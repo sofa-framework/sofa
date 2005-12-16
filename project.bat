@@ -3,7 +3,7 @@ REM This batch permit to create all dsp project or vcproj project for
 REM Visual C++ 6 or Visual dot Net 2003
 REM use : project [VC6 / VC7 / clean]
 REM default visual project depends on the environment variable QMAKESPEC
-set QTDIR=C:\Documents and Settings\test\Bureau\TestSofa\Tools
+set QTDIR=C:\Documents and Settings\test\Bureau\Sofa\Tools
 set PATH=%QTDIR%;%PATH%
 if "%1" == "VC6" goto vc6
 if "%1" == "VC7" goto vc7
