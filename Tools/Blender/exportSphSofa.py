@@ -1,4 +1,4 @@
-# export des spheres dans un fichier sph pour SPORE
+# export des spheres dans un fichier sph pour SOFA
 
 import struct
 from struct import *
