@@ -1,2 +1,2 @@
-SUBDIRS += src Projects
+SUBDIRS += src
 TEMPLATE = subdirs
