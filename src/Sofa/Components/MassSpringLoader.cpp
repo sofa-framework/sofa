@@ -1,0 +1,123 @@
+#include "Sofa/Components/MassSpringLoader.h"
+
+#include <stdio.h>
+#include <iostream>
+
+namespace Sofa
+{
+
+namespace Components
+{
+
+static void skipToEOL(FILE* f)
+{
+    int	ch;
+    while ((ch = fgetc(f)) != EOF && ch != '\n');
+}
+
+bool MassSpringLoader::load(const char *filename)
+{
+    char cmd[64];
+    FILE* file;
+
+    if ((file = fopen(filename, "r")) == NULL)
+    {
+        std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
+        return false;
+    }
+    std::cout << "Loading model'" << filename << "'" << std::endl;
+    int totalNumMasses=0;
+    int totalNumSprings=0;
+    // Check first line
+    if (fgets(cmd, 7, file) == NULL || !strcmp(cmd,"Xsp 3.0"))
+    {
+        fclose(file);
+        return false;
+    }
+    skipToEOL(file);
+
+    // then find out number of masses and springs
+    if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"numm"))
+    {
+        fscanf(file, "%d", &totalNumMasses);
+        setNumMasses(totalNumMasses);
+    }
+    if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"nums"))
+    {
+        fscanf(file, "%d", &totalNumSprings);
+        setNumSprings(totalNumSprings);
+    }
+
+    std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
+
+    while (fscanf(file, "%s", cmd) != EOF)
+    {
+        if (!strcmp(cmd,"mass"))
+        {
+            int index;
+            char location;
+            double px,py,pz,vx,vy,vz,mass,elastic;
+            bool fixed=false;
+            fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
+                    &index, &location,
+                    &px, &py, &pz, &vx, &vy, &vz,
+                    &mass, &elastic);
+            bool surface = (location == 's');
+
+            if (mass < 0)
+            {
+                // fixed point initialization
+                mass = -mass;
+                fixed = true;
+            }
+            addMass(px,py,pz,vx,vy,vz,mass,elastic,fixed,surface);
+        }
+        else if (!strcmp(cmd,"lspg"))	// linear springs connector
+        {
+            int	index;
+            int m1,m2;
+            double ks,kd,initpos;
+            fscanf(file, "%d %d %d %lf %lf %lf\n", &index,
+                    &m1,&m2,&ks,&kd,&initpos);
+            --m1;
+            --m2;
+            addSpring(m1,m2,ks,kd,initpos);
+        }
+        else if (!strcmp(cmd,"grav"))
+        {
+            double gx,gy,gz;
+            fscanf(file, "%lf %lf %lf\n", &gx, &gy, &gz);
+            setGravity(gx,gy,gz);
+        }
+        else if (!strcmp(cmd,"visc"))
+        {
+            double viscosity;
+            fscanf(file, "%lf\n", &viscosity);
+            setViscosity(viscosity);
+        }
+        else if (!strcmp(cmd,"step"))
+        {
+            //fscanf(file, "%lf\n", &(MSparams.default_dt));
+            skipToEOL(file);
+        }
+        else if (!strcmp(cmd,"frce"))
+        {
+            skipToEOL(file);
+        }
+        else if (cmd[0] == '#')	// it's a comment
+        {
+            skipToEOL(file);
+        }
+        else		// it's an unknown keyword
+        {
+            printf("Unknown keyword: %s\n", cmd);
+            skipToEOL(file);
+        }
+    }
+    fclose(file);
+    return true;
+}
+
+} // namespace Components
+
+} // namespace Sofa
