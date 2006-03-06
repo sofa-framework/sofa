@@ -1,0 +1,58 @@
+\documentclass[a4paper,11pt]{report}
+% LaTeX2Html: setenv TEXINPUTS `pwd`/fig:; latex2html
+
+% ---- graphiques
+\usepackage[dvips]{graphicx}
+%\graphicspath{./fig} 
+\usepackage{subfigure}  % several figures in a figure
+%\usepackage{pstricks}
+
+% ---- couleurs
+\usepackage[dvips]{color}
+\pagecolor[gray]{1}         % couleur de fond (blanc)
+
+% ---- format de page A4
+	\setlength{\textwidth }{16cm}	% largeur de ligne
+	\setlength{\textheight}{23cm}   % hauteur du texte
+	\setlength{\oddsidemargin}{0cm} % marge pages impaires
+	\setlength{\evensidemargin}{0cm}% marge pages paires
+	\setlength{\topmargin}{0cm} 	
+	\setlength{\headheight}{14pt} 
+	\setlength{\headsep}{0.5cm} 
+
+
+% Title Page
+\title{SOFA Documentation}
+\author{Fran\c{c}ois Faure\\ {\small INRIA Rh\^one-Alpes, Grenoble, France}}
+
+% ------ my custom commands
+\newcommand{\sofa}{SOFA}
+\newcommand{\todo}[1]{}
+\include{macros_docu}
+
+\begin{document} 
+\maketitle
+
+\begin{abstract}
+This is the documentation of the SOFA library. Chapter \ref{chapter:pba} gives theoretical background on physically-based animation. Chapter \ref{chapter:as} shows how to implement simulations using \sofa.
+\end{abstract}
+
+% \tableofcontents
+% \listoffigures
+% \listoftables
+
+
+\include{sofaMechanical}
+
+\include{physicallyBasedAnimation}
+
+\include{appendices}
+
+
+
+
+
+
+
+
+\end{document}          
