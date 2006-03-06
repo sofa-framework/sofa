@@ -1,0 +1,29 @@
+<!-- Mechanical MassSpring Group Basic Example -->
+<Scene dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
+	<Group name="Poutre1">
+		<Solver type="RungeKutta4"/>
+		<DynamicModel type="MassObject" name="M1" filename="BehaviorModels/fixedVSmCube27.xs3">
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+		</DynamicModel>
+		<DynamicModel type="MassObject" name="M2" filename="BehaviorModels/smCube27.xs3">
+			<Trans dx="0" dy="0" dz="10.5" />
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+		</DynamicModel>
+		<DynamicModel type="MassObject" name="M3" filename="BehaviorModels/smCube27.xs3">
+			<Trans dx="0" dy="0" dz="21.0" />
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+		</DynamicModel>
+		<DynamicModel type="MassObject" name="M4" filename="BehaviorModels/smCube27.xs3">
+			<Trans dx="0" dy="0" dz="31.5" />
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+		</DynamicModel>
+		<DynamicModel type="MassObject" name="M5" filename="BehaviorModels/smCube27.xs3">
+			<Trans dx="0" dy="0" dz="42.0" />
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+		</DynamicModel>
+		<InteractionForceField type="SpringForceField" name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2" />
+		<InteractionForceField type="SpringForceField" name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="M2" object2="M3" />
+		<InteractionForceField type="SpringForceField" name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="M3" object2="M4" />
+		<InteractionForceField type="SpringForceField" name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="M4" object2="M5" />
+	</Group>
+</Scene>

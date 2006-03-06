@@ -1,0 +1,31 @@
+<!-- Mechanical MassSpring+Rigid Basic Example -->
+<Scene dt="0.01" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
+	<Group name="Poutre1">
+		<Solver type="CGImplicit" iterations="100"/>
+		<DynamicModel type="MassObject" name="M1" filename="BehaviorModels/fixedVSmCube27.xs3">
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+		</DynamicModel>
+		<DynamicModel type="RigidObject" name="M2" filename="BehaviorModels/rigid.xs3">
+			<MechanicalModel type="Vec3d" name="Points"/>
+			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
+			<Trans dx="0" dy="0" dz="10.5" />
+		</DynamicModel>
+		<DynamicModel type="MassObject" name="M3" filename="BehaviorModels/smCube27.xs3">
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+			<Trans dx="0" dy="0" dz="21.0" />
+		</DynamicModel>
+		<DynamicModel type="RigidObject" name="M4" filename="BehaviorModels/rigid.xs3">
+			<MechanicalModel type="Vec3d" name="Points"/>
+			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
+			<Trans dx="0" dy="0" dz="31.5" />
+		</DynamicModel>
+		<DynamicModel type="MassObject" name="M5" filename="BehaviorModels/smCube27.xs3">
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+			<Trans dx="0" dy="0" dz="42.0" />
+		</DynamicModel>
+		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2/Points" />
+		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="M2/Points" object2="M3" />
+		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="M3" object2="M4/Points" />
+		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="M4/Points" object2="M5" />
+	</Group>
+</Scene>

@@ -1,0 +1,73 @@
+<!-- Hierarchical Group Basic Test -->
+<Scene dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
+	<CollisionPipeline verbose="1">
+		<CollisionDetection name="Voxel" type="VoxelGrid" min="-40" max="40" n="8" draw="1" />
+		<CollisionDetection name="N2" type="BruteForce" />
+	</CollisionPipeline>
+	<Group name="Poutre1">
+		<Solver type="CGImplicit" iterations="100"/>
+		<Group name="G1">
+		<DynamicModel type="MassObject" name="M1" filename="BehaviorModels/fixedVSmCube27.xs3">
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="yellow" />
+			<Mapping type="IdentityMapping" object1=".." object2="Visual" />
+			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27.sph" />
+			<Mapping type="IdentityMapping" object1=".." object2="Surf" />
+			<Trans dx="0" dy="0" dz="-21.0" />
+		</DynamicModel>
+		<DynamicModel type="RigidObject" name="M2" filename="BehaviorModels/rigid.xs3">
+			<MechanicalModel type="Vec3d" name="Points"/>
+			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
+			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
+			<Mapping type="RigidMapping" filename="VisualModels/smCube27.obj" object1=".." object2="Visual" />
+			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
+			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />
+			<Trans dx="0" dy="0" dz="-10.5" />
+		</DynamicModel>
+		<DynamicModel type="MassObject" name="M3" filename="BehaviorModels/smCube27.xs3">
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="red" />
+			<Mapping type="IdentityMapping" object1=".." object2="Visual" color="red" />
+			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27.sph" />
+			<Mapping type="IdentityMapping" object1=".." object2="Surf" />
+		</DynamicModel>
+		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2/Points" />
+		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="M2/Points" object2="M3" />
+		</Group>
+		<Group name="G2">
+		<DynamicModel type="RigidObject" name="M4" filename="BehaviorModels/rigid.xs3">
+			<MechanicalModel type="Vec3d" name="Points">
+				<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
+				<Mapping type="IdentityMapping" object1=".." object2="Visual" />
+			</MechanicalModel>
+			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
+			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
+			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />
+			<Trans dx="0" dy="0" dz="10.5" />
+		</DynamicModel>
+		<DynamicModel type="MassObject" name="M5" filename="BehaviorModels/smCube27.xs3">
+			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="cyan" />
+			<Mapping type="IdentityMapping" object1=".." object2="Visual" />
+			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27.sph" />
+			<Mapping type="IdentityMapping" object1=".." object2="Surf" />
+			<Trans dx="0" dy="0" dz="21.0" />
+		</DynamicModel>
+		<DynamicModel type="RigidObject" name="M6" filename="BehaviorModels/rigid.xs3">
+			<MechanicalModel type="Vec3d" name="Points"/>
+				<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
+			<VisualModel type="OglModel" name="Visual" filename="VisualModels/dragon.obj" color="gray" />
+			<Mapping type="RigidMapping" filename="VisualModels/dragon.obj" object1=".." object2="Visual" />
+			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
+			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />
+			<Trans dx="0" dy="0" dz="31.5" />
+		</DynamicModel>
+		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="M4/Points" object2="M5" />
+		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings5" filename="BehaviorModels/linkSmCube27.xs3" object1="M5" object2="M6/Points" />
+		</Group>
+		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="G1/M3" object2="G2/M4/Points" />
+	</Group>
+	<!-- -->
+	<CollisionModel type="Sphere" name="Floor" filename="CollisionModels/floor.sph" dy="-20" />
+	<VisualModel type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-20" />
+</Scene>
