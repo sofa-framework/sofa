@@ -14,7 +14,7 @@ SOURCES = Main.cpp
 HEADERS = 
 
 win32{
-  LIBS = -lSofaAbstract -lSofaCore -lSofaComponents -lSofaGUIFLTK -llibxml2 -lfltk -lfltkgl -lGLaux -lglut32 -lcomctl32 
+  LIBS = -lSofaCore -lSofaComponents -lSofaGUIFLTK -llibxml2 -lfltk -lfltkgl -lGLaux -lglut32 -lcomctl32 -lopengl32 -lglu32
   contains (CONFIGPROJECT, vc7) {
 	contains (CONFIGPROJECT, debug) {
 	  	LIBS += -NODEFAULTLIB:libcd 	
