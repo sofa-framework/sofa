@@ -6,6 +6,11 @@
 #include "Scene.h"
 #include <assert.h>
 #include <iostream>
+// added by Sylvere F.
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include <GL/gl.h>
 
 namespace Sofa

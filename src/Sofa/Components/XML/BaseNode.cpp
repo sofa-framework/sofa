@@ -113,7 +113,8 @@ bool BaseNode::init()
     return res;
 }
 
-template<> class Factory< std::string, BaseNode, std::pair<std::string, std::string> > NodeFactory;
+// commented by Sylvere F.
+// template<> class Factory< std::string, BaseNode, std::pair<std::string, std::string> > NodeFactory;
 
 BaseNode* BaseNode::Create(const std::string& nodeClass, const std::string& name, const std::string& type)
 {

@@ -33,7 +33,7 @@ SetDirectory::SetDirectory(const char* filename)
         getcwd(previousDir,sizeof(previousDir));
         chdir(directory);
 #else
-        GetCurrentDirectory(sizeof(previousDir) - 1, previousDir)
+        GetCurrentDirectory(sizeof(previousDir) - 1, previousDir);
         SetCurrentDirectory(directory);
 #endif
     }

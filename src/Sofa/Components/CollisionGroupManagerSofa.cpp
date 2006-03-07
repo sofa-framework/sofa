@@ -182,17 +182,20 @@ public:
 
 // First the easy cases...
 
-    static OdeSolver* createSolver(EulerSolver& solver1, EulerSolver& /*solver2*/)
+// Sylvere F. : change the name of function, because under Visual C++ it doesn't compile
+// createSolver1, 2, etc.
+
+    static OdeSolver* createSolver1(EulerSolver& solver1, EulerSolver& /*solver2*/)
     {
         return new EulerSolver(solver1);
     }
 
-    static OdeSolver* createSolver(RungeKutta4Solver& solver1, RungeKutta4Solver& /*solver2*/)
+    static OdeSolver* createSolver2(RungeKutta4Solver& solver1, RungeKutta4Solver& /*solver2*/)
     {
         return new RungeKutta4Solver(solver1);
     }
 
-    static OdeSolver* createSolver(CGImplicitSolver& solver1, CGImplicitSolver& solver2)
+    static OdeSolver* createSolver3(CGImplicitSolver& solver1, CGImplicitSolver& solver2)
     {
         CGImplicitSolver* solver = new CGImplicitSolver();
         solver->maxCGIter = solver1.maxCGIter > solver2.maxCGIter ? solver1.maxCGIter : solver2.maxCGIter;
@@ -203,30 +206,31 @@ public:
 
 // Then the other, with the policy of taking the more precise solver
 
-    static OdeSolver* createSolver(RungeKutta4Solver& solver1, EulerSolver& /*solver2*/)
+    static OdeSolver* createSolver4(RungeKutta4Solver& solver1, EulerSolver& /*solver2*/)
     {
         return new RungeKutta4Solver(solver1);
     }
 
-    static OdeSolver* createSolver(CGImplicitSolver& solver1, EulerSolver& /*solver2*/)
+    static OdeSolver* createSolver5(CGImplicitSolver& solver1, EulerSolver& /*solver2*/)
     {
         return new CGImplicitSolver(solver1);
     }
 
-    static OdeSolver* createSolver(CGImplicitSolver& solver1, RungeKutta4Solver& /*solver2*/)
+    static OdeSolver* createSolver6(CGImplicitSolver& solver1, RungeKutta4Solver& /*solver2*/)
     {
         return new CGImplicitSolver(solver1);
     }
 
 protected:
-    SolverMerger()
+
+    SolverMerger ()
     {
-        SolverDispatcher::Add<EulerSolver,EulerSolver,createSolver,false>();
-        SolverDispatcher::Add<RungeKutta4Solver,RungeKutta4Solver,createSolver,false>();
-        SolverDispatcher::Add<CGImplicitSolver,CGImplicitSolver,createSolver,false>();
-        SolverDispatcher::Add<RungeKutta4Solver,EulerSolver,createSolver,true>();
-        SolverDispatcher::Add<CGImplicitSolver,EulerSolver,createSolver,true>();
-        SolverDispatcher::Add<CGImplicitSolver,RungeKutta4Solver,createSolver,true>();
+        SolverDispatcher::Add<EulerSolver,EulerSolver,createSolver1,false>();
+        SolverDispatcher::Add<RungeKutta4Solver,RungeKutta4Solver,createSolver2,false>();
+        SolverDispatcher::Add<CGImplicitSolver,CGImplicitSolver,createSolver3,false>();
+        SolverDispatcher::Add<RungeKutta4Solver,EulerSolver,createSolver4,true>();
+        SolverDispatcher::Add<CGImplicitSolver,EulerSolver,createSolver5,true>();
+        SolverDispatcher::Add<CGImplicitSolver,RungeKutta4Solver,createSolver6,true>();
     }
     static SolverMerger instance;
 };

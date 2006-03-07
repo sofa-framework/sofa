@@ -9,7 +9,13 @@
 
 #include "Sofa/Core/MechanicalMapping.inl"
 
-#include <strings.h>
+// added by Sylvere F.
+//#include <strings.h>
+#include <string>
+#ifdef _WIN32
+#include <windows.h>
+#endif /* _WIN32 */
+
 #include <GL/gl.h>
 
 namespace Sofa
@@ -144,8 +150,9 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typen
     out[0].getVOrientation()[2] += omega[2];
 }
 
+// commented by Sylvere F.
 template <class BaseMapping>
-void RigidMapping<BaseMapping>::RigidMapping::draw()
+void RigidMapping<BaseMapping>/*::RigidMapping*/::draw()
 {
     if (!Scene::getInstance()->getShowMappings()) return;
     glDisable (GL_LIGHTING);

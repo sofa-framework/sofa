@@ -43,7 +43,9 @@ BaseNode* createNode(xmlNodePtr root)
         name = "default";
         static int num = 0;
         char buf[16];
-        snprintf(buf,sizeof(buf),"%d",num);
+        // added by Sylvere F.
+        sprintf(buf, "%d", num);
+        // snprintf(buf,sizeof(buf),"%d",num);
         ++num;
         name += buf;
     }

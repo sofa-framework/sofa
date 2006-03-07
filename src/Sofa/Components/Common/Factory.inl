@@ -5,6 +5,10 @@
 #include <iostream>
 #include <typeinfo>
 
+// added by Sylvere F.
+// this inclusion must be done but not in this part of code. For the moment, I don't know where ;)
+#include <string>
+
 namespace Sofa
 {
 
@@ -27,7 +31,9 @@ TObject* Factory<TKey, TObject, TArgument>::createObject(Key key, Argument arg)
         object = creator->createInstance(arg);
         if (object != NULL)
         {
-            std::cout<<"Object type "<<key<<" created: "<<gettypename(typeid(*object))<<std::endl;
+            // Added by Sylvere F.
+            // TODO : find the errors due to gettypename
+            //std::cout<<"Object type "<<key<<" created: "<<gettypename(typeid(*object))<<std::endl;
             return object;
         }
         ++it;

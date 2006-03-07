@@ -10,7 +10,8 @@ namespace Components
 namespace Common
 {
 
-template class Factory<std::string, Mesh, std::string>;
+// commented by Sylvere
+// template class Factory<std::string, Mesh, std::string>;
 
 Mesh::Material::Material()
 {
