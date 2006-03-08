@@ -1,5 +1,8 @@
 To build the project Sofa under Windows :
 
+You need to verify the path of QTDIR. It must point to the directory Sofa/Tools.
+For example, if you have download Sofa on C:\Sofa, the variable QTDIR=C:\Sofa\Tools.
+
 Verify in the sofa.cfg to have the good configuration to build a project.
 
  - console :
@@ -16,3 +19,4 @@ Verify in the sofa.cfg to have the good configuration to build a project.
  to debug or release solution. Before, we have to change the
  variable CONFIGDEBUG in sofa.cfg.
 
+After creating the project, verify that project example1 is the activated project.
