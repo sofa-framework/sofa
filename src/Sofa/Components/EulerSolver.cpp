@@ -30,6 +30,8 @@ void create(EulerSolver*& obj, XML::Node<Core::OdeSolver>* /*arg*/)
     obj = new EulerSolver();
 }
 
+SOFA_DECL_CLASS(Euler)
+
 Creator<XML::SolverNode::Factory, EulerSolver> EulerSolverClass("Euler");
 
 } // namespace Components

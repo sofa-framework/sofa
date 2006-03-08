@@ -13,6 +13,8 @@ namespace Sofa
 namespace Components
 {
 
+SOFA_DECL_CLASS(SpringForceField)
+
 using namespace Common;
 
 template class SpringForceField<Vec3dTypes>;

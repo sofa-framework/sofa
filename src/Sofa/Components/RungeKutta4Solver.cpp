@@ -81,6 +81,8 @@ void create(RungeKutta4Solver*& obj, XML::Node<Core::OdeSolver>* /*arg*/)
     obj = new RungeKutta4Solver();
 }
 
+SOFA_DECL_CLASS(RungeKutta4)
+
 Creator<XML::SolverNode::Factory, RungeKutta4Solver> RungeKutta4SolverClass("RungeKutta4");
 
 } // namespace Components

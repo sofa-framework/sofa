@@ -5,6 +5,8 @@
 #include <iostream>
 #include <typeinfo>
 
+#include "Sofa/Components/Common/config.h"
+
 namespace Sofa
 {
 

@@ -14,6 +14,8 @@ namespace Components
 using namespace Common;
 using namespace Core;
 
+SOFA_DECL_CLASS(IdentityMapping)
+
 template<class BaseMapping>
 void create(IdentityMapping<BaseMapping>*& obj, XML::Node<Core::BasicMapping>* arg)
 {

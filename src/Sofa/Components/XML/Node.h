@@ -22,7 +22,7 @@ private:
     Object* object;
 public:
     Node(const std::string& name, const std::string& type, BaseNode* newParent=NULL)
-        : BaseNode(name, type, newParent)
+        : BaseNode(name, type, newParent), object(NULL)
     {
     }
 

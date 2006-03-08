@@ -11,6 +11,8 @@ namespace Components
 
 using namespace Common;
 
+SOFA_DECL_CLASS(MeshOBJ)
+
 Creator<Mesh::Factory,MeshOBJ> MeshOBJClass("obj");
 
 void MeshOBJ::init (std::string filename)

@@ -9,6 +9,8 @@ namespace Sofa
 namespace Components
 {
 
+SOFA_DECL_CLASS(RigidMapping)
+
 using namespace Common;
 
 template<class BaseMapping>

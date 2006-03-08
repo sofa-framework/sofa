@@ -27,6 +27,8 @@ void create(BruteForceDetection*& obj, XML::Node<Detection>* arg)
     obj = new BruteForceDetection(arg->getName());
 }
 
+SOFA_DECL_CLASS(BruteForce)
+
 Creator<XML::CollisionDetectionNode::Factory, BruteForceDetection> BruteForceDetectionClass("BruteForce");
 
 using namespace Abstract;

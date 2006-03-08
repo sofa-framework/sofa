@@ -38,6 +38,8 @@ void create(VoxelGrid*& obj, XML::Node<Detection>* arg)
                        );
 }
 
+SOFA_DECL_CLASS(VoxelGrid)
+
 Creator<XML::CollisionDetectionNode::Factory, VoxelGrid> VoxelGridClass("VoxelGrid");
 
 using namespace Abstract;

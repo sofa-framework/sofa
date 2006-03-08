@@ -9,6 +9,8 @@ namespace Components
 
 using namespace Common;
 
+SOFA_DECL_CLASS(ImageBMP)
+
 Creator<Image::Factory,ImageBMP> ImageBMPClass("bmp");
 
 void ImageBMP::init(const std::string &filename)

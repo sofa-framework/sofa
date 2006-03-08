@@ -11,6 +11,8 @@ namespace Sofa
 namespace Components
 {
 
+SOFA_DECL_CLASS(StiffSpringForceField)
+
 using namespace Common;
 
 template class StiffSpringForceField<Vec3dTypes>;

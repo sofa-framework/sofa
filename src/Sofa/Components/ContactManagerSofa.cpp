@@ -15,6 +15,8 @@ void create(ContactManagerSofa*& obj, XML::Node<ContactManager>* arg)
     obj = new ContactManagerSofa(arg->getName(),arg->getAttribute("response","default"));
 }
 
+SOFA_DECL_CLASS(ContactManagerSofa)
+
 Creator<XML::ContactNode::Factory, ContactManagerSofa> ContactManagerSofaClass("default");
 
 ContactManagerSofa::ContactManagerSofa(const std::string& name, const std::string& contacttype)

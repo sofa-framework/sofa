@@ -13,6 +13,8 @@ namespace Components
 
 using namespace Common;
 
+SOFA_DECL_CLASS(RepulsiveSpringForceField)
+
 template class RepulsiveSpringForceField<Vec3dTypes>;
 template class RepulsiveSpringForceField<Vec3fTypes>;
 

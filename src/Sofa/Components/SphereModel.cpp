@@ -12,6 +12,8 @@ namespace Sofa
 namespace Components
 {
 
+SOFA_DECL_CLASS(Sphere)
+
 using namespace Common;
 
 void create(SphereModel*& obj, XML::Node<Abstract::CollisionModel>* arg)

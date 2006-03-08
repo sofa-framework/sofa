@@ -35,6 +35,8 @@ void create(OglModel*& obj, XML::Node<Abstract::VisualModel>* arg)
     }
 }
 
+SOFA_DECL_CLASS(OglModel)
+
 Creator< XML::VisualNode::Factory, OglModel > OglModelClass("OglModel");
 
 Material& Material::operator=(const Mesh::Material &matLoaded)

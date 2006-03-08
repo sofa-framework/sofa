@@ -20,6 +20,8 @@ void create(PipelineSofa*& obj, XML::Node<Collision::Pipeline>* arg)
     obj = new PipelineSofa(atoi(arg->getAttribute("verbose","0"))!=0);
 }
 
+SOFA_DECL_CLASS(PipelineSofa)
+
 Creator<XML::CollisionPipelineNode::Factory, PipelineSofa> PipelineSofaClass("default");
 
 PipelineSofa::PipelineSofa(bool verbose)

@@ -23,6 +23,8 @@ void create(CollisionGroupManagerSofa*& obj, XML::Node<CollisionGroupManager>* a
     obj = new CollisionGroupManagerSofa(arg->getName());
 }
 
+SOFA_DECL_CLASS(CollisionGroupManagerSofa)
+
 Creator<XML::CollisionGroupNode::Factory, CollisionGroupManagerSofa> CollisionGroupManagerSofaClass("default");
 
 

@@ -96,6 +96,8 @@ void create(CGImplicitSolver*& obj, XML::Node<Core::OdeSolver>* arg)
         obj->rayleighStiffness = atof(arg->getAttribute("stiffness"));
 }
 
+SOFA_DECL_CLASS(CGImplicit)
+
 Creator<XML::SolverNode::Factory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
 
 } // namespace Components
