@@ -30,6 +30,8 @@ public:
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
 
+    virtual void init();
+
     virtual void propagateX();
 
     virtual void propagateV();

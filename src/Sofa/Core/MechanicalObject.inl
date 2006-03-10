@@ -4,6 +4,7 @@
 #include "MechanicalObject.h"
 #include "Sofa/Abstract/Encoding.inl"
 #include <assert.h>
+#include <iostream>
 
 namespace Sofa
 {
@@ -13,16 +14,17 @@ namespace Core
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
+    : topology(NULL)
 {
     x = new VecCoord;
     v = new VecDeriv;
     f = new VecDeriv;
     dx = new VecDeriv;
     // default size is 1
-    x->resize(1);
-    v->resize(1);
-    f->resize(1);
-    dx->resize(1);
+    resize(1);
+    translation[0]=0.0;
+    translation[1]=0.0;
+    translation[2]=0.0;
 }
 
 template <class DataTypes>
@@ -45,10 +47,43 @@ void MechanicalObject<DataTypes>::addForceField(Core::ForceField *mFField)
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::resize(int vsize)
+{
+    getX()->resize(vsize);
+    getV()->resize(vsize);
+    getF()->resize(vsize);
+    getDx()->resize(vsize);
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
-    this->propagateX();
-    this->propagateV();
+    Topology* topo = this->getTopology();
+    if (topo!=NULL && topo->hasPos())
+    {
+        int nbp = topo->getNbPoints();
+        std::cout<<"Setting "<<nbp<<" points from topology with translation "<<translation[0]<<" "<<translation[1]<<" "<<translation[2]<<std::endl;
+        this->resize(nbp);
+        for (int i=0; i<nbp; i++)
+        {
+            DataTypes::set((*getX())[i], topo->getPX(i)+translation[0], topo->getPY(i)+translation[1], topo->getPZ(i)+translation[2]);
+        }
+    }
+
+    //this->propagateX();
+    //this->propagateV();
+    {
+        ForceFieldIt it = forcefields.begin();
+        ForceFieldIt itEnd = forcefields.end();
+        for (; it != itEnd; it++)
+            (*it)->init();
+    }
+    {
+        MappingIt it = mappings.begin();
+        MappingIt itEnd = mappings.end();
+        for (; it != itEnd; it++)
+            (*it)->init();
+    }
 }
 
 template <class DataTypes>
@@ -164,6 +199,18 @@ void MechanicalObject<DataTypes>::setObject(Abstract::BehaviorModel* obj)
     MappingIt itEnd = mappings.end();
     for (; it != itEnd; it++)
         (*it)->setObject(obj);
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setTopology(Topology* topo)
+{
+    this->topology = topo;
+}
+
+template <class DataTypes>
+Topology* MechanicalObject<DataTypes>::getTopology()
+{
+    return topology;
 }
 
 } // namespace Core

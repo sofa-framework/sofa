@@ -121,6 +121,8 @@ public:
     VecDeriv* getDx() { return NULL; }
     */
 
+    void init() { }
+
     void beginIteration(double /*dt*/) { }
 
     void endIteration(double /*dt*/) { }
@@ -130,6 +132,8 @@ public:
     void propagateV() { }
 
     void setObject(Abstract::BehaviorModel* /*obj*/) { }
+
+    void setTopology(Core::Topology* /*topo*/) { }
 };
 
 } // namespace GL

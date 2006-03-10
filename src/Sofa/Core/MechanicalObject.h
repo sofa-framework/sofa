@@ -19,6 +19,8 @@ class MechanicalObject : public MechanicalModel<DataTypes>
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
 protected:
     VecCoord* x;
     VecDeriv* v;
@@ -27,9 +29,11 @@ protected:
 
     std::vector< Core::ForceField *> forcefields;
     std::vector< Core::BasicMapping *> mappings;
+    Topology* topology;
     typedef typename std::vector< Core::ForceField* >::iterator ForceFieldIt;
     typedef typename std::vector< Core::BasicMapping* >::iterator MappingIt;
 
+    double translation[3];
 public:
     MechanicalObject();
 
@@ -48,6 +52,8 @@ public:
     virtual void addMapping(Core::BasicMapping *mMap);
 
     virtual void addForceField(Core::ForceField *mFField);
+
+    virtual void resize(int vsize);
 
     virtual void init();
 
@@ -71,6 +77,10 @@ public:
 
     /// Set the behavior object currently ownning this model
     virtual void setObject(Abstract::BehaviorModel* obj);
+
+    virtual void setTopology(Topology* topo);
+
+    virtual Topology* getTopology();
 };
 
 } // namespace Core

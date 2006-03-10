@@ -3,6 +3,7 @@
 
 #include "ForceField.h"
 #include "BasicMapping.h"
+#include "Topology.h"
 #include "Sofa/Abstract/Base.h"
 #include "Sofa/Abstract/BehaviorModel.h"
 
@@ -20,6 +21,8 @@ public:
     virtual void addMapping(Core::BasicMapping *mMap) = 0;
 
     virtual void addForceField(Core::ForceField *mFField) = 0;
+
+    virtual void resize(int vsize) = 0;
 
     virtual void init() = 0;
 
@@ -39,6 +42,10 @@ public:
 
     /// Set the behavior object currently ownning this model
     virtual void setObject(Abstract::BehaviorModel* obj) = 0;
+
+    virtual void setTopology(Topology* topo) = 0;
+
+    virtual Topology* getTopology() = 0;
 };
 
 } // namespace Core

@@ -40,6 +40,7 @@ public:
     }
 
     // Mapping Interface
+    virtual void init() = 0;
     virtual void beginIteration(double dt) = 0;
     virtual void endIteration(double dt) = 0;
     virtual void propagateX() = 0;

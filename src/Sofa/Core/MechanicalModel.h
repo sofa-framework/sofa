@@ -2,6 +2,7 @@
 #define SOFA_CORE_MECHANICALMODEL_H
 
 #include "BasicMechanicalModel.h"
+#include "BasicMechanicalModel.h"
 
 namespace Sofa
 {
@@ -35,7 +36,6 @@ public:
 
     virtual void beginIteration(double dt) = 0;
     virtual void endIteration(double dt) = 0;
-
 };
 
 } // namespace Core

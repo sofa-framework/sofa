@@ -1,32 +1,7 @@
 #ifndef SOFA_COMPONENTS_COMMON_VEC_H
 #define SOFA_COMPONENTS_COMMON_VEC_H
 
-/* The following code declares class array,
- * an STL container (as wrapper) for arrays of constant size.
- *
- * See
- *      http://www.josuttis.com/cppcode
- * for details and the latest version.
- *
- * (C) Copyright Nicolai M. Josuttis 2001.
- * Permission to copy, use, modify, sell and distribute this software
- * is granted provided this copyright notice appears in all copies.
- * This software is provided "as is" without express or implied
- * warranty, and with no claim as to its suitability for any purpose.
- *
- * 29 Jun 2005 - remove boost includes and reverse iterators. (Jeremie Allard)
- * 23 Aug 2002 - fix for Non-MSVC compilers combined with MSVC libraries.
- * 05 Aug 2001 - minor update (Nico Josuttis)
- * 20 Jan 2001 - STLport fix (Beman Dawes)
- * 29 Sep 2000 - Initial Revision (Nico Josuttis)
- */
-
-// See http://www.boost.org/libs/array for Documentation.
-
-#include <cstddef>
-#include <stdexcept>
-#include <iterator>
-#include <algorithm>
+#include "fixed_array.h"
 #include <math.h>
 //#include <boost/static_assert.hpp>
 #define BOOST_STATIC_ASSERT(a)
@@ -39,121 +14,6 @@ namespace Components
 
 namespace Common
 {
-
-template<class T, std::size_t N>
-class fixed_array
-{
-public:
-    T elems[N];    // fixed-size array of elements of type T
-
-public:
-    // type definitions
-    typedef T              value_type;
-    typedef T*             iterator;
-    typedef const T*       const_iterator;
-    typedef T&             reference;
-    typedef const T&       const_reference;
-    typedef std::size_t    size_type;
-    typedef std::ptrdiff_t difference_type;
-
-    // iterator support
-    iterator begin() { return elems; }
-    const_iterator begin() const { return elems; }
-    iterator end() { return elems+N; }
-    const_iterator end() const { return elems+N; }
-
-    // operator[]
-    reference operator[](size_type i) { return elems[i]; }
-    const_reference operator[](size_type i) const { return elems[i]; }
-
-    // at() with range check
-    reference at(size_type i) { rangecheck(i); return elems[i]; }
-    const_reference at(size_type i) const { rangecheck(i); return elems[i]; }
-
-    // front() and back()
-    reference front() { return elems[0]; }
-    const_reference front() const { return elems[0]; }
-    reference back() { return elems[N-1]; }
-    const_reference back() const { return elems[N-1]; }
-
-    // size is constant
-    static size_type size() { return N; }
-    static bool empty() { return false; }
-    static size_type max_size() { return N; }
-    enum { static_size = N };
-
-    // swap (note: linear complexity)
-    void swap (fixed_array<T,N>& y)
-    {
-        std::swap_ranges(begin(),end(),y.begin());
-    }
-
-    // direct access to data
-    const T* data() const { return elems; }
-
-    // assignment with type conversion
-    template <typename T2>
-    fixed_array<T,N>& operator= (const fixed_array<T2,N>& rhs)
-    {
-        std::copy(rhs.begin(),rhs.end(), begin());
-        return *this;
-    }
-
-    // assign one value to all elements
-    void assign (const T& value)
-    {
-        std::fill_n(begin(),size(),value);
-    }
-
-private:
-
-    // check range (may be private because it is static)
-    static void rangecheck (size_type i)
-    {
-        if (i >= size()) { throw std::range_error("fixed_array"); }
-    }
-
-};
-
-// comparisons
-template<class T, std::size_t N>
-bool operator== (const fixed_array<T,N>& x, const fixed_array<T,N>& y)
-{
-    return std::equal(x.begin(), x.end(), y.begin());
-}
-template<class T, std::size_t N>
-bool operator< (const fixed_array<T,N>& x, const fixed_array<T,N>& y)
-{
-    return std::lexicographical_compare(x.begin(),x.end(),y.begin(),y.end());
-}
-template<class T, std::size_t N>
-bool operator!= (const fixed_array<T,N>& x, const fixed_array<T,N>& y)
-{
-    return !(x==y);
-}
-template<class T, std::size_t N>
-bool operator> (const fixed_array<T,N>& x, const fixed_array<T,N>& y)
-{
-    return y<x;
-}
-template<class T, std::size_t N>
-bool operator<= (const fixed_array<T,N>& x, const fixed_array<T,N>& y)
-{
-    return !(y<x);
-}
-template<class T, std::size_t N>
-bool operator>= (const fixed_array<T,N>& x, const fixed_array<T,N>& y)
-{
-    return !(x<y);
-}
-
-// global swap()
-template<class T, std::size_t N>
-inline void swap (fixed_array<T,N>& x, fixed_array<T,N>& y)
-{
-    x.swap(y);
-}
-
 
 template <int N, typename real=float>
 class Vec : public fixed_array<real,N>
@@ -201,29 +61,6 @@ public:
         this->elems[3]=r4;
     }
 
-    /// Specific constructor for 5-elements vectors.
-    Vec(real r1, real r2, real r3, real r4, real r5)
-    {
-        BOOST_STATIC_ASSERT(N == 5);
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
-        this->elems[4]=r5;
-    }
-
-    /// Specific constructor for 6-elements vectors (bounding-box).
-    Vec(real r1, real r2, real r3, real r4, real r5, real r6)
-    {
-        BOOST_STATIC_ASSERT(N == 6);
-        this->elems[0]=r1;
-        this->elems[1]=r2;
-        this->elems[2]=r3;
-        this->elems[3]=r4;
-        this->elems[4]=r5;
-        this->elems[5]=r6;
-    }
-
     /// Constructor from an N-1 elements vector and an additional value (added at the end).
     Vec(const Vec<N-1,real>& v, real r1)
     {
@@ -231,6 +68,12 @@ public:
         for(int i=0; i<N-1; i++)
             this->elems[i] = v[i];
         this->elems[N-1]=r1;
+    }
+
+    template<typename real2>
+    Vec(const Vec<N, real2>& p)
+    {
+        std::copy(p.begin(), p.end(), this->begin());
     }
 
     /// Constructor from an array of values.

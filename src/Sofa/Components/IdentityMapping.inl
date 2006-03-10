@@ -15,6 +15,8 @@ template <class BaseMapping>
 void IdentityMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize(in.size());
+    if (this->fromModel->getTopology()!=NULL)
+        this->toModel->setTopology(this->fromModel->getTopology());
     for(unsigned int i=0; i<out.size(); i++)
     {
         out[i] = in[i];

@@ -32,6 +32,21 @@ Abstract::Base* Mapping<In,Out>::getTo()
     return this->toModel;
 }
 
+
+template <class In, class Out>
+void Mapping<In,Out>::init()
+{
+    if (this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
+    {
+        apply(*this->toModel->getX(), *this->fromModel->getX());
+    }
+    if (this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
+    {
+        applyJ(*this->toModel->getV(), *this->fromModel->getV());
+    }
+    this->toModel->init();
+}
+
 template <class In, class Out>
 void Mapping<In,Out>::beginIteration(double dt)
 {

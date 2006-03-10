@@ -125,6 +125,13 @@ public:
 
     typedef std::vector<Coord> VecCoord;
     typedef std::vector<Deriv> VecDeriv;
+
+    static void set(Coord& c, double x, double y, double z)
+    {
+        c.getCenter()[0] = x;
+        c.getCenter()[1] = y;
+        c.getCenter()[2] = z;
+    }
 };
 
 } // namespace Common

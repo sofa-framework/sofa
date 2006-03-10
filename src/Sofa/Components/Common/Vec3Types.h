@@ -22,6 +22,13 @@ public:
     typedef TDeriv Deriv;
     typedef std::vector<Coord> VecCoord;
     typedef std::vector<Deriv> VecDeriv;
+
+    static void set(Coord& c, double x, double y, double z)
+    {
+        c[0] = x;
+        c[1] = y;
+        c[2] = z;
+    }
 };
 
 template<class T>
@@ -62,6 +69,13 @@ public:
     typedef TDeriv Deriv;
     typedef ExtVector<Coord> VecCoord;
     typedef ExtVector<Deriv> VecDeriv;
+
+    static void set(Coord& c, double x, double y, double z)
+    {
+        c[0] = x;
+        c[1] = y;
+        c[2] = z;
+    }
 };
 
 typedef StdVectorTypes<Vec3d,Vec3d> Vec3dTypes;
