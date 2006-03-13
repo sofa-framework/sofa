@@ -16,7 +16,10 @@ using namespace Common;
 template<class BaseMapping>
 void create(RigidMapping<BaseMapping>*& obj, XML::Node<Core::BasicMapping>* arg)
 {
-    XML::createWith2ObjectsAndFilename< RigidMapping<BaseMapping>, typename RigidMapping<BaseMapping>::In, typename RigidMapping<BaseMapping>::Out>(obj, arg);
+    if (arg->getAttribute("filename"))
+        XML::createWith2ObjectsAndFilename< RigidMapping<BaseMapping>, typename RigidMapping<BaseMapping>::In, typename RigidMapping<BaseMapping>::Out>(obj, arg);
+    else
+        XML::createWith2Objects< RigidMapping<BaseMapping>, typename RigidMapping<BaseMapping>::In, typename RigidMapping<BaseMapping>::Out>(obj, arg);
 }
 
 Creator< XML::MappingNode::Factory, RigidMapping< MechanicalMapping< RigidObject, MechanicalModel<Vec3dTypes> > > > RigidMapping3dClass("RigidMapping", true);

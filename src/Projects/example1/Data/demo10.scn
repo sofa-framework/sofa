@@ -92,20 +92,6 @@
 			<Trans dx="-4" dy="31.5" dz="-4" />
 		</DynamicModel>
 	</Group>
-	<!--
-	<Group>
-		<Solver type="CGImplicit" iterations="100"/>
-		<DynamicModel type="RigidObject" name="M6" filename="BehaviorModels/rigid.xs3">
-			<MechanicalModel type="Vec3d" name="Points"/>
-			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
-			<VisualModel type="OglModel" name="Visual" filename="VisualModels/dragon.obj" color="gray" />
-			<Mapping type="RigidMapping" filename="VisualModels/dragon.obj" object1=".." object2="Visual" />
-			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
-			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />
-			<Trans dx="0" dy="42" dz="0" />
-		</DynamicModel>
-	</Group> -->
-	<!-- -->
 	<CollisionModel type="Sphere" name="Floor" filename="CollisionModels/floor.sph" dy="-20" />
 	<VisualModel type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-20" />
 </Scene>

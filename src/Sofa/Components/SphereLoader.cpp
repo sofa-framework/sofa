@@ -57,7 +57,7 @@ bool SphereLoader::load(const char *filename)
                     &index, &cx, &cy, &cz, &r);
             addSphere(cx,cy,cz,r);
         }
-        else if (!strcmp(cmd,"#") || !strcmp(cmd,"##"))
+        else if (cmd[0]=='#')
         {
             skipToEOL(file);
         }

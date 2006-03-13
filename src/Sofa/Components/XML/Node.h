@@ -118,8 +118,8 @@ void createWith2Objects(Object*& obj, BaseNode* arg)
     Object2* pobject2 = dynamic_cast<Object2*>(arg->findObject(object2));
     if (pobject1==NULL || pobject2==NULL)
     {
-        std::cerr << arg->getType()<<": object1 "<<(pobject1?"OK":arg->findObject(object1)?"INVALID":"NULL")
-                <<", object2 "<<(pobject2?"OK":arg->findObject(object2)?"INVALID":"NULL")<<std::endl;
+        //std::cerr << arg->getType()<<": object1 "<<(pobject1?"OK":arg->findObject(object1)?"INVALID":"NULL")
+        //                           <<", object2 "<<(pobject2?"OK":arg->findObject(object2)?"INVALID":"NULL")<<std::endl;
         return;
     }
     obj = new Object(pobject1, pobject2, arg->getName());

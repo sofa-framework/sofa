@@ -48,9 +48,16 @@ public:
         init(filename, name);
     }
 
+    RigidMapping(In* from, Out* to, const std::string& /*name*/="")
+        : Inherit(from, to)
+    {
+    }
+
     virtual ~RigidMapping()
     {
     }
+
+    void init();
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 

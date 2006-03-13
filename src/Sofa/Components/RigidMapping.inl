@@ -57,7 +57,7 @@ void RigidMapping<BaseMapping>::init(const char *filename, const std::string &/*
         Loader loader(this);
         loader.SphereLoader::load(filename);
     }
-    else
+    else if (strlen(filename)>0)
     {
         // Default to mesh loader
         Mesh* mesh = Mesh::Create(filename);
@@ -69,6 +69,19 @@ void RigidMapping<BaseMapping>::init(const char *filename, const std::string &/*
             delete mesh;
         }
     }
+}
+
+template <class BaseMapping>
+void RigidMapping<BaseMapping>::init()
+{
+    if (this->points.empty() && this->toModel!=NULL)
+    {
+        VecCoord& x = *this->toModel->getX();
+        points.resize(x.size());
+        for (unsigned int i=0; i<x.size(); i++)
+            points[i] = x[i];
+    }
+    this->BaseMapping::init();
 }
 
 template <class BaseMapping>

@@ -71,9 +71,9 @@
 			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/dragon.obj" color="gray" />
 			<Mapping type="RigidMapping" filename="VisualModels/dragon.obj" object1=".." object2="Visual" />
-			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
-			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />
-			<Trans dx="0" dy="42" dz="0" />
+			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/dragon.sph" />
+			<Mapping type="RigidMapping" filename="CollisionModels/dragon.sph" object1=".." object2="Surf" />
+			<Trans dx="0" dy="45" dz="0" />
 		</DynamicModel>
 	</Group>
 	<!-- -->
