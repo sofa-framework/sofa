@@ -7,7 +7,7 @@
 		<CollisionGroup name="Group" />
 	</CollisionPipeline>
 	<Group>
-		<Solver type="RungeKutta4" iterations="100"/>
+		<Solver type="CGImplicit" iterations="100"/>
 		<DynamicModel type="MassObject" name="M1" filename="BehaviorModels/smCube27.xs3">
 			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="yellow" />
@@ -18,7 +18,7 @@
 		</DynamicModel>
 	</Group>
 	<Group>
-		<Solver type="RungeKutta4" iterations="100"/>
+		<Solver type="CGImplicit" iterations="100"/>
 		<DynamicModel type="RigidObject" name="M2" filename="BehaviorModels/rigid.xs3">
 			<MechanicalModel type="Vec3d" name="Points"/>
 			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
@@ -30,7 +30,7 @@
 		</DynamicModel>
 	</Group>
 	<Group>
-		<Solver type="RungeKutta4" iterations="100"/>
+		<Solver type="CGImplicit" iterations="100"/>
 		<DynamicModel type="MassObject" name="M3" filename="BehaviorModels/smCube27.xs3">
 			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="red" />
@@ -41,7 +41,7 @@
 		</DynamicModel>
 	</Group>
 	<Group>
-		<Solver type="RungeKutta4" iterations="100"/>
+		<Solver type="CGImplicit" iterations="100"/>
 		<DynamicModel type="RigidObject" name="M4" filename="BehaviorModels/rigid.xs3">
 			<MechanicalModel type="Vec3d" name="Points">
 				<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
@@ -54,7 +54,7 @@
 		</DynamicModel>
 	</Group>
 	<Group>
-		<Solver type="RungeKutta4" iterations="100"/>
+		<Solver type="CGImplicit" iterations="100"/>
 		<DynamicModel type="MassObject" name="M5" filename="BehaviorModels/smCube27.xs3">
 			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="cyan" />
@@ -65,7 +65,7 @@
 		</DynamicModel>
 	</Group>
 	<Group>
-		<Solver type="RungeKutta4" iterations="100"/>
+		<Solver type="CGImplicit" iterations="100"/>
 		<DynamicModel type="RigidObject" name="M6" filename="BehaviorModels/rigid.xs3">
 			<MechanicalModel type="Vec3d" name="Points"/>
 			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />

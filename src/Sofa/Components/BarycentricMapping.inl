@@ -1,13 +1,13 @@
 #ifndef SOFA_COMPONENTS_BARYCENTRICMAPPING_INL
 #define SOFA_COMPONENTS_BARYCENTRICMAPPING_INL
 
+#include "Sofa/Components/Common/config.h"
 #include "BarycentricMapping.h"
 #include "RegularGridTopology.h"
 #include "Scene.h"
 
 #include "Sofa/Core/MechanicalMapping.inl"
 
-#include <strings.h>
 #include <GL/gl.h>
 
 namespace Sofa
@@ -148,7 +148,7 @@ static inline void glVertex3v(const float* p) { glVertex3fv(p); }
 static inline void glVertex3v(const double* p) { glVertex3dv(p); }
 
 template <class BaseMapping>
-void BarycentricMapping<BaseMapping>::BarycentricMapping::draw()
+void BarycentricMapping<BaseMapping>::draw()
 {
     if (!Scene::getInstance()->getShowMappings()) return;
     glDisable (GL_LIGHTING);
