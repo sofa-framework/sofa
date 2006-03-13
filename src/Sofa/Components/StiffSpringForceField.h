@@ -13,11 +13,13 @@ template<class DataTypes>
 class StiffSpringForceField : public SpringForceField<DataTypes>
 {
 public:
+    typedef SpringForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef typename Inherit::Spring Spring;
     class Mat3 : public fixed_array<Deriv,3>
     {
     public:
@@ -29,6 +31,10 @@ public:
 
 protected:
     std::vector<Mat3> dfdx;
+
+    void addSpringForce(VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring);
+
+    void addSpringDForce(VecDeriv& f1, VecCoord& p1, VecDeriv& dx1, VecDeriv& f2, VecCoord& p2, VecDeriv& dx2, int i, const Spring& spring);
 
 public:
     StiffSpringForceField(Core::MechanicalObject<DataTypes>* object1, Core::MechanicalObject<DataTypes>* object2, const char* filename, const std::string& name)

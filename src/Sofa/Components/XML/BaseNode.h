@@ -87,7 +87,11 @@ public:
     virtual Abstract::Base* findObject(const char* nodeName)
     {
         BaseNode* node = findNode(nodeName);
-        if (node!=NULL) { std::cout << "Found node "<<nodeName<<": "<<node->getName()<<std::endl; return node->getBaseObject(); }
+        if (node!=NULL)
+        {
+            //std::cout << "Found node "<<nodeName<<": "<<node->getName()<<std::endl;
+            return node->getBaseObject();
+        }
         else return NULL;
     }
 

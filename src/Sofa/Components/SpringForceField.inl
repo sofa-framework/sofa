@@ -36,8 +36,29 @@ void SpringForceField<DataTypes>::init(const char *filename, const std::string &
 {
     //this->typeName = "SpringForceField";
     //this->_name = name;
-    Loader loader(this);
-    loader.load(filename);
+    if (filename && filename[0])
+    {
+        Loader loader(this);
+        loader.load(filename);
+    }
+}
+
+template<class DataTypes>
+void SpringForceField<DataTypes>::addSpringForce(VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int /*i*/, const Spring& spring)
+{
+    int a = spring.m1;
+    int b = spring.m2;
+    Coord u = p2[b]-p1[a];
+    Real d = u.norm();
+    Real inverseLength = 1.0f/d;
+    u *= inverseLength;
+    Real elongation = d - spring.initpos;
+    Deriv relativeVelocity = v2[b]-v1[a];
+    Real elongationVelocity = dot(u,relativeVelocity);
+    Real forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
+    Deriv force = u*forceIntensity;
+    f1[a]+=force;
+    f2[b]-=force;
 }
 
 template<class DataTypes>
@@ -55,19 +76,7 @@ void SpringForceField<DataTypes>::addForce()
     f2.resize(p2.size());
     for (unsigned int i=0; i<this->springs.size(); i++)
     {
-        int a = this->springs[i].m1;
-        int b = this->springs[i].m2;
-        Coord u = p2[b]-p1[a];
-        Real d = u.norm();
-        Real inverseLength = 1.0f/d;
-        u *= inverseLength;
-        Real elongation = d - this->springs[i].initpos;
-        Deriv relativeVelocity = v2[b]-v1[a];
-        Real elongationVelocity = dot(u,relativeVelocity);
-        Real forceIntensity = this->springs[i].ks*elongation+this->springs[i].kd*elongationVelocity;
-        Deriv force = u*forceIntensity;
-        f1[a]+=force;
-        f2[b]-=force;
+        this->addSpringForce(f1,p1,v1,f2,p2,v2, i, this->springs[i]);
     }
 }
 

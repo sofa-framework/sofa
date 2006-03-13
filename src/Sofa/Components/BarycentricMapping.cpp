@@ -35,6 +35,12 @@ Creator< XML::MappingNode::Factory, BarycentricMapping< Mapping< MechanicalModel
 Creator< XML::MappingNode::Factory, BarycentricMapping< Mapping< MechanicalModel<Vec3dTypes>, MappedModel<Vec3fTypes> > > > BarycentricMapping3dM3fClass("BarycentricMapping", true);
 Creator< XML::MappingNode::Factory, BarycentricMapping< Mapping< MechanicalModel<Vec3fTypes>, MappedModel<Vec3dTypes> > > > BarycentricMapping3fM3dClass("BarycentricMapping", true);
 
+// Mech -> ExtMapped
+Creator< XML::MappingNode::Factory, BarycentricMapping< Mapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > > BarycentricMapping3dME3dClass("BarycentricMapping", true);
+Creator< XML::MappingNode::Factory, BarycentricMapping< Mapping< MechanicalModel<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > > BarycentricMapping3fME3fClass("BarycentricMapping", true);
+Creator< XML::MappingNode::Factory, BarycentricMapping< Mapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > > BarycentricMapping3dME3fClass("BarycentricMapping", true);
+Creator< XML::MappingNode::Factory, BarycentricMapping< Mapping< MechanicalModel<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > > BarycentricMapping3fME3dClass("BarycentricMapping", true);
+
 // Mech -> Mech
 template class BarycentricMapping< MechanicalMapping< MechanicalModel<Vec3dTypes>, MechanicalModel<Vec3dTypes> > >;
 template class BarycentricMapping< MechanicalMapping< MechanicalModel<Vec3fTypes>, MechanicalModel<Vec3fTypes> > >;
@@ -46,6 +52,12 @@ template class BarycentricMapping< Mapping< MechanicalModel<Vec3dTypes>, MappedM
 template class BarycentricMapping< Mapping< MechanicalModel<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
 template class BarycentricMapping< Mapping< MechanicalModel<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
 template class BarycentricMapping< Mapping< MechanicalModel<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
+
+// Mech -> ExtMapped
+template class BarycentricMapping< Mapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class BarycentricMapping< Mapping< MechanicalModel<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class BarycentricMapping< Mapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class BarycentricMapping< Mapping< MechanicalModel<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
 
 } // namespace Components
 

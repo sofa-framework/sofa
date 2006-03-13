@@ -1,4 +1,4 @@
-<Scene dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
+<Scene dt="0.005" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
 	<CollisionPipeline verbose="0">
 		<CollisionDetection name="Voxel" type="VoxelGrid" min="-40" max="40" n="8" draw="0" />
 		<CollisionDetection name="N2" type="BruteForce" />
@@ -6,7 +6,7 @@
 		<CollisionGroup name="Group" />
 	</CollisionPipeline>
 	<Group>
-		<Solver type="CGImplicit" iterations="20"/>
+		<Solver type="CGImplicit" iterations="100"/>
 		<DynamicModel type="MassObject" name="M1" mass="0.37">
 			<Topology type="RegularGrid"
 				nx="3" ny="3" nz="3"
@@ -14,75 +14,87 @@
 				ymin="-3.5" ymax="3.5"
 				zmin="-3.5" zmax="3.5"
 			/>
-			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+			<ForceField type="RegularGridSpringForceField" name="Springs" stiffness="800" damping="8" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="yellow" />
-			<Mapping type="IdentityMapping" object1=".." object2="Visual" />
+			<!-- <Mapping type="IdentityMapping" object1=".." object2="Visual" /> -->
+			<Mapping type="BarycentricMapping" object1=".." object2="Visual" />
 			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
 			<Mapping type="BarycentricMapping" object1=".." object2="Surf" />
 			<Trans dx="0" dy="-10.5" dz="0" />
 		</DynamicModel>
 	</Group>
 	<Group>
-		<Solver type="CGImplicit" iterations="20"/>
-		<DynamicModel type="RigidObject" name="M2" filename="BehaviorModels/rigid.xs3">
-			<MechanicalModel type="Vec3d" name="Points"/>
-			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
-			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
-			<Mapping type="RigidMapping" filename="VisualModels/smCube27.obj" object1=".." object2="Visual" />
-			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
-			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />
-			<Trans dx="4" dy="0" dz="0" />
-		</DynamicModel>
-	</Group>
-	<Group>
-		<Solver type="CGImplicit" iterations="20"/>
-		<DynamicModel type="MassObject" name="M3" mass="0.37">
+		<Solver type="CGImplicit" iterations="100"/>
+		<DynamicModel type="MassObject" name="M2" mass="0.37">
 			<Topology type="RegularGrid"
-				nx="3" ny="3" nz="3"
+				nx="4" ny="4" nz="4"
 				xmin="-3.5" xmax="3.5"
 				ymin="-3.5" ymax="3.5"
 				zmin="-3.5" zmax="3.5"
 			/>
-			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+			<ForceField type="RegularGridSpringForceField" name="Springs" stiffness="560" damping="5.6" />
+			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="#ff8000" />
+			<!-- <Mapping type="IdentityMapping" object1=".." object2="Visual" /> -->
+			<Mapping type="BarycentricMapping" object1=".." object2="Visual" />
+			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
+			<Mapping type="BarycentricMapping" object1=".." object2="Surf" />
+			<Trans dx="0" dy="0" dz="0" />
+		</DynamicModel>
+	</Group>
+	<Group>
+		<Solver type="CGImplicit" iterations="100"/>
+		<DynamicModel type="MassObject" name="M3" mass="0.37">
+			<Topology type="RegularGrid"
+				nx="5" ny="5" nz="5"
+				xmin="-3.5" xmax="3.5"
+				ymin="-3.5" ymax="3.5"
+				zmin="-3.5" zmax="3.5"
+			/>
+			<ForceField type="RegularGridSpringForceField" name="Springs" stiffness="400" damping="4" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="red" />
-			<Mapping type="IdentityMapping" object1=".." object2="Visual" color="red" />
+			<Mapping type="BarycentricMapping" object1=".." object2="Visual" />
 			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
 			<Mapping type="BarycentricMapping" object1=".." object2="Surf" />
 			<Trans dx="0" dy="10.5" dz="-4" />
 		</DynamicModel>
 	</Group>
 	<Group>
-		<Solver type="CGImplicit" iterations="20"/>
-		<DynamicModel type="RigidObject" name="M4" filename="BehaviorModels/rigid.xs3">
-			<MechanicalModel type="Vec3d" name="Points">
-				<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
-				<Mapping type="IdentityMapping" object1=".." object2="Visual" />
-			</MechanicalModel>
-			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
-			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
-			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />
-			<Trans dx="0" dy="21" dz="0" />
-		</DynamicModel>
-	</Group>
-	<Group>
-		<Solver type="CGImplicit" iterations="20"/>
-		<DynamicModel type="MassObject" name="M5"  mass="0.37">
+		<Solver type="CGImplicit" iterations="100"/>
+		<DynamicModel type="MassObject" name="M4" mass="0.37">
 			<Topology type="RegularGrid"
-				nx="3" ny="3" nz="3"
+				nx="6" ny="6" nz="6"
 				xmin="-3.5" xmax="3.5"
 				ymin="-3.5" ymax="3.5"
 				zmin="-3.5" zmax="3.5"
 			/>
-			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
+			<ForceField type="RegularGridSpringForceField" name="Springs" stiffness="280" damping="2.8" />
+			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="#801080" />
+			<Mapping type="BarycentricMapping" object1=".." object2="Visual" />
+			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
+			<Mapping type="BarycentricMapping" object1=".." object2="Surf" />
+			<Trans dx="0" dy="21" dz="0" />
+		</DynamicModel>
+	</Group>
+	<Group>
+		<Solver type="CGImplicit" iterations="100"/>
+		<DynamicModel type="MassObject" name="M5"  mass="0.37">
+			<Topology type="RegularGrid"
+				nx="7" ny="7" nz="7"
+				xmin="-3.5" xmax="3.5"
+				ymin="-3.5" ymax="3.5"
+				zmin="-3.5" zmax="3.5"
+			/>
+			<ForceField type="RegularGridSpringForceField" name="Springs" stiffness="200" damping="2" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="cyan" />
-			<Mapping type="IdentityMapping" object1=".." object2="Visual" />
+			<Mapping type="BarycentricMapping" object1=".." object2="Visual" />
 			<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
 			<Mapping type="BarycentricMapping" object1=".." object2="Surf" />
 			<Trans dx="-4" dy="31.5" dz="-4" />
 		</DynamicModel>
 	</Group>
+	<!--
 	<Group>
-		<Solver type="CGImplicit" iterations="20"/>
+		<Solver type="CGImplicit" iterations="100"/>
 		<DynamicModel type="RigidObject" name="M6" filename="BehaviorModels/rigid.xs3">
 			<MechanicalModel type="Vec3d" name="Points"/>
 			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
@@ -92,7 +104,7 @@
 			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />
 			<Trans dx="0" dy="42" dz="0" />
 		</DynamicModel>
-	</Group>
+	</Group> -->
 	<!-- -->
 	<CollisionModel type="Sphere" name="Floor" filename="CollisionModels/floor.sph" dy="-20" />
 	<VisualModel type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-20" />

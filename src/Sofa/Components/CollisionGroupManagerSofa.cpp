@@ -151,8 +151,8 @@ void CollisionGroupManagerSofa::createGroups(Scene* scene, const std::vector<Con
     groupVec.clear();
     for (std::set<Core::MechanicalGroup*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
         groupVec.push_back(*it);
-    if (!groupVec.empty())
-        std::cout << groupVec.size()<<" collision groups created."<<std::endl;
+    //if (!groupVec.empty())
+    //	std::cout << groupVec.size()<<" collision groups created."<<std::endl;
 }
 
 void CollisionGroupManagerSofa::clearGroups(Scene* scene)

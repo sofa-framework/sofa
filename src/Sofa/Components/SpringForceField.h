@@ -46,6 +46,8 @@ protected:
     class Loader;
     void init(const char *filename, const std::string &name);
 
+    void addSpringForce(VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring);
+
 public:
     SpringForceField(Core::MechanicalObject<DataTypes>* object1, Core::MechanicalObject<DataTypes>* object2, const char* filename, const std::string& name)
         : object1(object1), object2(object2)

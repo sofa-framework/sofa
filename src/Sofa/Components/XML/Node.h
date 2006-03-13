@@ -71,6 +71,15 @@ void createWithParentAndFilename(Object*& obj, BaseNode* arg)
     obj = new Object(object, filename, arg->getName());
 }
 
+template<class Object, class ParentObject>
+void createWithParent(Object*& obj, BaseNode* arg)
+{
+    obj = NULL;
+    ParentObject* object = dynamic_cast<ParentObject*>(arg->getParent()->getBaseObject());
+    if (object==NULL) return;
+    obj = new Object(object, arg->getName());
+}
+
 template<class Object, class Object1, class Object2>
 void createWith2ObjectsAndFilename(Object*& obj, BaseNode* arg)
 {
@@ -87,8 +96,8 @@ void createWith2ObjectsAndFilename(Object*& obj, BaseNode* arg)
     Object2* pobject2 = dynamic_cast<Object2*>(arg->findObject(object2));
     if (pobject1==NULL || pobject2==NULL)
     {
-        std::cerr << arg->getType()<<": object1 "<<(pobject1?"OK":arg->findObject(object1)?"INVALID":"NULL")
-                <<", object2 "<<(pobject2?"OK":arg->findObject(object2)?"INVALID":"NULL")<<std::endl;
+        //std::cerr << arg->getType()<<": object1 "<<(pobject1?"OK":arg->findObject(object1)?"INVALID":"NULL")
+        //                           <<", object2 "<<(pobject2?"OK":arg->findObject(object2)?"INVALID":"NULL")<<std::endl;
         return;
     }
     obj = new Object(pobject1, pobject2, filename, arg->getName());

@@ -176,23 +176,23 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::draw(const typename Bas
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
-        Real f;
-        f = (1-fx) * (1-fy) * (1-fz); glColor3f(f,f,1);
-        glVertex3v(out[i]); glVertex3v(in[cube[0]]);
-        f = (  fx) * (1-fy) * (1-fz); glColor3f(f,f,1);
-        glVertex3v(out[i]); glVertex3v(in[cube[1]]);
-        f = (1-fx) * (  fy) * (1-fz); glColor3f(f,f,1);
-        glVertex3v(out[i]); glVertex3v(in[cube[2]]);
-        f = (  fx) * (  fy) * (1-fz); glColor3f(f,f,1);
-        glVertex3v(out[i]); glVertex3v(in[cube[3]]);
-        f = (1-fx) * (1-fy) * (  fz); glColor3f(f,f,1);
-        glVertex3v(out[i]); glVertex3v(in[cube[4]]);
-        f = (  fx) * (1-fy) * (  fz); glColor3f(f,f,1);
-        glVertex3v(out[i]); glVertex3v(in[cube[5]]);
-        f = (1-fx) * (  fy) * (  fz); glColor3f(f,f,1);
-        glVertex3v(out[i]); glVertex3v(in[cube[6]]);
-        f = (  fx) * (  fy) * (  fz); glColor3f(f,f,1);
-        glVertex3v(out[i]); glVertex3v(in[cube[7]]);
+        Real f[8];
+        f[0] = (1-fx) * (1-fy) * (1-fz);
+        f[1] = (  fx) * (1-fy) * (1-fz);
+        f[2] = (1-fx) * (  fy) * (1-fz);
+        f[3] = (  fx) * (  fy) * (1-fz);
+        f[4] = (1-fx) * (1-fy) * (  fz);
+        f[5] = (  fx) * (1-fy) * (  fz);
+        f[6] = (1-fx) * (  fy) * (  fz);
+        f[7] = (  fx) * (  fy) * (  fz);
+        for (int j=0; j<8; j++)
+        {
+            if (f[j]<=-0.0001 || f[j]>=0.0001)
+            {
+                glColor3f(f[j],f[j],1);
+                glVertex3v(out[i]); glVertex3v(in[cube[j]]);
+            }
+        }
     }
     glEnd();
 }
