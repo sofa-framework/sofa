@@ -10,6 +10,9 @@ namespace Sofa
 namespace Components
 {
 
+namespace Intersections
+{
+
 using namespace Common;
 using namespace Collision;
 
@@ -52,7 +55,7 @@ static void projectOntoAxis (const Triangle rkTri, const Vector3& rkAxis, double
 }
 */
 
-bool Intersection::intersectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
+bool intersectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
 {
     //std::cout<<"Collision between Sphere - Sphere"<<std::endl;
     Vector3 sph1Pos(sph1.center());
@@ -63,7 +66,7 @@ bool Intersection::intersectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
     return (tmp.norm2() < (radius1 + radius2) * (radius1 + radius2));
 }
 
-bool Intersection::intersectionCubeCube(Cube &cube1, Cube &cube2)
+bool intersectionCubeCube(Cube &cube1, Cube &cube2)
 {
     const Vector3& minVect1 = cube1.minVect();
     const Vector3& minVect2 = cube2.minVect();
@@ -85,7 +88,7 @@ bool Intersection::intersectionCubeCube(Cube &cube1, Cube &cube2)
     return true;
 }
 
-bool Intersection::intersectionSphereRay(Sphere &sph1 ,Ray &ray2)
+bool intersectionSphereRay(Sphere &sph1 ,Ray &ray2)
 {
     //std::cout<<"Collision between Sphere - Ray"<<std::endl;
 
@@ -102,13 +105,13 @@ bool Intersection::intersectionSphereRay(Sphere &sph1 ,Ray &ray2)
 }
 
 /*
-bool Intersection::intersectionSphereTriangle(Sphere &, Triangle &)
+bool intersectionSphereTriangle(Sphere &, Triangle &)
 {
 	std::cout<<"Collision between Sphere - Triangle"<<std::endl;
 	return false;
 }
 
-bool Intersection::intersectionTriangleTriangle (Triangle& t1, Triangle& t2)
+bool intersectionTriangleTriangle (Triangle& t1, Triangle& t2)
 {
 	 Vector3 akE0[3](
 	 	*(t1.p2) - *(t1.p1),
@@ -193,7 +196,7 @@ bool Intersection::intersectionTriangleTriangle (Triangle& t1, Triangle& t2)
 }
 */
 
-DetectionOutput* Intersection::distCorrectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
+DetectionOutput* distCorrectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
 {
     DetectionOutput *detection = new DetectionOutput();
     double distSph1Sph2 = (sph2.center() - sph1.center()).norm();
@@ -210,7 +213,7 @@ DetectionOutput* Intersection::distCorrectionSphereSphere(Sphere &sph1 ,Sphere &
     return detection;
 }
 
-DetectionOutput* Intersection::distCorrectionSphereRay(Sphere &sph1 ,Ray &ray2)
+DetectionOutput* distCorrectionSphereRay(Sphere &sph1 ,Ray &ray2)
 {
     const Vector3 sph1Pos(sph1.center());
     const double radius1 = sph1.r();
@@ -236,7 +239,7 @@ DetectionOutput* Intersection::distCorrectionSphereRay(Sphere &sph1 ,Ray &ray2)
 }
 
 /*
-DetectionOutput* Intersection::distCorrectionSphereTriangle(Sphere &, Triangle &)
+DetectionOutput* distCorrectionSphereTriangle(Sphere &, Triangle &)
 {
 	std::cout<<"Distance correction between Sphere - Triangle"<<std::endl;
 	return new DetectionOutput();
@@ -250,6 +253,8 @@ DetectionOutput* distCorrectionTriangleTriangle (Triangle &t1, Triangle &t2)
 	return intersectionT.computeDetectionOutput(); //new DetectionOutput();
 }
 */
+
+} // namespace Intersections
 
 } // namespace Components
 

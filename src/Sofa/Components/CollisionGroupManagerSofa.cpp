@@ -178,66 +178,72 @@ void CollisionGroupManagerSofa::clearGroups(Scene* scene)
     groupVec.clear();
 }
 
-class SolverMerger
+
+// Sylvere F. : change the name of function, because under Visual C++ it doesn't compile
+
+// Jeremie A. : put the methods inside a namespace instead of a class,
+// for g++ 3.4 compatibility
+
+namespace SolverMergers
 {
-public:
 
 // First the easy cases...
 
-// Sylvere F. : change the name of function, because under Visual C++ it doesn't compile
-// createSolver1, 2, etc.
+OdeSolver* createSolverEulerEuler(EulerSolver& solver1, EulerSolver& /*solver2*/)
+{
+    return new EulerSolver(solver1);
+}
 
-    static OdeSolver* createSolver1(EulerSolver& solver1, EulerSolver& /*solver2*/)
-    {
-        return new EulerSolver(solver1);
-    }
+OdeSolver* createSolverRungeKutta4RungeKutta4(RungeKutta4Solver& solver1, RungeKutta4Solver& /*solver2*/)
+{
+    return new RungeKutta4Solver(solver1);
+}
 
-    static OdeSolver* createSolver2(RungeKutta4Solver& solver1, RungeKutta4Solver& /*solver2*/)
-    {
-        return new RungeKutta4Solver(solver1);
-    }
-
-    static OdeSolver* createSolver3(CGImplicitSolver& solver1, CGImplicitSolver& solver2)
-    {
-        CGImplicitSolver* solver = new CGImplicitSolver();
-        solver->maxCGIter = solver1.maxCGIter > solver2.maxCGIter ? solver1.maxCGIter : solver2.maxCGIter;
-        solver->smallDenominatorThreshold = solver1.smallDenominatorThreshold < solver2.smallDenominatorThreshold ? solver1.smallDenominatorThreshold : solver2.smallDenominatorThreshold;
-        solver->rayleighStiffness = solver1.rayleighStiffness < solver2.rayleighStiffness ? solver1.rayleighStiffness : solver2.rayleighStiffness;
-        return solver;
-    }
+OdeSolver* createSolverCGImplicitCGImplicit(CGImplicitSolver& solver1, CGImplicitSolver& solver2)
+{
+    CGImplicitSolver* solver = new CGImplicitSolver();
+    solver->maxCGIter = solver1.maxCGIter > solver2.maxCGIter ? solver1.maxCGIter : solver2.maxCGIter;
+    solver->smallDenominatorThreshold = solver1.smallDenominatorThreshold < solver2.smallDenominatorThreshold ? solver1.smallDenominatorThreshold : solver2.smallDenominatorThreshold;
+    solver->rayleighStiffness = solver1.rayleighStiffness < solver2.rayleighStiffness ? solver1.rayleighStiffness : solver2.rayleighStiffness;
+    return solver;
+}
 
 // Then the other, with the policy of taking the more precise solver
 
-    static OdeSolver* createSolver4(RungeKutta4Solver& solver1, EulerSolver& /*solver2*/)
-    {
-        return new RungeKutta4Solver(solver1);
-    }
+OdeSolver* createSolverRungeKutta4Euler(RungeKutta4Solver& solver1, EulerSolver& /*solver2*/)
+{
+    return new RungeKutta4Solver(solver1);
+}
 
-    static OdeSolver* createSolver5(CGImplicitSolver& solver1, EulerSolver& /*solver2*/)
-    {
-        return new CGImplicitSolver(solver1);
-    }
+OdeSolver* createSolverCGImplicitEuler(CGImplicitSolver& solver1, EulerSolver& /*solver2*/)
+{
+    return new CGImplicitSolver(solver1);
+}
 
-    static OdeSolver* createSolver6(CGImplicitSolver& solver1, RungeKutta4Solver& /*solver2*/)
-    {
-        return new CGImplicitSolver(solver1);
-    }
+OdeSolver* createSolverCGImplicitRungeKutta4(CGImplicitSolver& solver1, RungeKutta4Solver& /*solver2*/)
+{
+    return new CGImplicitSolver(solver1);
+}
 
+class SolverMerger
+{
 protected:
 
     SolverMerger ()
     {
-        SolverDispatcher::Add<EulerSolver,EulerSolver,createSolver1,false>();
-        SolverDispatcher::Add<RungeKutta4Solver,RungeKutta4Solver,createSolver2,false>();
-        SolverDispatcher::Add<CGImplicitSolver,CGImplicitSolver,createSolver3,false>();
-        SolverDispatcher::Add<RungeKutta4Solver,EulerSolver,createSolver4,true>();
-        SolverDispatcher::Add<CGImplicitSolver,EulerSolver,createSolver5,true>();
-        SolverDispatcher::Add<CGImplicitSolver,RungeKutta4Solver,createSolver6,true>();
+        SolverDispatcher::Add<EulerSolver,EulerSolver,createSolverEulerEuler,false>();
+        SolverDispatcher::Add<RungeKutta4Solver,RungeKutta4Solver,createSolverRungeKutta4RungeKutta4,false>();
+        SolverDispatcher::Add<CGImplicitSolver,CGImplicitSolver,createSolverCGImplicitCGImplicit,false>();
+        SolverDispatcher::Add<RungeKutta4Solver,EulerSolver,createSolverRungeKutta4Euler,true>();
+        SolverDispatcher::Add<CGImplicitSolver,EulerSolver,createSolverCGImplicitEuler,true>();
+        SolverDispatcher::Add<CGImplicitSolver,RungeKutta4Solver,createSolverCGImplicitRungeKutta4,true>();
     }
     static SolverMerger instance;
 };
 
 SolverMerger SolverMerger::instance;
+
+} // namespace SolverMergers
 
 } // namespace Components
 

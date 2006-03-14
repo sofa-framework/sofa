@@ -14,24 +14,32 @@ namespace Sofa
 namespace Components
 {
 
+// Jeremie A. : put the methods inside a namespace instead of a class,
+// for g++ 3.4 compatibility
+
+namespace Intersections
+{
+
+bool intersectionCubeCube(Cube& ,Cube&);
+
+bool intersectionSphereSphere(Sphere & ,Sphere &);
+//bool intersectionSphereTriangle(Sphere &, Triangle &);
+//bool intersectionTriangleTriangle(Triangle& ,Triangle&);
+bool intersectionSphereRay(Sphere & ,Ray &);
+
+Collision::DetectionOutput* distCorrectionSphereSphere(Sphere & ,Sphere &);
+Collision::DetectionOutput* distCorrectionSphereRay(Sphere & ,Ray &);
+//Collision::DetectionOutput* distCorrectionSphereTriangle(Sphere &, Triangle &);
+//Collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle& ,Triangle&);
+
 class Intersection
 {
 protected:
     Intersection();
     static Intersection instance;
-public:
-    static bool intersectionCubeCube(Cube& ,Cube&);
-
-    static bool intersectionSphereSphere(Sphere & ,Sphere &);
-//	static bool intersectionSphereTriangle(Sphere &, Triangle &);
-//	static bool intersectionTriangleTriangle(Triangle& ,Triangle&);
-    static bool intersectionSphereRay(Sphere & ,Ray &);
-
-    static Collision::DetectionOutput* distCorrectionSphereSphere(Sphere & ,Sphere &);
-    static Collision::DetectionOutput* distCorrectionSphereRay(Sphere & ,Ray &);
-//	static Collision::DetectionOutput* distCorrectionSphereTriangle(Sphere &, Triangle &);
-//	static Collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle& ,Triangle&);
 };
+
+} // namespace Intersections
 
 } // namespace Components
 
