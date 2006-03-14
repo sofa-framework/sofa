@@ -1,13 +1,17 @@
 #include "Sofa/Components/MassSpringLoader.h"
+#include "Sofa/Components/Common/Vec.h"
 
 #include <stdio.h>
 #include <iostream>
+#include <vector>
 
 namespace Sofa
 {
 
 namespace Components
 {
+
+using namespace Common;
 
 static void skipToEOL(FILE* f)
 {
@@ -25,7 +29,7 @@ bool MassSpringLoader::load(const char *filename)
         std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
         return false;
     }
-    std::cout << "Loading model'" << filename << "'" << std::endl;
+    std::cout << "Loading model '" << filename << "'" << std::endl;
     int totalNumMasses=0;
     int totalNumSprings=0;
     // Check first line
@@ -50,13 +54,15 @@ bool MassSpringLoader::load(const char *filename)
 
     std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
 
+    std::vector<Vec3d> masses;
+
     while (fscanf(file, "%s", cmd) != EOF)
     {
         if (!strcmp(cmd,"mass"))
         {
             int index;
             char location;
-            double px,py,pz,vx,vy,vz,mass,elastic;
+            double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             bool fixed=false;
             fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
                     &index, &location,
@@ -71,17 +77,32 @@ bool MassSpringLoader::load(const char *filename)
                 fixed = true;
             }
             addMass(px,py,pz,vx,vy,vz,mass,elastic,fixed,surface);
+            masses.push_back(Vec3d(px,py,pz));
         }
         else if (!strcmp(cmd,"lspg"))	// linear springs connector
         {
             int	index;
             int m1,m2;
-            double ks,kd,initpos;
+            double ks=0.0,kd=0.0,initpos=-1;
             fscanf(file, "%d %d %d %lf %lf %lf\n", &index,
                     &m1,&m2,&ks,&kd,&initpos);
             --m1;
             --m2;
-            addSpring(m1,m2,ks,kd,initpos);
+            if ((unsigned int)m1>=masses.size() || (unsigned int)m2>=masses.size())
+            {
+                std::cerr << "ERROR: incorrect mass indexes in spring "<<index<<" "<<m1+1<<" "<<m2+1<<std::endl;
+            }
+            else
+            {
+                if (initpos==-1)
+                {
+                    initpos = (masses[m1]-masses[m2]).norm();
+                    ks/=initpos;
+                    kd/=initpos;
+                    //std::cout << "spring "<<m1<<" "<<m2<<" "<<ks<<" "<<kd<<" "<<initpos<<"\n";
+                }
+                addSpring(m1,m2,ks,kd,initpos);
+            }
         }
         else if (!strcmp(cmd,"grav"))
         {

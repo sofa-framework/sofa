@@ -35,6 +35,10 @@ public:
 
     MeshTopology();
 
+    virtual void clear();
+
+    virtual bool load(const char* filename);
+
     int getNbPoints();
 
     // Complete sequence accessors
@@ -82,6 +86,9 @@ protected:
     virtual void updateQuads()     { }
     virtual void updateTetras()    { }
     virtual void updateCubes()     { }
+
+    class Loader;
+    friend class Loader;
 };
 
 } // namespace Components

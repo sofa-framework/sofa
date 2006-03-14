@@ -161,6 +161,26 @@ void MeshOBJ::readOBJ (FILE* file)
     std::cout << " Normals: " << normals.size() << std::endl;
     std::cout << " Texcoords: " << texCoords.size() << std::endl;
     std::cout << " Triangles: " << facets.size() << std::endl;
+    if (vertices.size()>0)
+    {
+        // compute bbox
+        Vector3 minBB = vertices[0];
+        Vector3 maxBB = vertices[0];
+        for (unsigned int i=1; i<vertices.size(); i++)
+        {
+            Vector3 p = vertices[i];
+            for (int c=0; c<3; c++)
+            {
+                if (minBB[c] > p[c])
+                    minBB[c] = p[c];
+                if (maxBB[c] < p[c])
+                    maxBB[c] = p[c];
+            }
+        }
+
+        std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
+    }
+
 }
 
 // -----------------------------------------------------

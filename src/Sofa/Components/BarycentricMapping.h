@@ -31,7 +31,7 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type Real;
 
-    template<int NP, int NC>
+    template<int NC, int NP=0>
     class MappingData
     {
     public:
@@ -40,7 +40,7 @@ public:
         Real baryCoords[NC];
     };
 
-    typedef MappingData<1,1> LineData;
+    typedef MappingData<1,2> LineData;
     typedef MappingData<2,3> TriangleData;
     typedef MappingData<2,4> QuadData;
     typedef MappingData<3,4> TetraData;
@@ -67,6 +67,17 @@ public:
         void draw( const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in);
     };
 
+    class MeshMapper : public Mapper
+    {
+    public:
+        std::vector< MappingData<3> > map;
+        MeshTopology* topology;
+        void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
+        void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );
+        void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in );
+        void draw( const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in);
+    };
+
 protected:
     //std::vector<MapCoef> map;
 
@@ -79,6 +90,8 @@ protected:
     Mapper* mapper;
 
     void calcMap(RegularGridTopology* topo);
+
+    void calcMap(MeshTopology* topo);
 
 public:
     BarycentricMapping(In* from, Out* to, const std::string& /*name*/)

@@ -126,6 +126,8 @@ void SphereModel::computeBoundingBox(void)
         }
     }
 
+    //std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
+
     cubeModel->setCube(0,minBB, maxBB);
 }
 

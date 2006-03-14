@@ -1,5 +1,7 @@
 #include <iostream>
 #include "MeshTopology.h"
+#include "MeshTopologyLoader.h"
+#include "XML/TopologyNode.h"
 #include "Common/fixed_array.h"
 
 namespace Sofa
@@ -10,9 +12,66 @@ namespace Components
 
 using namespace Common;
 
+void create(MeshTopology*& obj, XML::Node<Core::Topology>* arg)
+{
+    obj = new MeshTopology();
+    if (arg->getAttribute("filename"))
+        obj->load(arg->getAttribute("filename"));
+}
+
+SOFA_DECL_CLASS(MeshTopology)
+
+Creator<XML::TopologyNode::Factory, MeshTopology> MeshTopologyClass("Mesh");
+
 MeshTopology::MeshTopology()
     : nbPoints(0), validLines(false), validTriangles(false), validQuads(false), validTetras(false), validCubes(false)
 {
+}
+
+
+class MeshTopology::Loader : public MeshTopologyLoader
+{
+public:
+    MeshTopology* dest;
+    Loader(MeshTopology* dest) : dest(dest) {}
+    virtual void addLine(int p1, int p2)
+    {
+        dest->seqLines.push_back(make_array(p1,p2));
+    }
+    virtual void addTriangle(int p1, int p2, int p3)
+    {
+        dest->seqTriangles.push_back(make_array(p1,p2,p3));
+    }
+    virtual void addQuad(int p1, int p2, int p3, int p4)
+    {
+        dest->seqQuads.push_back(make_array(p1,p2,p3,p4));
+    }
+    virtual void addTetra(int p1, int p2, int p3, int p4)
+    {
+        dest->seqTetras.push_back(make_array(p1,p2,p3,p4));
+    }
+    virtual void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
+    {
+        dest->seqCubes.push_back(make_array(p1,p2,p3,p4,p5,p6,p7,p8));
+    }
+};
+
+void MeshTopology::clear()
+{
+    nbPoints = 0;
+    seqLines.clear();
+    seqTriangles.clear();
+    seqQuads.clear();
+    seqTetras.clear();
+    seqCubes.clear();
+    invalidate();
+}
+
+bool MeshTopology::load(const char* filename)
+{
+    clear();
+    Loader loader(this);
+    return loader.load(filename);
 }
 
 const MeshTopology::SeqLines& MeshTopology::getLines()
