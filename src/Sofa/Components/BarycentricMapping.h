@@ -31,7 +31,7 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type Real;
 
-    template<int NC, int NP=0>
+    template<int NC, int NP>
     class MappingData
     {
     public:
@@ -70,7 +70,7 @@ public:
     class MeshMapper : public Mapper
     {
     public:
-        std::vector< MappingData<3> > map;
+        std::vector< MappingData<3,0> > map;
         MeshTopology* topology;
         void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
         void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );

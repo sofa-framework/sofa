@@ -10,6 +10,7 @@
 #include "Sofa/Core/MechanicalMapping.inl"
 
 #include <GL/gl.h>
+#include <algorithm>
 
 namespace Sofa
 {
@@ -107,7 +108,7 @@ void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
         {
             ++outside;
         }
-        MappingData<3>& data = mapper->map[i];
+        MappingData<3,0>& data = mapper->map[i];
         std::copy(coefs.begin(), coefs.end(), data.baryCoords);
         data.in_index = index;
     }

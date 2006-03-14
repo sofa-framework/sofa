@@ -306,34 +306,34 @@ public:
                 - (*this)(2,0)*(*this)(1,1)*(*this)(0,2);
     }
 
-    /// Invert matrices and stores the result in m.
+    /// Invert matrix m
     bool invert(const Mat<L,C,real>& m)
     {
-        return invertMatrix(*this,m);
+        return invertMatrix(*this, m);
     }
 
 };
 
 /// Matrix inversion (general case).
-template<int N, class real>
-extern __inline__ bool invertMatrix(Mat<N,N,real>& dest, const Mat<N,N,real>& from)
+template<int S, class real>
+bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 {
     int i, j, k;
-    Vec<N,int> r, c, row, col;
+    Vec<S,int> r, c, row, col;
 
-    Mat<N,N,real> m1 = from;
-    Mat<N,N,real> m2;
+    Mat<S,S,real> m1 = from;
+    Mat<S,S,real> m2;
     m2.identity();
 
-    for ( k = 0; k < N; k++ )
+    for ( k = 0; k < S; k++ )
     {
         // Choosing the pivot
         real pivot = 0;
-        for (i = 0; i < N; i++)
+        for (i = 0; i < S; i++)
         {
             if (row[i])
                 continue;
-            for (j = 0; j < N; j++)
+            for (j = 0; j < S; j++)
             {
                 if (col[j])
                     continue;
@@ -360,7 +360,7 @@ extern __inline__ bool invertMatrix(Mat<N,N,real>& dest, const Mat<N,N,real>& fr
         m2[r[k]] /= pivot;
 
         // Reduction
-        for (i = 0; i < N; i++)
+        for (i = 0; i < S; i++)
         {
             if (i != r[k])
             {
@@ -371,12 +371,12 @@ extern __inline__ bool invertMatrix(Mat<N,N,real>& dest, const Mat<N,N,real>& fr
         }
     }
 
-    for (i = 0; i < N; i++)
-        for (j = 0; j < N; j++)
+    for (i = 0; i < S; i++)
+        for (j = 0; j < S; j++)
             if (c[j] == i)
                 row[i] = r[j];
 
-    for ( i = 0; i < N; i++ )
+    for ( i = 0; i < S; i++ )
         dest[i] = m2[row[i]];
 
     return true;
@@ -384,7 +384,7 @@ extern __inline__ bool invertMatrix(Mat<N,N,real>& dest, const Mat<N,N,real>& fr
 
 /// Matrix inversion (special case 3x3).
 template<class real>
-extern __inline__ bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
+bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
     real det=from.determinant();
 
@@ -406,7 +406,7 @@ extern __inline__ bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& fr
 
 /// Matrix inversion (special case 2x2).
 template<class real>
-extern __inline__ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
+bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 {
     real det=from(0,0)*from(1,1)-from(0,1)*from(1,0);
 
@@ -430,7 +430,8 @@ typedef Mat<3,4,double> Mat3x4d;
 typedef Mat<4,4,float> Mat4x4f;
 typedef Mat<4,4,double> Mat4x4d;
 
-typedef Mat4x4d Matrix3;
+typedef Mat3x3d Matrix3;
+typedef Mat4x4d Matrix4;
 
 #undef BOOST_STATIC_ASSERT
 
