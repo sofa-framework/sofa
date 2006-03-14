@@ -2,6 +2,7 @@
 #define SOFA_COMPONENTS_COMMON_QUATERNION_H
 
 #include "Vec.h"
+#include "Mat.h"
 #include <assert.h>
 #include <iostream>
 
@@ -29,6 +30,9 @@ public:
     void normalize();
 
     void clear() { _q[0]=0.0; _q[1]=0.0; _q[2]=0.0; _q[3]=1.0; }
+
+    void fromMatrix(const Mat3x3d &m);
+    void toMatrix(Mat3x3d &m) const;
 
     /// Given two quaternions, add them together to get a third quaternion.
     /// Adding quaternions to get a compound rotation is analagous to adding

@@ -47,6 +47,16 @@ void MechanicalObject<DataTypes>::addForceField(Core::ForceField *mFField)
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::removeForceField(Core::ForceField* mFField)
+{
+    std::vector<ForceField*>::iterator it = std::find(forcefields.begin(), forcefields.end(), mFField);
+    if (it!=forcefields.end())
+    {
+        forcefields.erase(it);
+    }
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(int vsize)
 {
     getX()->resize(vsize);

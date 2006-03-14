@@ -293,6 +293,11 @@ typedef Vec<3,double> Vec3d;
 
 typedef Vec3d Vector3; ///< alias
 
+typedef Vec<4,float> Vec4f;
+typedef Vec<4,double> Vec4d;
+
+typedef Vec4d Vector4; ///< alias
+
 #undef BOOST_STATIC_ASSERT
 
 } // namespace Common

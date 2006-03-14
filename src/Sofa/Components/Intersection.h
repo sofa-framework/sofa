@@ -6,6 +6,7 @@
 #include "Sphere.h"
 //#include "Triangle.h"
 #include "Cube.h"
+#include "Ray.h"
 
 namespace Sofa
 {
@@ -19,12 +20,15 @@ protected:
     Intersection();
     static Intersection instance;
 public:
+    static bool intersectionCubeCube(Cube& ,Cube&);
+
     static bool intersectionSphereSphere(Sphere & ,Sphere &);
 //	static bool intersectionSphereTriangle(Sphere &, Triangle &);
 //	static bool intersectionTriangleTriangle(Triangle& ,Triangle&);
-    static bool intersectionCubeCube(Cube& ,Cube&);
+    static bool intersectionSphereRay(Sphere & ,Ray &);
 
     static Collision::DetectionOutput* distCorrectionSphereSphere(Sphere & ,Sphere &);
+    static Collision::DetectionOutput* distCorrectionSphereRay(Sphere & ,Ray &);
 //	static Collision::DetectionOutput* distCorrectionSphereTriangle(Sphere &, Triangle &);
 //	static Collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle& ,Triangle&);
 };

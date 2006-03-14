@@ -39,6 +39,8 @@ public:
     virtual CollisionModel* getNext() = 0;
     virtual CollisionModel* getPrevious() = 0;
 
+    virtual bool isActive() { return true; }
+
     virtual void computeSphereVolume() {}
 
     virtual void computeBoundingBox() {}

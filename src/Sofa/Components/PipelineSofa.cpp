@@ -67,6 +67,7 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
         std::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
         for (; it != itEnd; it++)
         {
+            if (!(*it)->isActive()) continue;
             //(*it)->computeSphereVolume();
             (*it)->computeBoundingBox();
             vectBoundingVolume.push_back ((*it)->getFirst());

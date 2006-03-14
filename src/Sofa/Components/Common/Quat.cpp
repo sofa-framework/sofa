@@ -180,16 +180,91 @@ void Quat::normalize()
     }
 }
 
+void Quat::fromMatrix(const Mat3x3d &m)
+{
+    double tr, s;
+
+    tr = m.x().x() + m.y().y() + m.z().z();
+
+    // check the diagonal
+    if (tr > 0)
+    {
+        s = (float)sqrt (tr + 1);
+        _q[3] = s * 0.5f; // w OK
+        s = 0.5f / s;
+        _q[0] = (m.y().z() - m.z().y()) * s; // x OK
+        _q[1] = (m.z().x() - m.x().z()) * s; // y OK
+        _q[2] = (m.x().y() - m.y().x()) * s; // z OK
+    }
+    else
+    {
+        if (m.y().y() > m.x().x() && m.z().z() <= m.y().y())
+        {
+            s = (float)sqrt ((m.y().y() - (m.z().z() + m.x().x())) + 1.0f);
+
+            _q[1] = s * 0.5f; // y OK
+
+            if (s != 0.0f)
+                s = 0.5f / s;
+
+            _q[2] = (m.z().y() + m.y().z()) * s; // z OK
+            _q[0] = (m.y().x() + m.x().y()) * s; // x OK
+            _q[3] = (m.z().x() - m.x().z()) * s; // w OK
+        }
+        else if ((m.y().y() <= m.x().x()  &&  m.z().z() > m.x().x())  ||  (m.z().z() > m.y().y()))
+        {
+            s = (float)sqrt ((m.z().z() - (m.x().x() + m.y().y())) + 1.0f);
+
+            _q[2] = s * 0.5f; // z OK
+
+            if (s != 0.0f)
+                s = 0.5f / s;
+
+            _q[0] = (m.x().z() + m.z().x()) * s; // x OK
+            _q[1] = (m.z().y() + m.y().z()) * s; // y OK
+            _q[3] = (m.x().y() - m.y().x()) * s; // w OK
+        }
+        else
+        {
+            s = (float)sqrt ((m.x().x() - (m.y().y() + m.z().z())) + 1.0f);
+
+            _q[0] = s * 0.5f; // x OK
+
+            if (s != 0.0f)
+                s = 0.5f / s;
+
+            _q[1] = (m.y().x() + m.x().y()) * s; // y OK
+            _q[2] = (m.x().z() + m.z().x()) * s; // z OK
+            _q[3] = (m.y().z() - m.z().y()) * s; // w OK
+        }
+    }
+}
+
+void Quat::toMatrix(Mat3x3d &m) const
+{
+    m[0][0] = (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
+    m[0][1] = (2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
+    m[0][2] = (2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
+
+    m[1][0] = (2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
+    m[1][1] = (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
+    m[1][2] = (float) (2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
+
+    m[2][0] = (float) (2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
+    m[2][1] = (float) (2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
+    m[2][2] = (float) (1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
+}
+
 /// Build a rotation matrix, given a quaternion rotation.
 void Quat::buildRotationMatrix(double m[4][4])
 {
-    m[0][0] = (float) (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[0][1] = (float) (2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[0][2] = (float) (2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
+    m[0][0] = (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
+    m[0][1] = (2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
+    m[0][2] = (2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
     m[0][3] = 0.0f;
 
-    m[1][0] = (float) (2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1][1] = (float) (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
+    m[1][0] = (2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
+    m[1][1] = (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
     m[1][2] = (float) (2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
     m[1][3] = 0.0f;
 
@@ -203,33 +278,6 @@ void Quat::buildRotationMatrix(double m[4][4])
     m[3][2] = 0.0f;
     m[3][3] = 1.0f;
 }
-/*
-/// Build a rotation matrix, given a quaternion rotation.
-void Quat::buildRotationMatrix(Matrix &m)
-{
-	assert ((m.Col() == 4) && (m.Row() == 4));
-
-	m.set(1, 1, (float) (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2])));
-	m.set(1, 2, (float) (2.0 * (_q[0] * _q[1] - _q[2] * _q[3])));
-	m.set(1, 3, (float) (2.0 * (_q[2] * _q[0] + _q[1] * _q[3])));
-	m.set(1, 4, 0.0f);
-
-	m.set(2, 1, (float) (2.0 * (_q[0] * _q[1] + _q[2] * _q[3])));
-	m.set(2, 2, (float) (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0])));
-	m.set(2, 3, (float) (2.0 * (_q[1] * _q[2] - _q[0] * _q[3])));
-	m.set(2, 4, 0.0f);
-
-	m.set(3, 1, (float) (2.0 * (_q[2] * _q[0] - _q[1] * _q[3])));
-	m.set(3, 2, (float) (2.0 * (_q[1] * _q[2] + _q[0] * _q[3])));
-	m.set(3, 3, (float) (1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0])));
-	m.set(3, 4, 0.0f);
-
-	m.set(4, 1, 0.0f);
-	m.set(4, 2, 0.0f);
-	m.set(4, 3, 0.0f);
-	m.set(4, 4, 1.0f);
-}
-*/
 
 /// Given an axis and angle, compute quaternion.
 Quat Quat::axisToQuat(Vec3d a, double phi)
@@ -314,6 +362,7 @@ void Quat::operator*=(const Quat& q1)
             q2._q[0] * q1._q[1] -
             q2._q[1] * q1._q[0];
 }
+
 
 } // namespace Common
 

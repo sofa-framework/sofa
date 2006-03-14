@@ -39,9 +39,16 @@ public:
 template<class RealContact>
 void create(RealContact*& obj, std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*> arg)
 {
-    typedef typename RealContact::CollisionModel RealCollisionModel;
-    RealCollisionModel* model1 = dynamic_cast<RealCollisionModel*>(arg.first);
-    RealCollisionModel* model2 = dynamic_cast<RealCollisionModel*>(arg.second);
+    typedef typename RealContact::CollisionModel1 RealCollisionModel1;
+    typedef typename RealContact::CollisionModel2 RealCollisionModel2;
+    RealCollisionModel1* model1 = dynamic_cast<RealCollisionModel1*>(arg.first);
+    RealCollisionModel2* model2 = dynamic_cast<RealCollisionModel2*>(arg.second);
+    if (model1==NULL || model2==NULL)
+    {
+        // Try the other way around
+        model1 = dynamic_cast<RealCollisionModel1*>(arg.second);
+        model2 = dynamic_cast<RealCollisionModel2*>(arg.first);
+    }
     if (model1==NULL || model2==NULL) return;
     obj = new RealContact(model1, model2);
 }

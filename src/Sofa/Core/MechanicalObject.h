@@ -53,6 +53,8 @@ public:
 
     virtual void addForceField(Core::ForceField *mFField);
 
+    virtual void removeForceField(Core::ForceField* mFField);
+
     virtual void resize(int vsize);
 
     virtual void init();
