@@ -49,9 +49,11 @@ int main(int argc, char** argv)
 {
     std::string fileName="Data/demo7.scn";
     bool buildSceneProcedurally=false;
+    bool startAnim=false;
     parse("This is a SOFA application. Here are the command line arguments")
-    .option(&fileName,'f',"file","x3d scene file")
+    .option(&fileName,'f',"file","scene file")
     .option(&buildSceneProcedurally,'p',"proceduralScene","build scene procedurally instead of reading it from a file")
+    .option(&startAnim,'s',"start","start the animation loop")
     (argc,argv);
 
 
@@ -71,6 +73,6 @@ int main(int argc, char** argv)
         }
     }
 
-    Sofa::GUI::FLTK::MainLoop(argv[0]);
+    Sofa::GUI::FLTK::MainLoop(argv[0],startAnim);
     return 0;
 }

@@ -4,6 +4,7 @@
 #include "FnDispatcher.h"
 #include "Factory.h" // for gettypename()
 #include <iostream>
+#include <string>
 
 namespace Sofa
 {
@@ -20,13 +21,14 @@ BasicDispatcher<BaseClass, ResulT>::~BasicDispatcher()
 }
 
 template <class BaseClass, typename ResulT>
-ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& /*arg1*/, BaseClass& /*arg2*/)
+ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& arg1, BaseClass& arg2)
 {
     // commented by Sylvere F.
     // TODO : search where are the errors for gettypename
     // error : operator << not found for right value type std::string
-    //          << gettypename(typeid(arg1)) << ", "
-    //          << gettypename(typeid(arg2)) << ")\n";
+    std::cerr << "ERROR DISPATCH ("
+            << gettypename(typeid(arg1)) << ", "
+            << gettypename(typeid(arg2)) << ")\n";
     return ResulT();
 }
 

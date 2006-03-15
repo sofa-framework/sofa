@@ -1,4 +1,5 @@
 #include "Common/FnDispatcher.h"
+#include "Common/config.h"
 #include "Intersection.h"
 //#include "ContinuousTriangleIntersection.h"
 
@@ -13,6 +14,8 @@ namespace Components
 
 namespace Intersections
 {
+
+SOFA_DECL_CLASS(Intersection)
 
 using namespace Common;
 using namespace Collision;
