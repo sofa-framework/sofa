@@ -1,4 +1,5 @@
 #include <iostream>
+#include "argumentParser.h"
 #include "Sofa/Components/Scene.h"
 #include "Sofa/GUI/FLTK/Main.h"
 
@@ -46,17 +47,28 @@ Scene* buildScene()
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    std::string fileName="Data/demo7.scn";
+    bool buildSceneProcedurally=false;
+    parse("This is a SOFA application. Here are the command line arguments")
+    .option(&fileName,'f',"file","x3d scene file")
+    .option(&buildSceneProcedurally,'p',"proceduralScene","build scene procedurally instead of reading it from a file")
+    (argc,argv);
+
+
     Scene * scene=0;
 
-    if (argc >= 2)
+    if( buildSceneProcedurally )
     {
-        scene = Sofa::Components::Scene::loadScene(argv[1]);
-    }
-
-    if( scene==NULL )
-    {
-        cerr<<"Could not read file, build scene procedurally"<<endl;
         scene = buildScene();
+    }
+    else
+    {
+        scene = Sofa::Components::Scene::loadScene(fileName.c_str());
+        if( !scene )
+        {
+            cerr<<"Could not read file, abort"<<endl;
+            exit(1);
+        }
     }
 
     Sofa::GUI::FLTK::MainLoop(argv[0]);
