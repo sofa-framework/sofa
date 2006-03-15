@@ -3,6 +3,7 @@
 //#include "ContinuousTriangleIntersection.h"
 
 #include <iostream>
+#include <algorithm>
 
 namespace Sofa
 {
@@ -99,7 +100,7 @@ bool intersectionSphereRay(Sphere &sph1 ,Ray &ray2)
     const double length2 = ray2.l();
     const Vector3 tmp = sph1Pos - ray2Origin;
     const double rayPos = tmp*ray2Direction;
-    const double rayPosInside = fmax(fmin(rayPos,length2),0);
+    const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
     const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
     return (dist2 < (radius1*radius1));
 }
@@ -222,7 +223,7 @@ DetectionOutput* distCorrectionSphereRay(Sphere &sph1 ,Ray &ray2)
     const double length2 = ray2.l();
     const Vector3 tmp = sph1Pos - ray2Origin;
     const double rayPos = tmp*ray2Direction;
-    const double rayPosInside = fmax(fmin(rayPos,length2),0);
+    const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
     const double dist = sqrt(tmp.norm2() - (rayPosInside*rayPosInside));
 
     DetectionOutput *detection = new DetectionOutput();
