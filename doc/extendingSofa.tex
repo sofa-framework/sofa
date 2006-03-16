@@ -1,1 +1,415 @@
 \chapter{Extending Sofa}
+
+This chapter presents how different types of classes can be added to \sofa{} to implement new behaviors.
+
+\section{Adding a new DynamicObject}
+
+A DynamicObject is responsible for implementing the behavior of a given type of body. It contains the degrees of freedoms (\textit{DOFs}) of the body (within the MechanicalObject class), as well as its mass (i.e. how the body moves given an applied force).
+
+To add a new DynamicObject in \sofa, the following steps are required:
+
+\begin{enumerate}
+\item Specify the type of its DOFs in a \textit{DataTypes} class.
+\item Create the \textit{DynamicObject} derived class implementing the behaviors of the body, or instanciate an existing class with you \textit{DataTypes} class if already available.
+\item Create a method to create an instance of the body given an XML node.
+\item Register the new DynamicObject in the Sofa::Components::XML::DynamicNode::Factory factory.
+\item Create a XML scene file containing a DynamicModel with the \textit{type} of our class.
+\item Have fun!
+\end{enumerate}
+
+If the new class will only be created procedurally, then only the first two steps are required.
+
+We will now details these steps using the example of an object containing a set of one-dimensional particles.
+
+The code corresponding to this example is available in the following files:
+\begin{description}
+\item[Sofa/doc/src\_examples/example3/MassObject1d.h]~\\
+ Declaration of MassObject1d.
+\item[Sofa/doc/src\_examples/example3/MassObject1d.cpp]~\\
+ Creation from XML and registration in the Factory
+\item[Sofa/doc/src\_examples/example3/Main.cpp]~\\
+ Main program
+\item[Sofa/doc/src\_examples/example3/test1.scn]~\\
+ Test scene file
+\end{description}
+
+\subsection{Specification of the Degrees of Freedom}\label{sec:DOF}
+
+The data types used by the body are specified in a class containing the following definitions:
+
+\begin{description}
+\item[Coord]~\\
+ Type of DOFs.
+\item[Deriv]~\\
+ Type of derivatives (velocity, forces, displacements).
+\item[VecCoord]~\\
+ Container of DOFs.
+\item[VecDeriv]~\\
+ Container of derivatives.
+\item[void set(Coord\& c, double x, double y, double z)]~\\
+ Utility method to set the value of a point.
+\item[void add(Coord\& c, double x, double y, double z)]~\\
+ Utility method to add a value to a point (for applyTranslation).
+
+\end{description}
+
+In our example, we can use double as the type of DOFs and std::vector as containers:
+
+\begin{verbatim}
+class Vec1dTypes
+{
+public:
+  typedef double Coord;
+  typedef double Deriv;
+  typedef std::vector<Coord> VecCoord;
+  typedef std::vector<Deriv> VecDeriv;
+  
+  /// Here we only use the first coordinate
+  static void set(Coord& c, double x, double /*y*/, double /*z*/)
+  {
+    c = x;
+  }
+  
+  static void add(Coord& c, double x, double /*y*/, double /*z*/)
+  {
+    c += x;
+  }
+};
+\end{verbatim}
+
+\subsection{Body Behaviors Implementation}
+
+In \sofa{} a DynamicObject does not implement the time integration algorithm, which is handled by an separate Solver. Instead, it implements basic operations, such as compute forces, combine several vectors, etc. Of these operations, most are only dependant on the types of DOFs, or are computed through external classes (ForceFields for instance). Only 3 operations related to the mass remain to be implemented by DynamicObject subclasses:
+
+\begin{description}
+\item[computeForce] must be modified to add gravity ( $\ve f = \ve f + \ma M \ve g$ ).
+\item[accFromF] must be implemented to convert forces to accelerations ( $\ve a = \ma M^{-1} \ve f$ ).
+\item[addMDx] must be implemented to multiply a given deplacement by the mass ( $ \ve r = \ve r + \ma M \ve dx$ ).
+\end{description}
+
+In our example, a class \textit{MassObject} already exists to handle object represented as a set of particles. So we just need to instanciate it to the type of DOFs we want to use:
+
+\begin{verbatim}
+typedef MassObject<Vec1dTypes> MassObject1d;
+\end{verbatim}
+
+As a reference, here is how MassObject implements the 3 operations mentioned earlier:
+
+\begin{verbatim}
+template <class DataTypes>
+void MassObject<DataTypes>::addMDx(VecDeriv* res, VecDeriv* dx)
+{
+  for( unsigned i=0; i<dx->size(); ++i )
+    (*res)[i] += (*dx)[i] * masses[i].mass;
+}
+
+
+template <class DataTypes>
+void MassObject<DataTypes>::accFromF(VecDeriv* a, VecDeriv* f)
+{
+  a->resize(f->size());
+  for( unsigned i=0; i<f->size(); ++i )
+    (*a)[i] = (*f)[i] / masses[i].mass;
+}
+
+
+template <class DataTypes>
+void MassObject<DataTypes>::computeForce(VecDeriv* result)
+{
+  Inherit::computeForce(result);
+  // Add Gravity
+  for (unsigned int i=0;i<result->size();i++)
+  {
+    (*result)[i]+=gravity*masses[i].mass;
+  }
+}
+\end{verbatim}
+
+\subsection{Instanciation from XML}
+
+\sofa{} implements a mechanism to load a scene from a XML file using a two step process:
+
+\begin{enumerate}
+\item The XML file is parsed and converted to a tree of Node class.
+\item Each node use a Factory to instanciate the described object.
+\end{enumerate}
+
+A DynamicObject is described by a Sofa::Components::XML::DynamicNode. It contains the type of the class to instanciate, as well as a set of string attributes. To build our DynamicObject from this description we need a function to construct and configure a new instance given the pointer to the XML::DynamicNode. This can either be a constructor in our class, or an external function with the following prototype:
+\begin{verbatim}
+namespace Sofa { namespace Components { namespace Common {
+void create(MyDynamicObject*& obj, XML::Node<Sofa::Abstract::DynamicModel>* arg);
+} } }
+\end{verbatim}
+where \textit{MyDynamicObject} is the name of our new class.
+
+\textbf{Note:} the inclusion in the Sofa::Components::Common namespace is necessary for the Factory class to find our function. If anyone find a better design removing this requirement please tell me!
+
+Typically, the object will either be constructed from attributes given in the XML node, or using an external description file.
+
+Our 1D particles example is simple enough not to require an external file. We can implement a creation function as follow:
+
+\begin{verbatim}
+/// Read a vector of scalars from a string.
+void readVec1(std::vector<double>& vec, const char* str)
+{
+  vec.clear();
+  if (str==NULL) return;
+  const char* str2 = NULL;
+  for(;;)
+  {
+    double v = strtod(str,(char**)&str2);
+    std::cout << v << std::endl;
+    if (str2==str) break;
+    str = str2;
+    vec.push_back(v);
+  }
+}
+
+namespace Sofa { namespace Components { namespace Common {
+/// Construct a MassObject1d object from a XML node.
+void create(MassObject1d*& obj, XML::Node<Sofa::Abstract::DynamicModel>* arg)
+{
+        obj = new MassObject1d();
+  obj->clear();
+  std::vector<double> mass;
+  std::vector<double> pos;
+  std::vector<double> vel;
+  std::vector<double> fixed;
+  readVec1(mass,arg->getAttribute("mass"));
+  readVec1(pos,arg->getAttribute("position"));
+  readVec1(vel,arg->getAttribute("velocity"));
+  readVec1(fixed,arg->getAttribute("fixed"));
+  if (arg->getAttribute("gravity"))
+  {
+    obj->setGravity(atof(arg->getAttribute("gravity")));
+  }
+  unsigned int maxsize = mass.size();
+  if (pos.size()>maxsize) maxsize = pos.size();
+  if (vel.size()>maxsize) maxsize = vel.size();
+  double defaultmass = (mass.empty()?1.0:*mass.rbegin());
+  while (mass.size()<maxsize)
+    mass.push_back(defaultmass);
+  double defaultpos = 0;
+  if (!pos.empty()) defaultpos = *pos.rbegin();
+  while (pos.size()<maxsize)
+    pos.push_back(defaultpos);
+  double defaultvel = 0;
+  if (!vel.empty()) defaultvel = *vel.rbegin();
+  while (vel.size()<maxsize)
+    vel.push_back(defaultvel);
+  for (unsigned int i=0;i<maxsize;i++)
+  {
+    obj->addMass(pos[i], vel[i], mass[i], 0.0,
+      (std::find(fixed.begin(), fixed.end(), (double)i)!=fixed.end()));
+  }
+} } } }
+\end{verbatim}
+
+Note that this function is quite long, as it construct vectors of values (masses, positions, velocities) from strings. For simpler cases, where only a filename is required for instance, generic creation functions are provided:
+\begin{verbatim}
+namespace Sofa { namespace Components { namespace Common {
+/// Construct a MassObject1d object from a XML node using an external file.
+void create(MassObject1d*& obj, XML::Node<Sofa::Abstract::DynamicModel>* arg)
+{
+  XML::createFromFilename(obj, arg);
+} } } }
+\end{verbatim}
+However it is then necessary to implement the external file loading method.
+
+\subsection{Factory Registration}
+
+Once all functionnalities are implemented, it is necessary to register the new class in the Sofa::Components::XML::DynamicNode::Factory factory in order for \sofa{} to know about it. This requires adding the following "magic" line:
+
+\begin{verbatim}
+Creator< XML::DynamicNode::Factory, MassObject<Vec1dTypes> >
+  MassObject1dClass("MassObject1d");
+\end{verbatim}
+
+This command will register our class to the Factory during the initialization of the program. For this to work we must still ensure our code is linked in the final binary. To do this we must add the following line in the .cpp file containing the Creator command:
+\begin{verbatim}
+SOFA_DECL_CLASS(MassObject1d)
+\end{verbatim}
+and then add a corresponding line in a .cpp file used during the execution of the program (such as the file containing the main() function, or in Sofa/Components/init.cpp if the new class is integrated in \sofa{}):
+\begin{verbatim}
+SOFA_INIT_CLASS(MassObject1d)
+\end{verbatim}
+This last step is required to work around portability issues, and might be removed if a better solution is found.
+
+When the given type name is used in an XML file, the Factory will now be able to construct our custom DynamicObject.
+
+\subsection{Testing}
+
+Our new class can now be loaded by writing a small XML file:
+
+\begin{verbatim}
+<Scene dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
+	<Group>
+		<Solver type="RungeKutta4"/>
+		<DynamicModel type="MassObject1d" name="M1" position="0 1 2 3 4 5" fixed="5" gravity="-9.8"/>
+	</Group>
+</Scene>
+\end{verbatim}
+
+To run it, go to Sofa/doc/src\_examples/example3 and execute
+\begin{verbatim}
+./run test1.scn
+\end{verbatim}
+
+\section{Adding a new Mapping}
+
+Many existing objects in \sofa{} expect to work with 3D particles. To be able to use them with our 1D particles, we can create a MechanicalMapping which will convert informations between the two representations.
+
+Adding a new Mapping in \sofa{} requires the following steps:
+
+\begin{enumerate}
+\item Create the \textit{Mapping} or \textit{MechanicalMapping} derived class computing the mapping from the input model to the ouput, and accumulating forces back for MechanicalMappings.
+\item Create a method to create an instance of the mapping given an XML node.
+\item Register the new mapping in the Sofa::Components::XML::MappingNode::Factory factory.
+\item Create a XML scene file containing a Mapping with the \textit{type} of our class.
+\item Have more fun!
+\end{enumerate}
+
+We will now detail these steps using the 1D -\> 3D mechanical mapping example.
+The code for this mapping is available in the \textbf{Sofa/doc/src\_examples/example3/LinearMapping.cpp} file.
+
+\subsection{Mapping Implementation}
+
+A MechanicalMapping is used in the scene to link two MechanicalObjects, an input model and an output model. Positions, velocities and displacements are propagated from the input model to the output, and forces are accumulated in the other direction. This can be implemented by overloading 3 methods:
+
+\begin{description}
+\item[apply] compute output positions from input ones
+\item[applyJ] compute output derivatives (velocity of displacement) from input ones
+\item[applyJT] accumulate back output forces (or df) into input ones
+\end{description}
+
+If the mapping is linear these operations can be expressed in terms of the mapping matrix $\ma J$: apply and applyJ are equivalent to $\ve out = \ma J \ve in$, and applyJT is equivalent to $ \ve in += \ma J^{t} \ve out $.
+
+A scene in \sofa{} can contain mechanical models with different types of degrees of freedoms (see section~\ref{sec:DOF}). The mapping can either be generic relatively to the types used in the input and output models, or requires them to use specific types. The first solution requires the mapping implementation to be declared as a template of the type of DOFs, while the second solution requires implementing a "standard" class.
+
+For our example, we will create a non-templated mapping for simplicity, although a templated version would be very similar.
+
+\begin{verbatim}
+class LineMapping : public Sofa::Core::MechanicalMapping< Sofa::Core::MechanicalObject<Vec1dTypes>, Sofa::Core::MechanicalObject<Vec3dTypes> >
+{
+public:
+  // Simplified notation for all involved classes
+  typedef Sofa::Core::MechanicalMapping< Sofa::Core::MechanicalObject<Vec1dTypes>, Sofa::Core::MechanicalObject<Vec3dTypes> > BaseMapping;
+  typedef BaseMapping::In In;
+  typedef BaseMapping::Out Out;
+  typedef Out::VecCoord VecCoord;
+  typedef Out::VecDeriv VecDeriv;
+  typedef Out::Coord Coord;
+  typedef Out::Deriv Deriv;
+
+  Coord p0; ///< Origin of the 3D line
+  Deriv dx; ///< Direction of the 3D line
+  
+  LineMapping(In* from, Out* to, const std::string& /*name*/)
+  : BaseMapping(from, to), p0(0,0,0), dx(1,0,0)
+  {
+  }
+  
+  void apply( Out::VecCoord& out, const In::VecCoord& in )
+  {
+    out.resize(in.size());
+    for(unsigned int i=0;i<out.size();i++)
+      out[i] = p0+dx*in[i];
+  }
+  
+  void applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+  {
+    out.resize(in.size());
+    for(unsigned int i=0;i<out.size();i++)
+      out[i] = dx*in[i];
+  }
+  
+  void applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+  {
+    for(unsigned int i=0;i<out.size();i++)
+      out[i] += dx*in[i];
+  }
+};
+\end{verbatim}
+
+\subsection{Instanciation from XML and Registration in Factory}
+
+This process is identical to the corresponding steps in the DynamicObject case, except that the XML Node to use is XML::MappingNode instead of XML::DynamicNode.
+
+In our example, the additional code required for this step is:
+\begin{verbatim}
+
+namespace Sofa { namespace Components { namespace Common {
+
+void create(LineMapping*& obj, XML::Node<Sofa::Core::BasicMapping>* arg)
+{
+  XML::createWith2Objects< LineMapping, LineMapping::In, LineMapping::Out>(obj, arg);
+  if (obj!=NULL)
+  {
+    obj->p0[0] = atof(arg->getAttribute("x0","0"));
+    obj->p0[1] = atof(arg->getAttribute("y0","0"));
+    obj->p0[2] = atof(arg->getAttribute("z0","0"));
+    obj->dx[0] = atof(arg->getAttribute("dx","1"));
+    obj->dx[1] = atof(arg->getAttribute("dy","0"));
+    obj->dx[2] = atof(arg->getAttribute("dz","0"));
+  }
+} } } }
+
+SOFA_DECL_CLASS(LineMapping)
+
+Creator< XML::MappingNode::Factory, LineMapping > LineMappingClass("LineMapping", true);
+\end{verbatim}
+
+Note the true argument in the Creator command. It means that other classes with the same type name are authorized in the Factory, implementing the same mapping for other datatypes for instance.
+
+\subsection{Testing}
+
+Our new class can now be used to add a 3D spring force field to our 1D masses by writing a small XML file:
+
+\begin{verbatim}
+<Scene dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
+	<Group>
+		<Solver type="RungeKutta4"/>
+		<DynamicModel type="MassObject1d" name="M1" position="0 1 2 3 4 5" fixed="5" gravity="-9.8">
+		<MechanicalModel type="Vec3d" name="Points">
+		<ForceField type="StiffSpringForceField" filename="test2.xs3"/>
+		</MechanicalModel>
+		<Mapping type="LineMapping" object1=".." object2="Points" />
+		</DynamicModel>
+	</Group>
+</Scene>
+\end{verbatim}
+
+To run it, go to Sofa/doc/src\_examples/example3 and execute
+\begin{verbatim}
+./run test2.scn
+\end{verbatim}
+
+The same mapping can also be used to attach a collision model:
+
+\begin{verbatim}
+<Scene dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
+	<CollisionPipeline>
+		<CollisionDetection name="N2" type="BruteForce" />
+		<Contact name="Response" contact="default" />
+		<CollisionGroup name="Group" />
+	</CollisionPipeline>
+	<Group>
+		<Solver type="RungeKutta4"/>
+		<DynamicModel type="MassObject1d" name="M1" position="0 1 2 3 4 5" fixed="5" gravity="-9.8">
+		<MechanicalModel type="Vec3d" name="Points">
+		<ForceField type="StiffSpringForceField" filename="test2.xs3"/>
+		</MechanicalModel>
+		<Mapping type="LineMapping" object1=".." object2="Points" />
+		<CollisionModel type="Sphere" name="Spheres" filename="test3.sph"/>
+		<Mapping type="LineMapping" object1=".." object2="Spheres" />
+		</DynamicModel>
+	</Group>
+</Scene>
+\end{verbatim}
+
+To run it, go to Sofa/doc/src\_examples/example3 and execute
+\begin{verbatim}
+./run test3.scn
+\end{verbatim}
+
+You can now pick the particles with the mouse by pressing the shift key and left mouse button.
