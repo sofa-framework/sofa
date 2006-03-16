@@ -61,7 +61,7 @@ void SphereModel::init(const char* filename)
 
 void SphereModel::draw()
 {
-    if (!Scene::getInstance()->getShowCollisionModels()) return;
+    if (!isActive() || !Scene::getInstance()->getShowCollisionModels()) return;
     //std::cout << "SPHdraw"<<elems.size()<<std::endl;
     glDisable(GL_LIGHTING);
     if (getObject()==NULL)

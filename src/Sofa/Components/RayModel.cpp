@@ -54,7 +54,7 @@ void RayModel::addRay(Vector3 origin, Vector3 direction, double length)
 
 void RayModel::draw()
 {
-    if (!Scene::getInstance()->getShowCollisionModels()) return;
+    if (!isActive() || !Scene::getInstance()->getShowCollisionModels()) return;
     //std::cout << "SPHdraw"<<elems.size()<<std::endl;
     glDisable(GL_LIGHTING);
     if (getObject()==NULL)

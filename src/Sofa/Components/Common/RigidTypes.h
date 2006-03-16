@@ -132,6 +132,13 @@ public:
         c.getCenter()[1] = y;
         c.getCenter()[2] = z;
     }
+
+    static void add(Coord& c, double x, double y, double z)
+    {
+        c.getCenter()[0] += x;
+        c.getCenter()[1] += y;
+        c.getCenter()[2] += z;
+    }
 };
 
 } // namespace Common

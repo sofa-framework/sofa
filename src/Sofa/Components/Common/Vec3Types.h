@@ -29,6 +29,13 @@ public:
         c[1] = y;
         c[2] = z;
     }
+
+    static void add(Coord& c, double x, double y, double z)
+    {
+        c[0] += x;
+        c[1] += y;
+        c[2] += z;
+    }
 };
 
 template<class T>
@@ -75,6 +82,13 @@ public:
         c[0] = x;
         c[1] = y;
         c[2] = z;
+    }
+
+    static void add(Coord& c, double x, double y, double z)
+    {
+        c[0] += x;
+        c[1] += y;
+        c[2] += z;
     }
 };
 
