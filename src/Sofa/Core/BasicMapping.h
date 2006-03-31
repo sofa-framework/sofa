@@ -30,28 +30,28 @@ class BasicMapping : public virtual Abstract::Base
 public:
     virtual ~BasicMapping() { }
 
+    // Mapping Interface
+    virtual void init() = 0;
+
     /*! \fn void updateMapping()
      *  \brief apply the transformation from a model to an other model (like apply displacement from BehaviorModel to VisualModel)
      */
-    virtual void updateMapping()
-    {
-        propagateX();
-        propagateV();
-    }
+    virtual void updateMapping() = 0;
+    //{
+    //	//propagateX();
+    //	//propagateV();
+    //}
+    // virtual void beginIteration(double dt) = 0;
+    // virtual void endIteration(double dt) = 0;
+    // virtual void propagateX() = 0;
+    // virtual void propagateV() = 0;
+    // virtual void propagateDx() { }
+    // virtual void resetForce() { }
+    // virtual void accumulateForce() { }
+    // virtual void accumulateDf() { }
 
-    // Mapping Interface
-    virtual void init() = 0;
-    virtual void beginIteration(double dt) = 0;
-    virtual void endIteration(double dt) = 0;
-    virtual void propagateX() = 0;
-    virtual void propagateV() = 0;
-    virtual void propagateDx() { }
-    virtual void resetForce() { }
-    virtual void accumulateForce() { }
-    virtual void accumulateDf() { }
-
-    /// Set the behavior object currently ownning this model
-    virtual void setObject(Abstract::BehaviorModel* obj) = 0;
+    // /// Set the behavior object currently ownning this model
+    // virtual void setObject(Abstract::BehaviorModel* obj) = 0;
 
     virtual Abstract::Base* getFrom() = 0;
     virtual Abstract::Base* getTo() = 0;

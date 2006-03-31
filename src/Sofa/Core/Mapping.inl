@@ -32,57 +32,25 @@ Abstract::Base* Mapping<In,Out>::getTo()
     return this->toModel;
 }
 
-
 template <class In, class Out>
 void Mapping<In,Out>::init()
 {
-    if (this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
-    {
-        apply(*this->toModel->getX(), *this->fromModel->getX());
-    }
-    if (this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
-    {
-        applyJ(*this->toModel->getV(), *this->fromModel->getV());
-    }
-    this->toModel->init();
+    this->updateMapping();
 }
 
 template <class In, class Out>
-void Mapping<In,Out>::beginIteration(double dt)
-{
-    this->toModel->beginIteration(dt);
-}
-
-template <class In, class Out>
-void Mapping<In,Out>::endIteration(double dt)
-{
-    this->toModel->endIteration(dt);
-}
-
-template <class In, class Out>
-void Mapping<In,Out>::propagateX()
+void Mapping<In,Out>::updateMapping()
 {
     if (this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
     {
         apply(*this->toModel->getX(), *this->fromModel->getX());
-        this->toModel->propagateX();
+        //this->toModel->propagateX();
     }
-}
-
-template <class In, class Out>
-void Mapping<In,Out>::propagateV()
-{
     if (this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
     {
         applyJ(*this->toModel->getV(), *this->fromModel->getV());
-        this->toModel->propagateV();
+        //this->toModel->propagateV();
     }
-}
-
-template <class In, class Out>
-void Mapping<In,Out>::setObject(Abstract::BehaviorModel* obj)
-{
-    this->toModel->setObject(obj);
 }
 
 } // namespace Core

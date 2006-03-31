@@ -32,15 +32,17 @@ public:
 
     virtual void init();
 
-    virtual void propagateX();
+    virtual void updateMapping();
 
-    virtual void propagateV();
+    //virtual void propagateX();
 
-    virtual void beginIteration(double dt);
+    //virtual void propagateV();
 
-    virtual void endIteration(double dt);
+    // virtual void beginIteration(double dt);
 
-    virtual void setObject(Abstract::BehaviorModel* obj);
+    // virtual void endIteration(double dt);
+
+    // virtual void setObject(Abstract::BehaviorModel* obj);
 };
 
 } // namespace Core

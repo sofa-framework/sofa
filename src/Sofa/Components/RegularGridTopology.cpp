@@ -47,9 +47,18 @@ RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
 void RegularGridTopology::setPos(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
 {
     setP0(Vec3(xmin,ymin,zmin));
-    setDx(Vec3((xmax-xmin)/(nx-1),0,0));
-    setDy(Vec3(0,(ymax-ymin)/(ny-1),0));
-    setDz(Vec3(0,0,(zmax-zmin)/(nz-1)));
+    if (nx>1)
+        setDx(Vec3((xmax-xmin)/(nx-1),0,0));
+    else
+        setDx(Vec3(0,0,0));
+    if (ny>1)
+        setDy(Vec3(0,(ymax-ymin)/(ny-1),0));
+    else
+        setDy(Vec3(0,0,0));
+    if (nz>1)
+        setDz(Vec3(0,0,(zmax-zmin)/(nz-1)));
+    else
+        setDz(Vec3(0,0,0));
 }
 
 RegularGridTopology::Vec3 RegularGridTopology::getPoint(int i)

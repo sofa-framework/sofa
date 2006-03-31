@@ -2,7 +2,7 @@
 #define SOFA_CORE_MECHANICALOBJECT_H
 
 #include "ForceField.h"
-#include "BasicMapping.h"
+#include "BasicMechanicalMapping.h"
 #include "MechanicalModel.h"
 #include <vector>
 #include <assert.h>
@@ -27,11 +27,12 @@ protected:
     VecDeriv* f;
     VecDeriv* dx;
 
+    BasicMechanicalMapping* mapping;
     std::vector< Core::ForceField *> forcefields;
-    std::vector< Core::BasicMapping *> mappings;
+    std::vector< Core::BasicMechanicalModel *> mmodels;
     Topology* topology;
     typedef typename std::vector< Core::ForceField* >::iterator ForceFieldIt;
-    typedef typename std::vector< Core::BasicMapping* >::iterator MappingIt;
+    typedef typename std::vector< Core::BasicMechanicalModel* >::iterator MModelIt;
 
     double translation[3];
 public:
@@ -49,9 +50,15 @@ public:
     const VecDeriv* getF()  const { return f;  }
     const VecDeriv* getDx() const { return dx; }
 
-    virtual void addMapping(Core::BasicMapping *mMap);
+    //virtual void addMapping(Core::BasicMapping *mMap);
 
-    virtual void addForceField(Core::ForceField *mFField);
+    virtual void setMapping(Core::BasicMechanicalMapping* map);
+
+    virtual void addMechanicalModel(Core::BasicMechanicalModel* mm);
+
+    virtual void removeMechanicalModel(Core::BasicMechanicalModel* mm);
+
+    virtual void addForceField(Core::ForceField* mFField);
 
     virtual void removeForceField(Core::ForceField* mFField);
 

@@ -13,18 +13,28 @@ namespace Sofa
 namespace Core
 {
 
+class BasicMechanicalMapping;
+
 class BasicMechanicalModel : public virtual Abstract::Base
 {
 public:
     virtual ~BasicMechanicalModel() { }
 
-    virtual void addMapping(Core::BasicMapping *mMap) = 0;
+    // Basic Mappings are no longer handled by Mechanical Objects
+    //virtual void addMapping(Core::BasicMapping *mMap) = 0;
+    virtual void setMapping(Core::BasicMechanicalMapping *mMap) = 0;
+
+    virtual void addMechanicalModel(Core::BasicMechanicalModel *mm) = 0;
 
     virtual void addForceField(Core::ForceField *mFField) = 0;
 
     virtual void resize(int vsize) = 0;
 
     virtual void init() = 0;
+
+    virtual void beginIteration(double dt) = 0;
+
+    virtual void endIteration(double dt) = 0;
 
     virtual void propagateX() = 0;
 

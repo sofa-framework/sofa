@@ -14,7 +14,7 @@ namespace Core
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : topology(NULL)
+    : mapping(NULL), topology(NULL)
 {
     x = new VecCoord;
     v = new VecDeriv;
@@ -33,11 +33,19 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::setMapping(Core::BasicMechanicalMapping *map)
+{
+    this->mapping = map;
+}
+
+/*
+template <class DataTypes>
 void MechanicalObject<DataTypes>::addMapping(Core::BasicMapping *mMap)
 {
-    assert(mMap);
-    mappings.push_back(mMap);
+	assert(mMap);
+	mappings.push_back(mMap);
 }
+*/
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addForceField(Core::ForceField *mFField)
@@ -49,10 +57,27 @@ void MechanicalObject<DataTypes>::addForceField(Core::ForceField *mFField)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::removeForceField(Core::ForceField* mFField)
 {
-    std::vector<ForceField*>::iterator it = std::find(forcefields.begin(), forcefields.end(), mFField);
+    ForceFieldIt it = std::find(forcefields.begin(), forcefields.end(), mFField);
     if (it!=forcefields.end())
     {
         forcefields.erase(it);
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::addMechanicalModel(BasicMechanicalModel *mmodel)
+{
+    assert(mmodel);
+    mmodels.push_back(mmodel);
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::removeMechanicalModel(BasicMechanicalModel *mmodel)
+{
+    MModelIt it = std::find(mmodels.begin(), mmodels.end(), mmodel);
+    if (it!=mmodels.end())
+    {
+        mmodels.erase(it);
     }
 }
 
@@ -68,6 +93,8 @@ void MechanicalObject<DataTypes>::resize(int vsize)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
+    if (mapping!=NULL) mapping->init();
+
     Topology* topo = this->getTopology();
     if (topo!=NULL && topo->hasPos())
     {
@@ -88,9 +115,17 @@ void MechanicalObject<DataTypes>::init()
         for (; it != itEnd; it++)
             (*it)->init();
     }
+    /*
     {
-        MappingIt it = mappings.begin();
-        MappingIt itEnd = mappings.end();
+    	MappingIt it = mappings.begin();
+    	MappingIt itEnd = mappings.end();
+    	for (; it != itEnd; it++)
+    		(*it)->init();
+    }
+    */
+    {
+        MModelIt it = mmodels.begin();
+        MModelIt itEnd = mmodels.end();
         for (; it != itEnd; it++)
             (*it)->init();
     }
@@ -99,8 +134,8 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIteration(double dt)
 {
-    MappingIt it = mappings.begin();
-    MappingIt itEnd = mappings.end();
+    MModelIt it = mmodels.begin();
+    MModelIt itEnd = mmodels.end();
     for (; it != itEnd; it++)
     {
         (*it)->beginIteration(dt);
@@ -110,8 +145,8 @@ void MechanicalObject<DataTypes>::beginIteration(double dt)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::endIteration(double dt)
 {
-    MappingIt it = mappings.begin();
-    MappingIt itEnd = mappings.end();
+    MModelIt it = mmodels.begin();
+    MModelIt itEnd = mmodels.end();
     for (; it != itEnd; it++)
     {
         (*it)->endIteration(dt);
@@ -121,8 +156,10 @@ void MechanicalObject<DataTypes>::endIteration(double dt)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::propagateX()
 {
-    MappingIt it = mappings.begin();
-    MappingIt itEnd = mappings.end();
+    if (mapping != NULL)
+        mapping->propagateX();
+    MModelIt it = mmodels.begin();
+    MModelIt itEnd = mmodels.end();
     for (; it != itEnd; it++)
     {
         (*it)->propagateX();
@@ -132,8 +169,10 @@ void MechanicalObject<DataTypes>::propagateX()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::propagateV()
 {
-    MappingIt it = mappings.begin();
-    MappingIt itEnd = mappings.end();
+    if (mapping != NULL)
+        mapping->propagateV();
+    MModelIt it = mmodels.begin();
+    MModelIt itEnd = mmodels.end();
     for (; it != itEnd; it++)
     {
         (*it)->propagateV();
@@ -143,8 +182,10 @@ void MechanicalObject<DataTypes>::propagateV()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::propagateDx()
 {
-    MappingIt it = mappings.begin();
-    MappingIt itEnd = mappings.end();
+    if (mapping != NULL)
+        mapping->propagateDx();
+    MModelIt it = mmodels.begin();
+    MModelIt itEnd = mmodels.end();
     for (; it != itEnd; it++)
     {
         (*it)->propagateDx();
@@ -157,8 +198,8 @@ void MechanicalObject<DataTypes>::resetForce()
     f->resize(x->size());
     for (unsigned int i=0; i<f->size(); i++)
         (*f)[i] = typename VecDeriv::value_type();
-    MappingIt it = mappings.begin();
-    MappingIt itEnd = mappings.end();
+    MModelIt it = mmodels.begin();
+    MModelIt itEnd = mmodels.end();
     for (; it != itEnd; it++)
         (*it)->resetForce();
 }
@@ -167,8 +208,8 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::accumulateForce()
 {
     {
-        MappingIt it = mappings.begin();
-        MappingIt itEnd = mappings.end();
+        MModelIt it = mmodels.begin();
+        MModelIt itEnd = mmodels.end();
         for (; it != itEnd; it++)
             (*it)->accumulateForce();
     }
@@ -178,14 +219,16 @@ void MechanicalObject<DataTypes>::accumulateForce()
         for (; it != itEnd; it++)
             (*it)->addForce();
     }
+    if (mapping != NULL)
+        mapping->accumulateForce();
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::accumulateDf()
 {
     {
-        MappingIt it = mappings.begin();
-        MappingIt itEnd = mappings.end();
+        MModelIt it = mmodels.begin();
+        MModelIt itEnd = mmodels.end();
         for (; it != itEnd; it++)
             (*it)->accumulateDf();
     }
@@ -195,6 +238,8 @@ void MechanicalObject<DataTypes>::accumulateDf()
         for (; it != itEnd; it++)
             (*it)->addDForce();
     }
+    if (mapping != NULL)
+        mapping->accumulateDf();
 }
 
 template <class DataTypes>
@@ -205,8 +250,8 @@ void MechanicalObject<DataTypes>::applyConstraints()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::setObject(Abstract::BehaviorModel* obj)
 {
-    MappingIt it = mappings.begin();
-    MappingIt itEnd = mappings.end();
+    MModelIt it = mmodels.begin();
+    MModelIt itEnd = mmodels.end();
     for (; it != itEnd; it++)
         (*it)->setObject(obj);
 }
