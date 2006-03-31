@@ -14,7 +14,13 @@ SOURCES = Main.cpp
 HEADERS = 
 
 win32{
-  LIBS = -lSofaCore -lSofaComponents -lSofaGUIFLTK -llibxml2 -lfltk -lfltkgl -lGLaux -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
+  LIBS = -lSofaCore -lSofaComponents -llibxml2 -lGLaux -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
+  contains (DEFINES, SOFA_GUI_FLTK) {
+	LIBS += -lSofaGUIFLTK -lfltk -lfltkgl
+  }
+  contains (DEFINES, SOFA_GUI_QT) {
+	LIBS += -lSofaGUIQT
+  }
   contains (CONFIGPROJECT, vc7) {
 	contains (CONFIGPROJECT, debug) {
 	  	LIBS += -NODEFAULTLIB:libcd 	
@@ -27,12 +33,16 @@ win32{
   #QMAKE_LFLAGS = 
   #QMAKE_LIBS_WINDOWS = ""
   #QMAKE_CXXFLAGS += -GR -GX
-  DEFINES = WIN32
+  #DEFINES = WIN32
 }
 
 unix {
   QMAKE_CXXFLAGS += -g
-  LIBS = -L../../../lib/$$LIBSDIRECTORY -L/usr/X11R6/lib -lSofaAbstract -lSofaCore -lSofaComponents -lSofaGUIFLTK -lglut -lGL -lGLU -lfltk_gl -lz -lfltk -lpthread -lxml2 -lz
-
-#-lManager -lVisualModel -lGUI  -lglut -lGL -lGLU  -lfltk_gl -lCollisionResponse -lBehaviorModel -lCollisionModel -lCollisionDetection -lz -lCommon -lfltk -lThread -lpthread -lIntegrationSolver -lxml2 -lz
+  LIBS = -L../../../lib/$$LIBSDIRECTORY -L/usr/X11R6/lib -lSofaAbstract -lSofaCore -lSofaComponents -lglut -lGL -lGLU -lpthread -lxml2 -lz
+  contains (DEFINES, SOFA_GUI_FLTK) {
+	LIBS += -lSofaGUIFLTK -lfltk_gl -lfltk
+  }
+  contains (DEFINES, SOFA_GUI_QT) {
+	LIBS += -lSofaGUIQT
+  }
 }
