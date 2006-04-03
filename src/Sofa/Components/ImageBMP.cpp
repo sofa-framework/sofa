@@ -13,7 +13,7 @@ SOFA_DECL_CLASS(ImageBMP)
 
 Creator<Image::Factory,ImageBMP> ImageBMPClass("bmp");
 
-void ImageBMP::init(const std::string &filename)
+bool ImageBMP::load(const std::string &filename)
 {
     unsigned short int bfType;
     long int bfOffBits;
@@ -27,20 +27,20 @@ void ImageBMP::init(const std::string &filename)
     if ((file = fopen(filename.c_str(), "rb")) == NULL)
     {
         std::cerr << "File not found : " << filename << std::endl;
-        return;
+        return false;
     }
 
     if(!fread(&bfType, sizeof(short int), 1, file))
     {
         std::cerr << "Error reading file!" << std::endl;
-        return;
+        return false;
     }
 
     /* check if file is a bitmap */
     if (bfType != 19778)
     {
         std::cerr << "Not a Bitmap-File!\n";
-        return;
+        return false;
     }
     /* get the file size */
     /* skip file size and reserved fields of bitmap file header */
@@ -49,7 +49,7 @@ void ImageBMP::init(const std::string &filename)
     if (!fread(&bfOffBits, sizeof(long int), 1, file))
     {
         std::cerr << "Error reading file!\n";
-        return;
+        return false;
     }
     // printf("Data at Offset: %ld\n", bfOffBits);
     /* skip size of bitmap info header */
@@ -65,20 +65,21 @@ void ImageBMP::init(const std::string &filename)
     if (biPlanes != 1)
     {
         std::cerr << "Error: number of Planes not 1!\n";
-        return;
+        return false;
     }
     /* get the number of bits per pixel */
     if (!fread(&biBitCount, sizeof(short int), 1, file))
     {
         std::cerr << "Error reading file!\n";
-        return;
+        return false;
     }
     //printf("Bits per Pixel: %d\n", biBitCount);
     if (biBitCount != 24)
     {
         std::cerr << "Bits per Pixel not 24\n";
-        return;
+        return false;
     }
+    nbBits = biBitCount;
     /* calculate the size of the image in bytes */
     biSizeImage = width * height * 3;
     // std::cout << "Size of the image data: " << biSizeImage << std::endl;
@@ -89,7 +90,7 @@ void ImageBMP::init(const std::string &filename)
     if (!fread(data, biSizeImage, 1, file))
     {
         std::cerr << "Error loading file!\n";
-        return;
+        return false;
     }
 
     /* swap red and blue (bgr -> rgb) */
@@ -99,6 +100,84 @@ void ImageBMP::init(const std::string &filename)
         data[i] = data[i + 2];
         data[i + 2] = temp;
     }
+
+    fclose(file);
+    return true;
+}
+
+static bool fwriteW(FILE* file, unsigned short data)
+{
+    return fwrite(&data,sizeof(data),1,file);
+}
+
+static bool fwriteDW(FILE* file, unsigned long data)
+{
+    return fwrite(&data,sizeof(data),1,file);
+}
+
+bool ImageBMP::save(const std::string& filename)
+{
+    FILE *file;
+    /* make sure the file is there and open it read-only (binary) */
+    if ((file = fopen(filename.c_str(), "wb")) == NULL)
+    {
+        std::cerr << "File write access failed : " << filename << std::endl;
+        return false;
+    }
+
+    unsigned long biSizeImage = ((nbBits+7)/8)*width*height;
+
+    // BITMAPFILEHEADER
+    if (!fwriteW(file, (unsigned short)'B' | ((unsigned short)'M' << 8))) return false; // Type
+    if (!fwriteDW(file, 14+40+biSizeImage)) return false; // Size
+    if (!fwriteW(file, 0)) return false; // Reserved1
+    if (!fwriteW(file, 0)) return false; // Reserved2
+    if (!fwriteDW(file, 14+40)) return false; // OffBits
+
+    // BITMAPINFOHEADER
+    if (!fwriteDW(file, 40)) return false; // Size
+    if (!fwriteDW(file, width)) return false; // Width
+    if (!fwriteDW(file, height)) return false; // Height
+    if (!fwriteW(file, 1)) return false; // Planes
+    if (!fwriteW(file, nbBits)) return false; // BitCount
+    if (!fwriteDW(file, 0)) return false; // Compression
+    if (!fwriteDW(file, biSizeImage)) return false; // SizeImage
+    if (!fwriteDW(file, 2825)) return false; // XPelsPerMeter
+    if (!fwriteDW(file, 2825)) return false; // YPelsPerMeter
+    if (!fwriteDW(file, 0)) return false; // ClrUsed
+    if (!fwriteDW(file, 0)) return false; // ClrImportant
+
+    switch (nbBits)
+    {
+    case 24:
+    {
+        unsigned int i;
+        unsigned char temp;
+        /* swap red and blue (rgb -> bgr) */
+        for (i = 0; i < biSizeImage; i += 3)
+        {
+            temp = data[i];
+            data[i] = data[i + 2];
+            data[i + 2] = temp;
+        }
+
+        if (!fwrite(data, biSizeImage, 1, file)) return false;
+
+        /* swap red and blue (bgr -> rgb) */
+        for (i = 0; i < biSizeImage; i += 3)
+        {
+            temp = data[i];
+            data[i] = data[i + 2];
+            data[i + 2] = temp;
+        }
+        break;
+    }
+    default:
+        if (!fwrite(data, biSizeImage, 1, file)) return false;
+    }
+
+    fclose(file);
+    return true;
 }
 
 } // namespace Components

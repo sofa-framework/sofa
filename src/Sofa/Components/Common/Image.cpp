@@ -13,13 +13,31 @@ namespace Common
 template class Factory<std::string, Image, std::string>;
 
 Image::Image()
-    : data(NULL)
+    : width(0), height(0), nbBits(0), data(NULL)
 {
 }
 
 Image::~Image()
 {
     if (data) free(data);
+}
+
+void Image::init(int w, int h, int nbb)
+{
+    clear();
+    width = w;
+    height = h;
+    nbBits = nbb;
+    data = (unsigned char*) malloc(((nbb+7)/8)*width*height);
+}
+
+void Image::clear()
+{
+    if (data!=NULL) free(data);
+    width = 0;
+    height = 0;
+    nbBits = 0;
+    data = NULL;
 }
 
 Image* Image::Create(std::string filename)

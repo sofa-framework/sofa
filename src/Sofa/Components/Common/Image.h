@@ -28,6 +28,7 @@ public:
 
     int getWidth() {return width;}
     int getHeight() {return height;}
+    int getNbBits() {return nbBits;}
     unsigned char * getData() {return data;}
 
     typedef Factory<std::string, Image, std::string> Factory;

@@ -16,12 +16,17 @@ using namespace Common;
 class ImageBMP : public Image
 {
 public:
-    ImageBMP (const std::string &filename)
+    ImageBMP ()
     {
-        init (filename);
     }
 
-    void init (const std::string &filename);
+    ImageBMP (const std::string &filename)
+    {
+        load(filename);
+    }
+
+    bool load(const std::string &filename);
+    bool save(const std::string &filename);
 };
 
 } // namespace Components
