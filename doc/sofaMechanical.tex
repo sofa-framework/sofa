@@ -8,14 +8,13 @@ Figure \ref{fig:singleParticleCollaboration} shows the collaboration diagram and
 
 \begin{figure}[htp]
 \begin{center} \begin{tabular}{cc}
-\begin{minipage}[b]{7cm}
+\begin{minipage}[b]{6cm}
 	\includegraphics*[width=6cm]{fig/singleParticleCollaboration.eps}  
 	%\input{fig/singleParticleCollaboration.tex} 
 \end{minipage}
  &
-\begin{minipage}[b]{8cm} 
-{\scriptsize
-\begin{verbatim}
+\begin{minipage}[b]{9cm} 
+\begin{code_cpp}
 #include "Sofa/Components/Scene.h"
 #include "Sofa/Components/MassObject.h"
 #include "Sofa/Components/EulerSolver.h"
@@ -48,9 +47,7 @@ int main(int argc, char** argv)
     MainLoop(argv[0]);
     return 0;
 }
- \end{verbatim} 
-}
-
+\end{code_cpp}
 \end{minipage}
 \end{tabular}
 \end{center}

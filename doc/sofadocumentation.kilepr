@@ -15,42 +15,42 @@ QuickBuild=
 
 [item:appendices.tex]
 archive=true
-column=64
-encoding=ISO 8859-1
+column=0
+encoding=ISO 8859-15
 highlight=LaTeX
-line=8
-open=false
+line=7
+open=true
 
 [item:extendingSofa.tex]
 archive=true
-column=46
+column=65
 encoding=ISO 8859-15
 highlight=LaTeX
-line=271
+line=763
 open=true
 
 [item:macros_docu.tex]
 archive=true
-column=0
-encoding=ISO 8859-1
+column=44
+encoding=ISO 8859-15
 highlight=LaTeX
-line=0
-open=false
+line=1
+open=true
 
 [item:main.tex]
 archive=true
-column=0
+column=1
 encoding=ISO 8859-1
 highlight=LaTeX
-line=16
+line=45
 open=true
 
 [item:physicallyBasedAnimation.tex]
 archive=true
-column=20
+column=0
 encoding=ISO 8859-1
 highlight=LaTeX
-line=1
+line=121
 open=true
 
 [item:sofaMechanical.tex]
@@ -58,7 +58,7 @@ archive=true
 column=0
 encoding=ISO 8859-1
 highlight=LaTeX
-line=30
+line=0
 open=true
 
 [item:sofadocumentation.kilepr]

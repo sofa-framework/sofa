@@ -11,6 +11,29 @@
 \usepackage[dvips]{color}
 \pagecolor[gray]{1}         % couleur de fond (blanc)
 
+% ---- inclusion de codes
+
+\usepackage{listings}
+\lstset{showstringspaces=false,frame=trBL,frameround=tttt,tabsize=4,basicstyle=\tiny,breaklines=true,breakatwhitespace=true}
+\lstdefinestyle{bash}{language=bash}
+\lstdefinestyle{Perl}{language=Perl}
+\lstdefinestyle{C++}{language=C++}
+\lstdefinestyle{DTD}{language=XML}
+\lstdefinestyle{XML}{language=XML,usekeywordsintag=false,markfirstintag=true}
+\newcommand{\includecode}[2]{\lstinputlisting[style=#1]{#2}}
+%\lstnewenvironment{code}{}{}
+\lstnewenvironment{code_bash}{\lstset{style=bash}}{}
+\lstnewenvironment{code_perl}{\lstset{style=Perl}}{}
+\lstnewenvironment{code_cpp}{\lstset{style=C++}}{}
+\lstnewenvironment{code_dtd}{\lstset{style=DTD}}{}
+\lstnewenvironment{code_xml}{\lstset{style=XML}}{}
+
+\newcommand{\textcode}[1]{{\small {\tt #1}}}
+
+% ---- liens entre le dvi généré et les fichiers sources latex
+
+\usepackage[active]{srcltx}
+
 % ---- format de page A4
 	\setlength{\textwidth }{16cm}	% largeur de ligne
 	\setlength{\textheight}{23cm}   % hauteur du texte
@@ -20,10 +43,11 @@
 	\setlength{\headheight}{14pt} 
 	\setlength{\headsep}{0.5cm} 
 
+%\renewcommand{\floatpagefraction}{1}
 
 % Title Page
 \title{SOFA Documentation}
-\author{Fran\c{c}ois Faure\\ {\small INRIA Rh\^one-Alpes, Grenoble, France}}
+\author{Fran\c{c}ois Faure\\ J\'er\'emie Allard\\ {\small INRIA Rh\^one-Alpes, Grenoble, France}}
 
 % ------ my custom commands
 \newcommand{\sofa}{SOFA}
@@ -34,10 +58,10 @@
 \maketitle
 
 \begin{abstract}
-This is the documentation of the SOFA library. Chapter \ref{chapter:pba} gives theoretical background on physically-based animation. Chapter \ref{chapter:as} shows how to implement simulations using \sofa.
+This is the documentation of the SOFA library. Chapter~\ref{chapter:pba} gives theoretical background on physically-based animation. Chapter~\ref{chapter:as} shows how to implement simulations using \sofa. Chapter~\ref{chapter:es} describes how to integrate new components in \sofa.
 \end{abstract}
 
-% \tableofcontents
+\tableofcontents
 % \listoffigures
 % \listoftables
 
