@@ -26,7 +26,7 @@ win32{
 	  	LIBS += -NODEFAULTLIB:libcd 	
 	}	
 	contains (CONFIGPROJECT, release) {
-	  	LIBS += -NODEFAULTLIB:libc
+	  	LIBS += -NODEFAULTLIB:libc -NODEFAULTLIB:MSVCRTD
 	}
   }
   QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY
