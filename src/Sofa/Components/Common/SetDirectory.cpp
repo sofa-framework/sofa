@@ -31,10 +31,10 @@ SetDirectory::SetDirectory(const char* filename)
     if (directory[0])
     {
 #ifndef WIN32
-        getcwd(previousDir,sizeof(previousDir));
+        getcwd(previousDir, sizeof(previousDir));
         chdir(directory);
 #else
-        _getcwd(previousDir, 1024);
+        _getcwd(previousDir, sizeof(previousDir));
         _chdir(directory);
 #endif
     }

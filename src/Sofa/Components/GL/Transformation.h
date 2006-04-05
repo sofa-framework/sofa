@@ -1,8 +1,6 @@
 #ifndef SOFA_COMPONENTS_GL_TRANSFORMATION_H
 #define SOFA_COMPONENTS_GL_TRANSFORMATION_H
 
-#include <FL/glut.H>		// use FLTK version of GLUT
-
 namespace Sofa
 {
 

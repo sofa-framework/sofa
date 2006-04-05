@@ -1,5 +1,8 @@
 #include "Transformation.h"
 
+#include "Sofa/Components/Common/config.h"
+#include <GL/gl.h>
+
 namespace Sofa
 {
 

@@ -104,16 +104,18 @@ int main(int argc, char** argv)
         cout << "1000 iterations done." << endl;
     }
 
+    if (startAnim) Scene::getInstance()->setAnimate(true);
+
 #ifdef SOFA_GUI_FLTK
     else if (gui=="fltk")
     {
-        Sofa::GUI::FLTK::MainLoop(argv[0],startAnim);
+        Sofa::GUI::FLTK::MainLoop(argv[0]);
     }
 #endif
 #ifdef SOFA_GUI_QT
     else if (gui=="qt")
     {
-        Sofa::GUI::QT::MainLoop(argv[0],startAnim);
+        Sofa::GUI::QT::MainLoop(argv[0]);
     }
 #endif
     else
