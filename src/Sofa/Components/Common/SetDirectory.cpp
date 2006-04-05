@@ -4,6 +4,7 @@
 #include <unistd.h>
 #else
 #include <windows.h>
+#include <direct.h>
 #endif
 
 #include <string.h>
@@ -33,8 +34,8 @@ SetDirectory::SetDirectory(const char* filename)
         getcwd(previousDir,sizeof(previousDir));
         chdir(directory);
 #else
-        GetCurrentDirectory(sizeof(previousDir) - 1, previousDir);
-        SetCurrentDirectory(directory);
+        _getcwd(previousDir, 1024);
+        _chdir(directory);
 #endif
     }
 }
@@ -46,7 +47,7 @@ SetDirectory::~SetDirectory()
 #ifndef WIN32
         chdir(previousDir);
 #else
-        SetCurrentDirectory(previousDir);
+        _chdir(directory);
 #endif
     }
     delete[] directory;
