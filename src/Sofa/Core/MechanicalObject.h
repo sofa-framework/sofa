@@ -4,6 +4,7 @@
 #include "ForceField.h"
 #include "BasicMechanicalMapping.h"
 #include "MechanicalModel.h"
+#include "Mass.h"
 #include <vector>
 #include <assert.h>
 
@@ -31,6 +32,7 @@ protected:
     std::vector< Core::ForceField *> forcefields;
     std::vector< Core::BasicMechanicalModel *> mmodels;
     Topology* topology;
+    Mass* mass;
     typedef typename std::vector< Core::ForceField* >::iterator ForceFieldIt;
     typedef typename std::vector< Core::BasicMechanicalModel* >::iterator MModelIt;
 
@@ -84,12 +86,20 @@ public:
 
     virtual void applyConstraints();
 
-    /// Set the behavior object currently ownning this model
+    virtual void addMDx(); ///< f += M dx
+
+    virtual void accFromF(); ///< dx = M^-1 f
+
+    /// Set the behavior object currently owning this model
     virtual void setObject(Abstract::BehaviorModel* obj);
 
     virtual void setTopology(Topology* topo);
 
     virtual Topology* getTopology();
+
+    virtual void setMass(Mass* m);
+
+    virtual Mass* getMass();
 };
 
 } // namespace Core

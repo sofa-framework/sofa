@@ -2,7 +2,7 @@
 #define SOFA_CORE_MECHANICALOBJECT_INL
 
 #include "MechanicalObject.h"
-#include "Sofa/Abstract/Encoding.inl"
+#include "Encoding.inl"
 #include <assert.h>
 #include <iostream>
 
@@ -14,7 +14,7 @@ namespace Core
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : mapping(NULL), topology(NULL)
+    : mapping(NULL), topology(NULL), mass(NULL)
 {
     x = new VecCoord;
     v = new VecDeriv;
@@ -93,8 +93,6 @@ void MechanicalObject<DataTypes>::resize(int vsize)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
-    if (mapping!=NULL) mapping->init();
-
     Topology* topo = this->getTopology();
     if (topo!=NULL && topo->hasPos())
     {
@@ -106,6 +104,10 @@ void MechanicalObject<DataTypes>::init()
             DataTypes::set((*getX())[i], topo->getPX(i)+translation[0], topo->getPY(i)+translation[1], topo->getPZ(i)+translation[2]);
         }
     }
+
+    if (mapping!=NULL) mapping->init();
+
+    if (mass!=NULL) mass->init();
 
     //this->propagateX();
     //this->propagateV();
@@ -207,6 +209,9 @@ void MechanicalObject<DataTypes>::resetForce()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::accumulateForce()
 {
+    if (mass != NULL)
+        mass->computeForce();
+
     {
         MModelIt it = mmodels.begin();
         MModelIt itEnd = mmodels.end();
@@ -226,6 +231,9 @@ void MechanicalObject<DataTypes>::accumulateForce()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::accumulateDf()
 {
+    if (mass != NULL)
+        mass->computeDf();
+
     {
         MModelIt it = mmodels.begin();
         MModelIt itEnd = mmodels.end();
@@ -248,6 +256,20 @@ void MechanicalObject<DataTypes>::applyConstraints()
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::addMDx()
+{
+    if (mass != NULL)
+        mass->addMDx();
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::accFromF()
+{
+    if (mass != NULL)
+        mass->accFromF();
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::setObject(Abstract::BehaviorModel* obj)
 {
     MModelIt it = mmodels.begin();
@@ -265,7 +287,19 @@ void MechanicalObject<DataTypes>::setTopology(Topology* topo)
 template <class DataTypes>
 Topology* MechanicalObject<DataTypes>::getTopology()
 {
-    return topology;
+    return this->topology;
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setMass(Mass* m)
+{
+    this->mass = m;
+}
+
+template <class DataTypes>
+Mass* MechanicalObject<DataTypes>::getMass()
+{
+    return this->mass;
 }
 
 } // namespace Core

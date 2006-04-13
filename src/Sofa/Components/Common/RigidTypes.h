@@ -2,6 +2,7 @@
 #define SOFA_COMPONENTS_COMMON_RIGIDTYPES_H
 
 #include "Vec.h"
+#include "Mat.h"
 #include "Quat.h"
 
 namespace Sofa
@@ -139,7 +140,59 @@ public:
         c.getCenter()[1] += y;
         c.getCenter()[2] += z;
     }
+
+    static void set(Deriv& c, double x, double y, double z)
+    {
+        c.getVCenter()[0] = x;
+        c.getVCenter()[1] = y;
+        c.getVCenter()[2] = z;
+    }
+
+    static void add(Deriv& c, double x, double y, double z)
+    {
+        c.getVCenter()[0] += x;
+        c.getVCenter()[1] += y;
+        c.getVCenter()[2] += z;
+    }
 };
+
+class RigidMass
+{
+public:
+    double mass;
+    Mat3x3d inertiaMatrix;	      // Inertia matrix of the object
+    Mat3x3d inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
+    Mat3x3d invInertiaMatrix;	  // inverse of inertiaMatrix
+    Mat3x3d invInertiaMassMatrix; // inverse of inertiaMassMatrix
+    RigidMass(double m=1.0)
+    {
+        mass = m;
+        inertiaMatrix.identity();
+        recalc();
+    }
+    void recalc()
+    {
+        inertiaMassMatrix = inertiaMatrix * mass;
+        invInertiaMatrix.invert(inertiaMatrix);
+        invInertiaMassMatrix.invert(inertiaMassMatrix);
+    }
+};
+
+inline RigidTypes::Deriv operator*(const RigidTypes::Deriv& d, const RigidMass& m)
+{
+    RigidTypes::Deriv res;
+    res.getVCenter() = d.getVCenter() * m.mass;
+    res.getVOrientation() = m.inertiaMassMatrix * d.getVOrientation();
+    return res;
+}
+
+inline RigidTypes::Deriv operator/(const RigidTypes::Deriv& d, const RigidMass& m)
+{
+    RigidTypes::Deriv res;
+    res.getVCenter() = d.getVCenter() / m.mass;
+    res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
+    return res;
+}
 
 } // namespace Common
 

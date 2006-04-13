@@ -4,6 +4,7 @@
 #include "ForceField.h"
 #include "BasicMapping.h"
 #include "Topology.h"
+#include "Mass.h"
 #include "Sofa/Abstract/Base.h"
 #include "Sofa/Abstract/BehaviorModel.h"
 
@@ -56,6 +57,10 @@ public:
     virtual void setTopology(Topology* topo) = 0;
 
     virtual Topology* getTopology() = 0;
+
+    virtual void setMass(Mass* m) = 0;
+
+    virtual Mass* getMass() = 0;
 };
 
 } // namespace Core

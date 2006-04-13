@@ -2,7 +2,7 @@
 #include "Scene.h"
 #include "Common/FnDispatcher.h"
 #include "Common/FnDispatcher.inl"
-#include "Sofa/Abstract/DynamicModel.h"
+#include "Sofa/Core/DynamicModel.h"
 #include "CollisionGroupManagerSofa.h"
 #include "EulerSolver.h"
 #include "RungeKutta4Solver.h"
@@ -106,8 +106,8 @@ void CollisionGroupManagerSofa::createGroups(Scene* scene, const std::vector<Con
                         else
                         {
                             // merge groups and remove group2
-                            const std::vector<Abstract::DynamicModel*>& objects = group2->getObjects();
-                            for (std::vector<Abstract::DynamicModel*>::const_iterator ito = objects.begin(); ito != objects.end(); ++ito)
+                            const std::vector<Core::DynamicModel*>& objects = group2->getObjects();
+                            for (std::vector<Core::DynamicModel*>::const_iterator ito = objects.begin(); ito != objects.end(); ++ito)
                                 group->addObject(*ito);
                             const std::vector<Core::InteractionForceField*>& forcefields = group2->getForceFields();
                             for (std::vector<Core::InteractionForceField*>::const_iterator itf = forcefields.begin(); itf != forcefields.end(); ++itf)
@@ -160,10 +160,10 @@ void CollisionGroupManagerSofa::clearGroups(Scene* scene)
     for (std::set<Core::MechanicalGroup*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
     {
         Core::MechanicalGroup* group = *it;
-        const std::vector<Abstract::DynamicModel*>& objects = group->getObjects();
-        for (std::vector<Abstract::DynamicModel*>::const_iterator it2 = objects.begin(); it2 != objects.end(); ++it2)
+        const std::vector<Core::DynamicModel*>& objects = group->getObjects();
+        for (std::vector<Core::DynamicModel*>::const_iterator it2 = objects.begin(); it2 != objects.end(); ++it2)
         {
-            Abstract::DynamicModel* object = *it2;
+            Core::DynamicModel* object = *it2;
             object->setObject(NULL);
             if (dynamic_cast<Abstract::BehaviorModel*>(object)!=NULL)
                 scene->addBehaviorModel(dynamic_cast<Abstract::BehaviorModel*>(object));
