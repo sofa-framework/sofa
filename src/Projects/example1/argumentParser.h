@@ -17,9 +17,9 @@
 #include <map>
 
 
-typedef std::istringstream istrstream; ///< use a string as input
+typedef std::istringstream istrstream;
 
-/// Abstract base class for all comand line arguments
+/// Abstract base class for all command line arguments
 struct ArgumentBase
 {
     /// character string
@@ -119,7 +119,12 @@ private:
 
 };
 
-/// Specialisation for flag reading bool
+/** Specialization for flag reading booleans.
+Booleans are seen as flags that you can set to TRUE using the command line.
+Example: run --verbose
+The advantage is that you do not have to set the value, it is automatically TRUE.
+The drawback is that reading a boolean necessarily sets it to TRUE. Currently you can not set a boolean to FALSE using this parser.
+*/
 template<> inline
 bool Argument<bool>::read( std::istream& )
 {
@@ -135,9 +140,6 @@ void Argument<T>::printValue() const
     std::cout << *ptr << " ";
 }
 
-// /// Partial specialization for printing default value
-// template<class T> inline
-// void Argument<T*>::printValue() const {}
 
 //========================================================================
 
@@ -369,6 +371,7 @@ public:
 \param helpstr General help message
 \param hs short name for help
 \param hl long name for help
+This method frees the programmer from explicitly creating an ArgumentParser, which makes the program (hopefully) more readable. Using this method, the ArgumentParser is transparently created, it receives and processes the arguments, then it is destroyed.
 */
 inline ArgumentParser parse( const std::string& helpstr="", char hs='h', const std::string& hl="help" )
 {
