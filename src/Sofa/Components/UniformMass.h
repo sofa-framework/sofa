@@ -31,7 +31,7 @@ protected:
 public:
     UniformMass();
 
-    UniformMass(Core::MechanicalModel<DataTypes>* mmodel, const std::string& name="");
+    UniformMass(Core::MechanicalModel<DataTypes>* mmodel);
 
     ~UniformMass();
 

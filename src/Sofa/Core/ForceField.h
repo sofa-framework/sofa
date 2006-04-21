@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-#include "Sofa/Abstract/Base.h"
+#include "Sofa/Abstract/BaseObject.h"
 
 namespace Sofa
 {
@@ -11,7 +11,7 @@ namespace Sofa
 namespace Core
 {
 
-class ForceField : public virtual Abstract::Base
+class ForceField : public virtual Abstract::BaseObject
 {
 public:
     virtual ~ForceField() {}
@@ -19,8 +19,6 @@ public:
     virtual void addForce () = 0;
 
     virtual void addDForce () = 0;
-
-    virtual void init () { };
 };
 
 } // namespace Core

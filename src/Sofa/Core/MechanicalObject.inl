@@ -65,14 +65,14 @@ void MechanicalObject<DataTypes>::removeForceField(Core::ForceField* mFField)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addMechanicalModel(BasicMechanicalModel *mmodel)
+void MechanicalObject<DataTypes>::addMechanicalModel(BasicMechanicalObject *mmodel)
 {
     assert(mmodel);
     mmodels.push_back(mmodel);
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::removeMechanicalModel(BasicMechanicalModel *mmodel)
+void MechanicalObject<DataTypes>::removeMechanicalModel(BasicMechanicalObject *mmodel)
 {
     MModelIt it = std::find(mmodels.begin(), mmodels.end(), mmodel);
     if (it!=mmodels.end())

@@ -23,7 +23,7 @@ public:
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
 
-    IdentityMapping(In* from, Out* to, const std::string& /*name*/)
+    IdentityMapping(In* from, Out* to)
         : Inherit(from, to)
     {
     }

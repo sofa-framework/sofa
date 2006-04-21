@@ -1,7 +1,7 @@
 #ifndef SOFA_CORE_MASS_H
 #define SOFA_CORE_MASS_H
 
-#include "Sofa/Abstract/Base.h"
+#include "Sofa/Abstract/BaseObject.h"
 
 namespace Sofa
 {
@@ -9,12 +9,10 @@ namespace Sofa
 namespace Core
 {
 
-class Mass : public virtual Abstract::Base
+class Mass : public virtual Abstract::BaseObject
 {
 public:
     virtual ~Mass() { }
-
-    virtual void init() { }
 
     virtual void addMDx()=0; ///< f += M dx
 

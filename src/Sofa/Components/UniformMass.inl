@@ -23,7 +23,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
 
 
 template <class DataTypes, class MassType>
-UniformMass<DataTypes, MassType>::UniformMass(Core::MechanicalModel<DataTypes>* mmodel, const std::string& /*name*/)
+UniformMass<DataTypes, MassType>::UniformMass(Core::MechanicalModel<DataTypes>* mmodel)
     : mmodel(mmodel)
 {
     DataTypes::set(gravity,0,-9.8,0);

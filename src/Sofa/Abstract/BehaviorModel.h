@@ -1,7 +1,7 @@
 #ifndef SOFA_ABSTRACT_BEHAVIORMODEL_H
 #define SOFA_ABSTRACT_BEHAVIORMODEL_H
 
-#include "Base.h"
+#include "BaseObject.h"
 
 namespace Sofa
 {
@@ -20,7 +20,7 @@ namespace Abstract
  *  <BR>updatePosition corresponds to the computation of a new simulation step<BR>
  */
 
-class BehaviorModel : public virtual Base
+class BehaviorModel : public virtual BaseObject
 {
 public:
     virtual ~BehaviorModel() {}

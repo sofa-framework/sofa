@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "CollisionElement.h"
-#include "Base.h"
+#include "BaseObject.h"
 
 namespace Sofa
 {
@@ -29,7 +29,7 @@ class BehaviorModel;
   *  </P>
   */
 
-class CollisionModel : public virtual Base
+class CollisionModel : public virtual BaseObject
 {
 public:
     virtual ~CollisionModel() { }

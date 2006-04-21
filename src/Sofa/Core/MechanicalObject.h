@@ -4,6 +4,7 @@
 #include "ForceField.h"
 #include "BasicMechanicalMapping.h"
 #include "MechanicalModel.h"
+#include "BasicMechanicalObject.h"
 #include "Mass.h"
 #include <vector>
 #include <assert.h>
@@ -15,7 +16,7 @@ namespace Core
 {
 
 template <class DataTypes>
-class MechanicalObject : public MechanicalModel<DataTypes>
+class MechanicalObject : public MechanicalModel<DataTypes>, public BasicMechanicalObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -30,11 +31,11 @@ protected:
 
     BasicMechanicalMapping* mapping;
     std::vector< Core::ForceField *> forcefields;
-    std::vector< Core::BasicMechanicalModel *> mmodels;
+    std::vector< Core::BasicMechanicalObject *> mmodels;
     Topology* topology;
     Mass* mass;
     typedef typename std::vector< Core::ForceField* >::iterator ForceFieldIt;
-    typedef typename std::vector< Core::BasicMechanicalModel* >::iterator MModelIt;
+    typedef typename std::vector< Core::BasicMechanicalObject* >::iterator MModelIt;
 
     double translation[3];
 public:
@@ -52,13 +53,15 @@ public:
     const VecDeriv* getF()  const { return f;  }
     const VecDeriv* getDx() const { return dx; }
 
+    virtual BasicMechanicalModel* getMechanicalModel() { return this; }
+
     //virtual void addMapping(Core::BasicMapping *mMap);
 
     virtual void setMapping(Core::BasicMechanicalMapping* map);
 
-    virtual void addMechanicalModel(Core::BasicMechanicalModel* mm);
+    virtual void addMechanicalModel(Core::BasicMechanicalObject* mm);
 
-    virtual void removeMechanicalModel(Core::BasicMechanicalModel* mm);
+    virtual void removeMechanicalModel(Core::BasicMechanicalObject* mm);
 
     virtual void addForceField(Core::ForceField* mFField);
 

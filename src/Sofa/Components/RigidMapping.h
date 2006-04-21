@@ -40,15 +40,15 @@ protected:
     Mat3 rotation;
     std::vector<Coord> rotatedPoints;
     class Loader;
-    void init(const char* filename, const std::string& name);
+    void init(const char* filename);
 public:
-    RigidMapping(In* from, Out* to, const char* filename, const std::string& name)
+    RigidMapping(In* from, Out* to, const char* filename)
         : Inherit(from, to)
     {
-        init(filename, name);
+        init(filename);
     }
 
-    RigidMapping(In* from, Out* to, const std::string& /*name*/="")
+    RigidMapping(In* from, Out* to)
         : Inherit(from, to)
     {
     }

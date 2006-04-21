@@ -32,7 +32,7 @@ public:
 };
 
 template <class DataTypes>
-void SpringForceField<DataTypes>::init(const char *filename, const std::string &/*name*/)
+void SpringForceField<DataTypes>::init(const char *filename)
 {
     //this->typeName = "SpringForceField";
     //this->_name = name;

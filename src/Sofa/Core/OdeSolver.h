@@ -1,7 +1,8 @@
 #ifndef SOFA_CORE_ODESOLVER_H
 #define SOFA_CORE_ODESOLVER_H
 
-#include "Sofa/Abstract/Base.h"
+#include "Sofa/Abstract/BaseObject.h"
+#include "IntegrationGroup.h"
 
 namespace Sofa
 {
@@ -11,10 +12,10 @@ namespace Core
 
 class MechanicalGroup;
 
-class OdeSolver : public Abstract::Base
+class OdeSolver : public Abstract::BaseObject
 {
 protected:
-    MechanicalGroup* group;
+    IntegrationGroup* group;
 public:
     OdeSolver();
 
@@ -22,7 +23,7 @@ public:
 
     virtual void solve (double dt) = 0;
 
-    virtual void setGroup(MechanicalGroup* grp);
+    virtual void setGroup(IntegrationGroup* grp);
 };
 
 } // namespace Core

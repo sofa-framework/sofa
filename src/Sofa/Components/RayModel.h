@@ -32,6 +32,11 @@ public:
 
     RayModel();
 
+    virtual void init()
+    {
+        Core::MechanicalObject<Vec3Types>::init();
+    }
+
     void clear() { resize(0); }
 
     void resize(int size);

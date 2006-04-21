@@ -1,12 +1,8 @@
 #ifndef SOFA_CORE_BASICMECHANICALMODEL_H
 #define SOFA_CORE_BASICMECHANICALMODEL_H
 
-#include "ForceField.h"
-#include "BasicMapping.h"
 #include "Topology.h"
-#include "Mass.h"
-#include "Sofa/Abstract/Base.h"
-#include "Sofa/Abstract/BehaviorModel.h"
+#include "Sofa/Abstract/BaseObject.h"
 
 namespace Sofa
 {
@@ -16,22 +12,18 @@ namespace Core
 
 class BasicMechanicalMapping;
 
-class BasicMechanicalModel : public virtual Abstract::Base
+class BasicMechanicalModel : public virtual Abstract::BaseObject
 {
 public:
     virtual ~BasicMechanicalModel() { }
 
-    // Basic Mappings are no longer handled by Mechanical Objects
-    //virtual void addMapping(Core::BasicMapping *mMap) = 0;
-    virtual void setMapping(Core::BasicMechanicalMapping *mMap) = 0;
-
-    virtual void addMechanicalModel(Core::BasicMechanicalModel *mm) = 0;
-
-    virtual void addForceField(Core::ForceField *mFField) = 0;
-
     virtual void resize(int vsize) = 0;
 
     virtual void init() = 0;
+
+    virtual void setTopology(Topology* topo) = 0;
+
+    virtual Topology* getTopology() = 0;
 
     virtual void beginIteration(double dt) = 0;
 
@@ -50,17 +42,6 @@ public:
     virtual void accumulateDf() = 0;
 
     virtual void applyConstraints() = 0;
-
-    /// Set the behavior object currently ownning this model
-    virtual void setObject(Abstract::BehaviorModel* obj) = 0;
-
-    virtual void setTopology(Topology* topo) = 0;
-
-    virtual Topology* getTopology() = 0;
-
-    virtual void setMass(Mass* m) = 0;
-
-    virtual Mass* getMass() = 0;
 };
 
 } // namespace Core

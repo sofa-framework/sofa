@@ -23,6 +23,7 @@ bool Node<Object>::initNode()
     if (obj != NULL)
     {
         setObject(obj);
+        obj->setName(getName());
         return true;
     }
     else return false;

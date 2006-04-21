@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Sofa/Abstract/Base.h"
+#include "Sofa/Abstract/BaseObject.h"
 #include "Sofa/Abstract/BehaviorModel.h"
 
 namespace Sofa
@@ -25,7 +25,7 @@ namespace Core
   *
   */
 
-class BasicMapping : public virtual Abstract::Base
+class BasicMapping : public virtual Abstract::BaseObject
 {
 public:
     virtual ~BasicMapping() { }
@@ -37,21 +37,6 @@ public:
      *  \brief apply the transformation from a model to an other model (like apply displacement from BehaviorModel to VisualModel)
      */
     virtual void updateMapping() = 0;
-    //{
-    //	//propagateX();
-    //	//propagateV();
-    //}
-    // virtual void beginIteration(double dt) = 0;
-    // virtual void endIteration(double dt) = 0;
-    // virtual void propagateX() = 0;
-    // virtual void propagateV() = 0;
-    // virtual void propagateDx() { }
-    // virtual void resetForce() { }
-    // virtual void accumulateForce() { }
-    // virtual void accumulateDf() { }
-
-    // /// Set the behavior object currently ownning this model
-    // virtual void setObject(Abstract::BehaviorModel* obj) = 0;
 
     virtual Abstract::Base* getFrom() = 0;
     virtual Abstract::Base* getTo() = 0;

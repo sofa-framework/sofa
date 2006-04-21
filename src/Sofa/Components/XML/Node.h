@@ -53,7 +53,7 @@ void createWithFilename(Object*& obj, BaseNode* arg)
         obj = NULL;
     }
     else
-        obj = new Object(filename,arg->getName());
+        obj = new Object(filename);
 }
 
 template<class Object, class ParentObject>
@@ -68,7 +68,7 @@ void createWithParentAndFilename(Object*& obj, BaseNode* arg)
     }
     ParentObject* object = dynamic_cast<ParentObject*>(arg->getParent()->getBaseObject());
     if (object==NULL) return;
-    obj = new Object(object, filename, arg->getName());
+    obj = new Object(object, filename);
 }
 
 template<class Object, class ParentObject>
@@ -77,7 +77,7 @@ void createWithParent(Object*& obj, BaseNode* arg)
     obj = NULL;
     ParentObject* object = dynamic_cast<ParentObject*>(arg->getParent()->getBaseObject());
     if (object==NULL) return;
-    obj = new Object(object, arg->getName());
+    obj = new Object(object);
 }
 
 template<class Object, class Object1, class Object2>
@@ -100,7 +100,7 @@ void createWith2ObjectsAndFilename(Object*& obj, BaseNode* arg)
         //                           <<", object2 "<<(pobject2?"OK":arg->findObject(object2)?"INVALID":"NULL")<<std::endl;
         return;
     }
-    obj = new Object(pobject1, pobject2, filename, arg->getName());
+    obj = new Object(pobject1, pobject2, filename);
 }
 
 template<class Object, class Object1, class Object2>
@@ -111,7 +111,7 @@ void createWith2Objects(Object*& obj, BaseNode* arg)
     const char* object2 = arg->getAttribute("object2");
     if (!object1 || !object2)
     {
-        std::cerr << arg->getType()<< " requires filename, object1 and object2 attributes\n";
+        std::cerr << arg->getType()<< " requires object1 and object2 attributes\n";
         return;
     }
     Object1* pobject1 = dynamic_cast<Object1*>(arg->findObject(object1));
@@ -122,7 +122,7 @@ void createWith2Objects(Object*& obj, BaseNode* arg)
         //                           <<", object2 "<<(pobject2?"OK":arg->findObject(object2)?"INVALID":"NULL")<<std::endl;
         return;
     }
-    obj = new Object(pobject1, pobject2, arg->getName());
+    obj = new Object(pobject1, pobject2);
 }
 
 } // namespace XML

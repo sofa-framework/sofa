@@ -25,7 +25,7 @@ void create(SphereModel*& obj, XML::Node<Abstract::CollisionModel>* arg)
 
 Creator< XML::CollisionNode::Factory, SphereModel > SphereModelClass("Sphere");
 
-SphereModel::SphereModel(const char* filename, const std::string& /*name*/)
+SphereModel::SphereModel(const char* filename)
     : previous(NULL), next(NULL), object(NULL)
 {
     internalForces = f;

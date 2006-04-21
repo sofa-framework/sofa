@@ -18,7 +18,7 @@ OdeSolver::~OdeSolver()
 {
 }
 
-void OdeSolver::setGroup(MechanicalGroup* grp)
+void OdeSolver::setGroup(IntegrationGroup* grp)
 {
     group = grp;
 }

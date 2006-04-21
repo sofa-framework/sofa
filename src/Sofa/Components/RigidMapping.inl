@@ -43,7 +43,7 @@ public:
 };
 
 template <class BaseMapping>
-void RigidMapping<BaseMapping>::init(const char *filename, const std::string &/*name*/)
+void RigidMapping<BaseMapping>::init(const char *filename)
 {
     points.resize(0);
 

@@ -30,7 +30,7 @@ protected:
     VecCoord* externalForces;
 public:
 
-    SphereModel(const char* filename, const std::string& name);
+    SphereModel(const char* filename);
 
     // -- MechanicalModel interface
 

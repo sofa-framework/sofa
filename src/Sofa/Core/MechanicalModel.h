@@ -2,7 +2,6 @@
 #define SOFA_CORE_MECHANICALMODEL_H
 
 #include "BasicMechanicalModel.h"
-#include "BasicMechanicalModel.h"
 
 namespace Sofa
 {
@@ -30,12 +29,6 @@ public:
     virtual const VecDeriv* getV()  const = 0;
     virtual const VecDeriv* getF()  const = 0;
     virtual const VecDeriv* getDx() const = 0;
-
-    virtual void propagateX() = 0;
-    virtual void propagateV() = 0;
-
-    virtual void beginIteration(double dt) = 0;
-    virtual void endIteration(double dt) = 0;
 };
 
 } // namespace Core

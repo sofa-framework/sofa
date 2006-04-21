@@ -20,13 +20,13 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename StiffSpringForceField<DataTypes>::Mat3 Mat3;
 public:
-    RepulsiveSpringForceField(Core::MechanicalObject<DataTypes>* object1, Core::MechanicalObject<DataTypes>* object2, const char* filename, const std::string& name)
-        : StiffSpringForceField<DataTypes>(object1, object2, filename, name)
+    RepulsiveSpringForceField(Core::MechanicalObject<DataTypes>* object1, Core::MechanicalObject<DataTypes>* object2, const char* filename)
+        : StiffSpringForceField<DataTypes>(object1, object2, filename)
     {
     }
 
-    RepulsiveSpringForceField(Core::MechanicalObject<DataTypes>* object, const char* filename, const std::string& name)
-        : StiffSpringForceField<DataTypes>(object, filename, name)
+    RepulsiveSpringForceField(Core::MechanicalObject<DataTypes>* object, const char* filename)
+        : StiffSpringForceField<DataTypes>(object, filename)
     {
     }
 
