@@ -3,12 +3,15 @@
 
 #include "Topology.h"
 #include "Sofa/Abstract/BaseObject.h"
+#include "Sofa/Core/Encoding.h"
 
 namespace Sofa
 {
 
 namespace Core
 {
+
+using namespace Encoding;
 
 class BasicMechanicalMapping;
 
@@ -42,6 +45,28 @@ public:
     virtual void accumulateDf() = 0;
 
     virtual void applyConstraints() = 0;
+
+    /// @name Integration related methods
+    /// @{
+
+    virtual void vAlloc(VecId v) = 0; // {}
+
+    virtual void vFree(VecId v) = 0; // {}
+
+    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0) = 0; // {}
+
+    virtual double vDot(VecId a, VecId b) = 0; //{ return 0; }
+
+    virtual void setX(VecId v) = 0; //{}
+
+    virtual void setV(VecId v) = 0; //{}
+
+    virtual void setF(VecId v) = 0; //{}
+
+    virtual void setDx(VecId v) = 0; //{}
+
+    /// @}
+
 };
 
 } // namespace Core

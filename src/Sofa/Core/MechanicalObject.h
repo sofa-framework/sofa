@@ -29,6 +29,21 @@ protected:
     VecDeriv* f;
     VecDeriv* dx;
 
+    /// @name Integration-related data
+    /// @{
+
+    std::vector< VecCoord * > vectorsCoord;
+    std::vector< VecDeriv * > vectorsDeriv;
+    int vsize; ///< Number of elements to allocate in vectors
+
+    void setVecCoord(unsigned int index, VecCoord* v);
+    void setVecDeriv(unsigned int index, VecDeriv* v);
+
+    /// @}
+
+    /// @name Scene structure (only used if there is no external scenegraph)
+    /// @{
+
     BasicMechanicalMapping* mapping;
     std::vector< Core::ForceField *> forcefields;
     std::vector< Core::BasicMechanicalObject *> mmodels;
@@ -36,6 +51,8 @@ protected:
     Mass* mass;
     typedef typename std::vector< Core::ForceField* >::iterator ForceFieldIt;
     typedef typename std::vector< Core::BasicMechanicalObject* >::iterator MModelIt;
+
+    /// @}
 
     double translation[3];
 public:
@@ -103,6 +120,31 @@ public:
     virtual void setMass(Mass* m);
 
     virtual Mass* getMass();
+
+    /// @name Integration related methods
+    /// @{
+
+    VecCoord* getVecCoord(unsigned int index);
+
+    VecDeriv* getVecDeriv(unsigned int index);
+
+    virtual void vAlloc(VecId v);
+
+    virtual void vFree(VecId v);
+
+    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0);
+
+    virtual double vDot(VecId a, VecId b);
+
+    virtual void setX(VecId v);
+
+    virtual void setV(VecId v);
+
+    virtual void setF(VecId v);
+
+    virtual void setDx(VecId v);
+
+    /// @}
 };
 
 } // namespace Core

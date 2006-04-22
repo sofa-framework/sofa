@@ -139,11 +139,12 @@ public:
     virtual void execute(Action* action);
 
     /// Execute a recursive action starting from this node
-    void execute(Action& action) { execute(&action); }
+    template<class Act>
+    void execute(Act action) { Action* p = &action; execute(p); }
 
     /// Execute a recursive action starting from this node
     template<class Act>
-    void execute() { Act action; execute(&action); }
+    void execute() { Act action; Action* p = &action; execute(p); }
 
     /// @}
 
