@@ -1,11 +1,17 @@
 #include "Sofa/Components/Scene.h"
 #include "Sofa/Components/MassObject.h"
 #include "Sofa/Components/EulerSolver.h"
+#ifdef SOFA_GUI_FLTK
 #include "Sofa/GUI/FLTK/Main.h"
+using namespace Sofa::GUI::FLTK;
+#endif
+#ifdef SOFA_GUI_QT
+#include "Sofa/GUI/QT/Main.h"
+using namespace Sofa::GUI::QT;
+#endif
 
 using namespace Sofa::Components;
 using namespace Sofa::Core;
-using namespace Sofa::GUI::FLTK;
 typedef Sofa::Components::Common::Vec3Types MyTypes;
 typedef MyTypes::Deriv Vec3;
 

@@ -3,6 +3,10 @@
 #include <GL/gl.h>
 #include <assert.h>
 #include <algorithm>
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
 
 
 namespace Sofa
@@ -68,6 +72,17 @@ bool Axis::initDraw()
 }
 
 
+void Axis::push()
+{
+    glPushMatrix();
+    glMultMatrixd(matTransOpenGL);
+}
+
+void Axis::pop()
+{
+    glPopMatrix();
+}
+
 void Axis::draw()
 {
     //float scalefactor = length / 0.2f;
@@ -95,7 +110,8 @@ void Axis::draw()
 
 void Axis::update(double *mat)
 {
-    assert (sizeof(mat)/sizeof(double) == 16);
+    //cout<<"Axis::update(double *mat), sizeof(mat) = "<<sizeof(mat)<<endl;
+    //assert (sizeof(mat)/sizeof(double) == 16);
     std::copy(mat,mat+16, matTransOpenGL);
 }
 
@@ -144,6 +160,14 @@ void Axis::update(Vector3 &center, Quaternion &orient)
     //QuatToMat3D(orient, matOrient);
 
     update(center, mOrient);
+}
+
+Axis::Axis()
+{
+    init(1.0);
+    Vector3 o(0,0,0);
+    Quaternion q(1,0,0,0);
+    update( o,q );
 }
 
 Axis::Axis(Vector3 &center, Quaternion & orient, float length)

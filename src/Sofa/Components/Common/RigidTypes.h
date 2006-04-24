@@ -4,6 +4,7 @@
 #include "Vec.h"
 #include "Mat.h"
 #include "Quat.h"
+#include <vector>
 
 namespace Sofa
 {

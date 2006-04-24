@@ -1,7 +1,7 @@
 [General]
 img_extIsRegExp=false
 img_extensions=.eps .pdf .dvi .ps .fig .gif .jpg .jpeg .png
-lastDocument=file:///home/allardj/work/Sofa/doc/extendingSofa.tex
+lastDocument=file:///home/francois/Sofa/doc/main.tex
 masterDocument=
 name=SOFA documentation
 pkg_extIsRegExp=false
@@ -23,7 +23,7 @@ open=true
 
 [item:extendingSofa.tex]
 archive=true
-column=65
+column=102
 encoding=ISO 8859-15
 highlight=LaTeX
 line=763
@@ -39,10 +39,10 @@ open=true
 
 [item:main.tex]
 archive=true
-column=1
+column=0
 encoding=ISO 8859-1
 highlight=LaTeX
-line=45
+line=33
 open=true
 
 [item:physicallyBasedAnimation.tex]
@@ -55,10 +55,10 @@ open=true
 
 [item:sofaMechanical.tex]
 archive=true
-column=0
+column=34
 encoding=ISO 8859-1
 highlight=LaTeX
-line=0
+line=17
 open=true
 
 [item:sofadocumentation.kilepr]

@@ -272,6 +272,25 @@ public:
 
 };
 
+/// Read from an input stream
+template<int N,typename Real>
+std::istream& operator >> ( std::istream& in, Vec<N,Real>& v )
+{
+    for( int i=0; i<N; ++i )
+        in>>v[i];
+    return in;
+}
+
+/// Write to an output stream
+template<int N,typename Real>
+std::ostream& operator << ( std::ostream& out, const Vec<N,Real>& v )
+{
+    for( int i=0; i<N-1; ++i )
+        out<<v[i]<<" ";
+    out<<v[N-1];
+    return out;
+}
+
 /// Cross product for 3-elements vectors.
 template<typename real>
 inline Vec<3,real> cross(const Vec<3,real>& a, const Vec<3,real>& b)
@@ -297,6 +316,7 @@ typedef Vec<4,float> Vec4f;
 typedef Vec<4,double> Vec4d;
 
 typedef Vec4d Vector4; ///< alias
+
 
 #undef BOOST_STATIC_ASSERT
 

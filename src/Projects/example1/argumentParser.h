@@ -1,6 +1,6 @@
 //========================================================
 // Yet another command line parser.
-// François Faure, iMAGIS-GRAVIR, May 2001
+// Franï¿½is Faure, iMAGIS-GRAVIR, May 2001
 //========================================================
 
 #ifndef ANIMAL_command_line_parser________
@@ -367,7 +367,7 @@ public:
 
 };
 
-/** \function parse
+/** Parse a command line
 \param helpstr General help message
 \param hs short name for help
 \param hl long name for help

@@ -16,6 +16,7 @@ namespace Common
 
 template <int L, int C, class real=float>
 class Mat : public fixed_array<Vec<C,real>,L>
+    //class Mat : public Vec<L,Vec<C,real> >
 {
 public:
 
@@ -205,6 +206,16 @@ public:
         for (int i=0; i<L; i++)
             for (int j=0; j<C; j++)
                 this->elems[i][j]=m[j][i];
+    }
+
+    /// Set matrix as the transpose of m.
+    Mat transposed()
+    {
+        Mat m;
+        for (int i=0; i<L; i++)
+            for (int j=0; j<C; j++)
+                m[j][i]=this->elems[i][j];
+        return m;
     }
 
     /// Transpose current matrix.
@@ -435,16 +446,10 @@ typedef Mat4x4d Matrix4;
 
 #undef BOOST_STATIC_ASSERT
 
-} // namespace Common
 
-} // namespace Components
-
-} // namespace Sofa
-
-// iostream
 
 template <int L, int C, typename real>
-std::ostream& operator<<(std::ostream& o, const Sofa::Components::Common::Mat<L,C,real>& m)
+std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 {
     o << '<' << m[0];
     for (int i=1; i<L; i++)
@@ -482,6 +487,16 @@ std::istream& operator>>(std::istream& in, Sofa::Components::Common::Mat<L,C,rea
     }
     return in;
 }
+
+} // namespace Common
+
+} // namespace Components
+
+} // namespace Sofa
+
+// iostream
+
+
 
 /// Scalar matrix multiplication operator.
 template <int L, int C, typename real>

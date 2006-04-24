@@ -147,6 +147,7 @@ BaseNode* load(const char *filename, const char* rootname)
 
     std::cout << "Creating graph"<<std::endl;
     BaseNode* graph = createNode(root);
+    std::cout << "Graph created"<<std::endl;
     xmlFreeDoc(doc);
     xmlCleanupParser();
     xmlMemoryDump();
