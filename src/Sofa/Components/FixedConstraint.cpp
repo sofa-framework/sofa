@@ -1,0 +1,71 @@
+#include "FixedConstraint.inl"
+#include "Sofa/Components/XML/ConstraintNode.h"
+#include "Sofa/Components/Common/Vec3Types.h"
+#include "Sofa/Components/Common/RigidTypes.h"
+#include "Scene.h"
+#include "GL/Repere.h"
+
+namespace Sofa
+{
+
+namespace Components
+{
+
+using namespace Common;
+
+template <>
+void FixedConstraint<RigidTypes>::draw()
+{
+    if (!Scene::getInstance()->getShowBehaviorModels()) return;
+    VecCoord& x = *mmodel->getX();
+    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    {
+        int i = *it;
+        Quat orient = x[i].getOrientation();
+        RigidTypes::Vec3& center = x[i].getCenter();
+        orient[3] = -orient[3];
+
+        static GL::Axis *axis = new GL::Axis(center, orient, 5);
+
+        axis->update(center, orient);
+        axis->draw();
+    }
+}
+
+SOFA_DECL_CLASS(FixedConstraint)
+
+template class FixedConstraint<Vec3dTypes>;
+template class FixedConstraint<Vec3fTypes>;
+
+namespace Common   // \todo Why this must be inside Common namespace
+{
+
+template<class DataTypes>
+void create(FixedConstraint<DataTypes>*& obj, XML::Node<Core::Constraint>* arg)
+{
+    XML::createWithParent< FixedConstraint<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    if (obj!=NULL)
+    {
+        if (arg->getAttribute("indices"))
+        {
+            const char* str = arg->getAttribute("indices");
+            const char* str2 = NULL;
+            for(;;)
+            {
+                int v = (int)strtod(str,(char**)&str2);
+                if (str2==str) break;
+                str = str2;
+                obj->addConstraint(v);
+            }
+        }
+    }
+}
+}
+
+Creator< XML::ConstraintNode::Factory, FixedConstraint<Vec3dTypes> > FixedConstraint3dClass("FixedConstraint",true);
+Creator< XML::ConstraintNode::Factory, FixedConstraint<Vec3fTypes> > FixedConstraint3fClass("FixedConstraint",true);
+Creator< XML::ConstraintNode::Factory, FixedConstraint<RigidTypes> > FixedConstraintRigidClass("FixedConstraint",true);
+
+} // namespace Components
+
+} // namespace Sofa

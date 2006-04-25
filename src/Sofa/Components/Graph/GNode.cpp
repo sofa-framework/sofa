@@ -51,6 +51,7 @@ void GNode::addObject(BaseObject* obj)
     topology.add(dynamic_cast< Topology* >(obj));
     if (!interactionForceField.add(dynamic_cast< InteractionForceField* >(obj)))
         forceField.add(dynamic_cast< ForceField* >(obj));
+    constraint.add(dynamic_cast< Constraint* >(obj));
     behaviorModel.add(dynamic_cast< BehaviorModel* >(obj));
     visualModel.add(dynamic_cast< VisualModel* >(obj));
     collisionModel.add(dynamic_cast< CollisionModel* >(obj));
@@ -71,6 +72,7 @@ void GNode::removeObject(BaseObject* obj)
     topology.remove(dynamic_cast< Topology* >(obj));
     forceField.remove(dynamic_cast< ForceField* >(obj));
     interactionForceField.remove(dynamic_cast< InteractionForceField* >(obj));
+    constraint.remove(dynamic_cast< Constraint* >(obj));
     mapping.remove(dynamic_cast< BasicMapping* >(obj));
     behaviorModel.remove(dynamic_cast< BehaviorModel* >(obj));
     visualModel.remove(dynamic_cast< VisualModel* >(obj));

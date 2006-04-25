@@ -15,6 +15,7 @@
 #include "Sofa/Core/ForceField.h"
 #include "Sofa/Core/InteractionForceField.h"
 #include "Sofa/Core/Mass.h"
+#include "Sofa/Core/Constraint.h"
 #include "Sofa/Core/Topology.h"
 #include "Sofa/Core/OdeSolver.h"
 
@@ -240,6 +241,7 @@ public:
     Single<Topology> topology;
     Sequence<ForceField> forceField;
     Sequence<InteractionForceField> interactionForceField;
+    Sequence<Constraint> constraint;
 
     Sequence<BasicMapping> mapping;
     Sequence<BehaviorModel> behaviorModel;
