@@ -83,12 +83,14 @@ public:
     /// Given two quaternions, add them together to get a third quaternion.
     /// Adding quaternions to get a compound rotation is analagous to adding
     /// translations to get a compound translation.
-    template <class T>
-    friend Quater<T> operator+(Quater<T> q1, Quater<T> q2);
+    //template <class T>
+    //friend Quater<T> operator+(Quater<T> q1, Quater<T> q2);
+    Quater<Real> operator+(const Quater<Real> &q1);
 
+    Quater<Real> operator*(const Quater<Real> &q1);
     /// Given two Quaters, multiply them together to get a third quaternion.
-    template <class T>
-    friend Quater<T> operator*(const Quater<T>& q1, const Quater<T>& q2);
+    //template <class T>
+    //friend Quater<T> operator*(const Quater<T>& q1, const Quater<T>& q2);
 
     Quater quatVectMult(const Vec3d& vect);
 

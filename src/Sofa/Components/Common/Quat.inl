@@ -51,7 +51,8 @@ Quater<Real>::~Quater()
 ///   NOTE: This routine is written so that q1 or q2 may be the same
 ///  	   as dest (or each other).
 template<class Real>
-Quater<Real> operator+(Quater<Real> q1, Quater<Real> q2)
+//Quater<Real> operator+(Quater<Real> q1, Quater<Real> q2)
+Quater<Real> Quater<Real>::operator+(const Quater<Real> &q1)
 {
     static int	count	= 0;
 
@@ -59,25 +60,25 @@ Quater<Real> operator+(Quater<Real> q1, Quater<Real> q2)
     Real		tf[4];
     Quater<Real>	ret;
 
-    t1[0] = q1._q[0] * q2._q[3];
-    t1[1] = q1._q[1] * q2._q[3];
-    t1[2] = q1._q[2] * q2._q[3];
+    t1[0] = _q[0] * q1._q[3];
+    t1[1] = _q[1] * q1._q[3];
+    t1[2] = _q[2] * q1._q[3];
 
-    t2[0] = q2._q[0] * q1._q[3];
-    t2[1] = q2._q[1] * q1._q[3];
-    t2[2] = q2._q[2] * q1._q[3];
+    t2[0] = q1._q[0] * _q[3];
+    t2[1] = q1._q[1] * _q[3];
+    t2[2] = q1._q[2] * _q[3];
 
     // cross product t3 = q2 x q1
-    t3[0] = (q2._q[1] * q1._q[2]) - (q2._q[2] * q1._q[1]);
-    t3[1] = (q2._q[2] * q1._q[0]) - (q2._q[0] * q1._q[2]);
-    t3[2] = (q2._q[0] * q1._q[1]) - (q2._q[1] * q1._q[0]);
+    t3[0] = (q1._q[1] * _q[2]) - (q1._q[2] * _q[1]);
+    t3[1] = (q1._q[2] * _q[0]) - (q1._q[0] * _q[2]);
+    t3[2] = (q1._q[0] * _q[1]) - (q1._q[1] * _q[0]);
     // end cross product
 
     tf[0] = t1[0] + t2[0] + t3[0];
     tf[1] = t1[1] + t2[1] + t3[1];
     tf[2] = t1[2] + t2[2] + t3[2];
-    tf[3] = q1._q[3] * q2._q[3] -
-            (q1._q[0] * q2._q[0] + q1._q[1] * q2._q[1] + q1._q[2] * q2._q[2]);
+    tf[3] = _q[3] * q1._q[3] -
+            (_q[0] * q1._q[0] + _q[1] * q1._q[1] + _q[2] * q1._q[2]);
 
     ret._q[0] = tf[0];
     ret._q[1] = tf[1];
@@ -94,26 +95,27 @@ Quater<Real> operator+(Quater<Real> q1, Quater<Real> q2)
 }
 
 template<class Real>
-Quater<Real> operator*(const Quater<Real>& q1, const Quater<Real>& q2)
+//Quater<Real> operator*(const Quater<Real>& q1, const Quater<Real>& q2)
+Quater<Real> Quater<Real>::operator*(const Quater<Real>& q1)
 {
     Quater<Real>	ret;
 
-    ret._q[3] = q1._q[3] * q2._q[3] -
-            (q1._q[0] * q2._q[0] +
-                    q1._q[1] * q2._q[1] +
-                    q1._q[2] * q2._q[2]);
-    ret._q[0] = q1._q[3] * q2._q[0] +
-            q1._q[0] * q2._q[3] +
-            q1._q[1] * q2._q[2] -
-            q1._q[2] * q2._q[1];
-    ret._q[1] = q1._q[3] * q2._q[1] +
-            q1._q[1] * q2._q[3] +
-            q1._q[2] * q2._q[0] -
-            q1._q[0] * q2._q[2];
-    ret._q[2] = q1._q[3] * q2._q[2] +
-            q1._q[2] * q2._q[3] +
-            q1._q[0] * q2._q[1] -
-            q1._q[1] * q2._q[0];
+    ret._q[3] = _q[3] * q1._q[3] -
+            (_q[0] * q1._q[0] +
+                    _q[1] * q1._q[1] +
+                    _q[2] * q1._q[2]);
+    ret._q[0] = _q[3] * q1._q[0] +
+            _q[0] * q1._q[3] +
+            _q[1] * q1._q[2] -
+            _q[2] * q1._q[1];
+    ret._q[1] = _q[3] * q1._q[1] +
+            _q[1] * q1._q[3] +
+            _q[2] * q1._q[0] -
+            _q[0] * q1._q[2];
+    ret._q[2] = _q[3] * q1._q[2] +
+            _q[2] * q1._q[3] +
+            _q[0] * q1._q[1] -
+            _q[1] * q1._q[0];
 
     return ret;
 }
