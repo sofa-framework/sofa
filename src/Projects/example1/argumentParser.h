@@ -15,7 +15,7 @@
 #include <vector>
 #include <algorithm>
 #include <map>
-
+#include <list>
 
 typedef std::istringstream istrstream;
 
@@ -43,7 +43,7 @@ struct ArgumentBase
     virtual ~ArgumentBase() {}
 
     /// Read the command line
-    virtual bool read( std::istream& ) = 0;
+    virtual bool read( std::list<std::string>& str ) = 0;
 
     /// Print the value of the associated variable
     virtual void printValue() const =0;
@@ -107,9 +107,13 @@ private:
     /** Try to read argument value from an input stream.
         Return false if failed
     */
-    inline bool read( std::istream& str )
+    inline bool read( std::list<std::string>& str )
     {
-        if( ! (str >> *ptr) ) return false;
+        if (str.empty()) return false;
+        std::string s = str.front();
+        str.pop_front();
+        istrstream istr( s.c_str() );
+        if( ! (istr >> *ptr) ) return false;
         else
         {
             isSet = true;
@@ -126,9 +130,19 @@ The advantage is that you do not have to set the value, it is automatically TRUE
 The drawback is that reading a boolean necessarily sets it to TRUE. Currently you can not set a boolean to FALSE using this parser.
 */
 template<> inline
-bool Argument<bool>::read( std::istream& )
+bool Argument<bool>::read( std::list<std::string>& )
 {
     *ptr = true;
+    isSet = true;
+    return true;
+}
+
+bool Argument<std::string>::read( std::list<std::string>& str )
+{
+    if (str.empty()) return false;
+    std::string s = str.front();
+    str.pop_front();
+    *ptr = s;
     isSet = true;
     return true;
 }
@@ -277,26 +291,21 @@ public:
     */
     inline void operator () ( int argc, char** argv )
     {
-        string cmdLine;
-        for( int i=1; i<argc; ++i )
-            cmdLine += string( argv[i] ) + " ";
-
-        istrstream str( cmdLine.c_str() );
-        (*this)( str );
-
+        std::list<std::string> str;
+        for (int i=1; i<argc; ++i)
+            str.push_back(std::string(argv[i]));
+        (*this)(str);
     }
 
-
-    /** Parse an input stream
-    */
-    inline void operator () ( std::istream& str )
+    inline void operator () ( std::list<std::string> str )
     {
-
         string shHelp("-");  shHelp.push_back( helpShortName );
         string lgHelp("--"); lgHelp.append( helpLongName );
         string name;
-        while( str>>name )
+        while( !str.empty() )
         {
+            name = str.front();
+            str.pop_front();
 //			std::cout << "name = " << name << std::endl;
 //			std::cout << "lgHelp = " << lgHelp << std::endl;
 //			std::cout << "shHelp = " << shHelp << std::endl;
