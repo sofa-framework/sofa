@@ -21,7 +21,7 @@ public:
     Coord p0;
     Deriv dx;
 
-    LineMapping(In* from, Out* to, const std::string& /*name*/)
+    LineMapping(In* from, Out* to)
         : BaseMapping(from, to), p0(0,0,0), dx(1,0,0)
     {
     }

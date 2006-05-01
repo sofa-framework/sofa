@@ -29,7 +29,7 @@ namespace Components
 namespace Common
 {
 /// Construct a MassObject1d object from a XML node.
-void create(MassObject1d*& obj, XML::Node<Sofa::Abstract::DynamicModel>* arg)
+void create(MassObject1d*& obj, XML::Node<Sofa::Core::DynamicModel>* arg)
 {
     obj = new MassObject1d();
     obj->clear();

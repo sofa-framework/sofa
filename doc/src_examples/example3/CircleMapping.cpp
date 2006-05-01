@@ -26,7 +26,7 @@ public:
 
     std::vector<Deriv> dx;
 
-    CircleMapping(In* from, Out* to, const std::string& /*name*/)
+    CircleMapping(In* from, Out* to)
         : BaseMapping(from, to), p0(0,0,0), rx(1,0,0), ry(0,0,1)
     {
     }

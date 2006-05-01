@@ -1,10 +1,10 @@
 #include "Sofa/Components/Scene.h"
-//#include "Sofa/GUI/FLTK/Main.h"
-#include "Sofa/GUI/QT/Main.h"
+#include "Sofa/GUI/FLTK/Main.h"
+//#include "Sofa/GUI/QT/Main.h"
 
 using namespace Sofa::Components;
-//using namespace Sofa::GUI::FLTK;
-using namespace Sofa::GUI::QT;
+using namespace Sofa::GUI::FLTK;
+//using namespace Sofa::GUI::QT;
 
 int main(int argc, char** argv)
 {
