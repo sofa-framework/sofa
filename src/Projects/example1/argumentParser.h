@@ -137,6 +137,7 @@ bool Argument<bool>::read( std::list<std::string>& )
     return true;
 }
 
+template<> inline
 bool Argument<std::string>::read( std::list<std::string>& str )
 {
     if (str.empty()) return false;
