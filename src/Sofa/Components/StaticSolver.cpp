@@ -81,9 +81,13 @@ void StaticSolver::solve(double)
     pos.peq( x );
 }
 
-void create(StaticSolver*& obj, XML::Node<Core::OdeSolver>* /*arg*/)
+void create(StaticSolver*& obj, XML::Node<Core::OdeSolver>* arg)
 {
     obj = new StaticSolver();
+    if (arg->getAttribute("iterations"))
+        obj->maxCGIter = atoi(arg->getAttribute("iterations"));
+    if (arg->getAttribute("threshold"))
+        obj->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
 }
 
 SOFA_DECL_CLASS(StaticSolver)
