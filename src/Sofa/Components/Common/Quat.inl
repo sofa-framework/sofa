@@ -51,8 +51,8 @@ Quater<Real>::~Quater()
 ///   NOTE: This routine is written so that q1 or q2 may be the same
 ///  	   as dest (or each other).
 template<class Real>
-//Quater<Real> operator+(Quater<Real> q1, Quater<Real> q2)
-Quater<Real> Quater<Real>::operator+(const Quater<Real> &q1)
+//Quater<Real> operator+(Quater<Real> q1, Quater<Real> q2) const
+Quater<Real> Quater<Real>::operator+(const Quater<Real> &q1) const
 {
     static int	count	= 0;
 
@@ -95,8 +95,8 @@ Quater<Real> Quater<Real>::operator+(const Quater<Real> &q1)
 }
 
 template<class Real>
-//Quater<Real> operator*(const Quater<Real>& q1, const Quater<Real>& q2)
-Quater<Real> Quater<Real>::operator*(const Quater<Real>& q1)
+//Quater<Real> operator*(const Quater<Real>& q1, const Quater<Real>& q2) const
+Quater<Real> Quater<Real>::operator*(const Quater<Real>& q1) const
 {
     Quater<Real>	ret;
 

@@ -85,9 +85,9 @@ public:
     /// translations to get a compound translation.
     //template <class T>
     //friend Quater<T> operator+(Quater<T> q1, Quater<T> q2);
-    Quater<Real> operator+(const Quater<Real> &q1);
+    Quater<Real> operator+(const Quater<Real> &q1) const;
 
-    Quater<Real> operator*(const Quater<Real> &q1);
+    Quater<Real> operator*(const Quater<Real> &q1) const;
     /// Given two Quaters, multiply them together to get a third quaternion.
     //template <class T>
     //friend Quater<T> operator*(const Quater<T>& q1, const Quater<T>& q2);
