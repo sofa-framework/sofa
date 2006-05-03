@@ -147,6 +147,32 @@ public:
     template<class Act>
     void execute() { Act action; Action* p = &action; execute(p); }
 
+    /// List all objects of this node deriving from a given class
+    template<class Object, class Container>
+    void getNodeObjects(Container* list)
+    {
+        //list->insert(list->end(),this->object.begin(),this->object.end());
+        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
+        {
+            Object* o = dynamic_cast<Object*>(*it);
+            if (o!=NULL)
+                list->push_back(o);
+        }
+    }
+
+    /// List all objects of this node and sub-nodes deriving from a given class
+    template<class Object, class Container>
+    void getTreeObjects(Container* list)
+    {
+        this->getNodeObjects<Object, Container>(list);
+        for (ChildIterator it = this->child.begin(); it != this->child.end(); ++it)
+        {
+            GNode* n = *it;
+            n->getTreeObjects<Object, Container>(list);
+        }
+    }
+
+
     /// @}
 
     /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
@@ -233,6 +259,7 @@ public:
     typedef Sequence<GNode>::iterator ChildIterator;
 
     Sequence<BaseObject> object;
+    typedef Sequence<BaseObject>::iterator ObjectIterator;
 
     Single<BasicMechanicalModel> mechanicalModel;
     Single<BasicMechanicalMapping> mechanicalMapping;
