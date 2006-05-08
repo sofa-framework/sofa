@@ -398,6 +398,7 @@ void OglModel::setColor(std::string color)
 
 void OglModel::update()
 {
+    computeNormals();
 }
 
 void OglModel::initTextures()

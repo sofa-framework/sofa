@@ -69,6 +69,23 @@ void MechanicalObject<DataTypes>::removeForceField(Core::ForceField* mFField)
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::addConstraint(Core::Constraint *mConstraint)
+{
+    assert(mConstraint);
+    constraints.push_back(mConstraint);
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::removeConstraint(Core::Constraint* mConstraint)
+{
+    ConstraintIt it = std::find(constraints.begin(), constraints.end(), mConstraint);
+    if (it!=constraints.end())
+    {
+        constraints.erase(it);
+    }
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::addMechanicalModel(BasicMechanicalObject *mmodel)
 {
     assert(mmodel);
@@ -128,6 +145,12 @@ void MechanicalObject<DataTypes>::init()
     {
         ForceFieldIt it = forcefields.begin();
         ForceFieldIt itEnd = forcefields.end();
+        for (; it != itEnd; it++)
+            (*it)->init();
+    }
+    {
+        ConstraintIt it = constraints.begin();
+        ConstraintIt itEnd = constraints.end();
         for (; it != itEnd; it++)
             (*it)->init();
     }
@@ -267,6 +290,10 @@ void MechanicalObject<DataTypes>::accumulateDf()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyConstraints()
 {
+    ConstraintIt it = constraints.begin();
+    ConstraintIt itEnd = constraints.end();
+    for (; it != itEnd; it++)
+        (*it)->applyConstraint();
 }
 
 template <class DataTypes>

@@ -46,10 +46,12 @@ protected:
 
     BasicMechanicalMapping* mapping;
     std::vector< Core::ForceField *> forcefields;
+    std::vector< Core::Constraint *> constraints;
     std::vector< Core::BasicMechanicalObject *> mmodels;
     Topology* topology;
     Mass* mass;
     typedef typename std::vector< Core::ForceField* >::iterator ForceFieldIt;
+    typedef typename std::vector< Core::Constraint* >::iterator ConstraintIt;
     typedef typename std::vector< Core::BasicMechanicalObject* >::iterator MModelIt;
 
     /// @}
@@ -83,6 +85,10 @@ public:
     virtual void addForceField(Core::ForceField* mFField);
 
     virtual void removeForceField(Core::ForceField* mFField);
+
+    virtual void addConstraint(Core::Constraint* mConstraint);
+
+    virtual void removeConstraint(Core::Constraint* mConstraint);
 
     virtual void resize(int vsize);
 

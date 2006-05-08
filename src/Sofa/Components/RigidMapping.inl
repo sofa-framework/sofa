@@ -77,6 +77,7 @@ void RigidMapping<BaseMapping>::init()
     if (this->points.empty() && this->toModel!=NULL)
     {
         VecCoord& x = *this->toModel->getX();
+        std::cout << "RigidMapping: init "<<x.size()<<" points."<<std::endl;
         points.resize(x.size());
         for (unsigned int i=0; i<x.size(); i++)
             points[i] = x[i];
@@ -163,9 +164,8 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typen
     out[0].getVOrientation()[2] += omega[2];
 }
 
-// commented by Sylvere F.
 template <class BaseMapping>
-void RigidMapping<BaseMapping>/*::RigidMapping*/::draw()
+void RigidMapping<BaseMapping>::draw()
 {
     if (!Scene::getInstance()->getShowMappings()) return;
     glDisable (GL_LIGHTING);

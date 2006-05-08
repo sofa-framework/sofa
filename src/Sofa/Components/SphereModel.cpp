@@ -45,15 +45,13 @@ public:
         dest->getF()->push_back(Vector3(0,0,0));
         dest->getDx()->push_back(Vector3(0,0,0));
         dest->elems.push_back(new Sphere(r,dest->elems.size(),dest));
+        dest->resize(dest->elems.size());
     }
 };
 
 void SphereModel::init(const char* filename)
 {
-    this->getX()->resize(0);
-    this->getV()->resize(0);
-    this->getF()->resize(0);
-    this->getDx()->resize(0);
+    this->resize(0);
     elems.clear();
     Loader loader(this);
     loader.load(filename);

@@ -39,23 +39,21 @@ bool SphereLoader::load(const char *filename)
     }
     skipToEOL(file);
 
-    // then find out number of spheres
-    if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"nums"))
-    {
-        fscanf(file, "%d", &totalNumSpheres);
-        setNumSpheres(totalNumSpheres);
-    }
-
-    printf("Model contains %d spheres\n", totalNumSpheres);
     while (fscanf(file, "%s", cmd) != EOF)
     {
-        if (!strcmp(cmd,"sphe"))
+        if (!strcmp(cmd,"nums"))
+        {
+            fscanf(file, "%d", &totalNumSpheres);
+            setNumSpheres(totalNumSpheres);
+        }
+        else if (!strcmp(cmd,"sphe"))
         {
             int index;
             double cx=0,cy=0,cz=0,r=1;
             fscanf(file, "%d %lf %lf %lf %lf\n",
                     &index, &cx, &cy, &cz, &r);
             addSphere(cx,cy,cz,r);
+            ++totalNumSpheres;
         }
         else if (cmd[0]=='#')
         {
@@ -67,6 +65,7 @@ bool SphereLoader::load(const char *filename)
             skipToEOL(file);
         }
     }
+    printf("Model contains %d spheres\n", totalNumSpheres);
 
     (void) fclose(file);
 

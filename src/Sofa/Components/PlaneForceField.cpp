@@ -23,7 +23,7 @@ void create(PlaneForceField<DataTypes>*& obj, XML::Node<Core::ForceField>* arg)
     XML::createWithParent< PlaneForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
-        if (arg->getAttribute("stiffness")) obj->setStiffness(atof(arg->getAttribute("stiffness")));
+        if (arg->getAttribute("stiffness")) obj->setStiffness((typename PlaneForceField<DataTypes>::Real)atof(arg->getAttribute("stiffness")));
         double x=0,y=0,z=0,d=0;
         if (arg->getAttribute("normal"))
             sscanf(arg->getAttribute("normal"),"%lf %lf %lf",&x,&y,&z);
@@ -33,7 +33,7 @@ void create(PlaneForceField<DataTypes>*& obj, XML::Node<Core::ForceField>* arg)
 
         typename DataTypes::Deriv normal;
         DataTypes::set(normal,x,y,z);
-        obj->setPlane(normal,d);
+        obj->setPlane(normal,(typename PlaneForceField<DataTypes>::Real)d);
     }
 }
 

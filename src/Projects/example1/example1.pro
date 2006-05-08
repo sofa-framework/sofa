@@ -13,6 +13,10 @@ DEPENDPATH = ../..
 SOURCES = Main.cpp 
 HEADERS = 
 
+contains (DEFINES, SOFA_GUI_QT) {
+CONFIG += qt
+}
+
 win32{
   LIBS = -lSofaCore -lSofaComponents -llibxml2 -lGLaux -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
   contains (DEFINES, SOFA_GUI_FLTK) {
