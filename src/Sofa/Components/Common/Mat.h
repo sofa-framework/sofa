@@ -209,9 +209,9 @@ public:
     }
 
     /// Set matrix as the transpose of m.
-    Mat transposed()
+    Mat<C,L,real> transposed()
     {
-        Mat m;
+        Mat<C,L,real> m;
         for (int i=0; i<L; i++)
             for (int j=0; j<C; j++)
                 m[j][i]=this->elems[i][j];
@@ -296,11 +296,25 @@ public:
             this->elems[i]*=r;
     }
 
+    /// Scalar division assignment operator.
+    void operator /=(real r)
+    {
+        for(int i=0; i<L; i++)
+            this->elems[i]/=r;
+    }
+
     /// Addition assignment operator.
     void operator +=(const Mat<L,C,real>& m)
     {
         for(int i=0; i<L; i++)
             this->elems[i]+=m[i];
+    }
+
+    /// Substraction assignment operator.
+    void operator -=(const Mat<L,C,real>& m)
+    {
+        for(int i=0; i<L; i++)
+            this->elems[i]-=m[i];
     }
 
     /// Determinant of the matrix.
