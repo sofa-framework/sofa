@@ -5,6 +5,9 @@
 #include "Scene.h"
 #include "GL/template.h"
 #include "Common/RigidTypes.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {

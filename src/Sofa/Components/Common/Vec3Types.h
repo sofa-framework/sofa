@@ -2,7 +2,8 @@
 #define SOFA_COMPONENTS_COMMON_VEC3TYPES_H
 
 #include "Vec.h"
-#include <vector>
+#include <Sofa/Components/Common/vector.h>
+using Sofa::Components::Common::vector;
 #include <iostream>
 
 namespace Sofa
@@ -20,8 +21,8 @@ class StdVectorTypes
 public:
     typedef TCoord Coord;
     typedef TDeriv Deriv;
-    typedef std::vector<Coord> VecCoord;
-    typedef std::vector<Deriv> VecDeriv;
+    typedef vector<Coord> VecCoord;
+    typedef vector<Deriv> VecDeriv;
 
     static void set(Coord& c, double x, double y, double z)
     {
@@ -105,5 +106,6 @@ typedef Vec3dTypes ExtVec3Types;
 } // namespace Components
 
 } // namespace Sofa
+
 
 #endif

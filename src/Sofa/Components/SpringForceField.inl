@@ -12,6 +12,9 @@
 #endif
 
 #include <GL/gl.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -92,6 +95,8 @@ void SpringForceField<DataTypes>::draw()
     if (!Scene::getInstance()->getShowForceFields()) return;
     VecCoord& p1 = *this->object1->getX();
     VecCoord& p2 = *this->object2->getX();
+    /*        cerr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<endl;
+            cerr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<endl;*/
     glDisable(GL_LIGHTING);
     bool external = (this->object1!=this->object2);
     if (!external)

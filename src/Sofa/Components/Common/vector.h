@@ -1,5 +1,5 @@
-#ifndef ANIMAL_VECTOR_H
-#define ANIMAL_VECTOR_H
+#ifndef SOFA_COMPONENTS_COMMON_VECTOR_H
+#define SOFA_COMPONENTS_COMMON_VECTOR_H
 
 #include <vector>
 #include <algorithm>
@@ -93,8 +93,6 @@ public:
     }
 
 };
-/** \example vector_test.cpp
-*/
 
 // ======================  operations on standard vectors
 
@@ -151,16 +149,6 @@ void removeIndex( std::vector<T,TT>& v, size_t index )
 }
 
 
-// /// Dot product of two containers
-// template<class C>
-// C dot( const C& v1, const C& v2 )
-// {
-// 	C res = 0;
-// 	typename C::const_iterator i1=v1.begin(), iend, i2=v2.begin();
-// 	for( iend=v1.end(); i1!=iend; ++i1, ++i2 )
-// 		res += *i1 * *i2;
-// 	return res;
-// }
 
 //@}
 
