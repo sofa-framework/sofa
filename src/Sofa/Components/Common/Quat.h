@@ -149,8 +149,11 @@ public:
 
 
     // Print the quaternion
-    template <class T>
-    friend std::ostream& operator<<(std::ostream& out, Quater<T> Q);
+    inline friend std::ostream& operator<<(std::ostream& out, Quater Q)
+    {
+        return (out << "(" << Q._q[0] << "," << Q._q[1] << "," << Q._q[2] << ","
+                << Q._q[3] << ")");
+    }
 
     // Print the quaternion (C style)
     void print();

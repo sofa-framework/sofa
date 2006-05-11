@@ -387,13 +387,13 @@ Quater<Real> Quater<Real>::axisToQuat(Vec3d a, Real phi)
 }
 
 
-/// Output quaternion
-template<class Real>
-std::ostream& operator<<(std::ostream& out, Quater<Real> Q)
-{
-    return (out << "(" << Q._q[0] << "," << Q._q[1] << "," << Q._q[2] << ","
-            << Q._q[3] << ")");
-}
+///// Output quaternion
+//template<class Real>
+//    std::ostream& operator<<(std::ostream& out, Quater<Real> Q)
+//{
+//	return (out << "(" << Q._q[0] << "," << Q._q[1] << "," << Q._q[2] << ","
+//				<< Q._q[3] << ")");
+//}
 
 /// Print quaternion (C style)
 template<class Real>
