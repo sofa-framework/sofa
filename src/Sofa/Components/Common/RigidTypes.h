@@ -5,6 +5,8 @@
 #include "Mat.h"
 #include "Quat.h"
 #include <vector>
+#include <iostream>
+using std::endl;
 
 namespace Sofa
 {
@@ -123,6 +125,34 @@ public:
         Quat& getOrientation () { return orientation; }
         const Vec3& getCenter () const { return center; }
         const Quat& getOrientation () const { return orientation; }
+        inline friend std::ostream& operator << (std::ostream& out, const Coord& c )
+        {
+            out<<"translation = "<<c.getCenter();
+            out<<", rotation = "<<c.getOrientation();
+            return out;
+        }
+
+        static Coord identity()
+        {
+            Coord c;
+            return c;
+        }
+
+        /// Apply a transformation with respect to itself
+        void multRight( const Coord& c )
+        {
+            center += orientation.rotate(c.getCenter());
+            orientation = orientation * c.getOrientation();
+        }
+
+        /// Write the OpenGL transformation matrix
+        void writeOpenGlMatrix( float m[16] )
+        {
+            orientation.writeOpenGlMatrix(m);
+            m[12] = center[0];
+            m[13] = center[1];
+            m[14] = center[2];
+        }
     };
 
     typedef std::vector<Coord> VecCoord;

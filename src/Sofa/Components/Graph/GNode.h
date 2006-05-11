@@ -18,6 +18,11 @@
 #include "Sofa/Core/Constraint.h"
 #include "Sofa/Core/Topology.h"
 #include "Sofa/Core/OdeSolver.h"
+#include "Sofa/Core/Property.h"
+#include "TraversalAction.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 
 namespace Sofa
 {
@@ -49,10 +54,16 @@ public:
     virtual void removeChild(GNode* node);
 
     /// Add a child node
-    virtual void addChild(BaseNode* node) { this->addChild(dynamic_cast<GNode*>(node)); }
+    virtual void addChild(BaseNode* node)
+    {
+        this->addChild(dynamic_cast<GNode*>(node));
+    }
 
     /// Remove a child node
-    virtual void removeChild(BaseNode* node) { this->removeChild(dynamic_cast<GNode*>(node)); }
+    virtual void removeChild(BaseNode* node)
+    {
+        this->removeChild(dynamic_cast<GNode*>(node));
+    }
 
     /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
     virtual void addObject(BaseObject* obj);
@@ -139,13 +150,43 @@ public:
     /// Execute a recursive action starting from this node
     virtual void execute(Action* action);
 
-    /// Execute a recursive action starting from this node
-    template<class Act>
-    void execute(Act action) { Action* p = &action; execute(p); }
+    /// Execute a recursive action starting from this node using a parameter
+    void traverse(TraversalAction* action, Core::Properties p)
+    {
+        if(action->traverseNodeTopDown(this,p) != TraversalAction::RESULT_PRUNE)
+        {
+            for(ChildIterator it = child.begin(); it != child.end(); ++it)
+            {
+                (*it)->traverse(action,p);
+            }
+        }
+        action->traverseNodeBottomUp(this,p);
+    }
+    /// Execute a recursive traversal starting from this node
+    template<class Traversal>
+    void traverse( Core::Properties p =Core::Properties::getDefault() )
+    {
+        Traversal action;
+        traverse(&action, p);
+    }
+
 
     /// Execute a recursive action starting from this node
     template<class Act>
-    void execute() { Act action; Action* p = &action; execute(p); }
+    void execute(Act action)
+    {
+        Action* p = &action;
+        execute(p);
+    }
+
+    /// Execute a recursive action starting from this node
+    template<class Act>
+    void execute()
+    {
+        Act action;
+        Action* p = &action;
+        execute(p);
+    }
 
     /// List all objects of this node deriving from a given class
     template<class Object, class Container>
@@ -181,19 +222,22 @@ public:
     {
     protected:
         std::vector< T* > elems;
-        bool add(T* elem)
+        bool add
+        (T* elem)
         {
             if (elem == NULL)
                 return false;
             elems.push_back(elem);
             return true;
         }
-        bool remove(T* elem)
+        bool remove
+        (T* elem)
         {
             if (elem == NULL)
                 return false;
             typename std::vector< T* >::iterator it = elems.begin();
-            while (it != elems.end() && (*it)!=elem) ++it;
+            while (it != elems.end() && (*it)!=elem)
+                ++it;
             if (it != elems.end())
             {
                 elems.erase(it);
@@ -206,11 +250,26 @@ public:
         typedef T* value_type;
         typedef typename std::vector< T* >::const_iterator iterator;
 
-        iterator begin() const { return elems.begin(); }
-        iterator end() const { return elems.end(); }
-        unsigned int size() const { return elems.size(); }
-        bool empty() const { return elems.empty(); }
-        T* operator[](unsigned int i) const { return elems[i]; }
+        iterator begin() const
+        {
+            return elems.begin();
+        }
+        iterator end() const
+        {
+            return elems.end();
+        }
+        unsigned int size() const
+        {
+            return elems.size();
+        }
+        bool empty() const
+        {
+            return elems.empty();
+        }
+        T* operator[](unsigned int i) const
+        {
+            return elems[i];
+        }
         friend class GNode;
     };
 
@@ -220,14 +279,16 @@ public:
     {
     protected:
         T* elems[2];
-        bool add(T* elem)
+        bool add
+        (T* elem)
         {
             if (elem == NULL)
                 return false;
             elems[0] = elem;
             return true;
         }
-        bool remove(T* elem)
+        bool remove
+        (T* elem)
         {
             if (elem == NULL)
                 return false;
@@ -243,14 +304,39 @@ public:
         typedef T* value_type;
         typedef T* const * iterator;
 
-        Single() { elems[0] = NULL; elems[1] = NULL; }
-        iterator begin() const { return elems; }
-        iterator end() const { return (elems[0]==NULL)?elems:elems+1; }
-        unsigned int size() const { return (elems[0]==NULL)?0:1; }
-        bool empty() const { return (elems[0]==NULL); }
-        T* operator[](unsigned int i) const { return elems[i]; }
-        operator T*() const { return elems[0]; }
-        T* operator->() const { return elems[0]; }
+        Single()
+        {
+            elems[0] = NULL;
+            elems[1] = NULL;
+        }
+        iterator begin() const
+        {
+            return elems;
+        }
+        iterator end() const
+        {
+            return (elems[0]==NULL)?elems:elems+1;
+        }
+        unsigned int size() const
+        {
+            return (elems[0]==NULL)?0:1;
+        }
+        bool empty() const
+        {
+            return (elems[0]==NULL);
+        }
+        T* operator[](unsigned int i) const
+        {
+            return elems[i];
+        }
+        operator T*() const
+        {
+            return elems[0];
+        }
+        T* operator->() const
+        {
+            return elems[0];
+        }
         friend class GNode;
     };
 
@@ -269,6 +355,7 @@ public:
     Sequence<ForceField> forceField;
     Sequence<InteractionForceField> interactionForceField;
     Sequence<Constraint> constraint;
+    Sequence<Property> property;
 
     Sequence<BasicMapping> mapping;
     Sequence<BehaviorModel> behaviorModel;
@@ -309,3 +396,5 @@ protected:
 } // namespace Sofa
 
 #endif
+
+

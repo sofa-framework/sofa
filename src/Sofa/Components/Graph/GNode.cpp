@@ -55,6 +55,7 @@ void GNode::addObject(BaseObject* obj)
     behaviorModel.add(dynamic_cast< BehaviorModel* >(obj));
     visualModel.add(dynamic_cast< VisualModel* >(obj));
     collisionModel.add(dynamic_cast< CollisionModel* >(obj));
+    property.add(dynamic_cast<Property* >(obj));
 }
 
 /// Remove an object
@@ -77,6 +78,7 @@ void GNode::removeObject(BaseObject* obj)
     behaviorModel.remove(dynamic_cast< BehaviorModel* >(obj));
     visualModel.remove(dynamic_cast< VisualModel* >(obj));
     collisionModel.remove(dynamic_cast< CollisionModel* >(obj));
+    property.remove(dynamic_cast<Property* >(obj));
 }
 
 /// Connect all objects together. Must be called after each graph modification.

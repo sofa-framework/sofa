@@ -343,6 +343,31 @@ void Quater<Real>::writeOpenGlMatrix(double *m) const
     m[3*4+3] = 1.0f;
 }
 
+/// Write an OpenGL rotation matrix
+template<class Real>
+void Quater<Real>::writeOpenGlMatrix(float *m) const
+{
+    m[0*4+0] = (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
+    m[1*4+0] = (2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
+    m[2*4+0] = (2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
+    m[3*4+0] = 0.0f;
+
+    m[0*4+1] = (2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
+    m[1*4+1] = (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
+    m[2*4+1] = (float) (2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
+    m[3*4+1] = 0.0f;
+
+    m[0*4+2] = (float) (2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
+    m[1*4+2] = (float) (2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
+    m[2*4+2] = (float) (1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
+    m[3*4+2] = 0.0f;
+
+    m[0*4+3] = 0.0f;
+    m[1*4+3] = 0.0f;
+    m[2*4+3] = 0.0f;
+    m[3*4+3] = 1.0f;
+}
+
 /// Given an axis and angle, compute quaternion.
 template<class Real>
 Quater<Real> Quater<Real>::axisToQuat(Vec3d a, Real phi)

@@ -27,6 +27,12 @@ public:
     Quater(Real x, Real y, Real z, Real w);
     Quater(Real q[]);
 
+    static Quater identity()
+    {
+        return Quater(0,0,0,1);
+    }
+
+
     /// Normalize a quaternion
     void normalize();
 
@@ -115,6 +121,7 @@ public:
 
     void buildRotationMatrix(Real m[4][4]);
     void writeOpenGlMatrix( double* m ) const;
+    void writeOpenGlMatrix( float* m ) const;
 
     //void buildRotationMatrix(MATRIX4x4 m);
 
