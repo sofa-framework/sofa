@@ -2,6 +2,7 @@
 #define SOFA_ABSTRACT_BASENODE_H
 
 #include "Base.h"
+#include "Sofa/Core/Context.h"
 
 namespace Sofa
 {
@@ -12,7 +13,7 @@ namespace Abstract
 class BaseObject;
 
 /// Base class for simulation nodes.
-class BaseNode : public virtual Base
+class BaseNode : public virtual Base, public Sofa::Core::Context
 {
 public:
     virtual ~BaseNode() {}
@@ -40,34 +41,6 @@ public:
 
     /// @}
 
-    /// @name Global Parameters
-    /// @{
-
-    /// Gravity vector as a pointer to 3 double
-    virtual const double* getGravity() const = 0;
-
-    /// Animation flag
-    virtual bool getAnimate() const = 0;
-
-    /// MultiThreading activated
-    virtual bool getMultiThreadSimulation() const = 0;
-
-    /// Display flags: Collision Models
-    virtual bool getShowCollisionModels() const = 0;
-
-    /// Display flags: Behavior Models
-    virtual bool getShowBehaviorModels() const = 0;
-
-    /// Display flags: Visual Models
-    virtual bool getShowVisualModels() const = 0;
-
-    /// Display flags: Mappings
-    virtual bool getShowMappings() const = 0;
-
-    /// Display flags: ForceFields
-    virtual bool getShowForceFields() const = 0;
-
-    /// @}
 };
 
 } // namespace Abstract

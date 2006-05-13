@@ -17,9 +17,9 @@ public:
     const Frame&  getFrame() const { return frame_; }
     void setFrame( const Frame& f ) { frame_=f; }
 
-    void updateProperties( Core::Properties& data )
+    void updateContext( Core::Context& data )
     {
-        data.worldTransform.multRight(frame_);
+        data.setWorldTransform( data.getWorldTransform().mult( frame_ ) );
     }
 protected:
     Frame frame_;

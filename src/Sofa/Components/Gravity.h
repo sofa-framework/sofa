@@ -17,7 +17,7 @@ public:
     const Vec3f&  getGravity() const { return gravity_; }
     void setGravity( const Vec3f& g ) { gravity_=g; }
 
-    void updateProperties( Core::Properties& data ) { data.gravity = gravity_; }
+    void updateContext( Core::Context& c ) { c.setGravity( gravity_ ); }
 protected:
     Vec3f gravity_;
 };

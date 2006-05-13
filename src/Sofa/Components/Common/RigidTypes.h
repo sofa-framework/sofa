@@ -113,7 +113,7 @@ public:
             return r;
         }
 
-        /// dot product
+        /// dot product (FF: WHAT????  )
         double operator*(const Coord& a) const
         {
             return center[0]*a.center[0]+center[1]*a.center[1]+center[2]*a.center[2]
@@ -145,13 +145,28 @@ public:
             orientation = orientation * c.getOrientation();
         }
 
+        /// compute the product with another frame on the right
+        Coord mult( const Coord& c ) const
+        {
+            Coord r;
+            r.center = center + orientation.rotate( c.center );
+            r.orientation = orientation * c.getOrientation();
+            return r;
+        }
+
         /// Write the OpenGL transformation matrix
-        void writeOpenGlMatrix( float m[16] )
+        void writeOpenGlMatrix( float m[16] ) const
         {
             orientation.writeOpenGlMatrix(m);
             m[12] = center[0];
             m[13] = center[1];
             m[14] = center[2];
+        }
+
+        /// compute the projection of a vector from the parent frame to the child
+        Vec3 vectorToChild( const Vec3& v ) const
+        {
+            return orientation.inverseRotate(v);
         }
     };
 

@@ -6,6 +6,11 @@
 namespace Sofa
 {
 
+namespace Core
+{
+class Context;
+}
+
 namespace Abstract
 {
 
@@ -15,19 +20,42 @@ class BaseObject : public virtual Base
 private:
     BaseNode* node;
 public:
-    BaseObject() : node(NULL) {}
-    virtual ~BaseObject() {}
+    BaseObject() : node(NULL)
+    {}
+    virtual ~BaseObject()
+    {}
 
-    void setNode(BaseNode* n) { node = n; }
-    BaseNode* getNode() { return node; }
-    const BaseNode* getNode() const { return node; }
+    void setNode(BaseNode* n)
+    {
+        node = n;
+    }
+    BaseNode* getNode()
+    {
+        return node;
+    }
+    const BaseNode* getNode() const
+    {
+        return node;
+    }
 
     /// Initialization method called after each graph modification.
-    virtual void init() { }
-};
+    virtual void init()
+    { }
+
+    /*	void setContext( Core::Context* c ){
+    	    context_=c;
+    	}*/
+    Core::Context* getContext()
+    {
+        return node;
+    }
+}
+;
 
 } // namespace Abstract
 
 } // namespace Sofa
 
 #endif
+
+

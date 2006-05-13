@@ -19,7 +19,7 @@
 #include "Sofa/Core/Topology.h"
 #include "Sofa/Core/OdeSolver.h"
 #include "Sofa/Core/Property.h"
-#include "TraversalAction.h"
+#include "Action.h"
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -80,69 +80,6 @@ public:
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual const BaseNode* getParent() const;
 
-    /// @name Global Parameters Getters
-    /// @{
-
-    /// Simulation timestep
-    virtual double getDt() const;
-
-    /// Gravity vector as a pointer to 3 double
-    virtual const double* getGravity() const;
-
-    /// Animation flag
-    virtual bool getAnimate() const;
-
-    /// MultiThreading activated
-    virtual bool getMultiThreadSimulation() const;
-
-    /// Display flags: Collision Models
-    virtual bool getShowCollisionModels() const;
-
-    /// Display flags: Behavior Models
-    virtual bool getShowBehaviorModels() const;
-
-    /// Display flags: Visual Models
-    virtual bool getShowVisualModels() const;
-
-    /// Display flags: Mappings
-    virtual bool getShowMappings() const;
-
-    /// Display flags: ForceFields
-    virtual bool getShowForceFields() const;
-
-    /// @}
-
-    /// @name Global Parameters Setters
-    /// @{
-
-    /// Simulation timestep
-    virtual void setDt(double val);
-
-    /// Gravity vector as a pointer to 3 double
-    virtual void setGravity(const double* val);
-
-    /// Animation flag
-    virtual void setAnimate(bool val);
-
-    /// MultiThreading activated
-    virtual void setMultiThreadSimulation(bool val);
-
-    /// Display flags: Collision Models
-    virtual void setShowCollisionModels(bool val);
-
-    /// Display flags: Behavior Models
-    virtual void setShowBehaviorModels(bool val);
-
-    /// Display flags: Visual Models
-    virtual void setShowVisualModels(bool val);
-
-    /// Display flags: Mappings
-    virtual void setShowMappings(bool val);
-
-    /// Display flags: ForceFields
-    virtual void setShowForceFields(bool val);
-
-    /// @}
 
     /// @name Actions and graph traversal
     /// @{
@@ -150,25 +87,6 @@ public:
     /// Execute a recursive action starting from this node
     virtual void execute(Action* action);
 
-    /// Execute a recursive action starting from this node using a parameter
-    void traverse(TraversalAction* action, Core::Properties p)
-    {
-        if(action->traverseNodeTopDown(this,p) != TraversalAction::RESULT_PRUNE)
-        {
-            for(ChildIterator it = child.begin(); it != child.end(); ++it)
-            {
-                (*it)->traverse(action,p);
-            }
-        }
-        action->traverseNodeBottomUp(this,p);
-    }
-    /// Execute a recursive traversal starting from this node
-    template<class Traversal>
-    void traverse( Core::Properties p =Core::Properties::getDefault() )
-    {
-        Traversal action;
-        traverse(&action, p);
-    }
 
 
     /// Execute a recursive action starting from this node
@@ -364,28 +282,6 @@ public:
 
 protected:
 
-    /// Global properties
-    class Properties
-    {
-    public:
-        Properties();
-        static Properties defaultProperties;
-        double dt;
-        double gravity[3];
-        bool animate;
-        bool showCollisionModels;
-        bool showBehaviorModels;
-        bool showVisualModels;
-        bool showMappings;
-        bool showForceFields;
-        bool multiThreadSimulation;
-    };
-
-    Single<Properties> properties;
-
-    const Properties* searchProperties() const;
-
-    Properties* newProperties();
 
 };
 
