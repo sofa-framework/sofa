@@ -1,11 +1,11 @@
 
-#ifndef	SOFA_CORE_Properties_h
-#define	SOFA_CORE_Properties_h
+#ifndef	SOFA_CORE_Context_h
+#define	SOFA_CORE_Context_h
 
 #include <iostream>
 using std::endl;
 #include "Sofa/Components/Common/Vec.h"
-#include <Sofa/Components/Common/RigidTypes.h>
+#include <Sofa/Components/Common/Frame.h>
 
 
 namespace Sofa
@@ -19,8 +19,9 @@ class Context
 
 public:
     typedef Components::Common::Vec3f Vec;
-    typedef Sofa::Components::Common::RigidTypes::Coord Frame;
-    virtual ~Context() {}
+    typedef Components::Common::Frame Frame;
+    virtual ~Context()
+    {}
 
 
     /// @name Getters
@@ -29,15 +30,16 @@ public:
     virtual const Vec& getGravity() const;
 
     /// Projection from the local coordinate system to the world coordinate system
-    virtual const Frame& getWorldTransform() const;
+    virtual const Frame& getLocalToWorld() const;
+
+    /// Projection from the world coordinate system to the local coordinate system
+    virtual const Frame& getWorldToLocal() const;
 
     /// Simulation timestep
     virtual float getDt() const;
 
-
     /// Animation flag
     virtual bool getAnimate() const;
-
 
     /// MultiThreading activated
     virtual bool getMultiThreadSimulation() const;
@@ -64,8 +66,13 @@ public:
 
     /// Gravity in local coordinates
     virtual void setGravity( const Vec& g );
+
     /// Projection from the local frame to the world frame
-    virtual void setWorldTransform( const Frame& f );
+    virtual void setLocalToWorld( const Frame& f );
+
+    /// Projection from the local frame to the world frame
+    virtual void setWorldToLocal( const Frame& f );
+
     /// Simulation timestep
     virtual void setDt( float dt );
 
@@ -94,27 +101,16 @@ public:
     /// @}
 
 
-    void copyContextFrom( const Context* f )
-    {
-        *this = *f;
-    }
-    static Context getDefault()
-    {
-        Context d;
-        d.setGravity( Vec(0,-9.81,0) );
-        d.setWorldTransform( Frame::identity() );
-        return d;
-    }
+    void copyContextFrom( const Context* f );
 
-    inline friend std::ostream& operator << (std::ostream& out, const Context& c )
-    {
-        out<<endl<<"gravity = "<<c.getGravity();
-        out<<endl<<"worldTransform = "<<c.getWorldTransform();
-        return out;
-    }
+    static Context getDefault();
+
+    friend std::ostream& operator << (std::ostream& out, const Context& c );
+
 private:
     Vec gravity_;
-    Frame worldTransform_;
+    Frame localToWorld_;
+    Frame worldToLocal_;
     float dt_;
     bool animate_;
     bool showCollisionModels_;
@@ -129,5 +125,4 @@ private:
 }//Sofa
 
 #endif
-
 

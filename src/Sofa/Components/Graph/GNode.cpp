@@ -22,6 +22,12 @@ GNode::GNode(const std::string& name)
     setName(name);
 }
 
+GNode::GNode(const std::string& name, GNode* parent)
+{
+    setName(name);
+    parent->addChild(this);
+}
+
 /// Add a child node
 void GNode::addChild(GNode* node)
 {
@@ -36,10 +42,16 @@ void GNode::removeChild(GNode* node)
     node->parent.remove(this);
 }
 
+Sofa::Core::Context* GNode::getParentContext()
+{
+    return dynamic_cast<GNode*>(&(*parent));
+    // uglyssimo! and could be more efficient
+}
+
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 void GNode::addObject(BaseObject* obj)
 {
-    obj->setNode(this);
+    obj->setContext(this);
     object.add(obj);
     mechanicalModel.add(dynamic_cast< BasicMechanicalModel* >(obj));
     if (!mechanicalMapping.add(dynamic_cast< BasicMechanicalMapping* >(obj)))
@@ -53,15 +65,15 @@ void GNode::addObject(BaseObject* obj)
     behaviorModel.add(dynamic_cast< BehaviorModel* >(obj));
     visualModel.add(dynamic_cast< VisualModel* >(obj));
     collisionModel.add(dynamic_cast< CollisionModel* >(obj));
-    property.add(dynamic_cast<Property* >(obj));
+    contextObject.add(dynamic_cast<ContextObject* >(obj));
 }
 
 /// Remove an object
 void GNode::removeObject(BaseObject* obj)
 {
-    if (obj->getNode()==this)
+    if (obj->getContext()==this)
     {
-        obj->setNode(NULL);
+        obj->setContext(NULL);
     }
     object.remove(obj);
     mechanicalModel.remove(dynamic_cast< BasicMechanicalModel* >(obj));
@@ -76,7 +88,7 @@ void GNode::removeObject(BaseObject* obj)
     behaviorModel.remove(dynamic_cast< BehaviorModel* >(obj));
     visualModel.remove(dynamic_cast< VisualModel* >(obj));
     collisionModel.remove(dynamic_cast< CollisionModel* >(obj));
-    property.remove(dynamic_cast<Property* >(obj));
+    contextObject.remove(dynamic_cast<ContextObject* >(obj));
 }
 
 

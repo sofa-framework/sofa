@@ -1,8 +1,8 @@
 #ifndef SOFA_COMPONENTS_GRAVITY_H
 #define SOFA_COMPONENTS_GRAVITY_H
 
-#include <Sofa/Core/Property.h>
 #include <Sofa/Components/Common/Vec.h>
+#include <Sofa/Components/Graph/GNode.h>
 
 namespace Sofa
 {
@@ -11,15 +11,17 @@ namespace Components
 {
 using Common::Vec3f;
 
-class Gravity : public Core::Property
+class Gravity : public Components::Graph::ContextObject
 {
+    typedef Common::Vec3f Vec3;
 public:
-    const Vec3f&  getGravity() const { return gravity_; }
-    void setGravity( const Vec3f& g ) { gravity_=g; }
+    Gravity( std::string name, Components::Graph::GNode* gn ):ContextObject(name,gn) { gn->addObject(this); }
+    const Vec3&  getGravity() const { return gravity_; }
+    void setGravity( const Vec3& g ) { gravity_=g; }
 
-    void updateContext( Core::Context& c ) { c.setGravity( gravity_ ); }
+    void apply() { getContext()->setGravity( gravity_ ); }
 protected:
-    Vec3f gravity_;
+    Vec3 gravity_;
 };
 
 } // namespace Components

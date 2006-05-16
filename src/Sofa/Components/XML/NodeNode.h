@@ -2,6 +2,7 @@
 #define SOFA_COMPONENTS_XML_NODENODE_H
 
 #include "Node.h"
+#include <Sofa/Abstract/BaseNode.h>
 #include "Sofa/Core/ForceField.h"
 
 namespace Sofa

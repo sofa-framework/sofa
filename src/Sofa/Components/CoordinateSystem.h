@@ -1,8 +1,10 @@
-#ifndef SOFA_COMPONENTS_CoordinateSystem_H
+#ifndef SOFA_COMPONENTS_FrameinateSystem_H
 #define SOFA_COMPONENTS_CoordinateSystem_H
 
-#include <Sofa/Core/Property.h>
+#include <Sofa/Abstract/BaseObject.h>
 #include <Sofa/Components/Common/RigidTypes.h>
+#include <Sofa/Components/Graph/GNode.h>
+#include <Sofa/Components/Common/Frame.h>
 
 namespace Sofa
 {
@@ -10,17 +12,24 @@ namespace Sofa
 namespace Components
 {
 
-class CoordinateSystem : public Core::Property
+
+
+class CoordinateSystem : public Abstract::ContextObject
 {
 public:
-    typedef Sofa::Components::Common::RigidTypes::Coord Frame;
-    const Frame&  getFrame() const { return frame_; }
-    void setFrame( const Frame& f ) { frame_=f; }
+    typedef Common::Frame Frame;
+    typedef Common::Vec3f Vec3;
+    typedef Common::Quatf Quat;
 
-    void updateContext( Core::Context& data )
-    {
-        data.setWorldTransform( data.getWorldTransform().mult( frame_ ) );
-    }
+    virtual void apply();
+    CoordinateSystem(std::string name, Graph::GNode* n);
+    virtual ~CoordinateSystem() {}
+
+
+    const Frame&  getFrame() const;
+    void setFrame( const Frame& f );
+    void setFrame( const Vec3& translation, const Quat& rotation, const Vec3& scale=Vec3(1,1,1) );
+
 protected:
     Frame frame_;
 };
@@ -30,5 +39,4 @@ protected:
 } // namespace Sofa
 
 #endif
-
 

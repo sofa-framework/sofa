@@ -26,6 +26,7 @@ public:
     virtual ~Quater();
     Quater(Real x, Real y, Real z, Real w);
     Quater(Real q[]);
+    Quater( const Vec<3,Real>& axis, Real angle );
 
     static Quater identity()
     {
@@ -163,6 +164,7 @@ public:
 };
 
 typedef Quater<double> Quat; ///< alias
+typedef Quater<float> Quatf; ///< alias
 typedef Quater<double> Quaternion; ///< alias
 
 } // namespace Common

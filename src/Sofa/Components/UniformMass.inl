@@ -3,6 +3,7 @@
 
 #include "UniformMass.h"
 #include "Scene.h"
+#include <Sofa/Core/Context.h>
 #include "GL/template.h"
 #include "Common/RigidTypes.h"
 #include <iostream>
@@ -76,7 +77,7 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::computeForce()
 {
     VecDeriv& f = *mmodel->getF();
-    Core::Context::Vec g = getContext()->getGravity();
+    Core::Context::Vec g = this->getContext()->getGravity();
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass;

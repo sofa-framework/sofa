@@ -267,7 +267,7 @@ public:
     }
 
     /// Multiplication operator Matrix * Column.
-    Col operator*(const Line& v) const
+    Col operator*(const Col& v) const
     {
         Col r;
         for(int i=0; i<L; i++)
@@ -278,6 +278,21 @@ public:
         }
         return r;
     }
+
+    /// Multiplication of the transposed matrix * line
+    Line multTranspose(const Line& v) const
+    {
+        Line r;
+        for(int i=0; i<C; i++)
+        {
+            r[i]=(*this)[0][i] * v[0];
+            for(int j=1; j<L; j++)
+                r[i] += (*this)[j][i] * v[j];
+        }
+        return r;
+    }
+
+
 
     /// Scalar multiplication operator.
     Mat<L,C,real> operator*(real f) const

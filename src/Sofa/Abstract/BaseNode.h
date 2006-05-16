@@ -2,7 +2,6 @@
 #define SOFA_ABSTRACT_BASENODE_H
 
 #include "Base.h"
-#include "Sofa/Core/Context.h"
 
 namespace Sofa
 {
@@ -13,7 +12,7 @@ namespace Abstract
 class BaseObject;
 
 /// Base class for simulation nodes.
-class BaseNode : public virtual Base, public Sofa::Core::Context
+class BaseNode : public virtual Base
 {
 public:
     virtual ~BaseNode() {}

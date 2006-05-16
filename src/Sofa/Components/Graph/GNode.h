@@ -5,10 +5,12 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Sofa/Abstract/BaseObject.h"
+//#include "Sofa/Abstract/BaseObject.h"
+#include "Sofa/Abstract/BaseNode.h"
 #include "Sofa/Abstract/BehaviorModel.h"
 #include "Sofa/Abstract/CollisionModel.h"
 #include "Sofa/Abstract/VisualModel.h"
+#include "Sofa/Core/Context.h"
 #include "Sofa/Core/MechanicalModel.h"
 #include "Sofa/Core/Mapping.h"
 #include "Sofa/Core/MechanicalMapping.h"
@@ -18,7 +20,7 @@
 #include "Sofa/Core/Constraint.h"
 #include "Sofa/Core/Topology.h"
 #include "Sofa/Core/OdeSolver.h"
-#include "Sofa/Core/Property.h"
+//#include "Sofa/Components/Graph/Property.h"
 #include "Action.h"
 #include <iostream>
 using std::cout;
@@ -26,6 +28,10 @@ using std::endl;
 
 namespace Sofa
 {
+namespace Abstract
+{
+class BaseObject;
+}
 
 namespace Components
 {
@@ -38,12 +44,14 @@ using namespace Core;
 
 class Action;
 
-class GNode : public BaseNode
+class GNode : public BaseNode, public Sofa::Core::Context
 {
 public:
     GNode();
 
     GNode(const std::string& name);
+
+    GNode( const std::string& name, GNode* parent  );
 
     virtual ~GNode();
 
@@ -79,6 +87,9 @@ public:
 
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual const BaseNode* getParent() const;
+
+    /// Get the context of the parent, if the parent exists and is a Context
+    Context* getParentContext();
 
 
     /// @name Actions and graph traversal
@@ -273,7 +284,7 @@ public:
     Sequence<ForceField> forceField;
     Sequence<InteractionForceField> interactionForceField;
     Sequence<Constraint> constraint;
-    Sequence<Property> property;
+    Sequence<ContextObject> contextObject;
 
     Sequence<BasicMapping> mapping;
     Sequence<BehaviorModel> behaviorModel;
@@ -281,6 +292,7 @@ public:
     Sequence<CollisionModel> collisionModel;
 
 protected:
+    //Context* parentContext_;
 
 
 };
