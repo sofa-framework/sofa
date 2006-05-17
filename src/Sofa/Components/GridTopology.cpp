@@ -119,6 +119,55 @@ GridTopology::Cube GridTopology::getCube(int x, int y, int z)
             point(x  ,y+1,z+1),point(x+1,y+1,z+1));
 }
 
+
+
+GridTopology::Quad GridTopology::getQuad(int i)
+{
+    if (nx == 1)
+    {
+        int y = i%(ny-1);
+        i/=(ny-1);
+        int z = i%(nz-1);
+
+        return getQuad(1,y,z);
+    }
+    else if (ny == 1)
+    {
+        int x = i%(nx-1);
+        i/=(nx-1);
+        int z = i%(nz-1);
+
+        return getQuad(x,1,z);
+    }
+    else
+    {
+        int x = i%(nx-1);
+        i/=(nx-1);
+        int y = i%(ny-1);
+
+        return getQuad(x,y,1);
+    }
+}
+
+GridTopology::Quad GridTopology::getQuad(int x, int y, int z)
+{
+    /*
+    	if (x == -1)
+    		return make_array(point(1, y, z),point(1, y+1, z),
+    			point(1, y+1, z+1),point(1, y, z+1));
+
+    	else if (y == -1)
+    		return make_array(point(x, 1, z),point(x+1, 1, z),
+    			point(x+1, 1, z+1),point(x, 1, z+1));
+
+    	else
+    		return make_array(point(x, y, 1),point(x+1, y, 1),
+    			point(x+1, y+1, 1),point(x, y+1, 1));
+    */
+    return make_array(point(x, y, 1),point(x+1, y, 1),
+            point(x+1, y+1, 1),point(x, y+1, 1));
+}
+
 } // namespace Components
 
 } // namespace Sofa

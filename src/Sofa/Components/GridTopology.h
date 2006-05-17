@@ -27,8 +27,22 @@ public:
     int getNbPoints() const { return nx*ny*nz; }
 
     int getNbCubes() const { return (nx-1)*(ny-1)*(nz-1); }
+
+    int getNbQuads() const
+    {
+        if (nz == 1)
+            return (nx-1)*(ny-1);
+        else if (ny == 1)
+            return (nx-1)*(nz-1);
+        else
+            return (ny-1)*(nz-1);
+    }
+
     Cube getCube(int i);
     Cube getCube(int x, int y, int z);
+
+    Quad getQuad(int i);
+    Quad getQuad(int x, int y, int z);
 
     int point(int x, int y, int z) const { return x+nx*(y+ny*z); }
     int cube(int x, int y, int z) const { return x+(nx-1)*(y+(ny-1)*z); }
