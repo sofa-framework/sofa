@@ -19,17 +19,17 @@
 			<MechanicalModel type="Vec3d" name="Points"/>
 			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
-			<Mapping type="RigidMapping" filename="VisualModels/smCube27.obj" object1=".." object2="Visual" />
-			<!--<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
-			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />-->
+			<Mapping type="RigidMapping" object1=".." object2="Visual" />
+			<CollisionModel type="Triangle" name="Surf" filename="VisualModels/smCube27.obj" />
+			<Mapping type="RigidMapping" object1=".." object2="Surf" />
 			<Trans dx="0" dy="0" dz="-10.5" />
 		</DynamicModel>
 		<DynamicModel type="MassObject" name="M3" filename="BehaviorModels/smCube27.xs3">
 			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="red" />
 			<Mapping type="IdentityMapping" object1=".." object2="Visual" color="red" />
-			<!--<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27.sph" />
-			<Mapping type="IdentityMapping" object1=".." object2="Surf" />-->
+			<CollisionModel type="Triangle" name="Surf" filename="VisualModels/smCube27.obj" />
+			<Mapping type="IdentityMapping" object1=".." object2="Surf" />
 		</DynamicModel>
 		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2/Points" />
 		<InteractionForceField type="StiffSpringForceField" name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="M2/Points" object2="M3" />
@@ -41,16 +41,16 @@
 				<Mapping type="IdentityMapping" object1=".." object2="Visual" />
 			</MechanicalModel>
 			<Mapping type="RigidMapping" filename="BehaviorModels/smCube27.xs3" object1=".." object2="Points" />
-			<!--<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27b.sph" />
-			<Mapping type="RigidMapping" filename="CollisionModels/smCube27b.sph" object1=".." object2="Surf" />-->
+			<CollisionModel type="Triangle" name="Surf" filename="VisualModels/smCube27.obj" />
+			<Mapping type="RigidMapping" object1=".." object2="Surf" />
 			<Trans dx="0" dy="0" dz="10.5" />
 		</DynamicModel>
 		<DynamicModel type="MassObject" name="M5" filename="BehaviorModels/smCube27.xs3">
 			<ForceField type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3" />
 			<VisualModel type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="cyan" />
 			<Mapping type="IdentityMapping" object1=".." object2="Visual" />
-			<!--<CollisionModel type="Sphere" name="Surf" filename="CollisionModels/smCube27.sph" />
-			<Mapping type="IdentityMapping" object1=".." object2="Surf" />-->
+			<CollisionModel type="Triangle" name="Surf" filename="VisualModels/smCube27.obj" />
+			<Mapping type="IdentityMapping" object1=".." object2="Surf" />
 			<Trans dx="0" dy="0" dz="21.0" />
 		</DynamicModel>
 		<DynamicModel type="RigidObject" name="M6" filename="BehaviorModels/rigid.xs3">
