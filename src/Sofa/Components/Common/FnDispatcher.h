@@ -4,7 +4,7 @@
 #include <map>
 #include <typeinfo>
 
-#include "Collision/DetectionOutput.h"
+#include "Sofa/Components/Collision/DetectionOutput.h"
 #include "Sofa/Abstract/CollisionElement.h"
 
 namespace Sofa

@@ -1,12 +1,11 @@
 include(../../../sofa.cfg)
 TEMPLATE = $$TEMPLATEAPPPROJECT
-CONFIG =  $$CONFIGPROJECT \
-          warn_on \
-          $$CONFIGDEBUG
+CONFIG += $$CONFIGPROJECT \
+          warn_on
 
 DESTDIR = . # ../../bin
 TARGET = example1
-OBJECTS_DIR = ./OBJ
+OBJECTS_DIR = OBJ/$$CONFIGDEBUG
 INCLUDEPATH = ../..
 INCLUDEPATH += ../../../include
 DEPENDPATH = ../..
@@ -15,6 +14,7 @@ HEADERS =
 
 contains (DEFINES, SOFA_GUI_QT) {
 CONFIG += qt
+QT += opengl qt3support
 }
 
 win32{
@@ -26,11 +26,11 @@ win32{
 	LIBS += -lSofaGUIQT
   }
   contains (CONFIGPROJECT, vc7) {
-	contains (CONFIGPROJECT, debug) {
-	  	LIBS += -NODEFAULTLIB:libcd 	
+	contains (CONFIGDEBUG, debug) {
+	  	LIBS += /NODEFAULTLIB:libcd 	
 	}	
-	contains (CONFIGPROJECT, release) {
-	  	LIBS += -NODEFAULTLIB:libc -NODEFAULTLIB:MSVCRTD
+	contains (CONFIGDEBUG, release) {
+	  	LIBS += /NODEFAULTLIB:libc /NODEFAULTLIB:MSVCRTD
 	}
   }
   QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY

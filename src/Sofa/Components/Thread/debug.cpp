@@ -44,7 +44,7 @@ void Trace::checkGL(const char *)
 
 }
 
-void Trace::checkGL(const char */*chaine*/, const char */*ch2*/,int /*d*/)
+void Trace::checkGL(const char * /*chaine*/, const char * /*ch2*/,int /*d*/)
 {
 
 }

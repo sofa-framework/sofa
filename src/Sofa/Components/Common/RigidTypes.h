@@ -158,9 +158,9 @@ public:
         void writeOpenGlMatrix( float m[16] ) const
         {
             orientation.writeOpenGlMatrix(m);
-            m[12] = center[0];
-            m[13] = center[1];
-            m[14] = center[2];
+            m[12] = (float)center[0];
+            m[13] = (float)center[1];
+            m[14] = (float)center[2];
         }
 
         /// compute the projection of a vector from the parent frame to the child

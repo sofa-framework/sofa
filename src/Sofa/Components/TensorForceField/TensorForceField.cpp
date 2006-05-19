@@ -1,8 +1,8 @@
 #include "TensorForceField.h"
 
-#include "Scene.h"
-#include "XML/DynamicNode.h"
-#include "XML/ForceFieldNode.h"
+#include "Sofa/Components/Scene.h"
+#include "Sofa/Components/XML/DynamicNode.h"
+#include "Sofa/Components/XML/ForceFieldNode.h"
 
 #include <GL/gl.h>
 
@@ -631,7 +631,7 @@ void TensorForceField<DataTypes>::addElasticTensors(Tetrahedron& tetra)
 
 } // namespace Sofa
 
-#include "Common/Vec3Types.h"
+#include "Sofa/Components/Common/Vec3Types.h"
 
 namespace Sofa
 {

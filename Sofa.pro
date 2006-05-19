@@ -1,2 +1,5 @@
+# message(Original config is $$CONFIG)
+include(sofa.cfg)
 SUBDIRS += src
-TEMPLATE = subdirs
+TEMPLATE = $$TEMPLATESUBDIRS
+# message(Final config is $$CONFIG)
