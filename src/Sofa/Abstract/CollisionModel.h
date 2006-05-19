@@ -45,6 +45,8 @@ public:
 
     virtual void computeBoundingBox() {}
 
+    virtual void computeContinueBoundingBox() {}
+
     virtual BehaviorModel* getObject() = 0;
 
     CollisionModel* getFirst()

@@ -1,5 +1,6 @@
 #include "VoxelGrid.h"
 #include "Sphere.h"
+#include "Triangle.h"
 #include "Scene.h"
 #include "Common/FnDispatcher.h"
 #include "XML/CollisionDetectionNode.h"
@@ -237,7 +238,6 @@ void VoxelGrid::draw()
     glVertex3d (minVect[0], minVect[1], maxVect[2]);
 
     glEnd();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     for(i = 0; i < (int) nbSubdiv[0]; i++)
     {
@@ -255,6 +255,7 @@ void VoxelGrid::draw()
     {
         glDisable(GL_LIGHTING);
         glColor3f(1.0, 0.0, 1.0);
+        glLineWidth(3);
         //std::cout << "Size : " << elemPairs.size() << std::endl;
         for (; it != itEnd; it++)
         {
@@ -264,6 +265,11 @@ void VoxelGrid::draw()
             if (s!=NULL) s->draw();
             s = dynamic_cast<Sphere*>(it->second);
             if (s!=NULL) s->draw();
+            Triangle *t;
+            t = dynamic_cast<Triangle*>(it->first);
+            if (t!=NULL) t->draw();
+            t = dynamic_cast<Triangle*>(it->second);
+            if (t!=NULL) t->draw();
             /* Sphere *sph = (*it)->first->getSphere();
             Sphere *sph1 = (*it)->second->getSphere();
             glPushMatrix();
@@ -277,7 +283,9 @@ void VoxelGrid::draw()
             //(*it)->getCollisionElement(0)->getSphere()->draw();
             //(*it)->getCollisionElement(1)->getSphere()->draw();
         }
+        glLineWidth(1);
     }
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void GridCell::add(CollisionElement *collisionElem, std::set<CollisionElement*> &vectCollis, int phase)
@@ -287,8 +295,18 @@ void GridCell::add(CollisionElement *collisionElem, std::set<CollisionElement*> 
     std::vector < CollisionElement* >	::iterator it	 = collisElems.begin();
     std::vector < CollisionElement* >	::iterator itEnd = collisElems.end();
 
+    Vector3 minBBox1, maxBBox1;
+    //Vector3 minBBox2, maxBBox2;
+    //collisionElem->getBBox(minBBox1, maxBBox1);
+
     for (; it < itEnd; it++)
     {
+        if ((*collisionElem).isSelfCollis(*it)) continue;
+        //(*it)->getBBox(minBBox2, maxBBox2);
+        //if (minBBox1[0] > maxBBox2[0] || minBBox2[0] > maxBBox1[0]
+        // || minBBox1[1] > maxBBox2[1] || minBBox2[1] > maxBBox1[1]
+        // || minBBox1[2] > maxBBox2[2] || minBBox2[2] > maxBBox1[2]) continue;
+
         if (intersectionDis->intersection(*collisionElem, *(*it)))
             vectCollis.insert(*it);
     }
@@ -298,6 +316,11 @@ void GridCell::add(CollisionElement *collisionElem, std::set<CollisionElement*> 
 
     for (; itImmo < itImmoEnd; itImmo++)
     {
+        if ((*collisionElem).isSelfCollis(*itImmo)) continue;
+        //(*itImmo)->getBBox(minBBox2, maxBBox2);
+        //if (minBBox1[0] > maxBBox2[0] || minBBox2[0] > maxBBox1[0]
+        // || minBBox1[1] > maxBBox2[1] || minBBox2[1] > maxBBox1[1]
+        // || minBBox1[2] > maxBBox2[2] || minBBox2[2] > maxBBox1[2]) continue;
         if (intersectionDis->intersection(*collisionElem, *(*itImmo)))
             vectCollis.insert(*itImmo);
     }
@@ -344,7 +367,7 @@ void GridCell::draw (int timeStampMethod)
         glColor3f (1.0, 0.0, 1.0);
     }
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glBegin(GL_QUADS);
     glVertex3d (minCell[0], minCell[1], minCell[2]);
@@ -368,7 +391,7 @@ void GridCell::draw (int timeStampMethod)
     glVertex3d (minCell[0], minCell[1], maxCell[2]);
 
     glEnd();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 } // namespace Components

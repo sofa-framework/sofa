@@ -1,7 +1,7 @@
 #include "Common/FnDispatcher.h"
 #include "Common/config.h"
 #include "Intersection.h"
-//#include "ContinuousTriangleIntersection.h"
+#include "ContinuousTriangleIntersection.h"
 
 #include <iostream>
 #include <algorithm>
@@ -27,37 +27,15 @@ Intersection::Intersection()
     FnCollisionDetection::Add<Cube,Cube,intersectionCubeCube,false>();
     FnCollisionDetection::Add<Sphere,Sphere,intersectionSphereSphere,false>();
     //FnCollisionDetection::Add<Sphere,Triangle,intersectionSphereTriangle,true>();
-    //FnCollisionDetection::Add<Triangle,Triangle,intersectionSphereSphere,false>();
+    FnCollisionDetection::Add<Triangle, Triangle, intersectionTriangleTriangle, false>();
     FnCollisionDetection::Add<Sphere,Ray,intersectionSphereRay,true>();
 
     //FnCollisionDetectionOutput::Add<Cube,Cube,distCorrectionCubeCube,false>();
     FnCollisionDetectionOutput::Add<Sphere,Sphere,distCorrectionSphereSphere,false>();
     FnCollisionDetectionOutput::Add<Sphere,Ray,distCorrectionSphereRay,true>();
     //FnCollisionDetectionOutput::Add<Sphere,Triangle,distCorrectionSphereTriangle,true>();
-    //FnCollisionDetectionOutput::Add<Triangle,Triangle,distCorrectionSphereSphere,false>();
+    FnCollisionDetectionOutput::Add<Triangle, Triangle, distCorrectionTriangleTriangle, false>();
 }
-
-/*
-static void projectOntoAxis (const Triangle rkTri, const Vector3& rkAxis, double& rfMin, double& rfMax)
-{
-	double fDot0 = rkAxis.Dot(*rkTri.p1);
-    double fDot1 = rkAxis.Dot(*rkTri.p2);
-    double fDot2 = rkAxis.Dot(*rkTri.p3);
-
-    rfMin = fDot0;
-    rfMax = rfMin;
-
-    if ( fDot1 < rfMin )
-        rfMin = fDot1;
-    else if ( fDot1 > rfMax )
-        rfMax = fDot1;
-
-    if ( fDot2 < rfMin )
-        rfMin = fDot2;
-    else if ( fDot2 > rfMax )
-        rfMax = fDot2;
-}
-*/
 
 bool intersectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
 {
@@ -78,12 +56,6 @@ bool intersectionCubeCube(Cube &cube1, Cube &cube2)
     const Vector3& maxVect2 = cube2.maxVect();
     for (int i=0; i<3; i++)
     {
-        // Why so complicated?
-        //if (!((((minVect1[i] >= minVect2[i]) && (minVect1[i] <= maxVect2[i]))
-        //	|| ((maxVect1[i] >= minVect2[i]) && (maxVect1[i] <= maxVect2[i])))
-        //	|| (((minVect2[i] >= minVect1[i]) && (minVect2[i] <= maxVect1[i]))
-        //	|| ((maxVect2[i] >= minVect1[i]) && (maxVect2[i] <= maxVect1[i])))))
-
         if (minVect1[i] > maxVect2[i] || minVect2[i] > maxVect1[i])
             return false;
     }
@@ -114,91 +86,13 @@ bool intersectionSphereTriangle(Sphere &, Triangle &)
 	std::cout<<"Collision between Sphere - Triangle"<<std::endl;
 	return false;
 }
-
+*/
 bool intersectionTriangleTriangle (Triangle& t1, Triangle& t2)
 {
-	 Vector3 akE0[3](
-	 	*(t1.p2) - *(t1.p1),
-        *(t1.p3) - *(t1.p2),
-        *(t1.p1) - *(t1.p3)
-    );
+    ContinuousTriangleIntersection intersectionT(t1, t2);
 
-    // get normal vector of triangle0
-	 Vector3 kN0 = akE0[0].UnitCross(akE0[1]);
-
-    // project triangle1 onto normal line of triangle0, test for separation
-    double fN0dT0V0 = kN0.Dot(*(t1.p1));
-    double fMin1, fMax1;
-    projectOntoAxis(t2, kN0, fMin1, fMax1);
-    if ( fN0dT0V0 < fMin1 || fN0dT0V0 > fMax1 )
-        return false;
-
-    // get edge vectors for triangle1
-    Vector3 akE1[3] =
-    {
-        *(t2.p2) - *(t2.p1),
-        *(t2.p3) - *(t2.p2),
-        *(t2.p1) - *(t2.p3)
-    };
-
-    // get normal vector of triangle1
-    Vector3 kN1 = akE1[0].UnitCross(akE1[1]);
-
-    Vector3 kDir;
-    double fMin0, fMax0;
-    int i0, i1;
-
-    Vector3 kN0xN1 = kN0.UnitCross(kN1);
-    if ( kN0xN1.Dot(kN0xN1) >= 1e-08 )
-    {
-        // triangles are not parallel
-
-        // Project triangle0 onto normal line of triangle1, test for
-        // separation.
-        double fN1dT1V0 = kN1.Dot(*t2.p1);
-        projectOntoAxis(t1, kN1, fMin0, fMax0);
-        if ( fN1dT1V0 < fMin0 || fN1dT1V0 > fMax0 )
-            return false;
-
-        // directions E0[i0]xE1[i1]
-        for (i1 = 0; i1 < 3; i1++)
-        {
-            for (i0 = 0; i0 < 3; i0++)
-            {
-                kDir = akE0[i0].UnitCross(akE1[i1]);
-                projectOntoAxis(t1, kDir, fMin0, fMax0);
-                projectOntoAxis(t2, kDir, fMin1, fMax1);
-                if ( fMax0 < fMin1 || fMax1 < fMin0 )
-                    return false;
-            }
-        }
-    }
-    else  // triangles are parallel (and, in fact, coplanar)
-    {
-        // directions N0xE0[i0]
-        for (i0 = 0; i0 < 3; i0++)
-        {
-            kDir = kN0.UnitCross(akE0[i0]);
-            projectOntoAxis(t1, kDir, fMin0, fMax0);
-            projectOntoAxis(t2, kDir, fMin1, fMax1);
-            if ( fMax0 < fMin1 || fMax1 < fMin0 )
-                return false;
-        }
-
-        // directions N1xE1[i1]
-        for (i1 = 0; i1 < 3; i1++)
-        {
-            kDir = kN1.UnitCross(akE1[i1]);
-            projectOntoAxis(t1, kDir, fMin0, fMax0);
-            projectOntoAxis(t2, kDir, fMin1, fMax1);
-            if ( fMax0 < fMin1 || fMax1 < fMin0 )
-                return false;
-        }
-    }
-	return true;
-	//return false;
+    return intersectionT.isCollision();
 }
-*/
 
 DetectionOutput* distCorrectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
 {
@@ -248,15 +142,15 @@ DetectionOutput* distCorrectionSphereTriangle(Sphere &, Triangle &)
 	std::cout<<"Distance correction between Sphere - Triangle"<<std::endl;
 	return new DetectionOutput();
 }
-
+*/
 DetectionOutput* distCorrectionTriangleTriangle (Triangle &t1, Triangle &t2)
 {
-	ContinuousTriangleIntersection intersectionT(t1, t2);
+    ContinuousTriangleIntersection intersectionT(t1, t2);
 
-	//std::cout<<"Distance correction between Triangle - Triangle"<<std::endl;
-	return intersectionT.computeDetectionOutput(); //new DetectionOutput();
+    //std::cout<<"Distance correction between Triangle - Triangle"<<std::endl;
+    return intersectionT.computeDetectionOutput(); // new DetectionOutput();
 }
-*/
+
 
 } // namespace Intersections
 

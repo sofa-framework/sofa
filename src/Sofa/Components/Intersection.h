@@ -4,7 +4,7 @@
 #include "Sofa/Abstract/CollisionModel.h"
 #include "Collision/DetectionOutput.h"
 #include "Sphere.h"
-//#include "Triangle.h"
+#include "Triangle.h"
 #include "Cube.h"
 #include "Ray.h"
 
@@ -24,13 +24,13 @@ bool intersectionCubeCube(Cube& ,Cube&);
 
 bool intersectionSphereSphere(Sphere & ,Sphere &);
 //bool intersectionSphereTriangle(Sphere &, Triangle &);
-//bool intersectionTriangleTriangle(Triangle& ,Triangle&);
+bool intersectionTriangleTriangle(Triangle& ,Triangle&);
 bool intersectionSphereRay(Sphere & ,Ray &);
 
 Collision::DetectionOutput* distCorrectionSphereSphere(Sphere & ,Sphere &);
 Collision::DetectionOutput* distCorrectionSphereRay(Sphere & ,Ray &);
 //Collision::DetectionOutput* distCorrectionSphereTriangle(Sphere &, Triangle &);
-//Collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle& ,Triangle&);
+Collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle& ,Triangle&);
 
 class Intersection
 {

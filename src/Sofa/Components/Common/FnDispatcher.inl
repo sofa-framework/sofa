@@ -23,9 +23,6 @@ BasicDispatcher<BaseClass, ResulT>::~BasicDispatcher()
 template <class BaseClass, typename ResulT>
 ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& arg1, BaseClass& arg2)
 {
-    // commented by Sylvere F.
-    // TODO : search where are the errors for gettypename
-    // error : operator << not found for right value type std::string
     std::cerr << "ERROR DISPATCH ("
             << gettypename(typeid(arg1)) << ", "
             << gettypename(typeid(arg2)) << ")\n";
