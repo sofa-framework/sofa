@@ -20,52 +20,29 @@ using Core::Context;
 class BaseObject : public virtual Base
 {
 protected:
-    Context* context;
+    const Context* context_;
 public:
-    BaseObject() : context(NULL)
+    BaseObject()
+        : Base(), context_(NULL)
     {}
     virtual ~BaseObject()
     {}
 
-    void setContext(Context* n)
+    void setContext(const Context* n)
     {
-        context = n;
+        context_ = n;
     }
     const Context* getContext() const
     {
-        return context;
+        return context_;
     }
 
     /// Initialization method called after each graph modification.
     virtual void init()
     { }
 
-    /*	void setContext( Core::Context* c ){
-    	    context_=c;
-    	}*/
 }
 ;
-
-class ContextObject : public BaseObject
-{
-public:
-    ContextObject( std::string name, Core::Context* c )
-    {
-        setName(name);
-        setContext(c);
-    }
-
-    virtual ~ContextObject()
-    {}
-    /// modify the Context
-    virtual void apply()=0;
-protected:
-    Context* getContext()
-    {
-        return const_cast<Context*>(this->context);
-    }
-
-};
 
 
 } // namespace Abstract
@@ -73,5 +50,3 @@ protected:
 } // namespace Sofa
 
 #endif
-
-

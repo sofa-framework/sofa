@@ -5,25 +5,58 @@ namespace Sofa
 namespace Core
 {
 
+Context::Context()
+    : gravity_( Vec(0,-9.81,0) )
+    , localToWorld_( Frame::identity() )
+    , spatialVelocity_( Vec(0,0,0),Vec(0,0,0) )
+    , originAcceleration_( Vec(0,0,0) )
+    , dt_(0.04)
+    , animate_(false)
+    , showCollisionModels_(false)
+    , showBehaviorModels_(true)
+    , showVisualModels_(true)
+    , showMappings_(false)
+    , showForceFields_(true)
+    , multiThreadSimulation_(false)
+{}
+
+
 /// Simulation timestep
 float Context::getDt() const
 {
     return dt_;
 }
 
-/// Gravity vector as a pointer to 3 double
-const Context::Vec& Context::getGravity() const
+/// Gravity vector in local coordinates
+const Context::Vec Context::getGravity() const
 {
-    return gravity_;
+    return getLocalToWorld().backProjectVector(gravity_);
 }
 
 const Context::Frame& Context::getLocalToWorld() const
 {
     return localToWorld_;
 }
-const Context::Frame& Context::getWorldToLocal() const
+
+const Context::SpatialVelocity& Context::getSpatialVelocity() const
 {
-    return worldToLocal_;
+    return spatialVelocity_;
+}
+
+/// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
+const Context::Vec& Context::getOriginAcceleration() const
+{
+    return originAcceleration_;
+}
+
+
+Context::Vec Context::getLinearVelocity() const
+{
+    return spatialVelocity_.freeVec;
+}
+Context::Vec Context::getAngularVelocity() const
+{
+    return spatialVelocity_.lineVec;
 }
 
 /// Animation flag
@@ -68,6 +101,8 @@ bool Context::getShowForceFields() const
     return showForceFields_;
 }
 
+//===============================================================================
+
 /// Simulation timestep
 void Context::setDt(float val)
 {
@@ -85,10 +120,17 @@ void Context::setLocalToWorld( const Frame& f )
     localToWorld_ = f;
 }
 
-void Context::setWorldToLocal( const Frame& f )
+void Context::setSpatialVelocity( const SpatialVelocity& v )
 {
-    worldToLocal_ = f;
+    spatialVelocity_ = v;
 }
+
+/// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
+void Context::setOriginAcceleration( const Vec& a )
+{
+    originAcceleration_ = a;
+}
+
 
 /// Animation flag
 void Context::setAnimate(bool val)
@@ -132,31 +174,24 @@ void Context::setShowForceFields(bool val)
     showForceFields_ = val;
 }
 
-void Context::copyContextFrom( const Context* f )
-{
-    *this = *f;
-}
-
 Context Context::getDefault()
 {
     Context d;
-    d.setGravity( Vec(0,-9.81,0) );
-    d.setLocalToWorld( Frame::identity() );
-    d.setWorldToLocal( Frame::identity() );
     return d;
 }
-
-
-
-}//Core
-}//Sofa
 
 std::ostream& operator << (std::ostream& out, const Sofa::Core::Context& c )
 {
     out<<endl<<"gravity = "<<c.getGravity();
     out<<endl<<"transform from local to world = "<<c.getLocalToWorld();
-    out<<endl<<"transform from world to local = "<<c.getWorldToLocal();
+    //out<<endl<<"transform from world to local = "<<c.getWorldToLocal();
+    out<<endl<<"spatial velocity = "<<c.getSpatialVelocity();
+    out<<endl<<"acceleration of the origin = "<<c.getOriginAcceleration();
     return out;
 }
+
+
+}//Core
+}//Sofa
 
 

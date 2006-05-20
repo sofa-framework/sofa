@@ -27,13 +27,13 @@ public:
     virtual const BaseNode* getParent() const = 0;
 
     /// Add a child node
-    virtual void addChild(BaseNode* node) = 0;
+    virtual BaseNode* addChild(BaseNode* node) = 0;
 
     /// Remove a child node
     virtual void removeChild(BaseNode* node) = 0;
 
     /// Add a generic object
-    virtual void addObject(BaseObject* obj) = 0;
+    virtual BaseNode* addObject(BaseObject* obj) = 0;
 
     /// Remove a generic object
     virtual void removeObject(BaseObject* obj) = 0;

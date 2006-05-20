@@ -67,6 +67,12 @@ public:
         Vec3& getVOrientation (void) { return vOrientation; }
         const Vec3& getVCenter (void) const { return vCenter; }
         const Vec3& getVOrientation (void) const { return vOrientation; }
+        inline friend std::ostream& operator << (std::ostream& out, const Deriv& v )
+        {
+            out<<"vCenter = "<<v.getVCenter();
+            out<<", vOrientation = "<<v.getVOrientation();
+            return out;
+        }
     };
 
     class Coord

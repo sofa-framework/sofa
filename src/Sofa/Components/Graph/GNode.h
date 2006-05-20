@@ -5,10 +5,10 @@
 #include <vector>
 #include <string>
 #include <iostream>
-//#include "Sofa/Abstract/BaseObject.h"
 #include "Sofa/Abstract/BaseNode.h"
 #include "Sofa/Abstract/BehaviorModel.h"
 #include "Sofa/Abstract/CollisionModel.h"
+#include "Sofa/Abstract/ContextObject.h"
 #include "Sofa/Abstract/VisualModel.h"
 #include "Sofa/Core/Context.h"
 #include "Sofa/Core/MechanicalModel.h"
@@ -20,7 +20,6 @@
 #include "Sofa/Core/Constraint.h"
 #include "Sofa/Core/Topology.h"
 #include "Sofa/Core/OdeSolver.h"
-//#include "Sofa/Components/Graph/Property.h"
 #include "Action.h"
 #include <iostream>
 using std::cout;
@@ -44,37 +43,30 @@ using namespace Core;
 
 class Action;
 
-class GNode : public BaseNode, public Sofa::Core::Context
+class GNode : public BaseNode
 {
 public:
-    GNode();
-
-    GNode(const std::string& name);
-
-    GNode( const std::string& name, GNode* parent  );
+    GNode( const std::string& name="", GNode* parent=NULL  );
 
     virtual ~GNode();
 
-    /// Add a child node
-    virtual void addChild(GNode* node);
+    /// Add a child node and return this
+    virtual BaseNode* addChild(GNode* node);
 
     /// Remove a child
     virtual void removeChild(GNode* node);
 
-    /// Add a child node
-    virtual void addChild(BaseNode* node)
-    {
-        this->addChild(dynamic_cast<GNode*>(node));
-    }
+    /// Add a child node and return this
+    virtual BaseNode* addChild(BaseNode* node);
 
     /// Remove a child node
-    virtual void removeChild(BaseNode* node)
-    {
-        this->removeChild(dynamic_cast<GNode*>(node));
-    }
+    virtual void removeChild(BaseNode* node);
 
-    /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual void addObject(BaseObject* obj);
+    const Core::Context* getContext() const;
+    Core::Context* getContext();
+
+    /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
+    virtual GNode* addObject(BaseObject* obj);
 
     /// Remove an object
     virtual void removeObject(BaseObject* obj);
@@ -90,6 +82,9 @@ public:
 
     /// Get the context of the parent, if the parent exists and is a Context
     Context* getParentContext();
+
+    /// Update the context values, based on parent and local ContextObjects
+    void updateContext();
 
 
     /// @name Actions and graph traversal
@@ -291,8 +286,12 @@ public:
     Sequence<VisualModel> visualModel;
     Sequence<CollisionModel> collisionModel;
 
+    void setDebug(bool);
+    bool getDebug() const;
+
 protected:
-    //Context* parentContext_;
+    Context context_;
+    bool debug_;
 
 
 };

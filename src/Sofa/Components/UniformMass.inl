@@ -45,9 +45,10 @@ void UniformMass<DataTypes, MassType>::setMechanicalModel(Core::MechanicalModel<
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::setMass(const MassType& m)
+Core::Mass* UniformMass<DataTypes, MassType>::setMass(const MassType& m)
 {
     this->mass = m;
+    return this;
 }
 
 // -- Mass interface
@@ -77,13 +78,30 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::computeForce()
 {
     VecDeriv& f = *mmodel->getF();
+    VecCoord& x = *mmodel->getX();
+    VecDeriv& v = *mmodel->getV();
+
+    // weight
     Core::Context::Vec g = this->getContext()->getGravity();
     Deriv theGravity;
     DataTypes::set( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass;
+
+    // velcity-based stuff
+    Core::Context::SpatialVelocity vframe = getContext()->getSpatialVelocity();
+    Core::Context::Vec aframe = getContext()->getOriginAcceleration() ;
+    // project back to local frame
+    vframe = getContext()->getLocalToWorld() / vframe;
+    aframe = getContext()->getLocalToWorld().backProjectVector( aframe );
+    /*	cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame = "<<vframe<<endl;
+    	cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame = "<<aframe<<endl;
+    	cerr<<"UniformMass<DataTypes, MassType>::computeForce(), mg = "<<mg<<endl;*/
+
+    // add weight and inertia force
     for (unsigned int i=0; i<f.size(); i++)
     {
-        f[i] += mg;
+        f[i] += mg + inertiaForce(vframe,aframe,mass,x[i],v[i]);
+        //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
     }
 }
 
@@ -110,8 +128,8 @@ void UniformMass<DataTypes, MassType>::draw()
 }
 
 // Specialization for rigids
-template <>
-void UniformMass<RigidTypes, RigidMass>::draw();
+// template <>
+//       void UniformMass<RigidTypes<float>, RigidTypes<float>::RigidInertia>::draw();
 
 } // namespace Components
 

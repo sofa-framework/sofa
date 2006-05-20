@@ -13,23 +13,23 @@ namespace Components
 
 using namespace Common;
 
-template <>
-void UniformMass<RigidTypes, RigidMass>::draw()
-{
-    if (!Scene::getInstance()->getShowBehaviorModels()) return;
-    VecCoord& x = *mmodel->getX();
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        Quat orient = x[i].getOrientation();
-        RigidTypes::Vec3& center = x[i].getCenter();
-        orient[3] = -orient[3];
-
-        static GL::Axis *axis = new GL::Axis(center, orient);
-
-        axis->update(center, orient);
-        axis->draw();
-    }
-}
+// template <>
+// void UniformMass<RigidTypes, RigidMass>::draw()
+// {
+// 	if (!Scene::getInstance()->getShowBehaviorModels()) return;
+// 	VecCoord& x = *mmodel->getX();
+// 	for (unsigned int i=0; i<x.size(); i++)
+// 	{
+// 		Quat orient = x[i].getOrientation();
+// 		RigidTypes::Vec3& center = x[i].getCenter();
+// 		orient[3] = -orient[3];
+//
+// 		static GL::Axis *axis = new GL::Axis(center, orient);
+//
+// 		axis->update(center, orient);
+// 		axis->draw();
+// 	}
+// }
 
 SOFA_DECL_CLASS(UniformMass)
 
@@ -65,7 +65,7 @@ void create(UniformMass<DataTypes, MassType>*& obj, XML::Node<Core::Mass>* arg)
 
 Creator< XML::MassNode::Factory, UniformMass<Vec3dTypes,double> > UniformMass3dClass("UniformMass",true);
 Creator< XML::MassNode::Factory, UniformMass<Vec3fTypes,float > > UniformMass3fClass("UniformMass",true);
-Creator< XML::MassNode::Factory, UniformMass<RigidTypes,RigidMass> > UniformMassRigidClass("UniformMass",true);
+//Creator< XML::MassNode::Factory, UniformMass<RigidTypes,RigidMass> > UniformMassRigidClass("UniformMass",true);
 
 } // namespace Components
 

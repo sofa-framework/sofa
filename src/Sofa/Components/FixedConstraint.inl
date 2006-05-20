@@ -39,15 +39,17 @@ void FixedConstraint<DataTypes>::setMechanicalModel(Core::MechanicalModel<DataTy
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::addConstraint(int index)
+Core::Constraint*  FixedConstraint<DataTypes>::addConstraint(int index)
 {
     this->indices.insert(index);
+    return this;
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::removeConstraint(int index)
+Core::Constraint*  FixedConstraint<DataTypes>::removeConstraint(int index)
 {
     this->indices.erase(index);
+    return this;
 }
 
 // -- Mass interface
@@ -79,7 +81,9 @@ void FixedConstraint<DataTypes>::draw()
 
 // Specialization for rigids
 template <>
-void FixedConstraint<RigidTypes>::draw();
+void FixedConstraint<RigidTypes >::draw();
+template <>
+void FixedConstraint<RigidTypes >::applyConstraint();
 
 } // namespace Components
 

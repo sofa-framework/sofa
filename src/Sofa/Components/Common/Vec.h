@@ -84,22 +84,54 @@ public:
     }
 
     /// Special access to first element.
-    real& x() { BOOST_STATIC_ASSERT(N >= 1); return this->elems[0]; }
+    real& x()
+    {
+        BOOST_STATIC_ASSERT(N >= 1);
+        return this->elems[0];
+    }
     /// Special access to second element.
-    real& y() { BOOST_STATIC_ASSERT(N >= 2); return this->elems[1]; }
+    real& y()
+    {
+        BOOST_STATIC_ASSERT(N >= 2);
+        return this->elems[1];
+    }
     /// Special access to third element.
-    real& z() { BOOST_STATIC_ASSERT(N >= 3); return this->elems[2]; }
+    real& z()
+    {
+        BOOST_STATIC_ASSERT(N >= 3);
+        return this->elems[2];
+    }
     /// Special access to fourth element.
-    real& w() { BOOST_STATIC_ASSERT(N >= 4); return this->elems[3]; }
+    real& w()
+    {
+        BOOST_STATIC_ASSERT(N >= 4);
+        return this->elems[3];
+    }
 
     /// Special const access to first element.
-    const real& x() const { BOOST_STATIC_ASSERT(N >= 1); return this->elems[0]; }
+    const real& x() const
+    {
+        BOOST_STATIC_ASSERT(N >= 1);
+        return this->elems[0];
+    }
     /// Special const access to second element.
-    const real& y() const { BOOST_STATIC_ASSERT(N >= 2); return this->elems[1]; }
+    const real& y() const
+    {
+        BOOST_STATIC_ASSERT(N >= 2);
+        return this->elems[1];
+    }
     /// Special const access to third element.
-    const real& z() const { BOOST_STATIC_ASSERT(N >= 3); return this->elems[2]; }
+    const real& z() const
+    {
+        BOOST_STATIC_ASSERT(N >= 3);
+        return this->elems[2];
+    }
     /// Special const access to fourth element.
-    const real& w() const { BOOST_STATIC_ASSERT(N >= 4); return this->elems[3]; }
+    const real& w() const
+    {
+        BOOST_STATIC_ASSERT(N >= 4);
+        return this->elems[3];
+    }
 
     /// Assignment operator from an array of values.
     void operator=(const real* p)
@@ -108,7 +140,8 @@ public:
     }
 
     /// Assignment from a vector with different dimensions.
-    template<int M, typename real2> void operator=(const Vec<M,real2>& v)
+    template<int M, typename real2>
+    void operator=(const Vec<M,real2>& v)
     {
         std::copy(v.begin(), v.begin()+(N>M?M:N), this->begin());
     }
@@ -270,6 +303,16 @@ public:
                 this->elems[i]/=r;
     }
 
+    Vec cross( const Vec& b ) const
+    {
+        BOOST_STATIC_ASSERT(N == 3);
+        return Vec(
+                (*this)[1]*b[2] - (*this)[2]*b[1],
+                (*this)[2]*b[0] - (*this)[0]*b[2],
+                (*this)[0]*b[1] - (*this)[1]*b[0]
+                );
+    }
+
 };
 
 /// Read from an input stream
@@ -327,3 +370,5 @@ typedef Vec4d Vector4; ///< alias
 } // namespace Sofa
 
 #endif
+
+

@@ -16,21 +16,40 @@ using namespace Common;
 template <>
 void FixedConstraint<RigidTypes>::draw()
 {
-    if (!Scene::getInstance()->getShowBehaviorModels()) return;
+    /*	if (!Scene::getInstance()->getShowBehaviorModels()) return;
+    	VecCoord& x = *mmodel->getX();
+    	for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    	{
+    		int i = *it;
+    		Quat orient = x[i].getOrientation();
+    		RigidTypes::Vec3& center = x[i].getCenter();
+    		orient[3] = -orient[3];
+
+    		static GL::Axis *axis = new GL::Axis(center, orient, 5);
+
+    		axis->update(center, orient);
+    		axis->draw();
+    	}*/
+    if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
+    glDisable (GL_LIGHTING);
+    glPointSize(10);
+    glColor4f (1,0.5,0.5,1);
+    glBegin (GL_POINTS);
     for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
     {
-        int i = *it;
-        Quat orient = x[i].getOrientation();
-        RigidTypes::Vec3& center = x[i].getCenter();
-        orient[3] = -orient[3];
-
-        static GL::Axis *axis = new GL::Axis(center, orient, 5);
-
-        axis->update(center, orient);
-        axis->draw();
+        GL::glVertexT(x[0].getCenter());
     }
+    glEnd();
 }
+
+template <>
+void FixedConstraint<RigidTypes>::applyConstraint()
+{
+    VecDeriv& res = *mmodel->getDx();
+    res[0] = Deriv();
+}
+
 
 SOFA_DECL_CLASS(FixedConstraint)
 

@@ -5,7 +5,7 @@
 #include <iostream>
 using std::endl;
 #include "Sofa/Components/Common/Vec.h"
-#include <Sofa/Components/Common/Frame.h>
+#include <Sofa/Components/Common/SolidTypes.h>
 
 
 namespace Sofa
@@ -18,8 +18,10 @@ class Context
 {
 
 public:
-    typedef Components::Common::Vec3f Vec;
-    typedef Components::Common::Frame Frame;
+    typedef Components::Common::SolidTypes<float>::Vec Vec;
+    typedef Components::Common::SolidTypes<float>::Coord Frame;
+    typedef Components::Common::SolidTypes<float>::Deriv SpatialVelocity;
+    Context();
     virtual ~Context()
     {}
 
@@ -27,13 +29,22 @@ public:
     /// @name Getters
     /// @{
     /// Gravity in the local coordinate system
-    virtual const Vec& getGravity() const;
+    virtual const Vec getGravity() const;
 
     /// Projection from the local coordinate system to the world coordinate system
     virtual const Frame& getLocalToWorld() const;
 
-    /// Projection from the world coordinate system to the local coordinate system
-    virtual const Frame& getWorldToLocal() const;
+    /** Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system. */
+    virtual const SpatialVelocity& getSpatialVelocity() const;
+
+    /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
+    virtual const Vec& getOriginAcceleration() const;
+
+    /** Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system. */
+    virtual Vec getLinearVelocity() const;
+
+    /** Velocity of the local frame in the world coordinate system.*/
+    virtual Vec getAngularVelocity() const;
 
     /// Simulation timestep
     virtual float getDt() const;
@@ -70,8 +81,11 @@ public:
     /// Projection from the local frame to the world frame
     virtual void setLocalToWorld( const Frame& f );
 
-    /// Projection from the local frame to the world frame
-    virtual void setWorldToLocal( const Frame& f );
+    /** Velocity of the local frame with respect the world coordinate system, expressed in the world coordinate system, at the origin of the world coordinate system */
+    virtual void setSpatialVelocity( const SpatialVelocity& );
+
+    /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
+    virtual void setOriginAcceleration( const Vec& );
 
     /// Simulation timestep
     virtual void setDt( float dt );
@@ -100,17 +114,15 @@ public:
 
     /// @}
 
-
-    void copyContextFrom( const Context* f );
-
     static Context getDefault();
 
     friend std::ostream& operator << (std::ostream& out, const Context& c );
 
 private:
-    Vec gravity_;
-    Frame localToWorld_;
-    Frame worldToLocal_;
+    Vec gravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM. Method getGravity() performs the projection transparently.
+    Frame localToWorld_;  ///< Used to project from the local coordinate system to the world coordinate system
+    SpatialVelocity spatialVelocity_; ///< Velocity in the local frame, defined in the world coordinate system
+    Vec originAcceleration_; ///< Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
     float dt_;
     bool animate_;
     bool showCollisionModels_;

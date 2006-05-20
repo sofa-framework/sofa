@@ -5,6 +5,7 @@
 #include "Sofa/Core/Mass.h"
 #include "Sofa/Core/MechanicalModel.h"
 #include "Sofa/Abstract/VisualModel.h"
+#include "Sofa/Components/CoordinateSystem.h"
 
 namespace Sofa
 {
@@ -37,7 +38,7 @@ public:
 
     void setMechanicalModel(Core::MechanicalModel<DataTypes>* mm);
 
-    void setMass(const MassType& mass);
+    Core::Mass* setMass(const MassType& mass);
 
     // -- Mass interface
     void addMDx();
@@ -52,9 +53,11 @@ public:
 
     void draw();
 
-    void initTextures() { }
+    void initTextures()
+    { }
 
-    void update() { }
+    void update()
+    { }
 };
 
 } // namespace Components
@@ -62,3 +65,4 @@ public:
 } // namespace Sofa
 
 #endif
+

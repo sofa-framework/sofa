@@ -4,6 +4,9 @@
 #include "XML/SolverNode.h"
 
 #include <math.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -34,6 +37,13 @@ void CGImplicitSolver::solve(double dt)
     MultiVector x(group, V_DERIV);
     MultiVector z(group, V_DERIV);
     double h = dt;
+
+    if( getDebug() )
+    {
+        cerr<<"CGImplicitSolver, dt = "<< dt <<endl;
+        cerr<<"CGImplicitSolver, initial x = "<< pos <<endl;
+        cerr<<"CGImplicitSolver, initial v = "<< vel <<endl;
+    }
 
     // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
@@ -83,6 +93,12 @@ void CGImplicitSolver::solve(double dt)
     // apply the solution
     vel.peq( x );                       // vel = vel + x
     pos.peq( vel, h );                  // pos = pos + h vel
+
+    if( getDebug() )
+    {
+        cerr<<"CGImplicitSolver, final x = "<< pos <<endl;
+        cerr<<"CGImplicitSolver, final v = "<< vel <<endl;
+    }
 }
 
 void create(CGImplicitSolver*& obj, XML::Node<Core::OdeSolver>* arg)

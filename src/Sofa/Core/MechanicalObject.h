@@ -90,7 +90,7 @@ public:
 
     virtual void removeConstraint(Core::Constraint* mConstraint);
 
-    virtual void resize(int vsize);
+    virtual BasicMechanicalModel* resize(int vsize);
 
     virtual void init();
 
@@ -150,6 +150,10 @@ public:
 
     virtual void setDx(VecId v);
 
+    /// @}
+    /// @name Debug
+    /// @{
+    virtual void printDOF( VecId, std::ostream& =std::cerr );
     /// @}
 };
 

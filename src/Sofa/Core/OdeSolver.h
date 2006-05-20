@@ -24,6 +24,11 @@ public:
     virtual void solve (double dt) = 0;
 
     virtual void setGroup(IntegrationGroup* grp);
+
+    OdeSolver* setDebug(bool);
+    bool getDebug() const;
+private:
+    bool debug_;
 };
 
 } // namespace Core
@@ -31,3 +36,4 @@ public:
 } // namespace Sofa
 
 #endif
+

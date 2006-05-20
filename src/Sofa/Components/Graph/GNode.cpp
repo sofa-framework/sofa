@@ -1,6 +1,9 @@
 #include "GNode.h"
 #include "Action.h"
 #include "Sofa/Components/XML/NodeNode.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -14,25 +17,21 @@ namespace Graph
 GNode::~GNode()
 {}
 
-GNode::GNode()
-{}
-
-GNode::GNode(const std::string& name)
-{
-    setName(name);
-}
 
 GNode::GNode(const std::string& name, GNode* parent)
+    : debug_(false)
 {
     setName(name);
-    parent->addChild(this);
+    if( parent )
+        parent->addChild(this);
 }
 
 /// Add a child node
-void GNode::addChild(GNode* node)
+BaseNode* GNode::addChild(GNode* node)
 {
     child.add(node);
     node->parent.add(this);
+    return this;
 }
 
 /// Remove a child
@@ -42,16 +41,41 @@ void GNode::removeChild(GNode* node)
     node->parent.remove(this);
 }
 
+/// Add a child node
+BaseNode* GNode::addChild(BaseNode* node)
+{
+    this->addChild(dynamic_cast<GNode*>(node));
+    return this;
+}
+
+/// Remove a child node
+void GNode::removeChild(BaseNode* node)
+{
+    this->removeChild(dynamic_cast<GNode*>(node));
+}
+
+Core::Context* GNode::getContext()
+{
+    return &context_;
+}
+const Core::Context* GNode::getContext() const
+{
+    return &context_;
+}
+
 Sofa::Core::Context* GNode::getParentContext()
 {
-    return dynamic_cast<GNode*>(&(*parent));
-    // uglyssimo! and could be more efficient
+    if( GNode* p = dynamic_cast<GNode*>(&(*parent)) )
+    {
+        return p->getContext();
+    }
+    else return NULL;
 }
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
-void GNode::addObject(BaseObject* obj)
+GNode* GNode::addObject(BaseObject* obj)
 {
-    obj->setContext(this);
+    obj->setContext(getContext());
     object.add(obj);
     mechanicalModel.add(dynamic_cast< BasicMechanicalModel* >(obj));
     if (!mechanicalMapping.add(dynamic_cast< BasicMechanicalMapping* >(obj)))
@@ -66,12 +90,14 @@ void GNode::addObject(BaseObject* obj)
     visualModel.add(dynamic_cast< VisualModel* >(obj));
     collisionModel.add(dynamic_cast< CollisionModel* >(obj));
     contextObject.add(dynamic_cast<ContextObject* >(obj));
+
+    return this;
 }
 
 /// Remove an object
 void GNode::removeObject(BaseObject* obj)
 {
-    if (obj->getContext()==this)
+    if (obj->getContext()==getContext())
     {
         obj->setContext(NULL);
     }
@@ -96,9 +122,7 @@ void GNode::removeObject(BaseObject* obj)
 /// Connect all objects together. Must be called after each graph modification.
 void GNode::init()
 {
-//     for( Sequence<BaseObject>::iterator it = object.begin(); it!=object.end(); it++ ){
-// 	(*it)->setContext(this);
-//     }
+    updateContext();
 
     for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++)
     {
@@ -118,37 +142,41 @@ const BaseNode* GNode::getParent() const
     return parent;
 }
 
+void GNode::updateContext()
+{
+    if( getParentContext() != NULL )
+    {
+        context_ = *getParentContext();
+        //cerr<<"node "<<getName()<<", copy context"<<endl;
+    }
+    else
+    {
+        context_ = Context::getDefault() ;
+        //cerr<<"node "<<getName()<<", apply default context"<<endl;
+    }
 
+    /*	if( debug_ ){
+    	   cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *this->getContext() << endl;
+    	}*/
+    // Apply local modifications to the context
+    for( unsigned i=0; i<contextObject.size(); ++i )
+    {
+        contextObject[i]->apply();
+        /*		if( debug_ ){
+        		   cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<", new context = "<< *this->getContext() << endl;
+        		}*/
+    }
+    if( !mechanicalModel.empty() )
+    {
+        mechanicalModel->updateContext(&context_);
+    }
 
-// GNode::Properties::Properties()
-// {
-// 	dt = 0.04;
-// 	gravity[0] = 0;
-// 	gravity[1] = -9.8;
-// 	gravity[2] = 0;
-// 	animate = false;
-// 	showCollisionModels = true;
-// 	showBehaviorModels = true;
-// 	showVisualModels = true;
-// 	showMappings = true;
-// 	showForceFields = true;
-// 	multiThreadSimulation = false;
-// }
+    if( debug_ )
+    {
+        cerr<<"GNode::updateContext, node = "<<getName()<<", updated context = "<< *this->getContext() << endl;
+    }
+}
 
-// GNode::Properties GNode::Properties::defaultProperties;
-//
-// const GNode::Properties* GNode::searchProperties() const
-// {
-// 	if (!properties.empty()) return properties;
-// 	else if (!parent.empty()) return parent->searchProperties();
-// 	else return &Properties::defaultProperties;
-// }
-//
-// GNode::Properties* GNode::newProperties()
-// {
-// 	if (properties.empty()) properties.add(new Properties(*searchProperties()));
-// 	return properties;
-// }
 
 /// Execute a recursive action starting from this node
 void GNode::execute(Action* action)
@@ -161,6 +189,16 @@ void GNode::execute(Action* action)
         }
     }
     action->processNodeBottomUp(this);
+}
+
+void GNode::setDebug(bool b)
+{
+    debug_=b;
+}
+
+bool GNode::getDebug() const
+{
+    return debug_;
 }
 
 void create(GNode*& obj, XML::Node<Abstract::BaseNode>* /*arg*/)

@@ -34,8 +34,8 @@ public:
 
     void setMechanicalModel(Core::MechanicalModel<DataTypes>* mm);
 
-    void addConstraint(int index);
-    void removeConstraint(int index);
+    Core::Constraint* addConstraint(int index);
+    Core::Constraint*  removeConstraint(int index);
 
     // -- Constraint interface
     void applyConstraint();

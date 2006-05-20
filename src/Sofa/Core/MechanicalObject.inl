@@ -103,7 +103,7 @@ void MechanicalObject<DataTypes>::removeMechanicalModel(BasicMechanicalObject *m
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::resize(int size)
+BasicMechanicalModel* MechanicalObject<DataTypes>::resize(int size)
 {
     getX()->resize(size);
     getV()->resize(size);
@@ -119,6 +119,7 @@ void MechanicalObject<DataTypes>::resize(int size)
             if (vectorsDeriv[i]!=NULL && vectorsDeriv[i]->size()!=0)
                 vectorsDeriv[i]->resize(size);
     }
+    return this;
 }
 
 template <class DataTypes>
@@ -780,6 +781,27 @@ void MechanicalObject<DataTypes>::setDx(VecId v)
         std::cerr << "Invalid setDx operation ("<<v<<")\n";
     }
 }
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out)
+{
+    if( v.type==V_COORD )
+    {
+        VecCoord& x= *getVecCoord(v.index);
+        for( unsigned i=0; i<x.size(); ++i )
+            out<<x[i]<<" ";
+    }
+    else if( v.type==V_DERIV )
+    {
+        VecDeriv& x= *getVecDeriv(v.index);
+        for( unsigned i=0; i<x.size(); ++i )
+            out<<x[i]<<" ";
+    }
+    else
+        out<<"MechanicalObject<DataTypes>::printDOF, unknown v.type = "<<v.type<<endl;
+}
+
 
 } // namespace Core
 

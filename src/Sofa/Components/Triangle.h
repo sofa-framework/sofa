@@ -28,8 +28,8 @@ public:
     Vector3 normal;
     TriangleModel * trMdl;
 
-    Triangle(Vector3 *_p1, Vector3 *_p2, Vector3 *_p3, Vector3 *_v1, Vector3 *_v2, Vector3 *_v3, Vector3 norm, TriangleModel *_trMdl):trMdl(_trMdl), p1(_p1), p2(_p2), p3(_p3), v1(_v1), v2(_v2), v3(_v3), normal(norm) {};
-    Triangle(Vector3 *_p1, Vector3 *_p2, Vector3 *_p3, Vector3 *_v1, Vector3 *_v2, Vector3 *_v3, TriangleModel *_trMdl):trMdl(_trMdl), p1(_p1), p2(_p2), p3(_p3), v1(_v1), v2(_v2), v3(_v3) {};
+    Triangle(Vector3 *_p1, Vector3 *_p2, Vector3 *_p3, Vector3 *_v1, Vector3 *_v2, Vector3 *_v3, Vector3 norm, TriangleModel *_trMdl): p1(_p1), p2(_p2), p3(_p3), v1(_v1), v2(_v2), v3(_v3), normal(norm), trMdl(_trMdl) {};
+    Triangle(Vector3 *_p1, Vector3 *_p2, Vector3 *_p3, Vector3 *_v1, Vector3 *_v2, Vector3 *_v3, TriangleModel *_trMdl): p1(_p1), p2(_p2), p3(_p3), v1(_v1), v2(_v2), v3(_v3), trMdl(_trMdl) {};
 
     void getBBox(Vector3 &minBBox, Vector3 &maxBBox);
     void getBBox(double* minVect, double* maxVect);

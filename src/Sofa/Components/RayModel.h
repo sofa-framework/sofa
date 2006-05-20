@@ -39,7 +39,7 @@ public:
 
     void clear() { resize(0); }
 
-    void resize(int size);
+    Core::BasicMechanicalModel* resize(int size);
 
     void addRay(Vector3 origin, Vector3 direction, double length);
 

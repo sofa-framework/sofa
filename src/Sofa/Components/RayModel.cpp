@@ -31,7 +31,7 @@ RayModel::RayModel()
     externalForces = new VecCoord();
 }
 
-void RayModel::resize(int size)
+Core::BasicMechanicalModel* RayModel::resize(int size)
 {
     this->Core::MechanicalObject<Vec3Types>::resize(size);
     unsigned int size0 = elems.size();
@@ -41,6 +41,7 @@ void RayModel::resize(int size)
         elems[size0] = new Ray(1, size0, this);
         ++size0;
     }
+    return this;
 }
 
 void RayModel::addRay(Vector3 origin, Vector3 direction, double length)

@@ -4,6 +4,7 @@
 #include "Topology.h"
 #include "Sofa/Abstract/BaseObject.h"
 #include "Sofa/Core/Encoding.h"
+#include <iostream>
 
 namespace Sofa
 {
@@ -18,9 +19,13 @@ class BasicMechanicalMapping;
 class BasicMechanicalModel : public virtual Abstract::BaseObject
 {
 public:
-    virtual ~BasicMechanicalModel() { }
+    BasicMechanicalModel()
+        : Abstract::BaseObject()
+    {}
+    virtual ~BasicMechanicalModel()
+    { }
 
-    virtual void resize(int vsize) = 0;
+    virtual BasicMechanicalModel* resize(int vsize) = 0;
 
     virtual void init() = 0;
 
@@ -67,7 +72,17 @@ public:
 
     /// @}
 
-};
+    /// @name Debug
+    /// @{
+    virtual void printDOF( VecId, std::ostream& =std::cerr ) = 0;
+    /// @}
+
+    ///  Default: do not change the context.
+    virtual void updateContext( Context* )
+    {}
+
+}
+;
 
 } // namespace Core
 

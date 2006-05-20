@@ -2,24 +2,31 @@
 #define SOFA_COMPONENTS_GRAVITY_H
 
 #include <Sofa/Components/Common/Vec.h>
-#include <Sofa/Components/Graph/GNode.h>
+#include <Sofa/Abstract/ContextObject.h>
 
 namespace Sofa
 {
 
 namespace Components
 {
-using Common::Vec3f;
 
-class Gravity : public Components::Graph::ContextObject
+namespace Graph
+{
+class GNode;
+}
+
+class Gravity : public Abstract::ContextObject
 {
     typedef Common::Vec3f Vec3;
 public:
-    Gravity( std::string name, Components::Graph::GNode* gn ):ContextObject(name,gn) { gn->addObject(this); }
-    const Vec3&  getGravity() const { return gravity_; }
-    void setGravity( const Vec3& g ) { gravity_=g; }
+    Gravity();
+    const Vec3&  getGravity() const;
 
-    void apply() { getContext()->setGravity( gravity_ ); }
+    /// Set the value of the gravity and return this
+    Gravity* setGravity( const Vec3& g );
+
+    /// Modify the context of the GNode
+    void apply();
 protected:
     Vec3 gravity_;
 };
@@ -29,5 +36,4 @@ protected:
 } // namespace Sofa
 
 #endif
-
 
