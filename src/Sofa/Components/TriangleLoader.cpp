@@ -14,11 +14,11 @@ namespace Components
 
 using namespace Common;
 
-static void skipToEOL(FILE* f)
-{
-    int	ch;
-    while ((ch = fgetc(f)) != EOF && ch != '\n');
-}
+// static void skipToEOL(FILE* f)
+// {
+// 	int	ch;
+// 	while ((ch = fgetc(f)) != EOF && ch != '\n');
+// }
 
 bool TriangleLoader::load(const char *filename)
 {

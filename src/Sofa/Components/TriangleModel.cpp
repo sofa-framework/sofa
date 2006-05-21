@@ -217,14 +217,14 @@ void TriangleModel::setObject(Abstract::BehaviorModel* obj)
     this->Core::MechanicalObject<Vec3Types>::setObject(obj);
 }
 
-void TriangleModel::beginIteration(double dt)
+void TriangleModel::beginIteration(double /*dt*/)
 {
     /*std::cout << "BEGIN"<<std::endl;
      f = internalForces;
      this->Core::MechanicalObject<Vec3Types>::beginIteration(dt);*/
 }
 
-void TriangleModel::endIteration(double dt)
+void TriangleModel::endIteration(double /*dt*/)
 {
     /* this->Core::MechanicalObject<Vec3Types>::endIteration(dt);
     //std::cout << "END"<<std::endl;
@@ -274,3 +274,4 @@ void TriangleModel::findBoundingBox(const std::vector<Vector3> &verts, Vector3 &
 } // namespace Components
 
 } // namespace Sofa
+

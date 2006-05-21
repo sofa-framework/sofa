@@ -168,7 +168,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, cons
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c )
+void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord /*a*/, Coord b, Coord c )
 {
 #ifdef DEBUG_TRIANGLEFEM
     std::cout << "TriangleFEMForceField::computeStrainDisplacement\n";
