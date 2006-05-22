@@ -1,3 +1,6 @@
+Before building Sofa, look in sofa.cfg to configure it. Most importantly
+specify the GUI to use (FLTK, QT, or both).
+
 Building Sofa under Windows :
 -----------------------------
 	
@@ -11,11 +14,14 @@ Building Sofa under Windows :
      Launch Project VC8.bat.	 
 
  - console :
-     Change the templates in sofa.cfg from vcapp/vclib/vcsubdirs to app/lib/subdirs.
-     Then Launch Project VC6/7/8.bat depending on the version you use.
-     Finally, build all project with nmake. 
+     Open a command prompt with environment variables pointing to Visual
+     Studio.
+     If you already have qmake installed and configured simply launch qmake.
+     If not launch project.bat.
+     Then launch nmake to build all projects.
 
-After creating the project, verify that project example1 is the activated project.
+After creating the projects, verify that project example1 is the activated
+project.
 
 
 Building Sofa under Linux :

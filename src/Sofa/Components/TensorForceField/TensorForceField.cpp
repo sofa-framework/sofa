@@ -30,34 +30,6 @@ static unsigned int vertexEdge[4][4]= {{0,0,1,2,},{0,0,3,4},{1,3,0,5},{2,4,5,0}}
 
 
 
-void VertexTensor::resetToNull()
-{
-    //tensor.resetToNull();
-    for (int i = 0; i < 3; ++i)
-    {
-        for (int j = 0; j < 3; ++j)
-        {
-            tensor[i][j] = 0.0;
-        }
-    }
-}
-
-
-
-void EdgeTensor::resetToNull()
-{
-    //tensor.resetToNull();
-    for (int i = 0; i < 3; ++i)
-    {
-        for (int j = 0; j < 3; ++j)
-        {
-            tensor[i][j] = 0.0;
-        }
-    }
-}
-
-
-
 template <class DataTypes>
 TensorForceField<DataTypes>::TensorForceField(const char* filename)
 {
@@ -89,7 +61,7 @@ TensorForceField<DataTypes>::load(const char *filename)
     // read the young Modulues E and  the Poisson coefficient nu and compute the
     // lambda and mu lame coefficients from them
     // TODO : change this to E and nu.
-    double E, nu;
+    Real E, nu;
     in >> E >> nu;
     lambda_ = E * nu / ((1 + nu) * (1 - 2 * nu));
     mu_ = E / (2 * (1 + nu));
@@ -128,7 +100,7 @@ TensorForceField<DataTypes>::load(const char *filename)
     }
 
     // read vertices
-    double px, py, pz;
+    Real px, py, pz;
     for (unsigned int i = 0; i < nbVertices; ++i)
     {
         input >> px >> py >> pz;
@@ -207,36 +179,36 @@ TensorForceField<DataTypes>::initialize()
     // computing rest volume and triangles shapeVectors for all tetrahedrons
     for (unsigned int i = 0; i < tetrahedron_.size(); ++i)
     {
-        double a[3] = {vertex_[ tetrahedron_[i].vertex[0] ][0],
+        Real a[3] = {vertex_[ tetrahedron_[i].vertex[0] ][0],
                 vertex_[ tetrahedron_[i].vertex[0] ][1],
                 vertex_[ tetrahedron_[i].vertex[0] ][2]
-                      };
-        double b[3] = {vertex_[ tetrahedron_[i].vertex[1] ][0],
+                    };
+        Real b[3] = {vertex_[ tetrahedron_[i].vertex[1] ][0],
                 vertex_[ tetrahedron_[i].vertex[1] ][1],
                 vertex_[ tetrahedron_[i].vertex[1] ][2]
-                      };
-        double c[3] = {vertex_[ tetrahedron_[i].vertex[2] ][0],
+                    };
+        Real c[3] = {vertex_[ tetrahedron_[i].vertex[2] ][0],
                 vertex_[ tetrahedron_[i].vertex[2] ][1],
                 vertex_[ tetrahedron_[i].vertex[2] ][2]
-                      };
-        double d[3] = {vertex_[ tetrahedron_[i].vertex[3] ][0],
+                    };
+        Real d[3] = {vertex_[ tetrahedron_[i].vertex[3] ][0],
                 vertex_[ tetrahedron_[i].vertex[3] ][1],
                 vertex_[ tetrahedron_[i].vertex[3] ][2]
-                      };
+                    };
 
-        double ab[3] = {b[0] - a[0], b[1] - a[1], b[2] - a[2]};
-        double ac[3] = {c[0] - a[0], c[1] - a[1], c[2] - a[2]};
-        double ca[3] = {a[0] - c[0], a[1] - c[1], a[2] - c[2]};
-        double ad[3] = {d[0] - a[0], d[1] - a[1], d[2] - a[2]};
-        double bc[3] = {c[0] - b[0], c[1] - b[1], c[2] - b[2]};
-        double cb[3] = {b[0] - c[0], b[1] - c[1], b[2] - c[2]};
-        double bd[3] = {d[0] - b[0], d[1] - b[1], d[2] - b[2]};
+        Real ab[3] = {b[0] - a[0], b[1] - a[1], b[2] - a[2]};
+        Real ac[3] = {c[0] - a[0], c[1] - a[1], c[2] - a[2]};
+        Real ca[3] = {a[0] - c[0], a[1] - c[1], a[2] - c[2]};
+        Real ad[3] = {d[0] - a[0], d[1] - a[1], d[2] - a[2]};
+        Real bc[3] = {c[0] - b[0], c[1] - b[1], c[2] - b[2]};
+        Real cb[3] = {b[0] - c[0], b[1] - c[1], b[2] - c[2]};
+        Real bd[3] = {d[0] - b[0], d[1] - b[1], d[2] - b[2]};
 
         // restVolume = dot(cross(ab, ac), ad) / 6.0
         tetrahedron_[i].restVolume = ((ab[1] * ac[2] - ab[2] * ac[1]) * ad[0] +
                 (ab[2] * ac[0] - ab[0] * ac[2]) * ad[1] +
                 (ab[0] * ac[1] - ab[1] * ac[0]) * ad[2]) /
-                6.0;
+                6.0f;
 
         // tetrahedron_[i].triangleShapeVector[0] = cross (bc, bd)
         tetrahedron_[i].triangleShapeVector[0][0] = bc[1] * bd[2] - bc[2] * bd[1];
@@ -538,11 +510,11 @@ TensorForceField<DataTypes>::getTriangle(const int v0, const int v1,
 template<class DataTypes>
 void TensorForceField<DataTypes>::addElasticTensors(Tetrahedron& tetra)
 {
-    double si[3];
-    double sj[3];
+    Real si[3];
+    Real sj[3];
 
-    double t[3][3];
-    double id[3][3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
+    Real t[3][3];
+    Real id[3][3] = {{1, 0, 0}, {0, 1, 0}, {0, 0, 1}};
 
     for (int i = 0; i < 4; ++i)
     {
@@ -557,15 +529,15 @@ void TensorForceField<DataTypes>::addElasticTensors(Tetrahedron& tetra)
             sj[1] = tetra.triangleShapeVector[j][1];
             sj[2] = tetra.triangleShapeVector[j][2];
 
-            double dot = (si[0] * sj[0]) + (si[1] * sj[1]) + (si[2] * sj[2]);
+            Real dot = (si[0] * sj[0]) + (si[1] * sj[1]) + (si[2] * sj[2]);
 
             // mij is the tensor product of si sj
-            double mij[3][3]       = {{si[0] * sj[0], si[0] * sj[1], si[0] * sj[2]},
+            Real mij[3][3]       = {{si[0] * sj[0], si[0] * sj[1], si[0] * sj[2]},
                 {si[1] * sj[0], si[1] * sj[1], si[1] * sj[2]},
                 {si[2] * sj[0], si[2] * sj[1], si[2] * sj[2]}
             };
 
-            double mijTransp[3][3] = {{si[0] * sj[0], si[1] * sj[0], si[2] * sj[0]},
+            Real mijTransp[3][3] = {{si[0] * sj[0], si[1] * sj[0], si[2] * sj[0]},
                 {si[0] * sj[1], si[1] * sj[1], si[2] * sj[1]},
                 {si[0] * sj[2], si[1] * sj[2], si[2] * sj[2]}
             };
@@ -580,7 +552,7 @@ void TensorForceField<DataTypes>::addElasticTensors(Tetrahedron& tetra)
                     // divide by (6.0 * volume)^2 to get the real shape vectors in the
                     // products ( (x) -> ^2) and multiplied by volume from the volumetric
                     // integration
-                    t[k][l] /= 36.0 * tetra.restVolume;
+                    t[k][l] /= 36.0f * tetra.restVolume;
                 }
             }
 

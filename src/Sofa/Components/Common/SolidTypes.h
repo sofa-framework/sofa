@@ -58,8 +58,20 @@ public:
         SpatialVector();
         SpatialVector( const Vec& l, const Vec& f );
         SpatialVector& operator += (const SpatialVector& v);
-        SpatialVector operator * ( Real a ) const;
-        SpatialVector& operator *= ( Real a );
+
+        template<class Real2>
+        SpatialVector operator * ( Real2 a ) const
+        {
+            return SpatialVector( lineVec *a, freeVec * a);
+        }
+
+        template<class Real2>
+        SpatialVector& operator *= ( Real2 a )
+        {
+            lineVec *=a; freeVec *= a;
+            return *this;
+        }
+
         SpatialVector operator + ( const SpatialVector& v ) const;
         SpatialVector operator - ( const SpatialVector& v ) const;
         SpatialVector operator - ( ) const;
@@ -148,9 +160,22 @@ public:
 
         Transform& operator +=(const Transform& a);
 
-        Transform& operator*=(Real a);
+        template<class Real2>
+        Transform& operator*=(Real2 a)
+        {
+            std::cout << "SolidTypes<R>::Transform::operator *="<<std::endl;
+            origin_ *= a;
+            //orientation *= a;
+            return *this;
+        }
 
-        Transform operator*(Real a) const;
+        template<class Real2>
+        Transform operator*(Real2 a) const
+        {
+            Transform r = *this;
+            r*=a;
+            return r;
+        }
         //@}
 
     protected:

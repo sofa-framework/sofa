@@ -20,10 +20,10 @@ void StiffSpringForceField<DataTypes>::addSpringForce(VecDeriv& f1, VecCoord& p1
     Real d = u.norm();
     Real inverseLength = 1.0f/d;
     u *= inverseLength;
-    Real elongation = d - spring.initpos;
+    Real elongation = (Real)(d - spring.initpos);
     Deriv relativeVelocity = v2[b]-v1[a];
     Real elongationVelocity = dot(u,relativeVelocity);
-    Real forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
+    Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
     Deriv force = u*forceIntensity;
     f1[a]+=force;
     f2[b]-=force;
@@ -34,7 +34,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce(VecDeriv& f1, VecCoord& p1
     {
         for( int k=0; k<3; ++k )
         {
-            m[j][k] = (spring.ks-tgt) * u[j] * u[k];
+            m[j][k] = ((Real)spring.ks-tgt) * u[j] * u[k];
         }
         m[j][j] += tgt;
     }

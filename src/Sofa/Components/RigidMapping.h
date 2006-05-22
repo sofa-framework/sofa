@@ -24,6 +24,8 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
+    typedef typename Coord::value_type Real;
+
     class Mat3 : public fixed_array<Deriv,3>
     {
     public:
@@ -36,7 +38,7 @@ public:
 protected:
     std::vector<Coord> points;
     Coord translation;
-    double orientation[4];
+    Real orientation[4];
     Mat3 rotation;
     std::vector<Coord> rotatedPoints;
     class Loader;

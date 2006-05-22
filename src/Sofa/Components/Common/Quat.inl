@@ -131,10 +131,10 @@ Quater<Real> Quater<Real>::quatVectMult(const Vec3d& vect)
 {
     Quater<Real>	ret;
 
-    ret._q[3] = -(_q[0] * vect[0] + _q[1] * vect[1] + _q[2] * vect[2]);
-    ret._q[0] = _q[3] * vect[0] + _q[1] * vect[2] - _q[2] * vect[1];
-    ret._q[1] = _q[3] * vect[1] + _q[2] * vect[0] - _q[0] * vect[2];
-    ret._q[2] = _q[3] * vect[2] + _q[0] * vect[1] - _q[1] * vect[0];
+    ret._q[3] = (Real) (-(_q[0] * vect[0] + _q[1] * vect[1] + _q[2] * vect[2]));
+    ret._q[0] = (Real) (_q[3] * vect[0] + _q[1] * vect[2] - _q[2] * vect[1]);
+    ret._q[1] = (Real) (_q[3] * vect[1] + _q[2] * vect[0] - _q[0] * vect[2]);
+    ret._q[2] = (Real) (_q[3] * vect[2] + _q[0] * vect[1] - _q[1] * vect[0]);
 
     return ret;
 }
@@ -144,10 +144,10 @@ Quater<Real> Quater<Real>::vectQuatMult(const Vec3d& vect)
 {
     Quater<Real>	ret;
 
-    ret[3] = -(vect[0] * _q[0] + vect[1] * _q[1] + vect[2] * _q[2]);
-    ret[0] = vect[0] * _q[3] + vect[1] * _q[2] - vect[2] * _q[1];
-    ret[1] = vect[1] * _q[3] + vect[2] * _q[0] - vect[0] * _q[2];
-    ret[2] = vect[2] * _q[3] + vect[0] * _q[1] - vect[1] * _q[0];
+    ret[3] = (Real) (-(vect[0] * _q[0] + vect[1] * _q[1] + vect[2] * _q[2]));
+    ret[0] = (Real) (vect[0] * _q[3] + vect[1] * _q[2] - vect[2] * _q[1]);
+    ret[1] = (Real) (vect[1] * _q[3] + vect[2] * _q[0] - vect[0] * _q[2]);
+    ret[2] = (Real) (vect[2] * _q[3] + vect[0] * _q[1] - vect[1] * _q[0]);
 
     return ret;
 }
@@ -162,9 +162,9 @@ Quater<Real> Quater<Real>::inverse() const
             _q[2] * _q[2] +
             _q[3] * _q[3]);
 
-    if (norm != 0.0)
+    if (norm != 0.0f)
     {
-        norm = 1.0 / norm;
+        norm = 1.0f / norm;
         ret._q[3] = _q[3] * norm;
         for (int i = 0; i < 3; i++)
         {
@@ -203,7 +203,7 @@ void Quater<Real>::fromMatrix(const Mat3x3d &m)
 {
     Real tr, s;
 
-    tr = m.x().x() + m.y().y() + m.z().z();
+    tr = (Real)(m.x().x() + m.y().y() + m.z().z());
 
     // check the diagonal
     if (tr > 0)
@@ -211,50 +211,50 @@ void Quater<Real>::fromMatrix(const Mat3x3d &m)
         s = (float)sqrt (tr + 1);
         _q[3] = s * 0.5f; // w OK
         s = 0.5f / s;
-        _q[0] = (m.y().z() - m.z().y()) * s; // x OK
-        _q[1] = (m.z().x() - m.x().z()) * s; // y OK
-        _q[2] = (m.x().y() - m.y().x()) * s; // z OK
+        _q[0] = (Real)((m.y().z() - m.z().y()) * s); // x OK
+        _q[1] = (Real)((m.z().x() - m.x().z()) * s); // y OK
+        _q[2] = (Real)((m.x().y() - m.y().x()) * s); // z OK
     }
     else
     {
         if (m.y().y() > m.x().x() && m.z().z() <= m.y().y())
         {
-            s = (float)sqrt ((m.y().y() - (m.z().z() + m.x().x())) + 1.0f);
+            s = (Real)sqrt ((m.y().y() - (m.z().z() + m.x().x())) + 1.0f);
 
             _q[1] = s * 0.5f; // y OK
 
             if (s != 0.0f)
                 s = 0.5f / s;
 
-            _q[2] = (m.z().y() + m.y().z()) * s; // z OK
-            _q[0] = (m.y().x() + m.x().y()) * s; // x OK
-            _q[3] = (m.z().x() - m.x().z()) * s; // w OK
+            _q[2] = (Real)((m.z().y() + m.y().z()) * s); // z OK
+            _q[0] = (Real)((m.y().x() + m.x().y()) * s); // x OK
+            _q[3] = (Real)((m.z().x() - m.x().z()) * s); // w OK
         }
         else if ((m.y().y() <= m.x().x()  &&  m.z().z() > m.x().x())  ||  (m.z().z() > m.y().y()))
         {
-            s = (float)sqrt ((m.z().z() - (m.x().x() + m.y().y())) + 1.0f);
+            s = (Real)sqrt ((m.z().z() - (m.x().x() + m.y().y())) + 1.0f);
 
             _q[2] = s * 0.5f; // z OK
 
             if (s != 0.0f)
                 s = 0.5f / s;
 
-            _q[0] = (m.x().z() + m.z().x()) * s; // x OK
-            _q[1] = (m.z().y() + m.y().z()) * s; // y OK
-            _q[3] = (m.x().y() - m.y().x()) * s; // w OK
+            _q[0] = (Real)((m.x().z() + m.z().x()) * s); // x OK
+            _q[1] = (Real)((m.z().y() + m.y().z()) * s); // y OK
+            _q[3] = (Real)((m.x().y() - m.y().x()) * s); // w OK
         }
         else
         {
-            s = (float)sqrt ((m.x().x() - (m.y().y() + m.z().z())) + 1.0f);
+            s = (Real)sqrt ((m.x().x() - (m.y().y() + m.z().z())) + 1.0f);
 
             _q[0] = s * 0.5f; // x OK
 
             if (s != 0.0f)
                 s = 0.5f / s;
 
-            _q[1] = (m.y().x() + m.x().y()) * s; // y OK
-            _q[2] = (m.x().z() + m.z().x()) * s; // z OK
-            _q[3] = (m.y().z() - m.z().y()) * s; // w OK
+            _q[1] = (Real)((m.y().x() + m.x().y()) * s); // y OK
+            _q[2] = (Real)((m.x().z() + m.z().x()) * s); // z OK
+            _q[3] = (Real)((m.y().z() - m.z().y()) * s); // w OK
         }
     }
 }
@@ -279,19 +279,19 @@ void Quater<Real>::fromMatrix(const Mat3x3d &m)
 template<class Real>
 void Quater<Real>::buildRotationMatrix(Real m[4][4])
 {
-    m[0][0] = (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[0][1] = (2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[0][2] = (2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
+    m[0][0] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
+    m[0][1] = (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
+    m[0][2] = (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
     m[0][3] = 0;
 
-    m[1][0] = (2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1][1] = (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[1][2] = (2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
+    m[1][0] = (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
+    m[1][1] = (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
+    m[1][2] = (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]));
     m[1][3] = 0;
 
-    m[2][0] = (2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[2][1] = (2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2][2] = (1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
+    m[2][0] = (2.0f * (_q[2] * _q[0] - _q[1] * _q[3]));
+    m[2][1] = (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
+    m[2][2] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
     m[2][3] = 0;
 
     m[3][0] = 0;
@@ -328,19 +328,19 @@ void Quater<Real>::buildRotationMatrix(Real m[4][4])
 template<class Real>
 void Quater<Real>::writeOpenGlMatrix(double *m) const
 {
-    m[0*4+0] = (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[1*4+0] = (2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[2*4+0] = (2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
+    m[0*4+0] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
+    m[1*4+0] = (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
+    m[2*4+0] = (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
     m[3*4+0] = 0.0f;
 
-    m[0*4+1] = (2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1*4+1] = (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[2*4+1] = (float) (2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
+    m[0*4+1] = (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
+    m[1*4+1] = (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
+    m[2*4+1] = (float) (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]));
     m[3*4+1] = 0.0f;
 
-    m[0*4+2] = (float) (2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[1*4+2] = (float) (2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2*4+2] = (float) (1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
+    m[0*4+2] = (float) (2.0f * (_q[2] * _q[0] - _q[1] * _q[3]));
+    m[1*4+2] = (float) (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
+    m[2*4+2] = (float) (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
     m[3*4+2] = 0.0f;
 
     m[0*4+3] = 0.0f;
@@ -353,19 +353,19 @@ void Quater<Real>::writeOpenGlMatrix(double *m) const
 template<class Real>
 void Quater<Real>::writeOpenGlMatrix(float *m) const
 {
-    m[0*4+0] = (1.0 - 2.0 * (_q[1] * _q[1] + _q[2] * _q[2]));
-    m[1*4+0] = (2.0 * (_q[0] * _q[1] - _q[2] * _q[3]));
-    m[2*4+0] = (2.0 * (_q[2] * _q[0] + _q[1] * _q[3]));
+    m[0*4+0] = (float) (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
+    m[1*4+0] = (float) (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
+    m[2*4+0] = (float) (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
     m[3*4+0] = 0.0f;
 
-    m[0*4+1] = (2.0 * (_q[0] * _q[1] + _q[2] * _q[3]));
-    m[1*4+1] = (1.0 - 2.0 * (_q[2] * _q[2] + _q[0] * _q[0]));
-    m[2*4+1] = (float) (2.0 * (_q[1] * _q[2] - _q[0] * _q[3]));
+    m[0*4+1] = (float) (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
+    m[1*4+1] = (float) (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
+    m[2*4+1] = (float) (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]));
     m[3*4+1] = 0.0f;
 
-    m[0*4+2] = (float) (2.0 * (_q[2] * _q[0] - _q[1] * _q[3]));
-    m[1*4+2] = (float) (2.0 * (_q[1] * _q[2] + _q[0] * _q[3]));
-    m[2*4+2] = (float) (1.0 - 2.0 * (_q[1] * _q[1] + _q[0] * _q[0]));
+    m[0*4+2] = (float) (2.0f * (_q[2] * _q[0] - _q[1] * _q[3]));
+    m[1*4+2] = (float) (2.0f * (_q[1] * _q[2] + _q[0] * _q[3]));
+    m[2*4+2] = (float) (1.0f - 2.0f * (_q[1] * _q[1] + _q[0] * _q[0]));
     m[3*4+2] = 0.0f;
 
     m[0*4+3] = 0.0f;
@@ -379,15 +379,15 @@ template<class Real>
 Quater<Real> Quater<Real>::axisToQuat(Vec3d a, Real phi)
 {
     a = a / a.norm();
-    _q[0] = a.x();
-    _q[1] = a.y();
-    _q[2] = a.z();
+    _q[0] = (Real)a.x();
+    _q[1] = (Real)a.y();
+    _q[2] = (Real)a.z();
 
-    _q[0] = _q[0] * sin(phi / 2.0);
-    _q[1] = _q[1] * sin(phi / 2.0);
-    _q[2] = _q[2] * sin(phi / 2.0);
+    _q[0] = _q[0] * (Real)sin(phi / 2.0);
+    _q[1] = _q[1] * (Real)sin(phi / 2.0);
+    _q[2] = _q[2] * (Real)sin(phi / 2.0);
 
-    _q[3] = cos(phi / 2.0);
+    _q[3] = (Real)cos(phi / 2.0);
 
     return *this;
 }

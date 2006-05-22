@@ -149,7 +149,7 @@ GridTopology::Quad GridTopology::getQuad(int i)
     }
 }
 
-GridTopology::Quad GridTopology::getQuad(int x, int y, int z)
+GridTopology::Quad GridTopology::getQuad(int x, int y, int /*z*/)
 {
     /*
     	if (x == -1)

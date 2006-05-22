@@ -26,16 +26,16 @@ public:
 
     static void set(Coord& c, double x, double y, double z)
     {
-        c[0] = x;
-        c[1] = y;
-        c[2] = z;
+        c[0] = (typename Coord::value_type)x;
+        c[1] = (typename Coord::value_type)y;
+        c[2] = (typename Coord::value_type)z;
     }
 
     static void add(Coord& c, double x, double y, double z)
     {
-        c[0] += x;
-        c[1] += y;
-        c[2] += z;
+        c[0] += (typename Coord::value_type)x;
+        c[1] += (typename Coord::value_type)y;
+        c[2] += (typename Coord::value_type)z;
     }
 };
 
@@ -80,16 +80,16 @@ public:
 
     static void set(Coord& c, double x, double y, double z)
     {
-        c[0] = x;
-        c[1] = y;
-        c[2] = z;
+        c[0] = (typename Coord::value_type)x;
+        c[1] = (typename Coord::value_type)y;
+        c[2] = (typename Coord::value_type)z;
     }
 
     static void add(Coord& c, double x, double y, double z)
     {
-        c[0] += x;
-        c[1] += y;
-        c[2] += z;
+        c[0] += (typename Coord::value_type)x;
+        c[1] += (typename Coord::value_type)y;
+        c[2] += (typename Coord::value_type)z;
     }
 };
 

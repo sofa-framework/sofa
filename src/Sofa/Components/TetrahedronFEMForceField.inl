@@ -1030,10 +1030,10 @@ void TetrahedronFEMForceField<DataTypes>::draw()
         Index c = (*it)[2];
         Index d = (*it)[3];
         Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
-        Coord pa = (x[a]+center)*0.666667;
-        Coord pb = (x[b]+center)*0.666667;
-        Coord pc = (x[c]+center)*0.666667;
-        Coord pd = (x[d]+center)*0.666667;
+        Coord pa = (x[a]+center)*(Real)0.666667;
+        Coord pb = (x[b]+center)*(Real)0.666667;
+        Coord pc = (x[c]+center)*(Real)0.666667;
+        Coord pd = (x[d]+center)*(Real)0.666667;
 
         glColor4f(0,0,1,1);
         GL::glVertexT(pa);

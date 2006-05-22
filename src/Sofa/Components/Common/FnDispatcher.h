@@ -30,7 +30,7 @@ protected:
         TypeInfo(const std::type_info& t) : pt(&t) { }
         operator const std::type_info&() const { return *pt; }
         bool operator==(const TypeInfo& t) const { return *pt == *t.pt; }
-        bool operator<(const TypeInfo& t) const { return pt->before(*t.pt); }
+        bool operator<(const TypeInfo& t) const { return pt->before(*t.pt)!=0; }
     };
     typedef std::pair<TypeInfo,TypeInfo> KeyType;
     typedef std::map<KeyType, F> MapType;

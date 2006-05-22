@@ -22,6 +22,13 @@ Frame::Frame (const Vec3 &origin, const Quat &orientation, const Vec3& scale )
 {
     setTransform( origin, orientation, scale );
 }
+
+Frame::Frame (const Vec3 &origin )
+    : origin_(origin)
+{
+    basis_.identity();
+}
+
 Frame::Frame ()
 {
     clear();
@@ -29,9 +36,7 @@ Frame::Frame ()
 
 void Frame::clear()
 {
-    basis_.clear();
-    for( int i=0; i<3; ++i )
-        basis_[i][i] = 1;
+    basis_.identity();
     origin_.clear();
 }
 

@@ -15,70 +15,6 @@ namespace Components
 {
 
 
-
-class VertexTensor
-{
-public:
-    double tensor[3][3];
-
-    void resetToNull();
-
-}; //class VertexTensor
-
-
-
-class Edge
-{
-public:
-    int index;
-
-    int vertex[2];
-
-}; // class Edge
-
-
-
-class EdgeTensor
-{
-public:
-    double tensor[3][3];
-
-    void resetToNull();
-
-}; // class EdgeTensor
-
-
-
-class Triangle
-{
-public:
-    int index;
-
-    int vertex[3];
-
-    double shapeVector[3];
-    double squareRestArea;
-
-}; // class Triangle
-
-
-
-class Tetrahedron
-{
-public:
-    int index;
-
-    int vertex  [4];
-    int edge    [6];
-    int triangle[4];
-
-    double triangleShapeVector[4][3];
-    double restVolume;
-
-}; // class Tetrahedron
-
-
-
 /**
  * @class TensorForceField
  * @brief Tensors based internal force field class.
@@ -92,7 +28,6 @@ class TensorForceField : public Core::ForceField,
     public Abstract::VisualModel
 {
 public:
-
 
     TensorForceField (const char *filename);
 
@@ -122,14 +57,93 @@ public:
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
+    class VertexTensor
+    {
+    public:
+        Real tensor[3][3];
+
+        void resetToNull()
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
+                    tensor[i][j] = 0.0;
+                }
+            }
+        }
+
+    }; //class VertexTensor
+
+
+
+    class Edge
+    {
+    public:
+        int index;
+
+        int vertex[2];
+
+    }; // class Edge
+
+
+
+    class EdgeTensor
+    {
+    public:
+        Real tensor[3][3];
+
+        void resetToNull()
+        {
+            for (int i = 0; i < 3; ++i)
+            {
+                for (int j = 0; j < 3; ++j)
+                {
+                    tensor[i][j] = 0.0;
+                }
+            }
+        }
+
+    }; // class EdgeTensor
+
+
+
+    class Triangle
+    {
+    public:
+        int index;
+
+        int vertex[3];
+
+        double shapeVector[3];
+        double squareRestArea;
+
+    }; // class Triangle
+
+
+
+    class Tetrahedron
+    {
+    public:
+        int index;
+
+        int vertex  [4];
+        int edge    [6];
+        int triangle[4];
+
+        Real triangleShapeVector[4][3];
+        Real restVolume;
+
+    }; // class Tetrahedron
+
 
 private:
     // Mechanical Object containing this Force Field
     Core::MechanicalObject<DataTypes>* object_;
     // damping factor
-    double alpha_;
+    Real alpha_;
     // Lame coefficient
-    double lambda_, mu_;
+    Real lambda_, mu_;
     std::vector< Coord >    vertex_      ;
     std::vector< Edge >         edge_        ;
     std::vector< Triangle >     triangle_    ;

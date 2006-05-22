@@ -107,12 +107,12 @@ bool ImageBMP::load(const std::string &filename)
 
 static bool fwriteW(FILE* file, unsigned short data)
 {
-    return fwrite(&data,sizeof(data),1,file);
+    return fwrite(&data,sizeof(data),1,file)!=0;
 }
 
 static bool fwriteDW(FILE* file, unsigned long data)
 {
-    return fwrite(&data,sizeof(data),1,file);
+    return fwrite(&data,sizeof(data),1,file)!=0;
 }
 
 bool ImageBMP::save(const std::string& filename)

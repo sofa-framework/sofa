@@ -49,7 +49,7 @@ void readVec1(Vec& vec, const char* str)
         double v = strtod(str,(char**)&str2);
         if (str2==str) break;
         str = str2;
-        vec.push_back(v);
+        vec.push_back((typename Vec::value_type)v);
     }
 }
 
@@ -75,7 +75,7 @@ void create(DiagonalMass<DataTypes, MassType>*& obj, XML::Node<Core::Mass>* arg)
         }
         if (arg->getAttribute("mass"))
         {
-            std::vector<double> mass;
+            std::vector<MassType> mass;
             readVec1(mass,arg->getAttribute("mass"));
             obj->clear();
             for (unsigned int i=0; i<mass.size(); i++)

@@ -6,11 +6,11 @@ namespace Core
 {
 
 Context::Context()
-    : gravity_( Vec(0,-9.81,0) )
+    : gravity_( Vec(0,-9.81f,0) )
     , localToWorld_( Frame::identity() )
     , spatialVelocity_( Vec(0,0,0),Vec(0,0,0) )
     , originAcceleration_( Vec(0,0,0) )
-    , dt_(0.04)
+    , dt_(0.04f)
     , animate_(false)
     , showCollisionModels_(false)
     , showBehaviorModels_(true)

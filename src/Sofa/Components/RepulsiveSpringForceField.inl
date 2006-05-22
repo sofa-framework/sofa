@@ -34,10 +34,10 @@ void RepulsiveSpringForceField<DataTypes>::addForce()
         {
             Real inverseLength = 1.0f/d;
             u *= inverseLength;
-            Real elongation = d - this->springs[i].initpos;
+            Real elongation = (Real)(d - this->springs[i].initpos);
             Deriv relativeVelocity = v2[b]-v1[a];
             Real elongationVelocity = dot(u,relativeVelocity);
-            Real forceIntensity = this->springs[i].ks*elongation+this->springs[i].kd*elongationVelocity;
+            Real forceIntensity = (Real)(this->springs[i].ks*elongation+this->springs[i].kd*elongationVelocity);
             Deriv force = u*forceIntensity;
             f1[a]+=force;
             f2[b]-=force;
@@ -48,7 +48,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce()
             {
                 for( int k=0; k<3; ++k )
                 {
-                    m[j][k] = (this->springs[i].ks-tgt) * u[j] * u[k];
+                    m[j][k] = ((Real)this->springs[i].ks-tgt) * u[j] * u[k];
                 }
                 m[j][j] += tgt;
             }

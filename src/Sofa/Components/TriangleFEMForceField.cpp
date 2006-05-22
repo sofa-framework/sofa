@@ -202,7 +202,7 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
         _materialsStiffnesses[i][1][2] = 0;
         _materialsStiffnesses[i][2][0] = 0;
         _materialsStiffnesses[i][2][1] = 0;
-        _materialsStiffnesses[i][2][2] = 0.5 * (1 - _poissonRatio);
+        _materialsStiffnesses[i][2][2] = 0.5f * (1 - _poissonRatio);
 
         _materialsStiffnesses[i] = (_youngModulus / (12 * (1 - _poissonRatio * _poissonRatio))) * _materialsStiffnesses[i];
     }

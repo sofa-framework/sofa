@@ -41,7 +41,8 @@ public:
 
     const Frame&  getFrame() const;
     CoordinateSystem* setFrame( const Frame& f );
-    CoordinateSystem* setFrame( const Vec& translation, const Rot& rotation=Rot::identity() );
+    CoordinateSystem* setFrame( const Vec& translation, const Rot& rotation );
+    CoordinateSystem* setFrame( const Vec& translation ) { Rot r = Rot::identity(); return setFrame(translation, r); }
 
     const Velocity&  getVelocity() const;
     CoordinateSystem* setVelocity( const Velocity& f );

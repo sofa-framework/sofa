@@ -9,6 +9,10 @@ if "%1" == "VC6" goto vc6
 if "%1" == "VC7" goto vc7
 if "%1" == "VC8" goto vc8
 if "%1" == "clean" goto clean
+:console
+@echo Making Makefiles
+qmake -recursive
+@goto end
 :vc6
 set QMAKESPEC=win32-msvc
 goto common
@@ -25,8 +29,8 @@ set QMAKESPEC=win32-msvc2005
 @REM cd src
 @REM for /R %%i in (*.pro) do qmake "%%i"
 @REM cd ..
-qmake -recursive -o Sofa
-goto end
+qmake -tp vc -recursive -o Sofa
+@goto end
 :clean
 @echo cleaning all VC6 Project or VC7 Project
 for /R %%i in (*.ncb, *.suo, Makefile, *.idb, *.pdb, *.plg, *.opt) do del "%%i"

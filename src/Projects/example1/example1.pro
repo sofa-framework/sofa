@@ -1,5 +1,5 @@
 include(../../../sofa.cfg)
-TEMPLATE = $$TEMPLATEAPPPROJECT
+TEMPLATE = app
 CONFIG += $$CONFIGPROJECT \
           warn_on
 

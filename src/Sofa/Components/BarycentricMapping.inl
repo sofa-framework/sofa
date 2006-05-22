@@ -39,7 +39,9 @@ void BarycentricMapping<BaseMapping>::calcMap(RegularGridTopology* topology)
             cube = topology->findNearestCube(RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
         CubeData& data = mapper->map[i];
-        std::copy(coefs, coefs+3, data.baryCoords);
+        data.baryCoords[0] = (Real)coefs[0];
+        data.baryCoords[1] = (Real)coefs[1];
+        data.baryCoords[2] = (Real)coefs[2];
         data.in_index = cube;
         //const typename TTopology::Cube points = topology->getCube(cube);
         //std::copy(points.begin(), points.end(), data.points);
@@ -109,7 +111,9 @@ void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
             ++outside;
         }
         MappingData<3,0>& data = mapper->map[i];
-        std::copy(coefs.begin(), coefs.end(), data.baryCoords);
+        data.baryCoords[0] = (Real)coefs[0];
+        data.baryCoords[1] = (Real)coefs[1];
+        data.baryCoords[2] = (Real)coefs[2];
         data.in_index = index;
     }
     if (outside>0) std::cerr << "WARNING: Barycentric mapping with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
@@ -155,14 +159,14 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::apply( typename Barycen
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
-        out[i] = in[cube[0]] * (1-fx) * (1-fy) * (1-fz)
-                + in[cube[1]] * (  fx) * (1-fy) * (1-fz)
-                + in[cube[2]] * (1-fx) * (  fy) * (1-fz)
-                + in[cube[3]] * (  fx) * (  fy) * (1-fz)
-                + in[cube[4]] * (1-fx) * (1-fy) * (  fz)
-                + in[cube[5]] * (  fx) * (1-fy) * (  fz)
-                + in[cube[6]] * (1-fx) * (  fy) * (  fz)
-                + in[cube[7]] * (  fx) * (  fy) * (  fz);
+        out[i] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
+                + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
+                + in[cube[2]] * ((1-fx) * (  fy) * (1-fz))
+                + in[cube[3]] * ((  fx) * (  fy) * (1-fz))
+                + in[cube[4]] * ((1-fx) * (1-fy) * (  fz))
+                + in[cube[5]] * ((  fx) * (1-fy) * (  fz))
+                + in[cube[6]] * ((1-fx) * (  fy) * (  fz))
+                + in[cube[7]] * ((  fx) * (  fy) * (  fz));
     }
 }
 
@@ -189,14 +193,14 @@ void BarycentricMapping<BaseMapping>::MeshMapper::apply( typename BarycentricMap
         else
         {
             const MeshTopology::Cube& cube = cubes[index-c0];
-            out[i] = in[cube[0]] * (1-fx) * (1-fy) * (1-fz)
-                    + in[cube[1]] * (  fx) * (1-fy) * (1-fz)
-                    + in[cube[2]] * (1-fx) * (  fy) * (1-fz)
-                    + in[cube[3]] * (  fx) * (  fy) * (1-fz)
-                    + in[cube[4]] * (1-fx) * (1-fy) * (  fz)
-                    + in[cube[5]] * (  fx) * (1-fy) * (  fz)
-                    + in[cube[6]] * (1-fx) * (  fy) * (  fz)
-                    + in[cube[7]] * (  fx) * (  fy) * (  fz);
+            out[i] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
+                    + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
+                    + in[cube[2]] * ((1-fx) * (  fy) * (1-fz))
+                    + in[cube[3]] * ((  fx) * (  fy) * (1-fz))
+                    + in[cube[4]] * ((1-fx) * (1-fy) * (  fz))
+                    + in[cube[5]] * ((  fx) * (1-fy) * (  fz))
+                    + in[cube[6]] * ((1-fx) * (  fy) * (  fz))
+                    + in[cube[7]] * ((  fx) * (  fy) * (  fz));
         }
     }
 }
@@ -218,14 +222,14 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::applyJ( typename Baryce
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
-        out[i] = in[cube[0]] * (1-fx) * (1-fy) * (1-fz)
-                + in[cube[1]] * (  fx) * (1-fy) * (1-fz)
-                + in[cube[2]] * (1-fx) * (  fy) * (1-fz)
-                + in[cube[3]] * (  fx) * (  fy) * (1-fz)
-                + in[cube[4]] * (1-fx) * (1-fy) * (  fz)
-                + in[cube[5]] * (  fx) * (1-fy) * (  fz)
-                + in[cube[6]] * (1-fx) * (  fy) * (  fz)
-                + in[cube[7]] * (  fx) * (  fy) * (  fz);
+        out[i] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
+                + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
+                + in[cube[2]] * ((1-fx) * (  fy) * (1-fz))
+                + in[cube[3]] * ((  fx) * (  fy) * (1-fz))
+                + in[cube[4]] * ((1-fx) * (1-fy) * (  fz))
+                + in[cube[5]] * ((  fx) * (1-fy) * (  fz))
+                + in[cube[6]] * ((1-fx) * (  fy) * (  fz))
+                + in[cube[7]] * ((  fx) * (  fy) * (  fz));
     }
 }
 
@@ -252,14 +256,14 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJ( typename BarycentricMa
         else
         {
             const MeshTopology::Cube& cube = cubes[index-c0];
-            out[i] = in[cube[0]] * (1-fx) * (1-fy) * (1-fz)
-                    + in[cube[1]] * (  fx) * (1-fy) * (1-fz)
-                    + in[cube[2]] * (1-fx) * (  fy) * (1-fz)
-                    + in[cube[3]] * (  fx) * (  fy) * (1-fz)
-                    + in[cube[4]] * (1-fx) * (1-fy) * (  fz)
-                    + in[cube[5]] * (  fx) * (1-fy) * (  fz)
-                    + in[cube[6]] * (1-fx) * (  fy) * (  fz)
-                    + in[cube[7]] * (  fx) * (  fy) * (  fz);
+            out[i] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
+                    + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
+                    + in[cube[2]] * ((1-fx) * (  fy) * (1-fz))
+                    + in[cube[3]] * ((  fx) * (  fy) * (1-fz))
+                    + in[cube[4]] * ((1-fx) * (1-fy) * (  fz))
+                    + in[cube[5]] * ((  fx) * (1-fy) * (  fz))
+                    + in[cube[6]] * ((1-fx) * (  fy) * (  fz))
+                    + in[cube[7]] * ((  fx) * (  fy) * (  fz));
         }
     }
 }
@@ -277,17 +281,17 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::applyJT( typename BaseM
     {
         const OutDeriv v = in[i];
         const RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
-        const Real fx = map[i].baryCoords[0];
-        const Real fy = map[i].baryCoords[1];
-        const Real fz = map[i].baryCoords[2];
-        out[cube[0]] += v * (1-fx) * (1-fy) * (1-fz);
-        out[cube[1]] += v * (  fx) * (1-fy) * (1-fz);
-        out[cube[2]] += v * (1-fx) * (  fy) * (1-fz);
-        out[cube[3]] += v * (  fx) * (  fy) * (1-fz);
-        out[cube[4]] += v * (1-fx) * (1-fy) * (  fz);
-        out[cube[5]] += v * (  fx) * (1-fy) * (  fz);
-        out[cube[6]] += v * (1-fx) * (  fy) * (  fz);
-        out[cube[7]] += v * (  fx) * (  fy) * (  fz);
+        const OutReal fx = (OutReal)map[i].baryCoords[0];
+        const OutReal fy = (OutReal)map[i].baryCoords[1];
+        const OutReal fz = (OutReal)map[i].baryCoords[2];
+        out[cube[0]] += v * ((1-fx) * (1-fy) * (1-fz));
+        out[cube[1]] += v * ((  fx) * (1-fy) * (1-fz));
+        out[cube[2]] += v * ((1-fx) * (  fy) * (1-fz));
+        out[cube[3]] += v * ((  fx) * (  fy) * (1-fz));
+        out[cube[4]] += v * ((1-fx) * (1-fy) * (  fz));
+        out[cube[5]] += v * ((  fx) * (1-fy) * (  fz));
+        out[cube[6]] += v * ((1-fx) * (  fy) * (  fz));
+        out[cube[7]] += v * ((  fx) * (  fy) * (  fz));
     }
 }
 
@@ -300,9 +304,9 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJT( typename BaseMapping:
     for(unsigned int i=0; i<map.size(); i++)
     {
         const OutDeriv v = in[i];
-        const Real fx = map[i].baryCoords[0];
-        const Real fy = map[i].baryCoords[1];
-        const Real fz = map[i].baryCoords[2];
+        const OutReal fx = (OutReal)map[i].baryCoords[0];
+        const OutReal fy = (OutReal)map[i].baryCoords[1];
+        const OutReal fz = (OutReal)map[i].baryCoords[2];
         int index = map[i].in_index;
         if (index<c0)
         {
@@ -315,14 +319,14 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJT( typename BaseMapping:
         else
         {
             const MeshTopology::Cube& cube = cubes[index-c0];
-            out[cube[0]] += v * (1-fx) * (1-fy) * (1-fz);
-            out[cube[1]] += v * (  fx) * (1-fy) * (1-fz);
-            out[cube[2]] += v * (1-fx) * (  fy) * (1-fz);
-            out[cube[3]] += v * (  fx) * (  fy) * (1-fz);
-            out[cube[4]] += v * (1-fx) * (1-fy) * (  fz);
-            out[cube[5]] += v * (  fx) * (1-fy) * (  fz);
-            out[cube[6]] += v * (1-fx) * (  fy) * (  fz);
-            out[cube[7]] += v * (  fx) * (  fy) * (  fz);
+            out[cube[0]] += v * ((1-fx) * (1-fy) * (1-fz));
+            out[cube[1]] += v * ((  fx) * (1-fy) * (1-fz));
+            out[cube[2]] += v * ((1-fx) * (  fy) * (1-fz));
+            out[cube[3]] += v * ((  fx) * (  fy) * (1-fz));
+            out[cube[4]] += v * ((1-fx) * (1-fy) * (  fz));
+            out[cube[5]] += v * ((  fx) * (1-fy) * (  fz));
+            out[cube[6]] += v * ((1-fx) * (  fy) * (  fz));
+            out[cube[7]] += v * ((  fx) * (  fy) * (  fz));
         }
     }
 }
@@ -371,7 +375,7 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::draw(const typename Bas
         {
             if (f[j]<=-0.0001 || f[j]>=0.0001)
             {
-                glColor3f(f[j],f[j],1);
+                glColor3f((float)f[j],(float)f[j],1);
                 glVertex3v(out[i]); glVertex3v(in[cube[j]]);
             }
         }
@@ -404,7 +408,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
             {
                 if (f[j]<=-0.0001 || f[j]>=0.0001)
                 {
-                    glColor3f(f[j],1,f[j]);
+                    glColor3f((float)f[j],1,(float)f[j]);
                     glVertex3v(out[i]); glVertex3v(in[tetra[j]]);
                 }
             }
@@ -425,7 +429,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
             {
                 if (f[j]<=-0.0001 || f[j]>=0.0001)
                 {
-                    glColor3f(f[j],1,1);
+                    glColor3f((float)f[j],1,1);
                     glVertex3v(out[i]); glVertex3v(in[cube[j]]);
                 }
             }

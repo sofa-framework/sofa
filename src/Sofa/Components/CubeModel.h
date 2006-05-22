@@ -15,7 +15,7 @@ namespace Components
 
 using namespace Common;
 
-class CubeModel : public Abstract::CollisionModel, public Core::MechanicalObject<Vec3Types>, public Abstract::VisualModel
+class CubeModel : public Core::MechanicalObject<Vec3Types>, public Abstract::CollisionModel, public Abstract::VisualModel
 {
 protected:
     std::vector<Abstract::CollisionElement*> elems;

@@ -48,20 +48,20 @@ typename SolidTypes<R>::SpatialVector& SolidTypes<R>::SpatialVector::operator +=
     freeVec += v.freeVec;
     return *this;
 }
-
+/*
 template<class R>
 typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::operator * ( Real a ) const
 {
-    return SpatialVector( lineVec *a, freeVec * a);
+        return SpatialVector( lineVec *a, freeVec * a);
 }
 
 template<class R>
 typename SolidTypes<R>::SpatialVector& SolidTypes<R>::SpatialVector::operator *= ( Real a )
 {
-    lineVec *=a; freeVec *= a;
-    return *this;
+   lineVec *=a; freeVec *= a;
+        return *this;
 }
-
+*/
 template<class R>
 typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::operator + ( const SpatialVector& v ) const
 {
@@ -193,17 +193,17 @@ template<class R>
 typename SolidTypes<R>::Mat SolidTypes<R>::Transform::getRotationMatrix() const
 {
     Mat m;
-    m[0][0] = (1.0 - 2.0 * (orientation_[1] * orientation_[1] + orientation_[2] * orientation_[2]));
-    m[0][1] = (2.0 * (orientation_[0] * orientation_[1] - orientation_[2] * orientation_[3]));
-    m[0][2] = (2.0 * (orientation_[2] * orientation_[0] + orientation_[1] * orientation_[3]));
+    m[0][0] = (1.0f - 2.0f * (orientation_[1] * orientation_[1] + orientation_[2] * orientation_[2]));
+    m[0][1] = (2.0f * (orientation_[0] * orientation_[1] - orientation_[2] * orientation_[3]));
+    m[0][2] = (2.0f * (orientation_[2] * orientation_[0] + orientation_[1] * orientation_[3]));
 
-    m[1][0] = (2.0 * (orientation_[0] * orientation_[1] + orientation_[2] * orientation_[3]));
-    m[1][1] = (1.0 - 2.0 * (orientation_[2] * orientation_[2] + orientation_[0] * orientation_[0]));
-    m[1][2] = (2.0 * (orientation_[1] * orientation_[2] - orientation_[0] * orientation_[3]));
+    m[1][0] = (2.0f * (orientation_[0] * orientation_[1] + orientation_[2] * orientation_[3]));
+    m[1][1] = (1.0f - 2.0f * (orientation_[2] * orientation_[2] + orientation_[0] * orientation_[0]));
+    m[1][2] = (2.0f * (orientation_[1] * orientation_[2] - orientation_[0] * orientation_[3]));
 
-    m[2][0] = (2.0 * (orientation_[2] * orientation_[0] - orientation_[1] * orientation_[3]));
-    m[2][1] = (2.0 * (orientation_[1] * orientation_[2] + orientation_[0] * orientation_[3]));
-    m[2][2] = (1.0 - 2.0 * (orientation_[1] * orientation_[1] + orientation_[0] * orientation_[0]));
+    m[2][0] = (2.0f * (orientation_[2] * orientation_[0] - orientation_[1] * orientation_[3]));
+    m[2][1] = (2.0f * (orientation_[1] * orientation_[2] + orientation_[0] * orientation_[3]));
+    m[2][2] = (1.0f - 2.0f * (orientation_[1] * orientation_[1] + orientation_[0] * orientation_[0]));
     return m;
 }
 
@@ -303,22 +303,24 @@ typename SolidTypes<R>::Transform& SolidTypes<R>::Transform::operator +=(const T
     return *this;
 }
 
+/*
 template<class R>
-typename SolidTypes<R>::Transform& SolidTypes<R>::Transform::operator*=(Real a)
+      typename SolidTypes<R>::Transform& SolidTypes<R>::Transform::operator*=(Real a)
 {
-    std::cout << "SolidTypes<R>::Transform::operator *="<<std::endl;
-    origin_ *= a;
-    //orientation *= a;
-    return *this;
+   std::cout << "SolidTypes<R>::Transform::operator *="<<std::endl;
+   origin_ *= a;
+        //orientation *= a;
+   return *this;
 }
 
 template<class R>
-typename SolidTypes<R>::Transform SolidTypes<R>::Transform::operator*(Real a) const
+      typename SolidTypes<R>::Transform SolidTypes<R>::Transform::operator*(Real a) const
 {
-    Transform r = *this;
-    r*=a;
-    return r;
+   Transform r = *this;
+   r*=a;
+   return r;
 }
+*/
 
 //=================================================================================
 

@@ -57,7 +57,7 @@ void create(UniformMass<DataTypes, MassType>*& obj, XML::Node<Core::Mass>* arg)
         }
         if (arg->getAttribute("mass"))
         {
-            obj->setMass(atof(arg->getAttribute("mass")));
+            obj->setMass((MassType)atof(arg->getAttribute("mass")));
         }
     }
 }

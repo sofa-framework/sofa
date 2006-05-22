@@ -73,14 +73,18 @@ public:
     template<typename real2>
     Vec(const Vec<N, real2>& p)
     {
-        std::copy(p.begin(), p.end(), this->begin());
+        //std::copy(p.begin(), p.end(), this->begin());
+        for(int i=0; i<N; i++)
+            this->elems[i] = (real)p(i);
     }
 
     /// Constructor from an array of values.
     template<typename real2>
     explicit Vec(const real2* p)
     {
-        std::copy(p, p+N, this->begin());
+        //std::copy(p, p+N, this->begin());
+        for(int i=0; i<N; i++)
+            this->elems[i] = (real)p[i];
     }
 
     /// Special access to first element.
@@ -143,7 +147,9 @@ public:
     template<int M, typename real2>
     void operator=(const Vec<M,real2>& v)
     {
-        std::copy(v.begin(), v.begin()+(N>M?M:N), this->begin());
+        //std::copy(v.begin(), v.begin()+(N>M?M:N), this->begin());
+        for(int i=0; i<(N>M?M:N); i++)
+            this->elems[i] = (real)v(i);
     }
 
     /// Sets every element to 0.
@@ -197,52 +203,58 @@ public:
     // LINEAR ALGEBRA
 
     /// Multiplication by a scalar f.
-    Vec<N,real> operator*(real f) const
+    template<class real2>
+    Vec<N,real> operator*(real2 f) const
     {
         Vec<N,real> r;
         for (int i=0; i<N; i++)
-            r[i] = this->elems[i]*f;
+            r[i] = this->elems[i]*(real)f;
         return r;
     }
 
     /// On-place multiplication by a scalar f.
-    void operator*=(real f)
+    template<class real2>
+    void operator*=(real2 f)
     {
         for (int i=0; i<N; i++)
-            this->elems[i]*=f;
+            this->elems[i]*=(real)f;
     }
 
     /// Division by a scalar f.
-    Vec<N,real> operator/(real f) const
+    template<class real2>
+    Vec<N,real> operator/(real2 f) const
     {
         Vec<N,real> r;
         for (int i=0; i<N; i++)
-            r[i] = this->elems[i]/f;
+            r[i] = this->elems[i]/(real)f;
         return r;
     }
 
     /// On-place division by a scalar f.
-    void operator/=(real f)
+    template<class real2>
+    void operator/=(real2 f)
     {
         for (int i=0; i<N; i++)
-            this->elems[i]/=f;
+            this->elems[i]/=(real)f;
     }
 
     /// Dot product.
-    real operator*(const Vec<N,real>& v) const
+    template<class real2>
+    real operator*(const Vec<N,real2>& v) const
     {
         real r = this->elems[0]*v[0];
         for (int i=1; i<N; i++)
-            r += this->elems[i]*v[i];
+            r += (real)(this->elems[i]*v[i]);
         return r;
     }
 
     /// Vector addition.
-    Vec<N,real> operator+(const Vec<N,real>& v) const
+    template<class real2>
+    Vec<N,real> operator+(const Vec<N,real2>& v) const
     {
         Vec<N,real> r;
         for (int i=0; i<N; i++)
-            r[i]=this->elems[i]+v[i];
+            r[i]=this->elems[i]+(real)v[i];
         return r;
     }
 
@@ -251,23 +263,25 @@ public:
     void operator+=(const Vec<N,real2>& v)
     {
         for (int i=0; i<N; i++)
-            this->elems[i]+=v[i];
+            this->elems[i]+=(real)v[i];
     }
 
     /// Vector subtraction.
-    Vec<N,real> operator-(const Vec<N,real>& v) const
+    template<class real2>
+    Vec<N,real> operator-(const Vec<N,real2>& v) const
     {
         Vec<N,real> r;
         for (int i=0; i<N; i++)
-            r[i]=this->elems[i]-v[i];
+            r[i]=this->elems[i]-(real)v[i];
         return r;
     }
 
     /// On-place vector subtraction.
-    void operator-=(const Vec<N,real>& v)
+    template<class real2>
+    void operator-=(const Vec<N,real2>& v)
     {
         for (int i=0; i<N; i++)
-            this->elems[i]-=v[i];
+            this->elems[i]-=(real)v[i];
     }
 
     /// Vector negation.

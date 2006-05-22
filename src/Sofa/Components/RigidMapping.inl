@@ -6,17 +6,11 @@
 #include "SphereLoader.h"
 #include "Common/Mesh.h"
 #include "Scene.h"
+#include "GL/template.h"
 
 #include "Sofa/Core/MechanicalMapping.inl"
 
-// added by Sylvere F.
-//#include <strings.h>
 #include <string>
-#ifdef _WIN32
-#include <windows.h>
-#endif /* _WIN32 */
-
-#include <GL/gl.h>
 
 namespace Sofa
 {
@@ -34,11 +28,11 @@ public:
     Loader(RigidMapping<BaseMapping>* dest) : dest(dest) {}
     virtual void addMass(double px, double py, double pz, double, double, double, double, double, bool, bool)
     {
-        dest->points.push_back(typename Out::Coord(px,py,pz));
+        dest->points.push_back(Coord((Real)px,(Real)py,(Real)pz));
     }
     virtual void addSphere(double px, double py, double pz, double)
     {
-        dest->points.push_back(typename Out::Coord(px,py,pz));
+        dest->points.push_back(Coord((Real)px,(Real)py,(Real)pz));
     }
 };
 
@@ -65,7 +59,7 @@ void RigidMapping<BaseMapping>::init(const char *filename)
         {
             points.resize(mesh->getVertices().size());
             for (unsigned int i=0; i<mesh->getVertices().size(); i++)
-                points[i] = mesh->getVertices()[i];
+                points[i] = (Coord)mesh->getVertices()[i];
             delete mesh;
         }
     }
@@ -88,23 +82,23 @@ void RigidMapping<BaseMapping>::init()
 template <class BaseMapping>
 void RigidMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    translation[0] = in[0].getCenter()[0];
-    translation[1] = in[0].getCenter()[1];
-    translation[2] = in[0].getCenter()[2];
-    double* q = orientation;
-    q[0] = in[0].getOrientation()[0];
-    q[1] = in[0].getOrientation()[1];
-    q[2] = in[0].getOrientation()[2];
-    q[3] = in[0].getOrientation()[3];
-    rotation[0][0] =  (1.0 - 2.0 * (q[1] * q[1] + q[2] * q[2]));
-    rotation[0][1] =  (2.0 * (q[0] * q[1] - q[2] * q[3]));
-    rotation[0][2] =  (2.0 * (q[2] * q[0] + q[1] * q[3]));
-    rotation[1][0] =  (2.0 * (q[0] * q[1] + q[2] * q[3]));
-    rotation[1][1] =  (1.0 - 2.0 * (q[2] * q[2] + q[0] * q[0]));
-    rotation[1][2] =  (2.0 * (q[1] * q[2] - q[0] * q[3]));
-    rotation[2][0] =  (2.0 * (q[2] * q[0] - q[1] * q[3]));
-    rotation[2][1] =  (2.0 * (q[1] * q[2] + q[0] * q[3]));
-    rotation[2][2] =  (1.0 - 2.0 * (q[1] * q[1] + q[0] * q[0]));
+    translation[0] = (Real)in[0].getCenter()[0];
+    translation[1] = (Real)in[0].getCenter()[1];
+    translation[2] = (Real)in[0].getCenter()[2];
+    Real* q = orientation;
+    q[0] = (Real)in[0].getOrientation()[0];
+    q[1] = (Real)in[0].getOrientation()[1];
+    q[2] = (Real)in[0].getOrientation()[2];
+    q[3] = (Real)in[0].getOrientation()[3];
+    rotation[0][0] =  (1.0f - 2.0f * (q[1] * q[1] + q[2] * q[2]));
+    rotation[0][1] =  (2.0f * (q[0] * q[1] - q[2] * q[3]));
+    rotation[0][2] =  (2.0f * (q[2] * q[0] + q[1] * q[3]));
+    rotation[1][0] =  (2.0f * (q[0] * q[1] + q[2] * q[3]));
+    rotation[1][1] =  (1.0f - 2.0f * (q[2] * q[2] + q[0] * q[0]));
+    rotation[1][2] =  (2.0f * (q[1] * q[2] - q[0] * q[3]));
+    rotation[2][0] =  (2.0f * (q[2] * q[0] - q[1] * q[3]));
+    rotation[2][1] =  (2.0f * (q[1] * q[2] + q[0] * q[3]));
+    rotation[2][2] =  (1.0f - 2.0f * (q[1] * q[1] + q[0] * q[0]));
 
     rotatedPoints.resize(points.size());
     out.resize(points.size());
@@ -120,12 +114,12 @@ template <class BaseMapping>
 void RigidMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     Deriv v,omega;
-    v[0] = in[0].getVCenter()[0];
-    v[1] = in[0].getVCenter()[1];
-    v[2] = in[0].getVCenter()[2];
-    omega[0] = in[0].getVOrientation()[0];
-    omega[1] = in[0].getVOrientation()[1];
-    omega[2] = in[0].getVOrientation()[2];
+    v[0] = (Real)in[0].getVCenter()[0];
+    v[1] = (Real)in[0].getVCenter()[1];
+    v[2] = (Real)in[0].getVCenter()[2];
+    omega[0] = (Real)in[0].getVOrientation()[0];
+    omega[1] = (Real)in[0].getVOrientation()[1];
+    omega[2] = (Real)in[0].getVOrientation()[2];
     out.resize(points.size());
     for(unsigned int i=0; i<points.size(); i++)
     {
@@ -139,12 +133,12 @@ template <class BaseMapping>
 void RigidMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     Deriv v,omega;
-    v[0] = 0.0;
-    v[1] = 0.0;
-    v[2] = 0.0;
-    omega[0] = 0.0;
-    omega[1] = 0.0;
-    omega[2] = 0.0;
+    v[0] = 0.0f;
+    v[1] = 0.0f;
+    v[2] = 0.0f;
+    omega[0] = 0.0f;
+    omega[1] = 0.0f;
+    omega[2] = 0.0f;
     for(unsigned int i=0; i<points.size(); i++)
     {
         // out = Jt in
@@ -175,7 +169,7 @@ void RigidMapping<BaseMapping>::draw()
     typename Out::VecCoord& x = *this->toModel->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        glVertex3d(x[i][0],x[i][1],x[i][2]);
+        GL::glVertexT(x[i]);
     }
     glEnd();
 }

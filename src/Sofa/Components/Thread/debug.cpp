@@ -102,7 +102,7 @@ void TraceProfile::begin()
 void TraceProfile::end(int instant)
 {
     endTime = MeasureTime();
-    times[instant] += (endTime-beginTime);
+    times[instant] += (int)(endTime-beginTime);
 }
 
 } // namespace Thread

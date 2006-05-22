@@ -30,6 +30,7 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type Real;
+    typedef typename OutCoord::value_type OutReal;
 
     template<int NC, int NP>
     class MappingData

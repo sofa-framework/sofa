@@ -280,9 +280,9 @@ void OglModel::applyTranslation(double dx, double dy, double dz)
 {
     for (int i = 0; i < nbVertices; i++)
     {
-        vertices[i * 3] += dx;
-        vertices[i * 3 + 1] += dy;
-        vertices[i * 3 + 2] += dz;
+        vertices[i * 3] += (GLfloat)dx;
+        vertices[i * 3 + 1] += (GLfloat)dy;
+        vertices[i * 3 + 2] += (GLfloat)dz;
     }
 }
 
@@ -329,7 +329,7 @@ void OglModel::computeNormal(const Vector3& s1, const Vector3 &s2, const Vector3
 
 void Material::setColor(float r, float g, float b, float a)
 {
-    double f[4] = { r, g, b, a };
+    float f[4] = { r, g, b, a };
     for (int i=0; i<4; i++)
     {
         ambient[i] *= f[i];
@@ -355,39 +355,39 @@ static int hexval(char c)
 void OglModel::setColor(std::string color)
 {
     if (color.empty()) return;
-    double r = 1.0;
-    double g = 1.0;
-    double b = 1.0;
-    double a = 1.0;
+    float r = 1.0f;
+    float g = 1.0f;
+    float b = 1.0f;
+    float a = 1.0f;
     if (color[0]>='0' && color[0]<='9')
     {
-        sscanf(color.c_str(),"%lf %lf %lf %lf", &r, &g, &b, &a);
+        sscanf(color.c_str(),"%f %f %f %f", &r, &g, &b, &a);
     }
     else if (color[0]=='#' && color.length()>=7)
     {
-        r = (hexval(color[1])*16+hexval(color[2]))/255.0;
-        g = (hexval(color[3])*16+hexval(color[4]))/255.0;
-        b = (hexval(color[5])*16+hexval(color[6]))/255.0;
+        r = (hexval(color[1])*16+hexval(color[2]))/255.0f;
+        g = (hexval(color[3])*16+hexval(color[4]))/255.0f;
+        b = (hexval(color[5])*16+hexval(color[6]))/255.0f;
         if (color.length()>=9)
-            a = (hexval(color[7])*16+hexval(color[8]))/255.0;
+            a = (hexval(color[7])*16+hexval(color[8]))/255.0f;
     }
     else if (color[0]=='#' && color.length()>=4)
     {
-        r = (hexval(color[1])*17)/255.0;
-        g = (hexval(color[2])*17)/255.0;
-        b = (hexval(color[3])*17)/255.0;
+        r = (hexval(color[1])*17)/255.0f;
+        g = (hexval(color[2])*17)/255.0f;
+        b = (hexval(color[3])*17)/255.0f;
         if (color.length()>=5)
-            a = (hexval(color[4])*17)/255.0;
+            a = (hexval(color[4])*17)/255.0f;
     }
-    else if (color == "white")    { r = 1.0; g = 1.0; b = 1.0; }
-    else if (color == "black")    { r = 0.0; g = 0.0; b = 0.0; }
-    else if (color == "red")      { r = 1.0; g = 0.0; b = 0.0; }
-    else if (color == "green")    { r = 0.0; g = 1.0; b = 0.0; }
-    else if (color == "blue")     { r = 0.0; g = 0.0; b = 1.0; }
-    else if (color == "cyan")     { r = 0.0; g = 1.0; b = 1.0; }
-    else if (color == "magenta")  { r = 1.0; g = 0.0; b = 1.0; }
-    else if (color == "yellow")   { r = 1.0; g = 1.0; b = 0.0; }
-    else if (color == "gray")     { r = 0.5; g = 0.5; b = 0.5; }
+    else if (color == "white")    { r = 1.0f; g = 1.0f; b = 1.0f; }
+    else if (color == "black")    { r = 0.0f; g = 0.0f; b = 0.0f; }
+    else if (color == "red")      { r = 1.0f; g = 0.0f; b = 0.0f; }
+    else if (color == "green")    { r = 0.0f; g = 1.0f; b = 0.0f; }
+    else if (color == "blue")     { r = 0.0f; g = 0.0f; b = 1.0f; }
+    else if (color == "cyan")     { r = 0.0f; g = 1.0f; b = 1.0f; }
+    else if (color == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
+    else if (color == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
+    else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
     else
     {
         std::cerr << "Unknown color "<<color<<std::endl;

@@ -39,7 +39,6 @@ public:
 
 protected:
     std::multimap<Key, Creator*> registry;
-    static Factory<Key, Object, Argument> factory;
 
 public:
 //  typedef InterfaceCreator<Object>* Creator;
