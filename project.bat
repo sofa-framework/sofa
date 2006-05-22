@@ -3,8 +3,8 @@ REM This batch permit to create all dsp project or vcproj project for
 REM Visual C++ 6 or Visual dot Net 2003
 REM use : project [VC6 / VC7 / VC8 / clean]
 REM default visual project depends on the environment variable QMAKESPEC
-set QTDIR=%CD%\tools\qt4win
-set PATH=%QTDIR%\bin;%PATH%
+set QMAKEPATH=%CD%\tools\qt4win
+set PATH=%QMAKEPATH%\bin;%PATH%
 if "%1" == "VC6" goto vc6
 if "%1" == "VC7" goto vc7
 if "%1" == "VC8" goto vc8
@@ -29,7 +29,10 @@ set QMAKESPEC=win32-msvc2005
 @REM cd src
 @REM for /R %%i in (*.pro) do qmake "%%i"
 @REM cd ..
-qmake -tp vc -recursive -o Sofa
+qmake -tp vc -recursive -o Sofa QT_INSTALL_PREFIX="%QTDIR%"
+@if "%ERRORLEVEL%"=="0" goto end
+echo ERROR %ERRORLEVEL%
+pause
 @goto end
 :clean
 @echo cleaning all VC6 Project or VC7 Project
