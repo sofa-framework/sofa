@@ -35,6 +35,7 @@ SOFA_DECL_CLASS(DiagonalMass)
 
 template class DiagonalMass<Vec3dTypes,double>;
 template class DiagonalMass<Vec3fTypes,float>;
+template class DiagonalMass<RigidTypes,RigidMass>;
 
 namespace Common   // \todo Why this must be inside Common namespace
 {

@@ -28,6 +28,8 @@ public:
     virtual ~BaseObject()
     {}
 
+    BaseObject* setName(const std::string& n) { Base::setName(n); return this; }
+
     void setContext(const Context* n)
     {
         context_ = n;

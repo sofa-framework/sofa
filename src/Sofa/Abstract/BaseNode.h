@@ -40,6 +40,7 @@ public:
 
     /// @}
 
+    BaseNode* setName(const std::string& n) { Base::setName(n); return this; }
 };
 
 } // namespace Abstract

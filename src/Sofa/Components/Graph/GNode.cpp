@@ -123,6 +123,12 @@ void GNode::removeObject(BaseObject* obj)
 void GNode::init()
 {
     updateContext();
+    //cerr<<"GNode::init()"<<endl;
+    if( !mechanicalMapping.empty() )
+    {
+        mechanicalMapping->propagateX();
+        mechanicalMapping->propagateV();
+    }
 
     for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++)
     {
@@ -166,10 +172,9 @@ void GNode::updateContext()
         		   cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<", new context = "<< *this->getContext() << endl;
         		}*/
     }
-    if( !mechanicalModel.empty() )
-    {
-        mechanicalModel->updateContext(&context_);
-    }
+// 	if( !mechanicalModel.empty() ){
+// 	   mechanicalModel->updateContext(&context_);
+// 	}
 
     if( debug_ )
     {
@@ -191,9 +196,10 @@ void GNode::execute(Action* action)
     action->processNodeBottomUp(this);
 }
 
-void GNode::setDebug(bool b)
+GNode* GNode::setDebug(bool b)
 {
     debug_=b;
+    return this;
 }
 
 bool GNode::getDebug() const

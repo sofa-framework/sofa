@@ -85,10 +85,32 @@ void DiagonalMass<DataTypes, MassType>::accFromF()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::computeForce()
 {
+    /*	VecDeriv& f = *mmodel->getF();
+    	for (unsigned int i=0;i<f.size();i++)
+    	{
+    		f[i] += gravity * masses[i];
+    	}*/
     VecDeriv& f = *mmodel->getF();
+    VecCoord& x = *mmodel->getX();
+    VecDeriv& v = *mmodel->getV();
+
+    // gravity
+    Core::Context::Vec g = this->getContext()->getGravity();
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+
+    // velocity-based stuff
+    Core::Context::SpatialVelocity vframe = getContext()->getSpatialVelocity();
+    Core::Context::Vec aframe = getContext()->getLinearAcceleration() ;
+    // project back to local frame
+    vframe = getContext()->getLocalToWorld() / vframe;
+    aframe = getContext()->getLocalToWorld().backProjectVector( aframe );
+
+    // add weight and inertia force
     for (unsigned int i=0; i<f.size(); i++)
     {
-        f[i] += gravity * masses[i];
+        f[i] += theGravity*masses[i] + inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
     }
 }
 

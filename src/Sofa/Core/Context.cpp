@@ -1,3 +1,6 @@
+// Author: François Faure, INRIA-UJF, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
 #include "Context.h"
 
 namespace Sofa
@@ -44,7 +47,7 @@ const Context::SpatialVelocity& Context::getSpatialVelocity() const
 }
 
 /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
-const Context::Vec& Context::getOriginAcceleration() const
+const Context::Vec& Context::getLinearAcceleration() const
 {
     return originAcceleration_;
 }
@@ -126,7 +129,7 @@ void Context::setSpatialVelocity( const SpatialVelocity& v )
 }
 
 /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
-void Context::setOriginAcceleration( const Vec& a )
+void Context::setLinearAcceleration( const Vec& a )
 {
     originAcceleration_ = a;
 }
@@ -186,7 +189,7 @@ std::ostream& operator << (std::ostream& out, const Sofa::Core::Context& c )
     out<<endl<<"transform from local to world = "<<c.getLocalToWorld();
     //out<<endl<<"transform from world to local = "<<c.getWorldToLocal();
     out<<endl<<"spatial velocity = "<<c.getSpatialVelocity();
-    out<<endl<<"acceleration of the origin = "<<c.getOriginAcceleration();
+    out<<endl<<"acceleration of the origin = "<<c.getLinearAcceleration();
     return out;
 }
 

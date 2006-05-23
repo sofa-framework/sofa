@@ -117,7 +117,7 @@ SolidTypes<R>::Transform::Transform( const Rot& q, const Vec& o ):orientation_(q
 template<class R>
 void SolidTypes<R>::Transform::setTranslationRotation( const Vec& t, const Rot& q )
 {
-    orientation_ =q, origin_ = -(q.rotate(t));
+    orientation_ =q, origin_ = -(q.inverseRotate(t));
 }
 
 template<class R>
@@ -255,8 +255,11 @@ typename SolidTypes<R>::Transform SolidTypes<R>::Transform::inversed() const
 template<class R>
 void SolidTypes<R>::Transform::writeOpenGlMatrix( Real *m ) const
 {
+    /*    cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, this = "<<*this<<endl;
+        cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, origin_ = "<<origin_<<endl;*/
     orientation_.writeOpenGlMatrix(m);
-    Vec t = -orientation_.rotate(origin_);
+    Vec t = -projectVector(origin_);
+    /*	cerr<<"SolidTypes<R>::Transform::writeOpenGlMatrix, t = "<<t<<endl;*/
     m[12] = t[0];
     m[13] = t[1];
     m[14] = t[2];

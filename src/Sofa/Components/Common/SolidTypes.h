@@ -1,8 +1,6 @@
-//<<<<<<< .mine
-//
 // C++ Interface: SolidTypes
 //
-// Description:
+// Description: Base types for coordinate systems and articulated bodies
 //
 //
 // Author: Francois Faure, INRIA-UJF, (C) 2006

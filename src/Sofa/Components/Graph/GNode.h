@@ -286,7 +286,7 @@ public:
     Sequence<VisualModel> visualModel;
     Sequence<CollisionModel> collisionModel;
 
-    void setDebug(bool);
+    GNode* setDebug(bool);
     bool getDebug() const;
 
 protected:

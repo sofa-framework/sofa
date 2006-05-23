@@ -1,3 +1,7 @@
+// Author: François Faure, INRIA-UJF, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
+
 #include "CoordinateSystem.h"
 #include <Sofa/Components/Graph/GNode.h>
 #include <iostream>
@@ -22,72 +26,74 @@ CoordinateSystem::CoordinateSystem()
     setF(VecId::force());
     setDx(VecId::dx());
 
-    getX().clear();
-    getV() = Velocity( Vec(0,0,0), Vec(0,0,0) );
-
-    getX().clear();
+    getX()->clear();
+    *getV() = Velocity( Vec(0,0,0), Vec(0,0,0) );
 }
 
 
 const CoordinateSystem::Frame&  CoordinateSystem::getFrame() const
 {
-    return getX();
+    return *getX();
 }
 CoordinateSystem* CoordinateSystem::setFrame( const Frame& f )
 {
-    getX()=f;
+    *getX()=f;
     return this;
 }
 CoordinateSystem* CoordinateSystem::setFrame( const Vec& translation, const Rot& rotation )
 {
-    getX().setTranslationRotation(translation,rotation);
+    getX()->setTranslationRotation(translation,rotation);
     return this;
 }
 
 const CoordinateSystem::Velocity&  CoordinateSystem::getVelocity() const
 {
-    return getV();
+    return *getV();
 }
 
 CoordinateSystem* CoordinateSystem::setVelocity( const Velocity& v )
 {
-    getV() = v;
+    *getV() = v;
     return this;
 }
 
 CoordinateSystem* CoordinateSystem::setLinearVelocity( const Vec& linearVelocity )
 {
-    getV()=Velocity(linearVelocity, getAngularVelocity());
+    *getV()=Velocity(linearVelocity, getAngularVelocity());
     return this;
 }
 
 const CoordinateSystem::Vec& CoordinateSystem::getLinearVelocity() const
 {
-    return getV().freeVec;
+    return getV()->freeVec;
 }
 
 CoordinateSystem* CoordinateSystem::setAngularVelocity( const Vec& angularVelocity )
 {
-    getV()=Velocity(  angularVelocity, getLinearVelocity());
+    *getV()=Velocity(  angularVelocity, getLinearVelocity());
     return this;
 }
 
 const CoordinateSystem::Vec& CoordinateSystem::getAngularVelocity() const
 {
-    return getV().lineVec;
+    return getV()->lineVec;
 }
 
 void CoordinateSystem::updateContext(Core::Context* context)
 {
-    //cerr<<"CoordinateSystem, frame = "<<   getX() << endl;
+//     cerr<<"CoordinateSystem, frame = "<<   getName() << endl;
 
     // store parent position and velocity
     Frame parentToWorld = context->getLocalToWorld();
-    //Velocity parentWorldVelocity = context->getSpatialVelocity();
     Vec parentLinearVelocity = context->getLinearVelocity();
     Vec parentAngularVelocity = context->getAngularVelocity();
-    Vec parentOriginAcceleration = context->getOriginAcceleration();
+    Vec parentOriginAcceleration = context->getLinearAcceleration();
+    Core::Context::SpatialVelocity parentSpatialVelocity = context->getSpatialVelocity();
 
+//     cerr<<"CoordinateSystem::apply(), thisToParent "<< *getX() <<endl;
+//     cerr<<"CoordinateSystem::apply(), parentToWorld "<< parentToWorld <<endl;
+//     cerr<<"CoordinateSystem::apply(), parentAngularVelocity= "<< parentAngularVelocity <<endl;
+//     cerr<<"CoordinateSystem::apply(), parentLinearVelocity "<< parentLinearVelocity <<endl;
 
     // Project the relative velocity to the world.
     Vec vcenterProjected = parentToWorld.projectVector( getLinearVelocity() );
@@ -97,23 +103,30 @@ void CoordinateSystem::updateContext(Core::Context* context)
 
 
     // Velocity induced by the rotation of the parent frame. Local origin is defined in parent frame.
-    Vec vinduced = omegaProjected.cross( parentToWorld.projectVector(getX().getOriginInParent()) );
+    Vec originInParentProjected = parentToWorld.projectVector(getX()->getOriginInParent());
+    Vec vinduced = parentAngularVelocity.cross( originInParentProjected );
     // Acceleration induced by the rotation of the parent frame. Local origin is defined in parent frame.
-    Vec ainduced = omegaProjected.cross( vinduced );
+    Vec ainduced = parentAngularVelocity.cross( vinduced );
 
 
-    // 	cerr<<"CoordinateSystem::apply(), omegaProjected= "<< omegaProjected <<endl;
-    // 	cerr<<"CoordinateSystem::apply(), parentToWorld.projectVector(getX().getOrigin())= "<< parentToWorld.projectVector(getX().getOriginInParent()) <<endl;
-    // 	cerr<<"CoordinateSystem::apply(), vinduced= "<<vinduced<<endl;
-    // 	cerr<<"CoordinateSystem::apply(), ainduced= "<<ainduced<<endl;
+//     cerr<<"CoordinateSystem::apply(), vcenterProjected = "<<vcenterProjected<<endl;
+//     cerr<<"CoordinateSystem::apply(), omegaProjected= "<< omegaProjected <<endl;
+//     cerr<<"CoordinateSystem::apply(), vinduced= "<<vinduced<<endl;
+//     cerr<<"CoordinateSystem::apply(), ainduced= "<<ainduced<<endl;
 
 
     // update context
-    context->setOriginAcceleration( parentOriginAcceleration + ainduced );
-    context->setLocalToWorld( context->getLocalToWorld() * getX() );
-    context->setSpatialVelocity( Velocity(
-            omegaProjected,
-            parentLinearVelocity + vcenterProjected + vinduced ) );
+    context->setLinearAcceleration( parentOriginAcceleration + ainduced );
+    context->setLocalToWorld( context->getLocalToWorld() * (*getX()) );
+    context->setSpatialVelocity( parentSpatialVelocity + context->getLocalToWorld() * getVelocity() );
+
+//     cerr<<"CoordinateSystem::apply(), localToWorld= "<< context->getLocalToWorld() <<endl;
+//     cerr<<"CoordinateSystem::apply(), spatial velocity= "<< context->getSpatialVelocity() <<endl;
+//     cerr<<"CoordinateSystem::apply(), localLinearAcceleration= "<< context->getLinearAcceleration() <<endl;
+//
+//     cerr<<"CoordinateSystem::apply(), end--------------------------"<<endl;
+
+
 }
 
 CoordinateSystem::Frame* CoordinateSystem::getCoord(unsigned int index)
@@ -138,57 +151,57 @@ void CoordinateSystem::setX( VecId i )
 {
     x_=getCoord(i.index);
 }
-CoordinateSystem::Frame& CoordinateSystem::getX()
+CoordinateSystem::Frame* CoordinateSystem::getX()
 {
-    return *x_;
+    return x_;
 }
-const CoordinateSystem::Frame& CoordinateSystem::getX() const
+const CoordinateSystem::Frame* CoordinateSystem::getX() const
 {
-    return *x_;
+    return x_;
 }
 
 void CoordinateSystem::setV( VecId i )
 {
     v_=getDeriv(i.index);
 }
-CoordinateSystem::Velocity& CoordinateSystem::getV()
+CoordinateSystem::Velocity* CoordinateSystem::getV()
 {
-    return *v_;
+    return v_;
 }
-const CoordinateSystem::Velocity& CoordinateSystem::getV() const
+const CoordinateSystem::Velocity* CoordinateSystem::getV() const
 {
-    return *v_;
+    return v_;
 }
 
 void CoordinateSystem::setF( VecId i )
 {
     f_=getDeriv(i.index);
 }
-CoordinateSystem::Velocity& CoordinateSystem::getF()
+CoordinateSystem::Velocity* CoordinateSystem::getF()
 {
-    return *f_;
+    return f_;
 }
-const CoordinateSystem::Velocity& CoordinateSystem::getF() const
+const CoordinateSystem::Velocity* CoordinateSystem::getF() const
 {
-    return *f_;
+    return f_;
 }
 
 void CoordinateSystem::setDx( VecId i )
 {
     dx_=getDeriv(i.index);
 }
-CoordinateSystem::Velocity& CoordinateSystem::getDx()
+CoordinateSystem::Velocity* CoordinateSystem::getDx()
 {
-    return *dx_;
+    return dx_;
 }
-const CoordinateSystem::Velocity& CoordinateSystem::getDx() const
+const CoordinateSystem::Velocity* CoordinateSystem::getDx() const
 {
-    return *dx_;
+    return dx_;
 }
 
 void CoordinateSystem::resetForce()
 {
-    getF() = Velocity( Vec(0,0,0),Vec(0,0,0) );
+    *getF() = Velocity( Vec(0,0,0),Vec(0,0,0) );
 }
 
 /*void CoordinateSystem::printX( std::ostream& out )

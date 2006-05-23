@@ -1,3 +1,6 @@
+// Author: François Faure, INRIA-UJF, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
 #include "SpringForceField.inl"
 #include "Common/Vec3Types.h"
 #include "XML/DynamicNode.h"

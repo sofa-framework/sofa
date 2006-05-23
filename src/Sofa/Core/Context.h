@@ -1,3 +1,6 @@
+// Author: François Faure, INRIA-UJF, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
 
 #ifndef	SOFA_CORE_Context_h
 #define	SOFA_CORE_Context_h
@@ -38,7 +41,7 @@ public:
     virtual const SpatialVelocity& getSpatialVelocity() const;
 
     /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
-    virtual const Vec& getOriginAcceleration() const;
+    virtual const Vec& getLinearAcceleration() const;
 
     /** Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system. */
     virtual Vec getLinearVelocity() const;
@@ -85,7 +88,7 @@ public:
     virtual void setSpatialVelocity( const SpatialVelocity& );
 
     /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
-    virtual void setOriginAcceleration( const Vec& );
+    virtual void setLinearAcceleration( const Vec& );
 
     /// Simulation timestep
     virtual void setDt( float dt );

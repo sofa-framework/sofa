@@ -57,9 +57,7 @@ public:
     BasicMechanicalModel* resize(int )
     {return this;}
 
-    virtual void init()
-    {}
-    ;
+    virtual void init()=0; // do not instanciate this class, use ArticulatedBody and Joints instead
 
     virtual void setTopology(Core::Topology* /*topo*/)
     {}
@@ -127,18 +125,21 @@ public:
     //=================================
 
 
+    Frame* getX();
+    const Frame* getX() const;
+
+    Velocity* getV();
+    const Velocity* getV() const;
+
+    Velocity* getF();
+    const Velocity* getF() const;
+
+    Velocity* getDx();
+    const Velocity* getDx() const;
+
 protected:
-    Frame& getX();
-    const Frame& getX() const;
-
-    Velocity& getV();
-    const Velocity& getV() const;
-
-    Velocity& getF();
-    const Velocity& getF() const;
-
-    Velocity& getDx();
-    const Velocity& getDx() const;
+    Frame* getCoord(unsigned);
+    Velocity* getDeriv(unsigned);
 
 private:
     Common::vector<Frame*> coords_;
@@ -147,8 +148,6 @@ private:
     Velocity* v_;
     Velocity* f_;
     Velocity* dx_;
-    Frame* getCoord(unsigned);
-    Velocity* getDeriv(unsigned);
 };
 
 } // namespace Components

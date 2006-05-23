@@ -1,3 +1,6 @@
+// Author: François Faure, INRIA-UJF, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
 #include "Sofa/Components/CGImplicitSolver.h"
 #include "Sofa/Core/MechanicalGroup.h"
 #include "Sofa/Core/MultiVector.h"
@@ -22,6 +25,11 @@ CGImplicitSolver::CGImplicitSolver()
     maxCGIter = 25;
     smallDenominatorThreshold = 1e-5;
     rayleighStiffness = 0.1;
+}
+
+CGImplicitSolver* CGImplicitSolver::setMaxIter( int n )
+{
+    maxCGIter = n;
 }
 
 void CGImplicitSolver::solve(double dt)
@@ -89,6 +97,7 @@ void CGImplicitSolver::solve(double dt)
         rho_1 = rho;
     }
     // x is the solution of the system
+    //cerr<<"CGImplicitSolver::solve, nbiter = "<<nb_iter<<endl;
 
     // apply the solution
     vel.peq( x );                       // vel = vel + x
@@ -105,7 +114,7 @@ void create(CGImplicitSolver*& obj, XML::Node<Core::OdeSolver>* arg)
 {
     obj = new CGImplicitSolver();
     if (arg->getAttribute("iterations"))
-        obj->maxCGIter = atoi(arg->getAttribute("iterations"));
+        obj->setMaxIter( atoi(arg->getAttribute("iterations")) );
     if (arg->getAttribute("threshold"))
         obj->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
     if (arg->getAttribute("stiffness"))

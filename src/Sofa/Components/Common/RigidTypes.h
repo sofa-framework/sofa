@@ -4,6 +4,8 @@
 #include "Vec.h"
 #include "Mat.h"
 #include "Quat.h"
+#include <Sofa/Core/Context.h>
+#include <Sofa/Core/Mass.h>
 #include <vector>
 #include <iostream>
 using std::endl;
@@ -40,6 +42,14 @@ public:
         {
             vCenter += a.vCenter;
             vOrientation += a.vOrientation;
+        }
+
+        Deriv operator + (const Deriv& a) const
+        {
+            Deriv d;
+            d.vCenter = vCenter + a.vCenter;
+            d.vOrientation = vCenter + a.vOrientation;
+            return d;
         }
 
         void operator*=(double a)
@@ -249,6 +259,38 @@ inline RigidTypes::Deriv operator/(const RigidTypes::Deriv& d, const RigidMass& 
 } // namespace Common
 
 } // namespace Components
+
+//================================================================================================================
+// This is probably useless because the RigidObject actually contains its mass and computes its inertia forces itself:
+//================================================================================================================
+
+namespace Core
+{
+/// Specialization of the inertia force for Components::Common::RigidTypes
+template <>
+inline Components::Common::RigidTypes::Deriv inertiaForce<
+Components::Common::RigidTypes::Coord,
+           Components::Common::RigidTypes::Deriv,
+           Context::Vec,
+           Components::Common::RigidMass,
+           Context::SpatialVelocity
+           >
+           (
+                   const Context::SpatialVelocity& vframe,
+                   const Context::Vec& aframe,
+                   const Components::Common::RigidMass& mass,
+                   const Components::Common::RigidTypes::Coord& x,
+                   const Components::Common::RigidTypes::Deriv& v )
+{
+    Components::Common::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    Components::Common::RigidTypes::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+
+    finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
+    return Components::Common::RigidTypes::Deriv( finertia, zero );
+    /// \todo replace zero by Jomega.cross(omega)
+}
+
+}
 
 } // namespace Sofa
 
