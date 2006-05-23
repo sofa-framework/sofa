@@ -4,6 +4,7 @@ REM Visual C++ 6 or Visual dot Net 2003
 REM use : project [VC6 / VC7 / VC8 / clean]
 REM default visual project depends on the environment variable QMAKESPEC
 set QMAKEPATH=%CD%\tools\qt4win
+set QTDIR=%CD%\tools\qt4win
 set PATH=%QMAKEPATH%\bin;%PATH%
 if "%1" == "VC6" goto vc6
 if "%1" == "VC7" goto vc7
