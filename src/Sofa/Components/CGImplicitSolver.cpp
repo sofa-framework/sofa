@@ -30,6 +30,7 @@ CGImplicitSolver::CGImplicitSolver()
 CGImplicitSolver* CGImplicitSolver::setMaxIter( int n )
 {
     maxCGIter = n;
+    return this;
 }
 
 void CGImplicitSolver::solve(double dt)

@@ -96,6 +96,8 @@ int main(int argc, char** argv)
         }
     }
 
+    if (startAnim) Scene::getInstance()->setAnimate(true);
+
     if (gui=="none")
     {
         cout << "Computing 1000 iterations." << endl;
@@ -103,9 +105,6 @@ int main(int argc, char** argv)
             scene->updatePosition();
         cout << "1000 iterations done." << endl;
     }
-
-    if (startAnim) Scene::getInstance()->setAnimate(true);
-
 #ifdef SOFA_GUI_FLTK
     else if (gui=="fltk")
     {

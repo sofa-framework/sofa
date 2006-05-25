@@ -41,6 +41,9 @@ void Mapping<In,Out>::init()
 template <class In, class Out>
 void Mapping<In,Out>::updateMapping()
 {
+    if (this->toModel == NULL || this->fromModel == NULL)
+        return;
+
     if (this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
     {
         apply(*this->toModel->getX(), *this->fromModel->getX());

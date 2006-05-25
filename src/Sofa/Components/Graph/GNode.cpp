@@ -124,12 +124,17 @@ void GNode::init()
 {
     updateContext();
     //cerr<<"GNode::init()"<<endl;
-    if( !mechanicalMapping.empty() )
-    {
-        mechanicalMapping->propagateX();
-        mechanicalMapping->propagateV();
+    /*
+    if( !mechanicalMapping.empty() ){
+     mechanicalMapping->propagateX();
+     mechanicalMapping->propagateV();
     }
+    */
 
+    for (Sequence<BaseObject>::iterator it = object.begin(); it != object.end(); it++)
+    {
+        (*it)->init();
+    }
     for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++)
     {
         (*it)->init();
