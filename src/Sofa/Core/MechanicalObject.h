@@ -24,6 +24,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 protected:
+    VecCoord* x0;
+    VecDeriv* v0;
     VecCoord* x;
     VecDeriv* v;
     VecDeriv* f;
@@ -93,6 +95,8 @@ public:
     virtual BasicMechanicalModel* resize(int vsize);
 
     virtual void init();
+
+    virtual void reset();
 
     virtual void beginIteration(double dt);
 

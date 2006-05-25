@@ -43,6 +43,10 @@ public:
     virtual void init()
     { }
 
+    /// Reset to initial state
+    virtual void reset()
+    { }
+
 }
 ;
 

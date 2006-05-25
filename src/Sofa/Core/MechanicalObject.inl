@@ -137,6 +137,12 @@ void MechanicalObject<DataTypes>::init()
         }
     }
 
+    // Save initial state
+    this->x0 = new VecCoord;
+    *this->x0 = *x;
+    this->v0 = new VecDeriv;
+    *this->v0 = *v;
+
     if (mapping!=NULL) mapping->init();
 
     if (mass!=NULL) mass->init();
@@ -169,6 +175,14 @@ void MechanicalObject<DataTypes>::init()
         for (; it != itEnd; it++)
             (*it)->init();
     }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::reset()
+{
+    // Save initial state
+    *this->x = *x0;
+    *this->v = *v0;
 }
 
 template <class DataTypes>
