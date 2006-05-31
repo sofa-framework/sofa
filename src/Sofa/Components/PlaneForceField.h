@@ -5,6 +5,8 @@
 #include "Sofa/Core/MechanicalModel.h"
 #include "Sofa/Abstract/VisualModel.h"
 
+#include <vector>
+
 namespace Sofa
 {
 
@@ -12,10 +14,10 @@ namespace Components
 {
 
 template<class DataTypes>
-class PlaneForceField : public Core::ForceField, public Abstract::VisualModel
+class PlaneForceField : public Core::ForceField<DataTypes>, public Abstract::VisualModel
 {
 public:
-    typedef Core::ForceField Inherit;
+    typedef Core::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -23,8 +25,6 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    Core::MechanicalModel<DataTypes>* object;
-
     Deriv planeNormal;
     Real planeD;
 
@@ -33,8 +33,8 @@ protected:
     std::vector<unsigned int> contacts;
 
 public:
-    PlaneForceField(Core::MechanicalModel<DataTypes>* object, const std::string& /*name*/="")
-        : object(object), planeD(0), stiffness(500)
+    PlaneForceField(Core::MechanicalModel<DataTypes>* object=NULL, const std::string& /*name*/="")
+        : ForceField<DataTypes>(object), planeD(0), stiffness(500)
     {
     }
 
@@ -49,9 +49,9 @@ public:
         stiffness = stiff;
     }
 
-    virtual void addForce();
+    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual void addDForce();
+    virtual void addDForce (VecDeriv& df, const VecCoord& x, const VecDeriv& v, const VecDeriv& dx);
 
     // -- VisualModel interface
     void draw();

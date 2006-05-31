@@ -2,41 +2,38 @@
 #define SOFA_ABSTRACT_BASEOBJECT_H
 
 #include "Base.h"
-#include <Sofa/Core/Context.h>
+#include "BaseContext.h"
 
 namespace Sofa
 {
 
-// namespace Core
-// {
-// class Context;
-// }
-
 namespace Abstract
 {
-using Core::Context;
 
 /// Base class for simulation objects.
 class BaseObject : public virtual Base
 {
-protected:
-    const Context* context_;
 public:
     BaseObject()
         : Base(), context_(NULL)
     {}
+
     virtual ~BaseObject()
     {}
 
-    BaseObject* setName(const std::string& n) { Base::setName(n); return this; }
-
-    void setContext(const Context* n)
+    void setContext(BaseContext* n)
     {
         context_ = n;
     }
-    const Context* getContext() const
+
+    const BaseContext* getContext() const
     {
-        return context_;
+        return (context_==NULL)?BaseContext::getDefault():context_;
+    }
+
+    BaseContext* getContext()
+    {
+        return (context_==NULL)?BaseContext::getDefault():context_;
     }
 
     /// Initialization method called after each graph modification.
@@ -47,9 +44,9 @@ public:
     virtual void reset()
     { }
 
-}
-;
-
+protected:
+    BaseContext* context_;
+};
 
 } // namespace Abstract
 

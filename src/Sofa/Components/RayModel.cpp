@@ -1,7 +1,6 @@
 #include "RayModel.h"
 #include "CubeModel.h"
-#include "Scene.h"
-#include "XML/CollisionNode.h"
+#include "Common/ObjectFactory.h"
 
 #include <GL/glut.h>
 
@@ -15,20 +14,20 @@ SOFA_DECL_CLASS(Ray)
 
 using namespace Common;
 
-void create(RayModel*& obj, XML::Node<Abstract::CollisionModel>* arg)
+void create(RayModel*& obj, ObjectDescription* arg)
 {
     obj = new RayModel;
     if (obj!=NULL && arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
         obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
 }
 
-Creator< XML::CollisionNode::Factory, RayModel > RayModelClass("Ray");
+Creator< ObjectFactory, RayModel > RayModelClass("Ray");
 
 RayModel::RayModel()
-    : previous(NULL), next(NULL), object(NULL)
+    : previous(NULL), next(NULL)
 {
     internalForces = f;
-    externalForces = new VecCoord();
+    externalForces = new VecDeriv();
 }
 
 Core::BasicMechanicalModel* RayModel::resize(int size)
@@ -55,10 +54,10 @@ void RayModel::addRay(Vector3 origin, Vector3 direction, double length)
 
 void RayModel::draw()
 {
-    if (!isActive() || !Scene::getInstance()->getShowCollisionModels()) return;
+    if (!isActive() || !getContext()->getShowCollisionModels()) return;
     //std::cout << "SPHdraw"<<elems.size()<<std::endl;
     glDisable(GL_LIGHTING);
-    if (getObject()==NULL)
+    if (isStatic())
         glColor3f(0.5, 0.5, 0.5);
     else
         glColor3f(1.0, 0.0, 0.0);
@@ -89,11 +88,11 @@ void RayModel::computeBoundingBox(void)
             setPrevious(NULL);
         }
         cubeModel = new CubeModel();
-        cubeModel->setObject(getObject());
+        cubeModel->setContext(getContext());
         this->setPrevious(cubeModel);
         cubeModel->setNext(this);
     }
-    else if (getObject()==NULL) return; // No need to recompute BBox if immobile
+    else if (isStatic()) return; // No need to recompute BBox if immobile
 
     Vector3 minRay, maxRay, minBB, maxBB;
     std::vector<Abstract::CollisionElement*>::iterator it = elems.begin();
@@ -124,22 +123,16 @@ void RayModel::computeBoundingBox(void)
     cubeModel->setCube(0,minBB, maxBB);
 }
 
-void RayModel::setObject(Abstract::BehaviorModel* obj)
-{
-    object = obj;
-    this->Core::MechanicalObject<Vec3Types>::setObject(obj);
-}
-
-void RayModel::beginIteration(double dt)
+void RayModel::beginIntegration(double dt)
 {
     //std::cout << "BEGIN"<<std::endl;
     f = internalForces;
-    this->Core::MechanicalObject<Vec3Types>::beginIteration(dt);
+    this->Core::MechanicalObject<Vec3Types>::beginIntegration(dt);
 }
 
-void RayModel::endIteration(double dt)
+void RayModel::endIntegration(double dt)
 {
-    this->Core::MechanicalObject<Vec3Types>::endIteration(dt);
+    this->Core::MechanicalObject<Vec3Types>::endIntegration(dt);
     //std::cout << "END"<<std::endl;
     f = externalForces;
     externalForces->clear();

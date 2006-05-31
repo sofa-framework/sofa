@@ -1,7 +1,6 @@
 #include "Sofa/Components/EulerSolver.h"
-#include "Sofa/Core/MechanicalGroup.h"
 #include "Sofa/Core/MultiVector.h"
-#include "XML/SolverNode.h"
+#include "Common/ObjectFactory.h"
 
 #include <math.h>
 #include <iostream>
@@ -42,14 +41,14 @@ void EulerSolver::solve(double dt)
     }
 }
 
-void create(EulerSolver*& obj, XML::Node<Core::OdeSolver>* /*arg*/)
+void create(EulerSolver*& obj, ObjectDescription* /*arg*/)
 {
     obj = new EulerSolver();
 }
 
 SOFA_DECL_CLASS(Euler)
 
-Creator<XML::SolverNode::Factory, EulerSolver> EulerSolverClass("Euler");
+Creator<ObjectFactory, EulerSolver> EulerSolverClass("Euler");
 
 } // namespace Components
 

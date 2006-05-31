@@ -25,7 +25,6 @@ std::string gettypename(const std::type_info& t)
     {
         name = realname;
         free(realname);
-        // Shorten name
     }
 #endif
     // Remove namespaces

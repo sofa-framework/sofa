@@ -1,11 +1,7 @@
 #ifndef SOFA_CORE_MECHANICALOBJECT_H
 #define SOFA_CORE_MECHANICALOBJECT_H
 
-#include "ForceField.h"
-#include "BasicMechanicalMapping.h"
 #include "MechanicalModel.h"
-#include "BasicMechanicalObject.h"
-#include "Mass.h"
 #include <vector>
 #include <assert.h>
 
@@ -16,20 +12,22 @@ namespace Core
 {
 
 template <class DataTypes>
-class MechanicalObject : public MechanicalModel<DataTypes>, public BasicMechanicalObject
+class MechanicalObject : public MechanicalModel<DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+
 protected:
-    VecCoord* x0;
-    VecDeriv* v0;
     VecCoord* x;
     VecDeriv* v;
     VecDeriv* f;
     VecDeriv* dx;
+    VecCoord* x0;
+    VecDeriv* v0;
+    double translation[3];
 
     /// @name Integration-related data
     /// @{
@@ -43,22 +41,6 @@ protected:
 
     /// @}
 
-    /// @name Scene structure (only used if there is no external scenegraph)
-    /// @{
-
-    BasicMechanicalMapping* mapping;
-    std::vector< Core::ForceField *> forcefields;
-    std::vector< Core::Constraint *> constraints;
-    std::vector< Core::BasicMechanicalObject *> mmodels;
-    Topology* topology;
-    Mass* mass;
-    typedef typename std::vector< Core::ForceField* >::iterator ForceFieldIt;
-    typedef typename std::vector< Core::Constraint* >::iterator ConstraintIt;
-    typedef typename std::vector< Core::BasicMechanicalObject* >::iterator MModelIt;
-
-    /// @}
-
-    double translation[3];
 public:
     MechanicalObject();
 
@@ -74,65 +56,20 @@ public:
     const VecDeriv* getF()  const { return f;  }
     const VecDeriv* getDx() const { return dx; }
 
-    virtual BasicMechanicalModel* getMechanicalModel() { return this; }
-
-    //virtual void addMapping(Core::BasicMapping *mMap);
-
-    virtual void setMapping(Core::BasicMechanicalMapping* map);
-
-    virtual void addMechanicalModel(Core::BasicMechanicalObject* mm);
-
-    virtual void removeMechanicalModel(Core::BasicMechanicalObject* mm);
-
-    virtual void addForceField(Core::ForceField* mFField);
-
-    virtual void removeForceField(Core::ForceField* mFField);
-
-    virtual void addConstraint(Core::Constraint* mConstraint);
-
-    virtual void removeConstraint(Core::Constraint* mConstraint);
-
-    virtual BasicMechanicalModel* resize(int vsize);
-
     virtual void init();
 
     virtual void reset();
 
-    virtual void beginIteration(double dt);
+    virtual BasicMechanicalModel* resize(int vsize);
 
-    virtual void endIteration(double dt);
-
-    virtual void propagateX();
-
-    virtual void propagateV();
-
-    virtual void propagateDx();
-
-    virtual void resetForce();
-
-    virtual void accumulateForce();
-
-    virtual void accumulateDf();
-
-    virtual void applyConstraints();
-
-    virtual void addMDx(); ///< f += M dx
-
-    virtual void accFromF(); ///< dx = M^-1 f
-
-    /// Set the behavior object currently owning this model
-    virtual void setObject(Abstract::BehaviorModel* obj);
-
-    virtual void setTopology(Topology* topo);
-
-    virtual Topology* getTopology();
-
-    virtual void setMass(Mass* m);
-
-    virtual Mass* getMass();
+    void applyTranslation (double dx, double dy, double dz);
 
     /// @name Integration related methods
     /// @{
+
+    virtual void beginIntegration(double dt);
+
+    virtual void endIntegration(double dt);
 
     VecCoord* getVecCoord(unsigned int index);
 

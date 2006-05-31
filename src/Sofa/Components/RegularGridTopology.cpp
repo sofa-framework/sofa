@@ -1,5 +1,5 @@
 #include "RegularGridTopology.h"
-#include "XML/TopologyNode.h"
+#include "Common/ObjectFactory.h"
 
 namespace Sofa
 {
@@ -9,7 +9,7 @@ namespace Components
 
 using namespace Common;
 
-void create(RegularGridTopology*& obj, XML::Node<Core::Topology>* arg)
+void create(RegularGridTopology*& obj, ObjectDescription* arg)
 {
     const char* nx = arg->getAttribute("nx");
     const char* ny = arg->getAttribute("ny");
@@ -33,7 +33,7 @@ void create(RegularGridTopology*& obj, XML::Node<Core::Topology>* arg)
 
 SOFA_DECL_CLASS(RegularGridTopology)
 
-Creator<XML::TopologyNode::Factory, RegularGridTopology> RegularGridTopologyClass("RegularGrid");
+Creator<ObjectFactory, RegularGridTopology> RegularGridTopologyClass("RegularGrid");
 
 RegularGridTopology::RegularGridTopology()
 {

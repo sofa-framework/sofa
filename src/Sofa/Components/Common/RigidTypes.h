@@ -263,35 +263,34 @@ inline RigidTypes::Deriv operator/(const RigidTypes::Deriv& d, const RigidMass& 
 //================================================================================================================
 // This is probably useless because the RigidObject actually contains its mass and computes its inertia forces itself:
 //================================================================================================================
+/*
+namespace Core {
+    /// Specialization of the inertia force for Components::Common::RigidTypes
+    template <>
+	    inline Components::Common::RigidTypes::Deriv inertiaForce<
+	    Components::Common::RigidTypes::Coord,
+    Components::Common::RigidTypes::Deriv,
+    Context::Vec,
+    Components::Common::RigidMass,
+    Context::SpatialVelocity
+	    >
+	    (
+	    const Context::SpatialVelocity& vframe,
+    const Context::Vec& aframe,
+    const Components::Common::RigidMass& mass,
+    const Components::Common::RigidTypes::Coord& x,
+    const Components::Common::RigidTypes::Deriv& v )
+	    {
+		Components::Common::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+		Components::Common::RigidTypes::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
 
-namespace Core
-{
-/// Specialization of the inertia force for Components::Common::RigidTypes
-template <>
-inline Components::Common::RigidTypes::Deriv inertiaForce<
-Components::Common::RigidTypes::Coord,
-           Components::Common::RigidTypes::Deriv,
-           Context::Vec,
-           Components::Common::RigidMass,
-           Context::SpatialVelocity
-           >
-           (
-                   const Context::SpatialVelocity& vframe,
-                   const Context::Vec& aframe,
-                   const Components::Common::RigidMass& mass,
-                   const Components::Common::RigidTypes::Coord& x,
-                   const Components::Common::RigidTypes::Deriv& v )
-{
-    Components::Common::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    Components::Common::RigidTypes::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+		finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
+		return Components::Common::RigidTypes::Deriv( finertia, zero );
+		/// \todo replace zero by Jomega.cross(omega)
+	    }
 
-    finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return Components::Common::RigidTypes::Deriv( finertia, zero );
-    /// \todo replace zero by Jomega.cross(omega)
 }
-
-}
-
+*/
 } // namespace Sofa
 
 #endif

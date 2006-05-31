@@ -6,14 +6,9 @@
 
 #include "SpringForceField.h"
 #include "MassSpringLoader.h"
-#include "Scene.h"
+#include "Common/config.h"
 #include <assert.h>
 #include <iostream>
-// added by Sylvere F.
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include <GL/gl.h>
 #include <iostream>
 using std::cerr;
@@ -95,7 +90,7 @@ void SpringForceField<DataTypes>::addDForce()
 template<class DataTypes>
 void SpringForceField<DataTypes>::draw()
 {
-    if (!Scene::getInstance()->getShowForceFields()) return;
+    if (!getContext()->getShowForceFields()) return;
     VecCoord& p1 = *this->object1->getX();
     VecCoord& p2 = *this->object2->getX();
 //         cerr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<endl;

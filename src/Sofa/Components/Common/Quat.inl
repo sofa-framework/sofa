@@ -35,15 +35,6 @@ Quater<Real>::Quater( const Vec<3,Real>& axis, Real angle )
     axisToQuat(axis,angle);
 }
 
-template<class Real>
-Quater<Real>::Quater(Real q[])
-{
-    for (int i = 0; i < 4; i++)
-    {
-        _q[i] = q[i];
-    }
-}
-
 // Destructor
 template<class Real>
 Quater<Real>::~Quater()

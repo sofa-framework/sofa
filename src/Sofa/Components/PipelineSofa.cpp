@@ -1,8 +1,9 @@
 #include "PipelineSofa.h"
 #include "Common/FnDispatcher.h"
+#include "Sofa/Abstract/CollisionModel.h"
 #include "Scene.h"
 
-#include "XML/CollisionPipelineNode.h"
+#include "Common/ObjectFactory.h"
 
 #define VERBOSE(a) if (verbose) a; else
 
@@ -12,17 +13,18 @@ namespace Sofa
 namespace Components
 {
 
+using namespace Abstract;
 using namespace Common;
 using namespace Collision;
 
-void create(PipelineSofa*& obj, XML::Node<Collision::Pipeline>* arg)
+void create(PipelineSofa*& obj, ObjectDescription* arg)
 {
     obj = new PipelineSofa(atoi(arg->getAttribute("verbose","0"))!=0);
 }
 
 SOFA_DECL_CLASS(PipelineSofa)
 
-Creator<XML::CollisionPipelineNode::Factory, PipelineSofa> PipelineSofaClass("default");
+Creator<ObjectFactory, PipelineSofa> PipelineSofaClass("CollisionPipeline");
 
 PipelineSofa::PipelineSofa(bool verbose)
     : verbose(verbose)
@@ -31,7 +33,7 @@ PipelineSofa::PipelineSofa(bool verbose)
 
 void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& collisionModels)
 {
-    Scene* scene = Scene::getInstance();
+    Abstract::BaseContext* scene = getContext(); //Scene::getInstance();
 
     VERBOSE(std::cout << "Reset collisions"<<std::endl);
     // clear all contacts
@@ -46,6 +48,7 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     // clear all collision groups
     if (groupManager!=NULL)
     {
+        /// \todo Update for scenegraph
         groupManager->clearGroups(scene);
     }
     // clear all detection outputs
@@ -65,13 +68,16 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     {
         std::vector<CollisionModel*>::const_iterator it = collisionModels.begin();
         std::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
+        int nActive = 0;
         for (; it != itEnd; it++)
         {
             if (!(*it)->isActive()) continue;
             //(*it)->computeSphereVolume();
             (*it)->computeBoundingBox();
             vectBoundingVolume.push_back ((*it)->getFirst());
+            ++nActive;
         }
+        VERBOSE(std::cout << "Computed "<<nActive<<" BBoxs"<<std::endl);
     }
     // then we start the broad phase
     if (broadPhaseDetection==NULL) return; // can't go further
@@ -112,11 +118,32 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     contactManager->createContacts(detectionOutputs);
 
     // finally we start the creation of collisionGroup
+
+    const std::vector<Contact*>& contacts = contactManager->getContacts();
+
+    // First we remove all contacts with static objects and directly add them
+    std::vector<Contact*> notStaticContacts;
+
+    for (std::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+    {
+        Contact* c = *it;
+        if (c->getCollisionModels().first->isStatic())
+        {
+            c->createResponse(c->getCollisionModels().second->getContext());
+        }
+        else if (c->getCollisionModels().second->isStatic())
+        {
+            c->createResponse(c->getCollisionModels().first->getContext());
+        }
+        else
+            notStaticContacts.push_back(c);
+    }
+
+
     if (groupManager==NULL)
     {
         VERBOSE(std::cout << "Linking all contacts to Scene"<<std::endl);
-        const std::vector<Contact*>& contacts = contactManager->getContacts();
-        for (std::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+        for (std::vector<Contact*>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); it++)
         {
             (*it)->createResponse(scene);
         }
@@ -124,7 +151,7 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     else
     {
         VERBOSE(std::cout << "Create Groups "<<groupManager->getName()<<std::endl);
-        groupManager->createGroups(scene, contactManager->getContacts());
+        groupManager->createGroups(scene, notStaticContacts);
     }
 }
 

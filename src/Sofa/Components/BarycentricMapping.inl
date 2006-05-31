@@ -5,7 +5,6 @@
 #include "Sofa/Components/Common/Mat.h"
 #include "BarycentricMapping.h"
 #include "RegularGridTopology.h"
-#include "Scene.h"
 
 #include "Sofa/Core/MechanicalMapping.inl"
 
@@ -122,7 +121,7 @@ void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::init()
 {
-    Core::Topology* topology = this->fromModel->getTopology();
+    Core::Topology* topology = dynamic_cast<Core::Topology*>(this->fromModel->getContext()->getTopology());
     if (topology!=NULL)
     {
         RegularGridTopology* t = dynamic_cast<RegularGridTopology*>(topology);
@@ -145,7 +144,6 @@ void BarycentricMapping<BaseMapping>::init()
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    //out.resize(map.size());
     if (mapper!=NULL) mapper->apply(out, in);
 }
 
@@ -153,6 +151,7 @@ void BarycentricMapping<BaseMapping>::apply( typename Out::VecCoord& out, const 
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::RegularGridMapper::apply( typename BarycentricMapping<BaseMapping>::Out::VecCoord& out, const typename BarycentricMapping<BaseMapping>::In::VecCoord& in )
 {
+    out.resize(map.size());
     for(unsigned int i=0; i<map.size(); i++)
     {
         const RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
@@ -173,6 +172,7 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::apply( typename Barycen
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::MeshMapper::apply( typename BarycentricMapping<BaseMapping>::Out::VecCoord& out, const typename BarycentricMapping<BaseMapping>::In::VecCoord& in )
 {
+    out.resize(map.size());
     const MeshTopology::SeqTetras& tetras = this->topology->getTetras();
     const MeshTopology::SeqCubes& cubes = this->topology->getCubes();
     int c0 = tetras.size();
@@ -337,7 +337,7 @@ static inline void glVertex3v(const double* p) { glVertex3dv(p); }
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::draw()
 {
-    if (!Scene::getInstance()->getShowMappings()) return;
+    if (!getContext()->getShowMappings()) return;
     glDisable (GL_LIGHTING);
     glPointSize(7);
     glColor4f (1,1,0,1);

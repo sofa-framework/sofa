@@ -11,6 +11,7 @@
 #ifndef Sofa_ComponentsSolidTypes_h
 #define Sofa_ComponentsSolidTypes_h
 
+#include <Sofa/Abstract/BaseContext.h>
 #include <Sofa/Components/Common/Vec.h>
 #include <Sofa/Components/Common/Quat.h>
 #include <Sofa/Components/Common/Mat.h>
@@ -175,6 +176,21 @@ public:
             return r;
         }
         //@}
+
+        void fromContext(Abstract::BaseContext* context)
+        {
+            orientation_ = context->getLocalToWorldRotationQuat();
+            origin_ = context->getLocalToWorldTranslation();
+        }
+
+        void toContext(Abstract::BaseContext* context)
+        {
+            Vec3d translation ( origin_ );
+            Quat rotation ( orientation_ );
+            Mat3x3d mat;
+            rotation.toMatrix(mat);
+            context->setLocalToWorld(translation, rotation.ptr(), mat.ptr());
+        }
 
     protected:
         Rot orientation_; ///< child wrt parent

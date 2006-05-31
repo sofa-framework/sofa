@@ -13,8 +13,6 @@ namespace Components
 namespace GL
 {
 
-using namespace Common;
-
 template<class Coord>
 inline void glVertexT(const Coord& c)
 {

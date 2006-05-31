@@ -23,7 +23,7 @@ public:
 protected:
     CollisionModel1* model1;
     CollisionModel2* model2;
-    Core::Group* parent;
+    Abstract::BaseContext* parent;
 public:
     RayContact(CollisionModel1* model1, CollisionModel2* model2);
     ~RayContact();
@@ -34,7 +34,7 @@ public:
 
     const std::vector<Collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; };
 
-    void createResponse(Core::Group* group);
+    void createResponse(Abstract::BaseContext* group);
 
     void removeResponse();
 

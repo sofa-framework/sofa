@@ -3,6 +3,7 @@
 
 #include "../Common/Factory.h"
 #include "Sofa/Abstract/Base.h"
+#include "Sofa/Abstract/BaseContext.h"
 #include <string>
 #include <list>
 #include <map>

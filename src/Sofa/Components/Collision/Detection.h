@@ -14,7 +14,7 @@ namespace Components
 namespace Collision
 {
 
-class Detection : public virtual Abstract::Base
+class Detection : public virtual Abstract::BaseObject
 {
 protected:
     /// Contains the collisions models

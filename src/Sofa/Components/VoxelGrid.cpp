@@ -3,7 +3,7 @@
 #include "Triangle.h"
 #include "Scene.h"
 #include "Common/FnDispatcher.h"
-#include "XML/CollisionDetectionNode.h"
+#include "Common/ObjectFactory.h"
 
 #include <map>
 
@@ -23,7 +23,7 @@ namespace Components
 using namespace Common;
 using namespace Collision;
 
-void create(VoxelGrid*& obj, XML::Node<Detection>* arg)
+void create(VoxelGrid*& obj, ObjectDescription* arg)
 {
     obj = new VoxelGrid(arg->getName(),
             Vector3(atof(arg->getAttribute("minx",arg->getAttribute("min","-20.0"))),
@@ -41,7 +41,7 @@ void create(VoxelGrid*& obj, XML::Node<Detection>* arg)
 
 SOFA_DECL_CLASS(VoxelGrid)
 
-Creator<XML::CollisionDetectionNode::Factory, VoxelGrid> VoxelGridClass("VoxelGrid");
+Creator<ObjectFactory, VoxelGrid> VoxelGridClass("VoxelGridDetection");
 
 using namespace Abstract;
 
@@ -122,7 +122,7 @@ void VoxelGrid::addCollisionModel(CollisionModel *cm)
 
 void VoxelGrid::add(CollisionModel *cm, int phase)
 {
-    if (cm->getObject()!=NULL || gettimestamp(cm) < 0)
+    if (!cm->isStatic() || gettimestamp(cm) < 0)
     {
         const std::vector<CollisionElement*>& vectElems = cm->getCollisionElements();
         std::vector<CollisionElement*>::const_iterator it = vectElems.begin();
@@ -158,16 +158,9 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
 
             for (; itCollis != itCollisEnd; itCollis++)
             {
-                collisionDetected = true;
-                if ((*it)->isSelfCollis(*itCollis))
+                //if ((*it)->canCollideWith(*itCollis))
                 {
-                    // nbSelfCollision++;
-                    // selfCollision.push_back(new SpherePair(*it, *itCollis));
-                    //cmPairs.push_back(new CollisionModelPair((*it)->getCollisionModel(), (*itCollis)->getCollisionModel()));
-                    //elemPairs.push_back(new ElementPair(*it, *itCollis));
-                }
-                else
-                {
+                    collisionDetected = true;
                     cmPairs.push_back(std::pair<CollisionModel*, CollisionModel*>((*it)->getCollisionModel(), (*itCollis)->getCollisionModel()));
                     elemPairs.push_back(std::pair<CollisionElement*, CollisionElement*> (*it, *itCollis));
 
@@ -185,7 +178,7 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
         else
             removeCmNoCollision (cm);
 
-        if (cm->getObject()==NULL)
+        if (cm->isStatic())
             settimestamp(cm, 0);
     }
 }
@@ -301,7 +294,7 @@ void GridCell::add(CollisionElement *collisionElem, std::set<CollisionElement*> 
 
     for (; it < itEnd; it++)
     {
-        if ((*collisionElem).isSelfCollis(*it)) continue;
+        if (!(*collisionElem).canCollideWith(*it)) continue;
         //(*it)->getBBox(minBBox2, maxBBox2);
         //if (minBBox1[0] > maxBBox2[0] || minBBox2[0] > maxBBox1[0]
         // || minBBox1[1] > maxBBox2[1] || minBBox2[1] > maxBBox1[1]
@@ -316,7 +309,7 @@ void GridCell::add(CollisionElement *collisionElem, std::set<CollisionElement*> 
 
     for (; itImmo < itImmoEnd; itImmo++)
     {
-        if ((*collisionElem).isSelfCollis(*itImmo)) continue;
+        if (!(*collisionElem).canCollideWith(*itImmo)) continue;
         //(*itImmo)->getBBox(minBBox2, maxBBox2);
         //if (minBBox1[0] > maxBBox2[0] || minBBox2[0] > maxBBox1[0]
         // || minBBox1[1] > maxBBox2[1] || minBBox2[1] > maxBBox1[1]
@@ -325,7 +318,7 @@ void GridCell::add(CollisionElement *collisionElem, std::set<CollisionElement*> 
             vectCollis.insert(*itImmo);
     }
 
-    if (collisionElem->getCollisionModel()->getObject()==NULL)
+    if (collisionElem->getCollisionModel()->isStatic())
     {
         collisElemsImmobile[phase].push_back(collisionElem);
     }

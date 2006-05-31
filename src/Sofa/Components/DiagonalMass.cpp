@@ -1,8 +1,7 @@
 #include "DiagonalMass.inl"
-#include "Sofa/Components/XML/MassNode.h"
+#include "Sofa/Components/Common/ObjectFactory.h"
 #include "Sofa/Components/Common/Vec3Types.h"
 #include "Sofa/Components/Common/RigidTypes.h"
-#include "Scene.h"
 #include "GL/Repere.h"
 
 namespace Sofa
@@ -16,7 +15,7 @@ using namespace Common;
 template <>
 void DiagonalMass<RigidTypes, RigidMass>::draw()
 {
-    if (!Scene::getInstance()->getShowBehaviorModels()) return;
+    if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
@@ -55,7 +54,7 @@ void readVec1(Vec& vec, const char* str)
 }
 
 template<class DataTypes, class MassType>
-void create(DiagonalMass<DataTypes, MassType>*& obj, XML::Node<Core::Mass>* arg)
+void create(DiagonalMass<DataTypes, MassType>*& obj, ObjectDescription* arg)
 {
     XML::createWithParent< DiagonalMass<DataTypes, MassType>, Core::MechanicalModel<DataTypes> >(obj, arg);
     if (obj!=NULL)
@@ -64,16 +63,18 @@ void create(DiagonalMass<DataTypes, MassType>*& obj, XML::Node<Core::Mass>* arg)
         {
             obj->load(arg->getAttribute("filename"));
         }
+        /*
         if (arg->getAttribute("gravity"))
         {
-            double x=0;
-            double y=0;
-            double z=0;
-            sscanf(arg->getAttribute("gravity"),"%lf %lf %lf",&x,&y,&z);
-            typename DataTypes::Deriv g;
-            DataTypes::set(g,x,y,z);
-            obj->setGravity(g);
+        	double x=0;
+        	double y=0;
+        	double z=0;
+        	sscanf(arg->getAttribute("gravity"),"%lf %lf %lf",&x,&y,&z);
+        	typename DataTypes::Deriv g;
+        	DataTypes::set(g,x,y,z);
+        	obj->setGravity(g);
         }
+        */
         if (arg->getAttribute("mass"))
         {
             std::vector<MassType> mass;
@@ -86,9 +87,9 @@ void create(DiagonalMass<DataTypes, MassType>*& obj, XML::Node<Core::Mass>* arg)
 }
 }
 
-Creator< XML::MassNode::Factory, DiagonalMass<Vec3dTypes,double> > DiagonalMass3dClass("DiagonalMass",true);
-Creator< XML::MassNode::Factory, DiagonalMass<Vec3fTypes,float > > DiagonalMass3fClass("DiagonalMass",true);
-Creator< XML::MassNode::Factory, DiagonalMass<RigidTypes,RigidMass> > DiagonalMassRigidClass("DiagonalMass",true);
+Creator< ObjectFactory, DiagonalMass<Vec3dTypes,double> > DiagonalMass3dClass("DiagonalMass",true);
+Creator< ObjectFactory, DiagonalMass<Vec3fTypes,float > > DiagonalMass3fClass("DiagonalMass",true);
+Creator< ObjectFactory, DiagonalMass<RigidTypes,RigidMass> > DiagonalMassRigidClass("DiagonalMass",true);
 
 } // namespace Components
 

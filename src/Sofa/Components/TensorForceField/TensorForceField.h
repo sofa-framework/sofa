@@ -24,7 +24,7 @@ namespace Components
  * and edges.
  */
 template <class DataTypes>
-class TensorForceField : public Core::ForceField,
+class TensorForceField : public Core::BasicForceField,
     public Abstract::VisualModel
 {
 public:

@@ -1,8 +1,7 @@
 #include "OglModel.h"
 #include "RAII.h"
 #include "../Common/Quat.h"
-#include "../XML/VisualNode.h"
-#include "../Scene.h"
+#include "../Common/ObjectFactory.h"
 
 namespace Sofa
 {
@@ -15,7 +14,7 @@ namespace GL
 
 using namespace Common;
 
-void create(OglModel*& obj, XML::Node<Abstract::VisualModel>* arg)
+void create(OglModel*& obj, ObjectDescription* arg)
 {
     const char* filename = arg->getAttribute("filename");
     const char* loader = arg->getAttribute("loader","");
@@ -37,7 +36,7 @@ void create(OglModel*& obj, XML::Node<Abstract::VisualModel>* arg)
 
 SOFA_DECL_CLASS(OglModel)
 
-Creator< XML::VisualNode::Factory, OglModel > OglModelClass("OglModel");
+Creator< ObjectFactory, OglModel > OglModelClass("OglModel");
 
 Material& Material::operator=(const Mesh::Material &matLoaded)
 {
@@ -104,7 +103,7 @@ OglModel::~OglModel()
 
 void OglModel::draw()
 {
-    if (!Scene::getInstance()->getShowVisualModels()) return;
+    if (!getContext()->getShowVisualModels()) return;
     Enable<GL_TEXTURE_2D> texture;
     Enable<GL_LIGHTING> light;
     //Enable<GL_BLEND> blending;

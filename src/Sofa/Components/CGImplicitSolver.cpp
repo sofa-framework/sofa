@@ -2,9 +2,9 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include "Sofa/Components/CGImplicitSolver.h"
-#include "Sofa/Core/MechanicalGroup.h"
+#include "Sofa/Core/IntegrationGroup.h"
 #include "Sofa/Core/MultiVector.h"
-#include "XML/SolverNode.h"
+#include "Common/ObjectFactory.h"
 
 #include <math.h>
 #include <iostream>
@@ -111,7 +111,7 @@ void CGImplicitSolver::solve(double dt)
     }
 }
 
-void create(CGImplicitSolver*& obj, XML::Node<Core::OdeSolver>* arg)
+void create(CGImplicitSolver*& obj, ObjectDescription* arg)
 {
     obj = new CGImplicitSolver();
     if (arg->getAttribute("iterations"))
@@ -124,7 +124,7 @@ void create(CGImplicitSolver*& obj, XML::Node<Core::OdeSolver>* arg)
 
 SOFA_DECL_CLASS(CGImplicit)
 
-Creator<XML::SolverNode::Factory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
+Creator<ObjectFactory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
 
 } // namespace Components
 

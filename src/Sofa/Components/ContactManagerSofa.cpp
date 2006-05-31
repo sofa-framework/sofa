@@ -1,6 +1,6 @@
 #include "ContactManagerSofa.h"
 
-#include "XML/ContactNode.h"
+#include "Common/ObjectFactory.h"
 
 namespace Sofa
 {
@@ -10,14 +10,14 @@ namespace Components
 
 using namespace Collision;
 
-void create(ContactManagerSofa*& obj, XML::Node<ContactManager>* arg)
+void create(ContactManagerSofa*& obj, ObjectDescription* arg)
 {
     obj = new ContactManagerSofa(arg->getName(),arg->getAttribute("response","default"));
 }
 
 SOFA_DECL_CLASS(ContactManagerSofa)
 
-Creator<XML::ContactNode::Factory, ContactManagerSofa> ContactManagerSofaClass("default");
+Creator<ObjectFactory, ContactManagerSofa> ContactManagerSofaClass("CollisionResponse");
 
 ContactManagerSofa::ContactManagerSofa(const std::string& name, const std::string& contacttype)
     : name(name), contacttype(contacttype)

@@ -1,8 +1,7 @@
 #include "PlaneForceField.inl"
 #include "Common/Vec3Types.h"
-#include "XML/DynamicNode.h"
 #include "Sofa/Core/MechanicalObject.h"
-#include "XML/ForceFieldNode.h"
+#include "Common/ObjectFactory.h"
 
 namespace Sofa
 {
@@ -18,7 +17,7 @@ template class PlaneForceField<Vec3dTypes>;
 template class PlaneForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(PlaneForceField<DataTypes>*& obj, XML::Node<Core::ForceField>* arg)
+void create(PlaneForceField<DataTypes>*& obj, ObjectDescription* arg)
 {
     XML::createWithParent< PlaneForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
     if (obj!=NULL)
@@ -37,8 +36,8 @@ void create(PlaneForceField<DataTypes>*& obj, XML::Node<Core::ForceField>* arg)
     }
 }
 
-Creator< XML::ForceFieldNode::Factory, PlaneForceField<Vec3dTypes> > PlaneForceFieldVec3dClass("PlaneForceField", true);
-Creator< XML::ForceFieldNode::Factory, PlaneForceField<Vec3fTypes> > PlaneForceFieldVec3fClass("PlaneForceField", true);
+Creator< ObjectFactory, PlaneForceField<Vec3dTypes> > PlaneForceFieldVec3dClass("PlaneForceField", true);
+Creator< ObjectFactory, PlaneForceField<Vec3fTypes> > PlaneForceFieldVec3fClass("PlaneForceField", true);
 
 } // namespace Components
 

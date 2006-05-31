@@ -1,7 +1,7 @@
 #ifndef SOFA_ABSTRACT_BASENODE_H
 #define SOFA_ABSTRACT_BASENODE_H
 
-#include "Base.h"
+#include "BaseContext.h"
 
 namespace Sofa
 {
@@ -27,20 +27,24 @@ public:
     virtual const BaseNode* getParent() const = 0;
 
     /// Add a child node
-    virtual BaseNode* addChild(BaseNode* node) = 0;
+    virtual void addChild(BaseNode* node) = 0;
 
     /// Remove a child node
     virtual void removeChild(BaseNode* node) = 0;
 
     /// Add a generic object
-    virtual BaseNode* addObject(BaseObject* obj) = 0;
+    virtual bool addObject(BaseObject* obj) = 0;
 
     /// Remove a generic object
-    virtual void removeObject(BaseObject* obj) = 0;
+    virtual bool removeObject(BaseObject* obj) = 0;
+
+    /// Get this node context
+    virtual BaseContext* getContext() = 0;
+
+    /// Get this node context
+    virtual const BaseContext* getContext() const = 0;
 
     /// @}
-
-    BaseNode* setName(const std::string& n) { Base::setName(n); return this; }
 };
 
 } // namespace Abstract

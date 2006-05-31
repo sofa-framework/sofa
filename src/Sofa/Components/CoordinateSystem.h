@@ -29,6 +29,7 @@ class CoordinateSystem : public Core::BasicMechanicalModel
 public:
     typedef Common::SolidTypes<float>::Vec Vec;
     typedef Common::SolidTypes<float>::Rot Rot;
+    typedef Common::SolidTypes<float>::Mat Mat;
     typedef Common::SolidTypes<float>::Coord Frame;
     typedef Common::SolidTypes<float>::Deriv Velocity;
 

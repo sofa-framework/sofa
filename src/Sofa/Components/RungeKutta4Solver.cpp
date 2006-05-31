@@ -1,7 +1,6 @@
 #include "Sofa/Components/RungeKutta4Solver.h"
-#include "Sofa/Core/MechanicalGroup.h"
 #include "Sofa/Core/MultiVector.h"
-#include "XML/SolverNode.h"
+#include "Common/ObjectFactory.h"
 
 #include <math.h>
 
@@ -76,14 +75,14 @@ void RungeKutta4Solver::solve(double dt)
     vel.peq(k4a,stepBy6);
 }
 
-void create(RungeKutta4Solver*& obj, XML::Node<Core::OdeSolver>* /*arg*/)
+void create(RungeKutta4Solver*& obj, ObjectDescription* /*arg*/)
 {
     obj = new RungeKutta4Solver();
 }
 
 SOFA_DECL_CLASS(RungeKutta4)
 
-Creator<XML::SolverNode::Factory, RungeKutta4Solver> RungeKutta4SolverClass("RungeKutta4");
+Creator<ObjectFactory, RungeKutta4Solver> RungeKutta4SolverClass("RungeKutta4");
 
 } // namespace Components
 

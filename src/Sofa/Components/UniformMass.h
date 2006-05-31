@@ -16,7 +16,7 @@ namespace Components
 using namespace Common;
 
 template <class DataTypes, class MassType>
-class UniformMass : public Core::Mass, public Abstract::VisualModel
+class UniformMass : public Core::Mass<DataTypes>, public Abstract::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -24,11 +24,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 protected:
-    Core::MechanicalModel<DataTypes>* mmodel;
-
     MassType mass;
 
-    Deriv gravity;
 public:
     UniformMass();
 
@@ -36,18 +33,14 @@ public:
 
     ~UniformMass();
 
-    void setMechanicalModel(Core::MechanicalModel<DataTypes>* mm);
-
-    Core::Mass* setMass(const MassType& mass);
+    void setMass(const MassType& mass);
 
     // -- Mass interface
-    void addMDx();
+    void addMDx(VecDeriv& f, const VecDeriv& dx);
 
-    void accFromF();
+    void accFromF(VecDeriv& a, const VecDeriv& f);
 
-    void computeForce();
-
-    void setGravity( const Deriv& g );
+    void computeForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
     // -- VisualModel interface
 

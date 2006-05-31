@@ -1,8 +1,6 @@
 #include "NodeNode.h"
-#include "MechanicalNode.h"
-#include "DynamicNode.h"
+#include "ObjectNode.h"
 #include "Node.inl"
-#include "Sofa/Core/BasicMechanicalObject.h"
 
 namespace Sofa
 {
@@ -48,25 +46,29 @@ bool NodeNode::initNode()
 bool NodeNode::init()
 {
     bool res = Node<Abstract::BaseNode>::init();
+    /*
     if (getObject()!=NULL)
     {
-        for (child_iterator<> it = begin();
-                it != end(); ++it)
-        {
-            Abstract::BaseObject* obj = dynamic_cast<Abstract::BaseObject*>(it->getBaseObject());
-            if (obj!=NULL)
-            {
-                std::cout << "Adding Object "<<it->getName()<<" to "<<getName()<<std::endl;
-                getObject()->addObject(obj);
-            }
-        }
+    	for (child_iterator<> it = begin();
+    				it != end(); ++it)
+    	{
+    		Abstract::BaseObject* obj = dynamic_cast<Abstract::BaseObject*>(it->getBaseObject());
+    		if (obj!=NULL)
+    		{
+    			std::cout << "Adding Object "<<it->getName()<<" to "<<getName()<<std::endl;
+    			getObject()->addObject(obj);
+    		}
+    	}
     }
+    */
     return res;
 }
 
 SOFA_DECL_CLASS(Node)
 
 Creator<BaseNode::NodeFactory, NodeNode> NodeNodeClass("Node");
+Creator<BaseNode::NodeFactory, NodeNode> NodeBodyClass("Body");
+Creator<BaseNode::NodeFactory, NodeNode> NodeGClass("G");
 
 const char* NodeNode::getClass() const
 {

@@ -138,9 +138,12 @@ public:
     }
 
     /// Assignment operator from an array of values.
-    void operator=(const real* p)
+    template<typename real2>
+    void operator=(const real2* p)
     {
-        std::copy(p, p+N, this->begin());
+        //std::copy(p, p+N, this->begin());
+        for(int i=0; i<N; i++)
+            this->elems[i] = (real)p[i];
     }
 
     /// Assignment from a vector with different dimensions.

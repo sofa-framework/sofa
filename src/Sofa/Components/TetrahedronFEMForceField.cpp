@@ -1,8 +1,7 @@
 #include "TetrahedronFEMForceField.inl"
 #include "Common/Vec3Types.h"
-#include "XML/DynamicNode.h"
 #include "Sofa/Core/MechanicalObject.h"
-#include "XML/ForceFieldNode.h"
+#include "Common/ObjectFactory.h"
 
 //#include <typeinfo>
 
@@ -20,7 +19,7 @@ template class TetrahedronFEMForceField<Vec3dTypes>;
 template class TetrahedronFEMForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(TetrahedronFEMForceField<DataTypes>*& obj, XML::Node<Core::ForceField>* arg)
+void create(TetrahedronFEMForceField<DataTypes>*& obj, ObjectDescription* arg)
 {
     XML::createWithParent< TetrahedronFEMForceField<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
@@ -39,8 +38,8 @@ void create(TetrahedronFEMForceField<DataTypes>*& obj, XML::Node<Core::ForceFiel
     }
 }
 
-Creator< XML::ForceFieldNode::Factory, TetrahedronFEMForceField<Vec3dTypes> > TetrahedronFEMForceFieldVec3dClass("TetrahedronFEMForceField", true);
-Creator< XML::ForceFieldNode::Factory, TetrahedronFEMForceField<Vec3fTypes> > TetrahedronFEMForceFieldVec3fClass("TetrahedronFEMForceField", true);
+Creator< ObjectFactory, TetrahedronFEMForceField<Vec3dTypes> > TetrahedronFEMForceFieldVec3dClass("TetrahedronFEMForceField", true);
+Creator< ObjectFactory, TetrahedronFEMForceField<Vec3fTypes> > TetrahedronFEMForceFieldVec3fClass("TetrahedronFEMForceField", true);
 
 } // namespace Components
 

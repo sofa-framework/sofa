@@ -38,8 +38,8 @@ public:
      */
     virtual void updateMapping() = 0;
 
-    virtual Abstract::Base* getFrom() = 0;
-    virtual Abstract::Base* getTo() = 0;
+    virtual Abstract::BaseObject* getFrom() = 0;
+    virtual Abstract::BaseObject* getTo() = 0;
 };
 
 } // namespace Core

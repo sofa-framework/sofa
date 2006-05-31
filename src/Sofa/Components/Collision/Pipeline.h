@@ -20,7 +20,7 @@ namespace Components
 namespace Collision
 {
 
-class Pipeline : public virtual Abstract::Base
+class Pipeline : public virtual Abstract::BaseObject
 {
 protected:
     std::vector<DetectionOutput*> detectionOutputs;
@@ -36,20 +36,13 @@ protected:
     CollisionGroupManager* groupManager;
 
 public:
-    Pipeline()
-        : broadPhaseDetection(NULL),
-          narrowPhaseDetection(NULL),
-          contactManager(NULL),
-          groupManager(NULL)
-    {
-    }
+    Pipeline();
 
-    virtual ~Pipeline() { }
+    virtual ~Pipeline();
 
-    void addBroadPhaseDetection (BroadPhaseDetection *bp) { broadPhaseDetections.push_back(bp); if (broadPhaseDetection==NULL) broadPhaseDetection=bp; }
-    void addNarrowPhaseDetection (NarrowPhaseDetection *np) { narrowPhaseDetections.push_back(np); if (narrowPhaseDetection==NULL) narrowPhaseDetection=np; }
-    void addContactManager (ContactManager *m) { contactManagers.push_back(m); if (contactManager==NULL) contactManager=m; }
-    void addGroupManager (CollisionGroupManager *m) { groupManagers.push_back(m); if (groupManager==NULL) groupManager=m; }
+    virtual void init();
+
+    virtual void computeCollisions();
 
     virtual void startDetection(const std::vector<Abstract::CollisionModel*>& collisionModels) = 0;
     virtual std::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }

@@ -23,7 +23,7 @@ using namespace Common;
 
 
 template<class DataTypes>
-class TriangleFEMForceField : public Core::ForceField, public Abstract::VisualModel
+class TriangleFEMForceField : public Core::BasicForceField, public Abstract::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;

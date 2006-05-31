@@ -2,6 +2,7 @@
 #define SOFA_COMPONENTS_COLLISION_CONTACTMANAGER_H
 
 #include "Contact.h"
+#include "Sofa/Abstract/BaseObject.h"
 
 #include <vector>
 
@@ -14,7 +15,7 @@ namespace Components
 namespace Collision
 {
 
-class ContactManager : public virtual Abstract::Base
+class ContactManager : public virtual Abstract::BaseObject
 {
 public:
     virtual ~ContactManager() { }

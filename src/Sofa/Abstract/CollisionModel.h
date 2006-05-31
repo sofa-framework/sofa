@@ -41,13 +41,15 @@ public:
 
     virtual bool isActive() { return true; }
 
+    virtual bool isStatic() { return false; }
+
     virtual void computeSphereVolume() {}
 
     virtual void computeBoundingBox() {}
 
     virtual void computeContinueBoundingBox() {}
 
-    virtual BehaviorModel* getObject() = 0;
+//	virtual BehaviorModel* getObject() = 0;
 
     CollisionModel* getFirst()
     {

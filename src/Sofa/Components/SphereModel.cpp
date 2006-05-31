@@ -1,8 +1,7 @@
 #include "SphereModel.h"
 #include "SphereLoader.h"
 #include "CubeModel.h"
-#include "Scene.h"
-#include "XML/CollisionNode.h"
+#include "Common/ObjectFactory.h"
 
 #include <GL/glut.h>
 
@@ -16,20 +15,21 @@ SOFA_DECL_CLASS(Sphere)
 
 using namespace Common;
 
-void create(SphereModel*& obj, XML::Node<Abstract::CollisionModel>* arg)
+void create(SphereModel*& obj, ObjectDescription* arg)
 {
     XML::createWithFilename(obj, arg);
     if (obj!=NULL && arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
         obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+    obj->setStatic(!stricmp(arg->getAttribute("static","false"),"true"));
 }
 
-Creator< XML::CollisionNode::Factory, SphereModel > SphereModelClass("Sphere");
+Creator< ObjectFactory, SphereModel > SphereModelClass("Sphere");
 
 SphereModel::SphereModel(const char* filename)
-    : previous(NULL), next(NULL), object(NULL)
+    : previous(NULL), next(NULL), static_(false)
 {
     internalForces = f;
-    externalForces = new VecCoord();
+    externalForces = new VecDeriv();
     init(filename);
 }
 
@@ -59,10 +59,10 @@ void SphereModel::init(const char* filename)
 
 void SphereModel::draw()
 {
-    if (!isActive() || !Scene::getInstance()->getShowCollisionModels()) return;
+    if (!isActive() || !getContext()->getShowCollisionModels()) return;
     //std::cout << "SPHdraw"<<elems.size()<<std::endl;
     glDisable(GL_LIGHTING);
-    if (getObject()==NULL)
+    if (isStatic())
         glColor3f(0.5, 0.5, 0.5);
     else
         glColor3f(1.0, 0.0, 0.0);
@@ -94,11 +94,11 @@ void SphereModel::computeBoundingBox(void)
             setPrevious(NULL);
         }
         cubeModel = new CubeModel();
-        cubeModel->setObject(getObject());
+        cubeModel->setContext(getContext());
         this->setPrevious(cubeModel);
         cubeModel->setNext(this);
     }
-    else if (getObject()==NULL) return; // No need to recompute BBox if immobile
+    else if (isStatic()) return; // No need to recompute BBox if immobile
 
     Vector3 minSph, maxSph, minBB, maxBB;
     std::vector<Abstract::CollisionElement*>::iterator it = elems.begin();
@@ -129,23 +129,16 @@ void SphereModel::computeBoundingBox(void)
     cubeModel->setCube(0,minBB, maxBB);
 }
 
-
-void SphereModel::setObject(Abstract::BehaviorModel* obj)
-{
-    object = obj;
-    this->Core::MechanicalObject<Vec3Types>::setObject(obj);
-}
-
-void SphereModel::beginIteration(double dt)
+void SphereModel::beginIntegration(double dt)
 {
     //std::cout << "BEGIN"<<std::endl;
     f = internalForces;
-    this->Core::MechanicalObject<Vec3Types>::beginIteration(dt);
+    this->Core::MechanicalObject<Vec3Types>::beginIntegration(dt);
 }
 
-void SphereModel::endIteration(double dt)
+void SphereModel::endIntegration(double dt)
 {
-    this->Core::MechanicalObject<Vec3Types>::endIteration(dt);
+    this->Core::MechanicalObject<Vec3Types>::endIntegration(dt);
     //std::cout << "END"<<std::endl;
     f = externalForces;
     externalForces->clear();

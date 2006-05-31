@@ -3,9 +3,8 @@
 #include "CubeModel.h"
 #include "Triangle.h"
 #include "Sofa/Abstract/CollisionElement.h"
-#include "XML/CollisionNode.h"
+#include "Common/ObjectFactory.h"
 #include <vector>
-#include "Scene.h"
 
 namespace Sofa
 {
@@ -14,14 +13,14 @@ namespace Components
 
 SOFA_DECL_CLASS(Triangle)
 
-void create(TriangleModel*& obj, XML::Node<Abstract::CollisionModel>* arg)
+void create(TriangleModel*& obj, ObjectDescription* arg)
 {
     XML::createWithFilename(obj, arg);
     if (obj!=NULL && arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
         obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
 }
 
-Creator< XML::CollisionNode::Factory, TriangleModel > TriangleModelClass("Triangle");
+Creator< ObjectFactory, TriangleModel > TriangleModelClass("Triangle");
 
 class TriangleModel::Loader : public TriangleLoader
 {
@@ -30,10 +29,9 @@ public:
     Loader(TriangleModel* dest) : dest(dest) { }
     void addVertices (double x, double y, double z)
     {
-        dest->getX()->push_back(Vector3(x,y,z));
-        dest->getV()->push_back(Vector3(0,0,0));
-        dest->getF()->push_back(Vector3(0,0,0));
-        dest->getDx()->push_back(Vector3(0,0,0));
+        int i = dest->getX()->size();
+        dest->resize(i+1);
+        (*dest->getX())[i] = Vector3(x,y,z);
     }
 
     void addTriangle (int idp1, int idp2, int idp3)
@@ -55,10 +53,7 @@ void TriangleModel::applyTranslation(double dx, double dy, double dz)
 
 void TriangleModel::init(const char* file)
 {
-    this->getX()->resize(0);
-    this->getV()->resize(0);
-    this->getF()->resize(0);
-    this->getDx()->resize(0);
+    this->resize(0);
     elems.clear();
     Loader loader(this);
     loader.load(file);
@@ -72,11 +67,11 @@ void TriangleModel::init(const char* file)
 
 void TriangleModel::draw()
 {
-    if (!isActive() || !Scene::getInstance()->getShowCollisionModels()) return;
+    if (!isActive() || !getContext()->getShowCollisionModels()) return;
     //std::cout << "SPHdraw"<<elems.size()<<std::endl;
     glDisable(GL_LIGHTING);
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    if (getObject()==NULL)
+    if (isStatic())
         glColor3f(0.5, 0.5, 0.5);
     else
         glColor3f(1.0, 0.0, 0.0);
@@ -137,6 +132,20 @@ void TriangleModel::computeContinueBoundingBox (void)
 {
     CubeModel* cubeModel = dynamic_cast<CubeModel*>(getPrevious());
 
+    if (cubeModel == NULL)
+    {
+        if (getPrevious() != NULL)
+        {
+            delete getPrevious();
+            setPrevious(NULL);
+        }
+        cubeModel = new CubeModel();
+        cubeModel->setContext(getContext());
+        this->setPrevious(cubeModel);
+        cubeModel->setNext(this);
+    }
+    else if (isStatic()) return; // No need to recompute BBox if immobile
+
     /* Vector3 minBB, maxBB;
     Vector3 minBBMoved, maxBBMoved;
     std::vector<Vector3> newVertices;
@@ -151,24 +160,9 @@ void TriangleModel::computeContinueBoundingBox (void)
     for (int i = 0; i < size; i++)
     {
         Vector3 newPos = verts[i];
-        newPos += velocityVerts[i] * 0.005; // TO DELETE : change 0.005 by the true dt of the object
+        newPos += velocityVerts[i] * getContext()->getDt();
         newVertices.push_back(newPos);
     }
-
-    if (cubeModel == NULL)
-    {
-        if (getPrevious() != NULL)
-        {
-            delete getPrevious();
-            setPrevious(NULL);
-        }
-        cubeModel = new CubeModel();
-        cubeModel->setObject(getObject());
-        this->setPrevious(cubeModel);
-        cubeModel->setNext(this);
-    }
-    else if (getObject()==NULL) return; // No need to recompute BBox if immobile
-
     Vector3 minBB, maxBB, minBBMoved, maxBBMoved;
     findBoundingBox(verts, minBB, maxBB);
     findBoundingBox(newVertices, minBBMoved, maxBBMoved);
@@ -196,11 +190,11 @@ void TriangleModel::computeBoundingBox(void)
             setPrevious(NULL);
         }
         cubeModel = new CubeModel();
-        cubeModel->setObject(getObject());
+        cubeModel->setContext(getContext());
         this->setPrevious(cubeModel);
         cubeModel->setNext(this);
     }
-    else if (getObject()==NULL) return; // No need to recompute BBox if immobile
+    else if (isStatic()) return; // No need to recompute BBox if immobile
 
     Vector3 minBB, maxBB;
 
@@ -211,36 +205,30 @@ void TriangleModel::computeBoundingBox(void)
     cubeModel->setCube(0,minBB, maxBB);
 }
 
-void TriangleModel::setObject(Abstract::BehaviorModel* obj)
+void TriangleModel::beginIntegration(double dt)
 {
-    object = obj;
-    this->Core::MechanicalObject<Vec3Types>::setObject(obj);
+    //std::cout << "BEGIN"<<std::endl;
+    f = internalForces;
+    this->Core::MechanicalObject<Vec3Types>::beginIntegration(dt);
 }
 
-void TriangleModel::beginIteration(double /*dt*/)
+void TriangleModel::endIntegration(double dt)
 {
-    /*std::cout << "BEGIN"<<std::endl;
-     f = internalForces;
-     this->Core::MechanicalObject<Vec3Types>::beginIteration(dt);*/
-}
-
-void TriangleModel::endIteration(double /*dt*/)
-{
-    /* this->Core::MechanicalObject<Vec3Types>::endIteration(dt);
+    this->Core::MechanicalObject<Vec3Types>::endIntegration(dt);
     //std::cout << "END"<<std::endl;
     f = externalForces;
-    externalForces->clear(); */
+    externalForces->clear();
 }
 
 void TriangleModel::accumulateForce()
 {
-    /* if (!externalForces->empty())
+    if (!externalForces->empty())
     {
-    	//std::cout << "Adding external forces"<<std::endl;
-    	for (unsigned int i=0; i < externalForces->size(); i++)
-    		(*getF())[i] += (*externalForces)[i];
+        //std::cout << "Adding external forces"<<std::endl;
+        for (unsigned int i=0; i < externalForces->size(); i++)
+            (*getF())[i] += (*externalForces)[i];
     }
-    this->Core::MechanicalObject<Vec3Types>::accumulateForce(); */
+    this->Core::MechanicalObject<Vec3Types>::accumulateForce();
 }
 
 void TriangleModel::findBoundingBox(const std::vector<Vector3> &verts, Vector3 &minBB, Vector3 &maxBB)

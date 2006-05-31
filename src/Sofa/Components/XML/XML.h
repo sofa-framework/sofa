@@ -12,7 +12,7 @@ namespace Components
 namespace XML
 {
 
-BaseNode* load(const char *filename, const char* rootname="Scene");
+BaseNode* load(const char *filename);
 
 bool save(const char *filename, BaseNode* root);
 

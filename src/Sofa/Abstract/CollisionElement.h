@@ -20,7 +20,11 @@ public:
 
     virtual void getBBox(double* minVect, double* maxVect) = 0;
 
-    bool isSelfCollis(CollisionElement* elem) {return getCollisionModel() == elem->getCollisionModel();};
+    /// Test if collisions with another element should be tested.
+    /// Default is to reject any self-collisions.
+    bool canCollideWith(CollisionElement* elem) {return getCollisionModel() != elem->getCollisionModel();}
+
+    //bool isSelfCollis(CollisionElement* elem) {return getCollisionModel() == elem->getCollisionModel();}
 };
 
 } // namespace Abstract

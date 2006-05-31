@@ -1,8 +1,6 @@
 #include "TensorForceField.h"
 
-#include "Sofa/Components/Scene.h"
-#include "Sofa/Components/XML/DynamicNode.h"
-#include "Sofa/Components/XML/ForceFieldNode.h"
+#include "Sofa/Components/Common/ObjectFactory.h"
 
 #include <GL/gl.h>
 
@@ -404,7 +402,7 @@ TensorForceField<DataTypes>::addDForce()
 template<class DataTypes>
 void TensorForceField<DataTypes>::draw()
 {
-    if (!Scene::getInstance()->getShowForceFields()) return;
+    if (!getContext()->getShowForceFields()) return;
     VecCoord& p1 = *object_->getX();
     glDisable(GL_LIGHTING);
     glColor4f(1,1,1,1);
@@ -623,17 +621,17 @@ template class TensorForceField<Vec3fTypes>; // doesn't work for now
 
 template<class DataTypes>
 void create(TensorForceField<DataTypes>*& obj,
-        XML::Node<Core::ForceField>* arg)
+        ObjectDescription* arg)
 {
     XML::createWithParentAndFilename<
     TensorForceField<DataTypes>, Core::MechanicalObject<DataTypes>
     > (obj, arg);
 }
 
-Creator<XML::ForceFieldNode::Factory, TensorForceField<Vec3dTypes> >
+Creator<ObjectFactory, TensorForceField<Vec3dTypes> >
 TensorForceFieldVec3dClass("TensorForceField", true);
 
-Creator< XML::ForceFieldNode::Factory, TensorForceField<Vec3fTypes> >
+Creator<ObjectFactory, TensorForceField<Vec3fTypes> >
 TensorForceFieldVec3fClass("TensorForceField", true);
 
 

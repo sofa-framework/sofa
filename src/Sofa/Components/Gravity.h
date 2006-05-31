@@ -17,7 +17,7 @@ class GNode;
 
 class Gravity : public Abstract::ContextObject
 {
-    typedef Common::Vec3f Vec3;
+    typedef Common::Vec3d Vec3;
 public:
     Gravity();
     const Vec3&  getGravity() const;

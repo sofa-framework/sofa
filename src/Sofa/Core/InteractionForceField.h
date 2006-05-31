@@ -9,7 +9,7 @@ namespace Sofa
 namespace Core
 {
 
-class InteractionForceField : public ForceField
+class InteractionForceField : public BasicForceField
 {
 public:
 };

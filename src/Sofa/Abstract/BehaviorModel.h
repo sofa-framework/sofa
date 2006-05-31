@@ -30,9 +30,12 @@ public:
     /// Computation of a new simulation step.
     virtual void updatePosition(double dt) = 0;
 
+    /// Deprecated transform method. Replaced by local coordinates system in Context.
     virtual void applyTranslation(double /*dx*/, double /*dy*/, double /*dz*/) { }
-    virtual void applyScale(double /*sx*/, double /*sy*/, double /*sz*/, double /*smass*/) { }
+    /// Deprecated transform method. Replaced by local coordinates system in Context.
     virtual void applyRotation(double /*ax*/, double /*ay*/, double /*az*/, double /*angle*/) { }
+
+    virtual void applyScale(double /*sx*/, double /*sy*/, double /*sz*/, double /*smass*/) { }
 };
 
 } // namespace Abstract

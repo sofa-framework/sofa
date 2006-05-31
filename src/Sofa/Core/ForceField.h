@@ -1,9 +1,8 @@
 #ifndef SOFA_CORE_FORCEFIELD_H
 #define SOFA_CORE_FORCEFIELD_H
 
-#include <iostream>
-
-#include "Sofa/Abstract/BaseObject.h"
+#include "BasicForceField.h"
+#include "MechanicalModel.h"
 
 namespace Sofa
 {
@@ -11,14 +10,31 @@ namespace Sofa
 namespace Core
 {
 
-class ForceField : public virtual Abstract::BaseObject
+template<class DataTypes>
+class ForceField : public BasicForceField
 {
 public:
-    virtual ~ForceField() {}
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
 
-    virtual void addForce () = 0;
+    ForceField(MechanicalModel<DataTypes> *mm = NULL);
 
-    virtual void addDForce () = 0;
+    virtual ~ForceField();
+
+    virtual void init();
+
+    virtual void addForce();
+
+    virtual void addDForce();
+
+    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v) = 0;
+
+    virtual void addDForce (VecDeriv& df, const VecCoord& x, const VecDeriv& v, const VecDeriv& dx) = 0;
+
+protected:
+    MechanicalModel<DataTypes> *mmodel;
 };
 
 } // namespace Core

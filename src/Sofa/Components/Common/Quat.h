@@ -25,7 +25,10 @@ public:
     Quater();
     virtual ~Quater();
     Quater(Real x, Real y, Real z, Real w);
-    Quater(Real q[]);
+    template<class Real2>
+    Quater(const Real2 q[]) { for (int i=0; i<4; i++) _q[i] = (Real)q[i]; }
+    template<class Real2>
+    Quater(const Quater<Real2>& q) { for (int i=0; i<4; i++) _q[i] = (Real)q[i]; }
     Quater( const Vec<3,Real>& axis, Real angle );
 
     static Quater identity()
@@ -33,6 +36,18 @@ public:
         return Quater(0,0,0,1);
     }
 
+
+    /// Cast into a standard C array of elements.
+    const Real* ptr() const
+    {
+        return this->_q;
+    }
+
+    /// Cast into a standard C array of elements.
+    Real* ptr()
+    {
+        return this->_q;
+    }
 
     /// Normalize a quaternion
     void normalize();
@@ -50,12 +65,12 @@ public:
     template<class Mat33>
     void toMatrix(Mat33 &m) const
     {
-        m[0][0] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
-        m[0][1] = (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
-        m[0][2] = (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
+        m[0][0] = (float) (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
+        m[0][1] = (float) (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));
+        m[0][2] = (float) (2.0f * (_q[2] * _q[0] + _q[1] * _q[3]));
 
-        m[1][0] = (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
-        m[1][1] = (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
+        m[1][0] = (float) (2.0f * (_q[0] * _q[1] + _q[2] * _q[3]));
+        m[1][1] = (float) (1.0f - 2.0f * (_q[2] * _q[2] + _q[0] * _q[0]));
         m[1][2] = (float) (2.0f * (_q[1] * _q[2] - _q[0] * _q[3]));
 
         m[2][0] = (float) (2.0f * (_q[2] * _q[0] - _q[1] * _q[3]));

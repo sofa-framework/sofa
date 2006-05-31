@@ -47,10 +47,7 @@ public:
     {
         if(!multi && this->registry.find(key) != this->registry.end())
             return false; // key used
-        // commented by Sylvere F.
-        // TODO : search where are the errors for gettypename
-        // error : operator << not found for right value type std::string
-        // std::cout << gettypename(typeid(Object)) << (multi?" template class ":" class ")
+        //std::cout << gettypename(typeid(Object)) << (multi?" template class ":" class ")
         //          << gettypename(creator->type()) << " registered as " << key << std::endl;
         this->registry.insert(std::pair<Key, Creator*>(key, creator));
         return true;
@@ -64,7 +61,6 @@ public:
     {
         return getInstance()->createObject(key, arg);
     }
-
 };
 
 /// Generic object creator. Can be specialized for custom objects creation

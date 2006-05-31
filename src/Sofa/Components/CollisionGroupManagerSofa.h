@@ -2,7 +2,7 @@
 #define SOFA_COMPONENTS_COLLISIONGROUPMANAGERSOFA_H
 
 #include "Collision/CollisionGroupManager.h"
-#include "Sofa/Core/MechanicalGroup.h"
+#include "Graph/GNode.h"
 #include "Scene.h"
 
 #include <set>
@@ -17,8 +17,8 @@ class CollisionGroupManagerSofa : public Collision::CollisionGroupManager
 {
 public:
     std::string name;
-    std::set<Core::MechanicalGroup*> groupSet;
-    std::vector<Core::Group*> groupVec;
+    std::set<Graph::GNode*> groupSet;
+    std::vector<Abstract::BaseContext*> groupVec;
 public:
     CollisionGroupManagerSofa(const std::string& name);
 
@@ -26,11 +26,14 @@ public:
 
     virtual const char* getName() { return name.c_str(); }
 
-    virtual void createGroups(Scene* scene, const std::vector<Collision::Contact*>& contacts);
+    virtual void createGroups(Abstract::BaseContext* scene, const std::vector<Collision::Contact*>& contacts);
 
-    virtual void clearGroups(Scene* scene);
+    virtual void clearGroups(Abstract::BaseContext* scene);
 
-    virtual const std::vector<Core::Group*>& getGroups() { return groupVec; }
+    virtual const std::vector<Abstract::BaseContext*>& getGroups() { return groupVec; }
+
+protected:
+    virtual Graph::GNode* getIntegrationNode(Abstract::CollisionModel* model);
 };
 
 } // namespace Components

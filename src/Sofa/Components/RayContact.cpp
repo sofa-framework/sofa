@@ -35,7 +35,7 @@ void RayContact::setDetectionOutputs(const std::vector<DetectionOutput*>& output
     collisions = outputs;
 }
 
-void RayContact::createResponse(Core::Group* /*group*/)
+void RayContact::createResponse(Abstract::BaseContext* /*group*/)
 {
 }
 

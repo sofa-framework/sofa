@@ -1,8 +1,9 @@
 #ifndef SOFA_COMPONENTS_PLANEFORCEFIELD_INL
 #define SOFA_COMPONENTS_PLANEFORCEFIELD_INL
 
+#include "Sofa/Core/ForceField.inl"
 #include "PlaneForceField.h"
-#include "Scene.h"
+#include "Common/config.h"
 #include <assert.h>
 #include <GL/gl.h>
 
@@ -13,12 +14,8 @@ namespace Components
 {
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addForce()
+void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& /*v1*/)
 {
-    assert(this->object);
-    VecDeriv& f1 = *this->object->getF();
-    VecCoord& p1 = *this->object->getX();
-    //VecDeriv& v1 = *this->object->getV();
     //this->dfdd.resize(p1.size());
     this->contacts.clear();
     f1.resize(p1.size());
@@ -37,11 +34,8 @@ void PlaneForceField<DataTypes>::addForce()
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addDForce()
+void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecCoord& /*p1*/, const VecDeriv& /*v1*/, const VecDeriv& dx1)
 {
-    VecDeriv& f1  = *this->object->getF();
-    //VecCoord& p1 = *this->object->getX();
-    VecDeriv& dx1 = *this->object->getDx();
     f1.resize(dx1.size());
     for (unsigned int i=0; i<this->contacts.size(); i++)
     {
@@ -54,8 +48,8 @@ void PlaneForceField<DataTypes>::addDForce()
 template<class DataTypes>
 void PlaneForceField<DataTypes>::draw()
 {
-    if (!Scene::getInstance()->getShowForceFields()) return;
-    VecCoord& p1 = *this->object->getX();
+    if (!getContext()->getShowForceFields()) return;
+    VecCoord& p1 = *this->mmodel->getX();
     glDisable(GL_LIGHTING);
     glColor4f(1,0,0,1);
     glBegin(GL_LINES);

@@ -2,7 +2,6 @@
 #define SOFA_COMPONENTS_DIAGONALMASS_INL
 
 #include "DiagonalMass.h"
-#include "Scene.h"
 #include "MassSpringLoader.h"
 #include "GL/template.h"
 #include "Common/RigidTypes.h"
@@ -17,28 +16,19 @@ using namespace Common;
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
-    : mmodel(NULL)
 {
-    DataTypes::set(gravity,0,-9.8,0);
 }
 
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass(Core::MechanicalModel<DataTypes>* mmodel, const std::string& /*name*/)
-    : mmodel(mmodel)
+    : Mass<DataTypes>(mmodel)
 {
-    DataTypes::set(gravity,0,-9.8,0);
 }
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::~DiagonalMass()
 {
-}
-
-template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::setMechanicalModel(Core::MechanicalModel<DataTypes>* mm)
-{
-    this->mmodel = mm;
 }
 
 template <class DataTypes, class MassType>
@@ -61,10 +51,8 @@ void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMDx()
+void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx)
 {
-    VecDeriv& res = *mmodel->getF();
-    VecDeriv& dx = *mmodel->getDx();
     for (unsigned int i=0; i<dx.size(); i++)
     {
         res[i] += dx[i] * masses[i];
@@ -72,10 +60,8 @@ void DiagonalMass<DataTypes, MassType>::addMDx()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::accFromF()
+void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
-    VecDeriv& a = *mmodel->getDx();
-    VecDeriv& f = *mmodel->getF();
     for (unsigned int i=0; i<f.size(); i++)
     {
         a[i] = f[i] / masses[i];
@@ -83,24 +69,22 @@ void DiagonalMass<DataTypes, MassType>::accFromF()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::computeForce()
+void DiagonalMass<DataTypes, MassType>::computeForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
-    /*	VecDeriv& f = *mmodel->getF();
-    	for (unsigned int i=0;i<f.size();i++)
-    	{
-    		f[i] += gravity * masses[i];
-    	}*/
-    VecDeriv& f = *mmodel->getF();
-    VecCoord& x = *mmodel->getX();
-    VecDeriv& v = *mmodel->getV();
+    /*Deriv gravity ( getContext()->getGravity() );
+    for (unsigned int i=0;i<f.size();i++)
+    {
+    	f[i] += gravity * masses[i];
+    }*/
 
     // gravity
-    Core::Context::Vec g = this->getContext()->getGravity();
+    Vec3d g ( this->getContext()->getGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
 
     // velocity-based stuff
+#if 0
     Core::Context::SpatialVelocity vframe = getContext()->getSpatialVelocity();
     Core::Context::Vec aframe = getContext()->getLinearAcceleration() ;
     // project back to local frame
@@ -112,21 +96,21 @@ void DiagonalMass<DataTypes, MassType>::computeForce()
     {
         f[i] += theGravity*masses[i] + inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
     }
-}
-
-template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::setGravity( const Deriv& g )
-{
-    this->gravity = g;
+#else
+    for (unsigned int i=0; i<f.size(); i++)
+    {
+        f[i] += theGravity*masses[i];
+    }
+#endif
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw()
 {
-    if (!Scene::getInstance()->getShowBehaviorModels()) return;
+    if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);
-    glPointSize(5);
+    glPointSize(2);
     glColor4f (1,1,1,1);
     glBegin (GL_POINTS);
     for (unsigned int i=0; i<x.size(); i++)
@@ -148,9 +132,6 @@ public:
     }
     virtual void setGravity(double gx, double gy, double gz)
     {
-        typename DataTypes::Deriv g;
-        DataTypes::set(g,gx,gy,gz);
-        dest->setGravity(g);
     }
 };
 

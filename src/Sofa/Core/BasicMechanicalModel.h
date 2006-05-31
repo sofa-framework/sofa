@@ -1,7 +1,6 @@
 #ifndef SOFA_CORE_BASICMECHANICALMODEL_H
 #define SOFA_CORE_BASICMECHANICALMODEL_H
 
-#include "Topology.h"
 #include "Sofa/Abstract/BaseObject.h"
 #include "Sofa/Core/Encoding.h"
 #include <iostream>
@@ -29,30 +28,18 @@ public:
 
     virtual void init() = 0;
 
-    virtual void setTopology(Topology* topo) = 0;
-
-    virtual Topology* getTopology() = 0;
-
-    virtual void beginIteration(double dt) = 0;
-
-    virtual void endIteration(double dt) = 0;
-
-    virtual void propagateX() = 0;
-
-    virtual void propagateV() = 0;
-
-    virtual void propagateDx() = 0;
-
-    virtual void resetForce() = 0;
-
-    virtual void accumulateForce() = 0;
-
-    virtual void accumulateDf() = 0;
-
-    virtual void applyConstraints() = 0;
-
     /// @name Integration related methods
     /// @{
+
+    virtual void beginIntegration(double dt) { }
+
+    virtual void endIntegration(double dt) { }
+
+    virtual void resetForce() { vOp( VecId::force() ); }
+
+    virtual void accumulateForce() { }
+
+    virtual void accumulateDf() { }
 
     virtual void vAlloc(VecId v) = 0; // {}
 
@@ -77,12 +64,7 @@ public:
     virtual void printDOF( VecId, std::ostream& =std::cerr ) = 0;
     /// @}
 
-    ///  Default: do not change the context.
-    virtual void updateContext( Context* )
-    {}
-
-}
-;
+};
 
 } // namespace Core
 

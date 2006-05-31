@@ -3,7 +3,7 @@
 
 #include "Sofa/Core/MechanicalMapping.h"
 #include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Components/RigidObject.h"
+#include "Common/RigidTypes.h"
 #include "Sofa/Abstract/VisualModel.h"
 #include <vector>
 
@@ -26,7 +26,7 @@ public:
     typedef typename Out::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    class Mat3 : public fixed_array<Deriv,3>
+    class Mat3 : public Common::fixed_array<Deriv,3>
     {
     public:
         Coord operator*(const Coord& v) const

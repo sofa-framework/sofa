@@ -1,8 +1,7 @@
 #include "FixedConstraint.inl"
-#include "Sofa/Components/XML/ConstraintNode.h"
+#include "Sofa/Components/Common/ObjectFactory.h"
 #include "Sofa/Components/Common/Vec3Types.h"
 #include "Sofa/Components/Common/RigidTypes.h"
-#include "Scene.h"
 #include "GL/Repere.h"
 
 namespace Sofa
@@ -16,7 +15,7 @@ using namespace Common;
 template <>
 void FixedConstraint<RigidTypes>::draw()
 {
-    /*	if (!Scene::getInstance()->getShowBehaviorModels()) return;
+    /*	if (!getContext()->getShowBehaviorModels()) return;
     	VecCoord& x = *mmodel->getX();
     	for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
     	{
@@ -44,9 +43,8 @@ void FixedConstraint<RigidTypes>::draw()
 }
 
 template <>
-void FixedConstraint<RigidTypes>::applyConstraint()
+void FixedConstraint<RigidTypes>::applyConstraint(VecDeriv& res)
 {
-    VecDeriv& res = *mmodel->getDx();
     res[0] = Deriv();
 }
 
@@ -60,7 +58,7 @@ namespace Common   // \todo Why this must be inside Common namespace
 {
 
 template<class DataTypes>
-void create(FixedConstraint<DataTypes>*& obj, XML::Node<Core::Constraint>* arg)
+void create(FixedConstraint<DataTypes>*& obj, ObjectDescription* arg)
 {
     XML::createWithParent< FixedConstraint<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
     if (obj!=NULL)
@@ -81,9 +79,9 @@ void create(FixedConstraint<DataTypes>*& obj, XML::Node<Core::Constraint>* arg)
 }
 }
 
-Creator< XML::ConstraintNode::Factory, FixedConstraint<Vec3dTypes> > FixedConstraint3dClass("FixedConstraint",true);
-Creator< XML::ConstraintNode::Factory, FixedConstraint<Vec3fTypes> > FixedConstraint3fClass("FixedConstraint",true);
-Creator< XML::ConstraintNode::Factory, FixedConstraint<RigidTypes> > FixedConstraintRigidClass("FixedConstraint",true);
+Creator< ObjectFactory, FixedConstraint<Vec3dTypes> > FixedConstraint3dClass("FixedConstraint",true);
+Creator< ObjectFactory, FixedConstraint<Vec3fTypes> > FixedConstraint3fClass("FixedConstraint",true);
+Creator< ObjectFactory, FixedConstraint<RigidTypes> > FixedConstraintRigidClass("FixedConstraint",true);
 
 } // namespace Components
 

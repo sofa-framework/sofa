@@ -21,31 +21,29 @@ protected:
     std::vector<Abstract::CollisionElement*> elems;
     Abstract::CollisionModel* previous;
     Abstract::CollisionModel* next;
-    Abstract::BehaviorModel* object;
 
     class Loader;
     void init(const char* filename);
 
-    VecCoord* internalForces;
-    VecCoord* externalForces;
+    VecDeriv* internalForces;
+    VecDeriv* externalForces;
+    bool static_;
 public:
 
     SphereModel(const char* filename);
 
+    bool isStatic() { return static_; }
+    void setStatic(bool val=true) { static_ = val; }
+
     // -- MechanicalModel interface
 
-    virtual void setObject(Abstract::BehaviorModel* obj);
+    virtual void beginIntegration(double dt);
 
-    virtual void beginIteration(double dt);
-
-    virtual void endIteration(double dt);
+    virtual void endIntegration(double dt);
 
     virtual void accumulateForce();
 
     // -- CollisionModel interface
-
-    virtual Abstract::BehaviorModel* getObject()
-    { return object; }
 
     void computeBoundingBox();
 

@@ -1,5 +1,5 @@
 #include "GridTopology.h"
-#include "XML/TopologyNode.h"
+#include "Common/ObjectFactory.h"
 
 namespace Sofa
 {
@@ -9,7 +9,7 @@ namespace Components
 
 SOFA_DECL_CLASS(GridTopology)
 
-void create(GridTopology*& obj, XML::Node<Core::Topology>* arg)
+void create(GridTopology*& obj, ObjectDescription* arg)
 {
     const char* nx = arg->getAttribute("nx");
     const char* ny = arg->getAttribute("ny");
@@ -24,7 +24,7 @@ void create(GridTopology*& obj, XML::Node<Core::Topology>* arg)
     }
 }
 
-Creator<XML::TopologyNode::Factory, GridTopology> GridTopologyClass("Grid");
+Creator<ObjectFactory, GridTopology> GridTopologyClass("Grid");
 
 GridTopology::GridTopology()
     : nx(0), ny(0), nz(0)

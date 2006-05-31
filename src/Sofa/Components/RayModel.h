@@ -24,10 +24,9 @@ protected:
     std::vector<Abstract::CollisionElement*> elems;
     Abstract::CollisionModel* previous;
     Abstract::CollisionModel* next;
-    Abstract::BehaviorModel* object;
     std::set<RayContact*> contacts;
-    VecCoord* internalForces;
-    VecCoord* externalForces;
+    VecDeriv* internalForces;
+    VecDeriv* externalForces;
 public:
 
     RayModel();
@@ -55,18 +54,13 @@ public:
 
     // -- MechanicalModel interface
 
-    virtual void setObject(Abstract::BehaviorModel* obj);
+    virtual void beginIntegration(double dt);
 
-    virtual void beginIteration(double dt);
-
-    virtual void endIteration(double dt);
+    virtual void endIntegration(double dt);
 
     virtual void accumulateForce();
 
     // -- CollisionModel interface
-
-    virtual Abstract::BehaviorModel* getObject()
-    { return object; }
 
     void computeBoundingBox();
 

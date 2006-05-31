@@ -31,8 +31,6 @@ TObject* Factory<TKey, TObject, TArgument>::createObject(Key key, Argument arg)
         object = creator->createInstance(arg);
         if (object != NULL)
         {
-            // Added by Sylvere F.
-            // TODO : find the errors due to gettypename
             //std::cout<<"Object type "<<key<<" created: "<<gettypename(typeid(*object))<<std::endl;
             return object;
         }

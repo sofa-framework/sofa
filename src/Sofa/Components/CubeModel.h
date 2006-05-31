@@ -32,11 +32,11 @@ public:
     std::vector<Abstract::CollisionElement*> & getCollisionElements()
     { return elems; }
 
-    virtual Abstract::BehaviorModel* getObject()
-    { return object; }
+//	virtual Abstract::BehaviorModel* getObject()
+//	{ return object; }
 
-    virtual void setObject(Abstract::BehaviorModel* obj)
-    { object = obj; this->Core::MechanicalObject<Vec3Types>::setObject(obj); }
+//	virtual void setObject(Abstract::BehaviorModel* obj)
+//	{ object = obj; this->Core::MechanicalObject<Vec3Types>::setObject(obj); }
 
     Abstract::CollisionModel* getNext()
     { return next; }

@@ -2,9 +2,8 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include "Sofa/Components/StaticSolver.h"
-#include "Sofa/Core/MechanicalGroup.h"
 #include "Sofa/Core/MultiVector.h"
-#include "XML/SolverNode.h"
+#include "Common/ObjectFactory.h"
 
 #include <math.h>
 #include <iostream>
@@ -84,7 +83,7 @@ void StaticSolver::solve(double)
     pos.peq( x );
 }
 
-void create(StaticSolver*& obj, XML::Node<Core::OdeSolver>* arg)
+void create(StaticSolver*& obj, ObjectDescription* arg)
 {
     obj = new StaticSolver();
     if (arg->getAttribute("iterations"))
@@ -95,7 +94,7 @@ void create(StaticSolver*& obj, XML::Node<Core::OdeSolver>* arg)
 
 SOFA_DECL_CLASS(StaticSolver)
 
-Creator<XML::SolverNode::Factory, StaticSolver> StaticSolverClass("Static");
+Creator<ObjectFactory, StaticSolver> StaticSolverClass("Static");
 
 } // namespace Components
 

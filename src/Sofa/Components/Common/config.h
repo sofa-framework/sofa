@@ -11,6 +11,8 @@ template<class T> T min(const T& a, const T& b) { return _cpp_min(a,b); }
 template<class T> T max(const T& a, const T& b) { return _cpp_max(a,b); }
 }
 */
+
+#define snprintf _snprintf
 #endif
 
 

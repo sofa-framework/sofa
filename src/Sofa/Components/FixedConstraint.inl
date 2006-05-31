@@ -1,8 +1,8 @@
 #ifndef SOFA_COMPONENTS_FIXEDCONSTRAINT_INL
 #define SOFA_COMPONENTS_FIXEDCONSTRAINT_INL
 
+#include "Sofa/Core/Constraint.inl"
 #include "FixedConstraint.h"
-#include "Scene.h"
 #include "GL/template.h"
 #include "Common/RigidTypes.h"
 
@@ -16,14 +16,14 @@ using namespace Common;
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
-    : mmodel(NULL)
+    : Constraint<DataTypes>(NULL)
 {
 }
 
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint(Core::MechanicalModel<DataTypes>* mmodel)
-    : mmodel(mmodel)
+    : Constraint<DataTypes>(mmodel)
 {
 }
 
@@ -33,20 +33,14 @@ FixedConstraint<DataTypes>::~FixedConstraint()
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::setMechanicalModel(Core::MechanicalModel<DataTypes>* mm)
-{
-    this->mmodel = mm;
-}
-
-template <class DataTypes>
-Core::Constraint*  FixedConstraint<DataTypes>::addConstraint(int index)
+FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::addConstraint(int index)
 {
     this->indices.insert(index);
     return this;
 }
 
 template <class DataTypes>
-Core::Constraint*  FixedConstraint<DataTypes>::removeConstraint(int index)
+FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::removeConstraint(int index)
 {
     this->indices.erase(index);
     return this;
@@ -54,9 +48,8 @@ Core::Constraint*  FixedConstraint<DataTypes>::removeConstraint(int index)
 
 // -- Mass interface
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint()
+void FixedConstraint<DataTypes>::applyConstraint(VecDeriv& res)
 {
-    VecDeriv& res = *mmodel->getDx();
     for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
     {
         res[*it] = Deriv();
@@ -66,7 +59,7 @@ void FixedConstraint<DataTypes>::applyConstraint()
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw()
 {
-    if (!Scene::getInstance()->getShowBehaviorModels()) return;
+    if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
@@ -83,7 +76,7 @@ void FixedConstraint<DataTypes>::draw()
 template <>
 void FixedConstraint<RigidTypes >::draw();
 template <>
-void FixedConstraint<RigidTypes >::applyConstraint();
+void FixedConstraint<RigidTypes >::applyConstraint(VecDeriv& dx);
 
 } // namespace Components
 

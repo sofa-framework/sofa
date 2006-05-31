@@ -29,7 +29,7 @@ void RegularGridSpringForceField<DataTypes>::addForce()
     f2.resize(p2.size());
     if (this->object1==this->object2)
     {
-        RegularGridTopology* topology = dynamic_cast<RegularGridTopology*>(this->object1->getTopology());
+        RegularGridTopology* topology = dynamic_cast<RegularGridTopology*>(this->object1->getContext()->getTopology());
         if (topology != NULL)
         {
             const int nx = topology->getNx();
@@ -210,7 +210,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
     f2.resize(dx2.size());
     if (this->object1==this->object2)
     {
-        RegularGridTopology* topology = dynamic_cast<RegularGridTopology*>(this->object1->getTopology());
+        RegularGridTopology* topology = dynamic_cast<RegularGridTopology*>(this->object1->getContext()->getTopology());
         if (topology != NULL)
         {
             const int nx = topology->getNx();

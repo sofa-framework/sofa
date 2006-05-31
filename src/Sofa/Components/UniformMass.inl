@@ -2,7 +2,7 @@
 #define SOFA_COMPONENTS_UNIFORMMASS_INL
 
 #include "UniformMass.h"
-#include "Scene.h"
+#include "Sofa/Core/Mass.inl"
 #include <Sofa/Core/Context.h>
 #include "GL/template.h"
 #include "Common/RigidTypes.h"
@@ -30,19 +30,14 @@ void UniformMass<RigidTypes, RigidMass>::draw();
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-    : mmodel(NULL)
 {
-    DataTypes::set
-    (gravity,0,-9.8,0);
 }
 
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass(Core::MechanicalModel<DataTypes>* mmodel)
-    : mmodel(mmodel)
+    : Mass<DataTypes>(mmodel)
 {
-    DataTypes::set
-    (gravity,0,-9.8,0);
 }
 
 template <class DataTypes, class MassType>
@@ -50,24 +45,15 @@ UniformMass<DataTypes, MassType>::~UniformMass()
 {}
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::setMechanicalModel(Core::MechanicalModel<DataTypes>* mm)
-{
-    this->mmodel = mm;
-}
-
-template <class DataTypes, class MassType>
-Core::Mass* UniformMass<DataTypes, MassType>::setMass(const MassType& m)
+void UniformMass<DataTypes, MassType>::setMass(const MassType& m)
 {
     this->mass = m;
-    return this;
 }
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDx()
+void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx)
 {
-    VecDeriv& res = *mmodel->getF();
-    VecDeriv& dx = *mmodel->getDx();
     for (unsigned int i=0; i<dx.size(); i++)
     {
         res[i] += dx[i] * mass;
@@ -75,10 +61,8 @@ void UniformMass<DataTypes, MassType>::addMDx()
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::accFromF()
+void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
-    VecDeriv& a = *mmodel->getDx();
-    VecDeriv& f = *mmodel->getF();
     for (unsigned int i=0; i<f.size(); i++)
     {
         a[i] = f[i] / mass;
@@ -86,19 +70,15 @@ void UniformMass<DataTypes, MassType>::accFromF()
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::computeForce()
+void UniformMass<DataTypes, MassType>::computeForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
-    VecDeriv& f = *mmodel->getF();
-    VecCoord& x = *mmodel->getX();
-    VecDeriv& v = *mmodel->getV();
-
     // weight
-    Core::Context::Vec g = this->getContext()->getGravity();
+    const double* g = this->getContext()->getGravity();
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass;
-
+#if 0
     // velcity-based stuff
     Core::Context::SpatialVelocity vframe = getContext()->getSpatialVelocity();
     Core::Context::Vec aframe = getContext()->getLinearAcceleration() ;
@@ -119,22 +99,21 @@ void UniformMass<DataTypes, MassType>::computeForce()
         f[i] += mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i]);
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
     }
-}
-
-template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::setGravity( const Deriv& g )
-{
-    this->gravity = g;
+#else
+    for (unsigned int i=0; i<f.size(); i++)
+    {
+        f[i] += mg;
+    }
+#endif
 }
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw()
 {
-    if (!Scene::getInstance()->getShowBehaviorModels())
-        return;
+    if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);
-    glPointSize(5);
+    glPointSize(2);
     glColor4f (1,1,1,1);
     glBegin (GL_POINTS);
     for (unsigned int i=0; i<x.size(); i++)
@@ -150,4 +129,3 @@ void UniformMass<DataTypes, MassType>::draw()
 } // namespace Sofa
 
 #endif
-

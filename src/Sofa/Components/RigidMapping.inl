@@ -5,7 +5,6 @@
 #include "MassSpringLoader.h"
 #include "SphereLoader.h"
 #include "Common/Mesh.h"
-#include "Scene.h"
 #include "GL/template.h"
 
 #include "Sofa/Core/MechanicalMapping.inl"
@@ -161,7 +160,7 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typen
 template <class BaseMapping>
 void RigidMapping<BaseMapping>::draw()
 {
-    if (!Scene::getInstance()->getShowMappings()) return;
+    if (!getContext()->getShowMappings()) return;
     glDisable (GL_LIGHTING);
     glPointSize(7);
     glColor4f (1,1,0,1);

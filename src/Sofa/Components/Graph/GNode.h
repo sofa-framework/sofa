@@ -20,17 +20,13 @@
 #include "Sofa/Core/Constraint.h"
 #include "Sofa/Core/Topology.h"
 #include "Sofa/Core/OdeSolver.h"
-#include "Action.h"
+#include "Sofa/Components/Collision/Pipeline.h"
 #include <iostream>
 using std::cout;
 using std::endl;
 
 namespace Sofa
 {
-namespace Abstract
-{
-class BaseObject;
-}
 
 namespace Components
 {
@@ -42,34 +38,41 @@ using namespace Abstract;
 using namespace Core;
 
 class Action;
+class MutationListener;
 
-class GNode : public BaseNode
+class GNode : public Core::Context, public Abstract::BaseNode
 {
 public:
     GNode( const std::string& name="", GNode* parent=NULL  );
 
     virtual ~GNode();
 
-    /// Add a child node and return this
-    virtual BaseNode* addChild(GNode* node);
+    /// Add a child node
+    virtual void addChild(GNode* node);
 
     /// Remove a child
     virtual void removeChild(GNode* node);
 
-    /// Add a child node and return this
-    virtual BaseNode* addChild(BaseNode* node);
+    /// Add a child node
+    virtual void addChild(BaseNode* node);
 
     /// Remove a child node
     virtual void removeChild(BaseNode* node);
 
-    const Core::Context* getContext() const;
-    Core::Context* getContext();
+    virtual const BaseContext* getContext() const;
+    virtual BaseContext* getContext();
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual GNode* addObject(BaseObject* obj);
+    virtual bool addObject(BaseObject* obj);
 
     /// Remove an object
-    virtual void removeObject(BaseObject* obj);
+    virtual bool removeObject(BaseObject* obj);
+
+    /// Move a node from another node
+    virtual void moveChild(GNode* obj);
+
+    /// Move an object from another node
+    virtual void moveObject(BaseObject* obj);
 
     /// Connect all objects together. Must be called after each graph modification.
     virtual void init();
@@ -80,8 +83,19 @@ public:
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual const BaseNode* getParent() const;
 
-    /// Get the context of the parent, if the parent exists and is a Context
-    Context* getParentContext();
+    ///// Get the context of the parent, if the parent exists and is a Context
+    //Context* getParentContext();
+
+    /// @name Variables
+    /// @{
+
+    /// Mechanical Degrees-of-Freedom
+    virtual Abstract::BaseObject* getMechanicalModel() const;
+
+    /// Topology
+    virtual Abstract::BaseObject* getTopology() const;
+
+    /// @}
 
     /// Update the context values, based on parent and local ContextObjects
     void updateContext();
@@ -274,11 +288,11 @@ public:
     Single<BasicMechanicalModel> mechanicalModel;
     Single<BasicMechanicalMapping> mechanicalMapping;
     Single<OdeSolver> solver;
-    Single<Mass> mass;
+    Single<BasicMass> mass;
     Single<Topology> topology;
-    Sequence<ForceField> forceField;
+    Sequence<BasicForceField> forceField;
     Sequence<InteractionForceField> interactionForceField;
-    Sequence<Constraint> constraint;
+    Sequence<BasicConstraint> constraint;
     Sequence<ContextObject> contextObject;
 
     Sequence<BasicMapping> mapping;
@@ -286,13 +300,32 @@ public:
     Sequence<VisualModel> visualModel;
     Sequence<CollisionModel> collisionModel;
 
+    Sequence<Collision::Pipeline> collisionPipeline;
+
     GNode* setDebug(bool);
     bool getDebug() const;
 
+    Sequence<MutationListener> listener;
+
+    void addListener(MutationListener* obj);
+
+    void removeListener(MutationListener* obj);
+
 protected:
-    Context context_;
+//    Context context_;
     bool debug_;
 
+    void doAddChild(GNode* node);
+    void doRemoveChild(GNode* node);
+    void doAddObject(Abstract::BaseObject* obj);
+    void doRemoveObject(Abstract::BaseObject* obj);
+
+    void notifyAddChild(GNode* node);
+    void notifyRemoveChild(GNode* node);
+    void notifyAddObject(Abstract::BaseObject* obj);
+    void notifyRemoveObject(Abstract::BaseObject* obj);
+    void notifyMoveChild(GNode* node, GNode* prev);
+    void notifyMoveObject(Abstract::BaseObject* obj, GNode* prev);
 
 };
 
@@ -303,5 +336,3 @@ protected:
 } // namespace Sofa
 
 #endif
-
-

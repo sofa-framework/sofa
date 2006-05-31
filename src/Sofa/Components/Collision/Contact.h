@@ -2,7 +2,7 @@
 #define SOFA_COMPONENTS_COLLISION_CONTACT_H
 
 #include "DetectionOutput.h"
-#include "Sofa/Core/Group.h"
+#include "Sofa/Abstract/BaseContext.h"
 #include "../Common/Factory.h"
 
 #include <vector>
@@ -27,7 +27,7 @@ public:
 
     virtual void setDetectionOutputs(const std::vector<DetectionOutput*>& outputs) = 0;
 
-    virtual void createResponse(Core::Group* group) = 0;
+    virtual void createResponse(Abstract::BaseContext* group) = 0;
 
     virtual void removeResponse() = 0;
 

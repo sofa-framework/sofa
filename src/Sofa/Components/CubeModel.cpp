@@ -1,5 +1,4 @@
 #include "CubeModel.h"
-#include "Scene.h"
 
 #include <GL/glut.h>
 
@@ -51,7 +50,7 @@ void CubeModel::setCube(unsigned int index, const Vector3& min, const Vector3 &m
 
 void CubeModel::draw()
 {
-    if (!isActive() || !Scene::getInstance()->getShowCollisionModels()) return;
+    if (!isActive() || !getContext()->getShowCollisionModels()) return;
     //std::cout << "SPHdraw"<<elems.size()<<std::endl;
     glDisable(GL_LIGHTING);
     glColor3f(1.0, 1.0, 1.0);

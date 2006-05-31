@@ -66,7 +66,7 @@ BaseNode* createNode(xmlNodePtr root)
         return NULL;
     }
 
-    std::cerr << "Node "<<root->name<<" name "<<name<<" type "<<type<<" created.\n";
+    //std::cout << "Node "<<root->name<<" name "<<name<<" type "<<type<<" created.\n";
 
     // List attributes
     for (xmlAttrPtr attr = root->properties; attr!=NULL; attr = attr->next)
@@ -74,7 +74,7 @@ BaseNode* createNode(xmlNodePtr root)
         if (attr->children==NULL) continue;
         if (!xmlStrcmp(attr->name,(const xmlChar*)"name")) continue;
         if (!xmlStrcmp(attr->name,(const xmlChar*)"type")) continue;
-        std::cout << attr->name << " = " << attr->children->content << std::endl;
+        //std::cout << attr->name << " = " << attr->children->content << std::endl;
         node->setAttribute((const char*)attr->name, (const char*)attr->children->content);
     }
 
@@ -110,7 +110,7 @@ static void dumpNode(BaseNode* node, std::string prefix0="==", std::string prefi
     }
 }
 
-BaseNode* load(const char *filename, const char* rootname)
+BaseNode* load(const char *filename)
 {
     //
     // this initialize the library and check potential ABI mismatches
@@ -138,23 +138,16 @@ BaseNode* load(const char *filename, const char* rootname)
         return NULL;
     }
 
-    if (xmlStrcmp(root->name, (const xmlChar *) rootname))
-    {
-        std::cerr << "This is not a valid scene " << root->name << std::endl;
-        xmlFreeDoc(doc);
-        return NULL;
-    }
-
-    std::cout << "Creating graph"<<std::endl;
+    //std::cout << "Creating XML graph"<<std::endl;
     BaseNode* graph = createNode(root);
-    std::cout << "Graph created"<<std::endl;
+    //std::cout << "XML Graph created"<<std::endl;
     xmlFreeDoc(doc);
     xmlCleanupParser();
     xmlMemoryDump();
 
     if (graph == NULL)
     {
-        std::cerr << "Graph creation failed."<<std::endl;
+        std::cerr << "XML Graph creation failed."<<std::endl;
         return NULL;
     }
 

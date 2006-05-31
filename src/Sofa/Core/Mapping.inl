@@ -21,13 +21,13 @@ Mapping<In,Out>::~Mapping()
 }
 
 template <class In, class Out>
-Abstract::Base* Mapping<In,Out>::getFrom()
+Abstract::BaseObject* Mapping<In,Out>::getFrom()
 {
     return this->fromModel;
 }
 
 template <class In, class Out>
-Abstract::Base* Mapping<In,Out>::getTo()
+Abstract::BaseObject* Mapping<In,Out>::getTo()
 {
     return this->toModel;
 }
@@ -47,12 +47,10 @@ void Mapping<In,Out>::updateMapping()
     if (this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
     {
         apply(*this->toModel->getX(), *this->fromModel->getX());
-        //this->toModel->propagateX();
     }
     if (this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
     {
         applyJ(*this->toModel->getV(), *this->fromModel->getV());
-        //this->toModel->propagateV();
     }
 }
 

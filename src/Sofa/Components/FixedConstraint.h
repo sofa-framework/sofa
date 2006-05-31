@@ -14,17 +14,17 @@ namespace Components
 {
 
 template <class DataTypes>
-class FixedConstraint : public Core::Constraint, public Abstract::VisualModel
+class FixedConstraint : public Core::Constraint<DataTypes>, public Abstract::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-protected:
-    Core::MechanicalModel<DataTypes>* mmodel;
 
+protected:
     std::set<int> indices;
+
 public:
     FixedConstraint();
 
@@ -32,13 +32,11 @@ public:
 
     ~FixedConstraint();
 
-    void setMechanicalModel(Core::MechanicalModel<DataTypes>* mm);
-
-    Core::Constraint* addConstraint(int index);
-    Core::Constraint*  removeConstraint(int index);
+    FixedConstraint<DataTypes>* addConstraint(int index);
+    FixedConstraint<DataTypes>* removeConstraint(int index);
 
     // -- Constraint interface
-    void applyConstraint();
+    void applyConstraint(VecDeriv& dx);
 
     // -- VisualModel interface
 

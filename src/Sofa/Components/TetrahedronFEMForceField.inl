@@ -1,8 +1,9 @@
 #ifndef SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_INL
 #define SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_INL
 
+#include "Sofa/Core/ForceField.inl"
 #include "TetrahedronFEMForceField.h"
-#include "Scene.h"
+//#include "Scene.h"
 #include "MeshTopology.h"
 #include "Common/PolarDecompose.h"
 #include "GL/template.h"
@@ -22,8 +23,8 @@ using namespace Common;
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
-
-    _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->object->getTopology());
+    this->ForceField<DataTypes>::init();
+    _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->getContext()->getTopology());
     if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbCubes()<=0))
     {
         std::cerr << "ERROR(TetrahedronFEMForceField): object must have a tetrahedric MeshTopology.\n";
@@ -51,7 +52,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         _indexedElements = tetras;
     }
 
-    VecCoord& p = *this->object->getX();
+    VecCoord& p = *this->mmodel->getX();
     _initialPoints = p;
 
     _strainDisplacements.resize( _indexedElements->size() );
@@ -117,12 +118,8 @@ void TetrahedronFEMForceField<DataTypes>::init()
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addForce()
+void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
 {
-    assert(this->object);
-    VecDeriv& f = *this->object->getF();
-    VecCoord& p = *this->object->getX();
-    //VecDeriv& v = *this->object->getV();
     f.resize(p.size());
 
     unsigned int i=0;
@@ -163,12 +160,9 @@ void TetrahedronFEMForceField<DataTypes>::addForce()
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addDForce()
+void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecCoord& /*x*/, const VecDeriv& /*v*/, const VecDeriv& x)
 {
     Real h=1;
-    assert(this->object);
-    VecDeriv& v = *this->object->getF();
-    VecDeriv& x = *this->object->getDx();
     v.resize(x.size());
     //if(_assembling) applyStiffnessAssembled(v,h,x);
     //else
@@ -1015,9 +1009,9 @@ void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, Real h
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw()
 {
-    if (!Scene::getInstance()->getShowForceFields()) return;
-    if (!this->object) return;
-    VecCoord& x = *this->object->getX();
+    if (!getContext()->getShowForceFields()) return;
+    if (!this->mmodel) return;
+    VecCoord& x = *this->mmodel->getX();
 
     glDisable(GL_LIGHTING);
 

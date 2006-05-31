@@ -1,7 +1,8 @@
 #ifndef SOFA_CORE_MASS_H
 #define SOFA_CORE_MASS_H
 
-#include "Sofa/Abstract/BaseObject.h"
+#include "BasicMass.h"
+#include "MechanicalModel.h"
 
 namespace Sofa
 {
@@ -9,18 +10,39 @@ namespace Sofa
 namespace Core
 {
 
-class Mass : public virtual Abstract::BaseObject
+template<class DataTypes>
+class Mass : public BasicMass
 {
 public:
-    virtual ~Mass() { }
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
 
-    virtual void addMDx()=0; ///< f += M dx
+    Mass(MechanicalModel<DataTypes> *mm = NULL);
 
-    virtual void accFromF()=0; ///< dx = M^-1 f
+    virtual ~Mass();
 
-    virtual void computeForce() { }
+    virtual void init();
 
-    virtual void computeDf() { }
+    virtual void addMDx(); ///< f += M dx
+
+    virtual void accFromF(); ///< dx = M^-1 f
+
+    virtual void computeForce(); /// f += gravity and inertia forces
+
+    virtual void computeDf();
+
+    virtual void addMDx(VecDeriv& f, const VecDeriv& dx) = 0; ///< f += M dx
+
+    virtual void accFromF(VecDeriv& a, const VecDeriv& f) = 0; ///< dx = M^-1 f
+
+    virtual void computeForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v) = 0; /// f += gravity and inertia forces
+
+    virtual void computeDf(VecDeriv& /*df*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const VecDeriv& /*dx*/) { };
+
+protected:
+    MechanicalModel<DataTypes> *mmodel;
 };
 
 /** Return the inertia force applied to a body referenced in a moving coordinate system.

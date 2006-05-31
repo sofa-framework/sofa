@@ -18,7 +18,7 @@ QT += opengl qt3support
 }
 
 win32{
-  LIBS = -lSofaCore -lSofaComponents -llibxml2 -lGLaux -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
+  LIBS = -lSofaAbstract -lSofaCore -lSofaComponents -llibxml2 -lGLaux -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
   contains (DEFINES, SOFA_GUI_FLTK) {
 	LIBS += -lSofaGUIFLTK -lfltk -lfltkgl
   }
@@ -27,10 +27,10 @@ win32{
   }
   contains (CONFIGPROJECT, vc7) {
 	contains (CONFIGDEBUG, debug) {
-	  	LIBS += /NODEFAULTLIB:libcd 	
+	  	QMAKE_LFLAGS += /NODEFAULTLIB:libcd /NODEFAULTLIB:MSVCRT	
 	}	
 	contains (CONFIGDEBUG, release) {
-	  	LIBS += /NODEFAULTLIB:libc /NODEFAULTLIB:MSVCRTD
+	  	QMAKE_LFLAGS += /NODEFAULTLIB:libc /NODEFAULTLIB:MSVCRTD
 	}
   }
   QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY

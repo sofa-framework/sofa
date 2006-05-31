@@ -2,7 +2,7 @@
 #include "Sphere.h"
 #include "Scene.h"
 #include "Common/FnDispatcher.h"
-#include "XML/CollisionDetectionNode.h"
+#include "Common/ObjectFactory.h"
 
 #include <map>
 
@@ -22,14 +22,14 @@ namespace Components
 using namespace Common;
 using namespace Collision;
 
-void create(BruteForceDetection*& obj, XML::Node<Detection>* arg)
+void create(BruteForceDetection*& obj, ObjectDescription* arg)
 {
     obj = new BruteForceDetection(arg->getName());
 }
 
 SOFA_DECL_CLASS(BruteForce)
 
-Creator<XML::CollisionDetectionNode::Factory, BruteForceDetection> BruteForceDetectionClass("BruteForce");
+Creator<ObjectFactory, BruteForceDetection> BruteForceDetectionClass("BruteForceDetection");
 
 using namespace Abstract;
 

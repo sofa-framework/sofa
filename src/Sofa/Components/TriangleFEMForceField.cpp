@@ -1,8 +1,6 @@
 #include "TriangleFEMForceField.h"
 
-#include "Scene.h"
-#include "XML/DynamicNode.h"
-#include "XML/ForceFieldNode.h"
+#include "Common/ObjectFactory.h"
 
 #include "MeshTopology.h"
 #include "GL/template.h"
@@ -42,7 +40,7 @@ template <class DataTypes> TriangleFEMForceField<DataTypes>::~TriangleFEMForceFi
 
 template <class DataTypes> void TriangleFEMForceField<DataTypes>::init()
 {
-    _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->_object->getTopology());
+    _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->_object->getContext()->getTopology());
 
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {
@@ -555,7 +553,7 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, 
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::draw()
 {
-    if (!Scene::getInstance()->getShowForceFields()) return;
+    if (!getContext()->getShowForceFields()) return;
     if (!this->_object) return;
     VecCoord& x = *this->_object->getX();
 
@@ -604,7 +602,7 @@ template class TriangleFEMForceField<Vec3fTypes>;
 
 
 template<class DataTypes>
-void create(TriangleFEMForceField<DataTypes>*& obj, XML::Node<Core::ForceField>* arg)
+void create(TriangleFEMForceField<DataTypes>*& obj, ObjectDescription* arg)
 {
     XML::createWithParent< TriangleFEMForceField<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
@@ -619,10 +617,10 @@ void create(TriangleFEMForceField<DataTypes>*& obj, XML::Node<Core::ForceField>*
     }
 }
 
-Creator<XML::ForceFieldNode::Factory, TriangleFEMForceField<Vec3dTypes> >
+Creator<ObjectFactory, TriangleFEMForceField<Vec3dTypes> >
 TriangleFEMForceFieldVec3dClass("TriangleFEMForceField", true);
 
-Creator< XML::ForceFieldNode::Factory, TriangleFEMForceField<Vec3fTypes> >
+Creator<ObjectFactory, TriangleFEMForceField<Vec3fTypes> >
 TriangleFEMForceFieldVec3fClass("TriangleFEMForceField", true);
 
 

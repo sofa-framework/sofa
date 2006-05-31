@@ -2,6 +2,7 @@
 #define SOFA_CORE_MECHANICALOBJECT_INL
 
 #include "MechanicalObject.h"
+#include "Topology.h"
 #include "Encoding.inl"
 #include <assert.h>
 #include <iostream>
@@ -14,7 +15,7 @@ namespace Core
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : vsize(0), mapping(NULL), topology(NULL), mass(NULL)
+    : vsize(0), x0(NULL), v0(NULL)
 {
     x = new VecCoord;
     v = new VecDeriv;
@@ -22,84 +23,18 @@ MechanicalObject<DataTypes>::MechanicalObject()
     dx = new VecDeriv;
     // default size is 1
     resize(1);
-    translation[0]=0.0;
-    translation[1]=0.0;
-    translation[2]=0.0;
     setVecCoord(VecId::position().index, this->x);
     setVecDeriv(VecId::velocity().index, this->v);
     setVecDeriv(VecId::force().index, this->f);
     setVecDeriv(VecId::dx().index, this->dx);
+    translation[0]=0.0;
+    translation[1]=0.0;
+    translation[2]=0.0;
 }
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::~MechanicalObject()
 {
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setMapping(Core::BasicMechanicalMapping *map)
-{
-    this->mapping = map;
-}
-
-/*
-template <class DataTypes>
-void MechanicalObject<DataTypes>::addMapping(Core::BasicMapping *mMap)
-{
-	assert(mMap);
-	mappings.push_back(mMap);
-}
-*/
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::addForceField(Core::ForceField *mFField)
-{
-    assert(mFField);
-    forcefields.push_back(mFField);
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::removeForceField(Core::ForceField* mFField)
-{
-    ForceFieldIt it = std::find(forcefields.begin(), forcefields.end(), mFField);
-    if (it!=forcefields.end())
-    {
-        forcefields.erase(it);
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::addConstraint(Core::Constraint *mConstraint)
-{
-    assert(mConstraint);
-    constraints.push_back(mConstraint);
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::removeConstraint(Core::Constraint* mConstraint)
-{
-    ConstraintIt it = std::find(constraints.begin(), constraints.end(), mConstraint);
-    if (it!=constraints.end())
-    {
-        constraints.erase(it);
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::addMechanicalModel(BasicMechanicalObject *mmodel)
-{
-    assert(mmodel);
-    mmodels.push_back(mmodel);
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::removeMechanicalModel(BasicMechanicalObject *mmodel)
-{
-    MModelIt it = std::find(mmodels.begin(), mmodels.end(), mmodel);
-    if (it!=mmodels.end())
-    {
-        mmodels.erase(it);
-    }
 }
 
 template <class DataTypes>
@@ -123,16 +58,30 @@ BasicMechanicalModel* MechanicalObject<DataTypes>::resize(int size)
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::applyTranslation (double dx, double dy, double dz)
+{
+    this->translation[0]+=dx;
+    this->translation[1]+=dy;
+    this->translation[2]+=dz;
+    VecCoord& x = *this->getX();
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        DataTypes::add(x[i],dx,dy,dz);
+    }
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
-    Topology* topo = this->getTopology();
+    Topology* topo = dynamic_cast<Topology*>(this->getContext()->getTopology());
     if (topo!=NULL && topo->hasPos())
     {
         int nbp = topo->getNbPoints();
-        std::cout<<"Setting "<<nbp<<" points from topology with translation "<<translation[0]<<" "<<translation[1]<<" "<<translation[2]<<std::endl;
+        std::cout<<"Setting "<<nbp<<" points from topology."<<std::endl;
         this->resize(nbp);
         for (int i=0; i<nbp; i++)
         {
+            //DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
             DataTypes::set((*getX())[i], topo->getPX(i)+translation[0], topo->getPY(i)+translation[1], topo->getPZ(i)+translation[2]);
         }
     }
@@ -143,224 +92,31 @@ void MechanicalObject<DataTypes>::init()
     this->v0 = new VecDeriv;
     *this->v0 = *v;
 
-    if (mapping!=NULL) mapping->init();
-
-    if (mass!=NULL) mass->init();
-
-    //this->propagateX();
-    //this->propagateV();
-    {
-        ForceFieldIt it = forcefields.begin();
-        ForceFieldIt itEnd = forcefields.end();
-        for (; it != itEnd; it++)
-            (*it)->init();
-    }
-    {
-        ConstraintIt it = constraints.begin();
-        ConstraintIt itEnd = constraints.end();
-        for (; it != itEnd; it++)
-            (*it)->init();
-    }
-    /*
-    {
-    	MappingIt it = mappings.begin();
-    	MappingIt itEnd = mappings.end();
-    	for (; it != itEnd; it++)
-    		(*it)->init();
-    }
-    */
-    {
-        MModelIt it = mmodels.begin();
-        MModelIt itEnd = mmodels.end();
-        for (; it != itEnd; it++)
-            (*it)->init();
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::reset()
-{
-    // Save initial state
-    *this->x = *x0;
-    *this->v = *v0;
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::beginIteration(double dt)
-{
-    MModelIt it = mmodels.begin();
-    MModelIt itEnd = mmodels.end();
-    for (; it != itEnd; it++)
-    {
-        (*it)->beginIteration(dt);
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::endIteration(double dt)
-{
-    MModelIt it = mmodels.begin();
-    MModelIt itEnd = mmodels.end();
-    for (; it != itEnd; it++)
-    {
-        (*it)->endIteration(dt);
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::propagateX()
-{
-    if (mapping != NULL)
-        mapping->propagateX();
-    MModelIt it = mmodels.begin();
-    MModelIt itEnd = mmodels.end();
-    for (; it != itEnd; it++)
-    {
-        (*it)->propagateX();
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::propagateV()
-{
-    if (mapping != NULL)
-        mapping->propagateV();
-    MModelIt it = mmodels.begin();
-    MModelIt itEnd = mmodels.end();
-    for (; it != itEnd; it++)
-    {
-        (*it)->propagateV();
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::propagateDx()
-{
-    if (mapping != NULL)
-        mapping->propagateDx();
-    MModelIt it = mmodels.begin();
-    MModelIt itEnd = mmodels.end();
-    for (; it != itEnd; it++)
-    {
-        (*it)->propagateDx();
-    }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::resetForce()
-{
-    f->resize(x->size());
-    for (unsigned int i=0; i<f->size(); i++)
-        (*f)[i] = typename VecDeriv::value_type();
-    MModelIt it = mmodels.begin();
-    MModelIt itEnd = mmodels.end();
-    for (; it != itEnd; it++)
-        (*it)->resetForce();
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::accumulateForce()
-{
-    if (mass != NULL)
-        mass->computeForce();
-
-    {
-        MModelIt it = mmodels.begin();
-        MModelIt itEnd = mmodels.end();
-        for (; it != itEnd; it++)
-            (*it)->accumulateForce();
-    }
-    {
-        ForceFieldIt it = forcefields.begin();
-        ForceFieldIt itEnd = forcefields.end();
-        for (; it != itEnd; it++)
-            (*it)->addForce();
-    }
-    if (mapping != NULL)
-        mapping->accumulateForce();
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::accumulateDf()
-{
-    if (mass != NULL)
-        mass->computeDf();
-
-    {
-        MModelIt it = mmodels.begin();
-        MModelIt itEnd = mmodels.end();
-        for (; it != itEnd; it++)
-            (*it)->accumulateDf();
-    }
-    {
-        ForceFieldIt it = forcefields.begin();
-        ForceFieldIt itEnd = forcefields.end();
-        for (; it != itEnd; it++)
-            (*it)->addDForce();
-    }
-    if (mapping != NULL)
-        mapping->accumulateDf();
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::applyConstraints()
-{
-    ConstraintIt it = constraints.begin();
-    ConstraintIt itEnd = constraints.end();
-    for (; it != itEnd; it++)
-        (*it)->applyConstraint();
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::addMDx()
-{
-    if (mass != NULL)
-        mass->addMDx();
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::accFromF()
-{
-    if (mass != NULL)
-        mass->accFromF();
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setObject(Abstract::BehaviorModel* obj)
-{
-    MModelIt it = mmodels.begin();
-    MModelIt itEnd = mmodels.end();
-    for (; it != itEnd; it++)
-        (*it)->setObject(obj);
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setTopology(Topology* topo)
-{
-    this->topology = topo;
-}
-
-template <class DataTypes>
-Topology* MechanicalObject<DataTypes>::getTopology()
-{
-    return this->topology;
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setMass(Mass* m)
-{
-    this->mass = m;
-}
-
-template <class DataTypes>
-Mass* MechanicalObject<DataTypes>::getMass()
-{
-    return this->mass;
 }
 
 //
 // Integration related methods
 //
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::reset()
+{
+    if (x0 == NULL) return;
+    // Back to initial state
+    this->resize(this->x0->size());
+    *this->x = *x0;
+    *this->v = *v0;
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::beginIntegration(double dt)
+{
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::endIntegration(double dt)
+{
+}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::setVecCoord(unsigned int index, VecCoord* v)
@@ -813,7 +569,7 @@ void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out)
             out<<x[i]<<" ";
     }
     else
-        out<<"MechanicalObject<DataTypes>::printDOF, unknown v.type = "<<v.type<<endl;
+        out<<"MechanicalObject<DataTypes>::printDOF, unknown v.type = "<<v.type<<std::endl;
 }
 
 

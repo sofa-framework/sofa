@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Sofa/Abstract/Base.h"
+#include "Sofa/Abstract/BaseObject.h"
 
 namespace Sofa
 {
@@ -13,7 +13,7 @@ namespace Sofa
 namespace Core
 {
 
-class Topology : public virtual Abstract::Base
+class Topology : public virtual Abstract::BaseObject
 {
 public:
     virtual ~Topology() { }

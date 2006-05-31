@@ -24,8 +24,8 @@ public:
     Mapping(In* from, Out* to);
     virtual ~Mapping();
 
-    Abstract::Base* getFrom();
-    Abstract::Base* getTo();
+    Abstract::BaseObject* getFrom();
+    Abstract::BaseObject* getTo();
 
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
@@ -33,16 +33,6 @@ public:
     virtual void init();
 
     virtual void updateMapping();
-
-    //virtual void propagateX();
-
-    //virtual void propagateV();
-
-    // virtual void beginIteration(double dt);
-
-    // virtual void endIteration(double dt);
-
-    // virtual void setObject(Abstract::BehaviorModel* obj);
 };
 
 } // namespace Core

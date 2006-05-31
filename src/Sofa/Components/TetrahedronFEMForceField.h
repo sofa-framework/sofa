@@ -17,7 +17,7 @@ namespace Components
 using namespace Common;
 
 template<class DataTypes>
-class TetrahedronFEMForceField : public Core::ForceField, public Abstract::VisualModel
+class TetrahedronFEMForceField : public Core::ForceField<DataTypes>, public Abstract::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -36,7 +36,7 @@ public:
     static const int POLAR = 2;   ///< Symbol of polar displacements tetrahedron solver
 
 protected:
-    Core::MechanicalObject<DataTypes>* object;
+    //Core::MechanicalObject<DataTypes>* object;
 
     typedef Vec<12, Real> Displacement;		///< the displacement vector
 
@@ -75,9 +75,8 @@ protected:
     bool _assembling;
 
 public:
-    TetrahedronFEMForceField(Core::MechanicalObject<DataTypes>* object)
-        : object(object)
-        , _mesh(NULL)
+    TetrahedronFEMForceField(Core::MechanicalObject<DataTypes>* /*object*/=NULL)
+        : _mesh(NULL)
         , _indexedElements(NULL)
         , _method(0)
         , _poissonRatio(0)
@@ -98,13 +97,13 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->_assembling= val; }
 
-    Core::MechanicalObject<DataTypes>* getObject() { return object; }
+//	Core::MechanicalObject<DataTypes>* getObject() { return object; }
 
     virtual void init();
 
-    virtual void addForce();
+    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual void addDForce();
+    virtual void addDForce (VecDeriv& df, const VecCoord& x, const VecDeriv& v, const VecDeriv& dx);
 
     // -- VisualModel interface
     void draw();

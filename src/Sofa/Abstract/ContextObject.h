@@ -9,8 +9,6 @@ namespace Sofa
 
 namespace Abstract
 {
-using Core::Context;
-
 
 class ContextObject : public BaseObject
 {
@@ -25,9 +23,9 @@ public:
     /// modify the Context
     virtual void apply()=0;
 protected:
-    Context* getContext()
+    BaseContext* getContext()
     {
-        return const_cast<Context*>(this->context_);
+        return const_cast<BaseContext*>(this->context_);
     }
 
 };

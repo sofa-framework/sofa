@@ -1,9 +1,7 @@
 #include "RegularGridSpringForceField.inl"
 #include "Common/Vec3Types.h"
-#include "XML/DynamicNode.h"
 #include "Sofa/Core/MechanicalObject.h"
-#include "XML/ForceFieldNode.h"
-#include "XML/InteractionForceFieldNode.h"
+#include "Common/ObjectFactory.h"
 
 namespace Sofa
 {
@@ -19,7 +17,7 @@ template class RegularGridSpringForceField<Vec3dTypes>;
 template class RegularGridSpringForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(RegularGridSpringForceField<DataTypes>*& obj, XML::Node<Core::ForceField>* arg)
+void create(RegularGridSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
 {
     XML::createWithParent< RegularGridSpringForceField<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
@@ -35,18 +33,9 @@ void create(RegularGridSpringForceField<DataTypes>*& obj, XML::Node<Core::ForceF
     }
 }
 
-Creator< XML::ForceFieldNode::Factory, RegularGridSpringForceField<Vec3dTypes> > RegularGridSpringForceFieldVec3dClass("RegularGridSpringForceField", true);
-Creator< XML::ForceFieldNode::Factory, RegularGridSpringForceField<Vec3fTypes> > RegularGridSpringForceFieldVec3fClass("RegularGridSpringForceField", true);
-/*
-template<class DataTypes>
-void create(RegularGridSpringForceField<DataTypes>*& obj, XML::Node<Core::InteractionForceField>* arg)
-{
-	XML::createWith2Objects< RegularGridSpringForceField<DataTypes>, Core::MechanicalObject<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
-}
+Creator< ObjectFactory, RegularGridSpringForceField<Vec3dTypes> > RegularGridSpringForceFieldVec3dClass("RegularGridSpringForceField", true);
+Creator< ObjectFactory, RegularGridSpringForceField<Vec3fTypes> > RegularGridSpringForceFieldVec3fClass("RegularGridSpringForceField", true);
 
-Creator< XML::InteractionForceFieldNode::Factory, RegularGridSpringForceField<Vec3dTypes> > RegularGridSpringInteractionForceFieldVec3dClass("RegularGridSpringForceField", true);
-Creator< XML::InteractionForceFieldNode::Factory, RegularGridSpringForceField<Vec3fTypes> > RegularGridSpringInteractionForceFieldVec3fClass("RegularGridSpringForceField", true);
-*/
 } // namespace Components
 
 } // namespace Sofa

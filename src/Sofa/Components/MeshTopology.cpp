@@ -1,7 +1,7 @@
 #include <iostream>
 #include "MeshTopology.h"
 #include "MeshTopologyLoader.h"
-#include "XML/TopologyNode.h"
+#include "Common/ObjectFactory.h"
 #include "Common/fixed_array.h"
 
 namespace Sofa
@@ -12,7 +12,7 @@ namespace Components
 
 using namespace Common;
 
-void create(MeshTopology*& obj, XML::Node<Core::Topology>* arg)
+void create(MeshTopology*& obj, ObjectDescription* arg)
 {
     obj = new MeshTopology();
     if (arg->getAttribute("filename"))
@@ -21,7 +21,7 @@ void create(MeshTopology*& obj, XML::Node<Core::Topology>* arg)
 
 SOFA_DECL_CLASS(MeshTopology)
 
-Creator<XML::TopologyNode::Factory, MeshTopology> MeshTopologyClass("Mesh");
+Creator<ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
 
 MeshTopology::MeshTopology()
     : nbPoints(0), validLines(false), validTriangles(false), validQuads(false), validTetras(false), validCubes(false)

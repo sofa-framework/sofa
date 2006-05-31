@@ -15,7 +15,7 @@ namespace Components
 using namespace Common;
 
 template <class DataTypes, class MassType>
-class DiagonalMass : public Core::Mass, public Abstract::VisualModel
+class DiagonalMass : public Core::Mass<DataTypes>, public Abstract::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -23,11 +23,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 protected:
-    Core::MechanicalModel<DataTypes>* mmodel;
-
     std::vector<MassType> masses;
-
-    Deriv gravity;
 
     class Loader;
 public:
@@ -36,8 +32,6 @@ public:
     DiagonalMass(Core::MechanicalModel<DataTypes>* mmodel, const std::string& name="");
 
     ~DiagonalMass();
-
-    void setMechanicalModel(Core::MechanicalModel<DataTypes>* mm);
 
     bool load(const char *filename);
 
@@ -48,13 +42,11 @@ public:
     void resize(int vsize);
 
     // -- Mass interface
-    void addMDx();
+    void addMDx(VecDeriv& f, const VecDeriv& dx);
 
-    void accFromF();
+    void accFromF(VecDeriv& a, const VecDeriv& f);
 
-    void computeForce();
-
-    void setGravity( const Deriv& g );
+    void computeForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
     // -- VisualModel interface
 

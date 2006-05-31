@@ -65,6 +65,13 @@ public:
         this->elems[3]=r4;
     }
 
+    /// Constructor from another matrix
+    template<typename real2>
+    Mat(const Mat<L,C,real2>& m)
+    {
+        std::copy(m.begin(), m.begin()+L, this->begin());
+    }
+
     /// Constructor from an array of elements (stored per line).
     template<typename real2>
     explicit Mat(const real2* p)
@@ -76,6 +83,12 @@ public:
     void operator=(const real* p)
     {
         std::copy(p, p+N, this->begin()->begin());
+    }
+
+    /// Assignment from another matrix
+    template<typename real2> void operator=(const Mat<L,C,real2>& m)
+    {
+        std::copy(m.begin(), m.begin()+L, this->begin());
     }
 
     /// Assignment from a matrix of different size.
@@ -164,13 +177,13 @@ public:
     /// Cast into a standard C array of elements (stored per line) (read-only).
     const real* ptr() const
     {
-        return this->elems[0].ptr();
+        return this->elems[0];
     }
 
     /// Cast into a standard C array of elements (stored per line).
     real* ptr()
     {
-        return this->elems[0].ptr();
+        return this->elems[0];
     }
 
     /// Special access to first line.

@@ -19,10 +19,10 @@ protected:
     std::vector<Abstract::CollisionElement*> elems;
     Abstract::CollisionModel* previous;
     Abstract::CollisionModel* next;
-    Abstract::BehaviorModel* object;
 
-    VecCoord* internalForces; // ?? What does this can do ??
-    VecCoord* externalForces; // ?? What does this can do ??
+    VecDeriv* internalForces;
+    VecDeriv* externalForces;
+    bool static_;
 
     class Loader;
 public:
@@ -32,6 +32,9 @@ public:
     {
         previous = NULL;
         next = NULL;
+        internalForces = f;
+        externalForces = new VecDeriv();
+        static_ = false;
         init(filename);
     };
 
@@ -39,28 +42,20 @@ public:
     {
     };
 
-    TriangleModel* getTriangleModel () {return this;};
+    bool isStatic() { return static_; }
+    void setStatic(bool val=true) { static_ = val; }
 
 private:
     void init(const char *filename);
     void findBoundingBox(const std::vector<Vector3> &verts, Vector3 &minBB, Vector3 &maxBB);
 
-    //attributes
-
-//	std::vector<Vector3*> vertices;
-//	std::vector<Vector3*> velocityVertices;
-
 public:
-
-//	const std::string& getTypeName(void) {return typeName;};
 
     // -- MechanicalModel interface
 
-    void setObject(Abstract::BehaviorModel* obj);
+    virtual void beginIntegration(double dt);
 
-    void beginIteration(double dt);
-
-    void endIteration(double dt);
+    virtual void endIntegration(double dt);
 
     void accumulateForce();
 
@@ -87,9 +82,6 @@ public:
 
     void setPrevious(Abstract::CollisionModel* p)
     { previous = p; }
-
-    virtual Abstract::BehaviorModel* getObject()
-    { return object; }
 
     // -- VisualModel interface
 
