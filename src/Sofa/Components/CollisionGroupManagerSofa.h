@@ -3,7 +3,6 @@
 
 #include "Collision/CollisionGroupManager.h"
 #include "Graph/GNode.h"
-#include "Scene.h"
 
 #include <set>
 

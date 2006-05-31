@@ -1,6 +1,5 @@
 #include "BruteForceDetection.h"
 #include "Sphere.h"
-#include "Scene.h"
 #include "Common/FnDispatcher.h"
 #include "Common/ObjectFactory.h"
 

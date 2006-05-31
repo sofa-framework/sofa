@@ -1,7 +1,6 @@
 #include "VoxelGrid.h"
 #include "Sphere.h"
 #include "Triangle.h"
-#include "Scene.h"
 #include "Common/FnDispatcher.h"
 #include "Common/ObjectFactory.h"
 

@@ -1,7 +1,6 @@
 #include "PipelineSofa.h"
 #include "Common/FnDispatcher.h"
 #include "Sofa/Abstract/CollisionModel.h"
-#include "Scene.h"
 
 #include "Common/ObjectFactory.h"
 
