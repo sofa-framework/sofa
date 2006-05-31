@@ -54,7 +54,7 @@ void ContactManagerSofa::createContacts(const std::vector<DetectionOutput*>& out
         if (outputsIt!=outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
         {
             // new contact
-            std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
+            //std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
             Contact* contact = Contact::Create(contacttype, outputsIt->first.first, outputsIt->first.second);
             if (contact == NULL) std::cerr << "Contact creation failed"<<std::endl;
             else
@@ -68,7 +68,7 @@ void ContactManagerSofa::createContacts(const std::vector<DetectionOutput*>& out
         else if (contactIt!=contactMap.end() && (outputsIt == outputsMap.end() || contactIt->first < outputsIt->first))
         {
             // inactive contact
-            std::cout << "Deleting inactive "<<contacttype<<" contact"<<std::endl;
+            //std::cout << "Deleting inactive "<<contacttype<<" contact"<<std::endl;
             std::map< std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*>, Contact* >::iterator contactIt2 = contactIt;
             ++contactIt2;
             delete contactIt->second;

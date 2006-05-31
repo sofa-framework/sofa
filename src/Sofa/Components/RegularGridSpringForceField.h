@@ -93,6 +93,8 @@ public:
     virtual void addForce();
 
     virtual void addDForce();
+
+    virtual void draw();
 };
 
 } // namespace Components

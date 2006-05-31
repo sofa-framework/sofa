@@ -92,7 +92,7 @@ void Axis::draw()
 
     glPushAttrib(GL_ENABLE_BIT | GL_POLYGON_BIT | GL_DEPTH_BUFFER_BIT );
     //glDisable(GL_DEPTH_TEST);
-// glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHTING);
 
 
     //glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
