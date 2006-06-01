@@ -7,6 +7,10 @@
 #include "Triangle.h"
 #include "Cube.h"
 #include "Ray.h"
+#include "Proximity/proximity.h"
+
+#define ALARM_DIST 1.0
+#define CONTACT_DIST 0.5
 
 namespace Sofa
 {
@@ -34,9 +38,11 @@ Collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle& ,Triangle&
 
 class Intersection
 {
+
 protected:
     Intersection();
     static Intersection instance;
+
 };
 
 } // namespace Intersections

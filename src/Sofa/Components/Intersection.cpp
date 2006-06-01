@@ -54,11 +54,20 @@ bool intersectionCubeCube(Cube &cube1, Cube &cube2)
     const Vector3& minVect2 = cube2.minVect();
     const Vector3& maxVect1 = cube1.maxVect();
     const Vector3& maxVect2 = cube2.maxVect();
+#ifdef PROXIMITY
+    for (int i=0; i<3; i++)
+    {
+        if (minVect1[i]+ALARM_DIST > maxVect2[i] || minVect2[i]+ALARM_DIST > maxVect1[i])
+            return false;
+    }
+
+#else
     for (int i=0; i<3; i++)
     {
         if (minVect1[i] > maxVect2[i] || minVect2[i] > maxVect1[i])
             return false;
     }
+#endif
     //std::cout << "Box <"<<minVect1[0]<<","<<minVect1[1]<<","<<minVect1[2]<<">-<"<<maxVect1[0]<<","<<maxVect1[1]<<","<<maxVect1[2]
     //  <<"> collide with Box "<<minVect2[0]<<","<<minVect2[1]<<","<<minVect2[2]<<">-<"<<maxVect2[0]<<","<<maxVect2[1]<<","<<maxVect2[2]<<">"<<std::endl;
     return true;
@@ -89,9 +98,28 @@ bool intersectionSphereTriangle(Sphere &, Triangle &)
 */
 bool intersectionTriangleTriangle (Triangle& t1, Triangle& t2)
 {
-    ContinuousTriangleIntersection intersectionT(t1, t2);
 
+#ifdef PROXIMITY
+    Vector3 P,Q,PQ;
+    static DistanceTriTri proximitySolver;
+
+    proximitySolver.NewComputation( &t1, &t2,P,Q);
+    PQ = Q-P;
+
+    if (PQ.norm() < ALARM_DIST)
+    {
+        std::cout<<"Collision between Triangle - Triangle"<<std::endl;
+        return true;
+    }
+    else
+        return false;
+
+#else
+
+    ContinuousTriangleIntersection intersectionT(t1, t2);
     return intersectionT.isCollision();
+#endif
+
 }
 
 DetectionOutput* distCorrectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
@@ -145,10 +173,28 @@ DetectionOutput* distCorrectionSphereTriangle(Sphere &, Triangle &)
 */
 DetectionOutput* distCorrectionTriangleTriangle (Triangle &t1, Triangle &t2)
 {
-    ContinuousTriangleIntersection intersectionT(t1, t2);
+#ifdef PROXIMITY
+    Vector3 P,Q,PQ;
+    static DistanceTriTri proximitySolver;
+    DetectionOutput *detection = new DetectionOutput();
 
-    //std::cout<<"Distance correction between Triangle - Triangle"<<std::endl;
+    proximitySolver.NewComputation( &t1, &t2,P,Q);
+    PQ = Q-P;
+
+//	detection->distance = PQ.norm()-CONTACT_DIST;
+    detection->elem = std::pair<Abstract::CollisionElement*, Abstract::CollisionElement*>(&t1, &t2);
+    detection->point[0]=P;
+    detection->point[1]=Q;
+    return detection;
+
+#else
+    ContinuousTriangleIntersection intersectionT(t1, t2);
+    std::cout<<"Distance correction between Triangle - Triangle"<<std::endl;
     return intersectionT.computeDetectionOutput(); // new DetectionOutput();
+#endif
+
+
+
 }
 
 
