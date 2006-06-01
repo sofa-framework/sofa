@@ -18,9 +18,14 @@ using namespace Common;
 void create(SphereModel*& obj, ObjectDescription* arg)
 {
     XML::createWithFilename(obj, arg);
-    if (obj!=NULL && arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-    obj->setStatic(!strcmp(arg->getAttribute("static","false"),"true"));
+    if (obj!=NULL)
+    {
+        obj->setStatic(!strcmp(arg->getAttribute("static","false"),"true"));
+        if (arg->getAttribute("scale")!=NULL)
+            obj->applyScale(atof(arg->getAttribute("scale","1.0")));
+        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+            obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+    }
 }
 
 Creator< ObjectFactory, SphereModel > SphereModelClass("Sphere");
@@ -80,6 +85,16 @@ void SphereModel::applyTranslation(double dx, double dy, double dz)
     VecCoord& x = *getX();
     for (unsigned int i = 0; i < x.size(); i++)
         x[i] += d;
+}
+
+void SphereModel::applyScale(double s)
+{
+    VecCoord& x = *getX();
+    for (unsigned int i = 0; i < x.size(); i++)
+    {
+        x[i] *= s;
+        static_cast<Sphere*>(elems[i])->radius *=s;
+    }
 }
 
 void SphereModel::computeBoundingBox(void)

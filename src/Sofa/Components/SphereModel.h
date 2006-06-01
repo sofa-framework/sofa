@@ -64,6 +64,8 @@ public:
 
     void applyTranslation(double dx, double dy, double dz);
 
+    void applyScale(double s);
+
     // -- VisualModel interface
 
     void draw();

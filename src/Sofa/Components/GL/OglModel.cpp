@@ -29,6 +29,8 @@ void create(OglModel*& obj, ObjectDescription* arg)
         obj = new OglModel(arg->getName(), filename, loader, texturename);
         const char* color = arg->getAttribute("color");
         if (color) obj->setColor(color);
+        if (arg->getAttribute("scale")!=NULL)
+            obj->applyScale(atof(arg->getAttribute("scale","1.0")));
         if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
             obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
     }
@@ -282,6 +284,16 @@ void OglModel::applyTranslation(double dx, double dy, double dz)
         vertices[i * 3] += (GLfloat)dx;
         vertices[i * 3 + 1] += (GLfloat)dy;
         vertices[i * 3 + 2] += (GLfloat)dz;
+    }
+}
+
+void OglModel::applyScale(double scale)
+{
+    for (int i = 0; i < nbVertices; i++)
+    {
+        vertices[i * 3] *= scale;
+        vertices[i * 3 + 1] *= scale;
+        vertices[i * 3 + 2] *= scale;
     }
 }
 

@@ -80,6 +80,7 @@ public:
     */
     void init(const std::string &name, std::string filename, std::string loader, std::string textureName);
     void applyTranslation(double dx, double dy, double dz);
+    void applyScale(double s);
     void computeNormal(const Vector3& s1, const Vector3& s2, const Vector3& s3, int indVertex);
     void computeNormals();
 

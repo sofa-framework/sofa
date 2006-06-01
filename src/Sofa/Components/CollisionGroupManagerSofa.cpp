@@ -122,6 +122,12 @@ void CollisionGroupManagerSofa::createGroups(Abstract::BaseContext* scene, const
                     group = group2;
                     group->moveChild(group1);
                 }
+                if (group->solver!=NULL)
+                {
+                    OdeSolver* solver2 = group->solver;
+                    group->removeObject(solver2);
+                    delete solver2;
+                }
                 group->addObject(solver);
             }
         }
