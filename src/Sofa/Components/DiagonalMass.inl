@@ -22,7 +22,7 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass(Core::MechanicalModel<DataTypes>* mmodel, const std::string& /*name*/)
-    : Mass<DataTypes>(mmodel)
+    : Core::Mass<DataTypes>(mmodel)
 {
 }
 
@@ -69,7 +69,7 @@ void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::computeForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void DiagonalMass<DataTypes, MassType>::computeForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 {
     /*Deriv gravity ( getContext()->getGravity() );
     for (unsigned int i=0;i<f.size();i++)
@@ -108,7 +108,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mmodel->getX();
+    VecCoord& x = *this->mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(2);
     glColor4f (1,1,1,1);
@@ -129,9 +129,6 @@ public:
     virtual void addMass(double /*px*/, double /*py*/, double /*pz*/, double /*vx*/, double /*vy*/, double /*vz*/, double mass, double /*elastic*/, bool /*fixed*/, bool /*surface*/)
     {
         dest->addMass(MassType(mass));
-    }
-    virtual void setGravity(double gx, double gy, double gz)
-    {
     }
 };
 

@@ -373,7 +373,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
 template<class DataTypes>
 void RegularGridSpringForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     assert(this->object1);
     assert(this->object2);
     // Draw any custom springs

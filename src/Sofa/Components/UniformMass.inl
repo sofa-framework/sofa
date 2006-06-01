@@ -36,7 +36,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass(Core::MechanicalModel<DataTypes>* mmodel)
-    : Mass<DataTypes>(mmodel)
+    : Core::Mass<DataTypes>(mmodel)
 {
 }
 
@@ -70,7 +70,7 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::computeForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void UniformMass<DataTypes, MassType>::computeForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 {
     // weight
     const double* g = this->getContext()->getGravity();
@@ -111,7 +111,7 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mmodel->getX();
+    VecCoord& x = *this->mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(2);
     glColor4f (1,1,1,1);

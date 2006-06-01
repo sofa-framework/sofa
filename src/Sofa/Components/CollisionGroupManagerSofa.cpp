@@ -84,7 +84,7 @@ void CollisionGroupManagerSofa::createGroups(Abstract::BaseContext* scene, const
                 if (!group1IsColl && !group2IsColl)
                 {
                     char groupName[32];
-                    _snprintf(groupName,sizeof(groupName),"collision%d",groupIndex++);
+                    snprintf(groupName,sizeof(groupName),"collision%d",groupIndex++);
                     // create a new group
                     group = new GNode(groupName);
                     parent->addChild(group);
@@ -149,7 +149,7 @@ void CollisionGroupManagerSofa::createGroups(Abstract::BaseContext* scene, const
     //	std::cout << groupVec.size()<<" collision groups created."<<std::endl;
 }
 
-void CollisionGroupManagerSofa::clearGroups(Abstract::BaseContext* scene)
+void CollisionGroupManagerSofa::clearGroups(Abstract::BaseContext* /*scene*/)
 {
     for (std::set<GNode*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
     {

@@ -31,9 +31,9 @@ public:
     /// @name Integration related methods
     /// @{
 
-    virtual void beginIntegration(double dt) { }
+    virtual void beginIntegration(double /*dt*/) { }
 
-    virtual void endIntegration(double dt) { }
+    virtual void endIntegration(double /*dt*/) { }
 
     virtual void resetForce() { vOp( VecId::force() ); }
 

@@ -34,7 +34,7 @@ protected:
 
 public:
     PlaneForceField(Core::MechanicalModel<DataTypes>* object=NULL, const std::string& /*name*/="")
-        : ForceField<DataTypes>(object), planeD(0), stiffness(500)
+        : Core::ForceField<DataTypes>(object), planeD(0), stiffness(500)
     {
     }
 

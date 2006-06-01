@@ -23,7 +23,7 @@ using namespace Common;
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
-    this->ForceField<DataTypes>::init();
+    this->Core::ForceField<DataTypes>::init();
     _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->getContext()->getTopology());
     if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbCubes()<=0))
     {

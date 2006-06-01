@@ -10,6 +10,9 @@ namespace Components
 namespace Collision
 {
 
+using namespace Abstract;
+using namespace Core;
+
 Pipeline::Pipeline()
     : broadPhaseDetection(NULL),
       narrowPhaseDetection(NULL),

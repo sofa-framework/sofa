@@ -109,34 +109,34 @@ public:
     /// @{
 
     /// Gravity in local coordinates
-    virtual void setGravity( const double* g ) { }
+    virtual void setGravity( const double* /*g*/ ) { }
 
     /// Simulation timestep
-    virtual void setDt( double dt ) { }
+    virtual void setDt( double /*dt*/ ) { }
 
     /// Animation flag
-    virtual void setAnimate(bool val) { }
+    virtual void setAnimate(bool /*val*/) { }
 
     /// MultiThreading activated
-    virtual void setMultiThreadSimulation(bool val) { }
+    virtual void setMultiThreadSimulation(bool /*val*/) { }
 
     /// Display flags: Collision Models
-    virtual void setShowCollisionModels(bool val) { }
+    virtual void setShowCollisionModels(bool /*val*/) { }
 
     /// Display flags: Behavior Models
-    virtual void setShowBehaviorModels(bool val) { }
+    virtual void setShowBehaviorModels(bool /*val*/) { }
 
     /// Display flags: Visual Models
-    virtual void setShowVisualModels(bool val) { }
+    virtual void setShowVisualModels(bool /*val*/) { }
 
     /// Display flags: Mappings
-    virtual void setShowMappings(bool val) { }
+    virtual void setShowMappings(bool /*val*/) { }
 
     /// Display flags: ForceFields
-    virtual void setShowForceFields(bool val) { }
+    virtual void setShowForceFields(bool /*val*/) { }
 
     /// Projection from the local frame to the world frame
-    virtual void setLocalToWorld( const double* translation, const double* rotationQuat, const double* rotationMatrix ) { }
+    virtual void setLocalToWorld( const double* /*translation*/, const double* /*rotationQuat*/, const double* /*rotationMatrix*/) { }
 
     /// Velocity of the local frame with respect the world coordinate system, expressed in the world coordinate system, at the origin of the world coordinate system
     virtual void setLinearVelocity( const double* ) { }
@@ -164,10 +164,10 @@ public:
     /// @{
 
     /// Add an object, or return false if not supported
-    virtual bool addObject( BaseObject* obj ) { return false; }
+    virtual bool addObject( BaseObject* /*obj*/ ) { return false; }
 
     /// Remove an object, or return false if not supported
-    virtual bool removeObject( BaseObject* obj ) { return false; }
+    virtual bool removeObject( BaseObject* /*obj*/ ) { return false; }
 
     /// @}
 

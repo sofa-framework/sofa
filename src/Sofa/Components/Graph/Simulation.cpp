@@ -19,6 +19,8 @@ namespace Components
 namespace Graph
 {
 
+using namespace Common;
+
 /// Load a scene from a file
 GNode* Simulation::load(const char *filename)
 {

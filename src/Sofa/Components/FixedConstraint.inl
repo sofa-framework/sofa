@@ -16,14 +16,14 @@ using namespace Common;
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
-    : Constraint<DataTypes>(NULL)
+    : Core::Constraint<DataTypes>(NULL)
 {
 }
 
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint(Core::MechanicalModel<DataTypes>* mmodel)
-    : Constraint<DataTypes>(mmodel)
+    : Core::Constraint<DataTypes>(mmodel)
 {
 }
 
@@ -60,7 +60,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mmodel->getX();
+    VecCoord& x = *this->mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
