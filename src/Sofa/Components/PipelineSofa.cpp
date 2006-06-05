@@ -1,10 +1,11 @@
 #include "PipelineSofa.h"
-#include "Common/FnDispatcher.h"
 #include "Sofa/Abstract/CollisionModel.h"
 
 #include "Common/ObjectFactory.h"
 
-#define VERBOSE(a) if (verbose) a; else
+#include <GL/gl.h>
+
+#define VERBOSE(a) if (getVerbose()) a; else
 
 namespace Sofa
 {
@@ -18,15 +19,17 @@ using namespace Collision;
 
 void create(PipelineSofa*& obj, ObjectDescription* arg)
 {
-    obj = new PipelineSofa(atoi(arg->getAttribute("verbose","0"))!=0);
+    obj = new PipelineSofa();
+    obj->setVerbose(atoi(arg->getAttribute("verbose","0"))!=0);
+    obj->setDraw(atoi(arg->getAttribute("draw","0"))!=0);
 }
 
 SOFA_DECL_CLASS(PipelineSofa)
 
 Creator<ObjectFactory, PipelineSofa> PipelineSofaClass("CollisionPipeline");
 
-PipelineSofa::PipelineSofa(bool verbose)
-    : verbose(verbose)
+PipelineSofa::PipelineSofa()
+    : verbose_(false), draw_(false)
 {
 }
 
@@ -65,14 +68,20 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
 
     std::vector<CollisionModel*> vectBoundingVolume;
     {
+        const bool continuous = intersectionMethod->useContinuous();
+        const double distance = intersectionMethod->getAlarmDistance();
+        const double dt       = getContext()->getDt();
+
         std::vector<CollisionModel*>::const_iterator it = collisionModels.begin();
         std::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
         int nActive = 0;
         for (; it != itEnd; it++)
         {
             if (!(*it)->isActive()) continue;
-            //(*it)->computeSphereVolume();
-            (*it)->computeBoundingBox();
+            if (continuous)
+                (*it)->computeContinuousBoundingBox(dt);
+            else
+                (*it)->computeBoundingBox();
             vectBoundingVolume.push_back ((*it)->getFirst());
             ++nActive;
         }
@@ -103,7 +112,7 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
         CollisionElement *cm1 = it4->first;
         CollisionElement *cm2 = it4->second;
 
-        DetectionOutput *detection = FnCollisionDetectionOutput::Go(*cm1, *cm2);
+        DetectionOutput *detection = intersectionMethod->intersect(cm1, cm2);
 
         if (detection)
             detectionOutputs.push_back(detection);
@@ -154,6 +163,27 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     }
 }
 
+void PipelineSofa::draw()
+{
+    if (!getDraw()) return;
+    glDisable(GL_LIGHTING);
+    glLineWidth(2);
+    glBegin(GL_LINES);
+    std::vector< DetectionOutput* >::iterator it = detectionOutputs.begin();
+    std::vector< DetectionOutput* >::iterator itEnd = detectionOutputs.end();
+    for (; it != itEnd; it++)
+    {
+        DetectionOutput* d = *it;
+        if (!d->distance)
+            glColor3f(1.0f,0.5f,0.5f);
+        else
+            glColor3f(0.5f,1.0f,0.5f);
+        glVertex3dv(d->point[0]);
+        glVertex3dv(d->point[1]);
+    }
+    glEnd();
+    glLineWidth(1);
+}
 } // namespace Components
 
 } // namespace Sofa

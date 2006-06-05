@@ -291,9 +291,9 @@ void OglModel::applyScale(double scale)
 {
     for (int i = 0; i < nbVertices; i++)
     {
-        vertices[i * 3] *= scale;
-        vertices[i * 3 + 1] *= scale;
-        vertices[i * 3 + 2] *= scale;
+        vertices[i * 3] *= (float)scale;
+        vertices[i * 3 + 1] *= (float)scale;
+        vertices[i * 3 + 2] *= (float)scale;
     }
 }
 

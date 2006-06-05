@@ -1,8 +1,9 @@
 <!-- Hierarchical Group Basic Test -->
 <Node name="root"  dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
-	<Object type="CollisionPipeline" verbose="1" />
+	<Object type="CollisionPipeline" verbose="1" draw="1"/>
 	<Object type="VoxelGridDetection" name="Voxel" min="-40" max="40" n="8" draw="1" />
 	<Object type="BruteForceCollisionDetection" name="N2" />
+	<Object type="ProximityIntersection" name="proximity" alarmDistance="1.0" contactDistance="0.5" />
 	<Node name="Poutre1">
 		<Object type="CGImplicit" iterations="100"/>
 		<Node name="G1">

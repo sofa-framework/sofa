@@ -16,6 +16,8 @@ namespace Components
 
 using namespace Common;
 
+class VoxelGrid;
+
 class GridCell
 {
 private:
@@ -29,7 +31,7 @@ public:
     // Adding a sphere in a cell of the voxel grid.
     // When adding a sphere, we test if there are collision with the sphere in the cell
     // then we add it in the vector sphere
-    void add(Abstract::CollisionElement *collElem, std::set<Abstract::CollisionElement*> &vectCollis, int phase);
+    void add(VoxelGrid* grid, Abstract::CollisionElement *collElem, std::set<Abstract::CollisionElement*> &vectCollis, int phase);
     void eraseAll(int timeStampMethod);
     GridCell();
 

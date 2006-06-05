@@ -2,6 +2,7 @@
 #include <fstream>
 #include "argumentParser.h"
 #include "Sofa/Components/Graph/Simulation.h"
+#include "Sofa/Components/Common/Factory.h"
 #ifdef SOFA_GUI_FLTK
 #include "Sofa/GUI/FLTK/Main.h"
 #endif
@@ -14,8 +15,9 @@
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    std::string fileName = "Data/demoLiverFEM.scn";
+    std::string fileName = "Data/demo6Triangle.scn";
     bool        startAnim = false;
+    bool        printFactory = false;
     std::string gui = "none";
 #ifdef SOFA_GUI_FLTK
     gui = "fltk";
@@ -27,6 +29,7 @@ int main(int argc, char** argv)
     parse("This is a SOFA application. Here are the command line arguments")
     .option(&fileName,'f',"file","scene file")
     .option(&startAnim,'s',"start","start the animation loop")
+    .option(&printFactory,'p',"factory","print factory logs")
     .option(&gui,'g',"gui","choose the UI (none"
 #ifdef SOFA_GUI_FLTK
             "|fltk"
@@ -38,6 +41,12 @@ int main(int argc, char** argv)
            )
     (argc,argv);
 
+    if (printFactory)
+    {
+        std::cout << "////////// FACTORY //////////" << std::endl;
+        Sofa::Components::Common::printFactoryLog();
+        std::cout << "//////// END FACTORY ////////" << std::endl;
+    }
 
     Sofa::Components::Graph::GNode* groot = NULL;
 

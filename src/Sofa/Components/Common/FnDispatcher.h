@@ -4,9 +4,6 @@
 #include <map>
 #include <typeinfo>
 
-#include "Sofa/Components/Collision/DetectionOutput.h"
-#include "Sofa/Abstract/CollisionElement.h"
-
 namespace Sofa
 {
 
@@ -50,7 +47,6 @@ template <class BaseClass, typename ResulT>
 class FnDispatcher : public BasicDispatcher<BaseClass, ResulT>
 {
 public:
-    static FnDispatcher<BaseClass, ResulT>* getInstance();
 
     template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
     void add()
@@ -73,11 +69,16 @@ public:
             this->BasicDispatcher<BaseClass, ResulT>::add(typeid(ConcreteClass2), typeid(ConcreteClass1), &Local::trampolineR);
         }
     }
+};
 
-    ResulT intersection(BaseClass &arg1,BaseClass &arg2)
-    {
-        return this->go(arg1,arg2);
-    }
+
+template <class BaseClass, typename ResulT>
+class SingletonFnDispatcher : public FnDispatcher<BaseClass, ResulT>
+{
+protected:
+    SingletonFnDispatcher();
+public:
+    static SingletonFnDispatcher<BaseClass, ResulT>* getInstance();
 
     template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
     static void Add()
@@ -90,9 +91,6 @@ public:
         return getInstance()->go(arg1,arg2);
     }
 };
-
-typedef FnDispatcher<Abstract::CollisionElement, bool> FnCollisionDetection;
-typedef FnDispatcher<Abstract::CollisionElement, Collision::DetectionOutput*> FnCollisionDetectionOutput;
 
 } // namespace Common
 

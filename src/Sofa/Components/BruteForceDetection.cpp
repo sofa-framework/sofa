@@ -44,7 +44,7 @@ void BruteForceDetection::addCollisionModel(CollisionModel *cm)
         {
             for (unsigned int j=0; j<vectElems2.size(); j++)
             {
-                if (FnCollisionDetection::getInstance()->intersection(*vectElems1[i],*vectElems2[j]))
+                if (intersectionMethod->canIntersect(vectElems1[i],vectElems2[j]))
                 {
                     collisionDetected = true;
                     break;
@@ -73,7 +73,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
         for (unsigned int j=0; j<vectElems2.size(); j++)
         {
             CollisionElement* e2 = vectElems2[j];
-            if (FnCollisionDetection::getInstance()->intersection(*e1,*e2))
+            if (intersectionMethod->canIntersect(e1,e2))
             {
                 elemPairs.push_back(std::make_pair(e1,e2));
             }

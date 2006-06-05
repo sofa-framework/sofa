@@ -32,8 +32,8 @@ SOFA_DECL_CLASS(CollisionGroupManagerSofa)
 Creator<ObjectFactory, CollisionGroupManagerSofa> CollisionGroupManagerSofaClass("CollisionGroup");
 
 
-template class FnDispatcher<Core::OdeSolver, Core::OdeSolver*>;
-typedef FnDispatcher<Core::OdeSolver, Core::OdeSolver*> SolverDispatcher;
+template class SingletonFnDispatcher<Core::OdeSolver, Core::OdeSolver*>;
+typedef SingletonFnDispatcher<Core::OdeSolver, Core::OdeSolver*> SolverDispatcher;
 
 CollisionGroupManagerSofa::CollisionGroupManagerSofa(const std::string& name)
     : name(name)

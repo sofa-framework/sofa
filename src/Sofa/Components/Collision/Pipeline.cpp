@@ -1,4 +1,5 @@
 #include "Pipeline.h"
+#include "DiscreteIntersection.h"
 #include "../Graph/GNode.h"
 
 namespace Sofa
@@ -29,6 +30,9 @@ void Pipeline::init()
 {
     Graph::GNode* root = dynamic_cast<Graph::GNode*>(getContext());
     if(root == NULL) return;
+    intersectionMethods.clear();
+    root->getTreeObjects<Intersection>(&intersectionMethods);
+    intersectionMethod = (intersectionMethods.empty() ? NULL : intersectionMethods[0]);
     broadPhaseDetections.clear();
     root->getTreeObjects<BroadPhaseDetection>(&broadPhaseDetections);
     broadPhaseDetection = (broadPhaseDetections.empty() ? NULL : broadPhaseDetections[0]);
@@ -41,6 +45,9 @@ void Pipeline::init()
     groupManagers.clear();
     root->getTreeObjects<CollisionGroupManager>(&groupManagers);
     groupManager = (groupManagers.empty() ? NULL : groupManagers[0]);
+
+    if (intersectionMethod==NULL)
+        intersectionMethod = new DiscreteIntersection;
 }
 
 void Pipeline::computeCollisions()
@@ -49,6 +56,10 @@ void Pipeline::computeCollisions()
     if(root == NULL) return;
     std::vector<CollisionModel*> collisionModels;
     root->getTreeObjects<CollisionModel>(&collisionModels);
+    if (broadPhaseDetection!=NULL && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
+        broadPhaseDetection->setIntersectionMethod(intersectionMethod);
+    if (narrowPhaseDetection!=NULL && narrowPhaseDetection->getIntersectionMethod()!=intersectionMethod)
+        narrowPhaseDetection->setIntersectionMethod(intersectionMethod);
     startDetection(collisionModels);
 }
 

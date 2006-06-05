@@ -19,6 +19,12 @@ namespace Common
 /// Decode the type's name to a more readable form if possible
 std::string gettypename(const std::type_info& t);
 
+/// Log classes registered in the factory
+void logFactoryRegister(std::string baseclass, std::string classname, std::string key, bool multi);
+
+/// Print factory log
+void printFactoryLog(std::ostream& out = std::cout);
+
 template <class Object, class Argument>
 class BaseCreator
 {
@@ -47,6 +53,7 @@ public:
     {
         if(!multi && this->registry.find(key) != this->registry.end())
             return false; // key used
+        logFactoryRegister(gettypename(typeid(Object)), gettypename(creator->type()), key, multi);
         //std::cout << gettypename(typeid(Object)) << (multi?" template class ":" class ")
         //          << gettypename(creator->type()) << " registered as " << key << std::endl;
         this->registry.insert(std::pair<Key, Creator*>(key, creator));

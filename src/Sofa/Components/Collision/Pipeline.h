@@ -3,6 +3,7 @@
 
 #include "Sofa/Abstract/CollisionModel.h"
 #include "Sofa/Abstract/CollisionElement.h"
+#include "Intersection.h"
 #include "BroadPhaseDetection.h"
 #include "NarrowPhaseDetection.h"
 #include "DetectionOutput.h"
@@ -25,11 +26,13 @@ class Pipeline : public virtual Abstract::BaseObject
 protected:
     std::vector<DetectionOutput*> detectionOutputs;
 
+    std::vector<Intersection*> intersectionMethods;
     std::vector<BroadPhaseDetection*> broadPhaseDetections;
     std::vector<NarrowPhaseDetection*> narrowPhaseDetections;
     std::vector<ContactManager*> contactManagers;
     std::vector<CollisionGroupManager*> groupManagers;
 
+    Intersection* intersectionMethod;
     BroadPhaseDetection* broadPhaseDetection;
     NarrowPhaseDetection* narrowPhaseDetection;
     ContactManager* contactManager;

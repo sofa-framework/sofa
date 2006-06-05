@@ -40,9 +40,14 @@ ResulT BasicDispatcher<BaseClass, ResulT>::go(BaseClass &arg1,BaseClass &arg2)
 }
 
 template <class BaseClass, typename ResulT>
-FnDispatcher<BaseClass, ResulT>* FnDispatcher<BaseClass, ResulT>::getInstance()
+SingletonFnDispatcher<BaseClass, ResulT>::SingletonFnDispatcher()
 {
-    static FnDispatcher<BaseClass, ResulT> instance;
+}
+
+template <class BaseClass, typename ResulT>
+SingletonFnDispatcher<BaseClass, ResulT>* SingletonFnDispatcher<BaseClass, ResulT>::getInstance()
+{
+    static SingletonFnDispatcher<BaseClass, ResulT> instance;
     return &instance;
 }
 
