@@ -49,7 +49,7 @@ public:
     const SeqTetras& getTetras();
     const SeqCubes& getCubes();
 
-    // Random accessors;
+    // Random accessors
 
     int getNbLines();
     int getNbTriangles();
@@ -63,8 +63,17 @@ public:
     const Tetra& getTetra(index_type i);
     const Cube& getCube(index_type i);
 
+    // Points accessors (not always available)
+
+    virtual bool hasPos();
+    virtual double getPX(int i);
+    virtual double getPY(int i);
+    virtual double getPZ(int i);
+
+
 protected:
     int nbPoints;
+    std::vector< fixed_array<double,3> > seqPoints;
 
     SeqLines seqLines;
     bool validLines;

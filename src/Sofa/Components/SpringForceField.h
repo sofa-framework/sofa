@@ -5,9 +5,11 @@
 #define SOFA_COMPONENTS_SPRINGFORCEFIELD_H
 
 #include "Sofa/Core/InteractionForceField.h"
-#include "Sofa/Core/MechanicalObject.h"
+#include "Sofa/Core/MechanicalModel.h"
 #include "Sofa/Abstract/VisualModel.h"
 #include "Common/Vec.h"
+
+#include <vector>
 
 namespace Sofa
 {
@@ -28,8 +30,8 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    Core::MechanicalObject<DataTypes>* object1;
-    Core::MechanicalObject<DataTypes>* object2;
+    Core::MechanicalModel<DataTypes>* object1;
+    Core::MechanicalModel<DataTypes>* object2;
 
     class Spring
     {
@@ -52,30 +54,30 @@ protected:
     void addSpringForce(VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring);
 
 public:
-    SpringForceField(Core::MechanicalObject<DataTypes>* object1, Core::MechanicalObject<DataTypes>* object2, const char* filename)
+    SpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2, const char* filename)
         : object1(object1), object2(object2)
     {
         init(filename);
     }
 
-    SpringForceField(Core::MechanicalObject<DataTypes>* object, const char* filename)
+    SpringForceField(Core::MechanicalModel<DataTypes>* object, const char* filename)
         : object1(object), object2(object)
     {
         init(filename);
     }
 
-    SpringForceField(Core::MechanicalObject<DataTypes>* object1, Core::MechanicalObject<DataTypes>* object2)
+    SpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
         : object1(object1), object2(object2)
     {
     }
 
-    SpringForceField(Core::MechanicalObject<DataTypes>* object)
+    SpringForceField(Core::MechanicalModel<DataTypes>* object)
         : object1(object), object2(object)
     {
     }
 
-    Core::MechanicalObject<DataTypes>* getObject1() { return object1; }
-    Core::MechanicalObject<DataTypes>* getObject2() { return object2; }
+    Core::MechanicalModel<DataTypes>* getObject1() { return object1; }
+    Core::MechanicalModel<DataTypes>* getObject2() { return object2; }
 
     virtual void addForce();
 

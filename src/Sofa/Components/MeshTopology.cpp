@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Common/Mesh.h"
 #include "MeshTopology.h"
 #include "MeshTopologyLoader.h"
 #include "Common/ObjectFactory.h"
@@ -34,6 +35,12 @@ class MeshTopology::Loader : public MeshTopologyLoader
 public:
     MeshTopology* dest;
     Loader(MeshTopology* dest) : dest(dest) {}
+    virtual void addPoint(double px, double py, double pz)
+    {
+        dest->seqPoints.push_back(make_array(px, py, pz));
+        if (dest->seqPoints.size() > (unsigned)dest->nbPoints)
+            dest->nbPoints = dest->seqPoints.size();
+    }
     virtual void addLine(int p1, int p2)
     {
         dest->seqLines.push_back(make_array(p1,p2));
@@ -71,7 +78,44 @@ bool MeshTopology::load(const char* filename)
 {
     clear();
     Loader loader(this);
-    return loader.load(filename);
+
+    if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".obj"))
+    {
+        Mesh* mesh = Mesh::Create(filename);
+        if (mesh==NULL) return false;
+
+        loader.setNbPoints(mesh->getVertices().size());
+        for (unsigned int i=0; i<mesh->getVertices().size(); i++)
+        {
+            loader.addPoint(mesh->getVertices()[i][0],mesh->getVertices()[i][1],mesh->getVertices()[i][2]);
+        }
+        const std::vector< std::vector < std::vector <int> > > & facets = mesh->getFacets();
+        for (unsigned int g=0; g<facets.size(); g++)
+        {
+            for (unsigned int i=0; i<facets[g].size(); i++)
+            {
+                const std::vector<int> facet = facets[g][i];
+                if (facet.size()==4)
+                {
+                    // Quat
+                    loader.addQuad(facet[0],facet[1],facet[2],facet[3]);
+                }
+                else
+                {
+                    // Triangularize
+                    for (unsigned int j=2; j<facet.size(); j++)
+                        loader.addTriangle(facet[0],facet[j-1],facet[j]);
+                }
+            }
+        }
+        delete mesh;
+    }
+    else
+    {
+        if (!loader.load(filename))
+            return false;
+    }
+    return true;
 }
 
 const MeshTopology::SeqLines& MeshTopology::getLines()
@@ -177,6 +221,26 @@ const MeshTopology::Tetra& MeshTopology::getTetra(index_type i)
 const MeshTopology::Cube& MeshTopology::getCube(index_type i)
 {
     return getCubes()[i];
+}
+
+bool MeshTopology::hasPos()
+{
+    return !seqPoints.empty();
+}
+
+double MeshTopology::getPX(int i)
+{
+    return ((unsigned)i<seqPoints.size()?seqPoints[i][0]:0.0);
+}
+
+double MeshTopology::getPY(int i)
+{
+    return ((unsigned)i<seqPoints.size()?seqPoints[i][1]:0.0);
+}
+
+double MeshTopology::getPZ(int i)
+{
+    return ((unsigned)i<seqPoints.size()?seqPoints[i][2]:0.0);
 }
 
 void MeshTopology::invalidate()

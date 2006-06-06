@@ -1,10 +1,10 @@
 #include "TriangleModel.h"
-#include "TriangleLoader.h"
 #include "CubeModel.h"
 #include "Triangle.h"
 #include "Sofa/Abstract/CollisionElement.h"
 #include "Common/ObjectFactory.h"
 #include <vector>
+#include <GL/gl.h>
 
 namespace Sofa
 {
@@ -15,55 +15,114 @@ SOFA_DECL_CLASS(Triangle)
 
 void create(TriangleModel*& obj, ObjectDescription* arg)
 {
-    XML::createWithFilename(obj, arg);
-    if (obj!=NULL && arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+    obj = new TriangleModel;
+//	XML::createWithFilename(obj, arg);
+//	if (obj!=NULL && arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+//		obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
 }
 
 Creator< ObjectFactory, TriangleModel > TriangleModelClass("Triangle");
 
+TriangleModel::TriangleModel()
+{
+    mmodel = NULL;
+    mesh = NULL;
+    previous = NULL;
+    next = NULL;
+    static_ = false;
+}
+
+TriangleModel::~TriangleModel()
+{
+}
+
+void TriangleModel::init()
+{
+    mmodel = dynamic_cast< Core::MechanicalModel<Vec3Types>* > (getContext()->getMechanicalModel());
+    mesh = dynamic_cast< MeshTopology* > (getContext()->getTopology());
+
+    if (mmodel==NULL)
+    {
+        std::cerr << "ERROR: TriangleModel requires a Vec3 Mechanical Model.\n";
+        return;
+    }
+
+    if (mesh==NULL)
+    {
+        std::cerr << "ERROR: TriangleModel requires a Mesh Topology.\n";
+        return;
+    }
+    elems.clear();
+    const int npoints = mmodel->getX()->size();
+    const int ntris = mesh->getNbTriangles();
+    const int nquads = mesh->getNbQuads();
+    elems.reserve(ntris+2*nquads);
+    VecCoord& x = *mmodel->getX();
+    VecDeriv& v = *mmodel->getV();
+    for (int i=0; i<ntris; i++)
+    {
+        MeshTopology::Triangle idx = mesh->getTriangle(i);
+        if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
+        {
+            std::cerr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")\n";
+            continue;
+        }
+        Triangle *t = new Triangle(i, idx[0], idx[1], idx[2], this);
+        elems.push_back(t);
+    }
+    for (int i=0; i<nquads; i++)
+    {
+        MeshTopology::Quad idx = mesh->getQuad(i);
+        if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
+        {
+            std::cerr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")\n";
+            continue;
+        }
+        Triangle *t1 = new Triangle(i+ntris, idx[0], idx[1], idx[2], this);
+        Triangle *t2 = new Triangle(i+ntris, idx[0], idx[2], idx[3], this);
+        elems.push_back(t1);
+        elems.push_back(t2);
+    }
+}
+
+/*
 class TriangleModel::Loader : public TriangleLoader
 {
 public:
-    TriangleModel* dest;
-    Loader(TriangleModel* dest) : dest(dest) { }
-    void addVertices (double x, double y, double z)
-    {
-        int i = dest->getX()->size();
-        dest->resize(i+1);
-        (*dest->getX())[i] = Vector3(x,y,z);
-    }
+	TriangleModel* dest;
+	Loader(TriangleModel* dest) : dest(dest) { }
+	void addVertices (double x, double y, double z)
+	{
+		int i = dest->getX()->size();
+		dest->resize(i+1);
+		(*dest->getX())[i] = Vector3(x,y,z);
+	}
 
-    void addTriangle (int idp1, int idp2, int idp3)
-    {
-        Triangle *t = new Triangle(&(dest->getX()->at(idp1)), &(dest->getX()->at(idp2)), &(dest->getX()->at(idp3)),
-                &(dest->getV()->at(idp1)), &(dest->getV()->at(idp2)), &(dest->getV()->at(idp3)),
-                dest);
-        dest->elems.push_back(t);
-    }
+	void addTriangle (int idp1, int idp2, int idp3)
+	{
+		Triangle *t = new Triangle(&(dest->getX()->at(idp1)), &(dest->getX()->at(idp2)), &(dest->getX()->at(idp3)),
+								   &(dest->getV()->at(idp1)), &(dest->getV()->at(idp2)), &(dest->getV()->at(idp3)),
+								   dest);
+		dest->elems.push_back(t);
+	}
 };
 
 void TriangleModel::applyTranslation(double dx, double dy, double dz)
 {
-    Vector3 d(dx,dy,dz);
-    VecCoord& x = *getX();
-    for (unsigned int i = 0; i < x.size(); i++)
-        x[i] += d;
+	Vector3 d(dx,dy,dz);
+	VecCoord& x = *mmodel->getX();
+	for (unsigned int i = 0; i < x.size(); i++)
+		x[i] += d;
 }
 
 void TriangleModel::init(const char* file)
 {
-    this->resize(0);
-    elems.clear();
-    Loader loader(this);
-    loader.load(file);
-
-    /* if (!readOBJ(file))
-    {
-    	std::cout << "ERROR while loading Triangle model" << std::endl;
-    	exit(-1);
-    }*/
+	this->resize(0);
+	elems.clear();
+	Loader loader(this);
+	loader.load(file);
 }
+*/
 
 void TriangleModel::draw()
 {
@@ -128,7 +187,7 @@ void TriangleModel::computeSphereVolume (void)
 	sphModel->setNext(this);
 }
 */
-void TriangleModel::computeContinueBoundingBox (void)
+void TriangleModel::computeContinuousBoundingBox (double dt)
 {
     CubeModel* cubeModel = dynamic_cast<CubeModel*>(getPrevious());
 
@@ -152,15 +211,16 @@ void TriangleModel::computeContinueBoundingBox (void)
     int size = vertices.size(); */
     std::vector<Vector3> newVertices;
 
-    std::vector<Vector3> &verts = *(this->getX());
-    std::vector<Vector3> &velocityVerts = *(this->getV());
+    std::vector<Vector3> &verts = *(mmodel->getX());
+    std::vector<Vector3> &velocityVerts = *(mmodel->getV());
 
     int size = verts.size();
+    newVertices.reserve(size);
 
     for (int i = 0; i < size; i++)
     {
         Vector3 newPos = verts[i];
-        newPos += velocityVerts[i] * getContext()->getDt();
+        newPos += velocityVerts[i] * dt; //getContext()->getDt();
         newVertices.push_back(newPos);
     }
     Vector3 minBB, maxBB, minBBMoved, maxBBMoved;
@@ -198,37 +258,14 @@ void TriangleModel::computeBoundingBox(void)
 
     Vector3 minBB, maxBB;
 
-    findBoundingBox(*(this->getX()), minBB, maxBB);
+    findBoundingBox(*(mmodel->getX()), minBB, maxBB);
 
     //std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
 
     cubeModel->setCube(0,minBB, maxBB);
-}
 
-void TriangleModel::beginIntegration(double dt)
-{
-    //std::cout << "BEGIN"<<std::endl;
-    f = internalForces;
-    this->Core::MechanicalObject<Vec3Types>::beginIntegration(dt);
-}
-
-void TriangleModel::endIntegration(double dt)
-{
-    this->Core::MechanicalObject<Vec3Types>::endIntegration(dt);
-    //std::cout << "END"<<std::endl;
-    f = externalForces;
-    externalForces->clear();
-}
-
-void TriangleModel::accumulateForce()
-{
-    if (!externalForces->empty())
-    {
-        //std::cout << "Adding external forces"<<std::endl;
-        for (unsigned int i=0; i < externalForces->size(); i++)
-            (*getF())[i] += (*externalForces)[i];
-    }
-    this->Core::MechanicalObject<Vec3Types>::accumulateForce();
+    for (unsigned int i=0; i<elems.size(); i++)
+        static_cast<Triangle*>(elems[i])->recalcBBox();
 }
 
 void TriangleModel::findBoundingBox(const std::vector<Vector3> &verts, Vector3 &minBB, Vector3 &maxBB)

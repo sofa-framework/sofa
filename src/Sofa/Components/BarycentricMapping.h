@@ -60,6 +60,8 @@ public:
     class RegularGridMapper : public Mapper
     {
     public:
+        RegularGridMapper(RegularGridTopology* topology) : topology(topology) {}
+
         std::vector<CubeData> map;
         RegularGridTopology* topology;
         void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
@@ -71,8 +73,27 @@ public:
     class MeshMapper : public Mapper
     {
     public:
-        std::vector< MappingData<3,0> > map;
+        MeshMapper(MeshTopology* topology) : topology(topology) {}
+
+        std::vector< MappingData<1,0> > map1d;
+        std::vector< MappingData<2,0> > map2d;
+        std::vector< MappingData<3,0> > map3d;
         MeshTopology* topology;
+
+        void clear();
+
+        void addPointInLine(const OutCoord& p, int lineIndex, const Real* baryCoords);
+
+        void addPointInTriangle(const OutCoord& p, int triangleIndex, const Real* baryCoords);
+        void createPointInTriangle(const OutCoord& p, int triangleIndex, const InVecCoord* points);
+
+        void addPointInQuad(const OutCoord& p, int quadIndex, const Real* baryCoords);
+        void createPointInQuad(const OutCoord& p, int quadIndex, const InVecCoord* points);
+
+        void addPointInTetra(const OutCoord& p, int tetraIndex, const Real* baryCoords);
+
+        void addPointInCube(const OutCoord& p, int cubeIndex, const Real* baryCoords);
+
         void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
         void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );
         void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in );
@@ -95,13 +116,13 @@ protected:
     void calcMap(MeshTopology* topo);
 
 public:
-    BarycentricMapping(In* from, Out* to, const std::string& /*name*/)
+    BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
     {
     }
 
-    BarycentricMapping(In* from, Out* to)
-        : Inherit(from, to), mapper(NULL)
+    BarycentricMapping(In* from, Out* to, Mapper* mapper)
+        : Inherit(from, to), mapper(mapper)
     {
     }
 

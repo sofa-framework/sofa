@@ -26,6 +26,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce()
     f2.resize(p2.size());
     for (unsigned int i=0; i<this->springs.size(); i++)
     {
+#if 1
         int a = this->springs[i].m1;
         int b = this->springs[i].m2;
         Coord u = p2[b]-p1[a];
@@ -54,6 +55,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce()
             }
         }
         else
+#endif
         {
             Mat3& m = this->dfdx[i];
             for( int j=0; j<3; ++j )

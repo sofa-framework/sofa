@@ -15,7 +15,8 @@ using namespace Abstract;
 using namespace Core;
 
 Pipeline::Pipeline()
-    : broadPhaseDetection(NULL),
+    : intersectionMethod(NULL),
+      broadPhaseDetection(NULL),
       narrowPhaseDetection(NULL),
       contactManager(NULL),
       groupManager(NULL)
@@ -60,6 +61,8 @@ void Pipeline::computeCollisions()
         broadPhaseDetection->setIntersectionMethod(intersectionMethod);
     if (narrowPhaseDetection!=NULL && narrowPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         narrowPhaseDetection->setIntersectionMethod(intersectionMethod);
+    if (contactManager!=NULL && contactManager->getIntersectionMethod()!=intersectionMethod)
+        contactManager->setIntersectionMethod(intersectionMethod);
     startDetection(collisionModels);
 }
 

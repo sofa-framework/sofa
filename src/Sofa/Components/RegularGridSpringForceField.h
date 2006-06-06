@@ -28,7 +28,7 @@ protected:
     Real cubesDamping;
 
 public:
-    RegularGridSpringForceField(Core::MechanicalObject<DataTypes>* object1, Core::MechanicalObject<DataTypes>* object2)
+    RegularGridSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
         : StiffSpringForceField<DataTypes>(object1, object2),
           linesStiffness(0), linesDamping(0),
           quadsStiffness(0), quadsDamping(0),
@@ -36,7 +36,7 @@ public:
     {
     }
 
-    RegularGridSpringForceField(Core::MechanicalObject<DataTypes>* object)
+    RegularGridSpringForceField(Core::MechanicalModel<DataTypes>* object)
         : StiffSpringForceField<DataTypes>(object),
           linesStiffness(0), linesDamping(0),
           quadsStiffness(0), quadsDamping(0),

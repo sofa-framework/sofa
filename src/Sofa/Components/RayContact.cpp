@@ -13,7 +13,7 @@ SOFA_DECL_CLASS(RayContact)
 
 Creator<Contact::Factory, RayContact> RayContactClass("default",true);
 
-RayContact::RayContact(CollisionModel1* model1, CollisionModel2* model2)
+RayContact::RayContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* /*intersectionMethod*/)
     : model1(model1), model2(model2), parent(NULL)
 {
     if (model1!=NULL)

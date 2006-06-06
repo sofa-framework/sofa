@@ -19,13 +19,14 @@ class RayContact : public Collision::Contact, public Abstract::VisualModel
 public:
     typedef RayModel CollisionModel1;
     typedef SphereModel CollisionModel2;
+    typedef Collision::Intersection Intersection;
     std::vector<Collision::DetectionOutput*> collisions;
 protected:
     CollisionModel1* model1;
     CollisionModel2* model2;
     Abstract::BaseContext* parent;
 public:
-    RayContact(CollisionModel1* model1, CollisionModel2* model2);
+    RayContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     ~RayContact();
 
     std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }

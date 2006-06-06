@@ -71,12 +71,12 @@ void Simulation::print(GNode* root)
 void Simulation::animate(GNode* root, double dt)
 {
     if (!root) return;
-    root->execute<CollisionAction>();
     AnimateAction act;
     act.setDt(dt);
     root->execute(act);
     root->execute<UpdateMappingAction>();
     root->execute<VisualUpdateAction>();
+    root->execute<CollisionAction>();
 }
 
 /// Reset to initial state

@@ -45,8 +45,13 @@ void create(MechanicalObject<DataTypes>*& obj, ObjectDescription* arg)
         MechanicalObjectLoader<DataTypes> loader(obj);
         loader.load(arg->getAttribute("filename"));
     }
-    if (obj!=NULL && arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+    if (obj!=NULL)
+    {
+        if (arg->getAttribute("scale")!=NULL)
+            obj->applyScale(atof(arg->getAttribute("scale")));
+        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+            obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+    }
 }
 }
 

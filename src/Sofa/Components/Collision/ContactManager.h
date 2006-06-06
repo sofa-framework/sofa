@@ -25,6 +25,14 @@ public:
     virtual void createContacts(const std::vector<DetectionOutput*>& outputs) = 0;
 
     virtual const std::vector<Contact*>& getContacts() = 0;
+
+    /// virtual because subclasses might do precomputations based on intersection algorithms
+    virtual void setIntersectionMethod(Intersection* v) { intersectionMethod = v;    }
+    Intersection* getIntersectionMethod() const         { return intersectionMethod; }
+
+protected:
+    /// Current intersection method
+    Intersection* intersectionMethod;
 };
 
 } // namespace Collision

@@ -1,6 +1,5 @@
 #include "RegularGridSpringForceField.inl"
 #include "Common/Vec3Types.h"
-#include "Sofa/Core/MechanicalObject.h"
 #include "Common/ObjectFactory.h"
 
 namespace Sofa
@@ -19,7 +18,7 @@ template class RegularGridSpringForceField<Vec3fTypes>;
 template<class DataTypes>
 void create(RegularGridSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
 {
-    XML::createWithParent< RegularGridSpringForceField<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
+    XML::createWithParent< RegularGridSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("stiffness")) obj->setStiffness((typename DataTypes::Coord::value_type)atof(arg->getAttribute("stiffness")));

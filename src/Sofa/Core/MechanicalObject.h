@@ -27,7 +27,10 @@ protected:
     VecDeriv* dx;
     VecCoord* x0;
     VecDeriv* v0;
+    VecDeriv* internalForces;
+    VecDeriv* externalForces;
     double translation[3];
+    double scale;
 
     /// @name Integration-related data
     /// @{
@@ -64,12 +67,16 @@ public:
 
     void applyTranslation (double dx, double dy, double dz);
 
+    void applyScale (double s);
+
     /// @name Integration related methods
     /// @{
 
     virtual void beginIntegration(double dt);
 
     virtual void endIntegration(double dt);
+
+    virtual void accumulateForce();
 
     VecCoord* getVecCoord(unsigned int index);
 

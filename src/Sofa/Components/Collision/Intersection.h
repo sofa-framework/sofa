@@ -33,6 +33,9 @@ public:
     /// Return the alarm distance (must return 0 if useProximity() is false)
     virtual double getAlarmDistance() const { return 0.0; }
 
+    /// Return the contact distance (must return 0 if useProximity() is false)
+    virtual double getContactDistance() const { return 0.0; }
+
 };
 
 } // namespace Collision

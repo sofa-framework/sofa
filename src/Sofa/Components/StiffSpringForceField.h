@@ -40,22 +40,22 @@ protected:
     void addSpringDForce(VecDeriv& f1, VecCoord& p1, VecDeriv& dx1, VecDeriv& f2, VecCoord& p2, VecDeriv& dx2, int i, const Spring& spring);
 
 public:
-    StiffSpringForceField(Core::MechanicalObject<DataTypes>* object1, Core::MechanicalObject<DataTypes>* object2, const char* filename)
+    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2, const char* filename)
         : SpringForceField<DataTypes>(object1, object2, filename)
     {
     }
 
-    StiffSpringForceField(Core::MechanicalObject<DataTypes>* object, const char* filename)
+    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object, const char* filename)
         : SpringForceField<DataTypes>(object, filename)
     {
     }
 
-    StiffSpringForceField(Core::MechanicalObject<DataTypes>* object1, Core::MechanicalObject<DataTypes>* object2)
+    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
         : SpringForceField<DataTypes>(object1, object2)
     {
     }
 
-    StiffSpringForceField(Core::MechanicalObject<DataTypes>* object)
+    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object)
         : SpringForceField<DataTypes>(object)
     {
     }

@@ -19,7 +19,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
 {
     x = new VecCoord;
     v = new VecDeriv;
-    f = new VecDeriv;
+    internalForces = f = new VecDeriv;
+    externalForces = new VecDeriv;
     dx = new VecDeriv;
     // default size is 1
     resize(1);
@@ -30,6 +31,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     translation[0]=0.0;
     translation[1]=0.0;
     translation[2]=0.0;
+    scale = 1.0;
 }
 
 template <class DataTypes>
@@ -71,6 +73,17 @@ void MechanicalObject<DataTypes>::applyTranslation (double dx, double dy, double
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::applyScale(double s)
+{
+    this->scale*=s;
+    VecCoord& x = *this->getX();
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        x[i] *= s;
+    }
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
     Topology* topo = dynamic_cast<Topology*>(this->getContext()->getTopology());
@@ -82,7 +95,7 @@ void MechanicalObject<DataTypes>::init()
         for (int i=0; i<nbp; i++)
         {
             //DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
-            DataTypes::set((*getX())[i], topo->getPX(i)+translation[0], topo->getPY(i)+translation[1], topo->getPZ(i)+translation[2]);
+            DataTypes::set((*getX())[i], topo->getPX(i)*scale+translation[0], topo->getPY(i)*scale+translation[1], topo->getPZ(i)*scale+translation[2]);
         }
     }
 
@@ -111,11 +124,24 @@ void MechanicalObject<DataTypes>::reset()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIntegration(double dt)
 {
+    this->f = this->internalForces;
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::endIntegration(double dt)
 {
+    this->f = this->externalForces;
+    this->externalForces->clear();
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::accumulateForce()
+{
+    if (!this->externalForces->empty())
+    {
+        for (unsigned int i=0; i < this->externalForces->size(); i++)
+            (*this->f)[i] += (*this->externalForces)[i];
+    }
 }
 
 template <class DataTypes>

@@ -15,7 +15,7 @@
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    std::string fileName = "Data/demo6Triangle.scn";
+    std::string fileName = "Data/demoLiverProximity.scn";
     bool        startAnim = false;
     bool        printFactory = false;
     std::string gui = "none";

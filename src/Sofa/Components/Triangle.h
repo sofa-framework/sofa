@@ -1,13 +1,9 @@
-#ifndef _TRIANGLE_H_
-#define _TRIANGLE_H_
+#ifndef SOFA_COMPONENTS__TRIANGLE_H
+#define SOFA_COMPONENTS__TRIANGLE_H
 
 #include "Sofa/Abstract/CollisionElement.h"
-#include "Common/Vec.h"
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#include <GL/gl.h>
+#include "Sofa/Core/MechanicalModel.h"
+#include "Common/Vec3Types.h"
 
 namespace Sofa
 {
@@ -22,19 +18,32 @@ using namespace Common;
 class Triangle : public Abstract::CollisionElement
 {
 
-public:
-    Vector3 *p1, *p2, *p3;
-    Vector3 *v1, *v2, *v3;
-    Vector3 normal;
-    TriangleModel * trMdl;
+protected:
+    int index,i1,i2,i3;
+    //Vector3 normal;
+    TriangleModel * model;
+    Core::MechanicalModel<Vec3Types>* mmodel;
+    Vector3 minBBox, maxBBox;
 
-    Triangle(Vector3 *_p1, Vector3 *_p2, Vector3 *_p3, Vector3 *_v1, Vector3 *_v2, Vector3 *_v3, Vector3 norm, TriangleModel *_trMdl): p1(_p1), p2(_p2), p3(_p3), v1(_v1), v2(_v2), v3(_v3), normal(norm), trMdl(_trMdl) {};
-    Triangle(Vector3 *_p1, Vector3 *_p2, Vector3 *_p3, Vector3 *_v1, Vector3 *_v2, Vector3 *_v3, TriangleModel *_trMdl): p1(_p1), p2(_p2), p3(_p3), v1(_v1), v2(_v2), v3(_v3), trMdl(_trMdl) {};
+    void recalcBBox();
+    friend class TriangleModel;
+
+public:
+
+    const Vector3& p1() const { return (*mmodel->getX())[i1]; }
+    const Vector3& p2() const { return (*mmodel->getX())[i2]; }
+    const Vector3& p3() const { return (*mmodel->getX())[i3]; }
+
+    const Vector3& v1() const { return (*mmodel->getV())[i1]; }
+    const Vector3& v2() const { return (*mmodel->getV())[i2]; }
+    const Vector3& v3() const { return (*mmodel->getV())[i3]; }
+
+    int getIndex() const { return index; }
+
+    Triangle(int index, int i1, int i2, int i3, TriangleModel* model);
 
     void getBBox(Vector3 &minBBox, Vector3 &maxBBox);
     void getBBox(double* minVect, double* maxVect);
-
-    Triangle *getTriangle(void) {return this;};
 
     // for debugging only
     void draw (void);
@@ -47,4 +56,5 @@ public:
 } // namespace Components
 
 } // namespace Sofa
-#endif /* _TRIANGLE_H_ */
+
+#endif
