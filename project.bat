@@ -39,8 +39,6 @@ pause
 @echo cleaning all VC6 Project or VC7 Project
 for /R %%i in (*.ncb, *.suo, Makefile, *.idb, *.pdb, *.plg, *.opt) do del "%%i"
 cd src
-for /R %%i in (*.dsp, *.vcproj, *.vcproj.old) do del "%%i"
-cd ..\Projects
-for /R %%i in (*.dsp, *.vcproj, *.vcproj.old) do del "%%i"
+for /R %%i in (*.dsp, *.vcproj, *.vcproj.*) do del "%%i"
 cd ..
 :end

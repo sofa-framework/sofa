@@ -3,8 +3,9 @@ TEMPLATE = app
 CONFIG += $$CONFIGPROJECT \
           warn_on
 
-DESTDIR = . # ../../bin
-TARGET = example1
+DESTDIR = ../../../bin
+TARGET = example1$$SUFFIX
+
 OBJECTS_DIR = OBJ/$$CONFIGDEBUG
 INCLUDEPATH = ../..
 INCLUDEPATH += ../../../include
@@ -33,7 +34,7 @@ win32{
 	  	QMAKE_LFLAGS += /NODEFAULTLIB:libc /NODEFAULTLIB:MSVCRTD
 	}
   }
-  QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY
+  QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY ../../../lib/$$LIBSDIRECTORY/../Common
   #QMAKE_LFLAGS = 
   #QMAKE_LIBS_WINDOWS = ""
   #QMAKE_CXXFLAGS += -GR -GX

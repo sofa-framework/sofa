@@ -15,7 +15,7 @@
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    std::string fileName = "Data/demoLiverProximity.scn";
+    std::string fileName;
     bool        startAnim = false;
     bool        printFactory = false;
     std::string gui = "none";
@@ -50,7 +50,16 @@ int main(int argc, char** argv)
 
     Sofa::Components::Graph::GNode* groot = NULL;
 
-    groot = Sofa::Components::Graph::Simulation::load(fileName.c_str());
+    if (!fileName.empty())
+    {
+        groot = Sofa::Components::Graph::Simulation::load(fileName.c_str());
+    }
+    else
+    {
+        groot = Sofa::Components::Graph::Simulation::load("../Data/demoLiverProximity.scn");
+        if (groot == NULL) // Necessary for starting this program under Visual Studio with default Configuration
+            groot = Sofa::Components::Graph::Simulation::load("../../../Data/demoLiverProximity.scn");
+    }
 
     if (groot==NULL)
         return 1;
