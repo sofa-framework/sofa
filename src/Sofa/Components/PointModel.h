@@ -1,12 +1,12 @@
-#ifndef SOFA_COMPONENTS_TRIANGLEMODEL_H
-#define SOFA_COMPONENTS_TRIANGLEMODEL_H
+#ifndef SOFA_COMPONENTS_POINTMODEL_H
+#define SOFA_COMPONENTS_POINTMODEL_H
 
 #include "Sofa/Abstract/CollisionModel.h"
 #include "Sofa/Abstract/VisualModel.h"
 #include "Sofa/Core/MechanicalModel.h"
 #include "MeshTopology.h"
 #include "Common/Vec3Types.h"
-#include "Triangle.h"
+#include "Point.h"
 
 namespace Sofa
 {
@@ -14,7 +14,7 @@ namespace Sofa
 namespace Components
 {
 
-class TriangleModel : public Abstract::CollisionModel, public Abstract::VisualModel
+class PointModel : public Abstract::CollisionModel, public Abstract::VisualModel
 {
 public:
     typedef Vec3Types DataTypes;
@@ -23,20 +23,17 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
 
-    TriangleModel();
+    PointModel();
 
-    ~TriangleModel();
+    ~PointModel();
 
     bool isStatic() { return static_; }
     void setStatic(bool val=true) { static_ = val; }
 
     virtual void init();
 
-    //void applyTranslation (double dx, double dy, double dz);
-
     // --- CollisionModel interface
 
-    //void computeSphereVolume(void);
     void computeBoundingBox (void);
     void computeContinuousBoundingBox (double dt);
 
@@ -64,12 +61,9 @@ public:
 
     Core::MechanicalModel<Vec3Types>* getMechanicalModel() { return mmodel; }
 
-    MeshTopology* getTopology() { return mesh; }
-
 protected:
 
     Core::MechanicalModel<Vec3Types>* mmodel;
-    MeshTopology* mesh;
 
     std::vector<Abstract::CollisionElement*> elems;
     Abstract::CollisionModel* previous;
@@ -79,7 +73,7 @@ protected:
 
     void findBoundingBox(const std::vector<Vector3> &verts, Vector3 &minBB, Vector3 &maxBB);
 
-    friend class Triangle;
+    friend class Point;
 };
 
 } // namesapce Components

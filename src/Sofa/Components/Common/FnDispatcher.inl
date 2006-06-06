@@ -26,6 +26,13 @@ ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& arg1, BaseClass&
     std::cerr << "ERROR DISPATCH ("
             << gettypename(typeid(arg1)) << ", "
             << gettypename(typeid(arg2)) << ")\n";
+    this->ignore(typeid(arg1), typeid(arg2));
+    return ResulT();
+}
+
+template <class BaseClass, typename ResulT>
+ResulT BasicDispatcher<BaseClass, ResulT>::ignoreFn(BaseClass& arg1, BaseClass& arg2)
+{
     return ResulT();
 }
 

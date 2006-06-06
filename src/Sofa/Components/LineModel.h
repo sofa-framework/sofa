@@ -1,12 +1,12 @@
-#ifndef SOFA_COMPONENTS_TRIANGLEMODEL_H
-#define SOFA_COMPONENTS_TRIANGLEMODEL_H
+#ifndef SOFA_COMPONENTS_LINEMODEL_H
+#define SOFA_COMPONENTS_LINEMODEL_H
 
 #include "Sofa/Abstract/CollisionModel.h"
 #include "Sofa/Abstract/VisualModel.h"
 #include "Sofa/Core/MechanicalModel.h"
 #include "MeshTopology.h"
 #include "Common/Vec3Types.h"
-#include "Triangle.h"
+#include "Line.h"
 
 namespace Sofa
 {
@@ -14,7 +14,7 @@ namespace Sofa
 namespace Components
 {
 
-class TriangleModel : public Abstract::CollisionModel, public Abstract::VisualModel
+class LineModel : public Abstract::CollisionModel, public Abstract::VisualModel
 {
 public:
     typedef Vec3Types DataTypes;
@@ -23,20 +23,17 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
 
-    TriangleModel();
+    LineModel();
 
-    ~TriangleModel();
+    ~LineModel();
 
     bool isStatic() { return static_; }
     void setStatic(bool val=true) { static_ = val; }
 
     virtual void init();
 
-    //void applyTranslation (double dx, double dy, double dz);
-
     // --- CollisionModel interface
 
-    //void computeSphereVolume(void);
     void computeBoundingBox (void);
     void computeContinuousBoundingBox (double dt);
 
@@ -79,7 +76,7 @@ protected:
 
     void findBoundingBox(const std::vector<Vector3> &verts, Vector3 &minBB, Vector3 &maxBB);
 
-    friend class Triangle;
+    friend class Line;
 };
 
 } // namesapce Components

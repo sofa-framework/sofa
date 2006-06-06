@@ -235,8 +235,10 @@ void TriangleModel::computeContinuousBoundingBox (double dt)
     }
 
     cubeModel->setCube(0,minBB, maxBB);
-}
 
+    for (unsigned int i=0; i<elems.size(); i++)
+        static_cast<Triangle*>(elems[i])->recalcContinuousBBox(dt);
+}
 
 void TriangleModel::computeBoundingBox(void)
 {

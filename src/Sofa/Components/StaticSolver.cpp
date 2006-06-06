@@ -39,12 +39,12 @@ void StaticSolver::solve(double)
     MultiVector x(group, V_DERIV);
     MultiVector z(group, V_DERIV);
 
-    // compute the right-hand term of the equation system
+// compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
-    b.teq(-1);                           // b = -f0
+    b.teq(-1);                          // b = -f0
     group->applyConstraints(b);         // b is projected to the constrained space
 
-    // -- solve the system using a conjugate gradient solution
+// -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
     group->v_clear( x );
     group->v_eq(r,b); // initial residual
@@ -63,10 +63,10 @@ void StaticSolver::solve(double)
             p += z;
         }
 
-        // matrix-vector product
+// matrix-vector product
         group->propagateDx(p);          // dx = p
         group->computeDf(q);            // q = df/dx p
-        // filter the product to take the constraints into account
+// filter the product to take the constraints into account
         group->applyConstraints(q);     // q is projected to the constrained space
 
         double den = p.dot(q);
@@ -77,9 +77,9 @@ void StaticSolver::solve(double)
         r.peq(q,-alpha);                // r = r - alpha r
         rho_1 = rho;
     }
-    // x is the solution of the system
+// x is the solution of the system
 
-    // apply the solution
+// apply the solution
     pos.peq( x );
 }
 

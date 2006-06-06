@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_CUBE_H
 #define SOFA_COMPONENTS_CUBE_H
 
-#include "Sofa/Abstract/CollisionElement.h"
+#include "Sofa/Abstract/CollisionModel.h"
 #include "Common/Vec.h"
 
 namespace Sofa
@@ -45,6 +45,10 @@ public:
     }
 
     Abstract::CollisionModel* getCollisionModel();
+
+    /// Test if collisions with another element should be tested.
+    /// Reject any self-collisions, including collision with other collision models attached to the same node
+    bool canCollideWith(CollisionElement* elem) {return getCollisionModel()->getContext() != elem->getCollisionModel()->getContext();}
 
     void draw();
 

@@ -83,6 +83,7 @@ public:
         void clear();
 
         void addPointInLine(const OutCoord& p, int lineIndex, const Real* baryCoords);
+        void createPointInLine(const OutCoord& p, int lineIndex, const InVecCoord* points);
 
         void addPointInTriangle(const OutCoord& p, int triangleIndex, const Real* baryCoords);
         void createPointInTriangle(const OutCoord& p, int triangleIndex, const InVecCoord* points);

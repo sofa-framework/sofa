@@ -108,6 +108,18 @@ void BarycentricMapping<BaseMapping>::MeshMapper::addPointInCube(const OutCoord&
 }
 
 template <class BaseMapping>
+void BarycentricMapping<BaseMapping>::MeshMapper::createPointInLine(const OutCoord& p, int lineIndex, const InVecCoord* points)
+{
+    Real baryCoords[1];
+    const MeshTopology::Line& elem = topology->getLine(lineIndex);
+    const InCoord p0 = (*points)[elem[0]];
+    const InCoord pA = (*points)[elem[1]] - p0;
+    InCoord pos = p - p0;
+    baryCoords[0] = ((pos*pA)/pA.norm2());
+    this->addPointInLine(p, lineIndex, baryCoords);
+}
+
+template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::MeshMapper::createPointInTriangle(const OutCoord& p, int triangleIndex, const InVecCoord* points)
 {
     Real baryCoords[2];
@@ -120,8 +132,8 @@ void BarycentricMapping<BaseMapping>::MeshMapper::createPointInTriangle(const Ou
     InCoord normal = cross(pA, pB);
     Real norm2 = normal.norm2();
     pos -= normal*((pos*normal)/norm2);
-    baryCoords[0] = (Real)sqrtf(cross(pB, pos).norm2() / norm2);
-    baryCoords[1] = (Real)sqrtf(cross(pA, pos).norm2() / norm2);
+    baryCoords[0] = (Real)sqrt(cross(pB, pos).norm2() / norm2);
+    baryCoords[1] = (Real)sqrt(cross(pA, pos).norm2() / norm2);
     this->addPointInTriangle(p, triangleIndex, baryCoords);
 }
 
@@ -138,8 +150,8 @@ void BarycentricMapping<BaseMapping>::MeshMapper::createPointInQuad(const OutCoo
     InCoord normal = cross(pA, pB);
     Real norm2 = normal.norm2();
     pos -= normal*((pos*normal)/norm2);
-    baryCoords[0] = (Real)sqrtf(cross(pB, pos).norm2() / norm2);
-    baryCoords[1] = (Real)sqrtf(cross(pA, pos).norm2() / norm2);
+    baryCoords[0] = (Real)sqrt(cross(pB, pos).norm2() / norm2);
+    baryCoords[1] = (Real)sqrt(cross(pA, pos).norm2() / norm2);
     this->addPointInQuad(p, quadIndex, baryCoords);
 }
 

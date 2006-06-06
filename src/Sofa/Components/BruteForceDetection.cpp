@@ -1,5 +1,8 @@
 #include "BruteForceDetection.h"
 #include "Sphere.h"
+#include "Triangle.h"
+#include "Line.h"
+#include "Point.h"
 #include "Common/FnDispatcher.h"
 #include "Common/ObjectFactory.h"
 
@@ -44,6 +47,7 @@ void BruteForceDetection::addCollisionModel(CollisionModel *cm)
         {
             for (unsigned int j=0; j<vectElems2.size(); j++)
             {
+                if (!vectElems1[i]->canCollideWith(vectElems2[j])) continue;
                 if (intersectionMethod->canIntersect(vectElems1[i],vectElems2[j]))
                 {
                     collisionDetected = true;
@@ -65,14 +69,42 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
     CollisionModel *cm1 = cmPair.first->getNext();
     CollisionModel *cm2 = cmPair.second->getNext();
 
+    const bool continuous = intersectionMethod->useContinuous();
+    const bool proximity  = intersectionMethod->useProximity();
+    const double distance = intersectionMethod->getAlarmDistance();
+    const double dt       = getContext()->getDt();
+
     const std::vector<CollisionElement*>& vectElems1 = cm1->getCollisionElements();
     const std::vector<CollisionElement*>& vectElems2 = cm2->getCollisionElements();
+    Vector3 minBBox1, maxBBox1;
+    Vector3 minBBox2, maxBBox2;
     for (unsigned int i=0; i<vectElems1.size(); i++)
     {
         CollisionElement* e1 = vectElems1[i];
+        if (continuous)
+            e1->getContinuousBBox(minBBox1, maxBBox1, dt);
+        else
+            e1->getBBox(minBBox1, maxBBox1);
+        if (proximity)
+        {
+            minBBox1[0] -= distance;
+            minBBox1[1] -= distance;
+            minBBox1[2] -= distance;
+            maxBBox1[0] += distance;
+            maxBBox1[1] += distance;
+            maxBBox1[2] += distance;
+        }
         for (unsigned int j=0; j<vectElems2.size(); j++)
         {
             CollisionElement* e2 = vectElems2[j];
+            if (!e1->canCollideWith(e2)) continue;
+            if (continuous)
+                e2->getContinuousBBox(minBBox2, maxBBox2, dt);
+            else
+                e2->getBBox(minBBox2, maxBBox2);
+            if (minBBox1[0] > maxBBox2[0] || minBBox2[0] > maxBBox1[0]
+                || minBBox1[1] > maxBBox2[1] || minBBox2[1] > maxBBox1[1]
+                || minBBox1[2] > maxBBox2[2] || minBBox2[2] > maxBBox1[2]) continue;
             if (intersectionMethod->canIntersect(e1,e2))
             {
                 elemPairs.push_back(std::make_pair(e1,e2));
@@ -92,6 +124,8 @@ void BruteForceDetection::draw()
     {
         glDisable(GL_LIGHTING);
         glColor3f(1.0, 0.0, 1.0);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glLineWidth(3);
         //std::cout << "Size : " << elemPairs.size() << std::endl;
         for (; it != itEnd; it++)
         {
@@ -101,6 +135,21 @@ void BruteForceDetection::draw()
             if (s!=NULL) s->draw();
             s = dynamic_cast<Sphere*>(it->second);
             if (s!=NULL) s->draw();
+            Triangle *t;
+            t = dynamic_cast<Triangle*>(it->first);
+            if (t!=NULL) t->draw();
+            t = dynamic_cast<Triangle*>(it->second);
+            if (t!=NULL) t->draw();
+            Line *l;
+            l = dynamic_cast<Line*>(it->first);
+            if (l!=NULL) l->draw();
+            l = dynamic_cast<Line*>(it->second);
+            if (l!=NULL) l->draw();
+            Point *p;
+            p = dynamic_cast<Point*>(it->first);
+            if (p!=NULL) p->draw();
+            p = dynamic_cast<Point*>(it->second);
+            if (p!=NULL) p->draw();
             /* Sphere *sph = (*it)->first->getSphere();
             Sphere *sph1 = (*it)->second->getSphere();
             glPushMatrix();
@@ -114,6 +163,8 @@ void BruteForceDetection::draw()
             //(*it)->getCollisionElement(0)->getSphere()->draw();
             //(*it)->getCollisionElement(1)->getSphere()->draw();
         }
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glLineWidth(1);
     }
 }
 

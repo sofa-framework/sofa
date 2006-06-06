@@ -23,7 +23,7 @@ public:
 
     /// Test if collisions with another element should be tested.
     /// Default is to reject any self-collisions.
-    bool canCollideWith(CollisionElement* elem) {return getCollisionModel() != elem->getCollisionModel();}
+    virtual bool canCollideWith(CollisionElement* elem) {return getCollisionModel() != elem->getCollisionModel();}
 
     //bool isSelfCollis(CollisionElement* elem) {return getCollisionModel() == elem->getCollisionModel();}
 };

@@ -5,6 +5,8 @@
 #include "Common/ObjectFactory.h"
 #include "Common/fixed_array.h"
 
+#include <set>
+
 namespace Sofa
 {
 
@@ -89,22 +91,37 @@ bool MeshTopology::load(const char* filename)
         {
             loader.addPoint(mesh->getVertices()[i][0],mesh->getVertices()[i][1],mesh->getVertices()[i][2]);
         }
+
+        std::set<std::pair<int,int>> edges;
+
         const std::vector< std::vector < std::vector <int> > > & facets = mesh->getFacets();
-        for (unsigned int g=0; g<facets.size(); g++)
+        for (unsigned int i=0; i<facets.size(); i++)
         {
-            for (unsigned int i=0; i<facets[g].size(); i++)
+            const std::vector<int>& facet = facets[i][0];
+            if (facet.size()==4)
             {
-                const std::vector<int> facet = facets[g][i];
-                if (facet.size()==4)
+                // Quat
+                loader.addQuad(facet[0],facet[1],facet[2],facet[3]);
+            }
+            else
+            {
+                // Triangularize
+                for (unsigned int j=2; j<facet.size(); j++)
+                    loader.addTriangle(facet[0],facet[j-1],facet[j]);
+            }
+            // Add edges
+            for (unsigned int j=0; j<facet.size(); j++)
+            {
+                int i1 = facet[j];
+                int i2 = facet[(j+1)%facet.size()];
+                if (edges.count(std::make_pair(i1,i2))!=0)
                 {
-                    // Quat
-                    loader.addQuad(facet[0],facet[1],facet[2],facet[3]);
+                    std::cerr << "ERROR: Duplicate edge.\n";
                 }
-                else
+                else if (edges.count(std::make_pair(i2,i1))==0)
                 {
-                    // Triangularize
-                    for (unsigned int j=2; j<facet.size(); j++)
-                        loader.addTriangle(facet[0],facet[j-1],facet[j]);
+                    loader.addLine(i1,i2);
+                    edges.insert(std::make_pair(i1,i2));
                 }
             }
         }

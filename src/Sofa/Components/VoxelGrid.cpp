@@ -1,6 +1,8 @@
 #include "VoxelGrid.h"
 #include "Sphere.h"
 #include "Triangle.h"
+#include "Line.h"
+#include "Point.h"
 #include "Common/FnDispatcher.h"
 #include "Common/ObjectFactory.h"
 
@@ -219,7 +221,7 @@ void VoxelGrid::draw()
     for (i = 0; i < 3; i++)
         nbSubdiv[i] = (maxVect[i] - minVect[i]) / step[i];
 
-    glColor3f (0.25, 0.0, 0.25);
+    glColor3f (0.0, 0.25, 0.25);
 
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -277,6 +279,16 @@ void VoxelGrid::draw()
             if (t!=NULL) t->draw();
             t = dynamic_cast<Triangle*>(it->second);
             if (t!=NULL) t->draw();
+            Line *l;
+            l = dynamic_cast<Line*>(it->first);
+            if (l!=NULL) l->draw();
+            l = dynamic_cast<Line*>(it->second);
+            if (l!=NULL) l->draw();
+            Point *p;
+            p = dynamic_cast<Point*>(it->first);
+            if (p!=NULL) p->draw();
+            p = dynamic_cast<Point*>(it->second);
+            if (p!=NULL) p->draw();
             /* Sphere *sph = (*it)->first->getSphere();
             Sphere *sph1 = (*it)->second->getSphere();
             glPushMatrix();
@@ -389,11 +401,11 @@ void GridCell::draw (int timeStampMethod)
     if (timeStampMethod != timeStamp || (collisElems.empty() && collisElemsImmobile[1].empty()))
     {
         return;
-        glColor3f (0.25, 0.0, 0.25);
+        glColor3f (0.0, 0.25, 0.25);
     }
     else
     {
-        glColor3f (1.0, 0.0, 1.0);
+        glColor3f (0.0, 1.0, 1.0);
     }
 
     //glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
