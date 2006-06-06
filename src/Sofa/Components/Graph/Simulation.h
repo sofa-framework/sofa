@@ -34,6 +34,9 @@ public:
     /// Render the scene
     static void draw(GNode* root);
 
+    /// Delete a scene from memory. After this call the pointer is invalid
+    static void unload(GNode* root);
+
 };
 
 } // namespace Graph

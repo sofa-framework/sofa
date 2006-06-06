@@ -9,6 +9,7 @@
 #include "UpdateMappingAction.h"
 #include "ResetAction.h"
 #include "VisualAction.h"
+#include "DeleteAction.h"
 
 namespace Sofa
 {
@@ -101,6 +102,16 @@ void Simulation::draw(GNode* root)
 {
     if (!root) return;
     root->execute<VisualDrawAction>();
+}
+
+/// Delete a scene from memory. After this call the pointer is invalid
+void Simulation::unload(GNode* root)
+{
+    if (!root) return;
+    root->execute<DeleteAction>();
+    if (root->getParent()!=NULL)
+        root->getParent()->removeChild(root);
+    delete root;
 }
 
 } // namespace Graph
