@@ -87,10 +87,30 @@ bool ImageBMP::load(const std::string &filename)
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);
 
-    if (!fread(data, biSizeImage, 1, file))
+    if ((width%4)==0)
     {
-        std::cerr << "Error loading file!\n";
-        return false;
+        if (!fread(data, biSizeImage, 1, file))
+        {
+            std::cerr << "Error loading file!\n";
+            return false;
+        }
+    }
+    else
+    {
+        for (int y=0; y<height; y++)
+        {
+            if (!fread(data+y*width*3, width*3, 1, file))
+            {
+                std::cerr << "Error loading file!\n";
+                return false;
+            }
+            char buf[3];
+            if (!fread(buf, 4-(width%4), 1, file))
+            {
+                std::cerr << "Error loading file!\n";
+                return false;
+            }
+        }
     }
 
     /* swap red and blue (bgr -> rgb) */
@@ -125,7 +145,9 @@ bool ImageBMP::save(const std::string& filename)
         return false;
     }
 
-    unsigned long biSizeImage = ((nbBits+7)/8)*width*height;
+    unsigned long lineSizeIn = ((nbBits+7)/8)*width;
+    unsigned long lineSizeOut = ((lineSizeIn+3)/4)*4;
+    unsigned long biSizeImage = lineSizeOut*height;
 
     // BITMAPFILEHEADER
     if (!fwriteW(file, (unsigned short)'B' | ((unsigned short)'M' << 8))) return false; // Type
@@ -147,33 +169,41 @@ bool ImageBMP::save(const std::string& filename)
     if (!fwriteDW(file, 0)) return false; // ClrUsed
     if (!fwriteDW(file, 0)) return false; // ClrImportant
 
-    switch (nbBits)
+    if(nbBits==24)
     {
-    case 24:
-    {
-        unsigned int i;
         unsigned char temp;
         /* swap red and blue (rgb -> bgr) */
-        for (i = 0; i < biSizeImage; i += 3)
+        for (int i = 0; i < width*height*3; i += 3)
         {
             temp = data[i];
             data[i] = data[i + 2];
             data[i + 2] = temp;
         }
-
-        if (!fwrite(data, biSizeImage, 1, file)) return false;
-
-        /* swap red and blue (bgr -> rgb) */
-        for (i = 0; i < biSizeImage; i += 3)
-        {
-            temp = data[i];
-            data[i] = data[i + 2];
-            data[i + 2] = temp;
-        }
-        break;
     }
-    default:
+    if (lineSizeIn == lineSizeOut)
+    {
         if (!fwrite(data, biSizeImage, 1, file)) return false;
+    }
+    else
+    {
+        for (int y=0; y<height; y++)
+        {
+            if (!fwrite(data+y*lineSizeIn, lineSizeIn, 1, file)) return false;
+            char buf[3]= {0,0,0};
+            if (!fwrite(buf, lineSizeOut-lineSizeIn, 1, file)) return false;
+        }
+    }
+    if(nbBits==24)
+    {
+        int i;
+        unsigned char temp;
+        /* swap red and blue (bgr -> rgb) */
+        for (i = 0; i < width*height*3; i += 3)
+        {
+            temp = data[i];
+            data[i] = data[i + 2];
+            data[i + 2] = temp;
+        }
     }
 
     fclose(file);
