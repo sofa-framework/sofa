@@ -105,23 +105,24 @@ protected:
     SingletonFnDispatcher();
 public:
     static SingletonFnDispatcher<BaseClass, ResulT>* getInstance();
-
+    /*
     template <class ConcreteClass1,class ConcreteClass2,ResulT (*F)(ConcreteClass1&,ConcreteClass2&), bool symetric>
     static void Add()
     {
-        getInstance()->add<ConcreteClass1,ConcreteClass2,F,symetric>();
+    	getInstance()->add<ConcreteClass1,ConcreteClass2,F,symetric>();
     }
 
     template <class ConcreteClass1, class ConcreteClass2, bool symetric>
     static void Ignore()
     {
-        getInstance()->ignore<ConcreteClass1,ConcreteClass2,symetric>();
+    	getInstance()->ignore<ConcreteClass1,ConcreteClass2,symetric>();
     }
 
     static ResulT Go(BaseClass &arg1,BaseClass &arg2)
     {
-        return getInstance()->go(arg1,arg2);
+    	getInstance()->go(arg1,arg2);
     }
+    */
 };
 
 } // namespace Common

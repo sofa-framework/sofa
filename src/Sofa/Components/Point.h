@@ -24,7 +24,7 @@ protected:
     //Vector3 minBBox, maxBBox;
 
     void recalcBBox() {}
-    void recalcContinuousBBox(double dt) {}
+    void recalcContinuousBBox(double /*dt*/) {}
     friend class PointModel;
 
 public:

@@ -18,7 +18,7 @@ using namespace DiscreteIntersections;
 
 namespace Common
 {
-void create(DiscreteIntersection*& obj, ObjectDescription* arg)
+void create(DiscreteIntersection*& obj, ObjectDescription* /*arg*/)
 {
     obj = new DiscreteIntersection();
 }

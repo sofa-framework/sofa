@@ -69,7 +69,7 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     std::vector<CollisionModel*> vectBoundingVolume;
     {
         const bool continuous = intersectionMethod->useContinuous();
-        const double distance = intersectionMethod->getAlarmDistance();
+        //const double distance = intersectionMethod->getAlarmDistance();
         const double dt       = getContext()->getDt();
 
         std::vector<CollisionModel*>::const_iterator it = collisionModels.begin();

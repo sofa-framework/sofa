@@ -13,7 +13,7 @@ namespace Components
 
 SOFA_DECL_CLASS(Line)
 
-void create(LineModel*& obj, ObjectDescription* arg)
+void create(LineModel*& obj, ObjectDescription* /*arg*/)
 {
     obj = new LineModel;
 }
@@ -54,8 +54,8 @@ void LineModel::init()
     const int npoints = mmodel->getX()->size();
     const int nlines = mesh->getNbLines();
     elems.reserve(nlines);
-    VecCoord& x = *mmodel->getX();
-    VecDeriv& v = *mmodel->getV();
+    //VecCoord& x = *mmodel->getX();
+    //VecDeriv& v = *mmodel->getV();
     for (int i=0; i<nlines; i++)
     {
         MeshTopology::Line idx = mesh->getLine(i);

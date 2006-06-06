@@ -92,7 +92,7 @@ bool MeshTopology::load(const char* filename)
             loader.addPoint(mesh->getVertices()[i][0],mesh->getVertices()[i][1],mesh->getVertices()[i][2]);
         }
 
-        std::set<std::pair<int,int>> edges;
+        std::set< std::pair<int,int> > edges;
 
         const std::vector< std::vector < std::vector <int> > > & facets = mesh->getFacets();
         for (unsigned int i=0; i<facets.size(); i++)

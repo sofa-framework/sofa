@@ -31,7 +31,7 @@ ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& arg1, BaseClass&
 }
 
 template <class BaseClass, typename ResulT>
-ResulT BasicDispatcher<BaseClass, ResulT>::ignoreFn(BaseClass& arg1, BaseClass& arg2)
+ResulT BasicDispatcher<BaseClass, ResulT>::ignoreFn(BaseClass& /*arg1*/, BaseClass& /*arg2*/)
 {
     return ResulT();
 }

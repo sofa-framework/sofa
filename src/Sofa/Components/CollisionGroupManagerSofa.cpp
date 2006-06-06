@@ -31,9 +31,17 @@ SOFA_DECL_CLASS(CollisionGroupManagerSofa)
 
 Creator<ObjectFactory, CollisionGroupManagerSofa> CollisionGroupManagerSofaClass("CollisionGroup");
 
+class SolverMerger
+{
+public:
+    static Core::OdeSolver* merge(Core::OdeSolver* solver1, Core::OdeSolver* solver2);
 
-template class SingletonFnDispatcher<Core::OdeSolver, Core::OdeSolver*>;
-typedef SingletonFnDispatcher<Core::OdeSolver, Core::OdeSolver*> SolverDispatcher;
+protected:
+
+    FnDispatcher<Core::OdeSolver, Core::OdeSolver*> solverDispatcher;
+
+    SolverMerger ();
+};
 
 CollisionGroupManagerSofa::CollisionGroupManagerSofa(const std::string& name)
     : name(name)
@@ -75,7 +83,7 @@ void CollisionGroupManagerSofa::createGroups(Abstract::BaseContext* scene, const
         {
             // we can merge the groups
             // if solvers are compatible...
-            OdeSolver* solver = SolverDispatcher::Go(*group1->solver, *group2->solver);
+            OdeSolver* solver = SolverMerger::merge(group1->solver, group2->solver);
             if (solver!=NULL)
             {
                 GNode* parent = group1->parent;
@@ -235,25 +243,25 @@ OdeSolver* createSolverCGImplicitRungeKutta4(CGImplicitSolver& solver1, RungeKut
     return new CGImplicitSolver(solver1);
 }
 
-class SolverMerger
-{
-protected:
-
-    SolverMerger ()
-    {
-        SolverDispatcher::Add<EulerSolver,EulerSolver,createSolverEulerEuler,false>();
-        SolverDispatcher::Add<RungeKutta4Solver,RungeKutta4Solver,createSolverRungeKutta4RungeKutta4,false>();
-        SolverDispatcher::Add<CGImplicitSolver,CGImplicitSolver,createSolverCGImplicitCGImplicit,false>();
-        SolverDispatcher::Add<RungeKutta4Solver,EulerSolver,createSolverRungeKutta4Euler,true>();
-        SolverDispatcher::Add<CGImplicitSolver,EulerSolver,createSolverCGImplicitEuler,true>();
-        SolverDispatcher::Add<CGImplicitSolver,RungeKutta4Solver,createSolverCGImplicitRungeKutta4,true>();
-    }
-    static SolverMerger instance;
-};
-
-SolverMerger SolverMerger::instance;
-
 } // namespace SolverMergers
+
+using namespace SolverMergers;
+
+Core::OdeSolver* SolverMerger::merge(Core::OdeSolver* solver1, Core::OdeSolver* solver2)
+{
+    static SolverMerger instance;
+    return instance.solverDispatcher.go(*solver1, *solver2);
+}
+
+SolverMerger::SolverMerger()
+{
+    solverDispatcher.add<EulerSolver,EulerSolver,createSolverEulerEuler,false>();
+    solverDispatcher.add<RungeKutta4Solver,RungeKutta4Solver,createSolverRungeKutta4RungeKutta4,false>();
+    solverDispatcher.add<CGImplicitSolver,CGImplicitSolver,createSolverCGImplicitCGImplicit,false>();
+    solverDispatcher.add<RungeKutta4Solver,EulerSolver,createSolverRungeKutta4Euler,true>();
+    solverDispatcher.add<CGImplicitSolver,EulerSolver,createSolverCGImplicitEuler,true>();
+    solverDispatcher.add<CGImplicitSolver,RungeKutta4Solver,createSolverCGImplicitRungeKutta4,true>();
+}
 
 } // namespace Components
 

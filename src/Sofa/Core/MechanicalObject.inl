@@ -15,7 +15,7 @@ namespace Core
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : vsize(0), x0(NULL), v0(NULL)
+    : x0(NULL), v0(NULL), vsize(0)
 {
     x = new VecCoord;
     v = new VecDeriv;
@@ -122,13 +122,13 @@ void MechanicalObject<DataTypes>::reset()
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::beginIntegration(double dt)
+void MechanicalObject<DataTypes>::beginIntegration(double /*dt*/)
 {
     this->f = this->internalForces;
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::endIntegration(double dt)
+void MechanicalObject<DataTypes>::endIntegration(double /*dt*/)
 {
     this->f = this->externalForces;
     this->externalForces->clear();

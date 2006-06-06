@@ -47,19 +47,24 @@ std::string gettypename(const std::type_info& t)
     return name;
 }
 
-static std::string factoryLog;
+//static std::string factoryLog;
+static std::string& getFactoryLog()
+{
+    static std::string s;
+    return s;
+}
 
 /// Log classes registered in the factory
 void logFactoryRegister(std::string baseclass, std::string classname, std::string key, bool multi)
 {
-    factoryLog += baseclass + (multi?" template class ":" class ")
+    getFactoryLog() += baseclass + (multi?" template class ":" class ")
             + classname + " registered as " + key + "\n";
 }
 
 /// Print factory log
 void printFactoryLog(std::ostream& out)
 {
-    out << factoryLog;
+    out << getFactoryLog();
 }
 
 

@@ -13,7 +13,7 @@ namespace Components
 
 SOFA_DECL_CLASS(Point)
 
-void create(PointModel*& obj, ObjectDescription* arg)
+void create(PointModel*& obj, ObjectDescription* /*arg*/)
 {
     obj = new PointModel;
 }
@@ -45,8 +45,8 @@ void PointModel::init()
     elems.clear();
     const int npoints = mmodel->getX()->size();
     elems.reserve(npoints);
-    VecCoord& x = *mmodel->getX();
-    VecDeriv& v = *mmodel->getV();
+    //VecCoord& x = *mmodel->getX();
+    //VecDeriv& v = *mmodel->getV();
     for (int i=0; i<npoints; i++)
     {
         Point *t = new Point(i, this);

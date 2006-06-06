@@ -47,7 +47,7 @@ public:
 
     virtual void computeBoundingBox() {}
 
-    virtual void computeContinuousBoundingBox(double dt) {}
+    virtual void computeContinuousBoundingBox(double /*dt*/) {}
 
 //	virtual BehaviorModel* getObject() = 0;
 

@@ -57,7 +57,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::clear()
 }
 
 template <class BaseMapping>
-void BarycentricMapping<BaseMapping>::MeshMapper::addPointInLine(const OutCoord& p, int lineIndex, const Real* baryCoords)
+void BarycentricMapping<BaseMapping>::MeshMapper::addPointInLine(const OutCoord& /*p*/, int lineIndex, const Real* baryCoords)
 {
     map1d.resize(map1d.size()+1);
     MappingData<1,0>& data = *map1d.rbegin();
@@ -66,7 +66,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::addPointInLine(const OutCoord&
 }
 
 template <class BaseMapping>
-void BarycentricMapping<BaseMapping>::MeshMapper::addPointInTriangle(const OutCoord& p, int triangleIndex, const Real* baryCoords)
+void BarycentricMapping<BaseMapping>::MeshMapper::addPointInTriangle(const OutCoord& /*p*/, int triangleIndex, const Real* baryCoords)
 {
     map2d.resize(map2d.size()+1);
     MappingData<2,0>& data = *map2d.rbegin();
@@ -76,7 +76,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::addPointInTriangle(const OutCo
 }
 
 template <class BaseMapping>
-void BarycentricMapping<BaseMapping>::MeshMapper::addPointInQuad(const OutCoord& p, int quadIndex, const Real* baryCoords)
+void BarycentricMapping<BaseMapping>::MeshMapper::addPointInQuad(const OutCoord& /*p*/, int quadIndex, const Real* baryCoords)
 {
     map2d.resize(map2d.size()+1);
     MappingData<2,0>& data = *map2d.rbegin();
@@ -86,7 +86,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::addPointInQuad(const OutCoord&
 }
 
 template <class BaseMapping>
-void BarycentricMapping<BaseMapping>::MeshMapper::addPointInTetra(const OutCoord& p, int tetraIndex, const Real* baryCoords)
+void BarycentricMapping<BaseMapping>::MeshMapper::addPointInTetra(const OutCoord& /*p*/, int tetraIndex, const Real* baryCoords)
 {
     map3d.resize(map3d.size()+1);
     MappingData<3,0>& data = *map3d.rbegin();
@@ -97,7 +97,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::addPointInTetra(const OutCoord
 }
 
 template <class BaseMapping>
-void BarycentricMapping<BaseMapping>::MeshMapper::addPointInCube(const OutCoord& p, int cubeIndex, const Real* baryCoords)
+void BarycentricMapping<BaseMapping>::MeshMapper::addPointInCube(const OutCoord& /*p*/, int cubeIndex, const Real* baryCoords)
 {
     map3d.resize(map3d.size()+1);
     MappingData<3,0>& data = *map3d.rbegin();

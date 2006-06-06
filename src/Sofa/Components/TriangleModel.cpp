@@ -13,7 +13,7 @@ namespace Components
 
 SOFA_DECL_CLASS(Triangle)
 
-void create(TriangleModel*& obj, ObjectDescription* arg)
+void create(TriangleModel*& obj, ObjectDescription* /*arg*/)
 {
     obj = new TriangleModel;
 //	XML::createWithFilename(obj, arg);
@@ -57,8 +57,8 @@ void TriangleModel::init()
     const int ntris = mesh->getNbTriangles();
     const int nquads = mesh->getNbQuads();
     elems.reserve(ntris+2*nquads);
-    VecCoord& x = *mmodel->getX();
-    VecDeriv& v = *mmodel->getV();
+    //VecCoord& x = *mmodel->getX();
+    //VecDeriv& v = *mmodel->getV();
     for (int i=0; i<ntris; i++)
     {
         MeshTopology::Triangle idx = mesh->getTriangle(i);
