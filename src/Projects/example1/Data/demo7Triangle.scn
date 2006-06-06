@@ -19,6 +19,7 @@
 					<Object type="Mesh" filename="VisualModels/smCube27.obj" />
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
+					<Object type="Line" />
 					<Object type="IdentityMapping" />
 				</Node>
 			</Node>
@@ -33,6 +34,7 @@
 					<Object type="Mesh" filename="VisualModels/smCube27.obj" />
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
+					<Object type="Line" />
 					<Object type="RigidMapping" />
 				</Node>
 				<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
@@ -48,6 +50,7 @@
 					<Object type="Mesh" filename="VisualModels/smCube27.obj" />
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
+					<Object type="Line" />
 					<Object type="IdentityMapping" />
 				</Node>
 			</Node>
@@ -68,6 +71,7 @@
 					<Object type="Mesh" filename="VisualModels/smCube27.obj" />
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
+					<Object type="Line" />
 					<Object type="RigidMapping" />
 				</Node>
 			</Node>
@@ -89,6 +93,7 @@
 				<Object type="UniformMass" filename="BehaviorModels/rigid.xs3"/>
 				<Node name="Points">
 					<Object type="MechanicalObjectVec3d" filename="BehaviorModels/smCube27.xs3"/>
+					<Object type="Line" />
 					<Object type="RigidMapping"/>
 				</Node>
 				<Object type="OglModel" name="Visual" filename="VisualModels/dragon.obj" color="gray" />
@@ -97,6 +102,7 @@
 					<Object type="Mesh" filename="VisualModels/dragon.obj" />
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
+					<Object type="Line" />
 					<Object type="RigidMapping" />
 				</Node>
 			</Node>
@@ -109,6 +115,7 @@
 		<Object type="Mesh" filename="CollisionModels/floor.obj" />
 		<Object type="MechanicalObject" dy="-20" />
 		<Object type="Triangle" name="Floor" static="true" />
+		<Object type="Line" name="Floor" static="true" />
 		<Object type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-20" />
 	</Node>
 </Node>

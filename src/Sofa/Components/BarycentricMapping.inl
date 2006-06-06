@@ -146,12 +146,14 @@ void BarycentricMapping<BaseMapping>::MeshMapper::createPointInQuad(const OutCoo
     const InCoord pA = (*points)[elem[1]] - p0;
     const InCoord pB = (*points)[elem[2]] - p0;
     InCoord pos = p - p0;
-    // First project to plane
-    InCoord normal = cross(pA, pB);
-    Real norm2 = normal.norm2();
-    pos -= normal*((pos*normal)/norm2);
-    baryCoords[0] = (Real)sqrt(cross(pB, pos).norm2() / norm2);
-    baryCoords[1] = (Real)sqrt(cross(pA, pos).norm2() / norm2);
+    Mat<3,3,typename InCoord::value_type> m,mt,base;
+    m[0] = pA;
+    m[1] = pB;
+    m[2] = cross(pA, pB);
+    mt.transpose(m);
+    base.invert(mt);
+    baryCoords[0] = base[0] * pos;
+    baryCoords[1] = base[1] * pos;
     this->addPointInQuad(p, quadIndex, baryCoords);
 }
 

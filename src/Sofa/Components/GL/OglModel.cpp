@@ -3,6 +3,8 @@
 #include "../Common/Quat.h"
 #include "../Common/ObjectFactory.h"
 
+//#define DEBUGNORMAL
+
 namespace Sofa
 {
 
@@ -64,10 +66,10 @@ Material::Material()
 {
     for (int i = 0; i < 3; i++)
     {
-        ambient[i] = 1.0;
-        diffuse[i] = 0.5;
+        ambient[i] = 0.75;
+        diffuse[i] = 0.75;
         specular[i] = 1.0;
-        emissive[i] = 1.0;
+        emissive[i] = 0.0;
     }
     ambient[3] = 1.0;
     diffuse[3] = 1.0;
@@ -110,7 +112,7 @@ void OglModel::draw()
     Enable<GL_LIGHTING> light;
     //Enable<GL_BLEND> blending;
     //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-    //glColor3f(1.0 , 1.0, 1.0);
+    glColor3f(1.0 , 1.0, 1.0);
     if (material.useAmbient)
         glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient);
     if (material.useDiffuse)
@@ -247,28 +249,38 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
                 }
             }
 
-            nbFacets = facetsImport.size();
-            facets = new GLint[facetsImport.size() * 3];
-            normalsIndices = new GLint[facetsImport.size() * 3];
-            texCoordIndices = new GLint[facetsImport.size() * 3];
+            nbFacets = 0;
+            for (int i = 0; i < (int) facetsImport.size(); i++)
+                nbFacets += facetsImport[i][0].size()-2;
+            facets = new GLint[nbFacets * 3];
+            normalsIndices = new GLint[nbFacets * 3];
+            texCoordIndices = new GLint[nbFacets * 3];
+            int f = 0;
             for (int i = 0; i < (int) facetsImport.size(); i++)
             {
                 std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
                 std::vector<int> vertices = vertNormTexIndex[0];
                 std::vector<int> norms = vertNormTexIndex[1];
                 std::vector<int> texs = vertNormTexIndex[2];
-                for (int j = 0; j < 3; j++)
+                for (int j = 2; j < (int) vertices.size(); j++, f++)
                 {
-                    facets[(i * 3) + j] = (GLint) vertices[j];
-                    normalsIndices[(i * 3) + j] = (GLint) norms[j];
-                    texCoordIndices[(i * 3) + j] = (GLint) texs[j];
+                    facets         [(f * 3) + 0] = (GLint) vertices[0];
+                    normalsIndices [(f * 3) + 0] = (GLint) norms[0];
+                    texCoordIndices[(f * 3) + 0] = (GLint) texs[0];
+                    facets         [(f * 3) + 1] = (GLint) vertices[j-1];
+                    normalsIndices [(f * 3) + 1] = (GLint) norms[j-1];
+                    texCoordIndices[(f * 3) + 1] = (GLint) texs[j-1];
+                    facets         [(f * 3) + 2] = (GLint) vertices[j];
+                    normalsIndices [(f * 3) + 2] = (GLint) norms[j];
+                    texCoordIndices[(f * 3) + 2] = (GLint) texs[j];
                 }
             }
         }
     }
 
-    if (objLoader->getNormals().size() == 0) // compute the normals
+    //if (objLoader->getNormals().size() == 0) // compute the normals
     {
+        std::cout << "Computing normals." << std::endl;
         normals = new GLfloat[nbVertices * 3];
         computeNormals();
     }
