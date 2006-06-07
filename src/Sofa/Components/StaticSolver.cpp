@@ -43,6 +43,7 @@ void StaticSolver::solve(double)
     group->computeForce(b);             // b = f0
     b.teq(-1);                          // b = -f0
     group->applyConstraints(b);         // b is projected to the constrained space
+    //cerr<<"StaticSolver::solve, b = "<<b<<endl;
 
 // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
@@ -61,26 +62,38 @@ void StaticSolver::solve(double)
             beta = rho / rho_1;
             p *= beta;
             p += z;
+            //cerr<<"StaticSolver::solve, new p = "<< p <<endl;
         }
 
 // matrix-vector product
+        //cerr<<"StaticSolver::solve, dx = "<<p<<endl;
         group->propagateDx(p);          // dx = p
         group->computeDf(q);            // q = df/dx p
+        //cerr<<"StaticSolver::solve, df = "<<q<<endl;
 // filter the product to take the constraints into account
         group->applyConstraints(q);     // q is projected to the constrained space
+        //cerr<<"StaticSolver::solve, df filtered = "<<q<<endl;
 
         double den = p.dot(q);
+        //cerr<<"StaticSolver::solve, den = "<<den<<endl;
         if( fabs(den)<smallDenominatorThreshold )
             break;
         alpha = rho/den;
+        /*        cerr<<"StaticSolver::solve, rho = "<< rho <<endl;
+                cerr<<"StaticSolver::solve, den = "<< den <<endl;
+                cerr<<"StaticSolver::solve, alpha = "<< alpha <<endl;*/
         x.peq(p,alpha);                 // x = x + alpha p
         r.peq(q,-alpha);                // r = r - alpha r
         rho_1 = rho;
+        /*        cerr<<"StaticSolver::solve, x = "<<x<<endl;
+                cerr<<"StaticSolver::solve, r = "<<r<<endl;*/
     }
 // x is the solution of the system
 
 // apply the solution
+    //cerr<<"StaticSolver::solve, nb iter = "<<nb_iter<<endl;
     pos.peq( x );
+    //cerr<<"StaticSolver::solve, pos = "<<pos<<endl;
 }
 
 void create(StaticSolver*& obj, ObjectDescription* arg)

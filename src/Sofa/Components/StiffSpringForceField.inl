@@ -52,6 +52,7 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, VecCoord& /
     const Deriv dforce = this->dfdx[i]*d;
     f1[a]+=dforce;
     f2[b]-=dforce;
+    //cerr<<"StiffSpringForceField<DataTypes>::addSpringDForce, a="<<a<<", b="<<b<<", dforce ="<<dforce<<endl;
 }
 
 template<class DataTypes>
@@ -85,10 +86,14 @@ void StiffSpringForceField<DataTypes>::addDForce()
     VecDeriv& dx2 = *this->object2->getDx();
     f1.resize(dx1.size());
     f2.resize(dx2.size());
+    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, dx1 = "<<dx1<<endl;
+    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 before = "<<f1<<endl;
     for (unsigned int i=0; i<this->springs.size(); i++)
     {
         this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, i, this->springs[i]);
     }
+    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 = "<<f1<<endl;
+    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df2 = "<<f2<<endl;
 }
 
 } // namespace Components

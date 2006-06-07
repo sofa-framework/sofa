@@ -36,8 +36,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::~MechanicalObject()
-{
-}
+{}
 
 template <class DataTypes>
 BasicMechanicalModel* MechanicalObject<DataTypes>::resize(int size)
@@ -68,7 +67,8 @@ void MechanicalObject<DataTypes>::applyTranslation (double dx, double dy, double
     VecCoord& x = *this->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        DataTypes::add(x[i],dx,dy,dz);
+        DataTypes::add
+        (x[i],dx,dy,dz);
     }
 }
 
@@ -95,7 +95,8 @@ void MechanicalObject<DataTypes>::init()
         for (int i=0; i<nbp; i++)
         {
             //DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
-            DataTypes::set((*getX())[i], topo->getPX(i)*scale+translation[0], topo->getPY(i)*scale+translation[1], topo->getPZ(i)*scale+translation[2]);
+            DataTypes::set
+            ((*getX())[i], topo->getPX(i)*scale+translation[0], topo->getPY(i)*scale+translation[1], topo->getPZ(i)*scale+translation[2]);
         }
     }
 
@@ -114,7 +115,8 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
-    if (x0 == NULL) return;
+    if (x0 == NULL)
+        return;
     // Back to initial state
     this->resize(this->x0->size());
     *this->x = *x0;
@@ -598,9 +600,19 @@ void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out)
         out<<"MechanicalObject<DataTypes>::printDOF, unknown v.type = "<<v.type<<std::endl;
 }
 
+template <class DataTypes>
+void MechanicalObject<DataTypes>::resetForce()
+{
+    VecDeriv& f= *getF();
+    for( unsigned i=0; i<f.size(); ++i )
+        f[i] = Deriv();
+}
+
 
 } // namespace Core
 
 } // namespace Sofa
 
 #endif
+
+

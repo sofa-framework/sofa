@@ -35,7 +35,7 @@ public:
 
     virtual void endIntegration(double /*dt*/) { }
 
-    virtual void resetForce() { vOp( VecId::force() ); }
+    virtual void resetForce() =0;//{ vOp( VecId::force() ); }
 
     virtual void accumulateForce() { }
 

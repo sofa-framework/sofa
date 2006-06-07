@@ -98,6 +98,7 @@ public:
 
     virtual void setDx(VecId v);
 
+    virtual void resetForce();
     /// @}
     /// @name Debug
     /// @{
