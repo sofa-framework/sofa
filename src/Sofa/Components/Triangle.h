@@ -20,7 +20,7 @@ class Triangle : public Abstract::CollisionElement
 
 protected:
     int index,i1,i2,i3;
-    //Vector3 normal;
+    Vector3 normal;
     TriangleModel * model;
     Core::MechanicalModel<Vec3Types>* mmodel;
     Vector3 minBBox, maxBBox;
@@ -38,6 +38,8 @@ public:
     const Vector3& v1() const { return (*mmodel->getV())[i1]; }
     const Vector3& v2() const { return (*mmodel->getV())[i2]; }
     const Vector3& v3() const { return (*mmodel->getV())[i3]; }
+
+    const Vector3& n() const { return normal; }
 
     int getIndex() const { return index; }
 

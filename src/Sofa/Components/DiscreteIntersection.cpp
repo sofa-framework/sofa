@@ -119,14 +119,13 @@ bool intersectionSphereRay(Sphere &sph1 ,Ray &ray2)
 DetectionOutput* distCorrectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
 {
     DetectionOutput *detection = new DetectionOutput();
-    double distSph1Sph2 = (sph2.center() - sph1.center()).norm();
-    double t1 = sph1.r() / distSph1Sph2;
-    double t2 = (distSph1Sph2 - sph2.r()) / distSph1Sph2;
+    detection->normal = sph2.center() - sph1.center();
+    double distSph1Sph2 = detection->normal.norm();
+    detection->normal /= distSph1Sph2;
+    detection->point[0] = sph1.center() + detection->normal * sph1.r();
+    detection->point[1] = sph2.center() - detection->normal * sph2.r();
 
-    detection->point[0] = sph1.center() + ((sph2.center() - sph1.center()) * t1);
-    detection->point[1] = sph1.center() + ((sph2.center() - sph1.center()) * t2);
-
-    detection->distance = ((distSph1Sph2 - (sph1.r() + sph2.r())) >= 0);
+    detection->distance = distSph1Sph2 - (sph1.r() + sph2.r());
     detection->elem.first = &sph1;
     detection->elem.second = &sph2;
 
@@ -146,12 +145,12 @@ DetectionOutput* distCorrectionSphereRay(Sphere &sph1 ,Ray &ray2)
     const double dist = sqrt(tmp.norm2() - (rayPosInside*rayPosInside));
 
     DetectionOutput *detection = new DetectionOutput();
-    double t1 = radius1 / dist;
 
     detection->point[1] = ray2Origin + ray2Direction*rayPosInside;
-    detection->point[0] = sph1Pos + ((detection->point[1] - sph1Pos) * t1);
-
-    detection->distance = ((dist - radius1) >= 0);
+    detection->normal = detection->point[1] - sph1Pos;
+    detection->normal /= dist;
+    detection->point[0] = sph1Pos + detection->normal * radius1;
+    detection->distance = dist - radius1;
     detection->elem.first = &sph1;
     detection->elem.second = &ray2;
 

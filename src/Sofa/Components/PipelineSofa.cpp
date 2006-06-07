@@ -174,7 +174,7 @@ void PipelineSofa::draw()
     for (; it != itEnd; it++)
     {
         DetectionOutput* d = *it;
-        if (!d->distance)
+        if (d->distance<0)
             glColor3f(1.0f,0.5f,0.5f);
         else
             glColor3f(0.5f,1.0f,0.5f);

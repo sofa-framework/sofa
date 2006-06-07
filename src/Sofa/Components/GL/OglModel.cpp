@@ -265,13 +265,13 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
                 for (int j = 2; j < (int) vertices.size(); j++, f++)
                 {
                     facets         [(f * 3) + 0] = (GLint) vertices[0];
-                    normalsIndices [(f * 3) + 0] = (GLint) norms[0];
+                    normalsIndices [(f * 3) + 0] = (GLint) vertices[0]; //norms[0];
                     texCoordIndices[(f * 3) + 0] = (GLint) texs[0];
                     facets         [(f * 3) + 1] = (GLint) vertices[j-1];
-                    normalsIndices [(f * 3) + 1] = (GLint) norms[j-1];
+                    normalsIndices [(f * 3) + 1] = (GLint) vertices[j-1]; //norms[j-1];
                     texCoordIndices[(f * 3) + 1] = (GLint) texs[j-1];
                     facets         [(f * 3) + 2] = (GLint) vertices[j];
-                    normalsIndices [(f * 3) + 2] = (GLint) norms[j];
+                    normalsIndices [(f * 3) + 2] = (GLint) vertices[j]; //norms[j];
                     texCoordIndices[(f * 3) + 2] = (GLint) texs[j];
                 }
             }
