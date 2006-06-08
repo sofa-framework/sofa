@@ -13,9 +13,13 @@ namespace Components
 
 SOFA_DECL_CLASS(Line)
 
-void create(LineModel*& obj, ObjectDescription* /*arg*/)
+void create(LineModel*& obj, ObjectDescription* arg)
 {
     obj = new LineModel;
+    if (obj!=NULL)
+    {
+        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
+    }
 }
 
 Creator< ObjectFactory, LineModel > LineModelClass("Line");

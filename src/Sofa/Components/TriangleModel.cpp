@@ -13,12 +13,13 @@ namespace Components
 
 SOFA_DECL_CLASS(Triangle)
 
-void create(TriangleModel*& obj, ObjectDescription* /*arg*/)
+void create(TriangleModel*& obj, ObjectDescription* arg)
 {
     obj = new TriangleModel;
-//	XML::createWithFilename(obj, arg);
-//	if (obj!=NULL && arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-//		obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+    if (obj!=NULL)
+    {
+        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
+    }
 }
 
 Creator< ObjectFactory, TriangleModel > TriangleModelClass("Triangle");
