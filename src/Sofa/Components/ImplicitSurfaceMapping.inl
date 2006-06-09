@@ -5,6 +5,9 @@
 
 #include "Sofa/Core/Mapping.inl"
 
+#include <map>
+#include <list>
+
 namespace Sofa
 {
 
@@ -97,7 +100,7 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
 
         // Compute the data
         const std::list<InCoord>& particles = sortParticles[z0+z];
-        for (std::list<InCoord>::const_iterator it = particles.begin(); it != particles.end(); ++it)
+        for (typename std::list<InCoord>::const_iterator it = particles.begin(); it != particles.end(); ++it)
         {
             InCoord c = *it;
             int cx0 = rceil(c[0]-r);
@@ -130,7 +133,7 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
         i=0;
         int edgecube[12];
         const int edgepts[12] = {0,1,0,1,0,1,0,1,2,2,2,2};
-        std::vector<CubeData>::iterator base = planes.begin();
+        typename std::vector<CubeData>::iterator base = planes.begin();
         int ip0 = P0-base;
         int ip1 = P1-base;
         edgecube[0]  = (ip0   -dy);
@@ -187,7 +190,7 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
                 tri=MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
-                    std::vector<CubeData>::iterator b = base+i;
+                    typename std::vector<CubeData>::iterator b = base+i;
                     if (addFace((b+edgecube[tri[0]])->p[edgepts[tri[0]]],
                             (b+edgecube[tri[1]])->p[edgepts[tri[1]]],
                             (b+edgecube[tri[2]])->p[edgepts[tri[2]]], out.size())<0)
@@ -225,7 +228,7 @@ void ImplicitSurfaceMapping<In,Out>::newPlane()
 
 
 template <class In, class Out>
-void ImplicitSurfaceMapping<In,Out>::applyJ( OutVecDeriv& out, const InVecDeriv& in )
+void ImplicitSurfaceMapping<In,Out>::applyJ( OutVecDeriv& /*out*/, const InVecDeriv& /*in*/ )
 {
 }
 

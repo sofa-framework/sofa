@@ -39,7 +39,7 @@ SphereModel::SphereModel(double radius)
 
 void SphereModel::resize(int size)
 {
-    this->MechanicalObject<Vec3Types>::resize(size);
+    this->Core::MechanicalObject<Vec3Types>::resize(size);
     int s = this->elems.size();
     if (s < size)
     {

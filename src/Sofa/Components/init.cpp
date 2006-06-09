@@ -69,4 +69,3 @@ SOFA_LINK_CLASS(TriangleLinePenalityContact)
 SOFA_LINK_CLASS(TrianglePenalityContact)
 SOFA_LINK_CLASS(UniformMass)
 SOFA_LINK_CLASS(VoxelGrid)
-

@@ -31,12 +31,12 @@ public:
         typedef vector<Coord> VecCoord;
         typedef vector<Deriv> VecDeriv;
 
-        static void set(Coord& c, double x, double y, double z)
+        static void set(Coord& c, double x, double , double )
         {
             c = (Real)x;
         }
 
-        static void add(Coord& c, double x, double y, double z)
+        static void add(Coord& c, double x, double , double )
         {
             c += (Real)x;
         }
@@ -60,7 +60,7 @@ public:
         delete lambda;
     }
 
-    virtual void applyConstraint(VecDeriv& dx) ///< project dx to constrained space
+    virtual void applyConstraint(VecDeriv& /*dx*/) ///< project dx to constrained space
     {
     }
 

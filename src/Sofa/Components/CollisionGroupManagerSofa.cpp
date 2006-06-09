@@ -22,7 +22,7 @@ using namespace Core;
 using namespace Collision;
 using namespace Graph;
 
-void create(CollisionGroupManagerSofa*& obj, ObjectDescription* arg)
+void create(CollisionGroupManagerSofa*& obj, ObjectDescription* /*arg*/)
 {
     obj = new CollisionGroupManagerSofa;
 }

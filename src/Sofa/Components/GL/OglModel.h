@@ -57,26 +57,26 @@ class ResizableExtVector : public ExtVector<T>
 public:
     ~ResizableExtVector()
     {
-        if (data!=NULL) delete[] data;
+        if (this->data!=NULL) delete[] this->data;
     }
-    T* getData() { return data; }
-    const T* getData() const { return data; }
-    virtual void resize(size_type size)
+    T* getData() { return this->data; }
+    const T* getData() const { return this->data; }
+    virtual void resize(typename ExtVector<T>::size_type size)
     {
-        if (size > maxsize)
+        if (size > this->maxsize)
         {
-            T* oldData = data;
-            maxsize = (size > 2*maxsize ? size : 2*maxsize);
-            data = new T[maxsize];
-            for (size_type i = 0 ; i < cursize ; ++i)
-                data[i] = oldData[i];
+            T* oldData = this->data;
+            this->maxsize = (size > 2*this->maxsize ? size : 2*this->maxsize);
+            this->data = new T[this->maxsize];
+            for (typename ExtVector<T>::size_type i = 0 ; i < this->cursize ; ++i)
+                this->data[i] = oldData[i];
             if (oldData!=NULL) delete[] oldData;
         }
-        cursize = size;
+        this->cursize = size;
     }
     void push_back(const T& v)
     {
-        int i = size();
+        int i = this->size();
         resize(i+1);
         (*this)[i] = v;
     }

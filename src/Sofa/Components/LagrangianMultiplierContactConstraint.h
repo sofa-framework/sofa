@@ -64,7 +64,7 @@ public:
         contacts.clear();
         if (reserve)
             contacts.reserve(reserve);
-        lambda->resize(0);
+        this->lambda->resize(0);
     }
 
     void addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f);

@@ -20,8 +20,8 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addContact(int m1, int m2
 {
     int i = contacts.size();
     contacts.resize(i+1);
-    lambda->resize(i+1);
-    (*lambda->getX())[i] = 0;
+    this->lambda->resize(i+1);
+    (*this->lambda->getX())[i] = 0;
     Contact& c = contacts[i];
     c.m1 = m1;
     c.m2 = m2;
@@ -40,10 +40,10 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addForce()
     assert(this->object2);
     VecDeriv& f1 = *this->object1->getF();
     VecCoord& p1 = *this->object1->getX();
-    VecDeriv& v1 = *this->object1->getV();
+    //VecDeriv& v1 = *this->object1->getV();
     VecDeriv& f2 = *this->object2->getF();
     VecCoord& p2 = *this->object2->getX();
-    VecDeriv& v2 = *this->object2->getV();
+    //VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
 
@@ -82,10 +82,10 @@ template<class DataTypes>
 void LagrangianMultiplierContactConstraint<DataTypes>::addDForce()
 {
     VecDeriv& f1  = *this->object1->getF();
-    VecCoord& p1 = *this->object1->getX();
+    //VecCoord& p1 = *this->object1->getX();
     VecDeriv& dx1 = *this->object1->getDx();
     VecDeriv& f2  = *this->object2->getF();
-    VecCoord& p2 = *this->object2->getX();
+    //VecCoord& p2 = *this->object2->getX();
     VecDeriv& dx2 = *this->object2->getDx();
     f1.resize(dx1.size());
     f2.resize(dx2.size());

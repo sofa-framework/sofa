@@ -53,6 +53,7 @@ protected:
 
 public:
     ExtVector() : data(NULL), maxsize(0), cursize(0) {}
+    virtual ~ExtVector() {}
     void setData(data_type* d, size_type s) { data=d; maxsize=s; cursize=s; }
     data_type& operator[](size_type i) { return data[i]; }
     const data_type& operator[](size_type i) const { return data[i]; }
