@@ -30,6 +30,10 @@ void Texture::unbind(void)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
+Image* Texture::getImage(void)
+{
+    return image;
+}
 Texture::~Texture(void)
 {
     glDeleteTextures(1, &id);
