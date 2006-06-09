@@ -55,25 +55,24 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addForce()
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        c.pen0 = (p2[c.m2]-p1[c.m1])*c.norm - c.dist;//c.dist - (p1[c.m1]-p2[c.m2])*c.norm;
+        c.pen = c.pen0 = (p2[c.m2]-p1[c.m1])*c.norm - c.dist;//c.dist - (p1[c.m1]-p2[c.m2])*c.norm;
+        lambda[i] = c.pen0;
     }
 
-    // flamdba += C X
-
+    // flamdba += C . DOF
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        if (c.pen0 > 0) continue;
+        if (lambda[i] > -0.05) continue;
         flambda[i] += p2[c.m2]*c.norm - p1[c.m1]*c.norm - c.dist;
     }
 
-    // f += Ct lambda
-
+    // f += Ct . lambda
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        if (c.pen0 > 0) continue;
         Real v = lambda[i];
+        if (lambda[i] > -0.05) continue;
         f1[c.m1] += c.norm * v;
         f2[c.m2] -= c.norm * v;
     }
@@ -96,29 +95,19 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addDForce()
     LMVecDeriv& flambda = *this->lambda->getF();
     flambda.resize(dlambda.size());
 
-    // dflamdba += C dX
-
-
-    // Create list of active contact
+    // dflamdba += C . dX
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        c.pen = c.pen0; // + dx2[c.m2]*c.norm - dx1[c.m1]*c.norm;
-    }
-
-    for (unsigned int i=0; i<contacts.size(); i++)
-    {
-        Contact& c = contacts[i];
-        if (c.pen > 0) continue;
+        if (lambda[i] > -0.05) continue;
         flambda[i] += dx2[c.m2]*c.norm - dx1[c.m1]*c.norm;
     }
 
-    // df += Ct dlambda
-
+    // df += Ct . dlambda
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        if (c.pen > 0) continue;
+        if (lambda[i] > -0.05) continue;
         Real v = dlambda[i];
         f1[c.m1] += c.norm * v;
         f2[c.m2] -= c.norm * v;
