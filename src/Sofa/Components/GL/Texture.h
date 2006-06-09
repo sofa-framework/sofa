@@ -27,9 +27,10 @@ private:
     GLuint id;
 public:
     Texture (Image *img):image(img),id(0) {};
-    void bind(void);
-    void unbind(void);
-    void init (void);
+    Image* getImage(void);
+    void   bind(void);
+    void   unbind(void);
+    void   init (void);
     ~Texture();
 };
 
