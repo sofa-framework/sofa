@@ -2,6 +2,7 @@
 #define SOFA_CORE_BASICCONSTRAINT_H
 
 #include "Sofa/Abstract/BaseObject.h"
+#include "Sofa/Core/BasicMechanicalModel.h"
 
 namespace Sofa
 {
@@ -15,6 +16,8 @@ public:
     virtual ~BasicConstraint() { }
 
     virtual void applyConstraint() = 0; ///< project dx to constrained space
+
+    virtual BasicMechanicalModel* getDOFs() { return NULL; }
 };
 
 } // namespace Core

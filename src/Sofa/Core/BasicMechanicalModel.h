@@ -24,7 +24,7 @@ public:
     virtual ~BasicMechanicalModel()
     { }
 
-    virtual BasicMechanicalModel* resize(int vsize) = 0;
+    virtual void resize(int vsize) = 0;
 
     virtual void init() = 0;
 

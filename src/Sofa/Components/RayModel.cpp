@@ -26,11 +26,9 @@ Creator< ObjectFactory, RayModel > RayModelClass("Ray");
 RayModel::RayModel()
     : previous(NULL), next(NULL)
 {
-    internalForces = f;
-    externalForces = new VecDeriv();
 }
 
-Core::BasicMechanicalModel* RayModel::resize(int size)
+void RayModel::resize(int size)
 {
     this->Core::MechanicalObject<Vec3Types>::resize(size);
     unsigned int size0 = elems.size();
@@ -40,7 +38,6 @@ Core::BasicMechanicalModel* RayModel::resize(int size)
         elems[size0] = new Ray(1, size0, this);
         ++size0;
     }
-    return this;
 }
 
 void RayModel::addRay(Vector3 origin, Vector3 direction, double length)
@@ -121,32 +118,6 @@ void RayModel::computeBoundingBox(void)
     //std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
 
     cubeModel->setCube(0,minBB, maxBB);
-}
-
-void RayModel::beginIntegration(double dt)
-{
-    //std::cout << "BEGIN"<<std::endl;
-    f = internalForces;
-    this->Core::MechanicalObject<Vec3Types>::beginIntegration(dt);
-}
-
-void RayModel::endIntegration(double dt)
-{
-    this->Core::MechanicalObject<Vec3Types>::endIntegration(dt);
-    //std::cout << "END"<<std::endl;
-    f = externalForces;
-    externalForces->clear();
-}
-
-void RayModel::accumulateForce()
-{
-    if (!externalForces->empty())
-    {
-        //std::cout << "Adding external forces"<<std::endl;
-        for (unsigned int i=0; i < externalForces->size(); i++)
-            (*getF())[i] += (*externalForces)[i];
-    }
-    this->Core::MechanicalObject<Vec3Types>::accumulateForce();
 }
 
 } // namespace Components

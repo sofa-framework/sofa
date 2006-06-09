@@ -50,6 +50,12 @@ public:
     /// Display flags: ForceFields
     virtual bool getShowForceFields() const;
 
+    /// Display flags: WireFrame
+    virtual bool getShowWireFrame() const;
+
+    /// Display flags: Normals
+    virtual bool getShowNormals() const;
+
     /// @}
 
 
@@ -134,6 +140,12 @@ public:
 
     /// Display flags: ForceFields
     virtual void setShowForceFields(bool /*val*/) { }
+
+    /// Display flags: WireFrame
+    virtual void setShowWireFrame(bool /*val*/) { }
+
+    /// Display flags: Normals
+    virtual void setShowNormals(bool /*val*/) { }
 
     /// Projection from the local frame to the world frame
     virtual void setLocalToWorld( const double* /*translation*/, const double* /*rotationQuat*/, const double* /*rotationMatrix*/) { }

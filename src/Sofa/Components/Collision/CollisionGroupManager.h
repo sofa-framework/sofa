@@ -22,8 +22,6 @@ class CollisionGroupManager : public virtual Abstract::BaseObject
 public:
     virtual ~CollisionGroupManager() { }
 
-    virtual const char* getName() = 0;
-
     virtual void createGroups(Abstract::BaseContext* scene, const std::vector<Contact*>& contacts) = 0;
 
     virtual void clearGroups(Abstract::BaseContext* scene) = 0;

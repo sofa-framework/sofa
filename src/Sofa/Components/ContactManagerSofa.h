@@ -15,7 +15,6 @@ namespace Components
 class ContactManagerSofa : public Collision::ContactManager, public Abstract::VisualModel
 {
 protected:
-    std::string name;
     std::string contacttype;
     std::map< std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*>, std::vector<Collision::DetectionOutput*> > outputsMap;
     std::map<std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*>,Collision::Contact*> contactMap;
@@ -23,10 +22,8 @@ protected:
 
     void clear();
 public:
-    ContactManagerSofa(const std::string& name, const std::string& contacttype);
+    ContactManagerSofa(const std::string& contacttype);
     ~ContactManagerSofa();
-
-    const char* getName() { return name.c_str(); }
 
     void createContacts(const std::vector<Collision::DetectionOutput*>& outputs);
 

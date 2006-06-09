@@ -63,7 +63,7 @@ public:
 
     virtual void reset();
 
-    virtual BasicMechanicalModel* resize(int vsize);
+    virtual void resize(int vsize);
 
     void applyTranslation (double dx, double dy, double dz);
 

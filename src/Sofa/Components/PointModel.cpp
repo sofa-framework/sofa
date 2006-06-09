@@ -13,9 +13,13 @@ namespace Components
 
 SOFA_DECL_CLASS(Point)
 
-void create(PointModel*& obj, ObjectDescription* /*arg*/)
+void create(PointModel*& obj, ObjectDescription* arg)
 {
     obj = new PointModel;
+    if (obj!=NULL)
+    {
+        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
+    }
 }
 
 Creator< ObjectFactory, PointModel > PointModelClass("Point");

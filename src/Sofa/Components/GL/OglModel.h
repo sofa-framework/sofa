@@ -50,38 +50,83 @@ struct Material
     Material();
 };
 
+/// Resizable custom vector class.
+template<class T>
+class ResizableExtVector : public ExtVector<T>
+{
+public:
+    ~ResizableExtVector()
+    {
+        if (data!=NULL) delete[] data;
+    }
+    T* getData() { return data; }
+    const T* getData() const { return data; }
+    virtual void resize(size_type size)
+    {
+        if (size > maxsize)
+        {
+            T* oldData = data;
+            maxsize = (size > 2*maxsize ? size : 2*maxsize);
+            data = new T[maxsize];
+            for (size_type i = 0 ; i < cursize ; ++i)
+                data[i] = oldData[i];
+            if (oldData!=NULL) delete[] oldData;
+        }
+        cursize = size;
+    }
+    void push_back(const T& v)
+    {
+        int i = size();
+        resize(i+1);
+        (*this)[i] = v;
+    }
+};
+
 class OglModel : public Abstract::VisualModel, public Core::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >
 {
 private:
-    GLfloat *vertices; /* vertices */
-    GLfloat *normals; /* normals on a vertices */
-    GLfloat *texCoords; /* texture coordinates : only 2 texCoord for a vertex */
-    GLint *facets; /* vertices index */
-    GLint *normalsIndices; /* normals index */
-    GLint *texCoordIndices; /* texCoords index */
+    typedef Vec<2, GLfloat> TexCoord;
+    typedef fixed_array<int, 3> Triangle;
+    typedef fixed_array<int, 4> Quad;
+
+    ResizableExtVector<Coord>* inputVertices;
+
+    bool modified; ///< True if input vertices modified since last rendering
+    bool useTopology; ///< True if list of facets should be taken from the attached topology
+
+    ResizableExtVector<Coord> vertices;
+    ResizableExtVector<Coord> vnormals;
+    ResizableExtVector<TexCoord> vtexcoords;
+
+    ResizableExtVector<Triangle> triangles;
+    ResizableExtVector<Quad> quads;
+
+    /// If vertices have multiple normals/texcoords, then we need to separate them
+    /// This vector store which input position is used for each vertice
+    /// If it is empty then each vertex correspond to one position
+    ResizableExtVector<int> vertPosIdx;
+
+    /// Similarly this vector store which input normal is used for each vertice
+    /// If it is empty then each vertex correspond to one normal
+    ResizableExtVector<int> vertNormIdx;
+
     Material material;
-    int nbVertices;
-    int nbFacets;
+
     Texture *tex;
-    GLfloat *oldVertices;
-    double matTransOpenGL[16];
+
+    //double matTransOpenGL[16];
 
 public:
 
-    OglModel(const std::string &name, std::string filename, std::string loader, std::string textureName);
+    OglModel(const std::string &name="", std::string filename="", std::string loader="", std::string textureName="");
 
     ~OglModel();
 
     void draw();
-    /*
-    	void applyTrans(const Vector3 &trans);
-    	void applyScale(const Vector3 &scale);
-    	void applyRotation(const Vector3& rotationAxis, double rotationAngle);
-    */
+
     void init(const std::string &name, std::string filename, std::string loader, std::string textureName);
     void applyTranslation(double dx, double dy, double dz);
     void applyScale(double s);
-    void computeNormal(const Vector3& s1, const Vector3& s2, const Vector3& s3, int indVertex);
     void computeNormals();
 
     void setColor(float r, float g, float b, float a);
@@ -89,52 +134,23 @@ public:
 
     void update();
 
-    /*
-    	// For mapping interface
-    	Vector3 getVertexPosition(int n) const;
-    	bool setVertexDisplacement(int n, const Vector3& p);
-    	Vector3 getVertexDisplacement(int) const;
-    	bool setVertexPosition(int n, const Vector3& p);
-
-    	void setMatrixTransform (const Matrix& m);
-    */
+    void init();
 
     void initTextures();
 
-    int getNumberVertices() const
-    {
-        return nbVertices;
-    }
-
-    VecCoord x;
-
-    const VecCoord* getX()  const { return &x;   }
+    const VecCoord* getX()  const; // { return &x;   }
     const VecDeriv* getV()  const { return NULL; }
     /*
     const VecDeriv* getF()  const { return NULL; }
     const VecDeriv* getDx() const { return NULL; }
     */
 
-    VecCoord* getX()  { return &x;   }
+    VecCoord* getX(); //  { return &x;   }
     VecDeriv* getV()  { return NULL; }
     /*
     VecDeriv* getF()  { return NULL; }
     VecDeriv* getDx() { return NULL; }
     */
-
-    void init() { }
-
-    void beginIteration(double /*dt*/) { }
-
-    void endIteration(double /*dt*/) { }
-
-    void propagateX() { computeNormals(); }
-
-    void propagateV() { }
-
-    void setObject(Abstract::BehaviorModel* /*obj*/) { }
-
-    void setTopology(Core::Topology* /*topo*/) { }
 };
 
 } // namespace GL

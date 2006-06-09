@@ -15,15 +15,12 @@ namespace Components
 class CollisionGroupManagerSofa : public Collision::CollisionGroupManager
 {
 public:
-    std::string name;
     std::set<Graph::GNode*> groupSet;
     std::vector<Abstract::BaseContext*> groupVec;
 public:
-    CollisionGroupManagerSofa(const std::string& name);
+    CollisionGroupManagerSofa();
 
     virtual ~CollisionGroupManagerSofa();
-
-    virtual const char* getName() { return name.c_str(); }
 
     virtual void createGroups(Abstract::BaseContext* scene, const std::vector<Collision::Contact*>& contacts);
 

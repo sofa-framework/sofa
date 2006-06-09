@@ -57,14 +57,15 @@ public:
     data_type& operator[](size_type i) { return data[i]; }
     const data_type& operator[](size_type i) const { return data[i]; }
     size_type size() const { return cursize; }
-    void resize(size_type size)
+    bool empty() const { return cursize==0; }
+    virtual void resize(size_type size)
     {
         if (size <= maxsize)
-            cursize = maxsize;
+            cursize = size;
         else
         {
             cursize = maxsize;
-            std::cerr << "Error: invalide resize request ("<<size<<">"<<maxsize<<" on external vector\n";
+            std::cerr << "Error: invalide resize request ("<<size<<">"<<maxsize<<") on external vector.\n";
         }
     }
 };

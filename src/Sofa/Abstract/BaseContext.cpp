@@ -80,6 +80,18 @@ bool BaseContext::getShowForceFields() const
     return true;
 }
 
+/// Display flags: WireFrame
+bool BaseContext::getShowWireFrame() const
+{
+    return true;
+}
+
+/// Display flags: Normals
+bool BaseContext::getShowNormals() const
+{
+    return true;
+}
+
 
 //////////////////////////////
 // Local Coordinates System //

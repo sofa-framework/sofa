@@ -2,8 +2,7 @@
 #include "RAII.h"
 #include "../Common/Quat.h"
 #include "../Common/ObjectFactory.h"
-
-//#define DEBUGNORMAL
+#include "../MeshTopology.h"
 
 namespace Sofa
 {
@@ -18,15 +17,9 @@ using namespace Common;
 
 void create(OglModel*& obj, ObjectDescription* arg)
 {
-    const char* filename = arg->getAttribute("filename");
+    const char* filename = arg->getAttribute("filename","");
     const char* loader = arg->getAttribute("loader","");
     const char* texturename = arg->getAttribute("texturename","");
-    if (!filename)
-    {
-        std::cerr << arg->getType() << " requires a filename attribute\n";
-        obj = NULL;
-    }
-    else
     {
         obj = new OglModel(arg->getName(), filename, loader, texturename);
         const char* color = arg->getAttribute("color");
@@ -86,30 +79,25 @@ Material::Material()
 }
 
 OglModel::OglModel (const std::string &name, std::string filename, std::string loader, std::string textureName)
-    : vertices(NULL), normals(NULL), texCoords(NULL), facets(NULL), normalsIndices(NULL), texCoordIndices(NULL)
-    , nbVertices(0), nbFacets(0), tex(NULL), oldVertices(NULL)
+    : modified(false), useTopology(false), tex(NULL)
 {
+    inputVertices = &vertices;
     init (name, filename, loader, textureName);
-};
-
+}
 
 OglModel::~OglModel()
 {
-    if (vertices) delete vertices;
-    if (normals) delete normals;
-    if (texCoords) delete texCoords;
-    if (facets) delete facets;
-    if (normalsIndices) delete normalsIndices;
-    if (texCoordIndices) delete texCoordIndices;
-    if (tex) delete tex;
-    if (oldVertices) delete oldVertices;
+    if (tex!=NULL) delete tex;
+    if (inputVertices != &vertices) delete inputVertices;
 }
 
 void OglModel::draw()
 {
     if (!getContext()->getShowVisualModels()) return;
-    Enable<GL_TEXTURE_2D> texture;
-    Enable<GL_LIGHTING> light;
+    if (getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    glEnable(GL_LIGHTING);
     //Enable<GL_BLEND> blending;
     //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
@@ -124,67 +112,65 @@ void OglModel::draw()
     if (material.useShininess)
         glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, material.shininess);
 
-    /* 	glVertexPointer (3, GL_FLOAT, 0, vertices);
-    	glNormalPointer (GL_FLOAT, 0, normals);
-     	if ((tex != NULL) && (texCoords != NULL))
-    	{
-    		tex->bind();
-    		glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
-    	}
-
-    	glDrawElements(GL_TRIANGLES, nbFacets * 3, GL_UNSIGNED_INT, facets);
-    	*/
-    /*
-    if (!deformable)
+    glVertexPointer (3, GL_FLOAT, 0, vertices.getData());
+    glNormalPointer (GL_FLOAT, 0, vnormals.getData());
+    glEnableClientState(GL_NORMAL_ARRAY);
+    if (tex)
     {
-    	glPushMatrix();
-    	glMultMatrixd(matTransOpenGL);
-    }
-    */
-
-    if ((tex != NULL) && (texCoords != NULL))
+        glEnable(GL_TEXTURE_2D);
         tex->bind();
+        glTexCoordPointer(2, GL_FLOAT, 0, vtexcoords.getData());
+        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
 
-    for (int i = 0; i < nbFacets; i++)
+    if (!triangles.empty())
+        glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, triangles.getData());
+    if (!quads.empty())
+        glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, quads.getData());
+
+//	if ((tex != NULL) && (texCoords != NULL))
+//		tex->bind();
+//	for (int i = 0; i < nbFacets; i++)
+//	{
+//		glBegin(GL_TRIANGLES);
+//		for (int j = 0; j < 3; j++)
+//		{
+//			if ((tex != NULL) && (texCoords != NULL))
+//				glTexCoord2d(texCoords[texCoordIndices[i * 3 + j] * 2], texCoords[(texCoordIndices[i * 3 + j] * 2) + 1]);
+//			glNormal3d(normals[(normalsIndices[i * 3 + j]) * 3], normals[(normalsIndices[i * 3 + j] * 3) + 1], normals[(normalsIndices[i * 3 + j] * 3) + 2]);
+//			glVertex3d(vertices[(facets[i * 3 + j]) * 3], vertices[(facets[i * 3 + j] * 3) + 1], vertices[(facets[i * 3 + j] * 3) + 2]);
+//		}
+//		glEnd();
+//	}
+
+    if (tex)
     {
-        glBegin(GL_TRIANGLES);
-        for (int j = 0; j < 3; j++)
-        {
-            if ((tex != NULL) && (texCoords != NULL))
-                glTexCoord2d(texCoords[texCoordIndices[i * 3 + j] * 2], texCoords[(texCoordIndices[i * 3 + j] * 2) + 1]);
-            glNormal3d(normals[(normalsIndices[i * 3 + j]) * 3], normals[(normalsIndices[i * 3 + j] * 3) + 1], normals[(normalsIndices[i * 3 + j] * 3) + 2]);
-            glVertex3d(vertices[(facets[i * 3 + j]) * 3], vertices[(facets[i * 3 + j] * 3) + 1], vertices[(facets[i * 3 + j] * 3) + 2]);
-        }
-        glEnd();
-    }
-    /*
-    if (!deformable)
-    {
-    	glPopMatrix();
-    }
-    */
-    if ((tex != NULL) && (texCoords != NULL))
         tex->unbind();
-
-#ifdef DEBUGNORMAL
-    glColor3f (1.0, 1.0, 1.0);
-    for (int i = 0; i < nbVertices; i++)
-    {
-        glBegin(GL_LINES);
-        glVertex3f (vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
-        glVertex3f (vertices[i * 3] + normals[i * 3], vertices[i * 3 + 1] + normals[i * 3 + 1], vertices[i * 3 + 2] + normals[i * 3 + 2] );
-        glEnd();
+        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+        glDisable(GL_TEXTURE_2D);
     }
-#endif
+    glDisableClientState(GL_NORMAL_ARRAY);
+    glDisable(GL_LIGHTING);
+
+    if (getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    if (getContext()->getShowNormals())
+    {
+        glColor3f (1.0, 1.0, 1.0);
+        for (unsigned int i = 0; i < vertices.size(); i++)
+        {
+            glBegin(GL_LINES);
+            glVertex3fv (vertices[i]);
+            Coord p = vertices[i] + vnormals[i];
+            glVertex3fv (p);
+            glEnd();
+        }
+    }
 }
 
 void OglModel::init(const std::string &/*name*/, std::string filename, std::string loader, std::string textureName)
 {
-    texCoords = NULL;
-
-    memset(matTransOpenGL, 0, sizeof(matTransOpenGL));
-    matTransOpenGL[15]=1.0;
-
     if (textureName != "")
     {
         Image *img = Image::Create(textureName);
@@ -194,160 +180,233 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
         }
     }
 
-    Mesh *objLoader;
-    if (loader.empty())
-        objLoader = Mesh::Create(filename);
-    else
-        objLoader = Mesh::Factory::CreateObject(loader, filename);
-
-    //OBJLoader *objLoader = static_cast<OBJLoader*> (ldr);
-    if (objLoader) // finish to create the oglModel
+    if (filename != "")
     {
-        std::vector< std::vector< std::vector<int> > > &facetsImport = objLoader->getFacets();
-        std::vector<Vector3> &verticesImport = objLoader->getVertices();
-        std::vector<Vector3> &normalsImport = objLoader->getNormals();
-        std::vector<Vector3> &texCoordsImport = objLoader->getTexCoords();
+        Mesh *objLoader;
+        if (loader.empty())
+            objLoader = Mesh::Create(filename);
+        else
+            objLoader = Mesh::Factory::CreateObject(loader, filename);
 
-        Mesh::Material &materialImport = objLoader->getMaterial();
-
-        if (materialImport.activated)
-            material = materialImport;
-
-        std::cout << "Vertices Import size : " << verticesImport.size() << std::endl;
-        nbVertices = verticesImport.size();
-        if (nbVertices != 0)
+        if (objLoader)
         {
-            vertices = new GLfloat[nbVertices * 3];
-            oldVertices = new GLfloat[nbVertices * 3];
-            for (int i = 0; i < nbVertices; i++)
-            {
+            std::vector< std::vector< std::vector<int> > > &facetsImport = objLoader->getFacets();
+            std::vector<Vector3> &verticesImport = objLoader->getVertices();
+            std::vector<Vector3> &normalsImport = objLoader->getNormals();
+            std::vector<Vector3> &texCoordsImport = objLoader->getTexCoords();
 
-                for (int j = 0; j < 3; j++)
-                {
-                    vertices[i * 3 + j] = (GLfloat) verticesImport[i][j];
-                    oldVertices[i * 3 + j] = vertices[i * 3 + j];
-                }
-                //xVisual.push_back(new Vector3(verticesImport[i]));
-            }
-            if (normalsImport.size() != 0)
-            {
-                normals = new GLfloat[normalsImport.size() * 3];
-                for (int i = 0; i < (int) normalsImport.size(); i++)
-                {
-                    normals[i * 3] = (GLfloat) normalsImport[i][0];
-                    normals[(i * 3) + 1] = (GLfloat) normalsImport[i][1];
-                    normals[(i * 3) + 2] = (GLfloat) normalsImport[i][2];
-                }
-            }
-            if ((texCoordsImport.size() != 0) && (textureName != ""))
-            {
-                texCoords = new GLfloat [texCoordsImport.size() * 2];
-                for (int i = 0; i < (int) texCoordsImport.size(); i++)
-                {
-                    texCoords[i * 2] = (GLfloat) texCoordsImport[i][0];
-                    texCoords[(i * 2) + 1] = (GLfloat) texCoordsImport[i][1];
-                }
-            }
+            Mesh::Material &materialImport = objLoader->getMaterial();
 
-            nbFacets = 0;
-            for (int i = 0; i < (int) facetsImport.size(); i++)
-                nbFacets += facetsImport[i][0].size()-2;
-            facets = new GLint[nbFacets * 3];
-            normalsIndices = new GLint[nbFacets * 3];
-            texCoordIndices = new GLint[nbFacets * 3];
-            int f = 0;
-            for (int i = 0; i < (int) facetsImport.size(); i++)
+            if (materialImport.activated)
+                material = materialImport;
+
+            std::cout << "Vertices Import size : " << verticesImport.size() << " (" << normalsImport.size() << " normals)." << std::endl;
+
+            int nbVIn = verticesImport.size();
+            // First we compute for each point how many pair of normal/texcoord indices are used
+            // The map store the final index of each combinaison
+            std::vector< std::map< std::pair<int,int>, int > > vertNormTexMap;
+            vertNormTexMap.resize(nbVIn);
+            for (unsigned int i = 0; i < facetsImport.size(); i++)
             {
                 std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
-                std::vector<int> vertices = vertNormTexIndex[0];
-                std::vector<int> norms = vertNormTexIndex[1];
-                std::vector<int> texs = vertNormTexIndex[2];
-                for (int j = 2; j < (int) vertices.size(); j++, f++)
+                std::vector<int> verts = vertNormTexIndex[0];
+                std::vector<int> norms = vertNormTexIndex[2];
+                std::vector<int> texs = vertNormTexIndex[1];
+                for (unsigned int j = 0; j < verts.size(); j++)
                 {
-                    facets         [(f * 3) + 0] = (GLint) vertices[0];
-                    normalsIndices [(f * 3) + 0] = (GLint) vertices[0]; //norms[0];
-                    texCoordIndices[(f * 3) + 0] = (GLint) texs[0];
-                    facets         [(f * 3) + 1] = (GLint) vertices[j-1];
-                    normalsIndices [(f * 3) + 1] = (GLint) vertices[j-1]; //norms[j-1];
-                    texCoordIndices[(f * 3) + 1] = (GLint) texs[j-1];
-                    facets         [(f * 3) + 2] = (GLint) vertices[j];
-                    normalsIndices [(f * 3) + 2] = (GLint) vertices[j]; //norms[j];
-                    texCoordIndices[(f * 3) + 2] = (GLint) texs[j];
+                    vertNormTexMap[verts[j]][std::make_pair(norms[j], (tex!=NULL?texs[j]:0))] = 0;
                 }
             }
+
+            // Then we can compute how many vertices are created
+            int nbVOut = 0;
+            bool vsplit = false;
+            for (int i = 0; i < nbVIn; i++)
+            {
+                int s = vertNormTexMap[i].size();
+                nbVOut += s;
+                if (s!=1)
+                    vsplit = true;
+            }
+
+            // Then we can create the final arrays
+
+            vertices.resize(nbVOut);
+            vnormals.resize(nbVOut);
+
+            if (tex)
+                vtexcoords.resize(nbVOut);
+
+            if (vsplit)
+            {
+                inputVertices = new ResizableExtVector<Coord>;
+                inputVertices->resize(nbVIn);
+                vertPosIdx.resize(nbVOut);
+                vertNormIdx.resize(nbVOut);
+            }
+            else
+                inputVertices = &vertices;
+
+            int nbNOut = 0; /// Number of different normals
+            for (int i = 0, j = 0; i < nbVIn; i++)
+            {
+                if (vsplit)
+                    (*inputVertices)[i] = verticesImport[i];
+                std::map<int, int> normMap;
+                for (std::map<std::pair<int, int>, int>::iterator it = vertNormTexMap[i].begin();
+                        it != vertNormTexMap[i].end(); ++it)
+                {
+                    vertices[j] = verticesImport[i];
+                    int n = it->first.first;
+                    int t = it->first.second;
+                    if ((unsigned)n < normalsImport.size())
+                        vnormals[j] = normalsImport[n];
+                    if ((unsigned)t < texCoordsImport.size())
+                        vtexcoords[j] = texCoordsImport[n];
+                    if (vsplit)
+                    {
+                        vertPosIdx[j] = i;
+                        if (normMap.count(n))
+                            vertNormIdx[j] = normMap[n];
+                        else
+                            vertNormIdx[j] = normMap[n] = nbNOut++;
+                    }
+                    it->second = j++;
+                }
+            }
+
+            std::cout << "Vertices Export size : " << nbVOut << " (" << nbNOut << " normals)." << std::endl;
+
+            std::cout << "Facets Import size : " << facetsImport.size() << std::endl;
+
+            // Then we create the triangles and quads
+
+            for (unsigned int i = 0; i < facetsImport.size(); i++)
+            {
+                std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
+                std::vector<int> verts = vertNormTexIndex[0];
+                std::vector<int> norms = vertNormTexIndex[2];
+                std::vector<int> texs = vertNormTexIndex[1];
+                std::vector<int> idxs;
+                idxs.resize(verts.size());
+                for (unsigned int j = 0; j < verts.size(); j++)
+                    idxs[j] = vertNormTexMap[verts[j]][std::make_pair(norms[j], (tex!=NULL?texs[j]:0))];
+
+                if (verts.size() == 4)
+                {
+                    // quad
+                    quads.push_back(make_array(idxs[0],idxs[1],idxs[2],idxs[3]));
+                }
+                else
+                {
+                    // triangle(s)
+                    for (unsigned int j = 2; j < verts.size(); j++)
+                    {
+                        triangles.push_back(make_array(idxs[0],idxs[j-1],idxs[j]));
+                    }
+                }
+            }
+
+            std::cout << "Facets Export size : ";
+            if (!triangles.empty())
+                std::cout << triangles.size() << " triangles";
+            if (!quads.empty())
+                std::cout << quads.size() << " quads";
+            std::cout << "." << std::endl;
+
+            computeNormals();
         }
     }
-
-    //if (objLoader->getNormals().size() == 0) // compute the normals
+    else
     {
-        std::cout << "Computing normals." << std::endl;
-        normals = new GLfloat[nbVertices * 3];
-        computeNormals();
+        // Try to find a topology
+        Core::Topology* topology = dynamic_cast<Core::Topology*>(getContext()->getTopology());
+        if (topology!=NULL && topology->hasPos())
+        {
+            vertices.resize(topology->getNbPoints());
+            vnormals.resize(vertices.size());
+            if (tex)
+                vtexcoords.resize(vertices.size());
+            for (unsigned int i=0; i<vertices.size(); ++i)
+            {
+                vertices[i] = Coord((GLfloat)topology->getPX(i), (GLfloat)topology->getPY(i), (GLfloat)topology->getPZ(i));
+            }
+        }
+        useTopology = true;
+        modified = true;
+        update();
     }
-
-    // Link with mappings
-    x.setData((Vec<3,GLfloat>*)vertices,nbVertices);
 }
 
 void OglModel::applyTranslation(double dx, double dy, double dz)
 {
-    for (int i = 0; i < nbVertices; i++)
+    Vector3 d((GLfloat)dx,(GLfloat)dy,(GLfloat)dz);
+    VecCoord& x = *getX();
+    for (unsigned int i = 0; i < x.size(); i++)
     {
-        vertices[i * 3] += (GLfloat)dx;
-        vertices[i * 3 + 1] += (GLfloat)dy;
-        vertices[i * 3 + 2] += (GLfloat)dz;
+        x[i] += d;
     }
+    update();
 }
 
 void OglModel::applyScale(double scale)
 {
-    for (int i = 0; i < nbVertices; i++)
+    VecCoord& x = *getX();
+    for (unsigned int i = 0; i < x.size(); i++)
     {
-        vertices[i * 3] *= (float)scale;
-        vertices[i * 3 + 1] *= (float)scale;
-        vertices[i * 3 + 2] *= (float)scale;
+        x[i] *= (GLfloat) scale;
     }
+    update();
+}
+
+void OglModel::init()
+{
+    update();
 }
 
 void OglModel::computeNormals()
 {
-    for (int i = 0; i < nbVertices * 3; i++)
-        normals[i] = 0.0;
-
-    for (int i = 0; i < nbFacets ; i++)
+    std::vector<Coord> normals;
+    int nbn = 0;
+    bool vsplit = !vertNormIdx.empty();
+    if (vsplit)
     {
-        int indV1 = facets[i * 3] * 3;
-        int indV2 = facets[i * 3 + 1] * 3;
-        int indV3 = facets[i * 3 + 2] * 3;
+        for (unsigned int i = 0; i < vertNormIdx.size(); i++)
+        {
+            if (vertNormIdx[i] >= nbn)
+                nbn = vertNormIdx[i]+1;
+        }
+    }
+    else
+    {
+        nbn = vertices.size();
+    }
+    normals.resize(nbn);
+    for (int i = 0; i < nbn; i++)
+        normals[i].clear();
 
-        Vector3 s1(vertices[indV1], vertices[indV1 + 1], vertices[indV1 + 2]);
-        Vector3 s2(vertices[indV2], vertices[indV2 + 1], vertices[indV2 + 2]);
-        Vector3 s3(vertices[indV3], vertices[indV3 + 1], vertices[indV3 + 2]);
-
-        computeNormal (s1, s2, s3, indV1);
-        computeNormal (s3, s1, s2, indV2);
-        computeNormal (s2, s3, s1, indV3);
+    for (unsigned int i = 0; i < triangles.size() ; i++)
+    {
+        const Coord & v1 = vertices[triangles[i][0]];
+        const Coord & v2 = vertices[triangles[i][1]];
+        const Coord & v3 = vertices[triangles[i][2]];
+        Coord n = cross(v2-v1, v3-v1);
+        n.normalize();
+        normals[(vsplit ? vertNormIdx[triangles[i][0]] : triangles[i][0])] += n;
+        normals[(vsplit ? vertNormIdx[triangles[i][1]] : triangles[i][1])] += n;
+        normals[(vsplit ? vertNormIdx[triangles[i][2]] : triangles[i][2])] += n;
     }
 
-    for (int i = 0; i < nbVertices; i++)
+    for (unsigned int i = 0; i < normals.size(); i++)
     {
-        Vector3 norm(normals[i * 3], normals[i * 3 + 1], normals[i * 3 + 2]);
-        norm.normalize();
-        for (int j = 0; j < 3; j++)
-            normals[i * 3 + j] = (GLfloat) norm[j];
+        normals[i].normalize();
     }
-}
-
-void OglModel::computeNormal(const Vector3& s1, const Vector3 &s2, const Vector3 &s3, int indVertex)
-{
-    Vector3 v1 = s2 - s1;
-    Vector3 v2 = s1 - s3;
-    Vector3 norm = cross(v2,v1);
-    norm.normalize();
-
-    normals[indVertex] += (GLfloat) norm[0];
-    normals[indVertex + 1] += (GLfloat) norm[1];
-    normals[indVertex + 2] += (GLfloat) norm[2];
+    vnormals.resize(vertices.size());
+    for (unsigned int i = 0; i < vertices.size(); i++)
+    {
+        vnormals[i] = normals[(vsplit ? vertNormIdx[i] : i)];
+    }
 }
 
 void Material::setColor(float r, float g, float b, float a)
@@ -419,16 +478,53 @@ void OglModel::setColor(std::string color)
     setColor(r,g,b,a);
 }
 
+const OglModel::VecCoord* OglModel::getX()  const
+{
+    return inputVertices;
+}
+
+OglModel::VecCoord* OglModel::getX()
+{
+    modified = true;
+    return inputVertices;
+}
+
 void OglModel::update()
 {
-    computeNormals();
+    if (modified)
+    {
+        if (!vertPosIdx.empty())
+        {
+            // Need to transfer positions
+            for (unsigned int i=0 ; i < vertices.size(); ++i)
+                vertices[i] = (*inputVertices)[vertPosIdx[i]];
+        }
+
+        if (useTopology)
+        {
+            MeshTopology* topology = dynamic_cast<MeshTopology*>(getContext()->getTopology());
+            if (topology != NULL)
+            {
+                const std::vector<Triangle>& inputTriangles = topology->getTriangles();
+                triangles.resize(inputTriangles.size());
+                for (unsigned int i=0; i<triangles.size(); ++i)
+                    triangles[i] = inputTriangles[i];
+                const std::vector<Quad>& inputQuads = topology->getQuads();
+                quads.resize(inputQuads.size());
+                for (unsigned int i=0; i<quads.size(); ++i)
+                    quads[i] = inputQuads[i];
+            }
+        }
+
+        computeNormals();
+        modified = false;
+    }
 }
 
 void OglModel::initTextures()
 {
     if (tex)
     {
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
         tex->init();
     }
 }

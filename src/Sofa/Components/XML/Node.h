@@ -145,6 +145,17 @@ void createWith2Objects(Object*& obj, BaseNode* arg)
         return;
     }
     Abstract::Base* pbase1 = arg->findObject(object1);
+    if (pbase1==NULL)
+    {
+        std::cerr << arg->getType()<< " object1 \""<<object1<<"\" not found\n";
+        return;
+    }
+    Abstract::Base* pbase2 = arg->findObject(object2);
+    if (pbase2==NULL)
+    {
+        std::cerr << arg->getType()<< " object2 \""<<object2<<"\" not found\n";
+        return;
+    }
     Object1* pobject1 = dynamic_cast<Object1*>(pbase1);
     if (pobject1==NULL && pbase1!=NULL)
     {
@@ -153,7 +164,6 @@ void createWith2Objects(Object*& obj, BaseNode* arg)
         if (ctx!=NULL)
             pobject1 = dynamic_cast<Object1*>(ctx->getMechanicalModel());
     }
-    Abstract::Base* pbase2 = arg->findObject(object2);
     Object2* pobject2 = dynamic_cast<Object2*>(pbase2);
     if (pobject2==NULL && pbase2!=NULL)
     {

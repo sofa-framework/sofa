@@ -34,10 +34,12 @@ public:
 
     const Vector3& center() const;
 
-    inline const double& x() const { return center()[0]; }
-    inline const double& y() const { return center()[1]; }
-    inline const double& z() const { return center()[2]; }
-    inline const double& r() const { return radius; }
+    const double& x() const { return center()[0]; }
+    const double& y() const { return center()[1]; }
+    const double& z() const { return center()[2]; }
+    const double& r() const { return radius; }
+
+    double& r() { return radius; }
 
     void draw();
 

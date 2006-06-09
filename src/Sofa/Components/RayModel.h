@@ -25,8 +25,6 @@ protected:
     Abstract::CollisionModel* previous;
     Abstract::CollisionModel* next;
     std::set<RayContact*> contacts;
-    VecDeriv* internalForces;
-    VecDeriv* externalForces;
 public:
 
     RayModel();
@@ -38,7 +36,7 @@ public:
 
     void clear() { resize(0); }
 
-    Core::BasicMechanicalModel* resize(int size);
+    void resize(int size);
 
     void addRay(Vector3 origin, Vector3 direction, double length);
 
@@ -51,14 +49,6 @@ public:
     virtual void addContact(RayContact* contact) { contacts.insert(contact); }
 
     virtual void removeContact(RayContact* contact) { contacts.erase(contact); }
-
-    // -- MechanicalModel interface
-
-    virtual void beginIntegration(double dt);
-
-    virtual void endIntegration(double dt);
-
-    virtual void accumulateForce();
 
     // -- CollisionModel interface
 

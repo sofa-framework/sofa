@@ -26,18 +26,18 @@ using namespace Collision;
 
 void create(VoxelGrid*& obj, ObjectDescription* arg)
 {
-    obj = new VoxelGrid(arg->getName(),
-            Vector3(atof(arg->getAttribute("minx",arg->getAttribute("min","-20.0"))),
-                    atof(arg->getAttribute("miny",arg->getAttribute("min","-20.0"))),
-                    atof(arg->getAttribute("minz",arg->getAttribute("min","-20.0")))),
-            Vector3(atof(arg->getAttribute("maxx",arg->getAttribute("max","20.0"))),
-                    atof(arg->getAttribute("maxy",arg->getAttribute("max","20.0"))),
-                    atof(arg->getAttribute("maxz",arg->getAttribute("max","20.0")))),
-            Vector3(atof(arg->getAttribute("nx",arg->getAttribute("n","5.0"))),
-                    atof(arg->getAttribute("ny",arg->getAttribute("n","5.0"))),
-                    atof(arg->getAttribute("nz",arg->getAttribute("n","5.0")))),
-            atoi(arg->getAttribute("draw","0"))!=0
-                       );
+    obj = new VoxelGrid(
+        Vector3(atof(arg->getAttribute("minx",arg->getAttribute("min","-20.0"))),
+                atof(arg->getAttribute("miny",arg->getAttribute("min","-20.0"))),
+                atof(arg->getAttribute("minz",arg->getAttribute("min","-20.0")))),
+        Vector3(atof(arg->getAttribute("maxx",arg->getAttribute("max","20.0"))),
+                atof(arg->getAttribute("maxy",arg->getAttribute("max","20.0"))),
+                atof(arg->getAttribute("maxz",arg->getAttribute("max","20.0")))),
+        Vector3(atof(arg->getAttribute("nx",arg->getAttribute("n","5.0"))),
+                atof(arg->getAttribute("ny",arg->getAttribute("n","5.0"))),
+                atof(arg->getAttribute("nz",arg->getAttribute("n","5.0")))),
+        atoi(arg->getAttribute("draw","0"))!=0
+    );
 }
 
 SOFA_DECL_CLASS(VoxelGrid)

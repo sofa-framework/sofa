@@ -19,6 +19,8 @@ Context::Context()
     setShowVisualModels(getDefault()->getShowVisualModels());
     setShowMappings(getDefault()->getShowMappings());
     setShowForceFields(getDefault()->getShowForceFields());
+    setShowWireFrame(getDefault()->getShowWireFrame());
+    setShowNormals(getDefault()->getShowNormals());
     setMultiThreadSimulation(getDefault()->getMultiThreadSimulation());
 }
 
@@ -119,6 +121,18 @@ bool Context::getShowForceFields() const
     return showForceFields_;
 }
 
+/// Display flags: WireFrame
+bool Context::getShowWireFrame() const
+{
+    return showWireFrame_;
+}
+
+/// Display flags: Normal
+bool Context::getShowNormals() const
+{
+    return showNormals_;
+}
+
 //===============================================================================
 
 /// Simulation timestep
@@ -173,6 +187,18 @@ void Context::setShowMappings(bool val)
 void Context::setShowForceFields(bool val)
 {
     showForceFields_ = val;
+}
+
+/// Display flags: WireFrame
+void Context::setShowWireFrame(bool val)
+{
+    showWireFrame_ = val;
+}
+
+/// Display flags: Normals
+void Context::setShowNormals(bool val)
+{
+    showNormals_ = val;
 }
 
 void Context::setLocalToWorld( const double* translation, const double* rotationQuat, const double* rotationMatrix )

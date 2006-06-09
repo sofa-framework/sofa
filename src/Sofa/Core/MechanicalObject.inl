@@ -39,7 +39,7 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 {}
 
 template <class DataTypes>
-BasicMechanicalModel* MechanicalObject<DataTypes>::resize(int size)
+void MechanicalObject<DataTypes>::resize(int size)
 {
     getX()->resize(size);
     getV()->resize(size);
@@ -55,7 +55,6 @@ BasicMechanicalModel* MechanicalObject<DataTypes>::resize(int size)
             if (vectorsDeriv[i]!=NULL && vectorsDeriv[i]->size()!=0)
                 vectorsDeriv[i]->resize(size);
     }
-    return this;
 }
 
 template <class DataTypes>

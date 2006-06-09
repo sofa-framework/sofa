@@ -43,24 +43,20 @@ public:
 class VoxelGrid : public Collision::BroadPhaseDetection, public Collision::NarrowPhaseDetection, public Abstract::VisualModel
 {
 private:
-    std::string _name;
     Vector3 nbSubDiv;
     GridCell ***grid;
     bool bDraw;
     Vector3 minVect, maxVect, step;
     void posToIdx (const Vector3& pos, Vector3 &indices);
 public:
-    VoxelGrid (std::string name, Vector3 minVect = Vector3(-20.0, -20.0, -20.0), Vector3 maxVect = Vector3(-20.0, -20.0, -20.0), Vector3 nbSubdivision = Vector3(5.0, 5.0, 5.0), bool draw=false)
+    VoxelGrid (Vector3 minVect = Vector3(-20.0, -20.0, -20.0), Vector3 maxVect = Vector3(-20.0, -20.0, -20.0), Vector3 nbSubdivision = Vector3(5.0, 5.0, 5.0), bool draw=false)
     {
         createVoxelGrid (minVect, maxVect, nbSubdivision);
-        _name = name;
         timeStamp = 0;
         bDraw=draw;
     }
 
     ~VoxelGrid () {}
-
-    const char* getName() { return _name.c_str(); }
 
     // Create a voxel grid define by minx, miny, minz, maxx, maxy, maxz and the number of subdivision on x, y, z
     void createVoxelGrid (const Vector3 &min, const Vector3 &max, const Vector3 &nbSubdivision);

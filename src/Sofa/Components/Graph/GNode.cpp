@@ -342,6 +342,8 @@ void create(GNode*& obj, XML::Node<Abstract::BaseNode>* arg)
     obj->setShowVisualModels((atoi(arg->getAttribute("showVisualModels","1"))!=0));
     obj->setShowMappings((atoi(arg->getAttribute("showMappings","0"))!=0));
     obj->setShowForceFields((atoi(arg->getAttribute("showForceFields","0"))!=0));
+    obj->setShowWireFrame((atoi(arg->getAttribute("showWireFrame","0"))!=0));
+    obj->setShowNormals((atoi(arg->getAttribute("showNormals","0"))!=0));
 
 }
 

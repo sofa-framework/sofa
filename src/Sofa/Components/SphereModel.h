@@ -22,26 +22,21 @@ protected:
     Abstract::CollisionModel* previous;
     Abstract::CollisionModel* next;
 
-    class Loader;
-    void init(const char* filename);
+    double defaultRadius;
 
-    VecDeriv* internalForces;
-    VecDeriv* externalForces;
+    class Loader;
+
     bool static_;
 public:
 
-    SphereModel(const char* filename);
+    SphereModel(double radius = 1.0);
+
+    virtual void resize(int size);
+
+    bool load(const char* filename);
 
     bool isStatic() { return static_; }
     void setStatic(bool val=true) { static_ = val; }
-
-    // -- MechanicalModel interface
-
-    virtual void beginIntegration(double dt);
-
-    virtual void endIntegration(double dt);
-
-    virtual void accumulateForce();
 
     // -- CollisionModel interface
 

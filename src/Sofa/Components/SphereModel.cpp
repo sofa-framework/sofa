@@ -17,10 +17,12 @@ using namespace Common;
 
 void create(SphereModel*& obj, ObjectDescription* arg)
 {
-    XML::createWithFilename(obj, arg);
+    obj = new SphereModel(atof(arg->getAttribute("radius","1,0")));
     if (obj!=NULL)
     {
-        obj->setStatic(!strcmp(arg->getAttribute("static","false"),"true"));
+        if (arg->getAttribute("filename"))
+            obj->load(arg->getAttribute("filename"));
+        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
         if (arg->getAttribute("scale")!=NULL)
             obj->applyScale(atof(arg->getAttribute("scale","1.0")));
         if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
@@ -30,12 +32,27 @@ void create(SphereModel*& obj, ObjectDescription* arg)
 
 Creator< ObjectFactory, SphereModel > SphereModelClass("Sphere");
 
-SphereModel::SphereModel(const char* filename)
-    : previous(NULL), next(NULL), static_(false)
+SphereModel::SphereModel(double radius)
+    : previous(NULL), next(NULL), defaultRadius(radius), static_(false)
 {
-    internalForces = f;
-    externalForces = new VecDeriv();
-    init(filename);
+}
+
+void SphereModel::resize(int size)
+{
+    this->MechanicalObject<Vec3Types>::resize(size);
+    int s = this->elems.size();
+    if (s < size)
+    {
+        elems.reserve(size);
+        while (s < size)
+            elems.push_back(new Sphere(defaultRadius, s++, this));
+    }
+    else
+    {
+        while (s > size)
+            delete elems[s--];
+        elems.resize(size);
+    }
 }
 
 class SphereModel::Loader : public SphereLoader
@@ -45,21 +62,18 @@ public:
     Loader(SphereModel* dest) : dest(dest) { }
     void addSphere(double x, double y, double z, double r)
     {
-        dest->getX()->push_back(Vector3(x,y,z));
-        dest->getV()->push_back(Vector3(0,0,0));
-        dest->getF()->push_back(Vector3(0,0,0));
-        dest->getDx()->push_back(Vector3(0,0,0));
-        dest->elems.push_back(new Sphere(r,dest->elems.size(),dest));
-        dest->resize(dest->elems.size());
+        int i = dest->getX()->size();
+        dest->resize(i+1);
+        (*dest->getX())[i] = Vector3(x,y,z);
+        static_cast<Sphere*>(dest->elems[i])->r() = r;
     }
 };
 
-void SphereModel::init(const char* filename)
+bool SphereModel::load(const char* filename)
 {
     this->resize(0);
-    elems.clear();
     Loader loader(this);
-    loader.load(filename);
+    return loader.load(filename);
 }
 
 void SphereModel::draw()
@@ -142,32 +156,6 @@ void SphereModel::computeBoundingBox(void)
     //std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
 
     cubeModel->setCube(0,minBB, maxBB);
-}
-
-void SphereModel::beginIntegration(double dt)
-{
-    //std::cout << "BEGIN"<<std::endl;
-    f = internalForces;
-    this->Core::MechanicalObject<Vec3Types>::beginIntegration(dt);
-}
-
-void SphereModel::endIntegration(double dt)
-{
-    this->Core::MechanicalObject<Vec3Types>::endIntegration(dt);
-    //std::cout << "END"<<std::endl;
-    f = externalForces;
-    externalForces->clear();
-}
-
-void SphereModel::accumulateForce()
-{
-    if (!externalForces->empty())
-    {
-        //std::cout << "Adding external forces"<<std::endl;
-        for (unsigned int i=0; i < externalForces->size(); i++)
-            (*getF())[i] += (*externalForces)[i];
-    }
-    this->Core::MechanicalObject<Vec3Types>::accumulateForce();
 }
 
 } // namespace Components

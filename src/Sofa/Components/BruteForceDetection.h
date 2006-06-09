@@ -21,18 +21,14 @@ using namespace Common;
 class BruteForceDetection : public Collision::BroadPhaseDetection, public Collision::NarrowPhaseDetection, public Abstract::VisualModel
 {
 private:
-    std::string _name;
     std::vector<Abstract::CollisionModel*> collisionModels;
+    bool bDraw;
 
 public:
-    BruteForceDetection(const std::string& name)
-    {
-        _name = name;
-    }
 
-    ~BruteForceDetection () {}
+    BruteForceDetection();
 
-    const char* getName() { return _name.c_str(); }
+    void setDraw(bool val) { bDraw = val; }
 
     void addCollisionModel (Abstract::CollisionModel *cm);
     void addCollisionPair (const std::pair<Abstract::CollisionModel*, Abstract::CollisionModel*>& cmPair);

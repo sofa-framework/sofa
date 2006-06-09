@@ -55,18 +55,11 @@ public:
     //=================================
     // interface of BasicMechanicalModel
 
-    BasicMechanicalModel* resize(int )
-    {return this;}
+    void resize(int)
+    {
+    }
 
     virtual void init()=0; // do not instanciate this class, use ArticulatedBody and Joints instead
-
-    virtual void setTopology(Core::Topology* /*topo*/)
-    {}
-
-    virtual Core::Topology* getTopology()
-    {
-        return NULL;
-    }
 
     virtual void beginIteration(double /*dt*/)
     {}

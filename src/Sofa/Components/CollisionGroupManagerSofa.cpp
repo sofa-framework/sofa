@@ -24,7 +24,7 @@ using namespace Graph;
 
 void create(CollisionGroupManagerSofa*& obj, ObjectDescription* arg)
 {
-    obj = new CollisionGroupManagerSofa(arg->getName());
+    obj = new CollisionGroupManagerSofa;
 }
 
 SOFA_DECL_CLASS(CollisionGroupManagerSofa)
@@ -43,8 +43,7 @@ protected:
     SolverMerger ();
 };
 
-CollisionGroupManagerSofa::CollisionGroupManagerSofa(const std::string& name)
-    : name(name)
+CollisionGroupManagerSofa::CollisionGroupManagerSofa()
 {
 }
 

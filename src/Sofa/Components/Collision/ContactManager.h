@@ -20,8 +20,6 @@ class ContactManager : public virtual Abstract::BaseObject
 public:
     virtual ~ContactManager() { }
 
-    virtual const char* getName() = 0;
-
     virtual void createContacts(const std::vector<DetectionOutput*>& outputs) = 0;
 
     virtual const std::vector<Contact*>& getContacts() = 0;

@@ -24,8 +24,6 @@ protected:
 public:
     virtual ~BroadPhaseDetection() { }
 
-    virtual const char* getName() = 0;
-
     virtual void addCollisionModel(Abstract::CollisionModel *cm) = 0;
 
     virtual void addCollisionModels(const std::vector<Abstract::CollisionModel *> v)

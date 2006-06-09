@@ -26,7 +26,9 @@ using namespace Collision;
 
 void create(BruteForceDetection*& obj, ObjectDescription* arg)
 {
-    obj = new BruteForceDetection(arg->getName());
+    obj = new BruteForceDetection();
+    if (arg->getAttribute("draw"))
+        obj->setDraw(atoi(arg->getAttribute("draw"))!=0);
 }
 
 SOFA_DECL_CLASS(BruteForce)
@@ -34,6 +36,11 @@ SOFA_DECL_CLASS(BruteForce)
 Creator<ObjectFactory, BruteForceDetection> BruteForceDetectionClass("BruteForceDetection");
 
 using namespace Abstract;
+
+BruteForceDetection::BruteForceDetection()
+    : bDraw(false)
+{
+}
 
 void BruteForceDetection::addCollisionModel(CollisionModel *cm)
 {
@@ -115,7 +122,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
 
 void BruteForceDetection::draw()
 {
-//	if (!Scene::getInstance()->getShowCollisionModels()) return;
+    if (!bDraw) return;
 
     std::vector<std::pair<CollisionElement*, CollisionElement*> >::iterator it = elemPairs.begin();
     std::vector<std::pair<CollisionElement*, CollisionElement*> >::iterator itEnd = elemPairs.end();

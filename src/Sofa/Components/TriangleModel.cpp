@@ -128,20 +128,32 @@ void TriangleModel::init(const char* file)
 void TriangleModel::draw()
 {
     if (!isActive() || !getContext()->getShowCollisionModels()) return;
-    //std::cout << "SPHdraw"<<elems.size()<<std::endl;
-    glDisable(GL_LIGHTING);
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    if (getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+    glEnable(GL_LIGHTING);
+    //Enable<GL_BLEND> blending;
+    //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
+    static const float color[3] = { 1.0f, 0.0f, 0.0f};
+    static const float colorStatic[3] = { 0.5f, 0.5f, 0.5f};
     if (isStatic())
-        glColor3f(0.5, 0.5, 0.5);
+        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colorStatic);
     else
-        glColor3f(1.0, 0.0, 0.0);
+        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+
     for (unsigned int i=0; i<elems.size(); i++)
     {
         static_cast<Triangle*>(elems[i])->draw();
     }
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glDisable(GL_LIGHTING);
+    if (getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
     if (getPrevious()!=NULL && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 /*

@@ -25,6 +25,8 @@ struct ContextData
     bool showVisualModels_;
     bool showMappings_;
     bool showForceFields_;
+    bool showWireFrame_;
+    bool showNormals_;
     bool multiThreadSimulation_;
 
     double localToWorldTranslation_[3];  ///< Used to project from the local coordinate system to the world coordinate system
@@ -73,6 +75,12 @@ public:
 
     /// Display flags: ForceFields
     virtual bool getShowForceFields() const;
+
+    /// Display flags: WireFrame
+    virtual bool getShowWireFrame() const;
+
+    /// Display flags: Normals
+    virtual bool getShowNormals() const;
 
     /// @}
 
@@ -154,6 +162,12 @@ public:
 
     /// Display flags: ForceFields
     virtual void setShowForceFields(bool val);
+
+    /// Display flags: WireFrame
+    virtual void setShowWireFrame(bool val);
+
+    /// Display flags: Normals
+    virtual void setShowNormals(bool val);
 
     /// Projection from the local frame to the world frame
     virtual void setLocalToWorld( const double* translation, const double* rotationQuat, const double* rotationMatrix );

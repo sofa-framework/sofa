@@ -22,8 +22,6 @@ protected:
 public:
     virtual ~NarrowPhaseDetection() { }
 
-    virtual const char* getName() = 0;
-
     virtual void addCollisionPair (const std::pair<Abstract::CollisionModel*, Abstract::CollisionModel*>& cmPair) = 0;
 
     virtual void addCollisionPairs(const std::vector< std::pair<Abstract::CollisionModel*, Abstract::CollisionModel*> > v)

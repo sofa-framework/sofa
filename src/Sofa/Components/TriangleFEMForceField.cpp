@@ -555,6 +555,10 @@ void TriangleFEMForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
     if (!this->_object) return;
+
+    if (getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     VecCoord& x = *this->_object->getX();
 
     glDisable(GL_LIGHTING);
@@ -575,6 +579,9 @@ void TriangleFEMForceField<DataTypes>::draw()
         GL::glVertexT(x[c]);
     }
     glEnd();
+
+    if (getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 

@@ -12,15 +12,15 @@ using namespace Collision;
 
 void create(ContactManagerSofa*& obj, ObjectDescription* arg)
 {
-    obj = new ContactManagerSofa(arg->getName(),arg->getAttribute("response","default"));
+    obj = new ContactManagerSofa(arg->getAttribute("response","default"));
 }
 
 SOFA_DECL_CLASS(ContactManagerSofa)
 
 Creator<ObjectFactory, ContactManagerSofa> ContactManagerSofaClass("CollisionResponse");
 
-ContactManagerSofa::ContactManagerSofa(const std::string& name, const std::string& contacttype)
-    : name(name), contacttype(contacttype)
+ContactManagerSofa::ContactManagerSofa(const std::string& contacttype)
+    : contacttype(contacttype)
 {
 }
 
@@ -54,7 +54,7 @@ void ContactManagerSofa::createContacts(const std::vector<DetectionOutput*>& out
         if (outputsIt!=outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
         {
             // new contact
-            //std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
+            std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
             Contact* contact = Contact::Create(contacttype, outputsIt->first.first, outputsIt->first.second, intersectionMethod);
             if (contact == NULL) std::cerr << "Contact creation failed"<<std::endl;
             else
