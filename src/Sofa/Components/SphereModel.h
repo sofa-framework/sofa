@@ -33,6 +33,9 @@ public:
 
     virtual void resize(int size);
 
+    int addSphere(const Vector3& pos, double radius);
+    void setSphere(int index, const Vector3& pos, double radius);
+
     bool load(const char* filename);
 
     bool isStatic() { return static_; }

@@ -55,6 +55,22 @@ void SphereModel::resize(int size)
     }
 }
 
+
+int SphereModel::addSphere(const Vector3& pos, double radius)
+{
+    int i = elems.size();
+    resize(i+1);
+    setSphere(i, pos, radius);
+    return i;
+}
+
+void SphereModel:: setSphere(int i, const Vector3& pos, double radius)
+{
+    if ((unsigned)i >= (unsigned) elems.size()) return;
+    (*this->getX())[i] = pos;
+    static_cast<Sphere*>(elems[i])->r() = radius;
+}
+
 class SphereModel::Loader : public SphereLoader
 {
 public:

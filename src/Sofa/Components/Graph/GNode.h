@@ -105,7 +105,7 @@ public:
     /// @{
 
     /// Execute a recursive action starting from this node
-    virtual void execute(Action* action);
+    virtual void executeAction(Action* action);
 
 
 
@@ -114,7 +114,13 @@ public:
     void execute(Act action)
     {
         Action* p = &action;
-        execute(p);
+        executeAction(p);
+    }
+
+    template<>
+    void execute(Action* action)
+    {
+        executeAction(action);
     }
 
     /// Execute a recursive action starting from this node
@@ -123,7 +129,7 @@ public:
     {
         Act action;
         Action* p = &action;
-        execute(p);
+        executeAction(p);
     }
 
     /// List all objects of this node deriving from a given class

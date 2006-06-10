@@ -262,13 +262,13 @@ void GNode::updateContext()
 
 
 /// Execute a recursive action starting from this node
-void GNode::execute(Action* action)
+void GNode::executeAction(Action* action)
 {
     if(action->processNodeTopDown(this) != Action::RESULT_PRUNE)
     {
         for(ChildIterator it = child.begin(); it != child.end(); ++it)
         {
-            (*it)->execute(action);
+            (*it)->executeAction(action);
         }
     }
     action->processNodeBottomUp(this);

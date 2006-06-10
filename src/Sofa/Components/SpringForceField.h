@@ -78,6 +78,8 @@ public:
 
     Core::MechanicalModel<DataTypes>* getObject1() { return object1; }
     Core::MechanicalModel<DataTypes>* getObject2() { return object2; }
+    Core::BasicMechanicalModel* getMechModel1() { return object1; }
+    Core::BasicMechanicalModel* getMechModel2() { return object2; }
 
     virtual void addForce();
 
