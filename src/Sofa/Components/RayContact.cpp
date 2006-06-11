@@ -1,4 +1,7 @@
 #include "RayContact.h"
+#include "RayModel.h"
+#include "SphereModel.h"
+#include "TriangleModel.h"
 
 namespace Sofa
 {
@@ -11,43 +14,25 @@ using namespace Collision;
 
 SOFA_DECL_CLASS(RayContact)
 
-Creator<Contact::Factory, RayContact> RayContactClass("default",true);
+Creator<Contact::Factory, RayContact<SphereModel>> RaySphereContactClass("default",true);
+Creator<Contact::Factory, RayContact<SphereModel>> RaySphereContactClass2("LagrangianMultiplier",true);
 
-RayContact::RayContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* /*intersectionMethod*/)
-    : model1(model1), model2(model2), parent(NULL)
+Creator<Contact::Factory, RayContact<TriangleModel>> RayTriangleContactClass("default",true);
+Creator<Contact::Factory, RayContact<TriangleModel>> RayTriangleContactClass2("LagrangianMultiplier",true);
+
+BaseRayContact::BaseRayContact(CollisionModel1* model1, Collision::Intersection* /*instersectionMethod*/)
+    : model1(model1)
 {
     if (model1!=NULL)
-    {
         model1->addContact(this);
-    }
 }
 
-RayContact::~RayContact()
+BaseRayContact::~BaseRayContact()
 {
     if (model1!=NULL)
-    {
         model1->removeContact(this);
-    }
 }
 
-void RayContact::setDetectionOutputs(const std::vector<DetectionOutput*>& outputs)
-{
-    collisions = outputs;
-}
-
-void RayContact::createResponse(Abstract::BaseContext* /*group*/)
-{
-}
-
-void RayContact::removeResponse()
-{
-}
-
-void RayContact::draw()
-{
-//	if (dynamic_cast<Abstract::VisualModel*>(ff)!=NULL)
-//		dynamic_cast<Abstract::VisualModel*>(ff)->draw();
-}
 
 } // namespace Components
 

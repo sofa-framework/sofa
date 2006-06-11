@@ -16,7 +16,7 @@ namespace Components
 
 using namespace Common;
 
-class RayContact;
+class BaseRayContact;
 
 class RayModel : public Core::MechanicalObject<Vec3Types>, public Abstract::CollisionModel, public Abstract::VisualModel
 {
@@ -24,7 +24,7 @@ protected:
     std::vector<Abstract::CollisionElement*> elems;
     Abstract::CollisionModel* previous;
     Abstract::CollisionModel* next;
-    std::set<RayContact*> contacts;
+    std::set<BaseRayContact*> contacts;
 public:
 
     RayModel();
@@ -46,9 +46,9 @@ public:
 
     Ray* getRay(int index) { return static_cast<Ray*>(elems[index]); }
 
-    virtual void addContact(RayContact* contact) { contacts.insert(contact); }
+    virtual void addContact(BaseRayContact* contact) { contacts.insert(contact); }
 
-    virtual void removeContact(RayContact* contact) { contacts.erase(contact); }
+    virtual void removeContact(BaseRayContact* contact) { contacts.erase(contact); }
 
     // -- CollisionModel interface
 
