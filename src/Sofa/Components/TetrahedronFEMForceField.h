@@ -79,7 +79,7 @@ public:
         : _mesh(NULL)
         , _indexedElements(NULL)
         , _method(0)
-        , _poissonRatio(0.45)
+        , _poissonRatio(0.45f)
         , _youngModulus(5000)
         , _dampingRatio(0)
         , _updateStiffnessMatrix(true)
