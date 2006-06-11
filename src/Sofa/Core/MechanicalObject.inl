@@ -36,7 +36,14 @@ MechanicalObject<DataTypes>::MechanicalObject()
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::~MechanicalObject()
-{}
+{
+    for (unsigned int i=0; i<vectorsCoord.size(); i++)
+        if (vectorsCoord[i]!=NULL)
+            delete vectorsCoord[i];
+    for (unsigned int i=0; i<vectorsDeriv.size(); i++)
+        if (vectorsDeriv[i]!=NULL)
+            delete vectorsDeriv[i];
+}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(int size)

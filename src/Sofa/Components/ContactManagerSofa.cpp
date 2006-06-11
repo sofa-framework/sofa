@@ -26,7 +26,9 @@ ContactManagerSofa::ContactManagerSofa(const std::string& contacttype)
 
 ContactManagerSofa::~ContactManagerSofa()
 {
-    clear();
+    // HACK: do not delete contacts as they might point to forcefields that are already deleted
+    // FIX crash on unload bug. -- J. Allard
+    //clear();
 }
 
 void ContactManagerSofa::clear()

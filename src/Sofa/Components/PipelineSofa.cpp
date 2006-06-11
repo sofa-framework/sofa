@@ -35,7 +35,7 @@ PipelineSofa::PipelineSofa()
 
 void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& collisionModels)
 {
-    Abstract::BaseContext* scene = getContext(); //Scene::getInstance();
+    Abstract::BaseContext* scene = getContext();
 
     VERBOSE(std::cout << "Reset collisions"<<std::endl);
     // clear all contacts
@@ -50,7 +50,6 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     // clear all collision groups
     if (groupManager!=NULL)
     {
-        /// \todo Update for scenegraph
         groupManager->clearGroups(scene);
     }
     // clear all detection outputs

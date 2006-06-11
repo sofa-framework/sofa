@@ -213,7 +213,6 @@ void VoxelGrid::addCollisionPair(const std::pair<CollisionModel*, CollisionModel
 
 void VoxelGrid::draw()
 {
-    //if (!Scene::getInstance()->getShowCollisionModels()) return;
     if (!bDraw) return;
     Vector3 nbSubdiv;
     int i;
