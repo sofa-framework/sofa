@@ -28,6 +28,14 @@ void create(ImplicitSurfaceMapping<In,Out>*& obj, ObjectDescription* arg)
             obj->setStep(atof(arg->getAttribute("step")));
         if (arg->getAttribute("isoValue"))
             obj->setIsoValue(atof(arg->getAttribute("isoValue")));
+        if (arg->getAttribute("min") || arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))
+            obj->setGridMin(atof(arg->getAttribute("minx",arg->getAttribute("min","-100.0"))),
+                    atof(arg->getAttribute("miny",arg->getAttribute("min","-100.0"))),
+                    atof(arg->getAttribute("minz",arg->getAttribute("min","-100.0"))));
+        if (arg->getAttribute("max") || arg->getAttribute("maxx") || arg->getAttribute("maxy") || arg->getAttribute("maxz"))
+            obj->setGridMax(atof(arg->getAttribute("maxx",arg->getAttribute("max","100.0"))),
+                    atof(arg->getAttribute("maxy",arg->getAttribute("max","100.0"))),
+                    atof(arg->getAttribute("maxz",arg->getAttribute("max","100.0"))));
     }
 }
 

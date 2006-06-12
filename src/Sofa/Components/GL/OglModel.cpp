@@ -211,8 +211,8 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
             {
                 std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
                 std::vector<int> verts = vertNormTexIndex[0];
-                std::vector<int> norms = vertNormTexIndex[2];
-                std::vector<int> texs = vertNormTexIndex[1];
+                std::vector<int> norms = vertNormTexIndex[1];
+                std::vector<int> texs = vertNormTexIndex[2];
                 for (unsigned int j = 0; j < verts.size(); j++)
                 {
                     vertNormTexMap[verts[j]][std::make_pair(norms[j], (tex!=NULL?texs[j]:0))] = 0;
@@ -263,7 +263,7 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
                     if ((unsigned)n < normalsImport.size())
                         vnormals[j] = normalsImport[n];
                     if ((unsigned)t < texCoordsImport.size())
-                        vtexcoords[j] = texCoordsImport[n];
+                        vtexcoords[j] = texCoordsImport[t];
                     if (vsplit)
                     {
                         vertPosIdx[j] = i;
@@ -286,8 +286,8 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
             {
                 std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
                 std::vector<int> verts = vertNormTexIndex[0];
-                std::vector<int> norms = vertNormTexIndex[2];
-                std::vector<int> texs = vertNormTexIndex[1];
+                std::vector<int> norms = vertNormTexIndex[1];
+                std::vector<int> texs = vertNormTexIndex[2];
                 std::vector<int> idxs;
                 idxs.resize(verts.size());
                 for (unsigned int j = 0; j < verts.size(); j++)

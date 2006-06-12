@@ -27,6 +27,7 @@ void create(LennardJonesForceField<DataTypes>*& obj, ObjectDescription* arg)
         else if (arg->getAttribute("d0"))  obj->setDMax(2*(typename DataTypes::Coord::value_type)atof(arg->getAttribute("d0")));
         if (arg->getAttribute("d0"))  obj->setD0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("d0")));
         if (arg->getAttribute("p0"))  obj->setP0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("p0")));
+        if (arg->getAttribute("damping"))  obj->setP0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("damping")));
     }
 }
 }

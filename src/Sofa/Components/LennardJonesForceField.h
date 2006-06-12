@@ -27,6 +27,7 @@ public:
 protected:
     Real a,b,alpha,beta,dmax,fmax;
     Real d0,p0;
+    Real damping;
 
     struct DForce
     {
@@ -38,7 +39,7 @@ protected:
 
 public:
     LennardJonesForceField(Sofa::Core::MechanicalModel<DataTypes>* /*object*/=NULL)
-        : a(1), b(1), alpha(6), beta(12), dmax(2), fmax(1), d0(1), p0(1)
+        : a(1), b(1), alpha(6), beta(12), dmax(2), fmax(1), d0(1), p0(1), damping(0)
     {
     }
 
@@ -48,6 +49,7 @@ public:
     void setDMax(Real v) { dmax = v; }
     void setD0(Real v) { d0 = v; }
     void setP0(Real v) { p0 = v; }
+    void setDamping(Real v) { damping = v; }
 
     virtual void init();
 

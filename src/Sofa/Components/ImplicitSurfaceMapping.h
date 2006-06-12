@@ -31,7 +31,7 @@ public:
     typedef typename InCoord::value_type InReal;
 
     ImplicitSurfaceMapping(In* from, Out* to)
-        : Inherit(from, to), mStep(0.5), mRadius(2.0), mIsoValue(0.5)
+        : Inherit(from, to), mStep(0.5), mRadius(2.0), mIsoValue(0.5), mGridMin(-100,-100,-100), mGridMax(100, 100, 100)
     {
     }
 
@@ -48,6 +48,14 @@ public:
     double getIsoValue() const { return mIsoValue; }
     void setIsoValue(double val) { mIsoValue = val; }
 
+    const InCoord& getGridMin() const { return mGridMin; }
+    void setGridMin(const InCoord& val) { mGridMin = val; }
+    void setGridMin(double x, double y, double z) { mGridMin = InCoord((InReal)x,(InReal)y,(InReal)z); }
+
+    const InCoord& getGridMax() const { return mGridMax; }
+    void setGridMax(const InCoord& val) { mGridMax = val; }
+    void setGridMax(double x, double y, double z) { mGridMax = InCoord((InReal)x,(InReal)y,(InReal)z); }
+
     void apply( OutVecCoord& out, const InVecCoord& in );
 
     void applyJ( OutVecDeriv& out, const InVecDeriv& in );
@@ -57,6 +65,9 @@ protected:
     double mStep;
     double mRadius;
     double mIsoValue;
+
+    InCoord mGridMin;
+    InCoord mGridMax;
 
     // Marching cube data
 

@@ -36,7 +36,7 @@ void LennardJonesForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& /*v1*/)
+void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
 {
     Real dmax2 = dmax*dmax;
     this->dforces.clear();
@@ -68,7 +68,11 @@ void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
                 df.df = ((-alpha-1)*fa - (-beta-1)*fb)/(d*d2);
             }
             this->dforces.push_back(df);
-            const Deriv force = u*(forceIntensity/d);
+            Deriv force = u*(forceIntensity/d);
+
+            // Add damping
+            force += (v1[ib]-v1[ia])*damping;
+
             f1[ia]+=force;
             f1[ib]-=force;
         }
@@ -99,7 +103,7 @@ void LennardJonesForceField<DataTypes>::draw()
     VecCoord& p1 = *this->mmodel->getX();
     glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
-    const Real d02 = 1; //this->d0*this->d0;
+    const Real d02 = this->d0*this->d0;
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {
         const DForce& df = this->dforces[i];
