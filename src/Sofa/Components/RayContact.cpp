@@ -14,11 +14,11 @@ using namespace Collision;
 
 SOFA_DECL_CLASS(RayContact)
 
-Creator<Contact::Factory, RayContact<SphereModel>> RaySphereContactClass("default",true);
-Creator<Contact::Factory, RayContact<SphereModel>> RaySphereContactClass2("LagrangianMultiplier",true);
+Creator<Contact::Factory, RayContact<SphereModel> > RaySphereContactClass("default",true);
+Creator<Contact::Factory, RayContact<SphereModel> > RaySphereContactClass2("LagrangianMultiplier",true);
 
-Creator<Contact::Factory, RayContact<TriangleModel>> RayTriangleContactClass("default",true);
-Creator<Contact::Factory, RayContact<TriangleModel>> RayTriangleContactClass2("LagrangianMultiplier",true);
+Creator<Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass("default",true);
+Creator<Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass2("LagrangianMultiplier",true);
 
 BaseRayContact::BaseRayContact(CollisionModel1* model1, Collision::Intersection* /*instersectionMethod*/)
     : model1(model1)

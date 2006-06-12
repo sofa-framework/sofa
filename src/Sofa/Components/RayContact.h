@@ -35,7 +35,7 @@ public:
 
     const std::vector<Collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
 
-    void createResponse(Abstract::BaseContext* group)
+    void createResponse(Abstract::BaseContext* /*group*/)
     {
     }
 

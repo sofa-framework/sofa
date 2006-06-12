@@ -110,17 +110,16 @@ public:
 
 
     /// Execute a recursive action starting from this node
-    template<class Act>
-    void execute(Act action)
+    void execute(Action& action)
     {
         Action* p = &action;
         executeAction(p);
     }
 
-    template<>
-    void execute(Action* action)
+    /// Execute a recursive action starting from this node
+    void execute(Action* p)
     {
-        executeAction(action);
+        executeAction(p);
     }
 
     /// Execute a recursive action starting from this node
