@@ -127,6 +127,7 @@ public:
     void init(const std::string &name, std::string filename, std::string loader, std::string textureName);
     void applyTranslation(double dx, double dy, double dz);
     void applyScale(double s);
+    void applyUVScale(double su, double sv);
     void computeNormals();
 
     void setColor(float r, float g, float b, float a);
