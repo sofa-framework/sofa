@@ -398,6 +398,18 @@ void OglModel::computeNormals()
         normals[(vsplit ? vertNormIdx[triangles[i][2]] : triangles[i][2])] += n;
     }
 
+    for (unsigned int i = 0; i < quads.size() ; i++)
+    {
+        const Coord & v1 = vertices[quads[i][0]];
+        const Coord & v2 = vertices[quads[i][1]];
+        const Coord & v3 = vertices[quads[i][2]];
+        Coord n = cross(v2-v1, v3-v1);
+        n.normalize();
+        normals[(vsplit ? vertNormIdx[quads[i][0]] : quads[i][0])] += n;
+        normals[(vsplit ? vertNormIdx[quads[i][1]] : quads[i][1])] += n;
+        normals[(vsplit ? vertNormIdx[quads[i][2]] : quads[i][2])] += n;
+    }
+
     for (unsigned int i = 0; i < normals.size(); i++)
     {
         normals[i].normalize();

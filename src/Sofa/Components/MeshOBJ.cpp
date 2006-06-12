@@ -139,8 +139,8 @@ void MeshOBJ::readOBJ (FILE* file)
                     face = face.substr(face.find('/') + 1);
                 }
                 vIndices.push_back(vtn[0]);
-                tIndices.push_back(vtn[1]);
-                nIndices.push_back(vtn[2]);
+                nIndices.push_back(vtn[1]);
+                tIndices.push_back(vtn[2]);
                 token = strtok(NULL, " ");
             }
             vertNormTexIndices.push_back (vIndices);
