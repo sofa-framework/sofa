@@ -26,6 +26,8 @@ void create(OglModel*& obj, ObjectDescription* arg)
         if (color) obj->setColor(color);
         if (arg->getAttribute("scale")!=NULL)
             obj->applyScale(atof(arg->getAttribute("scale","1.0")));
+        if (arg->getAttribute("scaleTex")!=NULL)
+            obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
         if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
             obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
     }
@@ -358,6 +360,15 @@ void OglModel::applyScale(double scale)
         x[i] *= (GLfloat) scale;
     }
     update();
+}
+
+void OglModel::applyUVScale(double scaleU, double scaleV)
+{
+    for (unsigned int i = 0; i < vtexcoords.size(); i++)
+    {
+        vtexcoords[i][0] *= (GLfloat) scaleU;
+        vtexcoords[i][1] *= (GLfloat) scaleV;
+    }
 }
 
 void OglModel::init()
