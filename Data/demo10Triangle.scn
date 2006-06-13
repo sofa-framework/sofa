@@ -1,0 +1,121 @@
+<Node name="root"  dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
+	<Object type="CollisionPipeline" verbose="0" draw="1"/>
+	<Object type="BruteForceDetection" name="N2" />
+	<Object type="ProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.75" />
+	<Object type="CollisionResponse" name="Response" response="default" />
+	<Object type="CollisionGroup" name="Group" />
+	<Node name="M1">
+		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="MechanicalObject" dx="0" dy="-10.5" dz="0"/>
+		<Object type="UniformMass" mass="0.05"/>
+		<Object type="RegularGrid"
+			nx="3" ny="3" nz="3"
+			xmin="-3.5" xmax="3.5"
+			ymin="-3.5" ymax="3.5"
+			zmin="-3.5" zmax="3.5"
+			/>
+		<Object type="RegularGridSpringForceField" name="Springs" stiffness="800" damping="8" />
+		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="yellow"/>
+		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Surf">
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="BarycentricMapping" />
+		</Node>
+	</Node>
+	<Node name="M2">
+		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="MechanicalObject" dx="2" dy="0" dz="0"/>
+		<Object type="UniformMass" mass="0.05"/>
+		<Object type="RegularGrid"
+			nx="4" ny="4" nz="4"
+			xmin="-3.5" xmax="3.5"
+			ymin="-3.5" ymax="3.5"
+			zmin="-3.5" zmax="3.5"
+			/>
+		<Object type="RegularGridSpringForceField" name="Springs" stiffness="560" damping="5.6" />
+		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="#ff8000" />
+		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Surf">
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="BarycentricMapping" />
+		</Node>
+	</Node>
+	<Node name="M3">
+		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="MechanicalObject" dx="0" dy="10.5" dz="-4"/>
+		<Object type="UniformMass" mass="0.05"/>
+		<Object type="RegularGrid"
+			nx="5" ny="5" nz="5"
+			xmin="-3.5" xmax="3.5"
+			ymin="-3.5" ymax="3.5"
+			zmin="-3.5" zmax="3.5"
+			/>
+		<Object type="RegularGridSpringForceField" name="Springs" stiffness="400" damping="4" />
+		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="red" />
+		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Surf">
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="BarycentricMapping" />
+		</Node>
+	</Node>
+	<Node name="M4">
+		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="MechanicalObject" dx="0" dy="21" dz="0"/>
+		<Object type="UniformMass" mass="0.05"/>
+		<Object type="RegularGrid"
+			nx="6" ny="6" nz="6"
+			xmin="-3.5" xmax="3.5"
+			ymin="-3.5" ymax="3.5"
+			zmin="-3.5" zmax="3.5"
+			/>
+		<Object type="RegularGridSpringForceField" name="Springs" stiffness="400" damping="4" />
+		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="#801080" />
+		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Surf">
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="BarycentricMapping" />
+		</Node>
+	</Node>
+	<!--
+	<Node name="M5">
+		<Object type="CGImplicit" iterations="100" threshold="0.000001" />
+		<Object type="MechanicalObject" dx="-4" dy="31.5" dz="-4"/>
+		<Object type="UniformMass" mass="0.05"/>
+		<Object type="RegularGrid"
+			nx="7" ny="7" nz="7"
+			xmin="-3.5" xmax="3.5"
+			ymin="-3.5" ymax="3.5"
+			zmin="-3.5" zmax="3.5"
+			/>
+		<Object type="RegularGridSpringForceField" name="Springs" stiffness="400" damping="4" />
+		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="cyan" />
+		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Surf">
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="BarycentricMapping" />
+		</Node>
+	</Node>
+	-->
+	<Node name="Floor">
+		<Object type="Mesh" filename="CollisionModels/floor3.obj" />
+		<Object type="MechanicalObject" dy="-20" />
+		<Object type="Triangle" name="Floor" static="1" />
+		<Object type="Line" name="Floor" static="1" />
+		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor3.obj" texturename="VisualModels/floor.bmp" dy="-20" />
+	</Node>
+</Node>

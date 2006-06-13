@@ -1,7 +1,7 @@
 <!-- Hierarchical Group Basic Test -->
 <Node name="root"  dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
 	<Object type="CollisionPipeline" verbose="1" draw="1"/>
-	<Object type="VoxelGridDetection" name="Voxel" minx="-10" maxx="10"  miny="-30" maxy="0"  minz="-40" maxz="40" nx="4" ny="8" nz="16" draw="1" />
+	<Object type="VoxelGridDetection" name="Voxel" minx="-10" maxx="10"  miny="-30" maxy="0"  minz="-40" maxz="40" nx="2" ny="4" nz="8" draw="1" />
 	<Object type="BruteForceDetection" name="N2" />
 	<!--<Object type="ProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="1" useLineTriangle="0"/>-->
 	<Object type="ProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="0" useLineTriangle="1"/>
