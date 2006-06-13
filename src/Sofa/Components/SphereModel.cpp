@@ -108,24 +108,25 @@ void SphereModel::draw()
     if (getPrevious()!=NULL && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
 }
-
+/*
 void SphereModel::applyTranslation(double dx, double dy, double dz)
 {
-    Vector3 d(dx,dy,dz);
-    VecCoord& x = *getX();
-    for (unsigned int i = 0; i < x.size(); i++)
-        x[i] += d;
+	Vector3 d(dx,dy,dz);
+	VecCoord& x = *getX();
+	for (unsigned int i = 0; i < x.size(); i++)
+		x[i] += d;
 }
 
 void SphereModel::applyScale(double s)
 {
-    VecCoord& x = *getX();
-    for (unsigned int i = 0; i < x.size(); i++)
-    {
-        x[i] *= s;
-        static_cast<Sphere*>(elems[i])->radius *=s;
-    }
+	VecCoord& x = *getX();
+	for (unsigned int i = 0; i < x.size(); i++)
+	{
+		x[i] *= s;
+		static_cast<Sphere*>(elems[i])->radius *=s;
+	}
 }
+*/
 
 void SphereModel::computeBoundingBox(void)
 {

@@ -207,17 +207,17 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
             int nbVIn = verticesImport.size();
             // First we compute for each point how many pair of normal/texcoord indices are used
             // The map store the final index of each combinaison
-            std::vector< std::map< std::pair<int,int>, int > > vertNormTexMap;
-            vertNormTexMap.resize(nbVIn);
+            std::vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
+            vertTexNormMap.resize(nbVIn);
             for (unsigned int i = 0; i < facetsImport.size(); i++)
             {
                 std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
                 std::vector<int> verts = vertNormTexIndex[0];
-                std::vector<int> norms = vertNormTexIndex[1];
-                std::vector<int> texs = vertNormTexIndex[2];
+                std::vector<int> texs = vertNormTexIndex[1];
+                std::vector<int> norms = vertNormTexIndex[2];
                 for (unsigned int j = 0; j < verts.size(); j++)
                 {
-                    vertNormTexMap[verts[j]][std::make_pair(norms[j], (tex!=NULL?texs[j]:0))] = 0;
+                    vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:0), norms[j])] = 0;
                 }
             }
 
@@ -226,7 +226,7 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
             bool vsplit = false;
             for (int i = 0; i < nbVIn; i++)
             {
-                int s = vertNormTexMap[i].size();
+                int s = vertTexNormMap[i].size();
                 nbVOut += s;
                 if (s!=1)
                     vsplit = true;
@@ -256,12 +256,12 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
                 if (vsplit)
                     (*inputVertices)[i] = verticesImport[i];
                 std::map<int, int> normMap;
-                for (std::map<std::pair<int, int>, int>::iterator it = vertNormTexMap[i].begin();
-                        it != vertNormTexMap[i].end(); ++it)
+                for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
+                        it != vertTexNormMap[i].end(); ++it)
                 {
                     vertices[j] = verticesImport[i];
-                    int n = it->first.first;
-                    int t = it->first.second;
+                    int t = it->first.first;
+                    int n = it->first.second;
                     if ((unsigned)n < normalsImport.size())
                         vnormals[j] = normalsImport[n];
                     if ((unsigned)t < texCoordsImport.size())
@@ -288,12 +288,12 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
             {
                 std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
                 std::vector<int> verts = vertNormTexIndex[0];
-                std::vector<int> norms = vertNormTexIndex[1];
-                std::vector<int> texs = vertNormTexIndex[2];
+                std::vector<int> texs = vertNormTexIndex[1];
+                std::vector<int> norms = vertNormTexIndex[2];
                 std::vector<int> idxs;
                 idxs.resize(verts.size());
                 for (unsigned int j = 0; j < verts.size(); j++)
-                    idxs[j] = vertNormTexMap[verts[j]][std::make_pair(norms[j], (tex!=NULL?texs[j]:0))];
+                    idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:0), norms[j])];
 
                 if (verts.size() == 4)
                 {
@@ -413,12 +413,13 @@ void OglModel::computeNormals()
     {
         const Coord & v1 = vertices[quads[i][0]];
         const Coord & v2 = vertices[quads[i][1]];
-        const Coord & v3 = vertices[quads[i][2]];
+        const Coord & v3 = vertices[quads[i][3]];
         Coord n = cross(v2-v1, v3-v1);
         n.normalize();
         normals[(vsplit ? vertNormIdx[quads[i][0]] : quads[i][0])] += n;
         normals[(vsplit ? vertNormIdx[quads[i][1]] : quads[i][1])] += n;
         normals[(vsplit ? vertNormIdx[quads[i][2]] : quads[i][2])] += n;
+        normals[(vsplit ? vertNormIdx[quads[i][3]] : quads[i][3])] += n;
     }
 
     for (unsigned int i = 0; i < normals.size(); i++)

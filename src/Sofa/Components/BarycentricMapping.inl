@@ -144,7 +144,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::createPointInQuad(const OutCoo
     const MeshTopology::Quad& elem = topology->getQuad(quadIndex);
     const InCoord p0 = (*points)[elem[0]];
     const InCoord pA = (*points)[elem[1]] - p0;
-    const InCoord pB = (*points)[elem[2]] - p0;
+    const InCoord pB = (*points)[elem[3]] - p0;
     InCoord pos = p - p0;
     Mat<3,3,typename InCoord::value_type> m,mt,base;
     m[0] = pA;
@@ -323,8 +323,8 @@ void BarycentricMapping<BaseMapping>::MeshMapper::apply( typename BarycentricMap
                 const MeshTopology::Quad& quad = quads[index-c0];
                 out[i+i0] = in[quad[0]] * ((1-fx) * (1-fy))
                         + in[quad[1]] * ((  fx) * (1-fy))
-                        + in[quad[2]] * ((1-fx) * (  fy))
-                        + in[quad[3]] * ((  fx) * (  fy));
+                        + in[quad[3]] * ((1-fx) * (  fy))
+                        + in[quad[2]] * ((  fx) * (  fy));
             }
         }
     }
@@ -433,8 +433,8 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJ( typename BarycentricMa
                 const MeshTopology::Quad& quad = quads[index-c0];
                 out[i+i0] = in[quad[0]] * ((1-fx) * (1-fy))
                         + in[quad[1]] * ((  fx) * (1-fy))
-                        + in[quad[2]] * ((1-fx) * (  fy))
-                        + in[quad[3]] * ((  fx) * (  fy));
+                        + in[quad[3]] * ((1-fx) * (  fy))
+                        + in[quad[2]] * ((  fx) * (  fy));
             }
         }
     }
@@ -543,8 +543,8 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJT( typename BaseMapping:
                 const MeshTopology::Quad& quad = quads[index-c0];
                 out[quad[0]] += v * ((1-fx) * (1-fy));
                 out[quad[1]] += v * ((  fx) * (1-fy));
-                out[quad[2]] += v * ((1-fx) * (  fy));
-                out[quad[3]] += v * ((  fx) * (  fy));
+                out[quad[3]] += v * ((1-fx) * (  fy));
+                out[quad[2]] += v * ((  fx) * (  fy));
             }
         }
     }
@@ -699,8 +699,8 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
                 Real f[4];
                 f[0] = ((1-fx) * (1-fy));
                 f[1] = ((  fx) * (1-fy));
-                f[2] = ((1-fx) * (  fy));
-                f[3] = ((  fx) * (  fy));
+                f[3] = ((1-fx) * (  fy));
+                f[2] = ((  fx) * (  fy));
                 for (int j=0; j<4; j++)
                 {
                     if (f[j]<=-0.0001 || f[j]>=0.0001)

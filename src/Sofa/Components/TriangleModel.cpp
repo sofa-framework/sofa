@@ -80,7 +80,7 @@ void TriangleModel::init()
             continue;
         }
         Triangle *t1 = new Triangle(i+ntris, idx[0], idx[1], idx[2], this);
-        Triangle *t2 = new Triangle(i+ntris, idx[3], idx[2], idx[1], this);
+        Triangle *t2 = new Triangle(i+ntris, idx[0], idx[2], idx[3], this);
         elems.push_back(t1);
         elems.push_back(t2);
     }

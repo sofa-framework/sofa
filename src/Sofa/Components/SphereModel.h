@@ -60,9 +60,9 @@ public:
     void setPrevious(Abstract::CollisionModel* p)
     { previous = p; }
 
-    void applyTranslation(double dx, double dy, double dz);
+    //void applyTranslation(double dx, double dy, double dz);
 
-    void applyScale(double s);
+    //void applyScale(double s);
 
     // -- VisualModel interface
 

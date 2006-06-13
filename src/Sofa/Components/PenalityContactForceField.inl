@@ -77,7 +77,7 @@ void PenalityContactForceField<DataTypes>::addDForce()
         const Contact& c = contacts[i];
         Coord du = dx2[c.m2]-dx1[c.m1];
         Real dpen = - du*c.norm;
-        if (c.pen + dpen > 0)
+        if (c.pen > 0) // + dpen > 0)
         {
             if (c.pen < 0) dpen += c.pen; // start penality at distance 0
             Real dfN = c.ks * dpen;

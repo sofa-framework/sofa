@@ -101,7 +101,7 @@ bool MeshTopology::load(const char* filename)
             if (facet.size()==4)
             {
                 // Quat
-                loader.addQuad(facet[0],facet[1],facet[3],facet[2]);
+                loader.addQuad(facet[0],facet[1],facet[2],facet[3]);
             }
             else
             {
