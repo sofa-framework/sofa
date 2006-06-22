@@ -16,6 +16,7 @@
 #include <algorithm>
 #include <map>
 #include <list>
+#include <vector>
 
 typedef std::istringstream istrstream;
 
@@ -123,6 +124,39 @@ private:
 
 };
 
+/** Specialization for reading lists.
+Lists are used for options that can be repeted
+Example: run -D ELEM1 -D ELEM2 ...
+*/
+/*
+template<class TE> inline
+bool Argument< std::vector<TE> >::read( std::list<std::string>& str)
+{
+	if (str.empty()) return false;
+	std::string s = str.front();
+	str.pop_front();
+	TE val;
+	istrstream istr( s.c_str() );
+	if( ! (istr >> val) ) return false;
+	else {
+		isSet = true;
+		*ptr.push_back(vak);
+		return true;
+	}
+}
+*/
+
+template<> inline
+bool Argument< std::vector< std::string > >::read( std::list<std::string>& str)
+{
+    if (str.empty()) return false;
+    std::string s = str.front();
+    str.pop_front();
+    isSet = true;
+    ptr->push_back(s);
+    return true;
+}
+
 /** Specialization for flag reading booleans.
 Booleans are seen as flags that you can set to TRUE using the command line.
 Example: run --verbose
@@ -153,6 +187,14 @@ template<class T> inline
 void Argument<T>::printValue() const
 {
     std::cout << *ptr << " ";
+}
+
+/// General case for printing default value
+template<> inline
+void Argument<std::vector<std::string > >::printValue() const
+{
+    for (unsigned int i=0; i<ptr->size(); i++)
+        std::cout << (*ptr)[i] << " ";
 }
 
 

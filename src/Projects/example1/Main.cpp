@@ -10,6 +10,28 @@
 #include "Sofa/GUI/QT/Main.h"
 #endif
 
+#ifndef WIN32
+#include <dlfcn.h>
+bool loadPlugin(const char* filename)
+{
+    void *handle;
+    handle=dlopen(filename, RTLD_LAZY);
+    if (!handle)
+    {
+        std::cerr<<"Error loading plugin "<<filename<<": "<<dlerror()<<std::endl;
+        return false;
+    }
+    std::cerr<<"Plugin "<<filename<<" loaded."<<std::endl;
+    return true;
+}
+#else
+bool loadPlugin(const char* filename)
+{
+    std::cerr << "Plugin loading not supported on this platform.\n";
+    return false;
+}
+#endif
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -19,6 +41,7 @@ int main(int argc, char** argv)
     bool        startAnim = false;
     bool        printFactory = false;
     std::string gui = "none";
+    std::vector<std::string> plugins;
 #ifdef SOFA_GUI_FLTK
     gui = "fltk";
 #endif
@@ -39,7 +62,11 @@ int main(int argc, char** argv)
 #endif
             ")"
            )
+    .option(&plugins,'l',"load","load given plugins")
     (argc,argv);
+
+    for (unsigned int i=0; i<plugins.size(); i++)
+        loadPlugin(plugins[i].c_str());
 
     if (printFactory)
     {
@@ -62,7 +89,10 @@ int main(int argc, char** argv)
     }
 
     if (groot==NULL)
-        return 1;
+    {
+        groot = new Sofa::Components::Graph::GNode;
+        //return 1;
+    }
 
     if (startAnim)
         groot->setAnimate(true);
