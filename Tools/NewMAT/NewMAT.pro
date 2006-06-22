@@ -2,16 +2,16 @@ include(../../sofa.cfg)
 TEMPLATE = lib
 CONFIG += $$CONFIGLIBRARIES
 DESTDIR = ../../lib/$$LIBSDIRECTORY
-TARGET = NewMat
+TARGET = NewMat$$LIBSUFFIX
 OBJECTS_DIR = OBJ/$$CONFIGDEBUG
-INCLUDEPATH = ../..
-INCLUDEPATH += ../../include
-DEPENDPATH = ../..
+#INCLUDEPATH = ../..
+#INCLUDEPATH += ../../include
+#DEPENDPATH = ../..
 
-use_namespace 
+#DEFINES += use_namespace 
 
-#LIBS = -lSofaAbstract
-#QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY ../../../lib/$$LIBSDIRECTORY/../Common
+#QMAKE_LIBDIR = ../../lib/$$LIBSDIRECTORY ../../lib/$$LIBSDIRECTORY/../Common
+#LIBS = -lSofaAbstract$$LIBSUFFIX
 
 SOURCES = \    
         newmat1.cpp \
