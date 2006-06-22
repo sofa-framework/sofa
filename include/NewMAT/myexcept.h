@@ -239,6 +239,7 @@ protected:
     FreeCheckLink* next;
     void* ClassStore;
     FreeCheckLink();
+    virtual ~FreeCheckLink() {}
     virtual void Report()=0;                   // print details of link
     friend class FreeCheck;
 };
