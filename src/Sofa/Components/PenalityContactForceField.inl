@@ -65,10 +65,10 @@ template<class DataTypes>
 void PenalityContactForceField<DataTypes>::addDForce()
 {
     VecDeriv& f1  = *this->object1->getF();
-    VecCoord& p1 = *this->object1->getX();
+    //VecCoord& p1 = *this->object1->getX();
     VecDeriv& dx1 = *this->object1->getDx();
     VecDeriv& f2  = *this->object2->getF();
-    VecCoord& p2 = *this->object2->getX();
+    //VecCoord& p2 = *this->object2->getX();
     VecDeriv& dx2 = *this->object2->getDx();
     f1.resize(dx1.size());
     f2.resize(dx2.size());
