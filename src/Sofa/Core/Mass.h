@@ -2,6 +2,7 @@
 #define SOFA_CORE_MASS_H
 
 #include "BasicMass.h"
+#include "ForceField.h"
 #include "MechanicalModel.h"
 
 namespace Sofa
@@ -11,7 +12,7 @@ namespace Core
 {
 
 template<class DataTypes>
-class Mass : public BasicMass
+class Mass : public ForceField<DataTypes>, public BasicMass
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -23,26 +24,18 @@ public:
 
     virtual ~Mass();
 
-    virtual void init();
-
     virtual void addMDx(); ///< f += M dx
 
     virtual void accFromF(); ///< dx = M^-1 f
-
-    virtual void computeForce(); /// f += gravity and inertia forces
-
-    virtual void computeDf();
 
     virtual void addMDx(VecDeriv& f, const VecDeriv& dx) = 0; ///< f += M dx
 
     virtual void accFromF(VecDeriv& a, const VecDeriv& f) = 0; ///< dx = M^-1 f
 
-    virtual void computeForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v) = 0; /// f += gravity and inertia forces
+    // Mass forces (gravity) often have null derivative
+    virtual void addDForce(VecDeriv& /*df*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const VecDeriv& /*dx*/)
+    {}
 
-    virtual void computeDf(VecDeriv& /*df*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const VecDeriv& /*dx*/) { };
-
-protected:
-    MechanicalModel<DataTypes> *mmodel;
 };
 
 /** Return the inertia force applied to a body referenced in a moving coordinate system.
@@ -59,7 +52,6 @@ Deriv inertiaForce( const SV& sv, const Vec& a, const M& m, const Coord& x, cons
     const Deriv& omega=sv.lineVec;
     return -( a + omega.cross( omega.cross(x) + v*2 ))*m;
 }
-
 
 } // namespace Core
 

@@ -70,7 +70,7 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::computeForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
+void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 {
     // weight
     const double* g = this->getContext()->getGravity();

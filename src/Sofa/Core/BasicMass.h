@@ -18,9 +18,11 @@ public:
 
     virtual void accFromF() = 0; ///< dx = M^-1 f
 
-    virtual void computeForce() { } /// f += gravity and inertia forces
+    // Note: computeForce and computeDf are now replaced by addForce and addDForce of the ForceField class.
 
-    virtual void computeDf() { }
+    //virtual void computeForce() { } ///< f += gravity and inertia forces
+
+    //virtual void computeDf() { }
 };
 
 } // namespace Core

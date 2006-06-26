@@ -69,7 +69,7 @@ void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::computeForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
+void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 {
     /*Deriv gravity ( getContext()->getGravity() );
     for (unsigned int i=0;i<f.size();i++)

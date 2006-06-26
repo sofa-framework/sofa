@@ -46,7 +46,7 @@ public:
 
     void accFromF(VecDeriv& a, const VecDeriv& f);
 
-    void computeForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
     // -- VisualModel interface
 
