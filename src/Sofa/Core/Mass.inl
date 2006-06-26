@@ -31,7 +31,7 @@ void Mass<DataTypes>::addMDx()
 template<class DataTypes>
 void Mass<DataTypes>::accFromF()
 {
-    if (mmodel)
+    if (this->mmodel)
         accFromF(*this->mmodel->getDx(), *this->mmodel->getF());
 }
 
