@@ -12,7 +12,7 @@ namespace XML
 
 using namespace Common;
 
-template class Factory< std::string, Abstract::BaseObject, Node<Abstract::BaseObject*>* >;
+//template class Factory< std::string, Abstract::BaseObject, Node<Abstract::BaseObject*>* >;
 
 ObjectNode::ObjectNode(const std::string& name, const std::string& type, BaseNode* parent)
     : Node<Abstract::BaseObject>(name, type, parent)

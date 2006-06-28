@@ -18,6 +18,7 @@ using namespace DiscreteIntersections;
 
 namespace Common
 {
+template<>
 void create(DiscreteIntersection*& obj, ObjectDescription* /*arg*/)
 {
     obj = new DiscreteIntersection();

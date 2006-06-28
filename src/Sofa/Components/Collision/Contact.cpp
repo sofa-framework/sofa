@@ -12,7 +12,7 @@ namespace Collision
 
 using namespace Common;
 
-template class Factory< std::string, Contact, std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*> >;
+//template class Factory< std::string, Contact, std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*> >;
 
 Contact* Contact::Create(const std::string& type, Abstract::CollisionModel* model1, Abstract::CollisionModel* model2, Intersection* intersectionMethod)
 {

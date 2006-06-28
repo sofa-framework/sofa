@@ -55,10 +55,6 @@ void create(MechanicalObject<DataTypes>*& obj, ObjectDescription* arg)
 }
 }
 
-template class MechanicalObject<Vec3dTypes>;
-template class MechanicalObject<Vec3fTypes>;
-template class MechanicalObject<RigidTypes>;
-
 Creator< ObjectFactory, MechanicalObject<Vec3fTypes> > MechanicalObjectVec3fClass("MechanicalObjectVec3f",true);
 Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3dClass("MechanicalObjectVec3d",true);
 Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3Class("MechanicalObjectVec3",true);
@@ -66,5 +62,11 @@ Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectClass("Me
 Creator< ObjectFactory, MechanicalObject<RigidTypes> > MechanicalObjectRigidClass("MechanicalObjectRigid",true);
 
 } // namespace Components
+
+// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
+
+template class Core::MechanicalObject<Components::Common::Vec3dTypes>;
+template class Core::MechanicalObject<Components::Common::Vec3fTypes>;
+template class Core::MechanicalObject<Components::Common::RigidTypes>;
 
 } // namespace Sofa

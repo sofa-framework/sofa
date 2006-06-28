@@ -26,7 +26,7 @@
 //#define TEMPS_DESTROYED_QUICKLY_R       // the same thing but applied
 // to return from functions only
 
-#define DO_FREE_CHECK                   // check news and deletes balance
+//#define DO_FREE_CHECK                   // check news and deletes balance
 
 #define USING_DOUBLE                    // elements of type double
 //#define USING_FLOAT                   // elements of type float
