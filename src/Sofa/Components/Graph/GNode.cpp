@@ -264,14 +264,41 @@ void GNode::updateContext()
 /// Execute a recursive action starting from this node
 void GNode::executeAction(Action* action)
 {
-    if(action->processNodeTopDown(this) != Action::RESULT_PRUNE)
+    if (getLogTime())
     {
-        for(ChildIterator it = child.begin(); it != child.end(); ++it)
+        const ctime_t t0 = Thread::CTime::getTime();
+        ctime_t tChild = 0;
+        if(action->processNodeTopDown(this) != Action::RESULT_PRUNE)
         {
-            (*it)->executeAction(action);
+            ctime_t ct0 = Thread::CTime::getTime();
+            for(ChildIterator it = child.begin(); it != child.end(); ++it)
+            {
+                (*it)->executeAction(action);
+            }
+            tChild = Thread::CTime::getTime() - ct0;
         }
+        action->processNodeBottomUp(this);
+        ctime_t tTree = Thread::CTime::getTime() - t0;
+        ctime_t tNode = tTree - tChild;
+        totalTime.tNode += tNode;
+        totalTime.tTree += tTree;
+        ++totalTime.nVisit;
+        Timer& t = actionTime[action->getCategoryName()];
+        t.tNode += tNode;
+        t.tTree += tTree;
+        ++t.nVisit;
     }
-    action->processNodeBottomUp(this);
+    else
+    {
+        if(action->processNodeTopDown(this) != Action::RESULT_PRUNE)
+        {
+            for(ChildIterator it = child.begin(); it != child.end(); ++it)
+            {
+                (*it)->executeAction(action);
+            }
+        }
+        action->processNodeBottomUp(this);
+    }
 }
 
 GNode* GNode::setDebug(bool b)
@@ -283,6 +310,29 @@ GNode* GNode::setDebug(bool b)
 bool GNode::getDebug() const
 {
     return debug_;
+}
+
+void GNode::setLogTime(bool b)
+{
+    logTime_=b;
+}
+
+bool GNode::getLogTime() const
+{
+    return logTime_;
+}
+
+GNode::ctime_t GNode::getTimeFreq() const
+{
+    return Thread::CTime::getTicksPerSec();
+}
+
+void GNode::resetTime()
+{
+    totalTime.nVisit = 0;
+    totalTime.tNode = 0;
+    totalTime.tTree = 0;
+    actionTime.clear();
 }
 
 void GNode::addListener(MutationListener* obj)

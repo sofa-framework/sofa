@@ -21,6 +21,7 @@
 #include "Sofa/Core/Topology.h"
 #include "Sofa/Core/OdeSolver.h"
 #include "Sofa/Components/Collision/Pipeline.h"
+#include "Sofa/Components/Thread/CTime.h"
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -316,9 +317,35 @@ public:
 
     void removeListener(MutationListener* obj);
 
+    void setLogTime(bool);
+    bool getLogTime() const;
+
+    typedef Thread::ctime_t ctime_t;
+    struct Timer
+    {
+        ctime_t tNode; ///< total time elapsed in the node
+        ctime_t tTree; ///< total time elapsed in the branch (node and children)
+        int nVisit;    ///< number of visit
+    };
+
+    void resetTime();
+
+    const Timer& getTotalTime() const { return totalTime; }
+
+    const std::map<std::string, Timer>& getActionTime() const { return actionTime; }
+
+    const Timer& getActionTime(const std::string& s) { return actionTime[s]; }
+
+    const Timer& getActionTime(const char* s) { return actionTime[s]; }
+
+    ctime_t getTimeFreq() const;
+
 protected:
-//    Context context_;
     bool debug_;
+    bool logTime_;
+
+    Timer totalTime;
+    std::map<std::string, Timer> actionTime;
 
     void doAddChild(GNode* node);
     void doRemoveChild(GNode* node);

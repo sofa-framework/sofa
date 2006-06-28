@@ -56,7 +56,7 @@ void ContactManagerSofa::createContacts(const std::vector<DetectionOutput*>& out
         if (outputsIt!=outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
         {
             // new contact
-            std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
+            //std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
             Contact* contact = Contact::Create(contacttype, outputsIt->first.first, outputsIt->first.second, intersectionMethod);
             if (contact == NULL) std::cerr << "Contact creation failed"<<std::endl;
             else

@@ -96,12 +96,12 @@ void TraceProfile::addTime(int instant, int time)
 
 void TraceProfile::begin()
 {
-    beginTime = MeasureTime();
+    beginTime = CTime::getTime();
 }
 
 void TraceProfile::end(int instant)
 {
-    endTime = MeasureTime();
+    endTime = CTime::getTime();
     times[instant] += (int)(endTime-beginTime);
 }
 
