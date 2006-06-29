@@ -129,8 +129,12 @@ void Frame::writeOpenGlMatrix( float m[16] ) const
 Frame Frame::inversed() const
 {
     Mat33 inv;
+#ifdef NDEBUG
+    inv.invert( basis_ );
+#else
     bool invertible = inv.invert( basis_ );
     assert( invertible );
+#endif
     return Frame( -(inv*origin_) , inv );
 }
 
