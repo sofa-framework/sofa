@@ -1,4 +1,5 @@
-#pragma once
+#ifndef SOFA_COMPONENTS_COORDINATESYSTEM_H
+#define SOFA_COMPONENTS_COORDINATESYSTEM_H
 
 //#include <Sofa/Abstract/BaseObject.h>
 #include <Sofa/Components/Common/SolidTypes.h>
@@ -148,4 +149,4 @@ private:
 
 } // namespace Sofa
 
-
+#endif

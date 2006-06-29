@@ -21,13 +21,14 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+    typedef typename DataTypes::Real Real;
 
     class LMTypes
     {
     public:
         typedef Real Coord;
         typedef Real Deriv;
+        typedef Real Real;
         typedef vector<Coord> VecCoord;
         typedef vector<Deriv> VecDeriv;
 

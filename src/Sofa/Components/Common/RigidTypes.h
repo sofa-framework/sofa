@@ -23,6 +23,7 @@ class RigidTypes
 {
 public:
     typedef Vec3d Vec3;
+    typedef Vec3::value_type Real;
 
     class Deriv
     {

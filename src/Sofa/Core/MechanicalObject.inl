@@ -274,13 +274,13 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                 {
                     VecCoord* vv = getVecCoord(v.index);
                     for (unsigned int i=0; i<vv->size(); i++)
-                        (*vv)[i] *= f;
+                        (*vv)[i] *= (Real)f;
                 }
                 else
                 {
                     VecDeriv* vv = getVecDeriv(v.index);
                     for (unsigned int i=0; i<vv->size(); i++)
-                        (*vv)[i] *= f;
+                        (*vv)[i] *= (Real)f;
                 }
             }
             else
@@ -292,7 +292,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                     VecCoord* vb = getVecCoord(b.index);
                     vv->resize(vb->size());
                     for (unsigned int i=0; i<vv->size(); i++)
-                        (*vv)[i] = (*vb)[i] * f;
+                        (*vv)[i] = (*vb)[i] * (Real)f;
                 }
                 else
                 {
@@ -300,7 +300,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                     VecDeriv* vb = getVecDeriv(b.index);
                     vv->resize(vb->size());
                     for (unsigned int i=0; i<vv->size(); i++)
-                        (*vv)[i] = (*vb)[i] * f;
+                        (*vv)[i] = (*vb)[i] * (Real)f;
                 }
             }
         }
@@ -384,14 +384,14 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                             VecCoord* vb = getVecCoord(b.index);
                             vv->resize(vb->size());
                             for (unsigned int i=0; i<vv->size(); i++)
-                                (*vv)[i] += (*vb)[i]*f;
+                                (*vv)[i] += (*vb)[i]*(Real)f;
                         }
                         else
                         {
                             VecDeriv* vb = getVecDeriv(b.index);
                             vv->resize(vb->size());
                             for (unsigned int i=0; i<vv->size(); i++)
-                                (*vv)[i] += (*vb)[i]*f;
+                                (*vv)[i] += (*vb)[i]*(Real)f;
                         }
                     }
                     else if (b.type == V_DERIV)
@@ -400,7 +400,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                         VecDeriv* vb = getVecDeriv(b.index);
                         vv->resize(vb->size());
                         for (unsigned int i=0; i<vv->size(); i++)
-                            (*vv)[i] += (*vb)[i]*f;
+                            (*vv)[i] += (*vb)[i]*(Real)f;
                     }
                     else
                     {
@@ -472,7 +472,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                             for (unsigned int i=0; i<vv->size(); i++)
                             {
                                 (*vv)[i] = (*va)[i];
-                                (*vv)[i] += (*vb)[i]*f;
+                                (*vv)[i] += (*vb)[i]*(Real)f;
                             }
                         }
                         else
@@ -481,7 +481,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                             for (unsigned int i=0; i<vv->size(); i++)
                             {
                                 (*vv)[i] = (*va)[i];
-                                (*vv)[i] += (*vb)[i]*f;
+                                (*vv)[i] += (*vb)[i]*(Real)f;
                             }
                         }
                     }
@@ -494,7 +494,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                         for (unsigned int i=0; i<vv->size(); i++)
                         {
                             (*vv)[i] = (*va)[i];
-                            (*vv)[i] += (*vb)[i]*f;
+                            (*vv)[i] += (*vb)[i]*(Real)f;
                         }
                     }
                     else

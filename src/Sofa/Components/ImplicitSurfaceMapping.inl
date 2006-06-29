@@ -47,13 +47,13 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
     if (in.size()==0) return;
     InReal xmin, xmax;
     InReal ymin, ymax;
-    xmin = xmax = in[0][0]*(InReal)mStep;
-    ymin = ymax = in[0][1]*(InReal)mStep;
+    xmin = xmax = in[0][0]*invStep;
+    ymin = ymax = in[0][1]*invStep;
     const InReal r = (InReal)(getRadius() / mStep);
     std::map<int, std::list< InCoord > > sortParticles;
-    for (unsigned int i=0; i<in.size(); i++)
+    for (unsigned int ip=0; ip<in.size(); ip++)
     {
-        InCoord c0 = in[i];
+        InCoord c0 = in[ip];
         if (c0[0] < mGridMin[0] || c0[0] > mGridMax[0] ||
             c0[1] < mGridMin[1] || c0[1] > mGridMax[1] ||
             c0[2] < mGridMin[2] || c0[2] > mGridMax[2])

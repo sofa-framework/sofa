@@ -15,12 +15,13 @@ namespace Components
 namespace Common
 {
 
-template<class TCoord, class TDeriv>
+template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class StdVectorTypes
 {
 public:
     typedef TCoord Coord;
     typedef TDeriv Deriv;
+    typedef TReal Real;
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
 
@@ -71,12 +72,13 @@ public:
     }
 };
 
-template<class TCoord, class TDeriv>
+template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class ExtVectorTypes
 {
 public:
     typedef TCoord Coord;
     typedef TDeriv Deriv;
+    typedef TReal Real;
     typedef ExtVector<Coord> VecCoord;
     typedef ExtVector<Deriv> VecDeriv;
 
@@ -95,12 +97,12 @@ public:
     }
 };
 
-typedef StdVectorTypes<Vec3d,Vec3d> Vec3dTypes;
-typedef StdVectorTypes<Vec3f,Vec3f> Vec3fTypes;
+typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
+typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
 typedef Vec3dTypes Vec3Types;
 
-typedef ExtVectorTypes<Vec3d,Vec3d> ExtVec3dTypes;
-typedef ExtVectorTypes<Vec3f,Vec3f> ExtVec3fTypes;
+typedef ExtVectorTypes<Vec3d,Vec3d,double> ExtVec3dTypes;
+typedef ExtVectorTypes<Vec3f,Vec3f,float> ExtVec3fTypes;
 typedef Vec3dTypes ExtVec3Types;
 
 } // namespace Common
