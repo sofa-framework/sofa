@@ -21,7 +21,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+    typedef typename DataTypes::Real Real;
     typedef Common::StdVectorTypes<Real, Real, Real> LMTypes;
     typedef typename LMTypes::VecCoord LMVecCoord;
     typedef typename LMTypes::VecDeriv LMVecDeriv;

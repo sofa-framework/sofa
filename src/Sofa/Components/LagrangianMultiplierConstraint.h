@@ -26,9 +26,9 @@ public:
     class LMTypes
     {
     public:
+        typedef typename DataTypes::Real Real;
         typedef Real Coord;
         typedef Real Deriv;
-        typedef Real Real;
         typedef vector<Coord> VecCoord;
         typedef vector<Deriv> VecDeriv;
 
