@@ -2,7 +2,9 @@
 
 #ifdef WIN32
 # include <windows.h>
-# include <intrin.h>
+# if _MSC_VER >= 1400
+#  include <intrin.h>
+# endif
 #else
 # include <unistd.h>
 # include <sys/time.h>
@@ -74,7 +76,12 @@ void CTime::sleep(double a)
 #if defined(_MSC_VER)
 volatile ctime_t CTime::getFastTime()
 {
+#if _MSC_VER >= 1400
     return __rdtsc();
+#else
+    _asm    _emit 0x0F
+    _asm    _emit 0x31
+#endif
 }
 #elif defined(__ia64__)
 # if defined(__EDG_VERSION) || defined(__ECC)
@@ -103,7 +110,7 @@ volatile ctime_t CTime::getFastTime()
 volatile ctime_t CTime::getFastTime()
 {
     ctime_t t;
-    __asm__ volatile ("RDTSC" : "=A" (&t) );
+    __asm__ volatile ("rdtsc" : "=A" (t) );
     return t;
 }
 #else
