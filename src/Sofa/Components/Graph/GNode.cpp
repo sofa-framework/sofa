@@ -240,24 +240,30 @@ void GNode::updateContext()
     //	//cerr<<"node "<<getName()<<", apply default context"<<endl;
     //}
 
-    /*	if( debug_ ){
-    	   cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *this->getContext() << endl;
-    	}*/
+
+    //if( debug_ ) cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *this->getContext() << endl;
+
     // Apply local modifications to the context
-    for( unsigned i=0; i<contextObject.size(); ++i )
+    if (getLogTime())
     {
-        contextObject[i]->apply();
-        /*		if( debug_ ){
-        		   cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<", new context = "<< *this->getContext() << endl;
-        		}*/
+        for( unsigned i=0; i<contextObject.size(); ++i )
+        {
+            contextObject[i]->apply();
+            // if( debug_ ) cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<", new context = "<< *this->getContext() << endl;
+        }
     }
-// 	if( !mechanicalModel.empty() ){
-// 	   mechanicalModel->updateContext(&context_);
-// 	}
-    if( debug_ )
+    else
     {
-        cerr<<"GNode::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<Core::Context*>(this) << endl;
+        for( unsigned i=0; i<contextObject.size(); ++i )
+        {
+            contextObject[i]->apply();
+            // if( debug_ ) cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<", new context = "<< *this->getContext() << endl;
+        }
     }
+//	if( !mechanicalModel.empty() ) {
+//		mechanicalModel->updateContext(&context_);
+//	}
+    if( debug_ ) cerr<<"GNode::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<Core::Context*>(this) << endl;
 }
 
 
@@ -283,7 +289,7 @@ void GNode::executeAction(Action* action)
         totalTime.tNode += tNode;
         totalTime.tTree += tTree;
         ++totalTime.nVisit;
-        Timer& t = actionTime[action->getCategoryName()];
+        NodeTimer& t = actionTime[action->getCategoryName()];
         t.tNode += tNode;
         t.tTree += tTree;
         ++t.nVisit;
@@ -317,11 +323,6 @@ void GNode::setLogTime(bool b)
     logTime_=b;
 }
 
-bool GNode::getLogTime() const
-{
-    return logTime_;
-}
-
 GNode::ctime_t GNode::getTimeFreq() const
 {
     return Thread::CTime::getTicksPerSec();
@@ -333,6 +334,51 @@ void GNode::resetTime()
     totalTime.tNode = 0;
     totalTime.tTree = 0;
     actionTime.clear();
+    objectTime.clear();
+}
+
+/// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
+void GNode::addTime(ctime_t t, const std::string& s, Abstract::BaseObject* obj, Abstract::BaseObject* parent)
+{
+    ObjectTimer& timer = objectTime[s][obj];
+    timer.tObject += t;
+    ++ timer.nVisit;
+    objectTime[s][parent].tObject -= t;
+}
+
+/// Log time spent on an action category and the concerned object
+void GNode::addTime(ctime_t t, const std::string& s, Abstract::BaseObject* obj)
+{
+    ObjectTimer& timer = objectTime[s][obj];
+    timer.tObject += t;
+    ++ timer.nVisit;
+}
+
+/// Measure start time
+GNode::ctime_t GNode::startTime() const
+{
+    if (!getLogTime()) return 0;
+    return Thread::CTime::getTime();
+}
+
+/// Log time spent given a start time, an action category, and the concerned object
+GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, Abstract::BaseObject* obj)
+{
+    if (!getLogTime()) return 0;
+    const ctime_t t1 = Thread::CTime::getTime();
+    const ctime_t t = t1 - t0;
+    addTime(t, s, obj);
+    return t1;
+}
+
+/// Log time spent given a start time, an action category, and the concerned object
+GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, Abstract::BaseObject* obj, Abstract::BaseObject* parent)
+{
+    if (!getLogTime()) return 0;
+    const ctime_t t1 = Thread::CTime::getTime();
+    const ctime_t t = t1 - t0;
+    addTime(t, s, obj, parent);
+    return t1;
 }
 
 void GNode::addListener(MutationListener* obj)

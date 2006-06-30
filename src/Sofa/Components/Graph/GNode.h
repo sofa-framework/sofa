@@ -318,34 +318,72 @@ public:
     void removeListener(MutationListener* obj);
 
     void setLogTime(bool);
-    bool getLogTime() const;
+    bool getLogTime() const { return logTime_; }
 
     typedef Thread::ctime_t ctime_t;
-    struct Timer
+
+    struct NodeTimer
     {
         ctime_t tNode; ///< total time elapsed in the node
         ctime_t tTree; ///< total time elapsed in the branch (node and children)
         int nVisit;    ///< number of visit
     };
 
+    struct ObjectTimer
+    {
+        ctime_t tObject; ///< total time elapsed in the object
+        int nVisit;    ///< number of visit
+    };
+
+    /// Reset time logs
     void resetTime();
 
-    const Timer& getTotalTime() const { return totalTime; }
+    /// Get total time log
+    const NodeTimer& getTotalTime() const { return totalTime; }
 
-    const std::map<std::string, Timer>& getActionTime() const { return actionTime; }
+    /// Get time log of all categories
+    const std::map<std::string, NodeTimer>& getActionTime() const { return actionTime; }
 
-    const Timer& getActionTime(const std::string& s) { return actionTime[s]; }
+    /// Get time log of a given category
+    const NodeTimer& getActionTime(const std::string& s) { return actionTime[s]; }
 
-    const Timer& getActionTime(const char* s) { return actionTime[s]; }
+    /// Get time log of a given category
+    const NodeTimer& getActionTime(const char* s) { return actionTime[s]; }
 
+    /// Get time log of all objects
+    const std::map<std::string, std::map<Abstract::BaseObject*, ObjectTimer> >& getObjectTime() const { return objectTime; }
+
+    /// Get time log of all objects of a given category
+    const std::map<Abstract::BaseObject*, ObjectTimer>& getObjectTime(const std::string& s) { return objectTime[s]; }
+
+    /// Get time log of all objects of a given category
+    const std::map<Abstract::BaseObject*, ObjectTimer>& getObjectTime(const char* s) { return objectTime[s]; }
+
+    /// Get timer frequency
     ctime_t getTimeFreq() const;
+
+    /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
+    void addTime(ctime_t t, const std::string& s, Abstract::BaseObject* obj, Abstract::BaseObject* parent);
+
+    /// Log time spent on an action category and the concerned object
+    void addTime(ctime_t t, const std::string& s, Abstract::BaseObject* obj);
+
+    /// Measure start time
+    ctime_t startTime() const;
+
+    /// Log time spent given a start time, an action category, and the concerned object
+    ctime_t endTime(ctime_t t0, const std::string& s, Abstract::BaseObject* obj);
+
+    /// Log time spent given a start time, an action category, and the concerned object, plus remove the computed time from the parent caller object
+    ctime_t endTime(ctime_t t0, const std::string& s, Abstract::BaseObject* obj, Abstract::BaseObject* parent);
 
 protected:
     bool debug_;
     bool logTime_;
 
-    Timer totalTime;
-    std::map<std::string, Timer> actionTime;
+    NodeTimer totalTime;
+    std::map<std::string, NodeTimer> actionTime;
+    std::map<std::string, std::map<Abstract::BaseObject*, ObjectTimer> > objectTime;
 
     void doAddChild(GNode* node);
     void doRemoveChild(GNode* node);

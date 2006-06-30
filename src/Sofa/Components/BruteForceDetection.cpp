@@ -5,6 +5,7 @@
 #include "Point.h"
 #include "Common/FnDispatcher.h"
 #include "Common/ObjectFactory.h"
+#include "Graph/GNode.h"
 
 #include <map>
 
@@ -76,6 +77,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
     CollisionModel *cm1 = cmPair.first->getNext();
     CollisionModel *cm2 = cmPair.second->getNext();
 
+    Graph::GNode* node = dynamic_cast<Graph::GNode*>(getContext());
+    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
+    Graph::GNode::ctime_t t0=0, t=0;
+
     const bool continuous = intersectionMethod->useContinuous();
     const bool proximity  = intersectionMethod->useProximity();
     const double distance = intersectionMethod->getAlarmDistance();
@@ -112,12 +117,16 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
             if (minBBox1[0] > maxBBox2[0] || minBBox2[0] > maxBBox1[0]
                 || minBBox1[1] > maxBBox2[1] || minBBox2[1] > maxBBox1[1]
                 || minBBox1[2] > maxBBox2[2] || minBBox2[2] > maxBBox1[2]) continue;
-            if (intersectionMethod->canIntersect(e1,e2))
+            if (node) t0 = node->startTime();
+            bool b = intersectionMethod->canIntersect(e1,e2);
+            if (node) t += node->startTime() - t0;
+            if (b)
             {
                 elemPairs.push_back(std::make_pair(e1,e2));
             }
         }
     }
+    if (node) node->addTime(t, "collision", intersectionMethod, this);
 }
 
 void BruteForceDetection::draw()

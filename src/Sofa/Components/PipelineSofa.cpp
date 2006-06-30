@@ -1,5 +1,6 @@
 #include "PipelineSofa.h"
 #include "Sofa/Abstract/CollisionModel.h"
+#include "Graph/GNode.h"
 
 #include "Common/ObjectFactory.h"
 
@@ -33,9 +34,15 @@ PipelineSofa::PipelineSofa()
 {
 }
 
+typedef Graph::GNode::ctime_t ctime_t;
+
 void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& collisionModels)
 {
     Abstract::BaseContext* scene = getContext();
+    Graph::GNode* node = dynamic_cast<Graph::GNode*>(scene);
+    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
+    ctime_t t0;
+    const std::string category = "collision";
 
     VERBOSE(std::cout << "Reset collisions"<<std::endl);
     // clear all contacts
@@ -50,7 +57,9 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     // clear all collision groups
     if (groupManager!=NULL)
     {
+        if (node) t0 = node->startTime();
         groupManager->clearGroups(scene);
+        if (node) t0 = node->endTime(t0, category, groupManager, this);
     }
     // clear all detection outputs
     {
@@ -67,6 +76,7 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
 
     std::vector<CollisionModel*> vectBoundingVolume;
     {
+        if (node) t0 = node->startTime();
         const bool continuous = intersectionMethod->useContinuous();
         //const double distance = intersectionMethod->getAlarmDistance();
         const double dt       = getContext()->getDt();
@@ -84,21 +94,26 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
             vectBoundingVolume.push_back ((*it)->getFirst());
             ++nActive;
         }
+        if (node) t0 = node->endTime(t0, "collision/bbox", this);
         VERBOSE(std::cout << "Computed "<<nActive<<" BBoxs"<<std::endl);
     }
     // then we start the broad phase
     if (broadPhaseDetection==NULL) return; // can't go further
     VERBOSE(std::cout << "BroadPhaseDetection "<<broadPhaseDetection->getName()<<std::endl);
+    if (node) t0 = node->startTime();
     broadPhaseDetection->clearBroadPhase();
     broadPhaseDetection->addCollisionModels(vectBoundingVolume);
+    if (node) t0 = node->endTime(t0, category, broadPhaseDetection, this);
 
     // then we start the narrow phase
     if (narrowPhaseDetection==NULL) return; // can't go further
     VERBOSE(std::cout << "NarrowPhaseDetection "<<narrowPhaseDetection->getName()<<std::endl);
+    if (node) t0 = node->startTime();
     narrowPhaseDetection->clearNarrowPhase();
     std::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
     VERBOSE(std::cout << vectCMPair.size()<<" colliding model pairs"<<std::endl);
     narrowPhaseDetection->addCollisionPairs(vectCMPair);
+    if (node) t0 = node->endTime(t0, category, narrowPhaseDetection, this);
 
     VERBOSE(std::cout << "CollisionDetection "<<std::endl);
     // then we start the real detection between primitives
@@ -106,6 +121,7 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     std::vector<std::pair<CollisionElement*, CollisionElement*> >::iterator it4 = vectElemPair.begin();
     std::vector<std::pair<CollisionElement*, CollisionElement*> >::iterator it4End = vectElemPair.end();
 
+    if (node) t0 = node->startTime();
     for (; it4 != it4End; it4++)
     {
         CollisionElement *cm1 = it4->first;
@@ -116,13 +132,16 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
         if (detection)
             detectionOutputs.push_back(detection);
     }
+    if (node) t0 = node->endTime(t0, category, intersectionMethod, this);
     VERBOSE(std::cout << detectionOutputs.size()<<" collisions detected"<<std::endl);
 
 
     // then we start the creation of contacts
     if (contactManager==NULL) return; // can't go further
     VERBOSE(std::cout << "Create Contacts "<<contactManager->getName()<<std::endl);
+    if (node) t0 = node->startTime();
     contactManager->createContacts(detectionOutputs);
+    if (node) t0 = node->endTime(t0, category, contactManager, this);
 
     // finally we start the creation of collisionGroup
 
@@ -158,7 +177,9 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     else
     {
         VERBOSE(std::cout << "Create Groups "<<groupManager->getName()<<std::endl);
+        if (node) t0 = node->startTime();
         groupManager->createGroups(scene, notStaticContacts);
+        if (node) t0 = node->endTime(t0, category, groupManager, this);
     }
 }
 
