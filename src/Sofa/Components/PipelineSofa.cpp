@@ -41,7 +41,7 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     Abstract::BaseContext* scene = getContext();
     Graph::GNode* node = dynamic_cast<Graph::GNode*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
-    ctime_t t0;
+    ctime_t t0 = 0;
     const std::string category = "collision";
 
     VERBOSE(std::cout << "Reset collisions"<<std::endl);
