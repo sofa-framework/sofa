@@ -44,6 +44,12 @@ DiscreteIntersection::DiscreteIntersection()
     //fnCollisionDetectionOutput.add<Triangle, Triangle, distCorrectionTriangleTriangle, false>();
 }
 
+/// Test if intersection between 2 types of elements is supported, i.e. an intersection test is implemented for this combinaison of types.
+bool DiscreteIntersection::isSupported(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2)
+{
+    return fnCollisionDetection.isSupported(*elem1, *elem2);
+}
+
 /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
 bool DiscreteIntersection::canIntersect(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2)
 {

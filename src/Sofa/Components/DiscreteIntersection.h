@@ -19,6 +19,9 @@ class DiscreteIntersection : public Collision::Intersection
 public:
     DiscreteIntersection();
 
+    /// Test if intersection between 2 types of elements is supported, i.e. an intersection test is implemented for this combinaison of types.
+    virtual bool isSupported(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2);
+
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
     virtual bool canIntersect(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2);
 

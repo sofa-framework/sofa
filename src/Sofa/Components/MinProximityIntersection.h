@@ -29,7 +29,7 @@ public:
     virtual Collision::DetectionOutput* intersect(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2);
 
     /// returns true if algorithm uses continous detection
-    virtual bool useMinProximity() const { return true; }
+    virtual bool useProximity() const { return true; }
 
     /// Return the alarm distance (must return 0 if useMinProximity() is false)
     double getAlarmDistance() const { return alarmDistance; }

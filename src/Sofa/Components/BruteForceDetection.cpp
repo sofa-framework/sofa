@@ -77,6 +77,15 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
     CollisionModel *cm1 = cmPair.first->getNext();
     CollisionModel *cm2 = cmPair.second->getNext();
 
+    const std::vector<CollisionElement*>& vectElems1 = cm1->getCollisionElements();
+    const std::vector<CollisionElement*>& vectElems2 = cm2->getCollisionElements();
+
+    if (vectElems1.size()<=0 ||vectElems2.size()<=0)
+        return;
+
+    if (!intersectionMethod->isSupported(vectElems1[0], vectElems2[0]))
+        return;
+
     Graph::GNode* node = dynamic_cast<Graph::GNode*>(getContext());
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
     Graph::GNode::ctime_t t0=0, t=0;
@@ -86,8 +95,6 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
     const double distance = intersectionMethod->getAlarmDistance();
     const double dt       = getContext()->getDt();
 
-    const std::vector<CollisionElement*>& vectElems1 = cm1->getCollisionElements();
-    const std::vector<CollisionElement*>& vectElems2 = cm2->getCollisionElements();
     Vector3 minBBox1, maxBBox1;
     Vector3 minBBox2, maxBBox2;
     for (unsigned int i=0; i<vectElems1.size(); i++)

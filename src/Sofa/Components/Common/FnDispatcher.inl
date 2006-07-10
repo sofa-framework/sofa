@@ -46,6 +46,17 @@ ResulT BasicDispatcher<BaseClass, ResulT>::go(BaseClass &arg1,BaseClass &arg2)
         return (itt->second)(arg1,arg2);
 }
 
+/// Return true if a pair of argument correspond to a callback function (different than ignoreFn)
+template <class BaseClass, typename ResulT>
+bool BasicDispatcher<BaseClass, ResulT>::isSupported(BaseClass &arg1, BaseClass &arg2)
+{
+    typename MapType::iterator itt = this->callBackMap.find(KeyType(TypeInfo(typeid(arg1)),TypeInfo(typeid(arg2))));
+    if (itt==callBackMap.end())
+        return false;
+    else
+        return itt->second != ignoreFn;
+}
+
 template <class BaseClass, typename ResulT>
 SingletonFnDispatcher<BaseClass, ResulT>::SingletonFnDispatcher()
 {

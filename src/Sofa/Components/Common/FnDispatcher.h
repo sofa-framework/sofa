@@ -57,6 +57,8 @@ public:
     virtual ResulT defaultFn(BaseClass& arg1, BaseClass& arg2);
     static ResulT ignoreFn(BaseClass& arg1, BaseClass& arg2);
     ResulT go(BaseClass &arg1,BaseClass &arg2);
+    /// Return true if a pair of argument correspond to a callback function (different than ignoreFn)
+    bool isSupported(BaseClass &arg1, BaseClass &arg2);
 };
 
 template <class BaseClass, typename ResulT>

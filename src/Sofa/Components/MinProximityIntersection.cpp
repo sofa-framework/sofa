@@ -111,16 +111,16 @@ bool intersectionCubeCube(Cube &cube1, Cube &cube2)
 bool intersectionLineLine(Line& e1, Line& e2)
 {
     const double alarmDist = proximityInstance->getAlarmDistance();
-    const Vector3& x01 = e1.p2()-e1.p1();
-    const Vector3& x32 = e2.p1()-e2.p2();
-    const Vector3& x31 = e1.p2()-e2.p2();
+    const Vector3& AB = e1.p2()-e1.p1();
+    const Vector3& CD = e2.p2()-e2.p1();
+    const Vector3& AC = e2.p1()-e1.p1();
     Matrix2 A;
     Vector2 b;
-    A[0][0] = x01*x01;
-    A[1][1] = x32*x32;
-    A[0][1] = A[1][0] = x01*x32;
-    b[0] = x01*x31;
-    b[1] = x32*x31;
+    A[0][0] = AB*AB;
+    A[1][1] = CD*CD;
+    A[0][1] = A[1][0] = -CD*AB;
+    b[0] = AB*AC;
+    b[1] = -CD*AC;
     const double det = determinant(A);
 
     double alpha = 0.5;
@@ -136,8 +136,8 @@ bool intersectionLineLine(Line& e1, Line& e2)
     }
 
     Vector3 P,Q,PQ;
-    P = e1.p1() + x01 * alpha;
-    Q = e2.p1() - x32 * beta;
+    P = e1.p1() + AB * alpha;
+    Q = e2.p1() + CD * beta;
     PQ = Q-P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
@@ -151,16 +151,16 @@ bool intersectionLineLine(Line& e1, Line& e2)
 DetectionOutput* distCorrectionLineLine(Line& e1, Line& e2)
 {
     const double contactDist = proximityInstance->getContactDistance();
-    const Vector3& x01 = e1.p2()-e1.p1();
-    const Vector3& x32 = e2.p1()-e2.p2();
-    const Vector3& x31 = e1.p2()-e2.p2();
+    const Vector3& AB = e1.p2()-e1.p1();
+    const Vector3& CD = e2.p2()-e2.p1();
+    const Vector3& AC = e2.p1()-e1.p1();
     Matrix2 A;
     Vector2 b;
-    A[0][0] = x01*x01;
-    A[1][1] = x32*x32;
-    A[0][1] = A[1][0] = x01*x32;
-    b[0] = x01*x31;
-    b[1] = x32*x31;
+    A[0][0] = AB*AB;
+    A[1][1] = CD*CD;
+    A[0][1] = A[1][0] = -CD*AB;
+    b[0] = AB*AC;
+    b[1] = -CD*AC;
     const double det = determinant(A);
 
     double alpha = 0.5;
@@ -176,8 +176,8 @@ DetectionOutput* distCorrectionLineLine(Line& e1, Line& e2)
     }
 
     Vector3 P,Q,PQ;
-    P = e1.p1() + x01 * alpha;
-    Q = e2.p1() - x32 * beta;
+    P = e1.p1() + AB * alpha;
+    Q = e2.p1() + CD * beta;
     PQ = Q-P;
 
     DetectionOutput *detection = new DetectionOutput();
@@ -194,16 +194,16 @@ DetectionOutput* distCorrectionLineLine(Line& e1, Line& e2)
 bool intersectionPointTriangle(Point& e1, Triangle& e2)
 {
     const double alarmDist = proximityInstance->getAlarmDistance();
-    const Vector3& x13 = e2.p1()-e2.p2();
-    const Vector3& x23 = e2.p1()-e2.p3();
-    const Vector3& x03 = e2.p1()-e1.p();
+    const Vector3& AB = e2.p2()-e2.p1();
+    const Vector3& AC = e2.p3()-e2.p1();
+    const Vector3& AP = e1.p() -e2.p1();
     Matrix2 A;
     Vector2 b;
-    A[0][0] = x13*x13;
-    A[1][1] = x23*x23;
-    A[0][1] = A[1][0] = x13*x23;
-    b[0] = x13*x03;
-    b[1] = x23*x03;
+    A[0][0] = AB*AB;
+    A[1][1] = AC*AC;
+    A[0][1] = A[1][0] = AB*AC;
+    b[0] = AP*AB;
+    b[1] = AP*AC;
     const double det = determinant(A);
 
     double alpha = 0.5;
@@ -221,7 +221,7 @@ bool intersectionPointTriangle(Point& e1, Triangle& e2)
 
     Vector3 P,Q,PQ;
     P = e1.p();
-    Q = e2.p1() - x13 * alpha - x23 * beta;
+    Q = e2.p1() + AB * alpha + AC * beta;
     PQ = Q-P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
@@ -235,16 +235,16 @@ bool intersectionPointTriangle(Point& e1, Triangle& e2)
 DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
 {
     const double contactDist = proximityInstance->getContactDistance();
-    const Vector3& x13 = e2.p1()-e2.p2();
-    const Vector3& x23 = e2.p1()-e2.p3();
-    const Vector3& x03 = e2.p1()-e1.p();
+    const Vector3& AB = e2.p2()-e2.p1();
+    const Vector3& AC = e2.p3()-e2.p1();
+    const Vector3& AP = e1.p() -e2.p1();
     Matrix2 A;
     Vector2 b;
-    A[0][0] = x13*x13;
-    A[1][1] = x23*x23;
-    A[0][1] = A[1][0] = x13*x23;
-    b[0] = x13*x03;
-    b[1] = x23*x03;
+    A[0][0] = AB*AB;
+    A[1][1] = AC*AC;
+    A[0][1] = A[1][0] = AB*AC;
+    b[0] = AP*AB;
+    b[1] = AP*AC;
     const double det = determinant(A);
 
     double alpha = 0.5;
@@ -260,9 +260,10 @@ DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
             return false;
     }
 
-    Vector3 P,Q;
+    Vector3 P,Q,PQ;
     P = e1.p();
-    Q = e2.p1() - x13 * alpha - x23 * beta;
+    Q = e2.p1() + AB * alpha + AC * beta;
+    PQ = Q-P;
 
     DetectionOutput *detection = new DetectionOutput();
     detection->elem = std::pair<Abstract::CollisionElement*, Abstract::CollisionElement*>(&e2, &e1);
@@ -271,6 +272,12 @@ DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
     detection->normal=P-Q;
     detection->distance = detection->normal.norm();
     detection->normal /= detection->distance;
+    if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
+    {
+        // The elements are interpenetrating
+        detection->normal = -detection->normal;
+        detection->distance = -detection->distance;
+    }
     detection->distance -= contactDist;
     return detection;
 }
@@ -278,12 +285,12 @@ DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
 bool intersectionPointLine(Point& e1, Line& e2)
 {
     const double alarmDist = proximityInstance->getAlarmDistance();
-    const Vector3& x32 = e2.p1()-e2.p2();
-    const Vector3& x31 = e1.p()-e2.p2();
+    const Vector3& AB = e2.p2()-e2.p1();
+    const Vector3& AP = e1.p()-e2.p1();
     double A;
     double b;
-    A = x32*x32;
-    b = x32*x31;
+    A = AB*AB;
+    b = AP*AB;
 
     double alpha = 0.5;
 
@@ -296,7 +303,7 @@ bool intersectionPointLine(Point& e1, Line& e2)
 
     Vector3 P,Q,PQ;
     P = e1.p();
-    Q = e2.p1() - x32 * alpha;
+    Q = e2.p1() + AB * alpha;
     PQ = Q-P;
 
     if (PQ.norm2() < alarmDist*alarmDist)
@@ -310,12 +317,12 @@ bool intersectionPointLine(Point& e1, Line& e2)
 DetectionOutput* distCorrectionPointLine(Point& e1, Line& e2)
 {
     const double contactDist = proximityInstance->getContactDistance();
-    const Vector3& x32 = e2.p1()-e2.p2();
-    const Vector3& x31 = e1.p()-e2.p2();
+    const Vector3& AB = e2.p2()-e2.p1();
+    const Vector3& AP = e1.p()-e2.p1();
     double A;
     double b;
-    A = x32*x32;
-    b = x32*x31;
+    A = AB*AB;
+    b = AP*AB;
 
     double alpha = 0.5;
 
@@ -328,7 +335,7 @@ DetectionOutput* distCorrectionPointLine(Point& e1, Line& e2)
 
     Vector3 P,Q,PQ;
     P = e1.p();
-    Q = e2.p1() - x32 * alpha;
+    Q = e2.p1() + AB * alpha;
     PQ = Q-P;
 
     DetectionOutput *detection = new DetectionOutput();

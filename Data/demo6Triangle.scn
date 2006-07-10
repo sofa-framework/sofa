@@ -1,10 +1,10 @@
 <!-- Hierarchical Group Basic Test -->
 <Node name="root"  dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
-	<Object type="CollisionPipeline" verbose="1" draw="1"/>
-	<Object type="VoxelGridDetection" name="Voxel" minx="-10" maxx="10"  miny="-30" maxy="0"  minz="-40" maxz="40" nx="2" ny="4" nz="8" draw="1" />
+	<Object type="CollisionPipeline" verbose="0" draw="1"/>
 	<Object type="BruteForceDetection" name="N2" />
+	<Object type="VoxelGridDetection" name="Voxel" minx="-10" maxx="10"  miny="-30" maxy="0"  minz="-40" maxz="40" nx="2" ny="4" nz="8" draw="1" />
 	<!--<Object type="ProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="1" useLineTriangle="0"/>-->
-	<Object type="ProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="0" useLineTriangle="1"/>
+	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" useTriangleTriangle="0" useLineTriangle="1"/>
 	<Node name="Poutre1">
 		<Object type="CGImplicit" iterations="100"/>
 		<Node name="G1">
@@ -20,6 +20,7 @@
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
 					<Object type="Line" />
+					<Object type="Point" />
 					<Object type="IdentityMapping" />
 				</Node>
 			</Node>
@@ -35,6 +36,7 @@
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
 					<Object type="Line" />
+					<Object type="Point" />
 					<Object type="RigidMapping" />
 				</Node>
 				<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
@@ -51,6 +53,7 @@
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
 					<Object type="Line" />
+					<Object type="Point" />
 					<Object type="IdentityMapping" />
 				</Node>
 			</Node>
@@ -72,6 +75,7 @@
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
 					<Object type="Line" />
+					<Object type="Point" />
 					<Object type="RigidMapping" />
 				</Node>
 			</Node>
@@ -86,6 +90,7 @@
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
 					<Object type="Line" />
+					<Object type="Point" />
 					<Object type="IdentityMapping" />
 				</Node>
 			</Node>
@@ -103,6 +108,7 @@
 					<Object type="MechanicalObject" />
 					<Object type="Triangle" />
 					<Object type="Line" />
+					<Object type="Point" />
 					<Object type="RigidMapping" />
 				</Node>
 			</Node>
@@ -116,6 +122,7 @@
 		<Object type="MechanicalObject" dy="-20" />
 		<Object type="Triangle" name="Floor" static="1" />
 		<Object type="Line" name="Floor" static="1" />
+		<Object type="Point" name="Floor" static="1" />
 		<Object type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-20" />
 	</Node>
 </Node>
