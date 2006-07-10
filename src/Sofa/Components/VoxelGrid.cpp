@@ -134,7 +134,8 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
         const double distance = intersectionMethod->getAlarmDistance();
         const double dt       = getContext()->getDt();
 
-        std::set<CollisionElement*> collisionElems;
+        CollisionElementSet collisionElems;
+        CollisionElementSet noCollisionElems;
         Vector3 minBBox, maxBBox;
         Vector3 ijk, lmn;
         bool collisionDetected = false;
@@ -163,14 +164,14 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
                     {
                         //if (grid[i][j][k].timeStamp != timeStamp)
                         grid[i][j][k].eraseAll(timeStamp);
-                        grid[i][j][k].add(this, (*it), collisionElems, phase);
+                        grid[i][j][k].add(this, (*it), collisionElems, noCollisionElems, phase);
                     }
                 }
             }
 
             // get the collision pair or self collision pair for this sphere
-            std::set<CollisionElement*>::iterator itCollis = collisionElems.begin();
-            std::set<CollisionElement*>::iterator itCollisEnd = collisionElems.end();
+            CollisionElementSet::const_iterator itCollis = collisionElems.begin();
+            CollisionElementSet::const_iterator itCollisEnd = collisionElems.end();
 
             for (; itCollis != itCollisEnd; itCollis++)
             {
@@ -187,6 +188,7 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
                 }
             }
             collisionElems.clear();
+            noCollisionElems.clear();
         }
 
         if (!collisionDetected)
@@ -316,7 +318,7 @@ void VoxelGrid::draw()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void GridCell::add(VoxelGrid* grid, CollisionElement *collisionElem, std::set<CollisionElement*> &vectCollis, int phase)
+void GridCell::add(VoxelGrid* grid, CollisionElement *collisionElem, CollisionElementSet &vectCollis, CollisionElementSet &vectNoCollis, int phase)
 {
     Intersection* intersectionMethod = grid->getIntersectionMethod();
     const bool continuous = intersectionMethod->useContinuous();
@@ -330,7 +332,7 @@ void GridCell::add(VoxelGrid* grid, CollisionElement *collisionElem, std::set<Co
     Vector3 minBBox1, maxBBox1;
     Vector3 minBBox2, maxBBox2;
 
-    Graph::GNode::ctime_t t0;
+    Graph::GNode::ctime_t t0 = 0;
 
     if (continuous)
         collisionElem->getContinuousBBox(minBBox1, maxBBox1, dt);
@@ -349,13 +351,20 @@ void GridCell::add(VoxelGrid* grid, CollisionElement *collisionElem, std::set<Co
     for (; it < itEnd; it++)
     {
         if (!(*collisionElem).canCollideWith(*it)) continue;
+        if (vectCollis.count(*it)) continue;
+        if (vectNoCollis.count(*it)) continue;
+
         if (continuous)
             (*it)->getContinuousBBox(minBBox2, maxBBox2, dt);
         else
             (*it)->getBBox(minBBox2, maxBBox2);
         if (minBBox1[0] > maxBBox2[0] || minBBox2[0] > maxBBox1[0]
             || minBBox1[1] > maxBBox2[1] || minBBox2[1] > maxBBox1[1]
-            || minBBox1[2] > maxBBox2[2] || minBBox2[2] > maxBBox1[2]) continue;
+            || minBBox1[2] > maxBBox2[2] || minBBox2[2] > maxBBox1[2])
+        {
+            //vectNoCollis.insert(*it);
+            continue;
+        }
 
         if (grid->timeLogger) t0 = grid->timeLogger->startTime();
         bool b = intersectionMethod->canIntersect(collisionElem, (*it));
@@ -363,6 +372,8 @@ void GridCell::add(VoxelGrid* grid, CollisionElement *collisionElem, std::set<Co
         if (b)
             //if (intersectionMethod->canIntersect(collisionElem, (*it)))
             vectCollis.insert(*it);
+        else
+            vectNoCollis.insert(*it);
     }
 
     std::vector < CollisionElement* >::iterator itImmo = collisElemsImmobile[phase].begin();
@@ -370,18 +381,27 @@ void GridCell::add(VoxelGrid* grid, CollisionElement *collisionElem, std::set<Co
     for (; itImmo < itImmoEnd; itImmo++)
     {
         if (!(*collisionElem).canCollideWith(*itImmo)) continue;
+        if (vectCollis.count(*itImmo)) continue;
+        if (vectNoCollis.count(*itImmo)) continue;
+
         if (continuous)
             (*itImmo)->getContinuousBBox(minBBox2, maxBBox2, dt);
         else
             (*itImmo)->getBBox(minBBox2, maxBBox2);
         if (minBBox1[0] > maxBBox2[0] || minBBox2[0] > maxBBox1[0]
             || minBBox1[1] > maxBBox2[1] || minBBox2[1] > maxBBox1[1]
-            || minBBox1[2] > maxBBox2[2] || minBBox2[2] > maxBBox1[2]) continue;
+            || minBBox1[2] > maxBBox2[2] || minBBox2[2] > maxBBox1[2])
+        {
+            //vectNoCollis.insert(*itImmo);
+            continue;
+        }
         if (grid->timeLogger) t0 = grid->timeLogger->startTime();
         bool b = intersectionMethod->canIntersect(collisionElem, (*itImmo));
         if (grid->timeLogger) grid->timeInter += grid->timeLogger->startTime() - t0;
         if (b)
             vectCollis.insert(*itImmo);
+        else
+            vectNoCollis.insert(*itImmo);
     }
 
     if (collisionElem->getCollisionModel()->isStatic())

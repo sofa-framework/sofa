@@ -28,6 +28,8 @@ protected:
 
     bool static_;
 public:
+    typedef Vec3Types DataTypes;
+    typedef Sphere Element;
 
     SphereModel(double radius = 1.0);
 

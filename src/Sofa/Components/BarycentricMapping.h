@@ -82,18 +82,18 @@ public:
 
         void clear();
 
-        void addPointInLine(const OutCoord& p, int lineIndex, const Real* baryCoords);
-        void createPointInLine(const OutCoord& p, int lineIndex, const InVecCoord* points);
+        int addPointInLine(const OutCoord& p, int lineIndex, const Real* baryCoords);
+        int createPointInLine(const OutCoord& p, int lineIndex, const InVecCoord* points);
 
-        void addPointInTriangle(const OutCoord& p, int triangleIndex, const Real* baryCoords);
-        void createPointInTriangle(const OutCoord& p, int triangleIndex, const InVecCoord* points);
+        int addPointInTriangle(const OutCoord& p, int triangleIndex, const Real* baryCoords);
+        int createPointInTriangle(const OutCoord& p, int triangleIndex, const InVecCoord* points);
 
-        void addPointInQuad(const OutCoord& p, int quadIndex, const Real* baryCoords);
-        void createPointInQuad(const OutCoord& p, int quadIndex, const InVecCoord* points);
+        int addPointInQuad(const OutCoord& p, int quadIndex, const Real* baryCoords);
+        int createPointInQuad(const OutCoord& p, int quadIndex, const InVecCoord* points);
 
-        void addPointInTetra(const OutCoord& p, int tetraIndex, const Real* baryCoords);
+        int addPointInTetra(const OutCoord& p, int tetraIndex, const Real* baryCoords);
 
-        void addPointInCube(const OutCoord& p, int cubeIndex, const Real* baryCoords);
+        int addPointInCube(const OutCoord& p, int cubeIndex, const Real* baryCoords);
 
         void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
         void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );

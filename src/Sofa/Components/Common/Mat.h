@@ -345,20 +345,6 @@ public:
             this->elems[i]-=m[i];
     }
 
-    /// Determinant of the matrix.
-    /// @ATTENTION: determinant currently only implemented for 3x3 matrices.
-    real determinant() const
-    {
-        BOOST_STATIC_ASSERT(L == 3);
-        BOOST_STATIC_ASSERT(C == 3);
-        return (*this)(0,0)*(*this)(1,1)*(*this)(2,2)
-                + (*this)(1,0)*(*this)(2,1)*(*this)(0,2)
-                + (*this)(2,0)*(*this)(0,1)*(*this)(1,2)
-                - (*this)(0,0)*(*this)(2,1)*(*this)(1,2)
-                - (*this)(1,0)*(*this)(0,1)*(*this)(2,2)
-                - (*this)(2,0)*(*this)(1,1)*(*this)(0,2);
-    }
-
     /// Invert matrix m
     bool invert(const Mat<L,C,real>& m)
     {
@@ -366,6 +352,26 @@ public:
     }
 
 };
+
+/// Determinant of a 3x3 matrix.
+template<class real>
+inline real determinant(const Mat<3,3,real>& m)
+{
+    return m(0,0)*m(1,1)*m(2,2)
+            + m(1,0)*m(2,1)*m(0,2)
+            + m(2,0)*m(0,1)*m(1,2)
+            - m(0,0)*m(2,1)*m(1,2)
+            - m(1,0)*m(0,1)*m(2,2)
+            - m(2,0)*m(1,1)*m(0,2);
+}
+
+/// Determinant of a 2x2 matrix.
+template<class real>
+inline real determinant(const Mat<2,2,real>& m)
+{
+    return m(0,0)*m(1,1)
+            - m(1,0)*m(0,1);
+}
 
 /// Matrix inversion (general case).
 template<int S, class real>
@@ -439,7 +445,7 @@ bool invertMatrix(Mat<S,S,real>& dest, const Mat<S,S,real>& from)
 template<class real>
 bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 {
-    real det=from.determinant();
+    real det=determinant(from);
 
     if ( -1e-10<=det && det<=1e-10)
         return false;
@@ -461,7 +467,7 @@ bool invertMatrix(Mat<3,3,real>& dest, const Mat<3,3,real>& from)
 template<class real>
 bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 {
-    real det=from(0,0)*from(1,1)-from(0,1)*from(1,0);
+    real det=determinant(from);
 
     if ( -1e-10<=det && det<=1e-10)
         return false;
@@ -474,6 +480,9 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
     return true;
 }
 
+typedef Mat<2,2,float> Mat2x2f;
+typedef Mat<2,2,double> Mat2x2d;
+
 typedef Mat<3,3,float> Mat3x3f;
 typedef Mat<3,3,double> Mat3x3d;
 
@@ -483,6 +492,7 @@ typedef Mat<3,4,double> Mat3x4d;
 typedef Mat<4,4,float> Mat4x4f;
 typedef Mat<4,4,double> Mat4x4d;
 
+typedef Mat2x2d Matrix2;
 typedef Mat3x3d Matrix3;
 typedef Mat4x4d Matrix4;
 

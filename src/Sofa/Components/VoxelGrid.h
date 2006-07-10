@@ -7,7 +7,16 @@
 #include "Common/Vec.h"
 #include "Graph/GNode.h"
 
+//#if defined(__GNUC__)
+//#include <ext/hash_set>
+//typedef __gnu_cxx::hash_set<Sofa::Abstract::CollisionElement*> CollisionElementSet;
+//#elif defined(_MSC_VER)
+//#include <hash_set>
+//typedef stdext::hash_set<Sofa::Abstract::CollisionElement*> CollisionElementSet;
+//#else
 #include <set>
+typedef std::set<Sofa::Abstract::CollisionElement*> CollisionElementSet;
+//#endif
 
 namespace Sofa
 {
@@ -32,7 +41,7 @@ public:
     // Adding a sphere in a cell of the voxel grid.
     // When adding a sphere, we test if there are collision with the sphere in the cell
     // then we add it in the vector sphere
-    void add(VoxelGrid* grid, Abstract::CollisionElement *collElem, std::set<Abstract::CollisionElement*> &vectCollis, int phase);
+    void add(VoxelGrid* grid, Abstract::CollisionElement *collElem, CollisionElementSet &vectCollis, CollisionElementSet &vectNoCollis, int phase);
     void eraseAll(int timeStampMethod);
     GridCell();
 

@@ -22,6 +22,7 @@ public:
     typedef DataTypes::VecDeriv VecDeriv;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
+    typedef Point Element;
 
     PointModel();
 

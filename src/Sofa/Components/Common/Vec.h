@@ -367,6 +367,11 @@ inline real dot(const Vec<N,real>& a, const Vec<N,real>& b)
     return a*b;
 }
 
+typedef Vec<2,float> Vec2f;
+typedef Vec<2,double> Vec2d;
+
+typedef Vec2d Vector2; ///< alias
+
 typedef Vec<3,float> Vec3f;
 typedef Vec<3,double> Vec3d;
 

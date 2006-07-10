@@ -21,12 +21,12 @@ void create(RegularGridTopology*& obj, ObjectDescription* arg)
     else
     {
         obj = new RegularGridTopology(atoi(nx),atoi(ny),atoi(nz));
-        const char* xmin = arg->getAttribute("xmin","0");
-        const char* ymin = arg->getAttribute("ymin","0");
-        const char* zmin = arg->getAttribute("zmin","0");
-        const char* xmax = arg->getAttribute("xmax",nx);
-        const char* ymax = arg->getAttribute("ymax",ny);
-        const char* zmax = arg->getAttribute("zmax",nz);
+        const char* xmin = arg->getAttribute("xmin",arg->getAttribute("min","0"));
+        const char* ymin = arg->getAttribute("ymin",arg->getAttribute("min","0"));
+        const char* zmin = arg->getAttribute("zmin",arg->getAttribute("min","0"));
+        const char* xmax = arg->getAttribute("xmax",arg->getAttribute("max",nx));
+        const char* ymax = arg->getAttribute("ymax",arg->getAttribute("max",ny));
+        const char* zmax = arg->getAttribute("zmax",arg->getAttribute("max",nz));
         obj->setPos(atof(xmin),atof(xmax),atof(ymin),atof(ymax),atof(zmin),atof(zmax));
     }
 }
