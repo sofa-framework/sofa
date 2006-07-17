@@ -32,7 +32,7 @@ protected:
     typedef std::pair<TypeInfo,TypeInfo> KeyType;
     typedef std::map<KeyType, F> MapType;
     MapType callBackMap;
-    virtual ~BasicDispatcher();
+    virtual ~BasicDispatcher() {}
 public:
     void add(const std::type_info& class1, const std::type_info& class2, F fun)
     {

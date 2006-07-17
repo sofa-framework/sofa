@@ -15,10 +15,10 @@ namespace Components
 namespace Common
 {
 
-template <class BaseClass, typename ResulT>
-BasicDispatcher<BaseClass, ResulT>::~BasicDispatcher()
-{
-}
+// template <class BaseClass, typename ResulT>
+// BasicDispatcher<BaseClass, ResulT>::~BasicDispatcher()
+// {
+// }
 
 template <class BaseClass, typename ResulT>
 ResulT BasicDispatcher<BaseClass, ResulT>::defaultFn(BaseClass& arg1, BaseClass& arg2)

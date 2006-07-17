@@ -64,6 +64,22 @@ public:
 
     /// @name Local Coordinates System
     /// @{
+    // Projection from the local coordinate system to the world coordinate system: translation part.
+    /// Returns a pointer to 3 doubles
+    //virtual const double* getLocalToWorldTranslation() const;
+
+    /// Projection from the local coordinate system to the world coordinate system: rotation part.
+    /// Returns a pointer to a 3x3 matrix (9 doubles, row-major format)
+    //virtual const double* getLocalToWorldRotationMatrix() const;
+
+    /// Projection from the local coordinate system to the world coordinate system: rotation part.
+    /// Returns a pointer to a quaternion (4 doubles, <x,y,z,w> )
+    //virtual const double* getLocalToWorldRotationQuat() const;
+
+    /// Compute the global 4x4 matrix in row-major format
+    //void computeLocalToWorldMatrixRowMajor(double* m) const;
+
+
 
     /// Projection from the local coordinate system to the world coordinate system: translation part.
     /// Returns a pointer to 3 doubles
@@ -82,11 +98,11 @@ public:
 
     /// Compute the global 4x4 matrix in column-major (OpenGL) format
     void computeLocalToWorldMatrixColumnMajor(double* m) const;
-    /*
-    	/// Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system.
-    	/// Returns a pointer to 6 doubles (3 doubles for linear velocity, 3 doubles for angular velocity)
-    	virtual const double* getSpatialVelocity() const;
-    */
+
+    /// Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system.
+    /// Returns a pointer to 6 doubles (3 doubles for linear velocity, 3 doubles for angular velocity)
+    //virtual const double* getSpatialVelocity() const;
+
 
     /// Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system.
     /// Returns a pointer to 3 doubles
