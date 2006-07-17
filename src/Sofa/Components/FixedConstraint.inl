@@ -48,7 +48,7 @@ FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::removeConstraint(int in
 
 // -- Mass interface
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(VecDeriv& res)
+void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
     for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
     {
@@ -76,7 +76,7 @@ void FixedConstraint<DataTypes>::draw()
 template <>
 void FixedConstraint<RigidTypes >::draw();
 template <>
-void FixedConstraint<RigidTypes >::applyConstraint(VecDeriv& dx);
+void FixedConstraint<RigidTypes >::projectResponse(VecDeriv& dx);
 
 } // namespace Components
 

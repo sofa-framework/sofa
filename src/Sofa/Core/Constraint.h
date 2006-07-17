@@ -25,9 +25,13 @@ public:
 
     virtual void init();
 
-    virtual void applyConstraint(); ///< project dx to constrained space
+    virtual void projectResponse(); ///< project dx to constrained space
+    virtual void projectVelocity(); ///< project dx to constrained space (dx models a velocity)
+    virtual void projectPosition(); ///< project x to constrained space (x models a position)
 
-    virtual void applyConstraint(VecDeriv& dx) = 0; ///< project dx to constrained space
+    virtual void projectResponse(VecDeriv& dx) = 0; ///< project dx to constrained space
+    virtual void projectVelocity(VecDeriv& dx)=0; ///< project dx to constrained space (dx models a velocity)
+    virtual void projectPosition(VecCoord& x)=0; ///< project x to constrained space (x models a position)
 
 protected:
     MechanicalModel<DataTypes> *mmodel;

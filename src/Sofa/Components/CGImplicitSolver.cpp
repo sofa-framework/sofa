@@ -60,7 +60,7 @@ void CGImplicitSolver::solve(double dt)
     group->computeDf(f);                // f = df/dx v
     b.peq(f,h);                         // b = f0+hdf/dx v
     b.teq(h);                           // b = h(f0+hdf/dx v)
-    group->applyConstraints(b);         // b is projected to the constrained space
+    group->projectResponse(b);         // b is projected to the constrained space
 
     // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
@@ -87,7 +87,7 @@ void CGImplicitSolver::solve(double dt)
         q *= -h*(h+rayleighStiffness);  // q = -h(h+r) df/dx p
         group->addMdx( q, p);           // q = Mp -h(h+r) df/dx p
         // filter the product to take the constraints into account
-        group->applyConstraints(q);     // q is projected to the constrained space
+        group->projectResponse(q);     // q is projected to the constrained space
 
         double den = p.dot(q);
         if( fabs(den)<smallDenominatorThreshold )

@@ -19,6 +19,7 @@ struct ContextData
     double gravity_[3];  ///< Gravity
     double worldGravity_[3];  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     double dt_;
+    double time_;
     bool animate_;
     bool showCollisionModels_;
     bool showBehaviorModels_;
@@ -54,6 +55,9 @@ public:
 
     /// Simulation timestep
     virtual double getDt() const;
+
+    /// Simulation time
+    virtual double getTime() const;
 
     /// Animation flag
     virtual bool getAnimate() const;
@@ -141,6 +145,9 @@ public:
 
     /// Simulation timestep
     virtual void setDt( double dt );
+
+    /// Simulation time
+    virtual void setTime( double t );
 
     /// Animation flag
     virtual void setAnimate(bool val);

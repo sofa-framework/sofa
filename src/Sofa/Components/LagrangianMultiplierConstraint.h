@@ -61,9 +61,11 @@ public:
         delete lambda;
     }
 
-    virtual void applyConstraint(VecDeriv& /*dx*/) ///< project dx to constrained space
+    virtual void projectResponse(VecDeriv& /*dx*/) ///< project dx to constrained space
     {
     }
+    virtual void projectVelocity(VecDeriv& /*dx*/) {} ///< project dx to constrained space (dx models a velocity)
+    virtual void projectPosition(VecCoord& /*x*/) {} ///< project x to constrained space (x models a position)
 
     virtual Core::BasicMechanicalModel* getDOFs()
     {

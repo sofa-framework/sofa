@@ -42,7 +42,7 @@ void StaticSolver::solve(double)
 // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
     b.teq(-1);                          // b = -f0
-    group->applyConstraints(b);         // b is projected to the constrained space
+    group->projectResponse(b);         // b is projected to the constrained space
     //cerr<<"StaticSolver::solve, b = "<<b<<endl;
 
 // -- solve the system using a conjugate gradient solution
@@ -71,7 +71,7 @@ void StaticSolver::solve(double)
         group->computeDf(q);            // q = df/dx p
         //cerr<<"StaticSolver::solve, df = "<<q<<endl;
 // filter the product to take the constraints into account
-        group->applyConstraints(q);     // q is projected to the constrained space
+        group->projectResponse(q);     // q is projected to the constrained space
         //cerr<<"StaticSolver::solve, df filtered = "<<q<<endl;
 
         double den = p.dot(q);

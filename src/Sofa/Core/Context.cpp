@@ -13,6 +13,7 @@ Context::Context()
     setAngularVelocity(getDefault()->getAngularVelocity());
     setLinearAcceleration(getDefault()->getLinearAcceleration());
     setDt(getDefault()->getDt());
+    setTime(getDefault()->getTime());
     setAnimate(getDefault()->getAnimate());
     setShowCollisionModels(getDefault()->getShowCollisionModels());
     setShowBehaviorModels(getDefault()->getShowBehaviorModels());
@@ -29,6 +30,12 @@ Context::Context()
 double Context::getDt() const
 {
     return dt_;
+}
+
+/// Simulation time
+double Context::getTime() const
+{
+    return time_;
 }
 
 /// Gravity vector in local coordinates
@@ -139,6 +146,12 @@ bool Context::getShowNormals() const
 void Context::setDt(double val)
 {
     dt_ = val;
+}
+
+/// Simulation time
+void Context::setTime(double val)
+{
+    time_ = val;
 }
 
 /// Gravity vector as a pointer to 3 double

@@ -26,6 +26,9 @@ public:
     /// Gravity in the local coordinate system as a pointer to 3 doubles
     virtual const double* getGravity() const;
 
+    /// Simulation time
+    virtual double getTime() const;
+
     /// Simulation timestep
     virtual double getDt() const;
 

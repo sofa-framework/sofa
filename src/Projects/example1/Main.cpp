@@ -37,7 +37,7 @@ bool loadPlugin(const char* filename)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    std::string fileName;
+    std::string fileName ;
     bool        startAnim = false;
     bool        printFactory = false;
     std::string gui = "none";
@@ -119,6 +119,8 @@ int main(int argc, char** argv)
     else if (gui=="qt")
     {
         Sofa::GUI::QT::MainLoop(argv[0],groot);
+        Sofa::GUI::QT::setWindowTitle(fileName.c_str());
+
     }
 #endif
     else

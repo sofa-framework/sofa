@@ -43,7 +43,7 @@ void FixedConstraint<RigidTypes>::draw()
 }
 
 template <>
-void FixedConstraint<RigidTypes>::applyConstraint(VecDeriv& res)
+void FixedConstraint<RigidTypes>::projectResponse(VecDeriv& res)
 {
     res[0] = Deriv();
 }

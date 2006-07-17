@@ -85,7 +85,7 @@ public:
     virtual void accumulateDf()
     {}
 
-    virtual void applyConstraints()
+    virtual void projectResponse()
     {}
 
     /// @name Integration related methods

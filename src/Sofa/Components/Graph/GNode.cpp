@@ -233,8 +233,10 @@ void GNode::updateContext()
     if( getParent() != NULL )
     {
         copyContext(*parent);
-        //cerr<<"node "<<getName()<<", copy context"<<endl;
+        //cerr<<"node "<<getName()<<", copy context, time = "<<getTime()<<endl;
     }
+    //else
+    //	cerr<<"node "<<getName()<<", time = "<<getTime()<<endl;
     //else {
     //	*static_cast<Core::Context*>(this) = Core::Context() ;
     //	//cerr<<"node "<<getName()<<", apply default context"<<endl;
@@ -431,6 +433,7 @@ void create(GNode*& obj, XML::Node<Abstract::BaseNode>* arg)
 {
     obj = new GNode();
     obj->setDt(atof(arg->getAttribute("dt","0.01")));
+    obj->setTime(atof(arg->getAttribute("t","0.0")));
     obj->setAnimate((atoi(arg->getAttribute("animate","0"))!=0));
     obj->setDebug((atoi(arg->getAttribute("debug","0"))!=0));
     obj->setShowCollisionModels((atoi(arg->getAttribute("showCollisionModels","0"))!=0));

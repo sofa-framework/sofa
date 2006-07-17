@@ -38,6 +38,12 @@ double BaseContext::getDt() const
     return 0.01;
 }
 
+/// Simulation time
+double BaseContext::getTime() const
+{
+    return 0.0;
+}
+
 /// Animation flag
 bool BaseContext::getAnimate() const
 {

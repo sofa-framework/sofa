@@ -108,6 +108,18 @@ public:
             orientation.normalize();
         }
 
+        Coord operator + (const Deriv& a) const
+        {
+            Coord c = *this;
+            c.center += a.getVCenter();
+            c.orientation.normalize();
+            Quat qDot = c.orientation.vectQuatMult(a.getVOrientation());
+            for (int i = 0; i < 4; i++)
+                c.orientation[i] += qDot[i] * 0.5;
+            c.orientation.normalize();
+            return c;
+        }
+
         void operator +=(const Coord& a)
         {
             std::cout << "+="<<std::endl;

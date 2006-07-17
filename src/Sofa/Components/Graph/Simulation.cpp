@@ -81,6 +81,7 @@ void Simulation::animate(GNode* root, double dt)
     root->execute(act);
     root->execute<UpdateMappingAction>();
     root->execute<VisualUpdateAction>();
+    root->setTime( root->getTime() + root->getDt() );
 }
 
 /// Reset to initial state

@@ -28,10 +28,22 @@ void Constraint<DataTypes>::init()
 }
 
 template<class DataTypes>
-void Constraint<DataTypes>::applyConstraint()
+void Constraint<DataTypes>::projectResponse()
 {
     if (mmodel)
-        applyConstraint(*mmodel->getDx());
+        projectResponse(*mmodel->getDx());
+}
+template<class DataTypes>
+void Constraint<DataTypes>::projectVelocity()
+{
+    if (mmodel)
+        projectVelocity(*mmodel->getV());
+}
+template<class DataTypes>
+void Constraint<DataTypes>::projectPosition()
+{
+    if (mmodel)
+        projectPosition(*mmodel->getX());
 }
 
 } // namespace Core
