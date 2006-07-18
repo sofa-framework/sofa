@@ -93,6 +93,7 @@ private:
 
     bool modified; ///< True if input vertices modified since last rendering
     bool useTopology; ///< True if list of facets should be taken from the attached topology
+    bool useNormals; ///< True if normals should be read from file
 
     ResizableExtVector<Coord> vertices;
     ResizableExtVector<Coord> vnormals;
@@ -118,13 +119,14 @@ private:
 
 public:
 
-    OglModel(const std::string &name="", std::string filename="", std::string loader="", std::string textureName="");
+    OglModel();
 
     ~OglModel();
 
     void draw();
 
-    void init(const std::string &name, std::string filename, std::string loader, std::string textureName);
+    bool load(const std::string& filename, const std::string& loader, const std::string& textureName);
+
     void applyTranslation(double dx, double dy, double dz);
     void applyScale(double s);
     void applyUVScale(double su, double sv);
@@ -132,6 +134,9 @@ public:
 
     void setColor(float r, float g, float b, float a);
     void setColor(std::string color);
+
+    void setUseNormals(bool val) { useNormals = val;  }
+    bool getUseNormals() const   { return useNormals; }
 
     void update();
 

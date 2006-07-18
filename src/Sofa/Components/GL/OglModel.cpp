@@ -17,20 +17,24 @@ using namespace Common;
 
 void create(OglModel*& obj, ObjectDescription* arg)
 {
-    const char* filename = arg->getAttribute("filename","");
-    const char* loader = arg->getAttribute("loader","");
-    const char* texturename = arg->getAttribute("texturename","");
-    {
-        obj = new OglModel(arg->getName(), filename, loader, texturename);
-        const char* color = arg->getAttribute("color");
-        if (color) obj->setColor(color);
-        if (arg->getAttribute("scale")!=NULL)
-            obj->applyScale(atof(arg->getAttribute("scale","1.0")));
-        if (arg->getAttribute("scaleTex")!=NULL)
-            obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
-        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-            obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-    }
+    obj = new OglModel;
+
+    if (arg->getAttribute("normals")!=NULL)
+        obj->setUseNormals(atoi(arg->getAttribute("normals"))!=0);
+
+    std::string filename = arg->getAttribute("filename","");
+    std::string loader = arg->getAttribute("loader","");
+    std::string texturename = arg->getAttribute("texturename","");
+    obj->load(filename, loader, texturename);
+
+    if (arg->getAttribute("color"))
+        obj->setColor(arg->getAttribute("color"));
+    if (arg->getAttribute("scale")!=NULL)
+        obj->applyScale(atof(arg->getAttribute("scale","1.0")));
+    if (arg->getAttribute("scaleTex")!=NULL)
+        obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
+    if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+        obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
 }
 
 SOFA_DECL_CLASS(OglModel)
@@ -80,11 +84,11 @@ Material::Material()
     useShininess = false;
 }
 
-OglModel::OglModel (const std::string &name, std::string filename, std::string loader, std::string textureName)
-    : modified(false), useTopology(false), tex(NULL)
+OglModel::OglModel() //const std::string &name, std::string filename, std::string loader, std::string textureName)
+    : modified(false), useTopology(false), useNormals(true), tex(NULL)
 {
     inputVertices = &vertices;
-    init (name, filename, loader, textureName);
+    //init (name, filename, loader, textureName);
 }
 
 OglModel::~OglModel()
@@ -171,7 +175,7 @@ void OglModel::draw()
     }
 }
 
-void OglModel::init(const std::string &/*name*/, std::string filename, std::string loader, std::string textureName)
+bool OglModel::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
     if (textureName != "")
     {
@@ -190,7 +194,11 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
         else
             objLoader = Mesh::Factory::CreateObject(loader, filename);
 
-        if (objLoader)
+        if (!objLoader)
+        {
+            return false;
+        }
+        else
         {
             std::vector< std::vector< std::vector<int> > > &facetsImport = objLoader->getFacets();
             std::vector<Vector3> &verticesImport = objLoader->getVertices();
@@ -217,7 +225,7 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
                 std::vector<int> norms = vertNormTexIndex[2];
                 for (unsigned int j = 0; j < verts.size(); j++)
                 {
-                    vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:0), norms[j])] = 0;
+                    vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:0), (useNormals?norms[j]:0))] = 0;
                 }
             }
 
@@ -293,7 +301,7 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
                 std::vector<int> idxs;
                 idxs.resize(verts.size());
                 for (unsigned int j = 0; j < verts.size(); j++)
-                    idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:0), norms[j])];
+                    idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:0), (useNormals?norms[j]:0))];
 
                 if (verts.size() == 4)
                 {
@@ -339,6 +347,7 @@ void OglModel::init(const std::string &/*name*/, std::string filename, std::stri
         modified = true;
         update();
     }
+    return true;
 }
 
 void OglModel::applyTranslation(double dx, double dy, double dz)
