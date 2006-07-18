@@ -48,6 +48,8 @@ void BruteForceDetection::addCollisionModel(CollisionModel *cm)
     for (std::vector<CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
     {
         CollisionModel* cm2 = *it;
+        if (cm->isStatic() && cm2->isStatic())
+            continue;
         bool collisionDetected = false;
         const std::vector<CollisionElement*>& vectElems1 = cm->getCollisionElements();
         const std::vector<CollisionElement*>& vectElems2 = cm2->getCollisionElements();
@@ -76,6 +78,9 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
 {
     CollisionModel *cm1 = cmPair.first->getNext();
     CollisionModel *cm2 = cmPair.second->getNext();
+
+    if (cm1->isStatic() && cm2->isStatic())
+        return;
 
     const std::vector<CollisionElement*>& vectElems1 = cm1->getCollisionElements();
     const std::vector<CollisionElement*>& vectElems2 = cm2->getCollisionElements();

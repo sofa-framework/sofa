@@ -213,6 +213,7 @@ void TriangleModel::computeContinuousBoundingBox (double dt)
         }
         cubeModel = new CubeModel();
         cubeModel->setContext(getContext());
+        cubeModel->setStatic(isStatic());
         this->setPrevious(cubeModel);
         cubeModel->setNext(this);
     }
@@ -266,6 +267,7 @@ void TriangleModel::computeBoundingBox(void)
         }
         cubeModel = new CubeModel();
         cubeModel->setContext(getContext());
+        cubeModel->setStatic(isStatic());
         this->setPrevious(cubeModel);
         cubeModel->setNext(this);
     }

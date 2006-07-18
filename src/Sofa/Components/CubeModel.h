@@ -22,9 +22,14 @@ protected:
     Abstract::CollisionModel* previous;
     Abstract::CollisionModel* next;
     Abstract::BehaviorModel* object;
+    bool static_;
 public:
 
     CubeModel();
+
+    bool isStatic() { return static_; }
+    void setStatic(bool val=true) { static_ = val; }
+
     void clear();
     void addCube(const Vector3& min, const Vector3 &max);
     void setCube(unsigned int index, const Vector3& min, const Vector3 &max);

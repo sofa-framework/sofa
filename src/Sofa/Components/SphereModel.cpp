@@ -141,6 +141,7 @@ void SphereModel::computeBoundingBox(void)
         }
         cubeModel = new CubeModel();
         cubeModel->setContext(getContext());
+        cubeModel->setStatic(isStatic());
         this->setPrevious(cubeModel);
         cubeModel->setNext(this);
     }

@@ -87,6 +87,7 @@ void PointModel::computeContinuousBoundingBox (double dt)
         }
         cubeModel = new CubeModel();
         cubeModel->setContext(getContext());
+        cubeModel->setStatic(isStatic());
         this->setPrevious(cubeModel);
         cubeModel->setNext(this);
     }
@@ -137,6 +138,7 @@ void PointModel::computeBoundingBox(void)
         }
         cubeModel = new CubeModel();
         cubeModel->setContext(getContext());
+        cubeModel->setStatic(isStatic());
         this->setPrevious(cubeModel);
         cubeModel->setNext(this);
     }
