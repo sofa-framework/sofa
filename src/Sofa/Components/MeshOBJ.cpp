@@ -224,11 +224,26 @@ void MeshOBJ::readMTL(char* filename)
                 mat->name = buf;
                 break;
             case 'N':
-                fscanf(file, "%lf", &mat->shininess);
-                /* wavefront shininess is from [0, 1000], so scale for OpenGL */
-                mat->shininess /= 1000.0;
-                mat->shininess *= 128.0;
-                mat->useShininess = true;
+                switch (buf[1])
+                {
+                case 'i':
+                {
+                    double optical_density;
+                    fscanf(file, "%lf", &optical_density);
+                    break;
+                }
+                case 's':
+                    fscanf(file, "%lf", &mat->shininess);
+                    /* wavefront shininess is from [0, 1000], so scale for OpenGL */
+                    //mat->shininess /= 1000.0;
+                    //mat->shininess *= 128.0;
+                    mat->useShininess = true;
+                    break;
+                default:
+                    /* eat up rest of line */
+                    fgets(buf, sizeof(buf), file);
+                    break;
+                }
                 break;
             case 'K':
                 switch (buf[1])
