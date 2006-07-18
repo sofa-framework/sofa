@@ -209,6 +209,16 @@ void VoxelGrid::addCollisionPair(const std::pair<CollisionModel*, CollisionModel
 
     CollisionModel *cm1 = cmPair.first->getNext(); //cmPair->getCollisionModel(0);
     CollisionModel *cm2 = cmPair.second->getNext(); //getCollisionModel(1);
+
+    const std::vector<CollisionElement*>& vectElems1 = cm1->getCollisionElements();
+    const std::vector<CollisionElement*>& vectElems2 = cm2->getCollisionElements();
+
+    if (vectElems1.size()<=0 ||vectElems2.size()<=0)
+        return;
+
+    if (!intersectionMethod->isSupported(vectElems1[0], vectElems2[0]))
+        return;
+
     if (gettimestamp(cm1) < timeStamp)
         add(cm1,1);
     settimestamp(cm1, timeStamp);
