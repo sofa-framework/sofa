@@ -14,6 +14,8 @@ class CollisionModel;
 class CollisionElement
 {
 public:
+    CollisionElement() : mTimeStamp(-1) {}
+
     virtual ~CollisionElement() { }
 
     virtual CollisionModel* getCollisionModel() = 0;
@@ -26,6 +28,31 @@ public:
     virtual bool canCollideWith(CollisionElement* elem) {return getCollisionModel() != elem->getCollisionModel();}
 
     //bool isSelfCollis(CollisionElement* elem) {return getCollisionModel() == elem->getCollisionModel();}
+
+    static void clearAllVisits()
+    {
+        CurrentTimeStamp(1);
+    }
+
+    bool visited() const
+    {
+        return mTimeStamp == CurrentTimeStamp();
+    }
+
+    void setVisited()
+    {
+        mTimeStamp = CurrentTimeStamp();
+    }
+
+protected:
+    int mTimeStamp;
+
+    static int CurrentTimeStamp(int incr=0)
+    {
+        static int ts = 0;
+        ts += incr;
+        return ts;
+    }
 };
 
 } // namespace Abstract
