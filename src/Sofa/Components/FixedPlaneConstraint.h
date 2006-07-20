@@ -21,14 +21,17 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename Coord::value_type   Real    ;
 
 protected:
-    std::set<int> indices;
+    std::set<int> indices; // the set of vertex indices
     /// direction on which the constraint applies
     Coord direction;
     /// whether to nail a point or to allow sliding along a plane of a known normal
     bool alongDirection;
 
+    Real dmin; // coordinates min of the plane for the vertex selection
+    Real dmax;// coordinates max of the plane for the vertex selection
 public:
     FixedPlaneConstraint();
 
@@ -46,6 +49,9 @@ public:
 
 
     void setDirection (Coord dir);
+    void selectVerticesAlongPlane();
+    void setDminAndDmax(const Real _dmin,const Real _dmax) {dmin=_dmin; dmax=_dmax; selectVerticesAlongPlane();}
+
     // -- VisualModel interface
 
     void draw();
@@ -53,6 +59,15 @@ public:
     void initTextures() { }
 
     void update() { }
+protected:
+    bool isPointInPlane(Coord p)
+    {
+        Real d=dot(p,direction);
+        if ((d>dmin)&& (d<dmax))
+            return true;
+        else
+            return false;
+    }
 };
 
 } // namespace Components
