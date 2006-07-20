@@ -59,6 +59,20 @@ void create(FixedPlaneConstraint<DataTypes>*& obj, ObjectDescription* arg)
             Coord dir(val);
             obj->setDirection(dir);
         }
+        if (arg->getAttribute("distance"))
+        {
+            const char* str = arg->getAttribute("distance");
+            const char* str2 = NULL;
+            Real val[2];
+            unsigned int i;
+            for(i=0; i<2; i++)
+            {
+                val[i] = (Real)strtod(str,(char**)&str2);
+                if (str2==str) break;
+                str = str2;
+            }
+            obj->setDminAndDmax(val[0],val[1]);
+        }
     }
 }
 }
