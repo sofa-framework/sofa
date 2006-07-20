@@ -68,12 +68,21 @@ protected:
     VecCoord _initialPoints;										///< the intial positions of the points
 
     Deriv pressure;
+
+    bool usePlaneSelection; // whether the edges are defined from 2 parallel planes or not
+    /// the normal used to define the edge subjected to the pressure force.
+    Deriv normal;
+
+    Real dmin; // coordinates min of the plane for the vertex selection
+    Real dmax;// coordinates max of the plane for the vertex selection
+
 public:
 
     EdgePressureForceField(Core::MechanicalObject<DataTypes>* object)
         : _object(object)
         , nbEdges(0)
         , _mesh(NULL)
+        , usePlaneSelection(false)
     {
     }
 
@@ -90,6 +99,10 @@ public:
     void initTextures() { };
     void update() { };
     void addEdgePressure(Index ind1,Index ind2);
+    void setNormal (Coord dir);
+    void selectEdgesAlongPlane();
+    void setDminAndDmax(const Real _dmin,const Real _dmax) {dmin=_dmin; dmax=_dmax; usePlaneSelection=true;}
+
 
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateEdgeInformation(); }
 
@@ -98,7 +111,14 @@ public:
 protected :
     void updateEdgeInformation();
     void initEdgeInformation();
-
+    bool isPointInPlane(Coord p)
+    {
+        Real d=dot(p,normal);
+        if ((d>dmin)&& (d<dmax))
+            return true;
+        else
+            return false;
+    }
 };
 
 

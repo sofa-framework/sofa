@@ -1,6 +1,7 @@
 #include "EdgePressureForceField.h"
 
 #include "Common/ObjectFactory.h"
+#include "Sofa/Components/MeshTopology.h"
 
 #include "MeshTopology.h"
 #include "GL/template.h"
@@ -15,6 +16,7 @@
 #endif
 
 #include <vector>
+#include <set>
 
 // #define DEBUG_TRIANGLEFEM
 
@@ -47,6 +49,9 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
     // get restPosition
     VecCoord& p = *this->_object->getX();
     _initialPoints = p;
+    if (usePlaneSelection)
+        selectEdgesAlongPlane();
+
     initEdgeInformation();
 
 }
@@ -124,7 +129,64 @@ void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 
     }
 }
+template <class DataTypes>
+void EdgePressureForceField<DataTypes>::setNormal(Coord dir)
+{
+    if (dir.norm2()>0)
+    {
+        normal=dir;
+    }
+}
 
+template <class DataTypes>
+void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
+{
+    VecCoord& x = *this->_object->getX();
+    std::vector<unsigned int> vArray;
+    unsigned int i,j,k,l,m;
+    int n;
+    std::set<std::pair<unsigned int,unsigned int> > edgeSet;
+
+    vArray.resize(x.size());
+    for(i=0; i<x.size(); ++i)
+    {
+        vArray[i]=isPointInPlane(x[i]);
+    }
+    Sofa::Components::MeshTopology* _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(getContext()->getTopology());
+
+    if (_mesh==NULL || (_mesh->getTriangles().empty()))
+    {
+        std::cerr << "ERROR(EdgePressureForceField): object must have a triangular MeshTopology.\n";
+        return;
+    }
+    const MeshTopology::SeqTriangles *_indexedElements = & (_mesh->getTriangles());
+
+    for (n=0; n<_mesh->getNbTriangles(); ++n)
+    {
+        for (j=0; j<3; ++j)
+        {
+            k=(*_indexedElements)[n][(j+1)%3];
+            l=(*_indexedElements)[n][(j+2)%3];
+            if ((vArray[k]) && (vArray[l]))
+            {
+                if (k>l)
+                {
+                    m=k;
+                    k=l;
+                    l=m;
+                }
+                if (edgeSet.find(std::pair<unsigned int,unsigned int>(k,l))==edgeSet.end())
+                {
+                    edgeSet.insert(std::pair<unsigned int,unsigned int>(k,l));
+                    std::cerr<<"adding vertices : "<< k << "and " << l << std::endl;
+                    addEdgePressure((Index) k,(Index) l);
+                }
+            }
+
+        }
+    }
+
+}
 
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::draw()
@@ -137,14 +199,14 @@ void EdgePressureForceField<DataTypes>::draw()
 
 
     VecCoord& x = *this->_object->getX();
-    /*
-    	Real dx=(x[1] -x[0]).norm();
-    	Real dy=(x[2] -x[1]).norm();
-    	Real ex=fabs(10-dx)/10;
-    	Real ey=fabs(10-dy)/10;
 
-    	std::cerr << "dx="<<dx<< " dy="<<dy<<" ex="<<ex<<" ey="<<ey << std::endl;
-    */
+    Real dx=(x[1] -x[0]).norm();
+    Real dy=(x[2] -x[1]).norm();
+    Real ex=fabs(10-dx)/10;
+    Real ey=fabs(10-dy)/10;
+
+    std::cerr << "dx="<<dx<< " dy="<<dy<<" ex="<<ex<<" ey="<<ey << std::endl;
+
     glDisable(GL_LIGHTING);
 
     glBegin(GL_LINES);
@@ -188,6 +250,9 @@ template class EdgePressureForceField<Vec3fTypes>;
 template<class DataTypes>
 void create(EdgePressureForceField<DataTypes>*& obj, ObjectDescription* arg)
 {
+    typedef typename DataTypes::Coord::value_type   Real;
+    typedef typename DataTypes::Coord   Coord;
+
     XML::createWithParent< EdgePressureForceField<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
@@ -210,6 +275,35 @@ void create(EdgePressureForceField<DataTypes>*& obj, ObjectDescription* arg)
                 str = str2;
                 obj->addEdgePressure(ind1,ind2);
             }
+        }
+        if (arg->getAttribute("normal"))
+        {
+            const char* str = arg->getAttribute("normal");
+            const char* str2 = NULL;
+            Real val[3];
+            unsigned int i;
+            for(i=0; i<3; i++)
+            {
+                val[i] = (Real)strtod(str,(char**)&str2);
+                if (str2==str) break;
+                str = str2;
+            }
+            Coord dir(val);
+            obj->setNormal(dir);
+        }
+        if (arg->getAttribute("distance"))
+        {
+            const char* str = arg->getAttribute("distance");
+            const char* str2 = NULL;
+            Real val[2];
+            unsigned int i;
+            for(i=0; i<2; i++)
+            {
+                val[i] = (Real)strtod(str,(char**)&str2);
+                if (str2==str) break;
+                str = str2;
+            }
+            obj->setDminAndDmax(val[0],val[1]);
         }
     }
 }
