@@ -28,11 +28,12 @@ using namespace Core::Encoding;
 class CoordinateSystem : public Core::BasicMechanicalModel
 {
 public:
-    typedef Common::SolidTypes<float>::Vec Vec;
-    typedef Common::SolidTypes<float>::Rot Rot;
-    typedef Common::SolidTypes<float>::Mat Mat;
-    typedef Common::SolidTypes<float>::Coord Frame;
-    typedef Common::SolidTypes<float>::Deriv Velocity;
+    typedef Abstract::BaseContext::SolidTypes SolidTypes;
+    typedef SolidTypes::Vec Vec;
+    typedef SolidTypes::Rot Rot;
+    typedef SolidTypes::Mat Mat;
+    typedef SolidTypes::Coord Frame;
+    typedef SolidTypes::Deriv Velocity;
 
     CoordinateSystem();
     virtual ~CoordinateSystem()

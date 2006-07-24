@@ -11,7 +11,7 @@
 #ifndef Sofa_ComponentsSolidTypes_h
 #define Sofa_ComponentsSolidTypes_h
 
-#include <Sofa/Abstract/BaseContext.h>
+//#include <Sofa/Abstract/BaseContext.h>
 #include <Sofa/Components/Common/Vec.h>
 #include <Sofa/Components/Common/Quat.h>
 #include <Sofa/Components/Common/Mat.h>
@@ -55,6 +55,10 @@ public:
         Vec freeVec;
         void clear();
         SpatialVector();
+        /**
+        \param l The line vector: angular velocity, or force
+        \param f The free vector: linear velocity, or torque
+        */
         SpatialVector( const Vec& l, const Vec& f );
         SpatialVector& operator += (const SpatialVector& v);
 
@@ -83,6 +87,14 @@ public:
             out<<t.lineVec<<" "<<t.freeVec;
             return out;
         }
+        /// If the SpatialVector models a velocity, then the linear velocity is the lineVec.
+        /// Otherwise, the SpatialVector models a spatial force, and this method returns a torque.
+        const Vec& getLinearVelocity() const { return freeVec; }
+        void setLinearVelocity(const Vec& v) { freeVec = v; }
+        /// If the SpatialVector models a velocity, then the angular velocity is the freeVec.
+        /// Otherwise, the SpatialVector models a spatial force, and this method returns a force.
+        const Vec& getAngularVelocity() const { return lineVec; }
+        void setAngularVelocity(const Vec& v) { lineVec = v; }
     };
 
     /** Define a frame (this) whith respect to another (called this->parent int he documentation, although this object has no pointer to a parent Frame). A frame represents a local coordinate system.
@@ -177,20 +189,20 @@ public:
         }
         //@}
 
-        void fromContext(Abstract::BaseContext* context)
-        {
-            orientation_ = context->getLocalToWorldRotationQuat();
-            origin_ = context->getLocalToWorldTranslation();
-        }
+        //void fromContext(Abstract::BaseContext* context)
+        //{
+        //	orientation_ = context->getLocalToWorldRotationQuat();
+        //	origin_ = context->getLocalToWorldTranslation();
+        //}
 
-        void toContext(Abstract::BaseContext* context)
-        {
-            Vec3d translation ( origin_ );
-            Quat rotation ( orientation_ );
-            Mat3x3d mat;
-            rotation.toMatrix(mat);
-            context->setLocalToWorld(translation, rotation.ptr(), mat.ptr());
-        }
+        //void toContext(Abstract::BaseContext* context)
+        //{
+        //	Vec3d translation ( origin_ );
+        //	Quat rotation ( orientation_ );
+        //	Mat3x3d mat;
+        //	rotation.toMatrix(mat);
+        //	context->setLocalToWorld(translation, rotation.ptr(), mat.ptr());
+        //}
 
     protected:
         Rot orientation_; ///< child wrt parent

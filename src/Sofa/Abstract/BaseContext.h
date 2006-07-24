@@ -2,6 +2,7 @@
 #define SOFA_ABSTRACT_BASECONTEXT_H
 
 #include "Base.h"
+#include <Sofa/Components/Common/SolidTypes.h>
 
 namespace Sofa
 {
@@ -15,6 +16,13 @@ class BaseObject;
 class BaseContext : public virtual Base
 {
 public:
+    typedef Components::Common::SolidTypes<double> SolidTypes;
+    typedef SolidTypes::Transform Frame;
+    typedef SolidTypes::Vec Vec3;
+    typedef SolidTypes::Rot Quat;
+    typedef SolidTypes::Mat Mat33;
+    typedef SolidTypes::SpatialVector SpatialVector;
+
     BaseContext();
     virtual ~BaseContext();
 
@@ -22,9 +30,6 @@ public:
 
     /// @name Parameters
     /// @{
-
-    /// Gravity in the local coordinate system as a pointer to 3 doubles
-    virtual const double* getGravity() const;
 
     /// Simulation time
     virtual double getTime() const;
@@ -62,62 +67,29 @@ public:
     /// @}
 
 
-    /// @name Local Coordinates System
+    /// @name Local Coordinate System
     /// @{
-    // Projection from the local coordinate system to the world coordinate system: translation part.
-    /// Returns a pointer to 3 doubles
-    //virtual const double* getLocalToWorldTranslation() const;
+    /// Projection from the local coordinate system to the world coordinate system.
+    virtual const Frame& getLocalFrame() const;
+    /// Projection from the local coordinate system to the world coordinate system.
+    virtual void setLocalFrame(const Frame&) {}
 
-    /// Projection from the local coordinate system to the world coordinate system: rotation part.
-    /// Returns a pointer to a 3x3 matrix (9 doubles, row-major format)
-    //virtual const double* getLocalToWorldRotationMatrix() const;
+    /// Spatial velocity (linear, angular) of the local frame with respect to the world
+    virtual const SpatialVector& getSpatialVelocity() const;
+    /// Spatial velocity (linear, angular) of the local frame with respect to the world
+    virtual void setSpatialVelocity(const SpatialVector&) {}
 
-    /// Projection from the local coordinate system to the world coordinate system: rotation part.
-    /// Returns a pointer to a quaternion (4 doubles, <x,y,z,w> )
-    //virtual const double* getLocalToWorldRotationQuat() const;
-
-    /// Compute the global 4x4 matrix in row-major format
-    //void computeLocalToWorldMatrixRowMajor(double* m) const;
-
-
-
-    /// Projection from the local coordinate system to the world coordinate system: translation part.
-    /// Returns a pointer to 3 doubles
-    virtual const double* getLocalToWorldTranslation() const;
-
-    /// Projection from the local coordinate system to the world coordinate system: rotation part.
-    /// Returns a pointer to a 3x3 matrix (9 doubles, row-major format)
-    virtual const double* getLocalToWorldRotationMatrix() const;
-
-    /// Projection from the local coordinate system to the world coordinate system: rotation part.
-    /// Returns a pointer to a quaternion (4 doubles, <x,y,z,w> )
-    virtual const double* getLocalToWorldRotationQuat() const;
-
-    /// Compute the global 4x4 matrix in row-major format
-    void computeLocalToWorldMatrixRowMajor(double* m) const;
-
-    /// Compute the global 4x4 matrix in column-major (OpenGL) format
-    void computeLocalToWorldMatrixColumnMajor(double* m) const;
-
-    /// Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system.
-    /// Returns a pointer to 6 doubles (3 doubles for linear velocity, 3 doubles for angular velocity)
-    //virtual const double* getSpatialVelocity() const;
-
-
-    /// Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system.
-    /// Returns a pointer to 3 doubles
-    virtual const double* getLinearVelocity() const;
-
-    /// Velocity of the local frame in the world coordinate system.
-    /// Returns a pointer to 3 doubles
-    virtual const double* getAngularVelocity() const;
-
-    /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame.
-    /// Returns a pointer to 3 doubles
-    virtual const double* getLinearAcceleration() const;
-
+    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
+    virtual const Vec3& getVelocityBasedLinearAcceleration() const;
+    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
+    virtual void setVelocityBasedLinearAcceleration(const Vec3& ) {}
     /// @}
 
+
+    /// Gravity in local coordinates
+    virtual const Vec3& getGravity() const;
+    /// Gravity in local coordinates
+    virtual void setGravity( const Vec3& ) { }
 
     /// @name Variables
     /// @{
@@ -133,8 +105,6 @@ public:
     /// @name Parameters Setters
     /// @{
 
-    /// Gravity in local coordinates
-    virtual void setGravity( const double* /*g*/ ) { }
 
     /// Simulation timestep
     virtual void setDt( double /*dt*/ ) { }
@@ -165,18 +135,6 @@ public:
 
     /// Display flags: Normals
     virtual void setShowNormals(bool /*val*/) { }
-
-    /// Projection from the local frame to the world frame
-    virtual void setLocalToWorld( const double* /*translation*/, const double* /*rotationQuat*/, const double* /*rotationMatrix*/) { }
-
-    /// Velocity of the local frame with respect the world coordinate system, expressed in the world coordinate system, at the origin of the world coordinate system
-    virtual void setLinearVelocity( const double* ) { }
-
-    /// Velocity of the local frame with respect the world coordinate system, expressed in the world coordinate system, at the origin of the world coordinate system
-    virtual void setAngularVelocity( const double* ) { }
-
-    /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
-    virtual void setLinearAcceleration( const double* ) { }
 
     /// @}
 

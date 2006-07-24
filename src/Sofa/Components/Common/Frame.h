@@ -23,7 +23,7 @@ The product F1F2 can be seen as a frame displacement F1 starting from the refere
 class Frame
 {
 public:
-    typedef float Real;
+    typedef double Real;
     typedef Vec<3,Real> Vec3;
     typedef Quater<Real> Quat;
     typedef Mat<3,3,Real> Mat33;

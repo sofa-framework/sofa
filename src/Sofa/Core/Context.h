@@ -16,8 +16,15 @@ namespace Core
 
 struct ContextData
 {
-    double gravity_[3];  ///< Gravity
-    double worldGravity_[3];  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    typedef Abstract::BaseContext::Frame Frame;
+    typedef Abstract::BaseContext::Vec3 Vec3;
+    typedef Abstract::BaseContext::Quat Quat;
+    typedef Abstract::BaseContext::SpatialVector SpatialVector;
+
+    //double gravity_[3];  ///< Gravity
+    //double worldGravity_[3];  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    Vec3 gravity_;  ///< Gravity
+    Vec3 worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     double dt_;
     double time_;
     bool animate_;
@@ -30,18 +37,28 @@ struct ContextData
     bool showNormals_;
     bool multiThreadSimulation_;
 
-    double localToWorldTranslation_[3];  ///< Used to project from the local coordinate system to the world coordinate system
-    double localToWorldRotationQuat_[4];  ///< Used to project from the local coordinate system to the world coordinate system
-    double localToWorldRotationMatrix_[9];  ///< Used to project from the local coordinate system to the world coordinate system
-    double linearVelocity_[3]; ///< Velocity in the local frame, defined in the world coordinate system
-    double angularVelocity_[3]; ///< Velocity in the local frame, defined in the world coordinate system
-    double linearAcceleration_[3]; ///< Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
+
+    Frame localFrame_;
+    SpatialVector spatialVelocity_;
+    Vec3 velocityBasedLinearAcceleration_;
+    //double localToWorldTranslation_[3];  ///< Used to project from the local coordinate system to the world coordinate system
+    //double localToWorldRotationQuat_[4];  ///< Used to project from the local coordinate system to the world coordinate system
+    //double localToWorldRotationMatrix_[9];  ///< Used to project from the local coordinate system to the world coordinate system
+    //double linearVelocity_[3]; ///< Velocity in the local frame, defined in the world coordinate system
+    //double angularVelocity_[3]; ///< Velocity in the local frame, defined in the world coordinate system
+    //double linearAcceleration_[3]; ///< Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
 };
 
 class Context : public Abstract::BaseContext, private ContextData
 {
 
 public:
+    typedef Abstract::BaseContext::Frame Frame;
+    typedef Abstract::BaseContext::Vec3 Vec3;
+    typedef Abstract::BaseContext::Quat Quat;
+    typedef Abstract::BaseContext::SpatialVector SpatialVector;
+
+
     Context();
     virtual ~Context()
     {}
@@ -50,8 +67,10 @@ public:
     /// @name Parameters
     /// @{
 
-    /// Gravity in the local coordinate system as a pointer to 3 doubles
-    virtual const double* getGravity() const;
+    /// Gravity in the local coordinate system
+    virtual const Vec3& getGravity() const;
+    /// Gravity in the local coordinate system
+    virtual void setGravity(const Vec3& );
 
     /// Simulation timestep
     virtual double getDt() const;
@@ -89,39 +108,22 @@ public:
     /// @}
 
 
-    /// @name Local Coordinates System
+    /// @name Local Coordinate System
     /// @{
+    /// Projection from the local coordinate system to the world coordinate system.
+    virtual const Frame& getLocalFrame() const;
+    /// Projection from the local coordinate system to the world coordinate system.
+    virtual void setLocalFrame(const Frame&);
 
-    /// Projection from the local coordinate system to the world coordinate system: translation part.
-    /// Returns a pointer to 3 doubles
-    virtual const double* getLocalToWorldTranslation() const;
+    /// Spatial velocity (linear, angular) of the local frame with respect to the world
+    virtual const SpatialVector& getSpatialVelocity() const;
+    /// Spatial velocity (linear, angular) of the local frame with respect to the world
+    virtual void setSpatialVelocity(const SpatialVector&);
 
-    /// Projection from the local coordinate system to the world coordinate system: rotation part.
-    /// Returns a pointer to a 3x3 matrix (9 doubles, row-major format)
-    virtual const double* getLocalToWorldRotationMatrix() const;
-
-    /// Projection from the local coordinate system to the world coordinate system: rotation part.
-    /// Returns a pointer to a quaternion (4 doubles, <x,y,z,w> )
-    virtual const double* getLocalToWorldRotationQuat() const;
-
-    /*
-    	/// Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system.
-    	/// Returns a pointer to 6 doubles (3 doubles for linear velocity, 3 doubles for angular velocity)
-    	virtual const double* getSpatialVelocity() const;
-    */
-
-    /// Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system.
-    /// Returns a pointer to 3 doubles
-    virtual const double* getLinearVelocity() const;
-
-    /// Velocity of the local frame in the world coordinate system.
-    /// Returns a pointer to 3 doubles
-    virtual const double* getAngularVelocity() const;
-
-    /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame.
-    /// Returns a pointer to 3 doubles
-    virtual const double* getLinearAcceleration() const;
-
+    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
+    virtual const Vec3& getVelocityBasedLinearAcceleration() const;
+    /// Linear acceleration of the origin induced by the angular velocity of the ancestors
+    virtual void setVelocityBasedLinearAcceleration(const Vec3& );
     /// @}
 
     /*
@@ -140,8 +142,6 @@ public:
     /// @name Parameters Setters
     /// @{
 
-    /// Gravity in local coordinates
-    virtual void setGravity( const double* g );
 
     /// Simulation timestep
     virtual void setDt( double dt );
@@ -176,17 +176,6 @@ public:
     /// Display flags: Normals
     virtual void setShowNormals(bool val);
 
-    /// Projection from the local frame to the world frame
-    virtual void setLocalToWorld( const double* translation, const double* rotationQuat, const double* rotationMatrix );
-
-    /// Velocity of the local frame with respect the world coordinate system, expressed in the world coordinate system, at the origin of the world coordinate system
-    virtual void setLinearVelocity( const double* );
-
-    /// Velocity of the local frame with respect the world coordinate system, expressed in the world coordinate system, at the origin of the world coordinate system
-    virtual void setAngularVelocity( const double* );
-
-    /// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
-    virtual void setLinearAcceleration( const double* );
 
     /// @}
 

@@ -84,11 +84,11 @@ void CoordinateSystem::updateContext(Core::Context* context)
 //     cerr<<"CoordinateSystem, frame = "<<   getName() << endl;
 
     // store parent position and velocity
-    Frame parentToWorld ( Rot(context->getLocalToWorldRotationQuat()), Vec(context->getLocalToWorldTranslation()) );
-    Vec parentLinearVelocity ( context->getLinearVelocity() );
-    Vec parentAngularVelocity ( context->getAngularVelocity() );
+    Frame parentToWorld = context->getLocalFrame();
+    Vec parentLinearVelocity ( context->getSpatialVelocity().getLinearVelocity() );
+    Vec parentAngularVelocity ( context->getSpatialVelocity().getAngularVelocity() );
     Velocity parentSpatialVelocity ( parentLinearVelocity, parentAngularVelocity );
-    Vec parentLinearAcceleration ( context->getLinearAcceleration() );
+    Vec parentLinearAcceleration ( context->getVelocityBasedLinearAcceleration() );
 
 //     cerr<<"CoordinateSystem::apply(), thisToParent "<< *getX() <<endl;
 //     cerr<<"CoordinateSystem::apply(), parentToWorld "<< parentToWorld <<endl;
@@ -122,16 +122,15 @@ void CoordinateSystem::updateContext(Core::Context* context)
     Common::Vec3d newLinearAcceleration = parentLinearAcceleration + ainduced;
     Frame newLocalToWorld = parentToWorld * (*getX());
     Velocity newSpatialVelocity ( parentSpatialVelocity + parentToWorld * getVelocity() );
-    // Convert to required types
-    Common::Vec3d newTranslation = newLocalToWorld.getOriginInParent();
-    Common::Mat3x3d newMatrix = newLocalToWorld.getRotationMatrix();
-    Common::Quater<double> newQuat ( newLocalToWorld.getOrientation() );
-    Common::Vec3d newLinearVelocity ( newSpatialVelocity.lineVec );
-    Common::Vec3d newAngularVelocity ( newSpatialVelocity.freeVec );
-    context->setLinearAcceleration( newLinearAcceleration );
-    context->setLocalToWorld( newTranslation, newQuat.ptr(), newMatrix.ptr() );
-    context->setLinearVelocity( newLinearVelocity );
-    context->setAngularVelocity( newAngularVelocity );
+    //// Convert to required types
+    //Common::Vec3d newTranslation = newLocalToWorld.getOriginInParent();
+    //Common::Mat3x3d newMatrix = newLocalToWorld.getRotationMatrix();
+    //Common::Quater<double> newQuat ( newLocalToWorld.getOrientation() );
+    //Common::Vec3d newLinearVelocity ( newSpatialVelocity.lineVec );
+    //Common::Vec3d newAngularVelocity ( newSpatialVelocity.freeVec );
+    context->setVelocityBasedLinearAcceleration( newLinearAcceleration );
+    context->setLocalFrame( newLocalToWorld );
+    context->setSpatialVelocity( newSpatialVelocity );
 
 //     cerr<<"CoordinateSystem::apply(), localToWorld= "<< context->getLocalToWorld() <<endl;
 //     cerr<<"CoordinateSystem::apply(), spatial velocity= "<< context->getSpatialVelocity() <<endl;

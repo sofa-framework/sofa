@@ -26,9 +26,9 @@ BaseContext* BaseContext::getDefault()
 ////////////////
 
 /// Gravity in the local coordinate system as a pointer to 3 doubles
-const double* BaseContext::getGravity() const
+const BaseContext::Vec3& BaseContext::getGravity() const
 {
-    static const double G[3]= {0,-9.81,0};
+    static const Vec3 G(0,-9.81,0);
     return G;
 }
 
@@ -104,83 +104,25 @@ bool BaseContext::getShowNormals() const
 //////////////////////////////
 
 
-/// Projection from the local coordinate system to the world coordinate system: translation part.
-/// Returns a pointer to 3 doubles
-const double* BaseContext::getLocalToWorldTranslation() const
+/// Projection from the local coordinate system to the world coordinate system.
+const BaseContext::Frame& BaseContext::getLocalFrame() const
 {
-    static const double defaultVal[3]= {0,0,0};
-    return defaultVal;
+    static const Frame f;
+    return f;
 }
 
-/// Projection from the local coordinate system to the world coordinate system: rotation part.
-/// Returns a pointer to a 3x3 matrix (9 doubles, row-major format)
-const double* BaseContext::getLocalToWorldRotationMatrix() const
+/// Spatial velocity (linear, angular) of the local frame with respect to the world
+const BaseContext::SpatialVector& BaseContext::getSpatialVelocity() const
 {
-    static const double defaultVal[9]= {1,0,0, 0,1,0, 0,0,1};
-    return defaultVal;
+    static const SpatialVector v( Vec3(0,0,0), Vec3(0,0,0) );
+    return v;
 }
 
-/// Projection from the local coordinate system to the world coordinate system: rotation part.
-/// Returns a pointer to a quaternion (4 doubles, <x,y,z,w> )
-const double* BaseContext::getLocalToWorldRotationQuat() const
+/// Linear acceleration of the origin induced by the angular velocity of the ancestors
+const BaseContext::Vec3& BaseContext::getVelocityBasedLinearAcceleration() const
 {
-    static const double defaultVal[4]= {0,0,0,1};
-    return defaultVal;
-}
-
-/// Compute the global 4x4 matrix in row-major format
-void BaseContext::computeLocalToWorldMatrixRowMajor(double* m) const
-{
-    const double* t = getLocalToWorldTranslation();
-    const double* r = getLocalToWorldRotationMatrix();
-    m[0*4+0]=r[0*3+0];  m[0*4+1]=r[0*3+1];  m[0*4+2]=r[0*3+2];  m[0*4+3]=t[0];
-    m[1*4+0]=r[1*3+0];  m[1*4+1]=r[1*3+1];  m[1*4+2]=r[1*3+2];  m[1*4+3]=t[1];
-    m[2*4+0]=r[2*3+0];  m[2*4+1]=r[2*3+1];  m[2*4+2]=r[2*3+2];  m[2*4+3]=t[2];
-    m[3*4+0]=0;         m[3*4+1]=0;         m[3*4+2]=0;         m[3*4+3]=1;
-}
-
-/// Compute the global 4x4 matrix in column-major (OpenGL) format
-void BaseContext::computeLocalToWorldMatrixColumnMajor(double* m) const
-{
-    const double* t = getLocalToWorldTranslation();
-    const double* r = getLocalToWorldRotationMatrix();
-    m[0+4*0]=r[0*3+0];  m[0+4*1]=r[0*3+1];  m[0+4*2]=r[0*3+2];  m[0+4*3]=t[0];
-    m[1+4*0]=r[1*3+0];  m[1+4*1]=r[1*3+1];  m[1+4*2]=r[1*3+2];  m[1+4*3]=t[1];
-    m[2+4*0]=r[2*3+0];  m[2+4*1]=r[2*3+1];  m[2+4*2]=r[2*3+2];  m[2+4*3]=t[2];
-    m[3+4*0]=0;         m[3+4*1]=0;         m[3+4*2]=0;         m[3+4*3]=1;
-}
-/*
-/// Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system.
-/// Returns a pointer to 6 doubles (3 doubles for linear velocity, 3 doubles for angular velocity)
-const double* BaseContext::getSpatialVelocity() const
-{
-	static const double defaultVal[6]={0,0,0,0,0,0};
-	return defaultVal;
-}
-*/
-
-/// Velocity of the local frame in the world coordinate system. The linear velocity is expressed at the origin of the world coordinate system.
-/// Returns a pointer to 3 doubles
-const double* BaseContext::getLinearVelocity() const
-{
-    static const double defaultVal[3]= {0,0,0};
-    return defaultVal;
-}
-
-/// Velocity of the local frame in the world coordinate system.
-/// Returns a pointer to 3 doubles
-const double* BaseContext::getAngularVelocity() const
-{
-    static const double defaultVal[3]= {0,0,0};
-    return defaultVal;
-}
-
-/// Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame.
-/// Returns a pointer to 3 doubles
-const double* BaseContext::getLinearAcceleration() const
-{
-    static const double defaultVal[3]= {0,0,0};
-    return defaultVal;
+    static const Vec3 a(0,0,0);
+    return a;
 }
 
 
