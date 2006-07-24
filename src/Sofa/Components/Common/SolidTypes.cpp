@@ -102,7 +102,9 @@ typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::cross( const
 
 template<class R>
 SolidTypes<R>::Transform::Transform()
-{}
+{
+    *this = this->identity();
+}
 
 /// Define using Featherstone's conventions
 template<class R>
@@ -118,6 +120,15 @@ template<class R>
 void SolidTypes<R>::Transform::setTranslationRotation( const Vec& t, const Rot& q )
 {
     orientation_ =q, origin_ = -(q.inverseRotate(t));
+}
+
+/// Define given the origin of the child wrt the parent and the orientation of the child wrt the parent (i.e. standard way)
+template<class R>
+typename SolidTypes<R>::Transform         SolidTypes<R>::Transform::displace( const Vec& t, const Rot& q )
+{
+    Transform f;
+    f.setTranslationRotation( t, q );
+    return f;
 }
 
 template<class R>
@@ -217,6 +228,7 @@ void SolidTypes<R>::Transform::clear()
 template<class R>
 typename SolidTypes<R>::Transform SolidTypes<R>::Transform::operator * (const Transform& f2) const
 {
+    cerr<<"SolidTypes<R>::Transform::operator *, orientation = "<<orientation_<<", f2.orientation = "<<f2.getOrientation()<<", product = "<<orientation_ * f2.getOrientation()<<endl;
     return Transform(  orientation_ * f2.getOrientation(), f2.getOriginInChild() + f2.getOrientation().inverseRotate(origin_)) ;
 }
 

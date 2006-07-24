@@ -58,6 +58,11 @@ const Context::Vec3& Context::getGravity() const
 {
     return gravity_;
 }
+/// Gravity vector in world coordinates
+const Context::Vec3& Context::getWorldGravity() const
+{
+    return worldGravity_;
+}
 
 
 
@@ -133,6 +138,11 @@ void Context::setTime(double val)
 void Context::setGravity(const Vec3& g)
 {
     gravity_ = g;
+}
+/// Gravity vector
+void Context::setWorldGravity(const Vec3& g)
+{
+    worldGravity_ = g;
 }
 
 /// Animation flag

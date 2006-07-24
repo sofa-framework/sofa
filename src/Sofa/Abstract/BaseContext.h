@@ -90,6 +90,10 @@ public:
     virtual const Vec3& getGravity() const;
     /// Gravity in local coordinates
     virtual void setGravity( const Vec3& ) { }
+    /// Gravity in world coordinates
+    virtual const Vec3& getWorldGravity() const;
+    /// Gravity in world coordinates
+    virtual void setWorldGravity( const Vec3& ) { }
 
     /// @name Variables
     /// @{

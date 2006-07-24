@@ -1,4 +1,4 @@
-// Author: François Faure, INRIA-UJF, (C) 2006
+// Author: Franï¿½is Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
 #ifndef	SOFA_CORE_CONTEXT_H
@@ -71,6 +71,10 @@ public:
     virtual const Vec3& getGravity() const;
     /// Gravity in the local coordinate system
     virtual void setGravity(const Vec3& );
+    /// Gravity in world coordinates
+    virtual const Vec3& getWorldGravity() const;
+    /// Gravity in world coordinates
+    virtual void setWorldGravity( const Vec3& );
 
     /// Simulation timestep
     virtual double getDt() const;

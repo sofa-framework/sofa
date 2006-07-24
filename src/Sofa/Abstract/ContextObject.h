@@ -10,7 +10,7 @@ namespace Sofa
 namespace Abstract
 {
 
-class ContextObject : public BaseObject
+class ContextObject : public virtual BaseObject
 {
 public:
     ContextObject()

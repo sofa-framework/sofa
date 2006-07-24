@@ -265,6 +265,11 @@ void GNode::updateContext()
 //	if( !mechanicalModel.empty() ) {
 //		mechanicalModel->updateContext(&context_);
 //	}
+
+
+    // project the gravity to the local coordinate system
+    getContext()->setGravity( getContext()->getLocalFrame().backProjectVector(getContext()->getWorldGravity()) );
+
     if( debug_ ) cerr<<"GNode::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<Core::Context*>(this) << endl;
 }
 

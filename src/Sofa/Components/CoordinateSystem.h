@@ -1,10 +1,10 @@
 #ifndef SOFA_COMPONENTS_COORDINATESYSTEM_H
 #define SOFA_COMPONENTS_COORDINATESYSTEM_H
 
-//#include <Sofa/Abstract/BaseObject.h>
+#include <Sofa/Abstract/ContextObject.h>
+#include <Sofa/Abstract/VisualModel.h>
 #include <Sofa/Components/Common/SolidTypes.h>
-#include <Sofa/Core/BasicMechanicalModel.h>
-#include <Sofa/Components/Common/vector.h>
+// #include <Sofa/Components/Common/vector.h>
 
 namespace Sofa
 {
@@ -21,11 +21,10 @@ namespace Graph
 class GNode;
 }
 
-using namespace Core::Encoding;
 
 /** Defines the local coordinate system with respect to its parent.
 */
-class CoordinateSystem : public Core::BasicMechanicalModel
+class CoordinateSystem : public Abstract::ContextObject, public Abstract::VisualModel
 {
 public:
     typedef Abstract::BaseContext::SolidTypes SolidTypes;
@@ -33,117 +32,40 @@ public:
     typedef SolidTypes::Rot Rot;
     typedef SolidTypes::Mat Mat;
     typedef SolidTypes::Coord Frame;
-    typedef SolidTypes::Deriv Velocity;
+    typedef SolidTypes::Deriv SpatialVector;
 
     CoordinateSystem();
     virtual ~CoordinateSystem()
     {}
 
-    virtual void updateContext( Core::Context* );
+    // ContextObject
+    virtual void apply();
+
+    // VisualModel
+    virtual void draw();
+    virtual void initTextures() {}
+    virtual void update() {}
 
 
-    const Frame&  getFrame() const;
-    CoordinateSystem* setFrame( const Frame& f );
-    CoordinateSystem* setFrame( const Vec& translation, const Rot& rotation );
-    CoordinateSystem* setFrame( const Vec& translation ) { Rot r = Rot::identity(); return setFrame(translation, r); }
+    const Frame&  getRelativePosition() const;
+    CoordinateSystem* setRelativePosition( const Frame& f );
+//     CoordinateSystem* setFrame( const Vec& translation, const Rot& rotation );
+//     CoordinateSystem* setFrame( const Vec& translation ) { Rot r = Rot::identity(); return setFrame(translation, r); }
 
-    const Velocity&  getVelocity() const;
-    CoordinateSystem* setVelocity( const Velocity& f );
-    const Vec& getLinearVelocity() const;
-    CoordinateSystem* setLinearVelocity( const Vec& linearVelocity);
-    const Vec& getAngularVelocity() const;
-    CoordinateSystem* setAngularVelocity( const Vec& angularVelocity );
-
-    //=================================
-    // interface of BasicMechanicalModel
-
-    void resize(int)
-    {
-    }
-
-    virtual void init()=0; // do not instanciate this class, use ArticulatedBody and Joints instead
-
-    virtual void beginIteration(double /*dt*/)
-    {}
-
-    virtual void endIteration(double /*dt*/)
-    {}
-
-    virtual void propagateX()
-    {}
-
-    virtual void propagateV()
-    {}
-
-    virtual void propagateDx()
-    {}
-
-    virtual void resetForce();
-
-    virtual void accumulateForce()
-    {}
-
-    virtual void accumulateDf()
-    {}
-
-    virtual void projectResponse()
-    {}
-
-    /// @name Integration related methods
-    /// @{
-
-    void vAlloc(VecId )
-    {}
-
-    void vFree(VecId )
-    {}
-
-    void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0);
-
-    virtual double vDot(VecId a, VecId b);
-
-    virtual void setX(VecId v);
-
-    virtual void setV(VecId v);
-
-    virtual void setF(VecId v);
-
-    virtual void setDx(VecId v);
-
-    /// @}
-
-    /// @name Debug
-    /// @{
-    virtual void printDOF( VecId, std::ostream& =std::cerr );
-    /// @}
-
-    // interface of BasicMechanicalModel
-    //=================================
-
-
-    Frame* getX();
-    const Frame* getX() const;
-
-    Velocity* getV();
-    const Velocity* getV() const;
-
-    Velocity* getF();
-    const Velocity* getF() const;
-
-    Velocity* getDx();
-    const Velocity* getDx() const;
+    /// wrt parent frame, given in parent frame
+    const SpatialVector&  getRelativeVelocity() const;
+    /// wrt parent frame, given in parent frame
+    CoordinateSystem* setRelativeVelocity( const SpatialVector& f );
+    /*    const Vec& getLinearVelocity() const;
+        CoordinateSystem* setLinearVelocity( const Vec& linearVelocity);
+        const Vec& getAngularVelocity() const;
+        CoordinateSystem* setAngularVelocity( const Vec& angularVelocity );*/
 
 protected:
-    Frame* getCoord(unsigned);
-    Velocity* getDeriv(unsigned);
+    Frame relativePosition_;   ///< wrt parent frame
+    SpatialVector relativeVelocity_;  ///< wrt parent frame, given in parent frame
 
-private:
-    Common::vector<Frame*> coords_;
-    Common::vector<Velocity*> derivs_;
-    Frame* x_;
-    Velocity* v_;
-    Velocity* f_;
-    Velocity* dx_;
+
 };
 
 } // namespace Components
