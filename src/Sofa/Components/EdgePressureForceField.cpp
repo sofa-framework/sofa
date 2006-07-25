@@ -59,7 +59,7 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::addEdgePressure(Index ind1, Index ind2)
 {
-    Real length=0;
+    /*Real length=0*/;
     Deriv force;
     EdgePressureInformation edge;
 

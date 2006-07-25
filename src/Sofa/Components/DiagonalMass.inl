@@ -78,7 +78,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*
     }*/
 
     // gravity
-    Vec3d g ( this->getContext()->getGravity() );
+    Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);

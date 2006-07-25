@@ -87,10 +87,10 @@ void CoordinateSystem::apply()
     //context->setLocalToWorld( context->getLocalToWorld() * (*getX()) );
     //context->setSpatialVelocity( parentSpatialVelocity + context->getLocalToWorld() * getVelocity() );
     Common::Vec3d newLinearAcceleration = parentLinearAcceleration + ainduced;
-    cerr<<"CoordinateSystem::updateContext, component "<<this->getName()<<", parentToWorld = "<<parentToWorld<<endl;
-    cerr<<"CoordinateSystem::updateContext, *getX() = "<< getRelativePosition() <<endl;
+    /*        cerr<<"CoordinateSystem::updateContext, component "<<this->getName()<<", parentToWorld = "<<parentToWorld<<endl;
+            cerr<<"CoordinateSystem::updateContext, *getX() = "<< getRelativePosition() <<endl;*/
     Frame newLocalToWorld = parentToWorld * getRelativePosition();
-    cerr<<"CoordinateSystem::updateContext, newLocalToWorld = "<< newLocalToWorld <<endl;
+    /*        cerr<<"CoordinateSystem::updateContext, newLocalToWorld = "<< newLocalToWorld <<endl;*/
     SpatialVector newSpatialVelocity ( parentSpatialVelocity + parentToWorld * getRelativeVelocity() );
     //// Convert to required types
     //Common::Vec3d newTranslation = newLocalToWorld.getOriginInParent();

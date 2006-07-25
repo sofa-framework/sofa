@@ -87,11 +87,11 @@ public:
 
 
     /// Gravity in local coordinates
-    virtual const Vec3& getGravity() const;
+    virtual Vec3 getLocalGravity() const;
     /// Gravity in local coordinates
-    virtual void setGravity( const Vec3& ) { }
+    //virtual void setGravity( const Vec3& ) { }
     /// Gravity in world coordinates
-    virtual const Vec3& getWorldGravity() const;
+    //virtual const Vec3& getWorldGravity() const;
     /// Gravity in world coordinates
     virtual void setWorldGravity( const Vec3& ) { }
 

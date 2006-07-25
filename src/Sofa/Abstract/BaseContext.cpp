@@ -26,17 +26,17 @@ BaseContext* BaseContext::getDefault()
 ////////////////
 
 /// Gravity in the local coordinate system
-const BaseContext::Vec3& BaseContext::getGravity() const
+BaseContext::Vec3 BaseContext::getLocalGravity() const
 {
     static const Vec3 G(0,-9.81,0);
     return G;
 }
 
 /// Gravity in the world coordinate system
-const BaseContext::Vec3& BaseContext::getWorldGravity() const
-{
-    return getGravity();
-}
+//                 const BaseContext::Vec3& BaseContext::getWorldGravity() const
+//                 {
+//                     return getGravity();
+//                 }
 
 /// Simulation timestep
 double BaseContext::getDt() const

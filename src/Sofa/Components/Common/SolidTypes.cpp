@@ -228,7 +228,7 @@ void SolidTypes<R>::Transform::clear()
 template<class R>
 typename SolidTypes<R>::Transform SolidTypes<R>::Transform::operator * (const Transform& f2) const
 {
-    cerr<<"SolidTypes<R>::Transform::operator *, orientation = "<<orientation_<<", f2.orientation = "<<f2.getOrientation()<<", product = "<<orientation_ * f2.getOrientation()<<endl;
+    //cerr<<"SolidTypes<R>::Transform::operator *, orientation = "<<orientation_<<", f2.orientation = "<<f2.getOrientation()<<", product = "<<orientation_ * f2.getOrientation()<<endl;
     return Transform(  orientation_ * f2.getOrientation(), f2.getOriginInChild() + f2.getOrientation().inverseRotate(origin_)) ;
 }
 

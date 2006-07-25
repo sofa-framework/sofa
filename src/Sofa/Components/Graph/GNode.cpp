@@ -268,7 +268,7 @@ void GNode::updateContext()
 
 
     // project the gravity to the local coordinate system
-    getContext()->setGravity( getContext()->getLocalFrame().backProjectVector(getContext()->getWorldGravity()) );
+    /*        getContext()->setGravity( getContext()->getLocalFrame().backProjectVector(getContext()->getWorldGravity()) );*/
 
     if( debug_ ) cerr<<"GNode::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<Core::Context*>(this) << endl;
 }

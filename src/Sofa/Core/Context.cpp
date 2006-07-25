@@ -8,7 +8,7 @@ namespace Core
 Context::Context()
 {
     setLocalFrame(getDefault()->getLocalFrame());
-    setGravity(getDefault()->getGravity());
+    setWorldGravity(getDefault()->getLocalGravity());
     setSpatialVelocity(getDefault()->getSpatialVelocity());
     setVelocityBasedLinearAcceleration(getDefault()->getVelocityBasedLinearAcceleration());
     setDt(getDefault()->getDt());
@@ -54,14 +54,15 @@ double Context::getTime() const
 }
 
 /// Gravity vector in local coordinates
-const Context::Vec3& Context::getGravity() const
-{
-    return gravity_;
-}
+// const Context::Vec3& Context::getGravity() const
+// {
+// 	return gravity_;
+// }
+
 /// Gravity vector in world coordinates
-const Context::Vec3& Context::getWorldGravity() const
+Context::Vec3 Context::getLocalGravity() const
 {
-    return worldGravity_;
+    return getLocalFrame().backProjectVector(worldGravity_);
 }
 
 
@@ -135,10 +136,11 @@ void Context::setTime(double val)
 }
 
 /// Gravity vector
-void Context::setGravity(const Vec3& g)
-{
-    gravity_ = g;
-}
+// void Context::setGravity(const Vec3& g)
+// {
+// 	gravity_ = g;
+// }
+
 /// Gravity vector
 void Context::setWorldGravity(const Vec3& g)
 {
@@ -210,7 +212,7 @@ using std::endl;
 
 std::ostream& operator << (std::ostream& out, const Sofa::Core::Context& c )
 {
-    out<<endl<<"gravity = "<<c.getGravity();
+    out<<endl<<"local gravity = "<<c.getLocalGravity();
     out<<endl<<"transform from local to world = "<<c.getLocalFrame();
     //out<<endl<<"transform from world to local = "<<c.getWorldToLocal();
     out<<endl<<"spatial velocity = "<<c.getSpatialVelocity();

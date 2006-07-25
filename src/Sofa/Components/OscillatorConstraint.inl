@@ -42,13 +42,13 @@ OscillatorConstraint<DataTypes>*  OscillatorConstraint<DataTypes>::addConstraint
 template <class DataTypes>
 void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
-    Real t = (Real) getContext()->getTime();
+    //Real t = (Real) getContext()->getTime();
     for( unsigned i=0; i<constraints.size(); ++i )
     {
         const unsigned& index = constraints[i].first;
-        const Deriv& a = constraints[i].second.amplitude;
-        const Real& w = constraints[i].second.pulsation;
-        const Real& p = constraints[i].second.phase;
+        /*		const Deriv& a = constraints[i].second.amplitude;
+        		const Real& w = constraints[i].second.pulsation;
+        		const Real& p = constraints[i].second.phase;*/
 
         //res[index] = a*(-w)*w*sin(w*t+p);
         res[index] = Deriv();

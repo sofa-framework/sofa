@@ -73,11 +73,12 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 {
     // weight
-    const double* g = this->getContext()->getGravity();
+    const double* g = this->getContext()->getLocalGravity();
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass;
+    //cerr<<"UniformMass<DataTypes, MassType>::addForce, mg = "<<mg<<endl;
 #if 0
     // velcity-based stuff
     Core::Context::SpatialVelocity vframe = getContext()->getSpatialVelocity();

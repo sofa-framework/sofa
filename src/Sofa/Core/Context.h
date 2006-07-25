@@ -23,7 +23,7 @@ struct ContextData
 
     //double gravity_[3];  ///< Gravity
     //double worldGravity_[3];  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    Vec3 gravity_;  ///< Gravity
+    //Vec3 gravity_;  ///< Gravity
     Vec3 worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     double dt_;
     double time_;
@@ -68,11 +68,11 @@ public:
     /// @{
 
     /// Gravity in the local coordinate system
-    virtual const Vec3& getGravity() const;
+    virtual Vec3 getLocalGravity() const;
     /// Gravity in the local coordinate system
-    virtual void setGravity(const Vec3& );
+    //virtual void setGravity(const Vec3& );
     /// Gravity in world coordinates
-    virtual const Vec3& getWorldGravity() const;
+    //virtual const Vec3& getWorldGravity() const;
     /// Gravity in world coordinates
     virtual void setWorldGravity( const Vec3& );
 
