@@ -69,14 +69,8 @@ void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
+void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
-    /*Deriv gravity ( getContext()->getGravity() );
-    for (unsigned int i=0;i<f.size();i++)
-    {
-    	f[i] += gravity * masses[i];
-    }*/
-
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
@@ -84,24 +78,18 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*
     ( theGravity, g[0], g[1], g[2]);
 
     // velocity-based stuff
-#if 0
-    Core::Context::SpatialVelocity vframe = getContext()->getSpatialVelocity();
-    Core::Context::Vec aframe = getContext()->getLinearAcceleration() ;
+    Core::Context::SpatialVector vframe = getContext()->getSpatialVelocity();
+    Core::Context::Vec3 aframe = getContext()->getVelocityBasedLinearAcceleration() ;
+
     // project back to local frame
-    vframe = getContext()->getLocalToWorld() / vframe;
-    aframe = getContext()->getLocalToWorld().backProjectVector( aframe );
+    vframe = getContext()->getLocalFrame() / vframe;
+    aframe = getContext()->getLocalFrame().backProjectVector( aframe );
 
     // add weight and inertia force
     for (unsigned int i=0; i<f.size(); i++)
     {
-        f[i] += theGravity*masses[i] + inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
+        f[i] += theGravity*masses[i] + Core::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
     }
-#else
-    for (unsigned int i=0; i<f.size(); i++)
-    {
-        f[i] += theGravity*masses[i];
-    }
-#endif
 }
 
 template <class DataTypes, class MassType>

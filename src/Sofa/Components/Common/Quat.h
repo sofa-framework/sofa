@@ -148,7 +148,7 @@ public:
     // expressed in radians.
     Quater axisToQuat(Vec3d a, Real phi);
 
-    /// Create using rotation vector (axis*angle)
+    /// Create using rotation vector (axis*angle) given in parent coordinates
     template<class V>
     static Quater createFromRotationVector(const V& a)
     {
@@ -162,6 +162,28 @@ public:
             return Quater( a[0]*s*nor, a[1]*s*nor,a[2]*s*nor, (Real)cos(phi/2) );
         }
     }
+
+    /// Create using the entries of a rotation vector (axis*angle) given in parent coordinates
+    template<class T>
+    static Quater createFromRotationVector(T a0, T a1, T a2 )
+    {
+        Real phi = (Real)sqrt(a0*a0+a1*a1+a2*a2);
+        if( phi < 1.0e-5 )
+            return Quater(0,0,0,1);
+        else
+        {
+            Real nor = 1/phi;
+            Real s = (Real)sin(phi/2);
+            return Quater( a0*s*nor, a1*s*nor,a2*s*nor, (Real)cos(phi/2) );
+        }
+    }
+    /// Create using rotation vector (axis*angle) given in parent coordinates
+    template<class V>
+    static Quater set(const V& a) { return createFromRotationVector(a); }
+
+    /// Create using using the entries of a rotation vector (axis*angle) given in parent coordinates
+    template<class T>
+    static Quater set(T a0, T a1, T a2) { return createFromRotationVector(a0,a1,a2); }
 
 
     // Print the quaternion

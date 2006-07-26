@@ -22,6 +22,9 @@ public:
     /// Print all object in the graph
     static void print(GNode* root);
 
+    /// Initialize the objects
+    //static void init(GNode* root);
+
     /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
     static void animate(GNode* root, double dt=0.0);
 

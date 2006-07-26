@@ -30,15 +30,13 @@ void UniformMass<RigidTypes, RigidMass>::draw();
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-{
-}
+{}
 
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass(Core::MechanicalModel<DataTypes>* mmodel)
     : Core::Mass<DataTypes>(mmodel)
-{
-}
+{}
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::~UniformMass()
@@ -70,7 +68,7 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
+void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
     // weight
     const double* g = this->getContext()->getLocalGravity();
@@ -79,39 +77,41 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
     ( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass;
     //cerr<<"UniformMass<DataTypes, MassType>::addForce, mg = "<<mg<<endl;
-#if 0
-    // velcity-based stuff
-    Core::Context::SpatialVelocity vframe = getContext()->getSpatialVelocity();
-    Core::Context::Vec aframe = getContext()->getLinearAcceleration() ;
-    /*	cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates = "<<vframe<<endl;
-    	cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates = "<<aframe<<endl;
-    	cerr<<"UniformMass<DataTypes, MassType>::computeForce(), getContext()->getLocalToWorld() = "<<getContext()->getLocalToWorld()<<endl;*/
+
+    // velocity-based stuff
+    Core::Context::SpatialVector vframe = getContext()->getSpatialVelocity();
+    Core::Context::Vec3 aframe = getContext()->getVelocityBasedLinearAcceleration() ;
+//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in world coordinates = "<<vframe<<endl;
+//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in world coordinates = "<<aframe<<endl;
+//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), getContext()->getLocalToWorld() = "<<getContext()->getLocalFrame()<<endl;
 
     // project back to local frame
-    vframe = getContext()->getLocalToWorld() / vframe;
-    aframe = getContext()->getLocalToWorld().backProjectVector( aframe );
-//         	cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame = "<<vframe<<endl;
-//         	cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame = "<<aframe<<endl;
-//         	cerr<<"UniformMass<DataTypes, MassType>::computeForce(), mg = "<<mg<<endl;
+    vframe = getContext()->getLocalFrame() / vframe;
+    aframe = getContext()->getLocalFrame().backProjectVector( aframe );
+//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates= "<<vframe<<endl;
+//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates= "<<aframe<<endl;
+//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<endl;
 
     // add weight and inertia force
     for (unsigned int i=0; i<f.size(); i++)
     {
         f[i] += mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i]);
-        //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
+        //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<endl;
+        //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
     }
-#else
+
     for (unsigned int i=0; i<f.size(); i++)
     {
         f[i] += mg;
     }
-#endif
+
 }
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw()
 {
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!getContext()->getShowBehaviorModels())
+        return;
     VecCoord& x = *this->mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(2);
@@ -130,3 +130,6 @@ void UniformMass<DataTypes, MassType>::draw()
 } // namespace Sofa
 
 #endif
+
+
+

@@ -108,7 +108,7 @@ public:
     public:
         /// The default constructor does not initialize the transform
         Transform();
-        /// Define using Featherstone's conventions (see class documentation)
+        /// WARNING: using Featherstone's conventions (see class documentation)
         Transform( const Rot& q, const Vec& o );
         /// Define given the origin of this wrt its parent and the orientation of this wrt its parent (i.e. standard way)
         void setTranslationRotation( const Vec& t, const Rot& q );
@@ -117,7 +117,7 @@ public:
         /// The identity transform
         static Transform identity();
         /// define using origin in parent and orientation wrt parent (i.e. the standard way)
-        static Transform displace(const Vec& t, const Rot& r);
+        static Transform set(const Vec& t, const Rot& r);
         /// Define this as a given SpatialVector integrated during one second (used for time integration)
         Transform( const SpatialVector& v );
         /// The inverse transform i.e. from this->parent to this

@@ -124,7 +124,7 @@ void SolidTypes<R>::Transform::setTranslationRotation( const Vec& t, const Rot& 
 
 /// Define given the origin of the child wrt the parent and the orientation of the child wrt the parent (i.e. standard way)
 template<class R>
-typename SolidTypes<R>::Transform         SolidTypes<R>::Transform::displace( const Vec& t, const Rot& q )
+typename SolidTypes<R>::Transform  SolidTypes<R>::Transform::set( const Vec& t, const Rot& q )
 {
     Transform f;
     f.setTranslationRotation( t, q );
@@ -261,7 +261,8 @@ typename SolidTypes<R>::SpatialVector SolidTypes<R>::Transform::operator / (cons
 template<class R>
 typename SolidTypes<R>::Transform SolidTypes<R>::Transform::inversed() const
 {
-    return Transform( orientation_.inverse(), -(orientation_.inverse().rotate(origin_)) );
+    //return Transform( orientation_.inverse(), -(orientation_.inverse().rotate(origin_)) );
+    return Transform( orientation_.inverse(), -(orientation_.rotate(origin_)) );
 }
 
 template<class R>

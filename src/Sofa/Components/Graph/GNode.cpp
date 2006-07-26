@@ -251,7 +251,7 @@ void GNode::updateContext()
         for( unsigned i=0; i<contextObject.size(); ++i )
         {
             contextObject[i]->apply();
-            // if( debug_ ) cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<", new context = "<< *this->getContext() << endl;
+            //cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<< endl;
         }
     }
     else
@@ -259,7 +259,7 @@ void GNode::updateContext()
         for( unsigned i=0; i<contextObject.size(); ++i )
         {
             contextObject[i]->apply();
-            // if( debug_ ) cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<", new context = "<< *this->getContext() << endl;
+            //cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
         }
     }
 //	if( !mechanicalModel.empty() ) {

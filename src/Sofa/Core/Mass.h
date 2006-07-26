@@ -49,7 +49,8 @@ This default implementation is for particles. Rigid bodies will be handled in a 
 template<class Coord, class Deriv, class Vec, class M, class SV>
 Deriv inertiaForce( const SV& sv, const Vec& a, const M& m, const Coord& x, const Deriv& v )
 {
-    const Deriv& omega=sv.lineVec;
+    const Deriv& omega=sv.getAngularVelocity();
+    //std::cerr<<"inertiaForce, sv = "<<sv<<", omega ="<<omega<<", a = "<<a<<", m= "<<m<<", x= "<<x<<", v= "<<v<<std::endl;
     return -( a + omega.cross( omega.cross(x) + v*2 ))*m;
 }
 

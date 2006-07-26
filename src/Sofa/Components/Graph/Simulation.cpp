@@ -71,9 +71,18 @@ void Simulation::print(GNode* root)
     root->execute<PrintAction>();
 }
 
+/// Initialize the scene.
+// void Simulation::init(GNode* root)
+// {
+// 	if (!root) return;
+//         // There will probably be an InitAction on day...
+// 	root->execute<MechanicalPropagatePositionAndVelocityAction>();
+// }
+
 /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
 void Simulation::animate(GNode* root, double dt)
 {
+    double nextTime = root->getTime() + root->getDt();
     if (!root) return;
     root->execute<CollisionAction>();
     AnimateAction act;
@@ -81,7 +90,7 @@ void Simulation::animate(GNode* root, double dt)
     root->execute(act);
     root->execute<UpdateMappingAction>();
     root->execute<VisualUpdateAction>();
-    root->setTime( root->getTime() + root->getDt() );
+    root->setTime( nextTime );
 }
 
 /// Reset to initial state

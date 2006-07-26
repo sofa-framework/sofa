@@ -32,8 +32,10 @@ void RungeKutta4Solver::solve(double dt)
     double stepBy3 = double(dt / 3.0);
     double stepBy6 = double(dt / 6.0);
 
+    double startTime = group->getTime();
+
     //First step
-    group->computeAcc (k1a, pos, vel);
+    group->computeAcc (startTime, k1a, pos, vel);
     k1v = vel;
 
     //Step 2
@@ -44,7 +46,7 @@ void RungeKutta4Solver::solve(double dt)
     newV.peq(k1a, stepBy2);
 
     k2v = newV;
-    group->computeAcc (k2a, newX, newV);
+    group->computeAcc ( startTime+stepBy2, k2a, newX, newV);
 
     // step 3
     newX = pos;
@@ -54,7 +56,7 @@ void RungeKutta4Solver::solve(double dt)
     newV.peq(k2a, stepBy2);
 
     k3v = newV;
-    group->computeAcc (k3a, newX, newV);
+    group->computeAcc ( startTime+stepBy2, k3a, newX, newV);
 
     // step 4
     newX = pos;
@@ -63,7 +65,7 @@ void RungeKutta4Solver::solve(double dt)
     newV.peq(k3a, dt);
 
     k4v = newV;
-    group->computeAcc(k4a, newX, newV);
+    group->computeAcc( startTime+dt, k4a, newX, newV);
 
     pos.peq(k1v,stepBy6);
     vel.peq(k1a,stepBy6);
