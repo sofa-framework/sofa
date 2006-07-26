@@ -3,6 +3,8 @@
 // Copyright: See COPYING file that comes with this distribution
 
 #include "CoordinateSystem.h"
+#include <Sofa/Components/Common/ObjectFactory.h>
+#include <Sofa/Components/Common/Vec.h>
 #include <Sofa/Components/Graph/GNode.h>
 #include <iostream>
 using std::cerr;
@@ -131,8 +133,32 @@ void CoordinateSystem::draw()
     glPopAttrib();
 }
 
+void create(CoordinateSystem*& obj, ObjectDescription* arg)
+{
+    typedef Sofa::Components::CoordinateSystem::Frame Frame;
+    typedef Sofa::Components::CoordinateSystem::Vec Vec;
+    typedef Sofa::Components::CoordinateSystem::Rot Rot;
+    cout<<"create(CoordinateSystem*& obj, ObjectDescription*)"<< endl;
+    obj = new CoordinateSystem;
+    float x, y, z ;
+    Vec vec;
+    Vec rot;
+    if (arg->getAttribute("origin"))
+    {
+        sscanf(arg->getAttribute("origin"),"%f%f%f",&x,&y,&z);
+        vec = Vec(x,y,z);
+    }
+    if (arg->getAttribute("orientation"))
+    {
+        sscanf(arg->getAttribute("orientation"),"%f%f%f",&x,&y,&z);
+        rot = Vec(x,y,z);
+    }
+    obj->setRelativePosition( Frame::displace( vec, Rot::createFromRotationVector( rot ) ));
+}
 
+SOFA_DECL_CLASS(CoordinateSystem)
 
+Creator<ObjectFactory, CoordinateSystem> CoordinateSystemClass("CoordinateSystem");
 
 } // namespace Components
 
