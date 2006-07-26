@@ -133,12 +133,15 @@ void CoordinateSystem::draw()
     glPopAttrib();
 }
 
+namespace Common   // \todo Why this must be inside Common namespace
+{
+
 void create(CoordinateSystem*& obj, ObjectDescription* arg)
 {
     typedef Sofa::Components::CoordinateSystem::Frame Frame;
     typedef Sofa::Components::CoordinateSystem::Vec Vec;
     typedef Sofa::Components::CoordinateSystem::Rot Rot;
-    cout<<"create(CoordinateSystem*& obj, ObjectDescription*)"<< endl;
+    //cout<<"create(CoordinateSystem*& obj, ObjectDescription*)"<< endl;
     obj = new CoordinateSystem;
     float x, y, z ;
     Vec vec;
@@ -153,15 +156,18 @@ void create(CoordinateSystem*& obj, ObjectDescription* arg)
         sscanf(arg->getAttribute("orientation"),"%f%f%f",&x,&y,&z);
         rot = Vec(x,y,z);
     }
-    obj->setRelativePosition( Frame::displace( vec, Rot::createFromRotationVector( rot ) ));
+    obj->setRelativePosition( Frame::set( vec, Rot::createFromRotationVector( rot ) ));
+}
+
 }
 
 SOFA_DECL_CLASS(CoordinateSystem)
 
-Creator<ObjectFactory, CoordinateSystem> CoordinateSystemClass("CoordinateSystem");
+using namespace Common;
+
+Creator< ObjectFactory, CoordinateSystem > CoordinateSystemClass("CoordinateSystem");
 
 } // namespace Components
 
 } // namespace Sofa
-
 
