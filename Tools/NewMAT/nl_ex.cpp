@@ -10,7 +10,7 @@
 #include "newmatnl.h"
 #include "newmatio.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 using namespace RBD_LIBRARIES;
 #endif
 

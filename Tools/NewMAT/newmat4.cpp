@@ -7,7 +7,7 @@
 #include "newmat.h"
 #include "newmatrc.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -945,7 +945,7 @@ void SimpleIntArray::ReSize(int n1, bool keep)
 }
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

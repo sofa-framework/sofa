@@ -8,7 +8,7 @@
 
 #include "newmatio.h"                // need matrix output routines
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 using namespace NEWMAT;              // access NEWMAT namespace
 #endif
 

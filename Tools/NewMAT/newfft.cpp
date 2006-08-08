@@ -97,7 +97,7 @@
 
 #include "newmatap.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -1053,7 +1053,7 @@ static int BitReverse(int x, int prod, int n, const SimpleIntArray& f)
 }
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

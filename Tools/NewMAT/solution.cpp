@@ -12,7 +12,7 @@
 
 #include "solution.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace RBD_COMMON
 {
 #endif
@@ -195,7 +195,7 @@ bool R1_R1::IsValid(Real X)
     return (minXinf || x > minX) && (maxXinf || x < maxX);
 }
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

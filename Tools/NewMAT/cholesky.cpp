@@ -9,7 +9,7 @@
 
 #include "newmat.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -83,7 +83,7 @@ ReturnMatrix Cholesky(const SymmetricBandMatrix& S)
 }
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

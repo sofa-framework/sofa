@@ -5,7 +5,7 @@
 #ifndef NEWMATRM_LIB
 #define NEWMATRM_LIB 0
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -18,7 +18,7 @@ class RectMatrixRowCol
 // a class for accessing rows and columns of rectangular matrices
 {
 protected:
-#ifdef use_namespace              // to make namespace work
+#ifndef newmat_no_namespace              // to make namespace work
 public:
 #endif
     Real* store;                   // pointer to storage
@@ -112,7 +112,7 @@ inline Real sign(Real x, Real y)
 
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

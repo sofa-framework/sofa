@@ -8,7 +8,7 @@
 
 #include "newmatap.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -267,7 +267,7 @@ void SortSV(DiagonalMatrix& D, Matrix& U, Matrix& V, bool ascending)
 
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

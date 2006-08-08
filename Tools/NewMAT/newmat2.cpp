@@ -9,7 +9,7 @@
 #include "newmat.h"
 #include "newmatrc.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -632,7 +632,7 @@ void MatrixRowCol::SubRowCol(MatrixRowCol& mrc, int skip1, int l1) const
     mrc.cw = 0;
 }
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

@@ -7,7 +7,7 @@
 #include "include.h"                 // include standard files
 #include "newmat.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -302,7 +302,7 @@ ReturnMatrixX::ReturnMatrixX(const ReturnMatrixX& tm)
 #endif
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

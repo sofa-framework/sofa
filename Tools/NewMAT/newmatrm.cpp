@@ -7,7 +7,7 @@
 #include "newmat.h"
 #include "newmatrm.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -183,7 +183,7 @@ void Rotate(RectMatrixCol& U, RectMatrixCol& V, Real tau, Real s)
 
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

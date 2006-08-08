@@ -9,7 +9,7 @@
 #include "newmatap.h"
 #include "newmatnl.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -254,7 +254,7 @@ void MLE_D_FI::GetCorrelations(SymmetricMatrix& Corr)
 
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

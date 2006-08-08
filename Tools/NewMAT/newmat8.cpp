@@ -10,7 +10,7 @@
 #include "newmatrc.h"
 #include "precisio.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -729,7 +729,7 @@ LinearEquationSolver::LinearEquationSolver(const BaseMatrix& bm)
 }
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

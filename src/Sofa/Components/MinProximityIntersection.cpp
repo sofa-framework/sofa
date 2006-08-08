@@ -16,6 +16,7 @@ namespace Components
 
 using namespace Common;
 using namespace Collision;
+using namespace Proximity;
 using namespace MinProximityIntersections;
 
 namespace Common

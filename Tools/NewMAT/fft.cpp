@@ -12,7 +12,7 @@
 
 // #include "newmatio.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -444,7 +444,7 @@ void DST(const ColumnVector& U, ColumnVector& V)
 
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

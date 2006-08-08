@@ -10,7 +10,7 @@
 #include "newmatrm.h"
 #include "precisio.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -222,7 +222,7 @@ void SVD(const Matrix& A, DiagonalMatrix& D)
 
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

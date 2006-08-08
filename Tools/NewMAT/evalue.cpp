@@ -9,7 +9,7 @@
 #include "newmatrm.h"
 #include "precisio.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -292,7 +292,7 @@ void EigenValues(const SymmetricMatrix& X, DiagonalMatrix& D,
 { REPORT DiagonalMatrix E; tred3(X,D,E,A); tql1(D,E); }
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

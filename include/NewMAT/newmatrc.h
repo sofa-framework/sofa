@@ -5,7 +5,7 @@
 #ifndef NEWMATRC_LIB
 #define NEWMATRC_LIB 0
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -164,7 +164,7 @@ inline void MatrixCol::Next() { gm->NextCol(*this); }
 
 inline void MatrixColX::Next() { gm->NextCol(*this); }
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

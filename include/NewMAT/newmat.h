@@ -11,7 +11,7 @@
 #include "myexcept.h"
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT { using namespace RBD_COMMON; }
 namespace RBD_LIBRARIES { using namespace NEWMAT; }
 namespace NEWMAT
@@ -1789,7 +1789,7 @@ inline MatrixInput GetSubMatrix::operator<<(int f) { return *this << (Real)f; }
 
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

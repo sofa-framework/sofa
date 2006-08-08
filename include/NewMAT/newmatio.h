@@ -11,7 +11,7 @@
 
 #include "newmat.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -50,7 +50,7 @@ Omanip_width setw(int i);
 
 */
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

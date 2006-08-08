@@ -5,7 +5,7 @@
 #ifndef bool_LIB
 #define bool_LIB 0
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace RBD_COMMON
 {
 #endif
@@ -32,7 +32,7 @@ const bool false = 0;
 //#define false 0
 //#define true 1
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

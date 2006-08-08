@@ -1,18 +1,29 @@
-#ifndef __LCP_SOLVER__
-#define __LCP_SOLVER__
+#ifndef SOFA_COMPONENTS_PROXIMITY_LCP_SOLVER_H
+#define SOFA_COMPONENTS_PROXIMITY_LCP_SOLVER_H
 
-
-template <int dim> class LCP
+namespace Sofa
 {
 
+namespace Components
+{
 
+namespace Proximity
+{
+
+template <int dim>
+class LCP
+{
 public:
-
     typedef double Matrix[dim][dim];
 
     bool  solve(const double *q, const Matrix &M, double *res);
     void  printInfo(double *q, Matrix &M);
-
 };
 
-#endif // __LCP_SOLVER__
+} // namespace Proximity
+
+} // namespace Components
+
+} // namespace Sofa
+
+#endif

@@ -51,7 +51,7 @@
 
 #include "include.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace RBD_COMMON
 {
 #endif
@@ -434,7 +434,7 @@ public:
     Bad_alloc(const char* a_what = 0);
 };
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

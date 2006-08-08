@@ -3,7 +3,7 @@
 #include "boolean.h"
 #include "myexcept.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace RBD_COMMON
 {
 #endif
@@ -86,7 +86,7 @@ private:
 };
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

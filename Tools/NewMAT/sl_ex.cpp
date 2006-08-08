@@ -9,7 +9,7 @@
 #include "include.h"
 #include "solution.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 using namespace RBD_LIBRARIES;
 #endif
 

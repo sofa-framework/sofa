@@ -287,7 +287,7 @@ using namespace std;
 
 #endif                                  // _STANDARD_
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace RBD_COMMON
 {
 #endif
@@ -327,12 +327,12 @@ const bool false = 0;
 #endif
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace RBD_COMMON {}
 namespace RBD_LIBRARIES                 // access all my libraries
 {

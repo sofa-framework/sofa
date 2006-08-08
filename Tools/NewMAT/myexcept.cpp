@@ -21,7 +21,7 @@
 
 #include "myexcept.h"                  // for exception handling
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace RBD_COMMON
 {
 #endif
@@ -488,7 +488,7 @@ unsigned long Range_error::Select;
 unsigned long Overflow_error::Select;
 unsigned long Bad_alloc::Select;
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

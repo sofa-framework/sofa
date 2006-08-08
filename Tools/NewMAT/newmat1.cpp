@@ -6,7 +6,7 @@
 
 #include "newmat.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -172,7 +172,7 @@ GeneralMatrix* MatrixType::New(int nr, int nc, BaseMatrix* bm) const
 }
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

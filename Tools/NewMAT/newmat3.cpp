@@ -9,7 +9,7 @@
 #include "newmat.h"
 #include "newmatrc.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -839,7 +839,7 @@ MatrixCol::~MatrixCol() { if (+(cw*StoreOnExit)) gm->RestoreCol(*this); }
 
 MatrixColX::~MatrixColX() { if (+(cw*StoreOnExit)) gm->RestoreCol(*this); }
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

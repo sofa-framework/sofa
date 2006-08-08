@@ -13,7 +13,7 @@
 #include "precisio.h"
 #include "newmatrm.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -118,7 +118,7 @@ void Jacobi(const SymmetricMatrix& X, DiagonalMatrix& D, Matrix& V)
 { REPORT SymmetricMatrix A; Jacobi(X,D,A,V,true); }
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

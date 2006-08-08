@@ -7,7 +7,7 @@
 
 #include "newmat.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -149,7 +149,7 @@ public:
 };
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

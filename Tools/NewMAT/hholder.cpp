@@ -8,7 +8,7 @@
 
 #include "newmatap.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -194,7 +194,7 @@ void QRZ(const Matrix& X, Matrix& Y, Matrix& M)
 }
 */
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 

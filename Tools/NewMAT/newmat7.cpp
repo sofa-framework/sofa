@@ -7,7 +7,7 @@
 #include "newmat.h"
 #include "newmatrc.h"
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 namespace NEWMAT
 {
 #endif
@@ -1047,7 +1047,7 @@ bool BandLUMatrix::IsEqual(const GeneralMatrix& A) const
 }
 
 
-#ifdef use_namespace
+#ifndef newmat_no_namespace
 }
 #endif
 
