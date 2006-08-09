@@ -85,6 +85,7 @@ void Simulation::animate(GNode* root, double dt)
 {
     double nextTime = root->getTime() + root->getDt();
     if (!root) return;
+    //std::cout << "animate\n";
     root->execute<CollisionAction>();
     AnimateAction act;
     act.setDt(dt);
@@ -122,6 +123,7 @@ void Simulation::updateContext(GNode* root)
 void Simulation::draw(GNode* root)
 {
     if (!root) return;
+    //std::cout << "draw\n";
     root->execute<VisualDrawAction>();
 }
 
