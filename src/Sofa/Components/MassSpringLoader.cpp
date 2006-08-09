@@ -131,7 +131,7 @@ bool MassSpringLoader::load(const char *filename)
         }
         else		// it's an unknown keyword
         {
-            printf("Unknown keyword: %s\n", cmd);
+            printf("%s: Unknown MassSpring keyword: %s\n", filename, cmd);
             skipToEOL(file);
         }
     }

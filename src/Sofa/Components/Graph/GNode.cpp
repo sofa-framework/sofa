@@ -189,6 +189,14 @@ void GNode::doRemoveObject(BaseObject* obj)
     collisionModel.remove(dynamic_cast< CollisionModel* >(obj));
     contextObject.remove(dynamic_cast<ContextObject* >(obj));
     collisionPipeline.remove(dynamic_cast< Collision::Pipeline* >(obj));
+    // Remove references to this object in time log tables
+    if (!objectTime.empty())
+    {
+        for (std::map<std::string, std::map<Sofa::Abstract::BaseObject*, Graph::GNode::ObjectTimer> >::iterator it = objectTime.begin(); it != objectTime.end(); ++it)
+        {
+            it->second.erase(obj);
+        }
+    }
 }
 
 

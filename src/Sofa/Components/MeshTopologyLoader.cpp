@@ -33,6 +33,12 @@ bool MeshTopologyLoader::load(const char *filename)
 {
     char cmd[1024];
     FILE* file;
+    int npoints = 0;
+    int nlines = 0;
+    int ntris = 0;
+    int nquads = 0;
+    int ntetras = 0;
+    int ncubes = 0;
 
     if ((file = fopen(filename, "r")) == NULL)
     {
@@ -49,7 +55,6 @@ bool MeshTopologyLoader::load(const char *filename)
     if (!strncmp(cmd,"$NOD",4)) // Gmsh format
     {
         std::cout << "Loading Gmsh topology '" << filename << "'" << std::endl;
-        int npoints = 0;
         fscanf(file, "%d\n", &npoints);
         setNbPoints(npoints);
         std::vector<int> pmap;
@@ -64,17 +69,19 @@ bool MeshTopologyLoader::load(const char *filename)
         }
 
         readLine(cmd, sizeof(cmd), file);
-        std::cout << cmd << std::endl;
+        //std::cout << cmd << std::endl;
         if (strncmp(cmd,"$ENDNOD",7))
         {
+            std::cerr << "'$ENDNOD' expected, found '" << cmd << "'" << std::endl;
             fclose(file);
             return false;
         }
 
         readLine(cmd, sizeof(cmd), file);
-        std::cout << cmd << std::endl;
+        //std::cout << cmd << std::endl;
         if (strncmp(cmd,"$ELM",4))
         {
+            std::cerr << "'$ELM' expected, found '" << cmd << "'" << std::endl;
             fclose(file);
             return false;
         }
@@ -98,31 +105,48 @@ bool MeshTopologyLoader::load(const char *filename)
             {
             case 1: // Line
                 if (nnodes == 2)
+                {
                     addLine(nodes[0], nodes[1]);
+                    ++nlines;
+                }
                 break;
             case 2: // Triangle
                 if (nnodes == 3)
+                {
                     addTriangle(nodes[0], nodes[1], nodes[2]);
+                    ++ntris;
+                }
                 break;
             case 3: // Quad
                 if (nnodes == 4)
+                {
                     addQuad(nodes[0], nodes[1], nodes[2], nodes[3]);
+                    ++nquads;
+                }
                 break;
             case 4: // Tetra
                 if (nnodes == 4)
+                {
                     addTetra(nodes[0], nodes[1], nodes[2], nodes[3]);
+                    ++ntetras;
+                }
                 break;
             case 5: // Hexa
                 if (nnodes == 8)
+                {
                     addCube(nodes[0], nodes[1], nodes[2], nodes[3],
                             nodes[4], nodes[5], nodes[6], nodes[7]);
+                    ++ncubes;
+                }
                 break;
             }
+            skipToEOL(file);
         }
         readLine(cmd, sizeof(cmd), file);
         std::cout << cmd << std::endl;
         if (strncmp(cmd,"$ENDELM",7))
         {
+            std::cerr << "'$ENDELM' expected, found '" << cmd << "'" << std::endl;
             fclose(file);
             return false;
         }
@@ -138,6 +162,7 @@ bool MeshTopologyLoader::load(const char *filename)
                 fscanf(file, "%d %d\n",
                         &p1, &p2);
                 addLine(p1, p2);
+                ++nlines;
             }
             else if (!strcmp(cmd,"triangle"))
             {
@@ -145,6 +170,7 @@ bool MeshTopologyLoader::load(const char *filename)
                 fscanf(file, "%d %d %d\n",
                         &p1, &p2, &p3);
                 addTriangle(p1, p2, p3);
+                ++ntris;
             }
             else if (!strcmp(cmd,"quad"))
             {
@@ -152,6 +178,7 @@ bool MeshTopologyLoader::load(const char *filename)
                 fscanf(file, "%d %d %d %d\n",
                         &p1, &p2, &p3, &p4);
                 addQuad(p1, p2, p3, p4);
+                ++nquads;
             }
             else if (!strcmp(cmd,"tetra"))
             {
@@ -159,6 +186,7 @@ bool MeshTopologyLoader::load(const char *filename)
                 fscanf(file, "%d %d %d %d\n",
                         &p1, &p2, &p3, &p4);
                 addTetra(p1, p2, p3, p4);
+                ++ntetras;
             }
             else if (!strcmp(cmd,"cube"))
             {
@@ -166,6 +194,7 @@ bool MeshTopologyLoader::load(const char *filename)
                 fscanf(file, "%d %d %d %d %d %d %d %d\n",
                         &p1, &p2, &p3, &p4, &p5, &p6, &p7, &p8);
                 addCube(p1, p2, p3, p4, p5, p6, p7, p8);
+                ++ncubes;
             }
             else if (!strcmp(cmd,"point"))
             {
@@ -173,6 +202,7 @@ bool MeshTopologyLoader::load(const char *filename)
                 fscanf(file, "%lf %lf %lf\n",
                         &px, &py, &pz);
                 addPoint(px, py, pz);
+                ++npoints;
             }
             else if (!strcmp(cmd,"v"))
             {
@@ -180,6 +210,7 @@ bool MeshTopologyLoader::load(const char *filename)
                 fscanf(file, "%lf %lf %lf\n",
                         &px, &py, &pz);
                 addPoint(px, py, pz);
+                ++npoints;
             }
             else if (!strcmp(cmd,"f"))
             {
@@ -187,9 +218,15 @@ bool MeshTopologyLoader::load(const char *filename)
                 fscanf(file, "%d %d %d %d\n",
                         &p1, &p2, &p3, &p4);
                 if (p4)
+                {
                     addQuad(p1-1, p2-1, p3-1, p4-1);
+                    ++nquads;
+                }
                 else
+                {
                     addTriangle(p1-1, p2-1, p3-1);
+                    ++ntris;
+                }
             }
             else if (!strcmp(cmd,"mass"))
             {
@@ -201,6 +238,7 @@ bool MeshTopologyLoader::load(const char *filename)
                         &px, &py, &pz, &vx, &vy, &vz,
                         &mass, &elastic);
                 addPoint(px, py, pz);
+                ++npoints;
             }
             else if (!strcmp(cmd,"lspg"))
             {
@@ -212,6 +250,7 @@ bool MeshTopologyLoader::load(const char *filename)
                 --m1;
                 --m2;
                 addLine(m1,m2);
+                ++nlines;
             }
             else if (cmd[0] == '#')	// it's a comment
             {
@@ -219,12 +258,20 @@ bool MeshTopologyLoader::load(const char *filename)
             }
             else		// it's an unknown keyword
             {
-                printf("Unknown keyword: %s\n", cmd);
+                printf("%s: Unknown Mesh keyword: %s\n", filename, cmd);
                 skipToEOL(file);
+                return false;
             }
         }
     }
-    std::cout << "Loading topology complete." << std::endl;
+    std::cout << "Loading topology complete:";
+    if (npoints>0) std::cout << ' ' << npoints << " points";
+    if (nlines>0)  std::cout << ' ' << nlines  << " lines";
+    if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
+    if (nquads>0)  std::cout << ' ' << nquads  << " quads";
+    if (ntetras>0) std::cout << ' ' << ntetras << " tetrahedra";
+    if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
+    std::cout << std::endl;
     fclose(file);
     return true;
 }

@@ -49,6 +49,10 @@ void create(UniformMass<DataTypes, MassType>*& obj, ObjectDescription* arg)
         {
             obj->setMass((MassType)atof(arg->getAttribute("mass")));
         }
+        if (arg->getAttribute("totalmass"))
+        {
+            obj->setTotalMass(atof(arg->getAttribute("totalmass")));
+        }
     }
 }
 
@@ -67,6 +71,10 @@ void create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg)
         if (arg->getAttribute("mass"))
         {
             obj->setMass(RigidMass(atof(arg->getAttribute("mass"))));
+        }
+        if (arg->getAttribute("totalmass"))
+        {
+            obj->setTotalMass(atof(arg->getAttribute("totalmass")));
         }
         if (arg->getAttribute("filename"))
         {
@@ -106,6 +114,7 @@ void create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg)
                         else if (!strcmp(cmd,"mass"))
                         {
                             fscanf(file, "%lf", &(m.mass));
+                            std::cout << "mass="<<m.mass<<"\n";
                         }
                         else if (!strcmp(cmd,"frme"))
                         {
@@ -148,7 +157,7 @@ void create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg)
                         }
                         else		// it's an unknown keyword
                         {
-                            printf("Unknown keyword: %s\n", cmd);
+                            printf("%s: Unknown RigidMass keyword: %s\n", filename, cmd);
                             skipToEOL(file);
                         }
                     }

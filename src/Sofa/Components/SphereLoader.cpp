@@ -61,7 +61,7 @@ bool SphereLoader::load(const char *filename)
         }
         else			// it's an unknown keyword
         {
-            printf("Unknown keyword: %s\n", cmd);
+            printf("%s: Unknown Sphere keyword: %s\n", filename, cmd);
             skipToEOL(file);
         }
     }

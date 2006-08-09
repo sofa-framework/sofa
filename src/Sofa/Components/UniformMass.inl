@@ -30,12 +30,13 @@ void UniformMass<RigidTypes, RigidMass>::draw();
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
+    : totalMass(0)
 {}
 
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass(Core::MechanicalModel<DataTypes>* mmodel)
-    : Core::Mass<DataTypes>(mmodel)
+    : Core::Mass<DataTypes>(mmodel), totalMass(0)
 {}
 
 template <class DataTypes, class MassType>
@@ -46,6 +47,22 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setMass(const MassType& m)
 {
     this->mass = m;
+}
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::setTotalMass(double m)
+{
+    this->totalMass = m;
+}
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::init()
+{
+    this->Core::Mass<DataTypes>::init();
+    if (this->totalMass>0 && this->mmodel!=NULL)
+    {
+        this->mass = (MassType)(this->totalMass / this->mmodel->getX()->size());
+    }
 }
 
 // -- Mass interface
@@ -76,7 +93,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
     Deriv mg = theGravity * mass;
-    //cerr<<"UniformMass<DataTypes, MassType>::addForce, mg = "<<mg<<endl;
+    //cerr<<"UniformMass<DataTypes, MassType>::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<endl;
 
     // velocity-based stuff
     Core::Context::SpatialVector vframe = getContext()->getSpatialVelocity();
@@ -95,14 +112,10 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
     // add weight and inertia force
     for (unsigned int i=0; i<f.size(); i++)
     {
+        //f[i] += mg;
         f[i] += mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i]);
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<endl;
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
-    }
-
-    for (unsigned int i=0; i<f.size(); i++)
-    {
-        f[i] += mg;
     }
 
 }

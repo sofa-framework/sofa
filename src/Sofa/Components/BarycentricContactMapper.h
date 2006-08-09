@@ -62,7 +62,7 @@ public:
             std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        Graph::GNode* child = new Graph::GNode("contactPoints"); parent->addChild(child);
+        Graph::GNode* child = new Graph::GNode("contactPoints"); parent->addChild(child); child->updateContext();
         MMechanicalModel* mmodel = new MMechanicalObject; child->addObject(mmodel);
         mapper = new typename MMapping::MeshMapper(model->getTopology());
         mapping = new MMapping(model->getMechanicalModel(), mmodel, mapper); child->addObject(mapping);

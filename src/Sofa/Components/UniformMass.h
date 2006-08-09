@@ -25,6 +25,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
 protected:
     MassType mass;
+    double totalMass; ///< if >0 : total mass of this body
 
 public:
     UniformMass();
@@ -35,7 +36,12 @@ public:
 
     void setMass(const MassType& mass);
 
+    void setTotalMass(double m);
+
     // -- Mass interface
+
+    void init();
+
     void addMDx(VecDeriv& f, const VecDeriv& dx);
 
     void accFromF(VecDeriv& a, const VecDeriv& f);

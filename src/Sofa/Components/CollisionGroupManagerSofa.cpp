@@ -95,6 +95,7 @@ void CollisionGroupManagerSofa::createGroups(Abstract::BaseContext* scene, const
                     // create a new group
                     group = new GNode(groupName);
                     parent->addChild(group);
+                    group->updateContext();
                     group->moveChild(group1);
                     group->moveChild(group2);
                     groupSet.insert(group);

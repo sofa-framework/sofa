@@ -6,6 +6,7 @@
 #include "AnimateAction.h"
 #include "MechanicalAction.h"
 #include "CollisionAction.h"
+#include "UpdateContextAction.h"
 #include "UpdateMappingAction.h"
 #include "ResetAction.h"
 #include "VisualAction.h"
@@ -108,6 +109,13 @@ void Simulation::initTextures(GNode* root)
 {
     if (!root) return;
     root->execute<VisualInitTexturesAction>();
+}
+
+/// Update contexts. Required before drawing the scene if root flags are modified.
+void Simulation::updateContext(GNode* root)
+{
+    if (!root) return;
+    root->execute<UpdateContextAction>();
 }
 
 /// Render the scene

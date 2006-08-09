@@ -77,9 +77,11 @@ void RungeKutta4Solver::solve(double dt)
     vel.peq(k4a,stepBy6);
 }
 
-void create(RungeKutta4Solver*& obj, ObjectDescription* /*arg*/)
+void create(RungeKutta4Solver*& obj, ObjectDescription* arg)
 {
     obj = new RungeKutta4Solver();
+    if (arg->getAttribute("debug"))
+        obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );
 }
 
 SOFA_DECL_CLASS(RungeKutta4)

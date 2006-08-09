@@ -118,8 +118,7 @@ int main(int argc, char** argv)
 #ifdef SOFA_GUI_QT
     else if (gui=="qt")
     {
-        Sofa::GUI::QT::MainLoop(argv[0],groot);
-        Sofa::GUI::QT::setGuiTitle(fileName.c_str());
+        Sofa::GUI::QT::MainLoop(argv[0],groot,fileName.c_str());
 
     }
 #endif

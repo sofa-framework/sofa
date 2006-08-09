@@ -49,7 +49,7 @@ public:
         {
             Deriv d;
             d.vCenter = vCenter + a.vCenter;
-            d.vOrientation = vCenter + a.vOrientation;
+            d.vOrientation = vOrientation + a.vOrientation;
             return d;
         }
 
@@ -255,6 +255,12 @@ public:
         inertiaMassMatrix = inertiaMatrix * mass;
         invInertiaMatrix.invert(inertiaMatrix);
         invInertiaMassMatrix.invert(inertiaMassMatrix);
+    }
+    inline friend std::ostream& operator << (std::ostream& out, const RigidMass& m )
+    {
+        out<<"mass = "<<m.mass;
+        out<<", inertia = "<<m.inertiaMatrix;
+        return out;
     }
 };
 

@@ -34,6 +34,9 @@ public:
     /// Initialize the textures
     static void initTextures(GNode* root);
 
+    /// Update contexts. Required before drawing the scene if root flags are modified.
+    static void updateContext(GNode* root);
+
     /// Render the scene
     static void draw(GNode* root);
 

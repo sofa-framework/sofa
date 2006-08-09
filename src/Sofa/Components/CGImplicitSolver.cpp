@@ -56,6 +56,8 @@ void CGImplicitSolver::solve(double dt)
 
     // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
+    if( getDebug() )
+        cerr<<"CGImplicitSolver, f0 = "<< b <<endl;
     group->propagateDx(vel);            // dx = v
     group->computeDf(f);                // f = df/dx v
     b.peq(f,h);                         // b = f0+hdf/dx v
@@ -66,6 +68,9 @@ void CGImplicitSolver::solve(double dt)
     double rho, rho_1=0, alpha, beta;
     group->v_clear( x );
     group->v_eq(r,b); // initial residual
+
+    if( getDebug() )
+        cerr<<"CGImplicitSolver, r0 = "<< r <<endl;
 
     unsigned nb_iter;
     for( nb_iter=1; nb_iter<=maxCGIter; nb_iter++ )
@@ -120,6 +125,8 @@ void create(CGImplicitSolver*& obj, ObjectDescription* arg)
         obj->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
     if (arg->getAttribute("stiffness"))
         obj->rayleighStiffness = atof(arg->getAttribute("stiffness"));
+    if (arg->getAttribute("debug"))
+        obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );
 }
 
 SOFA_DECL_CLASS(CGImplicit)

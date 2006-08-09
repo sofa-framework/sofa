@@ -225,7 +225,7 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
                 std::vector<int> norms = vertNormTexIndex[2];
                 for (unsigned int j = 0; j < verts.size(); j++)
                 {
-                    vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:0), (useNormals?norms[j]:0))] = 0;
+                    vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:-1), (useNormals?norms[j]:0))] = 0;
                 }
             }
 
@@ -301,7 +301,7 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
                 std::vector<int> idxs;
                 idxs.resize(verts.size());
                 for (unsigned int j = 0; j < verts.size(); j++)
-                    idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:0), (useNormals?norms[j]:0))];
+                    idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:-1), (useNormals?norms[j]:0))];
 
                 if (verts.size() == 4)
                 {

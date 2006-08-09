@@ -41,9 +41,11 @@ void EulerSolver::solve(double dt)
     }
 }
 
-void create(EulerSolver*& obj, ObjectDescription* /*arg*/)
+void create(EulerSolver*& obj, ObjectDescription* arg)
 {
     obj = new EulerSolver();
+    if (arg->getAttribute("debug"))
+        obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );
 }
 
 SOFA_DECL_CLASS(Euler)

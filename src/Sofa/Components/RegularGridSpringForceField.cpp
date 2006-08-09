@@ -23,12 +23,12 @@ void create(RegularGridSpringForceField<DataTypes>*& obj, ObjectDescription* arg
     {
         if (arg->getAttribute("stiffness")) obj->setStiffness((typename DataTypes::Coord::value_type)atof(arg->getAttribute("stiffness")));
         if (arg->getAttribute("linesStiffness")) obj->setLinesStiffness((typename DataTypes::Coord::value_type)atof(arg->getAttribute("linesStiffness")));
-        if (arg->getAttribute("quadsStiffness")) obj->setLinesStiffness((typename DataTypes::Coord::value_type)atof(arg->getAttribute("quadsStiffness")));
-        if (arg->getAttribute("cubesStiffness")) obj->setLinesStiffness((typename DataTypes::Coord::value_type)atof(arg->getAttribute("cubesStiffness")));
+        if (arg->getAttribute("quadsStiffness")) obj->setQuadsStiffness((typename DataTypes::Coord::value_type)atof(arg->getAttribute("quadsStiffness")));
+        if (arg->getAttribute("cubesStiffness")) obj->setCubesStiffness((typename DataTypes::Coord::value_type)atof(arg->getAttribute("cubesStiffness")));
         if (arg->getAttribute("damping")) obj->setDamping((typename DataTypes::Coord::value_type)atof(arg->getAttribute("damping")));
         if (arg->getAttribute("linesDamping")) obj->setLinesDamping((typename DataTypes::Coord::value_type)atof(arg->getAttribute("linesDamping")));
-        if (arg->getAttribute("quadsDamping")) obj->setLinesDamping((typename DataTypes::Coord::value_type)atof(arg->getAttribute("quadsDamping")));
-        if (arg->getAttribute("cubesDamping")) obj->setLinesDamping((typename DataTypes::Coord::value_type)atof(arg->getAttribute("cubesDamping")));
+        if (arg->getAttribute("quadsDamping")) obj->setQuadsDamping((typename DataTypes::Coord::value_type)atof(arg->getAttribute("quadsDamping")));
+        if (arg->getAttribute("cubesDamping")) obj->setCubesDamping((typename DataTypes::Coord::value_type)atof(arg->getAttribute("cubesDamping")));
     }
 }
 
