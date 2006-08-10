@@ -14,7 +14,7 @@ namespace Components
 {
 
 template<class DataTypes>
-class LagrangianMultiplierConstraint : public Core::Constraint<DataTypes>
+class LagrangianMultiplierConstraint : public Core::BasicConstraint
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -61,11 +61,11 @@ public:
         delete lambda;
     }
 
-    virtual void projectResponse(VecDeriv& /*dx*/) ///< project dx to constrained space
+    virtual void projectResponse() ///< project dx to constrained space
     {
     }
-    virtual void projectVelocity(VecDeriv& /*dx*/) {} ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition(VecCoord& /*x*/) {} ///< project x to constrained space (x models a position)
+    virtual void projectVelocity() {} ///< project dx to constrained space (dx models a velocity)
+    virtual void projectPosition() {} ///< project x to constrained space (x models a position)
 
     virtual Core::BasicMechanicalModel* getDOFs()
     {
