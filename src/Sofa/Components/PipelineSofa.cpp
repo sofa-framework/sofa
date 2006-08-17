@@ -23,6 +23,7 @@ void create(PipelineSofa*& obj, ObjectDescription* arg)
     obj = new PipelineSofa();
     obj->setVerbose(atoi(arg->getAttribute("verbose","0"))!=0);
     obj->setDraw(atoi(arg->getAttribute("draw","0"))!=0);
+    obj->setDepth(atoi(arg->getAttribute("depth","6")));
 }
 
 SOFA_DECL_CLASS(PipelineSofa)
@@ -30,7 +31,7 @@ SOFA_DECL_CLASS(PipelineSofa)
 Creator<ObjectFactory, PipelineSofa> PipelineSofaClass("CollisionPipeline");
 
 PipelineSofa::PipelineSofa()
-    : verbose_(false), draw_(false)
+    : verbose_(false), draw_(false), depth_(6)
 {
 }
 
@@ -70,7 +71,7 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     }
     detectionOutputs.clear();
 
-    VERBOSE(std::cout << "Compute BBoxs"<<std::endl);
+    VERBOSE(std::cout << "Compute Bounding Trees"<<std::endl);
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
     // or we have loaded a collision model that knows its other model
 
@@ -78,7 +79,6 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
     {
         if (node) t0 = node->startTime();
         const bool continuous = intersectionMethod->useContinuous();
-        //const double distance = intersectionMethod->getAlarmDistance();
         const double dt       = getContext()->getDt();
 
         std::vector<CollisionModel*>::const_iterator it = collisionModels.begin();
@@ -88,9 +88,9 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
         {
             if (!(*it)->isActive()) continue;
             if (continuous)
-                (*it)->computeContinuousBoundingBox(dt);
+                (*it)->computeContinuousBoundingTree(dt, getDepth());
             else
-                (*it)->computeBoundingBox();
+                (*it)->computeBoundingTree(getDepth());
             vectBoundingVolume.push_back ((*it)->getFirst());
             ++nActive;
         }
@@ -117,22 +117,37 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
 
     VERBOSE(std::cout << "CollisionDetection "<<std::endl);
     // then we start the real detection between primitives
-    std::vector<std::pair<CollisionElement*, CollisionElement*> >& vectElemPair = narrowPhaseDetection->getCollisionElementPairs();
-    std::vector<std::pair<CollisionElement*, CollisionElement*> >::iterator it4 = vectElemPair.begin();
-    std::vector<std::pair<CollisionElement*, CollisionElement*> >::iterator it4End = vectElemPair.end();
-
-    if (node) t0 = node->startTime();
-    for (; it4 != it4End; it4++)
     {
-        CollisionElement *cm1 = it4->first;
-        CollisionElement *cm2 = it4->second;
+        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >& vectElemPair = narrowPhaseDetection->getCollisionElementPairs();
+        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it4 = vectElemPair.begin();
+        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it4End = vectElemPair.end();
 
-        DetectionOutput *detection = intersectionMethod->intersect(cm1, cm2);
+        // Cache the intersector used
+        ElementIntersector* intersector = NULL;
+        Abstract::CollisionModel* model1 = NULL;
+        Abstract::CollisionModel* model2 = NULL;
 
-        if (detection)
-            detectionOutputs.push_back(detection);
+        if (node) t0 = node->startTime();
+        for (; it4 != it4End; it4++)
+        {
+            CollisionElementIterator cm1 = it4->first;
+            CollisionElementIterator cm2 = it4->second;
+            if (cm1->getCollisionModel() != model1 || cm2->getCollisionModel() != model2)
+            {
+                model1 = cm1->getCollisionModel();
+                model2 = cm2->getCollisionModel();
+                intersector = intersectionMethod->findIntersector(model1, model2);
+            }
+            if (intersector != NULL)
+            {
+                DetectionOutput *detection = intersectionMethod->intersect(cm1, cm2);
+
+                if (detection)
+                    detectionOutputs.push_back(detection);
+            }
+        }
+        if (node) t0 = node->endTime(t0, category, intersectionMethod, this);
     }
-    if (node) t0 = node->endTime(t0, category, intersectionMethod, this);
     VERBOSE(std::cout << detectionOutputs.size()<<" collisions detected"<<std::endl);
 
 

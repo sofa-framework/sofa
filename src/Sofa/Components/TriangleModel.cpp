@@ -25,16 +25,14 @@ void create(TriangleModel*& obj, ObjectDescription* arg)
 Creator< ObjectFactory, TriangleModel > TriangleModelClass("Triangle");
 
 TriangleModel::TriangleModel()
+    : static_(false), mmodel(NULL), mesh(NULL)
 {
-    mmodel = NULL;
-    mesh = NULL;
-    previous = NULL;
-    next = NULL;
-    static_ = false;
 }
 
-TriangleModel::~TriangleModel()
+void TriangleModel::resize(int size)
 {
+    this->Abstract::CollisionModel::resize(size);
+    elems.resize(size);
 }
 
 void TriangleModel::init()
@@ -53,11 +51,11 @@ void TriangleModel::init()
         std::cerr << "ERROR: TriangleModel requires a Mesh Topology.\n";
         return;
     }
-    elems.clear();
     const int npoints = mmodel->getX()->size();
     const int ntris = mesh->getNbTriangles();
     const int nquads = mesh->getNbQuads();
-    elems.reserve(ntris+2*nquads);
+    resize(ntris+2*nquads);
+    int index = 0;
     //VecCoord& x = *mmodel->getX();
     //VecDeriv& v = *mmodel->getV();
     for (int i=0; i<ntris; i++)
@@ -68,8 +66,10 @@ void TriangleModel::init()
             std::cerr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")\n";
             continue;
         }
-        Triangle *t = new Triangle(i, idx[0], idx[1], idx[2], this);
-        elems.push_back(t);
+        elems[index].i1 = idx[0];
+        elems[index].i2 = idx[1];
+        elems[index].i3 = idx[2];
+        ++index;
     }
     for (int i=0; i<nquads; i++)
     {
@@ -79,51 +79,27 @@ void TriangleModel::init()
             std::cerr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")\n";
             continue;
         }
-        Triangle *t1 = new Triangle(i+ntris, idx[0], idx[1], idx[2], this);
-        Triangle *t2 = new Triangle(i+ntris, idx[0], idx[2], idx[3], this);
-        elems.push_back(t1);
-        elems.push_back(t2);
+        elems[index].i1 = idx[0];
+        elems[index].i2 = idx[1];
+        elems[index].i3 = idx[2];
+        ++index;
+        elems[index].i1 = idx[0];
+        elems[index].i2 = idx[2];
+        elems[index].i3 = idx[3];
+        ++index;
     }
 }
 
-/*
-class TriangleModel::Loader : public TriangleLoader
+void TriangleModel::draw(int index)
 {
-public:
-	TriangleModel* dest;
-	Loader(TriangleModel* dest) : dest(dest) { }
-	void addVertices (double x, double y, double z)
-	{
-		int i = dest->getX()->size();
-		dest->resize(i+1);
-		(*dest->getX())[i] = Vector3(x,y,z);
-	}
-
-	void addTriangle (int idp1, int idp2, int idp3)
-	{
-		Triangle *t = new Triangle(&(dest->getX()->at(idp1)), &(dest->getX()->at(idp2)), &(dest->getX()->at(idp3)),
-								   &(dest->getV()->at(idp1)), &(dest->getV()->at(idp2)), &(dest->getV()->at(idp3)),
-								   dest);
-		dest->elems.push_back(t);
-	}
-};
-
-void TriangleModel::applyTranslation(double dx, double dy, double dz)
-{
-	Vector3 d(dx,dy,dz);
-	VecCoord& x = *mmodel->getX();
-	for (unsigned int i = 0; i < x.size(); i++)
-		x[i] += d;
+    Triangle t(this,index);
+    glBegin(GL_TRIANGLES);
+    glNormal3dv(t.n());
+    glVertex3dv(t.p1());
+    glVertex3dv(t.p2());
+    glVertex3dv(t.p3());
+    glEnd();
 }
-
-void TriangleModel::init(const char* file)
-{
-	this->resize(0);
-	elems.clear();
-	Loader loader(this);
-	loader.load(file);
-}
-*/
 
 void TriangleModel::draw()
 {
@@ -135,16 +111,16 @@ void TriangleModel::draw()
     //Enable<GL_BLEND> blending;
     //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-    static const float color[3] = { 1.0f, 0.0f, 0.0f};
-    static const float colorStatic[3] = { 0.5f, 0.5f, 0.5f};
+    static const float color[4] = { 1.0f, 0.0f, 0.0f, 1.0f};
+    static const float colorStatic[4] = { 0.5f, 0.5f, 0.5f, 1.0f};
     if (isStatic())
         glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colorStatic);
     else
         glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
 
-    for (unsigned int i=0; i<elems.size(); i++)
+    for (int i=0; i<size; i++)
     {
-        static_cast<Triangle*>(elems[i])->draw();
+        draw(i);
     }
 
     glColor3f(1.0f, 1.0f, 1.0f);
@@ -156,160 +132,87 @@ void TriangleModel::draw()
         dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
 }
 
-/*
-void TriangleModel::computeSphereVolume (void)
+void TriangleModel::computeBoundingTree(int maxDepth)
 {
-	Vector3 minBB, maxBB;
+    CubeModel* cubeModel = createPrevious<CubeModel>();
+    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
-	std::vector<Vector3*>::iterator it = vertices.begin();
-	std::vector<Vector3*>::iterator itEnd = vertices.end();
+    Vector3 minElem, maxElem;
 
-	if (it != itEnd)
-	{
-		minBB = *(*it);
-		maxBB = *(*it);
-		it++;
-	}
-
-	for (;it != itEnd; it++)
-	{
-		minBB.x() = (minBB.x() > (*it)->x()) ? (*it)->x() : minBB.x();
-		minBB.y() =  (minBB.y() > (*it)->y()) ? (*it)->y() : minBB.y();
-		minBB.z() =  (minBB.z() > (*it)->z()) ? (*it)->y() : minBB.y();
-
-		maxBB.x() =  (maxBB.x() < (*it)->x()) ? (*it)->x() : maxBB.x();
-		maxBB.y() =  (maxBB.y() < (*it)->y()) ? (*it)->y() : maxBB.y();
-		maxBB.z() =  (maxBB.z() < (*it)->y()) ? (*it)->y() : maxBB.y();
-	}
-
-	Vector3 center = Vector3(minBB + maxBB) / 2;
-	double radius = (maxBB - center).Length();
-	Sphere boundingSphere(center, radius, 0);
-	CollisionModel *cm = getFirst();
-
-	SPHmodel *sphModel = NULL;
-	if (cm)
-	{
-		sphModel = cm->getSPHmodel();
-		if (sphModel) delete sphModel;
-	}
-
-	sphModel = new SPHmodel();
-	sphModel->addSphere (boundingSphere);
-	previous = sphModel;
-	sphModel->setNext(this);
-}
-*/
-void TriangleModel::computeContinuousBoundingBox (double dt)
-{
-    CubeModel* cubeModel = dynamic_cast<CubeModel*>(getPrevious());
-
-    if (cubeModel == NULL)
+    cubeModel->resize(size);
+    if (!empty())
     {
-        if (getPrevious() != NULL)
+        for (int i=0; i<size; i++)
         {
-            delete getPrevious();
-            setPrevious(NULL);
+            Triangle t(this,i);
+            const Vector3& pt1 = t.p1();
+            const Vector3& pt2 = t.p2();
+            const Vector3& pt3 = t.p3();
+
+            for (int c = 0; c < 3; c++)
+            {
+                minElem[c] = pt1[c];
+                maxElem[c] = pt1[c];
+                if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
+                else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
+                if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
+                else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+            }
+
+            // Also recompute normal vector
+            t.n() = cross(pt2-pt1,pt3-pt1);
+            t.n().normalize();
+
+            cubeModel->setParentOf(i, minElem, maxElem);
         }
-        cubeModel = new CubeModel();
-        cubeModel->setContext(getContext());
-        cubeModel->setStatic(isStatic());
-        this->setPrevious(cubeModel);
-        cubeModel->setNext(this);
+        cubeModel->computeBoundingTree(maxDepth);
     }
-    else if (isStatic()) return; // No need to recompute BBox if immobile
-
-    /* Vector3 minBB, maxBB;
-    Vector3 minBBMoved, maxBBMoved;
-    std::vector<Vector3> newVertices;
-    int size = vertices.size(); */
-    std::vector<Vector3> newVertices;
-
-    std::vector<Vector3> &verts = *(mmodel->getX());
-    std::vector<Vector3> &velocityVerts = *(mmodel->getV());
-
-    int size = verts.size();
-    newVertices.reserve(size);
-
-    for (int i = 0; i < size; i++)
-    {
-        Vector3 newPos = verts[i];
-        newPos += velocityVerts[i] * dt; //getContext()->getDt();
-        newVertices.push_back(newPos);
-    }
-    Vector3 minBB, maxBB, minBBMoved, maxBBMoved;
-    findBoundingBox(verts, minBB, maxBB);
-    findBoundingBox(newVertices, minBBMoved, maxBBMoved);
-
-    // get the min max vector with minBB, minBBMoved, maxBB, maxBBMoved
-    for (int i = 0; i < 3; i++)
-    {
-        minBB[i] = (minBB[i] > minBBMoved[i]) ? minBBMoved[i] : minBB[i];
-        maxBB[i] = (maxBB[i] > maxBBMoved[i]) ? maxBBMoved[i] : maxBB[i];
-    }
-
-    cubeModel->setCube(0,minBB, maxBB);
-
-    for (unsigned int i=0; i<elems.size(); i++)
-        static_cast<Triangle*>(elems[i])->recalcContinuousBBox(dt);
 }
 
-void TriangleModel::computeBoundingBox(void)
+void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {
-    CubeModel* cubeModel = dynamic_cast<CubeModel*>(getPrevious());
+    CubeModel* cubeModel = createPrevious<CubeModel>();
+    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
-    if (cubeModel == NULL)
+    Vector3 minElem, maxElem;
+
+    cubeModel->resize(size);
+    if (!empty())
     {
-        if (getPrevious() != NULL)
+        for (int i=0; i<size; i++)
         {
-            delete getPrevious();
-            setPrevious(NULL);
+            Triangle t(this,i);
+            const Vector3& pt1 = t.p1();
+            const Vector3& pt2 = t.p2();
+            const Vector3& pt3 = t.p3();
+            const Vector3 pt1v = pt1 + t.v1()*dt;
+            const Vector3 pt2v = pt2 + t.v2()*dt;
+            const Vector3 pt3v = pt3 + t.v3()*dt;
+
+            for (int c = 0; c < 3; c++)
+            {
+                minElem[c] = pt1[c];
+                maxElem[c] = pt1[c];
+                if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
+                else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
+                if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
+                else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+
+                if (pt1v[c] > maxElem[c]) maxElem[c] = pt1v[c];
+                else if (pt1v[c] < minElem[c]) minElem[c] = pt1v[c];
+                if (pt2v[c] > maxElem[c]) maxElem[c] = pt2v[c];
+                else if (pt2v[c] < minElem[c]) minElem[c] = pt2v[c];
+                if (pt3v[c] > maxElem[c]) maxElem[c] = pt3v[c];
+                else if (pt3v[c] < minElem[c]) minElem[c] = pt3v[c];
+            }
+
+            // Also recompute normal vector
+            t.n() = cross(pt2-pt1,pt3-pt1);
+            t.n().normalize();
+
+            cubeModel->setParentOf(i, minElem, maxElem);
         }
-        cubeModel = new CubeModel();
-        cubeModel->setContext(getContext());
-        cubeModel->setStatic(isStatic());
-        this->setPrevious(cubeModel);
-        cubeModel->setNext(this);
-    }
-    else if (isStatic()) return; // No need to recompute BBox if immobile
-
-    Vector3 minBB, maxBB;
-
-    findBoundingBox(*(mmodel->getX()), minBB, maxBB);
-
-    //std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
-
-    cubeModel->setCube(0,minBB, maxBB);
-
-    for (unsigned int i=0; i<elems.size(); i++)
-        static_cast<Triangle*>(elems[i])->recalcBBox();
-}
-
-void TriangleModel::findBoundingBox(const std::vector<Vector3> &verts, Vector3 &minBB, Vector3 &maxBB)
-{
-    //std::vector<Vector3*>::const_iterator it = points.begin();
-    //std::vector<Vector3*>::const_iterator itEnd = points.end();
-    //std::vector<Vector3>* verts = this->getX();
-
-    std::vector<Vector3>::const_iterator it = verts.begin();
-    std::vector<Vector3>::const_iterator itEnd = verts.end();
-
-    if (it != itEnd)
-    {
-        minBB = *it;
-        maxBB = *it;
-        it++;
-    }
-
-    for (; it != itEnd; it++)
-    {
-        minBB.x() =  (minBB.x() > (*it).x()) ? (*it).x() : minBB.x();
-        minBB.y() =  (minBB.y() > (*it).y()) ? (*it).y() : minBB.y();
-        minBB.z() =  (minBB.z() > (*it).z()) ? (*it).z() : minBB.z();
-
-        maxBB.x() =  (maxBB.x() < (*it).x()) ? (*it).x() : maxBB.x();
-        maxBB.y() =  (maxBB.y() < (*it).y()) ? (*it).y() : maxBB.y();
-        maxBB.z() =  (maxBB.z() < (*it).z()) ? (*it).z() : maxBB.z();
+        cubeModel->computeBoundingTree(maxDepth);
     }
 }
 

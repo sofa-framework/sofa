@@ -5,7 +5,6 @@
 #include "Sofa/Abstract/VisualModel.h"
 #include "Sofa/Core/MechanicalObject.h"
 #include "Common/Vec3Types.h"
-#include "Cube.h"
 
 namespace Sofa
 {
@@ -15,45 +14,63 @@ namespace Components
 
 using namespace Common;
 
-class CubeModel : public Core::MechanicalObject<Vec3Types>, public Abstract::CollisionModel, public Abstract::VisualModel
+class CubeModel;
+
+class Cube : public Abstract::TCollisionElementIterator<CubeModel>
+{
+public:
+    Cube(CubeModel* model=NULL, int index=0);
+
+    explicit Cube(const Abstract::CollisionElementIterator& i);
+
+    const Vector3& minVect() const;
+
+    const Vector3& maxVect() const;
+
+    const std::pair<Cube,Cube>& subcells() const;
+};
+
+class CubeModel : public Abstract::CollisionModel, public Abstract::VisualModel
 {
 protected:
-    std::vector<Abstract::CollisionElement*> elems;
-    Abstract::CollisionModel* previous;
-    Abstract::CollisionModel* next;
-    Abstract::BehaviorModel* object;
+
+    struct CubeData
+    {
+        Vector3 minBBox, maxBBox;
+        std::pair<Cube,Cube> subcells;
+        Abstract::CollisionElementIterator leaf; ///< Note that leaf is only meaningfull if subcells in empty
+    };
+
+    class CubeSortPredicate;
+
+    std::vector<CubeData> elems;
+    std::vector<int> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
+
     bool static_;
 public:
+    typedef Abstract::CollisionElementIterator ChildIterator;
+    typedef Vec3Types DataTypes;
+    typedef Cube Element;
+    friend class Cube;
 
     CubeModel();
+
+    virtual void resize(int size);
+
+    void setParentOf(int childIndex, const Vector3& min, const Vector3& max);
+
+    // -- CollisionModel interface
+
+    virtual void computeBoundingTree(int maxDepth=0);
 
     bool isStatic() { return static_; }
     void setStatic(bool val=true) { static_ = val; }
 
-    void clear();
-    void addCube(const Vector3& min, const Vector3 &max);
-    void setCube(unsigned int index, const Vector3& min, const Vector3 &max);
+    virtual std::pair<Abstract::CollisionElementIterator,Abstract::CollisionElementIterator> getInternalChildren(int index) const;
 
-    std::vector<Abstract::CollisionElement*> & getCollisionElements()
-    { return elems; }
+    virtual std::pair<Abstract::CollisionElementIterator,Abstract::CollisionElementIterator> getExternalChildren(int index) const;
 
-//	virtual Abstract::BehaviorModel* getObject()
-//	{ return object; }
-
-//	virtual void setObject(Abstract::BehaviorModel* obj)
-//	{ object = obj; this->Core::MechanicalObject<Vec3Types>::setObject(obj); }
-
-    Abstract::CollisionModel* getNext()
-    { return next; }
-
-    Abstract::CollisionModel* getPrevious()
-    { return previous; }
-
-    void setNext(Abstract::CollisionModel* n)
-    { next = n; }
-
-    void setPrevious(Abstract::CollisionModel* p)
-    { previous = p; }
+    void draw(int index);
 
     // -- VisualModel interface
 
@@ -62,7 +79,38 @@ public:
     void initTextures() { }
 
     void update() { }
+
+protected:
+
+    int addCube(Cube subcellsBegin, Cube subcellsEnd);
+    void updateCube(int index);
+    void updateCubes();
 };
+
+inline Cube::Cube(CubeModel* model, int index)
+    : Abstract::TCollisionElementIterator<CubeModel>(model, index)
+{}
+
+inline Cube::Cube(const Abstract::CollisionElementIterator& i)
+    : Abstract::TCollisionElementIterator<CubeModel>(static_cast<CubeModel*>(i->getCollisionModel()), i->getIndex())
+{
+}
+
+inline const Vector3& Cube::minVect() const
+{
+    return model->elems[index].minBBox;
+}
+
+inline const Vector3& Cube::maxVect() const
+{
+    return model->elems[index].maxBBox;
+}
+
+
+inline const std::pair<Cube,Cube>& Cube::subcells() const
+{
+    return model->elems[index].subcells;
+}
 
 } // namespace Components
 

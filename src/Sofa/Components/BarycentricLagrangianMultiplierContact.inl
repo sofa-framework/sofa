@@ -68,8 +68,8 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
     for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
         DetectionOutput* o = *it;
-        CollisionElement1* elem1 = static_cast<CollisionElement1*>(o->elem.first);
-        CollisionElement2* elem2 = static_cast<CollisionElement2*>(o->elem.second);
+        CollisionElement1 elem1(o->elem.first);
+        CollisionElement2 elem2(o->elem.second);
         int index1 = elem1->getIndex();
         int index2 = elem2->getIndex();
         // Create mapping for first point

@@ -101,7 +101,7 @@ inline int BarycentricContactMapper<TriangleModel>::addPoint(const Vector3& P, i
     if (index < model->getTopology()->getNbTriangles())
         return mapper->createPointInTriangle(P, index, model->getMechanicalModel()->getX());
     else
-        return mapper->createPointInQuad(P, index - model->getTopology()->getNbTriangles(), model->getMechanicalModel()->getX());
+        return mapper->createPointInQuad(P, (index - model->getTopology()->getNbTriangles())/2, model->getMechanicalModel()->getX());
 }
 
 template<>

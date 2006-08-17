@@ -10,50 +10,140 @@ namespace Abstract
 {
 
 class CollisionModel;
+class CollisionElementIterator;
 
-class CollisionElement
+template<class Model>
+class TCollisionElementIterator
 {
 public:
-    CollisionElement() : mTimeStamp(-1) {}
 
-    virtual ~CollisionElement() { }
-
-    virtual CollisionModel* getCollisionModel() = 0;
-
-    virtual void getBBox(double* minVect, double* maxVect) = 0;
-    virtual void getContinuousBBox(double* minVect, double* maxVect, double /*dt*/) { getBBox(minVect, maxVect); }
-
-    /// Test if collisions with another element should be tested.
-    /// Default is to reject any self-collisions.
-    virtual bool canCollideWith(CollisionElement* elem) {return getCollisionModel() != elem->getCollisionModel();}
-
-    //bool isSelfCollis(CollisionElement* elem) {return getCollisionModel() == elem->getCollisionModel();}
-
-    static void clearAllVisits()
+    TCollisionElementIterator(Model* model=NULL, int index=0)
+        : model(model), index(index)
     {
-        CurrentTimeStamp(1);
     }
 
-    bool visited() const
+    template<class Model2>
+    bool operator==(const TCollisionElementIterator<Model2>& i) const
     {
-        return mTimeStamp == CurrentTimeStamp();
+        return this->model == i.getCollisionModel() && this->index == i.getIndex();
     }
 
-    void setVisited()
+    template<class Model2>
+    bool operator!=(const TCollisionElementIterator<Model2>& i) const
     {
-        mTimeStamp = CurrentTimeStamp();
+        return this->model != i.getCollisionModel() || this->index != i.getIndex();
+    }
+
+    void operator++()
+    {
+        ++index;
+    }
+
+    void operator++(int)
+    {
+        ++index;
+    }
+
+    Model* getCollisionModel() const
+    {
+        return model;
+    }
+
+    int getIndex() const
+    {
+        return index;
+    }
+
+    bool valid() const
+    {
+        return model!=NULL;
+    }
+
+    std::pair<CollisionElementIterator,CollisionElementIterator> getInternalChildren() const;
+
+    std::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren() const;
+
+    bool canCollideWith(TCollisionElementIterator<Model>& elem)
+    {
+        return model->canCollideWithElement(index, elem.model, elem.index);
+    }
+
+    void draw()
+    {
+        model->draw(index);
+    }
+
+    /*
+    	const double* getBBoxMin() const
+    	{
+    		return model->getBBoxMin(index);
+    	}
+
+    	const double* getBBoxMax() const
+    	{
+    		return model->getBBoxMax(index);
+    	}
+    */
+
+    /*
+    	bool visited() const
+    	{
+    		return model->visited(index);
+    	}
+
+    	void setVisited()
+    	{
+    		model->setVisited(index);
+    	}
+    */
+
+    TCollisionElementIterator<Model>* operator->()
+    {
+        return this;
+    }
+
+    const TCollisionElementIterator<Model>* operator->() const
+    {
+        return this;
     }
 
 protected:
-    int mTimeStamp;
+    Model* model;
+    int index;
+};
 
-    static int CurrentTimeStamp(int incr=0)
+class CollisionElementIterator : public TCollisionElementIterator<CollisionModel>
+{
+public:
+    CollisionElementIterator(CollisionModel* model=NULL, int index=0)
+        : TCollisionElementIterator<CollisionModel>(model, index)
     {
-        static int ts = 0;
-        ts += incr;
-        return ts;
+    }
+    template<class DerivedModel>
+    CollisionElementIterator(const TCollisionElementIterator<DerivedModel>& i)
+        : TCollisionElementIterator<CollisionModel>(i.getCollisionModel(), i.getIndex())
+    {
+    }
+    template<class DerivedModel>
+    void operator=(const TCollisionElementIterator<DerivedModel>& i)
+    {
+        this->model = i.getCollisionModel();
+        this->index = i.getIndex();
     }
 };
+
+
+template<class Model>
+std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIterator<Model>::getInternalChildren() const
+{
+    return model->getInternalChildren(index);
+}
+
+template<class Model>
+std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIterator<Model>::getExternalChildren() const
+{
+    return model->getExternalChildren(index);
+}
 
 } // namespace Abstract
 

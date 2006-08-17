@@ -17,7 +17,7 @@ namespace Collision
 class NarrowPhaseDetection : virtual public Detection
 {
 protected:
-    std::vector< std::pair<Abstract::CollisionElement*, Abstract::CollisionElement*> > elemPairs;
+    std::vector< std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator> > elemPairs;
 
 public:
     virtual ~NarrowPhaseDetection() { }
@@ -35,7 +35,7 @@ public:
         elemPairs.clear();
     };
 
-    std::vector<std::pair<Abstract::CollisionElement*, Abstract::CollisionElement*> >& getCollisionElementPairs() { return elemPairs; }
+    std::vector<std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
 };
 
 } // namespace Collision

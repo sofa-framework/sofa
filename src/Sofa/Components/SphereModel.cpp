@@ -33,42 +33,39 @@ void create(SphereModel*& obj, ObjectDescription* arg)
 Creator< ObjectFactory, SphereModel > SphereModelClass("Sphere");
 
 SphereModel::SphereModel(double radius)
-    : previous(NULL), next(NULL), defaultRadius(radius), static_(false)
+    : defaultRadius(radius), static_(false)
 {
 }
 
 void SphereModel::resize(int size)
 {
     this->Core::MechanicalObject<Vec3Types>::resize(size);
-    int s = this->elems.size();
-    if (s < size)
+    this->Abstract::CollisionModel::resize(size);
+    if ((int)radius.size() < size)
     {
-        elems.reserve(size);
-        while (s < size)
-            elems.push_back(new Sphere(defaultRadius, s++, this));
+        radius.reserve(size);
+        while ((int)radius.size() < size)
+            radius.push_back(defaultRadius);
     }
     else
     {
-        while (s > size)
-            delete elems[s--];
-        elems.resize(size);
+        radius.resize(size);
     }
 }
 
-
 int SphereModel::addSphere(const Vector3& pos, double radius)
 {
-    int i = elems.size();
+    int i = size;
     resize(i+1);
     setSphere(i, pos, radius);
     return i;
 }
 
-void SphereModel:: setSphere(int i, const Vector3& pos, double radius)
+void SphereModel:: setSphere(int i, const Vector3& pos, double r)
 {
-    if ((unsigned)i >= (unsigned) elems.size()) return;
+    if ((unsigned)i >= (unsigned) size) return;
     (*this->getX())[i] = pos;
-    static_cast<Sphere*>(elems[i])->r() = radius;
+    radius[i] = r;
 }
 
 class SphereModel::Loader : public SphereLoader
@@ -78,10 +75,7 @@ public:
     Loader(SphereModel* dest) : dest(dest) { }
     void addSphere(double x, double y, double z, double r)
     {
-        int i = dest->getX()->size();
-        dest->resize(i+1);
-        (*dest->getX())[i] = Vector3(x,y,z);
-        static_cast<Sphere*>(dest->elems[i])->r() = r;
+        dest->addSphere(Vector3(x,y,z),r);
     }
 };
 
@@ -92,88 +86,88 @@ bool SphereModel::load(const char* filename)
     return loader.load(filename);
 }
 
+void SphereModel::draw(int index)
+{
+    Vector3 p = (*getX())[index];
+    glPushMatrix();
+    glTranslated(p[0], p[1], p[2]);
+    glutWireSphere(radius[index], 16, 8);
+    glPopMatrix();
+}
+
 void SphereModel::draw()
 {
     if (!isActive() || !getContext()->getShowCollisionModels()) return;
-    //std::cout << "SPHdraw"<<elems.size()<<std::endl;
     glDisable(GL_LIGHTING);
     if (isStatic())
         glColor3f(0.5, 0.5, 0.5);
     else
         glColor3f(1.0, 0.0, 0.0);
-    for (unsigned int i=0; i<elems.size(); i++)
+    for (int i=0; i<size; i++)
     {
-        static_cast<Sphere*>(elems[i])->draw();
+        draw(i);
     }
     if (getPrevious()!=NULL && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
 }
-/*
-void SphereModel::applyTranslation(double dx, double dy, double dz)
-{
-	Vector3 d(dx,dy,dz);
-	VecCoord& x = *getX();
-	for (unsigned int i = 0; i < x.size(); i++)
-		x[i] += d;
-}
 
-void SphereModel::applyScale(double s)
+void SphereModel::computeBoundingTree(int maxDepth)
 {
-	VecCoord& x = *getX();
-	for (unsigned int i = 0; i < x.size(); i++)
-	{
-		x[i] *= s;
-		static_cast<Sphere*>(elems[i])->radius *=s;
-	}
-}
-*/
+    CubeModel* cubeModel = createPrevious<CubeModel>();
+    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
-void SphereModel::computeBoundingBox(void)
-{
-    CubeModel* cubeModel = dynamic_cast<CubeModel*>(getPrevious());
+    Vector3 minElem, maxElem;
 
-    if (cubeModel == NULL)
+    cubeModel->resize(size);
+    if (!empty())
     {
-        if (getPrevious() != NULL)
+        VecCoord& x = *getX();
+        for (int i=0; i<size; i++)
         {
-            delete getPrevious();
-            setPrevious(NULL);
-        }
-        cubeModel = new CubeModel();
-        cubeModel->setContext(getContext());
-        cubeModel->setStatic(isStatic());
-        this->setPrevious(cubeModel);
-        cubeModel->setNext(this);
-    }
-    else if (isStatic()) return; // No need to recompute BBox if immobile
-
-    Vector3 minSph, maxSph, minBB, maxBB;
-    std::vector<Abstract::CollisionElement*>::iterator it = elems.begin();
-    std::vector<Abstract::CollisionElement*>::iterator itEnd = elems.end();
-
-    if (it != itEnd)
-    {
-        static_cast<Sphere*>(*it)->getBBox(minSph, maxSph);
-        minBB = minSph;
-        maxBB = maxSph;
-        ++it;
-        while (it != itEnd)
-        {
-            static_cast<Sphere*>(*it)->getBBox(minSph, maxSph);
-            for (int i=0; i<3; i++)
+            double r = radius[i];
+            for (int c=0; c<3; c++)
             {
-                if (minBB[i] > minSph[i])
-                    minBB[i] = minSph[i];
-                if (maxBB[i] < maxSph[i])
-                    maxBB[i] = maxSph[i];
+                minElem[c] = x[i][c] - r;
+                maxElem[c] = x[i][c] + r;
             }
-            ++it;
+            cubeModel->setParentOf(i, minElem, maxElem);
         }
+        cubeModel->computeBoundingTree(maxDepth);
     }
+}
 
-    //std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
+void SphereModel::computeContinuousBoundingTree(double dt, int maxDepth)
+{
+    CubeModel* cubeModel = createPrevious<CubeModel>();
+    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
-    cubeModel->setCube(0,minBB, maxBB);
+    Vector3 minElem, maxElem;
+
+    cubeModel->resize(size);
+    if (!empty())
+    {
+        VecCoord& x = *getX();
+        VecDeriv& v = *getV();
+        for (int i=0; i<size; i++)
+        {
+            double r = radius[i];
+            for (int c=0; c<3; c++)
+            {
+                if (v[i][c] < 0)
+                {
+                    minElem[c] = x[i][c] + v[i][c]*dt - r;
+                    maxElem[c] = x[i][c]           + r;
+                }
+                else
+                {
+                    minElem[c] = x[i][c]           - r;
+                    maxElem[c] = x[i][c] + v[i][c]*dt + r;
+                }
+            }
+            cubeModel->setParentOf(i, minElem, maxElem);
+        }
+        cubeModel->computeBoundingTree(maxDepth);
+    }
 }
 
 } // namespace Components

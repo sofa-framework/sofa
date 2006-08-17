@@ -3,12 +3,12 @@
 
 #include "DiscreteIntersection.h"
 #include "Common/FnDispatcher.h"
-#include "Sphere.h"
-#include "Triangle.h"
-#include "Line.h"
-#include "Point.h"
-#include "Cube.h"
-#include "Ray.h"
+#include "SphereModel.h"
+#include "TriangleModel.h"
+#include "LineModel.h"
+#include "PointModel.h"
+#include "CubeModel.h"
+#include "RayModel.h"
 
 namespace Sofa
 {
@@ -22,11 +22,8 @@ public:
     MinProximityIntersection(bool useSphereTriangle = true
                             );
 
-    /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    virtual bool canIntersect(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2);
-
-    /// Compute the intersection between 2 elements.
-    virtual Collision::DetectionOutput* intersect(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2);
+    /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
+    virtual Collision::ElementIntersector* findIntersector(Abstract::CollisionModel* object1, Abstract::CollisionModel* object2);
 
     /// returns true if algorithm uses continous detection
     virtual bool useProximity() const { return true; }
@@ -65,6 +62,7 @@ bool intersectionPointLine(Point&, Line&);
 bool intersectionPointPoint(Point&, Point&);
 bool intersectionRayTriangle(Ray&, Triangle&);
 
+Collision::DetectionOutput* distCorrectionCubeCube(Cube&, Cube&);
 Collision::DetectionOutput* distCorrectionSphereSphere(Sphere&, Sphere&);
 Collision::DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&);
 Collision::DetectionOutput* distCorrectionSphereLine(Sphere&, Line&);

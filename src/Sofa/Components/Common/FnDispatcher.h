@@ -13,6 +13,16 @@ namespace Components
 namespace Common
 {
 
+class TypeInfo
+{
+public:
+    const std::type_info* pt;
+    TypeInfo(const std::type_info& t) : pt(&t) { }
+    operator const std::type_info&() const { return *pt; }
+    bool operator==(const TypeInfo& t) const { return *pt == *t.pt; }
+    bool operator<(const TypeInfo& t) const { return pt->before(*t.pt)!=0; }
+};
+
 template <class BaseClass, typename ResulT = void>
 class BasicDispatcher
 {
@@ -20,15 +30,6 @@ public:
     typedef ResulT (*F)(BaseClass &,BaseClass &);
 
 protected:
-    class TypeInfo
-    {
-    public:
-        const std::type_info* pt;
-        TypeInfo(const std::type_info& t) : pt(&t) { }
-        operator const std::type_info&() const { return *pt; }
-        bool operator==(const TypeInfo& t) const { return *pt == *t.pt; }
-        bool operator<(const TypeInfo& t) const { return pt->before(*t.pt)!=0; }
-    };
     typedef std::pair<TypeInfo,TypeInfo> KeyType;
     typedef std::map<KeyType, F> MapType;
     MapType callBackMap;

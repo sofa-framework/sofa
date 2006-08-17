@@ -7,7 +7,7 @@
 #include "Common/Vec.h"
 #include "Graph/GNode.h"
 
-#include <set>
+#include <vector>
 
 namespace Sofa
 {
@@ -23,8 +23,8 @@ class GridCell
 {
 private:
     //Vector3 minVect, maxVect; // minx, miny, minz; maxx, maxy, maxz
-    std::vector<Abstract::CollisionElement*> collisElems; // elements wich are added at each iteration
-    std::vector<Abstract::CollisionElement*> collisElemsImmobile[2]; // elements which are added only once
+    std::vector<Abstract::CollisionElementIterator> collisElems; // elements wich are added at each iteration
+    std::vector<Abstract::CollisionElementIterator> collisElemsImmobile[2]; // elements which are added only once
 
     Vector3 minCell, maxCell;
     int timeStamp;
@@ -32,7 +32,7 @@ public:
     // Adding a sphere in a cell of the voxel grid.
     // When adding a sphere, we test if there are collision with the sphere in the cell
     // then we add it in the vector sphere
-    void add(VoxelGrid* grid, Abstract::CollisionElement *collElem, std::set<Abstract::CollisionElement*> &vectCollis, int phase);
+    void add(VoxelGrid* grid, Abstract::CollisionElementIterator collElem, std::vector<Abstract::CollisionElementIterator> &vectCollis, int phase);
     void eraseAll(int timeStampMethod);
     GridCell();
 

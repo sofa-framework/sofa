@@ -8,6 +8,8 @@
 #include "Graph/GNode.h"
 
 #include <map>
+#include <queue>
+#include <stack>
 
 /* for debugging the collision method */
 #ifdef _WIN32
@@ -50,15 +52,24 @@ void BruteForceDetection::addCollisionModel(CollisionModel *cm)
         CollisionModel* cm2 = *it;
         if (cm->isStatic() && cm2->isStatic())
             continue;
+        if (!cm->canCollideWith(cm2))
+            continue;
+        Collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2);
+        if (intersector == NULL)
+            continue;
         bool collisionDetected = false;
-        const std::vector<CollisionElement*>& vectElems1 = cm->getCollisionElements();
-        const std::vector<CollisionElement*>& vectElems2 = cm2->getCollisionElements();
-        for (unsigned int i=0; i<vectElems1.size(); i++)
+        //const std::vector<CollisionElement*>& vectElems1 = cm->getCollisionElements();
+        //const std::vector<CollisionElement*>& vectElems2 = cm2->getCollisionElements();
+        CollisionElementIterator begin1 = cm->begin();
+        CollisionElementIterator end1 = cm->end();
+        CollisionElementIterator begin2 = cm2->begin();
+        CollisionElementIterator end2 = cm2->end();
+        for (CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
         {
-            for (unsigned int j=0; j<vectElems2.size(); j++)
+            for (CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
             {
-                if (!vectElems1[i]->canCollideWith(vectElems2[j])) continue;
-                if (intersectionMethod->canIntersect(vectElems1[i],vectElems2[j]))
+                //if (!it1->canCollideWith(it2)) continue;
+                if (intersector->canIntersect(it1, it2))
                 {
                     collisionDetected = true;
                     break;
@@ -76,77 +87,165 @@ void BruteForceDetection::addCollisionModel(CollisionModel *cm)
 
 void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, CollisionModel*>& cmPair)
 {
+    typedef std::pair< std::pair<CollisionElementIterator,CollisionElementIterator>, std::pair<CollisionElementIterator,CollisionElementIterator> > TestPair;
+
     CollisionModel *cm1 = cmPair.first->getNext();
     CollisionModel *cm2 = cmPair.second->getNext();
 
     if (cm1->isStatic() && cm2->isStatic())
         return;
 
-    const std::vector<CollisionElement*>& vectElems1 = cm1->getCollisionElements();
-    const std::vector<CollisionElement*>& vectElems2 = cm2->getCollisionElements();
+    while (cm1->empty() && cm1->getNext()!=NULL)
+        cm1 = cm1->getNext();
+    while (cm2->empty() && cm2->getNext()!=NULL)
+        cm2 = cm2->getNext();
 
-    if (vectElems1.size()<=0 ||vectElems2.size()<=0)
+    if (cm1->empty() || cm2->empty())
         return;
 
-    if (!intersectionMethod->isSupported(vectElems1[0], vectElems2[0]))
+    CollisionModel *finalcm1 = cm1->getLast();
+    CollisionModel *finalcm2 = cm2->getLast();
+    Collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2);
+    if (finalintersector == NULL)
         return;
 
     Graph::GNode* node = dynamic_cast<Graph::GNode*>(getContext());
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
     Graph::GNode::ctime_t t0=0, t=0;
+    Graph::GNode::ctime_t ft=0;
 
-    const bool continuous = intersectionMethod->useContinuous();
-    const bool proximity  = intersectionMethod->useProximity();
-    const double distance = intersectionMethod->getAlarmDistance();
-    const double dt       = getContext()->getDt();
+    std::queue< TestPair > externalCells;
+    externalCells.push(std::make_pair(std::make_pair(cm1->begin(),cm1->end()),std::make_pair(cm2->begin(),cm2->end())));
 
-    Vector3 minBBox1, maxBBox1;
-    Vector3 minBBox2, maxBBox2;
-    for (unsigned int i=0; i<vectElems1.size(); i++)
+    Collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm1, cm2);
+
+    while (!externalCells.empty())
     {
-        CollisionElement* e1 = vectElems1[i];
-        if (continuous)
-            e1->getContinuousBBox(minBBox1, maxBBox1, dt);
-        else
-            e1->getBBox(minBBox1, maxBBox1);
-        if (proximity)
+        TestPair root = externalCells.front();
+        externalCells.pop();
+
+        if (cm1 != root.first.first.getCollisionModel() || cm2 != root.second.first.getCollisionModel())
         {
-            minBBox1[0] -= distance;
-            minBBox1[1] -= distance;
-            minBBox1[2] -= distance;
-            maxBBox1[0] += distance;
-            maxBBox1[1] += distance;
-            maxBBox1[2] += distance;
+            cm1 = root.first.first.getCollisionModel();
+            cm2 = root.second.first.getCollisionModel();
+            intersector = intersectionMethod->findIntersector(cm1, cm2);
         }
-        for (unsigned int j=0; j<vectElems2.size(); j++)
+        if (intersector == NULL)
+            continue;
+        std::stack< TestPair > internalCells;
+        internalCells.push(root);
+
+        Graph::GNode::ctime_t it=0;
+
+        while (!internalCells.empty())
         {
-            CollisionElement* e2 = vectElems2[j];
-            if (!e1->canCollideWith(e2)) continue;
-            if (continuous)
-                e2->getContinuousBBox(minBBox2, maxBBox2, dt);
-            else
-                e2->getBBox(minBBox2, maxBBox2);
-            if (minBBox1[0] > maxBBox2[0] || minBBox2[0] > maxBBox1[0]
-                || minBBox1[1] > maxBBox2[1] || minBBox2[1] > maxBBox1[1]
-                || minBBox1[2] > maxBBox2[2] || minBBox2[2] > maxBBox1[2]) continue;
-            if (node) t0 = node->startTime();
-            bool b = intersectionMethod->canIntersect(e1,e2);
-            if (node) t += node->startTime() - t0;
-            if (b)
+            TestPair current = internalCells.top();
+            internalCells.pop();
+
+            CollisionElementIterator begin1 = current.first.first;
+            CollisionElementIterator end1 = current.first.second;
+            CollisionElementIterator begin2 = current.second.first;
+            CollisionElementIterator end2 = current.second.second;
+            for (CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
             {
-                elemPairs.push_back(std::make_pair(e1,e2));
+                for (CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
+                {
+                    //if (!it1->canCollideWith(it2)) continue;
+
+                    //if (node) t0 = node->startTime();
+                    bool b = intersector->canIntersect(it1,it2);
+                    //if (node) it += node->startTime() - t0;
+                    if (b)
+                    {
+                        if (it1->getCollisionModel() == finalcm1 && it2->getCollisionModel() == finalcm2)
+                        {
+                            // Final collision pair
+                            elemPairs.push_back(std::make_pair(it1,it2));
+                        }
+                        else
+                        {
+                            // Need to test recursively
+                            TestPair newInternalTests(it1->getInternalChildren(),it2->getInternalChildren());
+                            TestPair newExternalTests(it1->getExternalChildren(),it2->getExternalChildren());
+                            if (newInternalTests.first.first != newInternalTests.first.second)
+                            {
+                                if (newInternalTests.second.first != newInternalTests.second.second)
+                                {
+                                    internalCells.push(newInternalTests);
+                                }
+                                else
+                                {
+                                    newInternalTests.second.first = it2;
+                                    newInternalTests.second.second = it2;
+                                    ++newInternalTests.second.second;
+                                    internalCells.push(newInternalTests);
+                                }
+                            }
+                            else
+                            {
+                                if (newInternalTests.second.first != newInternalTests.second.second)
+                                {
+                                    newInternalTests.first.first = it1;
+                                    newInternalTests.first.second = it1;
+                                    ++newInternalTests.first.second;
+                                    internalCells.push(newInternalTests);
+                                }
+                            }
+                            if (newExternalTests.first.first != newExternalTests.first.second && newExternalTests.second.first != newExternalTests.second.second)
+                            {
+                                if (newExternalTests.first.first.getCollisionModel() == finalcm1 && newExternalTests.second.first.getCollisionModel() == finalcm2)
+                                {
+                                    CollisionElementIterator begin1 = newExternalTests.first.first;
+                                    CollisionElementIterator end1 = newExternalTests.first.second;
+                                    CollisionElementIterator begin2 = newExternalTests.second.first;
+                                    CollisionElementIterator end2 = newExternalTests.second.second;
+                                    for (CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+                                    {
+                                        for (CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
+                                        {
+                                            //if (!it1->canCollideWith(it2)) continue;
+
+                                            if (node) t0 = node->startTime();
+                                            bool bfinal = finalintersector->canIntersect(it1,it2);
+                                            if (node) ft += node->startTime() - t0;
+                                            // Final collision pair
+                                            if (bfinal)
+                                                elemPairs.push_back(std::make_pair(it1,it2));
+                                        }
+                                    }
+                                }
+                                else
+                                    externalCells.push(newExternalTests);
+                            }
+                        }
+                    }
+                }
             }
         }
+        if (node)
+        {
+            //std::string name = "collision/";
+            //name += intersector->name();
+            //node->addTime(it, name, intersectionMethod);
+            t += it;
+        }
     }
-    if (node) node->addTime(t, "collision", intersectionMethod, this);
+    if (node)
+    {
+        std::string name = "collision/";
+        name += finalintersector->name();
+        node->addTime(ft, name, intersectionMethod);
+        t += ft;
+        node->addTime(t, "collision", intersectionMethod, this);
+    }
 }
 
 void BruteForceDetection::draw()
 {
     if (!bDraw) return;
 
-    std::vector<std::pair<CollisionElement*, CollisionElement*> >::iterator it = elemPairs.begin();
-    std::vector<std::pair<CollisionElement*, CollisionElement*> >::iterator itEnd = elemPairs.end();
+    std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it = elemPairs.begin();
+    std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator itEnd = elemPairs.end();
 
     if (elemPairs.size() >= 1)
     {
@@ -157,39 +256,8 @@ void BruteForceDetection::draw()
         //std::cout << "Size : " << elemPairs.size() << std::endl;
         for (; it != itEnd; it++)
         {
-            //std::cout<<*((*it)->getCollisionElement(0)->getSphere())<<std::endl;
-            Sphere *s;
-            s = dynamic_cast<Sphere*>(it->first);
-            if (s!=NULL) s->draw();
-            s = dynamic_cast<Sphere*>(it->second);
-            if (s!=NULL) s->draw();
-            Triangle *t;
-            t = dynamic_cast<Triangle*>(it->first);
-            if (t!=NULL) t->draw();
-            t = dynamic_cast<Triangle*>(it->second);
-            if (t!=NULL) t->draw();
-            Line *l;
-            l = dynamic_cast<Line*>(it->first);
-            if (l!=NULL) l->draw();
-            l = dynamic_cast<Line*>(it->second);
-            if (l!=NULL) l->draw();
-            Point *p;
-            p = dynamic_cast<Point*>(it->first);
-            if (p!=NULL) p->draw();
-            p = dynamic_cast<Point*>(it->second);
-            if (p!=NULL) p->draw();
-            /* Sphere *sph = (*it)->first->getSphere();
-            Sphere *sph1 = (*it)->second->getSphere();
-            glPushMatrix();
-            glTranslated (sph->center.x, sph->center.y, sph->center.z);
-            glutSolidSphere(sph->radius, 10, 10);
-            glPopMatrix();
-            glPushMatrix();
-            glTranslated (sph1->center.x, sph1->center.y, sph1->center.z);
-            glutSolidSphere(sph1->radius, 10, 10);
-            glPopMatrix(); */
-            //(*it)->getCollisionElement(0)->getSphere()->draw();
-            //(*it)->getCollisionElement(1)->getSphere()->draw();
+            it->first->draw();
+            it->second->draw();
         }
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glLineWidth(1);

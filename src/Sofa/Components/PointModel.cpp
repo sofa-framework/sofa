@@ -25,15 +25,13 @@ void create(PointModel*& obj, ObjectDescription* arg)
 Creator< ObjectFactory, PointModel > PointModelClass("Point");
 
 PointModel::PointModel()
+    : static_(false), mmodel(NULL)
 {
-    mmodel = NULL;
-    previous = NULL;
-    next = NULL;
-    static_ = false;
 }
 
-PointModel::~PointModel()
+void PointModel::resize(int size)
 {
+    this->Abstract::CollisionModel::resize(size);
 }
 
 void PointModel::init()
@@ -46,145 +44,94 @@ void PointModel::init()
         return;
     }
 
-    elems.clear();
     const int npoints = mmodel->getX()->size();
-    elems.reserve(npoints);
-    //VecCoord& x = *mmodel->getX();
-    //VecDeriv& v = *mmodel->getV();
-    for (int i=0; i<npoints; i++)
-    {
-        Point *t = new Point(i, this);
-        elems.push_back(t);
-    }
+    resize(npoints);
+}
+
+void PointModel::draw(int index)
+{
+    Point t(this,index);
+    glBegin(GL_POINTS);
+    glVertex3dv(t.p());
+    glEnd();
 }
 
 void PointModel::draw()
 {
     if (!isActive() || !getContext()->getShowCollisionModels()) return;
+    if (getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
     glDisable(GL_LIGHTING);
     if (isStatic())
         glColor3f(0.5, 0.5, 0.5);
     else
         glColor3f(1.0, 0.0, 0.0);
-    for (unsigned int i=0; i<elems.size(); i++)
+
+    for (int i=0; i<size; i++)
     {
-        static_cast<Point*>(elems[i])->draw();
+        draw(i);
     }
+
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glDisable(GL_LIGHTING);
+    if (getContext()->getShowWireFrame())
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
     if (getPrevious()!=NULL && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
 }
 
-void PointModel::computeContinuousBoundingBox (double dt)
+void PointModel::computeBoundingTree(int maxDepth)
 {
-    CubeModel* cubeModel = dynamic_cast<CubeModel*>(getPrevious());
+    CubeModel* cubeModel = createPrevious<CubeModel>();
+    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
-    if (cubeModel == NULL)
+    cubeModel->resize(size);
+    if (!empty())
     {
-        if (getPrevious() != NULL)
+        //VecCoord& x = *mmodel->getX();
+        for (int i=0; i<size; i++)
         {
-            delete getPrevious();
-            setPrevious(NULL);
+            Point p(this,i);
+            const Vector3& pt = p.p();
+            cubeModel->setParentOf(i, pt, pt);
         }
-        cubeModel = new CubeModel();
-        cubeModel->setContext(getContext());
-        cubeModel->setStatic(isStatic());
-        this->setPrevious(cubeModel);
-        cubeModel->setNext(this);
+        cubeModel->computeBoundingTree(maxDepth);
     }
-    else if (isStatic()) return; // No need to recompute BBox if immobile
-
-    std::vector<Vector3> newVertices;
-
-    std::vector<Vector3> &verts = *(mmodel->getX());
-    std::vector<Vector3> &velocityVerts = *(mmodel->getV());
-
-    int size = verts.size();
-    newVertices.reserve(size);
-
-    for (int i = 0; i < size; i++)
-    {
-        Vector3 newPos = verts[i];
-        newPos += velocityVerts[i] * dt; //getContext()->getDt();
-        newVertices.push_back(newPos);
-    }
-    Vector3 minBB, maxBB, minBBMoved, maxBBMoved;
-    findBoundingBox(verts, minBB, maxBB);
-    findBoundingBox(newVertices, minBBMoved, maxBBMoved);
-
-    // get the min max vector with minBB, minBBMoved, maxBB, maxBBMoved
-    for (int i = 0; i < 3; i++)
-    {
-        minBB[i] = (minBB[i] > minBBMoved[i]) ? minBBMoved[i] : minBB[i];
-        maxBB[i] = (maxBB[i] > maxBBMoved[i]) ? maxBBMoved[i] : maxBB[i];
-    }
-
-    cubeModel->setCube(0,minBB, maxBB);
-
-    for (unsigned int i=0; i<elems.size(); i++)
-        static_cast<Point*>(elems[i])->recalcContinuousBBox(dt);
 }
 
-
-void PointModel::computeBoundingBox(void)
+void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {
-    CubeModel* cubeModel = dynamic_cast<CubeModel*>(getPrevious());
+    CubeModel* cubeModel = createPrevious<CubeModel>();
+    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
-    if (cubeModel == NULL)
+    Vector3 minElem, maxElem;
+
+    cubeModel->resize(size);
+    if (!empty())
     {
-        if (getPrevious() != NULL)
+        //VecCoord& x = *mmodel->getX();
+        //VecDeriv& v = *mmodel->getV();
+        for (int i=0; i<size; i++)
         {
-            delete getPrevious();
-            setPrevious(NULL);
+            Point p(this,i);
+            const Vector3& pt = p.p();
+            const Vector3 ptv = pt + p.v()*dt;
+
+            for (int c = 0; c < 3; c++)
+            {
+                minElem[c] = pt[c];
+                maxElem[c] = pt[c];
+                if (ptv[c] > maxElem[c]) maxElem[c] = ptv[c];
+                else if (ptv[c] < minElem[c]) minElem[c] = ptv[c];
+            }
+            cubeModel->setParentOf(i, minElem, maxElem);
         }
-        cubeModel = new CubeModel();
-        cubeModel->setContext(getContext());
-        cubeModel->setStatic(isStatic());
-        this->setPrevious(cubeModel);
-        cubeModel->setNext(this);
-    }
-    else if (isStatic()) return; // No need to recompute BBox if immobile
-
-    Vector3 minBB, maxBB;
-
-    findBoundingBox(*(mmodel->getX()), minBB, maxBB);
-
-    //std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
-
-    cubeModel->setCube(0,minBB, maxBB);
-
-    for (unsigned int i=0; i<elems.size(); i++)
-        static_cast<Point*>(elems[i])->recalcBBox();
-}
-
-void PointModel::findBoundingBox(const std::vector<Vector3> &verts, Vector3 &minBB, Vector3 &maxBB)
-{
-    //std::vector<Vector3*>::const_iterator it = points.begin();
-    //std::vector<Vector3*>::const_iterator itEnd = points.end();
-    //std::vector<Vector3>* verts = this->getX();
-
-    std::vector<Vector3>::const_iterator it = verts.begin();
-    std::vector<Vector3>::const_iterator itEnd = verts.end();
-
-    if (it != itEnd)
-    {
-        minBB = *it;
-        maxBB = *it;
-        it++;
-    }
-
-    for (; it != itEnd; it++)
-    {
-        minBB.x() =  (minBB.x() > (*it).x()) ? (*it).x() : minBB.x();
-        minBB.y() =  (minBB.y() > (*it).y()) ? (*it).y() : minBB.y();
-        minBB.z() =  (minBB.z() > (*it).z()) ? (*it).z() : minBB.z();
-
-        maxBB.x() =  (maxBB.x() < (*it).x()) ? (*it).x() : maxBB.x();
-        maxBB.y() =  (maxBB.y() < (*it).y()) ? (*it).y() : maxBB.y();
-        maxBB.z() =  (maxBB.z() < (*it).z()) ? (*it).z() : maxBB.z();
+        cubeModel->computeBoundingTree(maxDepth);
     }
 }
 
 } // namespace Components
 
 } // namespace Sofa
-

@@ -2,8 +2,8 @@
 #define SOFA_ABSTRACT_COLLISIONMODEL_H
 
 #include <vector>
-#include "CollisionElement.h"
 #include "BaseObject.h"
+#include "CollisionElement.h"
 
 namespace Sofa
 {
@@ -11,45 +11,85 @@ namespace Sofa
 namespace Abstract
 {
 
-class BehaviorModel;
-
-/*! \class CollisionModel
-  *  \brief An interface inherited by CollisionObject
-  *  \author Fonteneau Sylvere
-  *  \version 0.1
-  *  \date    02/22/2004
-  *
-  *  <P>This Interface is used for CollisionModel like SPHModel, ...<BR>
-  *  All collision model inherit of this Interface. <BR>
-  *  The collision model has a view on mapping between a CollisionModel and a BehaviorModel. <br>
-  *  Because when a collision is detected by the environment collision, <BR>
-  *  we have only access to a collision model by element of a collision model <BR>
-  *  Then, when we have to report collision to a BehaviorModel <BR>
-  *  we use the mapping between CollisionModel and BehaviorModel <BR>
-  *  </P>
-  */
-
 class CollisionModel : public virtual BaseObject
 {
 public:
+
+    typedef CollisionElementIterator Iterator;
+
+    CollisionModel()
+        : size(0), previous(NULL), next(NULL)
+    {
+    }
+
     virtual ~CollisionModel() { }
 
-    virtual std::vector<CollisionElement*> & getCollisionElements() = 0;
+    virtual void resize(int s)
+    {
+        size = s;
+        //bbox.resize(s);
+        //timestamp.resize(s);
+    }
 
-    virtual CollisionModel* getNext() = 0;
-    virtual CollisionModel* getPrevious() = 0;
+    Iterator begin()
+    {
+        return Iterator(this,0);
+    }
+
+    Iterator end()
+    {
+        return Iterator(this,size);
+    }
+
+    bool empty() const
+    {
+        return size==0;
+    }
+
+    CollisionModel* getNext()
+    {
+        return next;
+    }
+
+    CollisionModel* getPrevious()
+    {
+        return previous;
+    }
+
+    void setNext(CollisionModel* val)
+    {
+        next = val;
+    }
+
+    void setPrevious(CollisionModel* val)
+    {
+        previous = val;
+    }
 
     virtual bool isActive() { return true; }
 
     virtual bool isStatic() { return false; }
 
-    virtual void computeSphereVolume() {}
+    virtual void computeBoundingTree(int maxDepth=0) = 0;
 
-    virtual void computeBoundingBox() {}
+    virtual void computeContinuousBoundingTree(double /*dt*/, int maxDepth=0) { computeBoundingTree(maxDepth); }
 
-    virtual void computeContinuousBoundingBox(double /*dt*/) {}
+    virtual std::pair<CollisionElementIterator,CollisionElementIterator> getInternalChildren(int /*index*/) const
+    {
+        return std::make_pair(CollisionElementIterator(),CollisionElementIterator());
+    }
 
-//	virtual BehaviorModel* getObject() = 0;
+    virtual std::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren(int /*index*/) const
+    {
+        return std::make_pair(CollisionElementIterator(),CollisionElementIterator());
+    }
+
+    virtual bool canCollideWith(CollisionModel* model) { return model->getContext() != this->getContext(); }
+    //virtual bool canCollideWith(CollisionModel* model) { return model != this; }
+
+    virtual bool canCollideWithElement(int /*index*/, CollisionModel* model2, int /*index2*/) { return canCollideWith(model2); }
+
+    virtual void draw(int /*index*/) {}
 
     CollisionModel* getFirst()
     {
@@ -68,6 +108,71 @@ public:
             cm = cm2;
         return cm;
     }
+
+    /*
+    	const double* getBBoxMin(int index) const { return bbox[index].min; }
+
+    	const double* getBBoxMax(int index) const { return bbox[index].max; }
+    */
+
+    /*
+    	static void clearAllVisits()
+    	{
+    		CurrentTimeStamp(1);
+    	}
+
+    	bool visited(int index) const
+    	{
+    		return timestamp[index] == CurrentTimeStamp();
+    	}
+
+    	void setVisited(int index)
+    	{
+    		timestamp[index] = CurrentTimeStamp();
+    	}
+    */
+protected:
+    int size;
+
+    CollisionModel* previous;
+    CollisionModel* next;
+
+    template<class DerivedModel>
+    DerivedModel* createPrevious()
+    {
+        DerivedModel* pmodel = dynamic_cast<DerivedModel*>(previous);
+        if (pmodel == NULL)
+        {
+            if (previous != NULL)
+                delete previous;
+            pmodel = new DerivedModel();
+            pmodel->setContext(getContext());
+            pmodel->setStatic(isStatic());
+            previous = pmodel;
+            pmodel->setNext(this);
+        }
+        return pmodel;
+    }
+
+    /*
+    	struct BBox
+    	{
+    		double min[3];
+    		double max[3];
+    	};
+    	std::vector<BBox> bbox;
+    */
+
+    /*
+    	std::vector<int> timestamp;
+
+    	static int CurrentTimeStamp(int incr=0)
+    	{
+    		static int ts = 0;
+    		ts += incr;
+    		return ts;
+    	}
+    */
 };
 
 } // namespace Abstract

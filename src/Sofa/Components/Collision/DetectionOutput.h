@@ -19,7 +19,7 @@ using namespace Common;
 class DetectionOutput
 {
 public:
-    std::pair<Abstract::CollisionElement*, Abstract::CollisionElement*> elem; ///< Pair of colliding elements
+    std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator> elem; ///< Pair of colliding elements
     Vector3 point[2]; ///< Point in contact on each element
     Vector3 normal; ///< Normal of the contact, pointing outward from model 1
     //bool collision; ///< Are the elements interpenetrating

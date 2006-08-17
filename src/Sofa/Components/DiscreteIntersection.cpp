@@ -2,6 +2,8 @@
 #include "Common/FnDispatcher.inl"
 #include "DiscreteIntersection.h"
 #include "Common/ObjectFactory.h"
+#include "Collision/Intersection.inl"
+#include "RayPickInteractor.h"
 
 #include <iostream>
 #include <algorithm>
@@ -31,42 +33,25 @@ Creator<ObjectFactory, DiscreteIntersection> DiscreteIntersectionClass("Discrete
 
 DiscreteIntersection::DiscreteIntersection()
 {
-    fnCollisionDetection.add<Cube,     Cube,     intersectionCubeCube,         false>();
-    fnCollisionDetection.add<Sphere,   Sphere,   intersectionSphereSphere,     false>();
-    fnCollisionDetection.add<Sphere,   Ray,      intersectionSphereRay,        true>();
-    //fnCollisionDetection.add<Sphere,   Triangle, intersectionSphereTriangle,   true>();
-    //fnCollisionDetection.add<Triangle, Triangle, intersectionTriangleTriangle, false>();
-
-    //fnCollisionDetectionOutput.add<Cube,     Cube,     distCorrectionCubeCube,         false>();
-    fnCollisionDetectionOutput.add<Sphere,   Sphere,   distCorrectionSphereSphere,     false>();
-    fnCollisionDetectionOutput.add<Sphere,   Ray,      distCorrectionSphereRay,        true>();
-    //fnCollisionDetectionOutput.add<Sphere,   Triangle, distCorrectionSphereTriangle,   true>();
-    //fnCollisionDetectionOutput.add<Triangle, Triangle, distCorrectionTriangleTriangle, false>();
+    intersectors.add<CubeModel,     CubeModel,     intersectionCubeCube,         distCorrectionCubeCube,         false>();
+    intersectors.add<SphereModel,   SphereModel,   intersectionSphereSphere,     distCorrectionSphereSphere,     false>();
+    intersectors.add<SphereModel,   RayModel,      intersectionSphereRay,        distCorrectionSphereRay,        true>();
+    intersectors.add<SphereModel,   RayPickInteractor,      intersectionSphereRay,        distCorrectionSphereRay,        true>();
+    //intersectors.add<SphereModel,   TriangleModel, intersectionSphereTriangle,   distCorrectionSphereTriangle, true>();
+    //intersectors.add<TriangleModel, TriangleModel, intersectionTriangleTriangle, distCorrectionTriangleTriangle, false>();
 }
 
-/// Test if intersection between 2 types of elements is supported, i.e. an intersection test is implemented for this combinaison of types.
-bool DiscreteIntersection::isSupported(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2)
+/// Return the intersector class handling the given pair of collision models, or NULL if not supported.
+ElementIntersector* DiscreteIntersection::findIntersector(Abstract::CollisionModel* object1, Abstract::CollisionModel* object2)
 {
-    return fnCollisionDetection.isSupported(*elem1, *elem2);
-}
-
-/// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-bool DiscreteIntersection::canIntersect(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2)
-{
-    return fnCollisionDetection.go(*elem1, *elem2);
-}
-
-/// Compute the intersection between 2 elements.
-DetectionOutput* DiscreteIntersection::intersect(Abstract::CollisionElement* elem1, Abstract::CollisionElement* elem2)
-{
-    return fnCollisionDetectionOutput.go(*elem1, *elem2);
+    return intersectors.get(object1, object2);
 }
 
 
 namespace DiscreteIntersections
 {
 
-bool intersectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
+bool intersectionSphereSphere(Sphere& sph1, Sphere& sph2)
 {
     //std::cout<<"Collision between Sphere - Sphere"<<std::endl;
     Vector3 sph1Pos(sph1.center());
@@ -77,7 +62,7 @@ bool intersectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
     return (tmp.norm2() < (radius1 + radius2) * (radius1 + radius2));
 }
 
-bool intersectionCubeCube(Cube &cube1, Cube &cube2)
+bool intersectionCubeCube(Cube& cube1, Cube& cube2)
 {
     const Vector3& minVect1 = cube1.minVect();
     const Vector3& minVect2 = cube2.minVect();
@@ -95,7 +80,7 @@ bool intersectionCubeCube(Cube &cube1, Cube &cube2)
     return true;
 }
 
-bool intersectionSphereRay(Sphere &sph1 ,Ray &ray2)
+bool intersectionSphereRay(Sphere& sph1, Ray& ray2)
 {
     //std::cout<<"Collision between Sphere - Ray"<<std::endl;
 
@@ -111,7 +96,7 @@ bool intersectionSphereRay(Sphere &sph1 ,Ray &ray2)
     return (dist2 < (radius1*radius1));
 }
 
-//bool intersectionSphereTriangle(Sphere &, Triangle &)
+//bool intersectionSphereTriangle(Sphere&, Triangle&)
 //{
 //	std::cout<<"Collision between Sphere - Triangle"<<std::endl;
 //	return false;
@@ -123,7 +108,12 @@ bool intersectionSphereRay(Sphere &sph1 ,Ray &ray2)
 //	return false;
 //}
 
-DetectionOutput* distCorrectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
+DetectionOutput* distCorrectionCubeCube(Cube&, Cube&)
+{
+    return NULL; /// \todo
+}
+
+DetectionOutput* distCorrectionSphereSphere(Sphere& sph1, Sphere& sph2)
 {
     DetectionOutput *detection = new DetectionOutput();
     detection->normal = sph2.center() - sph1.center();
@@ -133,13 +123,13 @@ DetectionOutput* distCorrectionSphereSphere(Sphere &sph1 ,Sphere &sph2)
     detection->point[1] = sph2.center() - detection->normal * sph2.r();
 
     detection->distance = distSph1Sph2 - (sph1.r() + sph2.r());
-    detection->elem.first = &sph1;
-    detection->elem.second = &sph2;
+    detection->elem.first = sph1;
+    detection->elem.second = sph2;
 
     return detection;
 }
 
-DetectionOutput* distCorrectionSphereRay(Sphere &sph1 ,Ray &ray2)
+DetectionOutput* distCorrectionSphereRay(Sphere& sph1, Ray& ray2)
 {
     const Vector3 sph1Pos(sph1.center());
     const double radius1 = sph1.r();
@@ -158,19 +148,19 @@ DetectionOutput* distCorrectionSphereRay(Sphere &sph1 ,Ray &ray2)
     detection->normal /= dist;
     detection->point[0] = sph1Pos + detection->normal * radius1;
     detection->distance = dist - radius1;
-    detection->elem.first = &sph1;
-    detection->elem.second = &ray2;
+    detection->elem.first = sph1;
+    detection->elem.second = ray2;
 
     return detection;
 }
 
-//DetectionOutput* distCorrectionSphereTriangle(Sphere &, Triangle &)
+//DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&)
 //{
 //	std::cout<<"Distance correction between Sphere - Triangle"<<std::endl;
 //	return new DetectionOutput();
 //}
 
-//DetectionOutput* distCorrectionTriangleTriangle(Triangle &, Triangle &)
+//DetectionOutput* distCorrectionTriangleTriangle(Triangle&, Triangle&)
 //{
 //	std::cout<<"Distance correction between Triangle - Triangle"<<std::endl;
 //	return new DetectionOutput();
