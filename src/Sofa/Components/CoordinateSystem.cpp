@@ -133,8 +133,7 @@ void CoordinateSystem::draw()
     glPopAttrib();
 }
 
-namespace Common   // \todo Why this must be inside Common namespace
-{
+using namespace Common;
 
 void create(CoordinateSystem*& obj, ObjectDescription* arg)
 {
@@ -159,11 +158,7 @@ void create(CoordinateSystem*& obj, ObjectDescription* arg)
     obj->setRelativePosition( Frame::set( vec, Rot::createFromRotationVector( rot ) ));
 }
 
-}
-
 SOFA_DECL_CLASS(CoordinateSystem)
-
-using namespace Common;
 
 Creator< ObjectFactory, CoordinateSystem > CoordinateSystemClass("CoordinateSystem");
 
