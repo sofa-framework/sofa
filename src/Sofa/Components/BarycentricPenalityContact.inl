@@ -76,10 +76,11 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
         index1 = mapper1.addPoint(o->point[0], index1);
         // Create mapping for second point
         index2 = mapper2.addPoint(o->point[1], index2);
+        double distance = intersectionMethod->getContactDistance() + mapper1.radius(elem1) + mapper2.radius(elem2);
         if (model1->isStatic() || model2->isStatic()) // create stiffer springs for static models as only half of the force is really applied
-            ff->addContact(index1, index2, o->normal, intersectionMethod->getContactDistance(), 300, 0.00f, 0.00f); /// \todo compute stiffness and damping
+            ff->addContact(index1, index2, o->normal, distance, 300, 0.00f, 0.00f); /// \todo compute stiffness and damping
         else
-            ff->addContact(index1, index2, o->normal, intersectionMethod->getContactDistance(), 250, 0.00f, 0.00f); /// \todo compute stiffness and damping
+            ff->addContact(index1, index2, o->normal, distance, 250, 0.00f, 0.00f); /// \todo compute stiffness and damping
     }
     // Update mappings
     mapper1.update();

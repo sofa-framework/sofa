@@ -87,6 +87,11 @@ public:
             mapping->updateMapping();
         }
     }
+
+    double radius(const typename TCollisionModel::Element& e)
+    {
+        return 0.0;
+    }
 };
 
 template<>
@@ -134,6 +139,11 @@ public:
     void update()
     {
     }
+
+    double radius(const Point& e)
+    {
+        return 0.0;
+    }
 };
 
 template <>
@@ -165,6 +175,11 @@ public:
 
     void update()
     {
+    }
+
+    double radius(const Sphere& e)
+    {
+        return e.r();
     }
 };
 
