@@ -45,7 +45,7 @@ CoordinateSystem* CoordinateSystem::setOrigin( const Vec& v )
 
 CoordinateSystem::Vec CoordinateSystem::getOrigin() const
 {
-    return this->getOrigin();
+    return this->relativePosition_.getOriginInParent();
 }
 
 CoordinateSystem* CoordinateSystem::setOrientation( const Rot& r )
@@ -57,7 +57,7 @@ CoordinateSystem* CoordinateSystem::setOrientation( const Rot& r )
 
 CoordinateSystem::Rot CoordinateSystem::getOrientation( ) const
 {
-    return this->getOrientation();
+    return this->relativePosition_.getOrientation();
 }
 
 CoordinateSystem* CoordinateSystem::set
