@@ -19,8 +19,8 @@ public:
     const std::type_info* pt;
     TypeInfo(const std::type_info& t) : pt(&t) { }
     operator const std::type_info&() const { return *pt; }
-    bool operator==(const TypeInfo& t) const { return *pt == *t.pt; }
-    bool operator<(const TypeInfo& t) const { return pt->before(*t.pt)!=0; }
+    int operator==(const TypeInfo& t) const { return *pt == *t.pt; }
+    int operator<(const TypeInfo& t) const { return pt->before(*t.pt); }
 };
 
 template <class BaseClass, typename ResulT = void>
