@@ -194,7 +194,7 @@ void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
         Mat3x3d m;
         m[0] = in[cubes[c][1]]-in[cubes[c][0]];
         m[1] = in[cubes[c][2]]-in[cubes[c][0]];
-        m[2] = in[cubes[c][3]]-in[cubes[c][0]];
+        m[2] = in[cubes[c][4]]-in[cubes[c][0]];
         bases[c0+c].invert(m);
         centers[c0+c] = (in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]])*0.125;
     }

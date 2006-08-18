@@ -244,15 +244,15 @@ void BruteForceDetection::draw()
 {
     if (!bDraw) return;
 
-    std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it = elemPairs.begin();
-    std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator itEnd = elemPairs.end();
-
-    if (elemPairs.size() >= 1)
+    if (!elemPairs.empty())
     {
         glDisable(GL_LIGHTING);
         glColor3f(1.0, 0.0, 1.0);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glLineWidth(3);
+        glPointSize(5);
+        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it = elemPairs.begin();
+        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator itEnd = elemPairs.end();
         //std::cout << "Size : " << elemPairs.size() << std::endl;
         for (; it != itEnd; it++)
         {
@@ -261,6 +261,7 @@ void BruteForceDetection::draw()
         }
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glLineWidth(1);
+        glPointSize(1);
     }
 }
 

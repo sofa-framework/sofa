@@ -88,7 +88,7 @@ public:
         }
     }
 
-    double radius(const typename TCollisionModel::Element& e)
+    double radius(const typename TCollisionModel::Element& /*e*/)
     {
         return 0.0;
     }
@@ -140,7 +140,7 @@ public:
     {
     }
 
-    double radius(const Point& e)
+    double radius(const Point& /*e*/)
     {
         return 0.0;
     }

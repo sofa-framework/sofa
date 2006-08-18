@@ -1,8 +1,9 @@
-<!-- Collision Response Stress Test -->
-<Node name="root"  dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
-	<Object type="CollisionPipeline" verbose="0" />
-	<Object type="VoxelGridDetection" name="Voxel" min="-40" max="40" n="8" draw="0" />
+<!-- Hierarchical Group Basic Test -->
+<Node name="root"  dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
+	<Object type="CollisionPipeline" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
+	<Object type="VoxelGridDetection" name="Voxel" min="-40" max="40" n="8" draw="0" />
+	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
 	<Object type="CollisionResponse" name="Response" contact="default" />
 	<Node name="M1">
 		<Object type="CGImplicit" iterations="100"/>
@@ -11,10 +12,13 @@
 		<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
 		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="yellow"/>
 		<Object type="IdentityMapping" object1=".." object2="Visual"/>
-		<Object type="Mesh" filename="Topology/smCube27.mesh"/>
 		<Node name="Surf">
-			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" dz="-21.0"/>
-			<Object type="BarycentricMapping" />
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="Point" />
+			<Object type="IdentityMapping" />
 		</Node>
 	</Node>
 	<Node name="M2">
@@ -26,7 +30,11 @@
 			<Object type="RigidMapping"/>
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" />
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="RigidMapping" />
 		</Node>
 		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
@@ -39,10 +47,13 @@
 		<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
 		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="red" />
 		<Object type="IdentityMapping" object1=".." object2="Visual" />
-		<Object type="Mesh" filename="Topology/smCube27.mesh"/>
 		<Node name="Surf">
-			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" />
-			<Object type="BarycentricMapping" />
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="Point" />
+			<Object type="IdentityMapping" />
 		</Node>
 	</Node>
 	<Node name="M4">
@@ -56,7 +67,11 @@
 			<Object type="IdentityMapping" object1=".." object2="Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" />
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
@@ -67,10 +82,13 @@
 		<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
 		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="cyan" />
 		<Object type="IdentityMapping" object1=".." object2="Visual" />
-		<Object type="Mesh" filename="Topology/smCube27.mesh"/>
 		<Node name="Surf">
-			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" dz="21"/>
-			<Object type="BarycentricMapping" />
+			<Object type="Mesh" filename="VisualModels/smCube27.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="Point" />
+			<Object type="IdentityMapping" />
 		</Node>
 	</Node>
 	<Node name="M6">
@@ -84,10 +102,20 @@
 		<Object type="OglModel" name="Visual" filename="VisualModels/dragon.obj" color="gray" />
 		<Object type="RigidMapping" object1=".." object2="Visual" />
 		<Node name="Surf">
-			<Object type="Sphere" filename="CollisionModels/dragon.sph" />
+			<Object type="Mesh" filename="VisualModels/dragon.obj" />
+			<Object type="MechanicalObject" />
+			<Object type="Triangle" />
+			<Object type="Line" />
+			<Object type="Point" />
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
-	<Object type="Sphere" name="Floor" filename="CollisionModels/floor.sph" static="1" dy="-20" />
-	<Object type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-20" />
+	<Node name="Floor">
+		<Object type="Mesh" filename="CollisionModels/floor.obj" />
+		<Object type="MechanicalObject" dy="-20" />
+		<Object type="Triangle" name="Floor" static="1" />
+		<Object type="Line" name="Floor" static="1" />
+		<Object type="Point" name="Floor" static="1" />
+		<Object type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-20" />
+	</Node>
 </Node>

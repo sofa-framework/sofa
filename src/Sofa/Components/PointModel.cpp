@@ -63,6 +63,7 @@ void PointModel::draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glDisable(GL_LIGHTING);
+    glPointSize(3);
     if (isStatic())
         glColor3f(0.5, 0.5, 0.5);
     else
@@ -75,6 +76,7 @@ void PointModel::draw()
 
     glColor3f(1.0f, 1.0f, 1.0f);
     glDisable(GL_LIGHTING);
+    glPointSize(1);
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 

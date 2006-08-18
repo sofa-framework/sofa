@@ -4,7 +4,6 @@
 	<Object type="VoxelGridDetection" name="Voxel" min="-40" max="40" n="8" draw="0" />
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="CollisionResponse" name="Response" contact="default" />
-	<Object type="CollisionGroup" name="Group" />
 	<Node name="M1">
 		<Object type="CGImplicit" iterations="100"/>
 		<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dx="0" dy="-10.5" dz="0"/>
@@ -12,9 +11,10 @@
 		<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
 		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="yellow"/>
 		<Object type="IdentityMapping" object1=".." object2="Visual"/>
+		<Object type="Mesh" filename="Topology/smCube27.mesh"/>
 		<Node name="Surf">
-			<Object type="Sphere" filename="CollisionModels/smCube27.sph" />
-			<Object type="IdentityMapping" />
+			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" dx="0" dy="-10.5" dz="0"/>
+			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
 	<Node name="M2">
@@ -39,9 +39,10 @@
 		<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
 		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="red" />
 		<Object type="IdentityMapping" object1=".." object2="Visual" />
+		<Object type="Mesh" filename="Topology/smCube27.mesh"/>
 		<Node name="Surf">
-			<Object type="Sphere" filename="CollisionModels/smCube27.sph" />
-			<Object type="IdentityMapping" />
+			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" dx="0" dy="10.5" dz="-4"/>
+			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
 	<Node name="M4">
@@ -66,9 +67,10 @@
 		<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
 		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="cyan" />
 		<Object type="IdentityMapping" object1=".." object2="Visual" />
+		<Object type="Mesh" filename="Topology/smCube27.mesh"/>
 		<Node name="Surf">
-			<Object type="Sphere" filename="CollisionModels/smCube27.sph" />
-			<Object type="IdentityMapping" />
+			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" dx="-4" dy="31.5" dz="-4"/>
+			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
 	<Node name="M6">
