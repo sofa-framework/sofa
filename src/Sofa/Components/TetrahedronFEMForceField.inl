@@ -3,8 +3,8 @@
 
 #include "Sofa/Core/ForceField.inl"
 #include "TetrahedronFEMForceField.h"
-//#include "Scene.h"
 #include "MeshTopology.h"
+#include "GridTopology.h"
 #include "Common/PolarDecompose.h"
 #include "GL/template.h"
 #include <assert.h>
@@ -38,17 +38,53 @@ void TetrahedronFEMForceField<DataTypes>::init()
     {
         MeshTopology::SeqTetras* tetras = new MeshTopology::SeqTetras;
         int nbcubes = _mesh->getNbCubes();
+
+        // These values are only correct if the mesh is a grid topology
+        int nx = 2;
+        int ny = 1;
+        int nz = 1;
+        {
+            GridTopology* grid = dynamic_cast<GridTopology*>(_mesh);
+            if (grid != NULL)
+            {
+                nx = grid->getNx()-1;
+                ny = grid->getNy()-1;
+                nz = grid->getNz()-1;
+            }
+        }
+
         tetras->reserve(nbcubes*6);
         for (int i=0; i<nbcubes; i++)
         {
             MeshTopology::Cube c = _mesh->getCube(i);
-            tetras->push_back(make_array(c[0],c[5],c[1],c[7]));
-            tetras->push_back(make_array(c[0],c[1],c[2],c[7]));
-            tetras->push_back(make_array(c[1],c[2],c[3],c[7]));
-            tetras->push_back(make_array(c[7],c[2],c[6],c[0]));
-            tetras->push_back(make_array(c[7],c[6],c[5],c[0]));
-            tetras->push_back(make_array(c[6],c[5],c[4],c[0]));
+            int xor = 0;
+            if ((i%nx)&1) xor+=1;
+            if (((i/nx)%ny)&1) xor+=2;
+            if ((i/(nx*ny))&1) xor+=4;
+            tetras->push_back(make_array(c[0^xor],c[5^xor],c[1^xor],c[7^xor]));
+            tetras->push_back(make_array(c[0^xor],c[1^xor],c[2^xor],c[7^xor]));
+            tetras->push_back(make_array(c[1^xor],c[2^xor],c[7^xor],c[3^xor]));
+            tetras->push_back(make_array(c[7^xor],c[2^xor],c[0^xor],c[6^xor]));
+            tetras->push_back(make_array(c[7^xor],c[6^xor],c[0^xor],c[5^xor]));
+            tetras->push_back(make_array(c[6^xor],c[5^xor],c[4^xor],c[0^xor]));
         }
+
+        /*
+        tetras->reserve(nbcubes*5);
+        for (int i=0;i<nbcubes;i++)
+        {
+        	MeshTopology::Cube c = _mesh->getCube(i);
+        	int xor = 0;
+        	if ((i%nx)&1) xor+=1;
+        	if (((i/nx)%ny)&1) xor+=2;
+        	if ((i/(nx*ny))&1) xor+=4;
+        	tetras->push_back(make_array(c[1^xor],c[0^xor],c[3^xor],c[5^xor]));
+        	tetras->push_back(make_array(c[2^xor],c[3^xor],c[0^xor],c[6^xor]));
+        	tetras->push_back(make_array(c[4^xor],c[5^xor],c[6^xor],c[0^xor]));
+        	tetras->push_back(make_array(c[7^xor],c[6^xor],c[5^xor],c[3^xor]));
+        	tetras->push_back(make_array(c[0^xor],c[3^xor],c[5^xor],c[6^xor]));
+        }
+        */
         _indexedElements = tetras;
     }
 

@@ -136,9 +136,9 @@ void RegularGridSpringForceField<DataTypes>::addForce()
                 spring1.ks = this->linesStiffness / spring1.initpos;
                 spring1.kd = this->linesDamping / spring1.initpos;
                 // lines (x,y+1,z) -> (x,y,z+1)
-                spring1.initpos = (topology->getDy()-topology->getDz()).norm();
-                spring1.ks = this->linesStiffness / spring1.initpos;
-                spring1.kd = this->linesDamping / spring1.initpos;
+                spring2.initpos = (topology->getDy()-topology->getDz()).norm();
+                spring2.ks = this->linesStiffness / spring1.initpos;
+                spring2.kd = this->linesDamping / spring1.initpos;
                 for (int z=0; z<nz-1; z++)
                     for (int y=0; y<ny-1; y++)
                         for (int x=0; x<nx; x++)
