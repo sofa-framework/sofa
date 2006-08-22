@@ -220,6 +220,7 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
             for (unsigned int i = 0; i < facetsImport.size(); i++)
             {
                 std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
+                if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
                 std::vector<int> verts = vertNormTexIndex[0];
                 std::vector<int> texs = vertNormTexIndex[1];
                 std::vector<int> norms = vertNormTexIndex[2];
@@ -295,6 +296,7 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
             for (unsigned int i = 0; i < facetsImport.size(); i++)
             {
                 std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
+                if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
                 std::vector<int> verts = vertNormTexIndex[0];
                 std::vector<int> texs = vertNormTexIndex[1];
                 std::vector<int> norms = vertNormTexIndex[2];

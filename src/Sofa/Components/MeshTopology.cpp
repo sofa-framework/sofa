@@ -98,7 +98,12 @@ bool MeshTopology::load(const char* filename)
         for (unsigned int i=0; i<facets.size(); i++)
         {
             const std::vector<int>& facet = facets[i][0];
-            if (facet.size()==4)
+            if (facet.size()==2)
+            {
+                // Line
+                loader.addLine(facet[0],facet[1]);
+            }
+            else if (facet.size()==4)
             {
                 // Quat
                 loader.addQuad(facet[0],facet[1],facet[2],facet[3]);
@@ -110,20 +115,21 @@ bool MeshTopology::load(const char* filename)
                     loader.addTriangle(facet[0],facet[j-1],facet[j]);
             }
             // Add edges
-            for (unsigned int j=0; j<facet.size(); j++)
-            {
-                int i1 = facet[j];
-                int i2 = facet[(j+1)%facet.size()];
-                if (edges.count(std::make_pair(i1,i2))!=0)
+            if (facet.size()>2)
+                for (unsigned int j=0; j<facet.size(); j++)
                 {
-                    std::cerr << "ERROR: Duplicate edge.\n";
+                    int i1 = facet[j];
+                    int i2 = facet[(j+1)%facet.size()];
+                    if (edges.count(std::make_pair(i1,i2))!=0)
+                    {
+                        std::cerr << "ERROR: Duplicate edge.\n";
+                    }
+                    else if (edges.count(std::make_pair(i2,i1))==0)
+                    {
+                        loader.addLine(i1,i2);
+                        edges.insert(std::make_pair(i1,i2));
+                    }
                 }
-                else if (edges.count(std::make_pair(i2,i1))==0)
-                {
-                    loader.addLine(i1,i2);
-                    edges.insert(std::make_pair(i1,i2));
-                }
-            }
         }
         delete mesh;
     }

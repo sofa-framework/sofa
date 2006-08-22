@@ -116,6 +116,7 @@ void MeshOBJ::readOBJ (FILE* file)
             fgets(buf, sizeof(buf), file);
             sscanf(buf, "%s", buf);
             break;
+        case 'l': // for now we consider a line as a 2-vertices face
         case 'f':
             // face
             fgets(buf, sizeof(buf), file);
