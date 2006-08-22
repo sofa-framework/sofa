@@ -591,7 +591,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJT( typename BaseMapping:
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::draw()
 {
-    if (!getContext()->getShowMappings()) return;
+    if (!getShow(this)) return;
     glDisable (GL_LIGHTING);
     glPointSize(7);
     glColor4f (1,1,0,1);

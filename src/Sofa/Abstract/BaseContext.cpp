@@ -68,6 +68,12 @@ bool BaseContext::getShowCollisionModels() const
     return true;
 }
 
+/// Display flags: Bounding Collision Models
+bool BaseContext::getShowBoundingCollisionModels() const
+{
+    return true;
+}
+
 /// Display flags: Behavior Models
 bool BaseContext::getShowBehaviorModels() const
 {
@@ -86,8 +92,20 @@ bool BaseContext::getShowMappings() const
     return true;
 }
 
+/// Display flags: Mechanical Mappings
+bool BaseContext::getShowMechanicalMappings() const
+{
+    return true;
+}
+
 /// Display flags: ForceFields
 bool BaseContext::getShowForceFields() const
+{
+    return true;
+}
+
+/// Display flags: InteractionForceFields
+bool BaseContext::getShowInteractionForceFields() const
 {
     return true;
 }

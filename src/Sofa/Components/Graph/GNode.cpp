@@ -450,10 +450,13 @@ void create(GNode*& obj, XML::Node<Abstract::BaseNode>* arg)
     obj->setAnimate((atoi(arg->getAttribute("animate","0"))!=0));
     obj->setDebug((atoi(arg->getAttribute("debug","0"))!=0));
     obj->setShowCollisionModels((atoi(arg->getAttribute("showCollisionModels","0"))!=0));
+    obj->setShowBoundingCollisionModels((atoi(arg->getAttribute("showBoundingCollisionModels",arg->getAttribute("showCollisionModels","0")))!=0));
     obj->setShowBehaviorModels((atoi(arg->getAttribute("showBehaviorModels","0"))!=0));
     obj->setShowVisualModels((atoi(arg->getAttribute("showVisualModels","1"))!=0));
     obj->setShowMappings((atoi(arg->getAttribute("showMappings","0"))!=0));
+    obj->setShowMechanicalMappings((atoi(arg->getAttribute("showMechanicalMappings",arg->getAttribute("showMappings","0")))!=0));
     obj->setShowForceFields((atoi(arg->getAttribute("showForceFields","0"))!=0));
+    obj->setShowInteractionForceFields((atoi(arg->getAttribute("showInteractionForceFields",arg->getAttribute("showForceFields","0")))!=0));
     obj->setShowWireFrame((atoi(arg->getAttribute("showWireFrame","0"))!=0));
     obj->setShowNormals((atoi(arg->getAttribute("showNormals","0"))!=0));
 

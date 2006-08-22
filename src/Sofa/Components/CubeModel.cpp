@@ -144,7 +144,7 @@ void CubeModel::draw(int index)
 
 void CubeModel::draw()
 {
-    if (!isActive() || !getContext()->getShowCollisionModels()) return;
+    if (!isActive() || !((getNext()==NULL)?getContext()->getShowCollisionModels():getContext()->getShowBoundingCollisionModels())) return;
     glDisable(GL_LIGHTING);
     int level=0;
     CollisionModel* m = getPrevious();
@@ -273,7 +273,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
                     int c1 = clevel->addCube(subcells.first, cmiddle);
                     int c2 = clevel->addCube(cmiddle, subcells.second);
                     level->elems[cell.getIndex()].subcells = std::make_pair(Cube(clevel,c1),Cube(clevel,c2+1));
-                    std::cout << "L"<<lvl<<" cell "<<cell.getIndex()<<" split along "<<(splitAxis==0?'X':splitAxis==1?'Y':'Z')<<" in cell "<<c1<<" size "<<middle-subcells.first.getIndex()<<" and cell "<<c2<<" size "<<subcells.second.getIndex()-middle<<".\n";
+                    //std::cout << "L"<<lvl<<" cell "<<cell.getIndex()<<" split along "<<(splitAxis==0?'X':splitAxis==1?'Y':'Z')<<" in cell "<<c1<<" size "<<middle-subcells.first.getIndex()<<" and cell "<<c2<<" size "<<subcells.second.getIndex()-middle<<".\n";
                 }
             }
             ++it;

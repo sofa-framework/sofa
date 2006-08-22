@@ -83,27 +83,28 @@ void LineModel::draw(int index)
 
 void LineModel::draw()
 {
-    if (!isActive() || !getContext()->getShowCollisionModels()) return;
-    if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    glDisable(GL_LIGHTING);
-    if (isStatic())
-        glColor3f(0.5, 0.5, 0.5);
-    else
-        glColor3f(1.0, 0.0, 0.0);
-
-    for (int i=0; i<size; i++)
+    if (isActive() && getContext()->getShowCollisionModels())
     {
-        draw(i);
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glDisable(GL_LIGHTING);
+        if (isStatic())
+            glColor3f(0.5, 0.5, 0.5);
+        else
+            glColor3f(1.0, 0.0, 0.0);
+
+        for (int i=0; i<size; i++)
+        {
+            draw(i);
+        }
+
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glDisable(GL_LIGHTING);
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glDisable(GL_LIGHTING);
-    if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    if (getPrevious()!=NULL && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
+    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
 }
 

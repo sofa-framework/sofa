@@ -15,10 +15,13 @@ Context::Context()
     setTime(getDefault()->getTime());
     setAnimate(getDefault()->getAnimate());
     setShowCollisionModels(getDefault()->getShowCollisionModels());
+    setShowBoundingCollisionModels(getDefault()->getShowBoundingCollisionModels());
     setShowBehaviorModels(getDefault()->getShowBehaviorModels());
     setShowVisualModels(getDefault()->getShowVisualModels());
     setShowMappings(getDefault()->getShowMappings());
+    setShowMechanicalMappings(getDefault()->getShowMechanicalMappings());
     setShowForceFields(getDefault()->getShowForceFields());
+    setShowInteractionForceFields(getDefault()->getShowInteractionForceFields());
     setShowWireFrame(getDefault()->getShowWireFrame());
     setShowNormals(getDefault()->getShowNormals());
     setMultiThreadSimulation(getDefault()->getMultiThreadSimulation());
@@ -85,6 +88,12 @@ bool Context::getShowCollisionModels() const
     return showCollisionModels_;
 }
 
+/// Display flags: Bounding Collision Models
+bool Context::getShowBoundingCollisionModels() const
+{
+    return showBoundingCollisionModels_;
+}
+
 /// Display flags: Behavior Models
 bool Context::getShowBehaviorModels() const
 {
@@ -103,10 +112,22 @@ bool Context::getShowMappings() const
     return showMappings_;
 }
 
+/// Display flags: Mechanical Mappings
+bool Context::getShowMechanicalMappings() const
+{
+    return showMechanicalMappings_;
+}
+
 /// Display flags: ForceFields
 bool Context::getShowForceFields() const
 {
     return showForceFields_;
+}
+
+/// Display flags: InteractionForceFields
+bool Context::getShowInteractionForceFields() const
+{
+    return showInteractionForceFields_;
 }
 
 /// Display flags: WireFrame
@@ -165,6 +186,12 @@ void Context::setShowCollisionModels(bool val)
     showCollisionModels_ = val;
 }
 
+/// Display flags: Bounding Collision Models
+void Context::setShowBoundingCollisionModels(bool val)
+{
+    showBoundingCollisionModels_ = val;
+}
+
 /// Display flags: Behavior Models
 void Context::setShowBehaviorModels(bool val)
 {
@@ -183,10 +210,22 @@ void Context::setShowMappings(bool val)
     showMappings_ = val;
 }
 
+/// Display flags: Mechanical Mappings
+void Context::setShowMechanicalMappings(bool val)
+{
+    showMechanicalMappings_ = val;
+}
+
 /// Display flags: ForceFields
 void Context::setShowForceFields(bool val)
 {
     showForceFields_ = val;
+}
+
+/// Display flags: InteractionForceFields
+void Context::setShowInteractionForceFields(bool val)
+{
+    showInteractionForceFields_ = val;
 }
 
 /// Display flags: WireFrame

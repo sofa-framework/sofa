@@ -29,10 +29,13 @@ struct ContextData
     double time_;
     bool animate_;
     bool showCollisionModels_;
+    bool showBoundingCollisionModels_;
     bool showBehaviorModels_;
     bool showVisualModels_;
     bool showMappings_;
+    bool showMechanicalMappings_;
     bool showForceFields_;
+    bool showInteractionForceFields_;
     bool showWireFrame_;
     bool showNormals_;
     bool multiThreadSimulation_;
@@ -91,6 +94,9 @@ public:
     /// Display flags: Collision Models
     virtual bool getShowCollisionModels() const;
 
+    /// Display flags: Bounding Collision Models
+    virtual bool getShowBoundingCollisionModels() const;
+
     /// Display flags: Behavior Models
     virtual bool getShowBehaviorModels() const;
 
@@ -100,8 +106,14 @@ public:
     /// Display flags: Mappings
     virtual bool getShowMappings() const;
 
+    /// Display flags: Mechanical Mappings
+    virtual bool getShowMechanicalMappings() const;
+
     /// Display flags: ForceFields
     virtual bool getShowForceFields() const;
+
+    /// Display flags: InteractionForceFields
+    virtual bool getShowInteractionForceFields() const;
 
     /// Display flags: WireFrame
     virtual bool getShowWireFrame() const;
@@ -165,14 +177,23 @@ public:
     /// Display flags: Behavior Models
     virtual void setShowBehaviorModels(bool val);
 
+    /// Display flags: Bounding Collision Models
+    virtual void setShowBoundingCollisionModels(bool val);
+
     /// Display flags: Visual Models
     virtual void setShowVisualModels(bool val);
 
     /// Display flags: Mappings
     virtual void setShowMappings(bool val);
 
+    /// Display flags: Mechanical Mappings
+    virtual void setShowMechanicalMappings(bool val);
+
     /// Display flags: ForceFields
     virtual void setShowForceFields(bool val);
+
+    /// Display flags: InteractionForceFields
+    virtual void setShowInteractionForceFields(bool val);
 
     /// Display flags: WireFrame
     virtual void setShowWireFrame(bool val);

@@ -92,7 +92,7 @@ void PenalityContactForceField<DataTypes>::addDForce()
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
     VecCoord& p1 = *this->object1->getX();
     VecCoord& p2 = *this->object2->getX();
     glDisable(GL_LIGHTING);

@@ -103,32 +103,38 @@ void TriangleModel::draw(int index)
 
 void TriangleModel::draw()
 {
-    if (!isActive() || !getContext()->getShowCollisionModels()) return;
-    if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-    glEnable(GL_LIGHTING);
-    //Enable<GL_BLEND> blending;
-    //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-
-    static const float color[4] = { 1.0f, 0.0f, 0.0f, 1.0f};
-    static const float colorStatic[4] = { 0.5f, 0.5f, 0.5f, 1.0f};
-    if (isStatic())
-        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colorStatic);
-    else
-        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
-
-    for (int i=0; i<size; i++)
+    if (isActive() && getContext()->getShowCollisionModels())
     {
-        draw(i);
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+        glEnable(GL_LIGHTING);
+        //Enable<GL_BLEND> blending;
+        //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+
+        static const float color[4] = { 1.0f, 0.2f, 0.0f, 1.0f};
+        static const float colorStatic[4] = { 0.5f, 0.5f, 0.5f, 1.0f};
+        if (isStatic())
+            glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colorStatic);
+        else
+            glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+        static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f};
+        static const float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
+        glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive);
+        glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
+        glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 20);
+
+        for (int i=0; i<size; i++)
+        {
+            draw(i);
+        }
+
+        glColor3f(1.0f, 1.0f, 1.0f);
+        glDisable(GL_LIGHTING);
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glDisable(GL_LIGHTING);
-    if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-    if (getPrevious()!=NULL && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
+    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
 }
 

@@ -160,7 +160,7 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typen
 template <class BaseMapping>
 void RigidMapping<BaseMapping>::draw()
 {
-    if (!getContext()->getShowMappings()) return;
+    if (!getShow(this)) return;
     glDisable (GL_LIGHTING);
     glPointSize(7);
     glColor4f (1,1,0,1);

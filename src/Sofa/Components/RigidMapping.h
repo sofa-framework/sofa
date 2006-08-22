@@ -71,6 +71,12 @@ public:
     void draw();
     void initTextures() { }
     void update() { }
+
+protected:
+
+    bool getShow(const Abstract::BaseObject* m) const { return m->getContext()->getShowMappings(); }
+
+    bool getShow(const Core::BasicMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 };
 
 } // namespace Components

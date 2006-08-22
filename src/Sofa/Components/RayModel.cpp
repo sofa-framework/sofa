@@ -74,17 +74,19 @@ void RayModel::draw(int index)
 
 void RayModel::draw()
 {
-    if (!isActive() || !getContext()->getShowCollisionModels()) return;
-    glDisable(GL_LIGHTING);
-    if (isStatic())
-        glColor3f(0.5, 0.5, 0.5);
-    else
-        glColor3f(1.0, 0.0, 0.0);
-    for (int i=0; i<size; i++)
+    if (isActive() && getContext()->getShowCollisionModels())
     {
-        draw(i);
+        glDisable(GL_LIGHTING);
+        if (isStatic())
+            glColor3f(0.5, 0.5, 0.5);
+        else
+            glColor3f(1.0, 0.0, 0.0);
+        for (int i=0; i<size; i++)
+        {
+            draw(i);
+        }
     }
-    if (getPrevious()!=NULL && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
+    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
 }
 

@@ -90,7 +90,7 @@ void SpringForceField<DataTypes>::addDForce()
 template<class DataTypes>
 void SpringForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
     VecCoord& p1 = *this->object1->getX();
     VecCoord& p2 = *this->object2->getX();
 //         cerr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<endl;
