@@ -35,10 +35,6 @@ SOFA_DECL_CLASS(RegularGridTopology)
 
 Creator<ObjectFactory, RegularGridTopology> RegularGridTopologyClass("RegularGrid");
 
-RegularGridTopology::RegularGridTopology()
-{
-}
-
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)
 {
@@ -75,7 +71,7 @@ RegularGridTopology::Vec3 RegularGridTopology::getPoint(int x, int y, int z)
 }
 
 /// return the cube containing the given point (or -1 if not found).
-int RegularGridTopology::findCube(const Vec3& pos) const
+int RegularGridTopology::findCube(const Vec3& pos)
 {
     if (nx<2 || ny<2 || nz<2) return -1;
     Vec3 p = pos-p0;
@@ -96,7 +92,7 @@ int RegularGridTopology::findCube(const Vec3& pos) const
 }
 
 /// return the nearest cube (or -1 if not found).
-int RegularGridTopology::findNearestCube(const Vec3& pos) const
+int RegularGridTopology::findNearestCube(const Vec3& pos)
 {
     if (nx<2 || ny<2 || nz<2) return -1;
     Vec3 p = pos-p0;
@@ -114,7 +110,7 @@ int RegularGridTopology::findNearestCube(const Vec3& pos) const
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double &fz) const
+int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double &fz)
 {
     if (nx<2 || ny<2 || nz<2) return -1;
     Vec3 p = pos-p0;
@@ -139,7 +135,7 @@ int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, doubl
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int RegularGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz) const
+int RegularGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz)
 {
     if (nx<2 || ny<2 || nz<2) return -1;
     Vec3 p = pos-p0;

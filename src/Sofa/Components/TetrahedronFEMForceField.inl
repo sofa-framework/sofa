@@ -57,16 +57,16 @@ void TetrahedronFEMForceField<DataTypes>::init()
         for (int i=0; i<nbcubes; i++)
         {
             MeshTopology::Cube c = _mesh->getCube(i);
-            int xor = 0;
-            if ((i%nx)&1) xor+=1;
-            if (((i/nx)%ny)&1) xor+=2;
-            if ((i/(nx*ny))&1) xor+=4;
-            tetras->push_back(make_array(c[0^xor],c[5^xor],c[1^xor],c[7^xor]));
-            tetras->push_back(make_array(c[0^xor],c[1^xor],c[2^xor],c[7^xor]));
-            tetras->push_back(make_array(c[1^xor],c[2^xor],c[7^xor],c[3^xor]));
-            tetras->push_back(make_array(c[7^xor],c[2^xor],c[0^xor],c[6^xor]));
-            tetras->push_back(make_array(c[7^xor],c[6^xor],c[0^xor],c[5^xor]));
-            tetras->push_back(make_array(c[6^xor],c[5^xor],c[4^xor],c[0^xor]));
+            int sym = 0;
+            if ((i%nx)&1)      sym+=1;
+            if (((i/nx)%ny)&1) sym+=2;
+            if ((i/(nx*ny))&1) sym+=4;
+            tetras->push_back(make_array(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
+            tetras->push_back(make_array(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
+            tetras->push_back(make_array(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));
+            tetras->push_back(make_array(c[7^sym],c[2^sym],c[0^sym],c[6^sym]));
+            tetras->push_back(make_array(c[7^sym],c[6^sym],c[0^sym],c[5^sym]));
+            tetras->push_back(make_array(c[6^sym],c[5^sym],c[4^sym],c[0^sym]));
         }
 
         /*
@@ -74,15 +74,15 @@ void TetrahedronFEMForceField<DataTypes>::init()
         for (int i=0;i<nbcubes;i++)
         {
         	MeshTopology::Cube c = _mesh->getCube(i);
-        	int xor = 0;
-        	if ((i%nx)&1) xor+=1;
-        	if (((i/nx)%ny)&1) xor+=2;
-        	if ((i/(nx*ny))&1) xor+=4;
-        	tetras->push_back(make_array(c[1^xor],c[0^xor],c[3^xor],c[5^xor]));
-        	tetras->push_back(make_array(c[2^xor],c[3^xor],c[0^xor],c[6^xor]));
-        	tetras->push_back(make_array(c[4^xor],c[5^xor],c[6^xor],c[0^xor]));
-        	tetras->push_back(make_array(c[7^xor],c[6^xor],c[5^xor],c[3^xor]));
-        	tetras->push_back(make_array(c[0^xor],c[3^xor],c[5^xor],c[6^xor]));
+        	int sym = 0;
+        	if ((i%nx)&1) sym+=1;
+        	if (((i/nx)%ny)&1) sym+=2;
+        	if ((i/(nx*ny))&1) sym+=4;
+        	tetras->push_back(make_array(c[1^sym],c[0^sym],c[3^sym],c[5^sym]));
+        	tetras->push_back(make_array(c[2^sym],c[3^sym],c[0^sym],c[6^sym]));
+        	tetras->push_back(make_array(c[4^sym],c[5^sym],c[6^sym],c[0^sym]));
+        	tetras->push_back(make_array(c[7^sym],c[6^sym],c[5^sym],c[3^sym]));
+        	tetras->push_back(make_array(c[0^sym],c[3^sym],c[5^sym],c[6^sym]));
         }
         */
         _indexedElements = tetras;

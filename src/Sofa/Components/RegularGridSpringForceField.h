@@ -2,6 +2,7 @@
 #define SOFA_COMPONENTS_GRIDSPRINGFORCEFIELD_H
 
 #include "Sofa/Components/StiffSpringForceField.h"
+#include "TrimmedRegularGridTopology.h"
 
 namespace Sofa
 {
@@ -32,7 +33,8 @@ public:
         : StiffSpringForceField<DataTypes>(object1, object2),
           linesStiffness(0), linesDamping(0),
           quadsStiffness(0), quadsDamping(0),
-          cubesStiffness(0), cubesDamping(0)
+          cubesStiffness(0), cubesDamping(0),
+          topology(NULL), trimmedTopology(NULL)
     {
     }
 
@@ -40,7 +42,8 @@ public:
         : StiffSpringForceField<DataTypes>(object),
           linesStiffness(0), linesDamping(0),
           quadsStiffness(0), quadsDamping(0),
-          cubesStiffness(0), cubesDamping(0)
+          cubesStiffness(0), cubesDamping(0),
+          topology(NULL), trimmedTopology(NULL)
     {
     }
 
@@ -90,11 +93,17 @@ public:
         cubesDamping = val;
     }
 
+    virtual void init();
+
     virtual void addForce();
 
     virtual void addDForce();
 
     virtual void draw();
+
+protected:
+    RegularGridTopology* topology;
+    TrimmedRegularGridTopology* trimmedTopology;
 };
 
 } // namespace Components

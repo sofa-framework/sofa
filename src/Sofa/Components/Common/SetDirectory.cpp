@@ -8,6 +8,7 @@
 #endif
 
 #include <string.h>
+#include <iostream>
 
 
 namespace Sofa
@@ -30,6 +31,7 @@ SetDirectory::SetDirectory(const char* filename)
     previousDir[0]='\0';
     if (directory[0])
     {
+        std::cout << "chdir("<<directory<<")"<<std::endl;
 #ifndef WIN32
         getcwd(previousDir, sizeof(previousDir));
         chdir(directory);
@@ -44,10 +46,11 @@ SetDirectory::~SetDirectory()
 {
     if (directory[0] && previousDir[0])
     {
+        std::cout << "chdir("<<previousDir<<")"<<std::endl;
 #ifndef WIN32
         chdir(previousDir);
 #else
-        _chdir(directory);
+        _chdir(previousDir);
 #endif
     }
     delete[] directory;

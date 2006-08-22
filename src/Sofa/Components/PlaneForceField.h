@@ -43,6 +43,9 @@ public:
         planeNormal = normal;
         planeNormal.normalize();
         planeD = d;
+        Real n = normal.norm();
+        planeNormal /= n;
+        d /= n;
     }
 
     void setStiffness(Real stiff)

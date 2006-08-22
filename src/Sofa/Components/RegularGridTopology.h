@@ -17,8 +17,6 @@ class RegularGridTopology : public GridTopology
 public:
     typedef Vec3d Vec3;
 
-    RegularGridTopology();
-
     RegularGridTopology(int nx, int ny, int nz);
 
     void setP0(const Vec3& val) { p0 = val; }
@@ -41,18 +39,18 @@ public:
     double getPZ(int i) { return getPoint(i)[2]; }
 
     /// return the cube containing the given point (or -1 if not found).
-    int findCube(const Vec3& pos) const;
+    virtual int findCube(const Vec3& pos);
 
     /// return the nearest cube (or -1 if not found).
-    int findNearestCube(const Vec3& pos) const;
+    virtual int findNearestCube(const Vec3& pos);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    int findCube(const Vec3& pos, double& fx, double &fy, double &fz) const;
+    virtual int findCube(const Vec3& pos, double& fx, double &fy, double &fz);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz) const;
+    virtual int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz);
 
 protected:
     /// Position of point 0
