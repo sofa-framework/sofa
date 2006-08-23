@@ -24,11 +24,11 @@ public:
     int getNy() const { return ny; }
     int getNz() const { return nz; }
 
-    int getNbPoints() const { return nx*ny*nz; }
+    virtual int getNbPoints() const { return nx*ny*nz; }
 
-    int getNbCubes() const { return (nx-1)*(ny-1)*(nz-1); }
+    virtual int getNbCubes() const { return (nx-1)*(ny-1)*(nz-1); }
 
-    int getNbQuads() const
+    virtual int getNbQuads() const
     {
         if (nz == 1)
             return (nx-1)*(ny-1);
@@ -38,11 +38,11 @@ public:
             return (ny-1)*(nz-1);
     }
 
-    Cube getCube(int i);
-    Cube getCube(int x, int y, int z);
+    virtual Cube getCube(int i);
+    virtual Cube getCube(int x, int y, int z);
 
-    Quad getQuad(int i);
-    Quad getQuad(int x, int y, int z);
+    virtual Quad getQuad(int i);
+    virtual Quad getQuad(int x, int y, int z);
 
     int point(int x, int y, int z) const { return x+nx*(y+ny*z); }
     int cube(int x, int y, int z) const { return x+(nx-1)*(y+(ny-1)*z); }

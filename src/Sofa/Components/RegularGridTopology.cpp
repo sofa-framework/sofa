@@ -57,7 +57,7 @@ void RegularGridTopology::setPos(double xmin, double xmax, double ymin, double y
         setDz(Vec3(0,0,0));
 }
 
-RegularGridTopology::Vec3 RegularGridTopology::getPoint(int i)
+RegularGridTopology::Vec3 RegularGridTopology::getPoint(int i) const
 {
     int x = i%nx; i/=nx;
     int y = i%ny; i/=ny;
@@ -65,7 +65,7 @@ RegularGridTopology::Vec3 RegularGridTopology::getPoint(int i)
     return getPoint(x,y,z);
 }
 
-RegularGridTopology::Vec3 RegularGridTopology::getPoint(int x, int y, int z)
+RegularGridTopology::Vec3 RegularGridTopology::getPoint(int x, int y, int z) const
 {
     return p0+dx*x+dy*y+dz*z;
 }

@@ -31,12 +31,12 @@ public:
     const Vec3& getDy() const { return dy; }
     const Vec3& getDz() const { return dz; }
 
-    Vec3 getPoint(int i);
-    Vec3 getPoint(int x, int y, int z);
-    bool hasPos() { return true; }
-    double getPX(int i) { return getPoint(i)[0]; }
-    double getPY(int i) { return getPoint(i)[1]; }
-    double getPZ(int i) { return getPoint(i)[2]; }
+    Vec3 getPoint(int i) const ;
+    Vec3 getPoint(int x, int y, int z) const ;
+    bool hasPos() const  { return true; }
+    double getPX(int i) const { return getPoint(i)[0]; }
+    double getPY(int i) const { return getPoint(i)[1]; }
+    double getPZ(int i) const { return getPoint(i)[2]; }
 
     /// return the cube containing the given point (or -1 if not found).
     virtual int findCube(const Vec3& pos);
