@@ -191,7 +191,7 @@ const MeshTopology::SeqCubes& MeshTopology::getCubes()
     return seqCubes;
 }
 
-int MeshTopology::getNbPoints()
+int MeshTopology::getNbPoints() const
 {
     return nbPoints;
 }
@@ -246,22 +246,22 @@ const MeshTopology::Cube& MeshTopology::getCube(index_type i)
     return getCubes()[i];
 }
 
-bool MeshTopology::hasPos()
+bool MeshTopology::hasPos() const
 {
     return !seqPoints.empty();
 }
 
-double MeshTopology::getPX(int i)
+double MeshTopology::getPX(int i) const
 {
     return ((unsigned)i<seqPoints.size()?seqPoints[i][0]:0.0);
 }
 
-double MeshTopology::getPY(int i)
+double MeshTopology::getPY(int i) const
 {
     return ((unsigned)i<seqPoints.size()?seqPoints[i][1]:0.0);
 }
 
-double MeshTopology::getPZ(int i)
+double MeshTopology::getPZ(int i) const
 {
     return ((unsigned)i<seqPoints.size()?seqPoints[i][2]:0.0);
 }

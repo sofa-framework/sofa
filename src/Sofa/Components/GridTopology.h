@@ -24,11 +24,11 @@ public:
     int getNy() const { return ny; }
     int getNz() const { return nz; }
 
-    virtual int getNbPoints() const { return nx*ny*nz; }
+    //virtual int getNbPoints() const { return nx*ny*nz; }
 
-    virtual int getNbCubes() const { return (nx-1)*(ny-1)*(nz-1); }
+    virtual int getNbCubes() { return (nx-1)*(ny-1)*(nz-1); }
 
-    virtual int getNbQuads() const
+    virtual int getNbQuads()
     {
         if (nz == 1)
             return (nx-1)*(ny-1);

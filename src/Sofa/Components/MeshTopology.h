@@ -39,7 +39,7 @@ public:
 
     virtual bool load(const char* filename);
 
-    int getNbPoints();
+    int getNbPoints() const;
 
     // Complete sequence accessors
 
@@ -65,10 +65,10 @@ public:
 
     // Points accessors (not always available)
 
-    virtual bool hasPos();
-    virtual double getPX(int i);
-    virtual double getPY(int i);
-    virtual double getPZ(int i);
+    virtual bool hasPos() const;
+    virtual double getPX(int i) const;
+    virtual double getPY(int i) const;
+    virtual double getPZ(int i) const;
 
 
 protected:
