@@ -9,19 +9,14 @@ varying vec3 normal;
 void main()
 {
     // Look up the diffuse color and shadow states for each light source.
-
+	const float kTransparency = 0.67;
     vec4  Kd = texture2D   (tex, gl_TexCoord[0].xy);
-    
+
     float s0 = shadow2DProj(shadowMap, gl_TexCoord[1]).r;
-   
-       
-
-   if(Kd.x == 0 && Kd.y == 0 && Kd.z == 0)
-   Kd = vec4(1, 1, 1, 1);
-  
-    // Look up the light masks for the spot light sources.
-
+    s0+=kTransparency;
+	clamp(s0, 0.0, 1.0); 
  
+/* 
     // Compute the lighting vectors.
 
     vec3 N  = normalize(normal);
@@ -34,12 +29,18 @@ void main()
   
     // Compute the scene foreground/background blending coefficient.
 
-    float fade = 1.0;// - smoothstep(48.0, 64.0, length(position));
+    position = gl_Vertex.xyz;
+    float fade = 1.0 - smoothstep(48.0, 64.0, length(position));
 
     // Compute the final pixel color from the diffuse and ambient lighting.
 
-    gl_FragColor = vec4(Kd.rgb * (gl_LightSource[0].diffuse.rgb * d0 +
-                                  gl_LightModel.ambient.rgb), Kd.a * fade);
+    gl_FragColor = vec4( (Kd.rgb) * (gl_LightSource[0].diffuse.rgb * d0 +
+					gl_LightModel.ambient.rgb), Kd.a * fade);
+*/
                                   
-    // gl_FragColor =    shadow2DProj(shadowMap, gl_TexCoord[1]);
+	if(Kd.x == 0.0 && Kd.y == 0.0 && Kd.z == 0.0)  
+		gl_FragColor = gl_Color*s0;
+	else
+		gl_FragColor = gl_Color*Kd*s0;
+                                  
 }
