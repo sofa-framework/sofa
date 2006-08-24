@@ -109,7 +109,8 @@ CShader::CShader()
 
 CShader::~CShader()
 {
-    Release();
+    // BUGFIX: if the GL context is gone, this can crash the application on exit -- Jeremie A.
+    //Release();
 }
 
 ///////////////////////////////// LOAD TEXT FILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
