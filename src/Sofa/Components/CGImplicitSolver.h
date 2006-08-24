@@ -22,8 +22,9 @@ public:
 
     unsigned int maxCGIter;
     double smallDenominatorThreshold;
+    double tolerance;
     double rayleighStiffness;
-
+    double rayleighDamping;
 };
 
 } // namespace Components

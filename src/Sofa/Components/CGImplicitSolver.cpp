@@ -24,7 +24,9 @@ CGImplicitSolver::CGImplicitSolver()
 {
     maxCGIter = 25;
     smallDenominatorThreshold = 1e-5;
+    tolerance = 1e-5;
     rayleighStiffness = 0.1;
+    rayleighDamping = 0.1;
 }
 
 CGImplicitSolver* CGImplicitSolver::setMaxIter( int n )
@@ -42,9 +44,10 @@ void CGImplicitSolver::solve(double dt)
     MultiVector b(group, V_DERIV);
     MultiVector p(group, V_DERIV);
     MultiVector q(group, V_DERIV);
+    MultiVector q2(group, V_DERIV);
     MultiVector r(group, V_DERIV);
     MultiVector x(group, V_DERIV);
-    MultiVector z(group, V_DERIV);
+    //MultiVector z(group, V_DERIV);
     double h = dt;
 
     if( getDebug() )
@@ -64,6 +67,8 @@ void CGImplicitSolver::solve(double dt)
     b.teq(h);                           // b = h(f0+hdf/dx v)
     group->projectResponse(b);         // b is projected to the constrained space
 
+    double normb = sqrt(b.dot(b));
+
     // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
     group->v_clear( x );
@@ -73,37 +78,56 @@ void CGImplicitSolver::solve(double dt)
         cerr<<"CGImplicitSolver, r0 = "<< r <<endl;
 
     unsigned nb_iter;
+    const char* endcond = "iterations";
     for( nb_iter=1; nb_iter<=maxCGIter; nb_iter++ )
     {
-        z = r; // no precond
-        rho = r.dot(z);
+        //z = r; // no precond
+        //rho = r.dot(z);
+        rho = r.dot(r);
         if( nb_iter==1 )
-            p = z;
+            p = r; //z;
         else
         {
             beta = rho / rho_1;
             p *= beta;
-            p += z;
+            p += r; //z;
         }
 
         // matrix-vector product
         group->propagateDx(p);          // dx = p
         group->computeDf(q);            // q = df/dx p
         q *= -h*(h+rayleighStiffness);  // q = -h(h+r) df/dx p
-        group->addMdx( q, p);           // q = Mp -h(h+r) df/dx p
+        if (rayleighDamping==0.0)
+            group->addMdx( q, p);           // q = Mp -h(h+r) df/dx p
+        else
+        {
+            q2.clear();
+            group->addMdx( q2, p);           // q = Mp -h(h+r) df/dx p -hr Mp  =  M dx - dt2 K dx - dt rS K dx - dt rD M dx
+            q.peq(q2,(1+h*rayleighDamping));
+        }
         // filter the product to take the constraints into account
         group->projectResponse(q);     // q is projected to the constrained space
 
         double den = p.dot(q);
         if( fabs(den)<smallDenominatorThreshold )
+        {
+            endcond = "threshold";
             break;
+        }
         alpha = rho/den;
         x.peq(p,alpha);                 // x = x + alpha p
         r.peq(q,-alpha);                // r = r - alpha r
+
+        double normr = sqrt(r.dot(r));
+        if (normr/normb <= tolerance)
+        {
+            endcond = "tolerance";
+            break;
+        }
         rho_1 = rho;
     }
     // x is the solution of the system
-    //cerr<<"CGImplicitSolver::solve, nbiter = "<<nb_iter<<endl;
+    cerr<<"CGImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
 
     // apply the solution
     vel.peq( x );                       // vel = vel + x
@@ -123,8 +147,12 @@ void create(CGImplicitSolver*& obj, ObjectDescription* arg)
         obj->setMaxIter( atoi(arg->getAttribute("iterations")) );
     if (arg->getAttribute("threshold"))
         obj->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
+    if (arg->getAttribute("tolerance"))
+        obj->tolerance = atof(arg->getAttribute("tolerance"));
     if (arg->getAttribute("stiffness"))
         obj->rayleighStiffness = atof(arg->getAttribute("stiffness"));
+    if (arg->getAttribute("damping"))
+        obj->rayleighDamping = atof(arg->getAttribute("damping"));
     if (arg->getAttribute("debug"))
         obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );
 }
