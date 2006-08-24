@@ -10,10 +10,18 @@
 
 using namespace std;
 
-extern void (*glewGetProcAddress(const char* name))(void);
+#ifdef _WIN32
+PROC glewGetProcAddress(const char* name);
+#else
+void (*glewGetProcAddress(const char* name))(void);
+#endif
 
 // This is a define that we use for our function pointers
+#ifdef APIENTRY
+#define APIENTRYP APIENTRY *
+#else
 #define APIENTRYP *
+#endif
 
 // Here we include the vertex and fragment shader defines
 #define GL_VERTEX_SHADER_ARB              0x8B31

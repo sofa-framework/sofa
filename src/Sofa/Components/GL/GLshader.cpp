@@ -9,6 +9,9 @@
 #include <stdlib.h>
 #include <math.h>
 #include <fstream>
+#ifndef _WIN32
+#  include <GL/glx.h>
+#endif
 
 
 // The function pointers for shaders
@@ -39,11 +42,11 @@ PFNGLGETINFOLOGARBPROC			glGetInfoLogARB = NULL;
 /////
 ///////////////////////////////////// INIT GLSL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-#ifndef _WIN32
-#  include <GL/glx.h>
-#endif
-
+#ifdef _WIN32
+PROC glewGetProcAddress(const char* name)
+#else
 void (*glewGetProcAddress(const char* name))(void)
+#endif
 {
 #if defined(_WIN32)
     return wglGetProcAddress((LPCSTR)name);

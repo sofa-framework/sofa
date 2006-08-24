@@ -46,9 +46,9 @@ void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
     for( unsigned i=0; i<constraints.size(); ++i )
     {
         const unsigned& index = constraints[i].first;
-        /*		const Deriv& a = constraints[i].second.amplitude;
-        		const Real& w = constraints[i].second.pulsation;
-        		const Real& p = constraints[i].second.phase;*/
+        //const Deriv& a = constraints[i].second.amplitude;
+        //const Real& w = constraints[i].second.pulsation;
+        //const Real& p = constraints[i].second.phase;
 
         //res[index] = a*(-w)*w*sin(w*t+p);
         res[index] = Deriv();
