@@ -239,14 +239,15 @@ public:
 class RigidMass
 {
 public:
-    double mass;
+    double mass,volume;
     Mat3x3d inertiaMatrix;	      // Inertia matrix of the object
     Mat3x3d inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
     Mat3x3d invInertiaMatrix;	  // inverse of inertiaMatrix
     Mat3x3d invInertiaMassMatrix; // inverse of inertiaMassMatrix
-    RigidMass(double m=1.0)
+    RigidMass(double m=1)
     {
         mass = m;
+        volume = 1;
         inertiaMatrix.identity();
         recalc();
     }
@@ -259,6 +260,7 @@ public:
     inline friend std::ostream& operator << (std::ostream& out, const RigidMass& m )
     {
         out<<"mass = "<<m.mass;
+        out<<", volume = "<<m.volume;
         out<<", inertia = "<<m.inertiaMatrix;
         return out;
     }

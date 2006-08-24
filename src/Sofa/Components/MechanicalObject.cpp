@@ -3,7 +3,6 @@
 #include "Sofa/Components/Common/RigidTypes.h"
 #include "Sofa/Components/MassSpringLoader.h"
 #include "Sofa/Core/MechanicalObject.inl"
-#include "GL/Repere.h"
 
 namespace Sofa
 {

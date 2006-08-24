@@ -120,7 +120,7 @@ bool intersectionLineLine(Line& e1, Line& e2)
     double alpha = 0.5;
     double beta = 0.5;
 
-    if (det < -0.000001 || det > 0.000001)
+    if (det < -0.000000000001 || det > 0.000000000001)
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
@@ -158,7 +158,7 @@ DetectionOutput* distCorrectionLineLine(Line& e1, Line& e2)
     double alpha = 0.5;
     double beta = 0.5;
 
-    if (det < -0.000001 || det > 0.000001)
+    if (det < -0.000000000001 || det > 0.000000000001)
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
@@ -189,6 +189,21 @@ bool intersectionPointTriangle(Point& e1, Triangle& e2)
     const Vector3 AB = e2.p2()-e2.p1();
     const Vector3 AC = e2.p3()-e2.p1();
     const Vector3 AP = e1.p() -e2.p1();
+
+    // We want to find alpha,beta so that:
+    // AQ = AB*alpha+AC*beta
+    // PQ.AB = 0 and PQ.AC = 0
+    // (AQ-AP).AB = 0 and (AQ-AP).AC = 0
+    // AQ.AB = AP.AB and AQ.AC = AP.AC
+    //
+    // (AB*alpha+AC*beta).AB = AP.AB and
+    // (AB*alpha+AC*beta).AC = AP.AC
+    //
+    // AB.AB*alpha + AC.AB*beta = AP.AB and
+    // AB.AC*alpha + AC.AC*beta = AP.AC
+    //
+    // A . [alpha beta] = b
+
     Matrix2 A;
     Vector2 b;
     A[0][0] = AB*AB;
@@ -201,7 +216,7 @@ bool intersectionPointTriangle(Point& e1, Triangle& e2)
     double alpha = 0.5;
     double beta = 0.5;
 
-    if (det < -0.000001 || det > 0.000001)
+    //if (det < -0.000000000001 || det > 0.000000000001)
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
@@ -211,10 +226,7 @@ bool intersectionPointTriangle(Point& e1, Triangle& e2)
             return false;
     }
 
-    Vector3 P,Q,PQ;
-    P = e1.p();
-    Q = e2.p1() + AB * alpha + AC * beta;
-    PQ = Q-P;
+    const Vector3 PQ = AB * alpha + AC * beta - AP;
 
     if (PQ.norm2() < alarmDist*alarmDist)
     {
@@ -242,7 +254,7 @@ DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
     double alpha = 0.5;
     double beta = 0.5;
 
-    if (det < -0.000001 || det > 0.000001)
+    //if (det < -0.000000000001 || det > 0.000000000001)
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
@@ -393,7 +405,7 @@ bool intersectionSphereTriangle(Sphere& e1, Triangle& e2)
     double alpha = 0.5;
     double beta = 0.5;
 
-    if (det < -0.000001 || det > 0.000001)
+    //if (det < -0.000001 || det > 0.000001)
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
@@ -434,7 +446,7 @@ DetectionOutput* distCorrectionSphereTriangle(Sphere& e1, Triangle& e2)
     double alpha = 0.5;
     double beta = 0.5;
 
-    if (det < -0.000001 || det > 0.000001)
+    //if (det < -0.000001 || det > 0.000001)
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;

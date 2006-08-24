@@ -268,7 +268,7 @@ void Quater<Real>::fromMatrix(const Mat3x3d &m)
 
 /// Build a rotation matrix, given a quaternion rotation.
 template<class Real>
-void Quater<Real>::buildRotationMatrix(Real m[4][4])
+void Quater<Real>::buildRotationMatrix(Real m[4][4]) const
 {
     m[0][0] = (1.0f - 2.0f * (_q[1] * _q[1] + _q[2] * _q[2]));
     m[0][1] = (2.0f * (_q[0] * _q[1] - _q[2] * _q[3]));

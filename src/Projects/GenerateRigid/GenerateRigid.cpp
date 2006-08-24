@@ -100,7 +100,7 @@ bool GenerateRigid(Sofa::Components::Common::RigidMass& mass, Sofa::Components::
     afIntegral[9] /= 120.0;
 
     // mass
-    mass.mass = afIntegral[0];
+    mass.mass = mass.volume = afIntegral[0];
 
     // center of mass
     center = Vec3d(afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]);

@@ -2,7 +2,7 @@
 #include "Common/ObjectFactory.h"
 #include "Sofa/Components/Common/Vec3Types.h"
 #include "Sofa/Components/Common/RigidTypes.h"
-#include "GL/Repere.h"
+#include "GL/Axis.h"
 
 namespace Sofa
 {
@@ -17,16 +17,29 @@ void UniformMass<RigidTypes, RigidMass>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
+    RigidTypes::Vec3 len;
+
+    // The moment of inertia of a box is:
+    //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
+    //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
+    //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
+    // So to get lx,ly,lz back we need to do
+    //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
+    // Note that RigidMass inertiaMatrix is already divided by M
+    double m00 = mass.inertiaMatrix[0][0];
+    double m11 = mass.inertiaMatrix[1][1];
+    double m22 = mass.inertiaMatrix[2][2];
+    len[0] = sqrt(m11+m22-m00);
+    len[1] = sqrt(m00+m22-m11);
+    len[2] = sqrt(m00+m11-m22);
+
     for (unsigned int i=0; i<x.size(); i++)
     {
-        Quat orient = x[i].getOrientation();
-        RigidTypes::Vec3& center = x[i].getCenter();
-        orient[3] = -orient[3];
+        const Quat& orient = x[i].getOrientation();
+        const RigidTypes::Vec3& center = x[i].getCenter();
+        //orient[3] = -orient[3];
 
-        static GL::Axis *axis = new GL::Axis(center, orient);
-
-        axis->update(center, orient);
-        axis->draw();
+        GL::Axis::draw(center, orient, len);
     }
 }
 
@@ -115,6 +128,11 @@ void create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg)
                         {
                             fscanf(file, "%lf", &(m.mass));
                             std::cout << "mass="<<m.mass<<"\n";
+                        }
+                        else if (!strcmp(cmd,"volm"))
+                        {
+                            fscanf(file, "%lf", &(m.volume));
+                            std::cout << "volm="<<m.volume<<"\n";
                         }
                         else if (!strcmp(cmd,"frme"))
                         {

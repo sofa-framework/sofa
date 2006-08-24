@@ -19,7 +19,6 @@ template class Quater<float>;
 //template std::ostream& operator<<(std::ostream& out, Quater<float> Q);
 //template std::ostream& operator<<(std::ostream& out, Quater<double> Q);
 
-
 } // namespace Common
 
 } // namespace Components

@@ -1,8 +1,6 @@
 #include "FixedPlaneConstraint.inl"
 #include "Sofa/Components/Common/ObjectFactory.h"
 #include "Sofa/Components/Common/Vec3Types.h"
-#include "Sofa/Components/Common/RigidTypes.h"
-#include "GL/Repere.h"
 
 namespace Sofa
 {

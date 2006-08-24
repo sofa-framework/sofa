@@ -135,7 +135,7 @@ public:
     // A useful function, builds a rotation matrix in Matrix based on
     // given quaternion.
 
-    void buildRotationMatrix(Real m[4][4]);
+    void buildRotationMatrix(Real m[4][4]) const;
     void writeOpenGlMatrix( double* m ) const;
     void writeOpenGlMatrix( float* m ) const;
 

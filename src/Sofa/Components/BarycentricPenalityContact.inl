@@ -33,7 +33,7 @@ template < class TCollisionModel1, class TCollisionModel2 >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(const std::vector<DetectionOutput*>& outputs)
 {
     // We need to remove duplicate contacts
-    const double minDist2 = 0.01f;
+    const double minDist2 = 0.0001f;
     std::vector<DetectionOutput*> contacts;
     contacts.reserve(outputs.size());
     for (std::vector<DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); it++)

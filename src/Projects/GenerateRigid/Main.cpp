@@ -40,6 +40,7 @@ int main(int argc, char** argv)
 
     *out << "Xsp 3.0\n";
     *out << "mass " << mass.mass << "\n";
+    *out << "volm " << mass.volume << "\n";
     *out << "inrt " << mass.inertiaMatrix[0][0] << " " << mass.inertiaMatrix[0][1] << " " << mass.inertiaMatrix[0][2] << " "
             << mass.inertiaMatrix[1][0] << " " << mass.inertiaMatrix[1][1] << " " << mass.inertiaMatrix[1][2] << " "
             << mass.inertiaMatrix[2][0] << " " << mass.inertiaMatrix[2][1] << " " << mass.inertiaMatrix[2][2] << "\n";
