@@ -1,20 +1,19 @@
 #ifndef _GL_SHADER_H
 #define _GL_SHADER_H
 
+#ifdef WIN32
 #include <windows.h>
-#include <stdio.h>
-#include <gl\gl.h>
-#include <gl\glu.h>
-#include <stdlib.h>
-#include <math.h>
+#endif
+#include <GL/gl.h>
+#include <GL/glu.h>
 #include <string>
-#include <fstream>
 
 using namespace std;
 
+extern void (*glewGetProcAddress(const char* name))(void);
 
 // This is a define that we use for our function pointers
-#define APIENTRYP APIENTRY *
+#define APIENTRYP *
 
 // Here we include the vertex and fragment shader defines
 #define GL_VERTEX_SHADER_ARB              0x8B31
@@ -67,7 +66,7 @@ typedef void (APIENTRYP PFNGLGETINFOLOGARBPROC) (GLhandleARB obj, GLsizei maxLen
 typedef void (APIENTRYP PFNGLMULTITEXCOORD2FARBPROC) (GLenum target, GLfloat s, GLfloat t);
 typedef void (APIENTRYP PFNGLACTIVETEXTUREARBPROC) (GLenum target);
 
-
+/*
 // Here we extern our functions to be used elsewhere
 extern PFNGLCREATESHADEROBJECTARBPROC glCreateShaderObjectARB;
 extern PFNGLSHADERSOURCEARBPROC glShaderSourceARB;
@@ -86,20 +85,19 @@ extern PFNGLDETACHOBJECTARBPROC glDetachObjectARB;
 extern PFNGLDELETEOBJECTARBPROC glDeleteObjectARB;
 extern PFNGLPROGRAMLOCALPARAMETER4FARBPROC glProgramLocalParameter4fARB;
 extern PFNGLBINDPROGRAMARBPROC glBindProgramARB;
-extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
-extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
 extern PFNGLGETOBJECTPARAMETERIV glGetObjectParameterivARB;
 extern PFNGLGETINFOLOGARBPROC glGetInfoLogARB;
-
+*/
+extern PFNGLMULTITEXCOORD2FARBPROC glMultiTexCoord2fARB;
+extern PFNGLACTIVETEXTUREARBPROC glActiveTextureARB;
 
 // This is our very basic shader class that we will use
 class CShader
 {
 public:
 
-    // Create an empty constructor and have the deconstructor release our memory.
-    CShader()	{				}
-    ~CShader()	{ Release();	}
+    CShader();
+    ~CShader();
 
     // This loads our text file for each shader and returns it in a string
     string LoadTextFile(string strFile);
@@ -116,15 +114,15 @@ public:
     GLhandleARB GetFragmentS()	{	return m_hFragmentShader; }
 
     // Below are functions to set an integer or a set of floats
-    void SetInt(GLint variable, int newValue)								{ glUniform1iARB(variable, newValue);		}
-    void SetFloat(GLint variable, float newValue)							{ glUniform1fARB(variable, newValue);		}
-    void SetFloat2(GLint variable, float v0, float v1)						{ glUniform2fARB(variable, v0, v1);			}
-    void SetFloat3(GLint variable, float v0, float v1, float v2)			{ glUniform3fARB(variable, v0, v1, v2);		}
-    void SetFloat4(GLint variable, float v0, float v1, float v2, float v3)	{ glUniform4fARB(variable, v0, v1, v2, v3);	}
+    void SetInt(GLint variable, int newValue);
+    void SetFloat(GLint variable, float newValue);
+    void SetFloat2(GLint variable, float v0, float v1);
+    void SetFloat3(GLint variable, float v0, float v1, float v2);
+    void SetFloat4(GLint variable, float v0, float v1, float v2, float v3);
 
     // These 2 functions turn on and off our shader
-    void TurnOn()		{	glUseProgramObjectARB(m_hProgramObject); }
-    void TurnOff()		{	glUseProgramObjectARB(0);				 }
+    void TurnOn();
+    void TurnOff();
 
     // This releases our memory for our shader
     void Release();

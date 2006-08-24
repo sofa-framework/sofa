@@ -6,6 +6,9 @@
 //*******************************************************************//
 
 #include "GLshader.h"
+#include <stdlib.h>
+#include <math.h>
+#include <fstream>
 
 
 // The function pointers for shaders
@@ -36,6 +39,23 @@ PFNGLGETINFOLOGARBPROC			glGetInfoLogARB = NULL;
 /////
 ///////////////////////////////////// INIT GLSL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
+#ifndef _WIN32
+#  include <GL/glx.h>
+#endif
+
+void (*glewGetProcAddress(const char* name))(void)
+{
+#if defined(_WIN32)
+    return wglGetProcAddress((LPCSTR)name);
+#elif defined(__APPLE__)
+    return NSGLGetProcAddress(name);
+#elif defined(__sgi) || defined(__sun)
+    return dlGetProcAddress(name);
+#else /* __linux */
+    return (*glXGetProcAddressARB)((const GLubyte*)name);
+#endif
+}
+
 bool InitGLSL()
 {
     // This grabs a list of all the video card's extensions it supports
@@ -56,30 +76,41 @@ bool InitGLSL()
     }
 
     // Now let's set all of our function pointers for our extension functions
-    glCreateShaderObjectARB = (PFNGLCREATESHADEROBJECTARBPROC)wglGetProcAddress("glCreateShaderObjectARB");
-    glShaderSourceARB = (PFNGLSHADERSOURCEARBPROC)wglGetProcAddress("glShaderSourceARB");
-    glCompileShaderARB = (PFNGLCOMPILESHADERARBPROC)wglGetProcAddress("glCompileShaderARB");
-    glCreateProgramObjectARB = (PFNGLCREATEPROGRAMOBJECTARBPROC)wglGetProcAddress("glCreateProgramObjectARB");
-    glAttachObjectARB = (PFNGLATTACHOBJECTARBPROC)wglGetProcAddress("glAttachObjectARB");
-    glLinkProgramARB = (PFNGLLINKPROGRAMARBPROC)wglGetProcAddress("glLinkProgramARB");
-    glUseProgramObjectARB = (PFNGLUSEPROGRAMOBJECTARBPROC)wglGetProcAddress("glUseProgramObjectARB");
-    glUniform1iARB = (PFNGLUNIFORM1IARBPROC)wglGetProcAddress("glUniform1iARB");
-    glUniform1fARB = (PFNGLUNIFORM1FARBPROC)wglGetProcAddress("glUniform1fARB");
-    glUniform2fARB = (PFNGLUNIFORM2FARBPROC)wglGetProcAddress("glUniform2fARB");
-    glUniform3fARB = (PFNGLUNIFORM3FARBPROC)wglGetProcAddress("glUniform3fARB");
-    glUniform4fARB = (PFNGLUNIFORM4FARBPROC)wglGetProcAddress("glUniform4fARB");
-    glGetUniformLocationARB = (PFNGLGETUNIFORMLOCATIONARBPROC)wglGetProcAddress("glGetUniformLocationARB");
-    glDetachObjectARB = (PFNGLDETACHOBJECTARBPROC)wglGetProcAddress("glDetachObjectARB");
-    glDeleteObjectARB  = (PFNGLDELETEOBJECTARBPROC)wglGetProcAddress("glDeleteObjectARB");
-    glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)wglGetProcAddress("glActiveTextureARB");
-    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)wglGetProcAddress("glMultiTexCoord2fARB");
-    glGetObjectParameterivARB = (PFNGLGETOBJECTPARAMETERIV)wglGetProcAddress("glGetObjectParameterivARB");
-    glGetInfoLogARB = (PFNGLGETINFOLOGARBPROC)wglGetProcAddress("glGetInfoLogARB");
+    glCreateShaderObjectARB = (PFNGLCREATESHADEROBJECTARBPROC)glewGetProcAddress("glCreateShaderObjectARB");
+    glShaderSourceARB = (PFNGLSHADERSOURCEARBPROC)glewGetProcAddress("glShaderSourceARB");
+    glCompileShaderARB = (PFNGLCOMPILESHADERARBPROC)glewGetProcAddress("glCompileShaderARB");
+    glCreateProgramObjectARB = (PFNGLCREATEPROGRAMOBJECTARBPROC)glewGetProcAddress("glCreateProgramObjectARB");
+    glAttachObjectARB = (PFNGLATTACHOBJECTARBPROC)glewGetProcAddress("glAttachObjectARB");
+    glLinkProgramARB = (PFNGLLINKPROGRAMARBPROC)glewGetProcAddress("glLinkProgramARB");
+    glUseProgramObjectARB = (PFNGLUSEPROGRAMOBJECTARBPROC)glewGetProcAddress("glUseProgramObjectARB");
+    glUniform1iARB = (PFNGLUNIFORM1IARBPROC)glewGetProcAddress("glUniform1iARB");
+    glUniform1fARB = (PFNGLUNIFORM1FARBPROC)glewGetProcAddress("glUniform1fARB");
+    glUniform2fARB = (PFNGLUNIFORM2FARBPROC)glewGetProcAddress("glUniform2fARB");
+    glUniform3fARB = (PFNGLUNIFORM3FARBPROC)glewGetProcAddress("glUniform3fARB");
+    glUniform4fARB = (PFNGLUNIFORM4FARBPROC)glewGetProcAddress("glUniform4fARB");
+    glGetUniformLocationARB = (PFNGLGETUNIFORMLOCATIONARBPROC)glewGetProcAddress("glGetUniformLocationARB");
+    glDetachObjectARB = (PFNGLDETACHOBJECTARBPROC)glewGetProcAddress("glDetachObjectARB");
+    glDeleteObjectARB  = (PFNGLDELETEOBJECTARBPROC)glewGetProcAddress("glDeleteObjectARB");
+    glActiveTextureARB = (PFNGLACTIVETEXTUREARBPROC)glewGetProcAddress("glActiveTextureARB");
+    glMultiTexCoord2fARB = (PFNGLMULTITEXCOORD2FARBPROC)glewGetProcAddress("glMultiTexCoord2fARB");
+    glGetObjectParameterivARB = (PFNGLGETOBJECTPARAMETERIV)glewGetProcAddress("glGetObjectParameterivARB");
+    glGetInfoLogARB = (PFNGLGETINFOLOGARBPROC)glewGetProcAddress("glGetInfoLogARB");
 
     // Return a success!
     return true;
 }
 
+CShader::CShader()
+{
+    m_hVertexShader = 0; //NULL;
+    m_hFragmentShader = 0; //NULL;
+    m_hProgramObject = 0; //NULL;
+}
+
+CShader::~CShader()
+{
+    Release();
+}
 
 ///////////////////////////////// LOAD TEXT FILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
@@ -180,6 +211,15 @@ void CShader::InitShaders(string strVertex, string strFragment)
     glUseProgramObjectARB(0);
 }
 
+void CShader::SetInt(GLint variable, int newValue)								{ if (variable!=-1) glUniform1iARB(variable, newValue);		}
+void CShader::SetFloat(GLint variable, float newValue)							{ if (variable!=-1) glUniform1fARB(variable, newValue);		}
+void CShader::SetFloat2(GLint variable, float v0, float v1)						{ if (variable!=-1) glUniform2fARB(variable, v0, v1);			}
+void CShader::SetFloat3(GLint variable, float v0, float v1, float v2)			{ if (variable!=-1) glUniform3fARB(variable, v0, v1, v2);		}
+void CShader::SetFloat4(GLint variable, float v0, float v1, float v2, float v3)	{ if (variable!=-1) glUniform4fARB(variable, v0, v1, v2, v3);	}
+
+// These 2 functions turn on and off our shader
+void CShader::TurnOn()		{	if (m_hProgramObject) glUseProgramObjectARB(m_hProgramObject); }
+void CShader::TurnOff()		{	if (m_hProgramObject) glUseProgramObjectARB(0);				 }
 
 ///////////////////////////////// GET VARIABLE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
@@ -212,7 +252,7 @@ void CShader::Release()
     {
         glDetachObjectARB(m_hProgramObject, m_hVertexShader);
         glDeleteObjectARB(m_hVertexShader);
-        m_hVertexShader = NULL;
+        m_hVertexShader = 0; //NULL;
     }
 
     // If our fragment shader pointer is valid, free it
@@ -220,14 +260,14 @@ void CShader::Release()
     {
         glDetachObjectARB(m_hProgramObject, m_hFragmentShader);
         glDeleteObjectARB(m_hFragmentShader);
-        m_hFragmentShader = NULL;
+        m_hFragmentShader = 0; //NULL;
     }
 
     // If our program object pointer is valid, free it
     if(m_hProgramObject)
     {
         glDeleteObjectARB(m_hProgramObject);
-        m_hProgramObject = NULL;
+        m_hProgramObject = 0; //NULL;
     }
 }
 
