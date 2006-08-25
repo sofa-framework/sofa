@@ -1,46 +1,23 @@
-uniform sampler2D       tex;
 uniform sampler2DShadow shadowMap;
-
-
-varying vec3 position;
-varying vec4 vertex;
-varying vec3 normal;
 
 void main()
 {
-    // Look up the diffuse color and shadow states for each light source.
-	const float kTransparency = 0.67;
-    vec4  Kd = texture2D   (tex, gl_TexCoord[0].xy);
 
-    float s0 = shadow2DProj(shadowMap, gl_TexCoord[1]).r;
-    s0+=kTransparency;
-	clamp(s0, 0.0, 1.0); 
+ float s0 ;
+ const float sc= 1.0/512.0;
  
-/* 
-    // Compute the lighting vectors.
-
-    vec3 N  = normalize(normal);
-    vec3 light_pos = gl_LightSource[0].position.xyz - vertex.xyz;
-    vec3 L0 = normalize(light_pos);
+ s0 = shadow2DProj(shadowMap, gl_TexCoord[1]).r;
+ s0 += shadow2DProj(shadowMap, gl_TexCoord[1]+vec4(-sc, -sc, 0, 0)*gl_TexCoord[1].q).r;
+ s0 += shadow2DProj(shadowMap, gl_TexCoord[1]+vec4(-sc, 0, 0, 0)*gl_TexCoord[1].q).r;
+ s0 += shadow2DProj(shadowMap, gl_TexCoord[1]+vec4(-sc, sc, 0, 0)*gl_TexCoord[1].q).r;
+ s0 += shadow2DProj(shadowMap, gl_TexCoord[1]+vec4(sc, -sc, 0, 0)*gl_TexCoord[1].q).r;
+ s0 += shadow2DProj(shadowMap, gl_TexCoord[1]+vec4(sc, 0, 0, 0)*gl_TexCoord[1].q).r;
+ s0 += shadow2DProj(shadowMap, gl_TexCoord[1]+vec4(sc, sc, 0, 0)*gl_TexCoord[1].q).r;
+ s0 += shadow2DProj(shadowMap, gl_TexCoord[1]+vec4(0, -sc, 0, 0)*gl_TexCoord[1].q).r;
+ s0 += shadow2DProj(shadowMap, gl_TexCoord[1]+vec4(0, sc, 0, 0)*gl_TexCoord[1].q).r;
  
-    // Compute the illumination coefficient for each light source.
-
-    vec3  d0 = vec3(max(dot(N, L0), 0.0)) * s0;
-  
-    // Compute the scene foreground/background blending coefficient.
-
-    position = gl_Vertex.xyz;
-    float fade = 1.0 - smoothstep(48.0, 64.0, length(position));
-
-    // Compute the final pixel color from the diffuse and ambient lighting.
-
-    gl_FragColor = vec4( (Kd.rgb) * (gl_LightSource[0].diffuse.rgb * d0 +
-					gl_LightModel.ambient.rgb), Kd.a * fade);
-*/
-                                  
-	if(Kd.x == 0.0 && Kd.y == 0.0 && Kd.z == 0.0)  
-		gl_FragColor = gl_Color*s0;
-	else
-		gl_FragColor = gl_Color*Kd*s0;
-                                  
+ s0  = s0 /9.0;
+ s0 = 1-s0;
+ 
+ gl_FragColor = s0*0.64;          
 }
