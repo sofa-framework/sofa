@@ -22,6 +22,7 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addConstraint(int m1, int 
     constraints.resize(i+1);
     this->lambda->resize(3*(i+1));
     (*this->lambda->getX())[i] = 0;
+    (*this->lambda->getV())[i] = 0;
     ConstraintData& c = constraints[i];
     c.m1 = m1;
     c.m2 = m2;
@@ -42,6 +43,7 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addForce()
     f2.resize(p2.size());
 
     LMVecCoord& lambda = *this->lambda->getX();
+    LMVecDeriv& vlambda = *this->lambda->getV();
     LMVecDeriv& flambda = *this->lambda->getF();
     flambda.resize(lambda.size());
 
@@ -49,27 +51,32 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addForce()
     for (unsigned int i=0; i<constraints.size(); i++)
     {
         ConstraintData& c = constraints[i];
-        Coord val = p2[c.m2]-p1[c.m1];
-        lambda[3*i+0] = val[0];
-        lambda[3*i+1] = val[1];
-        lambda[3*i+2] = val[2];
+        //Coord val = p2[c.m2]-p1[c.m1];
+        lambda[3*i+0] = 0; //val[0];
+        lambda[3*i+1] = 0; //val[1];
+        lambda[3*i+2] = 0; //val[2];
+        vlambda[3*i+0] = 0;
+        vlambda[3*i+1] = 0;
+        vlambda[3*i+2] = 0;
     }
 
-    // flamdba += C . DOF
+    // flamdba -= C . DOF
     for (unsigned int i=0; i<constraints.size(); i++)
     {
         ConstraintData& c = constraints[i];
-        Coord val = p2[c.m2]-p1[c.m1];
-        flambda[3*i+0] += val[0];
-        flambda[3*i+1] += val[1];
-        flambda[3*i+2] += val[2];
+        Coord val = (p2[c.m2]-p1[c.m1]);
+        val *= 16;
+        flambda[3*i+0] -= val[0];
+        flambda[3*i+1] -= val[1];
+        flambda[3*i+2] -= val[2];
     }
 
-    // f += Ct . lambda
+    // f -= Ct . lambda
     for (unsigned int i=0; i<constraints.size(); i++)
     {
         ConstraintData& c = constraints[i];
         Deriv val(lambda[3*i+0],lambda[3*i+1],lambda[3*i+2]);
+        val *= 16;
         f1[c.m1] += val;
         f2[c.m2] -= val;
     }
@@ -92,21 +99,23 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addDForce()
     LMVecDeriv& flambda = *this->lambda->getF();
     flambda.resize(dlambda.size());
 
-    // dflamdba += C . dX
+    // dflamdba -= C . dX
     for (unsigned int i=0; i<constraints.size(); i++)
     {
         ConstraintData& c = constraints[i];
-        Deriv val = dx2[c.m2] - dx1[c.m1];
-        flambda[3*i+0] += val[0];
-        flambda[3*i+1] += val[1];
-        flambda[3*i+2] += val[2];
+        Deriv val = (dx2[c.m2] - dx1[c.m1]);
+        val *= 16;
+        flambda[3*i+0] -= val[0];
+        flambda[3*i+1] -= val[1];
+        flambda[3*i+2] -= val[2];
     }
 
-    // df += Ct . dlambda
+    // df -= Ct . dlambda
     for (unsigned int i=0; i<constraints.size(); i++)
     {
         ConstraintData& c = constraints[i];
         Deriv val(dlambda[3*i+0],dlambda[3*i+1],dlambda[3*i+2]);
+        val *= 16;
         f1[c.m1] += val;
         f2[c.m2] -= val;
     }
@@ -139,6 +148,7 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::draw()
         {
             const ConstraintData& c = constraints[i];
             Coord dp ( lambda[3*i+0], lambda[3*i+1], lambda[3*i+2] );
+            dp*=1.0/16;
             dp*=0.001;
             Coord p = p1[c.m1] - dp;
             GL::glVertexT(p1[c.m1]);

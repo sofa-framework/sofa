@@ -87,11 +87,11 @@ void Simulation::animate(GNode* root, double dt)
     if (!root) return;
     //std::cout << "animate\n";
 
+    root->execute<CollisionAction>();
+
     AnimateAction act;
     act.setDt(dt);
     root->execute(act);
-
-    root->execute<CollisionAction>();
 
     root->execute<UpdateMappingAction>();
     root->execute<VisualUpdateAction>();

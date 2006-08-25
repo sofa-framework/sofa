@@ -22,6 +22,7 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addContact(int m1, int m2
     contacts.resize(i+1);
     this->lambda->resize(i+1);
     (*this->lambda->getX())[i] = 0;
+    (*this->lambda->getV())[i] = 0;
     Contact& c = contacts[i];
     c.m1 = m1;
     c.m2 = m2;
@@ -48,6 +49,7 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addForce()
     f2.resize(p2.size());
 
     LMVecCoord& lambda = *this->lambda->getX();
+    LMVecDeriv& vlambda = *this->lambda->getV();
     LMVecDeriv& flambda = *this->lambda->getF();
     flambda.resize(lambda.size());
 
@@ -56,23 +58,24 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addForce()
     {
         Contact& c = contacts[i];
         c.pen = c.pen0 = (p2[c.m2]-p1[c.m1])*c.norm - c.dist;//c.dist - (p1[c.m1]-p2[c.m2])*c.norm;
-        lambda[i] = c.pen0;
+        lambda[i] = 0;
+        vlambda[i] = 0;
     }
 
-    // flamdba += C . DOF
+    // flamdba += d - C . DOF
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        if (lambda[i] > -0.05) continue;
-        flambda[i] += p2[c.m2]*c.norm - p1[c.m1]*c.norm - c.dist;
+        if (c.pen0 > 0.001) continue;
+        flambda[i] += c.dist - (p2[c.m2] - p1[c.m1])*c.norm;
     }
 
-    // f += Ct . lambda
+    // f -= Ct . lambda
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
+        if (c.pen0 > 0.001) continue;
         Real v = lambda[i];
-        if (lambda[i] > -0.05) continue;
         f1[c.m1] += c.norm * v;
         f2[c.m2] -= c.norm * v;
     }
@@ -95,19 +98,19 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addDForce()
     LMVecDeriv& flambda = *this->lambda->getF();
     flambda.resize(dlambda.size());
 
-    // dflamdba += C . dX
+    // dflamdba -= C . dX
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        if (lambda[i] > -0.05) continue;
-        flambda[i] += dx2[c.m2]*c.norm - dx1[c.m1]*c.norm;
+        if (c.pen0 > 0.001) continue;
+        flambda[i] -= (dx2[c.m2] - dx1[c.m1])*c.norm;
     }
 
-    // df += Ct . dlambda
+    // df -= Ct . dlambda
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        if (lambda[i] > -0.05) continue;
+        if (c.pen0 > 0.001) continue;
         Real v = dlambda[i];
         f1[c.m1] += c.norm * v;
         f2[c.m2] -= c.norm * v;
@@ -137,7 +140,7 @@ void LagrangianMultiplierContactConstraint<DataTypes>::draw()
         GL::glVertexT(p2[c.m2]);
     }
     glEnd();
-
+    glLineWidth(5);
     //if (getContext()->getShowNormals())
     {
         glColor4f(1,1,0,1);
@@ -145,7 +148,8 @@ void LagrangianMultiplierContactConstraint<DataTypes>::draw()
         for (unsigned int i=0; i<contacts.size(); i++)
         {
             const Contact& c = contacts[i];
-            if (c.pen > 0) continue;
+            //if (c.pen > 0) continue;
+            //std::cout << " lambda["<<i<<"]="<<lambda[i]<<std::endl;
             Coord p = p1[c.m1] - c.norm * lambda[i];
             GL::glVertexT(p1[c.m1]);
             GL::glVertexT(p);
@@ -155,6 +159,7 @@ void LagrangianMultiplierContactConstraint<DataTypes>::draw()
         }
         glEnd();
     }
+    glLineWidth(1);
 }
 
 

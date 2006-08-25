@@ -63,9 +63,15 @@ void CGImplicitSolver::solve(double dt)
         cerr<<"CGImplicitSolver, f0 = "<< b <<endl;
     group->propagateDx(vel);            // dx = v
     group->computeDf(f);                // f = df/dx v
-    b.peq(f,h);                         // b = f0+hdf/dx v
-    b.teq(h);                           // b = h(f0+hdf/dx v)
-    group->projectResponse(b);         // b is projected to the constrained space
+    b.peq(f,h+rayleighStiffness);      // b = f0 + (h+rs)df/dx v
+    if (rayleighDamping != 0.0)
+    {
+        f.clear();
+        group->addMdx(f,dx);
+        b.peq(f,-rayleighDamping);     // b = f0 + (h+rs)df/dx v - rd M v
+    }
+    b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
+    group->projectResponse(b);          // b is projected to the constrained space
 
     double normb = sqrt(b.dot(b));
 
@@ -96,14 +102,14 @@ void CGImplicitSolver::solve(double dt)
         // matrix-vector product
         group->propagateDx(p);          // dx = p
         group->computeDf(q);            // q = df/dx p
-        q *= -h*(h+rayleighStiffness);  // q = -h(h+r) df/dx p
+        q *= -h*(h+rayleighStiffness);  // q = -h(h+rs) df/dx p
         if (rayleighDamping==0.0)
-            group->addMdx( q, p);           // q = Mp -h(h+r) df/dx p
+            group->addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
         else
         {
             q2.clear();
-            group->addMdx( q2, p);           // q = Mp -h(h+r) df/dx p -hr Mp  =  M dx - dt2 K dx - dt rS K dx - dt rD M dx
-            q.peq(q2,(1+h*rayleighDamping));
+            group->addMdx( q2, p);
+            q.peq(q2,(1+h*rayleighDamping)); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
         }
         // filter the product to take the constraints into account
         group->projectResponse(q);     // q is projected to the constrained space
@@ -127,7 +133,7 @@ void CGImplicitSolver::solve(double dt)
         rho_1 = rho;
     }
     // x is the solution of the system
-    cerr<<"CGImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
+    //cerr<<"CGImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
 
     // apply the solution
     vel.peq( x );                       // vel = vel + x
