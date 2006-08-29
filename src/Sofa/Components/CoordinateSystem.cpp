@@ -20,80 +20,94 @@ namespace Sofa
 namespace Components
 {
 CoordinateSystem::CoordinateSystem()
-    : relativePosition_( Frame::identity() )
-    , relativeVelocity_( Vec(0,0,0), Vec(0,0,0) )
+    : positionInParent_( Frame::identity() )
+    //, velocity_( Vec(0,0,0), Vec(0,0,0) )
 {}
 
 
-const CoordinateSystem::Frame&  CoordinateSystem::getRelativePosition() const
+// CoordinateSystem::Frame  CoordinateSystem::getPositionInWorld() const
+// {
+//     return Abstract::BaseObject::getContext()->getPositionInWorld() * positionInParent_;
+// }
+
+const CoordinateSystem::Frame&  CoordinateSystem::getTransform() const
 {
-    return relativePosition_;
+    return positionInParent_;
 }
 
-CoordinateSystem* CoordinateSystem::setRelativePosition( const Frame& f )
+void CoordinateSystem::setTransform( const Frame& f )
 {
-    relativePosition_ = f;
-    return this;
+    positionInParent_ = f;
 }
 
-CoordinateSystem* CoordinateSystem::setOrigin( const Vec& v )
-{
-    relativePosition_ = Frame::set
-            ( v, this->getOrientation() );
-    return this;
-}
-
+// CoordinateSystem* CoordinateSystem::setOrigin( const Vec& v )
+// {
+//     positionInParent_ = Frame( v, this->getOrientation() );
+//     return this;
+// }
+//
 CoordinateSystem::Vec CoordinateSystem::getOrigin() const
 {
-    return this->relativePosition_.getOriginInParent();
+//<<<<<<< .mine
+    return positionInParent_.getOrigin();
+    /*=======
+        return this->relativePosition_.getOriginInParent();
+    >>>>>>> .r414*/
 }
-
-CoordinateSystem* CoordinateSystem::setOrientation( const Rot& r )
-{
-    relativePosition_ = Frame::set
-            ( this->getOrigin(), r );
-    return this;
-}
-
+//
+// CoordinateSystem* CoordinateSystem::setOrientation( const Rot& r )
+// {
+//     positionInParent_ = Frame( this->getOrigin(), r );
+//     return this;
+// }
+//
 CoordinateSystem::Rot CoordinateSystem::getOrientation( ) const
 {
-    return this->relativePosition_.getOrientation();
+//<<<<<<< .mine
+    return positionInParent_.getOrientation();
+    /*=======
+        return this->relativePosition_.getOrientation();
+    >>>>>>> .r414*/
 }
+//
+// CoordinateSystem* CoordinateSystem::set( const Vec& v, const Rot& r )
+// {
+//     positionInParent_ = Frame( v, r );
+//     return this;
+// }
 
-CoordinateSystem* CoordinateSystem::set
-( const Vec& v, const Rot& r )
+/*const CoordinateSystem::SpatialVector&  CoordinateSystem::getVelocity() const
 {
-    relativePosition_ = Frame::set
-            ( v, r );
-    return this;
-}
-
-const CoordinateSystem::SpatialVector&  CoordinateSystem::getRelativeVelocity() const
+    return velocity_;
+}*/
+/*CoordinateSystem::SpatialVector  CoordinateSystem::getVelocityInWorld() const
 {
-    return relativeVelocity_;
-}
-CoordinateSystem* CoordinateSystem::setRelativeVelocity( const SpatialVector& f )
-{
-    relativeVelocity_ = f;
-    return this;
-}
+    return Abstract::BaseObject::getContext()->getVelocityInWorld() + getPositionInWorld() * velocity__;
+}*/
+// CoordinateSystem* CoordinateSystem::setVelocity( const SpatialVector& f )
+// {
+//     velocity_ = f;
+//     return this;
+// }
 
 
 void CoordinateSystem::apply()
 {
     //cerr<<"CoordinateSystem::apply(), frame = "<<   getName() <<", t="<<getContext()->getTime() << endl;
     Abstract::BaseContext* context = getContext();
+    cerr<<"CoordinateSystem::apply, current position = "<<context->getPositionInWorld()<<endl;
+    cerr<<"CoordinateSystem::apply, transform = "<<this->getTransform()<<endl;
 
     // store parent position and velocity
-    Frame parentToWorld = context->getLocalFrame();
-    SpatialVector parentSpatialVelocity = context->getSpatialVelocity();
+    Frame parentToWorld = context->getPositionInWorld();
+    SpatialVector parentSpatialVelocity = context->getVelocityInWorld();
     Vec parentLinearVelocity = parentSpatialVelocity.getLinearVelocity() ;
     Vec parentAngularVelocity = parentSpatialVelocity.getAngularVelocity() ;
-    Vec parentLinearAcceleration = context->getVelocityBasedLinearAcceleration() ;
+    Vec parentLinearAcceleration = context->getVelocityBasedLinearAccelerationInWorld() ;
 
 
     // Velocity induced by the rotation of the parent frame. Local origin is defined in parent frame.
-    Vec originInParentProjected = parentToWorld.projectVector(getRelativePosition().getOriginInParent());
+    Vec originInParentProjected = parentToWorld.projectVector(getOrigin());
     Vec vinduced = parentAngularVelocity.cross( originInParentProjected );
     // Acceleration induced by the rotation of the parent frame. Local origin is defined in parent frame.
     Vec ainduced = parentAngularVelocity.cross( vinduced );
@@ -103,12 +117,13 @@ void CoordinateSystem::apply()
 
     // update context
     Common::Vec3d newLinearAcceleration = parentLinearAcceleration + ainduced;
-    Frame newLocalToWorld = parentToWorld * getRelativePosition();
-    SpatialVector newSpatialVelocity ( parentSpatialVelocity + parentToWorld * getRelativeVelocity() );
+    Frame newLocalToWorld = parentToWorld * getTransform();
+    SpatialVector newSpatialVelocity ( parentSpatialVelocity /*+ newLocalToWorld * getVelocity()*/ );
 
-    context->setVelocityBasedLinearAcceleration( newLinearAcceleration );
-    context->setLocalFrame( newLocalToWorld );
-    context->setSpatialVelocity( newSpatialVelocity );
+    context->setVelocityBasedLinearAccelerationInWorld( newLinearAcceleration );
+    context->setPositionInWorld( newLocalToWorld );
+    context->setVelocityInWorld( newSpatialVelocity );
+    cerr<<"CoordinateSystem::apply, new position = "<<context->getPositionInWorld()<<endl;
 
 }
 
@@ -155,7 +170,7 @@ void create(CoordinateSystem*& obj, ObjectDescription* arg)
         sscanf(arg->getAttribute("orientation"),"%f%f%f",&x,&y,&z);
         rot = Vec(x,y,z);
     }
-    obj->setRelativePosition( Frame::set( vec, Rot::createFromRotationVector( rot ) ));
+    obj->setTransform( Frame( vec, Rot::createFromRotationVector( rot ) ));
 }
 
 SOFA_DECL_CLASS(CoordinateSystem)

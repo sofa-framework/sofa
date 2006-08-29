@@ -78,12 +78,12 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
     ( theGravity, g[0], g[1], g[2]);
 
     // velocity-based stuff
-    Core::Context::SpatialVector vframe = getContext()->getSpatialVelocity();
-    Core::Context::Vec3 aframe = getContext()->getVelocityBasedLinearAcceleration() ;
+    Core::Context::SpatialVector vframe = getContext()->getVelocityInWorld();
+    Core::Context::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
 
     // project back to local frame
-    vframe = getContext()->getLocalFrame() / vframe;
-    aframe = getContext()->getLocalFrame().backProjectVector( aframe );
+    vframe = getContext()->getPositionInWorld() / vframe;
+    aframe = getContext()->getPositionInWorld().backProjectVector( aframe );
 
     // add weight and inertia force
     for (unsigned int i=0; i<f.size(); i++)

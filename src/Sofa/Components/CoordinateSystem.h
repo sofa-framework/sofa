@@ -51,28 +51,33 @@ public:
     {}
 
 
-    const Frame&  getRelativePosition() const;
-    CoordinateSystem* setRelativePosition( const Frame& f );
+    /// Transform wrt parent
+    const Frame&  getTransform() const;
+    /// Transform wrt parent
+    virtual void setTransform( const Frame& f );
+    /// Transform wrt world
+    //Frame  getPositionInWorld() const;
     /// Define translation in parent coordinates
-    CoordinateSystem* setOrigin( const Vec& t );
+    //CoordinateSystem* setOrigin( const Vec& t );
     /// Translation in parent coordinates
     Vec getOrigin() const;
     /// Define orientation (rotation of the child wrt parent)  in parent coordinates
-    CoordinateSystem* setOrientation( const Rot& r );
+    //CoordinateSystem* setOrientation( const Rot& r );
     /// Orientation (rotation of the child wrt parent)
     Rot getOrientation() const;
     /// Define translation and orientation  in parent coordinates
-    CoordinateSystem* set
-    ( const Vec& t, const Rot& r );
+    //CoordinateSystem* set( const Vec& t, const Rot& r );
 
-    /// wrt parent frame, given in parent frame
-    const SpatialVector&  getRelativeVelocity() const;
-    /// wrt parent frame, given in parent frame
-    CoordinateSystem* setRelativeVelocity( const SpatialVector& f );
+    /// wrt world, given in world coordinates
+    //SpatialVector  getVelocityInWorld() const;
+    /// wrt parent frame, given in LOCAL frame
+    //const SpatialVector&  getVelocity() const;
+    /// wrt parent frame, given in LOCAL frame
+    //CoordinateSystem* setVelocity( const SpatialVector& f );
 
 protected:
-    Frame relativePosition_;   ///< wrt parent frame
-    SpatialVector relativeVelocity_;  ///< wrt parent frame, given in parent frame
+    Frame positionInParent_;   ///< wrt parent frame
+    //SpatialVector velocity_;  ///< velocity wrt parent frame, given in LOCAL frame
 
 
 };

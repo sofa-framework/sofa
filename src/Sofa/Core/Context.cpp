@@ -7,10 +7,10 @@ namespace Core
 
 Context::Context()
 {
-    setLocalFrame(getDefault()->getLocalFrame());
-    setWorldGravity(getDefault()->getLocalGravity());
-    setSpatialVelocity(getDefault()->getSpatialVelocity());
-    setVelocityBasedLinearAcceleration(getDefault()->getVelocityBasedLinearAcceleration());
+    setPositionInWorld(getDefault()->getPositionInWorld());
+    setGravityInWorld(getDefault()->getLocalGravity());
+    setVelocityInWorld(getDefault()->getVelocityInWorld());
+    setVelocityBasedLinearAccelerationInWorld(getDefault()->getVelocityBasedLinearAccelerationInWorld());
     setDt(getDefault()->getDt());
     setTime(getDefault()->getTime());
     setAnimate(getDefault()->getAnimate());
@@ -28,19 +28,22 @@ Context::Context()
 }
 
 /// Projection from the local coordinate system to the world coordinate system.
-const Context::Frame& Context::getLocalFrame() const { return localFrame_; }
+const Context::Frame& Context::getPositionInWorld() const { return localFrame_; }
 /// Projection from the local coordinate system to the world coordinate system.
-void Context::setLocalFrame(const Frame& f) { localFrame_ = f; }
+void Context::setPositionInWorld(const Frame& f) { localFrame_ = f; }
 
 /// Spatial velocity (linear, angular) of the local frame with respect to the world
-const Context::SpatialVector& Context::getSpatialVelocity() const { return spatialVelocity_; }
+const Context::SpatialVector& Context::getVelocityInWorld() const { return spatialVelocityInWorld_; }
 /// Spatial velocity (linear, angular) of the local frame with respect to the world
-void Context::setSpatialVelocity(const SpatialVector& v) { spatialVelocity_ = v; }
+void Context::setVelocityInWorld(const SpatialVector& v) { spatialVelocityInWorld_ = v; }
 
 /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-const Context::Vec3& Context::getVelocityBasedLinearAcceleration() const { return velocityBasedLinearAcceleration_; }
+const Context::Vec3& Context::getVelocityBasedLinearAccelerationInWorld() const { return velocityBasedLinearAccelerationInWorld_; }
 /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-void Context::setVelocityBasedLinearAcceleration(const Vec3& a ) { velocityBasedLinearAcceleration_ = a; }
+void Context::setVelocityBasedLinearAccelerationInWorld(const Vec3& a )
+{
+    velocityBasedLinearAccelerationInWorld_ = a;
+}
 
 
 
@@ -62,10 +65,16 @@ double Context::getTime() const
 // 	return gravity_;
 // }
 
-/// Gravity vector in world coordinates
+/// Gravity vector in local coordinates
 Context::Vec3 Context::getLocalGravity() const
 {
-    return getLocalFrame().backProjectVector(worldGravity_);
+    return getPositionInWorld().backProjectVector(worldGravity_);
+}
+
+/// Gravity vector in world coordinates
+const Context::Vec3& Context::getGravityInWorld() const
+{
+    return worldGravity_;
 }
 
 
@@ -163,7 +172,7 @@ void Context::setTime(double val)
 // }
 
 /// Gravity vector
-void Context::setWorldGravity(const Vec3& g)
+void Context::setGravityInWorld(const Vec3& g)
 {
     worldGravity_ = g;
 }
@@ -252,10 +261,10 @@ using std::endl;
 std::ostream& operator << (std::ostream& out, const Sofa::Core::Context& c )
 {
     out<<endl<<"local gravity = "<<c.getLocalGravity();
-    out<<endl<<"transform from local to world = "<<c.getLocalFrame();
+    out<<endl<<"transform from local to world = "<<c.getPositionInWorld();
     //out<<endl<<"transform from world to local = "<<c.getWorldToLocal();
-    out<<endl<<"spatial velocity = "<<c.getSpatialVelocity();
-    out<<endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAcceleration();
+    out<<endl<<"spatial velocity = "<<c.getVelocityInWorld();
+    out<<endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
     return out;
 }
 

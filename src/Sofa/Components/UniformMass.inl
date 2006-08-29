@@ -96,15 +96,15 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
     //cerr<<"UniformMass<DataTypes, MassType>::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<endl;
 
     // velocity-based stuff
-    Core::Context::SpatialVector vframe = getContext()->getSpatialVelocity();
-    Core::Context::Vec3 aframe = getContext()->getVelocityBasedLinearAcceleration() ;
+    Core::Context::SpatialVector vframe = getContext()->getVelocityInWorld();
+    Core::Context::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in world coordinates = "<<vframe<<endl;
-//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in world coordinates = "<<aframe<<endl;
-//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), getContext()->getLocalToWorld() = "<<getContext()->getLocalFrame()<<endl;
+    //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in world coordinates = "<<aframe<<endl;
+//     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), getContext()->getLocalToWorld() = "<<getContext()->getPositionInWorld()<<endl;
 
     // project back to local frame
-    vframe = getContext()->getLocalFrame() / vframe;
-    aframe = getContext()->getLocalFrame().backProjectVector( aframe );
+    vframe = getContext()->getPositionInWorld() / vframe;
+    aframe = getContext()->getPositionInWorld().backProjectVector( aframe );
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates= "<<vframe<<endl;
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates= "<<aframe<<endl;
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<endl;

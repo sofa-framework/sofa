@@ -33,10 +33,11 @@ BaseContext::Vec3 BaseContext::getLocalGravity() const
 }
 
 /// Gravity in the world coordinate system
-//                 const BaseContext::Vec3& BaseContext::getWorldGravity() const
-//                 {
-//                     return getGravity();
-//                 }
+const BaseContext::Vec3& BaseContext::getGravityInWorld() const
+{
+    static const Vec3 G(0,-9.81,0);
+    return G;
+}
 
 /// Simulation timestep
 double BaseContext::getDt() const
@@ -129,21 +130,21 @@ bool BaseContext::getShowNormals() const
 
 
 /// Projection from the local coordinate system to the world coordinate system.
-const BaseContext::Frame& BaseContext::getLocalFrame() const
+const BaseContext::Frame& BaseContext::getPositionInWorld() const
 {
     static const Frame f;
     return f;
 }
 
 /// Spatial velocity (linear, angular) of the local frame with respect to the world
-const BaseContext::SpatialVector& BaseContext::getSpatialVelocity() const
+const BaseContext::SpatialVector& BaseContext::getVelocityInWorld() const
 {
     static const SpatialVector v( Vec3(0,0,0), Vec3(0,0,0) );
     return v;
 }
 
 /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-const BaseContext::Vec3& BaseContext::getVelocityBasedLinearAcceleration() const
+const BaseContext::Vec3& BaseContext::getVelocityBasedLinearAccelerationInWorld() const
 {
     static const Vec3 a(0,0,0);
     return a;

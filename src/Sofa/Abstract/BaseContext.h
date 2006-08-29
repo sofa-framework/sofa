@@ -79,19 +79,19 @@ public:
     /// @name Local Coordinate System
     /// @{
     /// Projection from the local coordinate system to the world coordinate system.
-    virtual const Frame& getLocalFrame() const;
+    virtual const Frame& getPositionInWorld() const;
     /// Projection from the local coordinate system to the world coordinate system.
-    virtual void setLocalFrame(const Frame&) {}
+    virtual void setPositionInWorld(const Frame&) {}
 
     /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual const SpatialVector& getSpatialVelocity() const;
+    virtual const SpatialVector& getVelocityInWorld() const;
     /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual void setSpatialVelocity(const SpatialVector&) {}
+    virtual void setVelocityInWorld(const SpatialVector&) {}
 
     /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual const Vec3& getVelocityBasedLinearAcceleration() const;
+    virtual const Vec3& getVelocityBasedLinearAccelerationInWorld() const;
     /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual void setVelocityBasedLinearAcceleration(const Vec3& ) {}
+    virtual void setVelocityBasedLinearAccelerationInWorld(const Vec3& ) {}
     /// @}
 
 
@@ -100,9 +100,9 @@ public:
     /// Gravity in local coordinates
     //virtual void setGravity( const Vec3& ) { }
     /// Gravity in world coordinates
-    //virtual const Vec3& getWorldGravity() const;
+    virtual const Vec3& getGravityInWorld() const;
     /// Gravity in world coordinates
-    virtual void setWorldGravity( const Vec3& ) { }
+    virtual void setGravityInWorld( const Vec3& ) { }
 
     /// @name Variables
     /// @{

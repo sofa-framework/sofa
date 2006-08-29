@@ -33,7 +33,7 @@ Gravity* Gravity::setGravity( const Vec3& g )
 
 void Gravity::apply()
 {
-    getContext()->setWorldGravity( gravity_ );
+    getContext()->setGravityInWorld( gravity_ );
 }
 
 void create(Gravity*& obj, ObjectDescription* arg)

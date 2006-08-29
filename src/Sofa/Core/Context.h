@@ -42,8 +42,8 @@ struct ContextData
 
 
     Frame localFrame_;
-    SpatialVector spatialVelocity_;
-    Vec3 velocityBasedLinearAcceleration_;
+    SpatialVector spatialVelocityInWorld_;
+    Vec3 velocityBasedLinearAccelerationInWorld_;
     //double localToWorldTranslation_[3];  ///< Used to project from the local coordinate system to the world coordinate system
     //double localToWorldRotationQuat_[4];  ///< Used to project from the local coordinate system to the world coordinate system
     //double localToWorldRotationMatrix_[9];  ///< Used to project from the local coordinate system to the world coordinate system
@@ -75,9 +75,9 @@ public:
     /// Gravity in the local coordinate system
     //virtual void setGravity(const Vec3& );
     /// Gravity in world coordinates
-    //virtual const Vec3& getWorldGravity() const;
+    virtual const Vec3& getGravityInWorld() const;
     /// Gravity in world coordinates
-    virtual void setWorldGravity( const Vec3& );
+    virtual void setGravityInWorld( const Vec3& );
 
     /// Simulation timestep
     virtual double getDt() const;
@@ -127,19 +127,19 @@ public:
     /// @name Local Coordinate System
     /// @{
     /// Projection from the local coordinate system to the world coordinate system.
-    virtual const Frame& getLocalFrame() const;
+    virtual const Frame& getPositionInWorld() const;
     /// Projection from the local coordinate system to the world coordinate system.
-    virtual void setLocalFrame(const Frame&);
+    virtual void setPositionInWorld(const Frame&);
 
     /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual const SpatialVector& getSpatialVelocity() const;
+    virtual const SpatialVector& getVelocityInWorld() const;
     /// Spatial velocity (linear, angular) of the local frame with respect to the world
-    virtual void setSpatialVelocity(const SpatialVector&);
+    virtual void setVelocityInWorld(const SpatialVector&);
 
     /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual const Vec3& getVelocityBasedLinearAcceleration() const;
+    virtual const Vec3& getVelocityBasedLinearAccelerationInWorld() const;
     /// Linear acceleration of the origin induced by the angular velocity of the ancestors
-    virtual void setVelocityBasedLinearAcceleration(const Vec3& );
+    virtual void setVelocityBasedLinearAccelerationInWorld(const Vec3& );
     /// @}
 
     /*
