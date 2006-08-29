@@ -27,6 +27,7 @@ CGImplicitSolver::CGImplicitSolver()
     tolerance = 1e-5;
     rayleighStiffness = 0.1;
     rayleighDamping = 0.1;
+    velocityDamping = 0;
 }
 
 CGImplicitSolver* CGImplicitSolver::setMaxIter( int n )
@@ -138,6 +139,8 @@ void CGImplicitSolver::solve(double dt)
     // apply the solution
     vel.peq( x );                       // vel = vel + x
     pos.peq( vel, h );                  // pos = pos + h vel
+    if (velocityDamping!=0.0)
+        vel *= exp(-h*velocityDamping);
 
     if( getDebug() )
     {
@@ -159,6 +162,8 @@ void create(CGImplicitSolver*& obj, ObjectDescription* arg)
         obj->rayleighStiffness = atof(arg->getAttribute("stiffness"));
     if (arg->getAttribute("damping"))
         obj->rayleighDamping = atof(arg->getAttribute("damping"));
+    if (arg->getAttribute("vdamping"))
+        obj->velocityDamping = atof(arg->getAttribute("vdamping"));
     if (arg->getAttribute("debug"))
         obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );
 }

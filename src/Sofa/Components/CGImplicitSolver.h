@@ -25,6 +25,7 @@ public:
     double tolerance;
     double rayleighStiffness;
     double rayleighDamping;
+    double velocityDamping;
 };
 
 } // namespace Components
