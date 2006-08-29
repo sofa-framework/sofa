@@ -1,9 +1,7 @@
-#ifndef SOFA_COMPONENTS_COMMON_RIGIDTYPES_H
-#define SOFA_COMPONENTS_COMMON_RIGIDTYPES_H
+#ifndef SOFA_COMPONENTS_COMMON_LAPAROSCOPICRIGIDTYPES_H
+#define SOFA_COMPONENTS_COMMON_LAPAROSCOPICRIGIDTYPES_H
 
-#include "Vec.h"
-#include "Mat.h"
-#include "Quat.h"
+#include "RigidTypes.h"
 #include <Sofa/Core/Context.h>
 #include <Sofa/Core/Mass.h>
 #include <vector>
@@ -19,7 +17,7 @@ namespace Components
 namespace Common
 {
 
-class RigidTypes
+class LaparoscopicRigidTypes
 {
 public:
     typedef Vec3d Vec3;
@@ -28,34 +26,34 @@ public:
     class Deriv
     {
     private:
-        Vec3 vCenter;
+        Real vTranslation;
         Vec3 vOrientation;
     public:
         friend class Coord;
 
-        Deriv (const Vec3 &velCenter, const Vec3 &velOrient)
-            : vCenter(velCenter), vOrientation(velOrient) {}
+        Deriv (const Real &velTranslation, const Vec3 &velOrient)
+            : vTranslation(velTranslation), vOrientation(velOrient) {}
         Deriv () { clear(); }
 
-        void clear() { vCenter.clear(); vOrientation.clear(); }
+        void clear() { vTranslation = 0; vOrientation.clear(); }
 
         void operator +=(const Deriv& a)
         {
-            vCenter += a.vCenter;
+            vTranslation += a.vTranslation;
             vOrientation += a.vOrientation;
         }
 
         Deriv operator + (const Deriv& a) const
         {
             Deriv d;
-            d.vCenter = vCenter + a.vCenter;
+            d.vTranslation = vTranslation + a.vTranslation;
             d.vOrientation = vOrientation + a.vOrientation;
             return d;
         }
 
         void operator*=(double a)
         {
-            vCenter *= a;
+            vTranslation *= a;
             vOrientation *= a;
         }
 
@@ -68,24 +66,24 @@ public:
 
         Deriv operator - () const
         {
-            return Deriv(-vCenter, -vOrientation);
+            return Deriv(-vTranslation, -vOrientation);
         }
 
         /// dot product
         double operator*(const Deriv& a) const
         {
-            return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]+vCenter[2]*a.vCenter[2]
+            return vTranslation*a.vTranslation
                     +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
                     +vOrientation[2]*a.vOrientation[2];
         }
 
-        Vec3& getVCenter (void) { return vCenter; }
+        Real& getVTranslation (void) { return vTranslation; }
         Vec3& getVOrientation (void) { return vOrientation; }
-        const Vec3& getVCenter (void) const { return vCenter; }
+        const Real& getVTranslation (void) const { return vTranslation; }
         const Vec3& getVOrientation (void) const { return vOrientation; }
         inline friend std::ostream& operator << (std::ostream& out, const Deriv& v )
         {
-            out<<"vCenter = "<<v.getVCenter();
+            out<<"vTranslation = "<<v.getVTranslation();
             out<<", vOrientation = "<<v.getVOrientation();
             return out;
         }
@@ -94,18 +92,18 @@ public:
     class Coord
     {
     private:
-        Vec3 center;
+        Real translation;
         Quat orientation;
     public:
-        Coord (const Vec3 &posCenter, const Quat &orient)
-            : center(posCenter), orientation(orient) {}
+        Coord (const Real &posTranslation, const Quat &orient)
+            : translation(posTranslation), orientation(orient) {}
         Coord () { clear(); }
 
-        void clear() { center.clear(); orientation.clear(); }
+        void clear() { translation = 0; orientation.clear(); }
 
         void operator +=(const Deriv& a)
         {
-            center += a.getVCenter();
+            translation += a.getVTranslation();
             orientation.normalize();
             Quat qDot = orientation.vectQuatMult(a.getVOrientation());
             for (int i = 0; i < 4; i++)
@@ -116,7 +114,7 @@ public:
         Coord operator + (const Deriv& a) const
         {
             Coord c = *this;
-            c.center += a.getVCenter();
+            c.translation += a.getVTranslation();
             c.orientation.normalize();
             Quat qDot = c.orientation.vectQuatMult(a.getVOrientation());
             for (int i = 0; i < 4; i++)
@@ -128,7 +126,7 @@ public:
         void operator +=(const Coord& a)
         {
             std::cout << "+="<<std::endl;
-            center += a.getCenter();
+            translation += a.getTranslation();
             //orientation += a.getOrientation();
             //orientation.normalize();
         }
@@ -136,7 +134,7 @@ public:
         void operator*=(double a)
         {
             std::cout << "*="<<std::endl;
-            center *= a;
+            translation *= a;
             //orientation *= a;
         }
 
@@ -150,18 +148,18 @@ public:
         /// dot product (FF: WHAT????  )
         double operator*(const Coord& a) const
         {
-            return center[0]*a.center[0]+center[1]*a.center[1]+center[2]*a.center[2]
+            return translation*a.translation
                     +orientation[0]*a.orientation[0]+orientation[1]*a.orientation[1]
                     +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
         }
 
-        Vec3& getCenter () { return center; }
+        Real& getTranslation () { return translation; }
         Quat& getOrientation () { return orientation; }
-        const Vec3& getCenter () const { return center; }
+        const Real& getTranslation () const { return translation; }
         const Quat& getOrientation () const { return orientation; }
         inline friend std::ostream& operator << (std::ostream& out, const Coord& c )
         {
-            out<<"translation = "<<c.getCenter();
+            out<<"translation = "<<c.getTranslation();
             out<<", rotation = "<<c.getOrientation();
             return out;
         }
@@ -175,7 +173,7 @@ public:
         /// Apply a transformation with respect to itself
         void multRight( const Coord& c )
         {
-            center += orientation.rotate(c.getCenter());
+            translation += c.getTranslation();
             orientation = orientation * c.getOrientation();
         }
 
@@ -183,20 +181,10 @@ public:
         Coord mult( const Coord& c ) const
         {
             Coord r;
-            r.center = center + orientation.rotate( c.center );
+            r.translation = translation + c.translation; //orientation.rotate( c.translation );
             r.orientation = orientation * c.getOrientation();
             return r;
         }
-
-        /// Write the OpenGL transformation matrix
-        void writeOpenGlMatrix( float m[16] ) const
-        {
-            orientation.writeOpenGlMatrix(m);
-            m[12] = (float)center[0];
-            m[13] = (float)center[1];
-            m[14] = (float)center[2];
-        }
-
         /// compute the projection of a vector from the parent frame to the child
         Vec3 vectorToChild( const Vec3& v ) const
         {
@@ -207,91 +195,61 @@ public:
     typedef std::vector<Coord> VecCoord;
     typedef std::vector<Deriv> VecDeriv;
 
-    static void set(Coord& c, double x, double y, double z)
+    static void set(Coord& c, double x, double, double)
     {
-        c.getCenter()[0] = x;
-        c.getCenter()[1] = y;
-        c.getCenter()[2] = z;
+        c.getTranslation() = x;
+        //c.getTranslation()[1] = y;
+        //c.getTranslation()[2] = z;
     }
 
-    static void get(double& x, double& y, double& z, const Coord& c)
+    static void get(double& x, double&, double&, const Coord& c)
     {
-        x = c.getCenter()[0];
-        y = c.getCenter()[1];
-        z = c.getCenter()[2];
+        x = c.getTranslation();
+        //y = c.getTranslation();
+        //z = c.getTranslation()[2];
     }
 
-    static void add(Coord& c, double x, double y, double z)
+    static void add(Coord& c, double x, double, double)
     {
-        c.getCenter()[0] += x;
-        c.getCenter()[1] += y;
-        c.getCenter()[2] += z;
+        c.getTranslation() += x;
+        //c.getTranslation()[1] += y;
+        //c.getTranslation()[2] += z;
     }
 
-    static void set(Deriv& c, double x, double y, double z)
+    static void set(Deriv& c, double x, double, double)
     {
-        c.getVCenter()[0] = x;
-        c.getVCenter()[1] = y;
-        c.getVCenter()[2] = z;
+        c.getVTranslation() = x;
+        //c.getVTranslation()[1] = y;
+        //c.getVTranslation()[2] = z;
     }
 
     static void get(double& x, double& y, double& z, const Deriv& c)
     {
-        x = c.getVCenter()[0];
-        y = c.getVCenter()[1];
-        z = c.getVCenter()[2];
+        x = c.getVTranslation();
+        y = 0; //c.getVTranslation()[1];
+        z = 0; //c.getVTranslation()[2];
     }
 
-    static void add(Deriv& c, double x, double y, double z)
+    static void add(Deriv& c, double x, double, double)
     {
-        c.getVCenter()[0] += x;
-        c.getVCenter()[1] += y;
-        c.getVCenter()[2] += z;
+        c.getVTranslation() += x;
+        //c.getVTranslation()[1] += y;
+        //c.getVTranslation()[2] += z;
     }
 };
 
-class RigidMass
+inline LaparoscopicRigidTypes::Deriv operator*(const LaparoscopicRigidTypes::Deriv& d, const RigidMass& m)
 {
-public:
-    double mass,volume;
-    Mat3x3d inertiaMatrix;	      // Inertia matrix of the object
-    Mat3x3d inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
-    Mat3x3d invInertiaMatrix;	  // inverse of inertiaMatrix
-    Mat3x3d invInertiaMassMatrix; // inverse of inertiaMassMatrix
-    RigidMass(double m=1)
-    {
-        mass = m;
-        volume = 1;
-        inertiaMatrix.identity();
-        recalc();
-    }
-    void recalc()
-    {
-        inertiaMassMatrix = inertiaMatrix * mass;
-        invInertiaMatrix.invert(inertiaMatrix);
-        invInertiaMassMatrix.invert(inertiaMassMatrix);
-    }
-    inline friend std::ostream& operator << (std::ostream& out, const RigidMass& m )
-    {
-        out<<"mass = "<<m.mass;
-        out<<", volume = "<<m.volume;
-        out<<", inertia = "<<m.inertiaMatrix;
-        return out;
-    }
-};
-
-inline RigidTypes::Deriv operator*(const RigidTypes::Deriv& d, const RigidMass& m)
-{
-    RigidTypes::Deriv res;
-    res.getVCenter() = d.getVCenter() * m.mass;
+    LaparoscopicRigidTypes::Deriv res;
+    res.getVTranslation() = d.getVTranslation() * m.mass;
     res.getVOrientation() = m.inertiaMassMatrix * d.getVOrientation();
     return res;
 }
 
-inline RigidTypes::Deriv operator/(const RigidTypes::Deriv& d, const RigidMass& m)
+inline LaparoscopicRigidTypes::Deriv operator/(const LaparoscopicRigidTypes::Deriv& d, const RigidMass& m)
 {
-    RigidTypes::Deriv res;
-    res.getVCenter() = d.getVCenter() / m.mass;
+    LaparoscopicRigidTypes::Deriv res;
+    res.getVTranslation() = d.getVTranslation() / m.mass;
     res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
     return res;
 }
@@ -308,9 +266,9 @@ namespace Core
 {
 /// Specialization of the inertia force for Components::Common::RigidTypes
 template <>
-inline Components::Common::RigidTypes::Deriv inertiaForce<
-Components::Common::RigidTypes::Coord,
-           Components::Common::RigidTypes::Deriv,
+inline Components::Common::LaparoscopicRigidTypes::Deriv inertiaForce<
+Components::Common::LaparoscopicRigidTypes::Coord,
+           Components::Common::LaparoscopicRigidTypes::Deriv,
            Context::Vec3,
            Components::Common::RigidMass,
            Context::SpatialVector
@@ -319,14 +277,15 @@ Components::Common::RigidTypes::Coord,
                    const Context::SpatialVector& vframe,
                    const Context::Vec3& aframe,
                    const Components::Common::RigidMass& mass,
-                   const Components::Common::RigidTypes::Coord& x,
-                   const Components::Common::RigidTypes::Deriv& v )
+                   const Components::Common::LaparoscopicRigidTypes::Coord& x,
+                   const Components::Common::LaparoscopicRigidTypes::Deriv& v )
 {
     Components::Common::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    Components::Common::RigidTypes::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+    Components::Common::RigidTypes::Vec3 origin, finertia, zero(0,0,0);
+    origin[0] = x.getTranslation();
 
-    finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return Components::Common::RigidTypes::Deriv( finertia, zero );
+    finertia = -( aframe + omega.cross( omega.cross(origin) + Components::Common::RigidTypes::Vec3(v.getVTranslation()*2,0,0) ))*mass.mass;
+    return Components::Common::LaparoscopicRigidTypes::Deriv( finertia[0], zero );
     /// \todo replace zero by Jomega.cross(omega)
 }
 

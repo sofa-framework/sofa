@@ -162,7 +162,6 @@ void LagrangianMultiplierContactConstraint<DataTypes>::draw()
     glLineWidth(1);
 }
 
-
 } // namespace Components
 
 } // namespace Sofa

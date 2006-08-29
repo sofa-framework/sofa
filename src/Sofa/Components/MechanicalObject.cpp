@@ -1,6 +1,7 @@
 #include "Sofa/Components/Common/ObjectFactory.h"
 #include "Sofa/Components/Common/Vec3Types.h"
 #include "Sofa/Components/Common/RigidTypes.h"
+#include "Sofa/Components/Common/LaparoscopicRigidTypes.h"
 #include "Sofa/Components/MassSpringLoader.h"
 #include "Sofa/Core/MechanicalObject.inl"
 
@@ -59,7 +60,7 @@ Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3dClas
 Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3Class("MechanicalObjectVec3",true);
 Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectClass("MechanicalObject",true);
 Creator< ObjectFactory, MechanicalObject<RigidTypes> > MechanicalObjectRigidClass("MechanicalObjectRigid",true);
-
+Creator< ObjectFactory, MechanicalObject<LaparoscopicRigidTypes> > MechanicalObjectLaparoscopicRigidClass("LaparoscopicObject",true);
 } // namespace Components
 
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
@@ -67,5 +68,6 @@ Creator< ObjectFactory, MechanicalObject<RigidTypes> > MechanicalObjectRigidClas
 template class Core::MechanicalObject<Components::Common::Vec3dTypes>;
 template class Core::MechanicalObject<Components::Common::Vec3fTypes>;
 template class Core::MechanicalObject<Components::Common::RigidTypes>;
+template class Core::MechanicalObject<Components::Common::LaparoscopicRigidTypes>;
 
 } // namespace Sofa

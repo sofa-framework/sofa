@@ -36,6 +36,19 @@ public:
     void			ApplyWithCentring();
     void			ApplyInverse();
 
+    template<class Vector>
+    Vector operator*(Vector v) const
+    {
+        for(int c=0; c<3; c++)
+            v[c] *= scale[c];
+        Vector r;
+        for(int c=0; c<3; c++)
+            r[c] = rotation[0][c]*v[0]+rotation[1][c]*v[1]+rotation[2][c]*v[2];
+        for(int c=0; c<3; c++)
+            r[c] += translation[c];
+        return r;
+    }
+
 private:void		InvertTransRotMatrix(double matrix[4][4]);
     void			InvertTransRotMatrix(double sMatrix[4][4],
             double dMatrix[4][4]);

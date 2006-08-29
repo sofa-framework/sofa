@@ -614,6 +614,25 @@ void MechanicalObject<DataTypes>::resetForce()
         f[i] = Deriv();
 }
 
+/*
+template <class DataTypes>
+bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+{
+  const VecCoord& x = *getX();
+  if (x.size() <= 0) return false;
+  double p[3] = {0,0,0};
+  for (unsigned int i=0; i<x.size(); i++)
+  {
+    DataTypes::get(p[0], p[1], p[2], x[i]);
+    for (int c=0;c<3;c++)
+    {
+      if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+      if (p[c] < minBBox[c]) minBBox[c] = p[c];
+    }
+  }
+  return true;
+}
+*/
 
 } // namespace Core
 

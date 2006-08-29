@@ -29,6 +29,7 @@ bool Capture::saveScreen(const std::string& filename)
     glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img.getData());
     if (!img.save(filename)) return false;
     std::cout << "Saved "<<img.getWidth()<<"x"<<img.getHeight()<<" screen image to "<<filename<<std::endl;
+    glReadBuffer(GL_BACK);
     return true;
 }
 
