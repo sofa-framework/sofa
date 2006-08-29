@@ -175,6 +175,21 @@ void OglModel::draw()
     }
 }
 
+bool OglModel::addBBox(double* minBBox, double* maxBBox)
+{
+    const ResizableExtVector<Coord>& x = vertices;
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        const Coord& p = x[i];
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+            if (p[c] < minBBox[c]) minBBox[c] = p[c];
+        }
+    }
+    return true;
+}
+
 bool OglModel::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
     if (textureName != "")

@@ -115,6 +115,21 @@ void Simulation::initTextures(GNode* root)
     root->execute<VisualInitTexturesAction>();
 }
 
+
+/// Compute the bounding box of the scene.
+void Simulation::computeBBox(GNode* root, double* minBBox, double* maxBBox)
+{
+    VisualComputeBBoxAction act;
+    if (root)
+        root->execute(act);
+    minBBox[0] = act.minBBox[0];
+    minBBox[1] = act.minBBox[1];
+    minBBox[2] = act.minBBox[2];
+    maxBBox[0] = act.maxBBox[0];
+    maxBBox[1] = act.maxBBox[1];
+    maxBBox[2] = act.maxBBox[2];
+}
+
 /// Update contexts. Required before drawing the scene if root flags are modified.
 void Simulation::updateContext(GNode* root)
 {

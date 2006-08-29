@@ -144,6 +144,8 @@ public:
 
     void initTextures();
 
+    bool addBBox(double* minBBox, double* maxBBox);
+
     const VecCoord* getX()  const; // { return &x;   }
     const VecDeriv* getV()  const { return NULL; }
     /*

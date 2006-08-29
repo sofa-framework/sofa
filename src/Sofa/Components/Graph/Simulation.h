@@ -37,6 +37,9 @@ public:
     /// Update contexts. Required before drawing the scene if root flags are modified.
     static void updateContext(GNode* root);
 
+    /// Compute the bounding box of the scene.
+    static void computeBBox(GNode* root, double* minBBox, double* maxBBox);
+
     /// Render the scene
     static void draw(GNode* root);
 
