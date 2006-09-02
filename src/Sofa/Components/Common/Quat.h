@@ -167,7 +167,7 @@ public:
     template<class T>
     static Quater createFromRotationVector(T a0, T a1, T a2 )
     {
-        Real phi = (Real)sqrt(a0*a0+a1*a1+a2*a2);
+        Real phi = (Real)sqrt((Real)(a0*a0+a1*a1+a2*a2));
         if( phi < 1.0e-5 )
             return Quater(0,0,0,1);
         else

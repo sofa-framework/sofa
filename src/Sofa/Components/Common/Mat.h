@@ -5,6 +5,8 @@
 //#include <boost/static_assert.hpp>
 #define BOOST_STATIC_ASSERT(a)
 
+#include <assert.h>
+
 namespace Sofa
 {
 
