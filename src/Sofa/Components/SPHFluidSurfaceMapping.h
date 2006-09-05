@@ -1,11 +1,11 @@
 #ifndef SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_H
 #define SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_H
 
+#include "SPHFluidForceField.h"
 #include "Sofa/Core/Mapping.h"
 #include "Sofa/Core/MechanicalModel.h"
 #include "MeshTopology.h"
 #include "ImplicitSurfaceMapping.h" // for marching cube tables
-#include "SPHFluidForceField.h"
 #include <vector>
 
 namespace Sofa

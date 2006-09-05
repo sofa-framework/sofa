@@ -16,7 +16,7 @@ namespace Components
 
 template<class DataTypes>
 SPHFluidForceField<DataTypes>::SPHFluidForceField(Sofa::Core::MechanicalModel<DataTypes>* /*object*/)
-    : particleRadius(1), particleMass(1), pressureStiffness(100), density0(1), viscosity(0.001), surfaceTension(0), grid(NULL)
+    : particleRadius(1), particleMass(1), pressureStiffness(100), density0(1), viscosity(0.001f), surfaceTension(0), grid(NULL)
 {
 }
 
@@ -307,7 +307,7 @@ void SPHFluidForceField<DataTypes>::draw()
         for (typename std::vector< std::pair<int,Real> >::const_iterator it = Pi.neighbors.begin(); it != Pi.neighbors.end(); ++it)
         {
             const int j = it->first;
-            const Real r_h = it->second;
+            const float r_h = (float)it->second;
             float f = r_h*2;
             if (f < 1)
             {
@@ -330,7 +330,7 @@ void SPHFluidForceField<DataTypes>::draw()
     for (unsigned int i=0; i<particles.size(); i++)
     {
         Particle& Pi = particles[i];
-        Real f = Pi.density / density0;
+        float f = (float)(Pi.density / density0);
         f = 1+10*(f-1);
         if (f < 1)
         {

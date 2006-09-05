@@ -263,9 +263,9 @@ void SpatialGridContainer<DataTypes>::computeField(ParticleField* field, Real di
     {
         Grid* g = itg->second;
         Coord pos;
-        pos[0] = itg->first[0]*GRIDDIM;
-        pos[1] = itg->first[1]*GRIDDIM;
-        pos[2] = itg->first[2]*GRIDDIM;
+        pos[0] = (Real)(itg->first[0]*GRIDDIM);
+        pos[1] = (Real)(itg->first[1]*GRIDDIM);
+        pos[2] = (Real)(itg->first[2]*GRIDDIM);
         if (!g->empty)
         {
             Cell* c;
@@ -328,10 +328,6 @@ void SpatialGridContainer<DataTypes>::computeField(ParticleField* field, Real di
                     if (g2 == g) continue;
                     if (!g2->empty)
                     {
-                        Coord pos;
-                        pos[0] = itg->first[0]*GRIDDIM;
-                        pos[1] = itg->first[1]*GRIDDIM;
-                        pos[2] = itg->first[2]*GRIDDIM;
                         int g2_x0 = 0, g2_x1 = GRIDDIM-1; //, g_x0 = 0, g_x1 = GRIDDIM-1, g_dx0 = 0, g_dx1 = 0;
                         int g2_y0 = 0, g2_y1 = GRIDDIM-1; //, g_y0 = 0, g_y1 = GRIDDIM-1, g_dy0 = 0, g_dy1 = 0;
                         int g2_z0 = 0, g2_z1 = GRIDDIM-1; //, g_z0 = 0, g_z1 = GRIDDIM-1, g_dz0 = 0, g_dz1 = 0;
@@ -492,87 +488,88 @@ void SpatialGridContainer<DataTypes>::end()
 template<class DataTypes>
 void SpatialGridContainer<DataTypes>::draw()
 {
-    float scale = cellWidth*GRIDDIM;
+    const float cscale = (float)(cellWidth);
+    const float gscale = (float)(cellWidth*GRIDDIM);
     glBegin(GL_LINES);
     for (typename Map::iterator itg = map.begin(); itg != map.end(); itg++)
     {
         Key k = itg->first;
         Grid* g = itg->second;
         glColor3f(1,1,1);
-        glVertex3f((k[0]  )*scale, (k[1]  )*scale, (k[2]  )*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]  )*scale, (k[2]  )*scale);
-        glVertex3f((k[0]  )*scale, (k[1]+1)*scale, (k[2]  )*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]+1)*scale, (k[2]  )*scale);
-        glVertex3f((k[0]  )*scale, (k[1]  )*scale, (k[2]+1)*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]  )*scale, (k[2]+1)*scale);
-        glVertex3f((k[0]  )*scale, (k[1]+1)*scale, (k[2]+1)*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]+1)*scale, (k[2]+1)*scale);
+        glVertex3f((k[0]  )*gscale, (k[1]  )*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]  )*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]  )*gscale, (k[1]+1)*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]+1)*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]  )*gscale, (k[1]  )*gscale, (k[2]+1)*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]  )*gscale, (k[2]+1)*gscale);
+        glVertex3f((k[0]  )*gscale, (k[1]+1)*gscale, (k[2]+1)*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]+1)*gscale, (k[2]+1)*gscale);
 
-        glVertex3f((k[0]  )*scale, (k[1]  )*scale, (k[2]  )*scale);
-        glVertex3f((k[0]  )*scale, (k[1]+1)*scale, (k[2]  )*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]  )*scale, (k[2]  )*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]+1)*scale, (k[2]  )*scale);
-        glVertex3f((k[0]  )*scale, (k[1]  )*scale, (k[2]+1)*scale);
-        glVertex3f((k[0]  )*scale, (k[1]+1)*scale, (k[2]+1)*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]  )*scale, (k[2]+1)*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]+1)*scale, (k[2]+1)*scale);
+        glVertex3f((k[0]  )*gscale, (k[1]  )*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]  )*gscale, (k[1]+1)*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]  )*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]+1)*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]  )*gscale, (k[1]  )*gscale, (k[2]+1)*gscale);
+        glVertex3f((k[0]  )*gscale, (k[1]+1)*gscale, (k[2]+1)*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]  )*gscale, (k[2]+1)*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]+1)*gscale, (k[2]+1)*gscale);
 
-        glVertex3f((k[0]  )*scale, (k[1]  )*scale, (k[2]  )*scale);
-        glVertex3f((k[0]  )*scale, (k[1]  )*scale, (k[2]+1)*scale);
-        glVertex3f((k[0]  )*scale, (k[1]+1)*scale, (k[2]  )*scale);
-        glVertex3f((k[0]  )*scale, (k[1]+1)*scale, (k[2]+1)*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]  )*scale, (k[2]  )*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]  )*scale, (k[2]+1)*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]+1)*scale, (k[2]  )*scale);
-        glVertex3f((k[0]+1)*scale, (k[1]+1)*scale, (k[2]+1)*scale);
+        glVertex3f((k[0]  )*gscale, (k[1]  )*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]  )*gscale, (k[1]  )*gscale, (k[2]+1)*gscale);
+        glVertex3f((k[0]  )*gscale, (k[1]+1)*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]  )*gscale, (k[1]+1)*gscale, (k[2]+1)*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]  )*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]  )*gscale, (k[2]+1)*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]+1)*gscale, (k[2]  )*gscale);
+        glVertex3f((k[0]+1)*gscale, (k[1]+1)*gscale, (k[2]+1)*gscale);
 
         if (g->neighbors[0] == &emptyGrid)
         {
             glColor3f(1.0f,0.0f,0.0f);
-            glVertex3f((k[0]     )*scale, (k[1]+0.3f)*scale, (k[2]+0.3f)*scale);
-            glVertex3f((k[0]     )*scale, (k[1]+0.7f)*scale, (k[2]+0.7f)*scale);
-            glVertex3f((k[0]     )*scale, (k[1]+0.3f)*scale, (k[2]+0.7f)*scale);
-            glVertex3f((k[0]     )*scale, (k[1]+0.7f)*scale, (k[2]+0.3f)*scale);
+            glVertex3f((k[0]     )*gscale, (k[1]+0.3f)*gscale, (k[2]+0.3f)*gscale);
+            glVertex3f((k[0]     )*gscale, (k[1]+0.7f)*gscale, (k[2]+0.7f)*gscale);
+            glVertex3f((k[0]     )*gscale, (k[1]+0.3f)*gscale, (k[2]+0.7f)*gscale);
+            glVertex3f((k[0]     )*gscale, (k[1]+0.7f)*gscale, (k[2]+0.3f)*gscale);
         }
         if (g->neighbors[1] == &emptyGrid)
         {
             glColor3f(1.0f,0.5f,0.5f);
-            glVertex3f((k[0]+1   )*scale, (k[1]+0.3f)*scale, (k[2]+0.3f)*scale);
-            glVertex3f((k[0]+1   )*scale, (k[1]+0.7f)*scale, (k[2]+0.7f)*scale);
-            glVertex3f((k[0]+1   )*scale, (k[1]+0.3f)*scale, (k[2]+0.7f)*scale);
-            glVertex3f((k[0]+1   )*scale, (k[1]+0.7f)*scale, (k[2]+0.3f)*scale);
+            glVertex3f((k[0]+1   )*gscale, (k[1]+0.3f)*gscale, (k[2]+0.3f)*gscale);
+            glVertex3f((k[0]+1   )*gscale, (k[1]+0.7f)*gscale, (k[2]+0.7f)*gscale);
+            glVertex3f((k[0]+1   )*gscale, (k[1]+0.3f)*gscale, (k[2]+0.7f)*gscale);
+            glVertex3f((k[0]+1   )*gscale, (k[1]+0.7f)*gscale, (k[2]+0.3f)*gscale);
         }
         if (g->neighbors[2] == &emptyGrid)
         {
             glColor3f(0.0f,1.0f,0.0f);
-            glVertex3f((k[0]+0.3f)*scale, (k[1]     )*scale, (k[2]+0.3f)*scale);
-            glVertex3f((k[0]+0.7f)*scale, (k[1]     )*scale, (k[2]+0.7f)*scale);
-            glVertex3f((k[0]+0.3f)*scale, (k[1]     )*scale, (k[2]+0.7f)*scale);
-            glVertex3f((k[0]+0.7f)*scale, (k[1]     )*scale, (k[2]+0.3f)*scale);
+            glVertex3f((k[0]+0.3f)*gscale, (k[1]     )*gscale, (k[2]+0.3f)*gscale);
+            glVertex3f((k[0]+0.7f)*gscale, (k[1]     )*gscale, (k[2]+0.7f)*gscale);
+            glVertex3f((k[0]+0.3f)*gscale, (k[1]     )*gscale, (k[2]+0.7f)*gscale);
+            glVertex3f((k[0]+0.7f)*gscale, (k[1]     )*gscale, (k[2]+0.3f)*gscale);
         }
         if (g->neighbors[3] == &emptyGrid)
         {
             glColor3f(0.5f,1.0f,0.5f);
-            glVertex3f((k[0]+0.3f)*scale, (k[1]+1   )*scale, (k[2]+0.3f)*scale);
-            glVertex3f((k[0]+0.7f)*scale, (k[1]+1   )*scale, (k[2]+0.7f)*scale);
-            glVertex3f((k[0]+0.3f)*scale, (k[1]+1   )*scale, (k[2]+0.7f)*scale);
-            glVertex3f((k[0]+0.7f)*scale, (k[1]+1   )*scale, (k[2]+0.3f)*scale);
+            glVertex3f((k[0]+0.3f)*gscale, (k[1]+1   )*gscale, (k[2]+0.3f)*gscale);
+            glVertex3f((k[0]+0.7f)*gscale, (k[1]+1   )*gscale, (k[2]+0.7f)*gscale);
+            glVertex3f((k[0]+0.3f)*gscale, (k[1]+1   )*gscale, (k[2]+0.7f)*gscale);
+            glVertex3f((k[0]+0.7f)*gscale, (k[1]+1   )*gscale, (k[2]+0.3f)*gscale);
         }
         if (g->neighbors[4] == &emptyGrid)
         {
             glColor3f(0.0f,0.0f,1.0f);
-            glVertex3f((k[0]+0.3f)*scale, (k[1]+0.3f)*scale, (k[2]     )*scale);
-            glVertex3f((k[0]+0.7f)*scale, (k[1]+0.7f)*scale, (k[2]     )*scale);
-            glVertex3f((k[0]+0.7f)*scale, (k[1]+0.3f)*scale, (k[2]     )*scale);
-            glVertex3f((k[0]+0.3f)*scale, (k[1]+0.7f)*scale, (k[2]     )*scale);
+            glVertex3f((k[0]+0.3f)*gscale, (k[1]+0.3f)*gscale, (k[2]     )*gscale);
+            glVertex3f((k[0]+0.7f)*gscale, (k[1]+0.7f)*gscale, (k[2]     )*gscale);
+            glVertex3f((k[0]+0.7f)*gscale, (k[1]+0.3f)*gscale, (k[2]     )*gscale);
+            glVertex3f((k[0]+0.3f)*gscale, (k[1]+0.7f)*gscale, (k[2]     )*gscale);
         }
         if (g->neighbors[5] == &emptyGrid)
         {
             glColor3f(0.5f,0.5f,1.0f);
-            glVertex3f((k[0]+0.3f)*scale, (k[1]+0.3f)*scale, (k[2]+1   )*scale);
-            glVertex3f((k[0]+0.7f)*scale, (k[1]+0.7f)*scale, (k[2]+1   )*scale);
-            glVertex3f((k[0]+0.7f)*scale, (k[1]+0.3f)*scale, (k[2]+1   )*scale);
-            glVertex3f((k[0]+0.3f)*scale, (k[1]+0.7f)*scale, (k[2]+1   )*scale);
+            glVertex3f((k[0]+0.3f)*gscale, (k[1]+0.3f)*gscale, (k[2]+1   )*gscale);
+            glVertex3f((k[0]+0.7f)*gscale, (k[1]+0.7f)*gscale, (k[2]+1   )*gscale);
+            glVertex3f((k[0]+0.7f)*gscale, (k[1]+0.3f)*gscale, (k[2]+1   )*gscale);
+            glVertex3f((k[0]+0.3f)*gscale, (k[1]+0.7f)*gscale, (k[2]+1   )*gscale);
         }
         if (!g->empty)
         {
@@ -582,22 +579,22 @@ void SpatialGridContainer<DataTypes>::draw()
                 for (y = 0; y<=GRIDDIM; y++)
                 {
                     if ((y==0 || y==GRIDDIM) && (z==0 || z==GRIDDIM)) continue;
-                    glVertex3f((k[0]*GRIDDIM          )*cellWidth, (k[1]*GRIDDIM + y    )*cellWidth, (k[2]*GRIDDIM + z    )*cellWidth);
-                    glVertex3f((k[0]*GRIDDIM + GRIDDIM)*cellWidth, (k[1]*GRIDDIM + y    )*cellWidth, (k[2]*GRIDDIM + z    )*cellWidth);
+                    glVertex3f((k[0]*GRIDDIM          )*cscale, (k[1]*GRIDDIM + y    )*cscale, (k[2]*GRIDDIM + z    )*cscale);
+                    glVertex3f((k[0]*GRIDDIM + GRIDDIM)*cscale, (k[1]*GRIDDIM + y    )*cscale, (k[2]*GRIDDIM + z    )*cscale);
                 }
             for (z = 0; z<=GRIDDIM; z++)
                 for (x = 0; x<=GRIDDIM; x++)
                 {
                     if ((x==0 || x==GRIDDIM) && (z==0 || z==GRIDDIM)) continue;
-                    glVertex3f((k[0]*GRIDDIM + x    )*cellWidth, (k[1]*GRIDDIM          )*cellWidth, (k[2]*GRIDDIM + z    )*cellWidth);
-                    glVertex3f((k[0]*GRIDDIM + x    )*cellWidth, (k[1]*GRIDDIM + GRIDDIM)*cellWidth, (k[2]*GRIDDIM + z    )*cellWidth);
+                    glVertex3f((k[0]*GRIDDIM + x    )*cscale, (k[1]*GRIDDIM          )*cscale, (k[2]*GRIDDIM + z    )*cscale);
+                    glVertex3f((k[0]*GRIDDIM + x    )*cscale, (k[1]*GRIDDIM + GRIDDIM)*cscale, (k[2]*GRIDDIM + z    )*cscale);
                 }
             for (y = 0; y<=GRIDDIM; y++)
                 for (x = 0; x<=GRIDDIM; x++)
                 {
                     if ((x==0 || x==GRIDDIM) && (y==0 || y==GRIDDIM)) continue;
-                    glVertex3f((k[0]*GRIDDIM + x    )*cellWidth, (k[1]*GRIDDIM + y    )*cellWidth, (k[2]*GRIDDIM          )*cellWidth);
-                    glVertex3f((k[0]*GRIDDIM + x    )*cellWidth, (k[1]*GRIDDIM + y    )*cellWidth, (k[2]*GRIDDIM + GRIDDIM)*cellWidth);
+                    glVertex3f((k[0]*GRIDDIM + x    )*cscale, (k[1]*GRIDDIM + y    )*cscale, (k[2]*GRIDDIM          )*cscale);
+                    glVertex3f((k[0]*GRIDDIM + x    )*cscale, (k[1]*GRIDDIM + y    )*cscale, (k[2]*GRIDDIM + GRIDDIM)*cscale);
                 }
         }
     }

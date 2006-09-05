@@ -180,7 +180,7 @@ public:
         //}; // min_buckets = 2 ^^ N, 0 < N
         inline bool operator()(const Key& s1, const Key& s2) const
         {
-            for (int i=0; i<s1.size(); ++i)
+            for (unsigned int i=0; i<s1.size(); ++i)
                 if (s1[i] < s2[i]) return true;
                 else if (s1[i] > s2[i]) return false;
             return false; // s1 == s2

@@ -298,4 +298,4 @@ void CShader::Release()
 // Nothing new was added to this file for this tutorial.
 //
 //
-// © 2000-2005 GameTutorials
+// (C) 2000-2005 GameTutorials
