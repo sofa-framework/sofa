@@ -32,7 +32,8 @@ public:
 };
 
 #else
-#warning PNG not supported. Define SOFA_HAVE_PNG in sofa.cfg to activate.
+// #warning not supported by MSVC
+//#warning PNG not supported. Define SOFA_HAVE_PNG in sofa.cfg to activate.
 #endif
 
 } // namespace Components
