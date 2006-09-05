@@ -23,8 +23,21 @@ SPHFluidForceField<DataTypes>::SPHFluidForceField(Sofa::Core::MechanicalModel<Da
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::init()
 {
-    grid = new Grid(particleRadius);
     this->Inherit::init();
+    grid = new Grid(particleRadius);
+    int n = (*this->mmodel->getX()).size();
+    particles.resize(n);
+    for (int i=0; i<n; i++)
+    {
+        particles[i].neighbors.clear();
+#ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
+        particles[i].neighbors2.clear();
+#endif
+        particles[i].density = density0;
+        particles[i].pressure = 0;
+        particles[i].normal.clear();
+        particles[i].curvature = 0;
+    }
 }
 
 template<class DataTypes>

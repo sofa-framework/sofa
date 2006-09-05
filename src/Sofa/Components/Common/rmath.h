@@ -1,6 +1,7 @@
 #ifndef SOFA_COMPONENTS_COMMON_RMATH_H
 #define SOFA_COMPONENTS_COMMON_RMATH_H
 
+#include "config.h"
 #include <math.h>
 
 namespace Sofa

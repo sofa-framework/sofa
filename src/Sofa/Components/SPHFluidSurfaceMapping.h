@@ -88,7 +88,7 @@ protected:
             void clear() { p[0]=p[1]=p[2]=-1; val=0; }
             void add(ParticleField* field, int i, Real r2, Real h2)
             {
-                val += field->getParticleField(i, r2/h2);
+                val += (OutReal) field->getParticleField(i, r2/h2);
             }
         };
 

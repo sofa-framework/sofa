@@ -1,12 +1,15 @@
 #ifndef SOFA_COMPONENTS_SPHFLUIDFORCEFIELD_H
 #define SOFA_COMPONENTS_SPHFLUIDFORCEFIELD_H
 
+#include "Common/config.h"
+
 #include "Sofa/Core/ForceField.h"
 #include "Sofa/Core/MechanicalModel.h"
 #include "Sofa/Abstract/VisualModel.h"
 #include "SpatialGridContainer.h"
 
 #include <vector>
+#include <math.h>
 
 namespace Sofa
 {

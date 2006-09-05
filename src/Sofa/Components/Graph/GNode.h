@@ -160,31 +160,49 @@ public:
     /// Return an object of this node deriving from a given class, or NULL if not found.
     /// Note that only the first object is returned.
     template<class Object>
-    Object* getNodeObject()
+    void getNodeObject(Object*& result)
     {
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             Object* o = dynamic_cast<Object*>(*it);
-            if (o!=NULL)
-                return o;
+            if (o != NULL)
+            {
+                result = o;
+                return;
+            }
         }
-        return NULL;
+        result = NULL;
+    }
+
+    template<class Object>
+    Object* getNodeObject()
+    {
+        Object* result;
+        this->getNodeObject(result);
+        return result;
     }
 
     /// Return an object of this node and sub-nodes deriving from a given class, or NULL if not found.
     /// Note that only the first object is returned.
     template<class Object>
-    Object* getTreeObject()
+    void getTreeObject(Object*& result)
     {
-        Object* o = this->getNodeObject<Object>();
-        if (o != NULL) return o;
+        this->getNodeObject(result);
+        if (result != NULL) return;
         for (ChildIterator it = this->child.begin(); it != this->child.end(); ++it)
         {
             GNode* n = *it;
-            o = n->getTreeObject<Object>();
-            if (o != NULL) return o;
+            n->getTreeObject(result);
+            if (result != NULL) return;
         }
-        return NULL;
+    }
+
+    template<class Object>
+    Object* getTreeObject()
+    {
+        Object* result;
+        this->getTreeObject(result);
+        return result;
     }
 
     /// @}

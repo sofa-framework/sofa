@@ -27,14 +27,16 @@ void SPHFluidSurfaceMapping<In,Out>::init()
     Graph::GNode* node = dynamic_cast<Graph::GNode*>(this->getFrom()->getContext());
     if (node)
     {
-        sph = node->getNodeObject<SPHForceField>();
+        //the following line produces a compilation error with GCC 3.3 :(
+        //sph = node->getNodeObject<SPHForceField>();
+        node->getNodeObject(sph);
     }
     if (sph)
     {
         //mRadius = sph->getParticleRadius();
-        mIsoValue /= sph->getParticleFieldConstant(mRadius);
+        mIsoValue /= sph->getParticleFieldConstant((InReal)mRadius);
     }
-    grid = new Grid(mStep);
+    grid = new Grid((InReal)mStep);
 }
 
 template <class In, class Out>
@@ -322,6 +324,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
     if (!grid) return;
     grid->draw();
 
+    float scale = (float)mStep;
     typename Grid::iterator end = grid->gridEnd();
     typename Grid::iterator it;
 
@@ -344,7 +347,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
                 for (x=0; x<GRIDDIM; x++)
                 {
                     if (c->data.val > mIsoValue)
-                        glVertex3f((x0+x)*mStep,(y0+y)*mStep,(z0+z)*mStep);
+                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z)*scale);
                     c+=DX;
                 }
             }
@@ -384,18 +387,18 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
                 {
                     if (c->data.p[0]>0)
                     {
-                        glVertex3f((x0+x)*mStep,(y0+y)*mStep,(z0+z)*mStep);
-                        glVertex3f((x0+x+1)*mStep,(y0+y)*mStep,(z0+z)*mStep);
+                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z)*scale);
+                        glVertex3f((x0+x+1)*scale,(y0+y)*scale,(z0+z)*scale);
                     }
                     if (c->data.p[1]>0)
                     {
-                        glVertex3f((x0+x)*mStep,(y0+y)*mStep,(z0+z)*mStep);
-                        glVertex3f((x0+x)*mStep,(y0+y+1)*mStep,(z0+z)*mStep);
+                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z)*scale);
+                        glVertex3f((x0+x)*scale,(y0+y+1)*scale,(z0+z)*scale);
                     }
                     if (c->data.p[2]>0)
                     {
-                        glVertex3f((x0+x)*mStep,(y0+y)*mStep,(z0+z)*mStep);
-                        glVertex3f((x0+x)*mStep,(y0+y)*mStep,(z0+z+1)*mStep);
+                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z)*scale);
+                        glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z+1)*scale);
                     }
                     c+=DX;
                 }

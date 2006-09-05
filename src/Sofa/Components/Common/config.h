@@ -15,6 +15,9 @@ template<class T> T max(const T& a, const T& b) { return _cpp_max(a,b); }
 #define snprintf _snprintf
 #endif
 
+#ifdef _MSC_VER
+#define _USE_MATH_DEFINES // required to get M_PI from math.h
+#endif
 
 #define sofa_concat(a,b) a##b
 
