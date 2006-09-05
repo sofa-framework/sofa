@@ -8,7 +8,16 @@
 #include <GL/glu.h>
 #include <string>
 
-using namespace std;
+namespace Sofa
+{
+
+namespace Components
+{
+
+namespace GL
+{
+
+//using namespace std;
 
 #ifdef _WIN32
 PROC glewGetProcAddress(const char* name);
@@ -108,13 +117,16 @@ public:
     ~CShader();
 
     // This loads our text file for each shader and returns it in a string
-    string LoadTextFile(string strFile);
+    std::string LoadTextFile(std::string strFile);
+
+    // This is used to load all of the extensions and checks compatibility.
+    static bool InitGLSL();
 
     // This loads a vertex and fragment shader
-    void InitShaders(string strVertex, string strFragment);
+    void InitShaders(std::string strVertex, std::string strFragment);
 
     // This returns an ID for a variable in our shader
-    GLint GetVariable(string strVariable);
+    GLint GetVariable(std::string strVariable);
 
     // These are our basic get functions for our private data
     GLhandleARB GetProgram()	{	return m_hProgramObject; }
@@ -147,9 +159,10 @@ private:
     GLhandleARB m_hProgramObject;
 };
 
+} // namespace GL
 
-// This is used to load all of the extensions and checks compatibility.
-bool InitGLSL();
+} // namespace Components
 
+} // namespace Sofa
 
 #endif

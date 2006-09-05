@@ -41,7 +41,6 @@ public:
     void setPlane(const Deriv& normal, Real d)
     {
         planeNormal = normal;
-        planeNormal.normalize();
         planeD = d;
         Real n = normal.norm();
         planeNormal /= n;

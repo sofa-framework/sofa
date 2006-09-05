@@ -9,10 +9,11 @@ namespace Sofa
 namespace Core
 {
 
-template<class DataTypes>
+template<class TDataTypes>
 class MechanicalModel : public BasicMechanicalModel
 {
 public:
+    typedef TDataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecCoord VecCoord;

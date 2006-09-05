@@ -1,5 +1,8 @@
 #include "Capture.h"
 #include "../ImageBMP.h"
+#ifdef SOFA_HAVE_PNG
+#include "../ImagePNG.h"
+#endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -20,7 +23,11 @@ Capture::Capture()
 
 bool Capture::saveScreen(const std::string& filename)
 {
+#ifdef SOFA_HAVE_PNG
+    ImagePNG img;
+#else
     ImageBMP img;
+#endif
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
     img.init(viewport[2],viewport[3],24);
@@ -48,7 +55,11 @@ bool Capture::saveScreen()
             sprintf(buf, "%04d",c);
             filename = prefix;
             filename += buf;
+#ifdef SOFA_HAVE_PNG
+            filename += ".png";
+#else
             filename += ".bmp";
+#endif
         }
         while (stat(filename.c_str(),&st)==0);
     }
@@ -59,7 +70,11 @@ bool Capture::saveScreen()
     sprintf(buf, "%04d",c);
     filename = prefix;
     filename += buf;
+#ifdef SOFA_HAVE_PNG
+    filename += ".png";
+#else
     filename += ".bmp";
+#endif
     return saveScreen(filename);
 }
 

@@ -93,7 +93,7 @@ void LagrangianMultiplierContactConstraint<DataTypes>::addDForce()
     f1.resize(dx1.size());
     f2.resize(dx2.size());
 
-    LMVecCoord& lambda = *this->lambda->getX();
+    //LMVecCoord& lambda = *this->lambda->getX();
     LMVecCoord& dlambda = *this->lambda->getDx();
     LMVecDeriv& flambda = *this->lambda->getF();
     flambda.resize(dlambda.size());

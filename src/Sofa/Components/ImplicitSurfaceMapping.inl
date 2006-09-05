@@ -4,6 +4,7 @@
 #include "ImplicitSurfaceMapping.h"
 
 #include "Sofa/Core/Mapping.inl"
+#include "Common/rmath.h"
 
 #include <map>
 #include <list>
@@ -14,23 +15,7 @@ namespace Sofa
 namespace Components
 {
 
-template<class Real>
-int rfloor(Real r)
-{
-    return ((int)(r+1000000))-1000000; // Add a large number to not truncate toward 0
-}
-
-template<class Real>
-int rnear(Real r)
-{
-    return ((int)(r+1000000.5))-1000000; // Add a large number to not truncate toward 0
-}
-
-template<class Real>
-int rceil(Real r)
-{
-    return 1000000-((int)(1000000-r)); // Add a large number to not truncate toward 0
-}
+using namespace Common;
 
 template<class Real>
 Real sqr(Real r)

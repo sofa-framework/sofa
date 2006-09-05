@@ -65,18 +65,20 @@ void PlaneForceField<DataTypes>::draw()
         }
     }
     glEnd();
+    /*
     glPointSize(1);
     glColor4f(0,1,0,1);
     glBegin(GL_POINTS);
     for (unsigned int i=0; i<p1.size(); i++)
     {
-        Real d = p1[i]*planeNormal-planeD;
-        Coord p2 = p1[i];
-        p2 += planeNormal*(-d);
-        if (d>=0)
-            glVertex3d(p2[0],p2[1],p2[2]);
+    	Real d = p1[i]*planeNormal-planeD;
+    	Coord p2 = p1[i];
+    	p2 += planeNormal*(-d);
+    	if (d>=0)
+    		glVertex3d(p2[0],p2[1],p2[2]);
     }
     glEnd();
+    */
 }
 
 

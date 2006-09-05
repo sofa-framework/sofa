@@ -26,10 +26,13 @@ public:
     void init(int w, int h, int nbb);
     void clear();
 
-    int getWidth() {return width;}
-    int getHeight() {return height;}
-    int getNbBits() {return nbBits;}
-    unsigned char * getData() {return data;}
+    int getWidth() const                  { return width; }
+    int getHeight() const                 { return height; }
+    int getNbBits() const                 { return nbBits; }
+    int getLineSize() const               { return ((nbBits+7)/8)*width; }
+    int getImageSize() const              { return getLineSize()*height; }
+    unsigned char * getData()             { return data; }
+    const unsigned char * getData() const { return data; }
 
     typedef Factory<std::string, Image, std::string> Factory;
 

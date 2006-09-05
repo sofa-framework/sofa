@@ -10,10 +10,11 @@ namespace Sofa
 namespace Core
 {
 
-template<class DataTypes>
+template<class TDataTypes>
 class ForceField : public BasicForceField
 {
 public:
+    typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

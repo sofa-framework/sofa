@@ -157,6 +157,35 @@ public:
         }
     }
 
+    /// Return an object of this node deriving from a given class, or NULL if not found.
+    /// Note that only the first object is returned.
+    template<class Object>
+    Object* getNodeObject()
+    {
+        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
+        {
+            Object* o = dynamic_cast<Object*>(*it);
+            if (o!=NULL)
+                return o;
+        }
+        return NULL;
+    }
+
+    /// Return an object of this node and sub-nodes deriving from a given class, or NULL if not found.
+    /// Note that only the first object is returned.
+    template<class Object>
+    Object* getTreeObject()
+    {
+        Object* o = this->getNodeObject<Object>();
+        if (o != NULL) return o;
+        for (ChildIterator it = this->child.begin(); it != this->child.end(); ++it)
+        {
+            GNode* n = *it;
+            o = n->getTreeObject<Object>();
+            if (o != NULL) return o;
+        }
+        return NULL;
+    }
 
     /// @}
 

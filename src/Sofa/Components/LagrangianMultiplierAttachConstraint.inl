@@ -50,7 +50,7 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addForce()
     // Initialize constraints
     for (unsigned int i=0; i<constraints.size(); i++)
     {
-        ConstraintData& c = constraints[i];
+        //ConstraintData& c = constraints[i];
         //Coord val = p2[c.m2]-p1[c.m1];
         lambda[3*i+0] = 0; //val[0];
         lambda[3*i+1] = 0; //val[1];

@@ -14,6 +14,15 @@
 #endif
 
 
+namespace Sofa
+{
+
+namespace Components
+{
+
+namespace GL
+{
+
 // The function pointers for shaders
 PFNGLCREATESHADEROBJECTARBPROC	glCreateShaderObjectARB = NULL;
 PFNGLSHADERSOURCEARBPROC		glShaderSourceARB = NULL;
@@ -59,7 +68,7 @@ void (*glewGetProcAddress(const char* name))(void)
 #endif
 }
 
-bool InitGLSL()
+bool CShader::InitGLSL()
 {
     // This grabs a list of all the video card's extensions it supports
     char *szGLExtensions = (char*)glGetString(GL_EXTENSIONS);
@@ -122,20 +131,20 @@ CShader::~CShader()
 /////
 ///////////////////////////////// LOAD TEXT FILE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-string CShader::LoadTextFile(string strFile)
+std::string CShader::LoadTextFile(std::string strFile)
 {
     // Open the file passed in
-    ifstream fin(strFile.c_str());
+    std::ifstream fin(strFile.c_str());
 
     // Make sure we opened the file correctly
     if(!fin)
         return "";
 
-    string strLine = "";
-    string strText = "";
+    std::string strLine = "";
+    std::string strText = "";
 
     // Go through and store each line in the text file within a "string" object
-    while(getline(fin, strLine))
+    while(std::getline(fin, strLine))
     {
         strText = strText + "\n" + strLine;
     }
@@ -154,10 +163,10 @@ string CShader::LoadTextFile(string strFile)
 /////
 ///////////////////////////////// INIT SHADERS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-void CShader::InitShaders(string strVertex, string strFragment)
+void CShader::InitShaders(std::string strVertex, std::string strFragment)
 {
     // These will hold the shader's text file data
-    string strVShader, strFShader;
+    std::string strVShader, strFShader;
 
     // Make sure the user passed in a vertex and fragment shader file
     if(!strVertex.length() || !strFragment.length())
@@ -231,7 +240,7 @@ void CShader::TurnOff()		{	if (m_hProgramObject) glUseProgramObjectARB(0);				 }
 /////
 ///////////////////////////////// GET VARIABLE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-GLint CShader::GetVariable(string strVariable)
+GLint CShader::GetVariable(std::string strVariable)
 {
     // If we don't have an active program object, let's return -1
     if(!m_hProgramObject)
@@ -274,6 +283,12 @@ void CShader::Release()
         m_hProgramObject = 0; //NULL;
     }
 }
+
+} // namespace GL
+
+} // namespace Components
+
+} // namespace Sofa
 
 
 /////////////////////////////////////////////////////////////////////////////////

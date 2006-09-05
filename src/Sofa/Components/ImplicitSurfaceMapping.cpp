@@ -52,7 +52,6 @@ Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, Map
 Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<Vec3dTypes> > > ImplicitSurfaceMapping3fM3dClass("ImplicitSurfaceMapping", true);
 
 // Mech -> ExtMapped
-
 Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > ImplicitSurfaceMapping3dME3dClass("ImplicitSurfaceMapping", true);
 Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > ImplicitSurfaceMapping3fME3fClass("ImplicitSurfaceMapping", true);
 Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > ImplicitSurfaceMapping3dME3fClass("ImplicitSurfaceMapping", true);
