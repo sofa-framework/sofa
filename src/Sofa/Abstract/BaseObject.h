@@ -3,49 +3,70 @@
 
 #include "Base.h"
 #include "BaseContext.h"
+//#include <Sofa/Components/Common/ObjectFactory.h>
 
 namespace Sofa
 {
 
 namespace Abstract
 {
+class Event;
+//typedef Sofa::Components::XML::Node<Abstract::BaseObject> XMLNode;
 
-/// Base class for simulation objects.
+/** Base class for simulation objects.
+Each simulation object is related to a context, which gives access to all available external data.
+It is able to process events, if listening enabled (default is false).
+*/
 class BaseObject : public virtual Base
 {
 public:
-    BaseObject()
-        : Base(), context_(NULL)
-    {}
+    BaseObject();
 
-    virtual ~BaseObject()
-    {}
+    virtual ~BaseObject();
 
-    void setContext(BaseContext* n)
-    {
-        context_ = n;
-    }
+    /**@name context
+     */
+    ///@{
+    void setContext(BaseContext* n);
 
-    const BaseContext* getContext() const
-    {
-        return (context_==NULL)?BaseContext::getDefault():context_;
-    }
+    const BaseContext* getContext() const;
 
-    BaseContext* getContext()
-    {
-        return (context_==NULL)?BaseContext::getDefault():context_;
-    }
+    BaseContext* getContext();
+    ///@}
 
+    /**@name control
+        Basic state control
+     */
+    ///@{
     /// Initialization method called after each graph modification.
-    virtual void init()
-    { }
+    virtual void init();
 
     /// Reset to initial state
-    virtual void reset()
-    { }
+    virtual void reset();
+
+    /// Read data from an XML node
+    //virtual void readXML( XMLNode* );
+    ///@}
+
+    /**@name events
+    Methods related to Event processing
+     */
+    ///@{
+    /// if true, then handle the incoming events, else ignore them
+    void setListening( bool );
+
+    /// if true, then handle the incoming events, else ignore them
+    bool isListening() const;
+
+    /// Handle an event
+    virtual void handleEvent( Event* );
+    ///@}
+
+
 
 protected:
     BaseContext* context_;
+    bool m_isListening;
 };
 
 } // namespace Abstract
