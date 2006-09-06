@@ -1,0 +1,79 @@
+#include "BaseObject.h"
+#include "Event.h"
+#include <Sofa/Components/KeypressedEvent.h>
+#include <Sofa/Components/XML/BaseNode.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
+
+namespace Sofa
+{
+
+
+namespace Abstract
+{
+
+BaseObject::BaseObject()
+    : Base(), context_(NULL)
+    , m_isListening(false)
+{}
+
+BaseObject::~BaseObject()
+{}
+
+void BaseObject::setContext(BaseContext* n)
+{
+    context_ = n;
+}
+
+const BaseContext* BaseObject::getContext() const
+{
+    return (context_==NULL)?BaseContext::getDefault():context_;
+}
+
+BaseContext* BaseObject::getContext()
+{
+    return (context_==NULL)?BaseContext::getDefault():context_;
+}
+
+// void BaseObject::readXML( XMLNode* xmlnode )
+// {
+//     if( xmlnode->getAttribute("listening") ){
+//         setListening( xmlnode->getAttribute("listening") );
+//     }
+// }
+
+/// Initialization method called after each graph modification.
+void BaseObject::init()
+{ }
+
+/// Reset to initial state
+void BaseObject::reset()
+{ }
+
+/// Handle an event
+void BaseObject::handleEvent( Event* e )
+{
+    using namespace Components;
+    cerr<<"BaseObject "<<getName()<<" gets an event"<<endl;
+    if( KeypressedEvent* ke = dynamic_cast<KeypressedEvent*>( e ) )
+    {
+        cerr<<"BaseObject "<<getName()<<" gets a key event: "<<ke->getKey()<<endl;
+    }
+}
+
+void BaseObject::setListening( bool b )
+{
+    m_isListening = b;
+}
+
+bool BaseObject::isListening() const
+{
+    return m_isListening;
+}
+
+
+} // namespace Abstract
+
+} // namespace Sofa
+
