@@ -2,6 +2,7 @@
 #define SOFA_COMPONENTS_COMMON_MAT_H
 
 #include "Vec.h"
+#include <assert.h>
 //#include <boost/static_assert.hpp>
 #define BOOST_STATIC_ASSERT(a)
 

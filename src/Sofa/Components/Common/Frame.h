@@ -76,8 +76,11 @@ public:
     /// compute the product with another frame on the right
     Frame mult( const Frame& c ) const;
 
-    /// Write the OpenGL transformation matrix
-    void writeOpenGlMatrix( float m[16] ) const;
+    /// Write the OpenGL transformation matrix to a float[16]
+    void writeOpenGlMatrix( float* m ) const;
+
+    /// Write the OpenGL transformation matrix to a double[16]
+    void writeOpenGlMatrix( double* m ) const;
 
     /// compute the projection of a vector from the local frame to the reference frame
     template<class V>

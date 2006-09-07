@@ -31,10 +31,11 @@ public:
     const Vec3& getDy() const { return dy; }
     const Vec3& getDz() const { return dz; }
 
-    Vec3 getPoint(int i) const ;
-    Vec3 getPoint(int x, int y, int z) const ;
-    bool hasPos() const  { return true; }
-    double getPX(int i) const { return getPoint(i)[0]; }
+    unsigned getIndex( int i, int j, int k ) const; ///< one-dimensional index of a grid point
+    Vec3 getPoint(int i) const;
+    Vec3 getPoint(int x, int y, int z) const;
+    bool hasPos()  const { return true; }
+    double getPX(int i)  const { return getPoint(i)[0]; }
     double getPY(int i) const { return getPoint(i)[1]; }
     double getPZ(int i) const { return getPoint(i)[2]; }
 

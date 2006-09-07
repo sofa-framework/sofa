@@ -25,7 +25,7 @@ using Common::vector;
 class MultiResSparseGridTopology : public Core::Topology
 {
     int nbPoints;
-    typedef fixed_array<int, 8> Cube;
+public:
 
 
     /** Make all resolution of sparse grid create with a .vox file
@@ -303,7 +303,8 @@ class MultiResSparseGridTopology : public Core::Topology
         }
     };
 
-public:
+
+    typedef fixed_array<int, 8> Cube;
     typedef Vec3d Vec3;
 
     MultiResSparseGridTopology();

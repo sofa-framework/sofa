@@ -30,7 +30,7 @@ public:
 
     FixedConstraint(Core::MechanicalModel<DataTypes>* mmodel);
 
-    ~FixedConstraint();
+    virtual ~FixedConstraint();
 
     FixedConstraint<DataTypes>* addConstraint(int index);
     FixedConstraint<DataTypes>* removeConstraint(int index);

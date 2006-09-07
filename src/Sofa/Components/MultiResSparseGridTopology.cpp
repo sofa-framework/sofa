@@ -41,7 +41,7 @@ void create(MultiResSparseGridTopology*& obj, ObjectDescription* arg)
     else
     {
         obj = new MultiResSparseGridTopology(filevoxel,atoi(reso),
-                atof(arg->getAttribute("scale","1.0")));
+                (float) atof(arg->getAttribute("scale","1.0f")));
     }
 }
 
@@ -95,7 +95,7 @@ MultiResSparseGridTopology::Vec3 MultiResSparseGridTopology::getPoint(int i) con
     x = ((vectorSparseGrid[resolution]).getVertices())[i][0];
     y = ((vectorSparseGrid[resolution]).getVertices())[i][1];
     z = ((vectorSparseGrid[resolution]).getVertices())[i][2];
-    return (Vec3f(p0[0]+x,p0[1]+y,p0[2]+z));
+    return (Vec3f((float)p0[0]+x,(float)p0[1]+y,(float)p0[2]+z));
 }
 
 MultiResSparseGridTopology::Vec3 MultiResSparseGridTopology::getPoint(int i, int j, int k)
@@ -106,7 +106,7 @@ MultiResSparseGridTopology::Vec3 MultiResSparseGridTopology::getPoint(int i, int
     x = tmp->position[0];
     y = tmp->position[1];
     z = tmp->position[2];
-    return (Vec3f(p0[0]+x,p0[1]+y,p0[2]+z));
+    return (Vec3f((float)p0[0]+x,(float)p0[1]+y,(float)p0[2]+z));
 }
 
 
@@ -201,7 +201,7 @@ int MultiResSparseGridTopology::findNearestCube(const Vec3& pos, double& fx, dou
     double x = p*dx*inv_dx2;
     double y = p*dy*inv_dy2;
     double z = p*dz*inv_dz2;
-    float dist,distX,distY,distZ, distRef = -1;
+    double dist,distX,distY,distZ, distRef = -1;
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
@@ -396,9 +396,9 @@ int MultiResSparseGridTopology::SparseGrid::pasResolution(SparseGrid vg)
     dvy = vg.getDimVoxY();
     dvz = vg.getDimVoxZ();
 
-    setDimVoxX(2.0*dvx);
-    setDimVoxY(2.0*dvy);
-    setDimVoxZ(2.0*dvz);
+    setDimVoxX(2.0f*dvx);
+    setDimVoxY(2.0f*dvy);
+    setDimVoxZ(2.0f*dvz);
 
     dx = vg.getDimX();
     dy = vg.getDimY();
@@ -417,7 +417,7 @@ int MultiResSparseGridTopology::SparseGrid::pasResolution(SparseGrid vg)
 
     for(i = vg.voxelsMap.begin(); i != vg.voxelsMap.end(); i++)
     {
-        insertVoxel( ((*i).first.i)/2, ((*i).first.j)/2, ((*i).first.k)/2, (*i).second.density*0.125 );
+        insertVoxel( ((*i).first.i)/2, ((*i).first.j)/2, ((*i).first.k)/2, (*i).second.density*0.125f );
     }
 
     buildFromSparseGridMap(voxelsMap.size());
@@ -705,7 +705,7 @@ void MultiResSparseGridTopology::SparseGrid::setDensity()
     /// to find the voxels of the surface, we check if the voxel has neighbours or not
     for(i = voxelsMap.begin(); i != voxelsMap.end(); i++)
     {
-        voxelsDensity[j] = 1.0-voxelsMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k)].density;
+        voxelsDensity[j] = 1.0f-voxelsMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k)].density;
         j++;
     }
 }
@@ -739,7 +739,7 @@ int MultiResSparseGridTopology::SparseGrid::readFilePNG( char* fileName,int colo
         string thisFileName = theFileName + string(file_extension);
         cout<<"Reading file "<<thisFileName<<endl;
         /// getting pixels of the given color from the file
-        pixel_no += setPixels(thisFileName.c_str(),color,i-1);
+        pixel_no += setPixels(thisFileName.c_str(),color,(float)i-1);
     }
 
     return pixel_no;
@@ -752,9 +752,9 @@ void MultiResSparseGridTopology::SparseGrid::initFromPNG( char* fileName,int col
 
     allPixels = readFilePNG(fileName,color,filesNo);
 
-    setDimVoxX(0.35); // Dimension des voxels selon x.
-    setDimVoxY(0.35); // Dimension des voxels  selon y.
-    setDimVoxZ(0.35); // Dimension des voxels  selon z.
+    setDimVoxX(0.35f); // Dimension des voxels selon x.
+    setDimVoxY(0.35f); // Dimension des voxels  selon y.
+    setDimVoxZ(0.35f); // Dimension des voxels  selon z.
 
     buildFromSparseGridMap(allPixels);
 }
