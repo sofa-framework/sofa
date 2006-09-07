@@ -38,11 +38,11 @@ public:
             return (ny-1)*(nz-1);
     }
 
-    virtual Cube getCube(int i);
-    virtual Cube getCube(int x, int y, int z);
+    virtual Cube getCube(int i) const;
+    virtual Cube getCube(int x, int y, int z) const;
 
-    virtual Quad getQuad(int i);
-    virtual Quad getQuad(int x, int y, int z);
+    virtual Quad getQuad(int i) const;
+    virtual Quad getQuad(int x, int y, int z) const;
 
     int point(int x, int y, int z) const { return x+nx*(y+ny*z); }
     int cube(int x, int y, int z) const { return x+(nx-1)*(y+(ny-1)*z); }

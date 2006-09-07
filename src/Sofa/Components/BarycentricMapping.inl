@@ -5,6 +5,7 @@
 #include "Sofa/Components/Common/Mat.h"
 #include "BarycentricMapping.h"
 #include "RegularGridTopology.h"
+#include "MultiResSparseGridTopology.h"
 
 #include "Sofa/Core/MechanicalMapping.inl"
 #include "GL/template.h"
@@ -19,6 +20,37 @@ namespace Components
 {
 
 using namespace Common;
+
+template <class BaseMapping>
+void BarycentricMapping<BaseMapping>::calcMap(MultiResSparseGridTopology* topology)
+{
+    OutVecCoord& out = *this->toModel->getX();
+    int outside = 0;
+    typename BarycentricMapping<BaseMapping>::SparseGridMapper* mapper = new typename BarycentricMapping<BaseMapping>::SparseGridMapper(topology);
+    this->mapper = mapper;
+    mapper->map.resize(out.size());
+    int cube;
+    for (unsigned int i=0; i<out.size(); i++)
+    {
+        double coefs[3]= {0,0,0};
+        cube = topology->findCube(MultiResSparseGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+        if (cube==-1)
+        {
+            ++outside;
+            cube = topology->findNearestCube(MultiResSparseGridTopology::Vec3(out[i]), coefs[0], coefs[1],
+                    coefs[2]);
+// 			cout << "numero du cube outside : " << cube << endl;
+        }
+        CubeData& data = mapper->map[i];
+        data.baryCoords[0] = (Real)coefs[0];
+        data.baryCoords[1] = (Real)coefs[1];
+        data.baryCoords[2] = (Real)coefs[2];
+        data.in_index = cube;
+        //const typename TTopology::Cube points = topology->getCube(cube);
+        //std::copy(points.begin(), points.end(), data.points);
+    }
+    if (outside>0) std::cerr << "WARNING: Barycentric mapping with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
+}
 
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::calcMap(RegularGridTopology* topology)
@@ -241,17 +273,23 @@ void BarycentricMapping<BaseMapping>::init()
     Core::Topology* topology = dynamic_cast<Core::Topology*>(this->fromModel->getContext()->getTopology());
     if (topology!=NULL)
     {
-        RegularGridTopology* t = dynamic_cast<RegularGridTopology*>(topology);
+        MultiResSparseGridTopology* t = dynamic_cast<MultiResSparseGridTopology*>(topology);
         if (t!=NULL)
             this->calcMap(t);
         else
         {
-            MeshTopology* t2 = dynamic_cast<MeshTopology*>(topology);
-            if (t2!=NULL)
-                this->calcMap(t2);
+            RegularGridTopology* t = dynamic_cast<RegularGridTopology*>(topology);
+            if (t!=NULL)
+                this->calcMap(t);
             else
             {
-                std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;
+                MeshTopology* t2 = dynamic_cast<MeshTopology*>(topology);
+                if (t2!=NULL)
+                    this->calcMap(t2);
+                else
+                {
+                    std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;
+                }
             }
         }
     }
@@ -262,6 +300,30 @@ template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     if (mapper!=NULL) mapper->apply(out, in);
+}
+
+template <class BaseMapping>
+void BarycentricMapping<BaseMapping>::SparseGridMapper::apply( typename BarycentricMapping<BaseMapping>::Out::VecCoord& out, const typename BarycentricMapping<BaseMapping>::In::VecCoord& in )
+{
+    out.resize(map.size());
+    for(unsigned int i=0; i<map.size(); i++)
+    {
+        /*if (i == 16)
+        	cout << "this->map[i].in_index :" << this->map[i].in_index <<endl;
+        */const MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+
+        const Real fx = map[i].baryCoords[0];
+        const Real fy = map[i].baryCoords[1];
+        const Real fz = map[i].baryCoords[2];
+        out[i] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
+                + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
+                + in[cube[2]] * ((1-fx) * (  fy) * (1-fz))
+                + in[cube[3]] * ((  fx) * (  fy) * (1-fz))
+                + in[cube[4]] * ((1-fx) * (1-fy) * (  fz))
+                + in[cube[5]] * ((  fx) * (1-fy) * (  fz))
+                + in[cube[6]] * ((1-fx) * (  fy) * (  fz))
+                + in[cube[7]] * ((  fx) * (  fy) * (  fz));
+    }
 }
 
 template <class BaseMapping>
@@ -376,6 +438,27 @@ void BarycentricMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const
 
 
 template <class BaseMapping>
+void BarycentricMapping<BaseMapping>::SparseGridMapper::applyJ( typename BarycentricMapping<BaseMapping>::Out::VecDeriv& out, const typename BarycentricMapping<BaseMapping>::In::VecDeriv& in )
+{
+    for(unsigned int i=0; i<map.size(); i++)
+    {
+        const MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const Real fx = map[i].baryCoords[0];
+        const Real fy = map[i].baryCoords[1];
+        const Real fz = map[i].baryCoords[2];
+        out[i] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
+                + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
+                + in[cube[2]] * ((1-fx) * (  fy) * (1-fz))
+                + in[cube[3]] * ((  fx) * (  fy) * (1-fz))
+                + in[cube[4]] * ((1-fx) * (1-fy) * (  fz))
+                + in[cube[5]] * ((  fx) * (1-fy) * (  fz))
+                + in[cube[6]] * ((1-fx) * (  fy) * (  fz))
+                + in[cube[7]] * ((  fx) * (  fy) * (  fz));
+    }
+}
+
+
+template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::RegularGridMapper::applyJ( typename BarycentricMapping<BaseMapping>::Out::VecDeriv& out, const typename BarycentricMapping<BaseMapping>::In::VecDeriv& in )
 {
     for(unsigned int i=0; i<map.size(); i++)
@@ -481,6 +564,27 @@ template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     if (mapper!=NULL) mapper->applyJT(out, in);
+}
+
+template <class BaseMapping>
+void BarycentricMapping<BaseMapping>::SparseGridMapper::applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in )
+{
+    for(unsigned int i=0; i<map.size(); i++)
+    {
+        const OutDeriv v = in[i];
+        const MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const OutReal fx = (OutReal)map[i].baryCoords[0];
+        const OutReal fy = (OutReal)map[i].baryCoords[1];
+        const OutReal fz = (OutReal)map[i].baryCoords[2];
+        out[cube[0]] += v * ((1-fx) * (1-fy) * (1-fz));
+        out[cube[1]] += v * ((  fx) * (1-fy) * (1-fz));
+        out[cube[2]] += v * ((1-fx) * (  fy) * (1-fz));
+        out[cube[3]] += v * ((  fx) * (  fy) * (1-fz));
+        out[cube[4]] += v * ((1-fx) * (1-fy) * (  fz));
+        out[cube[5]] += v * ((  fx) * (1-fy) * (  fz));
+        out[cube[6]] += v * ((1-fx) * (  fy) * (  fz));
+        out[cube[7]] += v * ((  fx) * (  fy) * (  fz));
+    }
 }
 
 template <class BaseMapping>
@@ -604,6 +708,38 @@ void BarycentricMapping<BaseMapping>::draw()
     glEnd();
     InVecCoord& in = *this->fromModel->getX();
     if (mapper!=NULL) mapper->draw(out, in);
+}
+
+template <class BaseMapping>
+void BarycentricMapping<BaseMapping>::SparseGridMapper::draw(const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in)
+{
+    glBegin (GL_LINES);
+    for (unsigned int i=0; i<map.size(); i++)
+    {
+        const MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const Real fx = map[i].baryCoords[0];
+        const Real fy = map[i].baryCoords[1];
+        const Real fz = map[i].baryCoords[2];
+        Real f[8];
+        f[0] = (1-fx) * (1-fy) * (1-fz);
+        f[1] = (  fx) * (1-fy) * (1-fz);
+        f[2] = (1-fx) * (  fy) * (1-fz);
+        f[3] = (  fx) * (  fy) * (1-fz);
+        f[4] = (1-fx) * (1-fy) * (  fz);
+        f[5] = (  fx) * (1-fy) * (  fz);
+        f[6] = (1-fx) * (  fy) * (  fz);
+        f[7] = (  fx) * (  fy) * (  fz);
+        for (int j=0; j<8; j++)
+        {
+            if (f[j]<=-0.0001 || f[j]>=0.0001)
+            {
+                glColor3f((float)f[j],(float)f[j],1);
+                GL::glVertexT(out[i]);
+                GL::glVertexT(in[cube[j]]);
+            }
+        }
+    }
+    glEnd();
 }
 
 template <class BaseMapping>

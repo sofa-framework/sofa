@@ -8,6 +8,8 @@ namespace Components
 {
 
 using namespace Common;
+using std::cout;
+using std::endl;
 
 void create(RegularGridTopology*& obj, ObjectDescription* arg)
 {
@@ -71,7 +73,7 @@ RegularGridTopology::Vec3 RegularGridTopology::getPoint(int x, int y, int z) con
 }
 
 /// return the cube containing the given point (or -1 if not found).
-int RegularGridTopology::findCube(const Vec3& pos)
+int RegularGridTopology::findCube(const Vec3& pos) const
 {
     if (nx<2 || ny<2 || nz<2) return -1;
     Vec3 p = pos-p0;
@@ -110,7 +112,7 @@ int RegularGridTopology::findNearestCube(const Vec3& pos)
 
 /// return the cube containing the given point (or -1 if not found),
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double &fz)
+int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double &fz) const
 {
     if (nx<2 || ny<2 || nz<2) return -1;
     Vec3 p = pos-p0;

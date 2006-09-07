@@ -5,6 +5,7 @@
 #include "Sofa/Core/MechanicalModel.h"
 #include "Sofa/Abstract/VisualModel.h"
 #include "MeshTopology.h"
+#include "MultiResSparseGridTopology.h"
 #include "RegularGridTopology.h"
 #include <vector>
 
@@ -50,17 +51,34 @@ public:
     class Mapper
     {
     public:
-        virtual ~Mapper() { }
+        virtual ~Mapper()
+        { }
         virtual void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in ) = 0;
         virtual void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in ) = 0;
         virtual void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in ) = 0;
         virtual void draw( const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in) = 0;
     };
 
+    class SparseGridMapper : public Mapper
+    {
+        /// Classe permettant le calcul du mapping sur une SparseRegularGrid
+    public:
+        SparseGridMapper(MultiResSparseGridTopology* topology) : topology(topology)
+        {}
+
+        std::vector<CubeData> map;
+        MultiResSparseGridTopology* topology;
+        void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
+        void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );
+        void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in );
+        void draw( const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in);
+    };
+
     class RegularGridMapper : public Mapper
     {
     public:
-        RegularGridMapper(RegularGridTopology* topology) : topology(topology) {}
+        RegularGridMapper(RegularGridTopology* topology) : topology(topology)
+        {}
 
         std::vector<CubeData> map;
         RegularGridTopology* topology;
@@ -73,7 +91,8 @@ public:
     class MeshMapper : public Mapper
     {
     public:
-        MeshMapper(MeshTopology* topology) : topology(topology) {}
+        MeshMapper(MeshTopology* topology) : topology(topology)
+        {}
 
         std::vector< MappingData<1,0> > map1d;
         std::vector< MappingData<2,0> > map2d;
@@ -114,18 +133,18 @@ protected:
 
     void calcMap(RegularGridTopology* topo);
 
+    void calcMap(MultiResSparseGridTopology* topo);
+
     void calcMap(MeshTopology* topo);
 
 public:
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
-    {
-    }
+    {}
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
-    {
-    }
+    {}
 
     virtual ~BarycentricMapping()
     {
@@ -143,14 +162,22 @@ public:
 
     // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
+    void initTextures()
+    { }
+    void update()
+    { }
 
 protected:
 
-    bool getShow(const Abstract::BaseObject* m) const { return m->getContext()->getShowMappings(); }
+    bool getShow(const Abstract::BaseObject* m) const
+    {
+        return m->getContext()->getShowMappings();
+    }
 
-    bool getShow(const Core::BasicMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
+    bool getShow(const Core::BasicMechanicalMapping* m) const
+    {
+        return m->getContext()->getShowMechanicalMappings();
+    }
 
 };
 
