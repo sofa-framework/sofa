@@ -42,7 +42,7 @@ public:
 
     // -- VisualModel interface
 
-    void draw();
+    virtual void draw();
 
     void initTextures() { }
 

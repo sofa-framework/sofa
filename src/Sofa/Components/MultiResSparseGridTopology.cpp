@@ -103,9 +103,9 @@ MultiResSparseGridTopology::Vec3 MultiResSparseGridTopology::getPoint(int i, int
     MultiResSparseGridTopology::SparseGrid::Vertex *tmp =
         &((vectorSparseGrid[resolution]).getVertexMap())[MultiResSparseGridTopology::SparseGrid::Index3D(i,j,k)];
     float x,y,z;
-    x = tmp->position[0];
-    y = tmp->position[1];
-    z = tmp->position[2];
+    x = tmp->vertexPosition[0];
+    y = tmp->vertexPosition[1];
+    z = tmp->vertexPosition[2];
     return (Vec3f((float)p0[0]+x,(float)p0[1]+y,(float)p0[2]+z));
 }
 
@@ -264,9 +264,9 @@ int MultiResSparseGridTopology::getIndicesInSpace( std::vector<int>& indices,
     for(i = (vectorSparseGrid[resolution]).getVertexMap().begin();
         i !=  (vectorSparseGrid[resolution]).getVertexMap().end(); i++)
     {
-        x = (*i).second.position[0];
-        y = (*i).second.position[1];
-        z = (*i).second.position[2];
+        x = (*i).second.vertexPosition[0];
+        y = (*i).second.vertexPosition[1];
+        z = (*i).second.vertexPosition[2];
         if ( xmin <= x && x <= xmax)
             if( ymin <= y && y <= ymax)
                 if( zmin <= z && z <= zmax)
@@ -318,19 +318,19 @@ void MultiResSparseGridTopology::SparseGrid::afficherSparseGridMap()
     {
         //V1 (x0,y0,z0)
         for(int l=0; l<3; l++)
-            cout << vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k)].position[l] <<" ";
+            cout << vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k)].vertexPosition[l] <<" ";
         cout << "     ";
         //V1 (x0,y0,z0)
         for(int l=0; l<3; l++)
-            cout << vertexMap[Index3D((*i).first.i+1,(*i).first.j,(*i).first.k)].position[l] << " ";
+            cout << vertexMap[Index3D((*i).first.i+1,(*i).first.j,(*i).first.k)].vertexPosition[l] << " ";
         cout << "     ";
         //V1 (x0,y0,z0)
         for(int l=0; l<3; l++)
-            cout << vertexMap[Index3D((*i).first.i,(*i).first.j+1,(*i).first.k)].position[l] <<" " ;
+            cout << vertexMap[Index3D((*i).first.i,(*i).first.j+1,(*i).first.k)].vertexPosition[l] <<" " ;
         cout << "     ";
         //V1 (x0,y0,z0)
         for(int l=0; l<3; l++)
-            cout << vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k+1)].position[l] <<" ";
+            cout << vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k+1)].vertexPosition[l] <<" ";
         cout << "     ";
 
         cout << endl;
@@ -349,7 +349,7 @@ void MultiResSparseGridTopology::SparseGrid::afficherVertexMap()
     {
         cout << (*i).first.i << " " << (*i).first.j << " " << (*i).first.k << " : ";
         for(int l=0; l<3; l++)
-            cout << (*i).second.position[l] << " ";
+            cout << (*i).second.vertexPosition[l] << " ";
         cout << endl;
     }
     cout << "end of the vertexMap" << endl;
@@ -603,7 +603,7 @@ void MultiResSparseGridTopology::SparseGrid::setVertexMap()
     for(iter= vertexMap.begin(); iter!= vertexMap.end(); iter++)
     {
         (*iter).second.index = num;
-        vertices[num] = ((*iter).second.position);
+        vertices[num] = ((*iter).second.vertexPosition);
         num++;
     }
 
@@ -633,7 +633,7 @@ void MultiResSparseGridTopology::SparseGrid::setSurfaceSparseGrid()
         else if (voxelsMap.find(Index3D((*i).first.i,(*i).first.j,(*i).first.k-1))== voxelsMap.end())
             surfaceSparseGrid.push_back((*i).first);
     }
-    surfaceIndices = new int [surfaceSparseGrid.size()*30];
+    surfaceIndices.resize(surfaceSparseGrid.size()*30);
     int counter = 0;
     for(i = voxelsMap.begin(); i != voxelsMap.end(); i++)
     {
@@ -717,7 +717,7 @@ void MultiResSparseGridTopology::SparseGrid::buildFromSparseGridMap(int allPixel
     setVertexMap();
     /// defining number of indices: (4indices for each face + 1 to indicate the end)*number of faces
     numIndices = allPixels*6*5;
-    indices = new int [numIndices];
+    indices.resize(numIndices);
     /// finding the indices for each voxel
     setIndicesMap();
     /// finding voxels and faces of the surface
@@ -765,7 +765,7 @@ int MultiResSparseGridTopology::SparseGrid::readFileVOX( char* fileName,int colo
     // le constructeur de ifstream permet d'ouvrir un fichier en lecture
     ifstream fichier( fileName );
     int pixel_no = 0;
-    if ( fichier != NULL ) // ce test échoue si le fichier n'est pas ouvert
+    if ( fichier != NULL ) // ce test ï¿½houe si le fichier n'est pas ouvert
     {
         cout << "Ouverture du fichier " <<  fileName<< " reussit" << endl;
         int nb1, nb2, nb3,nb ;

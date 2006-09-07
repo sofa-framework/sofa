@@ -1,7 +1,7 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root"  dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
 	<Node name="Poutre1">
-		<Object type="RungeKutta4"/>
+		<Object type="CGImplicit"/>
 		<Node name="M1">
 			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
@@ -28,9 +28,9 @@
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="StiffSpringForceField" name="Springs" filename="BehaviorModels/smCube27.xs3"/>
 		</Node>
-		<Object type="SpringForceField" name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2" />
-		<Object type="SpringForceField" name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="M2" object2="M3" />
-		<Object type="SpringForceField" name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="M3" object2="M4" />
-		<Object type="SpringForceField" name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="M4" object2="M5" />
+		<Object type="StiffSpringForceField" name="ExternalSprings1" filename="BehaviorModels/linkSmCube27.xs3" object1="M1" object2="M2" />
+		<Object type="StiffSpringForceField" name="ExternalSprings2" filename="BehaviorModels/linkSmCube27.xs3" object1="M2" object2="M3" />
+		<Object type="StiffSpringForceField" name="ExternalSprings3" filename="BehaviorModels/linkSmCube27.xs3" object1="M3" object2="M4" />
+		<Object type="StiffSpringForceField" name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="M4" object2="M5" />
 	</Node>
 </Node>

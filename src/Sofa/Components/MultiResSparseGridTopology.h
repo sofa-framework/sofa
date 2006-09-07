@@ -21,6 +21,7 @@ namespace Components
 
 using namespace Common;
 using Common::vector;
+typedef Common::Vec3f Vec3;
 
 class MultiResSparseGridTopology : public Core::Topology
 {
@@ -56,14 +57,14 @@ public:
         ///to represent vertices of voxels
         struct Vertex
         {
-            float *position;
+            Vec3 vertexPosition;
             int index;
             Vertex(float x=0, float y=0, float z=0)
             {
-                position = new float(3);
-                position[0]=x;
-                position[1]=y;
-                position[2]=z;
+                //position = new float(3);
+                vertexPosition[0]=x;
+                vertexPosition[1]=y;
+                vertexPosition[2]=z;
             };
         };
 
@@ -104,15 +105,15 @@ public:
         /// Grid's scale
         float scale;
         /// array of vertices
-        vector< float *> vertices;
+        vector<Vec3> vertices;
         /// contains centers of the voxels of the surface
         vector<Index3D> surfaceSparseGrid;
         /// number and array of the 6 faces corresponding to each voxels
         int numIndices;
-        int *indices;
+        vector<int> indices;
         /// number and array of the visible faces
         int numSurfaceIndices;
-        int *surfaceIndices;
+        vector<int> surfaceIndices;
         /// array of density
         float* voxelsDensity;
         /// size of the voxels
@@ -156,16 +157,16 @@ public:
             return numSurfaceIndices;
         }
         /// returns the array of vertices
-        vector< float *>& getVertices()
+        vector< Vec3>& getVertices()
         {
             return vertices;
         }
-        const vector< float *>& getVertices() const
+        const vector<Vec3>& getVertices() const
         {
             return vertices;
         }
         /// returns the array of indices for all the voxels
-        int* getFaceIndices()
+        vector<int>& getFaceIndices()
         {
             return indices;
         }
@@ -212,7 +213,7 @@ public:
             return voxelsDensity;
         }
         /// returns the array of indices for faces of the surface
-        int* getSurfaceIndices()
+        vector<int>& getSurfaceIndices()
         {
             return surfaceIndices;
         }
