@@ -9,6 +9,8 @@
 #include "GL/template.h"
 #include <assert.h>
 #include <iostream>
+using std::cerr;
+using std::endl;
 
 #include <GL/gl.h>
 
@@ -483,10 +485,12 @@ void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const D
             /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
             /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
             /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
-    JtD[5] =   J[ 0][5]*Depl[ 0]+  J[ 1][5]*Depl[ 1]+/*J[ 2][5]*Depl[ 2]+*/
-            J[ 3][5]*Depl[ 3]+  J[ 4][5]*Depl[ 4]+/*J[ 5][5]*Depl[ 5]+*/
-            J[ 6][5]*Depl[ 6]+  J[ 7][5]*Depl[ 7]+/*J[ 8][5]*Depl[ 8]+*/
-            J[ 9][5]*Depl[ 9]+  J[10][5]*Depl[10] /*J[11][5]*Depl[11]*/;
+    JtD[5] =   J[ 0][5]*Depl[ 0]+  /*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
+            J[ 3][5]*Depl[ 3]+  /*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
+            J[ 6][5]*Depl[ 6]+  /*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
+            J[ 9][5]*Depl[ 9]+  /*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
+//         cerr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<endl;
+//         cerr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<endl;
 
     Vec<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
@@ -538,6 +542,7 @@ void TetrahedronFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Ind
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex )
 {
+    //std::cerr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall"<<std::endl;
     Element index = *elementIt;
     Index a = index[0];
     Index b = index[1];
@@ -558,6 +563,9 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f, const
     D[9] =  _initialPoints[d][0] - _initialPoints[a][0] - p[d][0]+p[a][0];
     D[10] = _initialPoints[d][1] - _initialPoints[a][1] - p[d][1]+p[a][1];
     D[11] = _initialPoints[d][2] - _initialPoints[a][2] - p[d][2]+p[a][2];
+    /*        std::cerr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, displacement"<<D<<std::endl;
+            std::cerr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, straindisplacement"<<_strainDisplacements[elementIndex]<<std::endl;
+            std::cerr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, material"<<_materialsStiffnesses[elementIndex]<<std::endl;*/
 
     // compute force on element
     Displacement F;
@@ -565,6 +573,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f, const
     if(!_assembling)
     {
         computeForce( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex] );
+        //std::cerr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, force"<<F<<std::endl;
     }
     else
     {

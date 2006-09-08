@@ -141,6 +141,11 @@ bool MeshTopology::load(const char* filename)
     return true;
 }
 
+void MeshTopology::addTetrahedron( int a, int b, int c, int d )
+{
+    seqTetras.push_back( make_array(a,b,c,d) );
+}
+
 const MeshTopology::SeqLines& MeshTopology::getLines()
 {
     if (!validLines)

@@ -70,6 +70,9 @@ public:
     virtual double getPY(int i) const;
     virtual double getPZ(int i) const;
 
+    // for procedural creation without file loader
+    void addTetrahedron( int a, int b, int c, int d );
+
 
 protected:
     int nbPoints;
