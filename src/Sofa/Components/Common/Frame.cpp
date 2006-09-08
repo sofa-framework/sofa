@@ -105,24 +105,45 @@ Frame Frame::mult( const Frame& c ) const
 }
 
 /// Write the OpenGL transformation matrix
-void Frame::writeOpenGlMatrix( float m[16] ) const
+void Frame::writeOpenGlMatrix( float *m ) const
 {
-    m[0] = (float)basis_[0][0];
-    m[1] = (float)basis_[1][0];
-    m[2] = (float)basis_[2][0];
-    m[3] = (float)0;
-    m[4] = (float)basis_[0][1];
-    m[5] = (float)basis_[1][1];
-    m[6] = (float)basis_[2][1];
-    m[7] = (float)0;
-    m[8] = (float)basis_[0][2];
-    m[9] = (float)basis_[1][2];
-    m[10] = (float)basis_[2][2];
-    m[11] = (float)0;
-    m[12] = (float)origin_[0];
-    m[13] = (float)origin_[1];
-    m[14] = (float)origin_[2];
-    m[15] = (float)1;
+    m[0] = (float) basis_[0][0];
+    m[1] = (float) basis_[1][0];
+    m[2] = (float) basis_[2][0];
+    m[3] = (float) 0;
+    m[4] = (float) basis_[0][1];
+    m[5] = (float) basis_[1][1];
+    m[6] = (float) basis_[2][1];
+    m[7] = (float) 0;
+    m[8] = (float) basis_[0][2];
+    m[9] = (float) basis_[1][2];
+    m[10] = (float) basis_[2][2];
+    m[11] = (float) 0;
+    m[12] = (float) origin_[0];
+    m[13] = (float) origin_[1];
+    m[14] = (float) origin_[2];
+    m[15] = (float) 1;
+}
+
+/// Write the OpenGL transformation matrix
+void Frame::writeOpenGlMatrix( double *m ) const
+{
+    m[0] = basis_[0][0];
+    m[1] = basis_[1][0];
+    m[2] = basis_[2][0];
+    m[3] = 0;
+    m[4] = basis_[0][1];
+    m[5] = basis_[1][1];
+    m[6] = basis_[2][1];
+    m[7] = 0;
+    m[8] = basis_[0][2];
+    m[9] = basis_[1][2];
+    m[10] = basis_[2][2];
+    m[11] = 0;
+    m[12] = origin_[0];
+    m[13] = origin_[1];
+    m[14] = origin_[2];
+    m[15] = 1;
 }
 
 /// Compute the transformation from the parent to the child

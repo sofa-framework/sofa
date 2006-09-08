@@ -33,44 +33,6 @@ public:
     }
 };
 
-template <>
-void MechanicalObject<Vec3dTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
-{
-    const VecCoord& x = *getX();
-    for( unsigned i=0; i<x.size(); ++i )
-    {
-        if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax )
-        {
-            indices.push_back(i);
-        }
-    }
-}
-template <>
-void MechanicalObject<Vec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
-{
-    const VecCoord& x = *getX();
-    for( unsigned i=0; i<x.size(); ++i )
-    {
-        if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax )
-        {
-            indices.push_back(i);
-        }
-    }
-}
-
-// overload for rigid bodies: use the center
-template<>
-void MechanicalObject<Components::Common::RigidTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
-{
-    const VecCoord& x = *getX();
-    for( unsigned i=0; i<x.size(); ++i )
-    {
-        if( x[i].getCenter()[0] >= xmin && x[i].getCenter()[0] <= xmax && x[i].getCenter()[1] >= ymin && x[i].getCenter()[1] <= ymax && x[i].getCenter()[2] >= zmin && x[i].getCenter()[2] <= zmax )
-        {
-            indices.push_back(i);
-        }
-    }
-}
 
 
 
@@ -103,6 +65,48 @@ Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectClass("Me
 Creator< ObjectFactory, MechanicalObject<RigidTypes> > MechanicalObjectRigidClass("MechanicalObjectRigid",true);
 Creator< ObjectFactory, MechanicalObject<LaparoscopicRigidTypes> > MechanicalObjectLaparoscopicRigidClass("LaparoscopicObject",true);
 } // namespace Components
+
+
+
+template <>
+void Core::MechanicalObject<Components::Common::Vec3dTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+{
+    const VecCoord& x = *getX();
+    for( unsigned i=0; i<x.size(); ++i )
+    {
+        if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax )
+        {
+            indices.push_back(i);
+        }
+    }
+}
+template <>
+void Core::MechanicalObject<Components::Common::Vec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+{
+    const VecCoord& x = *getX();
+    for( unsigned i=0; i<x.size(); ++i )
+    {
+        if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax )
+        {
+            indices.push_back(i);
+        }
+    }
+}
+
+// overload for rigid bodies: use the center
+template<>
+void Core::MechanicalObject<Components::Common::RigidTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+{
+    const VecCoord& x = *getX();
+    for( unsigned i=0; i<x.size(); ++i )
+    {
+        if( x[i].getCenter()[0] >= xmin && x[i].getCenter()[0] <= xmax && x[i].getCenter()[1] >= ymin && x[i].getCenter()[1] <= ymax && x[i].getCenter()[2] >= zmin && x[i].getCenter()[2] <= zmax )
+        {
+            indices.push_back(i);
+        }
+    }
+}
+
 
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 
