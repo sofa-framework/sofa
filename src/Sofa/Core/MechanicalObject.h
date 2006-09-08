@@ -70,6 +70,9 @@ public:
 
     void applyScale (double s);
 
+    /// Get the indices of the particles located in the given bounding box
+    void getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const;
+
     /// @name Integration related methods
     /// @{
 

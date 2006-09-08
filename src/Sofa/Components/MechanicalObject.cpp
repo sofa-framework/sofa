@@ -33,6 +33,47 @@ public:
     }
 };
 
+template <>
+void MechanicalObject<Vec3dTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+{
+    const VecCoord& x = *getX();
+    for( unsigned i=0; i<x.size(); ++i )
+    {
+        if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax )
+        {
+            indices.push_back(i);
+        }
+    }
+}
+template <>
+void MechanicalObject<Vec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+{
+    const VecCoord& x = *getX();
+    for( unsigned i=0; i<x.size(); ++i )
+    {
+        if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax )
+        {
+            indices.push_back(i);
+        }
+    }
+}
+
+// overload for rigid bodies: use the center
+template<>
+void MechanicalObject<Components::Common::RigidTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+{
+    const VecCoord& x = *getX();
+    for( unsigned i=0; i<x.size(); ++i )
+    {
+        if( x[i].getCenter()[0] >= xmin && x[i].getCenter()[0] <= xmax && x[i].getCenter()[1] >= ymin && x[i].getCenter()[1] <= ymax && x[i].getCenter()[2] >= zmin && x[i].getCenter()[2] <= zmax )
+        {
+            indices.push_back(i);
+        }
+    }
+}
+
+
+
 namespace Common   // \todo Why this must be inside Common namespace
 {
 

@@ -57,15 +57,15 @@ public:
         ///to represent vertices of voxels
         struct Vertex
         {
-            Vec3 vertexPosition;
+            //Vec3 vertexPosition;
             int index;
-            Vertex(float x=0, float y=0, float z=0)
-            {
-                //position = new float(3);
-                vertexPosition[0]=x;
-                vertexPosition[1]=y;
-                vertexPosition[2]=z;
-            };
+            /*            Vertex(float x=0, float y=0, float z=0)
+                        {
+                            //position = new float(3);
+                            vertexPosition[0]=x;
+                            vertexPosition[1]=y;
+                            vertexPosition[2]=z;
+                        };*/
         };
 
         ///To represent voxels centers
@@ -121,10 +121,12 @@ public:
         /// size of the grid
         int dimX,dimY,dimZ;
 
+        typedef std::map<Index3D, Vertex> VertexMap;
+        typedef std::map<Index3D, Voxel> VoxelMap;
         /// contains all vertices without repeating
-        std::map<Index3D, Vertex> vertexMap;
+        VertexMap vertexMap;
         /// contains all the voxels, each represented by its centers and its 8 vertices
-        std::map<Index3D,Voxel> voxelsMap;
+        VoxelMap voxelsMap;
 
     public:
 
@@ -327,7 +329,7 @@ public:
 
     ///  get the vertex's psotion with its indice or its index
     Vec3 getPoint(int i) const ;
-    Vec3 getPoint(int ,int ,int );
+    //Vec3 getPoint(int ,int ,int );
 
     /// ??????
     bool hasPos() const;
@@ -343,8 +345,6 @@ public:
     int findCube(const Vec3& pos, double& fx, double &fy, double &fz) const;
     /// get the indice of the nearest cube of the coordinates pos and the barycentric coordinates
     int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz) const;
-    ///find the vertices in the constraint box
-    int getIndicesInSpace( std::vector<int>& indices,float xmin,float xmax,float ymin,float ymax,float zmin,float zmax );
     /// set the position (not used)
     void setP0(const Vec3& val)
     {

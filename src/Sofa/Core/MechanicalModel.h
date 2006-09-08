@@ -14,6 +14,7 @@ class MechanicalModel : public BasicMechanicalModel
 {
 public:
     typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -30,6 +31,9 @@ public:
     virtual const VecDeriv* getV()  const = 0;
     virtual const VecDeriv* getF()  const = 0;
     virtual const VecDeriv* getDx() const = 0;
+
+    /// Get the indices of the particles located in the given bounding box
+    virtual void getIndicesInSpace(std::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const {}
 };
 
 } // namespace Core

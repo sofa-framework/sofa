@@ -98,16 +98,16 @@ MultiResSparseGridTopology::Vec3 MultiResSparseGridTopology::getPoint(int i) con
     return (Vec3f((float)p0[0]+x,(float)p0[1]+y,(float)p0[2]+z));
 }
 
-MultiResSparseGridTopology::Vec3 MultiResSparseGridTopology::getPoint(int i, int j, int k)
-{
-    MultiResSparseGridTopology::SparseGrid::Vertex *tmp =
-        &((vectorSparseGrid[resolution]).getVertexMap())[MultiResSparseGridTopology::SparseGrid::Index3D(i,j,k)];
-    float x,y,z;
-    x = tmp->vertexPosition[0];
-    y = tmp->vertexPosition[1];
-    z = tmp->vertexPosition[2];
-    return (Vec3f((float)p0[0]+x,(float)p0[1]+y,(float)p0[2]+z));
-}
+// MultiResSparseGridTopology::Vec3 MultiResSparseGridTopology::getPoint(int i, int j, int k)
+// {
+//     MultiResSparseGridTopology::SparseGrid::Vertex *tmp =
+// 		    &((vectorSparseGrid[resolution]).getVertexMap())[MultiResSparseGridTopology::SparseGrid::Index3D(i,j,k)];
+//     float x,y,z;
+//     x = tmp->vertexPosition[0];
+//     y = tmp->vertexPosition[1];
+//     z = tmp->vertexPosition[2];
+//     return (Vec3f((float)p0[0]+x,(float)p0[1]+y,(float)p0[2]+z));
+// }
 
 
 double MultiResSparseGridTopology::getPX(int i) const
@@ -256,26 +256,25 @@ int MultiResSparseGridTopology::findNearestCube(const Vec3& pos, double& fx, dou
     return ixTmp + iyTmp*DimX + izTmp*DimX*DimY;
 
 }
-int MultiResSparseGridTopology::getIndicesInSpace( std::vector<int>& indices,
-        float xmin,float xmax,float ymin,float ymax,float zmin,float zmax )
-{
-    float x,y,z;
-    std::map<SparseGrid::Index3D,SparseGrid::Vertex>::iterator i;
-    for(i = (vectorSparseGrid[resolution]).getVertexMap().begin();
-        i !=  (vectorSparseGrid[resolution]).getVertexMap().end(); i++)
-    {
-        x = (*i).second.vertexPosition[0];
-        y = (*i).second.vertexPosition[1];
-        z = (*i).second.vertexPosition[2];
-        if ( xmin <= x && x <= xmax)
-            if( ymin <= y && y <= ymax)
-                if( zmin <= z && z <= zmax)
-                {
-                    indices.push_back((*i).second.index);
-                }
-    }
-    return 0;
-}
+// int MultiResSparseGridTopology::getIndicesInSpace( std::vector<int>& indices,
+//         float xmin,float xmax,float ymin,float ymax,float zmin,float zmax )
+// {
+// 	float x,y,z;
+// 	std::map<SparseGrid::Index3D,SparseGrid::Vertex>::iterator i;
+// 	for(i = (vectorSparseGrid[resolution]).getVertexMap().begin();
+// 		   i !=  (vectorSparseGrid[resolution]).getVertexMap().end();i++)
+// 	{
+//             x = (*i).second.vertexPosition[0];
+//             y = (*i).second.vertexPosition[1];
+//             z = (*i).second.vertexPosition[2];
+// 		if ( xmin <= x && x <= xmax)
+// 			if( ymin <= y && y <= ymax)
+// 				if( zmin <= z && z <= zmax){
+// 					indices.push_back((*i).second.index);
+// 				}
+// 	}
+//     return 0;
+// }
 
 
 
@@ -314,44 +313,44 @@ void MultiResSparseGridTopology::SparseGrid::afficherSparseGridMap()
     }
 
 
-    for(i = voxelsMap.begin(); i != voxelsMap.end(); i++)
-    {
-        //V1 (x0,y0,z0)
-        for(int l=0; l<3; l++)
-            cout << vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k)].vertexPosition[l] <<" ";
-        cout << "     ";
-        //V1 (x0,y0,z0)
-        for(int l=0; l<3; l++)
-            cout << vertexMap[Index3D((*i).first.i+1,(*i).first.j,(*i).first.k)].vertexPosition[l] << " ";
-        cout << "     ";
-        //V1 (x0,y0,z0)
-        for(int l=0; l<3; l++)
-            cout << vertexMap[Index3D((*i).first.i,(*i).first.j+1,(*i).first.k)].vertexPosition[l] <<" " ;
-        cout << "     ";
-        //V1 (x0,y0,z0)
-        for(int l=0; l<3; l++)
-            cout << vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k+1)].vertexPosition[l] <<" ";
-        cout << "     ";
+    /*    for(i = voxelsMap.begin(); i != voxelsMap.end();i++)
+        {
+            //V1 (x0,y0,z0)
+            for(int l=0; l<3;l++)
+                cout << vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k)].vertexPosition[l] <<" ";
+            cout << "     ";
+            //V1 (x0,y0,z0)
+            for(int l=0; l<3;l++)
+                cout << vertexMap[Index3D((*i).first.i+1,(*i).first.j,(*i).first.k)].vertexPosition[l] << " ";
+            cout << "     ";
+            //V1 (x0,y0,z0)
+            for(int l=0; l<3;l++)
+                cout << vertexMap[Index3D((*i).first.i,(*i).first.j+1,(*i).first.k)].vertexPosition[l] <<" " ;
+            cout << "     ";
+            //V1 (x0,y0,z0)
+            for(int l=0; l<3;l++)
+                cout << vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k+1)].vertexPosition[l] <<" ";
+            cout << "     ";
 
-        cout << endl;
+            cout << endl;
+        }
+        cout << "end voxelMap" << endl;
+
     }
-    cout << "end voxelMap" << endl;
-
-}
 
 
-void MultiResSparseGridTopology::SparseGrid::afficherVertexMap()
-{
-
-    cout << "VertexMap" << endl;
-    std::map<Index3D,Vertex>::iterator i;
-    for(i = vertexMap.begin(); i != vertexMap.end(); i++)
+    void MultiResSparseGridTopology::SparseGrid::afficherVertexMap()
     {
-        cout << (*i).first.i << " " << (*i).first.j << " " << (*i).first.k << " : ";
-        for(int l=0; l<3; l++)
-            cout << (*i).second.vertexPosition[l] << " ";
-        cout << endl;
-    }
+
+        cout << "VertexMap" << endl;
+        std::map<Index3D,Vertex>::iterator i;
+        for(i = vertexMap.begin(); i != vertexMap.end();i++)
+        {
+            cout << (*i).first.i << " " << (*i).first.j << " " << (*i).first.k << " : ";
+            for(int l=0; l<3;l++)
+                cout << (*i).second.vertexPosition[l] << " ";
+            cout << endl;
+        }*/
     cout << "end of the vertexMap" << endl;
 
 }
@@ -570,29 +569,21 @@ void MultiResSparseGridTopology::SparseGrid::setVertexMap()
     for(i = voxelsMap.begin(); i != voxelsMap.end(); i++)
     {
         //V1 (x0,y0,z0)
-        vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k)] =
-            Vertex((*i).first.i*dx,(*i).first.j*dy,(*i).first.k*dz);
+        vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k)];// = Vertex((*i).first.i*dx,(*i).first.j*dy,(*i).first.k*dz);
         //V2 (x1,y0,z0)
-        vertexMap[Index3D((*i).first.i+1,(*i).first.j,(*i).first.k)] =
-            Vertex(((*i).first.i+1)*dx,(*i).first.j*dy,(*i).first.k*dz);
+        vertexMap[Index3D((*i).first.i+1,(*i).first.j,(*i).first.k)];// Vertex(((*i).first.i+1)*dx,(*i).first.j*dy,(*i).first.k*dz);
         //V3 (x1,y1,z0)
-        vertexMap[Index3D((*i).first.i+1,(*i).first.j+1,(*i).first.k)] =
-            Vertex(((*i).first.i+1)*dx,((*i).first.j+1)*dy,(*i).first.k*dz);
+        vertexMap[Index3D((*i).first.i+1,(*i).first.j+1,(*i).first.k)];// Vertex(((*i).first.i+1)*dx,((*i).first.j+1)*dy,(*i).first.k*dz);
         //V4 (x0,y1,z0)
-        vertexMap[Index3D((*i).first.i,(*i).first.j+1,(*i).first.k)] =
-            Vertex((*i).first.i*dx,((*i).first.j+1)*dy,((*i).first.k)*dz);
+        vertexMap[Index3D((*i).first.i,(*i).first.j+1,(*i).first.k)];// Vertex((*i).first.i*dx,((*i).first.j+1)*dy,((*i).first.k)*dz);
         //V1 (x0,y0,z1)
-        vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k+1)] =
-            Vertex((*i).first.i*dx,(*i).first.j*dy,((*i).first.k+1)*dz);
+        vertexMap[Index3D((*i).first.i,(*i).first.j,(*i).first.k+1)];// Vertex((*i).first.i*dx,(*i).first.j*dy,((*i).first.k+1)*dz);
         //V2 (x1,y0,z1)
-        vertexMap[Index3D((*i).first.i+1,(*i).first.j,(*i).first.k+1)] =
-            Vertex(((*i).first.i+1)*dx,(*i).first.j*dy,((*i).first.k+1)*dz);
+        vertexMap[Index3D((*i).first.i+1,(*i).first.j,(*i).first.k+1)];// Vertex(((*i).first.i+1)*dx,(*i).first.j*dy,((*i).first.k+1)*dz);
         //V3 (x1,y1,z1)
-        vertexMap[Index3D((*i).first.i+1,(*i).first.j+1,(*i).first.k+1)] =
-            Vertex(((*i).first.i+1)*dx,((*i).first.j+1)*dy,((*i).first.k+1)*dz);
+        vertexMap[Index3D((*i).first.i+1,(*i).first.j+1,(*i).first.k+1)];// Vertex(((*i).first.i+1)*dx,((*i).first.j+1)*dy,((*i).first.k+1)*dz);
         //V4 (x0,y1,z1)
-        vertexMap[Index3D((*i).first.i,(*i).first.j+1,(*i).first.k+1)] =
-            Vertex((*i).first.i*dx,((*i).first.j+1)*dy,((*i).first.k+1)*dz);
+        vertexMap[Index3D((*i).first.i,(*i).first.j+1,(*i).first.k+1)];// Vertex((*i).first.i*dx,((*i).first.j+1)*dy,((*i).first.k+1)*dz);
 
 
     }
@@ -603,7 +594,8 @@ void MultiResSparseGridTopology::SparseGrid::setVertexMap()
     for(iter= vertexMap.begin(); iter!= vertexMap.end(); iter++)
     {
         (*iter).second.index = num;
-        vertices[num] = ((*iter).second.vertexPosition);
+        //vertices[num] = ((*iter).second.vertexPosition);
+        vertices[num] = Vec3((*iter).first.i*dx, (*iter).first.j*dy, (*iter).first.k*dz);
         num++;
     }
 

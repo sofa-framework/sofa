@@ -90,6 +90,18 @@ void MechanicalObject<DataTypes>::applyScale(double s)
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+{
+    /*    const VecCoord& x = *getX();
+        for( unsigned i=0; i<x.size(); ++i ){
+            if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax ){
+                indices.push_back(i);
+            }
+        }*/
+}
+
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
     Topology* topo = dynamic_cast<Topology*>(this->getContext()->getTopology());
