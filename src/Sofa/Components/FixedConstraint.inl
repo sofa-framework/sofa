@@ -64,6 +64,24 @@ void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseMat
 
     for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
     {
+        /*
+        		// Reset Fixed Row
+        		for (int i=0; i<mat->colDim(); i++)
+        		{
+        			mat->element(i, 3 * (*it) + offset) = 0.0;
+        			mat->element(i, 3 * (*it) + offset + 1) = 0.0;
+        			mat->element(i, 3 * (*it) + offset + 2) = 0.0;
+        		}
+
+        		// Reset Fixed Col
+        		for (int i=0; i<mat->rowDim(); i++)
+        		{
+        			mat->element(3 * (*it) + offset, i) = 0.0;
+        			mat->element(3 * (*it) + offset + 1, i) = 0.0;
+        			mat->element(3 * (*it) + offset + 2, i) = 0.0;
+        		}
+        */
+        // Set Fixed Vertex
         mat->element(3 * (*it) + offset, 3 * (*it) + offset) = 1.0;
         mat->element(3 * (*it) + offset, 3 * (*it) + offset + 1) = 0.0;
         mat->element(3 * (*it) + offset, 3 * (*it) + offset + 2) = 0.0;

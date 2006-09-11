@@ -1107,7 +1107,7 @@ void TetrahedronFEMForceField<DataTypes>::draw()
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
 {
-    if (mmodel)
+    if (this->mmodel)
     {
         VecDeriv& p = *this->mmodel->getV();
         if (p.size() != 0)
@@ -1120,7 +1120,7 @@ void TetrahedronFEMForceField<DataTypes>::contributeToMatrixDimension(unsigned i
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::computeMatrix(Sofa::Components::Common::SofaBaseMatrix *mat, double m, double b, double k, unsigned int &offset)
+void TetrahedronFEMForceField<DataTypes>::computeMatrix(Sofa::Components::Common::SofaBaseMatrix *mat, double /*m*/, double /*b*/, double /*k*/, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     std::cout << "ComputeMatrix with offset = " << offset << "\n" ;
