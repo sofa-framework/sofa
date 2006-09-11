@@ -105,6 +105,12 @@ public:
 
     virtual void addDForce (VecDeriv& df, const VecCoord& x, const VecDeriv& v, const VecDeriv& dx);
 
+    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const);
+    virtual void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double, double, double, unsigned int &);
+    virtual void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int &);
+    virtual void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int &);
+
+
     // -- VisualModel interface
     void draw();
     void initTextures() { }

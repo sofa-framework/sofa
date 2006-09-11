@@ -5,6 +5,9 @@
 #include "Sofa/Core/MechanicalModel.h"
 #include "Sofa/Abstract/VisualModel.h"
 
+#include "Sofa/Components/Common/SofaBaseMatrix.h"
+#include "Sofa/Components/Common/SofaBaseVector.h"
+
 #include <set>
 
 namespace Sofa
@@ -39,6 +42,9 @@ public:
     void projectResponse(VecDeriv& dx);
     virtual void projectVelocity(VecDeriv& /*dx*/) {} ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& /*x*/) {} ///< project x to constrained space (x models a position)
+
+    void applyConstraint(Components::Common::SofaBaseMatrix *mat, unsigned int &offset);
+    void applyConstraint(Components::Common::SofaBaseVector *vect, unsigned int &offset);
 
     // -- VisualModel interface
 

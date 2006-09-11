@@ -3,6 +3,8 @@
 
 #include "BasicForceField.h"
 #include "MechanicalModel.h"
+#include "Sofa/Components/Common/SofaBaseMatrix.h"
+#include "Sofa/Components/Common/SofaBaseVector.h"
 
 namespace Sofa
 {
@@ -33,6 +35,14 @@ public:
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v) = 0;
 
     virtual void addDForce (VecDeriv& df, const VecCoord& x, const VecDeriv& v, const VecDeriv& dx) = 0;
+
+    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
+
+    virtual void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};
+
+    virtual void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int & ) {};
+
+    virtual void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int & ) {};
 
 protected:
     MechanicalModel<DataTypes> *mmodel;

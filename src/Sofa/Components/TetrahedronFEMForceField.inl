@@ -1104,6 +1104,119 @@ void TetrahedronFEMForceField<DataTypes>::draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (mmodel)
+    {
+        VecDeriv& p = *this->mmodel->getV();
+        if (p.size() != 0)
+        {
+            (*nbRow) += p.size() * p[0].size();
+            (*nbCol) = *nbRow;
+        }
+    }
+}
+
+
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::computeMatrix(Sofa::Components::Common::SofaBaseMatrix *mat, double m, double b, double k, unsigned int &offset)
+{
+    // Build Matrix Block for this ForceField
+    std::cout << "ComputeMatrix with offset = " << offset << "\n" ;
+
+    // Update offset
+    VecDeriv& p = *this->mmodel->getV();
+
+    int i,j,n1, n2, row, column, ROW, COLUMN , IT;
+
+    Transformation Rot;
+    StiffnessMatrix JKJt,tmp;
+
+    typename VecElement::const_iterator it;
+
+    Index noeud1, noeud2;
+
+    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+    Rot[0][1]=Rot[0][2]=0;
+    Rot[1][0]=Rot[1][2]=0;
+    Rot[2][0]=Rot[2][1]=0;
+
+    IT=0;
+    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it,++IT)
+    {
+        computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
+
+        // find index of node 1
+        for (n1=0; n1<4; n1++)
+        {
+            noeud1 = (*it)[n1];
+
+            for(i=0; i<3; i++)
+            {
+                ROW = offset+3*noeud1+i;
+                row = 3*n1+i;
+                // find index of node 2
+                for (n2=0; n2<4; n2++)
+                {
+                    noeud2 = (*it)[n2];
+                    for (j=0; j<3; j++)
+                    {
+                        COLUMN = offset+3*noeud2+j;
+                        column = 3*n2+j;
+                        mat->element(ROW, COLUMN) = JKJt[row][column];
+                    }
+                }
+            }
+        }
+    }
+
+    offset += p.size() * p[0].size();
+    /*
+    	VecDeriv& f = *this->mmodel->getF();
+    	unsigned int j(0);
+    	for (unsigned int i=0; i<f.size(); i++, j+=f[0].size())
+    	{
+    		mat->element(offset + i*3 , offset + i*3) = 1.0;
+    		mat->element(offset + i*3 + 1, offset + i*3 + 1) = 1.0;
+    		mat->element(offset + i*3 + 2, offset + i*3 + 2) = 1.0;
+    	}
+
+    	offset += f.size() * f[0].size();
+    */
+}
+
+
+
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::computeVector(Sofa::Components::Common::SofaBaseVector *vect, unsigned int &offset)
+{
+    std::cout << "computeVector with offset = " << offset << std::endl;
+    VecDeriv& f = *this->mmodel->getF();
+    unsigned int j(0);
+    for (unsigned int i=0; i<f.size(); i++, j+=f[0].size())
+    {
+        vect->element(offset + j) = f[i][0];
+        vect->element(offset + j + 1) = f[i][1];
+        vect->element(offset + j + 2) = f[i][2];
+    }
+
+    offset += f.size() * f[0].size();
+}
+
+
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *vect, unsigned int &offset)
+{
+    VecCoord& x = *this->mmodel->getX();
+
+    for (unsigned int i=0; i<x.size(); i++)
+        for (int j=0; j<x[0].size(); j++)
+            x[i][j] += vect->element(offset + i * x[0].size() + j);
+
+    offset += x.size() * x[0].size();
+}
+
 } // namespace Components
 
 } // namespace Sofa

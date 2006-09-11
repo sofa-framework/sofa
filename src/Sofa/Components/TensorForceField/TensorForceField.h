@@ -6,6 +6,9 @@
 #include "Sofa/Core/MechanicalObject.h"
 #include "Sofa/Abstract/VisualModel.h"
 
+#include "Sofa/Components/Common/SofaBaseMatrix.h"
+#include "Sofa/Components/Common/SofaBaseVector.h"
+
 
 namespace Sofa
 {
@@ -40,6 +43,12 @@ public:
 
 
     virtual void addDForce();
+
+    // -- Temporary added here for matrix ForceField
+    void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
+    void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};
+    void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int &) {};
+    void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int & ) {};
 
     // -- VisualModel interface
     void draw();

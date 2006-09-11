@@ -2,6 +2,7 @@
 #define SOFA_CORE_ODESOLVER_H
 
 #include "Sofa/Abstract/BaseObject.h"
+#include "Sofa/Components/Common/SofaBaseMatrix.h"
 #include "IntegrationGroup.h"
 
 namespace Sofa
@@ -16,6 +17,7 @@ class OdeSolver : public Abstract::BaseObject
 {
 protected:
     IntegrationGroup* group;
+    Components::Common::SofaBaseMatrix *mat;
 public:
     OdeSolver();
 

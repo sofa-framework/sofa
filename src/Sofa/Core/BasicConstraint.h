@@ -4,6 +4,9 @@
 #include "Sofa/Abstract/BaseObject.h"
 #include "Sofa/Core/BasicMechanicalModel.h"
 
+#include "Sofa/Components/Common/SofaBaseMatrix.h"
+#include "Sofa/Components/Common/SofaBaseVector.h"
+
 namespace Sofa
 {
 
@@ -18,6 +21,9 @@ public:
     virtual void projectResponse() = 0; ///< project dx to constrained space (dx models an acceleration)
     virtual void projectVelocity() = 0; ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition() = 0; ///< project x to constrained space (x models a position)
+
+    virtual void applyConstraint(Components::Common::SofaBaseMatrix *, unsigned int &offset) {};
+    virtual void applyConstraint(Components::Common::SofaBaseVector *, unsigned int &offset) {};
 
     virtual BasicMechanicalModel* getDOFs() { return NULL; }
 };

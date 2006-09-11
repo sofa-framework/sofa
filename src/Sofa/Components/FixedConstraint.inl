@@ -56,6 +56,41 @@ void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
     }
 }
 
+// Matrix Integration interface
+template <class DataTypes>
+void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseMatrix *mat, unsigned int &offset)
+{
+    std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
+
+    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    {
+        mat->element(3 * (*it) + offset, 3 * (*it) + offset) = 1.0;
+        mat->element(3 * (*it) + offset, 3 * (*it) + offset + 1) = 0.0;
+        mat->element(3 * (*it) + offset, 3 * (*it) + offset + 2) = 0.0;
+
+        mat->element(3 * (*it) + offset + 1, 3 * (*it) + offset) = 0.0;
+        mat->element(3 * (*it) + offset + 1, 3 * (*it) + offset + 1) = 1.0;
+        mat->element(3 * (*it) + offset + 1, 3 * (*it) + offset + 2) = 0.0;
+
+        mat->element(3 * (*it) + offset + 2, 3 * (*it) + offset) = 0.0;
+        mat->element(3 * (*it) + offset + 2, 3 * (*it) + offset + 1) = 0.0;
+        mat->element(3 * (*it) + offset + 2, 3 * (*it) + offset + 2) = 1.0;
+    }
+}
+
+template <class DataTypes>
+void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseVector *vect, unsigned int &offset)
+{
+    std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
+
+    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    {
+        vect->element(3 * (*it) + offset) = 0.0;
+        vect->element(3 * (*it) + offset + 1) = 0.0;
+        vect->element(3 * (*it) + offset + 2) = 0.0;
+    }
+}
+
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw()
 {

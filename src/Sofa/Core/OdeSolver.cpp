@@ -11,7 +11,7 @@ namespace Core
 
 OdeSolver::OdeSolver()
     : group(NULL)
-    , debug_(false)
+    , debug_(false), mat(NULL)
 {
 }
 
