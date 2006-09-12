@@ -1193,15 +1193,17 @@ void TetrahedronFEMForceField<DataTypes>::computeVector(Sofa::Components::Common
 {
     std::cout << "computeVector with offset = " << offset << std::endl;
     VecDeriv& f = *this->mmodel->getF();
+    unsigned int derivDim = Deriv::size();
     unsigned int j(0);
-    for (unsigned int i=0; i<f.size(); i++, j+=f[0].size())
+
+    for (unsigned int i=0; i<f.size(); i++, j+=derivDim)
     {
         vect->element(offset + j) = f[i][0];
         vect->element(offset + j + 1) = f[i][1];
         vect->element(offset + j + 2) = f[i][2];
     }
 
-    offset += f.size() * f[0].size();
+    offset += f.size() * derivDim;
 }
 
 
@@ -1209,12 +1211,13 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *vect, unsigned int &offset)
 {
     VecCoord& x = *this->mmodel->getX();
+    unsigned int coordDim = Coord::size();
 
     for (unsigned int i=0; i<x.size(); i++)
-        for (int j=0; j<x[0].size(); j++)
-            x[i][j] += vect->element(offset + i * x[0].size() + j);
+        for (unsigned int j=0; j<coordDim; j++)
+            x[i](j) += vect->element(offset + i * coordDim + j);
 
-    offset += x.size() * x[0].size();
+    offset += x.size() * coordDim;
 }
 
 } // namespace Components
