@@ -92,6 +92,19 @@ public:
         return os;
     }
 
+/// Input stream
+    inline friend std::istream& operator>> ( std::istream& in, std::vector<T,Alloc>& vec )
+    {
+        T t;
+        vec.clear();
+        while(in>>t)
+        {
+            vec.push_back(t);
+        }
+        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        return in;
+    }
+
 };
 
 // ======================  operations on standard vectors

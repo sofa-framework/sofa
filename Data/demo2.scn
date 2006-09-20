@@ -1,7 +1,7 @@
 <!-- Mechanical MassSpring+Rigid Basic Example -->
 <Node name="root"  dt="0.01" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
 	<Node name="Poutre1">
-		<Object type="CGImplicit" iterations="20"/>
+		<Object type="CGImplicit" iterations="10"/>
 		<Node name="M1">
 			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>

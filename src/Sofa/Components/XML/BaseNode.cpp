@@ -38,6 +38,16 @@ BaseNode::~BaseNode()
     children.clear();
 }
 
+const std::map<std::string,std::string*>& BaseNode::getAttributeMap() const
+{
+    return attributes;
+}
+
+std::map<std::string,std::string*>& BaseNode::getAttributeMap()
+{
+    return attributes;
+}
+
 /// Get an attribute given its name (return defaultVal if not present)
 const char* BaseNode::getAttribute(const std::string& attr, const char* defaultVal)
 {

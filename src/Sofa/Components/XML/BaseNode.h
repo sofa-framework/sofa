@@ -72,6 +72,12 @@ public:
     BaseNode* getParent() const
     { return parent; }
 
+    /// Get all attribute data, read-only
+    const std::map<std::string,std::string*>& getAttributeMap() const;
+
+    /// Get all attribute data
+    std::map<std::string,std::string*>& getAttributeMap();
+
     /// Get an attribute given its name (return defaultVal if not present)
     const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
