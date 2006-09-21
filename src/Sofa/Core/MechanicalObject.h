@@ -66,7 +66,7 @@ public:
 
     virtual void reset();
 
-    virtual void resize(int vsize);
+    virtual void resize(const int vsize);
 
     int getSize() const
     {
