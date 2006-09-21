@@ -56,7 +56,9 @@ public:
     VecDeriv* getDx() { return dx; }
 
     const VecCoord* getX()  const { return x;  }
+    const VecCoord* getX0()  const { return x0;  }
     const VecDeriv* getV()  const { return v;  }
+    const VecDeriv* getV0()  const { return v0;  }
     const VecDeriv* getF()  const { return f;  }
     const VecDeriv* getDx() const { return dx; }
 
@@ -65,6 +67,13 @@ public:
     virtual void reset();
 
     virtual void resize(int vsize);
+
+    int getSize() const
+    {
+        return vsize;
+    }
+    /// performs x[outPutIndex]=x[inputIndex]
+    void replaceValue (const int inputIndex, const int outputIndex);
 
     void applyTranslation (double dx, double dy, double dz);
 

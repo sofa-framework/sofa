@@ -45,11 +45,41 @@ MechanicalObject<DataTypes>::~MechanicalObject()
             delete vectorsDeriv[i];
 }
 
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int outputIndex)
+{
+    VecCoord& x = *this->getX();
+    x[outputIndex]=x[inputIndex];
+    (*x0)[outputIndex]=(*x0)[inputIndex];
+    VecDeriv v = *this->getV();
+    v[outputIndex]=v[inputIndex];
+    (*v0)[outputIndex]=(*v0)[inputIndex];
+    VecDeriv f = *this->getF();
+    f[outputIndex]=f[inputIndex];
+    VecDeriv dx = *this->getDx();
+    dx[outputIndex]=dx[inputIndex];
+
+    unsigned int i;
+    for (i=0; i<vectorsCoord.size(); i++)
+    {
+        VecCoord& vector = *vectorsCoord[i];
+        vector[outputIndex]=vector[inputIndex];
+    }
+    for ( i=0; i<vectorsDeriv.size(); i++)
+    {
+        VecDeriv& vector = *vectorsDeriv[i];
+        vector[outputIndex]=vector[inputIndex];
+    }
+
+}
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(int size)
 {
     getX()->resize(size);
+    getX0()->resize(size);
     getV()->resize(size);
+    getV0()->resize(size);
     getF()->resize(size);
     getDx()->resize(size);
     if (size!=vsize)
