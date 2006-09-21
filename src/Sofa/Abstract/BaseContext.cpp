@@ -167,6 +167,11 @@ BaseObject* BaseContext::getTopology() const
 {
     return NULL;
 }
+/// Topology
+BaseObject* BaseContext::getMainTopology() const
+{
+    return NULL;
+}
 
 } // namespace Abstract
 

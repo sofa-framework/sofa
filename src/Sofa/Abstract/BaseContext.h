@@ -113,6 +113,9 @@ public:
     /// Topology
     virtual BaseObject* getTopology() const;
 
+    /// Topology
+    virtual BaseObject* getMainTopology() const;
+
     /// @}
 
     /// @name Parameters Setters
