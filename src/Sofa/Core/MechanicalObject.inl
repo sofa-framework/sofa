@@ -76,12 +76,12 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(const int size)
 {
-    (*x)->resize(size);
-    (*x0)->resize(size);
-    (*v)->resize(size);
-    (*v0)->resize(size);
-    (*f)->resize(size);
-    (*dx)->resize(size);
+    (*x).resize(size);
+    (*x0).resize(size);
+    (*v).resize(size);
+    (*v0).resize(size);
+    (*f).resize(size);
+    (*dx).resize(size);
     if (size!=vsize)
     {
         vsize=size;
