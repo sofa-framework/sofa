@@ -81,7 +81,8 @@ bool MeshTopology::load(const char* filename)
     clear();
     Loader loader(this);
 
-    if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".obj"))
+    if ((strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".obj"))
+        || (strlen(filename)>6 && !strcmp(filename+strlen(filename)-6,".trian")))
     {
         Mesh* mesh = Mesh::Create(filename);
         if (mesh==NULL) return false;
