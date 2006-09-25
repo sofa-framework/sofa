@@ -77,9 +77,12 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(const int size)
 {
     (*x).resize(size);
-    (*x0).resize(size);
+    // Note (Jeremie A.): should we really update initial position vector size ???
+    if (x0!=NULL)
+        (*x0).resize(size);
     (*v).resize(size);
-    (*v0).resize(size);
+    if (v0!=NULL)
+        (*v0).resize(size);
     (*f).resize(size);
     (*dx).resize(size);
     if (size!=vsize)
@@ -120,16 +123,16 @@ void MechanicalObject<DataTypes>::applyScale(double s)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+void MechanicalObject<DataTypes>::getIndicesInSpace(std::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/, Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const
 {
-    /*    const VecCoord& x = *getX();
-        for( unsigned i=0; i<x.size(); ++i ){
-            if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax ){
-                indices.push_back(i);
-            }
-        }*/
+    std::cerr<<"ERROR: UNSUPPORTED MechanicalObject<DataTypes>::getIndicesInSpace()"<<std::endl;
+    //const VecCoord& x = *getX();
+    //for( unsigned i=0; i<x.size(); ++i ) {
+    //	if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax ) {
+    //		indices.push_back(i);
+    //	}
+    //}
 }
-
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()

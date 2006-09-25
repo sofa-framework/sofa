@@ -73,7 +73,6 @@ public:
     // for procedural creation without file loader
     void addTetrahedron( int a, int b, int c, int d );
 
-
 protected:
     int nbPoints;
     std::vector< fixed_array<double,3> > seqPoints;

@@ -72,6 +72,7 @@ public:
     {
         return vsize;
     }
+
     /// performs x[outPutIndex]=x[inputIndex]
     void replaceValue (const int inputIndex, const int outputIndex);
 
@@ -80,7 +81,7 @@ public:
     void applyScale (double s);
 
     /// Get the indices of the particles located in the given bounding box
-    void getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const;
+    void getIndicesInSpace(std::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
 
     /// @name Integration related methods
     /// @{
@@ -112,19 +113,20 @@ public:
     virtual void setDx(VecId v);
 
     virtual void resetForce();
+
     /// @}
+
     /// @name Debug
     /// @{
     virtual void printDOF( VecId, std::ostream& =std::cerr );
     /// @}
 
     /*! \fn void addBBox()
-     *  \brief Used to add the bounding-box of this mechanical model to the given bounding box.
-     *
-     *  Note that if it does not make sense for this particular object (such as if the DOFs are not 3D), then the default implementation displays a warning message and returns false.
-     */
+    *  \brief Used to add the bounding-box of this mechanical model to the given bounding box.
+    *
+    *  Note that if it does not make sense for this particular object (such as if the DOFs are not 3D), then the default implementation displays a warning message and returns false.
+    */
     //virtual bool addBBox(double* minBBox, double* maxBBox);
-
 };
 
 } // namespace Core

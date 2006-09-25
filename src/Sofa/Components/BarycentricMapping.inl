@@ -278,14 +278,14 @@ void BarycentricMapping<BaseMapping>::init()
             this->calcMap(t);
         else
         {
-            RegularGridTopology* t = dynamic_cast<RegularGridTopology*>(topology);
-            if (t!=NULL)
-                this->calcMap(t);
+            RegularGridTopology* t2 = dynamic_cast<RegularGridTopology*>(topology);
+            if (t2!=NULL)
+                this->calcMap(t2);
             else
             {
-                MeshTopology* t2 = dynamic_cast<MeshTopology*>(topology);
-                if (t2!=NULL)
-                    this->calcMap(t2);
+                MeshTopology* t3 = dynamic_cast<MeshTopology*>(topology);
+                if (t3!=NULL)
+                    this->calcMap(t3);
                 else
                 {
                     std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;

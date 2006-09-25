@@ -40,14 +40,14 @@ public:
     double getPZ(int i) const { return getPoint(i)[2]; }
 
     /// return the cube containing the given point (or -1 if not found).
-    virtual int findCube(const Vec3& pos) const;
+    virtual int findCube(const Vec3& pos);
 
     /// return the nearest cube (or -1 if not found).
     virtual int findNearestCube(const Vec3& pos);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
-    virtual int findCube(const Vec3& pos, double& fx, double &fy, double &fz) const;
+    virtual int findCube(const Vec3& pos, double& fx, double &fy, double &fz);
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).

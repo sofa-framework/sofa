@@ -59,9 +59,9 @@ public:
         virtual void draw( const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in) = 0;
     };
 
+    /// Classe permettant le calcul du mapping sur une SparseRegularGrid
     class SparseGridMapper : public Mapper
     {
-        /// Classe permettant le calcul du mapping sur une SparseRegularGrid
     public:
         SparseGridMapper(MultiResSparseGridTopology* topology) : topology(topology)
         {}

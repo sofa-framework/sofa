@@ -103,7 +103,7 @@ void GridTopology::updateCubes()
                         point(x  ,y+1,z+1),point(x+1,y+1,z+1)));
 }
 
-GridTopology::Cube GridTopology::getCube(int i) const
+GridTopology::Cube GridTopology::getCube(int i)
 {
     int x = i%(nx-1); i/=(nx-1);
     int y = i%(ny-1); i/=(ny-1);
@@ -111,7 +111,7 @@ GridTopology::Cube GridTopology::getCube(int i) const
     return getCube(x,y,z);
 }
 
-GridTopology::Cube GridTopology::getCube(int x, int y, int z) const
+GridTopology::Cube GridTopology::getCube(int x, int y, int z)
 {
     return make_array(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
             point(x  ,y+1,z  ),point(x+1,y+1,z  ),
@@ -119,9 +119,7 @@ GridTopology::Cube GridTopology::getCube(int x, int y, int z) const
             point(x  ,y+1,z+1),point(x+1,y+1,z+1));
 }
 
-
-
-GridTopology::Quad GridTopology::getQuad(int i) const
+GridTopology::Quad GridTopology::getQuad(int i)
 {
     if (nx == 1)
     {
@@ -149,7 +147,7 @@ GridTopology::Quad GridTopology::getQuad(int i) const
     }
 }
 
-GridTopology::Quad GridTopology::getQuad(int x, int y, int /*z*/) const
+GridTopology::Quad GridTopology::getQuad(int x, int y, int /*z*/)
 {
     /*
     	if (x == -1)

@@ -107,7 +107,6 @@ void Core::MechanicalObject<Components::Common::RigidTypes>::getIndicesInSpace(s
     }
 }
 
-
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 
 template class Core::MechanicalObject<Components::Common::Vec3dTypes>;
