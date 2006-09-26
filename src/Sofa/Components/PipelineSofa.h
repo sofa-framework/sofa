@@ -26,9 +26,17 @@ public:
     void setDepth(int v)    { depth_ = v;      }
     int getDepth() const    { return depth_;   }
 
+protected:
     // -- Pipeline interface
-    virtual void startDetection(const std::vector<Abstract::CollisionModel*>& collisionModels);
 
+    /// Remove collision response from last step
+    virtual void doCollisionReset();
+    /// Detect new collisions. Note that this step must not modify the simulation graph
+    virtual void doCollisionDetection(const std::vector<Abstract::CollisionModel*>& collisionModels);
+    /// Add collision response in the simulation graph
+    virtual void doCollisionResponse();
+
+public:
     // -- VisualModel interface
     void draw();
     void initTextures() { }

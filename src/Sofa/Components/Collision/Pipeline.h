@@ -45,10 +45,29 @@ public:
 
     virtual void init();
 
-    virtual void computeCollisions();
+    /// Remove collision response from last step
+    virtual void computeCollisionReset();
+    /// Detect new collisions. Note that this step must not modify the simulation graph
+    virtual void computeCollisionDetection();
+    /// Add collision response in the simulation graph
+    virtual void computeCollisionResponse();
 
-    virtual void startDetection(const std::vector<Abstract::CollisionModel*>& collisionModels) = 0;
-    virtual std::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }
+    void computeCollisions()
+    {
+        computeCollisionReset();
+        computeCollisionDetection();
+        computeCollisionResponse();
+    }
+
+    std::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }
+
+protected:
+    /// Remove collision response from last step
+    virtual void doCollisionReset() = 0;
+    /// Detect new collisions. Note that this step must not modify the simulation graph
+    virtual void doCollisionDetection(const std::vector<Abstract::CollisionModel*>& collisionModels) = 0;
+    /// Add collision response in the simulation graph
+    virtual void doCollisionResponse() = 0;
 };
 
 } // namespace Collision

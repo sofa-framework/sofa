@@ -51,19 +51,33 @@ void Pipeline::init()
         intersectionMethod = new DiscreteIntersection;
 }
 
-void Pipeline::computeCollisions()
+void Pipeline::computeCollisionReset()
 {
     Graph::GNode* root = dynamic_cast<Graph::GNode*>(getContext());
     if(root == NULL) return;
-    std::vector<CollisionModel*> collisionModels;
-    root->getTreeObjects<CollisionModel>(&collisionModels);
     if (broadPhaseDetection!=NULL && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         broadPhaseDetection->setIntersectionMethod(intersectionMethod);
     if (narrowPhaseDetection!=NULL && narrowPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         narrowPhaseDetection->setIntersectionMethod(intersectionMethod);
     if (contactManager!=NULL && contactManager->getIntersectionMethod()!=intersectionMethod)
         contactManager->setIntersectionMethod(intersectionMethod);
-    startDetection(collisionModels);
+    doCollisionReset();
+}
+
+void Pipeline::computeCollisionDetection()
+{
+    Graph::GNode* root = dynamic_cast<Graph::GNode*>(getContext());
+    if(root == NULL) return;
+    std::vector<CollisionModel*> collisionModels;
+    root->getTreeObjects<CollisionModel>(&collisionModels);
+    doCollisionDetection(collisionModels);
+}
+
+void Pipeline::computeCollisionResponse()
+{
+    Graph::GNode* root = dynamic_cast<Graph::GNode*>(getContext());
+    if(root == NULL) return;
+    doCollisionResponse();
 }
 
 } // namespace Collision

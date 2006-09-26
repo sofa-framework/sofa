@@ -37,7 +37,7 @@ PipelineSofa::PipelineSofa()
 
 typedef Graph::GNode::ctime_t ctime_t;
 
-void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& collisionModels)
+void PipelineSofa::doCollisionReset()
 {
     Abstract::BaseContext* scene = getContext();
     Graph::GNode* node = dynamic_cast<Graph::GNode*>(scene);
@@ -62,6 +62,16 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
         groupManager->clearGroups(scene);
         if (node) t0 = node->endTime(t0, category, groupManager, this);
     }
+}
+
+void PipelineSofa::doCollisionDetection(const std::vector<Abstract::CollisionModel*>& collisionModels)
+{
+    Abstract::BaseContext* scene = getContext();
+    Graph::GNode* node = dynamic_cast<Graph::GNode*>(scene);
+    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
+    ctime_t t0 = 0;
+    const std::string category = "collision";
+
     // clear all detection outputs
     {
         std::vector< DetectionOutput* >::iterator it = detectionOutputs.begin();
@@ -149,7 +159,15 @@ void PipelineSofa::startDetection(const std::vector<Abstract::CollisionModel*>& 
         if (node) t0 = node->endTime(t0, category, intersectionMethod, this);
     }
     VERBOSE(std::cout << detectionOutputs.size()<<" collisions detected"<<std::endl);
+}
 
+void PipelineSofa::doCollisionResponse()
+{
+    Abstract::BaseContext* scene = getContext();
+    Graph::GNode* node = dynamic_cast<Graph::GNode*>(scene);
+    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
+    ctime_t t0 = 0;
+    const std::string category = "collision";
 
     // then we start the creation of contacts
     if (contactManager==NULL) return; // can't go further
