@@ -9,6 +9,7 @@
 #ifdef SOFA_GUI_QT
 #include "Sofa/GUI/QT/Main.h"
 #endif
+#include <GL/glut.h>
 
 #ifndef WIN32
 #include <dlfcn.h>
@@ -37,6 +38,7 @@ bool loadPlugin(const char* filename)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    glutInit(&argc,argv);
     std::string fileName ;
     bool        startAnim = false;
     bool        printFactory = false;

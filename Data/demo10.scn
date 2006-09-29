@@ -5,7 +5,7 @@
 	<Object type="CollisionResponse" name="Response" contact="default" />
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="M1">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="CGImplicit" iterations="20"/>
 		<Object type="MechanicalObject" dx="0" dy="-10.5" dz="0"/>
 		<Object type="UniformMass" mass="0.37"/>
 		<Object type="RegularGrid"
@@ -23,7 +23,7 @@
 		</Node>
 	</Node>
 	<Node name="M2">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="CGImplicit" iterations="20"/>
 		<Object type="MechanicalObject" dx="0" dy="0" dz="0"/>
 		<Object type="UniformMass" mass="0.37"/>
 		<Object type="RegularGrid"
@@ -41,7 +41,7 @@
 		</Node>
 	</Node>
 	<Node name="M3">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="CGImplicit" iterations="20"/>
 		<Object type="MechanicalObject" dx="0" dy="10.5" dz="-4"/>
 		<Object type="UniformMass" mass="0.37"/>
 		<Object type="RegularGrid"
@@ -59,7 +59,7 @@
 		</Node>
 	</Node>
 	<Node name="M4">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="CGImplicit" iterations="20"/>
 		<Object type="MechanicalObject" dx="0" dy="21" dz="0"/>
 		<Object type="UniformMass" mass="0.37"/>
 		<Object type="RegularGrid"
@@ -78,7 +78,7 @@
 	</Node>
 	<!--
 	<Node name="M5">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="CGImplicit" iterations="20"/>
 		<Object type="MechanicalObject" dx="-4" dy="31.5" dz="-4"/>
 		<Object type="UniformMass" mass="0.37"/>
 		<Object type="RegularGrid"
