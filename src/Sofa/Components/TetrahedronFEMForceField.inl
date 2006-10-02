@@ -432,7 +432,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     {
         std::cerr << "ERROR: Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<std::endl;
     }
-    _materialsStiffnesses[i] /= volumes6*volumes6;
+    _materialsStiffnesses[i] /= volumes6;
 }
 
 template<class DataTypes>
