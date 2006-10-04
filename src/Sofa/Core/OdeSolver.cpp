@@ -11,13 +11,12 @@ namespace Core
 
 OdeSolver::OdeSolver()
     : group(NULL)
-    , debug_(false), mat(NULL)
-{
-}
+    , mat(NULL)
+    , debug_(false)
+{}
 
 OdeSolver::~OdeSolver()
-{
-}
+{}
 
 void OdeSolver::setGroup(IntegrationGroup* grp)
 {
@@ -37,3 +36,5 @@ bool OdeSolver::getDebug() const
 } // namespace Core
 
 } // namespace Sofa
+
+

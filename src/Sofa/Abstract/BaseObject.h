@@ -3,7 +3,7 @@
 
 #include "Base.h"
 #include "BaseContext.h"
-//#include <Sofa/Components/Common/ObjectFactory.h>
+#include "FieldContainer.h"
 
 namespace Sofa
 {
@@ -17,7 +17,7 @@ class Event;
 Each simulation object is related to a context, which gives access to all available external data.
 It is able to process events, if listening enabled (default is false).
 */
-class BaseObject : public virtual Base
+class BaseObject : public virtual Base, public virtual FieldContainer
 {
 public:
     BaseObject();

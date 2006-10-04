@@ -15,9 +15,6 @@ class MechanicalGroup;
 
 class OdeSolver : public Abstract::BaseObject
 {
-protected:
-    IntegrationGroup* group;
-    Components::Common::SofaBaseMatrix *mat;
 public:
     OdeSolver();
 
@@ -29,6 +26,11 @@ public:
 
     OdeSolver* setDebug(bool);
     bool getDebug() const;
+
+protected:
+    IntegrationGroup* group;
+    Components::Common::SofaBaseMatrix *mat;
+
 private:
     bool debug_;
 };
