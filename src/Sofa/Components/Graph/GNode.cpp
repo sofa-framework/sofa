@@ -165,6 +165,7 @@ void GNode::doAddObject(BaseObject* obj)
     collisionModel.add(dynamic_cast< CollisionModel* >(obj));
     contextObject.add(dynamic_cast< ContextObject* >(obj));
     collisionPipeline.add(dynamic_cast< Collision::Pipeline* >(obj));
+    actionScheduler.add(dynamic_cast< ActionScheduler* >(obj));
 }
 
 /// Remove an object
@@ -189,6 +190,7 @@ void GNode::doRemoveObject(BaseObject* obj)
     collisionModel.remove(dynamic_cast< CollisionModel* >(obj));
     contextObject.remove(dynamic_cast<ContextObject* >(obj));
     collisionPipeline.remove(dynamic_cast< Collision::Pipeline* >(obj));
+    actionScheduler.remove(dynamic_cast< ActionScheduler* >(obj));
     // Remove references to this object in time log tables
     if (!objectTime.empty())
     {
@@ -285,7 +287,11 @@ void GNode::updateContext()
 /// Execute a recursive action starting from this node
 void GNode::executeAction(Action* action)
 {
-    if (getLogTime())
+    if (!actionScheduler.empty())
+    {
+        actionScheduler->executeAction(this,action);
+    }
+    else if (getLogTime())
     {
         const ctime_t t0 = Thread::CTime::getTime();
         ctime_t tChild = 0;

@@ -22,6 +22,7 @@
 #include "Sofa/Core/OdeSolver.h"
 #include "Sofa/Components/Collision/Pipeline.h"
 #include "Sofa/Components/Thread/CTime.h"
+#include "Sofa/Components/Graph/ActionScheduler.h"
 #include <iostream>
 using std::cout;
 using std::endl;
@@ -354,6 +355,7 @@ public:
     Sequence<CollisionModel> collisionModel;
 
     Sequence<Collision::Pipeline> collisionPipeline;
+    Single<ActionScheduler> actionScheduler;
 
     GNode* setDebug(bool);
     bool getDebug() const;
