@@ -287,11 +287,17 @@ void GNode::updateContext()
 /// Execute a recursive action starting from this node
 void GNode::executeAction(Action* action)
 {
-    if (!actionScheduler.empty())
-    {
+    if (actionScheduler)
         actionScheduler->executeAction(this,action);
-    }
-    else if (getLogTime())
+    else
+        doExecuteAction(action);
+}
+
+/// Execute a recursive action starting from this node
+/// This method bypass the actionScheduler of this node if any.
+void GNode::doExecuteAction(Action* action)
+{
+    if (getLogTime())
     {
         const ctime_t t0 = Thread::CTime::getTime();
         ctime_t tChild = 0;
@@ -446,6 +452,16 @@ void GNode::notifyMoveObject(Abstract::BaseObject* obj, GNode* prev)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveObject(prev, this, obj);
+}
+
+/// Return the full path name of this node
+std::string GNode::getPathName() const
+{
+    std::string str;
+    if (parent!=NULL) str = parent->getPathName();
+    str += '/';
+    str += getName();
+    return str;
 }
 
 void create(GNode*& obj, XML::Node<Abstract::BaseNode>* arg)

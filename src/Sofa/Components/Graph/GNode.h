@@ -109,8 +109,6 @@ public:
     /// Execute a recursive action starting from this node
     virtual void executeAction(Action* action);
 
-
-
     /// Execute a recursive action starting from this node
     void execute(Action& action)
     {
@@ -426,6 +424,9 @@ public:
     /// Log time spent given a start time, an action category, and the concerned object, plus remove the computed time from the parent caller object
     ctime_t endTime(ctime_t t0, const std::string& s, Abstract::BaseObject* obj, Abstract::BaseObject* parent);
 
+    /// Return the full path name of this node
+    std::string getPathName() const;
+
 protected:
     bool debug_;
     bool logTime_;
@@ -445,6 +446,13 @@ protected:
     void notifyRemoveObject(Abstract::BaseObject* obj);
     void notifyMoveChild(GNode* node, GNode* prev);
     void notifyMoveObject(Abstract::BaseObject* obj, GNode* prev);
+
+    /// Execute a recursive action starting from this node.
+    /// This method bypass the actionScheduler of this node if any.
+    void doExecuteAction(Action* action);
+
+    // ActionScheduler can use doExecuteAction() method
+    friend class ActionScheduler;
 
 };
 
