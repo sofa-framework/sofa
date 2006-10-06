@@ -24,15 +24,10 @@ public:
 
     virtual void setGroup(IntegrationGroup* grp);
 
-    OdeSolver* setDebug(bool);
-    bool getDebug() const;
-
 protected:
     IntegrationGroup* group;
     Components::Common::SofaBaseMatrix *mat;
 
-private:
-    bool debug_;
 };
 
 } // namespace Core

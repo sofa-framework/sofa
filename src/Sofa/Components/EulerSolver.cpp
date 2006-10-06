@@ -22,7 +22,7 @@ void EulerSolver::solve(double dt)
     MultiVector vel(group, VecId::velocity());
     MultiVector acc(group, VecId::dx());
 
-    if( getDebug() )
+    if( printLog() )
     {
         cerr<<"EulerSolver, dt = "<< dt <<endl;
         cerr<<"EulerSolver, initial x = "<< pos <<endl;
@@ -33,7 +33,7 @@ void EulerSolver::solve(double dt)
     vel.peq(acc,dt);
     pos.peq(vel,dt);
 
-    if( getDebug() )
+    if( printLog() )
     {
         cerr<<"EulerSolver, acceleration = "<< acc <<endl;
         cerr<<"EulerSolver, final x = "<< pos <<endl;
@@ -44,8 +44,7 @@ void EulerSolver::solve(double dt)
 void create(EulerSolver*& obj, ObjectDescription* arg)
 {
     obj = new EulerSolver();
-    if (arg->getAttribute("debug"))
-        obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );
+    obj->parseFields( arg->getAttributeMap() );
 }
 
 SOFA_DECL_CLASS(Euler)

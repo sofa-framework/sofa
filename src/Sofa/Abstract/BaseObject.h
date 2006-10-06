@@ -1,5 +1,4 @@
-#ifndef SOFA_ABSTRACT_BASEOBJECT_H
-#define SOFA_ABSTRACT_BASEOBJECT_H
+#pragma once
 
 #include "Base.h"
 #include "BaseContext.h"
@@ -11,7 +10,6 @@ namespace Sofa
 namespace Abstract
 {
 class Event;
-//typedef Sofa::Components::XML::Node<Abstract::BaseObject> XMLNode;
 
 /** Base class for simulation objects.
 Each simulation object is related to a context, which gives access to all available external data.
@@ -44,8 +42,6 @@ public:
     /// Reset to initial state
     virtual void reset();
 
-    /// Read data from an XML node
-    //virtual void readXML( XMLNode* );
     ///@}
 
     /**@name events
@@ -62,15 +58,28 @@ public:
     virtual void handleEvent( Event* );
     ///@}
 
+    /**@name debug
+    Methods related to debugging
+     */
+    ///@{
+    /// if true, print logs at run-time
+    BaseObject* setPrintLog( bool );
+
+    /// if true, print logs at run-time
+    bool printLog() const;
+    ///@}
+
 
 
 protected:
     BaseContext* context_;
     bool m_isListening;
+    bool m_printLog;
 };
 
 } // namespace Abstract
 
 } // namespace Sofa
 
-#endif
+
+

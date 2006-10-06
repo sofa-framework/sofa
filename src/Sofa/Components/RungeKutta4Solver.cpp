@@ -80,8 +80,7 @@ void RungeKutta4Solver::solve(double dt)
 void create(RungeKutta4Solver*& obj, ObjectDescription* arg)
 {
     obj = new RungeKutta4Solver();
-    if (arg->getAttribute("debug"))
-        obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );
+    obj->parseFields( arg->getAttributeMap() );
 }
 
 SOFA_DECL_CLASS(RungeKutta4)

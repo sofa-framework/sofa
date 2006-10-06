@@ -24,6 +24,8 @@ StaticSolver::StaticSolver()
 {
     maxCGIter = 25;
     smallDenominatorThreshold = 1e-5;
+    addField(&maxCGIter,"iterations","maximum number of iterations of the Conjugate Gradient solution");
+    addField(&smallDenominatorThreshold,"threshold","minimum value of the denominator in the conjugate Gradient solution");
 }
 
 void StaticSolver::solve(double)
@@ -39,14 +41,14 @@ void StaticSolver::solve(double)
     MultiVector x(group, V_DERIV);
     MultiVector z(group, V_DERIV);
 
-// compute the right-hand term of the equation system
+    // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
     b.teq(-1);                          // b = -f0
     group->projectResponse(b);         // b is projected to the constrained space
-//     cerr<<"StaticSolver::solve, initial position = "<<pos<<endl;
-//     cerr<<"StaticSolver::solve, b = "<<b<<endl;
+    //     cerr<<"StaticSolver::solve, initial position = "<<pos<<endl;
+    //     cerr<<"StaticSolver::solve, b = "<<b<<endl;
 
-// -- solve the system using a conjugate gradient solution
+    // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
     group->v_clear( x );
     group->v_eq(r,b); // initial residual
@@ -66,14 +68,14 @@ void StaticSolver::solve(double)
             //cerr<<"StaticSolver::solve, new p = "<< p <<endl;
         }
 
-// matrix-vector product
+        // matrix-vector product
         /*        cerr<<"StaticSolver::solve, dx = "<<p<<endl;*/
         group->propagateDx(p);          // dx = p
         group->computeDf(q);            // q = df/dx p
         /*        cerr<<"StaticSolver::solve, df = "<<q<<endl;*/
-// filter the product to take the constraints into account
+        // filter the product to take the constraints into account
         group->projectResponse(q);     // q is projected to the constrained space
-//         cerr<<"StaticSolver::solve, df filtered = "<<q<<endl;
+        //         cerr<<"StaticSolver::solve, df filtered = "<<q<<endl;
 
         double den = p.dot(q);
         /*        cerr<<"StaticSolver::solve, den = "<<den<<endl;*/
@@ -90,9 +92,9 @@ void StaticSolver::solve(double)
                 cerr<<"StaticSolver::solve, r = "<<r<<endl;
                 cerr<<"StaticSolver::solve, residual = "<<sqrt(r.dot(r))<<endl;*/
     }
-// x is the solution of the system
+    // x is the solution of the system
 
-// apply the solution
+    // apply the solution
     /*    cerr<<"StaticSolver::solve, nb iter = "<<nb_iter<<endl;
         cerr<<"StaticSolver::solve, solution = "<<x<<endl;*/
     pos.peq( x );
@@ -102,10 +104,7 @@ void StaticSolver::solve(double)
 void create(StaticSolver*& obj, ObjectDescription* arg)
 {
     obj = new StaticSolver();
-    if (arg->getAttribute("iterations"))
-        obj->maxCGIter = atoi(arg->getAttribute("iterations"));
-    if (arg->getAttribute("threshold"))
-        obj->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
+    obj->parseFields( arg->getAttributeMap() );
 }
 
 SOFA_DECL_CLASS(StaticSolver)
@@ -115,3 +114,4 @@ Creator<ObjectFactory, StaticSolver> StaticSolverClass("Static");
 } // namespace Components
 
 } // namespace Sofa
+

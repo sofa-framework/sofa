@@ -16,7 +16,11 @@ namespace Abstract
 BaseObject::BaseObject()
     : Base(), context_(NULL)
     , m_isListening(false)
-{}
+    , m_printLog(false)
+{
+    addField( &m_isListening, "listening", "if true, handle the events, otherwise ignore the events");
+    addField( &m_printLog, "printLog", "if true, print logs at run-time");
+}
 
 BaseObject::~BaseObject()
 {}
@@ -35,13 +39,6 @@ BaseContext* BaseObject::getContext()
 {
     return (context_==NULL)?BaseContext::getDefault():context_;
 }
-
-// void BaseObject::readXML( XMLNode* xmlnode )
-// {
-//     if( xmlnode->getAttribute("listening") ){
-//         setListening( xmlnode->getAttribute("listening") );
-//     }
-// }
 
 /// Initialization method called after each graph modification.
 void BaseObject::init()
@@ -70,6 +67,17 @@ void BaseObject::setListening( bool b )
 bool BaseObject::isListening() const
 {
     return m_isListening;
+}
+
+BaseObject* BaseObject::setPrintLog( bool b )
+{
+    m_printLog = b;
+    return this;
+}
+
+bool BaseObject::printLog() const
+{
+    return m_printLog;
 }
 
 

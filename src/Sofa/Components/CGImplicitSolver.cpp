@@ -28,6 +28,13 @@ CGImplicitSolver::CGImplicitSolver()
     rayleighStiffness = 0.1;
     rayleighDamping = 0.1;
     velocityDamping = 0;
+
+    addField(&maxCGIter,"iterations","maximum number of iterations of the Conjugate Gradient solution");
+    addField(&smallDenominatorThreshold,"threshold","minimum value of the denominator in the conjugate Gradient solution");
+    addField(&tolerance,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)");
+    addField(&rayleighStiffness,"stiffness","Rayleigh damping coefficient related to stiffness");
+    addField(&velocityDamping,"vdamping","Velocity decay coefficient (no decay if null)");
+
 }
 
 CGImplicitSolver* CGImplicitSolver::setMaxIter( int n )
@@ -51,7 +58,7 @@ void CGImplicitSolver::solve(double dt)
     //MultiVector z(group, V_DERIV);
     double h = dt;
 
-    if( getDebug() )
+    if( printLog() )
     {
         cerr<<"CGImplicitSolver, dt = "<< dt <<endl;
         cerr<<"CGImplicitSolver, initial x = "<< pos <<endl;
@@ -60,7 +67,7 @@ void CGImplicitSolver::solve(double dt)
 
     // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
-    if( getDebug() )
+    if( printLog() )
         cerr<<"CGImplicitSolver, f0 = "<< b <<endl;
     group->propagateDx(vel);            // dx = v
     group->computeDf(f);                // f = df/dx v
@@ -81,7 +88,7 @@ void CGImplicitSolver::solve(double dt)
     group->v_clear( x );
     group->v_eq(r,b); // initial residual
 
-    if( getDebug() )
+    if( printLog() )
         cerr<<"CGImplicitSolver, r0 = "<< r <<endl;
 
     unsigned nb_iter;
@@ -142,7 +149,7 @@ void CGImplicitSolver::solve(double dt)
     if (velocityDamping!=0.0)
         vel *= exp(-h*velocityDamping);
 
-    if( getDebug() )
+    if( printLog() )
     {
         cerr<<"CGImplicitSolver, final x = "<< pos <<endl;
         cerr<<"CGImplicitSolver, final v = "<< vel <<endl;
@@ -152,20 +159,21 @@ void CGImplicitSolver::solve(double dt)
 void create(CGImplicitSolver*& obj, ObjectDescription* arg)
 {
     obj = new CGImplicitSolver();
-    if (arg->getAttribute("iterations"))
-        obj->setMaxIter( atoi(arg->getAttribute("iterations")) );
-    if (arg->getAttribute("threshold"))
-        obj->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
-    if (arg->getAttribute("tolerance"))
-        obj->tolerance = atof(arg->getAttribute("tolerance"));
-    if (arg->getAttribute("stiffness"))
-        obj->rayleighStiffness = atof(arg->getAttribute("stiffness"));
-    if (arg->getAttribute("damping"))
-        obj->rayleighDamping = atof(arg->getAttribute("damping"));
-    if (arg->getAttribute("vdamping"))
-        obj->velocityDamping = atof(arg->getAttribute("vdamping"));
-    if (arg->getAttribute("debug"))
-        obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );
+    obj->parseFields( arg->getAttributeMap() );
+    /*	if (arg->getAttribute("iterations"))
+    	    obj->setMaxIter( atoi(arg->getAttribute("iterations")) );
+    	if (arg->getAttribute("threshold"))
+    		obj->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
+    	if (arg->getAttribute("tolerance"))
+    		obj->tolerance = atof(arg->getAttribute("tolerance"));
+    	if (arg->getAttribute("stiffness"))
+    		obj->rayleighStiffness = atof(arg->getAttribute("stiffness"));
+    	if (arg->getAttribute("damping"))
+    		obj->rayleighDamping = atof(arg->getAttribute("damping"));
+    	if (arg->getAttribute("vdamping"))
+    		obj->velocityDamping = atof(arg->getAttribute("vdamping"));
+    	if (arg->getAttribute("debug"))
+    	    obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );*/
 }
 
 SOFA_DECL_CLASS(CGImplicit)
