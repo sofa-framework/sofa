@@ -26,6 +26,8 @@ void create(OglModel*& obj, ObjectDescription* arg)
     std::string loader = arg->getAttribute("loader","");
     std::string texturename = arg->getAttribute("texturename","");
     obj->load(filename, loader, texturename);
+    if (arg->getAttribute("flip")!=NULL)
+        obj->flipFaces();
 
     if (arg->getAttribute("color"))
         obj->setColor(arg->getAttribute("color"));
@@ -456,6 +458,20 @@ void OglModel::computeNormals()
     for (unsigned int i = 0; i < vertices.size(); i++)
     {
         vnormals[i] = normals[(vsplit ? vertNormIdx[i] : i)];
+    }
+}
+
+void OglModel::flipFaces()
+{
+    for (unsigned int i = 0; i < triangles.size() ; i++)
+    {
+        int temp = triangles[i][1];
+        triangles[i][1] = triangles[i][2];
+        triangles[i][2] = temp;
+    }
+    for (unsigned int i = 0; i < vnormals.size(); i++)
+    {
+        vnormals[i] = -vnormals[i];
     }
 }
 

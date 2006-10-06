@@ -132,6 +132,8 @@ public:
     void applyUVScale(double su, double sv);
     void computeNormals();
 
+    void flipFaces();
+
     void setColor(float r, float g, float b, float a);
     void setColor(std::string color);
 
