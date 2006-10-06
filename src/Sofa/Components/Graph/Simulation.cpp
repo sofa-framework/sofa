@@ -11,6 +11,9 @@
 #include "ResetAction.h"
 #include "VisualAction.h"
 #include "DeleteAction.h"
+#include "ExportOBJAction.h"
+
+#include <fstream>
 
 namespace Sofa
 {
@@ -153,6 +156,41 @@ void Simulation::unload(GNode* root)
     if (root->getParent()!=NULL)
         root->getParent()->removeChild(root);
     delete root;
+}
+
+/// Export a scene to an OBJ 3D Scene
+void Simulation::exportOBJ(GNode* root, const char* filename, bool exportMTL)
+{
+    if (!root) return;
+    std::ofstream fout(filename);
+
+    fout << "# Generated from SOFA Simulation" << std::endl;
+
+    if (!exportMTL)
+    {
+        ExportOBJAction act(&fout);
+        root->execute(&act);
+    }
+    else
+    {
+        const char *path1 = strrchr(filename, '/');
+        const char *path2 = strrchr(filename, '\\');
+        const char* path = (path1==NULL) ? ((path2==NULL)?filename : path2+1) : (path2==NULL) ? path1+1 : ((path1-filename) > (path2-filename)) ? path1+1 : path2+1;
+
+        const char *ext = strrchr(path, '.');
+
+        if (!ext) ext = path + strlen(path);
+        std::string mtlfilename(path, ext);
+        mtlfilename += ".mtl";
+        std::string mtlpathname(filename, ext);
+        mtlpathname += ".mtl";
+        std::ofstream mtl(mtlpathname.c_str());
+        mtl << "# Generated from SOFA Simulation" << std::endl;
+        fout << "m "<<mtlfilename<<'\n';
+
+        ExportOBJAction act(&fout,&mtl);
+        root->execute(&act);
+    }
 }
 
 } // namespace Graph

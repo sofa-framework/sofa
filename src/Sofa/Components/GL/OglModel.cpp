@@ -3,6 +3,7 @@
 #include "../Common/Quat.h"
 #include "../Common/ObjectFactory.h"
 #include "../MeshTopology.h"
+#include <sstream>
 
 namespace Sofa
 {
@@ -593,6 +594,42 @@ void OglModel::initTextures()
     {
         tex->init();
     }
+}
+
+int OglModel::exportOBJ(std::ostream* out, std::ostream* mtl, int vindex)
+{
+    if (mtl != NULL) // && !material.name.empty())
+    {
+        std::string name; // = material.name;
+        if (name.empty())
+        {
+            static int count = 0;
+            std::ostringstream o; o << "default" << ++count;
+            name = o.str();
+        }
+        *mtl << "n "<<name<<"\n";
+        if (material.useAmbient)
+            *mtl << "Ka "<<material.ambient[0]<<' '<<material.ambient[1]<<' '<<material.ambient[2]<<"\n";
+        if (material.useDiffuse)
+            *mtl << "Kd "<<material.diffuse[0]<<' '<<material.diffuse[1]<<' '<<material.diffuse[2]<<"\n";
+        if (material.useSpecular)
+            *mtl << "Ks "<<material.specular[0]<<' '<<material.specular[1]<<' '<<material.specular[2]<<"\n";
+        if (material.useShininess)
+            *mtl << "Ns "<<material.shininess<<"\n";
+        *out << "usemtl "<<name<<'\n';
+    }
+    const ResizableExtVector<Coord>& x = vertices;
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        *out << "v "<<x[i][0]<<' '<<x[i][1]<<' '<<x[i][2]<<'\n';
+    }
+
+    for (unsigned int i = 0; i < triangles.size() ; i++)
+    {
+        *out << "f "<<triangles[i][0]+vindex<<' '<<triangles[i][1]+vindex<<' '<<triangles[i][2]+vindex<<'\n';
+    }
+    *out << std::endl;
+    return x.size();
 }
 
 } // namespace GL

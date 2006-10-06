@@ -46,6 +46,9 @@ public:
     /// Delete a scene from memory. After this call the pointer is invalid
     static void unload(GNode* root);
 
+    /// Export a scene to an OBJ 3D Scene
+    static void exportOBJ(GNode* root, const char* filename, bool exportMTL = true);
+
 };
 
 } // namespace Graph

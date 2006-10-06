@@ -161,6 +161,10 @@ public:
     VecDeriv* getF()  { return NULL; }
     VecDeriv* getDx() { return NULL; }
     */
+
+    /// Append this mesh to an OBJ format stream, taking into account the number of vertices already written
+    /// Return the number of vertices written
+    int exportOBJ(std::ostream* out, std::ostream* mtl=NULL, int vindex=0);
 };
 
 } // namespace GL
