@@ -596,7 +596,7 @@ void OglModel::initTextures()
     }
 }
 
-int OglModel::exportOBJ(std::ostream* out, std::ostream* mtl, int vindex)
+void OglModel::exportOBJ(std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex)
 {
     if (mtl != NULL) // && !material.name.empty())
     {
@@ -604,32 +604,91 @@ int OglModel::exportOBJ(std::ostream* out, std::ostream* mtl, int vindex)
         if (name.empty())
         {
             static int count = 0;
-            std::ostringstream o; o << "default" << ++count;
+            std::ostringstream o; o << "mat" << ++count;
             name = o.str();
         }
-        *mtl << "n "<<name<<"\n";
+        *mtl << "newmtl "<<name<<"\n";
+        *mtl << "illum 4\n";
         if (material.useAmbient)
             *mtl << "Ka "<<material.ambient[0]<<' '<<material.ambient[1]<<' '<<material.ambient[2]<<"\n";
         if (material.useDiffuse)
             *mtl << "Kd "<<material.diffuse[0]<<' '<<material.diffuse[1]<<' '<<material.diffuse[2]<<"\n";
+        *mtl << "Tf 1.00 1.00 1.00\n";
+        *mtl << "Ni 1.00\n";
         if (material.useSpecular)
             *mtl << "Ks "<<material.specular[0]<<' '<<material.specular[1]<<' '<<material.specular[2]<<"\n";
         if (material.useShininess)
             *mtl << "Ns "<<material.shininess<<"\n";
+
         *out << "usemtl "<<name<<'\n';
     }
-    const ResizableExtVector<Coord>& x = vertices;
+    const ResizableExtVector<Coord>& x = *inputVertices;
+
+    int nbv = x.size();
+
     for (unsigned int i=0; i<x.size(); i++)
     {
-        *out << "v "<<x[i][0]<<' '<<x[i][1]<<' '<<x[i][2]<<'\n';
+        *out << "v "<< std::fixed << x[i][0]<<' '<< std::fixed <<x[i][1]<<' '<< std::fixed <<x[i][2]<<'\n';
+    }
+
+    int nbn = 0;
+
+    if (vertNormIdx.empty())
+    {
+        nbn = vnormals.size();
+        for (unsigned int i=0; i<vnormals.size(); i++)
+        {
+            *out << "vn "<< std::fixed << vnormals[i][0]<<' '<< std::fixed <<vnormals[i][1]<<' '<< std::fixed <<vnormals[i][2]<<'\n';
+        }
+    }
+    else
+    {
+        for (unsigned int i = 0; i < vertNormIdx.size(); i++)
+        {
+            if (vertNormIdx[i] >= nbn)
+                nbn = vertNormIdx[i]+1;
+        }
+        std::vector<int> normVertIdx(nbn);
+        for (unsigned int i = 0; i < vertNormIdx.size(); i++)
+        {
+            normVertIdx[vertNormIdx[i]]=i;
+        }
+        for (int i = 0; i < nbn; i++)
+        {
+            int j = normVertIdx[i];
+            *out << "vn "<< std::fixed << vnormals[j][0]<<' '<< std::fixed <<vnormals[j][1]<<' '<< std::fixed <<vnormals[j][2]<<'\n';
+        }
+    }
+
+    int nbt = 0;
+    if (!vtexcoords.empty())
+    {
+        nbt = vtexcoords.size();
+        for (unsigned int i=0; i<vtexcoords.size(); i++)
+        {
+            *out << "vt "<< std::fixed << vtexcoords[i][0]<<' '<< std::fixed <<vtexcoords[i][1]<<'\n';
+        }
     }
 
     for (unsigned int i = 0; i < triangles.size() ; i++)
     {
-        *out << "f "<<triangles[i][0]+vindex<<' '<<triangles[i][1]+vindex<<' '<<triangles[i][2]+vindex<<'\n';
+        *out << "f";
+        for (int j=0; j<3; j++)
+        {
+            int i0 = triangles[i][j];
+            int i_p = vertPosIdx.empty() ? i0 : vertPosIdx[i0];
+            int i_n = vertNormIdx.empty() ? i0 : vertNormIdx[i0];
+            if (vtexcoords.empty())
+                *out << ' ' << i_p+vindex+1 << "//" << i_n+nindex+1;
+            else
+                *out << ' ' << i_p+vindex+1 << '/' << i0+tindex+1 << '/' << i_n+nindex+1;
+        }
+        *out << '\n';
     }
     *out << std::endl;
-    return x.size();
+    vindex+=nbv;
+    nindex+=nbn;
+    tindex+=nbt;
 }
 
 } // namespace GL

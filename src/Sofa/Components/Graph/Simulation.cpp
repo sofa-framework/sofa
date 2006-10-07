@@ -186,7 +186,7 @@ void Simulation::exportOBJ(GNode* root, const char* filename, bool exportMTL)
         mtlpathname += ".mtl";
         std::ofstream mtl(mtlpathname.c_str());
         mtl << "# Generated from SOFA Simulation" << std::endl;
-        fout << "m "<<mtlfilename<<'\n';
+        fout << "mtllib "<<mtlfilename<<'\n';
 
         ExportOBJAction act(&fout,&mtl);
         root->execute(&act);

@@ -162,9 +162,10 @@ public:
     VecDeriv* getDx() { return NULL; }
     */
 
-    /// Append this mesh to an OBJ format stream, taking into account the number of vertices already written
-    /// Return the number of vertices written
-    int exportOBJ(std::ostream* out, std::ostream* mtl=NULL, int vindex=0);
+    /// Append this mesh to an OBJ format stream.
+    /// The number of vertices position, normal, and texture coordinates already written is given as parameters
+    /// This method should update them
+    void exportOBJ(std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 };
 
 } // namespace GL
