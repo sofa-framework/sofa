@@ -248,6 +248,7 @@ public:
         c.getVCenter()[1] += y;
         c.getVCenter()[2] += z;
     }
+
 };
 
 class RigidMass
@@ -279,6 +280,15 @@ public:
         return out;
     }
 };
+
+
+
+/// Specialization for potential energy
+// inline RigidTypes::Deriv operator*( const Vec3d& g, const RigidMass& m)
+// {
+//     return RigidTypes::Deriv( Vec3d(0,0,0), g * m.mass );
+// }
+
 
 inline RigidTypes::Deriv operator*(const RigidTypes::Deriv& d, const RigidMass& m)
 {

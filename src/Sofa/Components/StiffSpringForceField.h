@@ -34,8 +34,9 @@ public:
 
 protected:
     std::vector<Mat3> dfdx;
+    double m_potentialEnergy;
 
-    void addSpringForce(VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring);
+    void addSpringForce(double& potentialEnergy, VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring);
 
     void addSpringDForce(VecDeriv& f1, VecCoord& p1, VecDeriv& dx1, VecDeriv& f2, VecCoord& p2, VecDeriv& dx2, int i, const Spring& spring);
 
@@ -63,6 +64,8 @@ public:
     virtual void addForce();
 
     virtual void addDForce();
+
+    virtual double getPotentialEnergy() { return m_potentialEnergy; }
 };
 
 } // namespace Components

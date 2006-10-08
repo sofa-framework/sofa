@@ -121,6 +121,35 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
 }
 
 template <class DataTypes, class MassType>
+double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
+{
+    double e=0;
+    for (unsigned int i=0; i<v.size(); i++)
+    {
+        e+= v[i]*mass*v[i];
+    }
+    return e/2;
+}
+
+template <class DataTypes, class MassType>
+double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
+{
+    double e = 0;
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+
+        e += theGravity*mass*x[i];
+    }
+    return e;
+}
+
+
+template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw()
 {
     if (!getContext()->getShowBehaviorModels())

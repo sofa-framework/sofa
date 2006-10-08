@@ -65,6 +65,14 @@ void RepulsiveSpringForceField<DataTypes>::addForce()
     }
 }
 
+template <class DataTypes>
+double RepulsiveSpringForceField<DataTypes>::getPotentialEnergy()
+{
+    cerr<<"RepulsiveSpringForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
+
+
 } // namespace Components
 
 } // namespace Sofa

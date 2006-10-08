@@ -8,6 +8,9 @@
 #include <assert.h>
 #include <GL/gl.h>
 #include "GL/template.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -100,6 +103,14 @@ void LagrangianMultiplierFixedConstraint<DataTypes>::addDForce(VecDeriv& df, con
         df[c.indice] += val;
     }
 }
+
+template <class DataTypes>
+double LagrangianMultiplierFixedConstraint<DataTypes>::getPotentialEnergy(const VecCoord& )
+{
+    cerr<<"LagrangianMultiplierFixedConstraint::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
+
 
 template<class DataTypes>
 void LagrangianMultiplierFixedConstraint<DataTypes>::draw()

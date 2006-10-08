@@ -68,6 +68,8 @@ public:
 
     virtual void addDForce();
 
+    virtual double getPotentialEnergy();
+
     // -- VisualModel interface
     void draw();
     void initTextures() { }

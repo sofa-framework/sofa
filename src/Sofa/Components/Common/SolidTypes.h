@@ -63,14 +63,14 @@ public:
         SpatialVector( const Vec& l, const Vec& f );
         SpatialVector& operator += (const SpatialVector& v);
 
-        template<class Real2>
-        SpatialVector operator * ( Real2 a ) const
+        //template<class Real2>
+        SpatialVector operator * ( Real a ) const
         {
             return SpatialVector( lineVec *a, freeVec * a);
         }
 
-        template<class Real2>
-        SpatialVector& operator *= ( Real2 a )
+        //template<class Real2>
+        SpatialVector& operator *= ( Real a )
         {
             lineVec *=a;
             freeVec *= a;

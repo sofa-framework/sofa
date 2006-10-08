@@ -35,6 +35,14 @@ void Mass<DataTypes>::accFromF()
         accFromF(*this->mmodel->getDx(), *this->mmodel->getF());
 }
 
+template<class DataTypes>
+double Mass<DataTypes>::getKineticEnergy()
+{
+    if (this->mmodel)
+        return getKineticEnergy(*this->mmodel->getV());
+    return 0.;
+}
+
 } // namespace Core
 
 } // namespace Sofa

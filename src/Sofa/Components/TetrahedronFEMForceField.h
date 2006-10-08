@@ -60,6 +60,7 @@ protected:
     typedef std::vector< Col_Value > CompressedValue;
     typedef std::vector< CompressedValue > CompressedMatrix;
     CompressedMatrix _stiffnesses;
+    double m_potentialEnergy;
 
     //just for draw forces
     VecDeriv _forces;
@@ -104,6 +105,8 @@ public:
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
     virtual void addDForce (VecDeriv& df, const VecCoord& x, const VecDeriv& v, const VecDeriv& dx);
+
+    virtual double getPotentialEnergy(const VecCoord& x);
 
     virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const);
     virtual void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double, double, double, unsigned int &);

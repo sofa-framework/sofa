@@ -14,15 +14,12 @@ class BasicMass : public virtual Abstract::BaseObject
 public:
     virtual ~BasicMass() { }
 
-    virtual void addMDx() = 0; ///< f += M dx
+    virtual void addMDx() = 0; ///< f += M dx using dof->getF() and dof->getDx()
 
-    virtual void accFromF() = 0; ///< dx = M^-1 f
+    virtual void accFromF() = 0; ///< dx = M^-1 f using dof->getF() and dof->getDx()
 
-    // Note: computeForce and computeDf are now replaced by addForce and addDForce of the ForceField class.
+    virtual double getKineticEnergy() = 0;  ///< vMv/2 using dof->getV()
 
-    //virtual void computeForce() { } ///< f += gravity and inertia forces
-
-    //virtual void computeDf() { }
 };
 
 } // namespace Core

@@ -15,7 +15,7 @@ namespace Components
 {
 
 template<class DataTypes>
-void StiffSpringForceField<DataTypes>::addSpringForce(VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring)
+void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring)
 {
     int a = spring.m1;
     int b = spring.m2;
@@ -24,6 +24,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce(VecDeriv& f1, VecCoord& p1
     Real inverseLength = 1.0f/d;
     u *= inverseLength;
     Real elongation = (Real)(d - spring.initpos);
+    potentialEnergy += elongation * elongation * spring.ks / 2;
     Deriv relativeVelocity = v2[b]-v1[a];
     Real elongationVelocity = dot(u,relativeVelocity);
     Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
@@ -69,9 +70,10 @@ void StiffSpringForceField<DataTypes>::addForce()
     VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
+    m_potentialEnergy = 0;
     for (unsigned int i=0; i<this->springs.size(); i++)
     {
-        this->addSpringForce(f1,p1,v1,f2,p2,v2, i, this->springs[i]);
+        this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, i, this->springs[i]);
     }
 }
 

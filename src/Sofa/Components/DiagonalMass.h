@@ -48,6 +48,10 @@ public:
 
     void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
+    double getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
+
+    double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
+
     // -- VisualModel interface
 
     void draw();

@@ -4,12 +4,22 @@
 #include "MeshSpringForceField.h"
 #include "StiffSpringForceField.inl"
 #include "MeshTopology.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
 
 namespace Components
 {
+
+template <class DataTypes>
+double MeshSpringForceField<DataTypes>::getPotentialEnergy()
+{
+    cerr<<"MeshSpringForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
 
 template<class DataTypes>
 void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping)

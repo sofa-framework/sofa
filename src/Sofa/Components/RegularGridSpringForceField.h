@@ -13,6 +13,7 @@ namespace Components
 template<class DataTypes>
 class RegularGridSpringForceField : public StiffSpringForceField<DataTypes>
 {
+    double m_potentialEnergy;
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -98,6 +99,8 @@ public:
     virtual void addForce();
 
     virtual void addDForce();
+
+    virtual double getPotentialEnergy() { return m_potentialEnergy; }
 
     virtual void draw();
 

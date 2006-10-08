@@ -6,6 +6,8 @@
 
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
+using std::cerr;
+using std::endl;
 
 #ifdef _WIN32
 #include <windows.h>
@@ -397,6 +399,12 @@ TensorForceField<DataTypes>::addDForce()
 
 }
 
+template <class DataTypes>
+double TensorForceField<DataTypes>::getPotentialEnergy()
+{
+    cerr<<"TensorForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
 
 
 template<class DataTypes>

@@ -8,6 +8,9 @@
 #include <assert.h>
 #include <GL/gl.h>
 #include "GL/template.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -120,6 +123,14 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addDForce()
         f2[c.m2] -= val;
     }
 }
+
+template <class DataTypes>
+double LagrangianMultiplierAttachConstraint<DataTypes>::getPotentialEnergy()
+{
+    cerr<<"LagrangianMultiplierAttachConstraint::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
+
 
 template<class DataTypes>
 void LagrangianMultiplierAttachConstraint<DataTypes>::draw()

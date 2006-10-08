@@ -150,6 +150,12 @@ void TriangleFEMForceField<DataTypes>::addDForce()
     }
 }
 
+template <class DataTypes>
+double TriangleFEMForceField<DataTypes>::getPotentialEnergy()
+{
+    cerr<<"TriangleFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
 
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, const VecCoord& x )

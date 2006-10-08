@@ -36,6 +36,8 @@ public:
     virtual void addDForce(VecDeriv& /*df*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const VecDeriv& /*dx*/)
     {}
 
+    virtual double getKineticEnergy();  ///< vMv/2 using dof->getV()
+    virtual double getKineticEnergy( const VecDeriv& v )=0;  ///< vMv/2 using dof->getV()
 };
 
 /** Return the inertia force applied to a body referenced in a moving coordinate system.

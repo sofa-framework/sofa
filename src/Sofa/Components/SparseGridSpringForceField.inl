@@ -34,7 +34,7 @@ void SparseGridSpringForceField<DataTypes>::addForce()
     VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
-
+    this->m_potentialEnergy = 0;
 
 
     if (this->object1==this->object2)
@@ -75,16 +75,16 @@ void SparseGridSpringForceField<DataTypes>::addForce()
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i+1,j,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                     spring.m1 = topology->point(i,j+1,k);
                     spring.m2 = topology->point(i+1,j+1,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                     spring.m1 = topology->point(i,j,k+1);
                     spring.m2 = topology->point(i+1,j,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                     spring.m1 = topology->point(i,j+1,k+1);
                     spring.m2 = topology->point(i+1,j+1,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
 
                     /// add y axis springs
                     spring.initpos = topology->getDy().norm();
@@ -94,16 +94,16 @@ void SparseGridSpringForceField<DataTypes>::addForce()
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i,j+1,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                     spring.m1 = topology->point(i+1,j,k);
                     spring.m2 = topology->point(i+1,j+1,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                     spring.m1 = topology->point(i,j,k+1);
                     spring.m2 = topology->point(i,j+1,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                     spring.m1 = topology->point(i+1,j,k+1);
                     spring.m2 = topology->point(i+1,j+1,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
 
                     /// add z axis springs
                     spring.initpos = topology->getDz().norm();
@@ -113,16 +113,16 @@ void SparseGridSpringForceField<DataTypes>::addForce()
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i,j,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                     spring.m1 = topology->point(i+1,j,k);
                     spring.m2 = topology->point(i+1,j,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                     spring.m1 = topology->point(i,j+1,k);
                     spring.m2 = topology->point(i,j+1,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                     spring.m1 = topology->point(i+1,j+1,k);
                     spring.m2 = topology->point(i+1,j+1,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                 }
 
                 if (this->quadsStiffness != 0.0 || this->quadsDamping != 0.0)
@@ -143,16 +143,16 @@ void SparseGridSpringForceField<DataTypes>::addForce()
                     /// add the 4th springs
                     spring1.m1 = topology->point(i,j,k);
                     spring1.m2 = topology->point(i+1,j+1,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                     spring2.m1 = topology->point(i,j+1,k);
                     spring2.m2 = topology->point(i+1,j,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
                     spring1.m1 = topology->point(i,j,k+1);
                     spring1.m2 = topology->point(i+1,j+1,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                     spring2.m1 = topology->point(i,j+1,k+1);
                     spring2.m2 = topology->point(i+1,j,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
 
                     /// add xz plane springs
                     // lines (x,y,z) -> (x+1,y,z+1)
@@ -167,16 +167,16 @@ void SparseGridSpringForceField<DataTypes>::addForce()
                     /// add the 4th springs
                     spring1.m1 = topology->point(i,j,k);
                     spring1.m2 = topology->point(i+1,j,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                     spring2.m1 = topology->point(i,j,k+1);
                     spring2.m2 = topology->point(i+1,j,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
                     spring1.m1 = topology->point(i,j+1,k);
                     spring1.m2 = topology->point(i+1,j+1,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                     spring2.m1 = topology->point(i,j+1,k+1);
                     spring2.m2 = topology->point(i+1,j+1,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
 
                     /// add yz plane springs
                     // lines (x,y,z) -> (x,y+1,z+1)
@@ -191,16 +191,16 @@ void SparseGridSpringForceField<DataTypes>::addForce()
                     /// add the 4th springs
                     spring1.m1 = topology->point(i,j,k);
                     spring1.m2 = topology->point(i,j+1,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                     spring2.m1 = topology->point(i,j,k+1);
                     spring2.m2 = topology->point(i,j+1,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
                     spring1.m1 = topology->point(i+1,j,k);
                     spring1.m2 = topology->point(i+1,j+1,k+1);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                     spring2.m1 = topology->point(i+1,j,k+1);
                     spring2.m2 = topology->point(i+1,j+1,k);
-                    this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                    this->addSpringForce(this->m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
                 }
             }
 

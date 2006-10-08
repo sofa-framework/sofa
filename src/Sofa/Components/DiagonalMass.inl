@@ -69,8 +69,38 @@ void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
+double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
+{
+    double e = 0;
+    for (unsigned int i=0; i<masses.size(); i++)
+    {
+        e += v[i]*masses[i]*v[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
+    }
+    return e/2;
+}
+
+template <class DataTypes, class MassType>
+double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
+{
+    double e = 0;
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<masses.size(); i++)
+    {
+
+        e += theGravity*masses[i]*x[i];
+    }
+    return e;
+}
+
+
+template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
+
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;

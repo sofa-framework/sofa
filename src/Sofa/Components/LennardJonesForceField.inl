@@ -6,6 +6,9 @@
 #include "GL/template.h"
 #include <math.h>
 #include <GL/gl.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -95,6 +98,14 @@ void LennardJonesForceField<DataTypes>::addDForce(VecDeriv& f1, const VecCoord& 
         f1[ib] -= dforce;
     }
 }
+
+template <class DataTypes>
+double LennardJonesForceField<DataTypes>::getPotentialEnergy(const VecCoord& )
+{
+    cerr<<"LennardJonesForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
+
 
 template<class DataTypes>
 void LennardJonesForceField<DataTypes>::draw()

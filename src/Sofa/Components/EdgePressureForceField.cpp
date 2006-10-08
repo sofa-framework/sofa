@@ -98,6 +98,13 @@ void EdgePressureForceField<DataTypes>::addForce()
 
 }
 
+template <class DataTypes>
+double EdgePressureForceField<DataTypes>::getPotentialEnergy()
+{
+    cerr<<"EdgePressureForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
+
 
 
 template<class DataTypes>

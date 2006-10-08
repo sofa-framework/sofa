@@ -41,6 +41,7 @@ void RegularGridSpringForceField<DataTypes>::addForce()
     VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
+    m_potentialEnergy = 0;
     if (this->object1==this->object2)
     {
         if (topology != NULL)
@@ -76,7 +77,7 @@ void RegularGridSpringForceField<DataTypes>::addForce()
                                 continue;
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x+1,y,z);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                         }
                 // lines along Y
                 spring.initpos = topology->getDy().norm();
@@ -94,7 +95,7 @@ void RegularGridSpringForceField<DataTypes>::addForce()
                                 continue;
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x,y+1,z);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                         }
                 // lines along Z
                 spring.initpos = topology->getDz().norm();
@@ -112,7 +113,7 @@ void RegularGridSpringForceField<DataTypes>::addForce()
                                 continue;
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x,y,z+1);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring);
                         }
 
             }
@@ -139,10 +140,10 @@ void RegularGridSpringForceField<DataTypes>::addForce()
                                 continue;
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x+1,y+1,z);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                             spring2.m1 = topology->point(x+1,y,z);
                             spring2.m2 = topology->point(x,y+1,z);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
                         }
                 // quads along XZ plane
                 // lines (x,y,z) -> (x+1,y,z+1)
@@ -163,10 +164,10 @@ void RegularGridSpringForceField<DataTypes>::addForce()
                                 continue;
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x+1,y,z+1);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                             spring2.m1 = topology->point(x+1,y,z);
                             spring2.m2 = topology->point(x,y,z+1);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
                         }
                 // quads along YZ plane
                 // lines (x,y,z) -> (x,y+1,z+1)
@@ -187,10 +188,10 @@ void RegularGridSpringForceField<DataTypes>::addForce()
                                 continue;
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x,y+1,z+1);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                             spring2.m1 = topology->point(x,y+1,z);
                             spring2.m2 = topology->point(x,y,z+1);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
                         }
             }
             if (this->cubesStiffness != 0.0 || this->cubesDamping != 0.0)
@@ -224,16 +225,16 @@ void RegularGridSpringForceField<DataTypes>::addForce()
                                 continue;
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x+1,y+1,z+1);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring1);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring1);
                             spring2.m1 = topology->point(x+1,y,z);
                             spring2.m2 = topology->point(x,y+1,z+1);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring2);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring2);
                             spring3.m1 = topology->point(x,y+1,z);
                             spring3.m2 = topology->point(x+1,y,z+1);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring3);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring3);
                             spring4.m1 = topology->point(x,y,z+1);
                             spring4.m2 = topology->point(x+1,y+1,z);
-                            this->addSpringForce(f1,p1,v1,f2,p2,v2, index++, spring4);
+                            this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, index++, spring4);
                         }
             }
         }

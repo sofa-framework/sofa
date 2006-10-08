@@ -44,6 +44,8 @@ public:
 
     virtual void addDForce();
 
+    virtual double getPotentialEnergy();
+
     // -- Temporary added here for matrix ForceField
     void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
     void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};

@@ -20,6 +20,8 @@ public:
 
     virtual void addDForce() = 0;
 
+    virtual double getPotentialEnergy() =0;
+
     virtual void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};
 
     virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};

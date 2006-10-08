@@ -253,6 +253,14 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecCoord
     }
 }
 
+template <class DataTypes>
+double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+{
+    cerr<<"TetrahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
+
+
 
 
 /*

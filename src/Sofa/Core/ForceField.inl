@@ -41,6 +41,14 @@ void ForceField<DataTypes>::addDForce()
         addDForce(*mmodel->getF(), *mmodel->getX(), *mmodel->getV(), *mmodel->getDx());
 }
 
+template<class DataTypes>
+double ForceField<DataTypes>::getPotentialEnergy()
+{
+    if (mmodel)
+        return getPotentialEnergy(*mmodel->getX());
+    else return 0;
+}
+
 } // namespace Core
 
 } // namespace Sofa

@@ -32,6 +32,7 @@ public:
 protected:
     Core::MechanicalModel<DataTypes>* object1;
     Core::MechanicalModel<DataTypes>* object2;
+    double m_potentialEnergy;
 
     class Spring
     {
@@ -51,7 +52,7 @@ protected:
     class Loader;
     void init(const char *filename);
 
-    void addSpringForce(VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring);
+    void addSpringForce(double& potentialEnergy, VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring);
 
 public:
     SpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2, const char* filename)
@@ -84,6 +85,8 @@ public:
     virtual void addForce();
 
     virtual void addDForce();
+
+    virtual double getPotentialEnergy() { return m_potentialEnergy; }
 
     // -- VisualModel interface
     void draw();

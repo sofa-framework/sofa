@@ -41,6 +41,7 @@ public:
     }
 
     virtual void addForce();
+    virtual double getPotentialEnergy();
 };
 
 } // namespace Components

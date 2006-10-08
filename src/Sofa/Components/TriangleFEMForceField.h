@@ -85,6 +85,7 @@ public:
     virtual void init();
     virtual void addForce();
     virtual void addDForce();
+    virtual double getPotentialEnergy();
 
     // -- Temporary added here for matrix ForceField
     void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};

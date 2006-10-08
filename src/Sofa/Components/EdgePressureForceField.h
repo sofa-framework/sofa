@@ -92,6 +92,7 @@ public:
     virtual void init();
     virtual void addForce();
     virtual void addDForce() {}
+    virtual double getPotentialEnergy();
 
 
     // -- VisualModel interface

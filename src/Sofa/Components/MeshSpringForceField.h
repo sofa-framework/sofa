@@ -55,6 +55,9 @@ public:
     {
     }
 
+    virtual double getPotentialEnergy();
+
+
     Real getStiffness() const { return linesStiffness; }
     Real getLinesStiffness() const { return linesStiffness; }
     Real getTrianglesStiffness() const { return trianglesStiffness; }

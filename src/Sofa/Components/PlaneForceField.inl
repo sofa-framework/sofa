@@ -6,6 +6,9 @@
 #include "Common/config.h"
 #include <assert.h>
 #include <GL/gl.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -43,6 +46,14 @@ void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecCoord& /*p1*/,
         f1[p] += planeNormal * (-this->stiffness * (dx1[p]*planeNormal));
     }
 }
+
+template <class DataTypes>
+double PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+{
+    cerr<<"PlaneForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
+
 
 
 template<class DataTypes>

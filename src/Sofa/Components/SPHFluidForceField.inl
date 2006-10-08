@@ -7,6 +7,9 @@
 #include "GL/template.h"
 #include <math.h>
 #include <GL/gl.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -255,6 +258,14 @@ void SPHFluidForceField<DataTypes>::addDForce(VecDeriv& f1, const VecCoord& p1, 
         f1[ib] -= dforce;
     }
 }
+
+template <class DataTypes>
+double SPHFluidForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+{
+    cerr<<"SPHFluidForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
+
 
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::draw()

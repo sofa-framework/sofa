@@ -45,6 +45,24 @@ SOFA_DECL_CLASS(DiagonalMass)
 
 template class DiagonalMass<Vec3dTypes,double>;
 template class DiagonalMass<Vec3fTypes,float>;
+
+// specialization for rigid bodies
+template <>
+double DiagonalMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::VecCoord& x )
+{
+    double e = 0;
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<masses.size(); i++)
+    {
+        e += g*masses[i].mass*x[i].getCenter();
+    }
+    return e;
+}
+
 template class DiagonalMass<RigidTypes,RigidMass>;
 
 namespace Common   // \todo Why this must be inside Common namespace

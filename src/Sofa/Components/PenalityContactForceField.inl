@@ -7,6 +7,9 @@
 #include <assert.h>
 #include <GL/gl.h>
 #include "GL/template.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -88,6 +91,12 @@ void PenalityContactForceField<DataTypes>::addDForce()
     }
 }
 
+template <class DataTypes>
+double PenalityContactForceField<DataTypes>::getPotentialEnergy()
+{
+    cerr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    return 0;
+}
 
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::draw()

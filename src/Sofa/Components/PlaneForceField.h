@@ -56,6 +56,8 @@ public:
 
     virtual void addDForce (VecDeriv& df, const VecCoord& x, const VecDeriv& v, const VecDeriv& dx);
 
+    virtual double getPotentialEnergy(const VecCoord& x);
+
     // -- VisualModel interface
     void draw();
     void initTextures() { }
