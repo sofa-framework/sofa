@@ -128,7 +128,7 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
     {
         e+= v[i]*mass*v[i];
     }
-    cerr<<"UniformMass<DataTypes, MassType>::getKineticEnergy = "<<e/2<<endl;
+    //cerr<<"UniformMass<DataTypes, MassType>::getKineticEnergy = "<<e/2<<endl;
     return e/2;
 }
 
