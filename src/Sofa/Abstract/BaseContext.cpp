@@ -1,5 +1,8 @@
 #include "BaseContext.h"
 #include "BaseObject.h"
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -8,18 +11,16 @@ namespace Abstract
 {
 
 BaseContext::BaseContext()
-{
-}
+{}
 
 BaseContext::~BaseContext()
-{
-}
+{}
 
-BaseContext* BaseContext::getDefault()
-{
-    static BaseContext defaultContext;
-    return &defaultContext;
-}
+// BaseContext* BaseContext::getDefault()
+// {
+//     static BaseContext defaultContext;
+//     return &defaultContext;
+// }
 
 ////////////////
 // Parameters //
@@ -173,6 +174,14 @@ BaseObject* BaseContext::getMainTopology() const
     return NULL;
 }
 
+void BaseContext::executeAction( Components::Graph::Action* )
+{
+    cerr<<"WARNING !!! BaseContext::executeAction not overloaded, does nothing"<<endl;
+}
+
+
 } // namespace Abstract
 
 } // namespace Sofa
+
+

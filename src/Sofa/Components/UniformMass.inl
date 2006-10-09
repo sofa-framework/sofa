@@ -128,6 +128,7 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
     {
         e+= v[i]*mass*v[i];
     }
+    cerr<<"UniformMass<DataTypes, MassType>::getKineticEnergy = "<<e/2<<endl;
     return e/2;
 }
 
@@ -140,10 +141,13 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
+    //cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, theGravity = "<<theGravity<<endl;
     for (unsigned int i=0; i<x.size(); i++)
     {
-
-        e += theGravity*mass*x[i];
+        /*        cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, mass = "<<mass<<endl;
+                cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, x = "<<x[i]<<endl;
+                cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, remove "<<theGravity*mass*x[i]<<endl;*/
+        e -= theGravity*mass*x[i];
     }
     return e;
 }

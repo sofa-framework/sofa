@@ -15,6 +15,7 @@ using namespace Common;
 
 void RungeKutta4Solver::solve(double dt)
 {
+    Abstract::BaseContext* group = getContext();
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
     MultiVector k1a(group, V_DERIV);
@@ -90,3 +91,6 @@ Creator<ObjectFactory, RungeKutta4Solver> RungeKutta4SolverClass("RungeKutta4");
 } // namespace Components
 
 } // namespace Sofa
+
+
+

@@ -25,6 +25,7 @@ void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
     u *= inverseLength;
     Real elongation = (Real)(d - spring.initpos);
     potentialEnergy += elongation * elongation * spring.ks / 2;
+    //cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<endl;
     Deriv relativeVelocity = v2[b]-v1[a];
     Real elongationVelocity = dot(u,relativeVelocity);
     Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);

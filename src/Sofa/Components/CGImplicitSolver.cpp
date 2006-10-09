@@ -2,7 +2,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include "Sofa/Components/CGImplicitSolver.h"
-#include "Sofa/Core/IntegrationGroup.h"
+//#include "Sofa/Core/IntegrationGroup.h"
 #include "Sofa/Core/MultiVector.h"
 #include "Common/ObjectFactory.h"
 
@@ -45,6 +45,7 @@ CGImplicitSolver* CGImplicitSolver::setMaxIter( int n )
 
 void CGImplicitSolver::solve(double dt)
 {
+    Abstract::BaseContext* group = getContext();
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
     MultiVector dx(group, VecId::dx());
@@ -183,3 +184,6 @@ Creator<ObjectFactory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
 } // namespace Components
 
 } // namespace Sofa
+
+
+

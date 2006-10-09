@@ -32,12 +32,14 @@ void BaseObject::setContext(BaseContext* n)
 
 const BaseContext* BaseObject::getContext() const
 {
-    return (context_==NULL)?BaseContext::getDefault():context_;
+    //return (context_==NULL)?BaseContext::getDefault():context_;
+    return context_;
 }
 
 BaseContext* BaseObject::getContext()
 {
-    return (context_==NULL)?BaseContext::getDefault():context_;
+    //return (context_==NULL)?BaseContext::getDefault():context_;
+    return context_;
 }
 
 /// Initialization method called after each graph modification.

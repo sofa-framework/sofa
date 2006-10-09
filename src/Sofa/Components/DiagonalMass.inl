@@ -91,7 +91,7 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
     for (unsigned int i=0; i<masses.size(); i++)
     {
 
-        e += theGravity*masses[i]*x[i];
+        e -= theGravity*masses[i]*x[i];
     }
     return e;
 }

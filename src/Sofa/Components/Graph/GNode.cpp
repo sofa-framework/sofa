@@ -107,6 +107,7 @@ const BaseContext* GNode::getContext() const
 {
     return this;
 }
+
 /*
 Sofa::Core::Context* GNode::getParentContext()
 {

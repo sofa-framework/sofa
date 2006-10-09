@@ -3,7 +3,7 @@
 
 #include "Sofa/Abstract/BaseObject.h"
 #include "Sofa/Components/Common/SofaBaseMatrix.h"
-#include "IntegrationGroup.h"
+//#include "IntegrationGroup.h"
 
 namespace Sofa
 {
@@ -22,11 +22,13 @@ public:
 
     virtual void solve (double dt) = 0;
 
-    virtual void setGroup(IntegrationGroup* grp);
+    //virtual void setGroup(Abstract::BaseContext* grp);
 
 protected:
-    IntegrationGroup* group;
+    //IntegrationGroup* group;
+    //Abstract::BaseContext* group;
     Components::Common::SofaBaseMatrix *mat;
+
 
 };
 

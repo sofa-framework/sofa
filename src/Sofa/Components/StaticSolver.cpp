@@ -30,6 +30,7 @@ StaticSolver::StaticSolver()
 
 void StaticSolver::solve(double)
 {
+    Abstract::BaseContext* group = getContext();
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
     MultiVector dx(group, VecId::dx());

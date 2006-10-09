@@ -18,6 +18,7 @@ using namespace Core;
 
 void EulerSolver::solve(double dt)
 {
+    Abstract::BaseContext* group = getContext();
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
     MultiVector acc(group, VecId::dx());
@@ -54,4 +55,5 @@ Creator<ObjectFactory, EulerSolver> EulerSolverClass("Euler");
 } // namespace Components
 
 } // namespace Sofa
+
 
