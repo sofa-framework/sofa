@@ -19,6 +19,7 @@ namespace Abstract
 
 Event::Event()
 {
+    m_handled = false;
 }
 
 
