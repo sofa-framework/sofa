@@ -296,6 +296,72 @@ Data:
 
 
 %%%===================================================================
+\subsection{Mappings}
+%%%===================================================================
+
+\begin{frame}
+\frametitle{More on mappings}
+\begin{itemize}
+ \item They map a set of degrees of freedom (the parent) to another (the child).
+ \item Child degrees of freedom (DOF) are not independent: their positions are totally defined by their parent's.
+ \item Displacements are propagated top-down (parent to child): $v_{child} = Jv_{parent}$
+ \item Forces are propagated bottom-up
+ \item A necessary condition for physical consistency is to induce no energy. This is true iff: $v_{child} = Jv_{parent} \Rightarrow f_{parent} += J^T f_{child}$
+ \item Other physical constraints are not automatically satisfied, e.g. incompressibility of the child
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Examples of mappings}
+\begin{columns}
+\column[t]{0.5\linewidth}
+\begin{itemize}
+ \item<1-> RigidMapping can be used to attach points to a rigid body
+ \only<1-2>{
+  \begin{itemize}
+  \only<1>{\item to attach a visual model }
+  \only<2>{ \item to attach collision surfaces }
+ \end{itemize}
+ }
+
+ \item<3-> BarycentricMapping can be used to attach points to a deformable body
+\only<3-4>{
+\begin{itemize}
+ \only<3>{\item to attach a visual model }
+ \only<4>{\item to attach collision surfaces }
+\end{itemize}
+
+\item<5-> More advanced mapping can be applied to fluids
+
+}
+\end{itemize}
+\column[T]{0.5\linewidth}
+\only<1>{\includegraphics[width=\linewidth]{dragon-wire.png} \\ \includegraphics[width=\linewidth]{dragon-plain.png}}
+\only<2>{\includegraphics[width=\linewidth]{dragon-spheres-mapping.png} \\ \includegraphics[width=\linewidth]{dragon-spheres.png}}
+\only<3>{\includegraphics[width=\linewidth]{liver-wire.png} \\ \includegraphics[width=\linewidth]{liver-plain.png}}
+\only<4>{\includegraphics[width=\linewidth]{liver-dof.png} \\ \includegraphics[width=\linewidth]{liver-spheres.png}}
+\only<5>{\includegraphics[width=\linewidth]{sph-force.png} \\ \includegraphics[width=\linewidth]{sph-plain.png}}
+\only<6>{\includegraphics[width=\linewidth]{sph-dof.png} \\ \includegraphics[width=\linewidth]{sph-mapping.png}}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{On the physical consistency of mappings}
+\begin{itemize}
+ \item Conservation of energy:\\Necessary condition: $v_{child} = Jv_{parent} \Rightarrow f_{parent} += J^T f_{child}$
+ \item Conservation of momentum:\\
+ Mass is modeled at one level only. There is no transfer of momentum.
+ \item Constraints on displacements (e.g. incompressibility, fixed points) are not easily applied \textit{at the child level}
+\end{itemize}
+
+\end{frame}
+
+
+
+%%%===================================================================
 \subsection{Interacting bodies}
 %%%===================================================================
 
