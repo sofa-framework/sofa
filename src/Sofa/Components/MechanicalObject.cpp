@@ -67,6 +67,9 @@ Creator< ObjectFactory, MechanicalObject<LaparoscopicRigidTypes> > MechanicalObj
 } // namespace Components
 
 
+// template specialization must be in the same namespace as original namespace for GCC 4.1
+namespace Core
+{
 
 template <>
 void Core::MechanicalObject<Components::Common::Vec3dTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
@@ -113,5 +116,7 @@ template class Core::MechanicalObject<Components::Common::Vec3dTypes>;
 template class Core::MechanicalObject<Components::Common::Vec3fTypes>;
 template class Core::MechanicalObject<Components::Common::RigidTypes>;
 template class Core::MechanicalObject<Components::Common::LaparoscopicRigidTypes>;
+
+} // namespace Core
 
 } // namespace Sofa
