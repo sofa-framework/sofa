@@ -1,9 +1,9 @@
 #include "BackTrace.h"
 
-#ifndef WIN32
+#if !defined(WIN32)
 #include <signal.h>
 #endif
-#ifndef __APPLE__
+#if !defined(WIN32) && !defined(__APPLE__)
 #include <execinfo.h>
 #include <unistd.h>
 #endif
@@ -103,10 +103,12 @@ void BackTrace::autodump()
 
 void BackTrace::sig(int sig)
 {
+#if !defined(WIN32)
     fprintf(stderr,"\n########## SIG %d ##########\n",sig);
     dump();
     signal(sig,SIG_DFL);
     raise(sig);
+#endif
 }
 
 } // namespace Common
