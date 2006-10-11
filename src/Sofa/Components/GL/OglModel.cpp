@@ -350,22 +350,8 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
     }
     else
     {
-        // Try to find a topology
-        Core::Topology* topology = dynamic_cast<Core::Topology*>(getContext()->getTopology());
-        if (topology!=NULL && topology->hasPos())
-        {
-            vertices.resize(topology->getNbPoints());
-            vnormals.resize(vertices.size());
-            if (tex)
-                vtexcoords.resize(vertices.size());
-            for (unsigned int i=0; i<vertices.size(); ++i)
-            {
-                vertices[i] = Coord((GLfloat)topology->getPX(i), (GLfloat)topology->getPY(i), (GLfloat)topology->getPZ(i));
-            }
-        }
         useTopology = true;
         modified = true;
-        update();
     }
     return true;
 }
