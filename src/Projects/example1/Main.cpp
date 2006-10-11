@@ -3,6 +3,7 @@
 #include "argumentParser.h"
 #include "Sofa/Components/Graph/Simulation.h"
 #include "Sofa/Components/Common/Factory.h"
+#include "Sofa/Components/Common/BackTrace.h"
 #ifdef SOFA_GUI_FLTK
 #include "Sofa/GUI/FLTK/Main.h"
 #endif
@@ -38,6 +39,7 @@ bool loadPlugin(const char* filename)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    //Sofa::Components::Common::BackTrace::autodump();
     glutInit(&argc,argv);
     std::string fileName ;
     bool        startAnim = false;
