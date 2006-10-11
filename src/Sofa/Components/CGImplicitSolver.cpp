@@ -26,7 +26,7 @@ CGImplicitSolver::CGImplicitSolver()
     smallDenominatorThreshold = 1e-5;
     tolerance = 1e-5;
     rayleighStiffness = 0.1;
-    rayleighDamping = 0.1;
+    rayleighMass = 0.1;
     velocityDamping = 0;
 
     addField(&maxCGIter,"iterations","maximum number of iterations of the Conjugate Gradient solution");
@@ -73,11 +73,11 @@ void CGImplicitSolver::solve(double dt)
     group->propagateDx(vel);            // dx = v
     group->computeDf(f);                // f = df/dx v
     b.peq(f,h+rayleighStiffness);      // b = f0 + (h+rs)df/dx v
-    if (rayleighDamping != 0.0)
+    if (rayleighMass != 0.0)
     {
         f.clear();
         group->addMdx(f,dx);
-        b.peq(f,-rayleighDamping);     // b = f0 + (h+rs)df/dx v - rd M v
+        b.peq(f,-rayleighMass);     // b = f0 + (h+rs)df/dx v - rd M v
     }
     b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
     group->projectResponse(b);          // b is projected to the constrained space
@@ -112,13 +112,13 @@ void CGImplicitSolver::solve(double dt)
         group->propagateDx(p);          // dx = p
         group->computeDf(q);            // q = df/dx p
         q *= -h*(h+rayleighStiffness);  // q = -h(h+rs) df/dx p
-        if (rayleighDamping==0.0)
+        if (rayleighMass==0.0)
             group->addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
         else
         {
             q2.clear();
             group->addMdx( q2, p);
-            q.peq(q2,(1+h*rayleighDamping)); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
+            q.peq(q2,(1+h*rayleighMass)); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
         }
         // filter the product to take the constraints into account
         group->projectResponse(q);     // q is projected to the constrained space
@@ -170,7 +170,7 @@ void create(CGImplicitSolver*& obj, ObjectDescription* arg)
     	if (arg->getAttribute("stiffness"))
     		obj->rayleighStiffness = atof(arg->getAttribute("stiffness"));
     	if (arg->getAttribute("damping"))
-    		obj->rayleighDamping = atof(arg->getAttribute("damping"));
+    		obj->rayleighMass = atof(arg->getAttribute("damping"));
     	if (arg->getAttribute("vdamping"))
     		obj->velocityDamping = atof(arg->getAttribute("vdamping"));
     	if (arg->getAttribute("debug"))

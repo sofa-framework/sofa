@@ -24,7 +24,7 @@ public:
     double smallDenominatorThreshold;
     double tolerance;
     double rayleighStiffness;
-    double rayleighDamping;
+    double rayleighMass;
     double velocityDamping;
 };
 
