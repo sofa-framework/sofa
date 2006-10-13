@@ -50,6 +50,9 @@ void BaseObject::init()
 void BaseObject::reset()
 { }
 
+void BaseObject::writeState( std::ostream& )
+{ }
+
 /// Handle an event
 void BaseObject::handleEvent( Event* e )
 {

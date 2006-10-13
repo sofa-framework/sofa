@@ -42,6 +42,9 @@ public:
     /// Reset to initial state
     virtual void reset();
 
+    /// Write current state to the given output stream
+    virtual void writeState( std::ostream& out );
+
     ///@}
 
     /**@name events

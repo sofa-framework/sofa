@@ -6,7 +6,7 @@
 #include "Quat.h"
 #include <Sofa/Core/Context.h>
 #include <Sofa/Core/Mass.h>
-#include <vector>
+#include <Sofa/Components/Common/vector.h>
 #include <iostream>
 using std::endl;
 
@@ -18,6 +18,8 @@ namespace Components
 
 namespace Common
 {
+
+using Sofa::Components::Common::vector;
 
 class RigidTypes
 {
@@ -83,11 +85,22 @@ public:
         Vec3& getVOrientation (void) { return vOrientation; }
         const Vec3& getVCenter (void) const { return vCenter; }
         const Vec3& getVOrientation (void) const { return vOrientation; }
-        inline friend std::ostream& operator << (std::ostream& out, const Deriv& v )
+        /*		inline friend std::ostream& operator << (std::ostream& out, const Deriv& v ){
+        		    out<<"vCenter = "<<v.getVCenter();
+        		    out<<", vOrientation = "<<v.getVOrientation();
+        		    return out;
+        		}*/
+        /// write to an output stream
+        inline friend std::ostream& operator << ( std::ostream& out, const Deriv& v )
         {
-            out<<"vCenter = "<<v.getVCenter();
-            out<<", vOrientation = "<<v.getVOrientation();
+            out<<v.vCenter<<" "<<v.vOrientation;
             return out;
+        }
+        /// read from an input stream
+        inline friend std::istream& operator >> ( std::istream& in, Deriv& v )
+        {
+            in>>v.vCenter>>v.vOrientation;
+            return in;
         }
     };
 
@@ -159,12 +172,11 @@ public:
         Quat& getOrientation () { return orientation; }
         const Vec3& getCenter () const { return center; }
         const Quat& getOrientation () const { return orientation; }
-        inline friend std::ostream& operator << (std::ostream& out, const Coord& c )
-        {
-            out<<"translation = "<<c.getCenter();
-            out<<", rotation = "<<c.getOrientation();
-            return out;
-        }
+        /*                inline friend std::ostream& operator << (std::ostream& out, const Coord& c ){
+                            out<<"translation = "<<c.getCenter();
+                            out<<", rotation = "<<c.getOrientation();
+                            return out;
+                        }*/
 
         static Coord identity()
         {
@@ -202,10 +214,23 @@ public:
         {
             return orientation.inverseRotate(v);
         }
+
+        /// write to an output stream
+        inline friend std::ostream& operator << ( std::ostream& out, const Coord& v )
+        {
+            out<<v.center<<" "<<v.orientation;
+            return out;
+        }
+        /// read from an input stream
+        inline friend std::istream& operator >> ( std::istream& in, Coord& v )
+        {
+            in>>v.center>>v.orientation;
+            return in;
+        }
     };
 
-    typedef std::vector<Coord> VecCoord;
-    typedef std::vector<Deriv> VecDeriv;
+    typedef vector<Coord> VecCoord;
+    typedef vector<Deriv> VecDeriv;
 
     static void set(Coord& c, double x, double y, double z)
     {
@@ -305,6 +330,8 @@ inline RigidTypes::Deriv operator/(const RigidTypes::Deriv& d, const RigidMass& 
     res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
     return res;
 }
+
+
 
 } // namespace Common
 

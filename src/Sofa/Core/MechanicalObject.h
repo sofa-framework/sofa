@@ -66,6 +66,8 @@ public:
 
     virtual void reset();
 
+    virtual void writeState( std::ostream& out );
+
     virtual void resize( int vsize);
 
     int getSize() const

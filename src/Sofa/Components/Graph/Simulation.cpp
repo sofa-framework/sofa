@@ -12,6 +12,7 @@
 #include "VisualAction.h"
 #include "DeleteAction.h"
 #include "ExportOBJAction.h"
+#include "WriteStateAction.h"
 
 #include <fstream>
 
@@ -191,6 +192,13 @@ void Simulation::exportOBJ(GNode* root, const char* filename, bool exportMTL)
         ExportOBJAction act(&fout,&mtl);
         root->execute(&act);
     }
+}
+
+void Simulation::dumpState( GNode* root, std::ofstream& out )
+{
+    out<<root->getTime()<<" ";
+    WriteStateAction(out).execute(root);
+    out<<endl;
 }
 
 } // namespace Graph

@@ -175,6 +175,12 @@ void MechanicalObject<DataTypes>::reset()
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::writeState( std::ostream& out )
+{
+    out<<*getX()<<" "<<*getV()<<" ";
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIntegration(double /*dt*/)
 {
     this->f = this->internalForces;

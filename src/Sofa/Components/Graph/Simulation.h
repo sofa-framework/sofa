@@ -49,6 +49,9 @@ public:
     /// Export a scene to an OBJ 3D Scene
     static void exportOBJ(GNode* root, const char* filename, bool exportMTL = true);
 
+    /// Dump the current state in the given stream
+    static void dumpState( GNode* root, std::ofstream& out );
+
 };
 
 } // namespace Graph

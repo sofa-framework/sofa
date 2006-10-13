@@ -4,7 +4,7 @@
 #include "RigidTypes.h"
 #include <Sofa/Core/Context.h>
 #include <Sofa/Core/Mass.h>
-#include <vector>
+#include <Sofa/Components/Common/vector.h>
 #include <iostream>
 using std::endl;
 
@@ -16,6 +16,8 @@ namespace Components
 
 namespace Common
 {
+
+using Sofa::Components::Common::vector;
 
 class LaparoscopicRigidTypes
 {
@@ -192,8 +194,8 @@ public:
         }
     };
 
-    typedef std::vector<Coord> VecCoord;
-    typedef std::vector<Deriv> VecDeriv;
+    typedef vector<Coord> VecCoord;
+    typedef vector<Deriv> VecDeriv;
 
     static void set(Coord& c, double x, double, double)
     {

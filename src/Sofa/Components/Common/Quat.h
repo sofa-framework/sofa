@@ -187,17 +187,30 @@ public:
 
 
     // Print the quaternion
-    inline friend std::ostream& operator<<(std::ostream& out, Quater Q)
-    {
-        return (out << "(" << Q._q[0] << "," << Q._q[1] << "," << Q._q[2] << ","
-                << Q._q[3] << ")");
-    }
+//         inline friend std::ostream& operator<<(std::ostream& out, Quater Q)
+// 		{
+// 			return (out << "(" << Q._q[0] << "," << Q._q[1] << "," << Q._q[2] << ","
+// 				<< Q._q[3] << ")");
+// 		}
 
     // Print the quaternion (C style)
     void print();
 
     void operator+=(const Quater& q2);
     void operator*=(const Quater& q2);
+
+    /// write to an output stream
+    inline friend std::ostream& operator << ( std::ostream& out, const Quater& v )
+    {
+        out<<v._q[0]<<" "<<v._q[1]<<" "<<v._q[2]<<" "<<v._q[3];
+        return out;
+    }
+    /// read from an input stream
+    inline friend std::istream& operator >> ( std::istream& in, Quater& v )
+    {
+        in>>v._q[0]>>v._q[1]>>v._q[2]>>v._q[3];
+        return in;
+    }
 };
 
 typedef Quater<double> Quat; ///< alias
