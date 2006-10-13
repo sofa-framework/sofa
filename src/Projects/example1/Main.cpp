@@ -131,5 +131,8 @@ int main(int argc, char** argv)
         std::cerr << "Unsupported GUI."<<std::endl;
         exit(1);
     }
+
+    if (groot!=NULL)
+        Sofa::Components::Graph::Simulation::unload(groot);
     return 0;
 }

@@ -37,6 +37,11 @@ MechanicalObject<DataTypes>::MechanicalObject()
 template <class DataTypes>
 MechanicalObject<DataTypes>::~MechanicalObject()
 {
+    delete externalForces;
+    if (x0!=NULL)
+        delete x0;
+    if (v0!=NULL)
+        delete v0;
     for (unsigned int i=0; i<vectorsCoord.size(); i++)
         if (vectorsCoord[i]!=NULL)
             delete vectorsCoord[i];

@@ -16,8 +16,11 @@ namespace Graph
 {
 
 GNode::GNode(const std::string& name, GNode* parent)
-    : debug_(false)
+    : debug_(false), logTime_(false)
 {
+    totalTime.nVisit = 0;
+    totalTime.tNode = 0;
+    totalTime.tTree = 0;
     setName(name);
     if( parent )
         parent->addChild(this);

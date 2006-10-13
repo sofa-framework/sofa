@@ -245,6 +245,13 @@ public:
         , helpLongName(hlpLng)
     {}
 
+    /// Constructor using a global help string
+    ~ArgumentParser()
+    {
+        for( ArgVec::const_iterator a=commands.begin(), aend=commands.end(); a!=aend; ++a )
+            delete (*a);
+    }
+
     /** Declare an optional argument
     \param ptr pointer to the variable
     \param sho short name
