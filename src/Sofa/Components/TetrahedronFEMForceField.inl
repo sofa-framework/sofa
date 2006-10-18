@@ -11,6 +11,8 @@
 #include <iostream>
 using std::cerr;
 using std::endl;
+#include <set>
+using std::set;
 
 #include <GL/gl.h>
 
@@ -151,6 +153,72 @@ void TetrahedronFEMForceField<DataTypes>::init()
         break;
     }
     }
+
+    // Create the the stiffness matrix
+//         unsigned numElements = _indexedElements->size();
+//         vector< set<Index> > matrix_indices(numElements);
+//         //diagonal entries
+//         for( unsigned i=0; i<numElements; i++ )
+//             matrix_indices[i].insert(i);
+//         typename VecElement::const_iterator it;
+//         for(typename VecElement::const_iterator it = _indexedElements->begin(), itend=_indexedElements->end() ; it != itend ; ++it)
+//         {
+//             Index a = (*it)[0];
+//             Index b = (*it)[1];
+//             Index c = (*it)[2];
+//             Index d = (*it)[3];
+//
+//             // lower-triangular entries of the symmetric matrix
+//             if( b<a ){
+//                 matrix_indices[a].insert(b);
+//             }
+//             if( c<a ){
+//                 matrix_indices[a].insert(c);
+//             }
+//             if( d<a ){
+//                 matrix_indices[a].insert(d);
+//             }
+//
+//             if( a<b ){
+//                 matrix_indices[b].insert(a);
+//             }
+//             if( c<b ){
+//                 matrix_indices[b].insert(c);
+//             }
+//             if( d<b ){
+//                 matrix_indices[b].insert(d);
+//             }
+//
+//             if( a<c ){
+//                 matrix_indices[c].insert(a);
+//             }
+//             if( b<c ){
+//                 matrix_indices[c].insert(b);
+//             }
+//             if( d<c ){
+//                 matrix_indices[c].insert(d);
+//             }
+//
+//             if( a<d ){
+//                 matrix_indices[d].insert(a);
+//             }
+//             if( b<d ){
+//                 matrix_indices[d].insert(b);
+//             }
+//             if( c<d ){
+//                 matrix_indices[d].insert(c);
+//             }
+//         }
+//         // Compute size of assembled stiffness matrix and reserve it
+//         m_assembledStiffnessMatrix.clear();
+//         for( unsigned i=0, cnt=0; i<numElements; i++ ){
+//             for( set<Index>::const_iterator it=matrix_indices[i].begin, itend=matrix_indices[i].end(); it!=itend; it++, cnt++ ){
+//                 m_assembledStiffnessMatrix.push_back(AssembledStiffnessMatrixElement(cnt));
+//             }
+//         }
+
+
+
     std::cout << "TetrahedronFEMForceField: init OK, "<<_indexedElements->size()<<" tetra."<<std::endl;
 }
 

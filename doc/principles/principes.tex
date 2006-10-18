@@ -302,12 +302,13 @@ Data:
 \begin{frame}
 \frametitle{More on mappings}
 \begin{itemize}
- \item They map a set of degrees of freedom (the parent) to another (the child).
+ \item Map a set of degrees of freedom (the parent) to another (the child).
+ \item Typically used to attach a geometry to control points.
  \item Child degrees of freedom (DOF) are not independent: their positions are totally defined by their parent's.
  \item Displacements are propagated top-down (parent to child): $v_{child} = Jv_{parent}$
  \item Forces are propagated bottom-up
- \item A necessary condition for physical consistency is to induce no energy. This is true iff: $v_{child} = Jv_{parent} \Rightarrow f_{parent} += J^T f_{child}$
- \item Other physical constraints are not automatically satisfied, e.g. incompressibility of the child
+%  \item A necessary condition for physical consistency is to induce no energy. This is true iff: $v_{child} = Jv_{parent} \Rightarrow f_{parent} += J^T f_{child}$
+%  \item Other physical constraints are not automatically satisfied, e.g. incompressibility of the child
 \end{itemize}
 
 \end{frame}
@@ -332,15 +333,16 @@ Data:
  \only<3>{\item to attach a visual model }
  \only<4>{\item to attach collision surfaces }
 \end{itemize}
+}
 
 \item<5-> More advanced mapping can be applied to fluids
 
-}
 \end{itemize}
 \column[T]{0.5\linewidth}
 \only<1>{\includegraphics[width=\linewidth]{dragon-wire.png} \\ \includegraphics[width=\linewidth]{dragon-plain.png}}
 \only<2>{\includegraphics[width=\linewidth]{dragon-spheres-mapping.png} \\ \includegraphics[width=\linewidth]{dragon-spheres.png}}
-\only<3>{\includegraphics[width=\linewidth]{liver-wire.png} \\ \includegraphics[width=\linewidth]{liver-plain.png}}
+% \only<3>{\includegraphics[width=\linewidth]{liver-wire.png} \\ \includegraphics[width=\linewidth]{liver-plain.png}}
+\only<3>{\includegraphics[width=\linewidth]{bary-init.png} \\ \includegraphics[width=\linewidth]{bary-deformed.png}}
 \only<4>{\includegraphics[width=\linewidth]{liver-dof.png} \\ \includegraphics[width=\linewidth]{liver-spheres.png}}
 \only<5>{\includegraphics[width=\linewidth]{sph-force.png} \\ \includegraphics[width=\linewidth]{sph-plain.png}}
 \only<6>{\includegraphics[width=\linewidth]{sph-dof.png} \\ \includegraphics[width=\linewidth]{sph-mapping.png}}
@@ -568,6 +570,7 @@ Ongoing work: building global vectors and matrices also
 
 \begin{frame}
  \frametitle{Current stage}
+About 60 man.month, 20000 C++ code lines
 \begin{center}
  \includegraphics[width=\linewidth]{snapshotSofa1.png}
 \end{center}
@@ -609,6 +612,7 @@ Implementation:
 \item More brute force: parallelization on PC cluster \begin{small}\em (Everton Hermann, LIG/LJK)\end{small}
 \item More visual performance: coupling to a good render engine \begin{small}\textit{ (Pierre-Jean Bensoussan, ALCOVE)}\end{small}
 \item More documentation \begin{small}\textit{(everybody...)}\end{small}
+\item Licensing
 \end{itemize}
 
 \vspace{1cm}

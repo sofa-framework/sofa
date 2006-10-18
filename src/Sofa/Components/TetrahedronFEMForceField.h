@@ -5,6 +5,7 @@
 #include "Sofa/Core/MechanicalObject.h"
 #include "Sofa/Abstract/VisualModel.h"
 #include "Sofa/Components/MeshTopology.h"
+#include "Sofa/Components/Common/vector.h"
 #include "Common/Vec.h"
 #include "Common/Mat.h"
 
@@ -15,6 +16,7 @@ namespace Components
 {
 
 using namespace Common;
+using Sofa::Components::Common::vector;
 
 template<class DataTypes>
 class TetrahedronFEMForceField : public Core::ForceField<DataTypes>, public Abstract::VisualModel
@@ -41,11 +43,11 @@ protected:
     typedef Vec<12, Real> Displacement;		///< the displacement vector
 
     typedef Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
-    typedef std::vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
+    typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
     VecMaterialStiffness _materialsStiffnesses;					///< the material stiffness matrices vector
 
     typedef Mat<12, 6, Real> StrainDisplacement;	///< the strain-displacement matrix
-    typedef std::vector<StrainDisplacement> VecStrainDisplacement;		///< a vector of strain-displacement matrices
+    typedef vector<StrainDisplacement> VecStrainDisplacement;		///< a vector of strain-displacement matrices
     VecStrainDisplacement _strainDisplacements;					   ///< the strain-displacement matrices vector
 
     typedef Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
@@ -57,8 +59,8 @@ protected:
 
 
     typedef std::pair<int,Real> Col_Value;
-    typedef std::vector< Col_Value > CompressedValue;
-    typedef std::vector< CompressedValue > CompressedMatrix;
+    typedef vector< Col_Value > CompressedValue;
+    typedef vector< CompressedValue > CompressedMatrix;
     CompressedMatrix _stiffnesses;
     double m_potentialEnergy;
 
@@ -137,8 +139,8 @@ protected:
     void applyStiffnessSmall( Vector& f, Real h, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
 
 ////////////// large displacements method
-    std::vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
-    std::vector<Transformation> _rotations;
+    vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
+    vector<Transformation> _rotations;
     void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
@@ -146,7 +148,7 @@ protected:
     void applyStiffnessLarge( Vector& f, Real h, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3 );
 
 ////////////// polar decomposition method
-    std::vector<Transformation> _initialTransformation;
+    vector<Transformation> _initialTransformation;
     void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
     void applyStiffnessPolar( Vector& f, Real h, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
