@@ -132,7 +132,18 @@ Abstract::BaseObject* GNode::getTopology() const
 {
     return this->topology;
 }
-
+/// Topology
+Abstract::BaseObject* GNode::getMainTopology() const
+{
+    BasicTopology *main=0;
+    unsigned int i;
+    for (i=0; i<basicTopology.size(); ++i)
+    {
+        if (basicTopology[i]->isMainTopology()==true)
+            main=basicTopology[i];
+    }
+    return main;
+}
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool GNode::addObject(BaseObject* obj)
 {
@@ -161,6 +172,8 @@ void GNode::doAddObject(BaseObject* obj)
     solver.add(dynamic_cast< OdeSolver* >(obj));
     mass.add(dynamic_cast< BasicMass* >(obj));
     topology.add(dynamic_cast< Topology* >(obj));
+    basicTopology.add(dynamic_cast< BasicTopology* >(obj));
+
     if (!interactionForceField.add(dynamic_cast< InteractionForceField* >(obj)))
         forceField.add(dynamic_cast< BasicForceField* >(obj));
     constraint.add(dynamic_cast< BasicConstraint* >(obj));
@@ -185,6 +198,8 @@ void GNode::doRemoveObject(BaseObject* obj)
     solver.remove(dynamic_cast< OdeSolver* >(obj));
     mass.remove(dynamic_cast< BasicMass* >(obj));
     topology.remove(dynamic_cast< Topology* >(obj));
+    basicTopology.remove(dynamic_cast< BasicTopology* >(obj));
+
     forceField.remove(dynamic_cast< BasicForceField* >(obj));
     interactionForceField.remove(dynamic_cast< InteractionForceField* >(obj));
     constraint.remove(dynamic_cast< BasicConstraint* >(obj));

@@ -19,6 +19,7 @@
 #include "Sofa/Core/Mass.h"
 #include "Sofa/Core/Constraint.h"
 #include "Sofa/Core/Topology.h"
+#include "Sofa/Core/BasicTopology.h"
 #include "Sofa/Core/OdeSolver.h"
 #include "Sofa/Components/Collision/Pipeline.h"
 #include "Sofa/Components/Thread/CTime.h"
@@ -96,6 +97,9 @@ public:
 
     /// Topology
     virtual Abstract::BaseObject* getTopology() const;
+
+    /// Main Topology
+    virtual Abstract::BaseObject* getMainTopology() const;
 
     /// @}
 
@@ -342,6 +346,9 @@ public:
     Single<OdeSolver> solver;
     Single<BasicMass> mass;
     Single<Topology> topology;
+
+    Sequence<BasicTopology> basicTopology;
+
     Sequence<BasicForceField> forceField;
     Sequence<InteractionForceField> interactionForceField;
     Sequence<BasicConstraint> constraint;
