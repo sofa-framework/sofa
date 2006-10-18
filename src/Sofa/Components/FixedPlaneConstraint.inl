@@ -18,6 +18,7 @@ template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
     : Core::Constraint<DataTypes>(NULL)
 {
+    selectVerticesFromPlanes=false;
 }
 
 
@@ -25,6 +26,7 @@ template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint(Core::MechanicalModel<DataTypes>* mmodel)
     : Core::Constraint<DataTypes>(mmodel),direction(0.0,0.0,1.0)
 {
+    selectVerticesFromPlanes=false;
 }
 
 template <class DataTypes>
@@ -63,7 +65,6 @@ void FixedPlaneConstraint<DataTypes>::setDirection(Coord dir)
 {
     if (dir.norm2()>0)
     {
-        alongDirection=true;
         direction=dir;
     }
 }
@@ -80,7 +81,13 @@ void FixedPlaneConstraint<DataTypes>::selectVerticesAlongPlane()
     }
 
 }
+template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::init()
+{
+    if (selectVerticesFromPlanes)
+        selectVerticesAlongPlane();
 
+}
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::draw()
 {

@@ -27,8 +27,8 @@ protected:
     std::set<int> indices; // the set of vertex indices
     /// direction on which the constraint applies
     Coord direction;
-    /// whether to nail a point or to allow sliding along a plane of a known normal
-    bool alongDirection;
+    /// whether vertices should be selected from 2 parallel planes
+    bool selectVerticesFromPlanes;
 
     Real dmin; // coordinates min of the plane for the vertex selection
     Real dmax;// coordinates max of the plane for the vertex selection
@@ -47,10 +47,11 @@ public:
     virtual void projectVelocity(VecDeriv& /*dx*/) {} ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& /*x*/) {} ///< project x to constrained space (x models a position)
 
+    virtual void init();
 
     void setDirection (Coord dir);
     void selectVerticesAlongPlane();
-    void setDminAndDmax(const Real _dmin,const Real _dmax) {dmin=_dmin; dmax=_dmax; selectVerticesAlongPlane();}
+    void setDminAndDmax(const Real _dmin,const Real _dmax) {dmin=_dmin; dmax=_dmax; selectVerticesFromPlanes=true;}
 
     // -- VisualModel interface
 
