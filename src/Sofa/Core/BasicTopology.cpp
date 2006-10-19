@@ -5,6 +5,9 @@ namespace Sofa
 
 namespace Core
 {
+
+/** Question : shouldn't this be virtual, given this class has some virtual members?
+ */
 BasicTopology::~BasicTopology()
 {
     if (topologyContainerObject)
