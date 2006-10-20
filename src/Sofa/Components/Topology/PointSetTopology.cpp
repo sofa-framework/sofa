@@ -23,11 +23,11 @@ template class PointSetGeometryAlgorithms<Vec3dTypes>;
 
 
 /// give a read-only access to the edge array
-const PointSetTopologyContainer::VertexArray &PointSetTopologyContainer::getVertexArray() const
+const std::vector<int> &PointSetTopologyContainer::getVertexArray() const
 {
     return vertexArray;
 }
-PointSetTopologyContainer::indexType PointSetTopologyContainer::getVertex(const PointSetTopologyContainer::indexType i) const
+int PointSetTopologyContainer::getVertex(const int i) const
 {
     return vertexArray[i];
 }
@@ -37,11 +37,12 @@ unsigned int PointSetTopologyContainer::getNumberOfVertices() const
     return vertexArray.size();
 }
 
-const PointSetTopologyContainer::InSetArray &PointSetTopologyContainer::getVertexInSetArray() const
+const std::vector<bool> &PointSetTopologyContainer::getVertexInSetArray() const
 {
     return vertexInSetArray;
 }
-bool PointSetTopologyContainer::isVertexInSet(const PointSetTopologyContainer::indexType i) const\
+
+bool PointSetTopologyContainer::isVertexInSet(const int i) const\
 {
     return vertexInSetArray[i];
 }

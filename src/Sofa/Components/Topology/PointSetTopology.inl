@@ -15,34 +15,136 @@ namespace Components
 using namespace Common;
 using namespace Sofa::Core;
 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////PointSetTopologyModifier/////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 template<class TDataTypes>
-void PointSetTopologyModifier<TDataTypes>::swapVertices(const indexType i1,const indexType i2)
+void PointSetTopologyModifier<TDataTypes>::swapVertices(const int i1,const int i2)
 {
-    VertexSwap *e = new VertexSwap(i1,i2);
-    addTopologyChange(e);
-}
-template<class TDataTypes>
-void PointSetTopologyModifier<TDataTypes>::addVertices(const unsigned int nVertices)
-{
-    VertexAdded *e = new VertexAdded(nVertices);
-    addTopologyChange(e);
-}
-template<class TDataTypes>
-void PointSetTopologyModifier<TDataTypes>::removeVertices(const unsigned int nVertices)
-{
-    VertexRemoved *e = new VertexRemoved(nVertices);
+    PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>(m_basicTopology->getTopologyContainer());
+    if (container != 0)
+    {
+        int tmp = container->vertexArray[i1];
+        container->vertexArray[i1] = container->vertexArray[i2];
+        container->vertexArray[i2] = tmp;
+    }
+
+    PointsIndicewsSwap *e = new PointsIndicesSwap(i1,i2);
     addTopologyChange(e);
 }
 
+
+
+template<class TDataTypes>
+void PointSetTopologyModifier<TDataTypes>::addVertices(const unsigned int nVertices,
+        VecCoord &X = (VecCoord &)0 )
+{
+    PointSetTopology *topology = dynamic_cast<PointSetTopology *>m_basicTopology;
+    if (topology != 0)
+    {
+        PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>topology->getTopologyContainer());
+        if (container != 0)
+    {
+        int prevSizeMechObj   = topology->object->getSize();
+            int prevSizeContainer = container->vertexArray.size();
+
+            // resizing the state vectors
+            topology->object->resize( prevSizeMechObj + nVertices );
+
+            // resizing the topology container vectors
+            container->vertexArray.resize(prevSizeContainer + nVertices);
+            container->vertexInSetArray.resize(prevSizeContainer + nVertices);
+
+            // setting the new positions
+            if (X != (VecCoord)0 )
+            {
+                for (int i = 0; i < nVertices; ++i)
+                    topology->object->getX()[prevSizeMechObj + i] = X[i];
+            }
+            // TODO : same thing for other state vectors (X0, V and V0)
+
+            // setting the new indices
+            for (int i = 0; i < nVertices; ++i)
+            {
+                container->vertexArray[prevSizeContainer + i] = prevSizeMechObj + i;
+                container->vertexInSetArray[prevSizeContainer + i] = true;
+            }
+
+            // Warning that vertices just got created
+            PointsAdded *e = new PointsAdded(nVertices);
+            addTopologyChange(e);
+
+            //m_basicTopology->propagateTopologicalChanges();
+
+        }
+    }
+}
+
+
+
+template<class TDataTypes>
+void PointSetTopologyModifier<TDataTypes>::removeVertices(const unsigned int nVertices, std::vector<int> &indices)
+{
+    PointSetTopology *topology = dynamic_cast<PointSetTopology *>m_basicTopology;
+    if (topology != 0)
+    {
+        PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>topology->getTopologyContainer());
+        if (container != 0)
+    {
+        // Warning that these vertices will be deleted
+        PointsRemoved *e = new PointsRemoved(indices);
+            addTopologyChange(e);
+
+            //m_basicTopology->propagateTopologicalChanges();
+
+
+            int prevSizeMechObj   = topology->object->getSize();
+            int prevSizeContainer = container->vertexArray.size();
+            int lastIndexMech = prevSizeMechObj - 1;
+            int lastIndexTopo = prevSizeContainer - 1;
+
+            // deletting the vertices
+            for (int i = 0; i < nVertices; ++i)
+            {
+                //topology->object->getX()[ container->vertexArray()[indices[i]] ] = topology->object->getX()[lastIndexMech];
+                topology->object->replaceValue(lastIndexMech, container->vertexArray()[indices[i]] );
+
+
+
+                //container->vertexArray[indices[i]] = container->vertexArray[lastIndexTopo];
+                //container->vertexInSetArray[prevSizeContainer + i] = container->vertexInSetArray[lastIndexTopo];
+                --lastIndexMech;
+                --lastIndexTopo;
+            }
+
+            // resizing the state vectors
+            topology->object->resize( prevSizeMechObj - nVertices );
+
+            // resizing the topology container vectors
+            container->vertexArray.resize(prevSizeContainer - nVertices);
+            container->vertexInSetArray.resize(prevSizeContainer - nVertices);
+
+        }
+    }
+}
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////PointSetGeometryAlgorithms///////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
 template <class TDataTypes>
 typename TDataTypes::Coord PointSetGeometryAlgorithms<TDataTypes>::getPointSetCenter() const
 {
     typename TDataTypes::Coord center;
     // get restPosition
-    PointSetTopology<TDataTypes> *parent=static_cast<PointSetTopology<TDataTypes> *>(topology);
+    PointSetTopology<TDataTypes> *parent=static_cast<PointSetTopology<TDataTypes> *>(m_basicTopology);
     typename TDataTypes::VecCoord& p = *parent->getDOF()->getX();
     PointSetTopologyContainer *ps=static_cast<PointSetTopologyContainer *>( parent->getTopologyContainer());
-    const PointSetTopologyContainer::VertexArray &va=ps->getVertexArray();
+    const std::vector<int> &va=ps->getVertexArray();
     unsigned int i;
     for(i=0; i<ps->getNumberOfVertices(); i++)
     {
@@ -52,6 +154,8 @@ typename TDataTypes::Coord PointSetGeometryAlgorithms<TDataTypes>::getPointSetCe
     return center;
 }
 
+
+
 template<class TDataTypes>
 void  PointSetGeometryAlgorithms<TDataTypes>::getEnclosingSphere(typename TDataTypes::Coord &center,
         typename TDataTypes::Real &radius) const
@@ -59,10 +163,10 @@ void  PointSetGeometryAlgorithms<TDataTypes>::getEnclosingSphere(typename TDataT
     Coord dp;
     Real val;
     // get restPosition
-    PointSetTopology<TDataTypes> *parent=static_cast<PointSetTopology<TDataTypes> *>(topology);
+    PointSetTopology<TDataTypes> *parent=static_cast<PointSetTopology<TDataTypes> *>(m_basicTopology);
     typename TDataTypes::VecCoord& p = *parent->getDOF()->getX();
     PointSetTopologyContainer *ps=static_cast<PointSetTopologyContainer *>( parent->getTopologyContainer());
-    const PointSetTopologyContainer::VertexArray &va=ps->getVertexArray();
+    const std::vector<int> &va=ps->getVertexArray();
     unsigned int i;
     for(i=0; i<ps->getNumberOfVertices(); i++)
     {
@@ -81,16 +185,25 @@ void  PointSetGeometryAlgorithms<TDataTypes>::getEnclosingSphere(typename TDataT
     radius=(Real)sqrt((double) radius);
 }
 
+
+
 template<class TDataTypes>
 void  PointSetGeometryAlgorithms<TDataTypes>::getAABB(typename TDataTypes::Real bb[6] ) const
 {
 }
 
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////PointSetTopology/////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+
 template<class TDataTypes>
 PointSetTopology<TDataTypes>::PointSetTopology(MechanicalObject<TDataTypes> *obj) : object(obj)
 {
 }
+
+
 
 template<class TDataTypes>
 void PointSetTopology<TDataTypes>::createNewVertices() const
@@ -100,11 +213,14 @@ void PointSetTopology<TDataTypes>::createNewVertices() const
     {
         if ((*it)->getChangeType()==VERTEXADDED_CODE)
         {
-            VertexAdded *e=(VertexAdded *) (*it);
+            PointsAdded *e=(PointsAdded *) (*it);
             object->resize(object->getSize()+e->getNbAddedVertices());
         }
     }
 }
+
+
+
 template<class TDataTypes>
 void PointSetTopology<TDataTypes>::removeVertices() const
 {
@@ -114,16 +230,18 @@ void PointSetTopology<TDataTypes>::removeVertices() const
     {
         if ((*it)->getChangeType()==VERTEXREMOVED_CODE)
         {
-            VertexRemoved *e=(VertexRemoved *) (*it);
-            const std::vector<VertexRemoved::index_type> &a=e->getArray();
-            for (i=0; i<e->getNbRemovedVertices(); ++i)
+            PointsRemoved *e=(PointsRemoved *) (*it);
+            const std::vector<int> &a=e->getArray();
+            for (i = 0; i < e->removedVertexArray.size(); ++i)
             {
                 object->replaceValue(object->getSize()-1-i,a[i]);
             }
-            object->resize(object->getSize()-e->getNbRemovedVertices());
+            object->resize(object->getSize() - e->removedVertexArray.size());
         }
     }
 }
+
+
 
 template<class TDataTypes>
 void PointSetTopology<TDataTypes>::propagateTopologicalChanges()
@@ -137,9 +255,11 @@ void PointSetTopology<TDataTypes>::propagateTopologicalChanges()
         groot->execute(propKey);
         //	removeVertices();
         /// remove list of events
-        changeList.erase(changeList.begin(),changeList.end());
+        m_changeList.erase(m_changeList.begin(), m_changeList.end());
     }
 }
+
+
 
 template<class TDataTypes>
 void PointSetTopology<TDataTypes>::init()
