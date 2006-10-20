@@ -18,7 +18,8 @@ using namespace Core;
 
 void EulerSolver::solve(double dt)
 {
-    Abstract::BaseContext* group = getContext();
+    //Abstract::BaseContext* group = getContext();
+    OdeSolver* group = this;
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
     MultiVector acc(group, VecId::dx());
@@ -30,7 +31,7 @@ void EulerSolver::solve(double dt)
         cerr<<"EulerSolver, initial v = "<< vel <<endl;
     }
 
-    group->computeAcc ( group->getTime(), acc, pos, vel);
+    group->computeAcc ( getTime(), acc, pos, vel);
     vel.peq(acc,dt);
     pos.peq(vel,dt);
 

@@ -15,7 +15,8 @@ using namespace Common;
 
 void RungeKutta4Solver::solve(double dt)
 {
-    Abstract::BaseContext* group = getContext();
+    //Abstract::BaseContext* group = getContext();
+    OdeSolver* group = this;
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
     MultiVector k1a(group, V_DERIV);

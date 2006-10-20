@@ -72,6 +72,14 @@ public:
     bool printLog() const;
     ///@}
 
+    /**@name data access
+    Access to external data
+     */
+    ///@{
+    /// Current time
+    double getTime() const;
+    ///@}
+
 
 
 protected:

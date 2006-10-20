@@ -45,7 +45,8 @@ CGImplicitSolver* CGImplicitSolver::setMaxIter( int n )
 
 void CGImplicitSolver::solve(double dt)
 {
-    Abstract::BaseContext* group = getContext();
+    //Abstract::BaseContext* group = getContext();
+    CGImplicitSolver* group = this;
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
     MultiVector dx(group, VecId::dx());

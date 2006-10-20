@@ -39,7 +39,7 @@ public:
     BaseContext();
     virtual ~BaseContext();
 
-    //static BaseContext* getDefault();
+    static BaseContext* getDefault();
 
     /// @name Parameters
     /// @{
@@ -230,41 +230,6 @@ public:
     virtual void executeAction( Components::Graph::Action* );
 
     /// @}
-
-
-public:
-    //MechanicalIntegration(GNode* node);
-
-    //virtual double getTime() const=0;
-
-    /// Wait for the completion of previous operations and return the result of the last v_dot call
-    virtual double finish()=0;
-
-    virtual VecId v_alloc(Core::Encoding::VecType t)=0;
-    virtual void v_free(VecId v)=0;
-
-    virtual void v_clear(VecId v)=0; ///< v=0
-    virtual void v_eq(VecId v, VecId a)=0; ///< v=a
-    virtual void v_peq(VecId v, VecId a, double f=1.0)=0; ///< v+=f*a
-    virtual void v_teq(VecId v, double f)=0; ///< v*=f
-    virtual void v_dot(VecId a, VecId b)=0; ///< a dot b ( get result using finish )
-    virtual void propagateDx(VecId dx)=0;
-    virtual void projectResponse(VecId dx)=0;
-    virtual void addMdx(VecId res, VecId dx)=0;
-    virtual void integrateVelocity(VecId res, VecId x, VecId v, double dt)=0;
-    virtual void accFromF(VecId a, VecId f)=0;
-    virtual void propagatePositionAndVelocity(double t, VecId x, VecId v)=0;
-
-    virtual void computeForce(VecId result)=0;
-    virtual void computeDf(VecId df)=0;
-    virtual void computeAcc(double t, VecId a, VecId x, VecId v)=0;
-
-    virtual void computeMatrix(Components::Common::SofaBaseMatrix *mat=NULL, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0)=0;
-    virtual void getMatrixDimension(unsigned int * const, unsigned int * const)=0;
-    virtual void computeOpVector(Components::Common::SofaBaseVector *vect=NULL, unsigned int offset=0)=0;
-    virtual void matResUpdatePosition(Components::Common::SofaBaseVector *vect=NULL, unsigned int offset=0)=0;
-
-    virtual void print( VecId v, std::ostream& out )=0;
 
 
 

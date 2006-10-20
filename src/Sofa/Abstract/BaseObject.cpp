@@ -38,8 +38,8 @@ const BaseContext* BaseObject::getContext() const
 
 BaseContext* BaseObject::getContext()
 {
-    //return (context_==NULL)?BaseContext::getDefault():context_;
-    return context_;
+    return (context_==NULL)?BaseContext::getDefault():context_;
+    //return context_;
 }
 
 /// Initialization method called after each graph modification.
@@ -83,6 +83,11 @@ BaseObject* BaseObject::setPrintLog( bool b )
 bool BaseObject::printLog() const
 {
     return m_printLog;
+}
+
+double BaseObject::getTime() const
+{
+    return getContext()->getTime();
 }
 
 

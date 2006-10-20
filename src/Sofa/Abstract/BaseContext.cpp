@@ -16,11 +16,11 @@ BaseContext::BaseContext()
 BaseContext::~BaseContext()
 {}
 
-// BaseContext* BaseContext::getDefault()
-// {
-//     static BaseContext defaultContext;
-//     return &defaultContext;
-// }
+BaseContext* BaseContext::getDefault()
+{
+    static BaseContext defaultContext;
+    return &defaultContext;
+}
 
 ////////////////
 // Parameters //
