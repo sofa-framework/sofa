@@ -54,17 +54,15 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int outputIndex)
 {
-    VecCoord& x = *this->getX();
-    x[outputIndex]=x[inputIndex];
-    (*x0)[outputIndex]=(*x0)[inputIndex];
-    VecDeriv v = *this->getV();
-    v[outputIndex]=v[inputIndex];
-    (*v0)[outputIndex]=(*v0)[inputIndex];
-    VecDeriv f = *this->getF();
-    f[outputIndex]=f[inputIndex];
-    VecDeriv dx = *this->getDx();
-    dx[outputIndex]=dx[inputIndex];
+    // standard state vectors
+    (*x) [outputIndex] = (*x) [inputIndex];
+    (*x0)[outputIndex] = (*x0)[inputIndex];
+    (*v) [outputIndex] = (*v) [inputIndex];
+    (*v0)[outputIndex] = (*v0)[inputIndex];
+    (*f) [outputIndex] = (*f) [inputIndex];
+    (*dx)[outputIndex] = (*dx)[inputIndex];
 
+    // temporary state vectors
     unsigned int i;
     for (i=0; i<vectorsCoord.size(); i++)
     {
@@ -76,6 +74,10 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
         VecDeriv& vector = *vectorsDeriv[i];
         vector[outputIndex]=vector[inputIndex];
     }
+
+    // forces
+    (*internalForces)[outputIndex] = (*internalForces)[inputIndex];
+    (*externalForces)[outputIndex] = (*externalForces)[inputIndex];
 
 }
 template <class DataTypes>
