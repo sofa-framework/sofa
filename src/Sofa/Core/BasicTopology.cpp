@@ -10,14 +10,14 @@ namespace Core
  */
 BasicTopology::~BasicTopology()
 {
-    if (topologyContainerObject)
-        delete topologyContainerObject;
-    if (topologyModifierObject)
-        delete topologyModifierObject;
-    if (topologyAlgorithmsObject)
-        delete topologyAlgorithmsObject;
-    if (geometryAlgorithmsObject)
-        delete geometryAlgorithmsObject;
+    if (m_topologyContainer)
+        delete m_topologyContainer;
+    if (m_topologyModifier)
+        delete m_topologyModifier;
+    if (m_topologyAlgorithms)
+        delete m_topologyAlgorithms;
+    if (m_geometryAlgorithms)
+        delete m_geometryAlgorithms;
 }
 
 } // namespace Core
