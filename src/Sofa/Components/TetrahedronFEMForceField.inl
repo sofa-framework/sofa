@@ -266,7 +266,7 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecCoord& /*x*/, const VecDeriv& /*v*/, const VecDeriv& x)
+void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x)
 {
     Real h=1;
     v.resize(x.size());

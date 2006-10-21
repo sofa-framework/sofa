@@ -20,6 +20,9 @@ template<class DataTypes>
 void LennardJonesForceField<DataTypes>::init()
 {
     this->Inherit::init();
+
+    assert( mmodel );
+
     a = (p0 * (Real)pow(d0,alpha)) / (1-alpha/beta);
     b = (p0 * (Real)pow(d0,beta)) / (beta/alpha-1);
     std::cout << "Lennard-Jones initialized: alpha="<<alpha<<" beta="<<beta<<" d0="<<d0<<" p0="<<p0<<" a="<<a<<" b="<<b<<std::endl;
@@ -83,8 +86,9 @@ void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
 }
 
 template<class DataTypes>
-void LennardJonesForceField<DataTypes>::addDForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& /*v*/, const VecDeriv& dx1)
+void LennardJonesForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1)
 {
+    const VecCoord& p1 = *this->mmodel->getX();
     f1.resize(dx1.size());
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {

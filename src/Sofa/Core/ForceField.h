@@ -36,7 +36,7 @@ public:
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v) = 0;
 
-    virtual void addDForce (VecDeriv& df, const VecCoord& x, const VecDeriv& v, const VecDeriv& dx) = 0;
+    virtual void addDForce (VecDeriv& df, const VecDeriv& dx) = 0;
 
     virtual double getPotentialEnergy(const VecCoord& x) =0;
 

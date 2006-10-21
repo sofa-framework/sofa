@@ -37,7 +37,7 @@ void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, cons
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecCoord& /*p1*/, const VecDeriv& /*v1*/, const VecDeriv& dx1)
+void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1)
 {
     f1.resize(dx1.size());
     for (unsigned int i=0; i<this->contacts.size(); i++)

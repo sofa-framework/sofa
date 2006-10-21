@@ -33,7 +33,7 @@ public:
     virtual void accFromF(VecDeriv& a, const VecDeriv& f) = 0; ///< dx = M^-1 f
 
     // Mass forces (gravity) often have null derivative
-    virtual void addDForce(VecDeriv& /*df*/, const VecCoord& /*x*/, const VecDeriv& /*v*/, const VecDeriv& /*dx*/)
+    virtual void addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/)
     {}
 
     virtual double getKineticEnergy();  ///< vMv/2 using dof->getV()

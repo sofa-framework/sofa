@@ -222,27 +222,37 @@ void GNode::doRemoveObject(BaseObject* obj)
 
 
 
-/// Connect all objects together. Must be called after each graph modification.
-void GNode::init()
+void GNode::initialize()
 {
-    //cerr<<"GNode::init()"<<endl;
+    //cerr<<"GNode::initialize()"<<endl;
 
-    for (Sequence<BaseObject>::iterator it = object.begin(); it != object.end(); it++)
+    // this is now done by the InitAction
+    //     for (Sequence<BaseObject>::iterator it = object.begin(); it != object.end(); it++) {
+//         (*it)->init();
+//     }
+
+    // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
+    Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
+    for( ; i!=iend && dynamic_cast<OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
+    {}
+    if( i!=iend && !object.empty() ) // found
     {
-        (*it)->init();
+        // debug
+//         cerr<<"GNode::initialize(), components to swap: "<<(*object.begin())->getName()<<", "<<(*i)->getName()<<endl;
+
+        object.swap( i, object.begin() ); // put it first
+
+        // debug
+        /*        cerr<<"GNode::initialize(), swapped components: "<<(*object.begin())->getName()<<", "<<(*i)->getName()<<endl;*/
     }
 
+    //
     updateContext();
-    /*
-    if( !mechanicalMapping.empty() ){
-    mechanicalMapping->propagateX();
-    mechanicalMapping->propagateV();
-    }
-    */
-    for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++)
-    {
-        (*it)->init();
-    }
+
+    // this is now done by the InitAction
+    /*        for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++) {
+    		(*it)->init();
+    	}*/
 }
 
 /// Get parent node (or NULL if no hierarchy or for root node)

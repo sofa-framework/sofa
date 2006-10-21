@@ -43,6 +43,8 @@ using namespace Core;
 class Action;
 class MutationListener;
 
+/** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
+*/
 class GNode : public Core::Context, public Abstract::BaseNode
 {
 public:
@@ -77,17 +79,14 @@ public:
     /// Move an object from another node
     virtual void moveObject(BaseObject* obj);
 
-    /// Connect all objects together. Must be called after each graph modification.
-    virtual void init();
+    /// Must be called after each graph modification. Do not call it directly, apply an InitAction instead.
+    virtual void initialize();
 
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual BaseNode* getParent();
 
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual const BaseNode* getParent() const;
-
-    ///// Get the context of the parent, if the parent exists and is a Context
-    //Context* getParentContext();
 
     /// @name Variables
     /// @{
@@ -243,6 +242,7 @@ public:
     public:
         typedef T* value_type;
         typedef typename std::vector< T* >::const_iterator iterator;
+        typedef typename std::vector< T* >::const_reverse_iterator reverse_iterator;
 
         iterator begin() const
         {
@@ -251,6 +251,14 @@ public:
         iterator end() const
         {
             return elems.end();
+        }
+        reverse_iterator rbegin() const
+        {
+            return elems.rbegin();
+        }
+        reverse_iterator rend() const
+        {
+            return elems.rend();
         }
         unsigned int size() const
         {
@@ -263,6 +271,15 @@ public:
         T* operator[](unsigned int i) const
         {
             return elems[i];
+        }
+        /// Swap two values in the list. Uses a const_cast to violate the read-only iterators.
+        void swap( iterator a, iterator b )
+        {
+            T*& wa = const_cast<T*&>(*a);
+            T*& wb = const_cast<T*&>(*b);
+            T* tmp = *a;
+            wa = *b;
+            wb = tmp;
         }
         friend class GNode;
     };

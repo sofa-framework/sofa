@@ -243,8 +243,9 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
 }
 
 template<class DataTypes>
-void SPHFluidForceField<DataTypes>::addDForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& /*v*/, const VecDeriv& dx1)
+void SPHFluidForceField<DataTypes>::addDForce(VecDeriv& f1,  const VecDeriv& dx1)
 {
+    const VecCoord& p1 = *this->mmodel->getX();
     f1.resize(dx1.size());
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {

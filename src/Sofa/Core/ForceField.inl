@@ -38,7 +38,7 @@ template<class DataTypes>
 void ForceField<DataTypes>::addDForce()
 {
     if (mmodel)
-        addDForce(*mmodel->getF(), *mmodel->getX(), *mmodel->getV(), *mmodel->getDx());
+        addDForce(*mmodel->getF(), *mmodel->getDx());
 }
 
 template<class DataTypes>

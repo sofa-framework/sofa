@@ -76,7 +76,7 @@ void LagrangianMultiplierFixedConstraint<DataTypes>::addForce(VecDeriv& f, const
 }
 
 template<class DataTypes>
-void LagrangianMultiplierFixedConstraint<DataTypes>::addDForce(VecDeriv& df, const VecCoord& /*x*/, const VecDeriv& /*v*/, const VecDeriv& dx)
+void LagrangianMultiplierFixedConstraint<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
 {
     df.resize(dx.size());
 

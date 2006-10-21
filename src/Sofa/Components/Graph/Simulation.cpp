@@ -3,6 +3,7 @@
 #include "../Common/SetDirectory.h"
 #include "../init.h"
 #include "PrintAction.h"
+#include "InitAction.h"
 #include "AnimateAction.h"
 #include "MechanicalAction.h"
 #include "CollisionAction.h"
@@ -57,7 +58,8 @@ GNode* Simulation::load(const char *filename)
 
     std::cout << "Initializing simulation "<<root->getName()<<std::endl;
 
-    root->init();
+    //root->init();
+    root->execute<InitAction>();
 
     // As mappings might be initialized after visual models, it is necessary to update them
     root->execute<VisualUpdateAction>();
@@ -77,12 +79,11 @@ void Simulation::print(GNode* root)
 }
 
 /// Initialize the scene.
-// void Simulation::init(GNode* root)
-// {
-// 	if (!root) return;
-//         // There will probably be an InitAction on day...
-// 	root->execute<MechanicalPropagatePositionAndVelocityAction>();
-// }
+void Simulation::init(GNode* root)
+{
+    if (!root) return;
+    root->execute<InitAction>();
+}
 
 /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
 void Simulation::animate(GNode* root, double dt)
