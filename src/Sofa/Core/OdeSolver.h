@@ -4,15 +4,12 @@
 #include "Sofa/Abstract/BaseObject.h"
 #include "Sofa/Components/Common/SofaBaseMatrix.h"
 #include "Encoding.h"
-//#include "Sofa/Core/MultiVector.h"
 
 namespace Sofa
 {
 
 namespace Core
 {
-
-//class MechanicalGroup;
 
 class OdeSolver : public Abstract::BaseObject
 {
@@ -37,10 +34,8 @@ protected:
     class VectorIndexAlloc
     {
     protected:
-        std::set
-        <unsigned int> vused; ///< Currently in-use vectors
-        std::set
-        <unsigned int> vfree; ///< Once used vectors
+        std::set<unsigned int> vused; ///< Currently in-use vectors
+        std::set<unsigned int> vfree; ///< Once used vectors
         unsigned int  maxIndex; ///< Max index used
     public:
         VectorIndexAlloc();
@@ -51,10 +46,6 @@ protected:
 
     double result;
 public:
-    //MechanicalIntegration(GNode* node);
-
-    //double getTime() const;
-
     /// Wait for the completion of previous operations and return the result of the last v_dot call
     virtual double finish();
 
