@@ -55,6 +55,8 @@ bool MassSpringLoader::load(const char *filename)
     std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
 
     std::vector<Vec3d> masses;
+    if (totalNumMasses>0)
+        masses.reserve(totalNumMasses);
 
     while (fscanf(file, "%s", cmd) != EOF)
     {
@@ -88,13 +90,13 @@ bool MassSpringLoader::load(const char *filename)
                     &m1,&m2,&ks,&kd,&initpos);
             --m1;
             --m2;
-            if ((unsigned int)m1>=masses.size() || (unsigned int)m2>=masses.size())
+            if (!masses.empty() && ((unsigned int)m1>=masses.size() || (unsigned int)m2>=masses.size()))
             {
                 std::cerr << "ERROR: incorrect mass indexes in spring "<<index<<" "<<m1+1<<" "<<m2+1<<std::endl;
             }
             else
             {
-                if (initpos==-1)
+                if (initpos==-1 && !masses.empty())
                 {
                     initpos = (masses[m1]-masses[m2]).norm();
                     ks/=initpos;

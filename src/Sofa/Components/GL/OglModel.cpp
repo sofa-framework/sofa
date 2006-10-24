@@ -544,7 +544,7 @@ OglModel::VecCoord* OglModel::getX()
 
 void OglModel::update()
 {
-    if (modified)
+    if (modified && !vertices.empty())
     {
         if (!vertPosIdx.empty())
         {
