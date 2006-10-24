@@ -21,7 +21,7 @@ void LennardJonesForceField<DataTypes>::init()
 {
     this->Inherit::init();
 
-    assert( mmodel );
+    assert( this->mmodel );
 
     a = (p0 * (Real)pow(d0,alpha)) / (1-alpha/beta);
     b = (p0 * (Real)pow(d0,beta)) / (beta/alpha-1);

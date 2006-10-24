@@ -142,6 +142,11 @@ bool MeshTopology::load(const char* filename)
     return true;
 }
 
+void MeshTopology::addTriangle( int a, int b, int c )
+{
+    seqTriangles.push_back( make_array(a,b,c) );
+}
+
 void MeshTopology::addTetrahedron( int a, int b, int c, int d )
 {
     seqTetras.push_back( make_array(a,b,c,d) );

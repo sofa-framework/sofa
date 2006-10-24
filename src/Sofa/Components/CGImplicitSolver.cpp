@@ -128,6 +128,10 @@ void CGImplicitSolver::solve(double dt)
         if( fabs(den)<smallDenominatorThreshold )
         {
             endcond = "threshold";
+            if( printLog() )
+            {
+                cerr<<"CGImplicitSolver, den = "<<den<<", smallDenominatorThreshold = "<<smallDenominatorThreshold<<endl;
+            }
             break;
         }
         alpha = rho/den;
@@ -143,7 +147,6 @@ void CGImplicitSolver::solve(double dt)
         rho_1 = rho;
     }
     // x is the solution of the system
-    //cerr<<"CGImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
 
     // apply the solution
     vel.peq( x );                       // vel = vel + x
@@ -153,6 +156,8 @@ void CGImplicitSolver::solve(double dt)
 
     if( printLog() )
     {
+        cerr<<"CGImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
+        cerr<<"CGImplicitSolver::solve, solution = "<<x<<endl;
         cerr<<"CGImplicitSolver, final x = "<< pos <<endl;
         cerr<<"CGImplicitSolver, final v = "<< vel <<endl;
     }

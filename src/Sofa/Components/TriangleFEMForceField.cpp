@@ -393,6 +393,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         // second vector in the plane of the two first edges
         // third vector orthogonal to first and second
         Transformation R_0_1;
+        cerr<<"TriangleFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.size() = "<<_initialPoints.size()<<endl;
         computeRotationLarge( R_0_1, _initialPoints, a, b, c );
 
         _rotatedInitialElements[i][0] = R_0_1 * _initialPoints[a];

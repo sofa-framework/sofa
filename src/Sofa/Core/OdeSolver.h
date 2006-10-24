@@ -20,6 +20,9 @@ public:
 
     virtual void solve (double dt) = 0;
 
+    /// Method called at initialization, during the backwards traversal of the data structure.
+    virtual void bwdInit() {}
+
 protected:
     Components::Common::SofaBaseMatrix *mat;
 

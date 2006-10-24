@@ -71,6 +71,7 @@ public:
     virtual double getPZ(int i) const;
 
     // for procedural creation without file loader
+    void addTriangle( int a, int b, int c );
     void addTetrahedron( int a, int b, int c, int d );
 
 protected:
