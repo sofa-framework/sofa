@@ -87,4 +87,8 @@ SOFA_LINK_CLASS(Triangle)
 SOFA_LINK_CLASS(TriangleFEMForceField)
 SOFA_LINK_CLASS(TrimmedRegularGridTopology)
 SOFA_LINK_CLASS(UniformMass)
+
+SOFA_LINK_CLASS(TestDetection)
+//SOFA_LINK_CLASS(SphereTreeModel)
+SOFA_LINK_CLASS(SingleSphere)
 //SOFA_LINK_CLASS(VoxelGrid)
