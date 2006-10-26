@@ -37,6 +37,8 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<SphereModel,   SphereModel,   intersectionSphereSphere,     distCorrectionSphereSphere,     false>();
     intersectors.add<SphereModel,   RayModel,      intersectionSphereRay,        distCorrectionSphereRay,        true>();
     intersectors.add<SphereModel,   RayPickInteractor,      intersectionSphereRay,        distCorrectionSphereRay,        true>();
+    intersectors.add<SphereTreeModel, SphereTreeModel, intersectionSingleSphereSingleSphere, distCorrectionSingleSphereSingleSphere,     false>();
+    //intersectors.add<SphereTreeModel, SphereModel, intersectionSingleSphereSingleSphere, distCorrectionSingleSphereSingleSphere,     false>();
     //intersectors.add<SphereModel,   TriangleModel, intersectionSphereTriangle,   distCorrectionSphereTriangle, true>();
     //intersectors.add<TriangleModel, TriangleModel, intersectionTriangleTriangle, distCorrectionTriangleTriangle, false>();
 }
@@ -61,6 +63,18 @@ bool intersectionSphereSphere(Sphere& sph1, Sphere& sph2)
 
     return (tmp.norm2() < (radius1 + radius2) * (radius1 + radius2));
 }
+
+bool intersectionSingleSphereSingleSphere(SingleSphere& sph1, SingleSphere& sph2)
+{
+    //std::cout<<"Collision between Sphere - Sphere"<<std::endl;
+    Vector3 sph1Pos(sph1.center());
+    Vector3 sph2Pos(sph2.center());
+    double radius1 = sph1.r(), radius2 = sph2.r();
+    Vector3 tmp = sph1Pos - sph2Pos;
+
+    return (tmp.norm2() < (radius1 + radius2) * (radius1 + radius2));
+}
+
 
 bool intersectionCubeCube(Cube& cube1, Cube& cube2)
 {
@@ -129,6 +143,21 @@ DetectionOutput* distCorrectionSphereSphere(Sphere& sph1, Sphere& sph2)
     return detection;
 }
 
+DetectionOutput* distCorrectionSingleSphereSingleSphere(SingleSphere& sph1, SingleSphere& sph2)
+{
+    DetectionOutput *detection = new DetectionOutput();
+    detection->normal = sph2.center() - sph1.center();
+    double distSph1Sph2 = detection->normal.norm();
+    detection->normal /= distSph1Sph2;
+    detection->point[0] = sph1.center() + detection->normal * sph1.r();
+    detection->point[1] = sph2.center() - detection->normal * sph2.r();
+
+    detection->distance = distSph1Sph2 - (sph1.r() + sph2.r());
+    detection->elem.first = sph1;
+    detection->elem.second = sph2;
+
+    return detection;
+}
 DetectionOutput* distCorrectionSphereRay(Sphere& sph1, Ray& ray2)
 {
     const Vector3 sph1Pos(sph1.center());
