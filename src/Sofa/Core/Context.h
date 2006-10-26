@@ -14,53 +14,97 @@ namespace Sofa
 
 namespace Core
 {
+using Sofa::Components::Common::DataField;
 
-struct ContextData
+// struct ContextData
+// {
+// 	typedef Abstract::BaseContext::Frame Frame;
+// 	typedef Abstract::BaseContext::Vec3 Vec3;
+// 	typedef Abstract::BaseContext::Quat Quat;
+// 	typedef Abstract::BaseContext::SpatialVector SpatialVector;
+//
+//
+//         DataField<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+//         DataField<double> dt_;
+//         DataField<double> time_;
+//         DataField<bool> animate_;
+//         DataField<bool> showCollisionModels_;
+//         DataField<bool> showBoundingCollisionModels_;
+//         DataField<bool> showBehaviorModels_;
+//         DataField<bool> showVisualModels_;
+//         DataField<bool> showMappings_;
+//         DataField<bool> showMechanicalMappings_;
+//         DataField<bool> showForceFields_;
+//         DataField<bool> showInteractionForceFields_;
+//         DataField<bool> showWireFrame_;
+//         DataField<bool> showNormals_;
+//         DataField<bool> multiThreadSimulation_;
+//
+// //         DataField<Vec3> f_gravity;
+// //         DataField<double> f_dt;
+// //         DataField<double> f_time;
+// //         DataField<bool> f_animate;
+// //         DataField<bool> f_showCollisionModels;
+// //         DataField<bool> f_showBoundingCollisionModels;
+// //         DataField<bool> f_showBehaviorModels;
+// //         DataField<bool> f_showVisualModels;
+// //         DataField<bool> f_showMappings;
+// //         DataField<bool> f_showMechanicalMappings;
+// //         DataField<bool> f_showForceFields;
+// //         DataField<bool> f_showInteractionForceFields;
+// //         DataField<bool> f_showWireFrame;
+// //         DataField<bool> f_showNormals;
+// //         DataField<bool> f_multiThreadSimulation;
+//
+//
+// 	Frame localFrame_;
+//         SpatialVector spatialVelocityInWorld_;
+// 	Vec3 velocityBasedLinearAccelerationInWorld_;
+// 	//double localToWorldTranslation_[3];  ///< Used to project from the local coordinate system to the world coordinate system
+// 	//double localToWorldRotationQuat_[4];  ///< Used to project from the local coordinate system to the world coordinate system
+// 	//double localToWorldRotationMatrix_[9];  ///< Used to project from the local coordinate system to the world coordinate system
+// 	//double linearVelocity_[3]; ///< Velocity in the local frame, defined in the world coordinate system
+// 	//double angularVelocity_[3]; ///< Velocity in the local frame, defined in the world coordinate system
+// 	//double linearAcceleration_[3]; ///< Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
+// };
+
+class Context : public Abstract::BaseContext
 {
+
+public:
+    // begin ContextData
     typedef Abstract::BaseContext::Frame Frame;
     typedef Abstract::BaseContext::Vec3 Vec3;
     typedef Abstract::BaseContext::Quat Quat;
     typedef Abstract::BaseContext::SpatialVector SpatialVector;
 
-    //double gravity_[3];  ///< Gravity
-    //double worldGravity_[3];  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    //Vec3 gravity_;  ///< Gravity
-    Vec3 worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    double dt_;
-    double time_;
-    bool animate_;
-    bool showCollisionModels_;
-    bool showBoundingCollisionModels_;
-    bool showBehaviorModels_;
-    bool showVisualModels_;
-    bool showMappings_;
-    bool showMechanicalMappings_;
-    bool showForceFields_;
-    bool showInteractionForceFields_;
-    bool showWireFrame_;
-    bool showNormals_;
-    bool multiThreadSimulation_;
 
+    DataField<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    DataField<double> dt_;
+    DataField<double> time_;
+    DataField<bool> animate_;
+    DataField<bool> showCollisionModels_;
+    DataField<bool> showBoundingCollisionModels_;
+    DataField<bool> showBehaviorModels_;
+    DataField<bool> showVisualModels_;
+    DataField<bool> showMappings_;
+    DataField<bool> showMechanicalMappings_;
+    DataField<bool> showForceFields_;
+    DataField<bool> showInteractionForceFields_;
+    DataField<bool> showWireFrame_;
+    DataField<bool> showNormals_;
+    DataField<bool> multiThreadSimulation_;
 
     Frame localFrame_;
     SpatialVector spatialVelocityInWorld_;
     Vec3 velocityBasedLinearAccelerationInWorld_;
-    //double localToWorldTranslation_[3];  ///< Used to project from the local coordinate system to the world coordinate system
-    //double localToWorldRotationQuat_[4];  ///< Used to project from the local coordinate system to the world coordinate system
-    //double localToWorldRotationMatrix_[9];  ///< Used to project from the local coordinate system to the world coordinate system
-    //double linearVelocity_[3]; ///< Velocity in the local frame, defined in the world coordinate system
-    //double angularVelocity_[3]; ///< Velocity in the local frame, defined in the world coordinate system
-    //double linearAcceleration_[3]; ///< Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
-};
 
-class Context : public Abstract::BaseContext, private ContextData
-{
+    // end ContextData
 
-public:
-    typedef Abstract::BaseContext::Frame Frame;
-    typedef Abstract::BaseContext::Vec3 Vec3;
-    typedef Abstract::BaseContext::Quat Quat;
-    typedef Abstract::BaseContext::SpatialVector SpatialVector;
+//     typedef Abstract::BaseContext::Frame Frame;
+// 	typedef Abstract::BaseContext::Vec3 Vec3;
+// 	typedef Abstract::BaseContext::Quat Quat;
+// 	typedef Abstract::BaseContext::SpatialVector SpatialVector;
 
 
     Context();

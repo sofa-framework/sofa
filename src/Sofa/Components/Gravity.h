@@ -15,20 +15,24 @@ namespace Graph
 class GNode;
 }
 
+using namespace Common;
+
 class Gravity : public Abstract::ContextObject
 {
     typedef Common::Vec3d Vec3;
 public:
     Gravity();
-    const Vec3&  getGravity() const;
+    virtual const char* getTypeName() const { return "Gravity"; }
 
-    /// Set the value of the gravity and return this
-    Gravity* setGravity( const Vec3& g );
+    DataField<Vec3> f_gravity;
+
+//         const Vec3&  getGravity() const;
+// 	Gravity* setGravity( const Vec3& g );
 
     /// Modify the context of the GNode
     void apply();
 protected:
-    Vec3 gravity_;
+    //Vec3 gravity_;
 };
 
 } // namespace Components

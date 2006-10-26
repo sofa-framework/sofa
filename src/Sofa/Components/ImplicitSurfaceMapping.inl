@@ -195,7 +195,7 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
             }
         }
     }
-    std::cout << out.size() << " points, "<<seqTriangles.size()<<" faces."<<std::endl;
+    std::cout << out.size() << " points, "<<seqTriangles.getValue().size()<<" faces."<<std::endl;
 }
 
 template <class In, class Out>

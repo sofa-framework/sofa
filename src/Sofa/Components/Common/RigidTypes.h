@@ -304,6 +304,13 @@ public:
         out<<", inertia = "<<m.inertiaMatrix;
         return out;
     }
+    inline friend std::istream& operator >> (std::istream& in, RigidMass& m )
+    {
+        in>>m.mass;
+        in>>m.volume;
+        in>>m.inertiaMatrix;
+        return in;
+    }
 };
 
 

@@ -22,6 +22,9 @@ public:
     /// Print all object in the graph
     static void print(GNode* root);
 
+    /// Print all object in the graph in XML format
+    static void printXML(GNode* root, const char* fileName=0);
+
     /// Initialize the objects
     static void init(GNode* root);
 

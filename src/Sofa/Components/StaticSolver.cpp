@@ -24,8 +24,8 @@ StaticSolver::StaticSolver()
 {
     maxCGIter = 25;
     smallDenominatorThreshold = 1e-5;
-    addField(&maxCGIter,"iterations","maximum number of iterations of the Conjugate Gradient solution");
-    addField(&smallDenominatorThreshold,"threshold","minimum value of the denominator in the conjugate Gradient solution");
+    /*    newField(&maxCGIter,"iterations","maximum number of iterations of the Conjugate Gradient solution");
+        newField(&smallDenominatorThreshold,"threshold","minimum value of the denominator in the conjugate Gradient solution");*/
 }
 
 void StaticSolver::solve(double)

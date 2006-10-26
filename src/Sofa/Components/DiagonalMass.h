@@ -1,10 +1,10 @@
-#ifndef SOFA_COMPONENTS_DIAGONALMASS_H
-#define SOFA_COMPONENTS_DIAGONALMASS_H
+#pragma once
 
 #include "Common/Vec3Types.h"
 #include "Sofa/Core/Mass.h"
 #include "Sofa/Core/MechanicalModel.h"
 #include "Sofa/Abstract/VisualModel.h"
+#include "Sofa/Components/Common/vector.h"
 
 namespace Sofa
 {
@@ -13,6 +13,7 @@ namespace Components
 {
 
 using namespace Common;
+// using Abstract::Field;
 
 template <class DataTypes, class MassType>
 class DiagonalMass : public Core::Mass<DataTypes>, public Abstract::VisualModel
@@ -22,8 +23,9 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef vector<MassType> VecMass;
 protected:
-    std::vector<MassType> masses;
+    //VecMass masses;
 
     class Loader;
 public:
@@ -33,9 +35,13 @@ public:
 
     ~DiagonalMass();
 
+    virtual const char* getTypeName() const { return "DiagonalMass"; }
+
     bool load(const char *filename);
 
     void clear();
+
+    DataField< VecMass > f_mass;
 
     void addMass(const MassType& mass);
 
@@ -56,13 +62,15 @@ public:
 
     void draw();
 
-    void initTextures() { }
+    void initTextures()
+    { }
 
-    void update() { }
-};
+    void update()
+    { }
+}
+;
 
 } // namespace Components
 
 } // namespace Sofa
 
-#endif

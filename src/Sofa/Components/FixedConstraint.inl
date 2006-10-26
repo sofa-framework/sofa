@@ -17,32 +17,34 @@ using namespace Common;
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
     : Core::Constraint<DataTypes>(NULL)
-{
-}
+    , f_indices( dataField(&f_indices,"indices","Indices of the fixed points") )
+{}
 
 
 template <class DataTypes>
-FixedConstraint<DataTypes>::FixedConstraint(Core::MechanicalModel<DataTypes>* mmodel)
+FixedConstraint<DataTypes>::FixedConstraint(Core::MechanicalModel<DataTypes>
+        * mmodel)
     : Core::Constraint<DataTypes>(mmodel)
-{
-}
+    , f_indices( dataField(&f_indices,"indices","Indices of the fixed points") )
+{}
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::~FixedConstraint()
-{
-}
+{}
 
 template <class DataTypes>
 FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::addConstraint(int index)
 {
-    this->indices.insert(index);
+    f_indices.beginEdit()->push_back(index);
+    f_indices.endEdit();
     return this;
 }
 
 template <class DataTypes>
 FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::removeConstraint(int index)
 {
-    this->indices.erase(index);
+    removeValue(*f_indices.beginEdit(),index);
+    f_indices.endEdit();
     return this;
 }
 
@@ -50,7 +52,11 @@ FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::removeConstraint(int in
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
-    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    //std::cerr<<"FixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<endl;
+    const SetIndex& indices = f_indices.getValue();
+    for (SetIndex::const_iterator it = indices.begin();
+            it != indices.end();
+            ++it)
     {
         res[*it] = Deriv();
     }
@@ -62,7 +68,8 @@ void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseMat
 {
     std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
 
-    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    const SetIndex& indices = f_indices.getValue();
+    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         // Reset Fixed Row
         for (int i=0; i<mat->colDim(); i++)
@@ -100,9 +107,11 @@ void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseVec
 {
     std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
-    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    const SetIndex& indices = f_indices.getValue();
+    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        vect->element(3 * (*it) + offset) = 0.0;
+        vect->element(3 * (*it)
+                + offset) = 0.0;
         vect->element(3 * (*it) + offset + 1) = 0.0;
         vect->element(3 * (*it) + offset + 2) = 0.0;
     }
@@ -111,13 +120,19 @@ void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseVec
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw()
 {
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!getContext()->
+        getShowBehaviorModels()) return;
     VecCoord& x = *this->mmodel->getX();
+    //std::cerr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<endl;
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
-    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    const SetIndex& indices = f_indices.getValue();
+    //std::cerr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<endl;
+    for (SetIndex::const_iterator it = indices.begin();
+            it != indices.end();
+            ++it)
     {
         GL::glVertexT(x[*it]);
     }
@@ -135,3 +150,5 @@ void FixedConstraint<RigidTypes >::projectResponse(VecDeriv& dx);
 } // namespace Sofa
 
 #endif
+
+

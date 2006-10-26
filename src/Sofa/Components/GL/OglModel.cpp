@@ -1,5 +1,6 @@
 #include "OglModel.h"
 #include "RAII.h"
+#include "../Common/vector.h"
 #include "../Common/Quat.h"
 #include "../Common/ObjectFactory.h"
 #include "../MeshTopology.h"
@@ -218,10 +219,10 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
         }
         else
         {
-            std::vector< std::vector< std::vector<int> > > &facetsImport = objLoader->getFacets();
-            std::vector<Vector3> &verticesImport = objLoader->getVertices();
-            std::vector<Vector3> &normalsImport = objLoader->getNormals();
-            std::vector<Vector3> &texCoordsImport = objLoader->getTexCoords();
+            vector< vector< vector<int> > > &facetsImport = objLoader->getFacets();
+            vector<Vector3> &verticesImport = objLoader->getVertices();
+            vector<Vector3> &normalsImport = objLoader->getNormals();
+            vector<Vector3> &texCoordsImport = objLoader->getTexCoords();
 
             Mesh::Material &materialImport = objLoader->getMaterial();
 
@@ -233,15 +234,15 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
             int nbVIn = verticesImport.size();
             // First we compute for each point how many pair of normal/texcoord indices are used
             // The map store the final index of each combinaison
-            std::vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
+            vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
             vertTexNormMap.resize(nbVIn);
             for (unsigned int i = 0; i < facetsImport.size(); i++)
             {
-                std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
+                vector<vector <int> > vertNormTexIndex = facetsImport[i];
                 if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
-                std::vector<int> verts = vertNormTexIndex[0];
-                std::vector<int> texs = vertNormTexIndex[1];
-                std::vector<int> norms = vertNormTexIndex[2];
+                vector<int> verts = vertNormTexIndex[0];
+                vector<int> texs = vertNormTexIndex[1];
+                vector<int> norms = vertNormTexIndex[2];
                 for (unsigned int j = 0; j < verts.size(); j++)
                 {
                     vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:-1), (useNormals?norms[j]:0))] = 0;
@@ -313,12 +314,12 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
 
             for (unsigned int i = 0; i < facetsImport.size(); i++)
             {
-                std::vector<std::vector <int> > vertNormTexIndex = facetsImport[i];
+                vector<vector <int> > vertNormTexIndex = facetsImport[i];
                 if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
-                std::vector<int> verts = vertNormTexIndex[0];
-                std::vector<int> texs = vertNormTexIndex[1];
-                std::vector<int> norms = vertNormTexIndex[2];
-                std::vector<int> idxs;
+                vector<int> verts = vertNormTexIndex[0];
+                vector<int> texs = vertNormTexIndex[1];
+                vector<int> norms = vertNormTexIndex[2];
+                vector<int> idxs;
                 idxs.resize(verts.size());
                 for (unsigned int j = 0; j < verts.size(); j++)
                     idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex!=NULL?texs[j]:-1), (useNormals?norms[j]:0))];
@@ -393,7 +394,7 @@ void OglModel::init()
 
 void OglModel::computeNormals()
 {
-    std::vector<Coord> normals;
+    vector<Coord> normals;
     int nbn = 0;
     bool vsplit = !vertNormIdx.empty();
     if (vsplit)
@@ -558,11 +559,11 @@ void OglModel::update()
             MeshTopology* topology = dynamic_cast<MeshTopology*>(getContext()->getTopology());
             if (topology != NULL)
             {
-                const std::vector<Triangle>& inputTriangles = topology->getTriangles();
+                const vector<Triangle>& inputTriangles = topology->getTriangles();
                 triangles.resize(inputTriangles.size());
                 for (unsigned int i=0; i<triangles.size(); ++i)
                     triangles[i] = inputTriangles[i];
-                const std::vector<Quad>& inputQuads = topology->getQuads();
+                const vector<Quad>& inputQuads = topology->getQuads();
                 quads.resize(inputQuads.size());
                 for (unsigned int i=0; i<quads.size(); ++i)
                     quads[i] = inputQuads[i];
@@ -634,7 +635,7 @@ void OglModel::exportOBJ(std::ostream* out, std::ostream* mtl, int& vindex, int&
             if (vertNormIdx[i] >= nbn)
                 nbn = vertNormIdx[i]+1;
         }
-        std::vector<int> normVertIdx(nbn);
+        vector<int> normVertIdx(nbn);
         for (unsigned int i = 0; i < vertNormIdx.size(); i++)
         {
             normVertIdx[vertNormIdx[i]]=i;

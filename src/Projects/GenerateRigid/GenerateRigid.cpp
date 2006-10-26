@@ -2,6 +2,7 @@
 
 #include <stdlib.h>
 #include <math.h>
+#include <Sofa/Components/Common/vector.h>
 
 
 bool GenerateRigid(Sofa::Components::Common::RigidMass& mass, Sofa::Components::Common::Vec3d& center, Sofa::Components::Common::Mesh* mesh)
@@ -22,11 +23,11 @@ bool GenerateRigid(Sofa::Components::Common::RigidMass& mass, Sofa::Components::
             (double)0.0, (double)0.0, (double)0.0, (double)0.0, (double)0.0, (double)0.0
                             };
 
-    const std::vector<Vec3d>& points = mesh->getVertices();
-    const std::vector< std::vector< std::vector<int> > >& facets = mesh->getFacets();
+    const vector<Vec3d>& points = mesh->getVertices();
+    const vector< vector< vector<int> > >& facets = mesh->getFacets();
     for (unsigned int i = 0; i < facets.size(); i++)
     {
-        const std::vector<int>& v = facets[i][0];
+        const vector<int>& v = facets[i][0];
         for (unsigned int j = 2; j < v.size(); j++)
         {
             // get vertices of current triangle

@@ -1,5 +1,4 @@
-#ifndef SOFA_COMPONENTS_COMMON_FIXED_ARRAY_H
-#define SOFA_COMPONENTS_COMMON_FIXED_ARRAY_H
+#pragma once
 
 /* The following code declares class array,
  * an STL container (as wrapper) for arrays of constant size.
@@ -55,29 +54,76 @@ public:
     typedef std::ptrdiff_t difference_type;
 
     // iterator support
-    iterator begin() { return elems; }
-    const_iterator begin() const { return elems; }
-    iterator end() { return elems+N; }
-    const_iterator end() const { return elems+N; }
+    iterator begin()
+    {
+        return elems;
+    }
+    const_iterator begin() const
+    {
+        return elems;
+    }
+    iterator end()
+    {
+        return elems+N;
+    }
+    const_iterator end() const
+    {
+        return elems+N;
+    }
 
     // operator[]
-    reference operator[](size_type i) { return elems[i]; }
-    const_reference operator[](size_type i) const { return elems[i]; }
+    reference operator[](size_type i)
+    {
+        return elems[i];
+    }
+    const_reference operator[](size_type i) const
+    {
+        return elems[i];
+    }
 
     // at() with range check
-    reference at(size_type i) { rangecheck(i); return elems[i]; }
-    const_reference at(size_type i) const { rangecheck(i); return elems[i]; }
+    reference at(size_type i)
+    {
+        rangecheck(i);
+        return elems[i];
+    }
+    const_reference at(size_type i) const
+    {
+        rangecheck(i);
+        return elems[i];
+    }
 
     // front() and back()
-    reference front() { return elems[0]; }
-    const_reference front() const { return elems[0]; }
-    reference back() { return elems[N-1]; }
-    const_reference back() const { return elems[N-1]; }
+    reference front()
+    {
+        return elems[0];
+    }
+    const_reference front() const
+    {
+        return elems[0];
+    }
+    reference back()
+    {
+        return elems[N-1];
+    }
+    const_reference back() const
+    {
+        return elems[N-1];
+    }
 
     // size is constant
-    static size_type size() { return N; }
-    static bool empty() { return false; }
-    static size_type max_size() { return N; }
+    static size_type size()
+    {
+        return N;
+    }
+    static bool empty()
+    {
+        return false;
+    }
+    static size_type max_size()
+    {
+        return N;
+    }
     enum { static_size = N };
 
     // swap (note: linear complexity)
@@ -87,7 +133,10 @@ public:
     }
 
     // direct access to data
-    const T* data() const { return elems; }
+    const T* data() const
+    {
+        return elems;
+    }
 
     // assignment with type conversion
     template <typename T2>
@@ -103,12 +152,29 @@ public:
         std::fill_n(begin(),size(),value);
     }
 
+    inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
+    {
+        for( unsigned i=0; i<N; i++ )
+            out<<a.elems[i]<<" ";
+        return out;
+    }
+
+    inline friend std::istream& operator >> (std::istream& in, fixed_array<T,N>& a)
+    {
+        for( unsigned i=0; i<N; i++ )
+            in>>a.elems[i];
+        return in;
+    }
+
 private:
 
     // check range (may be private because it is static)
     static void rangecheck (size_type i)
     {
-        if (i >= size()) { throw std::range_error("fixed_array"); }
+        if (i >= size())
+        {
+            throw std::range_error("fixed_array");
+        }
     }
 
 };
@@ -164,4 +230,7 @@ inline fixed_array<T, 8> make_array(const T& v0, const T& v1, const T& v2, const
 
 } // namespace Sofa
 
-#endif
+
+
+
+

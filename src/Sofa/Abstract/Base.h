@@ -2,6 +2,7 @@
 #define SOFA_ABSTRACT_BASE_H
 
 #include <string>
+#include "FieldContainer.h"
 
 namespace Sofa
 {
@@ -10,13 +11,20 @@ namespace Abstract
 {
 
 /// Base class for everything
-class Base
+class Base:  public FieldContainer
 {
 public:
-    virtual ~Base() {}
+    Base();
+    virtual ~Base();
 
-    const std::string& getName() const { return name; }
-    void setName(const std::string& n) { name = n; }
+    DataField<std::string> f_name;
+
+    const std::string& getName() const;
+    void setName(const std::string& n);
+    virtual const char* getTypeName() const
+    {
+        return "UNKNOWN TYPE";
+    }
 
 protected:
     std::string name;
@@ -27,3 +35,4 @@ protected:
 } // namespace Sofa
 
 #endif
+

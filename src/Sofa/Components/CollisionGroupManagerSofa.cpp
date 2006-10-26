@@ -220,9 +220,13 @@ OdeSolver* createSolverRungeKutta4RungeKutta4(RungeKutta4Solver& solver1, RungeK
 OdeSolver* createSolverCGImplicitCGImplicit(CGImplicitSolver& solver1, CGImplicitSolver& solver2)
 {
     CGImplicitSolver* solver = new CGImplicitSolver();
-    solver->maxCGIter = solver1.maxCGIter > solver2.maxCGIter ? solver1.maxCGIter : solver2.maxCGIter;
-    solver->smallDenominatorThreshold = solver1.smallDenominatorThreshold < solver2.smallDenominatorThreshold ? solver1.smallDenominatorThreshold : solver2.smallDenominatorThreshold;
-    solver->rayleighStiffness = solver1.rayleighStiffness < solver2.rayleighStiffness ? solver1.rayleighStiffness : solver2.rayleighStiffness;
+    solver->f_maxIter.setValue( solver1.f_maxIter.getValue() > solver2.f_maxIter.getValue() ? solver1.f_maxIter.getValue() : solver2.f_maxIter.getValue() );
+
+    solver->f_smallDenominatorThreshold.setValue( solver1.f_smallDenominatorThreshold.getValue() < solver2.f_smallDenominatorThreshold.getValue() ? solver1.f_smallDenominatorThreshold.getValue() : solver2.f_smallDenominatorThreshold.getValue());
+
+    solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue() < solver2.f_rayleighStiffness.getValue() ? solver1.f_rayleighStiffness.getValue() : solver2.f_rayleighStiffness.getValue() );
+
+    solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
     return solver;
 }
 

@@ -31,14 +31,26 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
+template <class DataTypes>
+TriangleFEMForceField<DataTypes>::
+TriangleFEMForceField(Core::MechanicalObject<DataTypes>* object)
+    : _object(object)
+    , _mesh(NULL)
+    , _indexedElements(NULL)
+    , f_method(dataField(&f_method,0,"method","O: large displacements, 1: small displacements"))
+    , f_poisson(dataField(&f_poisson,(Real)0.3,"poisson","Poisson ratio in Hooke's law"))
+    , f_young(dataField(&f_young,(Real)1000.,"young","Young modulus in Hooke's law"))
+    , f_damping(dataField(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
+{}
 
-template <class DataTypes> TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
+template <class DataTypes>
+TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 {
-
 }
 
 
-template <class DataTypes> void TriangleFEMForceField<DataTypes>::init()
+template <class DataTypes>
+void TriangleFEMForceField<DataTypes>::init()
 {
     _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->_object->getContext()->getTopology());
 
@@ -86,9 +98,9 @@ void TriangleFEMForceField<DataTypes>::addForce()
     VecCoord& x = *this->_object->getX();
     f.resize(x.size());
 
-    if(_dampingRatio != 0)
+    if(f_damping.getValue() != 0)
     {
-        if(_method == SMALL)
+        if(f_method.getValue() == SMALL)
         {
             for( unsigned int i=0; i<_indexedElements->size(); i+=3 )
             {
@@ -107,7 +119,7 @@ void TriangleFEMForceField<DataTypes>::addForce()
     }
     else
     {
-        if(_method==SMALL)
+        if(f_method.getValue()==SMALL)
         {
             typename VecElement::const_iterator it;
             unsigned int i(0);
@@ -140,7 +152,7 @@ void TriangleFEMForceField<DataTypes>::addDForce()
     VecDeriv& x = *this->_object->getDx();
     v.resize(x.size());
 
-    if (_method == SMALL)
+    if (f_method.getValue() == SMALL)
     {
         applyStiffnessSmall( v,h,x );
     }
@@ -160,7 +172,7 @@ double TriangleFEMForceField<DataTypes>::getPotentialEnergy()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, const VecCoord& x )
 {
-    if (_method == SMALL)
+    if (f_method.getValue() == SMALL)
     {
         applyStiffnessSmall( v,h,x );
     }
@@ -199,16 +211,16 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
     for(unsigned i = 0; i < _indexedElements->size(); ++i)
     {
         _materialsStiffnesses[i][0][0] = 1;
-        _materialsStiffnesses[i][0][1] = _poissonRatio;
+        _materialsStiffnesses[i][0][1] = f_poisson.getValue();
         _materialsStiffnesses[i][0][2] = 0;
-        _materialsStiffnesses[i][1][0] = _poissonRatio;
+        _materialsStiffnesses[i][1][0] = f_poisson.getValue();
         _materialsStiffnesses[i][1][1] = 1;
         _materialsStiffnesses[i][1][2] = 0;
         _materialsStiffnesses[i][2][0] = 0;
         _materialsStiffnesses[i][2][1] = 0;
-        _materialsStiffnesses[i][2][2] = 0.5f * (1 - _poissonRatio);
+        _materialsStiffnesses[i][2][2] = 0.5f * (1 - f_poisson.getValue());
 
-        _materialsStiffnesses[i] = (_youngModulus / (12 * (1 - _poissonRatio * _poissonRatio))) * _materialsStiffnesses[i];
+        _materialsStiffnesses[i] = (f_young.getValue() / (12 * (1 - f_poisson.getValue() * f_poisson.getValue()))) * _materialsStiffnesses[i];
     }
 }
 
@@ -221,7 +233,7 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
 
     Vec<3,Real> JtD;
 
-//	JtD = Jt * Depl;
+    //	JtD = Jt * Depl;
 
     JtD[0] = Jt[0][0] * Depl[0] + Jt[0][1] * Depl[1] + Jt[0][2] * Depl[2] +
             Jt[0][3] * Depl[3] + Jt[0][4] * Depl[4] + Jt[0][5] * Depl[5];
@@ -234,7 +246,7 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
 
     Vec<3,Real> KJtD;
 
-//	KJtD = K * JtD;
+    //	KJtD = K * JtD;
 
     KJtD[0] = K[0][0] * JtD[0] + K[0][1] * JtD[1] + K[0][2] * JtD[2];
 
@@ -242,7 +254,7 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
 
     KJtD[2] = K[2][0] * JtD[0] + K[2][1] * JtD[1] + K[2][2] * JtD[2];
 
-//	F = J * KJtD;
+    //	F = J * KJtD;
 
     F[0] = J[0][0] * KJtD[0] + J[0][1] * KJtD[1] + J[0][2] * KJtD[2];
 
@@ -393,7 +405,7 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         // second vector in the plane of the two first edges
         // third vector orthogonal to first and second
         Transformation R_0_1;
-        cerr<<"TriangleFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.size() = "<<_initialPoints.size()<<endl;
+        //cerr<<"TriangleFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.size() = "<<_initialPoints.size()<<endl;
         computeRotationLarge( R_0_1, _initialPoints, a, b, c );
 
         _rotatedInitialElements[i][0] = R_0_1 * _initialPoints[a];
@@ -560,8 +572,10 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, 
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
-    if (!this->_object) return;
+    if (!getContext()->getShowForceFields())
+        return;
+    if (!this->_object)
+        return;
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -611,24 +625,29 @@ SOFA_DECL_CLASS(TriangleFEMForceField)
 
 using namespace Common;
 
-template class TriangleFEMForceField<Vec3dTypes>;
-template class TriangleFEMForceField<Vec3fTypes>;
+template class TriangleFEMForceField<Vec3dTypes>
+;
+template class TriangleFEMForceField<Vec3fTypes>
+;
 
 
 template<class DataTypes>
 void create(TriangleFEMForceField<DataTypes>*& obj, ObjectDescription* arg)
 {
     XML::createWithParent< TriangleFEMForceField<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-        obj->setPoissonRatio((typename TriangleFEMForceField<DataTypes>::Real)atof(arg->getAttribute("poissonRatio","0.49")));
-        obj->setYoungModulus((typename TriangleFEMForceField<DataTypes>::Real)atof(arg->getAttribute("youngModulus","100000")));
-        std::string method = arg->getAttribute("method","");
-        if (method == "small")
-            obj->setMethod(TriangleFEMForceField<DataTypes>::SMALL);
-        else if (method == "large")
-            obj->setMethod(TriangleFEMForceField<DataTypes>::LARGE);
-    }
+    obj->parseFields( arg->getAttributeMap() );
+    /*    if (obj!=NULL)
+        {
+            obj->setPoissonRatio((typename TriangleFEMForceField<DataTypes>::Real)atof(arg->getAttribute("poissonRatio","0.49")));
+            obj->setYoungModulus((typename TriangleFEMForceField<DataTypes>::Real)atof(arg->getAttribute("youngModulus","100000")));
+            std::string method = arg->getAttribute("method","");
+            if (method == "small")
+                obj->setMethod(TriangleFEMForceField<DataTypes>
+                               ::SMALL);
+            else if (method == "large")
+                obj->setMethod(TriangleFEMForceField<DataTypes>
+                               ::LARGE);
+        }*/
 }
 
 Creator<ObjectFactory, TriangleFEMForceField<Vec3dTypes> >
@@ -641,3 +660,6 @@ TriangleFEMForceFieldVec3fClass("TriangleFEMForceField", true);
 } // namespace Components
 
 } // namespace Sofa
+
+
+

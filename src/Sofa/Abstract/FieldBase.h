@@ -32,7 +32,7 @@ public:
     */
     FieldBase( const char* h)
         : help(h)
-        , isSet(false)
+        , m_isSet(false)
     {}
 
     /// Base destructor: does nothing.
@@ -50,8 +50,12 @@ public:
     /// Help message
     const char* help;
 
+    /// True if the value has been modified
+    inline bool isSet() const { return m_isSet; }
+
+protected:
     /// True iff a value has bee read on the command line
-    bool isSet;
+    bool m_isSet;
 
 
 };

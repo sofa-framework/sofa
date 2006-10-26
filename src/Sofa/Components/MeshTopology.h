@@ -7,6 +7,7 @@
 #include <iostream>
 #include "Sofa/Core/Topology.h"
 #include "Common/fixed_array.h"
+#include "Common/vector.h"
 
 namespace Sofa
 {
@@ -27,13 +28,14 @@ public:
     typedef fixed_array<index_type, 4> Tetra;
     typedef fixed_array<index_type, 8> Cube;
 
-    typedef std::vector<Line> SeqLines;
-    typedef std::vector<Triangle> SeqTriangles;
-    typedef std::vector<Quad> SeqQuads;
-    typedef std::vector<Tetra> SeqTetras;
-    typedef std::vector<Cube> SeqCubes;
+    typedef vector<Line> SeqLines;
+    typedef vector<Triangle> SeqTriangles;
+    typedef vector<Quad> SeqQuads;
+    typedef vector<Tetra> SeqTetras;
+    typedef vector<Cube> SeqCubes;
 
     MeshTopology();
+    virtual const char* getTypeName() const { return "Mesh"; }
 
     virtual void clear();
 
@@ -76,12 +78,13 @@ public:
 
 protected:
     int nbPoints;
-    std::vector< fixed_array<double,3> > seqPoints;
+    vector< fixed_array<double,3> > seqPoints;
 
     SeqLines seqLines;
     bool validLines;
 
-    SeqTriangles   seqTriangles;
+    //SeqTriangles   seqTriangles;
+    DataField<SeqTriangles> seqTriangles;
     bool         validTriangles;
     SeqQuads       seqQuads;
     bool         validQuads;

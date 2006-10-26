@@ -6,6 +6,8 @@
 #include "Encoding.inl"
 #include <assert.h>
 #include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace Sofa
 {
@@ -15,10 +17,16 @@ namespace Core
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x0(NULL), v0(NULL), vsize(0)
+    : x(new VecCoord), v(new VecDeriv), x0(NULL), v0(NULL), vsize(0)
+    , f_X( new XField<DataTypes>(&x, "position coordinates ot the degrees of freedom") )
+    , f_V( new VField<DataTypes>(&v, "velocity coordinates ot the degrees of freedom") )
 {
-    x = new VecCoord;
-    v = new VecDeriv;
+    this->addField(f_X, "position");
+    f_X->beginEdit();
+    this->addField(f_V, "velocity");
+    f_V->beginEdit();
+    /*    x = new VecCoord;
+        v = new VecDeriv;*/
     internalForces = f = new VecDeriv;
     externalForces = new VecDeriv;
     dx = new VecDeriv;
@@ -32,6 +40,14 @@ MechanicalObject<DataTypes>::MechanicalObject()
     translation[1]=0.0;
     translation[2]=0.0;
     scale = 1.0;
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::parseFields ( const std::map<std::string,std::string*>& str )
+{
+    Inherited::parseFields(str);
+    resize( getX()->size() );
+    cerr<<"MechanicalObject<DataTypes>::parseFields, resized to "<<getX()->size()<<endl;
 }
 
 template <class DataTypes>
@@ -697,5 +713,4 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 } // namespace Sofa
 
 #endif
-
 

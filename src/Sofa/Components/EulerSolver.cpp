@@ -23,8 +23,9 @@ void EulerSolver::solve(double dt)
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
     MultiVector acc(group, VecId::dx());
+    bool printLog = f_printLog.getValue();
 
-    if( printLog() )
+    if( printLog )
     {
         cerr<<"EulerSolver, dt = "<< dt <<endl;
         cerr<<"EulerSolver, initial x = "<< pos <<endl;
@@ -35,7 +36,7 @@ void EulerSolver::solve(double dt)
     vel.peq(acc,dt);
     pos.peq(vel,dt);
 
-    if( printLog() )
+    if( printLog )
     {
         cerr<<"EulerSolver, acceleration = "<< acc <<endl;
         cerr<<"EulerSolver, final x = "<< pos <<endl;

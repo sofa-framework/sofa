@@ -36,8 +36,8 @@ void MeshOBJ::init (std::string filename)
 // --------------------------------------------------------------------------
 void MeshOBJ::readOBJ (FILE* file)
 {
-    std::vector< std::vector<int> > vertNormTexIndices;
-    std::vector<int>vIndices, nIndices, tIndices;
+    vector< vector<int> > vertNormTexIndices;
+    vector<int>vIndices, nIndices, tIndices;
     int vtn[3];
     char buf[128], matName[1024];
     Vector3 result;
@@ -98,8 +98,8 @@ void MeshOBJ::readOBJ (FILE* file)
             /* eat up rest of line */
             fgets(buf, sizeof(buf), file);
             sscanf(buf, "%s", matName);
-            std::vector<Material>::iterator it = materials.begin();
-            std::vector<Material>::iterator itEnd = materials.end();
+            vector<Material>::iterator it = materials.begin();
+            vector<Material>::iterator itEnd = materials.end();
             for (; it != itEnd; it++)
             {
                 if (strcmp ((*it).name.c_str(), matName) == 0)

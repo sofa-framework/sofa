@@ -89,6 +89,12 @@ public:
             out<<", vOrientation = "<<v.getVOrientation();
             return out;
         }
+        inline friend std::istream& operator >> (std::istream& in, Deriv& v )
+        {
+            in>>v.vTranslation;
+            in>>v.vOrientation;
+            return in;
+        }
     };
 
     class Coord
@@ -164,6 +170,12 @@ public:
             out<<"translation = "<<c.getTranslation();
             out<<", rotation = "<<c.getOrientation();
             return out;
+        }
+        inline friend std::istream& operator >> (std::istream& in, Coord& c )
+        {
+            in>>c.translation;
+            in>>c.orientation;
+            return in;
         }
 
         static Coord identity()

@@ -14,6 +14,7 @@
 #include "DeleteAction.h"
 #include "ExportOBJAction.h"
 #include "WriteStateAction.h"
+#include "XMLPrintAction.h"
 
 #include <fstream>
 
@@ -76,6 +77,23 @@ void Simulation::print(GNode* root)
 {
     if (!root) return;
     root->execute<PrintAction>();
+}
+
+/// Print all object in the graph
+void Simulation::printXML(GNode* root, const char* fileName)
+{
+    if (!root) return;
+    if( fileName!=NULL )
+    {
+        std::ofstream out(fileName);
+        XMLPrintAction print(out);
+        root->execute(print);
+    }
+    else
+    {
+        XMLPrintAction print(std::cout);
+        root->execute(print);
+    }
 }
 
 /// Initialize the scene.

@@ -1,5 +1,4 @@
-#ifndef _TRIANGLEFEMFORCEFIELD_H_
-#define _TRIANGLEFEMFORCEFIELD_H_
+#pragma once
 
 
 #include "Sofa/Core/ForceField.h"
@@ -60,23 +59,19 @@ protected:
 
     MeshTopology* _mesh;
     const VecElement *_indexedElements;
-    VecCoord _initialPoints;										///< the intial positions of the points
-    int _method;													///< the computation method of the displacements
-    Real _poissonRatio;
-    Real _youngModulus;
-    Real _dampingRatio;
+    VecCoord _initialPoints; ///< the intial positions of the points
+//     int _method; ///< the computation method of the displacements
+//     Real _poissonRatio;
+//     Real _youngModulus;
+//     Real _dampingRatio;
 
 public:
 
-    TriangleFEMForceField(Core::MechanicalObject<DataTypes>* object)
-        : _object(object)
-        , _mesh(NULL)
-        , _indexedElements(NULL)
-        , _method(0)
-        , _poissonRatio(0)
-        , _youngModulus(0)
-        , _dampingRatio(0)
+    TriangleFEMForceField(Core::MechanicalObject<DataTypes>* object);
+
+    virtual const char* getTypeName() const
     {
+        return "TriangleFEMForceField";
     }
 
     virtual ~TriangleFEMForceField();
@@ -88,22 +83,42 @@ public:
     virtual double getPotentialEnergy();
 
     // -- Temporary added here for matrix ForceField
-    void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
-    void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};
-    void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int &) {};
-    void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int & ) {};
+    void contributeToMatrixDimension(unsigned int * const, unsigned int * const)
+    {}
+    ;
+    void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &)
+    {}
+    ;
+    void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int &)
+    {}
+    ;
+    void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int & )
+    {}
+    ;
 
 
     // -- VisualModel interface
     void draw();
-    void initTextures() { };
-    void update() { };
+    void initTextures()
+    { }
+    ;
+    void update()
+    { }
+    ;
 
-    void setPoissonRatio(Real val) { this->_poissonRatio = val; }
-    void setYoungModulus(Real val) { this->_youngModulus = val; }
-    void setMethod(int val) { this->_method = val; }
+    DataField<int> f_method;
+    DataField<Real> f_poisson;
+    DataField<Real> f_young;
+    DataField<Real> f_damping;
 
-    Core::MechanicalObject<DataTypes>* getObject() { return _object; }
+    /*	void setPoissonRatio(Real val) { this->_poissonRatio = val; }
+    	void setYoungModulus(Real val) { this->_youngModulus = val; }
+    	void setMethod(int val) { this->_method = val; }*/
+
+    Core::MechanicalObject<DataTypes>* getObject()
+    {
+        return _object;
+    }
 
 protected :
 
@@ -136,5 +151,3 @@ protected :
 } // namespace Sofa
 
 
-
-#endif /* _TRIANGLEFEMFORCEFIELD_H_ */

@@ -18,6 +18,7 @@ using namespace Common;
 void create(MeshTopology*& obj, ObjectDescription* arg)
 {
     obj = new MeshTopology();
+    obj->parseFields( arg->getAttributeMap() );
     if (arg->getAttribute("filename"))
         obj->load(arg->getAttribute("filename"));
 }
@@ -27,7 +28,7 @@ SOFA_DECL_CLASS(MeshTopology)
 Creator<ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
 
 MeshTopology::MeshTopology()
-    : nbPoints(0), validLines(false), validTriangles(false), validQuads(false), validTetras(false), validCubes(false)
+    : nbPoints(0), validLines(false), seqTriangles(dataField(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false), validQuads(false), validTetras(false), validCubes(false)
 {
 }
 
@@ -49,7 +50,9 @@ public:
     }
     virtual void addTriangle(int p1, int p2, int p3)
     {
-        dest->seqTriangles.push_back(make_array(p1,p2,p3));
+        SeqTriangles& triangles = *dest->seqTriangles.beginEdit();
+        triangles.push_back(make_array(p1,p2,p3));
+        dest->seqTriangles.endEdit();
     }
     virtual void addQuad(int p1, int p2, int p3, int p4)
     {
@@ -69,7 +72,7 @@ void MeshTopology::clear()
 {
     nbPoints = 0;
     seqLines.clear();
-    seqTriangles.clear();
+    seqTriangles.beginEdit()->clear(); seqTriangles.endEdit();
     seqQuads.clear();
     seqTetras.clear();
     seqCubes.clear();
@@ -95,10 +98,10 @@ bool MeshTopology::load(const char* filename)
 
         std::set< std::pair<int,int> > edges;
 
-        const std::vector< std::vector < std::vector <int> > > & facets = mesh->getFacets();
+        const vector< vector < vector <int> > > & facets = mesh->getFacets();
         for (unsigned int i=0; i<facets.size(); i++)
         {
-            const std::vector<int>& facet = facets[i][0];
+            const vector<int>& facet = facets[i][0];
             if (facet.size()==2)
             {
                 // Line
@@ -144,7 +147,8 @@ bool MeshTopology::load(const char* filename)
 
 void MeshTopology::addTriangle( int a, int b, int c )
 {
-    seqTriangles.push_back( make_array(a,b,c) );
+    seqTriangles.beginEdit()->push_back( make_array(a,b,c) );
+    seqTriangles.endEdit();
 }
 
 void MeshTopology::addTetrahedron( int a, int b, int c, int d )
@@ -169,7 +173,7 @@ const MeshTopology::SeqTriangles& MeshTopology::getTriangles()
         updateTriangles();
         validTriangles = true;
     }
-    return seqTriangles;
+    return seqTriangles.getValue();
 }
 
 const MeshTopology::SeqQuads& MeshTopology::getQuads()

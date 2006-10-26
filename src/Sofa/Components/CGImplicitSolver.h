@@ -11,21 +11,33 @@ namespace Sofa
 
 namespace Components
 {
+using namespace Common;
 
 class CGImplicitSolver : public Core::OdeSolver
 {
 public:
 
     CGImplicitSolver();
-    void solve (double dt);
-    CGImplicitSolver* setMaxIter( int maxiter );
+    virtual const char* getTypeName() const { return "CGImplicit"; }
 
-    unsigned int maxCGIter;
-    double smallDenominatorThreshold;
-    double tolerance;
-    double rayleighStiffness;
-    double rayleighMass;
-    double velocityDamping;
+    void solve (double dt);
+    //CGImplicitSolver* setMaxIter( int maxiter );
+
+    DataField<unsigned> f_maxIter;
+    DataField<double> f_tolerance;
+    DataField<double> f_smallDenominatorThreshold;
+    DataField<double> f_rayleighStiffness;
+    DataField<double> f_rayleighMass;
+    DataField<double> f_velocityDamping;
+
+protected:
+
+    /*	unsigned maxCGIter;
+    	double smallDenominatorThreshold;
+    	double tolerance;
+    	double rayleighStiffness;
+    	double rayleighMass;
+    	double velocityDamping;*/
 };
 
 } // namespace Components

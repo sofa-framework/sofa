@@ -50,6 +50,7 @@ void create(MechanicalObject<DataTypes>*& obj, ObjectDescription* arg)
     }
     if (obj!=NULL)
     {
+        obj->parseFields(arg->getAttributeMap() );
         if (arg->getAttribute("scale")!=NULL)
             obj->applyScale(atof(arg->getAttribute("scale")));
         if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)

@@ -16,13 +16,16 @@ using namespace Common;
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
+    : f_mass( dataField(&f_mass, "mass", "values of the particles' masses") )
 {
+    //f_mass = addField( &masses, "mass", "values of the particles' masses");
 }
 
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass(Core::MechanicalModel<DataTypes>* mmodel, const std::string& /*name*/)
     : Core::Mass<DataTypes>(mmodel)
+    , f_mass( dataField(&f_mass, "mass", "values of the particles' masses") )
 {
 }
 
@@ -34,25 +37,32 @@ DiagonalMass<DataTypes, MassType>::~DiagonalMass()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::clear()
 {
-    this->masses.clear();
+    VecMass& masses = *f_mass.beginEdit();
+    masses.clear();
+    f_mass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
 {
-    this->masses.push_back(m);
+    VecMass& masses = *f_mass.beginEdit();
+    masses.push_back(m);
+    f_mass.endEdit();
 }
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 {
-    this->masses.resize(vsize);
+    VecMass& masses = *f_mass.beginEdit();
+    masses.resize(vsize);
+    f_mass.endEdit();
 }
 
 // -- Mass interface
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx)
 {
+    const VecMass& masses = f_mass.getValue();
     for (unsigned int i=0; i<dx.size(); i++)
     {
         res[i] += dx[i] * masses[i];
@@ -62,6 +72,7 @@ void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
+    const VecMass& masses = f_mass.getValue();
     for (unsigned int i=0; i<f.size(); i++)
     {
         a[i] = f[i] / masses[i];
@@ -71,6 +82,7 @@ void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 template <class DataTypes, class MassType>
 double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 {
+    const VecMass& masses = f_mass.getValue();
     double e = 0;
     for (unsigned int i=0; i<masses.size(); i++)
     {
@@ -82,6 +94,7 @@ double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 template <class DataTypes, class MassType>
 double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
 {
+    const VecMass& masses = f_mass.getValue();
     double e = 0;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -100,6 +113,7 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
+    const VecMass& masses = f_mass.getValue();
 
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );

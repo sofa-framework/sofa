@@ -1,5 +1,4 @@
-#ifndef SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_H
-#define SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_H
+#pragma once
 
 #include "SPHFluidForceField.h"
 #include "Sofa/Core/Mapping.h"
@@ -34,21 +33,37 @@ public:
 
     SPHFluidSurfaceMapping(In* from, Out* to)
         : Inherit(from, to), mStep(0.5), mRadius(2.0), mIsoValue(0.5), sph(NULL), grid(NULL)
-    {
-    }
+    {}
 
     virtual ~SPHFluidSurfaceMapping()
+    {}
+
+    double getStep() const
     {
+        return mStep;
+    }
+    void setStep(double val)
+    {
+        mStep = val;
     }
 
-    double getStep() const { return mStep; }
-    void setStep(double val) { mStep = val; }
+    double getRadius() const
+    {
+        return mRadius;
+    }
+    void setRadius(double val)
+    {
+        mRadius = val;
+    }
 
-    double getRadius() const { return mRadius; }
-    void setRadius(double val) { mRadius = val; }
-
-    double getIsoValue() const { return mIsoValue; }
-    void setIsoValue(double val) { mIsoValue = val; }
+    double getIsoValue() const
+    {
+        return mIsoValue;
+    }
+    void setIsoValue(double val)
+    {
+        mIsoValue = val;
+    }
 
     void init();
 
@@ -60,8 +75,10 @@ public:
 
     // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
+    void initTextures()
+    { }
+    void update()
+    { }
 
 protected:
     double mStep;
@@ -84,9 +101,17 @@ protected:
         public:
             int p[3];
             OutReal val;
-            CellData() { clear(); }
-            void clear() { p[0]=p[1]=p[2]=-1; val=0; }
-            void add(ParticleField* field, int i, Real r2, Real h2)
+            CellData()
+            {
+                clear();
+            }
+            void clear()
+            {
+                p[0]=p[1]=p[2]=-1;
+                val=0;
+            }
+            void add
+            (ParticleField* field, int i, Real r2, Real h2)
             {
                 val += (OutReal) field->getParticleField(i, r2/h2);
             }
@@ -96,8 +121,14 @@ protected:
         {
         public:
             bool visited;
-            void clear() { visited = false; }
-            GridData() { clear(); }
+            void clear()
+            {
+                visited = false;
+            }
+            GridData()
+            {
+                clear();
+            }
         };
         enum { GRIDDIM_LOG2 = 2 };
     };
@@ -132,8 +163,10 @@ protected:
             (unsigned)p2<(unsigned)nbp &&
             (unsigned)p3<(unsigned)nbp)
         {
-            int f = seqTriangles.size();
-            seqTriangles.push_back(make_array(p1, p3, p2));
+            SeqTriangles& triangles = *seqTriangles.beginEdit();
+            int f = triangles.size();
+            triangles.push_back(make_array(p1, p3, p2));
+            seqTriangles.endEdit();
             return f;
         }
         else
@@ -149,4 +182,3 @@ protected:
 
 } // namespace Sofa
 
-#endif

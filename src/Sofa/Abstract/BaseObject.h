@@ -2,7 +2,6 @@
 
 #include "Base.h"
 #include "BaseContext.h"
-#include "FieldContainer.h"
 
 namespace Sofa
 {
@@ -15,7 +14,7 @@ class Event;
 Each simulation object is related to a context, which gives access to all available external data.
 It is able to process events, if listening enabled (default is false).
 */
-class BaseObject : public virtual Base, public virtual FieldContainer
+class BaseObject : public virtual Base
 {
 public:
     BaseObject();
@@ -51,11 +50,8 @@ public:
     Methods related to Event processing
      */
     ///@{
-    /// if true, then handle the incoming events, else ignore them
-    void setListening( bool );
 
-    /// if true, then handle the incoming events, else ignore them
-    bool isListening() const;
+    DataField<bool> f_listening;
 
     /// Handle an event
     virtual void handleEvent( Event* );
@@ -65,11 +61,7 @@ public:
     Methods related to debugging
      */
     ///@{
-    /// if true, print logs at run-time
-    BaseObject* setPrintLog( bool );
-
-    /// if true, print logs at run-time
-    bool printLog() const;
+    DataField<bool> f_printLog;
     ///@}
 
     /**@name data access
@@ -84,8 +76,8 @@ public:
 
 protected:
     BaseContext* context_;
-    bool m_isListening;
-    bool m_printLog;
+    /*        bool m_isListening;
+            bool m_printLog;*/
 };
 
 } // namespace Abstract

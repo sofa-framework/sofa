@@ -8,7 +8,21 @@ namespace Core
 {
 
 Context::Context()
-//        : result(0)
+    : worldGravity_(dataField(&worldGravity_, Vec3(0,0,0),"gravity","Gravity in the world coordinate system"))
+    , dt_(dataField(&dt_,0.01,"dt","Time step"))
+    , time_(dataField(&time_,0.,"time","Current time"))
+    , animate_(dataField(&animate_,false,"animate","???"))
+    , showCollisionModels_(dataField(&showCollisionModels_,false,"showCollisionModels","display flag"))
+    , showBoundingCollisionModels_( dataField(&showBoundingCollisionModels_,false,"showBoundingCollisionModels","display flag"))
+    , showBehaviorModels_(dataField(&showBehaviorModels_,false,"showBehaviorModels","display flag"))
+    , showVisualModels_(dataField(&showVisualModels_,false,"showVisualModels","display flag"))
+    , showMappings_(dataField(&showMappings_,false,"showMappings","display flag"))
+    , showMechanicalMappings_(dataField(&showMechanicalMappings_,false,"showMechanicalMappings","display flag"))
+    , showForceFields_(dataField(&showForceFields_,false,"showForceFields","display flag"))
+    , showInteractionForceFields_(dataField(&showInteractionForceFields_,false,"showInteractionForceFields","display flag"))
+    , showWireFrame_(dataField(&showWireFrame_,false,"showWireFrame","display flag"))
+    , showNormals_(dataField(&showNormals_,false,"showNormals","display flag"))
+    , multiThreadSimulation_(dataField(&multiThreadSimulation_,false,"multiThreadSimulation","Apply multithreaded simulation"))
 {
     setPositionInWorld(Abstract::BaseContext::getPositionInWorld());
     setGravityInWorld(Abstract::BaseContext::getLocalGravity());
@@ -75,13 +89,13 @@ void Context::setVelocityBasedLinearAccelerationInWorld(const Vec3& a )
 /// Simulation timestep
 double Context::getDt() const
 {
-    return dt_;
+    return dt_.getValue();
 }
 
 /// Simulation time
 double Context::getTime() const
 {
-    return time_;
+    return time_.getValue();
 }
 
 /// Gravity vector in local coordinates
@@ -93,13 +107,13 @@ double Context::getTime() const
 /// Gravity vector in local coordinates
 Context::Vec3 Context::getLocalGravity() const
 {
-    return getPositionInWorld().backProjectVector(worldGravity_);
+    return getPositionInWorld().backProjectVector(worldGravity_.getValue());
 }
 
 /// Gravity vector in world coordinates
 const Context::Vec3& Context::getGravityInWorld() const
 {
-    return worldGravity_;
+    return worldGravity_.getValue();
 }
 
 
@@ -107,73 +121,73 @@ const Context::Vec3& Context::getGravityInWorld() const
 /// Animation flag
 bool Context::getAnimate() const
 {
-    return animate_;
+    return animate_.getValue();
 }
 
 /// MultiThreading activated
 bool Context::getMultiThreadSimulation() const
 {
-    return multiThreadSimulation_;
+    return multiThreadSimulation_.getValue();
 }
 
 /// Display flags: Collision Models
 bool Context::getShowCollisionModels() const
 {
-    return showCollisionModels_;
+    return showCollisionModels_.getValue();
 }
 
 /// Display flags: Bounding Collision Models
 bool Context::getShowBoundingCollisionModels() const
 {
-    return showBoundingCollisionModels_;
+    return showBoundingCollisionModels_.getValue();
 }
 
 /// Display flags: Behavior Models
 bool Context::getShowBehaviorModels() const
 {
-    return showBehaviorModels_;
+    return showBehaviorModels_.getValue();
 }
 
 /// Display flags: Visual Models
 bool Context::getShowVisualModels() const
 {
-    return showVisualModels_;
+    return showVisualModels_.getValue();
 }
 
 /// Display flags: Mappings
 bool Context::getShowMappings() const
 {
-    return showMappings_;
+    return showMappings_.getValue();
 }
 
 /// Display flags: Mechanical Mappings
 bool Context::getShowMechanicalMappings() const
 {
-    return showMechanicalMappings_;
+    return showMechanicalMappings_.getValue();
 }
 
 /// Display flags: ForceFields
 bool Context::getShowForceFields() const
 {
-    return showForceFields_;
+    return showForceFields_.getValue();
 }
 
 /// Display flags: InteractionForceFields
 bool Context::getShowInteractionForceFields() const
 {
-    return showInteractionForceFields_;
+    return showInteractionForceFields_.getValue();
 }
 
 /// Display flags: WireFrame
 bool Context::getShowWireFrame() const
 {
-    return showWireFrame_;
+    return showWireFrame_.getValue();
 }
 
 /// Display flags: Normal
 bool Context::getShowNormals() const
 {
-    return showNormals_;
+    return showNormals_.getValue();
 }
 
 //===============================================================================
@@ -181,13 +195,13 @@ bool Context::getShowNormals() const
 /// Simulation timestep
 void Context::setDt(double val)
 {
-    dt_ = val;
+    dt_.setValue(val);
 }
 
 /// Simulation time
 void Context::setTime(double val)
 {
-    time_ = val;
+    time_.setValue(val);
 }
 
 /// Gravity vector
@@ -199,86 +213,87 @@ void Context::setTime(double val)
 /// Gravity vector
 void Context::setGravityInWorld(const Vec3& g)
 {
-    worldGravity_ = g;
+    worldGravity_ .setValue(g);
 }
 
 /// Animation flag
 void Context::setAnimate(bool val)
 {
-    animate_ = val;
+    animate_.setValue(val);
 }
 
 /// MultiThreading activated
 void Context::setMultiThreadSimulation(bool val)
 {
-    multiThreadSimulation_ = val;
+    multiThreadSimulation_.setValue(val);
 }
 
 /// Display flags: Collision Models
 void Context::setShowCollisionModels(bool val)
 {
-    showCollisionModels_ = val;
+    showCollisionModels_.setValue(val);
 }
 
 /// Display flags: Bounding Collision Models
 void Context::setShowBoundingCollisionModels(bool val)
 {
-    showBoundingCollisionModels_ = val;
+    showBoundingCollisionModels_.setValue(val);
 }
 
 /// Display flags: Behavior Models
 void Context::setShowBehaviorModels(bool val)
 {
-    showBehaviorModels_ = val;
+    showBehaviorModels_.setValue(val);
 }
 
 /// Display flags: Visual Models
 void Context::setShowVisualModels(bool val)
 {
-    showVisualModels_ = val;
+    showVisualModels_.setValue(val);
 }
 
 /// Display flags: Mappings
 void Context::setShowMappings(bool val)
 {
-    showMappings_ = val;
+    showMappings_.setValue(val);
 }
 
 /// Display flags: Mechanical Mappings
 void Context::setShowMechanicalMappings(bool val)
 {
-    showMechanicalMappings_ = val;
+    showMechanicalMappings_.setValue(val);
 }
 
 /// Display flags: ForceFields
 void Context::setShowForceFields(bool val)
 {
-    showForceFields_ = val;
+    showForceFields_.setValue(val);
 }
 
 /// Display flags: InteractionForceFields
 void Context::setShowInteractionForceFields(bool val)
 {
-    showInteractionForceFields_ = val;
+    showInteractionForceFields_.setValue(val);
 }
 
 /// Display flags: WireFrame
 void Context::setShowWireFrame(bool val)
 {
-    showWireFrame_ = val;
+    showWireFrame_.setValue(val);
 }
 
 /// Display flags: Normals
 void Context::setShowNormals(bool val)
 {
-    showNormals_ = val;
+    showNormals_.setValue(val);
 }
 
 
 
 void Context::copyContext(const Context& c)
 {
-    *static_cast<ContextData*>(this) = *static_cast<const ContextData *>(&c);
+    //*static_cast<ContextData*>(this) = *static_cast<const ContextData *>(&c);
+    *this = c;
 }
 
 using std::endl;
@@ -299,5 +314,6 @@ std::ostream& operator << (std::ostream& out, const Sofa::Core::Context& c )
 } // namespace Core
 
 } // namespace Sofa
+
 
 

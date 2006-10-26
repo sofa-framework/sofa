@@ -28,13 +28,14 @@ void FixedConstraint<RigidTypes>::draw()
     		axis->update(center, orient);
     		axis->draw();
     	}*/
+    const SetIndex& indices = f_indices.getValue();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
-    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    for (vector<int>::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         GL::glVertexT(x[0].getCenter());
     }
@@ -62,18 +63,19 @@ void create(FixedConstraint<DataTypes>*& obj, ObjectDescription* arg)
     XML::createWithParent< FixedConstraint<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
-        if (arg->getAttribute("indices"))
-        {
-            const char* str = arg->getAttribute("indices");
-            const char* str2 = NULL;
-            for(;;)
-            {
-                int v = (int)strtod(str,(char**)&str2);
-                if (str2==str) break;
-                str = str2;
-                obj->addConstraint(v);
-            }
-        }
+        obj->parseFields( arg->getAttributeMap() );
+        /*		if (arg->getAttribute("indices"))
+        		{
+        			const char* str = arg->getAttribute("indices");
+        			const char* str2 = NULL;
+        			for(;;)
+        			{
+        				int v = (int)strtod(str,(char**)&str2);
+        				if (str2==str) break;
+        				str = str2;
+        				obj->addConstraint(v);
+        			}
+        		}*/
     }
 }
 }

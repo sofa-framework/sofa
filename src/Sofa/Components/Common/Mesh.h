@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_COMMON_MESH_H
 #define SOFA_COMPONENTS_COMMON_MESH_H
 
-#include <vector>
+#include <Sofa/Components/Common/vector.h>
 #include "Vec.h"
 #include "Factory.h"
 
@@ -35,23 +35,23 @@ public:
     };
 
 protected:
-    std::vector<Vector3> vertices;
-    std::vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
-    std::vector<Vector3> normals;
-    std::vector< std::vector < std::vector <int> > > facets;
+    vector<Vector3> vertices;
+    vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
+    vector<Vector3> normals;
+    vector< vector < vector <int> > > facets;
     Material material;
 
     std::string textureName;
 public:
 
-    std::vector<Vector3> & getVertices()
+    vector<Vector3> & getVertices()
     {
         //std::cout << "vertices size : " << vertices.size() << std::endl;
         return vertices;
     };
-    std::vector<Vector3> & getTexCoords() {return texCoords;};
-    std::vector<Vector3> & getNormals() {return normals;};
-    std::vector< std::vector < std::vector <int> > > & getFacets()
+    vector<Vector3> & getTexCoords() {return texCoords;};
+    vector<Vector3> & getNormals() {return normals;};
+    vector< vector < vector <int> > > & getFacets()
     {
         //std::cout << "facets size : " << facets.size() << std::endl;
         return facets;

@@ -2,6 +2,8 @@
 #define SOFA_CORE_MECHANICALOBJECT_H
 
 #include "MechanicalModel.h"
+#include "XField.h"
+#include "VField.h"
 #include <vector>
 #include <assert.h>
 
@@ -15,6 +17,7 @@ template <class DataTypes>
 class MechanicalObject : public MechanicalModel<DataTypes>
 {
 public:
+    typedef MechanicalModel<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -50,8 +53,15 @@ public:
 
     virtual ~MechanicalObject();
 
-    VecCoord* getX()  { return x;  }
-    VecDeriv* getV()  { return v;  }
+    virtual const char* getTypeName() const { return "MechanicalObject"; }
+
+    virtual void parseFields ( const std::map<std::string,std::string*>& str );
+
+    XField<DataTypes>* const f_X;
+    VField<DataTypes>* const f_V;
+
+    VecCoord* getX()  { f_X->beginEdit(); return x;  }
+    VecDeriv* getV()  { f_V->beginEdit(); return v;  }
     VecDeriv* getF()  { return f;  }
     VecDeriv* getDx() { return dx; }
 

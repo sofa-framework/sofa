@@ -15,6 +15,7 @@ using namespace Common;
 template <>
 void DiagonalMass<RigidTypes, RigidMass>::draw()
 {
+    const VecMass& masses = f_mass.getValue();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
     for (unsigned int i=0; i<x.size(); i++)
@@ -50,6 +51,7 @@ template class DiagonalMass<Vec3fTypes,float>;
 template <>
 double DiagonalMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::VecCoord& x )
 {
+    const VecMass& masses = f_mass.getValue();
     double e = 0;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -88,6 +90,7 @@ void create(DiagonalMass<DataTypes, MassType>*& obj, ObjectDescription* arg)
     XML::createWithParent< DiagonalMass<DataTypes, MassType>, Core::MechanicalModel<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
+        obj->parseFields( arg->getAttributeMap() );
         if (arg->getAttribute("filename"))
         {
             obj->load(arg->getAttribute("filename"));

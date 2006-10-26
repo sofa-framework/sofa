@@ -14,13 +14,13 @@ namespace Abstract
 {
 
 BaseObject::BaseObject()
-    : Base(), context_(NULL)
-    , m_isListening(false)
-    , m_printLog(false)
-{
-    addField( &m_isListening, "listening", "if true, handle the events, otherwise ignore the events");
-    addField( &m_printLog, "printLog", "if true, print logs at run-time");
-}
+    : Base()
+    , f_listening(dataField( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
+    , f_printLog(dataField( &f_printLog, false, "printLog", "if true, print logs at run-time"))
+    , context_(NULL)
+/*        , m_isListening(false)
+        , m_printLog(false)*/
+{}
 
 BaseObject::~BaseObject()
 {}
@@ -64,26 +64,26 @@ void BaseObject::handleEvent( Event* e )
     }
 }
 
-void BaseObject::setListening( bool b )
-{
-    m_isListening = b;
-}
-
-bool BaseObject::isListening() const
-{
-    return m_isListening;
-}
-
-BaseObject* BaseObject::setPrintLog( bool b )
-{
-    m_printLog = b;
-    return this;
-}
-
-bool BaseObject::printLog() const
-{
-    return m_printLog;
-}
+// void BaseObject::setListening( bool b )
+// {
+//     m_isListening = b;
+// }
+//
+// bool BaseObject::isListening() const
+// {
+//     return m_isListening;
+// }
+//
+// BaseObject* BaseObject::setPrintLog( bool b )
+// {
+//     m_printLog = b;
+//     return this;
+// }
+//
+// bool BaseObject::printLog() const
+// {
+//     return m_printLog;
+// }
 
 double BaseObject::getTime() const
 {
@@ -94,4 +94,6 @@ double BaseObject::getTime() const
 } // namespace Abstract
 
 } // namespace Sofa
+
+
 
