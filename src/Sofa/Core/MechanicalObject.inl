@@ -47,7 +47,7 @@ void MechanicalObject<DataTypes>::parseFields ( const std::map<std::string,std::
 {
     Inherited::parseFields(str);
     resize( getX()->size() );
-    cerr<<"MechanicalObject<DataTypes>::parseFields, resized to "<<getX()->size()<<endl;
+    //cerr<<"MechanicalObject<DataTypes>::parseFields, resized to "<<getX()->size()<<endl;
 }
 
 template <class DataTypes>
