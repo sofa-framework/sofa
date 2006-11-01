@@ -1291,7 +1291,7 @@ void TetrahedronFEMForceField<DataTypes>::matResUpdatePosition(Sofa::Components:
 
     for (unsigned int i=0; i<x.size(); i++)
         for (unsigned int j=0; j<coordDim; j++)
-            x[i](j) += vect->element(offset + i * coordDim + j);
+            x[i](j) += (Real)vect->element(offset + i * coordDim + j);
 
     offset += x.size() * coordDim;
 }
