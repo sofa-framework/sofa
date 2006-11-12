@@ -165,10 +165,7 @@ A specialized program:
 
 
 %%%==================================================================
-\section{Data structure}
-%%%==================================================================
-%%%==================================================================
-\subsection{Simple bodies}
+\section{Simple bodies}
 %%%==================================================================
 
 
@@ -228,7 +225,7 @@ Data:
 
 
 %%%===================================================================
-\subsection{Layered bodies}
+\section{Layered bodies}
 %%%===================================================================
 
 \begin{frame}
@@ -315,6 +312,43 @@ Data:
 
 
 \begin{frame}
+\frametitle{The physics of mappings}
+Example: line mapping
+
+% 	\begin{center}
+% 	\includegraphics[width=O.3\linewidth]{lineMapping-v.png}
+% 	\includegraphics[width=O.3\linewidth]{lineMapping-f.png}
+% 	\end{center}
+
+\begin{eqnarray*}
+v = \left(
+\begin{array}{cc}
+a & b
+\end{array}
+\right)
+\begin{array}{c}
+v_1 & v_2
+\end{array}
+\right)
+&=& J v
+ \\
+\begin{array}{c}
+f_1 & f_2
+\end{array}
+\right)
+= 
+\begin{array}{c}
+a & b
+\end{array}
+\right)
+f
+&=& J^T f
+\end{eqnarray*}
+
+\end{frame}
+
+
+\begin{frame}
 \frametitle{Examples of mappings}
 \begin{columns}
 \column[t]{0.5\linewidth}
@@ -364,7 +398,7 @@ Data:
 
 
 %%%===================================================================
-\subsection{Interacting bodies}
+\section{Interacting bodies}
 %%%===================================================================
 
 \begin{frame}
@@ -382,13 +416,13 @@ Use extended trees (Directed Acyclic Graphs) to model trees with loops.
 %-----------------------------------------------
 \begin{frame}
 \frametitle{ODE solution of interacting bodies}
+ \only<1>{\includegraphics[width=0.9\linewidth]{livers-contact-tree-independent.png}}
+ \only<2->{\includegraphics[width=0.9\linewidth]{livers-contact-tree-common.png}}
 \begin{itemize}
 \item<1-> Soft interactions: independent processing, no synchronization required\\
 \item<2-> Stiff interactions: unified implicit solution, synchronized objects\\
 \item<3-> Hard interaction constraints: work in progress  \begin{small}\textit{(Christian Duriez, ALCOVE)}\end{small}
 \end{itemize}
- \only<1>{\includegraphics[width=0.9\linewidth]{livers-contact-tree-independent.png}}
- \only<2->{\includegraphics[width=0.9\linewidth]{livers-contact-tree-common.png}}
 \end{frame}
 
 
