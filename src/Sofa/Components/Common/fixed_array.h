@@ -22,6 +22,8 @@
 
 // See http://www.boost.org/libs/array for Documentation.
 
+// FF added operator <
+
 #include <cstddef>
 #include <stdexcept>
 #include <iterator>
@@ -164,6 +166,18 @@ public:
         for( unsigned i=0; i<N; i++ )
             in>>a.elems[i];
         return in;
+    }
+
+    inline bool operator < (const fixed_array& v ) const
+    {
+        for( unsigned i=0; i<N; i++ )
+        {
+            if( elems[i]<v[i] )
+                return true;  // (*this)<v
+            else if( elems[i]>v[i] )
+                return false; // (*this)>v
+        }
+        return false; // (*this)==v
     }
 
 private:
