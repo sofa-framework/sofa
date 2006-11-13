@@ -22,11 +22,11 @@ class MeshTopology : public Core::Topology
 public:
     typedef int index_type;
 
-    typedef fixed_array<index_type, 2> Line;
-    typedef fixed_array<index_type, 3> Triangle;
-    typedef fixed_array<index_type, 4> Quad;
-    typedef fixed_array<index_type, 4> Tetra;
-    typedef fixed_array<index_type, 8> Cube;
+    typedef Vec<2,index_type> Line;
+    typedef Vec<3,index_type> Triangle;
+    typedef Vec<4,index_type> Quad;
+    typedef Vec<4,index_type> Tetra;
+    typedef Vec<8,index_type> Cube;
 
     typedef vector<Line> SeqLines;
     typedef vector<Triangle> SeqTriangles;

@@ -46,25 +46,25 @@ public:
     }
     virtual void addLine(int p1, int p2)
     {
-        dest->seqLines.push_back(make_array(p1,p2));
+        dest->seqLines.push_back(Line(p1,p2));
     }
     virtual void addTriangle(int p1, int p2, int p3)
     {
         SeqTriangles& triangles = *dest->seqTriangles.beginEdit();
-        triangles.push_back(make_array(p1,p2,p3));
+        triangles.push_back(Triangle(p1,p2,p3));
         dest->seqTriangles.endEdit();
     }
     virtual void addQuad(int p1, int p2, int p3, int p4)
     {
-        dest->seqQuads.push_back(make_array(p1,p2,p3,p4));
+        dest->seqQuads.push_back(Quad(p1,p2,p3,p4));
     }
     virtual void addTetra(int p1, int p2, int p3, int p4)
     {
-        dest->seqTetras.push_back(make_array(p1,p2,p3,p4));
+        dest->seqTetras.push_back(Tetra(p1,p2,p3,p4));
     }
     virtual void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
     {
-        dest->seqCubes.push_back(make_array(p1,p2,p3,p4,p5,p6,p7,p8));
+        dest->seqCubes.push_back(Cube(p1,p2,p3,p4,p5,p6,p7,p8));
     }
 };
 
@@ -147,13 +147,13 @@ bool MeshTopology::load(const char* filename)
 
 void MeshTopology::addTriangle( int a, int b, int c )
 {
-    seqTriangles.beginEdit()->push_back( make_array(a,b,c) );
+    seqTriangles.beginEdit()->push_back( Triangle(a,b,c) );
     seqTriangles.endEdit();
 }
 
 void MeshTopology::addTetrahedron( int a, int b, int c, int d )
 {
-    seqTetras.push_back( make_array(a,b,c,d) );
+    seqTetras.push_back( Tetra(a,b,c,d) );
 }
 
 const MeshTopology::SeqLines& MeshTopology::getLines()

@@ -6,7 +6,7 @@
 	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
 	<Object type="CollisionResponse" name="Response" contact="default" />
 	<Node name="Poutre1">
-		<Object type="CGImplicit" iterations="100"/>
+		<Object type="CGImplicit" iterations="10"/>
 		<Node name="M1">
 			<Object type="MechanicalObject" filename="BehaviorModels/smCube27.xs3" dz="-21.0"/>
 			<Object type="DiagonalMass" filename="BehaviorModels/smCube27.xs3"/>

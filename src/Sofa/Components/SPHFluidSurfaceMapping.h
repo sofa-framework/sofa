@@ -165,7 +165,7 @@ protected:
         {
             SeqTriangles& triangles = *seqTriangles.beginEdit();
             int f = triangles.size();
-            triangles.push_back(make_array(p1, p3, p2));
+            triangles.push_back(Triangle(p1, p3, p2));
             seqTriangles.endEdit();
             return f;
         }

@@ -56,17 +56,17 @@ void GridTopology::updateLines()
     for (int z=0; z<nz; z++)
         for (int y=0; y<ny; y++)
             for (int x=0; x<nx-1; x++)
-                seqLines.push_back(make_array(point(x,y,z),point(x+1,y,z)));
+                seqLines.push_back(Line(point(x,y,z),point(x+1,y,z)));
     // lines along Y
     for (int z=0; z<nz; z++)
         for (int y=0; y<ny-1; y++)
             for (int x=0; x<nx; x++)
-                seqLines.push_back(make_array(point(x,y,z),point(x,y+1,z)));
+                seqLines.push_back(Line(point(x,y,z),point(x,y+1,z)));
     // lines along Z
     for (int z=0; z<nz-1; z++)
         for (int y=0; y<ny; y++)
             for (int x=0; x<nx; x++)
-                seqLines.push_back(make_array(point(x,y,z),point(x,y,z+1)));
+                seqLines.push_back(Line(point(x,y,z),point(x,y,z+1)));
 }
 
 void GridTopology::updateQuads()
@@ -77,17 +77,17 @@ void GridTopology::updateQuads()
     for (int z=0; z<nz; z++)
         for (int y=0; y<ny-1; y++)
             for (int x=0; x<nx-1; x++)
-                seqQuads.push_back(make_array(point(x,y,z),point(x+1,y,z),point(x+1,y+1,z),point(x,y+1,z)));
+                seqQuads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y+1,z),point(x,y+1,z)));
     // quads along XZ plane
     for (int z=0; z<nz-1; z++)
         for (int y=0; y<ny; y++)
             for (int x=0; x<nx-1; x++)
-                seqQuads.push_back(make_array(point(x,y,z),point(x+1,y,z),point(x+1,y,z+1),point(x,y,z+1)));
+                seqQuads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y,z+1),point(x,y,z+1)));
     // quads along YZ plane
     for (int z=0; z<nz-1; z++)
         for (int y=0; y<ny-1; y++)
             for (int x=0; x<nx; x++)
-                seqQuads.push_back(make_array(point(x,y,z),point(x,y+1,z),point(x,y+1,z+1),point(x,y,z+1)));
+                seqQuads.push_back(Quad(point(x,y,z),point(x,y+1,z),point(x,y+1,z+1),point(x,y,z+1)));
 }
 
 void GridTopology::updateCubes()
@@ -97,7 +97,7 @@ void GridTopology::updateCubes()
     for (int z=0; z<nz-1; z++)
         for (int y=0; y<ny-1; y++)
             for (int x=0; x<nx-1; x++)
-                seqCubes.push_back(make_array(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+                seqCubes.push_back(Cube(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
                         point(x  ,y+1,z  ),point(x+1,y+1,z  ),
                         point(x  ,y  ,z+1),point(x+1,y  ,z+1),
                         point(x  ,y+1,z+1),point(x+1,y+1,z+1)));
@@ -113,7 +113,7 @@ GridTopology::Cube GridTopology::getCube(int i)
 
 GridTopology::Cube GridTopology::getCube(int x, int y, int z)
 {
-    return make_array(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+    return Cube(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
             point(x  ,y+1,z  ),point(x+1,y+1,z  ),
             point(x  ,y  ,z+1),point(x+1,y  ,z+1),
             point(x  ,y+1,z+1),point(x+1,y+1,z+1));
@@ -162,7 +162,7 @@ GridTopology::Quad GridTopology::getQuad(int x, int y, int /*z*/)
     		return make_array(point(x, y, 1),point(x+1, y, 1),
     			point(x+1, y+1, 1),point(x, y+1, 1));
     */
-    return make_array(point(x, y, 1),point(x+1, y, 1),
+    return Quad(point(x, y, 1),point(x+1, y, 1),
             point(x+1, y+1, 1),point(x, y+1, 1));
 }
 

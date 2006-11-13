@@ -559,11 +559,11 @@ void OglModel::update()
             MeshTopology* topology = dynamic_cast<MeshTopology*>(getContext()->getTopology());
             if (topology != NULL)
             {
-                const vector<Triangle>& inputTriangles = topology->getTriangles();
+                const vector<MeshTopology::Triangle>& inputTriangles = topology->getTriangles();
                 triangles.resize(inputTriangles.size());
                 for (unsigned int i=0; i<triangles.size(); ++i)
                     triangles[i] = inputTriangles[i];
-                const vector<Quad>& inputQuads = topology->getQuads();
+                const vector<MeshTopology::Quad>& inputQuads = topology->getQuads();
                 quads.resize(inputQuads.size());
                 for (unsigned int i=0; i<quads.size(); ++i)
                     quads[i] = inputQuads[i];

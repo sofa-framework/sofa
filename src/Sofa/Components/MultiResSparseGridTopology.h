@@ -307,7 +307,7 @@ public:
     };
 
 
-    typedef fixed_array<int, 8> Cube;
+    typedef GridTopology::Cube Cube;
     typedef Vec3d Vec3;
 
     MultiResSparseGridTopology();
@@ -366,7 +366,7 @@ public:
         dz = val;
         inv_dz2 = 1/(dz*dz);
     }
-/// get the position (not used)
+    /// get the position (not used)
     const Vec3& getP0() const
     {
         return p0;
@@ -399,5 +399,4 @@ protected:
 } // namespace Sofa
 
 #endif
-
 

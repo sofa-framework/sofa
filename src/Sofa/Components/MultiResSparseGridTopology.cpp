@@ -157,7 +157,7 @@ GridTopology::Cube MultiResSparseGridTopology::getCube(int i)
     i/=(DimY);
     int z = i;
 
-    return make_array(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+    return Cube(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
             point(x  ,y+1,z  ),point(x+1,y+1,z  ),
             point(x  ,y  ,z+1),point(x+1,y  ,z+1),
             point(x  ,y+1,z+1),point(x+1,y+1,z+1));

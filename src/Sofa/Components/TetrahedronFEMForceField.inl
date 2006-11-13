@@ -65,12 +65,13 @@ void TetrahedronFEMForceField<DataTypes>::init()
             if ((i%nx)&1)      sym+=1;
             if (((i/nx)%ny)&1) sym+=2;
             if ((i/(nx*ny))&1) sym+=4;
-            tetras->push_back(make_array(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
-            tetras->push_back(make_array(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
-            tetras->push_back(make_array(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));
-            tetras->push_back(make_array(c[7^sym],c[2^sym],c[0^sym],c[6^sym]));
-            tetras->push_back(make_array(c[7^sym],c[6^sym],c[0^sym],c[5^sym]));
-            tetras->push_back(make_array(c[6^sym],c[5^sym],c[4^sym],c[0^sym]));
+            typedef MeshTopology::Tetra Tetra;
+            tetras->push_back(Tetra(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
+            tetras->push_back(Tetra(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
+            tetras->push_back(Tetra(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));
+            tetras->push_back(Tetra(c[7^sym],c[2^sym],c[0^sym],c[6^sym]));
+            tetras->push_back(Tetra(c[7^sym],c[6^sym],c[0^sym],c[5^sym]));
+            tetras->push_back(Tetra(c[6^sym],c[5^sym],c[4^sym],c[0^sym]));
         }
 
         /*

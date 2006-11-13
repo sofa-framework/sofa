@@ -61,6 +61,32 @@ public:
         this->elems[3]=r4;
     }
 
+    /// Specific constructor for 6-elements vectors.
+    Vec(real r1, real r2, real r3, real r4, real r5, real r6)
+    {
+        BOOST_STATIC_ASSERT(N == 6);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
+        this->elems[5]=r6;
+    }
+
+    /// Specific constructor for 8-elements vectors.
+    Vec(real r1, real r2, real r3, real r4, real r5, real r6, real r7, real r8)
+    {
+        BOOST_STATIC_ASSERT(N == 8);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
+        this->elems[5]=r6;
+        this->elems[6]=r7;
+        this->elems[7]=r8;
+    }
+
     /// Constructor from an N-1 elements vector and an additional value (added at the end).
     Vec(const Vec<N-1,real>& v, real r1)
     {
@@ -296,6 +322,7 @@ public:
         return r;
     }
 
+
     /// Squared norm.
     real norm2() const
     {
@@ -329,6 +356,8 @@ public:
                 (*this)[0]*b[1] - (*this)[1]*b[0]
                 );
     }
+
+
 
 };
 
@@ -391,6 +420,30 @@ typedef Vec4d Vector4; ///< alias
 
 } // namespace Sofa
 
-#endif
 
+// Specialization of the std comparison function, to use Vec as std::map key
+namespace std
+{
+template <>
+template<int N, class T>
+struct less<Sofa::Components::Common::Vec<N,T> > : public binary_function<Sofa::Components::Common::Vec<N,T>, Sofa::Components::Common::Vec<N,T>, bool>
+{
+    bool
+    operator()(const Sofa::Components::Common::Vec<N,T>& x, const Sofa::Components::Common::Vec<N,T>& y) const
+    {
+        //std::cerr<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
+        for( unsigned i=0; i<N; ++i )
+        {
+            if( x[i]<y[i] )
+                return true;
+            else if( y[i]<x[i] )
+                return false;
+        }
+        return false;
+    }
+};
+
+}
+
+#endif
 

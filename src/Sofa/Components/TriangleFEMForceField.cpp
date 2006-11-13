@@ -71,8 +71,8 @@ void TriangleFEMForceField<DataTypes>::init()
         for (int i=0; i<nbcubes; i++)
         {
             MeshTopology::Quad q = _mesh->getQuad(i);
-            trias->push_back(make_array(q[0],q[1],q[2]));
-            trias->push_back(make_array(q[0],q[2],q[3]));
+            trias->push_back(Element(q[0],q[1],q[2]));
+            trias->push_back(Element(q[0],q[2],q[3]));
         }
         _indexedElements = trias;
     }

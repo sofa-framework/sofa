@@ -5,7 +5,7 @@
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="M1">
-		<Object type="CGImplicit" iterations="25" tol="0.01" threshold="0.000001" />
+		<Object type="CGImplicit" iterations="10" tol="0.01" threshold="0.000001" />
 		<Object type="MechanicalObject" dx="0" dy="20" dz="29"/>
 		<Object type="UniformMass" totalmass="10"/>
 		<Object type="RegularGrid"
