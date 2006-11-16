@@ -122,13 +122,13 @@ public:
 
 The remaining values are shifted.
 */
-template<class T, class TT>
-void remove( std::vector<T,TT>& v, const T& elem )
+template<class T1, class T2>
+void remove( T1& v, const T2& elem )
 {
-    typename vector<T>::iterator e = std::find( v.begin(), v.end(), elem );
+    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
     if( e != v.end() )
     {
-        typename vector<T>::iterator next = e;
+        typename T1::iterator next = e;
         next++;
         for( ; next != v.end(); ++e, ++next )
             *e = *next;
@@ -140,10 +140,10 @@ void remove( std::vector<T,TT>& v, const T& elem )
 
 The last value is moved to where the value was found, and the other values are not shifted.
 */
-template<class T, class TT>
-void removeValue( std::vector<T,TT>& v, const T& elem )
+template<class T1, class T2>
+void removeValue( T1& v, const T2& elem )
 {
-    typename vector<T>::iterator e = std::find( v.begin(), v.end(), elem );
+    typename T1::iterator e = std::find( v.begin(), v.end(), elem );
     if( e != v.end() )
     {
         *e = v.back();
