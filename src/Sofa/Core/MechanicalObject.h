@@ -85,8 +85,28 @@ public:
         return vsize;
     }
 
-    /// performs x[outPutIndex]=x[inputIndex]
+    /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
+     *
+     */
     void replaceValue (const int inputIndex, const int outputIndex);
+
+
+
+    /** \brief Exchange values at indices idx1 and idx2.
+     *
+     */
+    void swapValues (const int idx1, const int idx2);
+
+
+
+    /** \brief Reorder values according to parameter.
+     *
+     * Result of this method is :
+     * newValue[ i ] = oldValue[ index[i] ];
+     */
+    void renumberValues( const std::vector<unsigned int> &index );
+
+
 
     void applyTranslation (double dx, double dy, double dz);
 

@@ -96,6 +96,121 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
     (*externalForces)[outputIndex] = (*externalForces)[inputIndex];
 
 }
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
+{
+
+    // standard state vectors
+    Coord tmp = (*x)[idx1];
+    (*x) [idx1] = (*x) [idx2];
+    (*x) [idx2] = tmp;
+
+    tmp = (*x0)[idx1];
+    (*x0)[idx1] = (*x0)[idx2];
+    (*x0)[idx2] = tmp;
+
+    Deriv tmp2 = (*v)[idx1];
+    (*v) [idx1] = (*v) [idx2];
+    (*v) [idx2] = tmp2;
+
+    tmp2 = (*v0) [idx1];
+    (*v0)[idx1] = (*v0)[idx2];
+    (*v0)[idx2] = tmp2;
+
+    tmp2 = (*f) [idx1];
+    (*f) [idx1] = (*f)[idx2];
+    (*f) [idx2] = tmp2;
+
+    tmp2 = (*dx) [idx1];
+    (*dx)[idx1] = (*dx)[idx2];
+    (*dx)[idx2] = tmp2;
+
+    // temporary state vectors
+    unsigned int i;
+    for (i=0; i<vectorsCoord.size(); i++)
+    {
+        VecCoord& vector = *vectorsCoord[i];
+        tmp = vector[idx1];
+        vector[idx1] = vector[idx2];
+        vector[idx2] = tmp;
+    }
+    for ( i=0; i<vectorsDeriv.size(); i++)
+    {
+        VecDeriv& vector = *vectorsDeriv[i];
+        tmp2 = vector[idx1];
+        vector[idx1] = vector[idx2];
+        vector[idx2] = tmp2;
+    }
+
+    // forces
+    tmp2 = (*internalForces)[idx1];
+    (*internalForces)[idx1] = (*internalForces)[idx2];
+    (*internalForces)[idx2] = tmp2;
+
+    tmp2 = (*externalForces)[idx1];
+    (*externalForces)[idx1] = (*externalForces)[idx2];
+    (*externalForces)[idx2] = tmp2;
+
+}
+
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::renumberValues( const std::vector< unsigned int > &index )
+{
+
+    // standard state vectors
+    VecCoord x_cp  = (*x);
+    VecCoord x0_cp = (*x0);
+
+    VecDeriv v_cp  = (*v);
+    VecDeriv v0_cp = (*v0);
+    VecDeriv f_cp  = (*f);
+    VecDeriv dx_cp = (*dx);
+
+    // temporary state vectors
+    std::vector< VecCoord > vecCoord_cp;
+    vecCoord_cp.resize( vectorsCoord.size() );
+    for (unsigned int i = 0; i < vectorsCoord.size(); ++i)
+    {
+        vecCoord_cp[i] = ( *(vectorsCoord[i]) );
+    }
+    std::vector< VecDeriv > vecDeriv_cp;
+    vecDeriv_cp.resize( vectorsDeriv.size() );
+    for (unsigned int i = 0; i < vectorsDeriv.size(); ++i)
+    {
+        vecDeriv_cp[i] = ( *(vectorsDeriv[i]) );
+    }
+
+    // forces
+    VecDeriv intern_cp = (*internalForces);
+    VecDeriv extern_cp = (*externalForces);
+
+    for (unsigned int i = 0; i < index.size(); ++i)
+    {
+        (*x )[i] = x_cp [ index[i] ];
+        (*x0)[i] = x0_cp[ index[i] ];
+        (*v )[i] = v_cp [ index[i] ];
+        (*v0)[i] = v0_cp[ index[i] ];
+        (*f )[i] = f_cp [ index[i] ];
+        (*dx)[i] = dx_cp[ index[i] ];
+
+        for (unsigned j = 0; j < vectorsCoord.size(); ++j)
+            (*vectorsCoord[j])[i] = vecCoord_cp[j][ index[i] ];
+
+        for (unsigned j = 0; j < vectorsDeriv.size(); ++j)
+            (*vectorsDeriv[j])[i] = vecDeriv_cp[j][ index[i] ];
+
+        (*internalForces)[i] = intern_cp[ index[i] ];
+        (*externalForces)[i] = extern_cp[ index[i] ];
+
+
+    }
+}
+
+
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(const int size)
 {
@@ -119,6 +234,8 @@ void MechanicalObject<DataTypes>::resize(const int size)
                 vectorsDeriv[i]->resize(size);
     }
 }
+
+
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyTranslation (double dx, double dy, double dz)
