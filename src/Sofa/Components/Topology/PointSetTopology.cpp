@@ -22,31 +22,60 @@ template class PointSetGeometryAlgorithms<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec3dTypes>;
 
 
-/// give a read-only access to the edge array
-const std::vector<int> &PointSetTopologyContainer::getVertexArray() const
+
+void PointSetTopologyContainer::createPointSetIndex()
 {
-    return vertexArray;
+    // resizing
+    m_PointSetIndex.resize( m_basicTopology->getDOFNumber() );
+
+    // initializing
+    for (int i = 0; i < m_PointSetIndex.size(); ++i)
+        m_PointSetIndex[i] = -1;
+
+    // overwriting defined DOFs indices
+    for (unsigned int i = 0; i < m_DOFIndex.size(); ++i)
+    {
+        m_PointSetIndex[ m_DOFIndex[i] ] = i;
+    }
 }
-int PointSetTopologyContainer::getVertex(const int i) const
+
+
+
+const std::vector<int> &PointSetTopologyContainer::getPointSetIndexArray()
 {
-    return vertexArray[i];
+    if (!m_PointSetIndex.size())
+        createPointSetIndex();
+    return m_PointSetIndex;
+}
+
+
+
+int PointSetTopologyContainer::getPointSetIndex(const unsigned int i)
+{
+    if (!m_PointSetIndex.size())
+        createPointSetIndex();
+    return m_PointSetIndex[i];
 }
 
 unsigned int PointSetTopologyContainer::getNumberOfVertices() const
 {
-    return vertexArray.size();
+    return m_DOFIndex.size();
 }
 
-const std::vector<bool> &PointSetTopologyContainer::getVertexInSetArray() const
+const std::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArray() const
 {
-    return vertexInSetArray;
+    return m_DOFIndex;
 }
 
-bool PointSetTopologyContainer::isVertexInSet(const int i) const\
+std::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArray()
 {
-    return vertexInSetArray[i];
+    return m_DOFIndex;
 }
 
+unsigned int PointSetTopologyContainer::getDOFIndex(const int i) const
+{
+    return m_DOFIndex[i];
+}
 
 
 

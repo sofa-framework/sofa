@@ -17,12 +17,12 @@ namespace Components
 using namespace Common;
 using namespace Sofa::Core;
 
-
+/*
 #define VERTEXSWAP_CODE 10
 #define VERTEXADDED_CODE 11
 #define VERTEXREMOVED_CODE 12
 #define VERTEXRENUMBERING_CODE 13
-
+*/
 
 
 /////////////////////////////////////////////////////////
@@ -36,9 +36,9 @@ class PointsIndicesSwap : public TopologyChange
 {
 
 public:
-    int index[2];
+    unsigned int index[2];
 
-    PointsIndicesSwap(const int i1,const int i2)
+    PointsIndicesSwap(const unsigned int i1,const unsigned int i2) : TopologyChange(POINTSINDICESSWAP)
     {
         index[0]=i1;
         index[1]=i2;
@@ -55,7 +55,7 @@ class PointsAdded : public TopologyChange
 public:
     unsigned int nVertices;
 
-    PointsAdded(const unsigned int nV) : nVertices(nV)
+    PointsAdded(const unsigned int nV) : TopologyChange(POINTSADDED), nVertices(nV)
     {
     }
 
@@ -73,14 +73,14 @@ class PointsRemoved : public TopologyChange
 {
 
 public:
-    std::vector<int> removedVertexArray;
+    std::vector<unsigned int> removedVertexArray;
 
 public:
-    PointsRemoved(std::vector<int> _vArray) : removedVertexArray(_vArray)
+    PointsRemoved(std::vector<unsigned int> _vArray) : TopologyChange(POINTSREMOVED), removedVertexArray(_vArray)
     {
     }
 
-    const std::vector<int> &getArray() const
+    const std::vector<unsigned int> &getArray() const
     {
         return removedVertexArray;
     }
@@ -89,15 +89,16 @@ public:
 
 
 
-/** indicates that the indices all points have been reordered */
-class VertexRenumbering : public TopologyChange
+/** indicates that the indices of all points have been reordered */
+class PointsRenumbering : public TopologyChange
 {
 
 public:
-    std::vector<int> indexArray;
+    std::vector<unsigned int> indexArray;
 
-    VertexRenumbering() {}
-    std::vector<int> &getIndexArray()
+    PointsRenumbering() : TopologyChange(POINTSRENUMBERING) {}
+
+    const std::vector<unsigned int> &getIndexArray() const
     {
         return indexArray;
     }
@@ -111,33 +112,77 @@ public:
 /////////////////////////////////////////////////////////
 
 
-/** a class that stores a set of pointss and provides access
+/** a class that stores a set of points and provides access
 to each point */
 class PointSetTopologyContainer : public TopologyContainer
 {
 
-protected:
-    std::vector<int> vertexArray;
+private:
+    /** \brief Creates the PointSetIndex.
+     *
+     * This function is only called if the PointSetIndex member is required.
+     * PointSetIndex[i] contains -1 if the ith DOF is not part of this topology,
+     * and its index in this topology otherwise.
+     */
+    void createPointSetIndex();
 
-    std::vector<bool> vertexInSetArray;
+protected:
+    std::vector<unsigned int> m_DOFIndex;
+    std::vector<int> m_PointSetIndex;
+
 
 public:
-    /// give a read-only access to the edge array
-    const std::vector<int> &getVertexArray() const;
+    /** \brief Returns the PointSetIndex.
+     *
+     * See getPointSetIndex(const unsigned int i) for more explanation.
+     */
+    const std::vector<int> &getPointSetIndexArray();
 
-    int getVertex(const int i) const;
 
+
+    /** \brief Returns the index in this topology of the point corresponding to the ith DOF of the mechanical object, or -1 if the ith DOF is not in this topology.
+     *
+     */
+    int getPointSetIndex(const unsigned int i);
+
+
+
+    /** \brief Returns the number of vertices in this topology.
+     *
+     */
     unsigned int getNumberOfVertices() const;
 
-    const std::vector<bool> &getVertexInSetArray() const;
 
-    bool isVertexInSet(const int i) const;
+
+    /** \brief Returns the DOFIndex.
+     *
+     * See getDOFIndex(const int i) for more explanation.
+     */
+    const std::vector<unsigned int> &getDOFIndexArray() const;
+
+
+
+    /** \brief Returns the DOFIndex.
+     *
+     * See getDOFIndex(const int i) for more explanation.
+     */
+    std::vector<unsigned int> &getDOFIndexArray();
+
+
+
+    /** \brief Returns the index in the mechanical object of the DOF corresponding to the ith point of this topology.
+     *
+     */
+    unsigned int getDOFIndex(const int i) const;
 
     PointSetTopologyContainer(BasicTopology *top);
 
-    PointSetTopologyContainer(BasicTopology *top, std::vector<int> &_vertexArray);
+    PointSetTopologyContainer(BasicTopology *top, std::vector<unsigned int> &DOFIndex);
 
-    template<class DT> friend class PointSetTopologyModifier;
+    template <typename DataTypes>
+    friend class PointSetTopologyModifier;
+
+    //friend class PointSetTopologicalMapping;
 
 };
 
@@ -152,12 +197,59 @@ class PointSetTopologyModifier : public TopologyModifier
 
 public:
     typedef typename TDataTypes::VecCoord VecCoord;
+    typedef typename TDataTypes::VecDeriv VecDeriv;
 
-    void swapVertices(const int i1,const int i2);
+    /** \brief Swap points i1 and i2.
+     *
+     */
+    void swapPoints(const int i1,const int i2);
 
-    void addVertices(const unsigned int nVertices, VecCoord &X = (VecCoord)0 );
 
-    void removeVertices(const unsigned int nVertices, std::vector<int> &indices);
+
+    /** \brief Sends a message to warn that some points were added in this topology.
+     *
+     * \sa addPointsProcess
+     */
+    void addPointsWarning(const unsigned int nPoints);
+
+
+
+    /** \brief Add some points to this topology.
+     *
+     * State vectors may be defined for these new points.
+     *
+     * \sa addPointsWarning
+     */
+    void addPointsProcess(const unsigned int nPoints, VecCoord &X = (VecCoord &)0, VecCoord &X0 = (VecCoord &)0,
+            VecDeriv &V = (VecDeriv &)0, VecDeriv &V0 = (VecDeriv &)0,
+            VecDeriv &F = (VecDeriv &)0, VecDeriv &DX = (VecDeriv &)0 );
+
+
+
+    /** \brief Sends a message to warn that some points are about to be deleted.
+     *
+     * \sa removePointsProcess
+     */
+    void removePointsWarning(const unsigned int nPoints, std::vector<unsigned int> &indices);
+
+
+
+    /** \brief Remove the points whose indices are given from this topology.
+     *
+     * Elements corresponding to these points are removed form the mechanical object's state vectors.
+     *
+     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
+     * \sa removePointsWarning
+     */
+    void removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices);
+
+
+
+    /** \brief Reorder this topology.
+     *
+     * \see MechanicalObject::renumberValues
+     */
+    void renumberPointsProcess( std::vector<unsigned int> &index );
 
 };
 
@@ -204,9 +296,9 @@ class PointSetTopology : public Core::BasicTopology
 public:
     MechanicalObject<TDataTypes> *object;
 
-    void createNewVertices() const;
+    //void createNewVertices() const;
 
-    void removeVertices() const;
+    //void removeVertices() const;
 
 public:
     PointSetTopology(MechanicalObject<TDataTypes> *obj);
@@ -219,6 +311,15 @@ public:
     virtual void propagateTopologicalChanges();
 
     virtual void init();
+
+
+
+    /** \brief Return the number of DOF in the mechanicalObject this Topology deals with.
+     *
+     */
+    virtual unsigned int getDOFNumber() { return object->getSize(); }
+
+
 
 };
 
