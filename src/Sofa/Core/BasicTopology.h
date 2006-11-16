@@ -27,6 +27,17 @@ class GeometryAlgorithms;
 class TopologicalMapping;
 
 
+/// The enumeration used to give unique identifiers to TopologyChange objects.
+enum TopologyChangeType
+{
+    BASE,               ///< For TopologyChange class, should never be used.
+    POINTSINDICESSWAP,  ///< For PointsIndicesSwap class.
+    POINTSADDED,        ///< For PointsAdded class.
+    POINTSREMOVED,      ///< For PointsRemoved class.
+    POINTSRENUMBERING   ///< For PointsRenumbering class.
+
+};
+
 
 /** \brief Base class to indicate a topology change occurred.
  *
@@ -40,14 +51,24 @@ class TopologyChange
 {
 
 protected:
-    unsigned int m_changeType; ///< A code that tells the nature of the Topology modification event (could be an enum).
+    TopologyChangeType m_changeType; ///< A code that tells the nature of the Topology modification event (could be an enum).
+
+    TopologyChange( TopologyChangeType changeType = BASE ):m_changeType(changeType)
+    {
+    }
 
 public:
     /** \brief Returns the code of this TopologyChange. */
-    unsigned int getChangeType() const
+    TopologyChangeType getChangeType() const
     {
         return m_changeType;
     }
+
+    /** \ brief Destructor.
+     *
+     * Must be virtual for TopologyChange to be a Polymorphic type.
+     */
+    virtual ~TopologyChange() { };
 };
 
 
@@ -71,19 +92,14 @@ class BasicTopology : public virtual Abstract::BaseObject
 public :
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator firstChange() const
-    {
-        return m_changeList.begin();
-    }
+    std::list<const TopologyChange>::const_iterator firstChange() const;
 
 
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange *>::const_iterator lastChange() const
-    {
-        return m_changeList.end();
-    }
+    std::list<const TopologyChange>::const_iterator lastChange() const;
+
 
 
     /** \brief Returns the TopologyContainer object of this Topology.
@@ -170,6 +186,13 @@ public :
 
 
 
+    /** \brief Return the number of DOF in the mechanicalObject this Topology deals with.
+     *
+     */
+    virtual unsigned int getDOFNumber() { return -1; }
+
+
+
     // Friend classes declaration.
     // Needed so that these classes (particularly TopologyModifier and TopologyAlgorithms) can access private
     // method addTopologyChange.
@@ -192,9 +215,6 @@ protected :
     /// Provides some geometric functions (e.g. ComputeTriangleNormal, ComputeShell, etc).
     GeometryAlgorithms *m_geometryAlgorithms;
 
-    /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
-    std::list<const TopologyChange *> m_changeList; // shouldn't this be private?
-
     /** \brief Defines wehther this topology is the main one for its mechanical object.
      *
      * If true, then this topology is the main topology of the MechanicalObject, meaning this is the one
@@ -215,10 +235,7 @@ private:
      * Question : Is this wrapper really needed since member m_changeTopology is protected and TopologyModifier
      * and TopologyAlgorithms are friend classes?
      */
-    void addTopologyChange(const TopologyChange *topologyChange)
-    {
-        m_changeList.push_back(topologyChange);
-    }
+    void addTopologyChange(const TopologyChange &topologyChange);
 
 
 };
@@ -238,6 +255,12 @@ public:
     {
     }
 
+
+    std::list<const TopologyChange> &getChangeList()
+    {
+        return m_changeList;
+    }
+
 protected:
     /// The topology this object describes.
     BasicTopology *m_basicTopology;
@@ -246,10 +269,17 @@ protected:
 
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
      */
-    void addTopologyChange(const TopologyChange *topologyChange)
+    void addTopologyChange(const TopologyChange &topologyChange)
     {
         m_basicTopology->addTopologyChange(topologyChange);
     }
+
+
+
+    /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
+    std::list<const TopologyChange> m_changeList; // shouldn't this be private?
+
+
 };
 
 
@@ -275,7 +305,7 @@ protected:
 
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
      */
-    void addTopologyChange(const TopologyChange *topologyChange)
+    void addTopologyChange(const TopologyChange &topologyChange)
     {
         m_basicTopology->addTopologyChange(topologyChange);
     }
@@ -305,7 +335,7 @@ protected:
 
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
      */
-    void addTopologyChange(const TopologyChange *topologyChange)
+    void addTopologyChange(const TopologyChange &topologyChange)
     {
         m_basicTopology->addTopologyChange(topologyChange);
     }
@@ -334,7 +364,7 @@ protected:
 
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
      */
-    void addTopologyChange(const TopologyChange *topologyChange)
+    void addTopologyChange(const TopologyChange &topologyChange)
     {
         m_basicTopology->addTopologyChange(topologyChange);
     }

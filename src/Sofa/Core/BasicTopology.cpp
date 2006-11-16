@@ -20,6 +20,28 @@ BasicTopology::~BasicTopology()
         delete m_geometryAlgorithms;
 }
 
+
+
+void BasicTopology::addTopologyChange(const TopologyChange &topologyChange)
+{
+    m_topologyContainer->getChangeList().push_back(topologyChange);
+}
+
+
+
+std::list<const TopologyChange>::const_iterator BasicTopology::lastChange() const
+{
+    return m_topologyContainer->getChangeList().end();
+}
+
+
+
+std::list<const TopologyChange>::const_iterator BasicTopology::firstChange() const
+{
+    return m_topologyContainer->getChangeList().begin();
+}
+
+
 } // namespace Core
 
 } // namespace Sofa
