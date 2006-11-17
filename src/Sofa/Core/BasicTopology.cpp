@@ -29,14 +29,14 @@ void BasicTopology::addTopologyChange(const TopologyChange &topologyChange)
 
 
 
-std::list<const TopologyChange>::const_iterator BasicTopology::lastChange() const
+std::list<TopologyChange>::const_iterator BasicTopology::lastChange() const
 {
     return m_topologyContainer->getChangeList().end();
 }
 
 
 
-std::list<const TopologyChange>::const_iterator BasicTopology::firstChange() const
+std::list<TopologyChange>::const_iterator BasicTopology::firstChange() const
 {
     return m_topologyContainer->getChangeList().begin();
 }

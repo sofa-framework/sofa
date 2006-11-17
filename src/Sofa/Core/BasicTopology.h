@@ -92,13 +92,13 @@ class BasicTopology : public virtual Abstract::BaseObject
 public :
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange>::const_iterator firstChange() const;
+    std::list<TopologyChange>::const_iterator firstChange() const;
 
 
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    std::list<const TopologyChange>::const_iterator lastChange() const;
+    std::list<TopologyChange>::const_iterator lastChange() const;
 
 
 
@@ -189,7 +189,7 @@ public :
     /** \brief Return the number of DOF in the mechanicalObject this Topology deals with.
      *
      */
-    virtual unsigned int getDOFNumber() { return -1; }
+    virtual unsigned int getDOFNumber() { return 0; }
 
 
 
@@ -256,7 +256,7 @@ public:
     }
 
 
-    std::list<const TopologyChange> &getChangeList()
+    std::list<TopologyChange> &getChangeList()
     {
         return m_changeList;
     }
@@ -277,7 +277,7 @@ protected:
 
 
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
-    std::list<const TopologyChange> m_changeList; // shouldn't this be private?
+    std::list<TopologyChange> m_changeList; // shouldn't this be private?
 
 
 };
