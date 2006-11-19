@@ -68,6 +68,14 @@ public:
         this->elems[3]=r4;
     }
 
+    /// Constructor from an element
+    Mat(const real& v)
+    {
+        for( int i=0; i<L; i++ )
+            for( int j=0; j<C; j++ )
+                this->elems[i][j] = v;
+    }
+
     /// Constructor from another matrix
     template<typename real2>
     Mat(const Mat<L,C,real2>& m)
@@ -339,6 +347,15 @@ public:
     {
         for(int i=0; i<L; i++)
             this->elems[i]+=m[i];
+    }
+
+    /// Addition of the transposed of m (possible for square matrices only)
+    void addTransposed(const Mat<L,C,real>& m)
+    {
+        BOOST_STATIC_ASSERT(L==C);
+        for(int i=0; i<L; i++)
+            for(int j=0; j<L; j++)
+                (*this)[i][j] += m[j][i];
     }
 
     /// Substraction assignment operator.
