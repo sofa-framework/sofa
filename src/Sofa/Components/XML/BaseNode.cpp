@@ -159,7 +159,7 @@ BaseNode* BaseNode::findNode(const char* nodeName, bool absolute)
     }
     for (child_iterator<> it = begin(); it != end(); ++it)
     {
-        if (!strncmp(it->getName().c_str(), nodeName, sep-nodeName))
+        if (it->getName().length() == sep-nodeName && !strncmp(it->getName().c_str(), nodeName, sep-nodeName))
         {
             BaseNode* res = it->findNode(sep,true);
             if (res!=NULL) return res;
