@@ -3,6 +3,7 @@
 
 #include "fixed_array.h"
 #include <math.h>
+#include <functional>
 //#include <boost/static_assert.hpp>
 #define BOOST_STATIC_ASSERT(a)
 
@@ -424,12 +425,12 @@ typedef Vec4d Vector4; ///< alias
 // Specialization of the std comparison function, to use Vec as std::map key
 namespace std
 {
-template <>
+
+// template <>
 template<int N, class T>
-struct less<Sofa::Components::Common::Vec<N,T> > : public binary_function<Sofa::Components::Common::Vec<N,T>, Sofa::Components::Common::Vec<N,T>, bool>
+struct less< Sofa::Components::Common::Vec<N,T> > : public binary_function< Sofa::Components::Common::Vec<N,T>,  Sofa::Components::Common::Vec<N,T>, bool>
 {
-    bool
-    operator()(const Sofa::Components::Common::Vec<N,T>& x, const Sofa::Components::Common::Vec<N,T>& y) const
+    bool operator()(const  Sofa::Components::Common::Vec<N,T>& x, const  Sofa::Components::Common::Vec<N,T>& y) const
     {
         //std::cerr<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
         for( unsigned i=0; i<N; ++i )
@@ -443,7 +444,7 @@ struct less<Sofa::Components::Common::Vec<N,T> > : public binary_function<Sofa::
     }
 };
 
-}
+} // namespace std
 
 #endif
 
