@@ -150,15 +150,19 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 {
     VecCoord& x = *this->_object->getX();
     std::vector<unsigned int> vArray;
-    unsigned int i,j,k,l,m;
+    Index i,j,k,l,m;
     int n;
     std::set<std::pair<unsigned int,unsigned int> > edgeSet;
 
     vArray.resize(x.size());
-    for(i=0; i<x.size(); ++i)
+    i = 0;
+
+    for(unsigned int cpt=0; cpt<x.size(); ++cpt)
     {
-        vArray[i]=isPointInPlane(x[i]);
+        vArray[cpt]=isPointInPlane(x[cpt]);
+        i++;
     }
+
     Sofa::Components::MeshTopology* _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(getContext()->getTopology());
 
     if (_mesh==NULL || (_mesh->getTriangles().empty()))
@@ -166,6 +170,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
         std::cerr << "ERROR(EdgePressureForceField): object must have a triangular MeshTopology.\n";
         return;
     }
+
     const MeshTopology::SeqTriangles *_indexedElements = & (_mesh->getTriangles());
 
     for (n=0; n<_mesh->getNbTriangles(); ++n)
@@ -189,10 +194,8 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
                     addEdgePressure((Index) k,(Index) l);
                 }
             }
-
         }
     }
-
 }
 
 template<class DataTypes>
