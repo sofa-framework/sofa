@@ -665,6 +665,16 @@ void luinv( Mat<n,n,Real> &inv, Mat<n,n,Real> &m )
     }
 }
 
+/// Create a matrix as \f$ u v^T \f$
+template <int L, int C, typename T>
+inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
+{
+    Mat<L,C,T> res;
+    for( int i=0; i<L; i++ )
+        for( int j=0; j<C; j++ )
+            res[i][j] = u[i]*v[j];
+    return res;
+}
 
 } // namespace Common
 
