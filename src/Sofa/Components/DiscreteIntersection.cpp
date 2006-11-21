@@ -67,8 +67,12 @@ bool intersectionSphereSphere(Sphere& sph1, Sphere& sph2)
 bool intersectionSingleSphereSingleSphere(SingleSphere& sph1, SingleSphere& sph2)
 {
     //std::cout<<"Collision between Sphere - Sphere"<<std::endl;
+    //Vector3 sph1Pos = sph1.getCenter();
+    //Vector3 sph2Pos = sph2.getCenter();
+
     Vector3 sph1Pos(sph1.center());
     Vector3 sph2Pos(sph2.center());
+
     double radius1 = sph1.r(), radius2 = sph2.r();
     Vector3 tmp = sph1Pos - sph2Pos;
 

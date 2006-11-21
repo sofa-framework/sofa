@@ -131,6 +131,11 @@ public:
     		timestamp[index] = CurrentTimeStamp();
     	}
     */
+
+    // Nodes of the hierarchy of the collision model
+    std::vector< CollisionElementIterator* > nodes;
+
+
 protected:
     int size;
 

@@ -107,9 +107,18 @@ public:
         return this;
     }
 
+    // children of the element
+    std::vector< CollisionElementIterator* > children;
+
+    // boolean that defines a leaf element
+    bool isLeaf;
+
+
 protected:
     Model* model;
     int index;
+
+
 };
 
 class CollisionElementIterator : public TCollisionElementIterator<CollisionModel>
