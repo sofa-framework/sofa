@@ -159,7 +159,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 
     for(unsigned int cpt=0; cpt<x.size(); ++cpt)
     {
-        vArray[cpt]=isPointInPlane(x[cpt]);
+        vArray[i]=isPointInPlane(x[i]);
         i++;
     }
 

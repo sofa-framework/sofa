@@ -106,6 +106,9 @@ void Simulation::init(GNode* root)
 /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
 void Simulation::animate(GNode* root, double dt)
 {
+    if (root->getMultiThreadSimulation())
+        return;
+
     double nextTime = root->getTime() + root->getDt();
     if (!root) return;
     //std::cout << "animate\n";
