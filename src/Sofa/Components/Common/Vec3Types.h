@@ -32,6 +32,13 @@ public:
         c[2] = (typename Coord::value_type)z;
     }
 
+    static void get(double& x, double& y, double& z, const Coord& c)
+    {
+        x = (double) c[0];
+        y = (double) c[1];
+        z = (double) c[2];
+    }
+
     static void add(Coord& c, double x, double y, double z)
     {
         c[0] += (typename Coord::value_type)x;
