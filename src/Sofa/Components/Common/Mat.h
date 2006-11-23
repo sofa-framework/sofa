@@ -232,8 +232,8 @@ public:
                 this->elems[i][j]=m[j][i];
     }
 
-    /// Set matrix as the transpose of m.
-    Mat<C,L,real> transposed()
+    /// Return the transpose of m.
+    Mat<C,L,real> transposed() const
     {
         Mat<C,L,real> m;
         for (int i=0; i<L; i++)
@@ -351,6 +351,15 @@ public:
 
     /// Addition of the transposed of m (possible for square matrices only)
     void addTransposed(const Mat<L,C,real>& m)
+    {
+        BOOST_STATIC_ASSERT(L==C);
+        for(int i=0; i<L; i++)
+            for(int j=0; j<L; j++)
+                (*this)[i][j] += m[j][i];
+    }
+
+    /// Substraction of the transposed of m (possible for square matrices only)
+    void subTransposed(const Mat<L,C,real>& m)
     {
         BOOST_STATIC_ASSERT(L==C);
         for(int i=0; i<L; i++)
