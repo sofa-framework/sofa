@@ -63,6 +63,16 @@ public:
 
     std::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren() const;
 
+    // Gets the children (a vector) of  iterator(index)
+    std::vector<CollisionElementIterator*> getChildren() const;
+
+    bool isLeaf ( ) const
+    {
+        std::vector<CollisionElementIterator*> children = model->getChildrenOf(index);
+        if ( children.size() == 0 ) return true;
+        else return false;
+    }
+
     bool canCollideWith(TCollisionElementIterator<Model>& elem)
     {
         return model->canCollideWithElement(index, elem.model, elem.index);
@@ -107,12 +117,6 @@ public:
         return this;
     }
 
-    // children of the element
-    std::vector< CollisionElementIterator* > children;
-
-    // boolean that defines a leaf element
-    bool isLeaf;
-
 
 protected:
     Model* model;
@@ -152,6 +156,12 @@ template<class Model>
 std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIterator<Model>::getExternalChildren() const
 {
     return model->getExternalChildren(index);
+}
+
+template<class Model>
+std::vector<CollisionElementIterator*> TCollisionElementIterator<Model>::getChildren() const
+{
+    return model->getChildrenOf(index);
 }
 
 } // namespace Abstract

@@ -84,6 +84,19 @@ public:
         return std::make_pair(CollisionElementIterator(),CollisionElementIterator());
     }
 
+    virtual std::vector<CollisionElementIterator*> getChildrenOf( int /*index*/ ) const
+    {
+        std::vector<CollisionElementIterator*> children;
+        return children;
+    }
+
+
+    virtual CollisionElementIterator* getRootNode( void )
+    {
+        CollisionElementIterator* root = NULL;
+        return root;
+    }
+
     virtual bool canCollideWith(CollisionModel* model) { return model->getContext() != this->getContext(); }
     //virtual bool canCollideWith(CollisionModel* model) { return model != this; }
 
@@ -132,8 +145,8 @@ public:
     	}
     */
 
-    // Nodes of the hierarchy of the collision model
-    std::vector< CollisionElementIterator* > nodes;
+    //// Nodes of the hierarchy of the collision model
+    //std::vector< CollisionElementIterator* > nodes;
 
 
 protected:
