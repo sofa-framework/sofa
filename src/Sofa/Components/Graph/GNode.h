@@ -52,6 +52,11 @@ public:
 
     virtual ~GNode();
 
+    virtual const char* getTypeName() const
+    {
+        return "GNODE";
+    }
+
     /// Add a child node
     virtual void addChild(GNode* node);
 

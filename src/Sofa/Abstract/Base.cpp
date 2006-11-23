@@ -18,7 +18,7 @@ namespace Abstract
 {
 
 Base::Base()
-    : f_name(dataField(&f_name,std::string("NoName"),"name","object name"))
+    : name(dataField(&name,std::string(""),"name","object name"))
 {
 
 }
@@ -26,14 +26,16 @@ Base::Base()
 Base::~Base()
 {}
 
-const std::string& Base::getName() const
+std::string Base::getName() const
 {
-    return name;
+    if( name.getValue().empty() )
+        return getTypeName();
+    return name.getValue();
 }
 
 void Base::setName(const std::string& na)
 {
-    f_name.setValue(na);
+    name.setValue(na);
 }
 
 

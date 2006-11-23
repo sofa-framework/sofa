@@ -289,6 +289,7 @@ void GNode::updateContext()
     {
         for( unsigned i=0; i<contextObject.size(); ++i )
         {
+            contextObject[i]->init();
             contextObject[i]->apply();
             //cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<< endl;
         }
@@ -297,6 +298,7 @@ void GNode::updateContext()
     {
         for( unsigned i=0; i<contextObject.size(); ++i )
         {
+            contextObject[i]->init();
             contextObject[i]->apply();
             //cerr<<"GNode::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
         }

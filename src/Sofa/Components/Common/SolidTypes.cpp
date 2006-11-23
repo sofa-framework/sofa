@@ -356,8 +356,11 @@ typename SolidTypes<R>::Transform& SolidTypes<R>::Transform::operator +=(const T
 {
     std::cerr << "SolidTypes<R>::Transform::operator +="<<std::endl;
     origin_ += a.getOriginOfParentInChild();
-    //orientation += a.getOrientation();
-    //orientation.normalize();
+
+    // previously commented out:
+    orientation_ += a.getOrientation();
+    orientation_.normalize();
+
     return *this;
 }
 

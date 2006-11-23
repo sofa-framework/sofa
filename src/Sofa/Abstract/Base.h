@@ -17,17 +17,17 @@ public:
     Base();
     virtual ~Base();
 
-    DataField<std::string> f_name;
+    DataField<std::string> name;
 
-    const std::string& getName() const;
+    std::string getName() const;
     void setName(const std::string& n);
     virtual const char* getTypeName() const
     {
-        return "UNKNOWN TYPE";
+        return "UNKNOWN";
     }
 
 protected:
-    std::string name;
+    //std::string name;
 };
 
 } // namespace Abstract

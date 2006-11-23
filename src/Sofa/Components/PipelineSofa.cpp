@@ -112,7 +112,7 @@ void PipelineSofa::doCollisionDetection(const std::vector<Abstract::CollisionMod
     VERBOSE(std::cout << "BroadPhaseDetection "<<broadPhaseDetection->getName()<<std::endl);
     if (node) t0 = node->startTime();
     broadPhaseDetection->clearBroadPhase();
-    broadPhaseDetection->addCollisionModels(vectBoundingVolume);
+    broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // detection is done there
     if (node) t0 = node->endTime(t0, category, broadPhaseDetection, this);
 
     // then we start the narrow phase

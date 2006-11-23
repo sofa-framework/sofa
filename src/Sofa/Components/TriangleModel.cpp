@@ -145,7 +145,7 @@ void TriangleModel::computeBoundingTree(int maxDepth)
 
     Vector3 minElem, maxElem;
 
-    cubeModel->resize(size);
+    cubeModel->resize(size);  // size = number of triangles
     if (!empty())
     {
         for (int i=0; i<size; i++)
@@ -169,7 +169,7 @@ void TriangleModel::computeBoundingTree(int maxDepth)
             t.n() = cross(pt2-pt1,pt3-pt1);
             t.n().normalize();
 
-            cubeModel->setParentOf(i, minElem, maxElem);
+            cubeModel->setParentOf(i, minElem, maxElem); // define the bounding box of the current triangle
         }
         cubeModel->computeBoundingTree(maxDepth);
     }

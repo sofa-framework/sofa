@@ -258,9 +258,9 @@ public:
     class RigidInertia
     {
     public:
-        Real m;
-        Vec h;
-        Mat I;
+        Real m;  ///< mass
+        Vec h;   ///< position of the mass center in the local reference frame
+        Mat I;  /// Inertia matrix around the mass center
         RigidInertia();
         RigidInertia( Real m, const Vec& h, const Mat& I );
         SpatialVector operator * (const SpatialVector& v ) const;
