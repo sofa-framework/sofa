@@ -89,7 +89,8 @@ int main(int argc, char** argv)
     {
         groot = Sofa::Components::Graph::Simulation::load("../Data/demoLiverProximity.scn");
         if (groot == NULL) // Necessary for starting this program under Visual Studio with default Configuration
-            groot = Sofa::Components::Graph::Simulation::load("../../../Data/demoLiverProximity.scn");
+            //groot = Sofa::Components::Graph::Simulation::load("../../../Data/demoLiverProximity.scn");
+            groot = Sofa::Components::Graph::Simulation::load("../../../Data/demoSphereTree.scn");
     }
 
     if (groot==NULL)

@@ -5,6 +5,7 @@
 #include "Sofa/Core/MechanicalObject.h"
 #include "Graph/GNode.h"
 #include "SphereModel.h"
+#include "SphereTreeModel.h"
 #include "TriangleModel.h"
 #include "LineModel.h"
 #include "PointModel.h"
@@ -145,6 +146,44 @@ public:
         return 0.0;
     }
 };
+
+template <>
+class BarycentricContactMapper<SphereTreeModel>
+{
+public:
+    typedef SphereTreeModel MCollisionModel;
+    typedef Core::MechanicalModel<MCollisionModel::DataTypes> MMechanicalModel;
+    MCollisionModel* model;
+
+    BarycentricContactMapper(MCollisionModel* model)
+        : model(model)
+    {
+    }
+
+    MMechanicalModel* createMapping()
+    {
+        return model;
+    }
+
+    void resize(int /*size*/)
+    {
+    }
+
+    int addPoint(const Vector3& /*P*/, int index)
+    {
+        return index;
+    }
+
+    void update()
+    {
+    }
+
+    double radius(const SingleSphere& e)
+    {
+        return e.r();
+    }
+};
+
 
 template <>
 class BarycentricContactMapper<SphereModel>
