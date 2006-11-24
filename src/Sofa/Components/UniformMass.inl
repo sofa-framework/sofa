@@ -30,13 +30,14 @@ void UniformMass<RigidTypes, RigidMass>::draw();
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-    : totalMass(0)
+    : totalMass( dataField(&totalMass, 0.0, "mass", "Sum of the particles' masses") )
 {}
 
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass(Core::MechanicalModel<DataTypes>* mmodel)
-    : Core::Mass<DataTypes>(mmodel), totalMass(0)
+    : Core::Mass<DataTypes>(mmodel)
+    , totalMass( dataField(&totalMass, 0.0, "mass", "Sum of the particles' masses") )
 {}
 
 template <class DataTypes, class MassType>
@@ -52,16 +53,16 @@ void UniformMass<DataTypes, MassType>::setMass(const MassType& m)
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setTotalMass(double m)
 {
-    this->totalMass = m;
+    this->totalMass.setValue(m);
 }
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::init()
 {
     this->Core::Mass<DataTypes>::init();
-    if (this->totalMass>0 && this->mmodel!=NULL)
+    if (this->totalMass.getValue()>0 && this->mmodel!=NULL)
     {
-        this->mass = (MassType)(this->totalMass / this->mmodel->getX()->size());
+        this->mass = (MassType)(this->totalMass.getValue() / this->mmodel->getX()->size());
     }
 }
 

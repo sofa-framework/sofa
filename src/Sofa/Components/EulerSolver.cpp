@@ -52,7 +52,7 @@ void create(EulerSolver*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(Euler)
 
-Creator<ObjectFactory, EulerSolver> EulerSolverClass("Euler");
+Creator<ObjectFactory, EulerSolver> EulerSolverClass("EulerSolver");
 
 } // namespace Components
 

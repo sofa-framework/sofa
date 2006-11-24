@@ -25,7 +25,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
 protected:
     MassType mass;
-    double totalMass; ///< if >0 : total mass of this body
+    DataField<double> totalMass; ///< if >0 : total mass of this body
 
 public:
     UniformMass();
@@ -33,6 +33,11 @@ public:
     UniformMass(Core::MechanicalModel<DataTypes>* mmodel);
 
     ~UniformMass();
+
+    virtual const char* getTypeName() const
+    {
+        return "UniformMass";
+    }
 
     void setMass(const MassType& mass);
 
