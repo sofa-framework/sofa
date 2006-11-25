@@ -99,17 +99,9 @@ void create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg)
     XML::createWithParent< UniformMass<RigidTypes, RigidMass>, Core::MechanicalModel<RigidTypes> >(obj, arg);
     if (obj!=NULL)
     {
-        if (arg->getAttribute("mass"))
-        {
-            obj->setMass(RigidMass(atof(arg->getAttribute("mass"))));
-        }
-        if (arg->getAttribute("totalmass"))
-        {
-            obj->setTotalMass(atof(arg->getAttribute("totalmass")));
-        }
+        RigidMass m(1.0f);
         if (arg->getAttribute("filename"))
         {
-            RigidMass m;
             const char* filename = arg->getAttribute("filename");
             char	cmd[64];
             FILE*	file;
@@ -200,9 +192,17 @@ void create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg)
                 }
                 fclose(file);
             }
-            m.recalc();
-            obj->setMass(m);
         }
+        if (arg->getAttribute("mass"))
+        {
+            m.mass = atof(arg->getAttribute("mass"));
+        }
+        if (arg->getAttribute("totalmass"))
+        {
+            m.mass = atof(arg->getAttribute("totalmass"));
+        }
+        m.recalc();
+        obj->setMass(m);
     }
 }
 

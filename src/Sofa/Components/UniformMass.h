@@ -61,6 +61,8 @@ public:
 
     void draw();
 
+    bool addBBox(double* minBBox, double* maxBBox);
+
     void initTextures()
     { }
 
