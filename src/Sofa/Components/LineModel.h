@@ -93,7 +93,7 @@ inline Line::Line(LineModel* model, int index)
 {}
 
 inline Line::Line(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<LineModel>(static_cast<LineModel*>(i->getCollisionModel()), i->getIndex())
+    : Abstract::TCollisionElementIterator<LineModel>(static_cast<LineModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 

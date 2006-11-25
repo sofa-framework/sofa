@@ -92,7 +92,7 @@ inline Ray::Ray(RayModel* model, int index)
 {}
 
 inline Ray::Ray(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<RayModel>(static_cast<RayModel*>(i->getCollisionModel()), i->getIndex())
+    : Abstract::TCollisionElementIterator<RayModel>(static_cast<RayModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 

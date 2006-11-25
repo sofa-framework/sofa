@@ -97,13 +97,14 @@ protected:
 
     int addFace(int p1, int p2, int p3, int nbp)
     {
-        SeqTriangles& triangles = *seqTriangles.beginEdit();
         if ((unsigned)p1<(unsigned)nbp &&
             (unsigned)p2<(unsigned)nbp &&
             (unsigned)p3<(unsigned)nbp)
         {
+            SeqTriangles& triangles = *seqTriangles.beginEdit();
             int f = triangles.size();
             triangles.push_back(Triangle(p1, p3, p2));
+            seqTriangles.endEdit();
             return f;
         }
         else
@@ -111,7 +112,6 @@ protected:
             std::cerr << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3<<std::endl;
             return -1;
         }
-        seqTriangles.endEdit();
     }
 
 };

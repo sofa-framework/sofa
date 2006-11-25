@@ -78,7 +78,7 @@ inline Point::Point(PointModel* model, int index)
 {}
 
 inline Point::Point(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<PointModel>(static_cast<PointModel*>(i->getCollisionModel()), i->getIndex())
+    : Abstract::TCollisionElementIterator<PointModel>(static_cast<PointModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 

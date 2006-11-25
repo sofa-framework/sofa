@@ -37,7 +37,7 @@ Intersection::~Intersection()
 /// Note that this method is deprecated in favor of findIntersector
 bool Intersection::isSupported(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
 {
-    ElementIntersector* i = findIntersector(elem1->getCollisionModel(), elem2->getCollisionModel());
+    ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
     return i != NULL;
 }
 
@@ -45,7 +45,7 @@ bool Intersection::isSupported(Abstract::CollisionElementIterator elem1, Abstrac
 /// Note that this method is deprecated in favor of findIntersector
 bool Intersection::canIntersect(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
 {
-    ElementIntersector* i = findIntersector(elem1->getCollisionModel(), elem2->getCollisionModel());
+    ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
     if (i == NULL)
         return false;
     else
@@ -56,7 +56,7 @@ bool Intersection::canIntersect(Abstract::CollisionElementIterator elem1, Abstra
 /// Note that this method is deprecated in favor of findIntersector
 Collision::DetectionOutput* Intersection::intersect(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
 {
-    ElementIntersector* i = findIntersector(elem1->getCollisionModel(), elem2->getCollisionModel());
+    ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
     if (i == NULL)
         return NULL;
     else

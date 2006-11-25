@@ -142,10 +142,10 @@ void PipelineSofa::doCollisionDetection(const std::vector<Abstract::CollisionMod
         {
             CollisionElementIterator cm1 = it4->first;
             CollisionElementIterator cm2 = it4->second;
-            if (cm1->getCollisionModel() != model1 || cm2->getCollisionModel() != model2)
+            if (cm1.getCollisionModel() != model1 || cm2.getCollisionModel() != model2)
             {
-                model1 = cm1->getCollisionModel();
-                model2 = cm2->getCollisionModel();
+                model1 = cm1.getCollisionModel();
+                model2 = cm2.getCollisionModel();
                 intersector = intersectionMethod->findIntersector(model1, model2);
             }
             if (intersector != NULL)

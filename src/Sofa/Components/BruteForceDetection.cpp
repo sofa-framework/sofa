@@ -157,7 +157,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
                     //if (node) it += node->startTime() - t0;
                     if (b)
                     {
-                        if (it1->getCollisionModel() == finalcm1 && it2->getCollisionModel() == finalcm2)
+                        if (it1.getCollisionModel() == finalcm1 && it2.getCollisionModel() == finalcm2)
                         {
                             // Final collision pair
                             elemPairs.push_back(std::make_pair(it1,it2));
@@ -165,8 +165,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
                         else
                         {
                             // Need to test recursively
-                            TestPair newInternalTests(it1->getInternalChildren(),it2->getInternalChildren());
-                            TestPair newExternalTests(it1->getExternalChildren(),it2->getExternalChildren());
+                            TestPair newInternalTests(it1.getInternalChildren(),it2.getInternalChildren());
+                            TestPair newExternalTests(it1.getExternalChildren(),it2.getExternalChildren());
                             if (newInternalTests.first.first != newInternalTests.first.second)
                             {
                                 if (newInternalTests.second.first != newInternalTests.second.second)
@@ -256,8 +256,8 @@ void BruteForceDetection::draw()
         //std::cout << "Size : " << elemPairs.size() << std::endl;
         for (; it != itEnd; it++)
         {
-            it->first->draw();
-            it->second->draw();
+            it->first.draw();
+            it->second.draw();
         }
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         glLineWidth(1);

@@ -92,7 +92,7 @@ inline Cube::Cube(CubeModel* model, int index)
 {}
 
 inline Cube::Cube(const Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<CubeModel>(static_cast<CubeModel*>(i->getCollisionModel()), i->getIndex())
+    : Abstract::TCollisionElementIterator<CubeModel>(static_cast<CubeModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 

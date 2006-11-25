@@ -70,8 +70,8 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
         DetectionOutput* o = *it;
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
-        int index1 = elem1->getIndex();
-        int index2 = elem2->getIndex();
+        int index1 = elem1.getIndex();
+        int index2 = elem2.getIndex();
         // Create mapping for first point
         index1 = mapper1.addPoint(o->point[0], index1);
         // Create mapping for second point

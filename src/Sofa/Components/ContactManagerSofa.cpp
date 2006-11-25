@@ -45,7 +45,7 @@ void ContactManagerSofa::createContacts(const std::vector<DetectionOutput*>& out
     for (std::vector<DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
     {
         DetectionOutput* o = *it;
-        outputsMap[std::make_pair(o->elem.first->getCollisionModel(),o->elem.second->getCollisionModel())].push_back(o);
+        outputsMap[std::make_pair(o->elem.first.getCollisionModel(),o->elem.second.getCollisionModel())].push_back(o);
     }
     // then remove any inactive contacts or add any new contact
     std::map< std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*>, std::vector<DetectionOutput*> >::iterator outputsIt = outputsMap.begin();

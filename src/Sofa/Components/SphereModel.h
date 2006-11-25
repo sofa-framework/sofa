@@ -79,7 +79,7 @@ inline Sphere::Sphere(SphereModel* model, int index)
 {}
 
 inline Sphere::Sphere(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<SphereModel>(static_cast<SphereModel*>(i->getCollisionModel()), i->getIndex())
+    : Abstract::TCollisionElementIterator<SphereModel>(static_cast<SphereModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 

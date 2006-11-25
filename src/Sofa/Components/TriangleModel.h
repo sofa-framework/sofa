@@ -101,7 +101,7 @@ inline Triangle::Triangle(TriangleModel* model, int index)
 {}
 
 inline Triangle::Triangle(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<TriangleModel>(static_cast<TriangleModel*>(i->getCollisionModel()), i->getIndex())
+    : Abstract::TCollisionElementIterator<TriangleModel>(static_cast<TriangleModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 

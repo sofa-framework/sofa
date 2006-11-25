@@ -153,6 +153,24 @@ void DiagonalMass<DataTypes, MassType>::draw()
 }
 
 template <class DataTypes, class MassType>
+bool DiagonalMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
+{
+    const VecCoord& x = *this->mmodel->getX();
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        //const Coord& p = x[i];
+        double p[3] = {0.0, 0.0, 0.0};
+        DataTypes::get(p[0],p[1],p[2],x[i]);
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+            if (p[c] < minBBox[c]) minBBox[c] = p[c];
+        }
+    }
+    return true;
+}
+
+template <class DataTypes, class MassType>
 class DiagonalMass<DataTypes, MassType>::Loader : public MassSpringLoader
 {
 public:
