@@ -90,11 +90,13 @@ void create(DiagonalMass<DataTypes, MassType>*& obj, ObjectDescription* arg)
     XML::createWithParent< DiagonalMass<DataTypes, MassType>, Core::MechanicalModel<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
-        obj->parseFields( arg->getAttributeMap() );
         if (arg->getAttribute("filename"))
         {
             obj->load(arg->getAttribute("filename"));
+            arg->removeAttribute("filename");
         }
+        obj->parseFields( arg->getAttributeMap() );
+
         /*
         if (arg->getAttribute("gravity"))
         {
