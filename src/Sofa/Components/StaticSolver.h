@@ -6,19 +6,25 @@
 
 #include <Sofa/Core/OdeSolver.h>
 
+
 namespace Sofa
 {
 
 namespace Components
 {
+using Common::DataField;
 
 class StaticSolver : public Core::OdeSolver
 {
+
 public:
+    DataField<unsigned int> f_maxCGIter;
+
     StaticSolver();
 
-    unsigned int maxCGIter;
     double smallDenominatorThreshold;
+    virtual const char* getTypeName() const { return "StaticSolver"; }
+
 
     void solve (double dt);
 };

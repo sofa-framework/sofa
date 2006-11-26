@@ -20,9 +20,9 @@ namespace Components
 using namespace Common;
 using namespace Core;
 
-StaticSolver::StaticSolver()
+StaticSolver::StaticSolver() : f_maxCGIter( dataField(&f_maxCGIter,"iterations","Maximum number of iterations for the conjugated gradient algorithmIndices of the fixed points") )
 {
-    maxCGIter = 25;
+    f_maxCGIter = 25;
     smallDenominatorThreshold = 1e-5;
     /*    newField(&maxCGIter,"iterations","maximum number of iterations of the Conjugate Gradient solution");
         newField(&smallDenominatorThreshold,"threshold","minimum value of the denominator in the conjugate Gradient solution");*/
@@ -56,7 +56,7 @@ void StaticSolver::solve(double)
     group->v_eq(r,b); // initial residual
 
     unsigned nb_iter;
-    for( nb_iter=1; nb_iter<=maxCGIter; nb_iter++ )
+    for( nb_iter=1; nb_iter<=f_maxCGIter.getValue(); nb_iter++ )
     {
         z = r; // no precond
         rho = r.dot(z);
@@ -105,13 +105,14 @@ void StaticSolver::solve(double)
 
 void create(StaticSolver*& obj, ObjectDescription* arg)
 {
+    std::cerr<<"creating static solver"<<std::endl;
     obj = new StaticSolver();
     obj->parseFields( arg->getAttributeMap() );
 }
 
 SOFA_DECL_CLASS(StaticSolver)
 
-Creator<ObjectFactory, StaticSolver> StaticSolverClass("Static");
+Creator<ObjectFactory, StaticSolver> StaticSolverClass("StaticSolver");
 
 } // namespace Components
 
