@@ -47,14 +47,23 @@ void create(MechanicalObject<DataTypes>*& obj, ObjectDescription* arg)
     {
         MechanicalObjectLoader<DataTypes> loader(obj);
         loader.load(arg->getAttribute("filename"));
+        arg->removeAttribute("filename");
     }
     if (obj!=NULL)
     {
-        obj->parseFields(arg->getAttributeMap() );
         if (arg->getAttribute("scale")!=NULL)
+        {
             obj->applyScale(atof(arg->getAttribute("scale")));
+            arg->removeAttribute("scale");
+        }
         if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+        {
             obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+            arg->removeAttribute("dx");
+            arg->removeAttribute("dy");
+            arg->removeAttribute("dz");
+        }
+        obj->parseFields(arg->getAttributeMap() );
     }
 }
 }
