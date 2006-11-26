@@ -18,9 +18,13 @@ using namespace Common;
 void create(MeshTopology*& obj, ObjectDescription* arg)
 {
     obj = new MeshTopology();
-    obj->parseFields( arg->getAttributeMap() );
     if (arg->getAttribute("filename"))
+    {
         obj->load(arg->getAttribute("filename"));
+        arg->removeAttribute("filename");
+    }
+    obj->parseFields( arg->getAttributeMap() );
+
 }
 
 SOFA_DECL_CLASS(MeshTopology)
