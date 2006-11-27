@@ -37,6 +37,7 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<SphereModel,   SphereModel,   intersectionSphereSphere,     distCorrectionSphereSphere,     false>();
     intersectors.add<SphereModel,   RayModel,      intersectionSphereRay,        distCorrectionSphereRay,        true>();
     intersectors.add<SphereModel,   RayPickInteractor,      intersectionSphereRay,        distCorrectionSphereRay,        true>();
+    intersectors.add<SphereTreeModel, RayPickInteractor, intersectionSingleSphereRay, distCorrectionSingleSphereRay, true>();
     intersectors.add<SphereTreeModel, SphereTreeModel, intersectionSingleSphereSingleSphere, distCorrectionSingleSphereSingleSphere,     false>();
     //intersectors.add<SphereTreeModel, SphereModel, intersectionSingleSphereSingleSphere, distCorrectionSingleSphereSingleSphere,     false>();
     //intersectors.add<SphereModel,   TriangleModel, intersectionSphereTriangle,   distCorrectionSphereTriangle, true>();
@@ -114,6 +115,26 @@ bool intersectionSphereRay(Sphere& sph1, Ray& ray2)
     return (dist2 < (radius1*radius1));
 }
 
+
+bool intersectionSingleSphereRay(SingleSphere& sph1, Ray& ray2)
+{
+    //std::cout<<"Collision between SingleSphere - Ray"<<std::endl;
+
+    const Vector3 sph1Pos(sph1.center());
+    const double radius1 = sph1.r();
+    const Vector3 ray2Origin(ray2.origin());
+    const Vector3 ray2Direction(ray2.direction());
+    const double length2 = ray2.l();
+    const Vector3 tmp = sph1Pos - ray2Origin;
+    const double rayPos = tmp*ray2Direction;
+    const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
+    const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
+    return (dist2 < (radius1*radius1));
+}
+
+
+
+
 //bool intersectionSphereTriangle(Sphere&, Triangle&)
 //{
 //	std::cout<<"Collision between Sphere - Triangle"<<std::endl;
@@ -187,6 +208,30 @@ DetectionOutput* distCorrectionSphereRay(Sphere& sph1, Ray& ray2)
     return detection;
 }
 
+DetectionOutput* distCorrectionSingleSphereRay(SingleSphere& sph1, Ray& ray2)
+{
+    const Vector3 sph1Pos(sph1.center());
+    const double radius1 = sph1.r();
+    const Vector3 ray2Origin(ray2.origin());
+    const Vector3 ray2Direction(ray2.direction());
+    const double length2 = ray2.l();
+    const Vector3 tmp = sph1Pos - ray2Origin;
+    const double rayPos = tmp*ray2Direction;
+    const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
+    const double dist = sqrt(tmp.norm2() - (rayPosInside*rayPosInside));
+
+    DetectionOutput *detection = new DetectionOutput();
+
+    detection->point[1] = ray2Origin + ray2Direction*rayPosInside;
+    detection->normal = detection->point[1] - sph1Pos;
+    detection->normal /= dist;
+    detection->point[0] = sph1Pos + detection->normal * radius1;
+    detection->distance = dist - radius1;
+    detection->elem.first = sph1;
+    detection->elem.second = ray2;
+
+    return detection;
+}
 //DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&)
 //{
 //	std::cout<<"Distance correction between Sphere - Triangle"<<std::endl;

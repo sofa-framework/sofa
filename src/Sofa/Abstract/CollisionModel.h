@@ -164,11 +164,11 @@ public:
     /// @todo Rename to getRootElement to unify terminology
     /// @todo Why returning a <i>pointer</i> to an iterator?
     /// @todo Why is it virtual? It should always correspond to getFirst()->begin()...
-    virtual CollisionElementIterator* getRootNode( void )
-    {
-        CollisionElementIterator* root = NULL;
-        return root;
-    }
+    //virtual CollisionElementIterator* getRootNode( void )
+    //{
+    //	CollisionElementIterator* root = NULL;
+    //	return root;
+    //}
 
     /// Test if this model can collide with another model.
     ///
