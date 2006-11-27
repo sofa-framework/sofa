@@ -115,7 +115,7 @@ template<class DataTypes>
 void LennardJonesForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
-    VecCoord& p1 = *this->mmodel->getX();
+    const VecCoord& p1 = *this->mmodel->getX();
     glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
     const Real d02 = this->d0*this->d0;

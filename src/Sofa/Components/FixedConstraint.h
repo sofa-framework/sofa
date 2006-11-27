@@ -20,6 +20,12 @@ namespace Components
 using Common::vector;
 using Common::DataField;
 
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template <class DataTypes>
+class FixedConstraintInternalData
+{
+};
+
 template <class DataTypes>
 class FixedConstraint : public Core::Constraint<DataTypes>, public Abstract::VisualModel
 {
@@ -29,9 +35,12 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef vector<int> SetIndex;
+    //typedef std::set<int> SetIndex;
 
 protected:
     //SetIndex indices;
+
+    FixedConstraintInternalData<DataTypes> data;
 
 public:
     FixedConstraint();
@@ -47,6 +56,7 @@ public:
     FixedConstraint<DataTypes>* removeConstraint(int index);
 
     // -- Constraint interface
+    void init();
     void projectResponse(VecDeriv& dx);
     virtual void projectVelocity(VecDeriv& /*dx*/) {} ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& /*x*/) {} ///< project x to constrained space (x models a position)

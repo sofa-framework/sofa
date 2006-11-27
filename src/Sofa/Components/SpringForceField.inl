@@ -33,19 +33,24 @@ public:
 };
 
 template <class DataTypes>
-void SpringForceField<DataTypes>::init(const char *filename)
+bool SpringForceField<DataTypes>::load(const char *filename)
 {
-    //this->typeName = "SpringForceField";
-    //this->_name = name;
     if (filename && filename[0])
     {
         Loader loader(this);
-        loader.load(filename);
+        return loader.load(filename);
     }
+    else return false;
+}
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::init()
+{
+    this->InteractionForceField::init();
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addSpringForce(double& ener, VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int /*i*/, const Spring& spring)
+void SpringForceField<DataTypes>::addSpringForce(double& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring)
 {
     int a = spring.m1;
     int b = spring.m2;
@@ -69,11 +74,11 @@ void SpringForceField<DataTypes>::addForce()
     assert(this->object1);
     assert(this->object2);
     VecDeriv& f1 = *this->object1->getF();
-    VecCoord& p1 = *this->object1->getX();
-    VecDeriv& v1 = *this->object1->getV();
+    const VecCoord& p1 = *this->object1->getX();
+    const VecDeriv& v1 = *this->object1->getV();
     VecDeriv& f2 = *this->object2->getF();
-    VecCoord& p2 = *this->object2->getX();
-    VecDeriv& v2 = *this->object2->getV();
+    const VecCoord& p2 = *this->object2->getX();
+    const VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
     m_potentialEnergy = 0;
@@ -93,8 +98,8 @@ template<class DataTypes>
 void SpringForceField<DataTypes>::draw()
 {
     if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
-    VecCoord& p1 = *this->object1->getX();
-    VecCoord& p2 = *this->object2->getX();
+    const VecCoord& p1 = *this->object1->getX();
+    const VecCoord& p2 = *this->object2->getX();
 //         cerr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<endl;
 //         cerr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<endl;
 //         cerr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<endl;

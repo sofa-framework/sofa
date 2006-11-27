@@ -247,8 +247,8 @@ TensorForceField<DataTypes>::addForce ()
 {
     // getting the containing mechanical object's data
     VecDeriv& f = *object_->getF();
-    VecCoord& p = *object_->getX();
-    VecDeriv& v = *object_->getV();
+    const VecCoord& p = *object_->getX();
+    const VecDeriv& v = *object_->getV();
 
     f.resize( p.size() ); // ??really needed??
 
@@ -328,8 +328,8 @@ TensorForceField<DataTypes>::addDForce()
     // getting the containing mechanical object's data
     VecDeriv& f = *object_->getF();
     // use Dx instead of X
-    VecCoord& p = *object_->getDx();
-    VecDeriv& v = *object_->getV();
+    const VecCoord& p = *object_->getDx();
+    const VecDeriv& v = *object_->getV();
 
     f.resize( p.size() ); // ??really needed??
 
@@ -411,7 +411,7 @@ template<class DataTypes>
 void TensorForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
-    VecCoord& p1 = *object_->getX();
+    const VecCoord& p1 = *object_->getX();
     glDisable(GL_LIGHTING);
     glColor4f(1,1,1,1);
     glBegin(GL_LINES);

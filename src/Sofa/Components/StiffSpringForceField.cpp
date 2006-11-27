@@ -22,9 +22,14 @@ template class StiffSpringForceField<Vec3fTypes>;
 template<class DataTypes>
 void create(StiffSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
 {
-    XML::createWithParentAndFilename< StiffSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< StiffSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
     if (obj == NULL) // try the InteractionForceField initialization
-        XML::createWith2ObjectsAndFilename< StiffSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+        XML::createWith2Objects< StiffSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    if (obj != NULL)
+    {
+        if (arg->getAttribute("filename"))
+            obj->load(arg->getAttribute("filename"));
+    }
 }
 
 Creator< ObjectFactory, StiffSpringForceField<Vec3dTypes> > StiffSpringInteractionForceFieldVec3dClass("StiffSpringForceField", true);

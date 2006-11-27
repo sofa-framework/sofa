@@ -13,6 +13,13 @@ namespace Sofa
 namespace Core
 {
 
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class DataTypes>
+class MechanicalObjectInternalData
+{
+public:
+};
+
 template <class DataTypes>
 class MechanicalObject : public MechanicalModel<DataTypes>
 {
@@ -33,6 +40,7 @@ protected:
     VecDeriv* v0;
     VecDeriv* internalForces;
     VecDeriv* externalForces;
+
     double translation[3];
     double scale;
 
@@ -47,6 +55,8 @@ protected:
     void setVecDeriv(unsigned int index, VecDeriv* v);
 
     /// @}
+
+    MechanicalObjectInternalData<DataTypes> data;
 
 public:
     MechanicalObject();
@@ -152,13 +162,6 @@ public:
     /// @{
     virtual void printDOF( VecId, std::ostream& =std::cerr );
     /// @}
-
-    /*! \fn void addBBox()
-    *  \brief Used to add the bounding-box of this mechanical model to the given bounding box.
-    *
-    *  Note that if it does not make sense for this particular object (such as if the DOFs are not 3D), then the default implementation displays a warning message and returns false.
-    */
-    //virtual bool addBBox(double* minBBox, double* maxBBox);
 };
 
 } // namespace Core

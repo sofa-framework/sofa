@@ -95,7 +95,7 @@ void TriangleFEMForceField<DataTypes>::addForce()
 {
     assert(this->_object);
     VecDeriv& f = *this->_object->getF();
-    VecCoord& x = *this->_object->getX();
+    const VecCoord& x = *this->_object->getX();
     f.resize(x.size());
 
     if(f_damping.getValue() != 0)
@@ -149,7 +149,7 @@ void TriangleFEMForceField<DataTypes>::addDForce()
     Real h=1;
     assert(this->_object);
     VecDeriv& v = *this->_object->getF();
-    VecDeriv& x = *this->_object->getDx();
+    const VecDeriv& x = *this->_object->getDx();
     v.resize(x.size());
 
     if (f_method.getValue() == SMALL)
@@ -580,7 +580,7 @@ void TriangleFEMForceField<DataTypes>::draw()
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    VecCoord& x = *this->_object->getX();
+    const VecCoord& x = *this->_object->getX();
 
     glDisable(GL_LIGHTING);
 

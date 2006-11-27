@@ -115,25 +115,14 @@ void MeshSpringForceField<DataTypes>::init()
                 for (int i=0; i<n; ++i)
                 {
                     MeshTopology::Cube e = topology->getCube(i);
-                    this->addSpring(sset, e[0], e[1], s, d);
-                    this->addSpring(sset, e[0], e[2], s, d);
-                    this->addSpring(sset, e[0], e[3], s, d);
-                    this->addSpring(sset, e[0], e[4], s, d);
-                    this->addSpring(sset, e[0], e[5], s, d);
-                    this->addSpring(sset, e[1], e[2], s, d);
-                    this->addSpring(sset, e[1], e[3], s, d);
-                    this->addSpring(sset, e[1], e[4], s, d);
-                    this->addSpring(sset, e[1], e[5], s, d);
-                    this->addSpring(sset, e[2], e[3], s, d);
-                    this->addSpring(sset, e[2], e[4], s, d);
-                    this->addSpring(sset, e[2], e[5], s, d);
-                    this->addSpring(sset, e[3], e[4], s, d);
-                    this->addSpring(sset, e[3], e[5], s, d);
-                    this->addSpring(sset, e[4], e[5], s, d);
+                    for (int i=0; i<8; i++)
+                        for (int j=i+1; j<8; j++)
+                            this->addSpring(sset, e[i], e[j], s, d);
                 }
             }
         }
     }
+    this->StiffSpringForceField<DataTypes>::init();
 }
 
 } // namespace Components

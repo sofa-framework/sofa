@@ -23,6 +23,7 @@ void RegularGridSpringForceField<DataTypes>::init()
             trimmedTopology = dynamic_cast<TrimmedRegularGridTopology*>(topology);
         }
     }
+    this->StiffSpringForceField<DataTypes>::init();
 }
 
 template<class DataTypes>
@@ -34,11 +35,11 @@ void RegularGridSpringForceField<DataTypes>::addForce()
     this->StiffSpringForceField<DataTypes>::addForce();
     // Compute topological springs
     VecDeriv& f1 = *this->object1->getF();
-    VecCoord& p1 = *this->object1->getX();
-    VecDeriv& v1 = *this->object1->getV();
+    const VecCoord& p1 = *this->object1->getX();
+    const VecDeriv& v1 = *this->object1->getV();
     VecDeriv& f2 = *this->object2->getF();
-    VecCoord& p2 = *this->object2->getX();
-    VecDeriv& v2 = *this->object2->getV();
+    const VecCoord& p2 = *this->object2->getX();
+    const VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
     m_potentialEnergy = 0;
@@ -248,11 +249,11 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
     this->StiffSpringForceField<DataTypes>::addDForce();
     // Compute topological springs
     VecDeriv& f1  = *this->object1->getF();
-    VecCoord& p1 = *this->object1->getX();
-    VecDeriv& dx1 = *this->object1->getDx();
+    const VecCoord& p1 = *this->object1->getX();
+    const VecDeriv& dx1 = *this->object1->getDx();
     VecDeriv& f2  = *this->object2->getF();
-    VecCoord& p2 = *this->object2->getX();
-    VecDeriv& dx2 = *this->object2->getDx();
+    const VecCoord& p2 = *this->object2->getX();
+    const VecDeriv& dx2 = *this->object2->getDx();
     f1.resize(dx1.size());
     f2.resize(dx2.size());
     if (this->object1==this->object2)
@@ -457,8 +458,8 @@ void RegularGridSpringForceField<DataTypes>::draw()
     // Draw any custom springs
     this->StiffSpringForceField<DataTypes>::draw();
     // Compute topological springs
-    VecCoord& p1 = *this->object1->getX();
-    VecCoord& p2 = *this->object2->getX();
+    const VecCoord& p1 = *this->object1->getX();
+    const VecCoord& p2 = *this->object2->getX();
     glDisable(GL_LIGHTING);
     glColor4f(0.5,0.5,0.5,1);
     glBegin(GL_LINES);

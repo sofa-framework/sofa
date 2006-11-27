@@ -1134,7 +1134,7 @@ void TetrahedronFEMForceField<DataTypes>::draw()
     if (!getContext()->getShowForceFields()) return;
     if (!this->mmodel) return;
 
-    VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mmodel->getX();
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

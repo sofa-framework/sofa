@@ -140,7 +140,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(2);
     glColor4f (1,1,1,1);

@@ -208,7 +208,7 @@ void EdgePressureForceField<DataTypes>::draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-    VecCoord& x = *this->_object->getX();
+    const VecCoord& x = *this->_object->getX();
 
     Real dx=(x[1] -x[0]).norm();
     Real dy=(x[2] -x[1]).norm();

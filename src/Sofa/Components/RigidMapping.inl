@@ -165,7 +165,7 @@ void RigidMapping<BaseMapping>::draw()
     glPointSize(7);
     glColor4f (1,1,0,1);
     glBegin (GL_POINTS);
-    typename Out::VecCoord& x = *this->toModel->getX();
+    const typename Out::VecCoord& x = *this->toModel->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
         GL::glVertexT(x[i]);

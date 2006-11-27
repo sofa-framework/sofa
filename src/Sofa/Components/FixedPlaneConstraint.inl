@@ -92,7 +92,7 @@ template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,1.0,0.5,1);

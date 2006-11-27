@@ -706,7 +706,7 @@ void BarycentricMapping<BaseMapping>::draw()
         GL::glVertexT(out[i]);
     }
     glEnd();
-    InVecCoord& in = *this->fromModel->getX();
+    const InVecCoord& in = *this->fromModel->getX();
     if (mapper!=NULL) mapper->draw(out, in);
 }
 

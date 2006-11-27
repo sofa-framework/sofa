@@ -116,8 +116,8 @@ template<class DataTypes>
 void LagrangianMultiplierFixedConstraint<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
-    VecCoord& p = *this->mmodel->getX();
-    LMVecCoord& lambda = *this->lambda->getX();
+    const VecCoord& p = *this->mmodel->getX();
+    const LMVecCoord& lambda = *this->lambda->getX();
     glDisable(GL_LIGHTING);
     glColor4f(1,1,0,1);
     glBegin(GL_LINES);

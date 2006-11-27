@@ -19,6 +19,13 @@ namespace Components
 
 using namespace Common;
 
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class DataTypes>
+class SpringForceFieldInternalData
+{
+public:
+};
+
 template<class DataTypes>
 class SpringForceField : public Core::InteractionForceField, public Abstract::VisualModel
 {
@@ -50,23 +57,12 @@ protected:
 
     std::vector<Spring> springs;
     class Loader;
-    void init(const char *filename);
 
-    void addSpringForce(double& potentialEnergy, VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring);
+    SpringForceFieldInternalData<DataTypes> data;
+
+    void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
 
 public:
-    SpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2, const char* filename)
-        : object1(object1), object2(object2)
-    {
-        init(filename);
-    }
-
-    SpringForceField(Core::MechanicalModel<DataTypes>* object, const char* filename)
-        : object1(object), object2(object)
-    {
-        init(filename);
-    }
-
     SpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
         : object1(object1), object2(object2)
     {
@@ -77,10 +73,14 @@ public:
     {
     }
 
+    bool load(const char *filename);
+
     Core::MechanicalModel<DataTypes>* getObject1() { return object1; }
     Core::MechanicalModel<DataTypes>* getObject2() { return object2; }
     Core::BasicMechanicalModel* getMechModel1() { return object1; }
     Core::BasicMechanicalModel* getMechModel2() { return object2; }
+
+    virtual void init();
 
     virtual void addForce();
 

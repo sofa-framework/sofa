@@ -60,7 +60,7 @@ template<class DataTypes>
 void PlaneForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
-    VecCoord& p1 = *this->mmodel->getX();
+    const VecCoord& p1 = *this->mmodel->getX();
     glDisable(GL_LIGHTING);
     glColor4f(1,0,0,1);
     glBegin(GL_LINES);

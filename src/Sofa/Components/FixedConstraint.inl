@@ -48,7 +48,20 @@ FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::removeConstraint(int in
     return this;
 }
 
-// -- Mass interface
+// -- Constraint interface
+
+
+template <class DataTypes>
+void FixedConstraint<DataTypes>::init()
+{
+    this->Core::Constraint<DataTypes>::init();
+    // sort indices and remove duplicates by copying them to a std::set
+    //SetIndex& indices = *f_indices.beginEdit();
+    //std::set<int> tmpset(indices.begin(), indices.end());
+    //indices = SetIndex(tmpset.begin(),tmpset.end());
+    //f_indices.endEdit();
+}
+
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
@@ -122,7 +135,7 @@ void FixedConstraint<DataTypes>::draw()
 {
     if (!getContext()->
         getShowBehaviorModels()) return;
-    VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mmodel->getX();
     //std::cerr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<endl;
     glDisable (GL_LIGHTING);
     glPointSize(10);

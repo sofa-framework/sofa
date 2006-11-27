@@ -36,21 +36,11 @@ protected:
     std::vector<Mat3> dfdx;
     double m_potentialEnergy;
 
-    void addSpringForce(double& potentialEnergy, VecDeriv& f1, VecCoord& p1, VecDeriv& v1, VecDeriv& f2, VecCoord& p2, VecDeriv& v2, int i, const Spring& spring);
+    void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
 
-    void addSpringDForce(VecDeriv& f1, VecCoord& p1, VecDeriv& dx1, VecDeriv& f2, VecCoord& p2, VecDeriv& dx2, int i, const Spring& spring);
+    void addSpringDForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& dx1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& dx2, int i, const Spring& spring);
 
 public:
-    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2, const char* filename)
-        : SpringForceField<DataTypes>(object1, object2, filename)
-    {
-    }
-
-    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object, const char* filename)
-        : SpringForceField<DataTypes>(object, filename)
-    {
-    }
-
     StiffSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
         : SpringForceField<DataTypes>(object1, object2)
     {
@@ -60,6 +50,8 @@ public:
         : SpringForceField<DataTypes>(object)
     {
     }
+
+    virtual void init();
 
     virtual void addForce();
 

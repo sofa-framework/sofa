@@ -274,7 +274,7 @@ void SPHFluidForceField<DataTypes>::draw()
     if (!getContext()->getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw();
-    VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mmodel->getX();
     glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
     glDepthMask(0);

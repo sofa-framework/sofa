@@ -51,20 +51,20 @@ template<class T>
 class ExtVector
 {
 public:
-    typedef T              data_type;
+    typedef T              value_type;
     typedef unsigned int   size_type;
 
 protected:
-    data_type* data;
-    size_type maxsize;
-    size_type cursize;
+    value_type* data;
+    size_type   maxsize;
+    size_type   cursize;
 
 public:
     ExtVector() : data(NULL), maxsize(0), cursize(0) {}
     virtual ~ExtVector() {}
-    void setData(data_type* d, size_type s) { data=d; maxsize=s; cursize=s; }
-    data_type& operator[](size_type i) { return data[i]; }
-    const data_type& operator[](size_type i) const { return data[i]; }
+    void setData(value_type* d, size_type s) { data=d; maxsize=s; cursize=s; }
+    value_type& operator[](size_type i) { return data[i]; }
+    const value_type& operator[](size_type i) const { return data[i]; }
     size_type size() const { return cursize; }
     bool empty() const { return cursize==0; }
     virtual void resize(size_type size)

@@ -17,11 +17,11 @@ void RepulsiveSpringForceField<DataTypes>::addForce()
     assert(this->object2);
     this->dfdx.resize(this->springs.size());
     VecDeriv& f1 = *this->object1->getF();
-    VecCoord& p1 = *this->object1->getX();
-    VecDeriv& v1 = *this->object1->getV();
+    const VecCoord& p1 = *this->object1->getX();
+    const VecDeriv& v1 = *this->object1->getV();
     VecDeriv& f2 = *this->object2->getF();
-    VecCoord& p2 = *this->object2->getX();
-    VecDeriv& v2 = *this->object2->getV();
+    const VecCoord& p2 = *this->object2->getX();
+    const VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
     for (unsigned int i=0; i<this->springs.size(); i++)

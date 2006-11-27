@@ -136,9 +136,9 @@ template<class DataTypes>
 void LagrangianMultiplierAttachConstraint<DataTypes>::draw()
 {
     if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
-    VecCoord& p1 = *this->object1->getX();
-    VecCoord& p2 = *this->object2->getX();
-    LMVecCoord& lambda = *this->lambda->getX();
+    const VecCoord& p1 = *this->object1->getX();
+    const VecCoord& p2 = *this->object2->getX();
+    const LMVecCoord& lambda = *this->lambda->getX();
     glDisable(GL_LIGHTING);
 
     glColor4f(1,0,0,1);
