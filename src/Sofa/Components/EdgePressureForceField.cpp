@@ -42,7 +42,7 @@ template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForce
 
 template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 {
-    std::cerr << "initializing EdgePressureForceField" << std::endl;
+    //std::cerr << "initializing EdgePressureForceField" << std::endl;
 
     _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->_object->getContext()->getTopology());
 
@@ -118,7 +118,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 _initialPoints[edgeInfo[i].index[1]]).norm();
 
         edgeInfo[i].force=pressure*edgeInfo[i].length;
-        std::cerr<< "force=" << edgeInfo[i].force<< std::endl;
+        //	std::cerr<< "force=" << edgeInfo[i].force<< std::endl;
 
     }
 }
@@ -128,11 +128,11 @@ template<class DataTypes>
 void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 {
     unsigned int i;
-    std::cerr<< "pressure=" << pressure << std::endl;
+//	std::cerr<< "pressure=" << pressure << std::endl;
     for(i=0; i<nbEdges; i++ )
     {
         edgeInfo[i].force=pressure*edgeInfo[i].length;
-        std::cerr<< "force=" << edgeInfo[i].force<< std::endl;
+        //	std::cerr<< "force=" << edgeInfo[i].force<< std::endl;
 
     }
 }
@@ -190,7 +190,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
                 if (edgeSet.find(std::pair<unsigned int,unsigned int>(k,l))==edgeSet.end())
                 {
                     edgeSet.insert(std::pair<unsigned int,unsigned int>(k,l));
-                    std::cerr<<"adding vertices : "<< k << "and " << l << std::endl;
+//					std::cerr<<"adding vertices : "<< k << "and " << l << std::endl;
                     addEdgePressure((Index) k,(Index) l);
                 }
             }
