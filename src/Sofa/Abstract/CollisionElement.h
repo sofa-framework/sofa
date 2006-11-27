@@ -106,7 +106,8 @@ public:
     /// Return the list (as a vector of pointers to iterators) of <i>children</i> of this element.
     ///
     /// @see CollisionModel::getChildrenOf
-    /// @todo Remove or explain the redundancy with getInternalChildren/getExternalChildren
+    /// @ Different from getInternalChildren/getExternalChildren since this function is
+    /// focused in non-binary trees.
     std::vector<CollisionElementIterator*> getChildren() const;
 
     /// Test if this element is a leaf.
@@ -201,7 +202,8 @@ std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIt
 template<class Model>
 std::vector<CollisionElementIterator*> TCollisionElementIterator<Model>::getChildren() const
 {
-    return model->getChildrenOf(index);
+    std::vector<CollisionElementIterator*> children = model->getChildrenOf(index);
+    return children;
 }
 
 } // namespace Abstract

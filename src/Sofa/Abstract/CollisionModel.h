@@ -146,7 +146,8 @@ public:
     /// Return the list (as a vector of pointers to iterators) of <i>children</i> of
     /// an element.
     ///
-    /// @todo Remove or explain the redundancy with getInternalChildren/getExternalChildren
+    /// @getInternalChildren/getExternalChildren are mainly used for binary trees.
+    /// @getChildrenOf is focused in non binary trees.
     /// @todo Return a reference of a pointer to a vector to remove extra dynamic allocations during computations
     ///
     /// Default to an empty vector
@@ -155,20 +156,6 @@ public:
         std::vector<CollisionElementIterator*> children;
         return children;
     }
-
-
-    /// Return the root node of the hierarchy.
-    ///
-    /// Default to NULL
-    ///
-    /// @todo Rename to getRootElement to unify terminology
-    /// @todo Why returning a <i>pointer</i> to an iterator?
-    /// @todo Why is it virtual? It should always correspond to getFirst()->begin()...
-    //virtual CollisionElementIterator* getRootNode( void )
-    //{
-    //	CollisionElementIterator* root = NULL;
-    //	return root;
-    //}
 
     /// Test if this model can collide with another model.
     ///
