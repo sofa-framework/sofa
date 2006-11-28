@@ -3,6 +3,10 @@
 
 #ifdef SOFA_HAVE_PNG
 #include <png.h>
+#ifdef _MSC_VER
+#pragma comment(lib,"libpng.lib")
+#pragma comment(lib,"zlib.lib")
+#endif
 #endif
 
 namespace Sofa

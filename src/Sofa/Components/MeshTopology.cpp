@@ -109,7 +109,10 @@ bool MeshTopology::load(const char* filename)
             if (facet.size()==2)
             {
                 // Line
-                loader.addLine(facet[0],facet[1]);
+                if (facet[0]<facet[1])
+                    loader.addLine(facet[0],facet[1]);
+                else
+                    loader.addLine(facet[1],facet[0]);
             }
             else if (facet.size()==4)
             {
@@ -134,7 +137,10 @@ bool MeshTopology::load(const char* filename)
                     }
                     else if (edges.count(std::make_pair(i2,i1))==0)
                     {
-                        loader.addLine(i1,i2);
+                        if (i1>i2)
+                            loader.addLine(i1,i2);
+                        else
+                            loader.addLine(i2,i1);
                         edges.insert(std::make_pair(i1,i2));
                     }
                 }

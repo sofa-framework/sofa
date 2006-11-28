@@ -91,7 +91,8 @@ void SphereModel::draw(int index)
     Vector3 p = (*getX())[index];
     glPushMatrix();
     glTranslated(p[0], p[1], p[2]);
-    glutWireSphere(radius[index], 16, 8);
+    //glutWireSphere(radius[index], 16, 8);
+    glutSolidSphere(radius[index], 32,16);
     glPopMatrix();
 }
 
@@ -99,7 +100,9 @@ void SphereModel::draw()
 {
     if (isActive() && getContext()->getShowCollisionModels())
     {
-        glDisable(GL_LIGHTING);
+        glEnable(GL_LIGHTING);
+        glEnable(GL_COLOR_MATERIAL);
+        //glDisable(GL_LIGHTING);
         if (isStatic())
             glColor3f(0.5, 0.5, 0.5);
         else
@@ -108,6 +111,7 @@ void SphereModel::draw()
         {
             draw(i);
         }
+        glDisable(GL_LIGHTING);
     }
     if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();

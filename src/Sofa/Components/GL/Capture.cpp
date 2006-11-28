@@ -62,6 +62,7 @@ bool Capture::saveScreen()
 #endif
         }
         while (stat(filename.c_str(),&st)==0);
+        counter = c+1;
     }
     else
     {

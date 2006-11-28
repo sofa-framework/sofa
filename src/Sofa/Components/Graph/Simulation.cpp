@@ -216,6 +216,15 @@ void Simulation::exportOBJ(GNode* root, const char* filename, bool exportMTL)
     }
 }
 
+/// Export a scene to XML
+void Simulation::exportXML(GNode* root, const char* filename)
+{
+    if (!root) return;
+    std::ofstream fout(filename);
+    XMLPrintAction act(fout);
+    root->execute(&act);
+}
+
 void Simulation::dumpState( GNode* root, std::ofstream& out )
 {
     out<<root->getTime()<<" ";

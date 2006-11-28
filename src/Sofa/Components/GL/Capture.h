@@ -34,7 +34,7 @@ public:
     int getCounter() const { return counter; }
 
     void setPrefix(const std::string v) { prefix=v; }
-    void setCounter(int v) { counter = v; }
+    void setCounter(int v=-1) { counter = v; }
 
     bool saveScreen(const std::string& filename);
 

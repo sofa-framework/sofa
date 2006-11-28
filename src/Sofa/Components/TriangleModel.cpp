@@ -134,8 +134,8 @@ void TriangleModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
+    //if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
+    //	dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
 }
 
 void TriangleModel::computeBoundingTree(int maxDepth)

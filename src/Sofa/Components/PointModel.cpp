@@ -58,7 +58,7 @@ void PointModel::draw(int index)
 
 void PointModel::draw()
 {
-    if (isActive() && getContext()->getShowCollisionModels())
+    if (0) //isActive() && getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -81,8 +81,8 @@ void PointModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
+    //if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
+    //	dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
 }
 
 void PointModel::computeBoundingTree(int maxDepth)

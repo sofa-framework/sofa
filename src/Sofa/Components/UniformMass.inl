@@ -26,6 +26,8 @@ using namespace Common;
 template <>
 void UniformMass<RigidTypes, RigidMass>::draw();
 
+template <>
+double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::VecCoord& x );
 
 
 template <class DataTypes, class MassType>

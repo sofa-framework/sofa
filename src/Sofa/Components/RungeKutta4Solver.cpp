@@ -15,6 +15,7 @@ using namespace Common;
 
 void RungeKutta4Solver::solve(double dt)
 {
+    //std::cout << "RK4 Init\n";
     //Abstract::BaseContext* group = getContext();
     OdeSolver* group = this;
     MultiVector pos(group, VecId::position());
@@ -37,10 +38,12 @@ void RungeKutta4Solver::solve(double dt)
     double startTime = group->getTime();
 
     //First step
-    group->computeAcc (startTime, k1a, pos, vel);
+    //std::cout << "RK4 Step 1\n";
     k1v = vel;
+    group->computeAcc (startTime, k1a, pos, vel);
 
     //Step 2
+    //std::cout << "RK4 Step 2\n";
     newX = pos;
     newV = vel;
 
@@ -51,6 +54,7 @@ void RungeKutta4Solver::solve(double dt)
     group->computeAcc ( startTime+stepBy2, k2a, newX, newV);
 
     // step 3
+    //std::cout << "RK4 Step 3\n";
     newX = pos;
     newV = vel;
 
@@ -61,6 +65,7 @@ void RungeKutta4Solver::solve(double dt)
     group->computeAcc ( startTime+stepBy2, k3a, newX, newV);
 
     // step 4
+    //std::cout << "RK4 Step 4\n";
     newX = pos;
     newV = vel;
     newX.peq(k3v, dt);
@@ -69,6 +74,7 @@ void RungeKutta4Solver::solve(double dt)
     k4v = newV;
     group->computeAcc( startTime+dt, k4a, newX, newV);
 
+    //std::cout << "RK4 Final\n";
     pos.peq(k1v,stepBy6);
     vel.peq(k1a,stepBy6);
     pos.peq(k2v,stepBy3);

@@ -52,6 +52,9 @@ public:
     /// Export a scene to an OBJ 3D Scene
     static void exportOBJ(GNode* root, const char* filename, bool exportMTL = true);
 
+    /// Export a scene to XML
+    static void exportXML(GNode* root, const char* filename);
+
     /// Dump the current state in the given stream
     static void dumpState( GNode* root, std::ofstream& out );
 

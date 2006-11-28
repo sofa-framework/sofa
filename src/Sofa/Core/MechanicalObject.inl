@@ -398,7 +398,7 @@ void MechanicalObject<DataTypes>::vAlloc(VecId v)
         std::cerr << "Invalid alloc operation ("<<v<<")\n";
         return;
     }
-    vOp(v); // clear vector
+    //vOp(v); // clear vector
 }
 
 template <class DataTypes>

@@ -43,11 +43,6 @@ void UniformMass<RigidTypes, RigidMass>::draw()
     }
 }
 
-SOFA_DECL_CLASS(UniformMass)
-
-template class UniformMass<Vec3dTypes,double>;
-template class UniformMass<Vec3fTypes,float>;
-
 // specialization for rigid bodies
 template <>
 double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::VecCoord& x )
@@ -65,6 +60,10 @@ double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::
     return e;
 }
 
+SOFA_DECL_CLASS(UniformMass)
+
+template class UniformMass<Vec3dTypes,double>;
+template class UniformMass<Vec3fTypes,float>;
 template class UniformMass<RigidTypes,RigidMass>;
 
 namespace Common   // \todo Why this must be inside Common namespace

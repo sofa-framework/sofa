@@ -105,18 +105,25 @@ void SpringForceField<DataTypes>::draw()
 //         cerr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<endl;
     glDisable(GL_LIGHTING);
     bool external = (this->object1!=this->object2);
-    if (!external)
-        glColor4f(1,1,1,1);
+    //if (!external)
+    //	glColor4f(1,1,1,1);
     glBegin(GL_LINES);
     for (unsigned int i=0; i<this->springs.size(); i++)
     {
+        Real d = (p2[this->springs[i].m2]-p1[this->springs[i].m1]).norm();
         if (external)
         {
-            Real d = (p2[this->springs[i].m2]-p1[this->springs[i].m1]).norm();
             if (d<this->springs[i].initpos*0.9999)
                 glColor4f(1,0,0,1);
             else
                 glColor4f(0,1,0,1);
+        }
+        else
+        {
+            if (d<this->springs[i].initpos*0.9999)
+                glColor4f(1,0.5f,0,1);
+            else
+                glColor4f(0,1,0.5f,1);
         }
         glVertex3d(p1[this->springs[i].m1][0],p1[this->springs[i].m1][1],p1[this->springs[i].m1][2]);
         glVertex3d(p2[this->springs[i].m2][0],p2[this->springs[i].m2][1],p2[this->springs[i].m2][2]);

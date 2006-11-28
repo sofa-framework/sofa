@@ -96,7 +96,8 @@ void LineModel::draw()
 
         for (int i=0; i<size; i++)
         {
-            draw(i);
+            if (elems[i].i1 < elems[i].i2) // only display non-edge lines
+                draw(i);
         }
 
         glColor3f(1.0f, 1.0f, 1.0f);

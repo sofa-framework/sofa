@@ -277,6 +277,7 @@ void SPHFluidForceField<DataTypes>::draw()
     const VecCoord& x = *this->mmodel->getX();
     glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDepthMask(0);
     glColor3f(0,1,1);
     glLineWidth(1);
