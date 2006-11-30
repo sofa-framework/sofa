@@ -34,7 +34,7 @@ void Axis::initDraw()
     double Lmax = L[0];
     if (L[1]>Lmax) Lmax = L[1];
     if (L[2]>Lmax) Lmax = L[2];
-    if (Lmax > Lmin*2)
+    if (Lmax > Lmin*2 && Lmin > 0.0)
         Lmax = Lmin*2;
     if (Lmax > Lmin*2)
         Lmin = Lmax/1.414;
@@ -54,40 +54,47 @@ void Axis::initDraw()
     glColor3f(1,1,1);
     gluSphere(quadratic,l[0],quadricDiscretisation,quadricDiscretisation/2);
 
-    // X Axis
-    glColor3f(1,0,0);
-    glRotatef(90,0,1,0);
-    gluCylinder(quadratic,l[0],l[0],L[0],quadricDiscretisation,quadricDiscretisation);
-    glRotatef(-90,0,1,0);
+    if (L[0] > 0.0)
+    {
+        // X Axis
+        glColor3f(1,0,0);
+        glRotatef(90,0,1,0);
+        gluCylinder(quadratic,l[0],l[0],L[0],quadricDiscretisation,quadricDiscretisation);
+        glRotatef(-90,0,1,0);
 
-    glTranslated(L[0],0,0);
-    glRotatef(90,0,1,0);
-    gluDisk(quadratic,0,lc[0],quadricDiscretisation,quadricDiscretisation);
-    gluCylinder(quadratic,lc[0],0,Lc[0],quadricDiscretisation,quadricDiscretisation);
-    glRotatef(-90,0,1,0);
-    glTranslated(-L[0],0,0);
+        glTranslated(L[0],0,0);
+        glRotatef(90,0,1,0);
+        gluDisk(quadratic,0,lc[0],quadricDiscretisation,quadricDiscretisation);
+        gluCylinder(quadratic,lc[0],0,Lc[0],quadricDiscretisation,quadricDiscretisation);
+        glRotatef(-90,0,1,0);
+        glTranslated(-L[0],0,0);
+    }
+    if (L[1] > 0.0)
+    {
+        // Y Axis
+        glColor3f(0,1,0);
+        glRotatef(-90,1,0,0);
+        gluCylinder(quadratic,l[1],l[1],L[1],quadricDiscretisation,quadricDiscretisation);
+        glRotatef(90,1,0,0);
 
-    // Y Axis
-    glColor3f(0,1,0);
-    glRotatef(-90,1,0,0);
-    gluCylinder(quadratic,l[1],l[1],L[1],quadricDiscretisation,quadricDiscretisation);
-    glRotatef(90,1,0,0);
+        glTranslated(0,L[1],0);
+        glRotatef(-90,1,0,0);
+        gluDisk(quadratic,0,lc[1],quadricDiscretisation,quadricDiscretisation);
+        gluCylinder(quadratic,lc[1],0,Lc[1],quadricDiscretisation,quadricDiscretisation);
+        glRotatef(90,1,0,0);
+        glTranslated(0,-L[1],0);
+    }
+    if (L[2] > 0.0)
+    {
+        // Z Axis
+        glColor3f(0,0,1);
+        gluCylinder(quadratic,l[2],l[2],L[2],quadricDiscretisation,quadricDiscretisation);
 
-    glTranslated(0,L[1],0);
-    glRotatef(-90,1,0,0);
-    gluDisk(quadratic,0,lc[1],quadricDiscretisation,quadricDiscretisation);
-    gluCylinder(quadratic,lc[1],0,Lc[1],quadricDiscretisation,quadricDiscretisation);
-    glRotatef(90,1,0,0);
-    glTranslated(0,-L[1],0);
-
-    // Z Axis
-    glColor3f(0,0,1);
-    gluCylinder(quadratic,l[2],l[2],L[2],quadricDiscretisation,quadricDiscretisation);
-
-    glTranslated(0,0,L[2]);
-    gluDisk(quadratic,0,lc[2],quadricDiscretisation,quadricDiscretisation);
-    gluCylinder(quadratic,lc[2],0,Lc[2],quadricDiscretisation,quadricDiscretisation);
-    glTranslated(0,0,-L[2]);
+        glTranslated(0,0,L[2]);
+        gluDisk(quadratic,0,lc[2],quadricDiscretisation,quadricDiscretisation);
+        gluCylinder(quadratic,lc[2],0,Lc[2],quadricDiscretisation,quadricDiscretisation);
+        glTranslated(0,0,-L[2]);
+    }
     glEndList();
 }
 
