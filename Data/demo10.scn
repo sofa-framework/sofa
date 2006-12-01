@@ -15,8 +15,10 @@
 			zmin="-3.5" zmax="3.5"
 			/>
 		<Object type="RegularGridSpringForceField" name="Springs" stiffness="800" damping="8" />
-		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="yellow"/>
-		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Visu">
+			<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="yellow"/>
+			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" />
 			<Object type="BarycentricMapping" />
@@ -33,8 +35,10 @@
 			zmin="-3.5" zmax="3.5"
 			/>
 		<Object type="RegularGridSpringForceField" name="Springs" stiffness="560" damping="5.6" />
-		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="#ff8000" />
-		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Visu">
+			<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="#ff8000" />
+			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" />
 			<Object type="BarycentricMapping" />
@@ -51,8 +55,10 @@
 			zmin="-3.5" zmax="3.5"
 			/>
 		<Object type="RegularGridSpringForceField" name="Springs" stiffness="400" damping="4" />
-		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="red" />
-		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Visu">
+			<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="red" />
+			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" />
 			<Object type="BarycentricMapping" />
@@ -69,8 +75,10 @@
 			zmin="-3.5" zmax="3.5"
 			/>
 		<Object type="RegularGridSpringForceField" name="Springs" stiffness="280" damping="2.8" />
-		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="#801080" />
-		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Visu">
+			<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="#801080" />
+			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" />
 			<Object type="BarycentricMapping" />
@@ -88,8 +96,10 @@
 			zmin="-3.5" zmax="3.5"
 			/>
 		<Object type="RegularGridSpringForceField" name="Springs" stiffness="200" damping="2" />
-		<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="cyan" />
-		<Object type="BarycentricMapping" object1=".." object2="Visual" />
+		<Node name="Visu">
+			<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" color="cyan" />
+			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
+		</Node>
 		<Node name="Surf">
 			<Object type="Sphere" filename="CollisionModels/smCube27b.sph" />
 			<Object type="BarycentricMapping" />
