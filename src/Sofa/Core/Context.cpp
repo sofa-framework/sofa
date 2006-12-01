@@ -292,8 +292,30 @@ void Context::setShowNormals(bool val)
 
 void Context::copyContext(const Context& c)
 {
-    //*static_cast<ContextData*>(this) = *static_cast<const ContextData *>(&c);
-    *this = c;
+    // *static_cast<ContextData*>(this) = *static_cast<const ContextData *>(&c);
+
+    // BUGFIX 12/01/06 (Jeremie A.): Can't use operator= on the class as it will copy other data in the BaseContext class (such as name)...
+    // *this = c;
+
+    worldGravity_ = c.worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    dt_ = c.dt_;
+    time_ = c.time_;
+    animate_ = c.animate_;
+    showCollisionModels_ = c.showCollisionModels_;
+    showBoundingCollisionModels_ = c.showBoundingCollisionModels_;
+    showBehaviorModels_ = c.showBehaviorModels_;
+    showVisualModels_ = c.showVisualModels_;
+    showMappings_ = c.showMappings_;
+    showMechanicalMappings_ = c.showMechanicalMappings_;
+    showForceFields_ = c.showForceFields_;
+    showInteractionForceFields_ = c.showInteractionForceFields_;
+    showWireFrame_ = c.showWireFrame_;
+    showNormals_ = c.showNormals_;
+    multiThreadSimulation_ = c.multiThreadSimulation_;
+
+    localFrame_ = c.localFrame_;
+    spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
+    velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
 }
 
 using std::endl;
