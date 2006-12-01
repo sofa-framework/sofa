@@ -124,13 +124,27 @@ Sofa::Core::Context* GNode::getParentContext()
 /// Mechanical Degrees-of-Freedom
 Abstract::BaseObject* GNode::getMechanicalModel() const
 {
-    return this->mechanicalModel;
+    // return this->mechanicalModel;
+    // CHANGE 12/01/06 (Jeremie A.): Inherit parent mechanical model if no local model is defined
+    if (this->mechanicalModel)
+        return this->mechanicalModel;
+    else if (parent)
+        return parent->getMechanicalModel();
+    else
+        return NULL;
 }
 
 /// Topology
 Abstract::BaseObject* GNode::getTopology() const
 {
-    return this->topology;
+    // return this->topology;
+    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
+    if (this->topology)
+        return this->topology;
+    else if (parent)
+        return parent->getTopology();
+    else
+        return NULL;
 }
 /// Topology
 Abstract::BaseObject* GNode::getMainTopology() const
@@ -142,7 +156,14 @@ Abstract::BaseObject* GNode::getMainTopology() const
         if (basicTopology[i]->isMainTopology()==true)
             main=basicTopology[i];
     }
-    return main;
+    // return main;
+    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
+    if (main)
+        return main;
+    else if (parent)
+        return parent->getMainTopology();
+    else
+        return NULL;
 }
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool GNode::addObject(BaseObject* obj)
