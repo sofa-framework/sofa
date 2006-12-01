@@ -1,9 +1,9 @@
 #ifndef SOFA_COMPONENTS_POINTSETTOPOLOGY_H
 #define SOFA_COMPONENTS_POINTSETTOPOLOGY_H
 
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <vector>
-#include <string>
+//#include <string>
 #include <Sofa/Core/BasicTopology.h>
 #include <Sofa/Core/MechanicalObject.h>
 #include <Sofa/Components/Common/fixed_array.h>
@@ -14,16 +14,6 @@ namespace Sofa
 namespace Components
 {
 
-using namespace Common;
-using namespace Sofa::Core;
-
-/*
-#define VERTEXSWAP_CODE 10
-#define VERTEXADDED_CODE 11
-#define VERTEXREMOVED_CODE 12
-#define VERTEXRENUMBERING_CODE 13
-*/
-
 
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
@@ -32,13 +22,13 @@ using namespace Sofa::Core;
 
 
 /** indicates that the indices of two points are being swapped */
-class PointsIndicesSwap : public TopologyChange
+class PointsIndicesSwap : public Core::TopologyChange
 {
 
 public:
     unsigned int index[2];
 
-    PointsIndicesSwap(const unsigned int i1,const unsigned int i2) : TopologyChange(POINTSINDICESSWAP)
+    PointsIndicesSwap(const unsigned int i1,const unsigned int i2) : Core::TopologyChange(Core::POINTSINDICESSWAP)
     {
         index[0]=i1;
         index[1]=i2;
@@ -49,15 +39,17 @@ public:
 
 
 /** indicates that some points were added */
-class PointsAdded : public TopologyChange
+class PointsAdded : public Core::TopologyChange
 {
 
 public:
     unsigned int nVertices;
 
-    PointsAdded(const unsigned int nV) : TopologyChange(POINTSADDED), nVertices(nV)
-    {
-    }
+    std::vector< std::vector< unsigned int > > ancestorsList;
+
+    PointsAdded(const unsigned int nV, const std::vector< std::vector< unsigned int > > &ancestors = (std::vector< std::vector< unsigned int > >)0)
+        : Core::TopologyChange(Core::POINTSADDED), nVertices(nV), ancestorsList(ancestors)
+    { }
 
     unsigned int getNbAddedVertices() const
     {
@@ -69,14 +61,14 @@ public:
 
 
 /** indicates that some points are about to be removed */
-class PointsRemoved : public TopologyChange
+class PointsRemoved : public Core::TopologyChange
 {
 
 public:
     std::vector<unsigned int> removedVertexArray;
 
 public:
-    PointsRemoved(std::vector<unsigned int> _vArray) : TopologyChange(POINTSREMOVED), removedVertexArray(_vArray)
+    PointsRemoved(const std::vector<unsigned int> _vArray) : Core::TopologyChange(Core::POINTSREMOVED), removedVertexArray(_vArray)
     {
     }
 
@@ -90,13 +82,13 @@ public:
 
 
 /** indicates that the indices of all points have been reordered */
-class PointsRenumbering : public TopologyChange
+class PointsRenumbering : public Core::TopologyChange
 {
 
 public:
     std::vector<unsigned int> indexArray;
 
-    PointsRenumbering() : TopologyChange(POINTSRENUMBERING) {}
+    PointsRenumbering(const std::vector< unsigned int > &indices = (std::vector< unsigned int >)0) : Core::TopologyChange(Core::POINTSRENUMBERING), indexArray(indices) {}
 
     const std::vector<unsigned int> &getIndexArray() const
     {
@@ -114,7 +106,7 @@ public:
 
 /** a class that stores a set of points and provides access
 to each point */
-class PointSetTopologyContainer : public TopologyContainer
+class PointSetTopologyContainer : public Core::TopologyContainer
 {
 
 private:
@@ -175,9 +167,9 @@ public:
      */
     unsigned int getDOFIndex(const int i) const;
 
-    PointSetTopologyContainer(BasicTopology *top);
+    PointSetTopologyContainer(Core::BasicTopology *top);
 
-    PointSetTopologyContainer(BasicTopology *top, std::vector<unsigned int> &DOFIndex);
+    PointSetTopologyContainer(Core::BasicTopology *top, std::vector<unsigned int> &DOFIndex);
 
     template <typename DataTypes>
     friend class PointSetTopologyModifier;
@@ -192,7 +184,7 @@ public:
  * A class that can apply basic transformations on a set of points.
  */
 template<class TDataTypes>
-class PointSetTopologyModifier : public TopologyModifier
+class PointSetTopologyModifier : public Core::TopologyModifier
 {
 
 public:
@@ -202,7 +194,7 @@ public:
     /** \brief Swap points i1 and i2.
      *
      */
-    void swapPoints(const int i1,const int i2);
+    virtual void swapPoints(const int i1,const int i2);
 
 
 
@@ -210,7 +202,7 @@ public:
      *
      * \sa addPointsProcess
      */
-    void addPointsWarning(const unsigned int nPoints);
+    void addPointsWarning(const unsigned int nPoints, const std::vector< std::vector< unsigned int > > &ancestors = (std::vector< std::vector< unsigned int > >) 0);
 
 
 
@@ -220,9 +212,18 @@ public:
      *
      * \sa addPointsWarning
      */
-    void addPointsProcess(const unsigned int nPoints, VecCoord &X = (VecCoord &)0, VecCoord &X0 = (VecCoord &)0,
-            VecDeriv &V = (VecDeriv &)0, VecDeriv &V0 = (VecDeriv &)0,
-            VecDeriv &F = (VecDeriv &)0, VecDeriv &DX = (VecDeriv &)0 );
+    virtual void addPointsProcess(const unsigned int nPoints, const VecCoord &X = (VecCoord &)0, const VecCoord &X0 = (VecCoord &)0,
+            const VecDeriv &V = (VecDeriv &)0, const VecDeriv &V0 = (VecDeriv &)0,
+            const VecDeriv &F = (VecDeriv &)0, const VecDeriv &DX = (VecDeriv &)0 );
+
+
+    /** \brief Add some points to this topology.
+     *
+     * Use a list of ancestors to create the new points.
+     *
+     * \sa addPointsWarning
+     */
+    virtual void addPointsProcess(const unsigned int nPoints, const std::vector< std::vector< unsigned int > > &ancestors );
 
 
 
@@ -230,7 +231,7 @@ public:
      *
      * \sa removePointsProcess
      */
-    void removePointsWarning(const unsigned int nPoints, std::vector<unsigned int> &indices);
+    void removePointsWarning(const unsigned int nPoints, const std::vector<unsigned int> &indices);
 
 
 
@@ -241,7 +242,7 @@ public:
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
      * \sa removePointsWarning
      */
-    void removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices);
+    virtual void removePointsProcess(const unsigned int nPoints, const std::vector<unsigned int> &indices);
 
 
 
@@ -249,7 +250,7 @@ public:
      *
      * \see MechanicalObject::renumberValues
      */
-    void renumberPointsProcess( std::vector<unsigned int> &index );
+    virtual void renumberPointsProcess( const std::vector<unsigned int> &index );
 
 };
 
@@ -259,7 +260,7 @@ public:
  * A class that can perform some geometric computation on a set of points.
  */
 template<class DataTypes>
-class PointSetGeometryAlgorithms : public GeometryAlgorithms
+class PointSetGeometryAlgorithms : public Core::GeometryAlgorithms
 {
 
 public:
@@ -269,7 +270,7 @@ public:
 
     typedef typename DataTypes::VecCoord VecCoord;
 
-    PointSetGeometryAlgorithms(BasicTopology *top) : GeometryAlgorithms(top)
+    PointSetGeometryAlgorithms(Core::BasicTopology *top) : GeometryAlgorithms(top)
     {
     }
 
@@ -294,16 +295,16 @@ class PointSetTopology : public Core::BasicTopology
 {
 
 public:
-    MechanicalObject<TDataTypes> *object;
+    Core::MechanicalObject<TDataTypes> *object;
 
     //void createNewVertices() const;
 
     //void removeVertices() const;
 
 public:
-    PointSetTopology(MechanicalObject<TDataTypes> *obj);
+    PointSetTopology(Core::MechanicalObject<TDataTypes> *obj);
 
-    MechanicalObject<TDataTypes> *getDOF() const
+    Core::MechanicalObject<TDataTypes> *getDOF() const
     {
         return object;
     }

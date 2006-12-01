@@ -41,12 +41,12 @@ void PointSetTopologyModifier<TDataTypes>::swapPoints(const int i1,const int i2)
 
 template<class TDataTypes>
 void PointSetTopologyModifier<TDataTypes>::addPointsProcess(const unsigned int nPoints,
-        VecCoord &X  = (VecCoord &)0,
-        VecCoord &X0 = (VecCoord &)0,
-        VecDeriv &V  = (VecDeriv &)0,
-        VecDeriv &V0 = (VecDeriv &)0,
-        VecDeriv &F  = (VecDeriv &)0,
-        VecDeriv &DX = (VecDeriv &)0
+        const VecCoord &X  = (VecCoord &)0,
+        const VecCoord &X0 = (VecCoord &)0,
+        const VecDeriv &V  = (VecDeriv &)0,
+        const VecDeriv &V0 = (VecDeriv &)0,
+        const VecDeriv &F  = (VecDeriv &)0,
+        const VecDeriv &DX = (VecDeriv &)0
                                                            )
 {
     PointSetTopology<TDataTypes> *topology = dynamic_cast<PointSetTopology<TDataTypes> *>m_basicTopology;
@@ -106,11 +106,20 @@ void PointSetTopologyModifier<TDataTypes>::addPointsProcess(const unsigned int n
 }
 
 
+
 template<class TDataTypes>
-void PointSetTopologyModifier<TDataTypes>::addPointsWarning(const unsigned int nPoints)
+void PointSetTopologyModifier<TDataTypes>::addPointsProcess(const unsigned int nPoints, const std::vector< std::vector< unsigned int > > &ancestors)
+{
+    // TODO
+}
+
+
+
+template<class TDataTypes>
+void PointSetTopologyModifier<TDataTypes>::addPointsWarning(const unsigned int nPoints, const std::vector< std::vector< unsigned int > > &ancestors = (std::vector< std::vector< unsigned int > >)0)
 {
     // Warning that vertices just got created
-    PointsAdded e(nPoints);
+    PointsAdded e(nPoints, ancestors);
     addTopologyChange(e);
 }
 
@@ -118,7 +127,7 @@ void PointSetTopologyModifier<TDataTypes>::addPointsWarning(const unsigned int n
 
 
 template<class TDataTypes>
-void PointSetTopologyModifier<TDataTypes>::removePointsWarning(const unsigned int nPoints, std::vector<unsigned int> &indices)
+void PointSetTopologyModifier<TDataTypes>::removePointsWarning(const unsigned int nPoints, const std::vector<unsigned int> &indices)
 {
     // Warning that these vertices will be deleted
     PointsRemoved e(indices);
@@ -128,7 +137,7 @@ void PointSetTopologyModifier<TDataTypes>::removePointsWarning(const unsigned in
 
 
 template<class TDataTypes>
-void PointSetTopologyModifier<TDataTypes>::removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices)
+void PointSetTopologyModifier<TDataTypes>::removePointsProcess(const unsigned int nPoints, const std::vector<unsigned int> &indices)
 {
     PointSetTopology<TDataTypes> *topology = dynamic_cast<PointSetTopology<TDataTypes> *>m_basicTopology;
     if (topology != 0)
@@ -165,7 +174,7 @@ void PointSetTopologyModifier<TDataTypes>::removePointsProcess(const unsigned in
 
 
 template<class TDataTypes>
-void PointSetTopologyModifier<TDataTypes>::renumberPointsProcess( std::vector<unsigned int> &index)
+void PointSetTopologyModifier<TDataTypes>::renumberPointsProcess( const std::vector<unsigned int> &index)
 {
 
     PointSetTopology<TDataTypes> *topology = dynamic_cast<PointSetTopology<TDataTypes> *>m_basicTopology;
