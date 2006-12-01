@@ -99,11 +99,9 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
-    DataTypes::set
-    ( theGravity, g[0], g[1], g[2]);
+    DataTypes::set ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<masses.size(); i++)
     {
-
         e -= theGravity*masses[i]*x[i];
     }
     return e;
@@ -118,8 +116,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
-    DataTypes::set
-    ( theGravity, g[0], g[1], g[2]);
+    DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
     // velocity-based stuff
     Core::Context::SpatialVector vframe = getContext()->getVelocityInWorld();
@@ -130,7 +127,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
     aframe = getContext()->getPositionInWorld().backProjectVector( aframe );
 
     // add weight and inertia force
-    for (unsigned int i=0; i<f.size(); i++)
+    for (unsigned int i=0; i<masses.size(); i++)
     {
         f[i] += theGravity*masses[i] + Core::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
     }
