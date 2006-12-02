@@ -247,33 +247,31 @@ void GNode::initialize()
 {
     //cerr<<"GNode::initialize()"<<endl;
 
-    // this is now done by the InitAction
-    //     for (Sequence<BaseObject>::iterator it = object.begin(); it != object.end(); it++) {
-//         (*it)->init();
-//     }
-
     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
+    /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
     Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();
     for( ; i!=iend && dynamic_cast<OdeSolver*>(*i)==NULL; i++ ) // find the OdeSolver
     {}
     if( i!=iend && !object.empty() ) // found
     {
-        // debug
-//         cerr<<"GNode::initialize(), components to swap: "<<(*object.begin())->getName()<<", "<<(*i)->getName()<<endl;
-
-        object.swap( i, object.begin() ); // put it first
-
-        // debug
-        /*        cerr<<"GNode::initialize(), swapped components: "<<(*object.begin())->getName()<<", "<<(*i)->getName()<<endl;*/
+        // put it first
+        // BUGFIX 01/12/06 (Jeremie A.): do not modify the order of the other objects
+        // object.swap( i, object.begin() );
+        while (i!=object.begin())
+        {
+            Sequence<BaseObject>::iterator i2 = i;
+            --i;
+            object.swap(i, i2);
+        }
     }
 
     //
     updateContext();
 
     // this is now done by the InitAction
-    /*        for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++) {
-    		(*it)->init();
-    	}*/
+    //for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++) {
+    //    (*it)->init();
+    //}
 }
 
 /// Get parent node (or NULL if no hierarchy or for root node)
