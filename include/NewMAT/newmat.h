@@ -12,10 +12,9 @@
 
 
 #ifndef newmat_no_namespace
-namespace NEWMAT { using namespace RBD_COMMON; }
-namespace RBD_LIBRARIES { using namespace NEWMAT; }
-namespace NEWMAT
+namespace NewMAT
 {
+using namespace RBD_COMMON;
 #endif
 
 //#define DO_REPORT                     // to activate REPORT

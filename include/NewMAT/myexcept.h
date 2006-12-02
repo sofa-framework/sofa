@@ -52,6 +52,8 @@
 #include "include.h"
 
 #ifndef newmat_no_namespace
+namespace NewMAT
+{
 namespace RBD_COMMON
 {
 #endif
@@ -435,6 +437,7 @@ public:
 };
 
 #ifndef newmat_no_namespace
+}
 }
 #endif
 

@@ -4,22 +4,22 @@
 
 #ifndef bool_LIB
 #define bool_LIB 0
-
+/*
 #ifndef newmat_no_namespace
-namespace RBD_COMMON
-{
+namespace NewMAT {
+namespace RBD_COMMON {
 #endif
 
 
 class bool
 {
-    int value;
+	int value;
 public:
-    bool(const int b) { value = b ? 1 : 0; }
-    bool(const void* b) { value = b ? 1 : 0; }
-    bool() {}
-    operator int() const { return value; }
-    int operator!() const { return !value; }
+	bool(const int b) { value = b ? 1 : 0; }
+	bool(const void* b) { value = b ? 1 : 0; }
+	bool() {}
+	operator int() const { return value; }
+	int operator!() const { return !value; }
 };
 
 
@@ -34,8 +34,9 @@ const bool false = 0;
 
 #ifndef newmat_no_namespace
 }
+}
 #endif
-
+*/
 
 
 #endif

@@ -12,7 +12,7 @@
 #include "newmat.h"
 
 #ifndef newmat_no_namespace
-namespace NEWMAT
+namespace NewMAT
 {
 #endif
 

@@ -8,7 +8,7 @@
 #include "newmatnl.h"
 
 #ifndef newmat_no_namespace
-using namespace RBD_LIBRARIES;
+using namespace NewMAT::RBD_LIBRARIES;
 #endif
 
 // This is a demonstration of a special case of the Garch model

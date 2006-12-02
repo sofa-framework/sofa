@@ -4,6 +4,8 @@
 #include "myexcept.h"
 
 #ifndef newmat_no_namespace
+namespace NewMAT
+{
 namespace RBD_COMMON
 {
 #endif
@@ -87,6 +89,7 @@ private:
 
 
 #ifndef newmat_no_namespace
+}
 }
 #endif
 

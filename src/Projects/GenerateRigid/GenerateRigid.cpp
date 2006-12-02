@@ -4,6 +4,8 @@
 #include <math.h>
 #include <Sofa/Components/Common/vector.h>
 
+namespace Projects
+{
 
 bool GenerateRigid(Sofa::Components::Common::RigidMass& mass, Sofa::Components::Common::Vec3d& center, Sofa::Components::Common::Mesh* mesh)
 {
@@ -132,4 +134,6 @@ bool GenerateRigid(Sofa::Components::Common::RigidMass& mass, Sofa::Components::
 
     mass.recalc();
     return true;
+}
+
 }

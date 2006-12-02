@@ -3,8 +3,7 @@
 //#define DONT_DO_NRIC         // activate if running a bounds checker
 
 #ifndef newmat_no_namespace
-//using namespace NEWMAT;
-namespace NEWMAT
+namespace NewMAT
 {
 #endif
 
@@ -28,7 +27,7 @@ void Clean(DiagonalMatrix&, Real);
 
 #ifndef newmat_no_namespace
 }
-using namespace NEWMAT;
+using namespace NewMAT;
 #endif
 
 void trymat1(); void trymat2(); void trymat3();

@@ -288,6 +288,8 @@ using namespace std;
 #endif                                  // _STANDARD_
 
 #ifndef newmat_no_namespace
+namespace NewMAT
+{
 namespace RBD_COMMON
 {
 #endif
@@ -305,19 +307,19 @@ typedef long double long_Real;
 
 
 // This is for (very old) compilers that do not have bool automatically defined
-
+/*
 #ifndef bool_LIB
 #define bool_LIB 0
 
 class bool
 {
-    int value;
+	int value;
 public:
-    bool(const int b) { value = b ? 1 : 0; }
-    bool(const void* b) { value = b ? 1 : 0; }
-    bool() {}
-    operator int() const { return value; }
-    int operator!() const { return !value; }
+	bool(const int b) { value = b ? 1 : 0; }
+	bool(const void* b) { value = b ? 1 : 0; }
+	bool() {}
+	operator int() const { return value; }
+	int operator!() const { return !value; }
 };
 
 
@@ -325,7 +327,7 @@ const bool true = 1;
 const bool false = 0;
 
 #endif
-
+*/
 
 #ifndef newmat_no_namespace
 }
@@ -337,6 +339,7 @@ namespace RBD_COMMON {}
 namespace RBD_LIBRARIES                 // access all my libraries
 {
 using namespace RBD_COMMON;
+}
 }
 #endif
 

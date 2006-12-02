@@ -6,7 +6,7 @@
 #define NEWMATRM_LIB 0
 
 #ifndef newmat_no_namespace
-namespace NEWMAT
+namespace NewMAT
 {
 #endif
 

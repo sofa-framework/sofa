@@ -1,4 +1,9 @@
+#ifndef SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_H
+#define SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_H
+
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
+#endif
 
 #include "SPHFluidForceField.h"
 #include "Sofa/Core/Mapping.h"
@@ -182,3 +187,4 @@ protected:
 
 } // namespace Sofa
 
+#endif

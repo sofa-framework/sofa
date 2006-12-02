@@ -24,11 +24,11 @@
 #  ifdef _MSC_VER
 #    if _MSC_VER >= 1300
 #      include <hash_map>
-#      if _MSC_VER >= 1400
+//#      if _MSC_VER >= 1400
 #        define HASH_NAMESPACE stdext
-#      else
-#        define HASH_NAMESPACE std
-#      endif
+//#      else
+//#        define HASH_NAMESPACE std
+//#      endif
 #    else
 #      include <map>
 #      define HASH_NAMESPACE std

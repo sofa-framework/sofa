@@ -22,6 +22,8 @@
 #include "myexcept.h"                  // for exception handling
 
 #ifndef newmat_no_namespace
+namespace NewMAT
+{
 namespace RBD_COMMON
 {
 #endif
@@ -489,6 +491,7 @@ unsigned long Overflow_error::Select;
 unsigned long Bad_alloc::Select;
 
 #ifndef newmat_no_namespace
+}
 }
 #endif
 

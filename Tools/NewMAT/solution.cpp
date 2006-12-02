@@ -13,6 +13,8 @@
 #include "solution.h"
 
 #ifndef newmat_no_namespace
+namespace NewMAT
+{
 namespace RBD_COMMON
 {
 #endif
@@ -196,6 +198,7 @@ bool R1_R1::IsValid(Real X)
 }
 
 #ifndef newmat_no_namespace
+}
 }
 #endif
 

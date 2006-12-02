@@ -5,6 +5,11 @@
 #include "Sofa/Components/Common/RigidTypes.h"
 #include "Sofa/Components/Common/Vec.h"
 
+namespace Projects
+{
+
 bool GenerateRigid(Sofa::Components::Common::RigidMass& mass, Sofa::Components::Common::Vec3d& center, Sofa::Components::Common::Mesh* mesh);
+
+}
 
 #endif

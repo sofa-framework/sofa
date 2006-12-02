@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     RigidMass mass;
 
 
-    GenerateRigid(mass, center, mesh);
+    Projects::GenerateRigid(mass, center, mesh);
 
     std::ostream* out = &std::cout;
     if (argc >= 3)

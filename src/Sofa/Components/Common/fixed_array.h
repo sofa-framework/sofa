@@ -1,5 +1,3 @@
-#pragma once
-
 /* The following code declares class array,
  * an STL container (as wrapper) for arrays of constant size.
  *
@@ -23,6 +21,12 @@
 // See http://www.boost.org/libs/array for Documentation.
 
 // FF added operator <
+#ifndef SOFA_COMPONENTS_COMMON_FIXED_ARRAY_H
+#define SOFA_COMPONENTS_COMMON_FIXED_ARRAY_H
+
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
+#pragma once
+#endif
 
 #include <cstddef>
 #include <stdexcept>
@@ -244,7 +248,4 @@ inline fixed_array<T, 8> make_array(const T& v0, const T& v1, const T& v2, const
 
 } // namespace Sofa
 
-
-
-
-
+#endif

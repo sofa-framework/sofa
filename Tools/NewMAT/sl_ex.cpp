@@ -10,7 +10,7 @@
 #include "solution.h"
 
 #ifndef newmat_no_namespace
-using namespace RBD_LIBRARIES;
+using namespace NewMAT::RBD_LIBRARIES;
 #endif
 
 

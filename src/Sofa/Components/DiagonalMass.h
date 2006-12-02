@@ -1,4 +1,9 @@
+#ifndef SOFA_COMPONENTS_DIAGONALMASS_H
+#define SOFA_COMPONENTS_DIAGONALMASS_H
+
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
+#endif
 
 #include "Common/Vec3Types.h"
 #include "Sofa/Core/Mass.h"
@@ -76,3 +81,4 @@ public:
 
 } // namespace Sofa
 
+#endif
