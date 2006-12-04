@@ -101,11 +101,11 @@ bool intersectionSingleSphereCube( SingleSphere& sph1, Cube& cube)
         else if ( ctr[i] > Bmax[i] ) dmin += (ctr[i]-Bmax[i])*(ctr[i]-Bmax[i]);
     }
 
-    if (dmin <= r2 ) return TRUE;
-    else return FALSE;
+    if (dmin <= r2 ) return true;
+    else return false;
 }
 
-bool intersectionSingleSphereTriangle( SingleSphere& sph, Triangle&)
+bool intersectionSingleSphereTriangle( SingleSphere& /*sph*/ , Triangle&)
 {
     // todo
     return false;
@@ -315,7 +315,7 @@ DetectionOutput* distCorrectionSingleSphereSingleSphere(SingleSphere& sph1, Sing
     return detection;
 }
 
-DetectionOutput* distCorrectionSingleSphereCube(SingleSphere& sph1, Cube& cube)
+DetectionOutput* distCorrectionSingleSphereCube(SingleSphere& /*sph1*/, Cube& /*cube*/)
 {
     //to do
     return NULL;
