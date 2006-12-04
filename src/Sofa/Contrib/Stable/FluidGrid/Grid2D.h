@@ -33,6 +33,7 @@ public:
     {
         vec2 u; ///< velocity (unit = cell width)
         int type; ///< First particle (or 0 for non-fluid cell)
+        int dummy; ///< Align the structure to 16 bytes
         void clear()
         {
             u.clear();

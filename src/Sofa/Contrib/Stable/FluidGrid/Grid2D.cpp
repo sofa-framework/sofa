@@ -299,7 +299,7 @@ void Grid2D::step_levelset(Grid2D* prev, Grid2D* temp, real dt, real /*diff*/)
         bool known = false;
         real phi0 = temp->levelset[ind];
         real inv_dist2 = 0;
-        for (int dim = 0; dim < 3; dim++)
+        for (int dim = 0; dim < 2; dim++)
         {
             real dist = RMAX;
             bool border = false;
@@ -353,7 +353,7 @@ void Grid2D::step_levelset(Grid2D* prev, Grid2D* temp, real dt, real /*diff*/)
             int c[2]; c[0] = x; c[1] = y;
             real phi1 = levelset[ind];
             phi1+=1;
-            for (int dim = 0; dim < 3; dim++)
+            for (int dim = 0; dim < 2; dim++)
             {
                 if (c[dim]>0)
                 {
@@ -391,7 +391,7 @@ void Grid2D::step_levelset(Grid2D* prev, Grid2D* temp, real dt, real /*diff*/)
         real phi1 = levelset[ind]+1;
         if ((phi1) >= 5) break;
         int c[2] = { ind % nx, (ind / nx) };
-        for (int dim = 0; dim < 3; dim++)
+        for (int dim = 0; dim < 2; dim++)
         {
             if (c[dim]>0)
             {
@@ -671,8 +671,6 @@ void Grid2D::step_surface(const Grid2D* /*prev*/, Grid2D* /*temp*/, real /*dt*/,
         FACE_X1=1<<1,
         FACE_Y0=1<<2,
         FACE_Y1=1<<3,
-        FACE_Z0=1<<4,
-        FACE_Z1=1<<5,
     };
 
     FOR_SURFACE_CELLS(fdata,
@@ -718,7 +716,7 @@ void Grid2D::step_surface(const Grid2D* /*prev*/, Grid2D* /*temp*/, real /*dt*/,
                 case FACE_Y0|FACE_X0|FACE_X1: y0 = x1-x0+y1   ; break;
                 case FACE_Y1|FACE_X0|FACE_X1: y1 = x0-x1+y0   ; break;
 
-                    // 6 faces: can't do anything
+                    // 4 faces: can't do anything
                 case FACE_X0|FACE_X1|FACE_Y0|FACE_Y1: break;
 
                     // Done!
