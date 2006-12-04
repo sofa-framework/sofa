@@ -21,10 +21,7 @@ public:
 
     std::string getName() const;
     void setName(const std::string& n);
-    virtual const char* getTypeName() const
-    {
-        return "UNKNOWN";
-    }
+    virtual const char* getTypeName() const;
 
 protected:
     //std::string name;

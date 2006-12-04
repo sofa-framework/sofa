@@ -139,11 +139,11 @@ inline void shft3(double &a, double &b, double &c, const double d)
 }
 
 
-inline void printerror( const char* msg )
-{
-    std::cerr<<msg<<std::endl;
-    assert(0);
-}
+//inline void printerror( const char* msg )
+//{
+//    std::cerr<<msg<<std::endl;
+//    assert(0);
+//}
 
 
 } // namespace Common
