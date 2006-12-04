@@ -103,22 +103,12 @@ public:
     /// @see CollisionModel::getExternalChildren
     std::pair<CollisionElementIterator,CollisionElementIterator> getExternalChildren() const;
 
-    /// Return the list (as a vector of pointers to iterators) of <i>children</i> of this element.
-    ///
-    /// @see CollisionModel::getChildrenOf
-    /// @ Different from getInternalChildren/getExternalChildren since this function is
-    /// focused in non-binary trees.
-    std::vector<CollisionElementIterator*> getChildren() const;
-
     /// Test if this element is a leaf.
     ///
-    /// @return true if the vector of children as returned by CollisionModel::getChildrenOf is empty.
-    /// @todo What about internal/external children?
+    /// @return true if the element(index) is leaf. i.e. If it is a primitive itself.
     bool isLeaf ( ) const
     {
-        std::vector<CollisionElementIterator*> children = model->getChildrenOf(index);
-        if ( children.size() == 0 ) return true;
-        else return false;
+        return model->isLeaf(index);
     }
 
     /// Test if this element can collide with another element.
@@ -197,13 +187,6 @@ template<class Model>
 std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIterator<Model>::getExternalChildren() const
 {
     return model->getExternalChildren(index);
-}
-
-template<class Model>
-std::vector<CollisionElementIterator*> TCollisionElementIterator<Model>::getChildren() const
-{
-    std::vector<CollisionElementIterator*> children = model->getChildrenOf(index);
-    return children;
 }
 
 } // namespace Abstract

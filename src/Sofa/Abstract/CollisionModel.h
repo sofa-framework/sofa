@@ -143,19 +143,15 @@ public:
         return std::make_pair(CollisionElementIterator(),CollisionElementIterator());
     }
 
-    /// Return the list (as a vector of pointers to iterators) of <i>children</i> of
-    /// an element.
-    ///
-    /// @getInternalChildren/getExternalChildren are mainly used for binary trees.
-    /// @getChildrenOf is focused in non binary trees.
-    /// @todo Return a reference of a pointer to a vector to remove extra dynamic allocations during computations
-    ///
-    /// Default to an empty vector
-    virtual std::vector<CollisionElementIterator*> getChildrenOf( int /*index*/ ) const
+
+    /// Checks if the element(index) is a leaf and a primitive of the collision model
+    /// Default to true since triangle model, line model, etc. does not have this method implemented and they
+    /// are themselves (normally) leaves and primitives
+    virtual bool isLeaf( int /*index*/ ) const
     {
-        std::vector<CollisionElementIterator*> children;
-        return children;
+        return true;  //e.g. Triangle will return true
     }
+
 
     /// Test if this model can collide with another model.
     ///

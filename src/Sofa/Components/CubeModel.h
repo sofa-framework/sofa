@@ -72,6 +72,21 @@ public:
 
     void draw(int index);
 
+    virtual bool isLeaf( int index ) const
+    {
+        Abstract::CollisionElementIterator i1 = elems[index].leaf;
+        if ( i1.valid() )
+        {
+            Abstract::CollisionElementIterator child = i1.getExternalChildren().first;
+            if ( child.valid() )
+            {
+                return false; //it is a leaf of cube model, but it has still children (e.g. triangles)
+            }
+            else	return true;
+        }
+        else
+            return false;
+    }
     // -- VisualModel interface
 
     void draw();

@@ -4,6 +4,7 @@
 #include "Collision/Intersection.h"
 #include "Common/FnDispatcher.h"
 #include "SphereModel.h"
+#include "LineModel.h"
 #include "TriangleModel.h"
 #include "CubeModel.h"
 #include "RayModel.h"
@@ -39,17 +40,21 @@ bool intersectionSphereRay(Sphere&, Ray&);
 
 
 bool intersectionSingleSphereSingleSphere(SingleSphere&, SingleSphere&);
-
+bool intersectionSingleSphereCube(SingleSphere&, Cube&);
 bool intersectionSingleSphereRay(SingleSphere&, Ray&);
-
+bool intersectionSingleSphereTriangle(SingleSphere&, Triangle&);
 //bool intersectionSphereTriangle(Sphere& , Triangle&);
 //bool intersectionTriangleTriangle(Triangle& ,Triangle&);
+
+
 
 Collision::DetectionOutput* distCorrectionCubeCube(Cube&, Cube&);
 Collision::DetectionOutput* distCorrectionSphereSphere(Sphere&, Sphere&);
 Collision::DetectionOutput* distCorrectionSingleSphereSingleSphere(SingleSphere&, SingleSphere&);
 Collision::DetectionOutput* distCorrectionSphereRay(Sphere&, Ray&);
 Collision::DetectionOutput* distCorrectionSingleSphereRay(SingleSphere&, Ray&);
+Collision::DetectionOutput* distCorrectionSingleSphereCube(SingleSphere&, Cube&);
+Collision::DetectionOutput* distCorrectionSingleSphereTriangle(SingleSphere&, Triangle&);
 //Collision::DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&);
 //Collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle&, Triangle&);
 
