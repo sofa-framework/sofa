@@ -377,6 +377,7 @@ typename DataTypes::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned 
         vectorsDeriv.resize(index+1);
     if (vectorsDeriv[index]==NULL)
         vectorsDeriv[index] = new VecDeriv;
+
     return vectorsDeriv[index];
 }
 

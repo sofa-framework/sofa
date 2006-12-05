@@ -48,7 +48,7 @@ void CGImplicitSolver::solve(double dt)
     CGImplicitSolver* group = this;
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
-    MultiVector dx(group, VecId::dx());
+//     MultiVector dx(group, VecId::dx());
     MultiVector f(group, VecId::force());
     MultiVector b(group, V_DERIV);
     MultiVector p(group, V_DERIV);
@@ -60,18 +60,21 @@ void CGImplicitSolver::solve(double dt)
     double h = dt;
     bool printLog = f_printLog.getValue();
 
-
     // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
     group->propagateDx(vel);            // dx = v
     group->computeDf(f);                // f = df/dx v
     b.peq(f,h+f_rayleighStiffness.getValue());      // b = f0 + (h+rs)df/dx v
+
+
     if (f_rayleighMass.getValue() != 0.0)
     {
         f.clear();
-        group->addMdx(f,dx);
+        group->addMdx(f,vel);
         b.peq(f,-f_rayleighMass.getValue());     // b = f0 + (h+rs)df/dx v - rd M v
     }
+
+
     b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
     group->projectResponse(b);          // b is projected to the constrained space
 
@@ -99,6 +102,8 @@ void CGImplicitSolver::solve(double dt)
         //z = r; // no precond
         //rho = r.dot(z);
         rho = r.dot(r);
+
+
         if( nb_iter==1 )
             p = r; //z;
         else
@@ -108,10 +113,22 @@ void CGImplicitSolver::solve(double dt)
             p += r; //z;
         }
 
+// 		cerr<<"p : "<<p<<endl;
+
         // matrix-vector product
         group->propagateDx(p);          // dx = p
+
+
         group->computeDf(q);            // q = df/dx p
+
+
+// 		cerr<<"computeDf(q) : "<<q<<endl;
+
         q *= -h*(h+f_rayleighStiffness.getValue());  // q = -h(h+rs) df/dx p
+//
+// 		cerr<<"-h(h+rs) df/dx p : "<<q<<endl;
+// 		cerr<<"f_rayleighMass.getValue() : "<<f_rayleighMass.getValue()<<endl;
+
         if (f_rayleighMass.getValue()==0.0)
             group->addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
         else
@@ -121,21 +138,28 @@ void CGImplicitSolver::solve(double dt)
             q.peq(q2,(1+h*f_rayleighMass.getValue())); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
         }
         // filter the product to take the constraints into account
+//
+// 	   cerr<<"q : "<<q<<endl;
+
         group->projectResponse(q);     // q is projected to the constrained space
 
+
         double den = p.dot(q);
+
+
         if( fabs(den)<f_smallDenominatorThreshold.getValue() )
         {
             endcond = "threshold";
             if( printLog )
             {
-                cerr<<"CGImplicitSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
+//                 cerr<<"CGImplicitSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
             }
             break;
         }
         alpha = rho/den;
         x.peq(p,alpha);                 // x = x + alpha p
         r.peq(q,-alpha);                // r = r - alpha r
+
 
         double normr = sqrt(r.dot(r));
         if (normr/normb <= f_tolerance.getValue())

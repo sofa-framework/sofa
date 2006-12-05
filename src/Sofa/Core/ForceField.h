@@ -32,11 +32,15 @@ public:
 
     virtual void addDForce();
 
+    virtual void updateStiffness();
+
     virtual double getPotentialEnergy();
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v) = 0;
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx) = 0;
+
+    virtual void updateStiffness(const VecCoord&) {std::cerr<<"ForceField :: function updateStiffness not implemented\n";};
 
     virtual double getPotentialEnergy(const VecCoord& x) =0;
 

@@ -42,6 +42,13 @@ void ForceField<DataTypes>::addDForce()
 }
 
 template<class DataTypes>
+void ForceField<DataTypes>::updateStiffness()
+{
+    if (mmodel)
+        updateStiffness(*mmodel->getX());
+}
+
+template<class DataTypes>
 double ForceField<DataTypes>::getPotentialEnergy()
 {
     if (mmodel)

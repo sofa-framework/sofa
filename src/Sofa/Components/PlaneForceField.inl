@@ -43,9 +43,25 @@ void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1)
     for (unsigned int i=0; i<this->contacts.size(); i++)
     {
         unsigned int p = this->contacts[i];
+        assert(p<dx1.size());
         f1[p] += planeNormal * (-this->stiffness * (dx1[p]*planeNormal));
     }
 }
+
+template<class DataTypes>
+void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& x )
+{
+    this->contacts.clear();
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        Real d = x[i]*planeNormal-planeD;
+        if (d<0)
+        {
+            this->contacts.push_back(i);
+        }
+    }
+}
+
 
 template <class DataTypes>
 double PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&)

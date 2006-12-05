@@ -58,6 +58,8 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
+    virtual void updateStiffness( const VecCoord& x );
+
     // -- VisualModel interface
     void draw();
     void initTextures() { }
