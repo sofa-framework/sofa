@@ -45,6 +45,8 @@ public:
 
     virtual void init();
 
+    virtual void reset();
+
     /// Remove collision response from last step
     virtual void computeCollisionReset();
     /// Detect new collisions. Note that this step must not modify the simulation graph

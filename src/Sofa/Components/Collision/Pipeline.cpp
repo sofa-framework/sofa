@@ -51,6 +51,11 @@ void Pipeline::init()
         intersectionMethod = new DiscreteIntersection;
 }
 
+void Pipeline::reset()
+{
+    computeCollisionReset();
+}
+
 void Pipeline::computeCollisionReset()
 {
     Graph::GNode* root = dynamic_cast<Graph::GNode*>(getContext());

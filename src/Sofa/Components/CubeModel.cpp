@@ -70,6 +70,7 @@ int CubeModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
     this->Abstract::CollisionModel::resize(size+1);
     elems.resize(size+1);
     elems[i].subcells = std::make_pair(subcellsBegin, subcellsEnd);
+    elems[i].leaf = Abstract::CollisionElementIterator();
     updateCube(i);
     return i;
 }
@@ -194,6 +195,11 @@ std::pair<Abstract::CollisionElementIterator,Abstract::CollisionElementIterator>
         Abstract::CollisionElementIterator i2 = i1; ++i2;
         return std::make_pair(i1,i2);
     }
+}
+
+bool CubeModel::isLeaf( int index ) const
+{
+    return elems[index].leaf.valid();
 }
 
 class CubeModel::CubeSortPredicate
