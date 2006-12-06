@@ -49,7 +49,7 @@ void Fluid2D::init()
     fluid->clear(nx,ny);
     fnext->clear(nx,ny);
     ftemp->clear(nx,ny);
-    if (f_height.getValue() > 0)
+    if (f_height.getValue() != 0)
     {
         //fluid->seed(f_height.getValue());
         fluid->seed(f_height.getValue(), f_dir.getValue());
@@ -72,25 +72,25 @@ void Fluid2D::updatePosition(double dt)
 
 void Fluid2D::draw()
 {
+    glPushMatrix();
+    glTranslatef(-(nx-1)*cellwidth/2,-(ny-1)*cellwidth/2,0.0f);
+    glScalef(cellwidth,cellwidth,cellwidth);
     //if (getContext()->getShowBehaviorModels())
     {
-        const real dx = (nx-1)*cellwidth;
-        const real dy = (ny-1)*cellwidth;
         glDisable(GL_LIGHTING);
         glColor4f(1,1,1,1);
         glBegin(GL_LINES);
-        glVertex2f( 0 ,  0 ); glVertex2f( dx,  0 );
-        glVertex2f( 0 , dy ); glVertex2f( dx, dy );
+        glVertex2f(    0,    0 ); glVertex2f( nx-1,    0 );
+        glVertex2f(    0, ny-1 ); glVertex2f( nx-1, ny-1 );
 
-        glVertex2f( 0 ,  0 ); glVertex2f( 0 , dy );
-        glVertex2f( dx,  0 ); glVertex2f( dx, dy );
+        glVertex2f(    0,    0 ); glVertex2f(    0, ny-1 );
+        glVertex2f( nx-1,    0 ); glVertex2f( nx-1, ny-1 );
         glEnd();
     }
     if (getContext()->getShowBehaviorModels())
     {
         glDisable(GL_LIGHTING);
-        const real s = cellwidth*getContext()->getDt()*5;
-        const real d = cellwidth;
+        const real s = getContext()->getDt()*5;
         glBegin(GL_LINES);
         for (int y=0; y<ny; y++)
             for (int x=0; x<nx; x++)
@@ -102,16 +102,16 @@ void Fluid2D::draw()
                 {
                     if (r>0.9) r=0.9;
                     glColor4f(1,0,0,1);
-                    glVertex2f((x-0.5f  )*d, y*d);
-                    glVertex2f((x-0.5f+r)*d, y*d);
+                    glVertex2f(x-0.5f  , y);
+                    glVertex2f(x-0.5f+r, y);
                 }
                 r = u[1]*s;
                 if (rabs(r) > 0.001)
                 {
                     if (r>0.9) r=0.9;
                     glColor4f(0,1,0,1);
-                    glVertex2f(x*d, (y-0.5f  )*d);
-                    glVertex2f(x*d, (y-0.5f+r)*d);
+                    glVertex2f(x, y-0.5f  );
+                    glVertex2f(x, y-0.5f+r);
                 }
             }
         glEnd();
@@ -130,7 +130,7 @@ void Fluid2D::draw()
                 {
                     glColor4f(1-l/5,1-l/5,0,1);
                 }
-                glVertex2f(x*d,y*d);
+                glVertex2f(x,y);
             }
         glEnd();
         glPointSize(1);
@@ -165,11 +165,11 @@ void Fluid2D::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
+    glPopMatrix();
 }
 
 void Fluid2D::update()
 {
-    //const real invStep = (1.0f/f_cellwidth.getValue());
     points.clear();
     facets.clear();
 
@@ -367,12 +367,13 @@ void Fluid2D::update()
 
 bool Fluid2D::addBBox(double* minBBox, double* maxBBox)
 {
-    if (minBBox[0] > 0) minBBox[0] = 0;
-    if (maxBBox[0] < nx) maxBBox[0] = nx;
-    if (minBBox[1] > 0) minBBox[1] = 0;
-    if (maxBBox[1] < ny) maxBBox[1] = ny;
-    if (minBBox[2] > 0) minBBox[2] = 0;
-    if (maxBBox[2] < 1) maxBBox[2] = 1;
+    double size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, cellwidth/2 };
+    double pos[3] = { -size[0]/2, -size[1]/2, 0 };
+    for (int c=0; c<3; c++)
+    {
+        if (minBBox[c] > pos[c]        ) minBBox[c] = pos[c];
+        if (maxBBox[c] < pos[c]+size[c]) maxBBox[c] = pos[c]+size[c];
+    }
     return true;
 }
 

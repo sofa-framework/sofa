@@ -50,7 +50,7 @@ void Fluid3D::init()
     fluid->clear(nx,ny,nz);
     fnext->clear(nx,ny,nz);
     ftemp->clear(nx,ny,nz);
-    if (f_height.getValue() > 0)
+    if (f_height.getValue() != 0)
     {
         //fluid->seed(f_height.getValue());
         fluid->seed(f_height.getValue(), f_dir.getValue());
@@ -73,35 +73,34 @@ void Fluid3D::updatePosition(double dt)
 
 void Fluid3D::draw()
 {
+    glPushMatrix();
+    glTranslatef(-(nx-1)*cellwidth/2,-(ny-1)*cellwidth/2,-(nz-1)*cellwidth/2);
+    glScalef(cellwidth,cellwidth,cellwidth);
     //if (getContext()->getShowBehaviorModels())
     {
-        const real dx = (nx-1)*cellwidth;
-        const real dy = (ny-1)*cellwidth;
-        const real dz = (nz-1)*cellwidth;
         glDisable(GL_LIGHTING);
         glColor4f(1,1,1,1);
         glBegin(GL_LINES);
-        glVertex3f( 0 ,  0,  0 ); glVertex3f( dx,  0,  0 );
-        glVertex3f( 0 , dy,  0 ); glVertex3f( dx, dy,  0 );
-        glVertex3f( 0 ,  0, dz ); glVertex3f( dx,  0, dz );
-        glVertex3f( 0 , dy, dz ); glVertex3f( dx, dy, dz );
+        glVertex3f(    0,    0,    0 ); glVertex3f( nx-1,    0,    0 );
+        glVertex3f(    0, ny-1,    0 ); glVertex3f( nx-1, ny-1,    0 );
+        glVertex3f(    0,    0, nz-1 ); glVertex3f( nx-1,    0, nz-1 );
+        glVertex3f(    0, ny-1, nz-1 ); glVertex3f( nx-1, ny-1, nz-1 );
 
-        glVertex3f( 0 ,  0,  0 ); glVertex3f( 0 , dy,  0 );
-        glVertex3f( dx,  0,  0 ); glVertex3f( dx, dy,  0 );
-        glVertex3f( 0 ,  0, dz ); glVertex3f( 0 , dy, dz );
-        glVertex3f( dx,  0, dz ); glVertex3f( dx, dy, dz );
+        glVertex3f(    0,    0,    0 ); glVertex3f(    0, ny-1,    0 );
+        glVertex3f( nx-1,    0,    0 ); glVertex3f( nx-1, ny-1,    0 );
+        glVertex3f(    0,    0, nz-1 ); glVertex3f(    0, ny-1, nz-1 );
+        glVertex3f( nx-1,    0, nz-1 ); glVertex3f( nx-1, ny-1, nz-1 );
 
-        glVertex3f( 0 ,  0,  0 ); glVertex3f( 0 ,  0, dz );
-        glVertex3f( dx,  0,  0 ); glVertex3f( dx,  0, dz );
-        glVertex3f( 0 , dy,  0 ); glVertex3f( 0 , dy, dz );
-        glVertex3f( dx, dy,  0 ); glVertex3f( dx, dy, dz );
+        glVertex3f(    0,    0,    0 ); glVertex3f(    0,    0, nz-1 );
+        glVertex3f( nx-1,    0,    0 ); glVertex3f( nx-1,    0, nz-1 );
+        glVertex3f(    0, ny-1,    0 ); glVertex3f(    0, ny-1, nz-1 );
+        glVertex3f( nx-1, ny-1,    0 ); glVertex3f( nx-1, ny-1, nz-1 );
         glEnd();
     }
     if (getContext()->getShowBehaviorModels())
     {
         glDisable(GL_LIGHTING);
-        const real s = cellwidth*getContext()->getDt()*5;
-        const real d = cellwidth;
+        const real s = getContext()->getDt()*5;
         glBegin(GL_LINES);
         for (int z=0; z<nz; z++)
             for (int y=0; y<ny; y++)
@@ -114,24 +113,24 @@ void Fluid3D::draw()
                     {
                         if (r>0.9) r=0.9;
                         glColor4f(1,0,0,1);
-                        glVertex3f((x-0.5f  )*d, y*d, z*d);
-                        glVertex3f((x-0.5f+r)*d, y*d, z*d);
+                        glVertex3f(x-0.5f  , y, z);
+                        glVertex3f(x-0.5f+r, y, z);
                     }
                     r = u[1]*s;
                     if (rabs(r) > 0.001)
                     {
                         if (r>0.9) r=0.9;
                         glColor4f(0,1,0,1);
-                        glVertex3f(x*d, (y-0.5f  )*d, z*d);
-                        glVertex3f(x*d, (y-0.5f+r)*d, z*d);
+                        glVertex3f(x, y-0.5f  , z);
+                        glVertex3f(x, y-0.5f+r, z);
                     }
                     r = u[2]*s;
                     if (rabs(r) > 0.001)
                     {
                         if (r>1) r=1;
                         glColor4f(0,0,1,1);
-                        glVertex3f(x*d, y*d, (z-0.5f  )*d);
-                        glVertex3f(x*d, y*d, (z-0.5f+r)*d);
+                        glVertex3f(x, y, z-0.5f  );
+                        glVertex3f(x, y, z-0.5f+r);
                     }
                 }
         glEnd();
@@ -151,7 +150,7 @@ void Fluid3D::draw()
                     {
                         glColor4f(1-l/5,1-l/5,0,1);
                     }
-                    glVertex3f(x*d,y*d,z*d);
+                    glVertex3f(x,y,z);
                 }
         glEnd();
         glPointSize(1);
@@ -187,11 +186,11 @@ void Fluid3D::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
+    glPopMatrix();
 }
 
 void Fluid3D::update()
 {
-    //const real invStep = (1.0f/f_cellwidth.getValue());
     points.clear();
     facets.clear();
 
@@ -387,12 +386,13 @@ void Fluid3D::update()
 
 bool Fluid3D::addBBox(double* minBBox, double* maxBBox)
 {
-    if (minBBox[0] > 0) minBBox[0] = 0;
-    if (maxBBox[0] < nx) maxBBox[0] = nx;
-    if (minBBox[1] > 0) minBBox[1] = 0;
-    if (maxBBox[1] < ny) maxBBox[1] = ny;
-    if (minBBox[2] > 0) minBBox[2] = 0;
-    if (maxBBox[2] < nz) maxBBox[2] = nz;
+    double size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, (nz-1)*cellwidth };
+    double pos[3] = { -size[0]/2, -size[1]/2, -size[2]/2 };
+    for (int c=0; c<3; c++)
+    {
+        if (minBBox[c] > pos[c]        ) minBBox[c] = pos[c];
+        if (maxBBox[c] < pos[c]+size[c]) maxBBox[c] = pos[c]+size[c];
+    }
     return true;
 }
 

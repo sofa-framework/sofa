@@ -58,11 +58,11 @@ public:
 
     virtual void draw();
 
+    virtual bool addBBox(double* minBBox, double* maxBBox);
+
     virtual void initTextures() {}
 
     virtual void update();
-
-    virtual bool addBBox(double* minBBox, double* maxBBox);
 
 protected:
     // marching cube
@@ -96,10 +96,10 @@ protected:
     int addPoint(int x,int y,int z, real v0, real v1, real iso)
     {
         int p = points.size();
-        vec2 pos = vec2((real)x,(real)y,(real)z);
+        vec3 pos((real)x,(real)y,(real)z);
         pos[C] -= (iso-v0)/(v1-v0);
         points.resize(p+1);
-        points[p].p = pos * cellwidth;
+        points[p].p = pos; // * cellwidth;
         return p;
     }
 
