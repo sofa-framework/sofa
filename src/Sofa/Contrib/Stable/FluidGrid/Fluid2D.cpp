@@ -208,7 +208,7 @@ void Fluid2D::update()
             ++i;
             for(x=1; x<nx; x++)
             {
-                if ((data[i]>isoval)^(data[i-dx]>isoval))
+                if ((data[i]>=isoval)^(data[i-dx]>=isoval))
                 {
                     P1[i].p[0] = addPoint<0>(x,y,z,data[i],data[i-dx],iso);
                 }
