@@ -133,28 +133,28 @@ void Grid3D::seed(real height, vec3 normal)
     normal.normalize();
     FOR_ALL_CELLS(fdata,
     {
-        real d = vec3(x,y,z)*normal - height;
+        real d = vec3((real)x,(real)y,(real)z)*normal - height;
         levelset[ind] = d;
     });
 }
 
 void Grid3D::seed(vec3 p0, vec3 p1, vec3 velocity)
 {
-    if (p0[0]<0.5) p0[0]=0.5;
-    if (p0[1]<0.5) p0[1]=0.5;
-    if (p0[2]<0.5) p0[2]=0.5;
-    if (p1[0]>nx-1.5) p1[0]=nx-1.5;
-    if (p1[1]>ny-1.5) p1[1]=ny-1.5;
-    if (p1[2]>nz-1.5) p1[2]=nz-1.5;
+    if (p0[0]<0.5f) p0[0]=0.5f;
+    if (p0[1]<0.5f) p0[1]=0.5f;
+    if (p0[2]<0.5f) p0[2]=0.5f;
+    if (p1[0]>nx-1.5f) p1[0]=nx-1.5f;
+    if (p1[1]>ny-1.5f) p1[1]=ny-1.5f;
+    if (p1[2]>nz-1.5f) p1[2]=nz-1.5f;
     if (p0[0]>=p1[0]) return;
     if (p0[1]>=p1[1]) return;
     if (p0[2]>=p1[2]) return;
     std::cout << "p0="<<p0<<" p1="<<p1<<std::endl;
-    vec3 center = (p0+p1)*0.5;
-    vec3 dim = (p1-p0)*0.5;
+    vec3 center = (p0+p1)*0.5f;
+    vec3 dim = (p1-p0)*0.5f;
     FOR_ALL_CELLS(fdata,
     {
-        vec3 v (x,y,z);
+        vec3 v ((real)x,(real)y,(real)z);
         v -= center;
         v[0] = rabs(v[0]) - dim[0];
         v[1] = rabs(v[1]) - dim[1];
@@ -255,7 +255,7 @@ void Grid3D::step_levelset(Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
         //if (prev->fdata[ind].type != PART_WALL && rabs(prev->levelset[ind]) < 5)
         if (rabs(prev->levelset[ind]) < 5)
         {
-            vec3 xn ( x, y, z );
+            vec3 xn ( (real)x, (real)y, (real)z );
             vec3 un = prev->interp(xn);
             vec3 xn1 = xn - un*dt; // xn1_2 at this time
 
@@ -671,7 +671,7 @@ void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*d
                     if ((unsigned)y<(unsigned)ny)
                         for (int x=cx-ir; x<=cx+ir; x++)
                         {
-                            real d = sqrtf((z-cz)*(z-cz)+(y-cy)*(y-cy)+(x-cx)*(x-cx)) - r;
+                            real d = sqrtf((real)((z-cz)*(z-cz)+(y-cy)*(y-cy)+(x-cx)*(x-cx))) - r;
                             int ind = index(x,y,z);
                             if (d < 0)
                             {
@@ -744,18 +744,18 @@ void Grid3D::step_surface(const Grid3D* /*prev*/, Grid3D* /*temp*/, real /*dt*/,
                 case FACE_Y0|FACE_Y1: break;
                 case FACE_Z0|FACE_Z1: break;
                     // other cases: copy opposite value and add half the difference of the remaining two faces
-                case FACE_X0|FACE_Y0: r = (z1-z0)*0.5;  x0 = x1+r;  y0 = y1+r; break;
-                case FACE_X0|FACE_Y1: r = (z1-z0)*0.5;  x0 = x1+r;  y1 = y0-r; break;
-                case FACE_X0|FACE_Z0: r = (y1-y0)*0.5;  x0 = x1+r;  z0 = z1+r; break;
-                case FACE_X0|FACE_Z1: r = (y1-y0)*0.5;  x0 = x1+r;  z1 = z0-r; break;
-                case FACE_X1|FACE_Y0: r = (z1-z0)*0.5;  x1 = x0-r;  y0 = y1+r; break;
-                case FACE_X1|FACE_Y1: r = (z1-z0)*0.5;  x1 = x0-r;  y1 = y0-r; break;
-                case FACE_X1|FACE_Z0: r = (y1-y0)*0.5;  x1 = x0-r;  z0 = z1+r; break;
-                case FACE_X1|FACE_Z1: r = (y1-y0)*0.5;  x1 = x0-r;  z1 = z0-r; break;
-                case FACE_Y0|FACE_Z0: r = (x1-x0)*0.5;  y0 = y1+r;  z0 = z1+r; break;
-                case FACE_Y0|FACE_Z1: r = (x1-x0)*0.5;  y0 = y1+r;  z1 = z0-r; break;
-                case FACE_Y1|FACE_Z0: r = (x1-x0)*0.5;  y1 = y0-r;  z0 = z1+r; break;
-                case FACE_Y1|FACE_Z1: r = (x1-x0)*0.5;  y1 = y0-r;  z1 = z0-r; break;
+                case FACE_X0|FACE_Y0: r = (z1-z0)*0.5f;  x0 = x1+r;  y0 = y1+r; break;
+                case FACE_X0|FACE_Y1: r = (z1-z0)*0.5f;  x0 = x1+r;  y1 = y0-r; break;
+                case FACE_X0|FACE_Z0: r = (y1-y0)*0.5f;  x0 = x1+r;  z0 = z1+r; break;
+                case FACE_X0|FACE_Z1: r = (y1-y0)*0.5f;  x0 = x1+r;  z1 = z0-r; break;
+                case FACE_X1|FACE_Y0: r = (z1-z0)*0.5f;  x1 = x0-r;  y0 = y1+r; break;
+                case FACE_X1|FACE_Y1: r = (z1-z0)*0.5f;  x1 = x0-r;  y1 = y0-r; break;
+                case FACE_X1|FACE_Z0: r = (y1-y0)*0.5f;  x1 = x0-r;  z0 = z1+r; break;
+                case FACE_X1|FACE_Z1: r = (y1-y0)*0.5f;  x1 = x0-r;  z1 = z0-r; break;
+                case FACE_Y0|FACE_Z0: r = (x1-x0)*0.5f;  y0 = y1+r;  z0 = z1+r; break;
+                case FACE_Y0|FACE_Z1: r = (x1-x0)*0.5f;  y0 = y1+r;  z1 = z0-r; break;
+                case FACE_Y1|FACE_Z0: r = (x1-x0)*0.5f;  y1 = y0-r;  z0 = z1+r; break;
+                case FACE_Y1|FACE_Z1: r = (x1-x0)*0.5f;  y1 = y0-r;  z1 = z0-r; break;
 
                     // 3 faces with no opposite face: copy other 3 values
                 case FACE_X0|FACE_Y0|FACE_Z0: x0 = x1;  y0 = y1;  z0 = z1; break;
@@ -781,22 +781,22 @@ void Grid3D::step_surface(const Grid3D* /*prev*/, Grid3D* /*temp*/, real /*dt*/,
                 case FACE_Z1|FACE_X0|FACE_X1: z1 = x0-x1+y0-y1+z0   ; break;
 
                     // 4 faces opposing each other: add a quarter of the difference of the remaining two faces
-                case FACE_X0|FACE_X1|FACE_Y0|FACE_Y1: r = ( z1-z0)*0.25;  x0 = r;  x1 = -r;  y0 = r;  y1 = -r; break;
-                case FACE_X0|FACE_X1|FACE_Z0|FACE_Z1: r = ( z1-z0)*0.25;  x0 = r;  x1 = -r;  z0 = r;  z1 = -r; break;
-                case FACE_Y0|FACE_Y1|FACE_Z0|FACE_Z1: r = ( z1-z0)*0.25;  y0 = r;  y1 = -r;  y0 = r;  y1 = -r; break;
+                case FACE_X0|FACE_X1|FACE_Y0|FACE_Y1: r = ( z1-z0)*0.25f;  x0 = r;  x1 = -r;  y0 = r;  y1 = -r; break;
+                case FACE_X0|FACE_X1|FACE_Z0|FACE_Z1: r = ( z1-z0)*0.25f;  x0 = r;  x1 = -r;  z0 = r;  z1 = -r; break;
+                case FACE_Y0|FACE_Y1|FACE_Z0|FACE_Z1: r = ( z1-z0)*0.25f;  y0 = r;  y1 = -r;  y0 = r;  y1 = -r; break;
                     // other cases: copy opposite values to the two faces not opposing each other split the difference of the remaining faces
-                case FACE_X0|FACE_X1|FACE_Y0|FACE_Z0: y0 = y1; z0 = z1;  r = ( y1+z1)*0.5;  x0 = r; x1 = r; break;
-                case FACE_X0|FACE_X1|FACE_Y1|FACE_Z0: y1 = y0; z0 = z1;  r = (-y0+z1)*0.5;  x0 = r; x1 = r; break;
-                case FACE_X0|FACE_X1|FACE_Y0|FACE_Z1: y0 = y1; z1 = z0;  r = ( y1-z0)*0.5;  x0 = r; x1 = r; break;
-                case FACE_X0|FACE_X1|FACE_Y1|FACE_Z1: y1 = y0; z1 = z0;  r = (-y0-z0)*0.5;  x0 = r; x1 = r; break;
-                case FACE_Y0|FACE_Y1|FACE_X0|FACE_Z0: x0 = x1; z0 = z1;  r = ( x1+z1)*0.5;  y0 = r; y1 = r; break;
-                case FACE_Y0|FACE_Y1|FACE_X1|FACE_Z0: x1 = x0; z0 = z1;  r = (-x0+z1)*0.5;  y0 = r; y1 = r; break;
-                case FACE_Y0|FACE_Y1|FACE_X0|FACE_Z1: x0 = x1; z1 = z0;  r = ( x1-z0)*0.5;  y0 = r; y1 = r; break;
-                case FACE_Y0|FACE_Y1|FACE_X1|FACE_Z1: x1 = x0; z1 = z0;  r = (-x0-z0)*0.5;  y0 = r; y1 = r; break;
-                case FACE_Z0|FACE_Z1|FACE_Y0|FACE_X0: y0 = y1; x0 = x1;  r = ( y1+x1)*0.5;  z0 = r; z1 = r; break;
-                case FACE_Z0|FACE_Z1|FACE_Y1|FACE_X0: y1 = y0; x0 = x1;  r = (-y0+x1)*0.5;  z0 = r; z1 = r; break;
-                case FACE_Z0|FACE_Z1|FACE_Y0|FACE_X1: y0 = y1; x1 = x0;  r = ( y1-x0)*0.5;  z0 = r; z1 = r; break;
-                case FACE_Z0|FACE_Z1|FACE_Y1|FACE_X1: y1 = y0; x1 = x0;  r = (-y0-x0)*0.5;  z0 = r; z1 = r; break;
+                case FACE_X0|FACE_X1|FACE_Y0|FACE_Z0: y0 = y1; z0 = z1;  r = ( y1+z1)*0.5f;  x0 = r; x1 = r; break;
+                case FACE_X0|FACE_X1|FACE_Y1|FACE_Z0: y1 = y0; z0 = z1;  r = (-y0+z1)*0.5f;  x0 = r; x1 = r; break;
+                case FACE_X0|FACE_X1|FACE_Y0|FACE_Z1: y0 = y1; z1 = z0;  r = ( y1-z0)*0.5f;  x0 = r; x1 = r; break;
+                case FACE_X0|FACE_X1|FACE_Y1|FACE_Z1: y1 = y0; z1 = z0;  r = (-y0-z0)*0.5f;  x0 = r; x1 = r; break;
+                case FACE_Y0|FACE_Y1|FACE_X0|FACE_Z0: x0 = x1; z0 = z1;  r = ( x1+z1)*0.5f;  y0 = r; y1 = r; break;
+                case FACE_Y0|FACE_Y1|FACE_X1|FACE_Z0: x1 = x0; z0 = z1;  r = (-x0+z1)*0.5f;  y0 = r; y1 = r; break;
+                case FACE_Y0|FACE_Y1|FACE_X0|FACE_Z1: x0 = x1; z1 = z0;  r = ( x1-z0)*0.5f;  y0 = r; y1 = r; break;
+                case FACE_Y0|FACE_Y1|FACE_X1|FACE_Z1: x1 = x0; z1 = z0;  r = (-x0-z0)*0.5f;  y0 = r; y1 = r; break;
+                case FACE_Z0|FACE_Z1|FACE_Y0|FACE_X0: y0 = y1; x0 = x1;  r = ( y1+x1)*0.5f;  z0 = r; z1 = r; break;
+                case FACE_Z0|FACE_Z1|FACE_Y1|FACE_X0: y1 = y0; x0 = x1;  r = (-y0+x1)*0.5f;  z0 = r; z1 = r; break;
+                case FACE_Z0|FACE_Z1|FACE_Y0|FACE_X1: y0 = y1; x1 = x0;  r = ( y1-x0)*0.5f;  z0 = r; z1 = r; break;
+                case FACE_Z0|FACE_Z1|FACE_Y1|FACE_X1: y1 = y0; x1 = x0;  r = (-y0-x0)*0.5f;  z0 = r; z1 = r; break;
 
                     // 5 faces: solve for the face with no opposite face
                 case         FACE_X1|FACE_Y0|FACE_Y1|FACE_Z0|FACE_Z1: x0 = x1   +y1-y0+z1-z0; break;
@@ -835,19 +835,19 @@ void Grid3D::step_advect(const Grid3D* /*prev*/, Grid3D* temp, real dt, real /*d
     FOR_INNER_CELLS(temp->fdata,
     {
         // X Axis
-        vec3 px( x-0.5 - dt*(fdata[ind].u[0]),
-        y     - dt*0.25*(fdata[ind].u[1]+fdata[ind+index(-1,0,0)].u[1]+fdata[ind+index(0,1,0)].u[1]+fdata[ind+index(-1,1,0)].u[1]),
-        z     - dt*(fdata[ind].u[2]+fdata[ind+index(-1,0,0)].u[2]+fdata[ind+index(0,0,1)].u[2]+fdata[ind+index(-1,0,1)].u[2]));
+        vec3 px( x-0.5f - dt*(fdata[ind].u[0]),
+        y      - dt*0.25f*(fdata[ind].u[1]+fdata[ind+index(-1,0,0)].u[1]+fdata[ind+index(0,1,0)].u[1]+fdata[ind+index(-1,1,0)].u[1]),
+        z      - dt*(fdata[ind].u[2]+fdata[ind+index(-1,0,0)].u[2]+fdata[ind+index(0,0,1)].u[2]+fdata[ind+index(-1,0,1)].u[2]));
         temp->fdata[ind].u[0] = interp<0>(px);
         // Y Axis
-        vec3 py( x     - dt*0.25*(fdata[ind].u[0]+fdata[ind+index(0,-1,0)].u[0]+fdata[ind+index(1,0,0)].u[0]+fdata[ind+index(1,-1,0)].u[0]),
-        y-0.5 - dt*(fdata[ind].u[1]),
-        z     - dt*(fdata[ind].u[2]+fdata[ind+index(0,-1,0)].u[2]+fdata[ind+index(0,0,1)].u[2]+fdata[ind+index(0,-1,1)].u[2]));
+        vec3 py( x      - dt*0.25f*(fdata[ind].u[0]+fdata[ind+index(0,-1,0)].u[0]+fdata[ind+index(1,0,0)].u[0]+fdata[ind+index(1,-1,0)].u[0]),
+        y-0.5f - dt*(fdata[ind].u[1]),
+        z      - dt*(fdata[ind].u[2]+fdata[ind+index(0,-1,0)].u[2]+fdata[ind+index(0,0,1)].u[2]+fdata[ind+index(0,-1,1)].u[2]));
         temp->fdata[ind].u[1] = interp<1>(py);
         // Z Axis
-        vec3 pz( x     - dt*(fdata[ind].u[0]+fdata[ind+index(0,0,-1)].u[0]+fdata[ind+index(1,0,0)].u[0]+fdata[ind+index(1,0,-1)].u[0]),
-        y     - dt*0.25*(fdata[ind].u[1]+fdata[ind+index(0,0,-1)].u[1]+fdata[ind+index(0,1,0)].u[1]+fdata[ind+index(0,1,-1)].u[1]),
-        z-0.5 - dt*(fdata[ind].u[2]));
+        vec3 pz( x      - dt*(fdata[ind].u[0]+fdata[ind+index(0,0,-1)].u[0]+fdata[ind+index(1,0,0)].u[0]+fdata[ind+index(1,0,-1)].u[0]),
+        y      - dt*0.25f*(fdata[ind].u[1]+fdata[ind+index(0,0,-1)].u[1]+fdata[ind+index(0,1,0)].u[1]+fdata[ind+index(0,1,-1)].u[1]),
+        z-0.5f - dt*(fdata[ind].u[2]));
         temp->fdata[ind].u[2] = interp<2>(pz);
     });
     // Result is now is temp
@@ -868,7 +868,7 @@ void Grid3D::step_diffuse(const Grid3D* /*prev*/, Grid3D* temp, real /*dt*/, rea
     }
 
     real a = diff;
-    real inv_c = 1.0 / (1.0001 + 6*a);
+    real inv_c = 1.0f / (1.0001f + 6*a);
 
     FOR_INNER_CELLS(fdata,
     {
@@ -1017,7 +1017,7 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
     // Now apply pressure back to velocity
     a = dt;
 
-    real max_speed = 0.5/dt;
+    real max_speed = 0.5f/dt;
 
     //max_pressure = 0.0;
     max_pressure = prev->max_pressure;

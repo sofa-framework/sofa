@@ -67,7 +67,7 @@ void Fluid3D::reset()
 
 void Fluid3D::updatePosition(double dt)
 {
-    fnext->step(fluid, ftemp, dt);
+    fnext->step(fluid, ftemp, (real)dt);
     Grid3D* p = fluid; fluid=fnext; fnext=p;
 }
 
@@ -81,26 +81,26 @@ void Fluid3D::draw()
         glDisable(GL_LIGHTING);
         glColor4f(1,1,1,1);
         glBegin(GL_LINES);
-        glVertex3f(    0,    0,    0 ); glVertex3f( nx-1,    0,    0 );
-        glVertex3f(    0, ny-1,    0 ); glVertex3f( nx-1, ny-1,    0 );
-        glVertex3f(    0,    0, nz-1 ); glVertex3f( nx-1,    0, nz-1 );
-        glVertex3f(    0, ny-1, nz-1 ); glVertex3f( nx-1, ny-1, nz-1 );
+        glVertex3i(    0,    0,    0 ); glVertex3i( nx-1,    0,    0 );
+        glVertex3i(    0, ny-1,    0 ); glVertex3i( nx-1, ny-1,    0 );
+        glVertex3i(    0,    0, nz-1 ); glVertex3i( nx-1,    0, nz-1 );
+        glVertex3i(    0, ny-1, nz-1 ); glVertex3i( nx-1, ny-1, nz-1 );
 
-        glVertex3f(    0,    0,    0 ); glVertex3f(    0, ny-1,    0 );
-        glVertex3f( nx-1,    0,    0 ); glVertex3f( nx-1, ny-1,    0 );
-        glVertex3f(    0,    0, nz-1 ); glVertex3f(    0, ny-1, nz-1 );
-        glVertex3f( nx-1,    0, nz-1 ); glVertex3f( nx-1, ny-1, nz-1 );
+        glVertex3i(    0,    0,    0 ); glVertex3i(    0, ny-1,    0 );
+        glVertex3i( nx-1,    0,    0 ); glVertex3i( nx-1, ny-1,    0 );
+        glVertex3i(    0,    0, nz-1 ); glVertex3i(    0, ny-1, nz-1 );
+        glVertex3i( nx-1,    0, nz-1 ); glVertex3i( nx-1, ny-1, nz-1 );
 
-        glVertex3f(    0,    0,    0 ); glVertex3f(    0,    0, nz-1 );
-        glVertex3f( nx-1,    0,    0 ); glVertex3f( nx-1,    0, nz-1 );
-        glVertex3f(    0, ny-1,    0 ); glVertex3f(    0, ny-1, nz-1 );
-        glVertex3f( nx-1, ny-1,    0 ); glVertex3f( nx-1, ny-1, nz-1 );
+        glVertex3i(    0,    0,    0 ); glVertex3i(    0,    0, nz-1 );
+        glVertex3i( nx-1,    0,    0 ); glVertex3i( nx-1,    0, nz-1 );
+        glVertex3i(    0, ny-1,    0 ); glVertex3i(    0, ny-1, nz-1 );
+        glVertex3i( nx-1, ny-1,    0 ); glVertex3i( nx-1, ny-1, nz-1 );
         glEnd();
     }
     if (getContext()->getShowBehaviorModels())
     {
         glDisable(GL_LIGHTING);
-        const real s = getContext()->getDt()*5;
+        const real s = (real)getContext()->getDt()*5;
         glBegin(GL_LINES);
         for (int z=0; z<nz; z++)
             for (int y=0; y<ny; y++)
@@ -109,28 +109,28 @@ void Fluid3D::draw()
                     vec3 u = fluid->get(x,y,z)->u;
                     real r;
                     r = u[0]*s;
-                    if (rabs(r) > 0.001)
+                    if (rabs(r) > 0.001f)
                     {
-                        if (r>0.9) r=0.9;
+                        if (r>0.9f) r=0.9f;
                         glColor4f(1,0,0,1);
-                        glVertex3f(x-0.5f  , y, z);
-                        glVertex3f(x-0.5f+r, y, z);
+                        glVertex3f((real)x-0.5f  , (real)y, (real)z);
+                        glVertex3f((real)x-0.5f+r, (real)y, (real)z);
                     }
                     r = u[1]*s;
-                    if (rabs(r) > 0.001)
+                    if (rabs(r) > 0.001f)
                     {
-                        if (r>0.9) r=0.9;
+                        if (r>0.9f) r=0.9f;
                         glColor4f(0,1,0,1);
-                        glVertex3f(x, y-0.5f  , z);
-                        glVertex3f(x, y-0.5f+r, z);
+                        glVertex3f((real)x, (real)y-0.5f  , (real)z);
+                        glVertex3f((real)x, (real)y-0.5f+r, (real)z);
                     }
                     r = u[2]*s;
-                    if (rabs(r) > 0.001)
+                    if (rabs(r) > 0.001f)
                     {
                         if (r>1) r=1;
                         glColor4f(0,0,1,1);
-                        glVertex3f(x, y, z-0.5f  );
-                        glVertex3f(x, y, z-0.5f+r);
+                        glVertex3f((real)x, (real)y, (real)z-0.5f  );
+                        glVertex3f((real)x, (real)y, (real)z-0.5f+r);
                     }
                 }
         glEnd();
@@ -150,7 +150,7 @@ void Fluid3D::draw()
                     {
                         glColor4f(1-l/5,1-l/5,0,1);
                     }
-                    glVertex3f(x,y,z);
+                    glVertex3i(x,y,z);
                 }
         glEnd();
         glPointSize(1);

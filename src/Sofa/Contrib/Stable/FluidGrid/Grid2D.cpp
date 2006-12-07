@@ -129,25 +129,25 @@ void Grid2D::seed(real height, vec2 normal)
     normal.normalize();
     FOR_ALL_CELLS(fdata,
     {
-        real d = vec2(x,y)*normal - height;
+        real d = vec2((real)x,(real)y)*normal - height;
         levelset[ind] = d;
     });
 }
 
 void Grid2D::seed(vec2 p0, vec2 p1, vec2 velocity)
 {
-    if (p0[0]<0.5) p0[0]=0.5;
-    if (p0[1]<0.5) p0[1]=0.5;
-    if (p1[0]>nx-1.5) p1[0]=nx-1.5;
-    if (p1[1]>ny-1.5) p1[1]=ny-1.5;
+    if (p0[0]<0.5f) p0[0]=0.5f;
+    if (p0[1]<0.5f) p0[1]=0.5f;
+    if (p1[0]>nx-1.5f) p1[0]=nx-1.5f;
+    if (p1[1]>ny-1.5f) p1[1]=ny-1.5f;
     if (p0[0]>=p1[0]) return;
     if (p0[1]>=p1[1]) return;
     std::cout << "p0="<<p0<<" p1="<<p1<<std::endl;
-    vec2 center = (p0+p1)*0.5;
-    vec2 dim = (p1-p0)*0.5;
+    vec2 center = (p0+p1)*0.5f;
+    vec2 dim = (p1-p0)*0.5f;
     FOR_ALL_CELLS(fdata,
     {
-        vec2 v (x,y);
+        vec2 v ((real)x,(real)y);
         v -= center;
         v[0] = rabs(v[0]) - dim[0];
         v[1] = rabs(v[1]) - dim[1];
@@ -245,7 +245,7 @@ void Grid2D::step_levelset(Grid2D* prev, Grid2D* temp, real dt, real /*diff*/)
         //if (prev->fdata[ind].type != PART_WALL && rabs(prev->levelset[ind]) < 5)
         if (rabs(prev->levelset[ind]) < 5)
         {
-            vec2 xn ( x, y );
+            vec2 xn ( (real)x, (real)y );
             vec2 un = prev->interp(xn);
             vec2 xn1 = xn - un*dt; // xn1_2 at this time
 
@@ -639,7 +639,7 @@ void Grid2D::step_forces(const Grid2D* prev, Grid2D* /*temp*/, real dt, real /*d
             if ((unsigned)y<(unsigned)ny)
                 for (int x=cx-ir; x<=cx+ir; x++)
                 {
-                    real d = sqrtf((y-cy)*(y-cy)+(x-cx)*(x-cx)) - r;
+                    real d = sqrtf((real)((y-cy)*(y-cy)+(x-cx)*(x-cx))) - r;
                     int ind = index(x,y);
                     if (d < 0)
                     {
@@ -742,12 +742,12 @@ void Grid2D::step_advect(const Grid2D* /*prev*/, Grid2D* temp, real dt, real /*d
     FOR_INNER_CELLS(temp->fdata,
     {
         // X Axis
-        vec2 px( x-0.5 - dt*(fdata[ind].u[0]),
-        y     - dt*0.25*(fdata[ind].u[1]+fdata[ind+index(-1,0)].u[1]+fdata[ind+index(0,1)].u[1]+fdata[ind+index(-1,1)].u[1]));
+        vec2 px( x-0.5f - dt*(fdata[ind].u[0]),
+        y      - dt*0.25f*(fdata[ind].u[1]+fdata[ind+index(-1,0)].u[1]+fdata[ind+index(0,1)].u[1]+fdata[ind+index(-1,1)].u[1]));
         temp->fdata[ind].u[0] = interp<0>(px);
         // Y Axis
-        vec2 py( x     - dt*0.25*(fdata[ind].u[0]+fdata[ind+index(0,-1)].u[0]+fdata[ind+index(1,0)].u[0]+fdata[ind+index(1,-1)].u[0]),
-        y-0.5 - dt*(fdata[ind].u[1]));
+        vec2 py( x      - dt*0.25f*(fdata[ind].u[0]+fdata[ind+index(0,-1)].u[0]+fdata[ind+index(1,0)].u[0]+fdata[ind+index(1,-1)].u[0]),
+        y-0.5f - dt*(fdata[ind].u[1]));
         temp->fdata[ind].u[1] = interp<1>(py);
     });
     // Result is now is temp
@@ -768,7 +768,7 @@ void Grid2D::step_diffuse(const Grid2D* /*prev*/, Grid2D* temp, real /*dt*/, rea
     }
 
     real a = diff;
-    real inv_c = 1.0 / (1.0001 + 4*a);
+    real inv_c = 1.0f / (1.0001f + 4*a);
 
     FOR_INNER_CELLS(fdata,
     {
@@ -914,9 +914,9 @@ void Grid2D::step_project(const Grid2D* prev, Grid2D* temp, real dt, real /*diff
     // Now apply pressure back to velocity
     a = dt;
 
-    real max_speed = 0.5/dt;
+    real max_speed = 0.5f/dt;
 
-    //max_pressure = 0.0;
+    //max_pressure = 0.0f;
     max_pressure = prev->max_pressure;
 
     FOR_INNER_CELLS(fdata,

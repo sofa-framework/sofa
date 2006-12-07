@@ -66,7 +66,7 @@ void Fluid2D::reset()
 
 void Fluid2D::updatePosition(double dt)
 {
-    fnext->step(fluid, ftemp, dt);
+    fnext->step(fluid, ftemp, (real)dt);
     Grid2D* p = fluid; fluid=fnext; fnext=p;
 }
 
@@ -80,17 +80,17 @@ void Fluid2D::draw()
         glDisable(GL_LIGHTING);
         glColor4f(1,1,1,1);
         glBegin(GL_LINES);
-        glVertex2f(    0,    0 ); glVertex2f( nx-1,    0 );
-        glVertex2f(    0, ny-1 ); glVertex2f( nx-1, ny-1 );
+        glVertex2i(    0,    0 ); glVertex2i( nx-1,    0 );
+        glVertex2i(    0, ny-1 ); glVertex2i( nx-1, ny-1 );
 
-        glVertex2f(    0,    0 ); glVertex2f(    0, ny-1 );
-        glVertex2f( nx-1,    0 ); glVertex2f( nx-1, ny-1 );
+        glVertex2i(    0,    0 ); glVertex2i(    0, ny-1 );
+        glVertex2i( nx-1,    0 ); glVertex2i( nx-1, ny-1 );
         glEnd();
     }
     if (getContext()->getShowBehaviorModels())
     {
         glDisable(GL_LIGHTING);
-        const real s = getContext()->getDt()*5;
+        const real s = (real)getContext()->getDt()*5;
         glBegin(GL_LINES);
         for (int y=0; y<ny; y++)
             for (int x=0; x<nx; x++)
@@ -98,20 +98,28 @@ void Fluid2D::draw()
                 vec2 u = fluid->get(x,y)->u;
                 real r;
                 r = u[0]*s;
-                if (rabs(r) > 0.001)
+                if (rabs(r) > 0.001f)
                 {
-                    if (r>0.9) r=0.9;
+                    if (r>0.9f) r=0.9f;
                     glColor4f(1,0,0,1);
-                    glVertex2f(x-0.5f  , y);
-                    glVertex2f(x-0.5f+r, y);
+                    glVertex2f((float)x-0.5f       , (float)y);
+                    glVertex2f((float)x-0.5f+     r, (float)y);
+                    glVertex2f((float)x-0.5f+     r, (float)y);
+                    glVertex2f((float)x-0.5f+0.8f*r, (float)y+0.2f*r);
+                    glVertex2f((float)x-0.5f+     r, (float)y);
+                    glVertex2f((float)x-0.5f+0.8f*r, (float)y-0.2f*r);
                 }
                 r = u[1]*s;
                 if (rabs(r) > 0.001)
                 {
                     if (r>0.9) r=0.9;
                     glColor4f(0,1,0,1);
-                    glVertex2f(x, y-0.5f  );
-                    glVertex2f(x, y-0.5f+r);
+                    glVertex2f((float)x, y-0.5f  );
+                    glVertex2f((float)x, y-0.5f+r);
+                    glVertex2f((float)x, y-0.5f+r);
+                    glVertex2f((float)x+0.2f*r, y-0.5f+0.8f*r);
+                    glVertex2f((float)x, y-0.5f+r);
+                    glVertex2f((float)x-0.2f*(float)r, y-0.5f+0.8f*r);
                 }
             }
         glEnd();
