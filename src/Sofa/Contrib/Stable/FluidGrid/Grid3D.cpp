@@ -344,9 +344,6 @@ void Grid3D::step_levelset(Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
         {
             //real phi = 1 / sqrt(inv_dist2);
             real phi = rabs(phi0);
-#ifdef FMM_VERBOSE
-            std::cout << "Front cell <"<<x<<','<<y<<','<<z<<"> phi="<<phi<<" phi0="<<phi0<<std::endl;
-#endif
             levelset[ind] = phi;
             fmm_status[ind] = FMM_KNOWN;
         }
@@ -674,7 +671,7 @@ void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*d
                     if ((unsigned)y<(unsigned)ny)
                         for (int x=cx-ir; x<=cx+ir; x++)
                         {
-                            real d = sqrt((z-cz)*(z-cz)+(y-cy)*(y-cy)+(x-cx)*(x-cx)) - r;
+                            real d = sqrtf((z-cz)*(z-cz)+(y-cy)*(y-cy)+(x-cx)*(x-cx)) - r;
                             int ind = index(x,y,z);
                             if (d < 0)
                             {

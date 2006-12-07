@@ -5,7 +5,7 @@ CONFIG += $$CONFIGPROJECT \
 
 DESTDIR = ../../../bin
 TARGET = example1$$SUFFIX
-
+RC_FILE = sofa.rc
 OBJECTS_DIR = OBJ/$$CONFIGDEBUG
 INCLUDEPATH = ../..
 INCLUDEPATH += ../../../include
@@ -37,7 +37,8 @@ win32{
 	  	QMAKE_LFLAGS += /NODEFAULTLIB:libc /NODEFAULTLIB:MSVCRTD
 	}
   }
-  #QMAKE_LFLAGS = 
+  LIBS += -lSofaContribFluidGrid
+  QMAKE_LFLAGS = /INCLUDE:_class_Fluid2D /INCLUDE:_class_Fluid3D
   #QMAKE_LIBS_WINDOWS = ""
   #QMAKE_CXXFLAGS += -GR -GX
   #DEFINES = WIN32

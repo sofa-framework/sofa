@@ -3,6 +3,7 @@
 
 #include "Vec.h"
 #include "Mat.h"
+#include <math.h>
 #include <assert.h>
 #include <iostream>
 
