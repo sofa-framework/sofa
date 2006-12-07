@@ -384,6 +384,25 @@ void GNode::doExecuteAction(Action* action)
     }
 }
 
+/// Find a child node given its name
+GNode* GNode::getChild(const std::string& name)
+{
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+        if ((*it)->getName() == name)
+            return *it;
+    return NULL;
+}
+
+/// Get a descendant node given its name
+GNode* GNode::getTreeNode(const std::string& name)
+{
+    GNode* result = NULL;
+    result = getChild(name);
+    for (ChildIterator it = child.begin(), itend = child.end(); result == NULL && it != itend; ++it)
+        result = (*it)->getTreeNode(name);
+    return result;
+}
+
 GNode* GNode::setDebug(bool b)
 {
     debug_=b;

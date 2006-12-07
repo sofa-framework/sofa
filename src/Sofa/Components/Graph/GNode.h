@@ -212,6 +212,12 @@ public:
         return result;
     }
 
+    /// Find a child node given its name
+    GNode* getChild(const std::string& name);
+
+    /// Get a descendant node given its name
+    GNode* getTreeNode(const std::string& name);
+
     /// @}
 
     /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).
