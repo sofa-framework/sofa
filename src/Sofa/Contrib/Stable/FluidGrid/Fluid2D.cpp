@@ -28,7 +28,7 @@ Fluid2D::Fluid2D()
       f_ny ( field(&f_ny, &ny, "ny", "grid size along y axis") ),
       f_cellwidth ( field(&f_cellwidth, &cellwidth, "cellwidth", "width of each cell") ),
       f_height ( dataField(&f_height, 5.0f, "height", "initial fluid height") ),
-      f_dir ( dataField(&f_dir, vec2(0,1,0), "dir", "initial fluid surface normal") ),
+      f_dir ( dataField(&f_dir, vec2(0,1), "dir", "initial fluid surface normal") ),
       f_tstart ( dataField(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
       f_tstop ( dataField(&f_tstop, 60.0f, "tstop", "stopping time for fluid source") )
 {
@@ -53,7 +53,7 @@ void Fluid2D::init()
     {
         //fluid->seed(f_height.getValue());
         fluid->seed(f_height.getValue(), f_dir.getValue());
-        //fluid->seed(vec2(3.5,3.5,3.5), vec2(12.5,8.5,12.5));
+        //fluid->seed(vec2(3.5,3.5), vec2(12.5,8.5));
     }
     fluid->t = -f_tstart.getValue();
     fluid->tend = f_tstop.getValue() - f_tstart.getValue();
@@ -110,9 +110,9 @@ void Fluid2D::draw()
                     glVertex2f((float)x-0.5f+0.8f*r, (float)y-0.2f*r);
                 }
                 r = u[1]*s;
-                if (rabs(r) > 0.001)
+                if (rabs(r) > 0.001f)
                 {
-                    if (r>0.9) r=0.9;
+                    if (r>0.9f) r=0.9f;
                     glColor4f(0,1,0,1);
                     glVertex2f((float)x, y-0.5f  );
                     glVertex2f((float)x, y-0.5f+r);
@@ -138,7 +138,7 @@ void Fluid2D::draw()
                 {
                     glColor4f(1-l/5,1-l/5,0,1);
                 }
-                glVertex2f(x,y);
+                glVertex2i(x,y);
             }
         glEnd();
         glPointSize(1);
@@ -163,8 +163,8 @@ void Fluid2D::draw()
             for (int j=0; j<3; j++)
             {
                 int idx = facets[i].p[j];
-                glNormal3fv(points[idx].n);
-                glVertex3fv(points[idx].p);
+                glNormal3fv(points[idx].n.ptr());
+                glVertex3fv(points[idx].p.ptr());
             }
         }
         glEnd();

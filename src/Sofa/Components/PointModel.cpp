@@ -52,7 +52,7 @@ void PointModel::draw(int index)
 {
     Point t(this,index);
     glBegin(GL_POINTS);
-    glVertex3dv(t.p());
+    glVertex3dv(t.p().ptr());
     glEnd();
 }
 

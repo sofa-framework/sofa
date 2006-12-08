@@ -193,8 +193,10 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
 
 // Specialization for rigids
 template <>
-void DiagonalMass<RigidTypes, RigidMass>::draw();
+double DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergy( const VecCoord& x );
 
+template <>
+void DiagonalMass<RigidTypes, RigidMass>::draw();
 
 } // namespace Components
 

@@ -231,8 +231,8 @@ void PipelineSofa::draw()
             glColor3f(1.0f,0.5f,0.5f);
         else
             glColor3f(0.5f,1.0f,0.5f);
-        glVertex3dv(d->point[0]);
-        glVertex3dv(d->point[1]);
+        glVertex3dv(d->point[0].ptr());
+        glVertex3dv(d->point[1].ptr());
     }
     glEnd();
     glLineWidth(1);

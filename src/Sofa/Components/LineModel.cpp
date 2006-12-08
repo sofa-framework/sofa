@@ -76,8 +76,8 @@ void LineModel::draw(int index)
 {
     Line t(this,index);
     glBegin(GL_LINES);
-    glVertex3dv(t.p1());
-    glVertex3dv(t.p2());
+    glVertex3dv(t.p1().ptr());
+    glVertex3dv(t.p2().ptr());
     glEnd();
 }
 

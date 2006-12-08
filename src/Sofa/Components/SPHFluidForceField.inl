@@ -52,7 +52,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
     const Real m2 = m*m;
     const Real k = pressureStiffness;
     const Real d0 = density0;
-    const double* localg = this->getContext()->getLocalGravity();
+    const Vec3d localg = this->getContext()->getLocalGravity();
     Deriv g;
     DataTypes::set ( g, localg[0], localg[1], localg[2]);
     //const Deriv mg = g * mass;

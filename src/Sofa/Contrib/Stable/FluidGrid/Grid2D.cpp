@@ -580,8 +580,8 @@ void Grid2D::step_forces(const Grid2D* prev, Grid2D* /*temp*/, real dt, real /*d
     // (free-slip condition)
     // Carlson Thesis page 23
 
-    //vec2 f(0,0,-9.81*dt/scale);
-    vec2 f(0,-5*dt,0);
+    //vec2 f(0,-9.81*dt/scale);
+    vec2 f(0,-5*dt);
 
     FOR_INNER_CELLS(fdata,
     {

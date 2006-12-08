@@ -2,10 +2,10 @@
 #define SOFA_COMPONENTS_COMMON_VEC_H
 
 #include "fixed_array.h"
+#include "static_assert.h"
 #include <math.h>
 #include <functional>
-//#include <boost/static_assert.hpp>
-#define BOOST_STATIC_ASSERT(a)
+//#define BOOST_STATIC_ASSERT(a)
 
 namespace Sofa
 {
@@ -27,13 +27,19 @@ public:
         this->assign(0);
     }
 
-    /*
-      Vec(real r1)
-      {
+    /// Specific constructor for 1-element vectors.
+    Vec(real r1)
+    {
         BOOST_STATIC_ASSERT(N == 1);
         this->elems[0]=r1;
-      }
-    */
+    }
+
+    /// Specific constructor for 1-element vectors.
+    void operator=(real r1)
+    {
+        BOOST_STATIC_ASSERT(N == 1);
+        this->elems[0]=r1;
+    }
 
     /// Specific constructor for 2-elements vectors.
     Vec(real r1, real r2)
@@ -194,17 +200,20 @@ public:
         this->assign(r);
     }
 
-    /// Access to i-th element.
-    real& operator[](int i)
-    {
-        return this->elems[i];
-    }
+    // Access to i-th element.
+    // Already in fixed_array
+    //real& operator[](int i)
+    //{
+    //    return this->elems[i];
+    //}
 
+    // Access to i-th element.
+    // Already in fixed_array
     /// Const access to i-th element.
-    const real& operator[](int i) const
-    {
-        return this->elems[i];
-    }
+    //const real& operator[](int i) const
+    //{
+    //    return this->elems[i];
+    //}
 
     /// Access to i-th element.
     real& operator()(int i)
@@ -219,13 +228,27 @@ public:
     }
 
     /// Cast into a const array of values.
-    operator const real*() const
+    /// CHANGE(Jeremie A.): removed it as it confuses some compilers. Use ptr() or data() instead
+    //operator const real*() const
+    //{
+    //    return this->elems;
+    //}
+
+    /// Cast into an array of values.
+    /// CHANGE(Jeremie A.): removed it as it confuses some compilers. Use ptr() or data() instead
+    //operator real*()
+    //{
+    //    return this->elems;
+    //}
+
+    /// Cast into a const array of values.
+    const real* ptr() const
     {
         return this->elems;
     }
 
     /// Cast into an array of values.
-    operator real*()
+    real* ptr()
     {
         return this->elems;
     }
@@ -412,8 +435,6 @@ typedef Vec<4,double> Vec4d;
 
 typedef Vec4d Vector4; ///< alias
 
-
-#undef BOOST_STATIC_ASSERT
 
 } // namespace Common
 

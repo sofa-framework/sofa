@@ -255,9 +255,9 @@ void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
             ++outside;
         }
         if (index < c0)
-            mapper->addPointInTetra(pos, index, coefs);
+            mapper->addPointInTetra(pos, index, coefs.ptr());
         else
-            mapper->addPointInCube(pos, index-c0, coefs);
+            mapper->addPointInCube(pos, index-c0, coefs.ptr());
         //MappingData<3,0>& data = mapper->map3d[i];
         //data.baryCoords[0] = (Real)coefs[0];
         //data.baryCoords[1] = (Real)coefs[1];

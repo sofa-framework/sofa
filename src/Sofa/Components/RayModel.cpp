@@ -67,8 +67,8 @@ void RayModel::draw(int index)
     const Vector3& p1 = r.origin();
     const Vector3 p2 = p1 + r.direction()*r.l();
     glBegin(GL_LINES);
-    glVertex3dv(p1);
-    glVertex3dv(p2);
+    glVertex3dv(p1.ptr());
+    glVertex3dv(p2.ptr());
     glEnd();
 }
 

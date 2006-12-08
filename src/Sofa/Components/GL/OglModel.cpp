@@ -171,9 +171,9 @@ void OglModel::draw()
         for (unsigned int i = 0; i < vertices.size(); i++)
         {
             glBegin(GL_LINES);
-            glVertex3fv (vertices[i]);
+            glVertex3fv (vertices[i].ptr());
             Coord p = vertices[i] + vnormals[i];
-            glVertex3fv (p);
+            glVertex3fv (p.ptr());
             glEnd();
         }
     }

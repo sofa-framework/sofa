@@ -3,10 +3,7 @@
 
 #include "Vec.h"
 #include <assert.h>
-//#include <boost/static_assert.hpp>
-#define BOOST_STATIC_ASSERT(a)
-
-#include <assert.h>
+#include "static_assert.h"
 
 namespace Sofa
 {
@@ -32,14 +29,12 @@ public:
     {
     }
 
-    /*
-      /// Specific constructor with a single line.
-      Mat(Line r1)
-      {
+    /// Specific constructor with a single line.
+    Mat(Line r1)
+    {
         BOOST_STATIC_ASSERT(L == 1);
         this->elems[0]=r1;
-      }
-    */
+    }
 
     /// Specific constructor with 2 lines.
     Mat(Line r1, Line r2)
@@ -188,13 +183,13 @@ public:
     /// Cast into a standard C array of elements (stored per line) (read-only).
     const real* ptr() const
     {
-        return this->elems[0];
+        return this->elems[0].ptr();
     }
 
     /// Cast into a standard C array of elements (stored per line).
     real* ptr()
     {
-        return this->elems[0];
+        return this->elems[0].ptr();
     }
 
     /// Special access to first line.
@@ -524,9 +519,6 @@ typedef Mat<4,4,double> Mat4x4d;
 typedef Mat2x2d Matrix2;
 typedef Mat3x3d Matrix3;
 typedef Mat4x4d Matrix4;
-
-#undef BOOST_STATIC_ASSERT
-
 
 
 template <int L, int C, typename real>

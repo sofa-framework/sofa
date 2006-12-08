@@ -176,8 +176,8 @@ void Fluid3D::draw()
             for (int j=0; j<3; j++)
             {
                 int idx = facets[i].p[j];
-                glNormal3fv(points[idx].n);
-                glVertex3fv(points[idx].p);
+                glNormal3fv(points[idx].n.ptr());
+                glVertex3fv(points[idx].p.ptr());
             }
         }
         glEnd();

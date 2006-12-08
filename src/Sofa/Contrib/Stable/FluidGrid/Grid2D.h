@@ -157,7 +157,7 @@ public:
 
     vec2 interp(vec2 p) const
     {
-        return vec2( interp<0>(p), interp<1>(p), interp<2>(p) );
+        return vec2( interp<0>(p), interp<1>(p) );
     }
 
     template<int C> void impulse(Cell* base, real fx, real fy, real i)
@@ -219,7 +219,7 @@ public:
 
     void seed(real height, vec2 normal);
 
-    void seed(vec2 p0, vec2 p1, vec2 velocity=vec2(0,0,0));
+    void seed(vec2 p0, vec2 p1, vec2 velocity=vec2(0,0));
 
     void step(Grid2D* prev, Grid2D* temp, real dt=0.04, real diff=0.00001);
     void step_init(const Grid2D* prev, Grid2D* temp, real dt, real diff);

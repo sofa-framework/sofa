@@ -64,7 +64,7 @@ void UniformMass<DataTypes, MassType>::init()
     this->Core::Mass<DataTypes>::init();
     if (this->totalMass.getValue()>0 && this->mmodel!=NULL)
     {
-        this->mass = (MassType)(this->totalMass.getValue() / this->mmodel->getX()->size());
+        this->mass = (MassType)((typename DataTypes::Real)this->totalMass.getValue() / this->mmodel->getX()->size());
     }
 }
 
@@ -91,7 +91,7 @@ template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
     // weight
-    const double* g = this->getContext()->getLocalGravity();
+    const double* g = this->getContext()->getLocalGravity().ptr();
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);

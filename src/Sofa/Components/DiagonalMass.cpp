@@ -13,6 +13,23 @@ namespace Components
 using namespace Common;
 
 template <>
+double DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergy( const VecCoord& x )
+{
+    double e = 0;
+    const VecMass& masses = f_mass.getValue();
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        e += theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
+    }
+    return e;
+}
+
+template <>
 void DiagonalMass<RigidTypes, RigidMass>::draw()
 {
     const VecMass& masses = f_mass.getValue();
@@ -46,24 +63,6 @@ SOFA_DECL_CLASS(DiagonalMass)
 
 template class DiagonalMass<Vec3dTypes,double>;
 template class DiagonalMass<Vec3fTypes,float>;
-
-// specialization for rigid bodies
-template <>
-double DiagonalMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::VecCoord& x )
-{
-    const VecMass& masses = f_mass.getValue();
-    double e = 0;
-    // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
-    Deriv theGravity;
-    DataTypes::set
-    ( theGravity, g[0], g[1], g[2]);
-    for (unsigned int i=0; i<masses.size(); i++)
-    {
-        e += g*masses[i].mass*x[i].getCenter();
-    }
-    return e;
-}
 
 template class DiagonalMass<RigidTypes,RigidMass>;
 

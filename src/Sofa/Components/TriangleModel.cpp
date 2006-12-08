@@ -94,10 +94,10 @@ void TriangleModel::draw(int index)
 {
     Triangle t(this,index);
     glBegin(GL_TRIANGLES);
-    glNormal3dv(t.n());
-    glVertex3dv(t.p1());
-    glVertex3dv(t.p2());
-    glVertex3dv(t.p3());
+    glNormal3dv(t.n().ptr());
+    glVertex3dv(t.p1().ptr());
+    glVertex3dv(t.p2().ptr());
+    glVertex3dv(t.p3().ptr());
     glEnd();
 }
 
