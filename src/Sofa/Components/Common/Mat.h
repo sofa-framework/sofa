@@ -240,7 +240,7 @@ public:
     /// Transpose current matrix.
     void transpose()
     {
-        BOOST_STATIC_ASSERT(L == C)
+        BOOST_STATIC_ASSERT(L == C);
         for (int i=0; i<L; i++)
             for (int j=i+1; j<C; j++)
             {
