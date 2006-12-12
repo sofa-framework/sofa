@@ -23,9 +23,9 @@ using namespace Sofa::Core;
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
 {
-    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>m_basicTopology;
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
-    PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>topology->getTopologyContainer());
+    PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     topology->object->swapValues( container->getDOFIndex(i1), container->getDOFIndex(i2) );
 
@@ -41,9 +41,9 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
         const std::vector< std::vector< unsigned int > >& ancestors,
         const std::vector< std::vector< double > >& baryCoefs)
 {
-    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>m_basicTopology;
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
-    PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>topology->getTopologyContainer());
+    PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     unsigned int prevSizeMechObj   = topology->object->getSize();
     unsigned int prevSizeContainer = container->getDOFIndexArray().size();
@@ -81,8 +81,8 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
     std::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
     DOFIndex.resize(prevSizeContainer + nPoints);
     for (unsigned int i = 0; i < nPoints; ++i)
-{
-    DOFIndex[prevSizeContainer + i] = prevSizeMechObj + i;
+    {
+        DOFIndex[prevSizeContainer + i] = prevSizeMechObj + i;
     }
 
     //invalidating PointSetIndex, since it is no longer up-to-date
@@ -119,9 +119,9 @@ template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices)
 {
     std::sort( indices.begin(), indices.end(), operator> (unsigned int, unsigne int) );
-    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>m_basicTopology;
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
-    PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>topology->getTopologyContainer());
+    PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     int prevSizeMechObj   = topology->object->getSize();
     unsigned int prevDOFIndexArraySize = container->getDOFIndexArray().size();
@@ -131,8 +131,8 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess(const unsigned int
 
     // deletting the vertices
     for (unsigned int i = 0; i < nPoints; ++i)
-{
-    topology->object->replaceValue(lastIndexMech, container->getDOFIndex(indices[i]) );
+    {
+        topology->object->replaceValue(lastIndexMech, container->getDOFIndex(indices[i]) );
 
         --lastIndexMech;
     }
@@ -151,7 +151,7 @@ template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::renumberPointsProcess( const std::vector<unsigned int> &index)
 {
 
-    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>m_basicTopology;
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
     topology->object->renumberValues( index );
 }

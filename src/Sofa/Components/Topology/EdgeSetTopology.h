@@ -272,7 +272,7 @@ public:
     /** \brief Fuse the edges.
      *
      */
-    virtual void fuseEdgesProcess(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair);
+    virtual void fuseEdgesProcess(const std::vector< Edge >& edgesPair);
 
 
 
@@ -298,7 +298,7 @@ public:
 
     typedef typename DataTypes::VecCoord VecCoord;
 
-    EdgeSetGeometryAlgorithms(Core::BasicTopology *top) : PointSetGeometryAlgorithms(top)
+    EdgeSetGeometryAlgorithms(Core::BasicTopology *top) : PointSetGeometryAlgorithms<DataTypes>(top)
     {
     }
 
@@ -313,7 +313,7 @@ class EdgeSetTopology : public PointSetTopology <DataTypes>
 {
 
 public:
-    EdgeSetTopology(Core::MechanicalObject<DataTypes> *obj) : PointSetTopology( obj )
+    EdgeSetTopology(Core::MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj )
     {
     }
 
