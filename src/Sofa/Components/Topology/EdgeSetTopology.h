@@ -272,7 +272,7 @@ public:
     /** \brief Fuse the edges.
      *
      */
-    virtual void fuseEdgesProcess(const std::vector< Edge >& edgesPair);
+    virtual void fuseEdgesProcess(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair);
 
 
 

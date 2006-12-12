@@ -178,7 +178,7 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const std::vec
 
 
 template<class DataTypes>
-void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdgesProcess(const std::vector< Edge > >& edgesPair)
+void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdgesProcess(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast< EdgeSetTopology< DataTypes >* >(m_basicTopology);
     assert(topology != 0);
