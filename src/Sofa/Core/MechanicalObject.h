@@ -118,6 +118,14 @@ public:
 
 
 
+    /** \brief Replace the value at index by the sum of the ancestors values weithed by the coefs.
+     *
+     * Sum of the coefs should usually equal to 1.0
+     */
+    void computeWeightedValue( const unsigned int i, const std::vector< unsigned int >& ancestors, const std::vector< double >& coefs);
+
+
+
     void applyTranslation (double dx, double dy, double dz);
 
     void applyScale (double s);

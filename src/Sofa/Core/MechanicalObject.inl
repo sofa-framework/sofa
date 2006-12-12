@@ -212,6 +212,60 @@ void MechanicalObject<DataTypes>::renumberValues( const std::vector< unsigned in
 
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int index, const std::vector< unsigned int >& ancestors, const std::vector< double >& coefs)
+{
+    assert( ancestors.size() > 0 && ancestors.size() == coefs.size() );
+
+    //initializing values (overriding old values) :
+
+    // standard state vectors
+    (*x )[index] = (*x )[ ancestors[0] ] * coefs[0];
+    (*x0)[index] = (*x0)[ ancestors[0] ] * coefs[0];
+    (*v )[index] = (*v )[ ancestors[0] ] * coefs[0];
+    (*v0)[index] = (*v0)[ ancestors[0] ] * coefs[0];
+    (*f )[index] = (*f )[ ancestors[0] ] * coefs[0];
+    (*dx)[index] = (*dx)[ ancestors[0] ] * coefs[0];
+
+    // temporary state vectors
+    for (unsigned j = 0; j < vectorsCoord.size(); ++j)
+        (*vectorsCoord[j])[index] = (*vectorsCoord[j])[ ancestors[0] ] * coefs[0];
+
+    for (unsigned j = 0; j < vectorsDeriv.size(); ++j)
+        (*vectorsDeriv[j])[index] = (*vectorsDeriv[j])[ ancestors[0] ] * coefs[0];
+
+    // forces
+    (*internalForces)[index] = (*internalForces)[ ancestors[0] ] * coefs[0];
+    (*externalForces)[index] = (*externalForces)[ ancestors[0] ] * coefs[0];
+
+
+    // adding the rest of the values
+    for (unsigned int i = 1; i < ancestors.size(); ++i)
+    {
+        // standard state vectors
+        (*x )[index] += (*x )[ ancestors[i] ] * coefs[i];
+        (*x0)[index] += (*x0)[ ancestors[i] ] * coefs[i];
+        (*v )[index] += (*v )[ ancestors[i] ] * coefs[i];
+        (*v0)[index] += (*v0)[ ancestors[i] ] * coefs[i];
+        (*f )[index] += (*f )[ ancestors[i] ] * coefs[i];
+        (*dx)[index] += (*dx)[ ancestors[i] ] * coefs[i];
+
+        // temporary state vectors
+        for (unsigned j = 0; j < vectorsCoord.size(); ++j)
+            (*vectorsCoord[j])[index] += (*vectorsCoord[j])[ ancestors[i] ] * coefs[i];
+
+        for (unsigned j = 0; j < vectorsDeriv.size(); ++j)
+            (*vectorsDeriv[j])[index] += (*vectorsDeriv[j])[ ancestors[i] ] * coefs[i];
+
+        // forces
+        (*internalForces)[index] += (*internalForces)[ ancestors[i] ] * coefs[i];
+        (*externalForces)[index] += (*externalForces)[ ancestors[i] ] * coefs[i];
+
+    }
+}
+
+
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(const int size)
 {
     (*x).resize(size);
