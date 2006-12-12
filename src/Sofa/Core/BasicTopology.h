@@ -35,12 +35,9 @@ enum TopologyChangeType
     POINTSADDED,        ///< For PointsAdded class.
     POINTSREMOVED,      ///< For PointsRemoved class.
     POINTSRENUMBERING,  ///< For PointsRenumbering class.
-    EDGESINDICESSWAP,   ///< For EdgesIndicesSwap class.
     EDGESADDED,         ///< For EdgesAdded class.
     EDGESREMOVED,       ///< For EdgesRemoved class.
-    EDGESRENUMBERING,   ///< For EdgesRenumbering class.
-    EDGESFUSED,         ///< For EdgesFused class.
-    EDGESSPLIT          ///< For EdgesSplit class.
+    EDGESRENUMBERING    ///< For EdgesRenumbering class.
 
 };
 
@@ -113,6 +110,15 @@ public :
     TopologyContainer *getTopologyContainer() const
     {
         return m_topologyContainer;
+    }
+
+
+
+    /** \brief Returns the TopologyModifier object of this Topology.
+     */
+    TopologyModifier *getTopologyModifier() const
+    {
+        return m_topologyModifier;
     }
 
 
