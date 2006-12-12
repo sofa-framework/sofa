@@ -29,7 +29,7 @@ void PointSetTopologyContainer::createPointSetIndex()
     m_PointSetIndex.resize( m_basicTopology->getDOFNumber() );
 
     // initializing
-    for (int i = 0; i < m_PointSetIndex.size(); ++i)
+    for (unsigned int i = 0; i < m_PointSetIndex.size(); ++i)
         m_PointSetIndex[i] = -1;
 
     // overwriting defined DOFs indices

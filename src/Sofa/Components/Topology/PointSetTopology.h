@@ -47,8 +47,12 @@ public:
 
     std::vector< std::vector< unsigned int > > ancestorsList;
 
-    PointsAdded(const unsigned int nV, const std::vector< std::vector< unsigned int > > &ancestors = (std::vector< std::vector< unsigned int > >)0)
-        : Core::TopologyChange(Core::POINTSADDED), nVertices(nV), ancestorsList(ancestors)
+    std::vector< std::vector< double       > > coefs;
+
+    PointsAdded(const unsigned int nV,
+            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
+            const std::vector< std::vector< double       > >& baryCoefs = (const std::vector< std::vector< double       > >)0)
+        : Core::TopologyChange(Core::POINTSADDED), nVertices(nV), ancestorsList(ancestors), coefs(baryCoefs)
     { }
 
     unsigned int getNbAddedVertices() const
@@ -68,7 +72,7 @@ public:
     std::vector<unsigned int> removedVertexArray;
 
 public:
-    PointsRemoved(const std::vector<unsigned int> _vArray) : Core::TopologyChange(Core::POINTSREMOVED), removedVertexArray(_vArray)
+    PointsRemoved(const std::vector<unsigned int>& _vArray) : Core::TopologyChange(Core::POINTSREMOVED), removedVertexArray(_vArray)
     {
     }
 
@@ -88,7 +92,9 @@ class PointsRenumbering : public Core::TopologyChange
 public:
     std::vector<unsigned int> indexArray;
 
-    PointsRenumbering(const std::vector< unsigned int > &indices = (std::vector< unsigned int >)0) : Core::TopologyChange(Core::POINTSRENUMBERING), indexArray(indices) {}
+    PointsRenumbering(const std::vector< unsigned int >& indices = (const std::vector< unsigned int >)0)
+        : Core::TopologyChange(Core::POINTSRENUMBERING), indexArray(indices)
+    { }
 
     const std::vector<unsigned int> &getIndexArray() const
     {
@@ -128,7 +134,7 @@ public:
      *
      * See getPointSetIndex(const unsigned int i) for more explanation.
      */
-    const std::vector<int> &getPointSetIndexArray();
+    const std::vector<int>& getPointSetIndexArray();
 
 
 
@@ -150,7 +156,7 @@ public:
      *
      * See getDOFIndex(const int i) for more explanation.
      */
-    const std::vector<unsigned int> &getDOFIndexArray() const;
+    const std::vector<unsigned int>& getDOFIndexArray() const;
 
 
 
@@ -158,7 +164,7 @@ public:
      *
      * See getDOFIndex(const int i) for more explanation.
      */
-    std::vector<unsigned int> &getDOFIndexArray();
+    std::vector<unsigned int>& getDOFIndexArray();
 
 
 
@@ -169,7 +175,7 @@ public:
 
     PointSetTopologyContainer(Core::BasicTopology *top);
 
-    PointSetTopologyContainer(Core::BasicTopology *top, std::vector<unsigned int> &DOFIndex);
+    PointSetTopologyContainer(Core::BasicTopology *top, const std::vector<unsigned int>& DOFIndex);
 
     template <typename DataTypes>
     friend class PointSetTopologyModifier;
@@ -183,13 +189,13 @@ public:
 /**
  * A class that can apply basic transformations on a set of points.
  */
-template<class TDataTypes>
+template<class DataTypes>
 class PointSetTopologyModifier : public Core::TopologyModifier
 {
 
 public:
-    typedef typename TDataTypes::VecCoord VecCoord;
-    typedef typename TDataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
 
     /** \brief Swap points i1 and i2.
      *
@@ -202,28 +208,24 @@ public:
      *
      * \sa addPointsProcess
      */
-    void addPointsWarning(const unsigned int nPoints, const std::vector< std::vector< unsigned int > > &ancestors = (std::vector< std::vector< unsigned int > >) 0);
+    void addPointsWarning(const unsigned int nPoints,
+            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >) 0,
+            const std::vector< std::vector< double       > >& coefs     = (const std::vector< std::vector< double       > >) 0);
 
-
-
-    /** \brief Add some points to this topology.
-     *
-     * State vectors may be defined for these new points.
-     *
-     * \sa addPointsWarning
-     */
-    virtual void addPointsProcess(const unsigned int nPoints, const VecCoord &X = (VecCoord &)0, const VecCoord &X0 = (VecCoord &)0,
-            const VecDeriv &V = (VecDeriv &)0, const VecDeriv &V0 = (VecDeriv &)0,
-            const VecDeriv &F = (VecDeriv &)0, const VecDeriv &DX = (VecDeriv &)0 );
 
 
     /** \brief Add some points to this topology.
      *
      * Use a list of ancestors to create the new points.
+     * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
+     * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
+     * for the point being created.
      *
      * \sa addPointsWarning
      */
-    virtual void addPointsProcess(const unsigned int nPoints, const std::vector< std::vector< unsigned int > > &ancestors );
+    virtual void addPointsProcess(const unsigned int nPoints,
+            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
+            const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0 );
 
 
 
@@ -241,8 +243,10 @@ public:
      *
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
      * \sa removePointsWarning
+     *
+     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
      */
-    virtual void removePointsProcess(const unsigned int nPoints, const std::vector<unsigned int> &indices);
+    virtual void removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices);
 
 
 
@@ -254,6 +258,15 @@ public:
 
 };
 
+
+
+/** A class that performs complex algorithms on a PointSet.
+ *
+ */
+class PointSetTopologyAlgorithms : public Core::GeometryAlgorithms
+{
+    // no methods implemented yet
+};
 
 
 /**
@@ -290,21 +303,21 @@ public:
 
 /** Describes a topological object that only consists as a set of points :
 it is a base class for all topological objects */
-template<class TDataTypes>
+template<class DataTypes>
 class PointSetTopology : public Core::BasicTopology
 {
 
 public:
-    Core::MechanicalObject<TDataTypes> *object;
+    Core::MechanicalObject<DataTypes> *object;
 
     //void createNewVertices() const;
 
     //void removeVertices() const;
 
 public:
-    PointSetTopology(Core::MechanicalObject<TDataTypes> *obj);
+    PointSetTopology(Core::MechanicalObject<DataTypes> *obj);
 
-    Core::MechanicalObject<TDataTypes> *getDOF() const
+    Core::MechanicalObject<DataTypes> *getDOF() const
     {
         return object;
     }
@@ -318,7 +331,7 @@ public:
     /** \brief Return the number of DOF in the mechanicalObject this Topology deals with.
      *
      */
-    virtual unsigned int getDOFNumber() { return object->getSize(); }
+    virtual unsigned int getDOFNumber() const { return object->getSize(); }
 
 
 
