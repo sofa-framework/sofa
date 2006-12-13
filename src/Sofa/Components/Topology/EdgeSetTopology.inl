@@ -24,7 +24,7 @@ using namespace Sofa::Core;
 template<class DataTypes>
 void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const std::vector< Edge > &edges)
 {
-    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(m_basicTopology);
+    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = dynamic_cast<EdgeSetTopologyContainer *>( topology->getTopologyContainer() );
     assert (container != 0);
@@ -44,7 +44,7 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesWarning(const unsigned int nEdg
 {
     // Warning that edges just got created
     EdgesAdded e(nEdges, ancestors);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 
@@ -55,7 +55,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesWarning( const std::vector<u
 {
     // Warning that these edges will be deleted
     EdgesRemoved e(edges);
-    addTopologyChange(e);
+    this->addTopologyChange(e);
 }
 
 
@@ -63,8 +63,8 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesWarning( const std::vector<u
 template<class DataTypes>
 void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const unsigned int nEdges, std::vector<unsigned int> &indices)
 {
-    std::sort( indices.begin(), indices.end(), greater<unsigned int>() );
-    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(m_basicTopology);
+    std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
+    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = dynamic_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
@@ -101,7 +101,7 @@ void EdgeSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int n
     PointSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs );
 
     // now update the local container structures.
-    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(m_basicTopology);
+    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = dynamic_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
@@ -117,7 +117,7 @@ void EdgeSetTopologyModifier< DataTypes >::removePointsProcess(const unsigned in
     PointSetTopologyModifier< DataTypes >::removePointsProcess( nPoints, indices );
 
     // now update the local container structures
-    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(m_basicTopology);
+    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = dynamic_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
@@ -155,7 +155,7 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const std::vec
     PointSetTopologyModifier< DataTypes >::renumberPointsProcess( index );
 
     // now update the local container structures.
-    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(m_basicTopology);
+    EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = dynamic_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);

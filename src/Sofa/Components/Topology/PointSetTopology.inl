@@ -94,8 +94,8 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
 
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::addPointsWarning(const unsigned int nPoints,
-        const std::vector< std::vector< unsigned int > > &ancestors = (const std::vector< std::vector< unsigned int > >)0,
-        const std::vector< std::vector< double       > >& coefs     = (const std::vector< std::vector< double       > >)0)
+        const std::vector< std::vector< unsigned int > > &ancestors,
+        const std::vector< std::vector< double       > >& coefs)
 {
     // Warning that vertices just got created
     PointsAdded e(nPoints, ancestors, coefs);
@@ -118,7 +118,7 @@ void PointSetTopologyModifier<DataTypes>::removePointsWarning(const unsigned int
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices)
 {
-    std::sort( indices.begin(), indices.end(), operator> (unsigned int, unsigne int) );
+    std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
     PointSetTopologyContainer * container = dynamic_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
@@ -138,11 +138,11 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess(const unsigned int
     }
 
     // resizing the state vectors
-    topology->object->resize( prevSizeMechObj - nVertices );
+    topology->object->resize( prevSizeMechObj - this->nVertices );
 
     // resizing the topology container vectors
-    container->getDOFIndexArray().resize(prevDOFIndexArraySize - nVertices);
-    container->getPointSetIndexArray().resize(prevPointSetIndexArraySize - nVertices);
+    container->getDOFIndexArray().resize(prevDOFIndexArraySize - this->nVertices);
+    container->getPointSetIndexArray().resize(prevPointSetIndexArraySize - this->nVertices);
 }
 
 
@@ -213,7 +213,7 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
 
 
 template<class DataTypes>
-void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real bb[6] ) const
+void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real /*bb*/[6] ) const
 {
 }
 
