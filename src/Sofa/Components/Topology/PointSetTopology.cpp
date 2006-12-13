@@ -21,6 +21,15 @@ template class PointSetTopology<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec3dTypes>;
 
+PointSetTopologyContainer::PointSetTopologyContainer(Core::BasicTopology *top)
+    : Core::TopologyContainer(top)
+{
+}
+
+PointSetTopologyContainer::PointSetTopologyContainer(Core::BasicTopology *top, const std::vector<unsigned int>& DOFIndex)
+    : Core::TopologyContainer(top), m_DOFIndex(DOFIndex)
+{
+}
 
 
 void PointSetTopologyContainer::createPointSetIndex()

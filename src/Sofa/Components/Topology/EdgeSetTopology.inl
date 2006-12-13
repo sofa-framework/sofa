@@ -229,7 +229,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdgesProcess(const std::vector<
 
 
     // now destroy the old edges.
-    removeEdgesProcess( indices.size(), indices );
+    modifier->removeEdgesProcess( indices.size(), indices );
 
     // TODO : final warning?
 
