@@ -22,8 +22,6 @@ public:
 
     virtual double getPotentialEnergy() =0;
 
-    /// update df/dx and others things necessary to compute accumulateDf()
-    virtual void updateStiffness() {std::cerr<<"BasicForceField :: function updateStiffness not implemented\n";};
 
     virtual void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};
 

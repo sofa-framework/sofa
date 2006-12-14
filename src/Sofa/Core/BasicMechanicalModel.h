@@ -57,13 +57,6 @@ public:
 
     virtual void setDx(VecId v) = 0; //{}
 
-    /// useful for multiresolution, if increase level -> levelVariation=+1, decrease -> levelVariation=-1
-    /// vectorIndex permits to give a potential VecId.index to do a calculation
-    virtual void setLevel( bool&result, const int /*levelVariation*/, const int /*vectorIndex*/ = -1 ) { std::cerr<<"BasicMechanicalModel :: function setLevel not implemented\n"; result=false; };
-
-    /// update df/dx and others things necessary to compute accumulateDf()
-    virtual void updateStiffness() {std::cerr<<"BasicMechanicalModel :: function updateStiffness not implemented\n";};
-
     /// @}
 
     /// @name Debug

@@ -99,6 +99,8 @@ void CGImplicitSolver::solve(double dt)
     const char* endcond = "iterations";
     for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
     {
+        cerr<<"r : "<<sqrt(r.dot(r))<<endl;
+
         //z = r; // no precond
         //rho = r.dot(z);
         rho = r.dot(r);
