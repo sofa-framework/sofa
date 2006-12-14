@@ -94,6 +94,11 @@ public:
     DataField<bool> showWireFrame_;
     DataField<bool> showNormals_;
     DataField<bool> multiThreadSimulation_;
+    /// for multiresolution usage
+    DataField<int> currentLevel_;
+    DataField<int> coarsestLevel_;
+    DataField<int> finestLevel_;
+
 
     Frame localFrame_;
     SpatialVector spatialVelocityInWorld_;
@@ -167,6 +172,14 @@ public:
 
     /// Display flags: Normals
     virtual bool getShowNormals() const;
+
+    /// Multiresolution
+    virtual int getCurrentLevel() const;
+    virtual int getCoarsestLevel() const;
+    virtual int getFinestLevel() const;
+
+
+
 
     /// @}
 
@@ -248,6 +261,10 @@ public:
     /// Display flags: Normals
     virtual void setShowNormals(bool val);
 
+    /// Multiresolution
+    virtual bool setCurrentLevel(int l);  ///< set the current level, return false if l >= coarsestLevel
+    virtual void setCoarsestLevel(int l);
+    virtual void setFinestLevel(int l);
 
     /// @}
 

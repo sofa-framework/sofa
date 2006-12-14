@@ -124,6 +124,23 @@ bool BaseContext::getShowNormals() const
     return true;
 }
 
+/// Multiresolution
+int BaseContext::getCurrentLevel() const
+{
+    return 0;
+}
+int BaseContext::getCoarsestLevel() const
+{
+    return 0;
+}
+int BaseContext::getFinestLevel() const
+{
+    return 0;
+}
+uint BaseContext::nbLevels() const
+{
+    return getCoarsestLevel() - getFinestLevel() + 1;
+}
 
 //////////////////////////////
 // Local Coordinates System //

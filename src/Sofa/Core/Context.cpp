@@ -23,6 +23,9 @@ Context::Context()
     , showWireFrame_(dataField(&showWireFrame_,false,"showWireFrame","display flag"))
     , showNormals_(dataField(&showNormals_,false,"showNormals","display flag"))
     , multiThreadSimulation_(dataField(&multiThreadSimulation_,false,"multiThreadSimulation","Apply multithreaded simulation"))
+    , currentLevel_(dataField(&currentLevel_,0,"currentLevel","Current level of details"))
+    , coarsestLevel_(dataField(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
+    , finestLevel_(dataField(&finestLevel_,0,"finestLevel","Finest level of details"))
 {
     setPositionInWorld(Abstract::BaseContext::getPositionInWorld());
     setGravityInWorld(Abstract::BaseContext::getLocalGravity());
@@ -190,6 +193,22 @@ bool Context::getShowNormals() const
     return showNormals_.getValue();
 }
 
+
+/// Multiresolution
+int Context::getCurrentLevel() const
+{
+    return currentLevel_.getValue();
+}
+int Context::getCoarsestLevel() const
+{
+    return coarsestLevel_.getValue();
+}
+int Context::getFinestLevel() const
+{
+    return finestLevel_.getValue();
+}
+
+
 //===============================================================================
 
 /// Simulation timestep
@@ -288,6 +307,30 @@ void Context::setShowNormals(bool val)
     showNormals_.setValue(val);
 }
 
+
+/// Multiresolution
+bool Context::setCurrentLevel(int l)
+{
+    if( l > coarsestLevel_.getValue() || l < 0 ) return false;
+    if( l == coarsestLevel_.getValue() )
+    {
+        currentLevel_.setValue(l);
+        return false;
+    }
+    currentLevel_.setValue(l);
+    return true;
+
+}
+void Context::setCoarsestLevel(int l)
+{
+    coarsestLevel_.setValue( l );
+}
+void Context::setFinestLevel(int l)
+{
+    finestLevel_.setValue( l );
+}
+
+//======================
 
 
 void Context::copyContext(const Context& c)

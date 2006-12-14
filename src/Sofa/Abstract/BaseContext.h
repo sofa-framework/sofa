@@ -86,6 +86,12 @@ public:
     /// Display flags: Normals
     virtual bool getShowNormals() const;
 
+    /// Multiresolution
+    virtual int getCurrentLevel() const;
+    virtual int getCoarsestLevel() const;
+    virtual int getFinestLevel() const;
+    virtual uint nbLevels() const;
+
     /// @}
 
 
@@ -190,6 +196,11 @@ public:
     /// Display flags: Normals
     virtual void setShowNormals(bool /*val*/)
     { }
+
+    /// Multiresolution
+    virtual bool setCurrentLevel(int ) {return false;} ///< set the current level, return false if l >= coarsestLevel
+    virtual void setCoarsestLevel(int ) {}
+    virtual void setFinestLevel(int ) {}
 
     /// @}
 
