@@ -3,11 +3,7 @@
 
 #include "Vec.h"
 #include <assert.h>
-//#include <boost/static_assert.hpp>
-//#include "static_assert.h"
-//#define BOOST_STATIC_ASSERT(a)
-
-#include <assert.h>
+#include "static_assert.h"
 
 namespace Sofa
 {
@@ -189,14 +185,13 @@ public:
     /// Cast into a standard C array of elements (stored per line) (read-only).
     const real* ptr() const
     {
-        return this->elems[0];
+        return this->elems[0].ptr();;
     }
 
     /// Cast into a standard C array of elements (stored per line).
     real* ptr()
     {
-        //return this->elems[0]; /// problems with create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg) and TetrahedralFEMForceField<DataTypes>::computeNodalQuaternions()
-        return 0; /// @todo FIX THIS !!!!
+        return this->elems[0].ptr();
     }
 
     /// Special access to first line.
@@ -526,8 +521,6 @@ typedef Mat<4,4,double> Mat4x4d;
 typedef Mat2x2d Matrix2;
 typedef Mat3x3d Matrix3;
 typedef Mat4x4d Matrix4;
-
-#undef BOOST_STATIC_ASSERT
 
 
 
