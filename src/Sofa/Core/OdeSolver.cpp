@@ -1,6 +1,7 @@
 #include "OdeSolver.h"
 #include "Sofa/Components/Graph/MechanicalAction.h"
 #include "Sofa/Components/Graph/MechanicalVPrintAction.h"
+#include "Sofa/Core/MultiVector.h"
 
 #include <stdlib.h>
 #include <math.h>
@@ -158,9 +159,13 @@ void OdeSolver::computeDf(VecId df)
 
 void OdeSolver::computeAcc(double t, VecId a, VecId x, VecId v)
 {
-    VecId f = VecId::force();
+    MultiVector f(this, VecId::force());
     propagatePositionAndVelocity(t, x, v);
     computeForce(f);
+    if( this->f_printLog.getValue()==true )
+    {
+        cerr<<"OdeSolver::computeAcc, f = "<<f<<endl;
+    }
     accFromF(a, f);
     projectResponse(a);
 }

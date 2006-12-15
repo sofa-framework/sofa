@@ -40,6 +40,26 @@ MechanicalObject<DataTypes>::MechanicalObject()
     translation[1]=0.0;
     translation[2]=0.0;
     scale = 1.0;
+    /*    cerr<<"MechanicalObject<DataTypes>::MechanicalObject, x.size() = "<<x->size()<<endl;
+        cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
+}
+
+template <class DataTypes>
+MechanicalObject<DataTypes>&
+MechanicalObject<DataTypes>::operator = (const MechanicalObject& obj)
+{
+    resize( obj.getSize() );
+    /*    *getX() = *obj.getX();
+        if( obj.x0 != NULL ){
+            x0 = new VecCoord;
+            *x0 = *obj.x0;
+        }
+        *getV() = *obj.getV();
+        if( obj.v0 != NULL ){
+            v0 = new VecDeriv;
+            *v0 = *obj.v0;
+        }*/
+    return *this;
 }
 
 template <class DataTypes>

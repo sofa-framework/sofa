@@ -60,6 +60,7 @@ protected:
 
 public:
     MechanicalObject();
+    MechanicalObject& operator = ( const MechanicalObject& );
 
     virtual ~MechanicalObject();
 

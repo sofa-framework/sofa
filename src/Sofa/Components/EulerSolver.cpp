@@ -32,7 +32,7 @@ void EulerSolver::solve(double dt)
         cerr<<"EulerSolver, initial v = "<< vel <<endl;
     }
 
-    group->computeAcc ( getTime(), acc, pos, vel);
+    computeAcc ( getTime(), acc, pos, vel);
     vel.peq(acc,dt);
     pos.peq(vel,dt);
 

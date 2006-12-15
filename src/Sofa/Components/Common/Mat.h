@@ -4,7 +4,8 @@
 #include "Vec.h"
 #include <assert.h>
 //#include <boost/static_assert.hpp>
-#define BOOST_STATIC_ASSERT(a)
+//#include "static_assert.h"
+//#define BOOST_STATIC_ASSERT(a)
 
 #include <assert.h>
 
@@ -194,7 +195,8 @@ public:
     /// Cast into a standard C array of elements (stored per line).
     real* ptr()
     {
-        return this->elems[0];
+        //return this->elems[0]; /// problems with create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg) and TetrahedralFEMForceField<DataTypes>::computeNodalQuaternions()
+        return 0; /// @todo FIX THIS !!!!
     }
 
     /// Special access to first line.
@@ -245,7 +247,7 @@ public:
     /// Transpose current matrix.
     void transpose()
     {
-        BOOST_STATIC_ASSERT(L == C)
+        BOOST_STATIC_ASSERT(L == C);
         for (int i=0; i<L; i++)
             for (int j=i+1; j<C; j++)
             {

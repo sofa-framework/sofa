@@ -48,7 +48,7 @@ void CGImplicitSolver::solve(double dt)
     CGImplicitSolver* group = this;
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
-//     MultiVector dx(group, VecId::dx());
+    //     MultiVector dx(group, VecId::dx());
     MultiVector f(group, VecId::force());
     MultiVector b(group, V_DERIV);
     MultiVector p(group, V_DERIV);
@@ -114,22 +114,31 @@ void CGImplicitSolver::solve(double dt)
             p += r; //z;
         }
 
-// 		cerr<<"p : "<<p<<endl;
+        if( printLog )
+        {
+            cerr<<"p : "<<p<<endl;
+        }
 
         // matrix-vector product
         group->propagateDx(p);          // dx = p
-
-
         group->computeDf(q);            // q = df/dx p
 
-
-// 		cerr<<"computeDf(q) : "<<q<<endl;
+        if( printLog )
+        {
+            cerr<<"q = df/dx p : "<<q<<endl;
+        }
 
         q *= -h*(h+f_rayleighStiffness.getValue());  // q = -h(h+rs) df/dx p
-//
-// 		cerr<<"-h(h+rs) df/dx p : "<<q<<endl;
-// 		cerr<<"f_rayleighMass.getValue() : "<<f_rayleighMass.getValue()<<endl;
 
+        if( printLog )
+        {
+            cerr<<"q = -h(h+rs) df/dx p : "<<q<<endl;
+        }
+        //
+        // 		cerr<<"-h(h+rs) df/dx p : "<<q<<endl;
+        // 		cerr<<"f_rayleighMass.getValue() : "<<f_rayleighMass.getValue()<<endl;
+
+        // apply global Rayleigh damping
         if (f_rayleighMass.getValue()==0.0)
             group->addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
         else
@@ -138,12 +147,18 @@ void CGImplicitSolver::solve(double dt)
             group->addMdx( q2, p);
             q.peq(q2,(1+h*f_rayleighMass.getValue())); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
         }
+        if( printLog )
+        {
+            cerr<<"q = Mp -h(h+rs) df/dx p +hr Mp  =  "<<q<<endl;
+        }
+
         // filter the product to take the constraints into account
-//
-// 	   cerr<<"q : "<<q<<endl;
-
+        //
         group->projectResponse(q);     // q is projected to the constrained space
-
+        if( printLog )
+        {
+            cerr<<"q after constraint projection : "<<q<<endl;
+        }
 
         double den = p.dot(q);
 
@@ -153,13 +168,19 @@ void CGImplicitSolver::solve(double dt)
             endcond = "threshold";
             if( printLog )
             {
-//                 cerr<<"CGImplicitSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
+                //                 cerr<<"CGImplicitSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
             }
             break;
         }
         alpha = rho/den;
         x.peq(p,alpha);                 // x = x + alpha p
         r.peq(q,-alpha);                // r = r - alpha r
+        if( printLog )
+        {
+            cerr<<"den = "<<den<<", alpha = "<<alpha<<endl;
+            cerr<<"x : "<<x<<endl;
+            cerr<<"r : "<<r<<endl;
+        }
 
 
         double normr = sqrt(r.dot(r));
@@ -200,4 +221,5 @@ Creator<ObjectFactory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
 } // namespace Components
 
 } // namespace Sofa
+
 

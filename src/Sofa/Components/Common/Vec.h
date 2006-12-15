@@ -30,7 +30,7 @@ public:
     /// Specific constructor for 1-element vectors.
     Vec(real r1)
     {
-        BOOST_STATIC_ASSERT(N == 1);
+        BOOST_STATIC_ASSERT(N==1);
         this->elems[0]=r1;
     }
 

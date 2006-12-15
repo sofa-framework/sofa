@@ -11,7 +11,7 @@ namespace Sofa
 namespace Abstract
 {
 
-/// Abstract ColliionModel interface.
+/// Abstract CollisionModel interface.
 ///
 /// A CollisionModel contains a list of same-type elements. It can be part of a
 /// list of CollisionModels, each describing a level in a bounding-volume
