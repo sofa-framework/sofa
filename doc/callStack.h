@@ -1,44 +1,73 @@
-/*
-Sofa call stack tree - How the different concepts are piled up ?
-This file tends to respect the C language syntax and uses "{" and "}" to build the tree nodes.
+/** An example of Sofa simulation shown using the call stack tree.
+It simulates a pair of particles linked by a spring, one particle being fixed.
+
+This file follows the C language syntax and is better seen in a folding C-source editor with comment highlights.
 */
 
+/** User application
+*/
 GUI::QT::QtViewer::step()
 {
+    /** Move the ::Sofa:: scene a step forward
+    * The data structure is hierarchically traversed by *actions* which trigger specific methods of the *components*.
+    * The components are not aware of the data structure. We use an extended tree (technically, a directed acyclic graph), because it eases the generic implementation of efficient simulation approaches.
+    * Other structures, such as networks, could be of interrest.
+    */
     Simulation::animate(root,dt)
     {
+        /** Process the collisions. Set up penalty-based contacts, modify topology, ...
+        */
         GNode::execute<CollisionAction>()
         {
             GNode::executeAction(CollisionAction)
             {
                 GNode::doExecuteAction(CollisionAction)
                 {
-                    CollisionAction::processNodeTopDown(GNode);
+                    CollisionAction::processNodeTopDown(GNode)
+                    {
+                        // ...
+                    }
                 }
             }
         }
+
+        /** Solve an ODE and move forward in time
+        * The ODE solver repeatedly uses the mechanical components (Mass, ForceField, Constraint) to update the state of the mechanical system.
+        */
         GNode::execute(animateAction)
         {
             GNode::executeAction(animateAction)
             {
                 GNode::doExecuteAction(animateAction)
                 {
+                    /** Notifies the BehaviorModel and OdeSolver components */
                     AnimateAction::processNodeTopDown(node)
                     {
+                        /** When a OdeSolver component is found, it handles its sub-tree.
+                        * The traversal of the AnimateAction does not continue through the children. It jumps to the sibling nodes.
+                        */
                         AnimateAction::processSolver(node,solver)
                         {
+                            /** The ODE solver applies its algorithm
+                            * Here, Implicit Euler solved using a filtered conjugate gradient [Baraff&Witkin 98]
+                            */
                             CGImplicitSolver::solve(dt)(dt)
                             {
-                                //     CGImplicitSolver init
+                                /** The right-hand term of the equation is stored in auxiliary state vector b.*/
                                 {
-                                    // b = f0
-                                    OdeSolver::computeForce(a)
+                                    /** b = f0 */
+                                    OdeSolver::computeForce(b)
                                     {
+                                        /** First, vector a is set to 0
+                                        */
                                         MechanicalResetForceAction::MechanicalResetForceAction(VecId);
                                         Action::execute(BaseContext); // MechanicalResetForceAction
+                                        /** Then, the ForceField components accumulate their contribution
+                                         */
                                         MechanicalComputeForceAction::MechanicalComputeForceAction(VecId);
-                                        Action::execute(BaseContext)  // MechanicalComputeForceAction
+                                        Action::execute(BaseContext)
                                         {
+                                            // MechanicalComputeForceAction
                                             GNode::executeAction(Action)
                                             {
                                                 GNode::doExecuteAction(Action)
@@ -49,6 +78,8 @@ GUI::QT::QtViewer::step()
                                                         {
                                                             MechanicalComputeForceAction::fwdForceField(GNode, BasicForceField)
                                                             {
+                                                                /** Internal forces (weight, springs, FEM, ...)
+                                                                */
                                                                 ForceField::addForce()
                                                                 {
                                                                     UniformMass::addForce(f, x, v);
@@ -56,6 +87,8 @@ GUI::QT::QtViewer::step()
                                                             }
                                                             MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField)
                                                             {
+                                                                /** Interaction forces (penalties, ...)
+                                                                 */
                                                                 MechanicalComputeForceAction::fwdForceField(GNode, BasicForceField)
                                                                 {
                                                                     StiffSpringForceField::addForce();
@@ -68,8 +101,12 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
-                                    // dx = v
-                                    OdeSolver::propagateDx(dx)
+                                    /** dx = v
+                                    * We need to compute hKv.
+                                    * Given a displacement, the ForceField components are able to compute the corresponding force variations
+                                    * This action makes v the current displacement
+                                    */
+                                    OdeSolver::propagateDx(v)
                                     {
                                         Action::execute(BaseContext)
                                         {
@@ -81,6 +118,8 @@ GUI::QT::QtViewer::step()
                                                     {
                                                         Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                         {
+                                                            /** Not complete. Documentation to be continued here
+                                                            */
                                                             MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField) ;
                                                         }
                                                     }
@@ -88,7 +127,9 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
-                                    // f = df/dx v
+                                    /** df = K dx
+                                    * Compute the force increment corresponding to the current displacement, and store it in vector df
+                                    */
                                     OdeSolver::computeDf(df)
                                     {
                                         Action::execute(BaseContext)
@@ -108,7 +149,8 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
-                                    // b = f0 + (h+rs)df/dx v
+                                    /** b = f0 + (h+rs)df/dx v
+                                    */
                                     MultiVector::peq(a, f)
                                     {
                                         OdeSolver::v_peq( v, a, f)
@@ -131,7 +173,8 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
-                                    // b = h(f0 + (h+rs)df/dx v - rd M v)
+                                    /** b = h(f0 + (h+rs)df/dx v - rd M v)
+                                    */
                                     MultiVector::teq(f)
                                     {
                                         OdeSolver::v_teq(v, f)
@@ -155,7 +198,8 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
-                                    // b is projected to the constrained space
+                                    /** b is projected to the constrained space
+                                    */
                                     OdeSolver::projectResponse(dx)
                                     {
                                         Action::execute(BaseContext)
@@ -175,6 +219,8 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
+                                    /** v=0  (?????)
+                                    */
                                     OdeSolver::v_clear(v)
                                     {
                                         Action::execute(BaseContext)
@@ -194,6 +240,8 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
+                                    /** v=a
+                                     */
                                     OdeSolver::v_eq(v, a)
                                     {
                                         Action::execute(BaseContext)
@@ -213,9 +261,8 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
-
                                 }
-                                // CGImplicitSolver iterations
+                                /** The solution of the equation system is iteratively refined using the filtered conjugate gradient algorithm */
                                 {
                                     OdeSolver::propagateDx(dx)
                                     {
@@ -275,7 +322,7 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                 }
-                                // Apply the solution
+                                /** Compute the value of the new positions x and new velocities v */
                                 {
                                     // vel = vel + x
                                     MultiVector::peq(a, f)
@@ -325,6 +372,7 @@ GUI::QT::QtViewer::step()
                                     }
                                 }
                             }
+                            /** Set x and v as current positions and velocities */
                             OdeSolver::propagatePositionAndVelocity(t, x, v)
                             {
                                 Action::execute(BaseContext)
@@ -337,14 +385,15 @@ GUI::QT::QtViewer::step()
                                             {
                                                 MechanicalAction::processNodeTopDown(GNode)
                                                 {
+                                                    /** Copy context values from parent node, and apply local changes */
                                                     node->updateContext();
-                                                    //mechanicalModel
+                                                    /** Set x and v as current positions and velocities */
                                                     MechanicalPropagatePositionAndVelocityAction::fwdMechanicalModel(GNode,BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setX(v);
+                                                        MechanicalObject::setX(x);
                                                         MechanicalObject::setV(v);
                                                     }
-                                                    //constraint
+                                                    /** Filter the positions and velocities to match the constraints */
                                                     for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicConstraint)* fonction)
                                                     {
                                                         MechanicalPropagatePositionAndVelocityAction::fwdConstraint(GNode, BasicConstraint)
@@ -361,11 +410,20 @@ GUI::QT::QtViewer::step()
                             }
                         }
                     }
-                    Action::processNodeBottomUp(GNode);
+                    /** nothing to do bottom-up */
+                    Action::processNodeBottomUp(GNode)
+                    {}
                 }
             }
         }
+
+        /** Update the other aspects: visual, haptics, ...
+        */
         GNode::execute<UpdateMappingAction>()
+        {}
+
+        /** redraw
+        */
         GNode::execute(VisualUpdateAction)
         {
             GNode::executeAction(VisualUpdateAction)
@@ -378,7 +436,9 @@ GUI::QT::QtViewer::step()
                         {
                             VisualUpdateAction::processVisualModel(GNode, VisualModel)
                             {
-                                UniformMass<::update();
+                                /** OpenGL rendering of the viewable components
+                                */
+                                VisualModel::draw();
                             }
                         }
                     }
@@ -387,4 +447,4 @@ GUI::QT::QtViewer::step()
         }
     }
 }
-}
+
