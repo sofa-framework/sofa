@@ -1,0 +1,30 @@
+[General]
+img_extIsRegExp=false
+img_extensions=.eps .pdf .dvi .ps .fig .gif .jpg .jpeg .png
+lastDocument=file:///home/faure/Sofa/doc/principles/principes.tex
+masterDocument=
+name=principes
+pkg_extIsRegExp=false
+pkg_extensions=.cls .sty .dtx
+src_extIsRegExp=false
+src_extensions=.tex .ltx .bib .mp
+
+[Tools]
+MakeIndex=
+QuickBuild=
+
+[item:principes.kilepr]
+archive=true
+column=6881384
+encoding=
+highlight=
+line=0
+open=false
+
+[item:principes.tex]
+archive=true
+column=0
+encoding=UTF-8
+highlight=LaTeX
+line=348
+open=true

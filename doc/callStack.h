@@ -53,6 +53,9 @@ GUI::QT::QtViewer::step()
                             */
                             CGImplicitSolver::solve(dt)(dt)
                             {
+                                MultiVector pos(group, VecId::position())
+                                {
+                                }
                                 /** The right-hand term of the equation is stored in auxiliary state vector b.*/
                                 {
                                     /** b = f0 */
@@ -127,10 +130,10 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
-                                    /** df = K dx
+                                    /** f = K dx
                                     * Compute the force increment corresponding to the current displacement, and store it in vector df
                                     */
-                                    OdeSolver::computeDf(df)
+                                    OdeSolver::computeDf(f)
                                     {
                                         Action::execute(BaseContext)
                                         {
@@ -151,6 +154,7 @@ GUI::QT::QtViewer::step()
                                     }
                                     /** b = f0 + (h+rs)df/dx v
                                     */
+                                    b.peq(f,h+f_rayleighStiffness.getValue()) {}
                                     MultiVector::peq(a, f)
                                     {
                                         OdeSolver::v_peq( v, a, f)
