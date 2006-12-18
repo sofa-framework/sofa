@@ -90,7 +90,7 @@ public:
     virtual int getCurrentLevel() const;
     virtual int getCoarsestLevel() const;
     virtual int getFinestLevel() const;
-    virtual uint nbLevels() const;
+    virtual unsigned int nbLevels() const;
 
     /// @}
 
