@@ -1,0 +1,20 @@
+sofa-all-sourcefiles.txt:
+    Files: 554
+    Lines: 93685
+    Bytes: 2712231
+sofa-applications-sourcefiles.txt:
+    Files: 49
+    Lines: 14983
+    Bytes: 445107
+sofa-core-sourcefiles.txt:
+    Files: 82
+    Lines: 10041
+    Bytes: 269494
+sofa-dev-sourcefiles.txt:
+    Files: 89
+    Lines: 19509
+    Bytes: 596279
+sofa-modules-sourcefiles.txt:
+    Files: 334
+    Lines: 49152
+    Bytes: 1401351
