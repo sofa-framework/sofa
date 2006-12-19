@@ -24,7 +24,8 @@ public:
     /// Default constructor: sets all values to 0.
     Vec()
     {
-        this->assign(0);
+//                 this->assign(0);
+        this->assign(real());// modified by Matthieu Nesme -> takes into account if the template type is more complex than a real-like.
     }
 
     /// Specific constructor for 1-element vectors.
