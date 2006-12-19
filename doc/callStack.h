@@ -69,25 +69,34 @@ GUI::QT::QtViewer::step()
                 }
             }
         }
-        /** Solve an ODE and move forward in time
-        * The ODE solver repeatedly uses the mechanical components (Mass, ForceField, Constraint) to update the state of the mechanical system.
-        */
+
+        /** Move forward in time */
         GNode::execute(animateAction)
         {
             GNode::executeAction(animateAction)
             {
                 GNode::doExecuteAction(animateAction)
                 {
-                    /** Notifies the BehaviorModel and OdeSolver components */
+                    /** Notifies the BehaviorModel and OdeSolver components.
+                    * The BehavioModel components are stand-alone.
+                    * They can be used to model objects designed separately from Sofa.
+                    * They are processed top-down.
+                    *
+                    * When a OdeSolver component is found, it handles its sub-tree.
+                    * The traversal of the AnimateAction does not continue through the children,
+                    * it jumps to the sibling nodes.
+                    */
                     AnimateAction::processNodeTopDown(node)
                     {
-                        /** When a OdeSolver component is found, it handles its sub-tree.
-                        * The traversal of the AnimateAction does not continue through the children. It jumps to the sibling nodes.
+                        /**  Solve an ODE and move forward in time.
+                        * The ODE solver repeatedly uses the mechanical components (Mass, ForceField, Constraint) to update the state of the mechanical system, using actions.
                         */
                         AnimateAction::processSolver(node,solver)
                         {
-                            /** MechanicalBeginIntegrationAction */
-                            GNode::execute(Action)
+                            /** MechanicalBeginIntegrationAction
+                            * All necessary tasks before integration, such as updating the external forces
+                            */
+                            GNode::execute(MechanicalBeginIntegrationAction)
                             {
                                 GNode::executeAction(Action)
                                 {
@@ -99,6 +108,8 @@ GUI::QT::QtViewer::step()
                                             {
                                                 MechanicalObject::beginIntegration(dt);
                                             }
+
+                                            //
                                             Action::for_each(MechanicalAction, GNode, const Sequence<BasicConstraint>, Action::Result (GNode,BasicConstraint)* fonction)
                                             {
                                                 /** 1st loop */
@@ -113,15 +124,16 @@ GUI::QT::QtViewer::step()
                                     }
                                 }
                             }
+
                             /** The ODE solver applies its algorithm
                             * Here, Implicit Euler solved using a filtered conjugate gradient [Baraff&Witkin 98]
                             */
                             CGImplicitSolver::solve(dt)
                             {
-                                /**************************/
                                 /** CGImplicitSolver init */
-                                /**************************/
-                                /* The solver allocates the corresponding DOFs (i.e. vectors (f,x, v...) in MechanicalObject)
+
+                                /** Reserve auxiliary vectors.
+                                The solver allocates the corresponding DOFs (i.e. vectors (f,x, v...) in MechanicalObject)
                                 */
                                 MultiVector::MultiVector(OdeSolver, VecType)
                                 {
@@ -155,8 +167,7 @@ GUI::QT::QtViewer::step()
                                 {
                                     /** First, vector a is set to 0
                                     */
-                                    MechanicalResetForceAction::MechanicalResetForceAction(VecId);
-                                    Action::execute(BaseContext)
+                                    MechanicalResetForceAction::execute(BaseContext)
                                     {
                                         GNode::executeAction(Action)
                                         {
@@ -169,7 +180,9 @@ GUI::QT::QtViewer::step()
                                                         MechanicalObject::setF(VecId);
                                                         MechanicalObject::resetForce();
                                                     }
-                                                    Action::for_each(MechanicalAction, GNode8, const Sequence & list, Result (GNode, InteractionForceField)* fonction)
+
+                                                    // ???
+                                                    Action::for_each(MechanicalAction, GNode, const Sequence & list, Result (GNode, InteractionForceField)* fonction)
                                                     {
                                                         /** 1st loop */
                                                         MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
@@ -181,10 +194,10 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
+
                                     /** Then, the ForceField components accumulate their contribution
-                                    */
-                                    MechanicalComputeForceAction::MechanicalComputeForceAction(VecId);
-                                    Action::execute(BaseContext)
+                                      */
+                                    MechanicalComputeForceAction::execute(BaseContext)
                                     {
                                         GNode::executeAction(Action)
                                         {
@@ -195,7 +208,7 @@ GUI::QT::QtViewer::step()
                                                     MechanicalComputeForceAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
                                                         MechanicalObject::setF(VecId);
-                                                        MechanicalObject::accumulateForce();
+                                                        MechanicalObject::accumulateForce(); // external forces
                                                     }
                                                     Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicForceField)* fonction)
                                                     {
@@ -276,12 +289,13 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                 }
+
                                 /** dx = v
                                 * We need to compute hKv.
                                 * Given a displacement, the ForceField components are able to compute the corresponding force variations
                                 * This action makes v the current displacement
                                 */
-                                OdeSolver::propagateDx(dx)
+                                OdeSolver::propagateDx(v)
                                 {
                                     Action::execute(BaseContext)
                                     {
@@ -291,18 +305,20 @@ GUI::QT::QtViewer::step()
                                             {
                                                 MechanicalAction::processNodeTopDown(GNode)
                                                 {
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
-                                                    {
-                                                        /** 1st loop */
-                                                        MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField) ;
-                                                        /** 2nd loop */
-                                                        MechanicalPropagateDxAction::fwdConstraint(GNode, BasicConstraint);
-
-                                                    }
-                                                    // ????
+                                                    /// Make the Dx index refer to the given one (v)
                                                     MechanicalPropagateDxAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
                                                         MechanicalObject::setDx(VecId);
+                                                    }
+
+                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
+                                                    {
+                                                        MechanicalAction::fwdnteIractionForceField(GNode, InteractionForceField) ;
+                                                    }
+                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, Constraint)* fonction)
+                                                    {
+                                                        MechanicalPropagateDxAction::fwdConstraint(GNode, BasicConstraint);
+
                                                     }
 
                                                 }
@@ -763,6 +779,7 @@ GUI::QT::QtViewer::step()
                                     }
                                 }
                             }
+
                             /** Set x and v as current positions and velocities */
                             OdeSolver::propagatePositionAndVelocity(t, x, v)
                             {
@@ -841,10 +858,10 @@ GUI::QT::QtViewer::step()
                             }
                         }
                     }
+
                     /** nothing to do bottom-up */
                     Action::processNodeBottomUp(GNode)
-                    {
-                    }
+                    {}
                 }
             }
         }
@@ -879,4 +896,3 @@ GUI::QT::QtViewer::step()
         }
     }
 }
-
