@@ -106,7 +106,10 @@ GUI::QT::QtViewer::step()
                                         {
                                             MechanicalBeginIntegrationAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                             {
-                                                MechanicalObject::beginIntegration(dt);
+                                                MechanicalObject::beginIntegration(dt)
+                                                {
+                                                    this->f = this->internalForces;
+                                                }
                                             }
                                             Action::for_each(MechanicalAction, GNode, const Sequence, Action::Result (GNode,InteractionForceField)* fonction)
                                             {
@@ -129,12 +132,12 @@ GUI::QT::QtViewer::step()
                             */
                             CGImplicitSolver::solve(dt)
                             {
-                                /** CGImplicitSolver init */
+                                CGImplicitSolver* group = this;
 
                                 /** Reserve auxiliary vectors.
-                                The solver allocates the corresponding DOFs (i.e. vectors (f,x, v...) in MechanicalObject)
+                                * The solver allocates the corresponding DOFs (i.e. vectors (f,x, v...) in MechanicalObject)
                                 */
-                                MultiVector::MultiVector(OdeSolver, VecType)
+                                MultiVector pos(group, VecId::position())
                                 {
                                     OdeSolver::v_alloc(VecType)
                                     {
@@ -148,7 +151,25 @@ GUI::QT::QtViewer::step()
                                                     {
                                                         MechanicalVAllocAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                         {
-                                                            MechanicalObject::vAlloc(VecId );
+                                                            MechanicalObject::vAlloc(VecId )
+                                                            {
+                                                                if (v.type == V_COORD && v.index >= V_FIRST_DYNAMIC_INDEX)
+                                                                {
+                                                                    VecCoord* vec = getVecCoord(v.index);
+                                                                    vec->resize(vsize);
+                                                                }
+                                                                else if (v.type == V_DERIV && v.index >= V_FIRST_DYNAMIC_INDEX)
+                                                                {
+                                                                    VecDeriv* vec = getVecDeriv(v.index);
+                                                                    vec->resize(vsize);
+                                                                }
+                                                                else
+                                                                {
+                                                                    std::cerr << "Invalid alloc operation ("<<v<<")\n";
+                                                                    return;
+                                                                }
+                                                                //vOp(v); // clear vector
+                                                            }
                                                         }
                                                         Action::for_each(MechanicalAction, GNode, Sequence, Result (GNode, InteractionForceField )* fonction)
                                                         {
@@ -160,9 +181,23 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                 }
+
+                                MultiVector vel(group, VecId::velocity());
+                                MultiVector f(group, VecId::force());
+                                MultiVector b(group, V_DERIV);
+                                MultiVector p(group, V_DERIV);
+                                MultiVector q(group, V_DERIV);
+                                MultiVector q2(group, V_DERIV);
+                                MultiVector r(group, V_DERIV);
+                                MultiVector x(group, V_DERIV);
+
+                                double h = dt;
+                                bool printLog = f_printLog.getValue();
+
+                                // compute the right-hand term of the equation system
                                 /** b = f0
                                 */
-                                OdeSolver::computeForce(b)
+                                group->computeForce(b)
                                 {
                                     /** First, vector a is set to 0
                                     */
@@ -176,8 +211,23 @@ GUI::QT::QtViewer::step()
                                                 {
                                                     MechanicalResetForceAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setF(VecId);
-                                                        MechanicalObject::resetForce();
+                                                        MechanicalObject::setF(VecId)
+                                                        {
+                                                            if (v.type == V_DERIV)
+                                                            {
+                                                                this->v = getVecDeriv(v.index);
+                                                            }
+                                                            else
+                                                            {
+                                                                std::cerr << "Invalid setV operation ("<<v<<")\n";
+                                                            }
+                                                        }
+                                                        MechanicalObject::resetForce()
+                                                        {
+                                                            VecDeriv& f= *getF();
+                                                            for( unsigned i=0; i<f.size(); ++i )
+                                                                f[i] = Deriv();
+                                                        }
                                                     }
                                                     Action::for_each(MechanicalAction, GNode, const Sequence & list, Result (GNode, InteractionForceField)* fonction)
                                                     {
@@ -204,8 +254,26 @@ GUI::QT::QtViewer::step()
                                                 {
                                                     MechanicalComputeForceAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setF(VecId);
-                                                        MechanicalObject::accumulateForce(); // external forces
+                                                        MechanicalObject::setF(VecId)
+                                                        {
+                                                            if (v.type == V_DERIV)
+                                                            {
+                                                                this->f = getVecDeriv(v.index);
+                                                            }
+                                                            else
+                                                            {
+                                                                std::cerr << "Invalid setF operation ("<<v<<")\n";
+                                                            }
+                                                        }
+                                                        // external forces
+                                                        MechanicalObject::accumulateForce()
+                                                        {
+                                                            if (!this->externalForces->empty())
+                                                            {
+                                                                for (unsigned int i=0; i < this->externalForces->size(); i++)
+                                                                    (*this->f)[i] += (*this->externalForces)[i];
+                                                            }
+                                                        }
                                                     }
                                                     /** BasicForceField */
                                                     Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicForceField)* fonction)
@@ -241,7 +309,6 @@ GUI::QT::QtViewer::step()
                                                                     {
                                                                         f[i] += mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i]);
                                                                     }
-
                                                                 }
                                                             }
                                                         }
@@ -291,13 +358,12 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                 }
-
                                 /** dx = v
                                 * We need to compute hKv.
                                 * Given a displacement, the ForceField components are able to compute the corresponding force variations
                                 * This action makes v the current displacement
                                 */
-                                OdeSolver::propagateDx(v)
+                                group->propagateDx(vel)
                                 {
                                     Action::execute(BaseContext)
                                     {
@@ -310,7 +376,17 @@ GUI::QT::QtViewer::step()
                                                     /// Make the Dx index refer to the given one (v)
                                                     MechanicalPropagateDxAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setDx(VecId);
+                                                        MechanicalObject::setDx(VecId v)
+                                                        {
+                                                            if (v.type == V_DERIV)
+                                                            {
+                                                                this->dx = getVecDeriv(v.index);
+                                                            }
+                                                            else
+                                                            {
+                                                                std::cerr << "Invalid setDx operation ("<<v<<")\n";
+                                                            }
+                                                        }
                                                     }
                                                     Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                     {
@@ -325,10 +401,10 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                 }
-                                /** f = K dx
+                                /** f = df/dx v
                                 * Compute the force increment corresponding to the current displacement, and store it in vector df
                                 */
-                                OdeSolver::computeDf(df)
+                                group->computeDf(f)
                                 {
                                     MechanicalResetForceAction::execute(BaseContext)
                                     {
@@ -341,9 +417,23 @@ GUI::QT::QtViewer::step()
                                                     /** MechanicalResetForceAction */
                                                     MechanicalResetForceAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setF(VecId);
-                                                        MechanicalObject::resetForce();
-                                                        MechanicalObject::setF(VecId);
+                                                        MechanicalObject::setF(VecId)
+                                                        {
+                                                            if (v.type == V_DERIV)
+                                                            {
+                                                                this->f = getVecDeriv(v.index);
+                                                            }
+                                                            else
+                                                            {
+                                                                std::cerr << "Invalid setF operation ("<<v<<")\n";
+                                                            }
+                                                        }
+                                                        MechanicalObject::resetForce()
+                                                        {
+                                                            VecDeriv& f= *getF();
+                                                            for( unsigned i=0; i<f.size(); ++i )
+                                                                f[i] = Deriv();
+                                                        }
                                                     }
                                                     Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                     {
@@ -370,7 +460,17 @@ GUI::QT::QtViewer::step()
                                                     /** MechanicalComputeDfAction */
                                                     MechanicalComputeDfAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setF(VecId v);
+                                                        MechanicalObject::setF(VecId v)
+                                                        {
+                                                            if (v.type == V_DERIV)
+                                                            {
+                                                                this->f = getVecDeriv(v.index);
+                                                            }
+                                                            else
+                                                            {
+                                                                std::cerr << "Invalid setF operation ("<<v<<")\n";
+                                                            }
+                                                        }
                                                     }
                                                     Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                     {
@@ -378,7 +478,25 @@ GUI::QT::QtViewer::step()
                                                         {
                                                             MechanicalComputeDfAction::fwdForceField(GNode, BasicForceField)
                                                             {
-                                                                StiffSpringForceField::addDForce();
+                                                                StiffSpringForceField::addDForce()
+                                                                {
+                                                                    VecDeriv& f1  = *this->object1->getF();
+                                                                    const VecCoord& p1 = *this->object1->getX();
+                                                                    const VecDeriv& dx1 = *this->object1->getDx();
+                                                                    VecDeriv& f2  = *this->object2->getF();
+                                                                    const VecCoord& p2 = *this->object2->getX();
+                                                                    const VecDeriv& dx2 = *this->object2->getDx();
+                                                                    f1.resize(dx1.size());
+                                                                    f2.resize(dx2.size());
+                                                                    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, dx1 = "<<dx1<<endl;
+                                                                    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 before = "<<f1<<endl;
+                                                                    for (unsigned int i=0; i<this->springs.size(); i++)
+                                                                    {
+                                                                        this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, i, this->springs[i]);
+                                                                    }
+                                                                    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 = "<<f1<<endl;
+                                                                    //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df2 = "<<f2<<endl;
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -393,7 +511,7 @@ GUI::QT::QtViewer::step()
                                 }
                                 /** b = f0 + (h+rs)df/dx v
                                 */
-                                MultiVector::peq(a, f)
+                                b.peq(f,h+f_rayleighStiffness.getValue())
                                 {
                                     OdeSolver::v_peq( VecId v, VecId a, double f)
                                     {
@@ -407,7 +525,283 @@ GUI::QT::QtViewer::step()
                                                     {
                                                         MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                         {
-                                                            MechanicalObject::vOp(VecId v, VecId a, VecId b, double f);
+                                                            MechanicalObject::vOp(VecId v, VecId a, VecId b, double f)
+                                                            {
+                                                                if(v.isNull())
+                                                                {
+                                                                    // ERROR
+                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                    return;
+                                                                }
+                                                                if (a.isNull())
+                                                                {
+                                                                    if (b.isNull())
+                                                                    {
+                                                                        // v = 0
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            vv->resize(this->vsize);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = Coord();
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            vv->resize(this->vsize);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = Deriv();
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (b.type != v.type)
+                                                                        {
+                                                                            // ERROR
+                                                                            std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                            return;
+                                                                        }
+                                                                        if (v == b)
+                                                                        {
+                                                                            // v *= f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] *= (Real)f;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] *= (Real)f;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            // v = b*f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                VecCoord* vb = getVecCoord(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (a.type != v.type)
+                                                                    {
+                                                                        // ERROR
+                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                        return;
+                                                                    }
+                                                                    if (b.isNull())
+                                                                    {
+                                                                        // v = a
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            VecCoord* va = getVecCoord(a.index);
+                                                                            vv->resize(va->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*va)[i];
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            VecDeriv* va = getVecDeriv(a.index);
+                                                                            vv->resize(va->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*va)[i];
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (v == a)
+                                                                        {
+                                                                            if (f==1.0)
+                                                                            {
+                                                                                // v += b
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // v += b*f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (f==1.0)
+                                                                            {
+                                                                                // v = a+b
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    VecCoord* va = getVecCoord(a.index);
+                                                                                    vv->resize(va->size());
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* va = getVecDeriv(a.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(va->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // v = a+b*f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    VecCoord* va = getVecCoord(a.index);
+                                                                                    vv->resize(va->size());
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* va = getVecDeriv(a.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(va->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                         Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                         {
@@ -419,76 +813,315 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                 }
-                                MultiVector::clear()
+
+
+                                if (f_rayleighMass.getValue() != 0.0)
                                 {
-                                    /** v=0  (?????)
-                                    */
-                                    OdeSolver::v_clear(v)
+                                    f.clear()
                                     {
-                                        Action::execute(BaseContext)
+                                        /** v=0  (?????)
+                                        */
+                                        OdeSolver::v_clear(v)
                                         {
-                                            GNode::executeAction(Action)
+                                            Action::execute(BaseContext)
                                             {
-                                                GNode::doExecuteAction(Action)
+                                                GNode::executeAction(Action)
                                                 {
-                                                    MechanicalAction::processNodeTopDown(GNode)
+                                                    GNode::doExecuteAction(Action)
                                                     {
-                                                        MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
+                                                        MechanicalAction::processNodeTopDown(GNode)
                                                         {
-                                                            MechanicalObject::vOp(VecId v, VecId a, VecId b, double f);
-                                                        }
-                                                        Action::for_each(MechanicalAction, GNode * node=0x01cc3f28, const Sequence & list, Action::Result (GNode,InteractionForceField)* fonction)
-                                                        {
-                                                            MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                OdeSolver::addMdx(VecId res, VecId dx)
-                                {
-                                    Action::execute(BaseContext)
-                                    {
-                                        GNode::executeAction(Action)
-                                        {
-                                            GNode::doExecuteAction(Action)
-                                            {
-                                                MechanicalAction::processNodeTopDown(GNode)
-                                                {
-                                                    MechanicalAddMDxAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
-                                                    {
-                                                        MechanicalObject::setF(VecId v);
-                                                        MechanicalObject::setDx(VecId v);
-                                                    }
-                                                    MechanicalAddMDxAction::fwdMass(GNode, BasicMass)
-                                                    {
-                                                        Mass::addMDx()
-                                                        {
-                                                            /** Get the state vectors using
-                                                            *  Mass->MechanicalModel->getF(),
-                                                            *  Mass->MechanicalModel->getDx()
-                                                            */
-                                                            UniformMass::addMDx(VecDeriv& f, const VecDeriv& dx)
+                                                            MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                             {
-                                                                for (unsigned int i=0; i<dx.size(); i++)
+                                                                MechanicalObject::vOp(VecId v, VecId a, VecId b, double f)
                                                                 {
-                                                                    f[i] += dx[i] * mass;
+                                                                    if(v.isNull())
+                                                                    {
+                                                                        // ERROR
+                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                        return;
+                                                                    }
+                                                                    if (a.isNull())
+                                                                    {
+                                                                        if (b.isNull())
+                                                                        {
+                                                                            // v = 0
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                vv->resize(this->vsize);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = Coord();
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                vv->resize(this->vsize);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = Deriv();
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (b.type != v.type)
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                            if (v == b)
+                                                                            {
+                                                                                // v *= f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] *= (Real)f;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] *= (Real)f;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // v = b*f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (a.type != v.type)
+                                                                        {
+                                                                            // ERROR
+                                                                            std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                            return;
+                                                                        }
+                                                                        if (b.isNull())
+                                                                        {
+                                                                            // v = a
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                VecCoord* va = getVecCoord(a.index);
+                                                                                vv->resize(va->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*va)[i];
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* va = getVecDeriv(a.index);
+                                                                                vv->resize(va->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*va)[i];
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (v == a)
+                                                                            {
+                                                                                if (f==1.0)
+                                                                                {
+                                                                                    // v += b
+                                                                                    if (v.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                                        if (b.type == V_COORD)
+                                                                                        {
+                                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                                            vv->resize(vb->size());
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                                (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                                            vv->resize(vb->size());
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                                (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                    else if (b.type == V_DERIV)
+                                                                                    {
+                                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        // ERROR
+                                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                        return;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // v += b*f
+                                                                                    if (v.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                                        if (b.type == V_COORD)
+                                                                                        {
+                                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                                            vv->resize(vb->size());
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                                (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                                            vv->resize(vb->size());
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                                (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                    else if (b.type == V_DERIV)
+                                                                                    {
+                                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        // ERROR
+                                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                        return;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                if (f==1.0)
+                                                                                {
+                                                                                    // v = a+b
+                                                                                    if (v.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                                        VecCoord* va = getVecCoord(a.index);
+                                                                                        vv->resize(va->size());
+                                                                                        if (b.type == V_COORD)
+                                                                                        {
+                                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            {
+                                                                                                (*vv)[i] = (*va)[i];
+                                                                                                (*vv)[i] += (*vb)[i];
+                                                                                            }
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            {
+                                                                                                (*vv)[i] = (*va)[i];
+                                                                                                (*vv)[i] += (*vb)[i];
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                    else if (b.type == V_DERIV)
+                                                                                    {
+                                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                                        VecDeriv* va = getVecDeriv(a.index);
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(va->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        // ERROR
+                                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                        return;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // v = a+b*f
+                                                                                    if (v.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                                        VecCoord* va = getVecCoord(a.index);
+                                                                                        vv->resize(va->size());
+                                                                                        if (b.type == V_COORD)
+                                                                                        {
+                                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            {
+                                                                                                (*vv)[i] = (*va)[i];
+                                                                                                (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                            }
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            {
+                                                                                                (*vv)[i] = (*va)[i];
+                                                                                                (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                    else if (b.type == V_DERIV)
+                                                                                    {
+                                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                                        VecDeriv* va = getVecDeriv(a.index);
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(va->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        // ERROR
+                                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                        return;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
                                                                 }
+                                                            }
+                                                            Action::for_each(MechanicalAction, GNode * node=0x01cc3f28, const Sequence & list, Action::Result (GNode,InteractionForceField)* fonction)
+                                                            {
+                                                                MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
                                                             }
                                                         }
                                                     }
-
                                                 }
                                             }
                                         }
                                     }
-                                }
-
-                                MultiVector::peq(VecId a, double f)
-                                {
-                                    OdeSolver::v_peq(VecId v, VecId a, double f)
+                                    group->addMdx(f,vel)
                                     {
                                         Action::execute(BaseContext)
                                         {
@@ -498,13 +1131,350 @@ GUI::QT::QtViewer::step()
                                                 {
                                                     MechanicalAction::processNodeTopDown(GNode)
                                                     {
-                                                        MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
+                                                        MechanicalAddMDxAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                         {
-                                                            MechanicalObject::vOp(VecId v, VecId a, VecId b, double f);
+                                                            MechanicalObject::setF(VecId v)
+                                                            {
+                                                                if (v.type == V_DERIV)
+                                                                {
+                                                                    this->f = getVecDeriv(v.index);
+                                                                }
+                                                                else
+                                                                {
+                                                                    std::cerr << "Invalid setF operation ("<<v<<")\n";
+                                                                }
+                                                            }
+                                                            MechanicalObject::setDx(VecId v)
+                                                            {
+                                                                if (v.type == V_DERIV)
+                                                                {
+                                                                    this->dx = getVecDeriv(v.index);
+                                                                }
+                                                                else
+                                                                {
+                                                                    std::cerr << "Invalid setDx operation ("<<v<<")\n";
+                                                                }
+                                                            }
                                                         }
-                                                        Action::for_each(MechanicalAction, GNode * node=0x01cc3f28, const Sequence & list, Action::Result (GNode,InteractionForceField)* fonction)
+                                                        MechanicalAddMDxAction::fwdMass(GNode, BasicMass)
                                                         {
-                                                            MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
+                                                            Mass::addMDx()
+                                                            {
+                                                                /** Get the state vectors using
+                                                                *  Mass->MechanicalModel->getF(),
+                                                                *  Mass->MechanicalModel->getDx()
+                                                                */
+                                                                UniformMass::addMDx(VecDeriv& f, const VecDeriv& dx)
+                                                                {
+                                                                    for (unsigned int i=0; i<dx.size(); i++)
+                                                                    {
+                                                                        f[i] += dx[i] * mass;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    b.peq(f,-f_rayleighMass.getValue())
+                                    {
+                                        OdeSolver::v_peq(VecId v, VecId a, double f)
+                                        {
+                                            Action::execute(BaseContext)
+                                            {
+                                                GNode::executeAction(Action)
+                                                {
+                                                    GNode::doExecuteAction(Action)
+                                                    {
+                                                        MechanicalAction::processNodeTopDown(GNode)
+                                                        {
+                                                            MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
+                                                            {
+                                                                MechanicalObject::vOp(VecId v, VecId a, VecId b, double f)
+                                                                {
+                                                                    if(v.isNull())
+                                                                    {
+                                                                        // ERROR
+                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                        return;
+                                                                    }
+                                                                    if (a.isNull())
+                                                                    {
+                                                                        if (b.isNull())
+                                                                        {
+                                                                            // v = 0
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                vv->resize(this->vsize);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = Coord();
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                vv->resize(this->vsize);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = Deriv();
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (b.type != v.type)
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                            if (v == b)
+                                                                            {
+                                                                                // v *= f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] *= (Real)f;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] *= (Real)f;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // v = b*f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (a.type != v.type)
+                                                                        {
+                                                                            // ERROR
+                                                                            std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                            return;
+                                                                        }
+                                                                        if (b.isNull())
+                                                                        {
+                                                                            // v = a
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                VecCoord* va = getVecCoord(a.index);
+                                                                                vv->resize(va->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*va)[i];
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* va = getVecDeriv(a.index);
+                                                                                vv->resize(va->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*va)[i];
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (v == a)
+                                                                            {
+                                                                                if (f==1.0)
+                                                                                {
+                                                                                    // v += b
+                                                                                    if (v.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                                        if (b.type == V_COORD)
+                                                                                        {
+                                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                                            vv->resize(vb->size());
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                                (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                                            vv->resize(vb->size());
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                                (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                    else if (b.type == V_DERIV)
+                                                                                    {
+                                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        // ERROR
+                                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                        return;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // v += b*f
+                                                                                    if (v.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                                        if (b.type == V_COORD)
+                                                                                        {
+                                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                                            vv->resize(vb->size());
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                                (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                                            vv->resize(vb->size());
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                                (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                    else if (b.type == V_DERIV)
+                                                                                    {
+                                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        // ERROR
+                                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                        return;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                if (f==1.0)
+                                                                                {
+                                                                                    // v = a+b
+                                                                                    if (v.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                                        VecCoord* va = getVecCoord(a.index);
+                                                                                        vv->resize(va->size());
+                                                                                        if (b.type == V_COORD)
+                                                                                        {
+                                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            {
+                                                                                                (*vv)[i] = (*va)[i];
+                                                                                                (*vv)[i] += (*vb)[i];
+                                                                                            }
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            {
+                                                                                                (*vv)[i] = (*va)[i];
+                                                                                                (*vv)[i] += (*vb)[i];
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                    else if (b.type == V_DERIV)
+                                                                                    {
+                                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                                        VecDeriv* va = getVecDeriv(a.index);
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(va->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        // ERROR
+                                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                        return;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // v = a+b*f
+                                                                                    if (v.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                                        VecCoord* va = getVecCoord(a.index);
+                                                                                        vv->resize(va->size());
+                                                                                        if (b.type == V_COORD)
+                                                                                        {
+                                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            {
+                                                                                                (*vv)[i] = (*va)[i];
+                                                                                                (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                            }
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            {
+                                                                                                (*vv)[i] = (*va)[i];
+                                                                                                (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                    else if (b.type == V_DERIV)
+                                                                                    {
+                                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                                        VecDeriv* va = getVecDeriv(a.index);
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(va->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        // ERROR
+                                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                        return;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            Action::for_each(MechanicalAction, GNode * node=0x01cc3f28, const Sequence & list, Action::Result (GNode,InteractionForceField)* fonction)
+                                                            {
+                                                                MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -514,7 +1484,7 @@ GUI::QT::QtViewer::step()
                                 }
                                 /** b = h(f0 + (h+rs)df/dx v - rd M v)
                                 */
-                                MultiVector::teq(f)
+                                b.teq(h)
                                 {
                                     OdeSolver::v_teq(VecId v, double f)
                                     {
@@ -528,7 +1498,283 @@ GUI::QT::QtViewer::step()
                                                     {
                                                         MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                         {
-                                                            MechanicalObject::vOp(VecId v, VecId a, VecId b, double f);
+                                                            MechanicalObject::vOp(VecId v, VecId a, VecId b, double f)
+                                                            {
+                                                                if(v.isNull())
+                                                                {
+                                                                    // ERROR
+                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                    return;
+                                                                }
+                                                                if (a.isNull())
+                                                                {
+                                                                    if (b.isNull())
+                                                                    {
+                                                                        // v = 0
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            vv->resize(this->vsize);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = Coord();
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            vv->resize(this->vsize);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = Deriv();
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (b.type != v.type)
+                                                                        {
+                                                                            // ERROR
+                                                                            std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                            return;
+                                                                        }
+                                                                        if (v == b)
+                                                                        {
+                                                                            // v *= f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] *= (Real)f;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] *= (Real)f;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            // v = b*f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                VecCoord* vb = getVecCoord(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (a.type != v.type)
+                                                                    {
+                                                                        // ERROR
+                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                        return;
+                                                                    }
+                                                                    if (b.isNull())
+                                                                    {
+                                                                        // v = a
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            VecCoord* va = getVecCoord(a.index);
+                                                                            vv->resize(va->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*va)[i];
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            VecDeriv* va = getVecDeriv(a.index);
+                                                                            vv->resize(va->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*va)[i];
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (v == a)
+                                                                        {
+                                                                            if (f==1.0)
+                                                                            {
+                                                                                // v += b
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // v += b*f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (f==1.0)
+                                                                            {
+                                                                                // v = a+b
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    VecCoord* va = getVecCoord(a.index);
+                                                                                    vv->resize(va->size());
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* va = getVecDeriv(a.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(va->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // v = a+b*f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    VecCoord* va = getVecCoord(a.index);
+                                                                                    vv->resize(va->size());
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* va = getVecDeriv(a.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(va->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                         Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                         {
@@ -543,7 +1789,7 @@ GUI::QT::QtViewer::step()
                                 }
                                 /** b is projected to the constrained space
                                 */
-                                OdeSolver::projectResponse(dx)
+                                group->projectResponse(b)
                                 {
                                     Action::execute(BaseContext)
                                     {
@@ -555,193 +1801,74 @@ GUI::QT::QtViewer::step()
                                                 {
                                                     MechanicalApplyConstraintsAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setDx(VecId v);
-                                                    }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
-                                                    {
-                                                        MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                MultiVector::dot(VecId a)
-                                {
-                                    /** Appel OdeSolver::v_dot(){
-                                    *           Action::execute(){
-                                    *               ...
-                                    *                   MechanicalVDotAction::fwdMechanicalModel(){
-                                    *                       MechanicalObject::vDot();
-                                    *                   }
-                                    *                   Action::for_each(){
-                                    *                       MechanicalAction::fwdInteractionForceField();
-                                    *                   }
-                                    *           }
-                                    *   }
-                                    */
-                                }
-                                OdeSolver::v_clear(v)
-                                {
-                                    Action::execute(BaseContext)
-                                    {
-                                        GNode::executeAction(Action)
-                                        {
-                                            GNode::doExecuteAction(Action)
-                                            {
-                                                MechanicalAction::processNodeTopDown(GNode)
-                                                {
-                                                    MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
-                                                    {
-                                                        MechanicalObject::vOp(VecId v, VecId a, VecId b, double f);
-                                                    }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
-                                                    {
-                                                        MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
-                                                    }
-
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                /** v=a
-                                */
-                                OdeSolver::v_eq(VecId v, VecId a)
-                                {
-                                    Action::execute(BaseContext)
-                                    {
-                                        GNode::executeAction(Action)
-                                        {
-                                            GNode::doExecuteAction(Action)
-                                            {
-                                                MechanicalAction::processNodeTopDown(GNode)
-                                                {
-                                                    MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
-                                                    {
-                                                        MechanicalObject::vOp(VecId v, VecId a, VecId b, double f);
-                                                    }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
-                                                    {
-                                                        MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-
-
-
-
-                                /********************************/
-                                /** CGImplicitSolver iterations */
-                                /********************************/
-                                /**... calcul vectoriel... */
-                                /** CGImplicitSolver iterations */
-                                OdeSolver::propagateDx(VecId dx)
-                                {
-                                    Action::execute(BaseContext)
-                                    {
-                                        GNode::executeAction(Action)
-                                        {
-                                            GNode::doExecuteAction(Action)
-                                            {
-                                                MechanicalAction::processNodeTopDown(GNode)
-                                                {
-                                                    MechanicalPropagateDxAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
-                                                    {
-                                                        MechanicalObject::setDx(VecId v);
-                                                    }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
-                                                    {
-                                                        MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
-                                                    }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicConstraint)* fonction)
-                                                    {
-                                                        MechanicalPropagateDxAction::fwdConstraint(GNode, BasicConstraint);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                /** CGImplicitSolver iterations */
-                                OdeSolver::computeDf(VecId df)
-                                {
-                                    MechanicalResetForceAction::execute(BaseContext)
-                                    {
-                                        GNode::executeAction(Action)
-                                        {
-                                            GNode::doExecuteAction(Action)
-                                            {
-                                                MechanicalAction::processNodeTopDown(GNode)
-                                                {
-                                                    /** MechanicalResetForceAction */
-                                                    MechanicalResetForceAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
-                                                    {
-                                                        MechanicalObject::setF(VecId v);
-                                                        MechanicalObject::resetForce();
-                                                    }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
-                                                    {
-                                                        MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
-                                                    }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicConstraint)* fonction)
-                                                    {
-                                                        MechanicalResetForceAction::fwdConstraint(GNode, BasicConstraint);
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    /** Do nothing */
-                                    OdeSolver::finish();
-                                    MechanicalComputeDfAction::execute(BaseContext)
-                                    {
-                                        GNode::executeAction(Action)
-                                        {
-                                            GNode::doExecuteAction(Action)
-                                            {
-                                                MechanicalAction::processNodeTopDown(GNode)
-                                                {
-
-                                                    /** MechanicalComputeDfAction */
-                                                    MechanicalComputeDfAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
-                                                    {
-                                                        MechanicalObject::setF(VecId v);
-                                                        BasicMechanicalModel::accumulateDf()
+                                                        MechanicalObject::setDx(VecId v)
                                                         {
-                                                            //empty
-                                                        }
-
-                                                    }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicForceField)* fonction)
-                                                    {
-                                                        MechanicalComputeDfAction::fwdForceField(GNode, BasicForceField);
-                                                    }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
-                                                    {
-                                                        MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField)
-                                                        {
-                                                            MechanicalComputeDfAction::fwdForceField(GNode,BasicForceField)
+                                                            if (v.type == V_DERIV)
                                                             {
-                                                                StiffSpringForceField::addDForce();
+                                                                this->dx = getVecDeriv(v.index);
+                                                            }
+                                                            else
+                                                            {
+                                                                std::cerr << "Invalid setDx operation ("<<v<<")\n";
                                                             }
                                                         }
                                                     }
-                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicConstraint)* fonction)
+                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                     {
-                                                        MechanicalComputeDfAction::fwdConstraint(GNode ,BasicConstraint);
+                                                        MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
                                                     }
                                                 }
                                             }
                                         }
                                     }
                                 }
-                                /** ... calcul vectoriel... */
-                                OdeSolver::projectResponse(VecId dx)
+
+                                double normb = sqrt(b.dot(b))
+                                {
+                                    /** notation simplifiée */
+                                    Appel OdeSolver::v_dot()
+                                    {
+                                        Action::execute()
+                                        {
+                                            ...
+                                            MechanicalVDotAction::fwdMechanicalModel()
+                                            {
+                                                MechanicalObject::vDot()
+                                                {
+                                                    double r = 0.0;
+                                                    if (a.type == V_COORD && b.type == V_COORD)
+                                                    {
+                                                        VecCoord* va = getVecCoord(a.index);
+                                                        VecCoord* vb = getVecCoord(b.index);
+                                                        for (unsigned int i=0; i<va->size(); i++)
+                                                            r += (*va)[i] * (*vb)[i];
+                                                    }
+                                                    else if (a.type == V_DERIV && b.type == V_DERIV)
+                                                    {
+                                                        VecDeriv* va = getVecDeriv(a.index);
+                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                        for (unsigned int i=0; i<va->size(); i++)
+                                                            r += (*va)[i] * (*vb)[i];
+                                                    }
+                                                    else
+                                                    {
+                                                        std::cerr << "Invalid dot operation ("<<a<<','<<b<<")\n";
+                                                    }
+                                                    return r;
+                                                }
+                                            }
+                                            Action::for_each()
+                                            {
+                                                MechanicalAction::fwdInteractionForceField();
+                                            }
+                                        }
+                                    }
+                                }
+
+
+                                // -- solve the system using a conjugate gradient solution
+                                double rho, rho_1=0, alpha, beta;
+                                group->v_clear( x )
                                 {
                                     Action::execute(BaseContext)
                                     {
@@ -751,9 +1878,587 @@ GUI::QT::QtViewer::step()
                                             {
                                                 MechanicalAction::processNodeTopDown(GNode)
                                                 {
-                                                    MechanicalApplyConstraintsAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
+                                                    MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setDx(VecId v);
+                                                        MechanicalObject::vOp(VecId v, VecId a, VecId b, double f)
+                                                        {
+                                                            if(v.isNull())
+                                                            {
+                                                                // ERROR
+                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                return;
+                                                            }
+                                                            if (a.isNull())
+                                                            {
+                                                                if (b.isNull())
+                                                                {
+                                                                    // v = 0
+                                                                    if (v.type == V_COORD)
+                                                                    {
+                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                        vv->resize(this->vsize);
+                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                            (*vv)[i] = Coord();
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                        vv->resize(this->vsize);
+                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                            (*vv)[i] = Deriv();
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (b.type != v.type)
+                                                                    {
+                                                                        // ERROR
+                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                        return;
+                                                                    }
+                                                                    if (v == b)
+                                                                    {
+                                                                        // v *= f
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] *= (Real)f;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] *= (Real)f;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        // v = b*f
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                            vv->resize(vb->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                            vv->resize(vb->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                if (a.type != v.type)
+                                                                {
+                                                                    // ERROR
+                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                    return;
+                                                                }
+                                                                if (b.isNull())
+                                                                {
+                                                                    // v = a
+                                                                    if (v.type == V_COORD)
+                                                                    {
+                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                        VecCoord* va = getVecCoord(a.index);
+                                                                        vv->resize(va->size());
+                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                            (*vv)[i] = (*va)[i];
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                        VecDeriv* va = getVecDeriv(a.index);
+                                                                        vv->resize(va->size());
+                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                            (*vv)[i] = (*va)[i];
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (v == a)
+                                                                    {
+                                                                        if (f==1.0)
+                                                                        {
+                                                                            // v += b
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                if (b.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                }
+                                                                            }
+                                                                            else if (b.type == V_DERIV)
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] += (*vb)[i];
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            // v += b*f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                if (b.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                }
+                                                                            }
+                                                                            else if (b.type == V_DERIV)
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (f==1.0)
+                                                                        {
+                                                                            // v = a+b
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                VecCoord* va = getVecCoord(a.index);
+                                                                                vv->resize(va->size());
+                                                                                if (b.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else if (b.type == V_DERIV)
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* va = getVecDeriv(a.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(va->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                {
+                                                                                    (*vv)[i] = (*va)[i];
+                                                                                    (*vv)[i] += (*vb)[i];
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            // v = a+b*f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                VecCoord* va = getVecCoord(a.index);
+                                                                                vv->resize(va->size());
+                                                                                if (b.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else if (b.type == V_DERIV)
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* va = getVecDeriv(a.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(va->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                {
+                                                                                    (*vv)[i] = (*va)[i];
+                                                                                    (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                    Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
+                                                    {
+                                                        MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                /** Initial residual
+                                */
+                                group->v_eq(r,b)
+                                {
+                                    Action::execute(BaseContext)
+                                    {
+                                        GNode::executeAction(Action)
+                                        {
+                                            GNode::doExecuteAction(Action)
+                                            {
+                                                MechanicalAction::processNodeTopDown(GNode)
+                                                {
+                                                    MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
+                                                    {
+                                                        MechanicalObject::vOp(VecId v, VecId a, VecId b, double f)
+                                                        {
+                                                            if(v.isNull())
+                                                            {
+                                                                // ERROR
+                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                return;
+                                                            }
+                                                            if (a.isNull())
+                                                            {
+                                                                if (b.isNull())
+                                                                {
+                                                                    // v = 0
+                                                                    if (v.type == V_COORD)
+                                                                    {
+                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                        vv->resize(this->vsize);
+                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                            (*vv)[i] = Coord();
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                        vv->resize(this->vsize);
+                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                            (*vv)[i] = Deriv();
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (b.type != v.type)
+                                                                    {
+                                                                        // ERROR
+                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                        return;
+                                                                    }
+                                                                    if (v == b)
+                                                                    {
+                                                                        // v *= f
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] *= (Real)f;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] *= (Real)f;
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        // v = b*f
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            VecCoord* vb = getVecCoord(b.index);
+                                                                            vv->resize(vb->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            VecDeriv* vb = getVecDeriv(b.index);
+                                                                            vv->resize(vb->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                if (a.type != v.type)
+                                                                {
+                                                                    // ERROR
+                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                    return;
+                                                                }
+                                                                if (b.isNull())
+                                                                {
+                                                                    // v = a
+                                                                    if (v.type == V_COORD)
+                                                                    {
+                                                                        VecCoord* vv = getVecCoord(v.index);
+                                                                        VecCoord* va = getVecCoord(a.index);
+                                                                        vv->resize(va->size());
+                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                            (*vv)[i] = (*va)[i];
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        VecDeriv* vv = getVecDeriv(v.index);
+                                                                        VecDeriv* va = getVecDeriv(a.index);
+                                                                        vv->resize(va->size());
+                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                            (*vv)[i] = (*va)[i];
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (v == a)
+                                                                    {
+                                                                        if (f==1.0)
+                                                                        {
+                                                                            // v += b
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                if (b.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                }
+                                                                            }
+                                                                            else if (b.type == V_DERIV)
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] += (*vb)[i];
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            // v += b*f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                if (b.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                }
+                                                                            }
+                                                                            else if (b.type == V_DERIV)
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (f==1.0)
+                                                                        {
+                                                                            // v = a+b
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                VecCoord* va = getVecCoord(a.index);
+                                                                                vv->resize(va->size());
+                                                                                if (b.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else if (b.type == V_DERIV)
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* va = getVecDeriv(a.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(va->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                {
+                                                                                    (*vv)[i] = (*va)[i];
+                                                                                    (*vv)[i] += (*vb)[i];
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            // v = a+b*f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                VecCoord* va = getVecCoord(a.index);
+                                                                                vv->resize(va->size());
+                                                                                if (b.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vb = getVecCoord(b.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                            else if (b.type == V_DERIV)
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* va = getVecDeriv(a.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(va->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                {
+                                                                                    (*vv)[i] = (*va)[i];
+                                                                                    (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // ERROR
+                                                                                std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                return;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                     Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                     {
@@ -764,12 +2469,239 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                 }
-                                /** ... calcul vectoriel... */
+
+                                unsigned nb_iter;
+                                const char* endcond = "iterations";
+                                for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
+                                {
+
+                                    rho = r.dot(r);
+
+
+                                    if( nb_iter==1 )
+                                        p = r; //z;
+                                    else
+                                    {
+                                        beta = rho / rho_1;
+                                        p *= beta;
+                                        p += r; //z;
+                                    }
+
+                                    // matrix-vector product
+                                    // dx = p
+                                    group->propagateDx(p)
+                                    {
+                                        Action::execute(BaseContext)
+                                        {
+                                            GNode::executeAction(Action)
+                                            {
+                                                GNode::doExecuteAction(Action)
+                                                {
+                                                    MechanicalAction::processNodeTopDown(GNode)
+                                                    {
+                                                        MechanicalPropagateDxAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
+                                                        {
+                                                            MechanicalObject::setDx(VecId v)
+                                                            {
+                                                                if (v.type == V_DERIV)
+                                                                {
+                                                                    this->dx = getVecDeriv(v.index);
+                                                                }
+                                                                else
+                                                                {
+                                                                    std::cerr << "Invalid setDx operation ("<<v<<")\n";
+                                                                }
+                                                            }
+                                                        }
+                                                        Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
+                                                        {
+                                                            MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
+                                                        }
+                                                        Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicConstraint)* fonction)
+                                                        {
+                                                            MechanicalPropagateDxAction::fwdConstraint(GNode, BasicConstraint);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    // q = df/dx p
+                                    group->computeDf(q)
+                                    {
+                                        MechanicalResetForceAction::execute(BaseContext)
+                                        {
+                                            GNode::executeAction(Action)
+                                            {
+                                                GNode::doExecuteAction(Action)
+                                                {
+                                                    MechanicalAction::processNodeTopDown(GNode)
+                                                    {
+                                                        /** MechanicalResetForceAction */
+                                                        MechanicalResetForceAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
+                                                        {
+                                                            MechanicalObject::setF(VecId v)
+                                                            {
+                                                                if (v.type == V_DERIV)
+                                                                {
+                                                                    this->f = getVecDeriv(v.index);
+                                                                }
+                                                                else
+                                                                {
+                                                                    std::cerr << "Invalid setF operation ("<<v<<")\n";
+                                                                }
+                                                            }
+                                                            MechanicalObject::resetForce()
+                                                            {
+                                                                VecDeriv& f= *getF();
+                                                                for( unsigned i=0; i<f.size(); ++i )
+                                                                    f[i] = Deriv();
+                                                            }
+                                                        }
+                                                        Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
+                                                        {
+                                                            MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
+                                                        }
+                                                        Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicConstraint)* fonction)
+                                                        {
+                                                            MechanicalResetForceAction::fwdConstraint(GNode, BasicConstraint);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        /** Do nothing */
+                                        OdeSolver::finish();
+                                        MechanicalComputeDfAction::execute(BaseContext)
+                                        {
+                                            GNode::executeAction(Action)
+                                            {
+                                                GNode::doExecuteAction(Action)
+                                                {
+                                                    MechanicalAction::processNodeTopDown(GNode)
+                                                    {
+
+                                                        /** MechanicalComputeDfAction */
+                                                        MechanicalComputeDfAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
+                                                        {
+                                                            MechanicalObject::setF(VecId v)
+                                                            {
+                                                                if (v.type == V_DERIV)
+                                                                {
+                                                                    this->f = getVecDeriv(v.index);
+                                                                }
+                                                                else
+                                                                {
+                                                                    std::cerr << "Invalid setF operation ("<<v<<")\n";
+                                                                }
+                                                            }
+                                                            BasicMechanicalModel::accumulateDf()
+                                                            {
+                                                                //empty
+                                                            }
+
+                                                        }
+                                                        Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicForceField)* fonction)
+                                                        {
+                                                            MechanicalComputeDfAction::fwdForceField(GNode, BasicForceField);
+                                                        }
+                                                        Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
+                                                        {
+                                                            MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField)
+                                                            {
+                                                                MechanicalComputeDfAction::fwdForceField(GNode,BasicForceField)
+                                                                {
+                                                                    StiffSpringForceField::addDForce();
+                                                                }
+                                                            }
+                                                        }
+                                                        Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, BasicConstraint)* fonction)
+                                                        {
+                                                            MechanicalComputeDfAction::fwdConstraint(GNode ,BasicConstraint);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    q *= -h*(h+f_rayleighStiffness.getValue());  // q = -h(h+rs) df/dx p
+
+
+                                    // apply global Rayleigh damping
+                                    if (f_rayleighMass.getValue()==0.0)
+                                        group->addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
+                                    else
+                                    {
+                                        q2.clear();
+                                        group->addMdx( q2, p);
+                                        q.peq(q2,(1+h*f_rayleighMass.getValue())); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
+                                    }
+
+                                    // filter the product to take the constraints into account
+                                    // q is projected to the constrained space
+                                    group->projectResponse(q)
+                                    {
+                                        Action::execute(BaseContext)
+                                        {
+                                            GNode::executeAction(Action)
+                                            {
+                                                GNode::doExecuteAction(Action)
+                                                {
+                                                    MechanicalAction::processNodeTopDown(GNode)
+                                                    {
+                                                        MechanicalApplyConstraintsAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
+                                                        {
+                                                            MechanicalObject::setDx(VecId v)
+                                                            {
+                                                                if (v.type == V_DERIV)
+                                                                {
+                                                                    this->dx = getVecDeriv(v.index);
+                                                                }
+                                                                else
+                                                                {
+                                                                    std::cerr << "Invalid setDx operation ("<<v<<")\n";
+                                                                }
+                                                            }
+                                                        }
+                                                        Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
+                                                        {
+                                                            MechanicalAction::fwdInteractionForceField(GNode, InteractionForceField);
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    double den = p.dot(q);
+
+
+                                    if( fabs(den)<f_smallDenominatorThreshold.getValue() )
+                                    {
+                                        endcond = "threshold";
+                                        break;
+                                    }
+                                    alpha = rho/den;
+                                    x.peq(p,alpha);                 // x = x + alpha p
+                                    r.peq(q,-alpha);                // r = r - alpha r
+
+                                    double normr = sqrt(r.dot(r));
+                                    if (normr/normb <= f_tolerance.getValue())
+                                    {
+                                        endcond = "tolerance";
+                                        break;
+                                    }
+                                    rho_1 = rho;
+                                }
+                                // x is the solution of the system
+
+                                // apply the solution
+                                vel.peq( x );                       // vel = vel + x
                                 /** Compute the value of the new positions x and new velocities v
                                 *  Apply the solution
                                 *  pos = pos + h vel
                                 */
-                                MultiVector::peq(a, f)
+                                pos.peq( vel, h )
                                 {
                                     OdeSolver::v_peq(VecId v, VecId a, double f)
                                     {
@@ -783,7 +2715,283 @@ GUI::QT::QtViewer::step()
                                                     {
                                                         MechanicalVOpAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                         {
-                                                            MechanicalObject::vOp(VecId v, VecId a, VecId b, double f);
+                                                            MechanicalObject::vOp(VecId v, VecId a, VecId b, double f)
+                                                            {
+                                                                if(v.isNull())
+                                                                {
+                                                                    // ERROR
+                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                    return;
+                                                                }
+                                                                if (a.isNull())
+                                                                {
+                                                                    if (b.isNull())
+                                                                    {
+                                                                        // v = 0
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            vv->resize(this->vsize);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = Coord();
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            vv->resize(this->vsize);
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = Deriv();
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (b.type != v.type)
+                                                                        {
+                                                                            // ERROR
+                                                                            std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                            return;
+                                                                        }
+                                                                        if (v == b)
+                                                                        {
+                                                                            // v *= f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] *= (Real)f;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] *= (Real)f;
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            // v = b*f
+                                                                            if (v.type == V_COORD)
+                                                                            {
+                                                                                VecCoord* vv = getVecCoord(v.index);
+                                                                                VecCoord* vb = getVecCoord(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                VecDeriv* vv = getVecDeriv(v.index);
+                                                                                VecDeriv* vb = getVecDeriv(b.index);
+                                                                                vv->resize(vb->size());
+                                                                                for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    (*vv)[i] = (*vb)[i] * (Real)f;
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (a.type != v.type)
+                                                                    {
+                                                                        // ERROR
+                                                                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                        return;
+                                                                    }
+                                                                    if (b.isNull())
+                                                                    {
+                                                                        // v = a
+                                                                        if (v.type == V_COORD)
+                                                                        {
+                                                                            VecCoord* vv = getVecCoord(v.index);
+                                                                            VecCoord* va = getVecCoord(a.index);
+                                                                            vv->resize(va->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*va)[i];
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            VecDeriv* vv = getVecDeriv(v.index);
+                                                                            VecDeriv* va = getVecDeriv(a.index);
+                                                                            vv->resize(va->size());
+                                                                            for (unsigned int i=0; i<vv->size(); i++)
+                                                                                (*vv)[i] = (*va)[i];
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        if (v == a)
+                                                                        {
+                                                                            if (f==1.0)
+                                                                            {
+                                                                                // v += b
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // v += b*f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        vv->resize(vb->size());
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(vb->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (f==1.0)
+                                                                            {
+                                                                                // v = a+b
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    VecCoord* va = getVecCoord(a.index);
+                                                                                    vv->resize(va->size());
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i];
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* va = getVecDeriv(a.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(va->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i];
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                // v = a+b*f
+                                                                                if (v.type == V_COORD)
+                                                                                {
+                                                                                    VecCoord* vv = getVecCoord(v.index);
+                                                                                    VecCoord* va = getVecCoord(a.index);
+                                                                                    vv->resize(va->size());
+                                                                                    if (b.type == V_COORD)
+                                                                                    {
+                                                                                        VecCoord* vb = getVecCoord(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        VecDeriv* vb = getVecDeriv(b.index);
+                                                                                        for (unsigned int i=0; i<vv->size(); i++)
+                                                                                        {
+                                                                                            (*vv)[i] = (*va)[i];
+                                                                                            (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                                else if (b.type == V_DERIV)
+                                                                                {
+                                                                                    VecDeriv* vv = getVecDeriv(v.index);
+                                                                                    VecDeriv* va = getVecDeriv(a.index);
+                                                                                    VecDeriv* vb = getVecDeriv(b.index);
+                                                                                    vv->resize(va->size());
+                                                                                    for (unsigned int i=0; i<vv->size(); i++)
+                                                                                    {
+                                                                                        (*vv)[i] = (*va)[i];
+                                                                                        (*vv)[i] += (*vb)[i]*(Real)f;
+                                                                                    }
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    // ERROR
+                                                                                    std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
                                                         }
                                                         Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                         {
@@ -795,14 +3003,10 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                 }
+                                if (f_velocityDamping.getValue()!=0.0)
+                                    vel *= exp(-h*f_velocityDamping.getValue());
 
-
-
-                                /** ... calcul vectoriel... */
-
-                                /****************/
                                 /** Free memory */
-                                /****************/
                                 MultiVector::~MultiVector()
                                 {
                                     OdeSolver::v_free(VecId v)
@@ -817,7 +3021,24 @@ GUI::QT::QtViewer::step()
                                                     {
                                                         MechanicalVFreeAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                         {
-                                                            MechanicalObject::vFree(VecId v);
+                                                            MechanicalObject::vFree(VecId v)
+                                                            {
+                                                                if (v.type == V_COORD && v.index >= V_FIRST_DYNAMIC_INDEX)
+                                                                {
+                                                                    VecCoord* vec = getVecCoord(v.index);
+                                                                    vec->resize(0);
+                                                                }
+                                                                else if (v.type == V_DERIV && v.index >= V_FIRST_DYNAMIC_INDEX)
+                                                                {
+                                                                    VecDeriv* vec = getVecDeriv(v.index);
+                                                                    vec->resize(0);
+                                                                }
+                                                                else
+                                                                {
+                                                                    std::cerr << "Invalid free operation ("<<v<<")\n";
+                                                                    return;
+                                                                }
+                                                            }
                                                         }
                                                         Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                                         {
@@ -854,8 +3075,28 @@ GUI::QT::QtViewer::step()
                                                 {
                                                     MechanicalPropagatePositionAndVelocityAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setX(VecId v);
-                                                        MechanicalObject::setV(VecId v);
+                                                        MechanicalObject::setX(VecId v)
+                                                        {
+                                                            if (v.type == V_COORD)
+                                                            {
+                                                                this->x = getVecCoord(v.index);
+                                                            }
+                                                            else
+                                                            {
+                                                                std::cerr << "Invalid setX operation ("<<v<<")\n";
+                                                            }
+                                                        }
+                                                        MechanicalObject::setV(VecId v)
+                                                        {
+                                                            if (v.type == V_DERIV)
+                                                            {
+                                                                this->f = getVecDeriv(v.index);
+                                                            }
+                                                            else
+                                                            {
+                                                                std::cerr << "Invalid setF operation ("<<v<<")\n";
+                                                            }
+                                                        }
                                                     }
                                                     for_each(MechanicalAction, GNode, const Sequence & list, Result (GNode, InteractionForceField)* fonction)
                                                     {
@@ -867,7 +3108,10 @@ GUI::QT::QtViewer::step()
                                                         MechanicalPropagatePositionAndVelocityAction::fwdConstraint(GNode, BasicConstraint)
                                                         {
                                                             // for example constraint a position in a plane or a fixed dot
-                                                            Constraint::projectPosition();
+                                                            Constraint::projectPosition()
+                                                            {
+                                                                /** Empty */
+                                                            }
                                                             // see also  Constraint::projectVelocity();
                                                         }
                                                     }
@@ -891,7 +3135,11 @@ GUI::QT::QtViewer::step()
                                         {
                                             MechanicalEndIntegrationAction::fwdMechanicalModel(GNode,BasicMechanicalModel)
                                             {
-                                                Core::MechanicalObject::endIntegration(double);
+                                                MechanicalObject::endIntegration(double)
+                                                {
+                                                    this->f = this->externalForces;
+                                                    this->externalForces->clear();
+                                                }
                                             }
                                             Action::for_each(MechanicalAction, GNode, Sequence, Action::Result (GNode, InteractionForceField)* fonction)
                                             {
