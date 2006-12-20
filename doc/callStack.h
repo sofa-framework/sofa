@@ -3,45 +3,46 @@ This file follows the C language syntax and is better seen in a folding C-source
 
 It simulates a pair of particles linked by a spring, one particle being fixed.
 Here is the code corresponding to the scene graph :
-        // The graph root node
-		groot = new Sofa::Components::Graph::GNode;
-		groot->setName( "root" );
+/////////////////////////////////////////////////////////
+// The graph root node
+groot = new Sofa::Components::Graph::GNode;
+groot->setName( "root" );
 
-		// One solver for all the graph
-		Sofa::Components::CGImplicitSolver* solver = new Sofa::Components::CGImplicitSolver;
-		solver->f_printLog.setValue(false);
-		groot->addObject(solver);
+// One solver for all the graph
+Sofa::Components::CGImplicitSolver* solver = new Sofa::Components::CGImplicitSolver;
+solver->f_printLog.setValue(false);
+groot->addObject(solver);
 
-		// Set gravity for all the graph
-		Sofa::Components::Gravity* gravity =  new Sofa::Components::Gravity;
-		gravity->f_gravity.setValue( Vec3(0,-100,0) );
-		groot->addObject(gravity);
+// Set gravity for all the graph
+Sofa::Components::Gravity* gravity =  new Sofa::Components::Gravity;
+gravity->f_gravity.setValue( Vec3(0,-100,0) );
+groot->addObject(gravity);
 
-		// Spring degrees of freedom
-		Sofa::Core::MechanicalObject<MyTypes>* DOF = new Sofa::Core::MechanicalObject<MyTypes>;
-		groot->addObject(DOF);
-		DOF->resize(2);
-		DOF->setName("DOF");
-		MyTypes::VecCoord& x = *DOF->getX();
-		x[0] = Vec3(0,0,0);
-		x[1] = Vec3(0,-10,0);
+// Spring degrees of freedom
+Sofa::Core::MechanicalObject<MyTypes>* DOF = new Sofa::Core::MechanicalObject<MyTypes>;
+groot->addObject(DOF);
+DOF->resize(2);
+DOF->setName("DOF");
+MyTypes::VecCoord& x = *DOF->getX()  { f_X->beginEdit(); return x;  };
+x[0] = Vec3(0,0,0);
+x[1] = Vec3(0,-10,0);
 
-		// Spring mass
-		Sofa::Components::UniformMass<MyTypes,double>* mass = new Sofa::Components::UniformMass<MyTypes,double>(DOF);
-        groot->addObject(mass);
-        mass->setMass( 1 );
+// Spring mass
+Sofa::Components::UniformMass<MyTypes,double>* mass = new Sofa::Components::UniformMass<MyTypes,double>(DOF);
+groot->addObject(mass);
+mass->setMass( 1 );
 
-		// Spring constraints
-		Sofa::Components::FixedConstraint<MyTypes>* constraints = new Sofa::Components::FixedConstraint<MyTypes>(DOF);
-		groot->addObject(constraints);
-		constraints->setName("constraints");
-		constraints->addConstraint(0);
+// Spring constraints
+Sofa::Components::FixedConstraint<MyTypes>* constraints = new Sofa::Components::FixedConstraint<MyTypes>(DOF);
+groot->addObject(constraints);
+constraints->setName("constraints");
+constraints->addConstraint(0);
 
-		// Spring force field
-		Sofa::Components::StiffSpringForceField<MyTypes>* spring = new Sofa::Components::StiffSpringForceField<MyTypes>(DOF);
-		spring->addSpring(0, 1, 10.f, 1.f, 5);
-		groot->addObject(spring);
-
+// Spring force field
+Sofa::Components::StiffSpringForceField<MyTypes>* spring = new Sofa::Components::StiffSpringForceField<MyTypes>(DOF);
+spring->addSpring(0, 1, 10.f, 1.f, 5);
+groot->addObject(spring);
+/////////////////////////////////////////////////////////
 */
 
 /** User application
@@ -138,11 +139,12 @@ GUI::QT::QtViewer::step()
                                 /** Reserve auxiliary vectors.
                                 * The solver allocates the corresponding DOFs (i.e. vectors (f,x, v...) in MechanicalObject)
                                 */
-                                MultiVector pos(group, VecId::position())
+                                MultiVector pos(this, VecId::position())
                                 {
-                                    OdeSolver::v_alloc(VecType)
+                                    OdeSolver::v_alloc(VecType t)
                                     {
-                                        Action::execute(BaseContext)
+                                        VecId v(t, vectors[t].alloc());
+                                        MechanicalVAllocAction(v).execute( getContext() )
                                         {
                                             GNode::executeAction(Action)
                                             {
@@ -180,16 +182,17 @@ GUI::QT::QtViewer::step()
                                                 }
                                             }
                                         }
+                                        return v;
                                     }
                                 }
-                                MultiVector vel(group, VecId::velocity());
-                                MultiVector f(group, VecId::force());
-                                MultiVector b(group, V_DERIV);
-                                MultiVector p(group, V_DERIV);
-                                MultiVector q(group, V_DERIV);
-                                MultiVector q2(group, V_DERIV);
-                                MultiVector r(group, V_DERIV);
-                                MultiVector x(group, V_DERIV);
+                                MultiVector vel(this, VecId::velocity());
+                                MultiVector f(this, VecId::force());
+                                MultiVector b(this, V_DERIV);
+                                MultiVector p(this, V_DERIV);
+                                MultiVector q(this, V_DERIV);
+                                MultiVector q2(this, V_DERIV);
+                                MultiVector r(this, V_DERIV);
+                                MultiVector x(this, V_DERIV);
 
                                 double h = dt;
                                 bool printLog = f_printLog.getValue();
@@ -197,7 +200,7 @@ GUI::QT::QtViewer::step()
                                 // compute the right-hand term of the equation system
                                 /** b = f0
                                 */
-                                group->computeForce(b)
+                                computeForce(b)
                                 {
                                     /** First, vector a is set to 0
                                     */
@@ -224,7 +227,7 @@ GUI::QT::QtViewer::step()
                                                         }
                                                         MechanicalObject::resetForce()
                                                         {
-                                                            VecDeriv& f= *getF();
+                                                            VecDeriv& f= *getF()  { return f;  };
                                                             for( unsigned i=0; i<f.size(); ++i )
                                                                 f[i] = Deriv();
                                                         }
@@ -242,9 +245,11 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
 
+                                    /** Do nothing */
+                                    OdeSolver::finish();
                                     /** Then, the ForceField components accumulate their contribution
                                     */
-                                    MechanicalComputeForceAction::execute(BaseContext)
+                                    MechanicalComputeForceAction(b).execute( getContext() )
                                     {
                                         GNode::executeAction(Action)
                                         {
@@ -283,9 +288,9 @@ GUI::QT::QtViewer::step()
                                                         {
                                                             ForceField::addForce()
                                                             {
-                                                                /** Get the state vectors using getContext()->getMechanicalModel()->getF(),
-                                                                getContext()->getMechanicalModel()->getX(),
-                                                                getContext()->getMechanicalModel()->getV()
+                                                                /** Get the state vectors using getContext()->getMechanicalModel()->getF()  { return f;  },
+                                                                getContext()->getMechanicalModel()->getX()  { f_X->beginEdit(); return x;  },
+                                                                getContext()->getMechanicalModel()->getV()  { f_V->beginEdit(); return v;  }
                                                                 */
                                                                 UniformMass::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
                                                                 {
@@ -326,12 +331,12 @@ GUI::QT::QtViewer::step()
                                                                     assert(this->object1);
                                                                     assert(this->object2);
                                                                     this->dfdx.resize(this->springs.size());
-                                                                    VecDeriv& f1 = *this->object1->getF();
-                                                                    const VecCoord& p1 = *this->object1->getX();
-                                                                    const VecDeriv& v1 = *this->object1->getV();
-                                                                    VecDeriv& f2 = *this->object2->getF();
-                                                                    const VecCoord& p2 = *this->object2->getX();
-                                                                    const VecDeriv& v2 = *this->object2->getV();
+                                                                    VecDeriv& f1 = *this->object1->getF()  { return f;  };
+                                                                    const VecCoord& p1 = *this->object1->getX()  { f_X->beginEdit(); return x;  };
+                                                                    const VecDeriv& v1 = *this->object1->getV()  { f_V->beginEdit(); return v;  };
+                                                                    VecDeriv& f2 = *this->object2->getF()  { return f;  };
+                                                                    const VecCoord& p2 = *this->object2->getX()  { f_X->beginEdit(); return x;  };
+                                                                    const VecDeriv& v2 = *this->object2->getV()  { f_V->beginEdit(); return v;  };
                                                                     f1.resize(p1.size());
                                                                     f2.resize(p2.size());
                                                                     m_potentialEnergy = 0;
@@ -351,7 +356,6 @@ GUI::QT::QtViewer::step()
                                                             /** Nothing is done in this example ! */
                                                             BasicConstraint::getDOFs();
                                                         }
-
                                                     }
                                                 }
                                             }
@@ -363,9 +367,9 @@ GUI::QT::QtViewer::step()
                                 * Given a displacement, the ForceField components are able to compute the corresponding force variations
                                 * This action makes v the current displacement
                                 */
-                                group->propagateDx(vel)
+                                propagateDx(vel)
                                 {
-                                    Action::execute(BaseContext)
+                                    MechanicalPropagateDxAction(vel).execute( getContext() )
                                     {
                                         GNode::executeAction(Action)
                                         {
@@ -404,9 +408,9 @@ GUI::QT::QtViewer::step()
                                 /** f = df/dx v
                                 * Compute the force increment corresponding to the current displacement, and store it in vector df
                                 */
-                                group->computeDf(f)
+                                computeDf(f)
                                 {
-                                    MechanicalResetForceAction::execute(BaseContext)
+                                    MechanicalResetForceAction(f).execute( getContext() )
                                     {
                                         GNode::executeAction(Action)
                                         {
@@ -417,7 +421,7 @@ GUI::QT::QtViewer::step()
                                                     /** MechanicalResetForceAction */
                                                     MechanicalResetForceAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setF(VecId)
+                                                        MechanicalObject::setF(VecId v)
                                                         {
                                                             if (v.type == V_DERIV)
                                                             {
@@ -430,7 +434,7 @@ GUI::QT::QtViewer::step()
                                                         }
                                                         MechanicalObject::resetForce()
                                                         {
-                                                            VecDeriv& f= *getF();
+                                                            VecDeriv& f= *getF()  { return f;  };
                                                             for( unsigned i=0; i<f.size(); ++i )
                                                                 f[i] = Deriv();
                                                         }
@@ -449,7 +453,7 @@ GUI::QT::QtViewer::step()
                                     }
                                     /** Do nothing */
                                     OdeSolver::finish();
-                                    MechanicalComputeDfAction::execute(BaseContext)
+                                    MechanicalComputeDfAction(f).execute( getContext() )
                                     {
                                         GNode::executeAction(Action)
                                         {
@@ -480,12 +484,12 @@ GUI::QT::QtViewer::step()
                                                             {
                                                                 StiffSpringForceField::addDForce()
                                                                 {
-                                                                    VecDeriv& f1  = *this->object1->getF();
-                                                                    const VecCoord& p1 = *this->object1->getX();
-                                                                    const VecDeriv& dx1 = *this->object1->getDx();
-                                                                    VecDeriv& f2  = *this->object2->getF();
-                                                                    const VecCoord& p2 = *this->object2->getX();
-                                                                    const VecDeriv& dx2 = *this->object2->getDx();
+                                                                    VecDeriv& f1  = *this->object1->getF()  { return f;  };
+                                                                    const VecCoord& p1 = *this->object1->getX()  { f_X->beginEdit(); return x;  };
+                                                                    const VecDeriv& dx1 = *this->object1->getDx() { return dx; }
+                                                                    VecDeriv& f2  = *this->object2->getF()  { return f;  };
+                                                                    const VecCoord& p2 = *this->object2->getX()  { f_X->beginEdit(); return x;  };
+                                                                    const VecDeriv& dx2 = *this->object2->getDx() { return dx; }
                                                                     f1.resize(dx1.size());
                                                                     f2.resize(dx2.size());
                                                                     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, dx1 = "<<dx1<<endl;
@@ -515,7 +519,7 @@ GUI::QT::QtViewer::step()
                                 {
                                     OdeSolver::v_peq( VecId v, VecId a, double f)
                                     {
-                                        Action::execute(BaseContext)
+                                        MechanicalVOpAction(v,v,a,f).execute( getContext() )
                                         {
                                             GNode::executeAction(Action)
                                             {
@@ -823,7 +827,7 @@ GUI::QT::QtViewer::step()
                                         */
                                         OdeSolver::v_clear(v)
                                         {
-                                            Action::execute(BaseContext)
+                                            MechanicalVOpAction(v).execute( getContext() )
                                             {
                                                 GNode::executeAction(Action)
                                                 {
@@ -1121,9 +1125,9 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
-                                    group->addMdx(f,vel)
+                                    addMdx(f,vel)
                                     {
-                                        Action::execute(BaseContext)
+                                        MechanicalAddMDxAction(f,vel).execute( getContext() )
                                         {
                                             GNode::executeAction(Action)
                                             {
@@ -1161,8 +1165,8 @@ GUI::QT::QtViewer::step()
                                                             Mass::addMDx()
                                                             {
                                                                 /** Get the state vectors using
-                                                                *  Mass->MechanicalModel->getF(),
-                                                                *  Mass->MechanicalModel->getDx()
+                                                                *  Mass->MechanicalModel->getF()  { return f;  },
+                                                                *  Mass->MechanicalModel->getDx() const { return dx; }
                                                                 */
                                                                 UniformMass::addMDx(VecDeriv& f, const VecDeriv& dx)
                                                                 {
@@ -1789,9 +1793,9 @@ GUI::QT::QtViewer::step()
                                 }
                                 /** b is projected to the constrained space
                                 */
-                                group->projectResponse(b)
+                                projectResponse(b)
                                 {
-                                    Action::execute(BaseContext)
+                                    MechanicalApplyConstraintsAction(b).execute( getContext() )
                                     {
                                         GNode::executeAction(Action)
                                         {
@@ -1825,10 +1829,10 @@ GUI::QT::QtViewer::step()
 
                                 double normb = sqrt(b.dot(b))
                                 {
-                                    /** notation simplifiée */
-                                    Appel OdeSolver::v_dot()
+                                    /** pile simplifiée */
+                                    OdeSolver::v_dot(VecId a, VecId b)
                                     {
-                                        Action::execute()
+                                        MechanicalVDotAction(a,b,&result).execute( getContext() )
                                         {
                                             ...
                                             MechanicalVDotAction::fwdMechanicalModel()
@@ -1865,12 +1869,11 @@ GUI::QT::QtViewer::step()
                                     }
                                 }
 
-
                                 // -- solve the system using a conjugate gradient solution
                                 double rho, rho_1=0, alpha, beta;
-                                group->v_clear( x )
+                                v_clear( x )
                                 {
-                                    Action::execute(BaseContext)
+                                    MechanicalVOpAction(v).execute( getContext() )
                                     {
                                         GNode::executeAction(Action)
                                         {
@@ -2170,7 +2173,7 @@ GUI::QT::QtViewer::step()
                                 }
                                 /** Initial residual
                                 */
-                                group->v_eq(r,b)
+                                v_eq(r,b)
                                 {
                                     Action::execute(BaseContext)
                                     {
@@ -2474,22 +2477,28 @@ GUI::QT::QtViewer::step()
                                 const char* endcond = "iterations";
                                 for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
                                 {
-
                                     rho = r.dot(r);
-
 
                                     if( nb_iter==1 )
                                         p = r; //z;
                                     else
                                     {
                                         beta = rho / rho_1;
-                                        p *= beta;
-                                        p += r; //z;
+                                        p *= beta
+                                        {
+                                            /** MultiVector : operator *= overloaded */
+                                            teq(f);
+                                        }
+                                        p += r
+                                        {
+                                            /** MultiVector : operator += overloaded */
+                                            peq(f);
+                                        }
                                     }
 
                                     // matrix-vector product
                                     // dx = p
-                                    group->propagateDx(p)
+                                    propagateDx(p)
                                     {
                                         Action::execute(BaseContext)
                                         {
@@ -2527,9 +2536,9 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                     // q = df/dx p
-                                    group->computeDf(q)
+                                    computeDf(q)
                                     {
-                                        MechanicalResetForceAction::execute(BaseContext)
+                                        MechanicalResetForceAction(q).execute( getContext() )
                                         {
                                             GNode::executeAction(Action)
                                             {
@@ -2553,7 +2562,7 @@ GUI::QT::QtViewer::step()
                                                             }
                                                             MechanicalObject::resetForce()
                                                             {
-                                                                VecDeriv& f= *getF();
+                                                                VecDeriv& f= *getF()  { return f;  };
                                                                 for( unsigned i=0; i<f.size(); ++i )
                                                                     f[i] = Deriv();
                                                             }
@@ -2572,7 +2581,7 @@ GUI::QT::QtViewer::step()
                                         }
                                         /** Do nothing */
                                         OdeSolver::finish();
-                                        MechanicalComputeDfAction::execute(BaseContext)
+                                        MechanicalComputeDfAction(q).execute( getContext() )
                                         {
                                             GNode::executeAction(Action)
                                             {
@@ -2624,24 +2633,28 @@ GUI::QT::QtViewer::step()
                                             }
                                         }
                                     }
-                                    q *= -h*(h+f_rayleighStiffness.getValue());  // q = -h(h+rs) df/dx p
-
+                                    // q = -h(h+rs) df/dx p
+                                    q *= -h*(h+f_rayleighStiffness.getValue())
+                                    {
+                                        /** MultiVector : operator *= overloaded */
+                                        teq(f);
+                                    }
 
                                     // apply global Rayleigh damping
                                     if (f_rayleighMass.getValue()==0.0)
-                                        group->addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
+                                        addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
                                     else
                                     {
                                         q2.clear();
-                                        group->addMdx( q2, p);
+                                        addMdx( q2, p);
                                         q.peq(q2,(1+h*f_rayleighMass.getValue())); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
                                     }
 
                                     // filter the product to take the constraints into account
                                     // q is projected to the constrained space
-                                    group->projectResponse(q)
+                                    projectResponse(q)
                                     {
-                                        Action::execute(BaseContext)
+                                        MechanicalApplyConstraintsAction(q).execute( getContext() )
                                         {
                                             GNode::executeAction(Action)
                                             {
@@ -3004,7 +3017,11 @@ GUI::QT::QtViewer::step()
                                     }
                                 }
                                 if (f_velocityDamping.getValue()!=0.0)
-                                    vel *= exp(-h*f_velocityDamping.getValue());
+                                    vel *= exp(-h*f_velocityDamping.getValue())
+                                {
+                                    /** MultiVector : operator *= overloaded */
+                                    teq(f);
+                                }
 
                                 /** Free memory */
                                 MultiVector::~MultiVector()
@@ -3055,7 +3072,7 @@ GUI::QT::QtViewer::step()
                             /** Set x and v as current positions and velocities */
                             OdeSolver::propagatePositionAndVelocity(t, x, v)
                             {
-                                Action::execute(BaseContext)
+                                MechanicalPropagatePositionAndVelocityAction(t,x,v).execute( getContext() )
                                 {
                                     GNode::executeAction(Action)
                                     {
@@ -3161,8 +3178,7 @@ GUI::QT::QtViewer::step()
 
         /** Update the other aspects: visual, haptics, ...
         */
-        GNode::execute<UpdateMappingAction>()
-        {}
+        GNode::execute<UpdateMappingAction>() {}
 
         /** redraw
         */
