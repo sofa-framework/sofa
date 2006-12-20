@@ -1,4 +1,6 @@
 /** An example of Sofa simulation shown using the call stack tree.
+This file follows the C language syntax and is better seen in a folding C-source editor with comment highlights.
+
 It simulates a pair of particles linked by a spring, one particle being fixed.
 Here is the code corresponding to the scene graph :
         // The graph root node
@@ -40,7 +42,6 @@ Here is the code corresponding to the scene graph :
 		spring->addSpring(0, 1, 10.f, 1.f, 5);
 		groot->addObject(spring);
 
-This file follows the C language syntax and is better seen in a folding C-source editor with comment highlights.
 */
 
 /** User application
@@ -151,7 +152,7 @@ GUI::QT::QtViewer::step()
                                                     {
                                                         MechanicalVAllocAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                         {
-                                                            MechanicalObject::vAlloc(VecId )
+                                                            MechanicalObject::vAlloc(VecId v)
                                                             {
                                                                 if (v.type == V_COORD && v.index >= V_FIRST_DYNAMIC_INDEX)
                                                                 {
@@ -181,7 +182,6 @@ GUI::QT::QtViewer::step()
                                         }
                                     }
                                 }
-
                                 MultiVector vel(group, VecId::velocity());
                                 MultiVector f(group, VecId::force());
                                 MultiVector b(group, V_DERIV);
@@ -201,7 +201,7 @@ GUI::QT::QtViewer::step()
                                 {
                                     /** First, vector a is set to 0
                                     */
-                                    MechanicalResetForceAction::execute(BaseContext)
+                                    MechanicalResetForceAction(b).execute( getContext() )
                                     {
                                         GNode::executeAction(Action)
                                         {
@@ -211,7 +211,7 @@ GUI::QT::QtViewer::step()
                                                 {
                                                     MechanicalResetForceAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setF(VecId)
+                                                        MechanicalObject::setF(VecId v)
                                                         {
                                                             if (v.type == V_DERIV)
                                                             {
@@ -254,7 +254,7 @@ GUI::QT::QtViewer::step()
                                                 {
                                                     MechanicalComputeForceAction::fwdMechanicalModel(GNode, BasicMechanicalModel)
                                                     {
-                                                        MechanicalObject::setF(VecId)
+                                                        MechanicalObject::setF(VecId v)
                                                         {
                                                             if (v.type == V_DERIV)
                                                             {

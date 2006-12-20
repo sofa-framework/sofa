@@ -126,6 +126,22 @@ Material, internal forces, contraints, contact detection and modeling, ODE solut
 \end{frame}
 
 
+%----------------------------------------------------
+\begin{frame}
+\frametitle{A generic approach}
+\begin{itemize}
+\item Behavior model: all internal laws
+\item Others: interaction with the world
+\item Mappings: relations between the models (uni- or bi-directional)
+\end{itemize}
+\begin{center}
+ \includegraphics[width=\linewidth]{multimodal.png}
+\end{center}
+
+\end{frame}
+
+
+
 %-----------------------------------------
 \begin{frame}[fragile]
 \frametitle{Animation of a simple body}
@@ -148,19 +164,6 @@ A specialized program:
 \end{frame}
 
 
-%----------------------------------------------------
-\begin{frame}
-\frametitle{A generic approach}
-\begin{itemize}
-\item Behavior model: all internal laws
-\item Others: interaction with the world
-\item Mappings: relations between the models (uni- or bi-directional)
-\end{itemize}
-\begin{center}
- \includegraphics[width=\linewidth]{multimodal.png}
-\end{center}
-
-\end{frame}
 
 
 
@@ -320,32 +323,35 @@ Example: line mapping
 % 	\includegraphics[width=O.3\linewidth]{lineMapping-f.png}
 % 	\end{center}
 
-% $$
-% \begin{array}{rcl}
-% v = \left(
-% \begin{array}{cc}
-% a & b
-% \end{array}
-% \right)
-% \begin{array}{c}
-% v_1 & v_2
-% \end{array}
-% \right)
-% &=& J v
-%  \\
-% \begin{array}{c}
-% f_1 & f_2
-% \end{array}
-% \right)
-% = 
-% \begin{array}{c}
-% a & b
-% \end{array}
-% \right)
-% f
-% &=& J^T f
-% \end{array}
-% $$
+$$
+\begin{array}{rcl}
+v = \left(
+\begin{array}{cc}
+a & b
+\end{array}
+\right)
+\left(
+\begin{array}{c}
+v_1 \\ 
+v_2
+\end{array}
+\right)
+&=& J v
+ \\
+\left(\begin{array}{c}
+f_1 \\ f_2
+\end{array}
+\right)
+= 
+\left(\begin{array}{c}
+a \\ 
+b
+\end{array}
+\right)
+f
+&=& J^T f
+\end{array}
+$$
 \end{frame}
 
 
