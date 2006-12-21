@@ -45,6 +45,91 @@ groot->addObject(spring);
 /////////////////////////////////////////////////////////
 */
 
+
+Simulation::init(GNode)
+{
+    GNode::execute<InitAction>()
+    {
+        GNode::executeAction(InitAction)
+        {
+            GNode::doExecuteAction(InitAction)
+            {
+                InitAction::processNodeTopDown(GNode)
+                {
+                    GNode::initialize()
+                    {
+                        GNode::updateContext()
+                        {
+                            if( getParent() != NULL )
+                            {
+                                copyContext(*parent);
+                            }
+                            // Apply local modifications to the context
+                            if (getLogTime()) // False
+                            {
+                                for( unsigned i=0; i<contextObject.size(); ++i )
+                                {
+                                    contextObject[i]->init();
+                                    contextObject[i]->apply();
+                                }
+                            }
+                            else // Pass around here
+                            {
+                                // In this example, contextObject is only composed with gravity
+                                for( unsigned i=0; i<contextObject.size(); ++i )
+                                {
+                                    // BaseObject::init();
+                                    contextObject[i]->init();
+                                    // Gravity::apply();
+                                    contextObject[i]->apply();
+                                }
+                            }
+                        }
+                    }
+
+                }
+                for(GNode::Sequence<BaseObject>::iterator i=node->object.begin(),
+                    iend=node->object.end();
+                    i!=iend;
+                    i++ )
+                {
+                    (*i)->init() // The different calls "init()" while the iterations
+                    {
+                        // 1st and 2nd loop;
+                        BaseObject::init();
+                        //3th loop
+                        UniformMass::init()
+                        {
+                            ForceField::init()
+                            {
+                                BaseObject::init();
+                            }
+                        }
+                        //4th loop
+                        FixedConstraint::init()
+                        {
+                            Constraint::init()
+                            {
+                                BaseObject::init();
+                                // Init its MechanicalModel
+                                mmodel = dynamic_cast< MechanicalModel<DataTypes>* >(getContext()->getMechanicalModel());
+                            }
+                        }
+                        //4th loop
+                        StiffSpringForceField::init()
+                        {
+                            SpringForceField::init()
+                            {
+                                BaseObject::init();
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 /** User application
 */
 GUI::QT::QtViewer::step()
