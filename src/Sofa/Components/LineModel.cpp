@@ -25,7 +25,7 @@ void create(LineModel*& obj, ObjectDescription* arg)
 Creator< ObjectFactory, LineModel > LineModelClass("Line");
 
 LineModel::LineModel()
-    : static_(false), mmodel(NULL), mesh(NULL)
+    : static_(false), meshRevision(-1), mmodel(NULL), mesh(NULL)
 {
 }
 
@@ -51,6 +51,13 @@ void LineModel::init()
         std::cerr << "ERROR: LineModel requires a Mesh Topology.\n";
         return;
     }
+    updateFromTopology();
+}
+
+bool LineModel::updateFromTopology()
+{
+    int revision = mesh->getRevision();
+    if (revision == meshRevision) return false;
 
     const int npoints = mmodel->getX()->size();
     const int nlines = mesh->getNbLines();
@@ -70,6 +77,8 @@ void LineModel::init()
         elems[index].i2 = idx[1];
         ++index;
     }
+    meshRevision = revision;
+    return true;
 }
 
 void LineModel::draw(int index)
@@ -112,7 +121,9 @@ void LineModel::draw()
 void LineModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    bool updated = updateFromTopology();
+    if (updated) cubeModel->resize(0);
+    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 
@@ -143,7 +154,9 @@ void LineModel::computeBoundingTree(int maxDepth)
 void LineModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    bool updated = updateFromTopology();
+    if (updated) cubeModel->resize(0);
+    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 

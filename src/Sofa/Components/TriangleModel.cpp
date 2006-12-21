@@ -25,7 +25,7 @@ void create(TriangleModel*& obj, ObjectDescription* arg)
 Creator< ObjectFactory, TriangleModel > TriangleModelClass("Triangle");
 
 TriangleModel::TriangleModel()
-    : static_(false), mmodel(NULL), mesh(NULL)
+    : static_(false), meshRevision(-1), mmodel(NULL), mesh(NULL)
 {
 }
 
@@ -51,6 +51,15 @@ void TriangleModel::init()
         std::cerr << "ERROR: TriangleModel requires a Mesh Topology.\n";
         return;
     }
+
+    updateFromTopology();
+}
+
+bool TriangleModel::updateFromTopology()
+{
+    int revision = mesh->getRevision();
+    if (revision == meshRevision) return false;
+
     const int npoints = mmodel->getX()->size();
     const int ntris = mesh->getNbTriangles();
     const int nquads = mesh->getNbQuads();
@@ -88,6 +97,8 @@ void TriangleModel::init()
         elems[index].i3 = idx[3];
         ++index;
     }
+    meshRevision = revision;
+    return true;
 }
 
 void TriangleModel::draw(int index)
@@ -141,7 +152,9 @@ void TriangleModel::draw()
 void TriangleModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    bool updated = updateFromTopology();
+    if (updated) cubeModel->resize(0);
+    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 
@@ -178,7 +191,9 @@ void TriangleModel::computeBoundingTree(int maxDepth)
 void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    bool updated = updateFromTopology();
+    if (updated) cubeModel->resize(0);
+    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 

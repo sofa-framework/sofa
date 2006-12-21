@@ -23,6 +23,7 @@ namespace Abstract
 {
 
 class BaseObject;
+class Event;
 
 /// Base class for storing shared variables and parameters.
 class BaseContext : public virtual Base
@@ -236,6 +237,9 @@ public:
 
     /// @name Actions.
     /// @{
+
+    /// Propagate an event
+    virtual void propagateEvent( Event* );
 
     /// apply an action
     virtual void executeAction( Components::Graph::Action* );

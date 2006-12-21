@@ -32,7 +32,7 @@ SOFA_DECL_CLASS(MeshTopology)
 Creator<ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
 
 MeshTopology::MeshTopology()
-    : nbPoints(0), validLines(false), seqTriangles(dataField(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false), validQuads(false), validTetras(false), validCubes(false)
+    : nbPoints(0), validLines(false), seqTriangles(dataField(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false), validQuads(false), validTetras(false), validCubes(false), revision(-2)
 {
 }
 
@@ -153,6 +153,11 @@ bool MeshTopology::load(const char* filename)
             return false;
     }
     return true;
+}
+
+void MeshTopology::addLine( int a, int b )
+{
+    seqLines.push_back( Line(a,b) );
 }
 
 void MeshTopology::addTriangle( int a, int b, int c )
@@ -298,6 +303,7 @@ void MeshTopology::invalidate()
     validQuads = false;
     validTetras = false;
     validQuads = false;
+    ++revision;
 }
 
 } // namespace Components

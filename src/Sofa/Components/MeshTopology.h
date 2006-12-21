@@ -73,9 +73,12 @@ public:
     virtual double getPZ(int i) const;
 
     // for procedural creation without file loader
+    void addLine( int a, int b );
     void addTriangle( int a, int b, int c );
     void addTetrahedron( int a, int b, int c, int d );
 
+    // get the current revision of this mesh (use to detect changes)
+    int getRevision() const { return revision; }
 protected:
     int nbPoints;
     vector< fixed_array<double,3> > seqPoints;
@@ -94,6 +97,7 @@ protected:
     SeqCubes       seqCubes;
     bool         validCubes;
 
+    int revision;
     void invalidate();
 
     virtual void updateLines()     { }

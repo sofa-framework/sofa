@@ -1,5 +1,6 @@
 #include "GNode.h"
 #include "Action.h"
+#include "PropagateEventAction.h"
 #include "MutationListener.h"
 #include "Sofa/Components/XML/NodeNode.h"
 #include <iostream>
@@ -401,6 +402,13 @@ GNode* GNode::getTreeNode(const std::string& name)
     for (ChildIterator it = child.begin(), itend = child.end(); result == NULL && it != itend; ++it)
         result = (*it)->getTreeNode(name);
     return result;
+}
+
+/// Propagate an event
+void GNode::propagateEvent( Event* event )
+{
+    PropagateEventAction act(event);
+    this->executeAction(&act);
 }
 
 GNode* GNode::setDebug(bool b)

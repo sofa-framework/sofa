@@ -218,6 +218,9 @@ public:
     /// Get a descendant node given its name
     GNode* getTreeNode(const std::string& name);
 
+    /// Propagate an event
+    virtual void propagateEvent( Event* event );
+
     /// @}
 
     /// Sequence class to hold a list of objects. Public access is only readonly using an interface similar to std::vector (size/[]/begin/end).

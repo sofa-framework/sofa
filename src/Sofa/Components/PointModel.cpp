@@ -88,7 +88,15 @@ void PointModel::draw()
 void PointModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    const int npoints = mmodel->getX()->size();
+    bool updated = false;
+    if (npoints != size)
+    {
+        resize(npoints);
+        updated = true;
+    }
+    if (updated) cubeModel->resize(0);
+    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     cubeModel->resize(size);
     if (!empty())
@@ -107,7 +115,14 @@ void PointModel::computeBoundingTree(int maxDepth)
 void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    const int npoints = mmodel->getX()->size();
+    bool updated = false;
+    if (npoints != size)
+    {
+        resize(npoints);
+        updated = true;
+    }
+    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 

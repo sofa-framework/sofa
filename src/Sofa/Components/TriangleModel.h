@@ -50,6 +50,8 @@ protected:
     class Loader;
 
     bool static_;
+    int meshRevision;
+    bool updateFromTopology();
 public:
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;

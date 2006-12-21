@@ -15,6 +15,9 @@
 #include "ExportOBJAction.h"
 #include "WriteStateAction.h"
 #include "XMLPrintAction.h"
+#include "PropagateEventAction.h"
+#include "../AnimateBeginEvent.h"
+#include "../AnimateEndEvent.h"
 
 #include <fstream>
 
@@ -106,12 +109,18 @@ void Simulation::init(GNode* root)
 /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
 void Simulation::animate(GNode* root, double dt)
 {
+    if (!root) return;
     if (root->getMultiThreadSimulation())
         return;
 
-    double nextTime = root->getTime() + root->getDt();
-    if (!root) return;
+    {
+        AnimateBeginEvent ev(dt);
+        PropagateEventAction act(&ev);
+        root->execute(act);
+    }
+
     //std::cout << "animate\n";
+    double nextTime = root->getTime() + root->getDt();
 
     root->execute<CollisionAction>();
 
@@ -122,6 +131,12 @@ void Simulation::animate(GNode* root, double dt)
     root->execute<UpdateMappingAction>();
     root->execute<VisualUpdateAction>();
     root->setTime( nextTime );
+
+    {
+        AnimateEndEvent ev(dt);
+        PropagateEventAction act(&ev);
+        root->execute(act);
+    }
 }
 
 /// Reset to initial state

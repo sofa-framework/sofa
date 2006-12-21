@@ -191,6 +191,12 @@ BaseObject* BaseContext::getMainTopology() const
     return NULL;
 }
 
+/// Propagate an event
+void BaseContext::propagateEvent( Event* )
+{
+    cerr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<endl;
+}
+
 void BaseContext::executeAction( Components::Graph::Action* )
 {
     cerr<<"WARNING !!! BaseContext::executeAction not overloaded, does nothing"<<endl;
