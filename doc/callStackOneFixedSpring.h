@@ -1,48 +1,7 @@
 /** An example of Sofa simulation shown using the call stack tree.
 This file follows the C language syntax and is better seen in a folding C-source editor with comment highlights.
 
-It simulates a pair of particles linked by a spring, one particle being fixed.
-Here is the code corresponding to the scene graph :
-/////////////////////////////////////////////////////////
-// The graph root node
-groot = new Sofa::Components::Graph::GNode;
-groot->setName( "root" );
-
-// One solver for all the graph
-Sofa::Components::CGImplicitSolver* solver = new Sofa::Components::CGImplicitSolver;
-solver->f_printLog.setValue(false);
-groot->addObject(solver);
-
-// Set gravity for all the graph
-Sofa::Components::Gravity* gravity =  new Sofa::Components::Gravity;
-gravity->f_gravity.setValue( Vec3(0,-100,0) );
-groot->addObject(gravity);
-
-// Spring degrees of freedom
-Sofa::Core::MechanicalObject<MyTypes>* DOF = new Sofa::Core::MechanicalObject<MyTypes>;
-groot->addObject(DOF);
-DOF->resize(2);
-DOF->setName("DOF");
-MyTypes::VecCoord& x = *DOF->getX()  { f_X->beginEdit(); return x;  };
-x[0] = Vec3(0,0,0);
-x[1] = Vec3(0,-10,0);
-
-// Spring mass
-Sofa::Components::UniformMass<MyTypes,double>* mass = new Sofa::Components::UniformMass<MyTypes,double>(DOF);
-groot->addObject(mass);
-mass->setMass( 1 );
-
-// Spring constraints
-Sofa::Components::FixedConstraint<MyTypes>* constraints = new Sofa::Components::FixedConstraint<MyTypes>(DOF);
-groot->addObject(constraints);
-constraints->setName("constraints");
-constraints->addConstraint(0);
-
-// Spring force field
-Sofa::Components::StiffSpringForceField<MyTypes>* spring = new Sofa::Components::StiffSpringForceField<MyTypes>(DOF);
-spring->addSpring(0, 1, 10.f, 1.f, 5);
-groot->addObject(spring);
-/////////////////////////////////////////////////////////
+It simulates a pair of particles linked by a spring, one particle being fixed (see ../src/CallStack/oneFixedSpring/).
 */
 
 
