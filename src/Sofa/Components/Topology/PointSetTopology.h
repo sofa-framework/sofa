@@ -143,30 +143,21 @@ public:
      */
     int getPointSetIndex(const unsigned int i);
 
-
+    /** \brief Returns the number of vertices in this index array
+    *
+    */
+    unsigned int getPointSetIndexSize() const;
 
     /** \brief Returns the number of vertices in this topology.
      *
      */
     unsigned int getNumberOfVertices() const;
 
-
-
     /** \brief Returns the DOFIndex.
      *
      * See getDOFIndex(const int i) for more explanation.
      */
     const std::vector<unsigned int>& getDOFIndexArray() const;
-
-
-
-    /** \brief Returns the DOFIndex.
-     *
-     * See getDOFIndex(const int i) for more explanation.
-     */
-    std::vector<unsigned int>& getDOFIndexArray();
-
-
 
     /** \brief Returns the index in the mechanical object of the DOF corresponding to the ith point of this topology.
      *
@@ -179,16 +170,27 @@ public:
 
     template <typename DataTypes>
     friend class PointSetTopologyModifier;
+protected:
+    /** \brief Returns the DOFIndex.
+    *
+    * See getDOFIndex(const int i) for more explanation.
+    */
+    std::vector<unsigned int>& getDOFIndexArrayForModification();
+    /** \brief Returns the PointSetIndex array for modification.
+     */
+    std::vector<int>& getPointSetIndexArrayForModification();
 
     //friend class PointSetTopologicalMapping;
 
 };
 
-
+// forward declaration
+template< typename DataTypes > class PointSetTopologyLoader;
 
 /**
  * A class that can apply basic transformations on a set of points.
  */
+
 template<class DataTypes>
 class PointSetTopologyModifier : public Core::TopologyModifier
 {
@@ -197,11 +199,20 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
+    PointSetTopologyModifier(Core::BasicTopology *top) : TopologyModifier(top)
+    {
+    }
+
     /** \brief Swap points i1 and i2.
      *
      */
     virtual void swapPoints(const int i1,const int i2);
 
+
+    /** \brief Build a point set topology from a file : also modifies the MechanicalObject
+     *
+     */
+    virtual bool load(const char *filename);
 
 
     /** \brief Sends a message to warn that some points were added in this topology.
@@ -256,6 +267,11 @@ public:
      */
     virtual void renumberPointsProcess( const std::vector<unsigned int> &index );
 
+protected:
+    /// modifies the mechanical object and creates the point set container
+    void loadPointSet(PointSetTopologyLoader<DataTypes> *);
+
+
 };
 
 
@@ -263,9 +279,14 @@ public:
 /** A class that performs complex algorithms on a PointSet.
  *
  */
-class PointSetTopologyAlgorithms : public Core::GeometryAlgorithms
+template<class DataTypes>
+class PointSetTopologyAlgorithms : public Core::TopologyAlgorithms
 {
     // no methods implemented yet
+public:
+    PointSetTopologyAlgorithms(Core::BasicTopology *top) : TopologyAlgorithms(top)
+    {
+    }
 };
 
 
@@ -326,6 +347,10 @@ public:
 
     virtual void init();
 
+    /** \brief Build a topology from a file : call the load member function in the modifier object
+    *
+    */
+    virtual bool load(const char *filename);
 
 
     /** \brief Return the number of DOF in the mechanicalObject this Topology deals with.
@@ -333,6 +358,8 @@ public:
      */
     virtual unsigned int getDOFNumber() const { return object->getSize(); }
 
+protected:
+    PointSetTopology(Core::MechanicalObject<DataTypes> *obj,const PointSetTopology *);
 
 
 };
