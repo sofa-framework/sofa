@@ -293,6 +293,49 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(std::vector<unsigned>& /*ind
     //	}
     //}
 }
+template <class DataTypes>
+void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const std::vector< unsigned int >& ancestors, const std::vector< double >& coefs)
+{
+    /// HD interpolate position, speed,force,...
+    /// assume all coef sum to 1.0
+    (*x)[i]=Coord();
+    (*x0)[i]=Coord();
+    (*v)[i]=Deriv();
+    (*f)[i]=Deriv();
+    (*dx)[i]=Deriv();
+    unsigned int j;
+    for (j=0; j<ancestors.size(); ++j)
+    {
+        (*x)[i]+=(*x)[ancestors[j]]*coefs[j];
+        (*x0)[i]+=(*x0)[ancestors[j]]*coefs[j];
+        (*v)[i]+=(*v)[ancestors[j]]*coefs[j];
+        (*f)[i]+=(*f)[ancestors[j]]*coefs[j];
+        (*dx)[i]+=(*dx)[ancestors[j]]*coefs[j];
+
+    }
+    for (unsigned int k=0; k<vectorsCoord.size(); k++)
+    {
+        if (vectorsCoord[k]!=NULL && vectorsCoord[k]->size()!=0)
+        {
+            (*vectorsCoord[k])[i]=Coord();
+            for (j=0; j<ancestors.size(); ++j)
+            {
+                (*vectorsCoord[k])[i]+= (*vectorsCoord[k])[ancestors[j]]*coefs[j];
+            }
+        }
+    }
+    for (unsigned int k=0; k<vectorsDeriv.size(); k++)
+    {
+        if (vectorsDeriv[k]!=NULL && vectorsDeriv[k]->size()!=0)
+        {
+            (*vectorsDeriv[k])[i]=Deriv();
+            for (j=0; j<ancestors.size(); ++j)
+            {
+                (*vectorsDeriv[k])[i]+= (*vectorsDeriv[k])[ancestors[j]]*coefs[j];
+            }
+        }
+    }
+}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
