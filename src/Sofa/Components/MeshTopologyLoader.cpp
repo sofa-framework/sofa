@@ -151,6 +151,95 @@ bool MeshTopologyLoader::load(const char *filename)
             return false;
         }
     }
+    else if (!strncmp(cmd,"Xsp 3.0",7))
+    {
+        int totalNumMasses;
+        int totalNumSprings;
+
+        //		skipToEOL(file);
+
+        // then find out number of masses and springs
+        if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"numm"))
+        {
+            fscanf(file, "%d", &totalNumMasses);
+            setNbPoints(totalNumMasses);
+        }
+        if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"nums"))
+        {
+            fscanf(file, "%d", &totalNumSprings);
+            setNbLines(totalNumSprings);
+//		setNumSprings(totalNumSprings);
+        }
+
+        std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
+
+
+
+        while (fscanf(file, "%s", cmd) != EOF)
+        {
+            if (!strcmp(cmd,"mass"))
+            {
+                int index;
+                char location;
+                double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
+                bool fixed=false;
+                fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
+                        &index, &location,
+                        &px, &py, &pz, &vx, &vy, &vz,
+                        &mass, &elastic);
+                bool surface = (location == 's');
+
+                if (mass < 0)
+                {
+                    // fixed point initialization
+                    mass = -mass;
+                    fixed = true;
+                }
+                addPoint(px,py,pz);
+            }
+            else if (!strcmp(cmd,"lspg"))	// linear springs connector
+            {
+                int	index;
+                int m1,m2;
+                double ks=0.0,kd=0.0,initpos=-1;
+                fscanf(file, "%d %d %d %lf %lf %lf\n", &index,
+                        &m1,&m2,&ks,&kd,&initpos);
+                --m1;
+                --m2;
+
+                addLine(m1,m2);
+            }
+            else if (!strcmp(cmd,"grav"))
+            {
+                double gx,gy,gz;
+                fscanf(file, "%lf %lf %lf\n", &gx, &gy, &gz);
+            }
+            else if (!strcmp(cmd,"visc"))
+            {
+                double viscosity;
+                fscanf(file, "%lf\n", &viscosity);
+            }
+            else if (!strcmp(cmd,"step"))
+            {
+                //fscanf(file, "%lf\n", &(MSparams.default_dt));
+                skipToEOL(file);
+            }
+            else if (!strcmp(cmd,"frce"))
+            {
+                skipToEOL(file);
+            }
+            else if (cmd[0] == '#')	// it's a comment
+            {
+                skipToEOL(file);
+            }
+            else		// it's an unknown keyword
+            {
+                printf("%s: Unknown MassSpring keyword: %s\n", filename, cmd);
+                skipToEOL(file);
+            }
+        }
+        fclose(file);
+    }
     else
     {
         std::cout << "Loading mesh topology '" << filename << "'" << std::endl;
