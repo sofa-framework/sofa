@@ -57,6 +57,18 @@ const std::vector<int> &PointSetTopologyContainer::getPointSetIndexArray()
     return m_PointSetIndex;
 }
 
+unsigned int PointSetTopologyContainer::getPointSetIndexSize() const
+{
+    return m_PointSetIndex.size();
+}
+
+std::vector<int> &PointSetTopologyContainer::getPointSetIndexArrayForModification()
+{
+    if (!m_PointSetIndex.size())
+        createPointSetIndex();
+    return m_PointSetIndex;
+}
+
 
 
 int PointSetTopologyContainer::getPointSetIndex(const unsigned int i)
@@ -76,7 +88,7 @@ const std::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArray() c
     return m_DOFIndex;
 }
 
-std::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArray()
+std::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArrayForModification()
 {
     return m_DOFIndex;
 }
