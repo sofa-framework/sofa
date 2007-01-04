@@ -19,10 +19,10 @@ using namespace Sofa::Core;
 
 
 template<class MassType>
-void MassPointCreationFunction(int index,
-        void* param, MassType & t,
-        const std::vector< unsigned int > &ancestors,
-        const std::vector< double >& coefs)
+void MassPointCreationFunction(int ,
+        void* , MassType & t,
+        const std::vector< unsigned int > &,
+        const std::vector< double >&)
 {
     t=0;
 }
@@ -39,8 +39,8 @@ void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
         EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
         const std::vector<Edge> &edgeArray=container->getEdgeArray();
         EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
-        DataTypes::Real md=dm->getMassDensity();
-        DataTypes::Real mass;
+        typename DataTypes::Real md=dm->getMassDensity();
+        typename DataTypes::Real mass;
         unsigned int i;
 
         for (i=0; i<edgeAdded.size(); ++i)
@@ -74,8 +74,8 @@ void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved,
         EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
         const std::vector<Edge> &edgeArray=container->getEdgeArray();
         EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
-        DataTypes::Real md=dm->getMassDensity();
-        DataTypes::Real mass;
+        typename DataTypes::Real md=dm->getMassDensity();
+        typename DataTypes::Real mass;
         unsigned int i;
 
         for (i=0; i<edgeRemoved.size(); ++i)
