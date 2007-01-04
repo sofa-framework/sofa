@@ -17,13 +17,15 @@ SOFA_DECL_CLASS(EdgeSetTopology)
 
 template class EdgeSetTopology<Vec3dTypes>;
 template class EdgeSetTopology<Vec3fTypes>;
+template class EdgeSetTopologyAlgorithms<Vec3fTypes>;
+template class EdgeSetTopologyAlgorithms<Vec3dTypes>;
 template class EdgeSetGeometryAlgorithms<Vec3fTypes>;
 template class EdgeSetGeometryAlgorithms<Vec3dTypes>;
 
 
 // implementation EdgeSetTopologyContainer
 
-void EdgeSetTopologyContainer::createEdgeShellsArray ()
+void EdgeSetTopologyContainer::createEdgeShellArray ()
 {
     m_edgeShell.resize( m_basicTopology->getDOFNumber() );
 
@@ -39,27 +41,51 @@ void EdgeSetTopologyContainer::createEdgeShellsArray ()
 
 const std::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
 {
+    if (!m_edge.size())
+        createEdgeSetArray();
     return m_edge;
 }
 
 
-
-Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i)
+int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned int v2)
 {
+    const std::vector< unsigned int > &es1=getEdgeShell(v1) ;
+    const std::vector<Edge> &ea=getEdgeArray();
+    unsigned int i=0;
+    int result= -1;
+    while ((i<es1.size()) && (result== -1))
+    {
+        const Edge &e=ea[es1[i]];
+        if ((e.first==v2)|| (e.second==v2))
+            result=(int) es1[i];
+
+        i++;
+    }
+    return result;
+}
+
+const Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i)
+{
+    if (!m_edge.size())
+        createEdgeSetArray();
     return m_edge[i];
 }
 
 
 
-unsigned int EdgeSetTopologyContainer::getNumberOfEdges() const
+unsigned int EdgeSetTopologyContainer::getNumberOfEdges()
 {
+    if (!m_edge.size())
+        createEdgeSetArray();
     return m_edge.size();
 }
 
 
 
-const std::vector< std::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeShellsArray() const
+const std::vector< std::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeShellsArray()
 {
+    if (!m_edgeShell.size())
+        createEdgeShellArray();
     return m_edgeShell;
 }
 
@@ -69,8 +95,18 @@ const std::vector< std::vector<unsigned int> > &EdgeSetTopologyContainer::getEdg
 
 
 
-const std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeShell(const unsigned int i) const
+const std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeShell(const unsigned int i)
 {
+    if (!m_edgeShell.size())
+        createEdgeShellArray();
+    return m_edgeShell[i];
+}
+
+
+std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeShellForModification(const unsigned int i)
+{
+    if (!m_edgeShell.size())
+        createEdgeShellArray();
     return m_edgeShell[i];
 }
 
@@ -100,7 +136,8 @@ void create(EdgeSetTopology<DataTypes>*& obj, ObjectDescription* arg)
     XML::createWithParent< EdgeSetTopology<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
-
+        if (arg->getAttribute("filename"))
+            obj->load(arg->getAttribute("filename"));
     }
 }
 
