@@ -89,19 +89,19 @@ public:
  * The class also holds an array of TopologyChange objects needed by Topologies linked to this one to know
  * what happened and how to take it into account (or ignore it).
  */
-class BasicTopology : public virtual Abstract::BaseObject
+class BasicTopology : public Abstract::BaseObject
 {
 
 public :
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
-    std::list<TopologyChange>::const_iterator firstChange() const;
+    std::list<const TopologyChange *>::const_iterator firstChange() const;
 
 
 
     /** \brief Provides an iterator on the last element in the list of TopologyChange objects.
      */
-    std::list<TopologyChange>::const_iterator lastChange() const;
+    std::list<const TopologyChange *>::const_iterator lastChange() const;
 
 
 
@@ -184,9 +184,6 @@ public :
     virtual void propagateTopologicalChanges()
     {
     }
-
-
-
     /** \brief Returns whether this topology is a main one or a specific one.
      *
      * @see BasicTopology::m_mainTopology
@@ -196,23 +193,10 @@ public :
         return m_mainTopology;
     }
 
-
-
     /** \brief Return the number of DOF in the mechanicalObject this Topology deals with.
      *
      */
-    virtual unsigned int getDOFNumber() { return 0; }
-
-
-
-    // Friend classes declaration.
-    // Needed so that these classes (particularly TopologyModifier and TopologyAlgorithms) can access private
-    // method addTopologyChange.
-    friend class TopologyModifier;
-    friend class TopologyAlgorithms;
-    friend class TopologyContainer;  // really needed?
-    friend class GeometryAlgorithms; // really needed?
-    friend class TopologicalMapping; // really needed?
+    virtual unsigned int getDOFNumber() const { return 0; }
 
 protected :
     /// Contains the actual topology data and give acces to it (nature of these data heavily depends on the kind of topology).
@@ -237,18 +221,11 @@ protected :
      */
     bool m_mainTopology;
 
-private:
-    /** \brief Adds a TopologyChange to the list.
-     *
-     * Needed by topologies linked to this one to know what happened and what to do to take it into account.
-     *
-     * Only TopologyModifier and TopologyAlgorithms objects of this topology should have access to this method.
-     *
-     * Question : Is this wrapper really needed since member m_changeTopology is protected and TopologyModifier
-     * and TopologyAlgorithms are friend classes?
-     */
-    void addTopologyChange(const TopologyChange &topologyChange);
-
+protected:
+    /** \brief Free each Topology changes in the list and remove them from the list
+      *
+      */
+    void resetTopologyChangeList() const;
 
 };
 
@@ -266,32 +243,48 @@ public:
     TopologyContainer(BasicTopology *basicTopology) : m_basicTopology(basicTopology)
     {
     }
+    /// Destructor
+    virtual ~TopologyContainer()
+    {
+    }
 
-
-    std::list<TopologyChange> &getChangeList()
+    const std::list<const TopologyChange *> &getChangeList() const
     {
         return m_changeList;
     }
-
 protected:
     /// The topology this object describes.
     BasicTopology *m_basicTopology;
 
+    /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
+    std::list<const TopologyChange *> m_changeList; // shouldn't this be private?
 
 
-    /** \brief Adds a TopologyChange object to the list of the topology this object describes.
-     */
-    void addTopologyChange(const TopologyChange &topologyChange)
+    /** \brief Adds a TopologyChange to the list.
+    *
+    * Needed by topologies linked to this one to know what happened and what to do to take it into account.
+    *
+    * Only TopologyModifier and TopologyAlgorithms objects of this topology should have access to this method.
+    *
+    * Question : Is this wrapper really needed since member m_changeTopology is protected and TopologyModifier
+    * and TopologyAlgorithms are friend classes?
+    */
+    void addTopologyChange(const TopologyChange *topologyChange)
     {
-        m_basicTopology->addTopologyChange(topologyChange);
+        m_changeList.push_back(topologyChange);
     }
 
+    /** \brief Free each Topology changes in the list and remove them from the list
+     *
+     */
+    void resetTopologyChangeList();
 
-
-    /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
-    std::list<TopologyChange> m_changeList; // shouldn't this be private?
-
-
+    // Friend classes declaration.
+    // Needed so that TopologyModifier and TopologyAlgorithms and BasicTopology can access private
+    // method addTopologyChange and resetTopologyList
+    friend class TopologyModifier;
+    friend class TopologyAlgorithms;
+    friend class BasicTopology;
 };
 
 
@@ -309,6 +302,11 @@ public:
     {
     }
 
+    /// Destructor
+    virtual ~TopologyModifier()
+    {
+    }
+
 protected:
     /// The topology this object applies to.
     BasicTopology *m_basicTopology;
@@ -317,9 +315,9 @@ protected:
 
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
      */
-    void addTopologyChange(const TopologyChange &topologyChange)
+    void addTopologyChange(const TopologyChange *topologyChange)
     {
-        m_basicTopology->addTopologyChange(topologyChange);
+        m_basicTopology->getTopologyContainer()->addTopologyChange(topologyChange);
     }
 
 };
@@ -338,7 +336,10 @@ public:
     TopologyAlgorithms(BasicTopology *basicTopology) : m_basicTopology(basicTopology)
     {
     }
-
+    /// Destructor
+    virtual ~TopologyAlgorithms()
+    {
+    }
 protected:
     /// The topology this object applies to.
     BasicTopology *m_basicTopology;
@@ -347,9 +348,9 @@ protected:
 
     /** \brief Adds a TopologyChange object to the list of the topology this object describes.
      */
-    void addTopologyChange(const TopologyChange &topologyChange)
+    void addTopologyChange(const TopologyChange *topologyChange)
     {
-        m_basicTopology->addTopologyChange(topologyChange);
+        m_basicTopology->getTopologyContainer()->addTopologyChange(topologyChange);
     }
 };
 
@@ -367,19 +368,14 @@ public:
     GeometryAlgorithms(BasicTopology *basicTopology) : m_basicTopology(basicTopology)
     {
     }
-
+    /// Destructor
+    virtual ~GeometryAlgorithms()
+    {
+    }
 protected:
     /// The topology this object applies to.
     BasicTopology *m_basicTopology;
 
-
-
-    /** \brief Adds a TopologyChange object to the list of the topology this object describes.
-     */
-    void addTopologyChange(const TopologyChange &topologyChange)
-    {
-        m_basicTopology->addTopologyChange(topologyChange);
-    }
 };
 
 

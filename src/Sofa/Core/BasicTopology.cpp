@@ -21,26 +21,31 @@ BasicTopology::~BasicTopology()
 }
 
 
-
-void BasicTopology::addTopologyChange(const TopologyChange &topologyChange)
-{
-    m_topologyContainer->getChangeList().push_back(topologyChange);
-}
-
-
-
-std::list<TopologyChange>::const_iterator BasicTopology::lastChange() const
+std::list<const TopologyChange *>::const_iterator BasicTopology::lastChange() const
 {
     return m_topologyContainer->getChangeList().end();
 }
 
 
 
-std::list<TopologyChange>::const_iterator BasicTopology::firstChange() const
+std::list<const TopologyChange *>::const_iterator BasicTopology::firstChange() const
 {
     return m_topologyContainer->getChangeList().begin();
 }
+void BasicTopology::resetTopologyChangeList() const
+{
+    getTopologyContainer()->resetTopologyChangeList();
+}
 
+void TopologyContainer::resetTopologyChangeList()
+{
+    std::list<const TopologyChange *>::iterator it=m_changeList.begin();
+    for (; it!=m_changeList.end(); ++it)
+    {
+        delete (*it);
+    }
+    m_changeList.erase(m_changeList.begin(),m_changeList.end());
+}
 
 } // namespace Core
 
