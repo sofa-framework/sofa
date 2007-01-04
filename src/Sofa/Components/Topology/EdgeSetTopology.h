@@ -277,7 +277,8 @@ public:
 protected:
     void addEdge(Edge e);
 
-    template< typename DataTypes >
+public:
+    template <class DataTypes>
     friend class EdgeSetTopologyLoader;
 
 };
@@ -322,7 +323,7 @@ public:
             const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0 );
 
 
-    EdgeSetTopologyAlgorithms(Sofa::Core::BasicTopology *top) : PointSetTopologyAlgorithms(top)
+    EdgeSetTopologyAlgorithms(Sofa::Core::BasicTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)
     {
     }
 };
