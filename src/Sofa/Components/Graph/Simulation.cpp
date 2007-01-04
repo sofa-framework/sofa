@@ -127,10 +127,10 @@ void Simulation::animate(GNode* root, double dt)
     AnimateAction act;
     act.setDt(dt);
     root->execute(act);
+    root->setTime( nextTime );
 
     root->execute<UpdateMappingAction>();
     root->execute<VisualUpdateAction>();
-    root->setTime( nextTime );
 
     {
         AnimateEndEvent ev(dt);
