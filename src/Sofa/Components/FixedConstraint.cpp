@@ -28,7 +28,7 @@ void FixedConstraint<RigidTypes>::draw()
     		axis->update(center, orient);
     		axis->draw();
     	}*/
-    const SetIndex& indices = f_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);

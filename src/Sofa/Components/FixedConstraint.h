@@ -4,11 +4,11 @@
 #include "Sofa/Core/Constraint.h"
 #include "Sofa/Core/MechanicalModel.h"
 #include "Sofa/Abstract/VisualModel.h"
-
+#include "Sofa/Abstract/Event.h"
 #include "Sofa/Components/Common/SofaBaseMatrix.h"
 #include "Sofa/Components/Common/SofaBaseVector.h"
 #include "Sofa/Components/Common/vector.h"
-
+#include "Topology/PointSubset.h"
 #include <set>
 
 namespace Sofa
@@ -19,6 +19,7 @@ namespace Components
 
 using Common::vector;
 using Common::DataField;
+using namespace Sofa::Abstract;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
@@ -34,7 +35,8 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef vector<int> SetIndex;
+    typedef PointSubset SetIndex;
+    typedef Common::vector<unsigned int> SetIndexArray;
     //typedef std::set<int> SetIndex;
 
 protected:
@@ -63,6 +65,9 @@ public:
 
     void applyConstraint(Components::Common::SofaBaseMatrix *mat, unsigned int &offset);
     void applyConstraint(Components::Common::SofaBaseVector *vect, unsigned int &offset);
+
+    // handle topological changes
+    virtual void handleEvent( Event* );
 
     // -- VisualModel interface
 

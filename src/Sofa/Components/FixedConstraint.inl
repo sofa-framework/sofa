@@ -5,6 +5,8 @@
 #include "FixedConstraint.h"
 #include "GL/template.h"
 #include "Common/RigidTypes.h"
+#include "Topology/TopologyChangedEvent.h"
+#include "Sofa/Core/BasicTopology.h"
 
 namespace Sofa
 {
@@ -13,6 +15,7 @@ namespace Components
 {
 
 using namespace Common;
+using namespace Sofa::Core;
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
@@ -55,6 +58,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::init()
 {
     this->Core::Constraint<DataTypes>::init();
+    f_listening.setValue(true);
     // sort indices and remove duplicates by copying them to a std::set
     //SetIndex& indices = *f_indices.beginEdit();
     //std::set<int> tmpset(indices.begin(), indices.end());
@@ -66,7 +70,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
     //std::cerr<<"FixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<endl;
-    const SetIndex& indices = f_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue().getArray();
     for (SetIndex::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
@@ -80,8 +84,8 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseMatrix *mat, unsigned int &offset)
 {
     std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
+    const SetIndexArray & indices = f_indices.getValue().getArray();
 
-    const SetIndex& indices = f_indices.getValue();
     for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         // Reset Fixed Row
@@ -120,7 +124,7 @@ void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseVec
 {
     std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
-    const SetIndex& indices = f_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue().getArray();
     for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         vect->element(3 * (*it)
@@ -129,6 +133,28 @@ void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseVec
         vect->element(3 * (*it) + offset + 2) = 0.0;
     }
 }
+
+template <class DataTypes>
+void FixedConstraint<DataTypes>::handleEvent( Event *event )
+{
+    TopologyChangedEvent *tce=dynamic_cast<TopologyChangedEvent *>(event);
+    /// test that the event is a change of topology and that it
+    if ((tce) && (tce->getTopology()== getContext()->getMainTopology()))
+    {
+        BasicTopology *topology = static_cast<BasicTopology *>(getContext()->getMainTopology());
+
+        std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
+        std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+        std::list<const TopologyChange *>::const_iterator it;
+
+        SetIndex & indices = *f_indices.beginEdit();
+        indices.handleTopologyEvents(itBegin,itEnd);
+        f_indices.endEdit();
+
+    }
+
+}
+
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw()
@@ -141,7 +167,7 @@ void FixedConstraint<DataTypes>::draw()
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
-    const SetIndex& indices = f_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue().getArray();
     //std::cerr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<endl;
     for (SetIndex::const_iterator it = indices.begin();
             it != indices.end();
