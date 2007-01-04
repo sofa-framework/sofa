@@ -162,6 +162,8 @@ protected:
 };
 
 
+template <class DataTypes>
+class EdgeSetTopologyLoader;
 
 /**
  * A class that can apply basic transformations on a set of points.
@@ -272,14 +274,14 @@ public:
      *
      */
     virtual void splitEdgesProcess( std::vector<unsigned int> &indices,
-            const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0);
+            const std::vector< std::vector< double > >& baryCoefs = std::vector< std::vector< double > >(0));
 
 protected:
     void addEdge(Edge e);
 
 public:
-    template <class DataTypes>
-    friend class EdgeSetTopologyLoader;
+    //template <class DataTypes>
+    friend class EdgeSetTopologyLoader<DataTypes>;
 
 };
 
@@ -378,19 +380,19 @@ public:
      */
     EdgeSetTopologyContainer *getEdgeSetTopologyContainer() const
     {
-        return (EdgeSetTopologyContainer *)m_topologyContainer;
+        return (EdgeSetTopologyContainer *)this->m_topologyContainer;
     }
     /** \brief Returns the EdgeSetTopologyAlgorithms object of this EdgeSetTopology.
      */
     EdgeSetTopologyAlgorithms<DataTypes> *getEdgeSetTopologyAlgorithms() const
     {
-        return (EdgeSetTopologyAlgorithms<DataTypes> *)m_topologyAlgorithms;
+        return (EdgeSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
     /** \brief Returns the EdgeSetTopologyAlgorithms object of this EdgeSetTopology.
      */
     EdgeSetGeometryAlgorithms<DataTypes> *getEdgeSetGeometryAlgorithms() const
     {
-        return (EdgeSetGeometryAlgorithms<DataTypes> *)m_geometryAlgorithms;
+        return (EdgeSetGeometryAlgorithms<DataTypes> *)this->m_geometryAlgorithms;
     }
 
 };

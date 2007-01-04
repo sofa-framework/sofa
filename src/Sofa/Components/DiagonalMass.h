@@ -42,13 +42,13 @@ public:
         TOPOLOGY_EDGESET=1
     } TopologyType;
 
+    DataField< VecMass > f_mass;
+    /// the mass density used to compute the mass from a mesh topology and geometry
+    DataField< Real > m_massDensity;
 protected:
     //VecMass masses;
 
     class Loader;
-    DataField< VecMass > f_mass;
-    /// the mass density used to compute the mass from a mesh topology and geometry
-    DataField< Real > m_massDensity;
     /// The type of topology to build the mass from the topology
     TopologyType topologyType;
 

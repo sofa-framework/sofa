@@ -272,7 +272,7 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const std::vec
 template<class DataTypes>
 void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair)
 {
-    EdgeSetTopology< DataTypes > *topology = dynamic_cast< EdgeSetTopology< DataTypes >* >(m_basicTopology);
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast< EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert(topology != 0);
 
     EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
@@ -330,7 +330,7 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const std::vector< s
 //            addTopologyChange( er );
 
     // propagate the warnings
-    m_basicTopology->propagateTopologicalChanges();
+    this->m_basicTopology->propagateTopologicalChanges();
 
 
     // now destroy the old edges.
@@ -346,7 +346,7 @@ template<class DataTypes>
 void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( std::vector<unsigned int> &indices,
         const std::vector< std::vector< double > >& baryCoefs)
 {
-    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(m_basicTopology);
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
     EdgeSetTopologyModifier< DataTypes >* modifier  = this;
@@ -400,7 +400,7 @@ void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( std::vector<unsign
     // warn about old edges about to be removed
     modifier->removeEdgesWarning( indices);
 
-    m_basicTopology->propagateTopologicalChanges();
+    this->m_basicTopology->propagateTopologicalChanges();
 
     // Removing the old edges
     modifier->removeEdgesProcess( indices.size(), indices );
@@ -409,7 +409,7 @@ void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( std::vector<unsign
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::removeEdges(std::vector< unsigned int >& edges)
 {
-    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(m_basicTopology);
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyModifier< DataTypes >* modifier  = static_cast< EdgeSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
@@ -425,7 +425,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const std::vector< Edge >&
         const std::vector< std::vector< unsigned int > > & ancestors ,
         const std::vector< std::vector< double > >& baryCoefs)
 {
-    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(m_basicTopology);
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyModifier< DataTypes >* modifier  = static_cast< EdgeSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
@@ -449,7 +449,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const std::vector< Edge >&
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair)
 {
-    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(m_basicTopology);
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyModifier< DataTypes >* modifier  = static_cast< EdgeSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
@@ -460,7 +460,7 @@ template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::splitEdges( std::vector<unsigned int> &indices,
         const std::vector< std::vector< double > >& baryCoefs)
 {
-    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(m_basicTopology);
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyModifier< DataTypes >* modifier  = static_cast< EdgeSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
@@ -473,7 +473,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::splitEdges( std::vector<unsigned in
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const unsigned int i) const
 {
-    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(m_basicTopology);
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
     const Edge &e=container->getEdge(i);
@@ -484,7 +484,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLeng
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdgeLength( const unsigned int i) const
 {
-    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(m_basicTopology);
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
     const Edge &e=container->getEdge(i);
@@ -496,11 +496,11 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdge
 template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterface<Real> &ai) const
 {
-    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(m_basicTopology);
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
     const std::vector<Edge> &ea=container->getEdgeArray();
-    const DataTypes::VecCoord& p = *topology->getDOF()->getX();
+    const typename DataTypes::VecCoord& p = *topology->getDOF()->getX();
     unsigned int i;
     for (i=0; i<ea.size(); ++i)
     {
@@ -518,10 +518,10 @@ void EdgeSetTopology<DataTypes>::init()
 template<class DataTypes>
 EdgeSetTopology<DataTypes>::EdgeSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0)
 {
-    m_topologyContainer= new EdgeSetTopologyContainer(this);
-    m_topologyModifier= new EdgeSetTopologyModifier<DataTypes>(this);
-    m_topologyAlgorithms= new EdgeSetTopologyAlgorithms<DataTypes>(this);
-    m_geometryAlgorithms= new EdgeSetGeometryAlgorithms<DataTypes>(this);
+    this->m_topologyContainer= new EdgeSetTopologyContainer(this);
+    this->m_topologyModifier= new EdgeSetTopologyModifier<DataTypes>(this);
+    this->m_topologyAlgorithms= new EdgeSetTopologyAlgorithms<DataTypes>(this);
+    this->m_geometryAlgorithms= new EdgeSetGeometryAlgorithms<DataTypes>(this);
 }
 
 
