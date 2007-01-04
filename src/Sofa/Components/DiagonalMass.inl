@@ -5,6 +5,8 @@
 #include "MassSpringLoader.h"
 #include "GL/template.h"
 #include "Common/RigidTypes.h"
+#include "Topology/EdgeSetTopology.h"
+#include "Topology/TopologyChangedEvent.h"
 
 namespace Sofa
 {
@@ -13,12 +15,96 @@ namespace Components
 {
 
 using namespace Common;
+using namespace Sofa::Core;
+
+
+template<class MassType>
+void MassPointCreationFunction(int index,
+        void* param, MassType & t,
+        const std::vector< unsigned int > &ancestors,
+        const std::vector< double >& coefs)
+{
+    t=0;
+}
+
+template< class DataTypes, class MassType>
+void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
+        void* param, Common::vector<MassType> &masses)
+{
+    DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
+    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
+    {
+        EdgeSetTopology<DataTypes> *est = dynamic_cast<Sofa::Components::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
+        assert(est!=0);
+        EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
+        const std::vector<Edge> &edgeArray=container->getEdgeArray();
+        EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
+        DataTypes::Real md=dm->getMassDensity();
+        DataTypes::Real mass;
+        unsigned int i;
+
+        for (i=0; i<edgeAdded.size(); ++i)
+        {
+            /// get the edge to be added
+            const Edge &e=edgeArray[edgeAdded[i]];
+            // compute its mass based on the mass density and the edge length
+            mass=(md*ga->computeRestEdgeLength(edgeAdded[i]))/2;
+            // added mass on its two vertices
+            masses[e.first]+=mass;
+            masses[e.second]+=mass;
+        }
+
+    }
+}
+
+template <>
+void MassEdgeCreationFunction<RigidTypes, RigidMass>(const std::vector<unsigned int> &edgeAdded,
+        void* param, Common::vector<RigidMass> &masses)
+{
+}
+template< class DataTypes, class MassType>
+void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved,
+        void* param, Common::vector<MassType> &masses)
+{
+    DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
+    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
+    {
+        EdgeSetTopology<DataTypes> *est = dynamic_cast<Sofa::Components::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
+        assert(est!=0);
+        EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
+        const std::vector<Edge> &edgeArray=container->getEdgeArray();
+        EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
+        DataTypes::Real md=dm->getMassDensity();
+        DataTypes::Real mass;
+        unsigned int i;
+
+        for (i=0; i<edgeRemoved.size(); ++i)
+        {
+            /// get the edge to be added
+            const Edge &e=edgeArray[edgeRemoved[i]];
+            // compute its mass based on the mass density and the edge length
+            mass=(md*ga->computeRestEdgeLength(edgeRemoved[i]))/2;
+            // added mass on its two vertices
+            masses[e.first]-=mass;
+            masses[e.second]-=mass;
+        }
+
+    }
+}
+
+template <>
+void MassEdgeDestroyFunction<RigidTypes, RigidMass>(const std::vector<unsigned int> &edgeRemoved,
+        void* param, Common::vector<RigidMass> &masses)
+{
+}
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
-    : f_mass( dataField(&f_mass, "mass", "values of the particles' masses") )
+    : f_mass( dataField(&f_mass, "mass", "values of the particles masses") )
+    ,m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
+    , topologyType(TOPOLOGY_UNKNOWN)
 {
-    //f_mass = addField( &masses, "mass", "values of the particles' masses");
+
 }
 
 
@@ -26,6 +112,8 @@ template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass(Core::MechanicalModel<DataTypes>* mmodel, const std::string& /*name*/)
     : Core::Mass<DataTypes>(mmodel)
     , f_mass( dataField(&f_mass, "mass", "values of the particles' masses") )
+    , m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
+    , topologyType(TOPOLOGY_UNKNOWN)
 {
 }
 
@@ -62,7 +150,7 @@ void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx)
 {
-    const VecMass& masses = f_mass.getValue();
+    const MassVector &masses= f_mass.getValue().getArray();
     for (unsigned int i=0; i<dx.size(); i++)
     {
         res[i] += dx[i] * masses[i];
@@ -72,7 +160,7 @@ void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
-    const VecMass& masses = f_mass.getValue();
+    const MassVector &masses= f_mass.getValue().getArray();
     for (unsigned int i=0; i<f.size(); i++)
     {
         a[i] = f[i] / masses[i];
@@ -82,7 +170,7 @@ void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 template <class DataTypes, class MassType>
 double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 {
-    const VecMass& masses = f_mass.getValue();
+    const MassVector &masses= f_mass.getValue().getArray();
     double e = 0;
     for (unsigned int i=0; i<masses.size(); i++)
     {
@@ -94,7 +182,7 @@ double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 template <class DataTypes, class MassType>
 double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
 {
-    const VecMass& masses = f_mass.getValue();
+    const MassVector &masses= f_mass.getValue().getArray();
     double e = 0;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -106,12 +194,83 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
     }
     return e;
 }
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::handleEvent( Event *event )
+{
+    TopologyChangedEvent *tce=dynamic_cast<TopologyChangedEvent *>(event);
+    /// test that the event is a change of topology and that it
+    if ((tce) && (tce->getTopology()== getContext()->getMainTopology()))
+    {
+        BasicTopology *topology = static_cast<BasicTopology *>(getContext()->getMainTopology());
 
+        std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
+        std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+        std::list<const TopologyChange *>::const_iterator it;
+
+        VecMass& masses = *f_mass.beginEdit();
+        masses.handleTopologyEvents(itBegin,itEnd);
+        f_mass.endEdit();
+
+
+    }
+
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::init()
+{
+    ForceField<DataTypes>::init();
+    // add the functions to handle topology changes.
+
+    VecMass& masses = *f_mass.beginEdit();
+    masses.setCreateFunction(MassPointCreationFunction<MassType>);
+    masses.setCreateEdgeFunction(MassEdgeCreationFunction<DataTypes,MassType>);
+    masses.setDestroyEdgeFunction(MassEdgeDestroyFunction<DataTypes,MassType>);
+    masses.setCreateParameter( (void *) this );
+    masses.setDestroyParameter( (void *) this );
+    f_mass.endEdit();
+    /// handle events
+    f_listening.setValue(true);
+
+    if ((f_mass.getValue().size()==0) && (getContext()->getMainTopology()!=0))
+    {
+        /// check that the topology is of type EdgeSet
+        /// \todo handle other types of topology
+        Sofa::Components::EdgeSetTopology<DataTypes> *est = dynamic_cast<Sofa::Components::EdgeSetTopology<DataTypes>*>(getContext()->getMainTopology());
+        assert(est!=0);
+        VecMass& masses = *f_mass.beginEdit();
+        topologyType=TOPOLOGY_EDGESET;
+
+        EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
+        EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
+
+        const std::vector<Edge> &ea=container->getEdgeArray();
+        // resize array
+        clear();
+        masses.resize(est->getDOFNumber());
+        unsigned int i;
+        for(i=0; i<masses.size(); ++i)
+            masses[i]=(Real)0;
+
+        Real md=m_massDensity.getValue();
+        Real mass;
+
+        for (i=0; i<ea.size(); ++i)
+        {
+            const Edge &e=ea[i];
+            mass=(md*ga->computeEdgeLength(i))/2;
+            masses[e.first]+=mass;
+            masses[e.second]+=mass;
+        }
+        f_mass.endEdit();
+
+    }
+}
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
-    const VecMass& masses = f_mass.getValue();
+    const MassVector &masses= f_mass.getValue().getArray();
 
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -197,6 +356,13 @@ double DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergy( const VecCoord& 
 
 template <>
 void DiagonalMass<RigidTypes, RigidMass>::draw();
+
+template <>
+void DiagonalMass<RigidTypes, RigidMass>::init();
+
+template <>
+void DiagonalMass<RigidTypes, RigidMass>::handleEvent( Event *event );
+
 
 } // namespace Components
 

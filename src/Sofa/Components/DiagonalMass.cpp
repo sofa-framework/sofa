@@ -16,7 +16,7 @@ template <>
 double DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergy( const VecCoord& x )
 {
     double e = 0;
-    const VecMass& masses = f_mass.getValue();
+    const MassVector &masses= f_mass.getValue().getArray();
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
@@ -28,11 +28,20 @@ double DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergy( const VecCoord& 
     }
     return e;
 }
+template <>
+void DiagonalMass<RigidTypes, RigidMass>::init()
+{
+    ForceField<RigidTypes>::init();
+}
+template <>
+void DiagonalMass<RigidTypes, RigidMass>::handleEvent( Event *event )
+{
+}
 
 template <>
 void DiagonalMass<RigidTypes, RigidMass>::draw()
 {
-    const VecMass& masses = f_mass.getValue();
+    const MassVector &masses= f_mass.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mmodel->getX();
     for (unsigned int i=0; i<x.size(); i++)
