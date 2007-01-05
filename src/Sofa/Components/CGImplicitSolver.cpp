@@ -60,6 +60,9 @@ void CGImplicitSolver::solve(double dt)
     double h = dt;
     bool printLog = f_printLog.getValue();
 
+
+    group->projectResponse(vel);          // initial velocities are projected to the constrained space
+
     // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
     group->propagateDx(vel);            // dx = v
