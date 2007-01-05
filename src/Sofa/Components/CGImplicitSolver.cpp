@@ -45,49 +45,47 @@ CGImplicitSolver::CGImplicitSolver()
 
 void CGImplicitSolver::solve(double dt)
 {
-    CGImplicitSolver* group = this;
-    MultiVector pos(group, VecId::position());
-    MultiVector vel(group, VecId::velocity());
-    //     MultiVector dx(group, VecId::dx());
-    MultiVector f(group, VecId::force());
-    MultiVector b(group, V_DERIV);
-    MultiVector p(group, V_DERIV);
-    MultiVector q(group, V_DERIV);
-    MultiVector q2(group, V_DERIV);
-    MultiVector r(group, V_DERIV);
-    MultiVector x(group, V_DERIV);
-    //MultiVector z(group, V_DERIV);
+    MultiVector pos(this, VecId::position());
+    MultiVector vel(this, VecId::velocity());
+    MultiVector f(this, VecId::force());
+    MultiVector b(this, V_DERIV);
+    MultiVector p(this, V_DERIV);
+    MultiVector q(this, V_DERIV);
+    MultiVector q2(this, V_DERIV);
+    MultiVector r(this, V_DERIV);
+    MultiVector x(this, V_DERIV);
+
     double h = dt;
     bool printLog = f_printLog.getValue();
 
 
-    group->projectResponse(vel);          // initial velocities are projected to the constrained space
+    projectResponse(vel);          // initial velocities are projected to the constrained space
 
     // compute the right-hand term of the equation system
-    group->computeForce(b);             // b = f0
-    group->propagateDx(vel);            // dx = v
-    group->computeDf(f);                // f = df/dx v
+    computeForce(b);             // b = f0
+    propagateDx(vel);            // dx = v
+    computeDf(f);                // f = df/dx v
     b.peq(f,h+f_rayleighStiffness.getValue());      // b = f0 + (h+rs)df/dx v
 
 
     if (f_rayleighMass.getValue() != 0.0)
     {
         f.clear();
-        group->addMdx(f,vel);
+        addMdx(f,vel);
         b.peq(f,-f_rayleighMass.getValue());     // b = f0 + (h+rs)df/dx v - rd M v
     }
 
 
     b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
-    group->projectResponse(b);          // b is projected to the constrained space
+    projectResponse(b);          // b is projected to the constrained space
 
     double normb = sqrt(b.dot(b));
 
 
     // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
-    group->v_clear( x );
-    group->v_eq(r,b); // initial residual
+    v_clear( x );
+    v_eq(r,b); // initial residual
 
     if( printLog )
     {
@@ -123,8 +121,8 @@ void CGImplicitSolver::solve(double dt)
         }
 
         // matrix-vector product
-        group->propagateDx(p);          // dx = p
-        group->computeDf(q);            // q = df/dx p
+        propagateDx(p);          // dx = p
+        computeDf(q);            // q = df/dx p
 
         if( printLog )
         {
@@ -143,11 +141,11 @@ void CGImplicitSolver::solve(double dt)
 
         // apply global Rayleigh damping
         if (f_rayleighMass.getValue()==0.0)
-            group->addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
+            addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
         else
         {
             q2.clear();
-            group->addMdx( q2, p);
+            addMdx( q2, p);
             q.peq(q2,(1+h*f_rayleighMass.getValue())); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
         }
         if( printLog )
@@ -157,7 +155,7 @@ void CGImplicitSolver::solve(double dt)
 
         // filter the product to take the constraints into account
         //
-        group->projectResponse(q);     // q is projected to the constrained space
+        projectResponse(q);     // q is projected to the constrained space
         if( printLog )
         {
             cerr<<"q after constraint projection : "<<q<<endl;
