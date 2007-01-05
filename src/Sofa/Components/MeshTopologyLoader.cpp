@@ -187,7 +187,6 @@ bool MeshTopologyLoader::load(const char *filename)
                         &index, &location,
                         &px, &py, &pz, &vx, &vy, &vz,
                         &mass, &elastic);
-                bool surface = (location == 's');
 
                 if (mass < 0)
                 {

@@ -58,8 +58,8 @@ void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
 }
 
 template <>
-void MassEdgeCreationFunction<RigidTypes, RigidMass>(const std::vector<unsigned int> &edgeAdded,
-        void* param, Common::vector<RigidMass> &masses)
+void MassEdgeCreationFunction<RigidTypes, RigidMass>(const std::vector<unsigned int> &,
+        void* , Common::vector<RigidMass> &)
 {
 }
 template< class DataTypes, class MassType>
@@ -93,8 +93,8 @@ void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved,
 }
 
 template <>
-void MassEdgeDestroyFunction<RigidTypes, RigidMass>(const std::vector<unsigned int> &edgeRemoved,
-        void* param, Common::vector<RigidMass> &masses)
+void MassEdgeDestroyFunction<RigidTypes, RigidMass>(const std::vector<unsigned int> &,
+        void* , Common::vector<RigidMass> &)
 {
 }
 

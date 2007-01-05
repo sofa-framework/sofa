@@ -36,7 +36,7 @@ FixedConstraint<DataTypes>::~FixedConstraint()
 {}
 
 template <class DataTypes>
-FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::addConstraint(int index)
+FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::addConstraint(unsigned int index)
 {
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
@@ -44,7 +44,7 @@ FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::addConstraint(int index
 }
 
 template <class DataTypes>
-FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::removeConstraint(int index)
+FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::removeConstraint(unsigned int index)
 {
     removeValue(*f_indices.beginEdit(),index);
     f_indices.endEdit();

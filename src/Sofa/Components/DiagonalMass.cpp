@@ -34,7 +34,7 @@ void DiagonalMass<RigidTypes, RigidMass>::init()
     ForceField<RigidTypes>::init();
 }
 template <>
-void DiagonalMass<RigidTypes, RigidMass>::handleEvent( Event *event )
+void DiagonalMass<RigidTypes, RigidMass>::handleEvent( Event * )
 {
 }
 
