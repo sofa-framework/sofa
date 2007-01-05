@@ -338,6 +338,7 @@ class BasicArrayInterface
 public:
     // Access to i-th element.
     virtual T & operator[](int i)=0;
+    virtual ~BasicArrayInterface() {}
 
 };
 /**

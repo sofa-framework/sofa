@@ -36,7 +36,7 @@ public:
     VecCoord pointArray;
     EdgeSetTopologyModifier<DataTypes> *estm;
 
-    EdgeSetTopologyLoader(EdgeSetTopologyModifier<DataTypes> *tm) : estm(tm), PointSetTopologyLoader<DataTypes>()
+    EdgeSetTopologyLoader(EdgeSetTopologyModifier<DataTypes> *tm) :PointSetTopologyLoader<DataTypes>(), estm(tm)
     {
     }
 
@@ -127,7 +127,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesWarning( std::vector<unsigne
 
 
 template<class DataTypes>
-void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const unsigned int nEdges, const std::vector<unsigned int> &indices)
+void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const unsigned int , const std::vector<unsigned int> &indices)
 {
     EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);

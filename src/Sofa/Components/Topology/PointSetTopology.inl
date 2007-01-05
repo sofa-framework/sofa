@@ -39,21 +39,7 @@ public:
     {
         pointArray.push_back(Coord((Real)px,(Real)py,(Real)pz));
     }
-    virtual void addLine(int p1, int p2)
-    {
-    }
-    virtual void addTriangle(int p1, int p2, int p3)
-    {
-    }
-    virtual void addQuad(int p1, int p2, int p3, int p4)
-    {
-    }
-    virtual void addTetra(int p1, int p2, int p3, int p4)
-    {
-    }
-    virtual void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
-    {
-    }
+
 };
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::loadPointSet(PointSetTopologyLoader<DataTypes> *loader)
@@ -308,7 +294,7 @@ PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj) 
     m_geometryAlgorithms= new PointSetGeometryAlgorithms<DataTypes>(this);
 }
 template<class DataTypes>
-PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,const PointSetTopology *pst) : object(obj)
+PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,const PointSetTopology *) : object(obj)
 {
 }
 
