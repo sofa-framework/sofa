@@ -163,15 +163,17 @@ bool MeshTopologyLoader::load(const char *filename)
         {
             fscanf(file, "%d", &totalNumMasses);
             setNbPoints(totalNumMasses);
+            npoints=totalNumMasses;
         }
         if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"nums"))
         {
             fscanf(file, "%d", &totalNumSprings);
             setNbLines(totalNumSprings);
-//		setNumSprings(totalNumSprings);
+            nlines=totalNumSprings;
+            //		setNumSprings(totalNumSprings);
         }
 
-        std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
+        //std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
 
 
 
@@ -237,7 +239,6 @@ bool MeshTopologyLoader::load(const char *filename)
                 skipToEOL(file);
             }
         }
-        fclose(file);
     }
     else
     {
