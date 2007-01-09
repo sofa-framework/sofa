@@ -25,7 +25,7 @@ void create(TriangleModel*& obj, ObjectDescription* arg)
 Creator< ObjectFactory, TriangleModel > TriangleModelClass("Triangle");
 
 TriangleModel::TriangleModel()
-    : static_(false), meshRevision(-1), mmodel(NULL), mesh(NULL)
+    : static_(false), meshRevision(-2), mmodel(NULL), mesh(NULL)
 {
 }
 

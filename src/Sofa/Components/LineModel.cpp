@@ -25,7 +25,7 @@ void create(LineModel*& obj, ObjectDescription* arg)
 Creator< ObjectFactory, LineModel > LineModelClass("Line");
 
 LineModel::LineModel()
-    : static_(false), meshRevision(-1), mmodel(NULL), mesh(NULL)
+    : static_(false), meshRevision(-2), mmodel(NULL), mesh(NULL)
 {
 }
 
