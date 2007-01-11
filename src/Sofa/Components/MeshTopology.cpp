@@ -32,7 +32,7 @@ SOFA_DECL_CLASS(MeshTopology)
 Creator<ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
 
 MeshTopology::MeshTopology()
-    : nbPoints(0), validLines(false), seqTriangles(dataField(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false), validQuads(false), validTetras(false), validCubes(false), revision(-2)
+    : nbPoints(0), validLines(false), seqTriangles(dataField(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false), validQuads(false), validTetras(false), validCubes(false), revision(0)
 {
 }
 
