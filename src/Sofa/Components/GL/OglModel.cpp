@@ -103,6 +103,7 @@ OglModel::~OglModel()
 
 void OglModel::draw()
 {
+    //std::cerr<<"	OglModel::draw()"<<std::endl;
     if (!getContext()->getShowVisualModels()) return;
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
