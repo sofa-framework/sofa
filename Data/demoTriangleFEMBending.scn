@@ -1,12 +1,5 @@
 <!-- Mechanical MassSpring Group Basic Example -->
 <Node name="root"  dt="0.05" showBehaviorModels="1" showCollisionModels="1" showMappings="1" showForceFields="1">
-	<Object type="ThreadSimulation" autoType="simpleMonoFrequency" nbThreads="2"/>
-	<Object type="CollisionPipeline" verbose="0" />
-	<Object type="BruteForceDetection" name="N2" />
-	<Object type="VoxelGridDetection" name="Voxel" min="-40" max="40" n="8" draw="0" />
-	<Object type="CollisionResponse" contact="default" />
-	<Object type="ProximityIntersection" name="Proximity" alarmDistance="0.8" contactDistance="0.5" />
-	<Object type="CollisionGroup" />
         <Object type="Gravity" gravity="0 0 1"/>
 	
 	<Node name="M1">
