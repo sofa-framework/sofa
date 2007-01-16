@@ -36,7 +36,7 @@ public:
     virtual void projectPosition(VecCoord& x)=0; ///< project x to constrained space (x models a position)
 
     virtual void applyConstraint(); // Pure virtual would be better
-    virtual void applyConstraint(VecConst& c) {};
+    virtual void applyConstraint(VecConst& /*c*/) {};
 
 protected:
     MechanicalModel<DataTypes> *mmodel;

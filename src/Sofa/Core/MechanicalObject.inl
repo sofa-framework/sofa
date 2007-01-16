@@ -842,7 +842,7 @@ void MechanicalObject<DataTypes>::setDx(VecId v)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setC(VecId v)
+void MechanicalObject<DataTypes>::setC(VecId /*v*/)
 {
     /*
         if (v.type == V_DERIV)
