@@ -56,8 +56,6 @@ Sofa/Core/BasicMapping.h
 Sofa/Core/BasicMass.h
 Sofa/Core/BasicMechanicalMapping.h
 Sofa/Core/BasicMechanicalModel.h
-Sofa/Core/BasicTopology.cpp
-Sofa/Core/BasicTopology.h
 Sofa/Core/Constraint.h
 Sofa/Core/Constraint.inl
 Sofa/Core/Context.cpp
@@ -78,5 +76,4 @@ Sofa/Core/MechanicalModel.h
 Sofa/Core/MultiVector.h
 Sofa/Core/OdeSolver.cpp
 Sofa/Core/OdeSolver.h
-Sofa/Core/TopologicalMapping.h
 Sofa/Core/Topology.h
