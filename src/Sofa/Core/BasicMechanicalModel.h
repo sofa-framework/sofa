@@ -37,6 +37,8 @@ public:
 
     virtual void resetForce() =0;//{ vOp( VecId::force() ); }
 
+    virtual void resetConstraint() =0;
+
     virtual void accumulateForce() { }
 
     virtual void accumulateDf() { }
@@ -56,6 +58,8 @@ public:
     virtual void setF(VecId v) = 0; //{}
 
     virtual void setDx(VecId v) = 0; //{}
+
+    virtual void setC(VecId v) = 0; //{}
 
     /// @}
 

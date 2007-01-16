@@ -229,6 +229,35 @@ public:
         }
     };
 
+    /*!
+     Basic Constraint applied to a single Degree Of Freedom (DOF)
+    */
+    class DOFConst
+    {
+    public:
+        /*!
+         The Construction needs the direction of the constraint and the index of the DOF
+         on which the constraint must be applied
+         This structure allows the management of sparse matrices of constraints
+        */
+        DOFConst(unsigned int index, Deriv& direction) : index(index), direction(direction) {}
+
+        //! Index of the constrained DOF
+        /*!
+         Index of the corresponding DOF in the MechanicalModel State Vectors
+        */
+        unsigned int index;
+
+        //! Direction Vector of the constraint
+        Deriv direction;
+    };
+
+    //! A Single Constraint applied to the whole state Vector
+    typedef vector<DOFConst> TConst;
+
+    //! All the Constraints applied to a state Vector
+    typedef	vector<TConst> VecConst;
+
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
 

@@ -841,6 +841,21 @@ void MechanicalObject<DataTypes>::setDx(VecId v)
     }
 }
 
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setC(VecId v)
+{
+    /*
+        if (v.type == V_DERIV)
+        {
+            this->dx = getVecDeriv(v.index);
+        }
+        else
+        {
+            std::cerr << "Invalid setC operation ("<<v<<")\n";
+        }
+    */
+}
+
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out)
@@ -867,6 +882,14 @@ void MechanicalObject<DataTypes>::resetForce()
     VecDeriv& f= *getF();
     for( unsigned i=0; i<f.size(); ++i )
         f[i] = Deriv();
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::resetConstraint()
+{
+    VecConst& c= *getC();
+    c.clear();
 }
 
 /*

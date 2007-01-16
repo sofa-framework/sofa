@@ -30,6 +30,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::TConst TConst;
+    typedef typename DataTypes::VecConst VecConst;
 
 protected:
     VecCoord* x;
@@ -40,6 +42,11 @@ protected:
     VecDeriv* v0;
     VecDeriv* internalForces;
     VecDeriv* externalForces;
+
+    // Constraints stored in the Mechanical State
+    // The storage is a SparseMatrix
+    // Each constraint (Type TConst) contains the index of the related DOF
+    VecConst *c;
 
     double translation[3];
     double scale;
@@ -75,6 +82,7 @@ public:
     VecDeriv* getV()  { f_V->beginEdit(); return v;  }
     VecDeriv* getF()  { return f;  }
     VecDeriv* getDx() { return dx; }
+    VecConst* getC() { return c;}
 
     const VecCoord* getX()  const { return x;  }
     const VecCoord* getX0()  const { return x0;  }
@@ -82,6 +90,7 @@ public:
     const VecDeriv* getV0()  const { return v0;  }
     const VecDeriv* getF()  const { return f;  }
     const VecDeriv* getDx() const { return dx; }
+    const VecConst* getC() const { return c; }
 
     virtual void init();
 
@@ -163,7 +172,11 @@ public:
 
     virtual void setDx(VecId v);
 
+    virtual void setC(VecId v);
+
     virtual void resetForce();
+
+    virtual void resetConstraint();
 
     /// @}
 

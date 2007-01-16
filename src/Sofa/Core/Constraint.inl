@@ -46,6 +46,13 @@ void Constraint<DataTypes>::projectPosition()
         projectPosition(*mmodel->getX());
 }
 
+template<class DataTypes>
+void Constraint<DataTypes>::applyConstraint()
+{
+    if (mmodel)
+        applyConstraint(*mmodel->getC());
+}
+
 } // namespace Core
 
 } // namespace Sofa
