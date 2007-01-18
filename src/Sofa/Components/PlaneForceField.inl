@@ -71,14 +71,75 @@ double PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 }
 
 
+template<class DataTypes>
+void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
+{
+    Deriv v;
+    v = planeNormal.cross(axe);
+    v.normalize();
+
+    planeNormal = planeNormal * cos( angle ) + v * sin( angle );
+}
+
+
 
 template<class DataTypes>
 void PlaneForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
+    draw2();
+}
+
+
+template<class DataTypes>
+void PlaneForceField<DataTypes>::draw2(float size)
+{
+    if (!getContext()->getShowForceFields()) return;
+
     const VecCoord& p1 = *this->mmodel->getX();
-    glDisable(GL_LIGHTING);
+
+
+
+
+    // un vecteur quelconque du plan
+    Deriv v1;
+    if( 0.0 != planeNormal[0] ) v1 = Deriv((-planeNormal[2]-planeNormal[1])/planeNormal[0], 1.0, 1.0);
+    else if ( 0.0 != planeNormal[1] ) v1 = Deriv(1.0, (-planeNormal[0]-planeNormal[2])/planeNormal[1],1.0);
+    else if ( 0.0 != planeNormal[2] ) v1 = Deriv(1.0, 1.0, (-planeNormal[0]-planeNormal[1])/planeNormal[2]);
+    v1.normalize();
+    // un deuxiement vecteur quelconque du plan orthogonal au premier
+    Deriv v2;
+    v2 = v1.cross(planeNormal);
+    v2.normalize();
+
+    Coord center = planeNormal*planeD;
+    Coord q0 = center-v1*size-v2*size;
+    Coord q1 = center+v1*size-v2*size;
+    Coord q2 = center+v1*size+v2*size;
+    Coord q3 = center-v1*size+v2*size;
+
+// 	glEnable(GL_LIGHTING);
+    glEnable(GL_CULL_FACE);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glCullFace(GL_FRONT);
+
+    glColor3f(_color.getValue()[0],_color.getValue()[1],_color.getValue()[2]);
+
+
+
+    glBegin(GL_QUADS);
+    glVertex3d(q0[0],q0[1],q0[2]);
+    glVertex3d(q1[0],q1[1],q1[2]);
+    glVertex3d(q2[0],q2[1],q2[2]);
+    glVertex3d(q3[0],q3[1],q3[2]);
+    glEnd();
+
+
+    glDisable(GL_CULL_FACE);
+
     glColor4f(1,0,0,1);
+    glDisable(GL_LIGHTING);
+    // lignes pour les points passés dessous
     glBegin(GL_LINES);
     for (unsigned int i=0; i<p1.size(); i++)
     {
@@ -92,21 +153,26 @@ void PlaneForceField<DataTypes>::draw()
         }
     }
     glEnd();
+
+
+
     /*
     glPointSize(1);
     glColor4f(0,1,0,1);
     glBegin(GL_POINTS);
     for (unsigned int i=0; i<p1.size(); i++)
     {
-    	Real d = p1[i]*planeNormal-planeD;
-    	Coord p2 = p1[i];
-    	p2 += planeNormal*(-d);
-    	if (d>=0)
-    		glVertex3d(p2[0],p2[1],p2[2]);
+    Real d = p1[i]*planeNormal-planeD;
+    Coord p2 = p1[i];
+    p2 += planeNormal*(-d);
+    if (d>=0)
+    glVertex3d(p2[0],p2[1],p2[2]);
     }
     glEnd();
     */
 }
+
+
 
 
 } // namespace Components

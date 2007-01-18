@@ -30,11 +30,17 @@ protected:
 
     Real stiffness;
 
+
     std::vector<unsigned int> contacts;
 
 public:
+
+
+    Common::DataField<Coord> _color;
+
     PlaneForceField(Core::MechanicalModel<DataTypes>* object=NULL, const std::string& /*name*/="")
         : Core::ForceField<DataTypes>(object), planeD(0), stiffness(500)
+        , _color(dataField(&_color, Coord(0,.5,.2), "color", "plane color"))
     {
     }
 
@@ -52,6 +58,8 @@ public:
         stiffness = stiff;
     }
 
+    void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
+
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
@@ -62,6 +70,7 @@ public:
 
     // -- VisualModel interface
     void draw();
+    void draw2(float size=1000.0f);
     void initTextures() { }
     void update() { }
 };
