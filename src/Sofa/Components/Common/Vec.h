@@ -376,7 +376,7 @@ public:
     /// Euclidean norm.
     real norm() const
     {
-        return sqrt(norm2());
+        return (real)sqrtf((real)norm2());
     }
 
     /// Normalize the vector.
