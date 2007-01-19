@@ -155,6 +155,15 @@ bool MeshTopology::load(const char* filename)
     return true;
 }
 
+
+void MeshTopology::addPoint(double px, double py, double pz)
+{
+    seqPoints.push_back(make_array(px, py, pz));
+    if (seqPoints.size() > (unsigned)nbPoints)
+        nbPoints = seqPoints.size();
+
+}
+
 void MeshTopology::addLine( int a, int b )
 {
     seqLines.push_back( Line(a,b) );

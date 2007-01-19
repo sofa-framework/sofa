@@ -73,6 +73,7 @@ public:
     virtual double getPZ(int i) const;
 
     // for procedural creation without file loader
+    void addPoint(double px, double py, double pz);
     void addLine( int a, int b );
     void addTriangle( int a, int b, int c );
     void addTetrahedron( int a, int b, int c, int d );
