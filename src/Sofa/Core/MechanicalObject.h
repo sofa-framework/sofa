@@ -30,7 +30,6 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::TConst TConst;
     typedef typename DataTypes::VecConst VecConst;
 
 protected:

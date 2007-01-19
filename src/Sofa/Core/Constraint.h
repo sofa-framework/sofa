@@ -18,7 +18,6 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::TConst TConst;
     typedef typename DataTypes::VecConst VecConst;
 
     Constraint(MechanicalModel<DataTypes> *mm = NULL);

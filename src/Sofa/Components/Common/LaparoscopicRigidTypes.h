@@ -206,34 +206,23 @@ public:
         }
     };
 
-    /*!
-     Basic Constraint applied to a single Degree Of Freedom (DOF)
-    */
-    class DOFConst
+    template <class T>
+    class SparseData
     {
     public:
-        /*!
-         The Construction needs the direction of the constraint and the index of the DOF
-         on which the constraint must be applied
-         This structure allows the management of sparse matrices of constraints
-        */
-        DOFConst(unsigned int index, Deriv& direction) : index(index), direction(direction) {}
-
-        //! Index of the constrained DOF
-        /*!
-         Index of the corresponding DOF in the MechanicalModel State Vectors
-        */
+        SparseData(unsigned int _index, T& _data): index(_index), data(_data) {};
         unsigned int index;
-
-        //! Direction Vector of the constraint
-        Deriv direction;
+        T data;
     };
 
-    //! A Single Constraint applied to the whole state Vector
-    typedef vector<DOFConst> TConst;
+    typedef SparseData<Coord> SparseCoord;
+    typedef SparseData<Deriv> SparseDeriv;
+
+    typedef vector<SparseCoord> SparseVecCoord;
+    typedef vector<SparseDeriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
-    typedef	vector<TConst> VecConst;
+    typedef	vector<SparseVecDeriv> VecConst;
 
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;

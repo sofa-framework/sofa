@@ -19,7 +19,6 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::TConst TConst;
     typedef typename DataTypes::VecConst VecConst;
 
     virtual ~MechanicalModel() { }
