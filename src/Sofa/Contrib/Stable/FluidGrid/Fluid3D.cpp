@@ -28,6 +28,7 @@ Fluid3D::Fluid3D()
       f_ny ( field(&f_ny, &ny, "ny", "grid size along y axis") ),
       f_nz ( field(&f_nz, &nz, "nz", "grid size along z axis") ),
       f_cellwidth ( field(&f_cellwidth, &cellwidth, "cellwidth", "width of each cell") ),
+      f_center ( dataField(&f_center, vec3(0,0,0), "center", "position of grid center") ),
       f_height ( dataField(&f_height, 5.0f, "height", "initial fluid height") ),
       f_dir ( dataField(&f_dir, vec3(0,1,0), "dir", "initial fluid surface normal") ),
       f_tstart ( dataField(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
@@ -74,7 +75,8 @@ void Fluid3D::updatePosition(double dt)
 void Fluid3D::draw()
 {
     glPushMatrix();
-    glTranslatef(-(nx-1)*cellwidth/2,-(ny-1)*cellwidth/2,-(nz-1)*cellwidth/2);
+    vec3 center = f_center.getValue();
+    glTranslatef(center[0]-(nx-1)*cellwidth/2,center[1]-(ny-1)*cellwidth/2,center[2]-(nz-1)*cellwidth/2);
     glScalef(cellwidth,cellwidth,cellwidth);
     //if (getContext()->getShowBehaviorModels())
     {
@@ -386,8 +388,9 @@ void Fluid3D::update()
 
 bool Fluid3D::addBBox(double* minBBox, double* maxBBox)
 {
+    vec3 center = f_center.getValue();
     double size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, (nz-1)*cellwidth };
-    double pos[3] = { -size[0]/2, -size[1]/2, -size[2]/2 };
+    double pos[3] = { center[0]-size[0]/2, center[1]-size[1]/2, center[2]-size[2]/2 };
     for (int c=0; c<3; c++)
     {
         if (minBBox[c] > pos[c]        ) minBBox[c] = pos[c];

@@ -187,12 +187,13 @@ void Grid3D::step(Grid3D* prev, Grid3D* temp, real dt, real diff)
 
     step_init(prev, temp, dt, diff);      // init fluid obstacles
     //step_particles(prev, temp, dt, diff); // init particles
-    step_levelset(prev, temp, dt, diff); // advance levelset
+    //step_levelset(prev, temp, dt, diff); // advance levelset
     step_forces(prev, temp, dt, diff);    // init fluid u with prev u, particles and gravity
     step_surface(prev, temp, dt, diff);   // calc fluid u at air/fluid surfaces
     step_advect(prev, temp, dt, diff);    // advance fluid u to temp u
     step_diffuse(prev, temp, dt, diff);   // calc diffusion of temp u to fluid u
     step_project(prev, temp, dt, diff);   // calc pressure and project fluid u to divergent free field. use temp as temporary scalar fields
+    step_levelset(prev, temp, dt, diff); // advance levelset
 
     // And that should be it!
 
@@ -202,7 +203,7 @@ void Grid3D::step(Grid3D* prev, Grid3D* temp, real dt, real diff)
 //////////////////////////////////////////////////////////////////
 //// Init grid with obstacles
 
-void Grid3D::step_init(const Grid3D* /*prev*/, Grid3D* /*temp*/, real /*dt*/, real /*diff*/)
+void Grid3D::step_init(const Grid3D* prev, Grid3D* /*temp*/, real /*dt*/, real /*diff*/)
 {
     //std::cout << "STEP: Obstacles\n";
     // Currently: only borders are obstacle
@@ -221,6 +222,8 @@ void Grid3D::step_init(const Grid3D* /*prev*/, Grid3D* /*temp*/, real /*dt*/, re
 
     FOR_ALL_CELLS(fdata,
     {
+        //levelset[ind] = 5;
+        levelset[ind] = prev->levelset[ind];
         if (x<bsize || y<bsize || z<bsize || x>=nx-bsize || y>=ny-bsize || z>=nz-bsize
         //    || (x>=x0 && x<x1 && y>=y0 && y<y1)
         || (obs!=NULL && ((obs[(z)*plsize+(y)*lnsize+((x)>>3)])&(1<<((x)&7))))
@@ -230,9 +233,11 @@ void Grid3D::step_init(const Grid3D* /*prev*/, Grid3D* /*temp*/, real /*dt*/, re
         }
         else
         {
-            fdata[ind].type = PART_EMPTY;
+            if (levelset[ind] < 0)
+                fdata[ind].type = PART_FULL;
+            else
+                fdata[ind].type = PART_EMPTY;
         }
-        levelset[ind] = 5;
     });
 }
 
@@ -256,11 +261,13 @@ void Grid3D::step_levelset(Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
         if (rabs(prev->levelset[ind]) < 5)
         {
             vec3 xn ( (real)x, (real)y, (real)z );
-            vec3 un = prev->interp(xn);
+            //vec3 un = prev->interp(xn);
+            vec3 un = interp(xn);
             vec3 xn1 = xn - un*dt; // xn1_2 at this time
 
             // TODO: Check if xn1_2 is not in empty cell
-            un = (un + prev->interp(xn1))*0.5;
+            //un = (un + prev->interp(xn1))*0.5;
+            un = (un + interp(xn1))*0.5;
             xn1 = xn - un*dt;
 
             temp->levelset[ind] = prev->getlevelset(xn1);
@@ -438,6 +445,11 @@ void Grid3D::step_levelset(Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
             levelset[ind] = -levelset[ind];
             if (fdata[ind].type == PART_EMPTY)
                 fdata[ind].type = PART_FULL;
+        }
+        else
+        {
+            if (fdata[ind].type == PART_FULL)
+                fdata[ind].type = PART_EMPTY;
         }
     });
 }
@@ -888,9 +900,9 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
     // Finally calculate projection to divergence free velocity
 
     // u_new = u~ - dt/P Dp where P = fluid density and p = pressure, Dp = (dp/dx,dp/dy,dp/dz)
-    // D.u_new = 0  =>  -dx²D²p = -P/dt dx²D.u~
-    //   where  -dx²D²p = 6p(i,j,k)-p(i-1,j,k)-p(i,j-1,k)-p(i,j,k-1)-p(i+1,j,k)-p(i,j+1,k)-p(i,j,k+1)
-    //     and  -P/dt dx²D.u~ = -P/dt dx ( u~(i+1,j,k) - u~(i,j,k) + v~(i,j+1,k) - v~(i,j,k) + w~(i,j,k+1) - w~(i,j,k) )
+    // D.u_new = 0  =>  -dxDp = -P/dt dxD.u~
+    //   where  -dxDp = 6p(i,j,k)-p(i-1,j,k)-p(i,j-1,k)-p(i,j,k-1)-p(i+1,j,k)-p(i,j+1,k)-p(i,j,k+1)
+    //     and  -P/dt dxD.u~ = -P/dt dx ( u~(i+1,j,k) - u~(i,j,k) + v~(i,j+1,k) - v~(i,j,k) + w~(i,j,k+1) - w~(i,j,k) )
     // Ap = b where A is a diagonal matrix plus neighbour coefficients at -1
 
     memset(temp->fdata,0,temp->ncell*sizeof(Cell));

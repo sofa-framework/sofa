@@ -28,6 +28,7 @@ public:
 protected:
     Common::DataField<Coord> _center;
     Common::DataField<Deriv> _size;
+    Common::DataField<Real> _speed;
 
     Common::DataField<Real> _stiffness;
 
@@ -39,6 +40,7 @@ public:
         , _center(dataField(&_center, Coord(0,0,0), "center", "box center"))
         ,_size(dataField(&_size, Deriv(1,1,1), "size", "box size"))
         , _stiffness(dataField(&_stiffness, (Real)500.0, "stiffness", "penality force stiffness"))
+        , _speed(dataField(&_speed, (Real)0.01, "speed", "rotation speed"))
     {
     }
 
@@ -58,13 +60,14 @@ public:
         }
 
         Deriv diff = _center.getValue() - _size.getValue() * .5;
+        Deriv diff2 = - _center.getValue() - _size.getValue() * .5;
 
         _planes[0]->setPlane( Deriv( 0, 1, 0), diff[1]  ); // sud
-        _planes[1]->setPlane( Deriv( 0, -1, 0), diff[1]  ); // nord
-        _planes[2]->setPlane( Deriv( -1, 0, 0), diff[0]  ); // ouest
+        _planes[1]->setPlane( Deriv( 0, -1, 0), diff2[1]  ); // nord
+        _planes[2]->setPlane( Deriv( -1, 0, 0), diff2[0]  ); // ouest
         _planes[3]->setPlane( Deriv( 1, 0, 0), diff[0]  ); // est
         _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
-        _planes[5]->setPlane( Deriv( 0, 0, -1), diff[2]  ); //devant
+        _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
 
         _planes[0]->_color.setValue( Coord( 1,0,0 ) );
         _planes[1]->_color.setValue( Coord( 0,1,0 ) );
@@ -86,6 +89,7 @@ public:
     void draw();
     void initTextures() { }
     void update() { }
+    bool addBBox(double* minBBox, double* maxBBox);
 };
 
 } // namespace Components

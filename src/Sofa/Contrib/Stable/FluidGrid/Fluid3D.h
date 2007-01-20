@@ -36,6 +36,7 @@ public:
     Sofa::Components::Common::Field<int> f_ny;
     Sofa::Components::Common::Field<int> f_nz;
     Sofa::Components::Common::Field<real> f_cellwidth;
+    Sofa::Components::Common::DataField<vec3> f_center;
     Sofa::Components::Common::DataField<real> f_height;
     Sofa::Components::Common::DataField<vec3> f_dir;
     Sofa::Components::Common::DataField<real> f_tstart;

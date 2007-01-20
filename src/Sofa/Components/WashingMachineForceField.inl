@@ -22,7 +22,7 @@ void WashingMachineForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord&
     for(int i=0; i<6; ++i)
     {
         _planes[i]->addForce(f1,p1,v1);
-        _planes[i]->rotate(Deriv(1,0,0),.01);
+        _planes[i]->rotate(Deriv(1,0,0),_speed.getValue());
     }
 }
 
@@ -47,11 +47,24 @@ double WashingMachineForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 template<class DataTypes>
 void WashingMachineForceField<DataTypes>::draw()
 {
+    if (!getContext()->getShowForceFields()) return;
     for(int i=0; i<6; ++i)
 // 				_planes[i]->draw2(_size.getValue()[0]);
         _planes[i]->draw();
 }
 
+template<class DataTypes>
+bool WashingMachineForceField<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+{
+    Deriv corner0 = _center.getValue() - _size.getValue() * .5;
+    Deriv corner1 = _center.getValue() + _size.getValue() * .5;
+    for (int c=0; c<3; c++)
+    {
+        if (minBBox[c] > corner0[c]) minBBox[c] = corner0[c];
+        if (maxBBox[c] < corner1[c]) maxBBox[c] = corner1[c];
+    }
+    return true;
+}
 
 } // namespace Components
 
