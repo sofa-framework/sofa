@@ -340,7 +340,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
-    if (getX()->size() != (int)vsize || getV()->size() != (int)vsize)
+    if (getX()->size() != (std::size_t)vsize || getV()->size() != (std::size_t)vsize)
     {
         // X and/or V where user-specified
         resize(getX()->size()>getV()->size()?getX()->size():getV()->size());
