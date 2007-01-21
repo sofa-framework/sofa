@@ -66,6 +66,7 @@ Grid3D::Grid3D()
       fdata(NULL), pressure(NULL), levelset(NULL),
       t(0), tend(60),
       max_pressure(0.0),
+      gravity(0,-5,0),
       fmm_status(NULL),
       fmm_heap(NULL),
       fmm_heap_size(0)
@@ -605,7 +606,7 @@ void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*d
     // Carlson Thesis page 23
 
     //vec3 f(0,0,-9.81*dt/scale);
-    vec3 f(0,-5*dt,0);
+    vec3 f = gravity * dt; //(0,-5*dt,0);
 
     FOR_INNER_CELLS(fdata,
     {

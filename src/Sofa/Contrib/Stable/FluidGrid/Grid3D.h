@@ -55,6 +55,8 @@ public:
     real max_pressure;
     Cell bcell;
 
+    vec3 gravity;
+
     static const unsigned long* obstacles;
 
     Grid3D();
