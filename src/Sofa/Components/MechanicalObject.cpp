@@ -51,6 +51,7 @@ void create(MechanicalObject<DataTypes>*& obj, ObjectDescription* arg)
     }
     if (obj!=NULL)
     {
+        obj->parseFields(arg->getAttributeMap() );
         if (arg->getAttribute("scale")!=NULL)
         {
             obj->applyScale(atof(arg->getAttribute("scale")));
@@ -63,7 +64,6 @@ void create(MechanicalObject<DataTypes>*& obj, ObjectDescription* arg)
             arg->removeAttribute("dy");
             arg->removeAttribute("dz");
         }
-        obj->parseFields(arg->getAttributeMap() );
     }
 }
 }

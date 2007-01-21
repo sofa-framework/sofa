@@ -23,11 +23,11 @@ void create(SphereModel*& obj, ObjectDescription* arg)
         if (arg->getAttribute("filename"))
             obj->load(arg->getAttribute("filename"));
         obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
+        obj->parseFields(arg->getAttributeMap() );
         if (arg->getAttribute("scale")!=NULL)
             obj->applyScale(atof(arg->getAttribute("scale","1.0")));
         if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
             obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-        obj->parseFields(arg->getAttributeMap() );
     }
 }
 
