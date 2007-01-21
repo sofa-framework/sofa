@@ -313,6 +313,7 @@ void MeshTopology::invalidate()
     validTetras = false;
     validQuads = false;
     ++revision;
+    std::cout << "MeshTopology::invalidate()"<<std::endl;
 }
 
 } // namespace Components

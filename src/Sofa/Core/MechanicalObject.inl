@@ -340,20 +340,27 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
-    Topology* topo = dynamic_cast<Topology*>(this->getContext()->getTopology());
-    if (topo!=NULL && topo->hasPos())
+    if (getX()->size() != (int)vsize || getV()->size() != (int)vsize)
     {
-        int nbp = topo->getNbPoints();
-        std::cout<<"Setting "<<nbp<<" points from topology."<<std::endl;
-        this->resize(nbp);
-        for (int i=0; i<nbp; i++)
+        // X and/or V where user-specified
+        resize(getX()->size()>getV()->size()?getX()->size():getV()->size());
+    }
+    else
+    {
+        Topology* topo = dynamic_cast<Topology*>(this->getContext()->getTopology());
+        if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
         {
-            //DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
-            DataTypes::set
-            ((*getX())[i], topo->getPX(i)*scale+translation[0], topo->getPY(i)*scale+translation[1], topo->getPZ(i)*scale+translation[2]);
+            int nbp = topo->getNbPoints();
+            std::cout<<"Setting "<<nbp<<" points from topology."<<std::endl;
+            this->resize(nbp);
+            for (int i=0; i<nbp; i++)
+            {
+                //DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
+                DataTypes::set
+                ((*getX())[i], topo->getPX(i)*scale+translation[0], topo->getPY(i)*scale+translation[1], topo->getPZ(i)*scale+translation[2]);
+            }
         }
     }
-
     // Save initial state
     this->x0 = new VecCoord;
     *this->x0 = *x;

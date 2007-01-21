@@ -27,6 +27,7 @@ void create(SphereModel*& obj, ObjectDescription* arg)
             obj->applyScale(atof(arg->getAttribute("scale","1.0")));
         if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
             obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+        obj->parseFields(arg->getAttributeMap() );
     }
 }
 

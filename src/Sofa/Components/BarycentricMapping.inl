@@ -708,6 +708,7 @@ void BarycentricMapping<BaseMapping>::draw()
     glEnd();
     const InVecCoord& in = *this->fromModel->getX();
     if (mapper!=NULL) mapper->draw(out, in);
+    glPointSize(1);
 }
 
 template <class BaseMapping>
