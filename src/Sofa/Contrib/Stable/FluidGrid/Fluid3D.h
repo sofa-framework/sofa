@@ -62,6 +62,8 @@ public:
 
     virtual void draw();
 
+    virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
+
     virtual void initTextures() {}
 
     virtual void update();

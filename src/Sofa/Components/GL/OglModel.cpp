@@ -584,8 +584,10 @@ void OglModel::initTextures()
     }
 }
 
-void OglModel::exportOBJ(std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex)
+void OglModel::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex)
 {
+    *out << "g "<<name<<"\n";
+
     if (mtl != NULL) // && !material.name.empty())
     {
         std::string name; // = material.name;

@@ -192,6 +192,28 @@ void Fluid3D::draw()
     glPopMatrix();
 }
 
+void Fluid3D::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex)
+{
+    *out << "g "<<name<<"\n";
+
+    for(unsigned i=0; i<points.size(); ++i)
+        *out << "v "<< std::fixed << points[i].p[0]<<' '<< std::fixed <<points[i].p[1]<<' '<< std::fixed <<points[i].p[2]<<'\n';
+
+
+    for(unsigned i=0; i<points.size(); ++i)
+        *out << "vn "<< std::fixed << points[i].n[0]<<' '<< std::fixed <<points[i].n[1]<<' '<< std::fixed <<points[i].n[2]<<'\n';
+
+
+    for (unsigned int i = 0; i < facets.size() ; i++)
+        *out << "f "<<facets[i].p[0]+1<<"//"<<facets[i].p[0]+1<<' '<< facets[i].p[1]+1<<"//"<<facets[i].p[1]+1<<' '<< facets[i].p[2]+1<<"//"<<facets[i].p[2]+1<<'\n';
+
+
+    *out << std::endl;
+
+    vindex+=points.size();
+    nindex+=points.size();
+}
+
 void Fluid3D::update()
 {
     points.clear();
