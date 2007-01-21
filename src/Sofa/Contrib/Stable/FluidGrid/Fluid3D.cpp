@@ -192,7 +192,7 @@ void Fluid3D::draw()
     glPopMatrix();
 }
 
-void Fluid3D::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex)
+void Fluid3D::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, int& vindex, int& nindex, int& /*tindex*/)
 {
     *out << "g "<<name<<"\n";
 
