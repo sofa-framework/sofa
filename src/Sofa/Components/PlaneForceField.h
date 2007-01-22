@@ -40,7 +40,7 @@ public:
 
     PlaneForceField(Core::MechanicalModel<DataTypes>* object=NULL, const std::string& /*name*/="")
         : Core::ForceField<DataTypes>(object), planeD(0), stiffness(500)
-        , _color(dataField(&_color, Coord(0,.5,.2), "color", "plane color"))
+        , _color(dataField(&_color, Coord(0,.5f,.2f), "color", "plane color"))
     {
     }
 

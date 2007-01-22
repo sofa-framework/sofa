@@ -123,7 +123,7 @@ void PlaneForceField<DataTypes>::draw2(float size)
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glCullFace(GL_FRONT);
 
-    glColor3f(_color.getValue()[0],_color.getValue()[1],_color.getValue()[2]);
+    glColor3d(_color.getValue()[0],_color.getValue()[1],_color.getValue()[2]);
 
 
 

@@ -100,7 +100,27 @@ inline T rlerp(const T& a, const T& b, float f)
 }
 
 template<class T>
-inline const T SQR(const T a)
+inline T rsqrt(const T& a)
+{
+    return (T)sqrtf((float)a);
+}
+
+inline double rsqrt(const double& a)
+{
+#if defined(__GNUC__)
+    return sqrt(a);
+#else
+    return (double)sqrtl((long double)a);
+#endif
+}
+
+inline long double rsqrt(const long double& a)
+{
+    return sqrtl(a);
+}
+
+template<class T>
+inline const T SQR(const T& a)
 {
     return a*a;
 }

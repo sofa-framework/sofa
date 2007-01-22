@@ -3,7 +3,7 @@
 
 #include "fixed_array.h"
 #include "static_assert.h"
-#include <math.h>
+#include "rmath.h"
 #include <functional>
 //#define BOOST_STATIC_ASSERT(a)
 
@@ -376,7 +376,7 @@ public:
     /// Euclidean norm.
     real norm() const
     {
-        return (real)sqrtf((real)norm2());
+        return rsqrt(norm2());
     }
 
     /// Normalize the vector.
