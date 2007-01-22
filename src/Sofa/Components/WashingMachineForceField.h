@@ -38,9 +38,9 @@ public:
     WashingMachineForceField(Core::MechanicalModel<DataTypes>* object=NULL, const std::string& /*name*/="")
         : Core::ForceField<DataTypes>(object)
         , _center(dataField(&_center, Coord(0,0,0), "center", "box center"))
-        ,_size(dataField(&_size, Deriv(1,1,1), "size", "box size"))
-        , _stiffness(dataField(&_stiffness, (Real)500.0, "stiffness", "penality force stiffness"))
+        , _size(dataField(&_size, Deriv(1,1,1), "size", "box size"))
         , _speed(dataField(&_speed, (Real)0.01, "speed", "rotation speed"))
+        , _stiffness(dataField(&_stiffness, (Real)500.0, "stiffness", "penality force stiffness"))
     {
     }
 
