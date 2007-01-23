@@ -675,6 +675,21 @@ void OglModel::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl,
         }
         *out << '\n';
     }
+    for (unsigned int i = 0; i < quads.size() ; i++)
+    {
+        *out << "f";
+        for (int j=0; j<4; j++)
+        {
+            int i0 = quads[i][j];
+            int i_p = vertPosIdx.empty() ? i0 : vertPosIdx[i0];
+            int i_n = vertNormIdx.empty() ? i0 : vertNormIdx[i0];
+            if (vtexcoords.empty())
+                *out << ' ' << i_p+vindex+1 << "//" << i_n+nindex+1;
+            else
+                *out << ' ' << i_p+vindex+1 << '/' << i0+tindex+1 << '/' << i_n+nindex+1;
+        }
+        *out << '\n';
+    }
     *out << std::endl;
     vindex+=nbv;
     nindex+=nbn;

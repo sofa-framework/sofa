@@ -44,13 +44,13 @@ void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
     Real d = stiffness.getValue() * dampingRatio.getValue();
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
-    cout<<"=================================TriangleBendingSprings<DataTypes>::addSpring "<<a<<", "<<b<<endl;
+    //cout<<"=================================TriangleBendingSprings<DataTypes>::addSpring "<<a<<", "<<b<<endl;
 }
 
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b, unsigned c, std::map<IndexPair, unsigned>& edgeMap)
 {
-    cout<<"=================================TriangleBendingSprings<DataTypes>::registerTriangle "<<a<<", "<<b<<", "<<c<<endl;
+    //cout<<"=================================TriangleBendingSprings<DataTypes>::registerTriangle "<<a<<", "<<b<<", "<<c<<endl;
     using namespace std;
     {
         IndexPair edge(a<b ? a : b,a<b ? b : a);
