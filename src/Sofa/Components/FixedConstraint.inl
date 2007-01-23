@@ -24,7 +24,6 @@ template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
     : Core::Constraint<DataTypes>(NULL)
     , f_indices( dataField(&f_indices,"indices","Indices of the fixed points") )
-    , endTime( dataField(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value. Une a negative value for infinite constraints") )
 {}
 
 
@@ -33,19 +32,11 @@ FixedConstraint<DataTypes>::FixedConstraint(Core::MechanicalModel<DataTypes>
         * mmodel)
     : Core::Constraint<DataTypes>(mmodel)
     , f_indices( dataField(&f_indices,"indices","Indices of the fixed points") )
-    , endTime( dataField(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value. Une a negative value for infinite constraints") )
 {}
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::~FixedConstraint()
 {}
-
-template <class DataTypes>
-bool   FixedConstraint<DataTypes>::isActive() const
-{
-    if( endTime.getValue()<0 ) return true;
-    return endTime.getValue()>getContext()->getTime();
-}
 
 template <class DataTypes>
 FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::addConstraint(unsigned int index)
@@ -81,7 +72,6 @@ void FixedConstraint<DataTypes>::init()
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
-    if( !isActive() ) return;
     //std::cerr<<"FixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<endl;
     const SetIndexArray & indices = f_indices.getValue().getArray();
     for (SetIndex::const_iterator it = indices.begin();
@@ -96,7 +86,6 @@ void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseMatrix *mat, unsigned int &offset)
 {
-    if( !isActive() ) return;
     std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
@@ -136,7 +125,6 @@ void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseMat
 template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseVector *vect, unsigned int &offset)
 {
-    if( !isActive() ) return;
     std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
     const SetIndexArray & indices = f_indices.getValue().getArray();

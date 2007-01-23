@@ -11,13 +11,21 @@ namespace Core
 
 template<class DataTypes>
 Constraint<DataTypes>::Constraint(MechanicalModel<DataTypes> *mm)
-    : mmodel(mm)
+    :  endTime( dataField(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value. Une a negative value for infinite constraints") )
+    , mmodel(mm)
 {
 }
 
 template<class DataTypes>
 Constraint<DataTypes>::~Constraint()
 {
+}
+
+template <class DataTypes>
+bool   Constraint<DataTypes>::isActive() const
+{
+    if( endTime.getValue()<0 ) return true;
+    return endTime.getValue()>getContext()->getTime();
 }
 
 template<class DataTypes>
@@ -30,18 +38,21 @@ void Constraint<DataTypes>::init()
 template<class DataTypes>
 void Constraint<DataTypes>::projectResponse()
 {
+    if( !isActive() ) return;
     if (mmodel)
         projectResponse(*mmodel->getDx());
 }
 template<class DataTypes>
 void Constraint<DataTypes>::projectVelocity()
 {
+    if( !isActive() ) return;
     if (mmodel)
         projectVelocity(*mmodel->getV());
 }
 template<class DataTypes>
 void Constraint<DataTypes>::projectPosition()
 {
+    if( !isActive() ) return;
     if (mmodel)
         projectPosition(*mmodel->getX());
 }
@@ -49,6 +60,7 @@ void Constraint<DataTypes>::projectPosition()
 template<class DataTypes>
 void Constraint<DataTypes>::applyConstraint()
 {
+    if( !isActive() ) return;
     if (mmodel)
         applyConstraint(*mmodel->getC());
 }

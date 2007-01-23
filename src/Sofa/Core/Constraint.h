@@ -10,10 +10,14 @@ namespace Sofa
 namespace Core
 {
 
+using Components::Common::DataField;
+
+
 template<class DataTypes>
 class Constraint : public BasicConstraint
 {
 public:
+    typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -23,6 +27,9 @@ public:
     Constraint(MechanicalModel<DataTypes> *mm = NULL);
 
     virtual ~Constraint();
+
+    DataField<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    bool isActive() const; ///< if false, the constraint does nothing
 
     virtual void init();
 

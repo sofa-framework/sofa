@@ -31,7 +31,6 @@ template <class DataTypes>
 class FixedConstraint : public Core::Constraint<DataTypes>, public Abstract::VisualModel
 {
 public:
-    typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -44,13 +43,11 @@ protected:
     //SetIndex indices;
 
     FixedConstraintInternalData<DataTypes> data;
-    bool isActive() const; ///< if false, the constraint does nothing
 
 public:
     FixedConstraint();
     virtual const char* getTypeName() const { return "FixedConstraint"; }
     DataField<SetIndex> f_indices;
-    DataField<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
 
 
     FixedConstraint(Core::MechanicalModel<DataTypes>* mmodel);
