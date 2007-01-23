@@ -31,6 +31,7 @@ protected:
     Common::DataField<Real> _speed;
 
     Common::DataField<Real> _stiffness;
+    Common::DataField<Real> _damping;
 
     Common::Vec<6,PlaneForceField*> _planes;
 
@@ -41,6 +42,7 @@ public:
         , _size(dataField(&_size, Deriv(1,1,1), "size", "box size"))
         , _speed(dataField(&_speed, (Real)0.01, "speed", "rotation speed"))
         , _stiffness(dataField(&_stiffness, (Real)500.0, "stiffness", "penality force stiffness"))
+        , _damping(dataField(&_damping, (Real)5.0, "damping", "penality force damping"))
     {
     }
 
@@ -57,6 +59,8 @@ public:
         for(int i=0; i<6; ++i)
         {
             _planes[i] = new PlaneForceField(this->mmodel);
+            _planes[i]->setStiffness(_stiffness.getValue());
+            _planes[i]->setDamping(_damping.getValue());
         }
 
         Deriv diff = _center.getValue() - _size.getValue() * .5;

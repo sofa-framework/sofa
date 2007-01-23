@@ -23,6 +23,7 @@ void create(PlaneForceField<DataTypes>*& obj, ObjectDescription* arg)
     if (obj!=NULL)
     {
         if (arg->getAttribute("stiffness")) obj->setStiffness((typename PlaneForceField<DataTypes>::Real)atof(arg->getAttribute("stiffness")));
+        if (arg->getAttribute("damping")) obj->setDamping((typename PlaneForceField<DataTypes>::Real)atof(arg->getAttribute("damping")));
         double x=0,y=0,z=0,d=0;
         if (arg->getAttribute("normal"))
             sscanf(arg->getAttribute("normal"),"%lf %lf %lf",&x,&y,&z);

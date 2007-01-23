@@ -29,6 +29,7 @@ protected:
     Real planeD;
 
     Real stiffness;
+    Real damping;
 
 
     std::vector<unsigned int> contacts;
@@ -39,7 +40,7 @@ public:
     Common::DataField<Coord> _color;
 
     PlaneForceField(Core::MechanicalModel<DataTypes>* object=NULL, const std::string& /*name*/="")
-        : Core::ForceField<DataTypes>(object), planeD(0), stiffness(500)
+        : Core::ForceField<DataTypes>(object), planeD(0), stiffness(500), damping(5)
         , _color(dataField(&_color, Coord(0,.5f,.2f), "color", "plane color"))
     {
     }
@@ -56,6 +57,11 @@ public:
     void setStiffness(Real stiff)
     {
         stiffness = stiff;
+    }
+
+    void setDamping(Real damp)
+    {
+        damping = damp;
     }
 
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)

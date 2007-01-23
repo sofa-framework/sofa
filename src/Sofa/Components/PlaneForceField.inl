@@ -17,7 +17,7 @@ namespace Components
 {
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& /*v1*/)
+void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
 {
     //this->dfdd.resize(p1.size());
     this->contacts.clear();
@@ -28,7 +28,8 @@ void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, cons
         if (d<0)
         {
             Real forceIntensity = -this->stiffness*d;
-            Deriv force = planeNormal*forceIntensity;
+            Real dampingIntensity = -this->damping*d;
+            Deriv force = planeNormal*forceIntensity - v1[i]*dampingIntensity;
             f1[i]+=force;
             //this->dfdd[i] = -this->stiffness;
             this->contacts.push_back(i);
