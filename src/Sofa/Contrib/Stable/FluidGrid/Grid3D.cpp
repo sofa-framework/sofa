@@ -12,6 +12,8 @@ namespace FluidGrid
 
 const unsigned long* Grid3D::obstacles = NULL;
 
+#define LEVELSET_MARGIN 0.01f
+
 // For loop macros
 
 #define FOR_ALL_CELLS(grid,cmd)                 \
@@ -234,7 +236,7 @@ void Grid3D::step_init(const Grid3D* prev, Grid3D* /*temp*/, real /*dt*/, real /
         }
         else
         {
-            if (levelset[ind] < 1)
+            if (levelset[ind] < LEVELSET_MARGIN)
                 fdata[ind].type = PART_FULL;
             else
                 fdata[ind].type = PART_EMPTY;
@@ -445,7 +447,7 @@ void Grid3D::step_levelset(Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
         {
             levelset[ind] = -levelset[ind];
         }
-        if (levelset[ind] < 1)
+        if (levelset[ind] < LEVELSET_MARGIN)
         {
             if (fdata[ind].type == PART_EMPTY)
                 fdata[ind].type = PART_FULL;
@@ -689,7 +691,7 @@ void Grid3D::step_forces(const Grid3D* prev, Grid3D* /*temp*/, real dt, real /*d
                         {
                             real d = sqrtf((real)((z-cz)*(z-cz)+(y-cy)*(y-cy)+(x-cx)*(x-cx))) - r;
                             int ind = index(x,y,z);
-                            if (d < 0)
+                            if (d < LEVELSET_MARGIN)
                             {
                                 fdata[ind].u = v;
                                 if (fdata[ind].type == PART_EMPTY)
