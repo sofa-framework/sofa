@@ -5,6 +5,7 @@
 #define SOFA_COMPONENTS_SPRINGFORCEFIELD_INL
 
 #include "SpringForceField.h"
+#include "MeshTopology.h"
 #include "MassSpringLoader.h"
 #include "Common/config.h"
 #include <assert.h>
@@ -44,9 +45,31 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 }
 
 template <class DataTypes>
+void SpringForceField<DataTypes>::initFromTopology()
+{
+    if (springs.empty())
+    {
+        Sofa::Components::MeshTopology* _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->getContext()->getTopology());
+        if( _mesh != NULL )
+        {
+            VecDeriv& P1 = *object1->getX();
+            VecDeriv& P2 = *object2->getX();
+            for( unsigned i=0; i<_mesh->getLines().size(); i++ )
+            {
+                int a =_mesh->getLines()[i][0];
+                int b = _mesh->getLines()[i][1];
+                Deriv gap = P1[a] - P2[b];
+                addSpring(a,b,ks,kd,sqrt(Common::dot(gap,gap)));
+            }
+        }
+    }
+}
+
+template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
     this->InteractionForceField::init();
+    initFromTopology();
 }
 
 template<class DataTypes>

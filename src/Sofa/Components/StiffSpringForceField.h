@@ -41,13 +41,13 @@ protected:
     void addSpringDForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& dx1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& dx2, int i, const Spring& spring);
 
 public:
-    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
-        : SpringForceField<DataTypes>(object1, object2)
+    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2, double ks=100.0, double kd=5.0)
+        : SpringForceField<DataTypes>(object1, object2, ks, kd)
     {
     }
 
-    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object)
-        : SpringForceField<DataTypes>(object)
+    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object, double ks=100.0, double kd=5.0)
+        : SpringForceField<DataTypes>(object, ks, kd)
     {
     }
 

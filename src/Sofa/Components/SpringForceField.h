@@ -40,6 +40,8 @@ protected:
     Core::MechanicalModel<DataTypes>* object1;
     Core::MechanicalModel<DataTypes>* object2;
     double m_potentialEnergy;
+    double ks;
+    double kd;
 
     class Spring
     {
@@ -63,13 +65,13 @@ protected:
     void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
 
 public:
-    SpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
-        : object1(object1), object2(object2)
+    SpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2, double _ks=100.0, double _kd=5.0)
+        : object1(object1), object2(object2), ks(_ks), kd(_kd)
     {
     }
 
-    SpringForceField(Core::MechanicalModel<DataTypes>* object)
-        : object1(object), object2(object)
+    SpringForceField(Core::MechanicalModel<DataTypes>* object, double _ks=100.0, double _kd=5.0)
+        : object1(object), object2(object), ks(_ks), kd(_kd)
     {
     }
 
@@ -81,12 +83,17 @@ public:
     Core::BasicMechanicalModel* getMechModel2() { return object2; }
 
     virtual void init();
+    void initFromTopology();
 
     virtual void addForce();
 
     virtual void addDForce();
 
     virtual double getPotentialEnergy() { return m_potentialEnergy; }
+    double getStiffness() { return ks; }
+    double getDamping() { return kd; }
+    void setStiffness(double _ks) { ks=_ks; }
+    void setDamping(double _kd) { kd=_kd; }
 
     // -- VisualModel interface
     void draw();
