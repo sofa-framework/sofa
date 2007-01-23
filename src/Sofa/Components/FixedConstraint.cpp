@@ -45,6 +45,7 @@ void FixedConstraint<RigidTypes>::draw()
 template <>
 void FixedConstraint<RigidTypes>::projectResponse(VecDeriv& res)
 {
+    if( !isActive() ) return;
     res[0] = Deriv();
 }
 
