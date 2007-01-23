@@ -234,7 +234,7 @@ void Grid3D::step_init(const Grid3D* prev, Grid3D* /*temp*/, real /*dt*/, real /
         }
         else
         {
-            if (levelset[ind] < 0)
+            if (levelset[ind] < 1)
                 fdata[ind].type = PART_FULL;
             else
                 fdata[ind].type = PART_EMPTY;
@@ -444,6 +444,9 @@ void Grid3D::step_levelset(Grid3D* prev, Grid3D* temp, real dt, real /*diff*/)
         if(temp->levelset[ind] < 0)
         {
             levelset[ind] = -levelset[ind];
+        }
+        if (levelset[ind] < 1)
+        {
             if (fdata[ind].type == PART_EMPTY)
                 fdata[ind].type = PART_FULL;
         }
@@ -917,7 +920,7 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
 
     real a = -1.0f/dt;
 
-    real b_norm2 = 0.0;
+    double b_norm2 = 0.0;
 
     //  int nbdiag[7]={0,0,0,0,0,0,0};
 
@@ -962,7 +965,7 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
     //  for (int i=0;i<7;i++) std::cout << ' ' << nbdiag[i];
     //  std::cout << '\n';
 
-    real err = 0.0;
+    double err = 0.0;
 
     // r = b - Ax
     FOR_INNER_CELLS(r,
@@ -980,13 +983,13 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
         g[ind] = r[ind]; // first direction is r
     });
 
-    real min_err = 0.0001f*b_norm2;
+    double min_err = 0.000001f*b_norm2;
 
     int step;
     for (step=0; step<100; step++)
     {
-        real err_old = err;
-        err = 0.0f;
+        double err_old = err;
+        err = 0.0;
         FOR_READ_INNER_CELLS(
         {
             err += r[ind]*r[ind];
@@ -995,14 +998,14 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
         if (err<=min_err) break;
         if (step>0)
         {
-            real beta = err/err_old;
+            real beta = (real)(err/err_old);
             // g = g*beta + r
             FOR_ALL_CELLS(g,
             {
                 g[ind] = g[ind]*beta + r[ind];
             });
         }
-        real g_q = 0.0;
+        double g_q = 0.0;
         // q = Ag
         FOR_INNER_CELLS(q,
         {
@@ -1016,7 +1019,7 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
             }
         });
 
-        real alpha = err/g_q;
+        real alpha = (real)(err/g_q);
 
         FOR_ALL_CELLS(pressure,
         {
@@ -1025,7 +1028,7 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
         });
     }
 
-    //  std::cout << "STEP: CG iteration "<<step<<" error "<<sqrt(err/b_norm2)<<"\n";
+    std::cout << "STEP: CG iteration "<<step<<" error(d) "<<sqrt(err/b_norm2)<<"\n";
 
     // Now apply pressure back to velocity
     a = dt;

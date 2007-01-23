@@ -194,10 +194,15 @@ void Fluid3D::draw()
 
 void Fluid3D::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, int& vindex, int& nindex, int& /*tindex*/)
 {
+    vec3 corner = f_center.getValue() - vec3((real)nx-1,(real)ny-1,(real)nz-1)*cellwidth/2;
+
     *out << "g "<<name<<"\n";
 
     for(unsigned i=0; i<points.size(); ++i)
-        *out << "v "<< std::fixed << points[i].p[0]<<' '<< std::fixed <<points[i].p[1]<<' '<< std::fixed <<points[i].p[2]<<'\n';
+    {
+        vec3 p = points[i].p*cellwidth + corner;
+        *out << "v "<< std::fixed << p[0]<<' '<< std::fixed <<p[1]<<' '<< std::fixed <<p[2]<<'\n';
+    }
 
 
     for(unsigned i=0; i<points.size(); ++i)
@@ -205,7 +210,7 @@ void Fluid3D::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl
 
 
     for (unsigned int i = 0; i < facets.size() ; i++)
-        *out << "f "<<facets[i].p[0]+1<<"//"<<facets[i].p[0]+1<<' '<< facets[i].p[1]+1<<"//"<<facets[i].p[1]+1<<' '<< facets[i].p[2]+1<<"//"<<facets[i].p[2]+1<<'\n';
+        *out << "f "<<facets[i].p[0]+vindex+1<<"//"<<facets[i].p[0]+nindex+1<<' '<< facets[i].p[1]+vindex+1<<"//"<<facets[i].p[1]+nindex+1<<' '<< facets[i].p[2]+vindex+1<<"//"<<facets[i].p[2]+nindex+1<<'\n';
 
 
     *out << std::endl;
