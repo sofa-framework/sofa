@@ -40,6 +40,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     }
     else
     {
+        _trimgrid = dynamic_cast<TrimmedRegularGridTopology*>(_mesh);
         MeshTopology::SeqTetras* tetras = new MeshTopology::SeqTetras;
         int nbcubes = _mesh->getNbCubes();
 
@@ -60,6 +61,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         tetras->reserve(nbcubes*6);
         for (int i=0; i<nbcubes; i++)
         {
+            // if (flags && !flags->isCubeActive(i)) continue;
             MeshTopology::Cube c = _mesh->getCube(i);
             int sym = 0;
             if ((i%nx)&1)      sym+=1;
@@ -236,30 +238,42 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
         if(_method==SMALL)
             for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
             {
+                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
                 accumulateForceSmall( f, p, it, i );
                 //accumulateDampingSmall( f, i );
             }
         else if(_method==LARGE)
             for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
             {
+                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
                 accumulateForceLarge( f, p, it, i );
                 //accumulateDampingLarge( f, i );
             }
         else
             for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
             {
+                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
                 accumulateForcePolar( f, p, it, i );
                 //accumulateDampingPolar( f, i );
             }
     else if(_method==SMALL)
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+        {
+            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForceSmall( f, p, it, i );
+        }
     else if(_method==LARGE)
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+        {
+            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForceLarge( f, p, it, i );
+        }
     else
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+        {
+            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForcePolar( f, p, it, i );
+        }
 
 //		_forces = f;
 //		cerr<<"----------------\nf : "<<f<<endl;
@@ -283,6 +297,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
         {
             for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
             {
+                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
                 Index a = (*it)[0];
                 Index b = (*it)[1];
                 Index c = (*it)[2];
@@ -296,6 +311,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
         {
             for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
             {
+                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
                 Index a = (*it)[0];
                 Index b = (*it)[1];
                 Index c = (*it)[2];
@@ -309,6 +325,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
         {
             for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
             {
+                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
                 Index a = (*it)[0];
                 Index b = (*it)[1];
                 Index c = (*it)[2];
@@ -1143,8 +1160,10 @@ void TetrahedronFEMForceField<DataTypes>::draw()
 
     glBegin(GL_TRIANGLES);
     typename VecElement::const_iterator it;
-    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it)
+    int i;
+    for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
     {
+        if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
         Index a = (*it)[0];
         Index b = (*it)[1];
         Index c = (*it)[2];

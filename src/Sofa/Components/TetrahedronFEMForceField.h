@@ -5,6 +5,7 @@
 #include "Sofa/Core/MechanicalObject.h"
 #include "Sofa/Abstract/VisualModel.h"
 #include "Sofa/Components/MeshTopology.h"
+#include "Sofa/Components/TrimmedRegularGridTopology.h"
 #include "Sofa/Components/Common/vector.h"
 #include "Common/Vec.h"
 #include "Common/Mat.h"
@@ -68,6 +69,7 @@ protected:
     VecDeriv _forces;
 
     MeshTopology* _mesh;
+    TrimmedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
     VecCoord _initialPoints; ///< the intial positions of the points
     int _method; ///< the computation method of the displacements
@@ -79,7 +81,7 @@ protected:
 
 public:
     TetrahedronFEMForceField(Core::MechanicalObject<DataTypes>* /*object*/=NULL)
-        : _mesh(NULL)
+        : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
         , _method(0)
         , _poissonRatio(0.45f)
