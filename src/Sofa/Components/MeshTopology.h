@@ -84,7 +84,7 @@ protected:
     int nbPoints;
     vector< fixed_array<double,3> > seqPoints;
 
-    SeqLines seqLines;
+    DataField<SeqLines> seqLines;
     bool validLines;
 
     //SeqTriangles   seqTriangles;

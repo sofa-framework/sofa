@@ -73,12 +73,12 @@ public:
         _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
         _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
 
-        _planes[0]->_color.setValue( Coord( 1,0,0 ) );
-        _planes[1]->_color.setValue( Coord( 0,1,0 ) );
-        _planes[2]->_color.setValue( Coord( 0,0,1 ) );
-        _planes[3]->_color.setValue( Coord( 1,1,0 ) );
-        _planes[4]->_color.setValue( Coord( 1,0,1 ) );
-        _planes[5]->_color.setValue( Coord( 0,1,1 ) );
+        _planes[0]->_color.setValue( Coord( 0.5f,0.4f,0.4f ) );
+        _planes[1]->_color.setValue( Coord( 0.4f,0.5f,0.4f ) );
+        _planes[2]->_color.setValue( Coord( 0.4f,0.4f,0.5f ) );
+        _planes[3]->_color.setValue( Coord( 0.5f,0.5f,0.4f ) );
+        _planes[4]->_color.setValue( Coord( 0.5f,0.4f,0.5f ) );
+        _planes[5]->_color.setValue( Coord( 0.4f,0.5f,0.5f ) );
 
     }
 

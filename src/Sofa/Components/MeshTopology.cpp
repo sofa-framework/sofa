@@ -32,7 +32,10 @@ SOFA_DECL_CLASS(MeshTopology)
 Creator<ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
 
 MeshTopology::MeshTopology()
-    : nbPoints(0), validLines(false), seqTriangles(dataField(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false), validQuads(false), validTetras(false), validCubes(false), revision(0)
+    : nbPoints(0)
+    , seqLines(dataField(&seqLines,"lines","List of line indices")), validLines(false)
+    , seqTriangles(dataField(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
+    , validQuads(false), validTetras(false), validCubes(false), revision(0)
 {
 }
 
@@ -50,12 +53,12 @@ public:
     }
     virtual void addLine(int p1, int p2)
     {
-        dest->seqLines.push_back(Line(p1,p2));
+        dest->seqLines.beginEdit()->push_back(Line(p1,p2));
+        dest->seqLines.endEdit();
     }
     virtual void addTriangle(int p1, int p2, int p3)
     {
-        SeqTriangles& triangles = *dest->seqTriangles.beginEdit();
-        triangles.push_back(Triangle(p1,p2,p3));
+        dest->seqTriangles.beginEdit()->push_back(Triangle(p1,p2,p3));
         dest->seqTriangles.endEdit();
     }
     virtual void addQuad(int p1, int p2, int p3, int p4)
@@ -75,7 +78,7 @@ public:
 void MeshTopology::clear()
 {
     nbPoints = 0;
-    seqLines.clear();
+    seqLines.beginEdit()->clear(); seqLines.endEdit();
     seqTriangles.beginEdit()->clear(); seqTriangles.endEdit();
     seqQuads.clear();
     seqTetras.clear();
@@ -166,7 +169,8 @@ void MeshTopology::addPoint(double px, double py, double pz)
 
 void MeshTopology::addLine( int a, int b )
 {
-    seqLines.push_back( Line(a,b) );
+    seqLines.beginEdit()->push_back(Line(a,b));
+    seqLines.endEdit();
 }
 
 void MeshTopology::addTriangle( int a, int b, int c )
@@ -187,7 +191,7 @@ const MeshTopology::SeqLines& MeshTopology::getLines()
         updateLines();
         validLines = true;
     }
-    return seqLines;
+    return seqLines.getValue();
 }
 
 const MeshTopology::SeqTriangles& MeshTopology::getTriangles()

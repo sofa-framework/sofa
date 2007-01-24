@@ -65,8 +65,10 @@ MechanicalObject<DataTypes>::operator = (const MechanicalObject& obj)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::parseFields ( const std::map<std::string,std::string*>& str )
 {
+    unsigned int size0 = getX()->size();
     Inherited::parseFields(str);
-    resize( getX()->size() );
+    if (getX()->size() != size0)
+        resize( getX()->size() );
     //cerr<<"MechanicalObject<DataTypes>::parseFields, resized to "<<getX()->size()<<endl;
 }
 
@@ -345,7 +347,7 @@ void MechanicalObject<DataTypes>::init()
         // X and/or V where user-specified
         resize(getX()->size()>getV()->size()?getX()->size():getV()->size());
     }
-    else
+    else if (getX()->size() <= 1)
     {
         Topology* topo = dynamic_cast<Topology*>(this->getContext()->getTopology());
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())

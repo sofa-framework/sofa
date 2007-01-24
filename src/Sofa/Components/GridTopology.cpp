@@ -50,23 +50,25 @@ void GridTopology::setSize(int nx, int ny, int nz)
 
 void GridTopology::updateLines()
 {
-    seqLines.clear();
-    seqLines.reserve((nx-1)*ny*nz+nx*(ny-1)*nz+nx*ny*(nz-1));
+    SeqLines& lines = *seqLines.beginEdit();
+    lines.clear();
+    lines.reserve((nx-1)*ny*nz+nx*(ny-1)*nz+nx*ny*(nz-1));
     // lines along X
     for (int z=0; z<nz; z++)
         for (int y=0; y<ny; y++)
             for (int x=0; x<nx-1; x++)
-                seqLines.push_back(Line(point(x,y,z),point(x+1,y,z)));
+                lines.push_back(Line(point(x,y,z),point(x+1,y,z)));
     // lines along Y
     for (int z=0; z<nz; z++)
         for (int y=0; y<ny-1; y++)
             for (int x=0; x<nx; x++)
-                seqLines.push_back(Line(point(x,y,z),point(x,y+1,z)));
+                lines.push_back(Line(point(x,y,z),point(x,y+1,z)));
     // lines along Z
     for (int z=0; z<nz-1; z++)
         for (int y=0; y<ny; y++)
             for (int x=0; x<nx; x++)
-                seqLines.push_back(Line(point(x,y,z),point(x,y,z+1)));
+                lines.push_back(Line(point(x,y,z),point(x,y,z+1)));
+    seqLines.endEdit();
 }
 
 void GridTopology::updateQuads()

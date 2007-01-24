@@ -46,6 +46,10 @@ public:
     DataField<Real> stiffness;
     DataField<Real> dampingRatio;
 
+    virtual void draw()
+    {
+    }
+
 protected:
     typedef std::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned );
