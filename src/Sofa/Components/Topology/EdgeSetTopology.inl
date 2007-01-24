@@ -158,9 +158,10 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const unsigned int ,
         // removes the edge from the edgelist
         container->m_edge[ indices[i] ] = container->m_edge[ container->m_edge.size() - 1 ]; // overwriting with last valid value.
         container->m_edge.resize( container->m_edge.size() - 1 ); // resizing to erase multiple occurence of the edge.
+
         // now updates the shell information of the edge formely at the end of the array
         // first check that the edge shell array has been initialized
-        if (container->m_edgeShell.size()>0)
+        if ( indices[i] < container->m_edge.size() )
         {
 
             unsigned int oldEdgeIndex=container->m_edge.size();
