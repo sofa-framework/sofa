@@ -224,15 +224,15 @@ void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
             mt.transpose(m);
             bases[t].invert(mt);
             centers[t] = (in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]])/3;
-            //std::cout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<std::endl;
         }
         for (unsigned int c = 0; c < quads.size(); c++)
         {
-            Mat3x3d m;
+            Mat3x3d m,mt;
             m[0] = in[quads[c][1]]-in[quads[c][0]];
             m[1] = in[quads[c][3]]-in[quads[c][0]];
             m[2] = cross(m[0],m[1]);
-            bases[c0+c].invert(m);
+            mt.transpose(m);
+            bases[c0+c].invert(mt);
             centers[c0+c] = (in[quads[c][0]]+in[quads[c][1]]+in[quads[c][2]]+in[quads[c][3]])*0.25;
         }
         for (unsigned int i=0; i<out.size(); i++)
@@ -283,11 +283,12 @@ void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
         }
         for (unsigned int c = 0; c < cubes.size(); c++)
         {
-            Mat3x3d m;
+            Mat3x3d m,mt;
             m[0] = in[cubes[c][1]]-in[cubes[c][0]];
             m[1] = in[cubes[c][2]]-in[cubes[c][0]];
             m[2] = in[cubes[c][4]]-in[cubes[c][0]];
-            bases[c0+c].invert(m);
+            mt.transpose(m);
+            bases[c0+c].invert(mt);
             centers[c0+c] = (in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]])*0.125;
         }
         for (unsigned int i=0; i<out.size(); i++)
