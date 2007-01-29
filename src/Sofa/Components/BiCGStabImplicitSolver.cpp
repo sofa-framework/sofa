@@ -73,7 +73,7 @@ void BiCGStabImplicitSolver::solve(double dt)
     double normb = sqrt(b.dot(b));
 
     // -- solve the system using a bi conjugate gradient stabilized solution
-    double rho_1=0, rho_2=0, alpha, beta, omega;
+    double rho_1=0, rho_2=0, alpha=0, beta=0, omega=0;
     group->v_clear( x );
     group->v_eq(r,b); // initial residual
 
