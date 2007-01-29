@@ -21,6 +21,8 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
+    virtual const char* getTypeName() const { return "RegularGridSpringForceField"; }
+
 protected:
     Real linesStiffness;
     Real linesDamping;

@@ -32,6 +32,8 @@ public:
         }
     };
 
+    virtual const char* getTypeName() const { return "StiffSpringForceField"; }
+
 protected:
     std::vector<Mat3> dfdx;
     double m_potentialEnergy;

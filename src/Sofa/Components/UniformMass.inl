@@ -32,14 +32,14 @@ double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-    : totalMass( dataField(&totalMass, 0.0, "mass", "Sum of the particles' masses") )
+    : totalMass( dataField(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
 {}
 
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass(Core::MechanicalModel<DataTypes>* mmodel)
     : Core::Mass<DataTypes>(mmodel)
-    , totalMass( dataField(&totalMass, 0.0, "mass", "Sum of the particles' masses") )
+    , totalMass( dataField(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
 {}
 
 template <class DataTypes, class MassType>

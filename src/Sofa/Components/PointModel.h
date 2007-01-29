@@ -68,6 +68,9 @@ public:
 
 
     Core::MechanicalModel<Vec3Types>* getMechanicalModel() { return mmodel; }
+
+    virtual const char* getTypeName() const { return "Point"; }
+
 protected:
 
     Core::MechanicalModel<Vec3Types>* mmodel;

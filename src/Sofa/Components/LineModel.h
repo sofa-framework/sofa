@@ -83,6 +83,8 @@ public:
 
     MeshTopology* getTopology() { return mesh; }
 
+    virtual const char* getTypeName() const { return "Line"; }
+
 protected:
 
     Core::MechanicalModel<Vec3Types>* mmodel;

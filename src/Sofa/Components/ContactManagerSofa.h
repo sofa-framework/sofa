@@ -29,6 +29,8 @@ public:
 
     const std::vector<Collision::Contact*>& getContacts() { return contactVec; }
 
+    virtual const char* getTypeName() const { return "CollisionResponse"; }
+
     // -- VisualModel interface
     void draw();
     void initTextures() { }

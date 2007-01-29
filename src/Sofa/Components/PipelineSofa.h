@@ -26,6 +26,8 @@ public:
     void setDepth(int v)    { depth_ = v;      }
     int getDepth() const    { return depth_;   }
 
+    virtual const char* getTypeName() const { return "CollisionPipeline"; }
+
 protected:
     // -- Pipeline interface
 

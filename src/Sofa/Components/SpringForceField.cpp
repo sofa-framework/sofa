@@ -31,6 +31,10 @@ void create(SpringForceField<DataTypes>*& obj, ObjectDescription* arg)
     {
         if (arg->getAttribute("filename"))
             obj->load(arg->getAttribute("filename"));
+        if (arg->getAttribute("stiffness"))
+            obj->setStiffness(atof(arg->getAttribute("stiffness")));
+        if (arg->getAttribute("damping"))
+            obj->setDamping(atof(arg->getAttribute("damping")));
     }
 }
 

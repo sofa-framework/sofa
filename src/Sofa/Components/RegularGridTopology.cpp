@@ -45,29 +45,29 @@ RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
 void RegularGridTopology::setPos(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
 {
     setP0(Vec3(xmin,ymin,zmin));
-    if (nx>1)
-        setDx(Vec3((xmax-xmin)/(nx-1),0,0));
+    if (nx.getValue()>1)
+        setDx(Vec3((xmax-xmin)/(nx.getValue()-1),0,0));
     else
         setDx(Vec3(0,0,0));
-    if (ny>1)
-        setDy(Vec3(0,(ymax-ymin)/(ny-1),0));
+    if (ny.getValue()>1)
+        setDy(Vec3(0,(ymax-ymin)/(ny.getValue()-1),0));
     else
         setDy(Vec3(0,0,0));
-    if (nz>1)
-        setDz(Vec3(0,0,(zmax-zmin)/(nz-1)));
+    if (nz.getValue()>1)
+        setDz(Vec3(0,0,(zmax-zmin)/(nz.getValue()-1)));
     else
         setDz(Vec3(0,0,0));
 }
 
 unsigned RegularGridTopology::getIndex( int i, int j, int k ) const
 {
-    return nx* ( ny*k + j ) + i;
+    return nx.getValue()* ( ny.getValue()*k + j ) + i;
 }
 
 RegularGridTopology::Vec3 RegularGridTopology::getPoint(int i) const
 {
-    int x = i%nx; i/=nx;
-    int y = i%ny; i/=ny;
+    int x = i%nx.getValue(); i/=nx.getValue();
+    int y = i%ny.getValue(); i/=ny.getValue();
     int z = i;
     return getPoint(x,y,z);
 }
@@ -80,7 +80,7 @@ RegularGridTopology::Vec3 RegularGridTopology::getPoint(int x, int y, int z) con
 /// return the cube containing the given point (or -1 if not found).
 int RegularGridTopology::findCube(const Vec3& pos)
 {
-    if (nx<2 || ny<2 || nz<2) return -1;
+    if (nx.getValue()<2 || ny.getValue()<2 || nz.getValue()<2) return -1;
     Vec3 p = pos-p0;
     double x = p*dx*inv_dx2;
     double y = p*dy*inv_dy2;
@@ -88,7 +88,7 @@ int RegularGridTopology::findCube(const Vec3& pos)
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if ((unsigned)ix<(unsigned)nx-2 && (unsigned)iy<(unsigned)ny-2 && (unsigned)iz<(unsigned)nz-2)
+    if ((unsigned)ix<(unsigned)nx.getValue()-2 && (unsigned)iy<(unsigned)ny.getValue()-2 && (unsigned)iz<(unsigned)nz.getValue()-2)
     {
         return cube(ix,iy,iz);
     }
@@ -101,7 +101,7 @@ int RegularGridTopology::findCube(const Vec3& pos)
 /// return the nearest cube (or -1 if not found).
 int RegularGridTopology::findNearestCube(const Vec3& pos)
 {
-    if (nx<2 || ny<2 || nz<2) return -1;
+    if (nx.getValue()<2 || ny.getValue()<2 || nz.getValue()<2) return -1;
     Vec3 p = pos-p0;
     double x = p*dx*inv_dx2;
     double y = p*dy*inv_dy2;
@@ -109,9 +109,9 @@ int RegularGridTopology::findNearestCube(const Vec3& pos)
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if (ix<0) ix=0; else if (ix>nx-2) ix=nx-2;
-    if (iy<0) iy=0; else if (iy>ny-2) iy=ny-2;
-    if (iz<0) iz=0; else if (iz>nz-2) iz=nz-2;
+    if (ix<0) ix=0; else if (ix>nx.getValue()-2) ix=nx.getValue()-2;
+    if (iy<0) iy=0; else if (iy>ny.getValue()-2) iy=ny.getValue()-2;
+    if (iz<0) iz=0; else if (iz>nz.getValue()-2) iz=nz.getValue()-2;
     return cube(ix,iy,iz);
 }
 
@@ -119,7 +119,7 @@ int RegularGridTopology::findNearestCube(const Vec3& pos)
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double &fz)
 {
-    if (nx<2 || ny<2 || nz<2) return -1;
+    if (nx.getValue()<2 || ny.getValue()<2 || nz.getValue()<2) return -1;
     Vec3 p = pos-p0;
     double x = p*dx*inv_dx2;
     double y = p*dy*inv_dy2;
@@ -127,7 +127,7 @@ int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, doubl
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if ((unsigned)ix<(unsigned)nx-2 && (unsigned)iy<(unsigned)ny-2 && (unsigned)iz<(unsigned)nz-2)
+    if ((unsigned)ix<(unsigned)nx.getValue()-2 && (unsigned)iy<(unsigned)ny.getValue()-2 && (unsigned)iz<(unsigned)nz.getValue()-2)
     {
         fx = x-ix;
         fy = y-iy;
@@ -144,7 +144,7 @@ int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, doubl
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 int RegularGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz)
 {
-    if (nx<2 || ny<2 || nz<2) return -1;
+    if (nx.getValue()<2 || ny.getValue()<2 || nz.getValue()<2) return -1;
     Vec3 p = pos-p0;
     double x = p*dx*inv_dx2;
     double y = p*dy*inv_dy2;
@@ -152,9 +152,9 @@ int RegularGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if (ix<0) ix=0; else if (ix>nx-2) ix=nx-2;
-    if (iy<0) iy=0; else if (iy>ny-2) iy=ny-2;
-    if (iz<0) iz=0; else if (iz>nz-2) iz=nz-2;
+    if (ix<0) ix=0; else if (ix>nx.getValue()-2) ix=nx.getValue()-2;
+    if (iy<0) iy=0; else if (iy>ny.getValue()-2) iy=ny.getValue()-2;
+    if (iz<0) iz=0; else if (iz>nz.getValue()-2) iz=nz.getValue()-2;
     fx = x-ix;
     fy = y-iy;
     fz = z-iz;

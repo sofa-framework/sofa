@@ -91,6 +91,8 @@ public:
 
     MeshTopology* getTopology() { return mesh; }
 
+    virtual const char* getTypeName() const { return "Triangle"; }
+
 protected:
 
     Core::MechanicalModel<Vec3Types>* mmodel;

@@ -72,6 +72,8 @@ public:
     void initTextures() { }
     void update() { }
 
+    virtual const char* getTypeName() const { return "RigidMapping"; }
+
 protected:
 
     bool getShow(const Abstract::BaseObject* m) const { return m->getContext()->getShowMappings(); }

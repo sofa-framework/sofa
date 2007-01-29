@@ -59,7 +59,7 @@ void SpringForceField<DataTypes>::initFromTopology()
                 int a =_mesh->getLines()[i][0];
                 int b = _mesh->getLines()[i][1];
                 Deriv gap = P1[a] - P2[b];
-                addSpring(a,b,ks,kd,sqrt(Common::dot(gap,gap)));
+                addSpring(a,b,ks.getValue(),kd.getValue(),sqrt(Common::dot(gap,gap)));
             }
         }
     }
