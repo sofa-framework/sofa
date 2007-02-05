@@ -46,6 +46,9 @@ public:
     /// Render the scene
     static void draw(GNode* root);
 
+    /// Render the scene - Shadows pass
+    static void drawShadows(GNode* root);
+
     /// Delete a scene from memory. After this call the pointer is invalid
     static void unload(GNode* root);
 

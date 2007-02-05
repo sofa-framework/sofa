@@ -267,6 +267,11 @@ void MeshOBJ::readMTL(char* filename)
                     break;
                 }
                 break;
+            case 'd':
+            case 'T':
+                // transparency value
+                fscanf(file, "%lf", &mat->diffuse[3]);
+                break;
             default:
                 /* eat up rest of line */
                 fgets(buf, sizeof(buf), file);
