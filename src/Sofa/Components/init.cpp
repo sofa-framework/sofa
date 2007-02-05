@@ -1,7 +1,5 @@
 #include "Common/config.h"
-#include "Sofa/Core/ObjectFactory.h"
 #include <iostream>
-#include <fstream>
 
 namespace Sofa
 {
@@ -15,11 +13,6 @@ void init()
     if (first)
     {
         std::cout << "Sofa Components Initialized"<<std::endl;
-        Sofa::Core::ObjectFactory::getInstance()->dump();
-        std::ofstream ofile("sofa-classes.html");
-        ofile << "<html><body>\n";
-        Sofa::Core::ObjectFactory::getInstance()->dumpHTML(ofile);
-        ofile << "</body></html>\n";
         first = false;
     }
 }
