@@ -1,5 +1,7 @@
 #include "Common/config.h"
+#include "Sofa/Core/ObjectFactory.h"
 #include <iostream>
+#include <fstream>
 
 namespace Sofa
 {
@@ -9,7 +11,17 @@ namespace Components
 
 void init()
 {
-    std::cout << "Sofa Components Initialized"<<std::endl;
+    static bool first = true;
+    if (first)
+    {
+        std::cout << "Sofa Components Initialized"<<std::endl;
+        Sofa::Core::ObjectFactory::getInstance()->dump();
+        std::ofstream ofile("sofa-classes.html");
+        ofile << "<html><body>\n";
+        Sofa::Core::ObjectFactory::getInstance()->dumpHTML(ofile);
+        ofile << "</body></html>\n";
+        first = false;
+    }
 }
 
 } // namespace Components
@@ -84,6 +96,7 @@ SOFA_LINK_CLASS(SpringEdgeDataForceField)
 SOFA_LINK_CLASS(StaticSolver)
 SOFA_LINK_CLASS(StiffSpringForceField)
 SOFA_LINK_CLASS(SurfaceIdentityMapping)
+SOFA_LINK_CLASS(SubsetMapping)
 SOFA_LINK_CLASS(TensorForceField)
 SOFA_LINK_CLASS(TetrahedronFEMForceField)
 SOFA_LINK_CLASS(ThreadSimulation)
@@ -97,3 +110,4 @@ SOFA_LINK_CLASS(SphereTreeModel)
 SOFA_LINK_CLASS(SingleSphere)
 //SOFA_LINK_CLASS(VoxelGrid)
 SOFA_LINK_CLASS(WashingMachineForceField)
+SOFA_LINK_CLASS(EdgeRemoveContact)
