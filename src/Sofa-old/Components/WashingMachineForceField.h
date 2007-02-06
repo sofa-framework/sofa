@@ -1,9 +1,9 @@
 #ifndef SOFA_COMPONENTS_WashingMachineForceField_H
 #define SOFA_COMPONENTS_WashingMachineForceField_H
 
-#include "Sofa/Core/ForceField.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Core/ForceField.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 #include "PlaneForceField.h"
 #include <vector>
 

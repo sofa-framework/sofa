@@ -1,4 +1,4 @@
-#include "Sofa/Components/TriangleLoader.h"
+#include "Sofa-old/Components/TriangleLoader.h"
 
 #include <assert.h>
 #include <stdlib.h>

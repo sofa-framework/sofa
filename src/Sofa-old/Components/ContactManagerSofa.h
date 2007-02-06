@@ -2,7 +2,7 @@
 #define SOFA_COMPONENTS_CONTACTMANAGERSOFA_H
 
 #include "Collision/ContactManager.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 
 #include <vector>
 

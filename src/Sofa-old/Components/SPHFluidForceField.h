@@ -3,9 +3,9 @@
 
 #include "Common/config.h"
 
-#include "Sofa/Core/ForceField.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Core/ForceField.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 #include "SpatialGridContainer.h"
 
 #include <vector>

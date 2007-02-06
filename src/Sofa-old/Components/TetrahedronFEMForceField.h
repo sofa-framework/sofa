@@ -1,12 +1,12 @@
 #ifndef SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_H
 #define SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_H
 
-#include "Sofa/Core/ForceField.h"
-#include "Sofa/Core/MechanicalObject.h"
-#include "Sofa/Abstract/VisualModel.h"
-#include "Sofa/Components/MeshTopology.h"
-#include "Sofa/Components/TrimmedRegularGridTopology.h"
-#include "Sofa/Components/Common/vector.h"
+#include "Sofa-old/Core/ForceField.h"
+#include "Sofa-old/Core/MechanicalObject.h"
+#include "Sofa-old/Abstract/VisualModel.h"
+#include "Sofa-old/Components/MeshTopology.h"
+#include "Sofa-old/Components/TrimmedRegularGridTopology.h"
+#include "Sofa-old/Components/Common/vector.h"
 #include "Common/Vec.h"
 #include "Common/Mat.h"
 

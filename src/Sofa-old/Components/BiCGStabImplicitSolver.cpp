@@ -1,9 +1,9 @@
 // Author: Jeremie Allard, Sim Group @ CIMIT, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include "Sofa/Components/BiCGStabImplicitSolver.h"
-//#include "Sofa/Core/IntegrationGroup.h"
-#include "Sofa/Core/MultiVector.h"
+#include "Sofa-old/Components/BiCGStabImplicitSolver.h"
+//#include "Sofa-old/Core/IntegrationGroup.h"
+#include "Sofa-old/Core/MultiVector.h"
 #include "Common/ObjectFactory.h"
 
 #include <math.h>

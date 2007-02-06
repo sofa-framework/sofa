@@ -2,7 +2,7 @@
 #define SOFA_COMPONENTS_PIPELINESOFA_H
 
 #include "Collision/Pipeline.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 
 namespace Sofa
 {

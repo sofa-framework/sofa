@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Sofa/Core/Topology.h"
+#include "Sofa-old/Core/Topology.h"
 #include "Common/fixed_array.h"
 #include "Common/vector.h"
 

@@ -4,9 +4,9 @@
 //#include <stdlib.h>
 #include <vector>
 //#include <string>
-#include <Sofa/Core/BasicTopology.h>
-#include <Sofa/Core/MechanicalObject.h>
-#include <Sofa/Components/Common/fixed_array.h>
+#include <Sofa-old/Core/BasicTopology.h>
+#include <Sofa-old/Core/MechanicalObject.h>
+#include <Sofa-old/Components/Common/fixed_array.h>
 
 namespace Sofa
 {

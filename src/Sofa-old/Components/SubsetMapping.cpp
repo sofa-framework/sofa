@@ -1,11 +1,11 @@
 #include "SubsetMapping.inl"
 
-#include "Sofa/Core/MechanicalMapping.inl"
+#include "Sofa-old/Core/MechanicalMapping.inl"
 
 #include "Common/Vec3Types.h"
 #include "Common/ObjectFactory.h"
-#include "Sofa/Core/MappedModel.h"
-#include "Sofa/Core/MechanicalModel.h"
+#include "Sofa-old/Core/MappedModel.h"
+#include "Sofa-old/Core/MechanicalModel.h"
 
 namespace Sofa
 {

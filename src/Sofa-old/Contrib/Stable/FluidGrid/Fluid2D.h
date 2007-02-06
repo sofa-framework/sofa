@@ -2,11 +2,11 @@
 #define SOFA_CONTRIB_FLUIDGRID2D_FLUID2D_H
 
 #include "Grid2D.h"
-#include <Sofa/Abstract/BehaviorModel.h>
-#include <Sofa/Abstract/VisualModel.h>
-#include <Sofa/Components/Common/Field.h>
-#include <Sofa/Components/Common/DataField.h>
-#include <Sofa/Components/ImplicitSurfaceMapping.h>
+#include <Sofa-old/Abstract/BehaviorModel.h>
+#include <Sofa-old/Abstract/VisualModel.h>
+#include <Sofa-old/Components/Common/Field.h>
+#include <Sofa-old/Components/Common/DataField.h>
+#include <Sofa-old/Components/ImplicitSurfaceMapping.h>
 
 namespace Sofa
 {

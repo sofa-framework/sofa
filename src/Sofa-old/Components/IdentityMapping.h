@@ -1,8 +1,8 @@
 #ifndef SOFA_COMPONENTS_IDENTITYMAPPING_H
 #define SOFA_COMPONENTS_IDENTITYMAPPING_H
 
-#include "Sofa/Core/MechanicalMapping.h"
-#include "Sofa/Core/MechanicalModel.h"
+#include "Sofa-old/Core/MechanicalMapping.h"
+#include "Sofa-old/Core/MechanicalModel.h"
 #include <vector>
 
 namespace Sofa

@@ -1,8 +1,8 @@
 #ifndef SOFA_COMPONENTS_GRAVITY_H
 #define SOFA_COMPONENTS_GRAVITY_H
 
-#include <Sofa/Components/Common/Vec.h>
-#include <Sofa/Abstract/ContextObject.h>
+#include <Sofa-old/Components/Common/Vec.h>
+#include <Sofa-old/Abstract/ContextObject.h>
 
 namespace Sofa
 {

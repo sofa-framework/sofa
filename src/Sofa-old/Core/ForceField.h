@@ -3,8 +3,8 @@
 
 #include "BasicForceField.h"
 #include "MechanicalModel.h"
-#include "Sofa/Components/Common/SofaBaseMatrix.h"
-#include "Sofa/Components/Common/SofaBaseVector.h"
+#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
+#include "Sofa-old/Components/Common/SofaBaseVector.h"
 
 namespace Sofa
 {

@@ -1,11 +1,11 @@
 #ifndef SOFA_CORE_BASICCONSTRAINT_H
 #define SOFA_CORE_BASICCONSTRAINT_H
 
-#include "Sofa/Abstract/BaseObject.h"
-#include "Sofa/Core/BasicMechanicalModel.h"
+#include "Sofa-old/Abstract/BaseObject.h"
+#include "Sofa-old/Core/BasicMechanicalModel.h"
 
-#include "Sofa/Components/Common/SofaBaseMatrix.h"
-#include "Sofa/Components/Common/SofaBaseVector.h"
+#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
+#include "Sofa-old/Components/Common/SofaBaseVector.h"
 
 #include <vector>
 

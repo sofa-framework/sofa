@@ -5,7 +5,7 @@
 #include "Common/Mesh.h"
 #include "GL/template.h"
 
-#include "Sofa/Core/MechanicalMapping.inl"
+#include "Sofa-old/Core/MechanicalMapping.inl"
 
 #include <string>
 

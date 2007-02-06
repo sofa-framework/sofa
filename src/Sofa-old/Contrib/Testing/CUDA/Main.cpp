@@ -5,18 +5,18 @@
 
 #include "mycuda.h"
 
-#include "Sofa/Components/Graph/Simulation.h"
-#include "Sofa/Components/Graph/Action.h"
-#include "Sofa/Components/Common/Factory.h"
-#include "Sofa/Components/Thread/CTime.h"
-#include "Sofa/Components/Thread/Automate.h"
-#include "Sofa/Components/Thread/ThreadSimulation.h"
-#include "Sofa/Components/Thread/ExecBus.h"
-#include "Sofa/Components/Thread/Node.h"
+#include "Sofa-old/Components/Graph/Simulation.h"
+#include "Sofa-old/Components/Graph/Action.h"
+#include "Sofa-old/Components/Common/Factory.h"
+#include "Sofa-old/Components/Thread/CTime.h"
+#include "Sofa-old/Components/Thread/Automate.h"
+#include "Sofa-old/Components/Thread/ThreadSimulation.h"
+#include "Sofa-old/Components/Thread/ExecBus.h"
+#include "Sofa-old/Components/Thread/Node.h"
 #if defined(SOFA_GUI_QT)
-#include "Sofa/GUI/QT/Main.h"
+#include "Sofa-old/GUI/QT/Main.h"
 #elif defined(SOFA_GUI_FLTK)
-#include "Sofa/GUI/FLTK/Main.h"
+#include "Sofa-old/GUI/FLTK/Main.h"
 #endif
 
 using Sofa::Components::Thread::CTime;

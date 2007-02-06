@@ -2,12 +2,12 @@
 #define _TENSORMASSFORCEFIELD_H_
 
 
-#include "Sofa/Core/ForceField.h"
-#include "Sofa/Core/MechanicalObject.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Core/ForceField.h"
+#include "Sofa-old/Core/MechanicalObject.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 
-#include "Sofa/Components/Common/SofaBaseMatrix.h"
-#include "Sofa/Components/Common/SofaBaseVector.h"
+#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
+#include "Sofa-old/Components/Common/SofaBaseVector.h"
 
 
 namespace Sofa

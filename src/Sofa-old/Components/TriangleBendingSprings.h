@@ -13,7 +13,7 @@
 #define TriangleBendingSprings_h
 
 #include "StiffSpringForceField.h"
-#include "Sofa/Core/MechanicalObject.h"
+#include "Sofa-old/Core/MechanicalObject.h"
 #include <map>
 
 namespace Sofa

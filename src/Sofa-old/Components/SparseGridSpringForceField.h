@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_GRIDSPRINGFORCEFIELD_H
 #define SOFA_COMPONENTS_GRIDSPRINGFORCEFIELD_H
 
-#include "Sofa/Components/StiffSpringForceField.h"
+#include "Sofa-old/Components/StiffSpringForceField.h"
 #include "MultiResSparseGridTopology.h"
 
 namespace Sofa

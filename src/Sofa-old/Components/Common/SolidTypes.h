@@ -11,12 +11,12 @@
 #ifndef Sofa_ComponentsSolidTypes_h
 #define Sofa_ComponentsSolidTypes_h
 
-//#include <Sofa/Abstract/BaseContext.h>
-#include <Sofa/Components/Common/Vec.h>
-#include <Sofa/Components/Common/Quat.h>
-#include <Sofa/Components/Common/Mat.h>
-#include <Sofa/Components/Common/fixed_array.h>
-#include <Sofa/Components/Common/vector.h>
+//#include <Sofa-old/Abstract/BaseContext.h>
+#include <Sofa-old/Components/Common/Vec.h>
+#include <Sofa-old/Components/Common/Quat.h>
+#include <Sofa-old/Components/Common/Mat.h>
+#include <Sofa-old/Components/Common/fixed_array.h>
+#include <Sofa-old/Components/Common/vector.h>
 #include <iostream>
 
 namespace Sofa

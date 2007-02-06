@@ -1,8 +1,8 @@
 #ifndef SOFA_COMPONENTS_IMPLICITSURFACEMAPPING_H
 #define SOFA_COMPONENTS_IMPLICITSURFACEMAPPING_H
 
-#include "Sofa/Core/Mapping.h"
-#include "Sofa/Core/MechanicalModel.h"
+#include "Sofa-old/Core/Mapping.h"
+#include "Sofa-old/Core/MechanicalModel.h"
 #include "MeshTopology.h"
 #include <vector>
 

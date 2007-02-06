@@ -5,8 +5,8 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Sofa/Abstract/BaseObject.h"
-#include "Sofa/Abstract/BehaviorModel.h"
+#include "Sofa-old/Abstract/BaseObject.h"
+#include "Sofa-old/Abstract/BehaviorModel.h"
 
 namespace Sofa
 {

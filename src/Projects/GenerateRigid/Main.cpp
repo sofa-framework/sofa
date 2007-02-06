@@ -1,5 +1,5 @@
 #include "GenerateRigid.h"
-#include "Sofa/Components/init.h"
+#include "Sofa-old/Components/init.h"
 #include <iostream>
 #include <fstream>
 

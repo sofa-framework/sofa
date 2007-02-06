@@ -1,7 +1,7 @@
 #include "EdgeSetTopology.h"
 #include "EdgeSetTopology.inl"
-#include "Sofa/Components/Common/Vec3Types.h"
-#include "Sofa/Components/Common/ObjectFactory.h"
+#include "Sofa-old/Components/Common/Vec3Types.h"
+#include "Sofa-old/Components/Common/ObjectFactory.h"
 
 namespace Sofa
 {

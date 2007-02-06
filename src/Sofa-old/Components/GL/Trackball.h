@@ -51,7 +51,7 @@
 #ifndef SOFA_COMPONENTS_GL_TRACKBALL_H
 #define SOFA_COMPONENTS_GL_TRACKBALL_H
 
-#include "Sofa/Components/Common/Quat.h"
+#include "Sofa-old/Components/Common/Quat.h"
 
 namespace Sofa
 {

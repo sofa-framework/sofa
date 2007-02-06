@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_FIXEDPLANECONSTRAINT_INL
 #define SOFA_COMPONENTS_FIXEDPLANECONSTRAINT_INL
 
-#include "Sofa/Core/Constraint.inl"
+#include "Sofa-old/Core/Constraint.inl"
 #include "FixedPlaneConstraint.h"
 #include "GL/template.h"
 #include "Common/RigidTypes.h"

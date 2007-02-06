@@ -1,10 +1,10 @@
 #ifndef SOFA_COMPONENTS_SUBSETMAPPING_H
 #define SOFA_COMPONENTS_SUBSETMAPPING_H
 
-#include "Sofa/Core/MechanicalMapping.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Components/Common/DataField.h"
-#include "Sofa/Components/Common/vector.h"
+#include "Sofa-old/Core/MechanicalMapping.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Components/Common/DataField.h"
+#include "Sofa-old/Components/Common/vector.h"
 #include <vector>
 
 namespace Sofa

@@ -2,8 +2,8 @@
 #define SOFA_CORE_INTERACTIONFORCEFIELD_H
 
 #include "ForceField.h"
-#include "Sofa/Components/Common/SofaBaseMatrix.h"
-#include "Sofa/Components/Common/SofaBaseVector.h"
+#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
+#include "Sofa-old/Components/Common/SofaBaseVector.h"
 
 namespace Sofa
 {

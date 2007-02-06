@@ -2,8 +2,8 @@
 #define SOFA_COMPONENTS_XML_BASENODE_H
 
 #include "../Common/Factory.h"
-#include "Sofa/Abstract/Base.h"
-#include "Sofa/Abstract/BaseContext.h"
+#include "Sofa-old/Abstract/Base.h"
+#include "Sofa-old/Abstract/BaseContext.h"
 #include <string>
 #include <list>
 #include <map>

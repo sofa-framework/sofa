@@ -6,8 +6,8 @@
 #endif
 
 #include "SPHFluidForceField.h"
-#include "Sofa/Core/Mapping.h"
-#include "Sofa/Core/MechanicalModel.h"
+#include "Sofa-old/Core/Mapping.h"
+#include "Sofa-old/Core/MechanicalModel.h"
 #include "MeshTopology.h"
 #include "ImplicitSurfaceMapping.h" // for marching cube tables
 #include <vector>

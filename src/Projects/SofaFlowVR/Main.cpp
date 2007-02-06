@@ -6,22 +6,22 @@
 #include <flowvr/render/chunkwriter.h>
 //#include <flowvr/interact/chunkwriter.h>
 
-#include "Sofa/Components/Graph/Simulation.h"
-#include "Sofa/Components/Graph/Action.h"
-#include "Sofa/Components/Graph/ParallelActionScheduler.h"
-#include "Sofa/Components/Graph/CactusStackStorage.h"
-#include <Sofa/Components/Common/ObjectFactory.h>
-#include "Sofa/Components/Common/Vec3Types.h"
-#include "Sofa/Components/Common/BackTrace.h"
-#include "Sofa/Components/Thread/CTime.h"
-#include "Sofa/Abstract/Event.h"
-#include "Sofa/Components/AnimateBeginEvent.h"
-#include "Sofa/Components/AnimateEndEvent.h"
-#include "Sofa/Components/MeshTopology.h"
+#include "Sofa-old/Components/Graph/Simulation.h"
+#include "Sofa-old/Components/Graph/Action.h"
+#include "Sofa-old/Components/Graph/ParallelActionScheduler.h"
+#include "Sofa-old/Components/Graph/CactusStackStorage.h"
+#include <Sofa-old/Components/Common/ObjectFactory.h>
+#include "Sofa-old/Components/Common/Vec3Types.h"
+#include "Sofa-old/Components/Common/BackTrace.h"
+#include "Sofa-old/Components/Thread/CTime.h"
+#include "Sofa-old/Abstract/Event.h"
+#include "Sofa-old/Components/AnimateBeginEvent.h"
+#include "Sofa-old/Components/AnimateEndEvent.h"
+#include "Sofa-old/Components/MeshTopology.h"
 #if defined(SOFA_GUI_QT)
-#include "Sofa/GUI/QT/Main.h"
+#include "Sofa-old/GUI/QT/Main.h"
 #elif defined(SOFA_GUI_FLTK)
-#include "Sofa/GUI/FLTK/Main.h"
+#include "Sofa-old/GUI/FLTK/Main.h"
 #endif
 using Sofa::Components::Thread::CTime;
 using Sofa::Components::Thread::ctime_t;

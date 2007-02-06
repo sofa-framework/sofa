@@ -1,13 +1,13 @@
 #ifndef SOFA_COMPONENTS_BARYCENTRICMAPPING_INL
 #define SOFA_COMPONENTS_BARYCENTRICMAPPING_INL
 
-#include "Sofa/Components/Common/config.h"
-#include "Sofa/Components/Common/Mat.h"
+#include "Sofa-old/Components/Common/config.h"
+#include "Sofa-old/Components/Common/Mat.h"
 #include "BarycentricMapping.h"
 #include "RegularGridTopology.h"
 #include "MultiResSparseGridTopology.h"
 
-#include "Sofa/Core/MechanicalMapping.inl"
+#include "Sofa-old/Core/MechanicalMapping.inl"
 #include "GL/template.h"
 
 #include <GL/gl.h>

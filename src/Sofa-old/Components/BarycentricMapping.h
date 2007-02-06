@@ -1,9 +1,9 @@
 #ifndef SOFA_COMPONENTS_BARYCENTRICMAPPING_H
 #define SOFA_COMPONENTS_BARYCENTRICMAPPING_H
 
-#include "Sofa/Core/MechanicalMapping.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Core/MechanicalMapping.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 #include "MeshTopology.h"
 #include "MultiResSparseGridTopology.h"
 #include "RegularGridTopology.h"

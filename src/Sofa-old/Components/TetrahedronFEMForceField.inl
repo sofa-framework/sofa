@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_INL
 #define SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_INL
 
-#include "Sofa/Core/ForceField.inl"
+#include "Sofa-old/Core/ForceField.inl"
 #include "TetrahedronFEMForceField.h"
 #include "MeshTopology.h"
 #include "GridTopology.h"

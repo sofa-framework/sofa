@@ -2,7 +2,7 @@
 #define SOFA_CONTRIB_CUDA_CUDAUNIFORMMASS_INL
 
 #include "CudaUniformMass.h"
-#include "Sofa/Components/UniformMass.inl"
+#include "Sofa-old/Components/UniformMass.inl"
 
 namespace Sofa
 {

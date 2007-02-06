@@ -1,8 +1,8 @@
 #ifndef SOFA_CORE_BASICMECHANICALMODEL_H
 #define SOFA_CORE_BASICMECHANICALMODEL_H
 
-#include "Sofa/Abstract/BaseObject.h"
-#include "Sofa/Core/Encoding.h"
+#include "Sofa-old/Abstract/BaseObject.h"
+#include "Sofa-old/Core/Encoding.h"
 #include <iostream>
 
 namespace Sofa

@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_GRAPH_LOCALSTORAGE_H
 #define SOFA_COMPONENTS_GRAPH_LOCALSTORAGE_H
 
-#include "Sofa/Abstract/BaseObject.h"
+#include "Sofa-old/Abstract/BaseObject.h"
 
 namespace Sofa
 {

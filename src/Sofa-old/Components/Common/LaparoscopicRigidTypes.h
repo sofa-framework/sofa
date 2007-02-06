@@ -2,9 +2,9 @@
 #define SOFA_COMPONENTS_COMMON_LAPAROSCOPICRIGIDTYPES_H
 
 #include "RigidTypes.h"
-#include <Sofa/Core/Context.h>
-#include <Sofa/Core/Mass.h>
-#include <Sofa/Components/Common/vector.h>
+#include <Sofa-old/Core/Context.h>
+#include <Sofa-old/Core/Mass.h>
+#include <Sofa-old/Components/Common/vector.h>
 #include <iostream>
 using std::endl;
 

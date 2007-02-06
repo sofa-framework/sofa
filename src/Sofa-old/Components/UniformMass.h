@@ -2,10 +2,10 @@
 #define SOFA_COMPONENTS_UNIFORMMASS_H
 
 #include "Common/Vec3Types.h"
-#include "Sofa/Core/Mass.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Abstract/VisualModel.h"
-#include "Sofa/Components/CoordinateSystem.h"
+#include "Sofa-old/Core/Mass.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
+#include "Sofa-old/Components/CoordinateSystem.h"
 
 namespace Sofa
 {

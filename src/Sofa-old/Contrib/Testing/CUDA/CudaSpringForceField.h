@@ -2,9 +2,9 @@
 #define SOFA_CONTRIB_CUDA_CUDASPRINGFORCEFIELD_H
 
 #include "CudaTypes.h"
-#include "Sofa/Components/SpringForceField.h"
-#include "Sofa/Components/StiffSpringForceField.h"
-#include "Sofa/Components/MeshSpringForceField.h"
+#include "Sofa-old/Components/SpringForceField.h"
+#include "Sofa-old/Components/StiffSpringForceField.h"
+#include "Sofa-old/Components/MeshSpringForceField.h"
 
 namespace Sofa
 {

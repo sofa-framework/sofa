@@ -1,5 +1,5 @@
 #include "CollisionGroupManagerSofa.h"
-#include "Sofa/Abstract/CollisionModel.h"
+#include "Sofa-old/Abstract/CollisionModel.h"
 #include "Common/config.h"
 #include "Common/FnDispatcher.h"
 #include "Common/FnDispatcher.inl"

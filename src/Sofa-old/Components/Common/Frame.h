@@ -1,9 +1,9 @@
 #ifndef SOFA_COMPONENTS_COMMON_FRAME_H
 #define SOFA_COMPONENTS_COMMON_FRAME_H
 
-#include <Sofa/Components/Common/Vec.h>
-#include <Sofa/Components/Common/Mat.h>
-#include <Sofa/Components/Common/Quat.h>
+#include <Sofa-old/Components/Common/Vec.h>
+#include <Sofa-old/Components/Common/Mat.h>
+#include <Sofa-old/Components/Common/Quat.h>
 
 namespace Sofa
 {

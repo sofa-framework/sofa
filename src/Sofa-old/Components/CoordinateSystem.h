@@ -4,9 +4,9 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 
-#include <Sofa/Abstract/ContextObject.h>
-#include <Sofa/Abstract/VisualModel.h>
-#include <Sofa/Components/Common/SolidTypes.h>
+#include <Sofa-old/Abstract/ContextObject.h>
+#include <Sofa-old/Abstract/VisualModel.h>
+#include <Sofa-old/Components/Common/SolidTypes.h>
 
 namespace Sofa
 {

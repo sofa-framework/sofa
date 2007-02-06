@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <Sofa/Components/Common/vector.h>
+#include <Sofa-old/Components/Common/vector.h>
 
 namespace Projects
 {

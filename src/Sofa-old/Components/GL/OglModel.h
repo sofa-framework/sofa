@@ -10,14 +10,14 @@
 #include <GL/gl.h>
 
 #include "Texture.h"
-#include "Sofa/Abstract/VisualModel.h"
-//#include "Sofa/Components/VisualLoader.h"
+#include "Sofa-old/Abstract/VisualModel.h"
+//#include "Sofa-old/Components/VisualLoader.h"
 //#include "Common/InterfaceVertex.h"
 //#include "Common/InterfaceTransformation.h"
-#include "Sofa/Core/MappedModel.h"
-#include "Sofa/Components/Common/Vec.h"
-#include "Sofa/Components/Common/Vec3Types.h"
-#include "Sofa/Components/Common/Mesh.h"
+#include "Sofa-old/Core/MappedModel.h"
+#include "Sofa-old/Components/Common/Vec.h"
+#include "Sofa-old/Components/Common/Vec3Types.h"
+#include "Sofa-old/Components/Common/Mesh.h"
 
 namespace Sofa
 {

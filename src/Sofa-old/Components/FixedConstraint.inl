@@ -1,12 +1,12 @@
 #ifndef SOFA_COMPONENTS_FIXEDCONSTRAINT_INL
 #define SOFA_COMPONENTS_FIXEDCONSTRAINT_INL
 
-#include "Sofa/Core/Constraint.inl"
+#include "Sofa-old/Core/Constraint.inl"
 #include "FixedConstraint.h"
 #include "GL/template.h"
 #include "Common/RigidTypes.h"
 #include "Topology/TopologyChangedEvent.h"
-#include "Sofa/Core/BasicTopology.h"
+#include "Sofa-old/Core/BasicTopology.h"
 #include <iostream>
 using std::cerr;
 using std::endl;

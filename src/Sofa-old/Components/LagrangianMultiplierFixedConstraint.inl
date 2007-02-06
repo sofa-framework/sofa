@@ -2,8 +2,8 @@
 #define SOFA_COMPONENTS_LagrangianMultiplierFixedConstraint_INL
 
 #include "LagrangianMultiplierFixedConstraint.h"
-#include "Sofa/Core/Constraint.inl"
-#include "Sofa/Core/MechanicalObject.inl"
+#include "Sofa-old/Core/Constraint.inl"
+#include "Sofa-old/Core/MechanicalObject.inl"
 #include "Common/config.h"
 #include <assert.h>
 #include <GL/gl.h>

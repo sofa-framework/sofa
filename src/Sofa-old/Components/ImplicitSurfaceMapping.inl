@@ -3,7 +3,7 @@
 
 #include "ImplicitSurfaceMapping.h"
 
-#include "Sofa/Core/Mapping.inl"
+#include "Sofa-old/Core/Mapping.inl"
 #include "Common/rmath.h"
 
 #include <map>

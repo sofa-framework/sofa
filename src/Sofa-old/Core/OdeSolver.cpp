@@ -1,7 +1,7 @@
 #include "OdeSolver.h"
-#include "Sofa/Components/Graph/MechanicalAction.h"
-#include "Sofa/Components/Graph/MechanicalVPrintAction.h"
-#include "Sofa/Core/MultiVector.h"
+#include "Sofa-old/Components/Graph/MechanicalAction.h"
+#include "Sofa-old/Components/Graph/MechanicalVPrintAction.h"
+#include "Sofa-old/Core/MultiVector.h"
 
 #include <stdlib.h>
 #include <math.h>

@@ -12,7 +12,7 @@
 #ifndef SOFA_COMPONENTS_ANIMATEENDEVENT_H
 #define SOFA_COMPONENTS_ANIMATEENDEVENT_H
 
-#include <Sofa/Abstract/Event.h>
+#include <Sofa-old/Abstract/Event.h>
 
 namespace Sofa
 {

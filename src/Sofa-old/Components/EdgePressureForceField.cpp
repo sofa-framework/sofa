@@ -1,7 +1,7 @@
 #include "EdgePressureForceField.h"
 
 #include "Common/ObjectFactory.h"
-#include "Sofa/Components/MeshTopology.h"
+#include "Sofa-old/Components/MeshTopology.h"
 
 #include "MeshTopology.h"
 #include "GL/template.h"

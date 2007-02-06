@@ -3,7 +3,7 @@
 
 #include "IdentityMapping.h"
 
-#include "Sofa/Core/MechanicalMapping.inl"
+#include "Sofa-old/Core/MechanicalMapping.inl"
 
 namespace Sofa
 {

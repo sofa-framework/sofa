@@ -2,8 +2,8 @@
 #define SOFA_COMPONENTS_READSTATE_INL
 
 #include "ReadState.h"
-#include "Sofa/Components/Graph/MechanicalAction.h"
-#include "Sofa/Components/Graph/UpdateMappingAction.h"
+#include "Sofa-old/Components/Graph/MechanicalAction.h"
+#include "Sofa-old/Components/Graph/UpdateMappingAction.h"
 
 #include <sstream>
 

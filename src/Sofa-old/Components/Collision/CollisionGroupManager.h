@@ -2,7 +2,7 @@
 #define SOFA_COMPONENTS_COLLISION_COLLISIONGROUPMANAGER_H
 
 #include "Contact.h"
-#include "Sofa/Abstract/BaseObject.h"
+#include "Sofa-old/Abstract/BaseObject.h"
 
 #include <vector>
 

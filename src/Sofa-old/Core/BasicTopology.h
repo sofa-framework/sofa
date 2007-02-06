@@ -6,7 +6,7 @@
 #include <list>
 #include <string>
 #include <iostream>
-#include "Sofa/Abstract/BaseObject.h"
+#include "Sofa-old/Abstract/BaseObject.h"
 
 namespace Sofa
 {

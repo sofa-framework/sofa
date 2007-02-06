@@ -3,9 +3,9 @@
 #include "Common/RigidTypes.h"
 #include "Common/LaparoscopicRigidTypes.h"
 #include "Common/ObjectFactory.h"
-#include "Sofa/Core/MappedModel.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Core/MechanicalMapping.inl"
+#include "Sofa-old/Core/MappedModel.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Core/MechanicalMapping.inl"
 
 namespace Sofa
 {

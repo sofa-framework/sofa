@@ -4,9 +4,9 @@
 
 #include "PointSetTopology.h"
 #include "TopologyChangedEvent.h"
-#include <Sofa/Components/Graph/PropagateEventAction.h>
-#include <Sofa/Components/Graph/GNode.h>
-#include <Sofa/Components/MeshTopologyLoader.h>
+#include <Sofa-old/Components/Graph/PropagateEventAction.h>
+#include <Sofa-old/Components/Graph/GNode.h>
+#include <Sofa-old/Components/MeshTopologyLoader.h>
 
 namespace Sofa
 {

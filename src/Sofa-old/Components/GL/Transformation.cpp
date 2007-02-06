@@ -1,6 +1,6 @@
 #include "Transformation.h"
 
-#include "Sofa/Components/Common/config.h"
+#include "Sofa-old/Components/Common/config.h"
 #include <GL/gl.h>
 
 namespace Sofa

@@ -1,5 +1,5 @@
-#include "Sofa/Components/RungeKutta4Solver.h"
-#include "Sofa/Core/MultiVector.h"
+#include "Sofa-old/Components/RungeKutta4Solver.h"
+#include "Sofa-old/Core/MultiVector.h"
 #include "Common/ObjectFactory.h"
 
 #include <math.h>

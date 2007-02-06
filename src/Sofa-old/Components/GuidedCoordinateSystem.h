@@ -12,7 +12,7 @@
 #ifndef Sofa_ComponentsGuidedCoordinateSystem_h
 #define Sofa_ComponentsGuidedCoordinateSystem_h
 
-//#include <Sofa/Core/BasicConstraint.h>
+//#include <Sofa-old/Core/BasicConstraint.h>
 #include "CoordinateSystem.h"
 
 namespace Sofa

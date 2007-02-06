@@ -2,7 +2,7 @@
 #define SOFA_COMPONENTS_XML_OBJECTNODE_H
 
 #include "Node.h"
-#include "Sofa/Abstract/BaseObject.h"
+#include "Sofa-old/Abstract/BaseObject.h"
 
 namespace Sofa
 {

@@ -1,6 +1,6 @@
 #include "Intersection.inl"
 #include "DetectionOutput.h"
-#include "Sofa/Components/Common/FnDispatcher.h"
+#include "Sofa-old/Components/Common/FnDispatcher.h"
 
 namespace Sofa
 {

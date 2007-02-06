@@ -1,5 +1,5 @@
-#include "Sofa/Components/MassSpringLoader.h"
-#include "Sofa/Components/Common/Vec.h"
+#include "Sofa-old/Components/MassSpringLoader.h"
+#include "Sofa-old/Components/Common/Vec.h"
 
 #include <stdio.h>
 #include <iostream>

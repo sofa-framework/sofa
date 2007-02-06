@@ -1,9 +1,9 @@
 #ifndef SOFA_CONTRIB_FLUIDGRID3D_GRID3D_H
 #define SOFA_CONTRIB_FLUIDGRID3D_GRID3D_H
 
-#include <Sofa/Components/Common/Vec.h>
-#include <Sofa/Components/Common/Mat.h>
-#include <Sofa/Components/Common/rmath.h>
+#include <Sofa-old/Components/Common/Vec.h>
+#include <Sofa-old/Components/Common/Mat.h>
+#include <Sofa-old/Components/Common/rmath.h>
 
 #include <iostream>
 

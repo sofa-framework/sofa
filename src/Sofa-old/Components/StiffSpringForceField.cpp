@@ -3,7 +3,7 @@
 // Copyright: See COPYING file that comes with this distribution
 #include "StiffSpringForceField.inl"
 #include "Common/Vec3Types.h"
-#include "Sofa/Core/MechanicalModel.h"
+#include "Sofa-old/Core/MechanicalModel.h"
 #include "Common/ObjectFactory.h"
 
 namespace Sofa

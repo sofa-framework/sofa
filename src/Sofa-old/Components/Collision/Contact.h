@@ -3,7 +3,7 @@
 
 #include "DetectionOutput.h"
 #include "Intersection.h"
-#include "Sofa/Abstract/BaseContext.h"
+#include "Sofa-old/Abstract/BaseContext.h"
 #include "../Common/Factory.h"
 
 #include <vector>

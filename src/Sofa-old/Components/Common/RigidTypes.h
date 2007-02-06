@@ -4,9 +4,9 @@
 #include "Vec.h"
 #include "Mat.h"
 #include "Quat.h"
-#include <Sofa/Core/Context.h>
-#include <Sofa/Core/Mass.h>
-#include <Sofa/Components/Common/vector.h>
+#include <Sofa-old/Core/Context.h>
+#include <Sofa-old/Core/Mass.h>
+#include <Sofa-old/Components/Common/vector.h>
 #include <iostream>
 using std::endl;
 

@@ -6,13 +6,13 @@
 #endif
 
 #include "Common/Vec3Types.h"
-#include "Sofa/Core/Mass.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Abstract/VisualModel.h"
-#include "Sofa/Abstract/Event.h"
-#include "Sofa/Components/Common/vector.h"
-#include "Sofa/Components/Topology/PointData.h"
-#include "Sofa/Components/Topology/PointData.inl"
+#include "Sofa-old/Core/Mass.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
+#include "Sofa-old/Abstract/Event.h"
+#include "Sofa-old/Components/Common/vector.h"
+#include "Sofa-old/Components/Topology/PointData.h"
+#include "Sofa-old/Components/Topology/PointData.inl"
 namespace Sofa
 {
 using namespace Abstract;

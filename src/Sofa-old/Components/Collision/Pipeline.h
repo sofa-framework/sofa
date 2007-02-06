@@ -1,8 +1,8 @@
 #ifndef SOFA_COMPONENTS_COLLISION_PIPELINE_H
 #define SOFA_COMPONENTS_COLLISION_PIPELINE_H
 
-#include "Sofa/Abstract/CollisionModel.h"
-#include "Sofa/Abstract/CollisionElement.h"
+#include "Sofa-old/Abstract/CollisionModel.h"
+#include "Sofa-old/Abstract/CollisionElement.h"
 #include "Intersection.h"
 #include "BroadPhaseDetection.h"
 #include "NarrowPhaseDetection.h"

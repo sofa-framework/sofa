@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_COLLISION_DETECTIONOUTPUT_H
 #define SOFA_COMPONENTS_COLLISION_DETECTIONOUTPUT_H
 
-#include "Sofa/Abstract/CollisionElement.h"
+#include "Sofa-old/Abstract/CollisionElement.h"
 #include "../Common/Vec.h"
 #include <iostream>
 

@@ -1,9 +1,9 @@
 #ifndef SOFA_COMPONENTS_POINTMODEL_H
 #define SOFA_COMPONENTS_POINTMODEL_H
 
-#include "Sofa/Abstract/CollisionModel.h"
-#include "Sofa/Abstract/VisualModel.h"
-#include "Sofa/Core/MechanicalObject.h"
+#include "Sofa-old/Abstract/CollisionModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
+#include "Sofa-old/Core/MechanicalObject.h"
 #include "MeshTopology.h"
 #include "Common/Vec3Types.h"
 

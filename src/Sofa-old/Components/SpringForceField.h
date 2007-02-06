@@ -4,9 +4,9 @@
 #ifndef SOFA_COMPONENTS_SPRINGFORCEFIELD_H
 #define SOFA_COMPONENTS_SPRINGFORCEFIELD_H
 
-#include "Sofa/Core/InteractionForceField.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Core/InteractionForceField.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 #include "Common/Vec.h"
 
 #include <vector>

@@ -3,8 +3,8 @@
 
 //#include "host_runtime.h" // CUDA
 #include "mycuda.h"
-#include <Sofa/Components/Common/Vec.h>
-#include <Sofa/Components/Common/Factory.h>
+#include <Sofa-old/Components/Common/Vec.h>
+#include <Sofa-old/Components/Common/Factory.h>
 #include <iostream>
 
 namespace Sofa

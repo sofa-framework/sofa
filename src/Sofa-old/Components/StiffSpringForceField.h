@@ -4,7 +4,7 @@
 #ifndef SOFA_COMPONENTS_STIFFSPRINGFORCEFIELD_H
 #define SOFA_COMPONENTS_STIFFSPRINGFORCEFIELD_H
 
-#include "Sofa/Components/SpringForceField.h"
+#include "Sofa-old/Components/SpringForceField.h"
 
 namespace Sofa
 {

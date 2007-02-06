@@ -1,6 +1,6 @@
 #include "WashingMachineForceField.inl"
 #include "Common/Vec3Types.h"
-#include "Sofa/Core/MechanicalObject.h"
+#include "Sofa-old/Core/MechanicalObject.h"
 #include "Common/ObjectFactory.h"
 
 namespace Sofa

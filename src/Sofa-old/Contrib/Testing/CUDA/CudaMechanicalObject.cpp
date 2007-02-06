@@ -1,7 +1,7 @@
 #include "CudaTypes.h"
 #include "CudaMechanicalObject.inl"
-#include "Sofa/Components/Common/ObjectFactory.h"
-#include "Sofa/Components/MassSpringLoader.h"
+#include "Sofa-old/Components/Common/ObjectFactory.h"
+#include "Sofa-old/Components/MassSpringLoader.h"
 
 namespace Sofa
 {

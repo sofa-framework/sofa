@@ -1,7 +1,7 @@
 #ifndef SOFA_CORE_BASICMASS_H
 #define SOFA_CORE_BASICMASS_H
 
-#include "Sofa/Abstract/BaseObject.h"
+#include "Sofa-old/Abstract/BaseObject.h"
 
 namespace Sofa
 {

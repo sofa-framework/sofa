@@ -1,14 +1,14 @@
 #include <iostream>
 #include <fstream>
 #include "argumentParser.h"
-#include "Sofa/Components/Graph/Simulation.h"
-#include "Sofa/Components/Common/Factory.h"
-#include "Sofa/Components/Common/BackTrace.h"
+#include "Sofa-old/Components/Graph/Simulation.h"
+#include "Sofa-old/Components/Common/Factory.h"
+#include "Sofa-old/Components/Common/BackTrace.h"
 #ifdef SOFA_GUI_FLTK
-#include "Sofa/GUI/FLTK/Main.h"
+#include "Sofa-old/GUI/FLTK/Main.h"
 #endif
 #ifdef SOFA_GUI_QT
-#include "Sofa/GUI/QT/Main.h"
+#include "Sofa-old/GUI/QT/Main.h"
 #endif
 #include <GL/glut.h>
 

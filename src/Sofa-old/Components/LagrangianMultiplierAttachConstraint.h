@@ -1,9 +1,9 @@
 #ifndef SOFA_COMPONENTS_LagrangianMultiplierContactConstraint_H
 #define SOFA_COMPONENTS_LagrangianMultiplierContactConstraint_H
 
-#include "Sofa/Core/InteractionForceField.h"
+#include "Sofa-old/Core/InteractionForceField.h"
 #include "LagrangianMultiplierConstraint.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 
 #include <vector>
 

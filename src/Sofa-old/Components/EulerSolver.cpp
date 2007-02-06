@@ -1,5 +1,5 @@
-#include "Sofa/Components/EulerSolver.h"
-#include "Sofa/Core/MultiVector.h"
+#include "Sofa-old/Components/EulerSolver.h"
+#include "Sofa-old/Core/MultiVector.h"
 #include "Common/ObjectFactory.h"
 
 #include <math.h>

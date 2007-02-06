@@ -1,6 +1,6 @@
 #include "Context.h"
-// #include "Sofa/Components/Graph/MechanicalAction.h"
-// #include "Sofa/Components/Graph/MechanicalVPrintAction.h"
+// #include "Sofa-old/Components/Graph/MechanicalAction.h"
+// #include "Sofa-old/Components/Graph/MechanicalVPrintAction.h"
 
 namespace Sofa
 {

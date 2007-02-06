@@ -1,8 +1,8 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include "Sofa/Components/StaticSolver.h"
-#include "Sofa/Core/MultiVector.h"
+#include "Sofa-old/Components/StaticSolver.h"
+#include "Sofa-old/Core/MultiVector.h"
 #include "Common/ObjectFactory.h"
 
 #include <math.h>

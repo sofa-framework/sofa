@@ -2,7 +2,7 @@
 #define SOFA_CONTRIB_CUDA_CUDAMECHANICALOBJECT_INL
 
 #include "CudaMechanicalObject.h"
-#include "Sofa/Core/MechanicalObject.inl"
+#include "Sofa-old/Core/MechanicalObject.inl"
 
 
 namespace Sofa

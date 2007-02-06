@@ -4,8 +4,8 @@
 #include "EdgeSetTopology.h"
 #include "PointSetTopology.inl"
 #include "TopologyChangedEvent.h"
-#include <Sofa/Components/Graph/PropagateEventAction.h>
-#include <Sofa/Components/Graph/GNode.h>
+#include <Sofa-old/Components/Graph/PropagateEventAction.h>
+#include <Sofa-old/Components/Graph/GNode.h>
 #include <algorithm>
 #include <functional>
 

@@ -1,7 +1,7 @@
 #include "DiagonalMass.inl"
-#include "Sofa/Components/Common/ObjectFactory.h"
-#include "Sofa/Components/Common/Vec3Types.h"
-#include "Sofa/Components/Common/RigidTypes.h"
+#include "Sofa-old/Components/Common/ObjectFactory.h"
+#include "Sofa-old/Components/Common/Vec3Types.h"
+#include "Sofa-old/Components/Common/RigidTypes.h"
 #include "GL/Axis.h"
 
 namespace Sofa

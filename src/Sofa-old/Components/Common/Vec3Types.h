@@ -2,7 +2,7 @@
 #define SOFA_COMPONENTS_COMMON_VEC3TYPES_H
 
 #include "Vec.h"
-#include <Sofa/Components/Common/vector.h>
+#include <Sofa-old/Components/Common/vector.h>
 using Sofa::Components::Common::vector;
 #include <iostream>
 

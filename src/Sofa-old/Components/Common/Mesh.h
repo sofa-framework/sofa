@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_COMMON_MESH_H
 #define SOFA_COMPONENTS_COMMON_MESH_H
 
-#include <Sofa/Components/Common/vector.h>
+#include <Sofa-old/Components/Common/vector.h>
 #include "Vec.h"
 #include "Factory.h"
 

@@ -4,7 +4,7 @@
 #ifndef	SOFA_CORE_CONTEXT_H
 #define	SOFA_CORE_CONTEXT_H
 
-#include "Sofa/Abstract/BaseContext.h"
+#include "Sofa-old/Abstract/BaseContext.h"
 
 #include <iostream>
 #include <map>

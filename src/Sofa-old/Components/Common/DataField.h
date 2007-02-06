@@ -16,7 +16,7 @@
 #pragma once
 #endif
 
-#include "Sofa/Abstract/FieldBase.h"
+#include "Sofa-old/Abstract/FieldBase.h"
 #include <stdlib.h>
 #include <string>
 #include <sstream>

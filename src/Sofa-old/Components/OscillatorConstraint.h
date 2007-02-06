@@ -1,10 +1,10 @@
 #ifndef SOFA_COMPONENTS_OscillatorConstraint_H
 #define SOFA_COMPONENTS_OscillatorConstraint_H
 
-#include "Sofa/Core/Constraint.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Abstract/VisualModel.h"
-#include <Sofa/Components/Common/vector.h>
+#include "Sofa-old/Core/Constraint.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
+#include <Sofa-old/Components/Common/vector.h>
 
 
 namespace Sofa

@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_COLLISION_DETECTION_H
 #define SOFA_COMPONENTS_COLLISION_DETECTION_H
 
-#include "Sofa/Abstract/CollisionModel.h"
+#include "Sofa-old/Abstract/CollisionModel.h"
 #include "Intersection.h"
 #include <vector>
 #include <algorithm>

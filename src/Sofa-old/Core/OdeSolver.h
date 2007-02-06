@@ -1,8 +1,8 @@
 #ifndef SOFA_CORE_ODESOLVER_H
 #define SOFA_CORE_ODESOLVER_H
 
-#include "Sofa/Abstract/BaseObject.h"
-#include "Sofa/Components/Common/SofaBaseMatrix.h"
+#include "Sofa-old/Abstract/BaseObject.h"
+#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
 #include "Encoding.h"
 
 namespace Sofa

@@ -2,7 +2,7 @@
 #define SOFA_CONTRIB_CUDA_CUDAFIXEDCONSTRAINT_H
 
 #include "CudaTypes.h"
-#include "Sofa/Components/FixedConstraint.h"
+#include "Sofa-old/Components/FixedConstraint.h"
 
 namespace Sofa
 {

@@ -1,7 +1,7 @@
-#include "Sofa/Components/Gravity.h"
-#include "Sofa/Components/Common/Vec3Types.h"
-#include <Sofa/Components/Graph/GNode.h>
-#include "Sofa/Components/Common/ObjectFactory.h"
+#include "Sofa-old/Components/Gravity.h"
+#include "Sofa-old/Components/Common/Vec3Types.h"
+#include <Sofa-old/Components/Graph/GNode.h>
+#include "Sofa-old/Components/Common/ObjectFactory.h"
 
 #include <math.h>
 

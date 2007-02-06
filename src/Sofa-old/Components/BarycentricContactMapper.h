@@ -2,7 +2,7 @@
 #define SOFA_COMPONENTS_BARYCENTRICCONTACTMAPPER_H
 
 #include "BarycentricMapping.h"
-#include "Sofa/Core/MechanicalObject.h"
+#include "Sofa-old/Core/MechanicalObject.h"
 #include "Graph/GNode.h"
 #include "SphereModel.h"
 #include "SphereTreeModel.h"

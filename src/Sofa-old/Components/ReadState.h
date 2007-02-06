@@ -1,12 +1,12 @@
 #ifndef SOFA_COMPONENTS_READSTATE_H
 #define SOFA_COMPONENTS_READSTATE_H
 
-#include "Sofa/Core/ForceField.h"
-#include "Sofa/Core/MechanicalModel.h"
-#include "Sofa/Abstract/BaseObject.h"
-#include "Sofa/Abstract/Event.h"
-#include "Sofa/Components/AnimateBeginEvent.h"
-#include "Sofa/Components/AnimateEndEvent.h"
+#include "Sofa-old/Core/ForceField.h"
+#include "Sofa-old/Core/MechanicalModel.h"
+#include "Sofa-old/Abstract/BaseObject.h"
+#include "Sofa-old/Abstract/Event.h"
+#include "Sofa-old/Components/AnimateBeginEvent.h"
+#include "Sofa-old/Components/AnimateEndEvent.h"
 
 #include <fstream>
 

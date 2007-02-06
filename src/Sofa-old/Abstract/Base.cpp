@@ -10,7 +10,7 @@
 //
 //
 #include "Base.h"
-#include "Sofa/Components/Common/Factory.h"
+#include "Sofa-old/Components/Common/Factory.h"
 #include <map>
 
 namespace Sofa

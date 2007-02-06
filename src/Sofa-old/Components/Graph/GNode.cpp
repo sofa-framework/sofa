@@ -2,7 +2,7 @@
 #include "Action.h"
 #include "PropagateEventAction.h"
 #include "MutationListener.h"
-#include "Sofa/Components/XML/NodeNode.h"
+#include "Sofa-old/Components/XML/NodeNode.h"
 #include <iostream>
 using std::cerr;
 using std::endl;

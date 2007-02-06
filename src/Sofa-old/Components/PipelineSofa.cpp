@@ -1,5 +1,5 @@
 #include "PipelineSofa.h"
-#include "Sofa/Abstract/CollisionModel.h"
+#include "Sofa-old/Abstract/CollisionModel.h"
 #include "Graph/GNode.h"
 
 #include "Common/ObjectFactory.h"

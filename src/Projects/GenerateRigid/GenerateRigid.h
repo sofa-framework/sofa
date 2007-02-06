@@ -1,9 +1,9 @@
 #ifndef GENERATERIGID_H
 #define GENERATERIGID_H
 
-#include "Sofa/Components/Common/Mesh.h"
-#include "Sofa/Components/Common/RigidTypes.h"
-#include "Sofa/Components/Common/Vec.h"
+#include "Sofa-old/Components/Common/Mesh.h"
+#include "Sofa-old/Components/Common/RigidTypes.h"
+#include "Sofa-old/Components/Common/Vec.h"
 
 namespace Projects
 {

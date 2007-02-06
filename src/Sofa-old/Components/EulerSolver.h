@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_EULERSOLVER_H
 #define SOFA_COMPONENTS_EULERSOLVER_H
 
-#include <Sofa/Core/OdeSolver.h>
+#include <Sofa-old/Core/OdeSolver.h>
 
 namespace Sofa
 {

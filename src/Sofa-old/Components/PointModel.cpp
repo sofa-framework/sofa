@@ -1,7 +1,7 @@
 #include "PointModel.h"
 #include "CubeModel.h"
 #include "Point.h"
-#include "Sofa/Abstract/CollisionElement.h"
+#include "Sofa-old/Abstract/CollisionElement.h"
 #include "Common/ObjectFactory.h"
 #include <vector>
 #include <GL/gl.h>

@@ -1,6 +1,6 @@
 #include "Fluid3D.h"
-#include <Sofa/Components/GL/template.h>
-#include <Sofa/Components/Common/ObjectFactory.h>
+#include <Sofa-old/Components/GL/template.h>
+#include <Sofa-old/Components/Common/ObjectFactory.h>
 #include <iostream>
 
 namespace Sofa

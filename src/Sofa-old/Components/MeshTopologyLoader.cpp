@@ -1,5 +1,5 @@
-#include "Sofa/Components/MeshTopologyLoader.h"
-#include "Sofa/Components/Common/Vec.h"
+#include "Sofa-old/Components/MeshTopologyLoader.h"
+#include "Sofa-old/Components/Common/Vec.h"
 
 #include <stdio.h>
 #include <iostream>

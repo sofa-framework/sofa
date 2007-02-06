@@ -3,9 +3,9 @@
 // Copyright: See COPYING file that comes with this distribution
 
 #include "CoordinateSystem.h"
-#include <Sofa/Components/Common/ObjectFactory.h>
-#include <Sofa/Components/Common/Vec.h>
-#include <Sofa/Components/Graph/GNode.h>
+#include <Sofa-old/Components/Common/ObjectFactory.h>
+#include <Sofa-old/Components/Common/Vec.h>
+#include <Sofa-old/Components/Graph/GNode.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

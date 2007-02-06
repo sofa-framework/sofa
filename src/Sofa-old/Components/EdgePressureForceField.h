@@ -2,10 +2,10 @@
 #define _EDGEPRESSUREFORCEFIELD_H_
 
 
-#include "Sofa/Core/ForceField.h"
-#include "Sofa/Core/MechanicalObject.h"
-#include "Sofa/Abstract/VisualModel.h"
-#include "Sofa/Components/MeshTopology.h"
+#include "Sofa-old/Core/ForceField.h"
+#include "Sofa-old/Core/MechanicalObject.h"
+#include "Sofa-old/Abstract/VisualModel.h"
+#include "Sofa-old/Components/MeshTopology.h"
 
 #include "Common/Vec.h"
 #include "Common/Mat.h"

@@ -3,8 +3,8 @@
 
 #include "Collision/BroadPhaseDetection.h"
 #include "Collision/NarrowPhaseDetection.h"
-#include "Sofa/Abstract/CollisionElement.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Abstract/CollisionElement.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 #include "Common/Vec.h"
 
 #include <set>

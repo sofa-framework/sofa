@@ -1,11 +1,11 @@
 #ifndef SOFA_COMPONENTS_LAPAROSCOPICRIGIDMAPPING_H
 #define SOFA_COMPONENTS_LAPAROSCOPICRIGIDMAPPING_H
 
-#include "Sofa/Core/MechanicalMapping.h"
-#include "Sofa/Core/MechanicalModel.h"
+#include "Sofa-old/Core/MechanicalMapping.h"
+#include "Sofa-old/Core/MechanicalModel.h"
 #include "Common/RigidTypes.h"
 #include "Common/LaparoscopicRigidTypes.h"
-#include "Sofa/Abstract/VisualModel.h"
+#include "Sofa-old/Abstract/VisualModel.h"
 #include <vector>
 
 namespace Sofa

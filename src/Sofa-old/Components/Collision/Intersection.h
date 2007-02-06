@@ -1,9 +1,9 @@
 #ifndef SOFA_COMPONENTS_COLLISION_INTERSECTION_H
 #define SOFA_COMPONENTS_COLLISION_INTERSECTION_H
 
-#include "Sofa/Abstract/CollisionModel.h"
+#include "Sofa-old/Abstract/CollisionModel.h"
 #include "DetectionOutput.h"
-#include "Sofa/Components/Common/FnDispatcher.h"
+#include "Sofa-old/Components/Common/FnDispatcher.h"
 
 namespace Sofa
 {

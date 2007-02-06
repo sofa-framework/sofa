@@ -2,10 +2,10 @@
 #define SOFA_ABSTRACT_BASECONTEXT_H
 
 #include "Base.h"
-#include <Sofa/Components/Common/SolidTypes.h>
-//#include <Sofa/Components/Common/SofaBaseMatrix.h>
-//#include <Sofa/Components/Graph/Action.h>
-#include "Sofa/Core/Encoding.h"
+#include <Sofa-old/Components/Common/SolidTypes.h>
+//#include <Sofa-old/Components/Common/SofaBaseMatrix.h>
+//#include <Sofa-old/Components/Graph/Action.h>
+#include "Sofa-old/Core/Encoding.h"
 #include <set>
 
 namespace Sofa

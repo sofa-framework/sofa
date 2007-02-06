@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_PLANEFORCEFIELD_INL
 #define SOFA_COMPONENTS_PLANEFORCEFIELD_INL
 
-#include "Sofa/Core/ForceField.inl"
+#include "Sofa-old/Core/ForceField.inl"
 #include "PlaneForceField.h"
 #include "Common/config.h"
 #include <assert.h>

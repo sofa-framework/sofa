@@ -2,8 +2,8 @@
 #define SOFA_COMPONENTS_UNIFORMMASS_INL
 
 #include "UniformMass.h"
-#include "Sofa/Core/Mass.inl"
-#include <Sofa/Core/Context.h>
+#include "Sofa-old/Core/Mass.inl"
+#include <Sofa-old/Core/Context.h>
 #include "GL/template.h"
 #include "Common/RigidTypes.h"
 //#include "Common/SolidTypes.h"

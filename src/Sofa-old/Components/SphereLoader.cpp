@@ -1,4 +1,4 @@
-#include "Sofa/Components/SphereLoader.h"
+#include "Sofa-old/Components/SphereLoader.h"
 
 #include <stdio.h>
 #include <iostream>

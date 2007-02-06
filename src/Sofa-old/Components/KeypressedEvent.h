@@ -12,7 +12,7 @@
 #ifndef Sofa_ComponentsKeypressedEvent_h
 #define Sofa_ComponentsKeypressedEvent_h
 
-#include <Sofa/Abstract/Event.h>
+#include <Sofa-old/Abstract/Event.h>
 
 namespace Sofa
 {

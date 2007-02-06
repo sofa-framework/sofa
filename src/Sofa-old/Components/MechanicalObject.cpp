@@ -1,9 +1,9 @@
-#include "Sofa/Components/Common/ObjectFactory.h"
-#include "Sofa/Components/Common/Vec3Types.h"
-#include "Sofa/Components/Common/RigidTypes.h"
-#include "Sofa/Components/Common/LaparoscopicRigidTypes.h"
-#include "Sofa/Components/MassSpringLoader.h"
-#include "Sofa/Core/MechanicalObject.inl"
+#include "Sofa-old/Components/Common/ObjectFactory.h"
+#include "Sofa-old/Components/Common/Vec3Types.h"
+#include "Sofa-old/Components/Common/RigidTypes.h"
+#include "Sofa-old/Components/Common/LaparoscopicRigidTypes.h"
+#include "Sofa-old/Components/MassSpringLoader.h"
+#include "Sofa-old/Core/MechanicalObject.inl"
 
 namespace Sofa
 {

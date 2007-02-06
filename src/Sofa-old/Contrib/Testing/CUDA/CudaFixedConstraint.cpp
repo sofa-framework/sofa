@@ -1,5 +1,5 @@
 #include "CudaTypes.h"
-#include "Sofa/Components/Common/ObjectFactory.h"
+#include "Sofa-old/Components/Common/ObjectFactory.h"
 #include "CudaFixedConstraint.inl"
 
 namespace Sofa

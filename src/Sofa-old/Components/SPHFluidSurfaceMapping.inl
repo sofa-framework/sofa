@@ -4,7 +4,7 @@
 #include "SPHFluidSurfaceMapping.h"
 #include "SpatialGridContainer.inl"
 
-#include "Sofa/Core/Mapping.inl"
+#include "Sofa-old/Core/Mapping.inl"
 #include "Common/rmath.h"
 #include "Graph/GNode.h"
 #include "GL/template.h"

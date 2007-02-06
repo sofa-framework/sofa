@@ -2,8 +2,8 @@
 #define SOFA_COMPONENTS_LAGRANGIANMULTIPLIERCONSTRAINT_H
 
 #include "Common/Vec3Types.h"
-#include "Sofa/Core/Constraint.h"
-#include "Sofa/Core/MechanicalObject.h"
+#include "Sofa-old/Core/Constraint.h"
+#include "Sofa-old/Core/MechanicalObject.h"
 
 #include <vector>
 

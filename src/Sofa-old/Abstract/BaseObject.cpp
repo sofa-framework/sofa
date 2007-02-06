@@ -1,7 +1,7 @@
 #include "BaseObject.h"
 #include "Event.h"
-#include <Sofa/Components/KeypressedEvent.h>
-#include <Sofa/Components/XML/BaseNode.h>
+#include <Sofa-old/Components/KeypressedEvent.h>
+#include <Sofa-old/Components/XML/BaseNode.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

@@ -4,7 +4,7 @@
 #ifndef SOFA_COMPONENTS_STATICSOLVER_H
 #define SOFA_COMPONENTS_STATICSOLVER_H
 
-#include <Sofa/Core/OdeSolver.h>
+#include <Sofa-old/Core/OdeSolver.h>
 
 
 namespace Sofa

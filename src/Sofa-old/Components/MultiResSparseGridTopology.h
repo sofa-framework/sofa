@@ -3,7 +3,7 @@
 
 #include "GridTopology.h"
 #include "Common/Vec.h"
-#include <Sofa/Components/Common/vector.h>
+#include <Sofa-old/Components/Common/vector.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>

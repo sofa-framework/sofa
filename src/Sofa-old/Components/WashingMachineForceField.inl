@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENTS_WashingMachineForceField_inl
 #define SOFA_COMPONENTS_WashingMachineForceField_inl
 
-#include "Sofa/Core/ForceField.inl"
+#include "Sofa-old/Core/ForceField.inl"
 #include "WashingMachineForceField.h"
 #include "Common/config.h"
 #include <assert.h>
