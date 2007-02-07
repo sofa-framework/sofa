@@ -1,19 +1,25 @@
-#ifndef SOFA_CORE_TOPOLOGICALMAPPING_H
-#define SOFA_CORE_TOPOLOGICALMAPPING_H
+#ifndef SOFA_CORE_COMPONENTMODEL_TOPOLOGY_TOPOLOGICALMAPPING_H
+#define SOFA_CORE_COMPONENTMODEL_TOPOLOGY_TOPOLOGICALMAPPING_H
 
-#include "BasicMapping.h"
-#include "BasicTopology.h"
+#include <sofa/core/Mapping.h>
+#include <sofa/core/componentmodel/topology/Topology.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace topology
 {
 
 /** A class that translates TopologyChange objects from one topology to another so that they have a meaning and
- * reflect the effects of the first topology changes on the second topology.
- */
-class TopologicalMapping : public BasicMapping
+         * reflect the effects of the first topology changes on the second topology.
+         */
+class TopologicalMapping : public BaseMapping
 {
 
 public:
@@ -23,7 +29,7 @@ public:
      * @param from the topology issuing TopologyChange objects (the "source").
      * @param to   the topology for which the TopologyChange objects must be translated (the "target").
      */
-    TopologicalMapping(BasicTopology* from, BasicTopology* to)
+    TopologicalMapping(BaseTopology* from, BaseTopology* to)
         : m_from(from),
           m_to(to)
     {
@@ -41,22 +47,22 @@ public:
 
 
 
-    /** \brief Returns source BasicTopology.
+    /** \brief Returns source BaseTopology.
      *
      * Returns the topology issuing TopologyChange objects (the "source").
      */
-    Abstract::BaseObject* getFrom()
+    objectmodel::BaseObject* getFrom()
     {
         return m_from;
     }
 
 
 
-    /** \brief Returns target BasicTopology.
+    /** \brief Returns target BaseTopology.
      *
      * Returns the topology for which the TopologyChange objects must be translated (the "target").
      */
-    Abstract::BaseObject* getTo()
+    objectmodel::BaseObject* getTo()
     {
         return m_to;
     }
@@ -100,12 +106,12 @@ public:
 
 protected:
     /// The topology issuing TopologyChange objects (the "source").
-    BasicTopology* m_from;
+    BaseTopology* m_from;
 
 
 
     /// The topology for which the TopologyChange objects must be translated (the "target").
-    BasicTopology* m_to;
+    BaseTopology* m_to;
 
 
 
@@ -122,8 +128,12 @@ protected:
 
 };
 
-} // namespace Core
+} // namespace topology
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif // SOFA_CORE_TOPOLOGICALMAPPING_H

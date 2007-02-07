@@ -1,29 +1,30 @@
-#ifndef _EDGEPRESSUREFORCEFIELD_H_
-#define _EDGEPRESSUREFORCEFIELD_H_
+#ifndef SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_EDGEPRESSUREFORCEFIELD_H
 
 
-#include "Sofa-old/Core/ForceField.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Components/MeshTopology.h"
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 
-#include "Common/Vec.h"
-#include "Common/Mat.h"
 
 
-namespace Sofa
+namespace sofa
 {
 
-
-namespace Components
+namespace component
 {
 
+namespace forcefield
+{
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 
 template<class DataTypes>
-class EdgePressureForceField : public Core::BasicForceField, public Abstract::VisualModel
+class EdgePressureForceField : public core::componentmodel::behavior::BaseForceField, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -59,7 +60,7 @@ protected:
 
     std::vector<EdgePressureInformation> edgeInfo;
 
-    Core::MechanicalObject<DataTypes>* _object;
+    component::MechanicalObject<DataTypes>* _object;
 
     unsigned int nbEdges;  // number of edge pressure forces
 
@@ -78,7 +79,7 @@ protected:
 
 public:
 
-    EdgePressureForceField(Core::MechanicalObject<DataTypes>* object)
+    EdgePressureForceField(component::MechanicalObject<DataTypes>* object)
         : _object(object)
         , nbEdges(0)
         , _mesh(NULL)
@@ -107,7 +108,7 @@ public:
 
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateEdgeInformation(); }
 
-    Core::MechanicalObject<DataTypes>* getObject() { return _object; }
+    component::MechanicalObject<DataTypes>* getObject() { return _object; }
 
 protected :
     void updateEdgeInformation();
@@ -123,11 +124,10 @@ protected :
 };
 
 
-} // namespace Components
+} // namespace forcefield
 
+} // namespace component
 
-} // namespace Sofa
-
-
+} // namespace sofa
 
 #endif /* _EDGEPRESSUREFORCEFIELD_H_ */

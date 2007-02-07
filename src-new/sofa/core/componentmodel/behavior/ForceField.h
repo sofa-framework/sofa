@@ -1,19 +1,25 @@
-#ifndef SOFA_CORE_FORCEFIELD_H
-#define SOFA_CORE_FORCEFIELD_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_FORCEFIELD_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_FORCEFIELD_H
 
-#include "BasicForceField.h"
-#include "MechanicalModel.h"
-#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
-#include "Sofa-old/Components/Common/SofaBaseVector.h"
+#include <sofa/core/componentmodel/behavior/BaseForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/defaulttype/SofaBaseMatrix.h>
+#include <sofa/defaulttype/SofaBaseVector.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace behavior
 {
 
 template<class TDataTypes>
-class ForceField : public BasicForceField
+class ForceField : public BaseForceField
 {
 public:
     typedef TDataTypes DataTypes;
@@ -22,7 +28,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 
-    ForceField(MechanicalModel<DataTypes> *mm = NULL);
+    ForceField(MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~ForceField();
 
@@ -42,18 +48,22 @@ public:
 
     virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
 
-    virtual void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};
+    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &) {};
 
-    virtual void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int & ) {};
+    virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int & ) {};
 
-    virtual void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int & ) {};
+    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int & ) {};
 
 protected:
-    MechanicalModel<DataTypes> *mmodel;
+    MechanicalState<DataTypes> *mstate;
 };
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

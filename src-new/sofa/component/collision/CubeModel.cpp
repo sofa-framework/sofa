@@ -1,21 +1,24 @@
-#include "CubeModel.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/collision/CubeModel.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <GL/gl.h>
 #include <algorithm>
 #include <math.h>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace collision
 {
 
 SOFA_DECL_CLASS(Cube)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
-void create(CubeModel*& obj, ObjectDescription* arg)
+void create(CubeModel*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new CubeModel;
     if (obj!=NULL)
@@ -28,7 +31,7 @@ void create(CubeModel*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, CubeModel > CubeModelClass("Cube");
+Creator<simulation::tree::xml::ObjectFactory, CubeModel > CubeModelClass("Cube");
 
 CubeModel::CubeModel()
     : static_(false)
@@ -46,13 +49,13 @@ void CubeModel::resize(int size)
         parent->resize(0);
         parent = parent->getPrevious();
     }
-    this->Abstract::CollisionModel::resize(size);
+    this->core::CollisionModel::resize(size);
     this->elems.resize(size);
     this->parentOf.resize(size);
     // set additional indices
     for (int i=size0; i<size; ++i)
     {
-        this->elems[i].leaf = Abstract::CollisionElementIterator(getNext(), i);
+        this->elems[i].leaf = core::CollisionElementIterator(getNext(), i);
         this->parentOf[i] = i;
     }
 }
@@ -67,10 +70,10 @@ void CubeModel::setParentOf(int childIndex, const Vector3& min, const Vector3& m
 int CubeModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
 {
     int i = size;
-    this->Abstract::CollisionModel::resize(size+1);
+    this->core::CollisionModel::resize(size+1);
     elems.resize(size+1);
     elems[i].subcells = std::make_pair(subcellsBegin, subcellsEnd);
-    elems[i].leaf = Abstract::CollisionElementIterator();
+    elems[i].leaf = core::CollisionElementIterator();
     updateCube(i);
     return i;
 }
@@ -174,25 +177,25 @@ void CubeModel::draw()
         glDisable(GL_BLEND);
         glDepthMask(1);
     }
-    if (getPrevious()!=NULL && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
+    if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
-std::pair<Abstract::CollisionElementIterator,Abstract::CollisionElementIterator> CubeModel::getInternalChildren(int index) const
+std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getInternalChildren(int index) const
 {
     return elems[index].subcells;
 }
 
-std::pair<Abstract::CollisionElementIterator,Abstract::CollisionElementIterator> CubeModel::getExternalChildren(int index) const
+std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getExternalChildren(int index) const
 {
-    Abstract::CollisionElementIterator i1 = elems[index].leaf;
+    core::CollisionElementIterator i1 = elems[index].leaf;
     if (!i1.valid())
     {
-        return std::make_pair(Abstract::CollisionElementIterator(),Abstract::CollisionElementIterator());
+        return std::make_pair(core::CollisionElementIterator(),core::CollisionElementIterator());
     }
     else
     {
-        Abstract::CollisionElementIterator i2 = i1; ++i2;
+        core::CollisionElementIterator i2 = i1; ++i2;
         return std::make_pair(i1,i2);
     }
 }
@@ -232,7 +235,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
         // First remove extra levels
         while(root->getPrevious()!=NULL)
         {
-            Abstract::CollisionModel* m = root->getPrevious();
+            core::CollisionModel* m = root->getPrevious();
             root->setPrevious(m->getPrevious());
             delete m;
         }
@@ -307,6 +310,9 @@ void CubeModel::computeBoundingTree(int maxDepth)
     //std::cout << "<CubeModel::computeBoundingTree("<<maxDepth<<")"<<std::endl;
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

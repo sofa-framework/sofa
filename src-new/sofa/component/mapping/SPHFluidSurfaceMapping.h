@@ -1,27 +1,30 @@
-#ifndef SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_H
-#define SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_H
+#define SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
 
-#include "SPHFluidForceField.h"
-#include "Sofa-old/Core/Mapping.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "MeshTopology.h"
-#include "ImplicitSurfaceMapping.h" // for marching cube tables
+#include <sofa/component/forcefield/SPHFluidForceField.h>
+#include <sofa/core/Mapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/mapping/ImplicitSurfaceMapping.h> // for marching cube tables
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Core;
+namespace mapping
+{
+
+using namespace core::componentmodel::behavior;
 
 template <class In, class Out>
-class SPHFluidSurfaceMapping : public Mapping<In, Out>, public MeshTopology, public Abstract::VisualModel
+class SPHFluidSurfaceMapping : public Mapping<In, Out>, public MeshTopology, public core::VisualModel
 {
 public:
     typedef Mapping<In, Out> Inherit;
@@ -183,8 +186,10 @@ protected:
 
 };
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

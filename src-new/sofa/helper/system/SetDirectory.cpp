@@ -1,4 +1,4 @@
-#include "SetDirectory.h"
+#include <sofa/helper/system/SetDirectory.h>
 
 #ifndef WIN32
 #include <unistd.h>
@@ -11,13 +11,13 @@
 #include <iostream>
 
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Common
+namespace system
 {
 
 SetDirectory::SetDirectory(const char* filename)
@@ -56,8 +56,9 @@ SetDirectory::~SetDirectory()
     delete[] directory;
 }
 
-} // namespace Common
+} // namespace system
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
+

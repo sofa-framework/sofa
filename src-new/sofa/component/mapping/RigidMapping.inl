@@ -1,23 +1,26 @@
-#ifndef SOFA_COMPONENTS_RIGIDMAPPING_INL
-#define SOFA_COMPONENTS_RIGIDMAPPING_INL
+#ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
 
-#include "RigidMapping.h"
-#include "MassSpringLoader.h"
-#include "SphereLoader.h"
-#include "Common/Mesh.h"
-#include "GL/template.h"
-
-#include "Sofa-old/Core/MechanicalMapping.inl"
-
+#include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/io/SphereLoader.h>
+#include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <string>
 
-namespace Sofa
+
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace mapping
+{
+
+using namespace sofa::defaulttype;
 
 template <class BaseMapping>
 class RigidMapping<BaseMapping>::Loader : public MassSpringLoader, public SphereLoader
@@ -173,8 +176,10 @@ void RigidMapping<BaseMapping>::draw()
     glEnd();
 }
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,27 +1,30 @@
-#ifndef SOFA_COMPONENTS_XML_NODENODE_H
-#define SOFA_COMPONENTS_XML_NODENODE_H
+#ifndef SOFA_SIMULATION_TREE_XML_NODEELEMENT_H
+#define SOFA_SIMULATION_TREE_XML_NODEELEMENT_H
 
-#include "Node.h"
-#include <Sofa-old/Abstract/BaseNode.h>
-#include "Sofa-old/Core/ForceField.h"
+#include <sofa/simulation/tree/xml/Element.h>
+#include <sofa/simulation/tree/xml/BaseElement.h>
+#include <sofa/core/componentmodel/behavior/ForceField.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace XML
+namespace tree
 {
 
-class NodeNode : public Node<Abstract::BaseNode>
+namespace xml
+{
+
+class NodeElement : public Node<xml::BaseElement>
 {
 public:
-    NodeNode(const std::string& name, const std::string& type, BaseNode* parent=NULL);
+    NodeNode(const std::string& name, const std::string& type, BaseElement* parent=NULL);
 
     virtual ~NodeNode();
 
-    virtual bool setParent(BaseNode* newParent);
+    virtual bool setParent(BaseElement* newParent);
 
     virtual bool initNode();
 
@@ -30,10 +33,12 @@ public:
     virtual const char* getClass() const;
 };
 
-} // namespace XML
+} // namespace xml
 
-} // namespace Components
+} // namespace tree
 
-} // namespace Sofa
+} // namespace simulation
+
+} // namespace sofa
 
 #endif

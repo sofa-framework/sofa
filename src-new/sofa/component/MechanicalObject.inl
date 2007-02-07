@@ -1,18 +1,18 @@
-#ifndef SOFA_CORE_MECHANICALOBJECT_INL
-#define SOFA_CORE_MECHANICALOBJECT_INL
+#ifndef SOFA_COMPONENT_MECHANICALOBJECT_INL
+#define SOFA_COMPONENT_MECHANICALOBJECT_INL
 
-#include "MechanicalObject.h"
-#include "Topology.h"
-#include "Encoding.inl"
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/helper/io/Encoding.inl>
 #include <assert.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace component
 {
 
 template <class DataTypes>
@@ -349,7 +349,7 @@ void MechanicalObject<DataTypes>::init()
     }
     else if (getX()->size() <= 1)
     {
-        Topology* topo = dynamic_cast<Topology*>(this->getContext()->getTopology());
+        core::componentmodel::topology::Topology* topo = dynamic_cast<core::componentmodel::topology::Topology*>(this->getContext()->getcoreTopology());
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
         {
             int nbp = topo->getNbPoints();
@@ -433,7 +433,7 @@ void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, VecDeriv* v)
 
 
 template<class DataTypes>
-typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index)
+typename DataTypes::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index)
 {
     if (index>=vectorsCoord.size())
         vectorsCoord.resize(index+1);
@@ -443,7 +443,7 @@ typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::get
 }
 
 template<class DataTypes>
-typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index)
+typename DataTypes::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index)
 {
     if (index>=vectorsDeriv.size())
         vectorsDeriv.resize(index+1);
@@ -921,9 +921,9 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 }
 */
 
-} // namespace Core
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif
 

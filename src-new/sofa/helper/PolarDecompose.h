@@ -1,16 +1,14 @@
-#ifndef SOFA_COMPONENTS_COMMON_POLARDECOMPOSE_H
-#define SOFA_COMPONENTS_COMMON_POLARDECOMPOSE_H
+#ifndef SOFA_HELPER_POLARDECOMPOSE_H
+#define SOFA_HELPER_POLARDECOMPOSE_H
 
-#include "Mat.h"
+#include <sofa/defaulttype/Mat.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Common
-{
 /**** FROM Decompose.c ****/
 /* Ken Shoemake, 1993     */
 
@@ -194,10 +192,8 @@ Real polar_decomp(const Mat<3,3,Real>& M, Mat<3,3,Real>& Q, Mat<3,3,Real>& S)
 }
 
 
-} // namespace Common
+} // namespace helper
 
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 #endif

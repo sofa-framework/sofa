@@ -1,19 +1,22 @@
-#ifndef SOFA_COMPONENTS_WashingMachineForceField_inl
-#define SOFA_COMPONENTS_WashingMachineForceField_inl
+#ifndef SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_INL
 
-#include "Sofa-old/Core/ForceField.inl"
-#include "WashingMachineForceField.h"
-#include "Common/config.h"
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/component/forcefield/WashingMachineForceField.h>
+#include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <GL/gl.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
@@ -66,8 +69,10 @@ bool WashingMachineForceField<DataTypes>::addBBox(double* minBBox, double* maxBB
     return true;
 }
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

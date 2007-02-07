@@ -1,20 +1,23 @@
-#ifndef SOFA_COMPONENTS_RIGIDMAPPING_H
-#define SOFA_COMPONENTS_RIGIDMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
+#define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
 
-#include "Sofa-old/Core/MechanicalMapping.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Common/RigidTypes.h"
-#include "Sofa-old/Abstract/VisualModel.h"
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/VisualModel.h>
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace mapping
 {
 
 template <class BaseMapping>
-class RigidMapping : public BaseMapping, public Abstract::VisualModel
+class RigidMapping : public BaseMapping, public core::VisualModel
 {
 public:
     typedef BaseMapping Inherit;
@@ -26,7 +29,7 @@ public:
     typedef typename Out::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    class Mat3 : public Common::fixed_array<Deriv,3>
+    class Mat3 : public helper::fixed_array<Deriv,3>
     {
     public:
         Coord operator*(const Coord& v) const
@@ -76,13 +79,15 @@ public:
 
 protected:
 
-    bool getShow(const Abstract::BaseObject* m) const { return m->getContext()->getShowMappings(); }
+    bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
 
-    bool getShow(const Core::BasicMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
+    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 };
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

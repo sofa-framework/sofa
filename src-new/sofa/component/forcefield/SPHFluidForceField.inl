@@ -1,24 +1,27 @@
-#ifndef SOFA_COMPONENTS_SPHFLUIDFORCEFIELD_INL
-#define SOFA_COMPONENTS_SPHFLUIDFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_INL
 
-#include "SPHFluidForceField.h"
-#include "SpatialGridContainer.inl"
-#include "Common/config.h"
-#include "GL/template.h"
+#include <sofa/component/forcefield/SPHFluidForceField.h>
+#include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.inl>
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/gl/template.h>
 #include <math.h>
 #include <GL/gl.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
-SPHFluidForceField<DataTypes>::SPHFluidForceField(Sofa::Core::MechanicalModel<DataTypes>* /*object*/)
+SPHFluidForceField<DataTypes>::SPHFluidForceField(sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* /*object*/)
     : particleRadius(1), particleMass(1), pressureStiffness(100), density0(1), viscosity(0.001f), surfaceTension(0), grid(NULL)
 {
 }
@@ -28,7 +31,7 @@ void SPHFluidForceField<DataTypes>::init()
 {
     this->Inherit::init();
     grid = new Grid(particleRadius);
-    int n = (*this->mmodel->getX()).size();
+    int n = (*this->mstate->getX()).size();
     particles.resize(n);
     for (int i=0; i<n; i++)
     {
@@ -245,7 +248,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::addDForce(VecDeriv& f1,  const VecDeriv& dx1)
 {
-    const VecCoord& p1 = *this->mmodel->getX();
+    const VecCoord& p1 = *this->mstate->getX();
     f1.resize(dx1.size());
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {
@@ -274,7 +277,7 @@ void SPHFluidForceField<DataTypes>::draw()
     if (!getContext()->getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw();
-    const VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mstate->getX();
     glDisable(GL_LIGHTING);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -359,8 +362,10 @@ void SPHFluidForceField<DataTypes>::draw()
     glPointSize(1);
 }
 
-} // namespace Sofa
+} // namespace forcefield
 
-} // namespace Components
+} // namespace component
+
+} // namespace sofa
 
 #endif

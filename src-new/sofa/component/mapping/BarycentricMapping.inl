@@ -1,25 +1,28 @@
-#ifndef SOFA_COMPONENTS_BARYCENTRICMAPPING_INL
-#define SOFA_COMPONENTS_BARYCENTRICMAPPING_INL
+#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_INL
 
-#include "Sofa-old/Components/Common/config.h"
-#include "Sofa-old/Components/Common/Mat.h"
-#include "BarycentricMapping.h"
-#include "RegularGridTopology.h"
-#include "MultiResSparseGridTopology.h"
-
-#include "Sofa-old/Core/MechanicalMapping.inl"
-#include "GL/template.h"
-
+#include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/topology/MultiResSparseGridTopology.h>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+#include <sofa/helper/gl/template.h>
 #include <GL/gl.h>
 #include <algorithm>
 
-namespace Sofa
+
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace mapping
+{
+
+using namespace sofa::defaulttype;
 
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::calcMap(MultiResSparseGridTopology* topology)
@@ -327,7 +330,7 @@ void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::init()
 {
-    Core::Topology* topology = dynamic_cast<Core::Topology*>(this->fromModel->getContext()->getTopology());
+    core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
     if (topology!=NULL)
     {
         MultiResSparseGridTopology* t = dynamic_cast<MultiResSparseGridTopology*>(topology);
@@ -967,8 +970,10 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
     glEnd();
 }
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,25 +1,29 @@
-#ifndef SOFA_CONTRIB_FLUIDGRID3D_GRID3D_H
-#define SOFA_CONTRIB_FLUIDGRID3D_GRID3D_H
+#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID3D_H
+#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID3D_H
 
-#include <Sofa-old/Components/Common/Vec.h>
-#include <Sofa-old/Components/Common/Mat.h>
-#include <Sofa-old/Components/Common/rmath.h>
-
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/helper/rmath.h>
 #include <iostream>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Contrib
+namespace component
 {
 
-namespace FluidGrid
+namespace behaviormodel
 {
 
-using namespace Sofa::Components::Common;
+namespace eulerianfluid
+{
 
-#ifndef NDEBUG
-#define DEBUGGRID
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
+#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID3D_H
+#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID3D_H
 #endif
 
 class Grid3D
@@ -277,10 +281,12 @@ public:
     void fmm_swap(int entry1, int entry2);
 };
 
-} // namespace FluidGrid
+} // namespace eulerianfluid
 
-} // namespace Contrib
+} // namespace behaviormodel
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

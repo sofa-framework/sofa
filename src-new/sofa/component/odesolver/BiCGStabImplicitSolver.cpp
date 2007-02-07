@@ -1,24 +1,27 @@
 // Author: Jeremie Allard, Sim Group @ CIMIT, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include "Sofa-old/Components/BiCGStabImplicitSolver.h"
-//#include "Sofa-old/Core/IntegrationGroup.h"
-#include "Sofa-old/Core/MultiVector.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/odesolver/BiCGStabImplicitSolver.h>
+//#include "Sofa/Core/IntegrationGroup.h"
+#include <sofa/helper/MultiVector.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
+
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Core;
+namespace odesolver
+{
+
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
 
 BiCGStabImplicitSolver::BiCGStabImplicitSolver()
 {
@@ -37,20 +40,20 @@ BiCGStabImplicitSolver* BiCGStabImplicitSolver::setMaxIter( int n )
 void BiCGStabImplicitSolver::solve(double dt)
 {
     BiCGStabImplicitSolver* group = this;
-    MultiVector pos(group, VecId::position());
-    MultiVector vel(group, VecId::velocity());
-    MultiVector dx(group, VecId::dx());
-    MultiVector f(group, VecId::force());
-    MultiVector b(group, V_DERIV);
-    MultiVector p(group, V_DERIV);
-    //MultiVector q(group, V_DERIV);
-    MultiVector r(group, V_DERIV);
-    MultiVector rtilde(group, V_DERIV);
-    MultiVector s(group, V_DERIV);
-    MultiVector t(group, V_DERIV);
-    MultiVector x(group, V_DERIV);
-    MultiVector v(group, V_DERIV);
-    //MultiVector z(group, V_DERIV);
+    helper::MultiVector pos(group, VecId::position());
+    helper::MultiVector vel(group, VecId::velocity());
+    helper::MultiVector dx(group, VecId::dx());
+    helper::MultiVector f(group, VecId::force());
+    helper::MultiVector b(group, V_DERIV);
+    helper::MultiVector p(group, V_DERIV);
+    //helper::MultiVector q(group, V_DERIV);
+    helper::MultiVector r(group, V_DERIV);
+    helper::MultiVector rtilde(group, V_DERIV);
+    helper::MultiVector s(group, V_DERIV);
+    helper::MultiVector t(group, V_DERIV);
+    helper::MultiVector x(group, V_DERIV);
+    helper::MultiVector v(group, V_DERIV);
+    //helper::MultiVector z(group, V_DERIV);
     double h = dt;
 
     if( getDebug() )
@@ -168,7 +171,7 @@ void BiCGStabImplicitSolver::solve(double dt)
     }
 }
 
-void create(BiCGStabImplicitSolver*& obj, ObjectDescription* arg)
+void create(BiCGStabImplicitSolver*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new BiCGStabImplicitSolver();
     if (arg->getAttribute("iterations"))
@@ -185,8 +188,11 @@ void create(BiCGStabImplicitSolver*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(BiCGStabImplicit)
 
-Creator<ObjectFactory, BiCGStabImplicitSolver> BiCGStabImplicitSolverClass("BiCGStabImplicit");
+Creator<simulation::tree::xml::ObjectFactory, BiCGStabImplicitSolver> BiCGStabImplicitSolverClass("BiCGStabImplicit");
 
-} // namespace Components
+} // namespace odesolver
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

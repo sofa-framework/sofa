@@ -1,43 +1,43 @@
-#include "Simulation.h"
-#include "../XML/XML.h"
-#include "../Common/SetDirectory.h"
-#include "../init.h"
-#include "PrintAction.h"
-#include "InitAction.h"
-#include "AnimateAction.h"
-#include "MechanicalAction.h"
-#include "CollisionAction.h"
-#include "UpdateContextAction.h"
-#include "UpdateMappingAction.h"
-#include "ResetAction.h"
-#include "VisualAction.h"
-#include "DeleteAction.h"
-#include "ExportOBJAction.h"
-#include "WriteStateAction.h"
-#include "XMLPrintAction.h"
-#include "PropagateEventAction.h"
-#include "../AnimateBeginEvent.h"
-#include "../AnimateEndEvent.h"
-
+#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/simulation/tree/init.h>
+#include <sofa/simulation/tree/PrintAction.h>
+#include <sofa/simulation/tree/InitAction.h>
+#include <sofa/simulation/tree/AnimateAction.h>
+#include <sofa/simulation/tree/MechanicalAction.h>
+#include <sofa/simulation/tree/CollisionAction.h>
+#include <sofa/simulation/tree/UpdateContextAction.h>
+#include <sofa/simulation/tree/UpdateMappingAction.h>
+#include <sofa/simulation/tree/ResetAction.h>
+#include <sofa/simulation/tree/VisualAction.h>
+#include <sofa/simulation/tree/DeleteAction.h>
+#include <sofa/simulation/tree/ExportOBJAction.h>
+#include <sofa/simulation/tree/WriteStateAction.h>
+#include <sofa/simulation/tree/XMLPrintAction.h>
+#include <sofa/simulation/tree/PropagateEventAction.h>
+#include <sofa/simulation/tree/AnimateBeginEvent.h>
+#include <sofa/simulation/tree/AnimateEndEvent.h>
 #include <fstream>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace Graph
+namespace tree
 {
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 /// Load a scene from a file
 GNode* Simulation::load(const char *filename)
 {
-    ::Sofa::Components::init();
+    ::sofa::Components::init();
     std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    XML::BaseNode* xml = XML::load(filename);
+    XML::BaseElement* xml = XML::load(filename);
     if (xml==NULL)
     {
         return NULL;
@@ -128,7 +128,6 @@ void Simulation::animate(GNode* root, double dt)
     act.setDt(dt);
     root->execute(act);
     root->setTime( nextTime );
-    root->execute<UpdateContextAction>();
 
     root->execute<UpdateMappingAction>();
     root->execute<VisualUpdateAction>();
@@ -184,19 +183,7 @@ void Simulation::draw(GNode* root)
 {
     if (!root) return;
     //std::cout << "draw\n";
-    VisualDrawAction act(VisualDrawAction::Std);
-    root->execute(&act);
-    VisualDrawAction act2(VisualDrawAction::Transparent);
-    root->execute(&act2);
-}
-
-/// Render the scene - shadow pass
-void Simulation::drawShadows(GNode* root)
-{
-    if (!root) return;
-    //std::cout << "drawShadows\n";
-    VisualDrawAction act(VisualDrawAction::Shadow);
-    root->execute(&act);
+    root->execute<VisualDrawAction>();
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid
@@ -260,9 +247,9 @@ void Simulation::dumpState( GNode* root, std::ofstream& out )
     out<<endl;
 }
 
-} // namespace Graph
+} // namespace tree
 
-} // namespace Components
+} // namespace simulation
 
-} // namespace Sofa
+} // namespace sofa
 

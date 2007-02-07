@@ -9,23 +9,30 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "TriangleBendingSprings.h"
-#include "MeshTopology.h"
+#include <sofa/component/forcefield/TriangleBendingSprings.h>
+#include <sofa/component/topology/MeshTopology.h>
 #include <iostream>
 using std::cerr;
 using std::cout;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
-using namespace Core;
+
+namespace component
+{
+
+namespace forcefield
+{
+
+using namespace core::componentmodel::behavior;
 
 namespace Components
 {
 
 template<class DataTypes>
-TriangleBendingSprings<DataTypes>::TriangleBendingSprings(Core::MechanicalModel<DataTypes>* object)
-    : Sofa::Components::StiffSpringForceField<DataTypes>(object)
+TriangleBendingSprings<DataTypes>::TriangleBendingSprings(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
+    : sofa::Components::StiffSpringForceField<DataTypes>(object)
     , stiffness( dataField(&stiffness,(Real)1.0,"stiffness","Stiffness of the bending springs") )
     , dampingRatio( dataField(&dampingRatio,(Real)0.0,"dampingRatio","Damping ratio of the bending springs. The actual damping coefficient is the stiffness times the damping ratio.") )
     , dof(NULL)
@@ -101,7 +108,7 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::init()
 {
-    dof = dynamic_cast<MechanicalObject<DataTypes>*>( this->getContext()->getMechanicalModel() );
+    dof = dynamic_cast<MechanicalObject<DataTypes>*>( this->getContext()->getMechanicalState() );
     assert(dof);
     //cout<<"==================================TriangleBendingSprings<DataTypes>::init(), dof size = "<<dof->getX()->size()<<endl;
 
@@ -135,7 +142,7 @@ void TriangleBendingSprings<DataTypes>::init()
     }
 
     // init the parent class
-    Sofa::Components::StiffSpringForceField<DataTypes>::init();
+    sofa::Components::StiffSpringForceField<DataTypes>::init();
 }
 
 

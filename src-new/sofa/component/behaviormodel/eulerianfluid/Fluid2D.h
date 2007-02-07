@@ -1,23 +1,27 @@
-#ifndef SOFA_CONTRIB_FLUIDGRID2D_FLUID2D_H
-#define SOFA_CONTRIB_FLUIDGRID2D_FLUID2D_H
+#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID2D_H
+#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID2D_H
 
-#include "Grid2D.h"
-#include <Sofa-old/Abstract/BehaviorModel.h>
-#include <Sofa-old/Abstract/VisualModel.h>
-#include <Sofa-old/Components/Common/Field.h>
-#include <Sofa-old/Components/Common/DataField.h>
-#include <Sofa-old/Components/ImplicitSurfaceMapping.h>
+#include <sofa/component/behaviormodel/eulerianfluid/Grid2D.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/core/objectmodel/Field.h>
+#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/component/mapping/ImplicitSurfaceMapping.h>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Contrib
+namespace component
 {
 
-namespace FluidGrid
+namespace behaviormodel
 {
 
-class Fluid2D : public Sofa::Abstract::BehaviorModel, public Sofa::Abstract::VisualModel
+namespace eulerianfluid
+{
+
+class Fluid2D : public sofa::core::BehaviorModel, public sofa::core::VisualModel
 {
 public:
     typedef Grid2D::real real;
@@ -33,13 +37,13 @@ protected:
     Grid2D* ftemp;
 
 public:
-    Sofa::Components::Common::Field<int> f_nx;
-    Sofa::Components::Common::Field<int> f_ny;
-    Sofa::Components::Common::Field<real> f_cellwidth;
-    Sofa::Components::Common::DataField<real> f_height;
-    Sofa::Components::Common::DataField<vec2> f_dir;
-    Sofa::Components::Common::DataField<real> f_tstart;
-    Sofa::Components::Common::DataField<real> f_tstop;
+    sofa::core::objectmodel::Field<int> f_nx;
+    sofa::core::objectmodel::Field<int> f_ny;
+    sofa::core::objectmodel::Field<real> f_cellwidth;
+    sofa::core::objectmodel::DataField<real> f_height;
+    sofa::core::objectmodel::DataField<vec2> f_dir;
+    sofa::core::objectmodel::DataField<real> f_tstart;
+    sofa::core::objectmodel::DataField<real> f_tstop;
 
     Fluid2D();
     virtual ~Fluid2D();
@@ -126,10 +130,12 @@ protected:
 
 };
 
-} // namespace FluidGrid
+} // namespace eulerianfluid
 
-} // namespace Contrib
+} // namespace behaviormodel
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

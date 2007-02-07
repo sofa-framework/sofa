@@ -1,21 +1,24 @@
-#ifndef SOFA_COMPONENTS_LagrangianMultiplierFixedConstraint_INL
-#define SOFA_COMPONENTS_LagrangianMultiplierFixedConstraint_INL
+#ifndef SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_INL
+#define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_INL
 
-#include "LagrangianMultiplierFixedConstraint.h"
-#include "Sofa-old/Core/Constraint.inl"
-#include "Sofa-old/Core/MechanicalObject.inl"
-#include "Common/config.h"
+#include <sofa/component/constraint/LagrangianMultiplierFixedConstraint.h>
+#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/component/MechanicalObject.inl>
+#include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <GL/gl.h>
-#include "GL/template.h"
+#include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace constraint
 {
 
 template<class DataTypes>
@@ -34,7 +37,7 @@ template<class DataTypes>
 void LagrangianMultiplierFixedConstraint<DataTypes>::init()
 {
     this->Core::ForceField<DataTypes>::init();
-    //this->Core::Constraint<DataTypes>::init();
+    //this->core::componentmodel::behavior::Constraint<DataTypes>::init();
 }
 
 template<class DataTypes>
@@ -116,7 +119,7 @@ template<class DataTypes>
 void LagrangianMultiplierFixedConstraint<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
-    const VecCoord& p = *this->mmodel->getX();
+    const VecCoord& p = *this->mstate->getX();
     const LMVecCoord& lambda = *this->lambda->getX();
     glDisable(GL_LIGHTING);
     glColor4f(1,1,0,1);
@@ -131,8 +134,10 @@ void LagrangianMultiplierFixedConstraint<DataTypes>::draw()
     glEnd();
 }
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

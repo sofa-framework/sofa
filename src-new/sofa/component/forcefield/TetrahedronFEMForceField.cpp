@@ -1,27 +1,30 @@
-#include "TetrahedronFEMForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/forcefield/TetrahedronFEMForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 //#include <typeinfo>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 SOFA_DECL_CLASS(TetrahedronFEMForceField)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class TetrahedronFEMForceField<Vec3dTypes>;
 template class TetrahedronFEMForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(TetrahedronFEMForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(TetrahedronFEMForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< TetrahedronFEMForceField<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
+    XML::createWithParent< TetrahedronFEMForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         obj->setPoissonRatio((typename TetrahedronFEMForceField<DataTypes>::Real)atof(arg->getAttribute("poissonRatio","0.49")));
@@ -38,9 +41,12 @@ void create(TetrahedronFEMForceField<DataTypes>*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, TetrahedronFEMForceField<Vec3dTypes> > TetrahedronFEMForceFieldVec3dClass("TetrahedronFEMForceField", true);
-Creator< ObjectFactory, TetrahedronFEMForceField<Vec3fTypes> > TetrahedronFEMForceFieldVec3fClass("TetrahedronFEMForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, TetrahedronFEMForceField<Vec3dTypes> > TetrahedronFEMForceFieldVec3dClass("TetrahedronFEMForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, TetrahedronFEMForceField<Vec3fTypes> > TetrahedronFEMForceFieldVec3fClass("TetrahedronFEMForceField", true);
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

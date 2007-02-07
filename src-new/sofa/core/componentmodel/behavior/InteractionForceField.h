@@ -1,31 +1,42 @@
-#ifndef SOFA_CORE_INTERACTIONFORCEFIELD_H
-#define SOFA_CORE_INTERACTIONFORCEFIELD_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_INTERACTIONFORCEFIELD_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_INTERACTIONFORCEFIELD_H
 
-#include "ForceField.h"
-#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
-#include "Sofa-old/Components/Common/SofaBaseVector.h"
+#include <sofa/core/componentmodel/behavior/BaseForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/defaulttype/SofaBaseMatrix.h>
+#include <sofa/defaulttype/SofaBaseVector.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
-class InteractionForceField : public BasicForceField
+namespace componentmodel
+{
+
+namespace behavior
+{
+
+class InteractionForceField : public BaseForceField
 {
 public:
-    virtual BasicMechanicalModel* getMechModel1() = 0;
-    virtual BasicMechanicalModel* getMechModel2() = 0;
+    virtual BaseMechanicalState* getMechModel1() = 0;
+    virtual BaseMechanicalState* getMechModel2() = 0;
 
     // ForceField using matrix interface
     virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
-    virtual void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};
-    virtual void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int &) {};
-    virtual void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int &) {};
+    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &) {};
+    virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
+    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
 };
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

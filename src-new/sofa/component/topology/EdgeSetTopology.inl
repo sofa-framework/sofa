@@ -1,21 +1,25 @@
-#ifndef SOFA_COMPONENTS_EDGESETTOPOLOGY_INL
-#define SOFA_COMPONENTS_EDGESETTOPOLOGY_INL
+#ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGY_INL
+#define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGY_INL
 
-#include "EdgeSetTopology.h"
-#include "PointSetTopology.inl"
-#include "TopologyChangedEvent.h"
-#include <Sofa-old/Components/Graph/PropagateEventAction.h>
-#include <Sofa-old/Components/Graph/GNode.h>
+#include <sofa/component/topology/EdgeSetTopology.h>
+#include <sofa/component/topology/PointSetTopology.inl>
+#include <sofa/component/topology/TopologyChangedEvent.h>
+#include <sofa/simulation/tree/PropagateEventAction.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <algorithm>
 #include <functional>
 
-namespace Sofa
-{
-namespace Components
+namespace sofa
 {
 
-using namespace Common;
-using namespace Sofa::Core;
+namespace component
+{
+
+namespace topology
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::behavior;
 
 
 
@@ -526,8 +530,10 @@ EdgeSetTopology<DataTypes>::EdgeSetTopology(MechanicalObject<DataTypes> *obj) : 
 }
 
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif // SOFA_COMPONENTS_EDGESETTOPOLOGY_INL

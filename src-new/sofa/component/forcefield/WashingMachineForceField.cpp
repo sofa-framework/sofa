@@ -1,14 +1,18 @@
-#include "WashingMachineForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/forcefield/WashingMachineForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
-using namespace Common;
+
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
 
 template class WashingMachineForceField<Vec3dTypes>;
 template class WashingMachineForceField<Vec3fTypes>;
@@ -17,15 +21,18 @@ SOFA_DECL_CLASS(WashingMachineForceField)
 
 
 template<class DataTypes>
-void create(WashingMachineForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(WashingMachineForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< WashingMachineForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< WashingMachineForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     obj->parseFields( arg->getAttributeMap() );
 }
 
-Creator< ObjectFactory, WashingMachineForceField<Vec3dTypes> > WashingMachineForceFieldVec3dClass("WashingMachineForceField", true);
-Creator< ObjectFactory, WashingMachineForceField<Vec3fTypes> > WashingMachineForceFieldVec3fClass("WashingMachineForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, WashingMachineForceField<Vec3dTypes> > WashingMachineForceFieldVec3dClass("WashingMachineForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, WashingMachineForceField<Vec3fTypes> > WashingMachineForceFieldVec3fClass("WashingMachineForceField", true);
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

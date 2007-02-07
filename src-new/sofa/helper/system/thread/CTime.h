@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENTS_THREAD_DEBUG_CTIME_H
-#define SOFA_COMPONENTS_THREAD_DEBUG_CTIME_H
+#ifndef SOFA_HELPER_SYSTEM_THREAD_CTIME_H
+#define SOFA_HELPER_SYSTEM_THREAD_CTIME_H
 
 #include <time.h>
 
@@ -12,13 +12,16 @@
  * Time measurement *
  ********************/
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Thread
+namespace system
+{
+
+namespace thread
 {
 
 #ifdef WIN32
@@ -52,10 +55,12 @@ protected:
     static ctime_t computeTicksPerSec();
 };
 
-} // namespace Thread
+} // namespace thread
 
-} // namespace Components
+} // namespace system
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
 
 #endif

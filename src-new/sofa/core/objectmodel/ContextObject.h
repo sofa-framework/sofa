@@ -1,13 +1,15 @@
-#ifndef SOFA_ABSTRACT_CONTEXTOBJECT_H
-#define SOFA_ABSTRACT_CONTEXTOBJECT_H
+#ifndef SOFA_CORE_OBJECTMODEL_CONTEXTOBJECT_H
+#define SOFA_CORE_OBJECTMODEL_CONTEXTOBJECT_H
 
-#include "BaseObject.h"
+#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace Sofa
+namespace sofa
 {
 
+namespace core
+{
 
-namespace Abstract
+namespace objectmodel
 {
 
 class ContextObject : public virtual BaseObject
@@ -31,9 +33,11 @@ protected:
 };
 
 
-} // namespace Abstract
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif
 

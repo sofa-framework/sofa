@@ -1,21 +1,24 @@
-#ifndef SOFA_COMPONENTS_IMPLICITSURFACEMAPPING_INL
-#define SOFA_COMPONENTS_IMPLICITSURFACEMAPPING_INL
+#ifndef SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_INL
 
-#include "ImplicitSurfaceMapping.h"
-
-#include "Sofa-old/Core/Mapping.inl"
-#include "Common/rmath.h"
-
+#include <sofa/component/mapping/ImplicitSurfaceMapping.h>
+#include <sofa/core/Mapping.inl>
+#include <sofa/helper/rmath.h>
 #include <map>
 #include <list>
 
-namespace Sofa
+
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace mapping
+{
+
+using namespace sofa::defaulttype;
 
 template<class Real>
 Real sqr(Real r)
@@ -222,8 +225,10 @@ void ImplicitSurfaceMapping<In,Out>::applyJ( OutVecDeriv& /*out*/, const InVecDe
 {
 }
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

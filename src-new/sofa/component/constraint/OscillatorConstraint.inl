@@ -1,28 +1,31 @@
-#ifndef SOFA_COMPONENTS_OscillatorConstraint_INL
-#define SOFA_COMPONENTS_OscillatorConstraint_INL
+#ifndef SOFA_COMPONENT_CONSTRAINT_OSCILLATORCONSTRAINT_INL
+#define SOFA_COMPONENT_CONSTRAINT_OSCILLATORCONSTRAINT_INL
 
-#include "FixedConstraint.inl"
-#include "OscillatorConstraint.h"
+#include <sofa/component/constraint/FixedConstraint.inl>
+#include <sofa/component/constraint/OscillatorConstraint.h>
 #include <math.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace constraint
+{
+
+using namespace sofa::defaulttype;
 
 template <class DataTypes>
 OscillatorConstraint<DataTypes>::OscillatorConstraint()
-    : Core::Constraint<DataTypes>(NULL)
+    : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
 {
 }
 
 
 template <class DataTypes>
-OscillatorConstraint<DataTypes>::OscillatorConstraint(Core::MechanicalModel<DataTypes>* mmodel)
-    : Core::Constraint<DataTypes>(mmodel)
+OscillatorConstraint<DataTypes>::OscillatorConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate)
+    : core::componentmodel::behavior::Constraint<DataTypes>(mstate)
 {
 }
 
@@ -94,8 +97,10 @@ void OscillatorConstraint<DataTypes>::projectPosition(VecCoord& res)
 //template <>
 //      void OscillatorConstraint<RigidTypes >::projectResponse(VecDeriv& dx);
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,12 +1,12 @@
-#include "CactusStackStorage.h"
+#include <sofa/simulation/tree/CactusStackStorage.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace Graph
+namespace tree
 {
 
 void CactusStackStorage::push(void* data)
@@ -35,8 +35,9 @@ bool CactusStackStorage::empty() const
     return stack.empty() && (up == NULL || up->empty());
 }
 
-} // namespace Graph
+} // namespace tree
 
-} // namespace Components
+} // namespace simulation
 
-} // namespace Sofa
+} // namespace sofa
+

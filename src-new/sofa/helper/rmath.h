@@ -1,16 +1,13 @@
-#ifndef SOFA_COMPONENTS_COMMON_RMATH_H
-#define SOFA_COMPONENTS_COMMON_RMATH_H
+#ifndef SOFA_HELPER_RMATH_H
+#define SOFA_HELPER_RMATH_H
 
-#include "config.h"
+#include <sofa/helper/system/config.h>
 #include <math.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace helper
 {
 
 /*
@@ -166,11 +163,9 @@ inline void shft3(double &a, double &b, double &c, const double d)
 //}
 
 
-} // namespace Common
+} // namespace helper
 
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 #endif
 

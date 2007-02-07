@@ -1,17 +1,17 @@
-#ifndef SOFA_COMPONENTS_GL_RAII_H
-#define SOFA_COMPONENTS_GL_RAII_H
+#ifndef SOFA_HELPER_GL_RAII_H
+#define SOFA_HELPER_GL_RAII_H
 
 #include <GL/gl.h>
 /* Opengl Resource Acquisition Is Initialisation */
 /* with this tool, we know at any moment what is the state of the openGL machine */
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 template <GLenum Flag>
@@ -57,10 +57,10 @@ struct Disable
     };
 };
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

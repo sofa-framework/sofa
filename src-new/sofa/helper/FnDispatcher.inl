@@ -1,18 +1,15 @@
-#ifndef SOFA_COMPONENTS_COMMON_FNDISPATCHER_INL
-#define SOFA_COMPONENTS_COMMON_FNDISPATCHER_INL
+#ifndef SOFA_HELPER_FNDISPATCHER_INL
+#define SOFA_HELPER_FNDISPATCHER_INL
 
-#include "FnDispatcher.h"
-#include "Factory.h" // for gettypename()
+#include <sofa/helper/FnDispatcher.h>
+#include <sofa/helper/Factory.h> // for gettypename()
 #include <iostream>
 #include <string>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace helper
 {
 
 // template <class BaseClass, typename ResulT>
@@ -69,10 +66,9 @@ SingletonFnDispatcher<BaseClass, ResulT>* SingletonFnDispatcher<BaseClass, Resul
     return &instance;
 }
 
-} // namespace Common
+} // namespace helper
 
-} // namespace Components
+} // namespace sofa
 
-} // namepsace Sofa
 
 #endif

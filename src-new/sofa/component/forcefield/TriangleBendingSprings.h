@@ -9,17 +9,20 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef TriangleBendingSprings_h
-#define TriangleBendingSprings_h
+#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
 
-#include "StiffSpringForceField.h"
-#include "Sofa-old/Core/MechanicalObject.h"
+#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/MechanicalObject.h>
 #include <map>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 /**
@@ -30,13 +33,13 @@ The springs connect the vertices not belonging to the common edge. It compresses
 	@author The SOFA team </www.sofa-framework.org>
 */
 template<class DataTypes>
-class TriangleBendingSprings : public Sofa::Components::StiffSpringForceField<DataTypes>
+class TriangleBendingSprings : public sofa::Components::StiffSpringForceField<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 
-    TriangleBendingSprings(Core::MechanicalModel<DataTypes>* object);
+    TriangleBendingSprings(core::componentmodel::behavior::MechanicalState<DataTypes>* object);
 
     ~TriangleBendingSprings();
 
@@ -54,7 +57,7 @@ protected:
     typedef std::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned );
     void registerTriangle( unsigned, unsigned, unsigned, std::map<IndexPair, unsigned>& );
-    Core::MechanicalObject<DataTypes>* dof;
+    component::MechanicalObject<DataTypes>* dof;
 
 };
 

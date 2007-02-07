@@ -1,21 +1,24 @@
-#ifndef SOFA_COMPONENTS_LagrangianMultiplierContactConstraint_INL
-#define SOFA_COMPONENTS_LagrangianMultiplierContactConstraint_INL
+#ifndef SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERCONTACTCONSTRAINT_INL
+#define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERCONTACTCONSTRAINT_INL
 
-#include "LagrangianMultiplierContactConstraint.h"
-#include "Sofa-old/Core/Constraint.inl"
-#include "Sofa-old/Core/MechanicalObject.inl"
-#include "Common/config.h"
+#include <sofa/component/constraint/LagrangianMultiplierContactConstraint.h>
+#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/component/MechanicalObject.inl>
+#include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <GL/gl.h>
-#include "GL/template.h"
+#include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace constraint
 {
 
 template<class DataTypes>
@@ -171,8 +174,10 @@ void LagrangianMultiplierContactConstraint<DataTypes>::draw()
     glLineWidth(1);
 }
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

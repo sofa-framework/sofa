@@ -1,28 +1,31 @@
-#include "Sofa-old/Components/EulerSolver.h"
-#include "Sofa-old/Core/MultiVector.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/odesolver/EulerSolver.h>
+#include <sofa/helper/MultiVector.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
+
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Core;
+namespace odesolver
+{
+
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
 
 void EulerSolver::solve(double dt)
 {
-    //Abstract::BaseContext* group = getContext();
+    //objectmodel::BaseContext* group = getContext();
     OdeSolver* group = this;
-    MultiVector pos(group, VecId::position());
-    MultiVector vel(group, VecId::velocity());
-    MultiVector acc(group, VecId::dx());
+    helper::MultiVector pos(group, VecId::position());
+    helper::MultiVector vel(group, VecId::velocity());
+    helper::MultiVector acc(group, VecId::dx());
     bool printLog = f_printLog.getValue();
 
     if( printLog )
@@ -44,7 +47,7 @@ void EulerSolver::solve(double dt)
     }
 }
 
-void create(EulerSolver*& obj, ObjectDescription* arg)
+void create(EulerSolver*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new EulerSolver();
     obj->parseFields( arg->getAttributeMap() );
@@ -52,11 +55,12 @@ void create(EulerSolver*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(Euler)
 
-Creator<ObjectFactory, EulerSolver> EulerSolverClass("EulerSolver");
-Creator<ObjectFactory, EulerSolver> EulerSolverClass2("Euler"); // Previous name for compatibility with existing scenes
+Creator<simulation::tree::xml::ObjectFactory, EulerSolver> EulerSolverClass("EulerSolver");
+Creator<simulation::tree::xml::ObjectFactory, EulerSolver> EulerSolverClass2("Euler"); // Previous name for compatibility with existing scenes
 
-} // namespace Components
+} // namespace odesolver
 
-} // namespace Sofa
+} // namespace component
 
+} // namespace sofa
 

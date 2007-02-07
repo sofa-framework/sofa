@@ -1,22 +1,25 @@
-#include "UniformMass.inl"
-#include "Common/ObjectFactory.h"
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include "Sofa-old/Components/Common/RigidTypes.h"
-#include "GL/Axis.h"
+#include <sofa/component/mass/UniformMass.inl>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/gl/Axis.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace mass
+{
+
+using namespace sofa::defaulttype;
 
 template <>
 void UniformMass<RigidTypes, RigidMass>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mmodel->getX();
+    VecCoord& x = *mstate->getX();
     RigidTypes::Vec3 len;
 
     // The moment of inertia of a box is:
@@ -66,13 +69,13 @@ template class UniformMass<Vec3dTypes,double>;
 template class UniformMass<Vec3fTypes,float>;
 template class UniformMass<RigidTypes,RigidMass>;
 
-namespace Common   // \todo Why this must be inside Common namespace
+namespace helper   // \todo Why this must be inside helper namespace
 {
 
 template<class DataTypes, class MassType>
-void create(UniformMass<DataTypes, MassType>*& obj, ObjectDescription* arg)
+void create(UniformMass<DataTypes, MassType>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< UniformMass<DataTypes, MassType>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< UniformMass<DataTypes, MassType>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("mass"))
@@ -93,9 +96,9 @@ static void skipToEOL(FILE* f)
 }
 
 template<>
-void create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg)
+void create(UniformMass<RigidTypes, RigidMass>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< UniformMass<RigidTypes, RigidMass>, Core::MechanicalModel<RigidTypes> >(obj, arg);
+    XML::createWithParent< UniformMass<RigidTypes, RigidMass>, core::componentmodel::behavior::MechanicalState<RigidTypes> >(obj, arg);
     if (obj!=NULL)
     {
         RigidMass m(1.0f);
@@ -207,10 +210,13 @@ void create(UniformMass<RigidTypes, RigidMass>*& obj, ObjectDescription* arg)
 
 }
 
-Creator< ObjectFactory, UniformMass<Vec3dTypes,double> > UniformMass3dClass("UniformMass",true);
-Creator< ObjectFactory, UniformMass<Vec3fTypes,float > > UniformMass3fClass("UniformMass",true);
-Creator< ObjectFactory, UniformMass<RigidTypes,RigidMass> > UniformMassRigidClass("UniformMass",true);
+Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3dTypes,double> > UniformMass3dClass("UniformMass",true);
+Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3fTypes,float > > UniformMass3fClass("UniformMass",true);
+Creator<simulation::tree::xml::ObjectFactory, UniformMass<RigidTypes,RigidMass> > UniformMassRigidClass("UniformMass",true);
 
-} // namespace Components
+} // namespace mass
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

@@ -1,30 +1,22 @@
-#include "Common/config.h"
-#include "MinProximityIntersection.h"
-#include "Common/ObjectFactory.h"
-#include "Proximity/proximity.h"
-#include "Common/Mat.h"
-#include "Common/Vec.h"
-#include "Collision/Intersection.inl"
-#include "RayPickInteractor.h"
-
+#include <sofa/helper/system/config.h>
+#include <sofa/component/collision/MinProximityIntersection.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/helper/proximity.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/component/collision/RayPickInteractor.h>
 #include <iostream>
 #include <algorithm>
 
-namespace Sofa
+
+namespace sofa
+{
+namespace helper
 {
 
-namespace Components
-{
-
-using namespace Common;
-using namespace Collision;
-using namespace Proximity;
-using namespace MinProximityIntersections;
-
-namespace Common
-{
 template<>
-void create(MinProximityIntersection*& obj, ObjectDescription* arg)
+void create(MinProximityIntersection*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new MinProximityIntersection(
         (atoi(arg->getAttribute("useSphereTriangle","1"))!=0)
@@ -32,11 +24,25 @@ void create(MinProximityIntersection*& obj, ObjectDescription* arg)
     obj->setAlarmDistance(atof(arg->getAttribute("alarmDistance","1.0")));
     obj->setContactDistance(atof(arg->getAttribute("contactDistance","0.5")));
 }
-}
+
 
 SOFA_DECL_CLASS(MinProximityIntersection)
 
-Creator<ObjectFactory, MinProximityIntersection> MinProximityIntersectionClass("MinProximityIntersection");
+Creator<simulation::tree::xml::ObjectFactory, MinProximityIntersection> MinProximityIntersectionClass("MinProximityIntersection");
+}
+
+namespace component
+{
+
+namespace collision
+{
+
+using namespace sofa::defaulttype;
+using namespace collision;
+using namespace helper;
+using namespace MinProximityIntersections;
+
+
 
 MinProximityIntersection::MinProximityIntersection(bool useSphereTriangle
                                                   )
@@ -71,7 +77,7 @@ MinProximityIntersection::MinProximityIntersection(bool useSphereTriangle
 static MinProximityIntersection* proximityInstance = NULL;
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-ElementIntersector* MinProximityIntersection::findIntersector(Abstract::CollisionModel* object1, Abstract::CollisionModel* object2)
+ElementIntersector* MinProximityIntersection::findIntersector(core::CollisionModel* object1, core::CollisionModel* object2)
 {
     proximityInstance = this;
     return this->DiscreteIntersection::findIntersector(object1, object2);
@@ -173,7 +179,7 @@ DetectionOutput* distCorrectionLineLine(Line& e1, Line& e2)
     PQ = Q-P;
 
     DetectionOutput *detection = new DetectionOutput();
-    detection->elem = std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator>(e1, e2);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->point[0]=P;
     detection->point[1]=Q;
     detection->normal=Q-P;
@@ -270,7 +276,7 @@ DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
     PQ = Q-P;
 
     DetectionOutput *detection = new DetectionOutput();
-    detection->elem = std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator>(e2, e1);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->point[0]=Q;
     detection->point[1]=P;
     detection->normal=P-Q;
@@ -343,7 +349,7 @@ DetectionOutput* distCorrectionPointLine(Point& e1, Line& e2)
     PQ = Q-P;
 
     DetectionOutput *detection = new DetectionOutput();
-    detection->elem = std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator>(e2, e1);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->point[0]=Q;
     detection->point[1]=P;
     detection->normal=P-Q;
@@ -375,7 +381,7 @@ DetectionOutput* distCorrectionPointPoint(Point& e1, Point& e2)
     PQ = Q-P;
 
     DetectionOutput *detection = new DetectionOutput();
-    detection->elem = std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator>(e1, e2);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->point[0]=P;
     detection->point[1]=Q;
     detection->normal=Q-P;
@@ -461,7 +467,7 @@ DetectionOutput* distCorrectionSphereTriangle(Sphere& e1, Triangle& e2)
     Q = e2.p1() - x13 * alpha - x23 * beta;
 
     DetectionOutput *detection = new DetectionOutput();
-    detection->elem = std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator>(e2, e1);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->point[0]=Q;
     detection->point[1]=P;
     detection->normal=P-Q;
@@ -528,7 +534,7 @@ DetectionOutput* distCorrectionSphereLine(Sphere& e1, Line& e2)
     PQ = Q-P;
 
     DetectionOutput *detection = new DetectionOutput();
-    detection->elem = std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator>(e2, e1);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->point[0]=Q;
     detection->point[1]=P;
     detection->normal=P-Q;
@@ -563,7 +569,7 @@ DetectionOutput* distCorrectionSpherePoint(Sphere& e1, Point& e2)
     PQ = Q-P;
 
     DetectionOutput *detection = new DetectionOutput();
-    detection->elem = std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator>(e1, e2);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->point[0]=P;
     detection->point[1]=Q;
     detection->normal=Q-P;
@@ -600,7 +606,7 @@ bool intersectionRayTriangle(Ray &t1,Triangle &t2)
         return false;
 }
 
-Collision::DetectionOutput* distCorrectionRayTriangle(Ray &t1, Triangle &t2)
+core::componentmodel::collision::DetectionOutput* distCorrectionRayTriangle(Ray &t1, Triangle &t2)
 {
     Vector3 A = t1.origin();
     Vector3 B = A + t1.direction() * t1.l();
@@ -612,7 +618,7 @@ Collision::DetectionOutput* distCorrectionRayTriangle(Ray &t1, Triangle &t2)
 
     proximitySolver.NewComputation( &t2, A,B,P,Q);
 
-    detection->elem = std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator>(t2, t1);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t2, t1);
     detection->point[0]=P;
     detection->point[1]=Q;
     detection->normal=t2.n();
@@ -623,6 +629,9 @@ Collision::DetectionOutput* distCorrectionRayTriangle(Ray &t1, Triangle &t2)
 
 } // namespace MinProximityIntersections
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

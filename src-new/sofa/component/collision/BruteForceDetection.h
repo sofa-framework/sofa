@@ -1,27 +1,33 @@
-#ifndef SOFA_COMPONENTS_VOXELGRID_H
-#define SOFA_COMPONENTS_VOXELGRID_H
+#ifndef SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
+#define SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
 
-#include "Collision/BroadPhaseDetection.h"
-#include "Collision/NarrowPhaseDetection.h"
-#include "Sofa-old/Abstract/CollisionElement.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Common/Vec.h"
-
+#include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
+#include <sofa/component/collision/NarrowPhaseDetection.h>
+#include <sofa/core/CollisionElement.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/defaulttype/Vec.h>
 #include <set>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 // inherit of VisualModel for debugging, then we can see the voxel grid
-class BruteForceDetection : public Collision::BroadPhaseDetection, public Collision::NarrowPhaseDetection, public Abstract::VisualModel
+class BruteForceDetection :
+    public core::componentmodel::collision::BroadPhaseDetection,
+    public NarrowPhaseDetection,
+    public core::VisualModel
 {
 private:
-    std::vector<Abstract::CollisionModel*> collisionModels;
+    std::vector<core::CollisionModel*> collisionModels;
     bool bDraw;
 
 public:
@@ -30,12 +36,12 @@ public:
 
     void setDraw(bool val) { bDraw = val; }
 
-    void addCollisionModel (Abstract::CollisionModel *cm);
-    void addCollisionPair (const std::pair<Abstract::CollisionModel*, Abstract::CollisionModel*>& cmPair);
+    void addCollisionModel (core::CollisionModel *cm);
+    void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
 
     virtual void clearBroadPhase()
     {
-        Collision::BroadPhaseDetection::clearBroadPhase();
+        core::componentmodel::collision::BroadPhaseDetection::clearBroadPhase();
         collisionModels.clear();
     }
 
@@ -45,8 +51,10 @@ public:
     void update() { }
 };
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

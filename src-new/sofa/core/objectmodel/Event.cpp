@@ -9,12 +9,15 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "Event.h"
+#include <sofa/core/objectmodel/Event.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
+{
+
+namespace objectmodel
 {
 
 Event::Event()
@@ -38,6 +41,8 @@ bool Event::isHandled() const
 }
 
 
-}
+} // namespace objectmodel
 
-}
+} // namespace core
+
+} // namespace sofa

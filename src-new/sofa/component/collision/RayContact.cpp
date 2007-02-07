@@ -1,33 +1,32 @@
-#include "RayContact.h"
-#include "RayModel.h"
-#include "SphereModel.h"
-#include "TriangleModel.h"
-#include "SphereTreeModel.h"
+#include <sofa/component/collision/RayContact.h>
+#include <sofa/component/collision/RayModel.h>
+#include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/SphereTreeModel.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Collision;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(RayContact)
 
-Creator<Contact::Factory, RayContact<SphereModel> > RaySphereContactClass("default",true);
-Creator<Contact::Factory, RayContact<SphereModel> > RaySphereContactClass2("LagrangianMultiplier",true);
-Creator<Contact::Factory, RayContact<SphereModel> > RaySphereContactClass3("EdgeRemove",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereModel> > RaySphereContactClass("default",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereModel> > RaySphereContactClass2("LagrangianMultiplier",true);
 
-Creator<Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass("default",true);
-Creator<Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass2("LagrangianMultiplier",true);
-Creator<Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass3("EdgeRemove",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass("default",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass2("LagrangianMultiplier",true);
 
-Creator<Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass("default",true);
-Creator<Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass2("LagrangianMultiplier",true);
-Creator<Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass3("EdgeRemove",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass("default",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass2("LagrangianMultiplier",true);
 
-BaseRayContact::BaseRayContact(CollisionModel1* model1, Collision::Intersection* /*instersectionMethod*/)
+BaseRayContact::BaseRayContact(CollisionModel1* model1, core::componentmodel::collision::Intersection* /*instersectionMethod*/)
     : model1(model1)
 {
     if (model1!=NULL)
@@ -41,6 +40,9 @@ BaseRayContact::~BaseRayContact()
 }
 
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

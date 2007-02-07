@@ -1,26 +1,29 @@
-#ifndef SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_H
-#define SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
 
-#include "Sofa-old/Core/ForceField.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Components/MeshTopology.h"
-#include "Sofa-old/Components/TrimmedRegularGridTopology.h"
-#include "Sofa-old/Components/Common/vector.h"
-#include "Common/Vec.h"
-#include "Common/Mat.h"
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/FittedRegularGridTopology.h>
+#include <sofa/helper/vector.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using Sofa::Components::Common::vector;
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
+using sofa::helper::vector;
 
 template<class DataTypes>
-class TetrahedronFEMForceField : public Core::ForceField<DataTypes>, public Abstract::VisualModel
+class TetrahedronFEMForceField : public Core::ForceField<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -39,7 +42,7 @@ public:
     static const int POLAR = 2;   ///< Symbol of polar displacements tetrahedron solver
 
 protected:
-    //Core::MechanicalObject<DataTypes>* object;
+    //component::MechanicalObject<DataTypes>* object;
 
     typedef Vec<12, Real> Displacement;		///< the displacement vector
 
@@ -80,7 +83,7 @@ protected:
     bool _assembling;
 
 public:
-    TetrahedronFEMForceField(Core::MechanicalObject<DataTypes>* /*object*/=NULL)
+    TetrahedronFEMForceField(component::MechanicalObject<DataTypes>* /*object*/=NULL)
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
         , _method(0)
@@ -102,7 +105,7 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->_assembling= val; }
 
-//	Core::MechanicalObject<DataTypes>* getObject() { return object; }
+//	component::MechanicalObject<DataTypes>* getObject() { return object; }
 
     virtual void init();
 
@@ -113,9 +116,9 @@ public:
     virtual double getPotentialEnergy(const VecCoord& x);
 
     virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const);
-    virtual void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double, double, double, unsigned int &);
-    virtual void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int &);
-    virtual void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int &);
+    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double, double, double, unsigned int &);
+    virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &);
+    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int &);
 
 
     // -- VisualModel interface
@@ -156,8 +159,10 @@ protected:
     void applyStiffnessPolar( Vector& f, Real h, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
 };
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

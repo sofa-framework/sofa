@@ -1,55 +1,63 @@
-#include "ContactManagerSofa.h"
+#include <sofa/component/collision/DefaultContactManager.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-#include "Common/ObjectFactory.h"
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
-
-using namespace Collision;
-
-void create(ContactManagerSofa*& obj, ObjectDescription* arg)
+template<>
+void create(component::collision::DefaultContactManager*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    obj = new ContactManagerSofa(arg->getAttribute("response","default"));
+    obj = new component::collision::DefaultContactManager(arg->getAttribute("response","default"));
 }
 
-SOFA_DECL_CLASS(ContactManagerSofa)
+SOFA_DECL_CLASS(DefaultContactManager)
 
-Creator<ObjectFactory, ContactManagerSofa> ContactManagerSofaClass("CollisionResponse");
+Creator<simulation::tree::xml::ObjectFactory, component::collision::DefaultContactManager> DefaultContactManagerClass("DefaultContactManager");
+}
 
-ContactManagerSofa::ContactManagerSofa(const std::string& contacttype)
+
+
+namespace component
+{
+
+namespace collision
+{
+
+
+DefaultContactManager::DefaultContactManager(const std::string& contacttype)
     : contacttype(contacttype)
 {
 }
 
-ContactManagerSofa::~ContactManagerSofa()
+DefaultContactManager::~DefaultContactManager()
 {
     // HACK: do not delete contacts as they might point to forcefields that are already deleted
     // FIX crash on unload bug. -- J. Allard
     //clear();
 }
 
-void ContactManagerSofa::clear()
+void DefaultContactManager::clear()
 {
-    for (std::vector<Contact*>::iterator it=contactVec.begin(); it!=contactVec.end(); ++it)
+    for (std::vector<core::componentmodel::collision::Contact*>::iterator it=contactVec.begin(); it!=contactVec.end(); ++it)
         delete *it;
     contactVec.clear();
     contactMap.clear();
 }
 
-void ContactManagerSofa::createContacts(const std::vector<DetectionOutput*>& outputs)
+void DefaultContactManager::createContacts(const std::vector<core::componentmodel::collision::DetectionOutput*>& outputs)
 {
     outputsMap.clear();
-    for (std::vector<DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
+    for (std::vector<core::componentmodel::collision::DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
     {
-        DetectionOutput* o = *it;
+        core::componentmodel::collision::DetectionOutput* o = *it;
         outputsMap[std::make_pair(o->elem.first.getCollisionModel(),o->elem.second.getCollisionModel())].push_back(o);
     }
     // then remove any inactive contacts or add any new contact
-    std::map< std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*>, std::vector<DetectionOutput*> >::iterator outputsIt = outputsMap.begin();
-    std::map< std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*>, Contact* >::iterator contactIt = contactMap.begin();
+    std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, std::vector<core::componentmodel::collision::DetectionOutput*> >::iterator outputsIt = outputsMap.begin();
+    std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::componentmodel::collision::Contact* >::iterator contactIt = contactMap.begin();
     int nbContact = 0;
     while (outputsIt!=outputsMap.end() || contactIt!=contactMap.end())
     {
@@ -57,7 +65,7 @@ void ContactManagerSofa::createContacts(const std::vector<DetectionOutput*>& out
         {
             // new contact
             //std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
-            Contact* contact = Contact::Create(contacttype, outputsIt->first.first, outputsIt->first.second, intersectionMethod);
+            core::componentmodel::collision::Contact* contact = core::componentmodel::collision::Contact::Create(contacttype, outputsIt->first.first, outputsIt->first.second, intersectionMethod);
             if (contact == NULL) std::cerr << "Contact creation failed"<<std::endl;
             else
             {
@@ -71,7 +79,7 @@ void ContactManagerSofa::createContacts(const std::vector<DetectionOutput*>& out
         {
             // inactive contact
             //std::cout << "Deleting inactive "<<contacttype<<" contact"<<std::endl;
-            std::map< std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*>, Contact* >::iterator contactIt2 = contactIt;
+            std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::componentmodel::collision::Contact* >::iterator contactIt2 = contactIt;
             ++contactIt2;
             delete contactIt->second;
             contactMap.erase(contactIt);
@@ -97,15 +105,18 @@ void ContactManagerSofa::createContacts(const std::vector<DetectionOutput*>& out
     }
 }
 
-void ContactManagerSofa::draw()
+void DefaultContactManager::draw()
 {
-    for (std::vector<Contact*>::iterator it = contactVec.begin(); it!=contactVec.end(); it++)
+    for (std::vector<core::componentmodel::collision::Contact*>::iterator it = contactVec.begin(); it!=contactVec.end(); it++)
     {
-        if (dynamic_cast<Abstract::VisualModel*>(*it)!=NULL)
-            dynamic_cast<Abstract::VisualModel*>(*it)->draw();
+        if (dynamic_cast<core::VisualModel*>(*it)!=NULL)
+            dynamic_cast<core::VisualModel*>(*it)->draw();
     }
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

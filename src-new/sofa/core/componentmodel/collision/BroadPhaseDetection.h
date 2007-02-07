@@ -1,17 +1,20 @@
-#ifndef SOFA_COMPONENTS_COLLISION_BROADPHASEDETECTION_H
-#define SOFA_COMPONENTS_COLLISION_BROADPHASEDETECTION_H
+#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_BROADPHASEDETECTION_H
+#define SOFA_CORE_COMPONENTMODEL_COLLISION_BROADPHASEDETECTION_H
 
-#include "Detection.h"
+#include <sofa/core/componentmodel/collision/Detection.h>
 #include <vector>
 #include <algorithm>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Collision
+namespace componentmodel
+{
+
+namespace collision
 {
 
 class BroadPhaseDetection : virtual public Detection
@@ -19,16 +22,16 @@ class BroadPhaseDetection : virtual public Detection
 protected:
     // it's an information to update the collisionMethod (like voxelgrid)
     int timeStamp;
-    std::vector< std::pair<Abstract::CollisionModel*, Abstract::CollisionModel*> > cmPairs;
+    std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
 
 public:
     virtual ~BroadPhaseDetection() { }
 
-    virtual void addCollisionModel(Abstract::CollisionModel *cm) = 0;
+    virtual void addCollisionModel(core::CollisionModel *cm) = 0;
 
-    virtual void addCollisionModels(const std::vector<Abstract::CollisionModel *> v)
+    virtual void addCollisionModels(const std::vector<core::CollisionModel *> v)
     {
-        for (std::vector<Abstract::CollisionModel *>::const_iterator it = v.begin(); it<v.end(); it++)
+        for (std::vector<core::CollisionModel *>::const_iterator it = v.begin(); it<v.end(); it++)
             addCollisionModel(*it);
     }
 
@@ -38,13 +41,15 @@ public:
         cmNoCollision.clear();
     };
 
-    std::vector<std::pair<Abstract::CollisionModel*, Abstract::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
+    std::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
 };
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

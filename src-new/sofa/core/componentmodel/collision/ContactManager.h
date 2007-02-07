@@ -1,21 +1,24 @@
-#ifndef SOFA_COMPONENTS_COLLISION_CONTACTMANAGER_H
-#define SOFA_COMPONENTS_COLLISION_CONTACTMANAGER_H
+#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTMANAGER_H
+#define SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTMANAGER_H
 
-#include "Contact.h"
-#include "Sofa-old/Abstract/BaseObject.h"
+#include <sofa/core/componentmodel/collision/Contact.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Collision
+namespace componentmodel
 {
 
-class ContactManager : public virtual Abstract::BaseObject
+namespace collision
+{
+
+class ContactManager : public virtual objectmodel::BaseObject
 {
 public:
     virtual ~ContactManager() { }
@@ -33,10 +36,12 @@ protected:
     Intersection* intersectionMethod;
 };
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

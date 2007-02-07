@@ -10,17 +10,23 @@
 //
 //
 
-#ifndef SOFA_COMPONENTS_SPATIALGRIDCONTAINER_INL
-#define SOFA_COMPONENTS_SPATIALGRIDCONTAINER_INL
+#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_INL
+#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_INL
 
-#include "SpatialGridContainer.h"
-
+#include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.h>
 #include <GL/gl.h>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace behaviormodel
+{
+
+namespace eulerianfluid
 {
 
 template<class DataTypes>
@@ -601,8 +607,12 @@ void SpatialGridContainer<DataTypes>::draw()
     glEnd();
 }
 
-} // namespace Components
+} // namespace eulerianfluid
 
-} // namespace Sofa
+} // namespace behaviormodel
+
+} // namespace component
+
+} // namespace sofa
 
 #endif

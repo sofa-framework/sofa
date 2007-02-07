@@ -1,27 +1,30 @@
-#ifndef SOFA_COMPONENTS_SPHEREMODEL_H
-#define SOFA_COMPONENTS_SPHEREMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_SPHEREMODEL_H
+#define SOFA_COMPONENT_COLLISION_SPHEREMODEL_H
 
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Common/Vec3Types.h"
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 class SphereModel;
 
-class Sphere : public Abstract::TCollisionElementIterator<SphereModel>
+class Sphere : public core::TCollisionElementIterator<SphereModel>
 {
 public:
     Sphere(SphereModel* model, int index);
 
-    explicit Sphere(Abstract::CollisionElementIterator& i);
+    explicit Sphere(core::CollisionElementIterator& i);
 
     const Vector3& center() const;
 
@@ -30,7 +33,7 @@ public:
     double r() const;
 };
 
-class SphereModel : public Core::MechanicalObject<Vec3Types>, public Abstract::CollisionModel, public Abstract::VisualModel
+class SphereModel : public component::MechanicalObject<Vec3Types>, public core::CollisionModel, public core::VisualModel
 {
 protected:
     std::vector<double> radius;
@@ -75,11 +78,11 @@ public:
 };
 
 inline Sphere::Sphere(SphereModel* model, int index)
-    : Abstract::TCollisionElementIterator<SphereModel>(model, index)
+    : core::TCollisionElementIterator<SphereModel>(model, index)
 {}
 
-inline Sphere::Sphere(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<SphereModel>(static_cast<SphereModel*>(i.getCollisionModel()), i.getIndex())
+inline Sphere::Sphere(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<SphereModel>(static_cast<SphereModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
@@ -98,8 +101,10 @@ inline double Sphere::r() const
     return model->radius[index];
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

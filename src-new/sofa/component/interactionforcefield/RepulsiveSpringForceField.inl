@@ -1,13 +1,16 @@
-#ifndef SOFA_COMPONENTS_REPULSIVESPRINGFORCEFIELD_INL
-#define SOFA_COMPONENTS_REPULSIVESPRINGFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_INL
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_INL
 
-#include "RepulsiveSpringForceField.h"
-#include "StiffSpringForceField.inl"
+#include <sofa/component/interactionforcefield/RepulsiveSpringForceField.h>
+#include <sofa/component/forcefield/StiffSpringForceField.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace interactionforcefield
 {
 
 template<class DataTypes>
@@ -73,8 +76,10 @@ double RepulsiveSpringForceField<DataTypes>::getPotentialEnergy()
 }
 
 
-} // namespace Components
+} // namespace interactionforcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

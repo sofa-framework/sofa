@@ -1,20 +1,20 @@
-#ifndef SOFA_CORE_BASICMAPPING_H
-#define SOFA_CORE_BASICMAPPING_H
+#ifndef SOFA_CORE_BASEMAPPING_H
+#define SOFA_CORE_BASEMAPPING_H
 
 #include <stdlib.h>
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Sofa-old/Abstract/BaseObject.h"
-#include "Sofa-old/Abstract/BehaviorModel.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/BehaviorModel.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
-/*! \class BasicMapping
+/*! \class BaseMapping
   *  \brief An interface to convert a model to an other model
   *  \author Fonteneau Sylvere
   *  \version 0.1
@@ -25,10 +25,10 @@ namespace Core
   *
   */
 
-class BasicMapping : public virtual Abstract::BaseObject
+class BaseMapping : public virtual objectmodel::BaseObject
 {
 public:
-    virtual ~BasicMapping() { }
+    virtual ~BaseMapping() { }
 
     // Mapping Interface
     virtual void init() = 0;
@@ -38,12 +38,12 @@ public:
      */
     virtual void updateMapping() = 0;
 
-    virtual Abstract::BaseObject* getFrom() = 0;
-    virtual Abstract::BaseObject* getTo() = 0;
+    virtual objectmodel::BaseObject* getFrom() = 0;
+    virtual objectmodel::BaseObject* getTo() = 0;
 };
 
-} // namespace Core
+} // namespace core
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

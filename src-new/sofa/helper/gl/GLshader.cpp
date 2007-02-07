@@ -5,7 +5,7 @@
 //																	 //
 //*******************************************************************//
 
-#include "GLshader.h"
+#include <sofa/helper/gl/GLshader.h>
 #include <stdlib.h>
 #include <math.h>
 #include <fstream>
@@ -14,13 +14,13 @@
 #endif
 
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 // The function pointers for shaders
@@ -284,12 +284,11 @@ void CShader::Release()
     }
 }
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
-
+} // namespace sofa
 
 /////////////////////////////////////////////////////////////////////////////////
 //

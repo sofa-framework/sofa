@@ -1,33 +1,36 @@
-#ifndef SOFA_COMPONENTS_BARYCENTRICCONTACTMAPPER_H
-#define SOFA_COMPONENTS_BARYCENTRICCONTACTMAPPER_H
+#ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
+#define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
 
-#include "BarycentricMapping.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Graph/GNode.h"
-#include "SphereModel.h"
-#include "SphereTreeModel.h"
-#include "TriangleModel.h"
-#include "LineModel.h"
-#include "PointModel.h"
-
+#include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/SphereTreeModel.h>
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/LineModel.h>
+#include <sofa/component/collision/PointModel.h>
 #include <iostream>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 template < class TCollisionModel >
 class BarycentricContactMapper
 {
 public:
     typedef TCollisionModel MCollisionModel;
-    typedef Core::MechanicalModel<typename MCollisionModel::DataTypes> MMechanicalModel;
-    typedef Core::MechanicalObject<typename MCollisionModel::DataTypes> MMechanicalObject;
-    typedef BarycentricMapping<Core::MechanicalMapping< MMechanicalModel, MMechanicalModel > > MMapping;
+    typedef core::componentmodel::behavior::MechanicalState<typename MCollisionModel::DataTypes> MMechanicalState;
+    typedef component::MechanicalObject<typename MCollisionModel::DataTypes> MMechanicalObject;
+    typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping< MMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
     MMapping* mapping;
     typename MMapping::MeshMapper* mapper;
@@ -41,10 +44,10 @@ public:
     {
         if (mapping!=NULL)
         {
-            Graph::GNode* parent = dynamic_cast<Graph::GNode*>(model->getContext());
+            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
             if (parent!=NULL)
             {
-                Graph::GNode* child = dynamic_cast<Graph::GNode*>(mapping->getContext());
+                simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
                 child->removeObject(mapping->getTo());
                 child->removeObject(mapping);
                 parent->removeChild(child);
@@ -55,19 +58,19 @@ public:
         }
     }
 
-    MMechanicalModel* createMapping()
+    MMechanicalState* createMapping()
     {
-        Graph::GNode* parent = dynamic_cast<Graph::GNode*>(model->getContext());
+        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
         if (parent==NULL)
         {
             std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        Graph::GNode* child = new Graph::GNode("contactPoints"); parent->addChild(child); child->updateContext();
-        MMechanicalModel* mmodel = new MMechanicalObject; child->addObject(mmodel);
+        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+        MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
         mapper = new typename MMapping::MeshMapper(model->getTopology());
-        mapping = new MMapping(model->getMechanicalModel(), mmodel, mapper); child->addObject(mapping);
-        return mmodel;
+        mapping = new MMapping(model->getMechanicalState(), mstate, mapper); child->addObject(mapping);
+        return mstate;
     }
 
     void resize(int size)
@@ -98,16 +101,16 @@ public:
 template<>
 inline int BarycentricContactMapper<LineModel>::addPoint(const Vector3& P, int index)
 {
-    return mapper->createPointInLine(P, index, model->getMechanicalModel()->getX());
+    return mapper->createPointInLine(P, index, model->getMechanicalState()->getX());
 }
 
 template<>
 inline int BarycentricContactMapper<TriangleModel>::addPoint(const Vector3& P, int index)
 {
     if (index < model->getTopology()->getNbTriangles())
-        return mapper->createPointInTriangle(P, index, model->getMechanicalModel()->getX());
+        return mapper->createPointInTriangle(P, index, model->getMechanicalState()->getX());
     else
-        return mapper->createPointInQuad(P, (index - model->getTopology()->getNbTriangles())/2, model->getMechanicalModel()->getX());
+        return mapper->createPointInQuad(P, (index - model->getTopology()->getNbTriangles())/2, model->getMechanicalState()->getX());
 }
 
 template<>
@@ -115,7 +118,7 @@ class BarycentricContactMapper<PointModel>
 {
 public:
     typedef PointModel MCollisionModel;
-    typedef Core::MechanicalModel<MCollisionModel::DataTypes> MMechanicalModel;
+    typedef core::componentmodel::behavior::MechanicalState<MCollisionModel::DataTypes> MMechanicalState;
     MCollisionModel* model;
 
     BarycentricContactMapper(MCollisionModel* model)
@@ -123,9 +126,9 @@ public:
     {
     }
 
-    MMechanicalModel* createMapping()
+    MMechanicalState* createMapping()
     {
-        return model->getMechanicalModel();
+        return model->getMechanicalState();
     }
 
     void resize(int /*size*/)
@@ -152,7 +155,7 @@ class BarycentricContactMapper<SphereTreeModel>
 {
 public:
     typedef SphereTreeModel MCollisionModel;
-    typedef Core::MechanicalModel<MCollisionModel::DataTypes> MMechanicalModel;
+    typedef core::componentmodel::behavior::MechanicalState<MCollisionModel::DataTypes> MMechanicalState;
     MCollisionModel* model;
 
     BarycentricContactMapper(MCollisionModel* model)
@@ -160,7 +163,7 @@ public:
     {
     }
 
-    MMechanicalModel* createMapping()
+    MMechanicalState* createMapping()
     {
         return model;
     }
@@ -190,7 +193,7 @@ class BarycentricContactMapper<SphereModel>
 {
 public:
     typedef SphereModel MCollisionModel;
-    typedef Core::MechanicalModel<MCollisionModel::DataTypes> MMechanicalModel;
+    typedef core::componentmodel::behavior::MechanicalState<MCollisionModel::DataTypes> MMechanicalState;
     MCollisionModel* model;
 
     BarycentricContactMapper(MCollisionModel* model)
@@ -198,7 +201,7 @@ public:
     {
     }
 
-    MMechanicalModel* createMapping()
+    MMechanicalState* createMapping()
     {
         return model;
     }
@@ -222,8 +225,10 @@ public:
     }
 };
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,13 +1,10 @@
-#ifndef SOFA_COMPONENTS_COMMON_BACKTRACE_H
-#define SOFA_COMPONENTS_COMMON_BACKTRACE_H
+#ifndef SOFA_HELPER_BACKTRACE_H
+#define SOFA_HELPER_BACKTRACE_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace helper
 {
 
 class BackTrace
@@ -28,10 +25,8 @@ protected:
     static void sig(int sig);
 };
 
-} // namespace Common
+} // namespace helper
 
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 #endif

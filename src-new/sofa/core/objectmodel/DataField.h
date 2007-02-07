@@ -9,14 +9,14 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef SOFA_COMPONENTS_COMMON_DATAFIELD_H
-#define SOFA_COMPONENTS_COMMON_DATAFIELD_H
+#ifndef SOFA_CORE_OBJECTMODEL_DATAFIELD_H
+#define SOFA_CORE_OBJECTMODEL_DATAFIELD_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
 
-#include "Sofa-old/Abstract/FieldBase.h"
+#include <sofa/core/objectmodel/FieldBase.h>
 #include <stdlib.h>
 #include <string>
 #include <sstream>
@@ -25,13 +25,13 @@
 #include <algorithm>
 #include <map>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Common
+namespace objectmodel
 {
 
 typedef std::istringstream istrstream;
@@ -40,7 +40,7 @@ typedef std::ostringstream ostrstream;
 /**
 Pointer to data, readable and writable from/to a string.*/
 template < class T = void* >
-class DataField : public Sofa::Abstract::FieldBase
+class DataField : public sofa::core::objectmodel::FieldBase
 {
 public:
 
@@ -142,8 +142,10 @@ std::string DataField<T>::getValueString() const
 }
 
 
-}
-}
-}
+} // namespace objectmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

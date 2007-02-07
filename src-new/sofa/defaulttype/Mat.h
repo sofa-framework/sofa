@@ -1,21 +1,18 @@
-#ifndef SOFA_COMPONENTS_COMMON_MAT_H
-#define SOFA_COMPONENTS_COMMON_MAT_H
+#ifndef SOFA_DEFAULTTYPE_MAT_H
+#define SOFA_DEFAULTTYPE_MAT_H
 
-#include "Vec.h"
+#include <sofa/defaulttype/Vec.h>
 #include <assert.h>
-#include "static_assert.h"
+#include <sofa/helper/static_assert.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace defaulttype
 {
 
 template <int L, int C, class real=float>
-class Mat : public fixed_array<Vec<C,real>,L>
+class Mat : public helper::fixed_array<Vec<C,real>,L>
     //class Mat : public Vec<L,Vec<C,real> >
 {
 public:
@@ -535,7 +532,7 @@ std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 }
 
 template <int L, int C, typename real>
-std::istream& operator>>(std::istream& in, Sofa::Components::Common::Mat<L,C,real>& m)
+std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
 {
     int c;
     c = in.peek();
@@ -680,11 +677,9 @@ inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
     return res;
 }
 
-} // namespace Common
+} // namespace defaulttype
 
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 // iostream
 
@@ -692,7 +687,7 @@ inline Mat<L,C,T> dyad( const Vec<L,T>& u, const Vec<C,T>& v )
 
 /// Scalar matrix multiplication operator.
 template <int L, int C, typename real>
-Sofa::Components::Common::Mat<L,C,real> operator*(real r, const Sofa::Components::Common::Mat<L,C,real>& m)
+sofa::defaulttype::Mat<L,C,real> operator*(real r, const sofa::defaulttype::Mat<L,C,real>& m)
 {
     return m*r;
 }

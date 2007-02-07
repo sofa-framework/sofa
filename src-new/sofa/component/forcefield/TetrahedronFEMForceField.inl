@@ -1,34 +1,37 @@
-#ifndef SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_INL
-#define SOFA_COMPONENTS_TETRAHEDRONFEMFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_INL
 
-#include "Sofa-old/Core/ForceField.inl"
-#include "TetrahedronFEMForceField.h"
-#include "MeshTopology.h"
-#include "GridTopology.h"
-#include "Common/PolarDecompose.h"
-#include "GL/template.h"
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/GridTopology.h>
+#include <sofa/helper/PolarDecompose.h>
+#include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
+#include <set>
+#include <GL/gl.h>
 using std::cerr;
 using std::endl;
-#include <set>
 using std::set;
 
-#include <GL/gl.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
 
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
     this->Core::ForceField<DataTypes>::init();
-    _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->getContext()->getTopology());
+    _mesh = dynamic_cast<sofa::Components::MeshTopology*>(this->getContext()->getTopology());
     if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbCubes()<=0))
     {
         std::cerr << "ERROR(TetrahedronFEMForceField): object must have a tetrahedric MeshTopology.\n";
@@ -95,7 +98,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         _indexedElements = tetras;
     }
 
-    VecCoord& p = *this->mmodel->getX();
+    VecCoord& p = *this->mstate->getX();
     _initialPoints = p;
 
     _strainDisplacements.resize( _indexedElements->size() );
@@ -1149,9 +1152,9 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
-    if (!this->mmodel) return;
+    if (!this->mstate) return;
 
-    const VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mstate->getX();
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -1203,9 +1206,9 @@ void TetrahedronFEMForceField<DataTypes>::draw()
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
 {
-    if (this->mmodel)
+    if (this->mstate)
     {
-        VecDeriv& p = *this->mmodel->getV();
+        VecDeriv& p = *this->mstate->getV();
         if (p.size() != 0)
         {
             (*nbRow) += p.size() * p[0].size();
@@ -1216,13 +1219,13 @@ void TetrahedronFEMForceField<DataTypes>::contributeToMatrixDimension(unsigned i
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::computeMatrix(Sofa::Components::Common::SofaBaseMatrix *mat, double /*m*/, double /*b*/, double /*k*/, unsigned int &offset)
+void TetrahedronFEMForceField<DataTypes>::computeMatrix(sofa::defaulttype::SofaBaseMatrix *mat, double /*m*/, double /*b*/, double /*k*/, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     std::cout << "ComputeMatrix with offset = " << offset << "\n" ;
 
     // Update offset
-    VecDeriv& p = *this->mmodel->getV();
+    VecDeriv& p = *this->mstate->getV();
 
     int i,j,n1, n2, row, column, ROW, COLUMN , IT;
 
@@ -1269,7 +1272,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMatrix(Sofa::Components::Common
 
     offset += p.size() * p[0].size();
     /*
-    	VecDeriv& f = *this->mmodel->getF();
+    	VecDeriv& f = *this->mstate->getF();
     	unsigned int j(0);
     	for (unsigned int i=0; i<f.size(); i++, j+=f[0].size())
     	{
@@ -1285,10 +1288,10 @@ void TetrahedronFEMForceField<DataTypes>::computeMatrix(Sofa::Components::Common
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::computeVector(Sofa::Components::Common::SofaBaseVector *vect, unsigned int &offset)
+void TetrahedronFEMForceField<DataTypes>::computeVector(sofa::defaulttype::SofaBaseVector *vect, unsigned int &offset)
 {
     std::cout << "computeVector with offset = " << offset << std::endl;
-    VecDeriv& f = *this->mmodel->getF();
+    VecDeriv& f = *this->mstate->getF();
     unsigned int derivDim = Deriv::size();
     unsigned int j(0);
 
@@ -1304,9 +1307,9 @@ void TetrahedronFEMForceField<DataTypes>::computeVector(Sofa::Components::Common
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *vect, unsigned int &offset)
+void TetrahedronFEMForceField<DataTypes>::matResUpdatePosition(sofa::defaulttype::SofaBaseVector *vect, unsigned int &offset)
 {
-    VecCoord& x = *this->mmodel->getX();
+    VecCoord& x = *this->mstate->getX();
     unsigned int coordDim = Coord::size();
 
     for (unsigned int i=0; i<x.size(); i++)
@@ -1316,8 +1319,10 @@ void TetrahedronFEMForceField<DataTypes>::matResUpdatePosition(Sofa::Components:
     offset += x.size() * coordDim;
 }
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,25 +1,22 @@
-#ifndef SOFA_COMPONENTS_COMMON_RIGIDTYPES_H
-#define SOFA_COMPONENTS_COMMON_RIGIDTYPES_H
+#ifndef SOFA_DEFAULTTYPE_RIGIDTYPES_H
+#define SOFA_DEFAULTTYPE_RIGIDTYPES_H
 
-#include "Vec.h"
-#include "Mat.h"
-#include "Quat.h"
-#include <Sofa-old/Core/Context.h>
-#include <Sofa-old/Core/Mass.h>
-#include <Sofa-old/Components/Common/vector.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/helper/vector.h>
 #include <iostream>
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace defaulttype
 {
 
-namespace Common
-{
-
-using Sofa::Components::Common::vector;
+using sofa::helper::vector;
 
 class RigidTypes
 {
@@ -356,44 +353,50 @@ inline RigidTypes::Deriv operator/(const RigidTypes::Deriv& d, const RigidMass& 
     return res;
 }
 
+} // namespace defaulttype
 
-
-} // namespace Common
-
-} // namespace Components
 
 //================================================================================================================
 // This is probably useless because the RigidObject actually contains its mass and computes its inertia forces itself:
 //================================================================================================================
 
-namespace Core
+namespace core
 {
-/// Specialization of the inertia force for Components::Common::RigidTypes
+namespace componentmodel
+{
+namespace behavior
+{
+/// Specialization of the inertia force for defaulttype::RigidTypes
 template <>
-inline Components::Common::RigidTypes::Deriv inertiaForce<
-Components::Common::RigidTypes::Coord,
-           Components::Common::RigidTypes::Deriv,
-           Context::Vec3,
-           Components::Common::RigidMass,
-           Context::SpatialVector
-           >
-           (
-                   const Context::SpatialVector& vframe,
-                   const Context::Vec3& aframe,
-                   const Components::Common::RigidMass& mass,
-                   const Components::Common::RigidTypes::Coord& x,
-                   const Components::Common::RigidTypes::Deriv& v )
+inline defaulttype::RigidTypes::Deriv inertiaForce<
+defaulttype::RigidTypes::Coord,
+            defaulttype::RigidTypes::Deriv,
+            objectmodel::Context::Vec3,
+            defaulttype::RigidMass,
+            objectmodel::Context::SpatialVector
+            >
+            (
+                    const objectmodel::Context::SpatialVector& vframe,
+                    const objectmodel::Context::Vec3& aframe,
+                    const defaulttype::RigidMass& mass,
+                    const defaulttype::RigidTypes::Coord& x,
+                    const defaulttype::RigidTypes::Deriv& v
+            )
 {
-    Components::Common::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    Components::Common::RigidTypes::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+    defaulttype::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::RigidTypes::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
 
     finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return Components::Common::RigidTypes::Deriv( finertia, zero );
+    return defaulttype::RigidTypes::Deriv( finertia, zero );
     /// \todo replace zero by Jomega.cross(omega)
 }
+} // namespace behavoir
 
-}
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
+
 
 #endif

@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENTS_GL_TEXTURE_H
-#define SOFA_COMPONENTS_GL_TEXTURE_H
+#ifndef SOFA_HELPER_GL_TEXTURE_H
+#define SOFA_HELPER_GL_TEXTURE_H
 
 #ifdef _WIN32
 #include <windows.h>
@@ -7,37 +7,37 @@
 
 #include <GL/gl.h>
 
-#include "../Common/Image.h"
+#include <sofa/helper/io/Image.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
-using namespace Common;
+//using namespace sofa::defaulttype;
 
 class Texture
 {
 private:
-    Image *image;
+    io::Image *image;
     GLuint id;
 public:
-    Texture (Image *img):image(img),id(0) {};
-    Image* getImage(void);
+    Texture (io::Image *img):image(img),id(0) {};
+    io::Image* getImage(void);
     void   bind(void);
     void   unbind(void);
     void   init (void);
     ~Texture();
 };
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

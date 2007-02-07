@@ -1,33 +1,36 @@
-#include "EdgePressureForceField.h"
-
-#include "Common/ObjectFactory.h"
-#include "Sofa-old/Components/MeshTopology.h"
-
-#include "MeshTopology.h"
-#include "GL/template.h"
-
+#include <sofa/component/forcefield/EdgePressureForceField.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/helper/gl/template.h>
 #include <GL/gl.h>
-
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
+#include <vector>
+#include <set>
+#include <sofa/defaulttype/Vec3Types.h>
+
+
+
+
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-#include <vector>
-#include <set>
 
 // #define DEBUG_TRIANGLEFEM
 
-namespace Sofa
+namespace sofa
 {
 
-
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
 
 using std::cerr;
 using std::cout;
@@ -44,7 +47,7 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 {
     //std::cerr << "initializing EdgePressureForceField" << std::endl;
 
-    _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->_object->getContext()->getTopology());
+    _mesh = dynamic_cast<sofa::Components::MeshTopology*>(this->_object->getContext()->getTopology());
 
     // get restPosition
     VecCoord& p = *this->_object->getX();
@@ -163,7 +166,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
         i++;
     }
 
-    Sofa::Components::MeshTopology* _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(getContext()->getTopology());
+    sofa::Components::MeshTopology* _mesh = dynamic_cast<sofa::Components::MeshTopology*>(getContext()->getTopology());
 
     if (_mesh==NULL || (_mesh->getTriangles().empty()))
     {
@@ -234,13 +237,12 @@ void EdgePressureForceField<DataTypes>::draw()
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
 
+} // namespace sofa
 
-
-#include "Common/Vec3Types.h"
 
 namespace Sofa
 {
@@ -251,19 +253,19 @@ namespace Components
 
 SOFA_DECL_CLASS(EdgePressureForceField)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class EdgePressureForceField<Vec3dTypes>;
 template class EdgePressureForceField<Vec3fTypes>;
 
 
 template<class DataTypes>
-void create(EdgePressureForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(EdgePressureForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     typedef typename DataTypes::Coord::value_type   Real;
     typedef typename DataTypes::Coord   Coord;
 
-    XML::createWithParent< EdgePressureForceField<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
+    XML::createWithParent< EdgePressureForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("px"))
@@ -318,10 +320,10 @@ void create(EdgePressureForceField<DataTypes>*& obj, ObjectDescription* arg)
     }
 }
 
-Creator<ObjectFactory, EdgePressureForceField<Vec3dTypes> >
+Creator<simulation::tree::xml::ObjectFactory, EdgePressureForceField<Vec3dTypes> >
 EdgePressureForceFieldVec3dClass("EdgePressureForceField", true);
 
-Creator<ObjectFactory, EdgePressureForceField<Vec3fTypes> >
+Creator<simulation::tree::xml::ObjectFactory, EdgePressureForceField<Vec3fTypes> >
 EdgePressureForceFieldVec3fClass("EdgePressureForceField", true);
 
 

@@ -1,15 +1,18 @@
-#include "MeshTrian.h"
+#include <sofa/helper/io/MeshTrian.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(MeshTrian)
 
@@ -79,6 +82,9 @@ void MeshTrian::readTrian (FILE* file)
 
 }
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
+

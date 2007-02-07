@@ -1,25 +1,27 @@
-#ifndef SOFA_ABSTRACT_BASECONTEXT_H
-#define SOFA_ABSTRACT_BASECONTEXT_H
+#ifndef SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
+#define SOFA_CORE_OBJECTMODEL_BASECONTEXT_H
 
-#include "Base.h"
-#include <Sofa-old/Components/Common/SolidTypes.h>
-//#include <Sofa-old/Components/Common/SofaBaseMatrix.h>
-//#include <Sofa-old/Components/Graph/Action.h>
-#include "Sofa-old/Core/Encoding.h"
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/defaulttype/SolidTypes.h>
+//#include <sofa/defaulttype/SofaBaseMatrix.h>
+//#include <sofa/simulation/tree/Action.h>
+#include <sofa/helper/io/Encoding.h>
 #include <set>
 
-namespace Sofa
+namespace sofa
 {
-
-namespace Components
+namespace simulation
 {
-namespace Graph
+namespace tree
 {
 class Action;
 }
 }
 
-namespace Abstract
+namespace core
+{
+
+namespace objectmodel
 {
 
 class BaseObject;
@@ -29,13 +31,13 @@ class Event;
 class BaseContext : public virtual Base
 {
 public:
-    typedef Components::Common::SolidTypes<double> SolidTypes;
+    typedef defaulttype::SolidTypes<double> SolidTypes;
     typedef SolidTypes::Transform Frame;
     typedef SolidTypes::Vec Vec3;
     typedef SolidTypes::Rot Quat;
     typedef SolidTypes::Mat Mat33;
     typedef SolidTypes::SpatialVector SpatialVector;
-    typedef Core::Encoding::VecId VecId;
+    typedef helper::io::VecId VecId;
 
     BaseContext();
     virtual ~BaseContext();
@@ -132,7 +134,7 @@ public:
     /// @{
 
     /// Mechanical Degrees-of-Freedom
-    virtual BaseObject* getMechanicalModel() const;
+    virtual BaseObject* getMechanicalState() const;
 
     /// Topology
     virtual BaseObject* getTopology() const;
@@ -209,11 +211,11 @@ public:
     /// @{
 
     /// Mechanical Degrees-of-Freedom
-    virtual void setMechanicalModel( Abstract::BaseObject* )
+    virtual void setMechanicalState( BaseObject* )
     { }
 
     /// Topology
-    virtual void setTopology( Abstract::BaseObject* )
+    virtual void setTopology( BaseObject* )
     { }
 
     /// @}
@@ -242,7 +244,7 @@ public:
     virtual void propagateEvent( Event* );
 
     /// apply an action
-    virtual void executeAction( Components::Graph::Action* );
+    virtual void executeAction( simulation::tree::Action* );
 
     /// @}
 
@@ -250,9 +252,11 @@ public:
 
 };
 
-} // namespace Abstract
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif
 

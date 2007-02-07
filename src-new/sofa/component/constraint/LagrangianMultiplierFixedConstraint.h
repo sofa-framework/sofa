@@ -1,20 +1,23 @@
-#ifndef SOFA_COMPONENTS_LagrangianMultiplierFixedConstraint_H
-#define SOFA_COMPONENTS_LagrangianMultiplierFixedConstraint_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_H
 
-#include "Sofa-old/Core/InteractionForceField.h"
-#include "LagrangianMultiplierConstraint.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-
+#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/component/constraint/LagrangianMultiplierConstraint.h>
+#include <sofa/core/VisualModel.h>
 #include <vector>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public Core::ForceField<DataTypes>, public Abstract::VisualModel
+class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public Core::ForceField<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -22,7 +25,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef Common::StdVectorTypes<Real, Real, Real> LMTypes;
+    typedef defaulttype::StdVectorTypes<Real, Real, Real> LMTypes;
     typedef typename LMTypes::VecCoord LMVecCoord;
     typedef typename LMTypes::VecDeriv LMVecDeriv;
 
@@ -38,7 +41,7 @@ protected:
 
 public:
 
-    LagrangianMultiplierFixedConstraint(Core::MechanicalModel<DataTypes>* object)
+    LagrangianMultiplierFixedConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
         : Core::ForceField<DataTypes>(object)
     {
     }
@@ -67,8 +70,10 @@ public:
     void update() { }
 };
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

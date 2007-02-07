@@ -1,21 +1,24 @@
-#include "SphereModel.h"
-#include "SphereLoader.h"
-#include "CubeModel.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/collision/SphereModel.h>
+#include <sofa/helper/io/SphereLoader.h>
+#include <sofa/component/collision/CubeModel.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <GL/glut.h>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace collision
 {
 
 SOFA_DECL_CLASS(Sphere)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
-void create(SphereModel*& obj, ObjectDescription* arg)
+void create(SphereModel*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new SphereModel(atof(arg->getAttribute("radius","1,0")));
     if (obj!=NULL)
@@ -31,7 +34,7 @@ void create(SphereModel*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, SphereModel > SphereModelClass("Sphere");
+Creator<simulation::tree::xml::ObjectFactory, SphereModel > SphereModelClass("Sphere");
 
 SphereModel::SphereModel(double radius)
     : defaultRadius(radius), static_(false)
@@ -40,8 +43,8 @@ SphereModel::SphereModel(double radius)
 
 void SphereModel::resize(int size)
 {
-    this->Core::MechanicalObject<Vec3Types>::resize(size);
-    this->Abstract::CollisionModel::resize(size);
+    this->component::MechanicalObject<Vec3Types>::resize(size);
+    this->core::CollisionModel::resize(size);
     if ((int)radius.size() < size)
     {
         radius.reserve(size);
@@ -114,8 +117,8 @@ void SphereModel::draw()
         }
         glDisable(GL_LIGHTING);
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
+    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
 void SphereModel::computeBoundingTree(int maxDepth)
@@ -177,6 +180,9 @@ void SphereModel::computeContinuousBoundingTree(double dt, int maxDepth)
     }
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

@@ -1,27 +1,33 @@
-#ifndef SOFA_COMPONENTS_COLLISION_PIPELINE_H
-#define SOFA_COMPONENTS_COLLISION_PIPELINE_H
+#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_PIPELINE_H
+#define SOFA_CORE_COMPONENTMODEL_COLLISION_PIPELINE_H
 
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Sofa-old/Abstract/CollisionElement.h"
-#include "Intersection.h"
-#include "BroadPhaseDetection.h"
-#include "NarrowPhaseDetection.h"
-#include "DetectionOutput.h"
-#include "ContactManager.h"
-#include "CollisionGroupManager.h"
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/CollisionElement.h>
+#include <sofa/core/componentmodel/collision/Intersection.h>
+#include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
+#include <sofa/component/collision/NarrowPhaseDetection.h>
+#include <sofa/core/componentmodel/collision/DetectionOutput.h>
+#include <sofa/core/componentmodel/collision/ContactManager.h>
+#include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
 
 #include <vector>
 
-namespace Sofa
+using namespace sofa::core::objectmodel;
+using namespace sofa::component::collision;
+
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Collision
+namespace componentmodel
 {
 
-class Pipeline : public virtual Abstract::BaseObject
+namespace collision
+{
+
+class Pipeline : public virtual BaseObject
 {
 protected:
     std::vector<DetectionOutput*> detectionOutputs;
@@ -67,15 +73,17 @@ protected:
     /// Remove collision response from last step
     virtual void doCollisionReset() = 0;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void doCollisionDetection(const std::vector<Abstract::CollisionModel*>& collisionModels) = 0;
+    virtual void doCollisionDetection(const std::vector<core::CollisionModel*>& collisionModels) = 0;
     /// Add collision response in the simulation graph
     virtual void doCollisionResponse() = 0;
 };
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

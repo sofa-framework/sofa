@@ -48,18 +48,18 @@
  */
 
 #include <math.h>
-#include "Trackball.h"
+#include <sofa/helper/gl/Trackball.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
-using namespace Common;
+//using namespace sofa::defaulttype;
 
 /*
  * This size should really be based on the distance from the center of
@@ -181,8 +181,9 @@ static double tb_project_to_sphere(double r, double x, double y)
     return z;
 }
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
+

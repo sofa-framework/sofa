@@ -1,18 +1,20 @@
-#include "Pipeline.h"
-#include "DiscreteIntersection.h"
-#include "../Graph/GNode.h"
+#include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/component/collision/DiscreteIntersection.h>
+#include <sofa/simulation/tree/GNode.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Collision
+namespace componentmodel
 {
 
-using namespace Abstract;
-using namespace Core;
+namespace collision
+{
+using namespace core::objectmodel;
+using namespace core::componentmodel::behavior;
 
 Pipeline::Pipeline()
     : intersectionMethod(NULL),
@@ -29,7 +31,7 @@ Pipeline::~Pipeline()
 
 void Pipeline::init()
 {
-    Graph::GNode* root = dynamic_cast<Graph::GNode*>(getContext());
+    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
     if(root == NULL) return;
     intersectionMethods.clear();
     root->getTreeObjects<Intersection>(&intersectionMethods);
@@ -58,7 +60,7 @@ void Pipeline::reset()
 
 void Pipeline::computeCollisionReset()
 {
-    Graph::GNode* root = dynamic_cast<Graph::GNode*>(getContext());
+    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
     if(root == NULL) return;
     if (broadPhaseDetection!=NULL && broadPhaseDetection->getIntersectionMethod()!=intersectionMethod)
         broadPhaseDetection->setIntersectionMethod(intersectionMethod);
@@ -71,7 +73,7 @@ void Pipeline::computeCollisionReset()
 
 void Pipeline::computeCollisionDetection()
 {
-    Graph::GNode* root = dynamic_cast<Graph::GNode*>(getContext());
+    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
     if(root == NULL) return;
     std::vector<CollisionModel*> collisionModels;
     root->getTreeObjects<CollisionModel>(&collisionModels);
@@ -80,13 +82,16 @@ void Pipeline::computeCollisionDetection()
 
 void Pipeline::computeCollisionResponse()
 {
-    Graph::GNode* root = dynamic_cast<Graph::GNode*>(getContext());
+    simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
     if(root == NULL) return;
     doCollisionResponse();
 }
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
+

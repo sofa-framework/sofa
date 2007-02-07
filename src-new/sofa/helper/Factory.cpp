@@ -1,16 +1,13 @@
-#include "Factory.inl"
+#include <sofa/helper/Factory.inl>
 #include <typeinfo>
 #ifdef __GNUC__
 #include <cxxabi.h>
 #endif
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace helper
 {
 
 /// Decode the type's name to a more readable form if possible
@@ -68,8 +65,7 @@ void printFactoryLog(std::ostream& out)
 }
 
 
-} // namespace Common
+} // namespace helper
 
-} // namespace Components
+} // namespace sofa
 
-} // namespace Sofa

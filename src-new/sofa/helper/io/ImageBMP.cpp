@@ -1,13 +1,16 @@
-#include "ImageBMP.h"
+#include <sofa/helper/io/ImageBMP.h>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+//using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(ImageBMP)
 
@@ -210,6 +213,9 @@ bool ImageBMP::save(const std::string& filename)
     return true;
 }
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
+

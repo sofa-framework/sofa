@@ -1,18 +1,19 @@
-#include "Sofa-old/Components/Common/ObjectFactory.h"
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include "Sofa-old/Components/Common/RigidTypes.h"
-#include "Sofa-old/Components/Common/LaparoscopicRigidTypes.h"
-#include "Sofa-old/Components/MassSpringLoader.h"
-#include "Sofa-old/Core/MechanicalObject.inl"
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/component/MechanicalObject.inl>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Core;
-using namespace Common;
+using namespace core::componentmodel::behavior;
+using namespace defaulttype;
 
 SOFA_DECL_CLASS(MechanicalObject)
 
@@ -32,20 +33,20 @@ public:
         ++index;
     }
 };
+} // namespace component
 
 
 
-
-namespace Common   // \todo Why this must be inside Common namespace
+namespace helper   // \todo Why this must be inside helper namespace
 {
 
 template<class DataTypes>
-void create(MechanicalObject<DataTypes>*& obj, ObjectDescription* arg)
+void create(component::MechanicalObject<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    obj = new MechanicalObject<DataTypes>();
+    obj = new component::MechanicalObject<DataTypes>();
     if (arg->getAttribute("filename"))
     {
-        MechanicalObjectLoader<DataTypes> loader(obj);
+        component::MechanicalObjectLoader<DataTypes> loader(obj);
         loader.load(arg->getAttribute("filename"));
         arg->removeAttribute("filename");
     }
@@ -68,21 +69,20 @@ void create(MechanicalObject<DataTypes>*& obj, ObjectDescription* arg)
 }
 }
 
-Creator< ObjectFactory, MechanicalObject<Vec3fTypes> > MechanicalObjectVec3fClass("MechanicalObjectVec3f",true);
-Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3dClass("MechanicalObjectVec3d",true);
-Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3Class("MechanicalObjectVec3",true);
-Creator< ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectClass("MechanicalObject",true);
-Creator< ObjectFactory, MechanicalObject<RigidTypes> > MechanicalObjectRigidClass("MechanicalObjectRigid",true);
-Creator< ObjectFactory, MechanicalObject<LaparoscopicRigidTypes> > MechanicalObjectLaparoscopicRigidClass("LaparoscopicObject",true);
-} // namespace Components
+namespace component
+{
+Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3fTypes> > MechanicalObjectVec3fClass("MechanicalObjectVec3f",true);
+Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3dClass("MechanicalObjectVec3d",true);
+Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3Class("MechanicalObjectVec3",true);
+Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectClass("MechanicalObject",true);
+Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<RigidTypes> > MechanicalObjectRigidClass("MechanicalObjectRigid",true);
+Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<LaparoscopicRigidTypes> > MechanicalObjectLaparoscopicRigidClass("LaparoscopicObject",true);
 
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
-namespace Core
-{
 
 template <>
-void Core::MechanicalObject<Components::Common::Vec3dTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+void MechanicalObject<defaulttype::Vec3dTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
 {
     const VecCoord& x = *getX();
     for( unsigned i=0; i<x.size(); ++i )
@@ -94,7 +94,7 @@ void Core::MechanicalObject<Components::Common::Vec3dTypes>::getIndicesInSpace(s
     }
 }
 template <>
-void Core::MechanicalObject<Components::Common::Vec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+void MechanicalObject<defaulttype::Vec3dTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
 {
     const VecCoord& x = *getX();
     for( unsigned i=0; i<x.size(); ++i )
@@ -108,7 +108,7 @@ void Core::MechanicalObject<Components::Common::Vec3fTypes>::getIndicesInSpace(s
 
 // overload for rigid bodies: use the center
 template<>
-void Core::MechanicalObject<Components::Common::RigidTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+void MechanicalObject<defaulttype::RigidTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
 {
     const VecCoord& x = *getX();
     for( unsigned i=0; i<x.size(); ++i )
@@ -122,11 +122,11 @@ void Core::MechanicalObject<Components::Common::RigidTypes>::getIndicesInSpace(s
 
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 
-template class Core::MechanicalObject<Components::Common::Vec3dTypes>;
-template class Core::MechanicalObject<Components::Common::Vec3fTypes>;
-template class Core::MechanicalObject<Components::Common::RigidTypes>;
-template class Core::MechanicalObject<Components::Common::LaparoscopicRigidTypes>;
+template class MechanicalObject<defaulttype::Vec3dTypes>;
+template class MechanicalObject<defaulttype::Vec3dTypes>;
+template class MechanicalObject<defaulttype::RigidTypes>;
+template class MechanicalObject<defaulttype::LaparoscopicRigidTypes>;
 
-} // namespace Core
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa

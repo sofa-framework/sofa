@@ -1,20 +1,26 @@
-#ifndef SOFA_CORE_BASICFORCEFIELD_H
-#define SOFA_CORE_BASICFORCEFIELD_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEFORCEFIELD_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEFORCEFIELD_H
 
-#include "Sofa-old/Abstract/BaseObject.h"
-#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
-#include "Sofa-old/Components/Common/SofaBaseVector.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/SofaBaseMatrix.h>
+#include <sofa/defaulttype/SofaBaseVector.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
-class BasicForceField : public virtual Abstract::BaseObject
+namespace componentmodel
+{
+
+namespace behavior
+{
+
+class BaseForceField : public virtual objectmodel::BaseObject
 {
 public:
-    virtual ~BasicForceField() {}
+    virtual ~BaseForceField() {}
 
     virtual void addForce() = 0;
 
@@ -23,17 +29,21 @@ public:
     virtual double getPotentialEnergy() =0;
 
 
-    virtual void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};
+    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &) {};
 
     virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
 
-    virtual void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int &) {};
+    virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
 
-    virtual void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int &) {};
+    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
 };
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

@@ -9,16 +9,19 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "KeypressedEvent.h"
+#include <sofa/core/objectmodel/KeypressedEvent.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
+{
+
+namespace objectmodel
 {
 
 KeypressedEvent::KeypressedEvent(char c)
-    : Sofa::Abstract::Event()
+    : Event()
     , m_char(c)
 {
 }
@@ -34,6 +37,8 @@ char KeypressedEvent::getKey() const
 }
 
 
-}
+} // namespace objectmodel
 
-}
+} // namespace core
+
+} // namespace sofa

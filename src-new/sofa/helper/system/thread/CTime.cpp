@@ -1,4 +1,4 @@
-#include "CTime.h"
+#include <sofa/helper/system/thread/CTime.h>
 
 #ifdef WIN32
 # include <windows.h>
@@ -19,13 +19,16 @@
  * Time measurement *
  ********************/
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Thread
+namespace system
+{
+
+namespace thread
 {
 
 #ifdef WIN32
@@ -169,8 +172,11 @@ volatile ctime_t CTime::getTime()
     return t;
 }
 
-} // namespace Thread
+} // namespace thread
 
-} // namespace Components
+} // namespace system
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
+

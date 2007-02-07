@@ -1,19 +1,23 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENTS_CGIMPLICITSOLVER_H
-#define SOFA_COMPONENTS_CGIMPLICITSOLVER_H
+#ifndef SOFA_COMPONENT_ODESOLVER_CGIMPLICITSOLVER_H
+#define SOFA_COMPONENT_ODESOLVER_CGIMPLICITSOLVER_H
 
-#include <Sofa-old/Core/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
-using namespace Common;
 
-class CGImplicitSolver : public Core::OdeSolver
+namespace odesolver
+{
+
+using namespace sofa::defaulttype;
+
+class CGImplicitSolver : public core::componentmodel::behavior::OdeSolver
 {
 public:
 
@@ -40,8 +44,10 @@ protected:
     	double velocityDamping;*/
 };
 
-} // namespace Components
+} // namespace odesolver
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

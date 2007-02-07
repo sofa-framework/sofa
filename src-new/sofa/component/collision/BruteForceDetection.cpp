@@ -1,33 +1,36 @@
-#include "BruteForceDetection.h"
-#include "Sphere.h"
-#include "Triangle.h"
-#include "Line.h"
-#include "Point.h"
-#include "Common/FnDispatcher.h"
-#include "Common/ObjectFactory.h"
-#include "Graph/GNode.h"
-
+#include <sofa/component/collision/BruteForceDetection.h>
+#include <sofa/component/collision/Sphere.h>
+#include <sofa/component/collision/Triangle.h>
+#include <sofa/component/collision/Line.h>
+#include <sofa/component/collision/Point.h>
+#include <sofa/helper/FnDispatcher.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <map>
 #include <queue>
 #include <stack>
+#include <GL/gl.h>
+#include <GL/glut.h>
+
 
 /* for debugging the collision method */
 #ifdef _WIN32
 #include <windows.h>
 #endif
-#include <GL/gl.h>
-#include <GL/glut.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Collision;
+namespace collision
+{
 
-void create(BruteForceDetection*& obj, ObjectDescription* arg)
+using namespace sofa::defaulttype;
+using namespace collision;
+
+void create(BruteForceDetection*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new BruteForceDetection();
     if (arg->getAttribute("draw"))
@@ -36,9 +39,9 @@ void create(BruteForceDetection*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(BruteForce)
 
-Creator<ObjectFactory, BruteForceDetection> BruteForceDetectionClass("BruteForceDetection");
+Creator<simulation::tree::xml::ObjectFactory, BruteForceDetection> BruteForceDetectionClass("BruteForceDetection");
 
-using namespace Abstract;
+using namespace core::objectmodel;
 
 BruteForceDetection::BruteForceDetection()
     : bDraw(false)
@@ -56,7 +59,7 @@ void BruteForceDetection::addCollisionModel(CollisionModel *cm)
             continue;
         if (!cm->canCollideWith(cm2))
             continue;
-        Collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2);
+        core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm2);
         if (intersector == NULL)
             continue;
 
@@ -110,7 +113,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
     CollisionModel *finalcm1 = cm1->getLast();
     CollisionModel *finalcm2 = cm2->getLast();
     //std::cout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<std::endl;
-    Collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2);
+    core::componentmodel::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2);
     if (finalintersector == NULL)
         return;
     //std::cout << "Final intersector " << finalintersector->name() << " for "<<finalcm1->getName()<<" - "<<finalcm2->getName()<<std::endl;
@@ -122,10 +125,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
         finalcm2 = NULL;
         finalintersector = NULL;
     }
-    Graph::GNode* node = dynamic_cast<Graph::GNode*>(getContext());
+    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(getContext());
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
-    Graph::GNode::ctime_t t0=0, t=0;
-    Graph::GNode::ctime_t ft=0;
+    simulation::tree::GNode::ctime_t t0=0, t=0;
+    simulation::tree::GNode::ctime_t ft=0;
 
     std::queue< TestPair > externalCells;
 
@@ -149,8 +152,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
     }
     //externalCells.push(std::make_pair(std::make_pair(cm1->begin(),cm1->end()),std::make_pair(cm2->begin(),cm2->end())));
 
-    //Collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm1, cm2);
-    Collision::ElementIntersector* intersector = NULL;
+    //core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm1, cm2);
+    core::componentmodel::collision::ElementIntersector* intersector = NULL;
     cm1 = NULL; // force later init of intersector
     cm2 = NULL;
 
@@ -175,7 +178,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
         std::stack< TestPair > internalCells;
         internalCells.push(root);
 
-        Graph::GNode::ctime_t it=0;
+        simulation::tree::GNode::ctime_t it=0;
 
         while (!internalCells.empty())
         {
@@ -338,6 +341,9 @@ void BruteForceDetection::draw()
     }
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

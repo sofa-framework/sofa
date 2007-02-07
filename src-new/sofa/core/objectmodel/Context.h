@@ -1,27 +1,31 @@
 // Author: Fran�is Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef	SOFA_CORE_CONTEXT_H
-#define	SOFA_CORE_CONTEXT_H
+#ifndef SOFA_CORE_OBJECTMODEL_CONTEXT_H
+#define SOFA_CORE_OBJECTMODEL_CONTEXT_H
 
-#include "Sofa-old/Abstract/BaseContext.h"
+#include <sofa/core/objectmodel/BaseContext.h>
 
 #include <iostream>
 #include <map>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
-using Sofa::Components::Common::DataField;
+
+namespace objectmodel
+{
+
+using sofa::core::objectmodel::DataField;
 
 // struct ContextData
 // {
-// 	typedef Abstract::BaseContext::Frame Frame;
-// 	typedef Abstract::BaseContext::Vec3 Vec3;
-// 	typedef Abstract::BaseContext::Quat Quat;
-// 	typedef Abstract::BaseContext::SpatialVector SpatialVector;
+// 	typedef BaseContext::Frame Frame;
+// 	typedef BaseContext::Vec3 Vec3;
+// 	typedef BaseContext::Quat Quat;
+// 	typedef BaseContext::SpatialVector SpatialVector;
 //
 //
 //         DataField<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
@@ -68,15 +72,15 @@ using Sofa::Components::Common::DataField;
 // 	//double linearAcceleration_[3]; ///< Acceleration of the origin of the frame due to the velocities of the ancestors of the current frame
 // };
 
-class Context : public Abstract::BaseContext
+class Context : public BaseContext
 {
 
 public:
     // begin ContextData
-    typedef Abstract::BaseContext::Frame Frame;
-    typedef Abstract::BaseContext::Vec3 Vec3;
-    typedef Abstract::BaseContext::Quat Quat;
-    typedef Abstract::BaseContext::SpatialVector SpatialVector;
+    typedef BaseContext::Frame Frame;
+    typedef BaseContext::Vec3 Vec3;
+    typedef BaseContext::Quat Quat;
+    typedef BaseContext::SpatialVector SpatialVector;
 
 
     DataField<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
@@ -106,10 +110,10 @@ public:
 
     // end ContextData
 
-//     typedef Abstract::BaseContext::Frame Frame;
-// 	typedef Abstract::BaseContext::Vec3 Vec3;
-// 	typedef Abstract::BaseContext::Quat Quat;
-// 	typedef Abstract::BaseContext::SpatialVector SpatialVector;
+//     typedef BaseContext::Frame Frame;
+// 	typedef BaseContext::Vec3 Vec3;
+// 	typedef BaseContext::Quat Quat;
+// 	typedef BaseContext::SpatialVector SpatialVector;
 
 
     Context();
@@ -207,10 +211,10 @@ public:
         /// @{
 
     	/// Mechanical Degrees-of-Freedom
-    	virtual Abstract::BaseObject* getMechanicalModel() const;
+    	virtual BaseObject* getMechanicalState() const;
 
     	/// Topology
-    	virtual Abstract::BaseObject* getTopology() const;
+    	virtual BaseObject* getTopology() const;
 
     	/// @}
     */
@@ -277,8 +281,10 @@ public:
 
 };
 
-} // namespace Core
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

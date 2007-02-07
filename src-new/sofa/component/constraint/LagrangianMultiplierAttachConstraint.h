@@ -1,20 +1,23 @@
-#ifndef SOFA_COMPONENTS_LagrangianMultiplierContactConstraint_H
-#define SOFA_COMPONENTS_LagrangianMultiplierContactConstraint_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERATTACHCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERATTACHCONSTRAINT_H
 
-#include "Sofa-old/Core/InteractionForceField.h"
-#include "LagrangianMultiplierConstraint.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-
+#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/component/constraint/LagrangianMultiplierConstraint.h>
+#include <sofa/core/VisualModel.h>
 #include <vector>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierAttachConstraint : public LagrangianMultiplierConstraint<DataTypes>, public Core::InteractionForceField, public Abstract::VisualModel
+class LagrangianMultiplierAttachConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::InteractionForceField, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -22,13 +25,13 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef Common::StdVectorTypes<Real, Real, Real> LMTypes;
+    typedef defaulttype::StdVectorTypes<Real, Real, Real> LMTypes;
     typedef typename LMTypes::VecCoord LMVecCoord;
     typedef typename LMTypes::VecDeriv LMVecDeriv;
 
 protected:
-    Core::MechanicalModel<DataTypes>* object1;
-    Core::MechanicalModel<DataTypes>* object2;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* object1;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* object2;
 
     struct ConstraintData
     {
@@ -39,20 +42,20 @@ protected:
 
 public:
 
-    LagrangianMultiplierAttachConstraint(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
+    LagrangianMultiplierAttachConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
         : object1(object1), object2(object2)
     {
     }
 
-    LagrangianMultiplierAttachConstraint(Core::MechanicalModel<DataTypes>* object)
+    LagrangianMultiplierAttachConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
         : object1(object), object2(object)
     {
     }
 
-    Core::MechanicalModel<DataTypes>* getObject1() { return object1; }
-    Core::MechanicalModel<DataTypes>* getObject2() { return object2; }
-    Core::BasicMechanicalModel* getMechModel1() { return object1; }
-    Core::BasicMechanicalModel* getMechModel2() { return object2; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return object1; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return object2; }
+    core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
+    core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
     void clear(int reserve = 0)
     {
@@ -76,8 +79,10 @@ public:
     void update() { }
 };
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

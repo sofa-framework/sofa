@@ -1,23 +1,26 @@
-#include "LennardJonesForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/forcefield/LennardJonesForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Core;
+namespace forcefield
+{
 
-namespace Common
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
+
+namespace helper
 {
 template<class DataTypes>
-void create(LennardJonesForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(LennardJonesForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< LennardJonesForceField<DataTypes>, MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< LennardJonesForceField<DataTypes>, MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("alpha"))  obj->setAlpha((typename DataTypes::Coord::value_type)atof(arg->getAttribute("alpha")));
@@ -30,7 +33,7 @@ void create(LennardJonesForceField<DataTypes>*& obj, ObjectDescription* arg)
         if (arg->getAttribute("damping"))  obj->setP0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("damping")));
     }
 }
-}
+} // namespace helper
 
 SOFA_DECL_CLASS(LennardJonesForceField)
 
@@ -39,9 +42,12 @@ template class LennardJonesForceField<Vec3fTypes>;
 template class LennardJonesForceField<Vec3dTypes>;
 
 // And registered in the Factory
-Creator< ObjectFactory, LennardJonesForceField<Vec3fTypes> > LennardJonesForceField3fClass("LennardJonesForceField", true);
-Creator< ObjectFactory, LennardJonesForceField<Vec3dTypes> > LennardJonesForceField3dClass("LennardJonesForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, LennardJonesForceField<Vec3fTypes> > LennardJonesForceField3fClass("LennardJonesForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, LennardJonesForceField<Vec3dTypes> > LennardJonesForceField3dClass("LennardJonesForceField", true);
 
-} // namespace Sofa
+} // namespace forcefield
 
-} // namespace Components
+} // namespace component
+
+} // namespace sofa
+

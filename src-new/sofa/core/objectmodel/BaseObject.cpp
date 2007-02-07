@@ -1,16 +1,18 @@
-#include "BaseObject.h"
-#include "Event.h"
-#include <Sofa-old/Components/KeypressedEvent.h>
-#include <Sofa-old/Components/XML/BaseNode.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/simulation/tree/xml/Element.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
+namespace core
+{
 
-namespace Abstract
+namespace objectmodel
 {
 
 BaseObject::BaseObject()
@@ -56,7 +58,7 @@ void BaseObject::writeState( std::ostream& )
 /// Handle an event
 void BaseObject::handleEvent( Event* e )
 {
-    using namespace Components;
+    using namespace simulation::tree;
     cerr<<"BaseObject "<<getName()<<" gets an event"<<endl;
     if( KeypressedEvent* ke = dynamic_cast<KeypressedEvent*>( e ) )
     {
@@ -91,9 +93,9 @@ double BaseObject::getTime() const
 }
 
 
-} // namespace Abstract
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
 
-
+} // namespace sofa
 

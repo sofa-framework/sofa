@@ -1,10 +1,13 @@
-#ifndef SOFA_COMPONENTS_MESHTOPOLOGYLOADER_H
-#define SOFA_COMPONENTS_MESHTOPOLOGYLOADER_H
+#ifndef SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
+#define SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
+{
+
+namespace io
 {
 
 class MeshTopologyLoader
@@ -27,8 +30,10 @@ public:
     virtual void addCube(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/, int /*p5*/, int /*p6*/, int /*p7*/, int /*p8*/) {}
 };
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
 
 #endif

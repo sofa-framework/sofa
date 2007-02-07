@@ -1,17 +1,23 @@
-#ifndef SOFA_CORE_MECHANICALOBJECT_H
-#define SOFA_CORE_MECHANICALOBJECT_H
+#ifndef SOFA_COMPONENT_MECHANICALOBJECT_H
+#define SOFA_COMPONENT_MECHANICALOBJECT_H
 
-#include "MechanicalModel.h"
-#include "XField.h"
-#include "VField.h"
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/objectmodel/XField.h>
+#include <sofa/core/objectmodel/VField.h>
 #include <vector>
 #include <assert.h>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Core
+namespace component
 {
+
+
+using namespace helper::io;
+using namespace core::componentmodel::behavior;
+using namespace core::objectmodel;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
@@ -21,10 +27,10 @@ public:
 };
 
 template <class DataTypes>
-class MechanicalObject : public MechanicalModel<DataTypes>
+class MechanicalObject : public MechanicalState<DataTypes>
 {
 public:
-    typedef MechanicalModel<DataTypes> Inherited;
+    typedef MechanicalState<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -185,8 +191,8 @@ public:
     /// @}
 };
 
-} // namespace Core
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

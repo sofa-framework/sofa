@@ -1,17 +1,23 @@
-#ifndef SOFA_CORE_BASICTOPOLOGY_H
-#define SOFA_CORE_BASICTOPOLOGY_H
+#ifndef SOFA_CORE_COMPONENTMODEL_TOPOLOGY_BASETOPOLOGY_H
+#define SOFA_CORE_COMPONENTMODEL_TOPOLOGY_BASETOPOLOGY_H
 
 #include <stdlib.h>
 #include <vector>
 #include <list>
 #include <string>
 #include <iostream>
-#include "Sofa-old/Abstract/BaseObject.h"
+#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace topology
 {
 
 // forward definitions :
@@ -44,8 +50,8 @@ enum TopologyChangeType
 
 /** \brief Base class to indicate a topology change occurred.
  *
- * All topological changes taking place in a given BasicTopology will issue a TopologyChange in the
- * BasicTopology's changeList, so that BasicTopologies mapped to it can know what happened and decide how to
+ * All topological changes taking place in a given BaseTopology will issue a TopologyChange in the
+ * BaseTopology's changeList, so that BasicTopologies mapped to it can know what happened and decide how to
  * react.
  * Classes inheriting from this one describe a given topolopy change (e.g. RemovedPoint, AddedEdge, etc).
  * The exact type of topology change is given by member changeType.
@@ -89,7 +95,7 @@ public:
  * The class also holds an array of TopologyChange objects needed by Topologies linked to this one to know
  * what happened and how to take it into account (or ignore it).
  */
-class BasicTopology : public Abstract::BaseObject
+class BaseTopology : public objectmodel::BaseObject
 {
 
 public :
@@ -155,7 +161,7 @@ public :
      * All topology related objects (TopologyContainer, TopologyModifier, TopologyAlgorithms,
      * GeometryAlgorithms) are initialized to 0.
      */
-    BasicTopology(bool isMainTopology = true)
+    BaseTopology(bool isMainTopology = true)
         : m_topologyContainer(0),
           m_topologyModifier(0),
           m_topologyAlgorithms(0),
@@ -167,7 +173,7 @@ public :
 
 
     /// Destructor.
-    ~BasicTopology();
+    ~BaseTopology();
 
 
 
@@ -177,7 +183,7 @@ public :
      * that just happened (in the case of creation) or are about to happen (in the case of destruction) since
      * last call to propagateTopologicalChanges.
      *
-     * @see BasicTopology::m_changeList
+     * @see BaseTopology::m_changeList
      * @sa firstChange()
      * @sa lastChange()
      */
@@ -186,7 +192,7 @@ public :
     }
     /** \brief Returns whether this topology is a main one or a specific one.
      *
-     * @see BasicTopology::m_mainTopology
+     * @see BaseTopology::m_mainTopology
      */
     bool isMainTopology() const
     {
@@ -240,7 +246,7 @@ public:
      *
      * @param basicTopology the topology this object describes.
      */
-    TopologyContainer(BasicTopology *basicTopology) : m_basicTopology(basicTopology)
+    TopologyContainer(BaseTopology *basicTopology) : m_basicTopology(basicTopology)
     {
     }
     /// Destructor
@@ -254,7 +260,7 @@ public:
     }
 protected:
     /// The topology this object describes.
-    BasicTopology *m_basicTopology;
+    BaseTopology *m_basicTopology;
 
     /// Array of topology modifications that have already occured (addition) or will occur next (deletion).
     std::list<const TopologyChange *> m_changeList; // shouldn't this be private?
@@ -280,11 +286,11 @@ protected:
     void resetTopologyChangeList();
 
     // Friend classes declaration.
-    // Needed so that TopologyModifier and TopologyAlgorithms and BasicTopology can access private
+    // Needed so that TopologyModifier and TopologyAlgorithms and BaseTopology can access private
     // method addTopologyChange and resetTopologyList
     friend class TopologyModifier;
     friend class TopologyAlgorithms;
-    friend class BasicTopology;
+    friend class BaseTopology;
 };
 
 
@@ -298,7 +304,7 @@ public:
      *
      * @param basicTopology the topology this object applies to.
      */
-    TopologyModifier(BasicTopology *basicTopology) : m_basicTopology(basicTopology)
+    TopologyModifier(BaseTopology *basicTopology) : m_basicTopology(basicTopology)
     {
     }
 
@@ -309,7 +315,7 @@ public:
 
 protected:
     /// The topology this object applies to.
-    BasicTopology *m_basicTopology;
+    BaseTopology *m_basicTopology;
 
 
 
@@ -333,7 +339,7 @@ public:
      *
      * @param basicTopology the topology this object applies to.
      */
-    TopologyAlgorithms(BasicTopology *basicTopology) : m_basicTopology(basicTopology)
+    TopologyAlgorithms(BaseTopology *basicTopology) : m_basicTopology(basicTopology)
     {
     }
     /// Destructor
@@ -342,7 +348,7 @@ public:
     }
 protected:
     /// The topology this object applies to.
-    BasicTopology *m_basicTopology;
+    BaseTopology *m_basicTopology;
 
 
 
@@ -365,7 +371,7 @@ public:
      *
      * @param basicTopology the topology this object applies to.
      */
-    GeometryAlgorithms(BasicTopology *basicTopology) : m_basicTopology(basicTopology)
+    GeometryAlgorithms(BaseTopology *basicTopology) : m_basicTopology(basicTopology)
     {
     }
     /// Destructor
@@ -374,14 +380,18 @@ public:
     }
 protected:
     /// The topology this object applies to.
-    BasicTopology *m_basicTopology;
+    BaseTopology *m_basicTopology;
 
 };
 
 
 
-} // namespace Core
+} // namespace topology
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif // SOFA_CORE_BASICTOPOLOGY_H

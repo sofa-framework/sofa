@@ -1,16 +1,19 @@
-#include "DiagonalMass.inl"
-#include "Sofa-old/Components/Common/ObjectFactory.h"
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include "Sofa-old/Components/Common/RigidTypes.h"
-#include "GL/Axis.h"
+#include <sofa/component/mass/DiagonalMass.inl>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/gl/Axis.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace mass
+{
+
+using namespace sofa::defaulttype;
 
 template <>
 double DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergy( const VecCoord& x )
@@ -43,7 +46,7 @@ void DiagonalMass<RigidTypes, RigidMass>::draw()
 {
     const MassVector &masses= f_mass.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mmodel->getX();
+    VecCoord& x = *mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
         const Quat& orient = x[i].getOrientation();
@@ -75,7 +78,7 @@ template class DiagonalMass<Vec3fTypes,float>;
 
 template class DiagonalMass<RigidTypes,RigidMass>;
 
-namespace Common   // \todo Why this must be inside Common namespace
+namespace helper   // \todo Why this must be inside helper namespace
 {
 template<class Vec>
 void readVec1(Vec& vec, const char* str)
@@ -93,9 +96,9 @@ void readVec1(Vec& vec, const char* str)
 }
 
 template<class DataTypes, class MassType>
-void create(DiagonalMass<DataTypes, MassType>*& obj, ObjectDescription* arg)
+void create(DiagonalMass<DataTypes, MassType>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< DiagonalMass<DataTypes, MassType>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< DiagonalMass<DataTypes, MassType>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("filename"))
@@ -129,10 +132,13 @@ void create(DiagonalMass<DataTypes, MassType>*& obj, ObjectDescription* arg)
 }
 }
 
-Creator< ObjectFactory, DiagonalMass<Vec3dTypes,double> > DiagonalMass3dClass("DiagonalMass",true);
-Creator< ObjectFactory, DiagonalMass<Vec3fTypes,float > > DiagonalMass3fClass("DiagonalMass",true);
-Creator< ObjectFactory, DiagonalMass<RigidTypes,RigidMass> > DiagonalMassRigidClass("DiagonalMass",true);
+Creator<simulation::tree::xml::ObjectFactory, DiagonalMass<Vec3dTypes,double> > DiagonalMass3dClass("DiagonalMass",true);
+Creator<simulation::tree::xml::ObjectFactory, DiagonalMass<Vec3fTypes,float > > DiagonalMass3fClass("DiagonalMass",true);
+Creator<simulation::tree::xml::ObjectFactory, DiagonalMass<RigidTypes,RigidMass> > DiagonalMassRigidClass("DiagonalMass",true);
 
-} // namespace Components
+} // namespace mass
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

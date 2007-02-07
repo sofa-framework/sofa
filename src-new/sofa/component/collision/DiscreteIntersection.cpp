@@ -1,40 +1,40 @@
-#include "Common/config.h"
-#include "Common/FnDispatcher.inl"
-#include "DiscreteIntersection.h"
-#include "Common/ObjectFactory.h"
-#include "Collision/Intersection.inl"
-#include "RayPickInteractor.h"
-
-#include "ProximityIntersection.h"
-#include "Proximity/proximity.h"
-
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/FnDispatcher.inl>
+#include <sofa/component/collision/DiscreteIntersection.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/component/collision/RayPickInteractor.h>
+#include <sofa/component/collision/ProximityIntersection.h>
+#include <sofa/helper/proximity.h>
 #include <iostream>
 #include <algorithm>
 
-namespace Sofa
+
+
+namespace sofa
 {
-
-namespace Components
-{
-
-using namespace Common;
-using namespace Collision;
-using namespace DiscreteIntersections;
-using namespace Proximity;
-
-
-namespace Common
+namespace helper
 {
 template<>
-void create(DiscreteIntersection*& obj, ObjectDescription* /*arg*/)
+void create(DiscreteIntersection*& obj, simulation::tree::xml::ObjectDescription* /*arg*/)
 {
     obj = new DiscreteIntersection();
 }
 }
+namespace component
+{
+
+namespace collision
+{
+
+using namespace sofa::defaulttype;
+using namespace DiscreteIntersections;
+//using namespace helper;
+
 
 SOFA_DECL_CLASS(DiscreteIntersection)
 
-Creator<ObjectFactory, DiscreteIntersection> DiscreteIntersectionClass("DiscreteIntersection");
+Creator<simulation::tree::xml::ObjectFactory, DiscreteIntersection> DiscreteIntersectionClass("DiscreteIntersection");
 
 DiscreteIntersection::DiscreteIntersection()
 {
@@ -52,7 +52,7 @@ DiscreteIntersection::DiscreteIntersection()
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-ElementIntersector* DiscreteIntersection::findIntersector(Abstract::CollisionModel* object1, Abstract::CollisionModel* object2)
+ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* object1, core::CollisionModel* object2)
 {
     return intersectors.get(object1, object2);
 }
@@ -426,9 +426,11 @@ DetectionOutput* distCorrectionSingleSphereRay(SingleSphere& sph1, Ray& ray2)
 //	std::cout<<"Distance correction between Triangle - Triangle"<<std::endl;
 //	return new DetectionOutput();
 //}
-
 } // namespace DiscreteIntersections
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

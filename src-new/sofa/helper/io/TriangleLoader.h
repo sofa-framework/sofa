@@ -1,12 +1,15 @@
-#ifndef SOFA_COMPONENTS_TRIANGLELOADER_H
-#define SOFA_COMPONENTS_TRIANGLELOADER_H
+#ifndef SOFA_HELPER_IO_TRIANGLELOADER_H
+#define SOFA_HELPER_IO_TRIANGLELOADER_H
 
 #include <stdio.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
+{
+
+namespace io
 {
 
 class TriangleLoader
@@ -21,8 +24,10 @@ private:
     void loadTriangles(FILE *file);
 };
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
 
 #endif

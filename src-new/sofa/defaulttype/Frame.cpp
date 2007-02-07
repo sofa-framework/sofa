@@ -1,18 +1,15 @@
 /* Francois Faure, INRIA-UJF, 2006
  */
-#include "Frame.h"
+#include <sofa/defaulttype/Frame.h>
 #include <iostream>
 using std::cout;
 using std::endl;
 
-namespace Sofa
-{
-namespace Components
-{
-namespace Common
+namespace sofa
 {
 
-
+namespace defaulttype
+{
 
 Frame::Frame (const Vec3 &origin, const Mat33& matrix )
     : origin_(origin)
@@ -159,7 +156,7 @@ Frame Frame::inversed() const
     return Frame( -(inv*origin_) , inv );
 }
 
-std::ostream& operator << (std::ostream& out, const Sofa::Components::Common::Frame& c )
+std::ostream& operator << (std::ostream& out, const sofa::defaulttype::Frame& c )
 {
     out<<"origin = "<<c.getOrigin()<<", basis matrix="<<endl;
     for( int i=0; i<3; i++ )
@@ -171,9 +168,9 @@ std::ostream& operator << (std::ostream& out, const Sofa::Components::Common::Fr
     return out;
 }
 
-}//Common
-}//Components
-}//Sofa
+} // namespace defaulttype
+
+} // namespace sofa
 
 
 

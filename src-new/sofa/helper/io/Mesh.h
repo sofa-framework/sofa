@@ -1,17 +1,19 @@
-#ifndef SOFA_COMPONENTS_COMMON_MESH_H
-#define SOFA_COMPONENTS_COMMON_MESH_H
+#ifndef SOFA_HELPER_IO_MESH_H
+#define SOFA_HELPER_IO_MESH_H
 
-#include <Sofa-old/Components/Common/vector.h>
-#include "Vec.h"
-#include "Factory.h"
+#include <sofa/helper/vector.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/Factory.h>
 
-namespace Sofa
+using namespace sofa::defaulttype;
+
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Common
+namespace io
 {
 
 class Mesh
@@ -68,10 +70,10 @@ public:
     static Mesh* Create(std::string filename);
 };
 
-} // namespace Common
+} // namespace io
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

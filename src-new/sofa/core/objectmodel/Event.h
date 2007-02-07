@@ -9,13 +9,16 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef Sofa_AbstractEvent_h
-#define Sofa_AbstractEvent_h
+#ifndef SOFA_CORE_OBJECTMODEL_EVENT_H
+#define SOFA_CORE_OBJECTMODEL_EVENT_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
+{
+
+namespace objectmodel
 {
 
 /**
@@ -41,8 +44,10 @@ protected:
     bool m_handled;
 };
 
-}
+} // namespace objectmodel
 
-}
+} // namespace core
+
+} // namespace sofa
 
 #endif

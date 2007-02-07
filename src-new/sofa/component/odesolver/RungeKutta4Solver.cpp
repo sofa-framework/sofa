@@ -1,35 +1,38 @@
-#include "Sofa-old/Components/RungeKutta4Solver.h"
-#include "Sofa-old/Core/MultiVector.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/odesolver/RungeKutta4Solver.h>
+#include <sofa/helper/MultiVector.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Core;
-using namespace Common;
+namespace odesolver
+{
+
+using namespace core::componentmodel::behavior;
+using namespace sofa::defaulttype;
 
 void RungeKutta4Solver::solve(double dt)
 {
     //std::cout << "RK4 Init\n";
-    //Abstract::BaseContext* group = getContext();
+    //objectmodel::BaseContext* group = getContext();
     OdeSolver* group = this;
-    MultiVector pos(group, VecId::position());
-    MultiVector vel(group, VecId::velocity());
-    MultiVector k1a(group, V_DERIV);
-    MultiVector k2a(group, V_DERIV);
-    MultiVector k3a(group, V_DERIV);
-    MultiVector k4a(group, V_DERIV);
-    MultiVector k1v(group, V_DERIV);
-    MultiVector k2v(group, V_DERIV);
-    MultiVector k3v(group, V_DERIV);
-    MultiVector k4v(group, V_DERIV);
-    MultiVector newX(group, V_COORD);
-    MultiVector newV(group, V_DERIV);
+    helper::MultiVector pos(group, VecId::position());
+    helper::MultiVector vel(group, VecId::velocity());
+    helper::MultiVector k1a(group, V_DERIV);
+    helper::MultiVector k2a(group, V_DERIV);
+    helper::MultiVector k3a(group, V_DERIV);
+    helper::MultiVector k4a(group, V_DERIV);
+    helper::MultiVector k1v(group, V_DERIV);
+    helper::MultiVector k2v(group, V_DERIV);
+    helper::MultiVector k3v(group, V_DERIV);
+    helper::MultiVector k4v(group, V_DERIV);
+    helper::MultiVector newX(group, V_COORD);
+    helper::MultiVector newV(group, V_DERIV);
 
     double stepBy2 = double(dt / 2.0);
     double stepBy3 = double(dt / 3.0);
@@ -85,7 +88,7 @@ void RungeKutta4Solver::solve(double dt)
     vel.peq(k4a,stepBy6);
 }
 
-void create(RungeKutta4Solver*& obj, ObjectDescription* arg)
+void create(RungeKutta4Solver*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new RungeKutta4Solver();
     obj->parseFields( arg->getAttributeMap() );
@@ -93,11 +96,11 @@ void create(RungeKutta4Solver*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(RungeKutta4)
 
-Creator<ObjectFactory, RungeKutta4Solver> RungeKutta4SolverClass("RungeKutta4");
+Creator<simulation::tree::xml::ObjectFactory, RungeKutta4Solver> RungeKutta4SolverClass("RungeKutta4");
 
-} // namespace Components
+} // namespace odesolver
 
-} // namespace Sofa
+} // namespace component
 
-
+} // namespace sofa
 

@@ -9,18 +9,20 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef Sofa_ComponentsGuidedCoordinateSystem_h
-#define Sofa_ComponentsGuidedCoordinateSystem_h
+#ifndef SOFA_COMPONENT_CONTEXTOBJECT_GUIDEDCOORDINATESYSTEM_H
+#define SOFA_COMPONENT_CONTEXTOBJECT_GUIDEDCOORDINATESYSTEM_H
 
-//#include <Sofa-old/Core/BasicConstraint.h>
-#include "CoordinateSystem.h"
+//#include <sofa/core/componentmodel/behavior/BaseConstraint.h>
+#include <sofa/component/contextobject/CoordinateSystem.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
+namespace contextobject
+{
 
 /**
 Make a CoordinateSystem turn around a given direction.
@@ -73,9 +75,12 @@ protected:
 
 };
 
-}
 
-}
+} // namespace contextobject
+
+} // namespace component
+
+} // namespace sofa
 
 #endif
 

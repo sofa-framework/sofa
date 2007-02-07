@@ -1,11 +1,12 @@
-#include "TensorForceField.h"
-
-#include "Sofa-old/Components/Common/ObjectFactory.h"
-
+#include <sofa/component/forcefield/TensorForceField.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <GL/gl.h>
-
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
+#include <sofa/defaulttype/Vec3Types.h>
+
+
+
 using std::cerr;
 using std::endl;
 
@@ -15,15 +16,14 @@ using std::endl;
 
 
 
-namespace Sofa
+namespace sofa
 {
 
-
-
-namespace Components
+namespace component
 {
 
-
+namespace forcefield
+{
 
 //dunnno how it was defined, but it works anyway...
 static unsigned int vertexEdge[4][4]= {{0,0,1,2,},{0,0,3,4},{1,3,0,5},{2,4,5,0}};
@@ -41,7 +41,7 @@ TensorForceField<DataTypes>::TensorForceField(const char* filename)
 
 template <class DataTypes>
 TensorForceField<DataTypes>::TensorForceField(
-    Core::MechanicalObject<DataTypes>* object, const char* filename
+    component::MechanicalObject<DataTypes>* object, const char* filename
 )
     : object_(object), alpha_(0.0), lambda_(2.80e5), mu_(3.1e4)
 {
@@ -605,45 +605,36 @@ void TensorForceField<DataTypes>::addElasticTensors(Tetrahedron& tetra)
 }
 
 
-} // namespace Components
-
-} // namespace Sofa
-
-#include "Sofa-old/Components/Common/Vec3Types.h"
-
-namespace Sofa
-{
-
-namespace Components
-{
 
 //--- the following seems to be needed for factory registering
 
 
 SOFA_DECL_CLASS(TensorForceField)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class TensorForceField<Vec3dTypes>;
 template class TensorForceField<Vec3fTypes>; // doesn't work for now
 
 template<class DataTypes>
 void create(TensorForceField<DataTypes>*& obj,
-        ObjectDescription* arg)
+        simulation::tree::xml::ObjectDescription* arg)
 {
     XML::createWithParentAndFilename<
-    TensorForceField<DataTypes>, Core::MechanicalObject<DataTypes>
+    TensorForceField<DataTypes>, component::MechanicalObject<DataTypes>
     > (obj, arg);
 }
 
-Creator<ObjectFactory, TensorForceField<Vec3dTypes> >
+Creator<simulation::tree::xml::ObjectFactory, TensorForceField<Vec3dTypes> >
 TensorForceFieldVec3dClass("TensorForceField", true);
 
-Creator<ObjectFactory, TensorForceField<Vec3fTypes> >
+Creator<simulation::tree::xml::ObjectFactory, TensorForceField<Vec3fTypes> >
 TensorForceFieldVec3fClass("TensorForceField", true);
 
 
-} // namespace Components
+} // namespace  forcefield
 
-} // namespace Sofa
+} // namespace  component
+
+} // namespace sofa
 

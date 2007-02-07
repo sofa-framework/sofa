@@ -1,20 +1,22 @@
-#ifndef SOFA_COMPONENTS_PLANEFORCEFIELD_H
-#define SOFA_COMPONENTS_PLANEFORCEFIELD_H
+#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_H
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_PLANEFORCEFIELD_H
 
-#include "Sofa-old/Core/ForceField.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
+#include "Sofa/Contrib/Testing/FEMcontact/TetrahedralFEMForceField.h"
 
-#include <vector>
-
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace interactionforcefield
 {
 
 template<class DataTypes>
-class PlaneForceField : public Core::ForceField<DataTypes>, public Abstract::VisualModel
+class PlaneForceField : public Core::ForceField<DataTypes>, public core::VisualModel
 {
 public:
     typedef Core::ForceField<DataTypes> Inherit;
@@ -25,23 +27,26 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
+    Core::MechanicalState<DataTypes>* object;
+    TetrahedralFEMForceField<DataTypes>* fem;
+
     Deriv planeNormal;
     Real planeD;
 
     Real stiffness;
-    Real damping;
-
 
     std::vector<unsigned int> contacts;
 
+    VecDeriv _force;
+
 public:
+    PlaneForceField(Core::MechanicalState<DataTypes>* object, const std::string& /*name*/="")
+        : object(object), planeD(0), stiffness(500), fem(0)
+    {
+    }
 
-
-    Common::DataField<Coord> _color;
-
-    PlaneForceField(Core::MechanicalModel<DataTypes>* object=NULL, const std::string& /*name*/="")
-        : Core::ForceField<DataTypes>(object), planeD(0), stiffness(500), damping(5)
-        , _color(dataField(&_color, Coord(0,.5f,.2f), "color", "plane color"))
+    PlaneForceField(Core::MechanicalState<DataTypes>* object, TetrahedralFEMForceField<DataTypes>* fem)
+        : object(object), fem(fem), planeD(0), stiffness(500)
     {
     }
 
@@ -49,9 +54,6 @@ public:
     {
         planeNormal = normal;
         planeD = d;
-        Real n = normal.norm();
-        planeNormal /= n;
-        d /= n;
     }
 
     void setStiffness(Real stiff)
@@ -59,30 +61,22 @@ public:
         stiffness = stiff;
     }
 
-    void setDamping(Real damp)
-    {
-        damping = damp;
-    }
-
-    void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)
-
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
-    virtual void updateStiffness( const VecCoord& x );
-
     // -- VisualModel interface
     void draw();
-    void draw2(float size=1000.0f);
     void initTextures() { }
     void update() { }
 };
 
-} // namespace Components
+} // namespace interactionforcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

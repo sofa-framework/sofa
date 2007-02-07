@@ -1,22 +1,23 @@
-#ifndef _TENSORMASSFORCEFIELD_H_
-#define _TENSORMASSFORCEFIELD_H_
+#ifndef SOFA_COMPONENT_FORCEFIELD_TENSORFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_TENSORFORCEFIELD_H
 
 
-#include "Sofa-old/Core/ForceField.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Sofa-old/Abstract/VisualModel.h"
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/defaulttype/SofaBaseMatrix.h>
+#include <sofa/defaulttype/SofaBaseVector.h>
 
-#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
-#include "Sofa-old/Components/Common/SofaBaseVector.h"
 
 
-namespace Sofa
+namespace sofa
 {
 
-
-namespace Components
+namespace component
 {
 
+namespace forcefield
+{
 
 /**
  * @class TensorForceField
@@ -27,15 +28,15 @@ namespace Components
  * and edges.
  */
 template <class DataTypes>
-class TensorForceField : public Core::BasicForceField,
-    public Abstract::VisualModel
+class TensorForceField : public core::componentmodel::behavior::BaseForceField,
+    public core::VisualModel
 {
 public:
 
     TensorForceField (const char *filename);
 
 
-    TensorForceField (Core::MechanicalObject<DataTypes>* object,
+    TensorForceField (component::MechanicalObject<DataTypes>* object,
             const char* filename);
 
 
@@ -48,9 +49,9 @@ public:
 
     // -- Temporary added here for matrix ForceField
     void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
-    void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &) {};
-    void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int &) {};
-    void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int & ) {};
+    void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &) {};
+    void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
+    void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int & ) {};
 
     // -- VisualModel interface
     void draw();
@@ -150,7 +151,7 @@ public:
 
 private:
     // Mechanical Object containing this Force Field
-    Core::MechanicalObject<DataTypes>* object_;
+    component::MechanicalObject<DataTypes>* object_;
     // damping factor
     Real alpha_;
     // Lame coefficient
@@ -182,12 +183,10 @@ private:
 
 
 
-} // namespace Components
+} // namespace forcefield
 
+} // namespace component
 
-
-} // namespace Sofa
-
-
+} // namespace sofa
 
 #endif /* _TENSORMASSFORCEFIELD_H_ */

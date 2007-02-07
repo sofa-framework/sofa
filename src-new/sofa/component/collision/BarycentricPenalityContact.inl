@@ -1,17 +1,20 @@
-#ifndef SOFA_COMPONENTS_BARYCENTRICPENALITYCONTACT_INL
-#define SOFA_COMPONENTS_BARYCENTRICPENALITYCONTACT_INL
+#ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_INL
+#define SOFA_COMPONENT_COLLISION_BARYCENTRICPENALITYCONTACT_INL
 
-#include "BarycentricPenalityContact.h"
+#include <sofa/component/collision/BarycentricPenalityContact.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Collision;
-using Graph::GNode;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
+using namespace collision;
+using simulation::tree::GNode;
 
 template < class TCollisionModel1, class TCollisionModel2 >
 BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
@@ -55,9 +58,9 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
     }
     if (ff==NULL)
     {
-        MechanicalModel1* mmodel1 = mapper1.createMapping();
-        MechanicalModel2* mmodel2 = mapper2.createMapping();
-        ff = new PenalityContactForceField<Vec3Types>(mmodel1,mmodel2);
+        MechanicalState1* mstate1 = mapper1.createMapping();
+        MechanicalState2* mstate2 = mapper2.createMapping();
+        ff = new forcefield::PenalityContactForceField<Vec3Types>(mstate1,mstate2);
     }
 
     int size = contacts.size();
@@ -88,7 +91,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::createResponse(Abstract::BaseContext* group)
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
 {
     if (ff!=NULL)
     {
@@ -119,12 +122,14 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::removeRespon
 template < class TCollisionModel1, class TCollisionModel2 >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::draw()
 {
-//	if (dynamic_cast<Abstract::VisualModel*>(ff)!=NULL)
-//		dynamic_cast<Abstract::VisualModel*>(ff)->draw();
+//	if (dynamic_cast<core::VisualModel*>(ff)!=NULL)
+//		dynamic_cast<core::VisualModel*>(ff)->draw();
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

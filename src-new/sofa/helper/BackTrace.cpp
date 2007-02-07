@@ -1,4 +1,4 @@
-#include "BackTrace.h"
+#include <sofa/helper/BackTrace.h>
 
 #if !defined(WIN32)
 #include <signal.h>
@@ -14,13 +14,10 @@
 #include <stdlib.h>
 #include <string.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace helper
 {
 
 /// Dump current backtrace to stderr.
@@ -111,8 +108,7 @@ void BackTrace::sig(int sig)
 #endif
 }
 
-} // namespace Common
+} // namespace helper
 
-} // namespace Components
+} // namespace sofa
 
-} // namespace Sofa

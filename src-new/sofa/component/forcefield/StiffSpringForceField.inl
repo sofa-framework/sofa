@@ -1,17 +1,20 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENTS_STIFFSPRINGFORCEFIELD_INL
-#define SOFA_COMPONENTS_STIFFSPRINGFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_INL
 
-#include "StiffSpringForceField.h"
-#include "SpringForceField.inl"
+#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/forcefield/SpringForceField.inl>
 #include <assert.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
@@ -105,8 +108,10 @@ void StiffSpringForceField<DataTypes>::addDForce()
     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df2 = "<<f2<<endl;
 }
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

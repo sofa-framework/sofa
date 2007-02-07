@@ -1,19 +1,22 @@
-#ifndef SOFA_COMPONENTS_LENNARDJONESFORCEFIELD_INL
-#define SOFA_COMPONENTS_LENNARDJONESFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_INL
 
-#include "LennardJonesForceField.h"
-#include "Common/config.h"
-#include "GL/template.h"
+#include <sofa/component/forcefield/LennardJonesForceField.h>
+#include <sofa/helper/system/config.h>
+#include <sofa/helper/gl/template.h>
 #include <math.h>
 #include <GL/gl.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
@@ -21,7 +24,7 @@ void LennardJonesForceField<DataTypes>::init()
 {
     this->Inherit::init();
 
-    assert( this->mmodel );
+    assert( this->mstate );
 
     a = (p0 * (Real)pow(d0,alpha)) / (1-alpha/beta);
     b = (p0 * (Real)pow(d0,beta)) / (beta/alpha-1);
@@ -88,7 +91,7 @@ void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
 template<class DataTypes>
 void LennardJonesForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1)
 {
-    const VecCoord& p1 = *this->mmodel->getX();
+    const VecCoord& p1 = *this->mstate->getX();
     f1.resize(dx1.size());
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {
@@ -115,7 +118,7 @@ template<class DataTypes>
 void LennardJonesForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
-    const VecCoord& p1 = *this->mmodel->getX();
+    const VecCoord& p1 = *this->mstate->getX();
     glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
     const Real d02 = this->d0*this->d0;
@@ -132,8 +135,10 @@ void LennardJonesForceField<DataTypes>::draw()
     glEnd();
 }
 
-} // namespace Sofa
+} // namespace forcefield
 
-} // namespace Components
+} // namespace component
+
+} // namespace sofa
 
 #endif

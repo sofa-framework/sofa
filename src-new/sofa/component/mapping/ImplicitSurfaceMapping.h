@@ -1,24 +1,27 @@
-#ifndef SOFA_COMPONENTS_IMPLICITSURFACEMAPPING_H
-#define SOFA_COMPONENTS_IMPLICITSURFACEMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_H
+#define SOFA_COMPONENT_MAPPING_IMPLICITSURFACEMAPPING_H
 
-#include "Sofa-old/Core/Mapping.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "MeshTopology.h"
+#include <sofa/core/Mapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/component/topology/MeshTopology.h>
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Core;
+namespace mapping
+{
+
+//using namespace core::componentmodel::behavior;
 
 template <class In, class Out>
-class ImplicitSurfaceMapping : public Mapping<In, Out>, public MeshTopology
+class ImplicitSurfaceMapping : public core::Mapping<In, Out>, public topology::MeshTopology
 {
 public:
-    typedef Mapping<In, Out> Inherit;
+    typedef core::Mapping<In, Out> Inherit;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
@@ -146,8 +149,10 @@ Y
 extern const int MarchingCubeEdgeTable[256];
 extern const int MarchingCubeTriTable[256][16];
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

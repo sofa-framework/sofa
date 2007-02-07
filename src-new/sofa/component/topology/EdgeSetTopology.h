@@ -1,16 +1,18 @@
-#ifndef SOFA_COMPONENTS_EDGESETTOPOLOGY_H
-#define SOFA_COMPONENTS_EDGESETTOPOLOGY_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGY_H
+#define SOFA_COMPONENT_TOPOLOGY_EDGESETTOPOLOGY_H
 
-#include "PointSetTopology.h"
+#include <sofa/component/topology/PointSetTopology.h>
 #include <vector>
 #include <map>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
+namespace topology
+{
 
 /// defining Edges as the pair of the DOFs indices
 typedef std::pair<unsigned int, unsigned int> Edge;
@@ -24,7 +26,7 @@ typedef std::pair<unsigned int, unsigned int> Edge;
 
 
 /** indicates that some edges were added */
-class EdgesAdded : public Core::TopologyChange
+class EdgesAdded : public core::componentmodel::topology::TopologyChange
 {
 
 public:
@@ -43,7 +45,7 @@ public:
             const std::vector< unsigned int >& edgesIndex = (const std::vector< unsigned int >)0,
             const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
             const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0)
-        : Core::TopologyChange(Core::EDGESADDED), nEdges(nE), edgeArray(edgesList), edgeIndexArray(edgesIndex),ancestorsList(ancestors), coefs(baryCoefs)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::EDGESADDED), nEdges(nE), edgeArray(edgesList), edgeIndexArray(edgesIndex),ancestorsList(ancestors), coefs(baryCoefs)
     {   }
 
     unsigned int getNbAddedEdges() const
@@ -56,14 +58,14 @@ public:
 
 
 /** indicates that some edges are about to be removed */
-class EdgesRemoved : public Core::TopologyChange
+class EdgesRemoved : public core::componentmodel::topology::TopologyChange
 {
 
 public:
     std::vector<unsigned int> removedEdgesArray;
 
 public:
-    EdgesRemoved(const std::vector<unsigned int> _eArray) : Core::TopologyChange(Core::EDGESREMOVED), removedEdgesArray(_eArray)
+    EdgesRemoved(const std::vector<unsigned int> _eArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::EDGESREMOVED), removedEdgesArray(_eArray)
     {
     }
 
@@ -146,9 +148,9 @@ public:
     int getEdgeIndex(const unsigned int v1, const unsigned int v2);
 
 
-    //EdgeSetTopologyContainer(Core::BasicTopology *top);
+    //EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top);
 
-    EdgeSetTopologyContainer(Core::BasicTopology *top, const std::vector< unsigned int > &DOFIndex = (const std::vector< unsigned int >)0,
+    EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector< unsigned int > &DOFIndex = (const std::vector< unsigned int >)0,
             const std::vector< Edge >         &edges    = (const std::vector< Edge >)        0 );
 
     template< typename DataTypes >
@@ -176,7 +178,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
-    EdgeSetTopologyModifier(Core::BasicTopology *top) : PointSetTopologyModifier<DataTypes>(top)
+    EdgeSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : PointSetTopologyModifier<DataTypes>(top)
     {
     }
     /** \brief Build an edge set topology from a file : also modifies the MechanicalObject
@@ -325,7 +327,7 @@ public:
             const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0 );
 
 
-    EdgeSetTopologyAlgorithms(Sofa::Core::BasicTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)
+    EdgeSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)
     {
     }
 };
@@ -353,7 +355,7 @@ public:
     typedef typename DataTypes::Coord Coord;
 
 
-    EdgeSetGeometryAlgorithms(Sofa::Core::BasicTopology *top) : PointSetGeometryAlgorithms<DataTypes>(top)
+    EdgeSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetGeometryAlgorithms<DataTypes>(top)
     {
     }
     /// computes the length of edge no i and returns it
@@ -373,7 +375,7 @@ class EdgeSetTopology : public PointSetTopology <DataTypes>
 {
 
 public:
-    EdgeSetTopology(Core::MechanicalObject<DataTypes> *obj);
+    EdgeSetTopology(component::MechanicalObject<DataTypes> *obj);
 
 
     virtual void init();
@@ -398,8 +400,10 @@ public:
 
 };
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

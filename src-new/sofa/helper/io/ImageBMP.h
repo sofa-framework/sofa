@@ -1,17 +1,20 @@
-#ifndef SOFA_COMPONENTS_IMAGEBMP_H
-#define SOFA_COMPONENTS_IMAGEBMP_H
+#ifndef SOFA_HELPER_IO_IMAGEBMP_H
+#define SOFA_HELPER_IO_IMAGEBMP_H
 
-#include "Common/Image.h"
+#include <sofa/helper/io/Image.h>
 #include <string>
 #include <assert.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+//using namespace sofa::defaulttype;
 
 class ImageBMP : public Image
 {
@@ -29,8 +32,10 @@ public:
     bool save(const std::string &filename);
 };
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
 
 #endif

@@ -1,35 +1,36 @@
-#ifndef SOFA_COMPONENTS_TRIANGLEFEMFORCEFIELD_H
-#define SOFA_COMPONENTS_TRIANGLEFEMFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEFEMFORCEFIELD_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
 
-#include "Sofa-old/Core/ForceField.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Components/MeshTopology.h"
-
-#include "Common/Vec.h"
-#include "Common/Mat.h"
-
-#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
-#include "Sofa-old/Components/Common/SofaBaseVector.h"
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/SofaBaseMatrix.h>
+#include <sofa/defaulttype/SofaBaseVector.h>
 
 
-namespace Sofa
+
+
+namespace sofa
 {
 
-
-namespace Components
+namespace component
 {
 
+namespace forcefield
+{
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 
 template<class DataTypes>
-class TriangleFEMForceField : public Core::BasicForceField, public Abstract::VisualModel
+class TriangleFEMForceField : public core::componentmodel::behavior::BaseForceField, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -46,7 +47,7 @@ public:
     static const int LARGE = 0;										///< Symbol of large displacements triangle solver
 
 protected:
-    Core::MechanicalObject<DataTypes>* _object;
+    component::MechanicalObject<DataTypes>* _object;
 
     typedef Vec<6, Real> Displacement;								///< the displacement vector
 
@@ -71,7 +72,7 @@ protected:
 
 public:
 
-    TriangleFEMForceField(Core::MechanicalObject<DataTypes>* object);
+    TriangleFEMForceField(component::MechanicalObject<DataTypes>* object);
 
     virtual const char* getTypeName() const
     {
@@ -90,13 +91,13 @@ public:
     void contributeToMatrixDimension(unsigned int * const, unsigned int * const)
     {}
     ;
-    void computeMatrix(Sofa::Components::Common::SofaBaseMatrix *, double , double , double, unsigned int &)
+    void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &)
     {}
     ;
-    void computeVector(Sofa::Components::Common::SofaBaseVector *, unsigned int &)
+    void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &)
     {}
     ;
-    void matResUpdatePosition(Sofa::Components::Common::SofaBaseVector *, unsigned int & )
+    void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int & )
     {}
     ;
 
@@ -119,7 +120,7 @@ public:
     	void setYoungModulus(Real val) { this->_youngModulus = val; }
     	void setMethod(int val) { this->_method = val; }*/
 
-    Core::MechanicalObject<DataTypes>* getObject()
+    component::MechanicalObject<DataTypes>* getObject()
     {
         return _object;
     }
@@ -149,9 +150,10 @@ protected :
 };
 
 
-} // namespace Components
+} // namespace forcefield
 
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

@@ -1,23 +1,26 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENTS_SPRINGFORCEFIELD_H
-#define SOFA_COMPONENTS_SPRINGFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_H
 
-#include "Sofa-old/Core/InteractionForceField.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Common/Vec.h"
-
+#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/defaulttype/Vec.h>
 #include <vector>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
@@ -27,7 +30,7 @@ public:
 };
 
 template<class DataTypes>
-class SpringForceField : public Core::InteractionForceField, public Abstract::VisualModel
+class SpringForceField : public core::componentmodel::behavior::InteractionForceField, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -37,8 +40,8 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    Core::MechanicalModel<DataTypes>* object1;
-    Core::MechanicalModel<DataTypes>* object2;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* object1;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* object2;
     double m_potentialEnergy;
     DataField<double> ks;
     DataField<double> kd;
@@ -65,22 +68,22 @@ protected:
     void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
 
 public:
-    SpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2, double _ks=100.0, double _kd=5.0)
+    SpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2, double _ks=100.0, double _kd=5.0)
         : object1(object1), object2(object2), ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs")), kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
     {
     }
 
-    SpringForceField(Core::MechanicalModel<DataTypes>* object, double _ks=100.0, double _kd=5.0)
+    SpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object, double _ks=100.0, double _kd=5.0)
         : object1(object), object2(object), ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs")), kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
     {
     }
 
     bool load(const char *filename);
 
-    Core::MechanicalModel<DataTypes>* getObject1() { return object1; }
-    Core::MechanicalModel<DataTypes>* getObject2() { return object2; }
-    Core::BasicMechanicalModel* getMechModel1() { return object1; }
-    Core::BasicMechanicalModel* getMechModel2() { return object2; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return object1; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return object2; }
+    core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
+    core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
     virtual void init();
     void initFromTopology();
@@ -114,8 +117,10 @@ public:
     }
 };
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,19 +1,16 @@
-#ifndef SOFA_COMPONENTS_COMMON_FACTORY_H
-#define SOFA_COMPONENTS_COMMON_FACTORY_H
+#ifndef SOFA_HELPER_FACTORY_H
+#define SOFA_HELPER_FACTORY_H
 
 #include <map>
 #include <iostream>
 #include <typeinfo>
 
-#include "Sofa-old/Components/Common/config.h"
+#include <sofa/helper/system/config.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace helper
 {
 
 /// Decode the type's name to a more readable form if possible
@@ -125,10 +122,9 @@ public:
     }
 };
 
-} // namespace Common
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

@@ -1,12 +1,12 @@
-#include "Texture.h"
+#include <sofa/helper/gl/Texture.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 void Texture::init(void)
@@ -30,7 +30,7 @@ void Texture::unbind(void)
     glBindTexture(GL_TEXTURE_2D, 0);
 }
 
-Image* Texture::getImage(void)
+io::Image* Texture::getImage(void)
 {
     return image;
 }
@@ -40,8 +40,9 @@ Texture::~Texture(void)
     delete image;
 }
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
+

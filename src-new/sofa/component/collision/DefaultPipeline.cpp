@@ -1,46 +1,49 @@
-#include "PipelineSofa.h"
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Graph/GNode.h"
-
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/collision/DefaultPipeline.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <GL/gl.h>
+
+
 
 #define VERBOSE(a) if (getVerbose()) a; else
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Abstract;
-using namespace Common;
-using namespace Collision;
-
-void create(PipelineSofa*& obj, ObjectDescription* arg)
+namespace collision
 {
-    obj = new PipelineSofa();
+
+using namespace core::objectmodel;
+using namespace sofa::defaulttype;
+using namespace collision;
+
+void create(DefaultPipeline*& obj, simulation::tree::xml::ObjectDescription* arg)
+{
+    obj = new DefaultPipeline();
     obj->setVerbose(atoi(arg->getAttribute("verbose","0"))!=0);
     obj->setDraw(atoi(arg->getAttribute("draw","0"))!=0);
     obj->setDepth(atoi(arg->getAttribute("depth","6")));
 }
 
-SOFA_DECL_CLASS(PipelineSofa)
+SOFA_DECL_CLASS(DefaultPipeline)
 
-Creator<ObjectFactory, PipelineSofa> PipelineSofaClass("CollisionPipeline");
+Creator<simulation::tree::xml::ObjectFactory, DefaultPipeline> DefaultPipelineClass("CollisionPipeline");
 
-PipelineSofa::PipelineSofa()
+DefaultPipeline::DefaultPipeline()
     : verbose_(false), draw_(false), depth_(6)
 {
 }
 
-typedef Graph::GNode::ctime_t ctime_t;
+typedef simulation::tree::GNode::ctime_t ctime_t;
 
-void PipelineSofa::doCollisionReset()
+void DefaultPipeline::doCollisionReset()
 {
-    Abstract::BaseContext* scene = getContext();
-    Graph::GNode* node = dynamic_cast<Graph::GNode*>(scene);
+    core::objectmodel::BaseContext* scene = getContext();
+    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
     ctime_t t0 = 0;
     const std::string category = "collision";
@@ -64,10 +67,10 @@ void PipelineSofa::doCollisionReset()
     }
 }
 
-void PipelineSofa::doCollisionDetection(const std::vector<Abstract::CollisionModel*>& collisionModels)
+void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionModel*>& collisionModels)
 {
-    Abstract::BaseContext* scene = getContext();
-    Graph::GNode* node = dynamic_cast<Graph::GNode*>(scene);
+    core::objectmodel::BaseContext* scene = getContext();
+    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
     ctime_t t0 = 0;
     const std::string category = "collision";
@@ -134,8 +137,8 @@ void PipelineSofa::doCollisionDetection(const std::vector<Abstract::CollisionMod
 
         // Cache the intersector used
         ElementIntersector* intersector = NULL;
-        Abstract::CollisionModel* model1 = NULL;
-        Abstract::CollisionModel* model2 = NULL;
+        core::CollisionModel* model1 = NULL;
+        core::CollisionModel* model2 = NULL;
 
         if (node) t0 = node->startTime();
         for (; it4 != it4End; it4++)
@@ -161,10 +164,10 @@ void PipelineSofa::doCollisionDetection(const std::vector<Abstract::CollisionMod
     VERBOSE(std::cout << detectionOutputs.size()<<" collisions detected"<<std::endl);
 }
 
-void PipelineSofa::doCollisionResponse()
+void DefaultPipeline::doCollisionResponse()
 {
-    Abstract::BaseContext* scene = getContext();
-    Graph::GNode* node = dynamic_cast<Graph::GNode*>(scene);
+    core::objectmodel::BaseContext* scene = getContext();
+    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(scene);
     if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
     ctime_t t0 = 0;
     const std::string category = "collision";
@@ -216,7 +219,7 @@ void PipelineSofa::doCollisionResponse()
     }
 }
 
-void PipelineSofa::draw()
+void DefaultPipeline::draw()
 {
     if (!getDraw()) return;
     glDisable(GL_LIGHTING);
@@ -237,6 +240,9 @@ void PipelineSofa::draw()
     glEnd();
     glLineWidth(1);
 }
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

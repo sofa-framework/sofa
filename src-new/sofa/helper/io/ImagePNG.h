@@ -1,17 +1,20 @@
-#ifndef SOFA_COMPONENTS_IMAGEPNG_H
-#define SOFA_COMPONENTS_IMAGEPNG_H
+#ifndef SOFA_HELPER_IO_IMAGEPNG_H
+#define SOFA_HELPER_IO_IMAGEPNG_H
 
-#include "Common/Image.h"
+#include <sofa/helper/io/Image.h>
 #include <string>
 #include <assert.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+//using namespace sofa::defaulttype;
 
 #ifdef SOFA_HAVE_PNG
 
@@ -36,8 +39,10 @@ public:
 //#warning PNG not supported. Define SOFA_HAVE_PNG in sofa.cfg to activate.
 #endif
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
 
 #endif

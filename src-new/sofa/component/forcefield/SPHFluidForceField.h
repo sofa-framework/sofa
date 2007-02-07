@@ -1,29 +1,32 @@
-#ifndef SOFA_COMPONENTS_SPHFLUIDFORCEFIELD_H
-#define SOFA_COMPONENTS_SPHFLUIDFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_H
 
-#include "Common/config.h"
-
-#include "Sofa-old/Core/ForceField.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "SpatialGridContainer.h"
-
+#include <sofa/helper/system/config.h>
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.h>
 #include <vector>
 #include <math.h>
 
-namespace Sofa
+
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-//#define SOFA_DEBUG_SPATIALGRIDCONTAINER
+namespace forcefield
+{
+
+//#define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_H
 
 template<class DataTypes>
-class SPHFluidForceField : public Sofa::Core::ForceField<DataTypes>, public Sofa::Abstract::VisualModel
+class SPHFluidForceField : public sofa::Core::ForceField<DataTypes>, public sofa::core::VisualModel
 {
 public:
-    typedef Sofa::Core::ForceField<DataTypes> Inherit;
+    typedef sofa::Core::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -257,7 +260,7 @@ protected:
     std::vector<DForce> dforces;
 
 public:
-    SPHFluidForceField(Sofa::Core::MechanicalModel<DataTypes>* object=NULL);
+    SPHFluidForceField(sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* object=NULL);
 
     Real getParticleRadius() const { return particleRadius; }
     void setParticleRadius(Real v) { particleRadius = v;    }
@@ -297,8 +300,10 @@ public:
     void update() { }
 };
 
-} // namespace Sofa
+} // namespace forcefield
 
-} // namespace Components
+} // namespace component
+
+} // namespace sofa
 
 #endif

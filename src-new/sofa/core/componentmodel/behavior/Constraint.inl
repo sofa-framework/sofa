@@ -1,18 +1,24 @@
-#ifndef SOFA_CORE_CONSTRAINT_INL
-#define SOFA_CORE_CONSTRAINT_INL
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_INL
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_INL
 
-#include "Constraint.h"
+#include <sofa/core/componentmodel/behavior/Constraint.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace behavior
 {
 
 template<class DataTypes>
-Constraint<DataTypes>::Constraint(MechanicalModel<DataTypes> *mm)
+Constraint<DataTypes>::Constraint(MechanicalState<DataTypes> *mm)
     :  endTime( dataField(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value. Une a negative value for infinite constraints") )
-    , mmodel(mm)
+    , mstate(mm)
 {
 }
 
@@ -31,42 +37,46 @@ bool   Constraint<DataTypes>::isActive() const
 template<class DataTypes>
 void Constraint<DataTypes>::init()
 {
-    BasicConstraint::init();
-    mmodel = dynamic_cast< MechanicalModel<DataTypes>* >(getContext()->getMechanicalModel());
+    BaseConstraint::init();
+    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
 
 template<class DataTypes>
 void Constraint<DataTypes>::projectResponse()
 {
     if( !isActive() ) return;
-    if (mmodel)
-        projectResponse(*mmodel->getDx());
+    if (mstate)
+        projectResponse(*mstate->getDx());
 }
 template<class DataTypes>
 void Constraint<DataTypes>::projectVelocity()
 {
     if( !isActive() ) return;
-    if (mmodel)
-        projectVelocity(*mmodel->getV());
+    if (mstate)
+        projectVelocity(*mstate->getV());
 }
 template<class DataTypes>
 void Constraint<DataTypes>::projectPosition()
 {
     if( !isActive() ) return;
-    if (mmodel)
-        projectPosition(*mmodel->getX());
+    if (mstate)
+        projectPosition(*mstate->getX());
 }
 
 template<class DataTypes>
 void Constraint<DataTypes>::applyConstraint()
 {
     if( !isActive() ) return;
-    if (mmodel)
-        applyConstraint(*mmodel->getC());
+    if (mstate)
+        applyConstraint(*mstate->getC());
 }
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

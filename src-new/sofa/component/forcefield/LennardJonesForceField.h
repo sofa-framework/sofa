@@ -1,23 +1,26 @@
-#ifndef SOFA_COMPONENTS_LENNARDJONESFORCEFIELD_H
-#define SOFA_COMPONENTS_LENNARDJONESFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_LENNARDJONESFORCEFIELD_H
 
-#include "Sofa-old/Core/ForceField.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
 #include <vector>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
-class LennardJonesForceField : public Sofa::Core::ForceField<DataTypes>, public Sofa::Abstract::VisualModel
+class LennardJonesForceField : public sofa::Core::ForceField<DataTypes>, public sofa::core::VisualModel
 {
 public:
-    typedef Sofa::Core::ForceField<DataTypes> Inherit;
+    typedef sofa::Core::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -38,7 +41,7 @@ protected:
     std::vector<DForce> dforces;
 
 public:
-    LennardJonesForceField(Sofa::Core::MechanicalModel<DataTypes>* /*object*/=NULL)
+    LennardJonesForceField(sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* /*object*/=NULL)
         : a(1), b(1), alpha(6), beta(12), dmax(2), fmax(1), d0(1), p0(1), damping(0)
     {
     }
@@ -66,8 +69,10 @@ public:
 
 };
 
-} // namespace Sofa
+} // namespace forcefield
 
-} // namespace Components
+} // namespace component
+
+} // namespace sofa
 
 #endif

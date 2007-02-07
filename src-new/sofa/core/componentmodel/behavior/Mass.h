@@ -1,18 +1,24 @@
-#ifndef SOFA_CORE_MASS_H
-#define SOFA_CORE_MASS_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MASS_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MASS_H
 
-#include "BasicMass.h"
-#include "ForceField.h"
-#include "MechanicalModel.h"
+#include <sofa/core/componentmodel/behavior/BaseMass.h>
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace behavior
 {
 
 template<class DataTypes>
-class Mass : public ForceField<DataTypes>, public BasicMass
+class Mass : public ForceField<DataTypes>, public BaseMass
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -20,7 +26,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 
-    Mass(MechanicalModel<DataTypes> *mm = NULL);
+    Mass(MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~Mass();
 
@@ -56,8 +62,12 @@ Deriv inertiaForce( const SV& sv, const Vec& a, const M& m, const Coord& x, cons
     return -( a + omega.cross( omega.cross(x) + v*2 ))*m;
 }
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

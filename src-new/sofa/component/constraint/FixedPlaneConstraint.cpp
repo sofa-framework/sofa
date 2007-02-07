@@ -1,14 +1,17 @@
-#include "FixedPlaneConstraint.inl"
-#include "Sofa-old/Components/Common/ObjectFactory.h"
-#include "Sofa-old/Components/Common/Vec3Types.h"
+#include <sofa/component/constraint/FixedPlaneConstraint.inl>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace constraint
+{
+
+using namespace sofa::defaulttype;
 
 
 
@@ -17,17 +20,17 @@ SOFA_DECL_CLASS(FixedPlaneConstraint)
 template class FixedPlaneConstraint<Vec3dTypes>;
 template class FixedPlaneConstraint<Vec3fTypes>;
 
-namespace Common   // \todo Why this must be inside Common namespace
+namespace helper   // \todo Why this must be inside helper namespace
 {
 
 
 template<class DataTypes>
-void create(FixedPlaneConstraint<DataTypes>*& obj, ObjectDescription* arg)
+void create(FixedPlaneConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     typedef typename DataTypes::Coord::value_type   Real;
     typedef typename DataTypes::Coord   Coord;
 
-    XML::createWithParent< FixedPlaneConstraint<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< FixedPlaneConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("indices"))
@@ -75,9 +78,12 @@ void create(FixedPlaneConstraint<DataTypes>*& obj, ObjectDescription* arg)
 }
 }
 
-Creator< ObjectFactory, FixedPlaneConstraint<Vec3dTypes> > FixedPlaneConstraint3dClass("FixedPlaneConstraint",true);
-Creator< ObjectFactory, FixedPlaneConstraint<Vec3fTypes> > FixedPlaneConstraint3fClass("FixedPlaneConstraint",true);
+Creator<simulation::tree::xml::ObjectFactory, FixedPlaneConstraint<Vec3dTypes> > FixedPlaneConstraint3dClass("FixedPlaneConstraint",true);
+Creator<simulation::tree::xml::ObjectFactory, FixedPlaneConstraint<Vec3fTypes> > FixedPlaneConstraint3fClass("FixedPlaneConstraint",true);
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

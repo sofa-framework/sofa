@@ -1,26 +1,26 @@
-#ifndef SOFA_COMPONENTS_GL_AXIS_H
-#define SOFA_COMPONENTS_GL_AXIS_H
+#ifndef SOFA_HELPER_GL_AXIS_H
+#define SOFA_HELPER_GL_AXIS_H
 
 #ifdef WIN32
 # include <windows.h>
 # include <mmsystem.h>
 #endif
-#include "../Common/Vec.h"
-#include "../Common/Quat.h"
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Quat.h>
 
 #include <GL/glu.h>
 #include <map>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 class Axis
 {
@@ -65,10 +65,10 @@ private:
 
 };
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

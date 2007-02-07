@@ -1,23 +1,26 @@
-#ifndef SOFA_CONTRIB_FLUIDGRID3D_FLUID3D_H
-#define SOFA_CONTRIB_FLUIDGRID3D_FLUID3D_H
+#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID3D_H
+#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_FLUID3D_H
 
-#include "Grid3D.h"
-#include <Sofa-old/Abstract/BehaviorModel.h>
-#include <Sofa-old/Abstract/VisualModel.h>
-#include <Sofa-old/Components/Common/Field.h>
-#include <Sofa-old/Components/Common/DataField.h>
-#include <Sofa-old/Components/ImplicitSurfaceMapping.h>
+#include <sofa/component/behaviormodel/eulerianfluid/Grid3D.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/core/objectmodel/Field.h>
+#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/component/mapping/ImplicitSurfaceMapping.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Contrib
+namespace component
 {
 
-namespace FluidGrid
+namespace behaviormodel
 {
 
-class Fluid3D : public Sofa::Abstract::BehaviorModel, public Sofa::Abstract::VisualModel
+namespace eulerianfluid
+{
+
+class Fluid3D : public sofa::core::BehaviorModel, public sofa::core::VisualModel
 {
 public:
     typedef Grid3D::real real;
@@ -32,15 +35,15 @@ protected:
     Grid3D* ftemp;
 
 public:
-    Sofa::Components::Common::Field<int> f_nx;
-    Sofa::Components::Common::Field<int> f_ny;
-    Sofa::Components::Common::Field<int> f_nz;
-    Sofa::Components::Common::Field<real> f_cellwidth;
-    Sofa::Components::Common::DataField<vec3> f_center;
-    Sofa::Components::Common::DataField<real> f_height;
-    Sofa::Components::Common::DataField<vec3> f_dir;
-    Sofa::Components::Common::DataField<real> f_tstart;
-    Sofa::Components::Common::DataField<real> f_tstop;
+    sofa::core::objectmodel::Field<int> f_nx;
+    sofa::core::objectmodel::Field<int> f_ny;
+    sofa::core::objectmodel::Field<int> f_nz;
+    sofa::core::objectmodel::Field<real> f_cellwidth;
+    sofa::core::objectmodel::DataField<vec3> f_center;
+    sofa::core::objectmodel::DataField<real> f_height;
+    sofa::core::objectmodel::DataField<vec3> f_dir;
+    sofa::core::objectmodel::DataField<real> f_tstart;
+    sofa::core::objectmodel::DataField<real> f_tstop;
 
     Fluid3D();
     virtual ~Fluid3D();
@@ -132,10 +135,12 @@ protected:
 
 };
 
-} // namespace FluidGrid
+} // namespace eulerianfluid
 
-} // namespace Contrib
+} // namespace behaviormodel
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

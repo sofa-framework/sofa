@@ -1,28 +1,31 @@
-#ifndef SOFA_COMPONENTS_TRIANGLEMODEL_H
-#define SOFA_COMPONENTS_TRIANGLEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
+#define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
 
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "MeshTopology.h"
-#include "Common/Vec3Types.h"
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 class TriangleModel;
 
-class Triangle : public Abstract::TCollisionElementIterator<TriangleModel>
+class Triangle : public core::TCollisionElementIterator<TriangleModel>
 {
 public:
     Triangle(TriangleModel* model, int index);
 
-    explicit Triangle(Abstract::CollisionElementIterator& i);
+    explicit Triangle(core::CollisionElementIterator& i);
 
     const Vector3& p1() const;
     const Vector3& p2() const;
@@ -36,7 +39,7 @@ public:
     Vector3& n();
 };
 
-class TriangleModel : public Abstract::CollisionModel, public Abstract::VisualModel
+class TriangleModel : public core::CollisionModel, public core::VisualModel
 {
 protected:
     struct TriangleData
@@ -87,41 +90,43 @@ public:
     void update() { }
 
 
-    Core::MechanicalModel<Vec3Types>* getMechanicalModel() { return mmodel; }
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
-    MeshTopology* getTopology() { return mesh; }
+    topology::MeshTopology* getTopology() { return mesh; }
 
     virtual const char* getTypeName() const { return "Triangle"; }
 
 protected:
 
-    Core::MechanicalModel<Vec3Types>* mmodel;
-    MeshTopology* mesh;
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+    topology::MeshTopology* mesh;
 
 };
 
 inline Triangle::Triangle(TriangleModel* model, int index)
-    : Abstract::TCollisionElementIterator<TriangleModel>(model, index)
+    : core::TCollisionElementIterator<TriangleModel>(model, index)
 {}
 
-inline Triangle::Triangle(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<TriangleModel>(static_cast<TriangleModel*>(i.getCollisionModel()), i.getIndex())
+inline Triangle::Triangle(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<TriangleModel>(static_cast<TriangleModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-inline const Vector3& Triangle::p1() const { return (*model->mmodel->getX())[model->elems[index].i1]; }
-inline const Vector3& Triangle::p2() const { return (*model->mmodel->getX())[model->elems[index].i2]; }
-inline const Vector3& Triangle::p3() const { return (*model->mmodel->getX())[model->elems[index].i3]; }
+inline const Vector3& Triangle::p1() const { return (*model->mstate->getX())[model->elems[index].i1]; }
+inline const Vector3& Triangle::p2() const { return (*model->mstate->getX())[model->elems[index].i2]; }
+inline const Vector3& Triangle::p3() const { return (*model->mstate->getX())[model->elems[index].i3]; }
 
-inline const Vector3& Triangle::v1() const { return (*model->mmodel->getV())[model->elems[index].i1]; }
-inline const Vector3& Triangle::v2() const { return (*model->mmodel->getV())[model->elems[index].i2]; }
-inline const Vector3& Triangle::v3() const { return (*model->mmodel->getV())[model->elems[index].i3]; }
+inline const Vector3& Triangle::v1() const { return (*model->mstate->getV())[model->elems[index].i1]; }
+inline const Vector3& Triangle::v2() const { return (*model->mstate->getV())[model->elems[index].i2]; }
+inline const Vector3& Triangle::v3() const { return (*model->mstate->getV())[model->elems[index].i3]; }
 
 inline const Vector3& Triangle::n() const { return model->elems[index].normal; }
 inline       Vector3& Triangle::n()       { return model->elems[index].normal; }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

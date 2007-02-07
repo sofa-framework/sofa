@@ -48,23 +48,23 @@
  * first paramater.
  */
 
-#ifndef SOFA_COMPONENTS_GL_TRACKBALL_H
-#define SOFA_COMPONENTS_GL_TRACKBALL_H
+#ifndef SOFA_HELPER_GL_TRACKBALL_H
+#define SOFA_HELPER_GL_TRACKBALL_H
 
-#include "Sofa-old/Components/Common/Quat.h"
+#include <sofa/defaulttype/Quat.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
-
-namespace GL
+namespace gl
 {
 
-class   		Trackball
+using namespace sofa::defaulttype;
+
+class   Trackball
 {
 private:
     Quaternion	_quat;
@@ -89,10 +89,10 @@ public:
     void AxisToQuat(double a[3], double phi, double q[4]);
 };
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

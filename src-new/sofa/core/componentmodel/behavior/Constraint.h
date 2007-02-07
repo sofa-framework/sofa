@@ -1,20 +1,24 @@
-#ifndef SOFA_CORE_CONSTRAINT_H
-#define SOFA_CORE_CONSTRAINT_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_H
 
-#include "BasicConstraint.h"
-#include "MechanicalModel.h"
+#include <sofa/core/componentmodel/behavior/BaseConstraint.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
-using Components::Common::DataField;
+namespace componentmodel
+{
+
+namespace behavior
+{
 
 
 template<class DataTypes>
-class Constraint : public BasicConstraint
+class Constraint : public BaseConstraint
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -24,7 +28,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecConst VecConst;
 
-    Constraint(MechanicalModel<DataTypes> *mm = NULL);
+    Constraint(MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~Constraint();
 
@@ -45,11 +49,15 @@ public:
     virtual void applyConstraint(VecConst& /*c*/) {};
 
 protected:
-    MechanicalModel<DataTypes> *mmodel;
+    MechanicalState<DataTypes> *mstate;
 };
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

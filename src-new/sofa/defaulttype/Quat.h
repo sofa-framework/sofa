@@ -1,19 +1,16 @@
-#ifndef SOFA_COMPONENTS_COMMON_QUATERNION_H
-#define SOFA_COMPONENTS_COMMON_QUATERNION_H
+#ifndef SOFA_DEFAULTTYPE_QUAT_H
+#define SOFA_DEFAULTTYPE_QUAT_H
 
-#include "Vec.h"
-#include "Mat.h"
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
 #include <math.h>
 #include <assert.h>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace defaulttype
 {
 
 template<class Real>
@@ -218,11 +215,9 @@ typedef Quater<double> Quat; ///< alias
 typedef Quater<float> Quatf; ///< alias
 typedef Quater<double> Quaternion; ///< alias
 
-} // namespace Common
+} // namespace defaulttype
 
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 #endif
 

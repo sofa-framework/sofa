@@ -1,16 +1,16 @@
-#ifndef SOFA_COMPONENTS_GL_TEMPLATE_H
-#define SOFA_COMPONENTS_GL_TEMPLATE_H
+#ifndef SOFA_HELPER_GL_TEMPLATE_H
+#define SOFA_HELPER_GL_TEMPLATE_H
 
-#include "../Common/config.h"
+#include <sofa/helper/system/config.h>
 #include <GL/gl.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 template<class Coord>
@@ -31,10 +31,10 @@ inline void glVertexT<float>(const float& c)
     glVertex3d(c,0,0);
 }
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

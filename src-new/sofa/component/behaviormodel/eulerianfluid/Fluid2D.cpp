@@ -1,18 +1,21 @@
-#include "Fluid2D.h"
-#include <Sofa-old/Components/GL/template.h>
-#include <Sofa-old/Components/Common/ObjectFactory.h>
+#include <sofa/component/behaviormodel/eulerianfluid/Fluid2D.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Contrib
+namespace component
 {
 
-namespace FluidGrid
+namespace behaviormodel
 {
 
-void create(Fluid2D*& obj, ObjectDescription* arg)
+namespace eulerianfluid
+{
+
+void create(Fluid2D*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new Fluid2D;
     obj->parseFields( arg->getAttributeMap() );
@@ -20,7 +23,7 @@ void create(Fluid2D*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(Fluid2D)
 
-Creator<ObjectFactory, Fluid2D> Fluid2DClass("Fluid2D");
+Creator<simulation::tree::xml::ObjectFactory, Fluid2D> Fluid2DClass("Fluid2D");
 
 Fluid2D::Fluid2D()
     : nx(16), ny(16), cellwidth(1.0f),
@@ -331,7 +334,7 @@ void Fluid2D::update()
                 if (data2/*data[i         ]*/>=iso) mk|= 64;
                 if (data2/*data[i-dx      ]*/>=iso) mk|= 128;
 
-                tri=Sofa::Components::MarchingCubeTriTable[mk];
+                tri= component::mapping::MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
                     int* b = base+3*i;
@@ -385,8 +388,11 @@ bool Fluid2D::addBBox(double* minBBox, double* maxBBox)
     return true;
 }
 
-} // namespace FluidGrid
+} // namespace eulerianfluid
 
-} // namespace Contrib
+} // namespace behaviormodel
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

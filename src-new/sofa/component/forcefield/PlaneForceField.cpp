@@ -1,29 +1,32 @@
-#include "PlaneForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/forcefield/PlaneForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include "XML/DynamicNode.h"
+#include <sofa/component/MechanicalObject.h>
+#include "XML/ForceFieldNode.h"
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace interactionforcefield
 {
 
 SOFA_DECL_CLASS(PlaneForceField)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class PlaneForceField<Vec3dTypes>;
 template class PlaneForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(PlaneForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(PlaneForceField<DataTypes>*& obj, XML::Node<Core::ForceField>* arg)
 {
-    XML::createWithParent< PlaneForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< PlaneForceField<DataTypes>, Core::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("stiffness")) obj->setStiffness((typename PlaneForceField<DataTypes>::Real)atof(arg->getAttribute("stiffness")));
-        if (arg->getAttribute("damping")) obj->setDamping((typename PlaneForceField<DataTypes>::Real)atof(arg->getAttribute("damping")));
         double x=0,y=0,z=0,d=0;
         if (arg->getAttribute("normal"))
             sscanf(arg->getAttribute("normal"),"%lf %lf %lf",&x,&y,&z);
@@ -37,9 +40,12 @@ void create(PlaneForceField<DataTypes>*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, PlaneForceField<Vec3dTypes> > PlaneForceFieldVec3dClass("PlaneForceField", true);
-Creator< ObjectFactory, PlaneForceField<Vec3fTypes> > PlaneForceFieldVec3fClass("PlaneForceField", true);
+Creator< XML::ForceFieldNode::Factory, PlaneForceField<Vec3dTypes> > PlaneForceFieldVec3dClass("PlaneForceField", true);
+Creator< XML::ForceFieldNode::Factory, PlaneForceField<Vec3fTypes> > PlaneForceFieldVec3fClass("PlaneForceField", true);
 
-} // namespace Components
+} // namespace interactionforcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

@@ -1,22 +1,24 @@
-#include "Sofa-old/Components/Gravity.h"
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include <Sofa-old/Components/Graph/GNode.h>
-#include "Sofa-old/Components/Common/ObjectFactory.h"
-
+#include <sofa/component/contextobject/Gravity.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
+namespace contextobject
+{
 
-using namespace Common;
-using namespace Core;
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
 
 Gravity::Gravity()
-    : Abstract::ContextObject()
+    : core::objectmodel::ContextObject()
     , f_gravity( dataField(&f_gravity,Vec3(0,0,0),"gravity","Gravity in the world coordinate system") )
 {
 }
@@ -37,7 +39,7 @@ void Gravity::apply()
     getContext()->setGravityInWorld( f_gravity.getValue() );
 }
 
-void create(Gravity*& obj, ObjectDescription* arg)
+void create(Gravity*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new Gravity;
     obj->parseFields(arg->getAttributeMap() );
@@ -45,9 +47,11 @@ void create(Gravity*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(Gravity)
 
-Creator<ObjectFactory, Gravity> GravityClass("Gravity");
+Creator<simulation::tree::xml::ObjectFactory, Gravity> GravityClass("Gravity");
 
-} // namespace Components
+} // namespace contextobject
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 

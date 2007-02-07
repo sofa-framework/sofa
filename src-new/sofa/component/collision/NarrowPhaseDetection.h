@@ -1,32 +1,34 @@
-#ifndef SOFA_COMPONENTS_COLLISION_NARROWPHASEDETECTION_H
-#define SOFA_COMPONENTS_COLLISION_NARROWPHASEDETECTION_H
+#ifndef SOFA_COMPONENT_COLLISION_NARROWPHASEDETECTION_H
+#define SOFA_COMPONENT_COLLISION_NARROWPHASEDETECTION_H
 
-#include "Detection.h"
+#include <sofa/core/componentmodel/collision/Detection.h>
 #include <vector>
 #include <algorithm>
 
-namespace Sofa
+using namespace sofa::core::componentmodel::collision;
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-namespace Collision
+namespace collision
 {
 
 class NarrowPhaseDetection : virtual public Detection
 {
 protected:
-    std::vector< std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator> > elemPairs;
+    std::vector< std::pair<core::CollisionElementIterator, core::CollisionElementIterator> > elemPairs;
 
 public:
     virtual ~NarrowPhaseDetection() { }
 
-    virtual void addCollisionPair (const std::pair<Abstract::CollisionModel*, Abstract::CollisionModel*>& cmPair) = 0;
+    virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;
 
-    virtual void addCollisionPairs(const std::vector< std::pair<Abstract::CollisionModel*, Abstract::CollisionModel*> > v)
+    virtual void addCollisionPairs(const std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > v)
     {
-        for (std::vector< std::pair<Abstract::CollisionModel*, Abstract::CollisionModel*> >::const_iterator it = v.begin(); it<v.end(); it++)
+        for (std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it<v.end(); it++)
             addCollisionPair(*it);
     }
 
@@ -35,13 +37,13 @@ public:
         elemPairs.clear();
     };
 
-    std::vector<std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
+    std::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
 };
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

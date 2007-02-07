@@ -1,34 +1,37 @@
-#include "ObjectNode.h"
-#include "Node.inl"
+#include <sofa/simulation/tree/xml/ObjectElement.h>
+#include <sofa/simulation/tree/xml/Element.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace XML
+namespace tree
 {
 
-using namespace Common;
+namespace xml
+{
 
-//template class Factory< std::string, Abstract::BaseObject, Node<Abstract::BaseObject*>* >;
+using namespace sofa::defaulttype;
 
-ObjectNode::ObjectNode(const std::string& name, const std::string& type, BaseNode* parent)
-    : Node<Abstract::BaseObject>(name, type, parent)
+//template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
+
+ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* parent)
+    : Node<objectmodel::BaseObject>(name, type, parent)
 {
 }
 
-ObjectNode::~ObjectNode()
+ObjectElement::~ObjectElement()
 {
 }
 
-bool ObjectNode::initNode()
+bool ObjectElement::initNode()
 {
-    if (!Node<Abstract::BaseObject>::initNode()) return false;
+    if (!Node<objectmodel::BaseObject>::initNode()) return false;
     if (getObject()!=NULL)
     {
-        Abstract::BaseContext* ctx = dynamic_cast<Abstract::BaseContext*>(getParent()->getBaseObject());
+        objectmodel::BaseContext* ctx = dynamic_cast<objectmodel::BaseContext*>(getParent()->getBaseObject());
         if (ctx!=NULL)
         {
             std::cout << "Adding Object "<<getName()<<" to "<<ctx->getName()<<std::endl;
@@ -40,27 +43,30 @@ bool ObjectNode::initNode()
 
 SOFA_DECL_CLASS(Object)
 
-Creator<BaseNode::NodeFactory, ObjectNode> ObjectNodeClass("Object");
-Creator<BaseNode::NodeFactory, ObjectNode> PropertyNodeClass("Property");
-Creator<BaseNode::NodeFactory, ObjectNode> MechanicalNodeClass("Mechanical");
-Creator<BaseNode::NodeFactory, ObjectNode> TopologyNodeClass("Topology");
-Creator<BaseNode::NodeFactory, ObjectNode> ForceFieldNodeClass("ForceField");
-Creator<BaseNode::NodeFactory, ObjectNode> InteractionForceFieldNodeClass("InteractionForceField");
-Creator<BaseNode::NodeFactory, ObjectNode> MassNodeClass("Mass");
-Creator<BaseNode::NodeFactory, ObjectNode> ConstraintNodeClass("Constraint");
-Creator<BaseNode::NodeFactory, ObjectNode> MappingNodeClass("Mapping");
-Creator<BaseNode::NodeFactory, ObjectNode> SolverNodeClass("Solver");
-Creator<BaseNode::NodeFactory, ObjectNode> CollisionNodeClass("Collision");
-Creator<BaseNode::NodeFactory, ObjectNode> VisualNodeClass("Visual");
-Creator<BaseNode::NodeFactory, ObjectNode> BehaviorNodeClass("Behavior");
+Creator<BaseElement::NodeFactory, ObjectElement> ObjectNodeClass("Object");
+Creator<BaseElement::NodeFactory, ObjectElement> PropertyNodeClass("Property");
+Creator<BaseElement::NodeFactory, ObjectElement> MechanicalNodeClass("Mechanical");
+Creator<BaseElement::NodeFactory, ObjectElement> TopologyNodeClass("Topology");
+Creator<BaseElement::NodeFactory, ObjectElement> ForceFieldNodeClass("ForceField");
+Creator<BaseElement::NodeFactory, ObjectElement> InteractionForceFieldNodeClass("InteractionForceField");
+Creator<BaseElement::NodeFactory, ObjectElement> MassNodeClass("Mass");
+Creator<BaseElement::NodeFactory, ObjectElement> ConstraintNodeClass("Constraint");
+Creator<BaseElement::NodeFactory, ObjectElement> MappingNodeClass("Mapping");
+Creator<BaseElement::NodeFactory, ObjectElement> SolverNodeClass("Solver");
+Creator<BaseElement::NodeFactory, ObjectElement> CollisionNodeClass("Collision");
+Creator<BaseElement::NodeFactory, ObjectElement> VisualNodeClass("Visual");
+Creator<BaseElement::NodeFactory, ObjectElement> BehaviorNodeClass("Behavior");
 
-const char* ObjectNode::getClass() const
+const char* ObjectElement::getClass() const
 {
     return ObjectNodeClass.c_str();
 }
 
-} // namespace XML
+} // namespace xml
 
-} // namespace Components
+} // namespace tree
 
-} // namespace Sofa
+} // namespace simulation
+
+} // namespace sofa
+

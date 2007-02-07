@@ -1,19 +1,19 @@
-#include "Capture.h"
-#include "../ImageBMP.h"
+#include <sofa/helper/gl/Capture.h>
+#include <sofa/helper/io/ImageBMP.h>
 #ifdef SOFA_HAVE_PNG
-#include "../ImagePNG.h"
+#include <sofa/helper/io/ImagePNG.h>
 #endif
 
 #include <sys/types.h>
 #include <sys/stat.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 Capture::Capture()
@@ -24,9 +24,9 @@ Capture::Capture()
 bool Capture::saveScreen(const std::string& filename)
 {
 #ifdef SOFA_HAVE_PNG
-    ImagePNG img;
+    io::ImagePNG img;
 #else
-    ImageBMP img;
+    io::ImageBMP img;
 #endif
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
@@ -79,8 +79,9 @@ bool Capture::saveScreen()
     return saveScreen(filename);
 }
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
+

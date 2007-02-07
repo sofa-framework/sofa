@@ -1,15 +1,18 @@
-#ifndef SOFA_COMPONENTS_MESHTRIAN_H
-#define SOFA_COMPONENTS_MESHTRIAN_H
+#ifndef SOFA_HELPER_IO_MESHTRIAN_H
+#define SOFA_HELPER_IO_MESHTRIAN_H
 
-#include "Common/Mesh.h"
+#include <sofa/helper/io/Mesh.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+using namespace sofa::defaulttype;
 
 /// Cette classe permet la fabrication d'un visuel pour un fichier de type trian
 /// ces fichiers se presentent de la maniere suivante
@@ -34,8 +37,10 @@ public:
     void init(std::string filename);
 };
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
 
 #endif

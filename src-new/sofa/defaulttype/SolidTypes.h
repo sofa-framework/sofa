@@ -8,24 +8,21 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef Sofa_ComponentsSolidTypes_h
-#define Sofa_ComponentsSolidTypes_h
+#ifndef SOFA_DEFAULTTYPE_SOLIDTYPES_H
+#define SOFA_DEFAULTTYPE_SOLIDTYPES_H
 
-//#include <Sofa-old/Abstract/BaseContext.h>
-#include <Sofa-old/Components/Common/Vec.h>
-#include <Sofa-old/Components/Common/Quat.h>
-#include <Sofa-old/Components/Common/Mat.h>
-#include <Sofa-old/Components/Common/fixed_array.h>
-#include <Sofa-old/Components/Common/vector.h>
+//#include <sofa/core/objectmodel/Context.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/helper/fixed_array.h>
+#include <sofa/helper/vector.h>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace defaulttype
 {
 
 /**
@@ -38,11 +35,11 @@ class SolidTypes
 {
 public:
     typedef R Real;
-    typedef Common::Vec<3,Real> Vec;
-    typedef Common::Quater<Real> Rot;
-    typedef Common::Mat<3,3,Real> Mat;
-    typedef Common::Mat<6,6,Real> Mat66;
-    typedef Common::Vec<6,Real> DOF;
+    typedef defaulttype::Vec<3,Real> Vec;
+    typedef defaulttype::Quater<Real> Rot;
+    typedef defaulttype::Mat<3,3,Real> Mat;
+    typedef defaulttype::Mat<6,6,Real> Mat66;
+    typedef defaulttype::Vec<6,Real> DOF;
 
 
 
@@ -319,11 +316,11 @@ public:
     typedef SparseData<Coord> SparseCoord;
     typedef SparseData<Deriv> SparseDeriv;
 
-    typedef vector<SparseCoord> SparseVecCoord;
-    typedef vector<SparseDeriv> SparseVecDeriv;
+    typedef helper::vector<SparseCoord> SparseVecCoord;
+    typedef helper::vector<SparseDeriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
-    typedef	vector<SparseVecDeriv> VecConst;
+    typedef	helper::vector<SparseVecDeriv> VecConst;
 
 
     static Mat dyad( const Vec& u, const Vec& v );
@@ -338,11 +335,9 @@ public:
     static ArticulatedInertia dyad ( const SpatialVector& u, const SpatialVector& v );
 };
 
-}//Common
+}// defaulttype
 
-}//Components
-
-}//Sofa
+}// sofa
 
 
 

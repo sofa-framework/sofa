@@ -1,16 +1,18 @@
-#ifndef SOFA_COMPONENTS_REGULARGRIDSPRINGFORCEFIELD_INL
-#define SOFA_COMPONENTS_REGULARGRIDSPRINGFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_SPARSEGRIDSPRINGFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_SPARSEGRIDSPRINGFORCEFIELD_INL
 
-#include "SparseGridSpringForceField.h"
-#include "StiffSpringForceField.inl"
-#include "GL/template.h"
+#include <sofa/component/forcefield/SparseGridSpringForceField.h>
+#include <sofa/component/forcefield/StiffSpringForceField.inl>
+#include <sofa/helper/gl/template.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
+namespace forcefield
+{
 
 using std::cout;
 using std::cerr;
@@ -599,8 +601,10 @@ void SparseGridSpringForceField<DataTypes>::draw()
     glEnd();
 }
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,27 +1,30 @@
-#ifndef SOFA_COMPONENTS_CUBEMODEL_H
-#define SOFA_COMPONENTS_CUBEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_CUBEMODEL_H
+#define SOFA_COMPONENT_COLLISION_CUBEMODEL_H
 
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Common/Vec3Types.h"
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 class CubeModel;
 
-class Cube : public Abstract::TCollisionElementIterator<CubeModel>
+class Cube : public core::TCollisionElementIterator<CubeModel>
 {
 public:
     Cube(CubeModel* model=NULL, int index=0);
 
-    explicit Cube(const Abstract::CollisionElementIterator& i);
+    explicit Cube(const core::CollisionElementIterator& i);
 
     const Vector3& minVect() const;
 
@@ -30,7 +33,7 @@ public:
     const std::pair<Cube,Cube>& subcells() const;
 };
 
-class CubeModel : public Abstract::CollisionModel, public Abstract::VisualModel
+class CubeModel : public core::CollisionModel, public core::VisualModel
 {
 protected:
 
@@ -38,7 +41,7 @@ protected:
     {
         Vector3 minBBox, maxBBox;
         std::pair<Cube,Cube> subcells;
-        Abstract::CollisionElementIterator leaf; ///< Note that leaf is only meaningfull if subcells in empty
+        core::CollisionElementIterator leaf; ///< Note that leaf is only meaningfull if subcells in empty
     };
 
     class CubeSortPredicate;
@@ -48,7 +51,7 @@ protected:
 
     bool static_;
 public:
-    typedef Abstract::CollisionElementIterator ChildIterator;
+    typedef core::CollisionElementIterator ChildIterator;
     typedef Vec3Types DataTypes;
     typedef Cube Element;
     friend class Cube;
@@ -66,9 +69,9 @@ public:
     bool isStatic() { return static_; }
     void setStatic(bool val=true) { static_ = val; }
 
-    virtual std::pair<Abstract::CollisionElementIterator,Abstract::CollisionElementIterator> getInternalChildren(int index) const;
+    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(int index) const;
 
-    virtual std::pair<Abstract::CollisionElementIterator,Abstract::CollisionElementIterator> getExternalChildren(int index) const;
+    virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getExternalChildren(int index) const;
 
     virtual bool isLeaf( int index ) const;
 
@@ -90,11 +93,11 @@ protected:
 };
 
 inline Cube::Cube(CubeModel* model, int index)
-    : Abstract::TCollisionElementIterator<CubeModel>(model, index)
+    : core::TCollisionElementIterator<CubeModel>(model, index)
 {}
 
-inline Cube::Cube(const Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<CubeModel>(static_cast<CubeModel*>(i.getCollisionModel()), i.getIndex())
+inline Cube::Cube(const core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<CubeModel>(static_cast<CubeModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
@@ -114,8 +117,10 @@ inline const std::pair<Cube,Cube>& Cube::subcells() const
     return model->elems[index].subcells;
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

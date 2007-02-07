@@ -1,17 +1,20 @@
-#ifndef SOFA_COMPONENTS_THREAD_DEBUG_H
-#define SOFA_COMPONENTS_THREAD_DEBUG_H
+#ifndef SOFA_HELPER_SYSTEM_THREAD_DEBUG_H
+#define SOFA_HELPER_SYSTEM_THREAD_DEBUG_H
 
 #include <vector>
 
-#include "CTime.h"
+#include <sofa/helper/system/thread/CTime.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Thread
+namespace system
+{
+
+namespace thread
 {
 
 enum TraceLevel
@@ -72,11 +75,12 @@ public:
 #define GLCHECK { }
 
 #endif
+} // namespace thread
 
-} // namespace Thread
+} // namespace system
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

@@ -1,22 +1,26 @@
-#ifndef SOFA_COMPONENTS_BARYCENTRICMAPPING_H
-#define SOFA_COMPONENTS_BARYCENTRICMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
+#define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 
-#include "Sofa-old/Core/MechanicalMapping.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "MeshTopology.h"
-#include "MultiResSparseGridTopology.h"
-#include "RegularGridTopology.h"
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/MultiResSparseGridTopology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 #include <vector>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace mapping
 {
 
 template <class BaseMapping>
-class BarycentricMapping : public BaseMapping, public Abstract::VisualModel
+class BarycentricMapping : public BaseMapping, public core::VisualModel
 {
 public:
     typedef BaseMapping Inherit;
@@ -65,11 +69,11 @@ public:
     class SparseGridMapper : public Mapper
     {
     public:
-        SparseGridMapper(MultiResSparseGridTopology* topology) : topology(topology)
+        SparseGridMapper(topology::MultiResSparseGridTopology* topology) : topology(topology)
         {}
 
         std::vector<CubeData> map;
-        MultiResSparseGridTopology* topology;
+        topology::MultiResSparseGridTopology* topology;
         void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
         void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );
         void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in );
@@ -79,11 +83,11 @@ public:
     class RegularGridMapper : public Mapper
     {
     public:
-        RegularGridMapper(RegularGridTopology* topology) : topology(topology)
+        RegularGridMapper(topology::RegularGridTopology* topology) : topology(topology)
         {}
 
         std::vector<CubeData> map;
-        RegularGridTopology* topology;
+        topology::RegularGridTopology* topology;
         void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
         void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );
         void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in );
@@ -93,13 +97,13 @@ public:
     class MeshMapper : public Mapper
     {
     public:
-        MeshMapper(MeshTopology* topology) : topology(topology)
+        MeshMapper(topology::MeshTopology* topology) : topology(topology)
         {}
 
         std::vector< MappingData<1,0> > map1d;
         std::vector< MappingData<2,0> > map2d;
         std::vector< MappingData<3,0> > map3d;
-        MeshTopology* topology;
+        topology::MeshTopology* topology;
 
         void clear();
 
@@ -133,11 +137,11 @@ protected:
 
     Mapper* mapper;
 
-    void calcMap(RegularGridTopology* topo);
+    void calcMap(topology::RegularGridTopology* topo);
 
-    void calcMap(MultiResSparseGridTopology* topo);
+    void calcMap(topology::MultiResSparseGridTopology* topo);
 
-    void calcMap(MeshTopology* topo);
+    void calcMap(topology::MeshTopology* topo);
 
 public:
     BarycentricMapping(In* from, Out* to)
@@ -171,20 +175,22 @@ public:
 
 protected:
 
-    bool getShow(const Abstract::BaseObject* m) const
+    bool getShow(const core::objectmodel::BaseObject* m) const
     {
         return m->getContext()->getShowMappings();
     }
 
-    bool getShow(const Core::BasicMechanicalMapping* m) const
+    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const
     {
         return m->getContext()->getShowMechanicalMappings();
     }
 
 };
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,15 +1,15 @@
-#ifndef SOFA_COMPONENTS_GRAPH_LOCALSTORAGE_H
-#define SOFA_COMPONENTS_GRAPH_LOCALSTORAGE_H
+#ifndef SOFA_SIMULATION_TREE_LOCALSTORAGE_H
+#define SOFA_SIMULATION_TREE_LOCALSTORAGE_H
 
-#include "Sofa-old/Abstract/BaseObject.h"
+#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace Graph
+namespace tree
 {
 
 class GNode;
@@ -28,10 +28,10 @@ public:
     virtual bool empty() const = 0;
 };
 
-} // namespace Graph
+} // namespace tree
 
-} // namespace Components
+} // namespace simulation
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

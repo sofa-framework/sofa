@@ -1,23 +1,20 @@
-#ifndef SOFA_COMPONENTS_COMMON_LAPAROSCOPICRIGIDTYPES_H
-#define SOFA_COMPONENTS_COMMON_LAPAROSCOPICRIGIDTYPES_H
+#ifndef SOFA_DEFAULTTYPE_LAPAROSCOPICRIGIDTYPES_H
+#define SOFA_DEFAULTTYPE_LAPAROSCOPICRIGIDTYPES_H
 
-#include "RigidTypes.h"
-#include <Sofa-old/Core/Context.h>
-#include <Sofa-old/Core/Mass.h>
-#include <Sofa-old/Components/Common/vector.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/helper/vector.h>
 #include <iostream>
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace defaulttype
 {
 
-namespace Common
-{
-
-using Sofa::Components::Common::vector;
+using sofa::helper::vector;
 
 class LaparoscopicRigidTypes
 {
@@ -286,43 +283,50 @@ inline LaparoscopicRigidTypes::Deriv operator/(const LaparoscopicRigidTypes::Der
     return res;
 }
 
-} // namespace Common
+} // namespace defaulttype
 
-} // namespace Components
 
 //================================================================================================================
 // This is probably useless because the RigidObject actually contains its mass and computes its inertia forces itself:
 //================================================================================================================
 
-namespace Core
+namespace core
 {
-/// Specialization of the inertia force for Components::Common::RigidTypes
+namespace componentmodel
+{
+namespace behavior
+{
+/// Specialization of the inertia force for defaulttype::RigidTypes
 template <>
-inline Components::Common::LaparoscopicRigidTypes::Deriv inertiaForce<
-Components::Common::LaparoscopicRigidTypes::Coord,
-           Components::Common::LaparoscopicRigidTypes::Deriv,
-           Context::Vec3,
-           Components::Common::RigidMass,
-           Context::SpatialVector
-           >
-           (
-                   const Context::SpatialVector& vframe,
-                   const Context::Vec3& aframe,
-                   const Components::Common::RigidMass& mass,
-                   const Components::Common::LaparoscopicRigidTypes::Coord& x,
-                   const Components::Common::LaparoscopicRigidTypes::Deriv& v )
+inline defaulttype::LaparoscopicRigidTypes::Deriv inertiaForce<
+defaulttype::LaparoscopicRigidTypes::Coord,
+            defaulttype::LaparoscopicRigidTypes::Deriv,
+            objectmodel::Context::Vec3,
+            defaulttype::RigidMass,
+            objectmodel::Context::SpatialVector
+            >
+            (
+                    const objectmodel::Context::SpatialVector& vframe,
+                    const objectmodel::Context::Vec3& aframe,
+                    const defaulttype::RigidMass& mass,
+                    const defaulttype::LaparoscopicRigidTypes::Coord& x,
+                    const defaulttype::LaparoscopicRigidTypes::Deriv& v )
 {
-    Components::Common::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    Components::Common::RigidTypes::Vec3 origin, finertia, zero(0,0,0);
+    defaulttype::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::RigidTypes::Vec3 origin, finertia, zero(0,0,0);
     origin[0] = x.getTranslation();
 
-    finertia = -( aframe + omega.cross( omega.cross(origin) + Components::Common::RigidTypes::Vec3(v.getVTranslation()*2,0,0) ))*mass.mass;
-    return Components::Common::LaparoscopicRigidTypes::Deriv( finertia[0], zero );
+    finertia = -( aframe + omega.cross( omega.cross(origin) + defaulttype::RigidTypes::Vec3(v.getVTranslation()*2,0,0) ))*mass.mass;
+    return defaulttype::LaparoscopicRigidTypes::Deriv( finertia[0], zero );
     /// \todo replace zero by Jomega.cross(omega)
 }
 
-}
+} // namespace behavoir
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

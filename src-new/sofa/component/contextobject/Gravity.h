@@ -1,25 +1,31 @@
-#ifndef SOFA_COMPONENTS_GRAVITY_H
-#define SOFA_COMPONENTS_GRAVITY_H
+#ifndef SOFA_COMPONENT_CONTEXTOBJECT_GRAVITY_H
+#define SOFA_COMPONENT_CONTEXTOBJECT_GRAVITY_H
 
-#include <Sofa-old/Components/Common/Vec.h>
-#include <Sofa-old/Abstract/ContextObject.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/objectmodel/ContextObject.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
-
-namespace Graph
+namespace tree
 {
 class GNode;
 }
+}
 
-using namespace Common;
-
-class Gravity : public Abstract::ContextObject
+namespace component
 {
-    typedef Common::Vec3d Vec3;
+
+namespace contextobject
+{
+
+using namespace sofa::defaulttype;
+
+class Gravity : public core::objectmodel::ContextObject
+{
+    typedef defaulttype::Vec3d Vec3;
 public:
     Gravity();
     virtual const char* getTypeName() const { return "Gravity"; }
@@ -35,9 +41,11 @@ protected:
     //Vec3 gravity_;
 };
 
-} // namespace Components
+} // namespace contextobject
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif
 

@@ -1,12 +1,15 @@
-#include "Sofa-old/Components/SphereLoader.h"
+#include <sofa/helper/io/SphereLoader.h>
 
 #include <stdio.h>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
+{
+
+namespace io
 {
 
 static void skipToEOL(FILE* f)
@@ -72,6 +75,9 @@ bool SphereLoader::load(const char *filename)
     return true;
 }
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
+

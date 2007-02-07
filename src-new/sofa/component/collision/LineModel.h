@@ -1,28 +1,32 @@
-#ifndef SOFA_COMPONENTS_LINEMODEL_H
-#define SOFA_COMPONENTS_LINEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_LINEMODEL_H
+#define SOFA_COMPONENT_COLLISION_LINEMODEL_H
 
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "MeshTopology.h"
-#include "Common/Vec3Types.h"
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::component::topology;
 
 class LineModel;
 
-class Line : public Abstract::TCollisionElementIterator<LineModel>
+class Line : public core::TCollisionElementIterator<LineModel>
 {
 public:
     Line(LineModel* model, int index);
 
-    explicit Line(Abstract::CollisionElementIterator& i);
+    explicit Line(core::CollisionElementIterator& i);
 
     const Vector3& p1() const;
     const Vector3& p2() const;
@@ -31,7 +35,7 @@ public:
     const Vector3& v2() const;
 };
 
-class LineModel : public Abstract::CollisionModel, public Abstract::VisualModel
+class LineModel : public core::CollisionModel, public core::VisualModel
 {
 protected:
     struct LineData
@@ -79,7 +83,7 @@ public:
     void update() { }
 
 
-    Core::MechanicalModel<Vec3Types>* getMechanicalModel() { return mmodel; }
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
     MeshTopology* getTopology() { return mesh; }
 
@@ -87,28 +91,30 @@ public:
 
 protected:
 
-    Core::MechanicalModel<Vec3Types>* mmodel;
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
     MeshTopology* mesh;
 
 };
 
 inline Line::Line(LineModel* model, int index)
-    : Abstract::TCollisionElementIterator<LineModel>(model, index)
+    : core::TCollisionElementIterator<LineModel>(model, index)
 {}
 
-inline Line::Line(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<LineModel>(static_cast<LineModel*>(i.getCollisionModel()), i.getIndex())
+inline Line::Line(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<LineModel>(static_cast<LineModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-inline const Vector3& Line::p1() const { return (*model->mmodel->getX())[model->elems[index].i1]; }
-inline const Vector3& Line::p2() const { return (*model->mmodel->getX())[model->elems[index].i2]; }
+inline const Vector3& Line::p1() const { return (*model->mstate->getX())[model->elems[index].i1]; }
+inline const Vector3& Line::p2() const { return (*model->mstate->getX())[model->elems[index].i2]; }
 
-inline const Vector3& Line::v1() const { return (*model->mmodel->getV())[model->elems[index].i1]; }
-inline const Vector3& Line::v2() const { return (*model->mmodel->getV())[model->elems[index].i2]; }
+inline const Vector3& Line::v1() const { return (*model->mstate->getV())[model->elems[index].i1]; }
+inline const Vector3& Line::v2() const { return (*model->mstate->getV())[model->elems[index].i2]; }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

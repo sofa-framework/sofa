@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENTS_GL_CAPTURE_H
-#define SOFA_COMPONENTS_GL_CAPTURE_H
+#ifndef SOFA_HELPER_GL_CAPTURE_H
+#define SOFA_HELPER_GL_CAPTURE_H
 
 #ifdef _WIN32
 #include <windows.h>
@@ -7,18 +7,18 @@
 
 #include <GL/gl.h>
 
-#include "../Common/Image.h"
+#include <sofa/helper/io/Image.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
-using namespace Common;
+//using namespace sofa::defaulttype;
 
 class Capture
 {
@@ -41,10 +41,10 @@ public:
     bool saveScreen();
 };
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

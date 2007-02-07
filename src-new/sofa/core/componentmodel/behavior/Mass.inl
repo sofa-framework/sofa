@@ -1,17 +1,23 @@
-#ifndef SOFA_CORE_MASS_INL
-#define SOFA_CORE_MASS_INL
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MASS_INL
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MASS_INL
 
-#include "Mass.h"
-#include "ForceField.inl"
+#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace behavior
 {
 
 template<class DataTypes>
-Mass<DataTypes>::Mass(MechanicalModel<DataTypes> *mm)
+Mass<DataTypes>::Mass(MechanicalState<DataTypes> *mm)
     : ForceField<DataTypes>(mm)
 {
 }
@@ -24,27 +30,31 @@ Mass<DataTypes>::~Mass()
 template<class DataTypes>
 void Mass<DataTypes>::addMDx()
 {
-    if (this->mmodel)
-        addMDx(*this->mmodel->getF(), *this->mmodel->getDx());
+    if (this->mstate)
+        addMDx(*this->mstate->getF(), *this->mstate->getDx());
 }
 
 template<class DataTypes>
 void Mass<DataTypes>::accFromF()
 {
-    if (this->mmodel)
-        accFromF(*this->mmodel->getDx(), *this->mmodel->getF());
+    if (this->mstate)
+        accFromF(*this->mstate->getDx(), *this->mstate->getF());
 }
 
 template<class DataTypes>
 double Mass<DataTypes>::getKineticEnergy()
 {
-    if (this->mmodel)
-        return getKineticEnergy(*this->mmodel->getV());
+    if (this->mstate)
+        return getKineticEnergy(*this->mstate->getV());
     return 0.;
 }
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

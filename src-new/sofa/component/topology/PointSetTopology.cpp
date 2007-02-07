@@ -1,16 +1,19 @@
 
-#include "PointSetTopology.h"
-#include "PointSetTopology.inl"
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include "Sofa-old/Components/Common/ObjectFactory.h"
+#include <sofa/component/topology/PointSetTopology.h>
+#include <sofa/component/topology/PointSetTopology.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace topology
+{
+
+using namespace sofa::defaulttype;
 
 
 SOFA_DECL_CLASS(PointSetTopology)
@@ -21,12 +24,12 @@ template class PointSetTopology<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec3dTypes>;
 
-PointSetTopologyContainer::PointSetTopologyContainer(Core::BasicTopology *top)
+PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
     : Core::TopologyContainer(top)
 {
 }
 
-PointSetTopologyContainer::PointSetTopologyContainer(Core::BasicTopology *top, const std::vector<unsigned int>& DOFIndex)
+PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector<unsigned int>& DOFIndex)
     : Core::TopologyContainer(top), m_DOFIndex(DOFIndex)
 {
 }
@@ -101,22 +104,25 @@ unsigned int PointSetTopologyContainer::getDOFIndex(const int i) const
 
 
 template<class DataTypes>
-void create(PointSetTopology<DataTypes>*& obj, ObjectDescription* arg)
+void create(PointSetTopology<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< PointSetTopology<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
+    XML::createWithParent< PointSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
 
     }
 }
 
-Creator<ObjectFactory, PointSetTopology<Vec3dTypes> >
+Creator<simulation::tree::xml::ObjectFactory, PointSetTopology<Vec3dTypes> >
 PointSetTopologyVec3dClass("PointSetTopology", true);
 
-Creator<ObjectFactory, PointSetTopology<Vec3fTypes> >
+Creator<simulation::tree::xml::ObjectFactory, PointSetTopology<Vec3fTypes> >
 PointSetTopologyVec3fClass("PointSetTopology", true);
 
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

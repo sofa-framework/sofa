@@ -1,15 +1,15 @@
-#include "Transformation.h"
+#include <sofa/helper/gl/Transformation.h>
 
-#include "Sofa-old/Components/Common/config.h"
+#include <sofa/helper/system/config.h>
 #include <GL/gl.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 // --------------------------------------------------------------------------------------
@@ -153,8 +153,9 @@ void Transformation::InvertTransRotMatrix(double sMatrix[4][4],
     InvertTransRotMatrix(dMatrix);
 }
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
+

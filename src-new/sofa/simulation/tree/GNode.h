@@ -1,51 +1,55 @@
-#ifndef SOFA_COMPONENTS_GRAPH_GNODE_H
-#define SOFA_COMPONENTS_GRAPH_GNODE_H
+#ifndef SOFA_SIMULATION_TREE_GNODE_H
+#define SOFA_SIMULATION_TREE_GNODE_H
 
 #include <stdlib.h>
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Sofa-old/Abstract/BaseNode.h"
-#include "Sofa-old/Abstract/BehaviorModel.h"
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Sofa-old/Abstract/ContextObject.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Core/Context.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Core/Mapping.h"
-#include "Sofa-old/Core/MechanicalMapping.h"
-#include "Sofa-old/Core/ForceField.h"
-#include "Sofa-old/Core/InteractionForceField.h"
-#include "Sofa-old/Core/Mass.h"
-#include "Sofa-old/Core/Constraint.h"
-#include "Sofa-old/Core/Topology.h"
-#include "Sofa-old/Core/BasicTopology.h"
-#include "Sofa-old/Core/OdeSolver.h"
-#include "Sofa-old/Components/Collision/Pipeline.h"
-#include "Sofa-old/Components/Thread/CTime.h"
-#include "Sofa-old/Components/Graph/ActionScheduler.h"
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/Mapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/simulation/tree/ActionScheduler.h>
 #include <iostream>
+
+
 using std::cout;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace Graph
+namespace tree
 {
 
-using namespace Abstract;
-using namespace Core;
+//using namespace core::objectmodel;
+//using namespace core::componentmodel::behavior;
+//using namespace core::componentmodel::topology;
+//using namespace core::componentmodel::collision;
 
 class Action;
 class MutationListener;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
 */
-class GNode : public Core::Context, public Abstract::BaseNode
+class GNode : public Context, public core::objectmodel::BaseNode
 {
 public:
     GNode( const std::string& name="", GNode* parent=NULL  );
@@ -97,13 +101,13 @@ public:
     /// @{
 
     /// Mechanical Degrees-of-Freedom
-    virtual Abstract::BaseObject* getMechanicalModel() const;
+    virtual BaseObject* getMechanicalState() const;
 
     /// Topology
-    virtual Abstract::BaseObject* getTopology() const;
+    virtual BaseObject* getTopology() const;
 
     /// Main Topology
-    virtual Abstract::BaseObject* getMainTopology() const;
+    virtual BaseObject* getMainTopology() const;
 
     /// @}
 
@@ -372,25 +376,25 @@ public:
     Sequence<BaseObject> object;
     typedef Sequence<BaseObject>::iterator ObjectIterator;
 
-    Single<BasicMechanicalModel> mechanicalModel;
-    Single<BasicMechanicalMapping> mechanicalMapping;
-    Single<OdeSolver> solver;
-    Single<BasicMass> mass;
-    Single<Topology> topology;
+    Single<core::componentmodel::behavior::BaseMechanicalState> mechanicalModel;
+    Single<core::componentmodel::behavior::BaseMechanicalMapping> mechanicalMapping;
+    Single<core::componentmodel::behavior::OdeSolver> solver;
+    Single<core::componentmodel::behavior::BaseMass> mass;
+    Single<core::componentmodel::topology::Topology> topology;
 
-    Sequence<BasicTopology> basicTopology;
+    Sequence<core::componentmodel::topology::BaseTopology> basicTopology;
 
-    Sequence<BasicForceField> forceField;
-    Sequence<InteractionForceField> interactionForceField;
-    Sequence<BasicConstraint> constraint;
-    Sequence<ContextObject> contextObject;
+    Sequence<core::componentmodel::behavior::BaseForceField> forceField;
+    Sequence<core::componentmodel::behavior::InteractionForceField> interactionForceField;
+    Sequence<core::componentmodel::behavior::BaseConstraint> constraint;
+    Sequence<core::objectmodel::ContextObject> contextObject;
 
-    Sequence<BasicMapping> mapping;
-    Sequence<BehaviorModel> behaviorModel;
-    Sequence<VisualModel> visualModel;
-    Sequence<CollisionModel> collisionModel;
+    Sequence<core::BaseMapping> mapping;
+    Sequence<core::BehaviorModel> behaviorModel;
+    Sequence<core::VisualModel> visualModel;
+    Sequence<core::CollisionModel> collisionModel;
 
-    Sequence<Collision::Pipeline> collisionPipeline;
+    Sequence<core::componentmodel::collision::Pipeline> collisionPipeline;
     Single<ActionScheduler> actionScheduler;
 
     GNode* setDebug(bool);
@@ -405,7 +409,7 @@ public:
     void setLogTime(bool);
     bool getLogTime() const { return logTime_; }
 
-    typedef Thread::ctime_t ctime_t;
+    typedef helper::system::thread::ctime_t ctime_t;
 
     struct NodeTimer
     {
@@ -436,31 +440,31 @@ public:
     const NodeTimer& getActionTime(const char* s) { return actionTime[s]; }
 
     /// Get time log of all objects
-    const std::map<std::string, std::map<Abstract::BaseObject*, ObjectTimer> >& getObjectTime() const { return objectTime; }
+    const std::map<std::string, std::map<BaseObject*, ObjectTimer> >& getObjectTime() const { return objectTime; }
 
     /// Get time log of all objects of a given category
-    const std::map<Abstract::BaseObject*, ObjectTimer>& getObjectTime(const std::string& s) { return objectTime[s]; }
+    const std::map<BaseObject*, ObjectTimer>& getObjectTime(const std::string& s) { return objectTime[s]; }
 
     /// Get time log of all objects of a given category
-    const std::map<Abstract::BaseObject*, ObjectTimer>& getObjectTime(const char* s) { return objectTime[s]; }
+    const std::map<BaseObject*, ObjectTimer>& getObjectTime(const char* s) { return objectTime[s]; }
 
     /// Get timer frequency
     ctime_t getTimeFreq() const;
 
     /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
-    void addTime(ctime_t t, const std::string& s, Abstract::BaseObject* obj, Abstract::BaseObject* parent);
+    void addTime(ctime_t t, const std::string& s, BaseObject* obj, BaseObject* parent);
 
     /// Log time spent on an action category and the concerned object
-    void addTime(ctime_t t, const std::string& s, Abstract::BaseObject* obj);
+    void addTime(ctime_t t, const std::string& s, BaseObject* obj);
 
     /// Measure start time
     ctime_t startTime() const;
 
     /// Log time spent given a start time, an action category, and the concerned object
-    ctime_t endTime(ctime_t t0, const std::string& s, Abstract::BaseObject* obj);
+    ctime_t endTime(ctime_t t0, const std::string& s, BaseObject* obj);
 
     /// Log time spent given a start time, an action category, and the concerned object, plus remove the computed time from the parent caller object
-    ctime_t endTime(ctime_t t0, const std::string& s, Abstract::BaseObject* obj, Abstract::BaseObject* parent);
+    ctime_t endTime(ctime_t t0, const std::string& s, BaseObject* obj, BaseObject* parent);
 
     /// Return the full path name of this node
     std::string getPathName() const;
@@ -471,19 +475,19 @@ protected:
 
     NodeTimer totalTime;
     std::map<std::string, NodeTimer> actionTime;
-    std::map<std::string, std::map<Abstract::BaseObject*, ObjectTimer> > objectTime;
+    std::map<std::string, std::map<BaseObject*, ObjectTimer> > objectTime;
 
     void doAddChild(GNode* node);
     void doRemoveChild(GNode* node);
-    void doAddObject(Abstract::BaseObject* obj);
-    void doRemoveObject(Abstract::BaseObject* obj);
+    void doAddObject(BaseObject* obj);
+    void doRemoveObject(BaseObject* obj);
 
     void notifyAddChild(GNode* node);
     void notifyRemoveChild(GNode* node);
-    void notifyAddObject(Abstract::BaseObject* obj);
-    void notifyRemoveObject(Abstract::BaseObject* obj);
+    void notifyAddObject(BaseObject* obj);
+    void notifyRemoveObject(BaseObject* obj);
     void notifyMoveChild(GNode* node, GNode* prev);
-    void notifyMoveObject(Abstract::BaseObject* obj, GNode* prev);
+    void notifyMoveObject(BaseObject* obj, GNode* prev);
 
     /// Execute a recursive action starting from this node.
     /// This method bypass the actionScheduler of this node if any.
@@ -494,10 +498,10 @@ protected:
 
 };
 
-} // namespace Graph
+} // namespace tree
 
-} // namespace Components
+} // namespace simulation
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

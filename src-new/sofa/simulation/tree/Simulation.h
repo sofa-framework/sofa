@@ -1,15 +1,15 @@
-#ifndef SOFA_COMPONENTS_GRAPH_SIMULATION_H
-#define SOFA_COMPONENTS_GRAPH_SIMULATION_H
+#ifndef SOFA_SIMULATION_TREE_SIMULATION_H
+#define SOFA_SIMULATION_TREE_SIMULATION_H
 
-#include "GNode.h"
+#include <sofa/simulation/tree/GNode.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace Graph
+namespace tree
 {
 
 class Simulation
@@ -46,9 +46,6 @@ public:
     /// Render the scene
     static void draw(GNode* root);
 
-    /// Render the scene - Shadows pass
-    static void drawShadows(GNode* root);
-
     /// Delete a scene from memory. After this call the pointer is invalid
     static void unload(GNode* root);
 
@@ -63,10 +60,10 @@ public:
 
 };
 
-} // namespace Graph
+} // namespace tree
 
-} // namespace Components
+} // namespace simulation
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

@@ -1,18 +1,22 @@
-#ifndef SOFA_ABSTRACT_BASEOBJECT_H
-#define SOFA_ABSTRACT_BASEOBJECT_H
+#ifndef SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
+#define SOFA_CORE_OBJECTMODEL_BASEOBJECT_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
 
-#include "Base.h"
-#include "BaseContext.h"
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
 {
+
+namespace objectmodel
+{
+
 class Event;
 
 /** Base class for simulation objects.
@@ -85,8 +89,10 @@ protected:
             bool m_printLog;*/
 };
 
-} // namespace Abstract
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

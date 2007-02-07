@@ -1,21 +1,24 @@
-#include "FixedConstraint.inl"
-#include "Sofa-old/Components/Common/ObjectFactory.h"
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include "Sofa-old/Components/Common/RigidTypes.h"
+#include <sofa/component/constraint/FixedConstraint.inl>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace constraint
+{
+
+using namespace sofa::defaulttype;
 
 template <>
 void FixedConstraint<RigidTypes>::draw()
 {
     /*	if (!getContext()->getShowBehaviorModels()) return;
-    	VecCoord& x = *mmodel->getX();
+    	VecCoord& x = *mstate->getX();
     	for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
     	{
     		int i = *it;
@@ -30,14 +33,14 @@ void FixedConstraint<RigidTypes>::draw()
     	}*/
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mmodel->getX();
+    VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
     for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        GL::glVertexT(x[0].getCenter());
+        gl::glVertexT(x[0].getCenter());
     }
     glEnd();
 }
@@ -54,13 +57,13 @@ SOFA_DECL_CLASS(FixedConstraint)
 template class FixedConstraint<Vec3dTypes>;
 template class FixedConstraint<Vec3fTypes>;
 
-namespace Common   // \todo Why this must be inside Common namespace
+namespace helper   // \todo Why this must be inside helper namespace
 {
 
 template<class DataTypes>
-void create(FixedConstraint<DataTypes>*& obj, ObjectDescription* arg)
+void create(FixedConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< FixedConstraint<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< FixedConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         obj->parseFields( arg->getAttributeMap() );
@@ -80,10 +83,13 @@ void create(FixedConstraint<DataTypes>*& obj, ObjectDescription* arg)
 }
 }
 
-Creator< ObjectFactory, FixedConstraint<Vec3dTypes> > FixedConstraint3dClass("FixedConstraint",true);
-Creator< ObjectFactory, FixedConstraint<Vec3fTypes> > FixedConstraint3fClass("FixedConstraint",true);
-Creator< ObjectFactory, FixedConstraint<RigidTypes> > FixedConstraintRigidClass("FixedConstraint",true);
+Creator<simulation::tree::xml::ObjectFactory, FixedConstraint<Vec3dTypes> > FixedConstraint3dClass("FixedConstraint",true);
+Creator<simulation::tree::xml::ObjectFactory, FixedConstraint<Vec3fTypes> > FixedConstraint3fClass("FixedConstraint",true);
+Creator<simulation::tree::xml::ObjectFactory, FixedConstraint<RigidTypes> > FixedConstraintRigidClass("FixedConstraint",true);
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

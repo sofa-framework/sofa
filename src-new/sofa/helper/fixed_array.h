@@ -21,8 +21,8 @@
 // See http://www.boost.org/libs/array for Documentation.
 
 // FF added operator <
-#ifndef SOFA_COMPONENTS_COMMON_FIXED_ARRAY_H
-#define SOFA_COMPONENTS_COMMON_FIXED_ARRAY_H
+#ifndef SOFA_HELPER_FIXED_ARRAY_H
+#define SOFA_HELPER_FIXED_ARRAY_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -34,13 +34,10 @@
 #include <algorithm>
 #include <math.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace helper
 {
 
 template<class T, std::size_t N>
@@ -242,10 +239,8 @@ inline fixed_array<T, 8> make_array(const T& v0, const T& v1, const T& v2, const
     return v;
 }
 
-} // namespace Common
+} // namespace helper
 
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 #endif

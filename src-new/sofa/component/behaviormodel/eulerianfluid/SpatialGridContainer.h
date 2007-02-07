@@ -10,14 +10,14 @@
 //
 //
 
-#ifndef SOFA_COMPONENTS_SPATIALGRIDCONTAINER_H
-#define SOFA_COMPONENTS_SPATIALGRIDCONTAINER_H
+#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_H
+#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_H
 
-#include "Common/Vec3Types.h"
-#include "Common/rmath.h"
-#include "Common/config.h"
-
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/helper/rmath.h>
+#include <sofa/helper/system/config.h>
 #include <list>
+
 
 // I need C++0x !!!
 #ifndef HASH_NAMESPACE
@@ -39,13 +39,19 @@
 #  endif
 #endif
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace behaviormodel
+{
+
+namespace eulerianfluid
+{
+
+using namespace sofa::defaulttype;
 
 class EmptyClass
 {
@@ -152,7 +158,7 @@ public:
 
     static Grid emptyGrid;
 
-    class Key : public Common::fixed_array<int, 3>
+    class Key : public helper::fixed_array<int, 3>
     {
     public:
         Key() {}
@@ -223,8 +229,12 @@ protected:
 
 };
 
-} // namespace Components
+} // namespace eulerianfluid
 
-} // namespace Sofa
+} // namespace behaviormodel
+
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,17 +1,24 @@
-#include "OdeSolver.h"
-#include "Sofa-old/Components/Graph/MechanicalAction.h"
-#include "Sofa-old/Components/Graph/MechanicalVPrintAction.h"
-#include "Sofa-old/Core/MultiVector.h"
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/simulation/tree/MechanicalAction.h>
+#include <sofa/simulation/tree/MechanicalVPrintAction.h>
+#include <sofa/helper/MultiVector.h>
+
 
 #include <stdlib.h>
 #include <math.h>
 
-using namespace Sofa::Components::Graph;
+using namespace sofa::simulation::tree;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace behavior
 {
 
 OdeSolver::OdeSolver()
@@ -21,15 +28,15 @@ OdeSolver::OdeSolver()
 OdeSolver::~OdeSolver()
 {}
 
-// void OdeSolver::setGroup(Abstract::BaseContext* grp)
+// void OdeSolver::setGroup(objectmodel::BaseContext* grp)
 // {
 //     group = grp;
 // }
 
 
 
-using namespace Core::Encoding;
-using namespace Components::Graph;
+using namespace helper::io;
+using namespace simulation::tree;
 
 OdeSolver::VectorIndexAlloc::VectorIndexAlloc()
     : maxIndex(V_FIRST_DYNAMIC_INDEX-1)
@@ -159,7 +166,7 @@ void OdeSolver::computeDf(VecId df)
 
 void OdeSolver::computeAcc(double t, VecId a, VecId x, VecId v)
 {
-    MultiVector f(this, VecId::force());
+    helper::MultiVector f(this, VecId::force());
     propagatePositionAndVelocity(t, x, v);
     computeForce(f);
     if( this->f_printLog.getValue()==true )
@@ -188,7 +195,7 @@ void OdeSolver::getMatrixDimension(unsigned int * const nbRow, unsigned int * co
 }
 
 
-void OdeSolver::computeMatrix(Components::Common::SofaBaseMatrix *mat, double mFact, double bFact, double kFact, unsigned int offset)
+void OdeSolver::computeMatrix(defaulttype::SofaBaseMatrix *mat, double mFact, double bFact, double kFact, unsigned int offset)
 {
     if (mat != NULL)
     {
@@ -197,7 +204,7 @@ void OdeSolver::computeMatrix(Components::Common::SofaBaseMatrix *mat, double mF
 }
 
 
-void OdeSolver::computeOpVector(Components::Common::SofaBaseVector *vect, unsigned int offset)
+void OdeSolver::computeOpVector(defaulttype::SofaBaseVector *vect, unsigned int offset)
 {
     if (vect != NULL)
     {
@@ -206,7 +213,7 @@ void OdeSolver::computeOpVector(Components::Common::SofaBaseVector *vect, unsign
 }
 
 
-void OdeSolver::matResUpdatePosition(Components::Common::SofaBaseVector *vect, unsigned int offset)
+void OdeSolver::matResUpdatePosition(defaulttype::SofaBaseVector *vect, unsigned int offset)
 {
     if (vect != NULL)
     {
@@ -220,8 +227,11 @@ void OdeSolver::matResUpdatePosition(Components::Common::SofaBaseVector *vect, u
 
 
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
 
+} // namespace core
+
+} // namespace sofa
 

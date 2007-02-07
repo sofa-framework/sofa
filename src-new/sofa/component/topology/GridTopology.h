@@ -1,15 +1,18 @@
-#ifndef SOFA_COMPONENTS_GRIDTOPOLOGY_H
-#define SOFA_COMPONENTS_GRIDTOPOLOGY_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_GRIDTOPOLOGY_H
+#define SOFA_COMPONENT_TOPOLOGY_GRIDTOPOLOGY_H
 
-#include "MeshTopology.h"
+#include <sofa/component/topology/MeshTopology.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace topology
+{
+
+using namespace sofa::defaulttype;
 
 class GridTopology : public MeshTopology
 {
@@ -57,8 +60,10 @@ protected:
     void updateCubes();
 };
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

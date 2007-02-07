@@ -1,36 +1,39 @@
-#ifndef SOFA_COMPONENTS_FIXEDCONSTRAINT_INL
-#define SOFA_COMPONENTS_FIXEDCONSTRAINT_INL
+#ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDCONSTRAINT_INL
+#define SOFA_COMPONENT_CONSTRAINT_FIXEDCONSTRAINT_INL
 
-#include "Sofa-old/Core/Constraint.inl"
-#include "FixedConstraint.h"
-#include "GL/template.h"
-#include "Common/RigidTypes.h"
-#include "Topology/TopologyChangedEvent.h"
-#include "Sofa-old/Core/BasicTopology.h"
+#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/component/constraint/FixedConstraint.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/topology/TopologyChangedEvent.h>
+#include <sofa/core/componentmodel/topology/BaseTopology.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Sofa::Core;
+namespace constraint
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::behavior;
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
-    : Core::Constraint<DataTypes>(NULL)
+    : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
     , f_indices( dataField(&f_indices,"indices","Indices of the fixed points") )
 {}
 
 
 template <class DataTypes>
-FixedConstraint<DataTypes>::FixedConstraint(Core::MechanicalModel<DataTypes>
-        * mmodel)
-    : Core::Constraint<DataTypes>(mmodel)
+FixedConstraint<DataTypes>::FixedConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>
+        * mstate)
+    : core::componentmodel::behavior::Constraint<DataTypes>(mstate)
     , f_indices( dataField(&f_indices,"indices","Indices of the fixed points") )
 {}
 
@@ -60,7 +63,7 @@ FixedConstraint<DataTypes>*  FixedConstraint<DataTypes>::removeConstraint(unsign
 template <class DataTypes>
 void FixedConstraint<DataTypes>::init()
 {
-    this->Core::Constraint<DataTypes>::init();
+    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
     f_listening.setValue(true);
     // sort indices and remove duplicates by copying them to a std::set
     //SetIndex& indices = *f_indices.beginEdit();
@@ -84,7 +87,7 @@ void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 
 // Matrix Integration interface
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseMatrix *mat, unsigned int &offset)
+void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseMatrix *mat, unsigned int &offset)
 {
     std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
     const SetIndexArray & indices = f_indices.getValue().getArray();
@@ -123,7 +126,7 @@ void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseMat
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseVector *vect, unsigned int &offset)
+void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseVector *vect, unsigned int &offset)
 {
     std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
@@ -140,15 +143,15 @@ void FixedConstraint<DataTypes>::applyConstraint(Components::Common::SofaBaseVec
 template <class DataTypes>
 void FixedConstraint<DataTypes>::handleEvent( Event *event )
 {
-    TopologyChangedEvent *tce=dynamic_cast<TopologyChangedEvent *>(event);
+    topology::TopologyChangedEvent *tce=dynamic_cast<topology::TopologyChangedEvent *>(event);
     /// test that the event is a change of topology and that it
     if ((tce) && (tce->getTopology()== getContext()->getMainTopology()))
     {
-        BasicTopology *topology = static_cast<BasicTopology *>(getContext()->getMainTopology());
+        core::componentmodel::topology::BaseTopology *topology = static_cast<core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
 
-        std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
-        std::list<const TopologyChange *>::const_iterator it;
+        std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
+        std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
+        std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator it;
 
         SetIndex & indices = *f_indices.beginEdit();
         indices.handleTopologyEvents(itBegin,itEnd);
@@ -164,7 +167,7 @@ void FixedConstraint<DataTypes>::draw()
 {
     if (!getContext()->
         getShowBehaviorModels()) return;
-    const VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mstate->getX();
     //std::cerr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<endl;
     glDisable (GL_LIGHTING);
     glPointSize(10);
@@ -176,7 +179,7 @@ void FixedConstraint<DataTypes>::draw()
             it != indices.end();
             ++it)
     {
-        GL::glVertexT(x[*it]);
+        gl::glVertexT(x[*it]);
     }
     glEnd();
 }
@@ -187,9 +190,11 @@ void FixedConstraint<RigidTypes >::draw();
 template <>
 void FixedConstraint<RigidTypes >::projectResponse(VecDeriv& dx);
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif
 

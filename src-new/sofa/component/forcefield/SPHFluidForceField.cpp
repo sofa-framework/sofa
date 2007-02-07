@@ -1,23 +1,26 @@
-#include "SPHFluidForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/forcefield/SPHFluidForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Core;
+namespace forcefield
+{
 
-namespace Common
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
+
+namespace helper
 {
 template<class DataTypes>
-void create(SPHFluidForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(SPHFluidForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< SPHFluidForceField<DataTypes>, MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< SPHFluidForceField<DataTypes>, MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("radius"))  obj->setParticleRadius((typename DataTypes::Coord::value_type)atof(arg->getAttribute("radius")));
@@ -28,7 +31,7 @@ void create(SPHFluidForceField<DataTypes>*& obj, ObjectDescription* arg)
         if (arg->getAttribute("surfaceTension"))  obj->setSurfaceTension((typename DataTypes::Coord::value_type)atof(arg->getAttribute("surfaceTension")));
     }
 }
-}
+} // namespace helper
 
 SOFA_DECL_CLASS(SPHFluidForceField)
 
@@ -37,9 +40,12 @@ template class SPHFluidForceField<Vec3fTypes>;
 template class SPHFluidForceField<Vec3dTypes>;
 
 // And registered in the Factory
-Creator< ObjectFactory, SPHFluidForceField<Vec3fTypes> > SPHFluidForceField3fClass("SPHFluidForceField", true);
-Creator< ObjectFactory, SPHFluidForceField<Vec3dTypes> > SPHFluidForceField3dClass("SPHFluidForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, SPHFluidForceField<Vec3fTypes> > SPHFluidForceField3fClass("SPHFluidForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, SPHFluidForceField<Vec3dTypes> > SPHFluidForceField3dClass("SPHFluidForceField", true);
 
-} // namespace Sofa
+} // namespace forcefield
 
-} // namespace Components
+} // namespace component
+
+} // namespace sofa
+

@@ -1,34 +1,34 @@
-#ifndef SOFA_COMPONENTS_GL_OGLMODEL_H
-#define SOFA_COMPONENTS_GL_OGLMODEL_H
+#ifndef SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
+#define SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
 
 #include <string>
+#include <GL/gl.h>
+#include <sofa/helper/gl/Texture.h>
+#include <sofa/core/VisualModel.h>
+//#include "Sofa/Components/VisualLoader.h"
+//#include "Common/InterfaceVertex.h"
+//#include "Common/InterfaceTransformation.h"
+#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/helper/io/Mesh.h>
 
 #ifdef _WIN32
 #include <windows.h>
 #endif // _WIN32
 
-#include <GL/gl.h>
 
-#include "Texture.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-//#include "Sofa-old/Components/VisualLoader.h"
-//#include "Common/InterfaceVertex.h"
-//#include "Common/InterfaceTransformation.h"
-#include "Sofa-old/Core/MappedModel.h"
-#include "Sofa-old/Components/Common/Vec.h"
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include "Sofa-old/Components/Common/Mesh.h"
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-namespace GL
+namespace visualmodel
 {
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 struct Material
 {
@@ -82,7 +82,7 @@ public:
     }
 };
 
-class OglModel : public Abstract::VisualModel, public Core::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >
+class OglModel : public core::VisualModel, public Core::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >
 {
 private:
     typedef Vec<2, GLfloat> TexCoord;
@@ -94,7 +94,6 @@ private:
     bool modified; ///< True if input vertices modified since last rendering
     bool useTopology; ///< True if list of facets should be taken from the attached topology
     bool useNormals; ///< True if normals should be read from file
-    bool castShadow; ///< True if object cast shadows
 
     ResizableExtVector<Coord> vertices;
     ResizableExtVector<Coord> vnormals;
@@ -118,19 +117,13 @@ private:
 
     //double matTransOpenGL[16];
 
-    void internalDraw();
-
 public:
 
     OglModel();
 
     ~OglModel();
 
-    bool isTransparent();
-
     void draw();
-    void drawTransparent();
-    void drawShadow();
 
     bool load(const std::string& filename, const std::string& loader, const std::string& textureName);
 
@@ -146,9 +139,6 @@ public:
 
     void setUseNormals(bool val) { useNormals = val;  }
     bool getUseNormals() const   { return useNormals; }
-
-    void setCastShadow(bool val) { castShadow = val;  }
-    bool getCastShadow() const   { return castShadow; }
 
     void update();
 
@@ -178,10 +168,10 @@ public:
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 };
 
-} // namespace GL
+} // namespace visualmodel
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

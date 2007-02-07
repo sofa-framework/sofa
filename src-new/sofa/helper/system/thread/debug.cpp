@@ -2,16 +2,19 @@
 #include <stdlib.h>
 #include <string>
 
-#include "debug.h"
-#include "CTime.h"
+#include <sofa/helper/system/thread/debug.h>
+#include <sofa/helper/system/thread/CTime.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Thread
+namespace system
+{
+
+namespace thread
 {
 
 int Trace::mTraceLevel = 0;
@@ -105,8 +108,11 @@ void TraceProfile::end(int instant)
     times[instant] += (int)(endTime-beginTime);
 }
 
-} // namespace Thread
+} // namespace thread
 
-} // namespace Components
+} // namespace system
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
+

@@ -1,12 +1,15 @@
-#ifndef SOFA_COMPONENTS_REPULSIVESPRINGFORCEFIELD_H
-#define SOFA_COMPONENTS_REPULSIVESPRINGFORCEFIELD_H
+#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
+#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
 
-#include "Sofa-old/Components/StiffSpringForceField.h"
+#include <sofa/component/forcefield/StiffSpringForceField.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace interactionforcefield
 {
 
 template<class DataTypes>
@@ -21,12 +24,12 @@ public:
     typedef typename StiffSpringForceField<DataTypes>::Mat3 Mat3;
 public:
 
-    RepulsiveSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
+    RepulsiveSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
         : StiffSpringForceField<DataTypes>(object1, object2)
     {
     }
 
-    RepulsiveSpringForceField(Core::MechanicalModel<DataTypes>* object)
+    RepulsiveSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
         : StiffSpringForceField<DataTypes>(object)
     {
     }
@@ -35,8 +38,10 @@ public:
     virtual double getPotentialEnergy();
 };
 
-} // namespace Components
+} // namespace interactionforcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

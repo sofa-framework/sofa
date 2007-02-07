@@ -1,15 +1,18 @@
-#include "GridTopology.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/topology/GridTopology.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace topology
 {
 
 SOFA_DECL_CLASS(GridTopology)
 
-void create(GridTopology*& obj, ObjectDescription* arg)
+void create(GridTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     const char* nx = arg->getAttribute("nx");
     const char* ny = arg->getAttribute("ny");
@@ -24,7 +27,7 @@ void create(GridTopology*& obj, ObjectDescription* arg)
     }
 }
 
-Creator<ObjectFactory, GridTopology> GridTopologyClass("Grid");
+Creator<simulation::tree::xml::ObjectFactory, GridTopology> GridTopologyClass("Grid");
 
 GridTopology::GridTopology()
     : nx(dataField(&nx,0,"nx","x grid resolution")), ny(dataField(&ny,0,"ny","y grid resolution")), nz(dataField(&nz,0,"nz","z grid resolution"))
@@ -168,6 +171,9 @@ GridTopology::Quad GridTopology::getQuad(int x, int y, int /*z*/)
             point(x+1, y+1, 1),point(x, y+1, 1));
 }
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

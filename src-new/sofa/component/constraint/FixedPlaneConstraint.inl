@@ -1,30 +1,33 @@
-#ifndef SOFA_COMPONENTS_FIXEDPLANECONSTRAINT_INL
-#define SOFA_COMPONENTS_FIXEDPLANECONSTRAINT_INL
+#ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDPLANECONSTRAINT_INL
+#define SOFA_COMPONENT_CONSTRAINT_FIXEDPLANECONSTRAINT_INL
 
-#include "Sofa-old/Core/Constraint.inl"
-#include "FixedPlaneConstraint.h"
-#include "GL/template.h"
-#include "Common/RigidTypes.h"
+#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/component/constraint/FixedPlaneConstraint.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace constraint
+{
+
+using namespace sofa::defaulttype;
 
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
-    : Core::Constraint<DataTypes>(NULL)
+    : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
 {
     selectVerticesFromPlanes=false;
 }
 
 
 template <class DataTypes>
-FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint(Core::MechanicalModel<DataTypes>* mmodel)
-    : Core::Constraint<DataTypes>(mmodel),direction(0.0,0.0,1.0)
+FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate)
+    : core::componentmodel::behavior::Constraint<DataTypes>(mstate),direction(0.0,0.0,1.0)
 {
     selectVerticesFromPlanes=false;
 }
@@ -72,7 +75,7 @@ void FixedPlaneConstraint<DataTypes>::setDirection(Coord dir)
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::selectVerticesAlongPlane()
 {
-    VecCoord& x = *this->mmodel->getX();
+    VecCoord& x = *this->mstate->getX();
     unsigned int i;
     for(i=0; i<x.size(); ++i)
     {
@@ -92,7 +95,7 @@ template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
-    const VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,1.0,0.5,1);
@@ -105,8 +108,10 @@ void FixedPlaneConstraint<DataTypes>::draw()
 }
 
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

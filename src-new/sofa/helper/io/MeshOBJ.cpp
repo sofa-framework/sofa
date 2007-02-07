@@ -1,15 +1,18 @@
-#include "MeshOBJ.h"
+#include <sofa/helper/io/MeshOBJ.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(MeshOBJ)
 
@@ -267,11 +270,6 @@ void MeshOBJ::readMTL(char* filename)
                     break;
                 }
                 break;
-            case 'd':
-            case 'T':
-                // transparency value
-                fscanf(file, "%lf", &mat->diffuse[3]);
-                break;
             default:
                 /* eat up rest of line */
                 fgets(buf, sizeof(buf), file);
@@ -289,6 +287,9 @@ void MeshOBJ::readMTL(char* filename)
     }
 }
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
+

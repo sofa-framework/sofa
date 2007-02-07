@@ -1,25 +1,28 @@
-#include "LaparoscopicRigidMapping.inl"
-#include "Common/Vec3Types.h"
-#include "Common/RigidTypes.h"
-#include "Common/LaparoscopicRigidTypes.h"
-#include "Common/ObjectFactory.h"
-#include "Sofa-old/Core/MappedModel.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Core/MechanicalMapping.inl"
+#include <sofa/component/mapping/LaparoscopicRigidMapping.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace mapping
 {
 
 SOFA_DECL_CLASS(LaparoscopicRigidMapping)
 
-using namespace Common;
-using namespace Core;
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
 
 template<class BaseMapping>
-void create(LaparoscopicRigidMapping<BaseMapping>*& obj, ObjectDescription* arg)
+void create(LaparoscopicRigidMapping<BaseMapping>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     XML::createWith2Objects< LaparoscopicRigidMapping<BaseMapping>, typename LaparoscopicRigidMapping<BaseMapping>::In, typename LaparoscopicRigidMapping<BaseMapping>::Out>(obj, arg);
     if (obj!=NULL)
@@ -39,12 +42,15 @@ void create(LaparoscopicRigidMapping<BaseMapping>*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, LaparoscopicRigidMapping< MechanicalMapping< MechanicalModel<LaparoscopicRigidTypes>, MechanicalModel<RigidTypes> > > > LaparoscopicRigidMappingClass("LaparoscopicRigidMapping", true);
-Creator< ObjectFactory, LaparoscopicRigidMapping< Mapping< MechanicalModel<LaparoscopicRigidTypes>, MappedModel<RigidTypes> > > > LaparoscopicRigidMechanicalMappingClass("LaparoscopicRigidMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, LaparoscopicRigidMapping< MechanicalMapping< MechanicalState<LaparoscopicRigidTypes>, MechanicalState<RigidTypes> > > > LaparoscopicRigidMappingClass("LaparoscopicRigidMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, LaparoscopicRigidMapping< Mapping< MechanicalState<LaparoscopicRigidTypes>, MappedModel<RigidTypes> > > > LaparoscopicRigidMechanicalMappingClass("LaparoscopicRigidMapping", true);
 
-template class LaparoscopicRigidMapping< MechanicalMapping<MechanicalModel<LaparoscopicRigidTypes>, MechanicalModel<RigidTypes> > >;
-template class LaparoscopicRigidMapping< Mapping<MechanicalModel<LaparoscopicRigidTypes>, MappedModel<RigidTypes> > >;
+template class LaparoscopicRigidMapping< MechanicalMapping<MechanicalState<LaparoscopicRigidTypes>, MechanicalState<RigidTypes> > >;
+template class LaparoscopicRigidMapping< Mapping<MechanicalState<LaparoscopicRigidTypes>, MappedModel<RigidTypes> > >;
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

@@ -1,24 +1,27 @@
-#include "MeshSpringForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/forcefield/MeshSpringForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 SOFA_DECL_CLASS(MeshSpringForceField)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class MeshSpringForceField<Vec3dTypes>;
 template class MeshSpringForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(MeshSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(MeshSpringForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< MeshSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< MeshSpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("stiffness"))          obj->setStiffness         ((typename DataTypes::Coord::value_type)atof(arg->getAttribute("stiffness")));
@@ -36,9 +39,12 @@ void create(MeshSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, MeshSpringForceField<Vec3dTypes> > MeshSpringForceFieldVec3dClass("MeshSpringForceField", true);
-Creator< ObjectFactory, MeshSpringForceField<Vec3fTypes> > MeshSpringForceFieldVec3fClass("MeshSpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, MeshSpringForceField<Vec3dTypes> > MeshSpringForceFieldVec3dClass("MeshSpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, MeshSpringForceField<Vec3fTypes> > MeshSpringForceFieldVec3fClass("MeshSpringForceField", true);
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

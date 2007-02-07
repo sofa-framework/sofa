@@ -1,32 +1,35 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include "SpringForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/forcefield/SpringForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 //#include <typeinfo>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 SOFA_DECL_CLASS(SpringForceField)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class SpringForceField<Vec3dTypes>;
 template class SpringForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(SpringForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(SpringForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< SpringForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< SpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj == NULL) // try the InteractionForceField initialization
-        XML::createWith2Objects< SpringForceField<DataTypes>, Core::MechanicalModel<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+        XML::createWith2Objects< SpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj != NULL)
     {
         if (arg->getAttribute("filename"))
@@ -38,9 +41,12 @@ void create(SpringForceField<DataTypes>*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, SpringForceField<Vec3dTypes> > SpringInteractionForceFieldVec3dClass("SpringForceField", true);
-Creator< ObjectFactory, SpringForceField<Vec3fTypes> > SpringInteractionForceFieldVec3fClass("SpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, SpringForceField<Vec3dTypes> > SpringInteractionForceFieldVec3dClass("SpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, SpringForceField<Vec3fTypes> > SpringInteractionForceFieldVec3fClass("SpringForceField", true);
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

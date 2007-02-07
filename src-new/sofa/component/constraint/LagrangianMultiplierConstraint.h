@@ -1,20 +1,23 @@
-#ifndef SOFA_COMPONENTS_LAGRANGIANMULTIPLIERCONSTRAINT_H
-#define SOFA_COMPONENTS_LAGRANGIANMULTIPLIERCONSTRAINT_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERCONSTRAINT_H
 
-#include "Common/Vec3Types.h"
-#include "Sofa-old/Core/Constraint.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/component/MechanicalObject.h>
 #include <vector>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierConstraint : public Core::BasicConstraint
+class LagrangianMultiplierConstraint : public core::componentmodel::behavior::BaseConstraint
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -29,8 +32,8 @@ public:
         typedef typename DataTypes::Real Real;
         typedef Real Coord;
         typedef Real Deriv;
-        typedef vector<Coord> VecCoord;
-        typedef vector<Deriv> VecDeriv;
+        typedef ::vector<Coord> VecCoord;
+        typedef ::vector<Deriv> VecDeriv;
 
         template <class T>
         class SparseData
@@ -44,11 +47,11 @@ public:
         typedef SparseData<Coord> SparseCoord;
         typedef SparseData<Deriv> SparseDeriv;
 
-        typedef vector<SparseCoord> SparseVecCoord;
-        typedef vector<SparseDeriv> SparseVecDeriv;
+        typedef ::vector<SparseCoord> SparseVecCoord;
+        typedef ::vector<SparseDeriv> SparseVecDeriv;
 
         //! All the Constraints applied to a state Vector
-        typedef	vector<SparseVecDeriv> VecConst;
+        typedef	::vector<SparseVecDeriv> VecConst;
 
 
         static void set(Coord& c, double x, double , double )
@@ -66,13 +69,13 @@ public:
 
 protected:
     /// Langrange multipliers
-    Core::MechanicalObject<LMTypes>* lambda;
+    component::MechanicalObject<LMTypes>* lambda;
 
 public:
 
     LagrangianMultiplierConstraint()
     {
-        lambda = new Core::MechanicalObject<LMTypes>;
+        lambda = new component::MechanicalObject<LMTypes>;
     }
 
     ~LagrangianMultiplierConstraint()
@@ -86,14 +89,16 @@ public:
     virtual void projectVelocity() {} ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition() {} ///< project x to constrained space (x models a position)
 
-    virtual Core::BasicMechanicalModel* getDOFs()
+    virtual core::componentmodel::behavior::BaseMechanicalState* getDOFs()
     {
         return lambda;
     }
 };
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

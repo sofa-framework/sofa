@@ -1,16 +1,13 @@
-#ifndef SOFA_COMPONENTS_GRAPH_COLORS_H
-#define SOFA_COMPONENTS_GRAPH_COLORS_H
+#ifndef SOFA_SIMULATION_TREE_COLORS_H
+#define SOFA_SIMULATION_TREE_COLORS_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace Graph
-{
-
-namespace Colors
+namespace tree
 {
 
 enum
@@ -43,7 +40,7 @@ static const char* COLOR[16]=
     /*Context               =*/ "#d7191c", // color spectral4/1
     /*BehaviorModel         =*/ "#93ff49", // color 7 (brighter)
     /*CollisionModel        =*/ "#fccde5", // color 8
-    /*MechanicalModel       =*/ "#8dd3c7", // color 1
+    /*MechanicalState       =*/ "#8dd3c7", // color 1
     /*Constraint            =*/ "#fdb462", // color 6
     /*InteractionForceField =*/ "#fb8072", // color 4
     /*ForceField            =*/ "#bebada", // color 3
@@ -57,10 +54,10 @@ static const char* COLOR[16]=
 };
 }
 
-} // namespace Graph
+} // namespace tree
 
-} // namespace Components
+} // namespace simulation
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

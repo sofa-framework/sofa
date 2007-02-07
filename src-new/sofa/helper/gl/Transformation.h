@@ -1,15 +1,14 @@
-#ifndef SOFA_COMPONENTS_GL_TRANSFORMATION_H
-#define SOFA_COMPONENTS_GL_TRANSFORMATION_H
+#ifndef SOFA_HELPER_GL_TRANSFORMATION_H
+#define SOFA_HELPER_GL_TRANSFORMATION_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
-
 
 class   		Transformation
 {
@@ -54,10 +53,10 @@ private:void		InvertTransRotMatrix(double matrix[4][4]);
             double dMatrix[4][4]);
 };
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif // __TRANSFORMATION_H__

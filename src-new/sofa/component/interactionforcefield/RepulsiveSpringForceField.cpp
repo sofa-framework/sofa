@@ -1,14 +1,17 @@
-#include "RepulsiveSpringForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/interactionforcefield/RepulsiveSpringForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace interactionforcefield
+{
+
+using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(RepulsiveSpringForceField)
 
@@ -16,11 +19,11 @@ template class RepulsiveSpringForceField<Vec3dTypes>;
 template class RepulsiveSpringForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(RepulsiveSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(RepulsiveSpringForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< RepulsiveSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< RepulsiveSpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj == NULL) // try the InteractionForceField initialization
-        XML::createWith2Objects< RepulsiveSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+        XML::createWith2Objects< RepulsiveSpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj != NULL)
     {
         if (arg->getAttribute("filename"))
@@ -28,9 +31,12 @@ void create(RepulsiveSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, RepulsiveSpringForceField<Vec3dTypes> > RepulsiveSpringInteractionForceFieldVec3dClass("RepulsiveSpringForceField", true);
-Creator< ObjectFactory, RepulsiveSpringForceField<Vec3fTypes> > RepulsiveSpringInteractionForceFieldVec3fClass("RepulsiveSpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, RepulsiveSpringForceField<Vec3dTypes> > RepulsiveSpringInteractionForceFieldVec3dClass("RepulsiveSpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, RepulsiveSpringForceField<Vec3fTypes> > RepulsiveSpringInteractionForceFieldVec3fClass("RepulsiveSpringForceField", true);
 
-} // namespace Components
+} // namespace interactionforcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

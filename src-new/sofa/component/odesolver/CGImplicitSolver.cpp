@@ -1,24 +1,27 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#include "Sofa-old/Components/CGImplicitSolver.h"
-//#include "Sofa-old/Core/IntegrationGroup.h"
-#include "Sofa-old/Core/MultiVector.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/odesolver/CGImplicitSolver.h>
+//#include "Sofa/Core/IntegrationGroup.h"
+#include <sofa/helper/MultiVector.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
+
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Core;
+namespace odesolver
+{
+
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
 
 CGImplicitSolver::CGImplicitSolver()
     : f_maxIter( dataField(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
@@ -45,15 +48,15 @@ CGImplicitSolver::CGImplicitSolver()
 
 void CGImplicitSolver::solve(double dt)
 {
-    MultiVector pos(this, VecId::position());
-    MultiVector vel(this, VecId::velocity());
-    MultiVector f(this, VecId::force());
-    MultiVector b(this, V_DERIV);
-    MultiVector p(this, V_DERIV);
-    MultiVector q(this, V_DERIV);
-    MultiVector q2(this, V_DERIV);
-    MultiVector r(this, V_DERIV);
-    MultiVector x(this, V_DERIV);
+    helper::MultiVector pos(this, VecId::position());
+    helper::MultiVector vel(this, VecId::velocity());
+    helper::MultiVector f(this, VecId::force());
+    helper::MultiVector b(this, V_DERIV);
+    helper::MultiVector p(this, V_DERIV);
+    helper::MultiVector q(this, V_DERIV);
+    helper::MultiVector q2(this, V_DERIV);
+    helper::MultiVector r(this, V_DERIV);
+    helper::MultiVector x(this, V_DERIV);
 
     double h = dt;
     bool printLog = f_printLog.getValue();
@@ -209,7 +212,7 @@ void CGImplicitSolver::solve(double dt)
     }
 }
 
-void create(CGImplicitSolver*& obj, ObjectDescription* arg)
+void create(CGImplicitSolver*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new CGImplicitSolver();
     obj->parseFields( arg->getAttributeMap() );
@@ -217,10 +220,11 @@ void create(CGImplicitSolver*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(CGImplicit)
 
-Creator<ObjectFactory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
+Creator<simulation::tree::xml::ObjectFactory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
 
-} // namespace Components
+} // namespace odesolver
 
-} // namespace Sofa
+} // namespace component
 
+} // namespace sofa
 

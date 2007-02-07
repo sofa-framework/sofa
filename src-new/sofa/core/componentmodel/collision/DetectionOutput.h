@@ -1,25 +1,28 @@
-#ifndef SOFA_COMPONENTS_COLLISION_DETECTIONOUTPUT_H
-#define SOFA_COMPONENTS_COLLISION_DETECTIONOUTPUT_H
+#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_DETECTIONOUTPUT_H
+#define SOFA_CORE_COMPONENTMODEL_COLLISION_DETECTIONOUTPUT_H
 
-#include "Sofa-old/Abstract/CollisionElement.h"
-#include "../Common/Vec.h"
+#include <sofa/core/CollisionElement.h>
+#include <sofa/defaulttype/Vec.h>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Collision
+namespace componentmodel
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 class DetectionOutput
 {
 public:
-    std::pair<Abstract::CollisionElementIterator, Abstract::CollisionElementIterator> elem; ///< Pair of colliding elements
+    std::pair<core::CollisionElementIterator, core::CollisionElementIterator> elem; ///< Pair of colliding elements
     Vector3 point[2]; ///< Point in contact on each element
     Vector3 normal; ///< Normal of the contact, pointing outward from model 1
     //bool collision; ///< Are the elements interpenetrating
@@ -31,10 +34,12 @@ public:
     }
 };
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

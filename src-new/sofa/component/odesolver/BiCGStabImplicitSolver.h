@@ -1,18 +1,21 @@
 // Author: Jeremie Allard, Sim Group @ CIMIT, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENTS_BICGSTABIMPLICITSOLVER_H
-#define SOFA_COMPONENTS_BICGSTABIMPLICITSOLVER_H
+#ifndef SOFA_COMPONENT_ODESOLVER_BICGSTABIMPLICITSOLVER_H
+#define SOFA_COMPONENT_ODESOLVER_BICGSTABIMPLICITSOLVER_H
 
-#include <Sofa-old/Core/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-class BiCGStabImplicitSolver : public Core::OdeSolver
+namespace odesolver
+{
+
+class BiCGStabImplicitSolver : public core::componentmodel::behavior::OdeSolver
 {
 public:
 
@@ -28,8 +31,10 @@ public:
     bool getDebug() { return false; }
 };
 
-} // namespace Components
+} // namespace odesolver
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

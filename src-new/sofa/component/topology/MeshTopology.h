@@ -1,23 +1,26 @@
-#ifndef SOFA_COMPONENTS_MESHTOPOLOGY_H
-#define SOFA_COMPONENTS_MESHTOPOLOGY_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_MESHTOPOLOGY_H
+#define SOFA_COMPONENT_TOPOLOGY_MESHTOPOLOGY_H
 
 #include <stdlib.h>
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Sofa-old/Core/Topology.h"
-#include "Common/fixed_array.h"
-#include "Common/vector.h"
+#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/helper/fixed_array.h>
+#include <sofa/helper/vector.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace topology
+{
 
-class MeshTopology : public Core::Topology
+using namespace sofa::defaulttype;
+
+class MeshTopology : public core::componentmodel::topology::Topology
 {
 public:
     typedef int index_type;
@@ -111,8 +114,10 @@ protected:
     friend class Loader;
 };
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

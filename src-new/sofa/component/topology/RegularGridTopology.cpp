@@ -1,17 +1,20 @@
-#include "RegularGridTopology.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace topology
+{
+
+using namespace sofa::defaulttype;
 using std::cout;
 using std::endl;
 
-void create(RegularGridTopology*& obj, ObjectDescription* arg)
+void create(RegularGridTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     const char* nx = arg->getAttribute("nx");
     const char* ny = arg->getAttribute("ny");
@@ -35,7 +38,7 @@ void create(RegularGridTopology*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(RegularGridTopology)
 
-Creator<ObjectFactory, RegularGridTopology> RegularGridTopologyClass("RegularGrid");
+Creator<simulation::tree::xml::ObjectFactory, RegularGridTopology> RegularGridTopologyClass("RegularGrid");
 
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)
@@ -161,6 +164,9 @@ int RegularGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy
     return cube(ix,iy,iz);
 }
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

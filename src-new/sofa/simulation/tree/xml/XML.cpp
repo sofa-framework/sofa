@@ -1,20 +1,23 @@
 #include <string>
 #include <typeinfo>
 #include <stdlib.h>
-
-/* For loading the scene */
 #include <libxml/parser.h>
 #include <libxml/tree.h>
+#include <sofa/simulation/tree/xml/XML.h>
 
-#include "XML.h"
+/* For loading the scene */
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace XML
+namespace tree
+{
+
+namespace xml
 {
 
 using std::cout;
@@ -24,7 +27,7 @@ using std::endl;
 #define is(n1, n2) (! xmlStrcmp((const xmlChar*)n1,(const xmlChar*)n2))
 #define getProp(n) ( xmlGetProp(cur, (const xmlChar*)n) )
 
-BaseNode* createNode(xmlNodePtr root)
+BaseElement* createNode(xmlNodePtr root)
 {
     if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
 
@@ -59,7 +62,7 @@ BaseNode* createNode(xmlNodePtr root)
         type = "default";
     }
 
-    BaseNode* node = BaseNode::Create((const char*)root->name,name,type);
+    BaseElement* node = BaseElement::Create((const char*)root->name,name,type);
     if (node == NULL)
     {
         std::cerr << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.\n";
@@ -80,7 +83,7 @@ BaseNode* createNode(xmlNodePtr root)
 
     for (xmlNodePtr child = root->xmlChildrenNode; child != NULL; child = child->next)
     {
-        BaseNode* childnode = createNode(child);
+        BaseElement* childnode = createNode(child);
         if (childnode != NULL)
         {
             if (!node->addChild(childnode))
@@ -94,15 +97,15 @@ BaseNode* createNode(xmlNodePtr root)
     return node;
 }
 
-static void dumpNode(BaseNode* node, std::string prefix0="==", std::string prefix="  ")
+static void dumpNode(BaseElement* node, std::string prefix0="==", std::string prefix="  ")
 {
     std::cout << prefix0;
     std::cout << node->getClass()<<" name "<<node->getName()<<" type "<<node->getType()<<std::endl;
-    BaseNode::child_iterator<> it = node->begin();
-    BaseNode::child_iterator<> end = node->end();
+    BaseElement::child_iterator<> it = node->begin();
+    BaseElement::child_iterator<> end = node->end();
     while (it != end)
     {
-        BaseNode::child_iterator<> next = it;
+        BaseElement::child_iterator<> next = it;
         ++next;
         if (next==end) dumpNode(it, prefix+"\\-", prefix+"  ");
         else           dumpNode(it, prefix+"+-", prefix+"| ");
@@ -110,7 +113,7 @@ static void dumpNode(BaseNode* node, std::string prefix0="==", std::string prefi
     }
 }
 
-BaseNode* load(const char *filename)
+BaseElement* load(const char *filename)
 {
     //
     // this initialize the library and check potential ABI mismatches
@@ -139,7 +142,7 @@ BaseNode* load(const char *filename)
     }
 
     //std::cout << "Creating XML graph"<<std::endl;
-    BaseNode* graph = createNode(root);
+    BaseElement* graph = createNode(root);
     //std::cout << "XML Graph created"<<std::endl;
     xmlFreeDoc(doc);
     xmlCleanupParser();
@@ -156,8 +159,11 @@ BaseNode* load(const char *filename)
     return graph;
 }
 
-} // namespace XML
+} // namespace xml
 
-} // namespace Components
+} // namespace tree
 
-} // namespace Sofa
+} // namespace simulation
+
+} // namespace sofa
+

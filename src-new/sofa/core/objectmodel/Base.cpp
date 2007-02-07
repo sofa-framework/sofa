@@ -9,14 +9,17 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "Base.h"
-#include "Sofa-old/Components/Common/Factory.h"
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/helper/Factory.h>
 #include <map>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
+{
+
+namespace objectmodel
 {
 
 Base::Base()
@@ -49,12 +52,15 @@ const char* Base::getTypeName() const
     std::string& str = typenames[this];
     if (str.empty())
     {
-        str = Sofa::Components::Common::gettypename(typeid(*this));
+        str = sofa::helper::gettypename(typeid(*this));
     }
     return str.c_str();
 }
 
 
-} // namespace Abstract
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
+

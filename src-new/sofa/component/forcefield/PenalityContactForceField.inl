@@ -1,20 +1,23 @@
-#ifndef SOFA_COMPONENTS_PENALITYCONTACTFORCEFIELD_INL
-#define SOFA_COMPONENTS_PENALITYCONTACTFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_PENALITYCONTACTFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_PENALITYCONTACTFORCEFIELD_INL
 
-#include "Sofa-old/Core/ForceField.inl"
-#include "PenalityContactForceField.h"
-#include "Common/config.h"
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/component/forcefield/PenalityContactForceField.h>
+#include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <GL/gl.h>
-#include "GL/template.h"
+#include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
@@ -139,8 +142,10 @@ void PenalityContactForceField<DataTypes>::draw()
 }
 
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

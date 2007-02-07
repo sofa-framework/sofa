@@ -1,19 +1,19 @@
-#ifndef SOFA_COMPONENTS_COMMON_VEC3TYPES_H
-#define SOFA_COMPONENTS_COMMON_VEC3TYPES_H
+#ifndef SOFA_DEFAULTTYPE_VEC3TYPES_H
+#define SOFA_DEFAULTTYPE_VEC3TYPES_H
 
-#include "Vec.h"
-#include <Sofa-old/Components/Common/vector.h>
-using Sofa::Components::Common::vector;
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/vector.h>
 #include <iostream>
 
-namespace Sofa
+
+
+namespace sofa
 {
 
-namespace Components
+namespace defaulttype
 {
 
-namespace Common
-{
+using helper::vector;
 
 template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
 class StdVectorTypes
@@ -157,11 +157,8 @@ typedef ExtVectorTypes<Vec3d,Vec3d,double> ExtVec3dTypes;
 typedef ExtVectorTypes<Vec3f,Vec3f,float> ExtVec3fTypes;
 typedef Vec3dTypes ExtVec3Types;
 
-} // namespace Common
+} // namespace defaulttype
 
-} // namespace Components
-
-} // namespace Sofa
-
+} // namespace sofa
 
 #endif

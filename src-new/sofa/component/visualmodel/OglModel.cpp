@@ -1,31 +1,28 @@
-#include "OglModel.h"
-#include "RAII.h"
-#include "../Common/vector.h"
-#include "../Common/Quat.h"
-#include "../Common/ObjectFactory.h"
-#include "../MeshTopology.h"
+#include <sofa/component/visualmodel/OglModel.h>
+#include <sofa/helper/gl/RAII.h>
+#include <sofa/helper/vector.h>
+#include <sofa/defaulttype/Quat.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/component/topology/MeshTopology.h>
 #include <sstream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-namespace GL
+namespace visualmodel
 {
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
-void create(OglModel*& obj, ObjectDescription* arg)
+void create(OglModel*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new OglModel;
 
     if (arg->getAttribute("normals")!=NULL)
         obj->setUseNormals(atoi(arg->getAttribute("normals"))!=0);
-
-    if (arg->getAttribute("castshadow")!=NULL)
-        obj->setCastShadow(atoi(arg->getAttribute("castshadow"))!=0);
 
     std::string filename = arg->getAttribute("filename","");
     std::string loader = arg->getAttribute("loader","");
@@ -46,7 +43,7 @@ void create(OglModel*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(OglModel)
 
-Creator< ObjectFactory, OglModel > OglModelClass("OglModel");
+Creator<simulation::tree::xml::ObjectFactory, OglModel > OglModelClass("OglModel");
 
 Material& Material::operator=(const Mesh::Material &matLoaded)
 {
@@ -92,7 +89,7 @@ Material::Material()
 }
 
 OglModel::OglModel() //const std::string &name, std::string filename, std::string loader, std::string textureName)
-    : modified(false), useTopology(false), useNormals(true), castShadow(true), tex(NULL) //, name("ObjectA")
+    : modified(false), useTopology(false), useNormals(true), tex(NULL)
 {
     inputVertices = &vertices;
     //init (name, filename, loader, textureName);
@@ -104,33 +101,7 @@ OglModel::~OglModel()
     if (inputVertices != &vertices) delete inputVertices;
 }
 
-bool OglModel::isTransparent()
-{
-    return 	(material.useDiffuse && material.diffuse[3] < 1.0);
-}
-
 void OglModel::draw()
-{
-    if (!isTransparent())
-        internalDraw();
-}
-
-void OglModel::drawTransparent()
-{
-    if (isTransparent())
-        internalDraw();
-}
-
-void OglModel::drawShadow()
-{
-    if (!isTransparent() && getCastShadow())
-    {
-        //std::cout << "drawShadow for "<<getName()<<std::endl;
-        internalDraw();
-    }
-}
-
-void OglModel::internalDraw()
 {
     //std::cerr<<"	OglModel::draw()"<<std::endl;
     if (!getContext()->getShowVisualModels()) return;
@@ -138,22 +109,13 @@ void OglModel::internalDraw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glEnable(GL_LIGHTING);
-
-    if (isTransparent())
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    }
-
     //Enable<GL_BLEND> blending;
     //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
     if (material.useAmbient)
         glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient);
     if (material.useDiffuse)
-    {
         glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse);
-    }
     if (material.useSpecular)
         glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, material.specular);
     if (material.useEmissive)
@@ -200,12 +162,6 @@ void OglModel::internalDraw()
     }
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
-    if (isTransparent())
-    {
-        glDisable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        //glBlendFunc(GL_ONE, GL_ZERO);
-    }
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -252,7 +208,6 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
 
     if (filename != "")
     {
-        name = filename;
         Mesh *objLoader;
         if (loader.empty())
             objLoader = Mesh::Create(filename);
@@ -654,8 +609,6 @@ void OglModel::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl,
             *mtl << "Ks "<<material.specular[0]<<' '<<material.specular[1]<<' '<<material.specular[2]<<"\n";
         if (material.useShininess)
             *mtl << "Ns "<<material.shininess<<"\n";
-        if (material.useDiffuse && material.diffuse[3]<1.0)
-            *mtl << "Tf "<<material.diffuse[3]<<' '<<material.diffuse[3]<<' '<<material.diffuse[3]<<"\n";
 
         *out << "usemtl "<<name<<'\n';
     }
@@ -743,8 +696,9 @@ void OglModel::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl,
     tindex+=nbt;
 }
 
-} // namespace GL
+} // namespace visualmodel
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
+

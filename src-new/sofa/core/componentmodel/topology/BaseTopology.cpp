@@ -1,14 +1,20 @@
-#include "BasicTopology.h"
+#include <sofa/core/componentmodel/topology/BaseTopology.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace topology
 {
 
 /** Question : shouldn't this be virtual, given this class has some virtual members?
- */
-BasicTopology::~BasicTopology()
+         */
+BaseTopology::~BaseTopology()
 {
     if (m_topologyContainer)
         delete m_topologyContainer;
@@ -21,18 +27,18 @@ BasicTopology::~BasicTopology()
 }
 
 
-std::list<const TopologyChange *>::const_iterator BasicTopology::lastChange() const
+std::list<const TopologyChange *>::const_iterator BaseTopology::lastChange() const
 {
     return m_topologyContainer->getChangeList().end();
 }
 
 
 
-std::list<const TopologyChange *>::const_iterator BasicTopology::firstChange() const
+std::list<const TopologyChange *>::const_iterator BaseTopology::firstChange() const
 {
     return m_topologyContainer->getChangeList().begin();
 }
-void BasicTopology::resetTopologyChangeList() const
+void BaseTopology::resetTopologyChangeList() const
 {
     getTopologyContainer()->resetTopologyChangeList();
 }
@@ -47,8 +53,11 @@ void TopologyContainer::resetTopologyChangeList()
     m_changeList.erase(m_changeList.begin(),m_changeList.end());
 }
 
-} // namespace Core
+} // namespace topology
 
-} // namespace Sofa
+} // namespace componentmodel
 
+} // namespace core
+
+} // namespace sofa
 

@@ -1,22 +1,25 @@
-#ifndef SOFA_COMPONENTS_UNIFORMMASS_H
-#define SOFA_COMPONENTS_UNIFORMMASS_H
+#ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_H
+#define SOFA_COMPONENT_MASS_UNIFORMMASS_H
 
-#include "Common/Vec3Types.h"
-#include "Sofa-old/Core/Mass.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Components/CoordinateSystem.h"
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/contextobject/CoordinateSystem.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace mass
+{
+
+using namespace sofa::defaulttype;
 
 template <class DataTypes, class MassType>
-class UniformMass : public Core::Mass<DataTypes>, public Abstract::VisualModel
+class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -30,7 +33,7 @@ protected:
 public:
     UniformMass();
 
-    UniformMass(Core::MechanicalModel<DataTypes>* mmodel);
+    UniformMass(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate);
 
     ~UniformMass();
 
@@ -70,9 +73,11 @@ public:
     { }
 };
 
-} // namespace Components
+} // namespace mass
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif
 

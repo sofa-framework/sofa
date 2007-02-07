@@ -1,16 +1,18 @@
-#include "Image.h"
-#include "Factory.inl"
+#include <sofa/helper/io/Image.h>
+#include <sofa/helper/Factory.inl>
 
-namespace Sofa
+template class sofa::helper::Factory<std::string, sofa::helper::io::Image, std::string>;
+
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Common
+namespace io
 {
 
-template class Factory<std::string, Image, std::string>;
+
 
 Image::Image()
     : width(0), height(0), nbBits(0), data(NULL)
@@ -49,8 +51,9 @@ Image* Image::Create(std::string filename)
     return Factory::CreateObject(loader, filename);
 }
 
-} // namespace Common
+} // namespace io
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
+

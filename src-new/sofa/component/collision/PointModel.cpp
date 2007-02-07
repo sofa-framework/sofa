@@ -1,19 +1,23 @@
-#include "PointModel.h"
-#include "CubeModel.h"
-#include "Point.h"
-#include "Sofa-old/Abstract/CollisionElement.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/collision/PointModel.h>
+#include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/Point.h>
+#include <sofa/core/CollisionElement.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <vector>
 #include <GL/gl.h>
 
-namespace Sofa
+namespace sofa
 {
-namespace Components
+
+namespace component
+{
+
+namespace collision
 {
 
 SOFA_DECL_CLASS(Point)
 
-void create(PointModel*& obj, ObjectDescription* arg)
+void create(PointModel*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new PointModel;
     if (obj!=NULL)
@@ -22,29 +26,29 @@ void create(PointModel*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, PointModel > PointModelClass("Point");
+Creator<simulation::tree::xml::ObjectFactory, PointModel > PointModelClass("Point");
 
 PointModel::PointModel()
-    : static_(false), mmodel(NULL)
+    : static_(false), mstate(NULL)
 {
 }
 
 void PointModel::resize(int size)
 {
-    this->Abstract::CollisionModel::resize(size);
+    this->core::CollisionModel::resize(size);
 }
 
 void PointModel::init()
 {
-    mmodel = dynamic_cast< Core::MechanicalModel<Vec3Types>* > (getContext()->getMechanicalModel());
+    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
-    if (mmodel==NULL)
+    if (mstate==NULL)
     {
         std::cerr << "ERROR: PointModel requires a Vec3 Mechanical Model.\n";
         return;
     }
 
-    const int npoints = mmodel->getX()->size();
+    const int npoints = mstate->getX()->size();
     resize(npoints);
 }
 
@@ -81,14 +85,14 @@ void PointModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    //if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
-    //	dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
+    //if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+    //	dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
 void PointModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mmodel->getX()->size();
+    const int npoints = mstate->getX()->size();
     bool updated = false;
     if (npoints != size)
     {
@@ -101,7 +105,7 @@ void PointModel::computeBoundingTree(int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x = *mmodel->getX();
+        //VecCoord& x = *mstate->getX();
         for (int i=0; i<size; i++)
         {
             Point p(this,i);
@@ -115,7 +119,7 @@ void PointModel::computeBoundingTree(int maxDepth)
 void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    const int npoints = mmodel->getX()->size();
+    const int npoints = mstate->getX()->size();
     bool updated = false;
     if (npoints != size)
     {
@@ -129,8 +133,8 @@ void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
     cubeModel->resize(size);
     if (!empty())
     {
-        //VecCoord& x = *mmodel->getX();
-        //VecDeriv& v = *mmodel->getV();
+        //VecCoord& x = *mstate->getX();
+        //VecDeriv& v = *mstate->getV();
         for (int i=0; i<size; i++)
         {
             Point p(this,i);
@@ -150,6 +154,9 @@ void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
     }
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

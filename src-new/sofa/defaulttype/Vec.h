@@ -1,23 +1,20 @@
-#ifndef SOFA_COMPONENTS_COMMON_VEC_H
-#define SOFA_COMPONENTS_COMMON_VEC_H
+#ifndef SOFA_DEFAULTTYPE_VEC_H
+#define SOFA_DEFAULTTYPE_VEC_H
 
-#include "fixed_array.h"
-#include "static_assert.h"
-#include "rmath.h"
+#include <sofa/helper/fixed_array.h>
+#include <sofa/helper/static_assert.h>
+#include <sofa/helper/rmath.h>
 #include <functional>
-//#define BOOST_STATIC_ASSERT(a)
+//#define SOFA_DEFAULTTYPE_VEC_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace defaulttype
 {
 
 template <int N, typename real=float>
-class Vec : public fixed_array<real,N>
+class Vec : public helper::fixed_array<real,N>
 {
 public:
 
@@ -376,7 +373,7 @@ public:
     /// Euclidean norm.
     real norm() const
     {
-        return rsqrt(norm2());
+        return helper::rsqrt(norm2());
     }
 
     /// Normalize the vector.
@@ -452,12 +449,9 @@ typedef Vec<4,double> Vec4d;
 
 typedef Vec4d Vector4; ///< alias
 
+} // namespace defaulttype
 
-} // namespace Common
-
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 
 // Specialization of the std comparison function, to use Vec as std::map key
@@ -466,9 +460,9 @@ namespace std
 
 // template <>
 template<int N, class T>
-struct less< Sofa::Components::Common::Vec<N,T> > : public binary_function< Sofa::Components::Common::Vec<N,T>,  Sofa::Components::Common::Vec<N,T>, bool>
+struct less< sofa::defaulttype::Vec<N,T> > : public binary_function< sofa::defaulttype::Vec<N,T>,  sofa::defaulttype::Vec<N,T>, bool>
 {
-    bool operator()(const  Sofa::Components::Common::Vec<N,T>& x, const  Sofa::Components::Common::Vec<N,T>& y) const
+    bool operator()(const  sofa::defaulttype::Vec<N,T>& x, const  sofa::defaulttype::Vec<N,T>& y) const
     {
         //std::cerr<<"specialized std::less, x = "<<x<<", y = "<<y<<std::endl;
         for( unsigned i=0; i<N; ++i )

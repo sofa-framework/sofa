@@ -1,20 +1,24 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENTS_STATICSOLVER_H
-#define SOFA_COMPONENTS_STATICSOLVER_H
+#ifndef SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
+#define SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
 
-#include <Sofa-old/Core/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
 
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
-using Common::DataField;
 
-class StaticSolver : public Core::OdeSolver
+namespace odesolver
+{
+
+using core::objectmodel::DataField;
+
+class StaticSolver : public core::componentmodel::behavior::OdeSolver
 {
 
 public:
@@ -29,8 +33,10 @@ public:
     void solve (double dt);
 };
 
-} // namespace Components
+} // namespace odesolver
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

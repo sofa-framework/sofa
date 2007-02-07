@@ -1,13 +1,13 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENTS_SPRINGFORCEFIELD_INL
-#define SOFA_COMPONENTS_SPRINGFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_INL
 
-#include "SpringForceField.h"
-#include "MeshTopology.h"
-#include "MassSpringLoader.h"
-#include "Common/config.h"
+#include <sofa/component/forcefield/SpringForceField.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <iostream>
 #include <GL/gl.h>
@@ -15,10 +15,13 @@
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template <class DataTypes>
@@ -49,7 +52,7 @@ void SpringForceField<DataTypes>::initFromTopology()
 {
     if (springs.empty())
     {
-        Sofa::Components::MeshTopology* _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->getContext()->getTopology());
+        sofa::Components::MeshTopology* _mesh = dynamic_cast<sofa::Components::MeshTopology*>(this->getContext()->getTopology());
         if( _mesh != NULL )
         {
             VecDeriv& P1 = *object1->getX();
@@ -59,7 +62,7 @@ void SpringForceField<DataTypes>::initFromTopology()
                 int a =_mesh->getLines()[i][0];
                 int b = _mesh->getLines()[i][1];
                 Deriv gap = P1[a] - P2[b];
-                addSpring(a,b,ks.getValue(),kd.getValue(),sqrt(Common::dot(gap,gap)));
+                addSpring(a,b,ks.getValue(),kd.getValue(),sqrt(defaulttype::dot(gap,gap)));
             }
         }
     }
@@ -154,8 +157,10 @@ void SpringForceField<DataTypes>::draw()
     glEnd();
 }
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

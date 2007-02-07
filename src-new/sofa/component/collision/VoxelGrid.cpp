@@ -1,30 +1,26 @@
-#include "VoxelGrid.h"
-#include "Sphere.h"
-#include "Triangle.h"
-#include "Line.h"
-#include "Point.h"
-#include "Common/FnDispatcher.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/collision/VoxelGrid.h>
+#include <sofa/component/collision/Sphere.h>
+#include <sofa/component/collision/Triangle.h>
+#include <sofa/component/collision/Line.h>
+#include <sofa/component/collision/Point.h>
+#include <sofa/helper/FnDispatcher.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <map>
+#include <GL/gl.h>
+#include <GL/glut.h>
+
 
 /* for debugging the collision method */
 #ifdef _WIN32
 #include <windows.h>
 #endif
-#include <GL/gl.h>
-#include <GL/glut.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
-
-using namespace Common;
-using namespace Collision;
-
-void create(VoxelGrid*& obj, ObjectDescription* arg)
+void create(VoxelGrid*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new VoxelGrid(
         Vector3(atof(arg->getAttribute("minx",arg->getAttribute("min","-20.0"))),
@@ -42,9 +38,16 @@ void create(VoxelGrid*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(VoxelGrid)
 
-Creator<ObjectFactory, VoxelGrid> VoxelGridClass("VoxelGridDetection");
+Creator<simulation::tree::xml::ObjectFactory, VoxelGrid> VoxelGridClass("VoxelGridDetection");
+}
+namespace component
+{
 
-using namespace Abstract;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
+using namespace core::objectmodel;
 
 void VoxelGrid::posToIdx (const Vector3& pos, Vector3 &indices)
 {
@@ -151,7 +154,7 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
             posToIdx (minBBox, ijk);
             posToIdx (maxBBox, lmn);
 
-            Abstract::CollisionModel::clearAllVisits();
+            core::CollisionModel::clearAllVisits();
 
             for(int i = (int) ijk[0]; i <= (int)lmn[0]; i++ )
             {
@@ -199,7 +202,7 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
 
 void VoxelGrid::addCollisionPair(const std::pair<CollisionModel*, CollisionModel*>& cmPair)
 {
-    timeLogger = dynamic_cast<Graph::GNode*>(getContext());
+    timeLogger = dynamic_cast<simulation::tree::GNode*>(getContext());
     if (timeLogger && !timeLogger->getLogTime()) timeLogger=NULL;
     timeInter = 0;
 
@@ -307,7 +310,7 @@ void GridCell::add(VoxelGrid* grid, CollisionElementIterator collisionElem, std:
     minBBox1 = collisionElem.getBBoxMin();
     maxBBox1 = collisionElem.getBBoxMax();
 
-    Graph::GNode::ctime_t t0 = 0;
+    simulation::tree::GNode::ctime_t t0 = 0;
 
     {
         std::vector < CollisionElementIterator >	::iterator it	 = collisElems.begin();
@@ -431,6 +434,9 @@ void GridCell::draw (int timeStampMethod)
     //glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

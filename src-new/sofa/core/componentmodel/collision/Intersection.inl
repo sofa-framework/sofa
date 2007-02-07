@@ -1,26 +1,30 @@
-#ifndef SOFA_COMPONENTS_COLLISION_INTERSECTION_INL
-#define SOFA_COMPONENTS_COLLISION_INTERSECTION_INL
+#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_INTERSECTION_INL
+#define SOFA_CORE_COMPONENTMODEL_COLLISION_INTERSECTION_INL
 
-#include "Intersection.h"
-#include "Common/Factory.h"
+#include <sofa/core/componentmodel/collision/Intersection.h>
+#include <sofa/helper/Factory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Collision
+namespace componentmodel
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 template<class Elem1, class Elem2,
          bool (*CanIntersectFn)(Elem1&, Elem2&),
-         Collision::DetectionOutput* (*IntersectFn)(Elem1&, Elem2&)
+         DetectionOutput* (*IntersectFn)(Elem1&, Elem2&)
          >
 bool FnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
-::canIntersect(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
+::canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
 {
     Elem1 e1(elem1);
     Elem2 e2(elem2);
@@ -30,10 +34,10 @@ bool FnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
 /// Compute the intersection between 2 elements.
 template<class Elem1, class Elem2,
          bool (*CanIntersectFn)(Elem1&, Elem2&),
-         Collision::DetectionOutput* (*IntersectFn)(Elem1&, Elem2&)
+         DetectionOutput* (*IntersectFn)(Elem1&, Elem2&)
          >
-Collision::DetectionOutput* FnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
-::intersect(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
+DetectionOutput* FnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
+::intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
 {
     Elem1 e1(elem1);
     Elem2 e2(elem2);
@@ -42,10 +46,10 @@ Collision::DetectionOutput* FnElementIntersector<Elem1,Elem2,CanIntersectFn,Inte
 
 template<class Elem1, class Elem2,
          bool (*CanIntersectFn)(Elem2&, Elem1&),
-         Collision::DetectionOutput* (*IntersectFn)(Elem2&, Elem1&)
+         DetectionOutput* (*IntersectFn)(Elem2&, Elem1&)
          >
 bool MirrorFnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
-::canIntersect(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
+::canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
 {
     Elem1 e1(elem1);
     Elem2 e2(elem2);
@@ -55,10 +59,10 @@ bool MirrorFnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
 /// Compute the intersection between 2 elements.
 template<class Elem1, class Elem2,
          bool (*CanIntersectFn)(Elem2&, Elem1&),
-         Collision::DetectionOutput* (*IntersectFn)(Elem2&, Elem1&)
+         DetectionOutput* (*IntersectFn)(Elem2&, Elem1&)
          >
-Collision::DetectionOutput* MirrorFnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
-::intersect(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
+DetectionOutput* MirrorFnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
+::intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
 {
     Elem1 e1(elem1);
     Elem2 e2(elem2);
@@ -67,7 +71,7 @@ Collision::DetectionOutput* MirrorFnElementIntersector<Elem1,Elem2,CanIntersectF
 
 template<class Elem1, class Elem2,
          bool (*CanIntersectFn)(Elem1&, Elem2&),
-         Collision::DetectionOutput* (*IntersectFn)(Elem1&, Elem2&)
+         DetectionOutput* (*IntersectFn)(Elem1&, Elem2&)
          >
 std::string FnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
 ::name() const
@@ -77,7 +81,7 @@ std::string FnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
 
 template<class Elem1, class Elem2,
          bool (*CanIntersectFn)(Elem2&, Elem1&),
-         Collision::DetectionOutput* (*IntersectFn)(Elem2&, Elem1&)
+         DetectionOutput* (*IntersectFn)(Elem2&, Elem1&)
          >
 std::string MirrorFnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
 ::name() const
@@ -87,15 +91,15 @@ std::string MirrorFnElementIntersector<Elem1,Elem2,CanIntersectFn,IntersectFn>
 
 template<class Model1, class Model2,
          bool (*CanIntersectFn)(typename Model1::Element&, typename Model2::Element&),
-         Collision::DetectionOutput* (*IntersectFn)(typename Model1::Element&, typename Model2::Element&),
+         DetectionOutput* (*IntersectFn)(typename Model1::Element&, typename Model2::Element&),
          bool mirror
          >
 void IntersectorMap::add()
 {
-    (*this)[std::make_pair(TypeInfo(typeid(Model1)),TypeInfo(typeid(Model2)))] =
+    (*this)[std::make_pair(helper::TypeInfo(typeid(Model1)),helper::TypeInfo(typeid(Model2)))] =
         new FnElementIntersector<typename Model1::Element, typename Model2::Element, CanIntersectFn, IntersectFn>;
     if (mirror)
-        (*this)[std::make_pair(TypeInfo(typeid(Model2)),TypeInfo(typeid(Model1)))] =
+        (*this)[std::make_pair(helper::TypeInfo(typeid(Model2)),helper::TypeInfo(typeid(Model1)))] =
             new MirrorFnElementIntersector<typename Model2::Element, typename Model1::Element, CanIntersectFn, IntersectFn>;
 }
 
@@ -104,17 +108,19 @@ template<class Model1, class Model2,
          >
 void IntersectorMap::ignore()
 {
-    (*this)[std::make_pair(TypeInfo(typeid(Model1)),TypeInfo(typeid(Model2)))] =
+    (*this)[std::make_pair(helper::TypeInfo(typeid(Model1)),helper::TypeInfo(typeid(Model2)))] =
         NULL;
     if (mirror)
-        (*this)[std::make_pair(TypeInfo(typeid(Model2)),TypeInfo(typeid(Model1)))] =
+        (*this)[std::make_pair(helper::TypeInfo(typeid(Model2)),helper::TypeInfo(typeid(Model1)))] =
             NULL;
 }
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

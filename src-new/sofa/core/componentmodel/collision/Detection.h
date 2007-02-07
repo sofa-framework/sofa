@@ -1,21 +1,24 @@
-#ifndef SOFA_COMPONENTS_COLLISION_DETECTION_H
-#define SOFA_COMPONENTS_COLLISION_DETECTION_H
+#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_DETECTION_H
+#define SOFA_CORE_COMPONENTMODEL_COLLISION_DETECTION_H
 
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Intersection.h"
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/componentmodel/collision/Intersection.h>
 #include <vector>
 #include <algorithm>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Collision
+namespace componentmodel
 {
 
-class Detection : public virtual Abstract::BaseObject
+namespace collision
+{
+
+class Detection : public virtual objectmodel::BaseObject
 {
 protected:
     /// Current intersection method
@@ -24,7 +27,7 @@ protected:
     /// Contains the collisions models
     /// which are included in the broadphase
     /// but which are not in collisions with another model
-    std::vector<Abstract::CollisionModel*> cmNoCollision;
+    std::vector<core::CollisionModel*> cmNoCollision;
 public:
 
     Detection()
@@ -36,27 +39,29 @@ public:
     virtual void setIntersectionMethod(Intersection* v) { intersectionMethod = v;    }
     Intersection* getIntersectionMethod() const         { return intersectionMethod; }
 
-    void removeCmNoCollision(Abstract::CollisionModel* cm)
+    void removeCmNoCollision(core::CollisionModel* cm)
     {
-        std::vector<Abstract::CollisionModel*>::iterator it = std::find(cmNoCollision.begin(), cmNoCollision.end(), cm);
+        std::vector<core::CollisionModel*>::iterator it = std::find(cmNoCollision.begin(), cmNoCollision.end(), cm);
         if (it != cmNoCollision.end())
         {
             cmNoCollision.erase(it);
         }
     }
 
-    void addNoCollisionDetect (Abstract::CollisionModel* cm)
+    void addNoCollisionDetect (core::CollisionModel* cm)
     {
         cmNoCollision.push_back(cm);
     }
 
-    std::vector<Abstract::CollisionModel*>& getListNoCollisionModel() {return cmNoCollision;};
+    std::vector<core::CollisionModel*>& getListNoCollisionModel() {return cmNoCollision;};
 };
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

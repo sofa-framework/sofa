@@ -1,14 +1,17 @@
-#include "BarycentricLagrangianMultiplierContact.inl"
+#include <sofa/component/collision/BarycentricLagrangianMultiplierContact.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Collision;
-using Graph::GNode;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
+using namespace collision;
+using simulation::tree::GNode;
 
 SOFA_DECL_CLASS(BarycentricLagrangianMultiplierContact)
 
@@ -25,6 +28,9 @@ Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<TriangleModel, 
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<SphereTreeModel,SphereTreeModel> > SphereTreeSphereTreeLagrangianMultiplierContactClass("LagrangianMultiplier",true);
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<SphereTreeModel,TriangleModel> > SphereTreeTriangleLagrangianMultiplierContactClass("LagrangianMultiplier",true);
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

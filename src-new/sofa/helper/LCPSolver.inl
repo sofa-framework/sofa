@@ -1,20 +1,17 @@
-#ifndef SOFA_COMPONENTS_PROXIMITY_LCP_SOLVER_INL
-#define SOFA_COMPONENTS_PROXIMITY_LCP_SOLVER_INL
+#ifndef SOFA_HELPER_LCPSOLVER_INL
+#define SOFA_HELPER_LCPSOLVER_INL
 
-#include "LCP.h"
+#include <sofa/helper/LCPSolver.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Proximity
-{
-
-#define EPS     0.00001	// epsilon pour tests = 0
-#define EPSP    0.00000000001	// epsilon pour pivot
-#define MAX_BOU 50	// nombre maximal de boucles de calcul
+#define SOFA_HELPER_LCPSOLVER_INL
+#define SOFA_HELPER_LCPSOLVER_INL
+#define SOFA_HELPER_LCPSOLVER_INL
 
 // -----------------------------------------------------------------
 // --- Resoud un LCP écrit sous la forme U = q + M.F
@@ -209,13 +206,11 @@ template <int dim> void LCP<dim>::printInfo(double *q, Matrix &M)
     	printf("      ]\n\n"); */
 }
 
-//template<> class LCP<3>;
-//template<> class LCP<5>;
+//template<> class LCPSolver<3>;
+//template<> class LCPSolver<5>;
 
-} // namespace Proximity
+} // namespace helper
 
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 #endif

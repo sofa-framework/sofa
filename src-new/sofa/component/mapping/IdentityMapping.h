@@ -1,14 +1,17 @@
-#ifndef SOFA_COMPONENTS_IDENTITYMAPPING_H
-#define SOFA_COMPONENTS_IDENTITYMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
+#define SOFA_COMPONENT_MAPPING_IDENTITYMAPPING_H
 
-#include "Sofa-old/Core/MechanicalMapping.h"
-#include "Sofa-old/Core/MechanicalModel.h"
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace mapping
 {
 
 template <class BaseMapping>
@@ -39,8 +42,10 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 };
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

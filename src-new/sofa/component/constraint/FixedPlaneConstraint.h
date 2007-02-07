@@ -1,20 +1,23 @@
-#ifndef SOFA_COMPONENTS_FIXEDPLANECONSTRAINT_H
-#define SOFA_COMPONENTS_FIXEDPLANECONSTRAINT_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDPLANECONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_FIXEDPLANECONSTRAINT_H
 
-#include "Sofa-old/Core/Constraint.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-
+#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
 #include <set>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace constraint
 {
 
 template <class DataTypes>
-class FixedPlaneConstraint : public Core::Constraint<DataTypes>, public Abstract::VisualModel
+class FixedPlaneConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -35,7 +38,7 @@ protected:
 public:
     FixedPlaneConstraint();
 
-    FixedPlaneConstraint(Core::MechanicalModel<DataTypes>* mmodel);
+    FixedPlaneConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate);
 
     ~FixedPlaneConstraint();
 
@@ -71,8 +74,10 @@ protected:
     }
 };
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

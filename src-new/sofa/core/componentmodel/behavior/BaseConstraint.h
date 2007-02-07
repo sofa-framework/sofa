@@ -1,24 +1,30 @@
-#ifndef SOFA_CORE_BASICCONSTRAINT_H
-#define SOFA_CORE_BASICCONSTRAINT_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASECONSTRAINT_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASECONSTRAINT_H
 
-#include "Sofa-old/Abstract/BaseObject.h"
-#include "Sofa-old/Core/BasicMechanicalModel.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 
-#include "Sofa-old/Components/Common/SofaBaseMatrix.h"
-#include "Sofa-old/Components/Common/SofaBaseVector.h"
+#include <sofa/defaulttype/SofaBaseMatrix.h>
+#include <sofa/defaulttype/SofaBaseVector.h>
 
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
-class BasicConstraint : public virtual Abstract::BaseObject
+namespace componentmodel
+{
+
+namespace behavior
+{
+
+class BaseConstraint : public virtual objectmodel::BaseObject
 {
 public:
-    virtual ~BasicConstraint() { }
+    virtual ~BaseConstraint() { }
 
     virtual void projectResponse() = 0; ///< project dx to constrained space (dx models an acceleration)
     virtual void projectVelocity() = 0; ///< project dx to constrained space (dx models a velocity)
@@ -26,16 +32,20 @@ public:
 
     virtual void applyConstraint() {};
 
-    virtual void applyConstraint(Components::Common::SofaBaseMatrix *, unsigned int &) {};
-    virtual void applyConstraint(Components::Common::SofaBaseVector *, unsigned int &) {};
+    virtual void applyConstraint(defaulttype::SofaBaseMatrix *, unsigned int &) {};
+    virtual void applyConstraint(defaulttype::SofaBaseVector *, unsigned int &) {};
 
-    virtual BasicMechanicalModel* getDOFs() { return NULL; }
+    virtual BaseMechanicalState* getDOFs() { return NULL; }
 
     virtual void getConstraintValue(double *) {};
 };
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

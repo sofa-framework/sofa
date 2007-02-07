@@ -9,15 +9,18 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "GuidedCoordinateSystem.h"
+#include <sofa/component/contextobject/GuidedCoordinateSystem.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace contextobject
 {
 
 GuidedCoordinateSystem::GuidedCoordinateSystem(/*CoordinateSystem* c*/)

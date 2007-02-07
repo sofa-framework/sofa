@@ -1,33 +1,36 @@
-#ifndef SOFA_COMPONENTS_CONTACTMANAGERSOFA_H
-#define SOFA_COMPONENTS_CONTACTMANAGERSOFA_H
+#ifndef SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
+#define SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
 
-#include "Collision/ContactManager.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-
+#include <sofa/core/componentmodel/collision/ContactManager.h>
+#include <sofa/core/VisualModel.h>
 #include <vector>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-class ContactManagerSofa : public Collision::ContactManager, public Abstract::VisualModel
+namespace collision
+{
+
+class DefaultContactManager : public core::componentmodel::collision::ContactManager, public core::VisualModel
 {
 protected:
     std::string contacttype;
-    std::map< std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*>, std::vector<Collision::DetectionOutput*> > outputsMap;
-    std::map<std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*>,Collision::Contact*> contactMap;
-    std::vector<Collision::Contact*> contactVec;
+    std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, std::vector<core::componentmodel::collision::DetectionOutput*> > outputsMap;
+    std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::componentmodel::collision::Contact*> contactMap;
+    std::vector<core::componentmodel::collision::Contact*> contactVec;
 
     void clear();
 public:
-    ContactManagerSofa(const std::string& contacttype);
-    ~ContactManagerSofa();
+    DefaultContactManager(const std::string& contacttype);
+    ~DefaultContactManager();
 
-    void createContacts(const std::vector<Collision::DetectionOutput*>& outputs);
+    void createContacts(const std::vector<core::componentmodel::collision::DetectionOutput*>& outputs);
 
-    const std::vector<Collision::Contact*>& getContacts() { return contactVec; }
+    const std::vector<core::componentmodel::collision::Contact*>& getContacts() { return contactVec; }
 
     virtual const char* getTypeName() const { return "CollisionResponse"; }
 
@@ -37,8 +40,10 @@ public:
     void update() { }
 };
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

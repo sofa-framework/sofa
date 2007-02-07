@@ -1,21 +1,24 @@
-#ifndef SOFA_COMPONENTS_LAPAROSCOPICRIGIDMAPPING_INL
-#define SOFA_COMPONENTS_LAPAROSCOPICRIGIDMAPPING_INL
+#ifndef SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_INL
 
-#include "LaparoscopicRigidMapping.h"
-#include "Common/Mesh.h"
-#include "GL/template.h"
-
-#include "Sofa-old/Core/MechanicalMapping.inl"
-
+#include <sofa/component/mapping/LaparoscopicRigidMapping.h>
+#include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <string>
 
-namespace Sofa
+
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace mapping
+{
+
+using namespace sofa::defaulttype;
 
 template <class BaseMapping>
 void LaparoscopicRigidMapping<BaseMapping>::init()
@@ -50,8 +53,10 @@ void LaparoscopicRigidMapping<BaseMapping>::draw()
     if (!getShow(this)) return;
 }
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,34 +1,39 @@
-#ifndef SOFA_COMPONENTS_XML_OBJECTNODE_H
-#define SOFA_COMPONENTS_XML_OBJECTNODE_H
+#ifndef SOFA_SIMULATION_TREE_XML_OBJECTELEMENT_H
+#define SOFA_SIMULATION_TREE_XML_OBJECTELEMENT_H
 
-#include "Node.h"
-#include "Sofa-old/Abstract/BaseObject.h"
+#include <sofa/simulation/tree/xml/Element.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace XML
+namespace tree
 {
 
-class ObjectNode : public Node<Abstract::BaseObject>
+namespace xml
+{
+
+class ObjectElement : public Element<objectmodel::BaseObject>
 {
 public:
-    ObjectNode(const std::string& name, const std::string& type, BaseNode* parent=NULL);
+    ObjectElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
 
-    virtual ~ObjectNode();
+    virtual ~ObjectElement();
 
     virtual bool initNode();
 
     virtual const char* getClass() const;
 };
 
-} // namespace XML
+} // namespace xml
 
-} // namespace Components
+} // namespace tree
 
-} // namespace Sofa
+} // namespace simulation
+
+} // namespace sofa
 
 #endif

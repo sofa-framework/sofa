@@ -1,16 +1,22 @@
-#ifndef SOFA_CORE_MECHANICALMODEL_H
-#define SOFA_CORE_MECHANICALMODEL_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MECHANICALSTATE_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MECHANICALSTATE_H
 
-#include "BasicMechanicalModel.h"
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace behavior
 {
 
 template<class TDataTypes>
-class MechanicalModel : public BasicMechanicalModel
+class MechanicalState : public BaseMechanicalState
 {
 public:
     typedef TDataTypes DataTypes;
@@ -21,7 +27,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;
 
-    virtual ~MechanicalModel() { }
+    virtual ~MechanicalState() { }
 
     virtual VecCoord* getX() = 0;
     virtual VecDeriv* getV() = 0;
@@ -35,15 +41,17 @@ public:
     virtual const VecDeriv* getDx() const = 0;
     virtual const VecConst* getC() const = 0;
 
-    virtual const VecCoord* getX0()  const = 0;
-    virtual const VecDeriv* getV0()  const = 0;
 
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(std::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
 };
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

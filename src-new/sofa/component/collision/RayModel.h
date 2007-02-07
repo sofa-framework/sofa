@@ -1,29 +1,32 @@
-#ifndef SOFA_COMPONENTS_RAYMODEL_H
-#define SOFA_COMPONENTS_RAYMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_RAYMODEL_H
+#define SOFA_COMPONENT_COLLISION_RAYMODEL_H
 
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "Common/Vec3Types.h"
-
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/defaulttype/Vec3Types.h>
 #include <set>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 class RayModel;
 
-class Ray : public Abstract::TCollisionElementIterator<RayModel>
+class Ray : public core::TCollisionElementIterator<RayModel>
 {
 public:
     Ray(RayModel* model, int index);
 
-    explicit Ray(Abstract::CollisionElementIterator& i);
+    explicit Ray(core::CollisionElementIterator& i);
 
     const Vector3& origin() const;
     const Vector3& direction() const;
@@ -36,7 +39,7 @@ public:
 
 class BaseRayContact;
 
-class RayModel : public Core::MechanicalObject<Vec3Types>, public Abstract::CollisionModel, public Abstract::VisualModel
+class RayModel : public component::MechanicalObject<Vec3Types>, public core::CollisionModel, public core::VisualModel
 {
 protected:
     std::vector<double> length;
@@ -88,11 +91,11 @@ public:
 };
 
 inline Ray::Ray(RayModel* model, int index)
-    : Abstract::TCollisionElementIterator<RayModel>(model, index)
+    : core::TCollisionElementIterator<RayModel>(model, index)
 {}
 
-inline Ray::Ray(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<RayModel>(static_cast<RayModel*>(i.getCollisionModel()), i.getIndex())
+inline Ray::Ray(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<RayModel>(static_cast<RayModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
@@ -126,8 +129,10 @@ inline double& Ray::l()
     return model->length[index];
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

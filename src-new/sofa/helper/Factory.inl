@@ -1,7 +1,7 @@
-#ifndef SOFA_COMPONENTS_COMMON_FACTORY_INL
-#define SOFA_COMPONENTS_COMMON_FACTORY_INL
+#ifndef SOFA_HELPER_FACTORY_INL
+#define SOFA_HELPER_FACTORY_INL
 
-#include "Factory.h"
+#include <sofa/helper/Factory.h>
 #include <iostream>
 #include <typeinfo>
 
@@ -9,14 +9,12 @@
 // this inclusion must be done but not in this part of code. For the moment, I don't know where ;)
 #include <string>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Common
-{
 
 template <typename TKey, class TObject, typename TArgument>
 TObject* Factory<TKey, TObject, TArgument>::createObject(Key key, Argument arg)
@@ -47,10 +45,8 @@ Factory<TKey, TObject, TArgument>* Factory<TKey, TObject, TArgument>::getInstanc
     return &instance;
 }
 
-} // namespace Common
+} // namespace helper
 
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 #endif

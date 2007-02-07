@@ -1,19 +1,22 @@
-#ifndef SOFA_COMPONENTS_MINPROXIMITYINTERSECTION_H
-#define SOFA_COMPONENTS_MINPROXIMITYINTERSECTION_H
+#ifndef SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_H
+#define SOFA_COMPONENT_COLLISION_MINPROXIMITYINTERSECTION_H
 
-#include "DiscreteIntersection.h"
-#include "Common/FnDispatcher.h"
-#include "SphereModel.h"
-#include "TriangleModel.h"
-#include "LineModel.h"
-#include "PointModel.h"
-#include "CubeModel.h"
-#include "RayModel.h"
+#include <sofa/component/collision/DiscreteIntersection.h>
+#include <sofa/helper/FnDispatcher.h>
+#include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/LineModel.h>
+#include <sofa/component/collision/PointModel.h>
+#include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/RayModel.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace collision
 {
 
 class MinProximityIntersection : public DiscreteIntersection
@@ -23,7 +26,7 @@ public:
                             );
 
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-    virtual Collision::ElementIntersector* findIntersector(Abstract::CollisionModel* object1, Abstract::CollisionModel* object2);
+    virtual core::componentmodel::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2);
 
     /// returns true if algorithm uses continous detection
     virtual bool useProximity() const { return true; }
@@ -62,22 +65,24 @@ bool intersectionPointLine(Point&, Line&);
 bool intersectionPointPoint(Point&, Point&);
 bool intersectionRayTriangle(Ray&, Triangle&);
 
-Collision::DetectionOutput* distCorrectionCubeCube(Cube&, Cube&);
-Collision::DetectionOutput* distCorrectionSphereSphere(Sphere&, Sphere&);
-Collision::DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&);
-Collision::DetectionOutput* distCorrectionSphereLine(Sphere&, Line&);
-Collision::DetectionOutput* distCorrectionSpherePoint(Sphere&, Point&);
-Collision::DetectionOutput* distCorrectionSphereRay(Sphere&, Ray&);
-Collision::DetectionOutput* distCorrectionPointTriangle(Point&, Triangle&);
-Collision::DetectionOutput* distCorrectionLineLine(Line&, Line&);
-Collision::DetectionOutput* distCorrectionPointLine(Point&, Line&);
-Collision::DetectionOutput* distCorrectionPointPoint(Point&, Point&);
-Collision::DetectionOutput* distCorrectionRayTriangle(Ray&, Triangle&);
+core::componentmodel::collision::DetectionOutput* distCorrectionCubeCube(Cube&, Cube&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSphereSphere(Sphere&, Sphere&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSphereLine(Sphere&, Line&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSpherePoint(Sphere&, Point&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSphereRay(Sphere&, Ray&);
+core::componentmodel::collision::DetectionOutput* distCorrectionPointTriangle(Point&, Triangle&);
+core::componentmodel::collision::DetectionOutput* distCorrectionLineLine(Line&, Line&);
+core::componentmodel::collision::DetectionOutput* distCorrectionPointLine(Point&, Line&);
+core::componentmodel::collision::DetectionOutput* distCorrectionPointPoint(Point&, Point&);
+core::componentmodel::collision::DetectionOutput* distCorrectionRayTriangle(Ray&, Triangle&);
 
 } // namespace MinProximityIntersections
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

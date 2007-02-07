@@ -1,30 +1,37 @@
-#ifndef SOFA_COMPONENTS_DIAGONALMASS_H
-#define SOFA_COMPONENTS_DIAGONALMASS_H
+#ifndef SOFA_COMPONENT_MASS_DIAGONALMASS_H
+#define SOFA_COMPONENT_MASS_DIAGONALMASS_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
 
-#include "Common/Vec3Types.h"
-#include "Sofa-old/Core/Mass.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Abstract/Event.h"
-#include "Sofa-old/Components/Common/vector.h"
-#include "Sofa-old/Components/Topology/PointData.h"
-#include "Sofa-old/Components/Topology/PointData.inl"
-namespace Sofa
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/componentmodel/behavior/Mass.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/helper/vector.h>
+#include <sofa/component/topology/PointData.h>
+#include <sofa/component/topology/PointData.inl>
+namespace sofa
 {
-using namespace Abstract;
+
+namespace component
+{
+
+namespace mass
+{
+
+using namespace core::objectmodel;
 namespace Components
 {
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
-// using Abstract::Field;
+// using core::Field;
 
 template <class DataTypes, class MassType>
-class DiagonalMass : public Core::Mass<DataTypes>, public Abstract::VisualModel
+class DiagonalMass : public core::componentmodel::behavior::Mass<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -55,7 +62,7 @@ protected:
 public:
     DiagonalMass();
 
-    DiagonalMass(Core::MechanicalModel<DataTypes>* mmodel, const std::string& name="");
+    DiagonalMass(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate, const std::string& name="");
 
     ~DiagonalMass();
 
@@ -108,8 +115,10 @@ public:
 }
 ;
 
-} // namespace Components
+} // namespace mass
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

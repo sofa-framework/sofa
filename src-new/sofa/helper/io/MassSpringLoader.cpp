@@ -1,17 +1,20 @@
-#include "Sofa-old/Components/MassSpringLoader.h"
-#include "Sofa-old/Components/Common/Vec.h"
+#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/defaulttype/Vec.h>
 
 #include <stdio.h>
 #include <iostream>
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+using namespace sofa::defaulttype;
 
 static void skipToEOL(FILE* f)
 {
@@ -141,6 +144,9 @@ bool MassSpringLoader::load(const char *filename)
     return true;
 }
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
+

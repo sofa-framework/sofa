@@ -1,13 +1,13 @@
-#include "Mesh.h"
-#include "Factory.inl"
+#include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/Factory.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Common
+namespace io
 {
 
 // commented by Sylvere
@@ -41,8 +41,9 @@ Mesh* Mesh::Create(std::string filename)
     return Factory::CreateObject(loader, filename);
 }
 
-} // namespace Common
+} // namespace io
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
+

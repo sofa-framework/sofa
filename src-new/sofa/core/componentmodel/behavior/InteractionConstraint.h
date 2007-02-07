@@ -1,23 +1,33 @@
-#ifndef SOFA_CORE_INTERACTIONCONSTRAINT_H
-#define SOFA_CORE_INTERACTIONCONSTRAINT_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_INTERACTIONCONSTRAINT_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_INTERACTIONCONSTRAINT_H
 
-#include "BasicConstraint.h"
+#include <sofa/core/componentmodel/behavior/Constraint.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
-class InteractionConstraint : public BasicConstraint
+namespace componentmodel
+{
+
+namespace behavior
+{
+
+class InteractionConstraint : public BaseConstraint
 {
 public:
-    virtual BasicMechanicalModel* getMechModel1() = 0;
-    virtual BasicMechanicalModel* getMechModel2() = 0;
+    virtual BaseMechanicalState* getMechModel1() = 0;
+    virtual BaseMechanicalState* getMechModel2() = 0;
 };
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

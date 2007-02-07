@@ -1,15 +1,14 @@
-#ifndef SOFA_COMPONENTS_COMMON_FRAME_H
-#define SOFA_COMPONENTS_COMMON_FRAME_H
+#ifndef SOFA_DEFAULTTYPE_FRAME_H
+#define SOFA_DEFAULTTYPE_FRAME_H
 
-#include <Sofa-old/Components/Common/Vec.h>
-#include <Sofa-old/Components/Common/Mat.h>
-#include <Sofa-old/Components/Common/Quat.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/Quat.h>
 
-namespace Sofa
+namespace sofa
 {
-namespace Components
-{
-namespace Common
+
+namespace defaulttype
 {
 
 /** The affine transformation of points and vectors from a coordinate system (the local frame) to another (the reference frame). The transformation is not necessarily rigid.
@@ -105,8 +104,7 @@ public:
 
     friend std::ostream& operator << (std::ostream& out, const Frame& c );
 };
-}//Common
-}//Components
-}//Sofa
+} // namespace defaulttype
 
+} // namespace sofa
 #endif

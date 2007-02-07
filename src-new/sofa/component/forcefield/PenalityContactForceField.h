@@ -1,20 +1,23 @@
-#ifndef SOFA_COMPONENTS_PENALITYCONTACTFORCEFIELD_H
-#define SOFA_COMPONENTS_PENALITYCONTACTFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_PENALITYCONTACTFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_PENALITYCONTACTFORCEFIELD_H
 
-#include "Sofa-old/Core/InteractionForceField.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-
+#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
 #include <vector>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
-class PenalityContactForceField : public Core::InteractionForceField, public Abstract::VisualModel
+class PenalityContactForceField : public core::componentmodel::behavior::InteractionForceField, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -24,8 +27,8 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    Core::MechanicalModel<DataTypes>* object1;
-    Core::MechanicalModel<DataTypes>* object2;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* object1;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* object2;
 
     struct Contact
     {
@@ -42,20 +45,20 @@ protected:
 
 public:
 
-    PenalityContactForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
+    PenalityContactForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
         : object1(object1), object2(object2)
     {
     }
 
-    PenalityContactForceField(Core::MechanicalModel<DataTypes>* object)
+    PenalityContactForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
         : object1(object), object2(object)
     {
     }
 
-    Core::MechanicalModel<DataTypes>* getObject1() { return object1; }
-    Core::MechanicalModel<DataTypes>* getObject2() { return object2; }
-    Core::BasicMechanicalModel* getMechModel1() { return object1; }
-    Core::BasicMechanicalModel* getMechModel2() { return object2; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return object1; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return object2; }
+    core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
+    core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
     void clear(int reserve = 0)
     {
@@ -78,8 +81,10 @@ public:
     void update() { }
 };
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

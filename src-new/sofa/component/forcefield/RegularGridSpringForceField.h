@@ -1,13 +1,16 @@
-#ifndef SOFA_COMPONENTS_GRIDSPRINGFORCEFIELD_H
-#define SOFA_COMPONENTS_GRIDSPRINGFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_REGULARGRIDSPRINGFORCEFIELD_H
 
-#include "Sofa-old/Components/StiffSpringForceField.h"
-#include "TrimmedRegularGridTopology.h"
+#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/topology/FittedRegularGridTopology.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
@@ -32,7 +35,7 @@ protected:
     Real cubesDamping;
 
 public:
-    RegularGridSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2)
+    RegularGridSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
         : StiffSpringForceField<DataTypes>(object1, object2),
           linesStiffness(0), linesDamping(0),
           quadsStiffness(0), quadsDamping(0),
@@ -41,7 +44,7 @@ public:
     {
     }
 
-    RegularGridSpringForceField(Core::MechanicalModel<DataTypes>* object)
+    RegularGridSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
         : StiffSpringForceField<DataTypes>(object),
           linesStiffness(0), linesDamping(0),
           quadsStiffness(0), quadsDamping(0),
@@ -111,8 +114,10 @@ protected:
     TrimmedRegularGridTopology* trimmedTopology;
 };
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

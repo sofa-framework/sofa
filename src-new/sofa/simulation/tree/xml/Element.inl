@@ -1,19 +1,20 @@
-#ifndef SOFA_COMPONENTS_XML_NODE_INL
-#define SOFA_COMPONENTS_XML_NODE_INL
+#ifndef SOFA_SIMULATION_TREE_XML_ELEMENT_INL
+#define SOFA_SIMULATION_TREE_XML_ELEMENT_INL
 
-#include "Node.h"
-#include "../Common/Factory.inl"
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace XML
+namespace tree
 {
 
-using namespace Common;
+namespace xml
+{
+
+using namespace sofa::defaulttype;
 
 template<class Object>
 bool Node<Object>::initNode()
@@ -32,10 +33,12 @@ bool Node<Object>::initNode()
 //template<class Object> class Factory< std::string, Object, Node<Object>* >;
 
 
-} // namespace XML
+} // namespace xml
 
-} // namespace Components
+} // namespace tree
 
-} // namespace Sofa
+} // namespace simulation
+
+} // namespace sofa
 
 #endif

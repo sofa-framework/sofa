@@ -1,19 +1,22 @@
-#include "Intersection.inl"
-#include "DetectionOutput.h"
-#include "Sofa-old/Components/Common/FnDispatcher.h"
+#include <sofa/core/componentmodel/collision/Intersection.inl>
+#include <sofa/core/componentmodel/collision/DetectionOutput.h>
+#include <sofa/helper/FnDispatcher.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Collision
+namespace componentmodel
 {
 
-using namespace Common;
+namespace collision
+{
 
-ElementIntersector* IntersectorMap::get(Abstract::CollisionModel* model1, Abstract::CollisionModel* model2)
+using namespace sofa::defaulttype;
+
+ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::CollisionModel* model2)
 {
     iterator it =
         this->find(std::make_pair(TypeInfo(typeid(*model1)),TypeInfo(typeid(*model2))));
@@ -35,7 +38,7 @@ Intersection::~Intersection()
 
 /// Test if intersection between 2 types of elements is supported, i.e. an intersection test is implemented for this combinaison of types.
 /// Note that this method is deprecated in favor of findIntersector
-bool Intersection::isSupported(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
+bool Intersection::isSupported(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
 {
     ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
     return i != NULL;
@@ -43,7 +46,7 @@ bool Intersection::isSupported(Abstract::CollisionElementIterator elem1, Abstrac
 
 /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present).
 /// Note that this method is deprecated in favor of findIntersector
-bool Intersection::canIntersect(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
+bool Intersection::canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
 {
     ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
     if (i == NULL)
@@ -54,7 +57,7 @@ bool Intersection::canIntersect(Abstract::CollisionElementIterator elem1, Abstra
 
 /// Compute the intersection between 2 elements.
 /// Note that this method is deprecated in favor of findIntersector
-Collision::DetectionOutput* Intersection::intersect(Abstract::CollisionElementIterator elem1, Abstract::CollisionElementIterator elem2)
+DetectionOutput* Intersection::intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
 {
     ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
     if (i == NULL)
@@ -63,9 +66,11 @@ Collision::DetectionOutput* Intersection::intersect(Abstract::CollisionElementIt
         return i->intersect(elem1, elem2);
 }
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 

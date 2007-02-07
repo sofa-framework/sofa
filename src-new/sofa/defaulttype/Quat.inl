@@ -1,14 +1,11 @@
 #include <math.h>
 #include <iostream>
-#include "Quat.h"
+#include <sofa/defaulttype/Quat.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace defaulttype
 {
 
 #define RENORMCOUNT 50
@@ -202,9 +199,9 @@ void Quater<Real>::fromMatrix(const Mat3x3d &m)
         s = (float)sqrt (tr + 1);
         _q[3] = s * 0.5f; // w OK
         s = 0.5f / s;
-        _q[0] = (Real)((m.z().y() - m.y().z()) * s); // x OK
-        _q[1] = (Real)((m.x().z() - m.z().x()) * s); // y OK
-        _q[2] = (Real)((m.y().x() - m.x().y()) * s); // z OK
+        _q[0] = (Real)((m.y().z() - m.z().y()) * s); // x OK
+        _q[1] = (Real)((m.z().x() - m.x().z()) * s); // y OK
+        _q[2] = (Real)((m.x().y() - m.y().x()) * s); // z OK
     }
     else
     {
@@ -217,9 +214,9 @@ void Quater<Real>::fromMatrix(const Mat3x3d &m)
             if (s != 0.0f)
                 s = 0.5f / s;
 
-            _q[2] = (Real)((m.y().z() + m.z().y()) * s); // z OK
-            _q[0] = (Real)((m.x().y() + m.y().x()) * s); // x OK
-            _q[3] = (Real)((m.x().z() - m.z().x()) * s); // w OK
+            _q[2] = (Real)((m.z().y() + m.y().z()) * s); // z OK
+            _q[0] = (Real)((m.y().x() + m.x().y()) * s); // x OK
+            _q[3] = (Real)((m.z().x() - m.x().z()) * s); // w OK
         }
         else if ((m.y().y() <= m.x().x()  &&  m.z().z() > m.x().x())  ||  (m.z().z() > m.y().y()))
         {
@@ -230,9 +227,9 @@ void Quater<Real>::fromMatrix(const Mat3x3d &m)
             if (s != 0.0f)
                 s = 0.5f / s;
 
-            _q[0] = (Real)((m.z().x() + m.x().z()) * s); // x OK
-            _q[1] = (Real)((m.y().z() + m.z().y()) * s); // y OK
-            _q[3] = (Real)((m.y().x() - m.x().y()) * s); // w OK
+            _q[0] = (Real)((m.x().z() + m.z().x()) * s); // x OK
+            _q[1] = (Real)((m.z().y() + m.y().z()) * s); // y OK
+            _q[3] = (Real)((m.x().y() - m.y().x()) * s); // w OK
         }
         else
         {
@@ -243,9 +240,9 @@ void Quater<Real>::fromMatrix(const Mat3x3d &m)
             if (s != 0.0f)
                 s = 0.5f / s;
 
-            _q[1] = (Real)((m.x().y() + m.y().x()) * s); // y OK
-            _q[2] = (Real)((m.z().x() + m.x().z()) * s); // z OK
-            _q[3] = (Real)((m.z().y() - m.y().z()) * s); // w OK
+            _q[1] = (Real)((m.y().x() + m.x().y()) * s); // y OK
+            _q[2] = (Real)((m.x().z() + m.z().x()) * s); // z OK
+            _q[3] = (Real)((m.y().z() - m.z().y()) * s); // w OK
         }
     }
 }
@@ -456,8 +453,7 @@ void Quater<Real>::operator*=(const Quater<Real>& q1)
 }
 
 
-} // namespace Common
+} // namespace defaulttype
 
-} // namespace Components
+} // namespace sofa
 
-} // namespace Sofa

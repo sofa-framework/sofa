@@ -1,5 +1,5 @@
-#ifndef _GL_SHADER_H
-#define _GL_SHADER_H
+#ifndef SOFA_HELPER_GL_GLSHADER_H
+#define SOFA_HELPER_GL_GLSHADER_H
 
 #ifdef WIN32
 #include <windows.h>
@@ -8,13 +8,13 @@
 #include <GL/glu.h>
 #include <string>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 //using namespace std;
@@ -159,10 +159,10 @@ private:
     GLhandleARB m_hProgramObject;
 };
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

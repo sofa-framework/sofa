@@ -1,12 +1,12 @@
-#ifndef SOFA_ABSTRACT_BEHAVIORMODEL_H
-#define SOFA_ABSTRACT_BEHAVIORMODEL_H
+#ifndef SOFA_CORE_BEHAVIORMODEL_H
+#define SOFA_CORE_BEHAVIORMODEL_H
 
-#include "BaseObject.h"
+#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
 {
 
 /*! \class BehaviorModel
@@ -20,7 +20,7 @@ namespace Abstract
  *  <BR>updatePosition corresponds to the computation of a new simulation step<BR>
  */
 
-class BehaviorModel : public virtual BaseObject
+class BehaviorModel : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     virtual ~BehaviorModel() {}
@@ -38,8 +38,8 @@ public:
     virtual void applyScale(double /*sx*/, double /*sy*/, double /*sz*/, double /*smass*/) { }
 };
 
-} // namespace Abstract
+} // namespace core
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

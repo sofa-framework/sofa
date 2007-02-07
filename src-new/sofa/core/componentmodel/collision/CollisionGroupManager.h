@@ -1,38 +1,43 @@
-#ifndef SOFA_COMPONENTS_COLLISION_COLLISIONGROUPMANAGER_H
-#define SOFA_COMPONENTS_COLLISION_COLLISIONGROUPMANAGER_H
+#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_COLLISIONGROUPMANAGER_H
+#define SOFA_CORE_COMPONENTMODEL_COLLISION_COLLISIONGROUPMANAGER_H
 
-#include "Contact.h"
-#include "Sofa-old/Abstract/BaseObject.h"
+#include <sofa/core/componentmodel/collision/Contact.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-class Scene;
-
-namespace Collision
+namespace componentmodel
 {
 
-class CollisionGroupManager : public virtual Abstract::BaseObject
+namespace collision
+{
+
+//class Scene;
+
+class CollisionGroupManager : public virtual objectmodel::BaseObject
 {
 public:
     virtual ~CollisionGroupManager() { }
 
-    virtual void createGroups(Abstract::BaseContext* scene, const std::vector<Contact*>& contacts) = 0;
+    virtual void createGroups(objectmodel::BaseContext* scene, const std::vector<Contact*>& contacts) = 0;
 
-    virtual void clearGroups(Abstract::BaseContext* scene) = 0;
+    virtual void clearGroups(objectmodel::BaseContext* scene) = 0;
 
-    virtual const std::vector<Abstract::BaseContext*>& getGroups() = 0;
+    virtual const std::vector<objectmodel::BaseContext*>& getGroups() = 0;
 };
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

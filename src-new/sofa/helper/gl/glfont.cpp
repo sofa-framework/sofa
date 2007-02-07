@@ -9,19 +9,19 @@
 #include <string.h>
 #include <GL/gl.h>
 
-#include "glfont.h"
+#include <sofa/helper/gl/glfont.h>
 
 #ifdef SGI_CC
 extern "C" Display * glXGetCurrentDisplayEXT (void);
 #endif
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 static GLuint LettersDL=0;
@@ -105,8 +105,9 @@ void glfntWriteBitmap(float x,float y,char *s)
     glListBase(CurBase);
 }
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
+

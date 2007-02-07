@@ -1,12 +1,15 @@
-#ifndef SOFA_ABSTRACT_BASENODE_H
-#define SOFA_ABSTRACT_BASENODE_H
+#ifndef SOFA_CORE_OBJECTMODEL_BASENODE_H
+#define SOFA_CORE_OBJECTMODEL_BASENODE_H
 
 #include "BaseContext.h"
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
+
+{
+namespace objectmodel
 {
 
 class BaseObject;
@@ -47,8 +50,10 @@ public:
     /// @}
 };
 
-} // namespace Abstract
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif

@@ -1,19 +1,25 @@
-#ifndef SOFA_CORE_TOPOLOGY_H
-#define SOFA_CORE_TOPOLOGY_H
+#ifndef SOFA_CORE_COMPONENTMODEL_TOPOLOGY_TOPOLOGY_H
+#define SOFA_CORE_COMPONENTMODEL_TOPOLOGY_TOPOLOGY_H
 
 #include <stdlib.h>
 #include <vector>
 #include <string>
 #include <iostream>
-#include "Sofa-old/Abstract/BaseObject.h"
+#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
-class Topology : public virtual Abstract::BaseObject
+namespace componentmodel
+{
+
+namespace topology
+{
+
+class Topology : public virtual objectmodel::BaseObject
 {
 public:
     virtual ~Topology() { }
@@ -28,8 +34,12 @@ public:
     virtual double getPZ(int /*i*/) const { return 0.0; }
 };
 
-} // namespace Core
+} // namespace topology
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

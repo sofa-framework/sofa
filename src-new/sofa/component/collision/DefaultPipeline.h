@@ -1,23 +1,26 @@
-#ifndef SOFA_COMPONENTS_PIPELINESOFA_H
-#define SOFA_COMPONENTS_PIPELINESOFA_H
+#ifndef SOFA_COMPONENT_COLLISION_DEFAULTPIPELINE_H
+#define SOFA_COMPONENT_COLLISION_DEFAULTPIPELINE_H
 
-#include "Collision/Pipeline.h"
-#include "Sofa-old/Abstract/VisualModel.h"
+#include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/core/VisualModel.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-class PipelineSofa : public Collision::Pipeline, public Abstract::VisualModel
+namespace collision
+{
+
+class DefaultPipeline : public core::componentmodel::collision::Pipeline, public core::VisualModel
 {
 protected:
     bool verbose_;
     bool draw_;
     int depth_;
 public:
-    PipelineSofa();
+    DefaultPipeline();
 
     void setVerbose(bool v) { verbose_ = v;    }
     bool getVerbose() const { return verbose_; }
@@ -34,7 +37,7 @@ protected:
     /// Remove collision response from last step
     virtual void doCollisionReset();
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void doCollisionDetection(const std::vector<Abstract::CollisionModel*>& collisionModels);
+    virtual void doCollisionDetection(const std::vector<core::CollisionModel*>& collisionModels);
     /// Add collision response in the simulation graph
     virtual void doCollisionResponse();
 
@@ -45,8 +48,10 @@ public:
     void update() { }
 };
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

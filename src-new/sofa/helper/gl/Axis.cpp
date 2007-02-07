@@ -1,4 +1,4 @@
-#include "Axis.h"
+#include <sofa/helper/gl/Axis.h>
 
 #include <GL/gl.h>
 #include <assert.h>
@@ -9,13 +9,13 @@ using std::cerr;
 using std::endl;
 
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 static const int quadricDiscretisation = 16;
@@ -261,8 +261,9 @@ void Axis::draw(const double *mat, double len)
     a->draw();
 }
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
+

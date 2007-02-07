@@ -1,16 +1,13 @@
-#ifndef SOFA_COMPONENTS_COMMON_FNDISPATCHER_H
-#define SOFA_COMPONENTS_COMMON_FNDISPATCHER_H
+#ifndef SOFA_HELPER_FNDISPATCHER_H
+#define SOFA_HELPER_FNDISPATCHER_H
 
 #include <map>
 #include <typeinfo>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace helper
 {
 
 class TypeInfo
@@ -128,10 +125,8 @@ public:
     */
 };
 
-} // namespace Common
+} // namespace helper
 
-} // namespace Components
-
-} // namepsace Sofa
+} // namespace sofa
 
 #endif

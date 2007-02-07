@@ -2,23 +2,27 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 
-#include "CoordinateSystem.h"
-#include <Sofa-old/Components/Common/ObjectFactory.h>
-#include <Sofa-old/Components/Common/Vec.h>
-#include <Sofa-old/Components/Graph/GNode.h>
+#include <sofa/component/contextobject/CoordinateSystem.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <iostream>
+#include <GL/gl.h>
 using std::cerr;
 using std::endl;
 #ifdef WIN32
 # include <windows.h>
 #endif
-#include <GL/gl.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
+
+namespace contextobject
+{
+
 CoordinateSystem::CoordinateSystem()
     : positionInParent_( Frame::identity() )
     //, velocity_( Vec(0,0,0), Vec(0,0,0) )
@@ -27,7 +31,7 @@ CoordinateSystem::CoordinateSystem()
 
 // CoordinateSystem::Frame  CoordinateSystem::getPositionInWorld() const
 // {
-//     return Abstract::BaseObject::getContext()->getPositionInWorld() * positionInParent_;
+//     return core::objectmodel::BaseObject::getContext()->getPositionInWorld() * positionInParent_;
 // }
 
 const CoordinateSystem::Frame&  CoordinateSystem::getTransform() const
@@ -82,7 +86,7 @@ CoordinateSystem::Rot CoordinateSystem::getOrientation( ) const
 }*/
 /*CoordinateSystem::SpatialVector  CoordinateSystem::getVelocityInWorld() const
 {
-    return Abstract::BaseObject::getContext()->getVelocityInWorld() + getPositionInWorld() * velocity__;
+    return core::objectmodel::BaseObject::getContext()->getVelocityInWorld() + getPositionInWorld() * velocity__;
 }*/
 // CoordinateSystem* CoordinateSystem::setVelocity( const SpatialVector& f )
 // {
@@ -94,7 +98,7 @@ CoordinateSystem::Rot CoordinateSystem::getOrientation( ) const
 void CoordinateSystem::apply()
 {
     //cerr<<"CoordinateSystem::apply(), frame = "<<   getName() <<", t="<<getContext()->getTime() << endl;
-    Abstract::BaseContext* context = getContext();
+    objectmodel::BaseContext* context = getContext();
     cerr<<"CoordinateSystem::apply, current position = "<<context->getPositionInWorld()<<endl;
     cerr<<"CoordinateSystem::apply, transform = "<<this->getTransform()<<endl;
 
@@ -116,7 +120,7 @@ void CoordinateSystem::apply()
 
 
     // update context
-    Common::Vec3d newLinearAcceleration = parentLinearAcceleration + ainduced;
+    defaulttype::Vec3d newLinearAcceleration = parentLinearAcceleration + ainduced;
     Frame newLocalToWorld = parentToWorld * getTransform();
     SpatialVector newSpatialVelocity ( parentSpatialVelocity /*+ newLocalToWorld * getVelocity()*/ );
 
@@ -148,14 +152,14 @@ void CoordinateSystem::draw()
     glPopAttrib();
 }
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
-void create(CoordinateSystem*& obj, ObjectDescription* arg)
+void create(CoordinateSystem*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    typedef Sofa::Components::CoordinateSystem::Frame Frame;
-    typedef Sofa::Components::CoordinateSystem::Vec Vec;
-    typedef Sofa::Components::CoordinateSystem::Rot Rot;
-    //cout<<"create(CoordinateSystem*& obj, ObjectDescription*)"<< endl;
+    typedef sofa::Components::CoordinateSystem::Frame Frame;
+    typedef sofa::Components::CoordinateSystem::Vec Vec;
+    typedef sofa::Components::CoordinateSystem::Rot Rot;
+    //cout<<"create(CoordinateSystem*& obj, simulation::tree::xml::ObjectDescription*)"<< endl;
     obj = new CoordinateSystem;
     float x, y, z ;
     Vec vec;
@@ -175,9 +179,11 @@ void create(CoordinateSystem*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(CoordinateSystem)
 
-Creator< ObjectFactory, CoordinateSystem > CoordinateSystemClass("CoordinateSystem");
+Creator<simulation::tree::xml::ObjectFactory, CoordinateSystem > CoordinateSystemClass("CoordinateSystem");
 
-} // namespace Components
+} // namespace contextobject
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 

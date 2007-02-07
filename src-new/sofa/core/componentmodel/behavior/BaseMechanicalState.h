@@ -1,27 +1,33 @@
-#ifndef SOFA_CORE_BASICMECHANICALMODEL_H
-#define SOFA_CORE_BASICMECHANICALMODEL_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEMECHANICALSTATE_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEMECHANICALSTATE_H
 
-#include "Sofa-old/Abstract/BaseObject.h"
-#include "Sofa-old/Core/Encoding.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/helper/io/Encoding.h>
 #include <iostream>
 
-namespace Sofa
+using namespace sofa::helper;
+
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
-using namespace Encoding;
+namespace componentmodel
+{
 
-class BasicMechanicalMapping;
+namespace behavior
+{
 
-class BasicMechanicalModel : public virtual Abstract::BaseObject
+class BaseMechanicalMapping;
+
+class BaseMechanicalState : public virtual objectmodel::BaseObject
 {
 public:
-    BasicMechanicalModel()
-        : Abstract::BaseObject()
+    BaseMechanicalState ()
+        : objectmodel::BaseObject()
     {}
-    virtual ~BasicMechanicalModel()
+    virtual ~BaseMechanicalState ()
     { }
 
     virtual void resize(int vsize) = 0;
@@ -35,7 +41,7 @@ public:
 
     virtual void endIntegration(double /*dt*/) { }
 
-    virtual void resetForce() =0;//{ vOp( VecId::force() ); }
+    virtual void resetForce() =0;//{ vOp( helper::io::VecId::force() ); }
 
     virtual void resetConstraint() =0;
 
@@ -43,29 +49,29 @@ public:
 
     virtual void accumulateDf() { }
 
-    virtual void vAlloc(VecId v) = 0; // {}
+    virtual void vAlloc(helper::io::VecId v) = 0; // {}
 
-    virtual void vFree(VecId v) = 0; // {}
+    virtual void vFree(helper::io::VecId v) = 0; // {}
 
-    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0) = 0; // {}
+    virtual void vOp(helper::io::VecId v, helper::io::VecId a = helper::io::VecId::null(), helper::io::VecId b = helper::io::VecId::null(), double f=1.0) = 0; // {}
 
-    virtual double vDot(VecId a, VecId b) = 0; //{ return 0; }
+    virtual double vDot(helper::io::VecId a, helper::io::VecId b) = 0; //{ return 0; }
 
-    virtual void setX(VecId v) = 0; //{}
+    virtual void setX(helper::io::VecId v) = 0; //{}
 
-    virtual void setV(VecId v) = 0; //{}
+    virtual void setV(helper::io::VecId v) = 0; //{}
 
-    virtual void setF(VecId v) = 0; //{}
+    virtual void setF(helper::io::VecId v) = 0; //{}
 
-    virtual void setDx(VecId v) = 0; //{}
+    virtual void setDx(helper::io::VecId v) = 0; //{}
 
-    virtual void setC(VecId v) = 0; //{}
+    virtual void setC(helper::io::VecId v) = 0; //{}
 
     /// @}
 
     /// @name Debug
     /// @{
-    virtual void printDOF( VecId, std::ostream& =std::cerr ) = 0;
+    virtual void printDOF( helper::io::VecId, std::ostream& =std::cerr ) = 0;
     /// @}
 
 
@@ -76,14 +82,18 @@ public:
      */
     //virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
     //{
-    //  std::cerr << "warning: unumplemented method MechanicalModel::addBBox() called.\n";
+    //  std::cerr << "warning: unumplemented method MechanicalState::addBBox() called.\n";
     //  return false;
     //}
 
 };
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

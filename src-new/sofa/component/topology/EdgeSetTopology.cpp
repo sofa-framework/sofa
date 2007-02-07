@@ -1,15 +1,18 @@
-#include "EdgeSetTopology.h"
-#include "EdgeSetTopology.inl"
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include "Sofa-old/Components/Common/ObjectFactory.h"
+#include <sofa/component/topology/EdgeSetTopology.h>
+#include <sofa/component/topology/EdgeSetTopology.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace topology
+{
+
+using namespace sofa::defaulttype;
 
 
 SOFA_DECL_CLASS(EdgeSetTopology)
@@ -112,14 +115,14 @@ std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeShellForModificati
 
 
 
-/*EdgeSetTopologyContainer::EdgeSetTopologyContainer(Core::BasicTopology *top) : PointSetTopologyContainer( top )
+/*EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top) : PointSetTopologyContainer( top )
 {
 
 }
 */
 
 
-EdgeSetTopologyContainer::EdgeSetTopologyContainer(Core::BasicTopology *top, const std::vector< unsigned int > &DOFIndex,
+EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector< unsigned int > &DOFIndex,
         const std::vector< Edge >         &edges )
     : PointSetTopologyContainer( top, DOFIndex ), m_edge( edges )
 {
@@ -131,9 +134,9 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(Core::BasicTopology *top, con
 // factory related stuff
 
 template<class DataTypes>
-void create(EdgeSetTopology<DataTypes>*& obj, ObjectDescription* arg)
+void create(EdgeSetTopology<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< EdgeSetTopology<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
+    XML::createWithParent< EdgeSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("filename"))
@@ -141,13 +144,16 @@ void create(EdgeSetTopology<DataTypes>*& obj, ObjectDescription* arg)
     }
 }
 
-Creator<ObjectFactory, EdgeSetTopology<Vec3dTypes> >
+Creator<simulation::tree::xml::ObjectFactory, EdgeSetTopology<Vec3dTypes> >
 EdgeSetTopologyVec3dClass("EdgeSetTopology", true);
 
-Creator<ObjectFactory, EdgeSetTopology<Vec3fTypes> >
+Creator<simulation::tree::xml::ObjectFactory, EdgeSetTopology<Vec3fTypes> >
 EdgeSetTopologyVec3fClass("EdgeSetTopology", true);
 
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

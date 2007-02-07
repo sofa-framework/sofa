@@ -1,21 +1,24 @@
-#ifndef SOFA_COMPONENTS_LAPAROSCOPICRIGIDMAPPING_H
-#define SOFA_COMPONENTS_LAPAROSCOPICRIGIDMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_H
+#define SOFA_COMPONENT_MAPPING_LAPAROSCOPICRIGIDMAPPING_H
 
-#include "Sofa-old/Core/MechanicalMapping.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Common/RigidTypes.h"
-#include "Common/LaparoscopicRigidTypes.h"
-#include "Sofa-old/Abstract/VisualModel.h"
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#include <sofa/core/VisualModel.h>
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace mapping
 {
 
 template <class BaseMapping>
-class LaparoscopicRigidMapping : public BaseMapping, public Abstract::VisualModel
+class LaparoscopicRigidMapping : public BaseMapping, public core::VisualModel
 {
 public:
     typedef BaseMapping Inherit;
@@ -28,8 +31,8 @@ public:
     //typedef typename Coord::value_type Real;
 
 protected:
-    Common::Vector3 pivot;
-    Common::Quat rotation;
+    defaulttype::Vector3 pivot;
+    defaulttype::Quat rotation;
 public:
 
     LaparoscopicRigidMapping(In* from, Out* to)
@@ -41,8 +44,8 @@ public:
     {
     }
 
-    void setPivot(const Common::Vector3& val) { this->pivot = val; }
-    void setRotation(const Common::Quat& val) { this->rotation = val; this->rotation.normalize(); }
+    void setPivot(const defaulttype::Vector3& val) { this->pivot = val; }
+    void setRotation(const defaulttype::Quat& val) { this->rotation = val; this->rotation.normalize(); }
 
     void init();
 
@@ -59,13 +62,15 @@ public:
 
 protected:
 
-    bool getShow(const Abstract::BaseObject* m) const { return m->getContext()->getShowMappings(); }
+    bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
 
-    bool getShow(const Core::BasicMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
+    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 };
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

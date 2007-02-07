@@ -1,34 +1,37 @@
-#ifndef SOFA_COMPONENTS_POINTMODEL_H
-#define SOFA_COMPONENTS_POINTMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_POINTMODEL_H
+#define SOFA_COMPONENT_COLLISION_POINTMODEL_H
 
-#include "Sofa-old/Abstract/CollisionModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "Sofa-old/Core/MechanicalObject.h"
-#include "MeshTopology.h"
-#include "Common/Vec3Types.h"
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 class PointModel;
 
-class Point : public Abstract::TCollisionElementIterator<PointModel>
+class Point : public core::TCollisionElementIterator<PointModel>
 {
 public:
     Point(PointModel* model, int index);
 
-    explicit Point(Abstract::CollisionElementIterator& i);
+    explicit Point(core::CollisionElementIterator& i);
 
     const Vector3& p() const;
     const Vector3& v() const;
 };
 
-class PointModel : public Abstract::CollisionModel, public Abstract::VisualModel
+class PointModel : public core::CollisionModel, public core::VisualModel
 {
 protected:
     bool static_;
@@ -67,30 +70,32 @@ public:
     void update() { }
 
 
-    Core::MechanicalModel<Vec3Types>* getMechanicalModel() { return mmodel; }
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
     virtual const char* getTypeName() const { return "Point"; }
 
 protected:
 
-    Core::MechanicalModel<Vec3Types>* mmodel;
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
 };
 
 inline Point::Point(PointModel* model, int index)
-    : Abstract::TCollisionElementIterator<PointModel>(model, index)
+    : core::TCollisionElementIterator<PointModel>(model, index)
 {}
 
-inline Point::Point(Abstract::CollisionElementIterator& i)
-    : Abstract::TCollisionElementIterator<PointModel>(static_cast<PointModel*>(i.getCollisionModel()), i.getIndex())
+inline Point::Point(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<PointModel>(static_cast<PointModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-inline const Vector3& Point::p() const { return (*model->mmodel->getX())[index]; }
+inline const Vector3& Point::p() const { return (*model->mstate->getX())[index]; }
 
-inline const Vector3& Point::v() const { return (*model->mmodel->getV())[index]; }
+inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

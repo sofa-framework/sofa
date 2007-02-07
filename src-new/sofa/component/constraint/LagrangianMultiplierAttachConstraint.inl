@@ -1,21 +1,24 @@
-#ifndef SOFA_COMPONENTS_LagrangianMultiplierAttachConstraint_INL
-#define SOFA_COMPONENTS_LagrangianMultiplierAttachConstraint_INL
+#ifndef SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERATTACHCONSTRAINT_INL
+#define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERATTACHCONSTRAINT_INL
 
-#include "LagrangianMultiplierAttachConstraint.h"
-#include "Sofa-old/Core/Constraint.inl"
-#include "Sofa-old/Core/MechanicalObject.inl"
-#include "Common/config.h"
+#include <sofa/component/constraint/LagrangianMultiplierAttachConstraint.h>
+#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include <sofa/component/MechanicalObject.inl>
+#include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <GL/gl.h>
-#include "GL/template.h"
+#include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace constraint
 {
 
 template<class DataTypes>
@@ -173,8 +176,10 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::draw()
 }
 
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

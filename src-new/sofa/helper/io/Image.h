@@ -1,16 +1,16 @@
-#ifndef SOFA_COMPONENTS_COMMON_IMAGE_H
-#define SOFA_COMPONENTS_COMMON_IMAGE_H
+#ifndef SOFA_HELPER_IO_IMAGE_H
+#define SOFA_HELPER_IO_IMAGE_H
 
 #include <stdlib.h>
-#include "Factory.h"
+#include <sofa/helper/Factory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Common
+namespace io
 {
 
 class Image
@@ -39,10 +39,10 @@ public:
     static Image* Create(std::string filename);
 };
 
-} // namespace Common
+} // namespace io
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

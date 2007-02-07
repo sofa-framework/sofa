@@ -9,22 +9,25 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef SOFA_COMPONENTS_ANIMATEENDEVENT_H
-#define SOFA_COMPONENTS_ANIMATEENDEVENT_H
+#ifndef SOFA_SIMULATION_TREE_ANIMATEENDEVENT_H
+#define SOFA_SIMULATION_TREE_ANIMATEENDEVENT_H
 
-#include <Sofa-old/Abstract/Event.h>
+#include <sofa/core/objectmodel/Event.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
+{
+
+namespace tree
 {
 
 /**
   Event fired by Simulation::animate() after computing a new animation step.
   @author Jeremie Allard
 */
-class AnimateEndEvent : public Sofa::Abstract::Event
+class AnimateEndEvent : public sofa::core::objectmodel::Event
 {
 public:
     AnimateEndEvent( double dt );

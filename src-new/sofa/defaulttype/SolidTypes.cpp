@@ -9,7 +9,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "SolidTypes.h"
+#include <sofa/defaulttype/SolidTypes.h>
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -18,13 +18,10 @@
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace defaulttype
 {
 
 template<class R>
@@ -93,8 +90,8 @@ template<class R>
 typename SolidTypes<R>::SpatialVector SolidTypes<R>::SpatialVector::cross( const SpatialVector& v ) const
 {
     return SpatialVector(
-            Common::cross(lineVec,v.lineVec),
-            Common::cross(freeVec,v.lineVec) + Common::cross(lineVec,v.freeVec)
+            defaulttype::cross(lineVec,v.lineVec),
+            defaulttype::cross(freeVec,v.lineVec) + defaulttype::cross(lineVec,v.freeVec)
             );
 }
 
@@ -563,9 +560,8 @@ typename SolidTypes<R>::Mat SolidTypes<R>::dyad( const Vec& u, const Vec& v )
 }
 
 
-}//Common
+}// defaulttype
 
-}//Components
+}// sofa
 
-}//Sofa
 

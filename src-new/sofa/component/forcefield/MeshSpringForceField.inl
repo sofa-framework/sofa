@@ -1,17 +1,20 @@
-#ifndef SOFA_COMPONENTS_MESHSPRINGFORCEFIELD_INL
-#define SOFA_COMPONENTS_MESHSPRINGFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_MESHSPRINGFORCEFIELD_INL
 
-#include "MeshSpringForceField.h"
-#include "StiffSpringForceField.inl"
-#include "MeshTopology.h"
+#include <sofa/component/forcefield/MeshSpringForceField.h>
+#include <sofa/component/forcefield/StiffSpringForceField.inl>
+#include <sofa/component/topology/MeshTopology.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template <class DataTypes>
@@ -125,8 +128,10 @@ void MeshSpringForceField<DataTypes>::init()
     this->StiffSpringForceField<DataTypes>::init();
 }
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

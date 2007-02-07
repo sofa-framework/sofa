@@ -1,31 +1,34 @@
-#include "TriangleFEMForceField.h"
-
-#include "Common/ObjectFactory.h"
-
-#include "MeshTopology.h"
-#include "GL/template.h"
-
+#include <sofa/component/forcefield/TriangleFEMForceField.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/helper/gl/template.h>
 #include <GL/gl.h>
-
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
+#include <vector>
+#include <sofa/defaulttype/Vec3Types.h>
+
+
+
+
 
 #ifdef _WIN32
 #include <windows.h>
 #endif
 
-#include <vector>
 
 // #define DEBUG_TRIANGLEFEM
 
-namespace Sofa
+namespace sofa
 {
 
-
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
 
 using std::cerr;
 using std::cout;
@@ -33,7 +36,7 @@ using std::endl;
 
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::
-TriangleFEMForceField(Core::MechanicalObject<DataTypes>* object)
+TriangleFEMForceField(component::MechanicalObject<DataTypes>* object)
     : _object(object)
     , _mesh(NULL)
     , _indexedElements(NULL)
@@ -52,7 +55,7 @@ TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::init()
 {
-    _mesh = dynamic_cast<Sofa::Components::MeshTopology*>(this->_object->getContext()->getTopology());
+    _mesh = dynamic_cast<sofa::Components::MeshTopology*>(this->_object->getContext()->getTopology());
 
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {
@@ -606,13 +609,12 @@ void TriangleFEMForceField<DataTypes>::draw()
 }
 
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
 
+} // namespace sofa
 
-
-#include "Common/Vec3Types.h"
 
 namespace Sofa
 {
@@ -623,7 +625,7 @@ namespace Components
 
 SOFA_DECL_CLASS(TriangleFEMForceField)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class TriangleFEMForceField<Vec3dTypes>
 ;
@@ -632,9 +634,9 @@ template class TriangleFEMForceField<Vec3fTypes>
 
 
 template<class DataTypes>
-void create(TriangleFEMForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(TriangleFEMForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< TriangleFEMForceField<DataTypes>, Core::MechanicalObject<DataTypes> >(obj, arg);
+    XML::createWithParent< TriangleFEMForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     obj->parseFields( arg->getAttributeMap() );
     /*    if (obj!=NULL)
         {
@@ -650,10 +652,10 @@ void create(TriangleFEMForceField<DataTypes>*& obj, ObjectDescription* arg)
         }*/
 }
 
-Creator<ObjectFactory, TriangleFEMForceField<Vec3dTypes> >
+Creator<simulation::tree::xml::ObjectFactory, TriangleFEMForceField<Vec3dTypes> >
 TriangleFEMForceFieldVec3dClass("TriangleFEMForceField", true);
 
-Creator<ObjectFactory, TriangleFEMForceField<Vec3fTypes> >
+Creator<simulation::tree::xml::ObjectFactory, TriangleFEMForceField<Vec3fTypes> >
 TriangleFEMForceFieldVec3fClass("TriangleFEMForceField", true);
 
 

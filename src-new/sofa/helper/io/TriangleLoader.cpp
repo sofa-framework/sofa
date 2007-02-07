@@ -1,18 +1,21 @@
-#include "Sofa-old/Components/TriangleLoader.h"
+#include <sofa/helper/io/TriangleLoader.h>
 
 #include <assert.h>
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
-#include "Common/Vec.h"
+#include <sofa/defaulttype/Vec.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+using namespace sofa::defaulttype;
 
 // static void skipToEOL(FILE* f)
 // {
@@ -206,6 +209,9 @@ void TriangleLoader::loadTriangles(FILE *file)
     }
 }
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
+

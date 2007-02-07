@@ -1,25 +1,25 @@
-#include "Common/config.h"
+#include <sofa/helper/system/config.h>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
+{
+
+namespace tree
 {
 
 void init()
 {
-    static bool first = true;
-    if (first)
-    {
-        std::cout << "Sofa Components Initialized"<<std::endl;
-        first = false;
-    }
+    std::cout << "Sofa Components Initialized"<<std::endl;
 }
 
-} // namespace Components
+} // namespace tree
 
-} // namespace SOFA
+} // namespace simulation
+
+} // namespace sofa
 
 ////////// BEGIN CLASS LIST //////////
 SOFA_LINK_CLASS(BarycentricLagrangianMultiplierContact)
@@ -28,8 +28,8 @@ SOFA_LINK_CLASS(BarycentricPenalityContact)
 SOFA_LINK_CLASS(BruteForce)
 SOFA_LINK_CLASS(CGImplicit)
 SOFA_LINK_CLASS(MatrixStatic)
-SOFA_LINK_CLASS(CollisionGroupManagerSofa)
-SOFA_LINK_CLASS(ContactManagerSofa)
+SOFA_LINK_CLASS(DefaultCollisionGroupManager)
+SOFA_LINK_CLASS(DefaultContactManager)
 SOFA_LINK_CLASS(ContinuousIntersection)
 SOFA_LINK_CLASS(CoordinateSystem)
 SOFA_LINK_CLASS(Cube)
@@ -67,7 +67,7 @@ SOFA_LINK_CLASS(Object)
 SOFA_LINK_CLASS(OglModel)
 SOFA_LINK_CLASS(OscillatorConstraint)
 SOFA_LINK_CLASS(PenalityContactForceField)
-SOFA_LINK_CLASS(PipelineSofa)
+SOFA_LINK_CLASS(DefaultPipeline)
 SOFA_LINK_CLASS(PlaneForceField)
 SOFA_LINK_CLASS(Point)
 SOFA_LINK_CLASS(PointSetTopology)
@@ -89,7 +89,6 @@ SOFA_LINK_CLASS(SpringEdgeDataForceField)
 SOFA_LINK_CLASS(StaticSolver)
 SOFA_LINK_CLASS(StiffSpringForceField)
 SOFA_LINK_CLASS(SurfaceIdentityMapping)
-SOFA_LINK_CLASS(SubsetMapping)
 SOFA_LINK_CLASS(TensorForceField)
 SOFA_LINK_CLASS(TetrahedronFEMForceField)
 SOFA_LINK_CLASS(ThreadSimulation)
@@ -103,6 +102,3 @@ SOFA_LINK_CLASS(SphereTreeModel)
 SOFA_LINK_CLASS(SingleSphere)
 //SOFA_LINK_CLASS(VoxelGrid)
 SOFA_LINK_CLASS(WashingMachineForceField)
-SOFA_LINK_CLASS(EdgeRemoveContact)
-SOFA_LINK_CLASS(ReadState)
-SOFA_LINK_CLASS(WriteState)

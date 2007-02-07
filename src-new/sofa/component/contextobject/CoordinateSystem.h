@@ -1,35 +1,48 @@
-#ifndef SOFA_COMPONENTS_COORDINATESYSTEM_H
-#define SOFA_COMPONENTS_COORDINATESYSTEM_H
+#ifndef SOFA_COMPONENT_CONTEXTOBJECT_COORDINATESYSTEM_H
+#define SOFA_COMPONENT_CONTEXTOBJECT_COORDINATESYSTEM_H
 // Author: François Faure, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
 
-#include <Sofa-old/Abstract/ContextObject.h>
-#include <Sofa-old/Abstract/VisualModel.h>
-#include <Sofa-old/Components/Common/SolidTypes.h>
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/defaulttype/SolidTypes.h>
 
-namespace Sofa
+namespace sofa
 {
-namespace Core
+namespace core
+{
+namespace objectmodel
 {
 class Context;
 class Topology;
 }
 
-namespace Components
+namespace componentmodel
 {
-namespace Graph
+class Topology;
+}
+}
+namespace simulation
+{
+namespace tree
 {
 class GNode;
 }
+}
 
+namespace component
+{
+
+namespace contextobject
+{
 
 /** Defines the local coordinate system with respect to its parent.
 */
-class CoordinateSystem : public Abstract::ContextObject, public Abstract::VisualModel
+class CoordinateSystem : public core::objectmodel::ContextObject, public core::VisualModel
 {
 public:
-    typedef Abstract::BaseContext::SolidTypes SolidTypes;
+    typedef core::objectmodel::BaseContext::SolidTypes SolidTypes;
     typedef SolidTypes::Vec Vec;
     typedef SolidTypes::Rot Rot;
     typedef SolidTypes::Mat Mat;
@@ -82,9 +95,11 @@ protected:
 
 };
 
-} // namespace Components
+} // namespace contextobject
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif
 

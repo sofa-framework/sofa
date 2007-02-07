@@ -1,34 +1,40 @@
-#include "LagrangianMultiplierFixedConstraint.inl"
-#include "Common/Vec3Types.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/constraint/LagrangianMultiplierFixedConstraint.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace constraint
 {
 
 SOFA_DECL_CLASS(LagrangianMultiplierFixedConstraint)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class LagrangianMultiplierFixedConstraint<Vec3dTypes>;
 template class LagrangianMultiplierFixedConstraint<Vec3fTypes>;
 
-namespace Common   // \todo Why this must be inside Common namespace
+namespace helper   // \todo Why this must be inside helper namespace
 {
 
 template<class DataTypes>
-void create(LagrangianMultiplierFixedConstraint<DataTypes>*& obj, ObjectDescription* arg)
+void create(LagrangianMultiplierFixedConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< LagrangianMultiplierFixedConstraint<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< LagrangianMultiplierFixedConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
 }
 
 }
 
-Creator< ObjectFactory, LagrangianMultiplierFixedConstraint<Vec3dTypes> > LagrangianMultiplierFixedConstraintVec3dClass("LagrangianMultiplierFixedConstraint", true);
-Creator< ObjectFactory, LagrangianMultiplierFixedConstraint<Vec3fTypes> > LagrangianMultiplierFixedConstraintVec3fClass("LagrangianMultiplierFixedConstraint", true);
+Creator<simulation::tree::xml::ObjectFactory, LagrangianMultiplierFixedConstraint<Vec3dTypes> > LagrangianMultiplierFixedConstraintVec3dClass("LagrangianMultiplierFixedConstraint", true);
+Creator<simulation::tree::xml::ObjectFactory, LagrangianMultiplierFixedConstraint<Vec3fTypes> > LagrangianMultiplierFixedConstraintVec3fClass("LagrangianMultiplierFixedConstraint", true);
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

@@ -1,13 +1,16 @@
-#include "BaseContext.h"
-#include "BaseObject.h"
+#include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
+{
+
+namespace objectmodel
 {
 
 BaseContext::BaseContext()
@@ -175,7 +178,7 @@ const BaseContext::Vec3& BaseContext::getVelocityBasedLinearAccelerationInWorld(
 
 
 /// Mechanical Degrees-of-Freedom
-BaseObject* BaseContext::getMechanicalModel() const
+BaseObject* BaseContext::getMechanicalState() const
 {
     return NULL;
 }
@@ -197,14 +200,15 @@ void BaseContext::propagateEvent( Event* )
     cerr<<"WARNING !!! BaseContext::propagateEvent not overloaded, does nothing"<<endl;
 }
 
-void BaseContext::executeAction( Components::Graph::Action* )
+void BaseContext::executeAction( simulation::tree::Action* )
 {
     cerr<<"WARNING !!! BaseContext::executeAction not overloaded, does nothing"<<endl;
 }
 
 
-} // namespace Abstract
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
 
+} // namespace sofa
 

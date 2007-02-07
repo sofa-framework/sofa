@@ -1,16 +1,16 @@
 #ifndef SOFA_CORE_MAPPING_H
 #define SOFA_CORE_MAPPING_H
 
-#include "BasicMapping.h"
+#include <sofa/core/BaseMapping.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
 template <class TIn, class TOut>
-class Mapping : public BasicMapping
+class Mapping : public BaseMapping
 {
 public:
     typedef TIn In;
@@ -24,8 +24,8 @@ public:
     Mapping(In* from, Out* to);
     virtual ~Mapping();
 
-    Abstract::BaseObject* getFrom();
-    Abstract::BaseObject* getTo();
+    objectmodel::BaseObject* getFrom();
+    objectmodel::BaseObject* getTo();
 
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
@@ -35,8 +35,8 @@ public:
     virtual void updateMapping();
 };
 
-} // namespace Core
+} // namespace core
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

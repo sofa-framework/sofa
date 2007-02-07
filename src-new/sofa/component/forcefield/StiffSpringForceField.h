@@ -1,15 +1,18 @@
 // Author: François Faure, INRIA-UJF, (C) 2006
 //
 // Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENTS_STIFFSPRINGFORCEFIELD_H
-#define SOFA_COMPONENTS_STIFFSPRINGFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_H
 
-#include "Sofa-old/Components/SpringForceField.h"
+#include <sofa/component/forcefield/SpringForceField.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
@@ -43,12 +46,12 @@ protected:
     void addSpringDForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& dx1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& dx2, int i, const Spring& spring);
 
 public:
-    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object1, Core::MechanicalModel<DataTypes>* object2, double ks=100.0, double kd=5.0)
+    StiffSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2, double ks=100.0, double kd=5.0)
         : SpringForceField<DataTypes>(object1, object2, ks, kd)
     {
     }
 
-    StiffSpringForceField(Core::MechanicalModel<DataTypes>* object, double ks=100.0, double kd=5.0)
+    StiffSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object, double ks=100.0, double kd=5.0)
         : SpringForceField<DataTypes>(object, ks, kd)
     {
     }
@@ -62,8 +65,10 @@ public:
     virtual double getPotentialEnergy() { return m_potentialEnergy; }
 };
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

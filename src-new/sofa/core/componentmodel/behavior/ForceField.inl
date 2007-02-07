@@ -1,17 +1,23 @@
-#ifndef SOFA_CORE_FORCEFIELD_INL
-#define SOFA_CORE_FORCEFIELD_INL
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_FORCEFIELD_INL
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_FORCEFIELD_INL
 
-#include "ForceField.h"
+#include <sofa/core/objectmodel/Field.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
+{
+
+namespace componentmodel
+{
+
+namespace behavior
 {
 
 template<class DataTypes>
-ForceField<DataTypes>::ForceField(MechanicalModel<DataTypes> *mm)
-    : mmodel(mm)
+ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)
+    : mstate(mm)
 {
 }
 
@@ -23,35 +29,39 @@ ForceField<DataTypes>::~ForceField()
 template<class DataTypes>
 void ForceField<DataTypes>::init()
 {
-    BasicForceField::init();
-    mmodel = dynamic_cast< MechanicalModel<DataTypes>* >(getContext()->getMechanicalModel());
+    BaseForceField::init();
+    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
 
 template<class DataTypes>
 void ForceField<DataTypes>::addForce()
 {
-    if (mmodel)
-        addForce(*mmodel->getF(), *mmodel->getX(), *mmodel->getV());
+    if (mstate)
+        addForce(*mstate->getF(), *mstate->getX(), *mstate->getV());
 }
 
 template<class DataTypes>
 void ForceField<DataTypes>::addDForce()
 {
-    if (mmodel)
-        addDForce(*mmodel->getF(), *mmodel->getDx());
+    if (mstate)
+        addDForce(*mstate->getF(), *mstate->getDx());
 }
 
 
 template<class DataTypes>
 double ForceField<DataTypes>::getPotentialEnergy()
 {
-    if (mmodel)
-        return getPotentialEnergy(*mmodel->getX());
+    if (mstate)
+        return getPotentialEnergy(*mstate->getX());
     else return 0;
 }
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

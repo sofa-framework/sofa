@@ -1,24 +1,27 @@
-#include "SparseGridSpringForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/forcefield/SparseGridSpringForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 SOFA_DECL_CLASS(SparseGridSpringForceField)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class SparseGridSpringForceField<Vec3dTypes>;
 template class SparseGridSpringForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(SparseGridSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(SparseGridSpringForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< SparseGridSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< SparseGridSpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("stiffness")) obj->setStiffness((typename DataTypes::Coord::value_type)atof(arg->getAttribute("stiffness")));
@@ -34,9 +37,12 @@ void create(SparseGridSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, SparseGridSpringForceField<Vec3dTypes> > SparseGridSpringForceFieldVec3dClass("SparseGridSpringForceField", true);
-Creator< ObjectFactory, SparseGridSpringForceField<Vec3fTypes> > SparseGridSpringForceFieldVec3fClass("SparseGridSpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, SparseGridSpringForceField<Vec3dTypes> > SparseGridSpringForceFieldVec3dClass("SparseGridSpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, SparseGridSpringForceField<Vec3fTypes> > SparseGridSpringForceFieldVec3fClass("SparseGridSpringForceField", true);
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

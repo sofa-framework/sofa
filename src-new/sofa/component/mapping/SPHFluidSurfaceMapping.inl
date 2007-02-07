@@ -1,30 +1,33 @@
-#ifndef SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_INL
-#define SOFA_COMPONENTS_SPHFLUIDSURFACEMAPPING_INL
+#ifndef SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_SPHFLUIDSURFACEMAPPING_INL
 
-#include "SPHFluidSurfaceMapping.h"
-#include "SpatialGridContainer.inl"
-
-#include "Sofa-old/Core/Mapping.inl"
-#include "Common/rmath.h"
-#include "Graph/GNode.h"
-#include "GL/template.h"
-
+#include <sofa/component/mapping/SPHFluidSurfaceMapping.h>
+#include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.inl>
+#include <sofa/core/Mapping.inl>
+#include <sofa/helper/rmath.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/helper/gl/template.h>
 #include <map>
 #include <list>
 
-namespace Sofa
+
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace mapping
+{
+
+using namespace sofa::defaulttype;
 
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::init()
 {
     this->Inherit::init();
-    Graph::GNode* node = dynamic_cast<Graph::GNode*>(this->getFrom()->getContext());
+    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(this->getFrom()->getContext());
     if (node)
     {
         //the following line produces a compilation error with GCC 3.3 :(
@@ -409,8 +412,10 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
     //glLineSize(1);
 }
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

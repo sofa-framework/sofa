@@ -1,18 +1,21 @@
-#include "Fluid3D.h"
-#include <Sofa-old/Components/GL/template.h>
-#include <Sofa-old/Components/Common/ObjectFactory.h>
+#include <sofa/component/behaviormodel/eulerianfluid/Fluid3D.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Contrib
+namespace component
 {
 
-namespace FluidGrid
+namespace behaviormodel
 {
 
-void create(Fluid3D*& obj, ObjectDescription* arg)
+namespace eulerianfluid
+{
+
+void create(Fluid3D*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new Fluid3D;
     obj->parseFields( arg->getAttributeMap() );
@@ -20,7 +23,7 @@ void create(Fluid3D*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(Fluid3D)
 
-Creator<ObjectFactory, Fluid3D> Fluid3DClass("Fluid3D");
+Creator<simulation::tree::xml::ObjectFactory, Fluid3D> Fluid3DClass("Fluid3D");
 
 Fluid3D::Fluid3D()
     : nx(16), ny(16), nz(16), cellwidth(1.0f),
@@ -372,7 +375,7 @@ void Fluid3D::update()
                 if (data[i         ]>iso) mk|= 64;
                 if (data[i-dx      ]>iso) mk|= 128;
 
-                tri=Sofa::Components::MarchingCubeTriTable[mk];
+                tri = component::mapping::MarchingCubeTriTable[mk];
                 while (*tri>=0)
                 {
                     int* b = base+3*i;
@@ -427,8 +430,11 @@ bool Fluid3D::addBBox(double* minBBox, double* maxBBox)
     return true;
 }
 
-} // namespace FluidGrid
+} // namespace eulerianfluid
 
-} // namespace Contrib
+} // namespace behaviormodel
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

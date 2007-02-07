@@ -1,41 +1,44 @@
-#ifndef SOFA_COMPONENTS_RAYCONTACT_H
-#define SOFA_COMPONENTS_RAYCONTACT_H
+#ifndef SOFA_COMPONENT_COLLISION_RAYCONTACT_H
+#define SOFA_COMPONENT_COLLISION_RAYCONTACT_H
 
-#include "Collision/Contact.h"
-#include "Common/Factory.h"
+#include <sofa/core/componentmodel/collision/Contact.h>
+#include <sofa/helper/Factory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace collision
+{
+
+using namespace sofa::defaulttype;
 
 class RayModel;
 
-class BaseRayContact : public Collision::Contact
+class BaseRayContact : public core::componentmodel::collision::Contact
 {
 public:
     typedef RayModel CollisionModel1;
 
 protected:
     CollisionModel1* model1;
-    std::vector<Collision::DetectionOutput*> collisions;
+    std::vector<core::componentmodel::collision::DetectionOutput*> collisions;
 
 public:
-    BaseRayContact(CollisionModel1* model1, Collision::Intersection* instersectionMethod);
+    BaseRayContact(CollisionModel1* model1, core::componentmodel::collision::Intersection* instersectionMethod);
 
     ~BaseRayContact();
 
-    void setDetectionOutputs(const std::vector<Collision::DetectionOutput*>& outputs)
+    void setDetectionOutputs(const std::vector<core::componentmodel::collision::DetectionOutput*>& outputs)
     {
         collisions = outputs;
     }
 
-    const std::vector<Collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
+    const std::vector<core::componentmodel::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
 
-    void createResponse(Abstract::BaseContext* /*group*/)
+    void createResponse(core::objectmodel::BaseContext* /*group*/)
     {
     }
 
@@ -50,21 +53,23 @@ class RayContact : public BaseRayContact
 public:
     typedef RayModel CollisionModel1;
     typedef CM2 CollisionModel2;
-    typedef Collision::Intersection Intersection;
+    typedef core::componentmodel::collision::Intersection Intersection;
 protected:
     CollisionModel2* model2;
-    Abstract::BaseContext* parent;
+    core::objectmodel::BaseContext* parent;
 public:
     RayContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : BaseRayContact(model1, intersectionMethod), model2(model2)
     {
     }
 
-    std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
+    std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
 };
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

@@ -1,26 +1,32 @@
-#include "Contact.h"
-#include "../Common/Factory.inl"
+#include <sofa/core/componentmodel/collision/Contact.h>
+#include <sofa/helper/Factory.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace core
 {
 
-namespace Collision
+namespace componentmodel
 {
 
-using namespace Common;
+namespace collision
+{
 
-//template class Factory< std::string, Contact, std::pair<Abstract::CollisionModel*,Abstract::CollisionModel*> >;
+using namespace sofa::defaulttype;
 
-Contact* Contact::Create(const std::string& type, Abstract::CollisionModel* model1, Abstract::CollisionModel* model2, Intersection* intersectionMethod)
+//template class Factory< std::string, Contact, std::pair<core::CollisionModel*,core::CollisionModel*> >;
+
+Contact* Contact::Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod)
 {
     return Factory::CreateObject(type,std::make_pair(std::make_pair(model1,model2),intersectionMethod));
 }
 
-} // namespace Collision
+} // namespace collision
 
-} // namespace Components
+} // namespace componentmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
+

@@ -1,14 +1,14 @@
-#ifndef SOFA_ABSTRACT_COLLISIONMODEL_H
-#define SOFA_ABSTRACT_COLLISIONMODEL_H
+#ifndef SOFA_CORE_COLLISIONMODEL_H
+#define SOFA_CORE_COLLISIONMODEL_H
 
 #include <vector>
-#include "BaseObject.h"
-#include "CollisionElement.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/CollisionElement.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
 {
 
 /// Abstract CollisionModel interface.
@@ -31,7 +31,7 @@ namespace Abstract
 /// * external children: child elements of a different type (often corresponding
 ///   to the final elements)
 ///
-class CollisionModel : public virtual BaseObject
+class CollisionModel : public virtual objectmodel::BaseObject
 {
 public:
 
@@ -229,8 +229,8 @@ protected:
     }
 };
 
-} // namespace Abstract
+} // namespace core
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

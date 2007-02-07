@@ -1,13 +1,16 @@
 #include <iostream>
-#include "Grid3D.h"
+#include <sofa/component/behaviormodel/eulerianfluid/Grid3D.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Contrib
+namespace component
 {
 
-namespace FluidGrid
+namespace behaviormodel
+{
+
+namespace eulerianfluid
 {
 
 const unsigned long* Grid3D::obstacles = NULL;
@@ -1069,8 +1072,11 @@ void Grid3D::step_project(const Grid3D* prev, Grid3D* temp, real dt, real /*diff
     //  std::cout << "STEP: max pressure "<<max_pressure<<'\n';
 }
 
-} // namespace FluidGrid
+} // namespace eulerianfluid
 
-} // namespace Contrib
+} // namespace behaviormodel
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

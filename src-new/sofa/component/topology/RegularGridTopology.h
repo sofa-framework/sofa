@@ -1,16 +1,19 @@
-#ifndef SOFA_COMPONENTS_REGULARGRIDTOPOLOGY_H
-#define SOFA_COMPONENTS_REGULARGRIDTOPOLOGY_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_REGULARGRIDTOPOLOGY_H
+#define SOFA_COMPONENT_TOPOLOGY_REGULARGRIDTOPOLOGY_H
 
-#include "GridTopology.h"
-#include "Common/Vec.h"
+#include <sofa/component/topology/GridTopology.h>
+#include <sofa/defaulttype/Vec.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace topology
+{
+
+using namespace sofa::defaulttype;
 
 class RegularGridTopology : public GridTopology
 {
@@ -61,8 +64,10 @@ protected:
     double inv_dx2, inv_dy2, inv_dz2;
 };
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

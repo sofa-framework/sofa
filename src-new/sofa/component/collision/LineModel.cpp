@@ -1,19 +1,23 @@
-#include "LineModel.h"
-#include "CubeModel.h"
-#include "Line.h"
-#include "Sofa-old/Abstract/CollisionElement.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/collision/LineModel.h>
+#include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/Line.h>
+#include <sofa/core/CollisionElement.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <vector>
 #include <GL/gl.h>
 
-namespace Sofa
+namespace sofa
 {
-namespace Components
+
+namespace component
+{
+
+namespace collision
 {
 
 SOFA_DECL_CLASS(Line)
 
-void create(LineModel*& obj, ObjectDescription* arg)
+void create(LineModel*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new LineModel;
     if (obj!=NULL)
@@ -22,25 +26,25 @@ void create(LineModel*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, LineModel > LineModelClass("Line");
+Creator<simulation::tree::xml::ObjectFactory, LineModel > LineModelClass("Line");
 
 LineModel::LineModel()
-    : static_(false), meshRevision(-1), mmodel(NULL), mesh(NULL)
+    : static_(false), meshRevision(-1), mstate(NULL), mesh(NULL)
 {
 }
 
 void LineModel::resize(int size)
 {
-    this->Abstract::CollisionModel::resize(size);
+    this->core::CollisionModel::resize(size);
     elems.resize(size);
 }
 
 void LineModel::init()
 {
-    mmodel = dynamic_cast< Core::MechanicalModel<Vec3Types>* > (getContext()->getMechanicalModel());
+    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     mesh = dynamic_cast< MeshTopology* > (getContext()->getTopology());
 
-    if (mmodel==NULL)
+    if (mstate==NULL)
     {
         std::cerr << "ERROR: LineModel requires a Vec3 Mechanical Model.\n";
         return;
@@ -59,12 +63,12 @@ bool LineModel::updateFromTopology()
     int revision = mesh->getRevision();
     if (revision == meshRevision) return false;
 
-    const int npoints = mmodel->getX()->size();
+    const int npoints = mstate->getX()->size();
     const int nlines = mesh->getNbLines();
     resize(nlines);
     int index = 0;
-    //VecCoord& x = *mmodel->getX();
-    //VecDeriv& v = *mmodel->getV();
+    //VecCoord& x = *mstate->getX();
+    //VecDeriv& v = *mstate->getV();
     for (int i=0; i<nlines; i++)
     {
         MeshTopology::Line idx = mesh->getLine(i);
@@ -114,8 +118,8 @@ void LineModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
+    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
 void LineModel::computeBoundingTree(int maxDepth)
@@ -189,7 +193,9 @@ void LineModel::computeContinuousBoundingTree(double dt, int maxDepth)
     }
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 

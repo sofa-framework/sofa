@@ -1,19 +1,23 @@
-#include "TriangleModel.h"
-#include "CubeModel.h"
-#include "Triangle.h"
-#include "Sofa-old/Abstract/CollisionElement.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/Triangle.h>
+#include <sofa/core/CollisionElement.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <vector>
 #include <GL/gl.h>
 
-namespace Sofa
+namespace sofa
 {
-namespace Components
+
+namespace component
+{
+
+namespace collision
 {
 
 SOFA_DECL_CLASS(Triangle)
 
-void create(TriangleModel*& obj, ObjectDescription* arg)
+void create(TriangleModel*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new TriangleModel;
     if (obj!=NULL)
@@ -22,25 +26,25 @@ void create(TriangleModel*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, TriangleModel > TriangleModelClass("Triangle");
+Creator<simulation::tree::xml::ObjectFactory, TriangleModel > TriangleModelClass("Triangle");
 
 TriangleModel::TriangleModel()
-    : static_(false), meshRevision(-1), mmodel(NULL), mesh(NULL)
+    : static_(false), meshRevision(-1), mstate(NULL), mesh(NULL)
 {
 }
 
 void TriangleModel::resize(int size)
 {
-    this->Abstract::CollisionModel::resize(size);
+    this->core::CollisionModel::resize(size);
     elems.resize(size);
 }
 
 void TriangleModel::init()
 {
-    mmodel = dynamic_cast< Core::MechanicalModel<Vec3Types>* > (getContext()->getMechanicalModel());
-    mesh = dynamic_cast< MeshTopology* > (getContext()->getTopology());
+    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    mesh = dynamic_cast< topology::MeshTopology* > (getContext()->getTopology());
 
-    if (mmodel==NULL)
+    if (mstate==NULL)
     {
         std::cerr << "ERROR: TriangleModel requires a Vec3 Mechanical Model.\n";
         return;
@@ -57,7 +61,7 @@ void TriangleModel::init()
 
 bool TriangleModel::updateFromTopology()
 {
-    const int npoints = mmodel->getX()->size();
+    const int npoints = mstate->getX()->size();
     const int ntris = mesh->getNbTriangles();
     const int nquads = mesh->getNbQuads();
     const int newsize = ntris+2*nquads;
@@ -67,11 +71,11 @@ bool TriangleModel::updateFromTopology()
 
     resize(newsize);
     int index = 0;
-    //VecCoord& x = *mmodel->getX();
-    //VecDeriv& v = *mmodel->getV();
+    //VecCoord& x = *mstate->getX();
+    //VecDeriv& v = *mstate->getV();
     for (int i=0; i<ntris; i++)
     {
-        MeshTopology::Triangle idx = mesh->getTriangle(i);
+        topology::MeshTopology::Triangle idx = mesh->getTriangle(i);
         if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
         {
             std::cerr << "ERROR: Out of range index in triangle "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" ( total points="<<npoints<<")\n";
@@ -84,7 +88,7 @@ bool TriangleModel::updateFromTopology()
     }
     for (int i=0; i<nquads; i++)
     {
-        MeshTopology::Quad idx = mesh->getQuad(i);
+        topology::MeshTopology::Quad idx = mesh->getQuad(i);
         if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
         {
             std::cerr << "ERROR: Out of range index in quad "<<i<<": "<<idx[0]<<" "<<idx[1]<<" "<<idx[2]<<" "<<idx[3]<<" ( total points="<<npoints<<")\n";
@@ -147,8 +151,8 @@ void TriangleModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    //if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
-    //	dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
+    //if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+    //	dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
 void TriangleModel::computeBoundingTree(int maxDepth)
@@ -239,7 +243,9 @@ void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
     }
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 

@@ -1,58 +1,61 @@
-#include "NodeNode.h"
-#include "ObjectNode.h"
-#include "Node.inl"
+#include <sofa/simulation/tree/xml/NodeElement.h>
+#include <sofa/simulation/tree/xml/ObjectElement.h>
+#include <sofa/simulation/tree/xml/Element.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace XML
+namespace tree
 {
 
-using namespace Common;
+namespace xml
+{
 
-//template class Factory< std::string, Abstract::BaseNode, Node<Abstract::BaseNode*>* >;
+using namespace sofa::defaulttype;
 
-NodeNode::NodeNode(const std::string& name, const std::string& type, BaseNode* parent)
-    : Node<Abstract::BaseNode>(name, type, parent)
+//template class Factory< std::string, xml::BaseElement, Node<xml::BaseElement*>* >;
+
+NodeElement::NodeNode(const std::string& name, const std::string& type, BaseElement* parent)
+    : Node<xml::BaseElement>(name, type, parent)
 {
 }
 
-NodeNode::~NodeNode()
+NodeElement::~NodeNode()
 {
 }
 
-bool NodeNode::setParent(BaseNode* newParent)
+bool NodeElement::setParent(BaseElement* newParent)
 {
     if (newParent != NULL && dynamic_cast<NodeNode*>(newParent)==NULL)
         return false;
     else
-        return Node<Abstract::BaseNode>::setParent(newParent);
+        return Node<xml::BaseElement>::setParent(newParent);
 }
 
-bool NodeNode::initNode()
+bool NodeElement::initNode()
 {
-    if (!Node<Abstract::BaseNode>::initNode()) return false;
-    if (getObject()!=NULL && getParent()!=NULL && dynamic_cast<Abstract::BaseNode*>(getParent()->getBaseObject())!=NULL)
+    if (!Node<xml::BaseElement>::initNode()) return false;
+    if (getObject()!=NULL && getParent()!=NULL && dynamic_cast<xml::BaseElement*>(getParent()->getBaseObject())!=NULL)
     {
         std::cout << "Adding Child "<<getName()<<" to "<<getParent()->getName()<<std::endl;
-        dynamic_cast<Abstract::BaseNode*>(getParent()->getBaseObject())->addChild(getObject());
+        dynamic_cast<xml::BaseElement*>(getParent()->getBaseObject())->addChild(getObject());
     }
     return true;
 }
 
-bool NodeNode::init()
+bool NodeElement::init()
 {
-    bool res = Node<Abstract::BaseNode>::init();
+    bool res = Node<xml::BaseElement>::init();
     /*
     if (getObject()!=NULL)
     {
     	for (child_iterator<> it = begin();
     				it != end(); ++it)
     	{
-    		Abstract::BaseObject* obj = dynamic_cast<Abstract::BaseObject*>(it->getBaseObject());
+    		objectmodel::BaseObject* obj = dynamic_cast<objectmodel::BaseObject*>(it->getBaseObject());
     		if (obj!=NULL)
     		{
     			std::cout << "Adding Object "<<it->getName()<<" to "<<getName()<<std::endl;
@@ -66,17 +69,20 @@ bool NodeNode::init()
 
 SOFA_DECL_CLASS(Node)
 
-Creator<BaseNode::NodeFactory, NodeNode> NodeNodeClass("Node");
-Creator<BaseNode::NodeFactory, NodeNode> NodeBodyClass("Body");
-Creator<BaseNode::NodeFactory, NodeNode> NodeGClass("G");
+Creator<BaseElement::NodeFactory, NodeNode> NodeNodeClass("Node");
+Creator<BaseElement::NodeFactory, NodeNode> NodeBodyClass("Body");
+Creator<BaseElement::NodeFactory, NodeNode> NodeGClass("G");
 
-const char* NodeNode::getClass() const
+const char* NodeElement::getClass() const
 {
     return NodeNodeClass.c_str();
 }
 
-} // namespace XML
+} // namespace xml
 
-} // namespace Components
+} // namespace tree
 
-} // namespace Sofa
+} // namespace simulation
+
+} // namespace sofa
+

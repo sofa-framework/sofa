@@ -1,27 +1,30 @@
-#include "MultiResSparseGridTopology.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/topology/MultiResSparseGridTopology.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <GL/gl.h>
+#include <string>
+#include <fstream>
 #ifdef WIN32
 #include <windows.h>
 #endif
-#include <GL/gl.h>
-using Sofa::Components::Common::Vec3f;
-#include <string>
-#include <fstream>
+using sofa::defaulttype::Vec3f;
 using std::ifstream;
 using std::string;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace topology
+{
+
+using namespace sofa::defaulttype;
 using std::cerr;
 using std::cout;
 using std::endl;
 
-void create(MultiResSparseGridTopology*& obj, ObjectDescription* arg)
+void create(MultiResSparseGridTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     const char* nx = arg->getAttribute("nx","1.0");
     const char* ny = arg->getAttribute("ny","1.0");
@@ -47,7 +50,7 @@ void create(MultiResSparseGridTopology*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(MultiResSparseGridTopology)
 
-Creator<ObjectFactory, MultiResSparseGridTopology> MultiResSparseGridTopologyClass("MultiResSparseGridTopology");
+Creator<simulation::tree::xml::ObjectFactory, MultiResSparseGridTopology> MultiResSparseGridTopologyClass("MultiResSparseGridTopology");
 
 MultiResSparseGridTopology::MultiResSparseGridTopology()//:GridTopology(nx,ny,nz)
 {}
@@ -817,6 +820,9 @@ float MultiResSparseGridTopology::SparseGrid::getDensity(int i, int j, int k)
 
 
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

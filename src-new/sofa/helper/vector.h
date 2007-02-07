@@ -1,16 +1,15 @@
-#ifndef SOFA_COMPONENTS_COMMON_VECTOR_H
-#define SOFA_COMPONENTS_COMMON_VECTOR_H
+#ifndef SOFA_HELPER_VECTOR_H
+#define SOFA_HELPER_VECTOR_H
 
 #include <vector>
 #include <algorithm>
 #include <cassert>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
-namespace Components
-{
-namespace Common
+
+namespace helper
 {
 
 //======================================================================
@@ -67,7 +66,7 @@ public:
 /// Read/write random access
     reference operator[](size_type n)
     {
-#ifndef NDEBUG
+#ifndef SOFA_HELPER_VECTOR_H
         assert( n<this->size() );
 #endif
         return *(this->begin() + n);
@@ -76,7 +75,7 @@ public:
 /// Read-only random access
     const_reference operator[](size_type n) const
     {
-#ifndef NDEBUG
+#ifndef SOFA_HELPER_VECTOR_H
         assert( n<this->size() );
 #endif
         return *(this->begin() + n);
@@ -155,7 +154,7 @@ void removeValue( T1& v, const T2& elem )
 template<class T, class TT>
 void removeIndex( std::vector<T,TT>& v, size_t index )
 {
-#ifndef NDEBUG
+#ifndef SOFA_HELPER_VECTOR_H
     assert( 0<= static_cast<int>(index) && index <v.size() );
 #endif
     v[index] = v.back();
@@ -166,12 +165,9 @@ void removeIndex( std::vector<T,TT>& v, size_t index )
 
 //@}
 
+} // namespace helper
 
-
-
-} // ==============================   end namespace Common
-} // ==============================   end namespace Components
-} // ==============================   end namespace Sofa
+} // namespace sofa
 
 
 

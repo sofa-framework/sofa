@@ -1,18 +1,24 @@
-#ifndef SOFA_CORE_BASICMASS_H
-#define SOFA_CORE_BASICMASS_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEMASS_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEMASS_H
 
-#include "Sofa-old/Abstract/BaseObject.h"
+#include <sofa/core/objectmodel/BaseObject.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
-class BasicMass : public virtual Abstract::BaseObject
+namespace componentmodel
+{
+
+namespace behavior
+{
+
+class BaseMass : public virtual objectmodel::BaseObject
 {
 public:
-    virtual ~BasicMass() { }
+    virtual ~BaseMass() { }
 
     virtual void addMDx() = 0; ///< f += M dx using dof->getF() and dof->getDx()
 
@@ -22,8 +28,12 @@ public:
 
 };
 
-} // namespace Core
+} // namespace behavior
 
-} // namespace Sofa
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
 
 #endif

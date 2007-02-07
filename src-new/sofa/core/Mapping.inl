@@ -1,12 +1,12 @@
 #ifndef SOFA_CORE_MAPPING_INL
 #define SOFA_CORE_MAPPING_INL
 
-#include "Mapping.h"
+#include <sofa/core/Mapping.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Core
+namespace core
 {
 
 template <class In, class Out>
@@ -21,13 +21,13 @@ Mapping<In,Out>::~Mapping()
 }
 
 template <class In, class Out>
-Abstract::BaseObject* Mapping<In,Out>::getFrom()
+objectmodel::BaseObject* Mapping<In,Out>::getFrom()
 {
     return this->fromModel;
 }
 
 template <class In, class Out>
-Abstract::BaseObject* Mapping<In,Out>::getTo()
+objectmodel::BaseObject* Mapping<In,Out>::getTo()
 {
     return this->toModel;
 }
@@ -54,8 +54,8 @@ void Mapping<In,Out>::updateMapping()
     }
 }
 
-} // namespace Core
+} // namespace core
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

@@ -1,20 +1,23 @@
-#ifndef SOFA_COMPONENTS_WashingMachineForceField_H
-#define SOFA_COMPONENTS_WashingMachineForceField_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
 
-#include "Sofa-old/Core/ForceField.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include "PlaneForceField.h"
+#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/component/forcefield/PlaneForceField.h>
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template<class DataTypes>
-class WashingMachineForceField : public Core::ForceField<DataTypes>, public Abstract::VisualModel
+class WashingMachineForceField : public Core::ForceField<DataTypes>, public core::VisualModel
 {
 public:
     typedef Core::ForceField<DataTypes> Inherit;
@@ -26,17 +29,17 @@ public:
     typedef PlaneForceField<DataTypes> PlaneForceField;
 
 protected:
-    Common::DataField<Coord> _center;
-    Common::DataField<Deriv> _size;
-    Common::DataField<Real> _speed;
+    core::objectmodel::DataField<Coord> _center;
+    core::objectmodel::DataField<Deriv> _size;
+    core::objectmodel::DataField<Real> _speed;
 
-    Common::DataField<Real> _stiffness;
-    Common::DataField<Real> _damping;
+    core::objectmodel::DataField<Real> _stiffness;
+    core::objectmodel::DataField<Real> _damping;
 
-    Common::Vec<6,PlaneForceField*> _planes;
+    defaulttype::Vec<6,PlaneForceField*> _planes;
 
 public:
-    WashingMachineForceField(Core::MechanicalModel<DataTypes>* object=NULL, const std::string& /*name*/="")
+    WashingMachineForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object=NULL, const std::string& /*name*/="")
         : Core::ForceField<DataTypes>(object)
         , _center(dataField(&_center, Coord(0,0,0), "center", "box center"))
         , _size(dataField(&_size, Deriv(1,1,1), "size", "box size"))
@@ -58,7 +61,7 @@ public:
     {
         for(int i=0; i<6; ++i)
         {
-            _planes[i] = new PlaneForceField(this->mmodel);
+            _planes[i] = new PlaneForceField(this->mstate);
             _planes[i]->setStiffness(_stiffness.getValue());
             _planes[i]->setDamping(_damping.getValue());
         }
@@ -96,9 +99,11 @@ public:
     bool addBBox(double* minBBox, double* maxBBox);
 };
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif
 //

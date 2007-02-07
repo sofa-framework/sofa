@@ -1,21 +1,24 @@
-#ifndef SOFA_COMPONENTS_DIAGONALMASS_INL
-#define SOFA_COMPONENTS_DIAGONALMASS_INL
+#ifndef SOFA_COMPONENT_MASS_DIAGONALMASS_INL
+#define SOFA_COMPONENT_MASS_DIAGONALMASS_INL
 
-#include "DiagonalMass.h"
-#include "MassSpringLoader.h"
-#include "GL/template.h"
-#include "Common/RigidTypes.h"
-#include "Topology/EdgeSetTopology.h"
-#include "Topology/TopologyChangedEvent.h"
+#include <sofa/component/mass/DiagonalMass.h>
+#include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/topology/EdgeSetTopology.h>
+#include <sofa/component/topology/TopologyChangedEvent.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Sofa::Core;
+namespace mass
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::behavior;
 
 
 template<class MassType>
@@ -29,12 +32,12 @@ void MassPointCreationFunction(int ,
 
 template< class DataTypes, class MassType>
 inline void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
-        void* param, Common::vector<MassType> &masses)
+        void* param, helper::vector<MassType> &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
     {
-        EdgeSetTopology<DataTypes> *est = dynamic_cast<Sofa::Components::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
+        EdgeSetTopology<DataTypes> *est = dynamic_cast<sofa::Components::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(est!=0);
         EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
         const std::vector<Edge> &edgeArray=container->getEdgeArray();
@@ -59,17 +62,17 @@ inline void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
 
 template <>
 inline void MassEdgeCreationFunction<RigidTypes, RigidMass>(const std::vector<unsigned int> &,
-        void* , Common::vector<RigidMass> &)
+        void* , helper::vector<RigidMass> &)
 {
 }
 template< class DataTypes, class MassType>
 inline void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved,
-        void* param, Common::vector<MassType> &masses)
+        void* param, helper::vector<MassType> &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
     {
-        EdgeSetTopology<DataTypes> *est = dynamic_cast<Sofa::Components::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
+        EdgeSetTopology<DataTypes> *est = dynamic_cast<sofa::Components::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(est!=0);
         EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
         const std::vector<Edge> &edgeArray=container->getEdgeArray();
@@ -94,7 +97,7 @@ inline void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved
 
 template <>
 inline void MassEdgeDestroyFunction<RigidTypes, RigidMass>(const std::vector<unsigned int> &,
-        void* , Common::vector<RigidMass> &)
+        void* , helper::vector<RigidMass> &)
 {
 }
 
@@ -109,8 +112,8 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
 
 
 template <class DataTypes, class MassType>
-DiagonalMass<DataTypes, MassType>::DiagonalMass(Core::MechanicalModel<DataTypes>* mmodel, const std::string& /*name*/)
-    : Core::Mass<DataTypes>(mmodel)
+DiagonalMass<DataTypes, MassType>::DiagonalMass(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate, const std::string& /*name*/)
+    : core::componentmodel::behavior::Mass<DataTypes>(mstate)
     , f_mass( dataField(&f_mass, "mass", "values of the particles' masses") )
     , m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
     , topologyType(TOPOLOGY_UNKNOWN)
@@ -201,7 +204,7 @@ void DiagonalMass<DataTypes, MassType>::handleEvent( Event *event )
     /// test that the event is a change of topology and that it
     if ((tce) && (tce->getTopology()== getContext()->getMainTopology()))
     {
-        BasicTopology *topology = static_cast<BasicTopology *>(getContext()->getMainTopology());
+        BaseTopology *topology = static_cast<BaseTopology *>(getContext()->getMainTopology());
 
         std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
         std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
@@ -236,7 +239,7 @@ void DiagonalMass<DataTypes, MassType>::init()
     {
         /// check that the topology is of type EdgeSet
         /// \todo handle other types of topology
-        Sofa::Components::EdgeSetTopology<DataTypes> *est = dynamic_cast<Sofa::Components::EdgeSetTopology<DataTypes>*>(getContext()->getMainTopology());
+        sofa::Components::EdgeSetTopology<DataTypes> *est = dynamic_cast<sofa::Components::EdgeSetTopology<DataTypes>*>(getContext()->getMainTopology());
         assert(est!=0);
         VecMass& masses = *f_mass.beginEdit();
         topologyType=TOPOLOGY_EDGESET;
@@ -296,7 +299,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
-    const VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(2);
     glColor4f (1,1,1,1);
@@ -311,7 +314,7 @@ void DiagonalMass<DataTypes, MassType>::draw()
 template <class DataTypes, class MassType>
 bool DiagonalMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
 {
-    const VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
         //const Coord& p = x[i];
@@ -364,8 +367,10 @@ template <>
 void DiagonalMass<RigidTypes, RigidMass>::handleEvent( Event *event );
 
 
-} // namespace Components
+} // namespace mass
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

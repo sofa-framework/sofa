@@ -1,31 +1,34 @@
-#ifndef SOFA_COMPONENTS_DISCRETEINTERSECTION_H
-#define SOFA_COMPONENTS_DISCRETEINTERSECTION_H
+#ifndef SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
+#define SOFA_COMPONENT_COLLISION_DISCRETEINTERSECTION_H
 
-#include "Collision/Intersection.h"
-#include "Common/FnDispatcher.h"
-#include "SphereModel.h"
-#include "LineModel.h"
-#include "TriangleModel.h"
-#include "CubeModel.h"
-#include "RayModel.h"
-#include "SphereTreeModel.h"
+#include <sofa/core/componentmodel/collision/Intersection.h>
+#include <sofa/helper/FnDispatcher.h>
+#include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/LineModel.h>
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/CubeModel.h>
+#include <sofa/component/collision/RayModel.h>
+#include <sofa/component/collision/SphereTreeModel.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-class DiscreteIntersection : public Collision::Intersection
+namespace collision
+{
+
+class DiscreteIntersection : public core::componentmodel::collision::Intersection
 {
 public:
     DiscreteIntersection();
 
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-    virtual Collision::ElementIntersector* findIntersector(Abstract::CollisionModel* object1, Abstract::CollisionModel* object2);
+    virtual core::componentmodel::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2);
 
 protected:
-    Collision::IntersectorMap intersectors;
+    core::componentmodel::collision::IntersectorMap intersectors;
 };
 
 // Jeremie A. : put the methods inside a namespace instead of a class,
@@ -48,20 +51,21 @@ bool intersectionSingleSphereTriangle(SingleSphere&, Triangle&);
 
 
 
-Collision::DetectionOutput* distCorrectionCubeCube(Cube&, Cube&);
-Collision::DetectionOutput* distCorrectionSphereSphere(Sphere&, Sphere&);
-Collision::DetectionOutput* distCorrectionSingleSphereSingleSphere(SingleSphere&, SingleSphere&);
-Collision::DetectionOutput* distCorrectionSphereRay(Sphere&, Ray&);
-Collision::DetectionOutput* distCorrectionSingleSphereRay(SingleSphere&, Ray&);
-Collision::DetectionOutput* distCorrectionSingleSphereCube(SingleSphere&, Cube&);
-Collision::DetectionOutput* distCorrectionSingleSphereTriangle(SingleSphere&, Triangle&);
-//Collision::DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&);
-//Collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle&, Triangle&);
+core::componentmodel::collision::DetectionOutput* distCorrectionCubeCube(Cube&, Cube&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSphereSphere(Sphere&, Sphere&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSingleSphereSingleSphere(SingleSphere&, SingleSphere&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSphereRay(Sphere&, Ray&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSingleSphereRay(SingleSphere&, Ray&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSingleSphereCube(SingleSphere&, Cube&);
+core::componentmodel::collision::DetectionOutput* distCorrectionSingleSphereTriangle(SingleSphere&, Triangle&);
+//core::componentmodel::collision::DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&);
+//core::componentmodel::collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle&, Triangle&);
+} // DiscreteIntersections
 
-} // namespace DiscreteIntersections
+} // namespace collision
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

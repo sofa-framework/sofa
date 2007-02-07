@@ -1,20 +1,23 @@
-#include "RayModel.h"
-#include "CubeModel.h"
-#include "Common/ObjectFactory.h"
-
+#include <sofa/component/collision/RayModel.h>
+#include <sofa/component/collision/CubeModel.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <GL/glut.h>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace collision
 {
 
 SOFA_DECL_CLASS(Ray)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
-void create(RayModel*& obj, ObjectDescription* arg)
+void create(RayModel*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new RayModel(atof(arg->getAttribute("length","1,0")));
     if (obj!=NULL)
@@ -27,7 +30,7 @@ void create(RayModel*& obj, ObjectDescription* arg)
     }
 }
 
-Creator< ObjectFactory, RayModel > RayModelClass("Ray");
+Creator<simulation::tree::xml::ObjectFactory, RayModel > RayModelClass("Ray");
 
 RayModel::RayModel(double length)
     : defaultLength(length), static_(false)
@@ -36,8 +39,8 @@ RayModel::RayModel(double length)
 
 void RayModel::resize(int size)
 {
-    this->Core::MechanicalObject<Vec3Types>::resize(size);
-    this->Abstract::CollisionModel::resize(size/2);
+    this->component::MechanicalObject<Vec3Types>::resize(size);
+    this->core::CollisionModel::resize(size/2);
     if ((int)length.size() < size/2)
     {
         length.reserve(size/2);
@@ -86,8 +89,8 @@ void RayModel::draw()
             draw(i);
         }
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<Abstract::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<Abstract::VisualModel*>(getPrevious())->draw();
+    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
 void RayModel::computeBoundingTree(int maxDepth)
@@ -132,6 +135,9 @@ void RayModel::applyTranslation(double dx, double dy, double dz)
         getRay(i).origin() += d;
 }
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

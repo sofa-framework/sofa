@@ -1,4 +1,4 @@
-#include "ImagePNG.h"
+#include <sofa/helper/io/ImagePNG.h>
 #include <iostream>
 
 #ifdef SOFA_HAVE_PNG
@@ -9,13 +9,16 @@
 #endif
 #endif
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+//using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(ImagePNG)
 
@@ -212,6 +215,9 @@ bool ImagePNG::save(const std::string& filename)
 
 #endif
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
+

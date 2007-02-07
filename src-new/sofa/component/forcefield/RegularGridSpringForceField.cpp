@@ -1,24 +1,27 @@
-#include "RegularGridSpringForceField.inl"
-#include "Common/Vec3Types.h"
-#include "Common/ObjectFactory.h"
+#include <sofa/component/forcefield/RegularGridSpringForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 SOFA_DECL_CLASS(RegularGridSpringForceField)
 
-using namespace Common;
+using namespace sofa::defaulttype;
 
 template class RegularGridSpringForceField<Vec3dTypes>;
 template class RegularGridSpringForceField<Vec3fTypes>;
 
 template<class DataTypes>
-void create(RegularGridSpringForceField<DataTypes>*& obj, ObjectDescription* arg)
+void create(RegularGridSpringForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< RegularGridSpringForceField<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< RegularGridSpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("stiffness")) obj->setStiffness((typename DataTypes::Coord::value_type)atof(arg->getAttribute("stiffness")));
@@ -32,9 +35,12 @@ void create(RegularGridSpringForceField<DataTypes>*& obj, ObjectDescription* arg
     }
 }
 
-Creator< ObjectFactory, RegularGridSpringForceField<Vec3dTypes> > RegularGridSpringForceFieldVec3dClass("RegularGridSpringForceField", true);
-Creator< ObjectFactory, RegularGridSpringForceField<Vec3fTypes> > RegularGridSpringForceFieldVec3fClass("RegularGridSpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, RegularGridSpringForceField<Vec3dTypes> > RegularGridSpringForceFieldVec3dClass("RegularGridSpringForceField", true);
+Creator<simulation::tree::xml::ObjectFactory, RegularGridSpringForceField<Vec3fTypes> > RegularGridSpringForceFieldVec3fClass("RegularGridSpringForceField", true);
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

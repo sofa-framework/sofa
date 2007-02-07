@@ -1,21 +1,24 @@
 #include <iostream>
-#include "Common/Mesh.h"
-#include "MeshTopology.h"
-#include "MeshTopologyLoader.h"
-#include "Common/ObjectFactory.h"
-#include "Common/fixed_array.h"
-
+#include <sofa/helper/io/Mesh.h>
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/helper/io/MeshTopologyLoader.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/helper/fixed_array.h>
 #include <set>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace topology
+{
 
-void create(MeshTopology*& obj, ObjectDescription* arg)
+using namespace sofa::defaulttype;
+
+void create(MeshTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     obj = new MeshTopology();
     if (arg->getAttribute("filename"))
@@ -29,7 +32,7 @@ void create(MeshTopology*& obj, ObjectDescription* arg)
 
 SOFA_DECL_CLASS(MeshTopology)
 
-Creator<ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
+Creator<simulation::tree::xml::ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
 
 MeshTopology::MeshTopology()
     : nbPoints(0)
@@ -320,6 +323,9 @@ void MeshTopology::invalidate()
     std::cout << "MeshTopology::invalidate()"<<std::endl;
 }
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

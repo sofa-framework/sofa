@@ -1,23 +1,26 @@
-#include "OscillatorConstraint.inl"
-#include "Sofa-old/Components/Common/ObjectFactory.h"
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include "Sofa-old/Components/Common/RigidTypes.h"
-//#include "GL/Axis.h"
+#include <sofa/component/constraint/OscillatorConstraint.inl>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
+//#include <sofa/helper/gl/Axis.h>
 #include <sstream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace constraint
+{
+
+using namespace sofa::defaulttype;
 
 //template <>
 //void OscillatorConstraint<RigidTypes>::draw()
 //{
 ///*	if (!getContext()->getShowBehaviorModels()) return;
-//	VecCoord& x = *mmodel->getX();
+//	VecCoord& x = *mstate->getX();
 //	for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
 //	{
 //		int i = *it;
@@ -31,7 +34,7 @@ using namespace Common;
 //		axis->draw();
 //	}*/
 //	if (!getContext()->getShowBehaviorModels()) return;
-//	VecCoord& x = *mmodel->getX();
+//	VecCoord& x = *mstate->getX();
 //	glDisable (GL_LIGHTING);
 //	glPointSize(10);
 //	glColor4f (1,0.5,0.5,1);
@@ -55,7 +58,7 @@ SOFA_DECL_CLASS(OscillatorConstraint)
 template class OscillatorConstraint<Vec3dTypes>;
 template class OscillatorConstraint<Vec3fTypes>;
 
-namespace Common   // \todo Why this must be inside Common namespace
+namespace helper   // \todo Why this must be inside helper namespace
 {
 
 /** Clear the container and fill it with values read from the string */
@@ -71,9 +74,9 @@ void readVector( C& container, const char* string )
 }
 
 template<class DataTypes>
-void create(OscillatorConstraint<DataTypes>*& obj, ObjectDescription* arg)
+void create(OscillatorConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< OscillatorConstraint<DataTypes>, Core::MechanicalModel<DataTypes> >(obj, arg);
+    XML::createWithParent< OscillatorConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (const char* str = arg->getAttribute("indices"))
@@ -94,10 +97,13 @@ void create(OscillatorConstraint<DataTypes>*& obj, ObjectDescription* arg)
 }
 }
 
-Creator< ObjectFactory, OscillatorConstraint<Vec3dTypes> > OscillatorConstraint3dClass("OscillatorConstraint",true);
-Creator< ObjectFactory, OscillatorConstraint<Vec3fTypes> > OscillatorConstraint3fClass("OscillatorConstraint",true);
-Creator< ObjectFactory, OscillatorConstraint<RigidTypes> > OscillatorConstraintRigidClass("OscillatorConstraint",true);
+Creator<simulation::tree::xml::ObjectFactory, OscillatorConstraint<Vec3dTypes> > OscillatorConstraint3dClass("OscillatorConstraint",true);
+Creator<simulation::tree::xml::ObjectFactory, OscillatorConstraint<Vec3fTypes> > OscillatorConstraint3fClass("OscillatorConstraint",true);
+Creator<simulation::tree::xml::ObjectFactory, OscillatorConstraint<RigidTypes> > OscillatorConstraintRigidClass("OscillatorConstraint",true);
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

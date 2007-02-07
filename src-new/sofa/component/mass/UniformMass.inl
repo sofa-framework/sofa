@@ -1,24 +1,26 @@
-#ifndef SOFA_COMPONENTS_UNIFORMMASS_INL
-#define SOFA_COMPONENTS_UNIFORMMASS_INL
+#ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_INL
+#define SOFA_COMPONENT_MASS_UNIFORMMASS_INL
 
-#include "UniformMass.h"
-#include "Sofa-old/Core/Mass.inl"
-#include <Sofa-old/Core/Context.h>
-#include "GL/template.h"
-#include "Common/RigidTypes.h"
-//#include "Common/SolidTypes.h"
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/core/componentmodel/behavior/Mass.inl>
+#include <sofa/core/objectmodel/Context.h>
+#include <sofa/helper/gl/template.h>
+#include <sofa/defaulttype/RigidTypes.h>
+//#include <sofa/defaulttype/SolidTypes.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-
-namespace Components
+namespace component
 {
 
-using namespace Common;
+namespace mass
+{
+
+using namespace sofa::defaulttype;
 
 
 
@@ -37,8 +39,8 @@ UniformMass<DataTypes, MassType>::UniformMass()
 
 
 template <class DataTypes, class MassType>
-UniformMass<DataTypes, MassType>::UniformMass(Core::MechanicalModel<DataTypes>* mmodel)
-    : Core::Mass<DataTypes>(mmodel)
+UniformMass<DataTypes, MassType>::UniformMass(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate)
+    : core::componentmodel::behavior::Mass<DataTypes>(mstate)
     , totalMass( dataField(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
 {}
 
@@ -61,10 +63,10 @@ void UniformMass<DataTypes, MassType>::setTotalMass(double m)
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::init()
 {
-    this->Core::Mass<DataTypes>::init();
-    if (this->totalMass.getValue()>0 && this->mmodel!=NULL)
+    this->core::componentmodel::behavior::Mass<DataTypes>::init();
+    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
     {
-        this->mass = (MassType)((typename DataTypes::Real)this->totalMass.getValue() / this->mmodel->getX()->size());
+        this->mass = (MassType)((typename DataTypes::Real)this->totalMass.getValue() / this->mstate->getX()->size());
     }
 }
 
@@ -161,7 +163,7 @@ void UniformMass<DataTypes, MassType>::draw()
 {
     if (!getContext()->getShowBehaviorModels())
         return;
-    const VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(2);
     glColor4f (1,1,1,1);
@@ -177,7 +179,7 @@ void UniformMass<DataTypes, MassType>::draw()
 template <class DataTypes, class MassType>
 bool UniformMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
 {
-    const VecCoord& x = *this->mmodel->getX();
+    const VecCoord& x = *this->mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
         //const Coord& p = x[i];
@@ -192,9 +194,11 @@ bool UniformMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
     return true;
 }
 
-} // namespace Components
+} // namespace mass
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif
 

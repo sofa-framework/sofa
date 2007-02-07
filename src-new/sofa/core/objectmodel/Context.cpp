@@ -1,10 +1,14 @@
-#include "Context.h"
-// #include "Sofa-old/Components/Graph/MechanicalAction.h"
-// #include "Sofa-old/Components/Graph/MechanicalVPrintAction.h"
+#include <sofa/core/objectmodel/Context.h>
+// #include <sofa/simulation/tree/Action.h>
+// #include <sofa/simulation/tree/Action.h>
 
-namespace Sofa
+namespace sofa
 {
-namespace Core
+
+namespace core
+{
+
+namespace objectmodel
 {
 
 Context::Context()
@@ -27,27 +31,27 @@ Context::Context()
     , coarsestLevel_(dataField(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
     , finestLevel_(dataField(&finestLevel_,0,"finestLevel","Finest level of details"))
 {
-    setPositionInWorld(Abstract::BaseContext::getPositionInWorld());
-    setGravityInWorld(Abstract::BaseContext::getLocalGravity());
-    setVelocityInWorld(Abstract::BaseContext::getVelocityInWorld());
-    setVelocityBasedLinearAccelerationInWorld(Abstract::BaseContext::getVelocityBasedLinearAccelerationInWorld());
-    setDt(Abstract::BaseContext::getDt());
-    setTime(Abstract::BaseContext::getTime());
-    setAnimate(Abstract::BaseContext::getAnimate());
-    setShowCollisionModels(Abstract::BaseContext::getShowCollisionModels());
-    setShowBoundingCollisionModels(Abstract::BaseContext::getShowBoundingCollisionModels());
-    setShowBehaviorModels(Abstract::BaseContext::getShowBehaviorModels());
-    setShowVisualModels(Abstract::BaseContext::getShowVisualModels());
-    setShowMappings(Abstract::BaseContext::getShowMappings());
-    setShowMechanicalMappings(Abstract::BaseContext::getShowMechanicalMappings());
-    setShowForceFields(Abstract::BaseContext::getShowForceFields());
-    setShowInteractionForceFields(Abstract::BaseContext::getShowInteractionForceFields());
-    setShowWireFrame(Abstract::BaseContext::getShowWireFrame());
-    setShowNormals(Abstract::BaseContext::getShowNormals());
-    setMultiThreadSimulation(Abstract::BaseContext::getMultiThreadSimulation());
+    setPositionInWorld(objectmodel::BaseContext::getPositionInWorld());
+    setGravityInWorld(objectmodel::BaseContext::getLocalGravity());
+    setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
+    setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
+    setDt(objectmodel::BaseContext::getDt());
+    setTime(objectmodel::BaseContext::getTime());
+    setAnimate(objectmodel::BaseContext::getAnimate());
+    setShowCollisionModels(objectmodel::BaseContext::getShowCollisionModels());
+    setShowBoundingCollisionModels(objectmodel::BaseContext::getShowBoundingCollisionModels());
+    setShowBehaviorModels(objectmodel::BaseContext::getShowBehaviorModels());
+    setShowVisualModels(objectmodel::BaseContext::getShowVisualModels());
+    setShowMappings(objectmodel::BaseContext::getShowMappings());
+    setShowMechanicalMappings(objectmodel::BaseContext::getShowMechanicalMappings());
+    setShowForceFields(objectmodel::BaseContext::getShowForceFields());
+    setShowInteractionForceFields(objectmodel::BaseContext::getShowInteractionForceFields());
+    setShowWireFrame(objectmodel::BaseContext::getShowWireFrame());
+    setShowNormals(objectmodel::BaseContext::getShowNormals());
+    setMultiThreadSimulation(objectmodel::BaseContext::getMultiThreadSimulation());
 }
 
-// Abstract::BaseContext* Context::getDefault()
+// objectmodel::BaseContext* Context::getDefault()
 // {
 //     static Context defaultContext;
 //     return &defaultContext;
@@ -363,7 +367,7 @@ void Context::copyContext(const Context& c)
 
 using std::endl;
 
-std::ostream& operator << (std::ostream& out, const Sofa::Core::Context& c )
+std::ostream& operator << (std::ostream& out, const Context& c )
 {
     out<<endl<<"local gravity = "<<c.getLocalGravity();
     out<<endl<<"transform from local to world = "<<c.getPositionInWorld();
@@ -376,9 +380,9 @@ std::ostream& operator << (std::ostream& out, const Sofa::Core::Context& c )
 
 
 
-} // namespace Core
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
 
-
+} // namespace sofa
 

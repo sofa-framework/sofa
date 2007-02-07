@@ -1,19 +1,20 @@
-#include "GNode.h"
-#include "Action.h"
-#include "PropagateEventAction.h"
-#include "MutationListener.h"
-#include "Sofa-old/Components/XML/NodeNode.h"
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/Action.h>
+#include <sofa/simulation/tree/PropagateEventAction.h>
+#include <sofa/simulation/tree/MutationListener.h>
+#include <sofa/simulation/tree/xml/NodeElement.h>
 #include <iostream>
+
 using std::cerr;
 using std::endl;
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace Graph
+namespace tree
 {
 
 GNode::GNode(const std::string& name, GNode* parent)
@@ -59,13 +60,13 @@ void GNode::removeChild(GNode* node)
 }
 
 /// Add a child node
-void GNode::addChild(BaseNode* node)
+void GNode::addChild(BaseElement* node)
 {
     this->addChild(dynamic_cast<GNode*>(node));
 }
 
 /// Remove a child node
-void GNode::removeChild(BaseNode* node)
+void GNode::removeChild(BaseElement* node)
 {
     this->removeChild(dynamic_cast<GNode*>(node));
 }
@@ -113,7 +114,7 @@ const BaseContext* GNode::getContext() const
 }
 
 /*
-Sofa::Core::Context* GNode::getParentContext()
+sofa::Core::Context* GNode::getParentContext()
 {
 	if( GNode* p = dynamic_cast<GNode*>(&(*parent)) ){
 		return p->getContext();
@@ -123,20 +124,20 @@ Sofa::Core::Context* GNode::getParentContext()
 */
 
 /// Mechanical Degrees-of-Freedom
-Abstract::BaseObject* GNode::getMechanicalModel() const
+objectmodel::BaseObject* GNode::getMechanicalState() const
 {
     // return this->mechanicalModel;
     // CHANGE 12/01/06 (Jeremie A.): Inherit parent mechanical model if no local model is defined
     if (this->mechanicalModel)
         return this->mechanicalModel;
     else if (parent)
-        return parent->getMechanicalModel();
+        return parent->getMechanicalState();
     else
         return NULL;
 }
 
 /// Topology
-Abstract::BaseObject* GNode::getTopology() const
+objectmodel::BaseObject* GNode::getTopology() const
 {
     // return this->topology;
     // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
@@ -148,9 +149,9 @@ Abstract::BaseObject* GNode::getTopology() const
         return NULL;
 }
 /// Topology
-Abstract::BaseObject* GNode::getMainTopology() const
+objectmodel::BaseObject* GNode::getMainTopology() const
 {
-    BasicTopology *main=0;
+    BaseTopology *main=0;
     unsigned int i;
     for (i=0; i<basicTopology.size(); ++i)
     {
@@ -188,22 +189,22 @@ void GNode::doAddObject(BaseObject* obj)
     notifyAddObject(obj);
     obj->setContext(this);
     object.add(obj);
-    mechanicalModel.add(dynamic_cast< BasicMechanicalModel* >(obj));
-    if (!mechanicalMapping.add(dynamic_cast< BasicMechanicalMapping* >(obj)))
-        mapping.add(dynamic_cast< BasicMapping* >(obj));
+    mechanicalModel.add(dynamic_cast< BaseMechanicalState* >(obj));
+    if (!mechanicalMapping.add(dynamic_cast< BaseMechanicalMapping* >(obj)))
+        mapping.add(dynamic_cast< BaseMapping* >(obj));
     solver.add(dynamic_cast< OdeSolver* >(obj));
-    mass.add(dynamic_cast< BasicMass* >(obj));
+    mass.add(dynamic_cast< BaseMass* >(obj));
     topology.add(dynamic_cast< Topology* >(obj));
-    basicTopology.add(dynamic_cast< BasicTopology* >(obj));
+    basicTopology.add(dynamic_cast< BaseTopology* >(obj));
 
     if (!interactionForceField.add(dynamic_cast< InteractionForceField* >(obj)))
-        forceField.add(dynamic_cast< BasicForceField* >(obj));
-    constraint.add(dynamic_cast< BasicConstraint* >(obj));
+        forceField.add(dynamic_cast< BaseForceField* >(obj));
+    constraint.add(dynamic_cast< BaseConstraint* >(obj));
     behaviorModel.add(dynamic_cast< BehaviorModel* >(obj));
     visualModel.add(dynamic_cast< VisualModel* >(obj));
     collisionModel.add(dynamic_cast< CollisionModel* >(obj));
     contextObject.add(dynamic_cast< ContextObject* >(obj));
-    collisionPipeline.add(dynamic_cast< Collision::Pipeline* >(obj));
+    collisionPipeline.add(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
     actionScheduler.add(dynamic_cast< ActionScheduler* >(obj));
 }
 
@@ -215,27 +216,27 @@ void GNode::doRemoveObject(BaseObject* obj)
         obj->setContext(NULL);
     }
     object.remove(obj);
-    mechanicalModel.remove(dynamic_cast< BasicMechanicalModel* >(obj));
-    mechanicalMapping.remove(dynamic_cast< BasicMechanicalMapping* >(obj));
+    mechanicalModel.remove(dynamic_cast< BaseMechanicalState* >(obj));
+    mechanicalMapping.remove(dynamic_cast< BaseMechanicalMapping* >(obj));
     solver.remove(dynamic_cast< OdeSolver* >(obj));
-    mass.remove(dynamic_cast< BasicMass* >(obj));
+    mass.remove(dynamic_cast< BaseMass* >(obj));
     topology.remove(dynamic_cast< Topology* >(obj));
-    basicTopology.remove(dynamic_cast< BasicTopology* >(obj));
+    basicTopology.remove(dynamic_cast< BaseTopology* >(obj));
 
-    forceField.remove(dynamic_cast< BasicForceField* >(obj));
+    forceField.remove(dynamic_cast< BaseForceField* >(obj));
     interactionForceField.remove(dynamic_cast< InteractionForceField* >(obj));
-    constraint.remove(dynamic_cast< BasicConstraint* >(obj));
-    mapping.remove(dynamic_cast< BasicMapping* >(obj));
+    constraint.remove(dynamic_cast< BaseConstraint* >(obj));
+    mapping.remove(dynamic_cast< BaseMapping* >(obj));
     behaviorModel.remove(dynamic_cast< BehaviorModel* >(obj));
     visualModel.remove(dynamic_cast< VisualModel* >(obj));
     collisionModel.remove(dynamic_cast< CollisionModel* >(obj));
     contextObject.remove(dynamic_cast<ContextObject* >(obj));
-    collisionPipeline.remove(dynamic_cast< Collision::Pipeline* >(obj));
+    collisionPipeline.remove(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
     actionScheduler.remove(dynamic_cast< ActionScheduler* >(obj));
     // Remove references to this object in time log tables
     if (!objectTime.empty())
     {
-        for (std::map<std::string, std::map<Sofa::Abstract::BaseObject*, Graph::GNode::ObjectTimer> >::iterator it = objectTime.begin(); it != objectTime.end(); ++it)
+        for (std::map<std::string, std::map<sofa::objectmodel::BaseObject*, simulation::tree::GNode::ObjectTimer> >::iterator it = objectTime.begin(); it != objectTime.end(); ++it)
         {
             it->second.erase(obj);
         }
@@ -276,13 +277,13 @@ void GNode::initialize()
 }
 
 /// Get parent node (or NULL if no hierarchy or for root node)
-BaseNode* GNode::getParent()
+BaseElement* GNode::getParent()
 {
     return parent;
 }
 
 /// Get parent node (or NULL if no hierarchy or for root node)
-const BaseNode* GNode::getParent() const
+const BaseElement* GNode::getParent() const
 {
     return parent;
 }
@@ -442,7 +443,7 @@ void GNode::resetTime()
 }
 
 /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
-void GNode::addTime(ctime_t t, const std::string& s, Abstract::BaseObject* obj, Abstract::BaseObject* parent)
+void GNode::addTime(ctime_t t, const std::string& s, objectmodel::BaseObject* obj, objectmodel::BaseObject* parent)
 {
     ObjectTimer& timer = objectTime[s][obj];
     timer.tObject += t;
@@ -451,7 +452,7 @@ void GNode::addTime(ctime_t t, const std::string& s, Abstract::BaseObject* obj, 
 }
 
 /// Log time spent on an action category and the concerned object
-void GNode::addTime(ctime_t t, const std::string& s, Abstract::BaseObject* obj)
+void GNode::addTime(ctime_t t, const std::string& s, objectmodel::BaseObject* obj)
 {
     ObjectTimer& timer = objectTime[s][obj];
     timer.tObject += t;
@@ -466,7 +467,7 @@ GNode::ctime_t GNode::startTime() const
 }
 
 /// Log time spent given a start time, an action category, and the concerned object
-GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, Abstract::BaseObject* obj)
+GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, objectmodel::BaseObject* obj)
 {
     if (!getLogTime()) return 0;
     const ctime_t t1 = Thread::CTime::getTime();
@@ -476,7 +477,7 @@ GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, Abstract::BaseOb
 }
 
 /// Log time spent given a start time, an action category, and the concerned object
-GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, Abstract::BaseObject* obj, Abstract::BaseObject* parent)
+GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, objectmodel::BaseObject* obj, objectmodel::BaseObject* parent)
 {
     if (!getLogTime()) return 0;
     const ctime_t t1 = Thread::CTime::getTime();
@@ -507,13 +508,13 @@ void GNode::notifyRemoveChild(GNode* node)
         (*it)->removeChild(this, node);
 }
 
-void GNode::notifyAddObject(Abstract::BaseObject* obj)
+void GNode::notifyAddObject(objectmodel::BaseObject* obj)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->addObject(this, obj);
 }
 
-void GNode::notifyRemoveObject(Abstract::BaseObject* obj)
+void GNode::notifyRemoveObject(objectmodel::BaseObject* obj)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->removeObject(this, obj);
@@ -525,7 +526,7 @@ void GNode::notifyMoveChild(GNode* node, GNode* prev)
         (*it)->moveChild(prev, this, node);
 }
 
-void GNode::notifyMoveObject(Abstract::BaseObject* obj, GNode* prev)
+void GNode::notifyMoveObject(objectmodel::BaseObject* obj, GNode* prev)
 {
     for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
         (*it)->moveObject(prev, this, obj);
@@ -541,7 +542,7 @@ std::string GNode::getPathName() const
     return str;
 }
 
-void create(GNode*& obj, XML::Node<Abstract::BaseNode>* arg)
+void create(GNode*& obj, XML::Node<xml::BaseElement>* arg)
 {
     obj = new GNode();
     obj->parseFields(arg->getAttributeMap());
@@ -564,12 +565,11 @@ void create(GNode*& obj, XML::Node<Abstract::BaseNode>* arg)
 
 SOFA_DECL_CLASS(GNode)
 
-Common::Creator<XML::NodeNode::Factory, GNode> GNodeClass("default");
+Common::Creator<xml::NodeElement::Factory, GNode> GNodeClass("default");
 
-} // namespace Graph
+} // namespace tree
 
-} // namespace Components
+} // namespace simulation
 
-} // namespace Sofa
-
+} // namespace sofa
 

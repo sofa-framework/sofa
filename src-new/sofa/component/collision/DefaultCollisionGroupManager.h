@@ -1,39 +1,44 @@
-#ifndef SOFA_COMPONENTS_COLLISIONGROUPMANAGERSOFA_H
-#define SOFA_COMPONENTS_COLLISIONGROUPMANAGERSOFA_H
+#ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
+#define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
 
-#include "Collision/CollisionGroupManager.h"
-#include "Graph/GNode.h"
-
+#include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <set>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-class CollisionGroupManagerSofa : public Collision::CollisionGroupManager
+namespace collision
+{
+
+class DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
 {
 public:
-    std::set<Graph::GNode*> groupSet;
-    std::vector<Abstract::BaseContext*> groupVec;
+    std::set<simulation::tree::GNode*> groupSet;
+    std::vector<core::objectmodel::BaseContext*> groupVec;
 public:
-    CollisionGroupManagerSofa();
+    DefaultCollisionGroupManager();
 
-    virtual ~CollisionGroupManagerSofa();
+    virtual ~DefaultCollisionGroupManager();
 
-    virtual void createGroups(Abstract::BaseContext* scene, const std::vector<Collision::Contact*>& contacts);
+    virtual void createGroups(core::objectmodel::BaseContext* scene, const std::vector<core::componentmodel::collision::Contact*>& contacts);
 
-    virtual void clearGroups(Abstract::BaseContext* scene);
+    virtual void clearGroups(core::objectmodel::BaseContext* scene);
 
-    virtual const std::vector<Abstract::BaseContext*>& getGroups() { return groupVec; }
+    virtual const std::vector<core::objectmodel::BaseContext*>& getGroups() { return groupVec; }
 
 protected:
-    virtual Graph::GNode* getIntegrationNode(Abstract::CollisionModel* model);
+    virtual simulation::tree::GNode* getIntegrationNode(core::CollisionModel* model);
 };
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

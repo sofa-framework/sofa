@@ -1,12 +1,12 @@
-#ifndef SOFA_ABSTRACT_COLLISIONELEMENT_H
-#define SOFA_ABSTRACT_COLLISIONELEMENT_H
+#ifndef SOFA_CORE_COLLISIONELEMENT_H
+#define SOFA_CORE_COLLISIONELEMENT_H
 
 #include <vector>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
 {
 
 class CollisionModel;
@@ -189,8 +189,8 @@ std::pair<CollisionElementIterator,CollisionElementIterator> TCollisionElementIt
     return model->getExternalChildren(index);
 }
 
-} // namespace Abstract
+} // namespace core
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

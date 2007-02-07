@@ -1,23 +1,27 @@
-#ifndef SOFA_COMPONENTS_XML_BASENODE_H
-#define SOFA_COMPONENTS_XML_BASENODE_H
+#ifndef SOFA_SIMULATION_TREE_XML_BASEELEMENT_H
+#define SOFA_SIMULATION_TREE_XML_BASEELEMENT_H
 
-#include "../Common/Factory.h"
-#include "Sofa-old/Abstract/Base.h"
-#include "Sofa-old/Abstract/BaseContext.h"
+
+#include <sofa/helper/Factory.h>
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <string>
 #include <list>
 #include <map>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace XML
+namespace tree
 {
 
-using namespace Common;
+namespace xml
+{
+
+//using namespace Common;
 
 template<class Node>
 void create(Node*& obj, std::pair<std::string,std::string> arg)
@@ -25,25 +29,25 @@ void create(Node*& obj, std::pair<std::string,std::string> arg)
     obj = new Node(arg.first,arg.second);
 }
 
-class BaseNode
+class BaseElement
 {
 private:
     std::string name;
     std::string type;
-    BaseNode* parent;
-    typedef std::list<BaseNode*> ChildList;
+    BaseElement* parent;
+    typedef std::list<BaseElement*> ChildList;
     ChildList children;
     std::map<std::string,std::string*> attributes;
 public:
-    BaseNode(const std::string& name, const std::string& type, BaseNode* newParent=NULL);
+    BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
 
-    virtual ~BaseNode();
+    virtual ~BaseElement();
 
     /// Get the node class (Scene, Mapping, ...)
     virtual const char* getClass() const = 0;
 
     /// Get the associated object
-    virtual Abstract::Base* getBaseObject() = 0;
+    virtual core::objectmodel::Base* getBaseObject() = 0;
 
     /// Get the node instance name
     const std::string& getName() const
@@ -69,7 +73,7 @@ public:
     { type = newType; }
 
     /// Get the parent node
-    BaseNode* getParent() const
+    BaseElement* getParent() const
     { return parent; }
 
     /// Get all attribute data, read-only
@@ -88,12 +92,12 @@ public:
     virtual bool removeAttribute(const std::string& attr);
 
     /// Find a node given its name
-    virtual BaseNode* findNode(const char* nodeName, bool absolute=false);
+    virtual BaseElement* findNode(const char* nodeName, bool absolute=false);
 
     /// Find an object given its name
-    virtual Abstract::Base* findObject(const char* nodeName)
+    virtual core::objectmodel::Base* findObject(const char* nodeName)
     {
-        BaseNode* node = findNode(nodeName);
+        BaseElement* node = findNode(nodeName);
         if (node!=NULL)
         {
             //std::cout << "Found node "<<nodeName<<": "<<node->getName()<<std::endl;
@@ -128,26 +132,26 @@ public:
 
 protected:
     /// Change this node's parent. Note that this method is protected as it should be called by the parent's addChild/removeChild methods
-    virtual bool setParent(BaseNode* newParent)
+    virtual bool setParent(BaseElement* newParent)
     { parent = newParent; return true; }
 
 public:
-    virtual bool addChild(BaseNode* child);
+    virtual bool addChild(BaseElement* child);
 
-    virtual bool removeChild(BaseNode* child);
+    virtual bool removeChild(BaseElement* child);
 
     virtual bool initNode() = 0;
 
     virtual bool init();
 
-    template<class Node=BaseNode>
+    template<class Node=BaseElement>
     class child_iterator
     {
     protected:
-        BaseNode* parent;
+        BaseElement* parent;
         ChildList::iterator it;
         Node* current;
-        child_iterator(BaseNode* parent, ChildList::iterator it)
+        child_iterator(BaseElement* parent, ChildList::iterator it)
             : parent(parent), it(it), current(NULL)
         {
             checkIt();
@@ -170,7 +174,7 @@ public:
         {
             return it == i.it;
         }
-        friend class BaseNode;
+        friend class BaseElement;
     };
 
     template<class Node>
@@ -179,9 +183,9 @@ public:
         return child_iterator<Node>(this, children.begin());
     }
 
-    child_iterator<BaseNode> begin()
+    child_iterator<BaseElement> begin()
     {
-        return begin<BaseNode>();
+        return begin<BaseElement>();
     }
 
     template<class Node>
@@ -190,21 +194,24 @@ public:
         return child_iterator<Node>(this, children.end());
     }
 
-    child_iterator<BaseNode> end()
+    child_iterator<BaseElement> end()
     {
-        return end<BaseNode>();
+        return end<BaseElement>();
     }
 
-    typedef Factory< std::string, BaseNode, std::pair<std::string, std::string> > NodeFactory;
+    typedef helper::Factory< std::string, BaseElement, std::pair<std::string, std::string> > NodeFactory;
 
-    static BaseNode* Create(const std::string& nodeClass, const std::string& name, const std::string& type);
+    static BaseElement* Create(const std::string& nodeClass, const std::string& name, const std::string& type);
 
 };
 
-} // namespace XML
+} // namespace xml
 
-} // namespace Components
+} // namespace tree
 
-} // namespace Sofa
+} // namespace simulation
+
+} // namespace sofa
 
 #endif
+

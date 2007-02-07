@@ -1,17 +1,17 @@
-#ifndef SOFA_COMPONENTS_GRAPH_CACTUSSTACKSTORAGE_H
-#define SOFA_COMPONENTS_GRAPH_CACTUSSTACKSTORAGE_H
+#ifndef SOFA_SIMULATION_TREE_CACTUSSTACKSTORAGE_H
+#define SOFA_SIMULATION_TREE_CACTUSSTACKSTORAGE_H
 
-#include "LocalStorage.h"
-
+#include <sofa/simulation/tree/LocalStorage.h>
 #include <stack>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace Graph
+namespace tree
 {
 
 /// Cactus Stack implementation of LocalStorage.
@@ -50,10 +50,10 @@ public:
     bool empty() const;
 };
 
-} // namespace Graph
+} // namespace tree
 
-} // namespace Components
+} // namespace simulation
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

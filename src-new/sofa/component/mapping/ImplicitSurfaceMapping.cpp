@@ -1,23 +1,26 @@
-#include "ImplicitSurfaceMapping.inl"
-#include "Common/Vec3Types.h"
-#include "Common/ObjectFactory.h"
-#include "Sofa-old/Core/MappedModel.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Core/MechanicalMapping.h"
+#include <sofa/component/mapping/ImplicitSurfaceMapping.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Core;
+namespace mapping
+{
+
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
 
 SOFA_DECL_CLASS(ImplicitSurfaceMapping)
 
 template<class In, class Out>
-void create(ImplicitSurfaceMapping<In,Out>*& obj, ObjectDescription* arg)
+void create(ImplicitSurfaceMapping<In,Out>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     XML::createWith2Objects< ImplicitSurfaceMapping<In,Out>, In, Out>(obj, arg);
     if (obj != NULL)
@@ -40,41 +43,41 @@ void create(ImplicitSurfaceMapping<In,Out>*& obj, ObjectDescription* arg)
 }
 
 // Mech -> Mech
-//Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalModel<Vec3dTypes>, MechanicalModel<Vec3dTypes> > > > ImplicitSurfaceMapping3d3dClass("ImplicitSurfaceMapping", true);
-//Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalModel<Vec3fTypes>, MechanicalModel<Vec3fTypes> > > > ImplicitSurfaceMapping3f3fClass("ImplicitSurfaceMapping", true);
-//Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalModel<Vec3dTypes>, MechanicalModel<Vec3fTypes> > > > ImplicitSurfaceMapping3d3fClass("ImplicitSurfaceMapping", true);
-//Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalModel<Vec3fTypes>, MechanicalModel<Vec3dTypes> > > > ImplicitSurfaceMapping3f3dClass("ImplicitSurfaceMapping", true);
+//Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > > ImplicitSurfaceMapping3d3dClass("ImplicitSurfaceMapping", true);
+//Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > > ImplicitSurfaceMapping3f3fClass("ImplicitSurfaceMapping", true);
+//Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > > ImplicitSurfaceMapping3d3fClass("ImplicitSurfaceMapping", true);
+//Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > > ImplicitSurfaceMapping3f3dClass("ImplicitSurfaceMapping", true);
 
 // Mech -> Mapped
-Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<Vec3dTypes> > > ImplicitSurfaceMapping3dM3dClass("ImplicitSurfaceMapping", true);
-Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<Vec3fTypes> > > ImplicitSurfaceMapping3fM3fClass("ImplicitSurfaceMapping", true);
-Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<Vec3fTypes> > > ImplicitSurfaceMapping3dM3fClass("ImplicitSurfaceMapping", true);
-Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<Vec3dTypes> > > ImplicitSurfaceMapping3fM3dClass("ImplicitSurfaceMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> > > ImplicitSurfaceMapping3dM3dClass("ImplicitSurfaceMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> > > ImplicitSurfaceMapping3fM3fClass("ImplicitSurfaceMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> > > ImplicitSurfaceMapping3dM3fClass("ImplicitSurfaceMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> > > ImplicitSurfaceMapping3fM3dClass("ImplicitSurfaceMapping", true);
 
 // Mech -> ExtMapped
-Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > ImplicitSurfaceMapping3dME3dClass("ImplicitSurfaceMapping", true);
-Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > ImplicitSurfaceMapping3fME3fClass("ImplicitSurfaceMapping", true);
-Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > ImplicitSurfaceMapping3dME3fClass("ImplicitSurfaceMapping", true);
-Creator< ObjectFactory, ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > ImplicitSurfaceMapping3fME3dClass("ImplicitSurfaceMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > ImplicitSurfaceMapping3dME3dClass("ImplicitSurfaceMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > ImplicitSurfaceMapping3fME3fClass("ImplicitSurfaceMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > ImplicitSurfaceMapping3dME3fClass("ImplicitSurfaceMapping", true);
+Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > ImplicitSurfaceMapping3fME3dClass("ImplicitSurfaceMapping", true);
 
 
 // Mech -> Mech
-//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalModel<Vec3dTypes>, MechanicalModel<Vec3dTypes> > >;
-//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalModel<Vec3fTypes>, MechanicalModel<Vec3fTypes> > >;
-//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalModel<Vec3dTypes>, MechanicalModel<Vec3fTypes> > >;
-//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalModel<Vec3fTypes>, MechanicalModel<Vec3dTypes> > >;
+//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
+//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
+//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
+//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
 
 // Mech -> Mapped
-template class ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<Vec3dTypes> >;
-template class ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<Vec3fTypes> >;
-template class ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<Vec3fTypes> >;
-template class ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<Vec3dTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> >;
 
 // Mech -> ExtMapped
-template class ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
-template class ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
-template class ImplicitSurfaceMapping< MechanicalModel<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
-template class ImplicitSurfaceMapping< MechanicalModel<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+template class ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
 
 const int MarchingCubeEdgeTable[256] =
 {
@@ -373,6 +376,9 @@ const int MarchingCubeTriTable[256][16] =
 };
 
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

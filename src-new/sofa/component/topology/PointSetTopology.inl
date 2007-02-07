@@ -1,20 +1,24 @@
-#ifndef SOFA_COMPONENTS_POINTSETTOPOLOGY_INL
-#define SOFA_COMPONENTS_POINTSETTOPOLOGY_INL
+#ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGY_INL
+#define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGY_INL
 
 
-#include "PointSetTopology.h"
-#include "TopologyChangedEvent.h"
-#include <Sofa-old/Components/Graph/PropagateEventAction.h>
-#include <Sofa-old/Components/Graph/GNode.h>
-#include <Sofa-old/Components/MeshTopologyLoader.h>
+#include <sofa/component/topology/PointSetTopology.h>
+#include <sofa/component/topology/TopologyChangedEvent.h>
+#include <sofa/simulation/tree/PropagateEventAction.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/helper/io/MeshTopologyLoader.h>
 
-namespace Sofa
-{
-namespace Components
+namespace sofa
 {
 
-using namespace Common;
-using namespace Sofa::Core;
+namespace component
+{
+
+namespace topology
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::behavior;
 
 
 
@@ -301,9 +305,9 @@ PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,c
 template<class DataTypes>
 void PointSetTopology<DataTypes>::propagateTopologicalChanges()
 {
-    Sofa::Components::TopologyChangedEvent topEvent((BasicTopology *)this);
-    Sofa::Components::Graph::PropagateEventAction propKey( &topEvent );
-    Sofa::Components::Graph::GNode *groot=dynamic_cast<Sofa::Components::Graph::GNode *>(this->getContext());
+    sofa::Components::TopologyChangedEvent topEvent((BaseTopology *)this);
+    sofa::Components::Graph::PropagateEventAction propKey( &topEvent );
+    sofa::Components::simulation::tree::GNode *groot=dynamic_cast<sofa::Components::simulation::tree::GNode *>(this->getContext());
     if (groot)
     {
         groot->execute(propKey);
@@ -327,8 +331,10 @@ bool PointSetTopology<DataTypes>::load(const char *filename)
 }
 
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

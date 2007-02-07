@@ -1,10 +1,13 @@
-#ifndef SOFA_COMPONENTS_MASSSPRINGLOADER_H
-#define SOFA_COMPONENTS_MASSSPRINGLOADER_H
+#ifndef SOFA_HELPER_IO_MASSSPRINGLOADER_H
+#define SOFA_HELPER_IO_MASSSPRINGLOADER_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
+{
+
+namespace io
 {
 
 class MassSpringLoader
@@ -20,8 +23,10 @@ public:
     virtual void setViscosity(double /*visc*/) {}
 };
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
 
 #endif

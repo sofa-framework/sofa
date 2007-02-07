@@ -1,23 +1,26 @@
-#ifndef SOFA_COMPONENTS_OscillatorConstraint_H
-#define SOFA_COMPONENTS_OscillatorConstraint_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_OSCILLATORCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_OSCILLATORCONSTRAINT_H
 
-#include "Sofa-old/Core/Constraint.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Abstract/VisualModel.h"
-#include <Sofa-old/Components/Common/vector.h>
+#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/helper/vector.h>
 
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace constraint
 {
 
 /** Apply sinusoidal trajectories. Defined as \f$ x = x_m A \sin ( \omega t + \phi )\f$
-where \f$ x_m, A , \omega t , \phi \f$ are the mean value, the amplitude, the pulsation and the phase, respectively.
-*/
+	where \f$ x_m, A , \omega t , \phi \f$ are the mean value, the amplitude, the pulsation and the phase, respectively.
+	*/
 template <class DataTypes>
-class OscillatorConstraint : public Core::Constraint<DataTypes>, public Abstract::VisualModel
+class OscillatorConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -36,13 +39,13 @@ protected:
         Oscillator( const Coord& m, const Deriv& a, const Real& w, const Real& p )
             : mean(m), amplitude(a), pulsation(w), phase(p) {}
     };
-    Common::vector< std::pair<unsigned,Oscillator> > constraints; ///< constrained particles
+    helper::vector< std::pair<unsigned,Oscillator> > constraints; ///< constrained particles
 
 
 public:
     OscillatorConstraint();
 
-    OscillatorConstraint(Core::MechanicalModel<DataTypes>* mmodel);
+    OscillatorConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate);
 
     ~OscillatorConstraint();
 
@@ -61,8 +64,10 @@ public:
     void update() { }
 };
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

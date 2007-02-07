@@ -1,14 +1,16 @@
-#include "BarycentricPenalityContact.inl"
+#include <sofa/component/collision/BarycentricPenalityContact.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using namespace Collision;
-using Graph::GNode;
+namespace collision
+{
+
+using namespace defaulttype;
+using simulation::tree::GNode;
 
 SOFA_DECL_CLASS(BarycentricPenalityContact)
 
@@ -26,6 +28,9 @@ Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, SphereTree
 Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, TriangleModel> > SphereTreeTriangleContactClass("default", true);
 
 
-} // namespace Components
+} // namespace collision
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
+

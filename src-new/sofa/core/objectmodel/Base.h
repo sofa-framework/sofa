@@ -1,13 +1,16 @@
-#ifndef SOFA_ABSTRACT_BASE_H
-#define SOFA_ABSTRACT_BASE_H
+#ifndef SOFA_CORE_OBJECTMODEL_BASE_H
+#define SOFA_CORE_OBJECTMODEL_BASE_H
 
 #include <string>
-#include "FieldContainer.h"
+#include <sofa/core/objectmodel/FieldContainer.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Abstract
+namespace core
+{
+
+namespace objectmodel
 {
 
 /// Base class for everything
@@ -27,9 +30,11 @@ protected:
     //std::string name;
 };
 
-} // namespace Abstract
+} // namespace objectmodel
 
-} // namespace Sofa
+} // namespace core
+
+} // namespace sofa
 
 #endif
 

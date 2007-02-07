@@ -1,29 +1,32 @@
-#ifndef SOFA_COMPONENTS_SPARSEREGULARGRIDTOPOLOGY_H
-#define SOFA_COMPONENTS_SPARSEREGULARGRIDTOPOLOGY_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_MULTIRESSPARSEGRIDTOPOLOGY_H
+#define SOFA_COMPONENT_TOPOLOGY_MULTIRESSPARSEGRIDTOPOLOGY_H
 
-#include "GridTopology.h"
-#include "Common/Vec.h"
-#include <Sofa-old/Components/Common/vector.h>
+#include <sofa/component/topology/GridTopology.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/vector.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <map>
 using std::cout;
 using std::cerr;
 using std::endl;
-#include <map>
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-using namespace Common;
-using Common::vector;
-typedef Common::Vec3f Vec3;
+namespace topology
+{
 
-class MultiResSparseGridTopology : public Core::Topology
+using namespace sofa::defaulttype;
+using helper::vector;
+typedef defaulttype::Vec3f Vec3;
+
+class MultiResSparseGridTopology : public core::componentmodel::topology::Topology
 {
     int nbPoints;
 public:
@@ -394,9 +397,11 @@ protected:
 
 };
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif
 

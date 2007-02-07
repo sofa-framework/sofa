@@ -1,19 +1,21 @@
-#ifndef SOFA_COMPONENTS_POINTSETTOPOLOGY_H
-#define SOFA_COMPONENTS_POINTSETTOPOLOGY_H
+#ifndef SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGY_H
+#define SOFA_COMPONENT_TOPOLOGY_POINTSETTOPOLOGY_H
 
 //#include <stdlib.h>
 #include <vector>
 //#include <string>
-#include <Sofa-old/Core/BasicTopology.h>
-#include <Sofa-old/Core/MechanicalObject.h>
-#include <Sofa-old/Components/Common/fixed_array.h>
+#include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/helper/fixed_array.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
+namespace topology
+{
 
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
@@ -22,13 +24,13 @@ namespace Components
 
 
 /** indicates that the indices of two points are being swapped */
-class PointsIndicesSwap : public Core::TopologyChange
+class PointsIndicesSwap : public core::componentmodel::topology::TopologyChange
 {
 
 public:
     unsigned int index[2];
 
-    PointsIndicesSwap(const unsigned int i1,const unsigned int i2) : Core::TopologyChange(Core::POINTSINDICESSWAP)
+    PointsIndicesSwap(const unsigned int i1,const unsigned int i2) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSINDICESSWAP)
     {
         index[0]=i1;
         index[1]=i2;
@@ -39,7 +41,7 @@ public:
 
 
 /** indicates that some points were added */
-class PointsAdded : public Core::TopologyChange
+class PointsAdded : public core::componentmodel::topology::TopologyChange
 {
 
 public:
@@ -52,7 +54,7 @@ public:
     PointsAdded(const unsigned int nV,
             const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
             const std::vector< std::vector< double       > >& baryCoefs = (const std::vector< std::vector< double       > >)0)
-        : Core::TopologyChange(Core::POINTSADDED), nVertices(nV), ancestorsList(ancestors), coefs(baryCoefs)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSADDED), nVertices(nV), ancestorsList(ancestors), coefs(baryCoefs)
     { }
 
     unsigned int getNbAddedVertices() const
@@ -65,14 +67,14 @@ public:
 
 
 /** indicates that some points are about to be removed */
-class PointsRemoved : public Core::TopologyChange
+class PointsRemoved : public core::componentmodel::topology::TopologyChange
 {
 
 public:
     std::vector<unsigned int> removedVertexArray;
 
 public:
-    PointsRemoved(const std::vector<unsigned int>& _vArray) : Core::TopologyChange(Core::POINTSREMOVED), removedVertexArray(_vArray)
+    PointsRemoved(const std::vector<unsigned int>& _vArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSREMOVED), removedVertexArray(_vArray)
     {
     }
 
@@ -86,14 +88,14 @@ public:
 
 
 /** indicates that the indices of all points have been reordered */
-class PointsRenumbering : public Core::TopologyChange
+class PointsRenumbering : public core::componentmodel::topology::TopologyChange
 {
 
 public:
     std::vector<unsigned int> indexArray;
 
     PointsRenumbering(const std::vector< unsigned int >& indices = (const std::vector< unsigned int >)0)
-        : Core::TopologyChange(Core::POINTSRENUMBERING), indexArray(indices)
+        : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSRENUMBERING), indexArray(indices)
     { }
 
     const std::vector<unsigned int> &getIndexArray() const
@@ -112,7 +114,7 @@ public:
 
 /** a class that stores a set of points and provides access
 to each point */
-class PointSetTopologyContainer : public Core::TopologyContainer
+class PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
 {
 
 private:
@@ -164,9 +166,9 @@ public:
      */
     unsigned int getDOFIndex(const int i) const;
 
-    PointSetTopologyContainer(Core::BasicTopology *top);
+    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top);
 
-    PointSetTopologyContainer(Core::BasicTopology *top, const std::vector<unsigned int>& DOFIndex);
+    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector<unsigned int>& DOFIndex);
 
     template <typename DataTypes>
     friend class PointSetTopologyModifier;
@@ -192,14 +194,14 @@ template< typename DataTypes > class PointSetTopologyLoader;
  */
 
 template<class DataTypes>
-class PointSetTopologyModifier : public Core::TopologyModifier
+class PointSetTopologyModifier : public core::componentmodel::topology::TopologyModifier
 {
 
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
-    PointSetTopologyModifier(Core::BasicTopology *top) : TopologyModifier(top)
+    PointSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : TopologyModifier(top)
     {
     }
 
@@ -280,11 +282,11 @@ protected:
  *
  */
 template<class DataTypes>
-class PointSetTopologyAlgorithms : public Core::TopologyAlgorithms
+class PointSetTopologyAlgorithms : public core::componentmodel::topology::TopologyAlgorithms
 {
     // no methods implemented yet
 public:
-    PointSetTopologyAlgorithms(Core::BasicTopology *top) : TopologyAlgorithms(top)
+    PointSetTopologyAlgorithms(core::componentmodel::topology::BaseTopology *top) : TopologyAlgorithms(top)
     {
     }
 };
@@ -294,7 +296,7 @@ public:
  * A class that can perform some geometric computation on a set of points.
  */
 template<class DataTypes>
-class PointSetGeometryAlgorithms : public Core::GeometryAlgorithms
+class PointSetGeometryAlgorithms : public core::componentmodel::topology::GeometryAlgorithms
 {
 
 public:
@@ -304,7 +306,7 @@ public:
 
     typedef typename DataTypes::VecCoord VecCoord;
 
-    PointSetGeometryAlgorithms(Core::BasicTopology *top) : GeometryAlgorithms(top)
+    PointSetGeometryAlgorithms(core::componentmodel::topology::BaseTopology *top) : GeometryAlgorithms(top)
     {
     }
 
@@ -325,20 +327,20 @@ public:
 /** Describes a topological object that only consists as a set of points :
 it is a base class for all topological objects */
 template<class DataTypes>
-class PointSetTopology : public Core::BasicTopology
+class PointSetTopology : public core::componentmodel::topology::BaseTopology
 {
 
 public:
-    Core::MechanicalObject<DataTypes> *object;
+    component::MechanicalObject<DataTypes> *object;
 
     //void createNewVertices() const;
 
     //void removeVertices() const;
 
 public:
-    PointSetTopology(Core::MechanicalObject<DataTypes> *obj);
+    PointSetTopology(component::MechanicalObject<DataTypes> *obj);
 
-    Core::MechanicalObject<DataTypes> *getDOF() const
+    component::MechanicalObject<DataTypes> *getDOF() const
     {
         return object;
     }
@@ -359,13 +361,15 @@ public:
     virtual unsigned int getDOFNumber() const { return object->getSize(); }
 
 protected:
-    PointSetTopology(Core::MechanicalObject<DataTypes> *obj,const PointSetTopology *);
+    PointSetTopology(component::MechanicalObject<DataTypes> *obj,const PointSetTopology *);
 
 
 };
 
-} // namespace Components
+} // namespace topology
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif // SOFA_COMPONENTS_POINTSETTOPOLOGY_H
