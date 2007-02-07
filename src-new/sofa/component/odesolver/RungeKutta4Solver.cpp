@@ -1,0 +1,103 @@
+#include "Sofa-old/Components/RungeKutta4Solver.h"
+#include "Sofa-old/Core/MultiVector.h"
+#include "Common/ObjectFactory.h"
+
+#include <math.h>
+
+namespace Sofa
+{
+
+namespace Components
+{
+
+using namespace Core;
+using namespace Common;
+
+void RungeKutta4Solver::solve(double dt)
+{
+    //std::cout << "RK4 Init\n";
+    //Abstract::BaseContext* group = getContext();
+    OdeSolver* group = this;
+    MultiVector pos(group, VecId::position());
+    MultiVector vel(group, VecId::velocity());
+    MultiVector k1a(group, V_DERIV);
+    MultiVector k2a(group, V_DERIV);
+    MultiVector k3a(group, V_DERIV);
+    MultiVector k4a(group, V_DERIV);
+    MultiVector k1v(group, V_DERIV);
+    MultiVector k2v(group, V_DERIV);
+    MultiVector k3v(group, V_DERIV);
+    MultiVector k4v(group, V_DERIV);
+    MultiVector newX(group, V_COORD);
+    MultiVector newV(group, V_DERIV);
+
+    double stepBy2 = double(dt / 2.0);
+    double stepBy3 = double(dt / 3.0);
+    double stepBy6 = double(dt / 6.0);
+
+    double startTime = group->getTime();
+
+    //First step
+    //std::cout << "RK4 Step 1\n";
+    k1v = vel;
+    group->computeAcc (startTime, k1a, pos, vel);
+
+    //Step 2
+    //std::cout << "RK4 Step 2\n";
+    newX = pos;
+    newV = vel;
+
+    newX.peq(k1v, stepBy2);
+    newV.peq(k1a, stepBy2);
+
+    k2v = newV;
+    group->computeAcc ( startTime+stepBy2, k2a, newX, newV);
+
+    // step 3
+    //std::cout << "RK4 Step 3\n";
+    newX = pos;
+    newV = vel;
+
+    newX.peq(k2v, stepBy2);
+    newV.peq(k2a, stepBy2);
+
+    k3v = newV;
+    group->computeAcc ( startTime+stepBy2, k3a, newX, newV);
+
+    // step 4
+    //std::cout << "RK4 Step 4\n";
+    newX = pos;
+    newV = vel;
+    newX.peq(k3v, dt);
+    newV.peq(k3a, dt);
+
+    k4v = newV;
+    group->computeAcc( startTime+dt, k4a, newX, newV);
+
+    //std::cout << "RK4 Final\n";
+    pos.peq(k1v,stepBy6);
+    vel.peq(k1a,stepBy6);
+    pos.peq(k2v,stepBy3);
+    vel.peq(k2a,stepBy3);
+    pos.peq(k3v,stepBy3);
+    vel.peq(k3a,stepBy3);
+    pos.peq(k4v,stepBy6);
+    vel.peq(k4a,stepBy6);
+}
+
+void create(RungeKutta4Solver*& obj, ObjectDescription* arg)
+{
+    obj = new RungeKutta4Solver();
+    obj->parseFields( arg->getAttributeMap() );
+}
+
+SOFA_DECL_CLASS(RungeKutta4)
+
+Creator<ObjectFactory, RungeKutta4Solver> RungeKutta4SolverClass("RungeKutta4");
+
+} // namespace Components
+
+} // namespace Sofa
+
+
+
