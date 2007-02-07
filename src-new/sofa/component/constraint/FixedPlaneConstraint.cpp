@@ -5,32 +5,16 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace constraint
-{
-
-using namespace sofa::defaulttype;
-
-
-
-SOFA_DECL_CLASS(FixedPlaneConstraint)
-
-template class FixedPlaneConstraint<Vec3dTypes>;
-template class FixedPlaneConstraint<Vec3fTypes>;
-
 namespace helper   // \todo Why this must be inside helper namespace
 {
-
-
+using namespace component::constraint;
 template<class DataTypes>
 void create(FixedPlaneConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     typedef typename DataTypes::Coord::value_type   Real;
     typedef typename DataTypes::Coord   Coord;
 
-    XML::createWithParent< FixedPlaneConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< FixedPlaneConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("indices"))
@@ -77,6 +61,23 @@ void create(FixedPlaneConstraint<DataTypes>*& obj, simulation::tree::xml::Object
     }
 }
 }
+
+namespace component
+{
+
+namespace constraint
+{
+
+using namespace sofa::defaulttype;
+
+
+
+SOFA_DECL_CLASS(FixedPlaneConstraint)
+
+template class FixedPlaneConstraint<Vec3dTypes>;
+template class FixedPlaneConstraint<Vec3fTypes>;
+
+using helper::Creator;
 
 Creator<simulation::tree::xml::ObjectFactory, FixedPlaneConstraint<Vec3dTypes> > FixedPlaneConstraint3dClass("FixedPlaneConstraint",true);
 Creator<simulation::tree::xml::ObjectFactory, FixedPlaneConstraint<Vec3fTypes> > FixedPlaneConstraint3fClass("FixedPlaneConstraint",true);

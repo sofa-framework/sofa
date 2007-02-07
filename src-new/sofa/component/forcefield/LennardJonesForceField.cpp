@@ -6,21 +6,13 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace forcefield
-{
-
-using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
-
 namespace helper
 {
+using namespace component::forcefield;
 template<class DataTypes>
 void create(LennardJonesForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< LennardJonesForceField<DataTypes>, MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< LennardJonesForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("alpha"))  obj->setAlpha((typename DataTypes::Coord::value_type)atof(arg->getAttribute("alpha")));
@@ -35,11 +27,22 @@ void create(LennardJonesForceField<DataTypes>*& obj, simulation::tree::xml::Obje
 }
 } // namespace helper
 
+namespace component
+{
+
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
+
 SOFA_DECL_CLASS(LennardJonesForceField)
 
 // Each instance of our class must be compiled
 template class LennardJonesForceField<Vec3fTypes>;
 template class LennardJonesForceField<Vec3dTypes>;
+
+using helper::Creator;
 
 // And registered in the Factory
 Creator<simulation::tree::xml::ObjectFactory, LennardJonesForceField<Vec3fTypes> > LennardJonesForceField3fClass("LennardJonesForceField", true);

@@ -1,23 +1,23 @@
-#ifndef SOFA_COMPONENTS_GL_GLFONT_H
-#define SOFA_COMPONENTS_GL_GLFONT_H
+#ifndef SOFA_HELPER_GL_GLFONT_H
+#define SOFA_HELPER_GL_GLFONT_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace GL
+namespace gl
 {
 
 void glfntInit(void);
 void glfntWriteBitmap(float x,float y,char *s);
 void glfntClose(void);
 
-} // namespace GL
+} // namespace gl
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

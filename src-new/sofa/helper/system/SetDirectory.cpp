@@ -10,7 +10,6 @@
 #include <string.h>
 #include <iostream>
 
-
 namespace sofa
 {
 

@@ -22,7 +22,7 @@ SOFA_DECL_CLASS(ImplicitSurfaceMapping)
 template<class In, class Out>
 void create(ImplicitSurfaceMapping<In,Out>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWith2Objects< ImplicitSurfaceMapping<In,Out>, In, Out>(obj, arg);
+    simulation::tree::xml::createWith2Objects< ImplicitSurfaceMapping<In,Out>, In, Out>(obj, arg);
     if (obj != NULL)
     {
         if (arg->getAttribute("radius"))

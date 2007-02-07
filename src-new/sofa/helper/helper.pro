@@ -61,9 +61,6 @@ HEADERS += \
           ./system/thread/ObjSubAutomateAttributeNodeExec.inl \
           ./system/thread/ObjSubAutomateCondExec.h \
           ./system/thread/ObjSubAutomateNodeExec.h \
-          ./system/thread/pthread.h \
-          ./system/thread/sched.h \
-          ./system/thread/semaphore.h \
           ./system/thread/StateMachine.h \
           ./system/thread/ThreadSimulation.h \
           ./system/thread/utils.h \

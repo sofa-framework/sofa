@@ -16,7 +16,7 @@ namespace tree
 namespace xml
 {
 
-class ObjectElement : public Element<objectmodel::BaseObject>
+class ObjectElement : public Element<core::objectmodel::BaseObject>
 {
 public:
     ObjectElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);

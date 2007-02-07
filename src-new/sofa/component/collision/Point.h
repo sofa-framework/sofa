@@ -1,6 +1,6 @@
-#ifndef SOFA_COMPONENTS_POINT_H
-#define SOFA_COMPONENTS_POINT_H
+#ifndef SOFA_COMPONENT_COLLISION_POINT_H
+#define SOFA_COMPONENT_COLLISION_POINT_H
 
-#include "PointModel.h"
+#include <sofa/component/collision/PointModel.h>
 
 #endif

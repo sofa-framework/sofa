@@ -21,9 +21,9 @@ template class RepulsiveSpringForceField<Vec3fTypes>;
 template<class DataTypes>
 void create(RepulsiveSpringForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< RepulsiveSpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< RepulsiveSpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj == NULL) // try the InteractionForceField initialization
-        XML::createWith2Objects< RepulsiveSpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+        simulation::tree::xml::createWith2Objects< RepulsiveSpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj != NULL)
     {
         if (arg->getAttribute("filename"))

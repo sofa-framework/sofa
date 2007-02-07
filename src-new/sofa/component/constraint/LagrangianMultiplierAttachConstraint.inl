@@ -149,8 +149,8 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::draw()
     for (unsigned int i=0; i<constraints.size(); i++)
     {
         const ConstraintData& c = constraints[i];
-        GL::glVertexT(p1[c.m1]);
-        GL::glVertexT(p2[c.m2]);
+        helper::gl::glVertexT(p1[c.m1]);
+        helper::gl::glVertexT(p2[c.m2]);
     }
     glEnd();
 
@@ -165,11 +165,11 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::draw()
             dp*=1.0/16;
             dp*=0.001;
             Coord p = p1[c.m1] - dp;
-            GL::glVertexT(p1[c.m1]);
-            GL::glVertexT(p);
+            helper::gl::glVertexT(p1[c.m1]);
+            helper::gl::glVertexT(p);
             p = p2[c.m2] + dp;
-            GL::glVertexT(p2[c.m2]);
-            GL::glVertexT(p);
+            helper::gl::glVertexT(p2[c.m2]);
+            helper::gl::glVertexT(p);
         }
         glEnd();
     }

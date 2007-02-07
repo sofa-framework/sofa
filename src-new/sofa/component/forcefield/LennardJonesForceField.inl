@@ -129,8 +129,8 @@ void LennardJonesForceField<DataTypes>::draw()
             glColor4f(1,1,1,1);
         else
             glColor4f(0,0,1,1);
-        GL::glVertexT(p1[df.a]);
-        GL::glVertexT(p1[df.b]);
+        helper::gl::glVertexT(p1[df.a]);
+        helper::gl::glVertexT(p1[df.b]);
     }
     glEnd();
 }

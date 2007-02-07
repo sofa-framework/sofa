@@ -32,7 +32,7 @@ void create(MeshTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
 
 SOFA_DECL_CLASS(MeshTopology)
 
-Creator<simulation::tree::xml::ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
+helper::Creator<simulation::tree::xml::ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
 
 MeshTopology::MeshTopology()
     : nbPoints(0)
@@ -43,14 +43,14 @@ MeshTopology::MeshTopology()
 }
 
 
-class MeshTopology::Loader : public MeshTopologyLoader
+class MeshTopology::Loader : public helper::io::MeshTopologyLoader
 {
 public:
     MeshTopology* dest;
     Loader(MeshTopology* dest) : dest(dest) {}
     virtual void addPoint(double px, double py, double pz)
     {
-        dest->seqPoints.push_back(make_array(px, py, pz));
+        dest->seqPoints.push_back(helper::make_array(px, py, pz));
         if (dest->seqPoints.size() > (unsigned)dest->nbPoints)
             dest->nbPoints = dest->seqPoints.size();
     }
@@ -97,7 +97,7 @@ bool MeshTopology::load(const char* filename)
     if ((strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".obj"))
         || (strlen(filename)>6 && !strcmp(filename+strlen(filename)-6,".trian")))
     {
-        Mesh* mesh = Mesh::Create(filename);
+        helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
         if (mesh==NULL) return false;
 
         loader.setNbPoints(mesh->getVertices().size());
@@ -164,7 +164,7 @@ bool MeshTopology::load(const char* filename)
 
 void MeshTopology::addPoint(double px, double py, double pz)
 {
-    seqPoints.push_back(make_array(px, py, pz));
+    seqPoints.push_back(helper::make_array(px, py, pz));
     if (seqPoints.size() > (unsigned)nbPoints)
         nbPoints = seqPoints.size();
 

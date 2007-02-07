@@ -301,8 +301,8 @@ void SPHFluidForceField<DataTypes>::draw()
                     ++j2;
                 if (j2 == Pi.neighbors2.size())
                 {
-                    GL::glVertexT(x[i]);
-                    GL::glVertexT(x[index]);
+                    helper::gl::glVertexT(x[i]);
+                    helper::gl::glVertexT(x[index]);
                 }
             }
             glColor4f(1,0,1,1);
@@ -314,8 +314,8 @@ void SPHFluidForceField<DataTypes>::draw()
                     ++j2;
                 if (j2 == Pi.neighbors.size())
                 {
-                    GL::glVertexT(x[i]);
-                    GL::glVertexT(x[index]);
+                    helper::gl::glVertexT(x[i]);
+                    helper::gl::glVertexT(x[index]);
                 }
             }
         }
@@ -333,8 +333,8 @@ void SPHFluidForceField<DataTypes>::draw()
             {
                 glColor4f(f-1,0,2-f,1-r_h);
             }
-            GL::glVertexT(x[i]);
-            GL::glVertexT(x[j]);
+            helper::gl::glVertexT(x[i]);
+            helper::gl::glVertexT(x[j]);
         }
 #endif
     }
@@ -356,7 +356,7 @@ void SPHFluidForceField<DataTypes>::draw()
         {
             glColor3f(f-1,0,2-f);
         }
-        GL::glVertexT(x[i]);
+        helper::gl::glVertexT(x[i]);
     }
     glEnd();
     glPointSize(1);

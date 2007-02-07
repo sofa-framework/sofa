@@ -20,13 +20,14 @@ namespace component
 namespace forcefield
 {
 
-//#define SOFA_COMPONENT_FORCEFIELD_SPHFLUIDFORCEFIELD_H
+// TODO: move SpatialGridContainer to another namespace?
+using namespace sofa::component::behaviormodel::eulerianfluid;
 
 template<class DataTypes>
-class SPHFluidForceField : public sofa::Core::ForceField<DataTypes>, public sofa::core::VisualModel
+class SPHFluidForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>, public sofa::core::VisualModel
 {
 public:
-    typedef sofa::Core::ForceField<DataTypes> Inherit;
+    typedef sofa::core::componentmodel::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

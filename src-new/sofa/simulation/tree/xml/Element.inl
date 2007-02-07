@@ -1,6 +1,7 @@
 #ifndef SOFA_SIMULATION_TREE_XML_ELEMENT_INL
 #define SOFA_SIMULATION_TREE_XML_ELEMENT_INL
 
+#include "Element.h"
 
 namespace sofa
 {
@@ -14,10 +15,8 @@ namespace tree
 namespace xml
 {
 
-using namespace sofa::defaulttype;
-
 template<class Object>
-bool Node<Object>::initNode()
+bool Element<Object>::initNode()
 {
     //Object *obj = Factory< std::string, Object, Node<Object>* >::getInstance()->createObject(this->getType(), this);
     Object *obj = Factory::CreateObject(this->getType(), this);

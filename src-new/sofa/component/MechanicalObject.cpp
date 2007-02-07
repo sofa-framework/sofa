@@ -2,8 +2,8 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/component/MechanicalObject.inl>
+#include <sofa/helper/io/MassSpringLoader.h>
 
 
 namespace sofa
@@ -18,7 +18,7 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(MechanicalObject)
 
 template<class DataTypes>
-class MechanicalObjectLoader : public MassSpringLoader
+class MechanicalObjectLoader : public helper::io::MassSpringLoader
 {
 public:
     MechanicalObject<DataTypes>* dest;
@@ -33,6 +33,7 @@ public:
         ++index;
     }
 };
+
 } // namespace component
 
 
@@ -67,10 +68,12 @@ void create(component::MechanicalObject<DataTypes>*& obj, simulation::tree::xml:
         }
     }
 }
-}
+
+} // namespace helper
 
 namespace component
 {
+
 Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3fTypes> > MechanicalObjectVec3fClass("MechanicalObjectVec3f",true);
 Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3dClass("MechanicalObjectVec3d",true);
 Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3Class("MechanicalObjectVec3",true);
@@ -94,7 +97,7 @@ void MechanicalObject<defaulttype::Vec3dTypes>::getIndicesInSpace(std::vector<un
     }
 }
 template <>
-void MechanicalObject<defaulttype::Vec3dTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+void MechanicalObject<defaulttype::Vec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
 {
     const VecCoord& x = *getX();
     for( unsigned i=0; i<x.size(); ++i )
@@ -122,7 +125,7 @@ void MechanicalObject<defaulttype::RigidTypes>::getIndicesInSpace(std::vector<un
 
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 
-template class MechanicalObject<defaulttype::Vec3dTypes>;
+template class MechanicalObject<defaulttype::Vec3fTypes>;
 template class MechanicalObject<defaulttype::Vec3dTypes>;
 template class MechanicalObject<defaulttype::RigidTypes>;
 template class MechanicalObject<defaulttype::LaparoscopicRigidTypes>;

@@ -9,16 +9,19 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "AnimateBeginEvent.h"
+#include <sofa/simulation/tree/AnimateBeginEvent.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
+{
+
+namespace tree
 {
 
 AnimateBeginEvent::AnimateBeginEvent(double dt)
-    : Sofa::Abstract::Event()
+    : sofa::core::objectmodel::Event()
     , dt(dt)
 {
 }
@@ -28,6 +31,8 @@ AnimateBeginEvent::~AnimateBeginEvent()
 {
 }
 
-}
+} // namespace tree
 
-}
+} // namespace simulation
+
+} // namespace sofa

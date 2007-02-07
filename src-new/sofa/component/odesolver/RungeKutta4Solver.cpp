@@ -15,6 +15,8 @@ namespace odesolver
 
 using namespace core::componentmodel::behavior;
 using namespace sofa::defaulttype;
+using namespace helper::io;
+using namespace helper;
 
 void RungeKutta4Solver::solve(double dt)
 {

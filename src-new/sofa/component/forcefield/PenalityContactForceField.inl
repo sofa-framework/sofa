@@ -118,8 +118,8 @@ void PenalityContactForceField<DataTypes>::draw()
             glColor4f(1,0,0,1);
         else
             glColor4f(0,1,0,1);
-        GL::glVertexT(p1[c.m1]);
-        GL::glVertexT(p2[c.m2]);
+        helper::gl::glVertexT(p1[c.m1]);
+        helper::gl::glVertexT(p2[c.m2]);
     }
     glEnd();
 
@@ -131,11 +131,11 @@ void PenalityContactForceField<DataTypes>::draw()
         {
             const Contact& c = contacts[i];
             Coord p = p1[c.m1] - c.norm;
-            GL::glVertexT(p1[c.m1]);
-            GL::glVertexT(p);
+            helper::gl::glVertexT(p1[c.m1]);
+            helper::gl::glVertexT(p);
             p = p2[c.m2] + c.norm;
-            GL::glVertexT(p2[c.m2]);
-            GL::glVertexT(p);
+            helper::gl::glVertexT(p2[c.m2]);
+            helper::gl::glVertexT(p);
         }
         glEnd();
     }

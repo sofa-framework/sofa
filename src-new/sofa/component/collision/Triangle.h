@@ -1,6 +1,6 @@
-#ifndef SOFA_COMPONENTS__TRIANGLE_H
-#define SOFA_COMPONENTS__TRIANGLE_H
+#ifndef SOFA_COMPONENT_COLLISION_TRIANGLE_H
+#define SOFA_COMPONENT_COLLISION_TRIANGLE_H
 
-#include "TriangleModel.h"
+#include <sofa/component/collision/TriangleModel.h>
 
 #endif

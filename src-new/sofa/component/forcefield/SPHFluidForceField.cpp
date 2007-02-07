@@ -6,21 +6,13 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace forcefield
-{
-
-using namespace sofa::defaulttype;
-using namespace core::componentmodel::behavior;
-
 namespace helper
 {
+using namespace component::forcefield;
 template<class DataTypes>
 void create(SPHFluidForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< SPHFluidForceField<DataTypes>, MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< SPHFluidForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("radius"))  obj->setParticleRadius((typename DataTypes::Coord::value_type)atof(arg->getAttribute("radius")));
@@ -33,11 +25,22 @@ void create(SPHFluidForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDe
 }
 } // namespace helper
 
-SOFA_DECL_CLASS(SPHFluidForceField)
+namespace component
+{
+
+namespace forcefield
+{
+
+using namespace sofa::defaulttype;
+using namespace core::componentmodel::behavior;
 
 // Each instance of our class must be compiled
 template class SPHFluidForceField<Vec3fTypes>;
 template class SPHFluidForceField<Vec3dTypes>;
+
+SOFA_DECL_CLASS(SPHFluidForceField)
+
+using helper::Creator;
 
 // And registered in the Factory
 Creator<simulation::tree::xml::ObjectFactory, SPHFluidForceField<Vec3fTypes> > SPHFluidForceField3fClass("SPHFluidForceField", true);

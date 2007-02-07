@@ -32,8 +32,8 @@ protected:
     Real cubesStiffness;
     Real cubesDamping;
     char* filename;
-    typedef MultiResSparseGridTopology::SparseGrid Voxels;
-    typedef MultiResSparseGridTopology::SparseGrid::Index3D Index3D;
+    typedef topology::MultiResSparseGridTopology::SparseGrid Voxels;
+    typedef topology::MultiResSparseGridTopology::SparseGrid::Index3D Index3D;
 
 
 public:

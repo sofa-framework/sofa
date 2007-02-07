@@ -36,7 +36,7 @@ void LagrangianMultiplierFixedConstraint<DataTypes>::addConstraint(int indice, c
 template<class DataTypes>
 void LagrangianMultiplierFixedConstraint<DataTypes>::init()
 {
-    this->Core::ForceField<DataTypes>::init();
+    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     //this->core::componentmodel::behavior::Constraint<DataTypes>::init();
 }
 
@@ -128,8 +128,8 @@ void LagrangianMultiplierFixedConstraint<DataTypes>::draw()
     {
         const PointConstraint& c = constraints[i];
         Coord p2 = p[c.indice] + Coord(lambda[3*i+0],lambda[3*i+1],lambda[3*i+2]);
-        GL::glVertexT(p[c.indice]);
-        GL::glVertexT(p2);
+        helper::gl::glVertexT(p[c.indice]);
+        helper::gl::glVertexT(p2);
     }
     glEnd();
 }

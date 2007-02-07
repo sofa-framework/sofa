@@ -9,6 +9,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_INL
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_INL
+
 #include <sofa/component/forcefield/TriangleBendingSprings.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <iostream>
@@ -27,12 +30,9 @@ namespace forcefield
 
 using namespace core::componentmodel::behavior;
 
-namespace Components
-{
-
 template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
-    : sofa::Components::StiffSpringForceField<DataTypes>(object)
+    : StiffSpringForceField<DataTypes>(object)
     , stiffness( dataField(&stiffness,(Real)1.0,"stiffness","Stiffness of the bending springs") )
     , dampingRatio( dataField(&dampingRatio,(Real)0.0,"dampingRatio","Damping ratio of the bending springs. The actual damping coefficient is the stiffness times the damping ratio.") )
     , dof(NULL)
@@ -115,25 +115,25 @@ void TriangleBendingSprings<DataTypes>::init()
     // Set the bending springs
 
     std::map< IndexPair, unsigned > edgeMap;
-    MeshTopology* topology = dynamic_cast<MeshTopology*>( this->getContext()->getTopology() );
+    topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>( this->getContext()->getTopology() );
     assert( topology );
 
-    const MeshTopology::SeqTriangles& triangles = topology->getTriangles();
+    const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
     cout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<endl;
     for( unsigned i= 0; i<triangles.size(); ++i )
     {
-        const MeshTopology::Triangle& face = triangles[i];
+        const topology::MeshTopology::Triangle& face = triangles[i];
         {
             registerTriangle( face[0], face[1], face[2], edgeMap );
         }
 
     }
 
-    const MeshTopology::SeqQuads& quads = topology->getQuads();
+    const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
     cout<<"==================================TriangleBendingSprings<DataTypes>::init(), quad size = "<<topology->getQuads().size()<<endl;
     for( unsigned i= 0; i<quads.size(); ++i )
     {
-        const MeshTopology::Quad& face = quads[i];
+        const topology::MeshTopology::Quad& face = quads[i];
         {
             registerTriangle( face[0], face[1], face[2], edgeMap );
             registerTriangle( face[0], face[2], face[3], edgeMap );
@@ -142,13 +142,14 @@ void TriangleBendingSprings<DataTypes>::init()
     }
 
     // init the parent class
-    sofa::Components::StiffSpringForceField<DataTypes>::init();
+    StiffSpringForceField<DataTypes>::init();
 }
 
 
-}
+} // namespace forcefield
 
-}
+} // namespace component
 
+} // namespace sofa
 
-
+#endif

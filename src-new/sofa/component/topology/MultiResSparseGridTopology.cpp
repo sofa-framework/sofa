@@ -50,7 +50,7 @@ void create(MultiResSparseGridTopology*& obj, simulation::tree::xml::ObjectDescr
 
 SOFA_DECL_CLASS(MultiResSparseGridTopology)
 
-Creator<simulation::tree::xml::ObjectFactory, MultiResSparseGridTopology> MultiResSparseGridTopologyClass("MultiResSparseGridTopology");
+helper::Creator<simulation::tree::xml::ObjectFactory, MultiResSparseGridTopology> MultiResSparseGridTopologyClass("MultiResSparseGridTopology");
 
 MultiResSparseGridTopology::MultiResSparseGridTopology()//:GridTopology(nx,ny,nz)
 {}

@@ -1,17 +1,12 @@
-#include "FnDispatcher.inl"
-#include "FnDispatcher.h"
+#include <sofa/helper/FnDispatcher.inl>
+#include <sofa/helper/FnDispatcher.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Common
-{
+} // namespace helper
 
-} // namespace Common
-
-} // namespace Components
-
-} // namepsace Sofa
+} // namespace sofa

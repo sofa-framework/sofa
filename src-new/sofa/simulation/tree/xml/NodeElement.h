@@ -3,7 +3,7 @@
 
 #include <sofa/simulation/tree/xml/Element.h>
 #include <sofa/simulation/tree/xml/BaseElement.h>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -17,12 +17,12 @@ namespace tree
 namespace xml
 {
 
-class NodeElement : public Node<xml::BaseElement>
+class NodeElement : public Element<core::objectmodel::BaseNode>
 {
 public:
-    NodeNode(const std::string& name, const std::string& type, BaseElement* parent=NULL);
+    NodeElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
 
-    virtual ~NodeNode();
+    virtual ~NodeElement();
 
     virtual bool setParent(BaseElement* newParent);
 

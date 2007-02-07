@@ -136,7 +136,7 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topolog
 template<class DataTypes>
 void create(EdgeSetTopology<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< EdgeSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< EdgeSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("filename"))

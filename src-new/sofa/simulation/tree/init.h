@@ -1,17 +1,22 @@
-#ifndef SOFA_COMPONENTS_INIT_H
-#define SOFA_COMPONENTS_INIT_H
+#ifndef SOFA_SIMULATION_TREE_INIT_H
+#define SOFA_SIMULATION_TREE_INIT_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
+{
+
+namespace tree
 {
 
 void init();
 
-} // namespace Components
+} // namespace tree
 
-} // namespace Sofa
+} // namespace simulation
+
+} // namespace sofa
 
 #endif
 

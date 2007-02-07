@@ -22,6 +22,7 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
+using namespace helper::io;
 
 CGImplicitSolver::CGImplicitSolver()
     : f_maxIter( dataField(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
@@ -220,7 +221,7 @@ void create(CGImplicitSolver*& obj, simulation::tree::xml::ObjectDescription* ar
 
 SOFA_DECL_CLASS(CGImplicit)
 
-Creator<simulation::tree::xml::ObjectFactory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
+helper::Creator<simulation::tree::xml::ObjectFactory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
 
 } // namespace odesolver
 

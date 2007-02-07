@@ -67,13 +67,6 @@ public:
     }
 };
 
-/// Generic object creator. Can be specialized for custom objects creation
-template<class Object, class Argument>
-void create(Object*& obj, Argument arg)
-{
-    obj = new Object(arg);
-}
-
 template <class Factory, class RealObject>
 class Creator : public Factory::Creator, public Factory::Key
 {
@@ -97,6 +90,13 @@ public:
         return typeid(RealObject);
     }
 };
+
+/// Generic object creator. Can be specialized for custom objects creation
+template<class Object, class Argument>
+void create(Object*& obj, Argument arg)
+{
+    obj = new Object(arg);
+}
 
 template <class Factory, class RealObject>
 class CreatorFn : public Factory::Creator, public Factory::Key

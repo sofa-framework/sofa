@@ -40,8 +40,10 @@ protected:
     double dt;
 };
 
-}
+} // namespace tree
 
-}
+} // namespace simulation
+
+} // namespace sofa
 
 #endif

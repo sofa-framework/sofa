@@ -13,6 +13,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/topology/PointData.inl>
+
 namespace sofa
 {
 
@@ -22,13 +23,7 @@ namespace component
 namespace mass
 {
 
-using namespace core::objectmodel;
-namespace Components
-{
-
-using namespace sofa::defaulttype;
-
-// using core::Field;
+using sofa::helper::vector;
 
 template <class DataTypes, class MassType>
 class DiagonalMass : public core::componentmodel::behavior::Mass<DataTypes>, public core::VisualModel
@@ -40,7 +35,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    typedef PointData<MassType> VecMass;
+    typedef topology::PointData<MassType> VecMass;
     typedef vector<MassType> MassVector;
 
     typedef enum
@@ -112,8 +107,7 @@ public:
 
     void update()
     { }
-}
-;
+};
 
 } // namespace mass
 

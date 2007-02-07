@@ -48,13 +48,13 @@ BruteForceDetection::BruteForceDetection()
 {
 }
 
-void BruteForceDetection::addCollisionModel(CollisionModel *cm)
+void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 {
     if (cm->empty())
         return;
-    for (std::vector<CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
+    for (std::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
     {
-        CollisionModel* cm2 = *it;
+        core::CollisionModel* cm2 = *it;
         if (cm->isStatic() && cm2->isStatic())
             continue;
         if (!cm->canCollideWith(cm2))
@@ -65,13 +65,13 @@ void BruteForceDetection::addCollisionModel(CollisionModel *cm)
 
         // // Here we assume multiple root elements are present in both models
         // bool collisionDetected = false;
-        // CollisionElementIterator begin1 = cm->begin();
-        // CollisionElementIterator end1 = cm->end();
-        // CollisionElementIterator begin2 = cm2->begin();
-        // CollisionElementIterator end2 = cm2->end();
-        // for (CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+        // core::CollisionElementIterator begin1 = cm->begin();
+        // core::CollisionElementIterator end1 = cm->end();
+        // core::CollisionElementIterator begin2 = cm2->begin();
+        // core::CollisionElementIterator end2 = cm2->end();
+        // for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
         // {
-        //     for (CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
+        //     for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
         //     {
         //         //if (!it1->canCollideWith(it2)) continue;
         //         if (intersector->canIntersect(it1, it2))
@@ -94,12 +94,12 @@ void BruteForceDetection::addCollisionModel(CollisionModel *cm)
     collisionModels.push_back(cm);
 }
 
-void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, CollisionModel*>& cmPair)
+void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair)
 {
-    typedef std::pair< std::pair<CollisionElementIterator,CollisionElementIterator>, std::pair<CollisionElementIterator,CollisionElementIterator> > TestPair;
+    typedef std::pair< std::pair<core::CollisionElementIterator,core::CollisionElementIterator>, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> > TestPair;
 
-    CollisionModel *cm1 = cmPair.first; //->getNext();
-    CollisionModel *cm2 = cmPair.second; //->getNext();
+    core::CollisionModel *cm1 = cmPair.first; //->getNext();
+    core::CollisionModel *cm2 = cmPair.second; //->getNext();
 
     //int size0 = elemPairs.size();
     //std::cout << "Narrow phase "<<cm1->getLast()->getName()<<" - "<<cm2->getLast()->getName()<<std::endl;
@@ -110,8 +110,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
     if (cm1->empty() || cm2->empty())
         return;
 
-    CollisionModel *finalcm1 = cm1->getLast();
-    CollisionModel *finalcm2 = cm2->getLast();
+    core::CollisionModel *finalcm1 = cm1->getLast();
+    core::CollisionModel *finalcm2 = cm2->getLast();
     //std::cout << "Final phase "<<gettypename(typeid(*finalcm1))<<" - "<<gettypename(typeid(*finalcm2))<<std::endl;
     core::componentmodel::collision::ElementIntersector* finalintersector = intersectionMethod->findIntersector(finalcm1, finalcm2);
     if (finalintersector == NULL)
@@ -132,10 +132,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
 
     std::queue< TestPair > externalCells;
 
-    std::pair<CollisionElementIterator,CollisionElementIterator> internalChildren1 = cm1->begin().getInternalChildren();
-    std::pair<CollisionElementIterator,CollisionElementIterator> internalChildren2 = cm2->begin().getInternalChildren();
-    std::pair<CollisionElementIterator,CollisionElementIterator> externalChildren1 = cm1->begin().getExternalChildren();
-    std::pair<CollisionElementIterator,CollisionElementIterator> externalChildren2 = cm2->begin().getExternalChildren();
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> internalChildren1 = cm1->begin().getInternalChildren();
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> internalChildren2 = cm2->begin().getInternalChildren();
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> externalChildren1 = cm1->begin().getExternalChildren();
+    std::pair<core::CollisionElementIterator,core::CollisionElementIterator> externalChildren2 = cm2->begin().getExternalChildren();
     if (internalChildren1.first != internalChildren1.second)
     {
         if (internalChildren2.first != internalChildren2.second)
@@ -185,13 +185,13 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
             TestPair current = internalCells.top();
             internalCells.pop();
 
-            CollisionElementIterator begin1 = current.first.first;
-            CollisionElementIterator end1 = current.first.second;
-            CollisionElementIterator begin2 = current.second.first;
-            CollisionElementIterator end2 = current.second.second;
-            for (CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+            core::CollisionElementIterator begin1 = current.first.first;
+            core::CollisionElementIterator end1 = current.first.second;
+            core::CollisionElementIterator begin2 = current.second.first;
+            core::CollisionElementIterator end2 = current.second.second;
+            for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
             {
-                for (CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
+                for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
                 {
                     //if (!it1->canCollideWith(it2)) continue;
 
@@ -245,13 +245,13 @@ void BruteForceDetection::addCollisionPair(const std::pair<CollisionModel*, Coll
                                         {
                                             if (newExternalTests.first.first.getCollisionModel() == finalcm1 && newExternalTests.second.first.getCollisionModel() == finalcm2)
                                             {
-                                                CollisionElementIterator begin1 = newExternalTests.first.first;
-                                                CollisionElementIterator end1 = newExternalTests.first.second;
-                                                CollisionElementIterator begin2 = newExternalTests.second.first;
-                                                CollisionElementIterator end2 = newExternalTests.second.second;
-                                                for (CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+                                                core::CollisionElementIterator begin1 = newExternalTests.first.first;
+                                                core::CollisionElementIterator end1 = newExternalTests.first.second;
+                                                core::CollisionElementIterator begin2 = newExternalTests.second.first;
+                                                core::CollisionElementIterator end2 = newExternalTests.second.second;
+                                                for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
                                                 {
-                                                    for (CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
+                                                    for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
                                                     {
                                                         //if (!it1->canCollideWith(it2)) continue;
                                                         if (node) t0 = node->startTime();
@@ -327,8 +327,8 @@ void BruteForceDetection::draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glLineWidth(3);
         glPointSize(5);
-        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it = elemPairs.begin();
-        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator itEnd = elemPairs.end();
+        std::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >::iterator it = elemPairs.begin();
+        std::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >::iterator itEnd = elemPairs.end();
         //std::cout << "Size : " << elemPairs.size() << std::endl;
         for (; it != itEnd; it++)
         {

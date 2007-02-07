@@ -14,11 +14,12 @@ namespace xml
 {
 
 using namespace sofa::defaulttype;
+using helper::Creator;
 
 //template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
 
 ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* parent)
-    : Node<objectmodel::BaseObject>(name, type, parent)
+    : Element<core::objectmodel::BaseObject>(name, type, parent)
 {
 }
 
@@ -28,10 +29,10 @@ ObjectElement::~ObjectElement()
 
 bool ObjectElement::initNode()
 {
-    if (!Node<objectmodel::BaseObject>::initNode()) return false;
+    if (!Element<core::objectmodel::BaseObject>::initNode()) return false;
     if (getObject()!=NULL)
     {
-        objectmodel::BaseContext* ctx = dynamic_cast<objectmodel::BaseContext*>(getParent()->getBaseObject());
+        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(getParent()->getBaseObject());
         if (ctx!=NULL)
         {
             std::cout << "Adding Object "<<getName()<<" to "<<ctx->getName()<<std::endl;

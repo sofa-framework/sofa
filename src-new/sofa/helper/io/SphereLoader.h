@@ -1,10 +1,13 @@
-#ifndef SOFA_COMPONENTS_SPHERELOADER_H
-#define SOFA_COMPONENTS_SPHERELOADER_H
+#ifndef SOFA_HELPER_IO_SPHERELOADER_H
+#define SOFA_HELPER_IO_SPHERELOADER_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
+{
+
+namespace io
 {
 
 class SphereLoader
@@ -16,8 +19,10 @@ public:
     virtual void addSphere(double /*px*/, double /*py*/, double /*pz*/, double /*r*/) {}
 };
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
 
 #endif

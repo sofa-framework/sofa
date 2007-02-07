@@ -6,6 +6,32 @@
 namespace sofa
 {
 
+namespace helper   // \todo Why this must be inside helper namespace
+{
+using namespace component::constraint;
+template<class DataTypes>
+void create(FixedConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
+{
+    simulation::tree::xml::createWithParent< FixedConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    if (obj!=NULL)
+    {
+        obj->parseFields( arg->getAttributeMap() );
+        /*		if (arg->getAttribute("indices"))
+        		{
+        			const char* str = arg->getAttribute("indices");
+        			const char* str2 = NULL;
+        			for(;;)
+        			{
+        				int v = (int)strtod(str,(char**)&str2);
+        				if (str2==str) break;
+        				str = str2;
+        				obj->addConstraint(v);
+        			}
+        		}*/
+    }
+}
+}
+
 namespace component
 {
 
@@ -57,31 +83,7 @@ SOFA_DECL_CLASS(FixedConstraint)
 template class FixedConstraint<Vec3dTypes>;
 template class FixedConstraint<Vec3fTypes>;
 
-namespace helper   // \todo Why this must be inside helper namespace
-{
-
-template<class DataTypes>
-void create(FixedConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    XML::createWithParent< FixedConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-        obj->parseFields( arg->getAttributeMap() );
-        /*		if (arg->getAttribute("indices"))
-        		{
-        			const char* str = arg->getAttribute("indices");
-        			const char* str2 = NULL;
-        			for(;;)
-        			{
-        				int v = (int)strtod(str,(char**)&str2);
-        				if (str2==str) break;
-        				str = str2;
-        				obj->addConstraint(v);
-        			}
-        		}*/
-    }
-}
-}
+using helper::Creator;
 
 Creator<simulation::tree::xml::ObjectFactory, FixedConstraint<Vec3dTypes> > FixedConstraint3dClass("FixedConstraint",true);
 Creator<simulation::tree::xml::ObjectFactory, FixedConstraint<Vec3fTypes> > FixedConstraint3fClass("FixedConstraint",true);

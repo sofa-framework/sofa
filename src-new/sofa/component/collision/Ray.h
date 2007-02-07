@@ -1,6 +1,6 @@
-#ifndef SOFA_COMPONENTS_RAY_H
-#define SOFA_COMPONENTS_RAY_H
+#ifndef SOFA_COMPONENT_COLLISION_RAY_H
+#define SOFA_COMPONENT_COLLISION_RAY_H
 
-#include "RayModel.h"
+#include <sofa/component/collision/RayModel.h>
 
 #endif

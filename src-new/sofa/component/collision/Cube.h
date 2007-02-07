@@ -1,6 +1,6 @@
-#ifndef SOFA_COMPONENTS_CUBE_H
-#define SOFA_COMPONENTS_CUBE_H
+#ifndef SOFA_COMPONENT_COLLISION_CUBE_H
+#define SOFA_COMPONENT_COLLISION_CUBE_H
 
-#include "CubeModel.h"
+#include <sofa/component/collision/CubeModel.h>
 
 #endif

@@ -22,9 +22,9 @@ template class LagrangianMultiplierAttachConstraint<Vec3fTypes>;
 template<class DataTypes>
 void create(LagrangianMultiplierAttachConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< LagrangianMultiplierAttachConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< LagrangianMultiplierAttachConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj == NULL) // try the InteractionForceField initialization
-        XML::createWith2Objects< LagrangianMultiplierAttachConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+        simulation::tree::xml::createWith2Objects< LagrangianMultiplierAttachConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
 }
 
 Creator<simulation::tree::xml::ObjectFactory, LagrangianMultiplierAttachConstraint<Vec3dTypes> > LagrangianMultiplierAttachConstraintVec3dClass("LagrangianMultiplierAttachConstraint", true);

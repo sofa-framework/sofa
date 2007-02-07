@@ -22,6 +22,8 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
+using namespace helper::io;
+using namespace helper;
 
 BiCGStabImplicitSolver::BiCGStabImplicitSolver()
 {

@@ -1,13 +1,13 @@
 #include <sofa/helper/io/Image.h>
 #include <sofa/helper/Factory.inl>
 
-template class sofa::helper::Factory<std::string, sofa::helper::io::Image, std::string>;
-
 namespace sofa
 {
 
 namespace helper
 {
+
+template class Factory<std::string, sofa::helper::io::Image, std::string>;
 
 namespace io
 {

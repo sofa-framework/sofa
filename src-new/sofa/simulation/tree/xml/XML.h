@@ -1,25 +1,30 @@
-#ifndef SOFA_COMPONENTS_XML_XML_H
-#define SOFA_COMPONENTS_XML_XML_H
+#ifndef SOFA_SIMULATION_TREE_XML_XML_H
+#define SOFA_SIMULATION_TREE_XML_XML_H
 
-#include "Node.h"
+#include <sofa/simulation/tree/xml/Element.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace simulation
 {
 
-namespace XML
+namespace tree
 {
 
-BaseNode* load(const char *filename);
+namespace xml
+{
 
-bool save(const char *filename, BaseNode* root);
+BaseElement* load(const char *filename);
 
-} // namespace XML
+bool save(const char *filename, BaseElement* root);
 
-} // namespace Components
+} // namespace xml
 
-} // namespace Sofa
+} // namespace tree
+
+} // namespace simulation
+
+} // namespace sofa
 
 #endif

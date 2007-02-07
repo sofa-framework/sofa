@@ -1,14 +1,11 @@
 #include <math.h>
 #include <iostream>
-#include "Quat.inl"
+#include <sofa/defaulttype/Quat.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Common
+namespace defaulttype
 {
 
 // instanciate the classes
@@ -19,8 +16,7 @@ template class Quater<float>;
 //template std::ostream& operator<<(std::ostream& out, Quater<float> Q);
 //template std::ostream& operator<<(std::ostream& out, Quater<double> Q);
 
-} // namespace Common
+} // namespace defaulttype
 
-} // namespace Components
+} // namespace sofa
 
-} // namespace Sofa

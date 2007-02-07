@@ -25,7 +25,7 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 template <class BaseMapping>
-void BarycentricMapping<BaseMapping>::calcMap(MultiResSparseGridTopology* topology)
+void BarycentricMapping<BaseMapping>::calcMap(topology::MultiResSparseGridTopology* topology)
 {
     OutVecCoord& out = *this->toModel->getX();
     int outside = 0;
@@ -36,11 +36,11 @@ void BarycentricMapping<BaseMapping>::calcMap(MultiResSparseGridTopology* topolo
     for (unsigned int i=0; i<out.size(); i++)
     {
         double coefs[3]= {0,0,0};
-        cube = topology->findCube(MultiResSparseGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+        cube = topology->findCube(topology::MultiResSparseGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         if (cube==-1)
         {
             ++outside;
-            cube = topology->findNearestCube(MultiResSparseGridTopology::Vec3(out[i]), coefs[0], coefs[1],
+            cube = topology->findNearestCube(topology::MultiResSparseGridTopology::Vec3(out[i]), coefs[0], coefs[1],
                     coefs[2]);
 // 			cout << "numero du cube outside : " << cube << endl;
         }
@@ -56,7 +56,7 @@ void BarycentricMapping<BaseMapping>::calcMap(MultiResSparseGridTopology* topolo
 }
 
 template <class BaseMapping>
-void BarycentricMapping<BaseMapping>::calcMap(RegularGridTopology* topology)
+void BarycentricMapping<BaseMapping>::calcMap(topology::RegularGridTopology* topology)
 {
     OutVecCoord& out = *this->toModel->getX();
     int outside = 0;
@@ -66,11 +66,11 @@ void BarycentricMapping<BaseMapping>::calcMap(RegularGridTopology* topology)
     for (unsigned int i=0; i<out.size(); i++)
     {
         double coefs[3]= {0,0,0};
-        int cube = topology->findCube(RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+        int cube = topology->findCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         if (cube==-1)
         {
             ++outside;
-            cube = topology->findNearestCube(RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+            cube = topology->findNearestCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
         CubeData& data = mapper->map[i];
         data.baryCoords[0] = (Real)coefs[0];
@@ -151,7 +151,7 @@ template <class BaseMapping>
 int BarycentricMapping<BaseMapping>::MeshMapper::createPointInLine(const OutCoord& p, int lineIndex, const InVecCoord* points)
 {
     Real baryCoords[1];
-    const MeshTopology::Line& elem = topology->getLine(lineIndex);
+    const topology::MeshTopology::Line& elem = topology->getLine(lineIndex);
     const InCoord p0 = (*points)[elem[0]];
     const InCoord pA = (*points)[elem[1]] - p0;
     InCoord pos = p - p0;
@@ -163,7 +163,7 @@ template <class BaseMapping>
 int BarycentricMapping<BaseMapping>::MeshMapper::createPointInTriangle(const OutCoord& p, int triangleIndex, const InVecCoord* points)
 {
     Real baryCoords[2];
-    const MeshTopology::Triangle& elem = topology->getTriangle(triangleIndex);
+    const topology::MeshTopology::Triangle& elem = topology->getTriangle(triangleIndex);
     const InCoord p0 = (*points)[elem[0]];
     const InCoord pA = (*points)[elem[1]] - p0;
     const InCoord pB = (*points)[elem[2]] - p0;
@@ -181,7 +181,7 @@ template <class BaseMapping>
 int BarycentricMapping<BaseMapping>::MeshMapper::createPointInQuad(const OutCoord& p, int quadIndex, const InVecCoord* points)
 {
     Real baryCoords[2];
-    const MeshTopology::Quad& elem = topology->getQuad(quadIndex);
+    const topology::MeshTopology::Quad& elem = topology->getQuad(quadIndex);
     const InCoord p0 = (*points)[elem[0]];
     const InCoord pA = (*points)[elem[1]] - p0;
     const InCoord pB = (*points)[elem[3]] - p0;
@@ -198,7 +198,7 @@ int BarycentricMapping<BaseMapping>::MeshMapper::createPointInQuad(const OutCoor
 }
 
 template <class BaseMapping>
-void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
+void BarycentricMapping<BaseMapping>::calcMap(topology::MeshTopology* topology)
 {
     OutVecCoord& out = *this->toModel->getX();
     InVecCoord& in = *this->fromModel->getX();
@@ -206,10 +206,10 @@ void BarycentricMapping<BaseMapping>::calcMap(MeshTopology* topology)
     typename BarycentricMapping<BaseMapping>::MeshMapper* mapper = new typename BarycentricMapping<BaseMapping>::MeshMapper(topology);
     this->mapper = mapper;
     mapper->map3d.reserve(out.size());
-    const MeshTopology::SeqTetras& tetras = topology->getTetras();
-    const MeshTopology::SeqCubes& cubes = topology->getCubes();
-    const MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    const MeshTopology::SeqQuads& quads = topology->getQuads();
+    const topology::MeshTopology::SeqTetras& tetras = topology->getTetras();
+    const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();
+    const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
+    const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
     std::vector<Mat3x3d> bases;
     std::vector<Vec3d> centers;
     if (tetras.empty() && cubes.empty())
@@ -333,17 +333,17 @@ void BarycentricMapping<BaseMapping>::init()
     core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
     if (topology!=NULL)
     {
-        MultiResSparseGridTopology* t = dynamic_cast<MultiResSparseGridTopology*>(topology);
+        topology::MultiResSparseGridTopology* t = dynamic_cast<topology::MultiResSparseGridTopology*>(topology);
         if (t!=NULL)
             this->calcMap(t);
         else
         {
-            RegularGridTopology* t2 = dynamic_cast<RegularGridTopology*>(topology);
+            topology::RegularGridTopology* t2 = dynamic_cast<topology::RegularGridTopology*>(topology);
             if (t2!=NULL && t2->getNbCubes()>0)
                 this->calcMap(t2);
             else
             {
-                MeshTopology* t3 = dynamic_cast<MeshTopology*>(topology);
+                topology::MeshTopology* t3 = dynamic_cast<topology::MeshTopology*>(topology);
                 if (t3!=NULL)
                     this->calcMap(t3);
                 else
@@ -370,7 +370,8 @@ void BarycentricMapping<BaseMapping>::SparseGridMapper::apply( typename Barycent
     {
         /*if (i == 16)
         	cout << "this->map[i].in_index :" << this->map[i].in_index <<endl;
-        */const MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        */
+        const topology::MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
 
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
@@ -392,7 +393,7 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::apply( typename Barycen
     out.resize(map.size());
     for(unsigned int i=0; i<map.size(); i++)
     {
-        const RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -411,11 +412,11 @@ template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::MeshMapper::apply( typename BarycentricMapping<BaseMapping>::Out::VecCoord& out, const typename BarycentricMapping<BaseMapping>::In::VecCoord& in )
 {
     out.resize(map1d.size()+map2d.size()+map3d.size());
-    const MeshTopology::SeqLines& lines = this->topology->getLines();
-    const MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
-    const MeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const MeshTopology::SeqTetras& tetras = this->topology->getTetras();
-    const MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
+    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
     // 1D elements
     {
         for(unsigned int i=0; i<map1d.size(); i++)
@@ -423,7 +424,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::apply( typename BarycentricMap
             const Real fx = map1d[i].baryCoords[0];
             int index = map1d[i].in_index;
             {
-                const MeshTopology::Line& line = lines[index];
+                const topology::MeshTopology::Line& line = lines[index];
                 out[i] = in[line[0]] * (1-fx)
                         + in[line[1]] * fx;
             }
@@ -440,14 +441,14 @@ void BarycentricMapping<BaseMapping>::MeshMapper::apply( typename BarycentricMap
             int index = map2d[i].in_index;
             if (index<c0)
             {
-                const MeshTopology::Triangle& triangle = triangles[index];
+                const topology::MeshTopology::Triangle& triangle = triangles[index];
                 out[i+i0] = in[triangle[0]] * (1-fx-fy)
                         + in[triangle[1]] * fx
                         + in[triangle[2]] * fy;
             }
             else
             {
-                const MeshTopology::Quad& quad = quads[index-c0];
+                const topology::MeshTopology::Quad& quad = quads[index-c0];
                 out[i+i0] = in[quad[0]] * ((1-fx) * (1-fy))
                         + in[quad[1]] * ((  fx) * (1-fy))
                         + in[quad[3]] * ((1-fx) * (  fy))
@@ -467,7 +468,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::apply( typename BarycentricMap
             int index = map3d[i].in_index;
             if (index<c0)
             {
-                const MeshTopology::Tetra& tetra = tetras[index];
+                const topology::MeshTopology::Tetra& tetra = tetras[index];
                 out[i+i0] = in[tetra[0]] * (1-fx-fy-fz)
                         + in[tetra[1]] * fx
                         + in[tetra[2]] * fy
@@ -475,7 +476,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::apply( typename BarycentricMap
             }
             else
             {
-                const MeshTopology::Cube& cube = cubes[index-c0];
+                const topology::MeshTopology::Cube& cube = cubes[index-c0];
                 out[i+i0] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
                         + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
                         + in[cube[2]] * ((1-fx) * (  fy) * (1-fz))
@@ -502,7 +503,7 @@ void BarycentricMapping<BaseMapping>::SparseGridMapper::applyJ( typename Barycen
 {
     for(unsigned int i=0; i<map.size(); i++)
     {
-        const MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -523,7 +524,7 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::applyJ( typename Baryce
 {
     for(unsigned int i=0; i<map.size(); i++)
     {
-        const RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -542,11 +543,11 @@ template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::MeshMapper::applyJ( typename BarycentricMapping<BaseMapping>::Out::VecDeriv& out, const typename BarycentricMapping<BaseMapping>::In::VecDeriv& in )
 {
     out.resize(map1d.size()+map2d.size()+map3d.size());
-    const MeshTopology::SeqLines& lines = this->topology->getLines();
-    const MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
-    const MeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const MeshTopology::SeqTetras& tetras = this->topology->getTetras();
-    const MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
+    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
     // 1D elements
     {
         for(unsigned int i=0; i<map1d.size(); i++)
@@ -554,7 +555,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJ( typename BarycentricMa
             const Real fx = map1d[i].baryCoords[0];
             int index = map1d[i].in_index;
             {
-                const MeshTopology::Line& line = lines[index];
+                const topology::MeshTopology::Line& line = lines[index];
                 out[i] = in[line[0]] * (1-fx)
                         + in[line[1]] * fx;
             }
@@ -571,14 +572,14 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJ( typename BarycentricMa
             int index = map2d[i].in_index;
             if (index<c0)
             {
-                const MeshTopology::Triangle& triangle = triangles[index];
+                const topology::MeshTopology::Triangle& triangle = triangles[index];
                 out[i+i0] = in[triangle[0]] * (1-fx-fy)
                         + in[triangle[1]] * fx
                         + in[triangle[2]] * fy;
             }
             else
             {
-                const MeshTopology::Quad& quad = quads[index-c0];
+                const topology::MeshTopology::Quad& quad = quads[index-c0];
                 out[i+i0] = in[quad[0]] * ((1-fx) * (1-fy))
                         + in[quad[1]] * ((  fx) * (1-fy))
                         + in[quad[3]] * ((1-fx) * (  fy))
@@ -598,7 +599,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJ( typename BarycentricMa
             int index = map3d[i].in_index;
             if (index<c0)
             {
-                const MeshTopology::Tetra& tetra = tetras[index];
+                const topology::MeshTopology::Tetra& tetra = tetras[index];
                 out[i+i0] = in[tetra[0]] * (1-fx-fy-fz)
                         + in[tetra[1]] * fx
                         + in[tetra[2]] * fy
@@ -606,7 +607,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJ( typename BarycentricMa
             }
             else
             {
-                const MeshTopology::Cube& cube = cubes[index-c0];
+                const topology::MeshTopology::Cube& cube = cubes[index-c0];
                 out[i+i0] = in[cube[0]] * ((1-fx) * (1-fy) * (1-fz))
                         + in[cube[1]] * ((  fx) * (1-fy) * (1-fz))
                         + in[cube[2]] * ((1-fx) * (  fy) * (1-fz))
@@ -632,7 +633,7 @@ void BarycentricMapping<BaseMapping>::SparseGridMapper::applyJT( typename BaseMa
     for(unsigned int i=0; i<map.size(); i++)
     {
         const OutDeriv v = in[i];
-        const MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
         const OutReal fx = (OutReal)map[i].baryCoords[0];
         const OutReal fy = (OutReal)map[i].baryCoords[1];
         const OutReal fz = (OutReal)map[i].baryCoords[2];
@@ -653,7 +654,7 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::applyJT( typename BaseM
     for(unsigned int i=0; i<map.size(); i++)
     {
         const OutDeriv v = in[i];
-        const RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
         const OutReal fx = (OutReal)map[i].baryCoords[0];
         const OutReal fy = (OutReal)map[i].baryCoords[1];
         const OutReal fz = (OutReal)map[i].baryCoords[2];
@@ -671,11 +672,11 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::applyJT( typename BaseM
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::MeshMapper::applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in )
 {
-    const MeshTopology::SeqLines& lines = this->topology->getLines();
-    const MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
-    const MeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const MeshTopology::SeqTetras& tetras = this->topology->getTetras();
-    const MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
+    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
     // 1D elements
     {
         for(unsigned int i=0; i<map1d.size(); i++)
@@ -684,7 +685,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJT( typename BaseMapping:
             const OutReal fx = (OutReal)map1d[i].baryCoords[0];
             int index = map1d[i].in_index;
             {
-                const MeshTopology::Line& line = lines[index];
+                const topology::MeshTopology::Line& line = lines[index];
                 out[line[0]] += v * (1-fx);
                 out[line[1]] += v * fx;
             }
@@ -702,14 +703,14 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJT( typename BaseMapping:
             int index = map2d[i].in_index;
             if (index<c0)
             {
-                const MeshTopology::Triangle& triangle = triangles[index];
+                const topology::MeshTopology::Triangle& triangle = triangles[index];
                 out[triangle[0]] += v * (1-fx-fy);
                 out[triangle[1]] += v * fx;
                 out[triangle[2]] += v * fy;
             }
             else
             {
-                const MeshTopology::Quad& quad = quads[index-c0];
+                const topology::MeshTopology::Quad& quad = quads[index-c0];
                 out[quad[0]] += v * ((1-fx) * (1-fy));
                 out[quad[1]] += v * ((  fx) * (1-fy));
                 out[quad[3]] += v * ((1-fx) * (  fy));
@@ -730,7 +731,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJT( typename BaseMapping:
             int index = map3d[i].in_index;
             if (index<c0)
             {
-                const MeshTopology::Tetra& tetra = tetras[index];
+                const topology::MeshTopology::Tetra& tetra = tetras[index];
                 out[tetra[0]] += v * (1-fx-fy-fz);
                 out[tetra[1]] += v * fx;
                 out[tetra[2]] += v * fy;
@@ -738,7 +739,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::applyJT( typename BaseMapping:
             }
             else
             {
-                const MeshTopology::Cube& cube = cubes[index-c0];
+                const topology::MeshTopology::Cube& cube = cubes[index-c0];
                 out[cube[0]] += v * ((1-fx) * (1-fy) * (1-fz));
                 out[cube[1]] += v * ((  fx) * (1-fy) * (1-fz));
                 out[cube[2]] += v * ((1-fx) * (  fy) * (1-fz));
@@ -763,7 +764,7 @@ void BarycentricMapping<BaseMapping>::draw()
     glBegin (GL_POINTS);
     for (unsigned int i=0; i<out.size(); i++)
     {
-        GL::glVertexT(out[i]);
+        helper::gl::glVertexT(out[i]);
     }
     glEnd();
     const InVecCoord& in = *this->fromModel->getX();
@@ -777,7 +778,7 @@ void BarycentricMapping<BaseMapping>::SparseGridMapper::draw(const typename Base
     glBegin (GL_LINES);
     for (unsigned int i=0; i<map.size(); i++)
     {
-        const MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -795,8 +796,8 @@ void BarycentricMapping<BaseMapping>::SparseGridMapper::draw(const typename Base
             if (f[j]<=-0.0001 || f[j]>=0.0001)
             {
                 glColor3f((float)f[j],(float)f[j],1);
-                GL::glVertexT(out[i]);
-                GL::glVertexT(in[cube[j]]);
+                helper::gl::glVertexT(out[i]);
+                helper::gl::glVertexT(in[cube[j]]);
             }
         }
     }
@@ -809,7 +810,7 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::draw(const typename Bas
     glBegin (GL_LINES);
     for (unsigned int i=0; i<map.size(); i++)
     {
-        const RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -827,8 +828,8 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::draw(const typename Bas
             if (f[j]<=-0.0001 || f[j]>=0.0001)
             {
                 glColor3f((float)f[j],(float)f[j],1);
-                GL::glVertexT(out[i]);
-                GL::glVertexT(in[cube[j]]);
+                helper::gl::glVertexT(out[i]);
+                helper::gl::glVertexT(in[cube[j]]);
             }
         }
     }
@@ -838,11 +839,11 @@ void BarycentricMapping<BaseMapping>::RegularGridMapper::draw(const typename Bas
 template <class BaseMapping>
 void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in)
 {
-    const MeshTopology::SeqLines& lines = this->topology->getLines();
-    const MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
-    const MeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const MeshTopology::SeqTetras& tetras = this->topology->getTetras();
-    const MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
+    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
 
     glBegin (GL_LINES);
     // 1D elements
@@ -853,7 +854,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
             const Real fx = map1d[i].baryCoords[0];
             int index = map1d[i].in_index;
             {
-                const MeshTopology::Line& line = lines[index];
+                const topology::MeshTopology::Line& line = lines[index];
                 Real f[2];
                 f[0] = (1-fx);
                 f[1] = fx;
@@ -862,8 +863,8 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
                         glColor3f((float)f[j],1,(float)f[j]);
-                        GL::glVertexT(out[i+i0]);
-                        GL::glVertexT(in[line[j]]);
+                        helper::gl::glVertexT(out[i+i0]);
+                        helper::gl::glVertexT(in[line[j]]);
                     }
                 }
             }
@@ -880,7 +881,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
             int index = map2d[i].in_index;
             if (index<c0)
             {
-                const MeshTopology::Triangle& triangle = triangles[index];
+                const topology::MeshTopology::Triangle& triangle = triangles[index];
                 Real f[3];
                 f[0] = (1-fx-fy);
                 f[1] = fx;
@@ -890,14 +891,14 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
                         glColor3f((float)f[j],1,(float)f[j]);
-                        GL::glVertexT(out[i+i0]);
-                        GL::glVertexT(in[triangle[j]]);
+                        helper::gl::glVertexT(out[i+i0]);
+                        helper::gl::glVertexT(in[triangle[j]]);
                     }
                 }
             }
             else
             {
-                const MeshTopology::Quad& quad = quads[index-c0];
+                const topology::MeshTopology::Quad& quad = quads[index-c0];
                 Real f[4];
                 f[0] = ((1-fx) * (1-fy));
                 f[1] = ((  fx) * (1-fy));
@@ -908,8 +909,8 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
                         glColor3f((float)f[j],1,(float)f[j]);
-                        GL::glVertexT(out[i+i0]);
-                        GL::glVertexT(in[quad[j]]);
+                        helper::gl::glVertexT(out[i+i0]);
+                        helper::gl::glVertexT(in[quad[j]]);
                     }
                 }
             }
@@ -927,7 +928,7 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
             int index = map3d[i].in_index;
             if (index<c0)
             {
-                const MeshTopology::Tetra& tetra = tetras[index];
+                const topology::MeshTopology::Tetra& tetra = tetras[index];
                 Real f[4];
                 f[0] = (1-fx-fy-fz);
                 f[1] = fx;
@@ -938,14 +939,14 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
                         glColor3f((float)f[j],1,(float)f[j]);
-                        GL::glVertexT(out[i+i0]);
-                        GL::glVertexT(in[tetra[j]]);
+                        helper::gl::glVertexT(out[i+i0]);
+                        helper::gl::glVertexT(in[tetra[j]]);
                     }
                 }
             }
             else
             {
-                const MeshTopology::Cube& cube = cubes[index-c0];
+                const topology::MeshTopology::Cube& cube = cubes[index-c0];
                 Real f[8];
                 f[0] = (1-fx) * (1-fy) * (1-fz);
                 f[1] = (  fx) * (1-fy) * (1-fz);
@@ -960,8 +961,8 @@ void BarycentricMapping<BaseMapping>::MeshMapper::draw(const typename BaseMappin
                     if (f[j]<=-0.0001 || f[j]>=0.0001)
                     {
                         glColor3f((float)f[j],1,1);
-                        GL::glVertexT(out[i+i0]);
-                        GL::glVertexT(in[cube[j]]);
+                        helper::gl::glVertexT(out[i+i0]);
+                        helper::gl::glVertexT(in[cube[j]]);
                     }
                 }
             }

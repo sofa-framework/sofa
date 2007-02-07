@@ -37,11 +37,11 @@ inline void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
     {
-        EdgeSetTopology<DataTypes> *est = dynamic_cast<sofa::Components::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
+        component::topology::EdgeSetTopology<DataTypes> *est = dynamic_cast<component::topology::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(est!=0);
-        EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
-        const std::vector<Edge> &edgeArray=container->getEdgeArray();
-        EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
+        component::topology::EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
+        const std::vector<component::topology::Edge> &edgeArray=container->getEdgeArray();
+        component::topology::EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
         typename DataTypes::Real md=dm->getMassDensity();
         typename DataTypes::Real mass;
         unsigned int i;
@@ -49,7 +49,7 @@ inline void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
         for (i=0; i<edgeAdded.size(); ++i)
         {
             /// get the edge to be added
-            const Edge &e=edgeArray[edgeAdded[i]];
+            const component::topology::Edge &e=edgeArray[edgeAdded[i]];
             // compute its mass based on the mass density and the edge length
             mass=(md*ga->computeRestEdgeLength(edgeAdded[i]))/2;
             // added mass on its two vertices
@@ -72,11 +72,11 @@ inline void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
     {
-        EdgeSetTopology<DataTypes> *est = dynamic_cast<sofa::Components::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
+        component::topology::EdgeSetTopology<DataTypes> *est = dynamic_cast<component::topology::EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(est!=0);
-        EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
-        const std::vector<Edge> &edgeArray=container->getEdgeArray();
-        EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
+        component::topology::EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
+        const std::vector<component::topology::Edge> &edgeArray=container->getEdgeArray();
+        component::topology::EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
         typename DataTypes::Real md=dm->getMassDensity();
         typename DataTypes::Real mass;
         unsigned int i;
@@ -84,7 +84,7 @@ inline void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved
         for (i=0; i<edgeRemoved.size(); ++i)
         {
             /// get the edge to be added
-            const Edge &e=edgeArray[edgeRemoved[i]];
+            const component::topology::Edge &e=edgeArray[edgeRemoved[i]];
             // compute its mass based on the mass density and the edge length
             mass=(md*ga->computeRestEdgeLength(edgeRemoved[i]))/2;
             // added mass on its two vertices
@@ -200,15 +200,14 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::handleEvent( Event *event )
 {
-    TopologyChangedEvent *tce=dynamic_cast<TopologyChangedEvent *>(event);
+    component::topology::TopologyChangedEvent *tce=dynamic_cast<component::topology::TopologyChangedEvent *>(event);
     /// test that the event is a change of topology and that it
     if ((tce) && (tce->getTopology()== getContext()->getMainTopology()))
     {
-        BaseTopology *topology = static_cast<BaseTopology *>(getContext()->getMainTopology());
+        core::componentmodel::topology::BaseTopology *topology = static_cast<core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
 
-        std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-        std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
-        std::list<const TopologyChange *>::const_iterator it;
+        std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
+        std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
         VecMass& masses = *f_mass.beginEdit();
         masses.handleTopologyEvents(itBegin,itEnd);
@@ -239,15 +238,15 @@ void DiagonalMass<DataTypes, MassType>::init()
     {
         /// check that the topology is of type EdgeSet
         /// \todo handle other types of topology
-        sofa::Components::EdgeSetTopology<DataTypes> *est = dynamic_cast<sofa::Components::EdgeSetTopology<DataTypes>*>(getContext()->getMainTopology());
+        component::topology::EdgeSetTopology<DataTypes> *est = dynamic_cast<component::topology::EdgeSetTopology<DataTypes>*>(getContext()->getMainTopology());
         assert(est!=0);
         VecMass& masses = *f_mass.beginEdit();
         topologyType=TOPOLOGY_EDGESET;
 
-        EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
-        EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
+        component::topology::EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
+        component::topology::EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
 
-        const std::vector<Edge> &ea=container->getEdgeArray();
+        const std::vector<component::topology::Edge> &ea=container->getEdgeArray();
         // resize array
         clear();
         masses.resize(est->getDOFNumber());
@@ -260,7 +259,7 @@ void DiagonalMass<DataTypes, MassType>::init()
 
         for (i=0; i<ea.size(); ++i)
         {
-            const Edge &e=ea[i];
+            const component::topology::Edge &e=ea[i];
             mass=(md*ga->computeEdgeLength(i))/2;
             masses[e.first]+=mass;
             masses[e.second]+=mass;
@@ -281,8 +280,8 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
     // velocity-based stuff
-    Core::Context::SpatialVector vframe = getContext()->getVelocityInWorld();
-    Core::Context::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
+    core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
+    core::objectmodel::BaseContext::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
 
     // project back to local frame
     vframe = getContext()->getPositionInWorld() / vframe;
@@ -291,7 +290,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
     // add weight and inertia force
     for (unsigned int i=0; i<masses.size(); i++)
     {
-        f[i] += theGravity*masses[i] + Core::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
+        f[i] += theGravity*masses[i] + core::componentmodel::behavior::inertiaForce(vframe,aframe,masses[i],x[i],v[i]);
     }
 }
 
@@ -306,7 +305,7 @@ void DiagonalMass<DataTypes, MassType>::draw()
     glBegin (GL_POINTS);
     for (unsigned int i=0; i<x.size(); i++)
     {
-        GL::glVertexT(x[i]);
+        helper::gl::glVertexT(x[i]);
     }
     glEnd();
 }

@@ -43,9 +43,9 @@ void create(OglModel*& obj, simulation::tree::xml::ObjectDescription* arg)
 
 SOFA_DECL_CLASS(OglModel)
 
-Creator<simulation::tree::xml::ObjectFactory, OglModel > OglModelClass("OglModel");
+helper::Creator<simulation::tree::xml::ObjectFactory, OglModel > OglModelClass("OglModel");
 
-Material& Material::operator=(const Mesh::Material &matLoaded)
+Material& Material::operator=(const helper::io::Mesh::Material &matLoaded)
 {
     for (int i = 0; i < 4; i++)
     {
@@ -199,20 +199,20 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
 {
     if (textureName != "")
     {
-        Image *img = Image::Create(textureName);
+        helper::io::Image *img = helper::io::Image::Create(textureName);
         if (img)
         {
-            tex = new Texture(img);
+            tex = new helper::gl::Texture(img);
         }
     }
 
     if (filename != "")
     {
-        Mesh *objLoader;
+        helper::io::Mesh *objLoader;
         if (loader.empty())
-            objLoader = Mesh::Create(filename);
+            objLoader = helper::io::Mesh::Create(filename);
         else
-            objLoader = Mesh::Factory::CreateObject(loader, filename);
+            objLoader = helper::io::Mesh::Factory::CreateObject(loader, filename);
 
         if (!objLoader)
         {
@@ -225,7 +225,7 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
             vector<Vector3> &normalsImport = objLoader->getNormals();
             vector<Vector3> &texCoordsImport = objLoader->getTexCoords();
 
-            Mesh::Material &materialImport = objLoader->getMaterial();
+            helper::io::Mesh::Material &materialImport = objLoader->getMaterial();
 
             if (materialImport.activated)
                 material = materialImport;
@@ -328,14 +328,14 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
                 if (verts.size() == 4)
                 {
                     // quad
-                    quads.push_back(make_array(idxs[0],idxs[1],idxs[2],idxs[3]));
+                    quads.push_back(helper::make_array(idxs[0],idxs[1],idxs[2],idxs[3]));
                 }
                 else
                 {
                     // triangle(s)
                     for (unsigned int j = 2; j < verts.size(); j++)
                     {
-                        triangles.push_back(make_array(idxs[0],idxs[j-1],idxs[j]));
+                        triangles.push_back(helper::make_array(idxs[0],idxs[j-1],idxs[j]));
                     }
                 }
             }
@@ -557,14 +557,14 @@ void OglModel::update()
 
         if (useTopology)
         {
-            MeshTopology* topology = dynamic_cast<MeshTopology*>(getContext()->getTopology());
+            topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(getContext()->getTopology());
             if (topology != NULL)
             {
-                const vector<MeshTopology::Triangle>& inputTriangles = topology->getTriangles();
+                const vector<topology::MeshTopology::Triangle>& inputTriangles = topology->getTriangles();
                 triangles.resize(inputTriangles.size());
                 for (unsigned int i=0; i<triangles.size(); ++i)
                     triangles[i] = inputTriangles[i];
-                const vector<MeshTopology::Quad>& inputQuads = topology->getQuads();
+                const vector<topology::MeshTopology::Quad>& inputQuads = topology->getQuads();
                 quads.resize(inputQuads.size());
                 for (unsigned int i=0; i<quads.size(); ++i)
                     quads[i] = inputQuads[i];

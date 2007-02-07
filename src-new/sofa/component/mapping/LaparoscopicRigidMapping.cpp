@@ -19,12 +19,13 @@ namespace mapping
 SOFA_DECL_CLASS(LaparoscopicRigidMapping)
 
 using namespace sofa::defaulttype;
+using namespace core;
 using namespace core::componentmodel::behavior;
 
 template<class BaseMapping>
 void create(LaparoscopicRigidMapping<BaseMapping>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWith2Objects< LaparoscopicRigidMapping<BaseMapping>, typename LaparoscopicRigidMapping<BaseMapping>::In, typename LaparoscopicRigidMapping<BaseMapping>::Out>(obj, arg);
+    simulation::tree::xml::createWith2Objects< LaparoscopicRigidMapping<BaseMapping>, typename LaparoscopicRigidMapping<BaseMapping>::In, typename LaparoscopicRigidMapping<BaseMapping>::Out>(obj, arg);
     if (obj!=NULL)
     {
         {

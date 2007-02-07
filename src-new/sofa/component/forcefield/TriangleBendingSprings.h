@@ -33,7 +33,7 @@ The springs connect the vertices not belonging to the common edge. It compresses
 	@author The SOFA team </www.sofa-framework.org>
 */
 template<class DataTypes>
-class TriangleBendingSprings : public sofa::Components::StiffSpringForceField<DataTypes>
+class TriangleBendingSprings : public sofa::component::forcefield::StiffSpringForceField<DataTypes>
 {
 public:
     typedef typename DataTypes::Real Real;
@@ -61,8 +61,10 @@ protected:
 
 };
 
-}
+} // namespace forcefield
 
-}
+} // namespace component
+
+} // namespace sofa
 
 #endif

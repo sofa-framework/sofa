@@ -10,6 +10,9 @@ namespace simulation
 namespace tree
 {
 
+namespace Colors
+{
+
 enum
 {
     NODE = 0,
@@ -52,6 +55,7 @@ static const char* COLOR[16]=
     /*Topology              =*/ "#ffed6f", // color 12
     /*VisualModel           =*/ "#eefdea", // color 11 (brighter)
 };
+
 }
 
 } // namespace tree

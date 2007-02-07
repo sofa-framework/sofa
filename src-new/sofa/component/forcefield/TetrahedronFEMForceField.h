@@ -23,7 +23,7 @@ using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
 template<class DataTypes>
-class TetrahedronFEMForceField : public Core::ForceField<DataTypes>, public core::VisualModel
+class TetrahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -33,9 +33,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-    typedef MeshTopology::index_type Index;
-    typedef MeshTopology::Tetra Element;
-    typedef MeshTopology::SeqTetras VecElement;
+    typedef topology::MeshTopology::index_type Index;
+    typedef topology::MeshTopology::Tetra Element;
+    typedef topology::MeshTopology::SeqTetras VecElement;
 
     static const int SMALL = 0;   ///< Symbol of small displacements tetrahedron solver
     static const int LARGE = 1;   ///< Symbol of large displacements tetrahedron solver
@@ -71,8 +71,8 @@ protected:
     //just for draw forces
     VecDeriv _forces;
 
-    MeshTopology* _mesh;
-    TrimmedRegularGridTopology* _trimgrid;
+    topology::MeshTopology* _mesh;
+    topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
     VecCoord _initialPoints; ///< the intial positions of the points
     int _method; ///< the computation method of the displacements

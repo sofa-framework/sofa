@@ -110,8 +110,8 @@ public:
     virtual void draw();
 
 protected:
-    RegularGridTopology* topology;
-    TrimmedRegularGridTopology* trimmedTopology;
+    topology::RegularGridTopology* topology;
+    topology::FittedRegularGridTopology* trimmedTopology;
 };
 
 } // namespace forcefield

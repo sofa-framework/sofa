@@ -1,13 +1,13 @@
-#ifndef SOFA_COMPONENTS_COMMON_SETDIRECTORY_H
-#define SOFA_COMPONENTS_COMMON_SETDIRECTORY_H
+#ifndef SOFA_HELPER_SYSTEM_SETDIRECTORY_H
+#define SOFA_HELPER_SYSTEM_SETDIRECTORY_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-namespace Common
+namespace system
 {
 
 // A small utility class to temporarly set the current directory to the same as a specified file
@@ -22,10 +22,10 @@ public:
     ~SetDirectory();
 };
 
-} // namespace Common
+} // namespace system
 
-} // namespace Components
+} // namespace helper
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

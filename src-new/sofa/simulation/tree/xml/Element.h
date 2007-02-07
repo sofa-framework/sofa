@@ -5,12 +5,8 @@
 #include <sofa/simulation/tree/xml/BaseElement.h>
 #include <sofa/helper/Factory.h>
 
-using namespace sofa::core;
-
 namespace sofa
 {
-
-//using namespace core::simulation;
 
 namespace simulation
 {
@@ -44,7 +40,7 @@ public:
     /// Get the associated object
     virtual core::objectmodel::Base* getBaseObject() { return object; }
 
-    virtual bool initElement();
+    virtual bool initNode();
 
     typedef helper::Factory< std::string, Object, Element<Object>* > Factory;
 
@@ -77,7 +73,7 @@ void createWithParentAndFilename(Object*& obj, BaseElement* arg)
     if (object==NULL)
     {
         // look for mechanicalmodel
-        objectmodel::BaseContext* ctx = dynamic_cast<objectmodel::BaseContext*>(arg->getParent()->getBaseObject());
+        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(arg->getParent()->getBaseObject());
         if (ctx!=NULL)
             object = dynamic_cast<ParentObject*>(ctx->getMechanicalState());
     }
@@ -93,7 +89,7 @@ void createWithParent(Object*& obj, BaseElement* arg)
     if (object==NULL)
     {
         // look for mechanicalmodel
-        objectmodel::BaseContext* ctx = dynamic_cast<objectmodel::BaseContext*>(arg->getParent()->getBaseObject());
+        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(arg->getParent()->getBaseObject());
         if (ctx!=NULL)
             object = dynamic_cast<ParentObject*>(ctx->getMechanicalState());
     }
@@ -113,13 +109,13 @@ void createWith2ObjectsAndFilename(Object*& obj, BaseElement* arg)
         std::cerr << arg->getType()<< " requires filename, object1 and object2 attributes\n";
         return;
     }
-    objectmodel::Base* pbase1 = arg->findObject(object1);
+    core::objectmodel::Base* pbase1 = arg->findObject(object1);
     if (pbase1==NULL)
     {
         std::cerr << arg->getType()<< " object1 \""<<object1<<"\" not found\n";
         return;
     }
-    objectmodel::Base* pbase2 = arg->findObject(object2);
+    core::objectmodel::Base* pbase2 = arg->findObject(object2);
     if (pbase2==NULL)
     {
         std::cerr << arg->getType()<< " object2 \""<<object2<<"\" not found\n";
@@ -129,7 +125,7 @@ void createWith2ObjectsAndFilename(Object*& obj, BaseElement* arg)
     if (pobject1==NULL && pbase1!=NULL)
     {
         // look for mechanicalmodel
-        objectmodel::BaseContext* ctx = dynamic_cast<objectmodel::BaseContext*>(pbase1);
+        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(pbase1);
         if (ctx!=NULL)
             pobject1 = dynamic_cast<Object1*>(ctx->getMechanicalState());
     }
@@ -137,7 +133,7 @@ void createWith2ObjectsAndFilename(Object*& obj, BaseElement* arg)
     if (pobject2==NULL && pbase2!=NULL)
     {
         // look for mechanicalmodel
-        objectmodel::BaseContext* ctx = dynamic_cast<objectmodel::BaseContext*>(pbase2);
+        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(pbase2);
         if (ctx!=NULL)
             pobject2 = dynamic_cast<Object2*>(ctx->getMechanicalState());
     }
@@ -161,13 +157,13 @@ void createWith2Objects(Object*& obj, BaseElement* arg)
         std::cerr << arg->getType()<< " requires object1 and object2 attributes\n";
         return;
     }
-    objectmodel::Base* pbase1 = arg->findObject(object1);
+    core::objectmodel::Base* pbase1 = arg->findObject(object1);
     if (pbase1==NULL)
     {
         std::cerr << arg->getType()<< " object1 \""<<object1<<"\" not found\n";
         return;
     }
-    objectmodel::Base* pbase2 = arg->findObject(object2);
+    core::objectmodel::Base* pbase2 = arg->findObject(object2);
     if (pbase2==NULL)
     {
         std::cerr << arg->getType()<< " object2 \""<<object2<<"\" not found\n";
@@ -177,7 +173,7 @@ void createWith2Objects(Object*& obj, BaseElement* arg)
     if (pobject1==NULL && pbase1!=NULL)
     {
         // look for mechanicalmodel
-        objectmodel::BaseContext* ctx = dynamic_cast<objectmodel::BaseContext*>(pbase1);
+        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(pbase1);
         if (ctx!=NULL)
             pobject1 = dynamic_cast<Object1*>(ctx->getMechanicalState());
     }
@@ -185,7 +181,7 @@ void createWith2Objects(Object*& obj, BaseElement* arg)
     if (pobject2==NULL && pbase2!=NULL)
     {
         // look for mechanicalmodel
-        objectmodel::BaseContext* ctx = dynamic_cast<objectmodel::BaseContext*>(pbase2);
+        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(pbase2);
         if (ctx!=NULL)
             pobject2 = dynamic_cast<Object2*>(ctx->getMechanicalState());
     }

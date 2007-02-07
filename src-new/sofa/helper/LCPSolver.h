@@ -1,17 +1,14 @@
-#ifndef SOFA_COMPONENTS_PROXIMITY_LCP_SOLVER_H
-#define SOFA_COMPONENTS_PROXIMITY_LCP_SOLVER_H
+#ifndef SOFA_HELPER_LCPSOLVER_H
+#define SOFA_HELPER_LCPSOLVER_H
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
-{
-
-namespace Proximity
+namespace helper
 {
 
 template <int dim>
-class LCP
+class LCPSolver
 {
 public:
     typedef double Matrix[dim][dim];
@@ -20,10 +17,8 @@ public:
     void  printInfo(double *q, Matrix &M);
 };
 
-} // namespace Proximity
+} // namespace helper
 
-} // namespace Components
-
-} // namespace Sofa
+} // namespace sofa
 
 #endif

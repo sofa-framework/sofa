@@ -22,9 +22,9 @@ template class PenalityContactForceField<Vec3fTypes>;
 template<class DataTypes>
 void create(PenalityContactForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< PenalityContactForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< PenalityContactForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj == NULL) // try the InteractionForceField initialization
-        XML::createWith2Objects< PenalityContactForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+        simulation::tree::xml::createWith2Objects< PenalityContactForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
 }
 
 Creator<simulation::tree::xml::ObjectFactory, PenalityContactForceField<Vec3dTypes> > PenalityContactForceFieldVec3dClass("PenalityContactForceField", true);

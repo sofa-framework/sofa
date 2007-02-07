@@ -7,75 +7,14 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace mass
-{
-
-using namespace sofa::defaulttype;
-
-template <>
-void UniformMass<RigidTypes, RigidMass>::draw()
-{
-    if (!getContext()->getShowBehaviorModels()) return;
-    VecCoord& x = *mstate->getX();
-    RigidTypes::Vec3 len;
-
-    // The moment of inertia of a box is:
-    //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
-    //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
-    //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
-    // So to get lx,ly,lz back we need to do
-    //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
-    // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = mass.inertiaMatrix[0][0];
-    double m11 = mass.inertiaMatrix[1][1];
-    double m22 = mass.inertiaMatrix[2][2];
-    len[0] = sqrt(m11+m22-m00);
-    len[1] = sqrt(m00+m22-m11);
-    len[2] = sqrt(m00+m11-m22);
-
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        const Quat& orient = x[i].getOrientation();
-        const RigidTypes::Vec3& center = x[i].getCenter();
-        //orient[3] = -orient[3];
-
-        GL::Axis::draw(center, orient, len);
-    }
-}
-
-// specialization for rigid bodies
-template <>
-double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::VecCoord& x )
-{
-    double e = 0;
-    // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
-    Deriv theGravity;
-    DataTypes::set
-    ( theGravity, g[0], g[1], g[2]);
-    for (unsigned int i=0; i<x.size(); i++)
-    {
-        e += g*mass.mass*x[i].getCenter();
-    }
-    return e;
-}
-
-SOFA_DECL_CLASS(UniformMass)
-
-template class UniformMass<Vec3dTypes,double>;
-template class UniformMass<Vec3fTypes,float>;
-template class UniformMass<RigidTypes,RigidMass>;
-
 namespace helper   // \todo Why this must be inside helper namespace
 {
+using namespace component::mass;
 
 template<class DataTypes, class MassType>
 void create(UniformMass<DataTypes, MassType>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< UniformMass<DataTypes, MassType>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< UniformMass<DataTypes, MassType>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("mass"))
@@ -98,7 +37,7 @@ static void skipToEOL(FILE* f)
 template<>
 void create(UniformMass<RigidTypes, RigidMass>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< UniformMass<RigidTypes, RigidMass>, core::componentmodel::behavior::MechanicalState<RigidTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< UniformMass<RigidTypes, RigidMass>, core::componentmodel::behavior::MechanicalState<RigidTypes> >(obj, arg);
     if (obj!=NULL)
     {
         RigidMass m(1.0f);
@@ -209,6 +148,70 @@ void create(UniformMass<RigidTypes, RigidMass>*& obj, simulation::tree::xml::Obj
 }
 
 }
+
+namespace component
+{
+
+namespace mass
+{
+
+using namespace sofa::defaulttype;
+
+template <>
+void UniformMass<RigidTypes, RigidMass>::draw()
+{
+    if (!getContext()->getShowBehaviorModels()) return;
+    VecCoord& x = *mstate->getX();
+    RigidTypes::Vec3 len;
+
+    // The moment of inertia of a box is:
+    //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
+    //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
+    //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
+    // So to get lx,ly,lz back we need to do
+    //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
+    // Note that RigidMass inertiaMatrix is already divided by M
+    double m00 = mass.inertiaMatrix[0][0];
+    double m11 = mass.inertiaMatrix[1][1];
+    double m22 = mass.inertiaMatrix[2][2];
+    len[0] = sqrt(m11+m22-m00);
+    len[1] = sqrt(m00+m22-m11);
+    len[2] = sqrt(m00+m11-m22);
+
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        const Quat& orient = x[i].getOrientation();
+        const RigidTypes::Vec3& center = x[i].getCenter();
+        //orient[3] = -orient[3];
+
+        helper::gl::Axis::draw(center, orient, len);
+    }
+}
+
+// specialization for rigid bodies
+template <>
+double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::VecCoord& x )
+{
+    double e = 0;
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        e += g*mass.mass*x[i].getCenter();
+    }
+    return e;
+}
+
+SOFA_DECL_CLASS(UniformMass)
+
+template class UniformMass<Vec3dTypes,double>;
+template class UniformMass<Vec3fTypes,float>;
+template class UniformMass<RigidTypes,RigidMass>;
+
+using helper::Creator;
 
 Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3dTypes,double> > UniformMass3dClass("UniformMass",true);
 Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3fTypes,float > > UniformMass3fClass("UniformMass",true);

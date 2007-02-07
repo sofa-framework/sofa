@@ -25,12 +25,12 @@ template class PointSetGeometryAlgorithms<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec3dTypes>;
 
 PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top)
-    : Core::TopologyContainer(top)
+    : core::componentmodel::topology::TopologyContainer(top)
 {
 }
 
 PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector<unsigned int>& DOFIndex)
-    : Core::TopologyContainer(top), m_DOFIndex(DOFIndex)
+    : core::componentmodel::topology::TopologyContainer(top), m_DOFIndex(DOFIndex)
 {
 }
 
@@ -106,7 +106,7 @@ unsigned int PointSetTopologyContainer::getDOFIndex(const int i) const
 template<class DataTypes>
 void create(PointSetTopology<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< PointSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< PointSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
 

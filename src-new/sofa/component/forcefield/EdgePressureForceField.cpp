@@ -47,7 +47,7 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 {
     //std::cerr << "initializing EdgePressureForceField" << std::endl;
 
-    _mesh = dynamic_cast<sofa::Components::MeshTopology*>(this->_object->getContext()->getTopology());
+    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->_object->getContext()->getTopology());
 
     // get restPosition
     VecCoord& p = *this->_object->getX();
@@ -166,7 +166,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
         i++;
     }
 
-    sofa::Components::MeshTopology* _mesh = dynamic_cast<sofa::Components::MeshTopology*>(getContext()->getTopology());
+    sofa::component::topology::MeshTopology* _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(getContext()->getTopology());
 
     if (_mesh==NULL || (_mesh->getTriangles().empty()))
     {
@@ -174,7 +174,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
         return;
     }
 
-    const MeshTopology::SeqTriangles *_indexedElements = & (_mesh->getTriangles());
+    const topology::MeshTopology::SeqTriangles *_indexedElements = & (_mesh->getTriangles());
 
     for (n=0; n<_mesh->getNbTriangles(); ++n)
     {
@@ -228,8 +228,8 @@ void EdgePressureForceField<DataTypes>::draw()
 
     for(i=0; i<edgeInfo.size(); i++ )
     {
-        GL::glVertexT(x[edgeInfo[i].index[0]]);
-        GL::glVertexT(x[edgeInfo[i].index[1]]);
+        helper::gl::glVertexT(x[edgeInfo[i].index[0]]);
+        helper::gl::glVertexT(x[edgeInfo[i].index[1]]);
     }
     glEnd();
 
@@ -237,19 +237,6 @@ void EdgePressureForceField<DataTypes>::draw()
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-
-namespace Sofa
-{
-
-namespace Components
-{
-
 
 SOFA_DECL_CLASS(EdgePressureForceField)
 
@@ -265,7 +252,7 @@ void create(EdgePressureForceField<DataTypes>*& obj, simulation::tree::xml::Obje
     typedef typename DataTypes::Coord::value_type   Real;
     typedef typename DataTypes::Coord   Coord;
 
-    XML::createWithParent< EdgePressureForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< EdgePressureForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         if (arg->getAttribute("px"))
@@ -327,6 +314,8 @@ Creator<simulation::tree::xml::ObjectFactory, EdgePressureForceField<Vec3fTypes>
 EdgePressureForceFieldVec3fClass("EdgePressureForceField", true);
 
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa

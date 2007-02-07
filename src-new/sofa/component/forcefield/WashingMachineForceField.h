@@ -1,3 +1,14 @@
+//
+// C++ Interface: WashingMachineForceField
+//
+// Description:
+//
+//
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
 #ifndef SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
 #define SOFA_COMPONENT_FORCEFIELD_WASHINGMACHINEFORCEFIELD_H
 
@@ -17,10 +28,10 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class WashingMachineForceField : public Core::ForceField<DataTypes>, public core::VisualModel
+class WashingMachineForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
 {
 public:
-    typedef Core::ForceField<DataTypes> Inherit;
+    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -40,7 +51,7 @@ protected:
 
 public:
     WashingMachineForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object=NULL, const std::string& /*name*/="")
-        : Core::ForceField<DataTypes>(object)
+        : core::componentmodel::behavior::ForceField<DataTypes>(object)
         , _center(dataField(&_center, Coord(0,0,0), "center", "box center"))
         , _size(dataField(&_size, Deriv(1,1,1), "size", "box size"))
         , _speed(dataField(&_speed, (Real)0.01, "speed", "rotation speed"))
@@ -106,14 +117,3 @@ public:
 } // namespace sofa
 
 #endif
-//
-// C++ Interface: WashingMachineForceField
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//

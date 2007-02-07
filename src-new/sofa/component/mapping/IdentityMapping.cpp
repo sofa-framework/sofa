@@ -15,6 +15,7 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
+using namespace core;
 using namespace core::componentmodel::behavior;
 
 SOFA_DECL_CLASS(IdentityMapping)
@@ -22,7 +23,7 @@ SOFA_DECL_CLASS(IdentityMapping)
 template<class BaseMapping>
 void create(IdentityMapping<BaseMapping>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWith2Objects< IdentityMapping<BaseMapping>, typename IdentityMapping<BaseMapping>::In, typename IdentityMapping<BaseMapping>::Out>(obj, arg);
+    simulation::tree::xml::createWith2Objects< IdentityMapping<BaseMapping>, typename IdentityMapping<BaseMapping>::In, typename IdentityMapping<BaseMapping>::Out>(obj, arg);
 }
 
 // Mech -> Mech

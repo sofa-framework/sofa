@@ -620,7 +620,7 @@ template<class DataTypes>
 void create(TensorForceField<DataTypes>*& obj,
         simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParentAndFilename<
+    simulation::tree::xml::createWithParentAndFilename<
     TensorForceField<DataTypes>, component::MechanicalObject<DataTypes>
     > (obj, arg);
 }

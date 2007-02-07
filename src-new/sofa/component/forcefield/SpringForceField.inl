@@ -25,7 +25,7 @@ namespace forcefield
 {
 
 template <class DataTypes>
-class SpringForceField<DataTypes>::Loader : public MassSpringLoader
+class SpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader
 {
 public:
     SpringForceField<DataTypes>* dest;
@@ -52,7 +52,7 @@ void SpringForceField<DataTypes>::initFromTopology()
 {
     if (springs.empty())
     {
-        sofa::Components::MeshTopology* _mesh = dynamic_cast<sofa::Components::MeshTopology*>(this->getContext()->getTopology());
+        sofa::component::topology::MeshTopology* _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
         if( _mesh != NULL )
         {
             VecDeriv& P1 = *object1->getX();

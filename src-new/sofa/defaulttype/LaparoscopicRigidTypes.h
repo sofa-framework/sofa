@@ -2,7 +2,7 @@
 #define SOFA_DEFAULTTYPE_LAPAROSCOPICRIGIDTYPES_H
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
@@ -301,13 +301,13 @@ template <>
 inline defaulttype::LaparoscopicRigidTypes::Deriv inertiaForce<
 defaulttype::LaparoscopicRigidTypes::Coord,
             defaulttype::LaparoscopicRigidTypes::Deriv,
-            objectmodel::Context::Vec3,
+            objectmodel::BaseContext::Vec3,
             defaulttype::RigidMass,
-            objectmodel::Context::SpatialVector
+            objectmodel::BaseContext::SpatialVector
             >
             (
-                    const objectmodel::Context::SpatialVector& vframe,
-                    const objectmodel::Context::Vec3& aframe,
+                    const objectmodel::BaseContext::SpatialVector& vframe,
+                    const objectmodel::BaseContext::Vec3& aframe,
                     const defaulttype::RigidMass& mass,
                     const defaulttype::LaparoscopicRigidTypes::Coord& x,
                     const defaulttype::LaparoscopicRigidTypes::Deriv& v )

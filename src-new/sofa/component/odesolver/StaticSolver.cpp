@@ -22,6 +22,8 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
+using namespace helper::io;
+using namespace helper;
 
 StaticSolver::StaticSolver() : f_maxCGIter( dataField(&f_maxCGIter,"iterations","Maximum number of iterations for the conjugated gradient algorithmIndices of the fixed points") )
 {

@@ -55,8 +55,8 @@ void create(EulerSolver*& obj, simulation::tree::xml::ObjectDescription* arg)
 
 SOFA_DECL_CLASS(Euler)
 
-Creator<simulation::tree::xml::ObjectFactory, EulerSolver> EulerSolverClass("EulerSolver");
-Creator<simulation::tree::xml::ObjectFactory, EulerSolver> EulerSolverClass2("Euler"); // Previous name for compatibility with existing scenes
+helper::Creator<simulation::tree::xml::ObjectFactory, EulerSolver> EulerSolverClass("EulerSolver");
+helper::Creator<simulation::tree::xml::ObjectFactory, EulerSolver> EulerSolverClass2("Euler"); // Previous name for compatibility with existing scenes
 
 } // namespace odesolver
 

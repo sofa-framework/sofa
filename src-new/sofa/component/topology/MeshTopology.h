@@ -19,10 +19,13 @@ namespace topology
 {
 
 using namespace sofa::defaulttype;
+using helper::vector;
+using helper::fixed_array;
 
 class MeshTopology : public core::componentmodel::topology::Topology
 {
 public:
+
     typedef int index_type;
 
     typedef Vec<2,index_type> Line;

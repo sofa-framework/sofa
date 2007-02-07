@@ -32,13 +32,16 @@ template class TriangleBendingSprings<Vec3dTypes>;
 template<class DataTypes>
 void create(TriangleBendingSprings<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< TriangleBendingSprings<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< TriangleBendingSprings<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     obj->parseFields(arg->getAttributeMap() );
 }
 
 Creator<simulation::tree::xml::ObjectFactory, TriangleBendingSprings<Vec3dTypes> > TriangleBendingSpringsVec3dClass("TriangleBendingSprings", true);
 Creator<simulation::tree::xml::ObjectFactory, TriangleBendingSprings<Vec3fTypes> > TriangleBendingSpringsVec3fClass("TriangleBendingSprings", true);
 
-}
+} // namespace forcefield
 
-}
+} // namespace component
+
+} // namespace sofa
+

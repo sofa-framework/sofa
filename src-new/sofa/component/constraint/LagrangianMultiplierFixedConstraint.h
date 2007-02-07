@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_LAGRANGIANMULTIPLIERFIXEDCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/constraint/LagrangianMultiplierConstraint.h>
 #include <sofa/core/VisualModel.h>
 #include <vector>
@@ -17,7 +17,7 @@ namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public Core::ForceField<DataTypes>, public core::VisualModel
+class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -42,7 +42,7 @@ protected:
 public:
 
     LagrangianMultiplierFixedConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
-        : Core::ForceField<DataTypes>(object)
+        : core::componentmodel::behavior::ForceField<DataTypes>(object)
     {
     }
 

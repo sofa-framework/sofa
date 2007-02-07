@@ -39,9 +39,9 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
-    typedef MeshTopology::index_type Index;
-    typedef MeshTopology::Triangle Element;
-    typedef MeshTopology::SeqTriangles VecElement;
+    typedef topology::MeshTopology::index_type Index;
+    typedef topology::MeshTopology::Triangle Element;
+    typedef topology::MeshTopology::SeqTriangles VecElement;
 
     static const int SMALL = 1;										///< Symbol of small displacements triangle solver
     static const int LARGE = 0;										///< Symbol of large displacements triangle solver
@@ -62,7 +62,7 @@ protected:
     typedef Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
 
 
-    MeshTopology* _mesh;
+    topology::MeshTopology* _mesh;
     const VecElement *_indexedElements;
     VecCoord _initialPoints; ///< the intial positions of the points
 //     int _method; ///< the computation method of the displacements

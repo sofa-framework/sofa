@@ -16,7 +16,7 @@ namespace helper
 
 /** Set MadjT to transpose of inverse of M times determinant of M **/
 template<class Real>
-void adjoint_transpose(const Mat<3,3,Real>& M, Mat<3,3,Real>& MadjT)
+void adjoint_transpose(const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT)
 {
     MadjT[0] = cross(M[1],M[2]);
     MadjT[1] = cross(M[2],M[0]);
@@ -25,7 +25,7 @@ void adjoint_transpose(const Mat<3,3,Real>& M, Mat<3,3,Real>& MadjT)
 
 /** Compute the infinity norm of M **/
 template<class Real>
-Real norm_inf(const Mat<3,3,Real>& M)
+Real norm_inf(const defaulttype::Mat<3,3,Real>& M)
 {
     Real sum, max = 0;
     for (int i=0; i<3; i++)
@@ -38,7 +38,7 @@ Real norm_inf(const Mat<3,3,Real>& M)
 
 /** Compute the 1 norm of M **/
 template<class Real>
-Real norm_one(const Mat<3,3,Real>& M)
+Real norm_one(const defaulttype::Mat<3,3,Real>& M)
 {
     Real sum, max = 0;
     for (int i=0; i<3; i++)
@@ -51,7 +51,7 @@ Real norm_one(const Mat<3,3,Real>& M)
 
 /** Return index of column of M containing maximum abs entry, or -1 if M=0 **/
 template<class Real>
-int find_max_col(const Mat<3,3,Real>& M)
+int find_max_col(const defaulttype::Mat<3,3,Real>& M)
 {
     Real abs, max = 0;
     int col = -1;
@@ -66,7 +66,7 @@ int find_max_col(const Mat<3,3,Real>& M)
 
 /** Setup u for Household reflection to zero all v components but first **/
 template<class Real>
-void make_reflector(const Vec<3,Real>& v, Vec<3,Real>& u)
+void make_reflector(const defaulttype::Vec<3,Real>& v, defaulttype::Vec<3,Real>& u)
 {
     Real s = (Real)sqrt(dot(v, v));
     u[0] = v[0]; u[1] = v[1];
@@ -77,7 +77,7 @@ void make_reflector(const Vec<3,Real>& v, Vec<3,Real>& u)
 
 /** Apply Householder reflection represented by u to column vectors of M **/
 template<class Real>
-void reflect_cols(Mat<3,3,Real>& M, const Vec<3,Real>& u)
+void reflect_cols(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u)
 {
     for (int i=0; i<3; i++)
     {
@@ -88,7 +88,7 @@ void reflect_cols(Mat<3,3,Real>& M, const Vec<3,Real>& u)
 }
 /** Apply Householder reflection represented by u to row vectors of M **/
 template<class Real>
-void reflect_rows(Mat<3,3,Real>& M, const Vec<3,Real>& u)
+void reflect_rows(defaulttype::Mat<3,3,Real>& M, const defaulttype::Vec<3,Real>& u)
 {
     for (int i=0; i<3; i++)
     {
@@ -100,9 +100,9 @@ void reflect_rows(Mat<3,3,Real>& M, const Vec<3,Real>& u)
 
 /** Find orthogonal factor Q of rank 1 (or less) M **/
 template<class Real>
-void do_rank1(Mat<3,3,Real>& M, Mat<3,3,Real>& Q)
+void do_rank1(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q)
 {
-    Vec<3,Real> v1, v2;
+    defaulttype::Vec<3,Real> v1, v2;
     Real s;
     int col;
     Q.identity();
@@ -120,9 +120,9 @@ void do_rank1(Mat<3,3,Real>& M, Mat<3,3,Real>& Q)
 
 /** Find orthogonal factor Q of rank 2 (or less) M using adjoint transpose **/
 template<class Real>
-void do_rank2(Mat<3,3,Real>& M, Mat<3,3,Real>& MadjT, Mat<3,3,Real>& Q)
+void do_rank2(defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& MadjT, defaulttype::Mat<3,3,Real>& Q)
 {
-    Vec<3,Real> v1, v2;
+    defaulttype::Vec<3,Real> v1, v2;
     Real w, x, y, z, c, s, d;
     int col;
     /* If rank(M) is 2, we should find a non-zero column in MadjT */
@@ -156,9 +156,9 @@ void do_rank2(Mat<3,3,Real>& M, Mat<3,3,Real>& MadjT, Mat<3,3,Real>& Q)
  * Department of Computer Science, Cornell University.
  */
 template<class Real>
-Real polar_decomp(const Mat<3,3,Real>& M, Mat<3,3,Real>& Q, Mat<3,3,Real>& S)
+Real polar_decomp(const defaulttype::Mat<3,3,Real>& M, defaulttype::Mat<3,3,Real>& Q, defaulttype::Mat<3,3,Real>& S)
 {
-    Mat<3,3,Real> Mk, MadjTk, Ek;
+    defaulttype::Mat<3,3,Real> Mk, MadjTk, Ek;
     Real det, M_one, M_inf, MadjT_one, MadjT_inf, E_one, gamma, g1, g2;
     Mk.transpose(M);
     M_one = norm_one(Mk);  M_inf = norm_inf(Mk);

@@ -21,13 +21,14 @@ namespace component
 namespace mapping
 {
 
-using namespace core::componentmodel::behavior;
+// TODO: move SpatialGridContainer to another namespace?
+using namespace sofa::component::behaviormodel::eulerianfluid;
 
 template <class In, class Out>
-class SPHFluidSurfaceMapping : public Mapping<In, Out>, public MeshTopology, public core::VisualModel
+class SPHFluidSurfaceMapping : public core::Mapping<In, Out>, public topology::MeshTopology, public core::VisualModel
 {
 public:
-    typedef Mapping<In, Out> Inherit;
+    typedef core::Mapping<In, Out> Inherit;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
@@ -93,7 +94,7 @@ protected:
     double mRadius;
     double mIsoValue;
 
-    typedef SPHFluidForceField<typename In::DataTypes> SPHForceField;
+    typedef forcefield::SPHFluidForceField<typename In::DataTypes> SPHForceField;
     SPHForceField* sph;
 
     // Marching cube data

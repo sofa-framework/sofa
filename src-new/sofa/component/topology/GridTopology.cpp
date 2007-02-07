@@ -27,7 +27,7 @@ void create(GridTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
     }
 }
 
-Creator<simulation::tree::xml::ObjectFactory, GridTopology> GridTopologyClass("Grid");
+helper::Creator<simulation::tree::xml::ObjectFactory, GridTopology> GridTopologyClass("Grid");
 
 GridTopology::GridTopology()
     : nx(dataField(&nx,0,"nx","x grid resolution")), ny(dataField(&ny,0,"ny","y grid resolution")), nz(dataField(&nz,0,"nz","z grid resolution"))

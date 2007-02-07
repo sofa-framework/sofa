@@ -35,16 +35,16 @@ using namespace sofa::defaulttype;
 /// Load a scene from a file
 GNode* Simulation::load(const char *filename)
 {
-    ::sofa::Components::init();
+    ::sofa::simulation::tree::init();
     std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    XML::BaseElement* xml = XML::load(filename);
+    xml::BaseElement* xml = xml::load(filename);
     if (xml==NULL)
     {
         return NULL;
     }
 
     // We go the the current file's directory so that all relative path are correct
-    SetDirectory chdir(filename);
+    helper::system::SetDirectory chdir(filename);
 
     std::cout << "Initializing objects"<<std::endl;
     if (!xml->init())

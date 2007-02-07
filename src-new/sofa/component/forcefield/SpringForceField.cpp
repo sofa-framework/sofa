@@ -27,9 +27,9 @@ template class SpringForceField<Vec3fTypes>;
 template<class DataTypes>
 void create(SpringForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< SpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< SpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj == NULL) // try the InteractionForceField initialization
-        XML::createWith2Objects< SpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+        simulation::tree::xml::createWith2Objects< SpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj != NULL)
     {
         if (arg->getAttribute("filename"))

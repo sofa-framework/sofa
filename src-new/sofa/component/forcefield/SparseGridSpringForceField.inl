@@ -41,7 +41,7 @@ void SparseGridSpringForceField<DataTypes>::addForce()
 
     if (this->object1==this->object2)
     {
-        MultiResSparseGridTopology* topology = dynamic_cast<MultiResSparseGridTopology*>(this->object1->getContext()->getTopology());
+        topology::MultiResSparseGridTopology* topology = dynamic_cast<topology::MultiResSparseGridTopology*>(this->object1->getContext()->getTopology());
         if (topology != NULL)
         {
             int index = this->springs.size();
@@ -226,7 +226,7 @@ void SparseGridSpringForceField<DataTypes>::addDForce()
     f2.resize(dx2.size());
     if (this->object1==this->object2)
     {
-        MultiResSparseGridTopology* topology = dynamic_cast<MultiResSparseGridTopology*>(this->object1->getContext()->getTopology());
+        topology::MultiResSparseGridTopology* topology = dynamic_cast<topology::MultiResSparseGridTopology*>(this->object1->getContext()->getTopology());
         if (topology != NULL)
         {
             int index = this->springs.size();
@@ -413,7 +413,7 @@ void SparseGridSpringForceField<DataTypes>::draw()
     glBegin(GL_LINES);
     if (this->object1==this->object2)
     {
-        MultiResSparseGridTopology* topology = dynamic_cast<MultiResSparseGridTopology*>(this->object1->getContext()->getTopology());
+        topology::MultiResSparseGridTopology* topology = dynamic_cast<topology::MultiResSparseGridTopology*>(this->object1->getContext()->getTopology());
         if (topology != NULL)
         {
 
@@ -446,20 +446,20 @@ void SparseGridSpringForceField<DataTypes>::draw()
 
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i+1,j,k);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
                     spring.m1 = topology->point(i,j+1,k);
                     spring.m2 = topology->point(i+1,j+1,k);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
                     spring.m1 = topology->point(i,j,k+1);
                     spring.m2 = topology->point(i+1,j,k+1);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
                     spring.m1 = topology->point(i,j+1,k+1);
                     spring.m2 = topology->point(i+1,j+1,k+1);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
 
                     ///draw axis spring y
                     spring.initpos = topology->getDy().norm();
@@ -468,20 +468,20 @@ void SparseGridSpringForceField<DataTypes>::draw()
                     /// draw the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i,j+1,k);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
                     spring.m1 = topology->point(i+1,j,k);
                     spring.m2 = topology->point(i+1,j+1,k);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
                     spring.m1 = topology->point(i,j,k+1);
                     spring.m2 = topology->point(i,j+1,k+1);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
                     spring.m1 = topology->point(i+1,j,k+1);
                     spring.m2 = topology->point(i+1,j+1,k+1);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
 
                     ///draw axis spring z
                     spring.initpos = topology->getDz().norm();
@@ -491,20 +491,20 @@ void SparseGridSpringForceField<DataTypes>::draw()
                     /// draw the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i,j,k+1);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
                     spring.m1 = topology->point(i+1,j,k);
                     spring.m2 = topology->point(i+1,j,k+1);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
                     spring.m1 = topology->point(i,j+1,k);
                     spring.m2 = topology->point(i,j+1,k+1);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
                     spring.m1 = topology->point(i+1,j+1,k);
                     spring.m2 = topology->point(i+1,j+1,k+1);
-                    GL::glVertexT(p1[spring.m1]);
-                    GL::glVertexT(p2[spring.m2]);
+                    helper::gl::glVertexT(p1[spring.m1]);
+                    helper::gl::glVertexT(p2[spring.m2]);
 
 
 
@@ -523,20 +523,20 @@ void SparseGridSpringForceField<DataTypes>::draw()
                     /// draw the 4th springs
                     spring1.m1 = topology->point(i,j,k);
                     spring1.m2 = topology->point(i+1,j+1,k);
-                    GL::glVertexT(p1[spring1.m1]);
-                    GL::glVertexT(p2[spring1.m2]);
+                    helper::gl::glVertexT(p1[spring1.m1]);
+                    helper::gl::glVertexT(p2[spring1.m2]);
                     spring2.m1 = topology->point(i,j+1,k);
                     spring2.m2 = topology->point(i+1,j,k);
-                    GL::glVertexT(p1[spring2.m1]);
-                    GL::glVertexT(p2[spring2.m2]);
+                    helper::gl::glVertexT(p1[spring2.m1]);
+                    helper::gl::glVertexT(p2[spring2.m2]);
                     spring1.m1 = topology->point(i,j,k+1);
                     spring1.m2 = topology->point(i+1,j+1,k+1);
-                    GL::glVertexT(p1[spring1.m1]);
-                    GL::glVertexT(p2[spring1.m2]);
+                    helper::gl::glVertexT(p1[spring1.m1]);
+                    helper::gl::glVertexT(p2[spring1.m2]);
                     spring2.m1 = topology->point(i,j+1,k+1);
                     spring2.m2 = topology->point(i+1,j,k+1);
-                    GL::glVertexT(p1[spring2.m1]);
-                    GL::glVertexT(p2[spring2.m2]);
+                    helper::gl::glVertexT(p1[spring2.m1]);
+                    helper::gl::glVertexT(p2[spring2.m2]);
 
                     /// draw plane springs  xz
                     // lines (x,y,z) -> (x+1,y,z+1)
@@ -551,20 +551,20 @@ void SparseGridSpringForceField<DataTypes>::draw()
                     /// draw the 4th springs
                     spring1.m1 = topology->point(i,j,k);
                     spring1.m2 = topology->point(i+1,j,k+1);
-                    GL::glVertexT(p1[spring1.m1]);
-                    GL::glVertexT(p2[spring1.m2]);
+                    helper::gl::glVertexT(p1[spring1.m1]);
+                    helper::gl::glVertexT(p2[spring1.m2]);
                     spring2.m1 = topology->point(i,j,k+1);
                     spring2.m2 = topology->point(i+1,j,k);
-                    GL::glVertexT(p1[spring2.m1]);
-                    GL::glVertexT(p2[spring2.m2]);
+                    helper::gl::glVertexT(p1[spring2.m1]);
+                    helper::gl::glVertexT(p2[spring2.m2]);
                     spring1.m1 = topology->point(i,j+1,k);
                     spring1.m2 = topology->point(i+1,j+1,k+1);
-                    GL::glVertexT(p1[spring1.m1]);
-                    GL::glVertexT(p2[spring1.m2]);
+                    helper::gl::glVertexT(p1[spring1.m1]);
+                    helper::gl::glVertexT(p2[spring1.m2]);
                     spring2.m1 = topology->point(i,j+1,k+1);
                     spring2.m2 = topology->point(i+1,j+1,k);
-                    GL::glVertexT(p1[spring2.m1]);
-                    GL::glVertexT(p2[spring2.m2]);
+                    helper::gl::glVertexT(p1[spring2.m1]);
+                    helper::gl::glVertexT(p2[spring2.m2]);
 
                     /// draw plane springs  yz
                     // lines (x,y,z) -> (x,y+1,z+1)
@@ -579,20 +579,20 @@ void SparseGridSpringForceField<DataTypes>::draw()
                     /// draw the 4th springs
                     spring1.m1 = topology->point(i,j,k);
                     spring1.m2 = topology->point(i,j+1,k+1);
-                    GL::glVertexT(p1[spring1.m1]);
-                    GL::glVertexT(p2[spring1.m2]);
+                    helper::gl::glVertexT(p1[spring1.m1]);
+                    helper::gl::glVertexT(p2[spring1.m2]);
                     spring2.m1 = topology->point(i,j,k+1);
                     spring2.m2 = topology->point(i,j+1,k);
-                    GL::glVertexT(p1[spring2.m1]);
-                    GL::glVertexT(p2[spring2.m2]);
+                    helper::gl::glVertexT(p1[spring2.m1]);
+                    helper::gl::glVertexT(p2[spring2.m2]);
                     spring1.m1 = topology->point(i+1,j,k);
                     spring1.m2 = topology->point(i+1,j+1,k+1);
-                    GL::glVertexT(p1[spring1.m1]);
-                    GL::glVertexT(p2[spring1.m2]);
+                    helper::gl::glVertexT(p1[spring1.m1]);
+                    helper::gl::glVertexT(p2[spring1.m2]);
                     spring2.m1 = topology->point(i+1,j,k+1);
                     spring2.m2 = topology->point(i+1,j+1,k);
-                    GL::glVertexT(p1[spring2.m1]);
-                    GL::glVertexT(p2[spring2.m2]);
+                    helper::gl::glVertexT(p1[spring2.m1]);
+                    helper::gl::glVertexT(p2[spring2.m2]);
                 }
             }
 

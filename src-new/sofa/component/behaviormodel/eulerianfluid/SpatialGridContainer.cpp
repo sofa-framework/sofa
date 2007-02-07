@@ -1,14 +1,25 @@
-#include "SpatialGridContainer.h"
+#include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace behaviormodel
+{
+
+namespace eulerianfluid
 {
 
 //template class SpatialGridContainer<Vec3f>;
 //template class SpatialGridContainer<Vec3d>;
 
-} // namespace Components
+} // namespace eulerianfluid
 
-} // namespace Sofa
+} // namespace behaviormodel
+
+} // namespace component
+
+} // namespace sofa
+

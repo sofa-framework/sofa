@@ -24,7 +24,7 @@ template class TetrahedronFEMForceField<Vec3fTypes>;
 template<class DataTypes>
 void create(TetrahedronFEMForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< TetrahedronFEMForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< TetrahedronFEMForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     if (obj!=NULL)
     {
         obj->setPoissonRatio((typename TetrahedronFEMForceField<DataTypes>::Real)atof(arg->getAttribute("poissonRatio","0.49")));

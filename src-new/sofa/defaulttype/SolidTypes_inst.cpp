@@ -1,21 +1,17 @@
-#include "SolidTypes.cpp"
+#include <sofa/defaulttype/SolidTypes.cpp>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace defaulttype
 {
 
-namespace Common
-{
 template class SolidTypes<float>
 ;
 template class SolidTypes<double>
 ;
 
-}//Common
+}// defaulttype
 
-}//Components
-
-}//Sofa
+}// sofa
 

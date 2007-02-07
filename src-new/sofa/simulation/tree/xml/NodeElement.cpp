@@ -18,37 +18,37 @@ using namespace sofa::defaulttype;
 
 //template class Factory< std::string, xml::BaseElement, Node<xml::BaseElement*>* >;
 
-NodeElement::NodeNode(const std::string& name, const std::string& type, BaseElement* parent)
-    : Node<xml::BaseElement>(name, type, parent)
+NodeElement::NodeElement(const std::string& name, const std::string& type, BaseElement* parent)
+    : Element<core::objectmodel::BaseNode>(name, type, parent)
 {
 }
 
-NodeElement::~NodeNode()
+NodeElement::~NodeElement()
 {
 }
 
 bool NodeElement::setParent(BaseElement* newParent)
 {
-    if (newParent != NULL && dynamic_cast<NodeNode*>(newParent)==NULL)
+    if (newParent != NULL && dynamic_cast<NodeElement*>(newParent)==NULL)
         return false;
     else
-        return Node<xml::BaseElement>::setParent(newParent);
+        return Element<core::objectmodel::BaseNode>::setParent(newParent);
 }
 
 bool NodeElement::initNode()
 {
-    if (!Node<xml::BaseElement>::initNode()) return false;
+    if (!Element<core::objectmodel::BaseNode>::initNode()) return false;
     if (getObject()!=NULL && getParent()!=NULL && dynamic_cast<xml::BaseElement*>(getParent()->getBaseObject())!=NULL)
     {
         std::cout << "Adding Child "<<getName()<<" to "<<getParent()->getName()<<std::endl;
-        dynamic_cast<xml::BaseElement*>(getParent()->getBaseObject())->addChild(getObject());
+        dynamic_cast<core::objectmodel::BaseNode*>(getParent()->getBaseObject())->addChild(getObject());
     }
     return true;
 }
 
 bool NodeElement::init()
 {
-    bool res = Node<xml::BaseElement>::init();
+    bool res = Element<core::objectmodel::BaseNode>::init();
     /*
     if (getObject()!=NULL)
     {
@@ -69,9 +69,9 @@ bool NodeElement::init()
 
 SOFA_DECL_CLASS(Node)
 
-Creator<BaseElement::NodeFactory, NodeNode> NodeNodeClass("Node");
-Creator<BaseElement::NodeFactory, NodeNode> NodeBodyClass("Body");
-Creator<BaseElement::NodeFactory, NodeNode> NodeGClass("G");
+helper::Creator<BaseElement::NodeFactory, NodeElement> NodeNodeClass("Node");
+helper::Creator<BaseElement::NodeFactory, NodeElement> NodeBodyClass("Body");
+helper::Creator<BaseElement::NodeFactory, NodeElement> NodeGClass("G");
 
 const char* NodeElement::getClass() const
 {

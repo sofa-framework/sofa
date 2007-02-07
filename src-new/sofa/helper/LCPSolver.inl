@@ -9,12 +9,12 @@ namespace sofa
 namespace helper
 {
 
-#define SOFA_HELPER_LCPSOLVER_INL
-#define SOFA_HELPER_LCPSOLVER_INL
-#define SOFA_HELPER_LCPSOLVER_INL
+#define EPS     0.00001	// epsilon pour tests = 0
+#define EPSP    0.00000000001	// epsilon pour pivot
+#define MAX_BOU 50	// nombre maximal de boucles de calcul
 
 // -----------------------------------------------------------------
-// --- Resoud un LCP écrit sous la forme U = q + M.F
+// --- Resoud un LCP ï¿½rit sous la forme U = q + M.F
 // ---   dim : dimension du pb
 // ---   res[0..dim-1] = U
 // ---   res[dim..2*dim-1] = F
@@ -26,7 +26,7 @@ template <int dim> bool LCP<dim>::solve(const double *q, const Matrix &M, double
     int         colPiv;	// colonne du pivot
     double      pivot;	// pivot
     double      min;	// recherche du minimum pour le pivot
-    double      coeff;	// valeur du coefficient de la combinaison linéaire
+    double      coeff;	// valeur du coefficient de la combinaison linï¿½ire
     int         boucles;	// ii du nombre de passages dans la boucle
     double      mat[dim][2*dim+1];
     int         base[dim];		// base des variables non nulles
@@ -112,7 +112,7 @@ template <int dim> bool LCP<dim>::solve(const double *q, const Matrix &M, double
                 mat[ligPiv][ii]/=pivot;
             }
 
-            // combinaisons linéaires mettant la colonne du pivot a 0
+            // combinaisons linï¿½ires mettant la colonne du pivot a 0
             for(ii=0; ii<dim; ii++)
             {
                 if (ii!=ligPiv)
@@ -148,7 +148,7 @@ template <int dim> bool LCP<dim>::solve(const double *q, const Matrix &M, double
     {
         res[ii]=0;
     }
-    // si on est arrive a résoudre le pb, seules les variables en base sont non nulles
+    // si on est arrive a rï¿½oudre le pb, seules les variables en base sont non nulles
     if (boucles<MAX_BOU)
     {
         for(ii=0; ii<dim; ii++)

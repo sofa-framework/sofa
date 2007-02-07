@@ -1,6 +1,6 @@
-#ifndef SOFA_COMPONENTS_LINE_H
-#define SOFA_COMPONENTS_LINE_H
+#ifndef SOFA_COMPONENT_COLLISION_LINE_H
+#define SOFA_COMPONENT_COLLISION_LINE_H
 
-#include "LineModel.h"
+#include <sofa/component/collision/LineModel.h>
 
 #endif

@@ -101,8 +101,8 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
     //cerr<<"UniformMass<DataTypes, MassType>::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<endl;
 
     // velocity-based stuff
-    Core::Context::SpatialVector vframe = getContext()->getVelocityInWorld();
-    Core::Context::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
+    core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
+    core::objectmodel::BaseContext::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in world coordinates = "<<vframe<<endl;
     //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in world coordinates = "<<aframe<<endl;
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), getContext()->getLocalToWorld() = "<<getContext()->getPositionInWorld()<<endl;
@@ -118,7 +118,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
     for (unsigned int i=0; i<f.size(); i++)
     {
         //f[i] += mg;
-        f[i] += mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i]);
+        f[i] += mg + core::componentmodel::behavior::inertiaForce(vframe,aframe,mass,x[i],v[i]);
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<endl;
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
     }
@@ -170,7 +170,7 @@ void UniformMass<DataTypes, MassType>::draw()
     glBegin (GL_POINTS);
     for (unsigned int i=0; i<x.size(); i++)
     {
-        GL::glVertexT(x[i]);
+        helper::gl::glVertexT(x[i]);
     }
     glEnd();
 }

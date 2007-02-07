@@ -44,7 +44,7 @@ struct Material
     bool useEmissive;
     bool useShininess;
 
-    Material& operator= (const Mesh::Material &matLoaded);
+    Material& operator= (const helper::io::Mesh::Material &matLoaded);
     void setColor(float r, float g, float b, float a);
 
     Material();
@@ -82,12 +82,12 @@ public:
     }
 };
 
-class OglModel : public core::VisualModel, public Core::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >
+class OglModel : public core::VisualModel, public core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >
 {
 private:
     typedef Vec<2, GLfloat> TexCoord;
-    typedef fixed_array<int, 3> Triangle;
-    typedef fixed_array<int, 4> Quad;
+    typedef helper::fixed_array<int, 3> Triangle;
+    typedef helper::fixed_array<int, 4> Quad;
 
     ResizableExtVector<Coord>* inputVertices;
 
@@ -113,7 +113,7 @@ private:
 
     Material material;
 
-    Texture *tex;
+    helper::gl::Texture *tex;
 
     //double matTransOpenGL[16];
 

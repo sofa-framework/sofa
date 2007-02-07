@@ -4,7 +4,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
@@ -371,13 +371,13 @@ template <>
 inline defaulttype::RigidTypes::Deriv inertiaForce<
 defaulttype::RigidTypes::Coord,
             defaulttype::RigidTypes::Deriv,
-            objectmodel::Context::Vec3,
+            objectmodel::BaseContext::Vec3,
             defaulttype::RigidMass,
-            objectmodel::Context::SpatialVector
+            objectmodel::BaseContext::SpatialVector
             >
             (
-                    const objectmodel::Context::SpatialVector& vframe,
-                    const objectmodel::Context::Vec3& aframe,
+                    const objectmodel::BaseContext::SpatialVector& vframe,
+                    const objectmodel::BaseContext::Vec3& aframe,
                     const defaulttype::RigidMass& mass,
                     const defaulttype::RigidTypes::Coord& x,
                     const defaulttype::RigidTypes::Deriv& v

@@ -17,10 +17,10 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class LennardJonesForceField : public sofa::Core::ForceField<DataTypes>, public sofa::core::VisualModel
+class LennardJonesForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>, public sofa::core::VisualModel
 {
 public:
-    typedef sofa::Core::ForceField<DataTypes> Inherit;
+    typedef sofa::core::componentmodel::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

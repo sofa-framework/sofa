@@ -365,7 +365,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
     const OutVecCoord& out = *this->toModel->getX();
     for (unsigned int i=0; i<out.size(); ++i)
     {
-        GL::glVertexT(out[i]);
+        helper::gl::glVertexT(out[i]);
     }
     glEnd();
     glPointSize(1);

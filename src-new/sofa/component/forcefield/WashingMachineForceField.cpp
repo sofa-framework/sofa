@@ -23,7 +23,7 @@ SOFA_DECL_CLASS(WashingMachineForceField)
 template<class DataTypes>
 void create(WashingMachineForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< WashingMachineForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< WashingMachineForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     obj->parseFields( arg->getAttributeMap() );
 }
 

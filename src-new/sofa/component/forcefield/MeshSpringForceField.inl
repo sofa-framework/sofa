@@ -48,7 +48,7 @@ void MeshSpringForceField<DataTypes>::init()
     assert(this->object2);
     if (this->object1==this->object2)
     {
-        MeshTopology* topology = dynamic_cast<MeshTopology*>(this->object1->getContext()->getTopology());
+        topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(this->object1->getContext()->getTopology());
         if (topology != NULL)
         {
             std::set< std::pair<int,int> > sset;
@@ -61,7 +61,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbLines();
                 for (int i=0; i<n; ++i)
                 {
-                    MeshTopology::Line e = topology->getLine(i);
+                    topology::MeshTopology::Line e = topology->getLine(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                 }
             }
@@ -72,7 +72,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbTriangles();
                 for (int i=0; i<n; ++i)
                 {
-                    MeshTopology::Triangle e = topology->getTriangle(i);
+                    topology::MeshTopology::Triangle e = topology->getTriangle(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[1], e[2], s, d);
@@ -85,7 +85,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbQuads();
                 for (int i=0; i<n; ++i)
                 {
-                    MeshTopology::Quad e = topology->getQuad(i);
+                    topology::MeshTopology::Quad e = topology->getQuad(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[0], e[3], s, d);
@@ -101,7 +101,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbTetras();
                 for (int i=0; i<n; ++i)
                 {
-                    MeshTopology::Tetra e = topology->getTetra(i);
+                    topology::MeshTopology::Tetra e = topology->getTetra(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[0], e[3], s, d);
@@ -117,7 +117,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbCubes();
                 for (int i=0; i<n; ++i)
                 {
-                    MeshTopology::Cube e = topology->getCube(i);
+                    topology::MeshTopology::Cube e = topology->getCube(i);
                     for (int i=0; i<8; i++)
                         for (int j=i+1; j<8; j++)
                             this->addSpring(sset, e[i], e[j], s, d);

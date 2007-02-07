@@ -7,6 +7,61 @@
 namespace sofa
 {
 
+namespace helper   // \todo Why this must be inside helper namespace
+{
+using namespace component::mass;
+template<class Vec>
+void readVec1(Vec& vec, const char* str)
+{
+    vec.clear();
+    if (str==NULL) return;
+    const char* str2 = NULL;
+    for(;;)
+    {
+        double v = strtod(str,(char**)&str2);
+        if (str2==str) break;
+        str = str2;
+        vec.push_back((typename Vec::value_type)v);
+    }
+}
+
+template<class DataTypes, class MassType>
+void create(DiagonalMass<DataTypes, MassType>*& obj, simulation::tree::xml::ObjectDescription* arg)
+{
+    simulation::tree::xml::createWithParent< DiagonalMass<DataTypes, MassType>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    if (obj!=NULL)
+    {
+        if (arg->getAttribute("filename"))
+        {
+            obj->load(arg->getAttribute("filename"));
+            arg->removeAttribute("filename");
+        }
+        obj->parseFields( arg->getAttributeMap() );
+
+        /*
+        if (arg->getAttribute("gravity"))
+        {
+        	double x=0;
+        	double y=0;
+        	double z=0;
+        	sscanf(arg->getAttribute("gravity"),"%lf %lf %lf",&x,&y,&z);
+        	typename DataTypes::Deriv g;
+        	DataTypes::set(g,x,y,z);
+        	obj->setGravity(g);
+        }
+        */
+        if (arg->getAttribute("mass"))
+        {
+            std::vector<MassType> mass;
+            readVec1(mass,arg->getAttribute("mass"));
+            obj->clear();
+            for (unsigned int i=0; i<mass.size(); i++)
+                obj->addMass(mass[i]);
+        }
+    }
+}
+}
+
 namespace component
 {
 
@@ -67,7 +122,7 @@ void DiagonalMass<RigidTypes, RigidMass>::draw()
         len[1] = sqrt(m00+m22-m11);
         len[2] = sqrt(m00+m11-m22);
 
-        GL::Axis::draw(center, orient, len);
+        helper::gl::Axis::draw(center, orient, len);
     }
 }
 
@@ -78,59 +133,7 @@ template class DiagonalMass<Vec3fTypes,float>;
 
 template class DiagonalMass<RigidTypes,RigidMass>;
 
-namespace helper   // \todo Why this must be inside helper namespace
-{
-template<class Vec>
-void readVec1(Vec& vec, const char* str)
-{
-    vec.clear();
-    if (str==NULL) return;
-    const char* str2 = NULL;
-    for(;;)
-    {
-        double v = strtod(str,(char**)&str2);
-        if (str2==str) break;
-        str = str2;
-        vec.push_back((typename Vec::value_type)v);
-    }
-}
-
-template<class DataTypes, class MassType>
-void create(DiagonalMass<DataTypes, MassType>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    XML::createWithParent< DiagonalMass<DataTypes, MassType>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-        if (arg->getAttribute("filename"))
-        {
-            obj->load(arg->getAttribute("filename"));
-            arg->removeAttribute("filename");
-        }
-        obj->parseFields( arg->getAttributeMap() );
-
-        /*
-        if (arg->getAttribute("gravity"))
-        {
-        	double x=0;
-        	double y=0;
-        	double z=0;
-        	sscanf(arg->getAttribute("gravity"),"%lf %lf %lf",&x,&y,&z);
-        	typename DataTypes::Deriv g;
-        	DataTypes::set(g,x,y,z);
-        	obj->setGravity(g);
-        }
-        */
-        if (arg->getAttribute("mass"))
-        {
-            std::vector<MassType> mass;
-            readVec1(mass,arg->getAttribute("mass"));
-            obj->clear();
-            for (unsigned int i=0; i<mass.size(); i++)
-                obj->addMass(mass[i]);
-        }
-    }
-}
-}
+using helper::Creator;
 
 Creator<simulation::tree::xml::ObjectFactory, DiagonalMass<Vec3dTypes,double> > DiagonalMass3dClass("DiagonalMass",true);
 Creator<simulation::tree::xml::ObjectFactory, DiagonalMass<Vec3fTypes,float > > DiagonalMass3fClass("DiagonalMass",true);

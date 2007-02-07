@@ -19,7 +19,7 @@ namespace componentmodel
 namespace topology
 {
 
-class Topology : public virtual objectmodel::BaseObject
+class Topology : public virtual core::objectmodel::BaseObject
 {
 public:
     virtual ~Topology() { }

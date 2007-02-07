@@ -23,7 +23,7 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 template <class BaseMapping>
-class RigidMapping<BaseMapping>::Loader : public MassSpringLoader, public SphereLoader
+class RigidMapping<BaseMapping>::Loader : public helper::io::MassSpringLoader, public helper::io::SphereLoader
 {
 public:
     RigidMapping<BaseMapping>* dest;
@@ -46,17 +46,17 @@ void RigidMapping<BaseMapping>::init(const char *filename)
     if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".xs3"))
     {
         Loader loader(this);
-        loader.MassSpringLoader::load(filename);
+        loader.helper::io::MassSpringLoader::load(filename);
     }
     else if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".sph"))
     {
         Loader loader(this);
-        loader.SphereLoader::load(filename);
+        loader.helper::io::SphereLoader::load(filename);
     }
     else if (strlen(filename)>0)
     {
         // Default to mesh loader
-        Mesh* mesh = Mesh::Create(filename);
+        helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
         if (mesh!=NULL)
         {
             points.resize(mesh->getVertices().size());
@@ -171,7 +171,7 @@ void RigidMapping<BaseMapping>::draw()
     const typename Out::VecCoord& x = *this->toModel->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        GL::glVertexT(x[i]);
+        helper::gl::glVertexT(x[i]);
     }
     glEnd();
 }

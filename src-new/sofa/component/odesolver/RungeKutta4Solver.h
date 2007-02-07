@@ -1,22 +1,27 @@
-#ifndef SOFA_COMPONENTS_RUNGEKUTTA4SOLVER_H
-#define SOFA_COMPONENTS_RUNGEKUTTA4SOLVER_H
+#ifndef SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA4SOLVER_H
+#define SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA4SOLVER_H
 
-#include <Sofa-old/Core/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-class RungeKutta4Solver : public Core::OdeSolver
+namespace odesolver
+{
+
+class RungeKutta4Solver : public core::componentmodel::behavior::OdeSolver
 {
 public:
     void solve (double dt);
 };
 
-} // namespace Components
+} // namespace odesolver
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

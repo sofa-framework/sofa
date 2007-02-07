@@ -1,23 +1,28 @@
-#ifndef SOFA_COMPONENTS_EULERSOLVER_H
-#define SOFA_COMPONENTS_EULERSOLVER_H
+#ifndef SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
+#define SOFA_COMPONENT_ODESOLVER_EULERSOLVER_H
 
-#include <Sofa-old/Core/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
-class EulerSolver : public Core::OdeSolver
+namespace odesolver
+{
+
+class EulerSolver : public core::componentmodel::behavior::OdeSolver
 {
 public:
     virtual const char* getTypeName() const { return "EulerSolver"; }
     void solve (double dt);
 };
 
-} // namespace Components
+} // namespace odesolver
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

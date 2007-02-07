@@ -38,7 +38,7 @@ void create(RegularGridTopology*& obj, simulation::tree::xml::ObjectDescription*
 
 SOFA_DECL_CLASS(RegularGridTopology)
 
-Creator<simulation::tree::xml::ObjectFactory, RegularGridTopology> RegularGridTopologyClass("RegularGrid");
+helper::Creator<simulation::tree::xml::ObjectFactory, RegularGridTopology> RegularGridTopologyClass("RegularGrid");
 
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)

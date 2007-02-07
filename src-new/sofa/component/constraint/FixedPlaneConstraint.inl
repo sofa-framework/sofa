@@ -102,7 +102,7 @@ void FixedPlaneConstraint<DataTypes>::draw()
     glBegin (GL_POINTS);
     for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
     {
-        GL::glVertexT(x[*it]);
+        helper::gl::glVertexT(x[*it]);
     }
     glEnd();
 }

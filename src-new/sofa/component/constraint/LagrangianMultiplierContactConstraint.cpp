@@ -22,9 +22,9 @@ template class LagrangianMultiplierContactConstraint<Vec3fTypes>;
 template<class DataTypes>
 void create(LagrangianMultiplierContactConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< LagrangianMultiplierContactConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< LagrangianMultiplierContactConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
     if (obj == NULL) // try the InteractionForceField initialization
-        XML::createWith2Objects< LagrangianMultiplierContactConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+        simulation::tree::xml::createWith2Objects< LagrangianMultiplierContactConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
 }
 
 Creator<simulation::tree::xml::ObjectFactory, LagrangianMultiplierContactConstraint<Vec3dTypes> > LagrangianMultiplierContactConstraintVec3dClass("LagrangianMultiplierContactConstraint", true);

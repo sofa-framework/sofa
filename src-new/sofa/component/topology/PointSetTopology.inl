@@ -305,16 +305,8 @@ PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,c
 template<class DataTypes>
 void PointSetTopology<DataTypes>::propagateTopologicalChanges()
 {
-    sofa::Components::TopologyChangedEvent topEvent((BaseTopology *)this);
-    sofa::Components::Graph::PropagateEventAction propKey( &topEvent );
-    sofa::Components::simulation::tree::GNode *groot=dynamic_cast<sofa::Components::simulation::tree::GNode *>(this->getContext());
-    if (groot)
-    {
-        groot->execute(propKey);
-        /// remove list of events
-        this->resetTopologyChangeList();
-//                m_topologyContainer->getChangeList().erase(m_topologyContainer->getChangeList().begin(), m_topologyContainer->getChangeList().end());
-    }
+    TopologyChangedEvent topEvent((BaseTopology *)this);
+    getContext()->propagateEvent(&topEvent);
 }
 
 

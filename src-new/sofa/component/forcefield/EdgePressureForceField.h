@@ -33,9 +33,9 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
 
-    typedef MeshTopology::index_type Index;
-    typedef MeshTopology::Triangle Element;
-    typedef MeshTopology::SeqTriangles VecElement;
+    typedef topology::MeshTopology::index_type Index;
+    typedef topology::MeshTopology::Triangle Element;
+    typedef topology::MeshTopology::SeqTriangles VecElement;
 
 
 protected:
@@ -64,7 +64,7 @@ protected:
 
     unsigned int nbEdges;  // number of edge pressure forces
 
-    MeshTopology* _mesh;
+    topology::MeshTopology* _mesh;
     const VecElement *_indexedElements;
     VecCoord _initialPoints;										///< the intial positions of the points
 

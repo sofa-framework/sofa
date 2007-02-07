@@ -55,7 +55,7 @@ TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::init()
 {
-    _mesh = dynamic_cast<sofa::Components::MeshTopology*>(this->_object->getContext()->getTopology());
+    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->_object->getContext()->getTopology());
 
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {
@@ -68,12 +68,12 @@ void TriangleFEMForceField<DataTypes>::init()
     }
     else
     {
-        MeshTopology::SeqTriangles* trias = new MeshTopology::SeqTriangles;
+        topology::MeshTopology::SeqTriangles* trias = new topology::MeshTopology::SeqTriangles;
         int nbcubes = _mesh->getNbQuads();
         trias->reserve(nbcubes*2);
         for (int i=0; i<nbcubes; i++)
         {
-            MeshTopology::Quad q = _mesh->getQuad(i);
+            topology::MeshTopology::Quad q = _mesh->getQuad(i);
             trias->push_back(Element(q[0],q[1],q[2]));
             trias->push_back(Element(q[0],q[2],q[3]));
         }
@@ -596,32 +596,17 @@ void TriangleFEMForceField<DataTypes>::draw()
         Index c = (*it)[2];
 
         glColor4f(0,1,0,1);
-        GL::glVertexT(x[a]);
+        helper::gl::glVertexT(x[a]);
         glColor4f(0,0.5,0.5,1);
-        GL::glVertexT(x[b]);
+        helper::gl::glVertexT(x[b]);
         glColor4f(0,0,1,1);
-        GL::glVertexT(x[c]);
+        helper::gl::glVertexT(x[c]);
     }
     glEnd();
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
-
-
-} // namespace forcefield
-
-} // namespace component
-
-} // namespace sofa
-
-
-namespace Sofa
-{
-
-namespace Components
-{
-
 
 SOFA_DECL_CLASS(TriangleFEMForceField)
 
@@ -636,7 +621,7 @@ template class TriangleFEMForceField<Vec3fTypes>
 template<class DataTypes>
 void create(TriangleFEMForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWithParent< TriangleFEMForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
+    simulation::tree::xml::createWithParent< TriangleFEMForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
     obj->parseFields( arg->getAttributeMap() );
     /*    if (obj!=NULL)
         {
@@ -659,9 +644,8 @@ Creator<simulation::tree::xml::ObjectFactory, TriangleFEMForceField<Vec3fTypes> 
 TriangleFEMForceFieldVec3fClass("TriangleFEMForceField", true);
 
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
 
-
-
+} // namespace sofa

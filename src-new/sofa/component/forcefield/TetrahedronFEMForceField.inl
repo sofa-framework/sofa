@@ -30,8 +30,8 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {
-    this->Core::ForceField<DataTypes>::init();
-    _mesh = dynamic_cast<sofa::Components::MeshTopology*>(this->getContext()->getTopology());
+    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
+    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
     if (_mesh==NULL || (_mesh->getTetras().empty() && _mesh->getNbCubes()<=0))
     {
         std::cerr << "ERROR(TetrahedronFEMForceField): object must have a tetrahedric MeshTopology.\n";
@@ -43,8 +43,8 @@ void TetrahedronFEMForceField<DataTypes>::init()
     }
     else
     {
-        _trimgrid = dynamic_cast<TrimmedRegularGridTopology*>(_mesh);
-        MeshTopology::SeqTetras* tetras = new MeshTopology::SeqTetras;
+        _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
+        topology::MeshTopology::SeqTetras* tetras = new topology::MeshTopology::SeqTetras;
         int nbcubes = _mesh->getNbCubes();
 
         // These values are only correct if the mesh is a grid topology
@@ -52,7 +52,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         int ny = 1;
         int nz = 1;
         {
-            GridTopology* grid = dynamic_cast<GridTopology*>(_mesh);
+            topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(_mesh);
             if (grid != NULL)
             {
                 nx = grid->getNx()-1;
@@ -65,12 +65,12 @@ void TetrahedronFEMForceField<DataTypes>::init()
         for (int i=0; i<nbcubes; i++)
         {
             // if (flags && !flags->isCubeActive(i)) continue;
-            MeshTopology::Cube c = _mesh->getCube(i);
+            topology::MeshTopology::Cube c = _mesh->getCube(i);
             int sym = 0;
             if ((i%nx)&1)      sym+=1;
             if (((i/nx)%ny)&1) sym+=2;
             if ((i/(nx*ny))&1) sym+=4;
-            typedef MeshTopology::Tetra Tetra;
+            typedef topology::MeshTopology::Tetra Tetra;
             tetras->push_back(Tetra(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
             tetras->push_back(Tetra(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
             tetras->push_back(Tetra(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));
@@ -1178,24 +1178,24 @@ void TetrahedronFEMForceField<DataTypes>::draw()
         Coord pd = (x[d]+center)*(Real)0.666667;
 
         glColor4f(0,0,1,1);
-        GL::glVertexT(pa);
-        GL::glVertexT(pb);
-        GL::glVertexT(pc);
+        helper::gl::glVertexT(pa);
+        helper::gl::glVertexT(pb);
+        helper::gl::glVertexT(pc);
 
         glColor4f(0,0.5,1,1);
-        GL::glVertexT(pb);
-        GL::glVertexT(pc);
-        GL::glVertexT(pd);
+        helper::gl::glVertexT(pb);
+        helper::gl::glVertexT(pc);
+        helper::gl::glVertexT(pd);
 
         glColor4f(0,1,1,1);
-        GL::glVertexT(pc);
-        GL::glVertexT(pd);
-        GL::glVertexT(pa);
+        helper::gl::glVertexT(pc);
+        helper::gl::glVertexT(pd);
+        helper::gl::glVertexT(pa);
 
         glColor4f(0.5,1,1,1);
-        GL::glVertexT(pd);
-        GL::glVertexT(pa);
-        GL::glVertexT(pb);
+        helper::gl::glVertexT(pd);
+        helper::gl::glVertexT(pa);
+        helper::gl::glVertexT(pb);
     }
     glEnd();
 

@@ -1,6 +1,6 @@
-#ifndef SOFA_COMPONENTS_SPHERE_H
-#define SOFA_COMPONENTS_SPHERE_H
+#ifndef SOFA_COMPONENT_COLLISION_SPHERE_H
+#define SOFA_COMPONENT_COLLISION_SPHERE_H
 
-#include "SphereModel.h"
+#include <sofa/component/collision/SphereModel.h>
 
 #endif

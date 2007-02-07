@@ -22,8 +22,8 @@ namespace eulerianfluid
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-#ifndef SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID3D_H
-#define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_GRID3D_H
+#ifndef NDEBUG
+#define DEBUGGRID
 #endif
 
 class Grid3D

@@ -4,8 +4,6 @@
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <GL/gl.h>
 
-
-
 #define VERBOSE(a) if (getVerbose()) a; else
 
 namespace sofa
@@ -17,9 +15,9 @@ namespace component
 namespace collision
 {
 
+using namespace core;
 using namespace core::objectmodel;
 using namespace sofa::defaulttype;
-using namespace collision;
 
 void create(DefaultPipeline*& obj, simulation::tree::xml::ObjectDescription* arg)
 {

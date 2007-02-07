@@ -15,6 +15,7 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
+using namespace core;
 using namespace core::componentmodel::behavior;
 
 SOFA_DECL_CLASS(BarycentricMapping)
@@ -22,7 +23,7 @@ SOFA_DECL_CLASS(BarycentricMapping)
 template<class BaseMapping>
 void create(BarycentricMapping<BaseMapping>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    XML::createWith2Objects< BarycentricMapping<BaseMapping>, typename BarycentricMapping<BaseMapping>::In, typename BarycentricMapping<BaseMapping>::Out>(obj, arg);
+    simulation::tree::xml::createWith2Objects< BarycentricMapping<BaseMapping>, typename BarycentricMapping<BaseMapping>::In, typename BarycentricMapping<BaseMapping>::Out>(obj, arg);
 }
 
 

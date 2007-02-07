@@ -8,6 +8,47 @@
 namespace sofa
 {
 
+namespace helper   // \todo Why this must be inside helper namespace
+{
+
+using namespace component::constraint;
+
+/** Clear the container and fill it with values read from the string */
+template<class C>
+void readVector( C& container, const char* string )
+{
+    typedef typename C::value_type value_type;
+    value_type v;
+    container.clear();
+    std::istringstream in(string);
+    while( in >> v )
+        container.push_back(v);
+}
+
+template<class DataTypes>
+void create(OscillatorConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
+{
+    simulation::tree::xml::createWithParent< OscillatorConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
+    if (obj!=NULL)
+    {
+        if (const char* str = arg->getAttribute("indices"))
+        {
+            vector<unsigned> indices;
+            readVector(indices,str);
+            //const char* str = arg->getAttribute("indices");
+            //const char* str2 = NULL;
+            //for(;;)
+            //{
+            //	int v = (int)strtod(str,(char**)&str2);
+            //	if (str2==str) break;
+            //	str = str2;
+            //	obj->addConstraint(v);
+            //}
+        }
+    }
+}
+}
+
 namespace component
 {
 
@@ -41,7 +82,7 @@ using namespace sofa::defaulttype;
 //	glBegin (GL_POINTS);
 //	for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
 //	{
-//	   GL::glVertexT(x[0].getCenter());
+//	   helper::gl::glVertexT(x[0].getCenter());
 //	}
 //	glEnd();
 //}
@@ -58,44 +99,7 @@ SOFA_DECL_CLASS(OscillatorConstraint)
 template class OscillatorConstraint<Vec3dTypes>;
 template class OscillatorConstraint<Vec3fTypes>;
 
-namespace helper   // \todo Why this must be inside helper namespace
-{
-
-/** Clear the container and fill it with values read from the string */
-template<class C>
-void readVector( C& container, const char* string )
-{
-    typedef typename C::value_type value_type;
-    value_type v;
-    container.clear();
-    std::istringstream in(string);
-    while( in >> v )
-        container.push_back(v);
-}
-
-template<class DataTypes>
-void create(OscillatorConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    XML::createWithParent< OscillatorConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-        if (const char* str = arg->getAttribute("indices"))
-        {
-            vector<unsigned> indices;
-            readVector(indices,str);
-            //const char* str = arg->getAttribute("indices");
-            //const char* str2 = NULL;
-            //for(;;)
-            //{
-            //	int v = (int)strtod(str,(char**)&str2);
-            //	if (str2==str) break;
-            //	str = str2;
-            //	obj->addConstraint(v);
-            //}
-        }
-    }
-}
-}
+using helper::Creator;
 
 Creator<simulation::tree::xml::ObjectFactory, OscillatorConstraint<Vec3dTypes> > OscillatorConstraint3dClass("OscillatorConstraint",true);
 Creator<simulation::tree::xml::ObjectFactory, OscillatorConstraint<Vec3fTypes> > OscillatorConstraint3fClass("OscillatorConstraint",true);

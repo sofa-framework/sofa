@@ -1,15 +1,18 @@
-#ifndef SOFA_COMPONENTS_MESHOBJ_H
-#define SOFA_COMPONENTS_MESHOBJ_H
+#ifndef SOFA_HELPER_IO_MESHOBJ_H
+#define SOFA_HELPER_IO_MESHOBJ_H
 
-#include "Common/Mesh.h"
+#include <sofa/helper/io/Mesh.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace helper
 {
 
-using namespace Common;
+namespace io
+{
+
+using namespace sofa::defaulttype;
 
 class MeshOBJ : public Mesh
 {
@@ -30,8 +33,10 @@ public:
     void init (std::string filename);
 };
 
-} // namespace Components
+} // namespace io
 
-} // namespace Sofa
+} // namespace helper
+
+} // namespace sofa
 
 #endif

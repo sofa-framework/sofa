@@ -66,7 +66,7 @@ public:
 /// Read/write random access
     reference operator[](size_type n)
     {
-#ifndef SOFA_HELPER_VECTOR_H
+#ifndef NDEBUG
         assert( n<this->size() );
 #endif
         return *(this->begin() + n);
@@ -75,7 +75,7 @@ public:
 /// Read-only random access
     const_reference operator[](size_type n) const
     {
-#ifndef SOFA_HELPER_VECTOR_H
+#ifndef NDEBUG
         assert( n<this->size() );
 #endif
         return *(this->begin() + n);
@@ -154,7 +154,7 @@ void removeValue( T1& v, const T2& elem )
 template<class T, class TT>
 void removeIndex( std::vector<T,TT>& v, size_t index )
 {
-#ifndef SOFA_HELPER_VECTOR_H
+#ifndef NDEBUG
     assert( 0<= static_cast<int>(index) && index <v.size() );
 #endif
     v[index] = v.back();

@@ -98,7 +98,7 @@ CoordinateSystem::Rot CoordinateSystem::getOrientation( ) const
 void CoordinateSystem::apply()
 {
     //cerr<<"CoordinateSystem::apply(), frame = "<<   getName() <<", t="<<getContext()->getTime() << endl;
-    objectmodel::BaseContext* context = getContext();
+    core::objectmodel::BaseContext* context = getContext();
     cerr<<"CoordinateSystem::apply, current position = "<<context->getPositionInWorld()<<endl;
     cerr<<"CoordinateSystem::apply, transform = "<<this->getTransform()<<endl;
 
@@ -156,9 +156,9 @@ using namespace sofa::defaulttype;
 
 void create(CoordinateSystem*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    typedef sofa::Components::CoordinateSystem::Frame Frame;
-    typedef sofa::Components::CoordinateSystem::Vec Vec;
-    typedef sofa::Components::CoordinateSystem::Rot Rot;
+    typedef CoordinateSystem::Frame Frame;
+    typedef CoordinateSystem::Vec Vec;
+    typedef CoordinateSystem::Rot Rot;
     //cout<<"create(CoordinateSystem*& obj, simulation::tree::xml::ObjectDescription*)"<< endl;
     obj = new CoordinateSystem;
     float x, y, z ;

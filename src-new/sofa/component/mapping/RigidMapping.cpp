@@ -17,16 +17,17 @@ namespace mapping
 
 SOFA_DECL_CLASS(RigidMapping)
 
-using namespace sofa::defaulttype;
+using namespace defaulttype;
+using namespace core;
 using namespace core::componentmodel::behavior;
 
 template<class BaseMapping>
 void create(RigidMapping<BaseMapping>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
     if (arg->getAttribute("filename"))
-        XML::createWith2ObjectsAndFilename< RigidMapping<BaseMapping>, typename RigidMapping<BaseMapping>::In, typename RigidMapping<BaseMapping>::Out>(obj, arg);
+        simulation::tree::xml::createWith2ObjectsAndFilename< RigidMapping<BaseMapping>, typename RigidMapping<BaseMapping>::In, typename RigidMapping<BaseMapping>::Out>(obj, arg);
     else
-        XML::createWith2Objects< RigidMapping<BaseMapping>, typename RigidMapping<BaseMapping>::In, typename RigidMapping<BaseMapping>::Out>(obj, arg);
+        simulation::tree::xml::createWith2Objects< RigidMapping<BaseMapping>, typename RigidMapping<BaseMapping>::In, typename RigidMapping<BaseMapping>::Out>(obj, arg);
 }
 
 Creator<simulation::tree::xml::ObjectFactory, RigidMapping< MechanicalMapping< MechanicalState<RigidTypes>, MechanicalState<Vec3dTypes> > > > RigidMapping3dClass("RigidMapping", true);
