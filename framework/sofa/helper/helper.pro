@@ -58,34 +58,18 @@ HEADERS += \
           ./PolarDecompose.h \
           ./proximity.h \
           ./rmath.h \
-          ./slc/bfast.h \
-          ./slc/bfastUtil.h \
-          ./slc/bfastVector.h \
-          ./slc/distTree.h \
-          ./slc/pcube/pcube.h \
-          ./slc/pcube/vec.h \
-          ./slc/slcSurface.h \
+#          ./slc/bfast.h \
+#          ./slc/bfastUtil.h \
+#          ./slc/bfastVector.h \
+#          ./slc/distTree.h \
+#          ./slc/pcube/pcube.h \
+#          ./slc/pcube/vec.h \
+#          ./slc/slcSurface.h \
           ./static_assert.h \
           ./system/config.h \
           ./system/SetDirectory.h \
-          ./system/thread/AutomateUtils.h \
           ./system/thread/CTime.h \
           ./system/thread/debug.h \
-          ./system/thread/Edge.h \
-          ./system/thread/EdgeGFX.h \
-          ./system/thread/ExecBus.h \
-          ./system/thread/NodeGFX.h \
-          ./system/thread/ObjSubAutomate.h \
-          ./system/thread/ObjSubAutomateAttributeCondExec.h \
-          ./system/thread/ObjSubAutomateAttributeCondExec.inl \
-          ./system/thread/ObjSubAutomateAttributeNodeExec.h \
-          ./system/thread/ObjSubAutomateAttributeNodeExec.inl \
-          ./system/thread/ObjSubAutomateCondExec.h \
-          ./system/thread/ObjSubAutomateNodeExec.h \
-          ./system/thread/StateMachine.h \
-          ./system/thread/ThreadSimulation.h \
-          ./system/thread/utils.h \
-          ./system/thread/video.h \
           ./vector.h 
           
 SOURCES += \
@@ -111,25 +95,13 @@ SOURCES += \
           ./io/SphereLoader.cpp \
           ./io/TriangleLoader.cpp \
           ./proximity.cpp \
-          ./slc/bfastUtil.cpp \
-          ./slc/bfastVector.cpp \
-          ./slc/distTree.cpp \
+#          ./slc/bfastUtil.cpp \
+#          ./slc/bfastVector.cpp \
+#          ./slc/distTree.cpp \
 #          ./slc/setup.cpp \
 #          ./slc/slcConvert.cpp \
 #          ./slc/slcSurface.cpp \
 #          ./slc/surface.cpp \
           ./system/SetDirectory.cpp \
-          ./system/thread/AutomateUtils.cpp \
           ./system/thread/CTime.cpp \
-          ./system/thread/debug.cpp \
-          ./system/thread/Edge.cpp \
-          ./system/thread/EdgeGFX.cpp \
-          ./system/thread/ExecBus.cpp \
-          ./system/thread/NodeGFX.cpp \
-          ./system/thread/ObjSubAutomate.cpp \
-          ./system/thread/ObjSubAutomateCondExec.cpp \
-          ./system/thread/ObjSubAutomateNodeExec.cpp \
-          ./system/thread/StateMachine.cpp \
-          ./system/thread/ThreadSimulation.cpp \
-          ./system/thread/utils.cpp \
-          ./system/thread/video.cpp 
+          ./system/thread/debug.cpp

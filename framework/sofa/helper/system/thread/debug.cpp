@@ -42,16 +42,6 @@ void Trace::setTraceLevel(int level)
     mTraceLevel = level;
 }
 
-void Trace::checkGL(const char *)
-{
-
-}
-
-void Trace::checkGL(const char * /*chaine*/, const char * /*ch2*/,int /*d*/)
-{
-
-}
-
 void Trace::print(int level, char *chaine)
 {
     switch( level )

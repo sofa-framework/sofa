@@ -34,8 +34,6 @@ public:
 
     static void setTraceLevel(int level);
     static void print(int level, char *chaine);
-    static void checkGL(const char *);
-    static void checkGL(const char *, const char*, int );
 };
 
 
@@ -72,7 +70,6 @@ public:
 
 #define TRACE_LEVEl(level) { }
 #define TRACE(level, chaine){ }
-#define GLCHECK { }
 
 #endif
 } // namespace thread
