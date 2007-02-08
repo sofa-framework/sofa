@@ -3,11 +3,10 @@ TEMPLATE = app
 
 include($$SOFA_DIR/sofa.cfg)
 
+TARGET = runSofa$$SUFFIX
+DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECT \
           warn_on
-
-DESTDIR = $$SOFA_DIR/bin
-TARGET = runSofa$$SUFFIX
 RC_FILE = sofa.rc
 
 SOURCES = Main.cpp 
@@ -18,7 +17,8 @@ CONFIG += qt
 QT += opengl qt3support
 }
 
-LIBS = -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX -lsofacore$$LIBSUFFIX -lNewMat$$LIBSUFFIX
+LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX -lsofacore$$LIBSUFFIX -lNewMat$$LIBSUFFIX
+LIBS += -lsofacomponent$$LIBSUFFIX -lsofasimulation$$LIBSUFFIX
 
 win32{
   LIBS += -llibxml2 -lGLaux -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
@@ -36,8 +36,6 @@ win32{
 	  	QMAKE_LFLAGS += /NODEFAULTLIB:libc /NODEFAULTLIB:MSVCRTD
 	}
   }
-#  LIBS += -lSofaContribFluidGrid
-#  QMAKE_LFLAGS = /INCLUDE:_class_Fluid2D /INCLUDE:_class_Fluid3D
   #QMAKE_LIBS_WINDOWS = ""
   #QMAKE_CXXFLAGS += -GR -GX
   #DEFINES = WIN32

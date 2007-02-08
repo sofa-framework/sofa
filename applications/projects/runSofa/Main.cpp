@@ -3,7 +3,7 @@
 #include "argumentParser.h"
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/helper/system/BackTrace.h"
+#include <sofa/helper/BackTrace.h>
 #ifdef SOFA_GUI_FLTK
 #include <sofa/gui/fltk/Main.h>
 #endif
@@ -39,7 +39,7 @@ bool loadPlugin(const char* filename)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    //Sofa::Components::Common::BackTrace::autodump();
+    //sofa::helper::BackTrace::autodump();
     glutInit(&argc,argv);
     std::string fileName ;
     bool        startAnim = false;
@@ -69,7 +69,7 @@ int main(int argc, char** argv)
     .option(&plugins,'l',"load","load given plugins")
     (argc,argv);
 
-    for (unsigned int i=0;i<plugins.size();i++)
+    for (unsigned int i=0; i<plugins.size(); i++)
         loadPlugin(plugins[i].c_str());
 
     if (printFactory)
@@ -117,14 +117,13 @@ int main(int argc, char** argv)
 #ifdef SOFA_GUI_FLTK
     else if (gui=="fltk")
     {
-        Sofa::GUI::FLTK::MainLoop(argv[0],groot);
+        sofa::gui::fltk::MainLoop(argv[0],groot);
     }
 #endif
 #ifdef SOFA_GUI_QT
     else if (gui=="qt")
     {
-        Sofa::GUI::QT::MainLoop(argv[0],groot,fileName.c_str());
-
+        sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
     }
 #endif
     else

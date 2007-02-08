@@ -55,7 +55,7 @@ HEADERS += \
           ./LCPSolver.inl \
           ./MultiVector.h \
           ./PolarDecompose.h \
-#          ./proximity.h \
+          ./proximity.h \
           ./rmath.h \
           ./slc/bfast.h \
           ./slc/bfastUtil.h \
@@ -108,7 +108,7 @@ SOURCES += \
           ./io/MeshTrian.cpp \
           ./io/SphereLoader.cpp \
           ./io/TriangleLoader.cpp \
-#          ./proximity.cpp \
+          ./proximity.cpp \
           ./slc/bfastUtil.cpp \
           ./slc/bfastVector.cpp \
           ./slc/distTree.cpp \

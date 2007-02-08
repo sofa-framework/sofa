@@ -19,7 +19,7 @@ namespace helper
 // ---   res[0..dim-1] = U
 // ---   res[dim..2*dim-1] = F
 // -----------------------------------------------------------------
-template <int dim> bool LCP<dim>::solve(const double *q, const Matrix &M, double *res)
+template <int dim> bool LCPSolver<dim>::solve(const double *q, const Matrix &M, double *res)
 {
     int         ii, jj;
     int         ligPiv;	// ligne du pivot
@@ -164,7 +164,7 @@ template <int dim> bool LCP<dim>::solve(const double *q, const Matrix &M, double
 // -----------------------------------------------------------------
 // ---
 // -----------------------------------------------------------------
-template <int dim> void LCP<dim>::printInfo(double *q, Matrix &M)
+template <int dim> void LCPSolver<dim>::printInfo(double *q, Matrix &M)
 {
     int ii, jj;
 
