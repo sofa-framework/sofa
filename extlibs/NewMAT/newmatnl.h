@@ -8,8 +8,7 @@
 #include "newmat.h"
 
 #ifndef newmat_no_namespace
-namespace NewMAT
-{
+namespace NewMAT {
 #endif
 
 
@@ -171,82 +170,82 @@ influence on your estimates.
 
 class FindMaximum2
 {
-    virtual void Value(const ColumnVector&, bool, Real&, bool&) = 0;
-    virtual bool NextPoint(ColumnVector&, Real&) = 0;
-    virtual Real LastDerivative(const ColumnVector&) = 0;
+   virtual void Value(const ColumnVector&, bool, Real&, bool&) = 0;
+   virtual bool NextPoint(ColumnVector&, Real&) = 0;
+   virtual Real LastDerivative(const ColumnVector&) = 0;
 public:
-    void Fit(ColumnVector&, int);
-    virtual ~FindMaximum2() {}            // to keep gnu happy
+   void Fit(ColumnVector&, int);
+   virtual ~FindMaximum2() {}            // to keep gnu happy
 };
 
 class R1_Col_I_D
 {
-    // The prototype for a Real function of a ColumnVector and an
-    // integer.
-    // You need to derive your function from this one and put in your
-    // function for operator() and Derivatives() at least.
-    // You may also want to set up a constructor to enter in additional
-    // parameter values (that will not vary during the solve).
+   // The prototype for a Real function of a ColumnVector and an
+   // integer.
+   // You need to derive your function from this one and put in your
+   // function for operator() and Derivatives() at least.
+   // You may also want to set up a constructor to enter in additional
+   // parameter values (that will not vary during the solve).
 
 protected:
-    ColumnVector para;                 // Current x value
+   ColumnVector para;                 // Current x value
 
 public:
-    virtual bool IsValid() { return true; }
-    // is the current x value OK
-    virtual Real operator()(int i) = 0; // i-th function value at current para
-    virtual void Set(const ColumnVector& X) { para = X; }
-    // set current para
-    bool IsValid(const ColumnVector& X)
-    { Set(X); return IsValid(); }
-    // set para, check OK
-    Real operator()(int i, const ColumnVector& X)
-    { Set(X); return operator()(i); }
-    // set para, return value
-    virtual ReturnMatrix Derivatives() = 0;
-    // return derivatives as RowVector
-    virtual ~R1_Col_I_D() {}            // to keep gnu happy
+   virtual bool IsValid() { return true; }
+                                       // is the current x value OK
+   virtual Real operator()(int i) = 0; // i-th function value at current para
+   virtual void Set(const ColumnVector& X) { para = X; }
+                                       // set current para
+   bool IsValid(const ColumnVector& X)
+      { Set(X); return IsValid(); }
+                                       // set para, check OK
+   Real operator()(int i, const ColumnVector& X)
+      { Set(X); return operator()(i); }
+                                       // set para, return value
+   virtual ReturnMatrix Derivatives() = 0;
+                                       // return derivatives as RowVector
+   virtual ~R1_Col_I_D() {}            // to keep gnu happy
 };
 
 
 class NonLinearLeastSquares : public FindMaximum2
 {
-    // these replace the corresponding functions in FindMaximum2
-    void Value(const ColumnVector&, bool, Real&, bool&);
-    bool NextPoint(ColumnVector&, Real&);
-    Real LastDerivative(const ColumnVector&);
+   // these replace the corresponding functions in FindMaximum2
+   void Value(const ColumnVector&, bool, Real&, bool&);
+   bool NextPoint(ColumnVector&, Real&);
+   Real LastDerivative(const ColumnVector&);
 
-    Matrix X;                         // the things we need to do the
-    ColumnVector Y;                   // QR triangularisation
-    UpperTriangularMatrix U;          // see the write-up in newmata.txt
-    ColumnVector M;
-    Real errorvar, criterion;
-    int n_obs, n_param;
-    const ColumnVector* DataPointer;
-    RowVector Derivs;
-    SymmetricMatrix Covariance;
-    DiagonalMatrix SE;
-    R1_Col_I_D& Pred;                 // Reference to predictor object
-    int Lim;                          // maximum number of iterations
+   Matrix X;                         // the things we need to do the
+   ColumnVector Y;                   // QR triangularisation
+   UpperTriangularMatrix U;          // see the write-up in newmata.txt
+   ColumnVector M;
+   Real errorvar, criterion;
+   int n_obs, n_param;
+   const ColumnVector* DataPointer;
+   RowVector Derivs;
+   SymmetricMatrix Covariance;
+   DiagonalMatrix SE;
+   R1_Col_I_D& Pred;                 // Reference to predictor object
+   int Lim;                          // maximum number of iterations
 
 public:
-    NonLinearLeastSquares(R1_Col_I_D& pred, int lim=1000, Real crit=0.0001)
-        : criterion(crit), Pred(pred), Lim(lim) {}
-    void Fit(const ColumnVector&, ColumnVector&);
-    Real ResidualVariance() const { return errorvar; }
-    void GetResiduals(ColumnVector& Z) const { Z = Y; }
-    void GetStandardErrors(ColumnVector&);
-    void GetCorrelations(SymmetricMatrix&);
-    void GetHatDiagonal(DiagonalMatrix&) const;
+   NonLinearLeastSquares(R1_Col_I_D& pred, int lim=1000, Real crit=0.0001)
+      : criterion(crit), Pred(pred), Lim(lim) {}
+   void Fit(const ColumnVector&, ColumnVector&);
+   Real ResidualVariance() const { return errorvar; }
+   void GetResiduals(ColumnVector& Z) const { Z = Y; }
+   void GetStandardErrors(ColumnVector&);
+   void GetCorrelations(SymmetricMatrix&);
+   void GetHatDiagonal(DiagonalMatrix&) const;
 
 private:
-    void MakeCovariance();
+   void MakeCovariance();
 };
 
 
 // The next class is the prototype class for calculating the
 // log-likelihood.
-// I assume first derivatives are available and something like the
+// I assume first derivatives are available and something like the 
 // Fisher Information or variance/covariance matrix of the first
 // derivatives or minus the matrix of second derivatives is
 // available. This matrix must be positive definite.
@@ -254,57 +253,57 @@ private:
 class LL_D_FI
 {
 protected:
-    ColumnVector para;                  // current parameter values
-    bool wg;                         // true if FI matrix wanted
+   ColumnVector para;                  // current parameter values
+   bool wg;                         // true if FI matrix wanted
 
 public:
-    virtual void Set(const ColumnVector& X) { para = X; }
-    // set parameter values
-    virtual void WG(bool wgx) { wg = wgx; }
-    // set wg
+   virtual void Set(const ColumnVector& X) { para = X; }
+                                       // set parameter values
+   virtual void WG(bool wgx) { wg = wgx; }
+                                       // set wg
 
-    virtual bool IsValid() { return true; }
-    // return true is para is OK
-    bool IsValid(const ColumnVector& X, bool wgx=true)
-    { Set(X); WG(wgx); return IsValid(); }
+   virtual bool IsValid() { return true; }
+                                       // return true is para is OK
+   bool IsValid(const ColumnVector& X, bool wgx=true)
+      { Set(X); WG(wgx); return IsValid(); }
 
-    virtual Real LogLikelihood() = 0;   // return the loglikelihhod
-    Real LogLikelihood(const ColumnVector& X, bool wgx=true)
-    { Set(X); WG(wgx); return LogLikelihood(); }
+   virtual Real LogLikelihood() = 0;   // return the loglikelihhod
+   Real LogLikelihood(const ColumnVector& X, bool wgx=true)
+      { Set(X); WG(wgx); return LogLikelihood(); }
 
-    virtual ReturnMatrix Derivatives() = 0;
-    // column vector of derivatives
-    virtual ReturnMatrix FI() = 0;      // Fisher Information matrix
-    virtual ~LL_D_FI() {}               // to keep gnu happy
+   virtual ReturnMatrix Derivatives() = 0;
+                                       // column vector of derivatives
+   virtual ReturnMatrix FI() = 0;      // Fisher Information matrix
+   virtual ~LL_D_FI() {}               // to keep gnu happy
 };
 
 // This is the class for doing the maximum likelihood estimation
 
 class MLE_D_FI : public FindMaximum2
 {
-    // these replace the corresponding functions in FindMaximum2
-    void Value(const ColumnVector&, bool, Real&, bool&);
-    bool NextPoint(ColumnVector&, Real&);
-    Real LastDerivative(const ColumnVector&);
+   // these replace the corresponding functions in FindMaximum2
+   void Value(const ColumnVector&, bool, Real&, bool&);
+   bool NextPoint(ColumnVector&, Real&);
+   Real LastDerivative(const ColumnVector&);
 
-    // the things we need for the analysis
-    LL_D_FI& LL;                        // reference to log-likelihood
-    int Lim;                            // maximum number of iterations
-    Real Criterion;                     // convergence criterion
-    ColumnVector Derivs;                // for the derivatives
-    LowerTriangularMatrix LT;           // Cholesky decomposition of FI
-    SymmetricMatrix Covariance;
-    DiagonalMatrix SE;
+   // the things we need for the analysis
+   LL_D_FI& LL;                        // reference to log-likelihood
+   int Lim;                            // maximum number of iterations
+   Real Criterion;                     // convergence criterion
+   ColumnVector Derivs;                // for the derivatives
+   LowerTriangularMatrix LT;           // Cholesky decomposition of FI
+   SymmetricMatrix Covariance;
+   DiagonalMatrix SE;
 
 public:
-    MLE_D_FI(LL_D_FI& ll, int lim=1000, Real criterion=0.0001)
-        : LL(ll), Lim(lim), Criterion(criterion) {}
-    void Fit(ColumnVector& Parameters);
-    void GetStandardErrors(ColumnVector&);
-    void GetCorrelations(SymmetricMatrix&);
+   MLE_D_FI(LL_D_FI& ll, int lim=1000, Real criterion=0.0001)
+      : LL(ll), Lim(lim), Criterion(criterion) {}
+   void Fit(ColumnVector& Parameters);
+   void GetStandardErrors(ColumnVector&);
+   void GetCorrelations(SymmetricMatrix&);
 
 private:
-    void MakeCovariance();
+   void MakeCovariance();
 };
 
 

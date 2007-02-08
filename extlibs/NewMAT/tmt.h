@@ -3,17 +3,16 @@
 //#define DONT_DO_NRIC         // activate if running a bounds checker
 
 #ifndef newmat_no_namespace
-namespace NewMAT
-{
+namespace NewMAT {
 #endif
 
 // print time between construction and destruction
 class time_lapse
 {
-    double start_time;
+   double start_time;
 public:
-    time_lapse();
-    ~time_lapse();
+   time_lapse();
+   ~time_lapse();
 };
 
 void Print(const Matrix& X);

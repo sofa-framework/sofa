@@ -4,9 +4,6 @@ CONFIG += $$CONFIGLIBRARIES
 DESTDIR = ../../lib/$$LIBSDIRECTORY
 TARGET = NewMat$$LIBSUFFIX
 OBJECTS_DIR = OBJ/$$CONFIGDEBUG
-#INCLUDEPATH = ../..
-INCLUDEPATH += ../../include/NewMAT
-DEPENDPATH += ../../include/NewMAT
 
 #DEFINES += use_namespace 
 

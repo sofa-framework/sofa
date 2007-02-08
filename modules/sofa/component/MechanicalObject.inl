@@ -349,7 +349,7 @@ void MechanicalObject<DataTypes>::init()
     }
     else if (getX()->size() <= 1)
     {
-        core::componentmodel::topology::Topology* topo = dynamic_cast<core::componentmodel::topology::Topology*>(this->getContext()->getMainTopology());
+        core::componentmodel::topology::Topology* topo = dynamic_cast<core::componentmodel::topology::Topology*>(this->getContext()->getTopology());
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
         {
             int nbp = topo->getNbPoints();

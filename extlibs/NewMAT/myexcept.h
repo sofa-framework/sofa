@@ -52,10 +52,8 @@
 #include "include.h"
 
 #ifndef newmat_no_namespace
-namespace NewMAT
-{
-namespace RBD_COMMON
-{
+namespace NewMAT {
+namespace RBD_COMMON {
 #endif
 
 
@@ -67,35 +65,34 @@ void Terminate();
 class BaseException;
 
 class Tracer                             // linked list showing how
-{
-    // we got here
-    const char* entry;
-    Tracer* previous;
+{                                        // we got here
+   const char* entry;
+   Tracer* previous;
 public:
-    Tracer(const char*);
-    ~Tracer();
-    void ReName(const char*);
-    static void PrintTrace();             // for printing trace
-    static void AddTrace();               // insert trace in exception record
-    static Tracer* last;                  // points to Tracer list
-    friend class BaseException;
+   Tracer(const char*);
+   ~Tracer();
+   void ReName(const char*);
+   static void PrintTrace();             // for printing trace
+   static void AddTrace();               // insert trace in exception record
+   static Tracer* last;                  // points to Tracer list
+   friend class BaseException;
 };
 
 
 class BaseException                          // The base exception class
 {
 protected:
-    static char* what_error;              // error message
-    static int SoFar;                     // no. characters already entered
-    static int LastOne;                   // last location in error buffer
+   static char* what_error;              // error message
+   static int SoFar;                     // no. characters already entered
+   static int LastOne;                   // last location in error buffer
 public:
-    static void AddMessage(const char* a_what);
-    // messages about exception
-    static void AddInt(int value);        // integer to error message
-    static unsigned long Select;          // for identifying exception
-    BaseException(const char* a_what = 0);
-    static const char* what() { return what_error; }
-    // for getting error message
+   static void AddMessage(const char* a_what);
+                                         // messages about exception
+   static void AddInt(int value);        // integer to error message
+   static unsigned long Select;          // for identifying exception
+   BaseException(const char* a_what = 0);
+   static const char* what() { return what_error; }
+                                         // for getting error message
 };
 
 #ifdef TypeDefException
@@ -103,7 +100,7 @@ typedef BaseException Exception;        // for compatibility with my older libra
 #endif
 
 inline Tracer::Tracer(const char* e)
-    : entry(e), previous(last) { last = this; }
+   : entry(e), previous(last) { last = this; }
 
 inline Tracer::~Tracer() { last = previous; }
 
@@ -123,20 +120,20 @@ class Janitor;
 class JumpBase         // pointer to a linked list of jmp_buf s
 {
 public:
-    static JumpItem *jl;
-    static jmp_buf env;
+   static JumpItem *jl;
+   static jmp_buf env;
 };
 
 class JumpItem         // an item in a linked list of jmp_buf s
 {
 public:
-    JumpItem *ji;
-    jmp_buf env;
-    Tracer* trace;                     // to keep check on Tracer items
-    Janitor* janitor;                  // list of items for cleanup
-    JumpItem() : ji(JumpBase::jl), trace(0), janitor(0)
-    { JumpBase::jl = this; }
-    ~JumpItem() { JumpBase::jl = ji; }
+   JumpItem *ji;
+   jmp_buf env;
+   Tracer* trace;                     // to keep check on Tracer items
+   Janitor* janitor;                  // list of items for cleanup
+   JumpItem() : ji(JumpBase::jl), trace(0), janitor(0)
+      { JumpBase::jl = this; }
+   ~JumpItem() { JumpBase::jl = ji; }
 };
 
 void Throw();
@@ -163,13 +160,13 @@ inline void Throw(const BaseException&) { Throw(); }
 class Janitor
 {
 protected:
-    static bool do_not_link;                  // set when new is called
-    bool OnStack;                             // false if created by new
+   static bool do_not_link;                  // set when new is called
+   bool OnStack;                             // false if created by new
 public:
-    Janitor* NextJanitor;
-    virtual void CleanUp() {}
-    Janitor();
-    virtual ~Janitor();
+   Janitor* NextJanitor;
+   virtual void CleanUp() {}
+   Janitor();
+   virtual ~Janitor();
 };
 
 
@@ -180,9 +177,9 @@ public:
 class JanitorInitializer
 {
 public:
-    JanitorInitializer();
+   JanitorInitializer();
 private:
-    static int ref_count;
+   static int ref_count;
 };
 
 static JanitorInitializer JanInit;
@@ -220,9 +217,9 @@ inline void Throw(const BaseException&) { Terminate(); }
 class Janitor                         // a dummy version
 {
 public:
-    virtual void CleanUp() {}
-    Janitor() {}
-    virtual ~Janitor() {}
+   virtual void CleanUp() {}
+   Janitor() {}
+   virtual ~Janitor() {}
 };
 
 #endif                                // end of ! SimulateExceptions
@@ -238,57 +235,57 @@ class FreeCheck;
 class FreeCheckLink
 {
 protected:
-    FreeCheckLink* next;
-    void* ClassStore;
-    FreeCheckLink();
-    virtual ~FreeCheckLink() {}
-    virtual void Report()=0;                   // print details of link
-    friend class FreeCheck;
+   FreeCheckLink* next;
+   void* ClassStore;
+   FreeCheckLink();
+   virtual ~FreeCheckLink() {}
+   virtual void Report()=0;                   // print details of link
+   friend class FreeCheck;
 };
 
 class FCLClass : public FreeCheckLink         // for registering objects
 {
-    char* ClassName;
-    FCLClass(void* t, char* name);
-    void Report();
-    friend class FreeCheck;
+   char* ClassName;
+   FCLClass(void* t, char* name);
+   void Report();
+   friend class FreeCheck;
 };
 
 class FCLRealArray : public FreeCheckLink     // for registering real arrays
 {
-    char* Operation;
-    int size;
-    FCLRealArray(void* t, char* o, int s);
-    void Report();
-    friend class FreeCheck;
+   char* Operation;
+   int size;
+   FCLRealArray(void* t, char* o, int s);
+   void Report();
+   friend class FreeCheck;
 };
 
 class FCLIntArray : public FreeCheckLink     // for registering int arrays
 {
-    char* Operation;
-    int size;
-    FCLIntArray(void* t, char* o, int s);
-    void Report();
-    friend class FreeCheck;
+   char* Operation;
+   int size;
+   FCLIntArray(void* t, char* o, int s);
+   void Report();
+   friend class FreeCheck;
 };
 
 
 class FreeCheck
 {
-    static FreeCheckLink* next;
-    static int BadDelete;
+   static FreeCheckLink* next;
+   static int BadDelete;
 public:
-    static void Register(void*, char*);
-    static void DeRegister(void*, char*);
-    static void RegisterR(void*, char*, int);
-    static void DeRegisterR(void*, char*, int);
-    static void RegisterI(void*, char*, int);
-    static void DeRegisterI(void*, char*, int);
-    static void Status();
-    friend class FreeCheckLink;
-    friend class FCLClass;
-    friend class FCLRealArray;
-    friend class FCLIntArray;
+   static void Register(void*, char*);
+   static void DeRegister(void*, char*);
+   static void RegisterR(void*, char*, int);
+   static void DeRegisterR(void*, char*, int);
+   static void RegisterI(void*, char*, int);
+   static void DeRegisterI(void*, char*, int);
+   static void Status();
+   friend class FreeCheckLink;
+   friend class FCLClass;
+   friend class FCLRealArray;
+   friend class FCLIntArray;
 };
 
 #define FREE_CHECK(Class)                                                  \
@@ -362,43 +359,43 @@ public:                                                                    \
 class Logic_error : public BaseException
 {
 public:
-    static unsigned long Select;
-    Logic_error(const char* a_what = 0);
+   static unsigned long Select;
+   Logic_error(const char* a_what = 0);
 };
 
 class Runtime_error : public BaseException
 {
 public:
-    static unsigned long Select;
-    Runtime_error(const char* a_what = 0);
+   static unsigned long Select;
+   Runtime_error(const char* a_what = 0);
 };
 
 class Domain_error : public Logic_error
 {
 public:
-    static unsigned long Select;
-    Domain_error(const char* a_what = 0);
+   static unsigned long Select;
+   Domain_error(const char* a_what = 0);
 };
 
 class Invalid_argument : public Logic_error
 {
 public:
-    static unsigned long Select;
-    Invalid_argument(const char* a_what = 0);
+   static unsigned long Select;
+   Invalid_argument(const char* a_what = 0);
 };
 
 class Length_error : public Logic_error
 {
 public:
-    static unsigned long Select;
-    Length_error(const char* a_what = 0);
+   static unsigned long Select;
+   Length_error(const char* a_what = 0);
 };
 
 class Out_of_range : public Logic_error
 {
 public:
-    static unsigned long Select;
-    Out_of_range(const char* a_what = 0);
+   static unsigned long Select;
+   Out_of_range(const char* a_what = 0);
 };
 
 //class Bad_cast : public Logic_error
@@ -418,22 +415,22 @@ public:
 class Range_error : public Runtime_error
 {
 public:
-    static unsigned long Select;
-    Range_error(const char* a_what = 0);
+   static unsigned long Select;
+   Range_error(const char* a_what = 0);
 };
 
 class Overflow_error : public Runtime_error
 {
 public:
-    static unsigned long Select;
-    Overflow_error(const char* a_what = 0);
+   static unsigned long Select;
+   Overflow_error(const char* a_what = 0);
 };
 
 class Bad_alloc : public BaseException
 {
 public:
-    static unsigned long Select;
-    Bad_alloc(const char* a_what = 0);
+   static unsigned long Select;
+   Bad_alloc(const char* a_what = 0);
 };
 
 #ifndef newmat_no_namespace

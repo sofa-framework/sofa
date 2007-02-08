@@ -8,8 +8,7 @@
 #include "newmat.h"
 
 #ifndef newmat_no_namespace
-namespace NewMAT
-{
+namespace NewMAT {
 #endif
 
 
@@ -35,12 +34,12 @@ ReturnMatrix Cholesky(const SymmetricMatrix&);
 ReturnMatrix Cholesky(const SymmetricBandMatrix&);
 
 void SVD(const Matrix&, DiagonalMatrix&, Matrix&, Matrix&,
-        bool=true, bool=true);
+    bool=true, bool=true);
 
 void SVD(const Matrix&, DiagonalMatrix&);
 
 inline void SVD(const Matrix& A, DiagonalMatrix& D, Matrix& U,
-        bool withU = true) { SVD(A, D, U, U, withU, false); }
+   bool withU = true) { SVD(A, D, U, U, withU, false); }
 
 void SortSV(DiagonalMatrix& D, Matrix& U, bool ascending = false);
 
@@ -53,7 +52,7 @@ void Jacobi(const SymmetricMatrix&, DiagonalMatrix&, SymmetricMatrix&);
 void Jacobi(const SymmetricMatrix&, DiagonalMatrix&, Matrix&);
 
 void Jacobi(const SymmetricMatrix&, DiagonalMatrix&, SymmetricMatrix&,
-        Matrix&, bool=true);
+   Matrix&, bool=true);
 
 void EigenValues(const SymmetricMatrix&, DiagonalMatrix&);
 
@@ -65,12 +64,12 @@ class SymmetricEigenAnalysis
 // not implemented yet
 {
 public:
-    SymmetricEigenAnalysis(const SymmetricMatrix&);
+   SymmetricEigenAnalysis(const SymmetricMatrix&);
 private:
-    DiagonalMatrix diag;
-    DiagonalMatrix offdiag;
-    SymmetricMatrix backtransform;
-    FREE_CHECK(SymmetricEigenAnalysis)
+   DiagonalMatrix diag;
+   DiagonalMatrix offdiag;
+   SymmetricMatrix backtransform;
+   FREE_CHECK(SymmetricEigenAnalysis)
 };
 
 void SortAscending(GeneralMatrix&);
@@ -82,16 +81,16 @@ void SortDescending(GeneralMatrix&);
 class FFT_Controller
 {
 public:
-    static bool OnlyOldFFT;
-    static bool ar_1d_ft (int PTS, Real* X, Real *Y);
-    static bool CanFactor(int PTS);
+   static bool OnlyOldFFT;
+   static bool ar_1d_ft (int PTS, Real* X, Real *Y);
+   static bool CanFactor(int PTS);
 };
 
 void FFT(const ColumnVector&, const ColumnVector&,
-        ColumnVector&, ColumnVector&);
+   ColumnVector&, ColumnVector&);
 
 void FFTI(const ColumnVector&, const ColumnVector&,
-        ColumnVector&, ColumnVector&);
+   ColumnVector&, ColumnVector&);
 
 void RealFFT(const ColumnVector&, ColumnVector&, ColumnVector&);
 
@@ -129,23 +128,23 @@ void DST_inverse(const ColumnVector&, ColumnVector&);
 
 class MultiRadixCounter
 {
-    const SimpleIntArray& Radix;
-    // radix of each digit
-    // n-1 highest order, 0 lowest order
-    SimpleIntArray& Value;     // value of each digit
-    const int n;               // number of digits
-    int reverse;               // value when order of digits is reversed
-    int product;               // product of radices
-    int counter;               // counter
-    bool finish;               // true when we have gone over whole range
+   const SimpleIntArray& Radix;
+                              // radix of each digit
+                              // n-1 highest order, 0 lowest order
+   SimpleIntArray& Value;     // value of each digit
+   const int n;               // number of digits
+   int reverse;               // value when order of digits is reversed
+   int product;               // product of radices
+   int counter;               // counter
+   bool finish;               // true when we have gone over whole range
 public:
-    MultiRadixCounter(int nx, const SimpleIntArray& rx,
-            SimpleIntArray& vx);
-    void operator++();         // increment the multi-radix counter
-    bool Swap() const { return reverse < counter; }
-    bool Finish() const { return finish; }
-    int Reverse() const { return reverse; }
-    int Counter() const { return counter; }
+   MultiRadixCounter(int nx, const SimpleIntArray& rx,
+      SimpleIntArray& vx);
+   void operator++();         // increment the multi-radix counter
+   bool Swap() const { return reverse < counter; }
+   bool Finish() const { return finish; }
+   int Reverse() const { return reverse; }
+   int Counter() const { return counter; }
 };
 
 
