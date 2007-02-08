@@ -7,7 +7,7 @@ CONFIG += $$CONFIGPROJECT \
           warn_on
 
 DESTDIR = $$SOFA_DIR/bin
-TARGET = SofaViewer$$SUFFIX
+TARGET = runSofa$$SUFFIX
 RC_FILE = sofa.rc
 
 SOURCES = Main.cpp 
