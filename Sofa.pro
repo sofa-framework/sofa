@@ -1,6 +1,9 @@
-# message(Original config is $$CONFIG)
-include(sofa.cfg)
-SUBDIRS += Tools/NewMAT
-SUBDIRS += src
+SOFA_DIR=.
 TEMPLATE = subdirs
-# message(Final config is $$CONFIG)
+
+include($$SOFA_DIR/sofa.cfg)
+
+SUBDIRS += Tools/NewMAT
+SUBDIRS += framework
+SUBDIRS += modules
+SUBDIRS += applications

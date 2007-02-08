@@ -32,5 +32,3 @@ Building Sofa under Linux :
 
 - console :
      Run qmake, then make
-
-TEST MAIL Automatique
