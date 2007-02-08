@@ -7,6 +7,7 @@ namespace sofa
 
 namespace helper
 {
+
 template<>
 void create(component::collision::DefaultContactManager*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
@@ -15,7 +16,7 @@ void create(component::collision::DefaultContactManager*& obj, simulation::tree:
 
 SOFA_DECL_CLASS(DefaultContactManager)
 
-Creator<simulation::tree::xml::ObjectFactory, component::collision::DefaultContactManager> DefaultContactManagerClass("DefaultContactManager");
+Creator<simulation::tree::xml::ObjectFactory, component::collision::DefaultContactManager> DefaultContactManagerClass("CollisionResponse");
 }
 
 
