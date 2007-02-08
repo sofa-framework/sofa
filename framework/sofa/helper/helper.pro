@@ -24,6 +24,7 @@ contains(DEFINES,SOFA_HAVE_PNG){
 }
 
 HEADERS += \
+          ./ArgumentParser.h \
           ./BackTrace.h \
           ./fixed_array.h \
           ./Factory.h \
@@ -88,6 +89,7 @@ HEADERS += \
           ./vector.h 
           
 SOURCES += \
+          ./ArgumentParser.cpp \
           ./BackTrace.cpp \
           ./FnDispatcher.cpp \
           ./Factory.cpp \

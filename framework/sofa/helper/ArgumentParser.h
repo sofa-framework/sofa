@@ -1,14 +1,13 @@
 //========================================================
 // Yet another command line parser.
-// Fran�is Faure, iMAGIS-GRAVIR, May 2001
+// Francois Faure, iMAGIS-GRAVIR, May 2001
 //========================================================
 
-#ifndef ANIMAL_command_line_parser________
-#define ANIMAL_command_line_parser________
+#ifndef SOFA_HELPER_ARGUMENTPARSER_H
+#define SOFA_HELPER_ARGUMENTPARSER_H
 
 #include <iostream>
 #include <stdlib.h>
-//#include <strstream>
 #include <sstream>
 #include <fstream>
 #include <string>
@@ -18,11 +17,18 @@
 #include <list>
 #include <vector>
 
+namespace sofa
+{
+
+namespace helper
+{
+
 typedef std::istringstream istrstream;
 
 /// Abstract base class for all command line arguments
-struct ArgumentBase
+class ArgumentBase
 {
+public:
     /// character string
     typedef std::string string;
 
@@ -32,16 +38,10 @@ struct ArgumentBase
     \param h help
     \param m true iff the argument is mandatory
     */
-    ArgumentBase(char s, string l, string h, bool m)
-        : shortName(s)
-        , longName(l)
-        , help(h)
-        , mandatory(m)
-        , isSet(false)
-    {}
+    ArgumentBase(char s, string l, string h, bool m);
 
     /// Base destructor: does nothing.
-    virtual ~ArgumentBase() {}
+    virtual ~ArgumentBase();
 
     /// Read the command line
     virtual bool read( std::list<std::string>& str ) = 0;
@@ -49,25 +49,18 @@ struct ArgumentBase
     /// Print the value of the associated variable
     virtual void printValue() const =0;
 
+    /// print short name, long name, help
+    void print () const;
+
     char shortName; ///< Short name
     string longName;  ///< Long name
     string help;      ///< Help message
-
-    /// print short name, long name, help
-    inline void print () const
-    {
-        std::cout << "-" << shortName <<",\t--"<< longName <<":\t" << help;
-        if( mandatory ) std::cout<< " (required) ";
-        std::cout << "  (default: "; printValue();
-        std::cout << ")" << std::endl;
-    }
 
     /// True iff the value must be set
     bool mandatory;
 
     /// True iff a value has bee read on the command line
     bool isSet;
-
 
 };
 
@@ -82,9 +75,9 @@ Contains also a short name, a long name and a help message.
 @see ArgumentParser
 */
 template < class T = void* >
-struct Argument : public ArgumentBase
+class Argument : public ArgumentBase
 {
-
+public:
 
     /** Constructor
     \param t a pointer to the value
@@ -231,6 +224,9 @@ class ArgumentParser
     /// Set of commands
     ArgVec commands;
 
+    /// Set of remaining file
+    std::vector<std::string>* files;
+
     // help stuff
     string globalHelp;    ///< Overall presentation
     char helpShortName;   ///< short name for help
@@ -239,18 +235,13 @@ class ArgumentParser
 public:
 
     /// Constructor using a global help string
-    ArgumentParser( const string& helpstr="", char hlpShrt='h', const string& hlpLng="help" )
-        : globalHelp( helpstr )
-        , helpShortName(hlpShrt)
-        , helpLongName(hlpLng)
-    {}
+    ArgumentParser( const string& helpstr="", char hlpShrt='h', const string& hlpLng="help" );
+
+    /// Constructor using a global help string and a list of filenames
+    ArgumentParser( std::vector<std::string>* files, const string& helpstr="", char hlpShrt='h', const string& hlpLng="help" );
 
     /// Constructor using a global help string
-    ~ArgumentParser()
-    {
-        for( ArgVec::const_iterator a=commands.begin(), aend=commands.end(); a!=aend; ++a )
-            delete (*a);
-    }
+    ~ArgumentParser();
 
     /** Declare an optional argument
     \param ptr pointer to the variable
@@ -334,95 +325,13 @@ public:
         return (*this);
     }
 
-
     /** Parse a command line
     \param argc number of arguments + 1, as usual in C
     \param argv arguments
     */
-    inline void operator () ( int argc, char** argv )
-    {
-        std::list<std::string> str;
-        for (int i=1; i<argc; ++i)
-            str.push_back(std::string(argv[i]));
-        (*this)(str);
-    }
+    void operator () ( int argc, char** argv );
 
-    inline void operator () ( std::list<std::string> str )
-    {
-        string shHelp("-");  shHelp.push_back( helpShortName );
-        string lgHelp("--"); lgHelp.append( helpLongName );
-        string name;
-        while( !str.empty() )
-        {
-            name = str.front();
-            str.pop_front();
-//			std::cout << "name = " << name << std::endl;
-//			std::cout << "lgHelp = " << lgHelp << std::endl;
-//			std::cout << "shHelp = " << shHelp << std::endl;
-
-            // display help
-            if( name == shHelp || name == lgHelp )
-            {
-                if( globalHelp.size()>0 ) std::cout<< globalHelp <<std::endl;
-                std::cout << "(short name, long name, description, default value)\n-h,\t--help: this help" << std::endl;
-                for( ArgVec::const_iterator a=commands.begin(), aend=commands.end(); a!=aend; ++a )
-                    (*a)->print();
-                exit(1);
-            }
-
-            // long name
-            else if( name.length() > 1 && name[0]=='-' && name[1]=='-' )
-            {
-                string a;
-                for( unsigned int i=2; i<name.length(); ++i )
-                {
-                    a += name[i];
-                }
-                if( longName.find(a) != longName.end() )
-                {
-                    if( !(longName[ a ]->read( str )))
-                        std::cerr<< "\ncould not read value for option " << name << std::endl << std::endl;
-                    else parameter_set[longName[ a ]] = true;
-                }
-                else std::cerr << "\nUnknown option " << name << std::endl << std::endl;
-            }
-
-            // short names (possibly concatenated)
-            else if( name.length() > 1 && name[0]=='-' && name[1]!='-' )
-            {
-                for( unsigned int i=1; i<name.length(); ++i )
-                {
-                    char a = name[i];
-                    if( shortName.find(a) != shortName.end() )
-                    {
-                        if( !(shortName[ a ]->read( str )))
-                            std::cerr<< "\ncould not read value for option " << name << std::endl << std::endl;
-                        else parameter_set[shortName[ a ]] = true;
-                    }
-                    else std::cerr << "\nUnknown option " << name[i] << std::endl << std::endl;
-                }
-            }
-
-            //
-            else std::cerr << "Unknown option " << name << std::endl;
-        }
-
-        // Unset mandatory arguments ?
-        bool unset = false;
-        for( ArgVec::const_iterator cm = commands.begin(), cmend=commands.end(); cm != cmend; ++cm )
-        {
-            if( (*cm)->mandatory && !(*cm)->isSet )
-            {
-                if( !unset )
-                {
-                    std::cout << "Please set the following parameters: (short name, long name, description)" << std::endl;
-                    unset = true;
-                }
-                (*cm)->print();
-            }
-        }
-        if( unset ) exit(1);
-    }
+    void operator () ( std::list<std::string> str );
 
 };
 
@@ -437,8 +346,13 @@ inline ArgumentParser parse( const std::string& helpstr="", char hs='h', const s
     return ArgumentParser(helpstr,hs,hl);
 }
 
+inline ArgumentParser parse( std::vector<std::string>* files, const std::string& helpstr="", char hs='h', const std::string& hl="help" )
+{
+    return ArgumentParser(files,helpstr,hs,hl);
+}
 
+} // namespace helper
 
+} // namespace sofa
 
 #endif
-

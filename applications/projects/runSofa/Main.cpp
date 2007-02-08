@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include "argumentParser.h"
+#include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
@@ -46,6 +46,7 @@ int main(int argc, char** argv)
     bool        printFactory = false;
     std::string gui = "none";
     std::vector<std::string> plugins;
+    std::vector<std::string> files;
 #ifdef SOFA_GUI_FLTK
     gui = "fltk";
 #endif
@@ -53,8 +54,8 @@ int main(int argc, char** argv)
     gui = "qt";
 #endif
 
-    parse("This is a SOFA application. Here are the command line arguments")
-    .option(&fileName,'f',"file","scene file")
+    sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
+//	.option(&fileName,'f',"file","scene file")
     .option(&startAnim,'s',"start","start the animation loop")
     .option(&printFactory,'p',"factory","print factory logs")
     .option(&gui,'g',"gui","choose the UI (none"
@@ -68,6 +69,8 @@ int main(int argc, char** argv)
            )
     .option(&plugins,'l',"load","load given plugins")
     (argc,argv);
+
+    if (!files.empty()) fileName = files[0];
 
     for (unsigned int i=0; i<plugins.size(); i++)
         loadPlugin(plugins[i].c_str());
