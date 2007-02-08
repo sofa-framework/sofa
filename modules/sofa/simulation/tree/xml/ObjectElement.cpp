@@ -45,6 +45,7 @@ bool ObjectElement::initNode()
 SOFA_DECL_CLASS(Object)
 
 Creator<BaseElement::NodeFactory, ObjectElement> ObjectNodeClass("Object");
+/*
 Creator<BaseElement::NodeFactory, ObjectElement> PropertyNodeClass("Property");
 Creator<BaseElement::NodeFactory, ObjectElement> MechanicalNodeClass("Mechanical");
 Creator<BaseElement::NodeFactory, ObjectElement> TopologyNodeClass("Topology");
@@ -57,6 +58,7 @@ Creator<BaseElement::NodeFactory, ObjectElement> SolverNodeClass("Solver");
 Creator<BaseElement::NodeFactory, ObjectElement> CollisionNodeClass("Collision");
 Creator<BaseElement::NodeFactory, ObjectElement> VisualNodeClass("Visual");
 Creator<BaseElement::NodeFactory, ObjectElement> BehaviorNodeClass("Behavior");
+*/
 
 const char* ObjectElement::getClass() const
 {

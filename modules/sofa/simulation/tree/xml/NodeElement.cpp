@@ -38,7 +38,7 @@ bool NodeElement::setParent(BaseElement* newParent)
 bool NodeElement::initNode()
 {
     if (!Element<core::objectmodel::BaseNode>::initNode()) return false;
-    if (getObject()!=NULL && getParent()!=NULL && dynamic_cast<xml::BaseElement*>(getParent()->getBaseObject())!=NULL)
+    if (getObject()!=NULL && getParent()!=NULL && dynamic_cast<core::objectmodel::BaseNode*>(getParent()->getBaseObject())!=NULL)
     {
         std::cout << "Adding Child "<<getName()<<" to "<<getParent()->getName()<<std::endl;
         dynamic_cast<core::objectmodel::BaseNode*>(getParent()->getBaseObject())->addChild(getObject());
