@@ -12,8 +12,7 @@
 #include "newmatrc.h"
 
 #ifndef newmat_no_namespace
-namespace NewMAT
-{
+namespace NewMAT {
 #endif
 
 
@@ -31,26 +30,26 @@ namespace NewMAT
 
 ostream& operator<<(ostream& s, const BaseMatrix& X)
 {
-    GeneralMatrix* gm = ((BaseMatrix&)X).Evaluate(); operator<<(s, *gm);
-    gm->tDelete(); return s;
+   GeneralMatrix* gm = ((BaseMatrix&)X).Evaluate(); operator<<(s, *gm);
+   gm->tDelete(); return s;
 }
 
 
 ostream& operator<<(ostream& s, const GeneralMatrix& X)
 {
-    MatrixRow mr((GeneralMatrix*)&X, LoadOnEntry);
-    int w = s.width();  int nr = X.Nrows();  ios_format_flags f = s.flags();
-    s.setf(ios::fixed, ios::floatfield);
-    for (int i=1; i<=nr; i++)
-    {
-        int skip = mr.skip;  int storage = mr.storage;
-        Real* store = mr.data;  skip *= w+1;
-        while (skip--) s << " ";
-        while (storage--) { s.width(w); s << *store++ << " "; }
+   MatrixRow mr((GeneralMatrix*)&X, LoadOnEntry);
+   int w = s.width();  int nr = X.Nrows();  ios_format_flags f = s.flags();
+   s.setf(ios::fixed, ios::floatfield);
+   for (int i=1; i<=nr; i++)
+   {
+      int skip = mr.skip;  int storage = mr.storage;
+      Real* store = mr.data;  skip *= w+1;
+      while (skip--) s << " ";
+      while (storage--) { s.width(w); s << *store++ << " "; }
 //      while (storage--) s << setw(w) << *store++ << " ";
-        mr.Next();  s << "\n";
-    }
-    s << flush;  s.flags(f); return s;
+      mr.Next();  s << "\n";
+   }
+   s << flush;  s.flags(f); return s;
 }
 
 // include this stuff if you are using an old version of G++
