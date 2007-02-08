@@ -12,7 +12,7 @@ namespace tree
 
 void init()
 {
-    std::cout << "Sofa Components Initialized"<<std::endl;
+    std::cout << "sofa::simulation::tree initialized"<<std::endl;
 }
 
 } // namespace tree

@@ -5,9 +5,6 @@
 #include <GL/gl.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/core/VisualModel.h>
-//#include "Sofa/Components/VisualLoader.h"
-//#include "Common/InterfaceVertex.h"
-//#include "Common/InterfaceTransformation.h"
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
