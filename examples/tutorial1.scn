@@ -52,7 +52,7 @@
 	</Node>
 	<Node name="M4">
 		<Object type="CGImplicit" iterations="25" tol="0.00001" threshold="0.000001" stiffness="0.2" />
-		<Object type="MechanicalObjectRigid" dx="-36"/>
+		<Object type="MechanicalObject" template="Rigid" dx="-36"/>
 		<Object type="UniformMass" filename="smCube125.rigid"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" filename="VisualModels/smCube125.obj" color="white" />

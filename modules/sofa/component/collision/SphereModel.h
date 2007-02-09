@@ -41,8 +41,6 @@ protected:
     DataField<double> defaultRadius;
 
     class Loader;
-
-    bool static_;
 public:
     typedef Vec3Types DataTypes;
     typedef Sphere Element;
@@ -62,9 +60,6 @@ public:
     virtual void computeBoundingTree(int maxDepth=0);
 
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
-
-    bool isStatic() { return static_; }
-    void setStatic(bool val=true) { static_ = val; }
 
     void draw(int index);
 

@@ -58,7 +58,7 @@
 		<Object type="RungeKutta4" />
 		<Object type="Euler" />
 		-->
-		<Object type="MechanicalObjectRigid" dx="-17" dy="16"  dz="29"/>
+		<Object type="MechanicalObject" template="Rigid" dx="-17" dy="16"  dz="29"/>
 		<Object type="UniformMass" filename="smCube125.rigid"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" filename="VisualModels/smCube125.obj" color="white" />

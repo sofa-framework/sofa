@@ -24,7 +24,7 @@ int LineModelClass = core::RegisterObject("Collision model representing a line")
 
 
 LineModel::LineModel()
-    : static_(false), meshRevision(-1), mstate(NULL), mesh(NULL)
+    : meshRevision(-1), mstate(NULL), mesh(NULL)
 {
 }
 
@@ -36,6 +36,7 @@ void LineModel::resize(int size)
 
 void LineModel::init()
 {
+    this->CollisionModel::init();
     mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     mesh = dynamic_cast< MeshTopology* > (getContext()->getTopology());
 

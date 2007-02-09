@@ -21,10 +21,10 @@
 	</Node>
 	<Node name="M2">
 		<Object type="CGImplicit" iterations="100"/>
-		<Object type="MechanicalObjectRigid" dz="-10.5"/>
+		<Object type="MechanicalObject" template="Rigid" dz="-10.5"/>
 		<Object type="UniformMass" filename="BehaviorModels/rigid.xs3"/>
 		<Node name="Points">
-			<Object type="MechanicalObjectVec3d" filename="BehaviorModels/smCube27.xs3"/>
+			<Object type="MechanicalObject" template="Vec3d" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="RigidMapping"/>
 		</Node>
 		<Node name="Surf">
@@ -53,10 +53,10 @@
 	</Node>
 	<Node name="M4">
 		<Object type="CGImplicit" iterations="100"/>
-		<Object type="MechanicalObjectRigid" dz="10.5"/>
+		<Object type="MechanicalObject" template="Rigid" dz="10.5"/>
 		<Object type="UniformMass" filename="BehaviorModels/rigid.xs3"/>
 		<Node name="Points">
-			<Object type="MechanicalObjectVec3d" filename="BehaviorModels/smCube27.xs3"/>
+			<Object type="MechanicalObject" template="Vec3d" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="RigidMapping"/>
 			<Node name="Visu">
 				<Object type="OglModel" name="Visual" filename="VisualModels/smCube27.obj" />
@@ -85,10 +85,10 @@
 	</Node>
 	<Node name="M6">
 		<Object type="CGImplicit" iterations="100"/>
-		<Object type="MechanicalObjectRigid" dz="31.5"/>
+		<Object type="MechanicalObject" template="Rigid" dz="31.5"/>
 		<Object type="UniformMass" filename="BehaviorModels/rigid.xs3"/>
 		<Node name="Points">
-			<Object type="MechanicalObjectVec3d" filename="BehaviorModels/smCube27.xs3"/>
+			<Object type="MechanicalObject" template="Vec3d" filename="BehaviorModels/smCube27.xs3"/>
 			<Object type="RigidMapping"/>
 		</Node>
 		<Node name="Visu">

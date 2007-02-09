@@ -35,6 +35,7 @@ void TriangleModel::resize(int size)
 
 void TriangleModel::init()
 {
+    this->CollisionModel::init();
     mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     mesh = dynamic_cast< topology::MeshTopology* > (getContext()->getTopology());
 

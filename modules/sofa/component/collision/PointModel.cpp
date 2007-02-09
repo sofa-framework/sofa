@@ -23,7 +23,7 @@ int PointModelClass = core::RegisterObject("Collision model which represents a s
         ;
 
 PointModel::PointModel()
-    : static_(false), mstate(NULL)
+    : mstate(NULL)
 {
 }
 
@@ -34,6 +34,7 @@ void PointModel::resize(int size)
 
 void PointModel::init()
 {
+    this->CollisionModel::init();
     mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
     if (mstate==NULL)

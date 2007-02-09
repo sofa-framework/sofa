@@ -33,8 +33,6 @@ public:
 
 class PointModel : public core::CollisionModel, public core::VisualModel
 {
-protected:
-    bool static_;
 public:
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;
@@ -55,9 +53,6 @@ public:
     virtual void computeBoundingTree(int maxDepth=0);
 
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
-
-    bool isStatic() { return static_; }
-    void setStatic(bool val=true) { static_ = val; }
 
     void draw(int index);
 
