@@ -20,7 +20,7 @@ template class PlaneForceField<Vec3fTypes>;
 
 SOFA_DECL_CLASS(PlaneForceField)
 
-int PlaneForceFieldClass = core::RegisterObject("TODO")
+int PlaneForceFieldClass = core::RegisterObject("Repulsion applied by a plane toward the exterior (half-space)")
         .add< PlaneForceField<Vec3dTypes> >()
         .add< PlaneForceField<Vec3fTypes> >()
         ;

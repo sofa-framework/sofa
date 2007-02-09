@@ -20,7 +20,7 @@ template class LagrangianMultiplierAttachConstraint<Vec3dTypes>;
 template class LagrangianMultiplierAttachConstraint<Vec3fTypes>;
 
 
-int LagrangianMultiplierAttachConstraintClass = core::RegisterObject("TODO")
+int LagrangianMultiplierAttachConstraintClass = core::RegisterObject("TODO-LagrangianMultiplierAttachConstraintClass")
         .add< LagrangianMultiplierAttachConstraint<Vec3dTypes> >()
         .add< LagrangianMultiplierAttachConstraint<Vec3fTypes> >()
         ;

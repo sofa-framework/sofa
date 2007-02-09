@@ -213,7 +213,7 @@ void CGImplicitSolver::solve(double dt)
 
 SOFA_DECL_CLASS(CGImplicit)
 
-int CGImplicitSolverClass = core::RegisterObject("TODO")
+int CGImplicitSolverClass = core::RegisterObject("Implicit time integration using the filtered conjugate gradient")
         .add< CGImplicitSolver >()
         .addAlias("CGImplicit");
 ;

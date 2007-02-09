@@ -613,7 +613,7 @@ template class TriangleFEMForceField<Vec3fTypes>;
 
 
 // Register in the Factory
-int TriangleFEMForceFieldClass = core::RegisterObject("TODO")
+int TriangleFEMForceFieldClass = core::RegisterObject("Triangular finite elements")
         .add< TriangleFEMForceField<Vec3dTypes> >()
         .add< TriangleFEMForceField<Vec3fTypes> >()
         ;

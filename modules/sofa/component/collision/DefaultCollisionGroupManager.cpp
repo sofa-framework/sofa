@@ -27,7 +27,7 @@ using namespace core::componentmodel::collision;
 
 SOFA_DECL_CLASS(DefaultCollisionGroupManager)
 
-int DefaultCollisionGroupManagerClass = core::RegisterObject("TODO")
+int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering colliding objects in the same group, for consistent time integration")
         .add< DefaultCollisionGroupManager >()
         .addAlias("CollisionGroup")
         ;

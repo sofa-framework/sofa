@@ -25,7 +25,7 @@ template class SpringForceField<Vec3dTypes>;
 template class SpringForceField<Vec3fTypes>;
 
 // Register in the Factory
-int SpringForceFieldClass = core::RegisterObject("TODO")
+int SpringForceFieldClass = core::RegisterObject("Springs")
         .add< SpringForceField<Vec3dTypes> >()
         .add< SpringForceField<Vec3fTypes> >()
         ;

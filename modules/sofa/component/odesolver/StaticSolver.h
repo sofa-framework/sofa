@@ -18,6 +18,7 @@ namespace odesolver
 
 using core::objectmodel::DataField;
 
+/** Finds the static equilibrium of a system. Can diverge when there are an infinity of solutions. */
 class StaticSolver : public core::componentmodel::behavior::OdeSolver
 {
 

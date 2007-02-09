@@ -17,7 +17,7 @@ namespace collision
 
 SOFA_DECL_CLASS(Line)
 
-int LineModelClass = core::RegisterObject("TODO")
+int LineModelClass = core::RegisterObject("Collision model representing a line")
         .add< LineModel >()
         .addAlias("Line")
         ;

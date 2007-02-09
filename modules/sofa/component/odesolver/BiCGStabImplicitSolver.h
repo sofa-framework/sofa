@@ -14,7 +14,8 @@ namespace component
 
 namespace odesolver
 {
-
+/** Implicit integration solver able to handle degenerate equation systems.
+*/
 class BiCGStabImplicitSolver : public core::componentmodel::behavior::OdeSolver
 {
 public:

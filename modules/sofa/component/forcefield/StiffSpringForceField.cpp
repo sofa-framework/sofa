@@ -24,7 +24,7 @@ template class StiffSpringForceField<Vec3fTypes>;
 SOFA_DECL_CLASS(StiffSpringForceField)
 
 // Register in the Factory
-int StiffSpringForceFieldClass = core::RegisterObject("TODO")
+int StiffSpringForceFieldClass = core::RegisterObject("Stiff springs for implicit integration")
         .add< StiffSpringForceField<Vec3dTypes> >()
         .add< StiffSpringForceField<Vec3fTypes> >()
         ;

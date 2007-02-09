@@ -23,7 +23,7 @@ using namespace core;
 using namespace core::componentmodel::behavior;
 
 // Register in the Factory
-int LaparoscopicRigidMappingClass = core::RegisterObject("TODO")
+int LaparoscopicRigidMappingClass = core::RegisterObject("TODO-LaparoscopicRigidMappingClass")
         .add< LaparoscopicRigidMapping< MechanicalMapping< MechanicalState<LaparoscopicRigidTypes>, MechanicalState<RigidTypes> > > >()
         .add< LaparoscopicRigidMapping< Mapping< MechanicalState<LaparoscopicRigidTypes>, MappedModel<RigidTypes> > > >()
         ;

@@ -31,7 +31,7 @@ template class TriangleBendingSprings<Vec3dTypes>;
 SOFA_DECL_CLASS(TriangleBendingSprings)
 
 // Register in the Factory
-int TriangleBendingSpringsClass = core::RegisterObject("TODO")
+int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a traingular mesh to prevent bending")
         .add< TriangleBendingSprings<Vec3dTypes> >()
         .add< TriangleBendingSprings<Vec3fTypes> >()
         ;

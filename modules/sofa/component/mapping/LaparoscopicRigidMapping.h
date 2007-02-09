@@ -36,8 +36,8 @@ public:
 
     LaparoscopicRigidMapping(In* from, Out* to)
         : Inherit(from, to)
-        , pivot(dataField(&pivot, defaulttype::Vector3(0,0,0), "pivot","TODO"))
-        , rotation(dataField(&rotation, defaulttype::Quat(0,0,0,1), "rotation", "TODO"))
+        , pivot(dataField(&pivot, defaulttype::Vector3(0,0,0), "pivot","TODO-pivot"))
+        , rotation(dataField(&rotation, defaulttype::Quat(0,0,0,1), "rotation", "TODO-rotation"))
     {
     }
 

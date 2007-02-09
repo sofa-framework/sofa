@@ -20,7 +20,7 @@ using namespace core::componentmodel::behavior;
 SOFA_DECL_CLASS(ImplicitSurfaceMapping)
 
 // Register in the Factory
-int ImplicitSurfaceMappingClass = core::RegisterObject("TODO")
+int ImplicitSurfaceMappingClass = core::RegisterObject("TODO-ImplicitSurfaceMappingClass")
         .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> > >()
         .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> > >()
         .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> > >()

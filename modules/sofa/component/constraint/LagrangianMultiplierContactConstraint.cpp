@@ -19,7 +19,7 @@ using namespace sofa::defaulttype;
 template class LagrangianMultiplierContactConstraint<Vec3dTypes>;
 template class LagrangianMultiplierContactConstraint<Vec3fTypes>;
 
-int LagrangianMultiplierContactConstraintClass = core::RegisterObject("TODO")
+int LagrangianMultiplierContactConstraintClass = core::RegisterObject("TODO-LagrangianMultiplierContactConstraintClass")
         .add< LagrangianMultiplierContactConstraint<Vec3dTypes> >()
         .add< LagrangianMultiplierContactConstraint<Vec3fTypes> >()
         ;

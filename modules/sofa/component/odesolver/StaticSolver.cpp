@@ -105,7 +105,7 @@ void StaticSolver::solve(double)
     /*    cerr<<"StaticSolver::solve, new pos = "<<pos<<endl;*/
 }
 
-int StaticSolverClass = core::RegisterObject("TODO")
+int StaticSolverClass = core::RegisterObject("A solver which seeks the static equilibrium of the scene it monitors")
         .add< StaticSolver >();
 
 SOFA_DECL_CLASS(StaticSolver)

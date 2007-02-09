@@ -17,7 +17,7 @@ namespace collision
 
 SOFA_DECL_CLASS(Triangle)
 
-int TriangleModelClass = core::RegisterObject("TODO")
+int TriangleModelClass = core::RegisterObject("collision model using a triangular mesh")
         .add< TriangleModel >()
         .addAlias("Triangle")
         ;

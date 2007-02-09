@@ -16,7 +16,7 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(LagrangianMultiplierFixedConstraint)
 
 
-int LagrangianMultiplierFixedConstraintClass = core::RegisterObject("TODO")
+int LagrangianMultiplierFixedConstraintClass = core::RegisterObject("TODO-LagrangianMultiplierFixedConstraintClass")
         .add< LagrangianMultiplierFixedConstraint<Vec3dTypes> >()
         .add< LagrangianMultiplierFixedConstraint<Vec3fTypes> >()
         ;

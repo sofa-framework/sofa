@@ -19,7 +19,7 @@ template class RepulsiveSpringForceField<Vec3dTypes>;
 template class RepulsiveSpringForceField<Vec3fTypes>;
 
 // Register in the Factory
-int RepulsiveSpringForceFieldClass = core::RegisterObject("TODO")
+int RepulsiveSpringForceFieldClass = core::RegisterObject("Springs which only repell")
         .add< RepulsiveSpringForceField<Vec3dTypes> >()
         .add< RepulsiveSpringForceField<Vec3fTypes> >()
         ;

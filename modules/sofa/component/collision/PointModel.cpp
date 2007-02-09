@@ -17,7 +17,7 @@ namespace collision
 
 SOFA_DECL_CLASS(Point)
 
-int PointModelClass = core::RegisterObject("TODO")
+int PointModelClass = core::RegisterObject("Collision model which represents a set of points")
         .add< PointModel >()
         .addAlias("Point")
         ;

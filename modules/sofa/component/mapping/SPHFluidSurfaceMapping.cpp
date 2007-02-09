@@ -20,7 +20,7 @@ using namespace core::componentmodel::behavior;
 SOFA_DECL_CLASS(SPHFluidSurfaceMapping)
 
 // Register in the Factory
-int SPHFluidSurfaceMappingClass = core::RegisterObject("TODO")
+int SPHFluidSurfaceMappingClass = core::RegisterObject("TODO-SPHFluidSurfaceMappingClass")
         .add< SPHFluidSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> > >()
         .add< SPHFluidSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> > >()
         .add< SPHFluidSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> > >()

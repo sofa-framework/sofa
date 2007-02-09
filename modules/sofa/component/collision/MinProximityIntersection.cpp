@@ -26,7 +26,7 @@ using namespace MinProximityIntersections;
 
 SOFA_DECL_CLASS(MinProximityIntersection)
 
-int MinProximityIntersectionClass = core::RegisterObject("TODO")
+int MinProximityIntersectionClass = core::RegisterObject("TODO-MinProximityIntersection")
         .add< MinProximityIntersection >()
         ;
 

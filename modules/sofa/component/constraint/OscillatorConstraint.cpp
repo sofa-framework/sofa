@@ -59,7 +59,7 @@ template class OscillatorConstraint<Vec3dTypes>;
 template class OscillatorConstraint<Vec3fTypes>;
 
 
-int OscillatorConstraintClass = core::RegisterObject("TODO")
+int OscillatorConstraintClass = core::RegisterObject("Apply a sinusoidal trajectory to given points")
         .add< OscillatorConstraint<Vec3dTypes> >()
         .add< OscillatorConstraint<Vec3fTypes> >()
         .add< OscillatorConstraint<RigidTypes> >()

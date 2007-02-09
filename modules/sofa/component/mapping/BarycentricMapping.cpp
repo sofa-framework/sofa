@@ -21,7 +21,7 @@ using namespace core::componentmodel::behavior;
 SOFA_DECL_CLASS(BarycentricMapping)
 
 // Register in the Factory
-int BarycentricMappingClass = core::RegisterObject("TODO")
+int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric coordinates of the child with respect to cells of its parent")
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()

@@ -15,6 +15,11 @@ namespace component
 namespace forcefield
 {
 
+/** SpringForceField able to evaluate and apply its stiffness.
+This allows to perform implicit integration.
+Stiffness is evaluated and stored by the addForce method.
+When explicit integration is used, SpringForceField is slightly more efficient.
+*/
 template<class DataTypes>
 class StiffSpringForceField : public SpringForceField<DataTypes>
 {
@@ -42,9 +47,11 @@ protected:
     std::vector<Mat3> dfdx;
     double m_potentialEnergy;
 
+    /// Accumulate the spring force and compute and store its stiffness
     void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
 
-    void addSpringDForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& dx1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& dx2, int i, const Spring& spring);
+    /// Apply the stiffness, i.e. accumulate df given dx
+    void addSpringDForce(VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, const Spring& spring);
 
 public:
     StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0)
@@ -59,10 +66,13 @@ public:
 
     virtual void init();
 
+    /// Accumulate f corresponding to x,v
     virtual void addForce();
 
+    /// Accumulate df corresponding to dx
     virtual void addDForce();
 
+    /// Return the potential energy of the springs
     virtual double getPotentialEnergy() { return m_potentialEnergy; }
 };
 

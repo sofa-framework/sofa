@@ -266,10 +266,10 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
     this->StiffSpringForceField<DataTypes>::addDForce();
     // Compute topological springs
     VecDeriv& f1  = *this->object1->getF();
-    const VecCoord& p1 = *this->object1->getX();
+// 	const VecCoord& p1 = *this->object1->getX();
     const VecDeriv& dx1 = *this->object1->getDx();
     VecDeriv& f2  = *this->object2->getF();
-    const VecCoord& p2 = *this->object2->getX();
+// 	const VecCoord& p2 = *this->object2->getX();
     const VecDeriv& dx2 = *this->object2->getDx();
     f1.resize(dx1.size());
     f2.resize(dx2.size());
@@ -300,7 +300,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
                                 continue;
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x+1,y,z);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring);
                         }
                 // lines along Y
                 spring.initpos = topology->getDy().norm();
@@ -318,7 +318,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
                                 continue;
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x,y+1,z);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring);
                         }
                 // lines along Z
                 spring.initpos = topology->getDz().norm();
@@ -336,7 +336,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
                                 continue;
                             spring.m1 = topology->point(x,y,z);
                             spring.m2 = topology->point(x,y,z+1);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring);
                         }
 
             }
@@ -363,10 +363,10 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
                                 continue;
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x+1,y+1,z);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring1);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring1);
                             spring2.m1 = topology->point(x+1,y,z);
                             spring2.m2 = topology->point(x,y+1,z);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring2);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring2);
                         }
                 // quads along XZ plane
                 // lines (x,y,z) -> (x+1,y,z+1)
@@ -387,10 +387,10 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
                                 continue;
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x+1,y,z+1);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring1);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring1);
                             spring2.m1 = topology->point(x+1,y,z);
                             spring2.m2 = topology->point(x,y,z+1);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring2);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring2);
                         }
                 // quads along YZ plane
                 // lines (x,y,z) -> (x,y+1,z+1)
@@ -411,10 +411,10 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
                                 continue;
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x,y+1,z+1);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring1);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring1);
                             spring2.m1 = topology->point(x,y+1,z);
                             spring2.m2 = topology->point(x,y,z+1);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring2);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring2);
                         }
             }
             if (this->cubesStiffness != 0.0 || this->cubesDamping != 0.0)
@@ -448,16 +448,16 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
                                 continue;
                             spring1.m1 = topology->point(x,y,z);
                             spring1.m2 = topology->point(x+1,y+1,z+1);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring1);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring1);
                             spring2.m1 = topology->point(x+1,y,z);
                             spring2.m2 = topology->point(x,y+1,z+1);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring2);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring2);
                             spring3.m1 = topology->point(x,y+1,z);
                             spring3.m2 = topology->point(x+1,y,z+1);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring3);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring3);
                             spring4.m1 = topology->point(x,y,z+1);
                             spring4.m2 = topology->point(x+1,y+1,z);
-                            this->addSpringDForce(f1,p1,dx1,f2,p2,dx2, index++, spring4);
+                            this->addSpringDForce(f1,dx1,f2,dx2, index++, spring4);
                         }
             }
         }

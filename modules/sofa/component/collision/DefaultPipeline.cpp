@@ -22,7 +22,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(DefaultPipeline)
 
-int DefaultPipelineClass = core::RegisterObject("TODO")
+int DefaultPipelineClass = core::RegisterObject("The default collision detection and modeling pipeline")
         .add< DefaultPipeline >()
         .addAlias("CollisionPipeline")
         ;

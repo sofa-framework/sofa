@@ -26,7 +26,7 @@ using namespace DiscreteIntersections;
 
 SOFA_DECL_CLASS(DiscreteIntersection)
 
-int DiscreteIntersectionClass = core::RegisterObject("TODO")
+int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionClass")
         .add< DiscreteIntersection >()
         ;
 

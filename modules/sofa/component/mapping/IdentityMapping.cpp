@@ -21,7 +21,7 @@ using namespace core::componentmodel::behavior;
 SOFA_DECL_CLASS(IdentityMapping)
 
 // Register in the Factory
-int IdentityMappingClass = core::RegisterObject("TODO")
+int IdentityMappingClass = core::RegisterObject("Special case of mapping where the child points are the same as the parent points")
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()

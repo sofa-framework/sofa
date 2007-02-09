@@ -87,7 +87,7 @@ void RungeKutta4Solver::solve(double dt)
     vel.peq(k4a,stepBy6);
 }
 
-int RungeKutta4SolverClass = core::RegisterObject("TODO")
+int RungeKutta4SolverClass = core::RegisterObject("A popular explicit time integrator")
         .add< RungeKutta4Solver >();
 
 SOFA_DECL_CLASS(RungeKutta4)

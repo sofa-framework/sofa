@@ -18,7 +18,7 @@ template class MeshSpringForceField<Vec3fTypes>;
 
 SOFA_DECL_CLASS(MeshSpringForceField)
 
-int MeshSpringForceFieldClass = core::RegisterObject("TODO")
+int MeshSpringForceFieldClass = core::RegisterObject("Spring force field acting along the edges of a mesh")
         .add< MeshSpringForceField<Vec3dTypes> >()
         .add< MeshSpringForceField<Vec3fTypes> >()
         ;

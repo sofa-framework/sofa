@@ -1,4 +1,8 @@
 #include "ObjectFactory.h"
+#include <iostream>
+using std::cout;
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -232,7 +236,10 @@ void ObjectFactory::dumpHTML(std::ostream& out)
 RegisterObject::RegisterObject(const std::string& description)
 {
     if (!description.empty())
+    {
+        std::cerr<<"description.size() = "<<description.size()<<", value = "<<description<<std::endl;
         addDescription(description);
+    }
 }
 
 RegisterObject& RegisterObject::addAlias(std::string val)
@@ -328,6 +335,31 @@ RegisterObject::operator int()
         return 1;
     }
 }
+
+// void ObjectFactory::ClassEntry::print()
+// {
+//   cout<<"className = "<<className<<endl;
+//   cout<<"  baseClasses: ";
+//   for( std::set<std::string>::const_iterator i=baseClasses.begin(), iend=baseClasses.end(); i!=iend; i++ )
+//     cout<<*i<<", ";
+//   cout<<endl;
+//   cout<<"  aliases: ";
+//   for( std::set<std::string>::const_iterator i=aliases.begin(), iend=aliases.end(); i!=iend; i++ )
+//     cout<<*i<<", ";
+//   cout<<endl;
+//   cout<<"  description: "<<description<<endl;
+//   cout<<"  authors: "<<authors<<endl;
+//   cout<<"  license: "<<license<<endl;
+//   cout<<"  creators: ";
+//   for( std::list< std::pair<std::string, Creator*> >::const_iterator i=creatorList.begin(), iend=creatorList.end(); i!=iend; i++ )
+//     cout<<(*i).first<<", ";
+//   cout<<endl;
+//   cout<<"  creatorMap: ";
+//   for( std::map<std::string, Creator*>::const_iterator i=creatorMap.begin(), iend=creatorMap.end(); i!=iend; i++ )
+//     cout<<(*i).first<<", ";
+//   cout<<endl;
+//
+// }
 
 } // namespace core
 

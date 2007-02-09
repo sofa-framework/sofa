@@ -20,7 +20,7 @@ template class WashingMachineForceField<Vec3fTypes>;
 SOFA_DECL_CLASS(WashingMachineForceField)
 
 // Register in the Factory
-int WashingMachineForceFieldClass = core::RegisterObject("TODO")
+int WashingMachineForceFieldClass = core::RegisterObject("A custom force field")
         .add< WashingMachineForceField<Vec3dTypes> >()
         .add< WashingMachineForceField<Vec3fTypes> >()
         ;

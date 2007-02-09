@@ -46,7 +46,7 @@ void EulerSolver::solve(double dt)
     }
 }
 
-int EulerSolverClass = core::RegisterObject("TODO")
+int EulerSolverClass = core::RegisterObject("A simple time integrator")
         .add< EulerSolver >();
 
 SOFA_DECL_CLASS(Euler)

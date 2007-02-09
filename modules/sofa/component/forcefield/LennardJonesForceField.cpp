@@ -21,7 +21,7 @@ template class LennardJonesForceField<Vec3dTypes>;
 
 SOFA_DECL_CLASS(LennardJonesForceField)
 
-int LennardJonesForceFieldClass = core::RegisterObject("TODO")
+int LennardJonesForceFieldClass = core::RegisterObject("Lennard-Jones forces for fluids")
         .add< LennardJonesForceField<Vec3dTypes> >()
         .add< LennardJonesForceField<Vec3fTypes> >()
         ;

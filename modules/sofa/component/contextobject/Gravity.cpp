@@ -29,7 +29,7 @@ void Gravity::apply()
 
 SOFA_DECL_CLASS(Gravity)
 
-int GravityClass = core::RegisterObject("TODO")
+int GravityClass = core::RegisterObject("Gravity in world coordinates")
         .add< Gravity >()
         ;
 

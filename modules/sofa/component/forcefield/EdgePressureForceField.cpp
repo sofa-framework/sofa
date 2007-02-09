@@ -290,7 +290,7 @@ template class EdgePressureForceField<Vec3fTypes>;
 
 SOFA_DECL_CLASS(EdgePressureForceField)
 
-int EdgePressureForceFieldClass = core::RegisterObject("TODO")
+int EdgePressureForceFieldClass = core::RegisterObject("TODO-EdgePressure")
         .add< EdgePressureForceField<Vec3dTypes> >()
         .add< EdgePressureForceField<Vec3fTypes> >()
         ;

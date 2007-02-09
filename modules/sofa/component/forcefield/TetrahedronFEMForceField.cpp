@@ -23,7 +23,7 @@ template class TetrahedronFEMForceField<Vec3fTypes>;
 SOFA_DECL_CLASS(TetrahedronFEMForceField)
 
 // Register in the Factory
-int TetrahedronFEMForceFieldClass = core::RegisterObject("TODO")
+int TetrahedronFEMForceFieldClass = core::RegisterObject("Tetrahedral finite elements")
         .add< TetrahedronFEMForceField<Vec3dTypes> >()
         .add< TetrahedronFEMForceField<Vec3fTypes> >()
         ;

@@ -20,7 +20,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(MeshTopology)
 
-int MeshTopologyClass = core::RegisterObject("TODO")
+int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
         .addAlias("Mesh")
         .add< MeshTopology >()
         ;

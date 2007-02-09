@@ -12,6 +12,7 @@ namespace component
 namespace odesolver
 {
 
+/* A popular time integration method, much more precise than the EulerSolver */
 class RungeKutta4Solver : public core::componentmodel::behavior::OdeSolver
 {
 public:

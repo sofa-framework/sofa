@@ -19,7 +19,7 @@ template class SparseGridSpringForceField<Vec3dTypes>;
 template class SparseGridSpringForceField<Vec3fTypes>;
 
 // Register in the Factory
-int SparseGridSpringForceFieldClass = core::RegisterObject("TODO")
+int SparseGridSpringForceFieldClass = core::RegisterObject("Springs acting on the cells of a sparse grid")
         .add< SparseGridSpringForceField<Vec3dTypes> >()
         .add< SparseGridSpringForceField<Vec3fTypes> >()
         ;

@@ -52,6 +52,7 @@ public:
         std::string license;
         std::list< std::pair<std::string, Creator*> > creatorList;
         std::map<std::string, Creator*> creatorMap;
+        //void print();
     };
 
 protected:

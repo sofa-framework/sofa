@@ -187,7 +187,7 @@ void BiCGStabImplicitSolver::parse(core::objectmodel::BaseObjectDescription* arg
 
 SOFA_DECL_CLASS(BiCGStabImplicit)
 // Register in the Factory
-int BiCGStabImplicitSolverClass = core::RegisterObject("TODO")
+int BiCGStabImplicitSolverClass = core::RegisterObject("An implicit solver able to handle some degenerate equation systems")
         .add< BiCGStabImplicitSolver >();
 
 

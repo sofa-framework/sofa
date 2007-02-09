@@ -18,7 +18,7 @@ SOFA_DECL_CLASS(Cube)
 
 using namespace sofa::defaulttype;
 
-int CubeModelClass = core::RegisterObject("TODO")
+int CubeModelClass = core::RegisterObject("Collision model representing a cube")
         .add< CubeModel >()
         .addAlias("Cube")
         ;

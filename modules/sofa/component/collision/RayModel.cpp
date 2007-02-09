@@ -15,7 +15,7 @@ namespace collision
 
 SOFA_DECL_CLASS(Ray)
 
-int RayModelClass = core::RegisterObject("TODO")
+int RayModelClass = core::RegisterObject("Collision model representing a ray in space, e.g. a mouse click")
         .add< RayModel >()
         .addAlias("Ray")
         ;

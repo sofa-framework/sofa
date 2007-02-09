@@ -17,6 +17,8 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 
+/** Implicit time integrator using the filtered conjugate gradient solution [Baraff&Witkin 98].
+*/
 class CGImplicitSolver : public core::componentmodel::behavior::OdeSolver
 {
 public:

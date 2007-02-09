@@ -44,7 +44,7 @@ void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
 
 SOFA_DECL_CLASS(OglModel)
 
-int OglModelClass = core::RegisterObject("TODO")
+int OglModelClass = core::RegisterObject("Generic visual model for OpenGL display")
         .add< OglModel >()
         ;
 

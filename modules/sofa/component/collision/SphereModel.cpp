@@ -16,7 +16,7 @@ namespace collision
 
 SOFA_DECL_CLASS(Sphere)
 
-int SphereModelClass = core::RegisterObject("TODO")
+int SphereModelClass = core::RegisterObject("Collision model representing a set of spheres")
         .add< SphereModel >()
         .addAlias("Sphere")
         ;

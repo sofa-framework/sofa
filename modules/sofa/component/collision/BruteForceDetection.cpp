@@ -32,7 +32,7 @@ using namespace collision;
 
 SOFA_DECL_CLASS(BruteForce)
 
-int BruteForceDetectionClass = core::RegisterObject("TODO")
+int BruteForceDetectionClass = core::RegisterObject("Collision detection using extensive pair-wise tests")
         .add< BruteForceDetection >()
         ;
 

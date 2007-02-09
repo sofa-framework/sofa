@@ -21,7 +21,7 @@ template class PenalityContactForceField<Vec3fTypes>;
 SOFA_DECL_CLASS(PenalityContactForceField)
 
 // Register in the Factory
-int PenalityContactForceFieldClass = core::RegisterObject("TODO")
+int PenalityContactForceFieldClass = core::RegisterObject("Contact using repulsive springs")
         .add< PenalityContactForceField<Vec3dTypes> >()
         .add< PenalityContactForceField<Vec3fTypes> >()
         ;

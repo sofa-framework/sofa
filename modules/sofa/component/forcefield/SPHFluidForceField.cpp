@@ -22,7 +22,7 @@ template class SPHFluidForceField<Vec3dTypes>;
 SOFA_DECL_CLASS(SPHFluidForceField)
 
 // And registered in the Factory
-int SPHFluidForceFieldClass = core::RegisterObject("TODO")
+int SPHFluidForceFieldClass = core::RegisterObject("Smooth Particle Hydrodynamics")
         .add< SPHFluidForceField<Vec3dTypes> >()
         .add< SPHFluidForceField<Vec3fTypes> >()
         ;

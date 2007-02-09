@@ -22,6 +22,8 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
+/** Compute Finite Element forces based on tetrahedral elements.
+*/
 template<class DataTypes>
 class TetrahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
 {

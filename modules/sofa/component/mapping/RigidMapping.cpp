@@ -23,7 +23,7 @@ using namespace core::componentmodel::behavior;
 
 
 // Register in the Factory
-int RigidMappingClass = core::RegisterObject("TODO")
+int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
         .add< RigidMapping< MechanicalMapping< MechanicalState<RigidTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< RigidMapping< MechanicalMapping< MechanicalState<RigidTypes>, MechanicalState<Vec3fTypes> > > >()
         .add< RigidMapping< Mapping< MechanicalState<RigidTypes>, MappedModel<Vec3dTypes> > > >()

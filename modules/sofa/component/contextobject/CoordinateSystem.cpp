@@ -180,7 +180,7 @@ void CoordinateSystem::parse(core::objectmodel::BaseObjectDescription* arg)
 
 SOFA_DECL_CLASS(CoordinateSystem)
 
-int CoordinateSystemClass = core::RegisterObject("TODO")
+int CoordinateSystemClass = core::RegisterObject("Translation and orientation of the local reference frame with respect to its parent")
         .add< CoordinateSystem >()
         ;
 

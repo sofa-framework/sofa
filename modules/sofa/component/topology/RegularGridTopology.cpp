@@ -28,7 +28,7 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 
 SOFA_DECL_CLASS(RegularGridTopology)
 
-int RegularGridTopologyClass = core::RegisterObject("TODO")
+int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
         .addAlias("RegularGrid")
         .add< RegularGridTopology >()
         ;

@@ -19,7 +19,7 @@ template class RegularGridSpringForceField<Vec3dTypes>;
 template class RegularGridSpringForceField<Vec3fTypes>;
 
 // Register in the Factory
-int RegularGridSpringForceFieldClass = core::RegisterObject("TODO")
+int RegularGridSpringForceFieldClass = core::RegisterObject("Spring acting on the edges and faces of a regular grid")
         .add< RegularGridSpringForceField<Vec3dTypes> >()
         .add< RegularGridSpringForceField<Vec3fTypes> >()
         ;

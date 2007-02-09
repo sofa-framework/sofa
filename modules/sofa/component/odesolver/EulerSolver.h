@@ -12,6 +12,7 @@ namespace component
 namespace odesolver
 {
 
+/** The simplest time integration */
 class EulerSolver : public core::componentmodel::behavior::OdeSolver
 {
 public:
