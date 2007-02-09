@@ -14,13 +14,13 @@ namespace component
 namespace mapping
 {
 
-template <class BaseMapping>
-class IdentityMapping : public BaseMapping
+template <class BasicMapping>
+class IdentityMapping : public BasicMapping
 {
 public:
-    typedef BaseMapping Inherit;
-    typedef typename BaseMapping::In In;
-    typedef typename BaseMapping::Out Out;
+    typedef BasicMapping Inherit;
+    typedef typename Inherit::In In;
+    typedef typename Inherit::Out Out;
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;

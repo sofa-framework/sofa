@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_VISUALMODEL_OGLMODEL_H
 
 #include <string>
-#include <GL/gl.h>
+#include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>

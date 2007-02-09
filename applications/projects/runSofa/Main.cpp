@@ -89,10 +89,9 @@ int main(int argc, char** argv)
     }
     else
     {
-        groot = sofa::simulation::tree::Simulation::load("../Data/demoLiverProximity.scn");
+        groot = sofa::simulation::tree::Simulation::load("../examples/demoLiverProximity.scn");
         if (groot == NULL) // Necessary for starting this program under Visual Studio with default Configuration
-            //groot = sofa::simulation::tree::Simulation::load("../../../Data/demoLiverProximity.scn");
-            groot = sofa::simulation::tree::Simulation::load("../../../Data/demoSphereTree.scn");
+            groot = sofa::simulation::tree::Simulation::load("../../../examples/demoLiverProximity.scn");
     }
 
     if (groot==NULL)

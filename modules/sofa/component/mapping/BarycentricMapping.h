@@ -19,13 +19,13 @@ namespace component
 namespace mapping
 {
 
-template <class BaseMapping>
-class BarycentricMapping : public BaseMapping, public core::VisualModel
+template <class BasicMapping>
+class BarycentricMapping : public BasicMapping, public core::VisualModel
 {
 public:
-    typedef BaseMapping Inherit;
-    typedef typename BaseMapping::In In;
-    typedef typename BaseMapping::Out Out;
+    typedef BasicMapping Inherit;
+    typedef typename Inherit::In In;
+    typedef typename Inherit::Out Out;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
@@ -59,10 +59,10 @@ public:
     public:
         virtual ~Mapper()
         { }
-        virtual void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in ) = 0;
-        virtual void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in ) = 0;
-        virtual void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in ) = 0;
-        virtual void draw( const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in) = 0;
+        virtual void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in ) = 0;
+        virtual void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in ) = 0;
+        virtual void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in ) = 0;
+        virtual void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in) = 0;
     };
 
     /// Classe permettant le calcul du mapping sur une SparseRegularGrid
@@ -74,10 +74,10 @@ public:
 
         std::vector<CubeData> map;
         topology::MultiResSparseGridTopology* topology;
-        void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
-        void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );
-        void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in );
-        void draw( const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in);
+        void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in );
+        void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in );
+        void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
+        void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
     };
 
     class RegularGridMapper : public Mapper
@@ -88,10 +88,10 @@ public:
 
         std::vector<CubeData> map;
         topology::RegularGridTopology* topology;
-        void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
-        void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );
-        void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in );
-        void draw( const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in);
+        void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in );
+        void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in );
+        void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
+        void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
     };
 
     class MeshMapper : public Mapper
@@ -120,10 +120,10 @@ public:
 
         int addPointInCube(const OutCoord& p, int cubeIndex, const Real* baryCoords);
 
-        void apply( typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in );
-        void applyJ( typename BaseMapping::Out::VecDeriv& out, const typename BaseMapping::In::VecDeriv& in );
-        void applyJT( typename BaseMapping::In::VecDeriv& out, const typename BaseMapping::Out::VecDeriv& in );
-        void draw( const typename BaseMapping::Out::VecCoord& out, const typename BaseMapping::In::VecCoord& in);
+        void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in );
+        void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in );
+        void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
+        void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
     };
 
 protected:

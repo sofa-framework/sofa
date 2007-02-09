@@ -17,13 +17,13 @@ namespace component
 namespace mapping
 {
 
-template <class BaseMapping>
-class LaparoscopicRigidMapping : public BaseMapping, public core::VisualModel
+template <class BasicMapping>
+class LaparoscopicRigidMapping : public BasicMapping, public core::VisualModel
 {
 public:
-    typedef BaseMapping Inherit;
-    typedef typename BaseMapping::In In;
-    typedef typename BaseMapping::Out Out;
+    typedef BasicMapping Inherit;
+    typedef typename Inherit::In In;
+    typedef typename Inherit::Out Out;
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;

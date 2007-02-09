@@ -14,8 +14,8 @@ namespace component
 namespace mapping
 {
 
-template <class BaseMapping>
-void IdentityMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class BasicMapping>
+void IdentityMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize(in.size());
     //if (this->fromModel->getContext()->getTopology()!=NULL)
@@ -26,8 +26,8 @@ void IdentityMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typ
     }
 }
 
-template <class BaseMapping>
-void IdentityMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class BasicMapping>
+void IdentityMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     out.resize(in.size());
     for(unsigned int i=0; i<out.size(); i++)
@@ -36,8 +36,8 @@ void IdentityMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const ty
     }
 }
 
-template <class BaseMapping>
-void IdentityMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class BasicMapping>
+void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     for(unsigned int i=0; i<out.size(); i++)
     {

@@ -22,12 +22,12 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-template <class BaseMapping>
-class RigidMapping<BaseMapping>::Loader : public helper::io::MassSpringLoader, public helper::io::SphereLoader
+template <class BasicMapping>
+class RigidMapping<BasicMapping>::Loader : public helper::io::MassSpringLoader, public helper::io::SphereLoader
 {
 public:
-    RigidMapping<BaseMapping>* dest;
-    Loader(RigidMapping<BaseMapping>* dest) : dest(dest) {}
+    RigidMapping<BasicMapping>* dest;
+    Loader(RigidMapping<BasicMapping>* dest) : dest(dest) {}
     virtual void addMass(double px, double py, double pz, double, double, double, double, double, bool, bool)
     {
         dest->points.push_back(Coord((Real)px,(Real)py,(Real)pz));
@@ -38,8 +38,8 @@ public:
     }
 };
 
-template <class BaseMapping>
-void RigidMapping<BaseMapping>::init(const char *filename)
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::init(const char *filename)
 {
     points.resize(0);
 
@@ -67,8 +67,8 @@ void RigidMapping<BaseMapping>::init(const char *filename)
     }
 }
 
-template <class BaseMapping>
-void RigidMapping<BaseMapping>::init()
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::init()
 {
     if (this->points.empty() && this->toModel!=NULL)
     {
@@ -78,11 +78,11 @@ void RigidMapping<BaseMapping>::init()
         for (unsigned int i=0; i<x.size(); i++)
             points[i] = x[i];
     }
-    this->BaseMapping::init();
+    this->BasicMapping::init();
 }
 
-template <class BaseMapping>
-void RigidMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     translation[0] = (Real)in[0].getCenter()[0];
     translation[1] = (Real)in[0].getCenter()[1];
@@ -112,8 +112,8 @@ void RigidMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typena
     }
 }
 
-template <class BaseMapping>
-void RigidMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     Deriv v,omega;
     v[0] = (Real)in[0].getVCenter()[0];
@@ -131,8 +131,8 @@ void RigidMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typen
     }
 }
 
-template <class BaseMapping>
-void RigidMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     Deriv v,omega;
     v[0] = 0.0f;
@@ -160,8 +160,8 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typen
     out[0].getVOrientation()[2] += omega[2];
 }
 
-template <class BaseMapping>
-void RigidMapping<BaseMapping>::draw()
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::draw()
 {
     if (!getShow(this)) return;
     glDisable (GL_LIGHTING);
