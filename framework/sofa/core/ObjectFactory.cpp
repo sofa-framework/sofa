@@ -54,8 +54,8 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     if (it != registry.end())
     {
         ClassEntry* entry = it->second;
-        std::map<std::string, Creator*>::iterator it2 = entry->creators.find(templatename);
-        if (it2 != entry->creators.end())
+        std::map<std::string, Creator*>::iterator it2 = entry->creatorMap.find(templatename);
+        if (it2 != entry->creatorMap.end())
         {
             Creator* c = it2->second;
             if (c->canCreate(context, arg))
@@ -63,9 +63,10 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
         }
         else
         {
-            for (it2 = entry->creators.begin(); it2 != entry->creators.end(); ++it2)
+            std::list< std::pair< std::string, Creator*> >::iterator it3;
+            for (it3 = entry->creatorList.begin(); it3 != entry->creatorList.end(); ++it3)
             {
-                Creator* c = it2->second;
+                Creator* c = it3->second;
                 if (c->canCreate(context, arg))
                     creators.push_back(c);
             }
@@ -119,7 +120,7 @@ void ObjectFactory::dump(std::ostream& out)
             out << "  authors : " << entry->authors << "\n";
         if (!entry->license.empty())
             out << "  license : " << entry->license << "\n";
-        for (std::map<std::string, Creator*>::iterator itc = entry->creators.begin(), itcend = entry->creators.end(); itc != itcend; ++itc)
+        for (std::list< std::pair< std::string, Creator* > >::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
         {
             out << "  template instance : " << itc->first << "\n";
         }
@@ -159,7 +160,7 @@ void ObjectFactory::dumpXML(std::ostream& out)
             out << "<authors>"<<entry->authors<<"</authors>\n";
         if (!entry->license.empty())
             out << "<license>"<<entry->license<<"</license>\n";
-        for (std::map<std::string, Creator*>::iterator itc = entry->creators.begin(), itcend = entry->creators.end(); itc != itcend; ++itc)
+        for (std::list< std::pair< std::string, Creator* > >::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
         {
             out << "<creator";
             if (!itc->first.empty()) out << " template=\"" << xmlencode(itc->first) << "\"";
@@ -198,10 +199,10 @@ void ObjectFactory::dumpHTML(std::ostream& out)
             out << "<li>Authors: <i>"<<entry->authors<<"</i></li>\n";
         if (!entry->license.empty())
             out << "<li>License: <i>"<<entry->license<<"</i></li>\n";
-        if (entry->creators.size()>2 || (entry->creators.size()==1 && !entry->creators.begin()->first.empty()))
+        if (entry->creatorList.size()>2 || (entry->creatorList.size()==1 && !entry->creatorList.begin()->first.empty()))
         {
             out << "<li>Template instances:<i>";
-            for (std::map<std::string, Creator*>::iterator itc = entry->creators.begin(), itcend = entry->creators.end(); itc != itcend; ++itc)
+            for (std::list< std::pair< std::string, Creator* > >::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
             {
                 out << " " << xmlencode(itc->first);
             }
@@ -255,14 +256,15 @@ RegisterObject RegisterObject::addCreator(std::string classname, std::string tem
     {
         std::cerr << "ERROR: ObjectFactory: all templated class should have the same base classname ("<<entry.className<<"!="<<classname<<")\n";
     }
-    else if (entry.creators.find(templatename) != entry.creators.end())
+    else if (entry.creatorMap.find(templatename) != entry.creatorMap.end())
     {
         std::cerr << "ERROR: ObjectFactory: class "<<classname<<"<"<<templatename<<"> already registered\n";
     }
     else
     {
         entry.className = classname;
-        entry.creators.insert(std::make_pair(templatename, creator));
+        entry.creatorMap.insert(std::make_pair(templatename, creator));
+        entry.creatorList.push_back(std::make_pair(templatename, creator));
     }
     return *this;
 }
@@ -280,15 +282,17 @@ RegisterObject::operator int()
         reg->description += entry.description;
         reg->authors += entry.authors;
         reg->license += entry.license;
-        for (std::map<std::string, ObjectFactory::Creator*>::iterator itc = entry.creators.begin(), itcend = entry.creators.end(); itc != itcend; ++itc)
+        for (std::list< std::pair< std::string, ObjectFactory::Creator* > >::iterator itc = entry.creatorList.begin(), itcend = entry.creatorList.end(); itc != itcend; ++itc)
+            //for (std::map<std::string, ObjectFactory::Creator*>::iterator itc = entry.creators.begin(), itcend = entry.creators.end(); itc != itcend; ++itc)
         {
-            if (reg->creators.find(itc->first) != reg->creators.end())
+            if (reg->creatorMap.find(itc->first) != reg->creatorMap.end())
             {
                 std::cerr << "ERROR: ObjectFactory: class "<<entry.className<<"<"<<itc->first<<"> already registered\n";
             }
             else
             {
-                reg->creators.insert(*itc);
+                reg->creatorMap.insert(*itc);
+                reg->creatorList.push_back(*itc);
             }
         }
         for (std::set<std::string>::iterator it = entry.aliases.begin(), itend = entry.aliases.end(); it != itend; ++it)

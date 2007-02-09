@@ -50,7 +50,8 @@ public:
         std::string description;
         std::string authors;
         std::string license;
-        std::map<std::string, Creator*> creators;
+        std::list< std::pair<std::string, Creator*> > creatorList;
+        std::map<std::string, Creator*> creatorMap;
     };
 
 protected:

@@ -214,7 +214,9 @@ void CGImplicitSolver::solve(double dt)
 SOFA_DECL_CLASS(CGImplicit)
 
 int CGImplicitSolverClass = core::RegisterObject("TODO")
-        .add< CGImplicitSolver >();
+        .add< CGImplicitSolver >()
+        .addAlias("CGImplicit");
+;
 
 } // namespace odesolver
 
