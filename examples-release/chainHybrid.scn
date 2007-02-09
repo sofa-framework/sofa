@@ -78,7 +78,7 @@
 		</Node>
 		<Node name="TorusRigid">
 			<Object type="CGImplicit" iterations="20" threshold="0.000001" rayleighStiffness="0.01" rayleighMass="1" tolerance="0.001" />
-			<Object type="MechanicalObjectRigid" dx="10" />
+			<Object type="MechanicalObject" template="Rigid" dx="10" />
 			<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" />
 			<Node name="Visu">
 				<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" color="gray" />

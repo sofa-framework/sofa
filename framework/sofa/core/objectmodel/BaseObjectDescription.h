@@ -42,8 +42,9 @@ public:
     virtual const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
     /// Get an attribute given its name (return defaultVal if not present)
-    virtual void removeAttribute(const std::string&)
+    virtual bool removeAttribute(const std::string&)
     {
+        return false;
     }
 
     virtual std::string getFullName() const;

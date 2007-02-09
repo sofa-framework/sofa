@@ -10,6 +10,10 @@ namespace core
 namespace objectmodel
 {
 
+BaseObjectDescription::~BaseObjectDescription()
+{
+}
+
 /// Get an attribute given its name (return defaultVal if not present)
 const char* BaseObjectDescription::getAttribute(const std::string& attr, const char* defaultVal)
 {

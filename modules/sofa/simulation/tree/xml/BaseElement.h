@@ -5,6 +5,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <string>
 #include <list>
 #include <map>
@@ -29,7 +30,7 @@ void create(Node*& obj, std::pair<std::string,std::string> arg)
     obj = new Node(arg.first,arg.second);
 }
 
-class BaseElement
+class BaseElement : public core::objectmodel::BaseObjectDescription
 {
 private:
     std::string name;
@@ -93,6 +94,12 @@ public:
 
     /// Find a node given its name
     virtual BaseElement* findNode(const char* nodeName, bool absolute=false);
+
+    /// Find a node given its name
+    virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false)
+    {
+        return findNode(nodeName, absolute);
+    }
 
     /// Find an object given its name
     virtual core::objectmodel::Base* findObject(const char* nodeName)

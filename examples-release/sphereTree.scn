@@ -5,7 +5,7 @@
 	<!-- Required for collision detection -->
 	<Object type="CollisionPipeline" verbose="0" />
 	
-	<!-- Required for a MechanicalObjectRigid -->
+	<!-- Required for a MechanicalObject" template="Rigid -->
 	<Object type="TestDetection" name="TestDetection" />
 
 	<Object type="CollisionResponse" name="Response" contact="default" />
@@ -14,7 +14,7 @@
 
 	<Node name="lamp2">
 		<Object type="CGImplicit" iterations="50"/>
-		<Object type="MechanicalObjectRigid" dx="50" dy="100.0" dz="0.0"/>
+		<Object type="MechanicalObject" template="Rigid" dx="50" dy="100.0" dz="0.0"/>
 		<Object type="UniformMass" filename="BehaviorModels/lamp600.rigid" mass="100"/>
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" filename="VisualModels/lamp600.obj" texturename="VisualModels/FIFA2.bmp" color="gray" />

@@ -78,7 +78,7 @@
 		</Node>
 		<Node name="TorusRigid">
 			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
-			<Object type="MechanicalObjectRigid" dx="10" />
+			<Object type="MechanicalObject" template="Rigid" dx="10" />
 			<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" />
 			<Node name="Visu">
 				<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" color="gray" />
@@ -383,7 +383,7 @@
 		</Node>
 		<Node name="TorusRigid">
 			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
-			<Object type="MechanicalObjectRigid" dx="2.5" dz="24" />
+			<Object type="MechanicalObject" template="Rigid" dx="2.5" dz="24" />
 			<Object type="UniformMass" filename="BehaviorModels/torus.rigid" />
 			<Node name="Visu">
 				<Object type="OglModel" name="Visual" filename="VisualModels/torus.obj" color="gray" />
@@ -400,7 +400,7 @@
 		</Node>
 		<Node name="TorusRigid">
 			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
-			<Object type="MechanicalObjectRigid" dx="5" dz="24" />
+			<Object type="MechanicalObject" template="Rigid" dx="5" dz="24" />
 			<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" />
 			<Node name="Visu">
 				<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" color="gray" />
@@ -417,7 +417,7 @@
 		</Node>
 		<Node name="TorusRigid">
 			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
-			<Object type="MechanicalObjectRigid" dx="7.5" dz="24" />
+			<Object type="MechanicalObject" template="Rigid" dx="7.5" dz="24" />
 			<Object type="UniformMass" filename="BehaviorModels/torus.rigid" />
 			<Node name="Visu">
 				<Object type="OglModel" name="Visual" filename="VisualModels/torus.obj" color="gray" />
@@ -434,7 +434,7 @@
 		</Node>
 		<Node name="TorusRigid">
 			<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0" />
-			<Object type="MechanicalObjectRigid" dx="10" dz="24" />
+			<Object type="MechanicalObject" template="Rigid" dx="10" dz="24" />
 			<Object type="UniformMass" filename="BehaviorModels/torus2.rigid" />
 			<Node name="Visu">
 				<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" color="gray" />

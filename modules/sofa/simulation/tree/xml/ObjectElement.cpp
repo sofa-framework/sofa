@@ -1,5 +1,6 @@
 #include <sofa/simulation/tree/xml/ObjectElement.h>
 #include <sofa/simulation/tree/xml/Element.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -30,8 +31,10 @@ ObjectElement::~ObjectElement()
 bool ObjectElement::initNode()
 {
     //if (!Element<core::objectmodel::BaseObject>::initNode()) return false;
+    core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(getParent()->getBaseObject());
 
-    Object *obj = core::ObjectFactory::CreateObject(this);
+    core::objectmodel::BaseObject *obj = core::ObjectFactory::CreateObject(ctx, this);
+
     if (obj == NULL)
         obj = Factory::CreateObject(this->getType(), this);
     if (obj == NULL)
@@ -39,14 +42,6 @@ bool ObjectElement::initNode()
     setObject(obj);
     obj->setName(getName());
 
-    {
-        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(getParent()->getBaseObject());
-        if (ctx!=NULL)
-        {
-            std::cout << "Adding Object "<<getName()<<" to "<<ctx->getName()<<std::endl;
-            ctx->addObject(getObject());
-        }
-    }
     return true;
 }
 
