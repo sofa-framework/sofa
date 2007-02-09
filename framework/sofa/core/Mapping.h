@@ -38,6 +38,10 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
+        if (arg->findObject(arg->getAttribute("object1","../..")) == NULL)
+            std::cerr << "Cannot create "<<className(obj)<<" as object1 is missing.\n";
+        if (arg->findObject(arg->getAttribute("object2","..")) == NULL)
+            std::cerr << "Cannot create "<<className(obj)<<" as object2 is missing.\n";
         if (dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))) == NULL)
             return false;
         if (dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)

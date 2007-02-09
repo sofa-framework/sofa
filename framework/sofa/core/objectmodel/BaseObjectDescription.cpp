@@ -1,5 +1,7 @@
 #include "BaseObjectDescription.h"
-
+#include "BaseContext.h"
+#include "BaseObject.h"
+#include <iostream>
 
 namespace sofa
 {
@@ -41,10 +43,21 @@ Base* BaseObjectDescription::findObject(const char* nodeName)
     BaseObjectDescription* node = find(nodeName);
     if (node!=NULL)
     {
-        //std::cout << "Found node "<<nodeName<<": "<<node->getName()<<std::endl;
-        return node->getObject();
+        std::cout << "Found node "<<nodeName<<": "<<node->getName()<<std::endl;
+        Base* obj = node->getObject();
+        BaseContext* ctx = dynamic_cast<BaseContext*>(obj);
+        if (ctx != NULL)
+        {
+            std::cout << "Node "<<nodeName<<" is a context, returning MechanicalState."<<std::endl;
+            obj = ctx->getMechanicalState();
+        }
+        return obj;
     }
-    else return NULL;
+    else
+    {
+        std::cout << "Node "<<nodeName<<" NOT FOUND."<<std::endl;
+        return NULL;
+    }
 }
 
 } // namespace objectmodel

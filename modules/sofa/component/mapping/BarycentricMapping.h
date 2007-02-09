@@ -176,7 +176,28 @@ public:
     { }
     void update()
     { }
-
+    /*
+        /// Pre-construction check method called by ObjectFactory.
+        template<class T>
+        static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+        {
+            if (arg->findObject(arg->getAttribute("object1","../..")) == NULL)
+                std::cerr << "Cannot create "<<className(obj)<<" as object1 is missing.\n";
+            if (arg->findObject(arg->getAttribute("object2","..")) == NULL)
+                std::cerr << "Cannot create "<<className(obj)<<" as object2 is missing.\n";
+            if (dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+            {
+                std::cerr << "Cannot create "<<className(obj)<<" as object2 is not of the right type.\n";
+                return false;
+            }
+            if (dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))) == NULL)
+            {
+                std::cerr << "Cannot create "<<className(obj)<<" as object1 is not of the right type.\n";
+                return false;
+            }
+            return BasicMapping::canCreate(obj, context, arg);
+        }
+    */
 protected:
 
     bool getShow(const core::objectmodel::BaseObject* m) const

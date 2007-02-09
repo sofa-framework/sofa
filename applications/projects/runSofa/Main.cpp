@@ -39,6 +39,7 @@ bool loadPlugin(const char* filename)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+    sofa::helper::BackTrace::autodump();
     glutInit(&argc,argv);
     std::string fileName ;
     bool        startAnim = false;

@@ -111,15 +111,15 @@ public:
 
     RegisterObject(const std::string& description);
 
-    RegisterObject addAlias(std::string val);
+    RegisterObject& addAlias(std::string val);
 
-    RegisterObject addDescription(std::string val);
+    RegisterObject& addDescription(std::string val);
 
-    RegisterObject addAuthor(std::string val);
+    RegisterObject& addAuthor(std::string val);
 
-    RegisterObject addLicense(std::string val);
+    RegisterObject& addLicense(std::string val);
 
-    RegisterObject addCreator(std::string classname, std::string templatename, ObjectFactory::Creator* creator);
+    RegisterObject& addCreator(std::string classname, std::string templatename, ObjectFactory::Creator* creator);
 
     // test whether T* converts to U*,
     // that is, if T is derived from U
@@ -150,7 +150,7 @@ public:
     }
 
     template<class RealObject>
-    RegisterObject add()
+    RegisterObject& add()
     {
         RealObject* p = NULL;
         std::string classname = RealObject::className(p);

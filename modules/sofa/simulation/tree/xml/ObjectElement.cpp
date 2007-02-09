@@ -33,6 +33,8 @@ bool ObjectElement::initNode()
     //if (!Element<core::objectmodel::BaseObject>::initNode()) return false;
     core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(getParent()->getBaseObject());
 
+    std::cout << "ObjectElement: creating "<<getAttribute( "type", "" )<<std::endl;
+
     core::objectmodel::BaseObject *obj = core::ObjectFactory::CreateObject(ctx, this);
 
     if (obj == NULL)

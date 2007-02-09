@@ -51,24 +51,39 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     std::string classname = arg->getAttribute( "type", "");
     std::string templatename = arg->getAttribute( "template", "");
     std::map<std::string, ClassEntry*>::iterator it = registry.find(classname);
+    if (it == registry.end())
+    {
+        std::cout << "ObjectFactory: class "<<classname<<" NOT FOUND."<<std::endl;
+        //for (it = registry.begin(); it != registry.end(); ++it)
+        //{
+        //    if (it->first == classname) break;
+        //}
+    }
     if (it != registry.end())
     {
+        std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
         ClassEntry* entry = it->second;
         std::map<std::string, Creator*>::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
+            std::cout << "ObjectFactory: template "<<templatename<<" FOUND."<<std::endl;
             Creator* c = it2->second;
             if (c->canCreate(context, arg))
                 creators.push_back(c);
+            else
+                std::cout << "ObjectFactory: template "<<it2->first<<" FAILED."<<std::endl;
         }
         else
         {
+            std::cout << "ObjectFactory: template "<<templatename<<" NOT FOUND."<<std::endl;
             std::list< std::pair< std::string, Creator*> >::iterator it3;
             for (it3 = entry->creatorList.begin(); it3 != entry->creatorList.end(); ++it3)
             {
                 Creator* c = it3->second;
                 if (c->canCreate(context, arg))
                     creators.push_back(c);
+                else
+                    std::cout << "ObjectFactory: template "<<it3->first<<" FAILED."<<std::endl;
             }
         }
     }
@@ -220,13 +235,13 @@ RegisterObject::RegisterObject(const std::string& description)
         addDescription(description);
 }
 
-RegisterObject RegisterObject::addAlias(std::string val)
+RegisterObject& RegisterObject::addAlias(std::string val)
 {
     entry.aliases.insert(val);
     return *this;
 }
 
-RegisterObject RegisterObject::addDescription(std::string val)
+RegisterObject& RegisterObject::addDescription(std::string val)
 {
     //std::cout << "ObjectFactory: add description "<<val<<std::endl;
     val += '\n';
@@ -234,7 +249,7 @@ RegisterObject RegisterObject::addDescription(std::string val)
     return *this;
 }
 
-RegisterObject RegisterObject::addAuthor(std::string val)
+RegisterObject& RegisterObject::addAuthor(std::string val)
 {
     //std::cout << "ObjectFactory: add author "<<val<<std::endl;
     val += ' ';
@@ -242,14 +257,14 @@ RegisterObject RegisterObject::addAuthor(std::string val)
     return *this;
 }
 
-RegisterObject RegisterObject::addLicense(std::string val)
+RegisterObject& RegisterObject::addLicense(std::string val)
 {
     //std::cout << "ObjectFactory: add license "<<val<<std::endl;
     entry.license += val;
     return *this;
 }
 
-RegisterObject RegisterObject::addCreator(std::string classname, std::string templatename, ObjectFactory::Creator* creator)
+RegisterObject& RegisterObject::addCreator(std::string classname, std::string templatename, ObjectFactory::Creator* creator)
 {
     //std::cout << "ObjectFactory: add creator "<<classname<<" with template "<<templatename<<std::endl;
     if (!entry.className.empty() && entry.className != classname)

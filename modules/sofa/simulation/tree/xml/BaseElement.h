@@ -102,16 +102,16 @@ public:
     }
 
     /// Find an object given its name
-    virtual core::objectmodel::Base* findObject(const char* nodeName)
-    {
-        BaseElement* node = findNode(nodeName);
-        if (node!=NULL)
-        {
-            //std::cout << "Found node "<<nodeName<<": "<<node->getName()<<std::endl;
-            return node->getBaseObject();
-        }
-        else return NULL;
-    }
+    //virtual core::objectmodel::Base* findObject(const char* nodeName)
+    //{
+    //	BaseElement* node = findNode(nodeName);
+    //	if (node!=NULL)
+    //	{
+    //		//std::cout << "Found node "<<nodeName<<": "<<node->getName()<<std::endl;
+    //		return node->getBaseObject();
+    //	}
+    //	else return NULL;
+    //}
 
     /// Get all objects of a given type
     template<class Sequence>
