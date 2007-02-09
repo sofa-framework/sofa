@@ -33,10 +33,12 @@ using namespace core::componentmodel::behavior;
 template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
     : StiffSpringForceField<DataTypes>(object)
-    , stiffness( dataField(&stiffness,(Real)1.0,"stiffness","Stiffness of the bending springs") )
+    , stiffness( dataField(&stiffness,(Real)1.0,"bendStiffness","Stiffness of the bending springs") )
     , dampingRatio( dataField(&dampingRatio,(Real)0.0,"dampingRatio","Damping ratio of the bending springs. The actual damping coefficient is the stiffness times the damping ratio.") )
     , dof(NULL)
-{}
+{
+    //cerr<<"TriangleBendingSprings<DataTypes>::TriangleBendingSprings"<<endl;
+}
 
 
 template<class DataTypes>
@@ -119,7 +121,7 @@ void TriangleBendingSprings<DataTypes>::init()
     assert( topology );
 
     const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    cout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<endl;
+    //cout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<endl;
     for( unsigned i= 0; i<triangles.size(); ++i )
     {
         const topology::MeshTopology::Triangle& face = triangles[i];
