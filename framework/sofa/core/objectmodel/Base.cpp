@@ -25,9 +25,8 @@ namespace objectmodel
 using std::string;
 
 Base::Base()
-    : name(dataField(&name,std::string(""),"name","object name"))
 {
-
+    name = dataField(&name,std::string("unnamed"),"name","object name");
 }
 
 Base::~Base()
