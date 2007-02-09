@@ -23,7 +23,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
-using namespace collision;
+using namespace core::componentmodel::collision;
 using namespace simulation::tree::xml;
 
 void create(DefaultCollisionGroupManager*& obj, simulation::tree::xml::ObjectDescription* /*arg*/)

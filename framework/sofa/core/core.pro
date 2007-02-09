@@ -34,6 +34,7 @@ HEADERS += \
           ./componentmodel/collision/DetectionOutput.h \
           ./componentmodel/collision/Intersection.h \
           ./componentmodel/collision/Intersection.inl \
+          ./componentmodel/collision/NarrowPhaseDetection.h \
           ./componentmodel/collision/Pipeline.h \
           ./componentmodel/topology/BaseTopology.h \
           ./componentmodel/topology/TopologicalMapping.h \

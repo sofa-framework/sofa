@@ -18,6 +18,7 @@ namespace tree
 {
 
 using helper::system::thread::CTime;
+using namespace sofa::core::objectmodel;
 
 GNode::GNode(const std::string& name, GNode* parent)
     : debug_(false), logTime_(false)

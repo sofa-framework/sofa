@@ -2,7 +2,7 @@
 #define SOFA_COMPONENT_COLLISION_BRUTEFORCEDETECTION_H
 
 #include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
-#include <sofa/component/collision/NarrowPhaseDetection.h>
+#include <sofa/core/componentmodel/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
@@ -23,7 +23,7 @@ using namespace sofa::defaulttype;
 // inherit of VisualModel for debugging, then we can see the voxel grid
 class BruteForceDetection :
     public core::componentmodel::collision::BroadPhaseDetection,
-    public NarrowPhaseDetection,
+    public core::componentmodel::collision::NarrowPhaseDetection,
     public core::VisualModel
 {
 private:

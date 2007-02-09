@@ -5,15 +5,12 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/componentmodel/collision/Intersection.h>
 #include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
-#include <sofa/component/collision/NarrowPhaseDetection.h>
+#include <sofa/core/componentmodel/collision/NarrowPhaseDetection.h>
 #include <sofa/core/componentmodel/collision/DetectionOutput.h>
 #include <sofa/core/componentmodel/collision/ContactManager.h>
 #include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
 
 #include <vector>
-
-using namespace sofa::core::objectmodel;
-using namespace sofa::component::collision;
 
 namespace sofa
 {
@@ -27,7 +24,7 @@ namespace componentmodel
 namespace collision
 {
 
-class Pipeline : public virtual BaseObject
+class Pipeline : public virtual sofa::core::objectmodel::BaseObject
 {
 protected:
     std::vector<DetectionOutput*> detectionOutputs;

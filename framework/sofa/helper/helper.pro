@@ -53,15 +53,7 @@ HEADERS += \
           ./LCPSolver.h \
           ./LCPSolver.inl \
           ./PolarDecompose.h \
-          ./proximity.h \
           ./rmath.h \
-#          ./slc/bfast.h \
-#          ./slc/bfastUtil.h \
-#          ./slc/bfastVector.h \
-#          ./slc/distTree.h \
-#          ./slc/pcube/pcube.h \
-#          ./slc/pcube/vec.h \
-#          ./slc/slcSurface.h \
           ./static_assert.h \
           ./system/config.h \
           ./system/SetDirectory.h \
@@ -91,14 +83,6 @@ SOURCES += \
           ./io/MeshTrian.cpp \
           ./io/SphereLoader.cpp \
           ./io/TriangleLoader.cpp \
-          ./proximity.cpp \
-#          ./slc/bfastUtil.cpp \
-#          ./slc/bfastVector.cpp \
-#          ./slc/distTree.cpp \
-#          ./slc/setup.cpp \
-#          ./slc/slcConvert.cpp \
-#          ./slc/slcSurface.cpp \
-#          ./slc/surface.cpp \
           ./system/SetDirectory.cpp \
           ./system/thread/CTime.cpp \
           ./system/thread/debug.cpp

@@ -17,6 +17,7 @@ namespace collision
 
 using namespace core;
 using namespace core::objectmodel;
+using namespace core::componentmodel::collision;
 using namespace sofa::defaulttype;
 
 void create(DefaultPipeline*& obj, simulation::tree::xml::ObjectDescription* arg)

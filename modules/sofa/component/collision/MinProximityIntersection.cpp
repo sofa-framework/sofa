@@ -1,7 +1,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/component/collision/MinProximityIntersection.h>
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
-#include <sofa/helper/proximity.h>
+#include <sofa/component/collision/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/componentmodel/collision/Intersection.inl>
@@ -14,7 +14,7 @@ namespace sofa
 {
 namespace helper
 {
-
+using namespace component::collision;
 template<>
 void create(MinProximityIntersection*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
@@ -38,7 +38,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace collision;
+using namespace sofa::core::componentmodel::collision;
 using namespace helper;
 using namespace MinProximityIntersections;
 

@@ -13,7 +13,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
-using namespace collision;
+using namespace core::componentmodel::collision;
 using simulation::tree::GNode;
 
 template < class TCollisionModel1, class TCollisionModel2 >

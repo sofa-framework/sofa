@@ -5,7 +5,7 @@
 #include <sofa/core/componentmodel/collision/Intersection.inl>
 #include <sofa/component/collision/RayPickInteractor.h>
 #include <sofa/component/collision/ProximityIntersection.h>
-#include <sofa/helper/proximity.h>
+#include <sofa/component/collision/proximity.h>
 #include <iostream>
 #include <algorithm>
 
@@ -13,14 +13,17 @@
 
 namespace sofa
 {
+
 namespace helper
 {
+using namespace component::collision;
 template<>
 void create(DiscreteIntersection*& obj, simulation::tree::xml::ObjectDescription* /*arg*/)
 {
     obj = new DiscreteIntersection();
 }
 }
+
 namespace component
 {
 
@@ -28,6 +31,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::collision;
 using namespace DiscreteIntersections;
 //using namespace helper;
 

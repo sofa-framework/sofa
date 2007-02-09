@@ -39,17 +39,12 @@ namespace simulation
 namespace tree
 {
 
-//using namespace core::objectmodel;
-//using namespace core::componentmodel::behavior;
-//using namespace core::componentmodel::topology;
-//using namespace core::componentmodel::collision;
-
 class Action;
 class MutationListener;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
 */
-class GNode : public Context, public core::objectmodel::BaseNode
+class GNode : public core::objectmodel::Context, public core::objectmodel::BaseNode
 {
 public:
     GNode( const std::string& name="", GNode* parent=NULL  );
@@ -74,37 +69,37 @@ public:
     virtual BaseContext* getContext();
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(BaseObject* obj);
+    virtual bool addObject(core::objectmodel::BaseObject* obj);
 
     /// Remove an object
-    virtual bool removeObject(BaseObject* obj);
+    virtual bool removeObject(core::objectmodel::BaseObject* obj);
 
     /// Move a node from another node
     virtual void moveChild(GNode* obj);
 
     /// Move an object from another node
-    virtual void moveObject(BaseObject* obj);
+    virtual void moveObject(core::objectmodel::BaseObject* obj);
 
     /// Must be called after each graph modification. Do not call it directly, apply an InitAction instead.
     virtual void initialize();
 
     /// Get parent node (or NULL if no hierarchy or for root node)
-    virtual BaseNode* getParent();
+    virtual core::objectmodel::BaseNode* getParent();
 
     /// Get parent node (or NULL if no hierarchy or for root node)
-    virtual const BaseNode* getParent() const;
+    virtual const core::objectmodel::BaseNode* getParent() const;
 
     /// @name Variables
     /// @{
 
     /// Mechanical Degrees-of-Freedom
-    virtual BaseObject* getMechanicalState() const;
+    virtual core::objectmodel::BaseObject* getMechanicalState() const;
 
     /// Topology
-    virtual BaseObject* getTopology() const;
+    virtual core::objectmodel::BaseObject* getTopology() const;
 
     /// Main Topology
-    virtual BaseObject* getMainTopology() const;
+    virtual core::objectmodel::BaseObject* getMainTopology() const;
 
     /// @}
 
@@ -220,7 +215,7 @@ public:
     GNode* getTreeNode(const std::string& name);
 
     /// Propagate an event
-    virtual void propagateEvent( Event* event );
+    virtual void propagateEvent( core::objectmodel::Event* event );
 
     /// @}
 
@@ -370,8 +365,8 @@ public:
     Sequence<GNode> child;
     typedef Sequence<GNode>::iterator ChildIterator;
 
-    Sequence<BaseObject> object;
-    typedef Sequence<BaseObject>::iterator ObjectIterator;
+    Sequence<core::objectmodel::BaseObject> object;
+    typedef Sequence<core::objectmodel::BaseObject>::iterator ObjectIterator;
 
     Single<core::componentmodel::behavior::BaseMechanicalState> mechanicalModel;
     Single<core::componentmodel::behavior::BaseMechanicalMapping> mechanicalMapping;
@@ -437,31 +432,31 @@ public:
     const NodeTimer& getActionTime(const char* s) { return actionTime[s]; }
 
     /// Get time log of all objects
-    const std::map<std::string, std::map<BaseObject*, ObjectTimer> >& getObjectTime() const { return objectTime; }
+    const std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> >& getObjectTime() const { return objectTime; }
 
     /// Get time log of all objects of a given category
-    const std::map<BaseObject*, ObjectTimer>& getObjectTime(const std::string& s) { return objectTime[s]; }
+    const std::map<core::objectmodel::BaseObject*, ObjectTimer>& getObjectTime(const std::string& s) { return objectTime[s]; }
 
     /// Get time log of all objects of a given category
-    const std::map<BaseObject*, ObjectTimer>& getObjectTime(const char* s) { return objectTime[s]; }
+    const std::map<core::objectmodel::BaseObject*, ObjectTimer>& getObjectTime(const char* s) { return objectTime[s]; }
 
     /// Get timer frequency
     ctime_t getTimeFreq() const;
 
     /// Log time spent on an action category, and the concerned object, plus remove the computed time from the parent caller object
-    void addTime(ctime_t t, const std::string& s, BaseObject* obj, BaseObject* parent);
+    void addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent);
 
     /// Log time spent on an action category and the concerned object
-    void addTime(ctime_t t, const std::string& s, BaseObject* obj);
+    void addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObject* obj);
 
     /// Measure start time
     ctime_t startTime() const;
 
     /// Log time spent given a start time, an action category, and the concerned object
-    ctime_t endTime(ctime_t t0, const std::string& s, BaseObject* obj);
+    ctime_t endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj);
 
     /// Log time spent given a start time, an action category, and the concerned object, plus remove the computed time from the parent caller object
-    ctime_t endTime(ctime_t t0, const std::string& s, BaseObject* obj, BaseObject* parent);
+    ctime_t endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent);
 
     /// Return the full path name of this node
     std::string getPathName() const;
@@ -472,19 +467,19 @@ protected:
 
     NodeTimer totalTime;
     std::map<std::string, NodeTimer> actionTime;
-    std::map<std::string, std::map<BaseObject*, ObjectTimer> > objectTime;
+    std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> > objectTime;
 
     void doAddChild(GNode* node);
     void doRemoveChild(GNode* node);
-    void doAddObject(BaseObject* obj);
-    void doRemoveObject(BaseObject* obj);
+    void doAddObject(core::objectmodel::BaseObject* obj);
+    void doRemoveObject(core::objectmodel::BaseObject* obj);
 
     void notifyAddChild(GNode* node);
     void notifyRemoveChild(GNode* node);
-    void notifyAddObject(BaseObject* obj);
-    void notifyRemoveObject(BaseObject* obj);
+    void notifyAddObject(core::objectmodel::BaseObject* obj);
+    void notifyRemoveObject(core::objectmodel::BaseObject* obj);
     void notifyMoveChild(GNode* node, GNode* prev);
-    void notifyMoveObject(BaseObject* obj, GNode* prev);
+    void notifyMoveObject(core::objectmodel::BaseObject* obj, GNode* prev);
 
     /// Execute a recursive action starting from this node.
     /// This method bypass the actionScheduler of this node if any.

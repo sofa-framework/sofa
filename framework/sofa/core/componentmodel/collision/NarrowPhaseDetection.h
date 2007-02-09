@@ -5,12 +5,13 @@
 #include <vector>
 #include <algorithm>
 
-using namespace sofa::core::componentmodel::collision;
-
 namespace sofa
 {
 
-namespace component
+namespace core
+{
+
+namespace componentmodel
 {
 
 namespace collision
@@ -42,7 +43,9 @@ public:
 
 } // namespace collision
 
-} // namespace component
+} // namespace componentmodel
+
+} // namespace core
 
 } // namespace sofa
 

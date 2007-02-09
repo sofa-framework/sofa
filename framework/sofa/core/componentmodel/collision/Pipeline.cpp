@@ -50,7 +50,7 @@ void Pipeline::init()
     groupManager = (groupManagers.empty() ? NULL : groupManagers[0]);
 
     if (intersectionMethod==NULL)
-        intersectionMethod = new DiscreteIntersection;
+        intersectionMethod = new sofa::component::collision::DiscreteIntersection;
 }
 
 void Pipeline::reset()
