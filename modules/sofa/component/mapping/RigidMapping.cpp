@@ -1,7 +1,7 @@
 #include <sofa/component/mapping/RigidMapping.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
@@ -21,23 +21,16 @@ using namespace defaulttype;
 using namespace core;
 using namespace core::componentmodel::behavior;
 
-template<class BaseMapping>
-void create(RigidMapping<BaseMapping>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    if (arg->getAttribute("filename"))
-        simulation::tree::xml::createWith2ObjectsAndFilename< RigidMapping<BaseMapping>, typename RigidMapping<BaseMapping>::In, typename RigidMapping<BaseMapping>::Out>(obj, arg);
-    else
-        simulation::tree::xml::createWith2Objects< RigidMapping<BaseMapping>, typename RigidMapping<BaseMapping>::In, typename RigidMapping<BaseMapping>::Out>(obj, arg);
-}
 
-Creator<simulation::tree::xml::ObjectFactory, RigidMapping< MechanicalMapping< MechanicalState<RigidTypes>, MechanicalState<Vec3dTypes> > > > RigidMapping3dClass("RigidMapping", true);
-Creator<simulation::tree::xml::ObjectFactory, RigidMapping< MechanicalMapping< MechanicalState<RigidTypes>, MechanicalState<Vec3fTypes> > > > RigidMapping3fClass("RigidMapping", true);
-
-Creator<simulation::tree::xml::ObjectFactory, RigidMapping< Mapping< MechanicalState<RigidTypes>, MappedModel<Vec3dTypes> > > > RigidMappingMapped3dClass("RigidMapping", true);
-Creator<simulation::tree::xml::ObjectFactory, RigidMapping< Mapping< MechanicalState<RigidTypes>, MappedModel<Vec3fTypes> > > > RigidMappingMapped3fClass("RigidMapping", true);
-
-Creator<simulation::tree::xml::ObjectFactory, RigidMapping< Mapping< MechanicalState<RigidTypes>, MappedModel<ExtVec3dTypes> > > > RigidMappingMappedExt3dClass("RigidMapping", true);
-Creator<simulation::tree::xml::ObjectFactory, RigidMapping< Mapping< MechanicalState<RigidTypes>, MappedModel<ExtVec3fTypes> > > > RigidMappingMappedExt3fClass("RigidMapping", true);
+// Register in the Factory
+int RigidMappingClass = core::RegisterObject("TODO")
+        .add< RigidMapping< MechanicalMapping< MechanicalState<RigidTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< RigidMapping< MechanicalMapping< MechanicalState<RigidTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< RigidMapping< Mapping< MechanicalState<RigidTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< RigidMapping< Mapping< MechanicalState<RigidTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< RigidMapping< Mapping< MechanicalState<RigidTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< RigidMapping< Mapping< MechanicalState<RigidTypes>, MappedModel<ExtVec3fTypes> > > >()
+        ;
 
 template class RigidMapping< MechanicalMapping<MechanicalState<RigidTypes>, MechanicalState<Vec3dTypes> > >;
 template class RigidMapping< MechanicalMapping<MechanicalState<RigidTypes>, MechanicalState<Vec3fTypes> > >;

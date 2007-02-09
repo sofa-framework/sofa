@@ -20,6 +20,26 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
+template <class In, class Out>
+void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->Inherit::parse(arg);
+    if (arg->getAttribute("radius"))
+        this->setRadius(atof(arg->getAttribute("radius")));
+    if (arg->getAttribute("step"))
+        this->setStep(atof(arg->getAttribute("step")));
+    if (arg->getAttribute("isoValue"))
+        this->setIsoValue(atof(arg->getAttribute("isoValue")));
+    if (arg->getAttribute("min") || arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))
+        this->setGridMin(atof(arg->getAttribute("minx",arg->getAttribute("min","-100.0"))),
+                atof(arg->getAttribute("miny",arg->getAttribute("min","-100.0"))),
+                atof(arg->getAttribute("minz",arg->getAttribute("min","-100.0"))));
+    if (arg->getAttribute("max") || arg->getAttribute("maxx") || arg->getAttribute("maxy") || arg->getAttribute("maxz"))
+        this->setGridMax(atof(arg->getAttribute("maxx",arg->getAttribute("max","100.0"))),
+                atof(arg->getAttribute("maxy",arg->getAttribute("max","100.0"))),
+                atof(arg->getAttribute("maxz",arg->getAttribute("max","100.0"))));
+}
+
 template<class Real>
 Real sqr(Real r)
 {

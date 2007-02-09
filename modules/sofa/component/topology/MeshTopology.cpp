@@ -2,7 +2,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/helper/io/MeshTopologyLoader.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
 #include <set>
 
@@ -18,21 +18,12 @@ namespace topology
 
 using namespace sofa::defaulttype;
 
-void create(MeshTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new MeshTopology();
-    if (arg->getAttribute("filename"))
-    {
-        obj->load(arg->getAttribute("filename"));
-        arg->removeAttribute("filename");
-    }
-    obj->parseFields( arg->getAttributeMap() );
-
-}
-
 SOFA_DECL_CLASS(MeshTopology)
 
-helper::Creator<simulation::tree::xml::ObjectFactory, MeshTopology> MeshTopologyClass("Mesh");
+int MeshTopologyClass = core::RegisterObject("TODO")
+        .addAlias("Mesh")
+        .add< MeshTopology >()
+        ;
 
 MeshTopology::MeshTopology()
     : nbPoints(0)

@@ -1,5 +1,5 @@
 #include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -14,34 +14,31 @@ using namespace sofa::defaulttype;
 using std::cout;
 using std::endl;
 
-void create(RegularGridTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
+void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
-    const char* nx = arg->getAttribute("nx");
-    const char* ny = arg->getAttribute("ny");
-    const char* nz = arg->getAttribute("nz");
-    if (!nx || !ny || !nz)
-    {
-        std::cerr << "RegularGridTopology requires nx, ny and nz attributes\n";
-    }
-    else
-    {
-        obj = new RegularGridTopology(atoi(nx),atoi(ny),atoi(nz));
-        const char* xmin = arg->getAttribute("xmin",arg->getAttribute("min","0"));
-        const char* ymin = arg->getAttribute("ymin",arg->getAttribute("min","0"));
-        const char* zmin = arg->getAttribute("zmin",arg->getAttribute("min","0"));
-        const char* xmax = arg->getAttribute("xmax",arg->getAttribute("max",nx));
-        const char* ymax = arg->getAttribute("ymax",arg->getAttribute("max",ny));
-        const char* zmax = arg->getAttribute("zmax",arg->getAttribute("max",nz));
-        obj->setPos(atof(xmin),atof(xmax),atof(ymin),atof(ymax),atof(zmin),atof(zmax));
-    }
+    this->GridTopology::parse(arg);
+    const char* xmin = arg->getAttribute("xmin",arg->getAttribute("min","0"));
+    const char* ymin = arg->getAttribute("ymin",arg->getAttribute("min","0"));
+    const char* zmin = arg->getAttribute("zmin",arg->getAttribute("min","0"));
+    const char* xmax = arg->getAttribute("xmax",arg->getAttribute("max",arg->getAttribute("nx","1")));
+    const char* ymax = arg->getAttribute("ymax",arg->getAttribute("max",arg->getAttribute("ny","1")));
+    const char* zmax = arg->getAttribute("zmax",arg->getAttribute("max",arg->getAttribute("nz","1")));
+    this->setPos(atof(xmin),atof(xmax),atof(ymin),atof(ymax),atof(zmin),atof(zmax));
 }
 
 SOFA_DECL_CLASS(RegularGridTopology)
 
-helper::Creator<simulation::tree::xml::ObjectFactory, RegularGridTopology> RegularGridTopologyClass("RegularGrid");
+int RegularGridTopologyClass = core::RegisterObject("TODO")
+        .addAlias("RegularGrid")
+        .add< RegularGridTopology >()
+        ;
 
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz)
+{
+}
+
+RegularGridTopology::RegularGridTopology()
 {
 }
 

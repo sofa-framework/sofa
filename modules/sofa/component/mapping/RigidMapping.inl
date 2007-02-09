@@ -39,7 +39,7 @@ public:
 };
 
 template <class BasicMapping>
-void RigidMapping<BasicMapping>::init(const char *filename)
+void RigidMapping<BasicMapping>::load(const char *filename)
 {
     points.resize(0);
 

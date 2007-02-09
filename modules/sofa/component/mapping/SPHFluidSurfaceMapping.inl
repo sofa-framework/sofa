@@ -24,6 +24,18 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 template <class In, class Out>
+void SPHFluidSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->Inherit::parse(arg);
+    if (arg->getAttribute("radius"))
+        this->setRadius(atof(arg->getAttribute("radius")));
+    if (arg->getAttribute("step"))
+        this->setStep(atof(arg->getAttribute("step")));
+    if (arg->getAttribute("isoValue"))
+        this->setIsoValue(atof(arg->getAttribute("isoValue")));
+}
+
+template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::init()
 {
     this->Inherit::init();

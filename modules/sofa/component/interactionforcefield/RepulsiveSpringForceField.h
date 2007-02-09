@@ -29,8 +29,7 @@ public:
     {
     }
 
-    RepulsiveSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
-        : forcefield::StiffSpringForceField<DataTypes>(object)
+    RepulsiveSpringForceField()
     {
     }
 

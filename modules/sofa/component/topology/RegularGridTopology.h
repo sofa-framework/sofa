@@ -21,6 +21,9 @@ public:
     typedef Vec3d Vec3;
 
     RegularGridTopology(int nx, int ny, int nz);
+    RegularGridTopology();
+
+    void parse(core::objectmodel::BaseObjectDescription* arg);
 
     void setP0(const Vec3& val) { p0 = val; }
     void setDx(const Vec3& val) { dx = val; inv_dx2 = 1/(dx*dx); }

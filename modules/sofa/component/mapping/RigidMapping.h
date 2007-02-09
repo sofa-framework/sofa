@@ -45,13 +45,8 @@ protected:
     Mat3 rotation;
     std::vector<Coord> rotatedPoints;
     class Loader;
-    void init(const char* filename);
+    void load(const char* filename);
 public:
-    RigidMapping(In* from, Out* to, const char* filename)
-        : Inherit(from, to)
-    {
-        init(filename);
-    }
 
     RigidMapping(In* from, Out* to)
         : Inherit(from, to)
@@ -63,6 +58,13 @@ public:
     }
 
     void init();
+
+    void parse(core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (arg->getAttribute("filename"))
+            this->load(arg->getAttribute("filename"));
+        this->Inherit::parse(arg);
+    }
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 

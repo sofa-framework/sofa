@@ -1,6 +1,6 @@
 #include <sofa/component/mapping/ImplicitSurfaceMapping.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
@@ -19,53 +19,17 @@ using namespace core::componentmodel::behavior;
 
 SOFA_DECL_CLASS(ImplicitSurfaceMapping)
 
-template<class In, class Out>
-void create(ImplicitSurfaceMapping<In,Out>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    simulation::tree::xml::createWith2Objects< ImplicitSurfaceMapping<In,Out>, In, Out>(obj, arg);
-    if (obj != NULL)
-    {
-        if (arg->getAttribute("radius"))
-            obj->setRadius(atof(arg->getAttribute("radius")));
-        if (arg->getAttribute("step"))
-            obj->setStep(atof(arg->getAttribute("step")));
-        if (arg->getAttribute("isoValue"))
-            obj->setIsoValue(atof(arg->getAttribute("isoValue")));
-        if (arg->getAttribute("min") || arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))
-            obj->setGridMin(atof(arg->getAttribute("minx",arg->getAttribute("min","-100.0"))),
-                    atof(arg->getAttribute("miny",arg->getAttribute("min","-100.0"))),
-                    atof(arg->getAttribute("minz",arg->getAttribute("min","-100.0"))));
-        if (arg->getAttribute("max") || arg->getAttribute("maxx") || arg->getAttribute("maxy") || arg->getAttribute("maxz"))
-            obj->setGridMax(atof(arg->getAttribute("maxx",arg->getAttribute("max","100.0"))),
-                    atof(arg->getAttribute("maxy",arg->getAttribute("max","100.0"))),
-                    atof(arg->getAttribute("maxz",arg->getAttribute("max","100.0"))));
-    }
-}
-
-// Mech -> Mech
-//Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > > ImplicitSurfaceMapping3d3dClass("ImplicitSurfaceMapping", true);
-//Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > > ImplicitSurfaceMapping3f3fClass("ImplicitSurfaceMapping", true);
-//Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > > ImplicitSurfaceMapping3d3fClass("ImplicitSurfaceMapping", true);
-//Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > > ImplicitSurfaceMapping3f3dClass("ImplicitSurfaceMapping", true);
-
-// Mech -> Mapped
-Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> > > ImplicitSurfaceMapping3dM3dClass("ImplicitSurfaceMapping", true);
-Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> > > ImplicitSurfaceMapping3fM3fClass("ImplicitSurfaceMapping", true);
-Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> > > ImplicitSurfaceMapping3dM3fClass("ImplicitSurfaceMapping", true);
-Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> > > ImplicitSurfaceMapping3fM3dClass("ImplicitSurfaceMapping", true);
-
-// Mech -> ExtMapped
-Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > ImplicitSurfaceMapping3dME3dClass("ImplicitSurfaceMapping", true);
-Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > ImplicitSurfaceMapping3fME3fClass("ImplicitSurfaceMapping", true);
-Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > ImplicitSurfaceMapping3dME3fClass("ImplicitSurfaceMapping", true);
-Creator<simulation::tree::xml::ObjectFactory, ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > ImplicitSurfaceMapping3fME3dClass("ImplicitSurfaceMapping", true);
-
-
-// Mech -> Mech
-//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-//template class ImplicitSurfaceMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
+// Register in the Factory
+int ImplicitSurfaceMappingClass = core::RegisterObject("TODO")
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> > >()
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> > >()
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> > >()
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> > >()
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >()
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >()
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >()
+        .add< ImplicitSurfaceMapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >()
+        ;
 
 // Mech -> Mapped
 template class ImplicitSurfaceMapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> >;

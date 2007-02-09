@@ -1,5 +1,5 @@
 #include <sofa/component/topology/GridTopology.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -12,22 +12,10 @@ namespace topology
 
 SOFA_DECL_CLASS(GridTopology)
 
-void create(GridTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    const char* nx = arg->getAttribute("nx");
-    const char* ny = arg->getAttribute("ny");
-    const char* nz = arg->getAttribute("nz");
-    if (!nx || !ny || !nz)
-    {
-        std::cerr << "GridTopology requires nx, ny and nz attributes\n";
-    }
-    else
-    {
-        obj = new GridTopology(atoi(nx),atoi(ny),atoi(nz));
-    }
-}
-
-helper::Creator<simulation::tree::xml::ObjectFactory, GridTopology> GridTopologyClass("Grid");
+int GridTopologyClass = core::RegisterObject("TODO")
+        .addAlias("Grid")
+        .add< GridTopology >()
+        ;
 
 GridTopology::GridTopology()
     : nx(dataField(&nx,0,"nx","x grid resolution")), ny(dataField(&ny,0,"ny","y grid resolution")), nz(dataField(&nz,0,"nz","z grid resolution"))
@@ -47,7 +35,12 @@ void GridTopology::setSize(int nx, int ny, int nz)
     this->nx.setValue(nx);
     this->ny.setValue(ny);
     this->nz.setValue(nz);
-    this->nbPoints = nx*ny*nz;
+    setSize();
+}
+
+void GridTopology::setSize()
+{
+    this->nbPoints = nx.getValue()*ny.getValue()*nz.getValue();
     invalidate();
 }
 

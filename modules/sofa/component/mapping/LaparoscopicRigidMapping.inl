@@ -30,8 +30,8 @@ template <class BasicMapping>
 void LaparoscopicRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize(1);
-    out[0].getOrientation() = in[0].getOrientation() * rotation;
-    out[0].getCenter() = pivot + in[0].getOrientation().rotate(Vector3(in[0].getTranslation(),0,0));
+    out[0].getOrientation() = in[0].getOrientation() * rotation.getValue();
+    out[0].getCenter() = pivot.getValue() + in[0].getOrientation().rotate(Vector3(in[0].getTranslation(),0,0));
 }
 
 template <class BasicMapping>

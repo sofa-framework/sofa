@@ -33,6 +33,28 @@ public:
     virtual void init();
 
     virtual void updateMapping();
+
+    /// Pre-construction check method called by ObjectFactory.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))) == NULL)
+            return false;
+        if (dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+            return false;
+        return BaseMapping::canCreate(obj, context, arg);
+    }
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        obj = new T(
+            dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))),
+            dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))));
+        if (context) context->addObject(obj);
+        obj->parse(arg);
+    }
 };
 
 } // namespace core

@@ -23,6 +23,12 @@ public:
 
     void setSize(int nx, int ny, int nz);
 
+    void parse(core::objectmodel::BaseObjectDescription* arg)
+    {
+        this->MeshTopology::parse(arg);
+        this->setSize();
+    }
+
     int getNx() const { return nx.getValue(); }
     int getNy() const { return ny.getValue(); }
     int getNz() const { return nz.getValue(); }
@@ -55,6 +61,7 @@ protected:
     DataField<int> ny;
     DataField<int> nz;
 
+    virtual void setSize();
     void updateLines();
     void updateQuads();
     void updateCubes();

@@ -120,6 +120,8 @@ public:
 
     ~OglModel();
 
+    void parse(core::objectmodel::BaseObjectDescription* arg);
+
     void draw();
 
     bool load(const std::string& filename, const std::string& loader, const std::string& textureName);

@@ -74,6 +74,8 @@ public:
         mIsoValue = val;
     }
 
+    void parse(core::objectmodel::BaseObjectDescription* arg);
+
     void init();
 
     void apply( OutVecCoord& out, const InVecCoord& in );

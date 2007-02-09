@@ -30,13 +30,14 @@ public:
     typedef typename Out::Deriv Deriv;
     //typedef typename Coord::value_type Real;
 
-protected:
-    defaulttype::Vector3 pivot;
-    defaulttype::Quat rotation;
 public:
+    DataField<defaulttype::Vector3> pivot;
+    DataField<defaulttype::Quat> rotation;
 
     LaparoscopicRigidMapping(In* from, Out* to)
         : Inherit(from, to)
+        , pivot(dataField(&pivot, defaulttype::Vector3(0,0,0), "pivot","TODO"))
+        , rotation(dataField(&rotation, defaulttype::Quat(0,0,0,1), "rotation", "TODO"))
     {
     }
 
@@ -44,8 +45,8 @@ public:
     {
     }
 
-    void setPivot(const defaulttype::Vector3& val) { this->pivot = val; }
-    void setRotation(const defaulttype::Quat& val) { this->rotation = val; this->rotation.normalize(); }
+    //void setPivot(const defaulttype::Vector3& val) { this->pivot = val; }
+    //void setRotation(const defaulttype::Quat& val) { this->rotation = val; this->rotation.normalize(); }
 
     void init();
 

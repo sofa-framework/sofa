@@ -2,7 +2,7 @@
 #include <sofa/helper/gl/RAII.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Quat.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sstream>
 
@@ -17,9 +17,10 @@ namespace visualmodel
 
 using namespace sofa::defaulttype;
 
-void create(OglModel*& obj, simulation::tree::xml::ObjectDescription* arg)
+void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
 {
-    obj = new OglModel;
+    this->core::VisualModel::parse(arg);
+    OglModel* obj = this;
 
     if (arg->getAttribute("normals")!=NULL)
         obj->setUseNormals(atoi(arg->getAttribute("normals"))!=0);
@@ -43,7 +44,10 @@ void create(OglModel*& obj, simulation::tree::xml::ObjectDescription* arg)
 
 SOFA_DECL_CLASS(OglModel)
 
-helper::Creator<simulation::tree::xml::ObjectFactory, OglModel > OglModelClass("OglModel");
+int OglModelClass = core::RegisterObject("TODO")
+        .add< OglModel >()
+        ;
+
 
 Material& Material::operator=(const helper::io::Mesh::Material &matLoaded)
 {

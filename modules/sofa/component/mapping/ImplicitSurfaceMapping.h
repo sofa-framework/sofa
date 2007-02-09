@@ -42,6 +42,8 @@ public:
     {
     }
 
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+
     double getStep() const { return mStep; }
     void setStep(double val) { mStep = val; }
 

@@ -47,6 +47,13 @@ public:
 
     virtual bool load(const char* filename);
 
+    void parse(core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (arg->getAttribute("filename"))
+            this->load(arg->getAttribute("filename"));
+        this->core::componentmodel::topology::Topology::parse(arg);
+    }
+
     int getNbPoints() const;
 
     // Complete sequence accessors
