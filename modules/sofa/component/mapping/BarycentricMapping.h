@@ -5,7 +5,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/MultiResSparseGridTopology.h>
+//#include <sofa/component/topology/MultiResSparseGridTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <vector>
 
@@ -65,6 +65,7 @@ public:
         virtual void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in) = 0;
     };
 
+#if 0
     /// Classe permettant le calcul du mapping sur une SparseRegularGrid
     class SparseGridMapper : public Mapper
     {
@@ -79,6 +80,7 @@ public:
         void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
         void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
     };
+#endif
 
     class RegularGridMapper : public Mapper
     {
@@ -139,7 +141,9 @@ protected:
 
     void calcMap(topology::RegularGridTopology* topo);
 
+#if 0
     void calcMap(topology::MultiResSparseGridTopology* topo);
+#endif
 
     void calcMap(topology::MeshTopology* topo);
 

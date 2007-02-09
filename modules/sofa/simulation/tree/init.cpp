@@ -1,4 +1,5 @@
 #include <sofa/helper/system/config.h>
+#include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
 namespace sofa
@@ -12,7 +13,17 @@ namespace tree
 
 void init()
 {
-    std::cout << "sofa::simulation::tree initialized"<<std::endl;
+    static bool first = true;
+    if (first)
+    {
+        std::cout << "Sofa components initialized."<<std::endl;
+        sofa::core::ObjectFactory::getInstance()->dump();
+        std::ofstream ofile("sofa-classes.html");
+        ofile << "<html><body>\n";
+        sofa::core::ObjectFactory::getInstance()->dumpHTML(ofile);
+        ofile << "</body></html>\n";
+        first = false;
+    }
 }
 
 } // namespace tree
@@ -80,7 +91,7 @@ SOFA_LINK_CLASS(RepulsiveSpringForceField)
 SOFA_LINK_CLASS(RigidMapping)
 SOFA_LINK_CLASS(RungeKutta4)
 SOFA_LINK_CLASS(BoxConstraint)
-SOFA_LINK_CLASS(SparseGridSpringForceField)
+//SOFA_LINK_CLASS(SparseGridSpringForceField)
 SOFA_LINK_CLASS(Sphere)
 SOFA_LINK_CLASS(SPHFluidForceField)
 SOFA_LINK_CLASS(SPHFluidSurfaceMapping)

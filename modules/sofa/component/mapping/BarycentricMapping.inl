@@ -5,7 +5,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/topology/MultiResSparseGridTopology.h>
+//#include <sofa/component/topology/MultiResSparseGridTopology.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/helper/gl/template.h>
 #include <GL/gl.h>
@@ -24,6 +24,7 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
+#if 0
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::calcMap(topology::MultiResSparseGridTopology* topology)
 {
@@ -54,6 +55,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::MultiResSparseGridTopol
     }
     if (outside>0) std::cerr << "WARNING: Barycentric mapping with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
 }
+#endif
 
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::calcMap(topology::RegularGridTopology* topology)
@@ -333,10 +335,12 @@ void BarycentricMapping<BasicMapping>::init()
     core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
     if (topology!=NULL)
     {
+#if 0
         topology::MultiResSparseGridTopology* t = dynamic_cast<topology::MultiResSparseGridTopology*>(topology);
         if (t!=NULL)
             this->calcMap(t);
         else
+#endif
         {
             topology::RegularGridTopology* t2 = dynamic_cast<topology::RegularGridTopology*>(topology);
             if (t2!=NULL && t2->getNbCubes()>0)
@@ -362,6 +366,7 @@ void BarycentricMapping<BasicMapping>::apply( typename Out::VecCoord& out, const
     if (mapper!=NULL) mapper->apply(out, in);
 }
 
+#if 0
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::SparseGridMapper::apply( typename BarycentricMapping<BasicMapping>::Out::VecCoord& out, const typename BarycentricMapping<BasicMapping>::In::VecCoord& in )
 {
@@ -386,6 +391,7 @@ void BarycentricMapping<BasicMapping>::SparseGridMapper::apply( typename Barycen
                 + in[cube[7]] * ((  fx) * (  fy) * (  fz));
     }
 }
+#endif
 
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::RegularGridMapper::apply( typename BarycentricMapping<BasicMapping>::Out::VecCoord& out, const typename BarycentricMapping<BasicMapping>::In::VecCoord& in )
@@ -498,6 +504,7 @@ void BarycentricMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, cons
 }
 
 
+#if 0
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::SparseGridMapper::applyJ( typename BarycentricMapping<BasicMapping>::Out::VecDeriv& out, const typename BarycentricMapping<BasicMapping>::In::VecDeriv& in )
 {
@@ -517,7 +524,7 @@ void BarycentricMapping<BasicMapping>::SparseGridMapper::applyJ( typename Baryce
                 + in[cube[7]] * ((  fx) * (  fy) * (  fz));
     }
 }
-
+#endif
 
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::RegularGridMapper::applyJ( typename BarycentricMapping<BasicMapping>::Out::VecDeriv& out, const typename BarycentricMapping<BasicMapping>::In::VecDeriv& in )
@@ -627,6 +634,7 @@ void BarycentricMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, cons
     if (mapper!=NULL) mapper->applyJT(out, in);
 }
 
+#if 0
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::SparseGridMapper::applyJT( typename BasicMapping::In::VecDeriv& out, const typename BasicMapping::Out::VecDeriv& in )
 {
@@ -647,6 +655,7 @@ void BarycentricMapping<BasicMapping>::SparseGridMapper::applyJT( typename Basic
         out[cube[7]] += v * ((  fx) * (  fy) * (  fz));
     }
 }
+#endif
 
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::RegularGridMapper::applyJT( typename BasicMapping::In::VecDeriv& out, const typename BasicMapping::Out::VecDeriv& in )
@@ -772,6 +781,7 @@ void BarycentricMapping<BasicMapping>::draw()
     glPointSize(1);
 }
 
+#if 0
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::SparseGridMapper::draw(const typename BasicMapping::Out::VecCoord& out, const typename BasicMapping::In::VecCoord& in)
 {
@@ -803,6 +813,7 @@ void BarycentricMapping<BasicMapping>::SparseGridMapper::draw(const typename Bas
     }
     glEnd();
 }
+#endif
 
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::RegularGridMapper::draw(const typename BasicMapping::Out::VecCoord& out, const typename BasicMapping::In::VecCoord& in)
