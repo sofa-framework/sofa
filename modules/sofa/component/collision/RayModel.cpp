@@ -1,6 +1,6 @@
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <GL/glut.h>
 
 
@@ -15,25 +15,16 @@ namespace collision
 
 SOFA_DECL_CLASS(Ray)
 
+int RayModelClass = core::RegisterObject("TODO")
+        .add< RayModel >()
+        .addAlias("Ray")
+        ;
+
+
 using namespace sofa::defaulttype;
 
-void create(RayModel*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new RayModel(atof(arg->getAttribute("length","1,0")));
-    if (obj!=NULL)
-    {
-        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
-        if (arg->getAttribute("scale")!=NULL)
-            obj->applyScale(atof(arg->getAttribute("scale","1.0")));
-        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-            obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-    }
-}
-
-Creator<simulation::tree::xml::ObjectFactory, RayModel > RayModelClass("Ray");
-
 RayModel::RayModel(double length)
-    : defaultLength(length), static_(false)
+    : defaultLength(dataField(&defaultLength, length, "", "TODO"))
 {
 }
 
@@ -45,7 +36,7 @@ void RayModel::resize(int size)
     {
         length.reserve(size/2);
         while ((int)length.size() < size/2)
-            length.push_back(defaultLength);
+            length.push_back(defaultLength.getValue());
     }
     else
     {

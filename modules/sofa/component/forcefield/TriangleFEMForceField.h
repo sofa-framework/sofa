@@ -72,7 +72,7 @@ protected:
 
 public:
 
-    TriangleFEMForceField(component::MechanicalObject<DataTypes>* object);
+    TriangleFEMForceField();
 
     //virtual const char* getTypeName() const { return "TriangleFEMForceField"; }
 

@@ -38,7 +38,7 @@ class SphereModel : public component::MechanicalObject<Vec3Types>, public core::
 protected:
     std::vector<double> radius;
 
-    double defaultRadius;
+    DataField<double> defaultRadius;
 
     class Loader;
 
@@ -53,7 +53,7 @@ public:
     int addSphere(const Vector3& pos, double radius);
     void setSphere(int index, const Vector3& pos, double radius);
 
-    bool load(const char* filename);
+    virtual bool load(const char* filename);
 
     // -- CollisionModel interface
 

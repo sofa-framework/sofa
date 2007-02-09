@@ -70,14 +70,18 @@ protected:
 
     MechanicalObjectInternalData<DataTypes> data;
 
+    class Loader;
+
 public:
+
     MechanicalObject();
     MechanicalObject& operator = ( const MechanicalObject& );
 
     virtual ~MechanicalObject();
 
-    //virtual const char* getTypeName() const { return "MechanicalObject"; }
+    virtual bool load(const char* filename);
 
+    virtual void parse ( BaseObjectDescription* arg );
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
 
     XField<DataTypes>* const f_X;

@@ -26,6 +26,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef typename Inherit::Spring Spring;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
     class Mat3 : public fixed_array<Deriv,3>
     {
     public:
@@ -46,13 +47,13 @@ protected:
     void addSpringDForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& dx1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& dx2, int i, const Spring& spring);
 
 public:
-    StiffSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2, double ks=100.0, double kd=5.0)
+    StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0)
         : SpringForceField<DataTypes>(object1, object2, ks, kd)
     {
     }
 
-    StiffSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object, double ks=100.0, double kd=5.0)
-        : SpringForceField<DataTypes>(object, ks, kd)
+    StiffSpringForceField(double ks=100.0, double kd=5.0)
+        : SpringForceField<DataTypes>(ks, kd)
     {
     }
 

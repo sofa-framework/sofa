@@ -41,7 +41,7 @@ protected:
     std::vector<DForce> dforces;
 
 public:
-    LennardJonesForceField(sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* /*object*/=NULL)
+    LennardJonesForceField()
         : a(1), b(1), alpha(6), beta(12), dmax(2), fmax(1), d0(1), p0(1), damping(0)
     {
     }
@@ -54,6 +54,7 @@ public:
     void setP0(Real v) { p0 = v; }
     void setDamping(Real v) { damping = v; }
 
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
     virtual void init();
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);

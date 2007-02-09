@@ -19,15 +19,7 @@ using namespace sofa::defaulttype;
 
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
-    : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
-{
-    selectVerticesFromPlanes=false;
-}
-
-
-template <class DataTypes>
-FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate)
-    : core::componentmodel::behavior::Constraint<DataTypes>(mstate),direction(0.0,0.0,1.0)
+    : direction(0.0,0.0,1.0)
 {
     selectVerticesFromPlanes=false;
 }
@@ -35,6 +27,55 @@ FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint(core::componentmodel::beha
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::~FixedPlaneConstraint()
 {
+}
+
+
+template <class DataTypes>
+void FixedPlaneConstraint<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherit::parse(arg);
+    FixedPlaneConstraint<DataTypes>* obj = this;
+    if (arg->getAttribute("indices"))
+    {
+        const char* str = arg->getAttribute("indices");
+        const char* str2 = NULL;
+        for(;;)
+        {
+            int v = (int)strtod(str,(char**)&str2);
+            if (str2==str) break;
+            str = str2;
+            obj->addConstraint(v);
+        }
+    }
+    if (arg->getAttribute("direction"))
+    {
+        const char* str = arg->getAttribute("direction");
+        const char* str2 = NULL;
+        Real val[3];
+        unsigned int i;
+        for(i=0; i<3; i++)
+        {
+            val[i] = (Real)strtod(str,(char**)&str2);
+            if (str2==str) break;
+            str = str2;
+        }
+        Coord dir(val);
+        obj->setDirection(dir);
+    }
+    if (arg->getAttribute("distance"))
+    {
+        const char* str = arg->getAttribute("distance");
+        const char* str2 = NULL;
+        Real val[2];
+        unsigned int i;
+        for(i=0; i<2; i++)
+        {
+            val[i] = (Real)strtod(str,(char**)&str2);
+            if (str2==str) break;
+            str = str2;
+        }
+        obj->setDminAndDmax(val[0],val[1]);
+    }
 }
 
 template <class DataTypes>

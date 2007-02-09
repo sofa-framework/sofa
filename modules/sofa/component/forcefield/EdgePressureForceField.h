@@ -3,7 +3,6 @@
 
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/MechanicalObject.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
@@ -24,7 +23,7 @@ using namespace sofa::defaulttype;
 
 
 template<class DataTypes>
-class EdgePressureForceField : public core::componentmodel::behavior::BaseForceField, public core::VisualModel
+class EdgePressureForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -60,8 +59,6 @@ protected:
 
     std::vector<EdgePressureInformation> edgeInfo;
 
-    component::MechanicalObject<DataTypes>* _object;
-
     unsigned int nbEdges;  // number of edge pressure forces
 
     topology::MeshTopology* _mesh;
@@ -79,9 +76,8 @@ protected:
 
 public:
 
-    EdgePressureForceField(component::MechanicalObject<DataTypes>* object)
-        : _object(object)
-        , nbEdges(0)
+    EdgePressureForceField()
+        : nbEdges(0)
         , _mesh(NULL)
         , usePlaneSelection(false)
     {
@@ -89,11 +85,12 @@ public:
 
     virtual ~EdgePressureForceField();
 
-
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
     virtual void init();
-    virtual void addForce();
-    virtual void addDForce() {}
-    virtual double getPotentialEnergy();
+
+    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/) {}
+    virtual double getPotentialEnergy(const VecCoord& x);
 
 
     // -- VisualModel interface
@@ -105,10 +102,7 @@ public:
     void selectEdgesAlongPlane();
     void setDminAndDmax(const Real _dmin,const Real _dmax) {dmin=_dmin; dmax=_dmax; usePlaneSelection=true;}
 
-
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateEdgeInformation(); }
-
-    component::MechanicalObject<DataTypes>* getObject() { return _object; }
 
 protected :
     void updateEdgeInformation();

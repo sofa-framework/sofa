@@ -4,6 +4,7 @@
 #include <string>
 #include <sofa/core/objectmodel/Field.h>
 #include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 using sofa::core::objectmodel::Field;
 using sofa::core::objectmodel::DataField;
@@ -18,7 +19,7 @@ namespace objectmodel
 {
 
 /// Base class for everything
-class Base//:  public FieldContainer
+class Base
 {
 public:
     Base();
@@ -116,6 +117,12 @@ public:
         //field = tmp;
         m_fieldMap[name] = field;
         return Field<T>(ptr,help);
+    }
+
+
+    virtual void parse ( BaseObjectDescription* arg )
+    {
+        this->parseFields ( arg->getAttributeMap() );
     }
 
 protected:

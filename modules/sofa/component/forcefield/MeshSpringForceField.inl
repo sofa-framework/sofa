@@ -128,6 +128,24 @@ void MeshSpringForceField<DataTypes>::init()
     this->StiffSpringForceField<DataTypes>::init();
 }
 
+template<class DataTypes>
+void MeshSpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->StiffSpringForceField<DataTypes>::parse(arg);
+    if (arg->getAttribute("stiffness"))          this->setStiffness         ((Real)atof(arg->getAttribute("stiffness")));
+    if (arg->getAttribute("linesStiffness"))     this->setLinesStiffness    ((Real)atof(arg->getAttribute("linesStiffness")));
+    if (arg->getAttribute("trianglesStiffness")) this->setTrianglesStiffness((Real)atof(arg->getAttribute("trianglesStiffness")));
+    if (arg->getAttribute("quadsStiffness"))     this->setQuadsStiffness    ((Real)atof(arg->getAttribute("quadsStiffness")));
+    if (arg->getAttribute("tetrasStiffness"))    this->setTetrasStiffness   ((Real)atof(arg->getAttribute("tetrasStiffness")));
+    if (arg->getAttribute("cubesStiffness"))     this->setCubesStiffness    ((Real)atof(arg->getAttribute("cubesStiffness")));
+    if (arg->getAttribute("damping"))            this->setDamping           ((Real)atof(arg->getAttribute("damping")));
+    if (arg->getAttribute("linesDamping"))       this->setLinesDamping      ((Real)atof(arg->getAttribute("linesDamping")));
+    if (arg->getAttribute("trianglesDamping"))   this->setTrianglesDamping  ((Real)atof(arg->getAttribute("trianglesDamping")));
+    if (arg->getAttribute("quadsDamping"))       this->setQuadsDamping      ((Real)atof(arg->getAttribute("quadsDamping")));
+    if (arg->getAttribute("tetrasDamping"))      this->setTetrasDamping     ((Real)atof(arg->getAttribute("tetrasDamping")));
+    if (arg->getAttribute("cubesDamping"))       this->setCubesDamping      ((Real)atof(arg->getAttribute("cubesDamping")));
+}
+
 } // namespace forcefield
 
 } // namespace component

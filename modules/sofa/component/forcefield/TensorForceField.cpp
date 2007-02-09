@@ -1,5 +1,5 @@
 #include <sofa/component/forcefield/TensorForceField.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <GL/gl.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging

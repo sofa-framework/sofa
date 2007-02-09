@@ -15,21 +15,17 @@ namespace collision
 
 class DefaultPipeline : public core::componentmodel::collision::Pipeline, public core::VisualModel
 {
-protected:
-    bool verbose_;
-    bool draw_;
-    int depth_;
 public:
+    DataField<bool> bVerbose;
+    DataField<bool> bDraw;
+    DataField<int> depth;
+
     DefaultPipeline();
 
-    void setVerbose(bool v) { verbose_ = v;    }
-    bool getVerbose() const { return verbose_; }
-    void setDraw(bool v)    { draw_ = v;       }
-    bool getDraw() const    { return draw_;    }
-    void setDepth(int v)    { depth_ = v;      }
-    int getDepth() const    { return depth_;   }
-
-    //virtual const char* getTypeName() const { return "CollisionPipeline"; }
+    // -- VisualModel interface
+    void draw();
+    void initTextures() { }
+    void update() { }
 
 protected:
     // -- Pipeline interface
@@ -40,12 +36,6 @@ protected:
     virtual void doCollisionDetection(const std::vector<core::CollisionModel*>& collisionModels);
     /// Add collision response in the simulation graph
     virtual void doCollisionResponse();
-
-public:
-    // -- VisualModel interface
-    void draw();
-    void initTextures() { }
-    void update() { }
 };
 
 } // namespace collision

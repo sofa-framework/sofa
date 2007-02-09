@@ -49,7 +49,6 @@ protected:
     std::vector<CubeData> elems;
     std::vector<int> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
 
-    bool static_;
 public:
     typedef core::CollisionElementIterator ChildIterator;
     typedef Vec3Types DataTypes;
@@ -65,9 +64,6 @@ public:
     // -- CollisionModel interface
 
     virtual void computeBoundingTree(int maxDepth=0);
-
-    bool isStatic() { return static_; }
-    void setStatic(bool val=true) { static_ = val; }
 
     virtual std::pair<core::CollisionElementIterator,core::CollisionElementIterator> getInternalChildren(int index) const;
 

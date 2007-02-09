@@ -24,6 +24,14 @@ namespace component
 namespace forcefield
 {
 
+template<class DataTypes>
+void SpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    if (arg->getAttribute("filename"))
+        this->load(arg->getAttribute("filename"));
+    this->InteractionForceField::parse(arg);
+}
+
 template <class DataTypes>
 class SpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader
 {

@@ -1,7 +1,7 @@
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <GL/glut.h>
 
 
@@ -16,28 +16,13 @@ namespace collision
 
 SOFA_DECL_CLASS(Sphere)
 
-using namespace sofa::defaulttype;
-
-void create(SphereModel*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new SphereModel(atof(arg->getAttribute("radius","1,0")));
-    if (obj!=NULL)
-    {
-        if (arg->getAttribute("filename"))
-            obj->load(arg->getAttribute("filename"));
-        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
-        obj->parseFields(arg->getAttributeMap() );
-        if (arg->getAttribute("scale")!=NULL)
-            obj->applyScale(atof(arg->getAttribute("scale","1.0")));
-        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-            obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-    }
-}
-
-Creator<simulation::tree::xml::ObjectFactory, SphereModel > SphereModelClass("Sphere");
+int SphereModelClass = core::RegisterObject("TODO")
+        .add< SphereModel >()
+        .addAlias("Sphere")
+        ;
 
 SphereModel::SphereModel(double radius)
-    : defaultRadius(radius), static_(false)
+    : defaultRadius(dataField(&defaultRadius, radius, "radius","TODO"))
 {
 }
 
@@ -49,7 +34,7 @@ void SphereModel::resize(int size)
     {
         radius.reserve(size);
         while ((int)radius.size() < size)
-            radius.push_back(defaultRadius);
+            radius.push_back(defaultRadius.getValue());
     }
     else
     {

@@ -91,10 +91,11 @@ public:
 
     /// Construction method called by ObjectFactory.
     template<class T>
-    static void create(T*& obj, BaseContext* /*context*/, BaseObjectDescription* arg)
+    static void create(T*& obj, BaseContext* context, BaseObjectDescription* arg)
     {
         obj = new T;
-        obj->parseFields(arg->getAttributeMap());
+        if (context) context->addObject(obj);
+        obj->parse(arg);
     }
 
 protected:

@@ -31,9 +31,8 @@ namespace forcefield
 using namespace core::componentmodel::behavior;
 
 template<class DataTypes>
-TriangleBendingSprings<DataTypes>::TriangleBendingSprings(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
-    : StiffSpringForceField<DataTypes>(object)
-    , stiffness( dataField(&stiffness,(Real)1.0,"bendStiffness","Stiffness of the bending springs") )
+TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
+    : stiffness( dataField(&stiffness,(Real)1.0,"bendStiffness","Stiffness of the bending springs") )
     , dampingRatio( dataField(&dampingRatio,(Real)0.0,"dampingRatio","Damping ratio of the bending springs. The actual damping coefficient is the stiffness times the damping ratio.") )
     , dof(NULL)
 {

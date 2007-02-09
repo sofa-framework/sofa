@@ -52,7 +52,6 @@ protected:
 
     class Loader;
 
-    bool static_;
     int meshRevision;
     bool updateFromTopology();
 public:
@@ -75,9 +74,6 @@ public:
     virtual void computeBoundingTree(int maxDepth=0);
 
     virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
-
-    bool isStatic() { return static_; }
-    void setStatic(bool val=true) { static_ = val; }
 
     void draw(int index);
 

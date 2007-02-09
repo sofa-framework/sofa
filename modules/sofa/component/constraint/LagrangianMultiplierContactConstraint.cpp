@@ -1,7 +1,7 @@
 #include <sofa/component/constraint/LagrangianMultiplierContactConstraint.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -19,16 +19,10 @@ using namespace sofa::defaulttype;
 template class LagrangianMultiplierContactConstraint<Vec3dTypes>;
 template class LagrangianMultiplierContactConstraint<Vec3fTypes>;
 
-template<class DataTypes>
-void create(LagrangianMultiplierContactConstraint<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    simulation::tree::xml::createWithParent< LagrangianMultiplierContactConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-    if (obj == NULL) // try the InteractionForceField initialization
-        simulation::tree::xml::createWith2Objects< LagrangianMultiplierContactConstraint<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-}
-
-Creator<simulation::tree::xml::ObjectFactory, LagrangianMultiplierContactConstraint<Vec3dTypes> > LagrangianMultiplierContactConstraintVec3dClass("LagrangianMultiplierContactConstraint", true);
-Creator<simulation::tree::xml::ObjectFactory, LagrangianMultiplierContactConstraint<Vec3fTypes> > LagrangianMultiplierContactConstraintVec3fClass("LagrangianMultiplierContactConstraint", true);
+int LagrangianMultiplierContactConstraintClass = core::RegisterObject("TODO")
+        .add< LagrangianMultiplierContactConstraint<Vec3dTypes> >()
+        .add< LagrangianMultiplierContactConstraint<Vec3fTypes> >()
+        ;
 
 } // namespace constraint
 

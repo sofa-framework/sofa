@@ -83,7 +83,7 @@ protected:
     bool _assembling;
 
 public:
-    TetrahedronFEMForceField(component::MechanicalObject<DataTypes>* /*object*/=NULL)
+    TetrahedronFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
         , _method(0)
@@ -94,6 +94,8 @@ public:
         , _assembling(false)
     {
     }
+
+    void parse(core::objectmodel::BaseObjectDescription* arg);
 
     void setPoissonRatio(Real val) { this->_poissonRatio = val; }
 

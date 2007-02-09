@@ -3,10 +3,10 @@
 
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/helper/io/MassSpringLoader.h>
+
 #include <assert.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -59,6 +59,53 @@ MechanicalObject<DataTypes>::operator = (const MechanicalObject& obj)
             *v0 = *obj.v0;
         }*/
     return *this;
+}
+
+template<class DataTypes>
+class MechanicalObject<DataTypes>::Loader : public helper::io::MassSpringLoader
+{
+public:
+    MechanicalObject<DataTypes>* dest;
+    int index;
+    Loader(MechanicalObject<DataTypes>* dest) : dest(dest), index(0) {}
+
+    virtual void addMass(double px, double py, double pz, double vx, double vy, double vz, double /*mass*/, double /*elastic*/, bool /*fixed*/, bool /*surface*/)
+    {
+        dest->resize(index+1);
+        DataTypes::set((*dest->getX())[index], px, py, pz);
+        DataTypes::set((*dest->getV())[index], vx, vy, vz);
+        ++index;
+    }
+};
+
+template<class DataTypes>
+bool MechanicalObject<DataTypes>::load(const char* filename)
+{
+    typename MechanicalObject<DataTypes>::Loader loader(this);
+    return loader.load(filename);
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
+{
+    if (arg->getAttribute("filename"))
+        load(arg->getAttribute("filename"));
+
+    Inherited::parse(arg);
+
+    //obj->parseTransform(arg);
+    if (arg->getAttribute("scale")!=NULL)
+    {
+        this->applyScale(atof(arg->getAttribute("scale")));
+        arg->removeAttribute("scale");
+    }
+    if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+    {
+        this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+        arg->removeAttribute("dx");
+        arg->removeAttribute("dy");
+        arg->removeAttribute("dz");
+    }
 }
 
 template <class DataTypes>

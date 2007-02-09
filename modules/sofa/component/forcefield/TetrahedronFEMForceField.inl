@@ -27,6 +27,23 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
+    this->setPoissonRatio((Real)atof(arg->getAttribute("poissonRatio","0.49")));
+    this->setYoungModulus((Real)atof(arg->getAttribute("youngModulus","100000")));
+    std::string method = arg->getAttribute("method","");
+    if (method == "small")
+        this->setMethod(SMALL);
+    else if (method == "large")
+        this->setMethod(LARGE);
+    else if (method == "polar")
+        this->setMethod(POLAR);
+    this->setUpdateStiffnessMatrix(std::string(arg->getAttribute("updateStiffnessMatrix","false"))=="true");
+    this->setComputeGlobalMatrix(std::string(arg->getAttribute("computeGlobalMatrix","false"))=="true");
+}
+
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {

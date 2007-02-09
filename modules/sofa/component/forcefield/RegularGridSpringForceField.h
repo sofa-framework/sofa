@@ -18,6 +18,7 @@ class RegularGridSpringForceField : public StiffSpringForceField<DataTypes>
 {
     double m_potentialEnergy;
 public:
+    typedef StiffSpringForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -44,9 +45,8 @@ public:
     {
     }
 
-    RegularGridSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
-        : StiffSpringForceField<DataTypes>(object),
-          linesStiffness(0), linesDamping(0),
+    RegularGridSpringForceField()
+        : linesStiffness(0), linesDamping(0),
           quadsStiffness(0), quadsDamping(0),
           cubesStiffness(0), cubesDamping(0),
           topology(NULL), trimmedTopology(NULL)
@@ -98,6 +98,8 @@ public:
     {
         cubesDamping = val;
     }
+
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     virtual void init();
 

@@ -20,6 +20,20 @@ namespace forcefield
 {
 
 template<class DataTypes>
+void LennardJonesForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->Inherit::parse(arg);
+    if (arg->getAttribute("alpha"))  this->setAlpha((typename DataTypes::Coord::value_type)atof(arg->getAttribute("alpha")));
+    if (arg->getAttribute("beta"))  this->setBeta((typename DataTypes::Coord::value_type)atof(arg->getAttribute("beta")));
+    if (arg->getAttribute("fmax"))  this->setFMax((typename DataTypes::Coord::value_type)atof(arg->getAttribute("fmax")));
+    if (arg->getAttribute("dmax"))  this->setDMax((typename DataTypes::Coord::value_type)atof(arg->getAttribute("dmax")));
+    else if (arg->getAttribute("d0"))  this->setDMax(2*(typename DataTypes::Coord::value_type)atof(arg->getAttribute("d0")));
+    if (arg->getAttribute("d0"))  this->setD0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("d0")));
+    if (arg->getAttribute("p0"))  this->setP0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("p0")));
+    if (arg->getAttribute("damping"))  this->setP0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("damping")));
+}
+
+template<class DataTypes>
 void LennardJonesForceField<DataTypes>::init()
 {
     this->Inherit::init();

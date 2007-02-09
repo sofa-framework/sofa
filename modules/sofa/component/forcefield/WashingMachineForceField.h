@@ -72,7 +72,8 @@ public:
     {
         for(int i=0; i<6; ++i)
         {
-            _planes[i] = new PlaneForceField(this->mstate);
+            _planes[i] = new PlaneForceField;
+            _planes[i]->setContext(this->getContext());
             _planes[i]->setStiffness(_stiffness.getValue());
             _planes[i]->setDamping(_damping.getValue());
         }
@@ -87,12 +88,12 @@ public:
         _planes[4]->setPlane( Deriv( 0, 0, 1), diff[2]  ); // derriere
         _planes[5]->setPlane( Deriv( 0, 0, -1), diff2[2]  ); //devant
 
-        _planes[0]->_color.setValue( Coord( 0.5f,0.4f,0.4f ) );
-        _planes[1]->_color.setValue( Coord( 0.4f,0.5f,0.4f ) );
-        _planes[2]->_color.setValue( Coord( 0.4f,0.4f,0.5f ) );
-        _planes[3]->_color.setValue( Coord( 0.5f,0.5f,0.4f ) );
-        _planes[4]->_color.setValue( Coord( 0.5f,0.4f,0.5f ) );
-        _planes[5]->_color.setValue( Coord( 0.4f,0.5f,0.5f ) );
+        _planes[0]->color.setValue( Coord( 0.5f,0.4f,0.4f ) );
+        _planes[1]->color.setValue( Coord( 0.4f,0.5f,0.4f ) );
+        _planes[2]->color.setValue( Coord( 0.4f,0.4f,0.5f ) );
+        _planes[3]->color.setValue( Coord( 0.5f,0.5f,0.4f ) );
+        _planes[4]->color.setValue( Coord( 0.5f,0.4f,0.5f ) );
+        _planes[5]->color.setValue( Coord( 0.4f,0.5f,0.5f ) );
 
     }
 

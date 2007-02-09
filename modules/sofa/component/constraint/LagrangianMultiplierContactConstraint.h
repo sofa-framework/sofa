@@ -29,10 +29,11 @@ public:
     typedef defaulttype::StdVectorTypes<Real, Real, Real> LMTypes;
     typedef typename LMTypes::VecCoord LMVecCoord;
     typedef typename LMTypes::VecDeriv LMVecDeriv;
+    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
 protected:
-    core::componentmodel::behavior::MechanicalState<DataTypes>* object1;
-    core::componentmodel::behavior::MechanicalState<DataTypes>* object2;
+    MechanicalState* object1;
+    MechanicalState* object2;
 
     struct Contact
     {
@@ -50,18 +51,13 @@ protected:
 
 public:
 
-    LagrangianMultiplierContactConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
-        : object1(object1), object2(object2)
+    LagrangianMultiplierContactConstraint(MechanicalState* m1=NULL, MechanicalState* m2=NULL)
+        : object1(m1), object2(m2)
     {
     }
 
-    LagrangianMultiplierContactConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
-        : object1(object), object2(object)
-    {
-    }
-
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return object1; }
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return object2; }
+    MechanicalState* getObject1() { return object1; }
+    MechanicalState* getObject2() { return object2; }
     core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
     core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
@@ -85,6 +81,44 @@ public:
     void draw();
     void initTextures() { }
     void update() { }
+
+    /// Pre-construction check method called by ObjectFactory.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
+        {
+            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
+                return false;
+            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+                return false;
+        }
+        else
+        {
+            if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
+                return false;
+        }
+        return core::componentmodel::behavior::InteractionForceField::canCreate(obj, context, arg);
+    }
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        core::componentmodel::behavior::InteractionForceField::create(obj, context, arg);
+        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
+        {
+            obj->object1 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1","..")));
+            obj->object2 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2","..")));
+        }
+        else
+        {
+            obj->object1 =
+                obj->object2 =
+                        dynamic_cast<MechanicalState*>(context->getMechanicalState());
+        }
+    }
+
 };
 
 } // namespace constraint

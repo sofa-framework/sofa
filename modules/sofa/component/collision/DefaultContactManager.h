@@ -18,14 +18,15 @@ namespace collision
 class DefaultContactManager : public core::componentmodel::collision::ContactManager, public core::VisualModel
 {
 protected:
-    std::string contacttype;
     std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, std::vector<core::componentmodel::collision::DetectionOutput*> > outputsMap;
     std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::componentmodel::collision::Contact*> contactMap;
     std::vector<core::componentmodel::collision::Contact*> contactVec;
 
     void clear();
 public:
-    DefaultContactManager(const std::string& contacttype);
+    DataField<std::string> response;
+
+    DefaultContactManager();
     ~DefaultContactManager();
 
     void createContacts(const std::vector<core::componentmodel::collision::DetectionOutput*>& outputs);

@@ -21,9 +21,21 @@ namespace forcefield
 {
 
 template<class DataTypes>
-SPHFluidForceField<DataTypes>::SPHFluidForceField(sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* /*object*/)
+SPHFluidForceField<DataTypes>::SPHFluidForceField()
     : particleRadius(1), particleMass(1), pressureStiffness(100), density0(1), viscosity(0.001f), surfaceTension(0), grid(NULL)
 {
+}
+
+template<class DataTypes>
+void SPHFluidForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->Inherit::parse(arg);
+    if (arg->getAttribute("radius"))  this->setParticleRadius((Real)atof(arg->getAttribute("radius")));
+    if (arg->getAttribute("mass"))  this->setParticleMass((Real)atof(arg->getAttribute("mass")));
+    if (arg->getAttribute("pressure"))  this->setPressureStiffness((Real)atof(arg->getAttribute("pressure")));
+    if (arg->getAttribute("density"))  this->setDensity0((Real)atof(arg->getAttribute("density")));
+    if (arg->getAttribute("viscosity"))  this->setViscosity((Real)atof(arg->getAttribute("viscosity")));
+    if (arg->getAttribute("surfaceTension"))  this->setSurfaceTension((Real)atof(arg->getAttribute("surfaceTension")));
 }
 
 template<class DataTypes>

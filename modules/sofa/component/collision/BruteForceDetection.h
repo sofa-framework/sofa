@@ -28,13 +28,13 @@ class BruteForceDetection :
 {
 private:
     std::vector<core::CollisionModel*> collisionModels;
-    bool bDraw;
+    DataField<bool> bDraw;
 
 public:
 
     BruteForceDetection();
 
-    void setDraw(bool val) { bDraw = val; }
+    void setDraw(bool val) { bDraw.setValue(val); }
 
     void addCollisionModel (core::CollisionModel *cm);
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);

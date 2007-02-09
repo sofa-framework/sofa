@@ -3,7 +3,7 @@
 // Copyright: See COPYING file that comes with this distribution
 
 #include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <iostream>
@@ -25,7 +25,7 @@ namespace contextobject
 
 CoordinateSystem::CoordinateSystem()
     : positionInParent_( Frame::identity() )
-    //, velocity_( Vec(0,0,0), Vec(0,0,0) )
+//, velocity_( Vec(0,0,0), Vec(0,0,0) )
 {}
 
 
@@ -154,13 +154,14 @@ void CoordinateSystem::draw()
 
 using namespace sofa::defaulttype;
 
-void create(CoordinateSystem*& obj, simulation::tree::xml::ObjectDescription* arg)
+void CoordinateSystem::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     typedef CoordinateSystem::Frame Frame;
     typedef CoordinateSystem::Vec Vec;
     typedef CoordinateSystem::Rot Rot;
-    //cout<<"create(CoordinateSystem*& obj, simulation::tree::xml::ObjectDescription*)"<< endl;
-    obj = new CoordinateSystem;
+
+    this->core::objectmodel::ContextObject::parse(arg);
+
     float x, y, z ;
     Vec vec;
     Vec rot;
@@ -174,12 +175,14 @@ void create(CoordinateSystem*& obj, simulation::tree::xml::ObjectDescription* ar
         sscanf(arg->getAttribute("orientation"),"%f%f%f",&x,&y,&z);
         rot = Vec(x,y,z);
     }
-    obj->setTransform( Frame( vec, Rot::createFromRotationVector( rot ) ));
+    setTransform( Frame( vec, Rot::createFromRotationVector( rot ) ));
 }
 
 SOFA_DECL_CLASS(CoordinateSystem)
 
-Creator<simulation::tree::xml::ObjectFactory, CoordinateSystem > CoordinateSystemClass("CoordinateSystem");
+int CoordinateSystemClass = core::RegisterObject("TODO")
+        .add< CoordinateSystem >()
+        ;
 
 } // namespace contextobject
 

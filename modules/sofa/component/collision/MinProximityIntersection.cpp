@@ -1,6 +1,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/component/collision/MinProximityIntersection.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
@@ -12,24 +12,6 @@
 
 namespace sofa
 {
-namespace helper
-{
-using namespace component::collision;
-template<>
-void create(MinProximityIntersection*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new MinProximityIntersection(
-        (atoi(arg->getAttribute("useSphereTriangle","1"))!=0)
-    );
-    obj->setAlarmDistance(atof(arg->getAttribute("alarmDistance","1.0")));
-    obj->setContactDistance(atof(arg->getAttribute("contactDistance","0.5")));
-}
-
-
-SOFA_DECL_CLASS(MinProximityIntersection)
-
-Creator<simulation::tree::xml::ObjectFactory, MinProximityIntersection> MinProximityIntersectionClass("MinProximityIntersection");
-}
 
 namespace component
 {
@@ -42,11 +24,20 @@ using namespace sofa::core::componentmodel::collision;
 using namespace helper;
 using namespace MinProximityIntersections;
 
+SOFA_DECL_CLASS(MinProximityIntersection)
 
+int MinProximityIntersectionClass = core::RegisterObject("TODO")
+        .add< MinProximityIntersection >()
+        ;
 
-MinProximityIntersection::MinProximityIntersection(bool useSphereTriangle
-                                                  )
-    : alarmDistance(1.0), contactDistance(0.5)
+MinProximityIntersection::MinProximityIntersection()
+    : useSphereTriangle(dataField(&useSphereTriangle, true, "useSphereTriangle","TODO"))
+    , alarmDistance(dataField(&alarmDistance, 1.0, "alarmDistance","TODO"))
+    , contactDistance(dataField(&contactDistance, 0.5, "contactDistance","TODO"))
+{
+}
+
+void MinProximityIntersection::init()
 {
     intersectors.add<CubeModel, CubeModel, intersectionCubeCube, distCorrectionCubeCube, false>();
     intersectors.ignore<TriangleModel, TriangleModel, false>();
@@ -56,7 +47,7 @@ MinProximityIntersection::MinProximityIntersection(bool useSphereTriangle
     intersectors.add<PointModel, LineModel, intersectionPointLine, distCorrectionPointLine, true>();
     intersectors.add<PointModel, PointModel, intersectionPointPoint, distCorrectionPointPoint, false>();
 
-    if (useSphereTriangle)
+    if (useSphereTriangle.getValue())
     {
         intersectors.add<SphereModel, TriangleModel, intersectionSphereTriangle, distCorrectionSphereTriangle, true>();
         intersectors.add<SphereModel, LineModel, intersectionSphereLine, distCorrectionSphereLine, true>();

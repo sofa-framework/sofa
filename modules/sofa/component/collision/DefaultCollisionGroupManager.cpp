@@ -7,7 +7,7 @@
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/RungeKutta4Solver.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <string.h>
 
 
@@ -24,16 +24,13 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
 using namespace core::componentmodel::collision;
-using namespace simulation::tree::xml;
-
-void create(DefaultCollisionGroupManager*& obj, simulation::tree::xml::ObjectDescription* /*arg*/)
-{
-    obj = new DefaultCollisionGroupManager;
-}
 
 SOFA_DECL_CLASS(DefaultCollisionGroupManager)
 
-Creator<simulation::tree::xml::ObjectFactory, DefaultCollisionGroupManager> DefaultCollisionGroupManagerClass("CollisionGroup");
+int DefaultCollisionGroupManagerClass = core::RegisterObject("TODO")
+        .add< DefaultCollisionGroupManager >()
+        .addAlias("CollisionGroup")
+        ;
 
 class SolverMerger
 {

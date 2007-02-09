@@ -2,7 +2,7 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Triangle.h>
 #include <sofa/core/CollisionElement.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <GL/gl.h>
 
@@ -17,19 +17,13 @@ namespace collision
 
 SOFA_DECL_CLASS(Triangle)
 
-void create(TriangleModel*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new TriangleModel;
-    if (obj!=NULL)
-    {
-        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
-    }
-}
-
-Creator<simulation::tree::xml::ObjectFactory, TriangleModel > TriangleModelClass("Triangle");
+int TriangleModelClass = core::RegisterObject("TODO")
+        .add< TriangleModel >()
+        .addAlias("Triangle")
+        ;
 
 TriangleModel::TriangleModel()
-    : static_(false), meshRevision(-1), mstate(NULL), mesh(NULL)
+    : meshRevision(-1), mstate(NULL), mesh(NULL)
 {
 }
 

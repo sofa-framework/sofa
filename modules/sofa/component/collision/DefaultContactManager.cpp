@@ -1,25 +1,9 @@
 #include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 
 
 namespace sofa
 {
-
-namespace helper
-{
-
-template<>
-void create(component::collision::DefaultContactManager*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new component::collision::DefaultContactManager(arg->getAttribute("response","default"));
-}
-
-SOFA_DECL_CLASS(DefaultContactManager)
-
-Creator<simulation::tree::xml::ObjectFactory, component::collision::DefaultContactManager> DefaultContactManagerClass("CollisionResponse");
-}
-
-
 
 namespace component
 {
@@ -27,9 +11,15 @@ namespace component
 namespace collision
 {
 
+SOFA_DECL_CLASS(DefaultContactManager)
 
-DefaultContactManager::DefaultContactManager(const std::string& contacttype)
-    : contacttype(contacttype)
+int DefaultContactManagerClass = core::RegisterObject("TODO")
+        .add< DefaultContactManager >()
+        .addAlias("CollisionResponse")
+        ;
+
+DefaultContactManager::DefaultContactManager()
+    : response(dataField(&response, std::string("default"), "response", "contact response class"))
 {
 }
 
@@ -66,7 +56,7 @@ void DefaultContactManager::createContacts(const std::vector<core::componentmode
         {
             // new contact
             //std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
-            core::componentmodel::collision::Contact* contact = core::componentmodel::collision::Contact::Create(contacttype, outputsIt->first.first, outputsIt->first.second, intersectionMethod);
+            core::componentmodel::collision::Contact* contact = core::componentmodel::collision::Contact::Create(response.getValue(), outputsIt->first.first, outputsIt->first.second, intersectionMethod);
             if (contact == NULL) std::cerr << "Contact creation failed"<<std::endl;
             else
             {

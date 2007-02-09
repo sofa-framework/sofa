@@ -53,6 +53,8 @@ public:
     virtual ~CoordinateSystem()
     {}
 
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+
     // ContextObject
     virtual void apply();
 

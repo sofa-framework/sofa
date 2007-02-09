@@ -38,10 +38,11 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
 protected:
-    core::componentmodel::behavior::MechanicalState<DataTypes>* object1;
-    core::componentmodel::behavior::MechanicalState<DataTypes>* object2;
+    MechanicalState* object1;
+    MechanicalState* object2;
     double m_potentialEnergy;
     DataField<double> ks;
     DataField<double> kd;
@@ -68,15 +69,19 @@ protected:
     void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
 
 public:
-    SpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2, double _ks=100.0, double _kd=5.0)
+    SpringForceField(MechanicalState* object1, MechanicalState* object2, double _ks=100.0, double _kd=5.0)
         : object1(object1), object2(object2), ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs")), kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
     {
     }
 
-    SpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object, double _ks=100.0, double _kd=5.0)
-        : object1(object), object2(object), ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs")), kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
+    SpringForceField(double _ks=100.0, double _kd=5.0)
+        : object1(NULL), object2(NULL)
+        , ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
+        , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
     {
     }
+
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     bool load(const char *filename);
 
@@ -114,6 +119,44 @@ public:
     void addSpring(int m1, int m2, double ks, double kd, double initlen)
     {
         springs.push_back(Spring(m1,m2,ks,kd,initlen));
+    }
+
+
+    /// Pre-construction check method called by ObjectFactory.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
+        {
+            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
+                return false;
+            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+                return false;
+        }
+        else
+        {
+            if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
+                return false;
+        }
+        return core::componentmodel::behavior::InteractionForceField::canCreate(obj, context, arg);
+    }
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        core::componentmodel::behavior::InteractionForceField::create(obj, context, arg);
+        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
+        {
+            obj->object1 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1","..")));
+            obj->object2 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2","..")));
+        }
+        else
+        {
+            obj->object1 =
+                obj->object2 =
+                        dynamic_cast<MechanicalState*>(context->getMechanicalState());
+        }
     }
 };
 

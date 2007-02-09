@@ -1,5 +1,5 @@
 #include <sofa/component/forcefield/TriangleFEMForceField.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <GL/gl.h>
@@ -7,9 +7,6 @@
 #include <iostream> //for debugging
 #include <vector>
 #include <sofa/defaulttype/Vec3Types.h>
-
-
-
 
 
 #ifdef _WIN32
@@ -36,9 +33,8 @@ using std::endl;
 
 template <class DataTypes>
 TriangleFEMForceField<DataTypes>::
-TriangleFEMForceField(component::MechanicalObject<DataTypes>* object)
-    : _object(object)
-    , _mesh(NULL)
+TriangleFEMForceField()
+    : _mesh(NULL)
     , _indexedElements(NULL)
     , f_method(dataField(&f_method,0,"method","O: large displacements, 1: small displacements"))
     , f_poisson(dataField(&f_poisson,(Real)0.3,"poisson","Poisson ratio in Hooke's law"))
@@ -612,36 +608,15 @@ SOFA_DECL_CLASS(TriangleFEMForceField)
 
 using namespace sofa::defaulttype;
 
-template class TriangleFEMForceField<Vec3dTypes>
-;
-template class TriangleFEMForceField<Vec3fTypes>
-;
+template class TriangleFEMForceField<Vec3dTypes>;
+template class TriangleFEMForceField<Vec3fTypes>;
 
 
-template<class DataTypes>
-void create(TriangleFEMForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    simulation::tree::xml::createWithParent< TriangleFEMForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
-    obj->parseFields( arg->getAttributeMap() );
-    /*    if (obj!=NULL)
-        {
-            obj->setPoissonRatio((typename TriangleFEMForceField<DataTypes>::Real)atof(arg->getAttribute("poissonRatio","0.49")));
-            obj->setYoungModulus((typename TriangleFEMForceField<DataTypes>::Real)atof(arg->getAttribute("youngModulus","100000")));
-            std::string method = arg->getAttribute("method","");
-            if (method == "small")
-                obj->setMethod(TriangleFEMForceField<DataTypes>
-                               ::SMALL);
-            else if (method == "large")
-                obj->setMethod(TriangleFEMForceField<DataTypes>
-                               ::LARGE);
-        }*/
-}
-
-Creator<simulation::tree::xml::ObjectFactory, TriangleFEMForceField<Vec3dTypes> >
-TriangleFEMForceFieldVec3dClass("TriangleFEMForceField", true);
-
-Creator<simulation::tree::xml::ObjectFactory, TriangleFEMForceField<Vec3fTypes> >
-TriangleFEMForceFieldVec3fClass("TriangleFEMForceField", true);
+// Register in the Factory
+int TriangleFEMForceFieldClass = core::RegisterObject("TODO")
+        .add< TriangleFEMForceField<Vec3dTypes> >()
+        .add< TriangleFEMForceField<Vec3fTypes> >()
+        ;
 
 
 } // namespace forcefield

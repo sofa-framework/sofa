@@ -44,11 +44,9 @@ class RayModel : public component::MechanicalObject<Vec3Types>, public core::Col
 protected:
     std::vector<double> length;
 
-    double defaultLength;
+    DataField<double> defaultLength;
 
     std::set<BaseRayContact*> contacts;
-
-    bool static_;
 public:
     typedef Vec3Types DataTypes;
     typedef Ray Element;
@@ -73,9 +71,6 @@ public:
     // -- CollisionModel interface
 
     virtual void computeBoundingTree(int maxDepth);
-
-    bool isStatic() { return static_; }
-    void setStatic(bool val=true) { static_ = val; }
 
     void draw(int index);
 

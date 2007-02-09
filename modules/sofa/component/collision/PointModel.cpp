@@ -2,7 +2,7 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Point.h>
 #include <sofa/core/CollisionElement.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <GL/gl.h>
 
@@ -17,16 +17,10 @@ namespace collision
 
 SOFA_DECL_CLASS(Point)
 
-void create(PointModel*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new PointModel;
-    if (obj!=NULL)
-    {
-        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
-    }
-}
-
-Creator<simulation::tree::xml::ObjectFactory, PointModel > PointModelClass("Point");
+int PointModelClass = core::RegisterObject("TODO")
+        .add< PointModel >()
+        .addAlias("Point")
+        ;
 
 PointModel::PointModel()
     : static_(false), mstate(NULL)

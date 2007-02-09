@@ -4,7 +4,7 @@
 #include <sofa/component/forcefield/SpringForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 //#include <typeinfo>
 
 
@@ -24,25 +24,11 @@ using namespace sofa::defaulttype;
 template class SpringForceField<Vec3dTypes>;
 template class SpringForceField<Vec3fTypes>;
 
-template<class DataTypes>
-void create(SpringForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    simulation::tree::xml::createWithParent< SpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-    if (obj == NULL) // try the InteractionForceField initialization
-        simulation::tree::xml::createWith2Objects< SpringForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-    if (obj != NULL)
-    {
-        if (arg->getAttribute("filename"))
-            obj->load(arg->getAttribute("filename"));
-        if (arg->getAttribute("stiffness"))
-            obj->setStiffness(atof(arg->getAttribute("stiffness")));
-        if (arg->getAttribute("damping"))
-            obj->setDamping(atof(arg->getAttribute("damping")));
-    }
-}
-
-Creator<simulation::tree::xml::ObjectFactory, SpringForceField<Vec3dTypes> > SpringInteractionForceFieldVec3dClass("SpringForceField", true);
-Creator<simulation::tree::xml::ObjectFactory, SpringForceField<Vec3fTypes> > SpringInteractionForceFieldVec3fClass("SpringForceField", true);
+// Register in the Factory
+int SpringForceFieldClass = core::RegisterObject("TODO")
+        .add< SpringForceField<Vec3dTypes> >()
+        .add< SpringForceField<Vec3fTypes> >()
+        ;
 
 } // namespace forcefield
 

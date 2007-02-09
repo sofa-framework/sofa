@@ -38,7 +38,8 @@ public:
     typedef CollisionElementIterator Iterator;
 
     CollisionModel()
-        : size(0), previous(NULL), next(NULL)
+        : bStatic(dataField(&bStatic, false, "static", "flag indicating if an object is immobile"))
+        , size(0), previous(NULL), next(NULL)
     {
     }
 
@@ -105,7 +106,9 @@ public:
     /// <i>obstacle</i> object.
     ///
     /// Default to false.
-    virtual bool isStatic() { return false; }
+    virtual bool isStatic() { return bStatic.getValue(); }
+
+    virtual void setStatic(bool val=true) { bStatic.setValue(val); }
 
     /// Create or update the bounding volume hierarchy.
     virtual void computeBoundingTree(int maxDepth=0) = 0;
@@ -198,6 +201,8 @@ public:
     }
 
 protected:
+
+    DataField<bool> bStatic;
 
     /// Number of collision elements
     int size;

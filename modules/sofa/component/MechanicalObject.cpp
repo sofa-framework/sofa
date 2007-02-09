@@ -1,9 +1,8 @@
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/component/MechanicalObject.inl>
-#include <sofa/helper/io/MassSpringLoader.h>
 
 
 namespace sofa
@@ -17,56 +16,37 @@ using namespace defaulttype;
 
 SOFA_DECL_CLASS(MechanicalObject)
 
-template<class DataTypes>
-class MechanicalObjectLoader : public helper::io::MassSpringLoader
-{
-public:
-    MechanicalObject<DataTypes>* dest;
-    int index;
-    MechanicalObjectLoader(MechanicalObject<DataTypes>* dest) : dest(dest), index(0) {}
-
-    virtual void addMass(double px, double py, double pz, double vx, double vy, double vz, double /*mass*/, double /*elastic*/, bool /*fixed*/, bool /*surface*/)
-    {
-        dest->resize(index+1);
-        DataTypes::set((*dest->getX())[index], px, py, pz);
-        DataTypes::set((*dest->getV())[index], vx, vy, vz);
-        ++index;
-    }
-};
-
+/*
 } // namespace component
 
 
 
-namespace helper   // \todo Why this must be inside helper namespace
-{
+namespace helper { // \todo Why this must be inside helper namespace
 
 template<class DataTypes>
 void create(component::MechanicalObject<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    obj = new component::MechanicalObject<DataTypes>();
-    if (arg->getAttribute("filename"))
-    {
-        component::MechanicalObjectLoader<DataTypes> loader(obj);
-        loader.load(arg->getAttribute("filename"));
-        arg->removeAttribute("filename");
-    }
-    if (obj!=NULL)
-    {
-        obj->parseFields(arg->getAttributeMap() );
-        if (arg->getAttribute("scale")!=NULL)
-        {
-            obj->applyScale(atof(arg->getAttribute("scale")));
-            arg->removeAttribute("scale");
-        }
-        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        {
-            obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-            arg->removeAttribute("dx");
-            arg->removeAttribute("dy");
-            arg->removeAttribute("dz");
-        }
-    }
+	obj = new component::MechanicalObject<DataTypes>();
+	if (arg->getAttribute("filename"))
+	{
+		component::MechanicalObjectLoader<DataTypes> loader(obj);
+		loader.load(arg->getAttribute("filename"));
+		arg->removeAttribute("filename");
+	}
+	if (obj!=NULL)
+	{
+		obj->parseFields(arg->getAttributeMap() );
+		if (arg->getAttribute("scale")!=NULL) {
+			obj->applyScale(atof(arg->getAttribute("scale")));
+			arg->removeAttribute("scale");
+		}
+		if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL) {
+			obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+			arg->removeAttribute("dx");
+			arg->removeAttribute("dy");
+			arg->removeAttribute("dz");
+		}
+	}
 }
 
 } // namespace helper
@@ -80,7 +60,14 @@ Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > Me
 Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectClass("MechanicalObject",true);
 Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<RigidTypes> > MechanicalObjectRigidClass("MechanicalObjectRigid",true);
 Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<LaparoscopicRigidTypes> > MechanicalObjectLaparoscopicRigidClass("LaparoscopicObject",true);
+*/
 
+int MechanicalObjectVec3fClass = core::RegisterObject("mechanical state vectors")
+        .add< MechanicalObject<Vec3dTypes> >()
+        .add< MechanicalObject<Vec3fTypes> >()
+        .add< MechanicalObject<RigidTypes> >()
+        .add< MechanicalObject<LaparoscopicRigidTypes> >()
+        ;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 

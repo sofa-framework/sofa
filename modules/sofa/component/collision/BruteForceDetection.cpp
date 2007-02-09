@@ -4,7 +4,7 @@
 #include <sofa/component/collision/Line.h>
 #include <sofa/component/collision/Point.h>
 #include <sofa/helper/FnDispatcher.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <map>
 #include <queue>
@@ -30,21 +30,16 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace collision;
 
-void create(BruteForceDetection*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new BruteForceDetection();
-    if (arg->getAttribute("draw"))
-        obj->setDraw(atoi(arg->getAttribute("draw"))!=0);
-}
-
 SOFA_DECL_CLASS(BruteForce)
 
-Creator<simulation::tree::xml::ObjectFactory, BruteForceDetection> BruteForceDetectionClass("BruteForceDetection");
+int BruteForceDetectionClass = core::RegisterObject("TODO")
+        .add< BruteForceDetection >()
+        ;
 
 using namespace core::objectmodel;
 
 BruteForceDetection::BruteForceDetection()
-    : bDraw(false)
+    : bDraw(dataField(&bDraw, false, "draw", "enable/disable display of results"))
 {
 }
 
@@ -318,7 +313,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
 
 void BruteForceDetection::draw()
 {
-    if (!bDraw) return;
+    if (!bDraw.getValue()) return;
 
     if (!elemPairs.empty())
     {

@@ -27,41 +27,40 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    Deriv planeNormal;
-    Real planeD;
-
-    Real stiffness;
-    Real damping;
-
     std::vector<unsigned int> contacts;
 
 public:
 
-    core::objectmodel::DataField<Coord> _color;
+    DataField<Deriv> planeNormal;
+    DataField<Real> planeD;
+    DataField<Real> stiffness;
+    DataField<Real> damping;
+    DataField<Coord> color;
 
-    PlaneForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object=NULL, const std::string& /*name*/="")
-        : Inherit(object), planeD(0), stiffness(500), damping(5)
-        , _color(dataField(&_color, Coord(0,.5f,.2f), "color", "plane color"))
+    PlaneForceField()
+        : planeNormal(dataField(&planeNormal, Deriv(0, 0, 1), "normal", "plane normal"))
+        , planeD(dataField(&planeD, (Real)0, "d", "plane d coef"))
+        , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness"))
+        , damping(dataField(&damping, (Real)5, "damping", "force damping"))
+        , color(dataField(&color, Coord(0.0f,.5f,.2f), "color", "plane color"))
     {
     }
 
     void setPlane(const Deriv& normal, Real d)
     {
-        planeNormal = normal;
-        planeD = d;
         Real n = normal.norm();
-        planeNormal /= n;
-        d /= n;
+        planeNormal.setValue( normal / n);
+        planeD.setValue( d / n );
     }
 
     void setStiffness(Real stiff)
     {
-        stiffness = stiff;
+        stiffness.setValue( stiff );
     }
 
     void setDamping(Real damp)
     {
-        damping = damp;
+        damping.setValue( damp );
     }
 
     void rotate( Deriv axe, Real angle ); // around the origin (0,0,0)

@@ -38,9 +38,13 @@ public:
     /// Find a node given its name
     virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false) = 0;
 
-
     /// Get an attribute given its name (return defaultVal if not present)
     virtual const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
+
+    /// Get an attribute given its name (return defaultVal if not present)
+    virtual void removeAttribute(const std::string&)
+    {
+    }
 
     virtual std::string getFullName() const;
 

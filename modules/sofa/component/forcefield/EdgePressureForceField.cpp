@@ -1,5 +1,5 @@
 #include <sofa/component/forcefield/EdgePressureForceField.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/helper/gl/template.h>
@@ -10,14 +10,9 @@
 #include <set>
 #include <sofa/defaulttype/Vec3Types.h>
 
-
-
-
-
 #ifdef _WIN32
 #include <windows.h>
 #endif
-
 
 // #define DEBUG_TRIANGLEFEM
 
@@ -36,21 +31,19 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-
 template <class DataTypes> EdgePressureForceField<DataTypes>::~EdgePressureForceField()
 {
-
 }
-
 
 template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 {
     //std::cerr << "initializing EdgePressureForceField" << std::endl;
+    this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
-    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->_object->getContext()->getTopology());
+    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
 
     // get restPosition
-    VecCoord& p = *this->_object->getX();
+    VecCoord& p = *this->mstate->getX();
     _initialPoints = p;
     if (usePlaneSelection)
         selectEdgesAlongPlane();
@@ -80,13 +73,11 @@ void EdgePressureForceField<DataTypes>::addEdgePressure(Index ind1, Index ind2)
     nbEdges++;
 }
 template <class DataTypes>
-void EdgePressureForceField<DataTypes>::addForce()
+void EdgePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
 {
     unsigned int i;
     EdgePressureInformation *edge;
 
-    VecDeriv& f = *this->_object->getF();
-    VecCoord& x = *this->_object->getX();
     f.resize(x.size());
 
 
@@ -102,13 +93,11 @@ void EdgePressureForceField<DataTypes>::addForce()
 }
 
 template <class DataTypes>
-double EdgePressureForceField<DataTypes>::getPotentialEnergy()
+double EdgePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     cerr<<"EdgePressureForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;
 }
-
-
 
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
@@ -151,7 +140,7 @@ void EdgePressureForceField<DataTypes>::setNormal(Coord dir)
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 {
-    VecCoord& x = *this->_object->getX();
+    VecCoord& x = *this->mstate->getX();
     std::vector<unsigned int> vArray;
     Index i,j,k,l,m;
     int n;
@@ -205,13 +194,13 @@ template<class DataTypes>
 void EdgePressureForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
-    if (!this->_object) return;
+    if (!this->mstate) return;
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-    const VecCoord& x = *this->_object->getX();
+    const VecCoord& x = *this->mstate->getX();
 
     Real dx=(x[1] -x[0]).norm();
     Real dy=(x[2] -x[1]).norm();
@@ -238,81 +227,73 @@ void EdgePressureForceField<DataTypes>::draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-SOFA_DECL_CLASS(EdgePressureForceField)
+template<class DataTypes>
+void EdgePressureForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
+    EdgePressureForceField<DataTypes>* obj = this;
+    if (arg->getAttribute("px"))
+    {
+        obj->setPressure(Vec3d(atof(arg->getAttribute("px","0")), atof(arg->getAttribute("py","0")), atof(arg->getAttribute("pz","0"))));
+    }
+    if (arg->getAttribute("edges"))
+    {
+        const char* str = arg->getAttribute("edges");
+        const char* str2 = NULL;
+        unsigned int ind1,ind2;
+        for(;;)
+        {
+            ind1 = (unsigned int)strtod(str,(char**)&str2);
+            if (str2==str) break;
+            str = str2;
+            ind2 = (unsigned int)strtod(str,(char**)&str2);
+            if (str2==str) break;
+            str = str2;
+            obj->addEdgePressure(ind1,ind2);
+        }
+    }
+    if (arg->getAttribute("normal"))
+    {
+        const char* str = arg->getAttribute("normal");
+        const char* str2 = NULL;
+        Real val[3];
+        unsigned int i;
+        for(i=0; i<3; i++)
+        {
+            val[i] = (Real)strtod(str,(char**)&str2);
+            if (str2==str) break;
+            str = str2;
+        }
+        Coord dir(val);
+        obj->setNormal(dir);
+    }
+    if (arg->getAttribute("distance"))
+    {
+        const char* str = arg->getAttribute("distance");
+        const char* str2 = NULL;
+        Real val[2];
+        unsigned int i;
+        for(i=0; i<2; i++)
+        {
+            val[i] = (Real)strtod(str,(char**)&str2);
+            if (str2==str) break;
+            str = str2;
+        }
+        obj->setDminAndDmax(val[0],val[1]);
+    }
+}
 
 using namespace sofa::defaulttype;
 
 template class EdgePressureForceField<Vec3dTypes>;
 template class EdgePressureForceField<Vec3fTypes>;
 
+SOFA_DECL_CLASS(EdgePressureForceField)
 
-template<class DataTypes>
-void create(EdgePressureForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    typedef typename DataTypes::Coord::value_type   Real;
-    typedef typename DataTypes::Coord   Coord;
-
-    simulation::tree::xml::createWithParent< EdgePressureForceField<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-        if (arg->getAttribute("px"))
-        {
-            obj->setPressure(Vec3d(atof(arg->getAttribute("px","0")), atof(arg->getAttribute("py","0")), atof(arg->getAttribute("pz","0"))));
-        }
-        if (arg->getAttribute("edges"))
-        {
-            const char* str = arg->getAttribute("edges");
-            const char* str2 = NULL;
-            unsigned int ind1,ind2;
-            for(;;)
-            {
-                ind1 = (unsigned int)strtod(str,(char**)&str2);
-                if (str2==str) break;
-                str = str2;
-                ind2 = (unsigned int)strtod(str,(char**)&str2);
-                if (str2==str) break;
-                str = str2;
-                obj->addEdgePressure(ind1,ind2);
-            }
-        }
-        if (arg->getAttribute("normal"))
-        {
-            const char* str = arg->getAttribute("normal");
-            const char* str2 = NULL;
-            Real val[3];
-            unsigned int i;
-            for(i=0; i<3; i++)
-            {
-                val[i] = (Real)strtod(str,(char**)&str2);
-                if (str2==str) break;
-                str = str2;
-            }
-            Coord dir(val);
-            obj->setNormal(dir);
-        }
-        if (arg->getAttribute("distance"))
-        {
-            const char* str = arg->getAttribute("distance");
-            const char* str2 = NULL;
-            Real val[2];
-            unsigned int i;
-            for(i=0; i<2; i++)
-            {
-                val[i] = (Real)strtod(str,(char**)&str2);
-                if (str2==str) break;
-                str = str2;
-            }
-            obj->setDminAndDmax(val[0],val[1]);
-        }
-    }
-}
-
-Creator<simulation::tree::xml::ObjectFactory, EdgePressureForceField<Vec3dTypes> >
-EdgePressureForceFieldVec3dClass("EdgePressureForceField", true);
-
-Creator<simulation::tree::xml::ObjectFactory, EdgePressureForceField<Vec3fTypes> >
-EdgePressureForceFieldVec3fClass("EdgePressureForceField", true);
-
+int EdgePressureForceFieldClass = core::RegisterObject("TODO")
+        .add< EdgePressureForceField<Vec3dTypes> >()
+        .add< EdgePressureForceField<Vec3fTypes> >()
+        ;
 
 } // namespace forcefield
 

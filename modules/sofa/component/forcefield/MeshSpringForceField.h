@@ -38,19 +38,8 @@ protected:
     void addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
 
 public:
-    MeshSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
-        : StiffSpringForceField<DataTypes>(object1, object2),
-          linesStiffness(0), linesDamping(0),
-          trianglesStiffness(0),  trianglesDamping(0),
-          quadsStiffness(0), quadsDamping(0),
-          tetrasStiffness(0), tetrasDamping(0),
-          cubesStiffness(0), cubesDamping(0)
-    {
-    }
-
-    MeshSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
-        : StiffSpringForceField<DataTypes>(object),
-          linesStiffness(0), linesDamping(0),
+    MeshSpringForceField()
+        : linesStiffness(0), linesDamping(0),
           trianglesStiffness(0),  trianglesDamping(0),
           quadsStiffness(0), quadsDamping(0),
           tetrasStiffness(0), tetrasDamping(0),
@@ -132,6 +121,9 @@ public:
     }
 
     virtual void init();
+
+    void parse(core::objectmodel::BaseObjectDescription* arg);
+
 };
 
 } // namespace forcefield

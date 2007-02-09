@@ -1,7 +1,7 @@
 #include <sofa/component/forcefield/WashingMachineForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -19,16 +19,11 @@ template class WashingMachineForceField<Vec3fTypes>;
 
 SOFA_DECL_CLASS(WashingMachineForceField)
 
-
-template<class DataTypes>
-void create(WashingMachineForceField<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    simulation::tree::xml::createWithParent< WashingMachineForceField<DataTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-    obj->parseFields( arg->getAttributeMap() );
-}
-
-Creator<simulation::tree::xml::ObjectFactory, WashingMachineForceField<Vec3dTypes> > WashingMachineForceFieldVec3dClass("WashingMachineForceField", true);
-Creator<simulation::tree::xml::ObjectFactory, WashingMachineForceField<Vec3fTypes> > WashingMachineForceFieldVec3fClass("WashingMachineForceField", true);
+// Register in the Factory
+int WashingMachineForceFieldClass = core::RegisterObject("TODO")
+        .add< WashingMachineForceField<Vec3dTypes> >()
+        .add< WashingMachineForceField<Vec3fTypes> >()
+        ;
 
 } // namespace forcefield
 

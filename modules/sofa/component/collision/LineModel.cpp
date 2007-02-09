@@ -2,7 +2,7 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Line.h>
 #include <sofa/core/CollisionElement.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <GL/gl.h>
 
@@ -17,16 +17,11 @@ namespace collision
 
 SOFA_DECL_CLASS(Line)
 
-void create(LineModel*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new LineModel;
-    if (obj!=NULL)
-    {
-        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
-    }
-}
+int LineModelClass = core::RegisterObject("TODO")
+        .add< LineModel >()
+        .addAlias("Line")
+        ;
 
-Creator<simulation::tree::xml::ObjectFactory, LineModel > LineModelClass("Line");
 
 LineModel::LineModel()
     : static_(false), meshRevision(-1), mstate(NULL), mesh(NULL)

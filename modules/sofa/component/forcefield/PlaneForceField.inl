@@ -26,12 +26,12 @@ void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, cons
     f1.resize(p1.size());
     for (unsigned int i=0; i<p1.size(); i++)
     {
-        Real d = p1[i]*planeNormal-planeD;
+        Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
         if (d<0)
         {
-            Real forceIntensity = -this->stiffness*d;
-            Real dampingIntensity = -this->damping*d;
-            Deriv force = planeNormal*forceIntensity - v1[i]*dampingIntensity;
+            Real forceIntensity = -this->stiffness.getValue()*d;
+            Real dampingIntensity = -this->damping.getValue()*d;
+            Deriv force = planeNormal.getValue()*forceIntensity - v1[i]*dampingIntensity;
             f1[i]+=force;
             //this->dfdd[i] = -this->stiffness;
             this->contacts.push_back(i);
@@ -47,7 +47,7 @@ void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1)
     {
         unsigned int p = this->contacts[i];
         assert(p<dx1.size());
-        f1[p] += planeNormal * (-this->stiffness * (dx1[p]*planeNormal));
+        f1[p] += planeNormal.getValue() * (-this->stiffness.getValue() * (dx1[p]*planeNormal.getValue()));
     }
 }
 
@@ -57,7 +57,7 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& x )
     this->contacts.clear();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        Real d = x[i]*planeNormal-planeD;
+        Real d = x[i]*planeNormal.getValue()-planeD.getValue();
         if (d<0)
         {
             this->contacts.push_back(i);
@@ -78,10 +78,10 @@ template<class DataTypes>
 void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 {
     Deriv v;
-    v = planeNormal.cross(axe);
+    v = planeNormal.getValue().cross(axe);
     v.normalize();
 
-    planeNormal = planeNormal * cos( angle ) + v * sin( angle );
+    planeNormal.setValue( planeNormal.getValue() * cos( angle ) + v * sin( angle ) );
 }
 
 
@@ -101,18 +101,20 @@ void PlaneForceField<DataTypes>::draw2(float size)
 
     const VecCoord& p1 = *this->mstate->getX();
 
+    const Coord normal = planeNormal.getValue();
+
     // un vecteur quelconque du plan
     Deriv v1;
-    if( 0.0 != planeNormal[0] ) v1 = Deriv((-planeNormal[2]-planeNormal[1])/planeNormal[0], 1.0, 1.0);
-    else if ( 0.0 != planeNormal[1] ) v1 = Deriv(1.0, (-planeNormal[0]-planeNormal[2])/planeNormal[1],1.0);
-    else if ( 0.0 != planeNormal[2] ) v1 = Deriv(1.0, 1.0, (-planeNormal[0]-planeNormal[1])/planeNormal[2]);
+    if( 0.0 != normal[0] ) v1 = Deriv((-normal[2]-normal[1])/normal[0], 1.0, 1.0);
+    else if ( 0.0 != normal[1] ) v1 = Deriv(1.0, (-normal[0]-normal[2])/normal[1],1.0);
+    else if ( 0.0 != normal[2] ) v1 = Deriv(1.0, 1.0, (-normal[0]-normal[1])/normal[2]);
     v1.normalize();
     // un deuxiement vecteur quelconque du plan orthogonal au premier
     Deriv v2;
-    v2 = v1.cross(planeNormal);
+    v2 = v1.cross(normal);
     v2.normalize();
 
-    Coord center = planeNormal*planeD;
+    Coord center = normal*planeD.getValue();
     Coord q0 = center-v1*size-v2*size;
     Coord q1 = center+v1*size-v2*size;
     Coord q2 = center+v1*size+v2*size;
@@ -123,7 +125,7 @@ void PlaneForceField<DataTypes>::draw2(float size)
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glCullFace(GL_FRONT);
 
-    glColor3d(_color.getValue()[0],_color.getValue()[1],_color.getValue()[2]);
+    glColor3d(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
 
 
 
@@ -143,9 +145,9 @@ void PlaneForceField<DataTypes>::draw2(float size)
     glBegin(GL_LINES);
     for (unsigned int i=0; i<p1.size(); i++)
     {
-        Real d = p1[i]*planeNormal-planeD;
+        Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
         Coord p2 = p1[i];
-        p2 += planeNormal*(-d);
+        p2 += planeNormal.getValue()*(-d);
         if (d<0)
         {
             glVertex3d(p1[i][0],p1[i][1],p1[i][2]);

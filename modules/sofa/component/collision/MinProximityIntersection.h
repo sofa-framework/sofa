@@ -22,28 +22,29 @@ namespace collision
 class MinProximityIntersection : public DiscreteIntersection
 {
 public:
-    MinProximityIntersection(bool useSphereTriangle = true
-                            );
+    DataField<bool> useSphereTriangle;
+    DataField<double> alarmDistance;
+    DataField<double> contactDistance;
+
+    MinProximityIntersection();
+
+    virtual void init();
 
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
     virtual core::componentmodel::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2);
 
-    /// returns true if algorithm uses continous detection
+    /// returns true if algorithm uses proximity
     virtual bool useProximity() const { return true; }
 
     /// Return the alarm distance (must return 0 if useMinProximity() is false)
-    double getAlarmDistance() const { return alarmDistance; }
+    double getAlarmDistance() const { return alarmDistance.getValue(); }
 
     /// Return the contact distance (must return 0 if useMinProximity() is false)
-    double getContactDistance() const { return contactDistance; }
+    double getContactDistance() const { return contactDistance.getValue(); }
 
-    void setAlarmDistance(double v) { alarmDistance = v; }
+    void setAlarmDistance(double v) { alarmDistance.setValue(v); }
 
-    void setContactDistance(double v) { contactDistance = v; }
-
-protected:
-    double alarmDistance;
-    double contactDistance;
+    void setContactDistance(double v) { contactDistance.setValue(v); }
 };
 
 // Jeremie A. : put the methods inside a namespace instead of a class,

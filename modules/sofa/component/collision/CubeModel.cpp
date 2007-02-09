@@ -1,5 +1,5 @@
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <GL/gl.h>
 #include <algorithm>
 #include <math.h>
@@ -18,23 +18,12 @@ SOFA_DECL_CLASS(Cube)
 
 using namespace sofa::defaulttype;
 
-void create(CubeModel*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new CubeModel;
-    if (obj!=NULL)
-    {
-        obj->setStatic(atoi(arg->getAttribute("static","0"))!=0);
-        //if (arg->getAttribute("scale")!=NULL)
-        //	obj->applyScale(atof(arg->getAttribute("scale","1.0")));
-        //if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-        //	obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-    }
-}
-
-Creator<simulation::tree::xml::ObjectFactory, CubeModel > CubeModelClass("Cube");
+int CubeModelClass = core::RegisterObject("TODO")
+        .add< CubeModel >()
+        .addAlias("Cube")
+        ;
 
 CubeModel::CubeModel()
-    : static_(false)
 {
 }
 

@@ -20,6 +20,7 @@ template <class DataTypes>
 class FixedPlaneConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public core::VisualModel
 {
 public:
+    typedef core::componentmodel::behavior::Constraint<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -38,9 +39,9 @@ protected:
 public:
     FixedPlaneConstraint();
 
-    FixedPlaneConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate);
-
     ~FixedPlaneConstraint();
+
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     FixedPlaneConstraint<DataTypes>* addConstraint(int index);
     FixedPlaneConstraint<DataTypes>* removeConstraint(int index);

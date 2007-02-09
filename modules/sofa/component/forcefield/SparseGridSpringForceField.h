@@ -18,6 +18,7 @@ class SparseGridSpringForceField : public StiffSpringForceField<DataTypes>
 {
     /// make the spring force field of a sparsegrid
 public:
+    typedef StiffSpringForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -45,13 +46,14 @@ public:
     {
     }
 
-    SparseGridSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
-        : StiffSpringForceField<DataTypes>(object),
-          linesStiffness(0), linesDamping(0),
+    SparseGridSpringForceField()
+        : linesStiffness(0), linesDamping(0),
           quadsStiffness(0), quadsDamping(0),
           cubesStiffness(0), cubesDamping(0)
     {
     }
+
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     Real getStiffness() const { return linesStiffness; }
     Real getLinesStiffness() const { return linesStiffness; }

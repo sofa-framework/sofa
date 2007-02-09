@@ -1,10 +1,10 @@
 #include <sofa/component/collision/DefaultPipeline.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <GL/gl.h>
 
-#define VERBOSE(a) if (getVerbose()) a; else
+#define VERBOSE(a) if (bVerbose.getValue()) a; else
 
 namespace sofa
 {
@@ -20,20 +20,17 @@ using namespace core::objectmodel;
 using namespace core::componentmodel::collision;
 using namespace sofa::defaulttype;
 
-void create(DefaultPipeline*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new DefaultPipeline();
-    obj->setVerbose(atoi(arg->getAttribute("verbose","0"))!=0);
-    obj->setDraw(atoi(arg->getAttribute("draw","0"))!=0);
-    obj->setDepth(atoi(arg->getAttribute("depth","6")));
-}
-
 SOFA_DECL_CLASS(DefaultPipeline)
 
-Creator<simulation::tree::xml::ObjectFactory, DefaultPipeline> DefaultPipelineClass("CollisionPipeline");
+int DefaultPipelineClass = core::RegisterObject("TODO")
+        .add< DefaultPipeline >()
+        .addAlias("CollisionPipeline")
+        ;
 
 DefaultPipeline::DefaultPipeline()
-    : verbose_(false), draw_(false), depth_(6)
+    : bVerbose(dataField(&bVerbose, false, "verbose","TODO"))
+    , bDraw(dataField(&bDraw, false, "draw","TODO"))
+    , depth(dataField(&depth, 6, "depth","TODO"))
 {
 }
 
@@ -100,9 +97,9 @@ void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionMode
         {
             if (!(*it)->isActive()) continue;
             if (continuous)
-                (*it)->computeContinuousBoundingTree(dt, getDepth());
+                (*it)->computeContinuousBoundingTree(dt, depth.getValue());
             else
-                (*it)->computeBoundingTree(getDepth());
+                (*it)->computeBoundingTree(depth.getValue());
             vectBoundingVolume.push_back ((*it)->getFirst());
             ++nActive;
         }
@@ -220,7 +217,7 @@ void DefaultPipeline::doCollisionResponse()
 
 void DefaultPipeline::draw()
 {
-    if (!getDraw()) return;
+    if (!bDraw.getValue()) return;
     glDisable(GL_LIGHTING);
     glLineWidth(2);
     glBegin(GL_LINES);

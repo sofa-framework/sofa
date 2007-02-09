@@ -41,8 +41,7 @@ protected:
 
 public:
 
-    LagrangianMultiplierFixedConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* object)
-        : core::componentmodel::behavior::ForceField<DataTypes>(object)
+    LagrangianMultiplierFixedConstraint()
     {
     }
 

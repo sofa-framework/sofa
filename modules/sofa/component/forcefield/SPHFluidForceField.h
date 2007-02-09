@@ -261,7 +261,9 @@ protected:
     std::vector<DForce> dforces;
 
 public:
-    SPHFluidForceField(sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* object=NULL);
+    SPHFluidForceField();
+
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     Real getParticleRadius() const { return particleRadius; }
     void setParticleRadius(Real v) { particleRadius = v;    }

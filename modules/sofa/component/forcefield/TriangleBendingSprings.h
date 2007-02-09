@@ -39,7 +39,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 
-    TriangleBendingSprings(core::componentmodel::behavior::MechanicalState<DataTypes>* object);
+    TriangleBendingSprings();
 
     ~TriangleBendingSprings();
 

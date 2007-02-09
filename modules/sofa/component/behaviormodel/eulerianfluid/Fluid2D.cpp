@@ -1,6 +1,6 @@
 #include <sofa/component/behaviormodel/eulerianfluid/Fluid2D.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <iostream>
 
 namespace sofa
@@ -15,15 +15,13 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-void create(Fluid2D*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new Fluid2D;
-    obj->parseFields( arg->getAttributeMap() );
-}
-
 SOFA_DECL_CLASS(Fluid2D)
 
-Creator<simulation::tree::xml::ObjectFactory, Fluid2D> Fluid2DClass("Fluid2D");
+int Fluid2DClass = core::RegisterObject("Eulerian 2D fluid")
+        .add< Fluid2D >()
+        .addLicense("LGPL")
+        .addAuthor("Jeremie Allard")
+        ;
 
 Fluid2D::Fluid2D()
     : nx(16), ny(16), cellwidth(1.0f),
