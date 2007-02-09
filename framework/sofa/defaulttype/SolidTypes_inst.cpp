@@ -1,4 +1,4 @@
-#include <sofa/defaulttype/SolidTypes.cpp>
+#include <sofa/defaulttype/SolidTypes.inl>
 
 namespace sofa
 {

@@ -9,6 +9,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#ifndef SOFA_DEFAULTTYPE_SOLIDTYPES_INL
+#define SOFA_DEFAULTTYPE_SOLIDTYPES_INL
+
 #include <sofa/defaulttype/SolidTypes.h>
 #ifdef _WIN32
 #include <windows.h>
@@ -564,4 +567,4 @@ typename SolidTypes<R>::Mat SolidTypes<R>::dyad( const Vec& u, const Vec& v )
 
 }// sofa
 
-
+#endif
