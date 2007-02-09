@@ -326,7 +326,7 @@ void MechanicalObject<DataTypes>::applyScale(double s)
     VecCoord& x = *this->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        x[i] *= s;
+        x[i] *= (Real)s;
     }
 }
 

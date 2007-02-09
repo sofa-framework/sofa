@@ -113,7 +113,7 @@ public:
     //}
 };
 
-inline std::ostream& operator<<(std::ostream& o, const BaseMechanicalState::VecId::VecId& v)
+inline std::ostream& operator<<(std::ostream& o, const BaseMechanicalState::VecId& v)
 {
     switch (v.type)
     {
