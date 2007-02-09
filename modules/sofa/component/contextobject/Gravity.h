@@ -23,22 +23,17 @@ namespace contextobject
 
 using namespace sofa::defaulttype;
 
+/** Override the default gravity */
 class Gravity : public core::objectmodel::ContextObject
 {
     typedef defaulttype::Vec3d Vec3;
 public:
     Gravity();
-    //virtual const char* getTypeName() const { return "Gravity"; }
 
-    DataField<Vec3> f_gravity;
-
-//         const Vec3&  getGravity() const;
-// 	Gravity* setGravity( const Vec3& g );
+    DataField<Vec3> f_gravity; ///< Gravity in the world coordinate system
 
     /// Modify the context of the GNode
     void apply();
-protected:
-    //Vec3 gravity_;
 };
 
 } // namespace contextobject

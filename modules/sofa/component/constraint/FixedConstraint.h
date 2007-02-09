@@ -30,6 +30,8 @@ class FixedConstraintInternalData
 {
 };
 
+/** Attach given particles to their initial positions.
+*/
 template <class DataTypes>
 class FixedConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public core::VisualModel
 {

@@ -76,7 +76,7 @@ void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx)
 {
     for (unsigned int i=0; i<dx.size(); i++)
     {
-        res[i] += dx[i] * mass;
+        res[i] += dx[i] * mass.getValue();
     }
 }
 
@@ -85,7 +85,7 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
     for (unsigned int i=0; i<f.size(); i++)
     {
-        a[i] = f[i] / mass;
+        a[i] = f[i] / mass.getValue();
     }
 }
 
@@ -97,7 +97,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * mass;
+    Deriv mg = theGravity * mass.getValue();
     //cerr<<"UniformMass<DataTypes, MassType>::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<endl;
 
     // velocity-based stuff
@@ -118,7 +118,7 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
     for (unsigned int i=0; i<f.size(); i++)
     {
         //f[i] += mg;
-        f[i] += mg + core::componentmodel::behavior::inertiaForce(vframe,aframe,mass,x[i],v[i]);
+        f[i] += mg + core::componentmodel::behavior::inertiaForce(vframe,aframe,mass.getValue(),x[i],v[i]);
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<endl;
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
     }
@@ -131,7 +131,7 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
     double e=0;
     for (unsigned int i=0; i<v.size(); i++)
     {
-        e+= v[i]*mass*v[i];
+        e+= v[i]*mass.getValue()*v[i];
     }
     //cerr<<"UniformMass<DataTypes, MassType>::getKineticEnergy = "<<e/2<<endl;
     return e/2;
@@ -152,7 +152,7 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
         /*        cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, mass = "<<mass<<endl;
                 cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, x = "<<x[i]<<endl;
                 cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, remove "<<theGravity*mass*x[i]<<endl;*/
-        e -= theGravity*mass*x[i];
+        e -= theGravity*mass.getValue()*x[i];
     }
     return e;
 }

@@ -16,7 +16,7 @@ namespace component
 namespace constraint
 {
 
-/** Apply sinusoidal trajectories. Defined as \f$ x = x_m A \sin ( \omega t + \phi )\f$
+/** Apply sinusoidal trajectories to particles. Defined as \f$ x = x_m A \sin ( \omega t + \phi )\f$
 	where \f$ x_m, A , \omega t , \phi \f$ are the mean value, the amplitude, the pulsation and the phase, respectively.
 	*/
 template <class DataTypes>

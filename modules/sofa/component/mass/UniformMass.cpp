@@ -152,9 +152,9 @@ void UniformMass<RigidTypes, RigidMass>::draw()
     // So to get lx,ly,lz back we need to do
     //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
     // Note that RigidMass inertiaMatrix is already divided by M
-    double m00 = mass.inertiaMatrix[0][0];
-    double m11 = mass.inertiaMatrix[1][1];
-    double m22 = mass.inertiaMatrix[2][2];
+    double m00 = mass.getValue().inertiaMatrix[0][0];
+    double m11 = mass.getValue().inertiaMatrix[1][1];
+    double m22 = mass.getValue().inertiaMatrix[2][2];
     len[0] = sqrt(m11+m22-m00);
     len[1] = sqrt(m00+m22-m11);
     len[2] = sqrt(m00+m11-m22);
@@ -181,7 +181,7 @@ double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::
     ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += g*mass.mass*x[i].getCenter();
+        e += g*mass.getValue().mass*x[i].getCenter();
     }
     return e;
 }
@@ -196,7 +196,7 @@ template class UniformMass<RigidTypes,RigidMass>
 ;
 
 // Register in the Factory
-int UniformMassClass = core::RegisterObject("TODO")
+int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
         .add< UniformMass<Vec3dTypes,double> >()
         .add< UniformMass<Vec3fTypes,float> >()
         .add< UniformMass<RigidTypes,RigidMass> >()

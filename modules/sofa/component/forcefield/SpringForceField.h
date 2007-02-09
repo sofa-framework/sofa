@@ -29,6 +29,7 @@ class SpringForceFieldInternalData
 public:
 };
 
+/** Define a set of springs between particles */
 template<class DataTypes>
 class SpringForceField : public core::componentmodel::behavior::InteractionForceField, public core::VisualModel
 {

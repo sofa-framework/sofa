@@ -120,7 +120,7 @@ void DiagonalMass<RigidTypes, RigidMass>::draw()
 SOFA_DECL_CLASS(DiagonalMass)
 
 // Register in the Factory
-int DiagonalMassClass = core::RegisterObject("TODO")
+int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
         .add< DiagonalMass<Vec3dTypes,double> >()
         .add< DiagonalMass<Vec3fTypes,float> >()
         .add< DiagonalMass<RigidTypes,RigidMass> >()

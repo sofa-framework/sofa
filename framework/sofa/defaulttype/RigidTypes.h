@@ -18,6 +18,8 @@ namespace defaulttype
 
 using sofa::helper::vector;
 
+/** Degrees of freedom of rigid bodies. Orientations are modeled using quaternions.
+*/
 class RigidTypes
 {
 public:

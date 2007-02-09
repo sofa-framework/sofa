@@ -16,7 +16,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(FixedConstraint)
 
-int FixedConstraintClass = core::RegisterObject("TODO")
+int FixedConstraintClass = core::RegisterObject("Attach given particles to their initial positions")
         .add< FixedConstraint<Vec3dTypes> >()
         .add< FixedConstraint<Vec3fTypes> >()
         .add< FixedConstraint<RigidTypes> >()
