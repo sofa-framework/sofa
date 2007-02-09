@@ -18,8 +18,10 @@ namespace odesolver
 class BiCGStabImplicitSolver : public core::componentmodel::behavior::OdeSolver
 {
 public:
+    typedef core::componentmodel::behavior::OdeSolver Inherited;
 
     BiCGStabImplicitSolver();
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
     void solve (double dt);
     BiCGStabImplicitSolver* setMaxIter( int maxiter );
 
@@ -28,7 +30,10 @@ public:
     double tolerance;
     double rayleighStiffness;
 
-    bool getDebug() { return false; }
+    bool getDebug()
+    {
+        return false;
+    }
 };
 
 } // namespace odesolver

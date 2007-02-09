@@ -26,6 +26,7 @@ static void skipToEOL(FILE* f)
 template<>
 void UniformMass<RigidTypes, RigidMass>::parse (core::objectmodel::BaseObjectDescription* arg)
 {
+    Inherited::parse(arg);
     RigidMass m(1.0f);
     if (arg->getAttribute("filename"))
     {

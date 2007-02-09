@@ -3,7 +3,7 @@
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/CGImplicitSolver.h>
 //#include "Sofa/Core/IntegrationGroup.h"
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
 
@@ -211,15 +211,10 @@ void CGImplicitSolver::solve(double dt)
     }
 }
 
-void create(CGImplicitSolver*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new CGImplicitSolver();
-    obj->parseFields( arg->getAttributeMap() );
-}
-
 SOFA_DECL_CLASS(CGImplicit)
 
-helper::Creator<simulation::tree::xml::ObjectFactory, CGImplicitSolver> CGImplicitSolverClass("CGImplicit");
+int CGImplicitSolverClass = core::RegisterObject("TODO")
+        .add< CGImplicitSolver >();
 
 } // namespace odesolver
 

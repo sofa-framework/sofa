@@ -1,5 +1,5 @@
 #include <sofa/component/odesolver/RungeKutta4Solver.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <math.h>
 
 
@@ -87,15 +87,11 @@ void RungeKutta4Solver::solve(double dt)
     vel.peq(k4a,stepBy6);
 }
 
-void create(RungeKutta4Solver*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    obj = new RungeKutta4Solver();
-    obj->parseFields( arg->getAttributeMap() );
-}
+int RungeKutta4SolverClass = core::RegisterObject("TODO")
+        .add< RungeKutta4Solver >();
 
 SOFA_DECL_CLASS(RungeKutta4)
 
-Creator<simulation::tree::xml::ObjectFactory, RungeKutta4Solver> RungeKutta4SolverClass("RungeKutta4");
 
 } // namespace odesolver
 

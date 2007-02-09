@@ -5,6 +5,7 @@
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
+#include <sofa/core/ObjectFactory.h>
 
 using std::cerr;
 using std::endl;
@@ -169,28 +170,29 @@ void BiCGStabImplicitSolver::solve(double dt)
     }
 }
 
-void create(BiCGStabImplicitSolver*& obj, simulation::tree::xml::ObjectDescription* arg)
+void BiCGStabImplicitSolver::parse(core::objectmodel::BaseObjectDescription* arg)
 {
-    obj = new BiCGStabImplicitSolver();
+    Inherited::parse(arg);
     if (arg->getAttribute("iterations"))
-        obj->setMaxIter( atoi(arg->getAttribute("iterations")) );
+        this->setMaxIter( atoi(arg->getAttribute("iterations")) );
     if (arg->getAttribute("threshold"))
-        obj->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
+        this->smallDenominatorThreshold = atof(arg->getAttribute("threshold"));
     if (arg->getAttribute("tolerance"))
-        obj->tolerance = atof(arg->getAttribute("tolerance"));
+        this->tolerance = atof(arg->getAttribute("tolerance"));
     if (arg->getAttribute("stiffness"))
-        obj->rayleighStiffness = atof(arg->getAttribute("stiffness"));
+        this->rayleighStiffness = atof(arg->getAttribute("stiffness"));
     //if (arg->getAttribute("debug"))
-    //    obj->setDebug( atoi(arg->getAttribute("debug"))!=0 );
+    //    this->setDebug( atoi(arg->getAttribute("debug"))!=0 );
 }
 
 SOFA_DECL_CLASS(BiCGStabImplicit)
+// Register in the Factory
+int BiCGStabImplicitSolverClass = core::RegisterObject("TODO")
+        .add< BiCGStabImplicitSolver >();
 
-Creator<simulation::tree::xml::ObjectFactory, BiCGStabImplicitSolver> BiCGStabImplicitSolverClass("BiCGStabImplicit");
 
 } // namespace odesolver
 
 } // namespace component
 
 } // namespace sofa
-

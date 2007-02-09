@@ -2,7 +2,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/StaticSolver.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
 
@@ -105,16 +105,11 @@ void StaticSolver::solve(double)
     /*    cerr<<"StaticSolver::solve, new pos = "<<pos<<endl;*/
 }
 
-void create(StaticSolver*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    std::cerr<<"creating static solver"<<std::endl;
-    obj = new StaticSolver();
-    obj->parseFields( arg->getAttributeMap() );
-}
+int StaticSolverClass = core::RegisterObject("TODO")
+        .add< StaticSolver >();
 
 SOFA_DECL_CLASS(StaticSolver)
 
-Creator<simulation::tree::xml::ObjectFactory, StaticSolver> StaticSolverClass("StaticSolver");
 
 } // namespace odesolver
 
