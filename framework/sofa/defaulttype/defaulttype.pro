@@ -19,10 +19,11 @@ HEADERS += \
           SofaBaseMatrix.h \
           SofaBaseVector.h \
           SolidTypes.h \
+          SolidTypes.inl \
           Vec.h \ 
           Vec3Types.h 
           
 SOURCES += \
           Frame.cpp \
           Quat.cpp \
-          SolidTypes_inst.cpp 
+          SolidTypes.cpp 
