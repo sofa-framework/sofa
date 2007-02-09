@@ -2,7 +2,6 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/StaticSolver.h>
-#include <sofa/helper/MultiVector.h>
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -22,8 +21,6 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
-using namespace helper::io;
-using namespace helper;
 
 StaticSolver::StaticSolver() : f_maxCGIter( dataField(&f_maxCGIter,"iterations","Maximum number of iterations for the conjugated gradient algorithmIndices of the fixed points") )
 {
@@ -37,16 +34,16 @@ void StaticSolver::solve(double)
 {
     //objectmodel::BaseContext* group = getContext();
     OdeSolver* group = this;
-    helper::MultiVector pos(group, VecId::position());
-    helper::MultiVector vel(group, VecId::velocity());
-    helper::MultiVector dx(group, VecId::dx());
-    helper::MultiVector f(group, VecId::force());
-    helper::MultiVector b(group, V_DERIV);
-    helper::MultiVector p(group, V_DERIV);
-    helper::MultiVector q(group, V_DERIV);
-    helper::MultiVector r(group, V_DERIV);
-    helper::MultiVector x(group, V_DERIV);
-    helper::MultiVector z(group, V_DERIV);
+    MultiVector pos(group, VecId::position());
+    MultiVector vel(group, VecId::velocity());
+    MultiVector dx(group, VecId::dx());
+    MultiVector f(group, VecId::force());
+    MultiVector b(group, VecId::V_DERIV);
+    MultiVector p(group, VecId::V_DERIV);
+    MultiVector q(group, VecId::V_DERIV);
+    MultiVector r(group, VecId::V_DERIV);
+    MultiVector x(group, VecId::V_DERIV);
+    MultiVector z(group, VecId::V_DERIV);
 
     // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0

@@ -15,7 +15,6 @@ namespace component
 {
 
 
-using namespace helper::io;
 using namespace core::componentmodel::behavior;
 using namespace core::objectmodel;
 
@@ -31,6 +30,7 @@ class MechanicalObject : public MechanicalState<DataTypes>
 {
 public:
     typedef MechanicalState<DataTypes> Inherited;
+    typedef typename Inherited::VecId VecId;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

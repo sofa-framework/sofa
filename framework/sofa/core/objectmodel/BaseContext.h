@@ -4,8 +4,6 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/defaulttype/SolidTypes.h>
 //#include <sofa/defaulttype/SofaBaseMatrix.h>
-//#include <sofa/simulation/tree/Action.h>
-#include <sofa/helper/io/Encoding.h>
 #include <set>
 
 namespace sofa
@@ -37,7 +35,6 @@ public:
     typedef SolidTypes::Rot Quat;
     typedef SolidTypes::Mat Mat33;
     typedef SolidTypes::SpatialVector SpatialVector;
-    typedef helper::io::VecId VecId;
 
     BaseContext();
     virtual ~BaseContext();

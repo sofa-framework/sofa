@@ -40,8 +40,6 @@ HEADERS += \
           ./gl/Texture.h \
           ./gl/Trackball.h \
           ./gl/Transformation.h \
-          ./io/Encoding.h \
-          ./io/Encoding.inl \
           ./io/Image.h \
           ./io/ImageBMP.h \
           ./io/ImagePNG.h \
@@ -54,7 +52,6 @@ HEADERS += \
           ./io/TriangleLoader.h \
           ./LCPSolver.h \
           ./LCPSolver.inl \
-          ./MultiVector.h \
           ./PolarDecompose.h \
           ./proximity.h \
           ./rmath.h \

@@ -27,7 +27,7 @@ using namespace sofa::core::componentmodel::behavior;
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
-class PointSetTopologyLoader : public MeshTopologyLoader
+class PointSetTopologyLoader : public helper::io::MeshTopologyLoader
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;

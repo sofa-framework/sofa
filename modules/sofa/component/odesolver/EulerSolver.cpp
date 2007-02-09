@@ -1,5 +1,4 @@
 #include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/helper/MultiVector.h>
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -23,9 +22,9 @@ void EulerSolver::solve(double dt)
 {
     //objectmodel::BaseContext* group = getContext();
     OdeSolver* group = this;
-    helper::MultiVector pos(group, VecId::position());
-    helper::MultiVector vel(group, VecId::velocity());
-    helper::MultiVector acc(group, VecId::dx());
+    MultiVector pos(group, VecId::position());
+    MultiVector vel(group, VecId::velocity());
+    MultiVector acc(group, VecId::dx());
     bool printLog = f_printLog.getValue();
 
     if( printLog )

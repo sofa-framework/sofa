@@ -2,8 +2,6 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/BiCGStabImplicitSolver.h>
-//#include "Sofa/Core/IntegrationGroup.h"
-#include <sofa/helper/MultiVector.h>
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -22,8 +20,6 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
-using namespace helper::io;
-using namespace helper;
 
 BiCGStabImplicitSolver::BiCGStabImplicitSolver()
 {
@@ -42,20 +38,20 @@ BiCGStabImplicitSolver* BiCGStabImplicitSolver::setMaxIter( int n )
 void BiCGStabImplicitSolver::solve(double dt)
 {
     BiCGStabImplicitSolver* group = this;
-    helper::MultiVector pos(group, VecId::position());
-    helper::MultiVector vel(group, VecId::velocity());
-    helper::MultiVector dx(group, VecId::dx());
-    helper::MultiVector f(group, VecId::force());
-    helper::MultiVector b(group, V_DERIV);
-    helper::MultiVector p(group, V_DERIV);
-    //helper::MultiVector q(group, V_DERIV);
-    helper::MultiVector r(group, V_DERIV);
-    helper::MultiVector rtilde(group, V_DERIV);
-    helper::MultiVector s(group, V_DERIV);
-    helper::MultiVector t(group, V_DERIV);
-    helper::MultiVector x(group, V_DERIV);
-    helper::MultiVector v(group, V_DERIV);
-    //helper::MultiVector z(group, V_DERIV);
+    MultiVector pos(group, VecId::position());
+    MultiVector vel(group, VecId::velocity());
+    MultiVector dx(group, VecId::dx());
+    MultiVector f(group, VecId::force());
+    MultiVector b(group, VecId::V_DERIV);
+    MultiVector p(group, VecId::V_DERIV);
+    //MultiVector q(group, VecId::V_DERIV);
+    MultiVector r(group, VecId::V_DERIV);
+    MultiVector rtilde(group, VecId::V_DERIV);
+    MultiVector s(group, VecId::V_DERIV);
+    MultiVector t(group, VecId::V_DERIV);
+    MultiVector x(group, VecId::V_DERIV);
+    MultiVector v(group, VecId::V_DERIV);
+    //MultiVector z(group, VecId::V_DERIV);
     double h = dt;
 
     if( getDebug() )

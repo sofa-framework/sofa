@@ -3,7 +3,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/helper/io/Encoding.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {
@@ -20,6 +20,8 @@ namespace behavior
 class OdeSolver : public objectmodel::BaseObject
 {
 public:
+    typedef BaseMechanicalState::VecId VecId;
+
     OdeSolver();
 
     virtual ~OdeSolver();
@@ -29,36 +31,14 @@ public:
     /// Method called at initialization, during the backwards traversal of the data structure.
     virtual void bwdInit() {}
 
-protected:
-    defaulttype::SofaBaseMatrix *mat;
-
     /// @name Actions and MultiVectors
     /// This provides an abstract view of the mechanical system to animate
     /// @{
 
-
-protected:
-
-    typedef helper::io::VecId VecId;
-    class VectorIndexAlloc
-    {
-    protected:
-        std::set<unsigned int> vused; ///< Currently in-use vectors
-        std::set<unsigned int> vfree; ///< Once used vectors
-        unsigned int  maxIndex; ///< Max index used
-    public:
-        VectorIndexAlloc();
-        unsigned int alloc();
-        bool free(unsigned int v);
-    };
-    std::map<helper::io::VecType, VectorIndexAlloc > vectors; ///< Current vectors
-
-    double result;
-public:
     /// Wait for the completion of previous operations and return the result of the last v_dot call
     virtual double finish();
 
-    virtual VecId v_alloc(helper::io::VecType t);
+    virtual VecId v_alloc(VecId::Type t);
     virtual void v_free(VecId v);
 
     virtual void v_clear(VecId v); ///< v=0
@@ -84,6 +64,104 @@ public:
 
     virtual void print( VecId v, std::ostream& out );
     /// @}
+
+protected:
+    defaulttype::SofaBaseMatrix *mat;
+
+    class VectorIndexAlloc
+    {
+    protected:
+        std::set<unsigned int> vused; ///< Currently in-use vectors
+        std::set<unsigned int> vfree; ///< Once used vectors
+        unsigned int  maxIndex; ///< Max index used
+    public:
+        VectorIndexAlloc();
+        unsigned int alloc();
+        bool free(unsigned int v);
+    };
+    std::map<VecId::Type, VectorIndexAlloc > vectors; ///< Current vectors
+
+    double result;
+
+    class MultiVector
+    {
+    public:
+        typedef OdeSolver::VecId VecId;
+    protected:
+        core::componentmodel::behavior::OdeSolver* parent;
+        VecId v;
+        // Copy is forbidden
+        MultiVector(const MultiVector& v);
+    public:
+        MultiVector(core::componentmodel::behavior::OdeSolver* parent, VecId v) : parent(parent), v(v)
+        {}
+        MultiVector(core::componentmodel::behavior::OdeSolver* parent, VecId::Type t) : parent(parent), v(parent->v_alloc(t))
+        {}
+        ~MultiVector()
+        {
+            parent->v_free(v);
+        }
+        operator VecId()
+        {
+            return v;
+        }
+
+        void clear()
+        {
+            parent->v_clear(v);
+        }
+
+        void eq(VecId a)
+        {
+            parent->v_eq(v, a);
+        }
+        void peq(VecId a, double f=1.0)
+        {
+            parent->v_peq(v, a, f);
+        }
+        void teq(double f)
+        {
+            parent->v_teq(v, f);
+        }
+        double dot(VecId a)
+        {
+            parent->v_dot(v, a);
+            return parent->finish();
+        }
+
+        double norm()
+        {
+            parent->v_dot(v, v);
+            return sqrt( parent->finish() );
+        }
+
+        void operator=(VecId a)
+        {
+            eq(a);
+        }
+        void operator=(const MultiVector& v)
+        {
+            eq(v.v);
+        }
+        void operator+=(VecId a)
+        {
+            peq(a);
+        }
+        void operator*=(double f)
+        {
+            teq(f);
+        }
+        double operator*(VecId a)
+        {
+            return dot(a);
+        }
+
+        friend std::ostream& operator << (std::ostream& out, const MultiVector& mv )
+        {
+            mv.parent->print(mv.v,out);
+            return out;
+        }
+    };
 };
 
 } // namespace behavior

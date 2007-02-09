@@ -1,7 +1,6 @@
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/simulation/tree/MechanicalAction.h>
 #include <sofa/simulation/tree/MechanicalVPrintAction.h>
-#include <sofa/helper/MultiVector.h>
 
 
 #include <stdlib.h>
@@ -35,11 +34,10 @@ OdeSolver::~OdeSolver()
 
 
 
-using namespace helper::io;
 using namespace simulation::tree;
 
 OdeSolver::VectorIndexAlloc::VectorIndexAlloc()
-    : maxIndex(V_FIRST_DYNAMIC_INDEX-1)
+    : maxIndex(VecId::V_FIRST_DYNAMIC_INDEX-1)
 {}
 
 unsigned int OdeSolver::VectorIndexAlloc::alloc()
@@ -65,7 +63,7 @@ unsigned int OdeSolver::VectorIndexAlloc::alloc()
 
 bool OdeSolver::VectorIndexAlloc::free(unsigned int v)
 {
-    if (v < V_FIRST_DYNAMIC_INDEX)
+    if (v < VecId::V_FIRST_DYNAMIC_INDEX)
         return false;
     // @TODO: Check for errors
     vused.erase(v);
@@ -83,7 +81,7 @@ double OdeSolver::finish()
     return result;
 }
 
-VecId OdeSolver::v_alloc(VecType t)
+OdeSolver::VecId OdeSolver::v_alloc(VecId::Type t)
 {
     VecId v(t, vectors[t].alloc());
     MechanicalVAllocAction(v).execute( getContext() );
@@ -166,7 +164,7 @@ void OdeSolver::computeDf(VecId df)
 
 void OdeSolver::computeAcc(double t, VecId a, VecId x, VecId v)
 {
-    helper::MultiVector f(this, VecId::force());
+    MultiVector f(this, VecId::force());
     propagatePositionAndVelocity(t, x, v);
     computeForce(f);
     if( this->f_printLog.getValue()==true )

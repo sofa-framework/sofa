@@ -2,7 +2,6 @@
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEMECHANICALSTATE_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/helper/io/Encoding.h>
 #include <iostream>
 
 using namespace sofa::helper;
@@ -41,7 +40,7 @@ public:
 
     virtual void endIntegration(double /*dt*/) { }
 
-    virtual void resetForce() =0;//{ vOp( helper::io::VecId::force() ); }
+    virtual void resetForce() =0;//{ vOp( VecId::force() ); }
 
     virtual void resetConstraint() =0;
 
@@ -49,29 +48,56 @@ public:
 
     virtual void accumulateDf() { }
 
-    virtual void vAlloc(helper::io::VecId v) = 0; // {}
 
-    virtual void vFree(helper::io::VecId v) = 0; // {}
+    class VecId
+    {
+    public:
+        enum { V_FIRST_DYNAMIC_INDEX = 4 }; ///< This is the first index used for dynamically allocated vectors
+        enum Type
+        {
+            V_NULL=0,
+            V_COORD,
+            V_DERIV
+        };
+        Type type;
+        unsigned int index;
+        VecId(Type t, unsigned int i) : type(t), index(i) { }
+        VecId() : type(V_NULL), index(0) { }
+        bool isNull() const { return type==V_NULL; }
+        static VecId null()     { return VecId(V_NULL,0); }
+        static VecId position() { return VecId(V_COORD,0); }
+        static VecId velocity() { return VecId(V_DERIV,0); }
+        static VecId force() { return VecId(V_DERIV,1); }
+        static VecId dx() { return VecId(V_DERIV,2); }
+        bool operator==(const VecId& v)
+        {
+            return type == v.type && index == v.index;
+        }
+    };
 
-    virtual void vOp(helper::io::VecId v, helper::io::VecId a = helper::io::VecId::null(), helper::io::VecId b = helper::io::VecId::null(), double f=1.0) = 0; // {}
+    virtual void vAlloc(VecId v) = 0; // {}
 
-    virtual double vDot(helper::io::VecId a, helper::io::VecId b) = 0; //{ return 0; }
+    virtual void vFree(VecId v) = 0; // {}
 
-    virtual void setX(helper::io::VecId v) = 0; //{}
+    virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0) = 0; // {}
 
-    virtual void setV(helper::io::VecId v) = 0; //{}
+    virtual double vDot(VecId a, VecId b) = 0; //{ return 0; }
 
-    virtual void setF(helper::io::VecId v) = 0; //{}
+    virtual void setX(VecId v) = 0; //{}
 
-    virtual void setDx(helper::io::VecId v) = 0; //{}
+    virtual void setV(VecId v) = 0; //{}
 
-    virtual void setC(helper::io::VecId v) = 0; //{}
+    virtual void setF(VecId v) = 0; //{}
+
+    virtual void setDx(VecId v) = 0; //{}
+
+    virtual void setC(VecId v) = 0; //{}
 
     /// @}
 
     /// @name Debug
     /// @{
-    virtual void printDOF( helper::io::VecId, std::ostream& =std::cerr ) = 0;
+    virtual void printDOF( VecId, std::ostream& =std::cerr ) = 0;
     /// @}
 
 
@@ -85,8 +111,20 @@ public:
     //  std::cerr << "warning: unumplemented method MechanicalState::addBBox() called.\n";
     //  return false;
     //}
-
 };
+
+inline std::ostream& operator<<(std::ostream& o, const BaseMechanicalState::VecId::VecId& v)
+{
+    switch (v.type)
+    {
+    case BaseMechanicalState::VecId::V_NULL: o << "vNull"; break;
+    case BaseMechanicalState::VecId::V_COORD: o << "vCoord"; break;
+    case BaseMechanicalState::VecId::V_DERIV: o << "vDeriv"; break;
+    default: o << "vUNKNOWN"; break;
+    }
+    o << '[' << v.index << ']';
+    return o;
+}
 
 } // namespace behavior
 

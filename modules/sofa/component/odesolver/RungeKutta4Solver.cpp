@@ -1,5 +1,4 @@
 #include <sofa/component/odesolver/RungeKutta4Solver.h>
-#include <sofa/helper/MultiVector.h>
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 
@@ -15,26 +14,24 @@ namespace odesolver
 
 using namespace core::componentmodel::behavior;
 using namespace sofa::defaulttype;
-using namespace helper::io;
-using namespace helper;
 
 void RungeKutta4Solver::solve(double dt)
 {
     //std::cout << "RK4 Init\n";
     //objectmodel::BaseContext* group = getContext();
     OdeSolver* group = this;
-    helper::MultiVector pos(group, VecId::position());
-    helper::MultiVector vel(group, VecId::velocity());
-    helper::MultiVector k1a(group, V_DERIV);
-    helper::MultiVector k2a(group, V_DERIV);
-    helper::MultiVector k3a(group, V_DERIV);
-    helper::MultiVector k4a(group, V_DERIV);
-    helper::MultiVector k1v(group, V_DERIV);
-    helper::MultiVector k2v(group, V_DERIV);
-    helper::MultiVector k3v(group, V_DERIV);
-    helper::MultiVector k4v(group, V_DERIV);
-    helper::MultiVector newX(group, V_COORD);
-    helper::MultiVector newV(group, V_DERIV);
+    MultiVector pos(group, VecId::position());
+    MultiVector vel(group, VecId::velocity());
+    MultiVector k1a(group, VecId::V_DERIV);
+    MultiVector k2a(group, VecId::V_DERIV);
+    MultiVector k3a(group, VecId::V_DERIV);
+    MultiVector k4a(group, VecId::V_DERIV);
+    MultiVector k1v(group, VecId::V_DERIV);
+    MultiVector k2v(group, VecId::V_DERIV);
+    MultiVector k3v(group, VecId::V_DERIV);
+    MultiVector k4v(group, VecId::V_DERIV);
+    MultiVector newX(group, VecId::V_COORD);
+    MultiVector newV(group, VecId::V_DERIV);
 
     double stepBy2 = double(dt / 2.0);
     double stepBy3 = double(dt / 3.0);

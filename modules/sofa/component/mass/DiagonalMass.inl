@@ -329,7 +329,7 @@ bool DiagonalMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox
 }
 
 template <class DataTypes, class MassType>
-class DiagonalMass<DataTypes, MassType>::Loader : public MassSpringLoader
+class DiagonalMass<DataTypes, MassType>::Loader : public helper::io::MassSpringLoader
 {
 public:
     DiagonalMass<DataTypes, MassType>* dest;

@@ -72,7 +72,7 @@ void SphereModel:: setSphere(int i, const Vector3& pos, double r)
     radius[i] = r;
 }
 
-class SphereModel::Loader : public SphereLoader
+class SphereModel::Loader : public helper::io::SphereLoader
 {
 public:
     SphereModel* dest;

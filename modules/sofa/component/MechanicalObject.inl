@@ -3,7 +3,6 @@
 
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
-#include <sofa/helper/io/Encoding.inl>
 #include <assert.h>
 #include <iostream>
 using std::cerr;
@@ -456,12 +455,12 @@ typename DataTypes::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vAlloc(VecId v)
 {
-    if (v.type == V_COORD && v.index >= V_FIRST_DYNAMIC_INDEX)
+    if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecCoord* vec = getVecCoord(v.index);
         vec->resize(vsize);
     }
-    else if (v.type == V_DERIV && v.index >= V_FIRST_DYNAMIC_INDEX)
+    else if (v.type == VecId::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecDeriv* vec = getVecDeriv(v.index);
         vec->resize(vsize);
@@ -477,12 +476,12 @@ void MechanicalObject<DataTypes>::vAlloc(VecId v)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vFree(VecId v)
 {
-    if (v.type == V_COORD && v.index >= V_FIRST_DYNAMIC_INDEX)
+    if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecCoord* vec = getVecCoord(v.index);
         vec->resize(0);
     }
-    else if (v.type == V_DERIV && v.index >= V_FIRST_DYNAMIC_INDEX)
+    else if (v.type == VecId::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecDeriv* vec = getVecDeriv(v.index);
         vec->resize(0);
@@ -508,7 +507,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
         if (b.isNull())
         {
             // v = 0
-            if (v.type == V_COORD)
+            if (v.type == VecId::V_COORD)
             {
                 VecCoord* vv = getVecCoord(v.index);
                 vv->resize(this->vsize);
@@ -534,7 +533,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
             if (v == b)
             {
                 // v *= f
-                if (v.type == V_COORD)
+                if (v.type == VecId::V_COORD)
                 {
                     VecCoord* vv = getVecCoord(v.index);
                     for (unsigned int i=0; i<vv->size(); i++)
@@ -550,7 +549,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
             else
             {
                 // v = b*f
-                if (v.type == V_COORD)
+                if (v.type == VecId::V_COORD)
                 {
                     VecCoord* vv = getVecCoord(v.index);
                     VecCoord* vb = getVecCoord(b.index);
@@ -580,7 +579,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
         if (b.isNull())
         {
             // v = a
-            if (v.type == V_COORD)
+            if (v.type == VecId::V_COORD)
             {
                 VecCoord* vv = getVecCoord(v.index);
                 VecCoord* va = getVecCoord(a.index);
@@ -604,10 +603,10 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                 if (f==1.0)
                 {
                     // v += b
-                    if (v.type == V_COORD)
+                    if (v.type == VecId::V_COORD)
                     {
                         VecCoord* vv = getVecCoord(v.index);
-                        if (b.type == V_COORD)
+                        if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = getVecCoord(b.index);
                             vv->resize(vb->size());
@@ -622,7 +621,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                                 (*vv)[i] += (*vb)[i];
                         }
                     }
-                    else if (b.type == V_DERIV)
+                    else if (b.type == VecId::V_DERIV)
                     {
                         VecDeriv* vv = getVecDeriv(v.index);
                         VecDeriv* vb = getVecDeriv(b.index);
@@ -640,10 +639,10 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                 else
                 {
                     // v += b*f
-                    if (v.type == V_COORD)
+                    if (v.type == VecId::V_COORD)
                     {
                         VecCoord* vv = getVecCoord(v.index);
-                        if (b.type == V_COORD)
+                        if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = getVecCoord(b.index);
                             vv->resize(vb->size());
@@ -658,7 +657,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                                 (*vv)[i] += (*vb)[i]*(Real)f;
                         }
                     }
-                    else if (b.type == V_DERIV)
+                    else if (b.type == VecId::V_DERIV)
                     {
                         VecDeriv* vv = getVecDeriv(v.index);
                         VecDeriv* vb = getVecDeriv(b.index);
@@ -679,12 +678,12 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                 if (f==1.0)
                 {
                     // v = a+b
-                    if (v.type == V_COORD)
+                    if (v.type == VecId::V_COORD)
                     {
                         VecCoord* vv = getVecCoord(v.index);
                         VecCoord* va = getVecCoord(a.index);
                         vv->resize(va->size());
-                        if (b.type == V_COORD)
+                        if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = getVecCoord(b.index);
                             for (unsigned int i=0; i<vv->size(); i++)
@@ -703,7 +702,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                             }
                         }
                     }
-                    else if (b.type == V_DERIV)
+                    else if (b.type == VecId::V_DERIV)
                     {
                         VecDeriv* vv = getVecDeriv(v.index);
                         VecDeriv* va = getVecDeriv(a.index);
@@ -725,12 +724,12 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                 else
                 {
                     // v = a+b*f
-                    if (v.type == V_COORD)
+                    if (v.type == VecId::V_COORD)
                     {
                         VecCoord* vv = getVecCoord(v.index);
                         VecCoord* va = getVecCoord(a.index);
                         vv->resize(va->size());
-                        if (b.type == V_COORD)
+                        if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = getVecCoord(b.index);
                             for (unsigned int i=0; i<vv->size(); i++)
@@ -749,7 +748,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                             }
                         }
                     }
-                    else if (b.type == V_DERIV)
+                    else if (b.type == VecId::V_DERIV)
                     {
                         VecDeriv* vv = getVecDeriv(v.index);
                         VecDeriv* va = getVecDeriv(a.index);
@@ -777,14 +776,14 @@ template <class DataTypes>
 double MechanicalObject<DataTypes>::vDot(VecId a, VecId b)
 {
     double r = 0.0;
-    if (a.type == V_COORD && b.type == V_COORD)
+    if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
     {
         VecCoord* va = getVecCoord(a.index);
         VecCoord* vb = getVecCoord(b.index);
         for (unsigned int i=0; i<va->size(); i++)
             r += (*va)[i] * (*vb)[i];
     }
-    else if (a.type == V_DERIV && b.type == V_DERIV)
+    else if (a.type == VecId::V_DERIV && b.type == VecId::V_DERIV)
     {
         VecDeriv* va = getVecDeriv(a.index);
         VecDeriv* vb = getVecDeriv(b.index);
@@ -801,7 +800,7 @@ double MechanicalObject<DataTypes>::vDot(VecId a, VecId b)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::setX(VecId v)
 {
-    if (v.type == V_COORD)
+    if (v.type == VecId::V_COORD)
     {
         this->x = getVecCoord(v.index);
     }
@@ -814,7 +813,7 @@ void MechanicalObject<DataTypes>::setX(VecId v)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::setV(VecId v)
 {
-    if (v.type == V_DERIV)
+    if (v.type == VecId::V_DERIV)
     {
         this->v = getVecDeriv(v.index);
     }
@@ -827,7 +826,7 @@ void MechanicalObject<DataTypes>::setV(VecId v)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::setF(VecId v)
 {
-    if (v.type == V_DERIV)
+    if (v.type == VecId::V_DERIV)
     {
         this->f = getVecDeriv(v.index);
     }
@@ -840,7 +839,7 @@ void MechanicalObject<DataTypes>::setF(VecId v)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::setDx(VecId v)
 {
-    if (v.type == V_DERIV)
+    if (v.type == VecId::V_DERIV)
     {
         this->dx = getVecDeriv(v.index);
     }
@@ -854,7 +853,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::setC(VecId /*v*/)
 {
     /*
-        if (v.type == V_DERIV)
+        if (v.type == VecId::V_DERIV)
         {
             this->dx = getVecDeriv(v.index);
         }
@@ -869,13 +868,13 @@ void MechanicalObject<DataTypes>::setC(VecId /*v*/)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out)
 {
-    if( v.type==V_COORD )
+    if( v.type==VecId::V_COORD )
     {
         VecCoord& x= *getVecCoord(v.index);
         for( unsigned i=0; i<x.size(); ++i )
             out<<x[i]<<" ";
     }
-    else if( v.type==V_DERIV )
+    else if( v.type==VecId::V_DERIV )
     {
         VecDeriv& x= *getVecDeriv(v.index);
         for( unsigned i=0; i<x.size(); ++i )

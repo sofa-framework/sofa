@@ -3,7 +3,6 @@
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/CGImplicitSolver.h>
 //#include "Sofa/Core/IntegrationGroup.h"
-#include <sofa/helper/MultiVector.h>
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -22,7 +21,6 @@ namespace odesolver
 
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
-using namespace helper::io;
 
 CGImplicitSolver::CGImplicitSolver()
     : f_maxIter( dataField(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
@@ -49,15 +47,15 @@ CGImplicitSolver::CGImplicitSolver()
 
 void CGImplicitSolver::solve(double dt)
 {
-    helper::MultiVector pos(this, VecId::position());
-    helper::MultiVector vel(this, VecId::velocity());
-    helper::MultiVector f(this, VecId::force());
-    helper::MultiVector b(this, V_DERIV);
-    helper::MultiVector p(this, V_DERIV);
-    helper::MultiVector q(this, V_DERIV);
-    helper::MultiVector q2(this, V_DERIV);
-    helper::MultiVector r(this, V_DERIV);
-    helper::MultiVector x(this, V_DERIV);
+    MultiVector pos(this, VecId::position());
+    MultiVector vel(this, VecId::velocity());
+    MultiVector f(this, VecId::force());
+    MultiVector b(this, VecId::V_DERIV);
+    MultiVector p(this, VecId::V_DERIV);
+    MultiVector q(this, VecId::V_DERIV);
+    MultiVector q2(this, VecId::V_DERIV);
+    MultiVector r(this, VecId::V_DERIV);
+    MultiVector x(this, VecId::V_DERIV);
 
     double h = dt;
     bool printLog = f_printLog.getValue();
