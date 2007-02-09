@@ -95,8 +95,8 @@ void SphereModel::draw(int index)
     Vector3 p = (*getX())[index];
     glPushMatrix();
     glTranslated(p[0], p[1], p[2]);
-    //glutWireSphere(radius[index], 16, 8);
-    glutSolidSphere(radius[index], 32,16);
+    glutSolidSphere(radius[index], 8, 4);
+    //glutSolidSphere(radius[index], 32,16);
     glPopMatrix();
 }
 

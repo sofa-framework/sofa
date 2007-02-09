@@ -216,6 +216,21 @@ public:
         double v2 = c2.minBBox[axis]+c2.maxBBox[axis];
         return v1 < v2;
     }
+    template<int Axis>
+    static int sortCube(const void* p1, const void* p2)
+    {
+        const CubeModel::CubeData* c1 = (const CubeModel::CubeData*)p1;
+        const CubeModel::CubeData* c2 = (const CubeModel::CubeData*)p2;
+        double v1 = c1->minBBox[Axis] + c1->maxBBox[Axis];
+        double v2 = c2->minBBox[Axis] + c2->maxBBox[Axis];
+
+        if (v1 < v2)
+            return -1;
+        else if (v1 > v2)
+            return 1;
+        else
+            return 0;
+    }
 };
 
 void CubeModel::computeBoundingTree(int maxDepth)
@@ -276,10 +291,23 @@ void CubeModel::computeBoundingTree(int maxDepth)
                         splitAxis = 1;
                     else
                         splitAxis = 2;
+
                     // Separate cells on each side of the median cell
+
+#if defined(GCC_VERSION) && GCC_VERSION == 40101
+                    // there is apparently a bug in std::sort with GCC 4.1.1
+                    if (splitAxis == 0)
+                        qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<0>);
+                    else if (splitAxis == 1)
+                        qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<1>);
+                    else
+                        qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<2>);
+#else
                     CubeSortPredicate sortpred(splitAxis);
                     //std::nth_element(elems.begin()+subcells.first.getIndex(),elems.begin()+middle,elems.begin()+subcells.second.getIndex(), sortpred);
                     std::sort(elems.begin()+subcells.first.getIndex(),elems.begin()+subcells.second.getIndex(), sortpred);
+#endif
+
                     // Create the two new subcells
                     Cube cmiddle(this, middle);
                     int c1 = clevel->addCube(subcells.first, cmiddle);

@@ -72,7 +72,7 @@ template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
     this->InteractionForceField::init();
-    initFromTopology();
+    //initFromTopology();
 }
 
 template<class DataTypes>
