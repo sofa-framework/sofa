@@ -51,7 +51,9 @@ TriangleFEMForceField<DataTypes>::~TriangleFEMForceField()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::init()
 {
-    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->_object->getContext()->getTopology());
+    this->Inherited::init();
+    cerr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<endl;
+    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
 
     if (_mesh==NULL || (_mesh->getTriangles().empty() && _mesh->getNbQuads()<=0))
     {
@@ -76,7 +78,7 @@ void TriangleFEMForceField<DataTypes>::init()
         _indexedElements = trias;
     }
 
-    VecCoord& p = *this->_object->getX();
+    VecCoord& p = *this->mstate->getX();
     _initialPoints = p;
 
     _strainDisplacements.resize(_indexedElements->size());
@@ -90,11 +92,11 @@ void TriangleFEMForceField<DataTypes>::init()
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::addForce()
+void TriangleFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
 {
-    assert(this->_object);
-    VecDeriv& f = *this->_object->getF();
-    const VecCoord& x = *this->_object->getX();
+//    assert(this->_object);
+    /*    VecDeriv& f = *this->_object->getF();
+        const VecCoord& x = *this->_object->getX();*/
     f.resize(x.size());
 
     if(f_damping.getValue() != 0)
@@ -143,26 +145,26 @@ void TriangleFEMForceField<DataTypes>::addForce()
 
 
 template <class DataTypes>
-void TriangleFEMForceField<DataTypes>::addDForce()
+void TriangleFEMForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
 {
     Real h=1;
-    assert(this->_object);
-    VecDeriv& v = *this->_object->getF();
-    const VecDeriv& x = *this->_object->getDx();
-    v.resize(x.size());
+//    assert(this->_object);
+    /*    VecDeriv& v = *this->_object->getF();
+        const VecDeriv& x = *this->_object->getDx();*/
+    df.resize(dx.size());
 
     if (f_method.getValue() == SMALL)
     {
-        applyStiffnessSmall( v,h,x );
+        applyStiffnessSmall( df,h,dx );
     }
     else
     {
-        applyStiffnessLarge( v,h,x );
+        applyStiffnessLarge( df,h,dx );
     }
 }
 
 template <class DataTypes>
-double TriangleFEMForceField<DataTypes>::getPotentialEnergy()
+double TriangleFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     cerr<<"TriangleFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;
@@ -573,13 +575,13 @@ void TriangleFEMForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields())
         return;
-    if (!this->_object)
-        return;
+//     if (!this->_object)
+//         return;
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    const VecCoord& x = *this->_object->getX();
+    const VecCoord& x = *this->mstate->getX();
 
     glDisable(GL_LIGHTING);
 

@@ -30,9 +30,10 @@ using namespace sofa::defaulttype;
 
 
 template<class DataTypes>
-class TriangleFEMForceField : public core::componentmodel::behavior::BaseForceField, public core::VisualModel
+class TriangleFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
 {
 public:
+    typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord    Coord   ;
@@ -47,7 +48,7 @@ public:
     static const int LARGE = 0;										///< Symbol of large displacements triangle solver
 
 protected:
-    component::MechanicalObject<DataTypes>* _object;
+//    component::MechanicalObject<DataTypes>* _object;
 
     typedef Vec<6, Real> Displacement;								///< the displacement vector
 
@@ -80,9 +81,12 @@ public:
 
 
     virtual void init();
-    virtual void addForce();
-    virtual void addDForce();
-    virtual double getPotentialEnergy();
+    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
+
+    virtual double getPotentialEnergy(const VecCoord& x);
+
 
     // -- Temporary added here for matrix ForceField
     void contributeToMatrixDimension(unsigned int * const, unsigned int * const)
@@ -117,10 +121,10 @@ public:
     	void setYoungModulus(Real val) { this->_youngModulus = val; }
     	void setMethod(int val) { this->_method = val; }*/
 
-    component::MechanicalObject<DataTypes>* getObject()
-    {
-        return _object;
-    }
+//     component::MechanicalObject<DataTypes>* getObject()
+//     {
+//         return _object;
+//     }
 
 protected :
 

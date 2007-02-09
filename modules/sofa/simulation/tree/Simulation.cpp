@@ -63,6 +63,7 @@ GNode* Simulation::load(const char *filename)
     std::cout << "Initializing simulation "<<root->getName()<<std::endl;
 
     //root->init();
+    exportXML( root, "toto.scn" );
     root->execute<InitAction>();
 
     // As mappings might be initialized after visual models, it is necessary to update them

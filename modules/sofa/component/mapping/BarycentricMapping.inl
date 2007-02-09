@@ -10,7 +10,9 @@
 #include <sofa/helper/gl/template.h>
 #include <GL/gl.h>
 #include <algorithm>
-
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 
 namespace sofa
@@ -549,6 +551,7 @@ void BarycentricMapping<BasicMapping>::RegularGridMapper::applyJ( typename Baryc
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::MeshMapper::applyJ( typename BarycentricMapping<BasicMapping>::Out::VecDeriv& out, const typename BarycentricMapping<BasicMapping>::In::VecDeriv& in )
 {
+    //cerr<<"	BarycentricMapping<BasicMapping>::MeshMapper::applyJ"<<endl;
     out.resize(map1d.size()+map2d.size()+map3d.size());
     const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
     const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();

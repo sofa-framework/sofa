@@ -237,7 +237,7 @@ RegisterObject::RegisterObject(const std::string& description)
 {
     if (!description.empty())
     {
-        std::cerr<<"description.size() = "<<description.size()<<", value = "<<description<<std::endl;
+        //std::cerr<<"description.size() = "<<description.size()<<", value = "<<description<<std::endl;
         addDescription(description);
     }
 }

@@ -171,7 +171,7 @@ bool intersectionCubeCube(Cube& cube1, Cube& cube2)
 
 bool intersectionSphereRay(Sphere& sph1, Ray& ray2)
 {
-    //std::cout<<"Collision between Sphere - Ray"<<std::endl;
+    //std::cout<<"intersectionSphereRay: Collision between Sphere - Ray"<<std::endl;
 
     const Vector3 sph1Pos(sph1.center());
     const double radius1 = sph1.r();
@@ -363,6 +363,7 @@ DetectionOutput* distCorrectionSingleSphereCube(SingleSphere& /*sph1*/, Cube& /*
 
 DetectionOutput* distCorrectionSphereRay(Sphere& sph1, Ray& ray2)
 {
+    //std::cout<<"distCorrectionSphereRay"<<std::endl;
     const Vector3 sph1Pos(sph1.center());
     const double radius1 = sph1.r();
     const Vector3 ray2Origin(ray2.origin());
