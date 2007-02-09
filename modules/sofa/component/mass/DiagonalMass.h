@@ -61,7 +61,7 @@ public:
 
     ~DiagonalMass();
 
-    virtual const char* getTypeName() const { return "DiagonalMass"; }
+    //virtual const char* getTypeName() const { return "DiagonalMass"; }
 
     bool load(const char *filename);
 

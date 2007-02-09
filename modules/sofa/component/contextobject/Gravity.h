@@ -28,7 +28,7 @@ class Gravity : public core::objectmodel::ContextObject
     typedef defaulttype::Vec3d Vec3;
 public:
     Gravity();
-    virtual const char* getTypeName() const { return "Gravity"; }
+    //virtual const char* getTypeName() const { return "Gravity"; }
 
     DataField<Vec3> f_gravity;
 

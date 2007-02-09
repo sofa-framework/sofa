@@ -4,7 +4,7 @@
 #include <string>
 #include <sofa/core/objectmodel/Field.h>
 #include <sofa/core/objectmodel/DataField.h>
-//#include <sofa/core/objectmodel/FieldContainer.h>
+
 using sofa::core::objectmodel::Field;
 using sofa::core::objectmodel::DataField;
 
@@ -28,7 +28,47 @@ public:
 
     std::string getName() const;
     void setName(const std::string& n);
-    virtual const char* getTypeName() const;
+    virtual std::string getTypeName() const
+    {
+        return decodeTypeName(typeid(*this));
+    }
+
+    virtual std::string getClassName() const
+    {
+        return decodeClassName(typeid(*this));
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return decodeTemplateName(typeid(*this));
+    }
+
+    /// Decode the type's name to a more readable form if possible
+    static std::string decodeTypeName(const std::type_info& t);
+
+    /// Extract the class name (removing namespaces and templates)
+    static std::string decodeClassName(const std::type_info& t);
+
+    /// Extract the template name (removing namespaces and class name)
+    static std::string decodeTemplateName(const std::type_info& t);
+
+    template<class T>
+    static std::string typeName(T* = NULL)
+    {
+        return decodeTypeName(typeid(T));
+    }
+
+    template<class T>
+    static std::string className(T* = NULL)
+    {
+        return decodeClassName(typeid(T));
+    }
+
+    template<class T>
+    static std::string templateName(T* = NULL)
+    {
+        return decodeTemplateName(typeid(T));
+    }
 
     void parseFields ( std::list<std::string> str );
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
@@ -92,7 +132,6 @@ protected:
         }
         m_fieldMap[name] = f;
     }
-
 };
 
 } // namespace objectmodel

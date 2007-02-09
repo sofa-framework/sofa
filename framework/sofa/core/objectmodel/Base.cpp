@@ -12,6 +12,10 @@
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #include <map>
+#include <typeinfo>
+#ifdef __GNUC__
+#include <cxxabi.h>
+#endif
 
 namespace sofa
 {
@@ -44,20 +48,74 @@ void Base::setName(const std::string& na)
     name.setValue(na);
 }
 
-const char* Base::getTypeName() const
+
+/// Decode the type's name to a more readable form if possible
+std::string Base::decodeTypeName(const std::type_info& t)
 {
-    //return "UNKNOWN";
-    // TODO: change the return type to std::string
-    // BUG: this is not threadsafe!!!
-    static std::map<const Base*, std::string> typenames;
-    std::string& str = typenames[this];
-    if (str.empty())
+    std::string name = t.name();
+#ifdef __GNUC__
+    char* realname = NULL;
+    int status;
+    realname = abi::__cxa_demangle(name.c_str(), 0, 0, &status);
+    if (realname!=NULL)
     {
-        str = sofa::helper::gettypename(typeid(*this));
+        name = realname;
+        free(realname);
     }
-    return str.c_str();
+#endif
+    // Remove namespaces
+    for(;;)
+    {
+        std::string::size_type pos = name.find("::");
+        if (pos == std::string::npos) break;
+        std::string::size_type first = name.find_last_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_",pos-1);
+        if (first == std::string::npos) first = 0;
+        else first++;
+        name.erase(first,pos-first+2);
+        std::cout << "name="<<name<<std::endl;
+    }
+    // Remove "class "
+    for(;;)
+    {
+        std::string::size_type pos = name.find("class ");
+        if (pos == std::string::npos) break;
+        name.erase(pos,6);
+    }
+    //std::cout << "TYPE NAME="<<name<<std::endl;
+    return name;
 }
 
+/// Extract the class name (removing namespaces and templates)
+std::string Base::decodeClassName(const std::type_info& t)
+{
+    std::string name = decodeTypeName(t);
+    // Find template
+    std::string::size_type pos = name.find("<");
+    if (pos != std::string::npos)
+    {
+        name.erase(pos,name.length()-pos);
+    }
+    //std::cout << "CLASS NAME="<<name<<std::endl;
+    return name;
+}
+
+/// Decode the template name (removing namespaces and class name)
+std::string Base::decodeTemplateName(const std::type_info& t)
+{
+    std::string name = decodeTypeName(t);
+    // Find template
+    std::string::size_type pos = name.find("<");
+    if (pos != std::string::npos)
+    {
+        name = name.substr(pos+1,name.length()-pos-2);
+    }
+    else
+    {
+        name = "";
+    }
+    //std::cout << "TEMPLATE NAME="<<name<<std::endl;
+    return name;
+}
 
 void  Base::parseFields ( std::list<std::string> str )
 {
@@ -78,7 +136,6 @@ void  Base::parseFields ( std::list<std::string> str )
         else
             std::cerr << "\nUnknown option: " << name << std::endl << std::endl;
     }
-
 }
 
 void  Base::parseFields ( const std::map<std::string,std::string*>& args )
@@ -104,10 +161,9 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
             }
         }
     }
-
 }
 
-void  Base::writeFields ( std::map<std::string,std::string*>& args )
+void    Base::writeFields ( std::map<std::string,std::string*>& args )
 {
     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a )
     {
@@ -119,7 +175,6 @@ void  Base::writeFields ( std::map<std::string,std::string*>& args )
         else
             args[(*a).first] =  new string(field->getValueString());
     }
-
 }
 
 void  Base::writeFields ( std::ostream& out )
@@ -130,7 +185,6 @@ void  Base::writeFields ( std::ostream& out )
         if( field->isSet() )
             out << (*a).first << "=\""<< field->getValueString() << "\" ";
     }
-
 }
 
 void  Base::xmlWriteFields ( std::ostream& out, unsigned level )
@@ -145,9 +199,7 @@ void  Base::xmlWriteFields ( std::ostream& out, unsigned level )
             out << (*a).first << "=\""<< field->getValueString() << "\""<<std::endl;
         }
     }
-
 }
-
 
 } // namespace objectmodel
 

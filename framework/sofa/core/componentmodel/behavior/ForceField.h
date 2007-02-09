@@ -54,6 +54,16 @@ public:
 
     virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int & ) {};
 
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
 protected:
     MechanicalState<DataTypes> *mstate;
 };

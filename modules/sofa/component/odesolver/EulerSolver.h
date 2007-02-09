@@ -15,7 +15,7 @@ namespace odesolver
 class EulerSolver : public core::componentmodel::behavior::OdeSolver
 {
 public:
-    virtual const char* getTypeName() const { return "EulerSolver"; }
+    //virtual const char* getTypeName() const { return "EulerSolver"; }
     void solve (double dt);
 };
 

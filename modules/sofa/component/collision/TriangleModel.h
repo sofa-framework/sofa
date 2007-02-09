@@ -94,7 +94,7 @@ public:
 
     topology::MeshTopology* getTopology() { return mesh; }
 
-    virtual const char* getTypeName() const { return "Triangle"; }
+    //virtual const char* getTypeName() const { return "Triangle"; }
 
 protected:
 

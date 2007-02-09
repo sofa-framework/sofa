@@ -72,7 +72,7 @@ public:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
-    virtual const char* getTypeName() const { return "Point"; }
+    //virtual const char* getTypeName() const { return "Point"; }
 
 protected:
 

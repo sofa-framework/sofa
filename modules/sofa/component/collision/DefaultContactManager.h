@@ -32,7 +32,7 @@ public:
 
     const std::vector<core::componentmodel::collision::Contact*>& getContacts() { return contactVec; }
 
-    virtual const char* getTypeName() const { return "CollisionResponse"; }
+    //virtual const char* getTypeName() const { return "CollisionResponse"; }
 
     // -- VisualModel interface
     void draw();

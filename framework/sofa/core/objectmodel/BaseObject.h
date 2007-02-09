@@ -7,6 +7,7 @@
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/objectmodel/BaseObjectDescription.h>
 
 namespace sofa
 {
@@ -81,7 +82,20 @@ public:
     double getTime() const;
     ///@}
 
+    /// Pre-construction check method called by ObjectFactory.
+    template<class T>
+    static bool canCreate(T*& /*obj*/, BaseContext* /*context*/, BaseObjectDescription* /*arg*/)
+    {
+        return true;
+    }
 
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static void create(T*& obj, BaseContext* /*context*/, BaseObjectDescription* arg)
+    {
+        obj = new T;
+        obj->parseFields(arg->getAttributeMap());
+    }
 
 protected:
     BaseContext* context_;

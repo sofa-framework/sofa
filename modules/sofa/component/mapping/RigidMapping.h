@@ -75,7 +75,7 @@ public:
     void initTextures() { }
     void update() { }
 
-    virtual const char* getTypeName() const { return "RigidMapping"; }
+    //virtual const char* getTypeName() const { return "RigidMapping"; }
 
 protected:
 

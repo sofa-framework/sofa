@@ -41,7 +41,7 @@ public:
     typedef vector<Cube> SeqCubes;
 
     MeshTopology();
-    virtual const char* getTypeName() const { return "Mesh"; }
+    //virtual const char* getTypeName() const { return "Mesh"; }
 
     virtual void clear();
 

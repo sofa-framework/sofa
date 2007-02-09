@@ -22,7 +22,7 @@ class CGImplicitSolver : public core::componentmodel::behavior::OdeSolver
 public:
 
     CGImplicitSolver();
-    virtual const char* getTypeName() const { return "CGImplicit"; }
+    //virtual const char* getTypeName() const { return "CGImplicit"; }
 
     void solve (double dt);
     //CGImplicitSolver* setMaxIter( int maxiter );

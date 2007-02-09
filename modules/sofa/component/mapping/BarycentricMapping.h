@@ -37,7 +37,7 @@ public:
     typedef typename InCoord::value_type Real;
     typedef typename OutCoord::value_type OutReal;
 
-    virtual const char* getTypeName() const { return "BarycentricMapping"; }
+    //virtual const char* getTypeName() const { return "BarycentricMapping"; }
 
     template<int NC, int NP>
     class MappingData

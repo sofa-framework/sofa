@@ -37,10 +37,7 @@ public:
 
     ~UniformMass();
 
-    virtual const char* getTypeName() const
-    {
-        return "UniformMass";
-    }
+    //virtual const char* getTypeName() const { return "UniformMass"; }
 
     void setMass(const MassType& mass);
 

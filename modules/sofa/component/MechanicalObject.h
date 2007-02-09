@@ -76,7 +76,7 @@ public:
 
     virtual ~MechanicalObject();
 
-    virtual const char* getTypeName() const { return "MechanicalObject"; }
+    //virtual const char* getTypeName() const { return "MechanicalObject"; }
 
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
 

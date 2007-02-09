@@ -49,7 +49,7 @@ protected:
 
 public:
     FixedConstraint();
-    virtual const char* getTypeName() const { return "FixedConstraint"; }
+    //virtual const char* getTypeName() const { return "FixedConstraint"; }
     DataField<SetIndex> f_indices;
 
 

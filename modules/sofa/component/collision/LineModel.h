@@ -87,7 +87,7 @@ public:
 
     MeshTopology* getTopology() { return mesh; }
 
-    virtual const char* getTypeName() const { return "Line"; }
+    //virtual const char* getTypeName() const { return "Line"; }
 
 protected:
 

@@ -27,8 +27,7 @@ public:
     StaticSolver();
 
     double smallDenominatorThreshold;
-    virtual const char* getTypeName() const { return "StaticSolver"; }
-
+    //virtual const char* getTypeName() const { return "StaticSolver"; }
 
     void solve (double dt);
 };

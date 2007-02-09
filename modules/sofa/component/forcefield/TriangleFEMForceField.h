@@ -74,10 +74,7 @@ public:
 
     TriangleFEMForceField(component::MechanicalObject<DataTypes>* object);
 
-    virtual const char* getTypeName() const
-    {
-        return "TriangleFEMForceField";
-    }
+    //virtual const char* getTypeName() const { return "TriangleFEMForceField"; }
 
     virtual ~TriangleFEMForceField();
 
