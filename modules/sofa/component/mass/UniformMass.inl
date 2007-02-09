@@ -194,6 +194,21 @@ bool UniformMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
     return true;
 }
 
+template<class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    Inherited::parse(arg);
+    if (arg->getAttribute("mass"))
+    {
+        this->setMass((MassType)atof(arg->getAttribute("mass")));
+    }
+    if (arg->getAttribute("totalmass"))
+    {
+        this->setTotalMass(atof(arg->getAttribute("totalmass")));
+    }
+}
+
+
 } // namespace mass
 
 } // namespace component

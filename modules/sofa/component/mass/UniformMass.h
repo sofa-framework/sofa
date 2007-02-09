@@ -22,6 +22,7 @@ template <class DataTypes, class MassType>
 class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>, public core::VisualModel
 {
 public:
+    typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -45,6 +46,7 @@ public:
 
     // -- Mass interface
 
+    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
     void init();
 
     void addMDx(VecDeriv& f, const VecDeriv& dx);

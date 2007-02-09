@@ -3,164 +3,144 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/Axis.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
-
-namespace helper   // \todo Why this must be inside helper namespace
-{
-using namespace component::mass;
-
-template<class DataTypes, class MassType>
-void create(UniformMass<DataTypes, MassType>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    simulation::tree::xml::createWithParent< UniformMass<DataTypes, MassType>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-        if (arg->getAttribute("mass"))
-        {
-            obj->setMass((MassType)atof(arg->getAttribute("mass")));
-        }
-        if (arg->getAttribute("totalmass"))
-        {
-            obj->setTotalMass(atof(arg->getAttribute("totalmass")));
-        }
-    }
-}
-
-static void skipToEOL(FILE* f)
-{
-    int	ch;
-    while ((ch = fgetc(f)) != EOF && ch != '\n');
-}
-
-template<>
-void create(UniformMass<RigidTypes, RigidMass>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    simulation::tree::xml::createWithParent< UniformMass<RigidTypes, RigidMass>, core::componentmodel::behavior::MechanicalState<RigidTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-        RigidMass m(1.0f);
-        if (arg->getAttribute("filename"))
-        {
-            const char* filename = arg->getAttribute("filename");
-            char	cmd[64];
-            FILE*	file;
-            if ((file = fopen(filename, "r")) == NULL)
-            {
-                std::cerr << "ERROR: cannot read file '" << filename << "'." << std::endl;
-            }
-            else
-            {
-                std::cout << "Loading rigid model '" << filename << "'" << std::endl;
-                // Check first line
-                //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
-                {
-                    skipToEOL(file);
-
-                    while (fscanf(file, "%s", cmd) != EOF)
-                    {
-                        if (!strcmp(cmd,"inrt"))
-                        {
-                            for (int i = 0; i < 9; i++)
-                            {
-                                fscanf(file, "%lf", &(m.inertiaMatrix.ptr()[i]));
-                            }
-                        }
-                        else if (!strcmp(cmd,"cntr"))
-                        {
-                            Vec3d center;
-                            for (int i = 0; i < 3; ++i)
-                            {
-                                fscanf(file, "%lf", &(center[i]));
-                            }
-                        }
-                        else if (!strcmp(cmd,"mass"))
-                        {
-                            fscanf(file, "%lf", &(m.mass));
-                            std::cout << "mass="<<m.mass<<"\n";
-                        }
-                        else if (!strcmp(cmd,"volm"))
-                        {
-                            fscanf(file, "%lf", &(m.volume));
-                            std::cout << "volm="<<m.volume<<"\n";
-                        }
-                        else if (!strcmp(cmd,"frme"))
-                        {
-                            Quat orient;
-                            for (int i = 0; i < 4; ++i)
-                            {
-                                fscanf(file, "%lf", &(orient[i]));
-                            }
-                            orient.normalize();
-                        }
-                        else if (!strcmp(cmd,"grav"))
-                        {
-                            Vec3d gravity;
-                            fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
-                                    &(gravity.y()), &(gravity.z()));
-                        }
-                        else if (!strcmp(cmd,"visc"))
-                        {
-                            double viscosity = 0;
-                            fscanf(file, "%lf", &viscosity);
-                        }
-                        else if (!strcmp(cmd,"stck"))
-                        {
-                            double tmp;
-                            fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
-                        }
-                        else if (!strcmp(cmd,"step"))
-                        {
-                            double tmp;
-                            fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
-                        }
-                        else if (!strcmp(cmd,"prec"))
-                        {
-                            double tmp;
-                            fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
-                        }
-                        else if (cmd[0] == '#')	// it's a comment
-                        {
-                            skipToEOL(file);
-                        }
-                        else		// it's an unknown keyword
-                        {
-                            printf("%s: Unknown RigidMass keyword: %s\n", filename, cmd);
-                            skipToEOL(file);
-                        }
-                    }
-                }
-                fclose(file);
-            }
-        }
-        if (arg->getAttribute("mass"))
-        {
-            m.mass = atof(arg->getAttribute("mass"));
-        }
-        if (arg->getAttribute("totalmass"))
-        {
-            m.mass = atof(arg->getAttribute("totalmass"));
-        }
-        m.recalc();
-        obj->setMass(m);
-    }
-}
-
-}
-
 namespace component
 {
 
 namespace mass
 {
 
+
+
+
+static void skipToEOL(FILE* f)
+{
+    int	ch;
+    while ((ch = fgetc(f)) != EOF && ch != '\n')
+        ;
+}
+
+template<>
+void UniformMass<RigidTypes, RigidMass>::parse (core::objectmodel::BaseObjectDescription* arg)
+{
+    RigidMass m(1.0f);
+    if (arg->getAttribute("filename"))
+    {
+        const char* filename = arg->getAttribute("filename");
+        char	cmd[64];
+        FILE*	file;
+        if ((file = fopen(filename, "r")) == NULL)
+        {
+            std::cerr << "ERROR: cannot read file '" << filename << "'." << std::endl;
+        }
+        else
+        {
+            std::cout << "Loading rigid model '" << filename << "'" << std::endl;
+            // Check first line
+            //if (fgets(cmd, 7, file) != NULL && !strcmp(cmd,"Xsp 3.0"))
+            {
+                skipToEOL(file);
+
+                while (fscanf(file, "%s", cmd) != EOF)
+                {
+                    if (!strcmp(cmd,"inrt"))
+                    {
+                        for (int i = 0; i < 9; i++)
+                        {
+                            fscanf(file, "%lf", &(m.inertiaMatrix.ptr()[i]));
+                        }
+                    }
+                    else if (!strcmp(cmd,"cntr"))
+                    {
+                        Vec3d center;
+                        for (int i = 0; i < 3; ++i)
+                        {
+                            fscanf(file, "%lf", &(center[i]));
+                        }
+                    }
+                    else if (!strcmp(cmd,"mass"))
+                    {
+                        fscanf(file, "%lf", &(m.mass));
+                        std::cout << "mass="<<m.mass<<"\n";
+                    }
+                    else if (!strcmp(cmd,"volm"))
+                    {
+                        fscanf(file, "%lf", &(m.volume));
+                        std::cout << "volm="<<m.volume<<"\n";
+                    }
+                    else if (!strcmp(cmd,"frme"))
+                    {
+                        Quat orient;
+                        for (int i = 0; i < 4; ++i)
+                        {
+                            fscanf(file, "%lf", &(orient[i]));
+                        }
+                        orient.normalize();
+                    }
+                    else if (!strcmp(cmd,"grav"))
+                    {
+                        Vec3d gravity;
+                        fscanf(file, "%lf %lf %lf\n", &(gravity.x()),
+                                &(gravity.y()), &(gravity.z()));
+                    }
+                    else if (!strcmp(cmd,"visc"))
+                    {
+                        double viscosity = 0;
+                        fscanf(file, "%lf", &viscosity);
+                    }
+                    else if (!strcmp(cmd,"stck"))
+                    {
+                        double tmp;
+                        fscanf(file, "%lf", &tmp); //&(MSparams.default_stick));
+                    }
+                    else if (!strcmp(cmd,"step"))
+                    {
+                        double tmp;
+                        fscanf(file, "%lf", &tmp); //&(MSparams.default_dt));
+                    }
+                    else if (!strcmp(cmd,"prec"))
+                    {
+                        double tmp;
+                        fscanf(file, "%lf", &tmp); //&(MSparams.default_prec));
+                    }
+                    else if (cmd[0] == '#')	// it's a comment
+                    {
+                        skipToEOL(file);
+                    }
+                    else		// it's an unknown keyword
+                    {
+                        printf("%s: Unknown RigidMass keyword: %s\n", filename, cmd);
+                        skipToEOL(file);
+                    }
+                }
+            }
+            fclose(file);
+        }
+    }
+    if (arg->getAttribute("mass"))
+    {
+        m.mass = atof(arg->getAttribute("mass"));
+    }
+    if (arg->getAttribute("totalmass"))
+    {
+        m.mass = atof(arg->getAttribute("totalmass"));
+    }
+    m.recalc();
+    this->setMass(m);
+}
+
+
+
 using namespace sofa::defaulttype;
 
 template <>
 void UniformMass<RigidTypes, RigidMass>::draw()
 {
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!getContext()->getShowBehaviorModels())
+        return;
     VecCoord& x = *mstate->getX();
     RigidTypes::Vec3 len;
 
@@ -207,19 +187,29 @@ double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::
 
 SOFA_DECL_CLASS(UniformMass)
 
-template class UniformMass<Vec3dTypes,double>;
-template class UniformMass<Vec3fTypes,float>;
-template class UniformMass<RigidTypes,RigidMass>;
+template class UniformMass<Vec3dTypes,double>
+;
+template class UniformMass<Vec3fTypes,float>
+;
+template class UniformMass<RigidTypes,RigidMass>
+;
 
-using helper::Creator;
+// Register in the Factory
+int UniformMassClass = core::RegisterObject("TODO")
+        .add< UniformMass<Vec3dTypes,double> >()
+        .add< UniformMass<Vec3fTypes,float> >()
+        .add< UniformMass<RigidTypes,RigidMass> >()
+        ;
 
-Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3dTypes,double> > UniformMass3dClass("UniformMass",true);
-Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3fTypes,float > > UniformMass3fClass("UniformMass",true);
-Creator<simulation::tree::xml::ObjectFactory, UniformMass<RigidTypes,RigidMass> > UniformMassRigidClass("UniformMass",true);
+
+// using helper::Creator;
+//
+// Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3dTypes,double> > UniformMass3dClass("UniformMass",true);
+// Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3fTypes,float > > UniformMass3fClass("UniformMass",true);
+// Creator<simulation::tree::xml::ObjectFactory, UniformMass<RigidTypes,RigidMass> > UniformMassRigidClass("UniformMass",true);
 
 } // namespace mass
 
 } // namespace component
 
 } // namespace sofa
-

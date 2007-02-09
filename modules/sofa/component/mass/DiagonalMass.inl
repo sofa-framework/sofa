@@ -65,6 +65,7 @@ inline void MassEdgeCreationFunction<RigidTypes, RigidMass>(const std::vector<un
         void* , helper::vector<RigidMass> &)
 {
 }
+
 template< class DataTypes, class MassType>
 inline void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved,
         void* param, helper::vector<MassType> &masses)
@@ -197,6 +198,7 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
     }
     return e;
 }
+
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::handleEvent( Event *event )
 {
@@ -364,6 +366,29 @@ void DiagonalMass<RigidTypes, RigidMass>::init();
 
 template <>
 void DiagonalMass<RigidTypes, RigidMass>::handleEvent( Event *event );
+
+template<class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescription* arg)
+{
+    this->Inherited::parse(arg);
+    if (arg->getAttribute("filename"))
+    {
+        this->load(arg->getAttribute("filename"));
+        arg->removeAttribute("filename");
+    }
+
+    if (arg->getAttribute("mass"))
+    {
+        std::vector<MassType> mass;
+        readVec1(mass,arg->getAttribute("mass"));
+        this->clear();
+        for (unsigned int i=0; i<mass.size(); i++)
+        {
+            this->addMass(mass[i]);
+        }
+    }
+}
+
 
 
 } // namespace mass
