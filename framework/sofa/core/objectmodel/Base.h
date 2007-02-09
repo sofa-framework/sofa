@@ -54,19 +54,19 @@ public:
     static std::string decodeTemplateName(const std::type_info& t);
 
     template<class T>
-    static std::string typeName(T* = NULL)
+    static std::string typeName(const T* = NULL)
     {
         return decodeTypeName(typeid(T));
     }
 
     template<class T>
-    static std::string className(T* = NULL)
+    static std::string className(const T* = NULL)
     {
         return decodeClassName(typeid(T));
     }
 
     template<class T>
-    static std::string templateName(T* = NULL)
+    static std::string templateName(const T* = NULL)
     {
         return decodeTemplateName(typeid(T));
     }

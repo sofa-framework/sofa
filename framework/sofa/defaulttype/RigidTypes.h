@@ -289,6 +289,10 @@ public:
         c.getVCenter()[2] += z;
     }
 
+    static const char* Name()
+    {
+        return "Rigid";
+    }
 };
 
 class RigidMass

@@ -333,6 +333,11 @@ public:
     static Mat crossM( const Vec& v );
 
     static ArticulatedInertia dyad ( const SpatialVector& u, const SpatialVector& v );
+
+    static const char* Name()
+    {
+        return "Solid";
+    }
 };
 
 }// defaulttype

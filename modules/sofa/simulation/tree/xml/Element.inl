@@ -19,7 +19,6 @@ namespace xml
 template<class Object>
 bool Element<Object>::initNode()
 {
-    //Object *obj = Factory< std::string, Object, Node<Object>* >::getInstance()->createObject(this->getType(), this);
     Object *obj = Factory::CreateObject(this->getType(), this);
     if (obj != NULL)
     {

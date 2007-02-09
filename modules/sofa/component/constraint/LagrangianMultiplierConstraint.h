@@ -63,6 +63,11 @@ public:
         {
             c += (Real)x;
         }
+
+        static const char* Name()
+        {
+            return "LMTypes";
+        }
     };
     typedef typename LMTypes::VecCoord LMCoord;
     typedef typename LMTypes::VecDeriv LMDeriv;

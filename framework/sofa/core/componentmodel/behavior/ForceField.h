@@ -64,6 +64,16 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const ForceField<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
 protected:
     MechanicalState<DataTypes> *mstate;
 };

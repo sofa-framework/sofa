@@ -265,6 +265,10 @@ public:
         //c.getVTranslation()[1] += y;
         //c.getVTranslation()[2] += z;
     }
+    static const char* Name()
+    {
+        return "LaparoscopicRigid";
+    }
 };
 
 inline LaparoscopicRigidTypes::Deriv operator*(const LaparoscopicRigidTypes::Deriv& d, const RigidMass& m)

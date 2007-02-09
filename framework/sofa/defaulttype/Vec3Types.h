@@ -64,6 +64,8 @@ public:
         c[1] += (typename Coord::value_type)y;
         c[2] += (typename Coord::value_type)z;
     }
+
+    static const char* Name();
 };
 
 template<class T>
@@ -147,15 +149,41 @@ public:
         c[1] += (typename Coord::value_type)y;
         c[2] += (typename Coord::value_type)z;
     }
+
+    static const char* Name();
 };
 
 typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
 typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
 typedef Vec3dTypes Vec3Types;
 
+template<>
+inline const char* Vec3dTypes::Name()
+{
+    return "Vec3d";
+}
+
+template<>
+inline const char* Vec3fTypes::Name()
+{
+    return "Vec3f";
+}
+
 typedef ExtVectorTypes<Vec3d,Vec3d,double> ExtVec3dTypes;
 typedef ExtVectorTypes<Vec3f,Vec3f,float> ExtVec3fTypes;
 typedef Vec3dTypes ExtVec3Types;
+
+template<>
+inline const char* ExtVec3dTypes::Name()
+{
+    return "ExtVec3d";
+}
+
+template<>
+inline const char* ExtVec3fTypes::Name()
+{
+    return "ExtVec3f";
+}
 
 } // namespace defaulttype
 
