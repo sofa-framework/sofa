@@ -479,7 +479,7 @@ void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, VecDeriv* v)
 
 
 template<class DataTypes>
-typename DataTypes::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index)
+typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index)
 {
     if (index>=vectorsCoord.size())
         vectorsCoord.resize(index+1);
@@ -489,7 +489,7 @@ typename DataTypes::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned 
 }
 
 template<class DataTypes>
-typename DataTypes::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index)
+typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index)
 {
     if (index>=vectorsDeriv.size())
         vectorsDeriv.resize(index+1);
