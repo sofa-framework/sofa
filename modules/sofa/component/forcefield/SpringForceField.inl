@@ -58,20 +58,26 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void SpringForceField<DataTypes>::initFromTopology()
 {
-    if (springs.empty())
+    sofa::component::topology::MeshTopology* _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
+    if( _mesh != NULL )
     {
-        sofa::component::topology::MeshTopology* _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
-        if( _mesh != NULL )
+        if(!object1)
+            object1 = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes>*>(this->getContext()->getMechanicalState());
+        if(!object2)
+            object2 = object1;
+        if(!object1)
         {
-            VecDeriv& P1 = *object1->getX();
-            VecDeriv& P2 = *object2->getX();
-            for( unsigned i=0; i<_mesh->getLines().size(); i++ )
-            {
-                int a =_mesh->getLines()[i][0];
-                int b = _mesh->getLines()[i][1];
-                Deriv gap = P1[a] - P2[b];
-                addSpring(a,b,ks.getValue(),kd.getValue(),sqrt(defaulttype::dot(gap,gap)));
-            }
+            std::cerr<<"ERROR(StiffSpringForceField): object must have a MechanicalState.\n";
+            return;
+        }
+        VecDeriv& P1 = *object1->getX();
+        VecDeriv& P2 = *object2->getX();
+        for( unsigned i=0; i<_mesh->getLines().size(); i++ )
+        {
+            int a =_mesh->getLines()[i][0];
+            int b = _mesh->getLines()[i][1];
+            Deriv gap = P1[a] - P2[b];
+            addSpring(a,b,ks.getValue(),kd.getValue(),sqrt(defaulttype::dot(gap,gap)));
         }
     }
 }
@@ -80,7 +86,8 @@ template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
     this->InteractionForceField::init();
-    //initFromTopology();
+    if (springs.empty())
+        initFromTopology();
 }
 
 template<class DataTypes>
