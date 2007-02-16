@@ -92,7 +92,6 @@ public:
     core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
     virtual void init();
-    void initFromTopology();
 
     virtual void addForce();
 
