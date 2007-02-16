@@ -42,6 +42,7 @@ public:
 
     void setMass(const MassType& mass);
 
+    double getTotalMass() { return totalMass.getValue();}
     void setTotalMass(double m);
 
     // -- Mass interface

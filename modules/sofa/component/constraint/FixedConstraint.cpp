@@ -47,6 +47,7 @@ void FixedConstraint<RigidTypes>::projectResponse(VecDeriv& res)
 
 template class FixedConstraint<Vec3dTypes>;
 template class FixedConstraint<Vec3fTypes>;
+template class FixedConstraint<RigidTypes>;
 
 } // namespace constraint
 

@@ -117,9 +117,14 @@ public:
     DataField<Real> f_young;
     DataField<Real> f_damping;
 
-    /*	void setPoissonRatio(Real val) { this->_poissonRatio = val; }
-    	void setYoungModulus(Real val) { this->_youngModulus = val; }
-    	void setMethod(int val) { this->_method = val; }*/
+    Real getPoisson() { return f_poisson.getValue(); }
+    void setPoisson(Real val) { f_poisson.setValue(val); }
+    Real getYoung() { return f_young.getValue(); }
+    void setYoung(Real val) { f_young.setValue(val); }
+    Real getDamping() { return f_damping.getValue(); }
+    void setDamping(Real val) { f_damping.setValue(val); }
+    int getMethod() { return f_method.getValue(); }
+    void setMethod(int val) { f_method.setValue(val); }
 
 //     component::MechanicalObject<DataTypes>* getObject()
 //     {
