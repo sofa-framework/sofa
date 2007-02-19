@@ -61,7 +61,9 @@ int CubeModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
     int i = size;
     this->core::CollisionModel::resize(size+1);
     elems.resize(size+1);
-    elems[i].subcells = std::make_pair(subcellsBegin, subcellsEnd);
+    //elems[i].subcells = std::make_pair(subcellsBegin, subcellsEnd);
+    elems[i].subcells.first = subcellsBegin;
+    elems[i].subcells.second = subcellsEnd;
     elems[i].leaf = core::CollisionElementIterator();
     updateCube(i);
     return i;
@@ -146,7 +148,7 @@ void CubeModel::draw()
     {
         m = m->getPrevious();
         ++level;
-        color *= 0.5f;
+        color *= 0.25f;
     }
     if (isStatic())
         glColor4f(1.0f, 1.0f, 1.0f, color);
@@ -155,6 +157,7 @@ void CubeModel::draw()
     if (color < 1.0f)
     {
         glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(0);
     }
     for (int i=0; i<size; i++)
@@ -260,10 +263,12 @@ void CubeModel::computeBoundingTree(int maxDepth)
         {
             //std::cout << "CubeModel: split level "<<lvl<<std::endl;
             CubeModel* clevel = *it;
+            clevel->elems.reserve(level->size*2);
             for(Cube cell = Cube(level->begin()); level->end() != cell; ++cell)
             {
-                std::pair<Cube,Cube> subcells = cell.subcells();
+                const std::pair<Cube,Cube>& subcells = cell.subcells();
                 int ncells = subcells.second.getIndex() - subcells.first.getIndex();
+                //std::cout << "CubeModel: level "<<lvl<<" cell "<<cell.getIndex()<<": current subcells "<<subcells.first.getIndex() << " - "<<subcells.second.getIndex()<<std::endl;
                 if (ncells > 4)
                 {
                     // Only split cells with more than 4 childs
@@ -283,8 +288,9 @@ void CubeModel::computeBoundingTree(int maxDepth)
 
                     // Separate cells on each side of the median cell
 
-#if defined(GCC_VERSION) && GCC_VERSION == 40101
-                    // there is apparently a bug in std::sort with GCC 4.1.1
+#if defined(__GNUC__) && (__GNUC__ == 4)
+// && (__GNUC_MINOR__ == 1) && (__GNUC_PATCHLEVEL__ == 1)
+                    // there is apparently a bug in std::sort with GCC 4.x
                     if (splitAxis == 0)
                         qsort(&(elems[subcells.first.getIndex()]), subcells.second.getIndex()-subcells.first.getIndex(), sizeof(elems[0]), CubeSortPredicate::sortCube<0>);
                     else if (splitAxis == 1)
@@ -301,8 +307,10 @@ void CubeModel::computeBoundingTree(int maxDepth)
                     Cube cmiddle(this, middle);
                     int c1 = clevel->addCube(subcells.first, cmiddle);
                     int c2 = clevel->addCube(cmiddle, subcells.second);
-                    level->elems[cell.getIndex()].subcells = std::make_pair(Cube(clevel,c1),Cube(clevel,c2+1));
                     //std::cout << "L"<<lvl<<" cell "<<cell.getIndex()<<" split along "<<(splitAxis==0?'X':splitAxis==1?'Y':'Z')<<" in cell "<<c1<<" size "<<middle-subcells.first.getIndex()<<" and cell "<<c2<<" size "<<subcells.second.getIndex()-middle<<".\n";
+                    //level->elems[cell.getIndex()].subcells = std::make_pair(Cube(clevel,c1),Cube(clevel,c2+1));
+                    level->elems[cell.getIndex()].subcells.first = Cube(clevel,c1);
+                    level->elems[cell.getIndex()].subcells.second = Cube(clevel,c2+1);
                 }
             }
             ++it;
