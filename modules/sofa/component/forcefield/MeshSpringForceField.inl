@@ -46,6 +46,9 @@ void MeshSpringForceField<DataTypes>::init()
 {
     assert(this->object1);
     assert(this->object2);
+    if(!object1 || !object2)
+        this->object2 = this->object1 = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
+
     if (this->object1==this->object2)
     {
         topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(this->object1->getContext()->getTopology());
