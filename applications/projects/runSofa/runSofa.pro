@@ -7,6 +7,13 @@ TARGET = runSofa$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECT \
           warn_on
+
+# The following is a workaround to get KDevelop to detect the name of the program to start
+unix {
+QMAKE_POST_LINK = ln -sf runSofa$$SUFFIX $$DESTDIR/runSofa-latest
+}
+
+
 RC_FILE = sofa.rc
 
 SOURCES = Main.cpp 
