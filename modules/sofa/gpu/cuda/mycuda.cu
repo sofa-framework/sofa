@@ -1,18 +1,13 @@
 #include "mycuda.h"
 
-// \todo Why mycuda.h is not read correctly...
-extern "C" {
-    extern int mycudaInit(int device);
-    extern void mycudaMalloc(void **devPtr, size_t size);
-    extern void mycudaFree(void *devPtr);
-//extern void mycudaMemcpy(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind);
-    extern void mycudaMemcpyHostToDevice(void *dst, const void *src, size_t count);
-    extern void mycudaMemcpyDeviceToDevice(void *dst, const void *src, size_t count);
-    extern void mycudaMemcpyDeviceToHost(void *dst, const void *src, size_t count);
-
-    extern void mycudaLogError(int err, const char* src);
-    extern int myprintf(const char* fmt, ...);
-}
+#if defined(__cplusplus)
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
+{
+#endif
 
 void cudaCheck(cudaError_t err, const char* src="?")
 {
@@ -30,11 +25,11 @@ int mycudaInit(int device)
     {
         cudaDeviceProp dev;
         dev.name=NULL;
-        dev.mbytes=0;
+        dev.bytes=0;
         dev.major=0;
         dev.minor=0;
         cudaCheck(cudaGetDeviceProperties(&dev,i));
-        myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), dev.mbytes, dev.major, dev.minor);
+        myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), dev.bytes/(1024*1024), dev.major, dev.minor);
     }
     if (device >= deviceCount)
     {
@@ -74,3 +69,9 @@ void mycudaMemcpyDeviceToHost(void *dst, const void *src, size_t count)
 {
     cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyDeviceToHost),"cudaMemcpyDeviceToHost");
 }
+
+#if defined(__cplusplus)
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
+#endif

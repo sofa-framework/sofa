@@ -1,18 +1,18 @@
-#ifndef SOFA_CONTRIB_CUDA_CUDASPRINGFORCEFIELD_INL
-#define SOFA_CONTRIB_CUDA_CUDASPRINGFORCEFIELD_INL
+#ifndef SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_INL
+#define SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_INL
 
 #include "CudaSpringForceField.h"
-#include "Sofa-old/Components/SpringForceField.inl"
-#include "Sofa-old/Components/StiffSpringForceField.inl"
-#include "Sofa-old/Components/MeshSpringForceField.inl"
+#include <sofa/component/forcefield/SpringForceField.inl>
+#include <sofa/component/forcefield/StiffSpringForceField.inl>
+#include <sofa/component/forcefield/MeshSpringForceField.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Contrib
+namespace gpu
 {
 
-namespace CUDA
+namespace cuda
 {
 
 extern "C"
@@ -25,14 +25,17 @@ extern "C"
     void StiffSpringForceFieldCuda3f_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx);
 }
 
-} // namespace CUDA
+} // namespace cuda
 
-} // namespace Contrib
+} // namespace gpu
 
-namespace Components
+namespace component
 {
 
-using namespace Contrib::CUDA;
+namespace forcefield
+{
+
+using namespace gpu::cuda;
 
 template <>
 void SpringForceField<CudaVec3fTypes>::init()
@@ -71,13 +74,13 @@ void SpringForceField<CudaVec3fTypes>::init()
                 int m1 = springs[i].m1 - data.springs1.vertex0;
                 int m2 = springs[i].m2 - data.springs2.vertex0;
                 data.springs1.set(m1, nsprings1[m1]++, m2,
-                        springs[i].initpos,
-                        springs[i].ks,
-                        springs[i].kd);
+                        (float)springs[i].initpos,
+                        (float)springs[i].ks,
+                        (float)springs[i].kd);
                 data.springs2.set(m2, nsprings2[m2]++, m1,
-                        springs[i].initpos,
-                        springs[i].ks,
-                        springs[i].kd);
+                        (float)springs[i].initpos,
+                        (float)springs[i].ks,
+                        (float)springs[i].kd);
             }
         }
         else
@@ -101,13 +104,13 @@ void SpringForceField<CudaVec3fTypes>::init()
                 int m1 = springs[i].m1 - data.springs1.vertex0;
                 int m2 = springs[i].m2 - data.springs1.vertex0;
                 data.springs1.set(m1, nsprings[m1]++, m2,
-                        springs[i].initpos,
-                        springs[i].ks,
-                        springs[i].kd);
+                        (float)springs[i].initpos,
+                        (float)springs[i].ks,
+                        (float)springs[i].kd);
                 data.springs1.set(m2, nsprings[m2]++, m1,
-                        springs[i].initpos,
-                        springs[i].ks,
-                        springs[i].kd);
+                        (float)springs[i].initpos,
+                        (float)springs[i].ks,
+                        (float)springs[i].kd);
             }
         }
     }
@@ -306,8 +309,10 @@ void StiffSpringForceField<CudaVec3fTypes>::addDForce()
     }
 }
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

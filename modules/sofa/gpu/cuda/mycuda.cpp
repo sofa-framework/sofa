@@ -5,11 +5,11 @@
 
 #include "mycuda.h"
 
-namespace Sofa
+namespace sofa
 {
-namespace Contrib
+namespace gpu
 {
-namespace CUDA
+namespace cuda
 {
 
 void mycudaLogError(int err, const char* src)
@@ -26,6 +26,6 @@ int myprintf(const char* fmt, ...)
     return r;
 }
 
-} // namespace CUDA
-} // namespace Contrib
-} // namespace Sofa
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa

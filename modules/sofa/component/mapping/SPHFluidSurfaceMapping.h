@@ -24,6 +24,50 @@ namespace mapping
 // TODO: move SpatialGridContainer to another namespace?
 using namespace sofa::component::behaviormodel::eulerianfluid;
 
+template <class InDataTypes, class OutDataTypes>
+class SPHFluidSurfaceMappingGridTypes : public SpatialGridContainerTypes<typename InDataTypes::Coord>
+{
+public:
+    typedef forcefield::SPHFluidForceField<InDataTypes> ParticleField;
+    typedef typename InDataTypes::Real Real;
+    /// For each cell, store the vertex indices on each 3 first edges, and the data value at the first corner
+    class CellData
+    {
+    public:
+        int p[3];
+        typename OutDataTypes::Real val;
+        CellData()
+        {
+            clear();
+        }
+        void clear()
+        {
+            p[0]=p[1]=p[2]=-1;
+            val=0;
+        }
+        void add
+        (ParticleField* field, int i, Real r2, Real h2)
+        {
+            val += (typename OutDataTypes::Real) field->getParticleField(i, r2/h2);
+        }
+    };
+
+    class GridData
+    {
+    public:
+        bool visited;
+        void clear()
+        {
+            visited = false;
+        }
+        GridData()
+        {
+            clear();
+        }
+    };
+    enum { GRIDDIM_LOG2 = 2 };
+};
+
 template <class In, class Out>
 class SPHFluidSurfaceMapping : public core::Mapping<In, Out>, public topology::MeshTopology, public core::VisualModel
 {
@@ -101,48 +145,7 @@ protected:
 
     // Marching cube data
 
-    class GridTypes : public SpatialGridContainerTypes<InCoord>
-    {
-    public:
-        typedef SPHForceField ParticleField;
-        typedef InReal Real;
-        /// For each cell, store the vertex indices on each 3 first edges, and the data value at the first corner
-        class CellData
-        {
-        public:
-            int p[3];
-            OutReal val;
-            CellData()
-            {
-                clear();
-            }
-            void clear()
-            {
-                p[0]=p[1]=p[2]=-1;
-                val=0;
-            }
-            void add
-            (ParticleField* field, int i, Real r2, Real h2)
-            {
-                val += (OutReal) field->getParticleField(i, r2/h2);
-            }
-        };
-
-        class GridData
-        {
-        public:
-            bool visited;
-            void clear()
-            {
-                visited = false;
-            }
-            GridData()
-            {
-                clear();
-            }
-        };
-        enum { GRIDDIM_LOG2 = 2 };
-    };
+    typedef SPHFluidSurfaceMappingGridTypes<typename In::DataTypes, typename Out::DataTypes> GridTypes;
 
     typedef SpatialGridContainer<GridTypes> Grid;
     typedef typename Grid::Cell Cell;

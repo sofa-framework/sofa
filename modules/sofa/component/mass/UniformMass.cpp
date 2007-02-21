@@ -1,5 +1,4 @@
 #include <sofa/component/mass/UniformMass.inl>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/gl/Axis.h>
@@ -7,6 +6,7 @@
 
 namespace sofa
 {
+
 namespace component
 {
 
@@ -188,12 +188,9 @@ double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::
 
 SOFA_DECL_CLASS(UniformMass)
 
-template class UniformMass<Vec3dTypes,double>
-;
-template class UniformMass<Vec3fTypes,float>
-;
-template class UniformMass<RigidTypes,RigidMass>
-;
+template class UniformMass<Vec3dTypes,double>;
+template class UniformMass<Vec3fTypes,float>;
+template class UniformMass<RigidTypes,RigidMass>;
 
 // Register in the Factory
 int UniformMassClass = core::RegisterObject("Define the same mass for all the particles")
@@ -201,13 +198,6 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
         .add< UniformMass<Vec3fTypes,float> >()
         .add< UniformMass<RigidTypes,RigidMass> >()
         ;
-
-
-// using helper::Creator;
-//
-// Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3dTypes,double> > UniformMass3dClass("UniformMass",true);
-// Creator<simulation::tree::xml::ObjectFactory, UniformMass<Vec3fTypes,float > > UniformMass3fClass("UniformMass",true);
-// Creator<simulation::tree::xml::ObjectFactory, UniformMass<RigidTypes,RigidMass> > UniformMassRigidClass("UniformMass",true);
 
 } // namespace mass
 

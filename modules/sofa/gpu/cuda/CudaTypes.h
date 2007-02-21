@@ -1,19 +1,19 @@
-#ifndef SOFA_CONTRIB_CUDA_CUDATYPES_H
-#define SOFA_CONTRIB_CUDA_CUDATYPES_H
+#ifndef SOFA_GPU_CUDA_CUDATYPES_H
+#define SOFA_GPU_CUDA_CUDATYPES_H
 
 //#include "host_runtime.h" // CUDA
 #include "mycuda.h"
-#include <Sofa-old/Components/Common/Vec.h>
-#include <Sofa-old/Components/Common/Factory.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/vector.h>
 #include <iostream>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Contrib
+namespace gpu
 {
 
-namespace CUDA
+namespace cuda
 {
 
 template<class T>
@@ -260,6 +260,24 @@ public:
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
 
+    template <class T>
+    class SparseData
+    {
+    public:
+        SparseData(unsigned int _index, T& _data): index(_index), data(_data) {};
+        unsigned int index;
+        T data;
+    };
+
+    typedef SparseData<Coord> SparseCoord;
+    typedef SparseData<Deriv> SparseDeriv;
+
+    typedef CudaVector<SparseCoord> SparseVecCoord;
+    typedef CudaVector<SparseDeriv> SparseVecDeriv;
+
+    //! All the Constraints applied to a state Vector
+    typedef	sofa::helper::vector<SparseVecDeriv> VecConst;
+
     static void set(Coord& c, double x, double y, double z)
     {
         if (c.size()>0)
@@ -286,28 +304,43 @@ public:
         if (c.size()>2)
             c[2] += (typename Coord::value_type)z;
     }
+
+    static const char* Name();
 };
 
-typedef Sofa::Components::Common::Vec3f Vec3f;
-typedef Sofa::Components::Common::Vec2f Vec2f;
+typedef sofa::defaulttype::Vec3f Vec3f;
+typedef sofa::defaulttype::Vec2f Vec2f;
 
 // GPUs do not support double precision yet
 // ( NVIDIA announced at SuperComputing'06 that it will be supported in 2007... )
-//typedef Sofa::Components::Common::Vec3d Vec3d;
-//typedef Sofa::Components::Common::Vec2d Vec2d;
+//typedef sofa::defaulttype::Vec3d Vec3d;
+//typedef sofa::defaulttype::Vec2d Vec2d;
 
 //typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;
 typedef CudaVectorTypes<Vec3f,Vec3f,float> CudaVec3fTypes;
 typedef CudaVec3fTypes CudaVec3Types;
 
+template<>
+inline const char* CudaVec3fTypes::Name()
+{
+    return "CudaVec3f";
+}
+
 //typedef CudaVectorTypes<Vec2d,Vec2d,double> CudaVec2dTypes;
 typedef CudaVectorTypes<Vec2f,Vec2f,float> CudaVec2fTypes;
 typedef CudaVec2fTypes CudaVec2Types;
 
-} // namespace CUDA
+template<>
+inline const char* CudaVec2fTypes::Name()
+{
+    return "CudaVec2f";
+}
 
-} // namespace Contrib
 
-} // namespace Sofa
+} // namespace cuda
+
+} // namespace gpu
+
+} // namespace sofa
 
 #endif

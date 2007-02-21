@@ -3,36 +3,35 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "mycuda.h"
+#include <sofa/gpu/cuda/mycuda.h>
 
-#include "Sofa-old/Components/Graph/Simulation.h"
-#include "Sofa-old/Components/Graph/Action.h"
-#include "Sofa-old/Components/Common/Factory.h"
-#include "Sofa-old/Components/Thread/CTime.h"
-#include "Sofa-old/Components/Thread/Automate.h"
-#include "Sofa-old/Components/Thread/ThreadSimulation.h"
-#include "Sofa-old/Components/Thread/ExecBus.h"
-#include "Sofa-old/Components/Thread/Node.h"
-#if defined(SOFA_GUI_QT)
-#include "Sofa-old/GUI/QT/Main.h"
+#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/helper/BackTrace.h>
+#include <sofa/helper/system/thread/CTime.h>
+#ifdef SOFA_GUI_QT
+#include <sofa/gui/qt/Main.h>
 #elif defined(SOFA_GUI_FLTK)
-#include "Sofa-old/GUI/FLTK/Main.h"
+#include <sofa/gui/fltk/Main.h>
 #endif
 
-using Sofa::Components::Thread::CTime;
-using Sofa::Components::Thread::ctime_t;
+using sofa::helper::system::thread::CTime;
+using sofa::helper::system::thread::ctime_t;
 
-using namespace Sofa::Components::Graph;
-using namespace Sofa::Contrib::CUDA;
+using namespace sofa::simulation::tree;
+using namespace sofa::gpu::cuda;
+
+SOFA_LINK_CLASS(CudaFixedConstraint)
+SOFA_LINK_CLASS(CudaMechanicalObject)
+SOFA_LINK_CLASS(CudaSpringForceField)
+SOFA_LINK_CLASS(CudaUniformMass)
 
 // ---------------------------------------------------------------------
 // --- MAIN
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    //std::string fileName = "../../../../../Data/Benchmarks/GPU/Bar10-spring-rk4-8.scn";
-    //std::string fileName = "../../../../../Data/Benchmarks/GPU/Bar10-spring-implicit-8.scn";
-    std::string fileName = "../../../../../Data/Benchmarks/GPU/Bar8+4-spring-rk4-4.scn";
+    std::string fileName = "../../../examples/Benchmarks/GPU/Bar10-spring-rk4-1.scn";
     int nbIter = 0;
     if (argc < 2 || argc > 3)
     {
@@ -109,9 +108,9 @@ int main(int argc, char** argv)
     else
     {
 #if defined(SOFA_GUI_QT)
-        Sofa::GUI::QT::MainLoop(argv[0],groot,fileName.c_str());
+        sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
 #elif defined(SOFA_GUI_FLTK)
-        Sofa::GUI::FLTK::MainLoop(argv[0],groot);
+        sofa::gui::fltk::MainLoop(argv[0],groot);
 #endif
     }
 

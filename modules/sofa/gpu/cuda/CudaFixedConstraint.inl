@@ -1,16 +1,16 @@
-#ifndef SOFA_CONTRIB_CUDA_CUDAFIXEDCONSTRAINT_INL
-#define SOFA_CONTRIB_CUDA_CUDAFIXEDCONSTRAINT_INL
+#ifndef SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_INL
+#define SOFA_GPU_CUDA_CUDAFIXEDCONSTRAINT_INL
 
 #include "CudaFixedConstraint.h"
-#include "Sofa-old/Components/FixedConstraint.inl"
+#include <sofa/component/constraint/FixedConstraint.inl>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Contrib
+namespace gpu
 {
 
-namespace CUDA
+namespace cuda
 {
 
 extern "C"
@@ -19,19 +19,22 @@ extern "C"
     void FixedConstraintCuda3f_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
 }
 
-} // namespace CUDA
+} // namespace cuda
 
-} // namespace Contrib
+} // namespace gpu
 
-namespace Components
+namespace component
 {
 
-using namespace Contrib::CUDA;
+namespace constraint
+{
+
+using namespace gpu::cuda;
 
 template <>
 void FixedConstraint<CudaVec3fTypes>::init()
 {
-    this->Core::Constraint<CudaVec3fTypes>::init();
+    this->core::componentmodel::behavior::Constraint<CudaVec3fTypes>::init();
     const SetIndex& indices = f_indices.getValue();
     data.minIndex = -1;
     data.maxIndex = -1;
@@ -67,8 +70,10 @@ void FixedConstraint<CudaVec3fTypes>::projectResponse(VecDeriv& dx)
         FixedConstraintCuda3f_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
-} // namespace Components
+} // namespace constraint
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif

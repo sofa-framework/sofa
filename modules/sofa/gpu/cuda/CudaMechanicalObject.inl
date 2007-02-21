@@ -1,17 +1,17 @@
-#ifndef SOFA_CONTRIB_CUDA_CUDAMECHANICALOBJECT_INL
-#define SOFA_CONTRIB_CUDA_CUDAMECHANICALOBJECT_INL
+#ifndef SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_INL
+#define SOFA_GPU_CUDA_CUDAMECHANICALOBJECT_INL
 
 #include "CudaMechanicalObject.h"
-#include "Sofa-old/Core/MechanicalObject.inl"
+#include <sofa/component/MechanicalObject.inl>
 
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Contrib
+namespace gpu
 {
 
-namespace CUDA
+namespace cuda
 {
 
 extern "C"
@@ -28,33 +28,33 @@ extern "C"
     void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp);
 }
 
-} // namespace CUDA
+} // namespace cuda
 
-} // namespace Contrib
+} // namespace gpu
 
-namespace Core
+namespace component
 {
 
-using namespace Contrib::CUDA;
+using namespace gpu::cuda;
 
 template <>
 void MechanicalObject<CudaVec3fTypes>::accumulateForce()
 {
     if (!this->externalForces->empty())
     {
-        Contrib::CUDA::MechanicalObjectCudaVec3f_vAssign(this->externalForces->size(), this->f->deviceWrite(), this->externalForces->deviceRead());
+        gpu::cuda::MechanicalObjectCudaVec3f_vAssign(this->externalForces->size(), this->f->deviceWrite(), this->externalForces->deviceRead());
     }
 }
 
 template <>
 void MechanicalObject<CudaVec3fTypes>::vAlloc(VecId v)
 {
-    if (v.type == V_COORD && v.index >= V_FIRST_DYNAMIC_INDEX)
+    if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecCoord* vec = getVecCoord(v.index);
         vec->fastResize(vsize);
     }
-    else if (v.type == V_DERIV && v.index >= V_FIRST_DYNAMIC_INDEX)
+    else if (v.type == VecId::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecDeriv* vec = getVecDeriv(v.index);
         vec->fastResize(vsize);
@@ -82,17 +82,17 @@ void MechanicalObject<CudaVec3fTypes>::vOp(VecId v, VecId a, VecId b, double f)
         if (b.isNull())
         {
             // v = 0
-            if (v.type == V_COORD)
+            if (v.type == VecId::V_COORD)
             {
                 VecCoord* vv = getVecCoord(v.index);
                 vv->fastResize(this->vsize);
-                Contrib::CUDA::MechanicalObjectCudaVec3f_vClear(vv->size(), vv->deviceWrite());
+                gpu::cuda::MechanicalObjectCudaVec3f_vClear(vv->size(), vv->deviceWrite());
             }
             else
             {
                 VecDeriv* vv = getVecDeriv(v.index);
                 vv->fastResize(this->vsize);
-                Contrib::CUDA::MechanicalObjectCudaVec3f_vClear(vv->size(), vv->deviceWrite());
+                gpu::cuda::MechanicalObjectCudaVec3f_vClear(vv->size(), vv->deviceWrite());
             }
         }
         else
@@ -106,33 +106,33 @@ void MechanicalObject<CudaVec3fTypes>::vOp(VecId v, VecId a, VecId b, double f)
             if (v == b)
             {
                 // v *= f
-                if (v.type == V_COORD)
+                if (v.type == VecId::V_COORD)
                 {
                     VecCoord* vv = getVecCoord(v.index);
-                    Contrib::CUDA::MechanicalObjectCudaVec3f_vMEq(vv->size(), vv->deviceWrite(), (Real) f);
+                    gpu::cuda::MechanicalObjectCudaVec3f_vMEq(vv->size(), vv->deviceWrite(), (Real) f);
                 }
                 else
                 {
                     VecDeriv* vv = getVecDeriv(v.index);
-                    Contrib::CUDA::MechanicalObjectCudaVec3f_vMEq(vv->size(), vv->deviceWrite(), (Real) f);
+                    gpu::cuda::MechanicalObjectCudaVec3f_vMEq(vv->size(), vv->deviceWrite(), (Real) f);
                 }
             }
             else
             {
                 // v = b*f
-                if (v.type == V_COORD)
+                if (v.type == VecId::V_COORD)
                 {
                     VecCoord* vv = getVecCoord(v.index);
                     VecCoord* vb = getVecCoord(b.index);
                     vv->fastResize(vb->size());
-                    Contrib::CUDA::MechanicalObjectCudaVec3f_vEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real) f);
+                    gpu::cuda::MechanicalObjectCudaVec3f_vEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real) f);
                 }
                 else
                 {
                     VecDeriv* vv = getVecDeriv(v.index);
                     VecDeriv* vb = getVecDeriv(b.index);
                     vv->fastResize(vb->size());
-                    Contrib::CUDA::MechanicalObjectCudaVec3f_vEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real) f);
+                    gpu::cuda::MechanicalObjectCudaVec3f_vEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real) f);
                 }
             }
         }
@@ -148,19 +148,19 @@ void MechanicalObject<CudaVec3fTypes>::vOp(VecId v, VecId a, VecId b, double f)
         if (b.isNull())
         {
             // v = a
-            if (v.type == V_COORD)
+            if (v.type == VecId::V_COORD)
             {
                 VecCoord* vv = getVecCoord(v.index);
                 VecCoord* va = getVecCoord(a.index);
                 vv->fastResize(va->size());
-                Contrib::CUDA::MechanicalObjectCudaVec3f_vAssign(vv->size(), vv->deviceWrite(), va->deviceRead());
+                gpu::cuda::MechanicalObjectCudaVec3f_vAssign(vv->size(), vv->deviceWrite(), va->deviceRead());
             }
             else
             {
                 VecDeriv* vv = getVecDeriv(v.index);
                 VecDeriv* va = getVecDeriv(a.index);
                 vv->fastResize(va->size());
-                Contrib::CUDA::MechanicalObjectCudaVec3f_vAssign(vv->size(), vv->deviceWrite(), va->deviceRead());
+                gpu::cuda::MechanicalObjectCudaVec3f_vAssign(vv->size(), vv->deviceWrite(), va->deviceRead());
             }
         }
         else
@@ -170,28 +170,28 @@ void MechanicalObject<CudaVec3fTypes>::vOp(VecId v, VecId a, VecId b, double f)
                 if (f==1.0)
                 {
                     // v += b
-                    if (v.type == V_COORD)
+                    if (v.type == VecId::V_COORD)
                     {
                         VecCoord* vv = getVecCoord(v.index);
-                        if (b.type == V_COORD)
+                        if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = getVecCoord(b.index);
                             vv->resize(vb->size());
-                            Contrib::CUDA::MechanicalObjectCudaVec3f_vPEq(vv->size(), vv->deviceWrite(), vb->deviceRead());
+                            gpu::cuda::MechanicalObjectCudaVec3f_vPEq(vv->size(), vv->deviceWrite(), vb->deviceRead());
                         }
                         else
                         {
                             VecDeriv* vb = getVecDeriv(b.index);
                             vv->resize(vb->size());
-                            Contrib::CUDA::MechanicalObjectCudaVec3f_vPEq(vv->size(), vv->deviceWrite(), vb->deviceRead());
+                            gpu::cuda::MechanicalObjectCudaVec3f_vPEq(vv->size(), vv->deviceWrite(), vb->deviceRead());
                         }
                     }
-                    else if (b.type == V_DERIV)
+                    else if (b.type == VecId::V_DERIV)
                     {
                         VecDeriv* vv = getVecDeriv(v.index);
                         VecDeriv* vb = getVecDeriv(b.index);
                         vv->resize(vb->size());
-                        Contrib::CUDA::MechanicalObjectCudaVec3f_vPEq(vv->size(), vv->deviceWrite(), vb->deviceRead());
+                        gpu::cuda::MechanicalObjectCudaVec3f_vPEq(vv->size(), vv->deviceWrite(), vb->deviceRead());
                     }
                     else
                     {
@@ -203,28 +203,28 @@ void MechanicalObject<CudaVec3fTypes>::vOp(VecId v, VecId a, VecId b, double f)
                 else
                 {
                     // v += b*f
-                    if (v.type == V_COORD)
+                    if (v.type == VecId::V_COORD)
                     {
                         VecCoord* vv = getVecCoord(v.index);
-                        if (b.type == V_COORD)
+                        if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = getVecCoord(b.index);
                             vv->resize(vb->size());
-                            Contrib::CUDA::MechanicalObjectCudaVec3f_vPEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real)f);
+                            gpu::cuda::MechanicalObjectCudaVec3f_vPEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real)f);
                         }
                         else
                         {
                             VecDeriv* vb = getVecDeriv(b.index);
                             vv->resize(vb->size());
-                            Contrib::CUDA::MechanicalObjectCudaVec3f_vPEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real)f);
+                            gpu::cuda::MechanicalObjectCudaVec3f_vPEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real)f);
                         }
                     }
-                    else if (b.type == V_DERIV)
+                    else if (b.type == VecId::V_DERIV)
                     {
                         VecDeriv* vv = getVecDeriv(v.index);
                         VecDeriv* vb = getVecDeriv(b.index);
                         vv->resize(vb->size());
-                        Contrib::CUDA::MechanicalObjectCudaVec3f_vPEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real)f);
+                        gpu::cuda::MechanicalObjectCudaVec3f_vPEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real)f);
                     }
                     else
                     {
@@ -239,29 +239,29 @@ void MechanicalObject<CudaVec3fTypes>::vOp(VecId v, VecId a, VecId b, double f)
                 if (f==1.0)
                 {
                     // v = a+b
-                    if (v.type == V_COORD)
+                    if (v.type == VecId::V_COORD)
                     {
                         VecCoord* vv = getVecCoord(v.index);
                         VecCoord* va = getVecCoord(a.index);
                         vv->fastResize(va->size());
-                        if (b.type == V_COORD)
+                        if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = getVecCoord(b.index);
-                            Contrib::CUDA::MechanicalObjectCudaVec3f_vAdd(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead());
+                            gpu::cuda::MechanicalObjectCudaVec3f_vAdd(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead());
                         }
                         else
                         {
                             VecDeriv* vb = getVecDeriv(b.index);
-                            Contrib::CUDA::MechanicalObjectCudaVec3f_vAdd(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead());
+                            gpu::cuda::MechanicalObjectCudaVec3f_vAdd(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead());
                         }
                     }
-                    else if (b.type == V_DERIV)
+                    else if (b.type == VecId::V_DERIV)
                     {
                         VecDeriv* vv = getVecDeriv(v.index);
                         VecDeriv* va = getVecDeriv(a.index);
                         VecDeriv* vb = getVecDeriv(b.index);
                         vv->fastResize(va->size());
-                        Contrib::CUDA::MechanicalObjectCudaVec3f_vAdd(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead());
+                        gpu::cuda::MechanicalObjectCudaVec3f_vAdd(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead());
                     }
                     else
                     {
@@ -273,29 +273,29 @@ void MechanicalObject<CudaVec3fTypes>::vOp(VecId v, VecId a, VecId b, double f)
                 else
                 {
                     // v = a+b*f
-                    if (v.type == V_COORD)
+                    if (v.type == VecId::V_COORD)
                     {
                         VecCoord* vv = getVecCoord(v.index);
                         VecCoord* va = getVecCoord(a.index);
                         vv->fastResize(va->size());
-                        if (b.type == V_COORD)
+                        if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = getVecCoord(b.index);
-                            Contrib::CUDA::MechanicalObjectCudaVec3f_vOp(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead(), (Real)f);
+                            gpu::cuda::MechanicalObjectCudaVec3f_vOp(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead(), (Real)f);
                         }
                         else
                         {
                             VecDeriv* vb = getVecDeriv(b.index);
-                            Contrib::CUDA::MechanicalObjectCudaVec3f_vOp(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead(), (Real)f);
+                            gpu::cuda::MechanicalObjectCudaVec3f_vOp(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead(), (Real)f);
                         }
                     }
-                    else if (b.type == V_DERIV)
+                    else if (b.type == VecId::V_DERIV)
                     {
                         VecDeriv* vv = getVecDeriv(v.index);
                         VecDeriv* va = getVecDeriv(a.index);
                         VecDeriv* vb = getVecDeriv(b.index);
                         vv->fastResize(va->size());
-                        Contrib::CUDA::MechanicalObjectCudaVec3f_vOp(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead(), (Real)f);
+                        gpu::cuda::MechanicalObjectCudaVec3f_vOp(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead(), (Real)f);
                     }
                     else
                     {
@@ -314,34 +314,34 @@ template <>
 double MechanicalObject<CudaVec3fTypes>::vDot(VecId a, VecId b)
 {
     Real r = 0.0f;
-    if (a.type == V_COORD && b.type == V_COORD)
+    if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
     {
         VecCoord* va = getVecCoord(a.index);
         VecCoord* vb = getVecCoord(b.index);
-        int tmpsize = Contrib::CUDA::MechanicalObjectCudaVec3f_vDotTmpSize(va->size());
+        int tmpsize = gpu::cuda::MechanicalObjectCudaVec3f_vDotTmpSize(va->size());
         if (tmpsize == 0)
         {
-            Contrib::CUDA::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), NULL);
+            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), NULL);
         }
         else
         {
             this->data.tmpdot.fastResize(tmpsize);
-            Contrib::CUDA::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), this->data.tmpdot.deviceWrite());
+            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), this->data.tmpdot.deviceWrite());
         }
     }
-    else if (a.type == V_DERIV && b.type == V_DERIV)
+    else if (a.type == VecId::V_DERIV && b.type == VecId::V_DERIV)
     {
         VecDeriv* va = getVecDeriv(a.index);
         VecDeriv* vb = getVecDeriv(b.index);
-        int tmpsize = Contrib::CUDA::MechanicalObjectCudaVec3f_vDotTmpSize(va->size());
+        int tmpsize = gpu::cuda::MechanicalObjectCudaVec3f_vDotTmpSize(va->size());
         if (tmpsize == 0)
         {
-            Contrib::CUDA::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), NULL);
+            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), NULL);
         }
         else
         {
             this->data.tmpdot.fastResize(tmpsize);
-            Contrib::CUDA::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), this->data.tmpdot.deviceWrite());
+            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), this->data.tmpdot.deviceWrite());
         }
 #ifndef NDEBUG
         // Check the result
@@ -362,11 +362,11 @@ template <>
 void MechanicalObject<CudaVec3fTypes>::resetForce()
 {
     VecDeriv& f= *getF();
-    Contrib::CUDA::MechanicalObjectCudaVec3f_vClear(f.size(), f.deviceWrite());
+    gpu::cuda::MechanicalObjectCudaVec3f_vClear(f.size(), f.deviceWrite());
 }
 
-} // namespace Core
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

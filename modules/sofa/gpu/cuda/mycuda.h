@@ -4,11 +4,11 @@
 #include <string.h>
 
 #if defined(__cplusplus)
-namespace Sofa
+namespace sofa
 {
-namespace Contrib
+namespace gpu
 {
-namespace CUDA
+namespace cuda
 {
 #endif
 
@@ -26,9 +26,9 @@ extern "C" {
 }
 
 #if defined(__cplusplus)
-} // namespace CUDA
-} // namespace Contrib
-} // namespace Sofa
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
 #endif
 
 #endif

@@ -1,19 +1,23 @@
-#ifndef SOFA_CONTRIB_CUDA_CUDASPRINGFORCEFIELD_H
-#define SOFA_CONTRIB_CUDA_CUDASPRINGFORCEFIELD_H
+#ifndef SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_H
+#define SOFA_GPU_CUDA_CUDASPRINGFORCEFIELD_H
 
 #include "CudaTypes.h"
-#include "Sofa-old/Components/SpringForceField.h"
-#include "Sofa-old/Components/StiffSpringForceField.h"
-#include "Sofa-old/Components/MeshSpringForceField.h"
+#include <sofa/component/forcefield/SpringForceField.h>
+#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/forcefield/MeshSpringForceField.h>
 
-namespace Sofa
+
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace forcefield
 {
 
 template <>
-class SpringForceFieldInternalData<Contrib::CUDA::CudaVec3fTypes>
+class SpringForceFieldInternalData<gpu::cuda::CudaVec3fTypes>
 {
 public:
     enum { BSIZE=16 };
@@ -37,8 +41,8 @@ public:
         int vertex0; ///< index of the first vertex connected to a spring
         int nbVertex; ///< number of vertices to process to compute all springs
         int nbSpringPerVertex; ///< max number of springs connected to a vertex
-        Contrib::CUDA::CudaVector<GPUSpring> springs; ///< springs attached to each points (layout per bloc of NBLOC vertices, with first spring of each vertex, then second spring, etc)
-        Contrib::CUDA::CudaVector<float> dfdx; ///< only used for StiffSpringForceField
+        gpu::cuda::CudaVector<GPUSpring> springs; ///< springs attached to each points (layout per bloc of NBLOC vertices, with first spring of each vertex, then second spring, etc)
+        gpu::cuda::CudaVector<float> dfdx; ///< only used for StiffSpringForceField
         GPUSpringSet() : vertex0(0), nbVertex(0), nbSpringPerVertex(0) {}
         void init(int v0, int nbv, int nbsperv)
         {
@@ -67,28 +71,30 @@ public:
 //
 
 template <>
-void SpringForceField<Contrib::CUDA::CudaVec3fTypes>::init();
+void SpringForceField<gpu::cuda::CudaVec3fTypes>::init();
 
 // -- InteractionForceField interface
 template <>
-void SpringForceField<Contrib::CUDA::CudaVec3fTypes>::addForce();
+void SpringForceField<gpu::cuda::CudaVec3fTypes>::addForce();
 
 //
 // StiffSpringForceField
 //
 
 template <>
-void StiffSpringForceField<Contrib::CUDA::CudaVec3fTypes>::init();
+void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::init();
 
 // -- InteractionForceField interface
 template <>
-void StiffSpringForceField<Contrib::CUDA::CudaVec3fTypes>::addForce();
+void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::addForce();
 
 template <>
-void StiffSpringForceField<Contrib::CUDA::CudaVec3fTypes>::addDForce();
+void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::addDForce();
 
-} // namespace Components
+} // namespace forcefield
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif
