@@ -90,6 +90,7 @@ template<class DataTypes>
 void PlaneForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;
+    if (!bDraw.getValue()) return;
     draw2();
 }
 

@@ -36,6 +36,7 @@ public:
     DataField<Real> stiffness;
     DataField<Real> damping;
     DataField<Coord> color;
+    DataField<bool> bDraw;
 
     PlaneForceField()
         : planeNormal(dataField(&planeNormal, Deriv(0, 0, 1), "normal", "plane normal"))
@@ -43,6 +44,7 @@ public:
         , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(dataField(&damping, (Real)5, "damping", "force damping"))
         , color(dataField(&color, Coord(0.0f,.5f,.2f), "color", "plane color"))
+        , bDraw(dataField(&bDraw, false, "draw", "enable/disable drawing of plane"))
     {
     }
 
