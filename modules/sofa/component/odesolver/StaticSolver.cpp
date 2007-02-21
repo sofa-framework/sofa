@@ -22,12 +22,10 @@ namespace odesolver
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
 
-StaticSolver::StaticSolver() : f_maxCGIter( dataField(&f_maxCGIter,"iterations","Maximum number of iterations for the conjugated gradient algorithmIndices of the fixed points") )
+StaticSolver::StaticSolver()
+    : f_maxCGIter( dataField(&f_maxCGIter,(unsigned)25,"iterations","Maximum number of iterations for the conjugated gradient algorithmIndices of the fixed points") )
+    , f_smallDenominatorThreshold( dataField(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
 {
-    f_maxCGIter = 25;
-    smallDenominatorThreshold = 1e-5;
-    /*    newField(&maxCGIter,"iterations","maximum number of iterations of the Conjugate Gradient solution");
-        newField(&smallDenominatorThreshold,"threshold","minimum value of the denominator in the conjugate Gradient solution");*/
 }
 
 void StaticSolver::solve(double)
@@ -83,7 +81,7 @@ void StaticSolver::solve(double)
 
         double den = p.dot(q);
         /*        cerr<<"StaticSolver::solve, den = "<<den<<endl;*/
-        if( fabs(den)<smallDenominatorThreshold )
+        if( fabs(den)<f_smallDenominatorThreshold.getValue() )
             break;
         alpha = rho/den;
         /*        cerr<<"StaticSolver::solve, rho = "<< rho <<endl;
