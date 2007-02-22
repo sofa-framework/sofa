@@ -30,10 +30,14 @@ public:
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
     typedef typename Out::Deriv OutDeriv;
+    typedef typename Out::SparseVecDeriv OutSparseVecDeriv;
+    typedef typename Out::SparseDeriv OutSparseDeriv;
     typedef typename In::VecCoord InVecCoord;
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
+    typedef typename In::SparseVecDeriv InSparseVecDeriv;
+    typedef typename In::SparseDeriv InSparseDeriv;
     typedef typename InCoord::value_type Real;
     typedef typename OutCoord::value_type OutReal;
 
@@ -62,6 +66,7 @@ public:
         virtual void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in ) = 0;
         virtual void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in ) = 0;
         virtual void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in ) = 0;
+        virtual void applyJT( typename Inherit::In::VecConst& out, const typename Inherit::Out::VecConst& in ) = 0;
         virtual void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in) = 0;
     };
 
@@ -78,6 +83,7 @@ public:
         void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in );
         void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in );
         void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
+        void applyJT( typename Inherit::In::VecConst& out, const typename Inherit::Out::VecConst& in );
         void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
     };
 #endif
@@ -93,6 +99,7 @@ public:
         void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in );
         void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in );
         void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
+        void applyJT( typename Inherit::In::VecConst& out, const typename Inherit::Out::VecConst& in );
         void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
     };
 
@@ -125,6 +132,7 @@ public:
         void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in );
         void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in );
         void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
+        void applyJT( typename Inherit::In::VecConst& out, const typename Inherit::Out::VecConst& in );
         void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
     };
 
@@ -169,6 +177,8 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
     // -- VisualModel interface
     void draw();

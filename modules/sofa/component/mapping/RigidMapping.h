@@ -27,6 +27,8 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
+    typedef typename In::Deriv InDeriv;
+    typedef typename In::SparseDeriv InSparseDeriv;
     typedef typename Coord::value_type Real;
 
     class Mat3 : public helper::fixed_array<Deriv,3>
@@ -71,6 +73,8 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
     // -- VisualModel interface
     void draw();

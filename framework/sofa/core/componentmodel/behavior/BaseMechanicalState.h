@@ -66,7 +66,9 @@ public:
         bool isNull() const { return type==V_NULL; }
         static VecId null()     { return VecId(V_NULL,0); }
         static VecId position() { return VecId(V_COORD,0); }
+        static VecId initialPosition() { return VecId(V_COORD,1); }
         static VecId velocity() { return VecId(V_DERIV,0); }
+        static VecId initialVelocity() { return VecId(V_DERIV,3); }
         static VecId force() { return VecId(V_DERIV,1); }
         static VecId dx() { return VecId(V_DERIV,2); }
         bool operator==(const VecId& v)
@@ -92,6 +94,11 @@ public:
     virtual void setDx(VecId v) = 0; //{}
 
     virtual void setC(VecId v) = 0; //{}
+
+    // new : get compliance on the constraints
+    virtual void getCompliance(double dt, double **w, double *dfree, int& numContact) { }
+    // apply contact force AND compute the subsequent dX
+    virtual void applyContactForce(double *f) { }
 
     /// @}
 

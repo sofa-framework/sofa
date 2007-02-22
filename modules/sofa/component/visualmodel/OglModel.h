@@ -167,6 +167,9 @@ public:
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 };
 
+typedef Vec<3,GLfloat> GLVec3f;
+typedef ExtVectorTypes<GLVec3f,GLVec3f> GLExtVec3fTypes;
+
 } // namespace visualmodel
 
 } // namespace component

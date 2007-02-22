@@ -110,6 +110,71 @@ void MechanicalObject<defaulttype::RigidTypes>::getIndicesInSpace(std::vector<un
     }
 }
 
+
+template<>
+void MechanicalObject<defaulttype::RigidTypes>::getCompliance (double dt, double**W, double *dfree, int &numContact)
+{
+    const VecDeriv& v = *getV();
+    const VecConst& contacts = *getC();
+    Deriv weighedNormal;
+
+    numContact = contacts.size();
+
+    for(int c1=0; c1<numContact; c1++)
+    {
+        int sizeC1 = contacts[c1].size();
+        for(int i=0; i<sizeC1; i++)
+        {
+            weighedNormal.getVCenter() = contacts[c1][i].data.getVCenter(); // weighed normal
+            weighedNormal.getVOrientation() = contacts[c1][i].data.getVOrientation();
+            dfree[c1] += (dot(v[0].getVCenter(), weighedNormal.getVCenter()) +
+                    dot(v[0].getVOrientation(), weighedNormal.getVOrientation()))*dt; //0.01;
+            for(int c2=c1; c2<numContact; c2++)
+            {
+                int sizeC2 = contacts[c2].size();
+                for(int j=0; j<sizeC2; j++)
+                {
+                    W[c1][c2] += (dot(weighedNormal.getVCenter(), contacts[c2][j].data.getVCenter()) +
+                            dot(weighedNormal.getVOrientation(), contacts[c2][j].data.getVOrientation()))*(dt*dt);//(0.01*0.01);
+                }
+            }
+            for(int c2=c1+1; c2<numContact; c2++)
+            {
+                W[c2][c1] = W[c1][c2];
+            }
+        }
+    }
+}
+
+template<>
+void MechanicalObject<defaulttype::RigidTypes>::applyContactForce(double *f)
+{
+    VecDeriv& force = *this->externalForces;
+    const VecConst& contacts = *getC();
+    Deriv weighedNormal;
+
+    int numContact = contacts.size();
+
+    force.resize(0);
+    force.resize(1);
+    force[0] = Deriv();
+
+    for(int c1=0; c1<numContact; c1++)
+    {
+        int sizeC1 = contacts[c1].size();
+        for(int i=0; i<sizeC1; i++)
+        {
+            if (f[c1+numContact]!=0)
+            {
+                weighedNormal = contacts[c1][i].data; // weighed normal
+                force[0].getVCenter() += weighedNormal.getVCenter() * f[c1+numContact];
+                force[0].getVOrientation() += weighedNormal.getVOrientation() * f[c1+numContact];
+            }
+        }
+    }
+}
+
+
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 
 template class MechanicalObject<defaulttype::Vec3fTypes>;

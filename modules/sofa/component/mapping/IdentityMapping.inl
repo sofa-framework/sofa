@@ -45,6 +45,23 @@ void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
     }
 }
 
+template <class BaseMapping>
+void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+{
+    out.clear();
+    out.resize(in.size());
+
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        for(unsigned int j=0; j<in[i].size(); j++)
+        {
+            const OutSparseDeriv cIn = in[i][j];
+            out[i][j].index = cIn.index;
+            out[i][j].data = cIn.data;
+        }
+    }
+}
+
 } // namespace mapping
 
 } // namespace component

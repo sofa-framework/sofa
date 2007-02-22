@@ -160,6 +160,61 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
     out[0].getVOrientation()[2] += omega[2];
 }
 
+// RigidMapping::applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) //
+// this function propagate the constraint through the rigid mapping :
+// if one constraint along (vector n) with a value (v) is applied on the childModel (like collision model)
+// then this constraint is transformed by (Jt.n) with value (v) for the rigid model
+// There is a specificity of this propagateConstraint: we have to find the application point on the childModel
+// in order to compute the right constaint on the rigidModel.
+template <class BaseMapping>
+void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+{
+
+//	printf("\n applyJT(VectConst, VectConst) in RigidMapping");
+
+    out.resize(in.size());
+
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        // computation of (Jt.n) //
+        // computation of the ApplicationPoint position // Coord is a Vec3
+        Out::Coord ApplicationPoint;
+
+        // computation of the constaint direction
+        Out::Deriv n;
+
+        Out::Deriv w_n;
+
+        // in[i].size() = num node involved in the constraint
+        for (unsigned int j=0; j<in[i].size(); j++)
+        {
+            int index = in[i][j].index;	// index of the node
+            w_n = (Deriv) in[i][j].data;	// weighted value of the constraint direction
+            double w = w_n.norm();	// computation of the weight
+            // the application point (on the child model) is computed using barycentric values //
+            ApplicationPoint += rotatedPoints[index]*w;
+            // we add the contribution of each weighted direction
+            n += w_n ;
+        }
+
+        if (n.norm() < 0.9999 || n.norm() > 1.00001)
+            printf("\n WARNING : constraint direction is not normalized !!!");
+
+        // apply Jt.n as a constraint for the center of mass
+        // Jt = [ I   ]
+        //      [ OM^ ]
+        Out::Deriv omega_n = cross(ApplicationPoint,n);
+
+        InDeriv direction;
+
+        direction.getVCenter() = n;
+        direction.getVOrientation() = omega_n;
+
+        // for rigid model, there's only the center of mass as application point (so only one vector for each constraint)
+        out[i].push_back(InSparseDeriv(0, direction)); // 0 = index of the center of mass
+    }
+}
+
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::draw()
 {

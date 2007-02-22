@@ -50,6 +50,7 @@ HEADERS += \
           io/MeshTrian.h \
           io/SphereLoader.h \
           io/TriangleLoader.h \
+          LCPcalc.h \
           LCPSolver.h \
           LCPSolver.inl \
           PolarDecompose.h \
@@ -83,6 +84,7 @@ SOURCES += \
           io/MeshTrian.cpp \
           io/SphereLoader.cpp \
           io/TriangleLoader.cpp \
+          LCPcalc.cpp \
           system/SetDirectory.cpp \
           system/thread/CTime.cpp \
           system/thread/debug.cpp

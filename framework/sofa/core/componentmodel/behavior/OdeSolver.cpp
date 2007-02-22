@@ -220,9 +220,10 @@ void OdeSolver::matResUpdatePosition(defaulttype::SofaBaseVector *vect, unsigned
 }
 
 
-
-
-
+void OdeSolver::computeCompliance(double dt, double **W, double *dFree, int &numContact)
+{
+    MechanicalComputeComplianceAction(dt, W,dFree, numContact).execute(getContext());
+}
 
 
 } // namespace behavior

@@ -36,6 +36,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::SparseDeriv SparseDeriv;
+    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename DataTypes::VecConst VecConst;
 
 protected:
@@ -151,6 +153,13 @@ public:
 
     /// Get the indices of the particles located in the given bounding box
     void getIndicesInSpace(std::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
+
+
+    // new : get compliance on the constraints
+    virtual void getCompliance(double dt, double **w, double *dfree, int &numContact);
+    // apply contact force AND compute the subsequent dX
+    virtual void applyContactForce(double *f);
+
 
     /// @name Integration related methods
     /// @{

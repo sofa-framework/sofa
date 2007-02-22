@@ -985,6 +985,175 @@ void BarycentricMapping<BasicMapping>::MeshMapper::draw(const typename BasicMapp
     glEnd();
 }
 
+
+/************************************* PropagateConstraint ***********************************/
+
+
+template <class BasicMapping>
+void BarycentricMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+{
+    if (mapper!=NULL)
+    {
+        mapper->applyJT(out, in);
+    }
+}
+
+#if 0
+template <class BasicMapping>
+void BarycentricMapping<BasicMapping>::SparseGridMapper::applyJT( typename BasicMapping::In::VecConst& out, const typename BasicMapping::Out::VecConst& in )
+{
+//	printf("\n applyJT() in BaricentricMapping  [SparseGridMapper] ");
+    int offset = out.size();
+    out.resize(offset+in.size());
+
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        for(unsigned int j=0; j<in[i].size(); j++)
+        {
+            const OutSparseDeriv cIn = in[i][j];
+            const topology::MultiResSparseGridTopology::Cube cube = this->topology->getCube(this->map[cIn.index].in_index);
+            const OutReal fx = (OutReal)map[cIn.index].baryCoords[0];
+            const OutReal fy = (OutReal)map[cIn.index].baryCoords[1];
+            const OutReal fz = (OutReal)map[cIn.index].baryCoords[2];
+
+            out[i+offset].push_back(InSparseDeriv(cube[0], (InDeriv) (cIn.data * ((1-fx) * (1-fy) * (1-fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[1], (InDeriv) (cIn.data * ((  fx) * (1-fy) * (1-fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[2], (InDeriv) (cIn.data * ((1-fx) * (  fy) * (1-fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[3], (InDeriv) (cIn.data * ((  fx) * (  fy) * (1-fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[4], (InDeriv) (cIn.data * ((1-fx) * (1-fy) * (  fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[5], (InDeriv) (cIn.data * ((  fx) * (1-fy) * (  fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[6], (InDeriv) (cIn.data * ((1-fx) * (  fy) * (  fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[7], (InDeriv) (cIn.data * ((  fx) * (  fy) * (  fz)))));
+        }
+    }
+}
+#endif
+
+template <class BasicMapping>
+void BarycentricMapping<BasicMapping>::RegularGridMapper::applyJT( typename BasicMapping::In::VecConst& out, const typename BasicMapping::Out::VecConst& in )
+{
+//	printf("\n applyJT() in BaricentricMapping  [RegularGridMapper] ");
+    int offset = out.size();
+    out.resize(offset+in.size());
+
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        for(unsigned int j=0; j<in[i].size(); j++)
+        {
+            const OutSparseDeriv cIn = in[i][j];
+            const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[cIn.index].in_index);
+            const OutReal fx = (OutReal)map[cIn.index].baryCoords[0];
+            const OutReal fy = (OutReal)map[cIn.index].baryCoords[1];
+            const OutReal fz = (OutReal)map[cIn.index].baryCoords[2];
+
+            out[i+offset].push_back(InSparseDeriv(cube[0], (InDeriv) (cIn.data * ((1-fx) * (1-fy) * (1-fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[1], (InDeriv) (cIn.data * ((  fx) * (1-fy) * (1-fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[2], (InDeriv) (cIn.data * ((1-fx) * (  fy) * (1-fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[3], (InDeriv) (cIn.data * ((  fx) * (  fy) * (1-fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[4], (InDeriv) (cIn.data * ((1-fx) * (1-fy) * (  fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[5], (InDeriv) (cIn.data * ((  fx) * (1-fy) * (  fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[6], (InDeriv) (cIn.data * ((1-fx) * (  fy) * (  fz)))));
+            out[i+offset].push_back(InSparseDeriv(cube[7], (InDeriv) (cIn.data * ((  fx) * (  fy) * (  fz)))));
+        }
+    }
+}
+
+template <class BasicMapping>
+void BarycentricMapping<BasicMapping>::MeshMapper::applyJT( typename BasicMapping::In::VecConst& out, const typename BasicMapping::Out::VecConst& in )
+{
+//	printf("\n applyJT() in BaricentricMapping  [MeshMapper] ");
+    const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
+    const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
+    const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();
+    const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
+    const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
+
+    const int iLine = lines.size();
+    const int iTri = triangles.size();
+    const int iQuad = quads.size();
+    const int iTetra= tetras.size();
+    const int iCube = cubes.size();
+
+    const int i1d = map1d.size();
+    const int i2d = map2d.size();
+    const int i3d = map3d.size();
+
+    int indexIn;
+
+    int offset = out.size();
+    out.resize(offset+in.size());
+
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        for(unsigned int j=0; j<in[i].size(); j++)
+        {
+            const OutSparseDeriv cIn = in[i][j];
+            indexIn = cIn.index;
+            // 1D elements
+            if (indexIn < i1d)
+            {
+                const OutReal fx = (OutReal)map1d[indexIn].baryCoords[0];
+                int index = map1d[indexIn].in_index;
+                {
+                    const topology::MeshTopology::Line& line = lines[index];
+                    out[i+offset].push_back(InSparseDeriv(line[0], (InDeriv) cIn.data * (1-fx)));
+                    out[i+offset].push_back(InSparseDeriv(line[1], (InDeriv) cIn.data * fx));
+                }
+            }
+            // 2D elements : triangle or quad
+            else if (indexIn < i2d)
+            {
+                const OutReal fx = (OutReal)map2d[indexIn].baryCoords[0];
+                const OutReal fy = (OutReal)map2d[indexIn].baryCoords[1];
+                int index = map2d[indexIn].in_index;
+                if (index < iTri) // triangle
+                {
+                    const topology::MeshTopology::Triangle& triangle = triangles[index];
+                    out[i+offset].push_back(InSparseDeriv(triangle[0], (InDeriv) cIn.data * (1-fx-fy)));
+                    out[i+offset].push_back(InSparseDeriv(triangle[1], (InDeriv) cIn.data * fx));
+                    out[i+offset].push_back(InSparseDeriv(triangle[2], (InDeriv) cIn.data * fy));
+                }
+                else // 2D element : Quad
+                {
+                    const topology::MeshTopology::Quad& quad = quads[index - iTri];
+                    out[i+offset].push_back(InSparseDeriv(quad[0], (InDeriv) cIn.data * ((1-fx) * (1-fy))));
+                    out[i+offset].push_back(InSparseDeriv(quad[1], (InDeriv) cIn.data * ((  fx) * (1-fy))));
+                    out[i+offset].push_back(InSparseDeriv(quad[3], (InDeriv) cIn.data * ((1-fx) * (  fy))));
+                    out[i+offset].push_back(InSparseDeriv(quad[2], (InDeriv) cIn.data * ((  fx) * (  fy))));
+                }
+            }
+            // 3D elements
+            else if (indexIn < i3d)
+            {
+                const OutReal fx = (OutReal)map3d[indexIn].baryCoords[0];
+                const OutReal fy = (OutReal)map3d[indexIn].baryCoords[1];
+                const OutReal fz = (OutReal)map3d[indexIn].baryCoords[2];
+                int index = map3d[indexIn].in_index;
+                if (index < iTetra) // tetra
+                {
+                    const topology::MeshTopology::Tetra& tetra = tetras[index];
+                    out[i+offset].push_back(InSparseDeriv(tetra[0], (InDeriv) cIn.data * (1-fx-fy-fz)));
+                    out[i+offset].push_back(InSparseDeriv(tetra[1], (InDeriv) cIn.data * fx));
+                    out[i+offset].push_back(InSparseDeriv(tetra[2], (InDeriv) cIn.data * fy));
+                    out[i+offset].push_back(InSparseDeriv(tetra[3], (InDeriv) cIn.data * fz));
+                }
+                else // cube
+                {
+                    const topology::MeshTopology::Cube& cube = cubes[index-iTetra];
+                    out[i+offset].push_back(InSparseDeriv(cube[0], (InDeriv) cIn.data * ((1-fx) * (1-fy) * (1-fz))));
+                    out[i+offset].push_back(InSparseDeriv(cube[1], (InDeriv) cIn.data * ((  fx) * (1-fy) * (1-fz))));
+                    out[i+offset].push_back(InSparseDeriv(cube[2], (InDeriv) cIn.data * ((1-fx) * (  fy) * (1-fz))));
+                    out[i+offset].push_back(InSparseDeriv(cube[3], (InDeriv) cIn.data * ((  fx) * (  fy) * (1-fz))));
+                    out[i+offset].push_back(InSparseDeriv(cube[4], (InDeriv) cIn.data * ((1-fx) * (1-fy) * (  fz))));
+                    out[i+offset].push_back(InSparseDeriv(cube[5], (InDeriv) cIn.data * ((  fx) * (1-fy) * (  fz))));
+                    out[i+offset].push_back(InSparseDeriv(cube[6], (InDeriv) cIn.data * ((1-fx) * (  fy) * (  fz))));
+                    out[i+offset].push_back(InSparseDeriv(cube[7], (InDeriv) cIn.data * ((  fx) * (  fy) * (  fz))));
+                }
+            }
+        }
+    }
+}
+
 } // namespace mapping
 
 } // namespace component

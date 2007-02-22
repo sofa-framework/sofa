@@ -37,7 +37,7 @@ public:
 
     virtual BaseMechanicalState* getDOFs() { return NULL; }
 
-    virtual void getConstraintValue(double *) {};
+    virtual void getConstraintValue(double *, int *) {};
 };
 
 } // namespace behavior

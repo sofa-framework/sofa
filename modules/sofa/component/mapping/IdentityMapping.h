@@ -23,6 +23,7 @@ public:
     typedef typename Inherit::Out Out;
     typedef typename Out::VecCoord VecCoord;
     typedef typename Out::VecDeriv VecDeriv;
+    typedef typename Out::SparseDeriv OutSparseDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
 
@@ -40,6 +41,8 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 };
 
 } // namespace mapping

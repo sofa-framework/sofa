@@ -25,6 +25,8 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::SparseDeriv SparseDeriv;
+    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename DataTypes::VecConst VecConst;
 
     virtual ~MechanicalState() { }

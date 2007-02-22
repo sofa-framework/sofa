@@ -62,6 +62,8 @@ public:
     virtual void computeOpVector(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
     virtual void matResUpdatePosition(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
 
+    virtual void computeCompliance(double dt, double **W, double *dFree, int &numContact);
+
     virtual void print( VecId v, std::ostream& out );
     /// @}
 
