@@ -1096,7 +1096,7 @@ void BarycentricMapping<BasicMapping>::MeshMapper::applyJT( typename BasicMappin
                 int index = map1d[indexIn].in_index;
                 {
                     const topology::MeshTopology::Line& line = lines[index];
-                    out[i+offset].push_back(InSparseDeriv(line[0], (InDeriv) cIn.data * (1-fx)));
+                    out[i+offset].push_back(InSparseDeriv((unsigned) line[0], (InDeriv) cIn.data * (1-fx)));
                     out[i+offset].push_back(InSparseDeriv(line[1], (InDeriv) cIn.data * fx));
                 }
             }

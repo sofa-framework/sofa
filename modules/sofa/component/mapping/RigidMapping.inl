@@ -178,12 +178,12 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
     {
         // computation of (Jt.n) //
         // computation of the ApplicationPoint position // Coord is a Vec3
-        Out::Coord ApplicationPoint;
+        typename Out::Coord ApplicationPoint;
 
         // computation of the constaint direction
-        Out::Deriv n;
+        typename Out::Deriv n;
 
-        Out::Deriv w_n;
+        typename Out::Deriv w_n;
 
         // in[i].size() = num node involved in the constraint
         for (unsigned int j=0; j<in[i].size(); j++)
@@ -203,7 +203,7 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
         // apply Jt.n as a constraint for the center of mass
         // Jt = [ I   ]
         //      [ OM^ ]
-        Out::Deriv omega_n = cross(ApplicationPoint,n);
+        typename Out::Deriv omega_n = cross(ApplicationPoint,n);
 
         InDeriv direction;
 
