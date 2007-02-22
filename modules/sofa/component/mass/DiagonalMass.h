@@ -23,6 +23,8 @@ namespace component
 namespace mass
 {
 
+template<class Vec> void readVec1(Vec& vec, const char* str);
+
 using sofa::helper::vector;
 
 template <class DataTypes, class MassType>

@@ -17,6 +17,24 @@ namespace component
 namespace mass
 {
 
+
+template<class Vec>
+void readVec1(Vec& vec, const char* str)
+{
+    vec.clear();
+    if (str==NULL) return;
+    const char* str2 = NULL;
+    for(;;)
+    {
+        double v = strtod(str,(char**)&str2);
+        if (str2==str) break;
+        str = str2;
+        vec.push_back((typename Vec::value_type)v);
+    }
+}
+
+
+
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
