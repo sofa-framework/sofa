@@ -16,7 +16,7 @@ namespace component
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), x0(NULL), v0(NULL), vsize(0), c(new VecConst)
+    : x(new VecCoord), v(new VecDeriv), x0(NULL), v0(NULL), c(new VecConst), vsize(0)
     , f_X( new XField<DataTypes>(&x, "position coordinates ot the degrees of freedom") )
     , f_V( new VField<DataTypes>(&v, "velocity coordinates ot the degrees of freedom") )
 {
@@ -387,12 +387,12 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getCompliance (double dt, double**W, double *dfree, int &numContact)
+void MechanicalObject<DataTypes>::getCompliance (double /*dt*/, double** /*W*/, double* /*dfree*/, int& /*numContact*/)
 {
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyContactForce(double *f)
+void MechanicalObject<DataTypes>::applyContactForce(double* /*f*/)
 {
 }
 

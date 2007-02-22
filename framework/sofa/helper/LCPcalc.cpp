@@ -7,7 +7,7 @@ namespace helper
 {
 
 
-/* Resoud un LCP écrit sous la forme U = q + M.F
+/* Resoud un LCP ï¿½rit sous la forme U = q + M.F
  * dim : dimension du pb
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
@@ -15,7 +15,7 @@ namespace helper
 int resoudreLCP(int dim, double * q, double ** M, double * res)
 {
 
-    // déclaration des variables
+    // dï¿½laration des variables
     int compteur;	// compteur de boucle
     int compteur2;	// compteur de boucle
     double ** mat;	// matrice de travail
@@ -24,11 +24,11 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
     int colPiv;		// colonne du pivot
     double pivot;	// pivot
     double min;		// recherche du minimum pour le pivot
-    double coeff;	// valeur du coefficient de la combinaison linéaire
+    double coeff;	// valeur du coefficient de la combinaison linï¿½ire
     int boucles;	// compteur du nombre de passages dans la boucle
     int result=1;
 
-    // allocation de la mémoire nécessaire
+    // allocation de la mï¿½oire nï¿½essaire
     mat = (double **)malloc(dim*sizeof(double *));
     for(compteur=0; compteur<dim; compteur++)
     {
@@ -130,7 +130,7 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
                 mat[ligPiv][compteur]/=pivot;
             }
 
-            // combinaisons linéaires mettant la colonne du pivot a 0
+            // combinaisons linï¿½ires mettant la colonne du pivot a 0
             for(compteur=0; compteur<dim; compteur++)
             {
                 if (compteur!=ligPiv)
@@ -169,7 +169,7 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
     {
         res[compteur]=0;
     }
-    // si on est arriv??résoudre le pb, seules les variables en base sont non nulles
+    // si on est arriv??rï¿½oudre le pb, seules les variables en base sont non nulles
     if (boucles<MAX_BOU)
     {
         for(compteur=0; compteur<dim; compteur++)
@@ -178,7 +178,7 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
         }
     }
 
-    // libération de la mémoire allouée
+    // libï¿½ation de la mï¿½oire allouï¿½
     for(compteur=0; compteur<dim; compteur++)
     {
         free(mat[compteur]);
@@ -322,7 +322,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
     double tmp;
     int *basis;
     static double** A;
-    static int dimTest=0;
+    //static int dimTest=0;
 
     dim2 = 2*(dim+1);
 

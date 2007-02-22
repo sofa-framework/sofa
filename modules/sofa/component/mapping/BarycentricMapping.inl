@@ -1068,11 +1068,11 @@ void BarycentricMapping<BasicMapping>::MeshMapper::applyJT( typename BasicMappin
     const topology::MeshTopology::SeqTetras& tetras = this->topology->getTetras();
     const topology::MeshTopology::SeqCubes& cubes = this->topology->getCubes();
 
-    const int iLine = lines.size();
+    //const int iLine = lines.size();
     const int iTri = triangles.size();
-    const int iQuad = quads.size();
+    //const int iQuad = quads.size();
     const int iTetra= tetras.size();
-    const int iCube = cubes.size();
+    //const int iCube = cubes.size();
 
     const int i1d = map1d.size();
     const int i2d = map2d.size();
