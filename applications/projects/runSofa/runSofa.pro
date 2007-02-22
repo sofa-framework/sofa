@@ -24,7 +24,7 @@ CONFIG += qt
 QT += opengl qt3support
 }
 
-LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX -lsofacore$$LIBSUFFIX -lNewMat$$LIBSUFFIX
+LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX -lsofacore$$LIBSUFFIX -lNewMat$$LIBSUFFIX -lSLC$$LIBSUFFIX
 LIBS += -lsofacomponent$$LIBSUFFIX -lsofasimulation$$LIBSUFFIX
 
 win32{
