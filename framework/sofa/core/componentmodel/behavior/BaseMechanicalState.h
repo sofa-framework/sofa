@@ -105,6 +105,7 @@ public:
     /// @name Debug
     /// @{
     virtual void printDOF( VecId, std::ostream& =std::cerr ) = 0;
+    virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0 ) {return 0;};
     /// @}
 
 

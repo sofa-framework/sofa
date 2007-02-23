@@ -201,6 +201,7 @@ public:
     /// @name Debug
     /// @{
     virtual void printDOF( VecId, std::ostream& =std::cerr );
+    virtual unsigned printDOFWithElapsedTime( VecId, unsigned count=0, unsigned time=0  );
     /// @}
 };
 

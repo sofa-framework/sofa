@@ -180,6 +180,11 @@ void OdeSolver::print( VecId v, std::ostream& out )
     MechanicalVPrintAction(v,out).execute( getContext() );
 }
 
+void OdeSolver::printWithElapsedTime( VecId v,  unsigned time )
+{
+    MechanicalVPrintWithElapsedTimeAction(v,time).execute( getContext() );
+}
+
 //                 double OdeSolver::getTime() const
 // {
 //     return this->getTime();

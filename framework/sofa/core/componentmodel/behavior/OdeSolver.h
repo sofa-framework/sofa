@@ -65,6 +65,7 @@ public:
     virtual void computeCompliance(double dt, double **W, double *dFree, int &numContact);
 
     virtual void print( VecId v, std::ostream& out );
+    virtual void printWithElapsedTime( VecId v,  unsigned time );
     /// @}
 
 protected:

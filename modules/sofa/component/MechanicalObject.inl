@@ -942,6 +942,38 @@ void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out)
         out<<"MechanicalObject<DataTypes>::printDOF, unknown v.type = "<<v.type<<std::endl;
 }
 
+
+template <class DataTypes>
+unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime( VecId v,unsigned count, unsigned time)
+{
+
+    if( v.type==VecId::V_COORD )
+    {
+        VecCoord& x= *getVecCoord(v.index);
+
+        for( unsigned i=0; i<x.size(); ++i )
+        {
+            std::cerr<<count+i<<"\t"<<time<<"\t"<<x[i]<<std::endl;
+        }
+        std::cerr<<std::endl<<std::endl;
+        return x.size();
+    }
+    else if( v.type==VecId::V_DERIV )
+    {
+        VecDeriv& x= *getVecDeriv(v.index);
+        for( unsigned i=0; i<x.size(); ++i )
+            std::cerr<<count+i<<"\t"<<time<<"\t"<<x[i]<<std::endl;
+        std::cerr<<std::endl<<std::endl;
+
+        return x.size();
+    }
+    else
+        std::cerr<<"MechanicalObject<DataTypes>::printDOFWithElapsedTime, unknown v.type = "<<v.type<<std::endl;
+
+    return 0;
+}
+
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetForce()
 {
