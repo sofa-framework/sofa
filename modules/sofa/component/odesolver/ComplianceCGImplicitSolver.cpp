@@ -96,11 +96,11 @@ void ComplianceCGImplicitSolver::solve(double dt)
 
     if( printLog )
     {
-        cerr<<"JP_CGImplicitSolver, dt = "<< dt <<endl;
-        cerr<<"JP_CGImplicitSolver, initial x = "<< pos <<endl;
-        cerr<<"JP_CGImplicitSolver, initial v = "<< vel <<endl;
-        cerr<<"JP_CGImplicitSolver, f0 = "<< b <<endl;
-        cerr<<"JP_CGImplicitSolver, r0 = "<< r <<endl;
+        cerr<<"ComplianceCGImplicitSolver, dt = "<< dt <<endl;
+        cerr<<"ComplianceCGImplicitSolver, initial x = "<< pos <<endl;
+        cerr<<"ComplianceCGImplicitSolver, initial v = "<< vel <<endl;
+        cerr<<"ComplianceCGImplicitSolver, f0 = "<< b <<endl;
+        cerr<<"ComplianceCGImplicitSolver, r0 = "<< r <<endl;
     }
 
     unsigned nb_iter;
