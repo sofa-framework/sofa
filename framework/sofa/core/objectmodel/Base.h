@@ -125,6 +125,8 @@ public:
         this->parseFields ( arg->getAttributeMap() );
     }
 
+    std::map< std::string, FieldBase* > getFields() { return m_fieldMap; }
+
 protected:
     /// name -> Field object
     std::map< std::string, FieldBase* > m_fieldMap;

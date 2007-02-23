@@ -66,6 +66,7 @@ public:
     inline void setHelpMsg( const char* msg ) { this->help = msg; }
     inline void printValue(std::ostream& out) const ;
     inline std::string getValueString() const ;
+    inline std::string getValueTypeString() const { return std::string(typeid(m_value).name()); }
     inline T* beginEdit()
     {
         m_isSet = true;

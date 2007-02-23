@@ -55,6 +55,9 @@ public:
     /// Print the value of the associated variable
     virtual std::string getValueString() const=0;
 
+    /// Print the value type of the associated variable
+    virtual std::string getValueTypeString() const=0;
+
     /// Help message
     const char* help;
 
