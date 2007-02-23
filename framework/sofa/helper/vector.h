@@ -82,7 +82,7 @@ public:
     }
 
 /// Output stream
-    inline friend std::ostream& operator<< ( std::ostream& os, const std::vector<T,Alloc>& vec )
+    inline friend std::ostream& operator<< ( std::ostream& os, const vector<T,Alloc>& vec )
     {
         if( vec.size()>0 )
         {
@@ -93,7 +93,7 @@ public:
     }
 
 /// Input stream
-    inline friend std::istream& operator>> ( std::istream& in, std::vector<T,Alloc>& vec )
+    inline friend std::istream& operator>> ( std::istream& in, vector<T,Alloc>& vec )
     {
         T t;
         vec.clear();
@@ -169,7 +169,47 @@ void removeIndex( std::vector<T,TT>& v, size_t index )
 
 } // namespace sofa
 
+/*
+/// Output stream
+template<class T, class Alloc>
+  std::ostream& operator<< ( std::ostream& os, const std::vector<T,Alloc>& vec )
+{
+  if( vec.size()>0 ){
+    for( unsigned int i=0; i<vec.size()-1; ++i ) os<<vec[i]<<" ";
+    os<<vec[vec.size()-1];
+  }
+  return os;
+}
 
+/// Input stream
+template<class T, class Alloc>
+    std::istream& operator>> ( std::istream& in, std::vector<T,Alloc>& vec )
+{
+  T t;
+  vec.clear();
+  while(in>>t){
+    vec.push_back(t);
+  }
+  if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+  return in;
+}
+
+/// Input a pair
+template<class T, class U>
+    std::istream& operator>> ( std::istream& in, std::pair<T,U>& pair )
+{
+  in>>pair.first>>pair.second;
+  return in;
+}
+
+/// Output a pair
+template<class T, class U>
+    std::ostream& operator<< ( std::ostream& out, const std::pair<T,U>& pair )
+{
+  out<<pair.first<<" "<<pair.second;
+  return out;
+}
+*/
 
 #endif
 

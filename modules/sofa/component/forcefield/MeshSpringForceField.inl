@@ -38,7 +38,8 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<int,int> >& s
         sset.insert(std::make_pair(m2,m1));
     }
     Real l = ((*this->object2->getX())[m2] - (*this->object1->getX())[m1]).norm();
-    this->springs.push_back(typename SpringForceField<DataTypes>::Spring(m1,m2,stiffness/l, damping/l, l));
+    this->springs.beginEdit()->push_back(typename SpringForceField<DataTypes>::Spring(m1,m2,stiffness/l, damping/l, l));
+    this->springs.endEdit();
 }
 
 template<class DataTypes>

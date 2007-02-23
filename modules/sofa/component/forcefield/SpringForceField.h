@@ -42,12 +42,6 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
 protected:
-    MechanicalState* object1;
-    MechanicalState* object2;
-    double m_potentialEnergy;
-    DataField<double> ks;
-    DataField<double> kd;
-
     class Spring
     {
     public:
@@ -60,9 +54,27 @@ protected:
             : m1(m1), m2(m2), ks(ks), kd(kd), initpos(initpos)
         {
         }
+
+        inline friend std::istream& operator >> ( std::istream& in, Spring& s )
+        {
+            in>>s.m1>>s.m2>>s.ks>>s.kd>>s.initpos;
+            return in;
+        }
+
+        inline friend std::ostream& operator << ( std::ostream& out, const Spring& s )
+        {
+            out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos;
+            return out;
+        }
+
     };
 
-    std::vector<Spring> springs;
+    MechanicalState* object1;
+    MechanicalState* object2;
+    double m_potentialEnergy;
+    DataField<double> ks;
+    DataField<double> kd;
+    DataField<sofa::helper::vector<Spring> > springs;
     class Loader;
 
     SpringForceFieldInternalData<DataTypes> data;
@@ -70,17 +82,8 @@ protected:
     void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
 
 public:
-    SpringForceField(MechanicalState* object1, MechanicalState* object2, double _ks=100.0, double _kd=5.0)
-        : object1(object1), object2(object2), ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs")), kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
-    {
-    }
-
-    SpringForceField(double _ks=100.0, double _kd=5.0)
-        : object1(NULL), object2(NULL)
-        , ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
-        , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
-    {
-    }
+    SpringForceField(MechanicalState* object1, MechanicalState* object2, double _ks=100.0, double _kd=5.0);
+    SpringForceField(double _ks=100.0, double _kd=5.0);
 
     virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
@@ -112,13 +115,16 @@ public:
 
     void clear(int reserve=0)
     {
+        vector<Spring>& springs = *this->springs.beginEdit();
         springs.clear();
         if (reserve) springs.reserve(reserve);
+        this->springs.endEdit();
     }
 
     void addSpring(int m1, int m2, double ks, double kd, double initlen)
     {
-        springs.push_back(Spring(m1,m2,ks,kd,initlen));
+        springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
+        springs.endEdit();
     }
 
 

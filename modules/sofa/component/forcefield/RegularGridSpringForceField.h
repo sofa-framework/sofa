@@ -19,6 +19,7 @@ class RegularGridSpringForceField : public StiffSpringForceField<DataTypes>
     double m_potentialEnergy;
 public:
     typedef StiffSpringForceField<DataTypes> Inherit;
+    typedef typename Inherit::Spring Spring;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

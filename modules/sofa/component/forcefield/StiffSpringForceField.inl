@@ -71,7 +71,8 @@ void StiffSpringForceField<DataTypes>::addForce()
 {
     assert(this->object1);
     assert(this->object2);
-    this->dfdx.resize(this->springs.size());
+    const vector<Spring>& springs= this->springs.getValue();
+    this->dfdx.resize(springs.size());
     VecDeriv& f1 = *this->object1->getF();
     const VecCoord& p1 = *this->object1->getX();
     const VecDeriv& v1 = *this->object1->getV();
@@ -81,9 +82,9 @@ void StiffSpringForceField<DataTypes>::addForce()
     f1.resize(p1.size());
     f2.resize(p2.size());
     m_potentialEnergy = 0;
-    for (unsigned int i=0; i<this->springs.size(); i++)
+    for (unsigned int i=0; i<springs.size(); i++)
     {
-        this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, i, this->springs[i]);
+        this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, i, springs[i]);
     }
 }
 
@@ -100,9 +101,10 @@ void StiffSpringForceField<DataTypes>::addDForce()
     f2.resize(dx2.size());
     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, dx1 = "<<dx1<<endl;
     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 before = "<<f1<<endl;
-    for (unsigned int i=0; i<this->springs.size(); i++)
+    const vector<Spring>& springs = this->springs.getValue();
+    for (unsigned int i=0; i<springs.size(); i++)
     {
-        this->addSpringDForce(f1,dx1,f2,dx2, i, this->springs[i]);
+        this->addSpringDForce(f1,dx1,f2,dx2, i, springs[i]);
     }
     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 = "<<f1<<endl;
     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df2 = "<<f2<<endl;

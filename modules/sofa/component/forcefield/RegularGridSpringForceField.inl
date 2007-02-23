@@ -60,6 +60,7 @@ void RegularGridSpringForceField<DataTypes>::addForce()
     f1.resize(p1.size());
     f2.resize(p2.size());
     m_potentialEnergy = 0;
+    const vector<Spring>& springs = this->springs.getValue();
     if (this->object1==this->object2)
     {
         if (topology != NULL)
@@ -67,7 +68,7 @@ void RegularGridSpringForceField<DataTypes>::addForce()
             const int nx = topology->getNx();
             const int ny = topology->getNy();
             const int nz = topology->getNz();
-            int index = this->springs.size();
+            int index = springs.size();
             int size = index;
             if (this->linesStiffness != 0.0 || this->linesDamping != 0.0)
                 size += ((nx-1)*ny*nz+nx*(ny-1)*nz+nx*ny*(nz-1));
@@ -78,7 +79,7 @@ void RegularGridSpringForceField<DataTypes>::addForce()
             this->dfdx.resize(size);
             if (this->linesStiffness != 0.0 || this->linesDamping != 0.0)
             {
-                typename RegularGridSpringForceField<DataTypes>::Spring spring;
+                Spring spring;
                 // lines along X
                 spring.initpos = topology->getDx().norm();
                 spring.ks = this->linesStiffness / spring.initpos;
@@ -273,6 +274,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
     const VecDeriv& dx2 = *this->object2->getDx();
     f1.resize(dx1.size());
     f2.resize(dx2.size());
+    const vector<Spring>& springs = this->springs.getValue();
     if (this->object1==this->object2)
     {
         if (topology != NULL)
@@ -280,7 +282,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce()
             const int nx = topology->getNx();
             const int ny = topology->getNy();
             const int nz = topology->getNz();
-            int index = this->springs.size();
+            int index = springs.size();
             if (this->linesStiffness != 0.0 || this->linesDamping != 0.0)
             {
                 typename RegularGridSpringForceField<DataTypes>::Spring spring;

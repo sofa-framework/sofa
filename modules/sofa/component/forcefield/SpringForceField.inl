@@ -25,6 +25,26 @@ namespace forcefield
 {
 
 template<class DataTypes>
+SpringForceField<DataTypes>::SpringForceField(MechanicalState* object1, MechanicalState* object2, double _ks, double _kd)
+    : object1(object1), object2(object2)
+    , ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
+    , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
+    , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+{
+}
+
+template<class DataTypes>
+SpringForceField<DataTypes>::SpringForceField(double _ks, double _kd)
+    : object1(NULL), object2(NULL)
+    , ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
+    , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
+    , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+{
+}
+
+
+
+template<class DataTypes>
 void SpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     if (arg->getAttribute("filename"))
@@ -40,7 +60,9 @@ public:
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
     virtual void addSpring(int m1, int m2, double ks, double kd, double initpos)
     {
-        dest->springs.push_back(Spring(m1,m2,ks,kd,initpos));
+        vector<Spring>& springs = *dest->springs.beginEdit();
+        springs.push_back(Spring(m1,m2,ks,kd,initpos));
+        dest->springs.endEdit();
     }
 };
 
@@ -94,9 +116,9 @@ void SpringForceField<DataTypes>::addForce()
     f1.resize(p1.size());
     f2.resize(p2.size());
     m_potentialEnergy = 0;
-    for (unsigned int i=0; i<this->springs.size(); i++)
+    for (unsigned int i=0; i<this->springs.getValue().size(); i++)
     {
-        this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, i, this->springs[i]);
+        this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, i, this->springs.getValue()[i]);
     }
 }
 
@@ -119,26 +141,27 @@ void SpringForceField<DataTypes>::draw()
     bool external = (this->object1!=this->object2);
     //if (!external)
     //	glColor4f(1,1,1,1);
+    const vector<Spring>& springs = this->springs.getValue();
     glBegin(GL_LINES);
-    for (unsigned int i=0; i<this->springs.size(); i++)
+    for (unsigned int i=0; i<springs.size(); i++)
     {
-        Real d = (p2[this->springs[i].m2]-p1[this->springs[i].m1]).norm();
+        Real d = (p2[springs[i].m2]-p1[springs[i].m1]).norm();
         if (external)
         {
-            if (d<this->springs[i].initpos*0.9999)
+            if (d<springs[i].initpos*0.9999)
                 glColor4f(1,0,0,1);
             else
                 glColor4f(0,1,0,1);
         }
         else
         {
-            if (d<this->springs[i].initpos*0.9999)
+            if (d<springs[i].initpos*0.9999)
                 glColor4f(1,0.5f,0,1);
             else
                 glColor4f(0,1,0.5f,1);
         }
-        glVertex3d(p1[this->springs[i].m1][0],p1[this->springs[i].m1][1],p1[this->springs[i].m1][2]);
-        glVertex3d(p2[this->springs[i].m2][0],p2[this->springs[i].m2][1],p2[this->springs[i].m2][2]);
+        glVertex3d(p1[springs[i].m1][0],p1[springs[i].m1][1],p1[springs[i].m1][2]);
+        glVertex3d(p2[springs[i].m2][0],p2[springs[i].m2][1],p2[springs[i].m2][2]);
     }
     glEnd();
 }

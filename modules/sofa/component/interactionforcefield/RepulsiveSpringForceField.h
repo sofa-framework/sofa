@@ -16,6 +16,8 @@ template<class DataTypes>
 class RepulsiveSpringForceField : public forcefield::StiffSpringForceField<DataTypes>
 {
 public:
+    typedef forcefield::StiffSpringForceField<DataTypes> Inherit;
+    typedef typename Inherit::Spring Spring;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

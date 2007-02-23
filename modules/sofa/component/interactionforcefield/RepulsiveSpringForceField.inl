@@ -18,7 +18,8 @@ void RepulsiveSpringForceField<DataTypes>::addForce()
 {
     assert(this->object1);
     assert(this->object2);
-    this->dfdx.resize(this->springs.size());
+    const vector<Spring>& springs = this->springs.getValue();
+    this->dfdx.resize(springs.size());
     VecDeriv& f1 = *this->object1->getF();
     const VecCoord& p1 = *this->object1->getX();
     const VecDeriv& v1 = *this->object1->getV();
@@ -27,21 +28,21 @@ void RepulsiveSpringForceField<DataTypes>::addForce()
     const VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
-    for (unsigned int i=0; i<this->springs.size(); i++)
+    for (unsigned int i=0; i<springs.size(); i++)
     {
 #if 1
-        int a = this->springs[i].m1;
-        int b = this->springs[i].m2;
+        int a = springs[i].m1;
+        int b = springs[i].m2;
         Coord u = p2[b]-p1[a];
         Real d = u.norm();
-        if (d < this->springs[i].initpos)
+        if (d < springs[i].initpos)
         {
             Real inverseLength = 1.0f/d;
             u *= inverseLength;
-            Real elongation = (Real)(d - this->springs[i].initpos);
+            Real elongation = (Real)(d - springs[i].initpos);
             Deriv relativeVelocity = v2[b]-v1[a];
             Real elongationVelocity = dot(u,relativeVelocity);
-            Real forceIntensity = (Real)(this->springs[i].ks*elongation+this->springs[i].kd*elongationVelocity);
+            Real forceIntensity = (Real)(springs[i].ks*elongation+springs[i].kd*elongationVelocity);
             Deriv force = u*forceIntensity;
             f1[a]+=force;
             f2[b]-=force;
@@ -52,7 +53,7 @@ void RepulsiveSpringForceField<DataTypes>::addForce()
             {
                 for( int k=0; k<3; ++k )
                 {
-                    m[j][k] = ((Real)this->springs[i].ks-tgt) * u[j] * u[k];
+                    m[j][k] = ((Real)springs[i].ks-tgt) * u[j] * u[k];
                 }
                 m[j][j] += tgt;
             }
