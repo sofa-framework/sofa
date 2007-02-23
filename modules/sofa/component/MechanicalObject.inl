@@ -8,15 +8,17 @@
 #include <assert.h>
 #include <iostream>
 
+
 namespace sofa
 {
+//using namespace core::objectmodel;
 
 namespace component
 {
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), x0(NULL), v0(NULL), c(new VecConst), vsize(0)
+    : x(new VecCoord), v(new VecDeriv), x0(NULL), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
     , f_X( new XField<DataTypes>(&x, "position coordinates ot the degrees of freedom") )
     , f_V( new VField<DataTypes>(&v, "velocity coordinates ot the degrees of freedom") )
 {
@@ -41,6 +43,29 @@ MechanicalObject<DataTypes>::MechanicalObject()
     scale = 1.0;
     /*    cerr<<"MechanicalObject<DataTypes>::MechanicalObject, x.size() = "<<x->size()<<endl;
         cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::initGnuplot()
+{
+    if( !this->getName().empty() )
+    {
+        m_gnuplotFileX = new std::ofstream( (this->getName()+"_x.gnuplot").c_str() );
+        m_gnuplotFileV = new std::ofstream( (this->getName()+"_v.gnuplot").c_str() );
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::exportGnuplot(double time)
+{
+    if( m_gnuplotFileX!=NULL )
+    {
+        (*m_gnuplotFileX) << time <<"\t"<< *getX() << std::endl;
+    }
+    if( m_gnuplotFileV!=NULL )
+    {
+        (*m_gnuplotFileV) << time <<"\t"<< *getV() << std::endl;
+    }
 }
 
 template <class DataTypes>
@@ -132,6 +157,10 @@ MechanicalObject<DataTypes>::~MechanicalObject()
     for (unsigned int i=0; i<vectorsDeriv.size(); i++)
         if (vectorsDeriv[i]!=NULL)
             delete vectorsDeriv[i];
+    if( m_gnuplotFileV!=NULL )
+        delete m_gnuplotFileV;
+    if( m_gnuplotFileX!=NULL )
+        delete m_gnuplotFileX;
 }
 
 

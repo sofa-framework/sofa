@@ -6,7 +6,7 @@
 #include <sofa/core/objectmodel/VField.h>
 #include <vector>
 #include <assert.h>
-
+#include <fstream>
 
 namespace sofa
 {
@@ -72,6 +72,9 @@ protected:
 
     MechanicalObjectInternalData<DataTypes> data;
 
+    std::ofstream* m_gnuplotFileX;
+    std::ofstream* m_gnuplotFileV;
+
     class Loader;
 
 public:
@@ -108,6 +111,9 @@ public:
     virtual void reset();
 
     virtual void writeState( std::ostream& out );
+
+    virtual void initGnuplot();
+    virtual void exportGnuplot(double time);
 
     virtual void resize( int vsize);
 

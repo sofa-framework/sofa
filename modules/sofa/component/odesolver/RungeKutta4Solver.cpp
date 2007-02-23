@@ -15,34 +15,40 @@ namespace odesolver
 using namespace core::componentmodel::behavior;
 using namespace sofa::defaulttype;
 
+int RungeKutta4SolverClass = core::RegisterObject("A popular explicit time integrator")
+        .add< RungeKutta4Solver >()
+        .addAlias("RungeKutta4")
+        ;
+
+SOFA_DECL_CLASS(RungeKutta4);
+
+
 void RungeKutta4Solver::solve(double dt)
 {
     //std::cout << "RK4 Init\n";
-    //objectmodel::BaseContext* group = getContext();
-    OdeSolver* group = this;
-    MultiVector pos(group, VecId::position());
-    MultiVector vel(group, VecId::velocity());
-    MultiVector k1a(group, VecId::V_DERIV);
-    MultiVector k2a(group, VecId::V_DERIV);
-    MultiVector k3a(group, VecId::V_DERIV);
-    MultiVector k4a(group, VecId::V_DERIV);
-    MultiVector k1v(group, VecId::V_DERIV);
-    MultiVector k2v(group, VecId::V_DERIV);
-    MultiVector k3v(group, VecId::V_DERIV);
-    MultiVector k4v(group, VecId::V_DERIV);
-    MultiVector newX(group, VecId::V_COORD);
-    MultiVector newV(group, VecId::V_DERIV);
+    MultiVector pos(this, VecId::position());
+    MultiVector vel(this, VecId::velocity());
+    MultiVector k1a(this, VecId::V_DERIV);
+    MultiVector k2a(this, VecId::V_DERIV);
+    MultiVector k3a(this, VecId::V_DERIV);
+    MultiVector k4a(this, VecId::V_DERIV);
+    MultiVector k1v(this, VecId::V_DERIV);
+    MultiVector k2v(this, VecId::V_DERIV);
+    MultiVector k3v(this, VecId::V_DERIV);
+    MultiVector k4v(this, VecId::V_DERIV);
+    MultiVector newX(this, VecId::V_COORD);
+    MultiVector newV(this, VecId::V_DERIV);
 
     double stepBy2 = double(dt / 2.0);
     double stepBy3 = double(dt / 3.0);
     double stepBy6 = double(dt / 6.0);
 
-    double startTime = group->getTime();
+    double startTime = this->getTime();
 
     //First step
     //std::cout << "RK4 Step 1\n";
     k1v = vel;
-    group->computeAcc (startTime, k1a, pos, vel);
+    computeAcc (startTime, k1a, pos, vel);
 
     //Step 2
     //std::cout << "RK4 Step 2\n";
@@ -53,7 +59,7 @@ void RungeKutta4Solver::solve(double dt)
     newV.peq(k1a, stepBy2);
 
     k2v = newV;
-    group->computeAcc ( startTime+stepBy2, k2a, newX, newV);
+    computeAcc ( startTime+stepBy2, k2a, newX, newV);
 
     // step 3
     //std::cout << "RK4 Step 3\n";
@@ -64,7 +70,7 @@ void RungeKutta4Solver::solve(double dt)
     newV.peq(k2a, stepBy2);
 
     k3v = newV;
-    group->computeAcc ( startTime+stepBy2, k3a, newX, newV);
+    computeAcc ( startTime+stepBy2, k3a, newX, newV);
 
     // step 4
     //std::cout << "RK4 Step 4\n";
@@ -74,7 +80,7 @@ void RungeKutta4Solver::solve(double dt)
     newV.peq(k3a, dt);
 
     k4v = newV;
-    group->computeAcc( startTime+dt, k4a, newX, newV);
+    computeAcc( startTime+dt, k4a, newX, newV);
 
     //std::cout << "RK4 Final\n";
     pos.peq(k1v,stepBy6);
@@ -87,12 +93,6 @@ void RungeKutta4Solver::solve(double dt)
     vel.peq(k4a,stepBy6);
 }
 
-int RungeKutta4SolverClass = core::RegisterObject("A popular explicit time integrator")
-        .add< RungeKutta4Solver >()
-        .addAlias("RungeKutta4")
-        ;
-
-SOFA_DECL_CLASS(RungeKutta4)
 
 
 } // namespace odesolver

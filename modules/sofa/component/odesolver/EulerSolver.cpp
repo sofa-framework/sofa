@@ -18,6 +18,17 @@ namespace odesolver
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
 
+int EulerSolverClass = core::RegisterObject("A simple explicit time integrator")
+        .add< EulerSolver >()
+        .addAlias("Euler")
+        ;
+
+SOFA_DECL_CLASS(Euler);
+
+EulerSolver::EulerSolver()
+    : symplectic( dataField( &symplectic, true, "symplectic", "If true, the velocities are updated before the velocities and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
+{}
+
 void EulerSolver::solve(double dt)
 {
     //objectmodel::BaseContext* group = getContext();
@@ -35,8 +46,18 @@ void EulerSolver::solve(double dt)
     }
 
     computeAcc ( getTime(), acc, pos, vel);
-    vel.peq(acc,dt);
-    pos.peq(vel,dt);
+
+    // update state
+    if( symplectic.getValue() )
+    {
+        vel.peq(acc,dt);
+        pos.peq(vel,dt);
+    }
+    else
+    {
+        pos.peq(vel,dt);
+        vel.peq(acc,dt);
+    }
 
     if( printLog )
     {
@@ -45,14 +66,6 @@ void EulerSolver::solve(double dt)
         cerr<<"EulerSolver, final v = "<< vel <<endl;
     }
 }
-
-int EulerSolverClass = core::RegisterObject("A simple time integrator")
-        .add< EulerSolver >();
-
-SOFA_DECL_CLASS(Euler)
-
-// helper::Creator<simulation::tree::xml::ObjectFactory, EulerSolver> EulerSolverClass("EulerSolver");
-// helper::Creator<simulation::tree::xml::ObjectFactory, EulerSolver> EulerSolverClass2("Euler"); // Previous name for compatibility with existing scenes
 
 } // namespace odesolver
 

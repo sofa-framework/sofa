@@ -58,6 +58,11 @@ public:
     /// Dump the current state in the given stream
     static void dumpState( GNode* root, std::ofstream& out );
 
+    /// Initialize gnuplot export (open files)
+    static void initGnuplot( GNode* root );
+    /// Dump the current state in gnuplot files
+    static void exportGnuplot( GNode* root, double time );
+
 };
 
 } // namespace tree

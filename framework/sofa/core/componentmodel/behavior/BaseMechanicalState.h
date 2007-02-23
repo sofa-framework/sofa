@@ -102,9 +102,11 @@ public:
 
     /// @}
 
-    /// @name Debug
+    /// @name Data output
     /// @{
     virtual void printDOF( VecId, std::ostream& =std::cerr ) = 0;
+    virtual void initGnuplot() {}
+    virtual void exportGnuplot(double) {}
     virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0 ) {return 0;};
     /// @}
 

@@ -3,6 +3,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/PrintAction.h>
+#include <sofa/simulation/tree/ExportGnuplotAction.h>
 #include <sofa/simulation/tree/InitAction.h>
 #include <sofa/simulation/tree/AnimateAction.h>
 #include <sofa/simulation/tree/MechanicalAction.h>
@@ -246,6 +247,21 @@ void Simulation::dumpState( GNode* root, std::ofstream& out )
     out<<root->getTime()<<" ";
     WriteStateAction(out).execute(root);
     out<<endl;
+}
+
+/// Initialize gnuplot file output
+void Simulation::initGnuplot(GNode* root)
+{
+    if (!root) return;
+    root->execute<InitGnuplotAction>();
+}
+
+/// Update gnuplot file output
+void Simulation::exportGnuplot(GNode* root, double time)
+{
+    if (!root) return;
+    ExportGnuplotAction expg(time);
+    root->execute(expg);
 }
 
 } // namespace tree
