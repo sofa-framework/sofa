@@ -50,8 +50,8 @@ void MechanicalObject<DataTypes>::initGnuplot()
 {
     if( !this->getName().empty() )
     {
-        m_gnuplotFileX = new std::ofstream( (this->getName()+"_x.gnuplot").c_str() );
-        m_gnuplotFileV = new std::ofstream( (this->getName()+"_v.gnuplot").c_str() );
+        m_gnuplotFileX = new std::ofstream( (this->getName()+"_x.txt").c_str() );
+        m_gnuplotFileV = new std::ofstream( (this->getName()+"_v.txt").c_str() );
     }
 }
 
