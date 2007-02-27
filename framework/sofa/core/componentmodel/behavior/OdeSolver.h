@@ -65,7 +65,7 @@ public:
     virtual void computeCompliance(double dt, double **W, double *dFree, int &numContact);
 
     virtual void print( VecId v, std::ostream& out );
-    virtual void printWithElapsedTime( VecId v,  unsigned time );
+    virtual void printWithElapsedTime( VecId v,  unsigned time, std::ostream& out=std::cerr );
     /// @}
 
 protected:
@@ -150,9 +150,17 @@ protected:
         {
             peq(a);
         }
+        void operator-=(VecId a)
+        {
+            peq(a,-1);
+        }
         void operator*=(double f)
         {
             teq(f);
+        }
+        void operator/=(double f)
+        {
+            teq(1.0/f);
         }
         double operator*(VecId a)
         {
@@ -176,5 +184,4 @@ protected:
 } // namespace sofa
 
 #endif
-
 
