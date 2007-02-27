@@ -48,8 +48,6 @@ CGImplicitSolver::CGImplicitSolver()
 
 void CGImplicitSolver::solve(double dt)
 {
-    const helper::system::thread::ctime_t time0 = helper::system::thread::CTime::getTime();
-
     MultiVector pos(this, VecId::position());
     MultiVector vel(this, VecId::velocity());
     MultiVector f(this, VecId::force());
