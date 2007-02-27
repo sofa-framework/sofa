@@ -973,7 +973,7 @@ void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out)
 
 
 template <class DataTypes>
-unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime( VecId v,unsigned count, unsigned time)
+unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime( VecId v,unsigned count, unsigned time, std::ostream& out)
 {
 
     if( v.type==VecId::V_COORD )
@@ -982,22 +982,22 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime( VecId v,unsigned 
 
         for( unsigned i=0; i<x.size(); ++i )
         {
-            std::cerr<<count+i<<"\t"<<time<<"\t"<<x[i]<<std::endl;
+            out<<count+i<<"\t"<<time<<"\t"<<x[i]<<std::endl;
         }
-        std::cerr<<std::endl<<std::endl;
+        out<<std::endl<<std::endl;
         return x.size();
     }
     else if( v.type==VecId::V_DERIV )
     {
         VecDeriv& x= *getVecDeriv(v.index);
         for( unsigned i=0; i<x.size(); ++i )
-            std::cerr<<count+i<<"\t"<<time<<"\t"<<x[i]<<std::endl;
-        std::cerr<<std::endl<<std::endl;
+            out<<count+i<<"\t"<<time<<"\t"<<x[i]<<std::endl;
+        out<<std::endl<<std::endl;
 
         return x.size();
     }
     else
-        std::cerr<<"MechanicalObject<DataTypes>::printDOFWithElapsedTime, unknown v.type = "<<v.type<<std::endl;
+        out<<"MechanicalObject<DataTypes>::printDOFWithElapsedTime, unknown v.type = "<<v.type<<std::endl;
 
     return 0;
 }

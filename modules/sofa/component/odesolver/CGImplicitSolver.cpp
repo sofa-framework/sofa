@@ -6,6 +6,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
+#include "sofa/helper/system/thread/CTime.h"
 
 using std::cerr;
 using std::endl;
@@ -47,6 +48,8 @@ CGImplicitSolver::CGImplicitSolver()
 
 void CGImplicitSolver::solve(double dt)
 {
+    const helper::system::thread::ctime_t time0 = helper::system::thread::CTime::getTime();
+
     MultiVector pos(this, VecId::position());
     MultiVector vel(this, VecId::velocity());
     MultiVector f(this, VecId::force());
@@ -102,6 +105,8 @@ void CGImplicitSolver::solve(double dt)
     const char* endcond = "iterations";
     for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
     {
+
+// 		printWithElapsedTime( x, helper::system::thread::CTime::getTime()-time0,std::cout );
 
         //z = r; // no precond
         //rho = r.dot(z);

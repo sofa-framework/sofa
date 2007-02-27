@@ -121,8 +121,8 @@ core::objectmodel::BaseObject* GNode::getMechanicalState() const
 {
     // return this->mechanicalModel;
     // CHANGE 12/01/06 (Jeremie A.): Inherit parent mechanical model if no local model is defined
-    if (this->mechanicalModel)
-        return this->mechanicalModel;
+    if (this->mechanicalState)
+        return this->mechanicalState;
     else if (parent)
         return parent->getMechanicalState();
     else
@@ -182,7 +182,7 @@ void GNode::doAddObject(BaseObject* obj)
     notifyAddObject(obj);
     obj->setContext(this);
     object.add(obj);
-    mechanicalModel.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
+    mechanicalState.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
     if (!mechanicalMapping.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj)))
         mapping.add(dynamic_cast< core::BaseMapping* >(obj));
     solver.add(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
@@ -209,7 +209,7 @@ void GNode::doRemoveObject(BaseObject* obj)
         obj->setContext(NULL);
     }
     object.remove(obj);
-    mechanicalModel.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
+    mechanicalState.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
     mechanicalMapping.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
     solver.remove(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
     mass.remove(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));

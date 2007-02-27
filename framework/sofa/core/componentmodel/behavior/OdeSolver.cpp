@@ -180,9 +180,10 @@ void OdeSolver::print( VecId v, std::ostream& out )
     MechanicalVPrintAction(v,out).execute( getContext() );
 }
 
-void OdeSolver::printWithElapsedTime( VecId v,  unsigned time )
+void OdeSolver::printWithElapsedTime( VecId v,  unsigned time, std::ostream& out )
 {
-    MechanicalVPrintWithElapsedTimeAction(v,time).execute( getContext() );
+    const double fact = 1000000.0 / (100*helper::system::thread::CTime::getTicksPerSec());
+    MechanicalVPrintWithElapsedTimeAction(v,(int)((fact*time+0.5)*0.001), out).execute( getContext() );
 }
 
 //                 double OdeSolver::getTime() const
