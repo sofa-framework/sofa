@@ -32,6 +32,11 @@ template<class DataTypes>
 void RegularGridSpringForceField<DataTypes>::init()
 {
     //this->StiffSpringForceField<DataTypes>::init();
+    if (this->object1 == NULL)
+    {
+        this->object1 = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
+        this->object2 = this->object1;
+    }
     if (this->object1==this->object2)
     {
         topology = dynamic_cast<topology::RegularGridTopology*>(this->object1->getContext()->getTopology());

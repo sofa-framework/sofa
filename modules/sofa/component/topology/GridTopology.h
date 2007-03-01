@@ -33,6 +33,10 @@ public:
     int getNy() const { return ny.getValue(); }
     int getNz() const { return nz.getValue(); }
 
+    void setNx(int n) { nx.setValue(n); setSize(); }
+    void setNy(int n) { ny.setValue(n); setSize(); }
+    void setNz(int n) { nz.setValue(n); setSize(); }
+
     //int getNbPoints() const { return nx.getValue()*ny.getValue()*nz.getValue(); }
 
     int getNbCubes() { return (nx.getValue()-1)*(ny.getValue()-1)*(nz.getValue()-1); }
