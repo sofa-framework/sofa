@@ -5,8 +5,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
 
-using namespace sofa::defaulttype;
-
 namespace sofa
 {
 
@@ -15,6 +13,9 @@ namespace helper
 
 namespace io
 {
+
+using sofa::helper::vector;
+using sofa::defaulttype::Vector3;
 
 class Mesh
 {

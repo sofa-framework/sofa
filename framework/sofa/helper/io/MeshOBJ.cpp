@@ -136,11 +136,14 @@ void MeshOBJ::readOBJ (FILE* file)
                 for (int j = 0; j < 3; j++)
                 {
                     vtn[j] = 0;
-
-                    tmp = face.substr(0, face.find('/'));
+                    std::string::size_type pos = face.find('/');
+                    tmp = face.substr(0, pos);
                     if (tmp != "")
                         vtn[j] = atoi(tmp.c_str()) - 1; // -1 because the numerotation begins at 1 and a vector begins at 0
-                    face = face.substr(face.find('/') + 1);
+                    if (pos == std::string::npos)
+                        face = "";
+                    else
+                        face = face.substr(pos + 1);
                 }
                 vIndices.push_back(vtn[0]);
                 nIndices.push_back(vtn[1]);
