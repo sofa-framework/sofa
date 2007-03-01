@@ -11,6 +11,8 @@ CONFIG += $$CONFIGPROJECT \
 SOURCES = Main.cpp 
 HEADERS = 
 
+RC_FILE = sofa.rc
+
 contains (DEFINES, SOFA_GUI_QT) {
 CONFIG += qt
 QT += opengl qt3support

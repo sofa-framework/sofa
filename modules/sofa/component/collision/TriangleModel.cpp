@@ -52,6 +52,17 @@ void TriangleModel::init()
     }
 
     updateFromTopology();
+
+    for (int i=0; i<size; i++)
+    {
+        Triangle t(this,i);
+        const Vector3& pt1 = t.p1();
+        const Vector3& pt2 = t.p2();
+        const Vector3& pt3 = t.p3();
+
+        t.n() = cross(pt2-pt1,pt3-pt1);
+        t.n().normalize();
+    }
 }
 
 bool TriangleModel::updateFromTopology()

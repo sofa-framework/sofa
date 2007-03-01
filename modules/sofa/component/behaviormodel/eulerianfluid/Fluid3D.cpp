@@ -15,6 +15,8 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
+SOFA_DECL_CLASS(Fluid3D)
+
 int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")
         .add< Fluid3D >()
         .addLicense("LGPL")
