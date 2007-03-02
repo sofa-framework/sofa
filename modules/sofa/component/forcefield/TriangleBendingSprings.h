@@ -46,9 +46,6 @@ public:
     /// Searches triangle topology and creates the bending springs
     virtual void init();
 
-    DataField<Real> stiffness;
-    DataField<Real> dampingRatio;
-
     virtual void draw()
     {
     }

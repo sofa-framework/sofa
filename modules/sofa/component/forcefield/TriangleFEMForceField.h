@@ -112,7 +112,8 @@ public:
     { }
     ;
 
-    DataField<int> f_method;
+    int method;
+    DataField<std::string> f_method;
     DataField<Real> f_poisson;
     DataField<Real> f_young;
     DataField<Real> f_damping;
@@ -123,8 +124,8 @@ public:
     void setYoung(Real val) { f_young.setValue(val); }
     Real getDamping() { return f_damping.getValue(); }
     void setDamping(Real val) { f_damping.setValue(val); }
-    int getMethod() { return f_method.getValue(); }
-    void setMethod(int val) { f_method.setValue(val); }
+    int  getMethod() { return method; }
+    void setMethod(int val) { method = val; }
 
 //     component::MechanicalObject<DataTypes>* getObject()
 //     {

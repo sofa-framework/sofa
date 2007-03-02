@@ -32,9 +32,7 @@ using namespace core::componentmodel::behavior;
 
 template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
-    : stiffness( dataField(&stiffness,(Real)1.0,"bendStiffness","Stiffness of the bending springs") )
-    , dampingRatio( dataField(&dampingRatio,(Real)0.0,"dampingRatio","Damping ratio of the bending springs. The actual damping coefficient is the stiffness times the damping ratio.") )
-    , dof(NULL)
+    : dof(NULL)
 {
     //cerr<<"TriangleBendingSprings<DataTypes>::TriangleBendingSprings"<<endl;
 }
@@ -48,8 +46,8 @@ template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
 {
     const VecCoord& x = *dof->getX();
-    Real s = stiffness.getValue();
-    Real d = stiffness.getValue() * dampingRatio.getValue();
+    Real s = this->ks.getValue();
+    Real d = this->kd.getValue();
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
     //cout<<"=================================TriangleBendingSprings<DataTypes>::addSpring "<<a<<", "<<b<<endl;

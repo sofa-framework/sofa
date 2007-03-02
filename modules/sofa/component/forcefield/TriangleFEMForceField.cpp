@@ -36,9 +36,10 @@ TriangleFEMForceField<DataTypes>::
 TriangleFEMForceField()
     : _mesh(NULL)
     , _indexedElements(NULL)
-    , f_method(dataField(&f_method,0,"method","O: large displacements, 1: small displacements"))
-    , f_poisson(dataField(&f_poisson,(Real)0.3,"poisson","Poisson ratio in Hooke's law"))
-    , f_young(dataField(&f_young,(Real)1000.,"young","Young modulus in Hooke's law"))
+    , method(LARGE)
+    , f_method(dataField(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
+    , f_poisson(dataField(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
+    , f_young(dataField(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , f_damping(dataField(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
 {}
 
@@ -52,6 +53,11 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::init()
 {
     this->Inherited::init();
+    if (f_method.getValue() == "small")
+        method = SMALL;
+    else if (f_method.getValue() == "large")
+        method = LARGE;
+
     cerr<<"TriangleFEMForceField<DataTypes>::init(), node = "<<this->getContext()->getName()<<endl;
     _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
 
@@ -101,7 +107,7 @@ void TriangleFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, 
 
     if(f_damping.getValue() != 0)
     {
-        if(f_method.getValue() == SMALL)
+        if(method == SMALL)
         {
             for( unsigned int i=0; i<_indexedElements->size(); i+=3 )
             {
@@ -120,7 +126,7 @@ void TriangleFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, 
     }
     else
     {
-        if(f_method.getValue()==SMALL)
+        if(method==SMALL)
         {
             typename VecElement::const_iterator it;
             unsigned int i(0);
@@ -153,7 +159,7 @@ void TriangleFEMForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& d
         const VecDeriv& x = *this->_object->getDx();*/
     df.resize(dx.size());
 
-    if (f_method.getValue() == SMALL)
+    if (method == SMALL)
     {
         applyStiffnessSmall( df,h,dx );
     }
@@ -173,7 +179,7 @@ double TriangleFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::applyStiffness( VecCoord& v, Real h, const VecCoord& x )
 {
-    if (f_method.getValue() == SMALL)
+    if (method == SMALL)
     {
         applyStiffnessSmall( v,h,x );
     }
