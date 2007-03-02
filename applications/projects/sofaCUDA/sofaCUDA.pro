@@ -18,7 +18,7 @@ CONFIG += qt
 QT += opengl qt3support
 }
 
-LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX -lsofacore$$LIBSUFFIX -lNewMat$$LIBSUFFIX
+LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX -lsofacore$$LIBSUFFIX -lNewMat$$LIBSUFFIX -lSLC$$LIBSUFFIX
 LIBS += -lsofacomponent$$LIBSUFFIX -lsofasimulation$$LIBSUFFIX
 LIBS += -lsofagpucuda$$LIBSUFFIX
 
@@ -56,19 +56,24 @@ unix {
 ########################################################################
 #  CUDA
 ########################################################################
-
-INCLUDEPATH += $(CUDA_INC_DIR)
-QMAKE_LIBDIR += $(CUDA_LIB_DIR)
-LIBS += -lcudart
-
 win32 {
+  INCLUDEPATH += $(CUDA_INC_DIR)
+  QMAKE_LIBDIR += $(CUDA_LIB_DIR)
+  LIBS += -lcudart
+
   cuda.output = $$OBJECTS_DIR/${QMAKE_FILE_BASE}_cuda.obj
   cuda.commands = $(CUDA_BIN_DIR)/nvcc.exe -c -Xcompiler $$join(QMAKE_CXXFLAGS,",") $$join(INCLUDEPATH,'" -I "','-I "','"') ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
 }
 unix {
+  # auto-detect CUDA path
+  CUDA_DIR = $$system(which nvcc | sed 's,/bin/nvcc$,,')
+  INCLUDEPATH += $$CUDA_DIR/include
+  QMAKE_LIBDIR += $$CUDA_DIR/lib
+  LIBS += -lcudart
+
   cuda.output = ${OBJECTS_DIR}${QMAKE_FILE_BASE}_cuda.obj
-  cuda.commands = ${CUDA_BIN_DIR}/nvcc -c ${QMAKE_CXXFLAGS} ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
-  #cuda.depends = g++ -E -M -I $$CILK/include/cilk ${QMAKE_CXXFLAGS} ${QMAKE_FILE_NAME} | sed "s,^.*: ,,"
+  cuda.commands = nvcc -c -Xcompiler $$join(QMAKE_CXXFLAGS,",") $$join(INCLUDEPATH,'" -I "','-I "','"') ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
+  cuda.depends = nvcc -M -Xcompiler $$join(QMAKE_CXXFLAGS,",") $$join(INCLUDEPATH,'" -I "','-I "','"') ${QMAKE_FILE_NAME} | sed "s,^.*: ,," | sed "s,^ *,," | tr -d '\\\n'
 }
 cuda.input = CUDA_SOURCES
 QMAKE_EXTRA_UNIX_COMPILERS += cuda
