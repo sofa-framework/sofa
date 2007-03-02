@@ -2,6 +2,7 @@
 #define SOFA_GPU_CUDA_CUDATYPES_H
 
 //#include "host_runtime.h" // CUDA
+#include "CudaCommon.h"
 #include "mycuda.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>

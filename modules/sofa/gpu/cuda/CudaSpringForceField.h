@@ -20,7 +20,7 @@ template <>
 class SpringForceFieldInternalData<gpu::cuda::CudaVec3fTypes>
 {
 public:
-    enum { BSIZE=16 };
+    //enum { BSIZE=16 };
     struct GPUSpring
     {
         int index; ///< -1 if no spring

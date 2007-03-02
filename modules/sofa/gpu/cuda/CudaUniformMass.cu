@@ -1,4 +1,5 @@
-#define BSIZE 16
+#include "CudaCommon.h"
+#include "CudaMath.h"
 
 extern "C"
 {

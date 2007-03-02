@@ -1,4 +1,5 @@
-#define BSIZE 16
+#include "CudaCommon.h"
+#include "CudaMath.h"
 
 extern "C"
 {
@@ -21,31 +22,6 @@ struct GPUSpring
 //////////////////////
 // GPU-side methods //
 //////////////////////
-
-__device__ float3 add(float3 a, float3 b)
-{
-    return make_float3(a.x+b.x, a.y+b.y, a.z+b.z);
-}
-
-__device__ float3 sub(float3 a, float3 b)
-{
-    return make_float3(a.x-b.x, a.y-b.y, a.z-b.z);
-}
-
-__device__ float3 mul(float3 a, float3 b)
-{
-    return make_float3(a.x*b.x, a.y*b.y, a.z*b.z);
-}
-
-__device__ float3 mulf(float3 a, float b)
-{
-    return make_float3(a.x*b, a.y*b, a.z*b);
-}
-
-__device__ float dot(float3 a, float3 b)
-{
-    return a.x*b.x + a.y*b.y + a.z*b.z;
-}
 
 __global__ void SpringForceFieldCuda3f_addExternalForce_kernel(unsigned int nbSpringPerVertex, const GPUSpring* springs, float* f1, const float* x1, const float* v1, const float* x2, const float* v2)
 {
@@ -100,16 +76,16 @@ __global__ void SpringForceFieldCuda3f_addExternalForce_kernel(unsigned int nbSp
                 relativeVelocity = ((const float3*)v2)[spring.index];
             }
 
-            u = sub(u, pos1);
-            relativeVelocity = sub(relativeVelocity, vel1);
+            u -= pos1;
+            relativeVelocity -= vel1;
 
             float inverseLength = 1/sqrt(dot(u,u));
             float d = 1/inverseLength;
-            u = mulf(u, inverseLength);
+            u *= inverseLength;
             float elongation = d - spring.initpos;
             float elongationVelocity = dot(u,relativeVelocity);
             float forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
-            force = add(force, mulf(u,forceIntensity));
+            force += u*forceIntensity;
         }
     }
 
@@ -187,16 +163,16 @@ __global__ void SpringForceFieldCuda3f_addForce_kernel(unsigned int nbSpringPerV
                 relativeVelocity = ((const float3*)v)[spring.index];
             }
 
-            u = sub(u, pos1);
-            relativeVelocity = sub(relativeVelocity, vel1);
+            u -= pos1;
+            relativeVelocity -= vel1;
 
             float inverseLength = 1/sqrt(dot(u,u));
             float d = 1/inverseLength;
-            u = mulf(u, inverseLength);
+            u *= inverseLength;
             float elongation = d - spring.initpos;
             float elongationVelocity = dot(u,relativeVelocity);
             float forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
-            force = add(force, mulf(u,forceIntensity));
+            force += u*forceIntensity;
         }
     }
 
@@ -267,16 +243,16 @@ __global__ void StiffSpringForceFieldCuda3f_addExternalForce_kernel(unsigned int
                 relativeVelocity = ((const float3*)v2)[spring.index];
             }
 
-            u = sub(u, pos1);
-            relativeVelocity = sub(relativeVelocity, vel1);
+            u -= pos1;
+            relativeVelocity -= vel1;
 
             float inverseLength = 1/sqrt(dot(u,u));
             float d = 1/inverseLength;
-            u = mulf(u, inverseLength);
+            u *= inverseLength;
             float elongation = d - spring.initpos;
             float elongationVelocity = dot(u,relativeVelocity);
             float forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
-            force = add(force, mulf(u,forceIntensity));
+            force += u*forceIntensity;
 
             *dfdx = forceIntensity*inverseLength;
         }
@@ -358,16 +334,16 @@ __global__ void StiffSpringForceFieldCuda3f_addForce_kernel(unsigned int nbSprin
                 relativeVelocity = ((const float3*)v)[spring.index];
             }
 
-            u = sub(u, pos1);
-            relativeVelocity = sub(relativeVelocity, vel1);
+            u -= pos1;
+            relativeVelocity -= vel1;
 
             float inverseLength = 1/sqrt(dot(u,u));
             float d = 1/inverseLength;
-            u = mulf(u, inverseLength);
+            u *= inverseLength;
             float elongation = d - spring.initpos;
             float elongationVelocity = dot(u,relativeVelocity);
             float forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
-            force = add(force, mulf(u,forceIntensity));
+            force += u*forceIntensity;
 
             *dfdx = forceIntensity*inverseLength;
         }
@@ -430,8 +406,8 @@ __global__ void StiffSpringForceFieldCuda3f_addExternalDForce_kernel(unsigned in
                 u = ((const float3*)x2)[spring.index];
             }
 
-            du = sub(du, dpos1);
-            u = sub(u, pos1);
+            du -= dpos1;
+            u -= pos1;
 
             float uxux = u.x*u.x;
             float uyuy = u.y*u.y;
@@ -511,8 +487,8 @@ __global__ void StiffSpringForceFieldCuda3f_addDForce_kernel(unsigned int nbSpri
                 u = ((const float3*)x)[spring.index];
             }
 
-            du = sub(du, dpos1);
-            u = sub(u, pos1);
+            du -= dpos1;
+            u -= pos1;
 
             float uxux = u.x*u.x;
             float uyuy = u.y*u.y;

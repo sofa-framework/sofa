@@ -9,6 +9,8 @@ CONFIG += $$CONFIGLIBRARIES
 
 HEADERS += mycuda.h \
            CudaTypes.h \
+           CudaCommon.h \
+           CudaMath.h \
            CudaMechanicalObject.h \
            CudaMechanicalObject.inl \
            CudaUniformMass.h \

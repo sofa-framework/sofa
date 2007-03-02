@@ -1,5 +1,5 @@
-#define BSIZE 16
-#define MAXTHREADS 512
+#include "CudaCommon.h"
+#include "CudaMath.h"
 
 //#include <alloca.h>
 #include <malloc.h>
@@ -290,8 +290,9 @@ void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a
         int bsize = (size+nblocs-1)/nblocs;
         if (nblocs > 1)
         {
-            // round-up bsize to multiples of 16
-            bsize = (bsize+15)&-16;
+            // round-up bsize to multiples of BSIZE
+            bsize = (bsize+BSIZE-1)&-BSIZE;
+            nblocs = (size+bsize-1)/bsize;
         }
         dim3 threads(bsize,1);
         dim3 grid(nblocs,1);
