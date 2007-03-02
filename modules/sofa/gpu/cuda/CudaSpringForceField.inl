@@ -41,7 +41,7 @@ template <>
 void SpringForceField<CudaVec3fTypes>::init()
 {
     this->InteractionForceField::init();
-
+    const sofa::helper::vector<Spring>& springs = this->springs.getValue();
     if (!springs.empty())
     {
         bool external = (this->object1!=this->object2);

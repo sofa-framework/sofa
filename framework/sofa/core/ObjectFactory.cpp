@@ -57,16 +57,13 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     std::map<std::string, ClassEntry*>::iterator it = registry.find(classname);
     if (it == registry.end())
     {
-        /*        std::cout << "ObjectFactory: class "<<classname<<" NOT FOUND."<<std::endl;
-                //for (it = registry.begin(); it != registry.end(); ++it)
-                //{
-                //    if (it->first == classname) break;
-                //}*/
+        //std::cout << "ObjectFactory: class "<<classname<<" NOT FOUND."<<std::endl;
     }
-    if (it != registry.end())
+    else
     {
         //std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
         ClassEntry* entry = it->second;
+        if(templatename.empty()) templatename = entry->defaultTemplate;
         std::map<std::string, Creator*>::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
@@ -74,8 +71,6 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
             Creator* c = it2->second;
             if (c->canCreate(context, arg))
                 creators.push_back(c);
-            /*            else
-                            std::cout << "ObjectFactory: template "<<it2->first<<" FAILED."<<std::endl;*/
         }
         else
         {
@@ -86,8 +81,6 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
                 Creator* c = it3->second;
                 if (c->canCreate(context, arg))
                     creators.push_back(c);
-                /*                else
-                                    std::cout << "ObjectFactory: template "<<it3->first<<" FAILED."<<std::endl;*/
             }
         }
     }
@@ -223,7 +216,10 @@ void ObjectFactory::dumpHTML(std::ostream& out)
             out << "<li>Template instances:<i>";
             for (std::list< std::pair< std::string, Creator* > >::iterator itc = entry->creatorList.begin(), itcend = entry->creatorList.end(); itc != itcend; ++itc)
             {
-                out << " " << xmlencode(itc->first);
+                if (itc->first == entry->defaultTemplate)
+                    out << " <b>" << xmlencode(itc->first) << "</b>";
+                else
+                    out << " " << xmlencode(itc->first);
             }
             out << "</i></li>\n";
         }
@@ -304,6 +300,17 @@ RegisterObject::operator int()
         reg->description += entry.description;
         reg->authors += entry.authors;
         reg->license += entry.license;
+        if (!entry.defaultTemplate.empty())
+        {
+            if (!reg->defaultTemplate.empty())
+            {
+                std::cerr << "ERROR: ObjectFactory: default template for class "<<entry.className<<" already registered <"<<reg->defaultTemplate<<">, do not register <"<<entry.defaultTemplate<<"> as default.\n";
+            }
+            else
+            {
+                reg->defaultTemplate = entry.defaultTemplate;
+            }
+        }
         for (std::list< std::pair< std::string, ObjectFactory::Creator* > >::iterator itc = entry.creatorList.begin(), itcend = entry.creatorList.end(); itc != itcend; ++itc)
             //for (std::map<std::string, ObjectFactory::Creator*>::iterator itc = entry.creators.begin(), itcend = entry.creators.end(); itc != itcend; ++itc)
         {

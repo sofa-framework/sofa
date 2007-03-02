@@ -224,7 +224,7 @@ protected:
     {
         if (hostIsValid) return;
 #ifndef NDEBUG
-        std::cout << "CUDA: GPU->CPU copy of "<<gettypename(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
+        std::cout << "CUDA: GPU->CPU copy of "<<core::objectmodel::Base::decodeTypeName(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
 #endif
         mycudaMemcpyDeviceToHost(hostPointer, devicePointer, vectorSize*sizeof(T));
         hostIsValid = true;
@@ -233,7 +233,7 @@ protected:
     {
         if (deviceIsValid) return;
 #ifndef NDEBUG
-        std::cout << "CUDA: CPU->GPU copy of "<<gettypename(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
+        std::cout << "CUDA: CPU->GPU copy of "<<core::objectmodel::Base::decodeTypeName(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
 #endif
         mycudaMemcpyHostToDevice(devicePointer, hostPointer, vectorSize*sizeof(T));
         deviceIsValid = true;

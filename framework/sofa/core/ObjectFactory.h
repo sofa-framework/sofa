@@ -50,6 +50,7 @@ public:
         std::string description;
         std::string authors;
         std::string license;
+        std::string defaultTemplate;
         std::list< std::pair<std::string, Creator*> > creatorList;
         std::map<std::string, Creator*> creatorMap;
         //void print();
@@ -151,11 +152,14 @@ public:
     }
 
     template<class RealObject>
-    RegisterObject& add()
+    RegisterObject& add(bool defaultTemplate=false)
     {
         RealObject* p = NULL;
         std::string classname = RealObject::className(p);
         std::string templatename = RealObject::templateName(p);
+
+        if (defaultTemplate)
+            entry.defaultTemplate = templatename;
 
         // This is the only place where we can test which base classes are implemented by this particular object, without having to create any instance
         // Unfortunately, we have to enumerate all classes we are interested in...

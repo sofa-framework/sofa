@@ -63,7 +63,7 @@ Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<LaparoscopicRigi
 */
 
 int MechanicalObjectVec3fClass = core::RegisterObject("mechanical state vectors")
-        .add< MechanicalObject<Vec3dTypes> >()
+        .add< MechanicalObject<Vec3dTypes> >(true) // default template
         .add< MechanicalObject<Vec3fTypes> >()
         .add< MechanicalObject<RigidTypes> >()
         .add< MechanicalObject<LaparoscopicRigidTypes> >()
