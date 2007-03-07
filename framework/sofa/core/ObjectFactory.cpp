@@ -149,6 +149,8 @@ static std::string xmlencode(const std::string& str)
         case '<': res += "&lt;"; break;
         case '>': res += "&gt;"; break;
         case '&': res += "&amp;"; break;
+        case '"': res += "&quot;"; break;
+        case '\'': res += "&apos;"; break;
         default:  res += str[i];
         }
     }

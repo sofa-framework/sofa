@@ -128,6 +128,16 @@ public:
     }
 
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const SpringForceField<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
