@@ -21,29 +21,24 @@ namespace system
 
 SetDirectory::SetDirectory(const char* filename)
 {
-    int len = strlen(filename);
-    while (len>0 && filename[len]!='\\' && filename[len]!='/')
-        --len;
-    directory = new char[len+1];
-    memcpy(directory, filename, len);
-    directory[len]='\0';
     previousDir[0]='\0';
-    if (directory[0])
+    directory = GetParentDir(filename);
+    if (!directory.empty())
     {
         std::cout << "chdir("<<directory<<")"<<std::endl;
 #ifndef WIN32
         getcwd(previousDir, sizeof(previousDir));
-        chdir(directory);
+        chdir(directory.c_str());
 #else
         _getcwd(previousDir, sizeof(previousDir));
-        _chdir(directory);
+        _chdir(directory.c_str());
 #endif
     }
 }
 
 SetDirectory::~SetDirectory()
 {
-    if (directory[0] && previousDir[0])
+    if (!directory.empty() && previousDir[0])
     {
         std::cout << "chdir("<<previousDir<<")"<<std::endl;
 #ifndef WIN32
@@ -52,7 +47,32 @@ SetDirectory::~SetDirectory()
         _chdir(previousDir);
 #endif
     }
-    delete[] directory;
+}
+
+std::string SetDirectory::GetParentDir(const char* filename)
+{
+    std::string s = filename;
+    std::string::size_type pos = s.find_last_of("/\\");
+    if (pos == std::string::npos)
+        return ""; // no directory
+    else
+        return s.substr(0,pos);
+}
+
+std::string SetDirectory::GetRelativeFile(const char* filename, const char* basename)
+{
+    std::string base = GetParentDir(basename);
+    std::string s = filename;
+    // remove any ".."
+    while ((s.substr(0,3)=="../" || s.substr(0,3)=="..\\") && !base.empty())
+    {
+        s = s.substr(3);
+        base = GetParentDir(base.c_str());
+    }
+    if (base.empty())
+        return s;
+    else
+        return base + "/" + s;
 }
 
 } // namespace system

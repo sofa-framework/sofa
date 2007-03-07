@@ -4,6 +4,7 @@
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
+#include <sofa/helper/system/SetDirectory.h>
 #ifdef SOFA_GUI_FLTK
 #include <sofa/gui/fltk/Main.h>
 #endif
@@ -84,16 +85,12 @@ int main(int argc, char** argv)
 
     sofa::simulation::tree::GNode* groot = NULL;
 
-    if (!fileName.empty())
+    if (fileName.empty())
     {
-        groot = sofa::simulation::tree::Simulation::load(fileName.c_str());
+        fileName = sofa::helper::system::SetDirectory::GetRelativeFile("../scenes/chainFFD.scn",argv[0]);
     }
-    else
-    {
-        groot = sofa::simulation::tree::Simulation::load("../examples/demoLiverProximity.scn");
-        if (groot == NULL) // Necessary for starting this program under Visual Studio with default Configuration
-            groot = sofa::simulation::tree::Simulation::load("../../../examples/demoLiverProximity.scn");
-    }
+
+    groot = sofa::simulation::tree::Simulation::load(fileName.c_str());
 
     if (groot==NULL)
     {
@@ -126,6 +123,9 @@ int main(int argc, char** argv)
     else if (gui=="qt")
     {
         sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
+        // BUGFIX: the user may have loaded another simulation, in which case the first simulation is already destroyed
+        // So we need to get the current simulation from the GUI
+        groot = sofa::gui::qt::CurrentSimulation();
     }
 #endif
     else
