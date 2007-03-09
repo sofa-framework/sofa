@@ -15,6 +15,13 @@ namespace component
 namespace forcefield
 {
 
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class DataTypes>
+class PlaneForceFieldInternalData
+{
+public:
+};
+
 template<class DataTypes>
 class PlaneForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
 {
@@ -28,6 +35,8 @@ public:
 
 protected:
     std::vector<unsigned int> contacts;
+
+    PlaneForceFieldInternalData<DataTypes> data;
 
 public:
 

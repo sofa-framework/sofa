@@ -27,6 +27,12 @@ public:
 template <>
 void FixedConstraint<gpu::cuda::CudaVec3fTypes>::init();
 
+template <>
+void FixedConstraint<gpu::cuda::CudaVec3fTypes>::addConstraint(unsigned int index);
+
+template <>
+void FixedConstraint<gpu::cuda::CudaVec3fTypes>::removeConstraint(unsigned int index);
+
 // -- Constraint interface
 template <>
 void FixedConstraint<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& dx);

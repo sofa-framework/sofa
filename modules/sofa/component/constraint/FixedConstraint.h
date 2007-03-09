@@ -59,8 +59,8 @@ public:
 
     virtual ~FixedConstraint();
 
-    FixedConstraint<DataTypes>* addConstraint(unsigned int index);
-    FixedConstraint<DataTypes>* removeConstraint(unsigned int index);
+    void addConstraint(unsigned int index);
+    void removeConstraint(unsigned int index);
 
     // -- Constraint interface
     void init();

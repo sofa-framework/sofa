@@ -23,6 +23,9 @@ void UniformMass<gpu::cuda::CudaVec3fTypes, float>::accFromF(VecDeriv& a, const 
 template <>
 void UniformMass<gpu::cuda::CudaVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
 
+template <>
+bool UniformMass<gpu::cuda::CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
+
 } // namespace mass
 
 } // namespace component

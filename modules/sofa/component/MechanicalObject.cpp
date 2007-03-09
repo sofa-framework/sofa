@@ -16,52 +16,6 @@ using namespace defaulttype;
 
 SOFA_DECL_CLASS(MechanicalObject)
 
-/*
-} // namespace component
-
-
-
-namespace helper { // \todo Why this must be inside helper namespace
-
-template<class DataTypes>
-void create(component::MechanicalObject<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-	obj = new component::MechanicalObject<DataTypes>();
-	if (arg->getAttribute("filename"))
-	{
-		component::MechanicalObjectLoader<DataTypes> loader(obj);
-		loader.load(arg->getAttribute("filename"));
-		arg->removeAttribute("filename");
-	}
-	if (obj!=NULL)
-	{
-		obj->parseFields(arg->getAttributeMap() );
-		if (arg->getAttribute("scale")!=NULL) {
-			obj->applyScale(atof(arg->getAttribute("scale")));
-			arg->removeAttribute("scale");
-		}
-		if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL) {
-			obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-			arg->removeAttribute("dx");
-			arg->removeAttribute("dy");
-			arg->removeAttribute("dz");
-		}
-	}
-}
-
-} // namespace helper
-
-namespace component
-{
-
-Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3fTypes> > MechanicalObjectVec3fClass("MechanicalObjectVec3f",true);
-Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3dClass("MechanicalObjectVec3d",true);
-Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectVec3Class("MechanicalObjectVec3",true);
-Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<Vec3dTypes> > MechanicalObjectClass("MechanicalObject",true);
-Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<RigidTypes> > MechanicalObjectRigidClass("MechanicalObjectRigid",true);
-Creator< simulation::tree::xml::ObjectFactory, MechanicalObject<LaparoscopicRigidTypes> > MechanicalObjectLaparoscopicRigidClass("LaparoscopicObject",true);
-*/
-
 int MechanicalObjectVec3fClass = core::RegisterObject("mechanical state vectors")
         .add< MechanicalObject<Vec3dTypes> >(true) // default template
         .add< MechanicalObject<Vec3fTypes> >()
@@ -83,6 +37,7 @@ void MechanicalObject<defaulttype::Vec3dTypes>::getIndicesInSpace(std::vector<un
         }
     }
 }
+
 template <>
 void MechanicalObject<defaulttype::Vec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
 {

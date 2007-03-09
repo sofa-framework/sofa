@@ -56,6 +56,24 @@ void UniformMass<CudaVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord&, 
     UniformMassCuda3f_addForce(f.size(), mg.ptr(), f.deviceWrite());
 }
 
+template <>
+bool UniformMass<gpu::cuda::CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox)
+{
+    const VecCoord& x = *this->mstate->getX();
+    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        //const Coord& p = x[i];
+        const Coord& p = x.getCached(i);
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+            if (p[c] < minBBox[c]) minBBox[c] = p[c];
+        }
+    }
+    return true;
+}
+
 } // namespace mass
 
 } // namespace component

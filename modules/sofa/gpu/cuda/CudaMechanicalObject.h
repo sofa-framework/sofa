@@ -30,6 +30,9 @@ double MechanicalObject<gpu::cuda::CudaVec3fTypes>::vDot(VecId a, VecId b);
 template <>
 void MechanicalObject<gpu::cuda::CudaVec3fTypes>::resetForce();
 
+template <>
+void MechanicalObject<gpu::cuda::CudaVec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const;
+
 } // namespace component
 
 } // namespace sofa

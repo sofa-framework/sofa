@@ -345,10 +345,10 @@ double MechanicalObject<CudaVec3fTypes>::vDot(VecId a, VecId b)
         }
 #ifndef NDEBUG
         // Check the result
-        Real r2 = 0.0f;
-        for (unsigned int i=0; i<va->size(); i++)
-            r2 += (*va)[i] * (*vb)[i];
-        std::cout << "CUDA vDot: GPU="<<r<<"  CPU="<<r2<<" relative error="<<(fabsf(r2)>0.000001?fabsf(r-r2)/fabsf(r2):fabsf(r-r2))<<"\n";
+        //Real r2 = 0.0f;
+        //for (unsigned int i=0; i<va->size(); i++)
+        //	r2 += (*va)[i] * (*vb)[i];
+        //std::cout << "CUDA vDot: GPU="<<r<<"  CPU="<<r2<<" relative error="<<(fabsf(r2)>0.000001?fabsf(r-r2)/fabsf(r2):fabsf(r-r2))<<"\n";
 #endif
     }
     else
@@ -363,6 +363,19 @@ void MechanicalObject<CudaVec3fTypes>::resetForce()
 {
     VecDeriv& f= *getF();
     gpu::cuda::MechanicalObjectCudaVec3f_vClear(f.size(), f.deviceWrite());
+}
+
+template <>
+void MechanicalObject<CudaVec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+{
+    const VecCoord& x = *getX();
+    for( unsigned i=0; i<x.size(); ++i )
+    {
+        if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax )
+        {
+            indices.push_back(i);
+        }
+    }
 }
 
 } // namespace component

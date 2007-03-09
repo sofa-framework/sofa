@@ -60,9 +60,99 @@ void FixedConstraint<CudaVec3fTypes>::init()
     }
 }
 
+template <>
+void FixedConstraint<gpu::cuda::CudaVec3fTypes>::addConstraint(unsigned int index)
+{
+    std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
+    f_indices.beginEdit()->push_back(index);
+    f_indices.endEdit();
+    if (data.cudaIndices.empty())
+    {
+        if (data.minIndex == -1)
+        {
+            std::cout << "CudaFixedConstraint: single index "<<index<<"\n";
+            data.minIndex = index;
+            data.maxIndex = index;
+        }
+        else if (data.minIndex == index+1)
+        {
+            data.minIndex = index;
+            std::cout << "CudaFixedConstraint: new min index "<<index<<"\n";
+        }
+        else if (data.maxIndex == index-1)
+        {
+            data.maxIndex = index;
+            std::cout << "CudaFixedConstraint: new max index "<<index<<"\n";
+        }
+        else
+        {
+            data.cudaIndices.reserve(data.maxIndex-data.minIndex+2);
+            for (int i=data.minIndex; i<data.maxIndex; i++)
+                data.cudaIndices.push_back(i);
+            data.cudaIndices.push_back(index);
+            data.minIndex = -1;
+            data.maxIndex = -1;
+            std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices.size()<<"\n";
+        }
+    }
+    else
+    {
+        data.cudaIndices.push_back(index);
+        std::cout << "CudaFixedConstraint: indices array size "<<data.cudaIndices.size()<<"\n";
+    }
+}
+
+template <>
+void FixedConstraint<gpu::cuda::CudaVec3fTypes>::removeConstraint(unsigned int index)
+{
+    removeValue(*f_indices.beginEdit(),index);
+    f_indices.endEdit();
+    if (data.cudaIndices.empty())
+    {
+        if (data.minIndex <= (int)index && (int)index <= data.maxIndex)
+        {
+            if (data.minIndex == index)
+            {
+                if (data.maxIndex == index)
+                {
+                    // empty set
+                    data.minIndex = -1;
+                    data.maxIndex = -1;
+                }
+                else
+                    ++data.minIndex;
+            }
+            else if (data.maxIndex == index)
+                --data.maxIndex;
+            else
+            {
+                data.cudaIndices.reserve(data.maxIndex-data.minIndex);
+                for (int i=data.minIndex; i<data.maxIndex; i++)
+                    if (i != index)
+                        data.cudaIndices.push_back(i);
+                data.minIndex = -1;
+                data.maxIndex = -1;
+            }
+        }
+    }
+    else
+    {
+        bool found = false;
+        for (unsigned int i=0; i<data.cudaIndices.size(); i++)
+        {
+            if (found)
+                data.cudaIndices[i-1] = data.cudaIndices[i];
+            else if (data.cudaIndices[i] == index)
+                found = true;
+        }
+        if (found)
+            data.cudaIndices.resize(data.cudaIndices.size()-1);
+    }
+}
+
 // -- Constraint interface
 template <>
-void FixedConstraint<CudaVec3fTypes>::projectResponse(VecDeriv& dx)
+void FixedConstraint<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& dx)
 {
     if (data.minIndex >= 0)
         FixedConstraintCuda3f_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((float*)dx.deviceWrite())+3*data.minIndex);

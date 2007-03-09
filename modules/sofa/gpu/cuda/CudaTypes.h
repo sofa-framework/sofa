@@ -83,8 +83,8 @@ public:
     {
         if (s <= allocSize) return;
         allocSize = (s>2*allocSize)?s:2*allocSize;
-        // always allocate multiples of 16 values
-        allocSize = (allocSize+15)&-16;
+        // always allocate multiples of BSIZE values
+        allocSize = (allocSize+BSIZE-1)&-BSIZE;
 
         void* prevDevicePointer = devicePointer;
         mycudaMalloc(&devicePointer, allocSize*sizeof(T));
@@ -167,6 +167,14 @@ public:
         deviceIsValid = false;
         return hostPointer;
     }
+    bool isHostValid() const
+    {
+        return hostIsValid;
+    }
+    bool isDeviceValid() const
+    {
+        return deviceIsValid;
+    }
     void push_back(const T& t)
     {
         size_type i = size();
@@ -189,6 +197,12 @@ public:
     {
         checkIndex(i);
         return hostWrite()[i];
+    }
+
+    const T& getCached(size_type i) const
+    {
+        checkIndex(i);
+        return hostPointer[i];
     }
 
     /// Output stream
