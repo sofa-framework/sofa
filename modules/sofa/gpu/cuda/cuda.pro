@@ -18,19 +18,23 @@ HEADERS += mycuda.h \
            CudaFixedConstraint.h \
            CudaFixedConstraint.inl \
            CudaSpringForceField.h \
-           CudaSpringForceField.inl
+           CudaSpringForceField.inl \
+           CudaPlaneForceField.h \
+           CudaPlaneForceField.inl
 
 SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
            CudaUniformMass.cpp \
            CudaFixedConstraint.cpp \
-           CudaSpringForceField.cpp
+           CudaSpringForceField.cpp \
+           CudaPlaneForceField.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
            CudaUniformMass.cu \
            CudaFixedConstraint.cu \
-           CudaSpringForceField.cu
+           CudaSpringForceField.cu \
+           CudaPlaneForceField.cu
 
 ########################################################################
 #  CUDA
