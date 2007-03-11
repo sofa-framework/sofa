@@ -100,9 +100,6 @@ void TriangleFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
 {
-//    assert(this->_object);
-    /*    VecDeriv& f = *this->_object->getF();
-        const VecCoord& x = *this->_object->getX();*/
     f.resize(x.size());
 
     if(f_damping.getValue() != 0)
@@ -154,9 +151,6 @@ template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
 {
     Real h=1;
-//    assert(this->_object);
-    /*    VecDeriv& v = *this->_object->getF();
-        const VecDeriv& x = *this->_object->getDx();*/
     df.resize(dx.size());
 
     if (method == SMALL)
@@ -197,7 +191,7 @@ void TriangleFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplace
     std::cout << "TriangleFEMForceField::computeStrainDisplacement\n";
 #endif
 
-    Coord ab_cross_ac = cross(b, c);
+    //Coord ab_cross_ac = cross(b, c);
     Real determinant = b[0] * c[1]; // Surface
 
     J[0][0] = J[1][2] = -c[1] / determinant;
@@ -227,7 +221,7 @@ void TriangleFEMForceField<DataTypes>::computeMaterialStiffnesses()
         _materialsStiffnesses[i][2][1] = 0;
         _materialsStiffnesses[i][2][2] = 0.5f * (1 - f_poisson.getValue());
 
-        _materialsStiffnesses[i] = (f_young.getValue() / (12 * (1 - f_poisson.getValue() * f_poisson.getValue()))) * _materialsStiffnesses[i];
+        _materialsStiffnesses[i] *= (f_young.getValue() / (12 * (1 - f_poisson.getValue() * f_poisson.getValue())));
     }
 }
 
@@ -240,40 +234,71 @@ void TriangleFEMForceField<DataTypes>::computeForce( Displacement &F, const Disp
 
     Vec<3,Real> JtD;
 
+    // Optimisations: The following values are 0 (per computeStrainDisplacement )
+
+    // Jt[0][1]
+    // Jt[0][3]
+    // Jt[0][4]
+    // Jt[0][5]
+    // Jt[1][0]
+    // Jt[1][2]
+    // Jt[1][4]
+    // Jt[2][5]
+
+
     //	JtD = Jt * Depl;
 
-    JtD[0] = Jt[0][0] * Depl[0] + Jt[0][1] * Depl[1] + Jt[0][2] * Depl[2] +
-            Jt[0][3] * Depl[3] + Jt[0][4] * Depl[4] + Jt[0][5] * Depl[5];
+    JtD[0] = Jt[0][0] * Depl[0] + /* Jt[0][1] * Depl[1] + */ Jt[0][2] * Depl[2]
+            /* + Jt[0][3] * Depl[3] + Jt[0][4] * Depl[4] + Jt[0][5] * Depl[5] */ ;
 
-    JtD[1] = Jt[1][0] * Depl[0] + Jt[1][1] * Depl[1] + Jt[1][2] * Depl[2] +
-            Jt[1][3] * Depl[3] + Jt[1][4] * Depl[4] + Jt[1][5] * Depl[5];
+    JtD[1] = /* Jt[1][0] * Depl[0] + */ Jt[1][1] * Depl[1] + /* Jt[1][2] * Depl[2] + */
+            Jt[1][3] * Depl[3] + /* Jt[1][4] * Depl[4] + */ Jt[1][5] * Depl[5];
 
     JtD[2] = Jt[2][0] * Depl[0] + Jt[2][1] * Depl[1] + Jt[2][2] * Depl[2] +
-            Jt[2][3] * Depl[3] + Jt[2][4] * Depl[4] + Jt[2][5] * Depl[5];
+            Jt[2][3] * Depl[3] + Jt[2][4] * Depl[4] /* + Jt[2][5] * Depl[5] */ ;
 
     Vec<3,Real> KJtD;
 
     //	KJtD = K * JtD;
 
-    KJtD[0] = K[0][0] * JtD[0] + K[0][1] * JtD[1] + K[0][2] * JtD[2];
+    // Optimisations: The following values are 0 (per computeMaterialStiffnesses )
 
-    KJtD[1] = K[1][0] * JtD[0] + K[1][1] * JtD[1] + K[1][2] * JtD[2];
+    // K[0][2]
+    // K[1][2]
+    // K[2][0]
+    // K[2][1]
 
-    KJtD[2] = K[2][0] * JtD[0] + K[2][1] * JtD[1] + K[2][2] * JtD[2];
+    KJtD[0] = K[0][0] * JtD[0] + K[0][1] * JtD[1] /* + K[0][2] * JtD[2] */;
+
+    KJtD[1] = K[1][0] * JtD[0] + K[1][1] * JtD[1] /* + K[1][2] * JtD[2] */;
+
+    KJtD[2] = /* K[2][0] * JtD[0] + K[2][1] * JtD[1] */ + K[2][2] * JtD[2];
 
     //	F = J * KJtD;
 
-    F[0] = J[0][0] * KJtD[0] + J[0][1] * KJtD[1] + J[0][2] * KJtD[2];
 
-    F[1] = J[1][0] * KJtD[0] + J[1][1] * KJtD[1] + J[1][2] * KJtD[2];
+    // Optimisations: The following values are 0 (per computeStrainDisplacement )
 
-    F[2] = J[2][0] * KJtD[0] + J[2][1] * KJtD[1] + J[2][2] * KJtD[2];
+    // J[0][1]
+    // J[1][0]
+    // J[2][1]
+    // J[3][0]
+    // J[4][0]
+    // J[4][1]
+    // J[5][0]
+    // J[5][2]
 
-    F[3] = J[3][0] * KJtD[0] + J[3][1] * KJtD[1] + J[3][2] * KJtD[2];
+    F[0] = J[0][0] * KJtD[0] + /* J[0][1] * KJtD[1] + */ J[0][2] * KJtD[2];
 
-    F[4] = J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + J[4][2] * KJtD[2];
+    F[1] = /* J[1][0] * KJtD[0] + */ J[1][1] * KJtD[1] + J[1][2] * KJtD[2];
 
-    F[5] = J[5][0] * KJtD[0] + J[5][1] * KJtD[1] + J[5][2] * KJtD[2];
+    F[2] = J[2][0] * KJtD[0] + /* J[2][1] * KJtD[1] + */ J[2][2] * KJtD[2];
+
+    F[3] = /* J[3][0] * KJtD[0] + */ J[3][1] * KJtD[1] + J[3][2] * KJtD[2];
+
+    F[4] = /* J[4][0] * KJtD[0] + J[4][1] * KJtD[1] + */ J[4][2] * KJtD[2];
+
+    F[5] = /* J[5][0] * KJtD[0] + */ J[5][1] * KJtD[1] /* + J[5][2] * KJtD[2] */ ;
 }
 
 
@@ -483,13 +508,14 @@ void TriangleFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const V
 
     // positions of the deformed and displaced Tetrahedre in its frame
     Coord deforme_a, deforme_b, deforme_c;
-    deforme_a = R_0_2 * p[a];
-    deforme_b = R_0_2 * p[b];
-    deforme_c = R_0_2 * p[c];
-
-    deforme_b -= deforme_a;
-    deforme_c -= deforme_a;
-    deforme_a = Coord(0,0,0);
+    //deforme_a = R_0_2 * p[a];
+    //deforme_b = R_0_2 * p[b];
+    //deforme_c = R_0_2 * p[c];
+    //deforme_b -= deforme_a;
+    //deforme_c -= deforme_a;
+    //deforme_a = Coord(0,0,0);
+    deforme_b = R_0_2 * (p[b]-p[a]);
+    deforme_c = R_0_2 * (p[c]-p[a]);
 
     // displacements
     Displacement D;

@@ -129,7 +129,7 @@ void TriangleBendingSprings<DataTypes>::init()
     }
 
     const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-    cout<<"==================================TriangleBendingSprings<DataTypes>::init(), quad size = "<<topology->getQuads().size()<<endl;
+    //cout<<"==================================TriangleBendingSprings<DataTypes>::init(), quad size = "<<topology->getQuads().size()<<endl;
     for( unsigned i= 0; i<quads.size(); ++i )
     {
         const topology::MeshTopology::Quad& face = quads[i];
