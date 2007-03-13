@@ -1,0 +1,25 @@
+digraph G {
+n_root_ [shape=hexagon,width=0.25,height=0.25,style="filled",fillcolor="#dedede",label="root"];
+o_ [shape=box,style="filled",fillcolor="#b3de69",label="CGImplicitSolver\n"];
+n_root_ -> o_;
+o_2 [shape=box,style="filled",fillcolor="#d7191c",label="Gravity\n"];
+n_root_ -> o_2;
+o_DOF_ [shape=box,style="filled",fillcolor="#8dd3c7",label="MechanicalObject\nDOF"];
+n_root_ -> o_DOF_;
+o_mass_ [shape=box,style="filled",fillcolor="#bebada",label="UniformMass\nmass"];
+n_root_ -> o_mass_;
+o_topology_ [shape=box,style="filled",fillcolor="#ffed6f",label="MeshTopology\ntopology"];
+n_root_ -> o_topology_;
+o_constraints_ [shape=box,style="filled",fillcolor="#fdb462",label="FixedConstraint\nconstraints"];
+n_root_ -> o_constraints_;
+o_3 [shape=box,style="filled",fillcolor="#bebada",label="TetrahedronFEMForceField\n"];
+n_root_ -> o_3;
+n_skin_ [shape=hexagon,width=0.25,height=0.25,style="filled",fillcolor="#dedede",label="skin"];
+n_root_ -> n_skin_ [minlen=2,style="bold"];
+o_mapping_ [shape=box,style="filled",fillcolor="#eefdea",label="OglModel\nmapping"];
+n_skin_ -> o_mapping_;
+o_4 [shape=box,style="filled",fillcolor="#80b1d3",label="BarycentricMapping\n"];
+n_skin_ -> o_4[constraint=false];
+o_DOF_ -> o_4 [style="dashed",arrowhead="none"];
+o_4 -> o_mapping_ [style="dashed"];
+}
