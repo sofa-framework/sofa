@@ -96,7 +96,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
     //std::cerr<<"FixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<endl;
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue().getArray();
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
@@ -110,7 +110,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseMatrix *mat, unsigned int &offset)
 {
     std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue().getArray();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
@@ -150,7 +150,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseVector *ve
 {
     std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue().getArray();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         vect->element(3 * (*it)
@@ -171,7 +171,7 @@ void FixedConstraint<DataTypes>::draw()
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
-    const SetIndexArray & indices = f_indices.getValue();
+    const SetIndexArray & indices = f_indices.getValue().getArray();
     //std::cerr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<endl;
     for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();

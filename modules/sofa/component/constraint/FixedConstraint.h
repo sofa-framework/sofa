@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/SofaBaseMatrix.h>
 #include <sofa/defaulttype/SofaBaseVector.h>
 #include <sofa/helper/vector.h>
+#include <sofa/component/topology/PointSubset.h>
 #include <set>
 
 namespace sofa
@@ -63,9 +64,9 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    //typedef topology::PointSubset SetIndex;
+    typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
-    typedef helper::vector<unsigned int> SetIndex;
+    //typedef helper::vector<unsigned int> SetIndex;
 
 protected:
     //SetIndex indices;
