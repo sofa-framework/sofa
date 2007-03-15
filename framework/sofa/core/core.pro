@@ -81,3 +81,4 @@ TARGET = sofacore$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 LIBS = -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX
 QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY ../../../lib/$$LIBSDIRECTORY/../Common
+

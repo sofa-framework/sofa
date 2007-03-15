@@ -94,6 +94,6 @@
 		<Object type="Triangle" name="Floor" static="1" />
 		<Object type="Line" name="Floor" static="1" />
 		<Object type="Point" name="Floor" static="1" />
-		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor2b.obj" scale="0.5" notexturename="VisualModels/floor.bmp" color="gray" dy="-10" />
+		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor2b.obj" scale="0.5" notexturename="VisualModels/floor.bmp" color="lightgray" dy="-10" />
 	</Node>
 </Node>

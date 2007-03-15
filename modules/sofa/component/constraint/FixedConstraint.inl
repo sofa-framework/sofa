@@ -1,3 +1,27 @@
+/*******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
+*                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
+*                                                                              *
+* This library is free software; you can redistribute it and/or modify it      *
+* under the terms of the GNU Lesser General Public License as published by the *
+* Free Software Foundation; either version 2.1 of the License, or (at your     *
+* option) any later version.                                                   *
+*                                                                              *
+* This library is distributed in the hope that it will be useful, but WITHOUT  *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
+* for more details.                                                            *
+*                                                                              *
+* You should have received a copy of the GNU Lesser General Public License     *
+* along with this library; if not, write to the Free Software Foundation,      *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
+*                                                                              *
+* Contact information: contact@sofa-framework.org                              *
+*                                                                              *
+* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
+* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
+* and F. Poyer                                                                 *
+*******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_FIXEDCONSTRAINT_INL
 
@@ -5,8 +29,6 @@
 #include <sofa/component/constraint/FixedConstraint.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/component/topology/TopologyChangedEvent.h>
-#include <sofa/core/componentmodel/topology/BaseTopology.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -74,8 +96,8 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
     //std::cerr<<"FixedConstraint<DataTypes>::projectResponse, res.size()="<<res.size()<<endl;
-    const SetIndexArray & indices = f_indices.getValue().getArray();
-    for (SetIndex::const_iterator it = indices.begin();
+    const SetIndexArray & indices = f_indices.getValue();
+    for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
     {
@@ -88,9 +110,9 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseMatrix *mat, unsigned int &offset)
 {
     std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
 
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         // Reset Fixed Row
         for (int i=0; i<mat->colDim(); i++)
@@ -128,8 +150,8 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseVector *ve
 {
     std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
-    const SetIndexArray & indices = f_indices.getValue().getArray();
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    const SetIndexArray & indices = f_indices.getValue();
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         vect->element(3 * (*it)
                 + offset) = 0.0;
@@ -137,28 +159,6 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseVector *ve
         vect->element(3 * (*it) + offset + 2) = 0.0;
     }
 }
-
-template <class DataTypes>
-void FixedConstraint<DataTypes>::handleEvent( Event *event )
-{
-    topology::TopologyChangedEvent *tce=dynamic_cast<topology::TopologyChangedEvent *>(event);
-    /// test that the event is a change of topology and that it
-    if ((tce) && (tce->getTopology()== getContext()->getMainTopology()))
-    {
-        core::componentmodel::topology::BaseTopology *topology = static_cast<core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
-
-        std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
-        std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
-        std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator it;
-
-        SetIndex & indices = *f_indices.beginEdit();
-        indices.handleTopologyEvents(itBegin,itEnd);
-        f_indices.endEdit();
-
-    }
-
-}
-
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw()
@@ -171,9 +171,9 @@ void FixedConstraint<DataTypes>::draw()
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = f_indices.getValue();
     //std::cerr<<"FixedConstraint<DataTypes>::draw(), indices = "<<indices<<endl;
-    for (SetIndex::const_iterator it = indices.begin();
+    for (SetIndexArray::const_iterator it = indices.begin();
             it != indices.end();
             ++it)
     {
