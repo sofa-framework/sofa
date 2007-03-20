@@ -308,8 +308,8 @@ public:
         return r;
     }
 
-    /// Multiplication operator Matrix * Column.
-    Col operator*(const Col& v) const
+    /// Multiplication operator Matrix * Line.
+    Col operator*(const Line& v) const
     {
         Col r;
         for(int i=0; i<L; i++)
@@ -321,8 +321,8 @@ public:
         return r;
     }
 
-    /// Multiplication of the transposed matrix * line
-    Line multTranspose(const Line& v) const
+    /// Multiplication of the transposed Matrix * Column
+    Line multTranspose(const Col& v) const
     {
         Line r;
         for(int i=0; i<C; i++)
