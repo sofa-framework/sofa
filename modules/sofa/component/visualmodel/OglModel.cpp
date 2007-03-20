@@ -49,6 +49,9 @@ void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
     if (arg->getAttribute("normals")!=NULL)
         obj->setUseNormals(atoi(arg->getAttribute("normals"))!=0);
 
+    if (arg->getAttribute("castshadow")!=NULL)
+        obj->setCastShadow(atoi(arg->getAttribute("castshadow"))!=0);
+
     std::string filename = arg->getAttribute("filename","");
     std::string loader = arg->getAttribute("loader","");
     std::string texturename = arg->getAttribute("texturename","");
@@ -117,7 +120,7 @@ Material::Material()
 }
 
 OglModel::OglModel() //const std::string &name, std::string filename, std::string loader, std::string textureName)
-    : modified(false), useTopology(false), useNormals(true), tex(NULL)
+    : modified(false), useTopology(false), useNormals(true), castShadow(true), tex(NULL)
 {
     inputVertices = &vertices;
     //init (name, filename, loader, textureName);
@@ -129,7 +132,33 @@ OglModel::~OglModel()
     if (inputVertices != &vertices) delete inputVertices;
 }
 
+bool OglModel::isTransparent()
+{
+    return 	(material.useDiffuse && material.diffuse[3] < 1.0);
+}
+
 void OglModel::draw()
+{
+    if (!isTransparent())
+        internalDraw();
+}
+
+void OglModel::drawTransparent()
+{
+    if (isTransparent())
+        internalDraw();
+}
+
+void OglModel::drawShadow()
+{
+    if (!isTransparent() && getCastShadow())
+    {
+        //std::cout << "drawShadow for "<<getName()<<std::endl;
+        internalDraw();
+    }
+}
+
+void OglModel::internalDraw()
 {
     //std::cerr<<"	OglModel::draw()"<<std::endl;
     if (!getContext()->getShowVisualModels()) return;
@@ -137,6 +166,13 @@ void OglModel::draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glEnable(GL_LIGHTING);
+
+    if (isTransparent())
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
+
     //Enable<GL_BLEND> blending;
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
@@ -190,6 +226,12 @@ void OglModel::draw()
     }
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
+    if (isTransparent())
+    {
+        glDisable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        //glBlendFunc(GL_ONE, GL_ZERO);
+    }
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -236,6 +278,7 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
 
     if (filename != "")
     {
+        name = filename;
         helper::io::Mesh *objLoader;
         if (loader.empty())
             objLoader = helper::io::Mesh::Create(filename);
@@ -638,6 +681,8 @@ void OglModel::exportOBJ(std::string name, std::ostream* out, std::ostream* mtl,
             *mtl << "Ks "<<material.specular[0]<<' '<<material.specular[1]<<' '<<material.specular[2]<<"\n";
         if (material.useShininess)
             *mtl << "Ns "<<material.shininess<<"\n";
+        if (material.useDiffuse && material.diffuse[3]<1.0)
+            *mtl << "Tf "<<material.diffuse[3]<<' '<<material.diffuse[3]<<' '<<material.diffuse[3]<<"\n";
 
         *out << "usemtl "<<name<<'\n';
     }

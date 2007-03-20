@@ -154,6 +154,7 @@ void Simulation::animate(GNode* root, double dt)
     act.setDt(dt);
     root->execute(act);
     root->setTime( nextTime );
+    root->execute<UpdateContextAction>();
 
     root->execute<UpdateMappingAction>();
     root->execute<VisualUpdateAction>();
@@ -209,7 +210,19 @@ void Simulation::draw(GNode* root)
 {
     if (!root) return;
     //std::cout << "draw\n";
-    root->execute<VisualDrawAction>();
+    VisualDrawAction act(VisualDrawAction::Std);
+    root->execute(&act);
+    VisualDrawAction act2(VisualDrawAction::Transparent);
+    root->execute(&act2);
+}
+
+/// Render the scene - shadow pass
+void Simulation::drawShadows(GNode* root)
+{
+    if (!root) return;
+    //std::cout << "drawShadows\n";
+    VisualDrawAction act(VisualDrawAction::Shadow);
+    root->execute(&act);
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid

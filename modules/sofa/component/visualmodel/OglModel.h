@@ -115,6 +115,7 @@ private:
     bool modified; ///< True if input vertices modified since last rendering
     bool useTopology; ///< True if list of facets should be taken from the attached topology
     bool useNormals; ///< True if normals should be read from file
+    bool castShadow; ///< True if object cast shadows
 
     ResizableExtVector<Coord> vertices;
     ResizableExtVector<Coord> vnormals;
@@ -136,7 +137,7 @@ private:
 
     helper::gl::Texture *tex;
 
-    //double matTransOpenGL[16];
+    void internalDraw();
 
 public:
 
@@ -146,7 +147,11 @@ public:
 
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
+    bool isTransparent();
+
     void draw();
+    void drawTransparent();
+    void drawShadow();
 
     bool load(const std::string& filename, const std::string& loader, const std::string& textureName);
 
@@ -162,6 +167,9 @@ public:
 
     void setUseNormals(bool val) { useNormals = val;  }
     bool getUseNormals() const   { return useNormals; }
+
+    void setCastShadow(bool val) { castShadow = val;  }
+    bool getCastShadow() const   { return castShadow; }
 
     void update();
 
