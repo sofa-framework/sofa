@@ -1,9 +1,9 @@
 #include "GenerateRigid.h"
-#include "Sofa-old/Components/init.h"
+#include <sofa/simulation/tree/init.h>
 #include <iostream>
 #include <fstream>
 
-using namespace Sofa::Components::Common;
+using namespace sofa::defaulttype;
 
 int main(int argc, char** argv)
 {
@@ -13,9 +13,9 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    Sofa::Components::init();
+    sofa::simulation::tree::init();
 
-    Mesh* mesh = Mesh::Create(argv[1]);
+    sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(argv[1]);
 
     if (mesh == NULL)
     {
@@ -27,7 +27,7 @@ int main(int argc, char** argv)
     RigidMass mass;
 
 
-    Projects::GenerateRigid(mass, center, mesh);
+    projects::GenerateRigid(mass, center, mesh);
 
     std::ostream* out = &std::cout;
     if (argc >= 3)

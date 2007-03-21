@@ -1,20 +1,21 @@
-include(../../../sofa.cfg)
+SOFA_DIR=../../..
 TEMPLATE = app
-CONFIG +=  $$CONFIGPROJECT \
-	      console
 
-DESTDIR = ../../../bin
+include($$SOFA_DIR/sofa.cfg)
+
 TARGET = GenerateRigid$$SUFFIX
-OBJECTS_DIR = ./OBJ/$$CONFIGDEBUG
-INCLUDEPATH = ../..
-INCLUDEPATH += ../../../include
-DEPENDPATH = ../..
+DESTDIR = $$SOFA_DIR/bin
+CONFIG += $$CONFIGPROJECT \
+          warn_on \
+          console
+
 SOURCES = GenerateRigid.cpp \
-	      Main.cpp
+          Main.cpp
+
 HEADERS = GenerateRigid.h
 
-QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY ../../../lib/$$LIBSDIRECTORY/../Common
-LIBS = -lSofaAbstract$$LIBSUFFIX -lSofaCore$$LIBSUFFIX -lSofaComponents$$LIBSUFFIX -lNewMat$$LIBSUFFIX
+LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX -lsofacore$$LIBSUFFIX -lNewMat$$LIBSUFFIX -lSLC$$LIBSUFFIX
+LIBS += -lsofacomponent$$LIBSUFFIX -lsofasimulation$$LIBSUFFIX
 
 win32{
   LIBS += -llibxml2 -lGLaux -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32

@@ -2,14 +2,15 @@
 
 #include <stdlib.h>
 #include <math.h>
-#include <Sofa-old/Components/Common/vector.h>
+#include <sofa/helper/vector.h>
 
-namespace Projects
+namespace projects
 {
 
-bool GenerateRigid(Sofa::Components::Common::RigidMass& mass, Sofa::Components::Common::Vec3d& center, Sofa::Components::Common::Mesh* mesh)
+bool GenerateRigid(sofa::defaulttype::RigidMass& mass, sofa::defaulttype::Vec3d& center, sofa::helper::io::Mesh* mesh)
 {
-    using namespace Sofa::Components::Common;
+    using namespace sofa::defaulttype;
+    using namespace sofa::helper;
     // Geometric Tools, Inc.
     // http://www.geometrictools.com
     // Copyright (c) 1998-2006.	All Rights Reserved
