@@ -1,7 +1,8 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_INL
 
-#include "UnilateralInteractionConstraint.h"
+#include <sofa/component/constraint/UnilateralInteractionConstraint.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -29,7 +30,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(bool friction, Deriv
 
 //	if(dt<1.0002)
 //	{
-    Vector3 Qt, Pt;
+    sofa::defaulttype::Vector3 Qt, Pt;
     Qt = Q*(1-dt) + Qfree*dt;
     Pt = P*(1-dt) + Pfree*dt;
     int i = contacts.size();
