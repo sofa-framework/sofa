@@ -81,12 +81,16 @@ public:
     virtual void computeDf(VecId df);
     virtual void computeAcc(double t, VecId a, VecId x, VecId v);
 
+    virtual void computeContactDf(VecId df);
+    virtual void computeContactAcc(double t, VecId a, VecId x, VecId v);
+
     virtual void computeMatrix(defaulttype::SofaBaseMatrix *mat=NULL, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0);
     virtual void getMatrixDimension(unsigned int * const, unsigned int * const);
     virtual void computeOpVector(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
     virtual void matResUpdatePosition(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
 
     virtual void computeCompliance(double dt, double **W, double *dFree, int &numContact);
+    virtual void computeContactForce(VecId result);
 
     virtual void print( VecId v, std::ostream& out );
     virtual void printWithElapsedTime( VecId v,  unsigned time, std::ostream& out=std::cerr );

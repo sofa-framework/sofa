@@ -73,6 +73,8 @@ protected:
     VecDeriv* v0;
     VecDeriv* internalForces;
     VecDeriv* externalForces;
+    VecCoord* xfree; // stores the position of the mechanical objet after a free movement (p.e. gravity action)
+    VecDeriv* vfree; // stores the velocity of the mechanical objet after a free movement (p.e. gravity action)
 
     // Constraints stored in the Mechanical State
     // The storage is a SparseMatrix
@@ -121,6 +123,8 @@ public:
     VecDeriv* getF()  { return f;  }
     VecDeriv* getDx() { return dx; }
     VecConst* getC() { return c;}
+    VecCoord* getXfree() { return xfree; }
+    VecDeriv* getVfree()  { return vfree;  }
 
     const VecCoord* getX()  const { return x;  }
     const VecCoord* getX0()  const { return x0;  }
@@ -129,6 +133,8 @@ public:
     const VecDeriv* getF()  const { return f;  }
     const VecDeriv* getDx() const { return dx; }
     const VecConst* getC() const { return c; }
+    const VecCoord* getXfree() const { return xfree; }
+    const VecDeriv* getVfree()  const { return vfree;  }
 
     virtual void init();
 
@@ -189,6 +195,9 @@ public:
     virtual void getCompliance(double dt, double **w, double *dfree, int &numContact);
     // apply contact force AND compute the subsequent dX
     virtual void applyContactForce(double *f);
+    virtual void resetContactForce(void);
+
+    virtual void addDxToCollisionModel(void);
 
 
     /// @name Integration related methods
@@ -213,6 +222,8 @@ public:
     virtual double vDot(VecId a, VecId b);
 
     virtual void setX(VecId v);
+
+    virtual void setXfree(VecId v);
 
     virtual void setV(VecId v);
 

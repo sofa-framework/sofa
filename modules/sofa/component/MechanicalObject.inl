@@ -42,7 +42,7 @@ namespace component
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), x0(NULL), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
+    : x(new VecCoord), xfree(new VecCoord), v(new VecDeriv), vfree(new VecDeriv), x0(NULL), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
     , f_X( new XField<DataTypes>(&x, "position coordinates ot the degrees of freedom") )
     , f_V( new VField<DataTypes>(&v, "velocity coordinates ot the degrees of freedom") )
 {
@@ -61,6 +61,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(VecId::velocity().index, this->v);
     setVecDeriv(VecId::force().index, this->f);
     setVecDeriv(VecId::dx().index, this->dx);
+    setVecCoord(VecId::freePosition().index, this->xfree);
+    setVecDeriv(VecId::freeVelocity().index, this->vfree);
     translation[0]=0.0;
     translation[1]=0.0;
     translation[2]=0.0;
@@ -449,6 +451,18 @@ void MechanicalObject<DataTypes>::applyContactForce(double* /*f*/)
 {
 }
 
+template <class DataTypes>
+void MechanicalObject<DataTypes>::resetContactForce()
+{
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::addDxToCollisionModel()
+{
+    for (unsigned int i=0; i < this->xfree->size(); i++)
+        (*this->x)[i] = (*this->xfree)[i] + (*this->dx)[i];
+}
+
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
@@ -479,6 +493,9 @@ void MechanicalObject<DataTypes>::init()
     *this->x0 = *x;
     this->v0 = new VecDeriv;
     *this->v0 = *v;
+
+    // free position = position
+    *this->xfree = *x;
 }
 
 //
@@ -918,6 +935,19 @@ void MechanicalObject<DataTypes>::setX(VecId v)
     else
     {
         std::cerr << "Invalid setX operation ("<<v<<")\n";
+    }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setXfree(VecId v)
+{
+    if (v.type == VecId::V_COORD)
+    {
+        this->xfree = getVecCoord(v.index);
+    }
+    else
+    {
+        std::cerr << "Invalid setXfree operation ("<<v<<")\n";
     }
 }
 

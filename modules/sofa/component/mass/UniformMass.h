@@ -65,6 +65,7 @@ public:
     //virtual const char* getTypeName() const { return "UniformMass"; }
 
     void setMass(const MassType& mass);
+    DataField<MassType> getMass() {return mass;}
 
     double getTotalMass() { return totalMass.getValue();}
     void setTotalMass(double m);

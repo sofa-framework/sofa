@@ -52,6 +52,7 @@ public:
     explicit Point(core::CollisionElementIterator& i);
 
     const Vector3& p() const;
+    const Vector3& pFree() const;
     const Vector3& v() const;
 };
 
@@ -108,6 +109,8 @@ inline Point::Point(core::CollisionElementIterator& i)
 }
 
 inline const Vector3& Point::p() const { return (*model->mstate->getX())[index]; }
+
+inline const Vector3& Point::pFree() const { return (*model->mstate->getXfree())[index]; }
 
 inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
 

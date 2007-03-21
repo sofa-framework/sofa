@@ -188,15 +188,24 @@ DetectionOutput* distCorrectionLineLine(Line& e1, Line& e2)
             return NULL;
     }
 
-    Vector3 P,Q,PQ;
+    Vector3 P,Q,PQ,Pfree,Qfree,ABfree,CDfree;
     P = e1.p1() + AB * alpha;
     Q = e2.p1() + CD * beta;
     PQ = Q-P;
+
+    // gets contact points of free movement
+    ABfree = e1.p2Free()-e1.p1Free();
+    CDfree = e2.p2Free()-e2.p1Free();
+    Pfree = e1.p1Free() + ABfree * alpha;
+    Qfree = e2.p1Free() + CDfree * beta;
+    //
 
     DetectionOutput *detection = new DetectionOutput();
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->point[0]=P;
     detection->point[1]=Q;
+    detection->freePoint[0]=Pfree;
+    detection->freePoint[1]=Qfree;
     detection->normal=Q-P;
     detection->distance = detection->normal.norm();
     detection->normal /= detection->distance;
@@ -285,24 +294,28 @@ DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
             return false;
     }
 
-    Vector3 P,Q,PQ;
+    Vector3 P,Q,PQ,QP,Pfree,Qfree,ABfree,ACfree;
     P = e1.p();
     Q = e2.p1() + AB * alpha + AC * beta;
     PQ = Q-P;
+    QP = P-Q;
 
     DetectionOutput *detection = new DetectionOutput();
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->point[0]=Q;
     detection->point[1]=P;
-    detection->normal=P-Q;
+    detection->freePoint[0]=Qfree;
+    detection->freePoint[1]=Pfree;
+    detection->normal = QP;
     detection->distance = detection->normal.norm();
     detection->normal /= detection->distance;
-    if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
-    {
-        // The elements are interpenetrating
-        detection->normal = -detection->normal;
-        detection->distance = -detection->distance;
-    }
+
+    printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
+    //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
+    //{ // The elements are interpenetrating
+    //	detection->normal = -detection->normal;
+    //	detection->distance = -detection->distance;
+    //}
     detection->distance -= contactDist;
     return detection;
 }
@@ -358,15 +371,22 @@ DetectionOutput* distCorrectionPointLine(Point& e1, Line& e2)
             return NULL;
     }
 
-    Vector3 P,Q,PQ;
+    Vector3 P,Q,PQ,Pfree,Qfree,ABfree;
     P = e1.p();
     Q = e2.p1() + AB * alpha;
     PQ = Q-P;
+    // gets contact points of free movement
+    ABfree = e2.p2Free()-e2.p1Free();
+    Pfree = e1.pFree();
+    Qfree = e2.p1Free() + ABfree * alpha;
+    //
 
     DetectionOutput *detection = new DetectionOutput();
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->point[0]=Q;
     detection->point[1]=P;
+    detection->freePoint[0]=Qfree;
+    detection->freePoint[1]=Pfree;
     detection->normal=P-Q;
     detection->distance = detection->normal.norm();
     detection->normal /= detection->distance;
@@ -390,15 +410,19 @@ bool intersectionPointPoint(Point& e1, Point& e2)
 DetectionOutput* distCorrectionPointPoint(Point& e1, Point& e2)
 {
     const double contactDist = proximityInstance->getContactDistance();
-    Vector3 P,Q,PQ;
+    Vector3 P,Q,PQ,Pfree,Qfree;
     P = e1.p();
     Q = e2.p();
     PQ = Q-P;
+    Pfree = e1.pFree();
+    Qfree = e2.pFree();
 
     DetectionOutput *detection = new DetectionOutput();
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->point[0]=P;
     detection->point[1]=Q;
+    detection->freePoint[0]=Qfree;
+    detection->freePoint[1]=Pfree;
     detection->normal=Q-P;
     detection->distance = detection->normal.norm();
     detection->normal /= detection->distance;
@@ -636,6 +660,8 @@ core::componentmodel::collision::DetectionOutput* distCorrectionRayTriangle(Ray 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t2, t1);
     detection->point[0]=P;
     detection->point[1]=Q;
+    detection->freePoint[0] = P;
+    detection->freePoint[0] = Q;
     detection->normal=t2.n();
     detection->distance = (Q-P).norm();
     detection->distance -= contactDist;

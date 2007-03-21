@@ -55,6 +55,10 @@ public:
     const Vector3& p2() const;
     const Vector3& p3() const;
 
+    const Vector3& p1Free() const;
+    const Vector3& p2Free() const;
+    const Vector3& p3Free() const;
+
     const Vector3& v1() const;
     const Vector3& v2() const;
     const Vector3& v3() const;
@@ -135,6 +139,10 @@ inline Triangle::Triangle(core::CollisionElementIterator& i)
 inline const Vector3& Triangle::p1() const { return (*model->mstate->getX())[model->elems[index].i1]; }
 inline const Vector3& Triangle::p2() const { return (*model->mstate->getX())[model->elems[index].i2]; }
 inline const Vector3& Triangle::p3() const { return (*model->mstate->getX())[model->elems[index].i3]; }
+
+inline const Vector3& Triangle::p1Free() const { return (*model->mstate->getXfree())[model->elems[index].i1]; }
+inline const Vector3& Triangle::p2Free() const { return (*model->mstate->getXfree())[model->elems[index].i2]; }
+inline const Vector3& Triangle::p3Free() const { return (*model->mstate->getXfree())[model->elems[index].i3]; }
 
 inline const Vector3& Triangle::v1() const { return (*model->mstate->getV())[model->elems[index].i1]; }
 inline const Vector3& Triangle::v2() const { return (*model->mstate->getV())[model->elems[index].i2]; }

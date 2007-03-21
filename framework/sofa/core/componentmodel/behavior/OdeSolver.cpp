@@ -199,6 +199,26 @@ void OdeSolver::computeAcc(double t, VecId a, VecId x, VecId v)
     projectResponse(a);
 }
 
+void OdeSolver::computeContactDf(VecId df)
+{
+    MechanicalResetForceAction(df).execute( getContext() );
+    finish();
+    //MechanicalComputeDfAction(df).execute( getContext() );
+}
+
+void OdeSolver::computeContactAcc(double t, VecId a, VecId x, VecId v)
+{
+    MultiVector f(this, VecId::force());
+    propagatePositionAndVelocity(t, x, v);
+    computeContactForce(f);
+    if( this->f_printLog.getValue()==true )
+    {
+        cerr<<"OdeSolver::computeContactAcc, f = "<<f<<endl;
+    }
+    accFromF(a, f);
+    projectResponse(a);
+}
+
 void OdeSolver::print( VecId v, std::ostream& out )
 {
     MechanicalVPrintAction(v,out).execute( getContext() );
@@ -253,6 +273,13 @@ void OdeSolver::matResUpdatePosition(defaulttype::SofaBaseVector *vect, unsigned
 void OdeSolver::computeCompliance(double dt, double **W, double *dFree, int &numContact)
 {
     MechanicalComputeComplianceAction(dt, W,dFree, numContact).execute(getContext());
+}
+
+void OdeSolver::computeContactForce(VecId result)
+{
+    MechanicalResetForceAction(result).execute( getContext() );
+    finish();
+    MechanicalComputeContactForceAction(result).execute( getContext() );
 }
 
 

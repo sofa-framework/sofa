@@ -28,6 +28,9 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/component/MechanicalObject.inl>
 
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/mass/UniformMass.h>
+
 
 namespace sofa
 {
@@ -90,12 +93,29 @@ void MechanicalObject<defaulttype::RigidTypes>::getIndicesInSpace(std::vector<un
 }
 
 
+
 template<>
 void MechanicalObject<defaulttype::RigidTypes>::getCompliance (double dt, double**W, double *dfree, int &numContact)
 {
-    const VecDeriv& v = *getV();
+    const VecDeriv& v = *getVfree();
     const VecConst& contacts = *getC();
     Deriv weighedNormal;
+    Deriv InvM_wN;
+
+    const sofa::defaulttype::RigidMass* massValue;
+
+    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+    if (node != NULL)
+    {
+        core::componentmodel::behavior::BaseMass*_m = node->mass;
+        component::mass::UniformMass<defaulttype::RigidTypes, defaulttype::RigidMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::RigidTypes, defaulttype::RigidMass>*> (_m);
+        massValue = 	&( m->getMass().getValue() );
+    }
+    else
+    {
+        massValue = new sofa::defaulttype::RigidMass();
+        printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
+    }
 
     numContact = contacts.size();
 
@@ -106,15 +126,30 @@ void MechanicalObject<defaulttype::RigidTypes>::getCompliance (double dt, double
         {
             weighedNormal.getVCenter() = contacts[c1][i].data.getVCenter(); // weighed normal
             weighedNormal.getVOrientation() = contacts[c1][i].data.getVOrientation();
-            dfree[c1] += (dot(v[0].getVCenter(), weighedNormal.getVCenter()) +
-                    dot(v[0].getVOrientation(), weighedNormal.getVOrientation()))*dt; //0.01;
+
+            InvM_wN = weighedNormal / (*massValue); // WARNING massValue is not a double but a massType !!
+            // operator / is defined in "RigidTypes.h"
+            /*
+            			printf("\n contact[%d] = weighedNormal x : %f, y : %f, z : %f, u : %f, v : %f, w : %f",
+            				c1, weighedNormal.getVCenter().x(), weighedNormal.getVCenter().y(), weighedNormal.getVCenter().z(),
+            				weighedNormal.getVOrientation().x(), weighedNormal.getVOrientation().y(), weighedNormal.getVOrientation().z());
+
+            			printf("\n contact[%d] = InvM_wN x : %f, y : %f, z : %f, u : %f, v : %f, w : %f",
+            				c1, InvM_wN.getVCenter().x(), InvM_wN.getVCenter().y(), InvM_wN.getVCenter().z(),
+            				InvM_wN.getVOrientation().x(), InvM_wN.getVOrientation().y(), InvM_wN.getVOrientation().z());
+            */
+//			dfree[c1] += (dot(v[0].getVCenter(), weighedNormal.getVCenter()) +
+//				dot(v[0].getVOrientation(), weighedNormal.getVOrientation()))*dt; //0.01;
             for(int c2=c1; c2<numContact; c2++)
             {
                 int sizeC2 = contacts[c2].size();
                 for(int j=0; j<sizeC2; j++)
                 {
-                    W[c1][c2] += (dot(weighedNormal.getVCenter(), contacts[c2][j].data.getVCenter()) +
-                            dot(weighedNormal.getVOrientation(), contacts[c2][j].data.getVOrientation()))*(dt*dt);//(0.01*0.01);
+//					W[c1][c2] += (dot(weighedNormal.getVCenter(), contacts[c2][j].data.getVCenter()) +
+//						dot(weighedNormal.getVOrientation(), contacts[c2][j].data.getVOrientation()))*(dt*dt);//(0.01*0.01);
+
+                    W[c1][c2] +=  contacts[c2][j].data*InvM_wN; // WARNING : this is a dot product defined in "RigidTypes.h"
+                    W[c1][c2] *= dt*dt;
                 }
             }
             for(int c2=c1+1; c2<numContact; c2++)
@@ -143,7 +178,7 @@ void MechanicalObject<defaulttype::RigidTypes>::applyContactForce(double *f)
         int sizeC1 = contacts[c1].size();
         for(int i=0; i<sizeC1; i++)
         {
-            if (f[c1+numContact]!=0)
+            if (f[c1+numContact]!=0.0)
             {
                 weighedNormal = contacts[c1][i].data; // weighed normal
                 force[0].getVCenter() += weighedNormal.getVCenter() * f[c1+numContact];
@@ -151,7 +186,18 @@ void MechanicalObject<defaulttype::RigidTypes>::applyContactForce(double *f)
             }
         }
     }
+//	printf("f = %f, %f, %f \n", force[0].getVCenter().x(), force[0].getVCenter().y(), force[0].getVCenter().z());
 }
+
+
+template<>
+void MechanicalObject<defaulttype::RigidTypes>::resetContactForce()
+{
+    VecDeriv& force = *this->externalForces;
+    for( unsigned i=0; i<force.size(); ++i )
+        force[i] = Deriv();
+}
+
 
 
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.

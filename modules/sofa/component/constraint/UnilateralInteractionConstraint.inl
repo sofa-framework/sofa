@@ -17,29 +17,41 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(bool friction, Deriv
 {
     // compute dt and delta
     Real delta = dot(P-Q, norm) - contactDistance;
-    Real dt = delta / dot(P-Q, norm) - dot(Pfree-Qfree, norm);
-    if(!(dt>1 && delta >= contactDistance + epsilon))
+
+    // Real dt = delta / dot(P-Q, norm) - dot(Pfree-Qfree, norm);
+
+    Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
+    Real dt;
+    if (abs(delta - deltaFree) > 0.0001 * delta)
+        dt = delta / (delta - deltaFree);
+    else
+        dt = 0;
+
+//	if(dt<1.0002)
+//	{
+    Vector3 Qt, Pt;
+    Qt = Q*(1-dt) + Qfree*dt;
+    Pt = P*(1-dt) + Pfree*dt;
+    int i = contacts.size();
+    contacts.resize(i+1);
+    Contact& c = contacts[i];
+    c.m1 = m1;
+    c.m2 = m2;
+    c.norm = norm;
+    c.delta = delta;
+    c.dt = dt;
+    c.dfree = dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
+    c.friction = friction;
+    if (friction) // only if friction, t and s are computed
     {
-        int i = contacts.size();
-        contacts.resize(i+1);
-        Contact& c = contacts[i];
-        c.m1 = m1;
-        c.m2 = m2;
-        c.norm = norm;
-        c.delta = delta;
-        c.dt = dt;
-        c.dfree = dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
-        c.friction = friction;
-        if (friction) // only if friction, t and s are computed
-        {
-            c.t = Deriv(norm.y(), norm.z(), norm.x());
-            c.s = cross(norm,c.t);
-            c.s = c.s / c.s.norm();
-            c.t = cross((-norm), c.s);
-            c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-            c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
-        }
+        c.t = Deriv(norm.y(), norm.z(), norm.x());
+        c.s = cross(norm,c.t);
+        c.s = c.s / c.s.norm();
+        c.t = cross((-norm), c.s);
+        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
+        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
     }
+//	}
 }
 
 
@@ -90,8 +102,8 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v, i
     for (i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i]; // get each contact detected
-        v[j+(*offset)] = c.delta;
-        //		v[j+(*offset)] = c.dfree; // if there is not friction, dfree is the only constraint value added to v
+        //v[j+(*offset)] = c.delta;
+        v[j+(*offset)] = c.dfree; // if there is not friction, dfree is the only constraint value added to v
         j++;
         if (c.friction)
         {

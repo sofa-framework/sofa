@@ -90,11 +90,13 @@ public:
         bool isNull() const { return type==V_NULL; }
         static VecId null()     { return VecId(V_NULL,0); }
         static VecId position() { return VecId(V_COORD,0); }
+        static VecId freePosition() { return VecId(V_COORD,1); }
         static VecId initialPosition() { return VecId(V_COORD,1); }
         static VecId velocity() { return VecId(V_DERIV,0); }
         static VecId initialVelocity() { return VecId(V_DERIV,3); }
         static VecId force() { return VecId(V_DERIV,1); }
         static VecId dx() { return VecId(V_DERIV,2); }
+        static VecId freeVelocity() { return VecId(V_DERIV,3); }
         bool operator==(const VecId& v)
         {
             return type == v.type && index == v.index;
@@ -111,6 +113,8 @@ public:
 
     virtual void setX(VecId v) = 0; //{}
 
+    virtual void setXfree(VecId v) = 0; //{}
+
     virtual void setV(VecId v) = 0; //{}
 
     virtual void setF(VecId v) = 0; //{}
@@ -123,6 +127,10 @@ public:
     virtual void getCompliance(double /*dt*/, double ** /*w*/, double * /*dfree*/, int& /*numContact*/) { }
     // apply contact force AND compute the subsequent dX
     virtual void applyContactForce(double * /*f*/) { }
+
+    virtual void resetContactForce(void) {}
+
+    virtual void addDxToCollisionModel(void) = 0; //{}
 
     /// @}
 

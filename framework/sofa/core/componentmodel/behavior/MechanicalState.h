@@ -60,12 +60,14 @@ public:
     virtual VecDeriv* getF() = 0;
     virtual VecDeriv* getDx() = 0;
     virtual VecConst* getC() = 0;
+    virtual VecCoord* getXfree() = 0;
 
     virtual const VecCoord* getX()  const = 0;
     virtual const VecDeriv* getV()  const = 0;
     virtual const VecDeriv* getF()  const = 0;
     virtual const VecDeriv* getDx() const = 0;
     virtual const VecConst* getC() const = 0;
+    virtual const VecCoord* getXfree()  const = 0;
 
 
     /// Get the indices of the particles located in the given bounding box

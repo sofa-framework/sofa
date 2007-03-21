@@ -48,6 +48,7 @@ class DetectionOutput
 public:
     std::pair<core::CollisionElementIterator, core::CollisionElementIterator> elem; ///< Pair of colliding elements
     Vector3 point[2]; ///< Point in contact on each element
+    Vector3 freePoint[2]; ///< free Point in contact on each element
     Vector3 normal; ///< Normal of the contact, pointing outward from model 1
     //bool collision; ///< Are the elements interpenetrating
     double distance; ///< Distance between the elements (negative for interpenetration)
