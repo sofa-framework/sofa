@@ -85,6 +85,11 @@ public:
 
     void setParentOf(int childIndex, const Vector3& min, const Vector3& max);
 
+    int getLeafIndex(int index) const
+    {
+        return elems[index].leaf.getIndex();
+    }
+
     // -- CollisionModel interface
 
     virtual void computeBoundingTree(int maxDepth=0);

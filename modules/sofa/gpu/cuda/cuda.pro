@@ -56,7 +56,10 @@ unix {
 
   cuda.output = ${OBJECTS_DIR}${QMAKE_FILE_BASE}_cuda.obj
   cuda.commands = nvcc -c -Xcompiler $$join(QMAKE_CXXFLAGS,",") $$join(INCLUDEPATH,'" -I "','-I "','"') ${QMAKE_FILE_NAME} -o ${QMAKE_FILE_OUT}
-  cuda.depends = nvcc -M -Xcompiler $$join(QMAKE_CXXFLAGS,",") $$join(INCLUDEPATH,'" -I "','-I "','"') ${QMAKE_FILE_NAME} | sed "s,^.*: ,," | sed "s,^ *,," | tr -d '\\\n'
+  cuda.depends = nvcc -M -Xcompiler $$join(QMAKE_CXXFLAGS,",") $$join(INCLUDEPATH,'" -I "','-I "','"') ${QMAKE_FILE_NAME} | tail +2 | sed "s,^ *,,; s/ \\\\$//" | paste -s -d " " | sed "s,/usr/[^ ]*,,g" | tee dep-${QMAKE_FILE_NAME}
+# | tail +2 | sed "s,^    ,," | tee dep-${QMAKE_FILE_NAME}
+# | tail +2 | sed "s,^    ,  ,"
+# | sed "s,^.*: ,," | sed "s,^ *,," | tr -d '\\\n' | tee dep-${QMAKE_FILE_NAME}
 }
 cuda.input = CUDA_SOURCES
 QMAKE_EXTRA_UNIX_COMPILERS += cuda

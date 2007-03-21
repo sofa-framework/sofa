@@ -277,30 +277,32 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
 
     unsigned int i=0;
     typename VecElement::const_iterator it;
-
+    /*
     if(_dampingRatio!=0)
-        if(_method==SMALL)
-            for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
-            {
-                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-                accumulateForceSmall( f, p, it, i );
-                //accumulateDampingSmall( f, i );
-            }
-        else if(_method==LARGE)
-            for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
-            {
-                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-                accumulateForceLarge( f, p, it, i );
-                //accumulateDampingLarge( f, i );
-            }
-        else
-            for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
-            {
-                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-                accumulateForcePolar( f, p, it, i );
-                //accumulateDampingPolar( f, i );
-            }
-    else if(_method==SMALL)
+    	if(_method==SMALL)
+    		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
+    		{
+    			if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
+    			accumulateForceSmall( f, p, it, i );
+    			accumulateDampingSmall( f, i );
+    		}
+    	else if(_method==LARGE)
+    		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
+    		{
+    			if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
+    			accumulateForceLarge( f, p, it, i );
+     			accumulateDampingLarge( f, i );
+    		}
+    	else
+    		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
+    		{
+    			if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
+    			accumulateForcePolar( f, p, it, i );
+     			accumulateDampingPolar( f, i );
+    		}
+    else
+    */
+    if(_method==SMALL)
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
         {
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
@@ -579,27 +581,31 @@ void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const D
     //Mat<6, 12, Real> Jt;
     //Jt.transpose(J);
     //F = J*(K*(Jt*Depl));
+    F = J*(K*(J.multTranspose(Depl)));
+    return;
 
-    /* We have:
-    K[0][3] = K[0][4] =	K[0][5] = 0;
-    K[1][3] = K[1][4] =	K[1][5] = 0;
-    K[2][3] = K[2][4] =	K[2][5] = 0;
-    K[3][0] = K[3][1] = K[3][2] = K[3][4] =	K[3][5] = 0;
-    K[4][0] = K[4][1] = K[4][2] = K[4][3] =	K[4][5] = 0;
-    K[5][0] = K[5][1] = K[5][2] = K[5][3] =	K[5][4] = 0;
+    /* We have these zeros
+                                  K[0][3]   K[0][4]   K[0][5]
+                                  K[1][3]   K[1][4]   K[1][5]
+                                  K[2][3]   K[2][4]   K[2][5]
+    K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
+    K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
+    K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
 
-    J[0][1] = J[0][2] = J[0][4] =
-    J[1][0] = J[1][2] = J[1][5] =
-    J[2][0] = J[2][1] = J[2][3] = 0;
-    J[3][1] = J[3][2] = J[3][4] =
-    J[4][0] = J[4][2] = J[4][5] =
-    J[5][0] = J[5][1] = J[5][3] = 0;
-    J[6][1] = J[6][2] = J[6][4] =
-    J[7][0] = J[7][2] = J[7][5] =
-    J[8][0] = J[8][1] = J[8][3] = 0;
-    J[9][1] = J[9][2] = J[9][4] =
-    J[10][0] = J[10][2] = J[10][5] =
-    J[11][0] = J[11][1] = J[11][3] = 0;
+
+
+              J[0][1]   J[0][2]             J[0][4]
+    J[1][0]             J[1][2]                       J[1][5]
+    J[2][0]   J[2][1]             J[2][3]
+              J[3][1]   J[3][2]             J[3][4]
+    J[4][0]             J[4][2]                       J[4][5]
+    J[5][0]   J[5][1]             J[5][3]
+              J[6][1]   J[6][2]             J[6][4]
+    J[7][0]             J[7][2]                       J[7][5]
+    J[8][0]   J[8][1]             J[8][3]
+              J[9][1]   J[9][2]             J[9][4]
+    J[10][0]            J[10][2]                      J[10][5]
+    J[11][0]  J[11][1]            J[11][3]
     */
 
     Vec<6,Real> JtD;
@@ -623,10 +629,10 @@ void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const D
             /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
             /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
             /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
-    JtD[5] =   J[ 0][5]*Depl[ 0]+  /*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
-            J[ 3][5]*Depl[ 3]+  /*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
-            J[ 6][5]*Depl[ 6]+  /*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
-            J[ 9][5]*Depl[ 9]+  /*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
+    JtD[5] =   J[ 0][5]*Depl[ 0]+/*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
+            J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
+            J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
+            J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
 //         cerr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<endl;
 //         cerr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<endl;
 
@@ -1183,10 +1189,10 @@ void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, Real h
 
     //cerr<<"F : "<<F<<endl;
 
-    f[a] += _rotations[i] * Deriv( -h*F[0], -h*F[1],  -h*F[2] );
-    f[b] += _rotations[i] * Deriv( -h*F[3], -h*F[4],  -h*F[5] );
-    f[c] += _rotations[i] * Deriv( -h*F[6], -h*F[7],  -h*F[8] );
-    f[d] += _rotations[i] * Deriv( -h*F[9], -h*F[10], -h*F[11] );
+    f[a] -= _rotations[i] * Deriv( F[0], F[1],  F[2] );
+    f[b] -= _rotations[i] * Deriv( F[3], F[4],  F[5] );
+    f[c] -= _rotations[i] * Deriv( F[6], F[7],  F[8] );
+    f[d] -= _rotations[i] * Deriv( F[9], F[10], F[11] );
 }
 
 template<class DataTypes>
