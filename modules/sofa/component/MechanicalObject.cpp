@@ -95,7 +95,7 @@ void MechanicalObject<defaulttype::RigidTypes>::getIndicesInSpace(std::vector<un
 
 
 template<>
-void MechanicalObject<defaulttype::RigidTypes>::getCompliance (double dt, double**W, double *dfree, int &numContact)
+void MechanicalObject<defaulttype::RigidTypes>::getCompliance (double dt, double**W, double * /*dfree*/, int &numContact)
 {
     // const VecDeriv& v = *getVfree();
     const VecConst& contacts = *getC();

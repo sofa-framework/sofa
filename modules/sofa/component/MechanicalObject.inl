@@ -42,7 +42,7 @@ namespace component
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), xfree(new VecCoord), v(new VecDeriv), vfree(new VecDeriv), x0(NULL), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
+    : x(new VecCoord), v(new VecDeriv), x0(NULL), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
     , f_X( new XField<DataTypes>(&x, "position coordinates ot the degrees of freedom") )
     , f_V( new VField<DataTypes>(&v, "velocity coordinates ot the degrees of freedom") )
 {
@@ -55,6 +55,10 @@ MechanicalObject<DataTypes>::MechanicalObject()
     internalForces = f = new VecDeriv;
     externalForces = new VecDeriv;
     dx = new VecDeriv;
+
+    xfree = new VecCoord;
+    vfree = new VecDeriv;
+
     // default size is 1
     resize(1);
     setVecCoord(VecId::position().index, this->x);
