@@ -300,6 +300,13 @@ DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
     PQ = Q-P;
     QP = P-Q;
 
+    // gets contact points of free movement
+    ABfree = e2.p2Free()-e2.p1Free();
+    ACfree = e2.p3Free()-e2.p1Free();
+    Pfree = e1.pFree();
+    Qfree = e2.p1Free() + ABfree * alpha + ACfree * beta;
+    //
+
     DetectionOutput *detection = new DetectionOutput();
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->point[0]=Q;
