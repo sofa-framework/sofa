@@ -84,7 +84,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::init()
 {
     this->core::componentmodel::behavior::Constraint<DataTypes>::init();
-    f_listening.setValue(true);
+    //f_listening.setValue(true);
     // sort indices and remove duplicates by copying them to a std::set
     //SetIndex& indices = *f_indices.beginEdit();
     //std::set<int> tmpset(indices.begin(), indices.end());

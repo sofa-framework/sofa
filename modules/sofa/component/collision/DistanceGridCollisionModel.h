@@ -47,7 +47,7 @@ public:
     int getNx() const { return nx; }
     int getNy() const { return ny; }
     int getNz() const { return nz; }
-    Real getCellWidth() const { return cellWidth; }
+    const Coord& getCellWidth() const { return cellWidth; }
 
     int size() const { return nxnynz; }
 
@@ -57,8 +57,9 @@ public:
 
     bool inBBox(const Coord& p) const
     {
+        Coord epsilon = cellWidth*0.1;
         for (int c=0; c<3; ++c)
-            if (p[c] < pmin[c] || p[c] > pmax[c]) return false;
+            if (p[c] < pmin[c]+epsilon[c] || p[c] > pmax[c]-epsilon[c]) return false;
         return true;
     }
 
@@ -72,25 +73,33 @@ public:
 
     int ix(const Coord& p) const
     {
-        return rfloor((p[0]-pmin[0])*invCellWidth);
+        return rfloor((p[0]-pmin[0])*invCellWidth[0]);
     }
 
     int iy(const Coord& p) const
     {
-        return rfloor((p[1]-pmin[1])*invCellWidth);
+        return rfloor((p[1]-pmin[1])*invCellWidth[1]);
     }
 
     int iz(const Coord& p) const
     {
-        return rfloor((p[2]-pmin[2])*invCellWidth);
+        return rfloor((p[2]-pmin[2])*invCellWidth[2]);
     }
 
     int index(const Coord& p, Coord& coefs) const
     {
-        coefs = (p-pmin)*invCellWidth;
-        int x = rfloor(coefs[0]); coefs[0] -= x;
-        int y = rfloor(coefs[1]); coefs[1] -= y;
-        int z = rfloor(coefs[2]); coefs[2] -= z;
+        coefs[0] = (p[0]-pmin[0])*invCellWidth[0];
+        coefs[1] = (p[1]-pmin[1])*invCellWidth[1];
+        coefs[2] = (p[2]-pmin[2])*invCellWidth[2];
+        int x = rfloor(coefs[0]);
+        if (x==-1) x=0; else if (x==nx-1) x=nx-2;
+        coefs[0] -= x;
+        int y = rfloor(coefs[1]);
+        if (y==-1) y=0; else if (y==ny-1) y=ny-2;
+        coefs[1] -= y;
+        int z = rfloor(coefs[2]);
+        if (z==-1) z=0; else if (z==nz-1) z=nz-2;
+        coefs[2] -= z;
         return x+nx*(y+ny*(z));
     }
 
@@ -107,7 +116,7 @@ public:
 
     Coord coord(int x, int y, int z)
     {
-        return pmin+Coord(x*cellWidth, y*cellWidth, z*cellWidth);
+        return pmin+Coord(x*cellWidth[0], y*cellWidth[1], z*cellWidth[2]);
     }
 
     Real operator[](int index) const { return dists[index]; }
@@ -154,12 +163,12 @@ public:
         Real d;
         if (inBBox(x))
         {
-            d = dists[index(x)] - cellWidth; // we underestimate the distance
+            d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
         }
         else
         {
             Coord xclamp = clamp(x);
-            d = dists[index(xclamp)] - cellWidth; // we underestimate the distance
+            d = dists[index(xclamp)] - cellWidth[0]; // we underestimate the distance
             d = rsqrt((x-xclamp).norm2() + d*d);
         }
         return d;
@@ -187,13 +196,13 @@ public:
         Real d2;
         if (inBBox(x))
         {
-            Real d = dists[index(x)] - cellWidth; // we underestimate the distance
+            Real d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
             d2 = d*d;
         }
         else
         {
             Coord xclamp = clamp(x);
-            Real d = dists[index(xclamp)] - cellWidth; // we underestimate the distance
+            Real d = dists[index(xclamp)] - cellWidth[0]; // we underestimate the distance
             d2 = ((x-xclamp).norm2() + d*d);
         }
         return d2;
@@ -205,7 +214,7 @@ protected:
     VecReal dists;
     const int nx,ny,nz, nxny, nxnynz;
     const Coord pmin, pmax;
-    const Real cellWidth, invCellWidth;
+    const Coord cellWidth, invCellWidth;
 
     // Fast Marching Method Update
     enum Status { FMM_FRONT0 = 0, FMM_FAR = -1, FMM_KNOWN_OUT = -2, FMM_KNOWN_IN = -3 };

@@ -302,7 +302,9 @@ void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
     : nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz),
-      pmin(pmin), pmax(pmax), cellWidth((pmax[0]-pmin[0])/(nx-1)), invCellWidth((nx-1)/(pmax[0]-pmin[0]))
+      pmin(pmin), pmax(pmax),
+      cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1)),
+      invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
 {
     dists.resize(nxnynz);
 }
@@ -448,13 +450,13 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                         {
                             Real dist1 = -dist / normal[0];
                             int ind2 = ind+1;
-                            if (dist1 >= -0.01*cellWidth && dist1 <= 1.01*cellWidth)
+                            if (dist1 >= -0.01*cellWidth[0] && dist1 <= 1.01*cellWidth[0])
                             {
                                 // edge crossed plane
                                 if (pointInTriangle<1,2>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
-                                    Real dist2 = cellWidth - dist1;
+                                    Real dist2 = cellWidth[0] - dist1;
                                     if (normal[0]<0)
                                     {
                                         // p1 is in outside, p2 inside
@@ -496,13 +498,13 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                         {
                             Real dist1 = -dist / normal[1];
                             int ind2 = ind+nx;
-                            if (dist1 >= -0.01*cellWidth && dist1 <= 1.01*cellWidth)
+                            if (dist1 >= -0.01*cellWidth[1] && dist1 <= 1.01*cellWidth[1])
                             {
                                 // edge crossed plane
                                 if (pointInTriangle<2,0>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
-                                    Real dist2 = cellWidth - dist1;
+                                    Real dist2 = cellWidth[1] - dist1;
                                     if (normal[1]<0)
                                     {
                                         // p1 is in outside, p2 inside
@@ -544,13 +546,13 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                         {
                             Real dist1 = -dist / normal[2];
                             int ind2 = ind+nxny;
-                            if (dist1 >= -0.01*cellWidth && dist1 <= 1.01*cellWidth)
+                            if (dist1 >= -0.01*cellWidth[2] && dist1 <= 1.01*cellWidth[2])
                             {
                                 // edge crossed plane
                                 if (pointInTriangle<0,1>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
-                                    Real dist2 = cellWidth - dist1;
+                                    Real dist2 = cellWidth[2] - dist1;
                                     if (normal[2]<0)
                                     {
                                         // p1 is in outside, p2 inside
@@ -600,14 +602,15 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                 if (fmm_status[ind] < FMM_FAR)
                 {
                     int ind2;
-                    Real dist1 = (dists[ind])+cellWidth;
+                    Real dist1 = dists[ind];
+                    Real dist2 = dist1+cellWidth[0];
                     // X-1
                     if (x>0)
                     {
                         ind2 = ind-1;
-                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist1)
+                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist2)
                         {
-                            dists[ind2] = dist1;
+                            dists[ind2] = dist2;
                             fmm_push(ind2);
                         }
                     }
@@ -615,19 +618,20 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                     if (x<nx-1)
                     {
                         ind2 = ind+1;
-                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist1)
+                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist2)
                         {
-                            dists[ind2] = dist1;
+                            dists[ind2] = dist2;
                             fmm_push(ind2);
                         }
                     }
+                    dist2 = dist1+cellWidth[1];
                     // Y-1
                     if (y>0)
                     {
                         ind2 = ind-nx;
-                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist1)
+                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist2)
                         {
-                            dists[ind2] = dist1;
+                            dists[ind2] = dist2;
                             fmm_push(ind2);
                         }
                     }
@@ -635,19 +639,20 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                     if (y<ny-1)
                     {
                         ind2 = ind+nx;
-                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist1)
+                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist2)
                         {
-                            dists[ind2] = dist1;
+                            dists[ind2] = dist2;
                             fmm_push(ind2);
                         }
                     }
+                    dist2 = dist1+cellWidth[2];
                     // Z-1
                     if (z>0)
                     {
                         ind2 = ind-nxny;
-                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist1)
+                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist2)
                         {
-                            dists[ind2] = dist1;
+                            dists[ind2] = dist2;
                             fmm_push(ind2);
                         }
                     }
@@ -655,9 +660,9 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                     if (z<nz-1)
                     {
                         ind2 = ind+nxny;
-                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist1)
+                        if (x>0 && fmm_status[ind2] >= FMM_FAR && (dists[ind2]) > dist2)
                         {
-                            dists[ind2] = dist1;
+                            dists[ind2] = dist2;
                             fmm_push(ind2);
                         }
                     }
@@ -675,7 +680,8 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
         int z = ind/nxny;
 
         int ind2;
-        Real dist1 = (dists[ind])+cellWidth;
+        Real dist1 = dists[ind];
+        Real dist2 = dist1+cellWidth[0];
         // X-1
         if (x>0)
         {
@@ -684,9 +690,9 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
             {
                 if (fmm_status[ind2] == FMM_KNOWN_IN) ++nbin; else ++nbout;
             }
-            else if ((dists[ind2]) > dist1)
+            else if ((dists[ind2]) > dist2)
             {
-                dists[ind2] = dist1;
+                dists[ind2] = dist2;
                 fmm_push(ind2); // create or update the corresponding entry in the heap
             }
         }
@@ -698,12 +704,13 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
             {
                 if (fmm_status[ind2] == FMM_KNOWN_IN) ++nbin; else ++nbout;
             }
-            else if ((dists[ind2]) > dist1)
+            else if ((dists[ind2]) > dist2)
             {
-                dists[ind2] = dist1;
+                dists[ind2] = dist2;
                 fmm_push(ind2); // create or update the corresponding entry in the heap
             }
         }
+        dist2 = dist1+cellWidth[1];
         // Y-1
         if (y>0)
         {
@@ -712,9 +719,9 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
             {
                 if (fmm_status[ind2] == FMM_KNOWN_IN) ++nbin; else ++nbout;
             }
-            else if ((dists[ind2]) > dist1)
+            else if ((dists[ind2]) > dist2)
             {
-                dists[ind2] = dist1;
+                dists[ind2] = dist2;
                 fmm_push(ind2); // create or update the corresponding entry in the heap
             }
         }
@@ -726,12 +733,13 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
             {
                 if (fmm_status[ind2] == FMM_KNOWN_IN) ++nbin; else ++nbout;
             }
-            else if ((dists[ind2]) > dist1)
+            else if ((dists[ind2]) > dist2)
             {
-                dists[ind2] = dist1;
+                dists[ind2] = dist2;
                 fmm_push(ind2); // create or update the corresponding entry in the heap
             }
         }
+        dist2 = dist1+cellWidth[2];
         // Z-1
         if (z>0)
         {
@@ -740,9 +748,9 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
             {
                 if (fmm_status[ind2] == FMM_KNOWN_IN) ++nbin; else ++nbout;
             }
-            else if ((dists[ind2]) > dist1)
+            else if ((dists[ind2]) > dist2)
             {
-                dists[ind2] = dist1;
+                dists[ind2] = dist2;
                 fmm_push(ind2); // create or update the corresponding entry in the heap
             }
         }
@@ -754,15 +762,15 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
             {
                 if (fmm_status[ind2] == FMM_KNOWN_IN) ++nbin; else ++nbout;
             }
-            else if ((dists[ind2]) > dist1)
+            else if ((dists[ind2]) > dist2)
             {
-                dists[ind2] = dist1;
+                dists[ind2] = dist2;
                 fmm_push(ind2); // create or update the corresponding entry in the heap
             }
         }
         if (nbin && nbout)
         {
-            //std::cerr << "FMM WARNING: in/out conflict at cell "<<x<<" "<<y<<" "<<z<<" ( "<<nbin<<" in, "<<nbout<<" out), dist = "<<dists[ind]<<std::endl;
+            std::cerr << "FMM WARNING: in/out conflict at cell "<<x<<" "<<y<<" "<<z<<" ( "<<nbin<<" in, "<<nbout<<" out), dist = "<<dists[ind]<<std::endl;
         }
         if (nbin > nbout)
             fmm_status[ind] = FMM_KNOWN_IN;
