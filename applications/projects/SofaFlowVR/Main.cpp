@@ -6,26 +6,26 @@
 #include <flowvr/render/chunkwriter.h>
 //#include <flowvr/interact/chunkwriter.h>
 
-#include "Sofa-old/Components/Graph/Simulation.h"
-#include "Sofa-old/Components/Graph/Action.h"
-#include "Sofa-old/Components/Graph/ParallelActionScheduler.h"
-#include "Sofa-old/Components/Graph/CactusStackStorage.h"
-#include <Sofa-old/Components/Common/ObjectFactory.h>
-#include "Sofa-old/Components/Common/Vec3Types.h"
-#include "Sofa-old/Components/Common/BackTrace.h"
-#include "Sofa-old/Components/Thread/CTime.h"
-#include "Sofa-old/Abstract/Event.h"
-#include "Sofa-old/Components/AnimateBeginEvent.h"
-#include "Sofa-old/Components/AnimateEndEvent.h"
-#include "Sofa-old/Components/MeshTopology.h"
+#include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/tree/Action.h>
+#include <sofa/simulation/tree/ParallelActionScheduler.h>
+#include <sofa/simulation/tree/CactusStackStorage.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/helper/BackTrace.h>
+#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/tree/AnimateBeginEvent.h>
+#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/component/topology/MeshTopology.h>
 #if defined(SOFA_GUI_QT)
-#include "Sofa-old/GUI/QT/Main.h"
+#include <sofa/gui/qt/Main.h>
 #elif defined(SOFA_GUI_FLTK)
-#include "Sofa-old/GUI/FLTK/Main.h"
+#include <sofa/gui/fltk/Main.h>
 #endif
-using Sofa::Components::Thread::CTime;
-using Sofa::Components::Thread::ctime_t;
-using namespace Sofa::Components::Graph;
+using sofa::helper::system::thread::CTime;
+using sofa::helper::system::thread::ctime_t;
+using namespace sofa::simulation::tree;
 
 
 //#define VERBOSE
@@ -41,7 +41,7 @@ namespace Type
 {
 
 template<int N, typename real>
-Type get(const Sofa::Components::Common::Vec<N,real>&)
+Type get(const sofa::defaulttype::Vec<N,real>&)
 {
     return (Type)vector(get(real()),N);
 }
@@ -58,11 +58,11 @@ flowvr::ModuleAPI* module = NULL;
 //using namespace flowvr::render;
 //using namespace flowvr::interact;
 
-using namespace Sofa::Abstract;
-using namespace Sofa::Components;
-using namespace Sofa::Components::Common;
+//using namespace Sofa::Abstract;
+//using namespace Sofa::Components;
+using namespace sofa::defaulttype;
 
-class FlowVREvent : public Event
+class FlowVREvent : public sofa::core::objectmodel::Event
 {
 public:
     virtual ~FlowVREvent() {}
@@ -96,7 +96,7 @@ public:
     flowvr::ModuleAPI* module;
 };
 
-class FlowVRObject : public virtual Sofa::Abstract::BaseObject
+class FlowVRObject : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     FlowVRObject()
@@ -132,7 +132,7 @@ public:
     {
     }
 
-    virtual void handleEvent(Sofa::Abstract::Event* event)
+    virtual void handleEvent(sofa::core::objectmodel::Event* event)
     {
         if (AnimateBeginEvent* ev = dynamic_cast<AnimateBeginEvent*>(event))
             animateBegin(ev->getDt());
@@ -254,13 +254,10 @@ public:
     }
 };
 
-void create(FlowVRModule*& obj, ObjectDescription* arg)
-{
-    obj = new FlowVRModule;
-    obj->parseFields( arg->getAttributeMap() );
-}
 SOFA_DECL_CLASS(FlowVRModule)
-Creator<ObjectFactory, FlowVRModule> FlowVRModuleClass("FlowVRModule");
+int FlowVRModuleClass = sofa::core::RegisterObject("FlowVR main module")
+        .add<FlowVRModule>()
+        ;
 
 //flowvr::interact::ObjectsOutputPort pObjectsOut("objects");
 //flowvr::interact::ChunkInteractWriter objects;
@@ -322,10 +319,10 @@ public:
             pointsLastIt = pointsIt;
             const Vec3f* vertices = points.data.getRead<Vec3f>(0);
 
-            BaseObject* mmodel = getContext()->getMechanicalModel();
-            MechanicalModel<Vec3fTypes>* mmodel3f;
-            MechanicalModel<Vec3dTypes>* mmodel3d;
-            if ((mmodel3f = dynamic_cast<MechanicalModel<Vec3fTypes>*>(mmodel))!=NULL)
+            BaseObject* mmodel = getContext()->getMechanicalState();
+            sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>* mmodel3f;
+            sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>* mmodel3d;
+            if ((mmodel3f = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>*>(mmodel))!=NULL)
             {
                 std::cout << "Copying "<<nbv<<" vertices to mmodel3f"<<std::endl;
                 mmodel3f->resize(nbv);
@@ -345,7 +342,7 @@ public:
                     }
                 }
             }
-            else if ((mmodel3d = dynamic_cast<MechanicalModel<Vec3dTypes>*>(mmodel))!=NULL)
+            else if ((mmodel3d = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>*>(mmodel))!=NULL)
             {
                 std::cout << "Copying "<<nbv<<" vertices to mmodel3d"<<std::endl;
                 mmodel3d->resize(nbv);
@@ -386,8 +383,8 @@ public:
                 }
             }
             BaseObject* topology = getContext()->getTopology();
-            MeshTopology* mesh;
-            if ((mesh = dynamic_cast<MeshTopology*>(topology))!=NULL)
+            sofa::component::topology::MeshTopology* mesh;
+            if ((mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(topology))!=NULL)
             {
                 mesh->clear();
                 if (valid)
@@ -411,13 +408,10 @@ public:
     }
 };
 
-void create(FlowVRInputMesh*& obj, ObjectDescription* arg)
-{
-    obj = new FlowVRInputMesh;
-    obj->parseFields( arg->getAttributeMap() );
-}
 SOFA_DECL_CLASS(FlowVRInputMesh)
-Creator<ObjectFactory, FlowVRInputMesh> FlowVRInputMeshClass("FlowVRInputMesh");
+int FlowVRInputMeshClass = sofa::core::RegisterObject("Import a mesh from a FlowVR InputPort")
+        .add< FlowVRInputMesh >()
+        ;
 
 
 class FlowVRRenderEvent : public FlowVREvent
@@ -450,7 +444,7 @@ class FlowVRRenderObject : public FlowVRObject
     {
     }
 
-    virtual void handleEvent(Sofa::Abstract::Event* event)
+    virtual void handleEvent(sofa::core::objectmodel::Event* event)
     {
         FlowVRObject::handleEvent(event);
         if (dynamic_cast<FlowVRRenderEvent*>(event))
@@ -500,16 +494,12 @@ public:
     }
 };
 
-void create(FlowVRRenderWriter*& obj, ObjectDescription* arg)
-{
-    obj = new FlowVRRenderWriter;
-    obj->parseFields( arg->getAttributeMap() );
-}
-
 SOFA_DECL_CLASS(FlowVRRenderWriter)
-Creator<ObjectFactory, FlowVRRenderWriter> FlowVRRenderWriterClass("FlowVRRenderWriter");
+int FlowVRRenderWriterClass = sofa::core::RegisterObject("FlowVRRender scene manager")
+        .add<FlowVRRenderWriter>()
+        ;
 
-class FlowVRRenderVisualModel : public FlowVRRenderObject, public Sofa::Abstract::VisualModel
+class FlowVRRenderVisualModel : public FlowVRRenderObject, public sofa::core::VisualModel
 {
 protected:
     flowvr::render::ChunkRenderWriter* scene;
@@ -563,8 +553,8 @@ public:
     DataField<std::string> pShader;
     DataField<Vec4f> color;
 
-    Sofa::Components::MeshTopology* topology;
-    MechanicalModel<DataTypes>* mmodel;
+    sofa::component::topology::MeshTopology* topology;
+    sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;
 
     flowvr::ID idP;
     flowvr::ID idVB;
@@ -580,7 +570,7 @@ public:
     Coord bbmin;
     Coord bbmax;
 
-    FlowVRRenderMesh(MechanicalModel<DataTypes>* = NULL)
+    FlowVRRenderMesh()
         : vShader(dataField(&vShader, std::string("shaders/default_v.cg"), "vshader", "vertex shader name"))
         , pShader(dataField(&pShader, std::string("shaders/default_p.cg"), "pshader", "pixel shader name"))
         , color(dataField(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
@@ -604,8 +594,8 @@ public:
     void computeNormals()
     {
         const VecCoord& x = *mmodel->getX();
-        const MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-        const MeshTopology::SeqQuads& quads = topology->getQuads();
+        const sofa::component::topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
+        const sofa::component::topology::MeshTopology::SeqQuads& quads = topology->getQuads();
         n.resize(x.size());
         for(unsigned int i=0; i<x.size(); i++)
         {
@@ -665,8 +655,8 @@ public:
 
     void init()
     {
-        mmodel = dynamic_cast<MechanicalModel<DataTypes>*>(getContext()->getMechanicalModel());
-        topology = dynamic_cast<MeshTopology*>(getContext()->getTopology());
+        mmodel = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes>*>(getContext()->getMechanicalState());
+        topology = dynamic_cast<sofa::component::topology::MeshTopology*>(getContext()->getTopology());
         if (!module || !scene || !mmodel) return;
 
         renderUpdate();
@@ -736,8 +726,8 @@ public:
             if (topology->getRevision() != lastMeshRev)
             {
                 lastMeshRev = topology->getRevision();
-                const MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-                const MeshTopology::SeqQuads& quads = topology->getQuads();
+                const sofa::component::topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
+                const sofa::component::topology::MeshTopology::SeqQuads& quads = topology->getQuads();
                 if (quads.empty())
                 {
                     // only triangles
@@ -772,21 +762,33 @@ public:
             }
         }
     }
+
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const FlowVRRenderMesh<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 };
 
-template<class DataTypes>
-void create(FlowVRRenderMesh<DataTypes>*& obj, ObjectDescription* arg)
-{
-    XML::createWithParent< FlowVRRenderMesh<DataTypes>, MechanicalModel<DataTypes> >(obj, arg);
-    if (obj != NULL)
-    {
-        obj->parseFields( arg->getAttributeMap() );
-    }
-}
-
 SOFA_DECL_CLASS(FlowVRRenderMesh)
-Creator<ObjectFactory, FlowVRRenderMesh<Vec3fTypes> > FlowVRRenderMesh3fClass("FlowVRRenderMesh", true);
-Creator<ObjectFactory, FlowVRRenderMesh<Vec3dTypes> > FlowVRRenderMesh3dClass("FlowVRRenderMesh", true);
+int FlowVRRenderMesh3fClass = sofa::core::RegisterObject("FlowVRRender Visual Model")
+        .add< FlowVRRenderMesh<Vec3fTypes> >()
+        .add< FlowVRRenderMesh<Vec3dTypes> >()
+        ;
 
 } // namespace SofaFlowVR
 
@@ -795,7 +797,7 @@ Creator<ObjectFactory, FlowVRRenderMesh<Vec3dTypes> > FlowVRRenderMesh3dClass("F
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    Sofa::Components::Common::BackTrace::autodump();
+    sofa::helper::BackTrace::autodump();
 
     std::string fileName = "/home/allardj/work/sig07et/data/test1.scn";
     //int nbIter = 500;
@@ -816,9 +818,9 @@ int main(int argc, char** argv)
     }
 
 #if defined(SOFA_GUI_QT)
-    Sofa::GUI::QT::MainLoop(argv[0],groot,fileName.c_str());
+    sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
 #elif defined(SOFA_GUI_FLTK)
-    Sofa::GUI::FLTK::MainLoop(argv[0],groot);
+    sofa::gui::fltk::MainLoop(argv[0],groot);
 #endif
 
     return 0;

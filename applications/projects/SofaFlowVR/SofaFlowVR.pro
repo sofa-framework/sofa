@@ -1,15 +1,12 @@
-include(../../../sofa.cfg)
+SOFA_DIR=../../..
 TEMPLATE = app
+
+include($$SOFA_DIR/sofa.cfg)
+
+TARGET = SofaFlowVR$$SUFFIX
+DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECT \
           warn_on
-
-DESTDIR = ../../../bin
-TARGET = SofaFlowVR$$SUFFIX
-
-OBJECTS_DIR = OBJ/$$CONFIGDEBUG
-INCLUDEPATH = ../..
-INCLUDEPATH += ../../../include
-DEPENDPATH = ../..
 
 SOURCES = Main.cpp 
 HEADERS = 
@@ -19,8 +16,8 @@ CONFIG += qt
 QT += opengl qt3support
 }
 
-QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY ../../../lib/$$LIBSDIRECTORY/../Common
-LIBS = -lSofaAbstract$$LIBSUFFIX -lSofaCore$$LIBSUFFIX -lSofaComponents$$LIBSUFFIX -lNewMat$$LIBSUFFIX
+LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX -lsofacore$$LIBSUFFIX -lNewMat$$LIBSUFFIX -lSLC$$LIBSUFFIX
+LIBS += -lsofacomponent$$LIBSUFFIX -lsofasimulation$$LIBSUFFIX
 
 ########################################################################
 #  FLOWVR
@@ -40,10 +37,10 @@ QMAKE_LFLAGS_RELEASE+= `pkg-config --libs flowvr-mod flowvr-ftl flowvr-render`
 win32{
   LIBS += -llibxml2 -lGLaux -lglut32 -lcomctl32 -lopengl32 -lglu32 -lAdvAPI32 -lUser32 -lShell32 -lGdi32 -lWSock32 -lWS2_32 -lOle32
   contains (DEFINES, SOFA_GUI_FLTK) {
-	LIBS += -lSofaGUIFLTK$$LIBSUFFIX -lfltk -lfltkgl
+	LIBS += -lsofaguifltk$$LIBSUFFIX -lfltk -lfltkgl
   }
   contains (DEFINES, SOFA_GUI_QT) {
-	LIBS += -lSofaGUIQT$$LIBSUFFIX
+	LIBS += -lsofaguiqt$$LIBSUFFIX
   }
   contains (CONFIGPROJECT, vc7) {
 	contains (CONFIGDEBUG, debug) {
@@ -62,9 +59,9 @@ win32{
 unix {
   LIBS += -L/usr/X11R6/lib -lglut -lGL -lGLU -lpthread -lxml2 -lz
   contains (DEFINES, SOFA_GUI_FLTK) {
-	LIBS += -lSofaGUIFLTK$$LIBSUFFIX -lfltk_gl -lfltk
+	LIBS += -lsofaguifltk$$LIBSUFFIX -lfltk_gl -lfltk
   }
   contains (DEFINES, SOFA_GUI_QT) {
-	LIBS += -lSofaGUIQT$$LIBSUFFIX
+	LIBS += -lsofaguiqt$$LIBSUFFIX
   }
 }
