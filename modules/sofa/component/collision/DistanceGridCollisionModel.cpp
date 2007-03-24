@@ -315,7 +315,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, int nx, int ny, in
     {
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         std::ifstream in(filename.c_str(), std::ios::in | std::ios::binary);
-        in.read((char*)grid->dists.data(), grid->nxnynz*sizeof(Real));
+        in.read((char*)&(grid->dists[0]), grid->nxnynz*sizeof(Real));
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
