@@ -25,7 +25,7 @@
 #ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_H
 #define SOFA_COMPONENT_MASS_UNIFORMMASS_H
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
@@ -58,16 +58,12 @@ protected:
 public:
     UniformMass();
 
-    UniformMass(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate);
-
     ~UniformMass();
 
-    //virtual const char* getTypeName() const { return "UniformMass"; }
-
     void setMass(const MassType& mass);
-    DataField<MassType> getMass() {return mass;}
+    const MassType& getMass() const { return mass.getValue(); }
 
-    double getTotalMass() { return totalMass.getValue();}
+    double getTotalMass() const { return totalMass.getValue(); }
     void setTotalMass(double m);
 
     // -- Mass interface

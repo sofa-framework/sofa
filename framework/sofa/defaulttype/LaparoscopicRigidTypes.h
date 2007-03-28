@@ -30,7 +30,6 @@
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
-using std::endl;
 
 namespace sofa
 {
@@ -40,7 +39,7 @@ namespace defaulttype
 
 using sofa::helper::vector;
 
-class LaparoscopicRigidTypes
+class LaparoscopicRigid3Types
 {
 public:
     typedef Vec3d Vec3;
@@ -291,25 +290,27 @@ public:
     }
     static const char* Name()
     {
-        return "LaparoscopicRigid";
+        return "LaparoscopicRigid3";
     }
 };
 
-inline LaparoscopicRigidTypes::Deriv operator*(const LaparoscopicRigidTypes::Deriv& d, const RigidMass& m)
+inline LaparoscopicRigid3Types::Deriv operator*(const LaparoscopicRigid3Types::Deriv& d, const Rigid3Mass& m)
 {
-    LaparoscopicRigidTypes::Deriv res;
+    LaparoscopicRigid3Types::Deriv res;
     res.getVTranslation() = d.getVTranslation() * m.mass;
     res.getVOrientation() = m.inertiaMassMatrix * d.getVOrientation();
     return res;
 }
 
-inline LaparoscopicRigidTypes::Deriv operator/(const LaparoscopicRigidTypes::Deriv& d, const RigidMass& m)
+inline LaparoscopicRigid3Types::Deriv operator/(const LaparoscopicRigid3Types::Deriv& d, const Rigid3Mass& m)
 {
-    LaparoscopicRigidTypes::Deriv res;
+    LaparoscopicRigid3Types::Deriv res;
     res.getVTranslation() = d.getVTranslation() / m.mass;
     res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
     return res;
 }
+
+typedef LaparoscopicRigid3Types LaparoscopicRigidTypes; ///< Alias
 
 } // namespace defaulttype
 
@@ -326,26 +327,26 @@ namespace behavior
 {
 /// Specialization of the inertia force for defaulttype::RigidTypes
 template <>
-inline defaulttype::LaparoscopicRigidTypes::Deriv inertiaForce<
-defaulttype::LaparoscopicRigidTypes::Coord,
-            defaulttype::LaparoscopicRigidTypes::Deriv,
+inline defaulttype::LaparoscopicRigid3Types::Deriv inertiaForce<
+defaulttype::LaparoscopicRigid3Types::Coord,
+            defaulttype::LaparoscopicRigid3Types::Deriv,
             objectmodel::BaseContext::Vec3,
-            defaulttype::RigidMass,
+            defaulttype::Rigid3Mass,
             objectmodel::BaseContext::SpatialVector
             >
             (
                     const objectmodel::BaseContext::SpatialVector& vframe,
                     const objectmodel::BaseContext::Vec3& aframe,
-                    const defaulttype::RigidMass& mass,
-                    const defaulttype::LaparoscopicRigidTypes::Coord& x,
-                    const defaulttype::LaparoscopicRigidTypes::Deriv& v )
+                    const defaulttype::Rigid3Mass& mass,
+                    const defaulttype::LaparoscopicRigid3Types::Coord& x,
+                    const defaulttype::LaparoscopicRigid3Types::Deriv& v )
 {
-    defaulttype::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::RigidTypes::Vec3 origin, finertia, zero(0,0,0);
+    defaulttype::Rigid3Types::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::Rigid3Types::Vec3 origin, finertia, zero(0,0,0);
     origin[0] = x.getTranslation();
 
-    finertia = -( aframe + omega.cross( omega.cross(origin) + defaulttype::RigidTypes::Vec3(v.getVTranslation()*2,0,0) ))*mass.mass;
-    return defaulttype::LaparoscopicRigidTypes::Deriv( finertia[0], zero );
+    finertia = -( aframe + omega.cross( omega.cross(origin) + defaulttype::Rigid3Types::Vec3(v.getVTranslation()*2,0,0) ))*mass.mass;
+    return defaulttype::LaparoscopicRigid3Types::Deriv( finertia[0], zero );
     /// \todo replace zero by Jomega.cross(omega)
 }
 

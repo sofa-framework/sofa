@@ -20,10 +20,12 @@ HEADERS += \
           SofaBaseVector.h \
           SolidTypes.h \
           SolidTypes.inl \
-          Vec.h \ 
-          Vec3Types.h 
-          
+          Vec.h \
+          VecTypes.h \
+          Vec3Types.h
+
 SOURCES += \
           Frame.cpp \
           Quat.cpp \
-          SolidTypes.cpp 
+          SolidTypes.cpp
+

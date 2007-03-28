@@ -51,7 +51,7 @@ public:
     DataField<Real> sphereRadius;
     DataField<Real> stiffness;
     DataField<Real> damping;
-    DataField<Coord> color;
+    DataField<defaulttype::Vec3f> color;
     DataField<bool> bDraw;
 
     SphereForceField()
@@ -59,7 +59,7 @@ public:
         , sphereRadius(dataField(&sphereRadius, (Real)1, "radius", "sphere radius"))
         , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(dataField(&damping, (Real)5, "damping", "force damping"))
-        , color(dataField(&color, Coord(0.0f,.5f,.2f), "color", "plane color"))
+        , color(dataField(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , bDraw(dataField(&bDraw, true, "draw", "enable/disable drawing of plane"))
     {
     }

@@ -29,6 +29,9 @@
 #include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
 #include <assert.h>
 #include <iostream>
 
@@ -390,16 +393,20 @@ void MechanicalObject<DataTypes>::applyScale(double s)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getIndicesInSpace(std::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/, Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const
+void MechanicalObject<DataTypes>::getIndicesInSpace(std::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
 {
-    std::cerr<<"ERROR: UNSUPPORTED MechanicalObject<DataTypes>::getIndicesInSpace()"<<std::endl;
-    //const VecCoord& x = *getX();
-    //for( unsigned i=0; i<x.size(); ++i ) {
-    //	if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax ) {
-    //		indices.push_back(i);
-    //	}
-    //}
+    const VecCoord& X = *getX();
+    for( unsigned i=0; i<X.size(); ++i )
+    {
+        double x=0.0,y=0.0,z=0.0;
+        DataTypes::get(x,y,z,X[i]);
+        if( x >= xmin && x <= xmax && y >= ymin && y <= ymax && z >= zmin && z <= zmax )
+        {
+            indices.push_back(i);
+        }
+    }
 }
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const std::vector< unsigned int >& ancestors, const std::vector< double >& coefs)
 {
@@ -1096,6 +1103,17 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
   return true;
 }
 */
+
+//
+// Template specializations
+
+template<>
+void MechanicalObject<defaulttype::Rigid3Types>::getCompliance (double dt, double**W, double * /*dfree*/, int &numContact);
+template<>
+void MechanicalObject<defaulttype::Rigid3Types>::applyContactForce(double *f);
+template<>
+void MechanicalObject<defaulttype::Rigid3Types>::resetContactForce();
+
 
 } // namespace component
 

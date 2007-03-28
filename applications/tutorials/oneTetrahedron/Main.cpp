@@ -69,7 +69,7 @@ int main(int argc, char** argv)
     x[3] = Vec3(-10*0.5,0,-10*0.866);
 
     // Tetrahedron uniform mass
-    sofa::component::mass::UniformMass<MyTypes,double>* mass = new sofa::component::mass::UniformMass<MyTypes,double>(DOF);
+    sofa::component::mass::UniformMass<MyTypes,double>* mass = new sofa::component::mass::UniformMass<MyTypes,double>;
     groot->addObject(mass);
     mass->setMass(2);
     mass->setName("mass");
@@ -81,13 +81,13 @@ int main(int argc, char** argv)
     topology->addTetrahedron(0,1,2,3);
 
     // Tetrahedron constraints
-    sofa::component::constraint::FixedConstraint<MyTypes>* constraints = new sofa::component::constraint::FixedConstraint<MyTypes>(DOF);
+    sofa::component::constraint::FixedConstraint<MyTypes>* constraints = new sofa::component::constraint::FixedConstraint<MyTypes>;
     groot->addObject(constraints);
     constraints->setName("constraints");
     constraints->addConstraint(0);
 
     // Tetrahedron force field
-    sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>* spring = new sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>();
+    sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>* spring = new sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>;
     groot->addObject(spring);
     spring->setUpdateStiffnessMatrix(true);
     spring->setYoungModulus(1);

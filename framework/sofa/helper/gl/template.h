@@ -37,10 +37,46 @@ namespace helper
 namespace gl
 {
 
+template<int N>
+inline void glVertexNv(const float* p)
+{
+    glVertex3f(p[0],p[1],p[2]);
+}
+
+template<>
+inline void glVertexNv<2>(const float* p)
+{
+    glVertex2f(p[0],p[1]);
+}
+
+template<>
+inline void glVertexNv<1>(const float* p)
+{
+    glVertex2f(p[0],0.0f);
+}
+
+template<int N>
+inline void glVertexNv(const double* p)
+{
+    glVertex3d(p[0],p[1],p[2]);
+}
+
+template<>
+inline void glVertexNv<2>(const double* p)
+{
+    glVertex2d(p[0],p[1]);
+}
+
+template<>
+inline void glVertexNv<1>(const double* p)
+{
+    glVertex2d(p[0],0.0);
+}
+
 template<class Coord>
 inline void glVertexT(const Coord& c)
 {
-    glVertex3d(c[0],c[1],c[2]);
+    glVertexNv<Coord::static_size>(c.ptr());
 }
 
 template<>

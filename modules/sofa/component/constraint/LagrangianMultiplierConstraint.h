@@ -59,6 +59,11 @@ public:
             c = (Real)x;
         }
 
+        static void get(double &x, double &, double &, const Coord& c)
+        {
+            x = (double)c;
+        }
+
         static void add(Coord& c, double x, double , double )
         {
             c += (Real)x;

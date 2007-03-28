@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
@@ -45,9 +45,7 @@ namespace component
 namespace mass
 {
 
-template<class Vec> void readVec1(Vec& vec, const char* str);
-
-using sofa::helper::vector;
+// template<class Vec> void readVec1(Vec& vec, const char* str);
 
 template <class DataTypes, class MassType>
 class DiagonalMass : public core::componentmodel::behavior::Mass<DataTypes>, public core::VisualModel
@@ -60,8 +58,8 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    typedef vector<MassType> VecMass;
-    typedef vector<MassType> MassVector;
+    typedef sofa::helper::vector<MassType> VecMass;
+    typedef sofa::helper::vector<MassType> MassVector;
 
     typedef enum
     {
@@ -81,8 +79,6 @@ protected:
 
 public:
     DiagonalMass();
-
-    DiagonalMass(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate, const std::string& name="");
 
     ~DiagonalMass();
 

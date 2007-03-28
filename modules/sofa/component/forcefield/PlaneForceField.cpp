@@ -23,7 +23,6 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/component/forcefield/PlaneForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/MechanicalObject.h>
 
@@ -40,6 +39,12 @@ using namespace sofa::defaulttype;
 
 template class PlaneForceField<Vec3dTypes>;
 template class PlaneForceField<Vec3fTypes>;
+template class PlaneForceField<Vec2dTypes>;
+template class PlaneForceField<Vec2fTypes>;
+template class PlaneForceField<Vec1dTypes>;
+template class PlaneForceField<Vec1fTypes>;
+template class PlaneForceField<Vec6dTypes>;
+template class PlaneForceField<Vec6fTypes>;
 
 
 SOFA_DECL_CLASS(PlaneForceField)
@@ -47,6 +52,12 @@ SOFA_DECL_CLASS(PlaneForceField)
 int PlaneForceFieldClass = core::RegisterObject("Repulsion applied by a plane toward the exterior (half-space)")
         .add< PlaneForceField<Vec3dTypes> >()
         .add< PlaneForceField<Vec3fTypes> >()
+        .add< PlaneForceField<Vec2dTypes> >()
+        .add< PlaneForceField<Vec2fTypes> >()
+        .add< PlaneForceField<Vec1dTypes> >()
+        .add< PlaneForceField<Vec1fTypes> >()
+        .add< PlaneForceField<Vec6dTypes> >()
+        .add< PlaneForceField<Vec6fTypes> >()
         ;
 
 } // namespace forcefield

@@ -23,7 +23,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename forcefield::StiffSpringForceField<DataTypes>::Mat3 Mat3;
+    typedef typename Inherit::Mat Mat;
+    enum { N = Inherit::N };
 public:
 
     RepulsiveSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)

@@ -42,11 +42,11 @@ void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
     f1[a]+=force;
     f2[b]-=force;
 
-    Mat3& m = this->dfdx[i];
+    Mat& m = this->dfdx[i];
     Real tgt = forceIntensity * inverseLength;
-    for( int j=0; j<3; ++j )
+    for( int j=0; j<N; ++j )
     {
-        for( int k=0; k<3; ++k )
+        for( int k=0; k<N; ++k )
         {
             m[j][k] = ((Real)spring.ks-tgt) * u[j] * u[k];
         }

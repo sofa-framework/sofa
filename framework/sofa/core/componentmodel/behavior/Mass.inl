@@ -70,7 +70,7 @@ double Mass<DataTypes>::getKineticEnergy()
 {
     if (this->mstate)
         return getKineticEnergy(*this->mstate->getV());
-    return 0.;
+    return 0;
 }
 
 } // namespace behavior

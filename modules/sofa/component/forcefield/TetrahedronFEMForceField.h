@@ -169,7 +169,7 @@ protected:
     void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
     void accumulateDampingSmall( Vector& f, Index elementIndex );
-    void applyStiffnessSmall( Vector& f, Real h, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
+    void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
 
 ////////////// large displacements method
     vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
@@ -178,13 +178,13 @@ protected:
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
     void accumulateDampingLarge( Vector& f, Index elementIndex );
-    void applyStiffnessLarge( Vector& f, Real h, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3 );
+    void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3 );
 
 ////////////// polar decomposition method
     vector<Transformation> _initialTransformation;
     void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessPolar( Vector& f, Real h, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
+    void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
 };
 
 } // namespace forcefield

@@ -28,8 +28,9 @@
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include "PlaneForceField.h"
 #include <sofa/helper/system/config.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/gl/template.h>
 #include <assert.h>
-#include <GL/gl.h>
 #include <iostream>
 
 namespace sofa
@@ -126,41 +127,39 @@ void PlaneForceField<DataTypes>::draw2(float size)
 
     const VecCoord& p1 = *this->mstate->getX();
 
-    const Coord normal = planeNormal.getValue();
+    defaulttype::Vec3d normal; normal = planeNormal.getValue();
 
-    // un vecteur quelconque du plan
-    Deriv v1;
+    // find a first vector inside the plane
+    defaulttype::Vec3d v1;
     if( 0.0 != normal[0] ) v1 = Deriv((-normal[2]-normal[1])/normal[0], 1.0, 1.0);
     else if ( 0.0 != normal[1] ) v1 = Deriv(1.0, (-normal[0]-normal[2])/normal[1],1.0);
     else if ( 0.0 != normal[2] ) v1 = Deriv(1.0, 1.0, (-normal[0]-normal[1])/normal[2]);
     v1.normalize();
-    // un deuxiement vecteur quelconque du plan orthogonal au premier
-    Deriv v2;
+    // find a second vector inside the plane and orthogonal to the first
+    defaulttype::Vec3d v2;
     v2 = v1.cross(normal);
     v2.normalize();
 
-    Coord center = normal*planeD.getValue();
-    Coord q0 = center-v1*size-v2*size;
-    Coord q1 = center+v1*size-v2*size;
-    Coord q2 = center+v1*size+v2*size;
-    Coord q3 = center-v1*size+v2*size;
+    defaulttype::Vec3d center = normal*planeD.getValue();
+    defaulttype::Vec3d corners[4];
+    corners[0] = center-v1*size-v2*size;
+    corners[1] = center+v1*size-v2*size;
+    corners[2] = center+v1*size+v2*size;
+    corners[3] = center-v1*size+v2*size;
 
-// 	glEnable(GL_LIGHTING);
+    // glEnable(GL_LIGHTING);
     glEnable(GL_CULL_FACE);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glCullFace(GL_FRONT);
 
-    glColor3d(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
-
-
+    glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
 
     glBegin(GL_QUADS);
-    glVertex3d(q0[0],q0[1],q0[2]);
-    glVertex3d(q1[0],q1[1],q1[2]);
-    glVertex3d(q2[0],q2[1],q2[2]);
-    glVertex3d(q3[0],q3[1],q3[2]);
+    helper::gl::glVertexT(corners[0]);
+    helper::gl::glVertexT(corners[1]);
+    helper::gl::glVertexT(corners[2]);
+    helper::gl::glVertexT(corners[3]);
     glEnd();
-
 
     glDisable(GL_CULL_FACE);
 
@@ -175,28 +174,48 @@ void PlaneForceField<DataTypes>::draw2(float size)
         p2 += planeNormal.getValue()*(-d);
         if (d<0)
         {
-            glVertex3d(p1[i][0],p1[i][1],p1[i][2]);
-            glVertex3d(p2[0],p2[1],p2[2]);
+            helper::gl::glVertexT(p1[i]);
+            helper::gl::glVertexT(p2);
         }
     }
     glEnd();
+}
 
+template <class DataTypes>
+bool PlaneForceField<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+{
+    if (!bDraw.getValue()) return false;
 
+    defaulttype::Vec3d normal; normal = planeNormal.getValue();
+    double size=10.0;
 
-    /*
-    glPointSize(1);
-    glColor4f(0,1,0,1);
-    glBegin(GL_POINTS);
-    for (unsigned int i=0; i<p1.size(); i++)
+    // find a first vector inside the plane
+    defaulttype::Vec3d v1;
+    if( 0.0 != normal[0] ) v1 = Deriv((-normal[2]-normal[1])/normal[0], 1.0, 1.0);
+    else if ( 0.0 != normal[1] ) v1 = Deriv(1.0, (-normal[0]-normal[2])/normal[1],1.0);
+    else if ( 0.0 != normal[2] ) v1 = Deriv(1.0, 1.0, (-normal[0]-normal[1])/normal[2]);
+    v1.normalize();
+    // find a second vector inside the plane and orthogonal to the first
+    defaulttype::Vec3d v2;
+    v2 = v1.cross(normal);
+    v2.normalize();
+
+    defaulttype::Vec3d center = normal*planeD.getValue();
+    defaulttype::Vec3d corners[4];
+    corners[0] = center-v1*size-v2*size;
+    corners[1] = center+v1*size-v2*size;
+    corners[2] = center+v1*size+v2*size;
+    corners[3] = center-v1*size+v2*size;
+
+    for (unsigned int i=0; i<4; i++)
     {
-    Real d = p1[i]*planeNormal-planeD;
-    Coord p2 = p1[i];
-    p2 += planeNormal*(-d);
-    if (d>=0)
-    glVertex3d(p2[0],p2[1],p2[2]);
+        for (int c=0; c<3; c++)
+        {
+            if (corners[i][c] > maxBBox[c]) maxBBox[c] = corners[i][c];
+            if (corners[i][c] < minBBox[c]) minBBox[c] = corners[i][c];
+        }
     }
-    glEnd();
-    */
+    return true;
 }
 
 } // namespace forcefield

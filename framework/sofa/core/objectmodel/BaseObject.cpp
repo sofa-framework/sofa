@@ -83,7 +83,7 @@ void BaseObject::writeState( std::ostream& )
 void BaseObject::handleEvent( Event* e )
 {
     using namespace simulation::tree;
-    cerr<<"BaseObject "<<getName()<<" gets an event"<<endl;
+    cerr<<"BaseObject "<<getName()<<" ("<<getTypeName()<<") gets an event"<<endl;
     if( KeypressedEvent* ke = dynamic_cast<KeypressedEvent*>( e ) )
     {
         cerr<<"BaseObject "<<getName()<<" gets a key event: "<<ke->getKey()<<endl;

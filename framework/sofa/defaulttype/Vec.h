@@ -451,12 +451,24 @@ inline Vec<3,real> cross(const Vec<3,real>& a, const Vec<3,real>& b)
             a.x()*b.y() - a.y()*b.x());
 }
 
+/// Cross product for 2-elements vectors.
+template <typename real>
+real cross(const defaulttype::Vec<2,real>& a, const defaulttype::Vec<2,real>& b )
+{
+    return a[0]*b[1] - a[1]*b[0];
+}
+
 /// Dot product (alias for operator*)
 template<int N,typename real>
 inline real dot(const Vec<N,real>& a, const Vec<N,real>& b)
 {
     return a*b;
 }
+
+typedef Vec<1,float> Vec1f;
+typedef Vec<1,double> Vec1d;
+
+typedef Vec1d Vector1; ///< alias
 
 typedef Vec<2,float> Vec2f;
 typedef Vec<2,double> Vec2d;
@@ -472,6 +484,11 @@ typedef Vec<4,float> Vec4f;
 typedef Vec<4,double> Vec4d;
 
 typedef Vec4d Vector4; ///< alias
+
+typedef Vec<6,float> Vec6f;
+typedef Vec<6,double> Vec6d;
+
+typedef Vec6d Vector6; ///< alias
 
 } // namespace defaulttype
 

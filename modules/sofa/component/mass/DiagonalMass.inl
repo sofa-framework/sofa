@@ -40,20 +40,20 @@ namespace mass
 {
 
 
-template<class Vec>
-void readVec1(Vec& vec, const char* str)
-{
-    vec.clear();
-    if (str==NULL) return;
-    const char* str2 = NULL;
-    for(;;)
-    {
-        double v = strtod(str,(char**)&str2);
-        if (str2==str) break;
-        str = str2;
-        vec.push_back((typename Vec::value_type)v);
-    }
-}
+// template<class Vec>
+// void readVec1(Vec& vec, const char* str)
+// {
+//     vec.clear();
+//     if (str==NULL) return;
+//     const char* str2 = NULL;
+//     for(;;)
+//     {
+//         double v = strtod(str,(char**)&str2);
+//         if (str2==str) break;
+//         str = str2;
+//         vec.push_back((typename Vec::value_type)v);
+//     }
+// }
 
 
 
@@ -64,21 +64,21 @@ using namespace sofa::core::componentmodel::behavior;
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
     : f_mass( dataField(&f_mass, "mass", "values of the particles masses") )
-    ,m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
-    , topologyType(TOPOLOGY_UNKNOWN)
-{
-
-}
-
-
-template <class DataTypes, class MassType>
-DiagonalMass<DataTypes, MassType>::DiagonalMass(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate, const std::string& /*name*/)
-    : core::componentmodel::behavior::Mass<DataTypes>(mstate)
-    , f_mass( dataField(&f_mass, "mass", "values of the particles' masses") )
     , m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
     , topologyType(TOPOLOGY_UNKNOWN)
 {
+
 }
+
+
+// template <class DataTypes, class MassType>
+// DiagonalMass<DataTypes, MassType>::DiagonalMass(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate, const std::string& /*name*/)
+// : core::componentmodel::behavior::Mass<DataTypes>(mstate)
+// , f_mass( dataField(&f_mass, "mass", "values of the particles' masses") )
+// , m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
+// , topologyType(TOPOLOGY_UNKNOWN)
+// {
+// }
 
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::~DiagonalMass()
@@ -161,7 +161,7 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::init()
 {
-    ForceField<DataTypes>::init();
+    Inherited::init();
 }
 
 template <class DataTypes, class MassType>
@@ -249,13 +249,22 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
 
 // Specialization for rigids
 template <>
-double DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergy( const VecCoord& x );
+double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
+template <>
+double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
+template <>
+double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
+template <>
+double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
 
 template <>
-void DiagonalMass<RigidTypes, RigidMass>::draw();
-
+void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
-void DiagonalMass<RigidTypes, RigidMass>::init();
+void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw();
+template <>
+void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw();
+template <>
+void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw();
 
 template<class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescription* arg)
@@ -267,16 +276,15 @@ void DiagonalMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescr
         arg->removeAttribute("filename");
     }
 
-    if (arg->getAttribute("mass"))
-    {
-        std::vector<MassType> mass;
-        readVec1(mass,arg->getAttribute("mass"));
-        this->clear();
-        for (unsigned int i=0; i<mass.size(); i++)
-        {
-            this->addMass(mass[i]);
-        }
-    }
+//     if (arg->getAttribute("mass"))
+//     {
+//       std::vector<MassType> mass;
+//       readVec1(mass,arg->getAttribute("mass"));
+//       this->clear();
+//       for (unsigned int i=0;i<mass.size();i++){
+//         this->addMass(mass[i]);
+//       }
+//     }
 }
 
 

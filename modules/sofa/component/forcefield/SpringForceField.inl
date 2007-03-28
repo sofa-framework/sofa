@@ -7,10 +7,9 @@
 #include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
-#include <iostream>
-#include <GL/gl.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -160,8 +159,8 @@ void SpringForceField<DataTypes>::draw()
             else
                 glColor4f(0,1,0.5f,1);
         }
-        glVertex3d(p1[springs[i].m1][0],p1[springs[i].m1][1],p1[springs[i].m1][2]);
-        glVertex3d(p2[springs[i].m2][0],p2[springs[i].m2][1],p2[springs[i].m2][2]);
+        helper::gl::glVertexT(p1[springs[i].m1]);
+        helper::gl::glVertexT(p2[springs[i].m2]);
     }
     glEnd();
 }

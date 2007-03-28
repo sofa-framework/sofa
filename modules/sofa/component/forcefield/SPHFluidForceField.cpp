@@ -42,6 +42,8 @@ using namespace core::componentmodel::behavior;
 // Each instance of our class must be compiled
 template class SPHFluidForceField<Vec3fTypes>;
 template class SPHFluidForceField<Vec3dTypes>;
+template class SPHFluidForceField<Vec2fTypes>;
+template class SPHFluidForceField<Vec2dTypes>;
 
 SOFA_DECL_CLASS(SPHFluidForceField)
 
@@ -49,6 +51,8 @@ SOFA_DECL_CLASS(SPHFluidForceField)
 int SPHFluidForceFieldClass = core::RegisterObject("Smooth Particle Hydrodynamics")
         .add< SPHFluidForceField<Vec3dTypes> >()
         .add< SPHFluidForceField<Vec3fTypes> >()
+        .add< SPHFluidForceField<Vec2dTypes> >()
+        .add< SPHFluidForceField<Vec2fTypes> >()
         ;
 
 } // namespace forcefield

@@ -156,6 +156,7 @@ public:
     bool load(const std::string& filename, const std::string& loader, const std::string& textureName);
 
     void applyTranslation(double dx, double dy, double dz);
+    void applyRotation(Quat q);
     void applyScale(double s);
     void applyUVScale(double su, double sv);
     void computeNormals();

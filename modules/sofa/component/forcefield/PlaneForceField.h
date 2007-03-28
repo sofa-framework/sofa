@@ -44,17 +44,20 @@ public:
     DataField<Real> planeD;
     DataField<Real> stiffness;
     DataField<Real> damping;
-    DataField<Coord> color;
+    DataField<defaulttype::Vec3f> color;
     DataField<bool> bDraw;
 
     PlaneForceField()
-        : planeNormal(dataField(&planeNormal, Deriv(0, 0, 1), "normal", "plane normal"))
+        : planeNormal(dataField(&planeNormal, "normal", "plane normal"))
         , planeD(dataField(&planeD, (Real)0, "d", "plane d coef"))
         , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(dataField(&damping, (Real)5, "damping", "force damping"))
-        , color(dataField(&color, Coord(0.0f,.5f,.2f), "color", "plane color"))
+        , color(dataField(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , bDraw(dataField(&bDraw, false, "draw", "enable/disable drawing of plane"))
     {
+        Deriv n;
+        DataTypes::set(n, 0, 1, 0);
+        planeNormal.setValue(n);
     }
 
     void setPlane(const Deriv& normal, Real d)
@@ -86,9 +89,11 @@ public:
 
     // -- VisualModel interface
     void draw();
-    void draw2(float size=1000.0f);
+    void draw2(float size=10.0f);
     void initTextures() { }
     void update() { }
+    bool addBBox(double* minBBox, double* maxBBox);
+
 };
 
 } // namespace forcefield

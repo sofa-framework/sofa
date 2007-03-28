@@ -67,6 +67,12 @@ void OglModel::parse(core::objectmodel::BaseObjectDescription* arg)
         obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
         obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+    if (arg->getAttribute("rx")!=NULL)
+        obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*M_PI/180));
+    if (arg->getAttribute("ry")!=NULL)
+        obj->applyRotation(Quat(Vec3d(0,1,0), atof(arg->getAttribute("ry","0.0"))*M_PI/180));
+    if (arg->getAttribute("rz")!=NULL)
+        obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*M_PI/180));
 }
 
 SOFA_DECL_CLASS(OglModel)
@@ -171,6 +177,7 @@ void OglModel::internalDraw()
     {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE);
     }
 
     //Enable<GL_BLEND> blending;
@@ -231,6 +238,7 @@ void OglModel::internalDraw()
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         //glBlendFunc(GL_ONE, GL_ZERO);
+        glDepthMask(GL_TRUE);
     }
 
     if (getContext()->getShowWireFrame())
@@ -436,6 +444,16 @@ void OglModel::applyTranslation(double dx, double dy, double dz)
     for (unsigned int i = 0; i < x.size(); i++)
     {
         x[i] += d;
+    }
+    update();
+}
+
+void OglModel::applyRotation(Quat q)
+{
+    VecCoord& x = *getX();
+    for (unsigned int i = 0; i < x.size(); i++)
+    {
+        x[i] = q.rotate(x[i]);
     }
     update();
 }

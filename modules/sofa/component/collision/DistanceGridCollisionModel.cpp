@@ -362,7 +362,17 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, int nx, int ny, in
 bool DistanceGrid::save(const std::string& filename)
 {
     /// !!!TODO!!! ///
-    return false;
+    if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")
+    {
+        std::ofstream out(filename.c_str(), std::ios::out | std::ios::binary);
+        out.write((char*)&(dists[0]), nxnynz*sizeof(Real));
+    }
+    else
+    {
+        std::cerr << " DistanceGrid::save(): Unsupported extension: "<<filename<<std::endl;
+        return false;
+    }
+    return true;
 }
 
 

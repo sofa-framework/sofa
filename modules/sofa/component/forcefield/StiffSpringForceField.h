@@ -5,6 +5,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_H
 
 #include <sofa/component/forcefield/SpringForceField.h>
+#include <sofa/defaulttype/Mat.h>
 
 namespace sofa
 {
@@ -32,19 +33,11 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename Inherit::Spring Spring;
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
-    class Mat3 : public fixed_array<Deriv,3>
-    {
-    public:
-        Deriv operator*(const Deriv& v)
-        {
-            return Deriv((*this)[0]*v,(*this)[1]*v,(*this)[2]*v);
-        }
-    };
-
-    //virtual const char* getTypeName() const { return "StiffSpringForceField"; }
+    enum { N=Coord::static_size };
+    typedef defaulttype::Mat<N,N,Real> Mat;
 
 protected:
-    std::vector<Mat3> dfdx;
+    std::vector<Mat> dfdx;
     double m_potentialEnergy;
 
     /// Accumulate the spring force and compute and store its stiffness

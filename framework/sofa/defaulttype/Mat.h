@@ -43,6 +43,7 @@ public:
 
     enum { N = L*C };
 
+    typedef real Real;
     typedef Vec<C,real> Line;
     typedef Vec<L,real> Col;
 

@@ -30,61 +30,17 @@
 
 namespace sofa
 {
+
 namespace component
 {
 
 namespace mass
 {
 
-
-// template<class Vec>
-// void readVec1(Vec& vec, const char* str)
-// {
-// 	vec.clear();
-// 	if (str==NULL) return;
-// 	const char* str2 = NULL;
-// 	for(;;)
-// 	{
-// 		double v = strtod(str,(char**)&str2);
-// 		if (str2==str) break;
-// 		str = str2;
-// 		vec.push_back((typename Vec::value_type)v);
-// 	}
-// }
-
-
-
-// template<class DataTypes, class MassType>
-// void create(DiagonalMass<DataTypes, MassType>*& obj, simulation::tree::xml::ObjectDescription* arg)
-// {
-// 	simulation::tree::xml::createWithParent< DiagonalMass<DataTypes, MassType>, core::componentmodel::behavior::MechanicalState<DataTypes> >(obj, arg);
-// 	if (obj!=NULL)
-// 	{
-// 		if (arg->getAttribute("filename"))
-// 		{
-// 			obj->load(arg->getAttribute("filename"));
-// 			arg->removeAttribute("filename");
-// 		}
-// 		obj->parseFields( arg->getAttributeMap() );
-//
-// 		if (arg->getAttribute("mass"))
-// 		{
-// 			std::vector<MassType> mass;
-// 			readVec1(mass,arg->getAttribute("mass"));
-// 			obj->clear();
-// 			for (unsigned int i=0;i<mass.size();i++)
-// 				obj->addMass(mass[i]);
-// 		}
-// 	}
-// }
-
-
-
-
 using namespace sofa::defaulttype;
 
 template <>
-double DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergy( const VecCoord& x )
+double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x )
 {
     double e = 0;
     const MassVector &masses= f_mass.getValue();
@@ -99,14 +55,61 @@ double DiagonalMass<RigidTypes, RigidMass>::getPotentialEnergy( const VecCoord& 
     }
     return e;
 }
+
 template <>
-void DiagonalMass<RigidTypes, RigidMass>::init()
+double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x )
 {
-    ForceField<RigidTypes>::init();
+    double e = 0;
+    const MassVector &masses= f_mass.getValue();
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        e += theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
+    }
+    return e;
 }
 
 template <>
-void DiagonalMass<RigidTypes, RigidMass>::draw()
+double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x )
+{
+    double e = 0;
+    const MassVector &masses= f_mass.getValue();
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        e += theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
+    }
+    return e;
+}
+
+template <>
+double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x )
+{
+    double e = 0;
+    const MassVector &masses= f_mass.getValue();
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        e += theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
+    }
+    return e;
+}
+
+
+template <>
+void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
 {
     const MassVector &masses= f_mass.getValue();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -135,18 +138,98 @@ void DiagonalMass<RigidTypes, RigidMass>::draw()
     }
 }
 
+template <>
+void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
+{
+    const MassVector &masses= f_mass.getValue();
+    if (!getContext()->getShowBehaviorModels()) return;
+    VecCoord& x = *mstate->getX();
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        const Quatf& orient = x[i].getOrientation();
+        //orient[3] = -orient[3];
+        const RigidTypes::Vec3& center = x[i].getCenter();
+        RigidTypes::Vec3 len;
+        // The moment of inertia of a box is:
+        //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
+        //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
+        //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
+        // So to get lx,ly,lz back we need to do
+        //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
+        // Note that RigidMass inertiaMatrix is already divided by M
+        double m00 = masses[i].inertiaMatrix[0][0];
+        double m11 = masses[i].inertiaMatrix[1][1];
+        double m22 = masses[i].inertiaMatrix[2][2];
+        len[0] = sqrt(m11+m22-m00);
+        len[1] = sqrt(m00+m22-m11);
+        len[2] = sqrt(m00+m11-m22);
+
+        helper::gl::Axis::draw(center, orient, len);
+    }
+}
+
+template <>
+void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw()
+{
+    const MassVector &masses= f_mass.getValue();
+    if (!getContext()->getShowBehaviorModels()) return;
+    VecCoord& x = *mstate->getX();
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        Vec3d len;
+        len[0] = len[1] = sqrt(masses[i].inertiaMatrix);
+        len[2] = 0;
+
+        Quat orient(Vec3d(0,0,1), x[i].getOrientation());
+        Vec3d center; center = x[i].getCenter();
+        helper::gl::Axis::draw(center, orient, len);
+    }
+}
+
+template <>
+void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw()
+{
+    const MassVector &masses= f_mass.getValue();
+    if (!getContext()->getShowBehaviorModels()) return;
+    VecCoord& x = *mstate->getX();
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        Vec3d len;
+        len[0] = len[1] = sqrt(masses[i].inertiaMatrix);
+        len[2] = 0;
+
+        Quat orient(Vec3d(0,0,1), x[i].getOrientation());
+        Vec3d center; center = x[i].getCenter();
+        helper::gl::Axis::draw(center, orient, len);
+    }
+}
+
 SOFA_DECL_CLASS(DiagonalMass)
 
 // Register in the Factory
 int DiagonalMassClass = core::RegisterObject("Define a specific mass for each particle")
         .add< DiagonalMass<Vec3dTypes,double> >()
         .add< DiagonalMass<Vec3fTypes,float> >()
-        .add< DiagonalMass<RigidTypes,RigidMass> >()
+        .add< DiagonalMass<Vec2dTypes,double> >()
+        .add< DiagonalMass<Vec2fTypes,float> >()
+        .add< DiagonalMass<Vec1dTypes,double> >()
+        .add< DiagonalMass<Vec1fTypes,float> >()
+        .add< DiagonalMass<Rigid3dTypes,Rigid3dMass> >()
+        .add< DiagonalMass<Rigid3fTypes,Rigid3fMass> >()
+        .add< DiagonalMass<Rigid2dTypes,Rigid2dMass> >()
+        .add< DiagonalMass<Rigid2fTypes,Rigid2fMass> >()
         ;
 
 template class DiagonalMass<Vec3dTypes,double>;
 template class DiagonalMass<Vec3fTypes,float>;
-template class DiagonalMass<RigidTypes,RigidMass>;
+template class DiagonalMass<Vec2dTypes,double>;
+template class DiagonalMass<Vec2fTypes,float>;
+template class DiagonalMass<Vec1dTypes,double>;
+template class DiagonalMass<Vec1fTypes,float>;
+template class DiagonalMass<Rigid3dTypes,Rigid3dMass>;
+template class DiagonalMass<Rigid3fTypes,Rigid3fMass>;
+template class DiagonalMass<Rigid2dTypes,Rigid2dMass>;
+template class DiagonalMass<Rigid2fTypes,Rigid2fMass>;
 
 } // namespace mass
 

@@ -23,7 +23,8 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/component/mapping/IdentityMapping.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
@@ -58,6 +59,51 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
         .add< IdentityMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
         .add< IdentityMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
         .add< IdentityMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2fTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec2dTypes>, MappedModel<Vec2dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec2fTypes>, MappedModel<Vec2dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec2dTypes>, MappedModel<Vec2fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec2fTypes>, MappedModel<Vec2fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec2dTypes>, MappedModel<ExtVec2dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec2fTypes>, MappedModel<ExtVec2dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec2dTypes>, MappedModel<ExtVec2fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec2fTypes>, MappedModel<ExtVec2fTypes> > > >()
+
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec1dTypes>, MappedModel<Vec1dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec1fTypes>, MappedModel<Vec1dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec1dTypes>, MappedModel<Vec1fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec1fTypes>, MappedModel<Vec1fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec1dTypes>, MappedModel<ExtVec1dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec1fTypes>, MappedModel<ExtVec1dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec1dTypes>, MappedModel<ExtVec1fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec1fTypes>, MappedModel<ExtVec1fTypes> > > >()
+
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6fTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec6dTypes>, MappedModel<Vec6dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<Vec6dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec6dTypes>, MappedModel<Vec6fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<Vec6fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec6dTypes>, MappedModel<ExtVec6dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<ExtVec6dTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec6dTypes>, MappedModel<ExtVec6fTypes> > > >()
+// .add< IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<ExtVec6fTypes> > > >()
+
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > >()
+
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > > >()
         ;
 
 
@@ -78,6 +124,73 @@ template class IdentityMapping< Mapping< MechanicalState<Vec3dTypes>, MappedMode
 template class IdentityMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
 template class IdentityMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
 template class IdentityMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
+
+
+// Mech -> Mech
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2dTypes> > >;
+
+// // Mech -> Mapped
+// template class IdentityMapping< Mapping< MechanicalState<Vec2dTypes>, MappedModel<Vec2dTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec2fTypes>, MappedModel<Vec2fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec2dTypes>, MappedModel<Vec2fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec2fTypes>, MappedModel<Vec2dTypes> > >;
+//
+// // Mech -> ExtMapped
+// template class IdentityMapping< Mapping< MechanicalState<Vec2dTypes>, MappedModel<ExtVec2dTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec2fTypes>, MappedModel<ExtVec2fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec2dTypes>, MappedModel<ExtVec2fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec2fTypes>, MappedModel<ExtVec2dTypes> > >;
+
+
+// Mech -> Mech
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > >;
+
+// // Mech -> Mapped
+// template class IdentityMapping< Mapping< MechanicalState<Vec1dTypes>, MappedModel<Vec1dTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec1fTypes>, MappedModel<Vec1fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec1dTypes>, MappedModel<Vec1fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec1fTypes>, MappedModel<Vec1dTypes> > >;
+//
+// // Mech -> ExtMapped
+// template class IdentityMapping< Mapping< MechanicalState<Vec1dTypes>, MappedModel<ExtVec1dTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec1fTypes>, MappedModel<ExtVec1fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec1dTypes>, MappedModel<ExtVec1fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec1fTypes>, MappedModel<ExtVec1dTypes> > >;
+
+
+// Mech -> Mech
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6fTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6dTypes> > >;
+
+// // Mech -> Mapped
+// template class IdentityMapping< Mapping< MechanicalState<Vec6dTypes>, MappedModel<Vec6dTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<Vec6fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec6dTypes>, MappedModel<Vec6fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<Vec6dTypes> > >;
+//
+// // Mech -> ExtMapped
+// template class IdentityMapping< Mapping< MechanicalState<Vec6dTypes>, MappedModel<ExtVec6dTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<ExtVec6fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec6dTypes>, MappedModel<ExtVec6fTypes> > >;
+// template class IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<ExtVec6dTypes> > >;
+
+
+// Mech -> Mech
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
+
+
+// Mech -> Mech
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > >;
 
 } // namespace mapping
 

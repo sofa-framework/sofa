@@ -76,14 +76,14 @@ public:
 \param m mass of the body
 \param x position of the body in the moving coordinate system
 \param v velocity of the body in the moving coordinate system
-This default implementation is for particles. Rigid bodies will be handled in a template specialization.
+This default implementation returns no inertia.
 */
 template<class Coord, class Deriv, class Vec, class M, class SV>
-Deriv inertiaForce( const SV& sv, const Vec& a, const M& m, const Coord& x, const Deriv& v )
+Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Coord& /*x*/, const Deriv& /*v*/ )
 {
-    const Deriv& omega=sv.getAngularVelocity();
-    //std::cerr<<"inertiaForce, sv = "<<sv<<", omega ="<<omega<<", a = "<<a<<", m= "<<m<<", x= "<<x<<", v= "<<v<<std::endl;
-    return -( a + omega.cross( omega.cross(x) + v*2 ))*m;
+    return Deriv();
+    //const Deriv& omega=sv.getAngularVelocity();
+    //return -( a + omega.cross( omega.cross(x) + v*2 ))*m;
 }
 
 } // namespace behavior

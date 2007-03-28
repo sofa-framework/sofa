@@ -23,8 +23,6 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/component/MechanicalObject.inl>
 
@@ -43,59 +41,24 @@ using namespace defaulttype;
 
 SOFA_DECL_CLASS(MechanicalObject)
 
-int MechanicalObjectVec3fClass = core::RegisterObject("mechanical state vectors")
+int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
         .add< MechanicalObject<Vec3dTypes> >(true) // default template
         .add< MechanicalObject<Vec3fTypes> >()
-        .add< MechanicalObject<RigidTypes> >()
-        .add< MechanicalObject<LaparoscopicRigidTypes> >()
+        .add< MechanicalObject<Rigid3Types> >()
+        .add< MechanicalObject<LaparoscopicRigid3Types> >()
+        .add< MechanicalObject<Vec2dTypes> >()
+        .add< MechanicalObject<Vec2fTypes> >()
+        .add< MechanicalObject<Rigid2Types> >()
+        .add< MechanicalObject<Vec1dTypes> >()
+        .add< MechanicalObject<Vec1fTypes> >()
+        .add< MechanicalObject<Vec6dTypes> >()
+        .add< MechanicalObject<Vec6fTypes> >()
         ;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
 
-template <>
-void MechanicalObject<defaulttype::Vec3dTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
-{
-    const VecCoord& x = *getX();
-    for( unsigned i=0; i<x.size(); ++i )
-    {
-        if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax )
-        {
-            indices.push_back(i);
-        }
-    }
-}
-
-template <>
-void MechanicalObject<defaulttype::Vec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
-{
-    const VecCoord& x = *getX();
-    for( unsigned i=0; i<x.size(); ++i )
-    {
-        if( x[i][0] >= xmin && x[i][0] <= xmax && x[i][1] >= ymin && x[i][1] <= ymax && x[i][2] >= zmin && x[i][2] <= zmax )
-        {
-            indices.push_back(i);
-        }
-    }
-}
-
-// overload for rigid bodies: use the center
 template<>
-void MechanicalObject<defaulttype::RigidTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
-{
-    const VecCoord& x = *getX();
-    for( unsigned i=0; i<x.size(); ++i )
-    {
-        if( x[i].getCenter()[0] >= xmin && x[i].getCenter()[0] <= xmax && x[i].getCenter()[1] >= ymin && x[i].getCenter()[1] <= ymax && x[i].getCenter()[2] >= zmin && x[i].getCenter()[2] <= zmax )
-        {
-            indices.push_back(i);
-        }
-    }
-}
-
-
-
-template<>
-void MechanicalObject<defaulttype::RigidTypes>::getCompliance (double dt, double**W, double * /*dfree*/, int &numContact)
+void MechanicalObject<defaulttype::Rigid3Types>::getCompliance (double dt, double**W, double * /*dfree*/, int &numContact)
 {
     // const VecDeriv& v = *getVfree();
     const VecConst& contacts = *getC();
@@ -109,11 +72,12 @@ void MechanicalObject<defaulttype::RigidTypes>::getCompliance (double dt, double
     {
         core::componentmodel::behavior::BaseMass*_m = node->mass;
         component::mass::UniformMass<defaulttype::RigidTypes, defaulttype::RigidMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::RigidTypes, defaulttype::RigidMass>*> (_m);
-        massValue = 	&( m->getMass().getValue() );
+        massValue = 	&( m->getMass() );
     }
     else
     {
-        massValue = new sofa::defaulttype::RigidMass();
+        static sofa::defaulttype::RigidMass defaultMass;
+        massValue = &defaultMass;
         printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
     }
 
@@ -161,7 +125,7 @@ void MechanicalObject<defaulttype::RigidTypes>::getCompliance (double dt, double
 }
 
 template<>
-void MechanicalObject<defaulttype::RigidTypes>::applyContactForce(double *f)
+void MechanicalObject<defaulttype::Rigid3Types>::applyContactForce(double *f)
 {
     VecDeriv& force = *this->externalForces;
     const VecConst& contacts = *getC();
@@ -191,7 +155,7 @@ void MechanicalObject<defaulttype::RigidTypes>::applyContactForce(double *f)
 
 
 template<>
-void MechanicalObject<defaulttype::RigidTypes>::resetContactForce()
+void MechanicalObject<defaulttype::Rigid3Types>::resetContactForce()
 {
     VecDeriv& force = *this->externalForces;
     for( unsigned i=0; i<force.size(); ++i )
@@ -204,8 +168,13 @@ void MechanicalObject<defaulttype::RigidTypes>::resetContactForce()
 
 template class MechanicalObject<defaulttype::Vec3fTypes>;
 template class MechanicalObject<defaulttype::Vec3dTypes>;
-template class MechanicalObject<defaulttype::RigidTypes>;
-template class MechanicalObject<defaulttype::LaparoscopicRigidTypes>;
+template class MechanicalObject<defaulttype::Vec2fTypes>;
+template class MechanicalObject<defaulttype::Vec2dTypes>;
+template class MechanicalObject<defaulttype::Rigid3dTypes>;
+template class MechanicalObject<defaulttype::Rigid3fTypes>;
+template class MechanicalObject<defaulttype::Rigid2dTypes>;
+template class MechanicalObject<defaulttype::Rigid2fTypes>;
+template class MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
 
 } // namespace component
 

@@ -47,24 +47,9 @@ namespace mass
 using namespace sofa::defaulttype;
 
 
-
-//Specialization for rigids
-template <>
-void UniformMass<RigidTypes, RigidMass>::draw();
-
-template <>
-double UniformMass<RigidTypes,RigidMass>::getPotentialEnergy( const RigidTypes::VecCoord& x );
-
-
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-    : totalMass( dataField(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
-{}
-
-
-template <class DataTypes, class MassType>
-UniformMass<DataTypes, MassType>::UniformMass(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate)
-    : core::componentmodel::behavior::Mass<DataTypes>(mstate)
+    : mass( dataField(&mass, MassType(1.0f), "mass", "Mass of each particle") )
     , totalMass( dataField(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
 {}
 
@@ -75,7 +60,7 @@ UniformMass<DataTypes, MassType>::~UniformMass()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::setMass(const MassType& m)
 {
-    this->mass = m;
+    this->mass.setValue(m);
 }
 
 template <class DataTypes, class MassType>
@@ -90,7 +75,9 @@ void UniformMass<DataTypes, MassType>::init()
     this->core::componentmodel::behavior::Mass<DataTypes>::init();
     if (this->totalMass.getValue()>0 && this->mstate!=NULL)
     {
-        this->mass = (MassType)((typename DataTypes::Real)this->totalMass.getValue() / this->mstate->getX()->size());
+        MassType* m = this->mass.beginEdit();
+        *m = ((typename DataTypes::Real)this->totalMass.getValue() / this->mstate->getX()->size());
+        this->mass.endEdit();
     }
 }
 
@@ -222,15 +209,43 @@ template<class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     Inherited::parse(arg);
+    /*
     if (arg->getAttribute("mass"))
-    {
+      {
         this->setMass((MassType)atof(arg->getAttribute("mass")));
-    }
-    if (arg->getAttribute("totalmass"))
-    {
+      }
+      if (arg->getAttribute("totalmass"))
+      {
         this->setTotalMass(atof(arg->getAttribute("totalmass")));
-    }
+      }
+    */
 }
+
+
+//Specialization for rigids
+
+template<>
+void UniformMass<Rigid3dTypes, Rigid3dMass>::parse(core::objectmodel::BaseObjectDescription* arg);
+template<>
+void UniformMass<Rigid3fTypes, Rigid3fMass>::parse(core::objectmodel::BaseObjectDescription* arg);
+
+template <>
+void UniformMass<Rigid3dTypes, Rigid3dMass>::draw();
+template <>
+void UniformMass<Rigid3fTypes, Rigid3fMass>::draw();
+template <>
+void UniformMass<Rigid2dTypes, Rigid2dMass>::draw();
+template <>
+void UniformMass<Rigid2fTypes, Rigid2fMass>::draw();
+
+template <>
+double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
+template <>
+double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
+template <>
+double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
+template <>
+double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
 
 
 } // namespace mass

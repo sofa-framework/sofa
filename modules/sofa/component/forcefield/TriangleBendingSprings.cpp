@@ -50,6 +50,8 @@ using namespace sofa::defaulttype;
 
 template class TriangleBendingSprings<Vec3fTypes>;
 template class TriangleBendingSprings<Vec3dTypes>;
+template class TriangleBendingSprings<Vec2fTypes>;
+template class TriangleBendingSprings<Vec2dTypes>;
 
 
 SOFA_DECL_CLASS(TriangleBendingSprings)
@@ -58,6 +60,8 @@ SOFA_DECL_CLASS(TriangleBendingSprings)
 int TriangleBendingSpringsClass = core::RegisterObject("Springs added to a traingular mesh to prevent bending")
         .add< TriangleBendingSprings<Vec3dTypes> >()
         .add< TriangleBendingSprings<Vec3fTypes> >()
+        .add< TriangleBendingSprings<Vec2dTypes> >()
+        .add< TriangleBendingSprings<Vec2fTypes> >()
         ;
 
 } // namespace forcefield

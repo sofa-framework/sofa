@@ -62,7 +62,7 @@ int main(int argc, char** argv)
     (*particle->getV())[0] = Vec3(0,0,0);
 
     // Its properties, i.e, a simple mass node
-    sofa::component::mass::UniformMass<MyTypes,double>* mass = new sofa::component::mass::UniformMass<MyTypes,double>(particle);
+    sofa::component::mass::UniformMass<MyTypes,double>* mass = new sofa::component::mass::UniformMass<MyTypes,double>;
     mass->setName("mass");
     particule_node->addObject(mass);
     mass->setMass( 1 );

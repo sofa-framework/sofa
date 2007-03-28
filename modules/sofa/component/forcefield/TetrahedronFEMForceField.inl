@@ -329,9 +329,8 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x)
 {
-    Real h=1;
     v.resize(x.size());
-    //if(_assembling) applyStiffnessAssembled(v,h,x);
+    //if(_assembling) applyStiffnessAssembled(v,x);
     //else
     {
         unsigned int i=0;
@@ -349,7 +348,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
                 Index c = (*it)[2];
                 Index d = (*it)[3];
 
-                applyStiffnessSmall( v,h,x, i, a,b,c,d );
+                applyStiffnessSmall( v,x, i, a,b,c,d );
             }
             break;
         }
@@ -363,7 +362,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
                 Index c = (*it)[2];
                 Index d = (*it)[3];
 
-                applyStiffnessLarge( v,h,x, i, a,b,c,d );
+                applyStiffnessLarge( v,x, i, a,b,c,d );
             }
             break;
         }
@@ -377,7 +376,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
                 Index c = (*it)[2];
                 Index d = (*it)[3];
 
-                applyStiffnessPolar( v,h,x, i, a,b,c,d );
+                applyStiffnessPolar( v,x, i, a,b,c,d );
             }
             break;
         }
@@ -397,7 +396,7 @@ double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 
 /*
 template <typename V, typename R, typename E>
-void TetrahedronFEMForceField<V,R,E>::applyStiffnessAssembled( Vector& v, Real h, const Vector& x )
+void TetrahedronFEMForceField<V,R,E>::applyStiffnessAssembled( Vector& v const Vector& x )
 {
 	for(unsigned int i=0;i<v.size();++i)
 	{
@@ -411,7 +410,7 @@ void TetrahedronFEMForceField<V,R,E>::applyStiffnessAssembled( Vector& v, Real h
 				int col = (*it).first;
 				val += ( (*it).second * x[col/3][col%3] );
 			}
-			v[i][k] += (-h*val);
+			v[i][k] += (-val);
 		}
 	}
 }
@@ -793,7 +792,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateDampingSmall( Vector& /*f*/,
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, Real h, const Vector& x, int i, Index a, Index b, Index c, Index d )
+void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
 {
     Displacement X;
 
@@ -816,10 +815,10 @@ void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, Real h
     Displacement F;
     computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i] );
 
-    f[a] += Deriv( -h*F[0], -h*F[1],  -h*F[2] );
-    f[b] += Deriv( -h*F[3], -h*F[4],  -h*F[5] );
-    f[c] += Deriv( -h*F[6], -h*F[7],  -h*F[8] );
-    f[d] += Deriv( -h*F[9], -h*F[10], -h*F[11] );
+    f[a] += Deriv( -F[0], -F[1],  -F[2] );
+    f[b] += Deriv( -F[3], -F[4],  -F[5] );
+    f[c] += Deriv( -F[6], -F[7],  -F[8] );
+    f[d] += Deriv( -F[9], -F[10], -F[11] );
 }
 
 ////////////// large displacements method
@@ -1025,7 +1024,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateDampingLarge( Vector& /*f*/,
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, Real h, const Vector& x, int i, Index a, Index b, Index c, Index d )
+void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
 {
     Transformation R_0_2;
     R_0_2.transpose(_rotations[i]);
@@ -1062,10 +1061,10 @@ void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, Real h
 
     //cerr<<"F : "<<F<<endl;
 
-    f[a] += _rotations[i] * Deriv( -h*F[0], -h*F[1],  -h*F[2] );
-    f[b] += _rotations[i] * Deriv( -h*F[3], -h*F[4],  -h*F[5] );
-    f[c] += _rotations[i] * Deriv( -h*F[6], -h*F[7],  -h*F[8] );
-    f[d] += _rotations[i] * Deriv( -h*F[9], -h*F[10], -h*F[11] );
+    f[a] += _rotations[i] * Deriv( -F[0], -F[1],  -F[2] );
+    f[b] += _rotations[i] * Deriv( -F[3], -F[4],  -F[5] );
+    f[c] += _rotations[i] * Deriv( -F[6], -F[7],  -F[8] );
+    f[d] += _rotations[i] * Deriv( -F[9], -F[10], -F[11] );
 }
 
 ////////////// polar decomposition method
@@ -1152,7 +1151,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, Real h, const Vector& x, int i, Index a, Index b, Index c, Index d )
+void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
 {
     Transformation R_0_2;
     R_0_2.transpose( _rotations[i] );

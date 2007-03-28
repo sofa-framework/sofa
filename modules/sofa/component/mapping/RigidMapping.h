@@ -54,21 +54,14 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename In::SparseDeriv InSparseDeriv;
     typedef typename Coord::value_type Real;
-
-    class Mat3 : public helper::fixed_array<Deriv,3>
-    {
-    public:
-        Coord operator*(const Coord& v) const
-        {
-            return Coord((*this)[0]*v,(*this)[1]*v,(*this)[2]*v);
-        }
-    };
+    enum { N=Coord::static_size };
+    typedef defaulttype::Mat<N,N,Real> Mat;
 
 protected:
     std::vector<Coord> points;
     Coord translation;
-    Real orientation[4];
-    Mat3 rotation;
+    //Real orientation[4];
+    Mat rotation;
     std::vector<Coord> rotatedPoints;
     class Loader;
     void load(const char* filename);

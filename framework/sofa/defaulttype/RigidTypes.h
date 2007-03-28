@@ -42,13 +42,25 @@ namespace defaulttype
 
 using sofa::helper::vector;
 
-/** Degrees of freedom of rigid bodies. Orientations are modeled using quaternions.
+template<int N, typename real>
+class StdRigidTypes;
+
+template<int N, typename real>
+class StdRigidMass;
+
+//=============================================================================
+// 3D Rigids
+//=============================================================================
+
+/** Degrees of freedom of 3D rigid bodies. Orientations are modeled using quaternions.
 */
-class RigidTypes
+template<typename real>
+class StdRigidTypes<3, real>
 {
 public:
-    typedef Vec3d Vec3;
-    typedef Vec3::value_type Real;
+    typedef real Real;
+    typedef Vec<3,Real> Vec3;
+    typedef Quater<Real> Quat;
 
     class Deriv
     {
@@ -96,7 +108,7 @@ public:
             return Deriv(-vCenter, -vOrientation);
         }
 
-        /// dot product
+        /// dot product, mostly used to compute residuals as sqrt(x*x)
         double operator*(const Deriv& a) const
         {
             return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]+vCenter[2]*a.vCenter[2]
@@ -108,11 +120,6 @@ public:
         Vec3& getVOrientation (void) { return vOrientation; }
         const Vec3& getVCenter (void) const { return vCenter; }
         const Vec3& getVOrientation (void) const { return vOrientation; }
-        /*		inline friend std::ostream& operator << (std::ostream& out, const Deriv& v ){
-        		    out<<"vCenter = "<<v.getVCenter();
-        		    out<<", vOrientation = "<<v.getVOrientation();
-        		    return out;
-        		}*/
         /// write to an output stream
         inline friend std::ostream& operator << ( std::ostream& out, const Deriv& v )
         {
@@ -163,7 +170,7 @@ public:
 
         void operator +=(const Coord& a)
         {
-            std::cout << "+="<<std::endl;
+            //std::cout << "+="<<std::endl;
             center += a.getCenter();
             //orientation += a.getOrientation();
             //orientation.normalize();
@@ -171,7 +178,7 @@ public:
 
         void operator*=(double a)
         {
-            std::cout << "*="<<std::endl;
+            //std::cout << "*="<<std::endl;
             center *= a;
             //orientation *= a;
         }
@@ -183,7 +190,7 @@ public:
             return r;
         }
 
-        /// dot product (FF: WHAT????  )
+        /// dot product, mostly used to compute residuals as sqrt(x*x)
         double operator*(const Coord& a) const
         {
             return center[0]*a.center[0]+center[1]*a.center[1]+center[2]*a.center[2]
@@ -195,11 +202,6 @@ public:
         Quat& getOrientation () { return orientation; }
         const Vec3& getCenter () const { return center; }
         const Quat& getOrientation () const { return orientation; }
-        /*                inline friend std::ostream& operator << (std::ostream& out, const Coord& c ){
-                            out<<"translation = "<<c.getCenter();
-                            out<<", rotation = "<<c.getOrientation();
-                            return out;
-                        }*/
 
         static Coord identity()
         {
@@ -221,6 +223,12 @@ public:
             r.center = center + orientation.rotate( c.center );
             r.orientation = orientation * c.getOrientation();
             return r;
+        }
+
+        template<class Mat>
+        void writeRotationMatrix( Mat& m) const
+        {
+            orientation.toMatrix(m);
         }
 
         /// Write the OpenGL transformation matrix
@@ -275,9 +283,9 @@ public:
 
     static void set(Coord& c, double x, double y, double z)
     {
-        c.getCenter()[0] = x;
-        c.getCenter()[1] = y;
-        c.getCenter()[2] = z;
+        c.getCenter()[0] = (Real)x;
+        c.getCenter()[1] = (Real)y;
+        c.getCenter()[2] = (Real)z;
     }
 
     static void get(double& x, double& y, double& z, const Coord& c)
@@ -289,16 +297,16 @@ public:
 
     static void add(Coord& c, double x, double y, double z)
     {
-        c.getCenter()[0] += x;
-        c.getCenter()[1] += y;
-        c.getCenter()[2] += z;
+        c.getCenter()[0] += (Real)x;
+        c.getCenter()[1] += (Real)y;
+        c.getCenter()[2] += (Real)z;
     }
 
     static void set(Deriv& c, double x, double y, double z)
     {
-        c.getVCenter()[0] = x;
-        c.getVCenter()[1] = y;
-        c.getVCenter()[2] = z;
+        c.getVCenter()[0] = (Real)x;
+        c.getVCenter()[1] = (Real)y;
+        c.getVCenter()[2] = (Real)z;
     }
 
     static void get(double& x, double& y, double& z, const Deriv& c)
@@ -310,30 +318,35 @@ public:
 
     static void add(Deriv& c, double x, double y, double z)
     {
-        c.getVCenter()[0] += x;
-        c.getVCenter()[1] += y;
-        c.getVCenter()[2] += z;
+        c.getVCenter()[0] += (Real)x;
+        c.getVCenter()[1] += (Real)y;
+        c.getVCenter()[2] += (Real)z;
     }
 
-    static const char* Name()
-    {
-        return "Rigid";
-    }
+    static const char* Name();
 };
 
-class RigidMass
+template<typename real>
+class StdRigidMass<3, real>
 {
 public:
-    double mass,volume;
-    Mat3x3d inertiaMatrix;	      // Inertia matrix of the object
-    Mat3x3d inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
-    Mat3x3d invInertiaMatrix;	  // inverse of inertiaMatrix
-    Mat3x3d invInertiaMassMatrix; // inverse of inertiaMassMatrix
-    RigidMass(double m=1)
+    typedef real Real;
+    typedef Mat<3,3,Real> Mat3x3;
+    Real mass,volume;
+    Mat3x3 inertiaMatrix;	      // Inertia matrix of the object
+    Mat3x3 inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
+    Mat3x3 invInertiaMatrix;	  // inverse of inertiaMatrix
+    Mat3x3 invInertiaMassMatrix; // inverse of inertiaMassMatrix
+    StdRigidMass(Real m=1)
     {
         mass = m;
         volume = 1;
         inertiaMatrix.identity();
+        recalc();
+    }
+    void operator=(Real m)
+    {
+        mass = m;
         recalc();
     }
     void recalc()
@@ -342,14 +355,15 @@ public:
         invInertiaMatrix.invert(inertiaMatrix);
         invInertiaMassMatrix.invert(inertiaMassMatrix);
     }
-    inline friend std::ostream& operator << (std::ostream& out, const RigidMass& m )
+
+    inline friend std::ostream& operator << (std::ostream& out, const StdRigidMass<3, real>& m )
     {
-        out<<"mass = "<<m.mass;
-        out<<", volume = "<<m.volume;
-        out<<", inertia = "<<m.inertiaMatrix;
+        out<<m.mass;
+        out<<" "<<m.volume;
+        out<<" "<<m.inertiaMatrix;
         return out;
     }
-    inline friend std::istream& operator >> (std::istream& in, RigidMass& m )
+    inline friend std::istream& operator >> (std::istream& in, StdRigidMass<3, real>& m )
     {
         in>>m.mass;
         in>>m.volume;
@@ -358,37 +372,406 @@ public:
     }
 };
 
-
-
-/// Specialization for potential energy
-// inline RigidTypes::Deriv operator*( const Vec3d& g, const RigidMass& m)
-// {
-//     return RigidTypes::Deriv( Vec3d(0,0,0), g * m.mass );
-// }
-
-
-inline RigidTypes::Deriv operator*(const RigidTypes::Deriv& d, const RigidMass& m)
+template<int N, typename real>
+inline typename StdRigidTypes<N,real>::Deriv operator*(const typename StdRigidTypes<N,real>::Deriv& d, const StdRigidMass<N,real>& m)
 {
-    RigidTypes::Deriv res;
+    typename StdRigidTypes<N,real>::Deriv res;
     res.getVCenter() = d.getVCenter() * m.mass;
     res.getVOrientation() = m.inertiaMassMatrix * d.getVOrientation();
     return res;
 }
 
-inline RigidTypes::Deriv operator/(const RigidTypes::Deriv& d, const RigidMass& m)
+template<int N, typename real>
+inline typename StdRigidTypes<N, real>::Deriv operator/(const typename StdRigidTypes<N, real>::Deriv& d, const StdRigidMass<N, real>& m)
 {
-    RigidTypes::Deriv res;
+    typename StdRigidTypes<N, real>::Deriv res;
     res.getVCenter() = d.getVCenter() / m.mass;
     res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
     return res;
 }
 
+
+typedef StdRigidTypes<3,double> Rigid3dTypes;
+typedef StdRigidTypes<3,float> Rigid3fTypes;
+typedef Rigid3dTypes Rigid3Types;
+typedef Rigid3Types RigidTypes;
+
+typedef StdRigidMass<3,double> Rigid3dMass;
+typedef StdRigidMass<3,float> Rigid3fMass;
+typedef Rigid3dMass Rigid3Mass;
+typedef Rigid3Mass RigidMass;
+
+/// Note: Many scenes use Rigid as template for 3D double-precision rigid type. Changing it to Rigid3d would break backward compatibility.
+template<> inline const char* Rigid3dTypes::Name() { return "Rigid"; }
+template<> inline const char* Rigid3fTypes::Name() { return "Rigid3f"; }
+
+
+//=============================================================================
+// 2D Rigids
+//=============================================================================
+
+/** Degrees of freedom of 2D rigid bodies.
+*/
+template<typename real>
+class StdRigidTypes<2, real>
+{
+public:
+    typedef real Real;
+    typedef Vec<2,real> Vec2;
+
+
+    static const char* Name();
+
+    class Deriv
+    {
+    private:
+        Vec2 vCenter;
+        Real vOrientation;
+    public:
+        friend class Coord;
+
+        Deriv (const Vec2 &velCenter, const Real &velOrient)
+            : vCenter(velCenter), vOrientation(velOrient) {}
+        Deriv () { clear(); }
+
+        void clear() { vCenter.clear(); vOrientation=0; }
+
+        void operator +=(const Deriv& a)
+        {
+            vCenter += a.vCenter;
+            vOrientation += a.vOrientation;
+        }
+
+        Deriv operator + (const Deriv& a) const
+        {
+            Deriv d;
+            d.vCenter = vCenter + a.vCenter;
+            d.vOrientation = vOrientation + a.vOrientation;
+            return d;
+        }
+
+        void operator*=(double a)
+        {
+            vCenter *= (Real)a;
+            vOrientation *= (Real)a;
+        }
+
+        Deriv operator*(double a) const
+        {
+            Deriv r = *this;
+            r *= (Real)a;
+            return r;
+        }
+
+        Deriv operator - () const
+        {
+            return Deriv(-vCenter, -vOrientation);
+        }
+
+        /// dot product, mostly used to compute residuals as sqrt(x*x)
+        double operator*(const Deriv& a) const
+        {
+            return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]
+                    +vOrientation*a.vOrientation;
+        }
+
+        Vec2& getVCenter (void) { return vCenter; }
+        Real& getVOrientation (void) { return vOrientation; }
+        const Vec2& getVCenter (void) const { return vCenter; }
+        const Real& getVOrientation (void) const { return vOrientation; }
+        /// write to an output stream
+        inline friend std::ostream& operator << ( std::ostream& out, const Deriv& v )
+        {
+            out<<v.vCenter<<" "<<v.vOrientation;
+            return out;
+        }
+        /// read from an input stream
+        inline friend std::istream& operator >> ( std::istream& in, Deriv& v )
+        {
+            in>>v.vCenter>>v.vOrientation;
+            return in;
+        }
+    };
+
+    class Coord
+    {
+    private:
+        Vec2 center;
+        Real orientation;
+    public:
+        Coord (const Vec2 &posCenter, const Real &orient)
+            : center(posCenter), orientation(orient) {}
+        Coord () { clear(); }
+
+        void clear() { center.clear(); orientation = 0; }
+
+        void operator +=(const Deriv& a)
+        {
+            center += a.getVCenter();
+            orientation += a.getVOrientation();
+        }
+
+        Coord operator + (const Deriv& a) const
+        {
+            Coord c = *this;
+            c.center += a.getVCenter();
+            c.orientation += a.getVOrientation();
+            return c;
+        }
+
+        void operator +=(const Coord& a)
+        {
+            std::cout << "+="<<std::endl;
+            center += a.getCenter();
+            orientation += a.getOrientation();
+        }
+
+        void operator*=(double a)
+        {
+            std::cout << "*="<<std::endl;
+            center *= (Real)a;
+            orientation *= (Real)a;
+        }
+
+        Coord operator*(double a) const
+        {
+            Coord r = *this;
+            r *= (Real)a;
+            return r;
+        }
+
+        /// dot product, mostly used to compute residuals as sqrt(x*x)
+        double operator*(const Coord& a) const
+        {
+            return center[0]*a.center[0]+center[1]*a.center[1]
+                    +orientation*a.orientation;
+        }
+
+        Vec2& getCenter () { return center; }
+        Real& getOrientation () { return orientation; }
+        const Vec2& getCenter () const { return center; }
+        const Real& getOrientation () const { return orientation; }
+
+        Vec2 rotate(const Vec2& v) const
+        {
+            Real s = sin(orientation);
+            Real c = cos(orientation);
+            return Vec2(c*v[0]-s*v[1],
+                    s*v[0]+c*v[1]);
+        }
+        Vec2 inverseRotate(const Vec2& v) const
+        {
+            Real s = sin(-orientation);
+            Real c = cos(-orientation);
+            return Vec2(c*v[0]-s*v[1],
+                    s*v[0]+c*v[1]);
+        }
+
+        static Coord identity()
+        {
+            Coord c;
+            return c;
+        }
+
+        /// Apply a transformation with respect to itself
+        void multRight( const Coord& c )
+        {
+            center += /*orientation.*/rotate(c.getCenter());
+            orientation = orientation * c.getOrientation();
+        }
+
+        /// compute the product with another frame on the right
+        Coord mult( const Coord& c ) const
+        {
+            Coord r;
+            r.center = center + /*orientation.*/rotate( c.center );
+            r.orientation = orientation * c.getOrientation();
+            return r;
+        }
+
+        template<class Mat>
+        void writeRotationMatrix( Mat& m) const
+        {
+            m[0][0] = cos(orientation); m[0][1] = -sin(orientation);
+            m[1][0] = sin(orientation); m[1][1] = cos(orientation);
+        }
+
+        /// Write the OpenGL transformation matrix
+        void writeOpenGlMatrix( float m[16] ) const
+        {
+            //orientation.writeOpenGlMatrix(m);
+            m[0] = cos(orientation);
+            m[1] = sin(orientation);
+            m[2] = 0;
+            m[3] = 0;
+            m[4] = -sin(orientation);
+            m[5] = cos(orientation);
+            m[6] = 0;
+            m[7] = 0;
+            m[8] = 0;
+            m[9] = 0;
+            m[10] = 1;
+            m[11] = 0;
+            m[12] = (float)center[0];
+            m[13] = (float)center[1];
+            m[14] = (float)center[2];
+            m[15] = 1;
+        }
+
+        /// compute the projection of a vector from the parent frame to the child
+        Vec2 vectorToChild( const Vec2& v ) const
+        {
+            return /*orientation.*/inverseRotate(v);
+        }
+
+        /// write to an output stream
+        inline friend std::ostream& operator << ( std::ostream& out, const Coord& v )
+        {
+            out<<v.center<<" "<<v.orientation;
+            return out;
+        }
+        /// read from an input stream
+        inline friend std::istream& operator >> ( std::istream& in, Coord& v )
+        {
+            in>>v.center>>v.orientation;
+            return in;
+        }
+    };
+
+    typedef vector<Coord> VecCoord;
+    typedef vector<Deriv> VecDeriv;
+
+
+    template <class T>
+    class SparseData
+    {
+    public:
+        SparseData(unsigned int _index, T& _data): index(_index), data(_data) {};
+        unsigned int index;
+        T data;
+    };
+
+    typedef SparseData<Coord> SparseCoord;
+    typedef SparseData<Deriv> SparseDeriv;
+
+    typedef vector<SparseCoord> SparseVecCoord;
+    typedef vector<SparseDeriv> SparseVecDeriv;
+
+    typedef	vector<SparseVecDeriv> VecConst;
+
+    static void set(Coord& c, double x, double y, double)
+    {
+        c.getCenter()[0] = (Real)x;
+        c.getCenter()[1] = (Real)y;
+    }
+
+    static void get(double& x, double& y, double& z, const Coord& c)
+    {
+        x = c.getCenter()[0];
+        y = c.getCenter()[1];
+        z = 0;
+    }
+
+    static void add(Coord& c, double x, double y, double)
+    {
+        c.getCenter()[0] += (Real)x;
+        c.getCenter()[1] += (Real)y;
+    }
+
+    static void set(Deriv& c, double x, double y, double)
+    {
+        c.getVCenter()[0] = (Real)x;
+        c.getVCenter()[1] = (Real)y;
+    }
+
+    static void get(double& x, double& y, double& z, const Deriv& c)
+    {
+        x = c.getVCenter()[0];
+        y = c.getVCenter()[1];
+        z = 0;
+    }
+
+    static void add(Deriv& c, double x, double y, double)
+    {
+        c.getVCenter()[0] += (Real)x;
+        c.getVCenter()[1] += (Real)y;
+    }
+
+};
+
+template<class real>
+class StdRigidMass<2, real>
+{
+public:
+    typedef real Real;
+    Real mass,volume;
+    Real inertiaMatrix;	      // Inertia matrix of the object
+    Real inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
+    Real invInertiaMatrix;	  // inverse of inertiaMatrix
+    Real invInertiaMassMatrix; // inverse of inertiaMassMatrix
+    StdRigidMass(Real m=1)
+    {
+        mass = m;
+        volume = 1;
+        inertiaMatrix = 1;
+        recalc();
+    }
+    void operator=(Real m)
+    {
+        mass = m;
+        recalc();
+    }
+    /// Mass for a circle
+    StdRigidMass(Real m, Real radius)
+    {
+        mass = m;
+        volume = radius*radius*M_PI;
+        inertiaMatrix = (radius*radius)/2;
+        recalc();
+    }
+    /// Mass for a rectangle
+    StdRigidMass(Real m, Real xwidth, Real ywidth)
+    {
+        mass = m;
+        volume = xwidth*xwidth + ywidth*ywidth;
+        inertiaMatrix = volume/12;
+        recalc();
+    }
+
+    void recalc()
+    {
+        inertiaMassMatrix = inertiaMatrix * mass;
+        invInertiaMatrix = 1/(inertiaMatrix);
+        invInertiaMassMatrix = 1/(inertiaMassMatrix);
+    }
+    inline friend std::ostream& operator << (std::ostream& out, const StdRigidMass<2,Real>& m )
+    {
+        out<<m.mass;
+        out<<" "<<m.volume;
+        out<<" "<<m.inertiaMatrix;
+        return out;
+    }
+    inline friend std::istream& operator >> (std::istream& in, StdRigidMass<2,Real>& m )
+    {
+        in>>m.mass;
+        in>>m.volume;
+        in>>m.inertiaMatrix;
+        return in;
+    }
+};
+
+typedef StdRigidTypes<2,double> Rigid2dTypes;
+typedef StdRigidTypes<2,float> Rigid2fTypes;
+typedef Rigid2dTypes Rigid2Types;
+
+typedef StdRigidMass<2,double> Rigid2dMass;
+typedef StdRigidMass<2,float> Rigid2fMass;
+typedef Rigid2dMass Rigid2Mass;
+
+template<> inline const char* Rigid2dTypes::Name() { return "Rigid2d"; }
+template<> inline const char* Rigid2fTypes::Name() { return "Rigid2f"; }
+
 } // namespace defaulttype
-
-
-//================================================================================================================
-// This is probably useless because the RigidObject actually contains its mass and computes its inertia forces itself:
-//================================================================================================================
 
 namespace core
 {
@@ -396,30 +779,68 @@ namespace componentmodel
 {
 namespace behavior
 {
-/// Specialization of the inertia force for defaulttype::RigidTypes
+
+/** Return the inertia force applied to a body referenced in a moving coordinate system.
+\param sv spatial velocity (omega, vorigin) of the coordinate system
+\param a acceleration of the origin of the coordinate system
+\param m mass of the body
+\param x position of the body in the moving coordinate system
+\param v velocity of the body in the moving coordinate system
+This default implementation returns no inertia.
+*/
+template<class Coord, class Deriv, class Vec, class M, class SV>
+Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Coord& /*x*/, const Deriv& /*v*/ );
+
+/// Specialization of the inertia force for defaulttype::Rigid3dTypes
 template <>
-inline defaulttype::RigidTypes::Deriv inertiaForce<
-defaulttype::RigidTypes::Coord,
-            defaulttype::RigidTypes::Deriv,
+inline defaulttype::StdRigidTypes<3, double>::Deriv inertiaForce<
+defaulttype::StdRigidTypes<3, double>::Coord,
+            defaulttype::StdRigidTypes<3, double>::Deriv,
             objectmodel::BaseContext::Vec3,
-            defaulttype::RigidMass,
+            defaulttype::StdRigidMass<3, double>,
             objectmodel::BaseContext::SpatialVector
             >
             (
                     const objectmodel::BaseContext::SpatialVector& vframe,
                     const objectmodel::BaseContext::Vec3& aframe,
-                    const defaulttype::RigidMass& mass,
-                    const defaulttype::RigidTypes::Coord& x,
-                    const defaulttype::RigidTypes::Deriv& v
+                    const defaulttype::StdRigidMass<3, double>& mass,
+                    const defaulttype::StdRigidTypes<3, double>::Coord& x,
+                    const defaulttype::StdRigidTypes<3, double>::Deriv& v
             )
 {
-    defaulttype::RigidTypes::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::RigidTypes::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+    defaulttype::StdRigidTypes<3, double>::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::StdRigidTypes<3, double>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
 
     finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return defaulttype::RigidTypes::Deriv( finertia, zero );
+    return defaulttype::StdRigidTypes<3, double>::Deriv( finertia, zero );
     /// \todo replace zero by Jomega.cross(omega)
 }
+
+/// Specialization of the inertia force for defaulttype::Rigid3fTypes
+template <>
+inline defaulttype::StdRigidTypes<3, float>::Deriv inertiaForce<
+defaulttype::StdRigidTypes<3, float>::Coord,
+            defaulttype::StdRigidTypes<3, float>::Deriv,
+            objectmodel::BaseContext::Vec3,
+            defaulttype::StdRigidMass<3, float>,
+            objectmodel::BaseContext::SpatialVector
+            >
+            (
+                    const objectmodel::BaseContext::SpatialVector& vframe,
+                    const objectmodel::BaseContext::Vec3& aframe,
+                    const defaulttype::StdRigidMass<3, float>& mass,
+                    const defaulttype::StdRigidTypes<3, float>::Coord& x,
+                    const defaulttype::StdRigidTypes<3, float>::Deriv& v
+            )
+{
+    defaulttype::StdRigidTypes<3, float>::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::StdRigidTypes<3, float>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+
+    finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
+    return defaulttype::StdRigidTypes<3, float>::Deriv( finertia, zero );
+    /// \todo replace zero by Jomega.cross(omega)
+}
+
 } // namespace behavoir
 
 } // namespace componentmodel

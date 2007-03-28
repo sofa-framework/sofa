@@ -1,0 +1,407 @@
+/*******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
+*                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
+*                                                                              *
+* This library is free software; you can redistribute it and/or modify it      *
+* under the terms of the GNU Lesser General Public License as published by the *
+* Free Software Foundation; either version 2.1 of the License, or (at your     *
+* option) any later version.                                                   *
+*                                                                              *
+* This library is distributed in the hope that it will be useful, but WITHOUT  *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
+* for more details.                                                            *
+*                                                                              *
+* You should have received a copy of the GNU Lesser General Public License     *
+* along with this library; if not, write to the Free Software Foundation,      *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
+*                                                                              *
+* Contact information: contact@sofa-framework.org                              *
+*                                                                              *
+* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
+* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
+* and F. Poyer                                                                 *
+*******************************************************************************/
+#ifndef SOFA_DEFAULTTYPE_VECTYPES_H
+#define SOFA_DEFAULTTYPE_VECTYPES_H
+
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/helper/vector.h>
+#include <iostream>
+
+
+
+namespace sofa
+{
+
+namespace defaulttype
+{
+
+using helper::vector;
+
+template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
+class StdVectorTypes
+{
+public:
+    typedef TCoord Coord;
+    typedef TDeriv Deriv;
+    typedef TReal Real;
+    typedef vector<Coord> VecCoord;
+    typedef vector<Deriv> VecDeriv;
+
+
+    template <class T>
+    class SparseData
+    {
+    public:
+        SparseData(unsigned int _index, const T& _data): index(_index), data(_data) {};
+        unsigned int index;
+        T data;
+    };
+
+    typedef SparseData<Coord> SparseCoord;
+    typedef SparseData<Deriv> SparseDeriv;
+
+    typedef vector<SparseCoord> SparseVecCoord;
+    typedef vector<SparseDeriv> SparseVecDeriv;
+
+    //! All the Constraints applied to a state Vector
+    typedef	vector<SparseVecDeriv> VecConst;
+
+    static void set(Coord& c, double x, double y, double z)
+    {
+
+        if (c.size() > 0)
+            c[0] = (typename Coord::value_type)x;
+        if (c.size() > 1)
+            c[1] = (typename Coord::value_type)y;
+        if (c.size() > 2)
+            c[2] = (typename Coord::value_type)z;
+    }
+
+    static void get(double& x, double& y, double& z, const Coord& c)
+    {
+        x = (c.size() > 0) ? (double) c[0] : 0.0;
+        y = (c.size() > 1) ? (double) c[1] : 0.0;
+        z = (c.size() > 2) ? (double) c[2] : 0.0;
+    }
+
+    static void add(Coord& c, double x, double y, double z)
+    {
+        if (c.size() > 0)
+            c[0] += (typename Coord::value_type)x;
+        if (c.size() > 1)
+            c[1] += (typename Coord::value_type)y;
+        if (c.size() > 2)
+            c[2] += (typename Coord::value_type)z;
+    }
+
+    static const char* Name();
+};
+
+template<class T>
+class ExtVector
+{
+public:
+    typedef T              value_type;
+    typedef unsigned int   size_type;
+
+protected:
+    value_type* data;
+    size_type   maxsize;
+    size_type   cursize;
+
+public:
+    ExtVector() : data(NULL), maxsize(0), cursize(0) {}
+    virtual ~ExtVector() {}
+    void setData(value_type* d, size_type s) { data=d; maxsize=s; cursize=s; }
+    value_type& operator[](size_type i) { return data[i]; }
+    const value_type& operator[](size_type i) const { return data[i]; }
+    size_type size() const { return cursize; }
+    bool empty() const { return cursize==0; }
+    virtual void resize(size_type size)
+    {
+        if (size <= maxsize)
+            cursize = size;
+        else
+        {
+            cursize = maxsize;
+            std::cerr << "Error: invalide resize request ("<<size<<">"<<maxsize<<") on external vector.\n";
+        }
+    }
+};
+
+template<class TCoord, class TDeriv, class TReal = typename TCoord::value_type>
+class ExtVectorTypes
+{
+public:
+    typedef TCoord Coord;
+    typedef TDeriv Deriv;
+    typedef TReal Real;
+    typedef ExtVector<Coord> VecCoord;
+    typedef ExtVector<Deriv> VecDeriv;
+
+    template <class T>
+    class SparseData
+    {
+    public:
+        SparseData(unsigned int _index, T& _data): index(_index), data(_data) {};
+        unsigned int index;
+        T data;
+    };
+
+    typedef SparseData<Coord> SparseCoord;
+    typedef SparseData<Deriv> SparseDeriv;
+
+    typedef vector<SparseCoord> SparseVecCoord;
+    typedef vector<SparseDeriv> SparseVecDeriv;
+
+    //! All the Constraints applied to a state Vector
+    typedef	vector<SparseVecDeriv> VecConst;
+
+
+    static void set(Coord& c, double x, double y, double z)
+    {
+
+        if (c.size() > 0)
+            c[0] = (typename Coord::value_type)x;
+        if (c.size() > 1)
+            c[1] = (typename Coord::value_type)y;
+        if (c.size() > 2)
+            c[2] = (typename Coord::value_type)z;
+    }
+
+    static void get(double& x, double& y, double& z, const Coord& c)
+    {
+        x = (c.size() > 0) ? (double) c[0] : 0.0;
+        y = (c.size() > 1) ? (double) c[1] : 0.0;
+        z = (c.size() > 2) ? (double) c[2] : 0.0;
+    }
+
+    static void add(Coord& c, double x, double y, double z)
+    {
+        if (c.size() > 0)
+            c[0] += (typename Coord::value_type)x;
+        if (c.size() > 1)
+            c[1] += (typename Coord::value_type)y;
+        if (c.size() > 2)
+            c[2] += (typename Coord::value_type)z;
+    }
+
+    static const char* Name();
+};
+
+//
+// 3D
+//
+
+/// 3D DOFs, double precision
+typedef StdVectorTypes<Vec3d,Vec3d,double> Vec3dTypes;
+/// 3D DOFs, single precision
+typedef StdVectorTypes<Vec3f,Vec3f,float> Vec3fTypes;
+/// 3D DOFs, double precision (default)
+typedef Vec3dTypes Vec3Types;
+
+template<> inline const char* Vec3dTypes::Name() { return "Vec3d"; }
+template<> inline const char* Vec3fTypes::Name() { return "Vec3f"; }
+
+/// 3D external DOFs, double precision
+typedef ExtVectorTypes<Vec3d,Vec3d,double> ExtVec3dTypes;
+/// 3D external DOFs, single precision
+typedef ExtVectorTypes<Vec3f,Vec3f,float> ExtVec3fTypes;
+/// 3D external DOFs, double precision (default)
+typedef ExtVec3dTypes ExtVec3Types;
+
+template<> inline const char* ExtVec3dTypes::Name() { return "ExtVec3d"; }
+template<> inline const char* ExtVec3fTypes::Name() { return "ExtVec3f"; }
+
+//
+// 2D
+//
+
+/// 2D DOFs, double precision
+typedef StdVectorTypes<Vec2d,Vec2d,double> Vec2dTypes;
+/// 2D DOFs, single precision
+typedef StdVectorTypes<Vec2f,Vec2f,float> Vec2fTypes;
+/// 2D DOFs, double precision (default)
+typedef Vec2dTypes Vec2Types;
+
+template<> inline const char* Vec2dTypes::Name() { return "Vec2d"; }
+template<> inline const char* Vec2fTypes::Name() { return "Vec2f"; }
+
+/// 2D external DOFs, double precision
+typedef ExtVectorTypes<Vec2d,Vec2d,double> ExtVec2dTypes;
+/// 2D external DOFs, single precision
+typedef ExtVectorTypes<Vec2f,Vec2f,float> ExtVec2fTypes;
+/// 2D external DOFs, double precision (default)
+typedef ExtVec2dTypes ExtVec2Types;
+
+template<> inline const char* ExtVec2dTypes::Name() { return "ExtVec2d"; }
+template<> inline const char* ExtVec2fTypes::Name() { return "ExtVec2f"; }
+
+//
+// 1D
+//
+
+/// 1D DOFs, double precision
+typedef StdVectorTypes<Vec1d,Vec1d,double> Vec1dTypes;
+/// 1D DOFs, single precision
+typedef StdVectorTypes<Vec1f,Vec1f,float> Vec1fTypes;
+/// 1D DOFs, double precision (default)
+typedef Vec1dTypes Vec1Types;
+
+template<> inline const char* Vec1dTypes::Name() { return "Vec1d"; }
+template<> inline const char* Vec1fTypes::Name() { return "Vec1f"; }
+
+/// 1D external DOFs, double precision
+typedef ExtVectorTypes<Vec1d,Vec1d,double> ExtVec1dTypes;
+/// 1D external DOFs, single precision
+typedef ExtVectorTypes<Vec1f,Vec1f,float> ExtVec1fTypes;
+/// 1D external DOFs, double precision (default)
+typedef ExtVec1dTypes ExtVec1Types;
+
+template<> inline const char* ExtVec1dTypes::Name() { return "ExtVec1d"; }
+template<> inline const char* ExtVec1fTypes::Name() { return "ExtVec1f"; }
+
+//
+// 6D (3 coordinates + 3 angles)
+//
+
+/// 6D DOFs, double precision
+typedef StdVectorTypes<Vec6d,Vec6d,double> Vec6dTypes;
+/// 6D DOFs, single precision
+typedef StdVectorTypes<Vec6f,Vec6f,float> Vec6fTypes;
+/// 6D DOFs, double precision (default)
+typedef Vec6dTypes Vec6Types;
+
+template<> inline const char* Vec6dTypes::Name() { return "Vec6d"; }
+template<> inline const char* Vec6fTypes::Name() { return "Vec6f"; }
+
+/// 6D external DOFs, double precision
+typedef ExtVectorTypes<Vec6d,Vec6d,double> ExtVec6dTypes;
+/// 6D external DOFs, single precision
+typedef ExtVectorTypes<Vec6f,Vec6f,float> ExtVec6fTypes;
+/// 6D external DOFs, double precision (default)
+typedef ExtVec6dTypes ExtVec6Types;
+
+template<> inline const char* ExtVec6dTypes::Name() { return "ExtVec6d"; }
+template<> inline const char* ExtVec6fTypes::Name() { return "ExtVec6f"; }
+
+} // namespace defaulttype
+
+namespace core
+{
+namespace componentmodel
+{
+namespace behavior
+{
+
+/** Return the inertia force applied to a body referenced in a moving coordinate system.
+\param sv spatial velocity (omega, vorigin) of the coordinate system
+\param a acceleration of the origin of the coordinate system
+\param m mass of the body
+\param x position of the body in the moving coordinate system
+\param v velocity of the body in the moving coordinate system
+This default implementation returns no inertia.
+*/
+template<class Coord, class Deriv, class Vec, class M, class SV>
+Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Coord& /*x*/, const Deriv& /*v*/ );
+
+/// Specialization of the inertia force for 3D particles
+template <>
+inline defaulttype::Vec<3, double> inertiaForce<
+defaulttype::Vec<3, double>,
+            defaulttype::Vec<3, double>,
+            objectmodel::BaseContext::Vec3,
+            double,
+            objectmodel::BaseContext::SpatialVector
+            >
+            (
+                    const objectmodel::BaseContext::SpatialVector& sv,
+                    const objectmodel::BaseContext::Vec3& a,
+                    const double& m,
+                    const defaulttype::Vec<3, double>& x,
+                    const defaulttype::Vec<3, double>& v
+            )
+{
+    const objectmodel::BaseContext::Vec3& omega=sv.getAngularVelocity();
+    //std::cerr<<"inertiaForce, sv = "<<sv<<", omega ="<<omega<<", a = "<<a<<", m= "<<m<<", x= "<<x<<", v= "<<v<<std::endl;
+    return -( a + omega.cross( omega.cross(x) + v*2 ))*m;
+}
+
+/// Specialization of the inertia force for 3D particles
+template <>
+inline defaulttype::Vec<3, float> inertiaForce<
+defaulttype::Vec<3, float>,
+            defaulttype::Vec<3, float>,
+            objectmodel::BaseContext::Vec3,
+            float,
+            objectmodel::BaseContext::SpatialVector
+            >
+            (
+                    const objectmodel::BaseContext::SpatialVector& sv,
+                    const objectmodel::BaseContext::Vec3& a,
+                    const float& m,
+                    const defaulttype::Vec<3, float>& x,
+                    const defaulttype::Vec<3, float>& v
+            )
+{
+    const objectmodel::BaseContext::Vec3& omega=sv.getAngularVelocity();
+    //std::cerr<<"inertiaForce, sv = "<<sv<<", omega ="<<omega<<", a = "<<a<<", m= "<<m<<", x= "<<x<<", v= "<<v<<std::endl;
+    return -( a + omega.cross( omega.cross(x) + v*2 ))*m;
+}
+
+/// Specialization of the inertia force for 2D particles
+template <>
+inline defaulttype::Vec<2, double> inertiaForce<
+defaulttype::Vec<2, double>,
+            defaulttype::Vec<2, double>,
+            objectmodel::BaseContext::Vec3,
+            double,
+            objectmodel::BaseContext::SpatialVector
+            >
+            (
+                    const objectmodel::BaseContext::SpatialVector& sv,
+                    const objectmodel::BaseContext::Vec3& a,
+                    const double& m,
+                    const defaulttype::Vec<2, double>& x,
+                    const defaulttype::Vec<2, double>& v
+            )
+{
+    double omega=(double)sv.getAngularVelocity()[2]; // z direction
+    defaulttype::Vec<2, double> a2( (double)a[0], (double)a[1] );
+    return -( a2 -( x*omega + v*2 )*omega )*m;
+}
+
+/// Specialization of the inertia force for 2D particles
+template <>
+inline defaulttype::Vec<2, float> inertiaForce<
+defaulttype::Vec<2, float>,
+            defaulttype::Vec<2, float>,
+            objectmodel::BaseContext::Vec3,
+            float,
+            objectmodel::BaseContext::SpatialVector
+            >
+            (
+                    const objectmodel::BaseContext::SpatialVector& sv,
+                    const objectmodel::BaseContext::Vec3& a,
+                    const float& m,
+                    const defaulttype::Vec<2, float>& x,
+                    const defaulttype::Vec<2, float>& v
+            )
+{
+    float omega=(float)sv.getAngularVelocity()[2]; // z direction
+    defaulttype::Vec<2, float> a2( (float)a[0], (float)a[1] );
+    return -( a2 -( x*omega + v*2 )*omega )*m;
+}
+
+} // namespace behavoir
+
+} // namespace componentmodel
+
+} // namespace core
+
+} // namespace sofa
+
+#endif

@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/component/interactionforcefield/RepulsiveSpringForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -41,11 +41,19 @@ SOFA_DECL_CLASS(RepulsiveSpringForceField)
 
 template class RepulsiveSpringForceField<Vec3dTypes>;
 template class RepulsiveSpringForceField<Vec3fTypes>;
+template class RepulsiveSpringForceField<Vec2dTypes>;
+template class RepulsiveSpringForceField<Vec2fTypes>;
+template class RepulsiveSpringForceField<Vec1dTypes>;
+template class RepulsiveSpringForceField<Vec1fTypes>;
 
 // Register in the Factory
 int RepulsiveSpringForceFieldClass = core::RegisterObject("Springs which only repell")
         .add< RepulsiveSpringForceField<Vec3dTypes> >()
         .add< RepulsiveSpringForceField<Vec3fTypes> >()
+        .add< RepulsiveSpringForceField<Vec2dTypes> >()
+        .add< RepulsiveSpringForceField<Vec2fTypes> >()
+        .add< RepulsiveSpringForceField<Vec1dTypes> >()
+        .add< RepulsiveSpringForceField<Vec1fTypes> >()
         ;
 
 } // namespace interactionforcefield

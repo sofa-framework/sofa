@@ -26,11 +26,14 @@
 #define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_INL
 
 #include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <string>
 
 
@@ -54,11 +57,15 @@ public:
     Loader(RigidMapping<BasicMapping>* dest) : dest(dest) {}
     virtual void addMass(double px, double py, double pz, double, double, double, double, double, bool, bool)
     {
-        dest->points.push_back(Coord((Real)px,(Real)py,(Real)pz));
+        Coord c;
+        Out::DataTypes::set(c,px,py,pz);
+        dest->points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
     virtual void addSphere(double px, double py, double pz, double)
     {
-        dest->points.push_back(Coord((Real)px,(Real)py,(Real)pz));
+        Coord c;
+        Out::DataTypes::set(c,px,py,pz);
+        dest->points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
 };
 
@@ -85,7 +92,9 @@ void RigidMapping<BasicMapping>::load(const char *filename)
         {
             points.resize(mesh->getVertices().size());
             for (unsigned int i=0; i<mesh->getVertices().size(); i++)
-                points[i] = (Coord)mesh->getVertices()[i];
+            {
+                Out::DataTypes::set(points[i], mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
+            }
             delete mesh;
         }
     }
@@ -108,23 +117,8 @@ void RigidMapping<BasicMapping>::init()
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    translation[0] = (Real)in[0].getCenter()[0];
-    translation[1] = (Real)in[0].getCenter()[1];
-    translation[2] = (Real)in[0].getCenter()[2];
-    Real* q = orientation;
-    q[0] = (Real)in[0].getOrientation()[0];
-    q[1] = (Real)in[0].getOrientation()[1];
-    q[2] = (Real)in[0].getOrientation()[2];
-    q[3] = (Real)in[0].getOrientation()[3];
-    rotation[0][0] =  (1.0f - 2.0f * (q[1] * q[1] + q[2] * q[2]));
-    rotation[0][1] =  (2.0f * (q[0] * q[1] - q[2] * q[3]));
-    rotation[0][2] =  (2.0f * (q[2] * q[0] + q[1] * q[3]));
-    rotation[1][0] =  (2.0f * (q[0] * q[1] + q[2] * q[3]));
-    rotation[1][1] =  (1.0f - 2.0f * (q[2] * q[2] + q[0] * q[0]));
-    rotation[1][2] =  (2.0f * (q[1] * q[2] - q[0] * q[3]));
-    rotation[2][0] =  (2.0f * (q[2] * q[0] - q[1] * q[3]));
-    rotation[2][1] =  (2.0f * (q[1] * q[2] + q[0] * q[3]));
-    rotation[2][2] =  (1.0f - 2.0f * (q[1] * q[1] + q[0] * q[0]));
+    translation = in[0].getCenter();
+    in[0].writeRotationMatrix(rotation);
 
     rotatedPoints.resize(points.size());
     out.resize(points.size());
@@ -140,12 +134,8 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     Deriv v,omega;
-    v[0] = (Real)in[0].getVCenter()[0];
-    v[1] = (Real)in[0].getVCenter()[1];
-    v[2] = (Real)in[0].getVCenter()[2];
-    omega[0] = (Real)in[0].getVOrientation()[0];
-    omega[1] = (Real)in[0].getVOrientation()[1];
-    omega[2] = (Real)in[0].getVOrientation()[2];
+    v = in[0].getVCenter();
+    omega = in[0].getVOrientation();
     out.resize(points.size());
     for(unsigned int i=0; i<points.size(); i++)
     {
@@ -155,16 +145,34 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     }
 }
 
+/// Template specialization for 2D rigids
+// template<typename real1, typename real2>
+// void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::componentmodel::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+// {
+//     Deriv v;
+//     Real omega;
+//     v = in[0].getVCenter();
+//     omega = (Real)in[0].getVOrientation();
+//     out.resize(points.size());
+//     for(unsigned int i=0;i<points.size();i++)
+//     {
+//         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
+//     }
+// }
+
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     Deriv v,omega;
-    v[0] = 0.0f;
-    v[1] = 0.0f;
-    v[2] = 0.0f;
-    omega[0] = 0.0f;
-    omega[1] = 0.0f;
-    omega[2] = 0.0f;
     for(unsigned int i=0; i<points.size(); i++)
     {
         // out = Jt in
@@ -176,13 +184,36 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
         v += f;
         omega += cross(rotatedPoints[i],f);
     }
-    out[0].getVCenter()[0] += v[0];
-    out[0].getVCenter()[1] += v[1];
-    out[0].getVCenter()[2] += v[2];
-    out[0].getVOrientation()[0] += omega[0];
-    out[0].getVOrientation()[1] += omega[1];
-    out[0].getVOrientation()[2] += omega[2];
+    out[0].getVCenter() += v;
+    out[0].getVOrientation() += omega;
 }
+
+
+/// Template specialization for 2D rigids
+// template<typename real1, typename real2>
+// void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::StdRigidTypes<2, real1> >, core::componentmodel::behavior::MechanicalState< defaulttype::StdVectorTypes<defaulttype::Vec<2, real2>, defaulttype::Vec<2, real2>, real2 > > > >::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+// {
+//     Deriv v;
+//     Real omega;
+//     for(unsigned int i=0;i<points.size();i++)
+//     {
+//         Deriv f = in[i];
+//         v += f;
+//         omega += cross(rotatedPoints[i],f);
+//     }
+//     out[0].getVCenter() += v;
+//     out[0].getVOrientation() += (typename In::Real)omega;
+// }
+
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+
 
 // RigidMapping::applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) //
 // this function propagate the constraint through the rigid mapping :
@@ -238,6 +269,18 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
         out[i].push_back(InSparseDeriv(0, direction)); // 0 = index of the center of mass
     }
 }
+
+/// Template specialization for 2D rigids
+
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in );
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in );
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2fTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in );
+template<>
+void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Vec2dTypes > > >::applyJT( In::VecConst& out, const Out::VecConst& in );
+
 
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::draw()
