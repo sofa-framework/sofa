@@ -119,7 +119,8 @@ public:
     {
         obj = new T;
         if (context) context->addObject(obj);
-        obj->parse(arg);
+        if (arg)
+            obj->parse(arg);
     }
 
 protected:

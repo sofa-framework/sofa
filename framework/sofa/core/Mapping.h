@@ -78,10 +78,10 @@ public:
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         obj = new T(
-            dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))),
-            dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))));
+            (arg?dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))):NULL),
+            (arg?dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))):NULL));
         if (context) context->addObject(obj);
-        obj->parse(arg);
+        if (arg) obj->parse(arg);
     }
 };
 

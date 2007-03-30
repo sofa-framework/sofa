@@ -845,6 +845,103 @@ defaulttype::StdRigidTypes<3, float>::Coord,
 
 } // namespace componentmodel
 
+namespace objectmodel
+{
+
+// Specialization of Field::getValueTypeString() method to display smaller
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Quat >(const defaulttype::Quat *) { return "Quat"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Quat > >(const std::vector< defaulttype::Quat > *) { return "vector<Quat>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Quat > >(const helper::vector< defaulttype::Quat > *) { return "vector<Quat>"; }
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Quatf >(const defaulttype::Quatf *) { return "Quatf"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Quatf > >(const std::vector< defaulttype::Quatf > *) { return "vector<Quatf>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Quatf > >(const helper::vector< defaulttype::Quatf > *) { return "vector<Quatf>"; }
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Rigid2dTypes::Coord >(const defaulttype::Rigid2dTypes::Coord *) { return "Rigid2dTypes::Coord"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Rigid2dTypes::Coord > >(const std::vector< defaulttype::Rigid2dTypes::Coord > *) { return "vector<Rigid2dTypes::Coord>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Rigid2dTypes::Coord > >(const helper::vector< defaulttype::Rigid2dTypes::Coord > *) { return "vector<Rigid2dTypes::Coord>"; }
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Rigid2dTypes::Deriv >(const defaulttype::Rigid2dTypes::Deriv *) { return "Rigid2dTypes::Deriv"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Rigid2dTypes::Deriv > >(const std::vector< defaulttype::Rigid2dTypes::Deriv > *) { return "vector<Rigid2dTypes::Deriv>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Rigid2dTypes::Deriv > >(const helper::vector< defaulttype::Rigid2dTypes::Deriv > *) { return "vector<Rigid2dTypes::Deriv>"; }
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Rigid2fTypes::Coord >(const defaulttype::Rigid2fTypes::Coord *) { return "Rigid2fTypes::Coord"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Rigid2fTypes::Coord > >(const std::vector< defaulttype::Rigid2fTypes::Coord > *) { return "vector<Rigid2fTypes::Coord>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Rigid2fTypes::Coord > >(const helper::vector< defaulttype::Rigid2fTypes::Coord > *) { return "vector<Rigid2fTypes::Coord>"; }
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Rigid2fTypes::Deriv >(const defaulttype::Rigid2fTypes::Deriv *) { return "Rigid2fTypes::Deriv"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Rigid2fTypes::Deriv > >(const std::vector< defaulttype::Rigid2fTypes::Deriv > *) { return "vector<Rigid2fTypes::Deriv>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Rigid2fTypes::Deriv > >(const helper::vector< defaulttype::Rigid2fTypes::Deriv > *) { return "vector<Rigid2fTypes::Deriv>"; }
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Rigid3dTypes::Coord >(const defaulttype::Rigid3dTypes::Coord *) { return "Rigid3dTypes::Coord"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Rigid3dTypes::Coord > >(const std::vector< defaulttype::Rigid3dTypes::Coord > *) { return "vector<Rigid3dTypes::Coord>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Rigid3dTypes::Coord > >(const helper::vector< defaulttype::Rigid3dTypes::Coord > *) { return "vector<Rigid3dTypes::Coord>"; }
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Rigid3dTypes::Deriv >(const defaulttype::Rigid3dTypes::Deriv *) { return "Rigid3dTypes::Deriv"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Rigid3dTypes::Deriv > >(const std::vector< defaulttype::Rigid3dTypes::Deriv > *) { return "vector<Rigid3dTypes::Deriv>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Rigid3dTypes::Deriv > >(const helper::vector< defaulttype::Rigid3dTypes::Deriv > *) { return "vector<Rigid3dTypes::Deriv>"; }
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Rigid3fTypes::Coord >(const defaulttype::Rigid3fTypes::Coord *) { return "Rigid3fTypes::Coord"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Rigid3fTypes::Coord > >(const std::vector< defaulttype::Rigid3fTypes::Coord > *) { return "vector<Rigid3fTypes::Coord>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Rigid3fTypes::Coord > >(const helper::vector< defaulttype::Rigid3fTypes::Coord > *) { return "vector<Rigid3fTypes::Coord>"; }
+
+template<>
+inline std::string FieldBase::typeName< defaulttype::Rigid3fTypes::Deriv >(const defaulttype::Rigid3fTypes::Deriv *) { return "Rigid3fTypes::Deriv"; }
+
+template<>
+inline std::string FieldBase::typeName< std::vector< defaulttype::Rigid3fTypes::Deriv > >(const std::vector< defaulttype::Rigid3fTypes::Deriv > *) { return "vector<Rigid3fTypes::Deriv>"; }
+
+template<>
+inline std::string FieldBase::typeName< helper::vector< defaulttype::Rigid3fTypes::Deriv > >(const helper::vector< defaulttype::Rigid3fTypes::Deriv > *) { return "vector<Rigid3fTypes::Deriv>"; }
+
+} // namespace objectmodel
+
 } // namespace core
 
 } // namespace sofa

@@ -90,7 +90,7 @@ public:
     inline void setHelpMsg( const char* msg ) { this->help = msg; }
     inline void printValue(std::ostream& out) const ;
     inline std::string getValueString() const ;
-    inline std::string getValueTypeString() const { return std::string(typeid(m_value).name()); }
+    inline std::string getValueTypeString() const; // { return std::string(typeid(m_value).name()); }
     inline T* beginEdit()
     {
         m_isSet = true;
@@ -164,6 +164,13 @@ std::string DataField<T>::getValueString() const
     ostrstream out;
     out << m_value;
     return out.str();
+}
+
+template<class T>
+inline
+std::string DataField<T>::getValueTypeString() const
+{
+    return FieldBase::typeName(&m_value);
 }
 
 

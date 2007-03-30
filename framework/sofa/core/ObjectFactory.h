@@ -86,6 +86,7 @@ protected:
 public:
 
     ClassEntry* getEntry(std::string classname);
+    void getAllEntries(std::vector<ClassEntry*>& result);
 
     bool addAlias(std::string name, std::string result, bool force=false);
 

@@ -219,6 +219,45 @@ std::string Base::decodeClassName(const std::type_info& t)
     */
 }
 
+/// Extract the namespace (removing class name and templates)
+std::string Base::decodeNamespaceName(const std::type_info& t)
+{
+    std::string name = t.name();
+    const char* realname = NULL;
+    char* allocname = strdup(name.c_str());
+#ifdef __GNUC__
+    int status;
+    realname = allocname = abi::__cxa_demangle(allocname, 0, 0, &status);
+    if (realname==NULL)
+#endif
+        realname = allocname;
+    int len = strlen(realname);
+    int start = 0;
+    int last = len-1;
+    int i;
+    for (i=0; i<len; i++)
+    {
+        char c = realname[i];
+        if (c == ' ' && i >= 5 && realname[i-5] == 'c' && realname[i-4] == 'l' && realname[i-3] == 'a' && realname[i-2] == 's' && realname[i-1] == 's')
+        {
+            start = i+1;
+        }
+        else if (c == ':' && (i<1 || realname[i-1]!=':'))
+        {
+            last = i-1;
+        }
+        else if (c != ':' && c != '_' && (c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+        {
+            // write result
+            break;
+        }
+    }
+    name.assign(realname+start, realname+last+1);
+    //if (allocname)
+    //    free(allocname);
+    return name;
+}
+
 /// Decode the template name (removing namespaces and class name)
 std::string Base::decodeTemplateName(const std::type_info& t)
 {

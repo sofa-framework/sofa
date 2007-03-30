@@ -25,6 +25,8 @@
 #ifndef SOFA_SIMULATION_TREE_COLORS_H
 #define SOFA_SIMULATION_TREE_COLORS_H
 
+#include <stdlib.h>
+
 namespace sofa
 {
 
@@ -79,6 +81,28 @@ static const char* COLOR[16]=
     /*Topology              =*/ "#ffed6f", // color 12
     /*VisualModel           =*/ "#eefdea", // color 11 (brighter)
 };
+
+inline const char* getColor(const char* classname)
+{
+    if (!strcmp(classname,"BaseNode")) return COLOR[NODE];
+    if (!strcmp(classname,"BaseObject")) return COLOR[OBJECT];
+    if (!strcmp(classname,"ContextObject")) return COLOR[CONTEXT];
+    if (!strcmp(classname,"BehaviorModel")) return COLOR[BMODEL];
+    if (!strcmp(classname,"CollisionModel")) return COLOR[CMODEL];
+    if (!strcmp(classname,"MechanicalState")) return COLOR[MMODEL];
+    if (!strcmp(classname,"Constraint")) return COLOR[CONSTRAINT];
+    if (!strcmp(classname,"InteractionForceField")) return COLOR[IFFIELD];
+    if (!strcmp(classname,"ForceField")) return COLOR[FFIELD];
+    if (!strcmp(classname,"OdeSolver")) return COLOR[SOLVER];
+    if (!strcmp(classname,"CollisionPipeline")) return COLOR[COLLISION];
+    if (!strcmp(classname,"MechanicalMapping")) return COLOR[MMAPPING];
+    if (!strcmp(classname,"Mapping")) return COLOR[MAPPING];
+    if (!strcmp(classname,"Mass")) return COLOR[MASS];
+    if (!strcmp(classname,"Topology")) return COLOR[TOPOLOGY];
+    if (!strcmp(classname,"VisualModel")) return COLOR[VMODEL];
+    return "";
+
+}
 
 }
 

@@ -17,12 +17,12 @@ void init()
     if (first)
     {
         std::cout << "Sofa components initialized."<<std::endl;
-        //sofa::core::ObjectFactory::getInstance()->dump();
-        std::ofstream ofile("sofa-classes.html");
-        ofile << "<html><body>\n";
-        sofa::core::ObjectFactory::getInstance()->dumpHTML(ofile);
-        ofile << "</body></html>\n";
-        first = false;
+
+        //std::ofstream ofile("sofa-classes.html");
+        //ofile << "<html><body>\n";
+        //sofa::core::ObjectFactory::getInstance()->dumpHTML(ofile);
+        //ofile << "</body></html>\n";
+        //first = false;
     }
 }
 

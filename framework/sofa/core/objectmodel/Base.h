@@ -74,6 +74,9 @@ public:
     /// Extract the class name (removing namespaces and templates)
     static std::string decodeClassName(const std::type_info& t);
 
+    /// Extract the namespace (removing class name and templates)
+    static std::string decodeNamespaceName(const std::type_info& t);
+
     /// Extract the template name (removing namespaces and class name)
     static std::string decodeTemplateName(const std::type_info& t);
 
@@ -87,6 +90,12 @@ public:
     static std::string className(const T* = NULL)
     {
         return decodeClassName(typeid(T));
+    }
+
+    template<class T>
+    static std::string namespaceName(const T* = NULL)
+    {
+        return decodeNamespaceName(typeid(T));
     }
 
     template<class T>

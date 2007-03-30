@@ -106,12 +106,12 @@ public:
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         core::componentmodel::behavior::InteractionForceField::create(obj, context, arg);
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
+        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
             obj->object1 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1","..")));
             obj->object2 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2","..")));
         }
-        else
+        else if (context)
         {
             obj->object1 =
                 obj->object2 =

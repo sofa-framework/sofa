@@ -129,6 +129,17 @@ ObjectFactory* ObjectFactory::getInstance()
     return &instance;
 }
 
+void ObjectFactory::getAllEntries(std::vector<ClassEntry*>& result)
+{
+    result.clear();
+    for (std::map<std::string, ClassEntry*>::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)
+    {
+        ClassEntry* entry = it->second;
+        if (entry->className != it->first) continue;
+        result.push_back(entry);
+    }
+}
+
 void ObjectFactory::dump(std::ostream& out)
 {
     for (std::map<std::string, ClassEntry*>::iterator it = registry.begin(), itend = registry.end(); it != itend; ++it)

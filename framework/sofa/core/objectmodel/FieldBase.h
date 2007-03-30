@@ -92,6 +92,14 @@ protected:
     /// True iff a value has bee read on the command line
     bool m_isSet;
 
+    static std::string decodeTypeName(const std::type_info& t);
+
+    template<class T>
+    static std::string typeName(const T* = NULL)
+    {
+        return decodeTypeName(typeid(T));
+    }
+
 
 };
 
