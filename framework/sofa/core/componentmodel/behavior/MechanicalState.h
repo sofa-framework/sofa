@@ -69,6 +69,9 @@ public:
     virtual const VecConst* getC() const = 0;
     virtual const VecCoord* getXfree()  const = 0;
 
+    virtual const VecCoord* getX0()  const = 0;
+    virtual const VecDeriv* getV0()  const = 0;
+
 
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(std::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
