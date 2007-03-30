@@ -1,12 +1,15 @@
-#ifndef SOFA_COMPONENTS_SUBSETMAPPING_INL
-#define SOFA_COMPONENTS_SUBSETMAPPING_INL
+#ifndef SOFA_COMPONENT_MAPPING_SUBSETMAPPING_INL
+#define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_INL
 
 #include "SubsetMapping.h"
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
+{
+
+namespace mapping
 {
 
 
@@ -27,6 +30,7 @@ SubsetMapping<BaseMapping>::~SubsetMapping()
 template <class BaseMapping>
 void SubsetMapping<BaseMapping>::init()
 {
+    this->Inherit::init();
     unsigned int inSize = this->fromModel->getX()->size();
     if (f_indices.getValue().empty() && f_first.getValue() != -1)
     {
@@ -76,9 +80,10 @@ void SubsetMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const type
     }
 }
 
+} // namespace mapping
 
-} // namespace Components
+} // namespace component
 
-} // namespace Sofa
+} // namespace sofa
 
 #endif

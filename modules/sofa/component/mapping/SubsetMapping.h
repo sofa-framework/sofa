@@ -1,37 +1,38 @@
-#ifndef SOFA_COMPONENTS_SUBSETMAPPING_H
-#define SOFA_COMPONENTS_SUBSETMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_SUBSETMAPPING_H
+#define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_H
 
-#include "Sofa-old/Core/MechanicalMapping.h"
-#include "Sofa-old/Core/MechanicalModel.h"
-#include "Sofa-old/Components/Common/DataField.h"
-#include "Sofa-old/Components/Common/vector.h"
-#include <vector>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/helper/vector.h>
+#include <sofa/core/objectmodel/DataField.h>
 
-namespace Sofa
+namespace sofa
 {
 
-namespace Components
+namespace component
 {
 
+namespace mapping
+{
 
 /**
  * @class SubsetMapping
  * @brief Compute a subset of input points
  */
-template <class BaseMapping>
-class SubsetMapping : public BaseMapping
+template <class BasicMapping>
+class SubsetMapping : public BasicMapping
 {
 protected:
     /// Correspondance array
-    typedef Common::vector<unsigned int> IndexArray;
-    Common::DataField < IndexArray > f_indices;
-    Common::DataField < int > f_first;
-    Common::DataField < int > f_last;
+    typedef helper::vector<unsigned int> IndexArray;
+    DataField < IndexArray > f_indices;
+    DataField < int > f_first;
+    DataField < int > f_last;
 
 public:
-    typedef BaseMapping Inherit;
-    typedef typename BaseMapping::In In;
-    typedef typename BaseMapping::Out Out;
+    typedef BasicMapping Inherit;
+    typedef typename Inherit::In In;
+    typedef typename Inherit::Out Out;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Coord OutCoord;
@@ -55,8 +56,10 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 };
 
-} // namespace Components
+} // namespace mapping
 
-} // namespace Sofa
+} // namespace component
+
+} // namespace sofa
 
 #endif
