@@ -99,16 +99,18 @@ double PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 }
 
 
+// Rotate the plane. Note that the rotation is only applied on the 3 first coordinates
 template<class DataTypes>
 void PlaneForceField<DataTypes>::rotate( Deriv axe, Real angle )
 {
-    Deriv v;
-    v = planeNormal.getValue().cross(axe);
+    defaulttype::Vec3d axe3d(1,1,1); axe3d = axe;
+    defaulttype::Vec3d normal3d; normal3d = planeNormal.getValue();
+    defaulttype::Vec3d v = normal3d.cross(axe3d);
     v.normalize();
-
-    planeNormal.setValue( planeNormal.getValue() * cos( angle ) + v * sin( angle ) );
+    v = normal3d * cos ( angle ) + v * sin ( angle );
+    *planeNormal.beginEdit() = v;
+    planeNormal.endEdit();
 }
-
 
 
 template<class DataTypes>
@@ -131,9 +133,9 @@ void PlaneForceField<DataTypes>::draw2(float size)
 
     // find a first vector inside the plane
     defaulttype::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = Deriv((-normal[2]-normal[1])/normal[0], 1.0, 1.0);
-    else if ( 0.0 != normal[1] ) v1 = Deriv(1.0, (-normal[0]-normal[2])/normal[1],1.0);
-    else if ( 0.0 != normal[2] ) v1 = Deriv(1.0, 1.0, (-normal[0]-normal[1])/normal[2]);
+    if( 0.0 != normal[0] ) v1 = defaulttype::Vec3d((-normal[2]-normal[1])/normal[0], 1.0, 1.0);
+    else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, (-normal[0]-normal[2])/normal[1],1.0);
+    else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 1.0, (-normal[0]-normal[1])/normal[2]);
     v1.normalize();
     // find a second vector inside the plane and orthogonal to the first
     defaulttype::Vec3d v2;
