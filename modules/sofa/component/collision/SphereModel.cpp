@@ -99,6 +99,14 @@ bool SphereModel::load(const char* filename)
     return loader.load(filename);
 }
 
+void SphereModel::applyScale(double s)
+{
+    Inherit::applyScale(s);
+    //std::cout << "Applying scale " << s << " to " << size << " spheres" << std::endl;
+    for (int i=0; i<size; i++)
+        radius[i] *= s;
+}
+
 void SphereModel::draw(int index)
 {
     Vector3 p = (*getX())[index];

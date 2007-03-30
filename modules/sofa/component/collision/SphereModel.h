@@ -68,6 +68,8 @@ protected:
 public:
     typedef Vec3Types DataTypes;
     typedef Sphere Element;
+    typedef component::MechanicalObject<Vec3Types> Inherit;
+
     friend class Sphere;
 
     SphereModel(double radius = 1.0);
@@ -76,6 +78,7 @@ public:
     void setSphere(int index, const Vector3& pos, double radius);
 
     virtual bool load(const char* filename);
+    void applyScale (double s);
 
     // -- CollisionModel interface
 

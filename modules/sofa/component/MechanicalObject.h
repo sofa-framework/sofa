@@ -183,9 +183,9 @@ public:
 
 
 
-    void applyTranslation (double dx, double dy, double dz);
+    virtual void applyTranslation (double dx, double dy, double dz);
 
-    void applyScale (double s);
+    virtual void applyScale (double s);
 
     /// Get the indices of the particles located in the given bounding box
     void getIndicesInSpace(std::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
