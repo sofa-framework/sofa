@@ -1,4 +1,4 @@
-<Node name="root"  dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
+<Node name="root"  dt="0.02" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
 	<Object type="CollisionPipeline" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="VoxelGridDetection" name="Voxel" min="-10" max="10" n="8" draw="0" />
@@ -30,9 +30,9 @@
 	</Node>
 	<Node name="Floor">
 		<Object type="Mesh" filename="CollisionModels/floor3.obj" />
-		<Object type="MechanicalObject" dy="-10" scale="0.5" />
+		<Object type="MechanicalObject" dy="-10" scale="0.75" />
 		<Object type="Triangle" name="Floor" static="1" />
 		<Object type="Line" name="Floor" static="1" />
-		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor3.obj" texturename="VisualModels/sky.bmp" dy="-10" scale="0.5" />
+		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor3.obj" texturename="VisualModels/brushed_metal.bmp" scaleTex="0.2" dy="-10" scale="0.75" />
 	</Node>
 </Node>

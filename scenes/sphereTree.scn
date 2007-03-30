@@ -1,6 +1,5 @@
 <!-- Definition time-step and setting of display -->
-
-<Node name="root"  dt="0.01" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
+<Node name="root"  dt="0.005" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="1">
 
 	<!-- Required for collision detection -->
 	<Object type="CollisionPipeline" verbose="0" />
@@ -10,28 +9,26 @@
 
 	<Object type="CollisionResponse" name="Response" contact="default" />
 	
-
-
-	<Node name="lamp2">
+	<Node name="lamp1">
 		<Object type="CGImplicit" iterations="50"/>
-		<Object type="MechanicalObject" template="Rigid" dx="50" dy="100.0" dz="0.0"/>
+		<Object type="MechanicalObject" template="Rigid" dx="5" dy="10.0" dz="0.0"/>
 		<Object type="UniformMass" filename="BehaviorModels/lamp600.rigid" mass="100"/>
 		<Node name="Visu">
-			<Object type="OglModel" name="Visual" filename="VisualModels/lamp600.obj" texturename="VisualModels/FIFA2.bmp" color="gray" />
+			<Object type="OglModel" name="Visual" filename="VisualModels/lamp600.obj" texturename="VisualModels/FIFA2.bmp" color="gray" scale="0.1"/>
 			<Object type="RigidMapping" object1="../.." object2="../Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="SphereTree" filename="CollisionModels/lamp600-medial.sph" static="0"  />  
+			<Object type="SphereTree" filename="CollisionModels/lamp600-medial.sph" static="0" scale="0.1"/>
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
 
 	<!-- Definition of static models model -->
-	<Object type="SphereTree" name="lamp3" filename="CollisionModels/lamp600-medial.sph" static="1" dx="-80" dy="-10" dz="100"  />
-	<Object type="OglModel" name="lamp3" filename="VisualModels/lamp600.obj" texturename="VisualModels/floor.bmp" dx="-80" dy="-10" dz="100"/>
+	<Object type="SphereTree" name="lamp2" filename="CollisionModels/lamp600-medial.sph" static="1" scale="0.1" dx="-8" dy="-1" dz="10"  />
+	<Object type="OglModel" name="lamp2" filename="VisualModels/lamp600.obj" texturename="VisualModels/brushed_metal.bmp" scale="0.1" dx="-8" dy="-1" dz="10"/>
 
-	<Object type="SphereTree" name="lamp3" filename="CollisionModels/lamp600-medial.sph" static="1" dx="80" dy="-20" dz="-100"/>
-	<Object type="OglModel" name="lamp3" filename="VisualModels/lamp600.obj" texturename="VisualModels/floor.bmp" dx="80" dy="-20" dz="-100"/>
+	<Object type="SphereTree" name="lamp3" filename="CollisionModels/lamp600-medial.sph" static="1" scale="0.1" dx="8" dy="-2" dz="-10"/>
+	<Object type="OglModel" name="lamp3" filename="VisualModels/lamp600.obj" texturename="VisualModels/floor.bmp" scale="0.1" dx="8" dy="-2" dz="-10"/>
 
 
 
