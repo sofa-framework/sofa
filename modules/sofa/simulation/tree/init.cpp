@@ -22,7 +22,7 @@ void init()
         //ofile << "<html><body>\n";
         //sofa::core::ObjectFactory::getInstance()->dumpHTML(ofile);
         //ofile << "</body></html>\n";
-        //first = false;
+        first = false;
     }
 }
 

@@ -24,7 +24,6 @@
 *******************************************************************************/
 #include <sofa/component/forcefield/PlaneForceField.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/MechanicalObject.h>
 
 namespace sofa
 {

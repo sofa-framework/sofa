@@ -1,7 +1,6 @@
 #include <sofa/component/forcefield/SphereForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/MechanicalObject.h>
 
 namespace sofa
 {

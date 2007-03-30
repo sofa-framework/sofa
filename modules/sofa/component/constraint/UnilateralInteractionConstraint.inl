@@ -23,7 +23,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(bool friction, Deriv
 
     Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
     Real dt;
-    if (abs(delta - deltaFree) > 0.0001 * delta)
+    if (rabs(delta - deltaFree) > 0.0001 * delta)
         dt = delta / (delta - deltaFree);
     else
         dt = 0;
