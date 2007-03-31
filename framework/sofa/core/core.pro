@@ -79,6 +79,5 @@ TEMPLATE = lib
 include($$SOFA_DIR/sofa.cfg)
 TARGET = sofacore$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
-LIBS = -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX
-QMAKE_LIBDIR = ../../../lib/$$LIBSDIRECTORY ../../../lib/$$LIBSDIRECTORY/../Common
-
+LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX
+LIBS += $$SOFA_EXT_LIBS

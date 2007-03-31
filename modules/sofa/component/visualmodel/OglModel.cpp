@@ -286,7 +286,7 @@ bool OglModel::load(const std::string& filename, const std::string& loader, cons
 
     if (filename != "")
     {
-        name = filename;
+        //name = filename;
         helper::io::Mesh *objLoader;
         if (loader.empty())
             objLoader = helper::io::Mesh::Create(filename);

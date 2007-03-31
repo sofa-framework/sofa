@@ -9,6 +9,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
+#include <sofa/helper/system/SetDirectory.h>
 #ifdef SOFA_GUI_QT
 #include <sofa/gui/qt/Main.h>
 #elif defined(SOFA_GUI_FLTK)
@@ -32,7 +33,7 @@ SOFA_LINK_CLASS(CudaPlaneForceField)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    std::string fileName = "../../../examples/Benchmarks/GPU/Bar10-spring-rk4-1.scn";
+    std::string fileName = sofa::helper::system::SetDirectory::GetRelativeFile("../examples/Benchmarks/GPU/Bar10-spring-rk4-1.scn",argv[0]);
     int nbIter = 0;
     if (argc < 2 || argc > 3)
     {

@@ -16,9 +16,9 @@ namespace mapping
 template <class BaseMapping>
 SubsetMapping<BaseMapping>::SubsetMapping(In* from, Out* to)
     : Inherit(from, to)
-    , f_indices( this->dataField(&f_indices, "indices", "list of input indices"))
-    , f_first( this->dataField(&f_first, -1, "first", "first index (use if indices are sequential)"))
-    , f_last( this->dataField(&f_last, -1, "last", "last index (use if indices are sequential)"))
+    , f_indices( dataField(&f_indices, "indices", "list of input indices"))
+    , f_first( dataField(&f_first, -1, "first", "first index (use if indices are sequential)"))
+    , f_last( dataField(&f_last, -1, "last", "last index (use if indices are sequential)"))
 {
 }
 

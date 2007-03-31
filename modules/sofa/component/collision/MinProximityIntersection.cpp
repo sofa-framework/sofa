@@ -317,7 +317,7 @@ DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
     detection->distance = detection->normal.norm();
     detection->normal /= detection->distance;
 
-    printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
+    //printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
     //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
     //{ // The elements are interpenetrating
     //	detection->normal = -detection->normal;

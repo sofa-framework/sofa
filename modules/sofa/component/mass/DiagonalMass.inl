@@ -231,7 +231,7 @@ public:
     Loader(DiagonalMass<DataTypes, MassType>* dest) : dest(dest) {}
     virtual void addMass(double /*px*/, double /*py*/, double /*pz*/, double /*vx*/, double /*vy*/, double /*vz*/, double mass, double /*elastic*/, bool /*fixed*/, bool /*surface*/)
     {
-        dest->addMass(MassType(mass));
+        dest->addMass(MassType((Real)mass));
     }
 };
 

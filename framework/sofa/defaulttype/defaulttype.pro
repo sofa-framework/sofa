@@ -6,6 +6,8 @@ include($$SOFA_DIR/sofa.cfg)
 
 TARGET = sofadefaulttype$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
+LIBS += -lsofahelper$$LIBSUFFIX
+LIBS += $$SOFA_EXT_LIBS
 
 HEADERS += \
           Frame.h \ 

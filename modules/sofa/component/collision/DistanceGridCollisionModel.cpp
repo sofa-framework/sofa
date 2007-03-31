@@ -332,8 +332,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, int nx, int ny, in
                 for(unsigned int i=1; i<vertices.size(); i++)
                 {
                     for (int c=0; c<3; c++)
-                        if (vertices[i][c] < pmin[c]) pmin[c] = vertices[i][c];
-                        else if (vertices[i][c] > pmax[c]) pmax[c] = vertices[i][c];
+                        if (vertices[i][c] < pmin[c]) pmin[c] = (Real)vertices[i][c];
+                        else if (vertices[i][c] > pmax[c]) pmax[c] = (Real)vertices[i][c];
                 }
             }
             std::cout << "bbox = "<<pmin<<" "<<pmax<<std::endl;

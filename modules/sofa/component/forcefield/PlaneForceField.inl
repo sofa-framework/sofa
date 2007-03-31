@@ -193,9 +193,9 @@ bool PlaneForceField<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 
     // find a first vector inside the plane
     defaulttype::Vec3d v1;
-    if( 0.0 != normal[0] ) v1 = Deriv((-normal[2]-normal[1])/normal[0], 1.0, 1.0);
-    else if ( 0.0 != normal[1] ) v1 = Deriv(1.0, (-normal[0]-normal[2])/normal[1],1.0);
-    else if ( 0.0 != normal[2] ) v1 = Deriv(1.0, 1.0, (-normal[0]-normal[1])/normal[2]);
+    if( 0.0 != normal[0] ) v1 = defaulttype::Vec3d((-normal[2]-normal[1])/normal[0], 1.0, 1.0);
+    else if ( 0.0 != normal[1] ) v1 = defaulttype::Vec3d(1.0, (-normal[0]-normal[2])/normal[1],1.0);
+    else if ( 0.0 != normal[2] ) v1 = defaulttype::Vec3d(1.0, 1.0, (-normal[0]-normal[1])/normal[2]);
     v1.normalize();
     // find a second vector inside the plane and orthogonal to the first
     defaulttype::Vec3d v2;

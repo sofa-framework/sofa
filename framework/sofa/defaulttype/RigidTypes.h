@@ -152,7 +152,7 @@ public:
             orientation.normalize();
             Quat qDot = orientation.vectQuatMult(a.getVOrientation());
             for (int i = 0; i < 4; i++)
-                orientation[i] += qDot[i] * 0.5;
+                orientation[i] += qDot[i] * 0.5f;
             orientation.normalize();
         }
 
@@ -163,7 +163,7 @@ public:
             c.orientation.normalize();
             Quat qDot = c.orientation.vectQuatMult(a.getVOrientation());
             for (int i = 0; i < 4; i++)
-                c.orientation[i] += qDot[i] * 0.5;
+                c.orientation[i] += qDot[i] * 0.5f;
             c.orientation.normalize();
             return c;
         }
@@ -592,8 +592,8 @@ public:
         template<class Mat>
         void writeRotationMatrix( Mat& m) const
         {
-            m[0][0] = cos(orientation); m[0][1] = -sin(orientation);
-            m[1][0] = sin(orientation); m[1][1] = cos(orientation);
+            m[0][0] = cos((typename Mat::Real)orientation); m[0][1] = -sin((typename Mat::Real)orientation);
+            m[1][0] = sin((typename Mat::Real)orientation); m[1][1] =  cos((typename Mat::Real)orientation);
         }
 
         /// Write the OpenGL transformation matrix
@@ -833,7 +833,7 @@ defaulttype::StdRigidTypes<3, float>::Coord,
                     const defaulttype::StdRigidTypes<3, float>::Deriv& v
             )
 {
-    defaulttype::StdRigidTypes<3, float>::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::StdRigidTypes<3, float>::Vec3 omega( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
     defaulttype::StdRigidTypes<3, float>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
 
     finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;

@@ -5,19 +5,8 @@ TEMPLATE = lib
 include($$SOFA_DIR/sofa.cfg)
 
 TARGET = sofahelper$$LIBSUFFIX
-CONFIG += $$CONFIGLIBRARIES qt uic3
-QT += opengl qt3support
-LIBS = -lsofadefaulttype$$LIBSUFFIX 
-win32{
-  LIBS += -llibxml2 -lGLaux -lglut32 -lopengl32 -lglu32
-}
-unix{
-  QMAKE_LIBDIR += /usr/X11R6/lib
-  LIBS += -lglut -lGL -lGLU -lpthread -lxml2 -lz
-}
-contains(DEFINES,SOFA_HAVE_PNG){
-  LIBS += -lpng -lz
-}
+CONFIG += $$CONFIGLIBRARIES
+LIBS += $$SOFA_EXT_LIBS
 
 HEADERS += \
           ArgumentParser.h \

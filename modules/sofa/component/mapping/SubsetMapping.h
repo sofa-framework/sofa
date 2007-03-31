@@ -4,7 +4,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
-#include <sofa/core/objectmodel/DataField.h>
 
 namespace sofa
 {
@@ -20,7 +19,7 @@ namespace mapping
  * @brief Compute a subset of input points
  */
 template <class BasicMapping>
-class SubsetMapping : public BasicMapping
+class SubsetMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
 protected:
     /// Correspondance array
@@ -54,6 +53,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+
 };
 
 } // namespace mapping

@@ -1,10 +1,10 @@
-# Target is a library:  NewMat
+# Target is a library:  NewMAT
 
 SOFA_DIR = ../..
 TEMPLATE = lib
 include($$SOFA_DIR/sofa.cfg)
 
-TARGET = NewMat$$LIBSUFFIX
+TARGET = NewMAT$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 
 #DEFINES += use_namespace 
