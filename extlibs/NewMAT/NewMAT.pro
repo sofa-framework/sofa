@@ -1,14 +1,13 @@
-include(../../sofa.cfg)
+# Target is a library:  NewMat
+
+SOFA_DIR = ../..
 TEMPLATE = lib
-CONFIG += $$CONFIGLIBRARIES
-DESTDIR = ../../lib/$$LIBSDIRECTORY
+include($$SOFA_DIR/sofa.cfg)
+
 TARGET = NewMat$$LIBSUFFIX
-OBJECTS_DIR = OBJ/$$CONFIGDEBUG
+CONFIG += $$CONFIGLIBRARIES
 
 #DEFINES += use_namespace 
-
-#QMAKE_LIBDIR = ../../lib/$$LIBSDIRECTORY ../../lib/$$LIBSDIRECTORY/../Common
-#LIBS = -lSofaAbstract$$LIBSUFFIX
 
 SOURCES = \    
         newmat1.cpp \
