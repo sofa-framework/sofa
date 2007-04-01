@@ -143,6 +143,7 @@ public:
         Coord (const Vec3 &posCenter, const Quat &orient)
             : center(posCenter), orientation(orient) {}
         Coord () { clear(); }
+        typedef real value_type;
 
         void clear() { center.clear(); orientation.clear(); }
 
@@ -502,6 +503,7 @@ public:
         Coord (const Vec2 &posCenter, const Real &orient)
             : center(posCenter), orientation(orient) {}
         Coord () { clear(); }
+        typedef real value_type;
 
         void clear() { center.clear(); orientation = 0; }
 
