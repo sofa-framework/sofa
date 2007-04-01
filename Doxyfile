@@ -3,9 +3,9 @@
 #---------------------------------------------------------------------------
 # Project related configuration options
 #---------------------------------------------------------------------------
-PROJECT_NAME           = Sofa.kdevelop
-PROJECT_NUMBER         = 0.1
-OUTPUT_DIRECTORY       = 
+PROJECT_NAME           = Sofa
+PROJECT_NUMBER         = SVN
+OUTPUT_DIRECTORY       = doc/doxygen
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 USE_WINDOWS_ENCODING   = NO
@@ -25,8 +25,7 @@ ABBREVIATE_BRIEF       = "The $name class" \
 ALWAYS_DETAILED_SEC    = NO
 INLINE_INHERITED_MEMB  = NO
 FULL_PATH_NAMES        = YES
-STRIP_FROM_PATH        = /home/evasion/faure/ \
-                         /home/francois/Sofa/src
+STRIP_FROM_PATH        = $(PWD)
 STRIP_FROM_INC_PATH    = 
 SHORT_NAMES            = NO
 JAVADOC_AUTOBRIEF      = NO
@@ -77,11 +76,11 @@ WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
 WARN_FORMAT            = "$file:$line: $text"
-WARN_LOGFILE           = 
+WARN_LOGFILE           = doxygen.log
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = src
+INPUT                  = framework modules applications
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \
@@ -129,9 +128,7 @@ FILE_PATTERNS          = *.c \
                          *.xpm \
                          *.dox
 RECURSIVE              = YES
-EXCLUDE                = include/FL \
-                         include/GL \
-                         include/libxml
+EXCLUDE                = include
 EXCLUDE_SYMLINKS       = NO
 EXCLUDE_PATTERNS       = 
 EXAMPLE_PATH           = 
@@ -160,7 +157,7 @@ IGNORE_PREFIX          =
 # configuration options related to the HTML output
 #---------------------------------------------------------------------------
 GENERATE_HTML          = YES
-HTML_OUTPUT            = doc/doxygen/html
+HTML_OUTPUT            = html
 HTML_FILE_EXTENSION    = .html
 HTML_HEADER            = 
 HTML_FOOTER            = 
@@ -235,7 +232,7 @@ EXPAND_ONLY_PREDEF     = NO
 SEARCH_INCLUDES        = YES
 INCLUDE_PATH           = 
 INCLUDE_FILE_PATTERNS  = 
-PREDEFINED             = 
+PREDEFINED             = SOFA_GUI_QT SOFA_GUI_FLTK SOFA_HAVE_PNG
 EXPAND_AS_DEFINED      = 
 SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
@@ -259,7 +256,7 @@ UML_LOOK               = NO
 TEMPLATE_RELATIONS     = NO
 INCLUDE_GRAPH          = YES
 INCLUDED_BY_GRAPH      = YES
-CALL_GRAPH             = NO
+CALL_GRAPH             = YES
 GRAPHICAL_HIERARCHY    = YES
 DIRECTORY_GRAPH        = YES
 DOT_IMAGE_FORMAT       = png

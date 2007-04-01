@@ -614,7 +614,6 @@ void OglModel::setColor(std::string color)
     else if (color == "magenta")  { r = 1.0f; g = 0.0f; b = 1.0f; }
     else if (color == "yellow")   { r = 1.0f; g = 1.0f; b = 0.0f; }
     else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
-    else if (color == "sofaOrange")   { r = 0.77f; g = 0.24f; b = 0.01f; }
     else
     {
         std::cerr << "Unknown color "<<color<<std::endl;
