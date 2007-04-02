@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 
+#include <sofa/helper/system/config.h>
 #include "mycuda.h"
 
 namespace sofa
@@ -11,6 +12,14 @@ namespace gpu
 {
 namespace cuda
 {
+
+SOFA_LINK_CLASS(CudaFixedConstraint)
+SOFA_LINK_CLASS(CudaMechanicalObject)
+SOFA_LINK_CLASS(CudaSpringForceField)
+SOFA_LINK_CLASS(CudaUniformMass)
+SOFA_LINK_CLASS(CudaPlaneForceField)
+SOFA_LINK_CLASS(CudaSphereForceField)
+SOFA_LINK_CLASS(CudaIdentityMapping)
 
 void mycudaLogError(int err, const char* src)
 {

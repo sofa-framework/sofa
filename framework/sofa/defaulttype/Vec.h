@@ -494,6 +494,13 @@ typedef Vec6d Vector6; ///< alias
 
 } // namespace sofa
 
+/// Scalar vector multiplication operator.
+template <int N, typename real>
+sofa::defaulttype::Vec<N,real> operator*(real r, const sofa::defaulttype::Vec<N,real>& v)
+{
+    return v*r;
+}
+
 
 // Specialization of the std comparison function, to use Vec as std::map key
 namespace std

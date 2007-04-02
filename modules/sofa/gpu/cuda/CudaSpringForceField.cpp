@@ -25,6 +25,14 @@ int MeshSpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side comp
         .add< component::forcefield::MeshSpringForceField<CudaVec3fTypes> >()
         ;
 
+int TriangleBendingSpringsCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::forcefield::TriangleBendingSprings<CudaVec3fTypes> >()
+        ;
+
+int QuadBendingSpringsCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::forcefield::QuadBendingSprings<CudaVec3fTypes> >()
+        ;
+
 } // namespace cuda
 
 } // namespace gpu

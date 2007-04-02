@@ -22,18 +22,13 @@ using sofa::helper::system::thread::ctime_t;
 using namespace sofa::simulation::tree;
 using namespace sofa::gpu::cuda;
 
-SOFA_LINK_CLASS(CudaFixedConstraint)
-SOFA_LINK_CLASS(CudaMechanicalObject)
-SOFA_LINK_CLASS(CudaSpringForceField)
-SOFA_LINK_CLASS(CudaUniformMass)
-SOFA_LINK_CLASS(CudaPlaneForceField)
-
 // ---------------------------------------------------------------------
 // --- MAIN
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    std::string fileName = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../examples/Benchmarks/GPU/Bar10-spring-rk4-1.scn",argv[0]);
+    //std::string fileName = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../scenes/beam10x10x46-spring-rk4-CUDA.scn",argv[0]);
+    std::string fileName = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../scenes/quadSpringSphereCUDA.scn",argv[0]);
     int nbIter = 0;
     if (argc < 2 || argc > 3)
     {

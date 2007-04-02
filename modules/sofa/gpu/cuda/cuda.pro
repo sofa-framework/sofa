@@ -22,21 +22,26 @@ HEADERS += mycuda.h \
            CudaSpringForceField.h \
            CudaSpringForceField.inl \
            CudaPlaneForceField.h \
-           CudaPlaneForceField.inl
+           CudaPlaneForceField.inl \
+           CudaSphereForceField.h \
+           CudaSphereForceField.inl
 
 SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
            CudaUniformMass.cpp \
            CudaFixedConstraint.cpp \
            CudaSpringForceField.cpp \
-           CudaPlaneForceField.cpp
+           CudaPlaneForceField.cpp \
+           CudaSphereForceField.cpp \
+           CudaIdentityMapping.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
            CudaUniformMass.cu \
            CudaFixedConstraint.cu \
            CudaSpringForceField.cu \
-           CudaPlaneForceField.cu
+           CudaPlaneForceField.cu \
+           CudaSphereForceField.cu
 
 ########################################################################
 #  CUDA

@@ -1,6 +1,15 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
 
+#if defined(__cplusplus)
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
+{
+#endif
+
 extern "C"
 {
     void FixedConstraintCuda3f_projectResponseContiguous(unsigned int size, void* dx);
@@ -59,3 +68,9 @@ void FixedConstraintCuda3f_projectResponseIndexed(unsigned int size, const void*
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     FixedConstraintCuda3f_projectResponseIndexed_kernel<<< grid, threads >>>(size, (const int*)indices, (float3*)dx);
 }
+
+#if defined(__cplusplus)
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
+#endif

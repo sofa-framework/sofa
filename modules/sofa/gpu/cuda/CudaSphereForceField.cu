@@ -10,25 +10,25 @@ namespace cuda
 {
 #endif
 
-struct GPUPlane
+struct GPUSphere
 {
-    float3 normal;
-    float d;
+    float3 center;
+    float r;
     float stiffness;
     float damping;
 };
 
 extern "C"
 {
-    void PlaneForceFieldCuda3f_addForce(unsigned int size, GPUPlane* plane, float* penetration, void* f, const void* x, const void* v);
-    void PlaneForceFieldCuda3f_addDForce(unsigned int size, GPUPlane* plane, const float* penetration, void* f, const void* dx); //, const void* dfdx);
+    void SphereForceFieldCuda3f_addForce(unsigned int size, GPUSphere* sphere, float4* penetration, void* f, const void* x, const void* v);
+    void SphereForceFieldCuda3f_addDForce(unsigned int size, GPUSphere* sphere, const float4* penetration, void* f, const void* dx); //, const void* dfdx);
 }
 
 //////////////////////
 // GPU-side methods //
 //////////////////////
 
-__global__ void PlaneForceFieldCuda3f_addForce_kernel(int size, GPUPlane plane, float* penetration, float* f, const float* x, const float* v)
+__global__ void SphereForceFieldCuda3f_addForce_kernel(int size, GPUSphere sphere, float4* penetration, float* f, const float* x, const float* v)
 {
     int index0 = blockIdx.x*BSIZE;
     int index0_3 = index0*3;
@@ -50,10 +50,8 @@ __global__ void PlaneForceFieldCuda3f_addForce_kernel(int size, GPUPlane plane, 
 
     __syncthreads();
 
-    float3 xi = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
-    float d = dot(xi,plane.normal)-plane.d;
-
-    penetration[index] = d;
+    float3 dp = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]) - sphere.center;
+    float d2 = dot(dp,dp);
 
     __syncthreads();
 
@@ -66,12 +64,20 @@ __global__ void PlaneForceFieldCuda3f_addForce_kernel(int size, GPUPlane plane, 
     float3 vi = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
     float3 force = make_float3(0,0,0);
 
-    if (d<0)
+    if (d2 < sphere.r*sphere.r)
     {
-        float forceIntensity = -plane.stiffness*d;
-        float dampingIntensity = -plane.damping*d;
-        force = plane.normal*forceIntensity - vi*dampingIntensity;
+        float inverseLength = 1/sqrt(d2);
+        dp.x = __fdividef(dp.x, inverseLength);
+        dp.y = __fdividef(dp.y, inverseLength);
+        dp.z = __fdividef(dp.z, inverseLength);
+        d2 = -sphere.r*inverseLength;
+        float d = sphere.r - __fdividef(1,inverseLength);
+
+        float forceIntensity = sphere.stiffness*d;
+        float dampingIntensity = sphere.damping*d;
+        force = dp*forceIntensity - vi*dampingIntensity;
     }
+    penetration[index] = make_float4(dp.x,dp.y,dp.z,d2);
 
     __syncthreads();
 
@@ -92,7 +98,7 @@ __global__ void PlaneForceFieldCuda3f_addForce_kernel(int size, GPUPlane plane, 
     f[index+2*BSIZE] = temp[index+2*BSIZE];
 }
 
-__global__ void PlaneForceFieldCuda3f_addDForce_kernel(int size, GPUPlane plane, const float* penetration, float* df, const float* dx)
+__global__ void SphereForceFieldCuda3f_addDForce_kernel(int size, GPUSphere sphere, const float4* penetration, float* df, const float* dx)
 {
     int index0 = blockIdx.x*BSIZE;
     int index0_3 = index0*3;
@@ -114,13 +120,14 @@ __global__ void PlaneForceFieldCuda3f_addDForce_kernel(int size, GPUPlane plane,
     __syncthreads();
 
     float3 dxi = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
-    float d = penetration[index];
+    float4 d = penetration[index];
 
     float3 dforce = make_float3(0,0,0);
 
-    if (d<0)
+    if (d.w<0)
     {
-        dforce = plane.normal * (-plane.stiffness * dot(dxi, plane.normal));
+        float3 dp = make_float3(d.x, d.y, d.z);
+        dforce = sphere.stiffness*(dot(dxi,dp)*d.w * dp - (1+d.w) * dxi);
     }
 
     __syncthreads();
@@ -146,18 +153,18 @@ __global__ void PlaneForceFieldCuda3f_addDForce_kernel(int size, GPUPlane plane,
 // CPU-side methods //
 //////////////////////
 
-void PlaneForceFieldCuda3f_addForce(unsigned int size, GPUPlane* plane, float* penetration, void* f, const void* x, const void* v)
+void SphereForceFieldCuda3f_addForce(unsigned int size, GPUSphere* sphere, float4* penetration, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *plane, penetration, (float*)f, (const float*)x, (const float*)v);
+    SphereForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *sphere, penetration, (float*)f, (const float*)x, (const float*)v);
 }
 
-void PlaneForceFieldCuda3f_addDForce(unsigned int size, GPUPlane* plane, const float* penetration, void* df, const void* dx) //, const void* dfdx)
+void SphereForceFieldCuda3f_addDForce(unsigned int size, GPUSphere* sphere, const float4* penetration, void* df, const void* dx) //, const void* dfdx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    PlaneForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *plane, penetration, (float*)df, (const float*)dx);
+    SphereForceFieldCuda3f_addDForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, *sphere, penetration, (float*)df, (const float*)dx);
 }
 
 #if defined(__cplusplus)

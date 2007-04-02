@@ -33,6 +33,7 @@ namespace forcefield
 //                        = r/|x-c|^2 * (xj-cj)/|x-c|
 // dfi/dxj = -stiffness * ( (xi-ci) * r/|x-c|^2 * (xj-cj)/|x-c| + (i==j) * (|x-c|-r)/|x-c| )
 //         = -stiffness * ( (xi-ci)/|x-c| * (xj-cj)/|x-c| * r/|x-c| + (i==j) * (1 - r/|x-c|) )
+// df = -stiffness * ( (x-c)/|x-c| * dot(dx,(x-c)/|x-c|) * r/|x-c|   + dx * (1 - r/|x-c|) )
 
 template<class DataTypes>
 void SphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
@@ -71,17 +72,8 @@ void SphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1)
     {
         const Contact& c = this->contacts[i];
         assert(c.index<dx1.size());
-        Coord dforce;
-        Coord du = dx1[c.index];
-        for (unsigned int ci=0; ci < Coord::size(); ci++)
-        {
-            dforce[ci] = 0;
-            for (unsigned int cj=0; cj < Coord::size(); cj++)
-            {
-                dforce[ci] += du[cj]*c.normal[cj];
-            }
-            dforce[ci] = dforce[ci]*c.normal[ci]*c.fact + du[ci]*(1-c.fact);
-        }
+        Deriv du = dx1[c.index];
+        Deriv dforce; dforce = -this->stiffness.getValue()*(c.normal * ((du*c.normal)*c.fact) + du * (1 - c.fact));
         df1[c.index] += dforce;
     }
 }

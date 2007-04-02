@@ -22,21 +22,10 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-//
-// C++ Implementation: TriangleBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_INL
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_QUADBENDINGSPRINGS_INL
+#define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGSPRINGS_INL
 
-#include <sofa/component/forcefield/TriangleBendingSprings.h>
+#include <sofa/component/forcefield/QuadBendingSprings.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <iostream>
 
@@ -52,113 +41,77 @@ namespace forcefield
 using namespace core::componentmodel::behavior;
 
 template<class DataTypes>
-TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
+QuadBendingSprings<DataTypes>::QuadBendingSprings()
     : dof(NULL)
 {
-    //std::cerr<<"TriangleBendingSprings<DataTypes>::TriangleBendingSprings"<<std::endl;
 }
 
 
 template<class DataTypes>
-TriangleBendingSprings<DataTypes>::~TriangleBendingSprings()
+QuadBendingSprings<DataTypes>::~QuadBendingSprings()
 {}
 
 template<class DataTypes>
-void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
+void QuadBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b, std::set<IndexPair>& springSet )
 {
+    IndexPair ab(a<b?a:b, a<b?b:a);
+    if (springSet.find(ab) != springSet.end()) return;
+    springSet.insert(ab);
     const VecCoord& x = *dof->getX();
     Real s = (Real)this->ks.getValue();
     Real d = (Real)this->kd.getValue();
     Real l = (x[a]-x[b]).norm();
     this->SpringForceField<DataTypes>::addSpring(a,b, s, d, l );
-    //std::cout<<"=================================TriangleBendingSprings<DataTypes>::addSpring "<<a<<", "<<b<<std::endl;
+    //std::cout<<"=================================QuadBendingSprings<DataTypes>::addSpring "<<a<<", "<<b<<std::endl;
 }
 
 template<class DataTypes>
-void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b, unsigned c, std::map<IndexPair, unsigned>& edgeMap)
+void QuadBendingSprings<DataTypes>::registerEdge( IndexPair ab, IndexPair cd, std::map<IndexPair, IndexPair>& edgeMap, std::set<IndexPair>& springSet)
 {
-    //std::cout<<"=================================TriangleBendingSprings<DataTypes>::registerTriangle "<<a<<", "<<b<<", "<<c<<std::endl;
-    using namespace std;
+    if (ab.first > ab.second)
     {
-        IndexPair edge(a<b ? a : b,a<b ? b : a);
-        unsigned opposite = c;
-        if( edgeMap.find( edge ) == edgeMap.end() )
-        {
-            edgeMap[edge] = opposite;
-        }
-        else
-        {
-            // create a spring between the opposite
-            this->addSpring(opposite,edgeMap[edge]);
-        }
+        ab = std::make_pair(ab.second,ab.first);
+        cd = std::make_pair(cd.second,cd.first);
     }
-
+    if (edgeMap.find(ab) == edgeMap.end())
     {
-        IndexPair edge(b<c ? b : c,b<c ? c : b);
-        unsigned opposite = a;
-        if( edgeMap.find( edge ) == edgeMap.end() )
-        {
-            edgeMap[edge] = opposite;
-        }
-        else
-        {
-            // create a spring between the opposite
-            this->addSpring(opposite,edgeMap[edge]);
-        }
+        edgeMap[ab] = cd;
     }
-
+    else
     {
-        IndexPair edge(c<a ? c : a,c<a ? a : c);
-        unsigned  opposite = b;
-        if( edgeMap.find( edge ) == edgeMap.end() )
-        {
-            edgeMap[edge] = opposite;
-        }
-        else
-        {
-            // create a spring between the opposite
-            this->addSpring(opposite,edgeMap[edge]);
-        }
+        // create a spring between the opposite
+        IndexPair ef = edgeMap[ab];
+        this->addSpring(cd.first, ef.first, springSet);
+        this->addSpring(cd.second, ef.second, springSet);
     }
-
 }
 
-
-
 template<class DataTypes>
-void TriangleBendingSprings<DataTypes>::init()
+void QuadBendingSprings<DataTypes>::init()
 {
     dof = dynamic_cast<MechanicalObject<DataTypes>*>( this->getContext()->getMechanicalState() );
     assert(dof);
-    //std::cout<<"==================================TriangleBendingSprings<DataTypes>::init(), dof size = "<<dof->getX()->size()<<std::endl;
+    //std::cout<<"==================================QuadBendingSprings<DataTypes>::init(), dof size = "<<dof->getX()->size()<<std::endl;
 
     // Set the bending springs
 
-    std::map< IndexPair, unsigned > edgeMap;
+    std::map< IndexPair, IndexPair > edgeMap;
+    std::set< IndexPair > springSet;
+
     topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>( this->getContext()->getTopology() );
     assert( topology );
 
-    const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    //std::cout<<"==================================TriangleBendingSprings<DataTypes>::init(), triangles size = "<<triangles.size()<<std::endl;
-    for( unsigned i= 0; i<triangles.size(); ++i )
-    {
-        const topology::MeshTopology::Triangle& face = triangles[i];
-        {
-            registerTriangle( face[0], face[1], face[2], edgeMap );
-        }
-
-    }
-
     const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-    //std::cout<<"==================================TriangleBendingSprings<DataTypes>::init(), quad size = "<<topology->getQuads().size()<<std::endl;
+    //std::cout<<"==================================QuadBendingSprings<DataTypes>::init(), quads size = "<<quads.size()<<std::endl;
     for( unsigned i= 0; i<quads.size(); ++i )
     {
         const topology::MeshTopology::Quad& face = quads[i];
         {
-            registerTriangle( face[0], face[1], face[2], edgeMap );
-            registerTriangle( face[0], face[2], face[3], edgeMap );
+            registerEdge( std::make_pair(face[0], face[1]), std::make_pair(face[3], face[2]), edgeMap, springSet );
+            registerEdge( std::make_pair(face[1], face[2]), std::make_pair(face[0], face[3]), edgeMap, springSet );
+            registerEdge( std::make_pair(face[2], face[3]), std::make_pair(face[1], face[0]), edgeMap, springSet );
+            registerEdge( std::make_pair(face[3], face[0]), std::make_pair(face[2], face[1]), edgeMap, springSet );
         }
-
     }
 
     // init the parent class

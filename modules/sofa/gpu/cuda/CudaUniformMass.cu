@@ -1,6 +1,15 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
 
+#if defined(__cplusplus)
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
+{
+#endif
+
 extern "C"
 {
     void UniformMassCuda3f_addMDx(unsigned int size, float mass, void* res, const void* dx);
@@ -121,3 +130,9 @@ void UniformMassCuda3f_addForce(unsigned int size, const float *mg, void* f)
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     UniformMassCuda3f_addForce_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, make_float3(mg[0],mg[1],mg[2]), (float*)f);
 }
+
+#if defined(__cplusplus)
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
+#endif

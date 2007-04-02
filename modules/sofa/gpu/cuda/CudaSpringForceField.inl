@@ -5,6 +5,8 @@
 #include <sofa/component/forcefield/SpringForceField.inl>
 #include <sofa/component/forcefield/StiffSpringForceField.inl>
 #include <sofa/component/forcefield/MeshSpringForceField.inl>
+#include <sofa/component/forcefield/TriangleBendingSprings.inl>
+#include <sofa/component/forcefield/QuadBendingSprings.inl>
 
 namespace sofa
 {

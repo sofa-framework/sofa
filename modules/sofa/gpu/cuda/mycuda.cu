@@ -16,9 +16,12 @@ void cudaCheck(cudaError_t err, const char* src="?")
     mycudaLogError(err, src);
 }
 
+bool cudaInitCalled = false;
+
 int mycudaInit(int device)
 {
     int deviceCount = 0;
+    cudaInitCalled = true;
     cudaCheck(cudaGetDeviceCount(&deviceCount));
     myprintf("CUDA: %d devices found.\n", deviceCount);
     for (int i=0; i<deviceCount; i++)
@@ -45,6 +48,7 @@ int mycudaInit(int device)
 
 void mycudaMalloc(void **devPtr, size_t size)
 {
+    if (!cudaInitCalled) mycudaInit(0);
     myprintf("CUDA: malloc(%d).\n",size);
     cudaCheck(cudaMalloc(devPtr, size),"cudaMalloc");
 }

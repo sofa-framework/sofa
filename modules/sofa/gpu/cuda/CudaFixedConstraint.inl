@@ -63,26 +63,26 @@ void FixedConstraint<CudaVec3fTypes>::init()
 template <>
 void FixedConstraint<gpu::cuda::CudaVec3fTypes>::addConstraint(unsigned int index)
 {
-    std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
+    //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
     f_indices.beginEdit()->push_back(index);
     f_indices.endEdit();
     if (data.cudaIndices.empty())
     {
         if (data.minIndex == -1)
         {
-            std::cout << "CudaFixedConstraint: single index "<<index<<"\n";
+            //std::cout << "CudaFixedConstraint: single index "<<index<<"\n";
             data.minIndex = index;
             data.maxIndex = index;
         }
         else if (data.minIndex == index+1)
         {
             data.minIndex = index;
-            std::cout << "CudaFixedConstraint: new min index "<<index<<"\n";
+            //std::cout << "CudaFixedConstraint: new min index "<<index<<"\n";
         }
         else if (data.maxIndex == index-1)
         {
             data.maxIndex = index;
-            std::cout << "CudaFixedConstraint: new max index "<<index<<"\n";
+            //std::cout << "CudaFixedConstraint: new max index "<<index<<"\n";
         }
         else
         {
@@ -92,13 +92,13 @@ void FixedConstraint<gpu::cuda::CudaVec3fTypes>::addConstraint(unsigned int inde
             data.cudaIndices.push_back(index);
             data.minIndex = -1;
             data.maxIndex = -1;
-            std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices.size()<<"\n";
+            //std::cout << "CudaFixedConstraint: new indices array size "<<data.cudaIndices.size()<<"\n";
         }
     }
     else
     {
         data.cudaIndices.push_back(index);
-        std::cout << "CudaFixedConstraint: indices array size "<<data.cudaIndices.size()<<"\n";
+        //std::cout << "CudaFixedConstraint: indices array size "<<data.cudaIndices.size()<<"\n";
     }
 }
 

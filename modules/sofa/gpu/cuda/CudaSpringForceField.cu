@@ -1,6 +1,15 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
 
+#if defined(__cplusplus)
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
+{
+#endif
+
 extern "C"
 {
     void SpringForceFieldCuda3f_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v);
@@ -338,7 +347,7 @@ __global__ void StiffSpringForceFieldCuda3f_addForce_kernel(unsigned int nbSprin
             relativeVelocity -= vel1;
 
             float inverseLength = 1/sqrt(dot(u,u));
-            float d = 1/inverseLength;
+            float d = __fdividef(1,inverseLength);
             u *= inverseLength;
             float elongation = d - spring.initpos;
             float elongationVelocity = dot(u,relativeVelocity);
@@ -562,3 +571,9 @@ void StiffSpringForceFieldCuda3f_addExternalDForce(unsigned int size, unsigned i
     dim3 grid((size+BSIZE-1)/BSIZE,1);
     StiffSpringForceFieldCuda3f_addExternalDForce_kernel<<< grid, threads, BSIZE*6*sizeof(float) >>>(nbSpringPerVertex, (const GPUSpring*)springs, (float*)f1, (const float*)dx1, (const float*)x1, (const float*)dx2, (const float*)x2, (const float*)dfdx);
 }
+
+#if defined(__cplusplus)
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
+#endif
