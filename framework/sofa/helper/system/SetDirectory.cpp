@@ -111,6 +111,8 @@ std::string SetDirectory::GetParentDir(const char* filename)
 
 std::string SetDirectory::GetRelativeFromDir(const char* filename, const char* basename)
 {
+    if (!filename || !filename[0]) return "";
+    if (filename[0] == '/') return filename; // absolute path
     std::string base = basename;
     std::string s = filename;
     // remove any ".."
@@ -121,6 +123,8 @@ std::string SetDirectory::GetRelativeFromDir(const char* filename, const char* b
     }
     if (base.empty())
         return s;
+    else if (base[base.length()-1] == '/')
+        return base + s;
     else
         return base + "/" + s;
 }
@@ -141,6 +145,18 @@ std::string SetDirectory::GetRelativeFromProcess(const char* filename, const cha
 std::string SetDirectory::GetProcessFullPath(const char* filename)
 {
 #ifdef WIN32
+    if (!filename || !filename[0])
+    {
+        LPWSTR wpath = *CommandLineToArgvW("",NULL);
+        if (wpath)
+        {
+            char path[1024];
+            memset(path,0,sizeof(path));
+            wcstombs(path, wpath, sizeof(path)-1);
+            //std::cout << "Current process: "<<path<<std::endl;
+            if (path[0]) return path;
+        }
+    }
     /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.
 #else
     if (!filename || filename[0]!='/')

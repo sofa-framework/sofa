@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/io/TriangleLoader.h>
+#include <sofa/helper/system/FileRepository.h>
 
 #include <assert.h>
 #include <stdlib.h>
@@ -49,10 +50,12 @@ using namespace sofa::defaulttype;
 
 bool TriangleLoader::load(const char *filename)
 {
+    std::string fname = filename;
+    if (!sofa::helper::system::DataRepository.findFile(fname)) return false;
     FILE*	file;
 
     /* open the file */
-    file = fopen(filename, "r");
+    file = fopen(fname.c_str(), "r");
     if (!file)
     {
         fprintf(stderr, "readOBJ() failed: can't open data file \"%s\".\n",

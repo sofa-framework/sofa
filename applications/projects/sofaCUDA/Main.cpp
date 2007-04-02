@@ -9,7 +9,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileRepository.h>
 #ifdef SOFA_GUI_QT
 #include <sofa/gui/qt/Main.h>
 #elif defined(SOFA_GUI_FLTK)
@@ -27,8 +27,9 @@ using namespace sofa::gpu::cuda;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    //std::string fileName = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../scenes/beam10x10x46-spring-rk4-CUDA.scn",argv[0]);
-    std::string fileName = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../scenes/quadSpringSphereCUDA.scn",argv[0]);
+    //std::string fileName = "beam10x10x46-spring-rk4-CUDA.scn";
+    std::string fileName = "quadSpringSphereCUDA.scn";
+
     int nbIter = 0;
     if (argc < 2 || argc > 3)
     {
@@ -40,6 +41,8 @@ int main(int argc, char** argv)
         fileName = argv[1];
         if (argc >=3) nbIter = atoi(argv[2]);
     }
+
+    sofa::helper::system::DataRepository.findFile(fileName);
 
     mycudaInit(0);
 

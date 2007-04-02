@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/io/MeshTopologyLoader.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <stdio.h>
@@ -58,6 +59,9 @@ static bool readLine(char* buf, int size, FILE* f)
 
 bool MeshTopologyLoader::load(const char *filename)
 {
+    std::string fname = filename;
+    if (!sofa::helper::system::DataRepository.findFile(fname)) return false;
+
     char cmd[1024];
     FILE* file;
     int npoints = 0;
@@ -67,7 +71,7 @@ bool MeshTopologyLoader::load(const char *filename)
     int ntetras = 0;
     int ncubes = 0;
 
-    if ((file = fopen(filename, "r")) == NULL)
+    if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
         std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
         return false;

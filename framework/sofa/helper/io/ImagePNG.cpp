@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/io/ImagePNG.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <iostream>
 
 #ifdef SOFA_HAVE_PNG
@@ -50,8 +51,13 @@ SOFA_DECL_CLASS(ImagePNG)
 
 Creator<Image::Factory,ImagePNG> ImagePNGClass("png");
 
-bool ImagePNG::load(const std::string &filename)
+bool ImagePNG::load(std::string filename)
 {
+    if (!sofa::helper::system::DataRepository.findFile(filename))
+    {
+        std::cerr << "File " << filename << " not found " << std::endl;
+        return false;
+    }
     FILE *file;
     /* make sure the file is there and open it read-only (binary) */
     if ((file = fopen(filename.c_str(), "rb")) == NULL)
@@ -152,7 +158,7 @@ bool ImagePNG::load(const std::string &filename)
     return true;
 }
 
-bool ImagePNG::save(const std::string& filename)
+bool ImagePNG::save(std::string filename)
 {
 
     FILE *file;

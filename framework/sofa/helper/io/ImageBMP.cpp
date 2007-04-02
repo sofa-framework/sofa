@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/io/ImageBMP.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <iostream>
 
 namespace sofa
@@ -40,8 +41,13 @@ SOFA_DECL_CLASS(ImageBMP)
 
 Creator<Image::Factory,ImageBMP> ImageBMPClass("bmp");
 
-bool ImageBMP::load(const std::string &filename)
+bool ImageBMP::load(std::string filename)
 {
+    if (!sofa::helper::system::DataRepository.findFile(filename))
+    {
+        std::cerr << "File " << filename << " not found " << std::endl;
+        return false;
+    }
     unsigned short int bfType;
     long int bfOffBits;
     short int biPlanes;
@@ -162,7 +168,7 @@ static bool fwriteDW(FILE* file, unsigned long data)
     return fwrite(&data,sizeof(data),1,file)!=0;
 }
 
-bool ImageBMP::save(const std::string& filename)
+bool ImageBMP::save(std::string filename)
 {
     FILE *file;
     /* make sure the file is there and open it read-only (binary) */

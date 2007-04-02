@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/io/MassSpringLoader.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/Vec.h>
 
 #include <stdio.h>
@@ -48,10 +49,13 @@ static void skipToEOL(FILE* f)
 
 bool MassSpringLoader::load(const char *filename)
 {
+    std::string fname = filename;
+    if (!sofa::helper::system::DataRepository.findFile(fname)) return false;
+
     char cmd[64];
     FILE* file;
 
-    if ((file = fopen(filename, "r")) == NULL)
+    if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
         std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
         return false;

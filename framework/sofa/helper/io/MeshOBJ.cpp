@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/io/MeshOBJ.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string>
@@ -44,6 +45,11 @@ Creator<Mesh::Factory,MeshOBJ> MeshOBJClass("obj");
 
 void MeshOBJ::init (std::string filename)
 {
+    if (!sofa::helper::system::DataRepository.findFile(filename))
+    {
+        std::cerr << "File " << filename << " not found " << std::endl;
+        return;
+    }
     FILE *f = fopen(filename.c_str(), "r");
     if (f)
     {

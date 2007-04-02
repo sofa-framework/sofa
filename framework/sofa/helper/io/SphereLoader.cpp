@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/io/SphereLoader.h>
+#include <sofa/helper/system/FileRepository.h>
 
 #include <stdio.h>
 #include <iostream>
@@ -44,12 +45,15 @@ static void skipToEOL(FILE* f)
 
 bool SphereLoader::load(const char *filename)
 {
+    std::string fname = filename;
+    if (!sofa::helper::system::DataRepository.findFile(fname)) return false;
+
     char cmd[64];
     FILE* file;
 
     static const char* SPH_FORMAT = "sph 1.0";
 
-    if ((file = fopen(filename, "r")) == NULL)
+    if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
         std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
         return false;

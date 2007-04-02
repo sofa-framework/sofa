@@ -4,7 +4,7 @@
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
-#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileRepository.h>
 #ifdef SOFA_GUI_FLTK
 #include <sofa/gui/fltk/Main.h>
 #endif
@@ -87,7 +87,8 @@ int main(int argc, char** argv)
 
     if (fileName.empty())
     {
-        fileName = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../scenes/chainFFD.scn",argv[0]);
+        fileName = "liver.scn";
+        sofa::helper::system::DataRepository.findFile(fileName);
     }
 
     groot = sofa::simulation::tree::Simulation::load(fileName.c_str());

@@ -13,7 +13,7 @@
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
-#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileRepository.h>
 
 #ifdef SOFA_GUI_FLTK
 #include <sofa/gui/fltk/Main.h>
@@ -99,7 +99,7 @@ int main(int argc, char** argv)
     // The visual model
     sofa::component::visualmodel::OglModel* visual = new sofa::component::visualmodel::OglModel();
     visual->setName( "visual" );
-    visual->load(sofa::helper::system::SetDirectory::GetRelativeFromProcess("../scenes/VisualModels/liver-smooth.obj",argv[0]), "", "");
+    visual->load(sofa::helper::system::DataRepository.getFile("VisualModels/liver-smooth.obj"), "", "");
     visual->setColor("red");
     visual->applyScale(0.7);
     visual->applyTranslation(1.2, 0.8, 0);

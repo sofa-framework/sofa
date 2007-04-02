@@ -43,6 +43,7 @@ HEADERS += \
           static_assert.h \
           system/config.h \
           system/SetDirectory.h \
+          system/FileRepository.h \
           system/thread/CTime.h \
           system/thread/debug.h \
           vector.h 
@@ -71,5 +72,6 @@ SOURCES += \
           io/TriangleLoader.cpp \
           LCPcalc.cpp \
           system/SetDirectory.cpp \
+          system/FileRepository.cpp \
           system/thread/CTime.cpp \
           system/thread/debug.cpp
