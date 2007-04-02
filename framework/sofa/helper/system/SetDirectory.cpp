@@ -45,16 +45,29 @@ namespace system
 
 SetDirectory::SetDirectory(const char* filename)
 {
-    previousDir[0]='\0';
     directory = GetParentDir(filename);
     if (!directory.empty())
     {
-        std::cout << "chdir("<<directory<<")"<<std::endl;
+        std::cout << ">chdir("<<directory<<")"<<std::endl;
+        previousDir = GetCurrentDir();
 #ifndef WIN32
-        getcwd(previousDir, sizeof(previousDir));
         chdir(directory.c_str());
 #else
-        _getcwd(previousDir, sizeof(previousDir));
+        _chdir(directory.c_str());
+#endif
+    }
+}
+
+SetDirectory::SetDirectory(const std::string& filename)
+{
+    directory = GetParentDir(filename.c_str());
+    if (!directory.empty())
+    {
+        std::cout << ">chdir("<<directory<<")"<<std::endl;
+        previousDir = GetCurrentDir();
+#ifndef WIN32
+        chdir(directory.c_str());
+#else
         _chdir(directory.c_str());
 #endif
     }
@@ -62,15 +75,28 @@ SetDirectory::SetDirectory(const char* filename)
 
 SetDirectory::~SetDirectory()
 {
-    if (!directory.empty() && previousDir[0])
+    if (!directory.empty() && !previousDir.empty())
     {
-        std::cout << "chdir("<<previousDir<<")"<<std::endl;
+        std::cout << "<chdir("<<previousDir<<")"<<std::endl;
 #ifndef WIN32
-        chdir(previousDir);
+        chdir(previousDir.c_str());
 #else
-        _chdir(previousDir);
+        _chdir(previousDir.c_str());
 #endif
     }
+}
+
+/// Get the current directory
+std::string SetDirectory::GetCurrentDir()
+{
+    char dir[1024];
+    memset(dir,0,sizeof(dir));
+#ifndef WIN32
+    getcwd(dir, sizeof(dir));
+#else
+    _getcwd(dir, sizeof(dir));
+#endif
+    return dir;
 }
 
 std::string SetDirectory::GetParentDir(const char* filename)
@@ -83,9 +109,9 @@ std::string SetDirectory::GetParentDir(const char* filename)
         return s.substr(0,pos);
 }
 
-std::string SetDirectory::GetRelativeFile(const char* filename, const char* basename)
+std::string SetDirectory::GetRelativeFromDir(const char* filename, const char* basename)
 {
-    std::string base = GetParentDir(basename);
+    std::string base = basename;
     std::string s = filename;
     // remove any ".."
     while ((s.substr(0,3)=="../" || s.substr(0,3)=="..\\") && !base.empty())
@@ -97,6 +123,37 @@ std::string SetDirectory::GetRelativeFile(const char* filename, const char* base
         return s;
     else
         return base + "/" + s;
+}
+
+std::string SetDirectory::GetRelativeFromFile(const char* filename, const char* basename)
+{
+    std::string base = GetParentDir(basename);
+    return GetRelativeFromDir(filename, base.c_str());
+}
+
+std::string SetDirectory::GetRelativeFromProcess(const char* filename, const char* basename)
+{
+    std::string base = GetProcessFullPath(basename);
+    return GetRelativeFromFile(filename, base.c_str());
+}
+
+/// Get the full path of the current process. The given filename should be the value of argv[0].
+std::string SetDirectory::GetProcessFullPath(const char* filename)
+{
+#ifdef WIN32
+    /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.
+#else
+    if (!filename || filename[0]!='/')
+    {
+        char path[1024];
+        memset(path,0,sizeof(path));
+        readlink("/proc/self/exe",path,sizeof(path)-1);
+        //std::cout << "Current process: "<<path<<std::endl;
+        if (path[0]) return path;
+
+    }
+#endif
+    return filename;
 }
 
 } // namespace system

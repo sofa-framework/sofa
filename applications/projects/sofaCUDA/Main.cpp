@@ -33,7 +33,7 @@ SOFA_LINK_CLASS(CudaPlaneForceField)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    std::string fileName = sofa::helper::system::SetDirectory::GetRelativeFile("../examples/Benchmarks/GPU/Bar10-spring-rk4-1.scn",argv[0]);
+    std::string fileName = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../examples/Benchmarks/GPU/Bar10-spring-rk4-1.scn",argv[0]);
     int nbIter = 0;
     if (argc < 2 || argc > 3)
     {

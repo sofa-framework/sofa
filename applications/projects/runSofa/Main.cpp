@@ -87,7 +87,7 @@ int main(int argc, char** argv)
 
     if (fileName.empty())
     {
-        fileName = sofa::helper::system::SetDirectory::GetRelativeFile("../scenes/chainFFD.scn",argv[0]);
+        fileName = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../scenes/chainFFD.scn",argv[0]);
     }
 
     groot = sofa::simulation::tree::Simulation::load(fileName.c_str());
