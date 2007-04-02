@@ -72,20 +72,11 @@ public:
     virtual const char* getClass() const = 0;
 
     /// Get the associated object
-    virtual core::objectmodel::Base* getBaseObject() = 0;
+    //virtual core::objectmodel::Base* getBaseObject() = 0;
 
     /// Get the node instance name
     const std::string& getName() const
     { return name; }
-
-    std::string getFullName() const
-    {
-        if (parent==NULL) return "/";
-        std::string pname = parent->getFullName();
-        pname += "/";
-        pname += getName();
-        return pname;
-    }
 
     virtual void setName(const std::string& newName)
     { name = newName; }
@@ -98,7 +89,11 @@ public:
     { type = newType; }
 
     /// Get the parent node
-    BaseElement* getParent() const
+    sofa::core::objectmodel::BaseObjectDescription* getParent() const
+    { return parent; }
+
+    /// Get the parent node
+    BaseElement* getParentElement() const
     { return parent; }
 
     /// Get all attribute data, read-only
@@ -125,23 +120,11 @@ public:
         return findNode(nodeName, absolute);
     }
 
-    /// Find an object given its name
-    //virtual core::objectmodel::Base* findObject(const char* nodeName)
-    //{
-    //	BaseElement* node = findNode(nodeName);
-    //	if (node!=NULL)
-    //	{
-    //		//std::cout << "Found node "<<nodeName<<": "<<node->getName()<<std::endl;
-    //		return node->getBaseObject();
-    //	}
-    //	else return NULL;
-    //}
-
     /// Get all objects of a given type
     template<class Sequence>
     void pushObjects(Sequence& result)
     {
-        typename Sequence::value_type obj = dynamic_cast<typename Sequence::value_type>(getBaseObject());
+        typename Sequence::value_type obj = dynamic_cast<typename Sequence::value_type>(getObject());
         if (obj!=NULL) result.push_back(obj);
 
         for (child_iterator<> it = begin(); it != end(); ++it)
@@ -154,7 +137,7 @@ public:
     {
         typedef typename Map::value_type V;
         typedef typename V::second_type OPtr;
-        OPtr obj = dynamic_cast<OPtr>(getBaseObject());
+        OPtr obj = dynamic_cast<OPtr>(getObject());
         if (obj!=NULL) result.insert(std::make_pair(getFullName(),obj));
 
         for (child_iterator<> it = begin(); it != end(); ++it)

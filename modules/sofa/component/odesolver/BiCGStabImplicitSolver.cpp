@@ -26,7 +26,6 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/BiCGStabImplicitSolver.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
 #include <sofa/core/ObjectFactory.h>

@@ -77,7 +77,7 @@ GNode* Simulation::load(const char *filename)
         std::cerr << "Objects initialization failed."<<std::endl;
     }
 
-    GNode* root = dynamic_cast<GNode*>(xml->getBaseObject());
+    GNode* root = dynamic_cast<GNode*>(xml->getObject());
     if (root == NULL)
     {
         std::cerr << "Objects initialization failed."<<std::endl;

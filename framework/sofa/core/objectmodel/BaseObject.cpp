@@ -25,7 +25,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/simulation/tree/xml/Element.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -82,7 +81,6 @@ void BaseObject::writeState( std::ostream& )
 /// Handle an event
 void BaseObject::handleEvent( Event* e )
 {
-    using namespace simulation::tree;
     cerr<<"BaseObject "<<getName()<<" ("<<getTypeName()<<") gets an event"<<endl;
     if( KeypressedEvent* ke = dynamic_cast<KeypressedEvent*>( e ) )
     {

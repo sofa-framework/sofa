@@ -40,6 +40,37 @@ namespace tree
 namespace xml
 {
 
+
+template<class Object>
+Element<Object>::Element(const std::string& name, const std::string& type, BaseElement* newParent)
+    : BaseElement(name, type, newParent), object(NULL)
+{
+}
+
+template<class Object>
+Element<Object>::~Element()
+{
+}
+
+template<class Object>
+Object* Element<Object>::getTypedObject()
+{
+    return object;
+}
+
+template<class Object>
+void Element<Object>::setObject(Object* newObject)
+{
+    object = newObject;
+}
+
+/// Get the associated object
+template<class Object>
+core::objectmodel::Base* Element<Object>::getObject()
+{
+    return object;
+}
+
 template<class Object>
 bool Element<Object>::initNode()
 {

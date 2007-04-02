@@ -111,7 +111,7 @@ bool BaseElement::removeAttribute(const std::string& attr)
 bool BaseElement::addChild(BaseElement* child)
 {
     if (child->getParent()==this) return false;
-    BaseElement* oldParent =  child->getParent();
+    BaseElement* oldParent =  child->getParentElement();
     if (!child->setParent(this)) return false;
     if (oldParent != NULL)
     {
@@ -159,8 +159,8 @@ BaseElement* BaseElement::findNode(const char* nodeName, bool absolute)
     if (nodeName == NULL) return NULL;
     if (nodeName[0]=='\\' || nodeName[0]=='/')
     {
-        if (!absolute && getParent()!=NULL)
-            return getParent()->findNode(nodeName);
+        if (!absolute && getParentElement()!=NULL)
+            return getParentElement()->findNode(nodeName);
         else
         { ++nodeName; absolute = true; }
     }
@@ -176,8 +176,8 @@ BaseElement* BaseElement::findNode(const char* nodeName, bool absolute)
         return findNode(sep, true);
     if (!strncmp(nodeName,"..",sep-nodeName))
     {
-        if (getParent()==NULL) return NULL;
-        else return getParent()->findNode(sep,true);
+        if (getParentElement()==NULL) return NULL;
+        else return getParentElement()->findNode(sep,true);
     }
     for (child_iterator<> it = begin(); it != end(); ++it)
     {
@@ -187,8 +187,8 @@ BaseElement* BaseElement::findNode(const char* nodeName, bool absolute)
             if (res!=NULL) return res;
         }
     }
-    if (!absolute && getParent()!=NULL)
-        return getParent()->findNode(nodeName);
+    if (!absolute && getParentElement()!=NULL)
+        return getParentElement()->findNode(nodeName);
     else
         return NULL;
 }

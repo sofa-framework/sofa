@@ -161,6 +161,7 @@ public:
         static T* MakeT();
     public:
         enum { exists = sizeof(Test(MakeT())) == sizeof(Small) };
+        static int Exists() { return exists; }
     };
 
     template<class RealClass, class BaseClass>

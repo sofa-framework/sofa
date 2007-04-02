@@ -98,8 +98,10 @@ void ReadState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
         if (updated)
         {
             //std::cout<<"update from file"<<std::endl;
-            static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityAction>();
-            static_cast<sofa::simulation::tree::GNode*>(this->getContext())->execute<sofa::simulation::tree::UpdateMappingAction>();
+            sofa::simulation::tree::MechanicalPropagatePositionAndVelocityAction action1;
+            this->getContext()->executeAction(&action1);
+            sofa::simulation::tree::UpdateMappingAction action2;
+            this->getContext()->executeAction(&action2);
         }
     }
     if (/* simulation::tree::AnimateEndEvent* ev = */ dynamic_cast<simulation::tree::AnimateEndEvent*>(event))

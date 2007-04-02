@@ -48,21 +48,16 @@ class Element : public BaseElement
 private:
     Object* object;
 public:
-    Element(const std::string& name, const std::string& type, BaseElement* newParent=NULL)
-        : BaseElement(name, type, newParent), object(NULL)
-    {
-    }
+    Element(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
 
-    virtual ~Element() {}
+    virtual ~Element();
 
-    Object* getObject()
-    { return object; }
+    Object* getTypedObject();
 
-    virtual void setObject(Object* newObject)
-    { object = newObject; }
+    virtual void setObject(Object* newObject);
 
     /// Get the associated object
-    virtual core::objectmodel::Base* getBaseObject() { return object; }
+    virtual core::objectmodel::Base* getObject();
 
     virtual bool initNode();
 
@@ -93,11 +88,11 @@ void createWithParentAndFilename(Object*& obj, BaseElement* arg)
         std::cerr << arg->getType() << " requires a filename attribute and a parent node\n";
         return;
     }
-    ParentObject* object = dynamic_cast<ParentObject*>(arg->getParent()->getBaseObject());
+    ParentObject* object = dynamic_cast<ParentObject*>(arg->getParent()->getObject());
     if (object==NULL)
     {
         // look for mechanicalmodel
-        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(arg->getParent()->getBaseObject());
+        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(arg->getParent()->getObject());
         if (ctx!=NULL)
             object = dynamic_cast<ParentObject*>(ctx->getMechanicalState());
     }
@@ -109,11 +104,11 @@ template<class Object, class ParentObject>
 void createWithParent(Object*& obj, BaseElement* arg)
 {
     obj = NULL;
-    ParentObject* object = dynamic_cast<ParentObject*>(arg->getParent()->getBaseObject());
+    ParentObject* object = dynamic_cast<ParentObject*>(arg->getParent()->getObject());
     if (object==NULL)
     {
         // look for mechanicalmodel
-        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(arg->getParent()->getBaseObject());
+        core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(arg->getParent()->getObject());
         if (ctx!=NULL)
             object = dynamic_cast<ParentObject*>(ctx->getMechanicalState());
     }
