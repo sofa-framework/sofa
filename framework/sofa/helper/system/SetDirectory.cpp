@@ -147,7 +147,9 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
 #ifdef WIN32
     if (!filename || !filename[0])
     {
-        LPWSTR wpath = *CommandLineToArgvW("",NULL);
+        //return __argv[0];
+        int n=0;
+        LPWSTR wpath = *CommandLineToArgvW(GetCommandLineW(),&n);
         if (wpath)
         {
             char path[1024];
