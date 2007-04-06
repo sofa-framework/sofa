@@ -23,9 +23,18 @@
       <Object type="Gravity" value="0 0 0 0 0 0" />
       <Object type="ExternalForceField" forces="10 0 0 0 0 0" indices="1" />
 -->
+<!--
       <Node name="Collision">
         <Object type="Sphere" radius=".2" position="0 0 0 0 0 0" />
         <Object type="RigidMapping" index="7" />
+      </Node>
+-->
+      <Node name="Collision">
+        <Object type="RegularGrid" nx="29" ny="1" nz="2" xmin="0" xmax="7" ymin="0" ymax="0" zmin="0.2" zmax="-0.2" />
+        <Object type="MechanicalObject" />
+        <Object type="BeamLinearMapping" />
+        <Object type="Triangle" />
+<!--        <Object type="OglModel" /> -->
       </Node>
    </Node>
    <Node name="beam2">
