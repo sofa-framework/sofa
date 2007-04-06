@@ -49,19 +49,23 @@ template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
     : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
     , f_indices( dataField(&f_indices,"indices","Indices of the fixed points") )
-{}
-
-
-template <class DataTypes>
-FixedConstraint<DataTypes>::FixedConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>
-        * mstate)
-    : core::componentmodel::behavior::Constraint<DataTypes>(mstate)
-    , f_indices( dataField(&f_indices,"indices","Indices of the fixed points") )
-{}
+{
+    // default to indice 0
+    f_indices.beginEdit()->push_back(0);
+    f_indices.endEdit();
+}
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::~FixedConstraint()
-{}
+{
+}
+
+template <class DataTypes>
+void FixedConstraint<DataTypes>::clearConstraints()
+{
+    f_indices.beginEdit()->clear();
+    f_indices.endEdit();
+}
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::addConstraint(unsigned int index)
@@ -184,9 +188,13 @@ void FixedConstraint<DataTypes>::draw()
 
 // Specialization for rigids
 template <>
-void FixedConstraint<RigidTypes >::draw();
+void FixedConstraint<Rigid3dTypes >::draw();
 template <>
-void FixedConstraint<RigidTypes >::projectResponse(VecDeriv& dx);
+void FixedConstraint<Rigid3fTypes >::draw();
+template <>
+void FixedConstraint<Rigid2dTypes >::draw();
+template <>
+void FixedConstraint<Rigid2fTypes >::draw();
 
 } // namespace constraint
 

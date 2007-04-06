@@ -260,7 +260,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw()
 {
     if (!getContext()->getShowBehaviorModels())
         return;
-    VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
     defaulttype::Vec3d len;
 
     // The moment of inertia of a box is:
@@ -288,7 +288,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw()
 {
     if (!getContext()->getShowBehaviorModels())
         return;
-    VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
     defaulttype::Vec3d len;
 
     // The moment of inertia of a box is:
@@ -316,7 +316,7 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw()
 {
     if (!getContext()->getShowBehaviorModels())
         return;
-    VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
     defaulttype::Vec3d len;
 
     len[0] = len[1] = sqrt(mass.getValue().inertiaMatrix);
@@ -335,7 +335,7 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw()
 {
     if (!getContext()->getShowBehaviorModels())
         return;
-    VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
     defaulttype::Vec3d len;
 
     len[0] = len[1] = sqrt(mass.getValue().inertiaMatrix);
@@ -405,6 +405,94 @@ double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const Rigid2fT
     return e;
 }
 
+Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
+{
+    double cosX = cos(thetaX);
+    double sinX = sin(thetaX);
+    double cosY = cos(thetaY);
+    double sinY = sin(thetaY);
+    double cosZ = cos(thetaZ);
+    double sinZ = sin(thetaZ);
+    return
+        Mat3x3d(Vec3d( cosZ, -sinZ,     0),
+                Vec3d( sinZ,  cosZ,     0),
+                Vec3d(    0,     0,     1)) *
+        Mat3x3d(Vec3d( cosY,     0,  sinY),
+                Vec3d(    0,     1,     0),
+                Vec3d(-sinY,     0,  cosY)) *
+        Mat3x3d(Vec3d(    1,     0,     0),
+                Vec3d(    0,  cosX, -sinX),
+                Vec3d(    0,  sinX,  cosX)) ;
+}
+
+template <>
+void UniformMass<Vec6fTypes, float>::draw()
+{
+    if (!getContext()->getShowBehaviorModels())
+        return;
+    const VecCoord& x = *mstate->getX();
+    const VecCoord& x0 = *mstate->getX0();
+
+    Mat3x3d R;
+    glBegin(GL_LINES);
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        defaulttype::Vec3d len(1,1,1);
+        int a = (i<x.size()-1)?i : i-1;
+        int b = a+1;
+        defaulttype::Vec3d dp; dp = x0[b]-x0[a];
+        defaulttype::Vec3d p; p = x[i];
+        len[0] = dp.norm();
+        len[1] = len[0];
+        len[2] = len[0];
+        R = R * MatrixFromEulerXYZ(x[i][3], x[i][4], x[i][5]);
+        glColor3f(1,0,0);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p + R.col(0)*len[0]);
+        glColor3f(0,1,0);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p + R.col(1)*len[1]);
+        glColor3f(0,0,1);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p + R.col(2)*len[2]);
+    }
+    glEnd();
+}
+
+template <>
+void UniformMass<Vec6dTypes, double>::draw()
+{
+    if (!getContext()->getShowBehaviorModels())
+        return;
+    const VecCoord& x = *mstate->getX();
+    const VecCoord& x0 = *mstate->getX0();
+
+    Mat3x3d R; R.identity();
+    glBegin(GL_LINES);
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        defaulttype::Vec3d len(1,1,1);
+        int a = (i<x.size()-1)?i : i-1;
+        int b = a+1;
+        defaulttype::Vec3d dp; dp = x0[b]-x0[a];
+        defaulttype::Vec3d p; p = x[i];
+        len[0] = dp.norm();
+        len[1] = len[0];
+        len[2] = len[0];
+        R = R * MatrixFromEulerXYZ(x[i][3], x[i][4], x[i][5]);
+        glColor3f(1,0,0);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p + R.col(0)*len[0]);
+        glColor3f(0,1,0);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p + R.col(1)*len[1]);
+        glColor3f(0,0,1);
+        helper::gl::glVertexT(p);
+        helper::gl::glVertexT(p + R.col(2)*len[2]);
+    }
+    glEnd();
+}
+
 SOFA_DECL_CLASS(UniformMass)
 
 template class UniformMass<Vec3dTypes,double>;
@@ -413,6 +501,8 @@ template class UniformMass<Vec2dTypes,double>;
 template class UniformMass<Vec2fTypes,float>;
 template class UniformMass<Vec1dTypes,double>;
 template class UniformMass<Vec1fTypes,float>;
+template class UniformMass<Vec6dTypes,double>;
+template class UniformMass<Vec6fTypes,float>;
 template class UniformMass<Rigid3dTypes,Rigid3dMass>;
 template class UniformMass<Rigid3fTypes,Rigid3fMass>;
 template class UniformMass<Rigid2dTypes,Rigid2dMass>;
@@ -424,6 +514,10 @@ int UniformMassClass = core::RegisterObject("Define the same mass for all the pa
         .add< UniformMass<Vec3fTypes,float> >()
         .add< UniformMass<Vec2dTypes,double> >()
         .add< UniformMass<Vec2fTypes,float> >()
+        .add< UniformMass<Vec1dTypes,double> >()
+        .add< UniformMass<Vec1fTypes,float> >()
+        .add< UniformMass<Vec6dTypes,double> >()
+        .add< UniformMass<Vec6fTypes,float> >()
         .add< UniformMass<Rigid3dTypes,Rigid3dMass> >()
         .add< UniformMass<Rigid3fTypes,Rigid3fMass> >()
         .add< UniformMass<Rigid2dTypes,Rigid2dMass> >()

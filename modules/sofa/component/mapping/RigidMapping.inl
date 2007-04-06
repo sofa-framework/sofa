@@ -117,8 +117,8 @@ void RigidMapping<BasicMapping>::init()
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    translation = in[0].getCenter();
-    in[0].writeRotationMatrix(rotation);
+    translation = in[index.getValue()].getCenter();
+    in[index.getValue()].writeRotationMatrix(rotation);
 
     rotatedPoints.resize(points.size());
     out.resize(points.size());
@@ -134,8 +134,8 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     Deriv v,omega;
-    v = in[0].getVCenter();
-    omega = in[0].getVOrientation();
+    v = in[index.getValue()].getVCenter();
+    omega = in[index.getValue()].getVOrientation();
     out.resize(points.size());
     for(unsigned int i=0; i<points.size(); i++)
     {
@@ -151,8 +151,8 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
 // {
 //     Deriv v;
 //     Real omega;
-//     v = in[0].getVCenter();
-//     omega = (Real)in[0].getVOrientation();
+//     v = in[index.getValue()].getVCenter();
+//     omega = (Real)in[index.getValue()].getVOrientation();
 //     out.resize(points.size());
 //     for(unsigned int i=0;i<points.size();i++)
 //     {
@@ -184,8 +184,8 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
         v += f;
         omega += cross(rotatedPoints[i],f);
     }
-    out[0].getVCenter() += v;
-    out[0].getVOrientation() += omega;
+    out[index.getValue()].getVCenter() += v;
+    out[index.getValue()].getVOrientation() += omega;
 }
 
 
@@ -201,8 +201,8 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
 //         v += f;
 //         omega += cross(rotatedPoints[i],f);
 //     }
-//     out[0].getVCenter() += v;
-//     out[0].getVOrientation() += (typename In::Real)omega;
+//     out[index.getValue()].getVCenter() += v;
+//     out[index.getValue()].getVOrientation() += (typename In::Real)omega;
 // }
 
 template<>
@@ -266,7 +266,7 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
         direction.getVOrientation() = omega_n;
 
         // for rigid model, there's only the center of mass as application point (so only one vector for each constraint)
-        out[i].push_back(InSparseDeriv(0, direction)); // 0 = index of the center of mass
+        out[i].push_back(InSparseDeriv(index.getValue(), direction)); // 0 = index of the center of mass
     }
 }
 

@@ -74,15 +74,13 @@ protected:
     FixedConstraintInternalData<DataTypes> data;
 
 public:
-    FixedConstraint();
-    //virtual const char* getTypeName() const { return "FixedConstraint"; }
     DataField<SetIndex> f_indices;
 
-
-    FixedConstraint(core::componentmodel::behavior::MechanicalState<DataTypes>* mstate);
+    FixedConstraint();
 
     virtual ~FixedConstraint();
 
+    void clearConstraints();
     void addConstraint(unsigned int index);
     void removeConstraint(unsigned int index);
 

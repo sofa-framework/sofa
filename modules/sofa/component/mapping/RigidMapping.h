@@ -66,9 +66,11 @@ protected:
     class Loader;
     void load(const char* filename);
 public:
+    DataField<unsigned> index;
 
     RigidMapping(In* from, Out* to)
         : Inherit(from, to)
+        , index(dataField(&index,(unsigned)0,"index","input DOF index"))
     {
     }
 

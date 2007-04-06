@@ -186,7 +186,6 @@ void UniformMass<DataTypes, MassType>::draw()
     glEnd();
 }
 
-
 template <class DataTypes, class MassType>
 bool UniformMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
 {
@@ -247,6 +246,11 @@ double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const VecCoord
 template <>
 double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
 
+
+template <>
+void UniformMass<Vec6fTypes,float>::draw();
+template <>
+void UniformMass<Vec6dTypes,double>::draw();
 
 } // namespace mass
 
