@@ -140,7 +140,7 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const
 
         defaulttype::Vec<N, typename In::Real> inpos = points[i];
         int in0 = helper::rfloor(inpos[0]);
-        if (in0<0) in0 = 0; else if (in0 > (int)in.size()-2) in0 = in.size()-2;
+        if (in0<0) in0 = 0; else if (in0 > (int)out.size()-2) in0 = out.size()-2;
         inpos[0] -= in0;
         Deriv f = in[i];
         out[in0].getVCenter() += f * (1-inpos[0]);
