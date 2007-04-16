@@ -47,7 +47,7 @@ void MeshSpringForceField<DataTypes>::init()
 {
     assert(this->object1);
     assert(this->object2);
-    clear();
+    this->StiffSpringForceField<DataTypes>::clear();
     if(!(this->object1) || !(this->object2))
         this->object2 = this->object1 = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
 
