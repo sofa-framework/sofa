@@ -100,6 +100,11 @@ public:
         return m_massDensity.getValue();
     }
 
+    void setMassDensity(Real m)
+    {
+        m_massDensity.setValue(m);
+    }
+
     void addMass(const MassType& mass);
 
     void resize(int vsize);
