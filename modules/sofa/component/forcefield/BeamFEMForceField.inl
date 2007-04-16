@@ -437,7 +437,7 @@ void BeamFEMForceField<DataTypes>::computeForce( Displacement &F, const Displace
 
 ////////////// large displacements method
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
+void BeamFEMForceField<DataTypes>::initLarge(int i, Index , Index )
 {
     _rotations[i].identity();
     // Rotation matrix (initial Tetrahedre/world)

@@ -131,7 +131,7 @@ void TriangleBendingSprings<DataTypes>::init()
     dof = dynamic_cast<MechanicalObject<DataTypes>*>( this->getContext()->getMechanicalState() );
     assert(dof);
     this->object1 = this->object2 = dof;
-    clear();
+    StiffSpringForceField<DataTypes>::clear();
 
     // Set the bending springs
 
