@@ -483,7 +483,7 @@ void MechanicalObject<DataTypes>::init()
         // X and/or V where user-specified
         resize(getX()->size()>getV()->size()?getX()->size():getV()->size());
     }
-    else if (getX()->size() <= 1)
+    else /*if (getX()->size() <= 1)*/
     {
         core::componentmodel::topology::Topology* topo = dynamic_cast<core::componentmodel::topology::Topology*>(this->getContext()->getTopology());
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())

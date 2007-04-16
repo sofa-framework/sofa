@@ -115,6 +115,12 @@ void RigidMapping<BasicMapping>::init()
 }
 
 template <class BasicMapping>
+void RigidMapping<BasicMapping>::clear()
+{
+    this->points.clear();
+}
+
+template <class BasicMapping>
 void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     translation = in[index.getValue()].getCenter();

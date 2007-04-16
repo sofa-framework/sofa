@@ -130,7 +130,8 @@ void TriangleBendingSprings<DataTypes>::init()
 {
     dof = dynamic_cast<MechanicalObject<DataTypes>*>( this->getContext()->getMechanicalState() );
     assert(dof);
-    //std::cout<<"==================================TriangleBendingSprings<DataTypes>::init(), dof size = "<<dof->getX()->size()<<std::endl;
+    this->object1 = this->object2 = dof;
+    clear();
 
     // Set the bending springs
 
@@ -163,6 +164,7 @@ void TriangleBendingSprings<DataTypes>::init()
 
     // init the parent class
     StiffSpringForceField<DataTypes>::init();
+
 }
 
 

@@ -100,6 +100,8 @@ public:
     void initTextures() { }
     void update() { }
 
+    void clear();
+
     //virtual const char* getTypeName() const { return "RigidMapping"; }
 
 protected:

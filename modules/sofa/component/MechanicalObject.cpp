@@ -42,7 +42,7 @@ using namespace defaulttype;
 SOFA_DECL_CLASS(MechanicalObject)
 
 int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
-        .add< MechanicalObject<Vec3dTypes> >(true) // default template
+        .add< MechanicalObject<Vec3dTypes> >(/*true*/) // default template
         .add< MechanicalObject<Vec3fTypes> >()
         .add< MechanicalObject<Rigid3Types> >()
         .add< MechanicalObject<LaparoscopicRigid3Types> >()
