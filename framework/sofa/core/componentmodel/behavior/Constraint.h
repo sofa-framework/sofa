@@ -69,8 +69,8 @@ public:
     virtual void projectVelocity(VecDeriv& dx)=0; ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& x)=0; ///< project x to constrained space (x models a position)
 
-    virtual void applyConstraint(); // Pure virtual would be better
-    virtual void applyConstraint(VecConst& /*c*/) {};
+    virtual void applyConstraint(unsigned int & /*contactId*/); // Pure virtual would be better
+    virtual void applyConstraint(VecConst& /*c*/, unsigned int & /*contactId*/) {};
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

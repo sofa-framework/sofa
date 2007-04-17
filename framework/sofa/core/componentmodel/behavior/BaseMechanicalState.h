@@ -124,7 +124,7 @@ public:
     virtual void setC(VecId v) = 0; //{}
 
     // new : get compliance on the constraints
-    virtual void getCompliance(double /*dt*/, double ** /*w*/, double * /*dfree*/, int& /*numContact*/) { }
+    virtual void getCompliance(double ** /*w*/) { }
     // apply contact force AND compute the subsequent dX
     virtual void applyContactForce(double * /*f*/) { }
 

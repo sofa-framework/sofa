@@ -22,57 +22,70 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASECONSTRAINT_H
-#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASECONSTRAINT_H
+#ifndef SOFA_DEFAULTTYPE_NEWMATMATRIX_H
+#define SOFA_DEFAULTTYPE_NEWMATMATRIX_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/NewMatVector.h>
 
-#include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/defaulttype/SofaBaseVector.h>
-
-#include <vector>
+#include "NewMAT/newmat.h"
 
 namespace sofa
 {
 
-namespace core
+namespace defaulttype
 {
 
-namespace componentmodel
-{
-
-namespace behavior
-{
-
-class BaseConstraint : public virtual objectmodel::BaseObject
+class NewMatMatrix : public BaseMatrix
 {
 public:
-    virtual ~BaseConstraint() { }
 
-    virtual void projectResponse() = 0; ///< project dx to constrained space (dx models an acceleration)
-    virtual void projectVelocity() = 0; ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition() = 0; ///< project x to constrained space (x models a position)
+    NewMatMatrix()
+    {
+        impl = new NewMAT::Matrix;
+    }
 
-    virtual void projectResponse(double **) {}; ///< project the compliance Matrix to constrained space
+    virtual ~NewMatMatrix()
+    {
+        delete impl;
+    }
 
-    virtual void applyConstraint(unsigned int&) {};
+    virtual void resize(int nbRow, int nbCol)
+    {
+        impl->ReSize(nbRow, nbCol);
+        (*impl) = 0.0;
+    };
 
-    virtual void applyConstraint(defaulttype::SofaBaseMatrix *, unsigned int &) {};
-    virtual void applyConstraint(defaulttype::SofaBaseVector *, unsigned int &) {};
+    virtual int rowSize(void)
+    {
+        return impl->Nrows();
+    };
 
-    virtual BaseMechanicalState* getDOFs() { return NULL; }
+    virtual int colSize(void)
+    {
+        return impl->Ncols();
+    };
 
-    virtual void getConstraintValue(double * /*, unsigned int &*/) {};
-    // virtual void resetContactCpt(){};
+    virtual double &element(int i, int j)
+    {
+        return impl->element(i,j);
+    };
+
+    virtual void solve(BaseVector *op, BaseVector *res)
+    {
+        NewMatVector *rv = dynamic_cast<NewMatVector *>(res);
+        NewMatVector *ov = dynamic_cast<NewMatVector *>(op);
+
+        assert((ov!=NULL) && (rv!=NULL));
+        *(rv->impl) = impl->i() * (*(ov->impl));
+    };
+
+private:
+    NewMAT::Matrix *impl;
 };
 
-} // namespace behavior
 
-} // namespace componentmodel
-
-} // namespace core
+} // namespace defaulttype
 
 } // namespace sofa
-
 #endif

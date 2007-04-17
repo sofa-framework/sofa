@@ -88,11 +88,11 @@ void Constraint<DataTypes>::projectPosition()
 }
 
 template<class DataTypes>
-void Constraint<DataTypes>::applyConstraint()
+void Constraint<DataTypes>::applyConstraint(unsigned int &contactId)
 {
     if( !isActive() ) return;
     if (mstate)
-        applyConstraint(*mstate->getC());
+        applyConstraint(*mstate->getC(), contactId);
 }
 
 } // namespace behavior

@@ -231,7 +231,7 @@ template <class BaseMapping>
 void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
 
-//	printf("\n applyJT(VectConst, VectConst) in RigidMapping");
+//	printf("\n applyJT(VectConst, VectConst) in RigidMapping\n");
 
     out.resize(in.size());
 

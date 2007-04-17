@@ -45,7 +45,7 @@ namespace behavior
 {
 
 OdeSolver::OdeSolver()
-    : mat(NULL), result(0)
+    : /*mat(NULL),*/ result(0)
 {}
 
 OdeSolver::~OdeSolver()
@@ -147,9 +147,9 @@ void OdeSolver::propagateDx(VecId dx)
     MechanicalPropagateDxAction(dx).execute( getContext() );
 }
 
-void OdeSolver::projectResponse(VecId dx)
+void OdeSolver::projectResponse(VecId dx, double **W)
 {
-    MechanicalApplyConstraintsAction(dx).execute( getContext() );
+    MechanicalApplyConstraintsAction(dx, W).execute( getContext() );
 }
 
 void OdeSolver::addMdx(VecId res, VecId dx)
@@ -195,6 +195,7 @@ void OdeSolver::computeAcc(double t, VecId a, VecId x, VecId v)
     {
         cerr<<"OdeSolver::computeAcc, f = "<<f<<endl;
     }
+
     accFromF(a, f);
     projectResponse(a);
 }
@@ -215,6 +216,7 @@ void OdeSolver::computeContactAcc(double t, VecId a, VecId x, VecId v)
     {
         cerr<<"OdeSolver::computeContactAcc, f = "<<f<<endl;
     }
+
     accFromF(a, f);
     projectResponse(a);
 }
@@ -230,19 +232,39 @@ void OdeSolver::printWithElapsedTime( VecId v,  unsigned time, std::ostream& out
     MechanicalVPrintWithElapsedTimeAction(v,(int)((fact*time+0.5)*0.001), out).execute( getContext() );
 }
 
-//                 double OdeSolver::getTime() const
-// {
-//     return this->getTime();
-// }
+//	double OdeSolver::getTime() const
+//	{
+//		return this->getTime();
+//	}
 
-// Matrix Computing in ForceField
+// BaseMatrix & BaseVector Computations
+void OdeSolver::addMBK_ToMatrix(defaulttype::BaseMatrix *A, double mFact, double bFact, double kFact, unsigned int offset)
+{
+    if (A != NULL)
+    {
+        MechanicalAddMBK_ToMatrixAction(A, mFact, bFact, kFact, offset).execute( getContext() );
+    }
+}
+
+void OdeSolver::addMBKdx_ToVector(VecId res, VecId dx, double mFact, double bFact, double kFact)
+{
+    MechanicalAddMBKdx_ToVectorAction(res, dx, mFact, bFact, kFact);
+}
+
+void OdeSolver::multiVector2BasicVector(VecId src, defaulttype::BaseVector *dest, unsigned int offset)
+{
+    if (dest != NULL)
+    {
+        MechanicalMultiVector2BasicVectorAction(src, dest, offset);
+    }
+}
 
 void OdeSolver::getMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
 {
     MechanicalGetMatrixDimensionAction(nbRow, nbCol).execute( getContext() );
 }
 
-
+/*
 void OdeSolver::computeMatrix(defaulttype::SofaBaseMatrix *mat, double mFact, double bFact, double kFact, unsigned int offset)
 {
     if (mat != NULL)
@@ -268,12 +290,9 @@ void OdeSolver::matResUpdatePosition(defaulttype::SofaBaseVector *vect, unsigned
         MechanicalMatResUpdatePositionAction(vect, offset).execute( getContext() );
     }
 }
+*/
 
 
-void OdeSolver::computeCompliance(double dt, double **W, double *dFree, int &numContact)
-{
-    MechanicalComputeComplianceAction(dt, W,dFree, numContact).execute(getContext());
-}
 
 void OdeSolver::computeContactForce(VecId result)
 {

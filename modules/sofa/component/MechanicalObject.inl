@@ -353,6 +353,10 @@ void MechanicalObject<DataTypes>::resize(const int size)
         (*v0).resize(size);
     (*f).resize(size);
     (*dx).resize(size);
+
+    (*xfree).resize(size);
+    (*vfree).resize(size);
+
     if (size!=vsize)
     {
         vsize=size;
@@ -453,7 +457,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getCompliance (double /*dt*/, double** /*W*/, double* /*dfree*/, int& /*numContact*/)
+void MechanicalObject<DataTypes>::getCompliance (double** /*W*/)
 {
 }
 
@@ -522,6 +526,8 @@ void MechanicalObject<DataTypes>::reset()
     this->resize(this->x0->size());
     *this->x = *x0;
     *this->v = *v0;
+
+    *this->xfree = *x;
 }
 
 template <class DataTypes>
@@ -1080,8 +1086,29 @@ void MechanicalObject<DataTypes>::resetForce()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint()
 {
+//	std::cout << "resetConstraint()\n";
     VecConst& c= *getC();
     c.clear();
+
+    constraintId.clear();
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setConstraintId(unsigned int i)
+{
+    constraintId.push_back(i);
+
+    //for (int j=0; j<constraintId.size(); j++)
+    //{
+    //	std::cout << "constraintId[j] = " << constraintId[j] << std::endl;
+    //}
+}
+
+template <class DataTypes>
+std::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId()
+{
+    return constraintId;
 }
 
 /*
@@ -1108,7 +1135,7 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 // Template specializations
 
 template<>
-void MechanicalObject<defaulttype::Rigid3Types>::getCompliance (double dt, double**W, double * /*dfree*/, int &numContact);
+void MechanicalObject<defaulttype::Rigid3Types>::getCompliance (double**W);
 template<>
 void MechanicalObject<defaulttype::Rigid3Types>::applyContactForce(double *f);
 template<>

@@ -57,64 +57,67 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(bool friction, Deriv
 
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::applyConstraint()
+void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &contactId)
 {
     assert(this->object1);
     assert(this->object2);
+
     VecConst& c1 = *this->object1->getC();
     VecConst& c2 = *this->object2->getC();
 
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        SparseVecDeriv svd;
+        c.id = contactId++;
 
-        /* Set the constraints vector for the first mechanical model using the normal */
-        svd.push_back(SparseDeriv(c.m1, -c.norm));
-        c1.push_back(svd);
-        /* Set the constraints vector for the second mechanical model using the normal */
-        svd[0] = SparseDeriv(c.m2, c.norm);
-        c2.push_back(svd);
+        this->object1->setConstraintId(c.id);
+        this->object2->setConstraintId(c.id);
 
+        SparseVecDeriv svd1;
+        SparseVecDeriv svd2;
+
+        svd1.push_back(SparseDeriv(c.m1, -c.norm));
+        svd2.push_back(SparseDeriv(c.m2, c.norm));
+
+        c1.push_back(svd1);
+        c2.push_back(svd2);
+
+        /*
         if (c.friction)
         {
-            /* Set the constraints vector for the first mechanical model using the tangente */
-            svd.push_back(SparseDeriv(c.m1, -c.t));
-            c1.push_back(svd);
-            /* Set the constraints vector for the second mechanical model using the tangente */
-            svd[0] = SparseDeriv(c.m2, c.t);
-            c2.push_back(svd);
+        	// Set the constraints vector for the first mechanical model using the tangente
+        	svd.push_back(SparseDeriv(c.m1, -c.t));
 
-            /* Set the constraints vector for the first mechanical model using the secant */
-            svd.push_back(SparseDeriv(c.m1, -c.s));
-            c1.push_back(svd);
-            /* Set the constraints vector for the second mechanical model the secant */
-            svd[0] = SparseDeriv(c.m2, c.s);
-            c2.push_back(svd);
+        	// Set the constraints vector for the second mechanical model using the tangente
+        	svd[0] = SparseDeriv(c.m2, c.t);
+
+        	// Set the constraints vector for the first mechanical model using the secant
+        	svd.push_back(SparseDeriv(c.m1, -c.s));
+
+        	// Set the constraints vector for the second mechanical model the secant
+        	svd[0] = SparseDeriv(c.m2, c.s);
         }
+        */
     }
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v, int* offset)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v /*, unsigned int &numContacts*/)
 {
-    unsigned int i, j;
-    j = 0;
-    for (i=0; i<contacts.size(); i++)
+    for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i]; // get each contact detected
-        //v[j+(*offset)] = c.delta;
-        v[j+(*offset)] = c.dfree; // if there is not friction, dfree is the only constraint value added to v
-        j++;
-        if (c.friction)
-        {
-            v[j+(*offset)] = c.dfree_t; // if there is friction, dfree_t & dfree_s are added to v too
-            v[j+(*offset)] = c.dfree_s;
-            j += 2;
-        }
+        v[c.id] = c.dfree; // if there is not friction, dfree is the only constraint value added to v
+
+        //	if (c.friction)
+        //	{
+        //		v[j+(*offset)] = c.dfree_t; // if there is friction, dfree_t & dfree_s are added to v too
+        //		v[j+(*offset)] = c.dfree_s;
+        //		j += 2;
+        //	}
     }
-    (*offset) += j;
 }
+
 
 } // namespace constraint
 

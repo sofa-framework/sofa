@@ -53,6 +53,7 @@ HEADERS += \
           objectmodel/Field.h \
           objectmodel/FieldBase.h \
           objectmodel/KeypressedEvent.h \
+	  objectmodel/KeyreleasedEvent.h \
           objectmodel/VField.h \
           objectmodel/XField.h \
           VisualModel.h \
@@ -72,6 +73,7 @@ SOURCES +=  \
           objectmodel/Event.cpp \
           objectmodel/Field.cpp \
           objectmodel/KeypressedEvent.cpp \
+	  objectmodel/KeyreleasedEvent.cpp \
           ObjectFactory.cpp
 
 SOFA_DIR = ../../..

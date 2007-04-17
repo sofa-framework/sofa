@@ -10,11 +10,15 @@ LIBS += -lsofahelper$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 
 HEADERS += \
+	  BaseMatrix.h \
+	  BaseVector.h \
           Frame.h \ 
           LaparoscopicRigidTypes.h \
           Mat.h \
           NewMatSofaMatrix.h \
           NewMatSofaVector.h \
+	  NewMatMatrix.h \
+          NewMatVector.h \
           Quat.h \
           Quat.inl \
           RigidTypes.h \

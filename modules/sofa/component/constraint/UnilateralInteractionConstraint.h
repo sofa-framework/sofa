@@ -4,6 +4,8 @@
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
+#include <iostream>
+
 namespace sofa
 {
 
@@ -43,12 +45,15 @@ protected:
         Real dfree_t;   ///< QPfree * t
         Real dfree_s;   ///< QPfree * s
         bool friction;  ///< show if friction is considered (for add t and s constraints)
+        unsigned int id;
     };
 
     std::vector<Contact> contacts;
     Real epsilon;
 
 public:
+
+    unsigned int constraintId;
 
     UnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
         : object1(object1), object2(object2), epsilon(Real(0.001))
@@ -65,6 +70,10 @@ public:
     {
     }
 
+    virtual ~UnilateralInteractionConstraint()
+    {
+    }
+
     MechanicalState* getObject1() { return object1; }
     MechanicalState* getObject2() { return object2; }
     core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
@@ -77,11 +86,11 @@ public:
             contacts.reserve(reserve);
     }
 
-    virtual void applyConstraint();
+    virtual void applyConstraint(unsigned int & /*contactId*/);
 
-    virtual void addContact(bool friction, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2,  Coord Pfree = Coord(), Coord Qfree = Coord());
+    virtual void addContact(bool friction, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree = Coord(), Coord Qfree = Coord());
 
-    virtual void getConstraintValue(double* v, int* offset);
+    virtual void getConstraintValue(double* v /*, unsigned int &numContacts */);
 
     // Previous Constraint Interface
     virtual void projectResponse() {};

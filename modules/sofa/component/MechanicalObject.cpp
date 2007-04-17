@@ -56,70 +56,75 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
         ;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
-
 template<>
-void MechanicalObject<defaulttype::Rigid3Types>::getCompliance (double dt, double**W, double * /*dfree*/, int &numContact)
+void MechanicalObject<defaulttype::Rigid3Types>::getCompliance(double**W)
 {
-    // const VecDeriv& v = *getVfree();
-    const VecConst& contacts = *getC();
+    const VecConst& constraints = *getC();
     Deriv weighedNormal;
     Deriv InvM_wN;
 
     const sofa::defaulttype::RigidMass* massValue;
 
     simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+
     if (node != NULL)
     {
         core::componentmodel::behavior::BaseMass*_m = node->mass;
         component::mass::UniformMass<defaulttype::RigidTypes, defaulttype::RigidMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::RigidTypes, defaulttype::RigidMass>*> (_m);
-        massValue = 	&( m->getMass() );
+        massValue = &( m->getMass());//.getValue() );
     }
     else
     {
-        static sofa::defaulttype::RigidMass defaultMass;
-        massValue = &defaultMass;
+        massValue = new sofa::defaulttype::RigidMass();
         printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
     }
 
-    numContact = contacts.size();
+    unsigned int numConstraints = constraints.size();
+    //std::cout << "constraints.size() = " << constraints.size() << std::endl;
+    //std::cout << "constraintId.size() = " << constraintId.size() << std::endl;
 
-    for(int c1=0; c1<numContact; c1++)
+    //std::cout << "Liste des index des contraintes: ";
+    //for(unsigned int i=0; i<constraintId.size(); i++)
+    //{
+    //	std::cout << constraintId[i] << ", ";
+    //}
+    //std::cout << std::endl;
+
+    double dt = this->getContext()->getDt();
+
+    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
-        int sizeC1 = contacts[c1].size();
-        for(int i=0; i<sizeC1; i++)
+        int sizeCurRowConst = constraints[curRowConst].size();
+        int indexCurRowConst = constraintId[curRowConst];
+
+        for(int i = 0; i < sizeCurRowConst; i++)
         {
-            weighedNormal.getVCenter() = contacts[c1][i].data.getVCenter(); // weighed normal
-            weighedNormal.getVOrientation() = contacts[c1][i].data.getVOrientation();
+            weighedNormal.getVCenter() = constraints[curRowConst][i].data.getVCenter(); // weighed normal
+            weighedNormal.getVOrientation() = constraints[curRowConst][i].data.getVOrientation();
 
-            InvM_wN = weighedNormal / (*massValue); // WARNING massValue is not a double but a massType !!
-            // operator / is defined in "RigidTypes.h"
-            /*
-            			printf("\n contact[%d] = weighedNormal x : %f, y : %f, z : %f, u : %f, v : %f, w : %f",
-            				c1, weighedNormal.getVCenter().x(), weighedNormal.getVCenter().y(), weighedNormal.getVCenter().z(),
-            				weighedNormal.getVOrientation().x(), weighedNormal.getVOrientation().y(), weighedNormal.getVOrientation().z());
+            InvM_wN = weighedNormal / (*massValue);
+            InvM_wN *= dt*dt;
 
-            			printf("\n contact[%d] = InvM_wN x : %f, y : %f, z : %f, u : %f, v : %f, w : %f",
-            				c1, InvM_wN.getVCenter().x(), InvM_wN.getVCenter().y(), InvM_wN.getVCenter().z(),
-            				InvM_wN.getVOrientation().x(), InvM_wN.getVOrientation().y(), InvM_wN.getVOrientation().z());
-            */
-//			dfree[c1] += (dot(v[0].getVCenter(), weighedNormal.getVCenter()) +
-//				dot(v[0].getVOrientation(), weighedNormal.getVOrientation()))*dt; //0.01;
-            for(int c2=c1; c2<numContact; c2++)
+            int indexCurColConst;
+
+            for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
-                int sizeC2 = contacts[c2].size();
-                for(int j=0; j<sizeC2; j++)
-                {
-//					W[c1][c2] += (dot(weighedNormal.getVCenter(), contacts[c2][j].data.getVCenter()) +
-//						dot(weighedNormal.getVOrientation(), contacts[c2][j].data.getVOrientation()))*(dt*dt);//(0.01*0.01);
+                int sizeCurColConst = constraints[curColConst].size();
+                indexCurColConst = constraintId[curColConst];
 
-                    W[c1][c2] +=  contacts[c2][j].data*InvM_wN; // WARNING : this is a dot product defined in "RigidTypes.h"
-                    W[c1][c2] *= dt*dt;
+                for(int j = 0; j < sizeCurColConst; j++)
+                {
+                    W[indexCurRowConst][indexCurColConst] +=  constraints[curColConst][j].data * InvM_wN;
+//					W[indexCurRowConst][indexCurColConst] *= dt*dt;
                 }
             }
-            for(int c2=c1+1; c2<numContact; c2++)
+
+            for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
             {
-                W[c2][c1] = W[c1][c2];
+                indexCurColConst = constraintId[curColConst];
+                W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
             }
+
         }
     }
 }
@@ -128,29 +133,30 @@ template<>
 void MechanicalObject<defaulttype::Rigid3Types>::applyContactForce(double *f)
 {
     VecDeriv& force = *this->externalForces;
-    const VecConst& contacts = *getC();
+    const VecConst& constraints = *getC();
     Deriv weighedNormal;
-
-    int numContact = contacts.size();
 
     force.resize(0);
     force.resize(1);
     force[0] = Deriv();
 
-    for(int c1=0; c1<numContact; c1++)
+    int numConstraints = constraints.size();
+
+    for(int c1 = 0; c1 < numConstraints; c1++)
     {
-        int sizeC1 = contacts[c1].size();
-        for(int i=0; i<sizeC1; i++)
+        int indexC1 = constraintId[c1];
+
+        if (f[indexC1] != 0.0)
         {
-            if (f[c1+numContact]!=0.0)
+            int sizeC1 = constraints[c1].size();
+            for(int i = 0; i < sizeC1; i++)
             {
-                weighedNormal = contacts[c1][i].data; // weighed normal
-                force[0].getVCenter() += weighedNormal.getVCenter() * f[c1+numContact];
-                force[0].getVOrientation() += weighedNormal.getVOrientation() * f[c1+numContact];
+                weighedNormal = constraints[c1][i].data; // weighted normal
+                force[0].getVCenter() += weighedNormal.getVCenter() * f[indexC1];
+                force[0].getVOrientation() += weighedNormal.getVOrientation() * f[indexC1];
             }
         }
     }
-//	printf("f = %f, %f, %f \n", force[0].getVCenter().x(), force[0].getVCenter().y(), force[0].getVCenter().z());
 }
 
 
@@ -161,8 +167,6 @@ void MechanicalObject<defaulttype::Rigid3Types>::resetContactForce()
     for( unsigned i=0; i<force.size(); ++i )
         force[i] = Deriv();
 }
-
-
 
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 

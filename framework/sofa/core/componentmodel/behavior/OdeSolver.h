@@ -26,8 +26,9 @@
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_ODESOLVER_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/SofaBaseMatrix.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
 {
@@ -71,7 +72,7 @@ public:
     virtual void v_teq(VecId v, double f); ///< v*=f
     virtual void v_dot(VecId a, VecId b); ///< a dot b ( get result using finish )
     virtual void propagateDx(VecId dx);
-    virtual void projectResponse(VecId dx);
+    virtual void projectResponse(VecId dx, double **W=NULL);
     virtual void addMdx(VecId res, VecId dx);
     virtual void integrateVelocity(VecId res, VecId x, VecId v, double dt);
     virtual void accFromF(VecId a, VecId f);
@@ -84,12 +85,16 @@ public:
     virtual void computeContactDf(VecId df);
     virtual void computeContactAcc(double t, VecId a, VecId x, VecId v);
 
-    virtual void computeMatrix(defaulttype::SofaBaseMatrix *mat=NULL, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0);
+    // BaseMatrix & BaseVector Computations
+    virtual void addMBK_ToMatrix(defaulttype::BaseMatrix *A, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0);
+    virtual void addMBKdx_ToVector(VecId res, VecId dx, double mFact=1.0, double bFact=1.0, double kFact=1.0);
     virtual void getMatrixDimension(unsigned int * const, unsigned int * const);
-    virtual void computeOpVector(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
-    virtual void matResUpdatePosition(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
+    virtual void multiVector2BasicVector(VecId src, defaulttype::BaseVector *dest=NULL, unsigned int offset=0);
 
-    virtual void computeCompliance(double dt, double **W, double *dFree, int &numContact);
+//			virtual void computeMatrix(defaulttype::SofaBaseMatrix *mat=NULL, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0);
+//          virtual void computeOpVector(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
+//          virtual void matResUpdatePosition(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
+
     virtual void computeContactForce(VecId result);
 
     virtual void print( VecId v, std::ostream& out );
@@ -97,7 +102,7 @@ public:
     /// @}
 
 protected:
-    defaulttype::SofaBaseMatrix *mat;
+    //defaulttype::SofaBaseMatrix *mat;
 
     class VectorIndexAlloc
     {

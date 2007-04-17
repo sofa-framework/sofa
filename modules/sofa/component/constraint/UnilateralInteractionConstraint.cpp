@@ -14,7 +14,6 @@ namespace constraint
 
 using namespace sofa::defaulttype;
 
-
 SOFA_DECL_CLASS(UnilateralInteractionConstraint)
 
 int UnilateralInteractionConstraintClass = core::RegisterObject("TODO-UnilateralInteractionConstraint")

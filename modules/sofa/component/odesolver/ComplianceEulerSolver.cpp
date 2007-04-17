@@ -79,30 +79,20 @@ void ComplianceEulerSolver::solve(double dt)
 
     if (firstCallToSolve.getValue()) // f = contact force
     {
-//        cerr<<"\n ComplianceEulerSolver, force = "<< force <<endl;
         computeContactAcc(getTime(), acc, pos, vel);
-//        cerr<<"\n ComplianceEulerSolver, acceleration = "<< acc <<endl;
         vel.eq(velFree); // computes velocity after a constraint movement
         vel.peq(acc,dt);
-//        cerr<<"\n ComplianceEulerSolver, velocity = "<< vel <<endl;
         pos.peq(vel,dt); // Computes position after a constraint movement
         dx.peq(acc,(dt*dt));
-//       cerr<<"\n ComplianceEulerSolver, dx = "<< dx <<endl;
         simulation::tree::MechanicalPropagateAndAddDxAction(dx).execute(context);
     }
     else // f = mass * gravity
     {
-//        cerr<<"\n ComplianceEulerSolver, pos = "<< pos <<endl;
-
-//        cerr<<"\n ComplianceEulerSolver, force = "<< force <<endl;
         computeAcc(getTime(), acc, pos, vel);
-//        cerr<<"\n ComplianceEulerSolver, acceleration = "<< acc <<endl;
         velFree.eq(vel);
         velFree.peq(acc,dt);
-//       cerr<<"\n ComplianceEulerSolver, velFree = "<< velFree <<endl;
         posFree.eq(pos);
         posFree.peq(velFree,dt);
-        //      cerr<<"\n ComplianceEulerSolver, posFree = "<< posFree <<endl;
         simulation::tree::MechanicalPropagateFreePositionAction().execute(context);
     }
 

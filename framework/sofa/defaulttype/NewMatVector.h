@@ -22,79 +22,55 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MECHANICALSTATE_H
-#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MECHANICALSTATE_H
+#ifndef SOFA_DEFAULTTYPE_NEWMATVECTOR_H
+#define SOFA_DEFAULTTYPE_NEWMATVECTOR_H
 
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include "NewMAT/newmat.h"
+#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/defaulttype/NewMatMatrix.h>
 
 namespace sofa
 {
 
-namespace core
+namespace defaulttype
 {
 
-namespace componentmodel
+class NewMatVector : public BaseVector
 {
-
-namespace behavior
-{
-
-template<class TDataTypes>
-class MechanicalState : public BaseMechanicalState
-{
+    friend class NewMatMatrix;
 public:
-    typedef TDataTypes DataTypes;
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::SparseDeriv SparseDeriv;
-    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
-    typedef typename DataTypes::VecConst VecConst;
 
-    virtual ~MechanicalState() { }
-
-    virtual VecCoord* getX() = 0;
-    virtual VecDeriv* getV() = 0;
-    virtual VecDeriv* getF() = 0;
-    virtual VecDeriv* getDx() = 0;
-    virtual VecConst* getC() = 0;
-    virtual VecCoord* getXfree() = 0;
-
-    virtual const VecCoord* getX()  const = 0;
-    virtual const VecDeriv* getV()  const = 0;
-    virtual const VecDeriv* getF()  const = 0;
-    virtual const VecDeriv* getDx() const = 0;
-    virtual const VecConst* getC() const = 0;
-    virtual const VecCoord* getXfree()  const = 0;
-
-    virtual const VecCoord* getX0()  const = 0;
-    virtual const VecDeriv* getV0()  const = 0;
-
-
-    /// Get the indices of the particles located in the given bounding box
-    virtual void getIndicesInSpace(std::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
-
-    virtual std::string getTemplateName() const
+    NewMatVector()
     {
-        return templateName(this);
+        impl = new NewMAT::ColumnVector();
     }
 
-    static std::string templateName(const MechanicalState<DataTypes>* = NULL)
+    virtual ~NewMatVector()
     {
-        return DataTypes::Name();
+        delete impl;
     }
 
-    virtual void setConstraintId(unsigned int ) = 0;
-    virtual std::vector<unsigned int>& getConstraintId() = 0;
+    virtual void resize(int dim)
+    {
+        impl->ReSize(dim);
+        (*impl) = 0.0;
+    };
+
+    virtual double &element(int i)
+    {
+        return impl->element(i);
+    };
+
+    virtual int size(void)
+    {
+        return impl->Nrows();
+    };
+
+private:
+    NewMAT::ColumnVector *impl;
 };
 
-} // namespace behavior
-
-} // namespace componentmodel
-
-} // namespace core
+} // namespace defaulttype
 
 } // namespace sofa
 

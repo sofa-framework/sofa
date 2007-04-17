@@ -1085,7 +1085,7 @@ void BarycentricMapping<BasicMapping>::RegularGridMapper::applyJT( typename Basi
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::MeshMapper::applyJT( typename BasicMapping::In::VecConst& out, const typename BasicMapping::Out::VecConst& in )
 {
-//	printf("\n applyJT() in BaricentricMapping  [MeshMapper] ");
+//	printf("\n applyJT() in BaricentricMapping  [MeshMapper] \n");
     const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
     const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
     const topology::MeshTopology::SeqQuads& quads = this->topology->getQuads();

@@ -22,57 +22,29 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASECONSTRAINT_H
-#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASECONSTRAINT_H
+#ifndef SOFA_DEFAULTTYPE_BASEVECTOR_H
+#define SOFA_DEFAULTTYPE_BASEVECTOR_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
-
-#include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/defaulttype/SofaBaseVector.h>
-
-#include <vector>
 
 namespace sofa
 {
 
-namespace core
+namespace defaulttype
 {
 
-namespace componentmodel
-{
-
-namespace behavior
-{
-
-class BaseConstraint : public virtual objectmodel::BaseObject
+class BaseVector
 {
 public:
-    virtual ~BaseConstraint() { }
+    virtual ~BaseVector() {};
 
-    virtual void projectResponse() = 0; ///< project dx to constrained space (dx models an acceleration)
-    virtual void projectVelocity() = 0; ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition() = 0; ///< project x to constrained space (x models a position)
-
-    virtual void projectResponse(double **) {}; ///< project the compliance Matrix to constrained space
-
-    virtual void applyConstraint(unsigned int&) {};
-
-    virtual void applyConstraint(defaulttype::SofaBaseMatrix *, unsigned int &) {};
-    virtual void applyConstraint(defaulttype::SofaBaseVector *, unsigned int &) {};
-
-    virtual BaseMechanicalState* getDOFs() { return NULL; }
-
-    virtual void getConstraintValue(double * /*, unsigned int &*/) {};
-    // virtual void resetContactCpt(){};
+    virtual void resize(int dim) = 0;
+    virtual double &element(int i) = 0;
+    virtual int size(void) = 0;
 };
 
-} // namespace behavior
+} // nampespace defaulttype
 
-} // namespace componentmodel
+} // nampespace sofa
 
-} // namespace core
-
-} // namespace sofa
 
 #endif

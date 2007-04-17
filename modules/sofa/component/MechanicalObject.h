@@ -80,6 +80,7 @@ protected:
     // The storage is a SparseMatrix
     // Each constraint (Type TConst) contains the index of the related DOF
     VecConst *c;
+    std::vector<unsigned int> constraintId;
 
     double translation[3];
     double scale;
@@ -192,12 +193,15 @@ public:
 
 
     // new : get compliance on the constraints
-    virtual void getCompliance(double dt, double **w, double *dfree, int &numContact);
+    virtual void getCompliance(double **w);
     // apply contact force AND compute the subsequent dX
     virtual void applyContactForce(double *f);
     virtual void resetContactForce(void);
 
     virtual void addDxToCollisionModel(void);
+
+    void setConstraintId(unsigned int);
+    std::vector<unsigned int>& getConstraintId();
 
 
     /// @name Integration related methods
