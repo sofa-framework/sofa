@@ -172,7 +172,7 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
 // in order to compute the right constaint on the rigidModel.
 template <class BaseMapping>
-void BeamLinearMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void BeamLinearMapping<BaseMapping>::applyJT( typename In::VecConst& /*out*/, const typename Out::VecConst& /*in*/ )
 {
     /*
     //	printf("\n applyJT(VectConst, VectConst) in BeamLinearMapping");
