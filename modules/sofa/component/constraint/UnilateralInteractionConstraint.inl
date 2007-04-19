@@ -23,16 +23,6 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(bool friction, Deriv
 
     Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
     Real dt;
-    if (rabs(delta - deltaFree) > 0.0001 * delta)
-        dt = delta / (delta - deltaFree);
-    else
-        dt = 0;
-
-//	if(dt<1.0002)
-//	{
-    sofa::defaulttype::Vector3 Qt, Pt;
-    Qt = Q*(1-dt) + Qfree*dt;
-    Pt = P*(1-dt) + Pfree*dt;
     int i = contacts.size();
     contacts.resize(i+1);
     Contact& c = contacts[i];
@@ -40,19 +30,39 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(bool friction, Deriv
     c.m2 = m2;
     c.norm = norm;
     c.delta = delta;
-    c.dt = dt;
-    c.dfree = dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
+    c.t = Deriv(norm.z(), norm.x(), norm.y());
+    c.s = cross(norm,c.t);
+    c.s = c.s / c.s.norm();
+    c.t = cross((-norm), c.s);
     c.friction = friction;
-    if (friction) // only if friction, t and s are computed
+
+    if (rabs(delta - deltaFree) > 0.0001 * delta)
     {
-        c.t = Deriv(norm.y(), norm.z(), norm.x());
-        c.s = cross(norm,c.t);
-        c.s = c.s / c.s.norm();
-        c.t = cross((-norm), c.s);
-        c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-        c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
+        dt = delta / (delta - deltaFree);
+        if (dt < 1.0)
+        {
+            sofa::defaulttype::Vector3 Qt, Pt;
+            Qt = Q*(1-dt) + Qfree*dt;
+            Pt = P*(1-dt) + Pfree*dt;
+            c.dfree = dot(Pfree-Pt, c.norm) - dot(Qfree-Qt, c.norm);
+            c.dfree_t = dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
+            c.dfree_s = dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
+        }
+        else
+        {
+            c.dfree = dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
+            c.dfree_t = 0;
+            c.dfree_s = 0;
+        }
     }
-//	}
+    else
+    {
+        dt = 0;
+        c.dfree = dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
+        c.dfree_t = 0;
+        c.dfree_s = 0;
+    }
+
 }
 
 
