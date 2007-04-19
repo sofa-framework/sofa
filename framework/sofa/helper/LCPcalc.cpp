@@ -12,7 +12,7 @@ namespace helper
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
  */
-int resoudreLCP(int dim, double * q, double ** M, double * res)
+int resoudreLCP(int dim, double * q, double ** M, double *res)
 {
 
     // d�laration des variables
@@ -181,6 +181,7 @@ int resoudreLCP(int dim, double * q, double ** M, double * res)
     // lib�ation de la m�oire allou�
     for(compteur=0; compteur<dim; compteur++)
     {
+        res[compteur]  = res[dim + compteur];
         free(mat[compteur]);
     }
     free(mat);
@@ -589,7 +590,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
 
     /*input*/
 
-    itermax = MAX_BOU;
+    itermax = dim2;
     ispeak  = 0;
 
     /*output*/
@@ -821,7 +822,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
     if (Ifound) return 1;
 
     printf("\n Problem with this LCP :\n");
-//  afficheLCP(q,M,dim);
+    afficheLCP(q,M,dim);
     return 0;
 
 }
@@ -831,6 +832,7 @@ void afficheLCP(double *q, double **M, int dim)
 {
     int compteur, compteur2;
     // affichage de la matrice du LCP
+    printf("dim = %d",dim);
     printf("M = [");
     for(compteur=0; compteur<dim; compteur++)
     {
@@ -848,7 +850,7 @@ void afficheLCP(double *q, double **M, int dim)
     {
         printf("\t%.4f\n",q[compteur]);
     }
-    printf("      ]\n\n");
+    printf("      ];\n\n");
 }
 
 } // namespace helper
