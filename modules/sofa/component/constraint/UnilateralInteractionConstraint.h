@@ -3,7 +3,7 @@
 
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-
+#include <sofa/core/VisualModel.h>
 #include <iostream>
 
 namespace sofa
@@ -16,7 +16,7 @@ namespace constraint
 {
 
 template<class DataTypes>
-class UnilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
+class UnilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -46,6 +46,10 @@ protected:
         Real dfree_s;   ///< QPfree * s
         bool friction;  ///< show if friction is considered (for add t and s constraints)
         unsigned int id;
+
+        // for visu
+        Coord P, Q;
+        Coord Pfree, Qfree;
     };
 
     std::vector<Contact> contacts;
@@ -133,6 +137,13 @@ public:
                         dynamic_cast<MechanicalState*>(context->getMechanicalState());
         }
     }
+
+    // -- VisualModel interface
+    void draw();
+    void initTextures() { }
+    void update() { }
+
+
 };
 } // namespace constraint
 
