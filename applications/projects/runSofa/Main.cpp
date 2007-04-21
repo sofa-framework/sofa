@@ -11,6 +11,9 @@
 #ifdef SOFA_GUI_QT
 #include <sofa/gui/qt/Main.h>
 #endif
+#ifdef SOFA_GUI_QGLVIEWER
+#include <sofa/gui/qglviewer/Main.h>
+#endif
 #include <GL/glut.h>
 
 #ifndef WIN32
@@ -54,6 +57,9 @@ int main(int argc, char** argv)
 #ifdef SOFA_GUI_QT
     gui = "qt";
 #endif
+#ifdef SOFA_GUI_QGLVIEWER
+    gui = "qglviewer";
+#endif
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
 //	.option(&fileName,'f',"file","scene file")
@@ -65,6 +71,9 @@ int main(int argc, char** argv)
 #endif
 #ifdef SOFA_GUI_QT
             "|qt"
+#endif
+#ifdef SOFA_GUI_QGLVIEWER
+            "|qglviewer"
 #endif
             ")"
            )
@@ -122,6 +131,15 @@ int main(int argc, char** argv)
 #endif
 #ifdef SOFA_GUI_QT
     else if (gui=="qt")
+    {
+        sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
+        // BUGFIX: the user may have loaded another simulation, in which case the first simulation is already destroyed
+        // So we need to get the current simulation from the GUI
+        groot = sofa::gui::qt::CurrentSimulation();
+    }
+#endif
+#ifdef SOFA_GUI_QGLVIEWER
+    else if (gui=="qglviewer")
     {
         sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
         // BUGFIX: the user may have loaded another simulation, in which case the first simulation is already destroyed
