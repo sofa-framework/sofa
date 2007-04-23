@@ -63,6 +63,13 @@ void Mapping<In,Out>::init()
 }
 
 template <class In, class Out>
+void Mapping<In,Out>::setModels(In* from, Out* to)
+{
+    this->fromModel = from;
+    this->toModel = to;
+}
+
+template <class In, class Out>
 void Mapping<In,Out>::updateMapping()
 {
     if (this->toModel == NULL || this->fromModel == NULL)

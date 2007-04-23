@@ -55,6 +55,7 @@ public:
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
 
     virtual void init();
+    virtual void setModels(In* from, Out* to);
 
     virtual void updateMapping();
 
