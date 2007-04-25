@@ -105,6 +105,7 @@ public:
 
 
     virtual void init();
+    virtual void reinit();
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);

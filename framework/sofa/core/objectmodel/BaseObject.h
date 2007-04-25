@@ -72,6 +72,9 @@ public:
     /// Initialization method called after each graph modification.
     virtual void init();
 
+    /// Update method called when variables used in precomputation are modified.
+    virtual void reinit();
+
     /// Reset to initial state
     virtual void reset();
 

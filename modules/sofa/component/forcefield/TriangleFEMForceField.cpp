@@ -121,6 +121,22 @@ void TriangleFEMForceField<DataTypes>::init()
 }
 
 
+
+template <class DataTypes>
+void TriangleFEMForceField<DataTypes>::reinit()
+{
+    if (f_method.getValue() == "small")
+        method = SMALL;
+    else if (f_method.getValue() == "large")
+        method = LARGE;
+
+    computeMaterialStiffnesses();
+
+    initSmall();
+    initLarge();
+}
+
+
 template <class DataTypes>
 void TriangleFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
 {

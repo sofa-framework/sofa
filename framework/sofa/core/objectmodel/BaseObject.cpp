@@ -71,6 +71,10 @@ BaseContext* BaseObject::getContext()
 void BaseObject::init()
 { }
 
+/// Update method called when variables used in precomputation are modified.
+void BaseObject::reinit()
+{ std::cout<<"WARNING: for this object, the reinit method does nothing.\n\n";}
+
 /// Reset to initial state
 void BaseObject::reset()
 { }

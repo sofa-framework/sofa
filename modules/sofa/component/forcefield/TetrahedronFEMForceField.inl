@@ -270,6 +270,65 @@ void TetrahedronFEMForceField<DataTypes>::init()
 }
 
 
+template <class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::reinit()
+{
+    switch(f_method.getValue())
+    {
+    case SMALL :
+    {
+        unsigned int i=0;
+        typename VecElement::const_iterator it;
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        {
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+            Index c = (*it)[2];
+            Index d = (*it)[3];
+            this->computeMaterialStiffness(i,a,b,c,d);
+            this->initSmall(i,a,b,c,d);
+        }
+        break;
+    }
+    case LARGE :
+    {
+        _rotations.resize( _indexedElements->size() );
+        _rotatedInitialElements.resize(_indexedElements->size());
+        unsigned int i=0;
+        typename VecElement::const_iterator it;
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        {
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+            Index c = (*it)[2];
+            Index d = (*it)[3];
+            computeMaterialStiffness(i,a,b,c,d);
+            initLarge(i,a,b,c,d);
+        }
+        break;
+    }
+    case POLAR :
+    {
+        _rotations.resize( _indexedElements->size() );
+        _rotatedInitialElements.resize(_indexedElements->size());
+        _initialTransformation.resize(_indexedElements->size());
+        unsigned int i=0;
+        typename VecElement::const_iterator it;
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        {
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+            Index c = (*it)[2];
+            Index d = (*it)[3];
+            computeMaterialStiffness(i,a,b,c,d);
+            initPolar(i,a,b,c,d);
+        }
+        break;
+    }
+    }
+}
+
+
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, const VecDeriv& /*v*/)
 {
