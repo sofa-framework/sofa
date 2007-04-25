@@ -55,8 +55,8 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-    this->setPoissonRatio((Real)atof(arg->getAttribute("poissonRatio","0.49")));
-    this->setYoungModulus((Real)atof(arg->getAttribute("youngModulus","100000")));
+    this->setPoissonRatio((Real)atof(arg->getAttribute("poissonRatio","0.3")));
+    this->setYoungModulus((Real)atof(arg->getAttribute("youngModulus","10000")));
     std::string method = arg->getAttribute("method","");
     if (method == "small")
         this->setMethod(SMALL);
@@ -147,7 +147,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
     _materialsStiffnesses.resize(_indexedElements->size() );
     _forces.resize( _initialPoints.size() );
 
-    switch(_method)
+    switch(f_method.getValue())
     {
     case SMALL :
     {
@@ -279,14 +279,14 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
     typename VecElement::const_iterator it;
     /*
     if(_dampingRatio!=0)
-    	if(_method==SMALL)
+    	if(f_method.getValue()==SMALL)
     		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
     		{
     			if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
     			accumulateForceSmall( f, p, it, i );
     			accumulateDampingSmall( f, i );
     		}
-    	else if(_method==LARGE)
+    	else if(f_method.getValue()==LARGE)
     		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
     		{
     			if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
@@ -302,13 +302,13 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
     		}
     else
     */
-    if(_method==SMALL)
+    if(f_method.getValue()==SMALL)
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
         {
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForceSmall( f, p, it, i );
         }
-    else if(_method==LARGE)
+    else if(f_method.getValue()==LARGE)
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
         {
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
@@ -330,13 +330,13 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x)
 {
     v.resize(x.size());
-    //if(_assembling) applyStiffnessAssembled(v,x);
+    //if(f_assembling.getValue()) applyStiffnessAssembled(v,x);
     //else
     {
         unsigned int i=0;
         typename VecElement::const_iterator it;
 
-        switch(_method)
+        switch(f_method.getValue())
         {
         case SMALL :
         {
@@ -532,20 +532,20 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
     _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
             = _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] =
-                    _materialsStiffnesses[i][2][1] = _poissonRatio/(1-_poissonRatio);
+                    _materialsStiffnesses[i][2][1] = f_poissonRatio.getValue()/(1-f_poissonRatio.getValue());
     _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] =	_materialsStiffnesses[i][0][5] = 0;
     _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] =	_materialsStiffnesses[i][1][5] = 0;
     _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] =	_materialsStiffnesses[i][2][5] = 0;
     _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] =	_materialsStiffnesses[i][3][5] = 0;
     _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] =	_materialsStiffnesses[i][4][5] = 0;
     _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] =	_materialsStiffnesses[i][5][4] = 0;
-    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1-2*_poissonRatio)/(2*(1-_poissonRatio));
-    _materialsStiffnesses[i] *= (_youngModulus*(1-_poissonRatio))/((1+_poissonRatio)*(1-2*_poissonRatio));
+    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1-2*f_poissonRatio.getValue())/(2*(1-f_poissonRatio.getValue()));
+    _materialsStiffnesses[i] *= (f_youngModulus.getValue()*(1-f_poissonRatio.getValue()))/((1+f_poissonRatio.getValue())*(1-2*f_poissonRatio.getValue()));
 
 
 
-    /*Real gamma = (_youngModulus*_poissonRatio) / ((1+_poissonRatio)*(1-2*_poissonRatio));
-    Real 		mu2 = _youngModulus / (1+_poissonRatio);
+    /*Real gamma = (f_youngModulus.getValue()*f_poissonRatio.getValue()) / ((1+f_poissonRatio.getValue())*(1-2*f_poissonRatio.getValue()));
+    Real 		mu2 = f_youngModulus.getValue() / (1+f_poissonRatio.getValue());
     _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] =	_materialsStiffnesses[i][0][5] = 0;
     _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] =	_materialsStiffnesses[i][1][5] = 0;
     _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] =	_materialsStiffnesses[i][2][5] = 0;
@@ -713,7 +713,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f, const
     // compute force on element
     Displacement F;
 
-    if(!_assembling)
+    if(!f_assembling.getValue())
     {
         computeForce( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex] );
         //std::cerr<<"TetrahedronFEMForceField<DataTypes>::accumulateForceSmall, force"<<F<<std::endl;
@@ -922,7 +922,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const
 
 
     Displacement F;
-    if(_updateStiffnessMatrix)
+    if(f_updateStiffnessMatrix.getValue())
     {
         _strainDisplacements[elementIndex][0][0]   = ( - deforme[2][1]*deforme[3][2] );
         _strainDisplacements[elementIndex][1][1] = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
@@ -941,7 +941,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const
     }
 
 
-    if(!_assembling)
+    if(!f_assembling.getValue())
     {
         // compute force on element
         computeForce( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex]);
@@ -1129,7 +1129,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const
 
 
     Displacement F;
-    if(_updateStiffnessMatrix)
+    if(f_updateStiffnessMatrix.getValue())
     {
         // shape functions matrix
         computeStrainDisplacement( _strainDisplacements[elementIndex], deforme[0],deforme[1],deforme[2],deforme[3]  );
@@ -1137,7 +1137,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const
     }
 
 
-    if(!_assembling)
+    if(!f_assembling.getValue())
     {
         computeForce( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex] );
 

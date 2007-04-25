@@ -101,39 +101,41 @@ protected:
     topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
     VecCoord _initialPoints; ///< the intial positions of the points
-    int _method; ///< the computation method of the displacements
-    Real _poissonRatio;
-    Real _youngModulus;
-    Real _dampingRatio;
-    bool _updateStiffnessMatrix;
-    bool _assembling;
 
 public:
+
+    DataField<int> f_method; ///< the computation method of the displacements
+    DataField<Real> f_poissonRatio;
+    DataField<Real> f_youngModulus;
+    DataField<Real> f_dampingRatio;
+    DataField<bool> f_updateStiffnessMatrix;
+    DataField<bool> f_assembling;
+
+
     TetrahedronFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
-        , _method(0)
-        , _poissonRatio(0.45f)
-        , _youngModulus(5000)
-        , _dampingRatio(0)
-        , _updateStiffnessMatrix(true)
-        , _assembling(false)
-    {
-    }
+        , f_method(dataField(&f_method,0,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
+        , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
+        , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus",""))
+        , f_dampingRatio(dataField(&f_dampingRatio,(Real)0,"dampingRatio",""))
+        , f_updateStiffnessMatrix(dataField(&f_updateStiffnessMatrix,true,"updateStiffnessMatrix",""))
+        , f_assembling(dataField(&f_assembling,false,"assembling",""))
+    {}
 
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    void setPoissonRatio(Real val) { this->_poissonRatio = val; }
+    void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
 
-    void setYoungModulus(Real val) { this->_youngModulus = val; }
+    void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
 
-    void setMethod(int val) { this->_method = val; }
+    void setMethod(int val) { this->f_method.setValue(val); }
 
-    void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }
+    void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 
-    void setComputeGlobalMatrix(bool val) { this->_assembling= val; }
+    void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
 
-//	component::MechanicalObject<DataTypes>* getObject() { return object; }
+    //	component::MechanicalObject<DataTypes>* getObject() { return object; }
 
     virtual void init();
 
@@ -165,13 +167,13 @@ protected:
 
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
 
-////////////// small displacements method
+    ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
     void accumulateDampingSmall( Vector& f, Index elementIndex );
     void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
 
-////////////// large displacements method
+    ////////////// large displacements method
     vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
     vector<Transformation> _rotations;
     void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
@@ -180,7 +182,7 @@ protected:
     void accumulateDampingLarge( Vector& f, Index elementIndex );
     void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3 );
 
-////////////// polar decomposition method
+    ////////////// polar decomposition method
     vector<Transformation> _initialTransformation;
     void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
