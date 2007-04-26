@@ -31,7 +31,7 @@ int FixedConstraintClass = core::RegisterObject("Attach given particles to their
         .add< FixedConstraint<Rigid3dTypes> >()
         .add< FixedConstraint<Rigid3fTypes> >()
         .add< FixedConstraint<Rigid2dTypes> >()
-        .add< FixedConstraint<Rigid2dTypes> >()
+        .add< FixedConstraint<Rigid2fTypes> >()
         ;
 
 template <>
