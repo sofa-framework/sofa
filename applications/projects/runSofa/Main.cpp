@@ -141,10 +141,10 @@ int main(int argc, char** argv)
 #ifdef SOFA_GUI_QGLVIEWER
     else if (gui=="qglviewer")
     {
-        sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
+        sofa::gui::guiqglviewer::MainLoop(argv[0],groot,fileName.c_str());
         // BUGFIX: the user may have loaded another simulation, in which case the first simulation is already destroyed
         // So we need to get the current simulation from the GUI
-        groot = sofa::gui::qt::CurrentSimulation();
+        groot = sofa::gui::guiqglviewer::CurrentSimulation();
     }
 #endif
     else
