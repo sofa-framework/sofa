@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Document   : example.xml
+    Created on : 02 March 2004, 15:44
+    Author     : promayon
+    Description:
+        Small example of custom properties definition.        
+-->
+
+<physicalProperties xmlns='http://www-timc.imag.fr/customPhysicalProperties'
+  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+  xsi:schemaLocation='http://www-timc.imag.fr/customPhysicalProperties ../PhysicalPropertiesCustomizer/customPhysicalProperties.xsd'>
+
+  <atomProperties>
+    <property name="myCustomProperty1" type="int" defaultValue="10"/>    
+    <property name="myCustomProperty2" type="std::string" defaultValue="no name"/>     
+  </atomProperties>
+  
+  <cellProperties inherits="false"> <!-- structural component properties can not be used as well on Cells -->
+    <property name="myCustomProperty1" type="float"/>    
+    <property name="myCustomProperty2" type="int"/>    
+  </cellProperties>
+  
+  <structuralComponentProperties>
+    <property name="myCustomProperty1" type="int"/>    
+    <property name="myCustomProperty2" type="std::string" defaultValue="~"/>
+  </structuralComponentProperties>
+  
+</physicalProperties>
