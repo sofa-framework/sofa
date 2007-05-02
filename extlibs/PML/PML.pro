@@ -3,13 +3,13 @@
 # 
 
 SOFA_DIR = ../..
+TEMPLATE = lib
 include($$SOFA_DIR/sofa.cfg)
 
 TARGET = physicalmodel$$LIBSUFFIX
-TEMPLATE = lib
 CONFIG += $$CONFIGLIBRARIES
 
-INCLUDEPATH += ./PhysicalProperties 
+# INCLUDEPATH += ./PhysicalProperties 
 
 
 # --------------- Sources --------------------
