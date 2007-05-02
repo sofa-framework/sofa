@@ -44,8 +44,8 @@ protected:
         Real dfree;		///< QPfree * normal - contact distance
         Real dfree_t;   ///< QPfree * t
         Real dfree_s;   ///< QPfree * s
-        bool friction;  ///< show if friction is considered (for add t and s constraints)
         unsigned int id;
+        double mu;		///< angle for friction
 
         // for visu
         Coord P, Q;
@@ -90,9 +90,9 @@ public:
             contacts.reserve(reserve);
     }
 
-    virtual void applyConstraint(unsigned int & /*contactId*/);
+    virtual void applyConstraint(unsigned int & /*contactId*/, double & /*mu*/);
 
-    virtual void addContact(bool friction, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree = Coord(), Coord Qfree = Coord());
+    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree = Coord(), Coord Qfree = Coord());
 
     virtual void getConstraintValue(double* v /*, unsigned int &numContacts */);
 

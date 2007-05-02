@@ -1,4 +1,7 @@
 #include <sofa/helper/LCPcalc.h>
+#include <vector>
+#include <algorithm>
+#include <functional>
 
 namespace sofa
 {
@@ -6,16 +9,16 @@ namespace sofa
 namespace helper
 {
 
-
-/* Resoud un LCP �rit sous la forme U = q + M.F
+//#include "mex.h"
+/* Resoud un LCP écrit sous la forme U = q + M.F
  * dim : dimension du pb
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
  */
-int resoudreLCP(int dim, double * q, double ** M, double *res)
+int resoudreLCP(int dim, double * q, double ** M, double * res)
 {
 
-    // d�laration des variables
+    // déclaration des variables
     int compteur;	// compteur de boucle
     int compteur2;	// compteur de boucle
     double ** mat;	// matrice de travail
@@ -24,11 +27,11 @@ int resoudreLCP(int dim, double * q, double ** M, double *res)
     int colPiv;		// colonne du pivot
     double pivot;	// pivot
     double min;		// recherche du minimum pour le pivot
-    double coeff;	// valeur du coefficient de la combinaison lin�ire
+    double coeff;	// valeur du coefficient de la combinaison linéaire
     int boucles;	// compteur du nombre de passages dans la boucle
     int result=1;
 
-    // allocation de la m�oire n�essaire
+    // allocation de la mémoire nécessaire
     mat = (double **)malloc(dim*sizeof(double *));
     for(compteur=0; compteur<dim; compteur++)
     {
@@ -130,7 +133,7 @@ int resoudreLCP(int dim, double * q, double ** M, double *res)
                 mat[ligPiv][compteur]/=pivot;
             }
 
-            // combinaisons lin�ires mettant la colonne du pivot a 0
+            // combinaisons linéaires mettant la colonne du pivot a 0
             for(compteur=0; compteur<dim; compteur++)
             {
                 if (compteur!=ligPiv)
@@ -169,7 +172,7 @@ int resoudreLCP(int dim, double * q, double ** M, double *res)
     {
         res[compteur]=0;
     }
-    // si on est arriv??r�oudre le pb, seules les variables en base sont non nulles
+    // si on est arrivé à résoudre le pb, seules les variables en base sont non nulles
     if (boucles<MAX_BOU)
     {
         for(compteur=0; compteur<dim; compteur++)
@@ -178,10 +181,9 @@ int resoudreLCP(int dim, double * q, double ** M, double *res)
         }
     }
 
-    // lib�ation de la m�oire allou�
+    // libération de la mémoire allouée
     for(compteur=0; compteur<dim; compteur++)
     {
-        res[compteur]  = res[dim + compteur];
         free(mat[compteur]);
     }
     free(mat);
@@ -329,7 +331,7 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double * res)
 
     /*input*/
 
-    itermax = MAX_BOU;
+    itermax = dim2;
     ispeak  = 0;
 
     /*output*/
@@ -822,17 +824,15 @@ int lcp_lexicolemke(int dim, double * q, double ** M, double **A, double * res)
     if (Ifound) return 1;
 
     printf("\n Problem with this LCP :\n");
-    afficheLCP(q,M,dim);
+//  afficheLCP(q,M,dim);
     return 0;
 
 }
 /********************************************************************************************/
-
 void afficheLCP(double *q, double **M, int dim)
 {
     int compteur, compteur2;
     // affichage de la matrice du LCP
-    printf("dim = %d",dim);
     printf("M = [");
     for(compteur=0; compteur<dim; compteur++)
     {
@@ -850,7 +850,328 @@ void afficheLCP(double *q, double **M, int dim)
     {
         printf("\t%.4f\n",q[compteur]);
     }
+    printf("      ]\n\n");
+}
+/********************************************************************************************/
+void afficheLCP(double *q, double **M, double *f, int dim)
+{
+    int compteur, compteur2;
+    // affichage de la matrice du LCP
+    printf("\n M = [");
+    for(compteur=0; compteur<dim; compteur++)
+    {
+        for(compteur2=0; compteur2<dim; compteur2++)
+        {
+            printf("\t%.5f",M[compteur][compteur2]);
+        }
+        printf("\n");
+    }
     printf("      ];\n\n");
+
+    // affichage de q
+    printf("q = [");
+    for(compteur=0; compteur<dim; compteur++)
+    {
+        printf("\t%.5f\n",q[compteur]);
+    }
+    printf("      ];\n\n");
+
+    // affichage de f
+    printf("f = [");
+    for(compteur=0; compteur<dim; compteur++)
+    {
+        printf("\t%.5f\n",f[compteur]);
+    }
+    printf("      ];\n\n");
+
+}
+
+
+/********************************************************************************************/
+// special class to obtain the inverse of a symetric matrix 3x3
+void LocalBlock33::compute(double &w11, double &w12, double &w13, double &w22, double &w23, double &w33)
+{
+    w[0]=w11; w[1]=w12; w[2] = w13; w[3]=w22; w[4]=w23; w[5]=w33;
+    det = w11*w22*w33-w11*w23*w23-w12*w12*w33+2*w12*w13*w23-w13*w13*w22;
+    wInv[0] = (w22*w33-w23*w23)/det;
+    wInv[1] = -(w12*w33-w13*w23)/det;
+    wInv[2] = (w12*w23-w13*w22)/det;
+    wInv[3] = (w11*w33-w13*w13)/det;
+    wInv[4] = -(w11*w23-w12*w13)/det;
+    wInv[5] = (w11*w22-w12*w12)/det;
+    computed=true;
+}
+
+void LocalBlock33::stickState(double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
+{
+    fn = -wInv[0]*dn - wInv[1]*dt - wInv[2]*ds;
+    ft = -wInv[1]*dn - wInv[3]*dt - wInv[4]*ds;
+    fs = -wInv[2]*dn - wInv[4]*dt - wInv[5]*ds;
+}
+
+
+
+
+void LocalBlock33::slipState(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
+{
+    double d[3];
+    double normFt;
+
+    for (int iteration=0; iteration<10000; iteration++)
+    {
+        // we set the previous value of the force
+        f_1[0]=fn; f_1[1]=ft; f_1[2]=fs;
+
+        // evaluation of the current normal position
+        d[0] = w[0]*fn + w[1]*ft + w[2]*fs + dn;
+        // evaluation of the new contact force
+        fn -= d[0]/w[0];
+
+        // evaluation of the current tangent positions
+        d[1] = w[1]*fn + w[3]*ft + w[4]*fs + dt;
+        d[2] = w[2]*fn + w[4]*ft + w[5]*fs + ds;
+
+        // envaluation of the new fricton forces
+        ft -= 2*d[1]/(w[3]+w[5]);
+        fs -= 2*d[2]/(w[3]+w[5]);
+        normFt=sqrt(ft*ft+fs*fs);
+        ft *=mu*fn/normFt;
+        fs *=mu*fn/normFt;
+
+
+        if (normError(fn,ft,fs,f_1[0],f_1[1],f_1[2]) < 0.000001)
+        {
+            dn=d[0]; dt=d[1]; ds=d[2];
+            //mexPrintf("\n convergence of slipState after %d iteration(s)",iteration);
+            return;
+        }
+
+    }
+//	mexPrintf("\n No convergence in slipState function: error =%f",normError(fn,ft,fs,f_1[0],f_1[1],f_1[2]));
+//	printf("\n No convergence in slipState function");
+
+}
+
+void LocalBlock33::GS_State(double &mu, double &dn, double &dt, double &ds, double &fn, double &ft, double &fs)
+{
+    double d[3];
+    double normFt;
+    f_1[0]=fn; f_1[1]=ft; f_1[2]=fs;
+
+    // evaluation of the current normal position
+    d[0] = w[0]*fn + w[1]*ft + w[2]*fs + dn;
+    // evaluation of the new contact force
+    fn -= d[0]/w[0];
+
+    if (fn < 0)
+    {
+        fn=0; ft=0; fs=0;
+        return;
+    }
+
+
+    // evaluation of the current tangent positions
+    d[1] = w[1]*fn + w[3]*ft + w[4]*fs + dt;
+    d[2] = w[2]*fn + w[4]*ft + w[5]*fs + ds;
+
+    // envaluation of the new fricton forces
+    ft -= 2*d[1]/(w[3]+w[5]);
+    fs -= 2*d[2]/(w[3]+w[5]);
+
+    normFt=sqrt(ft*ft+fs*fs);
+
+    if (normFt > mu*fn)
+    {
+        ft *=mu*fn/normFt;
+        fs *=mu*fn/normFt;
+    }
+
+    dn += w[0]*fn + w[1]*ft + w[2]*fs;
+    dt += w[1]*fn + w[3]*ft + w[4]*fs;
+    ds += w[2]*fn + w[4]*ft + w[5]*fs;
+
+}
+
+////////////////////////////////
+// // test sur LocalBlock33 // //
+////////////////////////////////
+// LocalBlock33 *Z;
+// Z = new LocalBlock33(W[0][0],W[0][1],W[0][2],W[1][1],W[1][2],W[2][2]);
+// Z->stickState(dfree[0],dfree[1],dfree[2],f[0],f[1],f[2]);
+
+// if (nlhs>0)
+// {
+//double *prF;
+//plhs[0]=mxCreateDoubleMatrix(3,1,mxREAL);
+//prF = mxGetPr(plhs[0]);
+//for(i=0; i<3; i++)
+//	prF[i] = f[i];
+// }
+
+
+/********************************************************************************************/
+
+int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, double &tol, int &numItMax)
+{
+    ///* Allocation */
+    //A = (double **)malloc( dim*sizeof(double*) );
+    //for( ic = 0 ; ic < dim; ++ic )
+    // A[ic] = (double *)malloc( dim2*sizeof(double) );
+
+    //for( ic = 0 ; ic < dim; ++ic )
+    //  for( jc = 0 ; jc < dim2; ++jc )
+    //    A[ic][jc] = 0.0;
+
+    double test = dim/3;
+    double zero = 0.0;
+    int numContacts =  (int) floor(test);
+    test = dim/3 - numContacts;
+
+    if (test>0.01)
+    {
+        printf("\n WARNING dim should be dividable by 3 in nlcp_gaussseidel");
+        return 0;
+    }
+    // iterators
+    int it,c1,i;
+
+    // memory allocation of vector d
+    double *d;
+    d = (double*)malloc(dim*sizeof(double));
+    // put the vector force to zero
+    for (i=0; i<dim; i++)
+        f[i]=0.0;
+    // previous value of the force and the displacment
+    double f_1[3];
+    double d_1[3];
+
+    // allocation of the inverted system 3x3
+    LocalBlock33 **W33;
+    W33 = (LocalBlock33 **) malloc (dim*sizeof(LocalBlock33));
+    for (c1=0; c1<numContacts; c1++)
+        W33[c1] = new LocalBlock33();
+
+
+
+
+
+    //////////////
+    // sorted list of the contact (depending on interpenetration)
+    //////////////
+    typedef struct { double value; int index;} listElem;
+    struct listSortAscending
+    {
+        bool operator()(listElem& e1, listElem& e2)
+        {
+            return e1.value < e2.value;
+        }
+    };
+    std::vector<listElem> sortedList;
+    listElem buf;
+    sortedList.clear();
+    for (c1=0; c1<numContacts; c1++)
+    {
+        buf.value = dfree[3*c1];
+        buf.index = c1;
+        sortedList.push_back(buf);
+    }
+    std::sort(sortedList.begin(), sortedList.end(), listSortAscending() );
+
+    //for (c1=0; c1<numContacts; c1++)
+    //{
+    //	mexPrintf("\n contact[%d] : dfree : %f", sortedList[c1].index, sortedList[c1].value);
+    //}
+
+    //////////////
+    // Beginning of iterative computations
+    //////////////
+    double error;
+    double dn, dt, ds, fn, ft, fs;
+
+    for (it=0; it<numItMax; it++)
+    {
+        error =0;
+        for (c1=0; c1<numContacts; c1++)
+        {
+            // index of contact
+            int index1 = sortedList[c1].index;
+
+            // put the previous value of the contact force in a buffer and put the current value to 0
+            f_1[0] = f[3*index1]; f_1[1] = f[3*index1+1]; f_1[2] = f[3*index1+2];
+            set3Dof(f,index1,zero,zero,zero); //		f[3*index] = 0.0; f[3*index+1] = 0.0; f[3*index+2] = 0.0;
+
+            // computation of actual d due to contribution of other contacts
+            dn=dfree[3*index1]; dt=dfree[3*index1+1]; ds=dfree[3*index1+2];
+            for (i=0; i<dim; i++)
+            {
+                dn += W[3*index1  ][i]*f[i] ;
+                dt += W[3*index1+1][i]*f[i];
+                ds += W[3*index1+2][i]*f[i];
+            }
+            d_1[0] = dn + W[3*index1  ][3*index1  ]*f_1[0]+W[3*index1  ][3*index1+1]*f_1[1]+W[3*index1  ][3*index1+2]*f_1[2];
+            d_1[1] = dt + W[3*index1+1][3*index1  ]*f_1[0]+W[3*index1+1][3*index1+1]*f_1[1]+W[3*index1+1][3*index1+2]*f_1[2];
+            d_1[2] = ds + W[3*index1+2][3*index1  ]*f_1[0]+W[3*index1+2][3*index1+1]*f_1[1]+W[3*index1+2][3*index1+2]*f_1[2];
+
+            if(W33[index1]->computed==false)
+            {
+                W33[index1]->compute(W[3*index1][3*index1],W[3*index1][3*index1+1],W[3*index1][3*index1+2],
+                        W[3*index1+1][3*index1+1], W[3*index1+1][3*index1+2],W[3*index1+2][3*index1+2]);
+            }
+
+            fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
+            W33[index1]->GS_State(mu,dn,dt,ds,fn,ft,fs);
+            error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
+
+
+
+            // there is a contact!
+            //if ( (dn+EPSILON_LCP) < 0)
+            //{
+            //	// we compute the system only if the contact is active (at least one time during the iterations)
+            //	if(W33[index1]->computed==false)
+            //	{
+            //		W33[index1]->compute(W[3*index1][3*index1],W[3*index1][3*index1+1],W[3*index1][3*index1+2],
+            //									W[3*index1+1][3*index1+1], W[3*index1+1][3*index1+2],W[3*index1+2][3*index1+2]);
+            //	}
+            //	W33[index1]->stickState(dn,dt,ds,fn,ft,fs);
+
+            //	if(sqrt(ft*ft+fs*fs)> mu*fn)
+            //	{
+            //		fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
+            //		W33[index1]->slipState(mu,dn,dt,ds,fn,ft,fs);
+            //	}
+            //	else
+            //	{
+            //		dn=0.0; dt=0.0; ds=0.0;
+            //	}
+            //	////error += normError(fn,ft,fs,f_1[0],f_1[1],f_1[2]);
+            //	error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
+
+            //}
+            //else
+            //{
+            //	fn=0.0; ft=0.0; fs=0.0;
+            //	//if (f_1[0]>0)
+            //	//	error += normError(f_1[0],f_1[1],f_1[2],fn,ft,fs);
+            //	error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
+
+            //}
+            set3Dof(f,index1,fn,ft,fs);
+        }
+
+        if (error < tol)
+        {
+            printf("\n convergence after %d iteration(s)",it);
+            //afficheLCP(dfree,W,f,dim);
+            return 1;
+        }
+    }
+
+    printf("\n No convergence in nlcp_gaussseidel function : error =%f", error);
+    //afficheLCP(dfree,W,f,dim);
+    return 0;
+
+
 }
 
 } // namespace helper

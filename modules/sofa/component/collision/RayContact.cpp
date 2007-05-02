@@ -43,15 +43,15 @@ SOFA_DECL_CLASS(RayContact)
 
 Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereModel> > RaySphereContactClass("default",true);
 Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereModel> > RaySphereContactClass2("LagrangianMultiplier",true);
-Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereModel> > RaySphereContactClass3("FrictionLessContact",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereModel> > RaySphereContactClass3("FrictionContact",true);
 
 Creator<core::componentmodel::collision::Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass("default",true);
 Creator<core::componentmodel::collision::Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass2("LagrangianMultiplier",true);
-Creator<core::componentmodel::collision::Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass3("FrictionLessContact",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<TriangleModel> > RayTriangleContactClass3("FrictionContact",true);
 
 Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass("default",true);
 Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass2("LagrangianMultiplier",true);
-Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass3("FrictionLessContact",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass3("FrictionContact",true);
 
 BaseRayContact::BaseRayContact(CollisionModel1* model1, core::componentmodel::collision::Intersection* /*instersectionMethod*/)
     : model1(model1)

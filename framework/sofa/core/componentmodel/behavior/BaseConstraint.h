@@ -56,7 +56,7 @@ public:
 
     virtual void projectResponse(double **) {}; ///< project the compliance Matrix to constrained space
 
-    virtual void applyConstraint(unsigned int&) {};
+    virtual void applyConstraint(unsigned int&, double&) {};
 
     virtual void applyConstraint(defaulttype::SofaBaseMatrix *, unsigned int &) {};
     virtual void applyConstraint(defaulttype::SofaBaseVector *, unsigned int &) {};
