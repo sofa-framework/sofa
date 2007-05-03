@@ -76,7 +76,7 @@ LMLConstraint<DataTypes>*  LMLConstraint<DataTypes>::addConstraint(unsigned int 
     this->targets.push_back(index);
     trans.normalize();
     this->translations.push_back(trans);
-    this->directionsNULLs.push_back(Deriv(0,0,0));
+    this->directionsNULLs.push_back(Deriv(1,1,1));
     this->initPos.push_back(Deriv(0,0,0));
     return this;
 }
@@ -114,7 +114,7 @@ void LMLConstraint<DataTypes>::fixDOF(int index, int axe)
         it2++;
     }
 
-    (*it2)[axe] = 1;
+    (*it2)[axe] = 0;
 }
 
 
@@ -122,35 +122,55 @@ template<class DataTypes>
 void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 {
     VecCoord& x = *this->mmodel->getX();
-    dx.resize(x.size());
-    double time = getContext()->getTime();
+    //dx.resize(x.size());
+    double time = this->getContext()->getTime();
+    double prevTime = time - this->getContext()->getDt();
 
     std::vector<unsigned int>::iterator it1=targets.begin();
+    VecDerivIterator it2=translations.begin();
     VecDerivIterator it3=directionsNULLs.begin();
     Load * load;
+    double valTime, prevValTime;
 
     for (unsigned int i=0 ; i<loads->numberOfLoads() ; i++)
     {
         load = loads->getLoad(i);
+        valTime = load->getValue(time);
+        prevValTime = load->getValue(prevTime);
         for(unsigned int j=0 ; j<load->numberOfTargets(); j++)
         {
             if ( atomToDOFIndexes.find(load->getTarget(j)) != atomToDOFIndexes.end() )
             {
                 //Deriv dirVec(0,0,0);
-                if (load->getDirection().isXNull() && load->getValue(time) != 0)
-                    (*it3)[0]=1;	// fix targets on the X axe
-                if (load->getDirection().isYNull() && load->getValue(time) != 0)
-                    (*it3)[1]=1;	// fix targets on the Y axe
-                if (load->getDirection().isZNull() && load->getValue(time) != 0)
-                    (*it3)[2]=1;	// fix targets on the Z axe
-                if (load->getValue(time) == 0)
-                    (*it3) = Deriv(0,0,0);
-                //cancel the dx value on the axes fixed (where directionNULLs value is equal to 1)
-                //Or apply the translation vector (where directionNULLs value is equal to 0)
-                //dx[*it1] -= Deriv(dx[*it1][0]*(*it3)[0], dx[*it1][1]*(*it3)[1], dx[*it1][2]*(*it3)[2]);
-                dx[*it1] = Deriv();
+                if (load->getDirection().isXNull() && valTime != 0)
+                    (*it3)[0]=0;	// fix targets on the X axe
+                if (load->getDirection().isYNull() && valTime != 0)
+                    (*it3)[1]=0;	// fix targets on the Y axe
+                if (load->getDirection().isZNull() && valTime != 0)
+                    (*it3)[2]=0;	// fix targets on the Z axe
+
+                if (valTime == 0)
+                    (*it3) = Deriv(1,1,1);
+                else
+                {
+                    if (load->getDirection().isToward())
+                    {
+                        std::map<unsigned int, unsigned int>::const_iterator titi = atomToDOFIndexes.find(load->getDirection().getToward());
+                        if (titi != atomToDOFIndexes.end())
+                        {
+                            (*it2) = (*mmodel->getX())[titi->second] - (*mmodel->getX())[*it1];
+                            it2->normalize();
+                        }
+                    }
+                    //cancel the dx value on the axes fixed (where directionNULLs value is equal to 1)
+                    //Or apply the translation vector (where directionNULLs value is equal to 0)
+                    dx[*it1][0] = ((*it2)[0]*valTime)-((*it2)[0]*prevValTime)*(*it3)[0];
+                    dx[*it1][1] = ((*it2)[1]*valTime)-((*it2)[1]*prevValTime)*(*it3)[1];
+                    dx[*it1][2] = ((*it2)[2]*valTime)-((*it2)[2]*prevValTime)*(*it3)[2];
+                }
 
                 it1++;
+                it2++;
                 it3++;
             }
         }
@@ -221,7 +241,7 @@ void LMLConstraint<DataTypes>::draw()
     VecDerivIterator it2 = directionsNULLs.begin();
     for (std::vector<unsigned int>::const_iterator it = this->targets.begin(); it != this->targets.end(); ++it)
     {
-        if ((*it2)[0]==1 && (*it2)[1]==1 && (*it2)[2]==1 )
+        if ((*it2)[0]==0 && (*it2)[1]==0 && (*it2)[2]==0 )
             gl::glVertexT(x[*it]);
         it2++;
     }
@@ -234,7 +254,7 @@ void LMLConstraint<DataTypes>::draw()
     it2 = directionsNULLs.begin();
     for (std::vector<unsigned int>::const_iterator it = this->targets.begin(); it != this->targets.end(); ++it)
     {
-        if ((*it2)[0]==0 || (*it2)[1]==0 || (*it2)[2]==0 )
+        if ((*it2)[0]==1 || (*it2)[1]==1 || (*it2)[2]==1 )
         {
             gl::glVertexT(x[*it]);
             gl::glVertexT(x[*it]+*it3);

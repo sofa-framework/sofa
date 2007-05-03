@@ -28,8 +28,7 @@
 
 #include "sofa/component/collision/DefaultPipeline.h"
 #include "sofa/component/collision/DefaultContactManager.h"
-#include "sofa/component/collision/DefaultCollisionGroupManager.h"
-#include "sofa/component/collision/MinProximityIntersection.h"
+#include "sofa/component/collision/ProximityIntersection.h"
 #include "sofa/component/collision/BruteForceDetection.h"
 #include "sofa/simulation/tree/VisualAction.h"
 #include "sofa/simulation/tree/Simulation.h"
@@ -52,10 +51,20 @@ void PMLReader::BuildStructure(const char* filename, GNode* root)
 
     if (!filename) return;
 
-    if(pm) delete pm;
+    if(pm)
+    {
+        delete pm;
+        pm = NULL;
+    }
     pm = new PhysicalModel(filename);
 
-    if (!pm || pm->getNumberOfAtoms()==0)
+    if (!pm)
+    {
+        cerr<<"PML reader error : failed to load PML file "<<filename<<endl;
+        return;
+    }
+
+    if (pm->getNumberOfAtoms()==0)
     {
         cerr<<"PML reader error : PML file "<<filename<<" not valid"<<endl;
         return;
@@ -103,34 +112,30 @@ void PMLReader::BuildStructure(GNode* root)
     }
 
     //if at least one of the bodies wants to detect contacts, we create all objects to do this
-    //if (collisionsExist){
-    DefaultPipeline * ps = new DefaultPipeline;
-    BruteForceDetection * bfd = new BruteForceDetection;
-    MinProximityIntersection * mpi = new MinProximityIntersection;
-    //computes the distance contact from the bounding box
-    VisualComputeBBoxAction act;
-    Simulation::init(root);
-    root->execute(act);
-    double dx=(act.maxBBox[0]-act.minBBox[0]);
-    double dy=(act.maxBBox[1]-act.minBBox[1]);
-    double dz=(act.maxBBox[2]-act.minBBox[2]);
-    double dmax = sqrt(dx*dx + dy*dy + dz*dz);
-    //maybe the ratio should be changed...
-    mpi->setAlarmDistance(dmax/30);
-    mpi->setContactDistance(dmax/40);
-    DefaultContactManager * contactManager = new DefaultContactManager;
-    DefaultCollisionGroupManager * toto =new DefaultCollisionGroupManager;
+    if (collisionsExist)
+    {
+        DefaultPipeline * ps = new DefaultPipeline;
+        BruteForceDetection * bfd = new BruteForceDetection;
+        ProximityIntersection * mpi = new ProximityIntersection;
+        //computes the distance contact from the bounding box
+        VisualComputeBBoxAction act;
+        Simulation::init(root);
+        root->execute(act);
+        double dx=(act.maxBBox[0]-act.minBBox[0]);
+        double dy=(act.maxBBox[1]-act.minBBox[1]);
+        double dz=(act.maxBBox[2]-act.minBBox[2]);
+        double dmax = sqrt(dx*dx + dy*dy + dz*dz);
+        //maybe the ratio should be changed...
+        mpi->setAlarmDistance(dmax/30);
+        mpi->setContactDistance(dmax/40);
+        DefaultContactManager * contactManager = new DefaultContactManager;
 
-    root->addObject(ps);
-    root->addObject(bfd);
-    root->addObject(mpi);
-    root->addObject(contactManager);
+        root->addObject(ps);
+        root->addObject(bfd);
+        root->addObject(mpi);
+        root->addObject(contactManager);
 
-    ps->init();
-    bfd->init();
-    mpi->init();
-    contactManager->init();
-    //}
+    }
 
     //if there is 2 bodies with the same type and some nodes in common, we merge them
     processFusions(root);

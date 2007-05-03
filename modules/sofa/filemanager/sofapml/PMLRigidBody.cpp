@@ -77,10 +77,10 @@ PMLRigidBody::PMLRigidBody(StructuralComponent* body, GNode * parent)
 
 PMLRigidBody::~PMLRigidBody()
 {
-    if(mmodel) delete mmodel;
-    if (mapping) delete mapping;
-    if (VisualNode) delete VisualNode;
-    if (CollisionNode) delete CollisionNode;
+    if(mmodel) { delete mmodel; mmodel=NULL;}
+    if (mapping) { delete mapping; mapping = NULL;}
+    if (VisualNode) { delete VisualNode; VisualNode = NULL;}
+    if (CollisionNode) { delete CollisionNode; CollisionNode = NULL;}
 }
 
 
@@ -265,6 +265,8 @@ void PMLRigidBody::createVisualModel(StructuralComponent* body)
     parentNode->addChild(VisualNode);
     //create mechanical object
     mmodel = new MechanicalObject<Vec3dTypes>;
+    //create visual model
+    OglModel * vmodel = new OglModel;
     StructuralComponent* atoms = body->getAtoms();
     mmodel->resize(atoms->getNumberOfStructures());
     Atom* pAtom;
@@ -282,9 +284,6 @@ void PMLRigidBody::createVisualModel(StructuralComponent* body)
 
     createTopology(body);
     VisualNode->addObject(topology);
-
-    //create visual model
-    OglModel * vmodel = new OglModel;
 
     double * color = body->getColor();
     vmodel->setColor((float)color[0], (float)color[1], (float)color[2], (float)color[3]);
@@ -413,19 +412,19 @@ void PMLRigidBody::createCollisionModel()
 {
     if (collisionsON)
     {
-        CollisionNode = new GNode("Collision");
-        parentNode->addChild(CollisionNode);
+        //CollisionNode = new GNode("Collision");
+        //parentNode->addChild(CollisionNode);
 
-        CollisionNode->addObject(mmodel);
+        /*CollisionNode->addObject(mmodel);
         CollisionNode->addObject(topology);
-        CollisionNode->addObject(mapping);
+        CollisionNode->addObject(mapping);*/
 
         TriangleModel * cmodel = new TriangleModel;
         LineModel *lmodel = new LineModel;
         PointModel *pmodel = new PointModel;
-        CollisionNode->addObject(cmodel);
-        CollisionNode->addObject(lmodel);
-        CollisionNode->addObject(pmodel);
+        VisualNode->addObject(cmodel);
+        VisualNode->addObject(lmodel);
+        VisualNode->addObject(pmodel);
 
         cmodel->init();
         lmodel->init();

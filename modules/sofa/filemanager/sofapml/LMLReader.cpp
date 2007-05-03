@@ -63,6 +63,7 @@ void LMLReader::BuildStructure(const char* filename, PMLReader * pmlreader)
         return;
     }
 
+    if(loadsList) delete loadsList;
     //read the file
     XMLLoads data(lmlFile);
     loadsList = data.getLoads();

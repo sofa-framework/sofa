@@ -208,7 +208,7 @@ void PhysicalModel::xmlRead(const char * n){
     static const char* xmlFile = 0;
     static bool isInit = false;
 
-    if (!isInit) {
+    //if (!isInit) {
 
 		// this initialize the library and check potential ABI mismatches
 		// between the version it was compiled for and the actual shared
@@ -245,7 +245,7 @@ void PhysicalModel::xmlRead(const char * n){
 		xmlCleanupParser();
 		xmlMemoryDump();
 
-    }
+    //}
 
     isInit = true;
 }
