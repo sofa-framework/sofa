@@ -148,7 +148,8 @@ void Simulation::animate(GNode* root, double dt)
     //std::cout << "animate\n";
     double nextTime = root->getTime() + root->getDt();
 
-    root->execute<CollisionAction>();
+    // CHANGE to support MasterSolvers : CollisionAction is now activated within AnimateAction
+    //root->execute<CollisionAction>();
 
     AnimateAction act;
     act.setDt(dt);

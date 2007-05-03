@@ -40,6 +40,7 @@
 #include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
 
 #include <map>
@@ -214,6 +215,8 @@ public:
             entry.baseClasses.insert("Mass");
         if (implements<RealObject,core::componentmodel::behavior::OdeSolver>())
             entry.baseClasses.insert("OdeSolver");
+        if (implements<RealObject,core::componentmodel::behavior::MasterSolver>())
+            entry.baseClasses.insert("MasterSolver");
         if (implements<RealObject,core::componentmodel::topology::Topology>())
             entry.baseClasses.insert("Topology");
 

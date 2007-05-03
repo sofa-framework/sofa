@@ -22,6 +22,7 @@ HEADERS += \
           componentmodel/behavior/MappedModel.h \
           componentmodel/behavior/Mass.h \
           componentmodel/behavior/Mass.inl \
+          componentmodel/behavior/MasterSolver.h \
           componentmodel/behavior/MechanicalMapping.h \
           componentmodel/behavior/MechanicalMapping.inl \
           componentmodel/behavior/MechanicalState.h \
@@ -60,6 +61,7 @@ HEADERS += \
           ObjectFactory.h
  
 SOURCES +=  \
+          componentmodel/behavior/MasterSolver.cpp \
           componentmodel/behavior/OdeSolver.cpp \
           componentmodel/collision/Contact.cpp \
           componentmodel/collision/Intersection.cpp \

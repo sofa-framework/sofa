@@ -93,6 +93,7 @@ inline const char* getColor(const char* classname)
     if (!strcmp(classname,"Constraint")) return COLOR[CONSTRAINT];
     if (!strcmp(classname,"InteractionForceField")) return COLOR[IFFIELD];
     if (!strcmp(classname,"ForceField")) return COLOR[FFIELD];
+    if (!strcmp(classname,"MasterSolver")) return COLOR[SOLVER];
     if (!strcmp(classname,"OdeSolver")) return COLOR[SOLVER];
     if (!strcmp(classname,"CollisionPipeline")) return COLOR[COLLISION];
     if (!strcmp(classname,"MechanicalMapping")) return COLOR[MMAPPING];

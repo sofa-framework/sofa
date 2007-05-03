@@ -45,6 +45,7 @@
 #include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/tree/ActionScheduler.h>
@@ -389,9 +390,10 @@ public:
     Sequence<core::objectmodel::BaseObject> object;
     typedef Sequence<core::objectmodel::BaseObject>::iterator ObjectIterator;
 
+    Single<core::componentmodel::behavior::MasterSolver> masterSolver;
+    Single<core::componentmodel::behavior::OdeSolver> solver;
     Single<core::componentmodel::behavior::BaseMechanicalState> mechanicalState;
     Single<core::componentmodel::behavior::BaseMechanicalMapping> mechanicalMapping;
-    Single<core::componentmodel::behavior::OdeSolver> solver;
     Single<core::componentmodel::behavior::BaseMass> mass;
     Single<core::componentmodel::topology::Topology> topology;
 
@@ -408,7 +410,7 @@ public:
     Sequence<core::VisualModel> visualModel;
     Sequence<core::CollisionModel> collisionModel;
 
-    Sequence<core::componentmodel::collision::Pipeline> collisionPipeline;
+    Single<core::componentmodel::collision::Pipeline> collisionPipeline;
     Single<ActionScheduler> actionScheduler;
 
     GNode* setDebug(bool);
