@@ -11,7 +11,7 @@ namespace sofa
 namespace helper
 {
 
-#define NULL 0
+//#define NULL 0
 
 #define EPSILON_LCP		0.00000000001	// epsilon pour tests = 0
 #define EPSILON_CONV	0.001			// for GS convergence

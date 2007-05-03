@@ -1011,6 +1011,15 @@ void LocalBlock33::GS_State(double &mu, double &dn, double &dt, double &ds, doub
 
 /********************************************************************************************/
 
+typedef struct { double value; int index;} listElem;
+struct listSortAscending
+{
+    bool operator()(const listElem& e1, const listElem& e2)
+    {
+        return e1.value < e2.value;
+    }
+};
+
 int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, double &tol, int &numItMax)
 {
     ///* Allocation */
@@ -1058,14 +1067,6 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
     //////////////
     // sorted list of the contact (depending on interpenetration)
     //////////////
-    typedef struct { double value; int index;} listElem;
-    struct listSortAscending
-    {
-        bool operator()(listElem& e1, listElem& e2)
-        {
-            return e1.value < e2.value;
-        }
-    };
     std::vector<listElem> sortedList;
     listElem buf;
     sortedList.clear();
