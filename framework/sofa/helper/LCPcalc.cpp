@@ -1011,6 +1011,10 @@ void LocalBlock33::GS_State(double &mu, double &dn, double &dt, double &ds, doub
 
 /********************************************************************************************/
 
+//////////////
+// sorted list of the contact (depending on interpenetration)
+//////////////
+
 typedef struct { double value; int index;} listElem;
 struct listSortAscending
 {
@@ -1060,13 +1064,6 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
     for (c1=0; c1<numContacts; c1++)
         W33[c1] = new LocalBlock33();
 
-
-
-
-
-    //////////////
-    // sorted list of the contact (depending on interpenetration)
-    //////////////
     std::vector<listElem> sortedList;
     listElem buf;
     sortedList.clear();
@@ -1086,7 +1083,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
     //////////////
     // Beginning of iterative computations
     //////////////
-    double error;
+    double error = 0;
     double dn, dt, ds, fn, ft, fs;
 
     for (it=0; it<numItMax; it++)
@@ -1162,7 +1159,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
 
         if (error < tol)
         {
-            printf("\n convergence after %d iteration(s)",it);
+            //	printf("\n convergence after %d iteration(s)",it);
             //afficheLCP(dfree,W,f,dim);
             return 1;
         }

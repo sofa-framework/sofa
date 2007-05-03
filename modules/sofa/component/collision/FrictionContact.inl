@@ -20,8 +20,9 @@ using simulation::tree::GNode;
 
 template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), mu(0.1), mapper1(model1), mapper2(model2), c(NULL), parent(NULL)
+    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), mapper1(model1), mapper2(model2), c(NULL), parent(NULL)
 {
+    mu = 0.0;
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
