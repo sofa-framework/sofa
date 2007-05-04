@@ -57,6 +57,7 @@ PMLStiffSpringForceField::PMLStiffSpringForceField(StructuralComponent* body, GN
 
     ks = body->getProperties()->getDouble("stiffness");
     kd = body->getProperties()->getDouble("damping");
+    solverName = body->getProperties()->getString("solver");
 
     //create the structure
     createMechanicalState(body);
@@ -65,6 +66,7 @@ PMLStiffSpringForceField::PMLStiffSpringForceField(StructuralComponent* body, GN
     createVisualModel(body);
     createForceField();
     createCollisionModel();
+    createSolver();
 }
 
 PMLStiffSpringForceField::~PMLStiffSpringForceField()

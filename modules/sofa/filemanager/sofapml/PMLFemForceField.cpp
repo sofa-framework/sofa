@@ -60,6 +60,7 @@ PMLFemForceField::PMLFemForceField(StructuralComponent* body, GNode * parent)
     young = body->getProperties()->getDouble("young");
     poisson = body->getProperties()->getDouble("poisson");
     deformationType = body->getProperties()->getString("deformation");
+    solverName = body->getProperties()->getString("solver");
 
     //create the structure
     createMechanicalState(body);
@@ -68,6 +69,7 @@ PMLFemForceField::PMLFemForceField(StructuralComponent* body, GNode * parent)
     createVisualModel(body);
     createForceField();
     createCollisionModel();
+    createSolver();
 }
 
 

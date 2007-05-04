@@ -18,6 +18,11 @@
  ***************************************************************************/
 
 #include "PMLBody.h"
+#include "sofa/component/odesolver/CGImplicitSolver.h"
+#include "sofa/component/odesolver/EulerSolver.h"
+#include "sofa/component/odesolver/StaticSolver.h"
+#include "sofa/component/odesolver/RungeKutta4Solver.h"
+using namespace sofa::component::odesolver;
 
 namespace sofa
 {
@@ -37,6 +42,7 @@ PMLBody::PMLBody()
     topology=NULL;
     forcefield=NULL;
     mmodel=NULL;
+    solver = NULL;
 
     AtomsToDOFsIndexes.clear();
 }
@@ -46,6 +52,18 @@ PMLBody::~PMLBody()
     if(mass) delete mass;
     if(topology) delete topology;
     if(forcefield) delete forcefield;
+    if (solver) delete solver;
+}
+
+void PMLBody::createSolver()
+{
+    if(solverName == "Static") solver = new StaticSolver;
+    else if(solverName == "Euler") solver = new EulerSolver;
+    else if(solverName == "RungeKutta4") solver = new RungeKutta4Solver;
+    else if(solverName == "None") return;
+    else solver = new CGImplicitSolver;
+
+    parentNode->addObject(solver);
 }
 
 

@@ -66,12 +66,14 @@ PMLRigidBody::PMLRigidBody(StructuralComponent* body, GNode * parent)
 
     initPosition(body->getProperties()->getString("position"));
     initVelocity(body->getProperties()->getString("velocity"));
+    solverName = body->getProperties()->getString("solver");
 
     //create the structure
     createMass(body);
     createMechanicalState(body);
     createVisualModel(body);
     createCollisionModel();
+    createSolver();
 }
 
 

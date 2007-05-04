@@ -36,6 +36,7 @@
 #include "sofa/core/componentmodel/behavior/ForceField.h"
 #include "sofa/component/visualmodel/OglModel.h"
 #include "sofa/core/CollisionModel.h"
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
 using namespace sofa::core;
 using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::core::componentmodel::topology;
@@ -105,6 +106,7 @@ protected :
     virtual void createVisualModel(StructuralComponent* body) =0;
     virtual void createForceField() =0;
     virtual void createCollisionModel() =0;
+    void createSolver();
 
     //name of the object
     string name;
@@ -117,6 +119,9 @@ protected :
     BaseMass * mass;
     Topology * topology;
     ForceField<Vec3dTypes> * forcefield;
+    OdeSolver * solver;
+
+    std::string solverName;
 };
 
 }
