@@ -46,32 +46,66 @@
 
 % Title Page
 \title{SOFA Documentation}
-\author{Fran\c{c}ois Faure\\ J\'er\'emie Allard\\ {\small INRIA Rh\^one-Alpes, Grenoble, France}}
+\author{The \sofa~team}
+% \author{Fran\c{c}ois Faure\\ J\'er\'emie Allard\\ {\small INRIA Rh\^one-Alpes, Grenoble, France}}
 
 % ------ my custom commands
-\newcommand{\sofa}{SOFA}
+\newcommand{\sofa}{SOFA }
 \newcommand{\todo}[1]{}
+\newcommand{\eg}{\textit{e.g.} }
 \include{macros_docu}
 
 \begin{document} 
 \maketitle
 
 \begin{abstract}
-This is the documentation of the SOFA library. Chapter~\ref{chapter:pba} gives theoretical background on physically-based animation. Chapter~\ref{chapter:as} shows how to implement simulations using \sofa. Chapter~\ref{chapter:es} describes how to integrate new components in \sofa.
+% This is the documentation of the SOFA library. Chapter~\ref{chapter:pba} gives theoretical background on physically-based animation. Chapter~\ref{chapter:as} shows how to implement simulations using \sofa. Chapter~\ref{chapter:es} describes how to integrate new components in \sofa.
 \end{abstract}
 
 \tableofcontents
-% \listoffigures
-% \listoftables
 
 
-\include{sofaMechanical}
+\section{Introduction}
+\sofa is an open-source C++ library for physical simulation, primarily targeted to medical simulation.
+It can be used as an external library in another program, or using one of the associated GUI applications.
 
-\include{extendingSofa}
+The main feature of \sofa  compared with other libraries is its high flexibility. It allows the use of multiple interacting geometrical models of the same object, typically, a mechanical model with mass and constitutive laws, a collision model with simple geometry, and a visual model with detailed geometry and rendering parameters. Each model can be designed independently of the others. During run-time, consistency is maintained using mappings.
 
-\include{physicallyBasedAnimation}
 
-\include{appendices}
+Additionally, \sofa  scenes are modeled using a data structure similar to hierarchical scene graphs commonly used in graphics libraries. This allows the splitting of the physical objects into collections of independent components, each of them describing one feature of the model, such as mass, force functions and constraints.
+For example, you can replace spring forces with finite element forces by simply replacing one component with another, all the rest (mass, collision geometry, time integration, etc.) remaining unchanged.
+
+Moreover, simulation algorithms, such as time integration or collision detection and modeling, are also modeled as components in the scene graph. This provides us with the same flexibility in algorithms as in models.
+
+Flexibility allows one to focus on its own domain of competence, while re-using the other's contributions on other topics. 
+However, efficiency is a major issue, and we have tried to design a framework which allows both efficiency and flexibility.
+
+\section{Commented example}
+deformable object + rigid, MMVR07
+Explicit integration with independent solvers
+Implicit integration with one solver
+
+\section{Data structure}
+Scene graph, components, nodes, mappings, actions
+
+
+\section{Mappings}
+More on mappings
+
+\section{Algorithms}
+time integration, constraint resolution
+
+\section{Collision detection}
+
+\section{File format}
+
+% \include{sofaMechanical}
+% 
+% \include{extendingSofa}
+% 
+% \include{physicallyBasedAnimation}
+% 
+% \include{appendices}
 
 
 
