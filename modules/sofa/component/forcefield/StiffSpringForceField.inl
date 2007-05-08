@@ -30,29 +30,44 @@ void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
     int b = spring.m2;
     Coord u = p2[b]-p1[a];
     Real d = u.norm();
-    Real inverseLength = 1.0f/d;
-    u *= inverseLength;
-    Real elongation = (Real)(d - spring.initpos);
-    potentialEnergy += elongation * elongation * spring.ks / 2;
-    /*        cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<endl;
-            cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<endl;
-            cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<endl;*/
-    Deriv relativeVelocity = v2[b]-v1[a];
-    Real elongationVelocity = dot(u,relativeVelocity);
-    Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
-    Deriv force = u*forceIntensity;
-    f1[a]+=force;
-    f2[b]-=force;
-
-    Mat& m = this->dfdx[i];
-    Real tgt = forceIntensity * inverseLength;
-    for( int j=0; j<N; ++j )
+    if( d>1.0e-4 )
     {
-        for( int k=0; k<N; ++k )
+        Real inverseLength = 1.0f/d;
+        u *= inverseLength;
+        Real elongation = (Real)(d - spring.initpos);
+        potentialEnergy += elongation * elongation * spring.ks / 2;
+        /*                    cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<endl;
+                            cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<endl;
+                            cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<endl;*/
+        Deriv relativeVelocity = v2[b]-v1[a];
+        Real elongationVelocity = dot(u,relativeVelocity);
+        Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
+        Deriv force = u*forceIntensity;
+        f1[a]+=force;
+        f2[b]-=force;
+
+
+        Mat& m = this->dfdx[i];
+        Real tgt = forceIntensity * inverseLength;
+        for( int j=0; j<N; ++j )
         {
-            m[j][k] = ((Real)spring.ks-tgt) * u[j] * u[k];
+            for( int k=0; k<N; ++k )
+            {
+                m[j][k] = ((Real)spring.ks-tgt) * u[j] * u[k];
+            }
+            m[j][j] += tgt;
         }
-        m[j][j] += tgt;
+    }
+    else // null length, no force and no stiffness
+    {
+        Mat& m = this->dfdx[i];
+        for( int j=0; j<N; ++j )
+        {
+            for( int k=0; k<N; ++k )
+            {
+                m[j][k] = 0;
+            }
+        }
     }
 }
 
@@ -96,10 +111,10 @@ template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addDForce()
 {
     VecDeriv& f1  = *this->object1->getF();
-// 	const VecCoord& p1 = *this->object1->getX();
+    // 	const VecCoord& p1 = *this->object1->getX();
     const VecDeriv& dx1 = *this->object1->getDx();
     VecDeriv& f2  = *this->object2->getF();
-// 	const VecCoord& p2 = *this->object2->getX();
+    // 	const VecCoord& p2 = *this->object2->getX();
     const VecDeriv& dx2 = *this->object2->getDx();
     f1.resize(dx1.size());
     f2.resize(dx2.size());
@@ -121,3 +136,4 @@ void StiffSpringForceField<DataTypes>::addDForce()
 } // namespace sofa
 
 #endif
+

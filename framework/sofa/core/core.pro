@@ -80,7 +80,7 @@ SOURCES +=  \
 Mapping.cpp \
 componentmodel/behavior/ForceField.cpp \
 componentmodel/behavior/Mass.cpp \
-componentmodel/behavior/MechanicalMapping.cpp \
+componentmodel/behavior/MechanicalMapping.cpp 
 
 SOFA_DIR = ../../..
 TEMPLATE = lib

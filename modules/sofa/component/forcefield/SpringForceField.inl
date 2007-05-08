@@ -98,6 +98,8 @@ void SpringForceField<DataTypes>::addSpringForce(double& ener, VecDeriv& f1, con
     Coord u = p2[b]-p1[a];
     Real d = u.norm();
     Real inverseLength = 1.0f/d;
+    if( d>1.0e-4 ) // null length => no force
+        return;
     u *= inverseLength;
     Real elongation = (Real)(d - spring.initpos);
     ener += elongation * elongation * spring.ks /2;
@@ -141,9 +143,10 @@ void SpringForceField<DataTypes>::draw()
     if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->object1->getX();
     const VecCoord& p2 = *this->object2->getX();
-//         cerr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<endl;
-//         cerr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<endl;
-//         cerr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<endl;
+    /*        cerr<<"SpringForceField<DataTypes>::draw() "<<getName()<<endl;
+            cerr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<endl;
+            cerr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<endl;
+            cerr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<endl;*/
     glDisable(GL_LIGHTING);
     bool external = (this->object1!=this->object2);
     //if (!external)
