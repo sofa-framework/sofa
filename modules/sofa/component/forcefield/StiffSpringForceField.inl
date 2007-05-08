@@ -34,7 +34,9 @@ void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
     u *= inverseLength;
     Real elongation = (Real)(d - spring.initpos);
     potentialEnergy += elongation * elongation * spring.ks / 2;
-    //cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<endl;
+    /*        cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, p1 = "<<p1<<endl;
+            cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, p2 = "<<p2<<endl;
+            cerr<<"StiffSpringForceField<DataTypes>::addSpringForce, new potential energy = "<<potentialEnergy<<endl;*/
     Deriv relativeVelocity = v2[b]-v1[a];
     Real elongationVelocity = dot(u,relativeVelocity);
     Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
@@ -82,8 +84,10 @@ void StiffSpringForceField<DataTypes>::addForce()
     f1.resize(p1.size());
     f2.resize(p2.size());
     m_potentialEnergy = 0;
+    /*        cerr<<"StiffSpringForceField<DataTypes>::addForce()"<<endl;*/
     for (unsigned int i=0; i<springs.size(); i++)
     {
+        /*            cerr<<"StiffSpringForceField<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<endl;*/
         this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, i, springs[i]);
     }
 }

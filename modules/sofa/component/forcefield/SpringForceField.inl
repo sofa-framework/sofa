@@ -80,6 +80,14 @@ template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
     this->InteractionForceField::init();
+    if( object1==NULL )
+    {
+        sofa::core::objectmodel::BaseObject* mstate = getContext()->getMechanicalState();
+        assert(mstate!=NULL);
+        MechanicalState* state = dynamic_cast<MechanicalState*>(mstate );
+        assert( state!= NULL );
+        object1 = object2 = state;
+    }
 }
 
 template<class DataTypes>

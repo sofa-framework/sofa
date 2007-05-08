@@ -35,6 +35,10 @@
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <string>
+#include <iostream>
+
+using std::cerr;
+using std::endl;
 
 
 
@@ -106,7 +110,7 @@ void RigidMapping<BasicMapping>::init()
     if (this->points.empty() && this->toModel!=NULL)
     {
         VecCoord& x = *this->toModel->getX();
-        std::cout << "RigidMapping: init "<<x.size()<<" points."<<std::endl;
+        //std::cout << "RigidMapping: init "<<x.size()<<" points."<<std::endl;
         points.resize(x.size());
         for (unsigned int i=0; i<x.size(); i++)
             points[i] = x[i];
@@ -179,6 +183,7 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     Deriv v,omega;
+    //cerr<<"RigidMapping<BasicMapping>::applyJT"<<endl;
     for(unsigned int i=0; i<points.size(); i++)
     {
         // out = Jt in
@@ -187,8 +192,11 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
         // -OM^t = OM^
 
         Deriv f = in[i];
+        //cerr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<endl;
         v += f;
         omega += cross(rotatedPoints[i],f);
+        //cerr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<endl;
+        //cerr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<endl;
     }
     out[index.getValue()].getVCenter() += v;
     out[index.getValue()].getVOrientation() += omega;

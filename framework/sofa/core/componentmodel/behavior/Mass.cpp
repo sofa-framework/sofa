@@ -22,52 +22,39 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/helper/gl/Texture.h>
-#include <assert.h>
+#include "Mass.inl"
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace core
 {
 
-namespace gl
+namespace componentmodel
 {
 
-void Texture::init(void)
+namespace behavior
 {
-    glGenTextures(1, &id);						// Create The Texture
-    std::cout << "Create Texture"<<std::endl;
-    // Typical Texture Generation Using Data From The Bitmap
-    glBindTexture(GL_TEXTURE_2D, id);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, image->getWidth(), image->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image->getData());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-}
 
-void Texture::bind(void)
-{
-    glBindTexture(GL_TEXTURE_2D, id);
-}
+using namespace sofa::defaulttype;
+template class Mass<Vec3dTypes>;
+template class Mass<Vec3fTypes>;
+template class Mass<Vec2dTypes>;
+template class Mass<Vec2fTypes>;
+template class Mass<Vec1dTypes>;
+template class Mass<Vec1fTypes>;
+template class Mass<Rigid3dTypes>;
+template class Mass<Rigid3fTypes>;
+template class Mass<Rigid2dTypes>;
+template class Mass<Rigid2fTypes>;
 
-void Texture::unbind(void)
-{
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
 
-io::Image* Texture::getImage(void)
-{
-    return image;
-}
-Texture::~Texture(void)
-{
-    glDeleteTextures(1, &id);
-    delete image;
-}
+} // namespace behavior
 
-} // namespace gl
+} // namespace componentmodel
 
-} // namespace helper
+} // namespace core
 
 } // namespace sofa
-

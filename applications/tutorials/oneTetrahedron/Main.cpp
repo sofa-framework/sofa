@@ -87,7 +87,7 @@ int main(int argc, char** argv)
     constraints->addConstraint(0);
 
     // Tetrahedron force field
-    sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>* spring = new sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>;
+    sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>* spring = new  sofa::component::forcefield::TetrahedronFEMForceField<MyTypes>;
     groot->addObject(spring);
     spring->setUpdateStiffnessMatrix(true);
     spring->setYoungModulus(1);

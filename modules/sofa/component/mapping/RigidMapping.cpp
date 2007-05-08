@@ -64,9 +64,10 @@ int RigidMappingClass = core::RegisterObject("Set the positions and velocities o
         .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > > >()
         ;
 
-template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
+// template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
+// template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
 
+template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
 template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
 template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
 

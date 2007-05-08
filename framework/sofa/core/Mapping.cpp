@@ -22,52 +22,43 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/helper/gl/Texture.h>
-#include <assert.h>
+#include "Mapping.inl"
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/behavior/MappedModel.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace core
 {
 
-namespace gl
-{
+using namespace sofa::defaulttype;
+using namespace core;
+using namespace core::componentmodel::behavior;
 
-void Texture::init(void)
-{
-    glGenTextures(1, &id);						// Create The Texture
-    std::cout << "Create Texture"<<std::endl;
-    // Typical Texture Generation Using Data From The Bitmap
-    glBindTexture(GL_TEXTURE_2D, id);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, image->getWidth(), image->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image->getData());
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-}
 
-void Texture::bind(void)
-{
-    glBindTexture(GL_TEXTURE_2D, id);
-}
+// Mech -> Mech
+template class Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> >;
+template class Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> >;
+template class Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> >;
+template class Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > ;
+//template class Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3dTypes> >;
 
-void Texture::unbind(void)
-{
-    glBindTexture(GL_TEXTURE_2D, 0);
-}
+// Mech -> Mapped
+template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> >;
+template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> >;
+template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> >;
+template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> >;
 
-io::Image* Texture::getImage(void)
-{
-    return image;
-}
-Texture::~Texture(void)
-{
-    glDeleteTextures(1, &id);
-    delete image;
-}
+// Mech -> ExtMapped
+template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
+template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
+template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
 
-} // namespace gl
-
-} // namespace helper
+} // namespace core
 
 } // namespace sofa
 
