@@ -378,18 +378,18 @@ void Context::copyContext(const Context& c)
     showNormals_.setValue(c.showNormals_.getValue());
     multiThreadSimulation_.setValue(c.multiThreadSimulation_.getValue());
 
-    localFrame_.setValue(c.localFrame_.getValue());
-    spatialVelocityInWorld_.setValue(c.spatialVelocityInWorld_.getValue());
-    velocityBasedLinearAccelerationInWorld_.setValue(c.velocityBasedLinearAccelerationInWorld_.getValue());
+    localFrame_ = c.localFrame_;
+    spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
+    velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
 }
 
 std::ostream& operator << (std::ostream& out, const Context& c )
 {
-    std::out<<std::endl<<"local gravity = "<<c.getLocalGravity();
-    std::out<<std::endl<<"transform from local to world = "<<c.getPositionInWorld();
-    //std::out<<std::endl<<"transform from world to local = "<<c.getWorldToLocal();
-    std::out<<std::endl<<"spatial velocity = "<<c.getVelocityInWorld();
-    std::out<<std::endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
+    out<<std::endl<<"local gravity = "<<c.getLocalGravity();
+    out<<std::endl<<"transform from local to world = "<<c.getPositionInWorld();
+    //out<<std::endl<<"transform from world to local = "<<c.getWorldToLocal();
+    out<<std::endl<<"spatial velocity = "<<c.getVelocityInWorld();
+    out<<std::endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
     return out;
 }
 

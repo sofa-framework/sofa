@@ -38,31 +38,27 @@ namespace sofa
 namespace core
 {
 
-/*! \class BaseMapping
-  *  \brief An interface to convert a model to an other model
-  *  \author Fonteneau Sylvere
-  *  \version 0.1
-  *  \date    02/22/2004
-  *
-  *	 <P> This Interface is used for the Mappings. A Mapping can convert one model to an other. <BR>
-  *  For example, we can have a mapping from BehaviorModel to a VisualModel. <BR>
-  *
-  */
-
+/**
+ *  \brief An interface to convert a model to an other model
+ *
+ *  This Interface is used for the Mappings. A Mapping can convert one model to an other.
+ *  For example, we can have a mapping from BehaviorModel to a VisualModel.
+ *
+ */
 class BaseMapping : public virtual objectmodel::BaseObject
 {
 public:
     virtual ~BaseMapping() { }
 
-    // Mapping Interface
     virtual void init() = 0;
 
-    /*! \fn void updateMapping()
-     *  \brief apply the transformation from a model to an other model (like apply displacement from BehaviorModel to VisualModel)
-     */
+    /// Apply the transformation from a model to an other model (like apply displacement from BehaviorModel to VisualModel)
     virtual void updateMapping() = 0;
 
+    /// Accessor to the input model of this mapping
     virtual objectmodel::BaseObject* getFrom() = 0;
+
+    /// Accessor to the output model of this mapping
     virtual objectmodel::BaseObject* getTo() = 0;
 };
 

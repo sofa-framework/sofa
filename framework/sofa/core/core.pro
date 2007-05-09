@@ -75,12 +75,12 @@ SOURCES +=  \
           objectmodel/Event.cpp \
           objectmodel/Field.cpp \
           objectmodel/KeypressedEvent.cpp \
-	  objectmodel/KeyreleasedEvent.cpp \
+          objectmodel/KeyreleasedEvent.cpp \
           ObjectFactory.cpp \
-Mapping.cpp \
-componentmodel/behavior/ForceField.cpp \
-componentmodel/behavior/Mass.cpp \
-componentmodel/behavior/MechanicalMapping.cpp 
+          Mapping.cpp \
+#          componentmodel/behavior/ForceField.cpp \
+          componentmodel/behavior/Mass.cpp \
+          componentmodel/behavior/MechanicalMapping.cpp 
 
 SOFA_DIR = ../../..
 TEMPLATE = lib
