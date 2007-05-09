@@ -40,15 +40,20 @@ namespace objectmodel
 
 class Base;
 
+/**
+ *  \brief Base Interface for classes containing the description of an object, used to construct it.
+ *
+ *  This class defines what informations are used as input (read from a file for instance) to create an object.
+ */
 class BaseObjectDescription
 {
 public:
     virtual ~BaseObjectDescription();
 
-    /// Get the associated object
+    /// Get the associated object (or NULL if it is not created yet)
     virtual Base* getObject() = 0;
 
-    /// Get the node instance name
+    /// Get the object instance name
     virtual const std::string& getName() const = 0;
 
     /// Get the parent node
@@ -59,22 +64,23 @@ public:
     /// Get all attribute data, read-only
     virtual const AttributeMap& getAttributeMap() const = 0;
 
-    /// Find a node given its name
+    /// Find an object description given its name (relative to this object)
     virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false) = 0;
+
+    /// Find an object given its name (relative to this object)
+    virtual Base* findObject(const char* nodeName);
 
     /// Get an attribute given its name (return defaultVal if not present)
     virtual const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
-    /// Get an attribute given its name (return defaultVal if not present)
+    /// Remove an attribute given its name (return defaultVal if not present)
     virtual bool removeAttribute(const std::string&)
     {
         return false;
     }
 
+    /// Get the full name of this object (i.e. concatenation if all the names of its ancestors and itself)
     virtual std::string getFullName() const;
-
-    /// Find an object given its name
-    virtual Base* findObject(const char* nodeName);
 
 };
 

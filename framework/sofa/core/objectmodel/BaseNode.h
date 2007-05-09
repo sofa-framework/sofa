@@ -38,7 +38,16 @@ namespace objectmodel
 
 class BaseObject;
 
-/// Base class for simulation nodes.
+/**
+ *  \brief Base class for simulation nodes.
+ *
+ *  A Node is a class defining the main scene data structure of a simulation.
+ *  It defined hierarchical relations between elements.
+ *  Each node can have parent and child nodes (potentially defining a tree),
+ *  as well as attached objects (the leaves of the tree).
+ *
+ * \author Jeremie Allard
+ */
 class BaseNode : public virtual Base
 {
 public:

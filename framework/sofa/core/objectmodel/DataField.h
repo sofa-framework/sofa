@@ -22,17 +22,6 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-//
-// C++ Interface: Field
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_CORE_OBJECTMODEL_DATAFIELD_H
 #define SOFA_CORE_OBJECTMODEL_DATAFIELD_H
 
@@ -58,11 +47,10 @@ namespace core
 namespace objectmodel
 {
 
-typedef std::istringstream istrstream;
-typedef std::ostringstream ostrstream;
-
 /**
-Pointer to data, readable and writable from/to a string.*/
+ *  \brief Pointer to data, readable and writable from/to a string.
+ *
+ */
 template < class T = void* >
 class DataField : public sofa::core::objectmodel::FieldBase
 {
@@ -121,7 +109,7 @@ protected:
         if (s.empty())
             return false;
         //std::cerr<<"Field::read "<<s.c_str()<<std::endl;
-        istrstream istr( s.c_str() );
+        std::istringstream istr( s.c_str() );
         istr >> m_value;
         if( istr.fail() )
         {
@@ -133,10 +121,7 @@ protected:
             return true;
         }
     }
-
-
-}
-;
+};
 
 /// Specialization for reading strings
 template<>
@@ -161,7 +146,7 @@ template<class T>
 inline
 std::string DataField<T>::getValueString() const
 {
-    ostrstream out;
+    std::ostringstream out;
     out << m_value;
     return out.str();
 }

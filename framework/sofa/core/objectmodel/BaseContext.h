@@ -49,20 +49,36 @@ namespace objectmodel
 class BaseObject;
 class Event;
 
-/// Base class for storing shared variables and parameters.
+/**
+ *  \brief Base class for Context classes, storing shared variables and parameters.
+ *
+ *  A Context contains values or pointers to variables and parameters shared
+ *  by a group of objects, typically refering to the same simulated body.
+ *  Derived classes can defined simple isolated contexts or more powerful
+ *  hierarchical representations (scene-graphs), in which case the context also
+ *  implements the BaseNode interface.
+ *
+ * \author Jeremie Allard
+ */
 class BaseContext : public virtual Base
 {
 public:
+
+    /// @name Types defined for local coordinate system handling
+    /// @{
     typedef defaulttype::SolidTypes<double> SolidTypes;
     typedef SolidTypes::Transform Frame;
     typedef SolidTypes::Vec Vec3;
     typedef SolidTypes::Rot Quat;
     typedef SolidTypes::Mat Mat33;
     typedef SolidTypes::SpatialVector SpatialVector;
+    /// @}
 
     BaseContext();
     virtual ~BaseContext();
 
+    /// Get the default Context object, that contains the default values for
+    /// all parameters and can be used when no local context is defined.
     static BaseContext* getDefault();
 
     /// @name Parameters
@@ -110,10 +126,16 @@ public:
     /// Display flags: Normals
     virtual bool getShowNormals() const;
 
-    /// Multiresolution
+    /// Multiresolution support (UNSTABLE)
     virtual int getCurrentLevel() const;
+
+    /// Multiresolution support (UNSTABLE)
     virtual int getCoarsestLevel() const;
+
+    /// Multiresolution support (UNSTABLE)
     virtual int getFinestLevel() const;
+
+    /// Multiresolution support (UNSTABLE)
     virtual unsigned int nbLevels() const;
 
     /// @}
@@ -143,7 +165,7 @@ public:
 
     /// Gravity in local coordinates
     virtual Vec3 getLocalGravity() const;
-    /// Gravity in local coordinates
+    ///// Gravity in local coordinates
     //virtual void setGravity( const Vec3& ) { }
     /// Gravity in world coordinates
     virtual const Vec3& getGravityInWorld() const;
@@ -160,7 +182,7 @@ public:
     /// Topology
     virtual BaseObject* getTopology() const;
 
-    /// Topology
+    /// Dynamic Topology
     virtual BaseObject* getMainTopology() const;
 
     /// @}
@@ -221,9 +243,16 @@ public:
     virtual void setShowNormals(bool /*val*/)
     { }
 
-    /// Multiresolution
-    virtual bool setCurrentLevel(int ) {return false;} ///< set the current level, return false if l >= coarsestLevel
+    /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
+    virtual bool setCurrentLevel(int )
+    {
+        return false;
+    }
+
+    /// Multiresolution support (UNSTABLE)
     virtual void setCoarsestLevel(int ) {}
+
+    /// Multiresolution support (UNSTABLE)
     virtual void setFinestLevel(int ) {}
 
     /// @}
@@ -241,7 +270,7 @@ public:
 
     /// @}
 
-    /// @name Adding/Removing objects. Note that these methods can fail if the context don't support attached objects
+    /// @name Adding/Removing objects. Note that these methods can fail if the context doesn't support attached objects
     /// @{
 
     /// Add an object, or return false if not supported
@@ -261,15 +290,13 @@ public:
     /// @name Actions.
     /// @{
 
-    /// Propagate an event
-    virtual void propagateEvent( Event* );
-
     /// apply an action
     virtual void executeAction( simulation::tree::Action* );
 
+    /// Propagate an event
+    virtual void propagateEvent( Event* );
+
     /// @}
-
-
 
 };
 

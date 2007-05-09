@@ -22,17 +22,6 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-//
-// C++ Interface: FieldBase
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_CORE_OBJECTMODEL_FIELDBASE_H
 #define SOFA_CORE_OBJECTMODEL_FIELDBASE_H
 
@@ -53,15 +42,17 @@ namespace objectmodel
 {
 
 /**
-Abstract base class for all fields, independently of their type.*/
+ *  \brief Abstract base class for all fields, independently of their type.
+ *
+ */
 class FieldBase
 {
 public:
     /** Constructor
-    \param l long name
-    \param h help
-    \param m true iff the argument is mandatory
-    */
+     *  \param l long name
+     *  \param h help
+     *  \param m true iff the argument is mandatory
+     */
     FieldBase( const char* h)
         : help(h)
         , m_isSet(false)
@@ -89,18 +80,18 @@ public:
     inline bool isSet() const { return m_isSet; }
 
 protected:
-    /// True iff a value has bee read on the command line
+    /// True iff a value has been read on the command line
     bool m_isSet;
 
+    /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
 
+    /// Helper method to get the type name of type T
     template<class T>
     static std::string typeName(const T* = NULL)
     {
         return decodeTypeName(typeid(T));
     }
-
-
 };
 
 } // namespace objectmodel

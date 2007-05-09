@@ -346,12 +346,14 @@ void  Base::parseFields ( std::list<std::string> str )
         if( m_fieldMap.find(name) != m_fieldMap.end() )
         {
             std::string s = str.front();
-            str.pop_front();
             if( !(m_fieldMap[ name ]->read( s )))
                 std::cerr<< "\ncould not read value for option " << name <<": "<< s << std::endl << std::endl;
         }
         else
+        {
+            str.pop_front();
             std::cerr << "\nUnknown option: " << name << std::endl << std::endl;
+        }
     }
 }
 

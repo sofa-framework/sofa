@@ -44,10 +44,15 @@ namespace objectmodel
 
 class Event;
 
-/** Base class for simulation objects.
-Each simulation object is related to a context, which gives access to all available external data.
-It is able to process events, if listening enabled (default is false).
-*/
+/**
+ *  \brief Base class for simulation objects.
+ *
+ *  An object defines a part of the functionnality in the simulation
+ *  (stores state data, specify topology, compute forces, etc).
+ *  Each simulation object is related to a context, which gives access to all available external data.
+ *  It is able to process events, if listening enabled (default is false).
+ *
+ */
 class BaseObject : public virtual Base
 {
 public:
@@ -55,59 +60,18 @@ public:
 
     virtual ~BaseObject();
 
-    /**@name context
-     */
-    ///@{
+    /// @name Context accessors
+    /// @{
     void setContext(BaseContext* n);
 
     const BaseContext* getContext() const;
 
     BaseContext* getContext();
-    ///@}
+    /// @}
 
-    /**@name control
-        Basic state control
-     */
-    ///@{
-    /// Initialization method called after each graph modification.
-    virtual void init();
-
-    /// Update method called when variables used in precomputation are modified.
-    virtual void reinit();
-
-    /// Reset to initial state
-    virtual void reset();
-
-    /// Write current state to the given output stream
-    virtual void writeState( std::ostream& out );
-
-    ///@}
-
-    /**@name events
-    Methods related to Event processing
-     */
-    ///@{
-
-    DataField<bool> f_listening;
-
-    /// Handle an event
-    virtual void handleEvent( Event* );
-    ///@}
-
-    /**@name debug
-    Methods related to debugging
-     */
-    ///@{
-    DataField<bool> f_printLog;
-    ///@}
-
-    /**@name data access
-    Access to external data
-     */
-    ///@{
-    /// Current time
-    double getTime() const;
-    ///@}
+    /// @name control
+    ///   Basic state control
+    /// @{
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>
@@ -122,14 +86,51 @@ public:
     {
         obj = new T;
         if (context) context->addObject(obj);
-        if (arg)
-            obj->parse(arg);
+        if (arg) obj->parse(arg);
     }
+
+    /// Initialization method called after each graph modification.
+    virtual void init();
+
+    /// Update method called when variables used in precomputation are modified.
+    virtual void reinit();
+
+    /// Reset to initial state
+    virtual void reset();
+
+    /// Write current state to the given output stream
+    virtual void writeState( std::ostream& out );
+
+    /// @}
+
+    /// @name events
+    ///   Methods related to Event processing
+    /// @{
+
+    DataField<bool> f_listening;
+
+    /// Handle an event
+    virtual void handleEvent( Event* );
+
+    ///@}
+
+    /// @name debug
+    ///   Methods related to debugging
+    ///@{
+    DataField<bool> f_printLog;
+    ///@}
+
+    /// @name data access
+    ///   Access to external data
+    /// @{
+
+    /// Current time
+    double getTime() const;
+
+    /// @}
 
 protected:
     BaseContext* context_;
-    /*        bool m_isListening;
-            bool m_printLog;*/
 };
 
 } // namespace objectmodel

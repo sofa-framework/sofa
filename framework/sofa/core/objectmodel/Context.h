@@ -22,9 +22,6 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-// Author: Fran�is Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
 #ifndef SOFA_CORE_OBJECTMODEL_CONTEXT_H
 #define SOFA_CORE_OBJECTMODEL_CONTEXT_H
 
@@ -43,16 +40,18 @@ namespace core
 namespace objectmodel
 {
 
+/**
+ *  \brief Implementation of BaseContext, storing all shared parameters in DataFields.
+ *
+ */
 class Context : public BaseContext
 {
-
 public:
-    // begin ContextData
+
     typedef BaseContext::Frame Frame;
     typedef BaseContext::Vec3 Vec3;
     typedef BaseContext::Quat Quat;
     typedef BaseContext::SpatialVector SpatialVector;
-
 
     DataField<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     DataField<double> dt_;
@@ -69,30 +68,22 @@ public:
     DataField<bool> showWireFrame_;
     DataField<bool> showNormals_;
     DataField<bool> multiThreadSimulation_;
-    /// for multiresolution usage
+
+    /// @name For multiresolution (UNSTABLE)
+    /// @{
     DataField<int> currentLevel_;
     DataField<int> coarsestLevel_;
     DataField<int> finestLevel_;
+    /// @}
 
 
     Frame localFrame_;
     SpatialVector spatialVelocityInWorld_;
     Vec3 velocityBasedLinearAccelerationInWorld_;
 
-    // end ContextData
-
-//     typedef BaseContext::Frame Frame;
-// 	typedef BaseContext::Vec3 Vec3;
-// 	typedef BaseContext::Quat Quat;
-// 	typedef BaseContext::SpatialVector SpatialVector;
-
-
     Context();
     virtual ~Context()
     {}
-    static BaseContext* getDefault();
-
-
 
     /// @name Parameters
     /// @{
@@ -148,13 +139,12 @@ public:
     /// Display flags: Normals
     virtual bool getShowNormals() const;
 
-    /// Multiresolution
+    /// Multiresolution support (UNSTABLE)
     virtual int getCurrentLevel() const;
+    /// Multiresolution support (UNSTABLE)
     virtual int getCoarsestLevel() const;
+    /// Multiresolution support (UNSTABLE)
     virtual int getFinestLevel() const;
-
-
-
 
     /// @}
 
@@ -177,22 +167,8 @@ public:
     virtual void setVelocityBasedLinearAccelerationInWorld(const Vec3& );
     /// @}
 
-    /*
-        /// @name Variables
-        /// @{
-
-    	/// Mechanical Degrees-of-Freedom
-    	virtual BaseObject* getMechanicalState() const;
-
-    	/// Topology
-    	virtual BaseObject* getTopology() const;
-
-    	/// @}
-    */
-
     /// @name Parameters Setters
     /// @{
-
 
     /// Simulation timestep
     virtual void setDt( double dt );
@@ -236,19 +212,19 @@ public:
     /// Display flags: Normals
     virtual void setShowNormals(bool val);
 
-    /// Multiresolution
-    virtual bool setCurrentLevel(int l);  ///< set the current level, return false if l >= coarsestLevel
+    /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
+    virtual bool setCurrentLevel(int l);
+    /// Multiresolution support (UNSTABLE)
     virtual void setCoarsestLevel(int l);
+    /// Multiresolution support (UNSTABLE)
     virtual void setFinestLevel(int l);
 
     /// @}
 
-    //static Context getDefault();
-
+    /// Copy the context variables from the given instance
     void copyContext(const Context& c);
 
     friend std::ostream& operator << (std::ostream& out, const Context& c );
-
 
 };
 

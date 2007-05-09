@@ -22,17 +22,6 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-//
-// C++ Interface: KeypressedEvent
-//
-// Description:
-//
-//
-// Author: Francois Faure, INRIA/UJF-Grenoble, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_CORE_OBJECTMODEL_KEYPRESSEDEVENT_H
 #define SOFA_CORE_OBJECTMODEL_KEYPRESSEDEVENT_H
 
@@ -61,7 +50,6 @@ public:
 
 protected:
     char m_char;
-
 };
 
 } // namespace objectmodel

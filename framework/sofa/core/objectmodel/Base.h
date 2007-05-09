@@ -42,74 +42,118 @@ namespace core
 namespace objectmodel
 {
 
-/// Base class for everything
+/**
+ *  \brief Base class for everything
+ *
+ *  This class contains all functionnality shared by every objects in SOFA.
+ *  Most importantly it defines how to retrieve information about an object (name, type, fields).
+ *
+ */
 class Base
 {
 public:
     Base();
     virtual ~Base();
 
+    /// Name of the object.
     DataField<std::string> name;
 
+    /// Accessor to the object name
     std::string getName() const;
+
+    /// Set the name of this object
     void setName(const std::string& n);
+
+    /// Get the type name of this object (i.e. class and template types)
     virtual std::string getTypeName() const
     {
         return decodeTypeName(typeid(*this));
     }
 
+    /// Get the class name of this object
     virtual std::string getClassName() const
     {
         return decodeClassName(typeid(*this));
     }
 
+    /// Get the template type names (if any) used to instantiate this object
     virtual std::string getTemplateName() const
     {
         return decodeTemplateName(typeid(*this));
     }
 
-    /// Decode the type's name to a more readable form if possible
+    /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
 
-    /// Extract the class name (removing namespaces and templates)
+    /// Helper method to extract the class name (removing namespaces and templates)
     static std::string decodeClassName(const std::type_info& t);
 
-    /// Extract the namespace (removing class name and templates)
+    /// Helper method to extract the namespace (removing class name and templates)
     static std::string decodeNamespaceName(const std::type_info& t);
 
-    /// Extract the template name (removing namespaces and class name)
+    /// Helper method to extract the template name (removing namespaces and class name)
     static std::string decodeTemplateName(const std::type_info& t);
 
+    /// Helper method to get the type name of a type derived from this class
+    ///
+    /// This method should be used as follow :
+    ///   T* ptr = NULL; std::string type = T::typeName(ptr);
+    /// This way derived classes can redefine the typeName method
     template<class T>
     static std::string typeName(const T* = NULL)
     {
         return decodeTypeName(typeid(T));
     }
 
+    /// Helper method to get the class name of a type derived from this class
+    ///
+    /// This method should be used as follow :
+    ///   T* ptr = NULL; std::string type = T::className(ptr);
+    /// This way derived classes can redefine the className method
     template<class T>
     static std::string className(const T* = NULL)
     {
         return decodeClassName(typeid(T));
     }
 
+    /// Helper method to get the namespace name of a type derived from this class
+    ///
+    /// This method should be used as follow :
+    ///   T* ptr = NULL; std::string type = T::namespaceName(ptr);
+    /// This way derived classes can redefine the namespaceName method
     template<class T>
     static std::string namespaceName(const T* = NULL)
     {
         return decodeNamespaceName(typeid(T));
     }
 
+    /// Helper method to get the template name of a type derived from this class
+    ///
+    /// This method should be used as follow :
+    ///   T* ptr = NULL; std::string type = T::templateName(ptr);
+    /// This way derived classes can redefine the templateName method
     template<class T>
     static std::string templateName(const T* = NULL)
     {
         return decodeTemplateName(typeid(T));
     }
 
+    /// Assign the field values stored in the given list of name + value pairs of strings
     void parseFields ( std::list<std::string> str );
+
+    /// Assign the field values stored in the given map of name -> value pairs
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
+
+    /// Write the current field values to the given map of name -> value pairs
     void writeFields (std::map<std::string,std::string*>& str);
+
+    /// Write the current field values to the given text output stream
     void writeFields (std::ostream& out);
+
+    /// Write the current field values to the given XML output stream
     void xmlWriteFields (std::ostream& out, unsigned level);
 
+    /// Helper method used to initialize a field containing a value of type T
     template<class T>
     DataField<T> dataField( DataField<T>* field, char* name, char* help )
     {
@@ -124,6 +168,7 @@ public:
         return DataField<T>(help);
     }
 
+    /// Helper method used to initialize a field containing a value of type T
     template<class T>
     DataField<T> dataField( DataField<T>* field, const T& value, char* name, char* help )
     {
@@ -138,6 +183,7 @@ public:
         return DataField<T>(value,help);
     }
 
+    /// Helper method used to initialize a field pointing to a value of type T
     template<class T>
     Field<T> field( Field<T>* field, T* ptr, char* name, char* help )
     {
@@ -153,17 +199,20 @@ public:
     }
 
 
+    /// Parse the given description to assign values to this object's fields and potentially other parameters
     virtual void parse ( BaseObjectDescription* arg )
     {
         this->parseFields ( arg->getAttributeMap() );
     }
 
+    /// Accessor to the map containing all the fields of this object
     std::map< std::string, FieldBase* > getFields() { return m_fieldMap; }
 
 protected:
     /// name -> Field object
     std::map< std::string, FieldBase* > m_fieldMap;
 
+    /// Add a field. Note that this method should only be called if the field was not initialized with the dataField<T> of field<T> methods
     void addField( FieldBase* f, char* name )
     {
         std::string ln(name);

@@ -75,12 +75,6 @@ Context::Context()
     setMultiThreadSimulation(objectmodel::BaseContext::getMultiThreadSimulation());
 }
 
-// objectmodel::BaseContext* Context::getDefault()
-// {
-//     static Context defaultContext;
-//     return &defaultContext;
-// }
-
 
 /// Projection from the local coordinate system to the world coordinate system.
 const Context::Frame& Context::getPositionInWorld() const
@@ -222,7 +216,8 @@ bool Context::getShowNormals() const
 }
 
 
-/// Multiresolution
+// Multiresolution
+
 int Context::getCurrentLevel() const
 {
     return currentLevel_.getValue();
@@ -336,9 +331,11 @@ void Context::setShowNormals(bool val)
 }
 
 
-/// Multiresolution
+// Multiresolution
+
 bool Context::setCurrentLevel(int l)
 {
+    /// \TODO Shouldn't we test against finestLevel instead of 0?
     if( l > coarsestLevel_.getValue() || l < 0 ) return false;
     if( l == coarsestLevel_.getValue() )
     {
@@ -347,7 +344,6 @@ bool Context::setCurrentLevel(int l)
     }
     currentLevel_.setValue(l);
     return true;
-
 }
 void Context::setCoarsestLevel(int l)
 {
@@ -363,41 +359,37 @@ void Context::setFinestLevel(int l)
 
 void Context::copyContext(const Context& c)
 {
-    // *static_cast<ContextData*>(this) = *static_cast<const ContextData *>(&c);
-
     // BUGFIX 12/01/06 (Jeremie A.): Can't use operator= on the class as it will copy other data in the BaseContext class (such as name)...
     // *this = c;
 
-    worldGravity_ = c.worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    dt_ = c.dt_;
-    time_ = c.time_;
-    animate_ = c.animate_;
-    showCollisionModels_ = c.showCollisionModels_;
-    showBoundingCollisionModels_ = c.showBoundingCollisionModels_;
-    showBehaviorModels_ = c.showBehaviorModels_;
-    showVisualModels_ = c.showVisualModels_;
-    showMappings_ = c.showMappings_;
-    showMechanicalMappings_ = c.showMechanicalMappings_;
-    showForceFields_ = c.showForceFields_;
-    showInteractionForceFields_ = c.showInteractionForceFields_;
-    showWireFrame_ = c.showWireFrame_;
-    showNormals_ = c.showNormals_;
-    multiThreadSimulation_ = c.multiThreadSimulation_;
+    worldGravity_.setValue(c.worldGravity_.getValue());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    dt_.setValue(c.dt_.getValue());
+    time_.setValue(c.time_.getValue());
+    animate_.setValue(c.animate_.getValue());
+    showCollisionModels_.setValue(c.showCollisionModels_.getValue());
+    showBoundingCollisionModels_.setValue(c.showBoundingCollisionModels_.getValue());
+    showBehaviorModels_.setValue(c.showBehaviorModels_.getValue());
+    showVisualModels_.setValue(c.showVisualModels_.getValue());
+    showMappings_.setValue(c.showMappings_.getValue());
+    showMechanicalMappings_.setValue(c.showMechanicalMappings_.getValue());
+    showForceFields_.setValue(c.showForceFields_.getValue());
+    showInteractionForceFields_.setValue(c.showInteractionForceFields_.getValue());
+    showWireFrame_.setValue(c.showWireFrame_.getValue());
+    showNormals_.setValue(c.showNormals_.getValue());
+    multiThreadSimulation_.setValue(c.multiThreadSimulation_.getValue());
 
-    localFrame_ = c.localFrame_;
-    spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
-    velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
+    localFrame_.setValue(c.localFrame_.getValue());
+    spatialVelocityInWorld_.setValue(c.spatialVelocityInWorld_.getValue());
+    velocityBasedLinearAccelerationInWorld_.setValue(c.velocityBasedLinearAccelerationInWorld_.getValue());
 }
-
-using std::endl;
 
 std::ostream& operator << (std::ostream& out, const Context& c )
 {
-    out<<endl<<"local gravity = "<<c.getLocalGravity();
-    out<<endl<<"transform from local to world = "<<c.getPositionInWorld();
-    //out<<endl<<"transform from world to local = "<<c.getWorldToLocal();
-    out<<endl<<"spatial velocity = "<<c.getVelocityInWorld();
-    out<<endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
+    std::out<<std::endl<<"local gravity = "<<c.getLocalGravity();
+    std::out<<std::endl<<"transform from local to world = "<<c.getPositionInWorld();
+    //std::out<<std::endl<<"transform from world to local = "<<c.getWorldToLocal();
+    std::out<<std::endl<<"spatial velocity = "<<c.getVelocityInWorld();
+    std::out<<std::endl<<"acceleration of the origin = "<<c.getVelocityBasedLinearAccelerationInWorld();
     return out;
 }
 

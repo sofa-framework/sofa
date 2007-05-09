@@ -22,17 +22,6 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-//
-// C++ Interface: Event
-//
-// Description:
-//
-//
-// Author: Francois Faure, INRIA/UJF-Grenoble, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
 #ifndef SOFA_CORE_OBJECTMODEL_EVENT_H
 #define SOFA_CORE_OBJECTMODEL_EVENT_H
 
@@ -46,11 +35,12 @@ namespace objectmodel
 {
 
 /**
-Base class for all events received by the objects.
-When created, the status is initialized as not handled. It is then propagated along the objects until it is handled.
-
-	@author Francois Faure
-*/
+ *  \brief Base class for all events received by the objects.
+ *
+ * When created, the status is initialized as not handled. It is then propagated along the objects until it is handled.
+ *
+ * @author Francois Faure
+ */
 class Event
 {
 public:
@@ -61,7 +51,7 @@ public:
     /// Tag the event as handled, i.e. the event needs not be propagated further
     void setHandled();
 
-    ///
+    /// Returns true of the event has been handled
     bool isHandled() const;
 
 protected:
