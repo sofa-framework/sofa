@@ -97,7 +97,7 @@ public:
     /// Helper method to get the type name of a type derived from this class
     ///
     /// This method should be used as follow :
-    ///   T* ptr = NULL; std::string type = T::typeName(ptr);
+    /// \code  T* ptr = NULL; std::string type = T::typeName(ptr); \endcode
     /// This way derived classes can redefine the typeName method
     template<class T>
     static std::string typeName(const T* = NULL)
@@ -108,7 +108,7 @@ public:
     /// Helper method to get the class name of a type derived from this class
     ///
     /// This method should be used as follow :
-    ///   T* ptr = NULL; std::string type = T::className(ptr);
+    /// \code  T* ptr = NULL; std::string type = T::className(ptr); \endcode
     /// This way derived classes can redefine the className method
     template<class T>
     static std::string className(const T* = NULL)
@@ -119,7 +119,7 @@ public:
     /// Helper method to get the namespace name of a type derived from this class
     ///
     /// This method should be used as follow :
-    ///   T* ptr = NULL; std::string type = T::namespaceName(ptr);
+    /// \code  T* ptr = NULL; std::string type = T::namespaceName(ptr); \endcode
     /// This way derived classes can redefine the namespaceName method
     template<class T>
     static std::string namespaceName(const T* = NULL)
@@ -130,7 +130,7 @@ public:
     /// Helper method to get the template name of a type derived from this class
     ///
     /// This method should be used as follow :
-    ///   T* ptr = NULL; std::string type = T::templateName(ptr);
+    /// \code  T* ptr = NULL; std::string type = T::templateName(ptr); \endcode
     /// This way derived classes can redefine the templateName method
     template<class T>
     static std::string templateName(const T* = NULL)

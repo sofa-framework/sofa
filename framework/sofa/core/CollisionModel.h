@@ -35,26 +35,28 @@ namespace sofa
 namespace core
 {
 
-/// Abstract CollisionModel interface.
-///
-/// A CollisionModel contains a list of same-type elements. It can be part of a
-/// list of CollisionModels, each describing a level in a bounding-volume
-/// hierarchy.
-///
-/// Each CollisionModel stores a pointer to the next model in the hierarchy
-/// (i.e. finer / lower / child level) as well as the previous model (i.e.
-/// coarser / upper / parent level). The first CollisionModel in this list is
-/// the root of the hierarchy and contains only one element. The last
-/// CollisionModel contains the leaves of the hierarchy which are the real
-/// elements of the object.
-///
-/// Each element inside CollisionModels except for the last one can have a list
-/// of children. There are 2 types of child elements:
-/// * internal children: child elements of the same type as their parent (often
-///   corresponding to non-final elements)
-/// * external children: child elements of a different type (often corresponding
-///   to the final elements)
-///
+/**
+ *  \brief Abstract CollisionModel interface.
+ *
+ *  A CollisionModel contains a list of same-type elements. It can be part of a
+ *  list of CollisionModels, each describing a level in a bounding-volume
+ *  hierarchy.
+ *
+ *  Each CollisionModel stores a pointer to the next model in the hierarchy
+ *  (i.e. finer / lower / child level) as well as the previous model (i.e.
+ *  coarser / upper / parent level). The first CollisionModel in this list is
+ *  the root of the hierarchy and contains only one element. The last
+ *  CollisionModel contains the leaves of the hierarchy which are the real
+ *  elements of the object.
+ *
+ *  Each element inside CollisionModels except for the last one can have a list
+ *  of children. There are 2 types of child elements:
+ *  \li internal children: child elements of the same type as their parent (often
+ *    corresponding to non-final elements)
+ *  \li external children: child elements of a different type (often corresponding
+ *    to the final elements)
+ *
+ */
 class CollisionModel : public virtual objectmodel::BaseObject
 {
 public:
@@ -93,40 +95,36 @@ public:
         return size==0;
     }
 
-    /// Return the next (i.e. finer / lower / child level)
-    /// CollisionModel in the hierarchy.
+    /// Return the next (finer / lower / child level) CollisionModel in the hierarchy.
     CollisionModel* getNext()
     {
         return next;
     }
 
-    /// Return the previous (i.e. coarser / upper / parent level)
-    /// CollisionModel in the hierarchy.
+    /// Return the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
     CollisionModel* getPrevious()
     {
         return previous;
     }
 
-    /// Set the next (i.e. finer / lower / child level)
-    /// CollisionModel in the hierarchy.
+    /// Set the next (finer / lower / child level) CollisionModel in the hierarchy.
     void setNext(CollisionModel* val)
     {
         next = val;
     }
 
-    /// Set the previous (i.e. coarser / upper / parent level)
-    /// CollisionModel in the hierarchy.
+    /// Set the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
     void setPrevious(CollisionModel* val)
     {
         previous = val;
     }
 
-    /// Return true if this CollisionModel should be used for collisions.
+    /// \brief Return true if this CollisionModel should be used for collisions.
     ///
     /// Default to true.
     virtual bool isActive() { return true; }
 
-    /// Return true if this CollisionModel is attached to an immobile
+    /// \brief Return true if this CollisionModel is attached to an immobile
     /// <i>obstacle</i> object.
     ///
     /// Default to false.
@@ -137,13 +135,13 @@ public:
     /// Create or update the bounding volume hierarchy.
     virtual void computeBoundingTree(int maxDepth=0) = 0;
 
-    /// Create or update the bounding volume hierarchy, accounting for motions
+    /// \brief Create or update the bounding volume hierarchy, accounting for motions
     /// within the given timestep.
     ///
     /// Default to computeBoundingTree().
     virtual void computeContinuousBoundingTree(double /*dt*/, int maxDepth=0) { computeBoundingTree(maxDepth); }
 
-    /// Return the list (as a pair of iterators) of <i>internal children</i> of
+    /// \brief Return the list (as a pair of iterators) of <i>internal children</i> of
     /// an element.
     ///
     /// Internal children are child elements of the same type as their parent
@@ -158,7 +156,7 @@ public:
         return std::make_pair(CollisionElementIterator(),CollisionElementIterator());
     }
 
-    /// Return the list (as a pair of iterators) of <i>external children</i> of
+    /// \brief Return the list (as a pair of iterators) of <i>external children</i> of
     /// an element.
     ///
     /// External children are child elements of a different type than their
@@ -171,7 +169,8 @@ public:
     }
 
 
-    /// Checks if the element(index) is a leaf and a primitive of the collision model
+    /// \brief Checks if the element(index) is a leaf and a primitive of the collision model.
+    ///
     /// Default to true since triangle model, line model, etc. does not have this method implemented and they
     /// are themselves (normally) leaves and primitives
     virtual bool isLeaf( int /*index*/ ) const
@@ -180,7 +179,7 @@ public:
     }
 
 
-    /// Test if this model can collide with another model.
+    /// \brief Test if this model can collide with another model.
     ///
     /// Note that this test is only related to <b>what</b> are the two models
     /// (i.e. which type, attached to which object) and not <b>where</b> they
@@ -193,7 +192,7 @@ public:
     virtual bool canCollideWith(CollisionModel* model) { return model->getContext() != this->getContext(); }
     //virtual bool canCollideWith(CollisionModel* model) { return model != this; }
 
-    /// Test if two elements can collide with each other.
+    /// \brief Test if two elements can collide with each other.
     ///
     /// This method should be implemented by models supporting
     /// self-collisions to prune tests between adjacent elements.
@@ -231,12 +230,10 @@ protected:
     /// Number of collision elements
     int size;
 
-    /// Pointer to the previous (i.e. coarser / upper / parent level)
-    /// CollisionModel in the hierarchy.
+    /// Pointer to the previous (coarser / upper / parent level) CollisionModel in the hierarchy.
     CollisionModel* previous;
 
-    /// Pointer to the next (i.e. finer / lower / child level)
-    /// CollisionModel in the hierarchy.
+    /// Pointer to the next (finer / lower / child level) CollisionModel in the hierarchy.
     CollisionModel* next;
 
     /// Helper method to get or create the previous model in the hierarchy.

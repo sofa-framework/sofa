@@ -36,21 +36,24 @@ namespace core
 class CollisionModel;
 class CollisionElementIterator;
 
-/// Reference to an collision element defined by its <i>index</i> inside a
-/// given collision <i>model</i>.
-///
-/// A CollisionElementIterator is only a temporary iterator and must not
-/// contain any data. It only contains inline non-virtual methods calling the
-/// appropriate methods in the parent model object.
-/// This class is a template in order to store reference to a specific type of
-/// element (such as a Cube in a CubeModel).
-///
+/**
+ *  \brief Reference to an collision element defined by its <i>index</i> inside
+ *  a given collision <i>model</i>.
+ *
+ *  A CollisionElementIterator is only a temporary iterator and must not
+ *  contain any data. It only contains inline non-virtual methods calling the
+ *  appropriate methods in the parent model object.
+ *  This class is a template in order to store reference to a specific type of
+ *  element (such as a Cube in a CubeModel).
+ *
+ */
 template<class Model>
 class TCollisionElementIterator
 {
 public:
 
-    /// Constructor. In most cases it will be used by the CollisionModel to
+    /// Constructor.
+    /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
     /// @todo Should this be protected and only available to the CollisionModel?
@@ -157,25 +160,26 @@ public:
 protected:
     Model* model;   ///< CollisionModel containing the referenced element.
     int index;      ///< index of the referenced element inside the CollisionModel.
-
-
 };
 
-/// Reference to an abstract collision element.
-///
-/// You can think of a CollisionElementIterator as a glorified pointer to a
-/// collision element. It is only there to create a reference to it, not to
-/// actual contain its data. Classes derived from TCollisionElementIterator
-/// does not store any data, but just provide methods allowing to access the
-/// additionnal data stored inside the derived CollisionModel. For instance,
-/// the Cube class adds the minVect() / maxVect() methods to retrieve the
-/// corners of the cube, however this data is not stored inside Cube, instead
-/// it is stored inside the CubeData class within CubeModel.
-///
+/**
+ *  \brief Reference to an abstract collision element.
+ *
+ *  You can think of a CollisionElementIterator as a glorified pointer to a
+ *  collision element. It is only there to create a reference to it, not to
+ *  actual contain its data. Classes derived from TCollisionElementIterator
+ *  does not store any data, but just provide methods allowing to access the
+ *  additionnal data stored inside the derived CollisionModel. For instance,
+ *  the Cube class adds the minVect() / maxVect() methods to retrieve the
+ *  corners of the cube, however this data is not stored inside Cube, instead
+ *  it is stored inside the CubeData class within CubeModel.
+ *
+ */
 class CollisionElementIterator : public TCollisionElementIterator<CollisionModel>
 {
 public:
-    /// Constructor. In most cases it will be used by the CollisionModel to
+    /// Constructor.
+    /// In most cases it will be used by the CollisionModel to
     /// create interators to its elements (such as in the begin() and end()
     /// methods).
     /// @todo Should this be protected and only available to the CollisionModel?

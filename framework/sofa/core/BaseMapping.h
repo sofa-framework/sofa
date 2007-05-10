@@ -42,7 +42,7 @@ namespace core
  *  \brief An interface to convert a model to an other model
  *
  *  This Interface is used for the Mappings. A Mapping can convert one model to an other.
- *  For example, we can have a mapping from BehaviorModel to a VisualModel.
+ *  For example, we can have a mapping from a BehaviorModel to a VisualModel.
  *
  */
 class BaseMapping : public virtual objectmodel::BaseObject
@@ -50,9 +50,7 @@ class BaseMapping : public virtual objectmodel::BaseObject
 public:
     virtual ~BaseMapping() { }
 
-    virtual void init() = 0;
-
-    /// Apply the transformation from a model to an other model (like apply displacement from BehaviorModel to VisualModel)
+    /// Apply the transformation from the input model to the output model (like apply displacement from BehaviorModel to VisualModel)
     virtual void updateMapping() = 0;
 
     /// Accessor to the input model of this mapping

@@ -33,33 +33,25 @@ namespace sofa
 namespace core
 {
 
-/*! \class BehaviorModel
- *  \brief An interface inherited by all BehaviorModel
- *  \author Fonteneau Sylvere
- *  \version 0.1
- *  \date    02/22/2004
+/**
+ *  \brief Abstract Interface of components defining the behavior of a simulated object.
  *
- *  <P>This Interface is used for MechanicalGroup and "black-box" BehaviorModel<BR>
- *  All behavior model inherit of this Interface, and each object has to implement the updatePosition method
- *  <BR>updatePosition corresponds to the computation of a new simulation step<BR>
+ *  This Interface is used by "black-box" objects (such as some fluid algorithms)
+ *  that are present in a SOFA simulation but which do not use the internal
+ *  behavior components (MechanicalState, ForceField, etc) defined in the
+ *  sofa::core::componentmodel::behavior namespace.
+ *
+ *  A BehaviorModel simply has to implement the updatePosition method
+ *  to compute a new simulation step.
+ *
  */
-
 class BehaviorModel : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     virtual ~BehaviorModel() {}
 
-    virtual void init() = 0;
-
     /// Computation of a new simulation step.
     virtual void updatePosition(double dt) = 0;
-
-    /// Deprecated transform method. Replaced by local coordinates system in Context.
-    virtual void applyTranslation(double /*dx*/, double /*dy*/, double /*dz*/) { }
-    /// Deprecated transform method. Replaced by local coordinates system in Context.
-    virtual void applyRotation(double /*ax*/, double /*ay*/, double /*az*/, double /*angle*/) { }
-
-    virtual void applyScale(double /*sx*/, double /*sy*/, double /*sz*/, double /*smass*/) { }
 };
 
 } // namespace core

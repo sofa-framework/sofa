@@ -851,6 +851,8 @@ namespace objectmodel
 {
 
 // Specialization of Field::getValueTypeString() method to display smaller
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
 
 template<>
 inline std::string FieldBase::typeName< defaulttype::Quat >(const defaulttype::Quat *) { return "Quat"; }
@@ -941,6 +943,8 @@ inline std::string FieldBase::typeName< std::vector< defaulttype::Rigid3fTypes::
 
 template<>
 inline std::string FieldBase::typeName< helper::vector< defaulttype::Rigid3fTypes::Deriv > >(const helper::vector< defaulttype::Rigid3fTypes::Deriv > *) { return "vector<Rigid3fTypes::Deriv>"; }
+
+/// \endcond
 
 } // namespace objectmodel
 

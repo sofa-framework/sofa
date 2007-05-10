@@ -405,7 +405,9 @@ defaulttype::Vec<2, float>,
 namespace objectmodel
 {
 
-// Specialization of Field::getValueTypeString() method to display smaller
+// Specialization of Field::getValueTypeString() method to display smaller aliases
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
 
 template<>
 inline std::string FieldBase::typeName< defaulttype::Vec1f >(const defaulttype::Vec1f *) { return "Vec1f"; }
@@ -452,6 +454,7 @@ inline std::string FieldBase::typeName< std::vector< defaulttype::Vec6d > >(cons
 template<>
 inline std::string FieldBase::typeName< helper::vector< defaulttype::Vec6d > >(const helper::vector< defaulttype::Vec6d > *) { return "vector<Vec6d>"; }
 
+/// \endcond
 
 } // namespace objectmodel
 

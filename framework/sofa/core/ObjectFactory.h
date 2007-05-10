@@ -53,19 +53,42 @@ namespace sofa
 namespace core
 {
 
+/**
+ *  \brief Main class used to register and dynamically create objects
+ *
+ *  It uses the Factory design pattern, where each class is registered in a map,
+ *  and dynamically retrieved given the type name.
+ *
+ *  It also stores metainformation on each classes, such as description,
+ *  authors, license, and available template types.
+ *
+ *  \see RegisterObject for how new classes should be registered.
+ *
+ */
 class ObjectFactory
 {
 public:
 
+    /// Abstract interface of objects used to create instances of a given type
     class Creator
     {
     public:
         virtual ~Creator() { }
+        /// Pre-construction check.
+        ///
+        /// \return true if the object can be created successfully.
         virtual bool canCreate(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
+
+        /// Construction method called by the factory.
+        ///
+        /// \pre canCreate(context, arg) == true.
         virtual objectmodel::BaseObject* createInstance(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg) = 0;
+
+        /// type_info structure associated with the type of intanciated objects.
         virtual const std::type_info& type() = 0;
     };
 
+    /// Record storing information about a class
     class ClassEntry
     {
     public:
@@ -82,34 +105,56 @@ public:
     };
 
 protected:
+
+    /// Main class registry
     std::map<std::string,ClassEntry*> registry;
 
 public:
 
+    /// Get an entry given a class name (or alias)
     ClassEntry* getEntry(std::string classname);
+
+    /// Fill the given vector with all the registered classes
     void getAllEntries(std::vector<ClassEntry*>& result);
 
+    /// Add an alias name for an already registered class
+    ///
+    /// \param name    name of the new alias
+    /// \param result  class pointed to by the new alias
+    /// \param force   set to true if this method should override any entry already registered for this name
     bool addAlias(std::string name, std::string result, bool force=false);
 
+    /// Create an object given a context and a description.
     objectmodel::BaseObject* createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
 
+    /// Get the ObjectFactory singleton instance
     static ObjectFactory* getInstance();
 
+    /// \copydoc createObject
     static objectmodel::BaseObject* CreateObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
         return getInstance()->createObject(context, arg);
     }
 
+    /// \copydoc addAlias
     static bool AddAlias(std::string name, std::string result, bool force=false)
     {
         return getInstance()->addAlias(name, result, force);
     }
 
+    /// Dump the content of the factory to a text stream.
     void dump(std::ostream& out = std::cout);
+
+    /// Dump the content of the factory to a XML stream.
     void dumpXML(std::ostream& out = std::cout);
+
+    /// Dump the content of the factory to a HTML stream.
     void dumpHTML(std::ostream& out = std::cout);
 };
 
+/**
+ *  \brief Typed Creator class used to create instances of object type RealObject
+ */
 template<class RealObject>
 class ObjectCreator : public ObjectFactory::Creator
 {
@@ -131,27 +176,54 @@ public:
     }
 };
 
+/**
+ *  \brief Helper class used to register a class in the ObjectFactory.
+ *
+ *  This class accumulate information about a given class, as well as creators
+ *  for each supported template instanciation, to register a new entry in
+ *  the ObjectFactory.
+ *
+ *  It should be used as a temporary object, finalized when used to initialize
+ *  an int static variable. For example :
+ *  \code
+ *    int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")
+ *    .add\< Fluid3D \>()
+ *    .addLicense("LGPL")
+ *    .addAuthor("Jeremie Allard")
+ *    ;
+ *  \endcode
+ *
+ */
 class RegisterObject
 {
 protected:
+    /// Class entry being constructed
     ObjectFactory::ClassEntry entry;
 public:
 
+    /// Start the registration by giving the description of this class.
     RegisterObject(const std::string& description);
 
+    /// Add an alias name for this class
     RegisterObject& addAlias(std::string val);
 
+    /// Add more descriptive text about this class
     RegisterObject& addDescription(std::string val);
 
+    /// Specify a list of authors (separated with spaces)
     RegisterObject& addAuthor(std::string val);
 
+    /// Specify a license (LGPL, GPL, ...)
     RegisterObject& addLicense(std::string val);
 
+    /// Add a creator able to instance this class with the given templatename.
+    ///
+    /// See the add<RealObject>() method for an easy way to add a Creator.
     RegisterObject& addCreator(std::string classname, std::string templatename, ObjectFactory::Creator* creator);
 
-    // test whether T* converts to U*,
-    // that is, if T is derived from U
-    // taken from Modern C++ Design
+    /// Test whether T* converts to U*,
+    /// that is, if T is derived from U
+    /// taken from Modern C++ Design
     template <class T, class U>
     class Conversion
     {
@@ -165,6 +237,8 @@ public:
         static int Exists() { return exists; }
     };
 
+    /// Test whether T* converts to U*,
+    /// that is, if T is derived from U
     template<class RealClass, class BaseClass>
     bool implements()
     {
@@ -178,6 +252,9 @@ public:
         return res;
     }
 
+    /// Add a template instanciation of this class.
+    ///
+    /// \param defaultTemplate    set to true if this should be the default instance when no template name is given.
     template<class RealObject>
     RegisterObject& add(bool defaultTemplate=false)
     {
@@ -223,8 +300,7 @@ public:
         return addCreator(classname, templatename, new ObjectCreator<RealObject>);
     }
 
-    /// Convert to an int
-    /// This is the final operation that will actually commit the additions to the factory
+    /// This is the final operation that will actually commit the additions to the ObjectFactory.
     operator int();
 };
 

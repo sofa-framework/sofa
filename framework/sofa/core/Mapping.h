@@ -33,33 +33,65 @@ namespace sofa
 namespace core
 {
 
+/**
+ *  \brief Specialized interface to convert a model of type TIn to an other model of type TOut
+ *
+ *  This Interface is used for the Mappings. A Mapping can convert one model to an other.
+ *  For example, we can have a mapping from a BehaviorModel to a VisualModel.
+ *
+ */
 template <class TIn, class TOut>
 class Mapping : public BaseMapping
 {
 public:
+    /// Input Model Type
     typedef TIn In;
+    /// Output Model Type
     typedef TOut Out;
 
 protected:
+    /// Input Model
     In* fromModel;
+    /// Output Model
     Out* toModel;
 
 public:
-    Mapping(In* from, Out* to);
+    /// Constructor, taking input and output models as parameters.
+    ///
+    /// Note that if you do not specify these models here, you must called
+    /// setModels with non-NULL value before the intialization (i.e. before
+    /// init() is called).
+    Mapping(In* from=NULL, Out* to=NULL);
+
     virtual ~Mapping();
 
+    /// Specify the input and output models.
+    virtual void setModels(In* from, Out* to);
+
+    /// Return the pointer to the input model.
     objectmodel::BaseObject* getFrom();
+    /// Return the pointer to the output model.
     objectmodel::BaseObject* getTo();
 
+    /// Apply the mapping on position vectors.
+    ///
+    /// This method must be reimplemented by all mappings.
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
+
+    /// Apply the mapping on derived (velocity, displacement) vectors.
+    ///
+    /// This method must be reimplemented by all mappings.
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
 
     virtual void init();
-    virtual void setModels(In* from, Out* to);
 
     virtual void updateMapping();
 
     /// Pre-construction check method called by ObjectFactory.
+    ///
+    /// This implementation read the object1 and object2 attributes and check
+    /// if they are compatible with the input and output model types of this
+    /// mapping.
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
@@ -75,6 +107,9 @@ public:
     }
 
     /// Construction method called by ObjectFactory.
+    ///
+    /// This implementation read the object1 and object2 attributes to
+    /// find the input and output models of this mapping.
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
