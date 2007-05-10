@@ -1,15 +1,15 @@
-\documentclass[a4paper,11pt]{report}
+\documentclass[a4paper,11pt]{article}
 % LaTeX2Html: setenv TEXINPUTS `pwd`/fig:; latex2html
 
 % ---- graphiques
-\usepackage[dvips]{graphicx}
+\usepackage{graphicx}
 %\graphicspath{./fig} 
-\usepackage{subfigure}  % several figures in a figure
+%\usepackage{subfigure}  % several figures in a figure
 %\usepackage{pstricks}
 
 % ---- couleurs
-\usepackage[dvips]{color}
-\pagecolor[gray]{1}         % couleur de fond (blanc)
+% \usepackage[dvips]{color}
+% \pagecolor[gray]{1}         % couleur de fond (blanc)
 
 % ---- inclusion de codes
 
@@ -58,9 +58,9 @@
 \begin{document} 
 \maketitle
 
-\begin{abstract}
+% \begin{abstract}
 % This is the documentation of the SOFA library. Chapter~\ref{chapter:pba} gives theoretical background on physically-based animation. Chapter~\ref{chapter:as} shows how to implement simulations using \sofa. Chapter~\ref{chapter:es} describes how to integrate new components in \sofa.
-\end{abstract}
+% \end{abstract}
 
 \tableofcontents
 
@@ -75,29 +75,82 @@ The main feature of \sofa  compared with other libraries is its high flexibility
 Additionally, \sofa  scenes are modeled using a data structure similar to hierarchical scene graphs commonly used in graphics libraries. This allows the splitting of the physical objects into collections of independent components, each of them describing one feature of the model, such as mass, force functions and constraints.
 For example, you can replace spring forces with finite element forces by simply replacing one component with another, all the rest (mass, collision geometry, time integration, etc.) remaining unchanged.
 
-Moreover, simulation algorithms, such as time integration or collision detection and modeling, are also modeled as components in the scene graph. This provides us with the same flexibility in algorithms as in models.
+Moreover, simulation algorithms, such as time integration or collision detection and modeling, are also modeled as components in the scene graph. This provides us with the same flexibility for algorithms as for models.
 
 Flexibility allows one to focus on its own domain of competence, while re-using the other's contributions on other topics. 
 However, efficiency is a major issue, and we have tried to design a framework which allows both efficiency and flexibility.
 
 \section{Commented example}
-deformable object + rigid, MMVR07
-Explicit integration with independent solvers
-Implicit integration with one solver
+Figure~\ref{fig:mixedPendulum} shows a simple scene composed of two different objets, one rigid body and one particle system, and linked by a spring.
+\begin{figure}
+ \centering
+ \includegraphics[width=0.9\linewidth]{mixedPendulum.png}
+ \caption{A pendulum composed of a rigid body (reference frame and yellow point) attached to an elastic string (green) fixed at one end (pink point). The corresponding scene graph is displayed on the left.}
+ \label{fig:mixedPendulum}
+\end{figure}
+This scene is modeled and simulated in C++ as shown in appendix~\ref{cpphybrid}.
 
-\section{Data structure}
-Scene graph, components, nodes, mappings, actions
+\todo{Graphviz scene graph}
 
+The scene is modeled as a tree structure with four nodes:
+\begin{itemize}
+ \item \texttt{root} 
+ \item \texttt{deformableBody} corresponds to the elastic string
+ \item \texttt{rigidBody} corrsponds to the rigid object
+ \item \texttt{rigidParticles} corresponds to a set of particles (only one in this case) attached to the rigid body
+\end{itemize}
+Each node can have children nodes and \textit{components}. Each component implements a reduced set of functionalities.
+
+
+One of the most important type of component is the \texttt{MechanicalObject}, which contains a list of \textit{degrees of freedom} (DOF), i.e. coordinates, velocities, and associated auxiliary vectors such as forces and accelerations. 
+All the coordinates in a \texttt{MechanicalObject} have the same type, e.g. 3D vectors particles, or (translation, rotation) pairs for rigid bodies. \texttt{MechanicalObject}, like many other \sofa classes, is a generic (C++ template) class instantiated on the types of DOF it stores.
+The particle DOFs are drawn as white points, whereas the rigid body DOFs are drawn as red, green, blue reference frame axes.
+There can be at most one \texttt{MechanicalObject} attached to a given node. This guarantees that all the components attached to the same node process the same types of DOF. Consequently, the particles and the rigid body necessarily belong to different nodes. 
+
+In this example, the masses are stored in \texttt{UniformMass} components.
+The types of their values are related to the types of their associated DOF.
+\texttt{UniformMass} is derived from the abstract \texttt{Mass} class, and stores only one value, for the case where all the associated objects have the same mass. If necessary, it can replaced by a \texttt{DiagonalMass} instanciated on the same DOF types, for the case where the associated objects have different masses. This is an important feature of \sofa: each component can be replaced by another one deriving from the same abstract class and instanciated on the same DOF types. This results in a high flexibility.
+
+The \texttt{FixedConstraint} component attaches a particle to a fixed point in world space, drawn in pink. The constraints act as filters which cancel the forces and displacements applied to their associated particle(s). They do not model more complex constraints such as maintaining three points aligned.
+
+The \texttt{StiffSpringForceField} stores a list of springs, each of them modeled by a pair of indices, as well as the standard physical parameters, stiffness, damping and rest length.
+
+The rigid body is connected to the deformable string by a spring.
+Since this spring is shared by the two bodies, it is modeled in the \texttt{StiffSpringForceField} attached to a common ancestor, the graph root in this example.
+Our springs can only connect particles. We thus need to attach a particle to the rigid body. Since the particle DOFs types are different from the rigid body DOF types, they have to be stored in another \texttt{MechanicalObject}, called \texttt{rigidParticleDOF} in this example, and attached to a different node. 
+However, \texttt{rigidParticleDOF} is not a set of independent DOF, since they are fixed in the reference frame of the rigid body. We thus attach it to a child node of the rigid body, and connect it to \texttt{rigidDOF} using a \texttt{RigidMapping}. This component stores the coordinates of the particle in the reference frame of the rigid body. Its task is to propagate the position, velocity and displacement of the rigid body down to the yellow particle, and conversely, to propagate the forces applied to the particle up to the rigid body.
+
+Mappings are one of the major features of \sofa. They allow us to use different geometric models for a given body, e.g. a coarse tetrahedral mesh for viscoelastic internal forces, a set of spheres for collision detection and modeling, and a fine triangular mesh for rendering.
+
+The gravity applied to the scene is modeled in the \texttt{Gravity} component near the root. It applies to all the scene, unless locally overloaded by another gravity component inside a branch of the tree.
+
+So far, we have discussed the physical model of the scene. 
+To animate it, we need to solve an \textit{Ordinary Differential Equation} (ODE) in time. 
+There are plenty of ODE solvers, and \sofa allows the design and the re-use of a wide variety of them. 
+Here we use a simple explicit Euler method, modeled using an \texttt{EulerSolver} component.
+It triggers computations such as force acumulation, acceleration computation and linear operations on state vectors.
+More sophisticated solvers are available in \sofa, and can be used by simply replacing the  \texttt{EulerSolver} component by another one, e.g \texttt{RungeKutta4} or \texttt{CGImplicit}.
+
+Other capabilities of \sofa, such as collision detection and response, will be discussed in subsequent sections.
+
+\section{Actions}
 
 \section{Mappings}
-More on mappings
 
-\section{Algorithms}
-time integration, constraint resolution
+\section{ODE Solvers}
 
 \section{Collision detection}
 
+\section{Constraint-based methods}
+
 \section{File format}
+
+\section{Limitations}
+
+\pagebreak
+\appendix
+\section{C++ code of the hybrid pendulum}\label{cpphybrid}
+\includecode{C++}{../applications/tutorials/mixedPendulum/Main.cpp}
 
 % \include{sofaMechanical}
 % 

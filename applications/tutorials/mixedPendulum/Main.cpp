@@ -1,26 +1,19 @@
-#include <iostream>
-#include <fstream>
-
-#include <sofa/helper/ArgumentParser.h>
+/** A sample program. Laure Heigeas, Francois Faure, 2007. */
+// scene data structure
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/contextobject/Gravity.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/component/MechanicalObject.h>
-#include <sofa/core/objectmodel/Context.h>
-#include <sofa/component/visualmodel/OglModel.h>
-#include <sofa/component/constraint/FixedConstraint.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/StaticSolver.h>
-#include <sofa/helper/system/FileRepository.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/constraint/FixedConstraint.h>
+#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/mapping/RigidMapping.h>
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-
-
+// gui
 #ifdef SOFA_GUI_FLTK
 #include <sofa/gui/fltk/Main.h>
 #endif
@@ -28,50 +21,35 @@
 #include <sofa/gui/qt/Main.h>
 #endif
 
-using sofa::core::Mapping;
-using sofa::component::mapping::BarycentricMapping;
-using sofa::component::topology::MeshTopology;
-typedef sofa::component::odesolver::EulerSolver OdeSolver;
-//typedef sofa::component::odesolver::StaticSolver OdeSolver;
 using sofa::simulation::tree::GNode;
-
+typedef sofa::component::odesolver::EulerSolver OdeSolver;
+using sofa::component::contextobject::Gravity;
 
 // deformable body
-typedef sofa::defaulttype::Vec3Types MyTypes;
-typedef MyTypes::Deriv Vec3;
+typedef sofa::defaulttype::Vec3Types ParticleTypes;
+typedef ParticleTypes::Deriv Vec3;
+typedef sofa::core::componentmodel::behavior::MechanicalState<ParticleTypes> ParticleStates;
+typedef sofa::component::MechanicalObject<ParticleTypes> ParticleDOFs;
+typedef sofa::component::mass::UniformMass<ParticleTypes,double> ParticleMasses;
+typedef sofa::component::constraint::FixedConstraint<ParticleTypes> ParticleFixedConstraint;
+typedef sofa::component::forcefield::StiffSpringForceField<ParticleTypes> ParticleStiffSpringForceField;
 typedef sofa::component::visualmodel::GLExtVec3fTypes OglTypes;
-typedef sofa::core::componentmodel::behavior::MechanicalState<MyTypes> MyMechanicalState;
-typedef sofa::component::MechanicalObject<MyTypes> MyMechanicalObject;
 typedef sofa::core::componentmodel::behavior::MappedModel<OglTypes> OglMappedModel;
-typedef sofa::component::mass::UniformMass<MyTypes,double> MyUniformMass;
-typedef BarycentricMapping< Mapping< MyMechanicalState, OglMappedModel > > MyMapping;
-typedef sofa::component::constraint::FixedConstraint<MyTypes> MyFixedConstraint;
-typedef sofa::component::forcefield::TetrahedronFEMForceField<MyTypes> MyTetrahedronFEMForceField;
 
 // rigid body
-typedef sofa::defaulttype::StdRigidTypes<3,double> MyRigidTypes;
-typedef MyRigidTypes::Coord RigidCoord;
-typedef MyRigidTypes::Quat Quaternion;
-typedef sofa::defaulttype::StdRigidMass<3,double> MyRigidMass;
-typedef sofa::component::mass::UniformMass<MyRigidTypes,MyRigidMass> MyRigidUniformMass;
-typedef sofa::core::componentmodel::behavior::MechanicalState<MyRigidTypes> MyRigidState;
-typedef sofa::component::MechanicalObject<MyRigidTypes> MyRigidMechanicalObject;
-typedef sofa::core::componentmodel::behavior::MechanicalMapping<MyRigidState, MyMechanicalState >  MyRigidMapping;
-typedef sofa::component::mapping::RigidMapping< MyRigidMapping >  MyRigidMechanicalMapping;
+typedef sofa::defaulttype::StdRigidTypes<3,double> RigidTypes;
+typedef RigidTypes::Coord RigidCoord;
+typedef RigidTypes::Quat Quaternion;
+typedef sofa::defaulttype::StdRigidMass<3,double> RigidMass;
+typedef sofa::component::mass::UniformMass<RigidTypes,RigidMass> RigidUniformMasses;
+typedef sofa::core::componentmodel::behavior::MechanicalState<RigidTypes> RigidStates;
+typedef sofa::component::MechanicalObject<RigidTypes> RigidDOFs;
+typedef sofa::core::componentmodel::behavior::MechanicalMapping<RigidStates, ParticleStates >  RigidToParticleMechanicalMapping;
+typedef sofa::component::mapping::RigidMapping< RigidToParticleMechanicalMapping >  RigidToParticleRigidMechanicalMapping;
 
-// attachment
-typedef sofa::component::forcefield::StiffSpringForceField<MyTypes> MyStiffSpringForceField;
-
-
-// ---------------------------------------------------------------------
-// ---
-// ---------------------------------------------------------------------
-int main(int argc, char** argv)
+int main(int, char** argv)
 {
-    parse("This is a SOFA application.")
-    (argc,argv);
-
-    // scene parameters
+    //=========================== Build the scene
     double endPos = 1.;
     double attach = -1.;
     double splength = 1.;
@@ -82,95 +60,93 @@ int main(int argc, char** argv)
 
     // One solver for all the graph
     OdeSolver* solver = new OdeSolver;
-    solver->f_printLog.setValue(false);
     groot->addObject(solver);
+    solver->f_printLog.setValue(false);
 
     // Set gravity for all the graph
-    sofa::component::contextobject::Gravity* gravity =  new sofa::component::contextobject::Gravity;
-    gravity->f_gravity.setValue( Vec3(0,-10,0) );
+    Gravity* gravity =  new Gravity;
     groot->addObject(gravity);
+    gravity->f_gravity.setValue( Vec3(0,-10,0) );
 
 
     //-------------------- Deformable body
     GNode* deformableBody = new GNode;
-    deformableBody->setName( "deformableBody" );
     groot->addChild(deformableBody);
+    deformableBody->setName( "deformableBody" );
 
     // degrees of freedom
-    MyMechanicalObject* DOF = new MyMechanicalObject;
+    ParticleDOFs* DOF = new ParticleDOFs;
     deformableBody->addObject(DOF);
     DOF->resize(2);
     DOF->setName("DOF");
-    MyTypes::VecCoord& x = *DOF->getX();
-
+    ParticleTypes::VecCoord& x = *DOF->getX();
     x[0] = Vec3(0,0,0);
     x[1] = Vec3(endPos,0,0);
 
     // mass
-    MyUniformMass* mass = new MyUniformMass;
+    ParticleMasses* mass = new ParticleMasses;
     deformableBody->addObject(mass);
     mass->setMass(1);
     mass->setName("mass");
 
     // Fixed point
-    MyFixedConstraint* constraints = new MyFixedConstraint;
+    ParticleFixedConstraint* constraints = new ParticleFixedConstraint;
     deformableBody->addObject(constraints);
     constraints->setName("constraints");
     constraints->addConstraint(0);
 
     // force field
-    MyStiffSpringForceField* spring = new MyStiffSpringForceField;
+    ParticleStiffSpringForceField* spring = new ParticleStiffSpringForceField;
     deformableBody->addObject(spring);
     spring->setName("internal spring");
     spring->addSpring( 1,0, 10., 1, splength );
 
 
-
     //-------------------- Rigid body
     GNode* rigidBody = new GNode;
-    rigidBody->setName( "rigidBody" );
     groot->addChild(rigidBody);
+    rigidBody->setName( "rigidBody" );
 
     // degrees of freedom
-    MyRigidMechanicalObject* rigidDOF = new MyRigidMechanicalObject;
+    RigidDOFs* rigidDOF = new RigidDOFs;
     rigidBody->addObject(rigidDOF);
     rigidDOF->resize(1);
     rigidDOF->setName("rigidDOF");
-    MyRigidTypes::VecCoord& rigid_x = *rigidDOF->getX();
+    RigidTypes::VecCoord& rigid_x = *rigidDOF->getX();
     rigid_x[0] = RigidCoord( Vec3(endPos-attach+splength,0,0), Quaternion::identity() );
 
     // mass
-    MyRigidUniformMass* rigidMass = new MyRigidUniformMass;
+    RigidUniformMasses* rigidMass = new RigidUniformMasses;
     rigidBody->addObject(rigidMass);
 
 
-    //-------------------- the skin of the rigid body
-    GNode* rigidSkin = new GNode;
-    rigidSkin->setName( "rigidSkin" );
-    rigidBody->addChild(rigidSkin);
+    //-------------------- the particles attached to the rigid body
+    GNode* rigidParticles = new GNode;
+    rigidParticles->setName( "rigidParticles" );
+    rigidBody->addChild(rigidParticles);
 
     // degrees of freedom of the skin
-    MyMechanicalObject* skinDOF = new MyMechanicalObject;
-    rigidSkin->addObject(skinDOF);
-    skinDOF->resize(1);
-    skinDOF->setName("skinDOF");
-    MyTypes::VecCoord& skin_x = *skinDOF->getX();
-    skin_x[0] = Vec3(attach,0,0);
+    ParticleDOFs* rigidParticleDOF = new ParticleDOFs;
+    rigidParticles->addObject(rigidParticleDOF);
+    rigidParticleDOF->resize(1);
+    rigidParticleDOF->setName("rigidParticleDOF");
+    ParticleTypes::VecCoord& rp_x = *rigidParticleDOF->getX();
+    rp_x[0] = Vec3(attach,0,0);
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
-    MyRigidMechanicalMapping* rigidMapping = new MyRigidMechanicalMapping(rigidDOF,skinDOF);
-    rigidSkin->addObject( rigidMapping );
+    RigidToParticleRigidMechanicalMapping* rigidMapping = new RigidToParticleRigidMechanicalMapping(rigidDOF,rigidParticleDOF);
+    rigidParticles->addObject( rigidMapping );
 
 
-    // ---------------- Attach the bodies
-    MyStiffSpringForceField* iff = new MyStiffSpringForceField( DOF, skinDOF, 1000., 100. );
+    // ---------------- Interaction force between the deformable and the rigid body
+    ParticleStiffSpringForceField* iff = new ParticleStiffSpringForceField( DOF, rigidParticleDOF );
     groot->addObject(iff);
     iff->setName("Interaction force");
     iff->addSpring( 1,0, 10., 1., splength );
 
 
 
-    // Init the scene
+    //=========================== Init the scene
     sofa::simulation::tree::Simulation::init(groot);
     groot->setAnimate(false);
     groot->setShowNormals(false);
@@ -185,14 +161,12 @@ int main(int argc, char** argv)
 
 
 
-    //=======================================
-    // Run the main loop
+    //=========================== Run the main loop
 #ifdef SOFA_GUI_FLTK
     sofa::gui::fltk::MainLoop(argv[0],groot);
 #endif
 #ifdef SOFA_GUI_QT
-    std::string fileName = "";
-    sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
+    sofa::gui::qt::MainLoop(argv[0],groot);
 #endif
     return 0;
 }
