@@ -31,11 +31,10 @@ EulerSolver::EulerSolver()
 
 void EulerSolver::solve(double dt)
 {
-    //objectmodel::BaseContext* group = getContext();
-    OdeSolver* group = this;
-    MultiVector pos(group, VecId::position());
-    MultiVector vel(group, VecId::velocity());
-    MultiVector acc(group, VecId::dx());
+    MultiVector pos(this, VecId::position());
+    MultiVector vel(this, VecId::velocity());
+    MultiVector acc(this, VecId::dx());
+    MultiVector f(this, VecId::force());
     bool printLog = f_printLog.getValue();
 
     if( printLog )
@@ -45,7 +44,9 @@ void EulerSolver::solve(double dt)
         cerr<<"EulerSolver, initial v = "<< vel <<endl;
     }
 
-    computeAcc ( getTime(), acc, pos, vel);
+    computeForce(f);
+    accFromF(acc, f);
+    projectResponse(acc);
 
     // update state
     if( symplectic.getValue() )
