@@ -45,8 +45,9 @@
 %\renewcommand{\floatpagefraction}{1}
 
 % Title Page
-\title{SOFA Documentation}
+\title{Introduction to \sofa}
 \author{The \sofa~team}
+\date{2007}
 % \author{Fran\c{c}ois Faure\\ J\'er\'emie Allard\\ {\small INRIA Rh\^one-Alpes, Grenoble, France}}
 
 % ------ my custom commands
@@ -65,7 +66,7 @@
 \tableofcontents
 
 
-\section{Introduction}
+\section{Brief overview}
 \sofa is an open-source C++ library for physical simulation, primarily targeted to medical simulation.
 It can be used as an external library in another program, or using one of the associated GUI applications.
 
@@ -80,7 +81,9 @@ Moreover, simulation algorithms, such as time integration or collision detection
 Flexibility allows one to focus on its own domain of competence, while re-using the other's contributions on other topics. 
 However, efficiency is a major issue, and we have tried to design a framework which allows both efficiency and flexibility.
 
-\section{Commented example}
+
+
+\section{Commented example} \label{sec:commentedExample}
 Figure~\ref{fig:mixedPendulum} shows a simple scene composed of two different objets, one rigid body and one particle system, and linked by a spring.
 \begin{figure}
  \centering
@@ -88,9 +91,13 @@ Figure~\ref{fig:mixedPendulum} shows a simple scene composed of two different ob
  \caption{A pendulum composed of a rigid body (reference frame and yellow point) attached to an elastic string (green) fixed at one end (pink point). The corresponding scene graph is displayed on the left.}
  \label{fig:mixedPendulum}
 \end{figure}
-This scene is modeled and simulated in C++ as shown in appendix~\ref{cpphybrid}.
-
-\todo{Graphviz scene graph}
+This scene is modeled and simulated in C++ as shown in appendix~\ref{cpp:hybrid}. The corresponding scene graph is shown in figure~\ref{fig:mixedPendulum-graph}. Note that the graph in the left of figure~\ref{fig:mixedPendulum} only displays a hierarchical view, while the whole graph includes additional pointers displayed as dashed arrows in figure~\ref{fig:mixedPendulum-graph}.
+\begin{figure}
+ \centering
+ \includegraphics[width=\linewidth]{mixedPendulum-graph}
+ \caption{The scene graph of the mixed pendulum. The nodes are displayed as grey hexagons, while the components are displayed as rectangles with colors associated with their types or roles. The bold plain arrows denote node hierarchy, while the thin plain arrows point to the components attached to the nodes, and the dotted arrows denote pointers between components.}
+ \label{fig:mixedPendulum-graph}
+\end{figure}
 
 The scene is modeled as a tree structure with four nodes:
 \begin{itemize}
@@ -133,13 +140,53 @@ More sophisticated solvers are available in \sofa, and can be used by simply rep
 
 Other capabilities of \sofa, such as collision detection and response, will be discussed in subsequent sections.
 
+\section{Multi-model objects} \label{sec:multimodel}
+An important feature of Sofa is the possibility of using different models of a single physical object. Figure~\ref{fig:liver} shows a scene graph representing a liver, and three different images of it.
+The liver exhibits three different geometries for mechanics, rendering and collision.
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{liver_graph}\\
+ \includegraphics[width=0.3\linewidth]{liver_smooth_visu}
+ \includegraphics[width=0.3\linewidth]{liver_behavior}
+ \includegraphics[width=0.3\linewidth]{liver_collision}
+ \caption{A liver. Top: scene graph. Bottom: visual model, mechanical model, collision model, respectively.}
+ \label{fig:liver}
+\end{figure}
+The corresponding xml code is given in appendix~\ref{xml:liver}.
+\label{bla:liver}
+
+On top of the scene, collision-related components allow a user to interact with the collision models using rays casted from the mouse pointer and hitting collision models. Collision is discussed in section~\ref{sec:collision}.
+
+The liver is modeled using three nodes, in two levels. The parent level contains the mechanical dofs (particle positions and velocities) in a \texttt{MechanicalObject} component. These dofs are the mechanically independent degrees of freedom of the object, in Lagrange's formalism. The node also contains components related to the dynamics of the particles, such as mass and internal forces. We call it the \textit{behavior model}.
+
+The two other nodes are in the lower level because during the simulation, their coordinates are totally defined by the coordinates of their parent node. Thus, they do not belong to the set of mechanically independent dofs. \emph{Mappings} are used to compute their positions and velocities based on their parent's, using the pointers represented as dashed arrows. Mappings are not symmetric. The motion of the parent dofs is mapped to the children dofs, whereas the motion of the children dofs is not mapped to their parent. This ensures consistency. 
+
+The \texttt{VisualModel} has vertices which are used for rendering, along with other rendering data such as a list of polygons, normals, etc. The mapping is one-way and the mapped dofs have no mechanical influence.
+
+The \texttt{SphereModel} class derives from \texttt{MechanicalObject}, with an additional radius value. It also derives from \texttt{CollisionModel}, which allows it to be processed by the collision detection and modeling pipeline. When contact or mouse interaction forces are applied to the spheres, the forces are propagated bottom-up to their parent dofs by the mapping. This allows the contact forces to be taken into account in the dynamics equations. The mapping is thus two-ways and derives from \texttt{MechanicalMapping} instead of \texttt{Mapping}. This is why it has a different color in the image of the scene graph.
+Again, the mechanical mappings are not symmetric: the forces are propagated from the children to the parents, not the other way round. 
+
+Mappings only propagate positions top-down, whereas MechanicalMappings additionally propagate velocities top-down and forces bottom-up. 
+
+Mapped models can be designed independently of their parent models, provided that the adequate (mechanical) mapping is available. This results in a high flexibility. For example, collision spheres can be replaced by collision triangles without changing anything in the behavior model or in the visual model. Similarly, other visual models can be used without modifying the behavior and collision models, and different behavior models can be used with the same collision and visual models, as illustrated in figure~\ref{fig:behaviormodels}.
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.4\linewidth]{demoLiverFall1.png}
+ \includegraphics[width=0.4\linewidth]{demoLiverFall2.png}
+ % demo.: 1179666x1179666 pixel, 0dpi, infxinf cm, bb=
+ \caption{Left: four behavior models (from left to right: deformable grid, springs, rigid, tetrahedral FEM) combined with the same collision model (right).}
+ \label{fig:behaviormodels}
+\end{figure}
+
+
 \section{Actions}
 
 \section{Mappings}
 
 \section{ODE Solvers}
 
-\section{Collision detection}
+\section{Collision detection} \label{sec:collision}
 
 \section{Constraint-based methods}
 
@@ -149,8 +196,14 @@ Other capabilities of \sofa, such as collision detection and response, will be d
 
 \pagebreak
 \appendix
-\section{C++ code of the hybrid pendulum}\label{cpphybrid}
+\section{Code of the examples}
+\subsection{The hybrid pendulum}\label{cpp:hybrid}
+This is the code of the example commented in section~\ref{sec:commentedExample}.
 \includecode{C++}{../applications/tutorials/mixedPendulum/Main.cpp}
+
+\subsection{A liver}\label{xml:liver}
+This is the XML code of the liver discussed in section~\ref{sec:multimodel} page~\pageref{bla:liver}.
+\includecode{XML}{../scenes/liver.scn}
 
 % \include{sofaMechanical}
 % 
