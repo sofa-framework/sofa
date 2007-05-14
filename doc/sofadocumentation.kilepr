@@ -41,11 +41,11 @@ open=false
 
 [item:main.tex]
 archive=true
-column=103
+column=26
 encoding=ISO 8859-1
 highlight=LaTeX
-line=177
-open=true
+line=314
+open=false
 
 [item:physicallyBasedAnimation.tex]
 archive=true
