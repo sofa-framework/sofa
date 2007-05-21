@@ -307,6 +307,32 @@ Note that some constraint-based animation methods require large state vectors an
 Such methods are currently under development in \sofa, and they are not yet documented.
 They use actions to count the total number of scalar dofs and to gather them in large state vectors, as well as to build mechanical matrices  such as mass, stiffness, damping and compliance etc.
 
+\subsection{Mechanical groups}
+During the simulation, each solver prunes the \texttt{AnimateAction} which traverses it and manages its associated subtree by itself using other actions. 
+We call \emph{mechanical group} the objects animated by a given solver.
+Each mechanical group corresponds to a subtree in the scene graph.
+In the example discussed in section~\ref{sec:commentedExample}, there is one mechanical group because a single solver located near the root manages the whole scene. 
+However, using separate solvers for different objects can sometimes increase efficiency.
+In the example shown in figure~\ref{fig:twoSolvers}, the same deformable body is animated using a \texttt{RungeKutta2Solver} while the rigid body is animated using an \texttt{EulerSolver}.
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{twoSolvers}
+  \caption{A scene graph with objects animated using different ODE solvers.}
+ \label{fig:twoSolvers}
+\end{figure}
+
+
+A mechanical group can include interaction forces between elements of the group, and such interaction forces are handled by the solver as expected.
+Interaction forces can also occur between objects which do not belong to the same group.
+In this case, the interaction force is located at a higher hierarchical level than the objects it applies to, as shown in figure~\ref{fig:twoSolvers}.
+It can not be traversed by actions fired by the solvers.
+Its evaluation is performed by the \texttt{AnimateAction}, and accumulated as external forces in the associated \texttt{MechanicalObject} components.
+Consequently, it acts as a constant constant force during each whole animation step.
+In a \texttt{RungeKutta2Solver}, during the force computation at midpoint, its value is the same as at the starting point.
+In a \texttt{CGImplicitSolver}, its stiffness is not taken into account, which may introduce instabilities if its actual stiffness is high.
+
+The default collision manager of Sofa circumvents this problem by dynamically gathering the objects in contact in a common mechanical group.
+
 \section{Mostly used components and methods}
 \subsection{ForceFields}
 \subsection{Constraints}
