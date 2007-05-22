@@ -51,13 +51,6 @@ OdeSolver::OdeSolver()
 OdeSolver::~OdeSolver()
 {}
 
-// void OdeSolver::setGroup(objectmodel::BaseContext* grp)
-// {
-//     group = grp;
-// }
-
-
-
 using namespace simulation::tree;
 
 OdeSolver::VectorIndexAlloc::VectorIndexAlloc()
@@ -78,28 +71,16 @@ unsigned int OdeSolver::VectorIndexAlloc::alloc()
     return v;
 }
 
-
-
-
-
-
-
-
 bool OdeSolver::VectorIndexAlloc::free(unsigned int v)
 {
     if (v < VecId::V_FIRST_DYNAMIC_INDEX)
         return false;
-    // @TODO: Check for errors
+// @TODO: Check for errors
     vused.erase(v);
     vfree.insert(v);
     return true;
 }
 
-//                 OdeSolver::Context(GNode* node)
-//                 : node(node), result(0)
-//                 {}
-
-/// Wait for the completion of previous operations and return the result of the last v_dot call
 double OdeSolver::finish()
 {
     return result;
@@ -200,6 +181,13 @@ void OdeSolver::computeAcc(double t, VecId a, VecId x, VecId v)
     projectResponse(a);
 }
 
+void OdeSolver::computeContactForce(VecId result)
+{
+    MechanicalResetForceAction(result).execute( getContext() );
+    finish();
+    MechanicalComputeContactForceAction(result).execute( getContext() );
+}
+
 void OdeSolver::computeContactDf(VecId df)
 {
     MechanicalResetForceAction(df).execute( getContext() );
@@ -231,11 +219,6 @@ void OdeSolver::printWithElapsedTime( VecId v,  unsigned time, std::ostream& out
     const double fact = 1000000.0 / (100*helper::system::thread::CTime::getTicksPerSec());
     MechanicalVPrintWithElapsedTimeAction(v,(int)((fact*time+0.5)*0.001), out).execute( getContext() );
 }
-
-//	double OdeSolver::getTime() const
-//	{
-//		return this->getTime();
-//	}
 
 // BaseMatrix & BaseVector Computations
 void OdeSolver::addMBK_ToMatrix(defaulttype::BaseMatrix *A, double mFact, double bFact, double kFact, unsigned int offset)
@@ -291,15 +274,6 @@ void OdeSolver::matResUpdatePosition(defaulttype::SofaBaseVector *vect, unsigned
     }
 }
 */
-
-
-
-void OdeSolver::computeContactForce(VecId result)
-{
-    MechanicalResetForceAction(result).execute( getContext() );
-    finish();
-    MechanicalComputeContactForceAction(result).execute( getContext() );
-}
 
 
 } // namespace behavior

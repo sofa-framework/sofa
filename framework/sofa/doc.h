@@ -9,6 +9,8 @@
  *
  * \TODO TODO: Write main intro page...
  *
+ * A good starting point to browse this documentation is the <a href="namespaces.html">Namespace List</a>.
+ *
  */
 
 /** \namespace sofa
@@ -73,6 +75,21 @@
 
 /** \namespace sofa::core::componentmodel::behavior
  *  \brief Abstract API of components related to the behavior of simulated objects.
+ *
+ *  Simulated bodies in SOFA are split into components storing the current
+ *  state (MechanicalState), handling mass properties (Mass), computing
+ *  forces (ForceField) and constraints (Constraint), and managing the
+ *  integration algorithm (MasterSolver, OdeSolver).
+ *
+ *  Depending on the solvers used, two modes of computations are used :
+ *  \li <i>vector</i> mode : computations are done directly in the vectors
+ *    stored in MechanicalState (used for explicit schemes or iterative
+ *    solvers such as conjugate gradient).
+ *  \li <i>matrix</i> mode : matrices corresponding to the mechanical system of
+ *    equations are constructed, and then inversed to compute the new state.
+ *  Not all components support the matrix mode of computation, as it is rather
+ *  new and not yet finalized.
+ *
  */
 
 /** \namespace sofa::core::componentmodel::collision
