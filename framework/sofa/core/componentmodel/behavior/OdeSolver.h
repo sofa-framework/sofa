@@ -247,31 +247,43 @@ protected:
             return sqrt( parent->finish() );
         }
 
-
+        /// v = a
         void operator=(VecId a)
         {
             eq(a);
         }
-        void operator=(const MultiVector& v)
+
+        /// v = a
+        void operator=(const MultiVector& a)
         {
-            eq(v.v);
+            eq(a.v);
         }
+
+        /// v += a
         void operator+=(VecId a)
         {
             peq(a);
         }
+
+        /// v -= a
         void operator-=(VecId a)
         {
             peq(a,-1);
         }
+
+        /// v *= f
         void operator*=(double f)
         {
             teq(f);
         }
+
+        /// v /= f
         void operator/=(double f)
         {
             teq(1.0/f);
         }
+
+        /// return the scalar product dot(v,a)
         double operator*(VecId a)
         {
             return dot(a);

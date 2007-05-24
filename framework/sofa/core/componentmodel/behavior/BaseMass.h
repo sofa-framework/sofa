@@ -39,16 +39,27 @@ namespace componentmodel
 namespace behavior
 {
 
+/**
+ *  \brief Component responsible for mass-related computations (gravity, acceleration).
+ */
 class BaseMass : public virtual objectmodel::BaseObject
 {
 public:
     virtual ~BaseMass() { }
 
-    virtual void addMDx() = 0; ///< f += M dx using dof->getF() and dof->getDx()
+    /// @name Vector operations
+    /// @{
 
-    virtual void accFromF() = 0; ///< dx = M^-1 f using dof->getF() and dof->getDx()
+    /// f += M dx using dof->getF() and dof->getDx()
+    virtual void addMDx() = 0;
 
-    virtual double getKineticEnergy() = 0;  ///< vMv/2 using dof->getV()
+    /// dx = M^-1 f using dof->getF() and dof->getDx()
+    virtual void accFromF() = 0;
+
+    /// vMv/2 using dof->getV()
+    virtual double getKineticEnergy() = 0;
+
+    /// @}
 
 };
 

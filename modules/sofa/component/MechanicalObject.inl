@@ -1007,21 +1007,6 @@ void MechanicalObject<DataTypes>::setDx(VecId v)
     }
 }
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::setC(VecId /*v*/)
-{
-    /*
-        if (v.type == VecId::V_DERIV)
-        {
-            this->dx = getVecDeriv(v.index);
-        }
-        else
-        {
-            std::cerr << "Invalid setC operation ("<<v<<")\n";
-        }
-    */
-}
-
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out)

@@ -42,6 +42,9 @@ namespace componentmodel
 namespace behavior
 {
 
+/**
+ *  \brief Component computing forces within a simulated body.
+ */
 template<class TDataTypes>
 class ForceField : public BaseForceField
 {
@@ -58,6 +61,9 @@ public:
 
     virtual void init();
 
+    /// @name Vector operations
+    /// @{
+
     virtual void addForce();
 
     virtual void addDForce();
@@ -70,6 +76,11 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x) =0;
 
+    /// @}
+
+    /// @name Matrix operations
+    /// @{
+
     virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
 
     virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &) {};
@@ -77,6 +88,8 @@ public:
     virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int & ) {};
 
     virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int & ) {};
+
+    /// @}
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

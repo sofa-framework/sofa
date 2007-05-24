@@ -39,37 +39,81 @@ namespace componentmodel
 namespace behavior
 {
 
+/**
+ *  \brief Component storing all state vectors of a simulated body (position,
+ *  velocity, etc), using the datatype specified in the templace.
+ *
+ *  The given DataTypes class should define the following internal types:
+ *  \li \code Real \endcode : scalar values (float or double).
+ *  \li \code Coord \endcode : position values.
+ *  \li \code Deriv \endcode : derivative values (velocity, forces, displacements).
+ *  \li \code VecCoord \endcode : container of Coord values with the same API as std::vector.
+ *  \li \code VecDeriv \endcode : container of Deriv values with the same API as std::vector.
+ *  \li \code SparseDeriv \endcode : index + Deriv value (entry of a sparse vector).
+ *  \li \code SparseVecDeriv \endcode : sparse vector of Deriv values (defining coefficient of a constraint).
+ *  \li \code VecConst \endcode : vector of constraints (i.e. of SparseVecDeriv).
+ *
+ *  Other vectors can be allocated to store other temporary values.
+ *  Vectors can be assigned efficiently by just swapping pointers.
+ *
+ *  In addition to state vectors, the current constraint system matrix is also
+ *  stored, containing the coefficient of each constraint defined over the DOFs
+ *  in this body.
+ *
+ */
 template<class TDataTypes>
 class MechanicalState : public BaseMechanicalState
 {
 public:
     typedef TDataTypes DataTypes;
+    /// Scalar values (float or double).
     typedef typename DataTypes::Real Real;
+    /// Position values.
     typedef typename DataTypes::Coord Coord;
+    /// Derivative values (velocity, forces, displacements).
     typedef typename DataTypes::Deriv Deriv;
+    /// Container of Coord values with the same API as std::vector.
     typedef typename DataTypes::VecCoord VecCoord;
+    /// Container of Deriv values with the same API as std::vector.
     typedef typename DataTypes::VecDeriv VecDeriv;
+    /// Index + Deriv value (entry of a sparse vector).
     typedef typename DataTypes::SparseDeriv SparseDeriv;
+    /// Sparse vector of Deriv values (defining coefficient of a constraint).
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
+    /// Vector of constraints (i.e. of SparseVecDeriv).
     typedef typename DataTypes::VecConst VecConst;
 
     virtual ~MechanicalState() { }
 
+    /// Return the current position vector (read-write access).
     virtual VecCoord* getX() = 0;
+    /// Return the current velocity vector (read-write access).
     virtual VecDeriv* getV() = 0;
+    /// Return the force vector (read-write access).
     virtual VecDeriv* getF() = 0;
+    /// Return the displacement vector (read-write access).
     virtual VecDeriv* getDx() = 0;
+    /// Return the constraints system matrix (read-write access).
     virtual VecConst* getC() = 0;
+    /// Return the free-motion position vector (read-write access).
     virtual VecCoord* getXfree() = 0;
 
+    /// Return the current position vector (read-only access).
     virtual const VecCoord* getX()  const = 0;
+    /// Return the current velocity vector (read-only access).
     virtual const VecDeriv* getV()  const = 0;
+    /// Return the force vector (read-only access).
     virtual const VecDeriv* getF()  const = 0;
+    /// Return the displacement vector (read-only access).
     virtual const VecDeriv* getDx() const = 0;
+    /// Return the constraints system matrix (read-only access).
     virtual const VecConst* getC() const = 0;
+    /// Return the free-motion position vector (read-only access).
     virtual const VecCoord* getXfree()  const = 0;
 
+    /// Return the initial position vector (read-only access).
     virtual const VecCoord* getX0()  const = 0;
+    /// Return the initial velocity vector (read-only access).
     virtual const VecDeriv* getV0()  const = 0;
 
 
@@ -86,7 +130,9 @@ public:
         return DataTypes::Name();
     }
 
+    /// Add a constraint ID
     virtual void setConstraintId(unsigned int ) = 0;
+    /// Return the constraint IDs corresponding to the entries in the constraints matrix returned by getC()
     virtual std::vector<unsigned int>& getConstraintId() = 0;
 };
 

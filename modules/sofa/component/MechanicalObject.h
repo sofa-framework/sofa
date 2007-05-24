@@ -235,8 +235,6 @@ public:
 
     virtual void setDx(VecId v);
 
-    virtual void setC(VecId v);
-
     virtual void resetForce();
 
     virtual void resetConstraint();

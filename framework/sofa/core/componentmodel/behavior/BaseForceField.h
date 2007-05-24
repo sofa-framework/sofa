@@ -41,10 +41,16 @@ namespace componentmodel
 namespace behavior
 {
 
+/**
+ *  \brief Component computing forces within a simulated body.
+ */
 class BaseForceField : public virtual objectmodel::BaseObject
 {
 public:
     virtual ~BaseForceField() {}
+
+    /// @name Vector operations
+    /// @{
 
     virtual void addForce() = 0;
 
@@ -52,6 +58,10 @@ public:
 
     virtual double getPotentialEnergy() =0;
 
+    /// @}
+
+    /// @name Matrix operations
+    /// @{
 
     virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &) {};
 
@@ -60,6 +70,8 @@ public:
     virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
 
     virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
+
+    /// @}
 };
 
 } // namespace behavior

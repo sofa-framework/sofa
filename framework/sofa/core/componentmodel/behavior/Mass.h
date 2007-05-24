@@ -41,6 +41,9 @@ namespace componentmodel
 namespace behavior
 {
 
+/**
+ *  \brief Component responsible for mass-related computations (gravity, acceleration).
+ */
 template<class DataTypes>
 class Mass : public ForceField<DataTypes>, public BaseMass
 {
@@ -54,20 +57,44 @@ public:
 
     virtual ~Mass();
 
-    virtual void addMDx(); ///< f += M dx
+    /// @name Vector operations
+    /// @{
 
-    virtual void accFromF(); ///< dx = M^-1 f
+    /// f += M dx
+    ///
+    /// This method retrieves the force and dx vector and call the internal addMDx(VecDeriv&,const VecDeriv&) method implemented by the component.
+    virtual void addMDx();
 
-    virtual void addMDx(VecDeriv& f, const VecDeriv& dx) = 0; ///< f += M dx
+    /// dx = M^-1 f
+    ///
+    /// This method retrieves the force and dx vector and call the internal accFromF(VecDeriv&,const VecDeriv&) method implemented by the component.
+    virtual void accFromF();
 
-    virtual void accFromF(VecDeriv& a, const VecDeriv& f) = 0; ///< dx = M^-1 f
+    /// f += M dx
+    ///
+    /// This method must be implemented by the component.
+    virtual void addMDx(VecDeriv& f, const VecDeriv& dx) = 0;
 
-    // Mass forces (gravity) often have null derivative
+    /// dx = M^-1 f
+    ///
+    /// This method must be implemented by the component.
+    virtual void accFromF(VecDeriv& a, const VecDeriv& f) = 0;
+
+    /// Mass forces (gravity) often have null derivative
     virtual void addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/)
     {}
 
-    virtual double getKineticEnergy();  ///< vMv/2 using dof->getV()
-    virtual double getKineticEnergy( const VecDeriv& v )=0;  ///< vMv/2 using dof->getV()
+    /// vMv/2 using dof->getV()
+    ///
+    /// This method retrieves the velocity vector and call the internal getKineticEnergy(const VecDeriv&) method implemented by the component.
+    virtual double getKineticEnergy();
+
+    /// vMv/2
+    ///
+    /// This method must be implemented by the component.
+    virtual double getKineticEnergy( const VecDeriv& v )=0;
+
+    /// @}
 };
 
 /** Return the inertia force applied to a body referenced in a moving coordinate system.

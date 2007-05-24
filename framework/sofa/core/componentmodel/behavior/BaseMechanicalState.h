@@ -44,35 +44,66 @@ namespace behavior
 
 class BaseMechanicalMapping;
 
+/**
+ *  \brief Component storing all state vectors of a simulated body (position, velocity, etc).
+ *
+ *  This class only contains the data of the body and not any of its
+ *  <i>active</i> computations, which are handled by the Mass, ForceField, and
+ *  Constraint components.
+ *
+ *  Two types of vectors are used :
+ *  \li \code VecCoord \endcode : containing positions.
+ *  \li \code VecDeriv \endcode : derivative values, i.e. velocity, forces, displacements.
+ *  In most cases they are the same (i.e. 3D/2D point particles), but they can
+ *  be different (rigid frames for instance).
+ *
+ *  Several pre-defined vectors are stored :
+ *  \li \code position \endcode
+ *  \li \code velocity \endcode
+ *  \li \code force \endcode
+ *  \li \code dx \endcode (displacement)
+ *
+ *  Other vectors can be allocated to store other temporary values.
+ *  Vectors can be assigned efficiently by just swapping pointers.
+ *
+ *  In addition to state vectors, the current constraint system matrix is also
+ *  stored, containing the coefficient of each constraint defined over the DOFs
+ *  in this body.
+ *
+ */
 class BaseMechanicalState : public virtual objectmodel::BaseObject
 {
 public:
-    BaseMechanicalState ()
-        : objectmodel::BaseObject()
+    BaseMechanicalState()
     {}
-    virtual ~BaseMechanicalState ()
+    virtual ~BaseMechanicalState()
     { }
 
+    /// Resize all stored vector
     virtual void resize(int vsize) = 0;
-
-    virtual void init() = 0;
 
     /// @name Integration related methods
     /// @{
 
+    /// Called at the beginning of each integration step.
     virtual void beginIntegration(double /*dt*/) { }
 
+    /// Called at the end of each iteration step.
     virtual void endIntegration(double /*dt*/) { }
 
+    /// Set F = 0
     virtual void resetForce() =0;//{ vOp( VecId::force() ); }
 
+    /// Reset the constraint matrix
     virtual void resetConstraint() =0;
 
+    /// Add stored external forces to F
     virtual void accumulateForce() { }
 
+    /// Add external forces derivatives to F
     virtual void accumulateDf() { }
 
-
+    /// Identify one vector stored in MechanicalState
     class VecId
     {
     public:
@@ -90,42 +121,68 @@ public:
         bool isNull() const { return type==V_NULL; }
         static VecId null()     { return VecId(V_NULL,0); }
         static VecId position() { return VecId(V_COORD,0); }
-        static VecId freePosition() { return VecId(V_COORD,1); }
         static VecId initialPosition() { return VecId(V_COORD,1); }
         static VecId velocity() { return VecId(V_DERIV,0); }
         static VecId initialVelocity() { return VecId(V_DERIV,3); }
         static VecId force() { return VecId(V_DERIV,1); }
         static VecId dx() { return VecId(V_DERIV,2); }
+        /// \todo Why is this the same index as initialPosition ?
+        static VecId freePosition() { return VecId(V_COORD,1); }
+        /// \todo Why is this the same index as initialVelocity ?
         static VecId freeVelocity() { return VecId(V_DERIV,3); }
+        /// Test if two VecId identify the same vector
         bool operator==(const VecId& v)
         {
             return type == v.type && index == v.index;
         }
     };
 
-    virtual void vAlloc(VecId v) = 0; // {}
+    /// Allocate a new temporary vector
+    virtual void vAlloc(VecId v) = 0;
 
-    virtual void vFree(VecId v) = 0; // {}
+    /// Free a temporary vector
+    virtual void vFree(VecId v) = 0;
 
+    /// Compute a linear operation on vectors : v = a + b * f.
+    ///
+    /// This generic operation can be used for many simpler cases :
+    /// \li v = 0
+    /// \li v = a
+    /// \li v = a + b
+    /// \li v = b * f
     virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0) = 0; // {}
 
+    /// Compute the scalar products between two vectors.
     virtual double vDot(VecId a, VecId b) = 0; //{ return 0; }
 
+    /// Make the position vector point to the identified vector.
+    ///
+    /// To reset it to the default storage use \code setX(VecId::position()) \endcode
     virtual void setX(VecId v) = 0; //{}
 
+    /// Make the free-motion position vector point to the identified vector.
+    ///
+    /// To reset it to the default storage use \code setV(VecId::freePosition()) \endcode
     virtual void setXfree(VecId v) = 0; //{}
 
+    /// Make the velocity vector point to the identified vector.
+    ///
+    /// To reset it to the default storage use \code setV(VecId::velocity()) \endcode
     virtual void setV(VecId v) = 0; //{}
 
+    /// Make the force vector point to the identified vector.
+    ///
+    /// To reset it to the default storage use \code setF(VecId::force()) \endcode
     virtual void setF(VecId v) = 0; //{}
 
+    /// Make the displacement vector point to the identified vector.
+    ///
+    /// To reset it to the default storage use \code setDx(VecId::dx()) \endcode
     virtual void setDx(VecId v) = 0; //{}
 
-    virtual void setC(VecId v) = 0; //{}
-
-    // new : get compliance on the constraints
+    /// new : get compliance on the constraints
     virtual void getCompliance(double ** /*w*/) { }
-    // apply contact force AND compute the subsequent dX
+    /// apply contact force AND compute the subsequent dX
     virtual void applyContactForce(double * /*f*/) { }
 
     virtual void resetContactForce(void) {}
@@ -142,17 +199,6 @@ public:
     virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr ) {return 0;};
     /// @}
 
-
-    /*! \fn void addBBox()
-     *  \brief Used to add the bounding-box of this mechanical model to the given bounding box.
-     *
-     *  Note that if it does not make sense for this particular object (such as if the DOFs are not 3D), then the default implementation displays a warning message and returns false.
-     */
-    //virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
-    //{
-    //  std::cerr << "warning: unumplemented method MechanicalState::addBBox() called.\n";
-    //  return false;
-    //}
 };
 
 inline std::ostream& operator<<(std::ostream& o, const BaseMechanicalState::VecId& v)
