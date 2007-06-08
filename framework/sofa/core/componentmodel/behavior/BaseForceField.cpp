@@ -22,13 +22,7 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_INTERACTIONFORCEFIELD_H
-#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_INTERACTIONFORCEFIELD_H
-
-#include <sofa/core/componentmodel/behavior/BaseForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/defaulttype/SofaBaseVector.h>
+#include "BaseForceField.h"
 
 namespace sofa
 {
@@ -42,23 +36,21 @@ namespace componentmodel
 namespace behavior
 {
 
-class InteractionForceField : public BaseForceField
+void BaseForceField::computeMatrix(sofa::defaulttype::SofaBaseMatrix * /*mat*/, double /*mFact*/, double /*bFact*/, double /*kFact*/, unsigned int &/*offset*/)
 {
-public:
-    virtual BaseMechanicalState* getMechModel1() = 0;
-    virtual BaseMechanicalState* getMechModel2() = 0;
+}
 
+void BaseForceField::contributeToMatrixDimension(unsigned int * const, unsigned int * const)
+{
+}
 
-    /// @name Matrix operations
-    /// @{
+void BaseForceField::computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &)
+{
+}
 
-    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
-    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &) {};
-    virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
-    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
-
-    /// @}
-};
+void BaseForceField::matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int &)
+{
+}
 
 } // namespace behavior
 
@@ -67,5 +59,3 @@ public:
 } // namespace core
 
 } // namespace sofa
-
-#endif

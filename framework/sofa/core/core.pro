@@ -78,6 +78,8 @@ SOURCES +=  \
           objectmodel/KeyreleasedEvent.cpp \
           ObjectFactory.cpp \
           Mapping.cpp \
+          componentmodel/behavior/BaseConstraint.cpp \
+          componentmodel/behavior/BaseForceField.cpp \
           componentmodel/behavior/ForceField.cpp \
           componentmodel/behavior/Mass.cpp \
           componentmodel/behavior/MechanicalMapping.cpp 

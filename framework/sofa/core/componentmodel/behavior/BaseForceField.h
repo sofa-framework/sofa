@@ -43,6 +43,18 @@ namespace behavior
 
 /**
  *  \brief Component computing forces within a simulated body.
+ *
+ *  This class define the abstract API common to all force fields.
+ *  A force field computes forces applied to one or more simulated body
+ *  given its current position and velocity.
+ *
+ *  Forces can be internal to a given body (attached to one MechanicalState,
+ *  see the ForceField class), or link several bodies together (such as contact
+ *  forces, see the InteractionForceField class).
+ *
+ *  For implicit integration schemes, it must also compute the derivative
+ *  ( df, given a displacement dx ).
+ *
  */
 class BaseForceField : public virtual objectmodel::BaseObject
 {
@@ -52,10 +64,29 @@ public:
     /// @name Vector operations
     /// @{
 
+    /// Given the current position and velocity states, update the current force
+    /// vector by computing and adding the forces associated with this
+    /// ForceField.
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// $ f += B v + K x $
     virtual void addForce() = 0;
 
+    /// Compute the force derivative given a small displacement from the
+    /// position and velocity used in the previous call to addForce().
+    ///
+    /// The derivative should be directly derived from the computations
+    /// done by addForce. Any forces neglected in addDForce will be integrated
+    /// explicitly (i.e. using its value at the beginning of the timestep).
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// $ df += K dx $
     virtual void addDForce() = 0;
 
+    /// Get the potential energy associated to this ForceField.
+    ///
+    /// Used to extimate the total energy of the system by some
+    /// post-stabilization techniques.
     virtual double getPotentialEnergy() =0;
 
     /// @}
@@ -63,13 +94,26 @@ public:
     /// @name Matrix operations
     /// @{
 
-    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &) {};
+    /// Compute the system matrix corresponding to m M + b B + k K
+    ///
+    /// \param m coefficient for mass values
+    /// \param b coefficient for damping values
+    /// \param k coefficient for stiffness values
+    /// \param offset current row/column offset, must be incremented
+    ///   by this method
+    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
 
-    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
+    /// Compute the system matrix dimmensions bo adding the number of lines and
+    /// columns associated with this ForceField.
+    ///
+    /// \todo Isn't the dimensions related to the MechanicalState and not the
+    /// ForceFields ?
+    virtual void contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol);
 
-    virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
+    /// Compute the right-hand side vector of the system matrix.
+    virtual void computeVector(sofa::defaulttype::SofaBaseVector * vect, unsigned int &offset);
 
-    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
+    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector * vect, unsigned int &offset);
 
     /// @}
 };

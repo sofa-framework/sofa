@@ -45,25 +45,44 @@ namespace componentmodel
 namespace behavior
 {
 
+/**
+ *  \brief Component computing constraints within a simulated body.
+ */
 class BaseConstraint : public virtual objectmodel::BaseObject
 {
 public:
     virtual ~BaseConstraint() { }
 
-    virtual void projectResponse() = 0; ///< project dx to constrained space (dx models an acceleration)
-    virtual void projectVelocity() = 0; ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition() = 0; ///< project x to constrained space (x models a position)
+    /// @name Vector operations
+    /// @{
 
-    virtual void projectResponse(double **) {}; ///< project the compliance Matrix to constrained space
+    /// Project dx to constrained space (dx models an acceleration)
+    virtual void projectResponse() = 0;
 
-    virtual void applyConstraint(unsigned int&, double&) {};
+    /// Project dx to constrained space (dx models a velocity)
+    virtual void projectVelocity() = 0;
 
-    virtual void applyConstraint(defaulttype::SofaBaseMatrix *, unsigned int &) {};
-    virtual void applyConstraint(defaulttype::SofaBaseVector *, unsigned int &) {};
+    /// Project x to constrained space (x models a position)
+    virtual void projectPosition() = 0;
+
+    /// @}
+
+    /// @name Matrix operations
+    /// @{
+
+    /// Project the compliance Matrix to constrained space
+    virtual void projectResponse(double **);
+
+    /// @}
+
+    virtual void applyConstraint(unsigned int&, double&);
+
+    virtual void applyConstraint(defaulttype::SofaBaseMatrix *, unsigned int &);
+    virtual void applyConstraint(defaulttype::SofaBaseVector *, unsigned int &);
 
     virtual BaseMechanicalState* getDOFs() { return NULL; }
 
-    virtual void getConstraintValue(double * /*, unsigned int &*/) {};
+    virtual void getConstraintValue(double * /*, unsigned int &*/) {}
     // virtual void resetContactCpt(){};
 };
 

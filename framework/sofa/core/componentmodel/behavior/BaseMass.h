@@ -50,13 +50,13 @@ public:
     /// @name Vector operations
     /// @{
 
-    /// f += M dx using dof->getF() and dof->getDx()
+    /// f += M dx
     virtual void addMDx() = 0;
 
-    /// dx = M^-1 f using dof->getF() and dof->getDx()
+    /// dx = M^-1 f
     virtual void accFromF() = 0;
 
-    /// vMv/2 using dof->getV()
+    /// vMv/2
     virtual double getKineticEnergy() = 0;
 
     /// @}
