@@ -40,7 +40,15 @@ namespace componentmodel
 namespace behavior
 {
 
-
+/**
+ *  \brief Component computing constraints within a simulated body.
+ *
+ *  This class define the abstract API common to constraints using a given type
+ *  of DOFs.
+ *  A Constraint computes constraints applied to one simulated body given its
+ *  current position and velocity.
+ *
+ */
 template<class DataTypes>
 class Constraint : public BaseConstraint
 {
@@ -61,16 +69,55 @@ public:
 
     virtual void init();
 
-    virtual void projectResponse(); ///< project dx to constrained space
-    virtual void projectVelocity(); ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition(); ///< project x to constrained space (x models a position)
+    /// @name Vector operations
+    /// @{
 
-    virtual void projectResponse(VecDeriv& dx) = 0; ///< project dx to constrained space
-    virtual void projectVelocity(VecDeriv& dx)=0; ///< project dx to constrained space (dx models a velocity)
-    virtual void projectPosition(VecCoord& x)=0; ///< project x to constrained space (x models a position)
+    /// Project dx to constrained space (dx models an acceleration).
+    ///
+    /// This method retrieves the dx vector from the MechanicalState and call
+    /// the internal projectResponse(VecDeriv&) method implemented by
+    /// the component.
+    virtual void projectResponse();
 
-    virtual void applyConstraint(unsigned int & /*contactId*/); // Pure virtual would be better
-    virtual void applyConstraint(VecConst& /*c*/, unsigned int & /*contactId*/) {};
+    /// Project dx to constrained space (dx models a velocity).
+    ///
+    /// This method retrieves the dx vector from the MechanicalState and call
+    /// the internal projectVelocity(VecDeriv&) method implemented by
+    /// the component.
+    virtual void projectVelocity();
+
+    /// Project x to constrained space (x models a position).
+    ///
+    /// This method retrieves the x vector from the MechanicalState and call
+    /// the internal projectPosition(VecCoord&) method implemented by
+    /// the component.
+    virtual void projectPosition();
+
+    /// Project dx to constrained space (dx models an acceleration).
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic Constraint::projectResponse() method.
+    virtual void projectResponse(VecDeriv& dx) = 0;
+
+    /// Project dx to constrained space (dx models a velocity).
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic Constraint::projectVelocity() method.
+    virtual void projectVelocity(VecDeriv& dx) = 0;
+
+    /// Project x to constrained space (x models a position).
+    ///
+    /// This method must be implemented by the component, and is usually called
+    /// by the generic Constraint::projectPosition() method.
+    virtual void projectPosition(VecCoord& x) = 0;
+
+    /// @}
+
+    /// \todo What is the difference with BaseConstraint::applyConstraint(unsigned int&, double&)
+    virtual void applyConstraint(unsigned int & contactId); // Pure virtual would be better
+
+    // already defined in BaseConstraint
+    //virtual void applyConstraint(VecConst& /*c*/, unsigned int & /*contactId*/){}
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

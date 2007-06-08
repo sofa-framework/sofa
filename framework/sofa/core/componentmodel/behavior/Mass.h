@@ -43,6 +43,12 @@ namespace behavior
 
 /**
  *  \brief Component responsible for mass-related computations (gravity, acceleration).
+ *
+ *  Mass can be defined either as a scalar, vector, or a full mass-matrix.
+ *  It is responsible for converting forces to accelerations (for explicit integrators),
+ *  or displacements to forces (for implicit integrators).
+ *
+ *  It is also a ForceField, computing gravity-related forces.
  */
 template<class DataTypes>
 class Mass : public ForceField<DataTypes>, public BaseMass
@@ -62,12 +68,14 @@ public:
 
     /// f += M dx
     ///
-    /// This method retrieves the force and dx vector and call the internal addMDx(VecDeriv&,const VecDeriv&) method implemented by the component.
+    /// This method retrieves the force and dx vector and call the internal
+    /// addMDx(VecDeriv&,const VecDeriv&) method implemented by the component.
     virtual void addMDx();
 
     /// dx = M^-1 f
     ///
-    /// This method retrieves the force and dx vector and call the internal accFromF(VecDeriv&,const VecDeriv&) method implemented by the component.
+    /// This method retrieves the force and dx vector and call the internal
+    /// accFromF(VecDeriv&,const VecDeriv&) method implemented by the component.
     virtual void accFromF();
 
     /// f += M dx
@@ -86,7 +94,8 @@ public:
 
     /// vMv/2 using dof->getV()
     ///
-    /// This method retrieves the velocity vector and call the internal getKineticEnergy(const VecDeriv&) method implemented by the component.
+    /// This method retrieves the velocity vector and call the internal
+    /// getKineticEnergy(const VecDeriv&) method implemented by the component.
     virtual double getKineticEnergy();
 
     /// vMv/2

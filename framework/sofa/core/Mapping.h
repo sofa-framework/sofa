@@ -75,16 +75,26 @@ public:
 
     /// Apply the mapping on position vectors.
     ///
+    /// If the Mapping can be represented as a matrix J, this method computes
+    /// $ out = J in $
+    ///
     /// This method must be reimplemented by all mappings.
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
 
     /// Apply the mapping on derived (velocity, displacement) vectors.
+    ///
+    /// If the Mapping can be represented as a matrix J, this method computes
+    /// $ out = J in $
     ///
     /// This method must be reimplemented by all mappings.
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
 
     virtual void init();
 
+    /// Apply the mapping to position and velocity vectors.
+    ///
+    /// This method call the internal apply(Out::VecCoord&,const In::VecCoord&)
+    /// and applyJ(Out::VecDeriv&,const In::VecDeriv&) methods.
     virtual void updateMapping();
 
     /// Pre-construction check method called by ObjectFactory.

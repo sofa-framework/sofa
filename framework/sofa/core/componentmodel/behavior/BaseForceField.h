@@ -42,7 +42,7 @@ namespace behavior
 {
 
 /**
- *  \brief Component computing forces within a simulated body.
+ *  \brief Component computing forces within simulated bodies.
  *
  *  This class define the abstract API common to all force fields.
  *  A force field computes forces applied to one or more simulated body
@@ -96,9 +96,10 @@ public:
 
     /// Compute the system matrix corresponding to m M + b B + k K
     ///
-    /// \param m coefficient for mass values
-    /// \param b coefficient for damping values
-    /// \param k coefficient for stiffness values
+    /// \param matrix matrix to add the result to
+    /// \param mFact coefficient for mass values
+    /// \param bFact coefficient for damping values
+    /// \param kFact coefficient for stiffness values
     /// \param offset current row/column offset, must be incremented
     ///   by this method
     virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);

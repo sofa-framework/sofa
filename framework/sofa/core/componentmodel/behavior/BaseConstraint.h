@@ -47,6 +47,15 @@ namespace behavior
 
 /**
  *  \brief Component computing constraints within a simulated body.
+ *
+ *  This class define the abstract API common to all constraints.
+ *  A BaseConstraint computes constraints applied to one or more simulated body
+ *  given its current position and velocity.
+ *
+ *  Constraints can be internal to a given body (attached to one MechanicalState,
+ *  see the Constraint class), or link several bodies together (such as contacts,
+ *  see the InteractionConstraint class).
+ *
  */
 class BaseConstraint : public virtual objectmodel::BaseObject
 {
@@ -56,13 +65,13 @@ public:
     /// @name Vector operations
     /// @{
 
-    /// Project dx to constrained space (dx models an acceleration)
+    /// Project dx to constrained space (dx models an acceleration).
     virtual void projectResponse() = 0;
 
-    /// Project dx to constrained space (dx models a velocity)
+    /// Project dx to constrained space (dx models a velocity).
     virtual void projectVelocity() = 0;
 
-    /// Project x to constrained space (x models a position)
+    /// Project x to constrained space (x models a position).
     virtual void projectPosition() = 0;
 
     /// @}
@@ -70,7 +79,7 @@ public:
     /// @name Matrix operations
     /// @{
 
-    /// Project the compliance Matrix to constrained space
+    /// Project the compliance Matrix to constrained space.
     virtual void projectResponse(double **);
 
     /// @}
@@ -80,10 +89,13 @@ public:
     virtual void applyConstraint(defaulttype::SofaBaseMatrix *, unsigned int &);
     virtual void applyConstraint(defaulttype::SofaBaseVector *, unsigned int &);
 
-    virtual BaseMechanicalState* getDOFs() { return NULL; }
-
     virtual void getConstraintValue(double * /*, unsigned int &*/) {}
     // virtual void resetContactCpt(){};
+
+    /// Get additionnal DOFs associated to this constraint (such as Lagrange Multiplier values)
+    /// \todo Remove it or disable it until we have a working Lagrange Multipliers implementation
+    virtual BaseMechanicalState* getDOFs() { return NULL; }
+
 };
 
 } // namespace behavior

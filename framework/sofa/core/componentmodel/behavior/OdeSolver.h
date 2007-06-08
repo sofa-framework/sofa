@@ -79,7 +79,7 @@ public:
 
     /// @name Actions and MultiVectors
     /// These methods provides an abstract view of the mechanical system to animate.
-    /// They are implemented by executing Actions in the subtree of the scene-graph below this solver
+    /// They are implemented by executing Actions in the subtree of the scene-graph below this solver.
     /// @{
 
     /// @name Vector operations

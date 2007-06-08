@@ -39,10 +39,25 @@ namespace componentmodel
 namespace behavior
 {
 
+/**
+ *  \brief InteractionConstraint is a constraint linking several bodies (MechanicalState) together.
+ *
+ *  An InteractionConstraint computes constraints applied to several simulated
+ *  bodies given their current positions and velocities.
+ *
+ */
 class InteractionConstraint : public BaseConstraint
 {
 public:
+
+    /// Get the first MechanicalState
+    /// \todo Rename to getMechState1()
+    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
     virtual BaseMechanicalState* getMechModel1() = 0;
+
+    /// Get the first MechanicalState
+    /// \todo Rename to getMechState2()
+    /// \todo Replace with an accessor to a list of states, as an InteractionConstraint can be applied to more than two.
     virtual BaseMechanicalState* getMechModel2() = 0;
 };
 

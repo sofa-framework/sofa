@@ -41,6 +41,12 @@ namespace behavior
 
 /**
  *  \brief Component responsible for mass-related computations (gravity, acceleration).
+ *
+ *  Mass can be defined either as a scalar, vector, or a full mass-matrix.
+ *  It is responsible for converting forces to accelerations (for explicit integrators),
+ *  or displacements to forces (for implicit integrators).
+ *
+ *  It is often also a ForceField, computing gravity-related forces.
  */
 class BaseMass : public virtual objectmodel::BaseObject
 {
