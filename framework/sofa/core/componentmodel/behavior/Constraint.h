@@ -113,11 +113,10 @@ public:
 
     /// @}
 
-    /// \todo What is the difference with BaseConstraint::applyConstraint(unsigned int&, double&)
+    /// \todo What is the difference with BaseConstraint::applyConstraint(unsigned int&, double&) ?
     virtual void applyConstraint(unsigned int & contactId); // Pure virtual would be better
 
-    // already defined in BaseConstraint
-    //virtual void applyConstraint(VecConst& /*c*/, unsigned int & /*contactId*/){}
+    virtual void applyConstraint(VecConst& /*c*/, unsigned int & /*contactId*/) {}
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

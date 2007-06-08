@@ -36,6 +36,10 @@ namespace componentmodel
 namespace behavior
 {
 
+void BaseConstraint::projectResponse(double **)
+{
+}
+
 void BaseConstraint::applyConstraint(unsigned int&, double&)
 {
 }
