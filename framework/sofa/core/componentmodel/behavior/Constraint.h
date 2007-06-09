@@ -79,9 +79,9 @@ public:
     /// the component.
     virtual void projectResponse();
 
-    /// Project dx to constrained space (dx models a velocity).
+    /// Project v to constrained space (v models a velocity).
     ///
-    /// This method retrieves the dx vector from the MechanicalState and call
+    /// This method retrieves the v vector from the MechanicalState and call
     /// the internal projectVelocity(VecDeriv&) method implemented by
     /// the component.
     virtual void projectVelocity();
@@ -99,11 +99,11 @@ public:
     /// by the generic Constraint::projectResponse() method.
     virtual void projectResponse(VecDeriv& dx) = 0;
 
-    /// Project dx to constrained space (dx models a velocity).
+    /// Project v to constrained space (v models a velocity).
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic Constraint::projectVelocity() method.
-    virtual void projectVelocity(VecDeriv& dx) = 0;
+    virtual void projectVelocity(VecDeriv& v) = 0;
 
     /// Project x to constrained space (x models a position).
     ///

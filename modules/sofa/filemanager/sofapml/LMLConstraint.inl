@@ -87,7 +87,7 @@ LMLConstraint<DataTypes>*  LMLConstraint<DataTypes>::removeConstraint(int index)
     std::vector<unsigned int>::iterator it1=targets.begin();
     VecDerivIterator it2=translations.begin();
     VecDerivIterator it3=directionsNULLs.begin();
-    while(it1 != targets.end() && *it1!=index)
+    while(it1 != targets.end() && *it1!=(unsigned)index)
     {
         it1++;
         it2++;
@@ -108,7 +108,7 @@ void LMLConstraint<DataTypes>::fixDOF(int index, int axe)
     //set the value to 1 on the corrects vector component
     std::vector<unsigned int>::iterator it1=targets.begin();
     VecDerivIterator it2 = directionsNULLs.begin();
-    while(it1 != targets.end() && *it1!=index)
+    while(it1 != targets.end() && *it1!=(unsigned)index)
     {
         it1++;
         it2++;
@@ -121,7 +121,7 @@ void LMLConstraint<DataTypes>::fixDOF(int index, int axe)
 template<class DataTypes>
 void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 {
-    VecCoord& x = *this->mmodel->getX();
+    //VecCoord& x = *this->mmodel->getX();
     //dx.resize(x.size());
     double time = this->getContext()->getTime();
     double prevTime = time - this->getContext()->getDt();

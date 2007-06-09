@@ -68,7 +68,7 @@ public:
     /// Project dx to constrained space (dx models an acceleration).
     virtual void projectResponse() = 0;
 
-    /// Project dx to constrained space (dx models a velocity).
+    /// Project v to constrained space (v models a velocity).
     virtual void projectVelocity() = 0;
 
     /// Project x to constrained space (x models a position).
