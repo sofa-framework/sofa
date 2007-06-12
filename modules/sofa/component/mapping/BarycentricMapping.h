@@ -66,7 +66,7 @@ public:
     typedef MappingData<3,8> CubeData;
     typedef MappingData<1,0> MappingData1D;
     typedef MappingData<2,0> MappingData2D;
-    typedef MappingData<2,0> MappingData3D;
+    typedef MappingData<3,0> MappingData3D;
 
     virtual ~BarycentricMapper()
     {}
@@ -116,8 +116,8 @@ public:
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::MappingData1D MappingData1D;
-    typedef typename Inherit::MappingData1D MappingData2D;
-    typedef typename Inherit::MappingData1D MappingData3D;
+    typedef typename Inherit::MappingData2D MappingData2D;
+    typedef typename Inherit::MappingData3D MappingData3D;
 protected:
     std::vector< MappingData1D > map1d;
     std::vector< MappingData2D > map2d;

@@ -75,7 +75,7 @@ void RegularGridMapper<In,Out>::init()
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::calcMap(topology::RegularGridTopology* topology)
 {
-    OutVecCoord& out = *this->toModel->getX();
+    const OutVecCoord& out = *this->toModel->getX();
     int outside = 0;
     RegularGridMapper<InDataTypes,OutDataTypes>* mapper = new RegularGridMapper<InDataTypes,OutDataTypes>(topology);
     this->mapper = mapper;
@@ -89,7 +89,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::RegularGridTopology* to
             ++outside;
             cube = topology->findNearestCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
-        InCoord baryCoords = coefs;
+        Vec<3,Real> baryCoords = coefs;
         mapper->addPointInCube(cube, baryCoords.ptr());
     }
     if (outside>0) std::cerr << "WARNING: Barycentric mapping with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
@@ -99,8 +99,8 @@ template <class In, class Out>
 void MeshMapper<In,Out>::clear(int reserve3d, int reserve2d, int reserve1d)
 {
     map1d.clear(); if (reserve1d>0) map1d.reserve(reserve1d);
-    map2d.clear(); if (reserve2d>0) map1d.reserve(reserve2d);
-    map3d.clear(); if (reserve3d>0) map1d.reserve(reserve3d);
+    map2d.clear(); if (reserve2d>0) map2d.reserve(reserve2d);
+    map3d.clear(); if (reserve3d>0) map3d.reserve(reserve3d);
 }
 
 template <class In, class Out>
@@ -217,8 +217,8 @@ void MeshMapper<In,Out>::init()
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::calcMap(topology::MeshTopology* topology)
 {
-    OutVecCoord& out = *this->toModel->getX();
-    InVecCoord& in = *this->fromModel->getX();
+    const OutVecCoord& out = *this->toModel->getX();
+    const InVecCoord& in = *this->fromModel->getX();
     int outside = 0;
     MeshMapper<InDataTypes,OutDataTypes>* mapper = new MeshMapper<InDataTypes,OutDataTypes>(topology);
     this->mapper = mapper;
