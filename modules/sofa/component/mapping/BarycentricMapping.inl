@@ -28,8 +28,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
-#include <sofa/component/topology/RegularGridTopology.h>
-//#include <sofa/component/topology/MultiResSparseGridTopology.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/helper/gl/template.h>
 #include <GL/gl.h>
@@ -109,7 +107,7 @@ template <class In, class Out>
 int MeshMapper<In,Out>::addPointInLine(int lineIndex, const Real* baryCoords)
 {
     map1d.resize(map1d.size()+1);
-    MappingData<1,0>& data = *map1d.rbegin();
+    MappingData1D& data = *map1d.rbegin();
     data.in_index = lineIndex;
     data.baryCoords[0] = baryCoords[0];
     return map1d.size()-1;
@@ -119,7 +117,7 @@ template <class In, class Out>
 int MeshMapper<In,Out>::addPointInTriangle(int triangleIndex, const Real* baryCoords)
 {
     map2d.resize(map2d.size()+1);
-    MappingData<2,0>& data = *map2d.rbegin();
+    MappingData2D& data = *map2d.rbegin();
     data.in_index = triangleIndex;
     data.baryCoords[0] = baryCoords[0];
     data.baryCoords[1] = baryCoords[1];
@@ -130,7 +128,7 @@ template <class In, class Out>
 int MeshMapper<In,Out>::addPointInQuad(int quadIndex, const Real* baryCoords)
 {
     map2d.resize(map2d.size()+1);
-    MappingData<2,0>& data = *map2d.rbegin();
+    MappingData2D& data = *map2d.rbegin();
     data.in_index = quadIndex + topology->getNbTriangles();
     data.baryCoords[0] = baryCoords[0];
     data.baryCoords[1] = baryCoords[1];
@@ -141,7 +139,7 @@ template <class In, class Out>
 int MeshMapper<In,Out>::addPointInTetra(int tetraIndex, const Real* baryCoords)
 {
     map3d.resize(map3d.size()+1);
-    MappingData<3,0>& data = *map3d.rbegin();
+    MappingData3D& data = *map3d.rbegin();
     data.in_index = tetraIndex;
     data.baryCoords[0] = baryCoords[0];
     data.baryCoords[1] = baryCoords[1];
@@ -153,7 +151,7 @@ template <class In, class Out>
 int MeshMapper<In,Out>::addPointInCube(int cubeIndex, const Real* baryCoords)
 {
     map3d.resize(map3d.size()+1);
-    MappingData<3,0>& data = *map3d.rbegin();
+    MappingData3D& data = *map3d.rbegin();
     data.in_index = cubeIndex + topology->getNbTetras();
     data.baryCoords[0] = baryCoords[0];
     data.baryCoords[1] = baryCoords[1];
@@ -222,7 +220,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::MeshTopology* topology)
     OutVecCoord& out = *this->toModel->getX();
     InVecCoord& in = *this->fromModel->getX();
     int outside = 0;
-    typename MeshMapper<InDataTypes,OutDataTypes>* mapper = new typename MeshMapper<InDataTypes,OutDataTypes>(topology);
+    MeshMapper<InDataTypes,OutDataTypes>* mapper = new MeshMapper<InDataTypes,OutDataTypes>(topology);
     this->mapper = mapper;
     const topology::MeshTopology::SeqTetras& tetras = topology->getTetras();
     const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();

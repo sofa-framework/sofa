@@ -6,6 +6,7 @@
 #include "mycuda.h"
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
+#include <sofa/core/objectmodel/Base.h>
 #include <iostream>
 
 namespace sofa
@@ -239,7 +240,7 @@ protected:
     {
         if (hostIsValid) return;
 #ifndef NDEBUG
-        std::cout << "CUDA: GPU->CPU copy of "<<core::objectmodel::Base::decodeTypeName(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
+        std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
 #endif
         mycudaMemcpyDeviceToHost(hostPointer, devicePointer, vectorSize*sizeof(T));
         hostIsValid = true;
@@ -248,7 +249,7 @@ protected:
     {
         if (deviceIsValid) return;
 //#ifndef NDEBUG
-        std::cout << "CUDA: CPU->GPU copy of "<<core::objectmodel::Base::decodeTypeName(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
+        std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
 //#endif
         mycudaMemcpyHostToDevice(devicePointer, hostPointer, vectorSize*sizeof(T));
         deviceIsValid = true;
@@ -279,7 +280,7 @@ public:
     class SparseData
     {
     public:
-        SparseData(unsigned int _index, T& _data): index(_index), data(_data) {};
+        SparseData(unsigned int _index, const T& _data): index(_index), data(_data) {};
         unsigned int index;
         T data;
     };

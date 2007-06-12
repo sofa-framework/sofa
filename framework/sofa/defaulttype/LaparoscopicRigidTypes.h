@@ -230,7 +230,7 @@ public:
     class SparseData
     {
     public:
-        SparseData(unsigned int _index, T& _data): index(_index), data(_data) {};
+        SparseData(unsigned int _index, const T& _data): index(_index), data(_data) {};
         unsigned int index;
         T data;
     };

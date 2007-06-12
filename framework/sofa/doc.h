@@ -1,6 +1,6 @@
 #ifndef SOFA_DOC_H
 
-// This file is only use to provide contents to the doxygen-generated documentation
+// This file is only used to provide contents to the doxygen-generated documentation
 // It should not be included by any external code
 
 // * \version SVN trunk HEAD

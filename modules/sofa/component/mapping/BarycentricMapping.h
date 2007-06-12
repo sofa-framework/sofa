@@ -64,6 +64,9 @@ public:
     typedef MappingData<2,4> QuadData;
     typedef MappingData<3,4> TetraData;
     typedef MappingData<3,8> CubeData;
+    typedef MappingData<1,0> MappingData1D;
+    typedef MappingData<2,0> MappingData2D;
+    typedef MappingData<2,0> MappingData3D;
 
     virtual ~BarycentricMapper()
     {}
@@ -83,6 +86,7 @@ public:
     typedef BarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::CubeData CubeData;
 protected:
     std::vector<CubeData> map;
     topology::RegularGridTopology* topology;
@@ -111,10 +115,13 @@ public:
     typedef BarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::MappingData1D MappingData1D;
+    typedef typename Inherit::MappingData1D MappingData2D;
+    typedef typename Inherit::MappingData1D MappingData3D;
 protected:
-    std::vector< Inherit::MappingData<1,0> > map1d;
-    std::vector< Inherit::MappingData<2,0> > map2d;
-    std::vector< Inherit::MappingData<3,0> > map3d;
+    std::vector< MappingData1D > map1d;
+    std::vector< MappingData2D > map2d;
+    std::vector< MappingData3D > map3d;
     topology::MeshTopology* topology;
 
 public:

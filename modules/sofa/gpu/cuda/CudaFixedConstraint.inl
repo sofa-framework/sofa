@@ -74,12 +74,12 @@ void FixedConstraint<gpu::cuda::CudaVec3fTypes>::addConstraint(unsigned int inde
             data.minIndex = index;
             data.maxIndex = index;
         }
-        else if (data.minIndex == index+1)
+        else if (data.minIndex == (int)index+1)
         {
             data.minIndex = index;
             //std::cout << "CudaFixedConstraint: new min index "<<index<<"\n";
         }
-        else if (data.maxIndex == index-1)
+        else if (data.maxIndex == (int)index-1)
         {
             data.maxIndex = index;
             //std::cout << "CudaFixedConstraint: new max index "<<index<<"\n";
@@ -111,9 +111,9 @@ void FixedConstraint<gpu::cuda::CudaVec3fTypes>::removeConstraint(unsigned int i
     {
         if (data.minIndex <= (int)index && (int)index <= data.maxIndex)
         {
-            if (data.minIndex == index)
+            if (data.minIndex == (int)index)
             {
-                if (data.maxIndex == index)
+                if (data.maxIndex == (int)index)
                 {
                     // empty set
                     data.minIndex = -1;
@@ -122,13 +122,13 @@ void FixedConstraint<gpu::cuda::CudaVec3fTypes>::removeConstraint(unsigned int i
                 else
                     ++data.minIndex;
             }
-            else if (data.maxIndex == index)
+            else if (data.maxIndex == (int)index)
                 --data.maxIndex;
             else
             {
                 data.cudaIndices.reserve(data.maxIndex-data.minIndex);
                 for (int i=data.minIndex; i<data.maxIndex; i++)
-                    if (i != index)
+                    if (i != (int)index)
                         data.cudaIndices.push_back(i);
                 data.minIndex = -1;
                 data.maxIndex = -1;
@@ -142,7 +142,7 @@ void FixedConstraint<gpu::cuda::CudaVec3fTypes>::removeConstraint(unsigned int i
         {
             if (found)
                 data.cudaIndices[i-1] = data.cudaIndices[i];
-            else if (data.cudaIndices[i] == index)
+            else if (data.cudaIndices[i] == (int)index)
                 found = true;
         }
         if (found)
