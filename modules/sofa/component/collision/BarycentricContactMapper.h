@@ -55,9 +55,10 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<typename MCollisionModel::DataTypes> MMechanicalState;
     typedef component::MechanicalObject<typename MCollisionModel::DataTypes> MMechanicalObject;
     typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping< MMechanicalState, MMechanicalState > > MMapping;
+    typedef mapping::MeshMapper<typename MCollisionModel::DataTypes, typename MCollisionModel::DataTypes> MeshMapper;
     MCollisionModel* model;
     MMapping* mapping;
-    typename MMapping::MeshMapper* mapper;
+    MeshMapper* mapper;
 
     BarycentricContactMapper(MCollisionModel* model)
         : model(model), mapping(NULL), mapper(NULL)
@@ -92,7 +93,7 @@ public:
         }
         simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
         MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-        mapper = new typename MMapping::MeshMapper(model->getTopology());
+        mapper = new MeshMapper(model->getTopology());
         mapping = new MMapping(model->getMechanicalState(), mstate, mapper); child->addObject(mapping);
         return mstate;
     }

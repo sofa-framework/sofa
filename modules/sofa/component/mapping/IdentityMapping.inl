@@ -53,11 +53,12 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
 
     for(unsigned int i=0; i<in.size(); i++)
     {
+        typename In::SparseVecDeriv& o = out[i];
+        o.reserve(in[i].size());
         for(unsigned int j=0; j<in[i].size(); j++)
         {
-            const OutSparseDeriv cIn = in[i][j];
-            out[i][j].index = cIn.index;
-            out[i][j].data = cIn.data;
+            const typename Out::SparseDeriv& cIn = in[i][j];
+            o.push_back( typename In::SparseDeriv(cIn.index, (typename In::Deriv)cIn.data) );
         }
     }
 }

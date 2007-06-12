@@ -29,7 +29,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
-//#include <sofa/component/topology/MultiResSparseGridTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <vector>
 
@@ -43,29 +42,13 @@ namespace component
 namespace mapping
 {
 
-template <class BasicMapping>
-class BarycentricMapping : public BasicMapping, public core::VisualModel
+/// Base class for barycentric mapping topology-specific mappers
+template<class In, class Out>
+class BarycentricMapper
 {
 public:
-    typedef BasicMapping Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename Out::SparseVecDeriv OutSparseVecDeriv;
-    typedef typename Out::SparseDeriv OutSparseDeriv;
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef typename In::Coord InCoord;
-    typedef typename In::Deriv InDeriv;
-    typedef typename In::SparseVecDeriv InSparseVecDeriv;
-    typedef typename In::SparseDeriv InSparseDeriv;
-    typedef typename InCoord::value_type Real;
-    typedef typename OutCoord::value_type OutReal;
-
-    //virtual const char* getTypeName() const { return "BarycentricMapping"; }
+    typedef typename In::Real Real;
+    typedef typename Out::Real OutReal;
 
     template<int NC, int NP>
     class MappingData
@@ -82,100 +65,117 @@ public:
     typedef MappingData<3,4> TetraData;
     typedef MappingData<3,8> CubeData;
 
-    class Mapper
-    {
-    public:
-        virtual ~Mapper()
-        { }
-        virtual void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in ) = 0;
-        virtual void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in ) = 0;
-        virtual void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in ) = 0;
-        virtual void applyJT( typename Inherit::In::VecConst& out, const typename Inherit::Out::VecConst& in ) = 0;
-        virtual void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in) = 0;
-    };
+    virtual ~BarycentricMapper()
+    {}
+    virtual void init() = 0;
+    virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
+    virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
+    virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) = 0;
+    virtual void applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) = 0;
+    virtual void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
+};
 
-#if 0
-    /// Classe permettant le calcul du mapping sur une SparseRegularGrid
-    class SparseGridMapper : public Mapper
-    {
-    public:
-        SparseGridMapper(topology::MultiResSparseGridTopology* topology) : topology(topology)
-        {}
+/// Class allowing barycentric mapping computation on a RegularGridTopology
+template<class In, class Out>
+class RegularGridMapper : public BarycentricMapper<In,Out>
+{
+public:
+    typedef BarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+protected:
+    std::vector<CubeData> map;
+    topology::RegularGridTopology* topology;
+public:
+    RegularGridMapper(topology::RegularGridTopology* topology) : topology(topology)
+    {}
 
-        std::vector<CubeData> map;
-        topology::MultiResSparseGridTopology* topology;
-        void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in );
-        void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in );
-        void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
-        void applyJT( typename Inherit::In::VecConst& out, const typename Inherit::Out::VecConst& in );
-        void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
-    };
-#endif
+    void clear(int reserve=0);
 
-    class RegularGridMapper : public Mapper
-    {
-    public:
-        RegularGridMapper(topology::RegularGridTopology* topology) : topology(topology)
-        {}
+    int addPointInCube(int cubeIndex, const Real* baryCoords);
 
-        std::vector<CubeData> map;
-        topology::RegularGridTopology* topology;
-        void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in );
-        void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in );
-        void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
-        void applyJT( typename Inherit::In::VecConst& out, const typename Inherit::Out::VecConst& in );
-        void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
-    };
+    void init();
 
-    class MeshMapper : public Mapper
-    {
-    public:
-        MeshMapper(topology::MeshTopology* topology) : topology(topology)
-        {}
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+};
 
-        std::vector< MappingData<1,0> > map1d;
-        std::vector< MappingData<2,0> > map2d;
-        std::vector< MappingData<3,0> > map3d;
-        topology::MeshTopology* topology;
+/// Class allowing barycentric mapping computation on a MeshTopology
+template<class In, class Out>
+class MeshMapper : public BarycentricMapper<In,Out>
+{
+public:
+    typedef BarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+protected:
+    std::vector< Inherit::MappingData<1,0> > map1d;
+    std::vector< Inherit::MappingData<2,0> > map2d;
+    std::vector< Inherit::MappingData<3,0> > map3d;
+    topology::MeshTopology* topology;
 
-        void clear();
+public:
+    MeshMapper(topology::MeshTopology* topology) : topology(topology)
+    {}
 
-        int addPointInLine(const OutCoord& p, int lineIndex, const Real* baryCoords);
-        int createPointInLine(const OutCoord& p, int lineIndex, const InVecCoord* points);
+    void clear(int reserve3d=0, int reserve2d=0, int reserve1d=0);
 
-        int addPointInTriangle(const OutCoord& p, int triangleIndex, const Real* baryCoords);
-        int createPointInTriangle(const OutCoord& p, int triangleIndex, const InVecCoord* points);
+    int addPointInLine(int lineIndex, const Real* baryCoords);
+    int createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points);
 
-        int addPointInQuad(const OutCoord& p, int quadIndex, const Real* baryCoords);
-        int createPointInQuad(const OutCoord& p, int quadIndex, const InVecCoord* points);
+    int addPointInTriangle(int triangleIndex, const Real* baryCoords);
+    int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
 
-        int addPointInTetra(const OutCoord& p, int tetraIndex, const Real* baryCoords);
+    int addPointInQuad(int quadIndex, const Real* baryCoords);
+    int createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points);
 
-        int addPointInCube(const OutCoord& p, int cubeIndex, const Real* baryCoords);
+    int addPointInTetra(int tetraIndex, const Real* baryCoords);
 
-        void apply( typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in );
-        void applyJ( typename Inherit::Out::VecDeriv& out, const typename Inherit::In::VecDeriv& in );
-        void applyJT( typename Inherit::In::VecDeriv& out, const typename Inherit::Out::VecDeriv& in );
-        void applyJT( typename Inherit::In::VecConst& out, const typename Inherit::Out::VecConst& in );
-        void draw( const typename Inherit::Out::VecCoord& out, const typename Inherit::In::VecCoord& in);
-    };
+    int addPointInCube(int cubeIndex, const Real* baryCoords);
+
+    void init();
+
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+};
+
+template <class BasicMapping>
+class BarycentricMapping : public BasicMapping, public core::VisualModel
+{
+public:
+    typedef BasicMapping Inherit;
+    typedef typename Inherit::In In;
+    typedef typename Inherit::Out Out;
+    typedef typename In::DataTypes InDataTypes;
+    typedef typename InDataTypes::VecCoord InVecCoord;
+    typedef typename InDataTypes::VecDeriv InVecDeriv;
+    typedef typename InDataTypes::Coord InCoord;
+    typedef typename InDataTypes::Deriv InDeriv;
+    typedef typename InDataTypes::SparseVecDeriv InSparseVecDeriv;
+    typedef typename InDataTypes::SparseDeriv InSparseDeriv;
+    typedef typename InDataTypes::Real Real;
+    typedef typename Out::DataTypes OutDataTypes;
+    typedef typename OutDataTypes::VecCoord OutVecCoord;
+    typedef typename OutDataTypes::VecDeriv OutVecDeriv;
+    typedef typename OutDataTypes::Coord OutCoord;
+    typedef typename OutDataTypes::Deriv OutDeriv;
+    typedef typename OutDataTypes::SparseVecDeriv OutSparseVecDeriv;
+    typedef typename OutDataTypes::SparseDeriv OutSparseDeriv;
+    typedef typename OutDataTypes::Real OutReal;
 
 protected:
-    //std::vector<MapCoef> map;
 
-    //std::vector<LineData> mapLines;
-    //std::vector<TriangleData> mapTriangles;
-    //std::vector<QuadData> mapQuads;
-    //std::vector<TetraData> mapTetras;
-    //std::vector<CubeData> mapCubes;
+    typedef BarycentricMapper<InDataTypes,OutDataTypes> Mapper;
 
     Mapper* mapper;
 
     void calcMap(topology::RegularGridTopology* topo);
-
-#if 0
-    void calcMap(topology::MultiResSparseGridTopology* topo);
-#endif
 
     void calcMap(topology::MeshTopology* topo);
 
@@ -210,28 +210,7 @@ public:
     { }
     void update()
     { }
-    /*
-        /// Pre-construction check method called by ObjectFactory.
-        template<class T>
-        static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-        {
-            if (arg->findObject(arg->getAttribute("object1","../..")) == NULL)
-                std::cerr << "Cannot create "<<className(obj)<<" as object1 is missing.\n";
-            if (arg->findObject(arg->getAttribute("object2","..")) == NULL)
-                std::cerr << "Cannot create "<<className(obj)<<" as object2 is missing.\n";
-            if (dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-            {
-                std::cerr << "Cannot create "<<className(obj)<<" as object2 is not of the right type.\n";
-                return false;
-            }
-            if (dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))) == NULL)
-            {
-                std::cerr << "Cannot create "<<className(obj)<<" as object1 is not of the right type.\n";
-                return false;
-            }
-            return BasicMapping::canCreate(obj, context, arg);
-        }
-    */
+
 protected:
 
     bool getShow(const core::objectmodel::BaseObject* m) const

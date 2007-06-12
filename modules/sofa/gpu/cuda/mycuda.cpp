@@ -20,6 +20,7 @@ SOFA_LINK_CLASS(CudaUniformMass)
 SOFA_LINK_CLASS(CudaPlaneForceField)
 SOFA_LINK_CLASS(CudaSphereForceField)
 SOFA_LINK_CLASS(CudaIdentityMapping)
+SOFA_LINK_CLASS(CudaBarycentricMapping)
 
 void mycudaLogError(int err, const char* src)
 {

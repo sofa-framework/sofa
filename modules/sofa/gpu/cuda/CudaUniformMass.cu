@@ -23,7 +23,7 @@ extern "C"
 
 __global__ void UniformMassCuda1f_addMDx_kernel(int size, const float mass, float* res, const float* dx)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = blockIdx.x*BSIZE+threadIdx.x;
     if (index < size)
     {
         res[index] += dx[index] * mass;
@@ -32,7 +32,7 @@ __global__ void UniformMassCuda1f_addMDx_kernel(int size, const float mass, floa
 
 __global__ void UniformMassCuda3f_addMDx_kernel(int size, const float mass, float3* res, const float3* dx)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = blockIdx.x*BSIZE+threadIdx.x;
     if (index < size)
     {
         //res[index] += dx[index] * mass;
@@ -45,7 +45,7 @@ __global__ void UniformMassCuda3f_addMDx_kernel(int size, const float mass, floa
 
 __global__ void UniformMassCuda1f_accFromF_kernel(int size, const float inv_mass, float* a, const float* f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = blockIdx.x*BSIZE+threadIdx.x;
     if (index < size)
     {
         a[index] = f[index] * inv_mass;
@@ -54,7 +54,7 @@ __global__ void UniformMassCuda1f_accFromF_kernel(int size, const float inv_mass
 
 __global__ void UniformMassCuda3f_accFromF_kernel(int size, const float inv_mass, float3* a, const float3* f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = blockIdx.x*BSIZE+threadIdx.x;
     if (index < size)
     {
         //a[index] = f[index] * inv_mass;
@@ -66,7 +66,7 @@ __global__ void UniformMassCuda3f_accFromF_kernel(int size, const float inv_mass
 
 __global__ void UniformMassCuda1f_addForce_kernel(int size, const float mg, float* f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = blockIdx.x*BSIZE+threadIdx.x;
     if (index < size)
     {
         f[index] += mg;
@@ -75,7 +75,7 @@ __global__ void UniformMassCuda1f_addForce_kernel(int size, const float mg, floa
 
 __global__ void UniformMassCuda3f_addForce_kernel(int size, const float3 mg, float* f)
 {
-    //int index = blockIdx.x*blockDim.x+threadIdx.x;
+    //int index = blockIdx.x*BSIZE+threadIdx.x;
     //f[index] += mg;
     f += blockIdx.x*BSIZE*3;
     int index = threadIdx.x;
@@ -87,7 +87,7 @@ __global__ void UniformMassCuda3f_addForce_kernel(int size, const float3 mg, flo
 
     __syncthreads();
 
-    if (blockIdx.x*blockDim.x+threadIdx.x < size)
+    if (blockIdx.x*BSIZE+threadIdx.x < size)
     {
         int index3 = 3*index;
         temp[index3+0] += mg.x;

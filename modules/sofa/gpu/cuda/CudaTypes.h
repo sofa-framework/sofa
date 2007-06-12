@@ -109,7 +109,7 @@ public:
             // Call the constructor for the new elements
             for (size_type i = vectorSize; i < s; i++)
             {
-                ::new(hostPointer+i) T();
+                ::new(hostPointer+i) T;
             }
             if (deviceIsValid)
             {
@@ -247,9 +247,9 @@ protected:
     void copyToDevice() const
     {
         if (deviceIsValid) return;
-#ifndef NDEBUG
+//#ifndef NDEBUG
         std::cout << "CUDA: CPU->GPU copy of "<<core::objectmodel::Base::decodeTypeName(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
-#endif
+//#endif
         mycudaMemcpyHostToDevice(devicePointer, hostPointer, vectorSize*sizeof(T));
         deviceIsValid = true;
     }
