@@ -33,8 +33,8 @@ int mycudaInit(int device)
         //dev.major=0;
         //dev.minor=0;
         cudaCheck(cudaGetDeviceProperties(&dev,i));
-        myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), dev.bytes/(1024*1024), dev.major, dev.minor);
-        //myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.major, dev.minor);
+        //myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,(dev.name==NULL?"":dev.name), dev.bytes/(1024*1024), dev.major, dev.minor);
+        myprintf("CUDA:  %d : \"%s\", %d MB, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.major, dev.minor);
     }
     if (device >= deviceCount)
     {

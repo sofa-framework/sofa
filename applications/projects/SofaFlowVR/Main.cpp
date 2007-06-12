@@ -18,7 +18,18 @@
 #include <sofa/simulation/tree/AnimateBeginEvent.h>
 #include <sofa/simulation/tree/AnimateEndEvent.h>
 #include <sofa/component/topology/MeshTopology.h>
-#if defined(SOFA_GUI_QT)
+
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/InitAction.h>
+#include <sofa/simulation/tree/DeleteAction.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/component/collision/PointModel.h>
+#include <sofa/component/collision/MinProximityIntersection.h>
+#include <sofa/component/collision/BruteForceDetection.h>
+
+#if defined(SOFA_GUI_QGLVIEWER)
+#include <sofa/gui/qglviewer/Main.h>
+#elif defined(SOFA_GUI_QT)
 #include <sofa/gui/qt/Main.h>
 #elif defined(SOFA_GUI_FLTK)
 #include <sofa/gui/fltk/Main.h>
@@ -218,6 +229,7 @@ public:
         module = createModule(ports);
         if (module == NULL)
         {
+            std::cerr << "SofaFlowVR: module creation failed. Exit."<<std::endl;
             std::exit(1);
         }
         std::cout << "Sending FlowVRInit"<<std::endl;
@@ -232,6 +244,7 @@ public:
         if (it!=-1 && f_dt.getValue()>0 && getContext()->getTime()<lasttime+f_dt.getValue()) return;
         if (!module->wait())
         {
+            std::cerr << "SofaFlowVR: module wait method returned 0. Exit."<<std::endl;
             std::exit(1);
         }
         ++it; step = true;
@@ -269,15 +282,41 @@ public:
     flowvr::InputPort* pInPoints;
     flowvr::InputPort* pInMatrix;
 
+    DataField<bool> computeV;
+    DataField<double> maxVDist;
+
+    // Velocity is estimated by searching the nearest primitive from each new point
+    // To do it we need to create an additionnal PointModel collision model, as well as a Detection and Intersection class
+    sofa::simulation::tree::GNode * newPointsNode;
+    typedef sofa::simulation::tree::GNode::Sequence<sofa::core::CollisionModel>::iterator CMIterator;
+    sofa::component::MechanicalObject<Vec3dTypes> * newPoints;
+    sofa::component::collision::PointModel * newPointsCM;
+    sofa::component::collision::MinProximityIntersection * intersection;
+    sofa::component::collision::BruteForceDetection * detection;
+    sofa::helper::vector<double> newPointsDist;
+
     Mat4x4f matrix;
     int facetsLastIt;
     int pointsLastIt;
     int matrixLastIt;
+    double motionLastTime;
 
     FlowVRInputMesh()
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
-        , facetsLastIt(-20), pointsLastIt(-20), matrixLastIt(-20)
+        , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
+        , facetsLastIt(-20), pointsLastIt(-20), matrixLastIt(-20), motionLastTime(-1000)
     {
+    }
+
+    ~FlowVRInputMesh()
+    {
+        if (newPointsNode != NULL)
+        {
+            newPointsNode->execute<sofa::simulation::tree::DeleteAction>();
+            delete newPointsNode;
+        }
     }
 
     virtual void flowvrPreInit(std::vector<flowvr::Port*>* ports)
@@ -288,10 +327,31 @@ public:
         ports->push_back(pInMatrix);
     }
 
+    virtual void init()
+    {
+        this->FlowVRObject::init();
+        if (computeV.getValue())
+        {
+            newPointsNode = new sofa::simulation::tree::GNode("newPoints");
+            newPointsNode->addObject ( newPoints = new sofa::component::MechanicalObject<Vec3dTypes> );
+            newPointsNode->addObject ( newPointsCM = new sofa::component::collision::PointModel );
+
+            newPointsNode->addObject ( intersection = new sofa::component::collision::MinProximityIntersection );
+            intersection->setAlarmDistance(maxVDist.getValue());
+            intersection->setContactDistance(0); //maxVDist.getValue());
+
+            newPointsNode->addObject ( detection = new sofa::component::collision::BruteForceDetection );
+            detection->setIntersectionMethod(intersection);
+
+            newPointsNode->execute<sofa::simulation::tree::InitAction>();
+        }
+    }
+
     virtual void flowvrBeginIteration(flowvr::ModuleAPI* module)
     {
         std::cout << "Received FlowVRBeginIteration"<<std::endl;
         flowvr::Message points, facets;
+        double time = getContext()->getTime();
 
         module->get(pInPoints, points);
         module->get(pInFacets, facets);
@@ -344,9 +404,22 @@ public:
             }
             else if ((mmodel3d = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>*>(mmodel))!=NULL)
             {
-                std::cout << "Copying "<<nbv<<" vertices to mmodel3d"<<std::endl;
-                mmodel3d->resize(nbv);
-                Vec3dTypes::VecCoord& x = *mmodel3d->getX();
+                bool doComputeV = (computeV.getValue() && newPoints != NULL && motionLastTime != -1000);
+
+                sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>* mm;
+                if (doComputeV)
+                {
+                    std::cout << "Copying "<<nbv<<" vertices and estimate velocity"<<std::endl;
+                    mm = newPoints; // put new data in newPoints state
+                }
+                else
+                {
+                    std::cout << "Copying "<<nbv<<" vertices to mmodel3d"<<std::endl;
+                    mm = mmodel3d;
+                }
+                mm->resize(nbv);
+                Vec3dTypes::VecCoord& x = *mm->getX();
+
                 if (matrixLastIt==-20)
                 {
                     for (unsigned int i=0; i<nbv; i++)
@@ -361,6 +434,90 @@ public:
                         x[i] = Vec3d(tv[0],tv[1],tv[2]);
                     }
                 }
+                if (doComputeV)
+                {
+                    sofa::simulation::tree::GNode* node = dynamic_cast<sofa::simulation::tree::GNode*>(getContext());
+                    Vec3dTypes::VecDeriv& v = *newPoints->getV();
+                    const double dmax = maxVDist.getValue();
+                    newPointsDist.resize(nbv);
+                    for (unsigned int i=0; i<nbv; i++)
+                    {
+                        v[i] = Vec3dTypes::Deriv();
+                        newPointsDist[i] = dmax;
+                    }
+                    intersection->setAlarmDistance(dmax); // make sure the distance is up-to-date
+                    intersection->setContactDistance(0);
+                    newPointsCM->computeBoundingTree( 6 ); // compute a bbox tree of depth 6
+                    //std::cout << "computeV: "<<newPointsCM->end().getIndex()<<" points"<<std::endl;
+                    detection->clearNarrowPhase();
+                    for (CMIterator it = node->collisionModel.begin(), itend = node->collisionModel.end(); it != itend ; ++it)
+                    {
+                        sofa::core::CollisionModel* cm2 = *it;
+                        std::cout << "computeV: narrow phase detection with "<<cm2->getClassName()<<std::endl;
+                        detection->addCollisionPair(std::make_pair(newPointsCM->getFirst(), cm2->getFirst()));
+                        //detection->addCollisionPair(std::make_pair(cm2, newPointsCM));
+                    }
+                    // then we start the real detection between primitives
+                    {
+                        std::vector<std::pair<sofa::core::CollisionElementIterator, sofa::core::CollisionElementIterator> >& vectElemPair = detection->getCollisionElementPairs();
+                        std::vector<std::pair<sofa::core::CollisionElementIterator, sofa::core::CollisionElementIterator> >::iterator it4 = vectElemPair.begin();
+                        std::vector<std::pair<sofa::core::CollisionElementIterator, sofa::core::CollisionElementIterator> >::iterator it4End = vectElemPair.end();
+
+                        std::cout << "computeV: "<<vectElemPair.size()<<" colliding bbox pairs"<<std::endl;
+                        // Cache the intersector used
+                        sofa::core::componentmodel::collision::ElementIntersector* intersector = NULL;
+                        sofa::core::CollisionModel* model1 = NULL;
+                        sofa::core::CollisionModel* model2 = NULL;
+                        int newPointsCMIndex = 0; // 0 or 1 depending if newPointsCM is the first or second CM
+                        int ncollisions = 0;
+                        for (; it4 != it4End; it4++)
+                        {
+                            sofa::core::CollisionElementIterator cm1 = it4->first;
+                            sofa::core::CollisionElementIterator cm2 = it4->second;
+                            if (cm1.getCollisionModel() != model1 || cm2.getCollisionModel() != model2)
+                            {
+                                model1 = cm1.getCollisionModel();
+                                model2 = cm2.getCollisionModel();
+                                intersector = intersection->findIntersector(model1, model2);
+                                //newPointsCMIndex = (model2==newPointsCM)?1:0;
+                            }
+                            if (intersector != NULL)
+                            {
+                                sofa::core::componentmodel::collision::DetectionOutput *detection = intersector->intersect(cm1, cm2);
+                                if (detection != NULL)
+                                {
+                                    ++ncollisions;
+                                    newPointsCMIndex = (detection->elem.second.getCollisionModel()==newPointsCM)?1:0;
+                                    int index = (&(detection->elem.first))[newPointsCMIndex].getIndex();
+                                    double d = detection->distance;
+                                    if ((unsigned)index >= nbv)
+                                    {
+                                        std::cerr << "computeV: invalid point index "<<index<<std::endl;
+                                    }
+                                    else if (d < newPointsDist[index])
+                                    {
+                                        newPointsDist[index] = d;
+                                        v[index] = detection->point[newPointsCMIndex] - detection->point[1-newPointsCMIndex];
+                                    }
+                                    delete detection;
+                                }
+                            }
+                        }
+                        std::cout << "computeV: "<<ncollisions<<" collisions detected"<<std::endl;
+                    }
+                    // then we finalize the results
+                    const double vscale = (time > motionLastTime) ? 1.0/(time-motionLastTime) : 1.0;
+                    for (unsigned int i=0; i<nbv; i++)
+                    {
+                        v[i] *= vscale;
+                    }
+                    mmodel3d->resize(nbv);
+                    Vec3dTypes::VecCoord& x2 = *mmodel3d->getX();
+                    Vec3dTypes::VecDeriv& v2 = *mmodel3d->getV();
+                    x2.swap(x);
+                    v2.swap(v);
+                }
+                motionLastTime = time;
             }
         }
 
@@ -817,7 +974,9 @@ int main(int argc, char** argv)
         groot = new GNode;
     }
 
-#if defined(SOFA_GUI_QT)
+#if defined(SOFA_GUI_QGLVIEWER)
+    sofa::gui::guiqglviewer::MainLoop(argv[0],groot,fileName.c_str());
+#elif defined(SOFA_GUI_QT)
     sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
 #elif defined(SOFA_GUI_FLTK)
     sofa::gui::fltk::MainLoop(argv[0],groot);
