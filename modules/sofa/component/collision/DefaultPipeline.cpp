@@ -173,7 +173,7 @@ void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionMode
             }
             if (intersector != NULL)
             {
-                DetectionOutput *detection = intersectionMethod->intersect(cm1, cm2);
+                DetectionOutput *detection = intersector->intersect(cm1, cm2);
 
                 if (detection)
                     detectionOutputs.push_back(detection);

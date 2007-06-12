@@ -55,9 +55,10 @@ int MinProximityIntersectionClass = core::RegisterObject("TODO-MinProximityInter
         ;
 
 MinProximityIntersection::MinProximityIntersection()
-    : useSphereTriangle(dataField(&useSphereTriangle, true, "useSphereTriangle","TODO"))
-    , alarmDistance(dataField(&alarmDistance, 1.0, "alarmDistance","TODO"))
-    , contactDistance(dataField(&contactDistance, 0.5, "contactDistance","TODO"))
+    : useSphereTriangle(dataField(&useSphereTriangle, true, "useSphereTriangle","activate Sphere-Triangle intersection tests"))
+    , usePointPoint(dataField(&usePointPoint, true, "usePointPoint","activate Point-Point intersection tests"))
+    , alarmDistance(dataField(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
+    , contactDistance(dataField(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
 {
 }
 
@@ -69,9 +70,10 @@ void MinProximityIntersection::init()
     intersectors.add<LineModel, LineModel, intersectionLineLine, distCorrectionLineLine, false>();
     intersectors.add<PointModel, TriangleModel, intersectionPointTriangle, distCorrectionPointTriangle, true>();
     intersectors.add<PointModel, LineModel, intersectionPointLine, distCorrectionPointLine, true>();
-    intersectors.ignore<PointModel, PointModel, false>();
-    //intersectors.add<PointModel, PointModel, intersectionPointPoint, distCorrectionPointPoint, false>();
-
+    if (useSphereTriangle.getValue())
+        intersectors.add<PointModel, PointModel, intersectionPointPoint, distCorrectionPointPoint, false>();
+    else
+        intersectors.ignore<PointModel, PointModel, false>();
     if (useSphereTriangle.getValue())
     {
         intersectors.add<SphereModel, TriangleModel, intersectionSphereTriangle, distCorrectionSphereTriangle, true>();

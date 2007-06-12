@@ -47,6 +47,7 @@ class MinProximityIntersection : public DiscreteIntersection
 {
 public:
     DataField<bool> useSphereTriangle;
+    DataField<bool> usePointPoint;
     DataField<double> alarmDistance;
     DataField<double> contactDistance;
 
