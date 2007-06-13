@@ -113,7 +113,7 @@ int main(int argc, char** argv)
     }
 //#else
 #endif
-#ifdef SOFA_GUI_QT
+#ifdef SOFA_GUI_QTVIEWER
     sofa::gui::guiviewer::MainLoop(argv[0],groot,fileName.c_str());
     // BUGFIX: the user may have loaded another simulation, in which case the first simulation is already destroyed
     // So we need to get the current simulation from the GUI
