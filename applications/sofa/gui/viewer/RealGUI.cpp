@@ -93,7 +93,7 @@ namespace gui
 namespace guiviewer
 {
 
-#ifdef SOFA_GUI_QT
+#ifdef SOFA_GUI_QTVIEWER
 class QtViewer;
 #elif SOFA_GUI_QGLVIEWER
 class QtGLViewer;
@@ -489,9 +489,9 @@ void RealGUI::addViewer(const char* filename)
     init();
 #ifdef SOFA_GUI_QGLVIEWER
     viewer = new sofa::gui::guiqglviewer::QtGLViewer( left_stack, "viewer" );
-#elif SOFA_GUI_QT
+#elif SOFA_GUI_QTVIEWER
     viewer = new sofa::gui::qt::QtViewer( left_stack, "viewer" );
-#else
+#elif SOFA_GUI_QTOGREVIEWER
     viewer = new sofa::gui::qtogreviewer::QtOgreViewer( left_stack , "viewer" );
 #endif
 

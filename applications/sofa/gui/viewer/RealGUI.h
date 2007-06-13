@@ -29,7 +29,7 @@
 #include "GUIField.h"
 
 
-#ifdef SOFA_GUI_QT
+#ifdef SOFA_GUI_QTVIEWER
 #include "QtViewer/QtViewer.h"
 #endif
 
@@ -82,7 +82,7 @@ public:
 
 #ifdef SOFA_GUI_QGLVIEWER
     sofa::gui::guiqglviewer::QtGLViewer* viewer;
-#elif SOFA_GUI_QT
+#elif SOFA_GUI_QTVIEWER
     sofa::gui::qt::QtViewer* viewer;
 #elif SOFA_GUI_QTOGREVIEWER
     sofa::gui::qtogreviewer::QtOgreViewer* viewer;
