@@ -508,7 +508,11 @@ void RealGUI::addViewer(const char* filename)
     viewer->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 100, 1,
             viewer->sizePolicy().hasHeightForWidth() ) );
     viewer->setMinimumSize( QSize( 0, 0 ) );
-// 	viewer->setCursor( QCursor( 2 ) );
+
+#ifndef QT_MODULE_QT3SUPPORT
+    viewer->setCursor( QCursor( 2 ) );
+#endif
+
     viewer->setMouseTracking( TRUE );
 
 
