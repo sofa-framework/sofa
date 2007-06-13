@@ -41,8 +41,10 @@ void  Loads::xmlPrint(std::ostream & o) const {
   Load * currentL;
   for (i=0; i<numberOfLoads(); i++) {
     currentL = getLoad(i);
-    currentL->xmlPrint(o); // o << (*currentL) doesn't work !!!;
-    o << std::endl;
+	if(currentL){
+		currentL->xmlPrint(o); // o << (*currentL) doesn't work !!!;
+		o << std::endl;
+	}
   }
 
   o << "</loads>" << std::endl;

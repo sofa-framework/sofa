@@ -25,6 +25,7 @@
 #include "PMLFemForceField.h"
 #include "PMLStiffSpringForceField.h"
 #include "PMLInteractionForceField.h"
+#include "PMLMappedBody.h"
 
 #include "sofa/component/collision/DefaultPipeline.h"
 #include "sofa/component/collision/DefaultContactManager.h"
@@ -186,6 +187,25 @@ PMLBody* PMLReader::createBody(StructuralComponent* SC, GNode * root)
         if (body1 && body2)
             return new PMLInteractionForceField(SC, body1, body2, root);
     }
+    if (type == "mapped")
+    {
+        std::string name1 = SC->getProperties()->getString("bodyRef");
+        PMLBody * body1=NULL;
+        std::vector<PMLBody*>::iterator it = bodiesList.begin();
+        while( !body1 && it != bodiesList.end() )
+        {
+            if ( (*it)->getName() == name1)
+                body1 = *it;
+            it++;
+        }
+        if (body1)
+        {
+            body1->parentNode->addChild(child);
+            return new PMLMappedBody(SC, body1, child);
+        }
+        else
+            cerr<<"mapped body : no body ref named "<<name1<<" found"<<endl;
+    }
 
     return NULL;
 }
@@ -232,7 +252,7 @@ void PMLReader::processFusions(GNode * root)
 
 
 //save the current scene as a pml filename
-void PMLReader::saveAsPML(char * filename)
+void PMLReader::saveAsPML(const char * filename)
 {
     std::vector<PMLBody*>::iterator itb = bodiesList.begin();
     StructuralComponent * atoms = pm->getAtoms();

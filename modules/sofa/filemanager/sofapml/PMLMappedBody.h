@@ -1,10 +1,10 @@
 /***************************************************************************
-								  LMLReader
+								PMLMappedBody
                              -------------------
-    begin             : August 9th, 2006
+    begin             : June 12th, 2007
     copyright         : (C) 2006 TIMC-INRIA (Michael Adam)
     author            : Michael Adam
-    Date              : $Date: 2007/02/25 13:51:44 $
+    Date              : $Date: 2007/12/06 9:32:44 $
     Version           : $Revision: 0.2 $
  ***************************************************************************/
 
@@ -19,23 +19,18 @@
 
 //-------------------------------------------------------------------------
 //						--   Description   --
-//	LMLReader is used to import a LML document to the sofa structure.
-//  It builds forcefields and constraints on the objects of the scene,
-//  reading a LML file, and using LMLConstraint and LMLForce classes.
+//	PMLMappedModel references points wich are mapped on an other mechanical model
 //-------------------------------------------------------------------------
 
-#ifndef LMLREADER_H
-#define LMLREADER_H
 
+#ifndef PMLMAPPEDBODY_H
+#define PMLMAPPEDBODY_H
 
-#include <Loads.h>
+#include "PMLBody.h"
+
 #include <map>
+using namespace std;
 
-#include "sofa/core/componentmodel/behavior/MechanicalState.h"
-#include "sofa/defaulttype/Vec3Types.h"
-using namespace sofa::defaulttype;
-#include <sofa/simulation/tree/GNode.h>
-using namespace sofa::simulation::tree;
 
 namespace sofa
 {
@@ -46,31 +41,43 @@ namespace filemanager
 namespace pml
 {
 
-class PMLReader;
-
-
-class LMLReader
+class PMLMappedBody: public PMLBody
 {
 public :
-    LMLReader(char* filename=NULL);
 
-    void BuildStructure(const char* filename, PMLReader * pmlreader);
-    void BuildStructure(Loads * loads, PMLReader * pmlreader);
-    void BuildStructure(PMLReader * pmlreader);
+    PMLMappedBody(StructuralComponent* body, PMLBody* fromBody, GNode * parent);
 
-    void updateStructure(Loads * loads, PMLReader * pmlreader);
+    ~PMLMappedBody();
 
-    void saveAsLML(const char * filename);
+    string isTypeOf() { return "mapped"; }
 
-    unsigned int numberOfLoads() { if(loadsList)return loadsList->numberOfLoads(); else return 0;}
+    bool FusionBody(PMLBody*) {return false;}
+
+    Vec3d getDOF(unsigned int );
+
+    GNode* getPointsNode() {return parentNode;}
 
 private :
-    Loads * loadsList;
-    const char * lmlFile;
+
+    /// creation of the scene graph
+    /// only a mapping and mechanical model are created
+    void createForceField() {}
+    void createMechanicalState(StructuralComponent* );
+    void createTopology(StructuralComponent* ) {}
+    void createMass(StructuralComponent* ) {}
+    void createVisualModel(StructuralComponent* ) {}
+    void createCollisionModel() {}
+
+    //structure
+    PMLBody * bodyRef;
+    BaseMapping * mapping;
+
+
 };
 
 }
 }
 }
 
-#endif //LMLREADER_H
+#endif
+

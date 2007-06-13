@@ -66,7 +66,7 @@ public :
     Vec3d getAtomPos(unsigned int atomindex);
 
     ///save the structure under a pml file
-    void saveAsPML(char * filename);
+    void saveAsPML(const char * filename);
 
     ///update all pml points positions
     void updatePML();

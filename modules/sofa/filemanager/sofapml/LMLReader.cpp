@@ -67,7 +67,6 @@ void LMLReader::BuildStructure(const char* filename, PMLReader * pmlreader)
     //read the file
     XMLLoads data(lmlFile);
     loadsList = data.getLoads();
-
     this->BuildStructure(pmlreader);
 }
 
@@ -167,6 +166,15 @@ void LMLReader::updateStructure(Loads * loads, PMLReader * pmlreader)
 
         it++;
     }
+}
+
+void LMLReader::saveAsLML(const char * filename)
+{
+    if(!loadsList)
+        return;
+
+    std::ofstream outputFile(filename);
+    loadsList->xmlPrint(outputFile);
 }
 
 }
