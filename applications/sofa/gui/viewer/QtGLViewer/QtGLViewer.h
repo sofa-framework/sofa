@@ -46,7 +46,7 @@
 #include <sofa/simulation/automatescheduler/Automate.h>
 
 
-#include <QGLViewer/qglviewer.h>
+#include <QtGLViewer/QGLViewer/qglviewer.h>
 
 namespace sofa
 {
