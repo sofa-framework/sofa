@@ -16,9 +16,12 @@
 // gui
 #ifdef SOFA_GUI_FLTK
 #include <sofa/gui/fltk/Main.h>
-#endif
-#ifdef SOFA_GUI_QT
-#include <sofa/gui/qt/Main.h>
+#elif  SOFA_GUI_QTVIEWER
+#include <sofa/gui/viewer/Main.h>
+#elif  SOFA_GUI_QGLVIEWER
+#include <sofa/gui/viewer/Main.h>
+#elif  SOFA_GUI_QTOGREVIEWER
+#include <sofa/gui/viewer/Main.h>
 #endif
 
 using sofa::simulation::tree::GNode;
@@ -162,12 +165,15 @@ int main(int, char** argv)
 
 
     //=========================== Run the main loop
+
 #ifdef SOFA_GUI_FLTK
     sofa::gui::fltk::MainLoop(argv[0],groot);
+#elif  SOFA_GUI_QTVIEWER
+    sofa::gui::guiviewer::MainLoop(argv[0],groot);
+#elif  SOFA_GUI_QGLVIEWER
+    sofa::gui::guiviewer::MainLoop(argv[0],groot);
+#elif  SOFA_GUI_QTOGREVIEWER
+    sofa::gui::guiviewer::MainLoop(argv[0],groot);
 #endif
-#ifdef SOFA_GUI_QT
-    sofa::gui::qt::MainLoop(argv[0],groot);
-#endif
-    return 0;
 }
 

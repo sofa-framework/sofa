@@ -1,0 +1,50 @@
+<scene formatVersion="">
+    <environment>
+       <colourBackground r="0.22" g="0.22" b="0.275" a="0" />
+       <colourAmbient r="0.1" g="0.1" b="0.1" />
+    </environment>
+    <nodes>
+
+<!--
+    <node name="Plane01" id="4">
+	    <position x="0.0" y="0" z="0" />
+            <scale x="1" y="1" z="1" />
+            <plane name="Plane01" distance="20" width="200" height="200" xSegments="40" ySegments="40" uTile="4" vTile="4" material="Sofa/Default">
+                <normal x="0" y="1" z="0" />
+                <upVector x="0" y="0" z="1" />
+            </plane>
+    </node>
+-->
+
+    <node name="Omni01">
+            <position x="-5" y="5" z="-9" />
+            <light name="Omni01" type="omni" castShadows="false">
+                <colourDiffuse r="0.4" g="0.4" b="0.4" />
+                <colourSpecular r="0.5" g="0.5" b="0.5" />
+            </light>
+    </node>
+    
+    <node name="Spot01" id="5">
+            <position x="50" y="100" z="50" />
+            <lookTarget>
+                <position x="0" y="-10" z="0" />
+                <localDirection x="0" y="0" z="1" />
+            </lookTarget>
+            <scale x="1" y="1" z="1" />
+            <light name="Spot01" type="spot" intensity="1" contrast="0"  castShadows="true">
+                <colourDiffuse r="1.0" g="1.0" b="1.0" />
+                <colourSpecular r="0.95" g="0.95" b="0.95" />
+                <lightRange inner="30" outer="50" />
+            </light>
+        </node>
+    </nodes>
+
+    <camera name="Camera01">
+        <clipping near="0.5" far="1000"/>
+        <position x="0" y="50" z="75" />
+            <lookTarget>
+                <position x="0" y="0" z="0" />
+            </lookTarget>
+<!--        <rotation angleX="-20" angleY="0" angleZ="0" /> -->
+    </camera>
+</scene>
