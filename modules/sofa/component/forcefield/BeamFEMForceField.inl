@@ -17,6 +17,10 @@ using std::endl;
 using std::set;
 
 
+#ifndef M_PI
+#define M_PI 3.141592653589793238462
+#endif /* M_PI */
+
 namespace sofa
 {
 
