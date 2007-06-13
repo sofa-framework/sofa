@@ -30,7 +30,6 @@ SubsetMapping<BaseMapping>::~SubsetMapping()
 template <class BaseMapping>
 void SubsetMapping<BaseMapping>::init()
 {
-    this->Inherit::init();
     unsigned int inSize = this->fromModel->getX()->size();
     if (f_indices.getValue().empty() && f_first.getValue() != -1)
     {
@@ -46,13 +45,28 @@ void SubsetMapping<BaseMapping>::init()
             indices[i] = first+i;
         f_indices.endEdit();
     }
+    else
+    {
+        IndexArray& indices = *f_indices.beginEdit();
+        for (unsigned int i=0; i<indices.size(); ++i)
+        {
+            if ((unsigned)indices[i] >= inSize)
+            {
+                std::cerr << "SubsetMapping: incorrect index "<<indices[i]<<" (input size "<<inSize<<")\n";
+                indices.erase(indices.begin()+i);
+                --i;
+            }
+        }
+        f_indices.endEdit();
+    }
+    this->Inherit::init();
 }
 
 template <class BaseMapping>
 void SubsetMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const IndexArray& indices = f_indices.getValue();
-    //out.resize(in.size());
+    out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
         out[i] = in[ indices[i] ];
@@ -63,7 +77,7 @@ template <class BaseMapping>
 void SubsetMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     const IndexArray& indices = f_indices.getValue();
-    //out.resize(in.size());
+    out.resize(indices.size());
     for(unsigned int i = 0; i < out.size(); ++i)
     {
         out[i] = in[ indices[i] ];

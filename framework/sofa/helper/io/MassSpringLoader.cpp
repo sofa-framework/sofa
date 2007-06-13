@@ -64,11 +64,28 @@ bool MassSpringLoader::load(const char *filename)
     int totalNumMasses=0;
     int totalNumSprings=0;
     // Check first line
-    if (fgets(cmd, 7, file) == NULL || !strcmp(cmd,"Xsp 3.0"))
+
+    //if (fgets(cmd, 7, file) == NULL || !strcmp(cmd,"Xsp 4.0"))
+    if (fgets(cmd, 7, file) == NULL)
     {
         fclose(file);
         return false;
     }
+
+    // paul--------------------------
+    float version = 0.0;
+    sscanf(cmd, "Xsp %f", &version);
+
+    bool  vector_spring = false;
+    if (version == 3.0) vector_spring = false;
+    else if (version == 4.0) vector_spring = true;
+    else
+    {
+        fclose(file);
+        return false;
+    }
+    // paul----------------------------
+
     skipToEOL(file);
 
     // then find out number of masses and springs
@@ -117,8 +134,14 @@ bool MassSpringLoader::load(const char *filename)
             int	index;
             int m1,m2;
             double ks=0.0,kd=0.0,initpos=-1;
-            fscanf(file, "%d %d %d %lf %lf %lf\n", &index,
-                    &m1,&m2,&ks,&kd,&initpos);
+            // paul-------------------------------------
+            double restx=0.0,resty=0.0,restz=0.0;
+            if (vector_spring)
+                fscanf(file, "%d %d %d %lf %lf %lf %lf %lf %lf\n",
+                        &index,&m1,&m2,&ks,&kd,&initpos, &restx,&resty,&restz);
+            else
+                fscanf(file, "%d %d %d %lf %lf %lf\n",
+                        &index,&m1,&m2,&ks,&kd,&initpos);
             --m1;
             --m2;
             if (!masses.empty() && ((unsigned int)m1>=masses.size() || (unsigned int)m2>=masses.size()))
@@ -134,7 +157,12 @@ bool MassSpringLoader::load(const char *filename)
                     kd/=initpos;
                     //std::cout << "spring "<<m1<<" "<<m2<<" "<<ks<<" "<<kd<<" "<<initpos<<"\n";
                 }
-                addSpring(m1,m2,ks,kd,initpos);
+
+                //paul-----------------------------------------
+                if (vector_spring)
+                    addVectorSpring(m1,m2,ks,kd,initpos,restx,resty,restz);
+                else
+                    addSpring(m1,m2,ks,kd,initpos);
             }
         }
         else if (!strcmp(cmd,"grav"))

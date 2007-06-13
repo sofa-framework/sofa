@@ -182,8 +182,22 @@ bool MeshTopologyLoader::load(const char *filename)
             return false;
         }
     }
-    else if (!strncmp(cmd,"Xsp 3.0",7))
+    else if (!strncmp(cmd,"Xsp",3))
     {
+        // paul--------------------------
+        float version = 0.0;
+        sscanf(cmd, "Xsp %f", &version);
+
+        bool  vector_spring = false;
+        if (version == 3.0) vector_spring = false;
+        else if (version == 4.0) vector_spring = true;
+        else
+        {
+            fclose(file);
+            return false;
+        }
+        // paul----------------------------
+
         int totalNumMasses;
         int totalNumSprings;
 
@@ -234,8 +248,14 @@ bool MeshTopologyLoader::load(const char *filename)
                 int	index;
                 int m1,m2;
                 double ks=0.0,kd=0.0,initpos=-1;
-                fscanf(file, "%d %d %d %lf %lf %lf\n", &index,
-                        &m1,&m2,&ks,&kd,&initpos);
+                // paul-------------------------------------
+                double restx=0.0,resty=0.0,restz=0.0;
+                if (vector_spring)
+                    fscanf(file, "%d %d %d %lf %lf %lf %lf %lf %lf\n",
+                            &index,&m1,&m2,&ks,&kd,&initpos, &restx,&resty,&restz);
+                else
+                    fscanf(file, "%d %d %d %lf %lf %lf\n",
+                            &index,&m1,&m2,&ks,&kd,&initpos);
                 --m1;
                 --m2;
 

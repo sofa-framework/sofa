@@ -354,15 +354,52 @@ public:
     */
     virtual bool load(const char *filename);
 
+    void parse(core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (arg->getAttribute("filename"))
+            this->load(arg->getAttribute("filename"));
+        this->core::componentmodel::topology::BaseTopology::parse(arg);
+    }
 
     /** \brief Return the number of DOF in the mechanicalObject this Topology deals with.
      *
      */
     virtual unsigned int getDOFNumber() const { return object->getSize(); }
 
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalObject.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<MechanicalObject<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+        return core::componentmodel::topology::BaseTopology::canCreate(obj, context, arg);
+    }
+
+    /// Construction method called by ObjectFactory.
+    ///
+    /// Get the MechanicalObject.
+    template<class T>
+    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        obj = new T(
+            (context?dynamic_cast<MechanicalObject<DataTypes>*>(context->getMechanicalState()):NULL));
+        if (context) context->addObject(obj);
+        if (arg) obj->parse(arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const PointSetTopology<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
 protected:
     PointSetTopology(component::MechanicalObject<DataTypes> *obj,const PointSetTopology *);
-
 
 };
 

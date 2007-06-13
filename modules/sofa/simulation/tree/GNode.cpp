@@ -166,23 +166,25 @@ core::objectmodel::BaseObject* GNode::getTopology() const
         return NULL;
 }
 
-// core::objectmodel::BaseObject* GNode::getMainTopology() const
-// {
-//     core::componentmodel::topology::BaseTopology *main=0;
-//     unsigned int i;
-//     for (i=0;i<logy.size();++i) {
-//         if (basicTopology[i]->isMainTopology()==true)
-//             main=basicTopology[i];
-//     }
-//     // return main;
-//     // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
-//     if (main)
-//         return main;
-//     else if (parent)
-//         return parent->getMainTopology();
-//     else
-//         return NULL;
-// }
+/// Dynamic Topology
+core::objectmodel::BaseObject* GNode::getMainTopology() const
+{
+    core::componentmodel::topology::BaseTopology *main=0;
+    unsigned int i;
+    for (i=0; i<basicTopology.size(); ++i)
+    {
+        if (basicTopology[i]->isMainTopology()==true)
+            main=basicTopology[i];
+    }
+    // return main;
+    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
+    if (main)
+        return main;
+    else if (parent)
+        return parent->getMainTopology();
+    else
+        return NULL;
+}
 
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool GNode::addObject(BaseObject* obj)
@@ -213,7 +215,7 @@ void GNode::doAddObject(BaseObject* obj)
         mapping.add(dynamic_cast< core::BaseMapping* >(obj));
     mass.add(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
     topology.add(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
-//	basicTopology.add(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
+    basicTopology.add(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
 
     if (!interactionForceField.add(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj)))
         forceField.add(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
@@ -240,7 +242,7 @@ void GNode::doRemoveObject(BaseObject* obj)
     mechanicalMapping.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
     mass.remove(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
     topology.remove(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
-//	basicTopology.remove(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
+    basicTopology.remove(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
 
     forceField.remove(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
     interactionForceField.remove(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj));

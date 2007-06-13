@@ -185,6 +185,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const unsigned int ,
             (*it)=indices[i];
         }
     }
+    std::cout << "EdgeSetTopology: container has now "<<container->m_edge.size()<<" edges."<<std::endl;
 }
 
 

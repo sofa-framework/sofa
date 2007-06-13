@@ -69,6 +69,9 @@ public:
 
     virtual void init();
 
+    /// Retrieve the associated MechanicalState
+    MechanicalState<DataTypes>* getMState() { return mstate; }
+
     /// @name Vector operations
     /// @{
 

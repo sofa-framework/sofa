@@ -290,7 +290,7 @@ void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real /*
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
-PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj) : object(obj)
+PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj=NULL) : object(obj)
 {
     m_topologyContainer= new PointSetTopologyContainer(this);
     m_topologyModifier= new PointSetTopologyModifier<DataTypes>(this);
@@ -307,6 +307,8 @@ void PointSetTopology<DataTypes>::propagateTopologicalChanges()
 {
     TopologyChangedEvent topEvent((BaseTopology *)this);
     getContext()->propagateEvent(&topEvent);
+    // BUGFIX (Jeremie A. 06/12/07): remove the changes we just propagated, so that we don't send then again next time
+    this->resetTopologyChangeList();
 }
 
 

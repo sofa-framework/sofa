@@ -67,6 +67,11 @@ public:
 public:
     EdgesRemoved(const std::vector<unsigned int> _eArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::EDGESREMOVED), removedEdgesArray(_eArray)
     {
+        std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") created"<<std::endl;
+    }
+    ~EdgesRemoved()
+    {
+        std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") destroyed"<<std::endl;
     }
 
     const std::vector<unsigned int> &getArray() const

@@ -2,7 +2,7 @@
 #include <sofa/component/topology/PointSetTopology.h>
 #include <sofa/component/topology/PointSetTopology.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -101,23 +101,16 @@ unsigned int PointSetTopologyContainer::getDOFIndex(const int i) const
     return m_DOFIndex[i];
 }
 
+int PointSetTopologyClass = core::RegisterObject("Dynamic topology handling point sets")
+        .add< PointSetTopology<Vec3dTypes> >()
+        .add< PointSetTopology<Vec3fTypes> >()
+        ;
 
+//Creator<simulation::tree::xml::ObjectFactory, PointSetTopology<Vec3dTypes> >
+//  PointSetTopologyVec3dClass("PointSetTopology", true);
 
-template<class DataTypes>
-void create(PointSetTopology<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    simulation::tree::xml::createWithParent< PointSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-
-    }
-}
-
-Creator<simulation::tree::xml::ObjectFactory, PointSetTopology<Vec3dTypes> >
-PointSetTopologyVec3dClass("PointSetTopology", true);
-
-Creator<simulation::tree::xml::ObjectFactory, PointSetTopology<Vec3fTypes> >
-PointSetTopologyVec3fClass("PointSetTopology", true);
+//Creator<simulation::tree::xml::ObjectFactory, PointSetTopology<Vec3fTypes> >
+//  PointSetTopologyVec3fClass("PointSetTopology", true);
 
 
 } // namespace topology

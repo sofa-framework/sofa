@@ -123,6 +123,9 @@ public:
     /// Topology
     virtual core::objectmodel::BaseObject* getTopology() const;
 
+    /// Dynamic Topology
+    virtual core::objectmodel::BaseObject* getMainTopology() const;
+
     /// @}
 
     /// Update the context values, based on parent and local ContextObjects

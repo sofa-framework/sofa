@@ -1,7 +1,7 @@
 #include <sofa/component/topology/EdgeSetTopology.h>
 #include <sofa/component/topology/EdgeSetTopology.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -133,22 +133,10 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topolog
 
 // factory related stuff
 
-template<class DataTypes>
-void create(EdgeSetTopology<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-    simulation::tree::xml::createWithParent< EdgeSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-        if (arg->getAttribute("filename"))
-            obj->load(arg->getAttribute("filename"));
-    }
-}
-
-Creator<simulation::tree::xml::ObjectFactory, EdgeSetTopology<Vec3dTypes> >
-EdgeSetTopologyVec3dClass("EdgeSetTopology", true);
-
-Creator<simulation::tree::xml::ObjectFactory, EdgeSetTopology<Vec3fTypes> >
-EdgeSetTopologyVec3fClass("EdgeSetTopology", true);
+int EdgeSetTopologyClass = core::RegisterObject("Dynamic topology handling point sets")
+        .add< EdgeSetTopology<Vec3dTypes> >()
+        .add< EdgeSetTopology<Vec3fTypes> >()
+        ;
 
 
 } // namespace topology
