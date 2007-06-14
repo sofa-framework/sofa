@@ -108,7 +108,7 @@ extern simulation::tree::GNode* groot;
 #include <sofa/simulation/tree/Colors.h>
 #include "WFloatLineEdit.h"
 #include <sofa/core/objectmodel/BaseObject.h>
-
+#include <limits.h>
 
 
 namespace sofa
@@ -688,8 +688,9 @@ void RealGUI::addViewer()
             }
 
 #ifdef QT_MODULE_QT3SUPPORT
+    left_stack->addWidget ( viewer->getQWidget() );
     left_stack->setCurrentWidget ( viewer->getQWidget() );
-    viewer->setGeometry(0,0,this->size().width()-vboxLayout->sizeHint().width(),this->size().height());
+    viewer->getQWidget()->setGeometry(0,0,this->size().width()-vboxLayout->sizeHint().width(),this->size().height());
 #else
     int id_viewer = left_stack->addWidget(viewer->getQWidget());
     left_stack->raiseWidget(id_viewer);
@@ -1090,7 +1091,7 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
             const std::string& fieldname = (*it).second->getValueTypeString();
             if( fieldname=="int")
             {
-                QSpinBox* spinBox = new QSpinBox((int)-1e-10,(int)1e10,1,qwidget);
+                QSpinBox* spinBox = new QSpinBox((int)INT_MIN,(int)INT_MAX,1,qwidget);
                 spinBox->setGeometry( 205, i*25+5, 170, 20 );
 
                 if( DataField<int> * ff = dynamic_cast< DataField<int> * >( (*it).second )  )
@@ -1101,7 +1102,7 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
             }
             else if( fieldname=="unsigned int")
             {
-                QSpinBox* spinBox = new QSpinBox((int)0,(int)1e10,1,qwidget);
+                QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,qwidget);
                 spinBox->setGeometry( 205, i*25+5, 170, 20 );
 
                 if( DataField<unsigned int> * ff = dynamic_cast< DataField<unsigned int> * >( (*it).second )  )
@@ -1746,8 +1747,8 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 #ifdef WIN32
 void RealGUI::resizeEvent(QResizeEvent * event )
 {
-    viewer->setGeometry(0,0,this->size().width()-vboxLayout->sizeHint().width(),this->size().height());
-    viewer->update();
+    viewer->getQWidget()->setGeometry(0,0,this->size().width()-vboxLayout->sizeHint().width(),this->size().height());
+    viewer->getQWidget()->update();
 }
 #endif
 

@@ -69,7 +69,7 @@ public:
     /// @{
 
     typedef int InitGUIFn(const char* name, const std::vector<std::string>& options);
-    typedef SofaGUI* CreateGUIFn(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot = NULL, const char* filename = NULL);
+    typedef SofaGUI* CreateGUIFn(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot, const char* filename);
     static int RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init=NULL, int priority=0);
 
     /// @}
