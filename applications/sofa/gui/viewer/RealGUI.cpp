@@ -141,7 +141,7 @@ using sofa::core::objectmodel::BaseObject;
 
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation::tree;
-//using namespace sofa::simulation::automatescheduler;
+using namespace sofa::simulation::automatescheduler;
 
 
 ///////////////////////////////////////////////////////////
