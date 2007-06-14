@@ -2287,9 +2287,7 @@ void QtViewer::SwitchToPresetView()
             in.close();
             return;
         }
-        std::cout << "PRESET FAILED " << viewFileName << std::endl;
     }
-    std::cout << "PRESET" << std::endl;
     _sceneTransform.translation[0] = 0.0;
     _sceneTransform.translation[1] = 0.0;
     _sceneTransform.translation[2] = -50.0;

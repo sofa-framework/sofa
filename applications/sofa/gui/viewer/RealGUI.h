@@ -162,6 +162,7 @@ protected:
 #endif
     void timerEvent(QTimerEvent *event)
     {
+        Q_UNUSED(event);
         if (viewer != NULL) viewer->update();
     }
 

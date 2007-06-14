@@ -1348,7 +1348,6 @@ bool QtGLViewer::isControlPressed() const
 
 void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 {
-    std::cerr<<"Keyboard Detected" << e->key() << " = " << Qt::Key_R <<"\n";
     // 	cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
@@ -1396,7 +1395,6 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         case Qt::Key_R:
             // --- draw axis
         {
-            std::cerr<<"Axis\n";
             _axis = !_axis;
             update();
             break;
@@ -1772,10 +1770,8 @@ void QtGLViewer::SwitchToPresetView()
 
             return;
         }
-        std::cout << "PRESET FAILED " << viewFileName << std::endl;
     }
 
-    std::cout << "PRESET" << std::endl;
 }
 
 

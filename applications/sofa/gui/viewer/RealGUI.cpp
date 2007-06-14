@@ -727,7 +727,7 @@ void RealGUI::saveXML()
 
 void RealGUI::setTitle( const char* windowTitle )
 {
-    std::string str = "SofaTest";
+    std::string str = "Sofa";
     if (windowTitle && *windowTitle)
     {
         str += " - ";
@@ -1036,7 +1036,7 @@ void RealGUI::step()
     }
     else
     {
-        if (viewer->ready()) {std::cout << "waitforrender true!!!\n"; return;}
+        if (viewer->ready()) return;
         //groot->setLogTime(true);
 
         Simulation::animate(groot);
