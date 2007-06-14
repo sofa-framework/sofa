@@ -92,7 +92,6 @@ namespace gui
 
 namespace guiviewer
 {
-
 #ifdef SOFA_GUI_QTVIEWER
 class QtViewer;
 #elif SOFA_GUI_QGLVIEWER
@@ -157,7 +156,7 @@ static const int iconPos[16]=
 };
 
 static QImage icons[16];
-     */
+*/
 static int hexval(char c)
 {
     if (c>='0' && c<='9') return c-'0';
@@ -170,15 +169,15 @@ static QPixmap* getPixmap(core::objectmodel::Base* obj)
 {
     using namespace sofa::simulation::tree::Colors;
     /*
-      if (classIcons == NULL)
-      {
-      classIcons = new QImage("../examples/classicons.png");
-      std::cout << "../examples/classicons.png: "<<classIcons->width()<<"x"<<classIcons->height()<<std::endl;
-      if (classIcons->height() < 16) return NULL;
-      // Find each icon
-      QRgb bg = classIcons->pixel(0,0);
-      }
-      if (classIcons->height() < 16) return NULL;
+    if (classIcons == NULL)
+    {
+    classIcons = new QImage("../examples/classicons.png");
+    std::cout << "../examples/classicons.png: "<<classIcons->width()<<"x"<<classIcons->height()<<std::endl;
+    if (classIcons->height() < 16) return NULL;
+    // Find each icon
+    QRgb bg = classIcons->pixel(0,0);
+    }
+    if (classIcons->height() < 16) return NULL;
     */
     unsigned int flags=0;
 
@@ -480,12 +479,10 @@ void RealGUI::init()
     m_dumpStateStream = 0;
     m_displayComputationTime = false;
     m_exportGnuplot = false;
-
 }
 
-void RealGUI::addViewer(const char* filename)
+void RealGUI::addViewer(const char* filename, int TYPE)
 {
-
     init();
 #ifdef SOFA_GUI_QGLVIEWER
     viewer = new sofa::gui::guiqglviewer::QtGLViewer( left_stack, "viewer" );
@@ -531,8 +528,25 @@ void RealGUI::addViewer(const char* filename)
         viewer->setup();
         id_timer = startTimer(100);
 #endif
-        groot = Simulation::load(filename);
-        setScene(groot, filename);
+        switch(TYPE)
+        {
+        case NORMAL:
+            groot = Simulation::load(filename);
+            setScene(groot, filename);
+            break;
+        case PML:
+#ifdef SOFA_PML
+            groot = Simulation::load(scene.c_str());
+            if (groot)
+            {
+                if (!pmlreader) pmlreader = new PMLReader;
+                pmlreader->BuildStructure(filename, groot);
+                setScene(groot, filename);
+            }
+#endif
+            break;
+        default:break;
+        }
     }
 
     timerStep = new QTimer(this);
@@ -586,13 +600,13 @@ void RealGUI::addViewer(const char* filename)
 
 }
 
-void RealGUI::fileOpen(const char* filename)
+void RealGUI::fileOpen(const char* filename, int TYPE)
 {
     left_stack->removeWidget(viewer);
+    graphListener->removeChild(NULL, groot);
     delete viewer;
 
-    addViewer(filename);
-
+    addViewer(filename, TYPE);
 }
 
 #ifdef SOFA_PML
@@ -604,15 +618,7 @@ void RealGUI::pmlOpen(const char* filename)
         std::cerr << "File " << scene << " not found " << std::endl;
         return;
     }
-    groot = Simulation::load(scene.c_str());
-
-    if (groot)
-    {
-        if (!pmlreader) pmlreader = new PMLReader;
-        pmlreader->BuildStructure(filename, groot);
-        setScene(groot, filename);
-
-    }
+    fileOpen(scene.c_str(), PML);
 }
 
 void RealGUI::lmlOpen(const char* filename)
@@ -1084,11 +1090,11 @@ void RealGUI::eventNewStep()
         ctime_t curtime = CTime::getRefTime();
         int i = ((frameCounter/10)%10);
         double fps = ((double)timeTicks / (curtime - beginTime[i]))*(frameCounter<100?frameCounter:100);
-// 	    emit newFPS(fps);
+        // 	    emit newFPS(fps);
         char buf[100];
         sprintf(buf, "%.1f FPS", fps);
         fpsLabel->setText(buf);
-// 	    emit newFPS(buf);
+        // 	    emit newFPS(buf);
         beginTime[i] = curtime;
         //frameCounter = 0;
     }
@@ -1142,11 +1148,11 @@ void RealGUI::eventNewTime()
     {
 
         double time = groot->getTime();
-// 	    emit newTime(time);
+        // 	    emit newTime(time);
         char buf[100];
         sprintf(buf, "T: %.3f s", time);
         timeLabel->setText(buf);
-// 	    emit newTime(buf);
+        // 	    emit newTime(buf);
 
     }
 }

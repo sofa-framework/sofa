@@ -67,6 +67,8 @@ namespace gui
 namespace guiviewer
 {
 
+enum TYPE { NORMAL, PML, LML};
+
 using sofa::simulation::tree::GNode;
 
 class GraphListenerQListView;
@@ -91,7 +93,7 @@ public:
     RealGUI( const char* filename=NULL);
     ~RealGUI();
 
-    virtual void fileOpen(const char* filename);
+    virtual void fileOpen(const char* filename, int TYPE=NORMAL);
     virtual void fileSaveAs(const char* filename);
     virtual void setScene(GNode* groot, const char* filename=NULL);
     virtual void setTitle( const char* windowTitle );
@@ -181,7 +183,7 @@ protected:
 
 private:
     std::map< core::objectmodel::Base*, QWidget* > _alreadyOpen;
-    void addViewer(const char* filename=NULL);
+    void addViewer(const char* filename=NULL, int TYPE=NORMAL);
     void setGUI(void);
     int id_timer;
 #ifdef SOFA_PML
