@@ -2408,7 +2408,9 @@ void QtViewer::setSizeH( int size )
 QString QtViewer::helpString()
 {
     QString text(
-        "TO NAVIGATE: use the MOUSE.<br>\
+        "QtViewer<br>\
+-----<br>\
+TO NAVIGATE: use the MOUSE.<br>\
 -----<br>\
 TO SWITCH INTERACTION MODE: press the KEY C.<br>\
 Allow or not the navigation with the mouse.<br>\

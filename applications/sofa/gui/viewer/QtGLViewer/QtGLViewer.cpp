@@ -188,7 +188,7 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     _mouseInteractorMoving = false;
     _mouseInteractorSavedPosX = 0;
     _mouseInteractorSavedPosY = 0;
-
+    m_isControlPressed = false;
 
     setManipulatedFrame( new qglviewer::ManipulatedFrame() );
 
@@ -1348,6 +1348,7 @@ bool QtGLViewer::isControlPressed() const
 
 void QtGLViewer::keyPressEvent ( QKeyEvent * e )
 {
+    std::cerr<<"Keyboard Detected" << e->key() << " = " << Qt::Key_R <<"\n";
     // 	cerr<<"QtGLViewer::keyPressEvent, get "<<e->key()<<endl;
     if( isControlPressed() ) // pass event to the scene data structure
     {
@@ -1356,9 +1357,9 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         groot->propagateEvent(&keyEvent);
     }
     else  // control the GUI
+    {
         switch(e->key())
         {
-
             // 	case Qt::Key_S:
             // 		// --- save screenshot
             // 		{
@@ -1395,6 +1396,7 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         case Qt::Key_R:
             // --- draw axis
         {
+            std::cerr<<"Axis\n";
             _axis = !_axis;
             update();
             break;
@@ -1484,8 +1486,10 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         {
             //                 e->ignore();
             QGLViewer::keyPressEvent(e);
+
         }
         }
+    }
 }
 
 
@@ -1894,7 +1898,9 @@ QString QtGLViewer::helpString()
 {
 
     QString text(
-        "TO NAVIGATE: use the MOUSE.<br>\
+        "QtGLViewer<br>\
+-----<br>\
+TO NAVIGATE: use the MOUSE.<br>\
 -----<br>\
 TO SWITCH INTERACTION MODE: press the KEY C.<br>\
 Allow or not the navigation with the mouse.<br>\

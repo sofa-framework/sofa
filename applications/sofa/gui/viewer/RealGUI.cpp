@@ -816,8 +816,8 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
             {
 
                 WFloatLineEdit* editSFFloat = new WFloatLineEdit( qwidget, "editSFFloat" );
-                editSFFloat->setMinFloatValue( -INFINITY );
-                editSFFloat->setMaxFloatValue( INFINITY );
+                editSFFloat->setMinFloatValue( (float)-INFINITY );
+                editSFFloat->setMaxFloatValue( (float)INFINITY );
                 editSFFloat->setGeometry( 205, i*25+5, 170, 20 );
 
 
@@ -864,16 +864,16 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
             {
 
                 WFloatLineEdit* editSFFloatX = new WFloatLineEdit( qwidget, "editSFFloatX" );
-                editSFFloatX->setMinFloatValue( -INFINITY );
-                editSFFloatX->setMaxFloatValue( INFINITY );
+                editSFFloatX->setMinFloatValue( (float)-INFINITY );
+                editSFFloatX->setMaxFloatValue( (float)INFINITY );
                 editSFFloatX->setGeometry( 205, i*25+5, 52, 20 );
                 WFloatLineEdit* editSFFloatY = new WFloatLineEdit( qwidget, "editSFFloatY" );
-                editSFFloatY->setMinFloatValue( -INFINITY );
-                editSFFloatY->setMaxFloatValue( INFINITY );
+                editSFFloatY->setMinFloatValue( (float)-INFINITY );
+                editSFFloatY->setMaxFloatValue( (float)INFINITY );
                 editSFFloatY->setGeometry( 262, i*25+5, 52, 20 );
                 WFloatLineEdit* editSFFloatZ = new WFloatLineEdit( qwidget, "editSFFloatZ" );
-                editSFFloatZ->setMinFloatValue( -INFINITY );
-                editSFFloatZ->setMaxFloatValue( INFINITY );
+                editSFFloatZ->setMinFloatValue( (float)-INFINITY );
+                editSFFloatZ->setMaxFloatValue( (float)INFINITY );
                 editSFFloatZ->setGeometry( 319, i*25+5, 52, 20 );
 
 
@@ -903,12 +903,12 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
             {
 
                 WFloatLineEdit* editSFFloatX = new WFloatLineEdit( qwidget, "editSFFloatX" );
-                editSFFloatX->setMinFloatValue( -INFINITY );
-                editSFFloatX->setMaxFloatValue( INFINITY );
+                editSFFloatX->setMinFloatValue( (float)-INFINITY );
+                editSFFloatX->setMaxFloatValue( (float)INFINITY );
                 editSFFloatX->setGeometry( 205, i*25+5, 52, 20 );
                 WFloatLineEdit* editSFFloatY = new WFloatLineEdit( qwidget, "editSFFloatY" );
-                editSFFloatY->setMinFloatValue( -INFINITY );
-                editSFFloatY->setMaxFloatValue( INFINITY );
+                editSFFloatY->setMinFloatValue( (float)-INFINITY );
+                editSFFloatY->setMaxFloatValue( (float)INFINITY );
                 editSFFloatY->setGeometry( 262, i*25+5, 52, 20 );
 
 
