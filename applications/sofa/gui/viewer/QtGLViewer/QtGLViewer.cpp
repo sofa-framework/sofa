@@ -122,6 +122,22 @@ GLuint ShadowTextureMask;
 
 // End of Shadow Mapping Parameters
 
+/// Activate this class of viewer.
+/// This method is called before the viewer is actually created
+/// and can be used to register classes associated with in the the ObjectFactory.
+int QtGLViewer::EnableViewer()
+{
+    return 0;
+}
+
+/// Disable this class of viewer.
+/// This method is called after the viewer is destroyed
+/// and can be used to unregister classes associated with in the the ObjectFactory.
+int QtGLViewer::DisableViewer()
+{
+    return 0;
+}
+
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
@@ -913,6 +929,7 @@ void QtGLViewer::DrawLogo()
 // -------------------------------------------------------------------
 void QtGLViewer::DisplayOBJs(bool shadowPass)
 {
+    if (!groot) return;
 
     Enable<GL_LIGHTING> light;
     Enable<GL_DEPTH_TEST> depth;

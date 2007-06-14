@@ -129,6 +129,22 @@ GLuint ShadowTextureMask;
 
 // End of Shadow Mapping Parameters
 
+/// Activate this class of viewer.
+/// This method is called before the viewer is actually created
+/// and can be used to register classes associated with in the the ObjectFactory.
+int QtViewer::EnableViewer()
+{
+    return 0;
+}
+
+/// Disable this class of viewer.
+/// This method is called after the viewer is destroyed
+/// and can be used to unregister classes associated with in the the ObjectFactory.
+int QtViewer::DisableViewer()
+{
+    return 0;
+}
+
 // ---------------------------------------------------------
 // --- Constructor
 // ---------------------------------------------------------
@@ -908,7 +924,7 @@ void QtViewer::DrawLogo()
 // -------------------------------------------------------------------
 void QtViewer::DisplayOBJs(bool shadowPass)
 {
-
+    if (!groot) return;
     Enable<GL_LIGHTING> light;
     Enable<GL_DEPTH_TEST> depth;
 
@@ -1265,12 +1281,13 @@ void QtViewer::calcProjection()
            zBackground;
 
     //if (!sceneBBoxIsValid)
+    if (groot)
     {
         Simulation::computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
     }
     //std::cout << "Scene BBox = "<<sceneMinBBox<<" - "<<sceneMaxBBox<<"\n";
-    if (sceneMinBBox[0] > sceneMaxBBox[0])
+    if (!sceneBBoxIsValid || sceneMinBBox[0] > sceneMaxBBox[0])
     {
         zNear = 1.0;
         zFar = 1000.0;
@@ -1569,8 +1586,11 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
     if( isControlPressed() ) // pass event to the scene data structure
     {
         //cerr<<"QtViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
-        sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
-        groot->propagateEvent(&keyEvent);
+        if (groot)
+        {
+            sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
+            groot->propagateEvent(&keyEvent);
+        }
     }
     else  // control the GUI
         switch(e->key())
@@ -1763,7 +1783,7 @@ void QtViewer::keyReleaseEvent ( QKeyEvent * e )
     if( isControlPressed() ) // pass event to the scene data structure
     {
         sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
-        groot->propagateEvent(&keyEvent);
+        if (groot) groot->propagateEvent(&keyEvent);
     }
 }
 
@@ -2050,7 +2070,7 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
     else if (e->state()&Qt::ControlButton)
     {
         std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > instruments;
-        groot->getTreeObjects<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>, std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > >(&instruments);
+        if (groot) groot->getTreeObjects<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>, std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > >(&instruments);
         //std::cout << instruments.size() << " instruments\n";
         if (!instruments.empty())
         {

@@ -92,7 +92,8 @@ GNode* Simulation::load(const char *filename)
     root->execute<InitAction>();
 
     // As mappings might be initialized after visual models, it is necessary to update them
-    root->execute<VisualUpdateAction>();
+    // BUGFIX (Jeremie A.): disabled as initTexture was not called yet, and the GUI might not even be up yet
+    //root->execute<VisualUpdateAction>();
 
     std::cout << "load done."<<std::endl;
 
@@ -182,6 +183,9 @@ void Simulation::initTextures(GNode* root)
 {
     if (!root) return;
     root->execute<VisualInitTexturesAction>();
+    // Do a visual update now as it is not done in load() anymore
+    /// \todo Separate this into another method?
+    root->execute<VisualUpdateAction>();
 }
 
 

@@ -10,16 +10,7 @@
 #include <iostream>
 #include <fstream>
 
-#ifdef SOFA_GUI_FLTK
-#include <sofa/gui/fltk/Main.h>
-#elif  SOFA_GUI_QTVIEWER
-#include <sofa/gui/viewer/Main.h>
-#elif  SOFA_GUI_QGLVIEWER
-#include <sofa/gui/viewer/Main.h>
-#elif  SOFA_GUI_QTOGREVIEWER
-#include <sofa/gui/viewer/Main.h>
-#endif
-
+#include <sofa/gui/SofaGUI.h>
 //typedef Sofa::Components::Common::Vec3Types MyTypes;
 typedef sofa::defaulttype::Vec3Types MyTypes;
 typedef MyTypes::Deriv Vec3;
@@ -32,6 +23,7 @@ int main(int argc, char** argv)
 {
     parse("This is a SOFA application.")
     (argc,argv);
+    sofa::gui::SofaGUI::Init(argv[0]);
 
     // The graph root node
     sofa::simulation::tree::GNode* groot = new sofa::simulation::tree::GNode;
@@ -75,18 +67,7 @@ int main(int argc, char** argv)
 
     //=======================================
     // Run the main loop
-#ifdef SOFA_GUI_FLTK
-    sofa::gui::fltk::MainLoop(argv[0],groot);
-#elif  SOFA_GUI_QTVIEWER
-    std::string fileName = "";
-    sofa::gui::guiviewer::MainLoop(argv[0],groot,fileName.c_str());
-#elif  SOFA_GUI_QGLVIEWER
-    std::string fileName = "";
-    sofa::gui::guiviewer::MainLoop(argv[0],groot,fileName.c_str());
-#elif  SOFA_GUI_QTOGREVIEWER
-    std::string fileName = "";
-    sofa::gui::guiviewer::MainLoop(argv[0],groot,fileName.c_str());
-#endif
+    sofa::gui::SofaGUI::MainLoop(groot);
 
     return 0;
 }

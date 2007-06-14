@@ -128,9 +128,20 @@ private:
     Capture capture;
 public:
 
+    /// Activate this class of viewer.
+    /// This method is called before the viewer is actually created
+    /// and can be used to register classes associated with in the the ObjectFactory.
+    static int EnableViewer();
+
+    /// Disable this class of viewer.
+    /// This method is called after the viewer is destroyed
+    /// and can be used to unregister classes associated with in the the ObjectFactory.
+    static int DisableViewer();
+
     QtGLViewer( QWidget* parent, const char* name="" );
     ~QtGLViewer();
 
+    QWidget* getQWidget() { return this; }
 
 protected:
 

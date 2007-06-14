@@ -14,15 +14,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/mapping/RigidMapping.h>
 // gui
-#ifdef SOFA_GUI_FLTK
-#include <sofa/gui/fltk/Main.h>
-#elif  SOFA_GUI_QTVIEWER
-#include <sofa/gui/viewer/Main.h>
-#elif  SOFA_GUI_QGLVIEWER
-#include <sofa/gui/viewer/Main.h>
-#elif  SOFA_GUI_QTOGREVIEWER
-#include <sofa/gui/viewer/Main.h>
-#endif
+#include <sofa/gui/SofaGUI.h>
 
 using sofa::simulation::tree::GNode;
 typedef sofa::component::odesolver::EulerSolver OdeSolver;
@@ -52,6 +44,7 @@ typedef sofa::component::mapping::RigidMapping< RigidToParticleMechanicalMapping
 
 int main(int, char** argv)
 {
+    sofa::gui::SofaGUI::Init(argv[0]);
     //=========================== Build the scene
     double endPos = 1.;
     double attach = -1.;
@@ -166,14 +159,6 @@ int main(int, char** argv)
 
     //=========================== Run the main loop
 
-#ifdef SOFA_GUI_FLTK
-    sofa::gui::fltk::MainLoop(argv[0],groot);
-#elif  SOFA_GUI_QTVIEWER
-    sofa::gui::guiviewer::MainLoop(argv[0],groot);
-#elif  SOFA_GUI_QGLVIEWER
-    sofa::gui::guiviewer::MainLoop(argv[0],groot);
-#elif  SOFA_GUI_QTOGREVIEWER
-    sofa::gui::guiviewer::MainLoop(argv[0],groot);
-#endif
+    sofa::gui::SofaGUI::MainLoop(groot);
 }
 

@@ -10,11 +10,7 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
-#ifdef SOFA_GUI_QT
-#include <sofa/gui/qt/Main.h>
-#elif defined(SOFA_GUI_FLTK)
-#include <sofa/gui/fltk/Main.h>
-#endif
+#include <sofa/gui/SofaGUI.h>
 
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
@@ -41,6 +37,8 @@ int main(int argc, char** argv)
         fileName = argv[1];
         if (argc >=3) nbIter = atoi(argv[2]);
     }
+
+    sofa::gui::SofaGUI::Init(argv[0]);
 
     sofa::helper::system::DataRepository.findFile(fileName);
 
@@ -107,11 +105,7 @@ int main(int argc, char** argv)
     }
     else
     {
-#if defined(SOFA_GUI_QT)
-        sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
-#elif defined(SOFA_GUI_FLTK)
-        sofa::gui::fltk::MainLoop(argv[0],groot);
-#endif
+        sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str());
     }
 
     return 0;

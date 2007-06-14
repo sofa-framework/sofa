@@ -46,22 +46,27 @@ class SofaViewer : public Automate::DrawCB
 {
 
 public:
-    SofaViewer () {};
-    ~SofaViewer() {};
+    SofaViewer ()
+        : groot(NULL)
+    {}
+    ~SofaViewer() {}
+
+    virtual QWidget* getQWidget()=0;
 
     virtual sofa::simulation::tree::GNode* getScene()        {  return groot;}
     virtual const std::string&             getSceneFileName() {  return sceneFileName;}
 
+    virtual void setup() {}
+    virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL)=0;
+    virtual void SwitchToPresetView()=0;
     virtual QString helpString()=0;
+    virtual bool ready() { return true; }
+    virtual void wait() {}
 
 protected:
     sofa::simulation::tree::GNode* groot;
     std::string sceneFileName;
     sofa::helper::gl::Capture capture;
-
-    //Pure Virtual
-    virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL)=0;
-    virtual void SwitchToPresetView()=0;
 
     //*************************************************************
     // QT

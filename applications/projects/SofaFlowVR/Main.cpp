@@ -27,13 +27,8 @@
 #include <sofa/component/collision/MinProximityIntersection.h>
 #include <sofa/component/collision/BruteForceDetection.h>
 
-#if defined(SOFA_GUI_QGLVIEWER)
-#include <sofa/gui/qglviewer/Main.h>
-#elif defined(SOFA_GUI_QT)
-#include <sofa/gui/qt/Main.h>
-#elif defined(SOFA_GUI_FLTK)
-#include <sofa/gui/fltk/Main.h>
-#endif
+#include <sofa/gui/SofaGUI.h>
+
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
 using namespace sofa::simulation::tree;
@@ -962,6 +957,8 @@ int main(int argc, char** argv)
     if (argc>1)
         fileName = argv[1];
 
+    sofa::gui::SofaGUI::Init(argv[0]);
+
     GNode* groot = NULL;
 
     if (!fileName.empty())
@@ -974,13 +971,7 @@ int main(int argc, char** argv)
         groot = new GNode;
     }
 
-#if defined(SOFA_GUI_QGLVIEWER)
-    sofa::gui::guiqglviewer::MainLoop(argv[0],groot,fileName.c_str());
-#elif defined(SOFA_GUI_QT)
-    sofa::gui::qt::MainLoop(argv[0],groot,fileName.c_str());
-#elif defined(SOFA_GUI_FLTK)
-    sofa::gui::fltk::MainLoop(argv[0],groot);
-#endif
+    sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str());
 
     return 0;
 }

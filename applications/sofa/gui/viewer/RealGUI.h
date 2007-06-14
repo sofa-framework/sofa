@@ -25,21 +25,24 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
+#include <sofa/gui/SofaGUI.h>
+
 #include "GUI.h"
 #include "GUIField.h"
 
 
-#ifdef SOFA_GUI_QTVIEWER
-#include "QtViewer/QtViewer.h"
-#endif
+#include "SofaViewer.h"
+// #ifdef SOFA_GUI_QTVIEWER
+// #include "QtViewer/QtViewer.h"
+// #endif
 
-#ifdef SOFA_GUI_QGLVIEWER
-#include "QtGLViewer/QtGLViewer.h"
-#endif
+// #ifdef SOFA_GUI_QGLVIEWER
+// #include "QtGLViewer/QtGLViewer.h"
+// #endif
 
-#ifdef SOFA_GUI_QTOGREVIEWER
-#include "QtOgreViewer/QtOgreViewer.h"
-#endif
+// #ifdef SOFA_GUI_QTOGREVIEWER
+// #include "QtOgreViewer/QtOgreViewer.h"
+// #endif
 
 
 #ifdef QT_MODULE_QT3SUPPORT
@@ -67,7 +70,7 @@ namespace gui
 namespace guiviewer
 {
 
-enum TYPE { NORMAL, PML, LML};
+//enum TYPE{ NORMAL, PML, LML};
 
 using sofa::simulation::tree::GNode;
 
@@ -75,25 +78,41 @@ class GraphListenerQListView;
 
 
 
-class RealGUI : public ::GUI
+class RealGUI : public ::GUI, public SofaGUI
 {
     Q_OBJECT
 
+    /// @name SofaGUI Interface
+    /// @{
+
 public:
 
+    static int InitGUI(const char* name, const std::vector<std::string>& options);
+    static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot = NULL, const char* filename = NULL);
 
-#ifdef SOFA_GUI_QGLVIEWER
-    sofa::gui::guiqglviewer::QtGLViewer* viewer;
-#elif SOFA_GUI_QTVIEWER
-    sofa::gui::qt::QtViewer* viewer;
-#elif SOFA_GUI_QTOGREVIEWER
-    sofa::gui::qtogreviewer::QtOgreViewer* viewer;
-#endif
+    int mainLoop();
+    void redraw();
+    int closeGUI();
 
-    RealGUI( const char* filename=NULL);
+    sofa::simulation::tree::GNode* currentSimulation();
+
+    /// @}
+
+    const char* viewerName;
+
+    sofa::gui::viewer::SofaViewer* viewer;
+// #ifdef SOFA_GUI_QGLVIEWER
+// 	  sofa::gui::guiqglviewer::QtGLViewer* viewer;
+// #elif SOFA_GUI_QTVIEWER
+// 	  sofa::gui::qt::QtViewer* viewer;
+// #elif SOFA_GUI_QTOGREVIEWER
+// 	  sofa::gui::qtogreviewer::QtOgreViewer* viewer;
+// #endif
+
+    RealGUI( const char* viewername, const std::vector<std::string>& options = std::vector<std::string>() );
     ~RealGUI();
 
-    virtual void fileOpen(const char* filename, int TYPE=NORMAL);
+    virtual void fileOpen(const char* filename); //, int TYPE=NORMAL);
     virtual void fileSaveAs(const char* filename);
     virtual void setScene(GNode* groot, const char* filename=NULL);
     virtual void setTitle( const char* windowTitle );
@@ -112,6 +131,9 @@ public:
     //virtual void editCopy();
     //virtual void editPaste();
     //virtual void editFind();
+    virtual void viewerOpenGL();
+    virtual void viewerQGLViewer();
+    virtual void viewerOGRE();
     //virtual void helpIndex();
     //virtual void helpContents();
     //virtual void helpAbout();
@@ -160,10 +182,10 @@ protected:
 #ifdef WIN32
     void resizeEvent(QResizeEvent * event );
 #endif
-    void timerEvent(QTimerEvent *event)
+    void timerEvent(QTimerEvent * event)
     {
         Q_UNUSED(event);
-        if (viewer != NULL) viewer->update();
+        if (viewer != NULL) viewer->getQWidget()->update();
     }
 
     bool m_dumpState;
@@ -179,12 +201,16 @@ protected:
     QLabel* timeLabel;
     QWidgetStack* left_stack;
 
-    sofa::simulation::tree::GNode* groot;
-    std::string sceneFileName;
+    //these are already stored in the viewe
+    //do not duplicate them
+    //sofa::simulation::tree::GNode* groot;
+    //std::string sceneFileName;
+    sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
 
 private:
     std::map< core::objectmodel::Base*, QWidget* > _alreadyOpen;
-    void addViewer(const char* filename=NULL, int TYPE=NORMAL);
+    bool setViewer(const char* name);
+    void addViewer();
     void setGUI(void);
     int id_timer;
 #ifdef SOFA_PML

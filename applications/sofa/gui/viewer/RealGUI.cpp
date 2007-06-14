@@ -22,8 +22,19 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include "RealGUI.h"
 
+#ifdef SOFA_GUI_QTOGREVIEWER
+#include "QtOgreViewer/QtOgreViewer.h"
+#endif
+
+#ifdef SOFA_GUI_QTVIEWER
+#include "QtViewer/QtViewer.h"
+#endif
+
+#ifdef SOFA_GUI_QGLVIEWER
+#include "QtGLViewer/QtGLViewer.h"
+#endif
+#include "RealGUI.h"
 
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/MutationListener.h>
@@ -31,6 +42,17 @@
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
 #include <sofa/simulation/automatescheduler/ExecBus.h>
 #include <sofa/simulation/automatescheduler/Node.h>
+
+namespace sofa
+{
+namespace simulation
+{
+namespace automatescheduler
+{
+extern simulation::tree::GNode* groot;
+}
+}
+}
 
 
 #ifdef QT_MODULE_QT3SUPPORT
@@ -47,6 +69,8 @@
 #include <QWidget>
 #include <QLayout>
 #include <QTimer>
+#include <QAction>
+#include <QMessageBox>
 #define WIDTH_OFFSET 2
 #define HEIGHT_OFFSET 2
 #define INFINITY 9.0e10
@@ -70,6 +94,9 @@
 #include <qwidgetstack.h>
 #include <qlayout.h>
 #include <qtimer.h>
+#include <qapplication.h>
+#include <qaction.h>
+#include <qmessagebox.h>
 
 #define WIDTH_OFFSET 0
 #define HEIGHT_OFFSET 0
@@ -92,13 +119,6 @@ namespace gui
 
 namespace guiviewer
 {
-#ifdef SOFA_GUI_QTVIEWER
-class QtViewer;
-#elif SOFA_GUI_QGLVIEWER
-class QtGLViewer;
-#elif SOFA_GUI_QTOGREVIEWER
-class QtOgreViewer;
-#endif
 
 #ifdef QT_MODULE_QT3SUPPORT
 typedef Q3ListView QListView;
@@ -121,8 +141,117 @@ using sofa::core::objectmodel::BaseObject;
 
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation::tree;
-using namespace sofa::simulation::automatescheduler;
+//using namespace sofa::simulation::automatescheduler;
 
+
+///////////////////////////////////////////////////////////
+//////////////////// SofaGUI Interface ////////////////////
+///////////////////////////////////////////////////////////
+
+#ifdef SOFA_GUI_QGLVIEWER
+SOFA_DECL_CLASS(QGLViewerGUI)
+int QGLViewerGUIClass = SofaGUI::RegisterGUI("qglviewer", &RealGUI::CreateGUI, &RealGUI::InitGUI, 2);
+#endif
+#ifdef SOFA_GUI_QTVIEWER
+SOFA_DECL_CLASS(QTGUI)
+int QtGUIClass = SofaGUI::RegisterGUI("qt", &RealGUI::CreateGUI, &RealGUI::InitGUI, 1);
+#endif
+#ifdef SOFA_GUI_QTOGREVIEWER
+SOFA_DECL_CLASS(OgreGUI)
+int QtOGREGUIClass = SofaGUI::RegisterGUI("ogre", &RealGUI::CreateGUI, &RealGUI::InitGUI, 0);
+#endif
+
+int RealGUI::InitGUI(const char* name, const std::vector<std::string>& /* options */)
+{
+#ifdef SOFA_GUI_QGLVIEWER
+    if (!name[0] || !strcmp(name,"qglviewer"))
+    {
+        return sofa::gui::guiqglviewer::QtGLViewer::EnableViewer();
+    }
+    else
+#endif
+#ifdef SOFA_GUI_QTVIEWER
+        if (!name[0] || !strcmp(name,"qt"))
+        {
+            return sofa::gui::qt::QtViewer::EnableViewer();
+        }
+        else
+#endif
+#ifdef SOFA_GUI_QTOGREVIEWER
+            if (!name[0] || !strcmp(name,"ogre"))
+            {
+                return sofa::gui::qtogreviewer::QtOgreViewer::EnableViewer();
+            }
+            else
+#endif
+            {
+                std::cerr << "ERROR(QtGUI): unknown or disabled gui name "<<name<<std::endl;
+                return 1;
+            }
+}
+
+extern QApplication* application; // = NULL;
+extern RealGUI* gui;
+
+using sofa::simulation::tree::GNode;
+
+SofaGUI* RealGUI::CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot, const char* filename)
+{
+    {
+        int argc=1;
+        char* argv[1];
+        argv[0] = strdup(SofaGUI::GetProgramName());
+        application = new QApplication(argc,argv);
+        free(argv[0]);
+    }
+    // create interface
+    gui = new RealGUI( name, options );
+    if (groot)
+        gui->setScene(groot, filename);
+
+    //gui->viewer->SwitchToPresetView();
+
+    application->setMainWidget( gui );
+
+    // Threads Management
+    if (ThreadSimulation::initialized())
+    {
+        ThreadSimulation::getInstance()->computeVModelsList(groot);
+        groot->setMultiThreadSimulation(true);
+        sofa::simulation::automatescheduler::groot = groot;
+
+        Automate::setDrawCB(gui->viewer);
+
+        gui->viewer->getQWidget()->update();
+        ThreadSimulation::getInstance()->start();
+    }
+    // show the gui
+    gui->show();
+    return gui;
+}
+
+int RealGUI::mainLoop()
+{
+    return application->exec();
+}
+
+void RealGUI::redraw()
+{
+    viewer->getQWidget()->update();
+}
+
+int RealGUI::closeGUI()
+{
+    delete this;
+    return 0;
+}
+
+sofa::simulation::tree::GNode* RealGUI::currentSimulation()
+{
+    return viewer->getScene();
+}
+
+///////////////////////////////////////////////////////////
 
 static const int iconWidth=8;
 static const int iconHeight=10;
@@ -415,12 +544,9 @@ public:
     }
 };
 
-
-
-RealGUI::RealGUI( const char* filename)
-    : graphListener(NULL)
+RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*options*/)
+    : viewerName(viewername), graphListener(NULL), id_timer(-1)
 {
-
     left_stack = new QWidgetStack(splitter2);
 #ifndef QT_MODULE_QT3SUPPORT
     GUILayout->addWidget(left_stack);
@@ -442,16 +568,39 @@ RealGUI::RealGUI( const char* filename)
     statusBar()->addWidget(fpsLabel);
     statusBar()->addWidget(timeLabel);
 
-    addViewer(filename);
+    timerStep = new QTimer(this);
+    connect( timerStep, SIGNAL(timeout()), this, SLOT(step()) );
+    connect( ResetSceneButton, SIGNAL( clicked() ), this, SLOT( resetScene() ) );
+    connect( dtEdit, SIGNAL( textChanged(const QString&) ), this, SLOT( setDt(const QString&) ) );
+    //connect( ResetViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( resetView() ) );
+    //connect( SaveViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( saveView() ) );
+    connect( showVisual, SIGNAL( toggled(bool) ), this, SLOT( slot_showVisual(bool) ) );
+    connect( showBehavior, SIGNAL( toggled(bool) ), this, SLOT( slot_showBehavior(bool) ) );
+    connect( showCollision, SIGNAL( toggled(bool) ), this, SLOT( slot_showCollision(bool) ) );
+    connect( showBoundingCollision, SIGNAL( toggled(bool) ), this, SLOT( slot_showBoundingCollision(bool) ) );
+    connect( showMapping, SIGNAL( toggled(bool) ), this, SLOT( slot_showMapping(bool) ) );
+    connect( showMechanicalMapping, SIGNAL( toggled(bool) ), this, SLOT( slot_showMechanicalMapping(bool) ) );
+    connect( showForceField, SIGNAL( toggled(bool) ), this, SLOT( slot_showForceField(bool) ) );
+    connect( showInteractionForceField, SIGNAL( toggled(bool) ), this, SLOT( slot_showInteractionForceField(bool) ) );
+    connect( showWireFrame, SIGNAL( toggled(bool) ), this, SLOT( slot_showWireFrame(bool) ) );
+    connect( showNormals, SIGNAL( toggled(bool) ), this, SLOT( slot_showNormals(bool) ) );
+    connect( stepButton, SIGNAL( clicked() ), this, SLOT( step() ) );
+    //connect( screenshotButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( screenshot() ) );
+    //connect( xmlSave_pushButton, SIGNAL( pressed() ), this, SLOT( saveXML() ) );
+    connect( ExportGraphButton, SIGNAL( clicked() ), this, SLOT( exportGraph() ) );
+    //connect( exportGraphAction, SIGNAL( activated() ), viewer, SLOT( exportGraph() ) );
+    //connect( sizeW, SIGNAL( valueChanged(int) ), viewer->getQWidget(), SLOT( setSizeW(int) ) );
+    //connect( sizeH, SIGNAL( valueChanged(int) ), viewer->getQWidget(), SLOT( setSizeH(int) ) );
+    connect( dumpStateCheckBox, SIGNAL( toggled(bool) ), this, SLOT( dumpState(bool) ) );
+    connect( exportGnuplotFilesCheckbox, SIGNAL(toggled(bool)), this, SLOT(setExportGnuplot(bool)) );
+    connect( displayComputationTimeCheckBox, SIGNAL( toggled(bool) ), this, SLOT( displayComputationTime(bool) ) );
 
-    setGUI();
+    addViewer();
 
 #ifdef SOFA_PML
     pmlreader = NULL;
     lmlreader = NULL;
 #endif
-
-
 }
 
 RealGUI::~RealGUI()
@@ -481,104 +630,123 @@ void RealGUI::init()
     m_exportGnuplot = false;
 }
 
-void RealGUI::addViewer(const char* filename, int TYPE)
+void RealGUI::addViewer()
 {
     init();
-#ifdef SOFA_GUI_QGLVIEWER
-    viewer = new sofa::gui::guiqglviewer::QtGLViewer( left_stack, "viewer" );
-#elif SOFA_GUI_QTVIEWER
-    viewer = new sofa::gui::qt::QtViewer( left_stack, "viewer" );
-#elif SOFA_GUI_QTOGREVIEWER
-    viewer = new sofa::gui::qtogreviewer::QtOgreViewer( left_stack , "viewer" );
-#endif
+    const char* name = viewerName;
 
+    // set menu state
+#ifdef SOFA_GUI_QTVIEWER
+    viewerOpenGLAction->setEnabled(true);
+#else
+    viewerOpenGLAction->setEnabled(false);
+    viewerOpenGLAction->setToolTip("enable SOFA_GUI_QTVIEWER in sofa-local.cfg to activate");
+#endif
+    viewerOpenGLAction->setOn(false);
+#ifdef SOFA_GUI_QGLVIEWER
+    viewerQGLViewerAction->setEnabled(true);
+#else
+    viewerQGLViewerAction->setEnabled(false);
+    viewerQGLViewerAction->setToolTip("enable SOFA_GUI_QGLVIEWER in sofa-local.cfg to activate");
+#endif
+    viewerQGLViewerAction->setOn(false);
+#ifdef SOFA_GUI_QTOGREVIEWER
+    viewerOGREAction->setEnabled(true);
+#else
+    viewerOGREAction->setEnabled(false);
+    viewerOGREAction->setToolTip("enable SOFA_GUI_QTOGREVIEWER in sofa-local.cfg to activate");
+#endif
+    viewerOGREAction->setOn(false);
+
+#ifdef SOFA_GUI_QGLVIEWER
+    if (!name[0] || !strcmp(name,"qglviewer"))
+    {
+        viewer = new sofa::gui::guiqglviewer::QtGLViewer( left_stack, "viewer" );
+        viewerQGLViewerAction->setOn(true);
+    }
+    else
+#endif
+#ifdef SOFA_GUI_QTVIEWER
+        if (!name[0] || !strcmp(name,"qt"))
+        {
+            viewer = new sofa::gui::qt::QtViewer( left_stack, "viewer" );
+            viewerOpenGLAction->setOn(true);
+        }
+        else
+#endif
+#ifdef SOFA_GUI_QTOGREVIEWER
+            if (!name[0] || !strcmp(name,"ogre"))
+            {
+                viewer = new sofa::gui::qtogreviewer::QtOgreViewer( left_stack , "viewer" );
+                viewerOGREAction->setOn(true);
+            }
+            else
+#endif
+            {
+                std::cerr << "ERROR(QtGUI): unknown or disabled viewer name "<<name<<std::endl;
+                application->exit();
+            }
 
 #ifdef QT_MODULE_QT3SUPPORT
-    left_stack->setCurrentWidget ( viewer );
+    left_stack->setCurrentWidget ( viewer->getQWidget() );
     viewer->setGeometry(0,0,this->size().width()-vboxLayout->sizeHint().width(),this->size().height());
 #else
-    int id_viewer = left_stack->addWidget(viewer);
+    int id_viewer = left_stack->addWidget(viewer->getQWidget());
     left_stack->raiseWidget(id_viewer);
 #endif
 
-
-    viewer->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 100, 1,
-            viewer->sizePolicy().hasHeightForWidth() ) );
-    viewer->setMinimumSize( QSize( 0, 0 ) );
-
+    viewer->getQWidget()->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 100, 1,
+            viewer->getQWidget()->sizePolicy().hasHeightForWidth() ) );
+    viewer->getQWidget()->setMinimumSize( QSize( 0, 0 ) );
 #ifndef QT_MODULE_QT3SUPPORT
-    viewer->setCursor( QCursor( 2 ) );
+    viewer->getQWidget()->setCursor( QCursor( 2 ) );
 #endif
-
-    viewer->setMouseTracking( TRUE );
-
+    viewer->getQWidget()->setMouseTracking( TRUE );
 
 #ifdef QT_MODULE_QT3SUPPORT
-    viewer->setFocusPolicy( Qt::StrongFocus );
+    viewer->getQWidget()->setFocusPolicy( Qt::StrongFocus );
 #else
-    viewer->setFocusPolicy( QWidget::StrongFocus );
+    viewer->getQWidget()->setFocusPolicy( QWidget::StrongFocus );
 #endif
 
+    viewer->setup();
+    /*
 
+    				//connect( xmlSave_pushButton, SIGNAL( pressed() ), this, SLOT( saveXML() ) );
+    				if (filename != "")
+    				{
+    #ifdef SOFA_GUI_QTOGREVIEWER
+    					viewer->setup();
+    					id_timer = startTimer(100);
+    #endif
+    					switch(TYPE)
+    					{
+    					case NORMAL:
+    						groot = Simulation::load(filename);
+    						setScene(groot, filename);
+    						break;
+    					case PML:
+    #ifdef SOFA_PML
+    						groot = Simulation::load(scene.c_str());
+    						if (groot){
+    							if (!pmlreader) pmlreader = new PMLReader;
+    							pmlreader->BuildStructure(filename, groot);
+    							setScene(groot, filename);
+    						}
+    #endif
+    							break;
+    					default:break;
+    						}
+    					}
+    */
 
-    //connect( xmlSave_pushButton, SIGNAL( pressed() ), this, SLOT( saveXML() ) );
-    if (filename != "")
-    {
-#ifdef SOFA_GUI_QTOGREVIEWER
-        viewer->setup();
-        id_timer = startTimer(100);
-#endif
-        switch(TYPE)
-        {
-        case NORMAL:
-            groot = Simulation::load(filename);
-            setScene(groot, filename);
-            break;
-        case PML:
-#ifdef SOFA_PML
-            groot = Simulation::load(scene.c_str());
-            if (groot)
-            {
-                if (!pmlreader) pmlreader = new PMLReader;
-                pmlreader->BuildStructure(filename, groot);
-                setScene(groot, filename);
-            }
-#endif
-            break;
-        default:break;
-        }
-    }
-
-    timerStep = new QTimer(this);
-    connect( timerStep, SIGNAL(timeout()), this, SLOT(step()) );
-    connect( ResetSceneButton, SIGNAL( clicked() ), this, SLOT( resetScene() ) );
-    connect( dtEdit, SIGNAL( textChanged(const QString&) ), this, SLOT( setDt(const QString&) ) );
-    connect( ResetSceneButton, SIGNAL( clicked() ), this, SLOT( resetScene() ) );
-    connect( ResetViewButton, SIGNAL( clicked() ), viewer, SLOT( resetView() ) );
-    connect( SaveViewButton, SIGNAL( clicked() ), viewer, SLOT( saveView() ) );
-    connect( showVisual, SIGNAL( toggled(bool) ), this, SLOT( slot_showVisual(bool) ) );
-    connect( showBehavior, SIGNAL( toggled(bool) ), this, SLOT( slot_showBehavior(bool) ) );
-    connect( showCollision, SIGNAL( toggled(bool) ), this, SLOT( slot_showCollision(bool) ) );
-    connect( showBoundingCollision, SIGNAL( toggled(bool) ), this, SLOT( slot_showBoundingCollision(bool) ) );
-    connect( showMapping, SIGNAL( toggled(bool) ), this, SLOT( slot_showMapping(bool) ) );
-    connect( showMechanicalMapping, SIGNAL( toggled(bool) ), this, SLOT( slot_showMechanicalMapping(bool) ) );
-    connect( showForceField, SIGNAL( toggled(bool) ), this, SLOT( slot_showForceField(bool) ) );
-    connect( showInteractionForceField, SIGNAL( toggled(bool) ), this, SLOT( slot_showInteractionForceField(bool) ) );
-    connect( showWireFrame, SIGNAL( toggled(bool) ), this, SLOT( slot_showWireFrame(bool) ) );
-    connect( showNormals, SIGNAL( toggled(bool) ), this, SLOT( slot_showNormals(bool) ) );
-    connect( stepButton, SIGNAL( clicked() ), this, SLOT( step() ) );
-    connect( screenshotButton, SIGNAL( clicked() ), viewer, SLOT( screenshot() ) );
-    connect( ExportGraphButton, SIGNAL( clicked() ), this, SLOT( exportGraph() ) );
-    //connect( exportGraphAction, SIGNAL( activated() ), viewer, SLOT( exportGraph() ) );
-    connect( sizeW, SIGNAL( valueChanged(int) ), viewer, SLOT( setSizeW(int) ) );
-    connect( sizeH, SIGNAL( valueChanged(int) ), viewer, SLOT( setSizeH(int) ) );
-    connect( dumpStateCheckBox, SIGNAL( toggled(bool) ), this, SLOT( dumpState(bool) ) );
-    connect( exportGnuplotFilesCheckbox, SIGNAL(toggled(bool)), this, SLOT(setExportGnuplot(bool)) );
-    connect( displayComputationTimeCheckBox, SIGNAL( toggled(bool) ), this, SLOT( displayComputationTime(bool) ) );
-
-    connect(viewer, SIGNAL(resizeW(int)), sizeW, SLOT(setValue(int)));
-    connect(viewer, SIGNAL(resizeH(int)), sizeH, SLOT(setValue(int)));
-
+    connect( ResetViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( resetView() ) );
+    connect( SaveViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( saveView() ) );
+    connect( screenshotButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( screenshot() ) );
+    connect( sizeW, SIGNAL( valueChanged(int) ), viewer->getQWidget(), SLOT( setSizeW(int) ) );
+    connect( sizeH, SIGNAL( valueChanged(int) ), viewer->getQWidget(), SLOT( setSizeH(int) ) );
+    connect(viewer->getQWidget(), SIGNAL(resizeW(int)), sizeW, SLOT(setValue(int)));
+    connect(viewer->getQWidget(), SIGNAL(resizeH(int)), sizeH, SLOT(setValue(int)));
 
     //startTimer(50);
 
@@ -594,23 +762,135 @@ void RealGUI::addViewer(const char* filename, int TYPE)
     list.push_back(500);
     splitter_ptr->setSizes(list);
 
+    viewer->getQWidget()->setFocus();
+    viewer->getQWidget()->show();
 
-    viewer->setFocus();
-    viewer->show();
-
+    setGUI();
 }
 
-void RealGUI::fileOpen(const char* filename, int TYPE)
+void RealGUI::viewerOpenGL()
 {
-    left_stack->removeWidget(viewer);
-    graphListener->removeChild(NULL, groot);
-    delete viewer;
+    viewerOpenGLAction->setOn(setViewer("qt"));
+}
 
-    addViewer(filename, TYPE);
+void RealGUI::viewerQGLViewer()
+{
+    viewerOpenGLAction->setOn(setViewer("qglviewer"));
+}
+
+void RealGUI::viewerOGRE()
+{
+    viewerOpenGLAction->setOn(setViewer("ogre"));
+}
+
+bool RealGUI::setViewer(const char* name)
+{
+    if (!strcmp(name,viewerName))
+        return true; // nothing to do
+    if (!strcmp(name,"qt"))
+    {
+#ifndef SOFA_GUI_QTVIEWER
+        std::cerr << "OpenGL viewer not activated. Enable SOFA_GUI_QGLVIEWER in sofa-local.cfg to activate.\n";
+        return false;
+#endif
+    }
+    else if (!strcmp(name,"qglviewer"))
+    {
+#ifndef SOFA_GUI_QGLVIEWER
+        std::cerr << "QGLViewer viewer not activated. Enable SOFA_GUI_QGLVIEWER in sofa-local.cfg to activate.\n";
+        return false;
+#endif
+    }
+    else if (!strcmp(name,"ogre"))
+    {
+#ifndef SOFA_GUI_QTOGREVIEWER
+        std::cerr << "OGRE viewer not activated. Enable SOFA_GUI_QTOGREVIEWER in sofa-local.cfg to activate.\n";
+        return false;
+#endif
+    }
+    else
+    {
+        std::cerr << "Unknown viewer.\n";
+        return false;
+    }
+    if ( QMessageBox::warning ( this, "Changing Viewer", "Changing viewer requires to reload the current scene.\nAre you sure you want to do that ?", QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
+        return false;
+
+    std::string filename = viewer->getSceneFileName();
+    GNode* groot = new GNode; // empty scene to do the transition
+    setScene(groot,filename.c_str());
+    left_stack->removeWidget(viewer->getQWidget());
+    delete viewer;
+    viewer = NULL;
+    // Disable Viewer-specific classes
+#ifdef SOFA_GUI_QTVIEWER
+    if (!strcmp(viewerName,"qt"))
+    {
+        sofa::gui::qt::QtViewer::DisableViewer();
+    }
+    else
+#endif
+#ifdef SOFA_GUI_QGLVIEWER
+        if (!strcmp(viewerName,"qglviewer"))
+        {
+            sofa::gui::guiqglviewer::QtGLViewer::DisableViewer();
+        }
+        else
+#endif
+#ifdef SOFA_GUI_QTOGREVIEWER
+            if (!strcmp(viewerName,"ogre"))
+            {
+                sofa::gui::qtogreviewer::QtOgreViewer::DisableViewer();
+            }
+            else
+#endif
+            {}
+    // Enable Viewer-specific classes
+#ifdef SOFA_GUI_QTVIEWER
+    if (!strcmp(name,"qt"))
+    {
+        sofa::gui::qt::QtViewer::EnableViewer();
+    }
+    else
+#endif
+#ifdef SOFA_GUI_QGLVIEWER
+        if (!strcmp(name,"qglviewer"))
+        {
+            sofa::gui::guiqglviewer::QtGLViewer::EnableViewer();
+        }
+        else
+#endif
+#ifdef SOFA_GUI_QTOGREVIEWER
+            if (!strcmp(name,"ogre"))
+            {
+                sofa::gui::qtogreviewer::QtOgreViewer::EnableViewer();
+            }
+#endif
+
+    viewerName = name;
+    addViewer();
+    fileOpen(filename.c_str());
+    return true;
+}
+
+void RealGUI::fileOpen(const char* filename)
+{
+    //left_stack->removeWidget(viewer->getQWidget());
+    //graphListener->removeChild(NULL, groot);
+    //delete viewer;
+    //viewer = NULL;
+    //addViewer(filename);
+    GNode* groot = Simulation::load(filename);
+    if (groot == NULL)
+    {
+        qFatal("Failed to load %s",filename);
+        return;
+    }
+    setScene(groot, filename);
 }
 
 #ifdef SOFA_PML
-void RealGUI::pmlOpen(const char* filename)
+void RealGUI::pmlOpen(const char* filename, bool resetView)
 {
     std::string scene = "PML/default.scn";
     if (!sofa::helper::system::DataRepository.findFile(scene))
@@ -618,7 +898,13 @@ void RealGUI::pmlOpen(const char* filename)
         std::cerr << "File " << scene << " not found " << std::endl;
         return;
     }
-    fileOpen(scene.c_str(), PML);
+    groot = Simulation::load(scene.c_str());
+    if (groot)
+    {
+        if (!pmlreader) pmlreader = new PMLReader;
+        pmlreader->BuildStructure(filename, groot);
+        setScene(groot, filename);
+    }
 }
 
 void RealGUI::lmlOpen(const char* filename)
@@ -632,15 +918,22 @@ void RealGUI::lmlOpen(const char* filename)
     }
     else
         std::cerr<<"You must load the pml file before the lml file"<<endl;
-
 }
 #endif
 
 void RealGUI::setScene(GNode* groot, const char* filename)
 {
+    if (viewer->getScene()!=NULL)
+    {
+        Simulation::unload(viewer->getScene());
+        if (graphListener!=NULL)
+            delete graphListener;
+        graphView->clear();
+    }
 
     setTitle(filename);
-    sceneFileName = filename;
+    //this->groot = groot;
+    //sceneFileName = filename;
 
     viewer->setScene(groot, filename);
     eventNewTime();
@@ -776,7 +1069,6 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
         }
 
         // else Create the associated QWidget
-
 
         QWidget *qwidget = new QWidget(NULL,node->getName().data());
 
@@ -987,27 +1279,42 @@ void RealGUI::playpauseGUI(bool value)
         timerStep->start(0);
     }
     else       {id_timer = startTimer(100); timerStep->stop();}
-    if (groot)  groot->getContext()->setAnimate(value);
+    if (getScene())  getScene()->getContext()->setAnimate(value);
 }
 
 
 void RealGUI::setGUI(void)
 {
-
     textEdit1->setText(viewer->helpString());
 
 #ifdef SOFA_GUI_QTOGREVIEWER
     //Hide unused options
-    showVisual->hide();
-    showBehavior->hide();
-    showCollision->hide();
-    showBoundingCollision->hide();
-    showMapping->hide();
-    showMechanicalMapping->hide();
-    showForceField->hide();
-    showInteractionForceField->hide();
-    showWireFrame->hide();
-    showNormals->hide();
+    if (!strcmp(viewerName,"ogre"))
+    {
+        showVisual->hide();
+        showBehavior->hide();
+        showCollision->hide();
+        showBoundingCollision->hide();
+        showMapping->hide();
+        showMechanicalMapping->hide();
+        showForceField->hide();
+        showInteractionForceField->hide();
+        showWireFrame->hide();
+        showNormals->hide();
+    }
+    else
+    {
+        showVisual->show();
+        showBehavior->show();
+        showCollision->show();
+        showBoundingCollision->show();
+        showMapping->show();
+        showMechanicalMapping->show();
+        showForceField->show();
+        showInteractionForceField->show();
+        showWireFrame->show();
+        showNormals->show();
+    }
 #endif
 }
 //###################################################################################################################
@@ -1018,6 +1325,7 @@ void RealGUI::setGUI(void)
 
 void RealGUI::step()
 {
+    GNode* groot = viewer->getScene();
     if (groot == NULL) return;
 
     if (groot->getContext()->getMultiThreadSimulation())
@@ -1051,7 +1359,7 @@ void RealGUI::step()
         eventNewStep();
         eventNewTime();
 
-        viewer->update();
+        viewer->getQWidget()->update();
     }
 
 
@@ -1078,6 +1386,7 @@ void RealGUI::eventNewStep()
     static ctime_t beginTime[10];
     static const ctime_t timeTicks = CTime::getRefTicksPerSec();
     static int frameCounter = 0;
+    GNode* groot = getScene();
     if (frameCounter==0)
     {
         ctime_t t = CTime::getRefTime();
@@ -1144,6 +1453,7 @@ void RealGUI::eventNewStep()
 
 void RealGUI::eventNewTime()
 {
+    GNode* groot = getScene();
     if (groot)
     {
 
@@ -1165,6 +1475,7 @@ void RealGUI::eventNewTime()
 
 void RealGUI::setDt(double value)
 {
+    GNode* groot = getScene();
     if (value > 0.0)
     {
 
@@ -1183,11 +1494,12 @@ void RealGUI::setDt(const QString& value)
 // Reset the simulation to t=0
 void RealGUI::resetScene()
 {
+    GNode* groot = getScene();
     if (groot)
     {
         Simulation::reset(groot);
         eventNewTime();
-        viewer->update();
+        viewer->getQWidget()->update();
     }
 }
 
@@ -1196,103 +1508,112 @@ void RealGUI::resetScene()
 // Set what to display
 void RealGUI::slot_showVisual(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowVisualModels(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
-
 
 void RealGUI::slot_showBehavior(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowBehaviorModels(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 void RealGUI::slot_showCollision(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowCollisionModels(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 void RealGUI::slot_showBoundingCollision(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowBoundingCollisionModels(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 void RealGUI::slot_showMapping(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowMappings(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 void RealGUI::slot_showMechanicalMapping(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowMechanicalMappings(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 void RealGUI::slot_showForceField(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowForceFields(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 void RealGUI::slot_showInteractionForceField(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowInteractionForceFields(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 void RealGUI::slot_showWireFrame(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowWireFrame(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 void RealGUI::slot_showNormals(bool value)
 {
+    GNode* groot = getScene();
     if (groot)
     {
         groot->getContext()->setShowNormals(value);
         Simulation::updateContext(groot);
     }
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 
@@ -1300,7 +1621,7 @@ void RealGUI::slot_showNormals(bool value)
 //
 void RealGUI::exportGraph()
 {
-    exportGraph(viewer->getScene());
+    exportGraph(getScene());
 }
 
 
@@ -1319,6 +1640,7 @@ void RealGUI::exportGraph(sofa::simulation::tree::GNode* root)
 //
 void RealGUI::displayComputationTime(bool value)
 {
+    GNode* groot = getScene();
     m_displayComputationTime = value;
     if (groot)
     {
@@ -1328,13 +1650,13 @@ void RealGUI::displayComputationTime(bool value)
 
 
 
-
 //*****************************************************************************************
 //
 void RealGUI::setExportGnuplot( bool exp )
 {
+    GNode* groot = getScene();
     m_exportGnuplot = exp;
-    if( m_exportGnuplot )
+    if( m_exportGnuplot && groot )
     {
         Simulation::initGnuplot( groot );
         Simulation::exportGnuplot( groot, groot->getTime() );
@@ -1364,7 +1686,9 @@ void RealGUI::dumpState(bool value)
 //
 void RealGUI::exportOBJ(bool exportMTL)
 {
+    GNode* groot = getScene();
     if (!groot) return;
+    std::string sceneFileName = viewer->getSceneFileName();
     std::ostringstream ofilename;
     if (!sceneFileName.empty())
     {
@@ -1393,7 +1717,7 @@ void RealGUI::exportOBJ(bool exportMTL)
 // Called by the animate timer
 void RealGUI::animate()
 {
-    viewer->update();
+    viewer->getQWidget()->update();
 }
 
 
