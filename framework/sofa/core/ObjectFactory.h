@@ -119,10 +119,17 @@ public:
 
     /// Add an alias name for an already registered class
     ///
-    /// \param name    name of the new alias
-    /// \param result  class pointed to by the new alias
-    /// \param force   set to true if this method should override any entry already registered for this name
-    bool addAlias(std::string name, std::string result, bool force=false);
+    /// \param name     name of the new alias
+    /// \param result   class pointed to by the new alias
+    /// \param force    set to true if this method should override any entry already registered for this name
+    /// \param previous (output) previous ClassEntry registered for this name
+    bool addAlias(std::string name, std::string result, bool force=false, ClassEntry** previous = NULL);
+
+    /// Reset an alias to a previous state
+    ///
+    /// \param name     name of the new alias
+    /// \param previous previous ClassEntry that need to be registered back for this name
+    void resetAlias(std::string name, ClassEntry* previous);
 
     /// Create an object given a context and a description.
     objectmodel::BaseObject* createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg);
@@ -137,9 +144,15 @@ public:
     }
 
     /// \copydoc addAlias
-    static bool AddAlias(std::string name, std::string result, bool force=false)
+    static bool AddAlias(std::string name, std::string result, bool force=false, ClassEntry** previous = NULL)
     {
-        return getInstance()->addAlias(name, result, force);
+        return getInstance()->addAlias(name, result, force, previous);
+    }
+
+    /// \copydoc resetAlias
+    static void ResetAlias(std::string name, ClassEntry* previous)
+    {
+        getInstance()->resetAlias(name, previous);
     }
 
     /// Dump the content of the factory to a text stream.

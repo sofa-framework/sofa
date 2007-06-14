@@ -45,8 +45,11 @@ ObjectFactory::ClassEntry* ObjectFactory::getEntry(std::string classname)
     return p;
 }
 
-bool ObjectFactory::addAlias(std::string name, std::string result, bool force)
+bool ObjectFactory::addAlias(std::string name, std::string result, bool force, ClassEntry** previous)
 {
+    ClassEntry*& p = registry[name];
+    if (previous)
+        *previous = p;
     std::map<std::string, ClassEntry*>::iterator it = registry.find(result);
     if (it == registry.end())
     {
@@ -54,7 +57,6 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force)
         return false;
     }
     ClassEntry* entry = it->second;
-    ClassEntry*& p = registry[name];
     if (p!=NULL && !force)
     {
         std::cerr << "ERROR: ObjectFactory: cannot create alias "<<name<<" as a class with this name already exists.\n";
@@ -70,6 +72,12 @@ bool ObjectFactory::addAlias(std::string name, std::string result, bool force)
         entry->aliases.insert(name);
         return true;
     }
+}
+
+void ObjectFactory::resetAlias(std::string name, ClassEntry* previous)
+{
+    ClassEntry*& p = registry[name];
+    p = previous;
 }
 
 objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)

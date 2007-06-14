@@ -274,7 +274,7 @@ public:
     \param help
     */
     template<class T> inline
-    ArgumentParser& option( T* ptr, char sho, char* lon, char* help )
+    ArgumentParser& option( T* ptr, char sho, const char* lon, const char* help )
     {
         string sn, ln(lon), h(help); sn += sho;
 
@@ -315,7 +315,7 @@ public:
     \param help
     */
     template<class T> inline
-    ArgumentParser& parameter( T* ptr, char sho, char* lon, char* help )
+    ArgumentParser& parameter( T* ptr, char sho, const char* lon, const char* help )
     {
         string sn, ln(lon), h(help); sn += sho;
 
