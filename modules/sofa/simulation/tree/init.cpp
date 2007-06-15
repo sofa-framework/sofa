@@ -86,10 +86,6 @@ SOFA_LINK_CLASS(Node)
 SOFA_LINK_CLASS(Object)
 SOFA_LINK_CLASS(OglModel)
 
-#ifdef SOFA_GUI_QTOGREVIEWER
-SOFA_LINK_CLASS(OgreVisualModel)
-#endif
-
 SOFA_LINK_CLASS(OscillatorConstraint)
 SOFA_LINK_CLASS(PenalityContactForceField)
 SOFA_LINK_CLASS(DefaultPipeline)
