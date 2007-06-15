@@ -29,7 +29,7 @@ struct GPUCubeData
 
 __global__ void RegularGridMapperCuda3f_apply_kernel(unsigned int size, unsigned int nx, unsigned int nxny, const GPUCubeData* map, float* out, const float* in)
 {
-    int index0 = blockIdx.x*BSIZE; //blockDim.x;
+    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
@@ -64,7 +64,7 @@ __global__ void RegularGridMapperCuda3f_apply_kernel(unsigned int size, unsigned
 
     //__syncthreads();
 
-    int index3 = 3*index1;
+    int index3 = umul24(3,index1);
 
     temp[index3  ] = res.x;
     temp[index3+1] = res.y;
@@ -72,7 +72,7 @@ __global__ void RegularGridMapperCuda3f_apply_kernel(unsigned int size, unsigned
 
     __syncthreads();
 
-    out += index0*3;
+    out += umul24(index0,3);
     out[index1        ] = temp[index1        ];
     out[index1+  BSIZE] = temp[index1+  BSIZE];
     out[index1+2*BSIZE] = temp[index1+2*BSIZE];

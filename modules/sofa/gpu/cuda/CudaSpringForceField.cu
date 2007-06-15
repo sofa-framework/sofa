@@ -34,14 +34,14 @@ struct GPUSpring
 
 __global__ void SpringForceFieldCuda3f_addExternalForce_kernel(unsigned int nbSpringPerVertex, const GPUSpring* springs, float* f1, const float* x1, const float* v1, const float* x2, const float* v2)
 {
-    int index0 = blockIdx.x*BSIZE; //blockDim.x;
+    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
     // First copy x and v inside temp
-    int iext = index0*3+index1;
+    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
     temp[index1        ] = x1[iext        ];
     temp[index1+  BSIZE] = x1[iext+  BSIZE];
     temp[index1+2*BSIZE] = x1[iext+2*BSIZE];
@@ -51,7 +51,7 @@ __global__ void SpringForceFieldCuda3f_addExternalForce_kernel(unsigned int nbSp
 
     __syncthreads();
 
-    int index3 = 3*index1;
+    int index3 = umul24(index1,3); //3*index1;
     float3 pos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
     float3 vel1 = make_float3(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
     float3 force = make_float3(0.0f,0.0f,0.0f);
@@ -113,14 +113,14 @@ __global__ void SpringForceFieldCuda3f_addExternalForce_kernel(unsigned int nbSp
 
 __global__ void SpringForceFieldCuda3f_addForce_kernel(unsigned int nbSpringPerVertex, const GPUSpring* springs, float* f, const float* x, const float* v)
 {
-    int index0 = blockIdx.x*BSIZE; //blockDim.x;
+    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
     // First copy x and v inside temp
-    int iext = index0*3+index1;
+    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
     temp[index1        ] = x[iext        ];
     temp[index1+  BSIZE] = x[iext+  BSIZE];
     temp[index1+2*BSIZE] = x[iext+2*BSIZE];
@@ -130,7 +130,7 @@ __global__ void SpringForceFieldCuda3f_addForce_kernel(unsigned int nbSpringPerV
 
     __syncthreads();
 
-    int index3 = 3*index1;
+    int index3 = umul24(index1,3); //3*index1;
     float3 pos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
     float3 vel1 = make_float3(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
     float3 force = make_float3(0.0f,0.0f,0.0f);
@@ -200,14 +200,14 @@ __global__ void SpringForceFieldCuda3f_addForce_kernel(unsigned int nbSpringPerV
 
 __global__ void StiffSpringForceFieldCuda3f_addExternalForce_kernel(unsigned int nbSpringPerVertex, const GPUSpring* springs, float* f1, const float* x1, const float* v1, const float* x2, const float* v2, float* dfdx)
 {
-    int index0 = blockIdx.x*BSIZE; //blockDim.x;
+    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
     // First copy x and v inside temp
-    int iext = index0*3+index1;
+    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
     temp[index1        ] = x1[iext        ];
     temp[index1+  BSIZE] = x1[iext+  BSIZE];
     temp[index1+2*BSIZE] = x1[iext+2*BSIZE];
@@ -217,7 +217,7 @@ __global__ void StiffSpringForceFieldCuda3f_addExternalForce_kernel(unsigned int
 
     __syncthreads();
 
-    int index3 = 3*index1;
+    int index3 = umul24(index1,3); //3*index1;
     float3 pos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
     float3 vel1 = make_float3(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
     float3 force = make_float3(0.0f,0.0f,0.0f);
@@ -283,14 +283,14 @@ __global__ void StiffSpringForceFieldCuda3f_addExternalForce_kernel(unsigned int
 
 __global__ void StiffSpringForceFieldCuda3f_addForce_kernel(unsigned int nbSpringPerVertex, const GPUSpring* springs, float* f, const float* x, const float* v, float* dfdx)
 {
-    int index0 = blockIdx.x*BSIZE; //blockDim.x;
+    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
     // First copy x and v inside temp
-    int iext = index0*3+index1;
+    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
     temp[index1        ] = x[iext        ];
     temp[index1+  BSIZE] = x[iext+  BSIZE];
     temp[index1+2*BSIZE] = x[iext+2*BSIZE];
@@ -300,7 +300,7 @@ __global__ void StiffSpringForceFieldCuda3f_addForce_kernel(unsigned int nbSprin
 
     __syncthreads();
 
-    int index3 = 3*index1;
+    int index3 = umul24(index1,3); //3*index1;
     float3 pos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
     float3 vel1 = make_float3(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
     float3 force = make_float3(0.0f,0.0f,0.0f);
@@ -374,14 +374,14 @@ __global__ void StiffSpringForceFieldCuda3f_addForce_kernel(unsigned int nbSprin
 
 __global__ void StiffSpringForceFieldCuda3f_addExternalDForce_kernel(unsigned int nbSpringPerVertex, const GPUSpring* springs, float* f1, const float* dx1, const float* x1, const float* dx2, const float* x2, const float* dfdx)
 {
-    int index0 = blockIdx.x*BSIZE; //blockDim.x;
+    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
     // First copy dx and x inside temp
-    int iext = index0*3+index1;
+    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
     temp[index1        ] = dx1[iext        ];
     temp[index1+  BSIZE] = dx1[iext+  BSIZE];
     temp[index1+2*BSIZE] = dx1[iext+2*BSIZE];
@@ -391,7 +391,7 @@ __global__ void StiffSpringForceFieldCuda3f_addExternalDForce_kernel(unsigned in
 
     __syncthreads();
 
-    int index3 = 3*index1;
+    int index3 = umul24(index1,3); //3*index1;
     float3 dpos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
     float3 pos1 = make_float3(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
     float3 dforce = make_float3(0.0f,0.0f,0.0f);
@@ -447,14 +447,14 @@ __global__ void StiffSpringForceFieldCuda3f_addExternalDForce_kernel(unsigned in
 
 __global__ void StiffSpringForceFieldCuda3f_addDForce_kernel(unsigned int nbSpringPerVertex, const GPUSpring* springs, float* f, const float* dx, const float* x, const float* dfdx)
 {
-    int index0 = blockIdx.x*BSIZE; //blockDim.x;
+    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
     // First copy dx and x inside temp
-    int iext = index0*3+index1;
+    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
     temp[index1        ] = dx[iext        ];
     temp[index1+  BSIZE] = dx[iext+  BSIZE];
     temp[index1+2*BSIZE] = dx[iext+2*BSIZE];
@@ -464,7 +464,7 @@ __global__ void StiffSpringForceFieldCuda3f_addDForce_kernel(unsigned int nbSpri
 
     __syncthreads();
 
-    int index3 = 3*index1;
+    int index3 = umul24(index1,3); //3*index1;
     float3 dpos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
     float3 pos1 = make_float3(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
     float3 dforce = make_float3(0.0f,0.0f,0.0f);

@@ -30,8 +30,8 @@ extern "C"
 
 __global__ void PlaneForceFieldCuda3f_addForce_kernel(int size, GPUPlane plane, float* penetration, float* f, const float* x, const float* v)
 {
-    int index0 = blockIdx.x*BSIZE;
-    int index0_3 = index0*3;
+    int index0 = umul24(blockIdx.x,BSIZE);
+    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
 
     penetration += index0;
     f += index0_3;
@@ -39,7 +39,7 @@ __global__ void PlaneForceFieldCuda3f_addForce_kernel(int size, GPUPlane plane, 
     v += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = index*3;
+    int index_3 = umul24(index,3); //index*3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
@@ -94,15 +94,15 @@ __global__ void PlaneForceFieldCuda3f_addForce_kernel(int size, GPUPlane plane, 
 
 __global__ void PlaneForceFieldCuda3f_addDForce_kernel(int size, GPUPlane plane, const float* penetration, float* df, const float* dx)
 {
-    int index0 = blockIdx.x*BSIZE;
-    int index0_3 = index0*3;
+    int index0 = umul24(blockIdx.x,BSIZE);
+    int index0_3 = umul24(blockIdx.x,BSIZE*3); //index0*3;
 
     penetration += index0;
     df += index0_3;
     dx += index0_3;
 
     int index = threadIdx.x;
-    int index_3 = index*3;
+    int index_3 = umul24(index,3); //index*3;
 
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];

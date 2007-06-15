@@ -34,7 +34,7 @@ extern "C"
 
 __global__ void MechanicalObjectCudaVec1f_vClear_kernel(int size, float* res)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         res[index] = 0.0f;
@@ -43,7 +43,7 @@ __global__ void MechanicalObjectCudaVec1f_vClear_kernel(int size, float* res)
 
 __global__ void MechanicalObjectCudaVec3f_vClear_kernel(int size, float3* res)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         res[index] = make_float3(0.0f,0.0f,0.0f);
@@ -52,7 +52,7 @@ __global__ void MechanicalObjectCudaVec3f_vClear_kernel(int size, float3* res)
 
 __global__ void MechanicalObjectCudaVec1f_vMEq_kernel(int size, float* res, float f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         res[index] *= f;
@@ -61,7 +61,7 @@ __global__ void MechanicalObjectCudaVec1f_vMEq_kernel(int size, float* res, floa
 
 __global__ void MechanicalObjectCudaVec3f_vMEq_kernel(int size, float3* res, float f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         //res[index] *= f;
@@ -73,7 +73,7 @@ __global__ void MechanicalObjectCudaVec3f_vMEq_kernel(int size, float3* res, flo
 
 __global__ void MechanicalObjectCudaVec1f_vEqBF_kernel(int size, float* res, const float* b, float f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         res[index] = b[index] * f;
@@ -82,7 +82,7 @@ __global__ void MechanicalObjectCudaVec1f_vEqBF_kernel(int size, float* res, con
 
 __global__ void MechanicalObjectCudaVec3f_vEqBF_kernel(int size, float3* res, const float3* b, float f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         //res[index] = b[index] * f;
@@ -94,7 +94,7 @@ __global__ void MechanicalObjectCudaVec3f_vEqBF_kernel(int size, float3* res, co
 
 __global__ void MechanicalObjectCudaVec1f_vPEq_kernel(int size, float* res, const float* a)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         res[index] += a[index];
@@ -103,7 +103,7 @@ __global__ void MechanicalObjectCudaVec1f_vPEq_kernel(int size, float* res, cons
 
 __global__ void MechanicalObjectCudaVec3f_vPEq_kernel(int size, float3* res, const float3* a)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         //res[index] += a[index];
@@ -116,7 +116,7 @@ __global__ void MechanicalObjectCudaVec3f_vPEq_kernel(int size, float3* res, con
 
 __global__ void MechanicalObjectCudaVec1f_vPEqBF_kernel(int size, float* res, const float* b, float f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         res[index] += b[index] * f;
@@ -125,7 +125,7 @@ __global__ void MechanicalObjectCudaVec1f_vPEqBF_kernel(int size, float* res, co
 
 __global__ void MechanicalObjectCudaVec3f_vPEqBF_kernel(int size, float3* res, const float3* b, float f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         //res[index] += b[index] * f;
@@ -138,7 +138,7 @@ __global__ void MechanicalObjectCudaVec3f_vPEqBF_kernel(int size, float3* res, c
 
 __global__ void MechanicalObjectCudaVec1f_vAdd_kernel(int size, float* res, const float* a, const float* b)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         res[index] = a[index] + b[index];
@@ -147,7 +147,7 @@ __global__ void MechanicalObjectCudaVec1f_vAdd_kernel(int size, float* res, cons
 
 __global__ void MechanicalObjectCudaVec3f_vAdd_kernel(int size, float3* res, const float3* a, const float3* b)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         //res[index] = a[index] + b[index];
@@ -160,7 +160,7 @@ __global__ void MechanicalObjectCudaVec3f_vAdd_kernel(int size, float3* res, con
 
 __global__ void MechanicalObjectCudaVec1f_vOp_kernel(int size, float* res, const float* a, const float* b, float f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         res[index] = a[index] + b[index] * f;
@@ -169,7 +169,7 @@ __global__ void MechanicalObjectCudaVec1f_vOp_kernel(int size, float* res, const
 
 __global__ void MechanicalObjectCudaVec3f_vOp_kernel(int size, float3* res, const float3* a, const float3* b, float f)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     //if (index < size)
     {
         //res[index] = a[index] + b[index] * f;
@@ -184,7 +184,7 @@ __global__ void MechanicalObjectCudaVec1f_vDot_kernel(int size, float* res, cons
 {
     //! Dynamically allocated shared memory for gather
     extern  __shared__  float temp[];
-    int index0 = blockIdx.x*blockDim.x;
+    int index0 = umul24(blockIdx.x,blockDim.x);
     int index1 = threadIdx.x;
     int n = min(blockDim.x , size-index0);
 
@@ -209,7 +209,7 @@ __global__ void MechanicalObjectCudaVec3f_vDot_kernel(int size, float* res, cons
 {
     //! Dynamically allocated shared memory for gather
     extern  __shared__  float temp[];
-    int index0 = blockIdx.x*blockDim.x;
+    int index0 = umul24(blockIdx.x,blockDim.x);
     int index1 = threadIdx.x;
     int n = blockDim.x; //min(blockDim.x , size-index0);
     size = size*3;

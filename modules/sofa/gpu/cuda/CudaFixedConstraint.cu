@@ -22,28 +22,28 @@ extern "C"
 
 __global__ void FixedConstraintCuda1f_projectResponseContiguous_kernel(int size, float* dx)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     if (index < size)
         dx[index] = 0.0f;
 }
 
 __global__ void FixedConstraintCuda3f_projectResponseContiguous_kernel(int size, float3* dx)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     if (index < size)
         dx[index] = make_float3(0.0f,0.0f,0.0f);
 }
 
 __global__ void FixedConstraintCuda1f_projectResponseIndexed_kernel(int size, const int* indices, float* dx)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     if (index < size)
         dx[indices[index]] = 0.0f;
 }
 
 __global__ void FixedConstraintCuda3f_projectResponseIndexed_kernel(int size, const int* indices, float3* dx)
 {
-    int index = blockIdx.x*blockDim.x+threadIdx.x;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     if (index < size)
         dx[indices[index]] = make_float3(0.0f,0.0f,0.0f);
 }
