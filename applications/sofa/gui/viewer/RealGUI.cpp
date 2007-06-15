@@ -866,11 +866,10 @@ bool RealGUI::setViewer(const char* name)
                 sofa::gui::qtogreviewer::QtOgreViewer::EnableViewer();
             }
 #endif
-    std::cerr<<"Test Viewer change!\n";
+
     viewerName = name;
-    std::cerr<<"Add Viewer!\n";
+    graphListener->removeChild(NULL, groot);
     addViewer();
-    std::cerr<<"fileOpen!\n";
     fileOpen(filename.c_str());
     return true;
 }
