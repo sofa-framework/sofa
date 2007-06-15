@@ -102,6 +102,9 @@ public:
     const Tetra& getTetra(index_type i);
     const Cube& getCube(index_type i);
 
+    /// return true if the given cube is active, i.e. it is not empty
+    virtual bool isCubeActive(int index) { return true; }
+
     // Points accessors (not always available)
 
     virtual bool hasPos() const;

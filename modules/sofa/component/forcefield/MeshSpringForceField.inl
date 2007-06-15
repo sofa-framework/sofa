@@ -122,6 +122,7 @@ void MeshSpringForceField<DataTypes>::init()
                 n = topology->getNbCubes();
                 for (int i=0; i<n; ++i)
                 {
+                    if (!topology->isCubeActive(i)) continue;
                     topology::MeshTopology::Cube e = topology->getCube(i);
                     for (int i=0; i<8; i++)
                         for (int j=i+1; j<8; j++)
