@@ -179,14 +179,11 @@ protected:
     void init();
     void keyPressEvent ( QKeyEvent * e );
 
-#ifdef WIN32
-    void resizeEvent(QResizeEvent * event );
-#endif
-    void timerEvent(QTimerEvent * event)
-    {
-        Q_UNUSED(event);
-        if (viewer != NULL) viewer->getQWidget()->update();
-    }
+    // void timerEvent(QTimerEvent * event)
+    // {
+    //Q_UNUSED(event);
+    //if (viewer != NULL) viewer->getQWidget()->update();
+    // }
 
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;

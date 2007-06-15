@@ -690,12 +690,10 @@ void RealGUI::addViewer()
 #ifdef QT_MODULE_QT3SUPPORT
     left_stack->addWidget ( viewer->getQWidget() );
     left_stack->setCurrentWidget ( viewer->getQWidget() );
-    viewer->getQWidget()->setGeometry(0,0,this->size().width()-vboxLayout->sizeHint().width(),this->size().height());
 #else
     int id_viewer = left_stack->addWidget(viewer->getQWidget());
     left_stack->raiseWidget(id_viewer);
 #endif
-
     viewer->getQWidget()->setSizePolicy( QSizePolicy( (QSizePolicy::SizeType)7, (QSizePolicy::SizeType)7, 100, 1,
             viewer->getQWidget()->sizePolicy().hasHeightForWidth() ) );
     viewer->getQWidget()->setMinimumSize( QSize( 0, 0 ) );
@@ -711,34 +709,36 @@ void RealGUI::addViewer()
 #endif
 
     viewer->setup();
+
+    //#ifdef SOFA_GUI_QTOGREVIEWER
+    //	id_timer = startTimer(100);
+    //#endif
+
     /*
 
-    				//connect( xmlSave_pushButton, SIGNAL( pressed() ), this, SLOT( saveXML() ) );
-    				if (filename != "")
-    				{
-    #ifdef SOFA_GUI_QTOGREVIEWER
-    					viewer->setup();
-    					id_timer = startTimer(100);
-    #endif
-    					switch(TYPE)
-    					{
-    					case NORMAL:
-    						groot = Simulation::load(filename);
-    						setScene(groot, filename);
-    						break;
-    					case PML:
+    //connect( xmlSave_pushButton, SIGNAL( pressed() ), this, SLOT( saveXML() ) );
+    if (filename != "")
+    {
+
+    switch(TYPE)
+    {
+    case NORMAL:
+    groot = Simulation::load(filename);
+    setScene(groot, filename);
+    break;
+    case PML:
     #ifdef SOFA_PML
-    						groot = Simulation::load(scene.c_str());
-    						if (groot){
-    							if (!pmlreader) pmlreader = new PMLReader;
-    							pmlreader->BuildStructure(filename, groot);
-    							setScene(groot, filename);
-    						}
+    groot = Simulation::load(scene.c_str());
+    if (groot){
+    if (!pmlreader) pmlreader = new PMLReader;
+    pmlreader->BuildStructure(filename, groot);
+    setScene(groot, filename);
+    }
     #endif
-    							break;
-    					default:break;
-    						}
-    					}
+    break;
+    default:break;
+    }
+    }
     */
 
     connect( ResetViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( resetView() ) );
@@ -762,7 +762,6 @@ void RealGUI::addViewer()
     list.push_back(75);
     list.push_back(500);
     splitter_ptr->setSizes(list);
-
     viewer->getQWidget()->setFocus();
     viewer->getQWidget()->show();
 
@@ -867,9 +866,11 @@ bool RealGUI::setViewer(const char* name)
                 sofa::gui::qtogreviewer::QtOgreViewer::EnableViewer();
             }
 #endif
-
+    std::cerr<<"Test Viewer change!\n";
     viewerName = name;
+    std::cerr<<"Add Viewer!\n";
     addViewer();
+    std::cerr<<"fileOpen!\n";
     fileOpen(filename.c_str());
     return true;
 }
@@ -1274,12 +1275,13 @@ void RealGUI::playpauseGUI(bool value)
 {
     if (value)
     {
+        /*
         if (id_timer != -1)
-            killTimer(id_timer);
+        	killTimer(id_timer);*/
 
         timerStep->start(0);
     }
-    else       {id_timer = startTimer(100); timerStep->stop();}
+    else       {/*id_timer = startTimer(100);*/timerStep->stop();}
     if (getScene())  getScene()->getContext()->setAnimate(value);
 }
 
@@ -1744,13 +1746,6 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
 }
 
-#ifdef WIN32
-void RealGUI::resizeEvent(QResizeEvent * event )
-{
-    viewer->getQWidget()->setGeometry(0,0,this->size().width()-vboxLayout->sizeHint().width(),this->size().height());
-    viewer->getQWidget()->update();
-}
-#endif
 
 
 } // namespace qt
