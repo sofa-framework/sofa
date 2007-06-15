@@ -73,7 +73,6 @@ namespace gui
 
 namespace qt
 {
-
 using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
@@ -223,7 +222,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
     interactor = NULL;
-
+    camera_type = CAMERA_PERSPECTIVE;
 
 }
 
@@ -1365,8 +1364,16 @@ void QtViewer::calcProjection()
     zForeground = -zNear - offset;
     zBackground = -zFar + offset;
 
-    glFrustum(-xNear * xFactor, xNear * xFactor, -yNear * yFactor,
-            yNear * yFactor, zNear, zFar);
+    if (camera_type == CAMERA_PERSPECTIVE)
+        glFrustum(-xNear * xFactor, xNear * xFactor, -yNear * yFactor,
+                yNear * yFactor, zNear, zFar);
+    else
+    {
+        float ratio = zFar/(zNear*2.0);
+        glOrtho( (-xNear * xFactor)*ratio , (xNear * xFactor)*ratio , (-yNear * yFactor)*ratio,
+                (yNear * yFactor)*ratio, zNear, zFar);
+    }
+
     xForeground = -zForeground * xNear / zNear;
     yForeground = -zForeground * yNear / zNear;
     xBackground = -zBackground * xNear / zNear;
@@ -1659,7 +1666,13 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
             }
             break;
         }
-
+        case Qt::Key_T:
+        {
+            if (camera_type == CAMERA_PERSPECTIVE) camera_type = CAMERA_ORTHOGRAPHIC;
+            else                                   camera_type = CAMERA_PERSPECTIVE;
+            update();
+            break;
+        }
         case Qt::Key_A:
             // --- switch automate display mode
         {
@@ -2432,6 +2445,9 @@ TO NAVIGATE: use the MOUSE.<br>\
 -----<br>\
 TO SWITCH INTERACTION MODE: press the KEY C.<br>\
 Allow or not the navigation with the mouse.<br>\
+<br>\
+-----<br>\
+TO CHANGE THE TYPE OF CAMERA: press the KEY T<br>\
 <br>\
 -----<br>\
 TO PICK: press SHIFT and LEFT MOUSE BUTTON to pick objects.<br>\

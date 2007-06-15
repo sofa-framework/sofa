@@ -1439,7 +1439,15 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
             }
             break;
         }
-
+        case Qt::Key_T:
+        {
+            if (camera()->type() == qglviewer::Camera::ORTHOGRAPHIC)
+                camera()->setType( qglviewer::Camera::PERSPECTIVE  );
+            else
+                camera()->setType( qglviewer::Camera::ORTHOGRAPHIC );
+            update();
+            break;
+        }
         // 	case Qt::Key_A:
         // 		// --- switch automate display mode
         // 		{
@@ -1917,6 +1925,9 @@ TO NAVIGATE: use the MOUSE.<br>\
 -----<br>\
 TO SWITCH INTERACTION MODE: press the KEY C.<br>\
 Allow or not the navigation with the mouse.<br>\
+<br>\
+-----<br>\
+TO CHANGE THE TYPE OF CAMERA: press the KEY T<br>\
 <br>\
 -----<br>\
 TO PICK: press SHIFT and LEFT MOUSE BUTTON to pick objects.<br>\

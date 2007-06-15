@@ -87,6 +87,8 @@ private:
 
     enum { MINMOVE = 10 };
 
+    enum {CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC};
+    int camera_type;
 
     QTimer* timerAnimate;
     int				_W, _H;
