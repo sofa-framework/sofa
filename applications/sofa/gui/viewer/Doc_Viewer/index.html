@@ -1,182 +1,270 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
-<HTML>
-<HEAD>
-	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
-	<TITLE></TITLE>
-	<META NAME="GENERATOR" CONTENT="OpenOffice.org 2.0  (Linux)">
-	<META NAME="CREATED" CONTENT="20070601;16074300">
-	<META NAME="CHANGEDBY" CONTENT="Florent Falipou">
-	<META NAME="CHANGED" CONTENT="20070615;18095800">
-</HEAD>
-<BODY LANG="en-US" DIR="LTR">
-<P ALIGN=LEFT STYLE="margin-bottom: 0in"><FONT SIZE=4><B>The Graphic
-User Interface in SOFA</B></FONT></P>
-<P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT SIZE=4><FONT FACE="Albany, sans-serif"><A HREF="#GUI">I)
-The GUI</A> <BR><A HREF="#Selection">II) How to Select your Viewer</A>
-<BR><A HREF="#Viewers">III) Viewers</A> <BR><A HREF="#QtOgreViewer">IV)
-QtOgreViewer</A> <BR></FONT></FONT><BR><BR>
-</P>
-<HR>
-<P><BR><BR>
-</P>
-<OL TYPE=I>
-	<LI><P STYLE="margin-top: 0.17in; page-break-after: avoid"><FONT FACE="Albany, sans-serif"><FONT SIZE=4>The
-	QtGUI</FONT></FONT></P>
-	<P STYLE="margin-bottom: 0in">The main interface uses a Qt
-	environment (Qt3.3 for Linux and Qt4 for Windows). 
-	</P>
-	<P STYLE="margin-bottom: 0in"></P>
-	<P STYLE="margin-bottom: 0in"><IMG SRC="GUI.png" NAME="graphics1" ALIGN=LEFT WIDTH=305 HEIGHT=323 BORDER=0><BR CLEAR=LEFT><BR>The
-	Main window, providing all the interactions possible with the
-	simulation, has been created using QtDesigner. The RealGUI contains
-	the viewer which can be selected directly in the main window. The
-	possible choices depends on the configuration file,
-	sofa-default.cfg. <BR>The Simulation is controlled by the RealGUI;
-	it sends the temporal information to the Viewer to update the
-	visualization. <BR><BR>
-	</P>
-</OL>
-<OL TYPE=I START=2>
-	<LI><P STYLE="margin-top: 0.17in; page-break-after: avoid"><A NAME="Selection"></A>
-	<FONT FACE="Albany, sans-serif"><FONT SIZE=4>How to Select your
-	Viewer </FONT></FONT>
-	</P>
-	<P><FONT FACE="Nimbus Roman No9 L, serif">sofa-default.cfg located
-	in your Sofa main directory allows to define what kind of viewer you
-	are willing to have. <BR>By commenting (adding a“#” in front of
-	the line) or uncommenting (removing the “#”) lines, you can
-	allow multiple kind of viewer.<BR>For example, if you want to have
-	the choice to render the scene with QtGLViewer and QtOgreViewer,
-	just modify sofa-default.cfg as below:<BR><BR># DEFINES +=
-	SOFA_GUI_QT <BR><FONT FACE="Courier, monospace">DEFINES +=
-	SOFA_GUI_QTOGREVIEWER<BR>DEFINES += SOFA_GUI_QGLVIEWER<BR><BR></FONT>Then,
-	in the main window, you select the kind of viewer you want. Qt will
-	appear in grey, whereas QGLViewer and Ogre will be
-	available.<BR>Warning, you must reload the scene when this change is
-	made!</FONT></P>
-	<LI><P STYLE="margin-top: 0.17in; page-break-after: avoid"><A NAME="Viewers"></A>
-	<FONT FACE="Albany, sans-serif"><FONT SIZE=4>Viewers</FONT></FONT></P>
-</OL>
-<OL TYPE=I>
-	<P STYLE="margin-bottom: 0in"><IMG SRC="Viewer.png" NAME="graphics2" ALIGN=LEFT WIDTH=553 HEIGHT=417 BORDER=0><BR CLEAR=LEFT><FONT FACE="Nimbus Roman No9 L, serif"><BR>The
-	Viewers available now are:<BR></FONT><BR>
-	</P>
-	<P STYLE="margin-bottom: 0in"></P>
-	<OL>
-		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif">QtViewer:
-		uses openGL, derives a QGLWidget in order to be embedded within
-		Qt.<BR></FONT><BR>
-		</P>
-		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif">QtGLViewer:
-		uses the library QGLViewer. Provides lots of functions to navigate
-		through the scene.<BR>More information at <A HREF="http://artis.imag.fr/~Gilles.Debunne/QGLViewer/download.html">QGLViewer
-		Website.<BR></A></FONT><BR>
-		</P>
-		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif">QtOgreViewer:
-		Embed Ogre within a Qwidget. Allows to get great visuals, through
-		an intensive use of shaders, materials.<BR>Shadows are provided,
-		but all the controls (show the mechanical objects, force fields...)
-		are disabled. <BR>Warning: Ogre is not provided by Sofa, you have
-		to previously install Ogre on your computer. <BR>The support works
-		with Windows, Linux. <BR> - For Windows, the easiest way to proceed
-		is to download and install the SDK. <BR> - For Linux, you have to
-		compile from the source. If Ogre's library aren't installed in the
-		default directory “<B>/usr/local/lib/Ogre</B>” then, you have
-		to set the correct path in
-		“<B>YourSofaDirectory/share/config/plugins_unix.cfg</B>”<BR>To
-		get it: <A HREF="http://www.ogre3d.org/index.php?option=com_content&amp;task=view&amp;id=406&amp;Itemid=103">Ogre
-		Website </A></FONT>
-		</P>
-	</OL>
-	<P STYLE="margin-bottom: 0in"></P>
-	<P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif"><BR>Common
-	Interactions:<BR></FONT><BR>
-	</P>
-	<OL>
-		<LI VALUE=1><P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif"><B>ANIM</B>:
-		launch the Simulation. The text field, <B>DT</B><SPAN STYLE="font-weight: medium">
-		sets the step of time used during the simulation.<BR></SPAN></FONT><BR>
-		</P>
-		<LI><P STYLE="margin-bottom: 0in; font-weight: medium"><FONT FACE="Nimbus Roman No9 L, serif"><B>STEP</B><SPAN STYLE="font-weight: medium">:
-		the simulation will compute its state at the time: t+DT. </SPAN><BR></FONT><BR>
-		</P>
-		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif"><B>Reset
-		Scene</B><SPAN STYLE="font-weight: medium">: reset the Simulation
-		to the initial time, t=0.<BR></SPAN></FONT><BR>
-		</P>
-		<LI><P STYLE="margin-bottom: 0in; font-weight: medium"><FONT FACE="Nimbus Roman No9 L, serif"><B>Reset
-		View</B>: set your camera at initial configuration found in a view
-		file, or default configuration.<BR></FONT><BR>
-		</P>
-		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif"><B>Save
-		View</B><SPAN STYLE="font-weight: medium">:  keep in memory the
-		position and orientation of the camera, for the next time you will
-		load the scene.<BR></SPAN></FONT><BR>
-		</P>
-		<LI><P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif"><B>Save
-		Screenshot</B><SPAN STYLE="font-weight: medium">: take a picture of
-		the current scene, and store it in
-		“</SPAN><B>YourSofaDirectory/share/screenshots” (TODO).</B><SPAN STYLE="font-weight: medium"><BR></SPAN></FONT><BR>
-		</P>
-		<LI><P STYLE="margin-bottom: 0in; font-weight: medium"><FONT FACE="Nimbus Roman No9 L, serif">Several
-		tabs give more information about the current scene: <BR> -
-		depending on the viewer, you can control what is displayed, <BR> -
-		the size of the rendering window, <BR> - the graph of the scene,
-		with all the nodes. You can export this graph into a nice png
-		file.<BR> - the last tab,  “<B>Viewer</B>” gives the name and
-		information about the possibilities of the current viewer, and the
-		shortcuts.<BR></FONT><BR>
-		</P>
-		<LI><P STYLE="margin-bottom: 0in; font-weight: medium"><FONT FACE="Nimbus Roman No9 L, serif">Direct
-		interaction with the scene is possible. To do so, maintain SHIFT
-		button pressed and click on a mechanical object present in the
-		scene; What is called a “Pick Interactor” will be created, and
-		now, you can move a part of the model, following the movement of
-		the mouse. To deactivate the “Pick Interactor”, just release
-		the SHIFT button.</FONT></P>
-		<P STYLE="margin-bottom: 0in; font-weight: medium"></P>
-		<P STYLE="margin-bottom: 0in"><A HREF="http://www.ogre3d.org/index.php?option=com_content&amp;task=view&amp;id=406&amp;Itemid=103"></A><A HREF="http://www.ogre3d.org/index.php?option=com_content&amp;task=view&amp;id=406&amp;Itemid=103"><FONT FACE="Nimbus Roman No9 L, serif"><BR></FONT></A><A HREF="http://www.ogre3d.org/index.php?option=com_content&amp;task=view&amp;id=406&amp;Itemid=103"></A><BR>
-		</P>
-	</OL>
-</OL>
-<OL TYPE=I START=4>
-	<LI><P STYLE="margin-top: 0.17in; page-break-after: avoid"><A NAME="QtOgreViewer"></A>
-	<FONT FACE="Albany, sans-serif"><FONT SIZE=4>QtOgreViewer</FONT></FONT></P>
-	<P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif">To
-	use this viewer, you must have Ogre installed on your computer. <BR>The
-	configuration files are located in:
-	“<B>YourSofaDirectory/share/config/</B>”. </FONT>“<FONT FACE="Nimbus Roman No9 L, serif"><B>plugins.cfg</B>”
-	describes the plugins used by Ogre for Windows, and
-	“<B>plugins_unix.cfg</B>” for... Linux.<BR>By creating a .scene
-	file with the same name as the simulation, you can provide
-	additional models, lights, visuals to the simulation( see Ogre
-	documentation for mode details ). This won't interact with Sofa, but
-	allows you to get a better render.</FONT></P>
-	<P STYLE="margin-bottom: 0in"><FONT FACE="Nimbus Roman No9 L, serif">Additional
-	textures, materials, shaders... in Ogre, have to be put in “
-	<B>YourSofaDirectory/share/textures</B><SPAN STYLE="font-weight: medium">”
-	or “ <B>YourSofaDirectory/share/materials</B><SPAN STYLE="font-weight: medium">”
-	or “<SPAN STYLE="font-weight: medium">
-	<B>YourSofaDirectory/share/shaders</B>” ..</SPAN></SPAN>. They are
-	loaded at the start-up of the viewer.</SPAN></FONT></P>
-	<P STYLE="margin-top: 0.17in; page-break-after: avoid"><IMG SRC="VIewerOGRE.png" NAME="graphics4" ALIGN=LEFT WIDTH=1012 HEIGHT=719 BORDER=0><BR CLEAR=LEFT><FONT FACE="Nimbus Roman No9 L, serif"><FONT SIZE=4><BR></FONT></FONT><BR><BR>
-	</P>
-</OL>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
-<P STYLE="margin-bottom: 0in"><BR>
-</P>
-</BODY>
-</HTML>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title></title>
+  <meta name="CREATED" content="20070601;16074300">
+  <meta name="CHANGEDBY" content="Florent Falipou">
+  <meta name="CHANGED" content="20070615;18095800">
+</head>
+
+<body lang="en-US" dir="ltr">
+<p align="left" style="margin-bottom: 0in"><font size="4"><b>The Graphic User
+Interface in SOFA</b></font></p>
+
+<p style="margin-top: 0.17in; page-break-after: avoid"><font size="4"><font
+face="Albany, sans-serif"><a href="#GUI">I) The GUI</a> <br>
+<a href="#Selection">II) How to Select your Viewer</a> <br>
+<a href="#Viewers">III) Viewers</a> <br>
+<a href="#QtOgreViewer">IV) QtOgreViewer</a> <br>
+</font></font><br>
+<br>
+</p>
+<hr>
+
+<p><br>
+<br>
+</p>
+<ol type="I">
+  <li><p style="margin-top: 0.17in; page-break-after: avoid"><font
+    face="Albany, sans-serif"><font size="4">The QtGUI</font></font></p>
+    <p style="margin-bottom: 0in">The main interface uses a Qt environment
+    (Qt3.3 for Linux and Qt4 for Windows). The Main window, providing all the
+    interactions possible with the simulation,was created using QtDesigner.
+    The RealGUI contains the viewer which can be selected directly in the
+    main window. The possible choices depends on the configuration file,
+    <code>sofa-default.cfg</code>.</p>
+    <p style="margin-bottom: 0in"><img src="GUI.png" name="graphics1"
+    align="left" width="305" height="323" border="0" />
+     <br clear="left">
+    <br>
+    <br>
+    </p>
+    <p style="margin-bottom: 0in">The RealGUI gets a pointer to the root of
+    the scene graph, and controls the application by calling class
+    <code>sofa::simulation::tree:Simulation</code>. </p>
+    <p style="margin-bottom: 0in">The RealGUI uses an internal timer to
+    repeatedly call method
+    <code>sofa::simulation::tree:Simulation::animate(GNode* root, double
+    dt)</code> and then update the viewer.</p>
+  </li>
+</ol>
+<ol type="I" start="2">
+  <li><p style="margin-top: 0.17in; page-break-after: avoid"><a
+    name="Selection"></a> <font face="Albany, sans-serif"><font size="4">How
+    to Select your Viewer</font></font></p>
+    <p><font face="Nimbus Roman No9 L, serif">sofa-default.cfg located in
+    your Sofa main directory allows to define what kind of viewer you are
+    willing to have. <br>
+    By commenting (adding a“#” in front of the line) or uncommenting
+    (removing the “#”) lines, you can allow multiple kind of viewer.<br>
+    For example, if you want to have the choice to render the scene with
+    QtGLViewer and QtOgreViewer, just modify sofa-default.cfg as below:<br>
+    <br>
+    # DEFINES += SOFA_GUI_QT <br>
+    <font face="Courier, monospace">DEFINES += SOFA_GUI_QTOGREVIEWER<br>
+    DEFINES += SOFA_GUI_QGLVIEWER<br>
+    <br>
+    </font>Then, in the main window, you select the kind of viewer you want.
+    Qt will appear in grey, whereas QGLViewer and Ogre will be available.<br>
+    Warning, you must reload the scene when this change is made!</font></p>
+  </li>
+  <li><p style="margin-top: 0.17in; page-break-after: avoid"><a
+    name="Viewers"></a> <font face="Albany, sans-serif"><font
+    size="4">Viewers</font></font></p>
+  </li>
+</ol>
+<ol type="I">
+  <p style="margin-bottom: 0in"><img src="Viewer.png" name="graphics2"
+  align="left" width="553" height="417" border="0" />
+   <br clear="left">
+  <font face="Nimbus Roman No9 L, serif"><br>
+  The Viewers available now are:<br>
+  </font><br>
+  </p>
+
+  <p style="margin-bottom: 0in"></p>
+  <ol>
+    <li><p style="margin-bottom: 0in"><font
+      face="Nimbus Roman No9 L, serif">QtViewer: uses openGL, derives a
+      QGLWidget in order to be embedded within Qt. This class will probably
+      not be maintained. Use QtGLViewer instead.<br>
+      </font><br>
+      </p>
+    </li>
+    <li><p style="margin-bottom: 0in"><font
+      face="Nimbus Roman No9 L, serif">QtGLViewer: uses the library
+      QGLViewer. Provides lots of functions to navigate through the scene.<br>
+      More information at <a
+      href="http://artis.imag.fr/~Gilles.Debunne/QGLViewer/download.html">QGLViewer
+      Website.<br>
+      </a></font><br>
+      </p>
+    </li>
+    <li><p style="margin-bottom: 0in"><font
+      face="Nimbus Roman No9 L, serif">QtOgreViewer: Embed Ogre within a
+      Qwidget. Allows to get great visuals, through an intensive use of
+      shaders, materials.<br>
+      Shadows are provided, but all the controls (show the mechanical
+      objects, force fields...) are disabled. <br>
+      Warning: Ogre is not provided by Sofa, you have to previously install
+      Ogre on your computer. <br>
+      The support works with Windows, Linux. <br>
+      - For Windows, the easiest way to proceed is to download and install
+      the SDK. <br>
+      - For Linux, you have to compile from the source. If Ogre's library
+      aren't installed in the default directory
+      “<b>/usr/local/lib/Ogre</b>” then, you have to set the correct path
+      in “<b>YourSofaDirectory/share/config/plugins_unix.cfg</b>”<br>
+      To get it: <a
+      href="http://www.ogre3d.org/index.php?option=com_content&amp;task=view&amp;id=406&amp;Itemid=103">Ogre
+      Website</a></font></p>
+    </li>
+  </ol>
+
+  <p style="margin-bottom: 0in"></p>
+
+  <p style="margin-bottom: 0in"><font face="Nimbus Roman No9 L, serif"><br>
+  Common Interactions:<br>
+  </font><br>
+  </p>
+  <ol>
+    <li value="1"><p style="margin-bottom: 0in"><font
+      face="Nimbus Roman No9 L, serif"><b>ANIM</b>: launch the Simulation.
+      The text field, <b>DT</b><span style="font-weight: medium">sets the
+      step of time used during the simulation.<br>
+      </span></font><br>
+      </p>
+    </li>
+    <li><p style="margin-bottom: 0in; font-weight: medium"><font
+      face="Nimbus Roman No9 L, serif"><b>STEP</b><span
+      style="font-weight: medium">: the simulation will compute its state at
+      the time: t+DT. </span><br>
+      </font><br>
+      </p>
+    </li>
+    <li><p style="margin-bottom: 0in"><font
+      face="Nimbus Roman No9 L, serif"><b>Reset Scene</b><span
+      style="font-weight: medium">: reset the Simulation to the initial time,
+      t=0.<br>
+      </span></font><br>
+      </p>
+    </li>
+    <li><p style="margin-bottom: 0in; font-weight: medium"><font
+      face="Nimbus Roman No9 L, serif"><b>Reset View</b>: set your camera at
+      initial configuration found in a view file, or default
+      configuration.<br>
+      </font><br>
+      </p>
+    </li>
+    <li><p style="margin-bottom: 0in"><font
+      face="Nimbus Roman No9 L, serif"><b>Save View</b><span
+      style="font-weight: medium">: keep in memory the position and
+      orientation of the camera, for the next time you will load the
+      scene.<br>
+      </span></font><br>
+      </p>
+    </li>
+    <li><p style="margin-bottom: 0in"><font
+      face="Nimbus Roman No9 L, serif"><b>Save Screenshot</b><span
+      style="font-weight: medium">: take a picture of the current
+      scene.</span></font><br>
+      </p>
+    </li>
+    <li><p style="margin-bottom: 0in; font-weight: medium"><font
+      face="Nimbus Roman No9 L, serif">Several tabs give more information
+      about the current scene: <br>
+      - depending on the viewer, you can control what is displayed, <br>
+      - the size of the rendering window, <br>
+      - the graph of the scene, with all the nodes. You can export this graph
+      into a nice png file.<br>
+      - the last tab, “<b>Viewer</b>” gives the name and information
+      about the possibilities of the current viewer, and the shortcuts.<br>
+      </font><br>
+      </p>
+    </li>
+    <li><p style="margin-bottom: 0in; font-weight: medium"><font
+      face="Nimbus Roman No9 L, serif">Direct interaction with the scene is
+      possible. To do so, maintain SHIFT button pressed and click on a
+      collision model present in the scene; A “Pick Interactor” will be
+      created, and attached to the picked collision model, if any, with a
+      spring. </font></p>
+      <p style="margin-bottom: 0in; font-weight: medium"><font
+      face="Nimbus Roman No9 L, serif">If you release the mouse button first,
+      the spring is removed.</font></p>
+      <p style="margin-bottom: 0in; font-weight: medium"><font
+      face="Nimbus Roman No9 L, serif">If you release the SHIFT button first,
+      the spring is fixed and exists until you pick another point in the
+      scene.</font></p>
+      <p style="margin-bottom: 0in; font-weight: medium"></p>
+      <p style="margin-bottom: 0in"><a
+      href="http://www.ogre3d.org/index.php?option=com_content&amp;task=view&amp;id=406&amp;Itemid=103"></a><a
+      href="http://www.ogre3d.org/index.php?option=com_content&amp;task=view&amp;id=406&amp;Itemid=103"><font
+      face="Nimbus Roman No9 L, serif"><br>
+      </font></a><a
+      href="http://www.ogre3d.org/index.php?option=com_content&amp;task=view&amp;id=406&amp;Itemid=103"></a><br>
+      </p>
+    </li>
+  </ol>
+</ol>
+<ol type="I" start="4">
+  <li><p style="margin-top: 0.17in; page-break-after: avoid"><a
+    name="QtOgreViewer"></a> <font face="Albany, sans-serif"><font
+    size="4">QtOgreViewer</font></font></p>
+    <p style="margin-bottom: 0in"><font face="Nimbus Roman No9 L, serif">To
+    use this viewer, you must have Ogre installed on your computer. <br>
+    The configuration files are located in:
+    “<b>YourSofaDirectory/share/config/</b>”. </font>“<font
+    face="Nimbus Roman No9 L, serif"><b>plugins.cfg</b>” describes the
+    plugins used by Ogre for Windows, and “<b>plugins_unix.cfg</b>”
+    for... Linux.<br>
+    By creating a .scene file with the same name as the simulation, you can
+    provide additional models, lights, visuals to the simulation( see Ogre
+    documentation for mode details ). This won't interact with Sofa, but
+    allows you to get a better render.</font></p>
+    <p style="margin-bottom: 0in"><font
+    face="Nimbus Roman No9 L, serif">Additional textures, materials,
+    shaders... in Ogre, have to be put in “
+    <b>YourSofaDirectory/share/textures</b><span
+    style="font-weight: medium">” or “
+    <b>YourSofaDirectory/share/materials</b><span
+    style="font-weight: medium">” or “<span
+    style="font-weight: medium"><b>YourSofaDirectory/share/shaders</b>”
+    ..</span></span>. They are loaded at the start-up of the
+    viewer.</span></font></p>
+    <p style="margin-top: 0.17in; page-break-after: avoid"><img
+    src="VIewerOGRE.png" name="graphics4" align="left" width="1012"
+    height="719" border="0" />
+     <br clear="left">
+    <font face="Nimbus Roman No9 L, serif"><font size="4"><br>
+    </font></font><br>
+    <br>
+    </p>
+  </li>
+</ol>
+
+<p style="margin-bottom: 0in"><br>
+</p>
+
+<p style="margin-bottom: 0in"><br>
+</p>
+
+<p style="margin-bottom: 0in"><br>
+</p>
+
+<p style="margin-bottom: 0in"><br>
+</p>
+
+<p style="margin-bottom: 0in"><br>
+</p>
+
+<p style="margin-bottom: 0in"><br>
+</p>
+
+<p style="margin-bottom: 0in"><br>
+</p>
+
+<p style="margin-bottom: 0in"><br>
+</p>
+</body>
+</html>
