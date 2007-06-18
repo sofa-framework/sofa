@@ -1853,6 +1853,7 @@ void QtGLViewer::setScene(sofa::simulation::tree::GNode* scene, const char* file
 {
 
     std::ostringstream ofilename;
+    std::string screenshot_prefix;
 
     sceneFileName = (filename==NULL)?"":filename;
 
@@ -1863,11 +1864,18 @@ void QtGLViewer::setScene(sofa::simulation::tree::GNode* scene, const char* file
         if (!end) end = begin + sceneFileName.length();
         ofilename << std::string(begin, end);
         ofilename << "_";
+
+        screenshot_prefix = ofilename.str();
+        int position_scene = screenshot_prefix.rfind("scenes/");
+        if (position_scene != std::string::npos)
+        {
+            screenshot_prefix.replace(position_scene, 7, "share/screenshots/");
+        }
     }
     else
-        ofilename << "scene_";
+        screenshot_prefix = "scene_";
 
-    capture.setPrefix(ofilename.str());
+    capture.setPrefix(screenshot_prefix);
     if (scene != groot)
     {
         if (interactor != NULL)
