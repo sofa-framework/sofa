@@ -68,8 +68,8 @@ public:
     virtual void        setPrefix(const std::string filename) {capture.setPrefix(filename);};
     virtual void        screenshot(const std::string filename)=0;
 
-    sofa::helper::gl::Capture capture;
 protected:
+    sofa::helper::gl::Capture capture;
     sofa::simulation::tree::GNode* groot;
     std::string sceneFileName;
 
