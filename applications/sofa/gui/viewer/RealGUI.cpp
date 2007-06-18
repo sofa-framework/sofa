@@ -71,6 +71,8 @@ extern simulation::tree::GNode* groot;
 #include <QTimer>
 #include <QAction>
 #include <QMessageBox>
+#include <QFileDialog>
+
 #define WIDTH_OFFSET 2
 #define HEIGHT_OFFSET 2
 #define INFINITY 9.0e10
@@ -97,6 +99,7 @@ extern simulation::tree::GNode* groot;
 #include <qapplication.h>
 #include <qaction.h>
 #include <qmessagebox.h>
+#include <qfiledialog.h>
 
 #define WIDTH_OFFSET 0
 #define HEIGHT_OFFSET 0
@@ -122,14 +125,14 @@ namespace guiviewer
 
 #ifdef QT_MODULE_QT3SUPPORT
 typedef Q3ListView QListView;
-typedef Q3FileDialog QFileDialog;
+//typedef Q3FileDialog QFileDialog;
 typedef Q3DockWindow QDockWindow;
 typedef QStackedWidget QWidgetStack;
 typedef Q3TextEdit QTextEdit;
 #else
 typedef QListViewItem Q3ListViewItem;
 typedef QListView Q3ListView;
-typedef QFileDialog Q3FileDialog;
+//typedef QFileDialog Q3FileDialog;
 //typedef QWidgetStack QStackedWidget;
 typedef QTextEdit Q3TextEdit;
 #endif
@@ -743,7 +746,7 @@ void RealGUI::addViewer()
 
     connect( ResetViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( resetView() ) );
     connect( SaveViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( saveView() ) );
-    connect( screenshotButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( screenshot() ) );
+    connect( screenshotButton, SIGNAL( clicked() ), this, SLOT( screenshot() ) );
     connect( sizeW, SIGNAL( valueChanged(int) ), viewer->getQWidget(), SLOT( setSizeW(int) ) );
     connect( sizeH, SIGNAL( valueChanged(int) ), viewer->getQWidget(), SLOT( setSizeH(int) ) );
     connect(viewer->getQWidget(), SIGNAL(resizeW(int)), sizeW, SLOT(setValue(int)));
@@ -959,6 +962,38 @@ void RealGUI::setScene(GNode* groot, const char* filename)
     //dumpGraph(groot, new Q3ListViewItem(graphView));
     graphListener = new GraphListenerQListView(graphView);
     graphListener->addChild(NULL, groot);
+}
+
+void RealGUI::screenshot()
+{
+    std::string filename;
+
+#ifdef QT_MODULE_QT3SUPPORT
+    filename = QFileDialog::getSaveFileName(
+            this,
+            "Choose a filename to save under",
+            viewer->screenshotName().c_str(),
+            "Images (*.png *.bmp *.jpg)");
+
+#else
+    filename = QFileDialog::getSaveFileName(
+            viewer->screenshotName().c_str(),
+            "Images (*.png *.bmp *.jpg)",
+            this,
+            "save file dialog"
+            "Choose a filename to save under" );
+#endif
+    if (filename != "")
+    {
+        std::ostringstream ofilename;
+        const char* begin = filename.c_str();
+        const char* end = strrchr(begin,'_');
+        if (!end) end = begin + filename.length();
+        ofilename << std::string(begin, end);
+        ofilename << "_";
+        viewer->setPrefix(ofilename.str());
+        viewer->screenshot(filename);
+    }
 }
 
 void RealGUI::fileOpen()

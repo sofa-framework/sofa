@@ -64,34 +64,28 @@ bool Capture::saveScreen(const std::string& filename)
     return true;
 }
 
-bool Capture::saveScreen()
+std::string Capture::findFilename()
 {
     std::string filename;
     char buf[32];
     int c;
-    if (counter == -1)
+    c = 0;
+    struct stat st;
+    do
     {
-        c = 0;
-        struct stat st;
-        do
-        {
-            ++c;
-            sprintf(buf, "%04d",c);
-            filename = prefix;
-            filename += buf;
+        ++c;
+        sprintf(buf, "%04d",c);
+        filename = prefix;
+        filename += buf;
 #ifdef SOFA_HAVE_PNG
-            filename += ".png";
+        filename += ".png";
 #else
-            filename += ".bmp";
+        filename += ".bmp";
 #endif
-        }
-        while (stat(filename.c_str(),&st)==0);
-        counter = c+1;
     }
-    else
-    {
-        c = counter++;
-    }
+    while (stat(filename.c_str(),&st)==0);
+    counter = c+1;
+
     sprintf(buf, "%04d",c);
     filename = prefix;
     filename += buf;
@@ -100,7 +94,14 @@ bool Capture::saveScreen()
 #else
     filename += ".bmp";
 #endif
-    return saveScreen(filename);
+
+    return filename;
+}
+
+
+bool Capture::saveScreen()
+{
+    return saveScreen(findFilename());
 }
 
 } // namespace gl

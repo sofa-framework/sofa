@@ -147,6 +147,7 @@ public slots:
     void setDt(double);
     void setDt(const QString&);
     void resetScene();
+    void screenshot();
     void slot_showVisual(bool);
     void slot_showBehavior(bool);
     void slot_showCollision(bool);

@@ -60,6 +60,7 @@ public:
     void setPrefix(const std::string v) { prefix=v; }
     void setCounter(int v=-1) { counter = v; }
 
+    std::string findFilename();
     bool saveScreen(const std::string& filename);
 
     bool saveScreen();

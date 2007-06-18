@@ -372,7 +372,7 @@ void QtGLViewer::init(void)
     // Redefine keyboard events
     // The default SAVE_SCREENSHOT shortcut is Ctrl+S and this shortcut is used to
     // save x3d file in the MainController. So we need to change it:
-    setShortcut(QGLViewer::SAVE_SCREENSHOT, Qt::Key_I);
+    //setShortcut(QGLViewer::SAVE_SCREENSHOT, Qt::Key_I);
     setShortcut(QGLViewer::HELP, Qt::Key_H);
 }
 
@@ -1333,7 +1333,7 @@ void QtGLViewer::draw()
         static int counter = 0;
         if ((counter++ % CAPTURE_PERIOD)==0)
 #endif
-            screenshot();
+            screenshot(capture.findFilename());
     }
 
     if (_waitForRender)
@@ -1376,12 +1376,12 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
     {
         switch(e->key())
         {
-            // 	case Qt::Key_S:
-            // 		// --- save screenshot
-            // 		{
-            // 			screenshot();
-            // 			break;
-            // 		}
+        case Qt::Key_I:
+            // --- save screenshot
+        {
+            screenshot(capture.findFilename());
+            break;
+        }
         case Qt::Key_V:
             // --- save video
         {
@@ -1843,9 +1843,9 @@ void QtGLViewer::saveView()
 }
 
 
-void QtGLViewer::screenshot()
+void QtGLViewer::screenshot(const std::string filename)
 {
-    capture.saveScreen();
+    capture.saveScreen(filename);
 }
 
 
@@ -1935,7 +1935,7 @@ TO SWITCH INTERACTION MODE: press the KEY C.<br>\
 Allow or not the navigation with the mouse.<br>\
 <br>\
 -----<br>\
-TO CHANGE THE TYPE OF CAMERA: press the KEY T<br>\
+TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA: press the KEY T<br>\
 <br>\
 -----<br>\
 TO PICK: press SHIFT and LEFT MOUSE BUTTON to pick objects.<br>\
@@ -1947,7 +1947,7 @@ TO DRAW SHADOWS: press the KEY L<br>\
 TO DRAW THE SCENE AXIS: press the KEY R.<br>\
 <br>\
 -----<br>\
-TO SAVE A SCREENSHOT: press the KEY S.<br>\
+TO SAVE A SCREENSHOT: press the KEY I.<br>\
 The captured images are saved in the running project directory under the name format capturexxxx.bmp<br>\
 <br>\
 -----<br>\

@@ -1438,7 +1438,7 @@ void QtViewer::paintGL()
         static int counter = 0;
         if ((counter++ % CAPTURE_PERIOD)==0)
 #endif
-            screenshot();
+            screenshot(capture.findFilename());
     }
 
     if (_waitForRender)
@@ -1606,7 +1606,7 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
         case Qt::Key_S:
             // --- save screenshot
         {
-            screenshot();
+            screenshot(capture.findFilename());
             break;
         }
         case Qt::Key_V:
@@ -2369,9 +2369,9 @@ void QtViewer::saveView()
     }
 }
 
-void QtViewer::screenshot()
+void QtViewer::screenshot(const std::string filename)
 {
-    capture.saveScreen();
+    capture.saveScreen(filename);
 }
 
 
@@ -2394,11 +2394,13 @@ void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filena
         {
             screenshot_prefix.replace(position_scene, 7, "share/screenshots/");
         }
+
     }
     else
         screenshot_prefix = "scene_";
 
     capture.setPrefix(screenshot_prefix);
+
     if (scene != groot)
     {
         SwitchToPresetView();
@@ -2454,7 +2456,7 @@ TO SWITCH INTERACTION MODE: press the KEY C.<br>\
 Allow or not the navigation with the mouse.<br>\
 <br>\
 -----<br>\
-TO CHANGE THE TYPE OF CAMERA: press the KEY T<br>\
+TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA: press the KEY T<br>\
 <br>\
 -----<br>\
 TO PICK: press SHIFT and LEFT MOUSE BUTTON to pick objects.<br>\

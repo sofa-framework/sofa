@@ -40,7 +40,6 @@
 #include <sofa/helper/gl/Transformation.h>
 #include <sofa/helper/gl/Trackball.h>
 #include <sofa/helper/gl/Texture.h>
-#include <sofa/helper/gl/Capture.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/component/collision/RayPickInteractor.h>
 #include <sofa/simulation/tree/xml/Element.h>
@@ -139,7 +138,6 @@ private:
     Vector3 sceneMinBBox;
     Vector3 sceneMaxBBox;
     bool initTexturesDone;
-    Capture capture;
 public:
 
     /// Activate this class of viewer.
@@ -163,7 +161,7 @@ public:
 public slots:
     virtual void resetView();
     virtual void saveView();
-    virtual void screenshot();
+    virtual void screenshot(const std::string filename);
     virtual void setSizeW(int);
     virtual void setSizeH(int);
 
