@@ -103,7 +103,7 @@ public:
     const Cube& getCube(index_type i);
 
     /// return true if the given cube is active, i.e. it is not empty
-    virtual bool isCubeActive(int index) { return true; }
+    virtual bool isCubeActive(int /*index*/) { return true; }
 
     // Points accessors (not always available)
 

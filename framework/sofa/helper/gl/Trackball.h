@@ -86,14 +86,11 @@ namespace helper
 namespace gl
 {
 
-using namespace sofa::defaulttype;
-
 class   Trackball
 {
-private:
-    Quaternion	_quat;
-
 public:
+    typedef Quater<double> Quaternion;
+
     Trackball();
     ~Trackball();
 
@@ -111,6 +108,9 @@ public:
     // the given vector) and an angle about which to rotate.  The angle is
     // expressed in radians.  The result is put into the third argument.
     void AxisToQuat(double a[3], double phi, double q[4]);
+
+private:
+    Quaternion	_quat;
 };
 
 } // namespace gl

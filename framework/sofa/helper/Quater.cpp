@@ -22,14 +22,12 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <math.h>
-#include <iostream>
-#include <sofa/defaulttype/Quat.inl>
+#include "Quater.inl"
 
 namespace sofa
 {
 
-namespace defaulttype
+namespace helper
 {
 
 // instanciate the classes
@@ -40,7 +38,7 @@ template class Quater<float>;
 //template std::ostream& operator<<(std::ostream& out, Quater<float> Q);
 //template std::ostream& operator<<(std::ostream& out, Quater<double> Q);
 
-} // namespace defaulttype
+} // namespace helper
 
 } // namespace sofa
 

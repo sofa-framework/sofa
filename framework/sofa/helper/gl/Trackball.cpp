@@ -83,7 +83,7 @@ namespace helper
 namespace gl
 {
 
-//using namespace sofa::defaulttype;
+using namespace sofa::defaulttype;
 
 /*
  * This size should really be based on the distance from the center of

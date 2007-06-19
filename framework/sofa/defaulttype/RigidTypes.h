@@ -60,7 +60,7 @@ class StdRigidTypes<3, real>
 public:
     typedef real Real;
     typedef Vec<3,Real> Vec3;
-    typedef Quater<Real> Quat;
+    typedef helper::Quater<Real> Quat;
 
     class Deriv
     {

@@ -32,6 +32,5 @@ HEADERS += \
 
 SOURCES += \
           Frame.cpp \
-          Quat.cpp \
           SolidTypes.cpp
 

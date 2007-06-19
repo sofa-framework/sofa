@@ -39,6 +39,8 @@ HEADERS += \
           LCPSolver.h \
           LCPSolver.inl \
           PolarDecompose.h \
+          Quater.h \
+          Quater.inl \
           rmath.h \
           static_assert.h \
           system/config.h \
@@ -71,6 +73,7 @@ SOURCES += \
           io/SphereLoader.cpp \
           io/TriangleLoader.cpp \
           LCPcalc.cpp \
+          Quater.cpp \
           system/SetDirectory.cpp \
           system/FileRepository.cpp \
           system/thread/CTime.cpp \

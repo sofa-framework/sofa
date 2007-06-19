@@ -27,7 +27,7 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/Quater.h>
 
 namespace sofa
 {
@@ -48,7 +48,7 @@ class Frame
 public:
     typedef double Real;
     typedef Vec<3,Real> Vec3;
-    typedef Quater<Real> Quat;
+    typedef helper::Quater<Real> Quat;
     typedef Mat<3,3,Real> Mat33;
 private:
     Vec3 origin_;

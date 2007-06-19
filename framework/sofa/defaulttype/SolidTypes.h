@@ -60,7 +60,7 @@ class SolidTypes
 public:
     typedef R Real;
     typedef defaulttype::Vec<3,Real> Vec;
-    typedef defaulttype::Quater<Real> Rot;
+    typedef helper::Quater<Real> Rot;
     typedef defaulttype::Mat<3,3,Real> Mat;
     typedef defaulttype::Mat<6,6,Real> Mat66;
     typedef defaulttype::Vec<6,Real> DOF;
