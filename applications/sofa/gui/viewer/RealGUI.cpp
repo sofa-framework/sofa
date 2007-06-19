@@ -125,14 +125,14 @@ namespace guiviewer
 
 #ifdef QT_MODULE_QT3SUPPORT
 typedef Q3ListView QListView;
-//typedef Q3FileDialog QFileDialog;
+typedef Q3FileDialog QFileDialog;
 typedef Q3DockWindow QDockWindow;
 typedef QStackedWidget QWidgetStack;
 typedef Q3TextEdit QTextEdit;
 #else
 typedef QListViewItem Q3ListViewItem;
 typedef QListView Q3ListView;
-//typedef QFileDialog Q3FileDialog;
+typedef QFileDialog Q3FileDialog;
 //typedef QWidgetStack QStackedWidget;
 typedef QTextEdit Q3TextEdit;
 #endif
@@ -966,33 +966,30 @@ void RealGUI::setScene(GNode* groot, const char* filename)
 
 void RealGUI::screenshot()
 {
-    std::string filename;
 
-#ifdef QT_MODULE_QT3SUPPORT
-    filename = QFileDialog::getSaveFileName(
-            this,
-            "Choose a filename to save under",
-            viewer->screenshotName().c_str(),
-            "Images (*.png *.bmp *.jpg)");
+    QString filename;
 
-#else
     filename = QFileDialog::getSaveFileName(
             viewer->screenshotName().c_str(),
             "Images (*.png *.bmp *.jpg)",
             this,
             "save file dialog"
             "Choose a filename to save under" );
-#endif
     if (filename != "")
     {
         std::ostringstream ofilename;
-        const char* begin = filename.c_str();
+        const char* begin = filename;
         const char* end = strrchr(begin,'_');
         if (!end) end = begin + filename.length();
         ofilename << std::string(begin, end);
         ofilename << "_";
         viewer->setPrefix(ofilename.str());
+#ifdef QT_MODULE_QT3SUPPORT
+        viewer->screenshot(filename.toStdString());
+#else
         viewer->screenshot(filename);
+#endif
+
     }
 }
 
