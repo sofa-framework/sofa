@@ -70,16 +70,14 @@ public:
 
     virtual ~Pipeline();
 
-    virtual void init();
-
-    virtual void reset();
+    virtual void reset()=0;
 
     /// Remove collision response from last step
-    virtual void computeCollisionReset();
+    virtual void computeCollisionReset()=0;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void computeCollisionDetection();
+    virtual void computeCollisionDetection()=0;
     /// Add collision response in the simulation graph
-    virtual void computeCollisionResponse();
+    virtual void computeCollisionResponse()=0;
 
     void computeCollisions()
     {

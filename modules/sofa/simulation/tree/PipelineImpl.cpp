@@ -22,23 +22,23 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/core/componentmodel/collision/Pipeline.h>
+#include "PipelineImpl.h"
 //#include <sofa/component/collision/DiscreteIntersection.h>
 #include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
 {
 
-namespace core
+namespace simulation
 {
 
-namespace componentmodel
+namespace tree
 {
 
-namespace collision
-{
-using namespace core::objectmodel;
-using namespace core::componentmodel::behavior;
+using namespace sofa::core;
+using namespace sofa::core::objectmodel;
+using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::componentmodel::collision;
 
 PipelineImpl::PipelineImpl()
 {
@@ -106,11 +106,8 @@ void PipelineImpl::computeCollisionResponse()
     doCollisionResponse();
 }
 
-} // namespace collision
+} // namespace tree
 
-} // namespace componentmodel
-
-} // namespace core
+} // namespace simulation
 
 } // namespace sofa
-
