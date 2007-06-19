@@ -29,6 +29,7 @@
 #define SOFA_COMPONENT_ODESOLVER_STATICSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/simulation/tree/OdeSolverImpl.h>
 
 
 namespace sofa
@@ -43,7 +44,7 @@ namespace odesolver
 using core::objectmodel::DataField;
 
 /** Finds the static equilibrium of a system. Can diverge when there are an infinity of solutions. */
-class StaticSolver : public core::componentmodel::behavior::OdeSolver
+class StaticSolver : public sofa::simulation::tree::OdeSolverImpl
 {
 
 public:

@@ -23,14 +23,14 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/MechanicalAction.h>
-#include <sofa/simulation/tree/MechanicalVPrintAction.h>
+//#include <sofa/simulation/tree/MechanicalAction.h>
+//#include <sofa/simulation/tree/MechanicalVPrintAction.h>
 
 
 #include <stdlib.h>
 #include <math.h>
 
-using namespace sofa::simulation::tree;
+//using namespace sofa::simulation::tree;
 
 namespace sofa
 {
@@ -45,13 +45,11 @@ namespace behavior
 {
 
 OdeSolver::OdeSolver()
-    : /*mat(NULL),*/ result(0)
+//: /*mat(NULL),*/ result(0)
 {}
 
 OdeSolver::~OdeSolver()
 {}
-
-using namespace simulation::tree;
 
 OdeSolver::VectorIndexAlloc::VectorIndexAlloc()
     : maxIndex(VecId::V_FIRST_DYNAMIC_INDEX-1)
@@ -80,6 +78,10 @@ bool OdeSolver::VectorIndexAlloc::free(unsigned int v)
     vfree.insert(v);
     return true;
 }
+
+#if 0
+
+using namespace simulation::tree;
 
 double OdeSolver::finish()
 {
@@ -275,6 +277,7 @@ void OdeSolver::matResUpdatePosition(defaulttype::SofaBaseVector *vect, unsigned
 }
 */
 
+#endif
 
 } // namespace behavior
 

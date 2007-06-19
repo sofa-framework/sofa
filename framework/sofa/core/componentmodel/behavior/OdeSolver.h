@@ -89,38 +89,38 @@ public:
     /// Wait for the completion of previous operations and return the result of the last v_dot call.
     ///
     /// Note that currently all methods are blocking so finish simply return the result of the last v_dot call.
-    virtual double finish();
+    virtual double finish() = 0;
 
     /// Allocate a temporary vector
-    virtual VecId v_alloc(VecId::Type t);
+    virtual VecId v_alloc(VecId::Type t) = 0;
     /// Free a previously allocated temporary vector
-    virtual void v_free(VecId v);
+    virtual void v_free(VecId v) = 0;
 
-    virtual void v_clear(VecId v); ///< v=0
-    virtual void v_eq(VecId v, VecId a); ///< v=a
-    virtual void v_peq(VecId v, VecId a, double f=1.0); ///< v+=f*a
-    virtual void v_teq(VecId v, double f); ///< v*=f
-    virtual void v_dot(VecId a, VecId b); ///< a dot b ( get result using finish )
+    virtual void v_clear(VecId v) = 0; ///< v=0
+    virtual void v_eq(VecId v, VecId a) = 0; ///< v=a
+    virtual void v_peq(VecId v, VecId a, double f=1.0) = 0; ///< v+=f*a
+    virtual void v_teq(VecId v, double f) = 0; ///< v*=f
+    virtual void v_dot(VecId a, VecId b) = 0; ///< a dot b ( get result using finish )
     /// Propagate the given displacement through all mappings
-    virtual void propagateDx(VecId dx);
+    virtual void propagateDx(VecId dx) = 0;
     /// Apply projective constraints to the given vector
-    virtual void projectResponse(VecId dx, double **W=NULL);
-    virtual void addMdx(VecId res, VecId dx); ///< res += M.dx
-    virtual void integrateVelocity(VecId res, VecId x, VecId v, double dt); ///< res = x + v.dt
-    virtual void accFromF(VecId a, VecId f); ///< a = M^-1 . f
+    virtual void projectResponse(VecId dx, double **W=NULL) = 0;
+    virtual void addMdx(VecId res, VecId dx) = 0; ///< res += M.dx
+    virtual void integrateVelocity(VecId res, VecId x, VecId v, double dt) = 0; ///< res = x + v.dt
+    virtual void accFromF(VecId a, VecId f) = 0; ///< a = M^-1 . f
     /// Propagate the given state (time, position and velocity) through all mappings
-    virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
+    virtual void propagatePositionAndVelocity(double t, VecId x, VecId v) = 0;
 
     /// Compute the current force (given the latest propagated position and velocity)
-    virtual void computeForce(VecId result);
+    virtual void computeForce(VecId result) = 0;
     /// Compute the current force delta (given the latest propagated displacement)
-    virtual void computeDf(VecId df);
+    virtual void computeDf(VecId df) = 0;
     /// Compute the acceleration corresponding to the given state (time, position and velocity)
-    virtual void computeAcc(double t, VecId a, VecId x, VecId v);
+    virtual void computeAcc(double t, VecId a, VecId x, VecId v) = 0;
 
-    virtual void computeContactForce(VecId result);
-    virtual void computeContactDf(VecId df);
-    virtual void computeContactAcc(double t, VecId a, VecId x, VecId v);
+    virtual void computeContactForce(VecId result) = 0;
+    virtual void computeContactDf(VecId df) = 0;
+    virtual void computeContactAcc(double t, VecId a, VecId x, VecId v) = 0;
 
     /// @}
 
@@ -129,10 +129,10 @@ public:
 
     // BaseMatrix & BaseVector Computations
 
-    virtual void addMBK_ToMatrix(defaulttype::BaseMatrix *A, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0);
-    virtual void addMBKdx_ToVector(VecId res, VecId dx, double mFact=1.0, double bFact=1.0, double kFact=1.0);
-    virtual void getMatrixDimension(unsigned int * const, unsigned int * const);
-    virtual void multiVector2BasicVector(VecId src, defaulttype::BaseVector *dest=NULL, unsigned int offset=0);
+    virtual void addMBK_ToMatrix(defaulttype::BaseMatrix *A, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0) = 0;
+    virtual void addMBKdx_ToVector(VecId res, VecId dx, double mFact=1.0, double bFact=1.0, double kFact=1.0) = 0;
+    virtual void getMatrixDimension(unsigned int * const, unsigned int * const) = 0;
+    virtual void multiVector2BasicVector(VecId src, defaulttype::BaseVector *dest=NULL, unsigned int offset=0) = 0;
 
 //    virtual void computeMatrix(defaulttype::SofaBaseMatrix *mat=NULL, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0);
 //    virtual void computeOpVector(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
@@ -144,8 +144,8 @@ public:
     /// @{
 
     /// Dump the content of the given vector.
-    virtual void print( VecId v, std::ostream& out );
-    virtual void printWithElapsedTime( VecId v,  unsigned time, std::ostream& out=std::cerr );
+    virtual void print( VecId v, std::ostream& out ) = 0;
+    virtual void printWithElapsedTime( VecId v,  unsigned time, std::ostream& out=std::cerr ) = 0;
 
     /// @}
 
@@ -170,9 +170,6 @@ protected:
     };
     std::map<VecId::Type, VectorIndexAlloc > vectors; ///< Current temporary vectors
 
-    /// Result of latest v_dot operation
-    double result;
-
     /// Helper class providing a high-level view of underlying state vectors.
     ///
     /// It is used to convert math-like operations to call to computation methods.
@@ -183,7 +180,7 @@ protected:
 
     protected:
         /// Solver who is using this vector
-        core::componentmodel::behavior::OdeSolver* parent;
+        OdeSolver* parent;
 
         /// Identifier of this vector
         VecId v;
@@ -193,11 +190,11 @@ protected:
 
     public:
         /// Refers to a state vector with the given ID (VecId::position(), VecId::velocity(), etc).
-        MultiVector(core::componentmodel::behavior::OdeSolver* parent, VecId v) : parent(parent), v(v)
+        MultiVector(OdeSolver* parent, VecId v) : parent(parent), v(v)
         {}
 
         /// Allocate a new temporary vector with the given type (VecId::V_COORD or VecId::V_DERIV).
-        MultiVector(core::componentmodel::behavior::OdeSolver* parent, VecId::Type t) : parent(parent), v(parent->v_alloc(t))
+        MultiVector(OdeSolver* parent, VecId::Type t) : parent(parent), v(parent->v_alloc(t))
         {}
 
         ~MultiVector()

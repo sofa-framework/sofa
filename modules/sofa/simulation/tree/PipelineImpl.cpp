@@ -24,7 +24,7 @@
 *******************************************************************************/
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 //#include <sofa/component/collision/DiscreteIntersection.h>
-//#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
 {
@@ -37,25 +37,18 @@ namespace componentmodel
 
 namespace collision
 {
-//using namespace core::objectmodel;
-//using namespace core::componentmodel::behavior;
+using namespace core::objectmodel;
+using namespace core::componentmodel::behavior;
 
-Pipeline::Pipeline()
-    : intersectionMethod(NULL),
-      broadPhaseDetection(NULL),
-      narrowPhaseDetection(NULL),
-      contactManager(NULL),
-      groupManager(NULL)
+PipelineImpl::PipelineImpl()
 {
 }
 
-Pipeline::~Pipeline()
+PipelineImpl::~PipelineImpl()
 {
 }
 
-#if 0
-
-void Pipeline::init()
+void PipelineImpl::init()
 {
     simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
     if(root == NULL) return;
@@ -75,16 +68,16 @@ void Pipeline::init()
     root->getTreeObjects<CollisionGroupManager>(&groupManagers);
     groupManager = (groupManagers.empty() ? NULL : groupManagers[0]);
 
-    if (intersectionMethod==NULL)
-        intersectionMethod = new sofa::component::collision::DiscreteIntersection;
+//	if (intersectionMethod==NULL)
+//		intersectionMethod = new sofa::component::collision::DiscreteIntersection;
 }
 
-void Pipeline::reset()
+void PipelineImpl::reset()
 {
     computeCollisionReset();
 }
 
-void Pipeline::computeCollisionReset()
+void PipelineImpl::computeCollisionReset()
 {
     simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
     if(root == NULL) return;
@@ -97,7 +90,7 @@ void Pipeline::computeCollisionReset()
     doCollisionReset();
 }
 
-void Pipeline::computeCollisionDetection()
+void PipelineImpl::computeCollisionDetection()
 {
     simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
     if(root == NULL) return;
@@ -106,14 +99,12 @@ void Pipeline::computeCollisionDetection()
     doCollisionDetection(collisionModels);
 }
 
-void Pipeline::computeCollisionResponse()
+void PipelineImpl::computeCollisionResponse()
 {
     simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
     if(root == NULL) return;
     doCollisionResponse();
 }
-
-#endif
 
 } // namespace collision
 

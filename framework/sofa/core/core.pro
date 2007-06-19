@@ -91,3 +91,7 @@ TARGET = sofacore$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
+
+# Make sure there are no cross-dependencies
+INCLUDEPATH -= $$SOFA_DIR/modules
+INCLUDEPATH -= $$SOFA_DIR/applications

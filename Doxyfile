@@ -82,7 +82,7 @@ WARN_LOGFILE           = doxygen.log
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = framework
+INPUT                  = framework modules applications
 FILE_PATTERNS          = *.c \
                          *.cc \
                          *.cxx \

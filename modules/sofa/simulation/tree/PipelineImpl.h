@@ -22,52 +22,48 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-// Author: Jeremie Allard, Sim Group @ CIMIT, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENT_ODESOLVER_BICGSTABIMPLICITSOLVER_H
-#define SOFA_COMPONENT_ODESOLVER_BICGSTABIMPLICITSOLVER_H
+#ifndef SOFA_SIMULATION_TREE_PIPELINEIMPL_H
+#define SOFA_SIMULATION_TREE_PIPELINEIMPL_H
 
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/OdeSolverImpl.h>
+#include <sofa/core/componentmodel/collision/Pipeline.h>
+
+#include <vector>
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-namespace odesolver
+namespace tree
 {
-/** Implicit integration solver able to handle degenerate equation systems.
-*/
-class BiCGStabImplicitSolver : public sofa::simulation::tree::OdeSolverImpl
+
+using namespace sofa::core::componentmodel::collision;
+
+class PipelineImpl : public virtual sofa::core::componentmodel::collision::Pipeline
 {
+
 public:
-    typedef core::componentmodel::behavior::OdeSolver Inherited;
+    PipelineImpl();
 
-    BiCGStabImplicitSolver();
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-    void solve (double dt);
-    BiCGStabImplicitSolver* setMaxIter( int maxiter );
+    virtual ~PipelineImpl();
 
-    unsigned int maxCGIter;
-    double smallDenominatorThreshold;
-    double tolerance;
-    double rayleighStiffness;
+    virtual void init();
 
-    bool getDebug()
-    {
-        return false;
-    }
+    virtual void reset();
+
+    /// Remove collision response from last step
+    virtual void computeCollisionReset();
+    /// Detect new collisions. Note that this step must not modify the simulation graph
+    virtual void computeCollisionDetection();
+    /// Add collision response in the simulation graph
+    virtual void computeCollisionResponse();
 };
 
-} // namespace odesolver
+} // namespace tree
 
-} // namespace component
+} // namespace simulation
 
 } // namespace sofa
 
 #endif
-
-

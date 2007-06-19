@@ -29,6 +29,7 @@
 #define SOFA_COMPONENT_ODESOLVER_CGIMPLICITSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/simulation/tree/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -43,12 +44,11 @@ using namespace sofa::defaulttype;
 
 /** Implicit time integrator using the filtered conjugate gradient solution [Baraff&Witkin 98].
 */
-class CGImplicitSolver : public core::componentmodel::behavior::OdeSolver
+class CGImplicitSolver : public sofa::simulation::tree::OdeSolverImpl
 {
 public:
 
     CGImplicitSolver();
-    //virtual const char* getTypeName() const { return "CGImplicit"; }
 
     void solve (double dt);
     //CGImplicitSolver* setMaxIter( int maxiter );

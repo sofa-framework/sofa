@@ -25,6 +25,7 @@
 #pragma once
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/simulation/tree/OdeSolverImpl.h>
 
 namespace sofa
 {
@@ -36,7 +37,7 @@ namespace odesolver
 {
 
 /* A popular time integration method, much more precise than the EulerSolver */
-class RungeKutta2Solver : public core::componentmodel::behavior::OdeSolver
+class RungeKutta2Solver : public sofa::simulation::tree::OdeSolverImpl
 {
 public:
     void solve (double dt);

@@ -8,6 +8,10 @@ TARGET = sofahelper$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 LIBS += $$SOFA_EXT_LIBS
 
+# Make sure there are no cross-dependencies
+INCLUDEPATH -= $$SOFA_DIR/modules
+INCLUDEPATH -= $$SOFA_DIR/applications
+
 HEADERS += \
           ArgumentParser.h \
           BackTrace.h \
