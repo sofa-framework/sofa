@@ -891,6 +891,7 @@ void RealGUI::fileOpen(const char* filename)
         return;
     }
     setScene(groot, filename);
+
 }
 
 #ifdef SOFA_PML
