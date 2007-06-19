@@ -163,12 +163,25 @@ std::map<std::string, flowvr::ModuleAPI*> moduleMap;
 std::map<std::string, flowvr::InputPort*> inputPortMap;
 std::map<std::string, flowvr::OutputPort*> outputPortMap;
 std::map<std::string, flowvr::render::SceneOutputPort*> sceneOutputPortMap;
+std::vector<flowvr::ID> prevP;
+std::vector<flowvr::ID> prevVS;
+std::vector<flowvr::ID> prevPS;
+std::vector<flowvr::ID> prevVB;
+std::vector<flowvr::ID> prevIB;
+std::vector<flowvr::ID> prevT;
 
 flowvr::ModuleAPI* createModule(const std::vector<flowvr::Port*>& ports, const char* name="")
 {
     flowvr::ModuleAPI*& module = moduleMap[name];
     if (module==NULL)
+    {
+        std::cout << "SofaFlowVR: Creating module "<<name<<std::endl;
         module = flowvr::initModule(ports);
+    }
+    else
+    {
+        std::cout << "SofaFlowVR: Reusing module "<<name<<std::endl;
+    }
     return module;
 }
 
@@ -176,7 +189,12 @@ flowvr::InputPort* createInputPort(const char* name)
 {
     flowvr::InputPort*& port = inputPortMap[name];
     if (port==NULL)
+    {
+        std::cout << "SofaFlowVR: Creating port "<<name<<std::endl;
         port = new flowvr::InputPort(name);
+    }
+    else
+        std::cout << "SofaFlowVR: Reusing port "<<name<<std::endl;
     return port;
 }
 
@@ -184,7 +202,12 @@ flowvr::OutputPort* createOutputPort(const char* name)
 {
     flowvr::OutputPort*& port = outputPortMap[name];
     if (port==NULL)
+    {
+        std::cout << "SofaFlowVR: Creating port "<<name<<std::endl;
         port = new flowvr::OutputPort(name);
+    }
+    else
+        std::cout << "SofaFlowVR: Reusing port "<<name<<std::endl;
     return port;
 }
 
@@ -192,7 +215,13 @@ flowvr::render::SceneOutputPort* createSceneOutputPort(const char* name="scene")
 {
     flowvr::render::SceneOutputPort*& port = sceneOutputPortMap[name];
     if (port==NULL)
+    {
+        std::cout << "SofaFlowVR: Creating port "<<name<<std::endl;
         port = new flowvr::render::SceneOutputPort(name);
+    }
+    else
+        std::cout << "SofaFlowVR: Reusing port "<<name<<std::endl;
+
     return port;
 }
 
@@ -273,10 +302,13 @@ int FlowVRModuleClass = sofa::core::RegisterObject("FlowVR main module")
 class FlowVRInputMesh : public FlowVRObject
 {
 public:
+
     flowvr::InputPort* pInFacets;
     flowvr::InputPort* pInPoints;
     flowvr::InputPort* pInMatrix;
 
+    DataField<float> f_scale;
+    DataField<Vec3f> f_trans;
     DataField<bool> computeV;
     DataField<double> maxVDist;
 
@@ -298,6 +330,8 @@ public:
 
     FlowVRInputMesh()
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
+        , f_scale(dataField(&f_scale,1.0f,"scale","scale"))
+        , f_trans(dataField(&f_trans,Vec3f(0,0,0),"translation","translation"))
         , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
         , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
@@ -373,6 +407,8 @@ public:
         {
             pointsLastIt = pointsIt;
             const Vec3f* vertices = points.data.getRead<Vec3f>(0);
+            const Vec3f trans = f_trans.getValue();
+            const float scale = f_scale.getValue();
 
             BaseObject* mmodel = getContext()->getMechanicalState();
             sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>* mmodel3f;
@@ -385,13 +421,17 @@ public:
                 if (matrixLastIt==-20)
                 {
                     for (unsigned int i=0; i<nbv; i++)
-                        x[i] = vertices[i];
+                    {
+                        x[i] = vertices[i]*scale;
+                        x[i] += trans;
+                    }
                 }
                 else
                 {
                     for (unsigned int i=0; i<nbv; i++)
                     {
-                        const Vec3f& v = vertices[i];
+                        Vec3f v = vertices[i]*scale;
+                        v += trans;
                         Vec4f tv = matrix * Vec4f(v[0],v[1],v[2],1.0f);
                         x[i] = Vec3f(tv[0],tv[1],tv[2]);
                     }
@@ -418,13 +458,17 @@ public:
                 if (matrixLastIt==-20)
                 {
                     for (unsigned int i=0; i<nbv; i++)
-                        x[i] = vertices[i];
+                    {
+                        x[i] = vertices[i]*scale;
+                        x[i] += trans;
+                    }
                 }
                 else
                 {
                     for (unsigned int i=0; i<nbv; i++)
                     {
-                        const Vec3f& v = vertices[i];
+                        Vec3f v = vertices[i]*scale;
+                        v += trans;
                         Vec4f tv = matrix * Vec4f(v[0],v[1],v[2],1.0f);
                         x[i] = Vec3d(tv[0],tv[1],tv[2]);
                     }
@@ -577,6 +621,7 @@ class FlowVRRenderInitEvent : public FlowVRRenderEvent
 public:
     virtual ~FlowVRRenderInitEvent() {}
     flowvr::render::ChunkRenderWriter* scene;
+    bool* scratch;
 };
 
 class FlowVRRenderUpdateEvent : public FlowVRRenderEvent
@@ -588,7 +633,7 @@ public:
 
 class FlowVRRenderObject : public FlowVRObject
 {
-    virtual void flowvrRenderInit(flowvr::render::ChunkRenderWriter* /*scene*/)
+    virtual void flowvrRenderInit(flowvr::render::ChunkRenderWriter* /*scene*/, bool* /*scratch*/)
     {
     }
 
@@ -602,7 +647,7 @@ class FlowVRRenderObject : public FlowVRObject
         if (dynamic_cast<FlowVRRenderEvent*>(event))
         {
             if (FlowVRRenderInitEvent* ev = dynamic_cast<FlowVRRenderInitEvent*>(event))
-                flowvrRenderInit(ev->scene);
+                flowvrRenderInit(ev->scene, ev->scratch);
             if (FlowVRRenderUpdateEvent* ev = dynamic_cast<FlowVRRenderUpdateEvent*>(event))
                 flowvrRenderUpdate(ev->scene);
         }
@@ -614,10 +659,26 @@ class FlowVRRenderWriter : public FlowVRRenderObject
 public:
     flowvr::render::SceneOutputPort* pOutScene;
     flowvr::render::ChunkRenderWriter scene;
+    bool scratch;
     bool init;
     FlowVRRenderWriter()
-        : pOutScene(createSceneOutputPort()), init(false)
+        : pOutScene(createSceneOutputPort()), init(false), scratch(false)
     {
+        for(unsigned int i=0; i<prevP.size(); ++i)
+            scene.delPrimitive(prevP[i]);
+        prevP.clear();
+        for(unsigned int i=0; i<prevVS.size(); ++i)
+            scene.delVertexShader(prevVS[i]);
+        prevVS.clear();
+        for(unsigned int i=0; i<prevPS.size(); ++i)
+            scene.delPixelShader(prevPS[i]);
+        prevPS.clear();
+        for(unsigned int i=0; i<prevVB.size(); ++i)
+            scene.delVertexBuffer(prevVB[i]);
+        prevVB.clear();
+        for(unsigned int i=0; i<prevIB.size(); ++i)
+            scene.delIndexBuffer(prevIB[i]);
+        prevIB.clear();
     }
 
     virtual void flowvrPreInit(std::vector<flowvr::Port*>* ports)
@@ -632,6 +693,7 @@ public:
         {
             FlowVRRenderInitEvent ev;
             ev.scene = &scene;
+            ev.scratch = &scratch;
             getContext()->propagateEvent(&ev);
             init = true;
         }
@@ -642,8 +704,23 @@ public:
         FlowVRRenderUpdateEvent ev;
         ev.scene = &scene;
         getContext()->propagateEvent(&ev);
-        scene.put(pOutScene);
+        scene.put(pOutScene, scratch);
+        scratch = true;
     }
+
+    virtual void flowvrInit(flowvr::ModuleAPI* module)
+    {
+        FlowVRRenderObject::flowvrInit(module);
+        if (!init)
+        {
+            //FlowVRRenderInitEvent ev;
+            //ev.scene = &scene;
+            //getContext()->propagateEvent(&ev);
+            scene.put(pOutScene);
+            //init = true;
+        }
+    }
+
 };
 
 SOFA_DECL_CLASS(FlowVRRenderWriter)
@@ -654,11 +731,16 @@ int FlowVRRenderWriterClass = sofa::core::RegisterObject("FlowVRRender scene man
 class FlowVRRenderVisualModel : public FlowVRRenderObject, public sofa::core::VisualModel
 {
 protected:
+    DataField<float> f_scale;
+    DataField<Vec3f> f_trans;
     flowvr::render::ChunkRenderWriter* scene;
+    bool *scratch;
     flowvr::ModuleAPI* module;
 public:
     FlowVRRenderVisualModel()
-        : scene(NULL), module(NULL)
+        : f_scale(dataField(&f_scale,1.0f,"scale","scale"))
+        , f_trans(dataField(&f_trans,Vec3f(0,0,0),"translation","translation"))
+        , scene(NULL), module(NULL)
     {
     }
 
@@ -668,11 +750,16 @@ public:
     void flowvrInit(flowvr::ModuleAPI* module)
     {
         this->module = module;
+        if (this->scene!=NULL)
+            renderInit();
     }
-    void flowvrRenderInit(flowvr::render::ChunkRenderWriter* scene)
+    //void flowvrRenderInit(flowvr::render::ChunkRenderWriter* scene)
+    void flowvrRenderInit(flowvr::render::ChunkRenderWriter* scene, bool* scratch)
     {
         this->scene = scene;
-        renderInit();
+        this->scratch = scratch;
+        if (this->module!=NULL)
+            renderInit();
     }
     void flowvrRenderUpdate(flowvr::render::ChunkRenderWriter* /*scene*/)
     {
@@ -818,18 +905,22 @@ public:
     {
         if (!idP)
         {
+            *scratch = false;
             idP = module->generateID();
             scene->addPrimitive(idP, getName().c_str());
+            prevP.push_back(idP);
             if (!vShader.getValue().empty())
             {
                 idVS = module->generateID();
                 scene->loadVertexShader(idVS, vShader.getValue().c_str());
+                prevP.push_back(idVS);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idVS);
             }
             if (!pShader.getValue().empty())
             {
                 idPS = module->generateID();
                 scene->loadPixelShader(idPS, pShader.getValue().c_str());
+                prevP.push_back(idPS);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::PSHADER, "", idPS);
             }
             scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "Proj", flowvr::render::ChunkPrimParam::Projection);
@@ -838,13 +929,21 @@ public:
             ftl::Vec3f light(1,1,2); light.normalize();
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "lightdir", light);
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "color", ftl::Vec4f(color.getValue().ptr())); //ftl::Vec4f(1, 1, 1, 0.5));
+
+            // SOFA = trans + scale * FLOWVR
+            // FLOWVR = SOFA * 1/scale - trans * 1/scale
+
+            scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_POSITION, "", ftl::Vec3f(f_trans.getValue().ptr())*(-1/f_scale.getValue()));
+            scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_SCALE, "", ftl::Vec3f(1,1,1)/f_scale.getValue());
         }
         if (mmodel)
         {
             computeBBox();
             if (!idVB)
             {
+                *scratch = false;
                 idVB = module->generateID();
+                prevP.push_back(idVB);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "position", idVB);
                 scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "position", 0);
             }
@@ -860,7 +959,9 @@ public:
             computeNormals();
             if (!idVBN)
             {
+                *scratch = false;
                 idVBN = module->generateID();
+                prevP.push_back(idVB);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "normal", idVBN);
                 scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "normal", 0);
             }
@@ -872,7 +973,9 @@ public:
 
             if (!idIB)
             {
+                *scratch = false;
                 idIB = module->generateID();
+                prevP.push_back(idIB);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::IBUFFER_ID, "", idIB);
             }
             if (topology->getRevision() != lastMeshRev)
