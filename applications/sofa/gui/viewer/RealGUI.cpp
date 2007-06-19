@@ -1392,7 +1392,7 @@ void RealGUI::step()
 
         eventNewStep();
         eventNewTime();
-
+        viewer->getQWidget()->setUpdatesEnabled(true);
         viewer->getQWidget()->update();
     }
 
