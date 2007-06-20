@@ -2389,7 +2389,7 @@ void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filena
         ofilename << "_";
 
         screenshot_prefix = ofilename.str();
-        int position_scene = screenshot_prefix.rfind("scenes/");
+        unsigned int position_scene = screenshot_prefix.rfind("scenes/");
         if (position_scene != std::string::npos)
         {
             screenshot_prefix.replace(position_scene, 7, "share/screenshots/");

@@ -69,6 +69,9 @@
                         <property name="accel">
                             <string>Alt+W</string>
                         </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Save the position and orientation of the camera</string>
+                        </property>
                     </widget>
                     <widget class="QTabWidget" row="4" column="0" rowspan="1" colspan="2">
                         <property name="name">
@@ -346,7 +349,7 @@
                                         <string>Dump State</string>
                                     </property>
                                     <property name="toolTip" stdset="0">
-                                        <string>record the state at each time step in file "dumpState.data"</string>
+                                        <string>Record the state at each time step in file "dumpState.data"</string>
                                         <comment>This is used to plut curves fter a simulation</comment>
                                     </property>
                                 </widget>
@@ -357,6 +360,9 @@
                                     <property name="text">
                                         <string>Log Time</string>
                                     </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Display information about the time spent at each branch of the graph</string>
+                                    </property>
                                 </widget>
                                 <widget class="QCheckBox">
                                     <property name="name">
@@ -364,6 +370,9 @@
                                     </property>
                                     <property name="text">
                                         <string>export state as gnuplot files</string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>Create gnuplot files for each named element of the simulation</string>
                                     </property>
                                 </widget>
                                 <spacer>
@@ -498,6 +507,9 @@
                         <property name="autoRepeat">
                             <bool>true</bool>
                         </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Compute the simulation at time t+DT</string>
+                        </property>
                     </widget>
                     <widget class="QLayoutWidget" row="1" column="1">
                         <property name="name">
@@ -566,6 +578,9 @@
                         <property name="accel">
                             <string>Alt+R</string>
                         </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Reset the Simulation  (t=0)</string>
+                        </property>
                     </widget>
                     <widget class="QPushButton" row="2" column="0">
                         <property name="name">
@@ -580,6 +595,9 @@
                         <property name="accel">
                             <string>Alt+V</string>
                         </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Set the camera to initial position and orientation</string>
+                        </property>
                     </widget>
                     <widget class="QPushButton" row="0" column="0">
                         <property name="name">
@@ -593,6 +611,9 @@
                         </property>
                         <property name="toggleButton">
                             <bool>true</bool>
+                        </property>
+                        <property name="toolTip" stdset="0">
+                            <string>Launch the Simulation</string>
                         </property>
                     </widget>
                 </grid>
@@ -630,7 +651,7 @@
     </item>
     <item text="&amp;View" name="View">
         <action name="ViewerAction"/>
-        <item text="Viewer" name="popupViewerMenu" accel="">
+        <item text="Viewer" name="popupMenu_18" accel="">
             <action name="viewerOpenGLAction"/>
             <action name="viewerQGLViewerAction"/>
             <action name="viewerOGREAction"/>
