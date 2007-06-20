@@ -943,6 +943,7 @@ void RealGUI::screenshot()
             this,
             "save file dialog"
             "Choose a filename to save under" );
+    viewer->getQWidget()->repaint();
     if (filename != "")
     {
         std::ostringstream ofilename;
