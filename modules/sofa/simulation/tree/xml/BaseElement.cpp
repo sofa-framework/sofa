@@ -49,12 +49,6 @@ BaseElement::~BaseElement()
 {
     attributes.erase("name");
     attributes.erase("type");
-    for (std::map<std::string,std::string*>::iterator it = attributes.begin();
-            it != attributes.end(); ++it)
-    {
-        delete it->second;
-    }
-    attributes.clear();
     for (ChildList::iterator it = children.begin();
             it != children.end(); ++it)
     {

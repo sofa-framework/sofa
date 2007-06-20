@@ -36,8 +36,58 @@ namespace core
 namespace objectmodel
 {
 
+BaseObjectDescription::BaseObjectDescription(const char* name, const char* type)
+{
+    if (name)
+        attributes["name"] = new std::string(name);
+    if (type)
+        attributes["type"] = new std::string(type);
+}
+
 BaseObjectDescription::~BaseObjectDescription()
 {
+    for (std::map<std::string,std::string*>::iterator it = attributes.begin();
+            it != attributes.end(); ++it)
+    {
+        delete it->second;
+    }
+    attributes.clear();
+}
+
+/// Get the associated object (or NULL if it is not created yet)
+Base* BaseObjectDescription::getObject()
+{
+    return NULL;
+}
+
+/// Get the object instance name
+std::string BaseObjectDescription::getName()
+{
+    return std::string(getAttribute("name",""));
+}
+
+/// Get the parent node
+BaseObjectDescription* BaseObjectDescription::getParent() const
+{
+    return NULL;
+}
+
+/// Get all attribute data, read-only
+const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMap() const
+{
+    return attributes;
+}
+
+/// Find an object description given its name (relative to this object)
+BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, bool /*absolute*/)
+{
+    return NULL;
+}
+
+/// Remove an attribute given its name (return defaultVal if not present)
+bool BaseObjectDescription::removeAttribute(const std::string&)
+{
+    return false;
 }
 
 /// Get an attribute given its name (return defaultVal if not present)
@@ -51,7 +101,7 @@ const char* BaseObjectDescription::getAttribute(const std::string& attr, const c
         return it->second->c_str();
 }
 
-std::string BaseObjectDescription::getFullName() const
+std::string BaseObjectDescription::getFullName()
 {
     BaseObjectDescription* parent = getParent();
     if (parent==NULL) return "/";

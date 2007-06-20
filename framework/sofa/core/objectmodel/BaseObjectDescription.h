@@ -44,28 +44,32 @@ class Base;
  *  \brief Base Interface for classes containing the description of an object, used to construct it.
  *
  *  This class defines what informations are used as input (read from a file for instance) to create an object.
+ *  This default implementation simply stores an attributes map and does not support any hierarchy.
+ *
  */
 class BaseObjectDescription
 {
 public:
+    typedef std::map<std::string,std::string*> AttributeMap;
+
+    BaseObjectDescription(const char* name=NULL, const char* type=NULL);
+
     virtual ~BaseObjectDescription();
 
     /// Get the associated object (or NULL if it is not created yet)
-    virtual Base* getObject() = 0;
+    virtual Base* getObject();
 
     /// Get the object instance name
-    virtual const std::string& getName() const = 0;
+    virtual std::string getName();
 
     /// Get the parent node
-    virtual BaseObjectDescription* getParent() const = 0;
-
-    typedef std::map<std::string,std::string*> AttributeMap;
+    virtual BaseObjectDescription* getParent() const;
 
     /// Get all attribute data, read-only
-    virtual const AttributeMap& getAttributeMap() const = 0;
+    virtual const AttributeMap& getAttributeMap() const;
 
     /// Find an object description given its name (relative to this object)
-    virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false) = 0;
+    virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false);
 
     /// Find an object given its name (relative to this object)
     virtual Base* findObject(const char* nodeName);
@@ -74,14 +78,13 @@ public:
     virtual const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
     /// Remove an attribute given its name (return defaultVal if not present)
-    virtual bool removeAttribute(const std::string&)
-    {
-        return false;
-    }
+    virtual bool removeAttribute(const std::string& attr);
 
     /// Get the full name of this object (i.e. concatenation if all the names of its ancestors and itself)
-    virtual std::string getFullName() const;
+    virtual std::string getFullName();
 
+protected:
+    AttributeMap attributes;
 };
 
 } // namespace objectmodel

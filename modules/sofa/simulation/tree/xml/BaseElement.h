@@ -62,7 +62,6 @@ private:
     BaseElement* parent;
     typedef std::list<BaseElement*> ChildList;
     ChildList children;
-    std::map<std::string,std::string*> attributes;
 public:
     BaseElement(const std::string& name, const std::string& type, BaseElement* newParent=NULL);
 
@@ -75,14 +74,14 @@ public:
     //virtual core::objectmodel::Base* getBaseObject() = 0;
 
     /// Get the node instance name
-    const std::string& getName() const
+    std::string getName()
     { return name; }
 
     virtual void setName(const std::string& newName)
     { name = newName; }
 
     /// Get the node instance type (MassObject, IdentityMapping, ...)
-    const std::string& getType() const
+    std::string getType()
     { return type; }
 
     virtual void setType(const std::string& newType)
