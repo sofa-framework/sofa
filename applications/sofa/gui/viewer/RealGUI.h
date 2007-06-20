@@ -180,12 +180,6 @@ protected:
     void init();
     void keyPressEvent ( QKeyEvent * e );
 
-    // void timerEvent(QTimerEvent * event)
-    // {
-    //Q_UNUSED(event);
-    //if (viewer != NULL) viewer->getQWidget()->update();
-    // }
-
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
     bool m_exportGnuplot;
@@ -210,7 +204,7 @@ private:
     bool setViewer(const char* name);
     void addViewer();
     void setGUI(void);
-    int id_timer;
+
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);
     virtual void lmlOpen(const char* filename);

@@ -548,7 +548,7 @@ public:
 };
 
 RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*options*/)
-    : viewerName(viewername), graphListener(NULL), id_timer(-1)
+    : viewerName(viewername), graphListener(NULL)
 {
     left_stack = new QWidgetStack(splitter2);
 #ifndef QT_MODULE_QT3SUPPORT
@@ -624,7 +624,7 @@ RealGUI::~RealGUI()
 
 void RealGUI::init()
 {
-    id_timer = -1;
+
     _animationOBJ = false;
     _animationOBJcounter = 0;
     m_dumpState = false;
@@ -689,7 +689,6 @@ void RealGUI::addViewer()
                 std::cerr << "ERROR(QtGUI): unknown or disabled viewer name "<<name<<std::endl;
                 application->exit();
             }
-
 #ifdef QT_MODULE_QT3SUPPORT
     left_stack->addWidget ( viewer->getQWidget() );
     left_stack->setCurrentWidget ( viewer->getQWidget() );
@@ -713,37 +712,6 @@ void RealGUI::addViewer()
 
     viewer->setup();
 
-    //#ifdef SOFA_GUI_QTOGREVIEWER
-    //	id_timer = startTimer(100);
-    //#endif
-
-    /*
-
-    //connect( xmlSave_pushButton, SIGNAL( pressed() ), this, SLOT( saveXML() ) );
-    if (filename != "")
-    {
-
-    switch(TYPE)
-    {
-    case NORMAL:
-    groot = Simulation::load(filename);
-    setScene(groot, filename);
-    break;
-    case PML:
-    #ifdef SOFA_PML
-    groot = Simulation::load(scene.c_str());
-    if (groot){
-    if (!pmlreader) pmlreader = new PMLReader;
-    pmlreader->BuildStructure(filename, groot);
-    setScene(groot, filename);
-    }
-    #endif
-    break;
-    default:break;
-    }
-    }
-    */
-
     connect( ResetViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( resetView() ) );
     connect( SaveViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( saveView() ) );
     connect( screenshotButton, SIGNAL( clicked() ), this, SLOT( screenshot() ) );
@@ -752,11 +720,9 @@ void RealGUI::addViewer()
     connect(viewer->getQWidget(), SIGNAL(resizeW(int)), sizeW, SLOT(setValue(int)));
     connect(viewer->getQWidget(), SIGNAL(resizeH(int)), sizeH, SLOT(setValue(int)));
 
-    //startTimer(50);
-
     QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
     splitter_ptr->moveToLast(left_stack);
-
+    splitter_ptr->setOpaqueResize(false);
 #ifdef QT_MODULE_QT3SUPPORT
     QList<int> list;
 #else
@@ -765,9 +731,10 @@ void RealGUI::addViewer()
     list.push_back(75);
     list.push_back(500);
     splitter_ptr->setSizes(list);
+    viewer->getQWidget()->setUpdatesEnabled(true);
     viewer->getQWidget()->setFocus();
     viewer->getQWidget()->show();
-
+    viewer->getQWidget()->update();
     setGUI();
 }
 
@@ -1305,15 +1272,8 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
 
 void RealGUI::playpauseGUI(bool value)
 {
-    if (value)
-    {
-        /*
-        if (id_timer != -1)
-        	killTimer(id_timer);*/
-
-        timerStep->start(0);
-    }
-    else       {/*id_timer = startTimer(100);*/timerStep->stop();}
+    if (value) {timerStep->start(0);}
+    else {timerStep->stop();}
     if (getScene())  getScene()->getContext()->setAnimate(value);
 }
 
@@ -1410,8 +1370,6 @@ void RealGUI::step()
         }
     }
 }
-
-
 
 //*****************************************************************************************
 // Update sofa Simulation with the time step
@@ -1534,6 +1492,7 @@ void RealGUI::resetScene()
     {
         Simulation::reset(groot);
         eventNewTime();
+        viewer->getQWidget()->setUpdatesEnabled(true);
         viewer->getQWidget()->update();
     }
 }
