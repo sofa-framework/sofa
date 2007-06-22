@@ -731,7 +731,7 @@ void RealGUI::addViewer()
     list.push_back(75);
     list.push_back(500);
     splitter_ptr->setSizes(list);
-    viewer->getQWidget()->setUpdatesEnabled(true);
+
     viewer->getQWidget()->setFocus();
     viewer->getQWidget()->show();
     viewer->getQWidget()->update();
@@ -1354,7 +1354,10 @@ void RealGUI::step()
 
         eventNewStep();
         eventNewTime();
+
+#ifdef QT_MODULE_QT3SUPPORT
         viewer->getQWidget()->setUpdatesEnabled(true);
+#endif
         viewer->getQWidget()->update();
     }
 
@@ -1493,7 +1496,6 @@ void RealGUI::resetScene()
     {
         Simulation::reset(groot);
         eventNewTime();
-        viewer->getQWidget()->setUpdatesEnabled(true);
         viewer->getQWidget()->update();
     }
 }
