@@ -659,8 +659,8 @@ class FlowVRRenderWriter : public FlowVRRenderObject
 public:
     flowvr::render::SceneOutputPort* pOutScene;
     flowvr::render::ChunkRenderWriter scene;
-    bool scratch;
     bool init;
+    bool scratch;
     FlowVRRenderWriter()
         : pOutScene(createSceneOutputPort()), init(false), scratch(false)
     {

@@ -272,11 +272,11 @@ void CShader::InitShaders(std::string strVertex, std::string strFragment)
 
     if (logLength > 1)
     {
-        GLchar *szLog = (char*)malloc(logLength);
+        GLcharARB *szLog = (GLcharARB*)malloc(logLength+1);
         GLint writtenLength = 0;
 
         glGetInfoLogARB(m_hProgramObject, logLength, &writtenLength, szLog);
-        printf("ERROR during shader initialization...\n");
+        printf("ERROR during shader initialization: %s\n", szLog);
 
         free(szLog);
     }
@@ -285,15 +285,15 @@ void CShader::InitShaders(std::string strVertex, std::string strFragment)
     glUseProgramObjectARB(0);
 }
 
-void CShader::SetInt(GLint variable, int newValue)								{ if (variable!=-1) glUniform1iARB(variable, newValue);		}
-void CShader::SetFloat(GLint variable, float newValue)							{ if (variable!=-1) glUniform1fARB(variable, newValue);		}
-void CShader::SetFloat2(GLint variable, float v0, float v1)						{ if (variable!=-1) glUniform2fARB(variable, v0, v1);			}
-void CShader::SetFloat3(GLint variable, float v0, float v1, float v2)			{ if (variable!=-1) glUniform3fARB(variable, v0, v1, v2);		}
-void CShader::SetFloat4(GLint variable, float v0, float v1, float v2, float v3)	{ if (variable!=-1) glUniform4fARB(variable, v0, v1, v2, v3);	}
+void CShader::SetInt(GLint variable, int newValue)                              { if (variable!=-1) glUniform1iARB(variable, newValue);       }
+void CShader::SetFloat(GLint variable, float newValue)                          { if (variable!=-1) glUniform1fARB(variable, newValue);       }
+void CShader::SetFloat2(GLint variable, float v0, float v1)                     { if (variable!=-1) glUniform2fARB(variable, v0, v1);         }
+void CShader::SetFloat3(GLint variable, float v0, float v1, float v2)           { if (variable!=-1) glUniform3fARB(variable, v0, v1, v2);     }
+void CShader::SetFloat4(GLint variable, float v0, float v1, float v2, float v3) { if (variable!=-1) glUniform4fARB(variable, v0, v1, v2, v3); }
 
 // These 2 functions turn on and off our shader
-void CShader::TurnOn()		{	if (m_hProgramObject) glUseProgramObjectARB(m_hProgramObject); }
-void CShader::TurnOff()		{	if (m_hProgramObject) glUseProgramObjectARB(0);				 }
+void CShader::TurnOn()	{ if (m_hProgramObject) glUseProgramObjectARB(m_hProgramObject); }
+void CShader::TurnOff()	{ if (m_hProgramObject) glUseProgramObjectARB(0);                }
 
 ///////////////////////////////// GET VARIABLE \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 /////
