@@ -6,6 +6,7 @@ namespace sofa
 namespace gui
 {
 
+#ifdef WIN32
 SOFA_LINK_CLASS(BatchGUI)
 
 #ifdef SOFA_GUI_QGLVIEWER
@@ -17,6 +18,7 @@ SOFA_LINK_CLASS(QTGUI)
 #ifdef SOFA_GUI_QTOGREVIEWER
 SOFA_LINK_CLASS(OgreGUI)
 #endif
+#endif // WIN32
 
 int SofaGUI::Init()
 {

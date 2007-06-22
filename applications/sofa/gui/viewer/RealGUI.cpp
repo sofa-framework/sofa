@@ -75,7 +75,9 @@ extern simulation::tree::GNode* groot;
 
 #define WIDTH_OFFSET 2
 #define HEIGHT_OFFSET 2
+#if !defined(INFINITY)
 #define INFINITY 9.0e10
+#endif
 #else
 #include <qlistview.h>
 #include <qcheckbox.h>

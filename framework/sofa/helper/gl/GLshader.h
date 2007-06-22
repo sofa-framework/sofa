@@ -28,9 +28,17 @@
 #ifdef WIN32
 #include <windows.h>
 #endif
+
+#ifdef __APPLE__
+#include <OpenGL/gl.h>
+#include <OpenGL/glu.h>
+#else
 #include <GL/gl.h>
 #include <GL/glu.h>
+#endif
+
 #include <string>
+
 
 namespace sofa
 {
@@ -43,8 +51,11 @@ namespace gl
 
 //using namespace std;
 
-#ifdef _WIN32
+
+#if defined (WIN32)
 PROC glewGetProcAddress(const char* name);
+#elif defined(__APPLE__)
+void (*glewGetProcAddress(const char* name));
 #else
 void (*glewGetProcAddress(const char* name))(void);
 #endif

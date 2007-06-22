@@ -26,6 +26,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/ObjectFactory.h>
+
 #include <GL/gl.h>
 
 #define VERBOSE(a) if (bVerbose.getValue()) a; else

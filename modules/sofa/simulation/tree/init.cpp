@@ -32,6 +32,7 @@ void init()
 
 } // namespace sofa
 
+#ifdef WIN32
 ////////// BEGIN CLASS LIST //////////
 SOFA_LINK_CLASS(BarycentricLagrangianMultiplierContact)
 SOFA_LINK_CLASS(BarycentricMapping)
@@ -127,3 +128,5 @@ SOFA_LINK_CLASS(WashingMachineForceField)
 SOFA_LINK_CLASS(ReadState)
 SOFA_LINK_CLASS(WriteState)
 SOFA_LINK_CLASS(QuadBendingSprings)
+#endif
+

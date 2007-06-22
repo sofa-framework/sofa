@@ -147,18 +147,6 @@ inline const T SQR(const T& a)
 }
 
 template<class T>
-inline const T MAX(const T &a, const T &b)
-{
-    return b > a ? (b) : (a);
-}
-
-template<class T>
-inline const T MIN(const T &a, const T &b)
-{
-    return b < a ? (b) : (a);
-}
-
-template<class T>
 inline const T SIGN(const T &a, const T &b)
 {
     return b >= 0 ? (a >= 0 ? a : -a) : (a >= 0 ? -a : a);

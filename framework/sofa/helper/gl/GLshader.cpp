@@ -33,8 +33,11 @@
 #include <stdlib.h>
 #include <math.h>
 #include <fstream>
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__APPLE__)
 #  include <GL/glx.h>
+#endif
+#ifdef __APPLE__
+#include "mach-o/dyld.h"
 #endif
 
 
@@ -75,8 +78,42 @@ PFNGLGETINFOLOGARBPROC			glGetInfoLogARB = NULL;
 /////
 ///////////////////////////////////// INIT GLSL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
-#ifdef _WIN32
+#ifdef __APPLE__
+void *NSGLGetProcAddress(const char *name)
+{
+    NSSymbol symbol;
+
+    /* Prepend a '_' for the Unix C symbol mangling convention */
+    char* symbolName = (char*)malloc(strlen(name) + 2);
+    if (!symbolName)
+    {
+        fprintf(stderr, "Failed to allocate memory for NSGLGetProcAddress\n");
+        return NULL;
+    }
+    symbolName[0] = '_';
+    strcpy(symbolName + 1, name);
+
+    if (!NSIsSymbolNameDefined(symbolName))
+    {
+        free(symbolName);
+        return NULL;
+    }
+
+    symbol = NSLookupAndBindSymbol(symbolName);
+    free(symbolName);
+    if (!symbol)
+    {
+        return NULL;
+    }
+
+    return NSAddressOfSymbol(symbol);
+}
+#endif
+
+#if defined (WIN32)
 PROC glewGetProcAddress(const char* name)
+#elif defined(__APPLE__)
+void (*glewGetProcAddress(const char* name))
 #else
 void (*glewGetProcAddress(const char* name))(void)
 #endif
@@ -230,13 +267,13 @@ void CShader::InitShaders(std::string strVertex, std::string strFragment)
     // Our last init function is to link our program object with OpenGL
     glLinkProgramARB(m_hProgramObject);
 
-    int logLength = 0;
+    GLint logLength = 0;
     glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_INFO_LOG_LENGTH_ARB, &logLength);
 
     if (logLength > 1)
     {
-        char *szLog = (char*)malloc(logLength);
-        int writtenLength = 0;
+        GLchar *szLog = (char*)malloc(logLength);
+        GLint writtenLength = 0;
 
         glGetInfoLogARB(m_hProgramObject, logLength, &writtenLength, szLog);
         printf("ERROR during shader initialization...\n");

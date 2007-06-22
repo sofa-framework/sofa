@@ -35,7 +35,7 @@
 #include <fstream>
 #include <string.h>
 #include <math.h>
-#include <GL/glu.h>
+
 #ifdef WIN32
 #include <GL/glaux.h>
 #endif

@@ -30,7 +30,10 @@
 #include <windows.h>
 #include <direct.h>
 #endif
-
+#if defined (__APPLE__)
+#include <sys/param.h>
+#include <mach-o/dyld.h>
+#endif
 #include <string.h>
 #include <iostream>
 
@@ -160,17 +163,28 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         }
     }
     /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.
-#else
+#elif defined(__linux__)
     if (!filename || filename[0]!='/')
     {
         char path[1024];
         memset(path,0,sizeof(path));
         readlink("/proc/self/exe",path,sizeof(path)-1);
-        //std::cout << "Current process: "<<path<<std::endl;
-        if (path[0]) return path;
-
+        std::cout << "Current process: "<< path <<std::endl;
+        if (path[0])
+            return path;
+        else
+            std::cout << "ERROR: can't get current process path..." << std::endl;
+    }
+#elif defined (__APPLE__)
+    if (!filename || filename[0]!='/')
+    {
+        char path[1024];
+        unsigned int size;
+        _NSGetExecutablePath( path, &size );
+        return path;
     }
 #endif
+
     return filename;
 }
 

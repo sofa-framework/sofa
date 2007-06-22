@@ -50,8 +50,18 @@ namespace gl
 
 static GLuint LettersDL=0;
 
-#ifdef WIN32
 
+#if __APPLE__
+
+// nothing yet
+
+void glfntInit(void) {}
+void glfntClose(void) {}
+void glfntWriteBitmap(float x,float y,char *s) {}
+
+#endif
+
+#ifdef WIN32
 void glfntInit(void)
 {
     HDC hdc;
@@ -70,7 +80,21 @@ void glfntClose(void)
     LettersDL=0;
 }
 
-#else
+void glfntWriteBitmap(float x,float y,char *s)
+{
+    GLint CurBase;
+
+    if (LettersDL==0) return;
+    glRasterPos2f(x,y);
+
+    glGetIntegerv(GL_LIST_BASE,&CurBase);
+    glListBase(LettersDL);
+    glCallLists(strlen(s),GL_UNSIGNED_BYTE,s);
+    glListBase(CurBase);
+}
+#endif // WIN32
+
+#ifdef __linux__
 
 static unsigned int last;
 
@@ -113,9 +137,6 @@ void glfntClose(void)
     LettersDL=0;
 }
 
-
-#endif
-
 void glfntWriteBitmap(float x,float y,char *s)
 {
     GLint CurBase;
@@ -128,6 +149,10 @@ void glfntWriteBitmap(float x,float y,char *s)
     glCallLists(strlen(s),GL_UNSIGNED_BYTE,s);
     glListBase(CurBase);
 }
+
+#endif // __linux__
+
+
 
 } // namespace gl
 
