@@ -88,6 +88,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     // Map storing group merging history
     std::map<simulation::tree::GNode*, simulation::tree::GNode*> mergedGroups;
     std::vector<simulation::tree::GNode*> contactGroup;
+    std::vector<simulation::tree::GNode*> removedGroup;
     contactGroup.reserve(contacts.size());
     for(std::vector<Contact*>::const_iterator cit = contacts.begin(); cit != contacts.end(); cit++)
     {
@@ -146,7 +147,9 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                         groupSet.erase(group2);
                         mergedGroups[group2] = group;
                         delete solver2;
-                        delete group2;
+                        // BUGFIX(2007-06-23 Jeremie A): we can't remove group2 yet, to make sure the keys in mergedGroups are unique.
+                        removedGroup.push_back(group2);
+                        //delete group2;
                     }
                 }
                 else
@@ -179,6 +182,11 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         else
             contact->createResponse(scene);
     }
+
+    // delete removed groups
+    for (std::vector<simulation::tree::GNode*>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
+        delete *it;
+    removedGroup.clear();
 
     // finally recreate group vector
     groupVec.clear();
