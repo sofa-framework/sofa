@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include "PipelineImpl.h"
-//#include <sofa/component/collision/DiscreteIntersection.h>
+#include <sofa/component/collision/DiscreteIntersection.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -69,13 +69,12 @@ void PipelineImpl::init()
     root->getTreeObjects<CollisionGroupManager>(&groupManagers);
     groupManager = (groupManagers.empty() ? NULL : groupManagers[0]);
 
-//	if (intersectionMethod==NULL)
     if (intersectionMethod==NULL)
     {
-//		intersectionMethod = new sofa::component::collision::DiscreteIntersection;
         std::cerr << "WARNING(Pipeline): no intersectionMethod defined. Using DiscreteIntersection.\n";
         sofa::core::objectmodel::BaseObjectDescription discreteIntersectionDesc("Default Intersection","DiscreteIntersection");
-        intersectionMethod = dynamic_cast<Intersection*>(sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc));
+        //intersectionMethod = dynamic_cast<Intersection*>(sofa::core::ObjectFactory::CreateObject(getContext(), &discreteIntersectionDesc));
+        intersectionMethod = new sofa::component::collision::DiscreteIntersection;
     }
 }
 
