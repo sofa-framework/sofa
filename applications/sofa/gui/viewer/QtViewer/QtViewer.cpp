@@ -251,7 +251,7 @@ void QtViewer::initializeGL(void)
 
     if (!initialized)
     {
-        //std::cout << "progname="<<sofa::gui::qt::progname<<std::endl;
+        std::cout << "progname=" << sofa::gui::guiviewer::progname << std::endl;
         sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::guiviewer::progname));
 
         // Define light parameters

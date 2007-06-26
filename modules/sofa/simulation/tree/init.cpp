@@ -32,7 +32,7 @@ void init()
 
 } // namespace sofa
 
-#ifdef WIN32
+#if defined (WIN32) || (__APPLE__)
 ////////// BEGIN CLASS LIST //////////
 SOFA_LINK_CLASS(BarycentricLagrangianMultiplierContact)
 SOFA_LINK_CLASS(BarycentricMapping)

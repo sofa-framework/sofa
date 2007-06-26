@@ -147,7 +147,7 @@ std::string SetDirectory::GetRelativeFromProcess(const char* filename, const cha
 /// Get the full path of the current process. The given filename should be the value of argv[0].
 std::string SetDirectory::GetProcessFullPath(const char* filename)
 {
-#ifdef WIN32
+#if defined (WIN32)
     if (!filename || !filename[0])
     {
         //return __argv[0];
@@ -163,7 +163,7 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         }
     }
     /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.
-#elif defined(__linux__)
+#elif defined (__linux__)
     if (!filename || filename[0]!='/')
     {
         char path[1024];
@@ -181,6 +181,8 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         char path[1024];
         unsigned int size;
         _NSGetExecutablePath( path, &size );
+        std::cout << "Current process: "<<path<<std::endl;
+
         return path;
     }
 #endif

@@ -118,6 +118,7 @@ void FileRepository::addLastPath(const std::string& path)
         p0 = p1+1;
     }
     vpath.insert(vpath.end(), entries.begin(), entries.end());
+    std::cout << path << std::endl;
 }
 
 bool FileRepository::findFileIn(std::string& filename, const std::string& path)

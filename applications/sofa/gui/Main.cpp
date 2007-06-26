@@ -6,7 +6,7 @@ namespace sofa
 namespace gui
 {
 
-#ifdef WIN32
+#if defined (WIN32) || (__APPLE__)
 SOFA_LINK_CLASS(BatchGUI)
 
 #ifdef SOFA_GUI_QGLVIEWER
@@ -18,7 +18,7 @@ SOFA_LINK_CLASS(QTGUI)
 #ifdef SOFA_GUI_QTOGREVIEWER
 SOFA_LINK_CLASS(OgreGUI)
 #endif
-#endif // WIN32
+#endif // WIN32 and __APPLE__
 
 int SofaGUI::Init()
 {
