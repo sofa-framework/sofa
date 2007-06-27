@@ -372,7 +372,7 @@ void QtGLViewer::init(void)
     // Redefine keyboard events
     // The default SAVE_SCREENSHOT shortcut is Ctrl+S and this shortcut is used to
     // save x3d file in the MainController. So we need to change it:
-    //setShortcut(QGLViewer::SAVE_SCREENSHOT, Qt::Key_I);
+    setShortcut(QGLViewer::SAVE_SCREENSHOT, Qt::Key_J);
     setShortcut(QGLViewer::HELP, Qt::Key_H);
 }
 
