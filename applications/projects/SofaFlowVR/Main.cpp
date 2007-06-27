@@ -61,7 +61,7 @@ Type get(const sofa::defaulttype::Vec<N,real>&)
 namespace SofaFlowVR
 {
 
-flowvr::ModuleAPI* module = NULL;
+//flowvr::ModuleAPI* module = NULL;
 
 //using namespace flowvr::render;
 //using namespace flowvr::interact;
@@ -70,10 +70,14 @@ flowvr::ModuleAPI* module = NULL;
 //using namespace Sofa::Components;
 using namespace sofa::defaulttype;
 
+class FlowVRModule;
+
 class FlowVREvent : public sofa::core::objectmodel::Event
 {
 public:
+    FlowVREvent() : from(NULL) {}
     virtual ~FlowVREvent() {}
+    FlowVRModule* from;
 };
 
 class FlowVRPreInitEvent : public FlowVREvent
@@ -107,7 +111,13 @@ public:
 class FlowVRObject : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    DataField<std::string> modName;
+    FlowVRModule* mod;
+
+
     FlowVRObject()
+        : modName(dataField(&modName, "module", "Name of FlowVR Module"))
+        , mod(NULL)
     {
         f_listening.setValue(true);
     }
@@ -140,24 +150,7 @@ public:
     {
     }
 
-    virtual void handleEvent(sofa::core::objectmodel::Event* event)
-    {
-        if (AnimateBeginEvent* ev = dynamic_cast<AnimateBeginEvent*>(event))
-            animateBegin(ev->getDt());
-        if (AnimateEndEvent* ev = dynamic_cast<AnimateEndEvent*>(event))
-            animateEnd(ev->getDt());
-        if (dynamic_cast<FlowVREvent*>(event))
-        {
-            if (FlowVRPreInitEvent* ev = dynamic_cast<FlowVRPreInitEvent*>(event))
-                flowvrPreInit(ev->ports);
-            if (FlowVRInitEvent* ev = dynamic_cast<FlowVRInitEvent*>(event))
-                flowvrInit(ev->module);
-            if (FlowVRBeginIterationEvent* ev = dynamic_cast<FlowVRBeginIterationEvent*>(event))
-                flowvrBeginIteration(ev->module);
-            if (FlowVREndIterationEvent* ev = dynamic_cast<FlowVREndIterationEvent*>(event))
-                flowvrEndIteration(ev->module);
-        }
-    }
+    virtual void handleEvent(sofa::core::objectmodel::Event* event);
 
 };
 
@@ -232,15 +225,20 @@ class FlowVRModule : public FlowVRObject
 public:
     flowvr::ModuleAPI* module;
     DataField<double> f_dt;
+    DataField<float> f_scale;
+    DataField<Vec3f> f_trans;
     int it;
     double lasttime;
     bool step;
     FlowVRModule()
         : module(NULL)
         , f_dt(dataField(&f_dt,0.0,"dt","simulation time interval between flowvr iteration"))
+        , f_scale(dataField(&f_scale,1.0f,"scale","scale"))
+        , f_trans(dataField(&f_trans,Vec3f(0,0,0),"translation","translation"))
         , it(-1)
         , lasttime(0.0), step(false)
     {
+        mod = this;
     }
 
     virtual void init()
@@ -249,6 +247,7 @@ public:
         std::vector<flowvr::Port*> ports;
         std::cout << "Sending FlowVRPreInit"<<std::endl;
         FlowVRPreInitEvent ev;
+        ev.from = this;
         ev.ports = &ports;
         getContext()->propagateEvent(&ev);
         //module = flowvr::initModule(ports);
@@ -260,6 +259,7 @@ public:
         }
         std::cout << "Sending FlowVRInit"<<std::endl;
         FlowVRInitEvent ev2;
+        ev2.from = this;
         ev2.module = module;
         getContext()->propagateEvent(&ev2);
     }
@@ -277,6 +277,7 @@ public:
         lasttime = getContext()->getTime();
         std::cout << "Sending FlowVRBeginIteration"<<std::endl;
         FlowVRBeginIterationEvent ev;
+        ev.from = this;
         ev.module = module;
         getContext()->propagateEvent(&ev);
     }
@@ -288,6 +289,7 @@ public:
         step = false;
         std::cout << "Sending FlowVREndIteration"<<std::endl;
         FlowVREndIterationEvent ev;
+        ev.from = this;
         ev.module = module;
         getContext()->propagateEvent(&ev);
     }
@@ -297,6 +299,35 @@ SOFA_DECL_CLASS(FlowVRModule)
 int FlowVRModuleClass = sofa::core::RegisterObject("FlowVR main module")
         .add<FlowVRModule>()
         ;
+
+
+void FlowVRObject::handleEvent(sofa::core::objectmodel::Event* event)
+{
+    if (AnimateBeginEvent* ev = dynamic_cast<AnimateBeginEvent*>(event))
+        animateBegin(ev->getDt());
+    if (AnimateEndEvent* ev = dynamic_cast<AnimateEndEvent*>(event))
+        animateEnd(ev->getDt());
+    if (FlowVREvent* flev = dynamic_cast<FlowVREvent*>(event))
+    {
+        if (!mod)
+        {
+            if (modName.getValue().empty() || modName.getValue() == flev->from->modName.getValue())
+                mod = flev->from;
+            else
+                return; // event for another module
+        }
+        else if (flev->from != mod)
+            return; // event for another module
+        if (FlowVRPreInitEvent* ev = dynamic_cast<FlowVRPreInitEvent*>(event))
+            flowvrPreInit(ev->ports);
+        if (FlowVRInitEvent* ev = dynamic_cast<FlowVRInitEvent*>(event))
+            flowvrInit(ev->module);
+        if (FlowVRBeginIterationEvent* ev = dynamic_cast<FlowVRBeginIterationEvent*>(event))
+            flowvrBeginIteration(ev->module);
+        if (FlowVREndIterationEvent* ev = dynamic_cast<FlowVREndIterationEvent*>(event))
+            flowvrEndIteration(ev->module);
+    }
+}
 
 //flowvr::interact::ObjectsOutputPort pObjectsOut("objects");
 //flowvr::interact::ChunkInteractWriter objects;
@@ -309,8 +340,6 @@ public:
     flowvr::InputPort* pInPoints;
     flowvr::InputPort* pInMatrix;
 
-    DataField<float> f_scale;
-    DataField<Vec3f> f_trans;
     DataField<bool> computeV;
     DataField<double> maxVDist;
 
@@ -332,8 +361,6 @@ public:
 
     FlowVRInputMesh()
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
-        , f_scale(dataField(&f_scale,1.0f,"scale","scale"))
-        , f_trans(dataField(&f_trans,Vec3f(0,0,0),"translation","translation"))
         , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
         , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
@@ -409,8 +436,8 @@ public:
         {
             pointsLastIt = pointsIt;
             const Vec3f* vertices = points.data.getRead<Vec3f>(0);
-            const Vec3f trans = f_trans.getValue();
-            const float scale = f_scale.getValue();
+            const Vec3f trans = mod->f_trans.getValue();
+            const float scale = mod->f_scale.getValue();
 
             BaseObject* mmodel = getContext()->getMechanicalState();
             sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>* mmodel3f;
@@ -694,6 +721,7 @@ public:
         if (!init)
         {
             FlowVRRenderInitEvent ev;
+            ev.from = mod;
             ev.scene = &scene;
             ev.scratch = &scratch;
             getContext()->propagateEvent(&ev);
@@ -704,6 +732,7 @@ public:
     virtual void flowvrEndIteration(flowvr::ModuleAPI* /*module*/)
     {
         FlowVRRenderUpdateEvent ev;
+        ev.from = mod;
         ev.scene = &scene;
         getContext()->propagateEvent(&ev);
         scene.put(pOutScene, scratch);
@@ -716,6 +745,7 @@ public:
         if (!init)
         {
             //FlowVRRenderInitEvent ev;
+            //ev.from = mod;
             //ev.scene = &scene;
             //getContext()->propagateEvent(&ev);
             scene.put(pOutScene);
@@ -733,16 +763,12 @@ int FlowVRRenderWriterClass = sofa::core::RegisterObject("FlowVRRender scene man
 class FlowVRRenderVisualModel : public FlowVRRenderObject, public sofa::core::VisualModel
 {
 protected:
-    DataField<float> f_scale;
-    DataField<Vec3f> f_trans;
     flowvr::render::ChunkRenderWriter* scene;
     bool *scratch;
     flowvr::ModuleAPI* module;
 public:
     FlowVRRenderVisualModel()
-        : f_scale(dataField(&f_scale,1.0f,"scale","scale"))
-        , f_trans(dataField(&f_trans,Vec3f(0,0,0),"translation","translation"))
-        , scene(NULL), module(NULL)
+        : scene(NULL), module(NULL)
     {
     }
 
@@ -935,8 +961,11 @@ public:
             // SOFA = trans + scale * FLOWVR
             // FLOWVR = SOFA * 1/scale - trans * 1/scale
 
-            scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_POSITION, "", ftl::Vec3f(f_trans.getValue().ptr())*(-1/f_scale.getValue()));
-            scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_SCALE, "", ftl::Vec3f(1,1,1)/f_scale.getValue());
+            const Vec3f trans = mod->f_trans.getValue();
+            const float scale = mod->f_scale.getValue();
+            const float inv_scale = 1/scale;
+            scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_POSITION, "", ftl::Vec3f(trans.ptr())*(-inv_scale));
+            scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_SCALE, "", ftl::Vec3f(inv_scale,inv_scale,inv_scale));
         }
         if (mmodel)
         {
