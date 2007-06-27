@@ -267,7 +267,7 @@ public:
     virtual void animateBegin(double /*dt*/)
     {
         if (module==NULL) return;
-        if (it!=-1 && f_dt.getValue()>0 && getContext()->getTime()<lasttime+f_dt.getValue()) return;
+        if (it!=-1 && f_dt.getValue()>0 && getContext()->getTime()<lasttime+f_dt.getValue() && getContext()->getTime()>=lasttime) return;
         if (!module->wait())
         {
             std::cerr << "SofaFlowVR: module wait method returned 0. Exit."<<std::endl;
