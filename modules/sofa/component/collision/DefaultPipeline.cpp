@@ -53,9 +53,9 @@ int DefaultPipelineClass = core::RegisterObject("The default collision detection
         ;
 
 DefaultPipeline::DefaultPipeline()
-    : bVerbose(dataField(&bVerbose, false, "verbose","TODO"))
-    , bDraw(dataField(&bDraw, false, "draw","TODO"))
-    , depth(dataField(&depth, 6, "depth","TODO"))
+    : bVerbose(dataField(&bVerbose, false, "verbose","Display current step information"))
+    , bDraw(dataField(&bDraw, false, "draw","Draw detected collisions"))
+    , depth(dataField(&depth, 6, "depth","Max depth of bounding trees"))
 {
 }
 

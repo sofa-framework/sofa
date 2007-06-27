@@ -25,10 +25,6 @@
 #ifndef SOFA_SIMULATION_TREE_GNODE_H
 #define SOFA_SIMULATION_TREE_GNODE_H
 
-#include <stdlib.h>
-#include <vector>
-#include <string>
-#include <iostream>
 #include <sofa/core/objectmodel/BaseNode.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
@@ -49,6 +45,10 @@
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/simulation/tree/ActionScheduler.h>
+#include <stdlib.h>
+#include <vector>
+#include <string>
+#include <stack>
 #include <iostream>
 
 
@@ -492,9 +492,15 @@ protected:
     bool debug_;
     bool logTime_;
 
+    /// @name Performance Timing Log
+    /// @{
+
+    std::stack<Action*> actionStack;
     NodeTimer totalTime;
     std::map<std::string, NodeTimer> actionTime;
     std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> > objectTime;
+
+    /// @}
 
     void doAddChild(GNode* node);
     void doRemoveChild(GNode* node);

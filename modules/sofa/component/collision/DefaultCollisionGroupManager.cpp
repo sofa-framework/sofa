@@ -85,6 +85,13 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         std::cerr << "DefaultCollisionGroupManager only support graph-based scenes.\n";
         return;
     }
+
+    simulation::tree::GNode* node = groot;
+    if (node && !node->getLogTime()) node=NULL; // Only use node for time logging
+    simulation::tree::GNode::ctime_t t0 = 0;
+
+    if (node) t0 = node->startTime();
+
     // Map storing group merging history
     std::map<simulation::tree::GNode*, simulation::tree::GNode*> mergedGroups;
     std::vector<simulation::tree::GNode*> contactGroup;
@@ -170,6 +177,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         contactGroup.push_back(group);
     }
 
+    if (node) t0 = node->endTime(t0, "collision/groups", this);
+
     // now that the groups are final, attach contacts' response
     for(unsigned int i=0; i<contacts.size(); i++)
     {
@@ -182,6 +191,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         else
             contact->createResponse(scene);
     }
+
+    if (node) t0 = node->endTime(t0, "collision/contacts", this);
 
     // delete removed groups
     for (std::vector<simulation::tree::GNode*>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)

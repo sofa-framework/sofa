@@ -374,6 +374,7 @@ void GNode::doExecuteAction(Action* action)
     {
         const ctime_t t0 = CTime::getTime();
         ctime_t tChild = 0;
+        actionStack.push(action);
         if(action->processNodeTopDown(this) != Action::RESULT_PRUNE)
         {
             ctime_t ct0 = CTime::getTime();
@@ -384,15 +385,27 @@ void GNode::doExecuteAction(Action* action)
             tChild = CTime::getTime() - ct0;
         }
         action->processNodeBottomUp(this);
+        actionStack.pop();
         ctime_t tTree = CTime::getTime() - t0;
         ctime_t tNode = tTree - tChild;
-        totalTime.tNode += tNode;
-        totalTime.tTree += tTree;
-        ++totalTime.nVisit;
+        if (actionStack.empty())
+        {
+            totalTime.tNode += tNode;
+            totalTime.tTree += tTree;
+            ++totalTime.nVisit;
+        }
         NodeTimer& t = actionTime[action->getCategoryName()];
         t.tNode += tNode;
         t.tTree += tTree;
         ++t.nVisit;
+        if (!actionStack.empty())
+        {
+            // remove time from calling action log
+            Action* prev = actionStack.top();
+            NodeTimer& t = actionTime[prev->getCategoryName()];
+            t.tNode -= tTree;
+            t.tTree -= tTree;
+        }
     }
     else
     {
