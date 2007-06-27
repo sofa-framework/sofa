@@ -1866,8 +1866,10 @@ void QtGLViewer::setScene(sofa::simulation::tree::GNode* scene, const char* file
         ofilename << "_";
 
         screenshot_prefix = ofilename.str();
+
         unsigned int position_scene = screenshot_prefix.rfind("scenes/");
-        if (position_scene != std::string::npos)
+
+        if (position_scene != std::string::npos && position_scene < screenshot_prefix.size()-7)
         {
             screenshot_prefix.replace(position_scene, 7, "share/screenshots/");
         }

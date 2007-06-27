@@ -157,7 +157,7 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     // setup OpenGL mode for the window
     //Fl_Gl_Window::mode(FL_RGB | FL_DOUBLE | FL_DEPTH | FL_ALPHA);
     timerAnimate = new QTimer(this);
-    connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
+    //connect( timerAnimate, SIGNAL(timeout()), this, SLOT(animate()) );
 
     _previousEyePos = Vector3(0.0, 0.0, 0.0);
     _zoom = 1.0;
@@ -2389,7 +2389,7 @@ void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filena
         ofilename << "_";
 
         screenshot_prefix = ofilename.str();
-        unsigned int position_scene = screenshot_prefix.rfind("scenes/");
+        std::string::size_type position_scene = screenshot_prefix.rfind("scenes/");
         if (position_scene != std::string::npos)
         {
             screenshot_prefix.replace(position_scene, 7, "share/screenshots/");
