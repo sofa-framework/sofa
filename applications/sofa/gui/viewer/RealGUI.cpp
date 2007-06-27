@@ -422,9 +422,10 @@ class GraphListenerQListView : public MutationListener
 {
 public:
     Q3ListView* widget;
+    bool frozen;
     std::map<core::objectmodel::Base*, Q3ListViewItem* > items;
     GraphListenerQListView(Q3ListView* w)
-        : widget(w)
+        : widget(w), frozen(false)
     {
     }
 
@@ -440,24 +441,43 @@ public:
 
     void addChild(GNode* parent, GNode* child)
     {
-        if (items.count(child)) return;
-        Q3ListViewItem* item;
-        if (parent == NULL)
-            item = new Q3ListViewItem(widget);
-        else if (items.count(parent))
-            item = createItem(items[parent]);
+        if (frozen) return;
+        if (items.count(child))
+        {
+            Q3ListViewItem* item = items[child];
+            if (item->listView() == NULL)
+            {
+                if (parent == NULL)
+                    widget->insertItem(item);
+                else if (items.count(parent))
+                    items[parent]->insertItem(item);
+                else
+                {
+                    std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
+                    return;
+                }
+            }
+        }
         else
         {
-            std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
-            return;
+            Q3ListViewItem* item;
+            if (parent == NULL)
+                item = new Q3ListViewItem(widget);
+            else if (items.count(parent))
+                item = createItem(items[parent]);
+            else
+            {
+                std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
+                return;
+            }
+            if (std::string(child->getName(),0,7) != "default")
+                item->setText(0, child->getName().c_str());
+            QPixmap* pix = getPixmap(child);
+            if (pix)
+                item->setPixmap(0, *pix);
+            item->setOpen(true);
+            items[child] = item;
         }
-        if (std::string(child->getName(),0,7) != "default")
-            item->setText(0, child->getName().c_str());
-        QPixmap* pix = getPixmap(child);
-        if (pix)
-            item->setPixmap(0, *pix);
-        item->setOpen(true);
-        items[child] = item;
         // Add all objects and grand-children
         MutationListener::addChild(parent, child);
     }
@@ -474,6 +494,16 @@ public:
 
     void moveChild(GNode* previous, GNode* parent, GNode* child)
     {
+        if (frozen && items.count(child))
+        {
+            Q3ListViewItem* itemChild = items[child];
+            if (itemChild->listView() != NULL)
+            {
+                Q3ListViewItem* itemPrevious = items[previous];
+                itemPrevious->takeItem(itemChild);
+            }
+            return;
+        }
         if (!items.count(child) || !items.count(previous))
         {
             addChild(parent, child);
@@ -494,29 +524,46 @@ public:
 
     void addObject(GNode* parent, core::objectmodel::BaseObject* object)
     {
-        if (items.count(object)) return;
-        Q3ListViewItem* item;
-        if (items.count(parent))
-            item = createItem(items[parent]);
+        if (frozen) return;
+        if (items.count(object))
+        {
+            Q3ListViewItem* item = items[object];
+            if (item->listView() == NULL)
+            {
+                if (items.count(parent))
+                    items[parent]->insertItem(item);
+                else
+                {
+                    std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
+                    return;
+                }
+            }
+        }
         else
         {
-            std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
-            return;
+            Q3ListViewItem* item;
+            if (items.count(parent))
+                item = createItem(items[parent]);
+            else
+            {
+                std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
+                return;
+            }
+            std::string name = sofa::helper::gettypename(typeid(*object));
+            std::string::size_type pos = name.find('<');
+            if (pos != std::string::npos)
+                name.erase(pos);
+            if (std::string(object->getName(),0,7) != "default")
+            {
+                name += "  ";
+                name += object->getName();
+            }
+            item->setText(0, name.c_str());
+            QPixmap* pix = getPixmap(object);
+            if (pix)
+                item->setPixmap(0, *pix);
+            items[object] = item;
         }
-        std::string name = sofa::helper::gettypename(typeid(*object));
-        std::string::size_type pos = name.find('<');
-        if (pos != std::string::npos)
-            name.erase(pos);
-        if (std::string(object->getName(),0,7) != "default")
-        {
-            name += "  ";
-            name += object->getName();
-        }
-        item->setText(0, name.c_str());
-        QPixmap* pix = getPixmap(object);
-        if (pix)
-            item->setPixmap(0, *pix);
-        items[object] = item;
     }
 
     void removeObject(GNode* /*parent*/, core::objectmodel::BaseObject* object)
@@ -530,6 +577,13 @@ public:
 
     void moveObject(GNode* previous, GNode* parent, core::objectmodel::BaseObject* object)
     {
+        if (frozen && items.count(object))
+        {
+            Q3ListViewItem* itemObject = items[object];
+            Q3ListViewItem* itemPrevious = items[previous];
+            itemPrevious->takeItem(itemObject);
+            return;
+        }
         if (!items.count(object) || !items.count(previous))
         {
             addObject(parent, object);
@@ -547,10 +601,56 @@ public:
             itemParent->insertItem(itemObject);
         }
     }
+
+    void freeze(GNode* groot)
+    {
+        if (!items.count(groot)) return;
+        frozen = true;
+    }
+    /*
+    void unfreeze(Q3ListViewItem* parent, GNode* node)
+    {
+    	if (!items.count(node))
+    	{
+    		addChild(node->parent, node);
+    		return;
+    	}
+    	Q3ListViewItem* item = items[node];
+    	if (item->listView() == NULL)
+    	{
+    		if (parent)
+    			parent->insertItem(item);
+    		else
+    			widget->insertItem(item);
+    	}
+    	for(GNode::ChildIterator it = groot->child.begin(), itend = groot->child.end(); it != itend; ++it)
+    	{
+    		unfreeze(item, *it);
+    	}
+    	for(GNode::ObjectIterator it = groot->object.begin(), itend = groot->object.end(); it != itend; ++it)
+    	{
+    		core::objectmodel::BaseObject* object = *it;
+    		if (!items.count(object))
+    			addObject(node, object);
+    		else
+    		{
+    			Q3ListViewItem* itemObject = items[object];
+    			if (itemObject->listView() == NULL)
+    				item->insertItem(itemObject);
+    		}
+    	}
+    }
+    */
+    void unfreeze(GNode* groot)
+    {
+        if (!items.count(groot)) return;
+        frozen = false;
+        addChild(NULL, groot);
+    }
 };
 
 RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*options*/)
-    : viewerName(viewername), graphListener(NULL)
+    : viewerName(viewername), viewer(NULL), currentTab(NULL), graphListener(NULL)
 {
     left_stack = new QWidgetStack(splitter2);
 #ifndef QT_MODULE_QT3SUPPORT
@@ -600,7 +700,11 @@ RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*opti
     connect( exportGnuplotFilesCheckbox, SIGNAL(toggled(bool)), this, SLOT(setExportGnuplot(bool)) );
     connect( displayComputationTimeCheckBox, SIGNAL( toggled(bool) ), this, SLOT( displayComputationTime(bool) ) );
 
+    connect( tabs, SIGNAL( currentChanged(QWidget*) ), this, SLOT( currentTabChanged(QWidget*) ) );
+
     addViewer();
+
+    currentTabChanged(tabs->currentPage());
 
 #ifdef SOFA_PML
     pmlreader = NULL;
@@ -840,7 +944,8 @@ bool RealGUI::setViewer(const char* name)
 #endif
 
     viewerName = name;
-    graphListener->removeChild(NULL, groot);
+    if (graphListener)
+        graphListener->removeChild(NULL, groot);
     addViewer();
     fileOpen(filename.c_str());
     return true;
@@ -901,7 +1006,10 @@ void RealGUI::setScene(GNode* groot, const char* filename)
     {
         Simulation::unload(viewer->getScene());
         if (graphListener!=NULL)
+        {
             delete graphListener;
+            graphListener = NULL;
+        }
         graphView->clear();
     }
 
@@ -932,6 +1040,36 @@ void RealGUI::setScene(GNode* groot, const char* filename)
     //dumpGraph(groot, new Q3ListViewItem(graphView));
     graphListener = new GraphListenerQListView(graphView);
     graphListener->addChild(NULL, groot);
+    if (currentTab != TabGraph)
+    {
+        std::cout << "Hide Graph"<<std::endl;
+        graphListener->freeze(groot);
+    }
+}
+
+void RealGUI::currentTabChanged(QWidget* widget)
+{
+    if (widget == currentTab) return;
+    GNode* groot = viewer==NULL ? NULL : viewer->getScene();
+    if (widget == TabGraph)
+    {
+        if (groot && graphListener)
+        {
+            std::cout << "Show Graph"<<std::endl;
+            //graphListener->addChild(NULL, groot);
+            graphListener->unfreeze(groot);
+        }
+    }
+    else if (currentTab == TabGraph)
+    {
+        if (groot && graphListener)
+        {
+            std::cout << "Hide Graph"<<std::endl;
+            //graphListener->removeChild(NULL, groot);
+            graphListener->freeze(groot);
+        }
+    }
+    currentTab = widget;
 }
 
 void RealGUI::screenshot()

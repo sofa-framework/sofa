@@ -522,7 +522,12 @@ GNode::ctime_t GNode::endTime(ctime_t t0, const std::string& s, core::objectmode
 
 void GNode::addListener(MutationListener* obj)
 {
-    listener.add(obj);
+    // make sure we don't add the same listener twice
+    Sequence< MutationListener >::iterator it = listener.begin();
+    while (it != listener.end() && (*it)!=obj)
+        ++it;
+    if (it == listener.end())
+        listener.add(obj);
 }
 
 void GNode::removeListener(MutationListener* obj)

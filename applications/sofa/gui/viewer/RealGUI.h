@@ -164,6 +164,7 @@ public slots:
     void dumpState(bool);
     void displayComputationTime(bool);
     void setExportGnuplot(bool);
+    void currentTabChanged(QWidget*);
 
 signals:
     void reload();
@@ -187,6 +188,7 @@ protected:
     bool m_displayComputationTime;
 
 
+    QWidget* currentTab;
     GraphListenerQListView* graphListener;
     QTimer* timerStep;
     QLabel* fpsLabel;
