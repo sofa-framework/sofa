@@ -497,10 +497,14 @@ public:
         if (frozen && items.count(child))
         {
             Q3ListViewItem* itemChild = items[child];
-            if (itemChild->listView() != NULL)
+            if (items.count(previous)) //itemChild->listView() != NULL)
             {
                 Q3ListViewItem* itemPrevious = items[previous];
                 itemPrevious->takeItem(itemChild);
+            }
+            else
+            {
+                removeChild(previous, child);
             }
             return;
         }
