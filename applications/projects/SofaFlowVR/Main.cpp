@@ -29,6 +29,8 @@
 
 #include <sofa/gui/SofaGUI.h>
 
+#include <GL/glut.h>
+
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
 using namespace sofa::simulation::tree;
@@ -1052,6 +1054,10 @@ int FlowVRRenderMesh3fClass = sofa::core::RegisterObject("FlowVRRender Visual Mo
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
+
+#ifndef SOFA_GUI_QTOGREVIEWER
+    glutInit(&argc,argv);
+#endif
     sofa::helper::BackTrace::autodump();
 
     std::string fileName = "/home/allardj/work/sig07et/data/test1.scn";
