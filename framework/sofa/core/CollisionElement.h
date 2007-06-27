@@ -146,6 +146,16 @@ public:
         return model->canCollideWithElement(index, elem.model, elem.index);
     }
 
+    /// Distance to the actual (visual) surface
+    double getProximity() { return model->getProximity(); }
+
+    /// Contact stiffness
+    double getContactStiffness() { return model->getContactStiffness(index); }
+
+    /// Contact friction (damping) coefficient
+    double getContactFriction() { return model->getContactFriction(index); }
+
+
     /// Render this element.
     ///
     /// @see CollisionModel::draw

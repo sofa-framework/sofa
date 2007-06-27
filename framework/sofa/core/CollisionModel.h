@@ -65,6 +65,9 @@ public:
 
     CollisionModel()
         : bStatic(dataField(&bStatic, false, "static", "flag indicating if an object is immobile"))
+        , proximity(dataField(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
+        , contactStiffness(dataField(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
+        , contactFriction(dataField(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
         , size(0), previous(NULL), next(NULL)
     {
     }
@@ -223,9 +226,30 @@ public:
         return cm;
     }
 
+
+    /// @name Experimental methods
+    /// @{
+
+    /// Distance to the actual (visual) surface
+    double getProximity() { return proximity.getValue(); }
+
+    /// Contact stiffness
+    double getContactStiffness(int /*index*/) { return contactStiffness.getValue(); }
+
+    /// Contact friction (damping) coefficient
+    double getContactFriction(int /*index*/) { return contactFriction.getValue(); }
+
+    /// @}
+
 protected:
 
     DataField<bool> bStatic;
+
+    DataField<double> proximity;
+
+    DataField<double> contactStiffness;
+
+    DataField<double> contactFriction;
 
     /// Number of collision elements
     int size;
@@ -248,6 +272,7 @@ protected:
             pmodel = new DerivedModel();
             pmodel->setContext(getContext());
             pmodel->setStatic(isStatic());
+            pmodel->proximity.setValue(proximity.getValue());
             previous = pmodel;
             pmodel->setNext(this);
         }

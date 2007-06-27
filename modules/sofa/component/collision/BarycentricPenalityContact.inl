@@ -92,6 +92,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
     mapper1.resize(size);
     mapper2.resize(size);
     int i = 0;
+    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity();
     for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
         DetectionOutput* o = *it;
@@ -103,11 +104,14 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
         index1 = mapper1.addPoint(o->point[0], index1);
         // Create mapping for second point
         index2 = mapper2.addPoint(o->point[1], index2);
-        double distance = intersectionMethod->getContactDistance() + mapper1.radius(elem1) + mapper2.radius(elem2);
-        if (model1->isStatic() || model2->isStatic()) // create stiffer springs for static models as only half of the force is really applied
-            ff->addContact(index1, index2, o->normal, distance, 300, 0.00f, 0.00f); /// \todo compute stiffness and damping
-        else
-            ff->addContact(index1, index2, o->normal, distance, 250, 0.00f, 0.00f); /// \todo compute stiffness and damping
+        double distance = d0 + mapper1.radius(elem1) + mapper2.radius(elem2);
+        double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness())/distance;
+        double mu_v = (elem1.getContactFriction() + elem2.getContactFriction())*0.01;
+        ff->addContact(index1, index2, o->normal, distance, stiffness, 0.0, mu_v);
+        //if (model1->isStatic() || model2->isStatic()) // create stiffer springs for static models as only half of the force is really applied
+        //	ff->addContact(index1, index2, o->normal, distance, 300, 0.00f, 0.00f); /// \todo compute stiffness and damping
+        //else
+        //	ff->addContact(index1, index2, o->normal, distance, 250, 0.00f, 0.00f); /// \todo compute stiffness and damping
     }
     // Update mappings
     mapper1.update();

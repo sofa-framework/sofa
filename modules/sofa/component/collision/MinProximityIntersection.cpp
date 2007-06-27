@@ -110,7 +110,7 @@ bool intersectionCubeCube(Cube &cube1, Cube &cube2)
     const Vector3& minVect2 = cube2.minVect();
     const Vector3& maxVect1 = cube1.maxVect();
     const Vector3& maxVect2 = cube2.maxVect();
-    const double alarmDist = proximityInstance->getAlarmDistance();
+    const double alarmDist = proximityInstance->getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
 
     for (int i=0; i<3; i++)
     {
@@ -128,7 +128,7 @@ DetectionOutput* distCorrectionCubeCube(Cube&, Cube&)
 
 bool intersectionLineLine(Line& e1, Line& e2)
 {
-    const double alarmDist = proximityInstance->getAlarmDistance();
+    const double alarmDist = proximityInstance->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e1.p2()-e1.p1();
     const Vector3 CD = e2.p2()-e2.p1();
     const Vector3 AC = e2.p1()-e1.p1();
@@ -166,7 +166,7 @@ bool intersectionLineLine(Line& e1, Line& e2)
 
 DetectionOutput* distCorrectionLineLine(Line& e1, Line& e2)
 {
-    const double contactDist = proximityInstance->getContactDistance();
+    const double contactDist = proximityInstance->getContactDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e1.p2()-e1.p1();
     const Vector3 CD = e2.p2()-e2.p1();
     const Vector3 AC = e2.p1()-e1.p1();
@@ -218,7 +218,7 @@ DetectionOutput* distCorrectionLineLine(Line& e1, Line& e2)
 
 bool intersectionPointTriangle(Point& e1, Triangle& e2)
 {
-    const double alarmDist = proximityInstance->getAlarmDistance();
+    const double alarmDist = proximityInstance->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
     const Vector3 AC = e2.p3()-e2.p1();
     const Vector3 AP = e1.p() -e2.p1();
@@ -271,7 +271,7 @@ bool intersectionPointTriangle(Point& e1, Triangle& e2)
 
 DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
 {
-    const double contactDist = proximityInstance->getContactDistance();
+    const double contactDist = proximityInstance->getContactDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
     const Vector3 AC = e2.p3()-e2.p1();
     const Vector3 AP = e1.p() -e2.p1();
@@ -332,7 +332,7 @@ DetectionOutput* distCorrectionPointTriangle(Point& e1, Triangle& e2)
 
 bool intersectionPointLine(Point& e1, Line& e2)
 {
-    const double alarmDist = proximityInstance->getAlarmDistance();
+    const double alarmDist = proximityInstance->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
     const Vector3 AP = e1.p()-e2.p1();
     double A;
@@ -364,7 +364,7 @@ bool intersectionPointLine(Point& e1, Line& e2)
 
 DetectionOutput* distCorrectionPointLine(Point& e1, Line& e2)
 {
-    const double contactDist = proximityInstance->getContactDistance();
+    const double contactDist = proximityInstance->getContactDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
     const Vector3 AP = e1.p()-e2.p1();
     double A;
@@ -406,7 +406,7 @@ DetectionOutput* distCorrectionPointLine(Point& e1, Line& e2)
 
 bool intersectionPointPoint(Point& e1, Point& e2)
 {
-    const double alarmDist = proximityInstance->getAlarmDistance();
+    const double alarmDist = proximityInstance->getAlarmDistance() + e1.getProximity() + e2.getProximity();
     Vector3 PQ = e2.p()-e1.p();
 
     if (PQ.norm2() < alarmDist*alarmDist)
@@ -419,7 +419,7 @@ bool intersectionPointPoint(Point& e1, Point& e2)
 
 DetectionOutput* distCorrectionPointPoint(Point& e1, Point& e2)
 {
-    const double contactDist = proximityInstance->getContactDistance();
+    const double contactDist = proximityInstance->getContactDistance() + e1.getProximity() + e2.getProximity();
     Vector3 P,Q,PQ,Pfree,Qfree;
     P = e1.p();
     Q = e2.p();
@@ -444,7 +444,7 @@ DetectionOutput* distCorrectionPointPoint(Point& e1, Point& e2)
 
 bool intersectionSphereTriangle(Sphere& e1, Triangle& e2)
 {
-    const double alarmDist = proximityInstance->getAlarmDistance() + e1.r();
+    const double alarmDist = proximityInstance->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     const Vector3 x13 = e2.p1()-e2.p2();
     const Vector3 x23 = e2.p1()-e2.p3();
     const Vector3 x03 = e2.p1()-e1.center();
@@ -485,7 +485,7 @@ bool intersectionSphereTriangle(Sphere& e1, Triangle& e2)
 
 DetectionOutput* distCorrectionSphereTriangle(Sphere& e1, Triangle& e2)
 {
-    const double contactDist = proximityInstance->getContactDistance() + e1.r();
+    const double contactDist = proximityInstance->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     const Vector3 x13 = e2.p1()-e2.p2();
     const Vector3 x23 = e2.p1()-e2.p3();
     const Vector3 x03 = e2.p1()-e1.center();
@@ -528,7 +528,7 @@ DetectionOutput* distCorrectionSphereTriangle(Sphere& e1, Triangle& e2)
 
 bool intersectionSphereLine(Sphere& e1, Line& e2)
 {
-    const double alarmDist = proximityInstance->getAlarmDistance() + e1.r();
+    const double alarmDist = proximityInstance->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     const Vector3 x32 = e2.p1()-e2.p2();
     const Vector3 x31 = e1.center()-e2.p2();
     double A;
@@ -560,7 +560,7 @@ bool intersectionSphereLine(Sphere& e1, Line& e2)
 
 DetectionOutput* distCorrectionSphereLine(Sphere& e1, Line& e2)
 {
-    const double contactDist = proximityInstance->getContactDistance() + e1.r();
+    const double contactDist = proximityInstance->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     const Vector3 x32 = e2.p1()-e2.p2();
     const Vector3 x31 = e1.center()-e2.p2();
     double A;
@@ -595,7 +595,7 @@ DetectionOutput* distCorrectionSphereLine(Sphere& e1, Line& e2)
 
 bool intersectionSpherePoint(Sphere& e1, Point& e2)
 {
-    const double alarmDist = proximityInstance->getAlarmDistance() + e1.r();
+    const double alarmDist = proximityInstance->getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     Vector3 P,Q,PQ;
     P = e1.center();
     Q = e2.p();
@@ -611,7 +611,7 @@ bool intersectionSpherePoint(Sphere& e1, Point& e2)
 
 DetectionOutput* distCorrectionSpherePoint(Sphere& e1, Point& e2)
 {
-    const double contactDist = proximityInstance->getContactDistance() + e1.r();
+    const double contactDist = proximityInstance->getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     Vector3 P,Q,PQ;
     P = e1.center();
     Q = e2.p();
