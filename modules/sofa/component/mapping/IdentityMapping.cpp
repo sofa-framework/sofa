@@ -101,9 +101,13 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
 
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > >()
+        .add< IdentityMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<Rigid3dTypes> > > >()
+        .add< IdentityMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<Rigid3fTypes> > > >()
 
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > > >()
+        .add< IdentityMapping< Mapping< MechanicalState<Rigid2dTypes>, MappedModel<Rigid2dTypes> > > >()
+        .add< IdentityMapping< Mapping< MechanicalState<Rigid2fTypes>, MappedModel<Rigid2fTypes> > > >()
         ;
 
 
@@ -183,14 +187,18 @@ template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, 
 // template class IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<ExtVec6dTypes> > >;
 
 
-// Mech -> Mech
+// Rigid3
 template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
+template class IdentityMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<Rigid3dTypes> > >;
+template class IdentityMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
 
 
-// Mech -> Mech
+// Rigid2
 template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Rigid2fTypes> > >;
+template class IdentityMapping< Mapping< MechanicalState<Rigid2dTypes>, MappedModel<Rigid2dTypes> > >;
+template class IdentityMapping< Mapping< MechanicalState<Rigid2fTypes>, MappedModel<Rigid2fTypes> > >;
 
 } // namespace mapping
 

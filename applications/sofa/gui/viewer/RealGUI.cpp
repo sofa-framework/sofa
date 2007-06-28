@@ -157,15 +157,15 @@ using namespace sofa::simulation::automatescheduler;
 
 #ifdef SOFA_GUI_QGLVIEWER
 SOFA_DECL_CLASS(QGLViewerGUI)
-int QGLViewerGUIClass = SofaGUI::RegisterGUI("qglviewer", &RealGUI::CreateGUI, &RealGUI::InitGUI, 2);
+int QGLViewerGUIClass = SofaGUI::RegisterGUI("qglviewer", &RealGUI::CreateGUI, &RealGUI::InitGUI, 3);
 #endif
 #ifdef SOFA_GUI_QTVIEWER
 SOFA_DECL_CLASS(QTGUI)
-int QtGUIClass = SofaGUI::RegisterGUI("qt", &RealGUI::CreateGUI, &RealGUI::InitGUI, 1);
+int QtGUIClass = SofaGUI::RegisterGUI("qt", &RealGUI::CreateGUI, &RealGUI::InitGUI, 2);
 #endif
 #ifdef SOFA_GUI_QTOGREVIEWER
 SOFA_DECL_CLASS(OgreGUI)
-int QtOGREGUIClass = SofaGUI::RegisterGUI("ogre", &RealGUI::CreateGUI, &RealGUI::InitGUI, 0);
+int QtOGREGUIClass = SofaGUI::RegisterGUI("ogre", &RealGUI::CreateGUI, &RealGUI::InitGUI, 1);
 #endif
 
 int RealGUI::InitGUI(const char* name, const std::vector<std::string>& /* options */)

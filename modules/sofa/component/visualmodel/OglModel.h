@@ -32,7 +32,7 @@
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/helper/io/Mesh.h>
+#include <sofa/component/visualmodel/VisualModelImpl.h>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -51,57 +51,9 @@ namespace visualmodel
 
 using namespace sofa::defaulttype;
 
-struct Material
-{
-    std::string	name;		/* name of material */
-    GLfloat	diffuse[4];	/* diffuse component */
-    GLfloat	ambient[4];	/* ambient component */
-    GLfloat	specular[4];	/* specular component */
-    GLfloat	emissive[4];	/* emmissive component */
-    GLfloat	shininess;	/* specular exponent */
-    bool useDiffuse;
-    bool useSpecular;
-    bool useAmbient;
-    bool useEmissive;
-    bool useShininess;
-
-    Material& operator= (const helper::io::Mesh::Material &matLoaded);
-    void setColor(float r, float g, float b, float a);
-
-    Material();
-};
-
-class OglModel : public core::VisualModel, public core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >
+class OglModel : public VisualModelImpl
 {
 private:
-    typedef Vec<2, GLfloat> TexCoord;
-    typedef helper::fixed_array<int, 3> Triangle;
-    typedef helper::fixed_array<int, 4> Quad;
-
-    ResizableExtVector<Coord>* inputVertices;
-
-    bool modified; ///< True if input vertices modified since last rendering
-    bool useTopology; ///< True if list of facets should be taken from the attached topology
-    bool useNormals; ///< True if normals should be read from file
-    bool castShadow; ///< True if object cast shadows
-
-    ResizableExtVector<Coord> vertices;
-    ResizableExtVector<Coord> vnormals;
-    ResizableExtVector<TexCoord> vtexcoords;
-
-    ResizableExtVector<Triangle> triangles;
-    ResizableExtVector<Quad> quads;
-
-    /// If vertices have multiple normals/texcoords, then we need to separate them
-    /// This vector store which input position is used for each vertice
-    /// If it is empty then each vertex correspond to one position
-    ResizableExtVector<int> vertPosIdx;
-
-    /// Similarly this vector store which input normal is used for each vertice
-    /// If it is empty then each vertex correspond to one normal
-    ResizableExtVector<int> vertNormIdx;
-
-    Material material;
 
     helper::gl::Texture *tex;
 
@@ -113,59 +65,9 @@ public:
 
     ~OglModel();
 
-    void parse(core::objectmodel::BaseObjectDescription* arg);
-
-    bool isTransparent();
-
-    void draw();
-    void drawTransparent();
-    void drawShadow();
-
-    bool load(const std::string& filename, const std::string& loader, const std::string& textureName);
-
-    void applyTranslation(double dx, double dy, double dz);
-    void applyRotation(Quat q);
-    void applyScale(double s);
-    void applyUVScale(double su, double sv);
-    void computeNormals();
-
-    void flipFaces();
-
-    void setColor(float r, float g, float b, float a);
-    void setColor(std::string color);
-
-    void setUseNormals(bool val) { useNormals = val;  }
-    bool getUseNormals() const   { return useNormals; }
-
-    void setCastShadow(bool val) { castShadow = val;  }
-    bool getCastShadow() const   { return castShadow; }
-
-    void update();
-
-    void init();
+    bool loadTexture(const std::string& filename);
 
     void initTextures();
-
-    bool addBBox(double* minBBox, double* maxBBox);
-
-    const VecCoord* getX()  const; // { return &x;   }
-    const VecDeriv* getV()  const { return NULL; }
-    /*
-    const VecDeriv* getF()  const { return NULL; }
-    const VecDeriv* getDx() const { return NULL; }
-    */
-
-    VecCoord* getX(); //  { return &x;   }
-    VecDeriv* getV()  { return NULL; }
-    /*
-    VecDeriv* getF()  { return NULL; }
-    VecDeriv* getDx() { return NULL; }
-    */
-
-    /// Append this mesh to an OBJ format stream.
-    /// The number of vertices position, normal, and texture coordinates already written is given as parameters
-    /// This method should update them
-    virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 };
 
 typedef Vec<3,GLfloat> GLVec3f;

@@ -90,7 +90,7 @@ int SimpleGUI::closeGUI()
 
 SOFA_DECL_CLASS(SimpleGUI)
 
-int SimpleGUIClass = SofaGUI::RegisterGUI("glut", &SimpleGUI::CreateGUI, &SimpleGUI::InitGUI, 10);
+int SimpleGUIClass = SofaGUI::RegisterGUI("glut", &SimpleGUI::CreateGUI, &SimpleGUI::InitGUI, 0);
 int SimpleGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
 {
     return 0;
