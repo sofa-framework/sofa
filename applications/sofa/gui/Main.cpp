@@ -9,6 +9,10 @@ namespace gui
 #if defined (WIN32) || (__APPLE__)
 SOFA_LINK_CLASS(BatchGUI)
 
+#ifdef SOFA_GUI_GLUT
+SOFA_LINK_CLASS(SimpleGUI)
+#endif
+
 #ifdef SOFA_GUI_QGLVIEWER
 SOFA_LINK_CLASS(QGLViewerGUI)
 #endif

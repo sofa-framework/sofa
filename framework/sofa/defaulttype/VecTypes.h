@@ -113,7 +113,9 @@ public:
     virtual void close(value_type* data)=0;
 };
 
-/// Custom vector class
+/// Custom vector class.
+///
+/// This class allows custom buffer allocation while not having any virtual methods using a bridge pattern with ExtVectorAllocator
 template<class T>
 class ExtVector
 {
@@ -176,39 +178,43 @@ public:
     }
 };
 
-/// Resizable custom vector class.
+template<class T>
+class DefaultAllocator : public ExtVectorAllocator<T>
+{
+public:
+    typedef typename ExtVectorAllocator<T>::value_type value_type;
+    typedef typename ExtVectorAllocator<T>::size_type size_type;
+    virtual void close(value_type* data)
+    {
+        if (data!=NULL) delete[] data;
+        delete this;
+    }
+    virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)
+    {
+        if (size > maxsize)
+        {
+            T* oldData = data;
+            maxsize = (size > 2*maxsize ? size : 2*maxsize);
+            data = new T[maxsize];
+            if (cursize)
+                std::copy(oldData, oldData+cursize, data);
+            //for (size_type i = 0 ; i < cursize ; ++i)
+            //    data[i] = oldData[i];
+            if (oldData!=NULL) delete[] oldData;
+        }
+        cursize = size;
+    }
+};
+
+/// Resizable custom vector class using DefaultAllocator
 template<class T>
 class ResizableExtVector : public ExtVector<T>
 {
 public:
     typedef typename ExtVector<T>::value_type value_type;
     typedef typename ExtVector<T>::size_type size_type;
-    class DefaultAllocator : public ExtVectorAllocator<T>
-    {
-    public:
-        virtual void close(value_type* data)
-        {
-            if (data!=NULL) delete[] data;
-            delete this;
-        }
-        virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)
-        {
-            if (size > maxsize)
-            {
-                T* oldData = data;
-                maxsize = (size > 2*maxsize ? size : 2*maxsize);
-                data = new T[maxsize];
-                if (cursize)
-                    std::copy(oldData, oldData+cursize, data);
-                //for (size_type i = 0 ; i < cursize ; ++i)
-                //    data[i] = oldData[i];
-                if (oldData!=NULL) delete[] oldData;
-            }
-            cursize = size;
-        }
-    };
     ResizableExtVector()
-        : ExtVector<T>(new DefaultAllocator)
+        : ExtVector<T>(new DefaultAllocator<T>)
     {
     }
 };

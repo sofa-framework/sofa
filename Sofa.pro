@@ -75,6 +75,21 @@ else {
   message( "|  PML/LML support: DISABLED")
 }
 
+
+contains(DEFINES,SOFA_GUI_GLUT) {
+  message( "|  GLUT GUI: ENABLED")
+}
+else {
+  message( "|  GLUT GUI: DISABLED")
+}
+
+contains(DEFINES,SOFA_GUI_FLTK) {
+  message( "|  FLTK GUI: ENABLED")
+}
+else {
+  message( "|  FLTK GUI: DISABLED")
+}
+
 !contains(DEFINES,SOFA_GUI_QTVIEWER) {
 !contains(DEFINES,SOFA_GUI_QGLVIEWER) {
 !contains(DEFINES,SOFA_GUI_QTOGREVIEWER) {
@@ -110,13 +125,6 @@ contains(DEFINES,SOFA_GUI_QTOGREVIEWER) {
 }
 else {
   message( "|  -  Qt OGRE 3D viewer: DISABLED")
-}
-
-contains(DEFINES,SOFA_GUI_FLTK) {
-  message( "|  FLTK GUI: ENABLED")
-}
-else {
-  message( "|  FLTK GUI: DISABLED")
 }
 
 message( "======================================")
