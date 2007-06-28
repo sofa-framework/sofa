@@ -37,7 +37,7 @@ namespace component
 namespace odesolver
 {
 
-/* A popular time integration method, much more precise than the EulerSolver */
+/** A popular time integration method, much more precise than the EulerSolver */
 class RungeKutta4Solver : public sofa::simulation::tree::OdeSolverImpl
 {
 public:

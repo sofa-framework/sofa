@@ -72,6 +72,7 @@ extern simulation::tree::GNode* groot;
 #include <QAction>
 #include <QMessageBox>
 #include <QFileDialog>
+#include <QTabWidget>
 
 #define WIDTH_OFFSET 2
 #define HEIGHT_OFFSET 2
@@ -102,6 +103,7 @@ extern simulation::tree::GNode* groot;
 #include <qaction.h>
 #include <qmessagebox.h>
 #include <qfiledialog.h>
+#include <qtabwidget.h>
 
 #define WIDTH_OFFSET 0
 #define HEIGHT_OFFSET 0

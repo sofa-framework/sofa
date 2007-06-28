@@ -22,7 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#pragma once
+#ifndef SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA2SOLVER_H
+#define SOFA_COMPONENT_ODESOLVER_RUNGEKUTTA2SOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/simulation/tree/OdeSolverImpl.h>
@@ -36,7 +37,7 @@ namespace component
 namespace odesolver
 {
 
-/* A popular time integration method, much more precise than the EulerSolver */
+/** A popular time integration method, much more precise than the EulerSolver */
 class RungeKutta2Solver : public sofa::simulation::tree::OdeSolverImpl
 {
 public:
@@ -49,3 +50,4 @@ public:
 
 } // namespace sofa
 
+#endif

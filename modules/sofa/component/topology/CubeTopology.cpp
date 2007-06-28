@@ -54,7 +54,6 @@ void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 SOFA_DECL_CLASS(CubeTopology)
 
 int CubeTopologyClass = core::RegisterObject("Surface of a cube in 3D")
-        .addAlias("Cube")
         .add< CubeTopology >()
         ;
 
