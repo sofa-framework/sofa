@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
+#include <algorithm>
 
 
 
@@ -100,6 +101,19 @@ public:
     static const char* Name();
 };
 
+/// Custom vector allocator class allowing data to be allocated at a specific location (such as for transmission through DMA, PCI-Express, Shared Memory, Network)
+template<class T>
+class ExtVectorAllocator
+{
+public:
+    typedef T              value_type;
+    typedef unsigned int   size_type;
+    virtual ~ExtVectorAllocator() {}
+    virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)=0;
+    virtual void close(value_type* data)=0;
+};
+
+/// Custom vector class
 template<class T>
 class ExtVector
 {
@@ -111,24 +125,91 @@ protected:
     value_type* data;
     size_type   maxsize;
     size_type   cursize;
-
+    ExtVectorAllocator<T>* allocator;
 public:
-    ExtVector() : data(NULL), maxsize(0), cursize(0) {}
-    virtual ~ExtVector() {}
+    ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL), maxsize(0), cursize(0), allocator(alloc) {}
+    ~ExtVector() { if (allocator) allocator->close(data); }
+    void setAllocator(ExtVectorAllocator<T>* alloc)
+    {
+        if (alloc != allocator)
+        {
+            if (cursize)
+            {
+                value_type* oldData = data;
+                size_type size = cursize;
+                data = NULL;
+                maxsize = 0;
+                cursize = 0;
+                alloc->resize(data, size, maxsize, cursize);
+                std::copy(oldData, oldData+size, data);
+                if (allocator)
+                    allocator->close(oldData);
+            }
+            allocator = alloc;
+        }
+    }
     void setData(value_type* d, size_type s) { data=d; maxsize=s; cursize=s; }
+    T* getData() { return this->data; }
+    const T* getData() const { return this->data; }
+
     value_type& operator[](size_type i) { return data[i]; }
     const value_type& operator[](size_type i) const { return data[i]; }
     size_type size() const { return cursize; }
     bool empty() const { return cursize==0; }
-    virtual void resize(size_type size)
+    void resize(size_type size)
     {
         if (size <= maxsize)
             cursize = size;
+        else if (allocator)
+            allocator->resize(data, size, maxsize, cursize);
         else
         {
             cursize = maxsize;
-            std::cerr << "Error: invalide resize request ("<<size<<">"<<maxsize<<") on external vector.\n";
+            std::cerr << "Error: invalide resize request ("<<size<<">"<<maxsize<<") on external vector without allocator.\n";
         }
+    }
+    void push_back(const T& v)
+    {
+        int i = this->size();
+        resize(i+1);
+        (*this)[i] = v;
+    }
+};
+
+/// Resizable custom vector class.
+template<class T>
+class ResizableExtVector : public ExtVector<T>
+{
+public:
+    typedef typename ExtVector<T>::value_type value_type;
+    typedef typename ExtVector<T>::size_type size_type;
+    class DefaultAllocator : public ExtVectorAllocator<T>
+    {
+    public:
+        virtual void close(value_type* data)
+        {
+            if (data!=NULL) delete[] data;
+            delete this;
+        }
+        virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)
+        {
+            if (size > maxsize)
+            {
+                T* oldData = data;
+                maxsize = (size > 2*maxsize ? size : 2*maxsize);
+                data = new T[maxsize];
+                if (cursize)
+                    std::copy(oldData, oldData+cursize, data);
+                //for (size_type i = 0 ; i < cursize ; ++i)
+                //    data[i] = oldData[i];
+                if (oldData!=NULL) delete[] oldData;
+            }
+            cursize = size;
+        }
+    };
+    ResizableExtVector()
+        : ExtVector<T>(new DefaultAllocator)
+    {
     }
 };
 

@@ -71,38 +71,6 @@ struct Material
     Material();
 };
 
-/// Resizable custom vector class.
-template<class T>
-class ResizableExtVector : public ExtVector<T>
-{
-public:
-    ~ResizableExtVector()
-    {
-        if (this->data!=NULL) delete[] this->data;
-    }
-    T* getData() { return this->data; }
-    const T* getData() const { return this->data; }
-    virtual void resize(typename ExtVector<T>::size_type size)
-    {
-        if (size > this->maxsize)
-        {
-            T* oldData = this->data;
-            this->maxsize = (size > 2*this->maxsize ? size : 2*this->maxsize);
-            this->data = new T[this->maxsize];
-            for (typename ExtVector<T>::size_type i = 0 ; i < this->cursize ; ++i)
-                this->data[i] = oldData[i];
-            if (oldData!=NULL) delete[] oldData;
-        }
-        this->cursize = size;
-    }
-    void push_back(const T& v)
-    {
-        int i = this->size();
-        resize(i+1);
-        (*this)[i] = v;
-    }
-};
-
 class OglModel : public core::VisualModel, public core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > >
 {
 private:
