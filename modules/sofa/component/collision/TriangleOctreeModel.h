@@ -34,6 +34,7 @@
 #include <sofa/component/collision/TriangleOctree.h>
 
 #define CUBE_SIZE 80
+/*This fixed size must be changed*/
 namespace sofa
 {
 
