@@ -307,8 +307,8 @@ static QPixmap* getPixmap(core::objectmodel::Base* obj)
     /*
     if (classIcons == NULL)
     {
-    classIcons = new QImage("../examples/classicons.png");
-    std::cout << "../examples/classicons.png: "<<classIcons->width()<<"x"<<classIcons->height()<<std::endl;
+    classIcons = new QImage("classicons.png");
+    std::cout << "classicons.png: "<<classIcons->width()<<"x"<<classIcons->height()<<std::endl;
     if (classIcons->height() < 16) return NULL;
     // Find each icon
     QRgb bg = classIcons->pixel(0,0);

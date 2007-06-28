@@ -24,12 +24,14 @@
 *******************************************************************************/
 #include "QtViewer/QtViewer.h"
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/MechanicalAction.h>
 #include <sofa/simulation/tree/UpdateMappingAction.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/core/ObjectFactory.h>
+//#include <sofa/helper/system/SetDirectory.h>
 #include <math.h>
 #include <iostream>
 #include <fstream>
@@ -128,11 +130,21 @@ GLuint ShadowTextureMask;
 
 // End of Shadow Mapping Parameters
 
+
+static bool enabled = false;
+sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+
 /// Activate this class of viewer.
 /// This method is called before the viewer is actually created
 /// and can be used to register classes associated with in the the ObjectFactory.
 int QtViewer::EnableViewer()
 {
+    if (!enabled)
+    {
+        enabled = true;
+        // Replace generic visual models with OglModel
+        sofa::core::ObjectFactory::AddAlias("VisualModel", "OglModel", true, &classVisualModel);
+    }
     return 0;
 }
 
@@ -141,6 +153,11 @@ int QtViewer::EnableViewer()
 /// and can be used to unregister classes associated with in the the ObjectFactory.
 int QtViewer::DisableViewer()
 {
+    if (enabled)
+    {
+        enabled = false;
+        sofa::core::ObjectFactory::ResetAlias("VisualModel", classVisualModel);
+    }
     return 0;
 }
 
@@ -251,8 +268,8 @@ void QtViewer::initializeGL(void)
 
     if (!initialized)
     {
-        std::cout << "progname=" << sofa::gui::guiviewer::progname << std::endl;
-        sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::guiviewer::progname));
+        //std::cout << "progname=" << sofa::gui::guiviewer::progname << std::endl;
+        //sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::guiviewer::progname));
 
         // Define light parameters
         //_lightPosition[0] = 0.0f;
@@ -331,11 +348,11 @@ void QtViewer::initializeGL(void)
 
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         //Load texture for logo
-        texLogo = new helper::gl::Texture(new helper::io::ImageBMP("../share/textures/SOFA_logo.bmp"));
+        texLogo = new helper::gl::Texture(new helper::io::ImageBMP( sofa::helper::system::DataRepository.getFile("textures/SOFA_logo.bmp")));
         texLogo->init();
 
         glEnableClientState(GL_VERTEX_ARRAY);
-        glEnableClientState(GL_NORMAL_ARRAY);
+        //glEnableClientState(GL_NORMAL_ARRAY);
 
         // Turn on our light and enable color along with the light
         //glEnable(GL_LIGHTING);
@@ -349,7 +366,7 @@ void QtViewer::initializeGL(void)
         if (_glshadow = CShader::InitGLSL())
         {
             // Here we pass in our new vertex and fragment shader files to our shader object.
-            g_Shader.InitShaders("../share/shaders/ShadowMappingPCF.vert", "../share/shaders/ShadowMappingPCF.frag");
+            g_Shader.InitShaders(sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.vert"), sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.frag"));
         }
         else
         {
@@ -362,7 +379,7 @@ void QtViewer::initializeGL(void)
 
         _beginTime = CTime::getTime();
 
-        printf("\n");
+        printf("GL initialized\n");
     }
 
     // switch to preset view
