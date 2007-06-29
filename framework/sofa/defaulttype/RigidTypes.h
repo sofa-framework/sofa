@@ -43,6 +43,12 @@ namespace defaulttype
 using sofa::helper::vector;
 
 template<int N, typename real>
+class RigidDeriv;
+
+template<int N, typename real>
+class RigidCoord;
+
+template<int N, typename real>
 class StdRigidTypes;
 
 template<int N, typename real>
@@ -55,211 +61,259 @@ class StdRigidMass;
 /** Degrees of freedom of 3D rigid bodies. Orientations are modeled using quaternions.
 */
 template<typename real>
-class StdRigidTypes<3, real>
+class RigidDeriv<3, real>
 {
 public:
     typedef real Real;
     typedef Vec<3,Real> Vec3;
     typedef helper::Quater<Real> Quat;
 
-    class Deriv
+private:
+    Vec3 vCenter;
+    Vec3 vOrientation;
+public:
+    friend class RigidCoord<3,real>;
+
+    RigidDeriv(const Vec3 &velCenter, const Vec3 &velOrient)
+        : vCenter(velCenter), vOrientation(velOrient) {}
+    RigidDeriv() { clear(); }
+
+    template<typename real2>
+    RigidDeriv(const RigidDeriv<3,real2>& c)
+        : vCenter(c.getVCenter()), vOrientation(c.getVOrientation())
     {
-    private:
-        Vec3 vCenter;
-        Vec3 vOrientation;
-    public:
-        friend class Coord;
+    }
 
-        Deriv (const Vec3 &velCenter, const Vec3 &velOrient)
-            : vCenter(velCenter), vOrientation(velOrient) {}
-        Deriv () { clear(); }
+    void clear() { vCenter.clear(); vOrientation.clear(); }
 
-        void clear() { vCenter.clear(); vOrientation.clear(); }
-
-        void operator +=(const Deriv& a)
-        {
-            vCenter += a.vCenter;
-            vOrientation += a.vOrientation;
-        }
-
-        Deriv operator + (const Deriv& a) const
-        {
-            Deriv d;
-            d.vCenter = vCenter + a.vCenter;
-            d.vOrientation = vOrientation + a.vOrientation;
-            return d;
-        }
-
-        void operator*=(double a)
-        {
-            vCenter *= a;
-            vOrientation *= a;
-        }
-
-        Deriv operator*(double a) const
-        {
-            Deriv r = *this;
-            r*=a;
-            return r;
-        }
-
-        Deriv operator - () const
-        {
-            return Deriv(-vCenter, -vOrientation);
-        }
-
-        /// dot product, mostly used to compute residuals as sqrt(x*x)
-        double operator*(const Deriv& a) const
-        {
-            return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]+vCenter[2]*a.vCenter[2]
-                    +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
-                    +vOrientation[2]*a.vOrientation[2];
-        }
-
-        Vec3& getVCenter (void) { return vCenter; }
-        Vec3& getVOrientation (void) { return vOrientation; }
-        const Vec3& getVCenter (void) const { return vCenter; }
-        const Vec3& getVOrientation (void) const { return vOrientation; }
-        /// write to an output stream
-        inline friend std::ostream& operator << ( std::ostream& out, const Deriv& v )
-        {
-            out<<v.vCenter<<" "<<v.vOrientation;
-            return out;
-        }
-        /// read from an input stream
-        inline friend std::istream& operator >> ( std::istream& in, Deriv& v )
-        {
-            in>>v.vCenter>>v.vOrientation;
-            return in;
-        }
-    };
-
-    class Coord
+    template<typename real2>
+    void operator =(const RigidDeriv<3,real2>& c)
     {
-    private:
-        Vec3 center;
-        Quat orientation;
-    public:
-        Coord (const Vec3 &posCenter, const Quat &orient)
-            : center(posCenter), orientation(orient) {}
-        Coord () { clear(); }
-        typedef real value_type;
+        vCenter = c.getVCenter();
+        vOrientation = c.getVOrientation();
+    }
 
-        void clear() { center.clear(); orientation.clear(); }
+    void operator +=(const RigidDeriv& a)
+    {
+        vCenter += a.vCenter;
+        vOrientation += a.vOrientation;
+    }
 
-        void operator +=(const Deriv& a)
-        {
-            center += a.getVCenter();
-            orientation.normalize();
-            Quat qDot = orientation.vectQuatMult(a.getVOrientation());
-            for (int i = 0; i < 4; i++)
-                orientation[i] += qDot[i] * 0.5f;
-            orientation.normalize();
-        }
+    RigidDeriv<3,real> operator + (const RigidDeriv<3,real>& a) const
+    {
+        RigidDeriv d;
+        d.vCenter = vCenter + a.vCenter;
+        d.vOrientation = vOrientation + a.vOrientation;
+        return d;
+    }
 
-        Coord operator + (const Deriv& a) const
-        {
-            Coord c = *this;
-            c.center += a.getVCenter();
-            c.orientation.normalize();
-            Quat qDot = c.orientation.vectQuatMult(a.getVOrientation());
-            for (int i = 0; i < 4; i++)
-                c.orientation[i] += qDot[i] * 0.5f;
-            c.orientation.normalize();
-            return c;
-        }
+    void operator*=(double a)
+    {
+        vCenter *= a;
+        vOrientation *= a;
+    }
 
-        void operator +=(const Coord& a)
-        {
-            //std::cout << "+="<<std::endl;
-            center += a.getCenter();
-            //orientation += a.getOrientation();
-            //orientation.normalize();
-        }
+    RigidDeriv<3,real> operator*(double a) const
+    {
+        RigidDeriv r = *this;
+        r*=a;
+        return r;
+    }
 
-        void operator*=(double a)
-        {
-            //std::cout << "*="<<std::endl;
-            center *= a;
-            //orientation *= a;
-        }
+    RigidDeriv<3,real> operator - () const
+    {
+        return RigidDeriv(-vCenter, -vOrientation);
+    }
 
-        Coord operator*(double a) const
-        {
-            Coord r = *this;
-            r*=a;
-            return r;
-        }
+    /// dot product, mostly used to compute residuals as sqrt(x*x)
+    double operator*(const RigidDeriv<3,real>& a) const
+    {
+        return vCenter[0]*a.vCenter[0]+vCenter[1]*a.vCenter[1]+vCenter[2]*a.vCenter[2]
+                +vOrientation[0]*a.vOrientation[0]+vOrientation[1]*a.vOrientation[1]
+                +vOrientation[2]*a.vOrientation[2];
+    }
 
-        /// dot product, mostly used to compute residuals as sqrt(x*x)
-        double operator*(const Coord& a) const
-        {
-            return center[0]*a.center[0]+center[1]*a.center[1]+center[2]*a.center[2]
-                    +orientation[0]*a.orientation[0]+orientation[1]*a.orientation[1]
-                    +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
-        }
+    Vec3& getVCenter (void) { return vCenter; }
+    Vec3& getVOrientation (void) { return vOrientation; }
+    const Vec3& getVCenter (void) const { return vCenter; }
+    const Vec3& getVOrientation (void) const { return vOrientation; }
+    /// write to an output stream
+    inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<3,real>& v )
+    {
+        out<<v.vCenter<<" "<<v.vOrientation;
+        return out;
+    }
+    /// read from an input stream
+    inline friend std::istream& operator >> ( std::istream& in, RigidDeriv<3,real>& v )
+    {
+        in>>v.vCenter>>v.vOrientation;
+        return in;
+    }
+};
 
-        Vec3& getCenter () { return center; }
-        Quat& getOrientation () { return orientation; }
-        const Vec3& getCenter () const { return center; }
-        const Quat& getOrientation () const { return orientation; }
+template<typename real>
+class RigidCoord<3,real>
+{
+public:
+    typedef real Real;
+    typedef Vec<3,Real> Vec3;
+    typedef helper::Quater<Real> Quat;
 
-        static Coord identity()
-        {
-            Coord c;
-            return c;
-        }
+private:
+    Vec3 center;
+    Quat orientation;
+public:
+    RigidCoord (const Vec3 &posCenter, const Quat &orient)
+        : center(posCenter), orientation(orient) {}
+    RigidCoord () { clear(); }
 
-        /// Apply a transformation with respect to itself
-        void multRight( const Coord& c )
-        {
-            center += orientation.rotate(c.getCenter());
-            orientation = orientation * c.getOrientation();
-        }
+    template<typename real2>
+    RigidCoord(const RigidCoord<3,real2>& c)
+        : center(c.getCenter()), orientation(c.getOrientation())
+    {
+    }
 
-        /// compute the product with another frame on the right
-        Coord mult( const Coord& c ) const
-        {
-            Coord r;
-            r.center = center + orientation.rotate( c.center );
-            r.orientation = orientation * c.getOrientation();
-            return r;
-        }
+    typedef real value_type;
 
-        template<class Mat>
-        void writeRotationMatrix( Mat& m) const
-        {
-            orientation.toMatrix(m);
-        }
+    void clear() { center.clear(); orientation.clear(); }
 
-        /// Write the OpenGL transformation matrix
-        void writeOpenGlMatrix( float m[16] ) const
-        {
-            orientation.writeOpenGlMatrix(m);
-            m[12] = (float)center[0];
-            m[13] = (float)center[1];
-            m[14] = (float)center[2];
-        }
+    template<typename real2>
+    void operator =(const RigidCoord<3,real2>& c)
+    {
+        center = c.getCenter();
+        orientation = c.getOrientation();
+    }
 
-        /// compute the projection of a vector from the parent frame to the child
-        Vec3 vectorToChild( const Vec3& v ) const
-        {
-            return orientation.inverseRotate(v);
-        }
+    //template<typename real2>
+    //void operator =(const typename StdRigidTypes<3,real2>::Coord& c)
+    //{
+    //    center = c.getCenter();
+    //    orientation = c.getOrientation();
+    //}
 
-        /// write to an output stream
-        inline friend std::ostream& operator << ( std::ostream& out, const Coord& v )
-        {
-            out<<v.center<<" "<<v.orientation;
-            return out;
-        }
-        /// read from an input stream
-        inline friend std::istream& operator >> ( std::istream& in, Coord& v )
-        {
-            in>>v.center>>v.orientation;
-            return in;
-        }
-    };
+    void operator +=(const RigidDeriv<3,real>& a)
+    {
+        center += a.getVCenter();
+        orientation.normalize();
+        Quat qDot = orientation.vectQuatMult(a.getVOrientation());
+        for (int i = 0; i < 4; i++)
+            orientation[i] += qDot[i] * 0.5f;
+        orientation.normalize();
+    }
+
+    RigidCoord<3,real> operator + (const RigidDeriv<3,real>& a) const
+    {
+        RigidCoord c = *this;
+        c.center += a.getVCenter();
+        c.orientation.normalize();
+        Quat qDot = c.orientation.vectQuatMult(a.getVOrientation());
+        for (int i = 0; i < 4; i++)
+            c.orientation[i] += qDot[i] * 0.5f;
+        c.orientation.normalize();
+        return c;
+    }
+
+    void operator +=(const RigidCoord<3,real>& a)
+    {
+        //std::cout << "+="<<std::endl;
+        center += a.getCenter();
+        //orientation += a.getOrientation();
+        //orientation.normalize();
+    }
+
+    void operator*=(double a)
+    {
+        //std::cout << "*="<<std::endl;
+        center *= a;
+        //orientation *= a;
+    }
+
+    RigidCoord<3,real> operator*(double a) const
+    {
+        RigidCoord r = *this;
+        r*=a;
+        return r;
+    }
+
+    /// dot product, mostly used to compute residuals as sqrt(x*x)
+    double operator*(const RigidCoord<3,real>& a) const
+    {
+        return center[0]*a.center[0]+center[1]*a.center[1]+center[2]*a.center[2]
+                +orientation[0]*a.orientation[0]+orientation[1]*a.orientation[1]
+                +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
+    }
+
+    Vec3& getCenter () { return center; }
+    Quat& getOrientation () { return orientation; }
+    const Vec3& getCenter () const { return center; }
+    const Quat& getOrientation () const { return orientation; }
+
+    static RigidCoord<3,real> identity()
+    {
+        RigidCoord c;
+        return c;
+    }
+
+    /// Apply a transformation with respect to itself
+    void multRight( const RigidCoord<3,real>& c )
+    {
+        center += orientation.rotate(c.getCenter());
+        orientation = orientation * c.getOrientation();
+    }
+
+    /// compute the product with another frame on the right
+    RigidCoord<3,real> mult( const RigidCoord<3,real>& c ) const
+    {
+        RigidCoord r;
+        r.center = center + orientation.rotate( c.center );
+        r.orientation = orientation * c.getOrientation();
+        return r;
+    }
+
+    template<class Mat>
+    void writeRotationMatrix( Mat& m) const
+    {
+        orientation.toMatrix(m);
+    }
+
+    /// Write the OpenGL transformation matrix
+    void writeOpenGlMatrix( float m[16] ) const
+    {
+        orientation.writeOpenGlMatrix(m);
+        m[12] = (float)center[0];
+        m[13] = (float)center[1];
+        m[14] = (float)center[2];
+    }
+
+    /// compute the projection of a vector from the parent frame to the child
+    Vec3 vectorToChild( const Vec3& v ) const
+    {
+        return orientation.inverseRotate(v);
+    }
+
+    /// write to an output stream
+    inline friend std::ostream& operator << ( std::ostream& out, const RigidCoord<3,real>& v )
+    {
+        out<<v.center<<" "<<v.orientation;
+        return out;
+    }
+    /// read from an input stream
+    inline friend std::istream& operator >> ( std::istream& in, RigidCoord<3,real>& v )
+    {
+        in>>v.center>>v.orientation;
+        return in;
+    }
+};
+
+template<typename real>
+class StdRigidTypes<3, real>
+{
+public:
+    typedef real Real;
+    typedef RigidCoord<3,real> Coord;
+    typedef RigidDeriv<3,real> Deriv;
+    typedef typename Coord::Vec3 Vec3;
+    typedef typename Coord::Quat Quat;
 
     template <class T>
     class SparseData

@@ -126,7 +126,7 @@ Material::Material()
 }
 
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)
-    : modified(false), useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true) //, tex(NULL)
+    : useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true) //, tex(NULL)
 {
     inputVertices = &vertices;
 }

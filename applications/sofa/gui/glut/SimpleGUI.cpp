@@ -101,14 +101,6 @@ SofaGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::strin
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
 
-    int nx = 0;
-    int ny = 0;
-
-    for (unsigned int i=0; i<options.size(); i++)
-    {
-
-    }
-
     //glutInitWindowPosition ( x0, y0 );
     //glutInitWindowSize ( nx, ny );
     glutCreateWindow ( ":: SOFA ::" );

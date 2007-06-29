@@ -9,9 +9,9 @@
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/Action.h>
 #include <sofa/simulation/tree/ParallelActionScheduler.h>
-#include <sofa/simulation/tree/CactusStackStorage.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/core/objectmodel/Event.h>
@@ -26,6 +26,9 @@
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/MinProximityIntersection.h>
 #include <sofa/component/collision/BruteForceDetection.h>
+
+#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/component/visualmodel/OglModel.h>
 
 #include <sofa/gui/SofaGUI.h>
 
@@ -52,6 +55,12 @@ template<int N, typename real>
 Type get(const sofa::defaulttype::Vec<N,real>&)
 {
     return (Type)vector(get(real()),N);
+}
+
+template<int L, int C, typename real>
+Type get(const sofa::defaulttype::Mat<L,C,real>&)
+{
+    return (Type)matrix(get(real()),L,C);
 }
 
 }
@@ -708,6 +717,9 @@ public:
         for(unsigned int i=0; i<prevIB.size(); ++i)
             scene.delIndexBuffer(prevIB[i]);
         prevIB.clear();
+        for(unsigned int i=0; i<prevT.size(); ++i)
+            scene.delTexture(prevT[i]);
+        prevT.clear();
     }
 
     virtual void flowvrPreInit(std::vector<flowvr::Port*>* ports)
@@ -760,7 +772,7 @@ int FlowVRRenderWriterClass = sofa::core::RegisterObject("FlowVRRender scene man
         .add<FlowVRRenderWriter>()
         ;
 
-class FlowVRRenderVisualModel : public FlowVRRenderObject, public sofa::core::VisualModel
+class FlowVRRenderVisualModel : public FlowVRRenderObject//, public sofa::core::VisualModel
 {
 protected:
     flowvr::render::ChunkRenderWriter* scene;
@@ -794,6 +806,7 @@ public:
         renderUpdate();
     }
 
+    /*
     void initTextures()
     {
     }
@@ -807,126 +820,94 @@ public:
     void draw()
     {
     }
+    */
 };
 
-template<class DataTypes>
-class FlowVRRenderMesh : public FlowVRRenderVisualModel
+class FlowVRRenderMesh : public FlowVRRenderVisualModel, public sofa::component::visualmodel::OglModel //VisualModelImpl
 {
 public:
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::Coord Coord;
+    typedef sofa::component::visualmodel::OglModel Inherit;
+    typedef Inherit::VecCoord VecCoord;
+    typedef Inherit::Coord Coord;
 
     DataField<std::string> vShader;
     DataField<std::string> pShader;
-    DataField<Vec4f> color;
-
-    sofa::component::topology::MeshTopology* topology;
-    sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;
+    std::string texture;
 
     flowvr::ID idP;
     flowvr::ID idVB;
     flowvr::ID idVBN;
+    flowvr::ID idVBT;
     flowvr::ID idIB;
     flowvr::ID idVS;
     flowvr::ID idPS;
+    flowvr::ID idTex;
 
-    int lastMeshRev;
+    static flowvr::ID idVSDefault;
+    static flowvr::ID idPSDefault;
+    static flowvr::ID idVSTexture;
+    static flowvr::ID idPSTexture;
+
+    bool posModified;
+    bool normModified;
+    bool meshModified;
+
     int lastPosRev;
-
-    VecCoord n;
-    Coord bbmin;
-    Coord bbmax;
+    int lastNormRev;
 
     FlowVRRenderMesh()
-        : vShader(dataField(&vShader, std::string("shaders/default_v.cg"), "vshader", "vertex shader name"))
-        , pShader(dataField(&pShader, std::string("shaders/default_p.cg"), "pshader", "pixel shader name"))
-        , color(dataField(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
-        , topology(NULL)
-        , mmodel(NULL)
+        : vShader(dataField(&vShader, std::string(""), "vshader", "vertex shader name"))
+        , pShader(dataField(&pShader, std::string(""), "pshader", "pixel shader name"))
+//    , color(dataField(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
+//    , topology(NULL)
+//    , mmodel(NULL)
         , idP(0)
         , idVB(0)
         , idVBN(0)
+        , idVBT(0)
         , idIB(0)
         , idVS(0)
         , idPS(0)
-        , lastMeshRev(-1)
+        , idTex(0)
+        , posModified(true)
+        , meshModified(true)
+//    , lastMeshRev(-1)
         , lastPosRev(-1)
     {
+    }
+
+    virtual bool loadTexture(const std::string& filename)
+    {
+        texture = filename;
+        Inherit::loadTexture(filename);
+        return true;
     }
 
     void renderInit()
     {
     }
 
-    void computeNormals()
-    {
-        const VecCoord& x = *mmodel->getX();
-        const sofa::component::topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-        const sofa::component::topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-        n.resize(x.size());
-        for(unsigned int i=0; i<x.size(); i++)
-        {
-            n[i] = Coord();
-        }
-        for(unsigned int i=0; i<triangles.size(); i++)
-        {
-            const Coord& pt1 = x[triangles[i][0]];
-            const Coord& pt2 = x[triangles[i][1]];
-            const Coord& pt3 = x[triangles[i][2]];
-            Coord normal = cross(pt2-pt1,pt3-pt1);
-            normal.normalize();
-            n[triangles[i][0]] += normal;
-            n[triangles[i][1]] += normal;
-            n[triangles[i][2]] += normal;
-        }
-        for(unsigned int i=0; i<quads.size(); i++)
-        {
-            const Coord& pt1 = x[quads[i][0]];
-            const Coord& pt2 = x[quads[i][1]];
-            const Coord& pt3 = x[quads[i][2]];
-            const Coord& pt4 = x[quads[i][3]];
-            Coord normal = cross(pt2-pt1,pt3-pt1) + cross(pt3-pt1,pt4-pt1);
-            normal.normalize();
-            n[quads[i][0]] += normal;
-            n[quads[i][1]] += normal;
-            n[quads[i][2]] += normal;
-            n[quads[i][3]] += normal;
-        }
-        for(unsigned int i=0; i<x.size(); i++)
-        {
-            n[i].normalize();
-        }
-    }
-
-    void computeBBox()
-    {
-        const VecCoord& x = *mmodel->getX();
-        if (x.size()==0)
-        {
-            bbmin = bbmax = Coord();
-        }
-        else
-        {
-            bbmin = bbmax = x[0];
-            for(unsigned int i=1; i<x.size(); i++)
-            {
-                const Coord& c = x[i];
-                for (unsigned int j=0; j<c.size(); j++)
-                {
-                    if (c[j] < bbmin[j]) bbmin[j] = c[j];
-                    else if (c[j] > bbmax[j]) bbmax[j] = c[j];
-                }
-            }
-        }
-    }
-
     void init()
     {
-        mmodel = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes>*>(getContext()->getMechanicalState());
-        topology = dynamic_cast<sofa::component::topology::MeshTopology*>(getContext()->getTopology());
-        if (!module || !scene || !mmodel) return;
+        VisualModelImpl::init();
+    }
 
-        renderUpdate();
+    void computePositions()
+    {
+        Inherit::computePositions();
+        posModified = true;
+    }
+
+    void computeNormals()
+    {
+        Inherit::computeNormals();
+        //normModified = true;
+    }
+
+    void computeMesh(sofa::component::topology::MeshTopology* topology)
+    {
+        Inherit::computeMesh(topology);
+        meshModified = true;
     }
 
     void renderUpdate()
@@ -941,22 +922,68 @@ public:
             {
                 idVS = module->generateID();
                 scene->loadVertexShader(idVS, vShader.getValue().c_str());
-                prevP.push_back(idVS);
+                prevVS.push_back(idVS);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idVS);
             }
+            else if (!texture.empty())
+            {
+                if (!idVSTexture)
+                {
+                    idVSTexture = module->generateID();
+                    scene->loadVertexShader(idVSTexture, "shaders/obj_color_v.cg");
+                }
+                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idVSTexture);
+            }
+            else
+            {
+                if (!idVSDefault)
+                {
+                    idVSDefault = module->generateID();
+                    scene->loadVertexShader(idVSDefault, "shaders/obj_v.cg");
+                }
+                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idVSDefault);
+            }
+
             if (!pShader.getValue().empty())
             {
                 idPS = module->generateID();
                 scene->loadPixelShader(idPS, pShader.getValue().c_str());
-                prevP.push_back(idPS);
+                prevPS.push_back(idPS);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::PSHADER, "", idPS);
+            }
+            else if (!texture.empty())
+            {
+                if (!idPSTexture)
+                {
+                    idPSTexture = module->generateID();
+                    scene->loadPixelShader(idPSTexture, "shaders/obj_color_p.cg");
+                }
+                scene->addParamID(idP, flowvr::render::ChunkPrimParam::PSHADER, "", idPSTexture);
+            }
+            else
+            {
+                if (!idPSDefault)
+                {
+                    idPSDefault = module->generateID();
+                    scene->loadPixelShader(idPSDefault, "shaders/obj_p.cg");
+                }
+                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idPSDefault);
+            }
+
+            if (!texture.empty())
+            {
+                idTex = module->generateID();
+                scene->loadTexture(idTex, texture.c_str());
+                prevT.push_back(idTex);
+                scene->addParamID(idP, flowvr::render::ChunkPrimParam::TEXTURE, "texcolor", idTex);
             }
             scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "Proj", flowvr::render::ChunkPrimParam::Projection);
             scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "ModelViewProj", flowvr::render::ChunkPrimParam::ModelViewProjection);
             scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "ModelViewIT", flowvr::render::ChunkPrimParam::ModelView_InvTrans);
             ftl::Vec3f light(1,1,2); light.normalize();
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "lightdir", light);
-            scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "color", ftl::Vec4f(color.getValue().ptr())); //ftl::Vec4f(1, 1, 1, 0.5));
+            ftl::Vec4f color ( material.diffuse );
+            scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "color", color); //ftl::Vec4f(1, 1, 1, 0.5));
 
             // SOFA = trans + scale * FLOWVR
             // FLOWVR = SOFA * 1/scale - trans * 1/scale
@@ -964,116 +991,148 @@ public:
             const Vec3f trans = mod->f_trans.getValue();
             const float scale = mod->f_scale.getValue();
             const float inv_scale = 1/scale;
+
             scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_POSITION, "", ftl::Vec3f(trans.ptr())*(-inv_scale));
             scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_SCALE, "", ftl::Vec3f(inv_scale,inv_scale,inv_scale));
         }
-        if (mmodel)
+        if (posModified)
         {
-            computeBBox();
             if (!idVB)
             {
                 *scratch = false;
                 idVB = module->generateID();
-                prevP.push_back(idVB);
+                prevVB.push_back(idVB);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "position", idVB);
                 scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "position", 0);
             }
-            VecCoord& x = *mmodel->getX();
+            const VecCoord& x = vertices;
             int types[1] = { ftl::Type::get(x[0]) };
-            flowvr::render::BBox bb(ftl::Vec3f((float)bbmin[0],(float)bbmin[1],(float)bbmin[2]),ftl::Vec3f((float)bbmax[0],(float)bbmax[1],(float)bbmax[2]));
+            flowvr::render::BBox bb(ftl::Vec3f(bbox[0].ptr()),ftl::Vec3f(bbox[1].ptr()));
             flowvr::render::ChunkVertexBuffer* vb = scene->addVertexBuffer(idVB, x.size(), 1, types, bb);
             vb->gen = ++lastPosRev;
             memcpy(vb->data(), &(x[0]), vb->dataSize());
-        }
-        if (mmodel && topology)
-        {
-            computeNormals();
-            if (!idVBN)
-            {
-                *scratch = false;
-                idVBN = module->generateID();
-                prevP.push_back(idVB);
-                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "normal", idVBN);
-                scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "normal", 0);
-            }
-            int types[1] = { ftl::Type::get(n[0]) };
-            flowvr::render::BBox bb(ftl::Vec3f((float)bbmin[0],(float)bbmin[1],(float)bbmin[2]),ftl::Vec3f((float)bbmax[0],(float)bbmax[1],(float)bbmax[2]));
-            flowvr::render::ChunkVertexBuffer* vb = scene->addVertexBuffer(idVBN, n.size(), 1, types, bb);
-            vb->gen = lastPosRev;
-            memcpy(vb->data(), &(n[0]), vb->dataSize());
+            posModified = false;
 
+            const VecCoord& n = vnormals;
+            if (!n.empty())
+            {
+                if (!idVBN)
+                {
+                    *scratch = false;
+                    idVBN = module->generateID();
+                    prevVB.push_back(idVBN);
+                    scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "normal", idVBN);
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "normal", 0);
+                }
+                int types[1] = { ftl::Type::get(n[0]) };
+                flowvr::render::ChunkVertexBuffer* vb = scene->addVertexBuffer(idVBN, n.size(), 1, types, bb);
+                vb->gen = lastPosRev;
+                memcpy(vb->data(), &(n[0]), vb->dataSize());
+            }
+
+            const ResizableExtVector<TexCoord>& t = vtexcoords;
+            if (!t.empty() && !idVBT) // only send texcoords once
+            {
+                if (!idVBT)
+                {
+                    *scratch = false;
+                    idVBT = module->generateID();
+                    prevVB.push_back(idVBT);
+                    scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "texcoord0", idVBT);
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "texcoord0", 0);
+                }
+                int types[1] = { ftl::Type::get(t[0]) };
+                flowvr::render::ChunkVertexBuffer* vb = scene->addVertexBuffer(idVBT, n.size(), 1, types, bb);
+                //vb->gen = lastPosRev;
+                memcpy(vb->data(), &(t[0]), vb->dataSize());
+            }
+        }
+        if (meshModified)
+        {
             if (!idIB)
             {
                 *scratch = false;
                 idIB = module->generateID();
-                prevP.push_back(idIB);
+                prevIB.push_back(idIB);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::IBUFFER_ID, "", idIB);
             }
-            if (topology->getRevision() != lastMeshRev)
+            if (quads.empty())
             {
-                lastMeshRev = topology->getRevision();
-                const sofa::component::topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-                const sofa::component::topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-                if (quads.empty())
+                // only triangles
+                flowvr::render::ChunkIndexBuffer* ib = scene->addIndexBuffer(idIB, triangles.size()*3, ftl::Type::Int, flowvr::render::ChunkIndexBuffer::Triangle);
+                ib->gen = lastMeshRev;
+                memcpy(ib->data(), &(triangles[0]), ib->dataSize());
+            }
+            else if (triangles.empty())
+            {
+                // only quads
+                flowvr::render::ChunkIndexBuffer* ib = scene->addIndexBuffer(idIB, quads.size()*4, ftl::Type::Int, flowvr::render::ChunkIndexBuffer::Quad);
+                ib->gen = lastMeshRev;
+                memcpy(ib->data(), &(quads[0]), ib->dataSize());
+            }
+            else
+            {
+                // both triangles and quads -> convert all to triangles
+                flowvr::render::ChunkIndexBuffer* ib = scene->addIndexBuffer(idIB, triangles.size()*3 + quads.size()*6, ftl::Type::Int, flowvr::render::ChunkIndexBuffer::Triangle);
+                ib->gen = lastMeshRev;
+                memcpy(ib->data(), &(triangles[0]), triangles.size()*3*sizeof(int));
+                int* dest = ((int*)ib->data()) + triangles.size()*3;
+                for (unsigned int i=0; i<quads.size(); i++)
                 {
-                    // only triangles
-                    flowvr::render::ChunkIndexBuffer* ib = scene->addIndexBuffer(idIB, triangles.size()*3, ftl::Type::Int, flowvr::render::ChunkIndexBuffer::Triangle);
-                    ib->gen = lastMeshRev;
-                    memcpy(ib->data(), &(triangles[0]), ib->dataSize());
-                }
-                else if (triangles.empty())
-                {
-                    // only quads
-                    flowvr::render::ChunkIndexBuffer* ib = scene->addIndexBuffer(idIB, quads.size()*4, ftl::Type::Int, flowvr::render::ChunkIndexBuffer::Quad);
-                    ib->gen = lastMeshRev;
-                    memcpy(ib->data(), &(quads[0]), ib->dataSize());
-                }
-                else
-                {
-                    // both triangles and quads -> convert all to triangles
-                    flowvr::render::ChunkIndexBuffer* ib = scene->addIndexBuffer(idIB, triangles.size()*3 + quads.size()*6, ftl::Type::Int, flowvr::render::ChunkIndexBuffer::Triangle);
-                    ib->gen = lastMeshRev;
-                    memcpy(ib->data(), &(triangles[0]), triangles.size()*3*sizeof(int));
-                    int* dest = ((int*)ib->data()) + triangles.size()*3;
-                    for (unsigned int i=0; i<quads.size(); i++)
-                    {
-                        *(dest++) = quads[i][0];
-                        *(dest++) = quads[i][1];
-                        *(dest++) = quads[i][2];
-                        *(dest++) = quads[i][0];
-                        *(dest++) = quads[i][2];
-                        *(dest++) = quads[i][3];
-                    }
+                    *(dest++) = quads[i][0];
+                    *(dest++) = quads[i][1];
+                    *(dest++) = quads[i][2];
+                    *(dest++) = quads[i][0];
+                    *(dest++) = quads[i][2];
+                    *(dest++) = quads[i][3];
                 }
             }
+            meshModified = false;
         }
-    }
+        if (xformsModified)
+        {
+            Vec3f position = xforms[0].getCenter();
+            Quatf rotation = xforms[0].getOrientation();
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, sofa::core::objectmodel::BaseContext* context, sofa::core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-            return false;
-        return BaseObject::canCreate(obj, context, arg);
-    }
+            Mat4x4f matrix;
+            matrix.identity();
+            rotation.toMatrix(matrix);
+            matrix[0][3] = position[0];
+            matrix[1][3] = position[1];
+            matrix[2][3] = position[2];
 
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
+            // SOFA = trans + scale * FLOWVR
+            // FLOWVR = (SOFA - trans) * 1/scale
+            // FLOWVR = SOFA * 1/scale - trans * 1/scale
 
-    static std::string templateName(const FlowVRRenderMesh<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
+            Vec3f trans = mod->f_trans.getValue();
+            const float scale = mod->f_scale.getValue();
+            const float inv_scale = 1/scale;
+
+            matrix[0][3] -= trans[0];
+            matrix[1][3] -= trans[1];
+            matrix[2][3] -= trans[2];
+
+            matrix *= inv_scale;
+
+            // TODO: use xforms
+            //scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_POSITION, "", ftl::Vec3f(trans.ptr())*(-inv_scale));
+            //scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM_SCALE, "", ftl::Vec3f(inv_scale,inv_scale,inv_scale));
+            scene->addParam(idP, flowvr::render::ChunkPrimParam::TRANSFORM, "", ftl::Mat4x4f(matrix.ptr()));
+
+            xformsModified = false;
+        }
     }
 };
 
+flowvr::ID FlowVRRenderMesh::idVSDefault = 0;
+flowvr::ID FlowVRRenderMesh::idPSDefault = 0;
+flowvr::ID FlowVRRenderMesh::idVSTexture = 0;
+flowvr::ID FlowVRRenderMesh::idPSTexture = 0;
+
 SOFA_DECL_CLASS(FlowVRRenderMesh)
-int FlowVRRenderMesh3fClass = sofa::core::RegisterObject("FlowVRRender Visual Model")
-        .add< FlowVRRenderMesh<Vec3fTypes> >()
-        .add< FlowVRRenderMesh<Vec3dTypes> >()
+int FlowVRRenderMeshClass = sofa::core::RegisterObject("FlowVRRender Visual Model")
+        .add< FlowVRRenderMesh >()
         ;
 
 } // namespace SofaFlowVR
@@ -1095,7 +1154,13 @@ int main(int argc, char** argv)
     if (argc>1)
         fileName = argv[1];
 
+    sofa::core::ObjectFactory::ClassEntry* classOglModel;
+    sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+
     sofa::gui::SofaGUI::Init(argv[0]);
+
+    sofa::core::ObjectFactory::AddAlias("OglModel", "FlowVRRenderMesh", true, &classOglModel);
+    sofa::core::ObjectFactory::AddAlias("VisualModel", "FlowVRRenderMesh", true, &classVisualModel);
 
     GNode* groot = NULL;
 

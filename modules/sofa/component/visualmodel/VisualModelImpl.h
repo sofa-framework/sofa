@@ -90,7 +90,7 @@ class ExtVec3fMappedModel : public core::componentmodel::behavior::MappedModel< 
 {
 public:
     ResizableExtVector<Coord>* inputVertices;
-    bool modified;
+    bool modified; ///< True if input vertices modified since last rendering
 
     ExtVec3fMappedModel()
         : inputVertices(NULL), modified(false)
@@ -124,7 +124,6 @@ protected:
 
     //ResizableExtVector<Coord>* inputVertices;
 
-    bool modified; ///< True if input vertices modified since last rendering
     bool useTopology; ///< True if list of facets should be taken from the attached topology
     int lastMeshRev; ///< Time stamps from the last time the mesh was updated from the topology
     bool useNormals; ///< True if normals should be read from file

@@ -100,8 +100,12 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
 // .add< IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<ExtVec6fTypes> > > >()
 
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > >()
         .add< IdentityMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<Rigid3dTypes> > > >()
+        .add< IdentityMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<Rigid3dTypes> > > >()
+        .add< IdentityMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<Rigid3fTypes> > > >()
         .add< IdentityMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<Rigid3fTypes> > > >()
 
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > > >()
@@ -189,8 +193,12 @@ template class IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, 
 
 // Rigid3
 template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > >;
+template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > >;
 template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
 template class IdentityMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<Rigid3dTypes> > >;
+template class IdentityMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<Rigid3dTypes> > >;
+template class IdentityMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<Rigid3fTypes> > >;
 template class IdentityMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
 
 
