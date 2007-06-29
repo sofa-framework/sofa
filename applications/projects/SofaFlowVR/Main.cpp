@@ -1154,12 +1154,12 @@ int main(int argc, char** argv)
     if (argc>1)
         fileName = argv[1];
 
-    sofa::core::ObjectFactory::ClassEntry* classOglModel;
+    //sofa::core::ObjectFactory::ClassEntry* classOglModel;
     sofa::core::ObjectFactory::ClassEntry* classVisualModel;
 
     sofa::gui::SofaGUI::Init(argv[0]);
 
-    sofa::core::ObjectFactory::AddAlias("OglModel", "FlowVRRenderMesh", true, &classOglModel);
+    //sofa::core::ObjectFactory::AddAlias("OglModel", "FlowVRRenderMesh", true, &classOglModel);
     sofa::core::ObjectFactory::AddAlias("VisualModel", "FlowVRRenderMesh", true, &classVisualModel);
 
     GNode* groot = NULL;
