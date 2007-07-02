@@ -43,7 +43,13 @@ enum TopologyChangeType
     POINTSRENUMBERING,  ///< For PointsRenumbering class.
     EDGESADDED,         ///< For EdgesAdded class.
     EDGESREMOVED,       ///< For EdgesRemoved class.
-    EDGESRENUMBERING    ///< For EdgesRenumbering class.
+    EDGESRENUMBERING,    ///< For EdgesRenumbering class.
+    TRIANGLESADDED,     ///< For TrianglesAdded class.
+    TRIANGLESREMOVED,   ///< For TrianglesRemoved class.
+    TRIANGLESRENUMBERING, ///< For TrianglesRenumbering class.
+    TETRAHEDRAADDED,     ///< For TrianglesAdded class.
+    TETRAHEDRAREMOVED,   ///< For TrianglesRemoved class.
+    TETRAHEDRARENUMBERING ///< For TrianglesRenumbering class.
 
 };
 
