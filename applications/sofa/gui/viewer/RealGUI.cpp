@@ -822,6 +822,9 @@ void RealGUI::addViewer()
     viewer->getQWidget()->setFocusPolicy( QWidget::StrongFocus );
 #endif
 
+
+
+
     viewer->setup();
 
     connect( ResetViewButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( resetView() ) );
