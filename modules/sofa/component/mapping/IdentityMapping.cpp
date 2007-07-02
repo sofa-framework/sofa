@@ -99,7 +99,7 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
 // .add< IdentityMapping< Mapping< MechanicalState<Vec6dTypes>, MappedModel<ExtVec6fTypes> > > >()
 // .add< IdentityMapping< Mapping< MechanicalState<Vec6fTypes>, MappedModel<ExtVec6fTypes> > > >()
 
-        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
+        .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > > >()
