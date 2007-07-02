@@ -53,7 +53,8 @@ using std::endl;
 
 BaseElement* createNode(xmlNodePtr root)
 {
-    if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
+    //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
+    if (root->type != XML_ELEMENT_NODE) return NULL;
 
     std::string name, type;
 

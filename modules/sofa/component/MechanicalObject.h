@@ -114,7 +114,6 @@ public:
     virtual bool load(const char* filename);
 
     virtual void parse ( BaseObjectDescription* arg );
-    virtual void parseFields ( const std::map<std::string,std::string*>& str );
 
     XField<DataTypes>* const f_X;
     VField<DataTypes>* const f_V;

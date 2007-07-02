@@ -347,7 +347,7 @@ void  Base::parseFields ( std::list<std::string> str )
         {
             std::string s = str.front();
             if( !(m_fieldMap[ name ]->read( s )))
-                std::cerr<< "\ncould not read value for option " << name <<": "<< s << std::endl << std::endl;
+                std::cerr<< "ERROR: could not read value for option " << name <<": "<< s << std::endl;
         }
         else
         {
@@ -371,7 +371,7 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
             if( m_fieldMap.find(key) != m_fieldMap.end() )
             {
                 if( !(m_fieldMap[ key ]->read( val )))
-                    std::cerr<< "\ncould not read value for option " << key <<": "<< val << std::endl << std::endl;
+                    std::cerr<< "ERROR: could not read value for option " << key <<": "<< val << std::endl;
             }
             else
             {
@@ -382,7 +382,23 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
     }
 }
 
-void    Base::writeFields ( std::map<std::string,std::string*>& args )
+/// Parse the given description to assign values to this object's fields and potentially other parameters
+void  Base::parse ( BaseObjectDescription* arg )
+{
+    //this->parseFields ( arg->getAttributeMap() );
+    for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a )
+    {
+        const char* val = arg->getAttribute(a->first);
+        if (val)
+        {
+            string valueString = val;
+            if( !(a->second->read( valueString )))
+                std::cerr<< "ERROR: could not read value for option " << a->first <<": "<< val << std::endl;
+        }
+    }
+}
+
+void  Base::writeFields ( std::map<std::string,std::string*>& args )
 {
     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a )
     {

@@ -38,17 +38,17 @@ namespace xml
 {
 
 BaseElement::BaseElement(const std::string& name, const std::string& type, BaseElement* newParent)
-    : name(name), type(type), parent(NULL)
+    : BaseObjectDescription(name.c_str(), type.c_str()), parent(NULL)
 {
     if (newParent!=NULL) newParent->addChild(this);
-    attributes["name"]=&this->name;
-    attributes["type"]=&this->type;
+    //attributes["name"]=&this->name;
+    //attributes["type"]=&this->type;
 }
 
 BaseElement::~BaseElement()
 {
-    attributes.erase("name");
-    attributes.erase("type");
+    //attributes.erase("name");
+    //attributes.erase("type");
     for (ChildList::iterator it = children.begin();
             it != children.end(); ++it)
     {
@@ -57,47 +57,33 @@ BaseElement::~BaseElement()
     children.clear();
 }
 
-const std::map<std::string,std::string*>& BaseElement::getAttributeMap() const
-{
-    return attributes;
-}
-
-std::map<std::string,std::string*>& BaseElement::getAttributeMap()
-{
-    return attributes;
-}
-
-/// Get an attribute given its name (return defaultVal if not present)
-const char* BaseElement::getAttribute(const std::string& attr, const char* defaultVal)
-{
-    std::map<std::string,std::string*>::iterator it = attributes.find(attr);
-    if (it == attributes.end())
-        return defaultVal;
-    else
-        return it->second->c_str();
-}
+// const std::map<std::string,std::string*>& BaseElement::getAttributeMap() const
+// {
+// 	return attributes;
+// }
+//
+// std::map<std::string,std::string*>& BaseElement::getAttributeMap()
+// {
+// 	return attributes;
+// }
 
 /// Set an attribute. Override any existing value
 void BaseElement::setAttribute(const std::string& attr, const char* val)
 {
-    std::map<std::string,std::string*>::iterator it = attributes.find(attr);
-    if (it != attributes.end())
-        *(it->second) = val;
-    else
-        attributes[attr] = new std::string(val);
+    attributes[attr] = val;
 }
 
 /// Remove an attribute. Fails if this attribute is "name" or "type"
 bool BaseElement::removeAttribute(const std::string& attr)
 {
-    std::map<std::string,std::string*>::iterator it = attributes.find(attr);
+    AttributeMap::iterator it = attributes.find(attr);
     if (it == attributes.end())
         return false;
-    if (it->second == &name)
-        return false;
-    if (it->second == &type)
-        return false;
-    delete it->second;
+    //if (it->second == &name)
+    //    return false;
+    //if (it->second == &type)
+    //    return false;
+    //delete it->second;
     attributes.erase(it);
     return true;
 }

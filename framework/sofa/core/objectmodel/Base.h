@@ -200,10 +200,7 @@ public:
 
 
     /// Parse the given description to assign values to this object's fields and potentially other parameters
-    virtual void parse ( BaseObjectDescription* arg )
-    {
-        this->parseFields ( arg->getAttributeMap() );
-    }
+    virtual void parse ( BaseObjectDescription* arg );
 
     /// Accessor to the map containing all the fields of this object
     std::map< std::string, FieldBase* > getFields() { return m_fieldMap; }

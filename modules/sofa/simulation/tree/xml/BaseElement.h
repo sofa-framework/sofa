@@ -57,8 +57,8 @@ void create(Node*& obj, std::pair<std::string,std::string> arg)
 class BaseElement : public core::objectmodel::BaseObjectDescription
 {
 private:
-    std::string name;
-    std::string type;
+    //std::string name;
+    //std::string type;
     BaseElement* parent;
     typedef std::list<BaseElement*> ChildList;
     ChildList children;
@@ -75,17 +75,17 @@ public:
 
     /// Get the node instance name
     std::string getName()
-    { return name; }
+    { return attributes["name"]; }
 
     virtual void setName(const std::string& newName)
-    { name = newName; }
+    { attributes["name"] = newName; }
 
     /// Get the node instance type (MassObject, IdentityMapping, ...)
     std::string getType()
-    { return type; }
+    { return attributes["type"]; }
 
     virtual void setType(const std::string& newType)
-    { type = newType; }
+    { attributes["type"] = newType; }
 
     /// Get the parent node
     sofa::core::objectmodel::BaseObjectDescription* getParent() const
@@ -95,14 +95,14 @@ public:
     BaseElement* getParentElement() const
     { return parent; }
 
-    /// Get all attribute data, read-only
-    const std::map<std::string,std::string*>& getAttributeMap() const;
+    ///// Get all attribute data, read-only
+    //const std::map<std::string,std::string*>& getAttributeMap() const;
 
-    /// Get all attribute data
-    std::map<std::string,std::string*>& getAttributeMap();
+    ///// Get all attribute data
+    //std::map<std::string,std::string*>& getAttributeMap();
 
-    /// Get an attribute given its name (return defaultVal if not present)
-    const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
+    ///// Get an attribute given its name (return defaultVal if not present)
+    //const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
     /// Set an attribute. Override any existing value
     virtual void setAttribute(const std::string& attr, const char* val);

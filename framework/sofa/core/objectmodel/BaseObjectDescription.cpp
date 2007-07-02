@@ -39,18 +39,18 @@ namespace objectmodel
 BaseObjectDescription::BaseObjectDescription(const char* name, const char* type)
 {
     if (name)
-        attributes["name"] = new std::string(name);
+        attributes["name"] = name;
     if (type)
-        attributes["type"] = new std::string(type);
+        attributes["type"] = type;
 }
 
 BaseObjectDescription::~BaseObjectDescription()
 {
-    for (std::map<std::string,std::string*>::iterator it = attributes.begin();
-            it != attributes.end(); ++it)
-    {
-        delete it->second;
-    }
+//     for (std::map<std::string,std::string*>::iterator it = attributes.begin();
+//         it != attributes.end(); ++it)
+//     {
+//         delete it->second;
+//     }
     attributes.clear();
 }
 
@@ -72,11 +72,11 @@ BaseObjectDescription* BaseObjectDescription::getParent() const
     return NULL;
 }
 
-/// Get all attribute data, read-only
-const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMap() const
-{
-    return attributes;
-}
+///// Get all attribute data, read-only
+//const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMap() const
+//{
+//    return attributes;
+//}
 
 /// Find an object description given its name (relative to this object)
 BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, bool /*absolute*/)
@@ -84,7 +84,7 @@ BaseObjectDescription* BaseObjectDescription::find(const char* /*nodeName*/, boo
     return NULL;
 }
 
-/// Remove an attribute given its name (return defaultVal if not present)
+/// Remove an attribute given its name
 bool BaseObjectDescription::removeAttribute(const std::string&)
 {
     return false;
@@ -93,12 +93,11 @@ bool BaseObjectDescription::removeAttribute(const std::string&)
 /// Get an attribute given its name (return defaultVal if not present)
 const char* BaseObjectDescription::getAttribute(const std::string& attr, const char* defaultVal)
 {
-    const AttributeMap& map = this->getAttributeMap();
-    AttributeMap::const_iterator it = map.find(attr);
-    if (it == map.end())
+    AttributeMap::iterator it = attributes.find(attr);
+    if (it == attributes.end())
         return defaultVal;
     else
-        return it->second->c_str();
+        return it->second.c_str();
 }
 
 std::string BaseObjectDescription::getFullName()

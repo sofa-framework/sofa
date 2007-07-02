@@ -149,7 +149,10 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     if (arg->getAttribute("filename"))
         load(arg->getAttribute("filename"));
 
+    unsigned int size0 = getX()->size();
     Inherited::parse(arg);
+    if (getX()->size() != size0)
+        resize( getX()->size() );
 
     //obj->parseTransform(arg);
     if (arg->getAttribute("scale")!=NULL)
@@ -164,16 +167,6 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
         arg->removeAttribute("dy");
         arg->removeAttribute("dz");
     }
-}
-
-template <class DataTypes>
-void MechanicalObject<DataTypes>::parseFields ( const std::map<std::string,std::string*>& str )
-{
-    unsigned int size0 = getX()->size();
-    Inherited::parseFields(str);
-    if (getX()->size() != size0)
-        resize( getX()->size() );
-    //cerr<<"MechanicalObject<DataTypes>::parseFields, resized to "<<getX()->size()<<endl;
 }
 
 template <class DataTypes>

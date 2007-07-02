@@ -68,6 +68,20 @@ bool ObjectElement::initNode()
     setObject(obj);
     obj->setName(getName());
 
+    // display any unused attributes
+    std::string unused;
+    for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
+    {
+        if (!it->second.isAccessed())
+        {
+            unused += ' ';
+            unused += it->first;
+        }
+    }
+    if (!unused.empty())
+    {
+        std::cerr << "WARNING: Unused attribute(s) in "<<getFullName()<<" :"<<unused<<std::endl;
+    }
     return true;
 }
 

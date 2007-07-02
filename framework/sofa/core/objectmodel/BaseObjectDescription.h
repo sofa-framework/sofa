@@ -50,7 +50,23 @@ class Base;
 class BaseObjectDescription
 {
 public:
-    typedef std::map<std::string,std::string*> AttributeMap;
+    class Attribute
+    {
+    protected:
+        std::string value;
+        bool accessed;
+    public:
+        Attribute() : accessed(false) {}
+        Attribute(const std::string& v) : value(v), accessed(false) {}
+        void operator=(const std::string& v) { value = v; }
+        void operator=(const char* v) { value = v; }
+        operator std::string() { accessed = true; return value; }
+        const char* c_str() { accessed = true; return value.c_str(); }
+        bool isAccessed() { return accessed; }
+        void setAccessed(bool v) { accessed = v; }
+    };
+
+    typedef std::map<std::string,Attribute> AttributeMap;
 
     BaseObjectDescription(const char* name=NULL, const char* type=NULL);
 
@@ -65,8 +81,8 @@ public:
     /// Get the parent node
     virtual BaseObjectDescription* getParent() const;
 
-    /// Get all attribute data, read-only
-    virtual const AttributeMap& getAttributeMap() const;
+    ///// Get all attribute data, read-only
+    //virtual const AttributeMap& getAttributeMap() const;
 
     /// Find an object description given its name (relative to this object)
     virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false);
@@ -77,7 +93,7 @@ public:
     /// Get an attribute given its name (return defaultVal if not present)
     virtual const char* getAttribute(const std::string& attr, const char* defaultVal=NULL);
 
-    /// Remove an attribute given its name (return defaultVal if not present)
+    /// Remove an attribute given its name
     virtual bool removeAttribute(const std::string& attr);
 
     /// Get the full name of this object (i.e. concatenation if all the names of its ancestors and itself)
