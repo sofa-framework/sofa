@@ -74,7 +74,9 @@ public:
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
         if (arg->getAttribute("filename"))
+        {
             this->load(arg->getAttribute("filename"));
+        } arg->removeAttribute("filename");
         this->core::componentmodel::topology::Topology::parse(arg);
     }
 
