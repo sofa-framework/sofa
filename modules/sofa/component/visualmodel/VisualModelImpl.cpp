@@ -43,7 +43,6 @@ using namespace sofa::defaulttype;
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
-    this->core::VisualModel::parse(arg);
     VisualModelImpl* obj = this;
 
     if (arg->getAttribute("normals")!=NULL)
@@ -57,22 +56,52 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     std::string texturename = arg->getAttribute("texturename","");
     obj->load(filename, loader, texturename);
     if (arg->getAttribute("flip")!=NULL)
+    {
         obj->flipFaces();
+        arg->removeAttribute("flip");
+    }
 
     if (arg->getAttribute("color"))
+    {
         obj->setColor(arg->getAttribute("color"));
+        arg->removeAttribute("color");
+    }
     if (arg->getAttribute("scale")!=NULL)
+    {
         obj->applyScale(atof(arg->getAttribute("scale","1.0")));
+        arg->removeAttribute("scale");
+    }
     if (arg->getAttribute("scaleTex")!=NULL)
+    {
         obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
+        arg->removeAttribute("scaleTex");
+    }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+    {
         obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+        if (arg->getAttribute("dx")!=NULL)
+            arg->removeAttribute("dx");
+        if (arg->getAttribute("dy")!=NULL)
+            arg->removeAttribute("dy");
+        if (arg->getAttribute("dz")!=NULL)
+            arg->removeAttribute("dz");
+    }
     if (arg->getAttribute("rx")!=NULL)
+    {
         obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*M_PI/180));
+        arg->removeAttribute("rx");
+    }
     if (arg->getAttribute("ry")!=NULL)
+    {
         obj->applyRotation(Quat(Vec3d(0,1,0), atof(arg->getAttribute("ry","0.0"))*M_PI/180));
+        arg->removeAttribute("ry");
+    }
     if (arg->getAttribute("rz")!=NULL)
+    {
         obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*M_PI/180));
+        arg->removeAttribute("rz");
+    }
+    this->core::VisualModel::parse(arg);
 }
 
 SOFA_DECL_CLASS(VisualModelImpl)
