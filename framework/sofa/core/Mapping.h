@@ -127,6 +127,10 @@ public:
             (arg?dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))):NULL),
             (arg?dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))):NULL));
         if (context) context->addObject(obj);
+        if ((arg) && (arg->getAttribute("object1")))
+            arg->removeAttribute("object1");
+        if ((arg) && (arg->getAttribute("object2")))
+            arg->removeAttribute("object2");
         if (arg) obj->parse(arg);
     }
 };
