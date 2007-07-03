@@ -1945,39 +1945,39 @@ QString QtGLViewer::helpString()
 {
 
     QString text(
-        "QtGLViewer<br>\
------<br>\
-TO NAVIGATE: use the MOUSE.<br>\
------<br>\
-TO SWITCH INTERACTION MODE: press the KEY C.<br>\
-Allow or not the navigation with the mouse.<br>\
+        "<H1>QtGLViewer</H1><br>\
+<hr><br>\
+TO NAVIGATE: use the MOUSE<br>\
+<hr><br>\
 <br>\
------<br>\
+TO CENTER THE VIEW: press the KEY C<br>\
+<br>\
+<hr><br>\
 TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA: press the KEY T<br>\
 <br>\
------<br>\
-TO PICK: press SHIFT and LEFT MOUSE BUTTON to pick objects.<br>\
+<hr><br>\
+TO PICK: press SHIFT and LEFT MOUSE BUTTON to pick objects<br>\
 <br>\
------<br>\
+<hr><br>\
 TO DRAW SHADOWS: press the KEY L<br>\
 <br>\
------<br>\
-TO DRAW THE SCENE AXIS: press the KEY R.<br>\
+<hr><br>\
+TO DRAW THE SCENE AXIS: press the KEY R<br>\
 <br>\
------<br>\
-TO SAVE A SCREENSHOT: press the KEY I.<br>\
+<hr><br>\
+TO SAVE A SCREENSHOT: press the KEY I<br>\
 The captured images are saved in the running project directory under the name format capturexxxx.bmp<br>\
 <br>\
------<br>\
-TO SAVE A VIDEO: press the KEY V.<br>\
-Each time the frame is updated a screenshot is saved.<br>\
+<hr><br>\
+TO SAVE A VIDEO: press the KEY V<br>\
+Each time the frame is updated a screenshot is saved<br>\
 <br>\
------<br>\
-TO EXPORT TO .OBJ: press the KEY O.<br>\
-The generated files scene-time.obj and scene-time.mtl are saved in the running project directory.<br>\
+<hr><br>\
+TO EXPORT TO .OBJ: press the KEY O<br>\
+The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br>\
 <br>\
------<br>\
-TO QUIT ::sofa:: press the KEY ESCAPE.<br>");
+<hr><br>\
+TO QUIT ::sofa:: press the KEY ESCAPE<br>");
 
     return text;
 }
