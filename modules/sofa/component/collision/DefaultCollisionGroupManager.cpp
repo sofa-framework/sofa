@@ -115,7 +115,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
         {
             // we can merge the groups
             // if solvers are compatible...
-            OdeSolver* solver = SolverMerger::merge(group1->solver, group2->solver);
+            OdeSolver* solver = SolverMerger::merge(group1->solver[0], group2->solver[0]);
             if (solver!=NULL)
             {
                 simulation::tree::GNode* parent = group1->parent;
@@ -144,7 +144,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     else
                     {
                         // merge groups and remove group2
-                        OdeSolver* solver2 = group2->solver;
+                        OdeSolver* solver2 = group2->solver[0];
                         group2->removeObject(solver2);
                         while(!group2->object.empty())
                             group->moveObject(*group2->object.begin());
@@ -165,9 +165,9 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     group = group2;
                     group->moveChild(group1);
                 }
-                if (group->solver!=NULL)
+                if (!group->solver.empty())
                 {
-                    OdeSolver* solver2 = group->solver;
+                    OdeSolver* solver2 = group->solver[0];
                     group->removeObject(solver2);
                     delete solver2;
                 }

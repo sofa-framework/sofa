@@ -394,7 +394,7 @@ public:
     typedef Sequence<core::objectmodel::BaseObject>::iterator ObjectIterator;
 
     Single<core::componentmodel::behavior::MasterSolver> masterSolver;
-    Single<core::componentmodel::behavior::OdeSolver> solver;
+    Sequence<core::componentmodel::behavior::OdeSolver> solver;
     Single<core::componentmodel::behavior::BaseMechanicalState> mechanicalState;
     Single<core::componentmodel::behavior::BaseMechanicalMapping> mechanicalMapping;
     Single<core::componentmodel::behavior::BaseMass> mass;
