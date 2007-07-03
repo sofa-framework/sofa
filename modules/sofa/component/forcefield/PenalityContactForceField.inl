@@ -83,8 +83,8 @@ void PenalityContactForceField<DataTypes>::addForce()
             Real fN = c.ks * c.pen;
             Deriv v = v2[c.m2]-v1[c.m1];
             v -= v*(v*c.norm); // project velocity to normal plane
-            Real fV = fN * c.mu_v;
-            Deriv force = -c.norm*fN + v*fV;
+            c.fDir = v*c.mu_v - c.norm;
+            Deriv force = c.fDir*fN;
             f1[c.m1]+=force;
             f2[c.m2]-=force;
         }
@@ -105,13 +105,13 @@ void PenalityContactForceField<DataTypes>::addDForce()
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         const Contact& c = contacts[i];
-        Coord du = dx2[c.m2]-dx1[c.m1];
-        Real dpen = - du*c.norm;
         if (c.pen > 0) // + dpen > 0)
         {
+            Coord du = dx2[c.m2]-dx1[c.m1];
+            Real dpen = - du*c.norm;
             if (c.pen < 0) dpen += c.pen; // start penality at distance 0
             Real dfN = c.ks * dpen;
-            Deriv dforce = -c.norm*dfN;
+            Deriv dforce = c.fDir*dfN;
             f1[c.m1]+=dforce;
             f2[c.m2]-=dforce;
         }

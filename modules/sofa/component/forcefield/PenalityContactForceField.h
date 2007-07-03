@@ -64,6 +64,7 @@ protected:
         Real mu_s;    ///< coulomb friction coefficient (currently unused)
         Real mu_v;    ///< viscous friction coefficient
         Real pen;     ///< current penetration
+        Deriv fDir;     ///< current force direction (including friction)
     };
 
     std::vector<Contact> contacts;
