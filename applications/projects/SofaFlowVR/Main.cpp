@@ -284,7 +284,7 @@ public:
         }
         ++it; step = true;
         lasttime = getContext()->getTime();
-        std::cout << "Sending FlowVRBeginIteration"<<std::endl;
+        //std::cout << "Sending FlowVRBeginIteration"<<std::endl;
         FlowVRBeginIterationEvent ev;
         ev.from = this;
         ev.module = module;
@@ -296,7 +296,7 @@ public:
         if (module==NULL) return;
         if (!step) return;
         step = false;
-        std::cout << "Sending FlowVREndIteration"<<std::endl;
+        //std::cout << "Sending FlowVREndIteration"<<std::endl;
         FlowVREndIterationEvent ev;
         ev.from = this;
         ev.module = module;
@@ -416,7 +416,7 @@ public:
 
     virtual void flowvrBeginIteration(flowvr::ModuleAPI* module)
     {
-        std::cout << "Received FlowVRBeginIteration"<<std::endl;
+        //std::cout << "Received FlowVRBeginIteration"<<std::endl;
         flowvr::Message points, facets;
         double time = getContext()->getTime();
 
@@ -453,7 +453,7 @@ public:
             sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>* mmodel3d;
             if ((mmodel3f = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<Vec3fTypes>*>(mmodel))!=NULL)
             {
-                std::cout << "Copying "<<nbv<<" vertices to mmodel3f"<<std::endl;
+                //std::cout << "Copying "<<nbv<<" vertices to mmodel3f"<<std::endl;
                 mmodel3f->resize(nbv);
                 Vec3fTypes::VecCoord& x = *mmodel3f->getX();
                 if (matrixLastIt==-20)
@@ -482,12 +482,12 @@ public:
                 sofa::core::componentmodel::behavior::MechanicalState<Vec3dTypes>* mm;
                 if (doComputeV)
                 {
-                    std::cout << "Copying "<<nbv<<" vertices and estimate velocity"<<std::endl;
+                    //std::cout << "Copying "<<nbv<<" vertices and estimate velocity"<<std::endl;
                     mm = newPoints; // put new data in newPoints state
                 }
                 else
                 {
-                    std::cout << "Copying "<<nbv<<" vertices to mmodel3d"<<std::endl;
+                    //std::cout << "Copying "<<nbv<<" vertices to mmodel3d"<<std::endl;
                     mm = mmodel3d;
                 }
                 mm->resize(nbv);
@@ -602,7 +602,7 @@ public:
                 mesh->clear();
                 if (valid)
                 {
-                    std::cout << "Copying "<<nbi/3<<" triangles to mesh"<<std::endl;
+                    //std::cout << "Copying "<<nbi/3<<" triangles to mesh"<<std::endl;
                     for (unsigned int i=0; i<nbi; i+=3)
                     {
                         mesh->addTriangle(indices[i  ],indices[i+1],indices[i+2]);
@@ -614,7 +614,7 @@ public:
                         if (indices[i+2] < indices[i  ])
                             mesh->addLine(indices[i+2],indices[i  ]);
                     }
-                    std::cout << "Copying "<<mesh->getNbLines()<<" edges to mesh"<<std::endl;
+                    //std::cout << "Copying "<<mesh->getNbLines()<<" edges to mesh"<<std::endl;
                 }
             }
         }

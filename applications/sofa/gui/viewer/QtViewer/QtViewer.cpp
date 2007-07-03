@@ -1344,7 +1344,7 @@ void QtViewer::calcProjection()
             zFar *= 1.1;
             if (zNear < zFar*0.01)
                 zNear = zFar*0.01;
-            if (zNear < 1.0) zNear = 1.0;
+            if (zNear < 0.1) zNear = 0.1;
             if (zFar < 2.0) zFar = 2.0;
         }
         //std::cout << "Z = ["<<zNear<<" - "<<zFar<<"]\n";
@@ -1517,6 +1517,8 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 {
     // Mouse Interaction
     double coeffDeplacement = 0.025;
+    if (sceneBBoxIsValid)
+        coeffDeplacement *= 0.001*(sceneMaxBBox-sceneMinBBox).norm();
     Quaternion conjQuat, resQuat, _newQuatBckUp;
 
     float x1, x2, y1, y2;
@@ -2426,7 +2428,10 @@ void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filena
     }
     groot = scene;
     initTexturesDone = false;
-    sceneBBoxIsValid = false;
+    Simulation::computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    sceneBBoxIsValid = true;
+    _panSpeed = (sceneMaxBBox-sceneMinBBox).norm()*0.5;
+    _zoomSpeed = (sceneMaxBBox-sceneMinBBox).norm();
 
     update();
 }
