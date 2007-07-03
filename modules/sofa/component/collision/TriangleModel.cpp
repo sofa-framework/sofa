@@ -187,6 +187,7 @@ bool TriangleModel::updateFromTopology()
         {
             f |= FLAG_E23;
         }
+        elems[index].flags = f;
 
         ++index;
         elems[index].i1 = idx[0];
