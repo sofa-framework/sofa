@@ -172,7 +172,7 @@ void CubeModel::draw()
     {
         m = m->getPrevious();
         ++level;
-        color *= 0.25f;
+        color *= 0.5f;
     }
     if (isStatic())
         glColor4f(1.0f, 1.0f, 1.0f, color);

@@ -106,6 +106,8 @@ bool TriangleModel::updateFromTopology()
     int index = 0;
     //VecCoord& x = *mstate->getX();
     //VecDeriv& v = *mstate->getV();
+    vector<bool> pflags(npoints);
+    std::set<std::pair<int,int> > eflags;
     for (int i=0; i<ntris; i++)
     {
         topology::MeshTopology::Triangle idx = mesh->getTriangle(i);
@@ -117,6 +119,37 @@ bool TriangleModel::updateFromTopology()
         elems[index].i1 = idx[0];
         elems[index].i2 = idx[1];
         elems[index].i3 = idx[2];
+        int f = 0;
+        if (!pflags[elems[index].i1])
+        {
+            f |= FLAG_P1;
+            pflags[elems[index].i1] = true;
+        }
+        if (!pflags[elems[index].i2])
+        {
+            f |= FLAG_P2;
+            pflags[elems[index].i2] = true;
+        }
+        if (!pflags[elems[index].i3])
+        {
+            f |= FLAG_P3;
+            pflags[elems[index].i3] = true;
+        }
+        if (eflags.insert( (elems[index].i1<elems[index].i2)?std::make_pair(elems[index].i1,elems[index].i2):std::make_pair(elems[index].i2,elems[index].i1) ).second)
+        {
+            f |= FLAG_E12;
+        }
+        if (eflags.insert( (elems[index].i2<elems[index].i3)?std::make_pair(elems[index].i2,elems[index].i3):std::make_pair(elems[index].i3,elems[index].i2) ).second)
+        {
+            f |= FLAG_E23;
+        }
+        if (eflags.insert( (elems[index].i3<elems[index].i1)?std::make_pair(elems[index].i3,elems[index].i1):std::make_pair(elems[index].i1,elems[index].i3) ).second)
+        {
+            f |= FLAG_E31;
+        }
+        elems[index].flags = f;
+
+        //elems[index].i3 = idx[2];
         ++index;
     }
     for (int i=0; i<nquads; i++)
@@ -130,10 +163,51 @@ bool TriangleModel::updateFromTopology()
         elems[index].i1 = idx[0];
         elems[index].i2 = idx[1];
         elems[index].i3 = idx[2];
+        int f = 0;
+        if (!pflags[elems[index].i1])
+        {
+            f |= FLAG_P1;
+            pflags[elems[index].i1] = true;
+        }
+        if (!pflags[elems[index].i2])
+        {
+            f |= FLAG_P2;
+            pflags[elems[index].i2] = true;
+        }
+        if (!pflags[elems[index].i3])
+        {
+            f |= FLAG_P3;
+            pflags[elems[index].i3] = true;
+        }
+        if (eflags.insert( (elems[index].i1<elems[index].i2)?std::make_pair(elems[index].i1,elems[index].i2):std::make_pair(elems[index].i2,elems[index].i1) ).second)
+        {
+            f |= FLAG_E12;
+        }
+        if (eflags.insert( (elems[index].i2<elems[index].i3)?std::make_pair(elems[index].i2,elems[index].i3):std::make_pair(elems[index].i3,elems[index].i2) ).second)
+        {
+            f |= FLAG_E23;
+        }
+
         ++index;
         elems[index].i1 = idx[0];
         elems[index].i2 = idx[2];
         elems[index].i3 = idx[3];
+        f = 0;
+        if (!pflags[elems[index].i3])
+        {
+            f |= FLAG_P3;
+            pflags[elems[index].i3] = true;
+        }
+        if (eflags.insert( (elems[index].i2<elems[index].i3)?std::make_pair(elems[index].i2,elems[index].i3):std::make_pair(elems[index].i3,elems[index].i2) ).second)
+        {
+            f |= FLAG_E23;
+        }
+        if (eflags.insert( (elems[index].i3<elems[index].i1)?std::make_pair(elems[index].i3,elems[index].i1):std::make_pair(elems[index].i1,elems[index].i3) ).second)
+        {
+            f |= FLAG_E31;
+        }
+        elems[index].flags = f;
+
         ++index;
     }
     meshRevision = revision;
@@ -184,8 +258,8 @@ void TriangleModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    //if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
-    //	dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
 void TriangleModel::computeBoundingTree(int maxDepth)

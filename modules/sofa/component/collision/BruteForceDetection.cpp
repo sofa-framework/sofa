@@ -199,7 +199,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         std::stack< TestPair > internalCells;
         internalCells.push(root);
 
-        simulation::tree::GNode::ctime_t it=0,it0;
+        simulation::tree::GNode::ctime_t it=0,it0=0;
 
         if (node) it0 = node->startTime();
         while (!internalCells.empty())

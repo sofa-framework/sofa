@@ -65,6 +65,8 @@ public:
 
     const Vector3& n() const;
     Vector3& n();
+
+    int flags() const;
 };
 
 class TriangleModel : public core::CollisionModel, public core::VisualModel
@@ -72,7 +74,7 @@ class TriangleModel : public core::CollisionModel, public core::VisualModel
 protected:
     struct TriangleData
     {
-        int i1,i2,i3;
+        int i1,i2,i3,flags;
         Vector3 normal;
     };
 
@@ -90,6 +92,18 @@ public:
     typedef DataTypes::Deriv Deriv;
     typedef Triangle Element;
     friend class Triangle;
+
+    enum TriangleFlag
+    {
+        FLAG_P1  = 1<<0, ///< Point 1  is attached to this triangle
+        FLAG_P2  = 1<<1, ///< Point 2  is attached to this triangle
+        FLAG_P3  = 1<<2, ///< Point 3  is attached to this triangle
+        FLAG_E12 = 1<<3, ///< Edge 1-2 is attached to this triangle
+        FLAG_E23 = 1<<4, ///< Edge 2-3 is attached to this triangle
+        FLAG_E31 = 1<<5, ///< Edge 3-1 is attached to this triangle
+        FLAG_POINTS  = FLAG_P1|FLAG_P2|FLAG_P3,
+        FLAG_EDGES   = FLAG_E12|FLAG_E23|FLAG_E31,
+    };
 
     TriangleModel();
 
@@ -152,6 +166,8 @@ inline const Vector3& Triangle::v3() const { return (*model->mstate->getV())[mod
 
 inline const Vector3& Triangle::n() const { return model->elems[index].normal; }
 inline       Vector3& Triangle::n()       { return model->elems[index].normal; }
+
+inline int            Triangle::flags() const { return model->elems[index].flags; }
 
 } // namespace collision
 
