@@ -137,6 +137,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         return;
     //std::cout << "Final intersector " << finalintersector->name() << " for "<<finalcm1->getName()<<" - "<<finalcm2->getName()<<std::endl;
 
+    DetectionOutputVector& outputs = outputsMap[std::make_pair(finalcm1, finalcm2)];
+
     if (finalcm1 == cm1 || finalcm2 == cm2)
     {
         // The last model also contains the root element -> it does not only contains the final level of the tree
@@ -197,8 +199,9 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         std::stack< TestPair > internalCells;
         internalCells.push(root);
 
-        simulation::tree::GNode::ctime_t it=0;
+        simulation::tree::GNode::ctime_t it=0,it0;
 
+        if (node) it0 = node->startTime();
         while (!internalCells.empty())
         {
             TestPair current = internalCells.top();
@@ -208,23 +211,29 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
             core::CollisionElementIterator end1 = current.first.second;
             core::CollisionElementIterator begin2 = current.second.first;
             core::CollisionElementIterator end2 = current.second.second;
-            for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
-            {
-                for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
-                {
-                    //if (!it1->canCollideWith(it2)) continue;
 
-                    //if (node) t0 = node->startTime();
-                    bool b = intersector->canIntersect(it1,it2);
-                    //if (node) it += node->startTime() - t0;
-                    if (b)
+            if (begin1.getCollisionModel() == finalcm1 && begin2.getCollisionModel() == finalcm2)
+            {
+                // Final collision pairs
+                if (node) t0 = node->startTime();
+                for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+                {
+                    for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
                     {
-                        if (it1.getCollisionModel() == finalcm1 && it2.getCollisionModel() == finalcm2)
-                        {
-                            // Final collision pair
-                            elemPairs.push_back(std::make_pair(it1,it2));
-                        }
-                        else
+                        intersector->intersect(it1,it2,outputs);
+                    }
+                }
+            }
+            else
+            {
+                for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
+                {
+                    for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
+                    {
+                        //if (!it1->canCollideWith(it2)) continue;
+
+                        bool b = intersector->canIntersect(it1,it2);
+                        if (b)
                         {
                             // Need to test recursively
                             // Note that an element cannot have both internal and external children
@@ -268,19 +277,17 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                                                 core::CollisionElementIterator end1 = newExternalTests.first.second;
                                                 core::CollisionElementIterator begin2 = newExternalTests.second.first;
                                                 core::CollisionElementIterator end2 = newExternalTests.second.second;
+                                                if (node) t0 = node->startTime();
                                                 for (core::CollisionElementIterator it1 = begin1; it1 != end1; ++it1)
                                                 {
                                                     for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
                                                     {
                                                         //if (!it1->canCollideWith(it2)) continue;
-                                                        if (node) t0 = node->startTime();
-                                                        bool bfinal = finalintersector->canIntersect(it1,it2);
-                                                        if (node) ft += node->startTime() - t0;
                                                         // Final collision pair
-                                                        if (bfinal)
-                                                            elemPairs.push_back(std::make_pair(it1,it2));
+                                                        finalintersector->intersect(it1,it2,outputs);
                                                     }
                                                 }
+                                                if (node) ft += node->startTime() - t0;
                                             }
                                             else
                                                 externalCells.push(newExternalTests);
@@ -307,7 +314,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                                     else
                                     {
                                         // No child -> final collision pair
-                                        elemPairs.push_back(std::make_pair(it1,it2));
+                                        intersector->intersect(it1,it2, outputs);
                                     }
                                 }
                             }
@@ -318,9 +325,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         }
         if (node)
         {
-            //std::string name = "collision/";
-            //name += intersector->name();
-            //node->addTime(it, name, intersectionMethod);
+            it += node->startTime() - it0 - ft;
+            std::string name = "collision/";
+            name += intersector->name();
+            node->addTime(it, name, intersectionMethod);
             t += it;
         }
     }
@@ -339,25 +347,24 @@ void BruteForceDetection::draw()
 {
     if (!bDraw.getValue()) return;
 
-    if (!elemPairs.empty())
+    glDisable(GL_LIGHTING);
+    glColor3f(1.0, 0.0, 1.0);
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    glLineWidth(3);
+    glPointSize(5);
+
+    for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
     {
-        glDisable(GL_LIGHTING);
-        glColor3f(1.0, 0.0, 1.0);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glLineWidth(3);
-        glPointSize(5);
-        std::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >::iterator it = elemPairs.begin();
-        std::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >::iterator itEnd = elemPairs.end();
-        //std::cout << "Size : " << elemPairs.size() << std::endl;
-        for (; it != itEnd; it++)
+        DetectionOutputVector& outputs = it->second;
+        for (DetectionOutputVector::iterator it2 = outputs.begin(); it2!=outputs.end(); it2++)
         {
-            it->first.draw();
-            it->second.draw();
+            it2->elem.first.draw();
+            it2->elem.second.draw();
         }
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glLineWidth(1);
-        glPointSize(1);
     }
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    glLineWidth(1);
+    glPointSize(1);
 }
 
 } // namespace collision

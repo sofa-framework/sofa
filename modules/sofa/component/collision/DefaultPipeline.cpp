@@ -97,13 +97,13 @@ void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionMode
     const std::string category = "collision";
 
     // clear all detection outputs
-    {
-        std::vector< DetectionOutput* >::iterator it = detectionOutputs.begin();
-        std::vector< DetectionOutput* >::iterator itEnd = detectionOutputs.end();
-        for (; it != itEnd; it++)
-            delete *it;
-    }
-    detectionOutputs.clear();
+    //{
+    //std::vector< DetectionOutput* >::iterator it = detectionOutputs.begin();
+    //std::vector< DetectionOutput* >::iterator itEnd = detectionOutputs.end();
+    //for (; it != itEnd; it++)
+    //	delete *it;
+    //}
+    //detectionOutputs.clear();
 
     VERBOSE(std::cout << "Compute Bounding Trees"<<std::endl);
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
@@ -135,20 +135,22 @@ void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionMode
     if (broadPhaseDetection==NULL) return; // can't go further
     VERBOSE(std::cout << "BroadPhaseDetection "<<broadPhaseDetection->getName()<<std::endl);
     if (node) t0 = node->startTime();
-    broadPhaseDetection->clearBroadPhase();
+    broadPhaseDetection->beginBroadPhase();
     broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // detection is done there
+    broadPhaseDetection->endBroadPhase();
     if (node) t0 = node->endTime(t0, category, broadPhaseDetection, this);
 
     // then we start the narrow phase
     if (narrowPhaseDetection==NULL) return; // can't go further
     VERBOSE(std::cout << "NarrowPhaseDetection "<<narrowPhaseDetection->getName()<<std::endl);
     if (node) t0 = node->startTime();
-    narrowPhaseDetection->clearNarrowPhase();
+    narrowPhaseDetection->beginNarrowPhase();
     std::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
     VERBOSE(std::cout << vectCMPair.size()<<" colliding model pairs"<<std::endl);
     narrowPhaseDetection->addCollisionPairs(vectCMPair);
+    narrowPhaseDetection->endNarrowPhase();
     if (node) t0 = node->endTime(t0, category, narrowPhaseDetection, this);
-
+#if 0 // no longer required as it is done within the narrow phase now
     VERBOSE(std::cout << "CollisionDetection "<<std::endl);
     // then we start the real detection between primitives
     {
@@ -183,6 +185,7 @@ void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionMode
         if (node) t0 = node->endTime(t0, category, intersectionMethod, this);
     }
     VERBOSE(std::cout << detectionOutputs.size()<<" collisions detected"<<std::endl);
+#endif
 }
 
 void DefaultPipeline::doCollisionResponse()
@@ -197,7 +200,7 @@ void DefaultPipeline::doCollisionResponse()
     if (contactManager==NULL) return; // can't go further
     VERBOSE(std::cout << "Create Contacts "<<contactManager->getName()<<std::endl);
     if (node) t0 = node->startTime();
-    contactManager->createContacts(detectionOutputs);
+    contactManager->createContacts(narrowPhaseDetection->getDetectionOutputs());
     if (node) t0 = node->endTime(t0, category, contactManager, this);
 
     // finally we start the creation of collisionGroup
@@ -243,20 +246,24 @@ void DefaultPipeline::doCollisionResponse()
 void DefaultPipeline::draw()
 {
     if (!bDraw.getValue()) return;
+    if (!narrowPhaseDetection) return;
     glDisable(GL_LIGHTING);
     glLineWidth(2);
     glBegin(GL_LINES);
-    std::vector< DetectionOutput* >::iterator it = detectionOutputs.begin();
-    std::vector< DetectionOutput* >::iterator itEnd = detectionOutputs.end();
-    for (; it != itEnd; it++)
+    DetectionOutputMap& outputsMap = narrowPhaseDetection->getDetectionOutputs();
+    for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
     {
-        DetectionOutput* d = *it;
-        if (d->distance<0)
-            glColor3f(1.0f,0.5f,0.5f);
-        else
-            glColor3f(0.5f,1.0f,0.5f);
-        glVertex3dv(d->point[0].ptr());
-        glVertex3dv(d->point[1].ptr());
+        DetectionOutputVector& outputs = it->second;
+        for (DetectionOutputVector::iterator it2 = outputs.begin(); it2!=outputs.end(); it2++)
+        {
+            DetectionOutput* d = &*it2;
+            if (d->distance<0)
+                glColor3f(1.0f,0.5f,0.5f);
+            else
+                glColor3f(0.5f,1.0f,0.5f);
+            glVertex3dv(d->point[0].ptr());
+            glVertex3dv(d->point[1].ptr());
+        }
     }
     glEnd();
     glLineWidth(1);

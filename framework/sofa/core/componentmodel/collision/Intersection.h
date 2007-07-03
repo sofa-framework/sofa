@@ -48,45 +48,15 @@ class ElementIntersector
 protected:
     virtual ~ElementIntersector() {}
 public:
+    typedef std::vector<DetectionOutput> DetectionOutputVector;
+
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
     virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) = 0;
 
-    /// Compute the intersection between 2 elements.
-    virtual DetectionOutput* intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2) = 0;
+    /// Compute the intersection between 2 elements. Return the number of contacts written in the contacts vector
+    virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector& contacts) = 0;
 
     virtual std::string name() const = 0;
-};
-
-template<class Elem1, class Elem2,
-         bool (*CanIntersectFn)(Elem1&, Elem2&),
-         DetectionOutput* (*IntersectFn)(Elem1&, Elem2&)
-         >
-class FnElementIntersector : public ElementIntersector
-{
-public:
-    /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2);
-
-    /// Compute the intersection between 2 elements.
-    DetectionOutput* intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2);
-
-    std::string name() const;
-};
-
-template<class Elem1, class Elem2,
-         bool (*CanIntersectFn)(Elem2&, Elem1&),
-         DetectionOutput* (*IntersectFn)(Elem2&, Elem1&)
-         >
-class MirrorFnElementIntersector : public ElementIntersector
-{
-public:
-    /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2);
-
-    /// Compute the intersection between 2 elements.
-    DetectionOutput* intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2);
-
-    std::string name() const;
 };
 
 class IntersectorMap : public std::map< std::pair< helper::TypeInfo, helper::TypeInfo >, ElementIntersector* >
@@ -94,10 +64,14 @@ class IntersectorMap : public std::map< std::pair< helper::TypeInfo, helper::Typ
 public:
     template<class Model1, class Model2,
              bool (*CanIntersectFn)(typename Model1::Element&, typename Model2::Element&),
-             DetectionOutput* (*IntersectFn)(typename Model1::Element&, typename Model2::Element&),
+             int (*IntersectFn)(typename Model1::Element&, typename Model2::Element&, std::vector<DetectionOutput>&),
              bool mirror
              >
     void add();
+
+    template<class Model1, class Model2, class T, bool mirror
+    >
+    void add(T* ptr);
 
     template<class Model1, class Model2,
              bool mirror
@@ -110,6 +84,8 @@ public:
 class Intersection : public virtual objectmodel::BaseObject
 {
 public:
+    typedef ElementIntersector::DetectionOutputVector DetectionOutputVector;
+
     virtual ~Intersection();
 
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
@@ -125,7 +101,7 @@ public:
 
     /// Compute the intersection between 2 elements.
     /// Note that this method is deprecated in favor of findIntersector
-    virtual DetectionOutput* intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2);
+    virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector& contacts);
 
     /// returns true if algorithm uses proximity detection
     virtual bool useProximity() const { return false; }

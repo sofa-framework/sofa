@@ -51,7 +51,7 @@ namespace collision
 class Pipeline : public virtual sofa::core::objectmodel::BaseObject
 {
 protected:
-    std::vector<DetectionOutput*> detectionOutputs;
+    //std::vector<DetectionOutput*> detectionOutputs;
 
     std::vector<Intersection*> intersectionMethods;
     std::vector<BroadPhaseDetection*> broadPhaseDetections;
@@ -66,6 +66,9 @@ protected:
     CollisionGroupManager* groupManager;
 
 public:
+    typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
+    typedef NarrowPhaseDetection::DetectionOutputVector DetectionOutputVector;
+
     Pipeline();
 
     virtual ~Pipeline();
@@ -86,7 +89,7 @@ public:
         computeCollisionResponse();
     }
 
-    std::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }
+    //std::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }
 
 protected:
     /// Remove collision response from last step

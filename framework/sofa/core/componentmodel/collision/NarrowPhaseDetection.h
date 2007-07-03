@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/collision/Detection.h>
 #include <vector>
+#include <map>
 #include <algorithm>
 
 namespace sofa
@@ -43,26 +44,56 @@ namespace collision
 
 class NarrowPhaseDetection : virtual public Detection
 {
+public:
+    typedef Intersection::DetectionOutputVector DetectionOutputVector;
+    typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector > DetectionOutputMap;
 protected:
-    std::vector< std::pair<core::CollisionElementIterator, core::CollisionElementIterator> > elemPairs;
+    //std::vector< std::pair<core::CollisionElementIterator, core::CollisionElementIterator> > elemPairs;
+    DetectionOutputMap outputsMap;
 
 public:
     virtual ~NarrowPhaseDetection() { }
 
+    virtual void beginNarrowPhase()
+    {
+        for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
+            it->second.clear();
+    }
+
     virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;
 
-    virtual void addCollisionPairs(const std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > v)
+    virtual void addCollisionPairs(const std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
     {
-        for (std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it<v.end(); it++)
+        for (std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
             addCollisionPair(*it);
     }
 
-    virtual void clearNarrowPhase()
-    {
-        elemPairs.clear();
-    };
 
-    std::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
+    virtual void endNarrowPhase()
+    {
+        DetectionOutputMap::iterator it = outputsMap.begin();
+        while(it!=outputsMap.end())
+        {
+            if (it->second.empty())
+            {
+                DetectionOutputMap::iterator it2 = it;
+                ++it2;
+                outputsMap.erase(it);
+                it = it2;
+            }
+            else
+            {
+                ++it;
+            }
+        }
+    }
+
+    //std::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
+
+    DetectionOutputMap& getDetectionOutputs()
+    {
+        return outputsMap;
+    }
 };
 
 } // namespace collision

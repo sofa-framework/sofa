@@ -71,7 +71,7 @@ public:
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
 
-    void setDetectionOutputs(const std::vector<core::componentmodel::collision::DetectionOutput*>& outputs);
+    void setDetectionOutputs(std::vector<core::componentmodel::collision::DetectionOutput>& outputs);
 
     void createResponse(core::objectmodel::BaseContext* group);
 

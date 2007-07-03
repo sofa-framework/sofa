@@ -35,16 +35,17 @@ FrictionContact<TCollisionModel1,TCollisionModel2>::~FrictionContact()
     }
 }
 
+#ifdef DETECTIONOUTPUT_FREEMOTION
 template < class TCollisionModel1, class TCollisionModel2 >
-void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(const std::vector<DetectionOutput*>& outputs)
+void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(DetectionOutputVector& outputs)
 {
     // We need to remove duplicate contacts
     const double minDist2 = 0.0001f;
     std::vector<DetectionOutput*> contacts;
     contacts.reserve(outputs.size());
-    for (std::vector<DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); it++)
+    for (DetectionOutputVector::iterator it = outputs.begin(); it!=outputs.end(); it++)
     {
-        DetectionOutput* o = *it;
+        DetectionOutput* o = &*it;
         bool found = false;
         for (unsigned int i=0; i<contacts.size() && !found; i++)
         {
@@ -96,6 +97,13 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(con
     mapper1.update();
     mapper2.update();
 }
+#else
+template < class TCollisionModel1, class TCollisionModel2 >
+void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(DetectionOutputVector&)
+{
+    cerr << endl << "ERROR: FrictionContact requires DETECTIONOUTPUT_FREEMOTION to be defined in DetectionOutput.h" << endl;
+}
+#endif
 
 template < class TCollisionModel1, class TCollisionModel2 >
 void FrictionContact<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)

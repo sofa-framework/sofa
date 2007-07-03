@@ -62,16 +62,17 @@ void DefaultContactManager::clear()
     contactMap.clear();
 }
 
-void DefaultContactManager::createContacts(const std::vector<core::componentmodel::collision::DetectionOutput*>& outputs)
+void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
 {
-    outputsMap.clear();
-    for (std::vector<core::componentmodel::collision::DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
-    {
-        core::componentmodel::collision::DetectionOutput* o = *it;
-        outputsMap[std::make_pair(o->elem.first.getCollisionModel(),o->elem.second.getCollisionModel())].push_back(o);
-    }
-    // then remove any inactive contacts or add any new contact
-    std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, std::vector<core::componentmodel::collision::DetectionOutput*> >::iterator outputsIt = outputsMap.begin();
+    //outputsMap.clear();
+    //for (std::vector<core::componentmodel::collision::DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
+    //{
+    //	core::componentmodel::collision::DetectionOutput* o = *it;
+    //	outputsMap[std::make_pair(o->elem.first.getCollisionModel(),o->elem.second.getCollisionModel())].push_back(o);
+    //}
+
+    // Remove any inactive contacts or add any new contact
+    DetectionOutputMap::iterator outputsIt = outputsMap.begin();
     std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::componentmodel::collision::Contact* >::iterator contactIt = contactMap.begin();
     int nbContact = 0;
     while (outputsIt!=outputsMap.end() || contactIt!=contactMap.end())

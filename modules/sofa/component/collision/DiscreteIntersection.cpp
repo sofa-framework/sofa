@@ -46,7 +46,6 @@ namespace collision
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::collision;
-using namespace DiscreteIntersections;
 
 SOFA_DECL_CLASS(DiscreteIntersection)
 
@@ -57,17 +56,17 @@ int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionC
 
 DiscreteIntersection::DiscreteIntersection()
 {
-    intersectors.add<CubeModel,     CubeModel,     intersectionCubeCube,         distCorrectionCubeCube,         false>();
-    intersectors.add<SphereModel,   SphereModel,   intersectionSphereSphere,     distCorrectionSphereSphere,     false>();
-    intersectors.add<SphereModel,   RayModel,      intersectionSphereRay,        distCorrectionSphereRay,        true>();
-    intersectors.add<SphereModel,   RayPickInteractor,      intersectionSphereRay,        distCorrectionSphereRay,        true>();
-    intersectors.add<SphereTreeModel, RayPickInteractor, intersectionSingleSphereRay, distCorrectionSingleSphereRay, true>();
-    intersectors.add<SphereTreeModel, SphereTreeModel, intersectionSingleSphereSingleSphere, distCorrectionSingleSphereSingleSphere,     false>();
-    intersectors.add<SphereTreeModel, CubeModel, intersectionSingleSphereCube, distCorrectionSingleSphereCube, true> ();
-    intersectors.add<SphereTreeModel, TriangleModel, intersectionSingleSphereTriangle, distCorrectionSingleSphereTriangle, true> ();
-    //intersectors.add<SphereTreeModel, SphereModel, intersectionSingleSphereSingleSphere, distCorrectionSingleSphereSingleSphere,     false>();
-    //intersectors.add<SphereModel,   TriangleModel, intersectionSphereTriangle,   distCorrectionSphereTriangle, true>();
-    //intersectors.add<TriangleModel, TriangleModel, intersectionTriangleTriangle, distCorrectionTriangleTriangle, false>();
+    intersectors.add<CubeModel,       CubeModel,         DiscreteIntersection, false> (this);
+    intersectors.add<SphereModel,     SphereModel,       DiscreteIntersection, false> (this);
+    intersectors.add<SphereModel,     RayModel,          DiscreteIntersection, true>  (this);
+    intersectors.add<SphereModel,     RayPickInteractor, DiscreteIntersection, true>  (this);
+    intersectors.add<SphereTreeModel, RayPickInteractor, DiscreteIntersection, true>  (this);
+    intersectors.add<SphereTreeModel, SphereTreeModel,   DiscreteIntersection, false> (this);
+    intersectors.add<SphereTreeModel, CubeModel,         DiscreteIntersection, true>  (this);
+    intersectors.add<SphereTreeModel, TriangleModel,     DiscreteIntersection, true>  (this);
+    //intersectors.add<SphereTreeModel, SphereModel,       DiscreteIntersection, true>  (this);
+    //intersectors.add<SphereModel,     TriangleModel,     DiscreteIntersection, true>  (this);
+    //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection, false> (this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
@@ -76,10 +75,7 @@ ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* 
     return intersectors.get(object1, object2);
 }
 
-namespace DiscreteIntersections
-{
-
-bool intersectionSphereSphere(Sphere& sph1, Sphere& sph2)
+bool DiscreteIntersection::testIntersection(Sphere& sph1, Sphere& sph2)
 {
     //std::cout<<"Collision between Sphere - Sphere"<<std::endl;
     Vector3 sph1Pos(sph1.center());
@@ -90,7 +86,7 @@ bool intersectionSphereSphere(Sphere& sph1, Sphere& sph2)
     return (tmp.norm2() < (radius1 + radius2) * (radius1 + radius2));
 }
 
-bool intersectionSingleSphereSingleSphere(SingleSphere& sph1, SingleSphere& sph2)
+bool DiscreteIntersection::testIntersection(SingleSphere& sph1, SingleSphere& sph2)
 {
     //std::cout<<"Collision between Sphere - Sphere"<<std::endl;
     Vector3 sph1Pos(sph1.center());
@@ -102,7 +98,7 @@ bool intersectionSingleSphereSingleSphere(SingleSphere& sph1, SingleSphere& sph2
     return (tmp.norm2() < (radius1 + radius2) * (radius1 + radius2));
 }
 
-bool intersectionSingleSphereCube( SingleSphere& sph1, Cube& cube)
+bool DiscreteIntersection::testIntersection( SingleSphere& sph1, Cube& cube)
 {
     // Values of the "aligned" bounding box
     Vector3 Bmin = cube.minVect();
@@ -124,7 +120,7 @@ bool intersectionSingleSphereCube( SingleSphere& sph1, Cube& cube)
     else return false;
 }
 
-bool intersectionSingleSphereTriangle( SingleSphere& sph, Triangle& triangle)
+bool DiscreteIntersection::testIntersection( SingleSphere& sph, Triangle& triangle)
 {
     // todo
     double EPSILON = 0.00001;
@@ -175,7 +171,7 @@ bool intersectionSingleSphereTriangle( SingleSphere& sph, Triangle& triangle)
     return false;
 }
 
-bool intersectionCubeCube(Cube& cube1, Cube& cube2)
+bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
 {
     const Vector3& minVect1 = cube1.minVect();
     const Vector3& minVect2 = cube2.minVect();
@@ -193,12 +189,14 @@ bool intersectionCubeCube(Cube& cube1, Cube& cube2)
     return true;
 }
 
-bool intersectionSphereRay(Sphere& sph1, Ray& ray2)
+bool DiscreteIntersection::testIntersection(Sphere& sph1, Ray& ray2)
 {
     //std::cout<<"intersectionSphereRay: Collision between Sphere - Ray"<<std::endl;
-
+    // Center of the sphere
     const Vector3 sph1Pos(sph1.center());
+    // Radius of the sphere
     const double radius1 = sph1.r();
+
     const Vector3 ray2Origin(ray2.origin());
     const Vector3 ray2Direction(ray2.direction());
     const double length2 = ray2.l();
@@ -210,7 +208,7 @@ bool intersectionSphereRay(Sphere& sph1, Ray& ray2)
 }
 
 
-bool intersectionSingleSphereRay(SingleSphere& sph1, Ray& ray2)
+bool DiscreteIntersection::testIntersection(SingleSphere& sph1, Ray& ray2)
 {
     // Center of the sphere
     const Vector3 sph1Pos(sph1.center());
@@ -228,24 +226,24 @@ bool intersectionSingleSphereRay(SingleSphere& sph1, Ray& ray2)
 }
 
 
-//bool intersectionSphereTriangle(Sphere&, Triangle&)
+//bool DiscreteIntersection::testIntersection(Sphere&, Triangle&)
 //{
 //	std::cout<<"Collision between Sphere - Triangle"<<std::endl;
 //	return false;
 //}
 
-//bool intersectionTriangleTriangle(Triangle& t1, Triangle& t2)
+//bool DiscreteIntersection::testIntersection(Triangle& t1, Triangle& t2)
 //{
 //	std::cout<<"Collision between Triangle - Triangle"<<std::endl;
 //	return false;
 //}
 
-DetectionOutput* distCorrectionCubeCube(Cube&, Cube&)
+int DiscreteIntersection::computeIntersection(Cube&, Cube&, DetectionOutputVector&)
 {
-    return NULL; /// \todo
+    return 0; /// \todo
 }
 
-DetectionOutput* distCorrectionSingleSphereTriangle( SingleSphere& sph, Triangle& triangle)
+int DiscreteIntersection::computeIntersection( SingleSphere& sph, Triangle& triangle, DetectionOutputVector& contacts)
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
@@ -280,7 +278,7 @@ DetectionOutput* distCorrectionSingleSphereTriangle( SingleSphere& sph, Triangle
     //and so the triangle (that spanned the plane) cannot be inside the sphere.
     if (distance  > EPSILON)
     {
-        return NULL;
+        return 0;
     }
 
     //However, if the plane has intersected the sphere, then it is
@@ -289,7 +287,8 @@ DetectionOutput* distCorrectionSingleSphereTriangle( SingleSphere& sph, Triangle
 #define SAMESIDE(ap1,ap2,ap3,ap4) (((cross((ap4-ap3),(ap1-ap3))) * (cross((ap4-ap3),(ap2-ap3)))) >= 0)
     if ( (SAMESIDE(projPoint,p0,p1,p2) && SAMESIDE(projPoint,p1,p0,p2) && SAMESIDE(projPoint,p2,p0,p1)))
     {
-        DetectionOutput *detection = new DetectionOutput();
+        contacts.resize(contacts.size()+1);
+        DetectionOutput *detection = &*(contacts.end()-1);
         detection->normal = -normal;
         detection->point[1] = projPoint;
         detection->point[0] = sph.center() - detection->normal * sph.r();
@@ -299,7 +298,7 @@ DetectionOutput* distCorrectionSingleSphereTriangle( SingleSphere& sph, Triangle
         //detection->elem.second = sph;
         detection->elem.first = sph;
         detection->elem.second = triangle;
-        return detection;
+        return 1;
     }
 #undef SAMESIDE
 
@@ -342,63 +341,84 @@ DetectionOutput* distCorrectionSingleSphereTriangle( SingleSphere& sph, Triangle
     //	return detection;
     //}
 
-    return NULL; // No intersection: passed all tests for intersections !
+    return 0; // No intersection: passed all tests for intersections !
 }
 
 
-DetectionOutput* distCorrectionSphereSphere(Sphere& sph1, Sphere& sph2)
+int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, DetectionOutputVector& contacts)
 {
-    DetectionOutput *detection = new DetectionOutput();
-    detection->normal = sph2.center() - sph1.center();
+    double r = sph1.r() + sph2.r();
+    Vector3 dist = sph2.center() - sph1.center();
+
+    if (dist.norm2() >= r*r)
+        return 0;
+
+    contacts.resize(contacts.size()+1);
+    DetectionOutput *detection = &*(contacts.end()-1);
+    detection->normal = dist;
     double distSph1Sph2 = detection->normal.norm();
     detection->normal /= distSph1Sph2;
     detection->point[0] = sph1.center() + detection->normal * sph1.r();
     detection->point[1] = sph2.center() - detection->normal * sph2.r();
 
-    detection->distance = distSph1Sph2 - (sph1.r() + sph2.r());
+    detection->distance = distSph1Sph2 - r;
     detection->elem.first = sph1;
     detection->elem.second = sph2;
 
-    return detection;
+    return 1;
 }
 
-DetectionOutput* distCorrectionSingleSphereSingleSphere(SingleSphere& sph1, SingleSphere& sph2)
+int DiscreteIntersection::computeIntersection(SingleSphere& sph1, SingleSphere& sph2, DetectionOutputVector& contacts)
 {
-    DetectionOutput *detection = new DetectionOutput();
-    detection->normal = sph2.center() - sph1.center();
+    double r = sph1.r() + sph2.r();
+    Vector3 dist = sph2.center() - sph1.center();
+
+    if (dist.norm2() >= r*r)
+        return 0;
+
+    contacts.resize(contacts.size()+1);
+    DetectionOutput *detection = &*(contacts.end()-1);
+    detection->normal = dist;
     double distSph1Sph2 = detection->normal.norm();
     detection->normal /= distSph1Sph2;
     detection->point[0] = sph1.center() + detection->normal * sph1.r();
     detection->point[1] = sph2.center() - detection->normal * sph2.r();
 
-    detection->distance = distSph1Sph2 - (sph1.r() + sph2.r());
+    detection->distance = distSph1Sph2 - r;
     detection->elem.first = sph1;
     detection->elem.second = sph2;
 
-    return detection;
+    return 1;
 }
 
-DetectionOutput* distCorrectionSingleSphereCube(SingleSphere& /*sph1*/, Cube& /*cube*/)
+int DiscreteIntersection::computeIntersection(SingleSphere& /*sph1*/, Cube& /*cube*/, DetectionOutputVector& /*contacts*/)
 {
     //to do
-    return NULL;
+    return 0;
 }
 
 
-DetectionOutput* distCorrectionSphereRay(Sphere& sph1, Ray& ray2)
+int DiscreteIntersection::computeIntersection(Sphere& sph1, Ray& ray2, DetectionOutputVector& contacts)
 {
-    //std::cout<<"distCorrectionSphereRay"<<std::endl;
+    // Center of the sphere
     const Vector3 sph1Pos(sph1.center());
+    // Radius of the sphere
     const double radius1 = sph1.r();
+
     const Vector3 ray2Origin(ray2.origin());
     const Vector3 ray2Direction(ray2.direction());
     const double length2 = ray2.l();
     const Vector3 tmp = sph1Pos - ray2Origin;
     const double rayPos = tmp*ray2Direction;
     const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
-    const double dist = sqrt(tmp.norm2() - (rayPosInside*rayPosInside));
+    const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
+    if (dist2 >= (radius1*radius1))
+        return 0;
 
-    DetectionOutput *detection = new DetectionOutput();
+    const double dist = sqrt(dist2);
+
+    contacts.resize(contacts.size()+1);
+    DetectionOutput *detection = &*(contacts.end()-1);
 
     detection->point[1] = ray2Origin + ray2Direction*rayPosInside;
     detection->normal = detection->point[1] - sph1Pos;
@@ -408,22 +428,30 @@ DetectionOutput* distCorrectionSphereRay(Sphere& sph1, Ray& ray2)
     detection->elem.first = sph1;
     detection->elem.second = ray2;
 
-    return detection;
+    return 1;
 }
 
-DetectionOutput* distCorrectionSingleSphereRay(SingleSphere& sph1, Ray& ray2)
+int DiscreteIntersection::computeIntersection(SingleSphere& sph1, Ray& ray2, DetectionOutputVector& contacts)
 {
+    // Center of the sphere
     const Vector3 sph1Pos(sph1.center());
+    // Radius of the sphere
     const double radius1 = sph1.r();
+
     const Vector3 ray2Origin(ray2.origin());
     const Vector3 ray2Direction(ray2.direction());
     const double length2 = ray2.l();
     const Vector3 tmp = sph1Pos - ray2Origin;
     const double rayPos = tmp*ray2Direction;
     const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
-    double dist =  sqrt(tmp.norm2() - (rayPosInside*rayPosInside));
+    const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
+    if (dist2 >= (radius1*radius1))
+        return 0;
 
-    DetectionOutput *detection = new DetectionOutput();
+    const double dist = sqrt(dist2);
+
+    contacts.resize(contacts.size()+1);
+    DetectionOutput *detection = &*(contacts.end()-1);
 
     detection->point[1] = ray2Origin + ray2Direction*rayPosInside;
     detection->normal = detection->point[1] - sph1Pos;
@@ -433,20 +461,19 @@ DetectionOutput* distCorrectionSingleSphereRay(SingleSphere& sph1, Ray& ray2)
     detection->elem.first = sph1;
     detection->elem.second = ray2;
 
-    return detection;
+    return 1;
 }
-//DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&)
+//int DiscreteIntersection::computeIntersection(Sphere&, Triangle&, DetectionOutputVector&)
 //{
 //	std::cout<<"Distance correction between Sphere - Triangle"<<std::endl;
-//	return new DetectionOutput();
+//	return 0;
 //}
 
-//DetectionOutput* distCorrectionTriangleTriangle(Triangle&, Triangle&)
+//int DiscreteIntersection::computeIntersection(Triangle&, Triangle&, DetectionOutputVector&)
 //{
 //	std::cout<<"Distance correction between Triangle - Triangle"<<std::endl;
-//	return new DetectionOutput();
+//	return 0;
 //}
-} // namespace DiscreteIntersections
 
 } // namespace collision
 

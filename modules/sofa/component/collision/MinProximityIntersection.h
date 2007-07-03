@@ -70,40 +70,33 @@ public:
     void setAlarmDistance(double v) { alarmDistance.setValue(v); }
 
     void setContactDistance(double v) { contactDistance.setValue(v); }
+
+    bool testIntersection(Cube& ,Cube&);
+
+    bool testIntersection(Sphere&, Sphere&);
+    bool testIntersection(Sphere&, Triangle&);
+    bool testIntersection(Sphere&, Line&);
+    bool testIntersection(Sphere&, Point&);
+    bool testIntersection(Sphere&, Ray&);
+    bool testIntersection(Point& ,Triangle&);
+    bool testIntersection(Line&, Line&);
+    bool testIntersection(Point&, Line&);
+    bool testIntersection(Point&, Point&);
+    bool testIntersection(Ray&, Triangle&);
+
+    int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Sphere&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Triangle&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Line&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Point&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Ray&, DetectionOutputVector&);
+    int computeIntersection(Point&, Triangle&, DetectionOutputVector&);
+    int computeIntersection(Line&, Line&, DetectionOutputVector&);
+    int computeIntersection(Point&, Line&, DetectionOutputVector&);
+    int computeIntersection(Point&, Point&, DetectionOutputVector&);
+    int computeIntersection(Ray&, Triangle&, DetectionOutputVector&);
+
 };
-
-// Jeremie A. : put the methods inside a namespace instead of a class,
-// for g++ 3.4 compatibility
-
-namespace MinProximityIntersections
-{
-
-bool intersectionCubeCube(Cube& ,Cube&);
-
-bool intersectionSphereSphere(Sphere&, Sphere&);
-bool intersectionSphereTriangle(Sphere&, Triangle&);
-bool intersectionSphereLine(Sphere&, Line&);
-bool intersectionSpherePoint(Sphere&, Point&);
-bool intersectionSphereRay(Sphere&, Ray&);
-bool intersectionPointTriangle(Point& ,Triangle&);
-bool intersectionLineLine(Line&, Line&);
-bool intersectionPointLine(Point&, Line&);
-bool intersectionPointPoint(Point&, Point&);
-bool intersectionRayTriangle(Ray&, Triangle&);
-
-core::componentmodel::collision::DetectionOutput* distCorrectionCubeCube(Cube&, Cube&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSphereSphere(Sphere&, Sphere&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSphereLine(Sphere&, Line&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSpherePoint(Sphere&, Point&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSphereRay(Sphere&, Ray&);
-core::componentmodel::collision::DetectionOutput* distCorrectionPointTriangle(Point&, Triangle&);
-core::componentmodel::collision::DetectionOutput* distCorrectionLineLine(Line&, Line&);
-core::componentmodel::collision::DetectionOutput* distCorrectionPointLine(Point&, Line&);
-core::componentmodel::collision::DetectionOutput* distCorrectionPointPoint(Point&, Point&);
-core::componentmodel::collision::DetectionOutput* distCorrectionRayTriangle(Ray&, Triangle&);
-
-} // namespace MinProximityIntersections
 
 } // namespace collision
 

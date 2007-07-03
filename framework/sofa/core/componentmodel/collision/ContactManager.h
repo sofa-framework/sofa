@@ -26,6 +26,7 @@
 #define SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTMANAGER_H
 
 #include <sofa/core/componentmodel/collision/Contact.h>
+#include <sofa/core/componentmodel/collision/NarrowPhaseDetection.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <vector>
@@ -45,11 +46,15 @@ namespace collision
 class ContactManager : public virtual objectmodel::BaseObject
 {
 public:
+    typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
+    typedef NarrowPhaseDetection::DetectionOutputVector DetectionOutputVector;
+    typedef std::vector<Contact*> ContactVector;
+
     virtual ~ContactManager() { }
 
-    virtual void createContacts(const std::vector<DetectionOutput*>& outputs) = 0;
+    virtual void createContacts(DetectionOutputMap& outputs) = 0;
 
-    virtual const std::vector<Contact*>& getContacts() = 0;
+    virtual const ContactVector& getContacts() = 0;
 
     /// virtual because subclasses might do precomputations based on intersection algorithms
     virtual void setIntersectionMethod(Intersection* v) { intersectionMethod = v;    }

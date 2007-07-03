@@ -55,9 +55,12 @@ public:
 
     ~BaseRayContact();
 
-    void setDetectionOutputs(const std::vector<core::componentmodel::collision::DetectionOutput*>& outputs)
+    void setDetectionOutputs(std::vector<core::componentmodel::collision::DetectionOutput>& outputs)
     {
-        collisions = outputs;
+        //collisions = outputs;
+        collisions.resize(outputs.size());
+        for (unsigned int i=0; i< outputs.size(); ++i)
+            collisions[i] = &outputs[i];
     }
 
     const std::vector<core::componentmodel::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }

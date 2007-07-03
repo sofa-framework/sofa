@@ -63,9 +63,9 @@ public:
     void addCollisionModel (core::CollisionModel *cm);
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
 
-    virtual void clearBroadPhase()
+    virtual void beginBroadPhase()
     {
-        core::componentmodel::collision::BroadPhaseDetection::clearBroadPhase();
+        core::componentmodel::collision::BroadPhaseDetection::beginBroadPhase();
         collisionModels.clear();
     }
 

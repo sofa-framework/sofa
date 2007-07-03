@@ -526,7 +526,7 @@ public:
                     intersection->setContactDistance(0);
                     newPointsCM->computeBoundingTree( 6 ); // compute a bbox tree of depth 6
                     //std::cout << "computeV: "<<newPointsCM->end().getIndex()<<" points"<<std::endl;
-                    detection->clearNarrowPhase();
+                    detection->beginNarrowPhase();
                     for (CMIterator it = node->collisionModel.begin(), itend = node->collisionModel.end(); it != itend ; ++it)
                     {
                         sofa::core::CollisionModel* cm2 = *it;
@@ -534,49 +534,28 @@ public:
                         detection->addCollisionPair(std::make_pair(newPointsCM->getFirst(), cm2->getFirst()));
                         //detection->addCollisionPair(std::make_pair(cm2, newPointsCM));
                     }
-                    // then we start the real detection between primitives
                     {
-                        std::vector<std::pair<sofa::core::CollisionElementIterator, sofa::core::CollisionElementIterator> >& vectElemPair = detection->getCollisionElementPairs();
-                        std::vector<std::pair<sofa::core::CollisionElementIterator, sofa::core::CollisionElementIterator> >::iterator it4 = vectElemPair.begin();
-                        std::vector<std::pair<sofa::core::CollisionElementIterator, sofa::core::CollisionElementIterator> >::iterator it4End = vectElemPair.end();
-
-                        std::cout << "computeV: "<<vectElemPair.size()<<" colliding bbox pairs"<<std::endl;
-                        // Cache the intersector used
-                        sofa::core::componentmodel::collision::ElementIntersector* intersector = NULL;
-                        sofa::core::CollisionModel* model1 = NULL;
-                        sofa::core::CollisionModel* model2 = NULL;
-                        int newPointsCMIndex = 0; // 0 or 1 depending if newPointsCM is the first or second CM
+                        sofa::core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputMap& contactMap = detection->getDetectionOutputs();
                         int ncollisions = 0;
-                        for (; it4 != it4End; it4++)
+                        for (sofa::core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputMap::iterator it1 = contactMap.begin(); it1 != contactMap.end(); ++it1)
                         {
-                            sofa::core::CollisionElementIterator cm1 = it4->first;
-                            sofa::core::CollisionElementIterator cm2 = it4->second;
-                            if (cm1.getCollisionModel() != model1 || cm2.getCollisionModel() != model2)
+                            sofa::core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputVector& contacts = it1->second;
+                            if (contacts.empty()) continue;
+                            int newPointsCMIndex = (contacts[0].elem.second.getCollisionModel()==newPointsCM)?1:0;
+                            for (sofa::core::componentmodel::collision::NarrowPhaseDetection::DetectionOutputVector::iterator it2 = contacts.begin(); it2 != contacts.end(); ++it2)
                             {
-                                model1 = cm1.getCollisionModel();
-                                model2 = cm2.getCollisionModel();
-                                intersector = intersection->findIntersector(model1, model2);
-                                //newPointsCMIndex = (model2==newPointsCM)?1:0;
-                            }
-                            if (intersector != NULL)
-                            {
-                                sofa::core::componentmodel::collision::DetectionOutput *detection = intersector->intersect(cm1, cm2);
-                                if (detection != NULL)
+                                sofa::core::componentmodel::collision::DetectionOutput* detection = &*it2;
+                                ++ncollisions;
+                                int index = (&(detection->elem.first))[newPointsCMIndex].getIndex();
+                                double d = detection->distance;
+                                if ((unsigned)index >= nbv)
                                 {
-                                    ++ncollisions;
-                                    newPointsCMIndex = (detection->elem.second.getCollisionModel()==newPointsCM)?1:0;
-                                    int index = (&(detection->elem.first))[newPointsCMIndex].getIndex();
-                                    double d = detection->distance;
-                                    if ((unsigned)index >= nbv)
-                                    {
-                                        std::cerr << "computeV: invalid point index "<<index<<std::endl;
-                                    }
-                                    else if (d < newPointsDist[index])
-                                    {
-                                        newPointsDist[index] = d;
-                                        v[index] = detection->point[newPointsCMIndex] - detection->point[1-newPointsCMIndex];
-                                    }
-                                    delete detection;
+                                    std::cerr << "computeV: invalid point index "<<index<<std::endl;
+                                }
+                                else if (d < newPointsDist[index])
+                                {
+                                    newPointsDist[index] = d;
+                                    v[index] = detection->point[newPointsCMIndex] - detection->point[1-newPointsCMIndex];
                                 }
                             }
                         }

@@ -81,13 +81,13 @@ bool Intersection::canIntersect(core::CollisionElementIterator elem1, core::Coll
 
 /// Compute the intersection between 2 elements.
 /// Note that this method is deprecated in favor of findIntersector
-DetectionOutput* Intersection::intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
+int Intersection::intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector& contacts)
 {
     ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
     if (i == NULL)
-        return NULL;
+        return 0;
     else
-        return i->intersect(elem1, elem2);
+        return i->intersect(elem1, elem2, contacts);
 }
 
 } // namespace collision

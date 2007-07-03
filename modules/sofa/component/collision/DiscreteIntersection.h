@@ -53,38 +53,32 @@ public:
 
 protected:
     core::componentmodel::collision::IntersectorMap intersectors;
+
+public:
+
+    bool testIntersection(Cube&, Cube&);
+    bool testIntersection(Sphere&, Sphere&);
+    bool testIntersection(Sphere&, Ray&);
+
+
+    bool testIntersection(SingleSphere&, SingleSphere&);
+    bool testIntersection(SingleSphere&, Cube&);
+    bool testIntersection(SingleSphere&, Ray&);
+    bool testIntersection(SingleSphere&, Triangle&);
+    //bool testIntersection(Sphere& , Triangle&);
+    //bool testIntersection(Triangle& ,Triangle&);
+
+    int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Sphere&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Ray&, DetectionOutputVector&);
+    int computeIntersection(SingleSphere&, SingleSphere&, DetectionOutputVector&);
+    int computeIntersection(SingleSphere&, Cube&, DetectionOutputVector&);
+    int computeIntersection(SingleSphere&, Ray&, DetectionOutputVector&);
+    int computeIntersection(SingleSphere&, Triangle&, DetectionOutputVector&);
+    //int computeIntersection(Sphere&, Triangle&, DetectionOutputVector&);
+    //int computeIntersection(Triangle&, Triangle&, DetectionOutputVector&);
+
 };
-
-// Jeremie A. : put the methods inside a namespace instead of a class,
-// for g++ 3.4 compatibility
-
-namespace DiscreteIntersections
-{
-
-bool intersectionCubeCube(Cube&, Cube&);
-bool intersectionSphereSphere(Sphere&, Sphere&);
-bool intersectionSphereRay(Sphere&, Ray&);
-
-
-bool intersectionSingleSphereSingleSphere(SingleSphere&, SingleSphere&);
-bool intersectionSingleSphereCube(SingleSphere&, Cube&);
-bool intersectionSingleSphereRay(SingleSphere&, Ray&);
-bool intersectionSingleSphereTriangle(SingleSphere&, Triangle&);
-//bool intersectionSphereTriangle(Sphere& , Triangle&);
-//bool intersectionTriangleTriangle(Triangle& ,Triangle&);
-
-
-
-core::componentmodel::collision::DetectionOutput* distCorrectionCubeCube(Cube&, Cube&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSphereSphere(Sphere&, Sphere&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSingleSphereSingleSphere(SingleSphere&, SingleSphere&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSphereRay(Sphere&, Ray&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSingleSphereRay(SingleSphere&, Ray&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSingleSphereCube(SingleSphere&, Cube&);
-core::componentmodel::collision::DetectionOutput* distCorrectionSingleSphereTriangle(SingleSphere&, Triangle&);
-//core::componentmodel::collision::DetectionOutput* distCorrectionSphereTriangle(Sphere&, Triangle&);
-//core::componentmodel::collision::DetectionOutput* distCorrectionTriangleTriangle (Triangle&, Triangle&);
-} // DiscreteIntersections
 
 } // namespace collision
 
