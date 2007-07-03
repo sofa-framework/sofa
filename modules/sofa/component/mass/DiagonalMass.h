@@ -69,7 +69,7 @@ public:
 
     DataField< VecMass > f_mass;
     /// the mass density used to compute the mass from a mesh topology and geometry
-    DataField< Real > m_massDensity;
+    //DataField< Real > m_massDensity;
 protected:
     //VecMass masses;
 
@@ -95,15 +95,13 @@ public:
     {
         return topologyType;
     }
-    Real getMassDensity() const
-    {
-        return m_massDensity.getValue();
-    }
+//     Real getMassDensity() const {
+//         return m_massDensity.getValue();
+//     }
 
-    void setMassDensity(Real m)
-    {
-        m_massDensity.setValue(m);
-    }
+//    void setMassDensity(Real m) {
+// 	   m_massDensity.setValue(m);
+//    }
 
     void addMass(const MassType& mass);
 

@@ -29,6 +29,7 @@
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 
 namespace sofa
 {
@@ -64,7 +65,7 @@ using namespace sofa::core::componentmodel::behavior;
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
     : f_mass( dataField(&f_mass, "mass", "values of the particles masses") )
-    , m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
+//, m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
     , topologyType(TOPOLOGY_UNKNOWN)
 {
 
@@ -161,6 +162,31 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::init()
 {
+    /*  using sofa::component::topology::RegularGridTopology;
+      RegularGridTopology* reg = dynamic_cast<RegularGridTopology*>( getContext()->getTopology() );
+      if( reg != NULL )
+      {
+        Real weight = reg->getDx().norm() * reg->getDy().norm() * reg->getDz().norm() * m_massDensity.getValue()/8;
+        VecMass& m = *f_mass.beginEdit();
+        for( int i=0; i<reg->getNx()-1; i++ )
+        {
+          for( int j=0; j<reg->getNy()-1; j++ )
+          {
+            for( int k=0; k<reg->getNz()-1; k++ )
+            {
+              m[reg->point(i,j,k)] += weight;
+              m[reg->point(i,j,k+1)] += weight;
+              m[reg->point(i,j+1,k)] += weight;
+              m[reg->point(i,j+1,k+1)] += weight;
+              m[reg->point(i+1,j,k)] += weight;
+              m[reg->point(i+1,j,k+1)] += weight;
+              m[reg->point(i+1,j+1,k)] += weight;
+              m[reg->point(i+1,j+1,k+1)] += weight;
+            }
+          }
+        }
+        f_mass.endEdit();
+      }*/
     Inherited::init();
 }
 

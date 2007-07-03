@@ -118,6 +118,8 @@ public:
 
     topology::MeshTopology* getTopology() { return mesh; }
 
+    void buildOctree();
+
     //virtual const char* getTypeName() const { return "Triangle"; }
 
 protected:

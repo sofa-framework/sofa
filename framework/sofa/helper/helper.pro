@@ -7,6 +7,7 @@ include($$SOFA_DIR/sofa.cfg)
 TARGET = sofahelper$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 LIBS += $$SOFA_EXT_LIBS
+LIBS += -lsofadefaulttype$$LIBSUFFIX
 
 # Make sure there are no cross-dependencies
 INCLUDEPATH -= $$SOFA_DIR/modules

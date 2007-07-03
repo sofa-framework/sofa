@@ -29,6 +29,9 @@
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <GL/gl.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -270,6 +273,24 @@ void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
             cubeModel->setParentOf(i, minElem, maxElem);
         }
         cubeModel->computeBoundingTree(maxDepth);
+    }
+}
+
+void TriangleModel::buildOctree()
+{
+    cerr<<"TriangleModel::buildOctree(), coords = "<<*mstate->getX()<<endl;
+    const int ntris = mesh->getNbTriangles();
+    const int nquads = mesh->getNbQuads();
+    for (int i=0; i<ntris; i++)
+    {
+        topology::MeshTopology::Triangle idx = mesh->getTriangle(i);
+        cerr<<"  triangle "<< idx[0] <<", "<<idx[1]<<", "<<idx[2]<<endl;;
+    }
+    for (int i=0; i<nquads; i++)
+    {
+        topology::MeshTopology::Quad idx = mesh->getQuad(i);
+        cerr<<"  triangle "<< idx[0] <<", "<<idx[1]<<", "<<idx[2]<<endl;;
+        cerr<<"  triangle "<< idx[0] <<", "<<idx[2]<<", "<<idx[3]<<endl;;
     }
 }
 
