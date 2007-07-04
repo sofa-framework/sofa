@@ -66,7 +66,16 @@ public:
     //Quad getQuad(int i);
     //Quad getQuad(int x, int y, int z);
 
-    int point(int x, int y, int z) const; // { return x+nx.getValue()*(y+ny.getValue()*z); }
+    enum Plane { PLANE_UNKNOWN=0,
+            PLANE_X0,
+            PLANE_X1,
+            PLANE_Y0,
+            PLANE_Y1,
+            PLANE_Z0,
+            PLANE_Z1
+               };
+
+    int point(int x, int y, int z, Plane p = PLANE_UNKNOWN) const; // { return x+nx.getValue()*(y+ny.getValue()*z); }
 
     void setP0(const Vec3& val) { p0 = val; }
     void setDx(const Vec3& val) { dx = val; inv_dx2 = 1/(dx*dx); }
@@ -92,6 +101,7 @@ protected:
     DataField<int> ny;
     DataField<int> nz;
     DataField<bool> internalPoints;
+    DataField<bool> splitNormals;
 
     /// Position of point 0
     Vec3 p0;

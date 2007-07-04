@@ -161,7 +161,7 @@ void XMLLoads::readLoadAppliedTo(xmlNodePtr elem, Load *currentLoad)
 // ------------------ readLoadValueEvent ------------------
 void XMLLoads::readLoadValueEvent(xmlNodePtr elem, Load *currentLoad)
 {
-	double value, date;
+	double value = 0.0, date = 0.0;
 
 	xmlChar * pDate = xmlGetProp(elem, (const xmlChar*)"date");
 	if(pDate)

@@ -978,7 +978,7 @@ void RealGUI::fileOpen(const char* filename)
 }
 
 #ifdef SOFA_PML
-void RealGUI::pmlOpen(const char* filename, bool resetView)
+void RealGUI::pmlOpen(const char* filename, bool /*resetView*/)
 {
     std::string scene = "PML/default.scn";
     if (!sofa::helper::system::DataRepository.findFile(scene))

@@ -58,13 +58,17 @@ int CubeTopologyClass = core::RegisterObject("Surface of a cube in 3D")
         ;
 
 CubeTopology::CubeTopology(int _nx, int _ny, int _nz)
-    : nx(dataField(&nx,_nx,"nx","x grid resolution")), ny(dataField(&ny,_ny,"ny","y grid resolution")), nz(dataField(&nz,_nz,"nz","z grid resolution")), internalPoints(dataField(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
+    : nx(dataField(&nx,_nx,"nx","x grid resolution")), ny(dataField(&ny,_ny,"ny","y grid resolution")), nz(dataField(&nz,_nz,"nz","z grid resolution"))
+    , internalPoints(dataField(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
+    , splitNormals(dataField(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
 {
     setSize();
 }
 
 CubeTopology::CubeTopology()
     : nx(dataField(&nx,0,"nx","x grid resolution")), ny(dataField(&ny,0,"ny","y grid resolution")), nz(dataField(&nz,0,"nz","z grid resolution"))
+    , internalPoints(dataField(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
+    , splitNormals(dataField(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
 {
 }
 
@@ -96,7 +100,9 @@ void CubeTopology::setSize()
     const int nx = this->nx.getValue();
     const int ny = this->ny.getValue();
     const int nz = this->nz.getValue();
-    if (!internalPoints.getValue() && (nx>1 && ny>1 && nz>1))
+    if (splitNormals.getValue())
+        this->nbPoints = nx*ny*(nz>1?2:1) + ny*nz*(nx>1?2:1) + nz*nx*(ny>1?2:1);
+    else if (!internalPoints.getValue() && (nx>1 && ny>1 && nz>1))
         this->nbPoints = nx*ny*2 + (nz-2)*(2*nx+2*ny-4);
     else
         this->nbPoints = nx*ny*nz;
@@ -104,12 +110,36 @@ void CubeTopology::setSize()
     invalidate();
 }
 
-int CubeTopology::point(int x, int y, int z) const
+int CubeTopology::point(int x, int y, int z, Plane p) const
 {
     const int nx = this->nx.getValue();
     const int ny = this->ny.getValue();
     const int nz = this->nz.getValue();
-    if (!internalPoints.getValue() && (nx>1 && ny>1 && nz>1))
+    if (splitNormals.getValue())
+    {
+        if (p == PLANE_UNKNOWN)
+        {
+            if (x==0) p = PLANE_X0;
+            else if (x==nx-1) p = PLANE_X1;
+            else if (y==0) p = PLANE_Y0;
+            else if (y==ny-1) p = PLANE_Y1;
+            else if (z==0) p = PLANE_Z0;
+            else if (z==nz-1) p = PLANE_Z1;
+        }
+        int i = 0;
+        switch (p)
+        {
+        case PLANE_X0: i =                               y+ny*z; break;
+        case PLANE_X1: i =   ny*nz +   nx*nz +   nx*ny + y+ny*z; break;
+        case PLANE_Y0: i =   ny*nz                     + x+nx*z; break;
+        case PLANE_Y1: i = 2*ny*nz +   nx*nz +   nx*ny + x+nx*z; break;
+        case PLANE_Z0: i =   ny*nz +   nx*nz           + x+nx*y; break;
+        case PLANE_Z1: i = 2*ny*nz + 2*nx*nz +   nx*ny + x+nx*y; break;
+        case PLANE_UNKNOWN: break;
+        }
+        return i;
+    }
+    else if (!internalPoints.getValue() && (nx>1 && ny>1 && nz>1))
     {
         if (z==0)
             return (x+nx*y);
@@ -167,30 +197,30 @@ void CubeTopology::updateQuads()
     // quads along Z=0 plane
     for (int z=0, y=0; y<ny-1; y++)
         for (int x=0; x<nx-1; x++)
-            seqQuads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y+1,z),point(x,y+1,z)));
+            seqQuads.push_back(Quad(point(x,y,z,PLANE_Z0),point(x,y+1,z,PLANE_Z0),point(x+1,y+1,z,PLANE_Z0),point(x+1,y,z,PLANE_Z0)));
     // quads along Z=NZ-1 plane
     if (nz > 1)
         for (int z=nz-1, y=0; y<ny-1; y++)
             for (int x=0; x<nx-1; x++)
-                seqQuads.push_back(Quad(point(x,y,z),point(x,y+1,z),point(x+1,y+1,z),point(x+1,y,z)));
+                seqQuads.push_back(Quad(point(x,y,z,PLANE_Z1),point(x+1,y,z,PLANE_Z1),point(x+1,y+1,z,PLANE_Z1),point(x,y+1,z,PLANE_Z1)));
     // quads along Y=0 plane
     for (int y=0, z=0; z<nz-1; z++)
         for (int x=0; x<nx-1; x++)
-            seqQuads.push_back(Quad(point(x,y,z),point(x+1,y,z),point(x+1,y,z+1),point(x,y,z+1)));
+            seqQuads.push_back(Quad(point(x,y,z,PLANE_Y0),point(x+1,y,z,PLANE_Y0),point(x+1,y,z+1,PLANE_Y0),point(x,y,z+1,PLANE_Y0)));
     // quads along Y=NY-1 plane
     if (ny > 1)
         for (int y=ny-1, z=0; z<nz-1; z++)
             for (int x=0; x<nx-1; x++)
-                seqQuads.push_back(Quad(point(x,y,z),point(x,y,z+1),point(x+1,y,z+1),point(x+1,y,z)));
+                seqQuads.push_back(Quad(point(x,y,z,PLANE_Y1),point(x,y,z+1,PLANE_Y1),point(x+1,y,z+1,PLANE_Y1),point(x+1,y,z,PLANE_Y1)));
     // quads along X=0 plane
     for (int x=0, z=0; z<nz-1; z++)
         for (int y=0; y<ny-1; y++)
-            seqQuads.push_back(Quad(point(x,y,z),point(x,y+1,z),point(x,y+1,z+1),point(x,y,z+1)));
+            seqQuads.push_back(Quad(point(x,y,z,PLANE_X0),point(x,y,z+1,PLANE_X0),point(x,y+1,z+1,PLANE_X0),point(x,y+1,z,PLANE_X0)));
     // quads along X=NX-1 plane
     if (nx > 1)
         for (int x=nx-1, z=0; z<nz-1; z++)
             for (int y=0; y<ny-1; y++)
-                seqQuads.push_back(Quad(point(x,y,z),point(x,y,z+1),point(x,y+1,z+1),point(x,y+1,z)));
+                seqQuads.push_back(Quad(point(x,y,z,PLANE_X1),point(x,y+1,z,PLANE_X1),point(x,y+1,z+1,PLANE_X1),point(x,y,z+1,PLANE_X1)));
 }
 
 void CubeTopology::setPos(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
@@ -216,7 +246,43 @@ CubeTopology::Vec3 CubeTopology::getPoint(int i) const
     const int ny = this->ny.getValue();
     const int nz = this->nz.getValue();
     int x,y,z;
-    if (!internalPoints.getValue() && (nx>1 && ny>1 && nz>1))
+    if (splitNormals.getValue())
+    {
+        if (i < ny*nz+nx*nz+nx*ny)
+        {
+            x = 0;
+            y = 0;
+            z = 0;
+        }
+        else
+        {
+            i -= ny*nz+nx*nz+nx*ny;
+            x = nx-1;
+            y = ny-1;
+            z = nz-1;
+        }
+        if (i < ny*nz)
+        {
+            y = i % ny;
+            z = i / ny;
+        }
+        else
+        {
+            i -= ny*nz;
+            if (i < nx*nz)
+            {
+                x = i % nx;
+                z = i / nx;
+            }
+            else
+            {
+                i -= nx*nz;
+                x = i % nx;
+                y = i / nx;
+            }
+        }
+    }
+    else if (!internalPoints.getValue() && (nx>1 && ny>1 && nz>1))
     {
         const int nxny = nx*ny;
         if (i<nxny)

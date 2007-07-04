@@ -618,10 +618,8 @@ void VisualModelImpl::setColor(std::string color)
 
 void VisualModelImpl::update()
 {
-    if (modified && !vertices.empty())
+    if (modified && (!vertices.empty() || useTopology))
     {
-        computePositions();
-
         if (useTopology)
         {
             topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(getContext()->getTopology());
@@ -630,6 +628,7 @@ void VisualModelImpl::update()
                 computeMesh(topology);
             }
         }
+        computePositions();
         computeNormals();
         computeBBox();
         modified = false;
@@ -649,6 +648,18 @@ void VisualModelImpl::computePositions()
 
 void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
 {
+    if (vertices.empty())
+    {
+        if (!topology->hasPos()) return;
+        vertices.resize(topology->getNbPoints());
+        for (unsigned int i=0; i<vertices.size(); i++)
+        {
+            vertices[i][0] = topology->getPX(i);
+            vertices[i][1] = topology->getPY(i);
+            vertices[i][2] = topology->getPZ(i);
+        }
+    }
+
     lastMeshRev = topology->getRevision();
     const vector<topology::MeshTopology::Triangle>& inputTriangles = topology->getTriangles();
     triangles.resize(inputTriangles.size());

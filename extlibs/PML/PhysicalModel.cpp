@@ -205,7 +205,7 @@ void PhysicalModel::xmlRead(const char * n){
     // clear all the current data
     clear();
 
-    static const char* xmlFile = 0;
+    //static const char* xmlFile = 0;
     static bool isInit = false;
 
     //if (!isInit) {
