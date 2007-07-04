@@ -292,7 +292,7 @@ static const int iconPos[16]=
 };
 
 static QImage icons[16];
-*/
+     */
 static int hexval(char c)
 {
     if (c>='0' && c<='9') return c-'0';
@@ -305,15 +305,15 @@ static QPixmap* getPixmap(core::objectmodel::Base* obj)
 {
     using namespace sofa::simulation::tree::Colors;
     /*
-    if (classIcons == NULL)
-    {
-    classIcons = new QImage("classicons.png");
-    std::cout << "classicons.png: "<<classIcons->width()<<"x"<<classIcons->height()<<std::endl;
-    if (classIcons->height() < 16) return NULL;
-    // Find each icon
-    QRgb bg = classIcons->pixel(0,0);
-    }
-    if (classIcons->height() < 16) return NULL;
+      if (classIcons == NULL)
+      {
+      classIcons = new QImage("classicons.png");
+      std::cout << "classicons.png: "<<classIcons->width()<<"x"<<classIcons->height()<<std::endl;
+      if (classIcons->height() < 16) return NULL;
+      // Find each icon
+      QRgb bg = classIcons->pixel(0,0);
+      }
+      if (classIcons->height() < 16) return NULL;
     */
     unsigned int flags=0;
 
@@ -614,38 +614,38 @@ public:
         frozen = true;
     }
     /*
-    void unfreeze(Q3ListViewItem* parent, GNode* node)
-    {
-    	if (!items.count(node))
-    	{
-    		addChild(node->parent, node);
-    		return;
-    	}
-    	Q3ListViewItem* item = items[node];
-    	if (item->listView() == NULL)
-    	{
-    		if (parent)
-    			parent->insertItem(item);
-    		else
-    			widget->insertItem(item);
-    	}
-    	for(GNode::ChildIterator it = groot->child.begin(), itend = groot->child.end(); it != itend; ++it)
-    	{
-    		unfreeze(item, *it);
-    	}
-    	for(GNode::ObjectIterator it = groot->object.begin(), itend = groot->object.end(); it != itend; ++it)
-    	{
-    		core::objectmodel::BaseObject* object = *it;
-    		if (!items.count(object))
-    			addObject(node, object);
-    		else
-    		{
-    			Q3ListViewItem* itemObject = items[object];
-    			if (itemObject->listView() == NULL)
-    				item->insertItem(itemObject);
-    		}
-    	}
-    }
+      void unfreeze(Q3ListViewItem* parent, GNode* node)
+      {
+      if (!items.count(node))
+      {
+      addChild(node->parent, node);
+      return;
+      }
+      Q3ListViewItem* item = items[node];
+      if (item->listView() == NULL)
+      {
+      if (parent)
+      parent->insertItem(item);
+      else
+      widget->insertItem(item);
+      }
+      for(GNode::ChildIterator it = groot->child.begin(), itend = groot->child.end(); it != itend; ++it)
+      {
+      unfreeze(item, *it);
+      }
+      for(GNode::ObjectIterator it = groot->object.begin(), itend = groot->object.end(); it != itend; ++it)
+      {
+      core::objectmodel::BaseObject* object = *it;
+      if (!items.count(object))
+      addObject(node, object);
+      else
+      {
+      Q3ListViewItem* itemObject = items[object];
+      if (itemObject->listView() == NULL)
+      item->insertItem(itemObject);
+      }
+      }
+      }
     */
     void unfreeze(GNode* groot)
     {
@@ -1148,10 +1148,23 @@ void RealGUI::fileReload()
 
 void RealGUI::fileSaveAs()
 {
+    QString s;
     std::string filename = viewer->getSceneFileName();
-    QString s = Q3FileDialog::getSaveFileName( filename.empty()?NULL:filename.c_str(), "Scenes (*.scn)", this, "save file dialog", "Choose where the scene will be saved" );
+#ifdef SOFA_PML
+    s = Q3FileDialog::getSaveFileName(filename.empty()?NULL:filename.c_str(), "Scenes (*.scn *.pml)",  this, "save file dialog",  "Choose where the scene will be saved" );
+    if (s.length()>0)
+    {
+        if(pmlreader && s.endsWith(".pml"))
+            pmlreader->saveAsPML(s);
+        else
+            fileSaveAs(s);
+    }
+#else
+    s = Q3FileDialog::getSaveFileName( filename.empty()?NULL:filename.c_str(), "Scenes (*.scn)", this, "save file dialog", "Choose where the scene will be saved" );
     if (s.length()>0)
         fileSaveAs(s);
+#endif
+
 }
 
 void RealGUI::fileSaveAs(const char* filename)
