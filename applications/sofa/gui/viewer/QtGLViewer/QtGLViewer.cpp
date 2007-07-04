@@ -329,7 +329,7 @@ void QtGLViewer::init(void)
         glShadeModel(GL_SMOOTH);
 
         // Define background color
-        glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         //Load texture for logo
@@ -1153,7 +1153,7 @@ void QtGLViewer::DrawScene(void)
             glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, GetWidth(), GetHeight());
         }
         if (_background==0)
-            glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         else if (_background==1)
             glClearColor(0.0f,0.0f,0.0f,0.0f);
         else if (_background==2)
@@ -1325,7 +1325,7 @@ void QtGLViewer::draw()
     */
     // clear buffers (color and depth)
     if (_background==0)
-        glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     else if (_background==1)
         glClearColor(0.0f,0.0f,0.0f,0.0f);
     else if (_background==2)

@@ -344,7 +344,7 @@ void QtViewer::initializeGL(void)
         glShadeModel(GL_SMOOTH);
 
         // Define background color
-        glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
+        //	    glClearColor(0.0f, 0.0f, 1.0f, 1.0f);
 
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         //Load texture for logo
@@ -1144,7 +1144,7 @@ void QtViewer::DrawScene(void)
             glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, GetWidth(), GetHeight());
         }
         if (_background==0)
-            glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
+            glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         else if (_background==1)
             glClearColor(0.0f,0.0f,0.0f,0.0f);
         else if (_background==2)
@@ -1431,7 +1431,7 @@ void QtViewer::paintGL()
     */
     // clear buffers (color and depth)
     if (_background==0)
-        glClearColor(0.0589f, 0.0589f, 0.0589f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     else if (_background==1)
         glClearColor(0.0f,0.0f,0.0f,0.0f);
     else if (_background==2)
@@ -1819,6 +1819,23 @@ void QtViewer::keyReleaseEvent ( QKeyEvent * e )
     }
 }
 
+void QtViewer::wheelEvent(QWheelEvent* e)
+{
+    int eventX = e->x();
+    int eventY = e->y();
+
+
+    _navigationMode = ZOOM_MODE;
+    _moving = true;
+    _spinning = false;
+    _mouseX = eventX;
+    _mouseY = eventY + e->delta();
+    _previousEyePos[2] = _sceneTransform.translation[2];
+    ApplySceneTransformation(eventX, eventY);
+
+    _moving = false;
+}
+
 void QtViewer::mousePressEvent ( QMouseEvent * e )
 {
     mouseEvent(e);
@@ -1918,6 +1935,7 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
             }
             break;
 
+
         default:
             break;
         }
@@ -1926,6 +1944,7 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
     }
     else if (e->state()&Qt::ShiftButton)
     {
+
         _moving = false;
         //_sceneTransform.ApplyInverse();
         if (interactor==NULL)
@@ -2070,7 +2089,7 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                 _mouseInteractorSavedPosY = eventY;
             }
         }
-        else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
+        else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
         {
             int dx = eventX - _mouseInteractorSavedPosX;
             int dy = eventY - _mouseInteractorSavedPosY;
@@ -2084,8 +2103,9 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                 _mouseInteractorSavedPosY = eventY;
             }
         }
-        else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
+        else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
         {
+
             int dx = eventX - _mouseInteractorSavedPosX;
             int dy = eventY - _mouseInteractorSavedPosY;
             if (dx || dy)
@@ -2122,6 +2142,7 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                 // Mouse right button is pushed
                 else if (e->button() == Qt::RightButton)
                 {
+
                     _navigationMode = BTRIGHT_MODE;
                     _mouseInteractorMoving = true;
                     _mouseInteractorSavedPosX = eventX;
@@ -2183,7 +2204,7 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                     _mouseInteractorSavedPosY = eventY;
                 }
             }
-            else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
+            else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
             {
                 int dx = eventX - _mouseInteractorSavedPosX;
                 int dy = eventY - _mouseInteractorSavedPosY;
@@ -2195,7 +2216,7 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                     _mouseInteractorSavedPosY = eventY;
                 }
             }
-            else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
+            else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
             {
                 int dx = eventX - _mouseInteractorSavedPosX;
                 int dy = eventY - _mouseInteractorSavedPosY;
@@ -2232,8 +2253,8 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                 _mouseX = eventX;
                 _mouseY = eventY;
             }
-            // translate with middle button (if it exists)
-            else if (e->button() == Qt::MidButton)
+            // zoom with right button
+            else if (e->button() == Qt::RightButton)
             {
                 _navigationMode = PAN_MODE;
                 _moving = true;
@@ -2243,8 +2264,8 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                 _previousEyePos[0] = _sceneTransform.translation[0];
                 _previousEyePos[1] = _sceneTransform.translation[1];
             }
-            // zoom with right button
-            else if (e->button() == Qt::RightButton)
+            // translate with middle button (if it exists)
+            else if (e->button() == Qt::MidButton)
             {
                 _navigationMode = ZOOM_MODE;
                 _moving = true;
@@ -2276,16 +2297,16 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                     }
                 }
             }
-            // Mouse middle button is released
-            else if (e->button() == Qt::MidButton)
+            // Mouse right button is released
+            else if (e->button() == Qt::RightButton)
             {
                 if (_moving && _navigationMode == PAN_MODE)
                 {
                     _moving = false;
                 }
             }
-            // Mouse right button is released
-            else if (e->button() == Qt::RightButton)
+            // Mouse middle button is released
+            else if (e->button() == Qt::MidButton)
             {
                 if (_moving && _navigationMode == ZOOM_MODE)
                 {
@@ -2294,6 +2315,7 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
             }
 
             break;
+
             /*
               case FL_MOUSEWHEEL:
               // it is also possible to zoom with mouse wheel (if it exists)
