@@ -1141,7 +1141,7 @@ void RealGUI::fileReload()
 {
 
     std::string filename = viewer->getSceneFileName();
-    QString s = filename;
+    QString s = filename.c_str();
 
     if (filename.empty()) { std::cerr << "Reload failed: no file loaded.\n"; return;}
 
