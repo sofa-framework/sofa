@@ -60,26 +60,29 @@ template < class TCollisionModel1, class TCollisionModel2 >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(std::vector<DetectionOutput>& outputs)
 {
     // We need to remove duplicate contacts
-    const double minDist2 = 0.0001f;
+    /*
+    const double minDist2 = 0.000001f;
     std::vector<DetectionOutput*> contacts;
     contacts.reserve(outputs.size());
     for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
     {
-        DetectionOutput* o = &*it;
-        bool found = false;
-        for (unsigned int i=0; i<contacts.size() && !found; i++)
-        {
-            DetectionOutput* p = contacts[i];
-            if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
-                found = true;
-        }
-        if (!found)
-            contacts.push_back(o);
+    	DetectionOutput* o = &*it;
+    	bool found = false;
+    	for (unsigned int i=0; i<contacts.size() && !found; i++)
+    	{
+    		DetectionOutput* p = contacts[i];
+    		if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
+    			found = true;
+    	}
+    	if (!found)
+    		contacts.push_back(o);
     }
     if (contacts.size()<outputs.size())
     {
-        //std::cout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << std::endl;
+    	//std::cout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << std::endl;
     }
+    */
+
     if (ff==NULL)
     {
         MechanicalState1* mstate1 = mapper1.createMapping();
@@ -87,15 +90,19 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
         ff = new forcefield::PenalityContactForceField<Vec3Types>(mstate1,mstate2);
     }
 
-    int size = contacts.size();
+    //int size = contacts.size();
+    int size = outputs.size();
     ff->clear(size);
     mapper1.resize(size);
     mapper2.resize(size);
-    int i = 0;
+    //int i = 0;
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity();
-    for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+    //for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+    //{
+    //	DetectionOutput* o = *it;
+    for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
     {
-        DetectionOutput* o = *it;
+        DetectionOutput* o = &*it;
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
@@ -106,8 +113,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
         index2 = mapper2.addPoint(o->point[1], index2);
         double distance = d0 + mapper1.radius(elem1) + mapper2.radius(elem2);
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness())/distance;
-        double mu_v = (elem1.getContactFriction() + elem2.getContactFriction())*0.01;
-        ff->addContact(index1, index2, o->normal, distance, stiffness, 0.0, mu_v);
+        double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
+        ff->addContact(index1, index2, o->normal, distance, stiffness, mu_v*distance, mu_v);
         //if (model1->isStatic() || model2->isStatic()) // create stiffer springs for static models as only half of the force is really applied
         //	ff->addContact(index1, index2, o->normal, distance, 300, 0.00f, 0.00f); /// \todo compute stiffness and damping
         //else

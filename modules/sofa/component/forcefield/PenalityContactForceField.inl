@@ -58,6 +58,7 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, const Deri
     c.mu_s = mu_s;
     c.mu_v = mu_v;
     c.pen = 0;
+    c.spen = 0;
 }
 
 template<class DataTypes>
@@ -82,9 +83,20 @@ void PenalityContactForceField<DataTypes>::addForce()
         {
             Real fN = c.ks * c.pen;
             Deriv v = v2[c.m2]-v1[c.m1];
-            v -= v*(v*c.norm); // project velocity to normal plane
-            c.fDir = v*c.mu_v - c.norm;
+            v -= c.norm*(v*c.norm); // project velocity to contact plane
+            if (v.norm2() < 0.0001)
+            {
+                // static friction mode
+                c.spen = c.mu_s * c.ks;
+                c.fDir = - c.norm;
+            }
+            else
+            {
+                c.spen = c.mu_s * c.ks * 0.1; //0;
+                c.fDir = v*c.mu_v - c.norm;
+            }
             Deriv force = c.fDir*fN;
+            c.fDir = - c.norm;
             f1[c.m1]+=force;
             f2[c.m2]-=force;
         }
@@ -109,9 +121,14 @@ void PenalityContactForceField<DataTypes>::addDForce()
         {
             Coord du = dx2[c.m2]-dx1[c.m1];
             Real dpen = - du*c.norm;
-            if (c.pen < 0) dpen += c.pen; // start penality at distance 0
+            //if (c.pen < 0) dpen += c.pen; // start penality at distance 0
             Real dfN = c.ks * dpen;
             Deriv dforce = c.fDir*dfN;
+            if (c.spen > 0)
+            {
+                du += c.norm*dpen; // project du to contact plane
+                dforce += du * c.spen;
+            }
             f1[c.m1]+=dforce;
             f2[c.m2]-=dforce;
         }
@@ -138,7 +155,12 @@ void PenalityContactForceField<DataTypes>::draw()
     {
         const Contact& c = contacts[i];
         Real d = c.dist - (p2[c.m2]-p1[c.m1])*c.norm;
-        if (d > 0)
+        if (c.spen > c.mu_s * c.ks * 0.99)
+            if (d > 0)
+                glColor4f(1,0,1,1);
+            else
+                glColor4f(0,1,1,1);
+        else if (d > 0)
             glColor4f(1,0,0,1);
         else
             glColor4f(0,1,0,1);
