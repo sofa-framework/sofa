@@ -101,6 +101,7 @@ public:
     virtual void v_peq(VecId v, VecId a, double f=1.0) = 0; ///< v+=f*a
     virtual void v_teq(VecId v, double f) = 0; ///< v*=f
     virtual void v_dot(VecId a, VecId b) = 0; ///< a dot b ( get result using finish )
+    virtual void v_threshold(VecId a, double threshold) = 0; ///< nullify the values below the given threshold
     /// Propagate the given displacement through all mappings
     virtual void propagateDx(VecId dx) = 0;
     /// Apply projective constraints to the given vector
@@ -235,6 +236,12 @@ protected:
         {
             parent->v_dot(v, a);
             return parent->finish();
+        }
+
+        /// nullify values below given threshold
+        void threshold( double threshold )
+        {
+            parent->v_threshold(v, threshold);
         }
 
         /// \return sqrt(v.v)

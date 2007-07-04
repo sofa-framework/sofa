@@ -13,7 +13,7 @@ namespace component
 namespace odesolver
 {
 
-/** Velocity damping.
+/** Velocity damping and thresholding.
 This is not an ODE solver, but it can be used as a post-process after a real ODE solver.
 */
 class DampVelocitySolver : public sofa::simulation::tree::OdeSolverImpl
@@ -22,6 +22,7 @@ public:
     DampVelocitySolver();
     void solve (double dt);
     DataField<double> rate;
+    DataField<double> threshold;
 };
 
 } // namespace odesolver

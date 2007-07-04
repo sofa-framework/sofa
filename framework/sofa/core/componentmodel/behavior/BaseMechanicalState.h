@@ -155,6 +155,9 @@ public:
     /// Compute the scalar products between two vectors.
     virtual double vDot(VecId a, VecId b) = 0; //{ return 0; }
 
+    /// Apply a threshold to all entries
+    virtual void vThreshold( VecId a, double threshold )=0;
+
     /// Make the position vector point to the identified vector.
     ///
     /// To reset it to the default storage use \code setX(VecId::position()) \endcode

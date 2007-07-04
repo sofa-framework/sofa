@@ -910,6 +910,39 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
     }
 }
 
+template <class T> inline void clear( T& t )
+{
+    t.clear();
+}
+template<> inline void clear( float& t )
+{
+    t=0;
+}
+template<> inline void clear( double& t )
+{
+    t=0;
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::vThreshold(VecId v, double t)
+{
+    if( v.type==VecId::V_DERIV)
+    {
+        VecDeriv* vv = getVecDeriv(v.index);
+        double t2 = t*t;
+        for (unsigned int i=0; i<vv->size(); i++)
+        {
+            if( (*vv)[i]*(*vv)[i] < t2 )
+                clear((*vv)[i]);
+        }
+    }
+    else
+    {
+        std::cerr<<"MechanicalObject<DataTypes>::vThreshold does not apply to coordinate vectors"<<std::endl;
+    }
+}
+
 template <class DataTypes>
 double MechanicalObject<DataTypes>::vDot(VecId a, VecId b)
 {

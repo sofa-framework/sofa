@@ -222,6 +222,8 @@ public:
 
     virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0);
 
+    virtual void vThreshold( VecId a, double threshold );
+
     virtual double vDot(VecId a, VecId b);
 
     virtual void setX(VecId v);

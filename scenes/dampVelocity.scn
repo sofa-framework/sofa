@@ -3,7 +3,7 @@
 	<Node name="M0">
 		<Object type="Gravity" gravity="0 0 0"/>
                 <Object type="CGImplicit" iterations="25" name="odesolver"/>
-                <Object type="DampVelocity" rate="0.9" printLog="1" name="damp"/>
+                <Object type="DampVelocity" rate="0.9" threshold="0.01"  printLog="1" name="damp"/>
 		<Object type="MechanicalObject" position="0 0 0  1 0 0  1 1 0  0 1 0" velocity="1 0 0  1 0 0  1 0 0  1 0 0"/>
 		<Object type="UniformMass" mass="0.1" />
 		<Object type="Mesh"
