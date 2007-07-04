@@ -32,6 +32,8 @@
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
+using std::cerr;
+using std::endl;
 
 namespace sofa
 {
@@ -54,9 +56,13 @@ void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, cons
         Real d = p1[i]*planeNormal.getValue()-planeD.getValue();
         if (d<0)
         {
+            //cerr<<"PlaneForceField<DataTypes>::addForce, d = "<<d<<endl;
             Real forceIntensity = -this->stiffness.getValue()*d;
+            //cerr<<"PlaneForceField<DataTypes>::addForce, stiffness = "<<stiffness.getValue()<<endl;
             Real dampingIntensity = -this->damping.getValue()*d;
+            //cerr<<"PlaneForceField<DataTypes>::addForce, dampingIntensity = "<<dampingIntensity<<endl;
             Deriv force = planeNormal.getValue()*forceIntensity - v1[i]*dampingIntensity;
+            //cerr<<"PlaneForceField<DataTypes>::addForce, force = "<<force<<endl;
             f1[i]+=force;
             //this->dfdd[i] = -this->stiffness;
             this->contacts.push_back(i);
