@@ -2364,7 +2364,10 @@ void QtViewer::SwitchToPresetView()
     }
     _sceneTransform.translation[0] = 0.0;
     _sceneTransform.translation[1] = 0.0;
-    _sceneTransform.translation[2] = -50.0;
+    if (sceneBBoxIsValid)
+        _sceneTransform.translation[2] = -(sceneMaxBBox-sceneMinBBox).norm();
+    else
+        _sceneTransform.translation[2] = -50.0;
     _newQuat[0] = 0.17;
     _newQuat[1] = -0.83;
     _newQuat[2] = -0.26;
@@ -2442,19 +2445,21 @@ void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filena
 
     capture.setPrefix(screenshot_prefix);
 
-    if (scene != groot)
+    bool newScene = (scene != groot);
+
+    groot = scene;
+    if (newScene)
     {
+        initTexturesDone = false;
+        Simulation::computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        sceneBBoxIsValid = true;
+        _panSpeed = (sceneMaxBBox-sceneMinBBox).norm()*0.5;
+        _zoomSpeed = (sceneMaxBBox-sceneMinBBox).norm();
+
         SwitchToPresetView();
         if (interactor != NULL)
             interactor = NULL;
     }
-    groot = scene;
-    initTexturesDone = false;
-    Simulation::computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-    sceneBBoxIsValid = true;
-    _panSpeed = (sceneMaxBBox-sceneMinBBox).norm()*0.5;
-    _zoomSpeed = (sceneMaxBBox-sceneMinBBox).norm();
-
     update();
 }
 
