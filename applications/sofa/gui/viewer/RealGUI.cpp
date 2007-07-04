@@ -999,10 +999,12 @@ void RealGUI::lmlOpen(const char* filename)
 {
     if (pmlreader)
     {
-        if (!lmlreader) lmlreader = new LMLReader;
+        if (lmlreader != NULL) delete lmlreader;
+        lmlreader = new LMLReader; std::cout <<"New lml reader\n";
         lmlreader->BuildStructure(filename, pmlreader);
         groot = viewer->getScene();
         Simulation::init(groot);
+
     }
     else
         std::cerr<<"You must load the pml file before the lml file"<<endl;
@@ -1137,13 +1139,28 @@ void RealGUI::fileOpen()
 
 void RealGUI::fileReload()
 {
-    std::string filename = viewer->getSceneFileName();
 
-    if (!filename.empty())
+    std::string filename = viewer->getSceneFileName();
+    QString s = filename;
+
+    if (filename.empty()) { std::cerr << "Reload failed: no file loaded.\n"; return;}
+
+#ifdef SOFA_PML
+    if (s.length()>0)
     {
-        fileOpen(filename.c_str());
+        if(s.endsWith(".pml"))
+            pmlOpen(s);
+        else if(s.endsWith(".lml"))
+            lmlOpen(s);
+        else
+            fileOpen(s);
     }
-    else std::cerr << "Reload failed: no file loaded." << filename << "\n";
+#else
+    fileOpen(filename.c_str());
+#endif
+
+
+
 }
 
 void RealGUI::fileSaveAs()
