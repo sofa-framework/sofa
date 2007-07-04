@@ -28,6 +28,7 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/helper/system/FileRepository.h>
 
 /* For loading the scene */
 
@@ -51,10 +52,81 @@ using std::endl;
 #define is(n1, n2) (! xmlStrcmp((const xmlChar*)n1,(const xmlChar*)n2))
 #define getProp(n) ( xmlGetProp(cur, (const xmlChar*)n) )
 
-BaseElement* createNode(xmlNodePtr root)
+void recReplaceAttribute(BaseElement* node, const char* attr, const char* value)
+{
+    if (node->getAttribute( attr ))
+    {
+        std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
+        node->setAttribute(attr, value);
+    }
+    BaseElement::child_iterator<> it = node->begin();
+    BaseElement::child_iterator<> end = node->end();
+    while (it != end)
+    {
+        recReplaceAttribute( it, attr, value );
+        ++it;
+    }
+}
+
+BaseElement* createNode(xmlNodePtr root, const char *basefilename)
 {
     //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
     if (root->type != XML_ELEMENT_NODE) return NULL;
+
+    // handle special 'preprocessor' tags
+
+    if (!xmlStrcmp(root->name,(const xmlChar*)"include"))
+    {
+        std::string filename;
+        xmlChar *pfilename = xmlGetProp(root, (const xmlChar*) "href");
+        if (pfilename)
+        {
+            filename = (const char*)pfilename;
+            xmlFree(pfilename);
+        }
+        if (filename.empty())
+        {
+            std::cerr << "ERROR: xml include tag requires non empty filename or href attribute." << std::endl;
+            return NULL;
+        }
+        std::cout << "XML: Including external file " << filename << std::endl;
+        sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename);
+        xmlDocPtr doc; // the resulting document tree
+        doc = xmlParseFile(filename.c_str());
+        if (doc == NULL)
+        {
+            std::cerr << "ERROR: Failed to parse " << filename << std::endl;
+            return NULL;
+        }
+
+        xmlNodePtr newroot = xmlDocGetRootElement(doc);
+        if (newroot == NULL)
+        {
+            std::cerr << "ERROR: empty document in " << filename << std::endl;
+            xmlFreeDoc(doc);
+            return NULL;
+        }
+        BaseElement* result = createNode(newroot, filename.c_str());
+        if (result)
+        {
+            // Copy attributes
+            for (xmlAttrPtr attr = root->properties; attr!=NULL; attr = attr->next)
+            {
+                if (attr->children==NULL) continue;
+                if (!xmlStrcmp(attr->name,(const xmlChar*)"href")) continue;
+                if (!xmlStrcmp(attr->name,(const xmlChar*)"name"))
+                {
+                    // only set the name of the root node
+                    result->setName((const char*)attr->children->content);
+                }
+                else
+                {
+                    recReplaceAttribute(result, (const char*)attr->name, (const char*)attr->children->content);
+                }
+            }
+        }
+        return result;
+    }
 
     std::string name, type;
 
@@ -108,7 +180,7 @@ BaseElement* createNode(xmlNodePtr root)
 
     for (xmlNodePtr child = root->xmlChildrenNode; child != NULL; child = child->next)
     {
-        BaseElement* childnode = createNode(child);
+        BaseElement* childnode = createNode(child, basefilename);
         if (childnode != NULL)
         {
             if (!node->addChild(childnode))
@@ -150,6 +222,8 @@ BaseElement* load(const char *filename)
     xmlDocPtr doc; // the resulting document tree
     xmlNodePtr root;
 
+    xmlSubstituteEntitiesDefault(1);
+
     doc = xmlParseFile(filename);
     if (doc == NULL)
     {
@@ -167,7 +241,7 @@ BaseElement* load(const char *filename)
     }
 
     //std::cout << "Creating XML graph"<<std::endl;
-    BaseElement* graph = createNode(root);
+    BaseElement* graph = createNode(root, filename);
     //std::cout << "XML Graph created"<<std::endl;
     xmlFreeDoc(doc);
     xmlCleanupParser();
