@@ -52,6 +52,9 @@ void DistanceGridCollisionModel::draw(int index)
     glEnd();
     glDisable(GL_BLEND);
     glDepthMask(1);
+
+    const float maxdist = (grid->getPMax()-grid->getPMin()).norm()*0.1;
+
     glBegin(GL_POINTS);
     {
 
@@ -61,9 +64,10 @@ void DistanceGridCollisionModel::draw(int index)
                 {
                     DistanceGrid::Coord p = grid->coord(x,y,z);
                     DistanceGrid::Real d = (*grid)[ind];
-                    if (rabs(d) > 4) continue;
+                    if (rabs(d) > maxdist) continue;
+                    d /= maxdist;
                     if (d<0)
-                        glColor3d(1-d*0.25, 0, 1-d);
+                        glColor3d(1+d*0.25, 0, 1+d);
                     else
                         glColor3d(0, 1-d*0.25, 1-d);
                     glVertex3fv(p.ptr());
@@ -73,19 +77,17 @@ void DistanceGridCollisionModel::draw(int index)
 }
 
 DistanceGridCollisionModel::DistanceGridCollisionModel()
-    : filename( dataField( &filename, "filename","load distance grid from specified file"))
+    : filename( dataField( &filename, "filename", "load distance grid from specified file"))
+    , scale( dataField( &scale, 1.0, "scale", "scaling factor for input file"))
     , box( dataField( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , nx( dataField( &nx, 64, "nx", "number of values on X axis") )
     , ny( dataField( &ny, 64, "ny", "number of values on Y axis") )
     , nz( dataField( &nz, 64, "nz", "number of values on Z axis") )
     , dumpfilename( dataField( &dumpfilename, "dumpfilename","write distance grid to specified file"))
 {
-    mstate = NULL;
+    ffd = NULL;
+    ffdGrid = NULL;
     rigid = NULL;
-    mesh = NULL;
-    previous = NULL;
-    next = NULL;
-    static_ = false;
 }
 
 DistanceGridCollisionModel::~DistanceGridCollisionModel()
@@ -98,43 +100,22 @@ void DistanceGridCollisionModel::init()
 {
     std::cout << "> DistanceGridCollisionModel::init()"<<std::endl;
     this->core::CollisionModel::init();
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     rigid = dynamic_cast< core::componentmodel::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
-    mesh = dynamic_cast< topology::MeshTopology* > (getContext()->getTopology());
+    ffd = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    ffdGrid = dynamic_cast< topology::RegularGridTopology* > (getContext()->getTopology());
 
     DistanceGrid* grid = NULL;
     if (filename.getValue().empty())
     {
-        if (mstate==NULL)
-        {
-            std::cerr << "ERROR: DistanceGridCollisionModel requires a Vec3 Mechanical Model or a filename.\n";
-            return;
-        }
-        /*
-        if (mstate->getX()->size()!=1)
-        {
-            std::cerr << "ERROR: DistanceGridCollisionModel requires a Vec3 Mechanical Model with 1 element.\n";
-            return;
-        }
-        */
-        if (mesh==NULL)
-        {
-            std::cerr << "ERROR: DistanceGridCollisionModel requires a Mesh Topology or a filename.\n";
-            return;
-        }
+        std::cerr << "ERROR: DistanceGridCollisionModel requires an input filename.\n";
+        return;
+    }
+    std::cout << "DistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<filename.getValue();
+    if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
+    if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
+    std::cout << std::endl;
+    grid = DistanceGrid::loadShared(filename.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
 
-        if (mesh->getNbTriangles()==0 || !mesh->hasPos())
-        {
-            std::cerr << "ERROR: DistanceGridCollisionModel requires a Mesh Topology with triangles and vertice positions or a filename.\n";
-            return;
-        }
-        grid = new DistanceGrid(nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
-    }
-    else
-    {
-        std::cout << "DistanceGridCollisionModel: creating DistanceGrid from file "<<filename.getValue()<<std::endl;
-        grid = DistanceGrid::loadShared(filename.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
-    }
     resize(1);
     elems[0] = grid;
     if (grid && !dumpfilename.getValue().empty())
@@ -163,82 +144,6 @@ void DistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
 
 void DistanceGridCollisionModel::updateGrid()
 {
-    if (elems.size()<1) return;
-    //DistanceGrid* grid = elems[0];
-    if (filename.getValue().empty())
-    {
-        /*
-                grid->builtFromTriangles = true;
-                if (mstate != NULL)
-                {
-                    const Vec3Types::VecCoord& x = *mstate->getX();
-                    unsigned int nbp = x.size();
-                    grid->meshPts.setNumVecs(nbp);
-                    for (unsigned int i=0;i<nbp;i++)
-                    {
-                        Vec3d p = x[i];
-                        grid->meshPts[i][0] = p[0];
-                        grid->meshPts[i][1] = p[1];
-                        grid->meshPts[i][2] = p[2];
-                    }
-                }
-                else
-                {
-                    unsigned int nbp = mesh->getNbPoints();
-                    grid->meshPts.setNumVecs(nbp);
-                    for (unsigned int i=0;i<nbp;i++)
-                    {
-                        grid->meshPts[i][0] = mesh->getPX(i);
-                        grid->meshPts[i][1] = mesh->getPY(i);
-                        grid->meshPts[i][2] = mesh->getPZ(i);
-                    }
-                }
-                const topology::MeshTopology::SeqTriangles& tris = mesh->getTriangles();
-                grid->triangles.setNumTriangles(tris.size());
-                for (unsigned int i=0;i<tris.size();i++)
-                {
-                    grid->triangles[i].a = tris[i][0];
-                    grid->triangles[i].b = tris[i][1];
-                    grid->triangles[i].c = tris[i][2];
-                }
-        */
-    }
-    /*
-        // Compute mesh bounding box
-        BfastVector3 bbmin;
-        BfastVector3 bbmax;
-        unsigned int nbp = grid->meshPts.numVecs();
-        for (unsigned int i=0;i<nbp;i++)
-        {
-            const BfastVector3& p = grid->meshPts[i];
-            if (!i || p[0] < bbmin[0]) bbmin[0] = p[0];
-            if (!i || p[0] > bbmax[0]) bbmax[0] = p[0];
-            if (!i || p[1] < bbmin[1]) bbmin[1] = p[1];
-            if (!i || p[1] > bbmax[1]) bbmax[1] = p[1];
-            if (!i || p[2] < bbmin[2]) bbmin[2] = p[2];
-            if (!i || p[2] > bbmax[2]) bbmax[2] = p[2];
-        }
-        // Grid's bounding box should be square
-        BfastReal width = bbmax[0] - bbmin[0];
-        if (bbmax[1] - bbmin[1] > width) width = bbmax[1] - bbmin[1];
-        if (bbmax[2] - bbmin[2] > width) width = bbmax[2] - bbmin[2];
-        width *= (1+2*border); // Build a bigger grid
-        BfastReal xcenter = (bbmin[0] + bbmax[0])/2;
-        BfastReal ycenter = (bbmin[1] + bbmax[1])/2;
-        BfastReal zcenter = (bbmin[2] + bbmax[2])/2;
-        bbmin[0] = xcenter - width/2; bbmax[0] = xcenter + width/2;
-        bbmin[1] = ycenter - width/2; bbmax[1] = ycenter + width/2;
-        bbmin[2] = zcenter - width/2; bbmax[2] = zcenter + width/2;
-
-        std::cout << "Building Distance Grid with " << grid->meshPts.numVecs() << " vertices and " << grid->triangles.numTriangles() << " triangles, bbox=<"<<bbmin[0]<<','<<bbmin[1]<<','<<bbmin[2]<<">-<"<<bbmax[0]<<','<<bbmax[1]<<','<<bbmax[2]<<">." << std::endl;
-        grid->computeNormals();
-        grid->computePsuedoNormals();
-        delete grid->tree;
-        grid->tree = new DtTree;
-        buildTree(grid->tree, bbmin, bbmax, depth, &(grid->meshPts), &(grid->triangles), &(grid->faceNormals));
-        grid->redistance();
-        std::cout << "Grid built: " << grid->tree->cells.numCells() << " cells." << std::endl;
-    */
 }
 
 void DistanceGridCollisionModel::draw()
@@ -260,7 +165,7 @@ void DistanceGridCollisionModel::draw()
         glColor3f(0.5, 0.5, 0.5);
     else
         glColor3f(1.0, 0.0, 0.0);
-    glPointSize(3);
+    glPointSize(1);
     for (unsigned int i=0; i<elems.size(); i++)
     {
         draw(i);
@@ -283,19 +188,44 @@ void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 
     if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
-    if (filename.getValue().empty())
-        updateGrid();
+    //if (filename.getValue().empty())
+    //    updateGrid();
 
-    for (unsigned int i=0; i<elems.size(); i++)
+    bool xform = false;
+    Mat3x3d rotation;
+    Vec3d translation;
+
+    if (rigid)
+    {
+        xform = true;
+        translation = (*rigid->getX())[0].getCenter();
+        (*rigid->getX())[0].getOrientation().toMatrix(rotation);
+    }
+
+    cubeModel->resize(size);
+    for (int i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
-        for (int c = 0; c < 3; c++)
+        if (xform)
         {
-            emin[c] = elems[i]->getPMin()[c];
-            emax[c] = elems[i]->getPMax()[c];
+            Vector3 corner = translation + rotation * elems[i]->getBBCorner(0);
+            emin = corner;
+            emin = emax;
+            for (int j=1; j<8; j++)
+            {
+                corner = translation + rotation * elems[i]->getBBCorner(j);
+                for(int c=0; c<3; c++)
+                    if (corner[c] < emin[c]) emin[c] = corner[c];
+                    else if (corner[c] > emax[c]) emax[c] = corner[c];
+            }
         }
-        cubeModel->setParentOf(i, emin, emax); // define the bounding box of the current triangle
+        else
+        {
+            emin = elems[i]->getBBMin();
+            emax = elems[i]->getBBMax();
+        }
+        cubeModel->setParentOf(i, emin, emax); // define the bounding box of the current element
     }
     cubeModel->computeBoundingTree(maxDepth);
 }
@@ -309,43 +239,68 @@ DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
     dists.resize(nxnynz);
 }
 
-DistanceGrid* DistanceGrid::load(const std::string& filename, int nx, int ny, int nz, Coord pmin, Coord pmax)
+DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")
     {
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         std::ifstream in(filename.c_str(), std::ios::in | std::ios::binary);
         in.read((char*)&(grid->dists[0]), grid->nxnynz*sizeof(Real));
+        if (scale != 1.0)
+        {
+            for (int i=0; i< grid->nxnynz; i++)
+                grid->dists[i] *= (float)scale;
+        }
+        grid->computeBBox();
+        return grid;
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".obj")
     {
         sofa::helper::io::Mesh* mesh = sofa::helper::io::Mesh::Create(filename);
         const sofa::helper::vector<Vector3> & vertices = mesh->getVertices();
 
-        if (pmin[0]==pmax[0])
+        std::cout << "Computing bbox."<<std::endl;
+        Coord bbmin, bbmax;
+        if (!vertices.empty())
         {
-            std::cout << "Computing bbox."<<std::endl;
-            if (!vertices.empty())
+            bbmin = vertices[0];
+            bbmax = bbmin;
+            for(unsigned int i=1; i<vertices.size(); i++)
             {
-                pmin = vertices[0];
-                pmax = pmin;
-                for(unsigned int i=1; i<vertices.size(); i++)
-                {
-                    for (int c=0; c<3; c++)
-                        if (vertices[i][c] < pmin[c]) pmin[c] = (Real)vertices[i][c];
-                        else if (vertices[i][c] > pmax[c]) pmax[c] = (Real)vertices[i][c];
-                }
+                for (int c=0; c<3; c++)
+                    if (vertices[i][c] < bbmin[c]) bbmin[c] = (Real)vertices[i][c];
+                    else if (vertices[i][c] > bbmax[c]) bbmax[c] = (Real)vertices[i][c];
             }
-            std::cout << "bbox = "<<pmin<<" "<<pmax<<std::endl;
+            bbmin *= scale;
+            bbmax *= scale;
         }
-        std::cout << "Creating distance grid."<<std::endl;
+        std::cout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<std::endl;
+
+        if (pmin[0]<=pmax[0])
+        {
+            pmin = bbmin;
+            pmax = bbmax;
+            Coord margin = (bbmax-bbmin)*0.1;
+            pmin -= margin;
+            pmax += margin;
+        }
+        else if (!vertices.empty())
+        {
+            for (int c=0; c<3; c++)
+            {
+                if (bbmin[c] < pmin[c]) pmin[c] = bbmin[c];
+                if (bbmax[c] > pmax[c]) pmax[c] = bbmax[c];
+            }
+        }
+        std::cout << "Creating distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
-        std::cout << "Copying mesh vertices."<<std::endl;
+        std::cout << "Copying "<<vertices.size()<<" mesh vertices."<<std::endl;
         grid->meshPts.resize(vertices.size());
         for(unsigned int i=0; i<vertices.size(); i++)
-            grid->meshPts[i] = vertices[i];
+            grid->meshPts[i] = vertices[i]*scale;
         std::cout << "Computing distance field."<<std::endl;
-        grid->calcDistance(mesh);
+        grid->calcDistance(mesh, scale);
+        grid->computeBBox();
         std::cout << "Distance grid creation DONE."<<std::endl;
         delete mesh;
         return grid;
@@ -353,10 +308,10 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, int nx, int ny, in
     else
     {
         std::cerr << "Unknown extension: "<<filename<<std::endl;
+        return NULL;
     }
 
 
-    return NULL;
 }
 
 bool DistanceGrid::save(const std::string& filename)
@@ -401,8 +356,29 @@ bool pointInTriangle(const DistanceGrid::Coord& p, const DistanceGrid::Coord& p0
     return true;
 }
 
+void DistanceGrid::computeBBox()
+{
+    if (!meshPts.empty())
+    {
+        bbmin = meshPts[0];
+        bbmax = bbmin;
+        for(unsigned int i=1; i<meshPts.size(); i++)
+        {
+            for (int c=0; c<3; c++)
+                if (meshPts[i][c] < bbmin[c]) bbmin[c] = (Real)meshPts[i][c];
+                else if (meshPts[i][c] > bbmax[c]) bbmax[c] = (Real)meshPts[i][c];
+        }
+    }
+    else
+    {
+        bbmin = pmin;
+        bbmax = pmax;
+        /// \TODO compute the real bbox from the grid content
+    }
+}
+
 /// Compute distance field from given mesh
-void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
+void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
 {
     fmm_status.resize(nxnynz);
     fmm_heap.resize(nxnynz);
@@ -422,12 +398,12 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
     {
         const sofa::helper::vector<int>& pts = facets[i][0];
         const int pt0 = 0;
-        const Coord& p0 = vertices[pts[pt0]];
+        const Coord p0 = vertices[pts[pt0]]*scale;
         for (unsigned int pt2=2; pt2<pts.size(); pt2++)
         {
             const int pt1 = pt2-1;
-            const Coord& p1 = vertices[pts[pt1]];
-            const Coord& p2 = vertices[pts[pt2]];
+            const Coord p1 = vertices[pts[pt1]]*scale;
+            const Coord p2 = vertices[pts[pt2]]*scale;
             Coord bbmin = p0, bbmax = p0;
             for (int c=0; c<3; c++)
                 if (p1[c] < bbmin[c]) bbmin[c] = p1[c];
@@ -439,7 +415,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
             Coord normal = (p1-p0).cross(p2-p0);
             normal.normalize();
             Real d = -(p0*normal);
-
+            int nedges = 0;
             int ix0 = ix(bbmin)-1; if (ix0 < 0) ix0 = 0;
             int iy0 = iy(bbmin)-1; if (iy0 < 0) iy0 = 0;
             int iz0 = iz(bbmin)-1; if (iz0 < 0) iz0 = 0;
@@ -466,6 +442,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                                 if (pointInTriangle<1,2>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
+                                    ++nedges;
                                     Real dist2 = cellWidth[0] - dist1;
                                     if (normal[0]<0)
                                     {
@@ -514,6 +491,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                                 if (pointInTriangle<2,0>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
+                                    ++nedges;
                                     Real dist2 = cellWidth[1] - dist1;
                                     if (normal[1]<0)
                                     {
@@ -562,6 +540,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                                 if (pointInTriangle<0,1>(pos,p0,p1,p2))
                                 {
                                     // edge crossed triangle
+                                    ++nedges;
                                     Real dist2 = cellWidth[2] - dist1;
                                     if (normal[2]<0)
                                     {
@@ -599,6 +578,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh)
                             }
                         }
                     }
+            std::cout << "Triangle "<<pts[pt0]<<"-"<<pts[pt1]<<"-"<<pts[pt2]<<" crossed "<<nedges<<" edges within <"<<ix0<<" "<<iy0<<" "<<iz0<<">-<"<<ix1-1<<" "<<iy1-1<<" "<<iz1-1<<" "<<">."<<std::endl;
         }
     }
 
@@ -946,10 +926,11 @@ void DistanceGrid::fmm_push(int index)
 #endif
 }
 
-DistanceGrid* DistanceGrid::loadShared(const std::string& filename, int nx, int ny, int nz, Coord pmin, Coord pmax)
+DistanceGrid* DistanceGrid::loadShared(const std::string& filename, double scale, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     DistanceGridParams params;
     params.filename = filename;
+    params.scale = scale;
     params.nx = nx;
     params.ny = ny;
     params.nz = nz;
@@ -961,7 +942,7 @@ DistanceGrid* DistanceGrid::loadShared(const std::string& filename, int nx, int 
         return it->second;
     else
     {
-        return shared[params] = load(filename, nx, ny, nz, pmin, pmax);
+        return shared[params] = load(filename, scale, nx, ny, nz, pmin, pmax);
     }
 }
 

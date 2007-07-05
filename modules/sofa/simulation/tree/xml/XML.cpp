@@ -90,7 +90,7 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
             std::cerr << "ERROR: xml include tag requires non empty filename or href attribute." << std::endl;
             return NULL;
         }
-        std::cout << "XML: Including external file " << filename << std::endl;
+        std::cout << "XML: Including external file " << filename << " from " << basefilename << std::endl;
         sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename);
         xmlDocPtr doc; // the resulting document tree
         doc = xmlParseFile(filename.c_str());

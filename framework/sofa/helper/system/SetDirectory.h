@@ -48,6 +48,9 @@ public:
 
     ~SetDirectory();
 
+    /// Return true if the given file has an absolute path
+    static bool IsAbsolute(const std::string& filename);
+
     /// Get the current directory
     static std::string GetCurrentDir();
 

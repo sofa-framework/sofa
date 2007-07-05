@@ -89,6 +89,17 @@ SetDirectory::~SetDirectory()
     }
 }
 
+/// Return true if the given file has an absolute path
+bool SetDirectory::IsAbsolute(const std::string& filename)
+{
+    if (filename.empty()) return false;
+    if (filename[0] == '/' || filename[0] == '\\') return true;
+#ifdef WIN32
+    if (filename.length() >= 2 && ((filename[0]>='a' && filename[0]<='z') || (filename[0]>='A' && filename[0]<='Z')) && filename[1]==':') return true;
+#endif
+    return false;
+}
+
 /// Get the current directory
 std::string SetDirectory::GetCurrentDir()
 {
@@ -115,7 +126,7 @@ std::string SetDirectory::GetParentDir(const char* filename)
 std::string SetDirectory::GetRelativeFromDir(const char* filename, const char* basename)
 {
     if (!filename || !filename[0]) return "";
-    if (filename[0] == '/') return filename; // absolute path
+    if (IsAbsolute(filename)) return filename; // absolute path
     std::string base = basename;
     std::string s = filename;
     // remove any ".."

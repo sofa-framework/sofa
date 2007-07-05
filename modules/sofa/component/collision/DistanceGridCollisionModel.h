@@ -8,7 +8,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 
 
 namespace sofa
@@ -33,16 +33,19 @@ public:
     DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax);
 
     /// Load a distance grid
-    static DistanceGrid* load(const std::string& filename, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
+    static DistanceGrid* load(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
 
     /// Load or reuse a distance grid
-    static DistanceGrid* loadShared(const std::string& filename, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
+    static DistanceGrid* loadShared(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
 
     /// Save current grid
     bool save(const std::string& filename);
 
     /// Compute distance field from given mesh
-    void calcDistance(sofa::helper::io::Mesh* mesh);
+    void calcDistance(sofa::helper::io::Mesh* mesh, double scale=1.0);
+
+    /// Update bbox
+    void computeBBox();
 
     int getNx() const { return nx; }
     int getNy() const { return ny; }
@@ -51,11 +54,21 @@ public:
 
     int size() const { return nxnynz; }
 
+    const Coord& getBBMin() const { return bbmin; }
+    const Coord& getBBMax() const { return bbmax; }
+    Coord getBBCorner(int i) const { return Coord((i&1)?bbmax[0]:bbmin[0],(i&2)?bbmax[1]:bbmin[1],(i&4)?bbmax[2]:bbmin[2]); }
+    bool inBBox(const Coord& p) const
+    {
+        for (int c=0; c<3; ++c)
+            if (p[c] < bbmin[c] || p[c] > bbmax[c]) return false;
+        return true;
+    }
+
     const Coord& getPMin() const { return pmin; }
     const Coord& getPMax() const { return pmax; }
     Coord getCorner(int i) const { return Coord((i&1)?pmax[0]:pmin[0],(i&2)?pmax[1]:pmin[1],(i&4)?pmax[2]:pmin[2]); }
 
-    bool inBBox(const Coord& p) const
+    bool inGrid(const Coord& p) const
     {
         Coord epsilon = cellWidth*0.1;
         for (int c=0; c<3; ++c)
@@ -145,7 +158,7 @@ public:
     Real eval(const Coord& x) const
     {
         Real d;
-        if (inBBox(x))
+        if (inGrid(x))
         {
             d = interp(x);
         }
@@ -161,7 +174,7 @@ public:
     Real quickeval(const Coord& x) const
     {
         Real d;
-        if (inBBox(x))
+        if (inGrid(x))
         {
             d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
         }
@@ -177,7 +190,7 @@ public:
     Real eval2(const Coord& x) const
     {
         Real d2;
-        if (inBBox(x))
+        if (inGrid(x))
         {
             Real d = interp(x);
             d2 = d*d;
@@ -194,7 +207,7 @@ public:
     Real quickeval2(const Coord& x) const
     {
         Real d2;
-        if (inBBox(x))
+        if (inGrid(x))
         {
             Real d = dists[index(x)] - cellWidth[0]; // we underestimate the distance
             d2 = d*d;
@@ -215,6 +228,7 @@ protected:
     const int nx,ny,nz, nxny, nxnynz;
     const Coord pmin, pmax;
     const Coord cellWidth, invCellWidth;
+    Coord bbmin, bbmax; ///< bounding box of the object, smaller than the grid
 
     // Fast Marching Method Update
     enum Status { FMM_FRONT0 = 0, FMM_FAR = -1, FMM_KNOWN_OUT = -2, FMM_KNOWN_IN = -3 };
@@ -231,11 +245,13 @@ protected:
     struct DistanceGridParams
     {
         std::string filename;
+        double scale;
         int nx,ny,nz;
         Coord pmin,pmax;
         bool operator==(const DistanceGridParams& v) const
         {
             if (!(filename == v.filename)) return false;
+            if (!(scale    == v.scale   )) return false;
             if (!(nx       == v.nx      )) return false;
             if (!(ny       == v.ny      )) return false;
             if (!(nz       == v.nz      )) return false;
@@ -251,6 +267,8 @@ protected:
         {
             if (filename < v.filename) return true;
             if (filename > v.filename) return false;
+            if (scale    < v.scale   ) return true;
+            if (scale    > v.scale   ) return false;
             if (nx       < v.nx      ) return false;
             if (nx       > v.nx      ) return true;
             if (ny       < v.ny      ) return false;
@@ -275,6 +293,8 @@ protected:
         {
             if (filename > v.filename) return true;
             if (filename < v.filename) return false;
+            if (scale    > v.scale   ) return true;
+            if (scale    < v.scale   ) return false;
             if (nx       > v.nx      ) return false;
             if (nx       < v.nx      ) return true;
             if (ny       > v.ny      ) return false;
@@ -318,21 +338,19 @@ class DistanceGridCollisionModel : public core::CollisionModel, public core::Vis
 {
 protected:
     std::vector<DistanceGrid*> elems;
-    core::CollisionModel* previous;
-    core::CollisionModel* next;
-    bool static_;
 
     // Input data parameters
     DataField< std::string > filename;
+    DataField< double > scale;
     DataField< helper::fixed_array<DistanceGrid::Coord,2> > box;
     DataField< int > nx;
     DataField< int > ny;
     DataField< int > nz;
     DataField< std::string > dumpfilename;
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
     core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
-    topology::MeshTopology* mesh;
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* ffd;
+    topology::MeshTopology* ffdGrid;
 
     void updateGrid();
 public:
@@ -340,9 +358,6 @@ public:
     DistanceGridCollisionModel();
 
     ~DistanceGridCollisionModel();
-
-    bool isStatic() { return static_; }
-    void setStatic(bool val=true) { static_ = val; }
 
     //const std::string& getFilename() const   { return filename; }
     //void setFilename(const std::string& val) { filename = val;  }
@@ -359,7 +374,6 @@ public:
     //const int& getDepth() const   { return depth; }
     //void setDepth(const int& val) { depth = val;  }
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
     core::componentmodel::behavior::MechanicalState<RigidTypes>* getRigidModel() { return rigid; }
 
     void init();
