@@ -1,6 +1,6 @@
 # Target is a library: sofagui
 
-SOFA_DIR = ../../..
+SOFA_DIR = ../../../..
 TEMPLATE = lib
 include($$SOFA_DIR/sofa.cfg)
 
@@ -10,10 +10,10 @@ LIBS += $$SOFA_FRAMEWORK_LIBS $$SOFA_MODULES_LIBS
 LIBS += $$SOFA_EXT_LIBS
 
 SOURCES = \
-	    SofaGUI.cpp \
-	    BatchGUI.cpp
+	    ../SofaGUI.cpp \
+	    ../BatchGUI.cpp
 
 HEADERS = \
-	    SofaGUI.h \
-	    BatchGUI.h
+	    ../SofaGUI.h \
+	    ../BatchGUI.h
 
