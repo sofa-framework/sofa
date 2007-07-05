@@ -63,6 +63,7 @@ extern simulation::tree::GNode* groot;
 #include <Q3ListView>
 #include <QStackedWidget>
 #include <QRadioButton>
+#include <QCheckBox>
 #include <QSplitter>
 #include <Q3TextEdit>
 #include <QCursor>
@@ -1316,14 +1317,14 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
             {
 
                 // the bool line edit
-                QRadioButton* radioButton = new QRadioButton(qwidget);
-                radioButton->setGeometry( 205, i*25+5, 170, 20 );
+                QCheckBox* checkBox = new QCheckBox(qwidget);
+                checkBox->setGeometry( 205, i*25+5, 170, 20 );
 
 
                 if( DataField<bool> * ff = dynamic_cast< DataField<bool> * >( (*it).second )  )
                 {
-                    radioButton->setChecked(ff->getValue());
-                    connect( radioButton, SIGNAL( toggled(bool) ), new GUIFieldBool(ff), SLOT( changeValue(bool) ) );
+                    checkBox->setChecked(ff->getValue());
+                    connect( checkBox, SIGNAL( toggled(bool) ), new GUIFieldBool(ff), SLOT( changeValue(bool) ) );
                 }
 
             }

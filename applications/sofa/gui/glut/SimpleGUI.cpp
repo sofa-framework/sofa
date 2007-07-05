@@ -96,7 +96,7 @@ int SimpleGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*o
     return 0;
 }
 
-SofaGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot, const char* filename)
+SofaGUI* SimpleGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::tree::GNode* groot, const char* filename)
 {
 
     glutInitDisplayMode ( GLUT_RGB | GLUT_DEPTH | GLUT_DOUBLE );
