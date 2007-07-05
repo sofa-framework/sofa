@@ -1389,9 +1389,8 @@ int FlowVRRenderMeshClass = sofa::core::RegisterObject("FlowVRRender Visual Mode
 int main(int argc, char** argv)
 {
 
-#ifndef SOFA_GUI_QTOGREVIEWER
     glutInit(&argc,argv);
-#endif
+
     sofa::helper::BackTrace::autodump();
 
     std::string fileName = "/home/allardj/work/sig07et/data/test1.scn";
