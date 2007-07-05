@@ -73,6 +73,10 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
     }
+    if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
+    {
+        obj->applyUVTranslation(atof(arg->getAttribute("du","0.0")), atof(arg->getAttribute("dv","0.0")));
+    }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
@@ -387,6 +391,15 @@ void VisualModelImpl::applyScale(double scale)
         x[i] *= (GLfloat) scale;
     }
     update();
+}
+
+void VisualModelImpl::applyUVTranslation(double dU, double dV)
+{
+    for (unsigned int i = 0; i < vtexcoords.size(); i++)
+    {
+        vtexcoords[i][0] += (GLfloat) dU;
+        vtexcoords[i][1] += (GLfloat) dV;
+    }
 }
 
 void VisualModelImpl::applyUVScale(double scaleU, double scaleV)

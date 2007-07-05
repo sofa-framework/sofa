@@ -173,6 +173,7 @@ public:
     void applyTranslation(double dx, double dy, double dz);
     void applyRotation(Quat q);
     void applyScale(double s);
+    void applyUVTranslation(double du, double dv);
     void applyUVScale(double su, double sv);
 
     void flipFaces();
