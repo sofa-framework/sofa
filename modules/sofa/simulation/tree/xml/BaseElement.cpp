@@ -24,6 +24,7 @@
 *******************************************************************************/
 #include "BaseElement.h"
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/system/SetDirectory.h>
 
 namespace sofa
 {
@@ -55,6 +56,25 @@ BaseElement::~BaseElement()
         delete *it;
     }
     children.clear();
+}
+
+/// Get the file where this description was read from. Useful to resolve relative file paths.
+std::string BaseElement::getBaseFile()
+{
+    if (isFileRoot()) return basefile;
+    else if (getParentElement()!=NULL) return getParentElement()->getBaseFile();
+    else return "";
+}
+
+void BaseElement::setBaseFile(const std::string& newBaseFile)
+{
+    basefile = newBaseFile;
+}
+
+/// Return true if this element was the root of the file
+bool BaseElement::isFileRoot()
+{
+    return !basefile.empty();
 }
 
 // const std::map<std::string,std::string*>& BaseElement::getAttributeMap() const
@@ -119,9 +139,9 @@ bool BaseElement::removeChild(BaseElement* child)
 
 bool BaseElement::init()
 {
+    sofa::helper::system::SetDirectory cwd(basefile);
     bool res = initNode();
-    for (child_iterator<> it = begin();
-            it != end(); ++it)
+    for (child_iterator<> it = begin(); it != end(); ++it)
     {
         res &= it->init();
     }

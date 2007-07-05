@@ -72,6 +72,12 @@ BaseObjectDescription* BaseObjectDescription::getParent() const
     return NULL;
 }
 
+/// Get the file where this description was read from. Useful to resolve relative file paths.
+std::string BaseObjectDescription::getBaseFile()
+{
+    return "";
+}
+
 ///// Get all attribute data, read-only
 //const BaseObjectDescription::AttributeMap& BaseObjectDescription::getAttributeMap() const
 //{

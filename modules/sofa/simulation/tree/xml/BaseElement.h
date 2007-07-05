@@ -59,6 +59,7 @@ class BaseElement : public core::objectmodel::BaseObjectDescription
 private:
     //std::string name;
     //std::string type;
+    std::string basefile;
     BaseElement* parent;
     typedef std::list<BaseElement*> ChildList;
     ChildList children;
@@ -94,6 +95,14 @@ public:
     /// Get the parent node
     BaseElement* getParentElement() const
     { return parent; }
+
+    /// Get the file where this description was read from. Useful to resolve relative file paths.
+    std::string getBaseFile();
+
+    virtual void setBaseFile(const std::string& newBaseFile);
+
+    /// Return true if this element was the root of the file
+    bool isFileRoot();
 
     ///// Get all attribute data, read-only
     //const std::map<std::string,std::string*>& getAttributeMap() const;

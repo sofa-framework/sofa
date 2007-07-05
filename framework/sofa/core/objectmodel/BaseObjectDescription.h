@@ -81,8 +81,19 @@ public:
     /// Get the parent node
     virtual BaseObjectDescription* getParent() const;
 
+    /// Get the file where this description was read from. Useful to resolve relative file paths.
+    virtual std::string getBaseFile();
+
     ///// Get all attribute data, read-only
     //virtual const AttributeMap& getAttributeMap() const;
+
+    ///// Get list of all attributes
+    template<class T> void getAttributeList(T& container)
+    {
+        for (AttributeMap::iterator it = attributes.begin();
+                it != attributes.end(); ++it)
+            container.push_back(it->first);
+    }
 
     /// Find an object description given its name (relative to this object)
     virtual BaseObjectDescription* find(const char* nodeName, bool absolute=false);

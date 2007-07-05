@@ -140,7 +140,14 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
 bool FileRepository::findFile(std::string& filename, const std::string& basedir)
 {
     if (filename.empty()) return false; // no filename
-    if (findFileIn(filename, basedir)) return true;
+    if (basedir.empty())
+    {
+        if (findFileIn(filename, SetDirectory::GetCurrentDir())) return true;
+    }
+    else
+    {
+        if (findFileIn(filename, SetDirectory::GetRelativeFromDir(basedir.c_str(),SetDirectory::GetCurrentDir().c_str()))) return true;
+    }
     if (filename[0]=='/') return false; // absolute file path
     if (filename.substr(0,2)=="./" || filename.substr(0,3)=="../") return false; // absolute or local file path
     for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)

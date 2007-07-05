@@ -29,6 +29,7 @@
 #include <libxml/tree.h>
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
 
 /* For loading the scene */
 
@@ -68,7 +69,7 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value)
     }
 }
 
-BaseElement* createNode(xmlNodePtr root, const char *basefilename)
+BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot = false)
 {
     //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
     if (root->type != XML_ELEMENT_NODE) return NULL;
@@ -106,7 +107,7 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename)
             xmlFreeDoc(doc);
             return NULL;
         }
-        BaseElement* result = createNode(newroot, filename.c_str());
+        BaseElement* result = createNode(newroot, filename.c_str(), true);
         if (result)
         {
             // Copy attributes
@@ -125,6 +126,7 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename)
                 }
             }
         }
+        xmlFreeDoc(doc);
         return result;
     }
 
@@ -165,6 +167,9 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename)
         std::cerr << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.\n";
         return NULL;
     }
+
+    if (isRoot)
+        node->setBaseFile( basefilename );
 
     //std::cout << "Node "<<root->name<<" name "<<name<<" type "<<type<<" created.\n";
 
@@ -241,7 +246,9 @@ BaseElement* load(const char *filename)
     }
 
     //std::cout << "Creating XML graph"<<std::endl;
-    BaseElement* graph = createNode(root, filename);
+    std::string basefilename =
+        sofa::helper::system::SetDirectory::GetRelativeFromDir(filename,sofa::helper::system::SetDirectory::GetCurrentDir().c_str());
+    BaseElement* graph = createNode(root, basefilename.c_str(), true);
     //std::cout << "XML Graph created"<<std::endl;
     xmlFreeDoc(doc);
     xmlCleanupParser();

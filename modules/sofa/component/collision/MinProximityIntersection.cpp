@@ -682,7 +682,7 @@ bool MinProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 {
     Vector3 P,Q,PQ;
     static DistanceSegTri proximitySolver;
-    const double alarmDist = 0.01; //getAlarmDistance();
+    const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
         return false; // no intersection for edges parallel to the triangle
@@ -704,7 +704,7 @@ bool MinProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 
 int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, DetectionOutputVector& contacts)
 {
-    const double alarmDist = 0.01; //getAlarmDistance();
+    const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
     if (fabs(t2.n() * t1.direction()) < 0.000001)
         return false; // no intersection for edges parallel to the triangle
@@ -721,7 +721,7 @@ int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Detecti
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    const double contactDist = 0.01; //getAlarmDistance();
+    const double contactDist = alarmDist;
     contacts.resize(contacts.size()+1);
     DetectionOutput *detection = &*(contacts.end()-1);
 
