@@ -30,6 +30,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.h>
+#include <sofa/helper/rmath.h>
 #include <vector>
 #include <math.h>
 
@@ -107,7 +108,7 @@ protected:
     /// Density Smoothing Kernel:  W = 315 / 64pih9 * (h2 - r2)3 = 315 / 64pih3 * (1 - (r/h)2)3
     Real  constWd(Real h) const
     {
-        return (Real)(315 / (64*M_PI*h*h*h));
+        return (Real)(315 / (64*R_PI*h*h*h));
     }
     Real  Wd(Real r_h, Real C)
     {
@@ -160,7 +161,7 @@ protected:
     /// Pressure Smoothing Kernel:  W = 15 / pih6 (h - r)3 = 15 / pih3 (1 - r/h)3
     Real  constWp(Real h) const
     {
-        return (Real)(15 / (M_PI*h*h*h));
+        return (Real)(15 / (R_PI*h*h*h));
     }
     Real  Wp(Real r_h, Real C)
     {
@@ -193,7 +194,7 @@ protected:
     /// Viscosity Smoothing Kernel:  W = 15/(2pih3) (-r3/2h3 + r2/h2 + h/2r - 1)
     Real  constWv(Real h)
     {
-        return (Real)(15/(2*M_PI*h*h*h));
+        return (Real)(15/(2*R_PI*h*h*h));
     }
     Real  Wv(Real r_h, Real C)
     {
@@ -238,7 +239,7 @@ protected:
     Real  constLaplacianWv(Real h)
     {
         return 6*constWv(h)/(h*h);
-        //return 75/(M_PI*h*h*h*h*h);
+        //return 75/(R_PI*h*h*h*h*h);
     }
 
     Real  laplacianWv(Real r_h, Real C)
@@ -249,7 +250,7 @@ protected:
     /// Color Smoothing Kernel: same as Density
     Real  constWc(Real h) const
     {
-        return (Real)(315 / (64*M_PI*h*h*h));
+        return (Real)(315 / (64*R_PI*h*h*h));
     }
     Real  Wc(Real r_h, Real C)
     {

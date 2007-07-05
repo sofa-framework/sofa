@@ -39,7 +39,6 @@ namespace core
 namespace objectmodel
 {
 class Context;
-class Topology;
 }
 
 namespace componentmodel

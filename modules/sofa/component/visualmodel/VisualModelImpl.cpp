@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/rmath.h>
 #include <sstream>
 
 namespace sofa
@@ -83,15 +84,15 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     }
     if (arg->getAttribute("rx")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*M_PI/180));
+        obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*R_PI/180));
     }
     if (arg->getAttribute("ry")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(0,1,0), atof(arg->getAttribute("ry","0.0"))*M_PI/180));
+        obj->applyRotation(Quat(Vec3d(0,1,0), atof(arg->getAttribute("ry","0.0"))*R_PI/180));
     }
     if (arg->getAttribute("rz")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*M_PI/180));
+        obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*R_PI/180));
     }
 }
 
@@ -667,9 +668,9 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
         vertices.resize(topology->getNbPoints());
         for (unsigned int i=0; i<vertices.size(); i++)
         {
-            vertices[i][0] = topology->getPX(i);
-            vertices[i][1] = topology->getPY(i);
-            vertices[i][2] = topology->getPZ(i);
+            vertices[i][0] = (Real)topology->getPX(i);
+            vertices[i][1] = (Real)topology->getPY(i);
+            vertices[i][2] = (Real)topology->getPZ(i);
         }
     }
 

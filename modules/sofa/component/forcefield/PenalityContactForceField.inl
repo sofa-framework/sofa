@@ -92,7 +92,7 @@ void PenalityContactForceField<DataTypes>::addForce()
             }
             else
             {
-                c.spen = c.mu_s * c.ks * 0.1; //0;
+                c.spen = c.mu_s * c.ks * 0.1f; //0;
                 c.fDir = v*c.mu_v - c.norm;
             }
             Deriv force = c.fDir*fN;

@@ -34,6 +34,12 @@ namespace sofa
 namespace helper
 {
 
+#ifdef M_PI
+#define R_PI M_PI
+#else
+#define R_PI 3.141592653589793238462
+#endif
+
 /*
 // Most portable version, but also the slowest
 inline int rfloor(double r)

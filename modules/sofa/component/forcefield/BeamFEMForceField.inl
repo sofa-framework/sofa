@@ -8,6 +8,7 @@
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
+#include <sofa/helper/rmath.h>
 #include <assert.h>
 #include <iostream>
 #include <set>
@@ -16,10 +17,6 @@ using std::cerr;
 using std::endl;
 using std::set;
 
-
-#ifndef M_PI
-#define M_PI 3.141592653589793238462
-#endif /* M_PI */
 
 namespace sofa
 {
@@ -44,10 +41,10 @@ void BeamFEMForceField<DataTypes>::init()
     _r  = _radius.getValue();
 
     _G  =_E/(2.0*(1.0+_nu));
-    _Iz = M_PI*_r*_r*_r*_r/4;
+    _Iz = R_PI*_r*_r*_r*_r/4;
     _Iy = _Iz ;
     _J  = _Iz+_Iy;
-    _A  = M_PI*_r*_r;
+    _A  = R_PI*_r*_r;
 
     if (_timoshenko.getValue())
     {
@@ -106,20 +103,20 @@ void BeamFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, con
     f.resize(p.size());
 
     // First compute each node rotation
+    unsigned int i;
 
     _nodeRotations.resize(p.size());
     //Mat3x3d R; R.identity();
-    for(unsigned int i=0; i<p.size(); ++i)
+    for(i=0; i<p.size(); ++i)
     {
         //R = R * MatrixFromEulerXYZ(p[i][3], p[i][4], p[i][5]);
         //_nodeRotations[i] = R;
         p[i].getOrientation().toMatrix(_nodeRotations[i]);
     }
 
-    unsigned int i=0;
     typename VecElement::const_iterator it;
 
-    for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+    for(it=_indexedElements->begin(),i=0; it!=_indexedElements->end(); ++it,++i)
     {
         Index a = (*it)[0];
         Index b = (*it)[1];

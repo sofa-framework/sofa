@@ -31,6 +31,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/rmath.h>
 #include <iostream>
 using std::endl;
 
@@ -781,7 +782,7 @@ public:
     StdRigidMass(Real m, Real radius)
     {
         mass = m;
-        volume = radius*radius*M_PI;
+        volume = radius*radius*R_PI;
         inertiaMatrix = (radius*radius)/2;
         recalc();
     }

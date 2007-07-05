@@ -97,8 +97,8 @@ void ConstantForceField<DataTypes>::draw()
         double xx,xy,xz,fx,fy,fz;
         DataTypes::get(xx,xy,xz,x[i]);
         DataTypes::get(fx,fy,fz,f[i]);
-        glVertex3f( xx, xy, xz );
-        glVertex3f( xx+fx, xy+fy, xz+fz );
+        glVertex3f( (GLfloat)xx, (GLfloat)xy, (GLfloat)xz );
+        glVertex3f( (GLfloat)(xx+fx), (GLfloat)(xy+fy), (GLfloat)(xz+fz) );
     }
     glEnd();
 }
