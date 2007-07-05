@@ -14,6 +14,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/tree/AnimateBeginEvent.h>
 #include <sofa/simulation/tree/AnimateEndEvent.h>
@@ -167,12 +168,6 @@ std::map<std::string, flowvr::ModuleAPI*> moduleMap;
 std::map<std::string, flowvr::InputPort*> inputPortMap;
 std::map<std::string, flowvr::OutputPort*> outputPortMap;
 std::map<std::string, flowvr::render::SceneOutputPort*> sceneOutputPortMap;
-std::vector<flowvr::ID> prevP;
-std::vector<flowvr::ID> prevVS;
-std::vector<flowvr::ID> prevPS;
-std::vector<flowvr::ID> prevVB;
-std::vector<flowvr::ID> prevIB;
-std::vector<flowvr::ID> prevT;
 
 flowvr::ModuleAPI* createModule(const std::vector<flowvr::Port*>& ports, const char* name="")
 {
@@ -648,8 +643,113 @@ public:
     flowvr::render::ChunkRenderWriter* scene;
 };
 
+std::vector<flowvr::ID> prevP;
+std::map<std::string,flowvr::ID> prevVS;
+std::map<std::string,flowvr::ID> prevPS;
+std::map<std::string,flowvr::ID> prevVB;
+std::map<std::string,flowvr::ID> prevIB;
+std::map<std::string,flowvr::ID> prevT;
+
 class FlowVRRenderObject : public FlowVRObject
 {
+public:
+    void clearSharedResources(flowvr::render::ChunkRenderWriter* scene)
+    {
+        for(std::vector<flowvr::ID>::const_iterator it = prevP.begin(), itend = prevP.end(); it != itend; ++it)
+            scene->delPrimitive(*it);
+        prevP.clear();
+        for(std::map<std::string,flowvr::ID>::const_iterator it = prevVS.begin(), itend = prevVS.end(); it != itend; ++it)
+            scene->delVertexShader(it->second);
+        prevVS.clear();
+        for(std::map<std::string,flowvr::ID>::const_iterator it = prevPS.begin(), itend = prevPS.end(); it != itend; ++it)
+            scene->delPixelShader(it->second);
+        prevPS.clear();
+        for(std::map<std::string,flowvr::ID>::const_iterator it = prevVB.begin(), itend = prevVB.end(); it != itend; ++it)
+            scene->delVertexBuffer(it->second);
+        prevVB.clear();
+        for(std::map<std::string,flowvr::ID>::const_iterator it = prevIB.begin(), itend = prevIB.end(); it != itend; ++it)
+            scene->delIndexBuffer(it->second);
+        prevIB.clear();
+        for(std::map<std::string,flowvr::ID>::const_iterator it = prevT.begin(), itend = prevT.end(); it != itend; ++it)
+            scene->delTexture(it->second);
+        prevT.clear();
+    }
+
+    flowvr::ID loadSharedTexture(flowvr::render::ChunkRenderWriter* scene, const char* filename)
+    {
+        flowvr::ID& id = prevT[filename];
+        if (!id)
+        {
+            id = mod->module->generateID();
+            flowvr::render::ChunkTexture* t = scene->loadTexture(id, filename);
+            if (t)
+                std::cout << "FlowVR Render: loaded " << t->nx << "x" << t->ny << "x" << ftl::Type::nx(t->pixelType)*(ftl::Type::elemSize(t->pixelType)==0?1:8*ftl::Type::elemSize(t->pixelType)) << " texture " << filename << std::endl;
+        }
+        return id;
+    }
+
+    flowvr::ID loadSharedVertexShader(flowvr::render::ChunkRenderWriter* scene, const char* filename)
+    {
+        flowvr::ID& id = prevVS[filename];
+        if (!id)
+        {
+            id = mod->module->generateID();
+            scene->loadVertexShader(id, filename);
+        }
+        return id;
+    }
+
+    flowvr::ID loadSharedPixelShader(flowvr::render::ChunkRenderWriter* scene, const char* filename)
+    {
+        flowvr::ID& id = prevPS[filename];
+        if (!id)
+        {
+            id = mod->module->generateID();
+            scene->loadPixelShader(id, filename);
+        }
+        return id;
+    }
+
+    flowvr::ID addVertexBuffer(flowvr::render::ChunkRenderWriter* /*scene*/)
+    {
+        static int count = 0;
+        char buf[16];
+        sprintf(buf,"default%d",count);
+        ++count;
+        flowvr::ID& id = prevVB[buf];
+        if (!id)
+        {
+            id = mod->module->generateID();
+        }
+        return id;
+    }
+
+    flowvr::ID addIndexBuffer(flowvr::render::ChunkRenderWriter* /*scene*/)
+    {
+        static int count = 0;
+        char buf[16];
+        sprintf(buf,"default%d",count);
+        ++count;
+        flowvr::ID& id = prevIB[buf];
+        if (!id)
+        {
+            id = mod->module->generateID();
+        }
+        return id;
+    }
+
+    flowvr::ID addPrimitive(flowvr::render::ChunkRenderWriter* scene, const char* name)
+    {
+        flowvr::ID id = mod->module->generateID();
+        prevP.push_back(id);
+        scene->addPrimitive(id, name);
+        return id;
+    }
+
+
+
+
+
     virtual void flowvrRenderInit(flowvr::render::ChunkRenderWriter* /*scene*/, bool* /*scratch*/)
     {
     }
@@ -681,24 +781,7 @@ public:
     FlowVRRenderWriter()
         : pOutScene(createSceneOutputPort()), init(false), scratch(false)
     {
-        for(unsigned int i=0; i<prevP.size(); ++i)
-            scene.delPrimitive(prevP[i]);
-        prevP.clear();
-        for(unsigned int i=0; i<prevVS.size(); ++i)
-            scene.delVertexShader(prevVS[i]);
-        prevVS.clear();
-        for(unsigned int i=0; i<prevPS.size(); ++i)
-            scene.delPixelShader(prevPS[i]);
-        prevPS.clear();
-        for(unsigned int i=0; i<prevVB.size(); ++i)
-            scene.delVertexBuffer(prevVB[i]);
-        prevVB.clear();
-        for(unsigned int i=0; i<prevIB.size(); ++i)
-            scene.delIndexBuffer(prevIB[i]);
-        prevIB.clear();
-        for(unsigned int i=0; i<prevT.size(); ++i)
-            scene.delTexture(prevT[i]);
-        prevT.clear();
+        clearSharedResources(&scene);
     }
 
     virtual void flowvrPreInit(std::vector<flowvr::Port*>* ports)
@@ -811,21 +894,22 @@ public:
 
     DataField<std::string> vShader;
     DataField<std::string> pShader;
+    DataField<bool> useTangent;
     std::string texture;
+
+    std::map<std::string,std::string> paramT;
+    std::map<std::string,std::string> paramVS;
+    std::map<std::string,std::string> paramPS;
 
     flowvr::ID idP;
     flowvr::ID idVB;
     flowvr::ID idVBN;
     flowvr::ID idVBT;
+    flowvr::ID idVBTangent;
     flowvr::ID idIB;
     flowvr::ID idVS;
     flowvr::ID idPS;
     flowvr::ID idTex;
-
-    static flowvr::ID idVSDefault;
-    static flowvr::ID idPSDefault;
-    static flowvr::ID idVSTexture;
-    static flowvr::ID idPSTexture;
 
     bool posModified;
     bool normModified;
@@ -837,6 +921,7 @@ public:
     FlowVRRenderMesh()
         : vShader(dataField(&vShader, std::string(""), "vshader", "vertex shader name"))
         , pShader(dataField(&pShader, std::string(""), "pshader", "pixel shader name"))
+        , useTangent(dataField(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
 //    , color(dataField(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
 //    , topology(NULL)
 //    , mmodel(NULL)
@@ -844,6 +929,7 @@ public:
         , idVB(0)
         , idVBN(0)
         , idVBT(0)
+        , idVBTangent(0)
         , idIB(0)
         , idVS(0)
         , idPS(0)
@@ -855,9 +941,35 @@ public:
     {
     }
 
+    void parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+    {
+        this->sofa::component::visualmodel::OglModel::parse(arg);
+        std::vector<std::string> params;
+        arg->getAttributeList(params);
+        for (unsigned int i=0; i<params.size(); ++i)
+        {
+            const char* name = params[i].c_str();
+            if (!strncmp(name,"tex_",4))
+            {
+                std::string filename = arg->getAttribute(name);
+                sofa::helper::system::DataRepository.findFile(filename);
+                paramT[name+4] = filename;
+            }
+            else if (!strncmp(name,"ps_",3))
+            {
+                paramPS[name+3] = arg->getAttribute(name);
+            }
+            else if (!strncmp(name,"vs_",3))
+            {
+                paramVS[name+3] = arg->getAttribute(name);
+            }
+        }
+    }
+
     virtual bool loadTexture(const std::string& filename)
     {
         texture = filename;
+        sofa::helper::system::DataRepository.findFile(texture);
         Inherit::loadTexture(filename);
         return true;
     }
@@ -894,75 +1006,91 @@ public:
         if (!idP)
         {
             *scratch = false;
-            idP = module->generateID();
-            scene->addPrimitive(idP, getName().c_str());
-            prevP.push_back(idP);
+            idP = addPrimitive(scene, getName().c_str());
+            const char* vshader;
             if (!vShader.getValue().empty())
-            {
-                idVS = module->generateID();
-                scene->loadVertexShader(idVS, vShader.getValue().c_str());
-                prevVS.push_back(idVS);
-                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idVS);
-            }
+                vshader = vShader.getValue().c_str();
+            else if (!texture.empty() && useTangent.getValue())
+                vshader = "shaders/obj_color_tangent_v.cg";
             else if (!texture.empty())
-            {
-                if (!idVSTexture)
-                {
-                    idVSTexture = module->generateID();
-                    scene->loadVertexShader(idVSTexture, "shaders/obj_color_v.cg");
-                }
-                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idVSTexture);
-            }
+                vshader = "shaders/obj_color_v.cg";
             else
-            {
-                if (!idVSDefault)
-                {
-                    idVSDefault = module->generateID();
-                    scene->loadVertexShader(idVSDefault, "shaders/obj_v.cg");
-                }
-                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idVSDefault);
-            }
+                vshader = "shaders/obj_v.cg";
 
+            idVS = loadSharedVertexShader(scene, vshader);
+            scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idVS);
+
+            const char* pshader;
             if (!pShader.getValue().empty())
-            {
-                idPS = module->generateID();
-                scene->loadPixelShader(idPS, pShader.getValue().c_str());
-                prevPS.push_back(idPS);
-                scene->addParamID(idP, flowvr::render::ChunkPrimParam::PSHADER, "", idPS);
-            }
+                pshader = pShader.getValue().c_str();
+            else if (!texture.empty() && useTangent.getValue())
+                pshader = "shaders/obj_color_tangent_p.cg";
             else if (!texture.empty())
-            {
-                if (!idPSTexture)
-                {
-                    idPSTexture = module->generateID();
-                    scene->loadPixelShader(idPSTexture, "shaders/obj_color_p.cg");
-                }
-                scene->addParamID(idP, flowvr::render::ChunkPrimParam::PSHADER, "", idPSTexture);
-            }
+                pshader = "shaders/obj_color_p.cg";
             else
-            {
-                if (!idPSDefault)
-                {
-                    idPSDefault = module->generateID();
-                    scene->loadPixelShader(idPSDefault, "shaders/obj_p.cg");
-                }
-                scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idPSDefault);
-            }
+                pshader = "shaders/obj_p.cg";
+
+            idPS = loadSharedPixelShader(scene, pshader);
+            scene->addParamID(idP, flowvr::render::ChunkPrimParam::PSHADER, "", idPS);
 
             if (!texture.empty())
             {
-                idTex = module->generateID();
-                scene->loadTexture(idTex, texture.c_str());
-                prevT.push_back(idTex);
+                idTex = loadSharedTexture(scene,texture.c_str());
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::TEXTURE, "texcolor", idTex);
             }
             scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "Proj", flowvr::render::ChunkPrimParam::Projection);
             scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "ModelViewProj", flowvr::render::ChunkPrimParam::ModelViewProjection);
             scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "ModelViewIT", flowvr::render::ChunkPrimParam::ModelView_InvTrans);
+            scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "ModelViewT", flowvr::render::ChunkPrimParam::ModelView_Trans);
             ftl::Vec3f light(1,1,2); light.normalize();
+            scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "lightdir", light);
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "lightdir", light);
             ftl::Vec4f color ( material.diffuse );
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "color", color); //ftl::Vec4f(1, 1, 1, 0.5));
+
+            // add user-defined textures
+            for (std::map<std::string,std::string>::const_iterator it = paramT.begin(), itend = paramT.end(); it != itend; ++it)
+            {
+                scene->addParamID(idP, flowvr::render::ChunkPrimParam::TEXTURE, it->first.c_str(), loadSharedTexture(scene,it->second.c_str()));
+            }
+
+            // add user-defined params
+
+            for (std::map<std::string,std::string>::const_iterator it = paramVS.begin(), itend = paramVS.end(); it != itend; ++it)
+            {
+                float vals[4] = {0,0,0,0};
+                int n = sscanf(it->second.c_str(),"%f %f %f %f",&vals[0],&vals[1],&vals[2],&vals[3]);
+                if (n==4)
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, it->first.c_str(), ftl::Vec4f(vals));
+                else if (n==3)
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, it->first.c_str(), ftl::Vec3f(vals));
+                else if (n==2)
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, it->first.c_str(), ftl::Vec2f(vals));
+                else if (n==1)
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, it->first.c_str(), vals[0]);
+                else
+                {
+                    std::cerr << "ERROR: vertex shader parameter "<<it->first<<": cannot parse value "<<it->second<<std::endl;
+                }
+            }
+
+            for (std::map<std::string,std::string>::const_iterator it = paramPS.begin(), itend = paramPS.end(); it != itend; ++it)
+            {
+                float vals[4] = {0,0,0,0};
+                int n = sscanf(it->second.c_str(),"%f %f %f %f",&vals[0],&vals[1],&vals[2],&vals[3]);
+                if (n==4)
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, it->first.c_str(), ftl::Vec4f(vals));
+                else if (n==3)
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, it->first.c_str(), ftl::Vec3f(vals));
+                else if (n==2)
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, it->first.c_str(), ftl::Vec2f(vals));
+                else if (n==1)
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, it->first.c_str(), vals[0]);
+                else
+                {
+                    std::cerr << "ERROR: vertex shader parameter "<<it->first<<": cannot parse value "<<it->second<<std::endl;
+                }
+            }
 
             // SOFA = trans + scale * FLOWVR
             // FLOWVR = SOFA * 1/scale - trans * 1/scale
@@ -979,8 +1107,7 @@ public:
             if (!idVB)
             {
                 *scratch = false;
-                idVB = module->generateID();
-                prevVB.push_back(idVB);
+                idVB = addVertexBuffer(scene);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "position", idVB);
                 scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "position", 0);
             }
@@ -998,8 +1125,8 @@ public:
                 if (!idVBN)
                 {
                     *scratch = false;
-                    idVBN = module->generateID();
-                    prevVB.push_back(idVBN);
+                    //idVBN = module->generateID();
+                    idVBN = addVertexBuffer(scene);
                     scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "normal", idVBN);
                     scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "normal", 0);
                 }
@@ -1015,8 +1142,8 @@ public:
                 if (!idVBT)
                 {
                     *scratch = false;
-                    idVBT = module->generateID();
-                    prevVB.push_back(idVBT);
+                    //idVBT = module->generateID();
+                    idVBT = addVertexBuffer(scene);
                     scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "texcoord0", idVBT);
                     scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "texcoord0", 0);
                 }
@@ -1025,14 +1152,159 @@ public:
                 //vb->gen = lastPosRev;
                 memcpy(vb->data(), &(t[0]), vb->dataSize());
             }
+
+            if (!n.empty() && !t.empty() && useTangent.getValue())
+            {
+                if (!idVBTangent)
+                {
+                    *scratch = false;
+                    idVBTangent = addVertexBuffer(scene);
+                    scene->addParamID(idP, flowvr::render::ChunkPrimParam::VBUFFER_ID, "tangent", idVBTangent);
+                    scene->addParam(idP, flowvr::render::ChunkPrimParam::VBUFFER_NUMDATA, "tangent", 0);
+                }
+
+                ResizableExtVector<Vec4f> tangent; tangent.resize(t.size());
+                ResizableExtVector<Coord> tangent1; tangent1.resize(t.size());
+                ResizableExtVector<Coord> tangent2; tangent2.resize(t.size());
+
+                // see http://www.terathon.com/code/tangent.php
+
+                for (unsigned int i=0; i<triangles.size(); i++)
+                {
+                    int i1 = triangles[i][0];
+                    int i2 = triangles[i][1];
+                    int i3 = triangles[i][2];
+
+                    const Coord& v1 = x[i1];
+                    const Coord& v2 = x[i2];
+                    const Coord& v3 = x[i3];
+
+                    const TexCoord& w1 = t[i1];
+                    const TexCoord& w2 = t[i2];
+                    const TexCoord& w3 = t[i3];
+
+                    float x1 = v2[0] - v1[0];
+                    float x2 = v3[0] - v1[0];
+                    float y1 = v2[1] - v1[1];
+                    float y2 = v3[1] - v1[1];
+                    float z1 = v2[2] - v1[2];
+                    float z2 = v3[2] - v1[2];
+
+                    float s1 = w2[0] - w1[0];
+                    float s2 = w3[0] - w1[0];
+                    float t1 = w2[1] - w1[1];
+                    float t2 = w3[1] - w1[1];
+
+                    float r = 1.0f / (s1 * t2 - s2 * t1);
+                    Coord sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
+                    Coord tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
+
+                    tangent1[i1] += sdir;
+                    tangent1[i2] += sdir;
+                    tangent1[i3] += sdir;
+
+                    tangent2[i1] += tdir;
+                    tangent2[i2] += tdir;
+                    tangent2[i3] += tdir;
+                }
+
+                for (unsigned int i=0; i<quads.size(); i++)
+                {
+                    int i1 = quads[i][0];
+                    int i2 = quads[i][1];
+                    int i3 = quads[i][2];
+                    int i4 = quads[i][4];
+
+                    const Coord& v1 = x[i1];
+                    const Coord& v2 = x[i2];
+                    const Coord& v3 = x[i3];
+                    const Coord& v4 = x[i4];
+
+                    const TexCoord& w1 = t[i1];
+                    const TexCoord& w2 = t[i2];
+                    const TexCoord& w3 = t[i3];
+                    const TexCoord& w4 = t[i4];
+
+                    // triangle i1 i2 i3
+                    {
+                        float x1 = v2[0] - v1[0];
+                        float x2 = v3[0] - v1[0];
+                        float y1 = v2[1] - v1[1];
+                        float y2 = v3[1] - v1[1];
+                        float z1 = v2[2] - v1[2];
+                        float z2 = v3[2] - v1[2];
+
+                        float s1 = w2[0] - w1[0];
+                        float s2 = w3[0] - w1[0];
+                        float t1 = w2[1] - w1[1];
+                        float t2 = w3[1] - w1[1];
+
+                        float r = 1.0f / (s1 * t2 - s2 * t1);
+                        Coord sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
+                        Coord tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
+
+                        tangent1[i1] += sdir;
+                        tangent1[i2] += sdir;
+                        tangent1[i3] += sdir;
+
+                        tangent2[i1] += tdir;
+                        tangent2[i2] += tdir;
+                        tangent2[i3] += tdir;
+                    }
+
+                    // triangle i1 i3 i4
+                    {
+                        float x1 = v3[0] - v1[0];
+                        float x2 = v4[0] - v1[0];
+                        float y1 = v3[1] - v1[1];
+                        float y2 = v4[1] - v1[1];
+                        float z1 = v3[2] - v1[2];
+                        float z2 = v4[2] - v1[2];
+
+                        float s1 = w3[0] - w1[0];
+                        float s2 = w4[0] - w1[0];
+                        float t1 = w3[1] - w1[1];
+                        float t2 = w4[1] - w1[1];
+
+                        float r = 1.0f / (s1 * t2 - s2 * t1);
+                        Coord sdir((t2 * x1 - t1 * x2) * r, (t2 * y1 - t1 * y2) * r, (t2 * z1 - t1 * z2) * r);
+                        Coord tdir((s1 * x2 - s2 * x1) * r, (s1 * y2 - s2 * y1) * r, (s1 * z2 - s2 * z1) * r);
+
+                        tangent1[i1] += sdir;
+                        tangent1[i3] += sdir;
+                        tangent1[i4] += sdir;
+
+                        tangent2[i1] += tdir;
+                        tangent2[i3] += tdir;
+                        tangent2[i4] += tdir;
+                    }
+                }
+
+                for (unsigned int i=0; i<tangent.size(); i++)
+                {
+                    const Coord& normal = n[i];
+                    Coord t1 = tangent1[i];
+                    // Gram-Schmidt orthogonalize
+                    t1 -= normal * ( normal * t1 );
+                    t1.normalize();
+                    tangent[i] = t1;
+                    // Calculate handedness
+                    tangent[i][3] = ((normal.cross(t1) * tangent2[i]) < 0.0f) ? -1.0f : 1.0f;
+                }
+
+                int types[1] = { ftl::Type::get(tangent[0]) };
+                flowvr::render::ChunkVertexBuffer* vb = scene->addVertexBuffer(idVBTangent, tangent.size(), 1, types, bb);
+                vb->gen = lastPosRev;
+                memcpy(vb->data(), &(tangent[0]), vb->dataSize());
+            }
         }
         if (meshModified)
         {
             if (!idIB)
             {
                 *scratch = false;
-                idIB = module->generateID();
-                prevIB.push_back(idIB);
+                //idIB = module->generateID();
+                idIB = addIndexBuffer(scene);
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::IBUFFER_ID, "", idIB);
             }
             if (quads.empty())
@@ -1103,11 +1375,6 @@ public:
         }
     }
 };
-
-flowvr::ID FlowVRRenderMesh::idVSDefault = 0;
-flowvr::ID FlowVRRenderMesh::idPSDefault = 0;
-flowvr::ID FlowVRRenderMesh::idVSTexture = 0;
-flowvr::ID FlowVRRenderMesh::idPSTexture = 0;
 
 SOFA_DECL_CLASS(FlowVRRenderMesh)
 int FlowVRRenderMeshClass = sofa::core::RegisterObject("FlowVRRender Visual Model")
