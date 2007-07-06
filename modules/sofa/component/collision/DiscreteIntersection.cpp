@@ -68,6 +68,8 @@ DiscreteIntersection::DiscreteIntersection()
     //intersectors.add<SphereModel,     TriangleModel,     DiscreteIntersection, true>  (this);
     //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection, false> (this);
     intersectors.add<DistanceGridCollisionModel, DistanceGridCollisionModel, DiscreteIntersection, false> (this);
+    intersectors.add<DistanceGridCollisionModel, RayModel,                   DiscreteIntersection, true>  (this);
+    intersectors.add<DistanceGridCollisionModel, RayPickInteractor,          DiscreteIntersection, true>  (this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
@@ -619,6 +621,127 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
 }
 
 
+bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement& e1, Ray& e2)
+{
+    return true;
+}
+
+int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, Ray& e2, DetectionOutputVector& contacts)
+{
+    Vector3 rayOrigin(e2.origin());
+    Vector3 rayDirection(e2.direction());
+    const double rayLength = e2.l();
+
+    int nc = 0;
+    DistanceGrid* grid1 = e1.getGrid();
+    sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid1 = e1.getRigidModel();
+
+    if (rigid1)
+    {
+        Vector3 t1;
+        Matrix3 r1;
+        t1 = (*rigid1->getX())[e1.getIndex()].getCenter();
+        (*rigid1->getX())[e1.getIndex()].getOrientation().toMatrix(r1);
+
+        rayOrigin = r1.multTranspose(rayOrigin-t1);
+        rayDirection = r1.multTranspose(rayDirection);
+        // now ray infos are in grid1 space
+    }
+
+    double l0 = 0;
+    double l1 = rayLength;
+    Vector3 r0 = rayOrigin;
+    Vector3 r1 = rayOrigin + rayDirection*l1;
+
+    DistanceGrid::Coord bbmin = grid1->getBBMin(), bbmax = grid1->getBBMax();
+    // clip along each axis
+    for (int c=0; c<3 && l1>l0; c++)
+    {
+        if (rayDirection[c] > 0)
+        {
+            // test if the ray is inside
+            if (r1[c] < bbmin[c] || r0[c] > bbmax[c])
+            { l1 = 0; break; }
+            if (r0[c] < bbmin[c])
+            {
+                // intersect with p[c] == bbmin[c] plane
+                double l = (bbmin[c]-rayOrigin[c]) / rayDirection[c];
+                if(l0 < l)
+                {
+                    l0 = l;
+                    r0 = rayOrigin + rayDirection*l0;
+                }
+            }
+            if (r1[c] > bbmax[c])
+            {
+                // intersect with p[c] == bbmax[c] plane
+                double l = (bbmax[c]-rayOrigin[c]) / rayDirection[c];
+                if(l1 > l)
+                {
+                    l1 = l;
+                    r1 = rayOrigin + rayDirection*l1;
+                }
+            }
+        }
+        else
+        {
+            // test if the ray is inside
+            if (r0[c] < bbmin[c] || r1[c] > bbmax[c])
+            { l1 = 0; break; }
+            if (r0[c] > bbmax[c])
+            {
+                // intersect with p[c] == bbmax[c] plane
+                double l = (bbmax[c]-rayOrigin[c]) / rayDirection[c];
+                if(l0 < l)
+                {
+                    l0 = l;
+                    r0 = rayOrigin + rayDirection*l0;
+                }
+            }
+            if (r1[c] < bbmin[c])
+            {
+                // intersect with p[c] == bbmin[c] plane
+                double l = (bbmin[c]-rayOrigin[c]) / rayDirection[c];
+                if(l1 > l)
+                {
+                    l1 = l;
+                    r1 = rayOrigin + rayDirection*l1;
+                }
+            }
+        }
+
+    }
+
+    if (l0 < l1)
+    {
+        // some part of the ray is inside the grid
+        Vector3 p = rayOrigin + rayDirection*l0;
+        double dist = grid1->interp(p);
+        double epsilon = grid1->getCellWidth().norm()*0.1f;
+        while (l0 < l1 && (dist > 0 || dist < -epsilon))
+        {
+            l0 += dist;
+            p = rayOrigin + rayDirection*l0;
+            dist = grid1->interp(p);
+        }
+        if (dist < 0)
+        {
+            // intersection found
+
+            contacts.resize(contacts.size()+1);
+            DetectionOutput *detection = &*(contacts.end()-1);
+
+            detection->point[0] = p;
+            detection->point[1] = e2.origin() + e2.direction()*l0;
+            detection->normal = -e2.direction(); // normal in global space from p1's surface
+            detection->distance = dist;
+            detection->elem.first = e1;
+            detection->elem.second = e2;
+            ++nc;
+        }
+    }
+    return nc;
+}
 
 
 } // namespace collision

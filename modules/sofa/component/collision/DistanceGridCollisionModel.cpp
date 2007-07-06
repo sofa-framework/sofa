@@ -24,6 +24,14 @@ using namespace defaulttype;
 
 void DistanceGridCollisionModel::draw(int index)
 {
+    if (rigid!=NULL)
+    {
+        glPushMatrix();
+        float m[16];
+        (*rigid->getX())[index].writeOpenGlMatrix( m );
+        glMultMatrixf(m);
+    }
+
     DistanceGrid* grid = getGrid(index);
     DistanceGrid::Coord corners[8];
     for(unsigned int i=0; i<8; i++)
@@ -77,7 +85,7 @@ void DistanceGridCollisionModel::draw(int index)
     }
     glEnd();
 
-    const float maxdist = (grid->getBBMax()-grid->getBBMin()).norm()*0.1;
+    const float maxdist = (grid->getBBMax()-grid->getBBMin()).norm()*0.1f;
 
     /*
     glBegin(GL_POINTS);
@@ -129,6 +137,11 @@ void DistanceGridCollisionModel::draw(int index)
         }
     }
     glEnd();
+
+    if (rigid!=NULL)
+    {
+        glPopMatrix();
+    }
 }
 
 DistanceGridCollisionModel::DistanceGridCollisionModel()
@@ -207,14 +220,6 @@ void DistanceGridCollisionModel::draw()
     if (!isActive()) return;
     if (getContext()->getShowCollisionModels())
     {
-        if (rigid!=NULL)
-        {
-            glPushMatrix();
-            float m[16];
-            (*rigid->getX())[0].writeOpenGlMatrix( m );
-            glMultMatrixf(m);
-        }
-
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDisable(GL_LIGHTING);
@@ -230,11 +235,6 @@ void DistanceGridCollisionModel::draw()
         glPointSize(1);
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-        if (rigid!=NULL)
-        {
-            glPopMatrix();
-        }
     }
     if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<core::VisualModel*>(getPrevious())->draw();
@@ -317,7 +317,73 @@ bool DistanceGrid::release()
 
 DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
-    if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")
+    if (filename == "#cube")
+    {
+        float dim = (float)scale;
+        int np = 5;
+        Coord bbmin(-dim, -dim, -dim), bbmax(dim,dim,dim);
+        std::cout << "bbox = <"<<bbmin<<">-<"<<bbmax<<">"<<std::endl;
+        if (pmin[0]<=pmax[0])
+        {
+            pmin = bbmin;
+            pmax = bbmax;
+            Coord margin = (bbmax-bbmin)*0.1;
+            pmin -= margin;
+            pmax += margin;
+        }
+        else
+        {
+            for (int c=0; c<3; c++)
+            {
+                if (bbmin[c] < pmin[c]) pmin[c] = bbmin[c];
+                if (bbmax[c] > pmax[c]) pmax[c] = bbmax[c];
+            }
+        }
+        std::cout << "Creating cube distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
+        DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
+        if (np > 1)
+        {
+            int nbp = np*np*np - (np-2)*(np-2)*(np-2);
+            std::cout << "Copying "<<nbp<<" cube vertices."<<std::endl;
+            grid->meshPts.resize(nbp);
+
+            for (int i=0,z=0; z<np; z++)
+                for (int y=0; y<np; y++)
+                    for (int x=0; x<np; x++)
+                        if (z==0 || z==np-1 || y==0 || y==np-1 || x==0 || x==np-1)
+                            grid->meshPts[i++] = Coord(x*dim*2/(np-1) - dim, y*dim*2/(np-1) - dim, z*dim*2/(np-1) - dim);
+        }
+
+        std::cout << "Computing distance field."<<std::endl;
+
+        Real dim2 = dim*0.75f; // add some 'roundness' to the cubes corner
+
+        for (int i=0,z=0; z<nz; z++)
+            for (int y=0; y<ny; y++)
+                for (int x=0; x<nx; x++,i++)
+                {
+                    Coord p = grid->coord(x,y,z);
+                    Coord s = p;
+                    bool out = false;
+                    for (int c=0; c<3; c++)
+                    {
+                        if (s[c] < -dim2) { s[c] = -dim2; out = true; }
+                        else if (s[c] >  dim2) { s[c] =  dim2; out = true; }
+                    }
+                    Real d;
+                    if (out)
+                        d = (p - s).norm();
+                    else
+                        d = rmax(rmax(rabs(s[0]),rabs(s[1])),rabs(s[2])) - dim2;
+                    grid->dists[i] = d - (dim-dim2);
+                }
+        //grid->computeBBox();
+        grid->bbmin = bbmin;
+        grid->bbmax = bbmax;
+        std::cout << "Distance grid creation DONE."<<std::endl;
+        return grid;
+    }
+    else if (filename.length()>4 && filename.substr(filename.length()-4) == ".raw")
     {
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         std::ifstream in(filename.c_str(), std::ios::in | std::ios::binary);

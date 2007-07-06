@@ -265,12 +265,13 @@ OdeSolver* createSolverCGImplicitCGImplicit(odesolver::CGImplicitSolver& solver1
 {
     odesolver::CGImplicitSolver* solver = new odesolver::CGImplicitSolver();
     solver->f_maxIter.setValue( solver1.f_maxIter.getValue() > solver2.f_maxIter.getValue() ? solver1.f_maxIter.getValue() : solver2.f_maxIter.getValue() );
-
+    solver->f_tolerance.setValue( solver1.f_tolerance.getValue() < solver2.f_tolerance.getValue() ? solver1.f_tolerance.getValue() : solver2.f_tolerance.getValue());
     solver->f_smallDenominatorThreshold.setValue( solver1.f_smallDenominatorThreshold.getValue() < solver2.f_smallDenominatorThreshold.getValue() ? solver1.f_smallDenominatorThreshold.getValue() : solver2.f_smallDenominatorThreshold.getValue());
 
-    solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue() < solver2.f_rayleighStiffness.getValue() ? solver1.f_rayleighStiffness.getValue() : solver2.f_rayleighStiffness.getValue() );
+    solver->f_rayleighStiffness.setValue( solver1.f_rayleighStiffness.getValue() > solver2.f_rayleighStiffness.getValue() ? solver1.f_rayleighStiffness.getValue() : solver2.f_rayleighStiffness.getValue() );
 
-    solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
+    solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() > solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
+    solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() > solver2.f_velocityDamping.getValue() ? solver1.f_velocityDamping.getValue() : solver2.f_velocityDamping.getValue());
     return solver;
 }
 

@@ -45,10 +45,10 @@ protected:
     class Spring
     {
     public:
-        int     m1, m2;		// the two extremities of the spring: masses m1 and m2
-        double  ks;			// spring stiffness
-        double  kd;			// damping factor
-        double  initpos;	// rest length of the spring
+        int     m1, m2;  ///< the two extremities of the spring: masses m1 and m2
+        double  ks;      ///< spring stiffness
+        double  kd;      ///< damping factor
+        double  initpos; ///< rest length of the spring
 
         Spring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0)
             : m1(m1), m2(m2), ks(ks), kd(kd), initpos(initpos)
