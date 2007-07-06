@@ -27,6 +27,7 @@
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+#include <sofa/core/Mapping.inl>
 
 namespace sofa
 {
@@ -64,8 +65,8 @@ int RigidMappingClass = core::RegisterObject("Set the positions and velocities o
         .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > > >()
         ;
 
-// template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-// template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
+template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
 
 template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
 template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;

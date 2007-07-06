@@ -29,6 +29,7 @@ public:
     static Real maxDist() { return (Real)1e10; }
     typedef Vec3f Coord;
     typedef helper::vector<Real> VecReal;
+    typedef helper::vector<Coord> VecCoord;
 
     DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax);
 
@@ -37,6 +38,12 @@ public:
 
     /// Load or reuse a distance grid
     static DistanceGrid* loadShared(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
+
+    /// Add one reference to this grid. Note that loadShared already does this.
+    DistanceGrid* addRef();
+
+    /// Release one reference, deleting this grid if this is the last
+    bool release();
 
     /// Save current grid
     bool save(const std::string& filename);
@@ -155,6 +162,41 @@ public:
         return interp(i, coefs);
     }
 
+    Coord grad(int index, const Coord& coefs) const
+    {
+        // val = dist[0][0][0] * (1-x) * (1-y) * (1-z)
+        //     + dist[1][0][0] * (  x) * (1-y) * (1-z)
+        //     + dist[0][1][0] * (1-x) * (  y) * (1-z)
+        //     + dist[1][1][0] * (  x) * (  y) * (1-z)
+        //     + dist[0][0][1] * (1-x) * (1-y) * (  z)
+        //     + dist[1][0][1] * (  x) * (1-y) * (  z)
+        //     + dist[0][1][1] * (1-x) * (  y) * (  z)
+        //     + dist[1][1][1] * (  x) * (  y) * (  z)
+        // dval / dx = (dist[1][0][0]-dist[0][0][0]) * (1-y) * (1-z)
+        //           + (dist[1][1][0]-dist[0][1][0]) * (  y) * (1-z)
+        //           + (dist[1][0][1]-dist[0][0][1]) * (1-y) * (  z)
+        //           + (dist[1][1][1]-dist[0][1][1]) * (  y) * (  z)
+        const Real dist000 = dists[index          ];
+        const Real dist100 = dists[index+1        ];
+        const Real dist010 = dists[index  +nx     ];
+        const Real dist110 = dists[index+1+nx     ];
+        const Real dist001 = dists[index     +nxny];
+        const Real dist101 = dists[index+1   +nxny];
+        const Real dist011 = dists[index  +nx+nxny];
+        const Real dist111 = dists[index+1+nx+nxny];
+        return Coord(
+                interp(coefs[2],interp(coefs[1],dist100-dist000,dist110-dist010),interp(coefs[1],dist101-dist001,dist111-dist011))*invCellWidth[0],
+                interp(coefs[2],interp(coefs[0],dist010-dist000,dist110-dist100),interp(coefs[0],dist011-dist001,dist111-dist101))*invCellWidth[1],
+                interp(coefs[1],interp(coefs[0],dist001-dist000,dist101-dist100),interp(coefs[0],dist011-dist010,dist111-dist110))*invCellWidth[2]);
+    }
+
+    Coord grad(const Coord& p) const
+    {
+        Coord coefs;
+        int i = index(p, coefs);
+        return grad(i, coefs);
+    }
+
     Real eval(const Coord& x) const
     {
         Real d;
@@ -221,9 +263,10 @@ public:
         return d2;
     }
 
-    vector<Coord> meshPts;
+    VecCoord meshPts;
 
 protected:
+    int nbRef;
     VecReal dists;
     const int nx,ny,nz, nxny, nxnynz;
     const Coord pmin, pmax;
@@ -331,6 +374,8 @@ public:
 
     DistanceGrid* getGrid();
 
+    sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* getRigidModel();
+
     void setGrid(DistanceGrid* surf);
 };
 
@@ -354,6 +399,10 @@ protected:
 
     void updateGrid();
 public:
+    typedef Vec3Types DataTypes;
+    typedef DistanceGridCollisionElement Element;
+
+    DataField< bool > usePoints;
 
     DistanceGridCollisionModel();
 
@@ -411,6 +460,8 @@ inline DistanceGridCollisionElement::DistanceGridCollisionElement(core::Collisio
 
 inline DistanceGrid* DistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
 inline void DistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
+
+inline sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* DistanceGridCollisionElement::getRigidModel() { return model->getRigidModel(); }
 
 } // namespace collision
 

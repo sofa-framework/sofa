@@ -33,6 +33,7 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/SphereTreeModel.h>
+#include <sofa/component/collision/DistanceGridCollisionModel.h>
 
 namespace sofa
 {
@@ -67,6 +68,7 @@ public:
     bool testIntersection(SingleSphere&, Triangle&);
     //bool testIntersection(Sphere& , Triangle&);
     //bool testIntersection(Triangle& ,Triangle&);
+    bool testIntersection(DistanceGridCollisionElement&, DistanceGridCollisionElement&);
 
     int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
     int computeIntersection(Sphere&, Sphere&, DetectionOutputVector&);
@@ -77,6 +79,7 @@ public:
     int computeIntersection(SingleSphere&, Triangle&, DetectionOutputVector&);
     //int computeIntersection(Sphere&, Triangle&, DetectionOutputVector&);
     //int computeIntersection(Triangle&, Triangle&, DetectionOutputVector&);
+    int computeIntersection(DistanceGridCollisionElement&, DistanceGridCollisionElement&, DetectionOutputVector&);
 
 };
 

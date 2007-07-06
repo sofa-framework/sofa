@@ -67,6 +67,7 @@ DiscreteIntersection::DiscreteIntersection()
     //intersectors.add<SphereTreeModel, SphereModel,       DiscreteIntersection, true>  (this);
     //intersectors.add<SphereModel,     TriangleModel,     DiscreteIntersection, true>  (this);
     //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection, false> (this);
+    intersectors.add<DistanceGridCollisionModel, DistanceGridCollisionModel, DiscreteIntersection, false> (this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
@@ -474,6 +475,151 @@ int DiscreteIntersection::computeIntersection(SingleSphere& sph1, Ray& ray2, Det
 //	std::cout<<"Distance correction between Triangle - Triangle"<<std::endl;
 //	return 0;
 //}
+
+
+
+
+
+
+
+
+bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement&, DistanceGridCollisionElement&)
+{
+    return true;
+}
+
+//#define DEBUG_XFORM
+
+int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, DistanceGridCollisionElement& e2, DetectionOutputVector& contacts)
+{
+    int nc = 0;
+    DistanceGrid* grid1 = e1.getGrid();
+    DistanceGrid* grid2 = e2.getGrid();
+    sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid1 = e1.getRigidModel();
+    sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid2 = e2.getRigidModel();
+
+    bool useXForm = false;
+
+    Vector3 t1;
+    Matrix3 r1;
+    if (rigid1)
+    {
+        t1 = (*rigid1->getX())[e1.getIndex()].getCenter();
+        (*rigid1->getX())[e1.getIndex()].getOrientation().toMatrix(r1);
+        useXForm = true;
+    }
+    else r1.identity();
+
+    Vector3 t2;
+    Matrix3 r2;
+    if (rigid2)
+    {
+        t2 = (*rigid2->getX())[e2.getIndex()].getCenter();
+        (*rigid2->getX())[e2.getIndex()].getOrientation().toMatrix(r2);
+        useXForm = true;
+    }
+    else r2.identity();
+
+    // transform from grid1 to grid2
+    Vec3f translation;
+    Mat3x3f rotation;
+
+    if (useXForm)
+    {
+        // p = t1+r1*p1 = t2+r2*p2
+        // r2*p2 = t1-t2+r1*p1
+        // p2 = r2t*(t1-p2) + r2t*r1*p1
+        translation = r2.multTranspose(t1-t2);
+        rotation = r2.multTranspose ( r1 );
+    }
+    else rotation.identity();
+
+    // first points of e1 against distance field of e2
+    const DistanceGrid::VecCoord& x1 = grid1->meshPts;
+    if (!x1.empty() && e1.getCollisionModel()->usePoints.getValue())
+    {
+        for (unsigned int i=0; i<x1.size(); i++)
+        {
+            Vec3f p1 = x1[i];
+            Vec3f p2 = translation + rotation*p1;
+#ifdef DEBUG_XFORM
+            Vec3f p1b = rotation.multTranspose(p2-translation);
+            Vec3f gp1 = t1+r1*p1;
+            Vec3f gp2 = t2+r2*p2;
+            if ((p1b-p1).norm2() > 0.0001)
+                std::cerr << "ERROR1a: " << p1 << " -> " << p2 << " -> " << p1b << std::endl;
+            if ((gp1-gp2).norm2() > 0.0001)
+                std::cerr << "ERROR1b: " << p1 << " -> " << gp1 << "    " << p2 << " -> " << gp2 << std::endl;
+#endif
+
+            if (!grid2->inBBox( p2 )) continue;
+
+            float d = grid2->interp(p2);
+            if (d >= 0.0f) continue;
+
+            DistanceGrid::Coord grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
+            grad.normalize();
+
+            p2 -= grad * d; // push p2 back to the surface
+
+            contacts.resize(contacts.size()+1);
+            DetectionOutput *detection = &*(contacts.end()-1);
+
+            detection->point[0] = p1;
+            detection->point[1] = p2;
+            detection->normal = r2 * -grad; // normal in global space from p1's surface
+            detection->distance = d;
+            detection->elem.first = e1;
+            detection->elem.second = e2;
+            ++nc;
+        }
+    }
+
+    // then points of e2 against distance field of e1
+    const DistanceGrid::VecCoord& x2 = grid2->meshPts;
+    if (!x2.empty() && e2.getCollisionModel()->usePoints.getValue())
+    {
+        for (unsigned int i=0; i<x2.size(); i++)
+        {
+            Vec3f p2 = x2[i];
+            Vec3f p1 = rotation.multTranspose(p2-translation);
+#ifdef DEBUG_XFORM
+            Vec3f p2b = translation + rotation*p1;
+            Vec3f gp1 = t1+r1*p1;
+            Vec3f gp2 = t2+r2*p2;
+            if ((p2b-p2).norm2() > 0.0001)
+                std::cerr << "ERROR2a: " << p2 << " -> " << p1 << " -> " << p2b << std::endl;
+            else if ((gp1-gp2).norm2() > 0.0001)
+                std::cerr << "ERROR2b: " << p1 << " -> " << gp1 << "    " << p2 << " -> " << gp2 << std::endl;
+#endif
+
+            if (!grid1->inBBox( p1 )) continue;
+
+            float d = grid1->interp(p1);
+            if (d >= 0.0f) continue;
+
+            DistanceGrid::Coord grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+            grad.normalize();
+
+            p1 -= grad * d; // push p1 back to the surface
+
+            contacts.resize(contacts.size()+1);
+            DetectionOutput *detection = &*(contacts.end()-1);
+
+            detection->point[0] = p1;
+            detection->point[1] = p2;
+            detection->normal = r1 * grad; // normal in global space from p1's surface
+            detection->distance = d;
+            detection->elem.first = e1;
+            detection->elem.second = e2;
+            ++nc;
+        }
+    }
+    return nc;
+}
+
+
+
 
 } // namespace collision
 

@@ -336,6 +336,21 @@ public:
     }
 
 
+    /// Transposed Matrix multiplication operator.
+    template <int P>
+    Mat<C,P,real> multTranspose(const Mat<L,P,real>& m) const
+    {
+        Mat<C,P,real> r;
+        for(int i=0; i<C; i++)
+            for(int j=0; j<P; j++)
+            {
+                r[i][j]=(*this)[0][i] * m[0][j];
+                for(int k=1; k<L; k++)
+                    r[i][j] += (*this)[k][i] * m[k][j];
+            }
+        return r;
+    }
+
 
     /// Scalar multiplication operator.
     Mat<L,C,real> operator*(real f) const

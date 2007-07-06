@@ -45,6 +45,18 @@ Mapping<In,Out>::~Mapping()
 }
 
 template <class In, class Out>
+In* Mapping<In,Out>::getFromModel()
+{
+    return this->fromModel;
+}
+
+template <class In, class Out>
+Out* Mapping<In,Out>::getToModel()
+{
+    return this->toModel;
+}
+
+template <class In, class Out>
 objectmodel::BaseObject* Mapping<In,Out>::getFrom()
 {
     return this->fromModel;

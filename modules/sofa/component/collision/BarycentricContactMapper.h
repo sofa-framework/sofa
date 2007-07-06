@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
 
 #include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/collision/SphereModel.h>
@@ -33,6 +34,7 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
+#include <sofa/component/collision/DistanceGridCollisionModel.h>
 #include <iostream>
 
 
@@ -247,6 +249,92 @@ public:
     double radius(const Sphere& e)
     {
         return e.r();
+    }
+};
+
+template <>
+class BarycentricContactMapper<DistanceGridCollisionModel>
+{
+public:
+    typedef DistanceGridCollisionModel MCollisionModel;
+    typedef sofa::defaulttype::Vec3Types DataTypes;
+    typedef sofa::core::componentmodel::behavior::MechanicalState<Rigid3Types> InMechanicalState;
+    typedef sofa::core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
+    typedef sofa::component::MechanicalObject<DataTypes> MMechanicalObject;
+    typedef mapping::RigidMapping<core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    MCollisionModel* model;
+    MMapping* mapping;
+    int nbp;
+
+    BarycentricContactMapper(MCollisionModel* model)
+        : model(model), mapping(NULL), nbp(0)
+    {
+    }
+
+    ~BarycentricContactMapper()
+    {
+        if (mapping!=NULL)
+        {
+            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getRigidModel()->getContext());
+            if (parent!=NULL)
+            {
+                simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
+                child->removeObject(mapping->getTo());
+                child->removeObject(mapping);
+                parent->removeChild(child);
+                delete mapping->getTo();
+                delete mapping;
+                delete child;
+            }
+        }
+    }
+
+    MMechanicalState* createMapping()
+    {
+        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getRigidModel()->getContext());
+        if (parent==NULL)
+        {
+            std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
+            return NULL;
+        }
+        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+        MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
+        mapping = new MMapping(model->getRigidModel(), mstate); child->addObject(mapping);
+        return mstate;
+    }
+
+    void resize(int size)
+    {
+        if (mapping!=NULL)
+        {
+            mapping->clear();
+            mapping->getMechTo()->resize(size);
+            nbp = 0;
+        }
+    }
+
+    int addPoint(const Vector3& P, int index)
+    {
+        mapping->index.setValue(index);
+        MMechanicalState* mstate = mapping->getToModel();
+        int i = mstate->getX()->size();
+        mstate->resize(i+1);
+        (*mstate->getX())[i] = P;
+        return i;
+    }
+
+    void update()
+    {
+        if (mapping!=NULL)
+        {
+            mapping->init();
+            mapping->updateMapping();
+        }
+    }
+
+    double radius(const MCollisionModel::Element& /*e*/)
+    {
+        return 0.0;
     }
 };
 

@@ -52,26 +52,81 @@ void DistanceGridCollisionModel::draw(int index)
     glEnd();
     glDisable(GL_BLEND);
     glDepthMask(1);
+    for(unsigned int i=0; i<8; i++)
+        corners[i] = grid->getBBCorner(i);
+    //glEnable(GL_BLEND);
+    //glDepthMask(0);
+    if (isStatic())
+        glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+    else
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glBegin(GL_LINES);
+    {
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
+    }
+    glEnd();
 
-    const float maxdist = (grid->getPMax()-grid->getPMin()).norm()*0.1;
+    const float maxdist = (grid->getBBMax()-grid->getBBMin()).norm()*0.1;
 
+    /*
     glBegin(GL_POINTS);
     {
-
-        for (int z=0, ind=0; z<grid->getNz(); z++)
-            for (int y=0; y<grid->getNy(); y++)
-                for (int x=0; x<grid->getNx(); x++, ind++)
-                {
-                    DistanceGrid::Coord p = grid->coord(x,y,z);
-                    DistanceGrid::Real d = (*grid)[ind];
-                    if (rabs(d) > maxdist) continue;
-                    d /= maxdist;
-                    if (d<0)
-                        glColor3d(1+d*0.25, 0, 1+d);
-                    else
-                        glColor3d(0, 1-d*0.25, 1-d);
-                    glVertex3fv(p.ptr());
-                }
+    for (int z=0, ind=0; z<grid->getNz(); z++)
+    for (int y=0; y<grid->getNy(); y++)
+    for (int x=0; x<grid->getNx(); x++, ind++)
+    {
+        DistanceGrid::Coord p = grid->coord(x,y,z);
+        DistanceGrid::Real d = (*grid)[ind];
+        if (rabs(d) > maxdist) continue;
+            d /= maxdist;
+        if (d<0)
+    	glColor3d(1+d*0.25, 0, 1+d);
+        else
+    	glColor3d(0, 1-d*0.25, 1-d);
+        glVertex3fv(p.ptr());
+    }
+    }
+    */
+    glColor3d(1, 1 ,1);
+    glBegin(GL_POINTS);
+    for (unsigned int i=0; i<grid->meshPts.size(); i++)
+    {
+        DistanceGrid::Coord p = grid->meshPts[i];
+        glVertex3fv(p.ptr());
+    }
+    glEnd();
+    glBegin(GL_LINES);
+    for (unsigned int i=0; i<grid->meshPts.size(); i++)
+    {
+        DistanceGrid::Coord p = grid->meshPts[i];
+        glColor3d(1, 1 ,1);
+        DistanceGrid::Coord grad = grid->grad(p);
+        grad.normalize();
+        for (int j = -2; j <= 2; j++)
+        {
+            DistanceGrid::Coord p2 = p + grad * (j*maxdist/2);
+            DistanceGrid::Real d = grid->eval(p2);
+            //if (rabs(d) > maxdist) continue;
+            d /= maxdist;
+            if (d<0)
+                glColor3d(1+d*0.25, 0, 1+d);
+            else
+                glColor3d(0, 1-d*0.25, 1-d);
+            glVertex3fv(p2.ptr());
+            if (j>-2 && j < 2)
+                glVertex3fv(p2.ptr());
+        }
     }
     glEnd();
 }
@@ -84,6 +139,7 @@ DistanceGridCollisionModel::DistanceGridCollisionModel()
     , ny( dataField( &ny, 64, "ny", "number of values on Y axis") )
     , nz( dataField( &nz, 64, "nz", "number of values on Z axis") )
     , dumpfilename( dataField( &dumpfilename, "dumpfilename","write distance grid to specified file"))
+    , usePoints( dataField( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
 {
     ffd = NULL;
     ffdGrid = NULL;
@@ -93,7 +149,7 @@ DistanceGridCollisionModel::DistanceGridCollisionModel()
 DistanceGridCollisionModel::~DistanceGridCollisionModel()
 {
     for (unsigned int i=0; i<elems.size(); i++)
-        if (elems[i]!=NULL) delete elems[i];
+        if (elems[i]!=NULL) elems[i]->release();
 }
 
 void DistanceGridCollisionModel::init()
@@ -148,37 +204,40 @@ void DistanceGridCollisionModel::updateGrid()
 
 void DistanceGridCollisionModel::draw()
 {
-    if (!isActive() || !getContext()->getShowCollisionModels()) return;
-
-    if (rigid!=NULL)
+    if (!isActive()) return;
+    if (getContext()->getShowCollisionModels())
     {
-        glPushMatrix();
-        float m[16];
-        (*rigid->getX())[0].writeOpenGlMatrix( m );
-        glMultMatrixf(m);
-    }
+        if (rigid!=NULL)
+        {
+            glPushMatrix();
+            float m[16];
+            (*rigid->getX())[0].writeOpenGlMatrix( m );
+            glMultMatrixf(m);
+        }
 
-    if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    glDisable(GL_LIGHTING);
-    if (isStatic())
-        glColor3f(0.5, 0.5, 0.5);
-    else
-        glColor3f(1.0, 0.0, 0.0);
-    glPointSize(1);
-    for (unsigned int i=0; i<elems.size(); i++)
-    {
-        draw(i);
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDisable(GL_LIGHTING);
+        if (isStatic())
+            glColor3f(0.5, 0.5, 0.5);
+        else
+            glColor3f(1.0, 0.0, 0.0);
+        glPointSize(3);
+        for (unsigned int i=0; i<elems.size(); i++)
+        {
+            draw(i);
+        }
+        glPointSize(1);
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        if (rigid!=NULL)
+        {
+            glPopMatrix();
+        }
     }
-    if (getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<core::VisualModel*>(getPrevious())->draw();
-
-    if (rigid!=NULL)
-    {
-        glPopMatrix();
-    }
 }
 
 /// Create or update the bounding volume hierarchy.
@@ -201,6 +260,7 @@ void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         translation = (*rigid->getX())[0].getCenter();
         (*rigid->getX())[0].getOrientation().toMatrix(rotation);
     }
+    else rotation.identity();
 
     cubeModel->resize(size);
     for (int i=0; i<size; i++)
@@ -211,7 +271,7 @@ void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         {
             Vector3 corner = translation + rotation * elems[i]->getBBCorner(0);
             emin = corner;
-            emin = emax;
+            emax = emin;
             for (int j=1; j<8; j++)
             {
                 corner = translation + rotation * elems[i]->getBBCorner(j);
@@ -231,12 +291,28 @@ void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 }
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
-    : nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz),
+    : nbRef(1), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz),
       pmin(pmin), pmax(pmax),
       cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1)),
       invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
 {
     dists.resize(nxnynz);
+}
+
+/// Add one reference to this grid. Note that loadShared already does this.
+DistanceGrid* DistanceGrid::addRef()
+{
+    ++nbRef;
+    return this;
+}
+
+/// Release one reference, deleting this grid if this is the last
+bool DistanceGrid::release()
+{
+    if (--nbRef != 0)
+        return false;
+    delete this;
+    return true;
 }
 
 DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int nx, int ny, int nz, Coord pmin, Coord pmax)
@@ -939,7 +1015,7 @@ DistanceGrid* DistanceGrid::loadShared(const std::string& filename, double scale
     std::map<DistanceGridParams, DistanceGrid*>& shared = getShared();
     std::map<DistanceGridParams, DistanceGrid*>::iterator it = shared.find(params);
     if (it != shared.end())
-        return it->second;
+        return it->second->addRef();
     else
     {
         return shared[params] = load(filename, scale, nx, ny, nz, pmin, pmax);

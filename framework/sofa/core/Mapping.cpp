@@ -44,7 +44,10 @@ template class Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes>
 template class Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> >;
 template class Mapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> >;
 template class Mapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > ;
-//template class Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3dTypes> >;
+template class Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3dTypes> >;
+template class Mapping< MechanicalState<StdRigidTypes<3,double> >, MechanicalState<Vec3fTypes> >;
+template class Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3dTypes> >;
+template class Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3fTypes> >;
 
 // Mech -> Mapped
 template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> >;

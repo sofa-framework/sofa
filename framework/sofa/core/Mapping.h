@@ -69,6 +69,11 @@ public:
     virtual void setModels(In* from, Out* to);
 
     /// Return the pointer to the input model.
+    In* getFromModel();
+    /// Return the pointer to the output model.
+    Out* getToModel();
+
+    /// Return the pointer to the input model.
     objectmodel::BaseObject* getFrom();
     /// Return the pointer to the output model.
     objectmodel::BaseObject* getTo();
