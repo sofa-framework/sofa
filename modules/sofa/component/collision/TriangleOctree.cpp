@@ -50,7 +50,17 @@ namespace collision
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
 
-
+TriangleOctree::~TriangleOctree ()
+{
+    for(int i=0; i<8; i++)
+    {
+        if(childVec[i])
+        {
+            delete childVec[i];
+            childVec[i]=NULL;
+        }
+    }
+}
 void TriangleOctree::draw ()
 {
 
@@ -74,6 +84,8 @@ void TriangleOctree::draw ()
 void TriangleOctree::insert (double _x, double _y, double _z,
         double inc, int t)
 {
+
+
     if (inc >= size)
     {
         objects.push_back (t);
@@ -487,25 +499,23 @@ int TriangleOctree::traceVolume (const Vector3 & origin,
         return -1;
 
 
-    if (objects.size ())
+    if (objects.size ()||internal)
     {
-        int tmpInputTriangle =
-            findInputTriangle (inputTriangle, origin, direction);
 
-        if (inputTriangle != -1 && tmpInputTriangle == -1)
+        if (inputTriangle != -1 )
         {
 
             int dx;
             int dy;
             int dz;
-
+//std::cerr<<"not -1"<<std::endl;
             for (int i = 0; i < vertexVec.size (); i++)
             {
-                int id = vertexVec[i]->childId;
+                unsigned int id = vertexVec[i]->childId;
 
                 TriangleOctree *tp = vertexVec[i]->parent;
                 double size2 = tp->size / 2;
-                if (tp->childVec[id])
+                if (!tp->childVec[id])
                 {
                     dz = id & 1;
                     id >>= 1;
@@ -523,7 +533,45 @@ int TriangleOctree::traceVolume (const Vector3 & origin,
             }
 
         }
-        inputTriangle = tmpInputTriangle;
+
+        inputTriangle = (inputTriangle != -1) ? -1 : 1;
+        return inputTriangle;
+        /*   int tmpInputTriangle =
+             findInputTriangle (inputTriangle, origin, direction);
+
+           if (inputTriangle != -1 && tmpInputTriangle == -1)
+             {
+
+        int dx;
+        int dy;
+        int dz;
+
+        for (int i = 0; i < vertexVec.size (); i++)
+          {
+            int id = vertexVec[i]->childId;
+
+            TriangleOctree *tp = vertexVec[i]->parent;
+            double size2 = tp->size / 2;
+            if (tp->childVec[id])
+              {
+        	dz = id & 1;
+        	id >>= 1;
+        	dy = id & 1;
+        	id >>= 1;
+        	dx = id & 1;
+
+
+        	tp->childVec[vertexVec[i]->childId] =
+        	  new TriangleOctree (tp->tm, tp->x + dx * size2,
+        			      tp->y + dy * size2,
+        			      tp->z + dz * size2, size2);
+        	tp->childVec[vertexVec[i]->childId]->internal = true;
+              }
+          }
+
+             }
+           inputTriangle = tmpInputTriangle;
+        */
     }
 
 
@@ -844,11 +892,11 @@ int TriangleOctree::traceVolume (Vector3 origin, Vector3 direction)
 int TriangleOctree::traceVolume (int n)
 {
     double inc = 2 * (double) CUBE_SIZE / n;
-    for (x = -CUBE_SIZE; x < CUBE_SIZE; x += inc)
-        for (y = -CUBE_SIZE; y < CUBE_SIZE; y += inc)
+    for (double i = -CUBE_SIZE; i < CUBE_SIZE; i += inc)
+        for (double j = -CUBE_SIZE; j < CUBE_SIZE; j += inc)
         {
 
-            traceVolume (Vector3 (-CUBE_SIZE, x, y), Vector3 (1, 0, 0));
+            traceVolume (Vector3 (-CUBE_SIZE, i, j), Vector3 (1, 0, 0));
         }
 }
 

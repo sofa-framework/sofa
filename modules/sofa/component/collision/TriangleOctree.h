@@ -25,6 +25,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_TRIANGLEOCTREE_H
 #define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREE_H
 
+#include <sofa/component/collision/TriangleOctreeModel.h>
+
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
@@ -48,7 +50,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-
+class TriangleOctreeModel;
 class TriangleOctree
 {
 public:
@@ -68,13 +70,13 @@ public:
     bool val;
     bool is_leaf;
     bool internal;
-    TriangleModel *tm;
+    TriangleOctreeModel *tm;
     vector < int >objects;
     TriangleOctree *childVec[8];
 
 
-
-    TriangleOctree (TriangleModel * _tm, double _x = -CUBE_SIZE, double _y = -CUBE_SIZE, double _z = -CUBE_SIZE, double _size = 2 * CUBE_SIZE):x (_x), y (_y), z (_z), size (_size),
+    ~TriangleOctree ();
+    TriangleOctree (TriangleOctreeModel * _tm, double _x = (double)-CUBE_SIZE, double _y = (double)-CUBE_SIZE, double _z =(double) -CUBE_SIZE, double _size = 2 * CUBE_SIZE):x (_x), y (_y), z (_z), size (_size),
         tm
         (_tm)
     {

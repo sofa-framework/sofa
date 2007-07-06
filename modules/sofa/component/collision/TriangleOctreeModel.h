@@ -30,10 +30,10 @@
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/component/collision/TriangleOctreeModel.h>
+#include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/TriangleOctree.h>
 
-#define CUBE_SIZE 80
+
 /*This fixed size must be changed*/
 namespace sofa
 {
@@ -46,8 +46,8 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class TriangleOctreeModel;
-
+class TriangleOctree;
+class TriangleModel;
 
 class TriangleOctreeModel:public  TriangleModel
 {
@@ -58,7 +58,18 @@ public:
     TriangleOctree *octreeRoot;
     vector < Vector4 > octreeVec;
     void	draw();
+    virtual void computeBoundingTree(int maxDepth=0);
 
+    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0)
+    {
+        if(octreeRoot)
+        {
+            delete octreeRoot;
+            octreeRoot=NULL;
+        }
+        //buildOctree();
+        this->TriangleModel::computeContinuousBoundingTree(0);
+    }
     void buildOctree ();
     int fillOctree (int t, int d = 0, Vector3 v = Vector3 (0, 0, 0));
 };

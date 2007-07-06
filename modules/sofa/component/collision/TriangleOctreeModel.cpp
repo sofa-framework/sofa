@@ -25,7 +25,6 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/TriangleOctreeModel.h>
 #include <sofa/component/collision/CubeModel.h>
-
 #include <sofa/component/collision/Triangle.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
@@ -84,7 +83,7 @@ TriangleAABB::TriangleAABB (Triangle & t)
 
 int TriangleOctreeModelClass =
     core::RegisterObject ("collision model using a triangular mesh").add <
-    TriangleOctreeModel > ().addAlias ("Triangle");
+    TriangleOctreeModel > ().addAlias ("TriangleOctree");
 
 TriangleOctreeModel::TriangleOctreeModel ()
 {
@@ -119,8 +118,8 @@ void TriangleOctreeModel::draw ()
         glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive);
         glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular);
         glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 20);
-
-        octreeRoot->draw ();
+        if(octreeRoot)
+            octreeRoot->draw ();
 
         glColor3f (1.0f, 1.0f, 1.0f);
         glDisable (GL_LIGHTING);
@@ -174,17 +173,60 @@ int TriangleOctreeModel::fillOctree (int tId, int d, Vector3 v)
     return 0;
 
 }
+void TriangleOctreeModel::computeBoundingTree(int maxDepth)
+{
+
+
+    CubeModel* cubeModel = createPrevious<CubeModel>();
+    bool updated = updateFromTopology();
+    int size2=mstate->getX()->size();
+
+    if(octreeRoot)
+    {
+        delete octreeRoot;
+        octreeRoot=NULL;
+    }
+
+    if (updated && !cubeModel->empty()) cubeModel->resize(0);
+    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+
+    Vector3 minElem, maxElem;
+    maxElem[0]=minElem[0]=(*mstate->getX())[0][0];
+    maxElem[1]=minElem[1]=(*mstate->getX())[0][1];
+    maxElem[2]=minElem[2]=(*mstate->getX())[0][2];
+
+    cubeModel->resize(1);  // size = number of triangles
+    for (int i=1; i<size2; i++)
+    {
+        for(int c=0; c<3; c++)
+        {
+            if ((*mstate->getX())[i][c] > maxElem[c]) maxElem[c] = (*mstate->getX())[i][c];
+            if ((*mstate->getX())[i][c] < minElem[c]) minElem[c] = (*mstate->getX())[i][c];
+
+        }
+
+
+    }
+
+    cubeModel->setParentOf(0, minElem, maxElem); // define the bounding box of the current triangle
+    cubeModel->computeBoundingTree(maxDepth);
+}
+
+
 void TriangleOctreeModel::buildOctree ()
 {
     ctime_t t0, t1, t2;
-    if (octreeRoot)
-    {
-        delete octreeRoot;
-        octreeRoot = NULL;
-    }
+    //if (octreeRoot)
+    //{
+    //delete octreeRoot;
+    // octreeRoot = NULL;
+    //}
     t0 = CTime::getRefTime ();
 
     octreeRoot = new TriangleOctree (this);
+    TriangleOctree & tm2 = *octreeRoot;
+
+
     for (int i = 0; i < elems.size (); i++)
     {
 
@@ -192,16 +234,18 @@ void TriangleOctreeModel::buildOctree ()
 
     }
     t1 = CTime::getRefTime ();
-
-    octreeRoot->traceVolume (20);
+//std::cerr<<"X:"<<octreeRoot->x<<std::endl;
+//	octreeRoot->traceVolume (200);
+//	std::cerr<<"X:"<<octreeRoot->x<<std::endl;
     t2 = CTime::getRefTime ();
 
-    std::cerr << "Octree construction:" << (t1 -
-            t0) /
-            ((double) CTime::getRefTicksPerSec () /
-                    1000) << " traceVolume:" << (t2 -
-                            t1) /
-            ((double) CTime::getRefTicksPerSec () / 1000) << std::endl;
+
+//	std::cerr << "Octree construction:" << (t1 -
+//						t0) /
+//	  ((double) CTime::getRefTicksPerSec () /
+//	   1000) << " traceVolume:" << (t2 -
+//					t1) /
+//	  ((double) CTime::getRefTicksPerSec () / 1000) << std::endl;
 }
 
 }				// namespace collision
