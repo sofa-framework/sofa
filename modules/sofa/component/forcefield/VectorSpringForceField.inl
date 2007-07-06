@@ -280,8 +280,8 @@ void VectorSpringForceField<DataTypes>::addDForce()
         const Spring &s=springArray[i];
         d = dx2[e.second]-dx1[e.first];
         dforce = d*s.ks;
-        df2[e.first]+=dforce;
-        df1[e.second]-=dforce;
+        df1[e.first]+=dforce;
+        df2[e.second]-=dforce;
     }
 
 }
@@ -289,7 +289,7 @@ void VectorSpringForceField<DataTypes>::addDForce()
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::draw()
 {
-    if (getContext()->getShowForceFields()==false)
+    if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields()))
         return;
     //const VecCoord& p = *this->mstate->getX();
     const VecCoord& p1 = *this->object1->getX();
