@@ -291,10 +291,11 @@ void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 }
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
-    : nbRef(1), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz),
-      pmin(pmin), pmax(pmax),
-      cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1)),
-      invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
+    : nbRef(1), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
+    , pmin(pmin), pmax(pmax)
+    , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
+    , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
+    , cubeDim(0)
 {
     dists.resize(nxnynz);
 }
@@ -341,45 +342,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
         }
         std::cout << "Creating cube distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
-        if (np > 1)
-        {
-            int nbp = np*np*np - (np-2)*(np-2)*(np-2);
-            std::cout << "Copying "<<nbp<<" cube vertices."<<std::endl;
-            grid->meshPts.resize(nbp);
-
-            for (int i=0,z=0; z<np; z++)
-                for (int y=0; y<np; y++)
-                    for (int x=0; x<np; x++)
-                        if (z==0 || z==np-1 || y==0 || y==np-1 || x==0 || x==np-1)
-                            grid->meshPts[i++] = Coord(x*dim*2/(np-1) - dim, y*dim*2/(np-1) - dim, z*dim*2/(np-1) - dim);
-        }
-
-        std::cout << "Computing distance field."<<std::endl;
-
-        Real dim2 = dim*0.75f; // add some 'roundness' to the cubes corner
-
-        for (int i=0,z=0; z<nz; z++)
-            for (int y=0; y<ny; y++)
-                for (int x=0; x<nx; x++,i++)
-                {
-                    Coord p = grid->coord(x,y,z);
-                    Coord s = p;
-                    bool out = false;
-                    for (int c=0; c<3; c++)
-                    {
-                        if (s[c] < -dim2) { s[c] = -dim2; out = true; }
-                        else if (s[c] >  dim2) { s[c] =  dim2; out = true; }
-                    }
-                    Real d;
-                    if (out)
-                        d = (p - s).norm();
-                    else
-                        d = rmax(rmax(rabs(s[0]),rabs(s[1])),rabs(s[2])) - dim2;
-                    grid->dists[i] = d - (dim-dim2);
-                }
-        //grid->computeBBox();
-        grid->bbmin = bbmin;
-        grid->bbmax = bbmax;
+        grid->calcCubeDistance(dim, np);
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
@@ -517,6 +480,53 @@ void DistanceGrid::computeBBox()
         bbmax = pmax;
         /// \TODO compute the real bbox from the grid content
     }
+}
+
+
+/// Compute distance field for a cube of the given half-size.
+/// Also create a mesh of points using np points per axis
+void DistanceGrid::calcCubeDistance(Real dim, int np)
+{
+    cubeDim = dim;
+    if (np > 1)
+    {
+        int nbp = np*np*np - (np-2)*(np-2)*(np-2);
+        //std::cout << "Copying "<<nbp<<" cube vertices."<<std::endl;
+        meshPts.resize(nbp);
+
+        for (int i=0,z=0; z<np; z++)
+            for (int y=0; y<np; y++)
+                for (int x=0; x<np; x++)
+                    if (z==0 || z==np-1 || y==0 || y==np-1 || x==0 || x==np-1)
+                        meshPts[i++] = Coord(x*dim*2/(np-1) - dim, y*dim*2/(np-1) - dim, z*dim*2/(np-1) - dim);
+    }
+
+    //std::cout << "Computing distance field."<<std::endl;
+
+    Real dim2 = dim; //*0.75f; // add some 'roundness' to the cubes corner
+
+    for (int i=0,z=0; z<nz; z++)
+        for (int y=0; y<ny; y++)
+            for (int x=0; x<nx; x++,i++)
+            {
+                Coord p = coord(x,y,z);
+                Coord s = p;
+                bool out = false;
+                for (int c=0; c<3; c++)
+                {
+                    if (s[c] < -dim2) { s[c] = -dim2; out = true; }
+                    else if (s[c] >  dim2) { s[c] =  dim2; out = true; }
+                }
+                Real d;
+                if (out)
+                    d = (p - s).norm();
+                else
+                    d = rmax(rmax(rabs(s[0]),rabs(s[1])),rabs(s[2])) - dim2;
+                dists[i] = d - (dim-dim2);
+            }
+    //computeBBox();
+    bbmin = Coord(-dim,-dim,-dim);
+    bbmax = Coord( dim, dim, dim);
 }
 
 /// Compute distance field from given mesh

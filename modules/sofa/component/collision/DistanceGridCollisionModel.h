@@ -51,6 +51,10 @@ public:
     /// Compute distance field from given mesh
     void calcDistance(sofa::helper::io::Mesh* mesh, double scale=1.0);
 
+    /// Compute distance field for a cube of the given half-size.
+    /// Also create a mesh of points using np points per axis
+    void calcCubeDistance(Real dim=1, int np=5);
+
     /// Update bbox
     void computeBBox();
 
@@ -265,6 +269,9 @@ public:
 
     VecCoord meshPts;
 
+    bool isCube() const { return cubeDim != 0; }
+    Real getCubeDim() const { return cubeDim; }
+
 protected:
     int nbRef;
     VecReal dists;
@@ -272,6 +279,8 @@ protected:
     const Coord pmin, pmax;
     const Coord cellWidth, invCellWidth;
     Coord bbmin, bbmax; ///< bounding box of the object, smaller than the grid
+
+    Real cubeDim; ///< Cube dimension (!=0 if this is actually a cube
 
     // Fast Marching Method Update
     enum Status { FMM_FRONT0 = 0, FMM_FAR = -1, FMM_KNOWN_OUT = -2, FMM_KNOWN_IN = -3 };
