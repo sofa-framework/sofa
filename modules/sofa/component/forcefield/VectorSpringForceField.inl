@@ -68,7 +68,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     VectorSpringForceField<DataTypes>* dest;
     Loader(VectorSpringForceField<DataTypes>* dest) : dest(dest) {}
-    virtual void addVectorSpring(int m1, int m2, double ks, double kd, double initpos, double restx, double resty, double restz)
+    virtual void addVectorSpring(int m1, int m2, double ks, double kd, double /*initpos*/, double restx, double resty, double restz)
     {
         dest->addSpring(m1,m2,ks,kd,Coord((Real)restx,(Real)resty,(Real)restz));
     }

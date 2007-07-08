@@ -505,7 +505,7 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
     sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid1 = e1.getRigidModel();
     sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid2 = e2.getRigidModel();
 
-    const DistanceGrid::Real margin = 0.001; //e1.getProximity() + e2.getProximity();
+    const DistanceGrid::Real margin = 0.001f; //e1.getProximity() + e2.getProximity();
 
     bool useXForm = false;
 
