@@ -82,6 +82,9 @@ public:
 
     // -- CollisionModel interface
 
+    // remove ambiguity
+    int getSize() const { return Inherit::getSize(); }
+
     virtual void resize(int size);
 
     virtual void computeBoundingTree(int maxDepth=0);

@@ -64,11 +64,13 @@ protected:
         Real mu_s;    ///< coulomb friction coefficient (currently unused)
         Real mu_v;    ///< viscous friction coefficient
         Real pen;     ///< current penetration
-        Deriv fDir;   ///< current force direction (including friction)
-        Real spen;    ///< current coulomb friction (0 if not in static mode)
+        int age;      ///< how old is this contact
     };
 
     std::vector<Contact> contacts;
+
+    // contacts from previous frame
+    std::vector<Contact> prevContacts;
 
 public:
 
@@ -87,14 +89,9 @@ public:
     core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
     core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
-    void clear(int reserve = 0)
-    {
-        contacts.clear();
-        if (reserve)
-            contacts.reserve(reserve);
-    }
+    void clear(int reserve = 0);
 
-    void addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f);
+    void addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s = 0.0f, Real mu_v = 0.0f, int oldIndex = 0);
 
     virtual void addForce();
 

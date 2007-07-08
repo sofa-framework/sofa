@@ -208,6 +208,7 @@ int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, DetectionO
     contacts.resize(contacts.size()+1);
     DetectionOutput *detection = &*(contacts.end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
 #ifdef DETECTIONOUTPUT_FREEMOTION
@@ -324,6 +325,7 @@ int MinProximityIntersection::computeIntersection(Point& e1, Triangle& e2, Detec
     contacts.resize(contacts.size()+1);
     DetectionOutput *detection = &*(contacts.end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
 #ifdef DETECTIONOUTPUT_FREEMOTION
@@ -416,6 +418,7 @@ int MinProximityIntersection::computeIntersection(Point& e1, Line& e2, Detection
     DetectionOutput *detection = &*(contacts.end()-1);
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
 #ifdef DETECTIONOUTPUT_FREEMOTION
@@ -461,6 +464,7 @@ int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, Detectio
     contacts.resize(contacts.size()+1);
     DetectionOutput *detection = &*(contacts.end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
 #ifdef DETECTIONOUTPUT_FREEMOTION
@@ -556,6 +560,7 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Triangle& e2, Dete
     contacts.resize(contacts.size()+1);
     DetectionOutput *detection = &*(contacts.end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
     detection->normal=QP;
@@ -627,6 +632,7 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Line& e2, Detectio
     contacts.resize(contacts.size()+1);
     DetectionOutput *detection = &*(contacts.end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->id = e1.getIndex();
     detection->point[0]=Q;
     detection->point[1]=P;
     detection->normal=QP;
@@ -666,6 +672,7 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Point& e2, Detecti
     contacts.resize(contacts.size()+1);
     DetectionOutput *detection = &*(contacts.end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
     detection->normal=PQ;
@@ -726,6 +733,7 @@ int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Detecti
     DetectionOutput *detection = &*(contacts.end()-1);
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t2, t1);
+    detection->id = t1.getIndex();
     detection->point[0]=P;
     detection->point[1]=Q;
 #ifdef DETECTIONOUTPUT_FREEMOTION

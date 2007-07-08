@@ -68,10 +68,10 @@ public:
     const Coord& getBBMin() const { return bbmin; }
     const Coord& getBBMax() const { return bbmax; }
     Coord getBBCorner(int i) const { return Coord((i&1)?bbmax[0]:bbmin[0],(i&2)?bbmax[1]:bbmin[1],(i&4)?bbmax[2]:bbmin[2]); }
-    bool inBBox(const Coord& p) const
+    bool inBBox(const Coord& p, Real margin=0.0f) const
     {
         for (int c=0; c<3; ++c)
-            if (p[c] < bbmin[c] || p[c] > bbmax[c]) return false;
+            if (p[c] < bbmin[c]-margin || p[c] > bbmax[c]+margin) return false;
         return true;
     }
 

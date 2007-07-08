@@ -46,7 +46,7 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class Contact
+class Contact : public virtual objectmodel::BaseObject
 {
 public:
     typedef Intersection::DetectionOutputVector DetectionOutputVector;
@@ -60,6 +60,9 @@ public:
     virtual void createResponse(objectmodel::BaseContext* group) = 0;
 
     virtual void removeResponse() = 0;
+
+    /// Return true if this contact should be kept alive, even if objects are no longer in collision
+    virtual bool keepAlive() { return false; }
 
     typedef helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> > Factory;
 

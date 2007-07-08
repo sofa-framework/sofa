@@ -28,19 +28,22 @@
 #ifdef WIN32
 #define NOMINMAX
 #include <windows.h>
-/*
-namespace std
-{
-template<class T> T min(const T& a, const T& b) { return _cpp_min(a,b); }
-template<class T> T max(const T& a, const T& b) { return _cpp_max(a,b); }
-}
-*/
-
 #define snprintf _snprintf
 #endif
 
 #ifdef _MSC_VER
-#define _USE_MATH_DEFINES // required to get M_PI from math.h
+# define _USE_MATH_DEFINES // required to get M_PI from math.h
+// Visual C++ does not include stdint.h
+typedef __int8            int8_t;
+typedef __int16           int16_t;
+typedef __int32           int32_t;
+typedef __int64           int64_t;
+typedef unsigned __int8   uint8_t;
+typedef unsigned __int16  uint16_t;
+typedef unsigned __int32  uint32_t;
+typedef unsigned __int64  uint64_t;
+#else
+#include <stdint.h>
 #endif
 
 #define sofa_concat(a,b) sofa_do_concat(a,b)

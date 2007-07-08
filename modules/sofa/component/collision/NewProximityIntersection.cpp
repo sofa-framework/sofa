@@ -77,7 +77,129 @@ void NewProximityIntersection::init()
     intersectors.add<RayPickInteractor, TriangleModel, NewProximityIntersection, true>(this);
 }
 
-int NewProximityIntersection::doIntersectionTrianglePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& /*n*/, const Vector3& q, DetectionOutputVector& contacts, bool swapElems)
+int NewProximityIntersection::doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, DetectionOutputVector& contacts, int id)
+{
+    const Vector3 AB = p2-p1;
+    const Vector3 CD = q2-q1;
+    const Vector3 AC = q1-p1;
+    Matrix2 A;
+    Vector2 b;
+    A[0][0] = AB*AB;
+    A[1][1] = CD*CD;
+    A[0][1] = A[1][0] = -CD*AB;
+    b[0] = AB*AC;
+    b[1] = -CD*AC;
+    const double det = determinant(A);
+
+    double alpha = 0.5;
+    double beta = 0.5;
+
+    if (det < -0.000000000001 || det > 0.000000000001)
+    {
+        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+        //if (alpha < 0.000001 || alpha > 0.999999 ||
+        //    beta  < 0.000001 || beta  > 0.999999 )
+        //        return 0;
+        if (alpha < 0.0) alpha = 0.0;
+        else if (alpha > 1.0) alpha = 1.0;
+        if (beta < 0.0) beta = 0.0;
+        else if (beta > 1.0) beta = 1.0;
+    }
+
+    Vector3 p,q,pq;
+    p = p1 + AB * alpha;
+    q = q1 + CD * beta;
+    pq = q-p;
+    if (pq.norm2() >= dist2)
+        return 0;
+
+    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    contacts.resize(contacts.size()+1);
+    DetectionOutput *detection = &*(contacts.end()-1);
+    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->id = id;
+    detection->point[0]=p;
+    detection->point[1]=q;
+    detection->normal=pq;
+    detection->distance = detection->normal.norm();
+    detection->normal /= detection->distance;
+    //detection->distance -= contactDist;
+    return 1;
+}
+
+int NewProximityIntersection::doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, DetectionOutputVector& contacts, int id, bool swapElems)
+{
+    const Vector3 AB = p2-p1;
+    const Vector3 AQ = q -p1;
+    double A;
+    double b;
+    A = AB*AB;
+    b = AQ*AB;
+
+    double alpha = 0.5;
+
+    //if (A < -0.000001 || A > 0.000001)
+    {
+        alpha = b/A;
+        //if (alpha < 0.000001 || alpha > 0.999999)
+        //        return 0;
+        if (alpha < 0.0) alpha = 0.0;
+        else if (alpha > 1.0) alpha = 1.0;
+    }
+
+    Vector3 p,pq;
+    p = p1 + AB * alpha;
+    pq = q-p;
+    if (pq.norm2() >= dist2)
+        return 0;
+
+    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    contacts.resize(contacts.size()+1);
+    DetectionOutput *detection = &*(contacts.end()-1);
+
+    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
+    detection->id = id;
+    if (swapElems)
+    {
+        detection->point[0]=q;
+        detection->point[1]=p;
+        detection->normal = -pq;
+    }
+    else
+    {
+        detection->point[0]=p;
+        detection->point[1]=q;
+        detection->normal = pq;
+    }
+    detection->distance = detection->normal.norm();
+    detection->normal /= detection->distance;
+    //detection->distance -= contactDist;
+    return 1;
+}
+
+int NewProximityIntersection::doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, DetectionOutputVector& contacts, int id)
+{
+    Vector3 pq;
+    pq = q-p;
+    if (pq.norm2() >= dist2)
+        return 0;
+
+    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
+    contacts.resize(contacts.size()+1);
+    DetectionOutput *detection = &*(contacts.end()-1);
+    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->id = id;
+    detection->point[0]=p;
+    detection->point[1]=q;
+    detection->normal=pq;
+    detection->distance = detection->normal.norm();
+    detection->normal /= detection->distance;
+    //detection->distance -= contactDist;
+    return 1;
+}
+
+int NewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& /*n*/, const Vector3& q, DetectionOutputVector& contacts, int id, bool swapElems)
 {
     const Vector3 AB = p2-p1;
     const Vector3 AC = p3-p1;
@@ -98,10 +220,66 @@ int NewProximityIntersection::doIntersectionTrianglePoint(double dist2, const Ve
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        if (alpha < 0.000001 ||
-            beta  < 0.000001 ||
-            alpha + beta  > 0.999999)
-            return 0;
+        //if (alpha < 0.000001 ||
+        //    beta  < 0.000001 ||
+        //    alpha + beta  > 0.999999)
+        //        return 0;
+        if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
+        {
+            // nearest point is on an edge or corner
+            // barycentric coordinate on AB
+            double pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+            // barycentric coordinate on AC
+            double pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
+            if (pAB < 0.000001 && pAC < 0.0000001)
+            {
+                // closest point is A
+                if (!flags&TriangleModel::FLAG_P1) return 0; // this corner is not considered
+                alpha = 0.0;
+                beta = 0.0;
+            }
+            else if (pAB < 0.999999 && beta < 0.000001)
+            {
+                // closest point is on AB
+                if (!flags&TriangleModel::FLAG_E12) return 0; // this edge is not considered
+                alpha = pAB;
+                beta = 0.0;
+            }
+            else if (pAC < 0.999999 && alpha < 0.000001)
+            {
+                // closest point is on AC
+                if (!flags&TriangleModel::FLAG_E12) return 0; // this edge is not considered
+                alpha = 0.0;
+                beta = pAC;
+            }
+            else
+            {
+                // barycentric coordinate on BC
+                // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
+                double pBC = (b[1] - b[0] + A[0][0] - A[1][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+                if (pBC < 0.000001)
+                {
+                    // closest point is B
+                    if (!flags&TriangleModel::FLAG_P2) return 0; // this edge is not considered
+                    alpha = 1.0;
+                    beta = 0.0;
+                }
+                else if (pBC > 0.999999)
+                {
+                    // closest point is C
+                    if (!flags&TriangleModel::FLAG_P3) return 0; // this edge is not considered
+                    alpha = 0.0;
+                    beta = 1.0;
+                }
+                else
+                {
+                    // closest point is on BC
+                    if (!flags&TriangleModel::FLAG_E31) return 0; // this edge is not considered
+                    alpha = 1.0-pBC;
+                    beta = pBC;
+                }
+            }
+        }
     }
 
     Vector3 p, pq;
@@ -114,6 +292,7 @@ int NewProximityIntersection::doIntersectionTrianglePoint(double dist2, const Ve
     contacts.resize(contacts.size()+1);
     DetectionOutput *detection = &*(contacts.end()-1);
     //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+    detection->id = id;
     if (swapElems)
     {
         detection->point[0]=q;
@@ -135,119 +314,6 @@ int NewProximityIntersection::doIntersectionTrianglePoint(double dist2, const Ve
     //	detection->normal = -detection->normal;
     //	detection->distance = -detection->distance;
     //}
-    //detection->distance -= contactDist;
-    return 1;
-}
-
-int NewProximityIntersection::doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, DetectionOutputVector& contacts)
-{
-    const Vector3 AB = p2-p1;
-    const Vector3 CD = q2-q1;
-    const Vector3 AC = q1-p1;
-    Matrix2 A;
-    Vector2 b;
-    A[0][0] = AB*AB;
-    A[1][1] = CD*CD;
-    A[0][1] = A[1][0] = -CD*AB;
-    b[0] = AB*AC;
-    b[1] = -CD*AC;
-    const double det = determinant(A);
-
-    double alpha = 0.5;
-    double beta = 0.5;
-
-    if (det < -0.000000000001 || det > 0.000000000001)
-    {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        if (alpha < 0.000001 || alpha > 0.999999 ||
-            beta  < 0.000001 || beta  > 0.999999 )
-            return 0;
-    }
-
-    Vector3 p,q,pq;
-    p = p1 + AB * alpha;
-    q = q1 + CD * beta;
-    pq = q-p;
-    if (pq.norm2() >= dist2)
-        return 0;
-
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    detection->point[0]=p;
-    detection->point[1]=q;
-    detection->normal=pq;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    //detection->distance -= contactDist;
-    return 1;
-}
-
-int NewProximityIntersection::doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, DetectionOutputVector& contacts, bool swapElems)
-{
-    const Vector3 AB = p2-p1;
-    const Vector3 AQ = q -p1;
-    double A;
-    double b;
-    A = AB*AB;
-    b = AQ*AB;
-
-    double alpha = 0.5;
-
-    //if (A < -0.000001 || A > 0.000001)
-    {
-        alpha = b/A;
-        if (alpha < 0.000001 || alpha > 0.999999)
-            return 0;
-    }
-
-    Vector3 p,pq;
-    p = p1 + AB * alpha;
-    pq = q-p;
-    if (pq.norm2() >= dist2)
-        return 0;
-
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
-
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
-    if (swapElems)
-    {
-        detection->point[0]=q;
-        detection->point[1]=p;
-        detection->normal = -pq;
-    }
-    else
-    {
-        detection->point[0]=p;
-        detection->point[1]=q;
-        detection->normal = pq;
-    }
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    //detection->distance -= contactDist;
-    return 1;
-}
-
-int NewProximityIntersection::doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, DetectionOutputVector& contacts)
-{
-    Vector3 pq;
-    pq = q-p;
-    if (pq.norm2() >= dist2)
-        return 0;
-
-    //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
-    //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-    detection->point[0]=p;
-    detection->point[1]=q;
-    detection->normal=pq;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
     //detection->distance -= contactDist;
     return 1;
 }
@@ -289,14 +355,14 @@ bool NewProximityIntersection::testIntersection(Point& e1, Point& e2)
 {
     DetectionOutputVector contacts;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts, -1);
     return n>0;
 }
 
 int NewProximityIntersection::computeIntersection(Point& e1, Point& e2, DetectionOutputVector& contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -313,14 +379,14 @@ bool NewProximityIntersection::testIntersection(Sphere& e1, Point& e2)
 {
     DetectionOutputVector contacts;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, -1);
     return n>0;
 }
 
 int NewProximityIntersection::computeIntersection(Sphere& e1, Point& e2, DetectionOutputVector& contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r();
@@ -337,14 +403,14 @@ bool NewProximityIntersection::testIntersection(Sphere& e1, Sphere& e2)
 {
     DetectionOutputVector contacts;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, -1);
     return n>0;
 }
 
 int NewProximityIntersection::computeIntersection(Sphere& e1, Sphere& e2, DetectionOutputVector& contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex());
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
@@ -366,12 +432,7 @@ bool NewProximityIntersection::testIntersection(Line&, Point&)
 int NewProximityIntersection::computeIntersection(Line& e1, Point& e2, DetectionOutputVector& contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.p(), contacts);
-    if (n==0)
-    {
-        n += doIntersectionPointPoint(alarmDist*alarmDist, e1.p1(),e2.p(), contacts);
-        n += doIntersectionPointPoint(alarmDist*alarmDist, e1.p2(),e2.p(), contacts);
-    }
+    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.p(), contacts, e2.getIndex());
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -393,12 +454,7 @@ bool NewProximityIntersection::testIntersection(Line&, Sphere&)
 int NewProximityIntersection::computeIntersection(Line& e1, Sphere& e2, DetectionOutputVector& contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
-    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts);
-    if (n==0)
-    {
-        n += doIntersectionPointPoint(alarmDist*alarmDist, e1.p1(),e2.center(), contacts);
-        n += doIntersectionPointPoint(alarmDist*alarmDist, e1.p2(),e2.center(), contacts);
-    }
+    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts, e2.getIndex());
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
@@ -421,21 +477,8 @@ int NewProximityIntersection::computeIntersection(Line& e1, Line& e2, DetectionO
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const double dist2 = alarmDist*alarmDist;
-    int n = doIntersectionLineLine(dist2, e1.p1(),e1.p2(), e2.p1(),e2.p2(), contacts);
-    if (n==0)
-    {
-        n += doIntersectionLinePoint(dist2, e1.p1(),e1.p2(), e2.p1(), contacts, false);
-        n += doIntersectionLinePoint(dist2, e1.p1(),e1.p2(), e2.p2(), contacts, false);
-        n += doIntersectionLinePoint(dist2, e2.p1(),e2.p2(), e1.p1(), contacts, true);
-        n += doIntersectionLinePoint(dist2, e2.p1(),e2.p2(), e1.p2(), contacts, true);
-        if (n==0)
-        {
-            n += doIntersectionPointPoint(dist2, e1.p1(),e2.p1(), contacts);
-            n += doIntersectionPointPoint(dist2, e1.p1(),e2.p2(), contacts);
-            n += doIntersectionPointPoint(dist2, e1.p2(),e2.p1(), contacts);
-            n += doIntersectionPointPoint(dist2, e1.p2(),e2.p2(), contacts);
-        }
-    }
+    const int id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
+    int n = doIntersectionLineLine(dist2, e1.p1(),e1.p2(), e2.p1(),e2.p2(), contacts, id);
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -458,24 +501,7 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Detec
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const double dist2 = alarmDist*alarmDist;
-    int n = doIntersectionTrianglePoint(dist2, e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.p(), contacts);
-    if (n==0)
-    {
-        const int f1 = e1.flags();
-        if (f1&TriangleModel::FLAG_E12)
-            n += doIntersectionLinePoint(dist2, e1.p1(),e1.p2(), e2.p(), contacts);
-        if (f1&TriangleModel::FLAG_E23)
-            n += doIntersectionLinePoint(dist2, e1.p2(),e1.p3(), e2.p(), contacts);
-        if (f1&TriangleModel::FLAG_E31)
-            n += doIntersectionLinePoint(dist2, e1.p3(),e1.p1(), e2.p(), contacts);
-
-        if (f1&TriangleModel::FLAG_P1)
-            n += doIntersectionPointPoint(dist2, e1.p1(), e2.p(), contacts);
-        if (f1&TriangleModel::FLAG_P2)
-            n += doIntersectionPointPoint(dist2, e1.p2(), e2.p(), contacts);
-        if (f1&TriangleModel::FLAG_P3)
-            n += doIntersectionPointPoint(dist2, e1.p3(), e2.p(), contacts);
-    }
+    int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.p(), contacts, e2.getIndex());
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -498,24 +524,7 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Sphere& e2, Dete
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     const double dist2 = alarmDist*alarmDist;
-    int n = doIntersectionTrianglePoint(dist2, e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.center(), contacts);
-    if (n==0)
-    {
-        const int f1 = e1.flags();
-        if (f1&TriangleModel::FLAG_E12)
-            n += doIntersectionLinePoint(dist2, e1.p1(),e1.p2(), e2.center(), contacts);
-        if (f1&TriangleModel::FLAG_E23)
-            n += doIntersectionLinePoint(dist2, e1.p2(),e1.p3(), e2.center(), contacts);
-        if (f1&TriangleModel::FLAG_E31)
-            n += doIntersectionLinePoint(dist2, e1.p3(),e1.p1(), e2.center(), contacts);
-
-        if (f1&TriangleModel::FLAG_P1)
-            n += doIntersectionPointPoint(dist2, e1.p1(), e2.center(), contacts);
-        if (f1&TriangleModel::FLAG_P2)
-            n += doIntersectionPointPoint(dist2, e1.p2(), e2.center(), contacts);
-        if (f1&TriangleModel::FLAG_P3)
-            n += doIntersectionPointPoint(dist2, e1.p3(), e2.center(), contacts);
-    }
+    int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.center(), contacts, e2.getIndex());
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity() + e2.r();
@@ -551,44 +560,19 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Detect
 
     if (f1&TriangleModel::FLAG_P1)
     {
-        n += doIntersectionPointPoint(dist2, p1, q1, contacts);
-        n += doIntersectionPointPoint(dist2, p1, q2, contacts);
-        n += doIntersectionLinePoint(dist2, q1,q2, p1, contacts, true);
+        n += doIntersectionLinePoint(dist2, q1,q2, p1, contacts, e2.getIndex(), true);
     }
     if (f1&TriangleModel::FLAG_P2)
     {
-        n += doIntersectionPointPoint(dist2, p2, q1, contacts);
-        n += doIntersectionPointPoint(dist2, p2, q2, contacts);
-        n += doIntersectionLinePoint(dist2, q1,q2, p2, contacts, true);
+        n += doIntersectionLinePoint(dist2, q1,q2, p2, contacts, e2.getIndex(), true);
     }
     if (f1&TriangleModel::FLAG_P3)
     {
-        n += doIntersectionPointPoint(dist2, p3, q1, contacts);
-        n += doIntersectionPointPoint(dist2, p3, q2, contacts);
-        n += doIntersectionLinePoint(dist2, q1,q2, p3, contacts, true);
+        n += doIntersectionLinePoint(dist2, q1,q2, p3, contacts, e2.getIndex(), true);
     }
 
-    if (f1&TriangleModel::FLAG_E12)
-    {
-        n += doIntersectionLineLine (dist2, p1,p2, q1,q2, contacts);
-        n += doIntersectionLinePoint(dist2, p1,p2, q1, contacts, false);
-        n += doIntersectionLinePoint(dist2, p1,p2, q2, contacts, false);
-    }
-    if (f1&TriangleModel::FLAG_E23)
-    {
-        n += doIntersectionLineLine (dist2, p2,p3, q1,q2, contacts);
-        n += doIntersectionLinePoint(dist2, p2,p3, q1, contacts, false);
-        n += doIntersectionLinePoint(dist2, p2,p3, q2, contacts, false);
-    }
-    if (f1&TriangleModel::FLAG_E31)
-    {
-        n += doIntersectionLineLine (dist2, p3,p1, q1,q2, contacts);
-        n += doIntersectionLinePoint(dist2, p3,p1, q1, contacts, false);
-        n += doIntersectionLinePoint(dist2, p3,p1, q2, contacts, false);
-    }
-
-    n += doIntersectionTrianglePoint(dist2, p1,p2,p3,pn, q1, contacts, false);
-    n += doIntersectionTrianglePoint(dist2, p1,p2,p3,pn, q2, contacts, false);
+    n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q1, contacts, e2.getIndex(), false);
+    n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q2, contacts, e2.getIndex(), false);
 
     if (n>0)
     {
@@ -625,100 +609,24 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, De
     const int f1 = e1.flags();
     const int f2 = e2.flags();
 
+    const int id1 = e1.getIndex()*3; // index of contacts involving points in e1
+    const int id2 = e1.getCollisionModel()->getSize()*3 + e2.getIndex()*3; // index of contacts involving points in e2
+
     int n = 0;
 
-    // Point-Point tests
     if (f1&TriangleModel::FLAG_P1)
-    {
-        if (f2&TriangleModel::FLAG_P1) n += doIntersectionPointPoint(dist2, p1, q1, contacts);
-        if (f2&TriangleModel::FLAG_P2) n += doIntersectionPointPoint(dist2, p1, q2, contacts);
-        if (f2&TriangleModel::FLAG_P3) n += doIntersectionPointPoint(dist2, p1, q3, contacts);
-    }
+        n += doIntersectionTrianglePoint(dist2, f2,q1,q2,q3,qn, p1, contacts, id1+0, true);
     if (f1&TriangleModel::FLAG_P2)
-    {
-        if (f2&TriangleModel::FLAG_P1) n += doIntersectionPointPoint(dist2, p2, q1, contacts);
-        if (f2&TriangleModel::FLAG_P2) n += doIntersectionPointPoint(dist2, p2, q2, contacts);
-        if (f2&TriangleModel::FLAG_P3) n += doIntersectionPointPoint(dist2, p2, q3, contacts);
-    }
+        n += doIntersectionTrianglePoint(dist2, f2,q1,q2,q3,qn, p2, contacts, id1+1, true);
     if (f1&TriangleModel::FLAG_P3)
-    {
-        if (f2&TriangleModel::FLAG_P1) n += doIntersectionPointPoint(dist2, p3, q1, contacts);
-        if (f2&TriangleModel::FLAG_P2) n += doIntersectionPointPoint(dist2, p3, q2, contacts);
-        if (f2&TriangleModel::FLAG_P3) n += doIntersectionPointPoint(dist2, p3, q3, contacts);
-    }
-
-    // Triangle-Point tests
-    if (f1&TriangleModel::FLAG_P1)
-        n += doIntersectionTrianglePoint(dist2, q1,q2,q3,qn, p1, contacts, true);
-    if (f1&TriangleModel::FLAG_P2)
-        n += doIntersectionTrianglePoint(dist2, q1,q2,q3,qn, p2, contacts, true);
-    if (f1&TriangleModel::FLAG_P3)
-        n += doIntersectionTrianglePoint(dist2, q1,q2,q3,qn, p3, contacts, true);
+        n += doIntersectionTrianglePoint(dist2, f2,q1,q2,q3,qn, p3, contacts, id1+2, true);
 
     if (f2&TriangleModel::FLAG_P1)
-        n += doIntersectionTrianglePoint(dist2, p1,p2,p3,pn, q1, contacts, false);
+        n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q1, contacts, id2+0, false);
     if (f2&TriangleModel::FLAG_P2)
-        n += doIntersectionTrianglePoint(dist2, p1,p2,p3,pn, q2, contacts, false);
+        n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q2, contacts, id2+1, false);
     if (f2&TriangleModel::FLAG_P3)
-        n += doIntersectionTrianglePoint(dist2, p1,p2,p3,pn, q3, contacts, false);
-
-    // Line-Line tests
-    if (f1&TriangleModel::FLAG_E12)
-    {
-        if (f2&TriangleModel::FLAG_E12) n += doIntersectionLineLine(dist2, p1,p2, q1,q2, contacts);
-        if (f2&TriangleModel::FLAG_E23) n += doIntersectionLineLine(dist2, p1,p2, q2,q3, contacts);
-        if (f2&TriangleModel::FLAG_E31) n += doIntersectionLineLine(dist2, p1,p2, q3,q1, contacts);
-    }
-    if (f1&TriangleModel::FLAG_E23)
-    {
-        if (f2&TriangleModel::FLAG_E12) n += doIntersectionLineLine(dist2, p2,p3, q1,q2, contacts);
-        if (f2&TriangleModel::FLAG_E23) n += doIntersectionLineLine(dist2, p2,p3, q2,q3, contacts);
-        if (f2&TriangleModel::FLAG_E31) n += doIntersectionLineLine(dist2, p2,p3, q3,q1, contacts);
-    }
-    if (f1&TriangleModel::FLAG_E31)
-    {
-        if (f2&TriangleModel::FLAG_E12) n += doIntersectionLineLine(dist2, p3,p1, q1,q2, contacts);
-        if (f2&TriangleModel::FLAG_E23) n += doIntersectionLineLine(dist2, p3,p1, q2,q3, contacts);
-        if (f2&TriangleModel::FLAG_E31) n += doIntersectionLineLine(dist2, p3,p1, q3,q1, contacts);
-    }
-
-    // Line-Point tests
-    if (f1&TriangleModel::FLAG_E12)
-    {
-        if (f2&TriangleModel::FLAG_P1) n += doIntersectionLinePoint(dist2, p1,p2, q1, contacts);
-        if (f2&TriangleModel::FLAG_P2) n += doIntersectionLinePoint(dist2, p1,p2, q2, contacts);
-        if (f2&TriangleModel::FLAG_P3) n += doIntersectionLinePoint(dist2, p1,p2, q3, contacts);
-    }
-    if (f1&TriangleModel::FLAG_E23)
-    {
-        if (f2&TriangleModel::FLAG_P1) n += doIntersectionLinePoint(dist2, p2,p3, q1, contacts);
-        if (f2&TriangleModel::FLAG_P2) n += doIntersectionLinePoint(dist2, p2,p3, q2, contacts);
-        if (f2&TriangleModel::FLAG_P3) n += doIntersectionLinePoint(dist2, p2,p3, q3, contacts);
-    }
-    if (f1&TriangleModel::FLAG_E31)
-    {
-        if (f2&TriangleModel::FLAG_P1) n += doIntersectionLinePoint(dist2, p3,p1, q1, contacts);
-        if (f2&TriangleModel::FLAG_P2) n += doIntersectionLinePoint(dist2, p3,p1, q2, contacts);
-        if (f2&TriangleModel::FLAG_P3) n += doIntersectionLinePoint(dist2, p3,p1, q3, contacts);
-    }
-    if (f2&TriangleModel::FLAG_E12)
-    {
-        if (f1&TriangleModel::FLAG_P1) n += doIntersectionLinePoint(dist2, q1,q2, p1, contacts, true);
-        if (f1&TriangleModel::FLAG_P2) n += doIntersectionLinePoint(dist2, q1,q2, p2, contacts, true);
-        if (f1&TriangleModel::FLAG_P3) n += doIntersectionLinePoint(dist2, q1,q2, p3, contacts, true);
-    }
-    if (f2&TriangleModel::FLAG_E23)
-    {
-        if (f1&TriangleModel::FLAG_P1) n += doIntersectionLinePoint(dist2, q2,q3, p1, contacts, true);
-        if (f1&TriangleModel::FLAG_P2) n += doIntersectionLinePoint(dist2, q2,q3, p2, contacts, true);
-        if (f1&TriangleModel::FLAG_P3) n += doIntersectionLinePoint(dist2, q2,q3, p3, contacts, true);
-    }
-    if (f2&TriangleModel::FLAG_E31)
-    {
-        if (f1&TriangleModel::FLAG_P1) n += doIntersectionLinePoint(dist2, q3,q1, p1, contacts, true);
-        if (f1&TriangleModel::FLAG_P2) n += doIntersectionLinePoint(dist2, q3,q1, p2, contacts, true);
-        if (f1&TriangleModel::FLAG_P3) n += doIntersectionLinePoint(dist2, q3,q1, p3, contacts, true);
-    }
+        n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q3, contacts, id2+2, false);
 
     if (n>0)
     {
@@ -731,12 +639,6 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, De
     }
     return n;
 }
-
-
-
-
-
-
 
 
 bool NewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)

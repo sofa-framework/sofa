@@ -65,6 +65,11 @@ protected:
 
     forcefield::PenalityContactForceField<Vec3Types>* ff;
     core::objectmodel::BaseContext* parent;
+
+    typedef std::map<core::componentmodel::collision::DetectionOutput::ContactId,int> ContactIndexMap;
+    /// Mapping of contactids to force element (+1, so that 0 means not active).
+    /// This allows to ignore duplicate contacts, and preserve information associated with each contact point over time
+    ContactIndexMap contactIndex;
 public:
     BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     ~BarycentricPenalityContact();

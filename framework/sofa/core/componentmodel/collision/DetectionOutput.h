@@ -25,6 +25,7 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_DETECTIONOUTPUT_H
 #define SOFA_CORE_COMPONENTMODEL_COLLISION_DETECTIONOUTPUT_H
 
+#include <sofa/helper/system/config.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/defaulttype/Vec.h>
 #include <iostream>
@@ -46,20 +47,45 @@ using namespace sofa::defaulttype;
 // uncomment if you want to use the freePoint information
 //#define DETECTIONOUTPUT_FREEMOTION
 
+/**
+ *  \brief Description of a contact point, as detected by the NarrowPhaseDetection using the Intersection class, and forwarded by the ContactManager to the Contact response class.
+ *
+ *  Each contact point is described by :
+ *
+ *  \item elem: pair of colliding elements.
+ *  \item id: unique id of the contact for the given pair of collision models.
+ *  \item point: contact points on the surface of each model.
+ *  \item normal: normal of the contact, pointing outward from the first model.
+ *  \item distance: signed distance (negative if objects are interpenetrating).
+ *  \item deltaT: estimated of time of contact.
+ *
+ *  The contact id is used to filter redundant contacts (only the contact with
+ *  the smallest distance is kept), and to store persistant data over time for
+ *  the response.
+ *
+ */
+
 class DetectionOutput
 {
 public:
-    std::pair<core::CollisionElementIterator, core::CollisionElementIterator> elem; ///< Pair of colliding elements
-    Vector3 point[2]; ///< Point in contact on each element
+    /// Pair of colliding elements.
+    std::pair<core::CollisionElementIterator, core::CollisionElementIterator> elem;
+    typedef int64_t ContactId;
+    /// Unique id of the contact for the given pair of collision models.
+    ContactId id;
+    /// Contact points on the surface of each model. They are expressed in the local coordinate system of the model if any is defined..
+    Vector3 point[2];
 #ifdef DETECTIONOUTPUT_FREEMOTION
     Vector3 freePoint[2]; ///< free Point in contact on each element
 #endif
-    Vector3 normal; ///< Normal of the contact, pointing outward from model 1
-    //bool collision; ///< Are the elements interpenetrating
-    double distance; ///< Distance between the elements (negative for interpenetration)
-    double deltaT; ///< Time of contact (0 for non-continuous methods)
+    /// Normal of the contact, pointing outward from the first model
+    Vector3 normal;
+    /// Signed distance (negative if objects are interpenetrating). If using a proximity-based detection, this is the actual distance between the objets minus the specified contact distance.
+    double distance;
+    /// If using a continuous collision detection, estimated of time of contact.
+    double deltaT;
     DetectionOutput()
-        : elem(NULL, NULL), distance(0.0), deltaT(0.0)
+        : elem(NULL, NULL), id(0), distance(0.0), deltaT(0.0)
     {
     }
 };

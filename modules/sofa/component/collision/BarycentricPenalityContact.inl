@@ -59,30 +59,7 @@ BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::~BarycentricPenal
 template < class TCollisionModel1, class TCollisionModel2 >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(std::vector<DetectionOutput>& outputs)
 {
-    // We need to remove duplicate contacts
-    /*
-    const double minDist2 = 0.000001f;
-    std::vector<DetectionOutput*> contacts;
-    contacts.reserve(outputs.size());
-    for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    {
-    	DetectionOutput* o = &*it;
-    	bool found = false;
-    	for (unsigned int i=0; i<contacts.size() && !found; i++)
-    	{
-    		DetectionOutput* p = contacts[i];
-    		if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
-    			found = true;
-    	}
-    	if (!found)
-    		contacts.push_back(o);
-    }
-    if (contacts.size()<outputs.size())
-    {
-    	//std::cout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << std::endl;
-    }
-    */
-
+    const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
         MechanicalState1* mstate1 = mapper1.createMapping();
@@ -90,19 +67,96 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
         ff = new forcefield::PenalityContactForceField<Vec3Types>(mstate1,mstate2);
     }
 
+    int insize = outputs.size();
+
+    // old index for each contact
+    // >0 indicate preexisting contact
+    // 0  indicate new contact
+    // -1 indicate ignored duplicate contact
+    std::vector<int> oldIndex(insize);
+
+    int nbnew = 0;
+
+    for (int i=0; i<insize; i++)
+    {
+        DetectionOutput* o = &outputs[i];
+        // find this contact in contactIndex, possibly creating a new entry initialized by 0
+        int& index = contactIndex[o->id];
+        if (index < 0) // duplicate contact
+        {
+            int i2 = -1-index;
+            DetectionOutput* o2 = &outputs[i2];
+            if (o2->distance <= o->distance)
+            {
+                // current contact is ignored
+                oldIndex[i] = -1;
+                continue;
+            }
+            else
+            {
+                // previous contact is replaced
+                oldIndex[i] = oldIndex[i2];
+                oldIndex[i2] = -1;
+            }
+        }
+        else
+        {
+            oldIndex[i] = index;
+            if (!index)
+            {
+                ++nbnew;
+                if (printLog) std::cout << "BarycentricPenalityContact: New contact "<<o->id<<std::endl;
+            }
+        }
+        index = -1-i; // save this index as a negative value in contactIndex map.
+    }
+
+    // compute new index of each contact
+    std::vector<int> newIndex(insize);
+    // number of final contacts used in the response
+    int size = 0;
+    for (int i=0; i<insize; i++)
+    {
+        if (oldIndex[i] >= 0)
+        {
+            ++size;
+            newIndex[i] = size;
+        }
+    }
+
+    // update contactMap
+    for (ContactIndexMap::iterator it = contactIndex.begin(), itend = contactIndex.end(); it != itend; )
+    {
+        int& index = it->second;
+        if (index >= 0)
+        {
+            if (printLog) std::cout << "BarycentricPenalityContact: Removed contact "<<it->first<<std::endl;
+            ContactIndexMap::iterator oldit = it;
+            ++it;
+            contactIndex.erase(oldit);
+        }
+        else
+        {
+            index = newIndex[-1-index]; // write the final contact index
+            ++it;
+        }
+    }
+    if (printLog) std::cout << "BarycentricPenalityContact: "<<insize<<" input contacts, "<<size<<" contacts used for response ("<<nbnew<<" new)."<<std::endl;
+
     //int size = contacts.size();
-    int size = outputs.size();
     ff->clear(size);
     mapper1.resize(size);
     mapper2.resize(size);
     //int i = 0;
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
-    //for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+    //for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
     //{
-    //	DetectionOutput* o = *it;
-    for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
+    //    DetectionOutput* o = &*it;
+    for (int i=0; i<insize; i++)
     {
-        DetectionOutput* o = &*it;
+        int index = oldIndex[i];
+        if (index < 0) continue; // this contact is ignored
+        DetectionOutput* o = &outputs[i];
         CollisionElement1 elem1(o->elem.first);
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
@@ -114,11 +168,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
         double distance = d0 + mapper1.radius(elem1) + mapper2.radius(elem2);
         double stiffness = (elem1.getContactStiffness() * elem2.getContactStiffness())/distance;
         double mu_v = (elem1.getContactFriction() + elem2.getContactFriction());
-        ff->addContact(index1, index2, o->normal, distance, stiffness, mu_v*distance, mu_v);
-        //if (model1->isStatic() || model2->isStatic()) // create stiffer springs for static models as only half of the force is really applied
-        //	ff->addContact(index1, index2, o->normal, distance, 300, 0.00f, 0.00f); /// \todo compute stiffness and damping
-        //else
-        //	ff->addContact(index1, index2, o->normal, distance, 250, 0.00f, 0.00f); /// \todo compute stiffness and damping
+        ff->addContact(index1, index2, o->normal, distance, stiffness, mu_v/* *distance */, mu_v, index);
     }
     // Update mappings
     mapper1.update();
@@ -130,11 +180,16 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::createRespon
 {
     if (ff!=NULL)
     {
-        if (parent!=NULL) parent->removeObject(ff);
+        if (parent!=NULL)
+        {
+            parent->removeObject(this);
+            parent->removeObject(ff);
+        }
         parent = group;
         if (parent!=NULL)
         {
             //std::cout << "Attaching contact response to "<<parent->getName()<<std::endl;
+            parent->addObject(this);
             parent->addObject(ff);
         }
     }
@@ -148,6 +203,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::removeRespon
         if (parent!=NULL)
         {
             //std::cout << "Removing contact response from "<<parent->getName()<<std::endl;
+            parent->removeObject(this);
             parent->removeObject(ff);
         }
         parent = NULL;

@@ -25,10 +25,11 @@
 #ifndef SOFA_CORE_OBJECTMODEL_BASE_H
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
-#include <string>
+#include <sofa/helper/system/config.h>
 #include <sofa/core/objectmodel/Field.h>
 #include <sofa/core/objectmodel/DataField.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <string>
 
 using sofa::core::objectmodel::Field;
 using sofa::core::objectmodel::DataField;

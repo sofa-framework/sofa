@@ -301,6 +301,7 @@ int DiscreteIntersection::computeIntersection( SingleSphere& sph, Triangle& tria
         //detection->elem.second = sph;
         detection->elem.first = sph;
         detection->elem.second = triangle;
+        detection->id = sph.getIndex();
         return 1;
     }
 #undef SAMESIDE
@@ -367,6 +368,7 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, Detect
     detection->distance = distSph1Sph2 - r;
     detection->elem.first = sph1;
     detection->elem.second = sph2;
+    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
 
     return 1;
 }
@@ -390,6 +392,7 @@ int DiscreteIntersection::computeIntersection(SingleSphere& sph1, SingleSphere& 
     detection->distance = distSph1Sph2 - r;
     detection->elem.first = sph1;
     detection->elem.second = sph2;
+    detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
 
     return 1;
 }
@@ -430,6 +433,7 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, Ray& ray2, Detection
     detection->distance = dist - radius1;
     detection->elem.first = sph1;
     detection->elem.second = ray2;
+    detection->id = ray2.getIndex();
 
     return 1;
 }
@@ -463,6 +467,7 @@ int DiscreteIntersection::computeIntersection(SingleSphere& sph1, Ray& ray2, Det
     detection->distance = dist - radius1;
     detection->elem.first = sph1;
     detection->elem.second = ray2;
+    detection->id = ray2.getIndex();
 
     return 1;
 }
@@ -499,6 +504,8 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
     DistanceGrid* grid2 = e2.getGrid();
     sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid1 = e1.getRigidModel();
     sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid2 = e2.getRigidModel();
+
+    const DistanceGrid::Real margin = 0.001; //e1.getProximity() + e2.getProximity();
 
     bool useXForm = false;
 
@@ -542,50 +549,55 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
     {
         if (grid2->isCube() && grid1->isCube())
         {
-            const float cubeDim2 = grid2->getCubeDim();
+            const DistanceGrid::Real cubeDim2 = grid2->getCubeDim();
+            const DistanceGrid::Real cubeDim2Margin = cubeDim2+margin;
             // translation is the position of cube1 center in cube2 space
             // we use its largest component as the dominant contact face normal
             /// \TODO use the relative velocity as an additionnal factor
-            Vec3f normal = translation;
+            Vector3 normal = translation;
             normal[2] *= 1.1f; // we like Z contact better ;)
             if (rabs(normal[0]) > rabs(normal[1]))
             {
                 if (rabs(normal[0]) > rabs(normal[2]))
-                    normal = Vec3f(normal[0]>0.0f?1.0f:-1.0f,0.0f,0.0f);
+                    normal = Vector3(normal[0]>0.0f?1.0f:-1.0f,0.0f,0.0f);
                 else
-                    normal = Vec3f(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
+                    normal = Vector3(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
             }
             else
             {
                 if (rabs(normal[1]) > rabs(normal[2]))
-                    normal = Vec3f(0.0f,normal[1]>0.0f?1.0f:-1.0f,0.0f);
+                    normal = Vector3(0.0f,normal[1]>0.0f?1.0f:-1.0f,0.0f);
                 else
-                    normal = Vec3f(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
+                    normal = Vector3(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
             }
 
-            Vec3f gnormal = r2 * -normal; // normal in global space from p1's surface
+            Vector3 gnormal = r2 * -normal; // normal in global space from p1's surface
             // special case: if normal in global frame is nearly vertical, make it so
-            if (gnormal[2] < -0.99f) gnormal = Vec3f(0.0f, 0.0f, -1.0f);
-            else if (gnormal[2] >  0.99f) gnormal = Vec3f(0.0f, 0.0f,  1.0f);
+            if (gnormal[2] < -0.99f) gnormal = Vector3(0.0f, 0.0f, -1.0f);
+            else if (gnormal[2] >  0.99f) gnormal = Vector3(0.0f, 0.0f,  1.0f);
 
             for (unsigned int i=0; i<x1.size(); i++)
             {
-                Vec3f p1 = x1[i];
-                Vec3f p2 = translation + rotation*p1;
-                if (p2[0] < -cubeDim2 || p2[0] > cubeDim2 || p2[1] < -cubeDim2 || p2[1] > cubeDim2 || p2[2] < -cubeDim2 || p2[2] > cubeDim2) continue;
-                float d = p2*normal - cubeDim2;
+                DistanceGrid::Coord p1 = x1[i];
+                DistanceGrid::Coord p2 = translation + rotation*p1;
+                if (p2[0] < -cubeDim2Margin || p2[0] > cubeDim2Margin ||
+                    p2[1] < -cubeDim2Margin || p2[1] > cubeDim2Margin ||
+                    p2[2] < -cubeDim2Margin || p2[2] > cubeDim2Margin)
+                    continue;
+                double d = p2*normal - cubeDim2;
 
-                p2 -= normal * d; // push p2 to the surface
+                //p2 -= normal * d; // push p2 to the surface
 
                 contacts.resize(contacts.size()+1);
                 DetectionOutput *detection = &*(contacts.end()-1);
 
-                detection->point[0] = p1;
-                detection->point[1] = p2;
+                detection->point[0] = Vector3(p1);
+                detection->point[1] = Vector3(p2) - normal*d;
                 detection->normal = gnormal;
                 detection->distance = d;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
+                detection->id = i;
                 ++nc;
             }
         }
@@ -593,37 +605,38 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
         {
             for (unsigned int i=0; i<x1.size(); i++)
             {
-                Vec3f p1 = x1[i];
-                Vec3f p2 = translation + rotation*p1;
+                DistanceGrid::Coord p1 = x1[i];
+                DistanceGrid::Coord p2 = translation + rotation*p1;
 #ifdef DEBUG_XFORM
-                Vec3f p1b = rotation.multTranspose(p2-translation);
-                Vec3f gp1 = t1+r1*p1;
-                Vec3f gp2 = t2+r2*p2;
-                if ((p1b-p1).norm2() > 0.0001)
+                DistanceGrid::Coord p1b = rotation.multTranspose(p2-translation);
+                DistanceGrid::Coord gp1 = t1+r1*p1;
+                DistanceGrid::Coord gp2 = t2+r2*p2;
+                if ((p1b-p1).norm2() > 0.0001f)
                     std::cerr << "ERROR1a: " << p1 << " -> " << p2 << " -> " << p1b << std::endl;
-                if ((gp1-gp2).norm2() > 0.0001)
+                if ((gp1-gp2).norm2() > 0.0001f)
                     std::cerr << "ERROR1b: " << p1 << " -> " << gp1 << "    " << p2 << " -> " << gp2 << std::endl;
 #endif
 
-                if (!grid2->inBBox( p2 )) continue;
+                if (!grid2->inBBox( p2, margin )) continue;
 
                 float d = grid2->interp(p2);
-                if (d >= 0.0f) continue;
+                if (d >= margin) continue;
 
-                DistanceGrid::Coord grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
+                Vector3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
                 grad.normalize();
 
-                p2 -= grad * d; // push p2 back to the surface
+                //p2 -= grad * d; // push p2 back to the surface
 
                 contacts.resize(contacts.size()+1);
                 DetectionOutput *detection = &*(contacts.end()-1);
 
-                detection->point[0] = p1;
-                detection->point[1] = p2;
+                detection->point[0] = Vector3(p1);
+                detection->point[1] = Vector3(p2) - grad * d;
                 detection->normal = r2 * -grad; // normal in global space from p1's surface
                 detection->distance = d;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
+                detection->id = i;
                 ++nc;
             }
         }
@@ -631,55 +644,61 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
 
     // then points of e2 against distance field of e1
     const DistanceGrid::VecCoord& x2 = grid2->meshPts;
+    const int i0 = x1.size();
     if (!x2.empty() && e2.getCollisionModel()->usePoints.getValue())
     {
         if (grid1->isCube() && grid2->isCube())
         {
-            const float cubeDim1 = grid1->getCubeDim();
+            const DistanceGrid::Real cubeDim1 = grid1->getCubeDim();
+            const DistanceGrid::Real cubeDim1Margin = cubeDim1+margin;
             // -rotationT*translation is the position of cube2 center in cube1 space
             // we use its largest component as the dominant contact face normal
             /// \TODO use the relative velocity as an additionnal factor
 
-            Vec3f normal = rotation.multTranspose(-translation);
+            Vector3 normal = rotation.multTranspose(-translation);
             normal[2] *= 1.1f; // we like Z contact better ;)
             if (rabs(normal[0]) > rabs(normal[1]))
             {
                 if (rabs(normal[0]) > rabs(normal[2]))
-                    normal = Vec3f(normal[0]>0.0f?1.0f:-1.0f,0.0f,0.0f);
+                    normal = Vector3(normal[0]>0.0f?1.0f:-1.0f,0.0f,0.0f);
                 else
-                    normal = Vec3f(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
+                    normal = Vector3(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
             }
             else
             {
                 if (rabs(normal[1]) > rabs(normal[2]))
-                    normal = Vec3f(0.0f,normal[1]>0.0f?1.0f:-1.0f,0.0f);
+                    normal = Vector3(0.0f,normal[1]>0.0f?1.0f:-1.0f,0.0f);
                 else
-                    normal = Vec3f(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
+                    normal = Vector3(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
             }
 
-            Vec3f gnormal = r1 * normal; // normal in global space from p1's surface
+            Vector3 gnormal = r1 * normal; // normal in global space from p1's surface
             // special case: if normal in global frame is nearly vertical, make it so
-            if (gnormal[2] < -0.99f) gnormal = Vec3f(0.0f, 0.0f, -1.0f);
-            else if (gnormal[2] >  0.99f) gnormal = Vec3f(0.0f, 0.0f,  1.0f);
+            if (gnormal[2] < -0.99f) gnormal = Vector3(0.0f, 0.0f, -1.0f);
+            else if (gnormal[2] >  0.99f) gnormal = Vector3(0.0f, 0.0f,  1.0f);
 
             for (unsigned int i=0; i<x2.size(); i++)
             {
-                Vec3f p2 = x2[i];
-                Vec3f p1 = rotation.multTranspose(p2-translation);
-                if (p1[0] < -cubeDim1 || p1[0] > cubeDim1 || p1[1] < -cubeDim1 || p1[1] > cubeDim1 || p1[2] < -cubeDim1 || p1[2] > cubeDim1) continue;
-                float d = p1*normal - cubeDim1;
+                DistanceGrid::Coord p2 = x2[i];
+                DistanceGrid::Coord p1 = rotation.multTranspose(p2-translation);
+                if (p1[0] < -cubeDim1Margin || p1[0] > cubeDim1Margin ||
+                    p1[1] < -cubeDim1Margin || p1[1] > cubeDim1Margin ||
+                    p1[2] < -cubeDim1Margin || p1[2] > cubeDim1Margin)
+                    continue;
+                double d = p1*normal - cubeDim1;
 
-                p1 -= normal * d; // push p1 to the surface
+                //p1 -= normal * d; // push p1 to the surface
 
                 contacts.resize(contacts.size()+1);
                 DetectionOutput *detection = &*(contacts.end()-1);
 
-                detection->point[0] = p1;
-                detection->point[1] = p2;
+                detection->point[0] = Vector3(p1) - normal * d;
+                detection->point[1] = Vector3(p2);
                 detection->normal = gnormal;
                 detection->distance = d;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
+                detection->id = i0+i;
                 ++nc;
             }
         }
@@ -687,37 +706,38 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
         {
             for (unsigned int i=0; i<x2.size(); i++)
             {
-                Vec3f p2 = x2[i];
-                Vec3f p1 = rotation.multTranspose(p2-translation);
+                DistanceGrid::Coord p2 = x2[i];
+                DistanceGrid::Coord p1 = rotation.multTranspose(p2-translation);
 #ifdef DEBUG_XFORM
-                Vec3f p2b = translation + rotation*p1;
-                Vec3f gp1 = t1+r1*p1;
-                Vec3f gp2 = t2+r2*p2;
-                if ((p2b-p2).norm2() > 0.0001)
+                DistanceGrid::Coord p2b = translation + rotation*p1;
+                DistanceGrid::Coord gp1 = t1+r1*p1;
+                DistanceGrid::Coord gp2 = t2+r2*p2;
+                if ((p2b-p2).norm2() > 0.0001f)
                     std::cerr << "ERROR2a: " << p2 << " -> " << p1 << " -> " << p2b << std::endl;
-                else if ((gp1-gp2).norm2() > 0.0001)
+                else if ((gp1-gp2).norm2() > 0.0001f)
                     std::cerr << "ERROR2b: " << p1 << " -> " << gp1 << "    " << p2 << " -> " << gp2 << std::endl;
 #endif
 
-                if (!grid1->inBBox( p1 )) continue;
+                if (!grid1->inBBox( p1, margin )) continue;
 
                 float d = grid1->interp(p1);
-                if (d >= 0.0f) continue;
+                if (d >= margin) continue;
 
-                DistanceGrid::Coord grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+                Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
                 grad.normalize();
 
-                p1 -= grad * d; // push p1 back to the surface
+                //p1 -= grad * d; // push p1 back to the surface
 
                 contacts.resize(contacts.size()+1);
                 DetectionOutput *detection = &*(contacts.end()-1);
 
-                detection->point[0] = p1;
-                detection->point[1] = p2;
+                detection->point[0] = Vector3(p1) - grad * d;
+                detection->point[1] = Vector3(p2);
                 detection->normal = r1 * grad; // normal in global space from p1's surface
                 detection->distance = d;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
+                detection->id = i0+i;
                 ++nc;
             }
         }
@@ -726,7 +746,7 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
 }
 
 
-bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement& e1, Ray& e2)
+bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement& /*e1*/, Ray& /*e2*/)
 {
     return true;
 }
@@ -842,6 +862,7 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
             detection->distance = dist;
             detection->elem.first = e1;
             detection->elem.second = e2;
+            detection->id = e2.getIndex();
             ++nc;
         }
     }

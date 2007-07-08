@@ -74,6 +74,18 @@ public:
 
     virtual ~CollisionModel() { }
 
+    /// Return true if there are no elements
+    bool empty() const
+    {
+        return size==0;
+    }
+
+    /// Get the number of elements.
+    int getSize() const
+    {
+        return size;
+    }
+
     /// Set the number of elements.
     virtual void resize(int s)
     {
@@ -90,12 +102,6 @@ public:
     Iterator end()
     {
         return Iterator(this,size);
-    }
-
-    /// Return true if there are no elements
-    bool empty() const
-    {
-        return size==0;
     }
 
     /// Return the next (finer / lower / child level) CollisionModel in the hierarchy.

@@ -75,6 +75,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
     DetectionOutputMap::iterator outputsIt = outputsMap.begin();
     std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::componentmodel::collision::Contact* >::iterator contactIt = contactMap.begin();
     int nbContact = 0;
+    DetectionOutputVector emptyContacts;
     while (outputsIt!=outputsMap.end() || contactIt!=contactMap.end())
     {
         if (outputsIt!=outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
@@ -86,6 +87,8 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             else
             {
                 contactMap[std::make_pair(outputsIt->first.first, outputsIt->first.second)] = contact;
+                contact->f_printLog.setValue(this->f_printLog.getValue());
+                contact->init();
                 contact->setDetectionOutputs(outputsIt->second);
                 ++nbContact;
             }
@@ -95,11 +98,18 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
         {
             // inactive contact
             //std::cout << "Deleting inactive "<<contacttype<<" contact"<<std::endl;
-            std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::componentmodel::collision::Contact* >::iterator contactIt2 = contactIt;
-            ++contactIt2;
-            delete contactIt->second;
-            contactMap.erase(contactIt);
-            contactIt = contactIt2;
+            if (contactIt->second->keepAlive())
+            {
+                contactIt->second->setDetectionOutputs(emptyContacts);
+            }
+            else
+            {
+                std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::componentmodel::collision::Contact* >::iterator contactIt2 = contactIt;
+                ++contactIt2;
+                delete contactIt->second;
+                contactMap.erase(contactIt);
+                contactIt = contactIt2;
+            }
         }
         else
         {

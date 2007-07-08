@@ -45,7 +45,16 @@ namespace forcefield
 {
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v)
+void PenalityContactForceField<DataTypes>::clear(int reserve)
+{
+    prevContacts.swap(contacts); // save old contacts in prevContacts
+    contacts.clear();
+    if (reserve)
+        contacts.reserve(reserve);
+}
+
+template<class DataTypes>
+void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v, int oldIndex)
 {
     int i = contacts.size();
     contacts.resize(i+1);
@@ -58,7 +67,14 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, const Deri
     c.mu_s = mu_s;
     c.mu_v = mu_v;
     c.pen = 0;
-    c.spen = 0;
+    if (oldIndex > 0 && oldIndex <= (int)prevContacts.size())
+    {
+        c.age = prevContacts[oldIndex-1].age+1;
+    }
+    else
+    {
+        c.age = 0;
+    }
 }
 
 template<class DataTypes>
@@ -68,10 +84,10 @@ void PenalityContactForceField<DataTypes>::addForce()
     assert(this->object2);
     VecDeriv& f1 = *this->object1->getF();
     const VecCoord& p1 = *this->object1->getX();
-    const VecDeriv& v1 = *this->object1->getV();
+    //const VecDeriv& v1 = *this->object1->getV();
     VecDeriv& f2 = *this->object2->getF();
     const VecCoord& p2 = *this->object2->getX();
-    const VecDeriv& v2 = *this->object2->getV();
+    //const VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
     for (unsigned int i=0; i<contacts.size(); i++)
@@ -82,21 +98,7 @@ void PenalityContactForceField<DataTypes>::addForce()
         if (c.pen > 0)
         {
             Real fN = c.ks * c.pen;
-            Deriv v = v2[c.m2]-v1[c.m1];
-            v -= c.norm*(v*c.norm); // project velocity to contact plane
-            if (v.norm2() < 0.0001)
-            {
-                // static friction mode
-                c.spen = c.mu_s * c.ks;
-                c.fDir = - c.norm;
-            }
-            else
-            {
-                c.spen = c.mu_s * c.ks * 0.1f; //0;
-                c.fDir = v*c.mu_v - c.norm;
-            }
-            Deriv force = c.fDir*fN;
-            c.fDir = - c.norm;
+            Deriv force = -c.norm*fN;
             f1[c.m1]+=force;
             f2[c.m2]-=force;
         }
@@ -123,12 +125,7 @@ void PenalityContactForceField<DataTypes>::addDForce()
             Real dpen = - du*c.norm;
             //if (c.pen < 0) dpen += c.pen; // start penality at distance 0
             Real dfN = c.ks * dpen;
-            Deriv dforce = c.fDir*dfN;
-            if (c.spen > 0)
-            {
-                du += c.norm*dpen; // project du to contact plane
-                dforce += du * c.spen;
-            }
+            Deriv dforce = -c.norm*dfN;
             f1[c.m1]+=dforce;
             f2[c.m2]-=dforce;
         }
@@ -155,7 +152,7 @@ void PenalityContactForceField<DataTypes>::draw()
     {
         const Contact& c = contacts[i];
         Real d = c.dist - (p2[c.m2]-p1[c.m1])*c.norm;
-        if (c.spen > c.mu_s * c.ks * 0.99)
+        if (c.age > 10) //c.spen > c.mu_s * c.ks * 0.99)
             if (d > 0)
                 glColor4f(1,0,1,1);
             else

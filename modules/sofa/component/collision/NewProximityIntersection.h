@@ -95,17 +95,13 @@ public:
     int computeIntersection(Triangle&, Triangle&, DetectionOutputVector&);
     int computeIntersection(Ray&, Triangle&, DetectionOutputVector&);
 
-    static inline int doIntersectionTrianglePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& n, const Vector3& q, DetectionOutputVector& contacts, bool swapElems = false);
+    static inline int doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, DetectionOutputVector& contacts, int id);
 
-    static inline int doIntersectionTrianglePoints(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& n, const Vector3& q1, const Vector3& q2, DetectionOutputVector& contacts, bool swapElems = false);
+    static inline int doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, DetectionOutputVector& contacts, int id, bool swapElems = false);
 
-    static inline int doIntersectionTrianglePoints(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& n, const Vector3& q1, const Vector3& q2, const Vector3& q3, DetectionOutputVector& contacts, bool swapElems = false);
+    static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, DetectionOutputVector& contacts, int id);
 
-    static inline int doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, DetectionOutputVector& contacts);
-
-    static inline int doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, DetectionOutputVector& contacts, bool swapElems = false);
-
-    static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, DetectionOutputVector& contacts);
+    static inline int doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& n, const Vector3& q, DetectionOutputVector& contacts, int id, bool swapElems = false);
 
 protected:
 };
