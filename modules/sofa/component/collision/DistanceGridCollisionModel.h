@@ -383,7 +383,9 @@ public:
 
     DistanceGrid* getGrid();
 
-    sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* getRigidModel();
+    bool isTransformed();
+    const Matrix3& getRotation();
+    const Vector3& getTranslation();
 
     void setGrid(DistanceGrid* surf);
 };
@@ -391,7 +393,17 @@ public:
 class DistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
 {
 protected:
-    std::vector<DistanceGrid*> elems;
+
+    class ElementData
+    {
+    public:
+        Matrix3 rotation;
+        Vector3 translation;
+        DistanceGrid* grid;
+        ElementData() : grid(NULL) { rotation.identity(); }
+    };
+
+    std::vector<ElementData> elems;
 
     // Input data parameters
     DataField< std::string > filename;
@@ -417,26 +429,22 @@ public:
 
     ~DistanceGridCollisionModel();
 
-    //const std::string& getFilename() const   { return filename; }
-    //void setFilename(const std::string& val) { filename = val;  }
-
-    //const Vec3d& getTranslation() const   { return translation; }
-    //void setTranslation(const Vec3d& val) { translation = val;  }
-
-    //const double& getScale() const   { return scale; }
-    //void setScale(const double& val) { scale = val;  }
-
-    //const double& getBorder() const   { return border; }
-    //void setBorder(const double& val) { border = val;  }
-
-    //const int& getDepth() const   { return depth; }
-    //void setDepth(const int& val) { depth = val;  }
-
     core::componentmodel::behavior::MechanicalState<RigidTypes>* getRigidModel() { return rigid; }
 
     void init();
 
-    DistanceGrid* getGrid(int index=0);
+    DistanceGrid* getGrid(int index=0)
+    {
+        return elems[index].grid;
+    }
+    const Matrix3& getRotation(int index=0)
+    {
+        return elems[index].rotation;
+    }
+    const Vector3& getTranslation(int index=0)
+    {
+        return elems[index].translation;
+    }
 
     void setGrid(DistanceGrid* surf, int index=0);
 
@@ -470,7 +478,9 @@ inline DistanceGridCollisionElement::DistanceGridCollisionElement(core::Collisio
 inline DistanceGrid* DistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
 inline void DistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
 
-inline sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* DistanceGridCollisionElement::getRigidModel() { return model->getRigidModel(); }
+inline bool DistanceGridCollisionElement::isTransformed() { return model->getRigidModel() != NULL; }
+inline const Matrix3& DistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
+inline const Vector3& DistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
 
 } // namespace collision
 

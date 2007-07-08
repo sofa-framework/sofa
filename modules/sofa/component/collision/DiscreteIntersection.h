@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/collision/Intersection.h>
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/component/collision/SphereModel.h>
+#include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/CubeModel.h>
@@ -69,6 +70,8 @@ public:
     //bool testIntersection(Sphere& , Triangle&);
     //bool testIntersection(Triangle& ,Triangle&);
     bool testIntersection(DistanceGridCollisionElement&, DistanceGridCollisionElement&);
+    bool testIntersection(DistanceGridCollisionElement&, Point&);
+    bool testIntersection(DistanceGridCollisionElement&, Triangle&);
     bool testIntersection(DistanceGridCollisionElement&, Ray&);
 
     int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
@@ -81,6 +84,8 @@ public:
     //int computeIntersection(Sphere&, Triangle&, DetectionOutputVector&);
     //int computeIntersection(Triangle&, Triangle&, DetectionOutputVector&);
     int computeIntersection(DistanceGridCollisionElement&, DistanceGridCollisionElement&, DetectionOutputVector&);
+    int computeIntersection(DistanceGridCollisionElement&, Point&, DetectionOutputVector&);
+    int computeIntersection(DistanceGridCollisionElement&, Triangle&, DetectionOutputVector&);
     int computeIntersection(DistanceGridCollisionElement&, Ray&, DetectionOutputVector&);
 
 };

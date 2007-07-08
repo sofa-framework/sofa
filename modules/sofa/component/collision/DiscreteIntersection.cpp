@@ -68,6 +68,8 @@ DiscreteIntersection::DiscreteIntersection()
     //intersectors.add<SphereModel,     TriangleModel,     DiscreteIntersection, true>  (this);
     //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection, false> (this);
     intersectors.add<DistanceGridCollisionModel, DistanceGridCollisionModel, DiscreteIntersection, false> (this);
+    intersectors.add<DistanceGridCollisionModel, PointModel,                 DiscreteIntersection, true>  (this);
+    intersectors.add<DistanceGridCollisionModel, TriangleModel,              DiscreteIntersection, true>  (this);
     intersectors.add<DistanceGridCollisionModel, RayModel,                   DiscreteIntersection, true>  (this);
     intersectors.add<DistanceGridCollisionModel, RayPickInteractor,          DiscreteIntersection, true>  (this);
 }
@@ -483,13 +485,6 @@ int DiscreteIntersection::computeIntersection(SingleSphere& sph1, Ray& ray2, Det
 //	return 0;
 //}
 
-
-
-
-
-
-
-
 bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement&, DistanceGridCollisionElement&)
 {
     return true;
@@ -502,32 +497,13 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
     int nc = 0;
     DistanceGrid* grid1 = e1.getGrid();
     DistanceGrid* grid2 = e2.getGrid();
-    sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid1 = e1.getRigidModel();
-    sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid2 = e2.getRigidModel();
+    bool useXForm = e1.isTransformed() || e2.isTransformed();
+    const Vector3& t1 = e1.getTranslation();
+    const Matrix3& r1 = e1.getRotation();
+    const Vector3& t2 = e2.getTranslation();
+    const Matrix3& r2 = e2.getRotation();
 
     const DistanceGrid::Real margin = 0.001f; //e1.getProximity() + e2.getProximity();
-
-    bool useXForm = false;
-
-    Vector3 t1;
-    Matrix3 r1;
-    if (rigid1)
-    {
-        t1 = (*rigid1->getX())[e1.getIndex()].getCenter();
-        (*rigid1->getX())[e1.getIndex()].getOrientation().toMatrix(r1);
-        useXForm = true;
-    }
-    else r1.identity();
-
-    Vector3 t2;
-    Matrix3 r2;
-    if (rigid2)
-    {
-        t2 = (*rigid2->getX())[e2.getIndex()].getCenter();
-        (*rigid2->getX())[e2.getIndex()].getOrientation().toMatrix(r2);
-        useXForm = true;
-    }
-    else r2.identity();
 
     // transform from grid1 to grid2
     Vec3f translation;
@@ -745,6 +721,168 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
     return nc;
 }
 
+bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement&, Point&)
+{
+    return true;
+}
+
+int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, Point& e2, DetectionOutputVector& contacts)
+{
+    DistanceGrid* grid1 = e1.getGrid();
+    bool useXForm = e1.isTransformed();
+    const Vector3& t1 = e1.getTranslation();
+    const Matrix3& r1 = e1.getRotation();
+
+    const DistanceGrid::Real margin = 0.001f; //e1.getProximity() + e2.getProximity();
+
+    Vector3 p2 = e2.p();
+    DistanceGrid::Coord p1;
+
+    if (useXForm)
+    {
+        p1 = r1.multTranspose(p2-t1);
+    }
+    else p1 = p2;
+
+    if (!grid1->inBBox( p1, margin )) return 0;
+
+    float d = grid1->interp(p1);
+    if (d >= margin) return 0;
+
+    Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+    grad.normalize();
+
+    //p1 -= grad * d; // push p1 back to the surface
+
+    contacts.resize(contacts.size()+1);
+    DetectionOutput *detection = &*(contacts.end()-1);
+
+    detection->point[0] = Vector3(p1) - grad * d;
+    detection->point[1] = Vector3(p2);
+    detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
+    detection->distance = d;
+    detection->elem.first = e1;
+    detection->elem.second = e2;
+    detection->id = e2.getIndex();
+    return 1;
+}
+
+bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement&, Triangle&)
+{
+    return true;
+}
+
+int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, Triangle& e2, DetectionOutputVector& contacts)
+{
+    const int f2 = e2.flags();
+    if (!(f2&TriangleModel::FLAG_POINTS)) return 0; // no points associated with this triangle
+    DistanceGrid* grid1 = e1.getGrid();
+    bool useXForm = e1.isTransformed();
+    const Vector3& t1 = e1.getTranslation();
+    const Matrix3& r1 = e1.getRotation();
+
+    const DistanceGrid::Real margin = 0.001f; //e1.getProximity() + e2.getProximity();
+
+    if (f2&TriangleModel::FLAG_P1)
+    {
+        Vector3 p2 = e2.p1();
+        DistanceGrid::Coord p1;
+
+        if (useXForm)
+        {
+            p1 = r1.multTranspose(p2-t1);
+        }
+        else p1 = p2;
+
+        if (!grid1->inBBox( p1, margin )) return 0;
+
+        float d = grid1->interp(p1);
+        if (d >= margin) return 0;
+
+        Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+        grad.normalize();
+
+        //p1 -= grad * d; // push p1 back to the surface
+
+        contacts.resize(contacts.size()+1);
+        DetectionOutput *detection = &*(contacts.end()-1);
+
+        detection->point[0] = Vector3(p1) - grad * d;
+        detection->point[1] = Vector3(p2);
+        detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
+        detection->distance = d;
+        detection->elem.first = e1;
+        detection->elem.second = e2;
+        detection->id = e2.getIndex()*3+0;
+    }
+
+    if (f2&TriangleModel::FLAG_P2)
+    {
+        Vector3 p2 = e2.p2();
+        DistanceGrid::Coord p1;
+
+        if (useXForm)
+        {
+            p1 = r1.multTranspose(p2-t1);
+        }
+        else p1 = p2;
+
+        if (!grid1->inBBox( p1, margin )) return 0;
+
+        float d = grid1->interp(p1);
+        if (d >= margin) return 0;
+
+        Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+        grad.normalize();
+
+        //p1 -= grad * d; // push p1 back to the surface
+
+        contacts.resize(contacts.size()+1);
+        DetectionOutput *detection = &*(contacts.end()-1);
+
+        detection->point[0] = Vector3(p1) - grad * d;
+        detection->point[1] = Vector3(p2);
+        detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
+        detection->distance = d;
+        detection->elem.first = e1;
+        detection->elem.second = e2;
+        detection->id = e2.getIndex()*3+1;
+    }
+
+    if (f2&TriangleModel::FLAG_P3)
+    {
+        Vector3 p2 = e2.p3();
+        DistanceGrid::Coord p1;
+
+        if (useXForm)
+        {
+            p1 = r1.multTranspose(p2-t1);
+        }
+        else p1 = p2;
+
+        if (!grid1->inBBox( p1, margin )) return 0;
+
+        float d = grid1->interp(p1);
+        if (d >= margin) return 0;
+
+        Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+        grad.normalize();
+
+        //p1 -= grad * d; // push p1 back to the surface
+
+        contacts.resize(contacts.size()+1);
+        DetectionOutput *detection = &*(contacts.end()-1);
+
+        detection->point[0] = Vector3(p1) - grad * d;
+        detection->point[1] = Vector3(p2);
+        detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
+        detection->distance = d;
+        detection->elem.first = e1;
+        detection->elem.second = e2;
+        detection->id = e2.getIndex()*3+2;
+    }
+    return 1;
+}
 
 bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement& /*e1*/, Ray& /*e2*/)
 {
@@ -759,15 +897,12 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
 
     int nc = 0;
     DistanceGrid* grid1 = e1.getGrid();
-    sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid1 = e1.getRigidModel();
+    bool useXForm = e1.isTransformed();
 
-    if (rigid1)
+    if (useXForm)
     {
-        Vector3 t1;
-        Matrix3 r1;
-        t1 = (*rigid1->getX())[e1.getIndex()].getCenter();
-        (*rigid1->getX())[e1.getIndex()].getOrientation().toMatrix(r1);
-
+        const Vector3& t1 = e1.getTranslation();
+        const Matrix3& r1 = e1.getRotation();
         rayOrigin = r1.multTranspose(rayOrigin-t1);
         rayDirection = r1.multTranspose(rayDirection);
         // now ray infos are in grid1 space

@@ -162,7 +162,7 @@ DistanceGridCollisionModel::DistanceGridCollisionModel()
 DistanceGridCollisionModel::~DistanceGridCollisionModel()
 {
     for (unsigned int i=0; i<elems.size(); i++)
-        if (elems[i]!=NULL) elems[i]->release();
+        if (elems[i].grid!=NULL) elems[i].grid->release();
 }
 
 void DistanceGridCollisionModel::init()
@@ -186,7 +186,7 @@ void DistanceGridCollisionModel::init()
     grid = DistanceGrid::loadShared(filename.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
 
     resize(1);
-    elems[0] = grid;
+    elems[0].grid = grid;
     if (grid && !dumpfilename.getValue().empty())
     {
         std::cout << "DistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
@@ -201,14 +201,9 @@ void DistanceGridCollisionModel::resize(int s)
     elems.resize(s);
 }
 
-DistanceGrid* DistanceGridCollisionModel::getGrid(int index)
-{
-    return elems[index];
-}
-
 void DistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
 {
-    elems[index] = surf;
+    elems[index].grid = surf;
 }
 
 void DistanceGridCollisionModel::updateGrid()
@@ -250,31 +245,22 @@ void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
     //if (filename.getValue().empty())
     //    updateGrid();
 
-    bool xform = false;
-    Mat3x3d rotation;
-    Vec3d translation;
-
-    if (rigid)
-    {
-        xform = true;
-        translation = (*rigid->getX())[0].getCenter();
-        (*rigid->getX())[0].getOrientation().toMatrix(rotation);
-    }
-    else rotation.identity();
-
     cubeModel->resize(size);
     for (int i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
-        if (xform)
+        if (rigid)
         {
-            Vector3 corner = translation + rotation * elems[i]->getBBCorner(0);
+            const RigidTypes::Coord& xform = (*rigid->getX())[i];
+            elems[i].translation = xform.getCenter();
+            xform.getOrientation().toMatrix(elems[i].rotation);
+            Vector3 corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(0);
             emin = corner;
             emax = emin;
             for (int j=1; j<8; j++)
             {
-                corner = translation + rotation * elems[i]->getBBCorner(j);
+                corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(j);
                 for(int c=0; c<3; c++)
                     if (corner[c] < emin[c]) emin[c] = corner[c];
                     else if (corner[c] > emax[c]) emax[c] = corner[c];
@@ -282,8 +268,8 @@ void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         }
         else
         {
-            emin = elems[i]->getBBMin();
-            emax = elems[i]->getBBMax();
+            emin = elems[i].grid->getBBMin();
+            emax = elems[i].grid->getBBMax();
         }
         cubeModel->setParentOf(i, emin, emax); // define the bounding box of the current element
     }
