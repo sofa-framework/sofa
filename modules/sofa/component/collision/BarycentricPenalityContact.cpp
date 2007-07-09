@@ -51,6 +51,8 @@ Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, SphereModel>
 Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, TriangleModel> > SphereTreeTriangleContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<DistanceGridCollisionModel, DistanceGridCollisionModel> > DistanceGridDistanceGridContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<DistanceGridCollisionModel, PointModel> > DistanceGridPointContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<DistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleContactClass("default", true);
 
 
 } // namespace collision

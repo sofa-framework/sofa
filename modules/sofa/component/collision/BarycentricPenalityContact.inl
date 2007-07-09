@@ -64,7 +64,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
     {
         MechanicalState1* mstate1 = mapper1.createMapping();
         MechanicalState2* mstate2 = mapper2.createMapping();
-        ff = new forcefield::PenalityContactForceField<Vec3Types>(mstate1,mstate2);
+        ff = new ResponseForceField(mstate1,mstate2);
     }
 
     int insize = outputs.size();

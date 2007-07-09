@@ -53,18 +53,29 @@ using std::endl;
 #define is(n1, n2) (! xmlStrcmp((const xmlChar*)n1,(const xmlChar*)n2))
 #define getProp(n) ( xmlGetProp(cur, (const xmlChar*)n) )
 
-void recReplaceAttribute(BaseElement* node, const char* attr, const char* value)
+void recReplaceAttribute(BaseElement* node, const char* attr, const char* value, const char* nodename=NULL)
 {
-    if (node->getAttribute( attr ))
+    if (nodename)
     {
-        std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
-        node->setAttribute(attr, value);
+        if (node->getName() == nodename)
+        {
+            std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
+            node->setAttribute(attr, value);
+        }
+    }
+    else
+    {
+        if (node->getAttribute( attr ))
+        {
+            std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
+            node->setAttribute(attr, value);
+        }
     }
     BaseElement::child_iterator<> it = node->begin();
     BaseElement::child_iterator<> end = node->end();
     while (it != end)
     {
-        recReplaceAttribute( it, attr, value );
+        recReplaceAttribute( it, attr, value, nodename );
         ++it;
     }
 }
@@ -122,7 +133,19 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
                 }
                 else
                 {
-                    recReplaceAttribute(result, (const char*)attr->name, (const char*)attr->children->content);
+                    const char* attrname = (const char*)attr->name;
+                    const char* value = (const char*)attr->children->content;
+                    if (const char* sep = strstr(attrname,"__"))
+                    {
+                        // replace attribute in nodes with a given name
+                        std::string nodename(attrname, sep);
+                        recReplaceAttribute(result, sep+2, value, nodename.c_str());
+                    }
+                    else
+                    {
+                        // replace attribute in all nodes already containing it
+                        recReplaceAttribute(result, attrname, value);
+                    }
                 }
             }
         }

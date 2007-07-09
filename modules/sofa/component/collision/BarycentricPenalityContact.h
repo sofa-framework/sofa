@@ -28,7 +28,11 @@
 #include <sofa/core/componentmodel/collision/Contact.h>
 #include <sofa/core/componentmodel/collision/Intersection.h>
 #include <sofa/component/mapping/BarycentricMapping.h>
+#ifdef SOFA_TEST_FRICTION
+#include <sofa/component/forcefield/PenalityContactFrictionForceField.h>
+#else
 #include <sofa/component/forcefield/PenalityContactForceField.h>
+#endif
 #include <sofa/helper/Factory.h>
 #include <sofa/component/collision/BarycentricContactMapper.h>
 
@@ -55,6 +59,11 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<typename CollisionModel2::DataTypes> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
+#ifdef SOFA_TEST_FRICTION
+    typedef forcefield::PenalityContactFrictionForceField<Vec3Types> ResponseForceField;
+#else
+    typedef forcefield::PenalityContactForceField<Vec3Types> ResponseForceField;
+#endif
 protected:
     CollisionModel1* model1;
     CollisionModel2* model2;
@@ -63,7 +72,7 @@ protected:
     BarycentricContactMapper<CollisionModel1> mapper1;
     BarycentricContactMapper<CollisionModel2> mapper2;
 
-    forcefield::PenalityContactForceField<Vec3Types>* ff;
+    ResponseForceField* ff;
     core::objectmodel::BaseContext* parent;
 
     typedef std::map<core::componentmodel::collision::DetectionOutput::ContactId,int> ContactIndexMap;
