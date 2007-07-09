@@ -38,9 +38,9 @@ int main(int argc, char** argv)
 {
     sofa::helper::BackTrace::autodump();
 
-#ifndef SOFA_GUI_QTOGREVIEWER
+
     glutInit(&argc,argv);
-#endif
+
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
     std::string fileName ;
     bool        startAnim = false;

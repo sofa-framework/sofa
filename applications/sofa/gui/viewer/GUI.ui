@@ -1181,6 +1181,12 @@
         <receiver>GUI</receiver>
         <slot>DoubleClickeItemInSceneView(QListViewItem*)</slot>
     </connection>
+    <connection>
+        <sender>graphView</sender>
+        <signal>rightButtonClicked(QListViewItem*,const QPoint&amp;,int)</signal>
+        <receiver>GUI</receiver>
+        <slot>RightClickedItemInSceneView(QListViewItem*,const QPoint&amp;,int)</slot>
+    </connection>
 </connections>
 <slots>
     <slot>fileNew()</slot>
@@ -1204,6 +1210,7 @@
     <slot>helpAbout()</slot>
     <slot>saveXML()</slot>
     <slot>DoubleClickeItemInSceneView(QListViewItem*)</slot>
+    <slot>RightClickedItemInSceneView(QListViewItem*, const QPoint&amp;, int)</slot>
 </slots>
 <layoutdefaults spacing="2" margin="5"/>
 </UI>

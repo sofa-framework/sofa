@@ -30,7 +30,7 @@
 #include "GUI.h"
 #include "GUIField.h"
 
-
+#include "GraphListenerQListView.h"
 #include "SofaViewer.h"
 // #ifdef SOFA_GUI_QTVIEWER
 // #include "QtViewer/QtViewer.h"
@@ -43,6 +43,7 @@
 // #ifdef SOFA_GUI_QTOGREVIEWER
 // #include "QtOgreViewer/QtOgreViewer.h"
 // #endif
+
 
 
 #ifdef QT_MODULE_QT3SUPPORT
@@ -74,7 +75,7 @@ namespace guiviewer
 
 using sofa::simulation::tree::GNode;
 
-class GraphListenerQListView;
+//      class GraphListenerQListView;
 
 
 
@@ -138,9 +139,11 @@ public:
     //virtual void helpContents();
     //virtual void helpAbout();
 
+
 public slots:
 
     void DoubleClickeItemInSceneView(QListViewItem * item);
+    void RightClickedItemInSceneView(QListViewItem *item, const QPoint& point, int index);
     void playpauseGUI(bool value);
     void step();
     void animate();
@@ -165,6 +168,9 @@ public slots:
     void displayComputationTime(bool);
     void setExportGnuplot(bool);
     void currentTabChanged(QWidget*);
+    void graphAddObject();
+    void graphRemoveObject();
+    void graphModify();
 
 signals:
     void reload();
@@ -181,6 +187,10 @@ protected:
     void init();
     void keyPressEvent ( QKeyEvent * e );
 
+
+    GNode *searchNode(GNode *node);
+    GNode *verifyNode(GNode *node);
+
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
     bool m_exportGnuplot;
@@ -190,6 +200,8 @@ protected:
 
     QWidget* currentTab;
     GraphListenerQListView* graphListener;
+    QListViewItem *item_clicked;
+    GNode *node_clicked;
     QTimer* timerStep;
     QLabel* fpsLabel;
     QLabel* timeLabel;

@@ -36,12 +36,23 @@
 #endif
 #include "RealGUI.h"
 
+
 #include <sofa/simulation/tree/Simulation.h>
+#include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/simulation/tree/InitAction.h>
 #include <sofa/simulation/tree/MutationListener.h>
+#include <sofa/simulation/tree/Colors.h>
+
+#include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
+
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
 #include <sofa/simulation/automatescheduler/ExecBus.h>
 #include <sofa/simulation/automatescheduler/Node.h>
+
+#include "WFloatLineEdit.h"
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <limits.h>
 
 namespace sofa
 {
@@ -74,6 +85,7 @@ extern simulation::tree::GNode* groot;
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTabWidget>
+#include <Q3PopupMenu.h>
 
 #define WIDTH_OFFSET 2
 #define HEIGHT_OFFSET 2
@@ -105,6 +117,8 @@ extern simulation::tree::GNode* groot;
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qtabwidget.h>
+#include <qpopupmenu.h>
+
 
 #define WIDTH_OFFSET 0
 #define HEIGHT_OFFSET 0
@@ -113,10 +127,6 @@ extern simulation::tree::GNode* groot;
 #include <GenGraphForm.h>
 #include "GUIField.h"
 
-#include <sofa/simulation/tree/Colors.h>
-#include "WFloatLineEdit.h"
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <limits.h>
 
 
 namespace sofa
@@ -134,23 +144,22 @@ typedef Q3FileDialog QFileDialog;
 typedef Q3DockWindow QDockWindow;
 typedef QStackedWidget QWidgetStack;
 typedef Q3TextEdit QTextEdit;
+typedef Q3PopupMmenu QPopupMenu;
 #else
 typedef QListViewItem Q3ListViewItem;
 typedef QListView Q3ListView;
 typedef QFileDialog Q3FileDialog;
 //typedef QWidgetStack QStackedWidget;
 typedef QTextEdit Q3TextEdit;
+typedef QPopupMenu Q3PopupMenu;
 #endif
 
-
-#include "iconnode.xpm"
 
 using sofa::core::objectmodel::BaseObject;
 
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation::tree;
 using namespace sofa::simulation::automatescheduler;
-
 
 ///////////////////////////////////////////////////////////
 //////////////////// SofaGUI Interface ////////////////////
@@ -259,402 +268,8 @@ sofa::simulation::tree::GNode* RealGUI::currentSimulation()
     return viewer->getScene();
 }
 
-///////////////////////////////////////////////////////////
-
-static const int iconWidth=8;
-static const int iconHeight=10;
-static const int iconMargin=6;
-
-/*
-static QImage* classIcons = NULL;
-static const int iconMargin=7;
-static const int iconHeight=20;
-
-// mapping; mmapping; constraint; iff; ffield; topology; mass; mstate; solver; bmodel; vmodel; cmodel; pipeline; context; object; gnode;
-
-static const int iconPos[16]=
-{
-0, // node
-1, // object
-2, // context
-6, // bmodel
-4, // cmodel
-8, // mstate
-13, // constraint
-12, // iff
-11, // ff
-7, // solver
-3, // pipeline
-14, // mmap
-15, // map
-9, // mass
-10, // topo
-5, // vmodel
-};
-
-static QImage icons[16];
-     */
-static int hexval(char c)
-{
-    if (c>='0' && c<='9') return c-'0';
-    else if (c>='a' && c<='f') return (c-'a')+10;
-    else if (c>='A' && c<='F') return (c-'A')+10;
-    else return 0;
-}
-
-static QPixmap* getPixmap(core::objectmodel::Base* obj)
-{
-    using namespace sofa::simulation::tree::Colors;
-    /*
-      if (classIcons == NULL)
-      {
-      classIcons = new QImage("classicons.png");
-      std::cout << "classicons.png: "<<classIcons->width()<<"x"<<classIcons->height()<<std::endl;
-      if (classIcons->height() < 16) return NULL;
-      // Find each icon
-      QRgb bg = classIcons->pixel(0,0);
-      }
-      if (classIcons->height() < 16) return NULL;
-    */
-    unsigned int flags=0;
-
-    if (dynamic_cast<core::objectmodel::BaseNode*>(obj))
-    {
-        static QPixmap pixNode((const char**)iconnode_xpm);
-        return &pixNode;
-        //flags |= 1 << NODE;
-    }
-    else if (dynamic_cast<core::objectmodel::BaseObject*>(obj))
-    {
-        if (dynamic_cast<core::objectmodel::ContextObject*>(obj))
-            flags |= 1 << CONTEXT;
-        if (dynamic_cast<core::BehaviorModel*>(obj))
-            flags |= 1 << BMODEL;
-        if (dynamic_cast<core::CollisionModel*>(obj))
-            flags |= 1 << CMODEL;
-        if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(obj))
-            flags |= 1 << MMODEL;
-        if (dynamic_cast<core::componentmodel::behavior::BaseConstraint*>(obj))
-            flags |= 1 << CONSTRAINT;
-        if (dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj) &&
-            dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel2())
-            flags |= 1 << IFFIELD;
-        else if (dynamic_cast<core::componentmodel::behavior::BaseForceField*>(obj))
-            flags |= 1 << FFIELD;
-        if (dynamic_cast<core::componentmodel::behavior::MasterSolver*>(obj)
-            || dynamic_cast<core::componentmodel::behavior::OdeSolver*>(obj))
-            flags |= 1 << SOLVER;
-        if (dynamic_cast<core::componentmodel::collision::Pipeline*>(obj)
-            || dynamic_cast<core::componentmodel::collision::Intersection*>(obj)
-            || dynamic_cast<core::componentmodel::collision::Detection*>(obj)
-            || dynamic_cast<core::componentmodel::collision::ContactManager*>(obj)
-            || dynamic_cast<core::componentmodel::collision::CollisionGroupManager*>(obj))
-            flags |= 1 << COLLISION;
-        if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
-            flags |= 1 << MMAPPING;
-        else if (dynamic_cast<core::BaseMapping*>(obj))
-            flags |= 1 << MAPPING;
-        if (dynamic_cast<core::componentmodel::behavior::BaseMass*>(obj))
-            flags |= 1 << MASS;
-        if (dynamic_cast<core::componentmodel::topology::Topology *>(obj))
-            flags |= 1 << TOPOLOGY;
-        if (dynamic_cast<core::VisualModel*>(obj) && !flags)
-            flags |= 1 << VMODEL;
-        if (!flags)
-            flags |= 1 << OBJECT;
-    }
-    else return NULL;
-
-    static std::map<unsigned int, QPixmap*> pixmaps;
-    if (!pixmaps.count(flags))
-    {
-        int nc = 0;
-        for (int i=0; i<16; i++)
-            if (flags & (1<<i))
-                ++nc;
-        int nx = 2+iconWidth*nc+iconMargin;
-        QImage * img = new QImage(nx,iconHeight,32);
-        img->setAlphaBuffer(true);
-        img->fill(qRgba(0,0,0,0));
-        // Workaround for qt 3.x where fill() does not set the alpha channel
-        for (int y=0 ; y < iconHeight ; y++)
-            for (int x=0 ; x < nx ; x++)
-                img->setPixel(x,y,qRgba(0,0,0,0));
-
-        for (int y=0 ; y < iconHeight ; y++)
-            img->setPixel(0,y,qRgba(0,0,0,255));
-        nc = 0;
-        for (int i=0; i<16; i++)
-            if (flags & (1<<i))
-            {
-                int x0 = 1+iconWidth*nc;
-                int x1 = x0+iconWidth-1;
-                //QColor c(COLOR[i]);
-                const char* color = COLOR[i];
-                //c.setAlpha(255);
-                int r = (hexval(color[1])*16+hexval(color[2]));
-                int g = (hexval(color[3])*16+hexval(color[4]));
-                int b = (hexval(color[5])*16+hexval(color[6]));
-                int a = 255;
-                for (int x=x0; x <=x1 ; x++)
-                {
-                    img->setPixel(x,0,qRgba(0,0,0,255));
-                    img->setPixel(x,iconHeight-1,qRgba(0,0,0,255));
-                    for (int y=1 ; y < iconHeight-1 ; y++)
-                        //img->setPixel(x,y,c.value());
-                        img->setPixel(x,y,qRgba(r,g,b,a));
-                }
-                //bitBlt(img,nimg*(iconWidth+2),0,classIcons,iconMargin,iconPos[i],iconWidth,iconHeight);
-                ++nc;
-            }
-        for (int y=0 ; y < iconHeight ; y++)
-            img->setPixel(2+iconWidth*nc-1,y,qRgba(0,0,0,255));
-        pixmaps[flags] = new QPixmap(*img);
-        delete img;
-    }
-    return pixmaps[flags];
-}
 
 
-using sofa::simulation::tree::Simulation;
-using sofa::simulation::tree::MutationListener;
-
-// TODO: Move this code somewhere else
-
-class GraphListenerQListView : public MutationListener
-{
-public:
-    Q3ListView* widget;
-    bool frozen;
-    std::map<core::objectmodel::Base*, Q3ListViewItem* > items;
-    GraphListenerQListView(Q3ListView* w)
-        : widget(w), frozen(false)
-    {
-    }
-
-    Q3ListViewItem* createItem(Q3ListViewItem* parent)
-    {
-        Q3ListViewItem* last = parent->firstChild();
-        if (last == NULL)
-            return new Q3ListViewItem(parent);
-        while (last->nextSibling()!=NULL)
-            last = last->nextSibling();
-        return new Q3ListViewItem(parent, last);
-    }
-
-    void addChild(GNode* parent, GNode* child)
-    {
-        if (frozen) return;
-        if (items.count(child))
-        {
-            Q3ListViewItem* item = items[child];
-            if (item->listView() == NULL)
-            {
-                if (parent == NULL)
-                    widget->insertItem(item);
-                else if (items.count(parent))
-                    items[parent]->insertItem(item);
-                else
-                {
-                    std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
-                    return;
-                }
-            }
-        }
-        else
-        {
-            Q3ListViewItem* item;
-            if (parent == NULL)
-                item = new Q3ListViewItem(widget);
-            else if (items.count(parent))
-                item = createItem(items[parent]);
-            else
-            {
-                std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
-                return;
-            }
-            if (std::string(child->getName(),0,7) != "default")
-                item->setText(0, child->getName().c_str());
-            QPixmap* pix = getPixmap(child);
-            if (pix)
-                item->setPixmap(0, *pix);
-            item->setOpen(true);
-            items[child] = item;
-        }
-        // Add all objects and grand-children
-        MutationListener::addChild(parent, child);
-    }
-
-    void removeChild(GNode* parent, GNode* child)
-    {
-        MutationListener::removeChild(parent, child);
-        if (items.count(child))
-        {
-            delete items[child];
-            items.erase(child);
-        }
-    }
-
-    void moveChild(GNode* previous, GNode* parent, GNode* child)
-    {
-        if (frozen && items.count(child))
-        {
-            Q3ListViewItem* itemChild = items[child];
-            if (items.count(previous)) //itemChild->listView() != NULL)
-            {
-                Q3ListViewItem* itemPrevious = items[previous];
-                itemPrevious->takeItem(itemChild);
-            }
-            else
-            {
-                removeChild(previous, child);
-            }
-            return;
-        }
-        if (!items.count(child) || !items.count(previous))
-        {
-            addChild(parent, child);
-        }
-        else if (!items.count(parent))
-        {
-            removeChild(previous, child);
-        }
-        else
-        {
-            Q3ListViewItem* itemChild = items[child];
-            Q3ListViewItem* itemPrevious = items[previous];
-            Q3ListViewItem* itemParent = items[parent];
-            itemPrevious->takeItem(itemChild);
-            itemParent->insertItem(itemChild);
-        }
-    }
-
-    void addObject(GNode* parent, core::objectmodel::BaseObject* object)
-    {
-        if (frozen) return;
-        if (items.count(object))
-        {
-            Q3ListViewItem* item = items[object];
-            if (item->listView() == NULL)
-            {
-                if (items.count(parent))
-                    items[parent]->insertItem(item);
-                else
-                {
-                    std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
-                    return;
-                }
-            }
-        }
-        else
-        {
-            Q3ListViewItem* item;
-            if (items.count(parent))
-                item = createItem(items[parent]);
-            else
-            {
-                std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
-                return;
-            }
-            std::string name = sofa::helper::gettypename(typeid(*object));
-            std::string::size_type pos = name.find('<');
-            if (pos != std::string::npos)
-                name.erase(pos);
-            if (std::string(object->getName(),0,7) != "default")
-            {
-                name += "  ";
-                name += object->getName();
-            }
-            item->setText(0, name.c_str());
-            QPixmap* pix = getPixmap(object);
-            if (pix)
-                item->setPixmap(0, *pix);
-            items[object] = item;
-        }
-    }
-
-    void removeObject(GNode* /*parent*/, core::objectmodel::BaseObject* object)
-    {
-        if (items.count(object))
-        {
-            delete items[object];
-            items.erase(object);
-        }
-    }
-
-    void moveObject(GNode* previous, GNode* parent, core::objectmodel::BaseObject* object)
-    {
-        if (frozen && items.count(object))
-        {
-            Q3ListViewItem* itemObject = items[object];
-            Q3ListViewItem* itemPrevious = items[previous];
-            itemPrevious->takeItem(itemObject);
-            return;
-        }
-        if (!items.count(object) || !items.count(previous))
-        {
-            addObject(parent, object);
-        }
-        else if (!items.count(parent))
-        {
-            removeObject(previous, object);
-        }
-        else
-        {
-            Q3ListViewItem* itemObject = items[object];
-            Q3ListViewItem* itemPrevious = items[previous];
-            Q3ListViewItem* itemParent = items[parent];
-            itemPrevious->takeItem(itemObject);
-            itemParent->insertItem(itemObject);
-        }
-    }
-
-    void freeze(GNode* groot)
-    {
-        if (!items.count(groot)) return;
-        frozen = true;
-    }
-    /*
-      void unfreeze(Q3ListViewItem* parent, GNode* node)
-      {
-      if (!items.count(node))
-      {
-      addChild(node->parent, node);
-      return;
-      }
-      Q3ListViewItem* item = items[node];
-      if (item->listView() == NULL)
-      {
-      if (parent)
-      parent->insertItem(item);
-      else
-      widget->insertItem(item);
-      }
-      for(GNode::ChildIterator it = groot->child.begin(), itend = groot->child.end(); it != itend; ++it)
-      {
-      unfreeze(item, *it);
-      }
-      for(GNode::ObjectIterator it = groot->object.begin(), itend = groot->object.end(); it != itend; ++it)
-      {
-      core::objectmodel::BaseObject* object = *it;
-      if (!items.count(object))
-      addObject(node, object);
-      else
-      {
-      Q3ListViewItem* itemObject = items[object];
-      if (itemObject->listView() == NULL)
-      item->insertItem(itemObject);
-      }
-      }
-      }
-    */
-    void unfreeze(GNode* groot)
-    {
-        if (!items.count(groot)) return;
-        frozen = false;
-        addChild(NULL, groot);
-    }
-};
 
 RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*options*/)
     : viewerName(viewername), viewer(NULL), currentTab(NULL), graphListener(NULL)
@@ -954,8 +569,11 @@ bool RealGUI::setViewer(const char* name)
 #endif
 
     viewerName = name;
+
+
     if (graphListener)
         graphListener->removeChild(NULL, groot);
+
     addViewer();
     fileOpen(filename.c_str());
     return true;
@@ -1016,10 +634,13 @@ void RealGUI::setScene(GNode* groot, const char* filename)
 {
     if (viewer->getScene()!=NULL)
     {
+
         Simulation::unload(viewer->getScene());
+
         if (graphListener!=NULL)
         {
             delete graphListener;
+
             graphListener = NULL;
         }
         graphView->clear();
@@ -1059,30 +680,6 @@ void RealGUI::setScene(GNode* groot, const char* filename)
     }
 }
 
-void RealGUI::currentTabChanged(QWidget* widget)
-{
-    if (widget == currentTab) return;
-    GNode* groot = viewer==NULL ? NULL : viewer->getScene();
-    if (widget == TabGraph)
-    {
-        if (groot && graphListener)
-        {
-            std::cout << "Show Graph"<<std::endl;
-            //graphListener->addChild(NULL, groot);
-            graphListener->unfreeze(groot);
-        }
-    }
-    else if (currentTab == TabGraph)
-    {
-        if (groot && graphListener)
-        {
-            std::cout << "Hide Graph"<<std::endl;
-            //graphListener->removeChild(NULL, groot);
-            graphListener->freeze(groot);
-        }
-    }
-    currentTab = widget;
-}
 
 void RealGUI::screenshot()
 {
@@ -1215,241 +812,6 @@ void RealGUI::setTitle( const char* windowTitle )
 #endif
 }
 
-
-void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
-{
-    // This happens because the clicked() signal also calls the select callback with
-    // NULL as a parameter.
-    if(item == NULL)
-        return;
-
-    // cancel the visibility action
-    item->setOpen( !item->isOpen() );
-
-
-    core::objectmodel::Base* node;
-    for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
-    {
-        if(  (*it).second == item )
-        {
-            node = (*it).first;
-            break;
-        }
-    }
-
-
-
-    // displayWidget
-    if (node)
-    {
-        // if the gui is already opene, do nothing
-        if( _alreadyOpen[ node ] )
-        {
-            _alreadyOpen[ node ]->raise();
-            _alreadyOpen[ node ]->show();
-            return;
-        }
-
-        // else Create the associated QWidget
-
-        QWidget *qwidget = new QWidget(NULL,node->getName().data());
-
-        const std::map< std::string, core::objectmodel::FieldBase* >& fields = node->getFields();
-
-        int i=0;
-        for( std::map< std::string, core::objectmodel::FieldBase* >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
-        {
-            // The label
-            QLabel *label = new QLabel(QString((*it).first.c_str()), qwidget,0);
-            label->setGeometry( 10, i*25+5, 200, 20 );
-
-            if( strcmp((*it).second->help,"TODO") )
-            {
-                QLabel *help = new QLabel((*it).second->help, qwidget);
-                help->setGeometry( 380, i*25+5, 1000, 20 );
-            }
-
-            const std::string& fieldname = (*it).second->getValueTypeString();
-            if( fieldname=="int")
-            {
-                QSpinBox* spinBox = new QSpinBox((int)INT_MIN,(int)INT_MAX,1,qwidget);
-                spinBox->setGeometry( 205, i*25+5, 170, 20 );
-
-                if( DataField<int> * ff = dynamic_cast< DataField<int> * >( (*it).second )  )
-                {
-                    spinBox->setValue(ff->getValue());
-                    connect( spinBox, SIGNAL( valueChanged(int) ), new GUIFieldInt(ff), SLOT( changeValue(int) ) );
-                }
-            }
-            else if( fieldname=="unsigned int")
-            {
-                QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,qwidget);
-                spinBox->setGeometry( 205, i*25+5, 170, 20 );
-
-                if( DataField<unsigned int> * ff = dynamic_cast< DataField<unsigned int> * >( (*it).second )  )
-                {
-                    spinBox->setValue(ff->getValue());
-                    connect( spinBox, SIGNAL( valueChanged(int) ), new GUIFieldUnsignedInt(ff), SLOT( changeValue(int) ) );
-                }
-            }
-            else if( fieldname=="float" || fieldname=="double" )
-            {
-
-                WFloatLineEdit* editSFFloat = new WFloatLineEdit( qwidget, "editSFFloat" );
-                editSFFloat->setMinFloatValue( (float)-INFINITY );
-                editSFFloat->setMaxFloatValue( (float)INFINITY );
-                editSFFloat->setGeometry( 205, i*25+5, 170, 20 );
-
-
-                if( DataField<float> * ff = dynamic_cast< DataField<float> * >( (*it).second )  )
-                {
-                    editSFFloat->setFloatValue(ff->getValue());
-                    connect( editSFFloat, SIGNAL( floatValueChanged(float) ), new GUIFieldFloat(ff), SLOT( changeValue(float) ) );
-                }
-                else if(DataField<double> * ff = dynamic_cast< DataField<double> * >( (*it).second )  )
-                {
-                    editSFFloat->setFloatValue(ff->getValue());
-                    connect( editSFFloat, SIGNAL( floatValueChanged(float) ), new GUIFieldDouble(ff), SLOT( changeValue(float) ) );
-                }
-
-            }
-            else if( fieldname=="bool" )
-            {
-
-                // the bool line edit
-                QCheckBox* checkBox = new QCheckBox(qwidget);
-                checkBox->setGeometry( 205, i*25+5, 170, 20 );
-
-
-                if( DataField<bool> * ff = dynamic_cast< DataField<bool> * >( (*it).second )  )
-                {
-                    checkBox->setChecked(ff->getValue());
-                    connect( checkBox, SIGNAL( toggled(bool) ), new GUIFieldBool(ff), SLOT( changeValue(bool) ) );
-                }
-
-            }
-            else if( fieldname=="string" )
-            {
-                QLineEdit* lineEdit = new QLineEdit(qwidget);
-                lineEdit->setGeometry( 205, i*25+5, 170, 20 );
-
-                if( DataField<std::string> * ff = dynamic_cast< DataField<std::string> * >( (*it).second )  )
-                {
-                    lineEdit->setText(QString(ff->getValue().c_str()));
-                    connect( lineEdit, SIGNAL( textChanged(const QString&) ), new GUIFieldString(ff), SLOT( changeValue(const QString&) ) );
-                }
-
-            }
-            else if( fieldname=="Vec3f" || fieldname=="Vec3d" )
-            {
-
-                WFloatLineEdit* editSFFloatX = new WFloatLineEdit( qwidget, "editSFFloatX" );
-                editSFFloatX->setMinFloatValue( (float)-INFINITY );
-                editSFFloatX->setMaxFloatValue( (float)INFINITY );
-                editSFFloatX->setGeometry( 205, i*25+5, 52, 20 );
-                WFloatLineEdit* editSFFloatY = new WFloatLineEdit( qwidget, "editSFFloatY" );
-                editSFFloatY->setMinFloatValue( (float)-INFINITY );
-                editSFFloatY->setMaxFloatValue( (float)INFINITY );
-                editSFFloatY->setGeometry( 262, i*25+5, 52, 20 );
-                WFloatLineEdit* editSFFloatZ = new WFloatLineEdit( qwidget, "editSFFloatZ" );
-                editSFFloatZ->setMinFloatValue( (float)-INFINITY );
-                editSFFloatZ->setMaxFloatValue( (float)INFINITY );
-                editSFFloatZ->setGeometry( 319, i*25+5, 52, 20 );
-
-
-                if( DataField<Vec3f> * ff = dynamic_cast< DataField<Vec3f> * >( (*it).second )  )
-                {
-                    editSFFloatX->setFloatValue(ff->getValue()[0]);
-                    editSFFloatY->setFloatValue(ff->getValue()[1]);
-                    editSFFloatZ->setFloatValue(ff->getValue()[2]);
-
-                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3f(ff,0), SLOT( changeValue(float) ) );
-                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3f(ff,1), SLOT( changeValue(float) ) );
-                    connect( editSFFloatZ, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3f(ff,2), SLOT( changeValue(float) ) );
-                }
-                else if(DataField<Vec3d> * ff = dynamic_cast< DataField<Vec3d> * >( (*it).second )  )
-                {
-                    editSFFloatX->setFloatValue(ff->getValue()[0]);
-                    editSFFloatY->setFloatValue(ff->getValue()[1]);
-                    editSFFloatZ->setFloatValue(ff->getValue()[2]);
-
-                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3d(ff,0), SLOT( changeValue(float) ) );
-                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3d(ff,1), SLOT( changeValue(float) ) );
-                    connect( editSFFloatZ, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3d(ff,2), SLOT( changeValue(float) ) );
-                }
-
-            }
-            else if( fieldname=="Vec2f" || fieldname=="Vec2d" )
-            {
-
-                WFloatLineEdit* editSFFloatX = new WFloatLineEdit( qwidget, "editSFFloatX" );
-                editSFFloatX->setMinFloatValue( (float)-INFINITY );
-                editSFFloatX->setMaxFloatValue( (float)INFINITY );
-                editSFFloatX->setGeometry( 205, i*25+5, 52, 20 );
-                WFloatLineEdit* editSFFloatY = new WFloatLineEdit( qwidget, "editSFFloatY" );
-                editSFFloatY->setMinFloatValue( (float)-INFINITY );
-                editSFFloatY->setMaxFloatValue( (float)INFINITY );
-                editSFFloatY->setGeometry( 262, i*25+5, 52, 20 );
-
-
-                if( DataField<Vec2f> * ff = dynamic_cast< DataField<Vec2f> * >( (*it).second )  )
-                {
-                    editSFFloatX->setFloatValue(ff->getValue()[0]);
-                    editSFFloatY->setFloatValue(ff->getValue()[1]);
-
-                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2f(ff,0), SLOT( changeValue(float) ) );
-                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2f(ff,1), SLOT( changeValue(float) ) );
-                }
-                else if(DataField<Vec2d> * ff = dynamic_cast< DataField<Vec2d> * >( (*it).second )  )
-                {
-                    editSFFloatX->setFloatValue(ff->getValue()[0]);
-                    editSFFloatY->setFloatValue(ff->getValue()[1]);
-
-                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2d(ff,0), SLOT( changeValue(float) ) );
-                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2d(ff,1), SLOT( changeValue(float) ) );
-                }
-
-            }
-            else
-                std::cerr<<"RealGUI.cpp: UNKNOWN GUI FIELD TYPE : "<<fieldname<<"   --> add a new GUIField"<<std::endl;
-
-
-
-            // 					std::cerr<<(*it).first<<"     "<<(*it).second->getValueString()<<"   "<<(*it).second->getValueTypeString()<<"    "<<std::endl;
-
-            ++i;
-        }
-
-
-        if(BaseObject*bo=dynamic_cast<BaseObject*>(node))
-        {
-            QPushButton*button=new QPushButton(qwidget,"update");
-            button->setGeometry(5,i*25+10,150,20);
-            button->setText("update");
-            connect( button, SIGNAL( pressed() ), new GUIButton(bo), SLOT( reinit() ) );
-        }
-
-
-        if (qwidget)
-        {
-            qwidget->raise();
-            qwidget->show();
-
-            qwidget->setFixedSize(700,(i+1)*25+15);
-            qwidget->setMinimumSize(200,100);
-            qwidget->setMaximumSize(2000,(i+1)*25+15);
-            qwidget->setCaption((node->getTypeName()+"::"+node->getName()).data());
-            _alreadyOpen[ node ] = qwidget;
-        }
-
-        // 			std::cerr<<"\n\n\n";
-
-    }
-
-
-
-
-}
 
 void RealGUI::playpauseGUI(bool value)
 {
@@ -1920,6 +1282,450 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
 }
 
+
+/*****************************************************************************************************************/
+// INTERACTION WITH THE GRAPH
+/*****************************************************************************************************************/
+void RealGUI::currentTabChanged(QWidget* widget)
+{
+    if (widget == currentTab) return;
+    GNode* groot = viewer==NULL ? NULL : viewer->getScene();
+    if (widget == TabGraph)
+    {
+        if (groot && graphListener)
+        {
+            std::cout << "Show Graph"<<std::endl;
+            //graphListener->addChild(NULL, groot);
+            graphListener->unfreeze(groot);
+        }
+    }
+    else if (currentTab == TabGraph)
+    {
+        if (groot && graphListener)
+        {
+            std::cout << "Hide Graph"<<std::endl;
+            //graphListener->removeChild(NULL, groot);
+            graphListener->freeze(groot);
+        }
+    }
+    currentTab = widget;
+}
+
+/*****************************************************************************************************************/
+void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
+{
+    // This happens because the clicked() signal also calls the select callback with
+    // NULL as a parameter.
+    if(item == NULL)
+        return;
+
+    // cancel the visibility action
+    item->setOpen( !item->isOpen() );
+
+
+    core::objectmodel::Base* node;
+    for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
+    {
+        if(  (*it).second == item )
+        {
+            node = (*it).first;
+            break;
+        }
+    }
+
+
+
+    // displayWidget
+    if (node)
+    {
+        // if the gui is already opene, do nothing
+        if( _alreadyOpen[ node ] )
+        {
+            _alreadyOpen[ node ]->raise();
+            _alreadyOpen[ node ]->show();
+            return;
+        }
+
+        // else Create the associated QWidget
+
+        QWidget *qwidget = new QWidget(NULL,node->getName().data());
+
+        const std::map< std::string, core::objectmodel::FieldBase* >& fields = node->getFields();
+
+        int i=0;
+        for( std::map< std::string, core::objectmodel::FieldBase* >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
+        {
+            // The label
+            QLabel *label = new QLabel(QString((*it).first.c_str()), qwidget,0);
+            label->setGeometry( 10, i*25+5, 200, 20 );
+
+            if( strcmp((*it).second->help,"TODO") )
+            {
+                QLabel *help = new QLabel((*it).second->help, qwidget);
+                help->setGeometry( 380, i*25+5, 1000, 20 );
+            }
+
+            const std::string& fieldname = (*it).second->getValueTypeString();
+            if( fieldname=="int")
+            {
+                QSpinBox* spinBox = new QSpinBox((int)INT_MIN,(int)INT_MAX,1,qwidget);
+                spinBox->setGeometry( 205, i*25+5, 170, 20 );
+
+                if( DataField<int> * ff = dynamic_cast< DataField<int> * >( (*it).second )  )
+                {
+                    spinBox->setValue(ff->getValue());
+                    connect( spinBox, SIGNAL( valueChanged(int) ), new GUIFieldInt(ff), SLOT( changeValue(int) ) );
+                }
+            }
+            else if( fieldname=="unsigned int")
+            {
+                QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,qwidget);
+                spinBox->setGeometry( 205, i*25+5, 170, 20 );
+
+                if( DataField<unsigned int> * ff = dynamic_cast< DataField<unsigned int> * >( (*it).second )  )
+                {
+                    spinBox->setValue(ff->getValue());
+                    connect( spinBox, SIGNAL( valueChanged(int) ), new GUIFieldUnsignedInt(ff), SLOT( changeValue(int) ) );
+                }
+            }
+            else if( fieldname=="float" || fieldname=="double" )
+            {
+
+                WFloatLineEdit* editSFFloat = new WFloatLineEdit( qwidget, "editSFFloat" );
+                editSFFloat->setMinFloatValue( (float)-INFINITY );
+                editSFFloat->setMaxFloatValue( (float)INFINITY );
+                editSFFloat->setGeometry( 205, i*25+5, 170, 20 );
+
+
+                if( DataField<float> * ff = dynamic_cast< DataField<float> * >( (*it).second )  )
+                {
+                    editSFFloat->setFloatValue(ff->getValue());
+                    connect( editSFFloat, SIGNAL( floatValueChanged(float) ), new GUIFieldFloat(ff), SLOT( changeValue(float) ) );
+                }
+                else if(DataField<double> * ff = dynamic_cast< DataField<double> * >( (*it).second )  )
+                {
+                    editSFFloat->setFloatValue(ff->getValue());
+                    connect( editSFFloat, SIGNAL( floatValueChanged(float) ), new GUIFieldDouble(ff), SLOT( changeValue(float) ) );
+                }
+
+            }
+            else if( fieldname=="bool" )
+            {
+
+                // the bool line edit
+                QCheckBox* checkBox = new QCheckBox(qwidget);
+                checkBox->setGeometry( 205, i*25+5, 170, 20 );
+
+
+                if( DataField<bool> * ff = dynamic_cast< DataField<bool> * >( (*it).second )  )
+                {
+                    checkBox->setChecked(ff->getValue());
+                    connect( checkBox, SIGNAL( toggled(bool) ), new GUIFieldBool(ff), SLOT( changeValue(bool) ) );
+                }
+
+            }
+            else if( fieldname=="string" )
+            {
+                QLineEdit* lineEdit = new QLineEdit(qwidget);
+                lineEdit->setGeometry( 205, i*25+5, 170, 20 );
+
+                if( DataField<std::string> * ff = dynamic_cast< DataField<std::string> * >( (*it).second )  )
+                {
+                    lineEdit->setText(QString(ff->getValue().c_str()));
+                    connect( lineEdit, SIGNAL( textChanged(const QString&) ), new GUIFieldString(ff), SLOT( changeValue(const QString&) ) );
+                }
+
+            }
+            else if( fieldname=="Vec3f" || fieldname=="Vec3d" )
+            {
+
+                WFloatLineEdit* editSFFloatX = new WFloatLineEdit( qwidget, "editSFFloatX" );
+                editSFFloatX->setMinFloatValue( (float)-INFINITY );
+                editSFFloatX->setMaxFloatValue( (float)INFINITY );
+                editSFFloatX->setGeometry( 205, i*25+5, 52, 20 );
+                WFloatLineEdit* editSFFloatY = new WFloatLineEdit( qwidget, "editSFFloatY" );
+                editSFFloatY->setMinFloatValue( (float)-INFINITY );
+                editSFFloatY->setMaxFloatValue( (float)INFINITY );
+                editSFFloatY->setGeometry( 262, i*25+5, 52, 20 );
+                WFloatLineEdit* editSFFloatZ = new WFloatLineEdit( qwidget, "editSFFloatZ" );
+                editSFFloatZ->setMinFloatValue( (float)-INFINITY );
+                editSFFloatZ->setMaxFloatValue( (float)INFINITY );
+                editSFFloatZ->setGeometry( 319, i*25+5, 52, 20 );
+
+
+                if( DataField<Vec3f> * ff = dynamic_cast< DataField<Vec3f> * >( (*it).second )  )
+                {
+                    editSFFloatX->setFloatValue(ff->getValue()[0]);
+                    editSFFloatY->setFloatValue(ff->getValue()[1]);
+                    editSFFloatZ->setFloatValue(ff->getValue()[2]);
+
+                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3f(ff,0), SLOT( changeValue(float) ) );
+                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3f(ff,1), SLOT( changeValue(float) ) );
+                    connect( editSFFloatZ, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3f(ff,2), SLOT( changeValue(float) ) );
+                }
+                else if(DataField<Vec3d> * ff = dynamic_cast< DataField<Vec3d> * >( (*it).second )  )
+                {
+                    editSFFloatX->setFloatValue(ff->getValue()[0]);
+                    editSFFloatY->setFloatValue(ff->getValue()[1]);
+                    editSFFloatZ->setFloatValue(ff->getValue()[2]);
+
+                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3d(ff,0), SLOT( changeValue(float) ) );
+                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3d(ff,1), SLOT( changeValue(float) ) );
+                    connect( editSFFloatZ, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3d(ff,2), SLOT( changeValue(float) ) );
+                }
+
+            }
+            else if( fieldname=="Vec2f" || fieldname=="Vec2d" )
+            {
+
+                WFloatLineEdit* editSFFloatX = new WFloatLineEdit( qwidget, "editSFFloatX" );
+                editSFFloatX->setMinFloatValue( (float)-INFINITY );
+                editSFFloatX->setMaxFloatValue( (float)INFINITY );
+                editSFFloatX->setGeometry( 205, i*25+5, 52, 20 );
+                WFloatLineEdit* editSFFloatY = new WFloatLineEdit( qwidget, "editSFFloatY" );
+                editSFFloatY->setMinFloatValue( (float)-INFINITY );
+                editSFFloatY->setMaxFloatValue( (float)INFINITY );
+                editSFFloatY->setGeometry( 262, i*25+5, 52, 20 );
+
+
+                if( DataField<Vec2f> * ff = dynamic_cast< DataField<Vec2f> * >( (*it).second )  )
+                {
+                    editSFFloatX->setFloatValue(ff->getValue()[0]);
+                    editSFFloatY->setFloatValue(ff->getValue()[1]);
+
+                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2f(ff,0), SLOT( changeValue(float) ) );
+                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2f(ff,1), SLOT( changeValue(float) ) );
+                }
+                else if(DataField<Vec2d> * ff = dynamic_cast< DataField<Vec2d> * >( (*it).second )  )
+                {
+                    editSFFloatX->setFloatValue(ff->getValue()[0]);
+                    editSFFloatY->setFloatValue(ff->getValue()[1]);
+
+                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2d(ff,0), SLOT( changeValue(float) ) );
+                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2d(ff,1), SLOT( changeValue(float) ) );
+                }
+
+            }
+            else
+                std::cerr<<"RealGUI.cpp: UNKNOWN GUI FIELD TYPE : "<<fieldname<<"   --> add a new GUIField"<<std::endl;
+
+
+
+            // 					std::cerr<<(*it).first<<"     "<<(*it).second->getValueString()<<"   "<<(*it).second->getValueTypeString()<<"    "<<std::endl;
+
+            ++i;
+        }
+
+
+        if(BaseObject*bo=dynamic_cast<BaseObject*>(node))
+        {
+            QPushButton*button=new QPushButton(qwidget,"update");
+            button->setGeometry(5,i*25+10,150,20);
+            button->setText("update");
+            connect( button, SIGNAL( pressed() ), new GUIButton(bo), SLOT( reinit() ) );
+        }
+
+
+        if (qwidget)
+        {
+            qwidget->raise();
+            qwidget->show();
+
+            qwidget->setFixedSize(700,(i+1)*25+15);
+            qwidget->setMinimumSize(200,100);
+            qwidget->setMaximumSize(2000,(i+1)*25+15);
+            qwidget->setCaption((node->getTypeName()+"::"+node->getName()).data());
+            _alreadyOpen[ node ] = qwidget;
+        }
+
+        // 			std::cerr<<"\n\n\n";
+    }
+}
+
+
+/*****************************************************************************************************************/
+void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& point, int index)
+{
+    //Creation of a popup menu at the mouse position
+    item_clicked=item;
+    //Search in the graph if the element clicked is a node
+    node_clicked = viewer->getScene();
+    //First initialize with the Root. Test if the node clicked on the graph has the same name as the root.
+    if (node_clicked->getName() == item_clicked->text(0))
+    {
+        //The node clicked has the same name as the root, but we need to verify the pointer of the node clicked
+        node_clicked = verifyNode(node_clicked);
+        if (node_clicked == NULL) node_clicked = searchNode(viewer->getScene());
+
+    }
+    else node_clicked = searchNode(viewer->getScene());
+
+    //Creation of the context Menu
+    int indexMenu[3];
+    QPopupMenu *contextMenu = new QPopupMenu(graphView, "ContextMenu");
+    indexMenu[0] = contextMenu->insertItem("Add Node", this, SLOT(graphAddObject()));
+    indexMenu[1] = contextMenu->insertItem("Remove Node", this, SLOT(graphRemoveObject()));
+    indexMenu[2] = contextMenu->insertItem("Modify", this, SLOT(graphModify()));
+    contextMenu->popup(point, index);
+
+
+    //Enable the option ADD and REMOVE only for the Nodes.
+    if (node_clicked == NULL)
+    {
+        contextMenu->setItemEnabled(indexMenu[0],false);
+        contextMenu->setItemEnabled(indexMenu[1],false);
+    }
+
+
+
+}
+
+/*****************************************************************************************************************/
+//Nodes in the graph can have the same name. To find the right one, we have to verify the pointer itself.
+//We return the Nodes clicked
+GNode *RealGUI::verifyNode(GNode *node)
+{
+    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator = graphListener->items.find(node);
+
+    while (graph_iterator != graphListener->items.end() )
+    {
+        if (  item_clicked == graph_iterator->second ) {return dynamic_cast< GNode*>(graph_iterator->first);}
+        graph_iterator ++;
+    }
+    return NULL;
+}
+
+/*****************************************************************************************************************/
+//Recursive search through the GNode graph.
+GNode *RealGUI::searchNode(GNode *node)
+{
+    if (node == NULL) return NULL;
+
+    GNode *result=NULL;
+    //For each child of the node, we are looking for one who has the same name as the one clicked
+    GNode::ChildIterator it;
+    for (it = node->child.begin(); it != node->child.end(); it++)
+    {
+        //a node with the same name has been found!!
+        result = node->getChild(item_clicked->text(0));
+        if ( result != NULL)
+        {
+            result = verifyNode(result);
+            if (result != NULL)	return result;
+        }
+
+
+        result = searchNode((*it));
+        if (result != NULL) return result;
+    }
+    //Nothing found
+    return NULL;
+}
+
+/*****************************************************************************************************************/
+void RealGUI::graphModify()
+{
+    if (item_clicked != NULL)
+    {
+        std::cout<<"Modify an object to " <<  item_clicked->text(0) << "\n";
+        DoubleClickeItemInSceneView(item_clicked);
+        item_clicked = NULL;
+    }
+}
+/*****************************************************************************************************************/
+void RealGUI::graphAddObject()
+{
+    if (node_clicked != NULL)
+    {
+        std::string filename = viewer->getSceneFileName();
+        QString s  = Q3FileDialog::getOpenFileName(filename.empty()?NULL:filename.c_str(), "Sofa Element (*.xml *.scn)",  this, "open file dialog",  "Choose a file to open" );
+
+
+#ifdef QT_MODULE_QT3SUPPORT
+        std::string object_fileName(s.toStdString());
+#else
+        std::string object_fileName(s.latin1());
+#endif
+
+        std::string position[3];
+        std::cout<< "Position X:\n" ;
+        std::cin>> position[0];
+        std::cout<< "Position Y:\n" ;
+        std::cin>> position[1];
+        std::cout<< "Position Z:\n" ;
+        std::cin>> position[2];
+
+        //Loading of the xml file
+        xml::BaseElement* xml = xml::load(object_fileName.c_str());
+        if (xml == NULL) return;
+
+        if (xml->getAttribute("dx")) xml->setAttribute("dx",position[0].c_str());
+        if (xml->getAttribute("dy")) xml->setAttribute("dy",position[1].c_str());
+        if (xml->getAttribute("dz")) xml->setAttribute("dz",position[2].c_str());
+
+        xml::BaseElement::child_iterator<> it = xml->begin();
+        xml::BaseElement::child_iterator<> end = xml->end();
+        while (it != end)
+        {
+            std::cout<<	it->getName() << " " << it->getType() <<"\n";
+
+            if (it->getAttribute("dx")) it->setAttribute("dx",position[0].c_str());
+            if (it->getAttribute("dy")) it->setAttribute("dy",position[1].c_str());
+            if (it->getAttribute("dz")) it->setAttribute("dz",position[2].c_str());
+
+            ++it;
+        }
+
+
+        helper::system::SetDirectory chdir( object_fileName.c_str());
+
+        std::cout << "Initializing objects"<<std::endl;
+        if (!xml->init())
+        {
+            std::cerr << "Objects initialization failed."<<std::endl;
+        }
+
+        GNode* new_node = dynamic_cast<GNode*>(xml->getObject());
+        if (new_node == NULL)
+        {
+            std::cerr << "Objects initialization failed."<<std::endl;
+            delete xml;
+            return ;
+        }
+
+        std::cout << "Initializing simulation "<<new_node->getName()<<std::endl;
+
+        new_node->execute<InitAction>();
+
+        node_clicked->addChild( new_node);
+        graphListener->addObject(node_clicked, (core::objectmodel::BaseObject*)new_node);
+
+        node_clicked = NULL;
+        item_clicked = NULL;
+    }
+}
+
+/*****************************************************************************************************************/
+void RealGUI::graphRemoveObject()
+{
+    if (node_clicked != NULL)
+    {
+        if (node_clicked->getParent() == NULL)
+        {
+            //Attempt to destroy the Root node
+            viewer->setScene(NULL, viewer->getSceneFileName().c_str());
+            graphListener->removeChild(NULL, node_clicked);
+        }
+        else
+        {
+            node_clicked->getParent()->removeChild(node_clicked);
+            graphListener->removeChild(NULL, node_clicked);
+        }
+        viewer->getQWidget()->update();
+        node_clicked = NULL;
+        item_clicked = NULL;
+    }
+}
 
 
 } // namespace qt
