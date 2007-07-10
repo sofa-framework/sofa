@@ -152,6 +152,9 @@ void FixedPlaneConstraint<DataTypes>::selectVerticesAlongPlane()
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::init()
 {
+    this->core::componentmodel::behavior::Constraint<DataTypes>::init();
+
+
     if (selectVerticesFromPlanes)
         selectVerticesAlongPlane();
 

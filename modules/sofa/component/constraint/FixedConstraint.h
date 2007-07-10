@@ -66,11 +66,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
-    //typedef helper::vector<unsigned int> SetIndex;
+
 
 protected:
-    //SetIndex indices;
-
     FixedConstraintInternalData<DataTypes> data;
 
 public:
