@@ -34,6 +34,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/component/topology/PointData.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa
@@ -58,13 +59,16 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    typedef sofa::helper::vector<MassType> VecMass;
-    typedef sofa::helper::vector<MassType> MassVector;
+    typedef sofa::component::topology::PointData<MassType> VecMass;
+    typedef vector<MassType> MassVector;
+
 
     typedef enum
     {
         TOPOLOGY_UNKNOWN=0,
-        TOPOLOGY_EDGESET=1
+        TOPOLOGY_EDGESET=1,
+        TOPOLOGY_TRIANGLESET=2,
+        TOPOLOGY_TETRAHEDRONSET=3
     } TopologyType;
 
     DataField< VecMass > f_mass;
@@ -99,9 +103,15 @@ public:
 //         return m_massDensity.getValue();
 //     }
 
-//    void setMassDensity(Real m) {
-// 	   m_massDensity.setValue(m);
-//    }
+
+    // handle topological changes
+    virtual void handleTopologyChange();
+
+    void setMassDensity(Real m)
+    {
+        m_massDensity.setValue(m);
+    }
+
 
     void addMass(const MassType& mass);
 
