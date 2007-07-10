@@ -29,15 +29,12 @@
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
-<<<<<<< .mine
 #include <sofa/component/topology/EdgeSetTopology.h>
 #include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/component/topology/PointData.inl>
-=======
 #include <sofa/component/topology/RegularGridTopology.h>
 
-    >>>>>>> .r1258
-    namespace sofa
+namespace sofa
 {
 
 namespace component
