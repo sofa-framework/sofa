@@ -30,6 +30,7 @@
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/topology/TriangleSetTopology.h>
 
 namespace sofa
 {
@@ -72,18 +73,19 @@ public:
 class TriangleModel : public core::CollisionModel, public core::VisualModel
 {
 protected:
-    struct TriangleData
+    struct TriangleInfo
     {
         int i1,i2,i3,flags;
         Vector3 normal;
     };
 
-    std::vector<TriangleData> elems;
+    std::vector<TriangleInfo> elems;
 
     class Loader;
 
     int meshRevision;
-    bool updateFromTopology();
+    bool needsUpdate;
+    void updateFromTopology();
 public:
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;
@@ -127,12 +129,16 @@ public:
 
     void update() { }
 
+    // handle topological changes
+    virtual void handleTopologyChange();
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 
     topology::MeshTopology* getTopology() { return mesh; }
 
     void buildOctree();
+
+    unsigned int getNbTriangles() const;
 
     //virtual const char* getTypeName() const { return "Triangle"; }
 

@@ -64,7 +64,6 @@ void TriangleModel::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
-    mesh = dynamic_cast< topology::MeshTopology* > (getContext()->getTopology());
 
     if (mstate==NULL)
     {
@@ -72,14 +71,39 @@ void TriangleModel::init()
         return;
     }
 
-    if (mesh==NULL)
+    sofa::core::componentmodel::topology::BaseTopology* bt = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+    if (bt)
     {
-        std::cerr << "ERROR: TriangleModel requires a Mesh Topology.\n";
-        return;
+        sofa::core::componentmodel::topology::TopologyContainer *container=bt->getTopologyContainer();
+        sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
+        if (tstc)
+        {
+            const std::vector<sofa::component::topology::Triangle> &ta=tstc->getTriangleArray();
+            resize(ta.size());
+            for(unsigned int i=0; i<ta.size(); ++i)
+            {
+                elems[i].i1=ta[i][0];
+                elems[i].i2=ta[i][1];
+                elems[i].i3=ta[i][2];
+            }
+        }
+        else
+        {
+            std::cerr << "ERROR: Topology is not a TriangleSetTopology.\n";
+            return;
+        }
     }
+    else
+    {
+        mesh = dynamic_cast< topology::MeshTopology* > (getContext()->getTopology());
 
-    updateFromTopology();
-
+        if (mesh==NULL)
+        {
+            std::cerr << "ERROR: TriangleModel requires a Mesh Topology.\n";
+            return;
+        }
+        updateFromTopology();
+    }
     for (int i=0; i<size; i++)
     {
         Triangle t(this,i);
@@ -92,15 +116,20 @@ void TriangleModel::init()
     }
 }
 
-bool TriangleModel::updateFromTopology()
+void TriangleModel::updateFromTopology()
 {
     const int npoints = mstate->getX()->size();
     const int ntris = mesh->getNbTriangles();
     const int nquads = mesh->getNbQuads();
     const int newsize = ntris+2*nquads;
+    needsUpdate=true;
 
     int revision = mesh->getRevision();
-    if (revision == meshRevision && newsize==size) return false;
+    if (revision == meshRevision && newsize==size)
+    {
+        needsUpdate=false;
+        return;
+    }
 
     resize(newsize);
     int index = 0;
@@ -212,7 +241,6 @@ bool TriangleModel::updateFromTopology()
         ++index;
     }
     meshRevision = revision;
-    return true;
 }
 
 void TriangleModel::draw(int index)
@@ -225,7 +253,90 @@ void TriangleModel::draw(int index)
     glVertex3dv(t.p3().ptr());
     glEnd();
 }
+void TriangleModel::handleTopologyChange()
+{
+    sofa::core::componentmodel::topology::BaseTopology* bt = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+    if (bt)
+    {
 
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=bt->firstChange();
+        std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=bt->lastChange();
+
+        while( itBegin != itEnd )
+        {
+            core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+            // Since we are using identifier, we can safely use C type casts.
+            switch( changeType )
+            {
+
+            case core::componentmodel::topology::TRIANGLESADDED:
+            {
+                TriangleInfo t;
+                const sofa::component::topology::TrianglesAdded *ta=dynamic_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
+                for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
+                {
+                    t.i1=(int)(ta->triangleArray[i])[0];
+                    t.i2=(int)(ta->triangleArray[i])[1];
+                    t.i3=(int)(ta->triangleArray[i])[2];
+                    elems.push_back(t);
+                }
+                needsUpdate=true;
+                break;
+            }
+
+            case core::componentmodel::topology::TRIANGLESREMOVED:
+            {
+                const std::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
+                unsigned int  last= elems.size() -1;
+                TriangleInfo tmp;
+                for (unsigned int i = 0; i <tab.size(); ++i)
+                {
+                    tmp = elems[tab[i]];
+                    elems[tab[i]] = elems[last];
+                    elems[last] = tmp;
+
+                    --last;
+                }
+                resize( elems.size() - tab.size() );
+                needsUpdate=true;
+                break;
+            }
+            case core::componentmodel::topology::POINTSREMOVED:
+            {
+                sofa::core::componentmodel::topology::TopologyContainer *container=bt->getTopologyContainer();
+                sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
+                if (tstc)
+                {
+                    const std::vector< std::vector<unsigned int> > &tvsa=tstc->getTriangleVertexShellArray();
+                    unsigned int last = tvsa.size() -1;
+                    unsigned int i,j;
+                    const std::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                    for ( i = 0; i < tab.size(); ++i)
+                    {
+                        const std::vector<unsigned int> &shell=tvsa[last];
+                        for (j=0; j<shell.size(); ++j)
+                        {
+                            if (elems[shell[j]].i1==last)
+                                elems[shell[j]].i1=tab[i];
+                            else if (elems[shell[j]].i2==last)
+                                elems[shell[j]].i2=tab[i];
+                            else if (elems[shell[j]].i3==last)
+                                elems[shell[j]].i3=tab[i];
+                        }
+                        --last;
+                    }
+                }
+                break;
+            }
+            default:
+                // Ignore events that are not Triangle  related.
+                break;
+            }; // switch( changeType )
+
+            ++itBegin;
+        } // while( changeIt != last; )
+    }
+}
 void TriangleModel::draw()
 {
     if (isActive() && getContext()->getShowCollisionModels())
@@ -266,10 +377,12 @@ void TriangleModel::draw()
 void TriangleModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    bool updated = updateFromTopology();
-    if (updated && !cubeModel->empty()) cubeModel->resize(0);
-    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+    if (mesh)
+        updateFromTopology();
+    if (needsUpdate && !cubeModel->empty()) cubeModel->resize(0);
+    if (isStatic() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
+    needsUpdate=false;
     Vector3 minElem, maxElem;
 
     cubeModel->resize(size);  // size = number of triangles
@@ -301,14 +414,22 @@ void TriangleModel::computeBoundingTree(int maxDepth)
         cubeModel->computeBoundingTree(maxDepth);
     }
 }
-
+unsigned int TriangleModel::getNbTriangles() const
+{
+    if (mesh)
+        return size;
+    else
+        mesh->getNbTriangles();
+}
 void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    bool updated = updateFromTopology();
-    if (updated) cubeModel->resize(0);
-    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+    if (mesh)
+        updateFromTopology();
+    if (needsUpdate) cubeModel->resize(0);
+    if (isStatic() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
+    needsUpdate=false;
     Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
