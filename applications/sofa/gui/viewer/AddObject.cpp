@@ -54,8 +54,8 @@ AddObject::AddObject( QWidget* parent , const char*, bool, Qt::WFlags )
     positionX->setText("0");
     positionY->setText("0");
     positionZ->setText("0");
-    fileName = "";
-    openFilePath->setText(QString(fileName.c_str()));
+
+    openFilePath->setText(NULL);
 
     connect( (QObject *) buttonOk, SIGNAL( clicked() ), parent, SLOT( loadObject()));
 }

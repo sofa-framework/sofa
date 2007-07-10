@@ -273,11 +273,8 @@ sofa::simulation::tree::GNode* RealGUI::currentSimulation()
 
 
 RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*options*/)
-    : viewerName(viewername), viewer(NULL), currentTab(NULL), graphListener(NULL)
+    : viewerName(viewername), viewer(NULL), currentTab(NULL), graphListener(NULL), dialog(NULL)
 {
-    dialog = NULL;
-    m_fileOpen_ready = true;
-
     left_stack = new QWidgetStack(splitter2);
 #ifndef QT_MODULE_QT3SUPPORT
     GUILayout->addWidget(left_stack);
@@ -334,6 +331,7 @@ RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*opti
     addViewer();
 
     currentTabChanged(tabs->currentPage());
+
 
 #ifdef SOFA_PML
     pmlreader = NULL;
@@ -588,6 +586,7 @@ bool RealGUI::setViewer(const char* name)
 
 void RealGUI::fileOpen(const char* filename)
 {
+    dialog->hide();
     //left_stack->removeWidget(viewer->getQWidget());
     //graphListener->removeChild(NULL, groot);
     //delete viewer;
@@ -600,7 +599,6 @@ void RealGUI::fileOpen(const char* filename)
         return;
     }
     setScene(groot, filename);
-
 }
 
 #ifdef SOFA_PML
@@ -1553,10 +1551,20 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
 /*****************************************************************************************************************/
 void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& point, int index)
 {
+    if (dialog == NULL)
+    {
+        //Creation of the file dialog
+        dialog = new AddObject(this);
+        dialog->setPath(viewer->getSceneFileName());
+        dialog->hide();
+    }
+
     //Creation of a popup menu at the mouse position
     item_clicked=item;
     //Search in the graph if the element clicked is a node
     node_clicked = viewer->getScene();
+    if (node_clicked == NULL) return;
+
     //First initialize with the Root. Test if the node clicked on the graph has the same name as the root.
     if (node_clicked->getName() == item_clicked->text(0).ascii())
     {
@@ -1644,14 +1652,6 @@ void RealGUI::graphAddObject()
 {
     if (node_clicked != NULL)
     {
-        if (dialog == NULL)
-        {
-            std::string filename = viewer->getSceneFileName();
-            dialog = new AddObject(this);
-            dialog->setPath(filename);
-        }
-
-
         dialog->show();
         dialog->raise();
 
@@ -1667,14 +1667,40 @@ void RealGUI::graphRemoveObject()
         if (node_clicked->getParent() == NULL)
         {
             //Attempt to destroy the Root node
-            viewer->setScene(NULL, viewer->getSceneFileName().c_str());
+            GNode *groot = new GNode("Root");
+
+            groot->setShowVisualModels           (1);
+            groot->setShowCollisionModels        (0);
+            groot->setShowBoundingCollisionModels(0);
+            groot->setShowBehaviorModels         (0);
+            groot->setShowMappings               (0);
+            groot->setShowMechanicalMappings     (0);
+            groot->setShowForceFields            (0);
+            groot->setShowInteractionForceFields (0);
+            groot->setShowWireFrame              (0);
+            groot->setShowNormals                (0);
+
+            showVisual->setChecked(groot->getShowVisualModels());
+            showBehavior->setChecked(groot->getShowBehaviorModels());
+            showCollision->setChecked(groot->getShowCollisionModels());
+            showBoundingCollision->setChecked(groot->getShowBoundingCollisionModels());
+            showForceField->setChecked(groot->getShowForceFields());
+            showInteractionForceField->setChecked(groot->getShowInteractionForceFields());
+            showMapping->setChecked(groot->getShowMappings());
+            showMechanicalMapping->setChecked(groot->getShowMechanicalMappings());
+            showWireFrame->setChecked(groot->getShowWireFrame());
+            showNormals->setChecked(groot->getShowNormals());
+
+            viewer->setScene(groot, viewer->getSceneFileName().c_str());
             graphListener->removeChild(NULL, node_clicked);
+            graphListener->addChild(NULL, groot);
         }
         else
         {
             node_clicked->getParent()->removeChild(node_clicked);
             graphListener->removeChild(NULL, node_clicked);
         }
+
         viewer->getQWidget()->update();
         node_clicked = NULL;
         item_clicked = NULL;
@@ -1684,8 +1710,6 @@ void RealGUI::graphRemoveObject()
 /*****************************************************************************************************************/
 void RealGUI::loadObject()
 {
-
-
 
     std::string position[3];
 
@@ -1746,7 +1770,11 @@ void RealGUI::loadObject()
 
     node_clicked->addChild( new_node);
     graphListener->addObject(node_clicked, (core::objectmodel::BaseObject*)new_node);
+    viewer->SwitchToPresetView();
+    viewer->getQWidget()->update();
 
+    node_clicked = NULL;
+    item_clicked = NULL;
 }
 
 } // namespace qt

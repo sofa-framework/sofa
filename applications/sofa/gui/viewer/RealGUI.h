@@ -203,7 +203,7 @@ protected:
     QLabel* timeLabel;
     QWidgetStack* left_stack;
     AddObject *dialog;
-    bool m_fileOpen_ready;
+
 
     //these are already stored in the viewe
     //do not duplicate them
