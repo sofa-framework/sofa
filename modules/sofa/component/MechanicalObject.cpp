@@ -174,10 +174,14 @@ template class MechanicalObject<defaulttype::Vec3fTypes>;
 template class MechanicalObject<defaulttype::Vec3dTypes>;
 template class MechanicalObject<defaulttype::Vec2fTypes>;
 template class MechanicalObject<defaulttype::Vec2dTypes>;
+template class MechanicalObject<defaulttype::Vec1fTypes>;
+template class MechanicalObject<defaulttype::Vec1dTypes>;
+
 template class MechanicalObject<defaulttype::Rigid3dTypes>;
 template class MechanicalObject<defaulttype::Rigid3fTypes>;
 template class MechanicalObject<defaulttype::Rigid2dTypes>;
 template class MechanicalObject<defaulttype::Rigid2fTypes>;
+
 template class MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
 
 } // namespace component
