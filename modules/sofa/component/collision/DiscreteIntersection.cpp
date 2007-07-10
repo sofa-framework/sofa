@@ -67,11 +67,12 @@ DiscreteIntersection::DiscreteIntersection()
     //intersectors.add<SphereTreeModel, SphereModel,       DiscreteIntersection, true>  (this);
     //intersectors.add<SphereModel,     TriangleModel,     DiscreteIntersection, true>  (this);
     //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection, false> (this);
-    intersectors.add<DistanceGridCollisionModel, DistanceGridCollisionModel, DiscreteIntersection, false> (this);
-    intersectors.add<DistanceGridCollisionModel, PointModel,                 DiscreteIntersection, true>  (this);
-    intersectors.add<DistanceGridCollisionModel, TriangleModel,              DiscreteIntersection, true>  (this);
-    intersectors.add<DistanceGridCollisionModel, RayModel,                   DiscreteIntersection, true>  (this);
-    intersectors.add<DistanceGridCollisionModel, RayPickInteractor,          DiscreteIntersection, true>  (this);
+    intersectors.add<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel, DiscreteIntersection, false> (this);
+    intersectors.add<RigidDistanceGridCollisionModel, PointModel,                      DiscreteIntersection, true>  (this);
+    intersectors.add<RigidDistanceGridCollisionModel, TriangleModel,                   DiscreteIntersection, true>  (this);
+    intersectors.add<RigidDistanceGridCollisionModel, RayModel,                        DiscreteIntersection, true>  (this);
+    intersectors.add<RigidDistanceGridCollisionModel, RayPickInteractor,               DiscreteIntersection, true>  (this);
+    intersectors.add<FFDDistanceGridCollisionModel,   RigidDistanceGridCollisionModel, DiscreteIntersection, true>  (this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
@@ -485,14 +486,14 @@ int DiscreteIntersection::computeIntersection(SingleSphere& sph1, Ray& ray2, Det
 //	return 0;
 //}
 
-bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement&, DistanceGridCollisionElement&)
+bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&)
 {
     return true;
 }
 
 //#define DEBUG_XFORM
 
-int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, DistanceGridCollisionElement& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, DetectionOutputVector& contacts)
 {
     int nc = 0;
     DistanceGrid* grid1 = e1.getGrid();
@@ -721,12 +722,12 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
     return nc;
 }
 
-bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement&, Point&)
+bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Point&)
 {
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, Point& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Point& e2, DetectionOutputVector& contacts)
 {
     DistanceGrid* grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();
@@ -767,12 +768,12 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
     return 1;
 }
 
-bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement&, Triangle&)
+bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Triangle&)
 {
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, Triangle& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Triangle& e2, DetectionOutputVector& contacts)
 {
     const int f2 = e2.flags();
     if (!(f2&TriangleModel::FLAG_POINTS)) return 0; // no points associated with this triangle
@@ -884,12 +885,12 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
     return 1;
 }
 
-bool DiscreteIntersection::testIntersection(DistanceGridCollisionElement& /*e1*/, Ray& /*e2*/)
+bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement& /*e1*/, Ray& /*e2*/)
 {
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, Ray& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Ray& e2, DetectionOutputVector& contacts)
 {
     Vector3 rayOrigin(e2.origin());
     Vector3 rayDirection(e2.direction());
@@ -1000,6 +1001,90 @@ int DiscreteIntersection::computeIntersection(DistanceGridCollisionElement& e1, 
             detection->id = e2.getIndex();
             ++nc;
         }
+    }
+    return nc;
+}
+
+bool DiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&)
+{
+    return true;
+}
+
+//#define DEBUG_XFORM
+
+int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, DetectionOutputVector& contacts)
+{
+    int nc = 0;
+    //DistanceGrid* grid1 = e1.getGrid();
+    DistanceGrid* grid2 = e2.getGrid();
+    vector<FFDDistanceGridCollisionModel::DeformedCube>& cubes1 = e1.getCollisionModel()->getDeformCubes(e1.getIndex());
+    bool useXForm = e2.isTransformed();
+    //const Vector3& t1 = e1.getTranslation();
+    //const Matrix3& r1 = e1.getRotation();
+    const Vector3& t2 = e2.getTranslation();
+    const Matrix3& r2 = e2.getRotation();
+
+    const DistanceGrid::Real margin = 0.001f; //e1.getProximity() + e2.getProximity();
+
+    // transform from grid1 to grid2
+    Vec3f translation;
+    Mat3x3f rotation;
+
+    if (useXForm)
+    {
+        translation = r2.multTranspose(-t2);
+        rotation = r2; rotation.transpose();
+    }
+    else rotation.identity();
+
+    // first points of e1 against distance field of e2
+    if (e1.getCollisionModel()->usePoints.getValue())
+    {
+        for (unsigned int c=0; c<cubes1.size(); c++)
+        {
+            DistanceGrid::Coord p1 = cubes1[c].center;
+            DistanceGrid::Coord p2 = translation + rotation*p1;
+            if (!grid2->inBBox( p2, margin + cubes1[c].radius )) continue;
+            cubes1[c].update();
+            const std::vector<DistanceGrid::Coord>& x1 = cubes1[c].points;
+            for (unsigned int i=0; i<x1.size(); i++)
+            {
+                p1 = x1[i];
+                p2 = translation + rotation*p1;
+
+                if (!grid2->inBBox( p2, margin )) continue;
+
+                float d = grid2->interp(p2);
+                if (d >= margin) continue;
+
+                Vector3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
+                grad.normalize();
+
+                //p2 -= grad * d; // push p2 back to the surface
+
+                contacts.resize(contacts.size()+1);
+                DetectionOutput *detection = &*(contacts.end()-1);
+
+                detection->point[0][0] = cubes1[c].initC0[0] + (cubes1[c].initC1[0]-cubes1[c].initC0[0])*cubes1[c].baryPoints[i][0];
+                detection->point[0][1] = cubes1[c].initC0[1] + (cubes1[c].initC1[1]-cubes1[c].initC0[1])*cubes1[c].baryPoints[i][1];
+                detection->point[0][2] = cubes1[c].initC0[2] + (cubes1[c].initC1[2]-cubes1[c].initC0[2])*cubes1[c].baryPoints[i][2];
+                detection->point[1] = Vector3(p2) - grad * d;
+                detection->normal = r2 * -grad; // normal in global space from p1's surface
+                detection->distance = d;
+                detection->elem.first = e1;
+                detection->elem.second = e2;
+                detection->id = i * cubes1.size() + c;
+                ++nc;
+            }
+        }
+    }
+
+    // then points of e2 against distance field of e1
+
+    const DistanceGrid::VecCoord& x2 = grid2->meshPts;
+    if (!x2.empty() && e2.getCollisionModel()->usePoints.getValue())
+    {
+        // \TODO ...
     }
     return nc;
 }

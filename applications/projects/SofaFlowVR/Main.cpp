@@ -649,6 +649,7 @@ std::map<std::string,flowvr::ID> prevPS;
 std::map<std::string,flowvr::ID> prevVB;
 std::map<std::string,flowvr::ID> prevIB;
 std::map<std::string,flowvr::ID> prevT;
+std::map<std::string,flowvr::ID> prevNM;
 
 class FlowVRRenderObject : public FlowVRObject
 {
@@ -673,6 +674,9 @@ public:
         for(std::map<std::string,flowvr::ID>::const_iterator it = prevT.begin(), itend = prevT.end(); it != itend; ++it)
             scene->delTexture(it->second);
         prevT.clear();
+        for(std::map<std::string,flowvr::ID>::const_iterator it = prevNM.begin(), itend = prevNM.end(); it != itend; ++it)
+            scene->delTexture(it->second);
+        prevNM.clear();
     }
 
     flowvr::ID loadSharedTexture(flowvr::render::ChunkRenderWriter* scene, const char* filename)
@@ -684,6 +688,24 @@ public:
             flowvr::render::ChunkTexture* t = scene->loadTexture(id, filename);
             if (t)
                 std::cout << "FlowVR Render: loaded " << t->nx << "x" << t->ny << "x" << ftl::Type::nx(t->pixelType)*(ftl::Type::elemSize(t->pixelType)==0?1:8*ftl::Type::elemSize(t->pixelType)) << " texture " << filename << std::endl;
+        }
+        return id;
+    }
+
+    flowvr::ID loadSharedTextureNormalMap(flowvr::render::ChunkRenderWriter* scene, const char* filename)
+    {
+        flowvr::ID& id = prevNM[filename];
+        if (!id)
+        {
+            id = mod->module->generateID();
+            flowvr::render::ChunkTexture* t = scene->loadTextureNormalMap(id, filename);
+            if (t)
+            {
+                std::cout << "FlowVR Render: loaded " << t->nx << "x" << t->ny << "x" << ftl::Type::nx(t->pixelType)*(ftl::Type::elemSize(t->pixelType)==0?1:8*ftl::Type::elemSize(t->pixelType)) << " normal map " << filename << std::endl;
+                std::string outname(filename,strrchr(filename,'.')?strrchr(filename,'.'):filename+strlen(filename));
+                outname+="-NM.png";
+                scene->saveTexture(t,outname.c_str());
+            }
         }
         return id;
     }
@@ -898,6 +920,7 @@ public:
     std::string texture;
 
     std::map<std::string,std::string> paramT;
+    std::map<std::string,std::string> paramNM;
     std::map<std::string,std::string> paramVS;
     std::map<std::string,std::string> paramPS;
 
@@ -954,6 +977,13 @@ public:
                 std::string filename = arg->getAttribute(name);
                 sofa::helper::system::DataRepository.findFile(filename);
                 paramT[name+4] = filename;
+            }
+            if (!strncmp(name,"bump_",5))
+            {
+                std::string filename = arg->getAttribute(name);
+                sofa::helper::system::DataRepository.findFile(filename);
+                paramNM[name+5] = filename;
+                useTangent.setValue(true);
             }
             else if (!strncmp(name,"ps_",3))
             {
@@ -1052,6 +1082,10 @@ public:
             for (std::map<std::string,std::string>::const_iterator it = paramT.begin(), itend = paramT.end(); it != itend; ++it)
             {
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::TEXTURE, it->first.c_str(), loadSharedTexture(scene,it->second.c_str()));
+            }
+            for (std::map<std::string,std::string>::const_iterator it = paramNM.begin(), itend = paramNM.end(); it != itend; ++it)
+            {
+                scene->addParamID(idP, flowvr::render::ChunkPrimParam::TEXTURE, it->first.c_str(), loadSharedTextureNormalMap(scene,it->second.c_str()));
             }
 
             // add user-defined params

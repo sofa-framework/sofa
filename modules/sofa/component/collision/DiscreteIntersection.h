@@ -69,10 +69,11 @@ public:
     bool testIntersection(SingleSphere&, Triangle&);
     //bool testIntersection(Sphere& , Triangle&);
     //bool testIntersection(Triangle& ,Triangle&);
-    bool testIntersection(DistanceGridCollisionElement&, DistanceGridCollisionElement&);
-    bool testIntersection(DistanceGridCollisionElement&, Point&);
-    bool testIntersection(DistanceGridCollisionElement&, Triangle&);
-    bool testIntersection(DistanceGridCollisionElement&, Ray&);
+    bool testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
+    bool testIntersection(RigidDistanceGridCollisionElement&, Point&);
+    bool testIntersection(RigidDistanceGridCollisionElement&, Triangle&);
+    bool testIntersection(RigidDistanceGridCollisionElement&, Ray&);
+    bool testIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
 
     int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
     int computeIntersection(Sphere&, Sphere&, DetectionOutputVector&);
@@ -83,10 +84,11 @@ public:
     int computeIntersection(SingleSphere&, Triangle&, DetectionOutputVector&);
     //int computeIntersection(Sphere&, Triangle&, DetectionOutputVector&);
     //int computeIntersection(Triangle&, Triangle&, DetectionOutputVector&);
-    int computeIntersection(DistanceGridCollisionElement&, DistanceGridCollisionElement&, DetectionOutputVector&);
-    int computeIntersection(DistanceGridCollisionElement&, Point&, DetectionOutputVector&);
-    int computeIntersection(DistanceGridCollisionElement&, Triangle&, DetectionOutputVector&);
-    int computeIntersection(DistanceGridCollisionElement&, Ray&, DetectionOutputVector&);
+    int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, DetectionOutputVector&);
+    int computeIntersection(RigidDistanceGridCollisionElement&, Point&, DetectionOutputVector&);
+    int computeIntersection(RigidDistanceGridCollisionElement&, Triangle&, DetectionOutputVector&);
+    int computeIntersection(RigidDistanceGridCollisionElement&, Ray&, DetectionOutputVector&);
+    int computeIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, DetectionOutputVector&);
 
 };
 

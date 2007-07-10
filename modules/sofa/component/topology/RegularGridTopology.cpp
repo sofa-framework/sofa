@@ -151,7 +151,7 @@ int RegularGridTopology::findCube(const Vec3& pos, double& fx, double &fy, doubl
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if ((unsigned)ix<(unsigned)nx.getValue()-2 && (unsigned)iy<(unsigned)ny.getValue()-2 && (unsigned)iz<(unsigned)nz.getValue()-2)
+    if ((unsigned)ix<=(unsigned)nx.getValue()-2 && (unsigned)iy<=(unsigned)ny.getValue()-2 && (unsigned)iz<=(unsigned)nz.getValue()-2)
     {
         fx = x-ix;
         fy = y-iy;

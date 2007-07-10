@@ -54,9 +54,9 @@ Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereTree
 Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass2("LagrangianMultiplier",true);
 Creator<core::componentmodel::collision::Contact::Factory, RayContact<SphereTreeModel> > RaySphereTreeContactClass3("FrictionContact",true);
 
-Creator<core::componentmodel::collision::Contact::Factory, RayContact<DistanceGridCollisionModel> > RayDistanceGridContactClass("default",true);
-Creator<core::componentmodel::collision::Contact::Factory, RayContact<DistanceGridCollisionModel> > RayDistanceGridContactClass2("LagrangianMultiplier",true);
-Creator<core::componentmodel::collision::Contact::Factory, RayContact<DistanceGridCollisionModel> > RayDistanceGridContactClass3("FrictionContact",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<RigidDistanceGridCollisionModel> > RayDistanceGridContactClass("default",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<RigidDistanceGridCollisionModel> > RayDistanceGridContactClass2("LagrangianMultiplier",true);
+Creator<core::componentmodel::collision::Contact::Factory, RayContact<RigidDistanceGridCollisionModel> > RayDistanceGridContactClass3("FrictionContact",true);
 
 BaseRayContact::BaseRayContact(CollisionModel1* model1, core::componentmodel::collision::Intersection* /*instersectionMethod*/)
     : model1(model1)

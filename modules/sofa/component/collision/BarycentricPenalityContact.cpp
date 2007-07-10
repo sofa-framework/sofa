@@ -50,9 +50,13 @@ Creator<Contact::Factory, BarycentricPenalityContact<LineModel, SphereModel> > L
 Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, SphereModel> > TriangleSpherePenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, TriangleModel> > SphereTreeTriangleContactClass("default", true);
-Creator<Contact::Factory, BarycentricPenalityContact<DistanceGridCollisionModel, DistanceGridCollisionModel> > DistanceGridDistanceGridContactClass("default", true);
-Creator<Contact::Factory, BarycentricPenalityContact<DistanceGridCollisionModel, PointModel> > DistanceGridPointContactClass("default", true);
-Creator<Contact::Factory, BarycentricPenalityContact<DistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridFFDDistanceGridContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridDistanceGridContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPointContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleContactClass("default", true);
 
 
 } // namespace collision

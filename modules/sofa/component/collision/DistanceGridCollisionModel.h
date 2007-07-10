@@ -372,14 +372,14 @@ protected:
 
 };
 
-class DistanceGridCollisionModel;
+class RigidDistanceGridCollisionModel;
 
-class DistanceGridCollisionElement : public core::TCollisionElementIterator<DistanceGridCollisionModel>
+class RigidDistanceGridCollisionElement : public core::TCollisionElementIterator<RigidDistanceGridCollisionModel>
 {
 public:
-    DistanceGridCollisionElement(DistanceGridCollisionModel* model, int index);
+    RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index);
 
-    explicit DistanceGridCollisionElement(core::CollisionElementIterator& i);
+    explicit RigidDistanceGridCollisionElement(core::CollisionElementIterator& i);
 
     DistanceGrid* getGrid();
 
@@ -390,7 +390,7 @@ public:
     void setGrid(DistanceGrid* surf);
 };
 
-class DistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
+class RigidDistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
 {
 protected:
 
@@ -415,19 +415,17 @@ protected:
     DataField< std::string > dumpfilename;
 
     core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* ffd;
-    topology::MeshTopology* ffdGrid;
 
     void updateGrid();
 public:
     typedef Vec3Types DataTypes;
-    typedef DistanceGridCollisionElement Element;
+    typedef RigidDistanceGridCollisionElement Element;
 
     DataField< bool > usePoints;
 
-    DistanceGridCollisionModel();
+    RigidDistanceGridCollisionModel();
 
-    ~DistanceGridCollisionModel();
+    ~RigidDistanceGridCollisionModel();
 
     core::componentmodel::behavior::MechanicalState<RigidTypes>* getRigidModel() { return rigid; }
 
@@ -466,21 +464,136 @@ public:
     void update() { }
 };
 
-inline DistanceGridCollisionElement::DistanceGridCollisionElement(DistanceGridCollisionModel* model, int index)
-    : core::TCollisionElementIterator<DistanceGridCollisionModel>(model, index)
+inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index)
+    : core::TCollisionElementIterator<RigidDistanceGridCollisionModel>(model, index)
 {}
 
-inline DistanceGridCollisionElement::DistanceGridCollisionElement(core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<DistanceGridCollisionModel>(static_cast<DistanceGridCollisionModel*>(i.getCollisionModel()), i.getIndex())
+inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<RigidDistanceGridCollisionModel>(static_cast<RigidDistanceGridCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-inline DistanceGrid* DistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
-inline void DistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
+inline DistanceGrid* RigidDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
+inline void RigidDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
 
-inline bool DistanceGridCollisionElement::isTransformed() { return model->getRigidModel() != NULL; }
-inline const Matrix3& DistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
-inline const Vector3& DistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
+inline bool RigidDistanceGridCollisionElement::isTransformed() { return model->getRigidModel() != NULL; }
+inline const Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
+inline const Vector3& RigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
+
+class FFDDistanceGridCollisionModel;
+
+class FFDDistanceGridCollisionElement : public core::TCollisionElementIterator<FFDDistanceGridCollisionModel>
+{
+public:
+    FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index);
+
+    explicit FFDDistanceGridCollisionElement(core::CollisionElementIterator& i);
+
+    DistanceGrid* getGrid();
+
+    void setGrid(DistanceGrid* surf);
+};
+
+class FFDDistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
+{
+public:
+    class DeformedCube
+    {
+    public:
+        int elem; ///< Index of the corresponding element in the topology
+        vector<DistanceGrid::Coord> baryPoints; ///< barycentric coordinates of included points
+        DistanceGrid::Coord initC0,initC1; ///< Initial corners position
+        DistanceGrid::Coord corners[8]; ///< Current corners position
+        DistanceGrid::Coord center; ///< current center;
+        DistanceGrid::Real radius; ///< radius of enclosing sphere
+        vector<DistanceGrid::Coord> points; ///< deformed points
+        bool updated; ///< true the points vector has been updated with the latest positions
+        void update(); ///< Update the points position if not done yet (i.e. if updated==false)
+    };
+
+protected:
+
+    class ElementData
+    {
+    public:
+
+        vector<DeformedCube> cubes;
+
+        DistanceGrid* grid;
+        ElementData() : grid(NULL) {}
+    };
+
+    std::vector<ElementData> elems;
+
+    // Input data parameters
+    DataField< std::string > filename;
+    DataField< double > scale;
+    DataField< helper::fixed_array<DistanceGrid::Coord,2> > box;
+    DataField< int > nx;
+    DataField< int > ny;
+    DataField< int > nz;
+    DataField< std::string > dumpfilename;
+
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* ffd;
+    topology::RegularGridTopology* ffdGrid;
+
+    void updateGrid();
+public:
+    typedef Vec3Types DataTypes;
+    typedef FFDDistanceGridCollisionElement Element;
+
+    DataField< bool > usePoints;
+
+    FFDDistanceGridCollisionModel();
+
+    ~FFDDistanceGridCollisionModel();
+
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* getDeformModel() { return ffd; }
+    topology::RegularGridTopology* getDeformGrid() { return ffdGrid; }
+
+    void init();
+
+    DistanceGrid* getGrid(int index=0)
+    {
+        return elems[index].grid;
+    }
+
+    vector<DeformedCube>& getDeformCubes(int index=0)
+    {
+        return elems[index].cubes;
+    }
+
+    void setGrid(DistanceGrid* surf, int index=0);
+
+    // -- CollisionModel interface
+
+    void resize(int size);
+
+    /// Create or update the bounding volume hierarchy.
+    void computeBoundingTree(int maxDepth=0);
+
+    void draw(int index);
+
+    // -- VisualModel interface
+
+    void draw();
+
+    void initTextures() { }
+
+    void update() { }
+};
+
+inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index)
+    : core::TCollisionElementIterator<FFDDistanceGridCollisionModel>(model, index)
+{}
+
+inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<FFDDistanceGridCollisionModel>(static_cast<FFDDistanceGridCollisionModel*>(i.getCollisionModel()), i.getIndex())
+{
+}
+
+inline DistanceGrid* FFDDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
+inline void FFDDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
 
 } // namespace collision
 

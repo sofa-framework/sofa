@@ -17,14 +17,152 @@ namespace collision
 
 SOFA_DECL_CLASS(DistanceGridCollisionModel)
 
-int DistanceGridCollisionModelClass = core::RegisterObject("Grid-based distance field, based on SLC code ( http://sourceforge.net/projects/bfast/ )")
-        .add< DistanceGridCollisionModel >()
+int RigidDistanceGridCollisionModelClass = core::RegisterObject("Grid-based distance field")
+        .add< RigidDistanceGridCollisionModel >()
+        .addAlias("RigidDistanceGrid")
+        .addAlias("DistanceGridCollisionModel")
         .addAlias("DistanceGrid")
+        ;
+
+int FFDDistanceGridCollisionModelClass = core::RegisterObject("Grid-based deformable distance field")
+        .add< FFDDistanceGridCollisionModel >()
+        .addAlias("FFDDistanceGrid")
         ;
 
 using namespace defaulttype;
 
-void DistanceGridCollisionModel::draw(int index)
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
+    : filename( dataField( &filename, "filename", "load distance grid from specified file"))
+    , scale( dataField( &scale, 1.0, "scale", "scaling factor for input file"))
+    , box( dataField( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    , nx( dataField( &nx, 64, "nx", "number of values on X axis") )
+    , ny( dataField( &ny, 64, "ny", "number of values on Y axis") )
+    , nz( dataField( &nz, 64, "nz", "number of values on Z axis") )
+    , dumpfilename( dataField( &dumpfilename, "dumpfilename","write distance grid to specified file"))
+    , usePoints( dataField( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
+{
+    rigid = NULL;
+}
+
+RigidDistanceGridCollisionModel::~RigidDistanceGridCollisionModel()
+{
+    for (unsigned int i=0; i<elems.size(); i++)
+        if (elems[i].grid!=NULL) elems[i].grid->release();
+}
+
+void RigidDistanceGridCollisionModel::init()
+{
+    std::cout << "> RigidDistanceGridCollisionModel::init()"<<std::endl;
+    this->core::CollisionModel::init();
+    rigid = dynamic_cast< core::componentmodel::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
+
+    DistanceGrid* grid = NULL;
+    if (filename.getValue().empty())
+    {
+        std::cerr << "ERROR: RigidDistanceGridCollisionModel requires an input filename.\n";
+        return;
+    }
+    std::cout << "RigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<filename.getValue();
+    if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
+    if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
+    std::cout << std::endl;
+    grid = DistanceGrid::loadShared(filename.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+
+    resize(1);
+    elems[0].grid = grid;
+    if (grid && !dumpfilename.getValue().empty())
+    {
+        std::cout << "RigidDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
+        grid->save(dumpfilename.getValue());
+    }
+    std::cout << "< RigidDistanceGridCollisionModel::init()"<<std::endl;
+}
+
+void RigidDistanceGridCollisionModel::resize(int s)
+{
+    this->core::CollisionModel::resize(s);
+    elems.resize(s);
+}
+
+void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
+{
+    elems[index].grid = surf;
+}
+
+/// Create or update the bounding volume hierarchy.
+void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
+{
+    CubeModel* cubeModel = this->createPrevious<CubeModel>();
+
+    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+
+    updateGrid();
+
+    cubeModel->resize(size);
+    for (int i=0; i<size; i++)
+    {
+        //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
+        Vector3 emin, emax;
+        if (rigid)
+        {
+            const RigidTypes::Coord& xform = (*rigid->getX())[i];
+            elems[i].translation = xform.getCenter();
+            xform.getOrientation().toMatrix(elems[i].rotation);
+            Vector3 corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(0);
+            emin = corner;
+            emax = emin;
+            for (int j=1; j<8; j++)
+            {
+                corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(j);
+                for(int c=0; c<3; c++)
+                    if (corner[c] < emin[c]) emin[c] = corner[c];
+                    else if (corner[c] > emax[c]) emax[c] = corner[c];
+            }
+        }
+        else
+        {
+            emin = elems[i].grid->getBBMin();
+            emax = elems[i].grid->getBBMax();
+        }
+        cubeModel->setParentOf(i, emin, emax); // define the bounding box of the current element
+    }
+    cubeModel->computeBoundingTree(maxDepth);
+}
+
+void RigidDistanceGridCollisionModel::updateGrid()
+{
+}
+
+void RigidDistanceGridCollisionModel::draw()
+{
+    if (!isActive()) return;
+    if (getContext()->getShowCollisionModels())
+    {
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDisable(GL_LIGHTING);
+        if (isStatic())
+            glColor3f(0.5, 0.5, 0.5);
+        else
+            glColor3f(1.0, 0.0, 0.0);
+        glPointSize(3);
+        for (unsigned int i=0; i<elems.size(); i++)
+        {
+            draw(i);
+        }
+        glPointSize(1);
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+    if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+}
+
+void RigidDistanceGridCollisionModel::draw(int index)
 {
     if (rigid!=NULL)
     {
@@ -146,7 +284,11 @@ void DistanceGridCollisionModel::draw(int index)
     }
 }
 
-DistanceGridCollisionModel::DistanceGridCollisionModel()
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
     : filename( dataField( &filename, "filename", "load distance grid from specified file"))
     , scale( dataField( &scale, 1.0, "scale", "scaling factor for input file"))
     , box( dataField( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
@@ -158,114 +300,116 @@ DistanceGridCollisionModel::DistanceGridCollisionModel()
 {
     ffd = NULL;
     ffdGrid = NULL;
-    rigid = NULL;
 }
 
-DistanceGridCollisionModel::~DistanceGridCollisionModel()
+FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()
 {
     for (unsigned int i=0; i<elems.size(); i++)
         if (elems[i].grid!=NULL) elems[i].grid->release();
 }
 
-void DistanceGridCollisionModel::init()
+void FFDDistanceGridCollisionModel::init()
 {
-    std::cout << "> DistanceGridCollisionModel::init()"<<std::endl;
+    std::cout << "> FFDDistanceGridCollisionModel::init()"<<std::endl;
     this->core::CollisionModel::init();
-    rigid = dynamic_cast< core::componentmodel::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
     ffd = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
     ffdGrid = dynamic_cast< topology::RegularGridTopology* > (getContext()->getTopology());
+    if (!ffd || !ffdGrid)
+    {
+        std::cerr << "ERROR: FFDDistanceGridCollisionModel requires a Vec3-based deformable model with associated RegularGridTopology.\n";
+        return;
+    }
 
     DistanceGrid* grid = NULL;
     if (filename.getValue().empty())
     {
-        std::cerr << "ERROR: DistanceGridCollisionModel requires an input filename.\n";
+        std::cerr << "ERROR: FFDDistanceGridCollisionModel requires an input filename.\n";
         return;
     }
-    std::cout << "DistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<filename.getValue();
+    std::cout << "FFDDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<filename.getValue();
     if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
     if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     std::cout << std::endl;
     grid = DistanceGrid::loadShared(filename.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
-
     resize(1);
     elems[0].grid = grid;
     if (grid && !dumpfilename.getValue().empty())
     {
-        std::cout << "DistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
+        std::cout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
         grid->save(dumpfilename.getValue());
     }
-    std::cout << "< DistanceGridCollisionModel::init()"<<std::endl;
+
+    /// place points in ffd elements
+    int nbp = grid->meshPts.size();
+    vector<DeformedCube>& cubes = getDeformCubes( 0 );
+    cubes.resize(ffdGrid->getNbCubes());
+    for (int i=0; i<nbp; i++)
+    {
+        Vec3Types::Coord p0 = grid->meshPts[i];
+        Vec3Types::Coord bary;
+        int elem = ffdGrid->findCube(p0,bary[0],bary[1],bary[2]);
+        if (elem == -1) continue;
+        cubes[elem].baryPoints.push_back(bary);
+    }
+    /// fill other data and remove inactive elements
+    int c=0;
+    for (int e=0; e<ffdGrid->getNbCubes(); e++)
+    {
+        if (ffdGrid->isCubeActive( e ))
+        {
+            if (c != e)
+                cubes[c].baryPoints.swap(cubes[e].baryPoints); // move the list of points to the new
+            cubes[c].elem = e;
+            topology::MeshTopology::Cube cube = ffdGrid->getCube(e);
+            cubes[c].initC0 = ffdGrid->getPoint(cube[0]);
+            cubes[c].initC1 = ffdGrid->getPoint(cube[7]);
+
+            ++c;
+        }
+    }
+
+    std::cout << "< FFDDistanceGridCollisionModel::init()"<<std::endl;
 }
 
-void DistanceGridCollisionModel::resize(int s)
+void FFDDistanceGridCollisionModel::resize(int s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
 }
 
-void DistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
+void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
 {
     elems[index].grid = surf;
 }
 
-void DistanceGridCollisionModel::updateGrid()
-{
-}
-
-void DistanceGridCollisionModel::draw()
-{
-    if (!isActive()) return;
-    if (getContext()->getShowCollisionModels())
-    {
-        if (getContext()->getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glDisable(GL_LIGHTING);
-        if (isStatic())
-            glColor3f(0.5, 0.5, 0.5);
-        else
-            glColor3f(1.0, 0.0, 0.0);
-        glPointSize(3);
-        for (unsigned int i=0; i<elems.size(); i++)
-        {
-            draw(i);
-        }
-        glPointSize(1);
-        if (getContext()->getShowWireFrame())
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    }
-    if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
-        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
-}
-
 /// Create or update the bounding volume hierarchy.
-void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
+void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = this->createPrevious<CubeModel>();
 
     if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
-    //if (filename.getValue().empty())
-    //    updateGrid();
+    updateGrid();
 
     cubeModel->resize(size);
     for (int i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
         Vector3 emin, emax;
-        if (rigid)
+        const vector<DeformedCube>& cubes = getDeformCubes(i);
+        if (!cubes.empty())
         {
-            const RigidTypes::Coord& xform = (*rigid->getX())[i];
-            elems[i].translation = xform.getCenter();
-            xform.getOrientation().toMatrix(elems[i].rotation);
-            Vector3 corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(0);
-            emin = corner;
+            emin = cubes[0].corners[0];
             emax = emin;
-            for (int j=1; j<8; j++)
+            for (unsigned int c=0; c<cubes.size(); c++)
             {
-                corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(j);
-                for(int c=0; c<3; c++)
-                    if (corner[c] < emin[c]) emin[c] = corner[c];
-                    else if (corner[c] > emax[c]) emax[c] = corner[c];
+                for (int j=0; j<8; j++)
+                {
+                    Vector3 corner = cubes[c].corners[j];
+                    for(int c=0; c<3; c++)
+                        if (corner[c] < emin[c]) emin[c] = corner[c];
+                        else if (corner[c] > emax[c]) emax[c] = corner[c];
+                }
             }
         }
         else
@@ -277,6 +421,179 @@ void DistanceGridCollisionModel::computeBoundingTree(int maxDepth)
     }
     cubeModel->computeBoundingTree(maxDepth);
 }
+
+void FFDDistanceGridCollisionModel::updateGrid()
+{
+    for (int index=0; index<size; index++)
+    {
+        vector<DeformedCube>& cubes = getDeformCubes( index );
+        const std::vector<topology::MeshTopology::Cube>& cubeCorners = ffdGrid->getCubes();
+        const Vec3Types::VecCoord& x = *ffd->getX();
+        for (unsigned int c=0; c<cubes.size(); c++)
+        {
+            int e = cubes[c].elem;
+            DistanceGrid::Coord center;
+            for (int j=0; j<8; j++)
+            {
+                cubes[c].corners[j] = x[cubeCorners[e][j]];
+                center += cubes[c].corners[j];
+            }
+            cubes[c].center = center * 0.125f;
+            DistanceGrid::Real radius2 = 0.0f;
+            for (int j=0; j<8; j++)
+            {
+                DistanceGrid::Real r2 = (cubes[c].corners[j] - cubes[c].center).norm2();
+                if (r2 > radius2) radius2 = r2;
+            }
+            cubes[c].radius = rsqrt(radius2);
+            cubes[c].updated = false;
+        }
+    }
+}
+
+/// Update the points position if not done yet (i.e. if updated==false)
+void FFDDistanceGridCollisionModel::DeformedCube::update()
+{
+    if (!updated)
+    {
+        points.resize(baryPoints.size());
+        for (unsigned int i=0; i<baryPoints.size(); i++)
+        {
+            DistanceGrid::Coord b = baryPoints[i];
+            DistanceGrid::Coord cx00 = corners[0+0+0] + (corners[1+0+0]-corners[0+0+0])*b[0];
+            DistanceGrid::Coord cx10 = corners[0+2+0] + (corners[1+2+0]-corners[0+2+0])*b[0];
+            DistanceGrid::Coord cx01 = corners[0+0+4] + (corners[1+0+4]-corners[0+0+4])*b[0];
+            DistanceGrid::Coord cx11 = corners[0+2+4] + (corners[1+2+4]-corners[0+2+4])*b[0];
+            DistanceGrid::Coord cy0 = cx00 + (cx10-cx00)*b[1];
+            DistanceGrid::Coord cy1 = cx01 + (cx11-cx01)*b[1];
+            points[i] = cy0 + (cy1-cy0)*b[2];
+        }
+        updated = true;
+    }
+}
+
+void FFDDistanceGridCollisionModel::draw()
+{
+    if (!isActive()) return;
+    if (getContext()->getShowCollisionModels())
+    {
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDisable(GL_LIGHTING);
+        if (isStatic())
+            glColor3f(0.5, 0.5, 0.5);
+        else
+            glColor3f(1.0, 0.0, 0.0);
+        for (unsigned int i=0; i<elems.size(); i++)
+        {
+            draw(i);
+        }
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+    if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+}
+
+void FFDDistanceGridCollisionModel::draw(int index)
+{
+    DistanceGrid* grid = getGrid(index);
+    DistanceGrid::Coord corners[8];
+    for(unsigned int i=0; i<8; i++)
+        corners[i] = grid->getCorner(i);
+    //glEnable(GL_BLEND);
+    //glDepthMask(0);
+    if (isStatic())
+        glColor4f(0.25f, 0.25f, 0.25f, 0.1f);
+    else
+        glColor4f(0.5f, 0.5f, 0.5f, 0.1f);
+    glBegin(GL_LINES);
+    {
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
+    }
+    glEnd();
+    glDisable(GL_BLEND);
+    glDepthMask(1);
+    for(unsigned int i=0; i<8; i++)
+        corners[i] = grid->getBBCorner(i);
+    //glEnable(GL_BLEND);
+    //glDepthMask(0);
+    if (isStatic())
+        glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+    else
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glBegin(GL_LINES);
+    {
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
+    }
+    glEnd();
+
+    glLineWidth(2);
+    glPointSize(5);
+    const vector<DeformedCube>& cubes = getDeformCubes( index );
+    for (unsigned int c=0; c<cubes.size(); c++)
+    {
+        if (cubes[c].updated)
+            glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+        else
+            glColor4f(0.0f, 1.0f, 0.5f, 1.0f);
+        glBegin(GL_LINES);
+        for (int j=0; j<3; j++)
+        {
+            Vec3f p = cubes[c].center;
+            p[j] += cubes[c].radius;
+            glVertex3fv(p.ptr());
+            p = cubes[c].center;
+            p[j] -= cubes[c].radius;
+            glVertex3fv(p.ptr());
+        }
+        glEnd();
+        glBegin(GL_POINTS);
+        for (unsigned int c=0; c<cubes.size(); c++)
+        {
+            glVertex3fv(cubes[c].center.ptr());
+        }
+        glEnd();
+    }
+    glLineWidth(1);
+    glPointSize(2);
+    glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
+    glBegin(GL_POINTS);
+    for (unsigned int c=0; c<cubes.size(); c++)
+    {
+        if (cubes[c].updated)
+            for (unsigned int j=0; j<cubes[c].points.size(); j++)
+                glVertex3fv(cubes[c].points[j].ptr());
+    }
+    glEnd();
+    glPointSize(1);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
     : nbRef(1), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
@@ -367,7 +684,7 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
         ny = mesh.distmap->ny;
         nz = mesh.distmap->nz;
         ftl::Vec3f fpmin = ftl::transform(mesh.distmap->mat,ftl::Vec3f(0,0,0))*scale;
-        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f(nx,ny,nz))*scale;
+        ftl::Vec3f fpmax = ftl::transform(mesh.distmap->mat,ftl::Vec3f(nx-1,ny-1,nz-1))*scale;
         pmin = Coord(fpmin.ptr());
         pmax = Coord(fpmax.ptr());
         std::cout << "Copying "<<nx<<"x"<<ny<<"x"<<nz<<" distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
