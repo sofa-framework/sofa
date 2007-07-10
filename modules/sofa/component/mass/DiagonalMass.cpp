@@ -94,6 +94,7 @@ template <>
 double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x )
 {
     double e = 0;
+
     const MassVector &masses= f_mass.getValue();
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -108,8 +109,23 @@ double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoo
 }
 
 
+
+void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
+        void* , vector<RigidMass> &)
+{
+}
+
+template <>
+void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
+        void* , vector<RigidMass> &)
+{
+}
+
+
+
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
+
 {
     const MassVector &masses= f_mass.getValue();
     if (!getContext()->getShowBehaviorModels()) return;
@@ -140,13 +156,14 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
 
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
+
 {
     const MassVector &masses= f_mass.getValue();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        const Quatf& orient = x[i].getOrientation();
+        const Quat& orient = x[i].getOrientation();
         //orient[3] = -orient[3];
         const RigidTypes::Vec3& center = x[i].getCenter();
         RigidTypes::Vec3 len;
@@ -166,6 +183,26 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
 
         helper::gl::Axis::draw(center, orient, len);
     }
+}
+template <>
+void DiagonalMass<Rigid3fTypes, Rigid3fMass>::init()
+{
+    Inherited::init();
+}
+template <>
+void DiagonalMass<Rigid3dTypes, Rigid3dMass>::init()
+{
+    Inherited::init();
+}
+template <>
+void DiagonalMass<Rigid2fTypes, Rigid2fMass>::init()
+{
+    Inherited::init();
+}
+template <>
+void DiagonalMass<Rigid2dTypes, Rigid2dMass>::init()
+{
+    Inherited::init();
 }
 
 template <>
@@ -230,6 +267,7 @@ template class DiagonalMass<Rigid3dTypes,Rigid3dMass>;
 template class DiagonalMass<Rigid3fTypes,Rigid3fMass>;
 template class DiagonalMass<Rigid2dTypes,Rigid2dMass>;
 template class DiagonalMass<Rigid2fTypes,Rigid2fMass>;
+
 
 } // namespace mass
 
