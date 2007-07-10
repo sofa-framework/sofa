@@ -1563,7 +1563,7 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
     item_clicked=item;
     //Search in the graph if the element clicked is a node
     node_clicked = viewer->getScene();
-    if (node_clicked == NULL) return;
+    if (node_clicked == NULL || item_clicked == NULL) return;
 
     //First initialize with the Root. Test if the node clicked on the graph has the same name as the root.
     if (node_clicked->getName() == item_clicked->text(0).ascii())
@@ -1590,8 +1590,6 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
         contextMenu->setItemEnabled(indexMenu[0],false);
         contextMenu->setItemEnabled(indexMenu[1],false);
     }
-
-
 
 }
 
@@ -1769,8 +1767,18 @@ void RealGUI::loadObject()
 
     new_node->execute<InitAction>();
 
-    node_clicked->addChild( new_node);
-    graphListener->addObject(node_clicked, (core::objectmodel::BaseObject*)new_node);
+    if (node_clicked->child.begin() ==  node_clicked->child.end() &&  node_clicked->object.begin() == node_clicked->object.end())
+    {
+        //Temporary Root : the current graph is empty, and has only a single node "Root"
+        viewer->setScene(new_node, object_fileName.c_str());
+        graphListener->removeChild(NULL, node_clicked);
+        graphListener->addChild(NULL, new_node);
+    }
+    else
+    {
+        node_clicked->addChild( new_node);
+        graphListener->addObject(node_clicked, (core::objectmodel::BaseObject*)new_node);
+    }
     viewer->SwitchToPresetView();
     viewer->getQWidget()->update();
 
