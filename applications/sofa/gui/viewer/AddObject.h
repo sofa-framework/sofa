@@ -22,42 +22,10 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
+#ifndef ADDOBECJT_H
+#define ADDOBECJT_H
 
-#ifndef GRAPHLISTENERQLISTVIEW_H
-#define GRAPHLISTENERQLISTVIEW_H
-
-
-
-
-#ifdef QT_MODULE_QT3SUPPORT
-#include <Q3ListViewItem>
-#include <Q3ListView>
-#include <QWidget>
-#include <Q3PopupMenu>
-
-#else
-#include <qlistview.h>
-#include <qwidget.h>
-#include <qpopupmenu.h>
-
-
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <qpushbutton.h>
-#include <qimage.h>
-#include <qspinbox.h>
-
-#endif
-
-
-#include "RealGUI.h"
-
-#include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/MutationListener.h>
-
-#include <sofa/simulation/tree/Colors.h>
-#include "WFloatLineEdit.h"
-
+#include "DialogAddObject.h"
 
 namespace sofa
 {
@@ -67,45 +35,29 @@ namespace gui
 
 namespace guiviewer
 {
-using sofa::simulation::tree::GNode;
-using sofa::simulation::tree::Simulation;
-using sofa::simulation::tree::MutationListener;
 
-#ifdef QT_MODULE_QT3SUPPORT
-typedef Q3ListView QListView;
-typedef Q3PopupMenu QPopupMenu;
-#else
-typedef QListViewItem Q3ListViewItem;
-typedef QListView Q3ListView;
-typedef QPopupMenu Q3PopupMenu;
-#endif
-
-
-class GraphListenerQListView : public MutationListener
+class AddObject : public DialogAddObject
 {
+    Q_OBJECT
 public:
-    Q3ListView* widget;
-    bool frozen;
-    std::map<core::objectmodel::Base*, Q3ListViewItem* > items;
-    GraphListenerQListView(Q3ListView* w)
-        : widget(w), frozen(false)
-    {
-    }
+
+    AddObject( QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
 
 
-    /*****************************************************************************************************************/
-    Q3ListViewItem* createItem(Q3ListViewItem* parent);
-    void addChild(GNode* parent, GNode* child);
-    void removeChild(GNode* parent, GNode* child);
-    void moveChild(GNode* previous, GNode* parent, GNode* child);
-    void addObject(GNode* parent, core::objectmodel::BaseObject* object);
-    void removeObject(GNode* /*parent*/, core::objectmodel::BaseObject* object);
-    void moveObject(GNode* previous, GNode* parent, core::objectmodel::BaseObject* object);
-    void freeze(GNode* groot);
-    void unfreeze(GNode* groot);
+    void setPath(const std::string path);
+
+public slots:
+    void fileOpen();
+
+protected:
+    std::string fileName;
+
 };
 
-}
-}
-}
+} // namespace qt
+
+} // namespace gui
+
+} // namespace sofa
+
 #endif

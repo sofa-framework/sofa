@@ -29,9 +29,9 @@
 
 #include "GUI.h"
 #include "GUIField.h"
-
 #include "GraphListenerQListView.h"
 #include "SofaViewer.h"
+#include <AddObject.h>
 // #ifdef SOFA_GUI_QTVIEWER
 // #include "QtViewer/QtViewer.h"
 // #endif
@@ -102,13 +102,6 @@ public:
     const char* viewerName;
 
     sofa::gui::viewer::SofaViewer* viewer;
-// #ifdef SOFA_GUI_QGLVIEWER
-// 	  sofa::gui::guiqglviewer::QtGLViewer* viewer;
-// #elif SOFA_GUI_QTVIEWER
-// 	  sofa::gui::qt::QtViewer* viewer;
-// #elif SOFA_GUI_QTOGREVIEWER
-// 	  sofa::gui::qtogreviewer::QtOgreViewer* viewer;
-// #endif
 
     RealGUI( const char* viewername, const std::vector<std::string>& options = std::vector<std::string>() );
     ~RealGUI();
@@ -168,9 +161,12 @@ public slots:
     void displayComputationTime(bool);
     void setExportGnuplot(bool);
     void currentTabChanged(QWidget*);
+    //Used in Context Menu
     void graphAddObject();
     void graphRemoveObject();
     void graphModify();
+    //When adding an object in the graph
+    void loadObject();
 
 signals:
     void reload();
@@ -206,6 +202,8 @@ protected:
     QLabel* fpsLabel;
     QLabel* timeLabel;
     QWidgetStack* left_stack;
+    AddObject *dialog;
+    bool m_fileOpen_ready;
 
     //these are already stored in the viewe
     //do not duplicate them

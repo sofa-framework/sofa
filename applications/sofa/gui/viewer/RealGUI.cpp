@@ -85,7 +85,7 @@ extern simulation::tree::GNode* groot;
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTabWidget>
-#include <Q3PopupMenu.h>
+#include <Q3PopupMenu>
 
 #define WIDTH_OFFSET 2
 #define HEIGHT_OFFSET 2
@@ -125,6 +125,7 @@ extern simulation::tree::GNode* groot;
 #endif
 
 #include <GenGraphForm.h>
+
 #include "GUIField.h"
 
 
@@ -274,6 +275,9 @@ sofa::simulation::tree::GNode* RealGUI::currentSimulation()
 RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*options*/)
     : viewerName(viewername), viewer(NULL), currentTab(NULL), graphListener(NULL)
 {
+    dialog = NULL;
+    m_fileOpen_ready = true;
+
     left_stack = new QWidgetStack(splitter2);
 #ifndef QT_MODULE_QT3SUPPORT
     GUILayout->addWidget(left_stack);
@@ -321,6 +325,9 @@ RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*opti
     connect( dumpStateCheckBox, SIGNAL( toggled(bool) ), this, SLOT( dumpState(bool) ) );
     connect( exportGnuplotFilesCheckbox, SIGNAL(toggled(bool)), this, SLOT(setExportGnuplot(bool)) );
     connect( displayComputationTimeCheckBox, SIGNAL( toggled(bool) ), this, SLOT( displayComputationTime(bool) ) );
+
+    //Dialog Add Object
+
 
     connect( tabs, SIGNAL( currentChanged(QWidget*) ), this, SLOT( currentTabChanged(QWidget*) ) );
 
@@ -1637,70 +1644,17 @@ void RealGUI::graphAddObject()
 {
     if (node_clicked != NULL)
     {
-        std::string filename = viewer->getSceneFileName();
-        QString s  = Q3FileDialog::getOpenFileName(filename.empty()?NULL:filename.c_str(), "Sofa Element (*.xml *.scn)",  this, "open file dialog",  "Choose a file to open" );
-
-
-#ifdef QT_MODULE_QT3SUPPORT
-        std::string object_fileName(s.toStdString());
-#else
-        std::string object_fileName(s.latin1());
-#endif
-
-        std::string position[3];
-        std::cout<< "Position X:\n" ;
-        std::cin>> position[0];
-        std::cout<< "Position Y:\n" ;
-        std::cin>> position[1];
-        std::cout<< "Position Z:\n" ;
-        std::cin>> position[2];
-
-        //Loading of the xml file
-        xml::BaseElement* xml = xml::load(object_fileName.c_str());
-        if (xml == NULL) return;
-
-        if (xml->getAttribute("dx")) xml->setAttribute("dx",position[0].c_str());
-        if (xml->getAttribute("dy")) xml->setAttribute("dy",position[1].c_str());
-        if (xml->getAttribute("dz")) xml->setAttribute("dz",position[2].c_str());
-
-        xml::BaseElement::child_iterator<> it = xml->begin();
-        xml::BaseElement::child_iterator<> end = xml->end();
-        while (it != end)
+        if (dialog == NULL)
         {
-            std::cout<<	it->getName() << " " << it->getType() <<"\n";
-
-            if (it->getAttribute("dx")) it->setAttribute("dx",position[0].c_str());
-            if (it->getAttribute("dy")) it->setAttribute("dy",position[1].c_str());
-            if (it->getAttribute("dz")) it->setAttribute("dz",position[2].c_str());
-
-            ++it;
+            std::string filename = viewer->getSceneFileName();
+            dialog = new AddObject(this);
+            dialog->setPath(filename);
         }
 
 
-        helper::system::SetDirectory chdir( object_fileName.c_str());
+        dialog->show();
+        dialog->raise();
 
-        std::cout << "Initializing objects"<<std::endl;
-        if (!xml->init())
-        {
-            std::cerr << "Objects initialization failed."<<std::endl;
-        }
-
-        GNode* new_node = dynamic_cast<GNode*>(xml->getObject());
-        if (new_node == NULL)
-        {
-            std::cerr << "Objects initialization failed."<<std::endl;
-            delete xml;
-            return ;
-        }
-
-        std::cout << "Initializing simulation "<<new_node->getName()<<std::endl;
-
-        new_node->execute<InitAction>();
-
-        node_clicked->addChild( new_node);
-        graphListener->addObject(node_clicked, (core::objectmodel::BaseObject*)new_node);
-
-        node_clicked = NULL;
         item_clicked = NULL;
     }
 }
@@ -1727,6 +1681,73 @@ void RealGUI::graphRemoveObject()
     }
 }
 
+/*****************************************************************************************************************/
+void RealGUI::loadObject()
+{
+
+
+
+    std::string position[3];
+
+#ifdef QT_MODULE_QT3SUPPORT
+    std::string object_fileName(dialog->openFilePath->text().toStdString());
+    position[0] = dialog->positionX->text().toStdString();
+    position[1] = dialog->positionY->text().toStdString();
+    position[2] = dialog->positionZ->text().toStdString();
+#else
+    std::string object_fileName(dialog->openFilePath->text().latin1());
+    position[0] = dialog->positionX->text().latin1();
+    position[1] = dialog->positionY->text().latin1();
+    position[2] = dialog->positionZ->text().latin1();
+#endif
+
+
+    //Loading of the xml file
+    xml::BaseElement* xml = xml::load(object_fileName.c_str());
+    if (xml == NULL) return;
+
+    if (xml->getAttribute("dx")) xml->setAttribute("dx",position[0].c_str());
+    if (xml->getAttribute("dy")) xml->setAttribute("dy",position[1].c_str());
+    if (xml->getAttribute("dz")) xml->setAttribute("dz",position[2].c_str());
+
+    xml::BaseElement::child_iterator<> it = xml->begin();
+    xml::BaseElement::child_iterator<> end = xml->end();
+    while (it != end)
+    {
+        std::cout<<	it->getName() << " " << it->getType() <<"\n";
+
+        if (it->getAttribute("dx")) it->setAttribute("dx",position[0].c_str());
+        if (it->getAttribute("dy")) it->setAttribute("dy",position[1].c_str());
+        if (it->getAttribute("dz")) it->setAttribute("dz",position[2].c_str());
+
+        ++it;
+    }
+
+
+    helper::system::SetDirectory chdir( object_fileName.c_str());
+
+    std::cout << "Initializing objects"<<std::endl;
+    if (!xml->init())
+    {
+        std::cerr << "Objects initialization failed."<<std::endl;
+    }
+
+    GNode* new_node = dynamic_cast<GNode*>(xml->getObject());
+    if (new_node == NULL)
+    {
+        std::cerr << "Objects initialization failed."<<std::endl;
+        delete xml;
+        return ;
+    }
+
+    std::cout << "Initializing simulation "<<new_node->getName()<<std::endl;
+
+    new_node->execute<InitAction>();
+
+    node_clicked->addChild( new_node);
+    graphListener->addObject(node_clicked, (core::objectmodel::BaseObject*)new_node);
+
+}
 
 } // namespace qt
 
