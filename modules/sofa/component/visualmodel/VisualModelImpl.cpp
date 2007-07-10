@@ -28,7 +28,6 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/rmath.h>
 #include <sstream>
 
 namespace sofa
@@ -41,10 +40,10 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::topology;
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
-    this->core::VisualModel::parse(arg);
     VisualModelImpl* obj = this;
 
     if (arg->getAttribute("normals")!=NULL)
@@ -60,40 +59,50 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     if (arg->getAttribute("flip")!=NULL)
     {
         obj->flipFaces();
+        arg->removeAttribute("flip");
     }
 
     if (arg->getAttribute("color"))
     {
         obj->setColor(arg->getAttribute("color"));
+        arg->removeAttribute("color");
     }
     if (arg->getAttribute("scale")!=NULL)
     {
         obj->applyScale(atof(arg->getAttribute("scale","1.0")));
+        arg->removeAttribute("scale");
     }
     if (arg->getAttribute("scaleTex")!=NULL)
     {
         obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
-    }
-    if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
-    {
-        obj->applyUVTranslation(atof(arg->getAttribute("du","0.0")), atof(arg->getAttribute("dv","0.0")));
+        arg->removeAttribute("scaleTex");
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+        if (arg->getAttribute("dx")!=NULL)
+            arg->removeAttribute("dx");
+        if (arg->getAttribute("dy")!=NULL)
+            arg->removeAttribute("dy");
+        if (arg->getAttribute("dz")!=NULL)
+            arg->removeAttribute("dz");
     }
     if (arg->getAttribute("rx")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*R_PI/180));
+        obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*M_PI/180));
+        arg->removeAttribute("rx");
     }
     if (arg->getAttribute("ry")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(0,1,0), atof(arg->getAttribute("ry","0.0"))*R_PI/180));
+        obj->applyRotation(Quat(Vec3d(0,1,0), atof(arg->getAttribute("ry","0.0"))*M_PI/180));
+        arg->removeAttribute("ry");
     }
     if (arg->getAttribute("rz")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*R_PI/180));
+        obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*M_PI/180));
+        arg->removeAttribute("rz");
     }
+    this->core::VisualModel::parse(arg);
 }
 
 SOFA_DECL_CLASS(VisualModelImpl)
@@ -394,15 +403,6 @@ void VisualModelImpl::applyScale(double scale)
     update();
 }
 
-void VisualModelImpl::applyUVTranslation(double dU, double dV)
-{
-    for (unsigned int i = 0; i < vtexcoords.size(); i++)
-    {
-        vtexcoords[i][0] += (GLfloat) dU;
-        vtexcoords[i][1] += (GLfloat) dV;
-    }
-}
-
 void VisualModelImpl::applyUVScale(double scaleU, double scaleV)
 {
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
@@ -632,17 +632,30 @@ void VisualModelImpl::setColor(std::string color)
 
 void VisualModelImpl::update()
 {
-    if (modified && (!vertices.empty() || useTopology))
+    if (modified && !vertices.empty())
     {
+        computePositions();
+
         if (useTopology)
         {
-            topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(getContext()->getTopology());
-            if (topology != NULL && topology->getRevision() != lastMeshRev)
+            /** HD : build also a Ogl description from main Topology. But it needs to be build only since the topology update
+            is taken care of by the handleTopologyChange() routine */
+            sofa::core::componentmodel::topology::BaseTopology* pst = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+            if (pst)
             {
-                computeMesh(topology);
+                useTopology=false;
+                computeMeshFromTopology(pst);
             }
+            else
+            {
+                topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(getContext()->getTopology());
+                if (topology != NULL && topology->getRevision() != lastMeshRev)
+                {
+                    computeMesh(topology);
+                }
+            }
+
         }
-        computePositions();
         computeNormals();
         computeBBox();
         modified = false;
@@ -662,18 +675,6 @@ void VisualModelImpl::computePositions()
 
 void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
 {
-    if (vertices.empty())
-    {
-        if (!topology->hasPos()) return;
-        vertices.resize(topology->getNbPoints());
-        for (unsigned int i=0; i<vertices.size(); i++)
-        {
-            vertices[i][0] = (Real)topology->getPX(i);
-            vertices[i][1] = (Real)topology->getPY(i);
-            vertices[i][2] = (Real)topology->getPZ(i);
-        }
-    }
-
     lastMeshRev = topology->getRevision();
     const vector<topology::MeshTopology::Triangle>& inputTriangles = topology->getTriangles();
     triangles.resize(inputTriangles.size());
@@ -685,6 +686,71 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
         quads[i] = inputQuads[i];
 }
 
+void VisualModelImpl::computeMeshFromTopology(sofa::core::componentmodel::topology::BaseTopology* bt)
+{
+    TopologyContainer *container=bt->getTopologyContainer();
+    sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
+    if (tstc)
+    {
+        const std::vector<sofa::component::topology::Triangle> &triangleArray=tstc->getTriangleArray();
+        triangles.resize(triangleArray.size());
+        for (unsigned int i=0; i<tstc->getNumberOfTriangles(); ++i)
+            triangles[i] = triangleArray[i];
+    }
+}
+void VisualModelImpl::handleTopologyChange()
+{
+    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+
+    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+
+    while( itBegin != itEnd )
+    {
+        core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+        // Since we are using identifier, we can safely use C type casts.
+        switch( changeType )
+        {
+
+        case core::componentmodel::topology::TRIANGLESADDED:
+        {
+            const sofa::component::topology::TrianglesAdded *ta=dynamic_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
+            Triangle t;
+            for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
+            {
+                t[0]=(int)(ta->triangleArray[i])[0];
+                t[1]=(int)(ta->triangleArray[i])[1];
+                t[2]=(int)(ta->triangleArray[i])[2];
+                triangles.push_back(t);
+            }
+            break;
+        }
+
+        case core::componentmodel::topology::TRIANGLESREMOVED:
+        {
+            const std::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
+            unsigned int last = triangles.size() -1;
+            Triangle tmp;
+            for (unsigned int i = 0; i < tab.size(); ++i)
+            {
+                tmp = triangles[tab[i]];
+                triangles[tab[i]] = triangles[last];
+                triangles[last] = tmp;
+
+                --last;
+            }
+            triangles.resize( triangles.size() - tab.size() );
+            break;
+        }
+
+        default:
+            // Ignore events that are not Triangle  related.
+            break;
+        }; // switch( changeType )
+
+        ++itBegin;
+    } // while( changeIt != last; )
+}
 void VisualModelImpl::initTextures()
 {
     //if (tex)
