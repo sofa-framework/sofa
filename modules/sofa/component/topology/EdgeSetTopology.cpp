@@ -20,23 +20,35 @@ SOFA_DECL_CLASS(EdgeSetTopology)
 
 template class EdgeSetTopology<Vec3dTypes>;
 template class EdgeSetTopology<Vec3fTypes>;
+template class EdgeSetTopology<Vec2dTypes>;
+template class EdgeSetTopology<Vec2fTypes>;
+template class EdgeSetTopology<Vec1dTypes>;
+template class EdgeSetTopology<Vec1fTypes>;
+
 template class EdgeSetTopologyAlgorithms<Vec3fTypes>;
 template class EdgeSetTopologyAlgorithms<Vec3dTypes>;
+template class EdgeSetTopologyAlgorithms<Vec2dTypes>;
+template class EdgeSetTopologyAlgorithms<Vec2fTypes>;
+template class EdgeSetTopologyAlgorithms<Vec1dTypes>;
+template class EdgeSetTopologyAlgorithms<Vec1fTypes>;
+
 template class EdgeSetGeometryAlgorithms<Vec3fTypes>;
 template class EdgeSetGeometryAlgorithms<Vec3dTypes>;
-
-
+template class EdgeSetGeometryAlgorithms<Vec2dTypes>;
+template class EdgeSetGeometryAlgorithms<Vec2fTypes>;
+template class EdgeSetGeometryAlgorithms<Vec1dTypes>;
+template class EdgeSetGeometryAlgorithms<Vec1fTypes>;
 // implementation EdgeSetTopologyContainer
 
-void EdgeSetTopologyContainer::createEdgeShellArray ()
+void EdgeSetTopologyContainer::createEdgeVertexShellArray ()
 {
-    m_edgeShell.resize( m_basicTopology->getDOFNumber() );
+    m_edgeVertexShell.resize( m_basicTopology->getDOFNumber() );
 
     for (unsigned int i = 0; i < m_edge.size(); ++i)
     {
         // adding edge i in the edge shell of both points
-        m_edgeShell[ m_edge[i].first  ].push_back( i );
-        m_edgeShell[ m_edge[i].second ].push_back( i );
+        m_edgeVertexShell[ m_edge[i].first  ].push_back( i );
+        m_edgeVertexShell[ m_edge[i].second ].push_back( i );
     }
 }
 
@@ -52,7 +64,7 @@ const std::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
 
 int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned int v2)
 {
-    const std::vector< unsigned int > &es1=getEdgeShell(v1) ;
+    const std::vector< unsigned int > &es1=getEdgeVertexShell(v1) ;
     const std::vector<Edge> &ea=getEdgeArray();
     unsigned int i=0;
     int result= -1;
@@ -73,6 +85,21 @@ const Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i)
         createEdgeSetArray();
     return m_edge[i];
 }
+bool EdgeSetTopologyContainer::checkTopology() const
+{
+    PointSetTopologyContainer::checkTopology();
+    if (m_edgeVertexShell.size()>0)
+    {
+        unsigned int i,j;
+        for (i=0; i<m_edgeVertexShell.size(); ++i)
+        {
+            const std::vector<unsigned int> &es=m_edgeVertexShell[i];
+            for (j=0; j<es.size(); ++j)
+                assert((m_edge[es[j]].first==i) ||  (m_edge[es[j]].second==i));
+        }
+    }
+    return true;
+}
 
 
 
@@ -85,32 +112,31 @@ unsigned int EdgeSetTopologyContainer::getNumberOfEdges()
 
 
 
-const std::vector< std::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeShellsArray()
+const std::vector< std::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeVertexShellArray()
 {
-    if (!m_edgeShell.size())
-        createEdgeShellArray();
-    return m_edgeShell;
+    if (!m_edgeVertexShell.size())
+        createEdgeVertexShellArray();
+    return m_edgeVertexShell;
 }
 
 
 
-//std::vector < std::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeShellsArray();
 
 
 
-const std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeShell(const unsigned int i)
+const std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShell(const unsigned int i)
 {
-    if (!m_edgeShell.size())
-        createEdgeShellArray();
-    return m_edgeShell[i];
+    if (!m_edgeVertexShell.size())
+        createEdgeVertexShellArray();
+    return m_edgeVertexShell[i];
 }
 
 
-std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeShellForModification(const unsigned int i)
+std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShellForModification(const unsigned int i)
 {
-    if (!m_edgeShell.size())
-        createEdgeShellArray();
-    return m_edgeShell[i];
+    if (!m_edgeVertexShell.size())
+        createEdgeVertexShellArray();
+    return m_edgeVertexShell[i];
 }
 
 

@@ -17,8 +17,6 @@ namespace topology
 /// defining Edges as the pair of the DOFs indices
 typedef std::pair<unsigned int, unsigned int> Edge;
 
-
-
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
 /////////////////////////////////////////////////////////
@@ -92,8 +90,7 @@ public:
 /////////////////////////////////////////////////////////
 
 
-/** a class that stores a set of points and provides access
-to each point */
+/** a class that stores a set of edges  and provides access to the adjacency between points and edges */
 class EdgeSetTopologyContainer : public PointSetTopologyContainer
 {
 
@@ -104,11 +101,13 @@ private:
      * EdgeShell[i] contains the indices of all edges having the ith DOF as
      * one of their ends.
      */
-    void createEdgeShellArray();
+    void createEdgeVertexShellArray();
 
 protected:
+    /*** The array that stores the set of edges in the edge set */
     std::vector<Edge> m_edge;
-    std::vector< std::vector< unsigned int > > m_edgeShell;
+    /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
+    std::vector< std::vector< unsigned int > > m_edgeVertexShell;
 
     /** \brief Creates the EdgeSet array.
      *
@@ -138,22 +137,26 @@ public:
 
 
 
-    /** \brief Returns the Edge Shells array.
+    /** \brief Returns the Edge Shell array.
      *
      */
-    const std::vector< std::vector<unsigned int> > &getEdgeShellsArray() ;
+    const std::vector< std::vector<unsigned int> > &getEdgeVertexShellArray() ;
 
     /** \brief Returns the edge shell of the ith DOF.
      *
      */
-    const std::vector< unsigned int > &getEdgeShell(const unsigned int i) ;
+    const std::vector< unsigned int > &getEdgeVertexShell(const unsigned int i) ;
     /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
      *
      */
     int getEdgeIndex(const unsigned int v1, const unsigned int v2);
 
+    /** \brief Checks if the Edge Set Topology is coherent
+     *
+     * Check if the Edge and the Edhe Shell arrays are coherent
+     */
+    virtual bool checkTopology() const;
 
-    //EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top);
 
     EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector< unsigned int > &DOFIndex = (const std::vector< unsigned int >)0,
             const std::vector< Edge >         &edges    = (const std::vector< Edge >)        0 );
@@ -164,7 +167,7 @@ protected:
     /** \brief Returns a non-const edge shell of the ith DOF for subsequent modification
      *
      */
-    std::vector< unsigned int > &getEdgeShellForModification(const unsigned int i);
+    std::vector< unsigned int > &getEdgeVertexShellForModification(const unsigned int i);
 
 };
 
@@ -204,26 +207,19 @@ public:
             const std::vector< std::vector< unsigned int > > & ancestors= (const std::vector< std::vector<unsigned int > >) 0 ,
             const std::vector< std::vector< double > >& baryCoefs= (const std::vector< std::vector< double > >)0) ;
 
-
-
     /** \brief Add some edges to this topology.
      *
      * \sa addEdgesWarning
      */
     virtual void addEdgesProcess(const std::vector< Edge > &edges);
 
-
-
-
-    /** \brief Sends a message to warn that some points are about to be deleted.
+    /** \brief Sends a message to warn that some edges are about to be deleted.
      *
      * \sa removeEdgesProcess
      */
     void removeEdgesWarning( std::vector<unsigned int> &edges);
 
-
-
-    /** \brief Remove the points whose indices are given from this topology.
+    /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
      *
      * Elements corresponding to these points are removed form the mechanical object's state vectors.
      *
@@ -231,17 +227,17 @@ public:
      * \sa removeEdgesWarning
      *
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+     *
+     * @param removeIsolatedItems if true isolated vertices are also removed
      */
-    virtual void removeEdgesProcess(const unsigned int nEdges,  const std::vector<unsigned int> &indices);
+    virtual void removeEdgesProcess(const std::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
-
-
-    /** \brief Add some points to this topology.
+    /** \brief Add some edges to this topology.
      *
      * Use a list of ancestors to create the new points.
-     * Last parameter baryCoefs defines the coefficient used for the creation of the new points.
+     * Last parameter baryCoefs defines the coefficient used for the creation of the new edges.
      * Default value for these coefficient (when none is defined) is 1/n with n being the number of ancestors
-     * for the point being created.
+     * for the edge being created.
      *
      * \sa addPointsWarning
      */
@@ -251,16 +247,14 @@ public:
 
 
 
-    /** \brief Remove the points whose indices are given from this topology.
+    /** \brief Remove a subset of points
      *
-     * Elements corresponding to these points are removed form the mechanical object's state vectors.
+     * these points are removed form the mechanical object's state vectors.
      *
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
      * \sa removePointsWarning
      */
-    virtual void removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices);
-
-
+    virtual void removePointsProcess( std::vector<unsigned int> &indices);
 
     /** \brief Reorder this topology.
      *
@@ -268,14 +262,10 @@ public:
      */
     virtual void renumberPointsProcess( const std::vector<unsigned int> &index );
 
-
-
     /** \brief Fuse the edges.
      *
      */
     virtual void fuseEdgesProcess(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair);
-
-
 
     /** \brief Split the edges.
      *
@@ -289,10 +279,7 @@ protected:
 public:
     //template <class DataTypes>
     friend class EdgeSetTopologyLoader<DataTypes>;
-
 };
-
-
 
 /**
  * A class that performs topology algorithms on an EdgeSet.

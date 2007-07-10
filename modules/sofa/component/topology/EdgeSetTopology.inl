@@ -83,7 +83,7 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const std::vector< Edge
     assert (container != 0);
     if (container->m_edge.size()>0)
     {
-        const std::vector< std::vector<unsigned int> > &sa=container->getEdgeShellsArray();
+        const std::vector< std::vector<unsigned int> > &sa=container->getEdgeVertexShellArray();
         for (unsigned int i = 0; i < edges.size(); ++i)
         {
             const Edge &e = edges[i];
@@ -94,8 +94,8 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const std::vector< Edge
             container->m_edge.push_back(e);
             if (sa.size()>0)
             {
-                container->getEdgeShellForModification( e.first ).push_back( container->m_edge.size() - 1 );
-                container->getEdgeShellForModification( e.second ).push_back( container->m_edge.size() - 1 );
+                container->getEdgeVertexShellForModification( e.first ).push_back( container->m_edge.size() - 1 );
+                container->getEdgeVertexShellForModification( e.second ).push_back( container->m_edge.size() - 1 );
             }
         }
     }
@@ -131,62 +131,86 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesWarning( std::vector<unsigne
 
 
 template<class DataTypes>
-void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const unsigned int , const std::vector<unsigned int> &indices)
+void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const std::vector<unsigned int> &indices,const bool removeIsolatedItems)
 {
     EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = static_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
 
-    for (unsigned int i = 0; i < indices.size(); ++i)
+    if (removeIsolatedItems)
+        container->getEdgeVertexShell(0);
+
+
+    if (container->m_edge.size()>0)
     {
-        Edge *e = &container->m_edge[ indices[i] ];
-        unsigned int point1 = e->first, point2 = e->second;
-        // first check that the edge shell array has been initialized
-        if (container->m_edgeShell.size()>0)
+        std::vector<unsigned int> vertexToBeRemoved;
+
+        for (unsigned int i = 0; i < indices.size(); ++i)
         {
+            Edge *e = &container->m_edge[ indices[i] ];
+            unsigned int point1 = e->first, point2 = e->second;
+            // first check that the edge shell array has been initialized
+            if (container->m_edgeVertexShell.size()>0)
+            {
 
-            std::vector< unsigned int > &shell = container->m_edgeShell[ point1 ];
+                std::vector< unsigned int > &shell = container->m_edgeVertexShell[ point1 ];
+                // removes the first occurence (should be the only one) of the edge in the edge shell of the point
+                assert(std::find( shell.begin(), shell.end(), indices[i] ) !=shell.end());
+                shell.erase( std::find( shell.begin(), shell.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell.size()==0))
+                {
+                    vertexToBeRemoved.push_back(point1);
+                }
 
-            // removes the first occurence (should be the only one) of the edge in the edge shell of the point
-            assert(std::find( shell.begin(), shell.end(), indices[i] ) !=shell.end());
-            shell.erase( std::find( shell.begin(), shell.end(), indices[i] ) );
+                std::vector< unsigned int > &shell2 = container->m_edgeVertexShell[ point2 ];
+                // removes the first occurence (should be the only one) of the edge in the edge shell of the other point
+                assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
+                shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell2.size()==0))
+                {
+                    vertexToBeRemoved.push_back(point2);
+                }
+            }
 
-            std::vector< unsigned int > &shell2 = container->m_edgeShell[ point2 ];
+            // removes the edge from the edgelist
+            container->m_edge[ indices[i] ] = container->m_edge[ container->m_edge.size() - 1 ]; // overwriting with last valid value.
+            container->m_edge.resize( container->m_edge.size() - 1 ); // resizing to erase multiple occurence of the edge.
 
-            // removes the first occurence (should be the only one) of the edge in the edge shell of the other point
-            assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
-            shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+            // now updates the shell information of the edge formely at the end of the array
+            // first check that the edge shell array has been initialized
+            // check if second test is necessary
+            if ( indices[i] < container->m_edge.size() && (container->m_edgeVertexShell.size()>0))
+            {
+
+                unsigned int oldEdgeIndex=container->m_edge.size();
+                e = &container->m_edge[ indices[i] ];
+                point1 = e->first; point2 = e->second;
+
+                //replaces the edge index oldEdgeIndex with indices[i] for the first vertex
+                std::vector< unsigned int > &shell3 = container->m_edgeVertexShell[ point1 ];
+                assert(std::find( shell3.begin(), shell3.end(), oldEdgeIndex ) !=shell3.end());
+                std::vector< unsigned int >::iterator it=std::find( shell3.begin(), shell3.end(), oldEdgeIndex );
+                (*it)=indices[i];
+
+                //replaces the edge index oldEdgeIndex with indices[i] for the second vertex
+                std::vector< unsigned int > &shell4 = container->m_edgeVertexShell[ point2 ];
+                assert(std::find( shell4.begin(), shell4.end(), oldEdgeIndex ) !=shell4.end());
+                it=std::find( shell4.begin(), shell4.end(), oldEdgeIndex );
+                (*it)=indices[i];
+            }
         }
-
-        // removes the edge from the edgelist
-        container->m_edge[ indices[i] ] = container->m_edge[ container->m_edge.size() - 1 ]; // overwriting with last valid value.
-        container->m_edge.resize( container->m_edge.size() - 1 ); // resizing to erase multiple occurence of the edge.
-
-        // now updates the shell information of the edge formely at the end of the array
-        // first check that the edge shell array has been initialized
-        if ( indices[i] < container->m_edge.size() )
+        if (vertexToBeRemoved.size()>0)
         {
-
-            unsigned int oldEdgeIndex=container->m_edge.size();
-            e = &container->m_edge[ indices[i] ];
-            point1 = e->first; point2 = e->second;
-
-            //replaces the edge index oldEdgeIndex with indices[i] for the first vertex
-            std::vector< unsigned int > &shell3 = container->m_edgeShell[ point1 ];
-            assert(std::find( shell3.begin(), shell3.end(), oldEdgeIndex ) !=shell3.end());
-            std::vector< unsigned int >::iterator it=std::find( shell3.begin(), shell3.end(), oldEdgeIndex );
-            (*it)=indices[i];
-
-            //replaces the edge index oldEdgeIndex with indices[i] for the second vertex
-            std::vector< unsigned int > &shell4 = container->m_edgeShell[ point2 ];
-            assert(std::find( shell4.begin(), shell4.end(), oldEdgeIndex ) !=shell4.end());
-            it=std::find( shell4.begin(), shell4.end(), oldEdgeIndex );
-            (*it)=indices[i];
+            removePointsWarning(vertexToBeRemoved);
+            // inform other objects that the edges are going to be removed
+            topology->propagateTopologicalChanges();
+            removePointsProcess(vertexToBeRemoved);
         }
+        std::cout << "EdgeSetTopology: container has now "<<container->m_edge.size()<<" edges."<<std::endl;
     }
-    std::cout << "EdgeSetTopology: container has now "<<container->m_edge.size()<<" edges."<<std::endl;
 }
+
 
 
 
@@ -203,45 +227,52 @@ void EdgeSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int n
     assert (topology != 0);
     EdgeSetTopologyContainer * container = static_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
-    container->m_edgeShell.resize( container->m_edgeShell.size() + nPoints );
+    container->m_edgeVertexShell.resize( container->m_edgeVertexShell.size() + nPoints );
 }
 
 
 
 template< class DataTypes >
-void EdgeSetTopologyModifier< DataTypes >::removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices)
+void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( std::vector<unsigned int> &indices)
 {
-    // start by calling the standard method.
-    PointSetTopologyModifier< DataTypes >::removePointsProcess( nPoints, indices );
-
     // now update the local container structures
     EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = static_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
 
-    unsigned int lastPoint = container->m_edgeShell.size() - 1;
+    // forces the construction of the edge shell array if it does not exists
+    if (container->m_edge.size()>0)
+        container->getEdgeVertexShellArray();
+
+    // start by calling the standard method.
+    PointSetTopologyModifier< DataTypes >::removePointsProcess( indices );
+
+
+
+    unsigned int lastPoint = container->m_edgeVertexShell.size() - 1;
 
     for (unsigned int i = 0; i < indices.size(); ++i)
     {
         // updating the edges connected to the point replacing the removed one:
         // for all edges connected to the last point
-        for (unsigned int j = 0; j < container->m_edgeShell[lastPoint].size(); ++j)
+        for (unsigned int j = 0; j < container->m_edgeVertexShell[lastPoint].size(); ++j)
         {
             // change the old index for the new one
-            if ( container->m_edge[ container->m_edgeShell[lastPoint][j] ].first == lastPoint )
-                container->m_edge[ container->m_edgeShell[lastPoint][j] ].first = indices[i];
+            if ( container->m_edge[ container->m_edgeVertexShell[lastPoint][j] ].first == lastPoint )
+                container->m_edge[ container->m_edgeVertexShell[lastPoint][j] ].first = indices[i];
             else
-                container->m_edge[ container->m_edgeShell[lastPoint][j] ].second = indices[i];
+                container->m_edge[ container->m_edgeVertexShell[lastPoint][j] ].second = indices[i];
         }
 
         // updating the edge shell itself (change the old index for the new one)
-        container->m_edgeShell[ indices[i] ] = container->m_edgeShell[ lastPoint ];
+        container->m_edgeVertexShell[ indices[i] ] = container->m_edgeVertexShell[ lastPoint ];
 
         --lastPoint;
     }
 
-    container->m_edgeShell.resize( container->m_edgeShell.size() - indices.size() );
+    container->m_edgeVertexShell.resize( container->m_edgeVertexShell.size() - indices.size() );
+
 }
 
 
@@ -258,10 +289,10 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const std::vec
     EdgeSetTopologyContainer * container = static_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
 
-    std::vector< std::vector< unsigned int > > edgeShell_cp = container->m_edgeShell;
+    std::vector< std::vector< unsigned int > > EdgeVertexShell_cp = container->m_edgeVertexShell;
     for (unsigned int i = 0; i < index.size(); ++i)
     {
-        container->m_edgeShell[i] = edgeShell_cp[ index[i] ];
+        container->m_edgeVertexShell[i] = EdgeVertexShell_cp[ index[i] ];
     }
 
     for (unsigned int i = 0; i < container->m_edge.size(); ++i)
@@ -340,7 +371,7 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const std::vector< s
 
 
     // now destroy the old edges.
-    modifier->removeEdgesProcess( indices.size(), indices );
+    modifier->removeEdgesProcess(  indices );
 
     // TODO : final warning?
 
@@ -409,7 +440,7 @@ void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( std::vector<unsign
     this->m_basicTopology->propagateTopologicalChanges();
 
     // Removing the old edges
-    modifier->removeEdgesProcess( indices.size(), indices );
+    modifier->removeEdgesProcess( indices );
 }
 
 template<class DataTypes>
@@ -424,7 +455,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::removeEdges(std::vector< unsigned i
     // inform other objects that the edges are going to be removed
     topology->propagateTopologicalChanges();
     // now destroy the old edges.
-    modifier->removeEdgesProcess( edges.size(), edges );
+    modifier->removeEdgesProcess( edges );
 }
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const std::vector< Edge >& edges,
