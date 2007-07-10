@@ -147,12 +147,10 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
 {
     if (arg->getAttribute("filename"))
+    {
         load(arg->getAttribute("filename"));
-
-    unsigned int size0 = getX()->size();
-    Inherited::parse(arg);
-    if (getX()->size() != size0)
-        resize( getX()->size() );
+        arg->removeAttribute("filename");
+    }
 
     //obj->parseTransform(arg);
     if (arg->getAttribute("scale")!=NULL)
@@ -167,6 +165,10 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
         arg->removeAttribute("dy");
         arg->removeAttribute("dz");
     }
+    unsigned int size0 = getX()->size();
+    Inherited::parse(arg);
+    if (getX()->size() != size0)
+        resize( getX()->size() );
 }
 
 template <class DataTypes>
@@ -198,25 +200,31 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
     (*x0)[outputIndex] = (*x0)[inputIndex];
     (*v) [outputIndex] = (*v) [inputIndex];
     (*v0)[outputIndex] = (*v0)[inputIndex];
-    (*f) [outputIndex] = (*f) [inputIndex];
-    (*dx)[outputIndex] = (*dx)[inputIndex];
+    if ((*f).size()>0)
+        (*f) [outputIndex] = (*f) [inputIndex];
+    if ((*dx).size()>0)
+        (*dx)[outputIndex] = (*dx)[inputIndex];
 
     // temporary state vectors
     unsigned int i;
     for (i=0; i<vectorsCoord.size(); i++)
     {
         VecCoord& vector = *vectorsCoord[i];
-        vector[outputIndex]=vector[inputIndex];
+        if (vector.size()>0)
+            vector[outputIndex]=vector[inputIndex];
     }
     for ( i=0; i<vectorsDeriv.size(); i++)
     {
         VecDeriv& vector = *vectorsDeriv[i];
-        vector[outputIndex]=vector[inputIndex];
+        if (vector.size()>0)
+            vector[outputIndex]=vector[inputIndex];
     }
 
     // forces
-    (*internalForces)[outputIndex] = (*internalForces)[inputIndex];
-    (*externalForces)[outputIndex] = (*externalForces)[inputIndex];
+    if ((*internalForces).size()>0)
+        (*internalForces)[outputIndex] = (*internalForces)[inputIndex];
+    if ((*externalForces).size()>0)
+        (*externalForces)[outputIndex] = (*externalForces)[inputIndex];
 
 }
 
