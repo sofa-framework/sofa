@@ -112,6 +112,9 @@ public:
     /// Handle an event
     virtual void handleEvent( Event* );
 
+    /// Handle topological Changes
+    virtual void handleTopologyChange() {}
+
     ///@}
 
     /// @name debug
