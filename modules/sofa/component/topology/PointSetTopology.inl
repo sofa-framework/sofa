@@ -3,8 +3,7 @@
 
 
 #include <sofa/component/topology/PointSetTopology.h>
-#include <sofa/component/topology/TopologyChangedEvent.h>
-#include <sofa/simulation/tree/PropagateEventAction.h>
+#include <sofa/simulation/tree/TopologyChangeAction.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/helper/io/MeshTopologyLoader.h>
 
@@ -52,17 +51,20 @@ void PointSetTopologyModifier<DataTypes>::loadPointSet(PointSetTopologyLoader<Da
     assert (topology != 0);
     PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
-    /// resize the DOF stored in the mechanical object
-    topology->object->resize(loader->pointArray.size());
-    /// resize the point set container
-    std::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
-    DOFIndex.resize(loader->pointArray.size());
-    /// store position and vertex index in containers
-    unsigned int index;
-    for (index=0; index<loader->pointArray.size(); ++index)
+    if ((loader->pointArray.size()>0) && (topology->object->getSize()==0))
     {
-        (*topology->object->getX())[index]=loader->pointArray[index];
-        DOFIndex[index] = index;
+        /// resize the DOF stored in the mechanical object
+        topology->object->resize(loader->pointArray.size());
+        /// resize the point set container
+        std::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
+        DOFIndex.resize(loader->pointArray.size());
+        /// store position and vertex index in containers
+        unsigned int index;
+        for (index=0; index<loader->pointArray.size(); ++index)
+        {
+            (*topology->object->getX())[index]=loader->pointArray[index];
+            DOFIndex[index] = index;
+        }
     }
 }
 template<class DataTypes>
@@ -170,17 +172,17 @@ void PointSetTopologyModifier<DataTypes>::addPointsWarning(const unsigned int nP
 
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::removePointsWarning(const unsigned int nPoints, const std::vector<unsigned int> &indices)
+void PointSetTopologyModifier<DataTypes>::removePointsWarning(const std::vector<unsigned int> &indices)
 {
     // Warning that these vertices will be deleted
-    PointsRemoved *e=PointsRemoved(indices);
+    PointsRemoved *e=new PointsRemoved(indices);
     addTopologyChange(e);
 }
 
 
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices)
+void PointSetTopologyModifier<DataTypes>::removePointsProcess( std::vector<unsigned int> &indices)
 {
     std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
@@ -193,22 +195,27 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess(const unsigned int
 
     int lastIndexMech = prevSizeMechObj - 1;
 
-    // deletting the vertices
-    for (unsigned int i = 0; i < nPoints; ++i)
+    // deleting the vertices
+    for (unsigned int i = 0; i < indices.size(); ++i)
     {
-        topology->object->replaceValue(lastIndexMech, container->getDOFIndex(indices[i]) );
+        // tests if the DOFIndex array is empty (if we have a main topology) or not
+        if (prevDOFIndexArraySize)
+            topology->object->replaceValue(lastIndexMech, container->getDOFIndex(indices[i]) );
+        else
+            topology->object->replaceValue(lastIndexMech, indices[i] );
+
 
         --lastIndexMech;
     }
 
     // resizing the state vectors
-    topology->object->resize( prevSizeMechObj - nPoints );
+    topology->object->resize( prevSizeMechObj - indices.size() );
 
     // resizing the topology container vectors
     if (prevDOFIndexArraySize)
-        container->getDOFIndexArrayForModification().resize(prevDOFIndexArraySize - nPoints);
+        container->getDOFIndexArrayForModification().resize(prevDOFIndexArraySize - indices.size() );
     if (prevPointSetIndexArraySize)
-        container->getPointSetIndexArrayForModification().resize(prevPointSetIndexArraySize - nPoints);
+        container->getPointSetIndexArrayForModification().resize(prevPointSetIndexArraySize - indices.size() );
 }
 
 
@@ -305,8 +312,8 @@ PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,c
 template<class DataTypes>
 void PointSetTopology<DataTypes>::propagateTopologicalChanges()
 {
-    TopologyChangedEvent topEvent((BaseTopology *)this);
-    getContext()->propagateEvent(&topEvent);
+    sofa::simulation::tree::TopologyChangeAction a;
+    getContext()->executeAction(&a);
     // BUGFIX (Jeremie A. 06/12/07): remove the changes we just propagated, so that we don't send then again next time
     this->resetTopologyChangeList();
 }

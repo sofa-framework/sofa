@@ -100,17 +100,26 @@ unsigned int PointSetTopologyContainer::getDOFIndex(const int i) const
 {
     return m_DOFIndex[i];
 }
+bool PointSetTopologyContainer::checkTopology() const
+{
 
-int PointSetTopologyClass = core::RegisterObject("Dynamic topology handling point sets")
+    if (m_PointSetIndex.size()>0)
+    {
+        unsigned int i;
+        for (i=0; i<m_DOFIndex.size(); ++i)
+        {
+            assert(m_PointSetIndex[m_DOFIndex[i]]!= -1);
+        }
+    }
+    return true;
+}
+
+int PointSetTopologyClass = core::RegisterObject("Topology consisting of a set of points")
         .add< PointSetTopology<Vec3dTypes> >()
         .add< PointSetTopology<Vec3fTypes> >()
         ;
 
-//Creator<simulation::tree::xml::ObjectFactory, PointSetTopology<Vec3dTypes> >
-//  PointSetTopologyVec3dClass("PointSetTopology", true);
 
-//Creator<simulation::tree::xml::ObjectFactory, PointSetTopology<Vec3fTypes> >
-//  PointSetTopologyVec3fClass("PointSetTopology", true);
 
 
 } // namespace topology

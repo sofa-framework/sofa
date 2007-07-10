@@ -87,7 +87,7 @@ public:
 
 
 
-/** indicates that the indices of all points have been reordered */
+/** indicates that the indices of all points have been renumbered */
 class PointsRenumbering : public core::componentmodel::topology::TopologyChange
 {
 
@@ -112,8 +112,8 @@ public:
 /////////////////////////////////////////////////////////
 
 
-/** a class that stores a set of points and provides access
-to each point */
+/** The container class that stores a set of points and provides access
+to each point. This set of point may be a subset of the DOF of the mechanical model */
 class PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
 {
 
@@ -127,7 +127,9 @@ private:
     void createPointSetIndex();
 
 protected:
+    /** an array that gives the DOF index of a subset of DOFs */
     std::vector<unsigned int> m_DOFIndex;
+    /** an array that takes as input the index a DOF and as an ouput the index in the m_DOFIndex array */
     std::vector<int> m_PointSetIndex;
 
 
@@ -166,9 +168,19 @@ public:
      */
     unsigned int getDOFIndex(const int i) const;
 
+    /** \brief Constructor from a a Base Topology.
+      */
     PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top);
 
+    /** \brief Constructor from a a Base Topology and a set of DOF indices
+      */
     PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector<unsigned int>& DOFIndex);
+
+    /** \brief Checks if the Topology is coherent
+     *
+     * Check if the PointSetIndex and the DOFIndex are coherent
+     */
+    virtual bool checkTopology() const;
 
     template <typename DataTypes>
     friend class PointSetTopologyModifier;
@@ -181,16 +193,13 @@ protected:
     /** \brief Returns the PointSetIndex array for modification.
      */
     std::vector<int>& getPointSetIndexArrayForModification();
-
-    //friend class PointSetTopologicalMapping;
-
 };
 
 // forward declaration
 template< typename DataTypes > class PointSetTopologyLoader;
 
 /**
- * A class that can apply basic transformations on a set of points.
+ * A class that can apply basic topology transformations on a set of points.
  */
 
 template<class DataTypes>
@@ -246,11 +255,11 @@ public:
      *
      * \sa removePointsProcess
      */
-    void removePointsWarning(const unsigned int nPoints, const std::vector<unsigned int> &indices);
+    void removePointsWarning( const std::vector<unsigned int> &indices);
 
 
 
-    /** \brief Remove the points whose indices are given from this topology.
+    /** \brief Remove a subset of points
      *
      * Elements corresponding to these points are removed form the mechanical object's state vectors.
      *
@@ -259,7 +268,7 @@ public:
      *
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
      */
-    virtual void removePointsProcess(const unsigned int nPoints, std::vector<unsigned int> &indices);
+    virtual void removePointsProcess( std::vector<unsigned int> &indices);
 
 
 
@@ -273,10 +282,7 @@ protected:
     /// modifies the mechanical object and creates the point set container
     void loadPointSet(PointSetTopologyLoader<DataTypes> *);
 
-
 };
-
-
 
 /** A class that performs complex algorithms on a PointSet.
  *
@@ -331,11 +337,8 @@ class PointSetTopology : public core::componentmodel::topology::BaseTopology
 {
 
 public:
+    /** the object where the mechanical DOFs are stored */
     component::MechanicalObject<DataTypes> *object;
-
-    //void createNewVertices() const;
-
-    //void removeVertices() const;
 
 public:
     PointSetTopology(component::MechanicalObject<DataTypes> *obj);
@@ -344,7 +347,8 @@ public:
     {
         return object;
     }
-
+    /** creates a TopologyChangeAction and therefore warns all components that
+    some topological changes have occured */
     virtual void propagateTopologicalChanges();
 
     virtual void init();
@@ -354,6 +358,7 @@ public:
     */
     virtual bool load(const char *filename);
 
+    /** Parse the XML attributes : allows to load a topology from a file */
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
         if (arg->getAttribute("filename"))
