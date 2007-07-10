@@ -586,7 +586,7 @@ bool RealGUI::setViewer(const char* name)
 
 void RealGUI::fileOpen(const char* filename)
 {
-    dialog->hide();
+    if (dialog != NULL) dialog->hide();
     //left_stack->removeWidget(viewer->getQWidget());
     //graphListener->removeChild(NULL, groot);
     //delete viewer;
@@ -1701,6 +1701,7 @@ void RealGUI::graphRemoveObject()
             graphListener->removeChild(NULL, node_clicked);
         }
 
+        viewer->SwitchToPresetView();
         viewer->getQWidget()->update();
         node_clicked = NULL;
         item_clicked = NULL;
