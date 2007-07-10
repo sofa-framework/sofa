@@ -23,15 +23,15 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 
-#ifdef QT_MODULE_QT3SUPPORT
-#include <Q3PopupMenu.h>
-#else
-#include <qpopupmenu.h>
-#endif
-
 #include <GenGraphForm.h>
 #include "GUIField.h"
 #include "RealGUI.h"
+
+#ifdef QT_MODULE_QT3SUPPORT
+#include <Q3PopupMenu>
+#else
+#include <qpopupmenu.h>
+#endif
 
 namespace sofa
 {
@@ -42,7 +42,7 @@ namespace gui
 namespace guiviewer
 {
 #ifdef QT_MODULE_QT3SUPPORT
-typedef Q3PopupMmenu QPopupMenu;
+typedef Q3PopupMenu QPopupMenu;
 #else
 typedef QPopupMenu Q3PopupMenu;
 #endif

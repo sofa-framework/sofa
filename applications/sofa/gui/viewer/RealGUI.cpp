@@ -144,7 +144,7 @@ typedef Q3FileDialog QFileDialog;
 typedef Q3DockWindow QDockWindow;
 typedef QStackedWidget QWidgetStack;
 typedef Q3TextEdit QTextEdit;
-typedef Q3PopupMmenu QPopupMenu;
+typedef Q3PopupMenu QPopupMenu;
 #else
 typedef QListViewItem Q3ListViewItem;
 typedef QListView Q3ListView;
@@ -1551,7 +1551,7 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
     //Search in the graph if the element clicked is a node
     node_clicked = viewer->getScene();
     //First initialize with the Root. Test if the node clicked on the graph has the same name as the root.
-    if (node_clicked->getName() == item_clicked->text(0))
+    if (node_clicked->getName() == item_clicked->text(0).ascii())
     {
         //The node clicked has the same name as the root, but we need to verify the pointer of the node clicked
         node_clicked = verifyNode(node_clicked);
@@ -1607,7 +1607,7 @@ GNode *RealGUI::searchNode(GNode *node)
     for (it = node->child.begin(); it != node->child.end(); it++)
     {
         //a node with the same name has been found!!
-        result = node->getChild(item_clicked->text(0));
+        result = node->getChild(item_clicked->text(0).ascii());
         if ( result != NULL)
         {
             result = verifyNode(result);
@@ -1627,7 +1627,7 @@ void RealGUI::graphModify()
 {
     if (item_clicked != NULL)
     {
-        std::cout<<"Modify an object to " <<  item_clicked->text(0) << "\n";
+        std::cout<<"Modify an object to " <<  item_clicked->text(0).ascii() << "\n";
         DoubleClickeItemInSceneView(item_clicked);
         item_clicked = NULL;
     }

@@ -33,7 +33,7 @@
 #include <Q3ListViewItem>
 #include <Q3ListView>
 #include <QWidget>
-#include <Q3PopupMenu.h>
+#include <Q3PopupMenu>
 
 #else
 #include <qlistview.h>
@@ -74,7 +74,7 @@ using sofa::simulation::tree::GNode;
 
 #ifdef QT_MODULE_QT3SUPPORT
 typedef Q3ListView QListView;
-typedef Q3PopupMmenu QPopupMenu;
+typedef Q3PopupMenu QPopupMenu;
 #else
 typedef QListViewItem Q3ListViewItem;
 typedef QListView Q3ListView;
