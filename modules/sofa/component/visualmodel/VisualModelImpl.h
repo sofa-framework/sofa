@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/TriangleSetTopology.h>
 #include <sofa/helper/io/Mesh.h>
 
 namespace sofa
@@ -118,6 +119,7 @@ protected:
     typedef ExtVec3fTypes::Deriv Deriv;
     typedef ExtVec3fTypes::VecDeriv VecDeriv;
 
+
     typedef Vec<2, float> TexCoord;
     typedef helper::fixed_array<int, 3> Triangle;
     typedef helper::fixed_array<int, 4> Quad;
@@ -173,7 +175,6 @@ public:
     void applyTranslation(double dx, double dy, double dz);
     void applyRotation(Quat q);
     void applyScale(double s);
-    void applyUVTranslation(double du, double dv);
     void applyUVScale(double su, double sv);
 
     void flipFaces();
@@ -189,10 +190,14 @@ public:
 
     virtual void computePositions();
     virtual void computeMesh(sofa::component::topology::MeshTopology* topology);
+    virtual void computeMeshFromTopology(sofa::core::componentmodel::topology::BaseTopology* topology);
     virtual void computeNormals();
     virtual void computeBBox();
 
     virtual void update();
+
+    // handle topological changes
+    virtual void handleTopologyChange();
 
     void init();
 
