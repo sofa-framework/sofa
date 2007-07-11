@@ -14,8 +14,10 @@ WFloatLineEdit::WFloatLineEdit(QWidget *parent,const char *name) : QLineEdit(par
     m_bFirst=true;
     m_DblValid=new QDoubleValidator(m_fMinValue,m_fMaxValue,6,this);
     setValidator(m_DblValid);
+
     connect(this,SIGNAL(returnPressed()),
-            this,SLOT(slotReturnPressed()));
+            this,SLOT  (slotReturnPressed()));
+
     m_bInternal=false;
     validateAndSet(QString("%1").arg(m_fValue),0,0,0);
 }
@@ -24,7 +26,9 @@ void WFloatLineEdit::slotReturnPressed()
 {
     //cerr<<"WFloatLineEdit::slotReturnPressed"<<endl;
     m_bInternal=true;
+
     slotCalcFloatValue(text().toFloat());
+
 }
 /* -------------------------------------------------------- */
 void WFloatLineEdit::slotCalcFloatValue(float f)

@@ -27,23 +27,12 @@
 
 #include <sofa/gui/SofaGUI.h>
 
-#include "GUI.h"
-#include "GUIField.h"
-#include "GraphListenerQListView.h"
-#include "SofaViewer.h"
+#include <GUI.h>
+#include <GUIField.h>
+#include <GraphListenerQListView.h>
+#include <SofaViewer.h>
 #include <AddObject.h>
-// #ifdef SOFA_GUI_QTVIEWER
-// #include "QtViewer/QtViewer.h"
-// #endif
-
-// #ifdef SOFA_GUI_QGLVIEWER
-// #include "QtGLViewer/QtGLViewer.h"
-// #endif
-
-// #ifdef SOFA_GUI_QTOGREVIEWER
-// #include "QtOgreViewer/QtOgreViewer.h"
-// #endif
-
+#include <ModifyObject.h>
 
 
 #ifdef QT_MODULE_QT3SUPPORT
@@ -74,10 +63,6 @@ namespace guiviewer
 //enum TYPE{ NORMAL, PML, LML};
 
 using sofa::simulation::tree::GNode;
-
-//      class GraphListenerQListView;
-
-
 
 class RealGUI : public ::GUI, public SofaGUI
 {

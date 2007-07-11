@@ -50,7 +50,6 @@
 #include <sofa/simulation/automatescheduler/ExecBus.h>
 #include <sofa/simulation/automatescheduler/Node.h>
 
-#include "WFloatLineEdit.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <limits.h>
 
@@ -67,65 +66,44 @@ extern simulation::tree::GNode* groot;
 
 
 #ifdef QT_MODULE_QT3SUPPORT
-#include <Q3FileDialog>
-#include <QStatusBar>
-#include <Q3DockWindow>
+#include <QWidget>
+#include <QStackedWidget>
+#include <QLayout>
 #include <Q3ListViewItem>
 #include <Q3ListView>
-#include <QStackedWidget>
+#include <QStatusBar>
 #include <QRadioButton>
 #include <QCheckBox>
 #include <QSplitter>
 #include <Q3TextEdit>
 #include <QCursor>
-#include <QWidget>
-#include <QLayout>
-#include <QTimer>
 #include <QAction>
 #include <QMessageBox>
-#include <QFileDialog>
+#include <Q3FileDialog>
 #include <QTabWidget>
 #include <Q3PopupMenu>
 
-#define WIDTH_OFFSET 2
-#define HEIGHT_OFFSET 2
-#if !defined(INFINITY)
-#define INFINITY 9.0e10
-#endif
 #else
+#include <qwidget.h>
+#include <qwidgetstack.h>
+#include <qlayout.h>
 #include <qlistview.h>
-#include <qcheckbox.h>
-#include <qpushbutton.h>
-#include <qlineedit.h>
-#include <qlabel.h>
 #include <qstatusbar.h>
 #include <qfiledialog.h>
 #include <qheader.h>
 #include <qimage.h>
-#include <qdockwindow.h>
-#include <qspinbox.h>
-#include <qradiobutton.h>
 #include <qsplitter.h>
 #include <qtextedit.h>
 #include <qcursor.h>
-#include <qwidget.h>
-#include <qwidgetstack.h>
-#include <qlayout.h>
-#include <qtimer.h>
 #include <qapplication.h>
 #include <qaction.h>
 #include <qmessagebox.h>
 #include <qfiledialog.h>
 #include <qtabwidget.h>
 #include <qpopupmenu.h>
-
-
-#define WIDTH_OFFSET 0
-#define HEIGHT_OFFSET 0
 #endif
 
 #include <GenGraphForm.h>
-
 #include "GUIField.h"
 
 
@@ -157,10 +135,11 @@ typedef QPopupMenu Q3PopupMenu;
 
 
 using sofa::core::objectmodel::BaseObject;
-
+using sofa::simulation::tree::GNode;
 using namespace sofa::helper::system::thread;
 using namespace sofa::simulation::tree;
 using namespace sofa::simulation::automatescheduler;
+
 
 ///////////////////////////////////////////////////////////
 //////////////////// SofaGUI Interface ////////////////////
@@ -210,8 +189,6 @@ int RealGUI::InitGUI(const char* name, const std::vector<std::string>& /* option
 
 extern QApplication* application; // = NULL;
 extern RealGUI* gui;
-
-using sofa::simulation::tree::GNode;
 
 SofaGUI* RealGUI::CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot, const char* filename)
 {
@@ -1324,227 +1301,11 @@ void RealGUI::DoubleClickeItemInSceneView(QListViewItem *item)
     if(item == NULL)
         return;
 
-    // cancel the visibility action
-    item->setOpen( !item->isOpen() );
+    item_clicked = item;
 
-
-    core::objectmodel::Base* node;
-    for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
-    {
-        if(  (*it).second == item )
-        {
-            node = (*it).first;
-            break;
-        }
-    }
-
-
-
-    // displayWidget
-    if (node)
-    {
-        // if the gui is already opene, do nothing
-        if( _alreadyOpen[ node ] )
-        {
-            _alreadyOpen[ node ]->raise();
-            _alreadyOpen[ node ]->show();
-            return;
-        }
-
-        // else Create the associated QWidget
-
-        QWidget *qwidget = new QWidget(NULL,node->getName().data());
-
-        const std::map< std::string, core::objectmodel::FieldBase* >& fields = node->getFields();
-
-        int i=0;
-        for( std::map< std::string, core::objectmodel::FieldBase* >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
-        {
-            // The label
-            QLabel *label = new QLabel(QString((*it).first.c_str()), qwidget,0);
-            label->setGeometry( 10, i*25+5, 200, 20 );
-
-            if( strcmp((*it).second->help,"TODO") )
-            {
-                QLabel *help = new QLabel((*it).second->help, qwidget);
-                help->setGeometry( 380, i*25+5, 1000, 20 );
-            }
-
-            const std::string& fieldname = (*it).second->getValueTypeString();
-            if( fieldname=="int")
-            {
-                QSpinBox* spinBox = new QSpinBox((int)INT_MIN,(int)INT_MAX,1,qwidget);
-                spinBox->setGeometry( 205, i*25+5, 170, 20 );
-
-                if( DataField<int> * ff = dynamic_cast< DataField<int> * >( (*it).second )  )
-                {
-                    spinBox->setValue(ff->getValue());
-                    connect( spinBox, SIGNAL( valueChanged(int) ), new GUIFieldInt(ff), SLOT( changeValue(int) ) );
-                }
-            }
-            else if( fieldname=="unsigned int")
-            {
-                QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,qwidget);
-                spinBox->setGeometry( 205, i*25+5, 170, 20 );
-
-                if( DataField<unsigned int> * ff = dynamic_cast< DataField<unsigned int> * >( (*it).second )  )
-                {
-                    spinBox->setValue(ff->getValue());
-                    connect( spinBox, SIGNAL( valueChanged(int) ), new GUIFieldUnsignedInt(ff), SLOT( changeValue(int) ) );
-                }
-            }
-            else if( fieldname=="float" || fieldname=="double" )
-            {
-
-                WFloatLineEdit* editSFFloat = new WFloatLineEdit( qwidget, "editSFFloat" );
-                editSFFloat->setMinFloatValue( (float)-INFINITY );
-                editSFFloat->setMaxFloatValue( (float)INFINITY );
-                editSFFloat->setGeometry( 205, i*25+5, 170, 20 );
-
-
-                if( DataField<float> * ff = dynamic_cast< DataField<float> * >( (*it).second )  )
-                {
-                    editSFFloat->setFloatValue(ff->getValue());
-                    connect( editSFFloat, SIGNAL( floatValueChanged(float) ), new GUIFieldFloat(ff), SLOT( changeValue(float) ) );
-                }
-                else if(DataField<double> * ff = dynamic_cast< DataField<double> * >( (*it).second )  )
-                {
-                    editSFFloat->setFloatValue(ff->getValue());
-                    connect( editSFFloat, SIGNAL( floatValueChanged(float) ), new GUIFieldDouble(ff), SLOT( changeValue(float) ) );
-                }
-
-            }
-            else if( fieldname=="bool" )
-            {
-
-                // the bool line edit
-                QCheckBox* checkBox = new QCheckBox(qwidget);
-                checkBox->setGeometry( 205, i*25+5, 170, 20 );
-
-
-                if( DataField<bool> * ff = dynamic_cast< DataField<bool> * >( (*it).second )  )
-                {
-                    checkBox->setChecked(ff->getValue());
-                    connect( checkBox, SIGNAL( toggled(bool) ), new GUIFieldBool(ff), SLOT( changeValue(bool) ) );
-                }
-
-            }
-            else if( fieldname=="string" )
-            {
-                QLineEdit* lineEdit = new QLineEdit(qwidget);
-                lineEdit->setGeometry( 205, i*25+5, 170, 20 );
-
-                if( DataField<std::string> * ff = dynamic_cast< DataField<std::string> * >( (*it).second )  )
-                {
-                    lineEdit->setText(QString(ff->getValue().c_str()));
-                    connect( lineEdit, SIGNAL( textChanged(const QString&) ), new GUIFieldString(ff), SLOT( changeValue(const QString&) ) );
-                }
-
-            }
-            else if( fieldname=="Vec3f" || fieldname=="Vec3d" )
-            {
-
-                WFloatLineEdit* editSFFloatX = new WFloatLineEdit( qwidget, "editSFFloatX" );
-                editSFFloatX->setMinFloatValue( (float)-INFINITY );
-                editSFFloatX->setMaxFloatValue( (float)INFINITY );
-                editSFFloatX->setGeometry( 205, i*25+5, 52, 20 );
-                WFloatLineEdit* editSFFloatY = new WFloatLineEdit( qwidget, "editSFFloatY" );
-                editSFFloatY->setMinFloatValue( (float)-INFINITY );
-                editSFFloatY->setMaxFloatValue( (float)INFINITY );
-                editSFFloatY->setGeometry( 262, i*25+5, 52, 20 );
-                WFloatLineEdit* editSFFloatZ = new WFloatLineEdit( qwidget, "editSFFloatZ" );
-                editSFFloatZ->setMinFloatValue( (float)-INFINITY );
-                editSFFloatZ->setMaxFloatValue( (float)INFINITY );
-                editSFFloatZ->setGeometry( 319, i*25+5, 52, 20 );
-
-
-                if( DataField<Vec3f> * ff = dynamic_cast< DataField<Vec3f> * >( (*it).second )  )
-                {
-                    editSFFloatX->setFloatValue(ff->getValue()[0]);
-                    editSFFloatY->setFloatValue(ff->getValue()[1]);
-                    editSFFloatZ->setFloatValue(ff->getValue()[2]);
-
-                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3f(ff,0), SLOT( changeValue(float) ) );
-                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3f(ff,1), SLOT( changeValue(float) ) );
-                    connect( editSFFloatZ, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3f(ff,2), SLOT( changeValue(float) ) );
-                }
-                else if(DataField<Vec3d> * ff = dynamic_cast< DataField<Vec3d> * >( (*it).second )  )
-                {
-                    editSFFloatX->setFloatValue(ff->getValue()[0]);
-                    editSFFloatY->setFloatValue(ff->getValue()[1]);
-                    editSFFloatZ->setFloatValue(ff->getValue()[2]);
-
-                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3d(ff,0), SLOT( changeValue(float) ) );
-                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3d(ff,1), SLOT( changeValue(float) ) );
-                    connect( editSFFloatZ, SIGNAL( floatValueChanged(float) ), new GUIFieldVec3d(ff,2), SLOT( changeValue(float) ) );
-                }
-
-            }
-            else if( fieldname=="Vec2f" || fieldname=="Vec2d" )
-            {
-
-                WFloatLineEdit* editSFFloatX = new WFloatLineEdit( qwidget, "editSFFloatX" );
-                editSFFloatX->setMinFloatValue( (float)-INFINITY );
-                editSFFloatX->setMaxFloatValue( (float)INFINITY );
-                editSFFloatX->setGeometry( 205, i*25+5, 52, 20 );
-                WFloatLineEdit* editSFFloatY = new WFloatLineEdit( qwidget, "editSFFloatY" );
-                editSFFloatY->setMinFloatValue( (float)-INFINITY );
-                editSFFloatY->setMaxFloatValue( (float)INFINITY );
-                editSFFloatY->setGeometry( 262, i*25+5, 52, 20 );
-
-
-                if( DataField<Vec2f> * ff = dynamic_cast< DataField<Vec2f> * >( (*it).second )  )
-                {
-                    editSFFloatX->setFloatValue(ff->getValue()[0]);
-                    editSFFloatY->setFloatValue(ff->getValue()[1]);
-
-                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2f(ff,0), SLOT( changeValue(float) ) );
-                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2f(ff,1), SLOT( changeValue(float) ) );
-                }
-                else if(DataField<Vec2d> * ff = dynamic_cast< DataField<Vec2d> * >( (*it).second )  )
-                {
-                    editSFFloatX->setFloatValue(ff->getValue()[0]);
-                    editSFFloatY->setFloatValue(ff->getValue()[1]);
-
-                    connect( editSFFloatX, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2d(ff,0), SLOT( changeValue(float) ) );
-                    connect( editSFFloatY, SIGNAL( floatValueChanged(float) ), new GUIFieldVec2d(ff,1), SLOT( changeValue(float) ) );
-                }
-
-            }
-            else
-                std::cerr<<"RealGUI.cpp: UNKNOWN GUI FIELD TYPE : "<<fieldname<<"   --> add a new GUIField"<<std::endl;
-
-
-
-            // 					std::cerr<<(*it).first<<"     "<<(*it).second->getValueString()<<"   "<<(*it).second->getValueTypeString()<<"    "<<std::endl;
-
-            ++i;
-        }
-
-
-        if(BaseObject*bo=dynamic_cast<BaseObject*>(node))
-        {
-            QPushButton*button=new QPushButton(qwidget,"update");
-            button->setGeometry(5,i*25+10,150,20);
-            button->setText("update");
-            connect( button, SIGNAL( pressed() ), new GUIButton(bo), SLOT( reinit() ) );
-        }
-
-
-        if (qwidget)
-        {
-            qwidget->raise();
-            qwidget->show();
-
-            qwidget->setFixedSize(700,(i+1)*25+15);
-            qwidget->setMinimumSize(200,100);
-            qwidget->setMaximumSize(2000,(i+1)*25+15);
-            qwidget->setCaption((node->getTypeName()+"::"+node->getName()).data());
-            _alreadyOpen[ node ] = qwidget;
-        }
-
-        // 			std::cerr<<"\n\n\n";
-    }
+    // cancel the visibility action caused by the double click
+    item_clicked->setOpen( !item_clicked->isOpen() );
+    graphModify();
 }
 
 
@@ -1593,6 +1354,93 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
 
 }
 
+
+/*****************************************************************************************************************/
+void RealGUI::graphAddObject()
+{
+    //Just pop up the dialog window
+    if (node_clicked != NULL)
+    {
+        dialog->show();
+        dialog->raise();
+
+        item_clicked = NULL;
+    }
+}
+
+/*****************************************************************************************************************/
+void RealGUI::graphRemoveObject()
+{
+    if (node_clicked != NULL)
+    {
+        if (node_clicked->getParent() == NULL)
+        {
+            //Attempt to destroy the Root node : create an empty node to handle new graph interaction
+            GNode *groot = new GNode("Root");
+
+            groot->setShowVisualModels           (1);
+            groot->setShowCollisionModels        (0);
+            groot->setShowBoundingCollisionModels(0);
+            groot->setShowBehaviorModels         (0);
+            groot->setShowMappings               (0);
+            groot->setShowMechanicalMappings     (0);
+            groot->setShowForceFields            (0);
+            groot->setShowInteractionForceFields (0);
+            groot->setShowWireFrame              (0);
+            groot->setShowNormals                (0);
+
+            showVisual->setChecked(groot->getShowVisualModels());
+            showBehavior->setChecked(groot->getShowBehaviorModels());
+            showCollision->setChecked(groot->getShowCollisionModels());
+            showBoundingCollision->setChecked(groot->getShowBoundingCollisionModels());
+            showForceField->setChecked(groot->getShowForceFields());
+            showInteractionForceField->setChecked(groot->getShowInteractionForceFields());
+            showMapping->setChecked(groot->getShowMappings());
+            showMechanicalMapping->setChecked(groot->getShowMechanicalMappings());
+            showWireFrame->setChecked(groot->getShowWireFrame());
+            showNormals->setChecked(groot->getShowNormals());
+
+            viewer->setScene(groot, viewer->getSceneFileName().c_str());
+            graphListener->removeChild(NULL, node_clicked);
+            graphListener->addChild(NULL, groot);
+        }
+        else
+        {
+            node_clicked->getParent()->removeChild(node_clicked);
+            graphListener->removeChild(NULL, node_clicked);
+        }
+
+        viewer->SwitchToPresetView();
+        viewer->getQWidget()->update();
+        node_clicked = NULL;
+        item_clicked = NULL;
+    }
+}
+
+/*****************************************************************************************************************/
+void RealGUI::graphModify()
+{
+    if (item_clicked != NULL)
+    {
+        core::objectmodel::Base* node=NULL;
+        for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
+        {
+            if(  (*it).second == item_clicked )
+            {
+                node = (*it).first;
+                break;
+            }
+        }
+
+        //Opening of a dialog window automatically created
+        ModifyObject *dialogModify = new ModifyObject(this,node->getName().data());
+        dialogModify->setNode(node, item_clicked);
+        dialogModify->show();
+        dialogModify->raise();
+
+        item_clicked = NULL;
+    }
+}
 /*****************************************************************************************************************/
 //Nodes in the graph can have the same name. To find the right one, we have to verify the pointer itself.
 //We return the Nodes clicked
@@ -1633,77 +1481,6 @@ GNode *RealGUI::searchNode(GNode *node)
     }
     //Nothing found
     return NULL;
-}
-
-/*****************************************************************************************************************/
-void RealGUI::graphModify()
-{
-    if (item_clicked != NULL)
-    {
-        std::cout<<"Modify an object to " <<  item_clicked->text(0).ascii() << "\n";
-        DoubleClickeItemInSceneView(item_clicked);
-        item_clicked = NULL;
-    }
-}
-/*****************************************************************************************************************/
-void RealGUI::graphAddObject()
-{
-    if (node_clicked != NULL)
-    {
-        dialog->show();
-        dialog->raise();
-
-        item_clicked = NULL;
-    }
-}
-
-/*****************************************************************************************************************/
-void RealGUI::graphRemoveObject()
-{
-    if (node_clicked != NULL)
-    {
-        if (node_clicked->getParent() == NULL)
-        {
-            //Attempt to destroy the Root node
-            GNode *groot = new GNode("Root");
-
-            groot->setShowVisualModels           (1);
-            groot->setShowCollisionModels        (0);
-            groot->setShowBoundingCollisionModels(0);
-            groot->setShowBehaviorModels         (0);
-            groot->setShowMappings               (0);
-            groot->setShowMechanicalMappings     (0);
-            groot->setShowForceFields            (0);
-            groot->setShowInteractionForceFields (0);
-            groot->setShowWireFrame              (0);
-            groot->setShowNormals                (0);
-
-            showVisual->setChecked(groot->getShowVisualModels());
-            showBehavior->setChecked(groot->getShowBehaviorModels());
-            showCollision->setChecked(groot->getShowCollisionModels());
-            showBoundingCollision->setChecked(groot->getShowBoundingCollisionModels());
-            showForceField->setChecked(groot->getShowForceFields());
-            showInteractionForceField->setChecked(groot->getShowInteractionForceFields());
-            showMapping->setChecked(groot->getShowMappings());
-            showMechanicalMapping->setChecked(groot->getShowMechanicalMappings());
-            showWireFrame->setChecked(groot->getShowWireFrame());
-            showNormals->setChecked(groot->getShowNormals());
-
-            viewer->setScene(groot, viewer->getSceneFileName().c_str());
-            graphListener->removeChild(NULL, node_clicked);
-            graphListener->addChild(NULL, groot);
-        }
-        else
-        {
-            node_clicked->getParent()->removeChild(node_clicked);
-            graphListener->removeChild(NULL, node_clicked);
-        }
-
-        viewer->SwitchToPresetView();
-        viewer->getQWidget()->update();
-        node_clicked = NULL;
-        item_clicked = NULL;
-    }
 }
 
 /*****************************************************************************************************************/

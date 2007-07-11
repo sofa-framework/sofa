@@ -35,17 +35,23 @@ public:
 
     WFloatLineEdit(QWidget *parent,const char *name);
 
-    float   minFloatValue() const {return (m_fMinValue);}
+
+
+    float   minFloatValue() const { return (m_fMinValue);}
+    float   getMinFloatValue() { emit(returnPressed()); return minFloatValue();}
     void    setMinFloatValue(float f) {m_fMinValue=f; m_DblValid->setBottom(m_fMinValue); }
 
 
-    float   maxFloatValue() const {return (m_fMaxValue);}
+    float   maxFloatValue() const { return (m_fMaxValue);}
+    float   getMaxFloatValue() { emit(returnPressed()); return maxFloatValue();}
     void    setMaxFloatValue(float f) {m_fMaxValue=f; m_DblValid->setTop(m_fMaxValue); }
 
-    float   floatValue() const {return (m_fValue);}
+    float   floatValue() const { return (m_fValue);}
+    float   getFloatValue() { emit(returnPressed()); return floatValue();}
     void    setFloatValue(float f);
 
-    int     intValue() const {return static_cast<int>(m_fValue);}
+    int     intValue() const { return static_cast<int>(m_fValue);}
+    int     getIntValue() { emit(returnPressed()); return intValue();}
     void	  setIntValue(int f);
 
     int     valuePercent();
