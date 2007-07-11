@@ -40,7 +40,18 @@ void Texture::init(void)
     std::cout << "Create "<<image->getWidth()<<"x"<<image->getHeight()<<" Texture "<<id<<std::endl;
     // Typical Texture Generation Using Data From The Bitmap
     glBindTexture(GL_TEXTURE_2D, id);
-    glTexImage2D(GL_TEXTURE_2D, 0, 3, image->getWidth(), image->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image->getData());
+    switch(image->getNbBits())
+    {
+    case 32:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->getWidth(), image->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image->getData());
+        break;
+    case 24:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->getWidth(), image->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image->getData());
+        break;
+    case 8:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_INTENSITY, image->getWidth(), image->getHeight(), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image->getData());
+        break;
+    }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     std::cout << "Texture "<<id<<" Created"<<std::endl;

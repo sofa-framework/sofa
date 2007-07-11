@@ -107,20 +107,21 @@ bool ImageBMP::load(std::string filename)
         return false;
     }
     //printf("Bits per Pixel: %d\n", biBitCount);
-    if (biBitCount != 24)
+    if (biBitCount != 24 && biBitCount != 32 && biBitCount != 8)
     {
-        std::cerr << "Bits per Pixel not 24\n";
+        std::cerr << "Bits per Pixel not supported\n";
         return false;
     }
     nbBits = biBitCount;
+    int nc = ((nbBits+7)/8);
     /* calculate the size of the image in bytes */
-    biSizeImage = width * height * 3;
+    biSizeImage = width * height * nc;
     // std::cout << "Size of the image data: " << biSizeImage << std::endl;
     data = (unsigned char*) malloc(biSizeImage);
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);
 
-    if ((width%4)==0)
+    if (((width*nc)%4)==0)
     {
         if (!fread(data, biSizeImage, 1, file))
         {
@@ -132,28 +133,29 @@ bool ImageBMP::load(std::string filename)
     {
         for (int y=0; y<height; y++)
         {
-            if (!fread(data+y*width*3, width*3, 1, file))
+            if (!fread(data+y*width*nc, width*nc, 1, file))
             {
                 std::cerr << "Error loading file!\n";
                 return false;
             }
             char buf[3];
-            if (!fread(buf, 4-(width%4), 1, file))
+            if (!fread(buf, 4-((width*nc)%4), 1, file))
             {
                 std::cerr << "Error loading file!\n";
                 return false;
             }
         }
     }
-
-    /* swap red and blue (bgr -> rgb) */
-    for (i = 0; i < biSizeImage; i += 3)
+    if (nc == 24 || nc == 32)
     {
-        temp = data[i];
-        data[i] = data[i + 2];
-        data[i + 2] = temp;
+        /* swap red and blue (bgr -> rgb) */
+        for (i = 0; i < width*height*nc; i += nc)
+        {
+            temp = data[i];
+            data[i] = data[i + 2];
+            data[i + 2] = temp;
+        }
     }
-
     fclose(file);
     return true;
 }
