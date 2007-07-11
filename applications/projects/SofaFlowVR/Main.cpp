@@ -370,6 +370,7 @@ public:
         , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
         , facetsLastIt(-20), pointsLastIt(-20), matrixLastIt(-20), motionLastTime(-1000)
     {
+        matrix.identity();
     }
 
     ~FlowVRInputMesh()
@@ -619,6 +620,228 @@ public:
 SOFA_DECL_CLASS(FlowVRInputMesh)
 int FlowVRInputMeshClass = sofa::core::RegisterObject("Import a mesh from a FlowVR InputPort")
         .add< FlowVRInputMesh >()
+        ;
+
+template<class T>
+class SofaFlowVRAllocator : public sofa::defaulttype::ExtVectorAllocator<T>
+{
+public:
+    typedef typename sofa::defaulttype::ExtVectorAllocator<T>::value_type value_type;
+    typedef typename sofa::defaulttype::ExtVectorAllocator<T>::size_type size_type;
+    virtual void close(value_type* /*data*/)
+    {
+        delete this;
+    }
+    virtual void resize(value_type*& data, size_type size, size_type& maxsize, size_type& cursize)
+    {
+        if (size > maxsize)
+        {
+            if (size > (size_type)bRead.getSize()) size = bRead.getSize();
+            maxsize = bRead.getSize();
+            data = const_cast<value_type*>(bRead.getRead<value_type>());
+        }
+        cursize = size;
+    }
+    flowvr::Buffer bRead;
+    SofaFlowVRAllocator(flowvr::Buffer& data) : bRead(data) {}
+};
+
+using sofa::component::collision::DistanceGrid;
+
+class FlowVRInputDistanceGrid : public FlowVRObject
+{
+public:
+
+    flowvr::InputPort* pInDistance;
+    flowvr::InputPort* pInMatrix;
+    flowvr::StampInfo stampSizes, stampP0, stampDP, stampBB;
+
+    DataField<bool> computeV;
+    DataField<double> maxVDist;
+
+    Mat4x4f matrix, lastMatrix;
+    int distanceLastIt;
+    int matrixLastIt;
+    double motionLastTime;
+    DistanceGrid* curDistGrid;
+    DistanceGrid* emptyGrid;
+    //flowvr::Message curDistance, lastDistance;
+
+    sofa::component::collision::RigidDistanceGridCollisionModel* grid;
+    //sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
+
+    FlowVRInputDistanceGrid()
+        : pInDistance(createInputPort("distance")), pInMatrix(createInputPort("matrix"))
+        , stampSizes("Sizes", flowvr::TypeArray::create(3, flowvr::TypeInt::create()))
+        , stampP0("P0", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
+        , stampDP("DP", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
+        , stampBB("BB", flowvr::TypeArray::create(6, flowvr::TypeInt::create()))
+        , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , distanceLastIt(-20), matrixLastIt(-20), motionLastTime(-1000), curDistGrid(NULL), emptyGrid(NULL)
+        , grid(NULL) //, rigid(NULL)
+    {
+        pInDistance->stamps->add(&stampSizes);
+        pInDistance->stamps->add(&stampP0);
+        pInDistance->stamps->add(&stampDP);
+        pInDistance->stamps->add(&stampBB);
+        matrix.identity();
+    }
+
+    ~FlowVRInputDistanceGrid()
+    {
+        if (emptyGrid!=NULL)
+        {
+            emptyGrid->release();
+        }
+        if (curDistGrid!=NULL)
+        {
+            curDistGrid->release();
+        }
+    }
+
+    virtual void flowvrPreInit(std::vector<flowvr::Port*>* ports)
+    {
+        std::cout << "Received FlowVRPreInit"<<std::endl;
+        ports->push_back(pInDistance);
+        ports->push_back(pInMatrix);
+    }
+
+    virtual void init()
+    {
+        this->FlowVRObject::init();
+        sofa::simulation::tree::GNode* node = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
+        if (node)
+        {
+            node->getNodeObject(grid);
+            if (grid)
+            {
+                //rigid = grid->getRigidModel();
+
+                // just create a dummy distance grid for now
+                emptyGrid = new DistanceGrid(2,2,2,DistanceGrid::Coord(0,0,0),DistanceGrid::Coord(0.001f,0.001f,0.001f));
+                for (int i=0; i<emptyGrid->size(); i++)
+                    (*emptyGrid)[i] = emptyGrid->maxDist();
+                grid->resize(1);
+                curDistGrid = emptyGrid->addRef();
+                grid->setGrid(curDistGrid,0);
+                grid->setActive(false);
+            }
+        }
+        if (computeV.getValue())
+        {
+        }
+    }
+
+    virtual void flowvrBeginIteration(flowvr::ModuleAPI* module)
+    {
+        //std::cout << "Received FlowVRBeginIteration"<<std::endl;
+        flowvr::Message distance;
+        double time = getContext()->getTime();
+
+        bool newmotion = false;
+        if (pInMatrix->isConnected())
+        {
+            flowvr::Message msgmatrix;
+            module->get(pInMatrix,msgmatrix);
+            int matrixIt = -1;
+            msgmatrix.stamps.read(pInMatrix->stamps->it,matrixIt);
+            if (matrixIt != matrixLastIt && msgmatrix.data.getSize()>=(int)sizeof(Mat4x4f))
+            {
+                lastMatrix = matrix;
+                matrix = *msgmatrix.data.getRead<Mat4x4f>(0);
+                matrixLastIt = matrixIt;
+                if (lastMatrix != matrix)
+                    newmotion = true;
+
+                //if(rigid)
+                //    (*rigid->getX())[0].fromMatrix(matrix);
+            }
+        }
+
+        module->get(pInDistance, distance);
+
+        int distanceIt = -1;
+        distance.stamps.read(pInDistance->stamps->it,distanceIt);
+        //const unsigned int nbv = points.data.getSize()/sizeof(Vec3f);
+        if (distanceIt != distanceLastIt)
+        {
+            distanceLastIt = distanceIt;
+            //const Vec3f* vertices = points.data.getRead<Vec3f>(0);
+            const Vec3f trans = mod->f_trans.getValue();
+            const float scale = mod->f_scale.getValue();
+
+            int nz = 64;
+            int ny = 64;
+            int nx = 64;
+            Vec3f p0, dp;
+            int bbox[6] = {-1,-1,-1,-1,-1,-1};
+            distance.stamps.read(stampSizes[0], nz);
+            distance.stamps.read(stampSizes[1], ny);
+            distance.stamps.read(stampSizes[2], nx);
+            distance.stamps.read(stampP0[0], p0[0]);
+            distance.stamps.read(stampP0[1], p0[1]);
+            distance.stamps.read(stampP0[2], p0[2]);
+            distance.stamps.read(stampDP[0], dp[0]);
+            distance.stamps.read(stampDP[1], dp[1]);
+            distance.stamps.read(stampDP[2], dp[2]);
+            for (int i=0; i<6; i++)
+                distance.stamps.read(stampBB[i], bbox[i]);
+
+            if (bbox[0] > bbox[3])
+            {
+                // empty grid
+                curDistGrid->release();
+                curDistGrid = emptyGrid->addRef();
+                grid->setActive(false);
+            }
+            else
+            {
+                DistanceGrid::Coord pmin = trans + p0;
+                DistanceGrid::Coord pmax = pmin + Vec3f(dp[0]*(nx-1),dp[1]*(ny-1),dp[2]*(ny-2));
+                DistanceGrid::Coord bbmin = pmin + Vec3f(dp[0]*bbox[0],dp[1]*bbox[1],dp[2]*bbox[2]);
+                DistanceGrid::Coord bbmax = pmin + Vec3f(dp[0]*bbox[3],dp[1]*bbox[4],dp[2]*bbox[5]);
+
+                if (scale==1.0f)
+                {
+                    curDistGrid->release();
+                    curDistGrid = new DistanceGrid(nx,ny,nz, pmin, pmax, new SofaFlowVRAllocator<DistanceGrid::Real>(distance.data));
+                }
+                else
+                {
+                    curDistGrid->release();
+                    curDistGrid = new DistanceGrid(nx,ny,nz, pmin, pmax);
+                    const float* in = distance.data.getRead<float>();
+                    for (int i=0; i<curDistGrid->size(); i++)
+                        (*curDistGrid)[i] = in[i]*scale;
+                }
+                curDistGrid->setBBMin(bbmin);
+                curDistGrid->setBBMax(bbmax);
+                grid->setActive(true);
+            }
+            newmotion = true;
+        }
+
+        if (newmotion)
+        {
+            Mat3x3f rotation;
+            Vec3f translation;
+            if (matrixLastIt != -20)
+            {
+                rotation = matrix;
+                translation = matrix.col(3);
+            }
+            else rotation.identity();
+            double dt = (motionLastTime == -1000 || motionLastTime >= time) ? 1 : time-motionLastTime;
+            grid->setNewState(0,dt,curDistGrid, rotation, translation);
+            motionLastTime = time;
+        }
+    }
+};
+
+SOFA_DECL_CLASS(FlowVRInputDistanceGrid)
+int FlowVRInputDistanceGridClass = sofa::core::RegisterObject("Import a distance field from a FlowVR InputPort")
+        .add< FlowVRInputDistanceGrid >()
         ;
 
 

@@ -264,10 +264,11 @@ public:
     typedef mapping::RigidMapping<core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
     MMapping* mapping;
+    MMechanicalState* outmodel;
     int nbp;
 
     BarycentricContactMapper(MCollisionModel* model)
-        : model(model), mapping(NULL), nbp(0)
+        : model(model), mapping(NULL), outmodel(NULL), nbp(0)
     {
     }
 
@@ -279,11 +280,14 @@ public:
             if (parent!=NULL)
             {
                 simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
-                child->removeObject(mapping->getTo());
-                child->removeObject(mapping);
+                child->removeObject(outmodel);
+                if (mapping)
+                {
+                    child->removeObject(mapping);
+                    delete mapping;
+                }
                 parent->removeChild(child);
-                delete mapping->getTo();
-                delete mapping;
+                delete outmodel;
                 delete child;
             }
         }
@@ -291,16 +295,33 @@ public:
 
     MMechanicalState* createMapping()
     {
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getRigidModel()->getContext());
-        if (parent==NULL)
+        InMechanicalState* instate = model->getRigidModel();
+        if (instate!=NULL)
         {
-            std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
-            return NULL;
+            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(instate->getContext());
+            if (parent==NULL)
+            {
+                std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
+                return NULL;
+            }
+            simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+            outmodel = new MMechanicalObject; child->addObject(outmodel);
+            mapping = new MMapping(model->getRigidModel(), outmodel); child->addObject(mapping);
+            return outmodel;
         }
-        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
-        MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-        mapping = new MMapping(model->getRigidModel(), mstate); child->addObject(mapping);
-        return mstate;
+        else
+        {
+            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+            if (parent==NULL)
+            {
+                std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
+                return NULL;
+            }
+            simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+            outmodel = new MMechanicalObject; child->addObject(outmodel);
+            mapping = NULL;
+            return outmodel;
+        }
     }
 
     void resize(int size)
@@ -308,18 +329,28 @@ public:
         if (mapping!=NULL)
         {
             mapping->clear();
-            mapping->getMechTo()->resize(size);
-            nbp = 0;
         }
+        if (outmodel!=NULL)
+        {
+            outmodel->resize(size);
+        }
+        nbp = 0;
     }
 
     int addPoint(const Vector3& P, int index)
     {
-        mapping->index.setValue(index);
-        MMechanicalState* mstate = mapping->getToModel();
-        int i = mstate->getX()->size();
-        mstate->resize(i+1);
-        (*mstate->getX())[i] = P;
+        int i = nbp++; //outmodel->getX()->size();
+        if ((int)outmodel->getX()->size() <= i)
+            outmodel->resize(i+1);
+        if (mapping)
+        {
+            mapping->index.setValue(index);
+            (*outmodel->getX())[i] = P;
+        }
+        else
+        {
+            (*outmodel->getX())[i] = model->getTranslation(index) + model->getRotation() * P;
+        }
         return i;
     }
 

@@ -69,6 +69,8 @@ public:
 
     const Coord& getBBMin() const { return bbmin; }
     const Coord& getBBMax() const { return bbmax; }
+    void setBBMin(const Coord& val) { bbmin = val; }
+    void setBBMax(const Coord& val) { bbmax = val; }
     Coord getBBCorner(int i) const { return Coord((i&1)?bbmax[0]:bbmin[0],(i&2)?bbmax[1]:bbmin[1],(i&4)?bbmax[2]:bbmin[2]); }
     bool inBBox(const Coord& p, Real margin=0.0f) const
     {
@@ -433,6 +435,7 @@ protected:
     };
 
     std::vector<ElementData> elems;
+    bool modified;
 
     // Input data parameters
     DataField< std::string > filename;

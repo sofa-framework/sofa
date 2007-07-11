@@ -35,7 +35,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(i
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        const std::vector<Edge> &edgeArray=container->getEdgeArray();
+        //const std::vector<Edge> &edgeArray=container->getEdgeArray();
         TriangleSetGeometryAlgorithms<DataTypes> *ga=_mesh->getTriangleSetGeometryAlgorithms();
 
         // store the rest length of the edge created
@@ -59,7 +59,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFuncti
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        const std::vector<Edge> &edgeArray=container->getEdgeArray();
+        //const std::vector<Edge> &edgeArray=container->getEdgeArray();
         const std::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
         unsigned int j,k,l;
 
@@ -294,9 +294,9 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, co
 {
     unsigned int i,j,k,l;
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-    unsigned int nbEdges=container->getNumberOfEdges();
+    //unsigned int nbEdges=container->getNumberOfEdges();
     unsigned int nbTriangles=container->getNumberOfTriangles();
-    const std::vector<Edge> &edgeArray=container->getEdgeArray();
+    //const std::vector<Edge> &edgeArray=container->getEdgeArray();
     const std::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
     const std::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 

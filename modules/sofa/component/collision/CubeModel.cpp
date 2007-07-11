@@ -257,7 +257,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
     for (int i=0; i<maxDepth; i++)
         levels.push_front(levels.front()->createPrevious<CubeModel>());
     CubeModel* root = levels.front();
-    if (isStatic() && root->getPrevious() == NULL && !root->empty()) return; // No need to recompute BBox if immobile
+    //if (isStatic() && root->getPrevious() == NULL && !root->empty()) return; // No need to recompute BBox if immobile
 
     if (root->empty() || root->getPrevious() != NULL)
     {

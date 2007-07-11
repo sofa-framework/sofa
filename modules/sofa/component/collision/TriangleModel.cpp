@@ -417,10 +417,10 @@ void TriangleModel::computeBoundingTree(int maxDepth)
 }
 unsigned int TriangleModel::getNbTriangles() const
 {
-    //if (!mesh)
-    return size;
-    //else
-    //	return mesh->getNbTriangles();
+    if (!mesh)
+        return size;
+    else
+        return mesh->getNbTriangles();
 }
 void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {

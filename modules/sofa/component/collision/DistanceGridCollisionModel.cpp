@@ -36,7 +36,8 @@ using namespace defaulttype;
 ////////////////////////////////////////////////////////////////////////////////
 
 RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
-    : filename( dataField( &filename, "filename", "load distance grid from specified file"))
+    : modified(true)
+    , filename( dataField( &filename, "filename", "load distance grid from specified file"))
     , scale( dataField( &scale, 1.0, "scale", "scaling factor for input file"))
     , box( dataField( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , nx( dataField( &nx, 64, "nx", "number of values on X axis") )
@@ -94,12 +95,16 @@ void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
 {
     if (elems[index].grid == surf) return;
     if (elems[index].grid!=NULL) elems[index].grid->release();
-    elems[index].grid = surf;
+    elems[index].grid = surf->addRef();
+    modified = true;
 }
 
 void RigidDistanceGridCollisionModel::setNewState(int index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
 {
-    if (elems[index].prevGrid!=NULL && elems[index].prevGrid!=elems[index].grid) elems[index].prevGrid->release();
+    if (grid != elems[index].grid)
+        grid->addRef();
+    if (elems[index].prevGrid!=NULL && elems[index].prevGrid!=elems[index].grid)
+        elems[index].prevGrid->release();
     elems[index].prevGrid = elems[index].grid;
     elems[index].grid = grid;
     elems[index].prevRotation = elems[index].rotation;
@@ -113,6 +118,7 @@ void RigidDistanceGridCollisionModel::setNewState(int index, double dt, Distance
             elems[index].isTransformed = true;
     }
     elems[index].prevDt = dt;
+    modified = true;
 }
 
 /// Create or update the bounding volume hierarchy.
@@ -120,7 +126,7 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = this->createPrevious<CubeModel>();
 
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    if (!modified && isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
     updateGrid();
 
@@ -138,6 +144,7 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         }
         if (elems[i].isTransformed)
         {
+            //std::cout << "Grid "<<i<<" transformation: <"<<elems[i].rotation<<"> x + <"<<elems[i].translation<<">"<<std::endl;
             Vector3 corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(0);
             emin = corner;
             emax = emin;
@@ -155,8 +162,10 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
             emax = elems[i].grid->getBBMax();
         }
         cubeModel->setParentOf(i, emin, emax); // define the bounding box of the current element
+        //std::cout << "Grid "<<i<<" within  <"<<emin<<">-<"<<emax<<">"<<std::endl;
     }
     cubeModel->computeBoundingTree(maxDepth);
+    modified = false;
 }
 
 void RigidDistanceGridCollisionModel::updateGrid()
@@ -190,12 +199,18 @@ void RigidDistanceGridCollisionModel::draw()
 
 void RigidDistanceGridCollisionModel::draw(int index)
 {
-    if (rigid!=NULL)
+    if (elems[index].isTransformed)
     {
         glPushMatrix();
-        float m[16];
-        (*rigid->getX())[index].writeOpenGlMatrix( m );
-        glMultMatrixf(m);
+        // float m[16];
+        // (*rigid->getX())[index].writeOpenGlMatrix( m );
+        // glMultMatrixf(m);
+        Mat4x4d m;
+        m.identity();
+        m = elems[index].rotation;
+        m[3] = Vec4d(elems[index].translation,1.0);
+        m.transpose();
+        glMultMatrixd(m.ptr());
     }
 
     DistanceGrid* grid = getGrid(index);
@@ -230,81 +245,87 @@ void RigidDistanceGridCollisionModel::draw(int index)
         corners[i] = grid->getBBCorner(i);
     //glEnable(GL_BLEND);
     //glDepthMask(0);
-    if (isStatic())
-        glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-    else
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glBegin(GL_LINES);
-    {
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
-    }
-    glEnd();
-
-    const float maxdist = (grid->getBBMax()-grid->getBBMin()).norm()*0.1f;
-
     /*
-    glBegin(GL_POINTS);
-    {
-    for (int z=0, ind=0; z<grid->getNz(); z++)
-    for (int y=0; y<grid->getNy(); y++)
-    for (int x=0; x<grid->getNx(); x++, ind++)
-    {
-        DistanceGrid::Coord p = grid->coord(x,y,z);
-        DistanceGrid::Real d = (*grid)[ind];
-        if (rabs(d) > maxdist) continue;
-            d /= maxdist;
-        if (d<0)
-    	glColor3d(1+d*0.25, 0, 1+d);
-        else
-    	glColor3d(0, 1-d*0.25, 1-d);
-        glVertex3fv(p.ptr());
-    }
-    }
-    */
-    glColor3d(1, 1 ,1);
-    glBegin(GL_POINTS);
-    for (unsigned int i=0; i<grid->meshPts.size(); i++)
-    {
-        DistanceGrid::Coord p = grid->meshPts[i];
-        glVertex3fv(p.ptr());
-    }
-    glEnd();
+    if (isStatic())
+    glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+    else
+    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     glBegin(GL_LINES);
-    for (unsigned int i=0; i<grid->meshPts.size(); i++)
     {
-        DistanceGrid::Coord p = grid->meshPts[i];
-        glColor3d(1, 1 ,1);
-        DistanceGrid::Coord grad = grid->grad(p);
-        grad.normalize();
-        for (int j = -2; j <= 2; j++)
-        {
-            DistanceGrid::Coord p2 = p + grad * (j*maxdist/2);
-            DistanceGrid::Real d = grid->eval(p2);
-            //if (rabs(d) > maxdist) continue;
-            d /= maxdist;
-            if (d<0)
-                glColor3d(1+d*0.25, 0, 1+d);
-            else
-                glColor3d(0, 1-d*0.25, 1-d);
-            glVertex3fv(p2.ptr());
-            if (j>-2 && j < 2)
-                glVertex3fv(p2.ptr());
-        }
+    glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
+    glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
+    glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
+    glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
+    glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
+    glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
+    glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
+    glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
+    glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
+    glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
+    glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
+    glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
     }
     glEnd();
+    */
+    const float mindist = -(grid->getPMax()-grid->getPMin()).norm()*0.1f;
+    const float maxdist = (grid->getPMax()-grid->getPMin()).norm()*0.025f;
 
-    if (rigid!=NULL)
+    if (grid->meshPts.empty())
+    {
+        glBegin(GL_POINTS);
+        {
+            for (int z=0, ind=0; z<grid->getNz(); z++)
+                for (int y=0; y<grid->getNy(); y++)
+                    for (int x=0; x<grid->getNx(); x++, ind++)
+                    {
+                        DistanceGrid::Coord p = grid->coord(x,y,z);
+                        DistanceGrid::Real d = (*grid)[ind];
+                        if (d < mindist || d > maxdist) continue;
+                        d /= maxdist;
+                        if (d<0)
+                            glColor3d(1+d*0.25, 0, 1+d);
+                        else
+                            glColor3d(0, 1-d*0.25, 1-d);
+                        glVertex3fv(p.ptr());
+                    }
+        }
+        glEnd();
+    }
+    else
+    {
+        glColor3d(1, 1 ,1);
+        glBegin(GL_POINTS);
+        for (unsigned int i=0; i<grid->meshPts.size(); i++)
+        {
+            DistanceGrid::Coord p = grid->meshPts[i];
+            glVertex3fv(p.ptr());
+        }
+        glEnd();
+        glBegin(GL_LINES);
+        for (unsigned int i=0; i<grid->meshPts.size(); i++)
+        {
+            DistanceGrid::Coord p = grid->meshPts[i];
+            glColor3d(1, 1 ,1);
+            DistanceGrid::Coord grad = grid->grad(p);
+            grad.normalize();
+            for (int j = -2; j <= 2; j++)
+            {
+                DistanceGrid::Coord p2 = p + grad * (j*maxdist/2);
+                DistanceGrid::Real d = grid->eval(p2);
+                //if (rabs(d) > maxdist) continue;
+                d /= maxdist;
+                if (d<0)
+                    glColor3d(1+d*0.25, 0, 1+d);
+                else
+                    glColor3d(0, 1-d*0.25, 1-d);
+                glVertex3fv(p2.ptr());
+                if (j>-2 && j < 2)
+                    glVertex3fv(p2.ptr());
+            }
+        }
+        glEnd();
+    }
+    if (elems[index].isTransformed)
     {
         glPopMatrix();
     }
@@ -622,7 +643,7 @@ void FFDDistanceGridCollisionModel::draw(int index)
 ////////////////////////////////////////////////////////////////////////////////
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
-    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nxnynz, new defaulttype::DefaultAllocator<Real>), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
+    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, new defaulttype::DefaultAllocator<Real>), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
     , pmin(pmin), pmax(pmax)
     , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
     , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
@@ -631,7 +652,7 @@ DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
 }
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<Real>* alloc)
-    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nxnynz, alloc), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
+    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nx*ny*nz, alloc), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
     , pmin(pmin), pmax(pmax)
     , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
     , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))

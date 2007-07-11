@@ -65,6 +65,7 @@ public:
 
     CollisionModel()
         : bStatic(dataField(&bStatic, false, "static", "flag indicating if an object is immobile"))
+        , bActive(dataField(&bActive, true, "active", "flag indicating if this collision model is active and should be included in collision detections"))
         , proximity(dataField(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
         , contactStiffness(dataField(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
         , contactFriction(dataField(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
@@ -131,7 +132,9 @@ public:
     /// \brief Return true if this CollisionModel should be used for collisions.
     ///
     /// Default to true.
-    virtual bool isActive() { return true; }
+    virtual bool isActive() { return bActive.getValue(); }
+
+    virtual void setActive(bool val=true) { bActive.setValue(val); }
 
     /// \brief Return true if this CollisionModel is attached to an immobile
     /// <i>obstacle</i> object.
@@ -250,6 +253,8 @@ public:
 protected:
 
     DataField<bool> bStatic;
+
+    DataField<bool> bActive;
 
     DataField<double> proximity;
 
