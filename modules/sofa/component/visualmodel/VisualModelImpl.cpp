@@ -28,6 +28,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/rmath.h>
 #include <sstream>
 
 namespace sofa
@@ -44,6 +45,7 @@ using namespace sofa::core::componentmodel::topology;
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
+    this->core::VisualModel::parse(arg);
     VisualModelImpl* obj = this;
 
     if (arg->getAttribute("normals")!=NULL)
@@ -59,50 +61,39 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     if (arg->getAttribute("flip")!=NULL)
     {
         obj->flipFaces();
-        arg->removeAttribute("flip");
     }
-
     if (arg->getAttribute("color"))
     {
         obj->setColor(arg->getAttribute("color"));
-        arg->removeAttribute("color");
-    }
-    if (arg->getAttribute("scale")!=NULL)
-    {
-        obj->applyScale(atof(arg->getAttribute("scale","1.0")));
-        arg->removeAttribute("scale");
     }
     if (arg->getAttribute("scaleTex")!=NULL)
     {
         obj->applyUVScale(atof(arg->getAttribute("scaleTex","1.0")), atof(arg->getAttribute("scaleTex","1.0")));
-        arg->removeAttribute("scaleTex");
+    }
+    if (arg->getAttribute("du")!=NULL || arg->getAttribute("dv")!=NULL)
+    {
+        obj->applyUVTranslation(atof(arg->getAttribute("du","0.0")), atof(arg->getAttribute("dv","0.0")));
+    }
+    if (arg->getAttribute("scale")!=NULL)
+    {
+        obj->applyScale(atof(arg->getAttribute("scale","1.0")));
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         obj->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-        if (arg->getAttribute("dx")!=NULL)
-            arg->removeAttribute("dx");
-        if (arg->getAttribute("dy")!=NULL)
-            arg->removeAttribute("dy");
-        if (arg->getAttribute("dz")!=NULL)
-            arg->removeAttribute("dz");
     }
     if (arg->getAttribute("rx")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*M_PI/180));
-        arg->removeAttribute("rx");
+        obj->applyRotation(Quat(Vec3d(1,0,0), atof(arg->getAttribute("rx","0.0"))*R_PI/180));
     }
     if (arg->getAttribute("ry")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(0,1,0), atof(arg->getAttribute("ry","0.0"))*M_PI/180));
-        arg->removeAttribute("ry");
+        obj->applyRotation(Quat(Vec3d(0,1,0), atof(arg->getAttribute("ry","0.0"))*R_PI/180));
     }
     if (arg->getAttribute("rz")!=NULL)
     {
-        obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*M_PI/180));
-        arg->removeAttribute("rz");
+        obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*R_PI/180));
     }
-    this->core::VisualModel::parse(arg);
 }
 
 SOFA_DECL_CLASS(VisualModelImpl)
@@ -403,6 +394,15 @@ void VisualModelImpl::applyScale(double scale)
     update();
 }
 
+void VisualModelImpl::applyUVTranslation(double dU, double dV)
+{
+    for (unsigned int i = 0; i < vtexcoords.size(); i++)
+    {
+        vtexcoords[i][0] += (GLfloat) dU;
+        vtexcoords[i][1] += (GLfloat) dV;
+    }
+}
+
 void VisualModelImpl::applyUVScale(double scaleU, double scaleV)
 {
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
@@ -632,10 +632,8 @@ void VisualModelImpl::setColor(std::string color)
 
 void VisualModelImpl::update()
 {
-    if (modified && !vertices.empty())
+    if (modified && !vertices.empty() || useTopology)
     {
-        computePositions();
-
         if (useTopology)
         {
             /** HD : build also a Ogl description from main Topology. But it needs to be build only since the topology update
@@ -654,8 +652,8 @@ void VisualModelImpl::update()
                     computeMesh(topology);
                 }
             }
-
         }
+        computePositions();
         computeNormals();
         computeBBox();
         modified = false;
@@ -675,6 +673,18 @@ void VisualModelImpl::computePositions()
 
 void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
 {
+    if (vertices.empty())
+    {
+        if (!topology->hasPos()) return;
+        vertices.resize(topology->getNbPoints());
+        for (unsigned int i=0; i<vertices.size(); i++)
+        {
+            vertices[i][0] = (Real)topology->getPX(i);
+            vertices[i][1] = (Real)topology->getPY(i);
+            vertices[i][2] = (Real)topology->getPZ(i);
+        }
+    }
+
     lastMeshRev = topology->getRevision();
     const vector<topology::MeshTopology::Triangle>& inputTriangles = topology->getTriangles();
     triangles.resize(inputTriangles.size());

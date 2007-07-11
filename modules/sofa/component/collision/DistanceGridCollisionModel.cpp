@@ -208,8 +208,8 @@ void RigidDistanceGridCollisionModel::draw(int index)
         Mat4x4d m;
         m.identity();
         m = elems[index].rotation;
-        m[3] = Vec4d(elems[index].translation,1.0);
         m.transpose();
+        m[3] = Vec4d(elems[index].translation,1.0);
         glMultMatrixd(m.ptr());
     }
 
@@ -245,28 +245,28 @@ void RigidDistanceGridCollisionModel::draw(int index)
         corners[i] = grid->getBBCorner(i);
     //glEnable(GL_BLEND);
     //glDepthMask(0);
-    /*
+
     if (isStatic())
-    glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+        glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
     else
-    glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
     glBegin(GL_LINES);
     {
-    glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
-    glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
-    glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
-    glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
-    glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
-    glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
-    glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
-    glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
-    glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
-    glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
-    glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
-    glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
     }
     glEnd();
-    */
+
     const float mindist = -(grid->getPMax()-grid->getPMin()).norm()*0.1f;
     const float maxdist = (grid->getPMax()-grid->getPMin()).norm()*0.025f;
 
