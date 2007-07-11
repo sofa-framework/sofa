@@ -149,26 +149,22 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     if (arg->getAttribute("filename"))
     {
         load(arg->getAttribute("filename"));
-        arg->removeAttribute("filename");
     }
+
+    unsigned int size0 = getX()->size();
+    Inherited::parse(arg);
+    if (getX()->size() != size0)
+        resize( getX()->size() );
 
     //obj->parseTransform(arg);
     if (arg->getAttribute("scale")!=NULL)
     {
         this->applyScale(atof(arg->getAttribute("scale")));
-        arg->removeAttribute("scale");
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-        arg->removeAttribute("dx");
-        arg->removeAttribute("dy");
-        arg->removeAttribute("dz");
     }
-    unsigned int size0 = getX()->size();
-    Inherited::parse(arg);
-    if (getX()->size() != size0)
-        resize( getX()->size() );
 }
 
 template <class DataTypes>
