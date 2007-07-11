@@ -25,7 +25,7 @@ using std::cout;
 using std::endl;
 
 template< class DataTypes>
-void TRQSEdgeCreationFunction(int edgeIndex, void* param, typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation &ei,
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
         const Edge& ,  const std::vector< unsigned int > &,
         const std::vector< double >&)
 {
@@ -47,8 +47,8 @@ void TRQSEdgeCreationFunction(int edgeIndex, void* param, typename TriangularQua
 
 
 template< class DataTypes>
-void TRQSTriangleCreationFunction (int triangleIndex, void* param,
-        typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation &tinfo,
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFunction (int triangleIndex, void* param,
+        TriangleRestInformation &tinfo,
         const Triangle& ,
         const std::vector< unsigned int > &,
         const std::vector< double >&)
@@ -108,7 +108,7 @@ void TRQSTriangleCreationFunction (int triangleIndex, void* param,
 
 
 template< class DataTypes>
-inline void TRQSTriangleDestroyFunction(int triangleIndex, void* param, typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation &tinfo)
+void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleDestroyFunction(int triangleIndex, void* param, typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation &tinfo)
 {
     TriangularQuadraticSpringsForceField<DataTypes> *ff= (TriangularQuadraticSpringsForceField<DataTypes> *)param;
     if (ff)
@@ -189,21 +189,21 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     const std::vector<Edge> &edgeArray=container->getEdgeArray();
     for (i=0; i<container->getNumberOfEdges(); ++i)
     {
-        TRQSEdgeCreationFunction<DataTypes>(i, (void*) this, edgeInfo[i],
+        TRQSEdgeCreationFunction(i, (void*) this, edgeInfo[i],
                 edgeArray[i],  (const std::vector< unsigned int > )0,
                 (const std::vector< double >)0);
     }
     const std::vector<Triangle> &triangleArray=container->getTriangleArray();
     for (i=0; i<container->getNumberOfTriangles(); ++i)
     {
-        TRQSTriangleCreationFunction<DataTypes>(i, (void*) this, triangleInfo[i],
+        TRQSTriangleCreationFunction(i, (void*) this, triangleInfo[i],
                 triangleArray[i],  (const std::vector< unsigned int > )0,
                 (const std::vector< double >)0);
     }
 
-    edgeInfo.setCreateFunction(TRQSEdgeCreationFunction<DataTypes>);
-    triangleInfo.setCreateFunction(TRQSTriangleCreationFunction<DataTypes>);
-    triangleInfo.setDestroyFunction(TRQSTriangleDestroyFunction<DataTypes>);
+    edgeInfo.setCreateFunction(TRQSEdgeCreationFunction);
+    triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
+    triangleInfo.setDestroyFunction(TRQSTriangleDestroyFunction);
     edgeInfo.setCreateParameter( (void *) this );
     edgeInfo.setDestroyParameter( (void *) this );
     triangleInfo.setCreateParameter( (void *) this );
@@ -213,7 +213,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 
 
 template <class DataTypes>
-double TriangularQuadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
+double TriangularQuadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
 {
     std::cerr<<"TriangularQuadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;

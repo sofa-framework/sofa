@@ -315,18 +315,18 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const std::v
 
             if (edgeToBeRemoved.size()>0)
                 /// warn that edges will be deleted
-                removeEdgesWarning(edgeToBeRemoved);
+                this->removeEdgesWarning(edgeToBeRemoved);
             if (vertexToBeRemoved.size()>0)
-                removePointsWarning(vertexToBeRemoved);
+                this->removePointsWarning(vertexToBeRemoved);
             /// propagate to all components
             topology->propagateTopologicalChanges();
             if (edgeToBeRemoved.size()>0)
                 /// actually remove edges without looking for isolated vertices
-                removeEdgesProcess(edgeToBeRemoved,false);
+                this->removeEdgesProcess(edgeToBeRemoved,false);
 
             if (vertexToBeRemoved.size()>0)
             {
-                removePointsProcess(vertexToBeRemoved);
+                this->removePointsProcess(vertexToBeRemoved);
             }
         }
     }

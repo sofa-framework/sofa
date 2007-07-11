@@ -40,7 +40,11 @@ public:
     }
     virtual void addPoint(double px, double py, double pz)
     {
-        pointArray.push_back(Coord((Real)px,(Real)py,(Real)pz));
+        //BUGFIX(Jeremie A.): The following does not work for 1D/2D datatypes
+        //pointArray.push_back(Coord((Real)px,(Real)py,(Real)pz));
+        Coord c;
+        DataTypes::set(c,px,py,pz);
+        pointArray.push_back(c);
     }
 
 };

@@ -63,7 +63,9 @@ void RigidDistanceGridCollisionModel::init()
     DistanceGrid* grid = NULL;
     if (filename.getValue().empty())
     {
-        std::cerr << "ERROR: RigidDistanceGridCollisionModel requires an input filename.\n";
+        if (elems.size()==0 || elems[0].grid==NULL)
+            std::cerr << "ERROR: RigidDistanceGridCollisionModel requires an input filename.\n";
+        // else the grid has already been set
         return;
     }
     std::cout << "RigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<filename.getValue();
@@ -90,7 +92,27 @@ void RigidDistanceGridCollisionModel::resize(int s)
 
 void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
 {
+    if (elems[index].grid == surf) return;
+    if (elems[index].grid!=NULL) elems[index].grid->release();
     elems[index].grid = surf;
+}
+
+void RigidDistanceGridCollisionModel::setNewState(int index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+{
+    if (elems[index].prevGrid!=NULL && elems[index].prevGrid!=elems[index].grid) elems[index].prevGrid->release();
+    elems[index].prevGrid = elems[index].grid;
+    elems[index].grid = grid;
+    elems[index].prevRotation = elems[index].rotation;
+    elems[index].rotation = rotation;
+    elems[index].prevTranslation = elems[index].translation;
+    elems[index].translation = translation;
+    if (!elems[index].isTransformed)
+    {
+        Matrix3 I; I.identity();
+        if (!(rotation == I) || !(translation == Vector3()))
+            elems[index].isTransformed = true;
+    }
+    elems[index].prevDt = dt;
 }
 
 /// Create or update the bounding volume hierarchy.
@@ -112,6 +134,10 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
             const RigidTypes::Coord& xform = (*rigid->getX())[i];
             elems[i].translation = xform.getCenter();
             xform.getOrientation().toMatrix(elems[i].rotation);
+            elems[i].isTransformed = true;
+        }
+        if (elems[i].isTransformed)
+        {
             Vector3 corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(0);
             emin = corner;
             emax = emin;
@@ -596,13 +622,21 @@ void FFDDistanceGridCollisionModel::draw(int index)
 ////////////////////////////////////////////////////////////////////////////////
 
 DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax)
-    : nbRef(1), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
+    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nxnynz, new defaulttype::DefaultAllocator<Real>), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
     , pmin(pmin), pmax(pmax)
     , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
     , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
     , cubeDim(0)
 {
-    dists.resize(nxnynz);
+}
+
+DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<Real>* alloc)
+    : meshPts(new defaulttype::DefaultAllocator<Coord>), nbRef(1), dists(nxnynz, alloc), nx(nx), ny(ny), nz(nz), nxny(nx*ny), nxnynz(nx*ny*nz)
+    , pmin(pmin), pmax(pmax)
+    , cellWidth   ((pmax[0]-pmin[0])/(nx-1), (pmax[1]-pmin[1])/(ny-1),(pmax[2]-pmin[2])/(nz-1))
+    , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
+    , cubeDim(0)
+{
 }
 
 /// Add one reference to this grid. Note that loadShared already does this.

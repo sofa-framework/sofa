@@ -28,10 +28,12 @@ public:
     typedef float Real;
     static Real maxDist() { return (Real)1e10; }
     typedef Vec3f Coord;
-    typedef helper::vector<Real> VecReal;
-    typedef helper::vector<Coord> VecCoord;
+    typedef defaulttype::ExtVector<Real> VecReal;
+    typedef defaulttype::ExtVector<Coord> VecCoord;
 
     DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax);
+
+    DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<Real>* alloc);
 
     /// Load a distance grid
     static DistanceGrid* load(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
@@ -372,6 +374,10 @@ protected:
 
 };
 
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
 class RigidDistanceGridCollisionModel;
 
 class RigidDistanceGridCollisionElement : public core::TCollisionElementIterator<RigidDistanceGridCollisionModel>
@@ -388,6 +394,18 @@ public:
     const Vector3& getTranslation();
 
     void setGrid(DistanceGrid* surf);
+
+    /// @name Previous state data
+    /// Used to estimate velocity in case the distance grid itself is dynamic
+    /// @{
+    DistanceGrid* getPrevGrid();
+    const Matrix3& getPrevRotation();
+    const Vector3& getPrevTranslation();
+    double getPrevDt();
+    /// @}
+
+    /// Set new grid and transform, keeping the old state to estimate velocity
+    void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 };
 
 class RigidDistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
@@ -400,7 +418,18 @@ protected:
         Matrix3 rotation;
         Vector3 translation;
         DistanceGrid* grid;
-        ElementData() : grid(NULL) { rotation.identity(); }
+
+        /// @name Previous state data
+        /// Used to estimate velocity in case the distance grid itself is dynamic
+        /// @{
+        DistanceGrid* prevGrid; ///< Previous grid
+        Matrix3 prevRotation; ///< Previous rotation
+        Vector3 prevTranslation; ///< Previous translation
+        double prevDt; ///< Time difference between previous and current state
+        /// @}
+
+        bool isTransformed; ///< True if translation/rotation was set
+        ElementData() : grid(NULL), prevGrid(NULL), prevDt(0.0), isTransformed(false) { rotation.identity(); prevRotation.identity(); }
     };
 
     std::vector<ElementData> elems;
@@ -435,6 +464,10 @@ public:
     {
         return elems[index].grid;
     }
+    bool isTransformed(int index=0)
+    {
+        return elems[index].isTransformed;
+    }
     const Matrix3& getRotation(int index=0)
     {
         return elems[index].rotation;
@@ -445,6 +478,31 @@ public:
     }
 
     void setGrid(DistanceGrid* surf, int index=0);
+
+    DistanceGrid* getPrevGrid(int index=0)
+    {
+        return elems[index].prevGrid;
+    }
+    const Matrix3& getPrevRotation(int index=0)
+    {
+        return elems[index].prevRotation;
+    }
+    const Vector3& getPrevTranslation(int index=0)
+    {
+        return elems[index].prevTranslation;
+    }
+    double getPrevDt(int index=0)
+    {
+        return elems[index].prevDt;
+    }
+
+    /// Set new grid and transform, keeping the old state to estimate velocity
+    void setNewState(int index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+
+    /// @}
+
+    /// Set new grid and transform, keeping the old state to estimate velocity
+    void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 
     // -- CollisionModel interface
 
@@ -476,9 +534,23 @@ inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(core
 inline DistanceGrid* RigidDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
 inline void RigidDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { return model->setGrid(surf, index); }
 
-inline bool RigidDistanceGridCollisionElement::isTransformed() { return model->getRigidModel() != NULL; }
+inline bool RigidDistanceGridCollisionElement::isTransformed() { return model->isTransformed(index); }
 inline const Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
 inline const Vector3& RigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
+
+inline DistanceGrid* RigidDistanceGridCollisionElement::getPrevGrid() { return model->getPrevGrid(index); }
+inline const Matrix3& RigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
+inline const Vector3& RigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
+inline double RigidDistanceGridCollisionElement::getPrevDt() { return model->getPrevDt(index); }
+
+inline void RigidDistanceGridCollisionElement::setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+{
+    return model->setNewState(dt, grid, rotation, translation);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 class FFDDistanceGridCollisionModel;
 

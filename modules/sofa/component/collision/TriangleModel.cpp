@@ -280,6 +280,7 @@ void TriangleModel::handleTopologyChange()
                     t.i3=(int)(ta->triangleArray[i])[2];
                     elems.push_back(t);
                 }
+                resize( elems.size() );
                 needsUpdate=true;
                 break;
             }
@@ -316,11 +317,11 @@ void TriangleModel::handleTopologyChange()
                         const std::vector<unsigned int> &shell=tvsa[last];
                         for (j=0; j<shell.size(); ++j)
                         {
-                            if (elems[shell[j]].i1==last)
+                            if ((unsigned)elems[shell[j]].i1==last)
                                 elems[shell[j]].i1=tab[i];
-                            else if (elems[shell[j]].i2==last)
+                            else if ((unsigned)elems[shell[j]].i2==last)
                                 elems[shell[j]].i2=tab[i];
-                            else if (elems[shell[j]].i3==last)
+                            else if ((unsigned)elems[shell[j]].i3==last)
                                 elems[shell[j]].i3=tab[i];
                         }
                         --last;
@@ -416,10 +417,10 @@ void TriangleModel::computeBoundingTree(int maxDepth)
 }
 unsigned int TriangleModel::getNbTriangles() const
 {
-    if (mesh)
-        return size;
-    else
-        mesh->getNbTriangles();
+    //if (!mesh)
+    return size;
+    //else
+    //	return mesh->getNbTriangles();
 }
 void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {

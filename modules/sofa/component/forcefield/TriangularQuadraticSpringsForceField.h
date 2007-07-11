@@ -97,8 +97,8 @@ protected:
     DataField<Real> f_dampingRatio;
     DataField<bool> f_useAngularSprings; // whether angular springs should be included
 
-    Real lambda;  /// first Lamé coefficient
-    Real mu;    /// second Lamé coefficient
+    Real lambda;  /// first Lamï¿½ coefficient
+    Real mu;    /// second Lamï¿½ coefficient
 public:
 
     TriangularQuadraticSpringsForceField();
@@ -132,14 +132,15 @@ protected :
 
     EdgeData<EdgeRestInformation> &getEdgeInfo() {return edgeInfo;}
 
-    template <typename DataTypes>
-    friend void TRQSTriangleCreationFunction (int , void* ,
-            typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation &,
+    static void TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
+            const Edge& ,  const std::vector< unsigned int > &,
+            const std::vector< double >&);
+    static void TRQSTriangleCreationFunction (int , void* ,
+            TriangleRestInformation &,
             const Triangle& , const std::vector< unsigned int > &, const std::vector< double >&);
 
 
-    template <typename DataTypes>
-    friend void TRQSTriangleDestroyFunction( int , void* , typename TriangularQuadraticSpringsForceField<DataTypes>::TriangleRestInformation &);
+    static void TRQSTriangleDestroyFunction ( int , void* , TriangleRestInformation &);
 
 };
 } //namespace forcefield

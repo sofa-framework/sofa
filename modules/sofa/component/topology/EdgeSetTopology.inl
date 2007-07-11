@@ -202,10 +202,10 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const std::vector<un
         }
         if (vertexToBeRemoved.size()>0)
         {
-            removePointsWarning(vertexToBeRemoved);
+            this->removePointsWarning(vertexToBeRemoved);
             // inform other objects that the edges are going to be removed
             topology->propagateTopologicalChanges();
-            removePointsProcess(vertexToBeRemoved);
+            this->removePointsProcess(vertexToBeRemoved);
         }
         std::cout << "EdgeSetTopology: container has now "<<container->m_edge.size()<<" edges."<<std::endl;
     }
