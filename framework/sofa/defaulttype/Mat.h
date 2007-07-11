@@ -53,7 +53,7 @@ public:
 
     /*
       /// Specific constructor with a single line.
-      Mat(Line r1)
+      explicit Mat(Line r1)
       {
         BOOST_STATIC_ASSERT(L == 1);
         this->elems[0]=r1;
@@ -88,7 +88,7 @@ public:
     }
 
     /// Constructor from an element
-    Mat(const real& v)
+    explicit Mat(const real& v)
     {
         for( int i=0; i<L; i++ )
             for( int j=0; j<C; j++ )
@@ -273,6 +273,25 @@ public:
                 this->elems[j][i] = t;
             }
     }
+
+    /// @name Tests operators
+    /// @{
+
+    bool operator==(const Mat<L,C,real>& b) const
+    {
+        for (int i=0; i<L; i++)
+            if (!(this->elems[i]==b[i])) return false;
+        return true;
+    }
+
+    bool operator!=(const Mat<L,C,real>& b) const
+    {
+        for (int i=0; i<L; i++)
+            if (this->elems[i]!=b[i]) return true;
+        return false;
+    }
+
+    /// @}
 
     // LINEAR ALGEBRA
 

@@ -45,12 +45,12 @@ public:
     /// Default constructor: sets all values to 0.
     Vec()
     {
-//                 this->assign(0);
+        //this->assign(0);
         this->assign(real());// modified by Matthieu Nesme -> takes into account if the template type is more complex than a real-like.
     }
 
     /// Specific constructor for 1-element vectors.
-    Vec(real r1)
+    explicit Vec(real r1)
     {
         BOOST_STATIC_ASSERT(N==1);
         this->elems[0]=r1;
@@ -419,8 +419,24 @@ public:
                 );
     }
 
+    /// @name Tests operators
+    /// @{
 
+    bool operator==(const Vec& b) const
+    {
+        for (int i=0; i<N; i++)
+            if (!(this->elems[i]==b[i])) return false;
+        return true;
+    }
 
+    bool operator!=(const Vec& b) const
+    {
+        for (int i=0; i<N; i++)
+            if (this->elems[i]!=b[i]) return true;
+        return false;
+    }
+
+    /// @}
 };
 
 /// Read from an input stream

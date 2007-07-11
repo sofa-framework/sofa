@@ -129,7 +129,8 @@ protected:
     size_type   cursize;
     ExtVectorAllocator<T>* allocator;
 public:
-    ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL), maxsize(0), cursize(0), allocator(alloc) {}
+    explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL), maxsize(0), cursize(0), allocator(alloc) {}
+    ExtVector(int size, ExtVectorAllocator<T>* alloc) : data(NULL), maxsize(0), cursize(0), allocator(alloc) { resize(size); }
     ~ExtVector() { if (allocator) allocator->close(data); }
     void setAllocator(ExtVectorAllocator<T>* alloc)
     {
@@ -176,6 +177,10 @@ public:
         resize(i+1);
         (*this)[i] = v;
     }
+    T* begin() { return getData(); }
+    const T* begin() const { return getData(); }
+    T* end() { return getData()+size(); }
+    const T* end() const { return getData()+size(); }
 };
 
 template<class T>
