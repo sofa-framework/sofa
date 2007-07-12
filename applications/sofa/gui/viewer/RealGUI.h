@@ -77,7 +77,7 @@ public:
     static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot = NULL, const char* filename = NULL);
 
     int mainLoop();
-    void redraw();
+
     int closeGUI();
 
     sofa::simulation::tree::GNode* currentSimulation();
@@ -152,6 +152,10 @@ public slots:
     void graphModify();
     //When adding an object in the graph
     void loadObject();
+    //refresh the visualization window
+    void redraw();
+    //when a dialog modify object is closed
+    void modifyUnlock();
 
 signals:
     void reload();
@@ -159,6 +163,7 @@ signals:
     void newFPS(double);
     void newTime(const QString&);
     void newTime(double);
+    void newScene();
 
 
 protected:
@@ -178,6 +183,7 @@ protected:
     bool _animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
 
+    int modifyDialogOpened;
 
     QWidget* currentTab;
     GraphListenerQListView* graphListener;
@@ -201,6 +207,7 @@ private:
     bool setViewer(const char* name);
     void addViewer();
     void setGUI(void);
+
 
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);

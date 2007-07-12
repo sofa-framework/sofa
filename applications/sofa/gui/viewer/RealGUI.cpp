@@ -104,7 +104,6 @@ extern simulation::tree::GNode* groot;
 #endif
 
 #include <GenGraphForm.h>
-#include "GUIField.h"
 
 
 
@@ -250,8 +249,9 @@ sofa::simulation::tree::GNode* RealGUI::currentSimulation()
 
 
 RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*options*/)
-    : viewerName(viewername), viewer(NULL), currentTab(NULL), graphListener(NULL), dialog(NULL)
+    : viewerName(viewername), viewer(NULL),  modifyDialogOpened(0),  currentTab(NULL), graphListener(NULL), dialog(NULL)
 {
+
     left_stack = new QWidgetStack(splitter2);
 #ifndef QT_MODULE_QT3SUPPORT
     GUILayout->addWidget(left_stack);
@@ -563,7 +563,12 @@ bool RealGUI::setViewer(const char* name)
 
 void RealGUI::fileOpen(const char* filename)
 {
+    //Hide the dialog to add a new object in the graph
     if (dialog != NULL) dialog->hide();
+    //Hide all the dialogs to modify the graph
+    emit( newScene());
+    modifyDialogOpened = 0;
+
     //left_stack->removeWidget(viewer->getQWidget());
     //graphListener->removeChild(NULL, groot);
     //delete viewer;
@@ -1351,6 +1356,12 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
         contextMenu->setItemEnabled(indexMenu[0],false);
         contextMenu->setItemEnabled(indexMenu[1],false);
     }
+    //if some modifying dialog windows are still open, we mustn't allow the user to remove nodes, it could lead to NULL pointer.
+    else if ( modifyDialogOpened != 0)
+    {
+        contextMenu->setItemEnabled(indexMenu[1],false);
+    }
+
 
 }
 
@@ -1437,7 +1448,8 @@ void RealGUI::graphModify()
         dialogModify->setNode(node, item_clicked);
         dialogModify->show();
         dialogModify->raise();
-
+        modifyDialogOpened++;
+        connect ( this, SIGNAL( newScene()), dialogModify, SLOT( closeNow()));
         item_clicked = NULL;
     }
 }
@@ -1561,6 +1573,12 @@ void RealGUI::loadObject()
 
     node_clicked = NULL;
     item_clicked = NULL;
+}
+
+/*****************************************************************************************************************/
+void RealGUI::modifyUnlock()
+{
+    modifyDialogOpened --;
 }
 
 } // namespace qt
