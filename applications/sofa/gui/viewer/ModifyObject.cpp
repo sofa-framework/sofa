@@ -35,6 +35,9 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <Q3GroupBox>
+#include <QTabWidget>
+#include <QGridLayout>
+#include <Q3Grid>
 #else
 #include <qlineedit.h>
 #include <qpushbutton.h>
@@ -43,11 +46,14 @@
 #include <qcheckbox.h>
 #include <qlayout.h>
 #include <qgroupbox.h>
+#include <qtabwidget.h>
+#include <qgrid.h>
 #endif
 
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/topology/PointSubset.h>
 #include "WFloatLineEdit.h"
 
 #if !defined(INFINITY)
@@ -64,16 +70,18 @@ namespace guiviewer
 {
 
 using namespace  sofa::defaulttype;
+using sofa::component::topology::PointSubset;
 
 #ifndef QT_MODULE_QT3SUPPORT
 typedef QGroupBox Q3GroupBox;
+typedef QGrid     Q3Grid;
 #endif
 
 
-ModifyObject::ModifyObject( QWidget*  , const char*, bool, Qt::WFlags )
+ModifyObject::ModifyObject( QWidget* parent, const char*, bool, Qt::WFlags ):node(NULL), list_Object(NULL)
 {
-    node = NULL;
-    list_Object = NULL;
+    connect ( this, SIGNAL( objectUpdated() ), parent, SLOT( redraw() ));
+    connect ( this, SIGNAL( dialogClosed() ) , parent, SLOT( modifyUnlock()));
 }
 
 ModifyObject::~ModifyObject()
@@ -86,7 +94,24 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
     node = node_clicked;
     item = item_clicked;
 
-    dialogLayout = new QVBoxLayout( this, 0, 1, "dialogLayout");
+    //Layout to organize the whole window
+    QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
+
+    //Tabulation widget
+    QTabWidget *dialogTab = new QTabWidget(this);
+    generalLayout->addWidget(dialogTab);
+
+    //Each tab
+    QWidget *tab1 = new QWidget();
+    dialogTab->addTab(tab1, QString("Properties"));
+
+    bool visualTab = false;
+    QWidget *tab2 = NULL; //tab for visualization info: only created if needed ( boolean visualTab gives this answer ).
+
+
+    QVBoxLayout *tabPropertiesLayout = new QVBoxLayout( tab1, 0, 1, "tabPropertiesLayout");
+    QVBoxLayout *tabVisualizationLayout = NULL;
+
     // displayWidget
 
     if (node)
@@ -94,7 +119,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
         //All the pointers to the QObjects will be kept in memory in list_Object
         list_Object= new std::list< QObject *>();
-
+        list_PointSubset= new std::list< std::list<QObject *> *>();
 
         const std::map< std::string, core::objectmodel::FieldBase* >& fields = node->getFields();
 
@@ -106,9 +131,9 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             //For each element, we create a layout
             std::ostringstream oss;
             oss << "itemLayout_" << i;
-            Q3GroupBox *lineLayout = NULL;;
+            Q3GroupBox *box = NULL;;
             // The label
-            //QLabel *label = new QLabel(QString((*it).first.c_str()), lineLayout,0);
+            //QLabel *label = new QLabel(QString((*it).first.c_str()), box,0);
             //label->setGeometry( 10, i*25+5, 200, 20 );
 
             const std::string& fieldname = (*it).second->getValueTypeString();
@@ -118,17 +143,34 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //Don't have any effect if the scene is animated: the root will erase the value.
                 std::string name((*it).first);
                 name.resize(4);
-                if (name == "show") continue;
+                if (name == "show")
+                {
+                    if (!visualTab)
+                    {
+                        visualTab = true;
+                        tab2 = new QWidget();
+                        dialogTab->addTab(tab2, QString("Visualization"));
+                        tabVisualizationLayout = new QVBoxLayout( tab2, 0, 1, "tabVisualizationLayout");
+                    }
 
-                std::string box_name(oss.str());
-                lineLayout = new Q3GroupBox(this, QString(box_name.c_str()));
-                lineLayout->setColumns(4);
-                lineLayout->setTitle(QString((*it).first.c_str()));
+                    std::string box_name(oss.str());
+                    box = new Q3GroupBox(tab2, QString(box_name.c_str()));
+                    tabVisualizationLayout->addWidget( box );
+                }
+                else
+                {
+                    std::string box_name(oss.str());
+                    box = new Q3GroupBox(tab1, QString(box_name.c_str()));
+                    tabPropertiesLayout->addWidget( box );
+                }
 
-                if( strcmp((*it).second->help,"TODO") )new QLabel((*it).second->help, lineLayout);
+                box->setColumns(4);
+                box->setTitle(QString((*it).first.c_str()));
+
+                if( strcmp((*it).second->help,"TODO") )new QLabel((*it).second->help, box);
 
                 // the bool line edit
-                QCheckBox* checkBox = new QCheckBox(lineLayout);
+                QCheckBox* checkBox = new QCheckBox(box);
                 list_Object->push_back( (QObject *) checkBox);
 
                 //checkBox->setGeometry( 205, i*25+5, 170, 20 );
@@ -138,19 +180,21 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     checkBox->setChecked(ff->getValue());
                     connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                 }
+
+                continue;
             }
             else
             {
                 std::string box_name(oss.str());
-                lineLayout = new Q3GroupBox(this, QString(box_name.c_str()));
-                lineLayout->setColumns(4);
-                lineLayout->setTitle(QString((*it).first.c_str()));
+                box = new Q3GroupBox(tab1, QString(box_name.c_str()));
+                box->setColumns(4);
+                box->setTitle(QString((*it).first.c_str()));
 
-                if( strcmp((*it).second->help,"TODO") )new QLabel((*it).second->help, lineLayout);
+                if( strcmp((*it).second->help,"TODO") )new QLabel((*it).second->help, box);
 
                 if( fieldname=="int")
                 {
-                    QSpinBox* spinBox = new QSpinBox((int)INT_MIN,(int)INT_MAX,1,lineLayout);
+                    QSpinBox* spinBox = new QSpinBox((int)INT_MIN,(int)INT_MAX,1,box);
                     list_Object->push_back( (QObject *) spinBox);
 
                     if( DataField<int> * ff = dynamic_cast< DataField<int> * >( (*it).second )  )
@@ -161,7 +205,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 }
                 else if( fieldname=="unsigned int")
                 {
-                    QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,lineLayout);
+                    QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,box);
                     list_Object->push_back( (QObject *) spinBox);
 
                     if( DataField<unsigned int> * ff = dynamic_cast< DataField<unsigned int> * >( (*it).second )  )
@@ -173,7 +217,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 else if( fieldname=="float" || fieldname=="double" )
                 {
 
-                    WFloatLineEdit* editSFFloat = new WFloatLineEdit( lineLayout, "editSFFloat" );
+                    WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
                     list_Object->push_back( (QObject *) editSFFloat);
 
                     editSFFloat->setMinFloatValue( (float)-INFINITY );
@@ -195,7 +239,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 else if( fieldname=="string" )
                 {
 
-                    QLineEdit* lineEdit = new QLineEdit(lineLayout);
+                    QLineEdit* lineEdit = new QLineEdit(box);
                     list_Object->push_back( (QObject *) lineEdit);
 
                     if( DataField<std::string> * ff = dynamic_cast< DataField<std::string> * >( (*it).second )  )
@@ -209,19 +253,19 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         fieldname=="Vec<3,float>" || fieldname=="Vec<3,double>" )
                 {
 
-                    WFloatLineEdit* editSFFloatX = new WFloatLineEdit( lineLayout, "editSFFloatX" );
+                    WFloatLineEdit* editSFFloatX = new WFloatLineEdit( box, "editSFFloatX" );
                     list_Object->push_back( (QObject *) editSFFloatX);
 
                     editSFFloatX->setMinFloatValue( (float)-INFINITY );
                     editSFFloatX->setMaxFloatValue( (float)INFINITY );
 
-                    WFloatLineEdit* editSFFloatY = new WFloatLineEdit( lineLayout, "editSFFloatY" );
+                    WFloatLineEdit* editSFFloatY = new WFloatLineEdit( box, "editSFFloatY" );
                     list_Object->push_back( (QObject *) editSFFloatY);
 
                     editSFFloatY->setMinFloatValue( (float)-INFINITY );
                     editSFFloatY->setMaxFloatValue( (float)INFINITY );
 
-                    WFloatLineEdit* editSFFloatZ = new WFloatLineEdit( lineLayout, "editSFFloatZ" );
+                    WFloatLineEdit* editSFFloatZ = new WFloatLineEdit( box, "editSFFloatZ" );
                     list_Object->push_back( (QObject *) editSFFloatZ);
 
                     editSFFloatZ->setMinFloatValue( (float)-INFINITY );
@@ -254,13 +298,13 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 else if( fieldname=="Vec2f" || fieldname=="Vec2d" )
                 {
 
-                    WFloatLineEdit* editSFFloatX = new WFloatLineEdit( lineLayout, "editSFFloatX" );
+                    WFloatLineEdit* editSFFloatX = new WFloatLineEdit( box, "editSFFloatX" );
                     list_Object->push_back( (QObject *) editSFFloatX);
 
                     editSFFloatX->setMinFloatValue( (float)-INFINITY );
                     editSFFloatX->setMaxFloatValue( (float)INFINITY );
 
-                    WFloatLineEdit* editSFFloatY = new WFloatLineEdit( lineLayout, "editSFFloatY" );
+                    WFloatLineEdit* editSFFloatY = new WFloatLineEdit( box, "editSFFloatY" );
                     list_Object->push_back( (QObject *) editSFFloatY);
                     editSFFloatY->setMinFloatValue( (float)-INFINITY );
                     editSFFloatY->setMaxFloatValue( (float)INFINITY );
@@ -283,13 +327,57 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     }
 
                 }
+                else if( fieldname == "PointSubset")
+                {
+
+                    if( DataField<PointSubset> * ff = dynamic_cast< DataField<PointSubset> * >( (*it).second )  )
+                    {
+
+                        //Get the PointSubset from the DataField
+                        PointSubset p= ff->getValue();
+                        //Add the structure to the list
+                        std::list< QObject *> *current_list = new std::list< QObject *>();
+                        list_PointSubset->push_back(current_list);
+
+                        //First line with only the title and the number of points
+                        box->setColumns(2);
+                        QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,box);
+
+                        current_list->push_back(spinBox);
+
+                        //Second line contains the sequence of fields
+                        Q3Grid *grid = new Q3Grid(width()/150,box);
+                        current_list->push_back(grid); //We save the container of the elements
+
+                        spinBox->setValue(p.size());
+                        for (unsigned int t=0; t< p.size(); t++)
+                        {
+                            std::ostringstream oindex;
+                            oindex << "editIndex_" << t;
+
+                            WFloatLineEdit* editIndex = new WFloatLineEdit( grid, oindex.str().c_str() );
+
+                            current_list->push_back(editIndex);
+
+                            editIndex->setMinFloatValue( 0);
+                            editIndex->setMaxFloatValue( (float)INFINITY );
+                            editIndex->setIntValue(p[t]);
+
+                            connect( editIndex, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+
+                        }
+                        connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeNumberPoint() ) );
+                    }
+                }
                 else
                     std::cerr<<"RealGUI.cpp: UNKNOWN GUI FIELD TYPE : "<<fieldname<<"   --> add a new GUIField"<<std::endl;
             }
 
             ++i;
-            if (lineLayout != NULL)
-                dialogLayout->addWidget( lineLayout );
+            if (box != NULL)
+            {
+                tabPropertiesLayout->addWidget( box );
+            }
         }
 
 
@@ -312,7 +400,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         lineLayout->addWidget(buttonCancel);
         buttonCancel->setText( tr( "&Cancel" ) );
 
-        dialogLayout->addLayout( lineLayout );
+        generalLayout->addLayout( lineLayout );
 
 
 
@@ -320,6 +408,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         connect( buttonUpdate,   SIGNAL( clicked() ), this, SLOT( updateValues() ) );
         connect( buttonOk,       SIGNAL( clicked() ), this, SLOT( closeDialog() ) );
         connect( buttonCancel,   SIGNAL( clicked() ), this, SLOT( reject() ) );
+
 
         //Title of the Dialog
         setCaption((node->getTypeName()+"::"+node->getName()).data());
@@ -330,18 +419,24 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
 }
 
+
+//*******************************************************************************************************************
 void ModifyObject::changeValue()
 {
     if (buttonUpdate == NULL) return;
     buttonUpdate->setEnabled(true);
 }
 
+
+//*******************************************************************************************************************
 void ModifyObject::closeDialog()
 {
     updateValues();
     emit(accept());
 }
 
+
+//*******************************************************************************************************************
 void ModifyObject::updateValues()
 {
     if (buttonUpdate == NULL) return;
@@ -351,6 +446,7 @@ void ModifyObject::updateValues()
     {
 
         std::list< QObject *>::iterator list_it=list_Object->begin();
+        std::list< std::list< QObject*> * >::iterator block_iterator=list_PointSubset->begin();
 
         const std::map< std::string, core::objectmodel::FieldBase* >& fields = node->getFields();
         int i=0;
@@ -366,7 +462,7 @@ void ModifyObject::updateValues()
 
                 if( DataField<int> * ff = dynamic_cast< DataField<int> * >( (*it).second )  )
                 {
-                    ff->setValue(atoi(spinBox->text()));
+                    ff->setValue(spinBox->value());
                 }
             }
             else if( fieldname=="unsigned int")
@@ -377,7 +473,7 @@ void ModifyObject::updateValues()
 
                 if( DataField<unsigned int> * ff = dynamic_cast< DataField<unsigned int> * >( (*it).second )  )
                 {
-                    ff->setValue(atoi(spinBox->text()));
+                    ff->setValue(spinBox->value());
                 }
             }
             else if( fieldname=="float" || fieldname=="double" )
@@ -398,10 +494,6 @@ void ModifyObject::updateValues()
             }
             else if( fieldname=="bool" )
             {
-                std::string name((*it).first);
-                name.resize(4);
-                if (name == "show") continue;
-
                 // the bool line edit
                 QCheckBox* checkBox = dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
 
@@ -475,6 +567,25 @@ void ModifyObject::updateValues()
                 }
 
             }
+            else if( fieldname=="PointSubset")
+            {
+
+                DataField<PointSubset> * ff = dynamic_cast< DataField<PointSubset> * >( (*it).second );
+                PointSubset p=ff->getValue();
+
+                //Size of the block, once the spinbox and the grid have been removed
+                p.resize((*block_iterator)->size()-2);
+                std::list< QObject* >::iterator element_iterator = (*block_iterator)->begin();
+                element_iterator++; element_iterator++;
+                for (int index=0; element_iterator != (*block_iterator)->end(); element_iterator++,index++)
+                {
+                    WFloatLineEdit* field = dynamic_cast< WFloatLineEdit *> ( (*element_iterator) );
+                    p[index] = field->getIntValue();
+                }
+                ff->setValue(p);
+                block_iterator++;
+
+            }
             else
                 std::cerr<<"RealGUI.cpp: UNKNOWN GUI FIELD TYPE : "<<fieldname<<"   --> add a new GUIField"<<std::endl;
 
@@ -482,10 +593,78 @@ void ModifyObject::updateValues()
         }
 
     }
+    emit (objectUpdated());
     buttonUpdate->setEnabled(false);
-
 }
 
+
+//*******************************************************************************************************************
+//Method called when the number of one of the PointSubset block has been modified : we need to recreate the block modified
+void ModifyObject::changeNumberPoint()
+{
+
+    //Add or remove fields
+    std::list< std::list< QObject*> * >::iterator block_iterator;
+
+    if ( list_PointSubset == NULL ) return;
+
+    //For each block of the set
+    for (block_iterator=list_PointSubset->begin() ; block_iterator != list_PointSubset->end(); block_iterator++)
+    {
+
+        //For each block of type PointSubset, we verify the initial number of element and the current
+        std::list< QObject *> *current_structure = (*block_iterator);
+        if (current_structure == NULL) continue;
+
+        //The number of fields, once the QSpinBox and the grid have been removed
+        int initial_size = (current_structure->size()-2);
+
+        //Get the spin box containing the number wanted of fields
+        std::list< QObject *>::iterator element_iterator=current_structure->begin();
+        QSpinBox *spin = dynamic_cast< QSpinBox *>( (*element_iterator) );
+        element_iterator++;
+        Q3Grid   *grid = dynamic_cast< Q3Grid *>  ( (*element_iterator) );
+
+        if ( initial_size == spin->value()) {continue; }
+        else if ( initial_size < spin->value())
+        {
+            //We need to add fields
+            for (int i=initial_size; i<spin->value(); i++)
+            {
+                std::ostringstream oindex;
+                oindex << "editIndex_" << i;
+
+                WFloatLineEdit* field = new WFloatLineEdit( grid, oindex.str().c_str() );
+                current_structure->push_back(field);
+                connect( field, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                field->setMinFloatValue( 0 );
+                field->setMaxFloatValue( (float) INFINITY );
+                field->setIntValue(0);
+                field->show();
+            }
+
+        }
+        else if ( initial_size > spin->value())
+        {
+            //We need to remove fields
+            element_iterator=current_structure->end();
+            element_iterator--; //last element
+            WFloatLineEdit* field;
+            for (int i=initial_size ; i > spin->value(); i--, element_iterator--)
+            {
+                field = dynamic_cast< WFloatLineEdit *> ( (*element_iterator) );
+                field->reparent(NULL, 0, QPoint(0,0));
+                delete field;
+                field=NULL;
+            }
+            current_structure->resize(spin->value()+2);
+        }
+
+    }
+    emit( changeValue() );
+
+
+}
 
 } // namespace qt
 
