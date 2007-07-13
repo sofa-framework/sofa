@@ -34,8 +34,6 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(i
     {
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
-        TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        //const std::vector<Edge> &edgeArray=container->getEdgeArray();
         TriangleSetGeometryAlgorithms<DataTypes> *ga=_mesh->getTriangleSetGeometryAlgorithms();
 
         // store the rest length of the edge created

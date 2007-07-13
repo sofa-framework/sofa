@@ -520,7 +520,7 @@ inline real areaProduct(const defaulttype::Vec<2,real>& a, const defaulttype::Ve
 }
 /// area for 1-elements vectors.
 template <typename real>
-inline real areaProduct(const defaulttype::Vec<1,real>& a, const defaulttype::Vec<1,real>& b )
+inline real areaProduct(const defaulttype::Vec<1,real>& , const defaulttype::Vec<1,real>&  )
 {
     assert(false);
     return (real)0;

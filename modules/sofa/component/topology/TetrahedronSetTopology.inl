@@ -186,7 +186,7 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraWarning( std::ve
 
 
 template<class DataTypes>
-void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const std::vector<unsigned int> &indices,const bool removeIsolatedItems)
+void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const std::vector<unsigned int> &indices,const bool )
 {
     TetrahedronSetTopology<DataTypes> *topology = dynamic_cast<TetrahedronSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
@@ -478,7 +478,7 @@ void TetrahedronSetTopologyModifier< DataTypes >::removePointsProcess( std::vect
 }
 
 template< class DataTypes >
-void TetrahedronSetTopologyModifier< DataTypes >::removeEdgesProcess( const std::vector<unsigned int> &indices,const bool removeIsolatedItems)
+void TetrahedronSetTopologyModifier< DataTypes >::removeEdgesProcess( const std::vector<unsigned int> &indices,const bool )
 {
     // start by calling the standard method.
     TriangleSetTopologyModifier< DataTypes >::removeEdgesProcess(  indices );
@@ -507,7 +507,7 @@ void TetrahedronSetTopologyModifier< DataTypes >::removeEdgesProcess( const std:
 }
 
 template< class DataTypes >
-void TetrahedronSetTopologyModifier< DataTypes >::removeTrianglesProcess(  const std::vector<unsigned int> &indices,const bool removeIsolatedItems)
+void TetrahedronSetTopologyModifier< DataTypes >::removeTrianglesProcess(  const std::vector<unsigned int> &indices,const bool )
 {
     // start by calling the standard method.
     TriangleSetTopologyModifier< DataTypes >::removeTrianglesProcess( indices );
@@ -578,14 +578,14 @@ inline real tripleProduct(const Vec<3,real>& a, const Vec<3,real>& b,const Vec<3
 
 /// area from 2-elements vectors.
 template <typename real>
-inline real tripleProduct(const Vec<2,real>& a, const Vec<2,real>& b,const Vec<2,real> &c)
+inline real tripleProduct(const Vec<2,real>& , const Vec<2,real>& ,const Vec<2,real> &)
 {
     assert(false);
     return (real)0;
 }
 /// area for 1-elements vectors.
 template <typename real>
-inline real tripleProduct(const Vec<1,real>& a, const Vec<1,real>& b,const Vec<1,real> &c)
+inline real tripleProduct(const Vec<1,real>& , const Vec<1,real>& ,const Vec<1,real> &)
 {
     assert(false);
     return (real)0;
