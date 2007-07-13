@@ -69,6 +69,7 @@ DiscreteIntersection::DiscreteIntersection()
     //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection, false> (this);
     intersectors.add<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel, DiscreteIntersection, false> (this);
     intersectors.add<RigidDistanceGridCollisionModel, PointModel,                      DiscreteIntersection, true>  (this);
+    intersectors.add<RigidDistanceGridCollisionModel, SphereModel,                      DiscreteIntersection, true>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, TriangleModel,                   DiscreteIntersection, true>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, RayModel,                        DiscreteIntersection, true>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, RayPickInteractor,               DiscreteIntersection, true>  (this);
@@ -975,7 +976,9 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     const Vector3& t1 = e1.getTranslation();
     const Matrix3& r1 = e1.getRotation();
 
-    const DistanceGrid::Real margin = 0.001f; //e1.getProximity() + e2.getProximity();
+
+    const double d0 = e1.getProximity() + e2.getProximity();
+    const DistanceGrid::Real margin = 0.001f + (DistanceGrid::Real)d0;
 
     Vector3 p2 = e2.p();
     DistanceGrid::Coord p1;
@@ -1002,7 +1005,54 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     detection->point[0] = Vector3(p1) - grad * d;
     detection->point[1] = Vector3(p2);
     detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-    detection->distance = d;
+    detection->distance = d - d0;
+    detection->elem.first = e1;
+    detection->elem.second = e2;
+    detection->id = e2.getIndex();
+    return 1;
+}
+
+bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, Sphere&)
+{
+    return true;
+}
+
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Sphere& e2, DetectionOutputVector& contacts)
+{
+    DistanceGrid* grid1 = e1.getGrid();
+    bool useXForm = e1.isTransformed();
+    const Vector3& t1 = e1.getTranslation();
+    const Matrix3& r1 = e1.getRotation();
+
+    const double d0 = e1.getProximity() + e2.getProximity() + e2.r();
+    const DistanceGrid::Real margin = 0.001f + (DistanceGrid::Real)d0;
+
+    Vector3 p2 = e2.center();
+    DistanceGrid::Coord p1;
+
+    if (useXForm)
+    {
+        p1 = r1.multTranspose(p2-t1);
+    }
+    else p1 = p2;
+
+    if (!grid1->inBBox( p1, margin )) return 0;
+
+    float d = grid1->interp(p1);
+    if (d >= margin) return 0;
+
+    Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+    grad.normalize();
+
+    //p1 -= grad * d; // push p1 back to the surface
+
+    contacts.resize(contacts.size()+1);
+    DetectionOutput *detection = &*(contacts.end()-1);
+
+    detection->point[0] = Vector3(p1) - grad * d;
+    detection->point[1] = Vector3(p2);
+    detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
+    detection->distance = d - d0;
     detection->elem.first = e1;
     detection->elem.second = e2;
     detection->id = e2.getIndex();
