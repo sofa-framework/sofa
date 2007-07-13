@@ -77,7 +77,7 @@ signals:
 protected:
     virtual void closeEvent ( QCloseEvent * ) {emit(dialogClosed()); emit(reject());}
 
-
+    QWidget *parent;
     core::objectmodel::Base* node;
     Q3ListViewItem * item;
     QPushButton *buttonUpdate;

@@ -78,10 +78,10 @@ typedef QGrid     Q3Grid;
 #endif
 
 
-ModifyObject::ModifyObject( QWidget* parent, const char*, bool, Qt::WFlags ):node(NULL), list_Object(NULL)
+ModifyObject::ModifyObject( QWidget* parent_, const char*, bool, Qt::WFlags ): parent(parent_), node(NULL), list_Object(NULL)
 {
-    connect ( this, SIGNAL( objectUpdated() ), parent, SLOT( redraw() ));
-    connect ( this, SIGNAL( dialogClosed() ) , parent, SLOT( modifyUnlock()));
+    connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
+    connect ( this, SIGNAL( dialogClosed() ) , parent_, SLOT( modifyUnlock()));
 }
 
 ModifyObject::~ModifyObject()
@@ -249,8 +249,9 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     }
 
                 }
-                else if( fieldname=="Vec3f"        || fieldname=="Vec3d" ||
-                        fieldname=="Vec<3,float>" || fieldname=="Vec<3,double>" )
+                else if( fieldname=="Vec3f"         || fieldname=="Vec3d"         ||
+                        fieldname=="Vec<3,float>"  || fieldname=="Vec<3,double>" ||
+                        fieldname=="Vec<3, float>" || fieldname=="Vec<3, double>" )
                 {
 
                     WFloatLineEdit* editSFFloatX = new WFloatLineEdit( box, "editSFFloatX" );
@@ -295,7 +296,9 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     }
 
                 }
-                else if( fieldname=="Vec2f" || fieldname=="Vec2d" )
+                else if( fieldname=="Vec2f"         || fieldname=="Vec2d"         ||
+                        fieldname=="Vec<2,float>"  || fieldname=="Vec<2,double>" ||
+                        fieldname=="Vec<2, float>" || fieldname=="Vec<2, double>" )
                 {
 
                     WFloatLineEdit* editSFFloatX = new WFloatLineEdit( box, "editSFFloatX" );
@@ -369,8 +372,86 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeNumberPoint() ) );
                     }
                 }
+                //StdRigidMass<3, double>
+                else if( fieldname == "StdRigidMass<3, double>" || fieldname == "StdRigidMass<3, float>" ||
+                        fieldname == "StdRigidMass<3,double>" || fieldname == "StdRigidMass<3,float>")
+                {
+                    box->setColumns(2);
+
+                    WFloatLineEdit* editMass = new WFloatLineEdit( box, "editMass" );
+                    list_Object->push_back( (QObject *) editMass);
+                    editMass->setMinFloatValue( 0.0f );
+                    editMass->setMaxFloatValue( (float)INFINITY );
+
+                    new QLabel("Volume", box);
+                    WFloatLineEdit* editVolume = new WFloatLineEdit( box, "editMass" );
+                    list_Object->push_back( (QObject *) editVolume);
+                    editVolume->setMinFloatValue( 0.0f );
+                    editVolume->setMaxFloatValue( (float)INFINITY );
+
+
+                    new QLabel("Inertia Matrix", box);
+                    Q3Grid* grid= new Q3Grid(3,box);
+                    WFloatLineEdit *matrix[3][3];
+                    for (int row=0; row<3; row++)
+                    {
+                        for (int column=0; column<3; column++)
+                        {
+
+                            std::ostringstream oindex;
+                            oindex << "InertiaMatrix_" << row<<column;
+
+                            matrix[row][column] = new WFloatLineEdit( grid, oindex.str().c_str() );
+
+                            list_Object->push_back( matrix[row][column] );
+                            matrix[row][column]->setMinFloatValue( (float)-INFINITY );
+                            matrix[row][column]->setMaxFloatValue( (float)INFINITY );
+                        }
+                    }
+
+
+                    if( DataField<StdRigidMass<3, double> > * ff = dynamic_cast< DataField<StdRigidMass<3, double> > * >( (*it).second )  )
+                    {
+                        StdRigidMass<3, double> current_mass = ff->getValue();
+                        editMass->setFloatValue(current_mass.mass);
+                        editVolume->setFloatValue(current_mass.volume);
+
+                        for (int row=0; row<3; row++)
+                        {
+                            for (int column=0; column<3; column++)
+                            {
+                                matrix[row][column]->setFloatValue(current_mass.inertiaMatrix[row][column]);
+                                connect( matrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                            }
+                        }
+                    }
+
+                    if( DataField<StdRigidMass<3, float> > * ff = dynamic_cast< DataField<StdRigidMass<3, float> > * >( (*it).second )  )
+                    {
+                        StdRigidMass<3, float> current_mass = ff->getValue();
+                        editMass->setFloatValue(current_mass.mass);
+                        editVolume->setFloatValue(current_mass.volume);
+                        for (int row=0; row<3; row++)
+                        {
+                            for (int column=0; column<3; column++)
+                            {
+                                matrix[row][column]->setFloatValue(current_mass.inertiaMatrix[row][column]);
+                                connect( matrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                            }
+                        }
+                    }
+                    connect( editMass, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                    connect( editVolume, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+
+                }
                 else
+                {
+                    //Delete the box
+                    //box->reparent(NULL, 0, QPoint(0,0));
+                    delete box;
+                    box = NULL;
                     std::cerr<<"RealGUI.cpp: UNKNOWN GUI FIELD TYPE : "<<fieldname<<"   --> add a new GUIField"<<std::endl;
+                }
             }
 
             ++i;
@@ -409,6 +490,8 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         connect( buttonOk,       SIGNAL( clicked() ), this, SLOT( closeDialog() ) );
         connect( buttonCancel,   SIGNAL( clicked() ), this, SLOT( reject() ) );
 
+        connect( buttonOk,       SIGNAL( clicked() ), parent, SLOT( modifyUnlock() ) );
+        connect( buttonCancel,   SIGNAL( clicked() ), parent, SLOT( modifyUnlock() ) );
 
         //Title of the Dialog
         setCaption((node->getTypeName()+"::"+node->getName()).data());
@@ -523,8 +606,9 @@ void ModifyObject::updateValues()
                 }
 
             }
-            else if( fieldname=="Vec3f"        || fieldname=="Vec3d" ||
-                    fieldname=="Vec<3,float>" || fieldname=="Vec<3,double>")
+            else if( fieldname=="Vec3f"         || fieldname=="Vec3d"          ||
+                    fieldname=="Vec<3,float>"  || fieldname=="Vec<3,double>"  ||
+                    fieldname=="Vec<3, float>" || fieldname=="Vec<3, double>")
             {
 
                 WFloatLineEdit* editSFFloatX = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
@@ -547,7 +631,9 @@ void ModifyObject::updateValues()
                 }
 
             }
-            else if( fieldname=="Vec2f" || fieldname=="Vec2d" )
+            else if( fieldname=="Vec2f"         || fieldname=="Vec2d"         ||
+                    fieldname=="Vec<2,float>"  || fieldname=="Vec<2,double>" ||
+                    fieldname=="Vec<2, float>" || fieldname=="Vec<2, double>" )
             {
 
                 WFloatLineEdit* editSFFloatX = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
@@ -567,6 +653,7 @@ void ModifyObject::updateValues()
                 }
 
             }
+
             else if( fieldname=="PointSubset")
             {
 
@@ -586,8 +673,48 @@ void ModifyObject::updateValues()
                 block_iterator++;
 
             }
-            else
-                std::cerr<<"RealGUI.cpp: UNKNOWN GUI FIELD TYPE : "<<fieldname<<"   --> add a new GUIField"<<std::endl;
+            else if( fieldname == "StdRigidMass<3, double>" || fieldname == "StdRigidMass<3, float>" ||
+                    fieldname == "StdRigidMass<3,double>" || fieldname == "StdRigidMass<3,float>")
+            {
+
+                if( DataField<StdRigidMass<3, double> > * ff = dynamic_cast< DataField<StdRigidMass<3, double> > * >( (*it).second )  )
+                {
+                    StdRigidMass<3, double> current_mass = ff->getValue();
+
+                    WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                    current_mass.mass = (double) mass->getFloatValue();
+                    WFloatLineEdit* volume = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                    current_mass.volume = (double) volume->getFloatValue();
+                    for (int row=0; row<3; row++)
+                    {
+                        for (int column=0; column<3; column++)
+                        {
+                            WFloatLineEdit* matrix_element = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                            current_mass.inertiaMatrix[row][column] = (double) matrix_element->getFloatValue();
+                        }
+                    }
+                    ff->setValue(current_mass);
+                }
+                if( DataField<StdRigidMass<3, float> > * ff = dynamic_cast< DataField<StdRigidMass<3, float> > * >( (*it).second )  )
+                {
+                    StdRigidMass<3, float> current_mass = ff->getValue();
+
+                    WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                    current_mass.mass =  mass->getFloatValue();
+                    WFloatLineEdit* volume = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                    current_mass.volume =  volume->getFloatValue();
+                    for (int row=0; row<3; row++)
+                    {
+                        for (int column=0; column<3; column++)
+                        {
+                            WFloatLineEdit* matrix_element = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                            current_mass.inertiaMatrix[row][column] = (double) matrix_element->getFloatValue();
+                        }
+                    }
+                    ff->setValue(current_mass);
+                }
+
+            }
 
             ++i;
         }
@@ -596,7 +723,6 @@ void ModifyObject::updateValues()
     emit (objectUpdated());
     buttonUpdate->setEnabled(false);
 }
-
 
 //*******************************************************************************************************************
 //Method called when the number of one of the PointSubset block has been modified : we need to recreate the block modified
@@ -653,16 +779,14 @@ void ModifyObject::changeNumberPoint()
             for (int i=initial_size ; i > spin->value(); i--, element_iterator--)
             {
                 field = dynamic_cast< WFloatLineEdit *> ( (*element_iterator) );
-                field->reparent(NULL, 0, QPoint(0,0));
+                //		    field->reparent(NULL, 0, QPoint(0,0));
                 delete field;
-                field=NULL;
             }
             current_structure->resize(spin->value()+2);
         }
 
     }
     emit( changeValue() );
-
 
 }
 
