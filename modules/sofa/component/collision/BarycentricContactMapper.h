@@ -29,12 +29,15 @@
 #include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/Simulation.h>
 #include <sofa/component/collision/SphereModel.h>
 #include <sofa/component/collision/SphereTreeModel.h>
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/LineModel.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/DistanceGridCollisionModel.h>
+#include <sofa/component/mapping/IdentityMapping.h>
+#include <sofa/component/visualmodel/DrawV.h>
 #include <iostream>
 
 
@@ -280,15 +283,16 @@ public:
             if (parent!=NULL)
             {
                 simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
-                child->removeObject(outmodel);
-                if (mapping)
-                {
-                    child->removeObject(mapping);
-                    delete mapping;
-                }
-                parent->removeChild(child);
-                delete outmodel;
-                delete child;
+                simulation::tree::Simulation::unload(child);
+                //child->removeObject(outmodel);
+                //if (mapping)
+                //{
+                //	child->removeObject(mapping);
+                //	delete mapping;
+                //}
+                //parent->removeChild(child);
+                //delete outmodel;
+                //delete child;
             }
         }
     }
@@ -320,6 +324,19 @@ public:
             simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
             outmodel = new MMechanicalObject; child->addObject(outmodel);
             mapping = NULL;
+
+            // add velocity visualization
+            sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
+            child->addObject(visu);
+            visu->useAlpha.setValue(true);
+            visu->vscale.setValue(model->getContext()->getDt());
+            sofa::component::mapping::IdentityMapping< core::Mapping< MMechanicalState , core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >* map = new sofa::component::mapping::IdentityMapping< core::Mapping< MMechanicalState , core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > > ( outmodel, visu );
+            child->addObject(map);
+            visu->init();
+            map->init();
+
+
+
             return outmodel;
         }
     }
@@ -349,7 +366,39 @@ public:
         }
         else
         {
-            (*outmodel->getX())[i] = model->getTranslation(index) + model->getRotation() * P;
+            DataTypes::Coord& x = (*outmodel->getX())[i];
+            DataTypes::Deriv& v = (*outmodel->getV())[i];
+            if (model->isTransformed(index))
+            {
+                x = model->getTranslation(index) + model->getRotation() * P;
+                v = (x - (model->getPrevTranslation(index) + model->getPrevRotation() * P)) * (1.0/model->getContext()->getDt());
+            }
+            else
+            {
+                x = P;
+                v = DataTypes::Deriv();
+            }
+
+            // estimating velocity
+            double gdt = model->getPrevDt(index);
+            if (gdt > 0.000001)
+            {
+                DistanceGrid* prevGrid = model->getPrevGrid(index);
+                //DistanceGrid* grid = model->getGrid(index);
+                //if (prevGrid != NULL && prevGrid != grid && prevGrid->inGrid(P))
+                {
+                    DistanceGrid::Coord coefs;
+                    int i = prevGrid->index(P, coefs);
+                    DistanceGrid::Real d = prevGrid->interp(i,coefs);
+                    if (rabs(d) < 0.3) // todo : control threshold
+                    {
+                        DistanceGrid::Coord n = prevGrid->grad(i,coefs);
+                        v += n * (d  / ( n.norm() * gdt));
+                        //std::cout << "Estimated v at "<<P<<" = "<<v<<" using distance from previous model "<<d<<std::endl;
+                    }
+                }
+            }
+            (*outmodel->getV())[i] = v;
         }
         return i;
     }

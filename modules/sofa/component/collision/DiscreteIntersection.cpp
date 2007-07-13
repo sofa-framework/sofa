@@ -520,6 +520,75 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     }
     else rotation.identity();
 
+    // For the cube-cube case, we need to detect cases where cubes are stacked
+    // One way is to find if a pair of faces exists that are nearly parallel and
+    // that are near each other
+    // if such pair is found, the corresponding face will be stored in these variables
+
+    enum { FACE_NONE=-1,FACE_XNEG=0,FACE_XPOS,FACE_YNEG,FACE_YPOS,FACE_ZNEG,FACE_ZPOS };
+    int face_e1 = FACE_NONE;
+    int face_e2 = FACE_NONE;
+
+    if (grid2->isCube() && grid1->isCube())
+    {
+        const DistanceGrid::Real cubeDim1 = grid1->getCubeDim();
+        const DistanceGrid::Real cubeDim2 = grid2->getCubeDim();
+        // current distance found
+        // we allow only 10% penetration
+        DistanceGrid::Real dist = (cubeDim1 + cubeDim2) * 0.1;
+        // a nearly perpendicular pair would be visible by an entry close to 1 in the rotation matrix
+        for (int f2 = 0; f2 < 3; f2++)
+        {
+            for (int f1 = 0; f1 < 3; f1++)
+            {
+                if (rotation[f2][f1] < -0.99 || rotation[f2][f1] > 0.99)
+                {
+                    // found a match
+                    // translation is the position of cube1 center in cube2 space
+                    // so the pair of faces are close if |translation[f2]| is close dim1+dim2
+                    DistanceGrid::Real d = rabs(rabs(translation[f2])-(cubeDim1+cubeDim2));
+                    // we should favor normals that are perpendicular to the relative velocity
+                    // however we don't have this information currently, so for now we favor the horizontal face
+                    if (rabs(r2[f2][2]) > 0.99 && d < (cubeDim1 + cubeDim2) * 0.1) d = 0;
+                    if (d < dist)
+                    {
+                        dist = d;
+                        if (translation[f2] > 0)
+                        {
+                            // positive side on cube 2
+                            face_e2 = 2*f2+1;
+                            if (rotation[f2][f1] > 0)
+                            {
+                                // cubes have same axis orientation -> negative side on cube 1
+                                face_e1 = 2*f1;
+                            }
+                            else
+                            {
+                                // cubes have same opposite orientation -> positive side on cube 1
+                                face_e1 = 2*f1+1;
+                            }
+                        }
+                        else
+                        {
+                            // negative side on cube 2
+                            face_e2 = 2*f2;
+                            if (rotation[f2][f1] > 0)
+                            {
+                                // cubes have same axis orientation -> positive side on cube 1
+                                face_e1 = 2*f1+1;
+                            }
+                            else
+                            {
+                                // cubes have same opposite orientation -> negative side on cube 1
+                                face_e1 = 2*f1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // first points of e1 against distance field of e2
     const DistanceGrid::VecCoord& x1 = grid1->meshPts;
     if (!x1.empty() && e1.getCollisionModel()->usePoints.getValue())
@@ -528,54 +597,91 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
         {
             const DistanceGrid::Real cubeDim2 = grid2->getCubeDim();
             const DistanceGrid::Real cubeDim2Margin = cubeDim2+margin;
-            // translation is the position of cube1 center in cube2 space
-            // we use its largest component as the dominant contact face normal
-            /// \TODO use the relative velocity as an additionnal factor
-            Vector3 normal = translation;
-            normal[2] *= 1.1f; // we like Z contact better ;)
-            if (rabs(normal[0]) > rabs(normal[1]))
+
+            if (face_e2 != FACE_NONE)
             {
-                if (rabs(normal[0]) > rabs(normal[2]))
-                    normal = Vector3(normal[0]>0.0f?1.0f:-1.0f,0.0f,0.0f);
-                else
-                    normal = Vector3(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
+                // stacked cubes
+                DistanceGrid::Coord normal;
+                normal[face_e2/2] = (face_e2&1)?1.0f:-1.0f;
+                Vector3 gnormal = r2 * -normal;
+                // special case: if normal in global frame is nearly vertical or horizontal, make it so
+                if (gnormal[0] < -0.99f) gnormal = Vector3(-1.0f, 0.0f,  0.0f);
+                else if (gnormal[0] >  0.99f) gnormal = Vector3( 1.0f, 0.0f,  0.0f);
+                if (gnormal[1] < -0.99f) gnormal = Vector3( 0.0f,-1.0f,  0.0f);
+                else if (gnormal[1] >  0.99f) gnormal = Vector3( 0.0f, 1.0f,  0.0f);
+                if (gnormal[2] < -0.99f) gnormal = Vector3( 0.0f, 0.0f, -1.0f);
+                else if (gnormal[2] >  0.99f) gnormal = Vector3( 0.0f, 0.0f,  1.0f);
+                for (unsigned int i=0; i<x1.size(); i++)
+                {
+                    DistanceGrid::Coord p1 = x1[i];
+                    DistanceGrid::Coord p2 = translation + rotation*p1;
+                    if (p2[0] < -cubeDim2Margin || p2[0] > cubeDim2Margin ||
+                        p2[1] < -cubeDim2Margin || p2[1] > cubeDim2Margin ||
+                        p2[2] < -cubeDim2Margin || p2[2] > cubeDim2Margin)
+                        continue;
+                    double d = p2*normal - cubeDim2;
+
+                    p2 -= normal * d; // push p2 to the surface
+
+                    contacts.resize(contacts.size()+1);
+                    DetectionOutput *detection = &*(contacts.end()-1);
+
+                    detection->point[0] = Vector3(p1);
+                    detection->point[1] = Vector3(p2);
+                    detection->normal = gnormal;
+                    detection->distance = d;
+                    detection->elem.first = e1;
+                    detection->elem.second = e2;
+                    detection->id = i;
+                    ++nc;
+                }
             }
             else
             {
-                if (rabs(normal[1]) > rabs(normal[2]))
-                    normal = Vector3(0.0f,normal[1]>0.0f?1.0f:-1.0f,0.0f);
-                else
-                    normal = Vector3(0.0f,0.0f,normal[2]>0.0f?1.0f:-1.0f);
-            }
+                // general case
+                for (unsigned int i=0; i<x1.size(); i++)
+                {
+                    DistanceGrid::Coord p1 = x1[i];
+                    DistanceGrid::Coord p2 = translation + rotation*p1;
+                    if (p2[0] < -cubeDim2Margin || p2[0] > cubeDim2Margin ||
+                        p2[1] < -cubeDim2Margin || p2[1] > cubeDim2Margin ||
+                        p2[2] < -cubeDim2Margin || p2[2] > cubeDim2Margin)
+                        continue;
+                    //double d = p2*normal - cubeDim2;
 
-            Vector3 gnormal = r2 * -normal; // normal in global space from p1's surface
-            // special case: if normal in global frame is nearly vertical, make it so
-            if (gnormal[2] < -0.99f) gnormal = Vector3(0.0f, 0.0f, -1.0f);
-            else if (gnormal[2] >  0.99f) gnormal = Vector3(0.0f, 0.0f,  1.0f);
+                    DistanceGrid::Coord normal;
+                    normal[0] = rabs(p2[0]) - cubeDim2;
+                    normal[1] = rabs(p2[1]) - cubeDim2;
+                    normal[2] = rabs(p2[2]) - cubeDim2;
 
-            for (unsigned int i=0; i<x1.size(); i++)
-            {
-                DistanceGrid::Coord p1 = x1[i];
-                DistanceGrid::Coord p2 = translation + rotation*p1;
-                if (p2[0] < -cubeDim2Margin || p2[0] > cubeDim2Margin ||
-                    p2[1] < -cubeDim2Margin || p2[1] > cubeDim2Margin ||
-                    p2[2] < -cubeDim2Margin || p2[2] > cubeDim2Margin)
-                    continue;
-                double d = p2*normal - cubeDim2;
+                    DistanceGrid::Real d;
+                    // find the smallest penetration
+                    int axis;
+                    if (normal[0] > normal[1])
+                        if (normal[0] > normal[2]) axis = 0;
+                        else                       axis = 2;
+                    else if (normal[1] > normal[2]) axis = 1;
+                    else                       axis = 2;
 
-                //p2 -= normal * d; // push p2 to the surface
+                    DistanceGrid::Real sign = (p2[axis]<0)?-1.0f:1.0f;
+                    d = normal[axis];
+                    p2[axis] = sign*cubeDim2;
+                    Vector3 gnormal = r2.col(axis) * -sign;
 
-                contacts.resize(contacts.size()+1);
-                DetectionOutput *detection = &*(contacts.end()-1);
+                    //p2 -= normal * d; // push p2 to the surface
 
-                detection->point[0] = Vector3(p1);
-                detection->point[1] = Vector3(p2) - normal*d;
-                detection->normal = gnormal;
-                detection->distance = d;
-                detection->elem.first = e1;
-                detection->elem.second = e2;
-                detection->id = i;
-                ++nc;
+                    contacts.resize(contacts.size()+1);
+                    DetectionOutput *detection = &*(contacts.end()-1);
+
+                    detection->point[0] = Vector3(p1);
+                    detection->point[1] = Vector3(p2);
+                    detection->normal = gnormal;
+                    detection->distance = d;
+                    detection->elem.first = e1;
+                    detection->elem.second = e2;
+                    detection->id = i;
+                    ++nc;
+                }
             }
         }
         else
@@ -628,12 +734,96 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
         {
             const DistanceGrid::Real cubeDim1 = grid1->getCubeDim();
             const DistanceGrid::Real cubeDim1Margin = cubeDim1+margin;
+
+            if (face_e1 != FACE_NONE)
+            {
+                // stacked cubes
+                DistanceGrid::Coord normal;
+                normal[face_e1/2] = (face_e1&1)?1.0f:-1.0f;
+                Vector3 gnormal = r1 * normal;
+                // special case: if normal in global frame is nearly vertical or horizontal, make it so
+                if (gnormal[0] < -0.99f) gnormal = Vector3(-1.0f, 0.0f,  0.0f);
+                else if (gnormal[0] >  0.99f) gnormal = Vector3( 1.0f, 0.0f,  0.0f);
+                if (gnormal[1] < -0.99f) gnormal = Vector3( 0.0f,-1.0f,  0.0f);
+                else if (gnormal[1] >  0.99f) gnormal = Vector3( 0.0f, 1.0f,  0.0f);
+                if (gnormal[2] < -0.99f) gnormal = Vector3( 0.0f, 0.0f, -1.0f);
+                else if (gnormal[2] >  0.99f) gnormal = Vector3( 0.0f, 0.0f,  1.0f);
+                for (unsigned int i=0; i<x1.size(); i++)
+                {
+                    DistanceGrid::Coord p2 = x2[i];
+                    DistanceGrid::Coord p1 = rotation.multTranspose(p2-translation);
+                    if (p1[0] < -cubeDim1Margin || p1[0] > cubeDim1Margin ||
+                        p1[1] < -cubeDim1Margin || p1[1] > cubeDim1Margin ||
+                        p1[2] < -cubeDim1Margin || p1[2] > cubeDim1Margin)
+                        continue;
+                    double d = p1*normal - cubeDim1;
+
+                    p1 -= normal * d; // push p2 to the surface
+
+                    contacts.resize(contacts.size()+1);
+                    DetectionOutput *detection = &*(contacts.end()-1);
+
+                    detection->point[0] = Vector3(p1);
+                    detection->point[1] = Vector3(p2);
+                    detection->normal = gnormal;
+                    detection->distance = d;
+                    detection->elem.first = e1;
+                    detection->elem.second = e2;
+                    detection->id = i;
+                    ++nc;
+                }
+            }
+            else
+            {
+                // general case
+                for (unsigned int i=0; i<x1.size(); i++)
+                {
+                    DistanceGrid::Coord p2 = x2[i];
+                    DistanceGrid::Coord p1 = rotation.multTranspose(p2-translation);
+                    if (p1[0] < -cubeDim1Margin || p1[0] > cubeDim1Margin ||
+                        p1[1] < -cubeDim1Margin || p1[1] > cubeDim1Margin ||
+                        p1[2] < -cubeDim1Margin || p1[2] > cubeDim1Margin)
+                        continue;
+
+                    DistanceGrid::Coord normal;
+                    normal[0] = rabs(p1[0]) - cubeDim1;
+                    normal[1] = rabs(p1[1]) - cubeDim1;
+                    normal[2] = rabs(p1[2]) - cubeDim1;
+
+                    DistanceGrid::Real d;
+                    // find the smallest penetration
+                    int axis;
+                    if (normal[0] > normal[1])
+                        if (normal[0] > normal[2]) axis = 0;
+                        else                       axis = 2;
+                    else if (normal[1] > normal[2]) axis = 1;
+                    else                       axis = 2;
+
+                    DistanceGrid::Real sign = (p1[axis]<0)?-1.0f:1.0f;
+                    d = normal[axis];
+                    p1[axis] = sign*cubeDim1;
+                    Vector3 gnormal = r1.col(axis) * sign;
+
+                    contacts.resize(contacts.size()+1);
+                    DetectionOutput *detection = &*(contacts.end()-1);
+
+                    detection->point[0] = Vector3(p1);
+                    detection->point[1] = Vector3(p2);
+                    detection->normal = gnormal;
+                    detection->distance = d;
+                    detection->elem.first = e1;
+                    detection->elem.second = e2;
+                    detection->id = i;
+                    ++nc;
+                }
+            }
+#if 0
+#if 0
             // -rotationT*translation is the position of cube2 center in cube1 space
             // we use its largest component as the dominant contact face normal
             /// \TODO use the relative velocity as an additionnal factor
-
             Vector3 normal = rotation.multTranspose(-translation);
-            normal[2] *= 1.1f; // we like Z contact better ;)
+            //normal[2] *= 1.1f; // we like Z contact better ;)
             if (rabs(normal[0]) > rabs(normal[1]))
             {
                 if (rabs(normal[0]) > rabs(normal[2]))
@@ -653,7 +843,19 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
             // special case: if normal in global frame is nearly vertical, make it so
             if (gnormal[2] < -0.99f) gnormal = Vector3(0.0f, 0.0f, -1.0f);
             else if (gnormal[2] >  0.99f) gnormal = Vector3(0.0f, 0.0f,  1.0f);
-
+#endif
+            Vector3 gnormal[3]; // X/Y/Z normals from p1 in global space
+            for (int i=0; i<3; i++)
+            {
+                gnormal[i] = r1.col(i);
+                // special case: if normal in global frame is nearly vertical or horizontal, make it so
+                if (gnormal[i][0] < -0.99f) gnormal[i] = Vector3(-1.0f, 0.0f,  0.0f);
+                else if (gnormal[i][0] >  0.99f) gnormal[i] = Vector3( 1.0f, 0.0f,  0.0f);
+                if (gnormal[i][1] < -0.99f) gnormal[i] = Vector3( 0.0f,-1.0f,  0.0f);
+                else if (gnormal[i][1] >  0.99f) gnormal[i] = Vector3( 0.0f, 1.0f,  0.0f);
+                if (gnormal[i][2] < -0.99f) gnormal[i] = Vector3( 0.0f, 0.0f, -1.0f);
+                else if (gnormal[i][2] >  0.99f) gnormal[i] = Vector3( 0.0f, 0.0f,  1.0f);
+            }
             for (unsigned int i=0; i<x2.size(); i++)
             {
                 DistanceGrid::Coord p2 = x2[i];
@@ -662,22 +864,61 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     p1[1] < -cubeDim1Margin || p1[1] > cubeDim1Margin ||
                     p1[2] < -cubeDim1Margin || p1[2] > cubeDim1Margin)
                     continue;
-                double d = p1*normal - cubeDim1;
 
-                //p1 -= normal * d; // push p1 to the surface
+                DistanceGrid::Coord p2normal = rotation.multTranspose(grid2->grad(p2)); // normal of p2, in p1's space
+
+                DistanceGrid::Coord p1normal;
+
+                p1normal[0] = (cubeDim1Margin - rabs(p1[0]))/(0.000001+rabs(p2normal[0]));
+                p1normal[1] = (cubeDim1Margin - rabs(p1[1]))/(0.000001+rabs(p2normal[1]));
+                p1normal[2] = (cubeDim1Margin - rabs(p1[2]))/(0.000001+rabs(p2normal[2]));
+
+                DistanceGrid::Real d;
+                Vector3 normal;
+                // find the smallest penetration
+                int axis;
+                //if (p1normal[0]*p2normal[0] < p1normal[1]*p2normal[1])
+                if (p1normal[0] < p1normal[1])
+                {
+                    if (p1normal[0] < p1normal[2])
+                        axis = 0;
+                    else
+                        axis = 2;
+                }
+                else
+                {
+                    if (p1normal[1] < p1normal[2])
+                        axis = 1;
+                    else
+                        axis = 2;
+                }
+                if (p1[axis]<0)
+                {
+                    d = -cubeDim1 - p1[axis]; // p2normal[axis];
+                    p1[axis] = -cubeDim1;
+                    normal = -gnormal[axis];
+                }
+                else
+                {
+                    d = p1[axis] - cubeDim1; // -p2normal[axis];
+                    p1[axis] = cubeDim1;
+                    normal = gnormal[axis];
+                }
+
 
                 contacts.resize(contacts.size()+1);
                 DetectionOutput *detection = &*(contacts.end()-1);
 
-                detection->point[0] = Vector3(p1) - normal * d;
+                detection->point[0] = Vector3(p1); // - normal * d;
                 detection->point[1] = Vector3(p2);
-                detection->normal = gnormal;
+                detection->normal = normal;
                 detection->distance = d;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = i0+i;
                 ++nc;
             }
+#endif
         }
         else
         {
@@ -782,7 +1023,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     const Vector3& t1 = e1.getTranslation();
     const Matrix3& r1 = e1.getRotation();
 
-    const DistanceGrid::Real margin = 0.001f; //e1.getProximity() + e2.getProximity();
+    const double d0 = e1.getProximity() + e2.getProximity();
+    const DistanceGrid::Real margin = 0.001f + (DistanceGrid::Real)d0;
 
     if (f2&TriangleModel::FLAG_P1)
     {
@@ -811,7 +1053,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
         detection->point[0] = Vector3(p1) - grad * d;
         detection->point[1] = Vector3(p2);
         detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-        detection->distance = d;
+        detection->distance = d - d0;
         detection->elem.first = e1;
         detection->elem.second = e2;
         detection->id = e2.getIndex()*3+0;

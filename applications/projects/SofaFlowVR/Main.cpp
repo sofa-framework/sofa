@@ -832,7 +832,9 @@ public:
                 translation = matrix.col(3);
             }
             else rotation.identity();
-            double dt = (motionLastTime == -1000 || motionLastTime >= time) ? 1 : time-motionLastTime;
+            double dt = 0;
+            if (computeV.getValue() && grid->getGrid(0) != emptyGrid)
+                dt = (motionLastTime == -1000 || motionLastTime >= time) ? 1 : time-motionLastTime;
             grid->setNewState(0,dt,curDistGrid, rotation, translation);
             motionLastTime = time;
         }
