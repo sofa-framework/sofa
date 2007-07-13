@@ -31,10 +31,10 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-protected:
     DataField < std::string > f_filename;
     DataField < double > f_interval;
 
+protected:
     core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;
     std::ifstream* infile;
     double nextTime;
