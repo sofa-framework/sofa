@@ -254,7 +254,7 @@ using namespace sofa::core::componentmodel::behavior;
 template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
     : f_mass( dataField(&f_mass, "mass", "values of the particles masses") )
-//, m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
+    , m_massDensity( dataField(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
     , topologyType(TOPOLOGY_UNKNOWN)
 {
 
