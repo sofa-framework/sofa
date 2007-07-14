@@ -224,7 +224,14 @@ public:
      *
      */
     virtual bool load(const char *filename);
-
+    /** \brief Translates the DOF : call the applyTranslation member function in the MechanicalObject
+     *
+     */
+    virtual void applyTranslation (const double dx,const double dy,const double dz);
+    /** \brief Scales the DOF : call the applyScale member function in the MechanicalObject object
+     *
+     */
+    virtual void applyScale (const double s);
 
     /** \brief Sends a message to warn that some points were added in this topology.
      *
@@ -357,12 +364,29 @@ public:
     *
     */
     virtual bool load(const char *filename);
+    /** \brief Translates the DOF : call the applyTranslation member function in the modifier object
+     *
+     */
+    virtual void applyTranslation (const double dx,const double dy,const double dz);
+    /** \brief Scales the DOF : call the applyScale member function in the modifier object
+     *
+     */
+    virtual void applyScale (const double s);
+
 
     /** Parse the XML attributes : allows to load a topology from a file */
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
         if (arg->getAttribute("filename"))
             this->load(arg->getAttribute("filename"));
+        if (arg->getAttribute("scale")!=NULL)
+        {
+            this->applyScale(atof(arg->getAttribute("scale")));
+        }
+        if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+        {
+            this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
+        }
         this->core::componentmodel::topology::BaseTopology::parse(arg);
     }
 

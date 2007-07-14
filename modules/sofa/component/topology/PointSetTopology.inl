@@ -55,7 +55,7 @@ void PointSetTopologyModifier<DataTypes>::loadPointSet(PointSetTopologyLoader<Da
     assert (topology != 0);
     PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
-    if ((loader->pointArray.size()>0) && (topology->object->getSize()==0))
+    if ((loader->pointArray.size()>0) && (topology->object->getSize()<=1))
     {
         /// resize the DOF stored in the mechanical object
         topology->object->resize(loader->pointArray.size());
@@ -84,8 +84,20 @@ bool PointSetTopologyModifier<DataTypes>::load(const char *filename)
         return true;
     }
 }
-
-
+template<class DataTypes>
+void PointSetTopologyModifier<DataTypes>::applyTranslation (const double dx,const double dy,const double dz)
+{
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+    assert (topology != 0);
+    topology->object->applyTranslation(dx,dy,dz);
+}
+template<class DataTypes>
+void PointSetTopologyModifier<DataTypes>::applyScale (const double s)
+{
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+    assert (topology != 0);
+    topology->object->applyScale(s);
+}
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
 {
@@ -333,6 +345,16 @@ template<class DataTypes>
 bool PointSetTopology<DataTypes>::load(const char *filename)
 {
     return ((PointSetTopologyModifier<DataTypes> *) m_topologyModifier)->load(filename);
+}
+template<class DataTypes>
+void PointSetTopology<DataTypes>::applyScale(const double scale)
+{
+    return ((PointSetTopologyModifier<DataTypes> *) m_topologyModifier)->applyScale(scale);
+}
+template<class DataTypes>
+void PointSetTopology<DataTypes>::applyTranslation(const double dx,const double dy,const double dz)
+{
+    return ((PointSetTopologyModifier<DataTypes> *) m_topologyModifier)->applyTranslation(dx,dy,dz);
 }
 
 
