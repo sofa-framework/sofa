@@ -536,7 +536,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
         const DistanceGrid::Real cubeDim2 = grid2->getCubeDim();
         // current distance found
         // we allow only 10% penetration
-        DistanceGrid::Real dist = (cubeDim1 + cubeDim2) * 0.1;
+        DistanceGrid::Real dist = (DistanceGrid::Real)((cubeDim1 + cubeDim2) * 0.1);
         // a nearly perpendicular pair would be visible by an entry close to 1 in the rotation matrix
         for (int f2 = 0; f2 < 3; f2++)
         {
