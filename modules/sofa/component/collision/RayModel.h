@@ -98,7 +98,7 @@ public:
 
     void draw(int index);
 
-    void applyTranslation(double dx, double dy, double dz);
+    void applyTranslation(const double dx,const double dy,const double dz);
 
     // -- VisualModel interface
 

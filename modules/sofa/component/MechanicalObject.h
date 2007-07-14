@@ -185,10 +185,9 @@ public:
     void computeWeightedValue( const unsigned int i, const std::vector< unsigned int >& ancestors, const std::vector< double >& coefs);
 
 
+    virtual void applyTranslation (const double dx,const double dy,const double dz);
 
-    virtual void applyTranslation (double dx, double dy, double dz);
-
-    virtual void applyScale (double s);
+    virtual void applyScale (const double s);
 
     /// Get the indices of the particles located in the given bounding box
     void getIndicesInSpace(std::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;

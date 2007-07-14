@@ -369,7 +369,7 @@ void MechanicalObject<DataTypes>::resize(const int size)
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyTranslation (double dx, double dy, double dz)
+void MechanicalObject<DataTypes>::applyTranslation (const double dx,const double dy,const double dz)
 {
     this->translation[0]+=dx;
     this->translation[1]+=dy;
@@ -383,7 +383,7 @@ void MechanicalObject<DataTypes>::applyTranslation (double dx, double dy, double
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyScale(double s)
+void MechanicalObject<DataTypes>::applyScale(const double s)
 {
     this->scale*=s;
     VecCoord& x = *this->getX();
