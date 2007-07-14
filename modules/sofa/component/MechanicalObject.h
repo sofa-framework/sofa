@@ -147,10 +147,13 @@ public:
 
     virtual void resize( int vsize);
 
-    int getSize() const
+    virtual int getSize() const
     {
         return vsize;
     }
+    virtual double getPX(int ) const { return 0; }
+    virtual double getPY(int ) const { return 0; }
+    virtual double getPZ(int ) const { return 0; }
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
      *
