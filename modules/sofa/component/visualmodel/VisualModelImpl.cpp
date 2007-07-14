@@ -423,6 +423,9 @@ void VisualModelImpl::computeNormals()
     if (vertNormIdx.empty())
     {
         int nbn = vertices.size();
+        /*		std::cerr << "nb of visual vertices"<<nbn<<std::endl;
+        		std::cerr << "nb of visual triangles"<<triangles.size()<<std::endl; */
+
         ResizableExtVector<Coord>& normals = vnormals;
 
         normals.resize(nbn);
@@ -698,6 +701,19 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
 
 void VisualModelImpl::computeMeshFromTopology(sofa::core::componentmodel::topology::BaseTopology* bt)
 {
+    if (vertices.empty())
+    {
+        BaseMechanicalState *bs= dynamic_cast<BaseMechanicalState *>(getContext()->getMechanicalState());
+        assert(bs);
+        assert(bs->getSize());
+        vertices.resize(bs->getSize());
+        for (unsigned int i=0; i<vertices.size(); i++)
+        {
+            vertices[i][0] = (Real)bs->getPX(i);
+            vertices[i][1] = (Real)bs->getPY(i);
+            vertices[i][2] = (Real)bs->getPZ(i);
+        }
+    }
     TopologyContainer *container=bt->getTopologyContainer();
     sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
     if (tstc)
