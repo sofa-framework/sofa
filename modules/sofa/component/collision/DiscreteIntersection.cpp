@@ -34,7 +34,6 @@
 #include <algorithm>
 
 
-
 namespace sofa
 {
 
@@ -1375,7 +1374,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
 
     if (!x2.empty() && e2.getCollisionModel()->usePoints.getValue())
     {
-        const DistanceGrid::Real far = c1.invDP.norm();
+        const DistanceGrid::Real cubesize = c1.invDP.norm();
         for (unsigned int i=0; i<x2.size(); i++)
         {
             DistanceGrid::Coord p2 = x2[i];
@@ -1395,7 +1394,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                     DistanceGrid::Coord pdeform = c1.deform(b);
                     DistanceGrid::Coord diff = p1-pdeform;
                     DistanceGrid::Real err = diff.norm();
-                    DistanceGrid::Real berr = err*far; if (berr>0.5f) berr=0.5f;
+                    DistanceGrid::Real berr = err*cubesize; if (berr>0.5f) berr=0.5f;
                     if (b[0] < -berr || b[0] > 1+berr
                         || b[1] < -berr || b[1] > 1+berr
                         || b[2] < -berr || b[2] > 1+berr)
@@ -1484,7 +1483,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
     {
         c1.updatePoints();
         c2.updateFaces();
-        const DistanceGrid::Real far = c2.invDP.norm();
+        const DistanceGrid::Real cubesize = c2.invDP.norm();
         const std::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
         for (unsigned int i=0; i<x1.size(); i++)
         {
@@ -1501,7 +1500,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                 DistanceGrid::Coord pdeform = c2.deform(b);
                 DistanceGrid::Coord diff = p2-pdeform;
                 DistanceGrid::Real err = diff.norm();
-                DistanceGrid::Real berr = err*far; if (berr>0.5f) berr=0.5f;
+                DistanceGrid::Real berr = err*cubesize; if (berr>0.5f) berr=0.5f;
                 if (b[0] < -berr || b[0] > 1+berr
                     || b[1] < -berr || b[1] > 1+berr
                     || b[2] < -berr || b[2] > 1+berr)
@@ -1561,7 +1560,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
     {
         c2.updatePoints();
         c1.updateFaces();
-        const DistanceGrid::Real far = c1.invDP.norm();
+        const DistanceGrid::Real cubesize = c1.invDP.norm();
         const std::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
         for (unsigned int i=0; i<x2.size(); i++)
         {
@@ -1580,7 +1579,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                 DistanceGrid::Real err = diff.norm();
                 if (iter>3)
                     std::cout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<"\n";
-                DistanceGrid::Real berr = err*far; if (berr>0.5f) berr=0.5f;
+                DistanceGrid::Real berr = err*cubesize; if (berr>0.5f) berr=0.5f;
                 if (b[0] < -berr || b[0] > 1+berr
                     || b[1] < -berr || b[1] > 1+berr
                     || b[2] < -berr || b[2] > 1+berr)
@@ -1672,7 +1671,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
 
     c1.updateFaces();
     DistanceGrid::Coord p1;
-    const DistanceGrid::Real far = c1.invDP.norm();
+    const DistanceGrid::Real cubesize = c1.invDP.norm();
     for(int i=0; i<100; i++)
     {
         rayPos = l0 + (l1-l0)*(i*0.01);
@@ -1690,7 +1689,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
             DistanceGrid::Real err = diff.norm();
             //if (iter>3)
             //    std::cout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<"\n";
-            DistanceGrid::Real berr = err*far; if (berr>0.5f) berr=0.5f;
+            DistanceGrid::Real berr = err*cubesize; if (berr>0.5f) berr=0.5f;
             if (b[0] < -berr || b[0] > 1+berr
                 || b[1] < -berr || b[1] > 1+berr
                 || b[2] < -berr || b[2] > 1+berr)

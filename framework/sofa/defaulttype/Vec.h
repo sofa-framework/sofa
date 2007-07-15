@@ -333,7 +333,7 @@ public:
     template<class real2>
     real operator*(const Vec<N,real2>& v) const
     {
-        real r = this->elems[0]*v[0];
+        real r = (real)(this->elems[0]*v[0]);
         for (int i=1; i<N; i++)
             r += (real)(this->elems[i]*v[i]);
         return r;

@@ -83,6 +83,9 @@ public:
     const Coord& getPMax() const { return pmax; }
     Coord getCorner(int i) const { return Coord((i&1)?pmax[0]:pmin[0],(i&2)?pmax[1]:pmin[1],(i&4)?pmax[2]:pmin[2]); }
 
+    bool isCube() const { return cubeDim != 0; }
+    Real getCubeDim() const { return cubeDim; }
+
     bool inGrid(const Coord& p) const
     {
         Coord epsilon = cellWidth*0.1;
@@ -272,9 +275,6 @@ public:
     }
 
     VecCoord meshPts;
-
-    bool isCube() const { return cubeDim != 0; }
-    Real getCubeDim() const { return cubeDim; }
 
 protected:
     int nbRef;

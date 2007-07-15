@@ -605,8 +605,8 @@ void FFDDistanceGridCollisionModel::draw(int index)
             glBegin(GL_LINE_STRIP);
             for (int r=0; r<=16; r++)
             {
-                float c = cube.radius*cos(r*M_PI/8);
-                float s = cube.radius*sin(r*M_PI/8);
+                float c = cube.radius*(float)cos(r*M_PI/8);
+                float s = cube.radius*(float)sin(r*M_PI/8);
                 Vec3f p = cube.center;
                 p[j] += c;
                 p[(j+1)%3] += s;
