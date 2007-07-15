@@ -46,6 +46,15 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
+
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class DataTypes>
+class TetrahedronFEMForceFieldInternalData
+{
+public:
+};
+
+
 /** Compute Finite Element forces based on tetrahedral elements.
 */
 template<class DataTypes>
@@ -68,34 +77,45 @@ public:
     static const int POLAR = 2;   ///< Symbol of polar displacements tetrahedron solver
 
 protected:
-    //component::MechanicalObject<DataTypes>* object;
 
-    typedef Vec<12, Real> Displacement;		///< the displacement vector
+    /// @name Per element (tetrahedron) data
+    /// @{
 
-    typedef Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
-    typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
-    VecMaterialStiffness _materialsStiffnesses;					///< the material stiffness matrices vector
+    /// Displacement vector (deformation of the 4 corners of a tetrahedron
+    typedef Vec<12, Real> Displacement;
 
-    typedef Mat<12, 6, Real> StrainDisplacement;	///< the strain-displacement matrix
-    typedef vector<StrainDisplacement> VecStrainDisplacement;		///< a vector of strain-displacement matrices
-    VecStrainDisplacement _strainDisplacements;					   ///< the strain-displacement matrices vector
+    /// Material stiffness matrix of a tetrahedron
+    typedef Mat<6, 6, Real> MaterialStiffness;
 
-    typedef Mat<3, 3, Real> Transformation; ///< matrix for rigid transformations like rotations
+    /// Strain-displacement matrix
+    typedef Mat<12, 6, Real> StrainDisplacement;
 
+    /// Rigid transformation (rotation) matrix
+    typedef Mat<3, 3, Real> Transformation;
 
+    /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
     typedef Mat<12, 12, Real> StiffnessMatrix;
-    //typedef typename matrix<Real,rectangle<>,compressed<>,row_major >::type CompressedMatrix;
-    //CompressedMatrix *_stiffnesses;
 
+    /// @}
+
+    /// Vector of material stiffness of each tetrahedron
+    typedef vector<MaterialStiffness> VecMaterialStiffness;
+    typedef vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
+
+    /// Vector of material stiffness matrices of each tetrahedron
+    VecMaterialStiffness _materialsStiffnesses;
+    VecStrainDisplacement _strainDisplacements;   ///< the strain-displacement matrices vector
+
+    /// @name Full system matrix assembly support
+    /// @{
 
     typedef std::pair<int,Real> Col_Value;
     typedef vector< Col_Value > CompressedValue;
     typedef vector< CompressedValue > CompressedMatrix;
-    CompressedMatrix _stiffnesses;
-    double m_potentialEnergy;
 
-    //just for draw forces
-    VecDeriv _forces;
+    CompressedMatrix _stiffnesses;
+
+    double m_potentialEnergy;
 
     topology::MeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
@@ -111,11 +131,10 @@ public:
     DataField<bool> f_updateStiffnessMatrix;
     DataField<bool> f_assembling;
 
-
     TetrahedronFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
-        , f_method(dataField(&f_method,0,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
+        , f_method(dataField(&f_method,LARGE,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
         , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus",""))
         , f_dampingRatio(dataField(&f_dampingRatio,(Real)0,"dampingRatio",""))
@@ -134,8 +153,6 @@ public:
     void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 
     void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
-
-    //	component::MechanicalObject<DataTypes>* getObject() { return object; }
 
     virtual void init();
     virtual void reinit();
@@ -171,7 +188,6 @@ protected:
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void accumulateDampingSmall( Vector& f, Index elementIndex );
     void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
 
     ////////////// large displacements method
@@ -180,7 +196,6 @@ protected:
     void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void accumulateDampingLarge( Vector& f, Index elementIndex );
     void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3 );
 
     ////////////// polar decomposition method

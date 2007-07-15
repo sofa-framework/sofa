@@ -53,6 +53,7 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/topology/PointSubset.h>
 #include "WFloatLineEdit.h"
 

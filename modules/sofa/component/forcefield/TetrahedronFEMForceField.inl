@@ -102,6 +102,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
             }
         }
 
+        // Tesselation of each cube into 6 tetrahedra
         tetras->reserve(nbcubes*6);
         for (int i=0; i<nbcubes; i++)
         {
@@ -121,6 +122,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         }
 
         /*
+        // Tesselation of each cube into 5 tetrahedra
         tetras->reserve(nbcubes*5);
         for (int i=0;i<nbcubes;i++)
         {
@@ -143,128 +145,13 @@ void TetrahedronFEMForceField<DataTypes>::init()
     _initialPoints = p;
 
     _strainDisplacements.resize( _indexedElements->size() );
-    _stiffnesses.resize( _initialPoints.size()*3 );
     _materialsStiffnesses.resize(_indexedElements->size() );
-    _forces.resize( _initialPoints.size() );
-
-    switch(f_method.getValue())
+    if(f_assembling.getValue())
     {
-    case SMALL :
-    {
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-            this->computeMaterialStiffness(i,a,b,c,d);
-            this->initSmall(i,a,b,c,d);
-        }
-        break;
-    }
-    case LARGE :
-    {
-        _rotations.resize( _indexedElements->size() );
-        _rotatedInitialElements.resize(_indexedElements->size());
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-            computeMaterialStiffness(i,a,b,c,d);
-            initLarge(i,a,b,c,d);
-        }
-        break;
-    }
-    case POLAR :
-    {
-        _rotations.resize( _indexedElements->size() );
-        _rotatedInitialElements.resize(_indexedElements->size());
-        _initialTransformation.resize(_indexedElements->size());
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
-            Index c = (*it)[2];
-            Index d = (*it)[3];
-            computeMaterialStiffness(i,a,b,c,d);
-            initPolar(i,a,b,c,d);
-        }
-        break;
-    }
+        _stiffnesses.resize( _initialPoints.size()*3 );
     }
 
-    // Create the the stiffness matrix
-//         unsigned numElements = _indexedElements->size();
-//         vector< set<Index> > matrix_indices(numElements);
-//         //diagonal entries
-//         for( unsigned i=0; i<numElements; i++ )
-//             matrix_indices[i].insert(i);
-//         typename VecElement::const_iterator it;
-//         for(typename VecElement::const_iterator it = _indexedElements->begin(), itend=_indexedElements->end() ; it != itend ; ++it)
-//         {
-//             Index a = (*it)[0];
-//             Index b = (*it)[1];
-//             Index c = (*it)[2];
-//             Index d = (*it)[3];
-//
-//             // lower-triangular entries of the symmetric matrix
-//             if( b<a ){
-//                 matrix_indices[a].insert(b);
-//             }
-//             if( c<a ){
-//                 matrix_indices[a].insert(c);
-//             }
-//             if( d<a ){
-//                 matrix_indices[a].insert(d);
-//             }
-//
-//             if( a<b ){
-//                 matrix_indices[b].insert(a);
-//             }
-//             if( c<b ){
-//                 matrix_indices[b].insert(c);
-//             }
-//             if( d<b ){
-//                 matrix_indices[b].insert(d);
-//             }
-//
-//             if( a<c ){
-//                 matrix_indices[c].insert(a);
-//             }
-//             if( b<c ){
-//                 matrix_indices[c].insert(b);
-//             }
-//             if( d<c ){
-//                 matrix_indices[c].insert(d);
-//             }
-//
-//             if( a<d ){
-//                 matrix_indices[d].insert(a);
-//             }
-//             if( b<d ){
-//                 matrix_indices[d].insert(b);
-//             }
-//             if( c<d ){
-//                 matrix_indices[d].insert(c);
-//             }
-//         }
-//         // Compute size of assembled stiffness matrix and reserve it
-//         m_assembledStiffnessMatrix.clear();
-//         for( unsigned i=0, cnt=0; i<numElements; i++ ){
-//             for( set<Index>::const_iterator it=matrix_indices[i].begin, itend=matrix_indices[i].end(); it!=itend; it++, cnt++ ){
-//                 m_assembledStiffnessMatrix.push_back(AssembledStiffnessMatrixElement(cnt));
-//             }
-//         }
-
-
+    reinit(); // compute per-element stiffness matrices and other precomputed values
 
     std::cout << "TetrahedronFEMForceField: init OK, "<<_indexedElements->size()<<" tetra."<<std::endl;
 }
@@ -273,13 +160,13 @@ void TetrahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::reinit()
 {
+    unsigned int i;
+    typename VecElement::const_iterator it;
     switch(f_method.getValue())
     {
     case SMALL :
     {
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
             Index b = (*it)[1];
@@ -294,9 +181,7 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
     {
         _rotations.resize( _indexedElements->size() );
         _rotatedInitialElements.resize(_indexedElements->size());
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
             Index b = (*it)[1];
@@ -314,7 +199,7 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
         _initialTransformation.resize(_indexedElements->size());
         unsigned int i=0;
         typename VecElement::const_iterator it;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
             Index b = (*it)[1];
@@ -334,112 +219,91 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
 {
     f.resize(p.size());
 
-    unsigned int i=0;
+    unsigned int i;
     typename VecElement::const_iterator it;
-    /*
-    if(_dampingRatio!=0)
-    	if(f_method.getValue()==SMALL)
-    		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
-    		{
-    			if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-    			accumulateForceSmall( f, p, it, i );
-    			accumulateDampingSmall( f, i );
-    		}
-    	else if(f_method.getValue()==LARGE)
-    		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
-    		{
-    			if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-    			accumulateForceLarge( f, p, it, i );
-     			accumulateDampingLarge( f, i );
-    		}
-    	else
-    		for(it=_indexedElements->begin();it!=_indexedElements->end();++it,++i)
-    		{
-    			if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-    			accumulateForcePolar( f, p, it, i );
-     			accumulateDampingPolar( f, i );
-    		}
-    else
-    */
-    if(f_method.getValue()==SMALL)
-        for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+    switch(f_method.getValue())
+    {
+    case SMALL :
+    {
+        for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForceSmall( f, p, it, i );
         }
-    else if(f_method.getValue()==LARGE)
-        for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+        break;
+    }
+    case LARGE :
+    {
+        for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForceLarge( f, p, it, i );
         }
-    else
-        for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+        break;
+    }
+    case POLAR :
+    {
+        for(it=_indexedElements->begin(), i = 0 ; it!=_indexedElements->end(); ++it,++i)
         {
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForcePolar( f, p, it, i );
         }
-
-//		_forces = f;
-//		cerr<<"----------------\nf : "<<f<<endl;
-
+        break;
+    }
+    }
 }
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x)
 {
     v.resize(x.size());
-    //if(f_assembling.getValue()) applyStiffnessAssembled(v,x);
-    //else
+    unsigned int i;
+    typename VecElement::const_iterator it;
+
+    switch(f_method.getValue())
     {
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
-
-        switch(f_method.getValue())
+    case SMALL :
+    {
+        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-        case SMALL :
-        {
-            for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-            {
-                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-                Index a = (*it)[0];
-                Index b = (*it)[1];
-                Index c = (*it)[2];
-                Index d = (*it)[3];
+            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+            Index c = (*it)[2];
+            Index d = (*it)[3];
 
-                applyStiffnessSmall( v,x, i, a,b,c,d );
-            }
-            break;
+            applyStiffnessSmall( v,x, i, a,b,c,d );
         }
-        case LARGE :
+        break;
+    }
+    case LARGE :
+    {
+        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-            for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-            {
-                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-                Index a = (*it)[0];
-                Index b = (*it)[1];
-                Index c = (*it)[2];
-                Index d = (*it)[3];
+            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+            Index c = (*it)[2];
+            Index d = (*it)[3];
 
-                applyStiffnessLarge( v,x, i, a,b,c,d );
-            }
-            break;
+            applyStiffnessLarge( v,x, i, a,b,c,d );
         }
-        case POLAR :
+        break;
+    }
+    case POLAR :
+    {
+        for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
-            for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-            {
-                if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
-                Index a = (*it)[0];
-                Index b = (*it)[1];
-                Index c = (*it)[2];
-                Index d = (*it)[3];
+            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+            Index c = (*it)[2];
+            Index d = (*it)[3];
 
-                applyStiffnessPolar( v,x, i, a,b,c,d );
-            }
-            break;
+            applyStiffnessPolar( v,x, i, a,b,c,d );
         }
-        }
+        break;
+    }
     }
 }
 
@@ -449,31 +313,6 @@ double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
     cerr<<"TetrahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;
 }
-
-
-
-
-/*
-template <typename V, typename R, typename E>
-void TetrahedronFEMForceField<V,R,E>::applyStiffnessAssembled( Vector& v const Vector& x )
-{
-	for(unsigned int i=0;i<v.size();++i)
-	{
-		for(int k=0;k<3;++k)
-		{
-			int row = i*3+k;
-
-			Real val = 0;
-			for(typename CompressedValue::iterator it=_stiffnesses[row].begin();it!=_stiffnesses[row].end();++it)
-			{
-				int col = (*it).first;
-				val += ( (*it).second * x[col/3][col%3] );
-			}
-			v[i][k] += (-val);
-		}
-	}
-}
-*/
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d )
@@ -587,21 +426,18 @@ void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatri
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d)
 {
-
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
     _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
             = _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] =
                     _materialsStiffnesses[i][2][1] = f_poissonRatio.getValue()/(1-f_poissonRatio.getValue());
-    _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] =	_materialsStiffnesses[i][0][5] = 0;
-    _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] =	_materialsStiffnesses[i][1][5] = 0;
-    _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] =	_materialsStiffnesses[i][2][5] = 0;
-    _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] =	_materialsStiffnesses[i][3][5] = 0;
-    _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] =	_materialsStiffnesses[i][4][5] = 0;
-    _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] =	_materialsStiffnesses[i][5][4] = 0;
+    _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] = _materialsStiffnesses[i][0][5] = 0;
+    _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] = _materialsStiffnesses[i][1][5] = 0;
+    _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] = _materialsStiffnesses[i][2][5] = 0;
+    _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] = _materialsStiffnesses[i][3][5] = 0;
+    _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] = _materialsStiffnesses[i][4][5] = 0;
+    _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] = _materialsStiffnesses[i][5][4] = 0;
     _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1-2*f_poissonRatio.getValue())/(2*(1-f_poissonRatio.getValue()));
     _materialsStiffnesses[i] *= (f_youngModulus.getValue()*(1-f_poissonRatio.getValue()))/((1+f_poissonRatio.getValue())*(1-2*f_poissonRatio.getValue()));
-
-
 
     /*Real gamma = (f_youngModulus.getValue()*f_poissonRatio.getValue()) / ((1+f_poissonRatio.getValue())*(1-2*f_poissonRatio.getValue()));
     Real 		mu2 = f_youngModulus.getValue() / (1+f_poissonRatio.getValue());
@@ -616,15 +452,12 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
     			= _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] = _materialsStiffnesses[i][2][1] = gamma;
     _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] =	mu2;*/
 
-
-
     // divide by 36 times volumes of the element
 
     Coord A = _initialPoints[b] - _initialPoints[a];
     Coord B = _initialPoints[c] - _initialPoints[a];
     Coord C = _initialPoints[d] - _initialPoints[a];
     Coord AB = cross(A, B);
-    //v_eq_cross( AB, A, B );
     Real volumes6 = fabs( dot( AB, C ) );
     if (volumes6<0)
     {
@@ -634,14 +467,11 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J )
+inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J )
 {
-    //Mat<6, 12, Real> Jt;
-    //Jt.transpose(J);
-    //F = J*(K*(Jt*Depl));
     F = J*(K*(J.multTranspose(Depl)));
-    return;
 
+#if 0
     /* We have these zeros
                                   K[0][3]   K[0][4]   K[0][5]
                                   K[1][3]   K[1][4]   K[1][5]
@@ -649,7 +479,6 @@ void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const D
     K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
     K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
     K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
-
 
 
               J[0][1]   J[0][2]             J[0][4]
@@ -732,9 +561,13 @@ void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const D
             J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
     F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
             /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
+#endif
 }
 
-////////////// small displacements method
+//////////////////////////////////////////////////////////////////////
+////////////////////  small displacements method  ////////////////////
+//////////////////////////////////////////////////////////////////////
+
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::initSmall(int i, Index&a, Index&b, Index&c, Index&d)
 {
@@ -801,8 +634,6 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f, const
         for(int i=0; i<12; ++i)
         {
             int row = index[i/3]*3+i%3;
-            /// \todo PAS CLAIR
-            //_stiffnesses[row].resize(0);
 
             for(int j=0; j<12; ++j)
             {
@@ -845,12 +676,6 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceSmall( Vector& f, const
 }
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::accumulateDampingSmall( Vector& /*f*/, Index /*elementIndex*/ )
-{
-    std::cerr << "TODO\n";
-}
-
-template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
 {
     Displacement X;
@@ -880,39 +705,12 @@ void TetrahedronFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const 
     f[d] += Deriv( -F[9], -F[10], -F[11] );
 }
 
-////////////// large displacements method
-template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c, Index&d)
-{
-    // Rotation matrix (initial Tetrahedre/world)
-    // first vector on first edge
-    // second vector in the plane of the two first edges
-    // third vector orthogonal to first and second
-    Transformation R_0_1;
-    computeRotationLarge( R_0_1, _initialPoints, a, b, c);
-
-    _rotatedInitialElements[i][0] = R_0_1*_initialPoints[a];
-    _rotatedInitialElements[i][1] = R_0_1*_initialPoints[b];
-    _rotatedInitialElements[i][2] = R_0_1*_initialPoints[c];
-    _rotatedInitialElements[i][3] = R_0_1*_initialPoints[d];
-
-// 		cerr<<"a,b,c : "<<a<<" "<<b<<" "<<c<<endl;
-// 		cerr<<"_initialPoints : "<<_initialPoints<<endl;
-// 		cerr<<"R_0_1 large : "<<R_0_1<<endl;
-
-    _rotatedInitialElements[i][1] -= _rotatedInitialElements[i][0];
-    _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];
-    _rotatedInitialElements[i][3] -= _rotatedInitialElements[i][0];
-    _rotatedInitialElements[i][0] = Coord(0,0,0);
-
-
-// 		cerr<<"_rotatedInitialElements : "<<_rotatedInitialElements<<endl;
-
-    computeStrainDisplacement( _strainDisplacements[i],_rotatedInitialElements[i][0], _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],_rotatedInitialElements[i][3] );
-}
+//////////////////////////////////////////////////////////////////////
+////////////////////  large displacements method  ////////////////////
+//////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c)
+inline void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c)
 {
     // first vector on first edge
     // second vector in the plane of the two first edges
@@ -939,6 +737,35 @@ void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &
     r[2][0] = edgez[0];
     r[2][1] = edgez[1];
     r[2][2] = edgez[2];
+}
+
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c, Index&d)
+{
+    // Rotation matrix (initial Tetrahedre/world)
+    // first vector on first edge
+    // second vector in the plane of the two first edges
+    // third vector orthogonal to first and second
+    Transformation R_0_1;
+    computeRotationLarge( R_0_1, _initialPoints, a, b, c);
+
+    _rotatedInitialElements[i][0] = R_0_1*_initialPoints[a];
+    _rotatedInitialElements[i][1] = R_0_1*_initialPoints[b];
+    _rotatedInitialElements[i][2] = R_0_1*_initialPoints[c];
+    _rotatedInitialElements[i][3] = R_0_1*_initialPoints[d];
+
+//	cerr<<"a,b,c : "<<a<<" "<<b<<" "<<c<<endl;
+//	cerr<<"_initialPoints : "<<_initialPoints<<endl;
+//	cerr<<"R_0_1 large : "<<R_0_1<<endl;
+
+    _rotatedInitialElements[i][1] -= _rotatedInitialElements[i][0];
+    _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];
+    _rotatedInitialElements[i][3] -= _rotatedInitialElements[i][0];
+    _rotatedInitialElements[i][0] = Coord(0,0,0);
+
+//	cerr<<"_rotatedInitialElements : "<<_rotatedInitialElements<<endl;
+
+    computeStrainDisplacement( _strainDisplacements[i],_rotatedInitialElements[i][0], _rotatedInitialElements[i][1],_rotatedInitialElements[i][2],_rotatedInitialElements[i][3] );
 }
 
 template<class DataTypes>
@@ -979,7 +806,6 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const
 
     //cerr<<"D : "<<D<<endl;
 
-
     Displacement F;
     if(f_updateStiffnessMatrix.getValue())
     {
@@ -995,30 +821,24 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const
         _strainDisplacements[elementIndex][8][2]   = ( - deforme[1][0]*deforme[3][1] );
 
         _strainDisplacements[elementIndex][11][2] = ( deforme[1][0]*deforme[2][1] );
-
-
     }
-
 
     if(!f_assembling.getValue())
     {
         // compute force on element
         computeForce( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex]);
-
-        //computeForceOptimized( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex]);
-
         for(int i=0; i<12; i+=3)
             f[index[i/3]] += _rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
 
         //cerr<<"p large : "<<p<<endl;
         //cerr<<"F large : "<<f<<endl;
-// 		for(int i=0;i<12;i+=3)
-// 		{
-// 			Vec tmp;
-// 			v_eq_Ab( tmp, _rotations[elementIndex], Vec( F[i], F[i+1],  F[i+2] ) );
-// 			cerr<<tmp<<"\t";
-// 		}
-// 		cerr<<endl;
+//		for(int i=0;i<12;i+=3)
+//		{
+//			Vec tmp;
+//			v_eq_Ab( tmp, _rotations[elementIndex], Vec( F[i], F[i+1],  F[i+2] ) );
+//			cerr<<tmp<<"\t";
+//		}
+//		cerr<<endl;
     }
     else
     {
@@ -1068,18 +888,11 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const
             }
         }
 
-
         F = RJKJt*D;
 
         for(int i=0; i<12; i+=3)
             f[index[i/3]] += Deriv( F[i], F[i+1],  F[i+2] );
     }
-}
-
-template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::accumulateDampingLarge( Vector& /*f*/, Index /*elementIndex*/ )
-{
-    std::cerr << "TODO\n";
 }
 
 template<class DataTypes>
@@ -1116,7 +929,6 @@ void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, const 
     //cerr<<"X : "<<X<<endl;
 
     computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i] );
-    //computeForce( F, X, _materialsStiffnesses[i],  _strainDisplacements[i][0][0],_strainDisplacements[i][1][1],_strainDisplacements[i][2][2],_strainDisplacements[i][3][0],_strainDisplacements[i][4][1],_strainDisplacements[i][5][2],_strainDisplacements[i][7][1],_strainDisplacements[i][8][2],_strainDisplacements[i][11][2]);
 
     //cerr<<"F : "<<F<<endl;
 
@@ -1126,7 +938,9 @@ void TetrahedronFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, const 
     f[d] += _rotations[i] * Deriv( -F[9], -F[10], -F[11] );
 }
 
-////////////// polar decomposition method
+//////////////////////////////////////////////////////////////////////
+////////////////////  polar decomposition method  ////////////////////
+//////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, Index&c, Index&d)
@@ -1186,26 +1000,22 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const
     D[11] = _rotatedInitialElements[elementIndex][3][2] - deforme[3][2];
     //cerr<<"D : "<<D<<endl;
 
-
     Displacement F;
     if(f_updateStiffnessMatrix.getValue())
     {
         // shape functions matrix
         computeStrainDisplacement( _strainDisplacements[elementIndex], deforme[0],deforme[1],deforme[2],deforme[3]  );
-        //computeForceOptimized( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex] );
     }
-
 
     if(!f_assembling.getValue())
     {
         computeForce( F, D, _materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex] );
-
         for(int i=0; i<12; i+=3)
             f[index[i/3]] += _rotations[elementIndex] * Deriv( F[i], F[i+1],  F[i+2] );
     }
     else
     {
-
+        std::cerr << "TODO(TetrahedronFEMForceField): support for assembling system matrix when using polar method.\n";
     }
 }
 
@@ -1242,7 +1052,6 @@ void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, const 
 
     //cerr<<"X : "<<X<<endl;
 
-    //computeForceOptimized( F, X, _materialsStiffnesses[i], _strainDisplacements[i] );
     computeForce( F, X, _materialsStiffnesses[i], _strainDisplacements[i] );
 
     //cerr<<"F : "<<F<<endl;
@@ -1252,6 +1061,10 @@ void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, const 
     f[c] -= _rotations[i] * Deriv( F[6], F[7],  F[8] );
     f[d] -= _rotations[i] * Deriv( F[9], F[10], F[11] );
 }
+
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw()
