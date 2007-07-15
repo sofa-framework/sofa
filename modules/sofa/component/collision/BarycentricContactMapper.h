@@ -479,10 +479,11 @@ public:
         }
     }
 
-    int addPoint(const Vector3& P, int /*index*/)
+    int addPoint(const Vector3& P, int index)
     {
         Vector3 bary;
-        int elem = model->getDeformGrid()->findCube(P,bary[0],bary[1],bary[2]);
+        int elem = model->getDeformCube(index).elem; //getDeformGrid()->findCube(P,bary[0],bary[1],bary[2]);
+        bary = model->getDeformCube(index).baryCoords(P);
         if (elem == -1)
         {
             std::cerr<<"WARNING: BarycentricContactMapper from FFDDistanceGridCollisionModel on point no within any the FFD grid."<<std::endl;

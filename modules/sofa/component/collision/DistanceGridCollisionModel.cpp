@@ -564,82 +564,56 @@ void FFDDistanceGridCollisionModel::draw()
 
 void FFDDistanceGridCollisionModel::draw(int index)
 {
-    DistanceGrid* grid = getGrid(index);
-    DistanceGrid::Coord corners[8];
-    for(unsigned int i=0; i<8; i++)
-        corners[i] = grid->getCorner(i);
+    //DistanceGrid* grid = getGrid(index);
+    DeformedCube& cube = getDeformCube( index );
     //glEnable(GL_BLEND);
     //glDepthMask(0);
+    float cscale;
     if (isStatic())
-        glColor4f(0.25f, 0.25f, 0.25f, 0.1f);
+        cscale = 0.5f;
     else
-        glColor4f(0.5f, 0.5f, 0.5f, 0.1f);
+        cscale = 1.0f;
+    if (cube.pointsUpdated && cube.facesUpdated)
+        glColor4f(1.0f*cscale, 0.0f*cscale, 0.0f*cscale, 1.0f);
+    else if (cube.pointsUpdated)
+        glColor4f(1.0f*cscale, 0.5f*cscale, 0.0f*cscale, 1.0f);
+    else if (cube.facesUpdated)
+        glColor4f(0.5f*cscale, 1.0f*cscale, 0.0f*cscale, 1.0f);
+    else
+        glColor4f(0.0f*cscale, 1.0f*cscale, 0.5f*cscale, 1.0f);
     glBegin(GL_LINES);
     {
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(cube.corners[0].ptr()); glVertex3fv(cube.corners[4].ptr());
+        glVertex3fv(cube.corners[1].ptr()); glVertex3fv(cube.corners[5].ptr());
+        glVertex3fv(cube.corners[2].ptr()); glVertex3fv(cube.corners[6].ptr());
+        glVertex3fv(cube.corners[3].ptr()); glVertex3fv(cube.corners[7].ptr());
+        glVertex3fv(cube.corners[0].ptr()); glVertex3fv(cube.corners[2].ptr());
+        glVertex3fv(cube.corners[1].ptr()); glVertex3fv(cube.corners[3].ptr());
+        glVertex3fv(cube.corners[4].ptr()); glVertex3fv(cube.corners[6].ptr());
+        glVertex3fv(cube.corners[5].ptr()); glVertex3fv(cube.corners[7].ptr());
+        glVertex3fv(cube.corners[0].ptr()); glVertex3fv(cube.corners[1].ptr());
+        glVertex3fv(cube.corners[2].ptr()); glVertex3fv(cube.corners[3].ptr());
+        glVertex3fv(cube.corners[4].ptr()); glVertex3fv(cube.corners[5].ptr());
+        glVertex3fv(cube.corners[6].ptr()); glVertex3fv(cube.corners[7].ptr());
     }
     glEnd();
-    glDisable(GL_BLEND);
-    glDepthMask(1);
-    for(unsigned int i=0; i<8; i++)
-        corners[i] = grid->getBBCorner(i);
-    //glEnable(GL_BLEND);
-    //glDepthMask(0);
-    if (isStatic())
-        glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
-    else
-        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
-    glBegin(GL_LINES);
-    {
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
-        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
-        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
-        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
-        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
-        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
-        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
-    }
-    glEnd();
-
     glLineWidth(2);
     glPointSize(5);
-    DeformedCube& cube = getDeformCube( index );
     {
-        if (cube.pointsUpdated && cube.facesUpdated)
-            glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
-        else if (cube.pointsUpdated)
-            glColor4f(1.0f, 0.5f, 0.0f, 1.0f);
-        else if (cube.facesUpdated)
-            glColor4f(0.5f, 1.0f, 0.0f, 1.0f);
-        else
-            glColor4f(0.0f, 1.0f, 0.5f, 1.0f);
-        glBegin(GL_LINES);
         for (int j=0; j<3; j++)
         {
-            Vec3f p = cube.center;
-            p[j] += cube.radius;
-            glVertex3fv(p.ptr());
-            p = cube.center;
-            p[j] -= cube.radius;
-            glVertex3fv(p.ptr());
+            glBegin(GL_LINE_STRIP);
+            for (int r=0; r<=16; r++)
+            {
+                float c = cube.radius*cos(r*M_PI/8);
+                float s = cube.radius*sin(r*M_PI/8);
+                Vec3f p = cube.center;
+                p[j] += c;
+                p[(j+1)%3] += s;
+                glVertex3fv(p.ptr());
+            }
+            glEnd();
         }
-        glEnd();
         glBegin(GL_POINTS);
         {
             glVertex3fv(cube.center.ptr());
@@ -647,15 +621,15 @@ void FFDDistanceGridCollisionModel::draw(int index)
         glEnd();
     }
     glLineWidth(1);
-    glPointSize(2);
-    glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
-    glBegin(GL_POINTS);
+    if (cube.pointsUpdated)
     {
-        if (cube.pointsUpdated)
-            for (unsigned int j=0; j<cube.deformedPoints.size(); j++)
-                glVertex3fv(cube.deformedPoints[j].ptr());
+        glPointSize(2);
+        glColor4f(1.0f, 0.5f, 0.5f, 1.0f);
+        glBegin(GL_POINTS);
+        for (unsigned int j=0; j<cube.deformedPoints.size(); j++)
+            glVertex3fv(cube.deformedPoints[j].ptr());
+        glEnd();
     }
-    glEnd();
     glPointSize(1);
 }
 
