@@ -578,7 +578,12 @@ public:
     {
     public:
         int elem; ///< Index of the corresponding element in the topology
-        vector<GCoord> baryPoints; ///< barycentric coordinates of included points
+        struct Point
+        {
+            GCoord bary; ///< Barycentric coordinates
+            int index; ///< Index of corresponding point in in DistanceGrid
+        };
+        vector<Point> points; ///< barycentric coordinates of included points
         GCoord initP0,initDP,invDP; ///< Initial corners position
         GCoord corners[8]; ///< Current corners position
         enum {C000 = 0+0+0,
@@ -618,9 +623,9 @@ public:
 
         GCoord center; ///< current center;
         GReal radius; ///< radius of enclosing sphere
-        vector<GCoord> points; ///< deformed points
-        bool pointsUpdated; ///< true the points vector has been updated with the latest positions
-        void updatePoints(); ///< Update the points position if not done yet (i.e. if pointsUpdated==false)
+        vector<GCoord> deformedPoints; ///< deformed points
+        bool pointsUpdated; ///< true the deformedPoints vector has been updated with the latest positions
+        void updatePoints(); ///< Update the deformedPoints position if not done yet (i.e. if pointsUpdated==false)
         bool facesUpdated; ///< true the faces plane vector has been updated with the latest positions
         void updateFaces(); ///< Update the face planes if not done yet (i.e. if facesUpdated==false)
         /// Compute the barycentric coordinates of a point from its initial position

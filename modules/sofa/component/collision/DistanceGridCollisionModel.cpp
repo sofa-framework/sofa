@@ -393,10 +393,13 @@ void FFDDistanceGridCollisionModel::init()
     for (int i=0; i<nbp; i++)
     {
         Vec3Types::Coord p0 = grid->meshPts[i];
-        Vec3Types::Coord bary;
+        Vector3 bary;
         int elem = ffdGrid->findCube(p0,bary[0],bary[1],bary[2]);
         if (elem == -1) continue;
-        cubes[elem].baryPoints.push_back(bary);
+        DeformedCube::Point p;
+        p.index = i;
+        p.bary = bary;
+        cubes[elem].points.push_back(p);
     }
     /// fill other data and remove inactive elements
     int c=0;
@@ -405,7 +408,7 @@ void FFDDistanceGridCollisionModel::init()
         if (ffdGrid->isCubeActive( e ))
         {
             if (c != e)
-                cubes[c].baryPoints.swap(cubes[e].baryPoints); // move the list of points to the new
+                cubes[c].points.swap(cubes[e].points); // move the list of points to the new
             cubes[c].elem = e;
             topology::MeshTopology::Cube cube = ffdGrid->getCube(e);
             cubes[c].initP0 = ffdGrid->getPoint(cube[0]);
@@ -514,15 +517,15 @@ void FFDDistanceGridCollisionModel::DeformedCube::updateDeform()
     Dxyz = corners[C111]-corners[C101]-corners[C011]+corners[C001]-Dxy; // Dxyz = - C000 + C100 + C010 - C110 + C001 - C101 - C011 + C111 = C001 - C101 - C011 + C111 - Dxy
 }
 
-/// Update the points position if not done yet (i.e. if pointsUpdated==false)
+/// Update the deformedPoints position if not done yet (i.e. if pointsUpdated==false)
 void FFDDistanceGridCollisionModel::DeformedCube::updatePoints()
 {
     if (!pointsUpdated)
     {
-        points.resize(baryPoints.size());
-        for (unsigned int i=0; i<baryPoints.size(); i++)
+        deformedPoints.resize(points.size());
+        for (unsigned int i=0; i<points.size(); i++)
         {
-            points[i] = deform(baryPoints[i]);
+            deformedPoints[i] = deform(points[i].bary);
         }
         pointsUpdated = true;
     }
@@ -664,8 +667,8 @@ void FFDDistanceGridCollisionModel::draw(int index)
     for (unsigned int c=0; c<cubes.size(); c++)
     {
         if (cubes[c].pointsUpdated)
-            for (unsigned int j=0; j<cubes[c].points.size(); j++)
-                glVertex3fv(cubes[c].points[j].ptr());
+            for (unsigned int j=0; j<cubes[c].deformedPoints.size(); j++)
+                glVertex3fv(cubes[c].deformedPoints[j].ptr());
     }
     glEnd();
     glPointSize(1);

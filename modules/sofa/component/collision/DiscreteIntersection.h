@@ -75,6 +75,7 @@ public:
     bool testIntersection(RigidDistanceGridCollisionElement&, Triangle&);
     bool testIntersection(RigidDistanceGridCollisionElement&, Ray&);
     bool testIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
+    bool testIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&);
 
     int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
     int computeIntersection(Sphere&, Sphere&, DetectionOutputVector&);
@@ -91,6 +92,7 @@ public:
     int computeIntersection(RigidDistanceGridCollisionElement&, Triangle&, DetectionOutputVector&);
     int computeIntersection(RigidDistanceGridCollisionElement&, Ray&, DetectionOutputVector&);
     int computeIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, DetectionOutputVector&);
+    int computeIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&, DetectionOutputVector&);
 
 };
 
