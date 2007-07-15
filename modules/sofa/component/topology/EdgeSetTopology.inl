@@ -529,6 +529,17 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdge
     Real length=(p[e.first]-p[e.second]).norm();
     return length;
 }
+template< class DataTypes>
+typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestSquareEdgeLength( const unsigned int i) const
+{
+    EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
+    const Edge &e=container->getEdge(i);
+    const VecCoord& p = *topology->getDOF()->getX0();
+    Real length=(p[e.first]-p[e.second]).norm2();
+    return length;
+}
 /// computes the edge length of all edges are store in the array interface
 template<class DataTypes>
 void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterface<Real> &ai) const

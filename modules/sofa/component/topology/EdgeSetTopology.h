@@ -356,7 +356,8 @@ public:
     void computeEdgeLength( BasicArrayInterface<Real> &ai) const;
     /// computes the initial length of edge no i and returns it
     Real computeRestEdgeLength(const unsigned int i) const;
-
+    /// computes the initial square length of edge no i and returns it
+    Real computeRestSquareEdgeLength(const unsigned int i) const;
 };
 
 
