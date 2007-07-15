@@ -147,13 +147,13 @@ public:
 
     virtual void resize( int vsize);
 
-    virtual int getSize() const
+    int getSize() const
     {
         return vsize;
     }
-    virtual double getPX(int ) const { return 0; }
-    virtual double getPY(int ) const { return 0; }
-    virtual double getPZ(int ) const { return 0; }
+    double getPX(int i) const { double x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return x; }
+    double getPY(int i) const { double x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return y; }
+    double getPZ(int i) const { double x=0.0,y=0.0,z=0.0; DataTypes::get(x,y,z,(*getX())[i]); return z; }
 
     /** \brief Overwrite values at index outputIndex by the ones at inputIndex.
      *

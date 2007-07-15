@@ -56,22 +56,6 @@ int MechanicalObjectClass = core::RegisterObject("mechanical state vectors")
         ;
 
 // template specialization must be in the same namespace as original namespace for GCC 4.1
-template<> double MechanicalObject<defaulttype::Vec1fTypes>::getPX(int i) const { return (double)(*getX())[i][0]; }
-template<> double MechanicalObject<defaulttype::Vec2fTypes>::getPX(int i) const { return (double)(*getX())[i][0]; }
-template<> double MechanicalObject<defaulttype::Vec2fTypes>::getPY(int i) const { return (double)(*getX())[i][1]; }
-template<> double MechanicalObject<defaulttype::Vec3fTypes>::getPX(int i) const { return (double)(*getX())[i][0]; }
-template<> double MechanicalObject<defaulttype::Vec3fTypes>::getPY(int i) const { return (double)(*getX())[i][1]; }
-template<> double MechanicalObject<defaulttype::Vec3fTypes>::getPZ(int i) const { return (double)(*getX())[i][2]; }
-
-template<> double MechanicalObject<defaulttype::Vec1dTypes>::getPX(int i) const { return (double)(*getX())[i][0]; }
-template<> double MechanicalObject<defaulttype::Vec2dTypes>::getPX(int i) const { return (double)(*getX())[i][0]; }
-template<> double MechanicalObject<defaulttype::Vec2dTypes>::getPY(int i) const { return (double)(*getX())[i][1]; }
-template<> double MechanicalObject<defaulttype::Vec3dTypes>::getPX(int i) const { return (double)(*getX())[i][0]; }
-template<> double MechanicalObject<defaulttype::Vec3dTypes>::getPY(int i) const { return (double)(*getX())[i][1]; }
-template<> double MechanicalObject<defaulttype::Vec3dTypes>::getPZ(int i) const { return (double)(*getX())[i][2]; }
-
-
-// template specialization must be in the same namespace as original namespace for GCC 4.1
 template<>
 void MechanicalObject<defaulttype::Rigid3Types>::getCompliance(double**W)
 {

@@ -408,9 +408,11 @@ void FFDDistanceGridCollisionModel::init()
                 cubes[c].baryPoints.swap(cubes[e].baryPoints); // move the list of points to the new
             cubes[c].elem = e;
             topology::MeshTopology::Cube cube = ffdGrid->getCube(e);
-            cubes[c].initC0 = ffdGrid->getPoint(cube[0]);
-            cubes[c].initC1 = ffdGrid->getPoint(cube[7]);
-
+            cubes[c].initP0 = ffdGrid->getPoint(cube[0]);
+            cubes[c].initDP = ffdGrid->getPoint(cube[7])-cubes[c].initP0;
+            cubes[c].invDP[0] = 1/cubes[c].initDP[0];
+            cubes[c].invDP[1] = 1/cubes[c].initDP[1];
+            cubes[c].invDP[2] = 1/cubes[c].initDP[2];
             ++c;
         }
     }
@@ -493,30 +495,57 @@ void FFDDistanceGridCollisionModel::updateGrid()
                 if (r2 > radius2) radius2 = r2;
             }
             cubes[c].radius = rsqrt(radius2);
-            cubes[c].updated = false;
+            cubes[c].updateDeform();
+            cubes[c].pointsUpdated = false;
+            cubes[c].facesUpdated = false;
         }
     }
 }
 
-/// Update the points position if not done yet (i.e. if updated==false)
-void FFDDistanceGridCollisionModel::DeformedCube::update()
+/// Update the deformation precomputed values
+void FFDDistanceGridCollisionModel::DeformedCube::updateDeform()
 {
-    if (!updated)
+    Dx = corners[C100]-corners[C000];   // Dx = -C000+C100
+    Dy = corners[C010]-corners[C000];   // Dy = -C000+C010
+    Dz = corners[C001]-corners[C000];   // Dx = -C000+C001
+    Dxy = corners[C110]-corners[C010]-Dx;  // Dxy = C000-C100-C010+C110 = C110-C010-Dx
+    Dxz = corners[C101]-corners[C001]-Dx;  // Dxz = C000-C100-C001+C101 = C101-C001-Dx
+    Dyz = corners[C011]-corners[C001]-Dy;  // Dyz = C000-C010-C001+C011 = C011-C001-Dy
+    Dxyz = corners[C111]-corners[C101]-corners[C011]+corners[C001]-Dxy; // Dxyz = - C000 + C100 + C010 - C110 + C001 - C101 - C011 + C111 = C001 - C101 - C011 + C111 - Dxy
+}
+
+/// Update the points position if not done yet (i.e. if pointsUpdated==false)
+void FFDDistanceGridCollisionModel::DeformedCube::updatePoints()
+{
+    if (!pointsUpdated)
     {
         points.resize(baryPoints.size());
         for (unsigned int i=0; i<baryPoints.size(); i++)
         {
-            DistanceGrid::Coord b = baryPoints[i];
-            DistanceGrid::Coord cx00 = corners[0+0+0] + (corners[1+0+0]-corners[0+0+0])*b[0];
-            DistanceGrid::Coord cx10 = corners[0+2+0] + (corners[1+2+0]-corners[0+2+0])*b[0];
-            DistanceGrid::Coord cx01 = corners[0+0+4] + (corners[1+0+4]-corners[0+0+4])*b[0];
-            DistanceGrid::Coord cx11 = corners[0+2+4] + (corners[1+2+4]-corners[0+2+4])*b[0];
-            DistanceGrid::Coord cy0 = cx00 + (cx10-cx00)*b[1];
-            DistanceGrid::Coord cy1 = cx01 + (cx11-cx01)*b[1];
-            points[i] = cy0 + (cy1-cy0)*b[2];
+            points[i] = deform(baryPoints[i]);
         }
-        updated = true;
+        pointsUpdated = true;
     }
+}
+
+/// Update the face planes position if not done yet (i.e. if facesUpdated==false)
+void FFDDistanceGridCollisionModel::DeformedCube::updateFaces()
+{
+    if (!facesUpdated)
+    {
+        faces[FX0] = computePlane(C000,C010,C001,C011); faces[FX1] = computePlane(C100,C101,C110,C111);
+        faces[FY0] = computePlane(C000,C001,C100,C101); faces[FY1] = computePlane(C010,C110,C011,C111);
+        faces[FZ0] = computePlane(C000,C100,C010,C110); faces[FZ1] = computePlane(C001,C011,C101,C111);
+        facesUpdated = true;
+    }
+}
+
+FFDDistanceGridCollisionModel::DeformedCube::Plane FFDDistanceGridCollisionModel::DeformedCube::computePlane(int c00, int c10, int c01, int c11)
+{
+    GCoord C4 = (corners[c00]+corners[c10]+corners[c01]+corners[c11]); //*0.25f;
+    GCoord N = (corners[c11]-corners[c00]).cross(corners[c01]-corners[c10]);
+    N.normalize();
+    return Plane(N,N*C4*(-0.25f));
 }
 
 void FFDDistanceGridCollisionModel::draw()
@@ -602,8 +631,12 @@ void FFDDistanceGridCollisionModel::draw(int index)
     const vector<DeformedCube>& cubes = getDeformCubes( index );
     for (unsigned int c=0; c<cubes.size(); c++)
     {
-        if (cubes[c].updated)
+        if (cubes[c].pointsUpdated && cubes[c].facesUpdated)
             glColor4f(1.0f, 0.0f, 0.0f, 1.0f);
+        else if (cubes[c].pointsUpdated)
+            glColor4f(1.0f, 0.5f, 0.0f, 1.0f);
+        else if (cubes[c].facesUpdated)
+            glColor4f(0.5f, 1.0f, 0.0f, 1.0f);
         else
             glColor4f(0.0f, 1.0f, 0.5f, 1.0f);
         glBegin(GL_LINES);
@@ -630,7 +663,7 @@ void FFDDistanceGridCollisionModel::draw(int index)
     glBegin(GL_POINTS);
     for (unsigned int c=0; c<cubes.size(); c++)
     {
-        if (cubes[c].updated)
+        if (cubes[c].pointsUpdated)
             for (unsigned int j=0; j<cubes[c].points.size(); j++)
                 glVertex3fv(cubes[c].points[j].ptr());
     }

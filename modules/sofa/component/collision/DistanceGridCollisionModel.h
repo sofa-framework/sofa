@@ -572,18 +572,136 @@ public:
 class FFDDistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
 {
 public:
+    typedef DistanceGrid::Real GReal;
+    typedef DistanceGrid::Coord GCoord;
     class DeformedCube
     {
     public:
         int elem; ///< Index of the corresponding element in the topology
-        vector<DistanceGrid::Coord> baryPoints; ///< barycentric coordinates of included points
-        DistanceGrid::Coord initC0,initC1; ///< Initial corners position
-        DistanceGrid::Coord corners[8]; ///< Current corners position
-        DistanceGrid::Coord center; ///< current center;
-        DistanceGrid::Real radius; ///< radius of enclosing sphere
-        vector<DistanceGrid::Coord> points; ///< deformed points
-        bool updated; ///< true the points vector has been updated with the latest positions
-        void update(); ///< Update the points position if not done yet (i.e. if updated==false)
+        vector<GCoord> baryPoints; ///< barycentric coordinates of included points
+        GCoord initP0,initDP,invDP; ///< Initial corners position
+        GCoord corners[8]; ///< Current corners position
+        enum {C000 = 0+0+0,
+                C100 = 1+0+0,
+                C010 = 0+2+0,
+                C110 = 1+2+0,
+                C001 = 0+0+4,
+                C101 = 1+0+4,
+                C011 = 0+2+4,
+                C111 = 1+2+4
+             };
+        typedef Vec<4,GReal> Plane; ///< plane equation as defined by Plane.(x y z 1) = 0
+        Plane faces[6]; ///< planes corresponding to the six faces (FX0,FX1,FY0,FY1,FZ0,FZ1)
+        enum {FX0 = 0+0,
+                FX1 = 0+1,
+                FY0 = 2+0,
+                FY1 = 2+1,
+                FZ0 = 4+0,
+                FZ1 = 4+1
+             };
+        /// @name Precomputed deformation factors
+        /// We have :
+        ///   deform(b) = C000(1-b[0])(1-b[1])(1-b[2]) + C100(b[0])(1-b[1])(1-b[2]) + C010(1-b[0])(b[1])(1-b[2]) + C110(b[0])(b[1])(1-b[2])
+        ///             + C001(1-b[0])(1-b[1])(  b[2]) + C101(b[0])(1-b[1])(  b[2]) + C011(1-b[0])(b[1])(  b[2]) + C111(b[0])(b[1])(  b[2])
+        ///             = C000 + Dx b[0] + Dy b[1] + Dz b[2] + Dxy b[0]b[1] + Dxz b[0]b[2] + dyz b[1]b[2] + dxyz b[0]b[1]b[2]
+        /// @{
+        GCoord Dx;   ///< Dx = -C000+C100
+        GCoord Dy;   ///< Dy = -C000+C010
+        GCoord Dz;   ///< Dx = -C000+C001
+        GCoord Dxy;  ///< Dxy = C000-C100-C010+C110 = C110-C010-Dx
+        GCoord Dxz;  ///< Dxz = C000-C100-C001+C101 = C101-C001-Dx
+        GCoord Dyz;  ///< Dyz = C000-C010-C001+C011 = C011-C001-Dy
+        GCoord Dxyz; ///< Dxyz = - C000 + C100 + C010 - C110 + C001 - C101 - C011 + C111 = C001 - C101 - C011 + C111 - Dxy
+        /// @}
+        /// Update the deformation precomputed values
+        void updateDeform();
+
+        GCoord center; ///< current center;
+        GReal radius; ///< radius of enclosing sphere
+        vector<GCoord> points; ///< deformed points
+        bool pointsUpdated; ///< true the points vector has been updated with the latest positions
+        void updatePoints(); ///< Update the points position if not done yet (i.e. if pointsUpdated==false)
+        bool facesUpdated; ///< true the faces plane vector has been updated with the latest positions
+        void updateFaces(); ///< Update the face planes if not done yet (i.e. if facesUpdated==false)
+        /// Compute the barycentric coordinates of a point from its initial position
+        DistanceGrid::Coord baryCoords(const GCoord& c) const
+        {
+            return GCoord( (c[0]-initP0[0])*invDP[0],
+                    (c[1]-initP0[1])*invDP[1],
+                    (c[2]-initP0[2])*invDP[2]);
+        }
+        /// Compute the initial position of a point from its barycentric coordinates
+        GCoord initpos(const GCoord& b) const
+        {
+            return GCoord( initP0[0]+initDP[0]*b[0],
+                    initP0[1]+initDP[1]*b[1],
+                    initP0[2]+initDP[2]*b[2]);
+        }
+        /// Compute the deformed position of a point from its barycentric coordinates
+        GCoord deform(const GCoord& b) const
+        {
+            return corners[C000] + Dx*b[0] + (Dy + Dxy*b[0])*b[1] + (Dz + Dxz*b[0] + (Dyz + Dxyz*b[0])*b[1])*b[2];
+        }
+
+        static GReal interp(GReal coef, GReal a, GReal b)
+        {
+            return a+coef*(b-a);
+        }
+
+        /// deform a direction relative to a point in barycentric coordinates
+        GCoord deformDir(const GCoord& b, const GCoord& dir) const
+        {
+            GCoord r;
+            // dp/dx = Dx + Dxy*y + Dxz*z + Dxyz*y*z
+            r  = (Dx + Dxy*b[1] + (Dxz + Dxyz*b[1])*b[2])*dir[0];
+            // dp/dy = Dy + Dxy*x + Dyz*z + Dxyz*x*z
+            r += (Dy + Dxy*b[0] + (Dyz + Dxyz*b[0])*b[2])*dir[1];
+            // dp/dz = Dz + Dxz*x + Dyz*y + Dxyz*x*y
+            r += (Dz + Dxz*b[0] + (Dyz + Dxyz*b[0])*b[1])*dir[2];
+            return r;
+        }
+
+        /// Get the local jacobian matrix of the deformation
+        Mat<3,3,GReal> Jdeform(const GCoord& b) const
+        {
+            Mat<3,3,GReal> J;
+            for (int i=0; i<3; i++)
+            {
+                // dp/dx = Dx + Dxy*y + Dxz*z + Dxyz*y*z
+                J[i][0] = (Dx[i] + Dxy[i]*b[1] + (Dxz[i] + Dxyz[i]*b[1])*b[2]);
+                // dp/dy = Dy + Dxy*x + Dyz*z + Dxyz*x*z
+                J[i][1] = (Dy[i] + Dxy[i]*b[0] + (Dyz[i] + Dxyz[i]*b[0])*b[2]);
+                // dp/dz = Dz + Dxz*x + Dyz*y + Dxyz*x*y
+                J[i][2] = (Dz[i] + Dxz[i]*b[0] + (Dyz[i] + Dxyz[i]*b[0])*b[1]);
+            }
+            return J;
+        }
+
+        /// Compute an initial estimate to the barycentric coordinate of a point given its deformed position
+        GCoord undeform0(const GCoord& p) const
+        {
+            GCoord b;
+            for (int i=0; i<3; i++)
+            {
+                GReal b0 = faces[2*i+0]*Plane(p,1);
+                GReal b1 = faces[2*i+1]*Plane(p,1);
+                b[i] = b0 / (b0 + b1);
+            }
+            return b;
+        }
+        /// Undeform a direction relative to a point in barycentric coordinates
+        GCoord undeformDir(const GCoord& b, const GCoord& dir) const
+        {
+            // we want to find b2 so that deform(b2)-deform(b) = dir
+            // we can use Newton's method using the jacobian of the deformation.
+            Mat<3,3,GReal> m = Jdeform(b);
+            Mat<3,3,GReal> minv;
+            minv.invert(m);
+            return minv*dir;
+        }
+
+        /// Compute a plane equation given 4 corners
+        Plane computePlane(int c00, int c10, int c01, int c11);
     };
 
 protected:
