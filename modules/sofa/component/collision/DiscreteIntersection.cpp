@@ -1308,7 +1308,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
     int nc = 0;
     DistanceGrid* grid1 = e1.getGrid();
     DistanceGrid* grid2 = e2.getGrid();
-    vector<FFDDistanceGridCollisionModel::DeformedCube>& cubes1 = e1.getCollisionModel()->getDeformCubes(e1.getIndex());
+    FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
     bool useXForm = e2.isTransformed();
     //const Vector3& t1 = e1.getTranslation();
     //const Matrix3& r1 = e1.getRotation();
@@ -1329,22 +1329,21 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
     }
     else rotation.identity();
 
+    const DistanceGrid::Coord center2 = translation + rotation*c1.center;
+    const DistanceGrid::Real radius2 = c1.radius*c1.radius;
     const DistanceGrid::VecCoord& x2 = grid2->meshPts;
     const int i0 = x2.size();
     // first points of e1 against distance field of e2
     if (e1.getCollisionModel()->usePoints.getValue()) // && !e2.getCollisionModel()->usePoints.getValue())
     {
-        for (unsigned int c=0; c<cubes1.size(); c++)
+        if (grid2->inBBox( center2, margin + c1.radius ))
         {
-            DistanceGrid::Coord p1 = cubes1[c].center;
-            DistanceGrid::Coord p2 = translation + rotation*p1;
-            if (!grid2->inBBox( p2, margin + cubes1[c].radius )) continue;
-            cubes1[c].updatePoints();
-            const std::vector<DistanceGrid::Coord>& x1 = cubes1[c].deformedPoints;
+            c1.updatePoints();
+            const std::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
             for (unsigned int i=0; i<x1.size(); i++)
             {
-                p1 = x1[i];
-                p2 = translation + rotation*p1;
+                DistanceGrid::Coord p1 = x1[i];
+                DistanceGrid::Coord p2 = translation + rotation*p1;
 
                 if (!grid2->inBBox( p2, margin )) continue;
 
@@ -1359,13 +1358,13 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                 contacts.resize(contacts.size()+1);
                 DetectionOutput *detection = &*(contacts.end()-1);
 
-                detection->point[0] = grid1->meshPts[cubes1[c].points[i].index];
+                detection->point[0] = grid1->meshPts[c1.points[i].index];
                 detection->point[1] = Vector3(p2) - grad * d;
                 detection->normal = r2 * -grad; // normal in global space from p1's surface
                 detection->distance = d - d0;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
-                detection->id = i0 + cubes1[c].points[i].index;
+                detection->id = i0 + c1.points[i].index;
                 ++nc;
             }
         }
@@ -1375,52 +1374,33 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
 
     if (!x2.empty() && e2.getCollisionModel()->usePoints.getValue())
     {
-        // list of cubes intersecting with the current point, sorted by increasing distance
-        std::vector<std::pair<DistanceGrid::Real,unsigned int> > activecubes;
         for (unsigned int i=0; i<x2.size(); i++)
         {
             DistanceGrid::Coord p2 = x2[i];
+            if ((p2-center2).norm2() >= radius2) continue;
             DistanceGrid::Coord p1 = rotation.multTranspose(p2-translation);
-            activecubes.clear();
-            for (unsigned int c=0; c<cubes1.size(); c++)
+            // try to find the point in the undeformed cube
             {
-                DistanceGrid::Real d2 = (p1-cubes1[c].center).norm2();
-                if (d2 < cubes1[c].radius*cubes1[c].radius)
-                {
-                    int p = activecubes.size();
-                    activecubes.resize(p+1);
-                    while (p>0 && activecubes[p-1].first > d2)
-                    {
-                        activecubes[p] = activecubes[p-1];
-                        --p;
-                    }
-                    activecubes[p].first = d2;
-                    activecubes[p].second = c;
-                }
-            }
-
-            //DistanceGrid::Real d = 1e10;
-            bool found = false;
-            // try to find the point in each cube
-            /// \TODO: start with the cube that the point was in the last time
-            for (unsigned int ci=0; ci<activecubes.size(); ci++)
-            {
-                FFDDistanceGridCollisionModel::DeformedCube& c = cubes1[activecubes[ci].second];
-                c.updateFaces();
+                c1.updateFaces();
+                const DistanceGrid::Real far = c1.invDP.norm();
                 // estimate the barycentric coordinates
-                DistanceGrid::Coord b = c.undeform0(p1);
+                DistanceGrid::Coord b = c1.undeform0(p1);
 
                 // refine the estimate until we are very close to the p1 or we are sure p1 cannot intersect with the object
                 int iter;
-                //std::cerr << "Undeform: p1 = "<<p1<<" b0 = "<<b<<" c000 = "<<C000<<" c100 = "<<C100<<" c010 = "<<C010<<" c110 = "<<C110<<" c001 = "<<C001<<" c101 = "<<C101<<" c011 = "<<C011<<" c111 = "<<C111<<std::endl;
                 DistanceGrid::Real err1 = 1000.0f;
                 for(iter=0; iter<5; ++iter)
                 {
-                    DistanceGrid::Coord pdeform = c.deform(b);
+                    DistanceGrid::Coord pdeform = c1.deform(b);
                     DistanceGrid::Coord diff = p1-pdeform;
                     DistanceGrid::Real err = diff.norm();
+                    DistanceGrid::Real berr = err*far; if (berr>0.5f) berr=0.5f;
+                    if (b[0] < -berr || b[0] > 1+berr
+                        || b[1] < -berr || b[1] > 1+berr
+                        || b[2] < -berr || b[2] > 1+berr)
+                        break; // far from the cube
                     if (iter>3)
-                        std::cout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c.initpos(b))<<"\n";
+                        std::cout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<"\n";
                     if (err < 0.001f)
                     {
                         // we found the corresponding point, but is is only valid if inside the current cube
@@ -1428,19 +1408,14 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                             && b[1] > -0.001f && b[1] < 1.001f
                             && b[2] > -0.001f && b[2] < 1.001f)
                         {
-                            found = true;
-                            DistanceGrid::Coord pinit = c.initpos(b);
+                            DistanceGrid::Coord pinit = c1.initpos(b);
                             DistanceGrid::Real d = grid1->interp(pinit);
                             if (d < margin)
                             {
-                                //std::cerr << "-> COLLISION"<<std::endl;
                                 DistanceGrid::Coord grad = grid1->grad(pinit); // note that there are some redundant computations between interp() and grad()
                                 grad.normalize();
                                 pinit -= grad*d;
-                                // compute the deformed position of this point
-                                //pdeform = c.deform(c.baryCoords(pinit));
-                                //grad = pdeform-p1;
-                                grad = c.deformDir(c.baryCoords(pinit),grad);
+                                grad = c1.deformDir(c1.baryCoords(pinit),grad);
                                 grad.normalize();
 
                                 contacts.resize(contacts.size()+1);
@@ -1455,35 +1430,23 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                                 detection->id = i;
                                 ++nc;
                             }
-                            //else std::cerr << "-> OUT"<<std::endl;
                         }
-                        //else std::cerr << "-> NOT IN CUBE "<<b<<std::endl;
                         break;
                     }
-                    //if (d*0.5f - err > margin)
-                    //{
-                    //    //std::cerr << "-> FAR"<<std::endl;
-                    //    break; // the point is too far from the object
-                    //}
-
-                    //if (err > 2*err1)
-                    //{
-                    //    std::cerr << "ERROR: FFD-Rigid collision diverged when searching for undeformed point: Iter"<<iter<<": "<<err1<<" -> "<<err<<" p1 = "<<p1<<" b = "<<b<<" c000 = "<<C000<<" c100 = "<<C100<<" c010 = "<<C010<<" c110 = "<<C110<<" c001 = "<<C001<<" c101 = "<<C101<<" c011 = "<<C011<<" c111 = "<<C111<<" pinit = "<<c.initpos(b)<<" pdeform = "<<c.deform(b)<<std::endl;
-                    //    break; // we are diverging...
-                    //}
                     err1 = err;
+                    DistanceGrid::Real d = grid1->interp(c1.initpos(b));
+                    if (d*0.5f - err > margin)
+                        break; // the point is too far from the object
                     // we are solving for deform(b+db)-deform(b) = p1-deform(b)
-                    // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
-                    b += c.undeformDir( b, diff );
-                    if (b[0] < -0.5f || b[0] > 1.5f
-                        || b[1] < -0.5f || b[1] > 1.5f
-                        || b[2] < -0.5f || b[2] > 1.5f)
-                        break; // far from the cube
+                    // deform(b+db) ~= deform(b) + J db  -> J db = p1-deform(b) -> db = J^-1 (p1-deform(b))
+                    b += c1.undeformDir( b, diff );
                 }
-                if (found) break; // no need to search anymore
                 if (iter == 5)
                 {
-                    std::cerr << "ERROR: FFD-Rigid collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c.corners[0]<<" c100 = "<<c.corners[1]<<" c010 = "<<c.corners[2]<<" c110 = "<<c.corners[3]<<" c001 = "<<c.corners[4]<<" c101 = "<<c.corners[5]<<" c011 = "<<c.corners[6]<<" c111 = "<<c.corners[7]<<" pinit = "<<c.initpos(b)<<" pdeform = "<<c.deform(b)<<" err = "<<err1<<std::endl;
+                    if (b[0] > -0.001f && b[0] < 1.001f
+                        && b[1] > -0.001f && b[1] < 1.001f
+                        && b[2] > -0.001f && b[2] < 1.001f)
+                        std::cerr << "ERROR: FFD-Rigid collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<std::endl;
                 }
             }
         }
@@ -1502,8 +1465,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
     int nc = 0;
     DistanceGrid* grid1 = e1.getGrid();
     DistanceGrid* grid2 = e2.getGrid();
-    vector<FFDDistanceGridCollisionModel::DeformedCube>& cubes1 = e1.getCollisionModel()->getDeformCubes(e1.getIndex());
-    vector<FFDDistanceGridCollisionModel::DeformedCube>& cubes2 = e2.getCollisionModel()->getDeformCubes(e2.getIndex());
+    FFDDistanceGridCollisionModel::DeformedCube& c1 = e1.getCollisionModel()->getDeformCube(e1.getIndex());
+    FFDDistanceGridCollisionModel::DeformedCube& c2 = e2.getCollisionModel()->getDeformCube(e2.getIndex());
     const bool usePoints1 = e1.getCollisionModel()->usePoints.getValue();
     const bool usePoints2 = e2.getCollisionModel()->usePoints.getValue();
 
@@ -1512,163 +1475,164 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
     const double d0 = e1.getProximity() + e2.getProximity();
     const DistanceGrid::Real margin = 0.001f + (DistanceGrid::Real)d0;
 
+    if ((c2.center - c1.center).norm2() > (c1.radius+c2.radius)*(c1.radius+c2.radius))
+        return 0; // the two enclosing spheres are not colliding
+
     int i0 = grid1->meshPts.size();
-    int npair = 0;
-    int npoints = 0;
-    for (unsigned int i1=0; i1<cubes1.size(); i1++)
+    if (usePoints1)
     {
-        FFDDistanceGridCollisionModel::DeformedCube& c1 = cubes1[i1];
-        for (unsigned int i2=0; i2<cubes2.size(); i2++)
+        c1.updatePoints();
+        c2.updateFaces();
+        const DistanceGrid::Real far = c2.invDP.norm();
+        const std::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
+        for (unsigned int i=0; i<x1.size(); i++)
         {
-            FFDDistanceGridCollisionModel::DeformedCube& c2 = cubes2[i2];
-            if ((c2.center - c1.center).norm2() > (c1.radius+c2.radius)*(c1.radius+c2.radius))
-                continue; // the two enclosing spheres are not colliding
-            ++npair;
-            if (usePoints1)
+            DistanceGrid::Coord p2 = x1[i];
+
+            // estimate the barycentric coordinates
+            DistanceGrid::Coord b = c2.undeform0(p2);
+
+            // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
+            int iter;
+            DistanceGrid::Real err1 = 1000.0f;
+            for(iter=0; iter<5; ++iter)
             {
-                c1.updatePoints();
-                c2.updateFaces();
-                const std::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
-                npoint += x1.size();
-                for (unsigned int i=0; i<x1.size(); i++)
+                DistanceGrid::Coord pdeform = c2.deform(b);
+                DistanceGrid::Coord diff = p2-pdeform;
+                DistanceGrid::Real err = diff.norm();
+                DistanceGrid::Real berr = err*far; if (berr>0.5f) berr=0.5f;
+                if (b[0] < -berr || b[0] > 1+berr
+                    || b[1] < -berr || b[1] > 1+berr
+                    || b[2] < -berr || b[2] > 1+berr)
+                    break; // far from the cube
+                if (iter>3)
+                    std::cout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid2->interp(c2.initpos(b))<<"\n";
+                if (err < 0.001f)
                 {
-                    DistanceGrid::Coord p2 = x1[i];
-
-                    // estimate the barycentric coordinates
-                    DistanceGrid::Coord b = c2.undeform0(p2);
-
-                    // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
-                    int iter;
-                    DistanceGrid::Real err1 = 1000.0f;
-                    for(iter=0; iter<5; ++iter)
+                    // we found the corresponding point, but is is only valid if inside the current cube
+                    if (b[0] > -0.001f && b[0] < 1.001f
+                        && b[1] > -0.001f && b[1] < 1.001f
+                        && b[2] > -0.001f && b[2] < 1.001f)
                     {
-                        DistanceGrid::Coord pdeform = c2.deform(b);
-                        DistanceGrid::Coord diff = p2-pdeform;
-                        DistanceGrid::Real err = diff.norm();
-                        if (iter>3)
-                            std::cout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid2->interp(c2.initpos(b))<<"\n";
-                        if (err < 0.001f)
+                        DistanceGrid::Coord pinit = c2.initpos(b);
+                        DistanceGrid::Real d = grid2->interp(pinit);
+                        if (d < margin)
                         {
-                            // we found the corresponding point, but is is only valid if inside the current cube
-                            if (b[0] > -0.001f && b[0] < 1.001f
-                                && b[1] > -0.001f && b[1] < 1.001f
-                                && b[2] > -0.001f && b[2] < 1.001f)
-                            {
-                                DistanceGrid::Coord pinit = c2.initpos(b);
-                                DistanceGrid::Real d = grid2->interp(pinit);
-                                if (d < margin)
-                                {
-                                    DistanceGrid::Coord grad = grid2->grad(pinit); // note that there are some redundant computations between interp() and grad()
-                                    grad.normalize();
-                                    pinit -= grad*d;
-                                    grad = c2.deformDir(c2.baryCoords(pinit),grad);
-                                    grad.normalize();
+                            DistanceGrid::Coord grad = grid2->grad(pinit); // note that there are some redundant computations between interp() and grad()
+                            grad.normalize();
+                            pinit -= grad*d;
+                            grad = c2.deformDir(c2.baryCoords(pinit),grad);
+                            grad.normalize();
 
-                                    contacts.resize(contacts.size()+1);
-                                    DetectionOutput *detection = &*(contacts.end()-1);
+                            contacts.resize(contacts.size()+1);
+                            DetectionOutput *detection = &*(contacts.end()-1);
 
-                                    detection->point[0] = Vector3(grid1->meshPts[c1.points[i].index]);
-                                    detection->point[1] = Vector3(pinit);
-                                    detection->normal = Vector3(-grad); // normal in global space from p1's surface
-                                    detection->distance = d - d0;
-                                    detection->elem.first = e1;
-                                    detection->elem.second = e2;
-                                    detection->id = c1.points[i].index;
-                                    ++nc;
-                                }
-                            }
-                            break;
+                            detection->point[0] = Vector3(grid1->meshPts[c1.points[i].index]);
+                            detection->point[1] = Vector3(pinit);
+                            detection->normal = Vector3(-grad); // normal in global space from p1's surface
+                            detection->distance = d - d0;
+                            detection->elem.first = e1;
+                            detection->elem.second = e2;
+                            detection->id = c1.points[i].index;
+                            ++nc;
                         }
-                        err1 = err;
-                        // we are solving for deform(b+db)-deform(b) = p1-deform(b)
-                        // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
-                        b += c2.undeformDir( b, diff );
-                        if (b[0] < -0.5f || b[0] > 1.5f
-                            || b[1] < -0.5f || b[1] > 1.5f
-                            || b[2] < -0.5f || b[2] > 1.5f)
-                            break; // far from the cube
                     }
-                    if (iter == 5)
-                    {
-                        std::cerr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p2 = "<<p2<<" b = "<<b<<" c000 = "<<c2.corners[0]<<" c100 = "<<c2.corners[1]<<" c010 = "<<c2.corners[2]<<" c110 = "<<c2.corners[3]<<" c001 = "<<c2.corners[4]<<" c101 = "<<c2.corners[5]<<" c011 = "<<c2.corners[6]<<" c111 = "<<c2.corners[7]<<" pinit = "<<c2.initpos(b)<<" pdeform = "<<c2.deform(b)<<" err = "<<err1<<std::endl;
-                    }
+                    break;
                 }
+                err1 = err;
+                DistanceGrid::Real d = grid2->interp(c2.initpos(b));
+                if (d*0.5f - err > margin)
+                    break; // the point is too far from the object
+                // we are solving for deform(b+db)-deform(b) = p1-deform(b)
+                // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
+                b += c2.undeformDir( b, diff );
             }
-            if (usePoints2)
+            if (iter == 5)
             {
-                c2.updatePoints();
-                c1.updateFaces();
-                const std::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
-                npoint += x2.size();
-                for (unsigned int i=0; i<x2.size(); i++)
-                {
-                    DistanceGrid::Coord p1 = x2[i];
-
-                    // estimate the barycentric coordinates
-                    DistanceGrid::Coord b = c1.undeform0(p1);
-
-                    // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
-                    int iter;
-                    DistanceGrid::Real err1 = 1000.0f;
-                    for(iter=0; iter<5; ++iter)
-                    {
-                        DistanceGrid::Coord pdeform = c1.deform(b);
-                        DistanceGrid::Coord diff = p1-pdeform;
-                        DistanceGrid::Real err = diff.norm();
-                        if (iter>3)
-                            std::cout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<"\n";
-                        if (err < 0.001f)
-                        {
-                            // we found the corresponding point, but is is only valid if inside the current cube
-                            if (b[0] > -0.001f && b[0] < 1.001f
-                                && b[1] > -0.001f && b[1] < 1.001f
-                                && b[2] > -0.001f && b[2] < 1.001f)
-                            {
-                                DistanceGrid::Coord pinit = c1.initpos(b);
-                                DistanceGrid::Real d = grid1->interp(pinit);
-                                if (d < margin)
-                                {
-                                    DistanceGrid::Coord grad = grid1->grad(pinit); // note that there are some redundant computations between interp() and grad()
-                                    grad.normalize();
-                                    pinit -= grad*d;
-                                    grad = c1.deformDir(c1.baryCoords(pinit),grad);
-                                    grad.normalize();
-
-                                    contacts.resize(contacts.size()+1);
-                                    DetectionOutput *detection = &*(contacts.end()-1);
-
-                                    detection->point[0] = Vector3(pinit);
-                                    detection->point[1] = Vector3(grid2->meshPts[c2.points[i].index]);
-                                    detection->normal = Vector3(grad); // normal in global space from p1's surface
-                                    detection->distance = d - d0;
-                                    detection->elem.first = e1;
-                                    detection->elem.second = e2;
-                                    detection->id = i0+c2.points[i].index;
-                                    ++nc;
-                                }
-                            }
-                            break;
-                        }
-                        err1 = err;
-                        // we are solving for deform(b+db)-deform(b) = p1-deform(b)
-                        // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
-                        b += c2.undeformDir( b, diff );
-                        if (b[0] < -0.5f || b[0] > 1.5f
-                            || b[1] < -0.5f || b[1] > 1.5f
-                            || b[2] < -0.5f || b[2] > 1.5f)
-                            break; // far from the cube
-                    }
-                    if (iter == 5)
-                    {
-                        std::cerr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<std::endl;
-                    }
-                }
+                if (b[0] > -0.001f && b[0] < 1.001f
+                    && b[1] > -0.001f && b[1] < 1.001f
+                    && b[2] > -0.001f && b[2] < 1.001f)
+                    std::cerr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p2 = "<<p2<<" b = "<<b<<" c000 = "<<c2.corners[0]<<" c100 = "<<c2.corners[1]<<" c010 = "<<c2.corners[2]<<" c110 = "<<c2.corners[3]<<" c001 = "<<c2.corners[4]<<" c101 = "<<c2.corners[5]<<" c011 = "<<c2.corners[6]<<" c111 = "<<c2.corners[7]<<" pinit = "<<c2.initpos(b)<<" pdeform = "<<c2.deform(b)<<" err = "<<err1<<std::endl;
             }
         }
     }
-    std::cout << "FFD-FFD: "<<cubes1.size()<<"x"<<cubes2.size()<<" cubes, "
-            <<npair<<" cube-cube tests, "
-            <<npoints<<" point tests."<<std::endl;
+    if (usePoints2)
+    {
+        c2.updatePoints();
+        c1.updateFaces();
+        const DistanceGrid::Real far = c1.invDP.norm();
+        const std::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
+        for (unsigned int i=0; i<x2.size(); i++)
+        {
+            DistanceGrid::Coord p1 = x2[i];
+
+            // estimate the barycentric coordinates
+            DistanceGrid::Coord b = c1.undeform0(p1);
+
+            // refine the estimate until we are very close to the p2 or we are sure p2 cannot intersect with the object
+            int iter;
+            DistanceGrid::Real err1 = 1000.0f;
+            for(iter=0; iter<5; ++iter)
+            {
+                DistanceGrid::Coord pdeform = c1.deform(b);
+                DistanceGrid::Coord diff = p1-pdeform;
+                DistanceGrid::Real err = diff.norm();
+                if (iter>3)
+                    std::cout << "Iter"<<iter<<": "<<err1<<" -> "<<err<<" b = "<<b<<" diff = "<<diff<<" d = "<<grid1->interp(c1.initpos(b))<<"\n";
+                DistanceGrid::Real berr = err*far; if (berr>0.5f) berr=0.5f;
+                if (b[0] < -berr || b[0] > 1+berr
+                    || b[1] < -berr || b[1] > 1+berr
+                    || b[2] < -berr || b[2] > 1+berr)
+                    break; // far from the cube
+                if (err < 0.001f)
+                {
+                    // we found the corresponding point, but is is only valid if inside the current cube
+                    if (b[0] > -0.001f && b[0] < 1.001f
+                        && b[1] > -0.001f && b[1] < 1.001f
+                        && b[2] > -0.001f && b[2] < 1.001f)
+                    {
+                        DistanceGrid::Coord pinit = c1.initpos(b);
+                        DistanceGrid::Real d = grid1->interp(pinit);
+                        if (d < margin)
+                        {
+                            DistanceGrid::Coord grad = grid1->grad(pinit); // note that there are some redundant computations between interp() and grad()
+                            grad.normalize();
+                            pinit -= grad*d;
+                            grad = c1.deformDir(c1.baryCoords(pinit),grad);
+                            grad.normalize();
+
+                            contacts.resize(contacts.size()+1);
+                            DetectionOutput *detection = &*(contacts.end()-1);
+
+                            detection->point[0] = Vector3(pinit);
+                            detection->point[1] = Vector3(grid2->meshPts[c2.points[i].index]);
+                            detection->normal = Vector3(grad); // normal in global space from p1's surface
+                            detection->distance = d - d0;
+                            detection->elem.first = e1;
+                            detection->elem.second = e2;
+                            detection->id = i0+c2.points[i].index;
+                            ++nc;
+                        }
+                    }
+                    break;
+                }
+                err1 = err;
+                DistanceGrid::Real d = grid1->interp(c1.initpos(b));
+                if (d*0.5f - err > margin)
+                    break; // the point is too far from the object
+                // we are solving for deform(b+db)-deform(b) = p1-deform(b)
+                // deform(b+db) ~= deform(b) + M db  -> M db = p1-deform(b) -> db = M^-1 (p1-deform(b))
+                b += c2.undeformDir( b, diff );
+            }
+            if (iter == 5)
+            {
+                if (b[0] > -0.001f && b[0] < 1.001f
+                    && b[1] > -0.001f && b[1] < 1.001f
+                    && b[2] > -0.001f && b[2] < 1.001f)
+                    std::cerr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<std::endl;
+            }
+        }
+    }
     return nc;
 }
 

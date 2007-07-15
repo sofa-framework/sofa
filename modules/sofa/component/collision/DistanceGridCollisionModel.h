@@ -577,6 +577,8 @@ public:
     class DeformedCube
     {
     public:
+        DistanceGrid* grid;
+        DeformedCube() : grid(NULL) {}
         int elem; ///< Index of the corresponding element in the topology
         struct Point
         {
@@ -667,9 +669,9 @@ public:
         }
 
         /// Get the local jacobian matrix of the deformation
-        Mat<3,3,GReal> Jdeform(const GCoord& b) const
+        Mat<3,3,double> Jdeform(const GCoord& b) const
         {
-            Mat<3,3,GReal> J;
+            Mat<3,3,double> J;
             for (int i=0; i<3; i++)
             {
                 // dp/dx = Dx + Dxy*y + Dxz*z + Dxyz*y*z
@@ -699,8 +701,8 @@ public:
         {
             // we want to find b2 so that deform(b2)-deform(b) = dir
             // we can use Newton's method using the jacobian of the deformation.
-            Mat<3,3,GReal> m = Jdeform(b);
-            Mat<3,3,GReal> minv;
+            Mat<3,3,double> m = Jdeform(b);
+            Mat<3,3,double> minv;
             minv.invert(m);
             return minv*dir;
         }
@@ -711,17 +713,7 @@ public:
 
 protected:
 
-    class ElementData
-    {
-    public:
-
-        vector<DeformedCube> cubes;
-
-        DistanceGrid* grid;
-        ElementData() : grid(NULL) {}
-    };
-
-    std::vector<ElementData> elems;
+    std::vector<DeformedCube> elems;
 
     // Input data parameters
     DataField< std::string > filename;
@@ -756,9 +748,9 @@ public:
         return elems[index].grid;
     }
 
-    vector<DeformedCube>& getDeformCubes(int index=0)
+    DeformedCube& getDeformCube(int index=0)
     {
-        return elems[index].cubes;
+        return elems[index];
     }
 
     void setGrid(DistanceGrid* surf, int index=0);
