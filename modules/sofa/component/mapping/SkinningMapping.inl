@@ -117,7 +117,6 @@ void SkinningMapping<BasicMapping>::init()
         repartition = new DataField<unsigned int>[nbRefs.getValue()*xto.size()];
         coefs = new DataField<double>[nbRefs.getValue()*xto.size()];
 
-        VecInCoord::iterator itFrom = xfrom.begin();
         Coord posTo;
 
         double * minDists = new double[nbRefs.getValue()];
@@ -152,7 +151,7 @@ void SkinningMapping<BasicMapping>::init()
                 }
             }
 
-            //then compute the coefficients from the inverse distance (coef = 1/d²)
+            //then compute the coefficients from the inverse distance (coef = 1/d)
             for (unsigned int k=0; k<nbRefs.getValue(); k++)
             {
                 minDists[k] = 1 / minDists[k];

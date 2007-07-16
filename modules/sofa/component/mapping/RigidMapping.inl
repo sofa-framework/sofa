@@ -152,8 +152,6 @@ void RigidMapping<BasicMapping>::setRepartition(std::vector<unsigned int> values
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    std::vector<Coord>::iterator itRot;
-    std::vector<Coord>::iterator itPoints;
     unsigned int cptOut;
     unsigned int val;
 
@@ -178,8 +176,6 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
         val = repartition.getValue()[0];
         //Out::VecCoord::iterator itOut = out.begin();
         cptOut=0;
-        itRot = rotatedPoints.begin();
-        itPoints = points.begin();
 
         for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
         {
@@ -188,11 +184,9 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
 
             for(unsigned int ito=0; ito<val; ito++)
             {
-                *itRot = rotation* (*itPoints);
-                out[cptOut] = *itRot;
+                rotatedPoints[cptOut] = rotation* points[cptOut];
+                out[cptOut] = rotatedPoints[cptOut];
                 out[cptOut] += translation;
-                itRot++;
-                itPoints++;
                 cptOut++;
             }
         }
@@ -205,8 +199,6 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
             return;
         }
         cptOut=0;
-        itRot = rotatedPoints.begin();
-        itPoints = points.begin();
 
         for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
         {
@@ -215,11 +207,9 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
 
             for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
             {
-                *itRot = rotation* (*itPoints);
-                out[cptOut] = *itRot;
+                rotatedPoints[cptOut] = rotation* points[cptOut];
+                out[cptOut] = rotatedPoints[cptOut];
                 out[cptOut] += translation;
-                itRot++;
-                itPoints++;
                 cptOut++;
             }
         }
@@ -232,7 +222,6 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
 {
     Deriv v,omega;
     out.resize(points.size());
-    std::vector<Coord>::iterator itRot;
     unsigned int cptOut;
     unsigned int val;
 
@@ -251,7 +240,6 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     case 1:
         val = repartition.getValue()[0];
         cptOut=0;
-        itRot = rotatedPoints.begin();
 
         for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
         {
@@ -262,9 +250,8 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
             {
                 // out = J in
                 // J = [ I -OM^ ]
-                out[cptOut] =  v - cross(*itRot,omega);
+                out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
                 cptOut++;
-                itRot++;
             }
         }
         break;
@@ -276,7 +263,6 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
         }
 
         cptOut=0;
-        itRot = rotatedPoints.begin();
 
         for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
         {
@@ -287,9 +273,8 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
             {
                 // out = J in
                 // J = [ I -OM^ ]
-                out[cptOut] =  v - cross(*itRot,omega);
+                out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
                 cptOut++;
-                itRot++;
             }
         }
         break;

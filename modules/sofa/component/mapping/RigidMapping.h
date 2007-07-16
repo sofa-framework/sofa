@@ -67,7 +67,7 @@ protected:
     void load(const char* filename);
     DataField<sofa::helper::vector<unsigned int> >  repartition;
 public:
-    DataField<unsigned> index;
+    DataField<unsigned int> index;
 
     RigidMapping(In* from, Out* to)
         : Inherit(from, to)

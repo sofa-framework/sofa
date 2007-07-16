@@ -152,7 +152,6 @@ void RigidRigidMapping<BasicMapping>::setRepartition(std::vector<unsigned int> v
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    std::vector<Coord>::iterator itpoints;
     unsigned int cptOut;
     unsigned int val;
 
@@ -173,16 +172,14 @@ void RigidRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
     case 1 : //one value specified : uniform repartition.getValue() mapping on the input dofs
         val = repartition.getValue()[0];
         cptOut=0;
-        itpoints = points.begin();
 
         for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
         {
             in[ifrom].writeRotationMatrix(rotation);
             for(unsigned int ito=0; ito<val; ito++)
             {
-                pointsR0[cptOut].getCenter() = rotation*(*itpoints).getCenter();
-                out[cptOut] = in[ifrom].mult(*itpoints);
-                itpoints++;
+                pointsR0[cptOut].getCenter() = rotation*(points[cptOut]).getCenter();
+                out[cptOut] = in[ifrom].mult(points[cptOut]);
                 cptOut++;
             }
         }
@@ -195,16 +192,14 @@ void RigidRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
             return;
         }
         cptOut=0;
-        itpoints = points.begin();
 
         for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
         {
             in[ifrom].writeRotationMatrix(rotation);
             for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
             {
-                pointsR0[cptOut].getCenter() = rotation*(*itpoints).getCenter();
-                out[cptOut] = in[ifrom].mult(*itpoints);
-                itpoints++;
+                pointsR0[cptOut].getCenter() = rotation*(points[cptOut]).getCenter();
+                out[cptOut] = in[ifrom].mult(points[cptOut]);
                 cptOut++;
             }
         }
@@ -217,7 +212,6 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
 {
     Vec v,omega;
     childForces.resize(points.size());
-    std::vector<Coord>::iterator itpoints;
     unsigned int cptchildForces;
     unsigned int val;
 
@@ -243,10 +237,9 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
 
             for(unsigned int ito=0; ito<val; ito++)
             {
-                childForces[cptchildForces].getVCenter() =  v + cross(omega,(*itpoints).getCenter());
+                childForces[cptchildForces].getVCenter() =  v + cross(omega,(points[cptchildForces]).getCenter());
                 childForces[cptchildForces].getVOrientation() = omega;
                 cptchildForces++;
-                itpoints++;
             }
         }
         break;
@@ -258,7 +251,6 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
             return;
         }
         cptchildForces=0;
-        itpoints = pointsR0.begin();
         for (unsigned int ifrom=0 ; ifrom<parentForces.size() ; ifrom++)
         {
             v = parentForces[ifrom].getVCenter();
@@ -266,10 +258,9 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
 
             for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
             {
-                childForces[cptchildForces].getVCenter() =  v + cross(omega,(*itpoints).getCenter());
+                childForces[cptchildForces].getVCenter() =  v + cross(omega,(points[cptchildForces]).getCenter());
                 childForces[cptchildForces].getVOrientation() = omega;
                 cptchildForces++;
-                itpoints++;
             }
         }
         break;
