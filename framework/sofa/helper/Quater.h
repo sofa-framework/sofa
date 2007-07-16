@@ -154,6 +154,8 @@ public:
 
     Quater inverse() const;
 
+    defaulttype::Vec<3,Real> toEulerVector() const;
+
     // A useful function, builds a rotation matrix in Matrix based on
     // given quaternion.
 

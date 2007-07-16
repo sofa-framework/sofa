@@ -22,14 +22,18 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
-#define SOFA_COMPONENT_MAPPING_RIGIDMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_H
+#define SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_H
 
+#include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/Vec.h>
 #include <sofa/core/VisualModel.h>
 #include <vector>
+
+using namespace sofa::defaulttype;
 
 namespace sofa
 {
@@ -41,7 +45,7 @@ namespace mapping
 {
 
 template <class BasicMapping>
-class RigidMapping : public BasicMapping, public core::VisualModel
+class RigidRigidMapping : public BasicMapping, public core::VisualModel
 {
 public:
     typedef BasicMapping Inherit;
@@ -51,32 +55,33 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
+    typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::SparseDeriv InSparseDeriv;
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef Vec<N,Real> Vec;
 
 protected:
     std::vector<Coord> points;
-    Coord translation;
-    //Real orientation[4];
+    std::vector<Coord> pointsR0;
     Mat rotation;
-    std::vector<Coord> rotatedPoints;
     class Loader;
     void load(const char* filename);
     DataField<sofa::helper::vector<unsigned int> >  repartition;
+
 public:
     DataField<unsigned> index;
 
-    RigidMapping(In* from, Out* to)
+    RigidRigidMapping(In* from, Out* to)
         : Inherit(from, to)
         , index(dataField(&index,(unsigned)0,"index","input DOF index"))
         , repartition(dataField(&repartition,"repartition","number of dest dofs per entry dof"))
     {
     }
 
-    virtual ~RigidMapping()
+    virtual ~RigidRigidMapping()
     {
     }
 
@@ -95,7 +100,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    //void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
     // -- VisualModel interface
     void draw();

@@ -125,18 +125,105 @@ void RigidMapping<BasicMapping>::clear()
 }
 
 template <class BasicMapping>
+void RigidMapping<BasicMapping>::setRepartition(unsigned int value)
+{
+    vector<unsigned int>& rep = *this->repartition.beginEdit();
+    rep.clear();
+    rep.push_back(value);
+    this->repartition.endEdit();
+}
+
+template <class BasicMapping>
+void RigidMapping<BasicMapping>::setRepartition(std::vector<unsigned int> values)
+{
+    vector<unsigned int>& rep = *this->repartition.beginEdit();
+    rep.clear();
+    rep.reserve(values.size());
+    //repartition.setValue(values);
+    std::vector<unsigned int>::iterator it = values.begin();
+    while (it != values.end())
+    {
+        rep.push_back(*it);
+        it++;
+    }
+    this->repartition.endEdit();
+}
+
+template <class BasicMapping>
 void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    translation = in[index.getValue()].getCenter();
-    in[index.getValue()].writeRotationMatrix(rotation);
+    std::vector<Coord>::iterator itRot;
+    std::vector<Coord>::iterator itPoints;
+    unsigned int cptOut;
+    unsigned int val;
 
     rotatedPoints.resize(points.size());
     out.resize(points.size());
-    for(unsigned int i=0; i<points.size(); i++)
+
+    switch (repartition.getValue().size())
     {
-        rotatedPoints[i] = rotation*points[i];
-        out[i] = rotatedPoints[i];
-        out[i] += translation;
+    case 0 : //no value specified : simple rigid mapping
+        translation = in[index.getValue()].getCenter();
+        in[index.getValue()].writeRotationMatrix(rotation);
+
+        for(unsigned int i=0; i<points.size(); i++)
+        {
+            rotatedPoints[i] = rotation*points[i];
+            out[i] = rotatedPoints[i];
+            out[i] += translation;
+        }
+        break;
+
+    case 1 : //one value specified : uniform repartition mapping on the input dofs
+        val = repartition.getValue()[0];
+        //Out::VecCoord::iterator itOut = out.begin();
+        cptOut=0;
+        itRot = rotatedPoints.begin();
+        itPoints = points.begin();
+
+        for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
+        {
+            translation = in[ifrom].getCenter();
+            in[ifrom].writeRotationMatrix(rotation);
+
+            for(unsigned int ito=0; ito<val; ito++)
+            {
+                *itRot = rotation* (*itPoints);
+                out[cptOut] = *itRot;
+                out[cptOut] += translation;
+                itRot++;
+                itPoints++;
+                cptOut++;
+            }
+        }
+        break;
+
+    default: //n values are specified : heterogen repartition mapping on the input dofs
+        if (repartition.getValue().size() != in.size())
+        {
+            std::cerr<<"Error : mapping dofs repartition is not correct"<<std::endl;
+            return;
+        }
+        cptOut=0;
+        itRot = rotatedPoints.begin();
+        itPoints = points.begin();
+
+        for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
+        {
+            translation = in[ifrom].getCenter();
+            in[ifrom].writeRotationMatrix(rotation);
+
+            for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
+            {
+                *itRot = rotation* (*itPoints);
+                out[cptOut] = *itRot;
+                out[cptOut] += translation;
+                itRot++;
+                itPoints++;
+                cptOut++;
+            }
+        }
+        break;
     }
 }
 
@@ -144,15 +231,70 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     Deriv v,omega;
-    v = in[index.getValue()].getVCenter();
-    omega = in[index.getValue()].getVOrientation();
     out.resize(points.size());
-    for(unsigned int i=0; i<points.size(); i++)
+    std::vector<Coord>::iterator itRot;
+    unsigned int cptOut;
+    unsigned int val;
+
+    switch (repartition.getValue().size())
     {
-        // out = J in
-        // J = [ I -OM^ ]
-        out[i] =  v - cross(rotatedPoints[i],omega);
+    case 0:
+        v = in[index.getValue()].getVCenter();
+        omega = in[index.getValue()].getVOrientation();
+        for(unsigned int i=0; i<points.size(); i++)
+        {
+            // out = J in
+            // J = [ I -OM^ ]
+            out[i] =  v - cross(rotatedPoints[i],omega);
+        }
+        break;
+    case 1:
+        val = repartition.getValue()[0];
+        cptOut=0;
+        itRot = rotatedPoints.begin();
+
+        for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
+        {
+            v = in[ifrom].getVCenter();
+            omega = in[ifrom].getVOrientation();
+
+            for(unsigned int ito=0; ito<val; ito++)
+            {
+                // out = J in
+                // J = [ I -OM^ ]
+                out[cptOut] =  v - cross(*itRot,omega);
+                cptOut++;
+                itRot++;
+            }
+        }
+        break;
+    default:
+        if (repartition.getValue().size() != in.size())
+        {
+            std::cerr<<"Error : mapping dofs repartition is not correct"<<std::endl;
+            return;
+        }
+
+        cptOut=0;
+        itRot = rotatedPoints.begin();
+
+        for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
+        {
+            v = in[ifrom].getVCenter();
+            omega = in[ifrom].getVOrientation();
+
+            for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
+            {
+                // out = J in
+                // J = [ I -OM^ ]
+                out[cptOut] =  v - cross(*itRot,omega);
+                cptOut++;
+                itRot++;
+            }
+        }
+        break;
     }
+
 }
 
 /// Template specialization for 2D rigids
@@ -183,23 +325,71 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     Deriv v,omega;
-    //cerr<<"RigidMapping<BasicMapping>::applyJT"<<endl;
-    for(unsigned int i=0; i<points.size(); i++)
+    unsigned int val;
+    unsigned int cpt;
+    switch(repartition.getValue().size())
     {
-        // out = Jt in
-        // Jt = [ I     ]
-        //      [ -OM^t ]
-        // -OM^t = OM^
+    case 0 :
+        for(unsigned int i=0; i<points.size(); i++)
+        {
+            // out = Jt in
+            // Jt = [ I     ]
+            //      [ -OM^t ]
+            // -OM^t = OM^
 
-        Deriv f = in[i];
-        //cerr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<endl;
-        v += f;
-        omega += cross(rotatedPoints[i],f);
-        //cerr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<endl;
-        //cerr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<endl;
+            Deriv f = in[i];
+            //cerr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<endl;
+            v += f;
+            omega += cross(rotatedPoints[i],f);
+            //cerr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<endl;
+            //cerr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<endl;
+        }
+        out[index.getValue()].getVCenter() += v;
+        out[index.getValue()].getVOrientation() += omega;
+        break;
+    case 1 :
+        val = repartition.getValue()[0];
+        cpt=0;
+        for(unsigned int ito=0; ito<out.size(); ito++)
+        {
+            v=Deriv();
+            omega=Deriv();
+            for(unsigned int i=0; i<val; i++)
+            {
+                Deriv f = in[cpt];
+                v += f;
+                omega += cross(rotatedPoints[cpt],f);
+                cpt++;
+            }
+            out[ito].getVCenter() += v;
+            out[ito].getVOrientation() += omega;
+        }
+        break;
+    default :
+        if (repartition.getValue().size() != out.size())
+        {
+            std::cerr<<"Error : mapping dofs repartition is not correct"<<std::endl;
+            return;
+        }
+
+        cpt=0;
+        for(unsigned int ito=0; ito<out.size(); ito++)
+        {
+            v=Deriv();
+            omega=Deriv();
+            for(unsigned int i=0; i<repartition.getValue()[ito]; i++)
+            {
+                Deriv f = in[cpt];
+                v += f;
+                omega += cross(rotatedPoints[cpt],f);
+                cpt++;
+            }
+            out[ito].getVCenter() += v;
+            out[ito].getVOrientation() += omega;
+        }
+        break;
     }
-    out[index.getValue()].getVCenter() += v;
-    out[index.getValue()].getVOrientation() += omega;
+
 }
 
 
@@ -240,7 +430,6 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
 {
 
 //	printf("\n applyJT(VectConst, VectConst) in RigidMapping\n");
-
     out.resize(in.size());
 
     for(unsigned int i=0; i<in.size(); i++)

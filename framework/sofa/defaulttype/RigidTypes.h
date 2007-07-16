@@ -100,6 +100,12 @@ public:
         vOrientation += a.vOrientation;
     }
 
+    void operator -=(const RigidDeriv& a)
+    {
+        vCenter -= a.vCenter;
+        vOrientation -= a.vOrientation;
+    }
+
     RigidDeriv<3,real> operator + (const RigidDeriv<3,real>& a) const
     {
         RigidDeriv d;
@@ -125,6 +131,12 @@ public:
     {
         return RigidDeriv(-vCenter, -vOrientation);
     }
+
+    RigidDeriv<3,real> operator - (const RigidDeriv<3,real>& a) const
+    {
+        return RigidDeriv<3,real>(this->vCenter - a.vCenter, this->vOrientation-a.vOrientation);
+    }
+
 
     /// dot product, mostly used to compute residuals as sqrt(x*x)
     double operator*(const RigidDeriv<3,real>& a) const
@@ -212,6 +224,11 @@ public:
             c.orientation[i] += qDot[i] * 0.5f;
         c.orientation.normalize();
         return c;
+    }
+
+    RigidCoord<3,real> operator -(const RigidCoord<3,real>& a) const
+    {
+        return RigidCoord<3,real>(this->center - a.getCenter(), a.orientation.inverse() * this->orientation);
     }
 
     void operator +=(const RigidCoord<3,real>& a)
@@ -326,6 +343,11 @@ public:
         in>>v.center>>v.orientation;
         return in;
     }
+    static int max_size()
+    {
+        return 3;
+    }
+    enum { static_size = 3 };
 };
 
 template<typename real>
@@ -730,6 +752,11 @@ public:
         in>>v.center>>v.orientation;
         return in;
     }
+    static int max_size()
+    {
+        return 3;
+    }
+    enum { static_size = 3 };
 };
 
 /** Degrees of freedom of 2D rigid bodies.

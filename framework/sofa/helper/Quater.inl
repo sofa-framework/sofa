@@ -407,6 +407,25 @@ Quater<Real> Quater<Real>::axisToQuat(defaulttype::Vec3d a, Real phi)
     return *this;
 }
 
+template<class Real>
+defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
+{
+    Quater<Real> q = *this;
+    q.normalize();
+
+    double angle = acos(q._q[3]) * 2;
+
+    defaulttype::Vec<3,Real> v(q._q[0], q._q[1], q._q[2]);
+
+    double norm = sqrt( (double) (v.x() * v.x() + v.y() * v.y() + v.z() * v.z()) );
+    if (norm > 0.0005)
+    {
+        v /= norm;
+        v *= angle;
+    }
+
+    return v;
+}
 
 ///// Output quaternion
 //template<class Real>

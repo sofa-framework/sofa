@@ -339,6 +339,16 @@ public:
         return r;
     }
 
+    /// linear product.
+    template<class real2>
+    Vec<N,real> linearProduct(const Vec<N,real2>& v) const
+    {
+        Vec<N,real> r;
+        for (int i=0; i<N; i++)
+            r[i]=this->elems[i]*(real)v[i];
+        return r;
+    }
+
     /// Vector addition.
     template<class real2>
     Vec<N,real> operator+(const Vec<N,real2>& v) const
