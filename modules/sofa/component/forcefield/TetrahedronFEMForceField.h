@@ -72,9 +72,10 @@ public:
     typedef topology::MeshTopology::Tetra Element;
     typedef topology::MeshTopology::SeqTetras VecElement;
 
-    static const int SMALL = 0;   ///< Symbol of small displacements tetrahedron solver
-    static const int LARGE = 1;   ///< Symbol of large displacements tetrahedron solver
-    static const int POLAR = 2;   ///< Symbol of polar displacements tetrahedron solver
+    enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
+            LARGE = 1,   ///< Symbol of large displacements tetrahedron solver
+            POLAR = 2
+         }; ///< Symbol of polar displacements tetrahedron solver
 
 protected:
 
@@ -137,7 +138,7 @@ public:
     TetrahedronFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
-        , f_method(dataField(&f_method,LARGE,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
+        , f_method(dataField(&f_method,(int)LARGE,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
         , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus",""))
         , f_dampingRatio(dataField(&f_dampingRatio,(Real)0,"dampingRatio",""))
