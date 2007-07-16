@@ -79,19 +79,24 @@ protected:
         Vec  initTrans;	// rest length of the spring
         Quat  initRot;	// rest length of the spring
 
-        Spring(int m1=0, int m2=0, Vec ks=Vec(), Real kd=0.0)
-            : m1(m1), m2(m2), kd(kd), kst(ks), ksr(ks)
+        Spring(int m1=0, int m2=0, Vec ks=Vec(), Real _kd=0.0)
+            : m1(m1), m2(m2), kd(_kd)
         {
+            kst = ksr = ks;
         }
 
         Spring(int m1, int m2, Vec _kst, Vec _ksr, Real kd)
-            : m1(m1), m2(m2), kd(kd), kst(_kst), ksr(_ksr)
+            : m1(m1), m2(m2), kd(kd)
         {
+            kst = _kst;
+            ksr = _ksr;
         }
 
         Spring(int m1, int m2, Real kstx, Real ksty, Real kstz, Real ksrx, Real ksry, Real ksrz, Real kd)
-            : m1(m1), m2(m2), kd(kd), kst(kstx,ksty,kstz), ksr(ksrx,ksry,ksrz)
+            : m1(m1), m2(m2), kd(kd)
         {
+            kst = Vec(kstx,ksty,kstz);
+            ksr = Vec(ksrx,ksry,ksrz);
         }
 
 

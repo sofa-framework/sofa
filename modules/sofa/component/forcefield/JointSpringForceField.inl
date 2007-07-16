@@ -114,7 +114,7 @@ void JointSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring)
+void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , const Spring& spring)
 {
     int a = spring.m1;
     int b = spring.m2;
@@ -150,7 +150,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int i, const Spring& spring)
+void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int , const Spring& spring)
 {
     const int a = spring.m1;
     const int b = spring.m2;

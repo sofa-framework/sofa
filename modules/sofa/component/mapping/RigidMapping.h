@@ -71,9 +71,9 @@ public:
 
     RigidMapping(In* from, Out* to)
         : Inherit(from, to)
-        , index(dataField(&index,(unsigned)0,"index","input DOF index"))
-        , repartition(dataField(&repartition,"repartition","number of dest dofs per entry dof"))
     {
+        index = dataField(&index,(unsigned)0,"index","input DOF index");
+        repartition = dataField(&repartition,"repartition","number of dest dofs per entry dof");
     }
 
     virtual ~RigidMapping()

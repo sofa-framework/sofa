@@ -17,12 +17,12 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(JointSpringForceField)
-
 using namespace sofa::defaulttype;
 
 template class JointSpringForceField<Rigid3dTypes>;
 template class JointSpringForceField<Rigid3fTypes>;
+
+SOFA_DECL_CLASS(JointSpringForceField)
 
 // Register in the Factory
 int JointSpringForceFieldClass = core::RegisterObject("Springs for Rigids")
