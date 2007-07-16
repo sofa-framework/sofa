@@ -144,13 +144,6 @@ void TetrahedronFEMForceField<DataTypes>::init()
     VecCoord& p = *this->mstate->getX();
     _initialPoints = p;
 
-    _strainDisplacements.resize( _indexedElements->size() );
-    _materialsStiffnesses.resize(_indexedElements->size() );
-    if(f_assembling.getValue())
-    {
-        _stiffnesses.resize( _initialPoints.size()*3 );
-    }
-
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
     std::cout << "TetrahedronFEMForceField: init OK, "<<_indexedElements->size()<<" tetra."<<std::endl;
@@ -160,6 +153,14 @@ void TetrahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::reinit()
 {
+
+    _strainDisplacements.resize( _indexedElements->size() );
+    _materialsStiffnesses.resize(_indexedElements->size() );
+    if(f_assembling.getValue())
+    {
+        _stiffnesses.resize( _initialPoints.size()*3 );
+    }
+
     unsigned int i;
     typename VecElement::const_iterator it;
     switch(f_method.getValue())
@@ -779,7 +780,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const
     _rotations[elementIndex].transpose(R_0_2);
     //cerr<<"R_0_2 large : "<<R_0_2<<endl;
 
-    // positions of the deformed and displaced Tetrahedre in its frame
+    // positions of the deformed and displaced Tetrahedron in its frame
     fixed_array<Coord,4> deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2*p[index[i]];

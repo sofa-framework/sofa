@@ -21,6 +21,8 @@ HEADERS += mycuda.h \
            CudaFixedConstraint.inl \
            CudaSpringForceField.h \
            CudaSpringForceField.inl \
+           CudaTetrahedronFEMForceField.h \
+           CudaTetrahedronFEMForceField.inl \
            CudaPlaneForceField.h \
            CudaPlaneForceField.inl \
            CudaSphereForceField.h \
@@ -28,17 +30,20 @@ HEADERS += mycuda.h \
            CudaIdentityMapping.h \
            CudaIdentityMapping.inl \
            CudaBarycentricMapping.h \
-           CudaBarycentricMapping.inl
+           CudaBarycentricMapping.inl \
+           CudaDistanceGridCollisionModel.h
 
 SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
            CudaUniformMass.cpp \
            CudaFixedConstraint.cpp \
            CudaSpringForceField.cpp \
+           CudaTetrahedronFEMForceField.cpp \
            CudaPlaneForceField.cpp \
            CudaSphereForceField.cpp \
            CudaIdentityMapping.cpp \
-           CudaBarycentricMapping.cpp
+           CudaBarycentricMapping.cpp \
+           CudaDistanceGridCollisionModel.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \

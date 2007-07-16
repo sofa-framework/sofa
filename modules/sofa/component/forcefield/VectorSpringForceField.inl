@@ -24,8 +24,8 @@ namespace forcefield
 {
 
 template<class DataTypes>
-void springCreationFunction(int /*index*/,
-        void* param, typename VectorSpringForceField<DataTypes>::Spring& t,
+void VectorSpringForceField<DataTypes>::springCreationFunction(int /*index*/,
+        void* param, Spring& t,
         const topology::Edge& e,
         const std::vector< unsigned int > &ancestors,
         const std::vector< double >& coefs)
@@ -43,7 +43,7 @@ void springCreationFunction(int /*index*/,
             if (ancestors.size()>0)
             {
                 t.kd=t.ks=0;
-                const topology::EdgeData<typename VectorSpringForceField<DataTypes>::Spring> &sa=ff->getSpringArray();
+                const topology::EdgeData<Spring> &sa=ff->getSpringArray();
                 unsigned int i;
                 for (i=0; i<ancestors.size(); ++i)
                 {
@@ -122,7 +122,7 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_stiffness( dataField(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
     , m_viscosity( dataField(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
 {
-    springArray.setCreateFunction(springCreationFunction<DataTypes>);
+    springArray.setCreateFunction(springCreationFunction);
     springArray.setCreateParameter( (void *) this );
 }
 
@@ -134,7 +134,7 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
     , m_stiffness( dataField(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
     , m_viscosity( dataField(&m_viscosity,1.0,"viscosity","Default edge viscosity used in absence of file information") )
 {
-    springArray.setCreateFunction(springCreationFunction<DataTypes>);
+    springArray.setCreateFunction(springCreationFunction);
     springArray.setCreateParameter( (void *) this );
 }
 

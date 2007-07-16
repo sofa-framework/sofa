@@ -114,6 +114,7 @@ protected:
     typedef vector< CompressedValue > CompressedMatrix;
 
     CompressedMatrix _stiffnesses;
+    /// @}
 
     double m_potentialEnergy;
 
@@ -121,6 +122,8 @@ protected:
     topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
     VecCoord _initialPoints; ///< the intial positions of the points
+
+    TetrahedronFEMForceFieldInternalData<DataTypes> data;
 
 public:
 

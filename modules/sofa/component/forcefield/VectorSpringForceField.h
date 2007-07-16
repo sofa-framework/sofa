@@ -72,6 +72,12 @@ protected:
 
     void resizeArray(unsigned int n);
 
+    static void springCreationFunction(int /*index*/,
+            void* param, Spring& t,
+            const topology::Edge& e,
+            const std::vector< unsigned int > &ancestors,
+            const std::vector< double >& coefs);
+
 public:
 
     VectorSpringForceField(MechanicalState* _object=NULL);
