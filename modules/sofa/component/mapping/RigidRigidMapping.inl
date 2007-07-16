@@ -222,7 +222,7 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
         omega = parentForces[index.getValue()].getVOrientation();
         for(unsigned int i=0; i<points.size(); i++)
         {
-            childForces[i].getVCenter() =  v + cross(omega,points[i].getCenter());
+            childForces[i].getVCenter() =  v + cross(omega,pointsR0[i].getCenter());
             childForces[i].getVOrientation() = omega;
         }
         break;
@@ -237,7 +237,7 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
 
             for(unsigned int ito=0; ito<val; ito++)
             {
-                childForces[cptchildForces].getVCenter() =  v + cross(omega,(points[cptchildForces]).getCenter());
+                childForces[cptchildForces].getVCenter() =  v + cross(omega,(pointsR0[cptchildForces]).getCenter());
                 childForces[cptchildForces].getVOrientation() = omega;
                 cptchildForces++;
             }
@@ -258,7 +258,7 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
 
             for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
             {
-                childForces[cptchildForces].getVCenter() =  v + cross(omega,(points[cptchildForces]).getCenter());
+                childForces[cptchildForces].getVCenter() =  v + cross(omega,(pointsR0[cptchildForces]).getCenter());
                 childForces[cptchildForces].getVOrientation() = omega;
                 cptchildForces++;
             }

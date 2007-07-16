@@ -52,45 +52,6 @@ int RigidRigidMappingClass = core::RegisterObject("Set the positions and velocit
 template class RigidRigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
 template class RigidRigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
 
-
-
-/*template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes > > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes > > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes > > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes > > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes > > >::applyJ(Out::VecDeriv& out, const In::VecDeriv& in)
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2dTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes > > >::apply( Out::VecCoord& out, const In::VecCoord& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes > > >::applyJ(Out::VecDeriv& out, const In::VecDeriv& in )
-{ }
-template<>
-void RigidRigidMapping< core::componentmodel::behavior::MechanicalMapping< core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes >, core::componentmodel::behavior::MechanicalState< defaulttype::Rigid2fTypes > > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
-{ }
-*/
 } // namespace mapping
 
 } // namespace component
