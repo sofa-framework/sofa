@@ -1571,30 +1571,30 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
     if (node == NULL) return;
     GNode::ObjectIterator obj_it = node->object.begin();
     //Verify if it exists a mesh topology. In that case, we have to recursively translate the mechanical object and the visual model
-    bool mesh_topology = false;
-    bool mechanical_object = false;
+// 	bool mesh_topology = false;
+// 	bool mechanical_object = false;
 
 
-    //Using the graph corresponding to the current node, we explorate it to find a Topology Element
-    if (graphListener->items[node] == NULL) return;
+// 	//Using the graph corresponding to the current node, we explorate it to find a Topology Element
+// 	if (graphListener->items[node] == NULL) return;
 
-    Q3ListViewItem *element = graphListener->items[node]->firstChild();
-    while (element != NULL)
-    {
-        //We search in the element of the current node, the presence of a MeshTopology: depending on its presence, it will modify the range of the translation
-        if (element->firstChild() == NULL)
-        {
-            std::string name = element->text(0);
-            std::string::size_type end_name = name.rfind(' ');
-            if (end_name != std::string::npos)
-                name.resize(end_name-1);
+// 	Q3ListViewItem *element = graphListener->items[node]->firstChild();
+// 	while (element != NULL)
+// 	  {
+// 	    //We search in the element of the current node, the presence of a MeshTopology: depending on its presence, it will modify the range of the translation
+// 	    if (element->firstChild() == NULL)
+// 	      {
+// 		std::string name = element->text(0);
+// 		std::string::size_type end_name = name.rfind(' ');
+// 		if (end_name != std::string::npos)
+// 		    name.resize(end_name-1);
 
-            if (name == "MeshTopology")
-                mesh_topology = true;
+// 		if (name == "MeshTopology")
+// 		    mesh_topology = true;
 
-        }
-        element = element->nextSibling();
-    }
+// 	      }
+// 	    element = element->nextSibling();
+// 	  }
 
     //We translate the elements
     while (obj_it != node->object.end())
@@ -1604,7 +1604,7 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
             core::componentmodel::behavior::BaseMechanicalState *mechanical = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it);
             mechanical->applyTranslation(dx, dy, dz);
             mechanical->applyScale(scale);
-            mechanical_object = true;
+// 		mechanical_object = true;
         }
 
         if (dynamic_cast< sofa::component::visualmodel::VisualModelImpl* >(*obj_it))
@@ -1617,8 +1617,8 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
     }
 
     //We don't need to go any further:
-    if (mechanical_object && !mesh_topology)
-        return;
+// 	if (mechanical_object && !mesh_topology)
+// 	    return;
 
     //We search recursively with the childs of the currend node
     GNode::ChildIterator it  = node->child.begin();
