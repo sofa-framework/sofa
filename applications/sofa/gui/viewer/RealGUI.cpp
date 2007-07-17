@@ -51,6 +51,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/visualmodel/VisualModelImpl.h>
 
 
 #include <limits.h>

@@ -63,31 +63,28 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, cons
 
     if (index < nbElem)
     {
-        float3 B = ((const float3*)x)[e.ib];
-        float3 C = ((const float3*)x)[e.ic];
-        float3 D = ((const float3*)x)[e.id];
         float3 A = ((const float3*)x)[e.ia];
-
+        float3 B = ((const float3*)x)[e.ib];
         B -= A;
-        C -= A;
-        D -= A;
 
         // Compute R
         float bx = norm(B);
         s.Rt.x = B/bx;
-        s.Rt.z = cross(B,C);
-        s.Rt.y = cross(s.Rt.z,B);
-        s.Rt.y *= invnorm(s.Rt.y);
-        s.Rt.z *= invnorm(s.Rt.z);
 
         // Compute JtRtX = JbtRtB + JctRtC + JdtRtD
 
         float3 JtRtX0,JtRtX1;
 
-        // RtB = (bx 0 0)
-        // Jb  = (Jbx 0 0 Jby 0 Jbz)
-        //       (0 Jby 0 Jbx Jbz 0)
-        //       (0 0 Jbz 0 Jby Jbx)
+        bx -= e.bx;
+        //                    ( bx)
+        // RtB =              ( 0 )
+        //                    ( 0 )
+        // Jtb = (Jbx  0   0 )
+        //       ( 0  Jby  0 )
+        //       ( 0   0  Jbz)
+        //       (Jby Jbx  0 )
+        //       ( 0  Jbz Jby)
+        //       (Jbz  0  Jbx)
         JtRtX0.x = e.Jbx_bx * bx;
         JtRtX0.y = 0;
         JtRtX0.z = 0;
@@ -95,29 +92,52 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, cons
         JtRtX1.y = 0;
         JtRtX1.z = e.Jbz_bx * bx;
 
-        // RtC = (cx cy 0)
-        // Jc  = (0 0   0 dz 0 -dy)
-        //       (0 dz  0 0 -dy  0)
-        //       (0 0 -dy 0  dz  0)
-        float cx = dot(C,s.Rt.x);
-        float cy = dot(C,s.Rt.y);
+        float3 C = ((const float3*)x)[e.ic];
+        C -= A;
+        s.Rt.z = cross(B,C);
+        s.Rt.y = cross(s.Rt.z,B);
+        s.Rt.y *= invnorm(s.Rt.y);
+        s.Rt.z *= invnorm(s.Rt.z);
 
+        float cx = dot(C,s.Rt.x) - e.cx;
+        float cy = dot(C,s.Rt.y) - e.cy;
+        //                    ( cx)
+        // RtC =              ( cy)
+        //                    ( 0 )
+        // Jtc = ( 0   0   0 )
+        //       ( 0   dz  0 )
+        //       ( 0   0  -dy)
+        //       ( dz  0   0 )
+        //       ( 0  -dy  dz)
+        //       (-dy  0   0 )
+        //JtRtX0.x += 0;
         JtRtX0.y += e.dz * cy;
+        //JtRtX0.z += 0;
         JtRtX1.x += e.dz * cx;
         JtRtX1.y -= e.dy * cy;
         JtRtX1.z -= e.dy * cx;
 
-        // RtD = (dx dy dz)
-        // Jd  = (0 0  0 0 0 cy)
-        //       (0 0  0 0 cy 0)
-        //       (0 0 cy 0  0 0)
-        float dx = dot(D,s.Rt.x);
-        float dy = dot(D,s.Rt.y);
-        float dz = dot(D,s.Rt.z);
+        float3 D = ((const float3*)x)[e.id];
+        D -= A;
 
+        float dx = dot(D,s.Rt.x) - e.dx;
+        float dy = dot(D,s.Rt.y) - e.dy;
+        float dz = dot(D,s.Rt.z) - e.dz;
+        //                    ( dx)
+        // RtD =              ( dy)
+        //                    ( dz)
+        // Jtd = ( 0   0   0 )
+        //       ( 0   0   0 )
+        //       ( 0   0   cy)
+        //       ( 0   0   0 )
+        //       ( 0   cy  0 )
+        //       ( cy  0   0 )
+        //JtRtX0.x += 0;
+        //JtRtX0.y += 0;
         JtRtX0.z += e.cy * dz;
-        JtRtX1.y -= e.dy * dy;
-        JtRtX1.z -= e.dy * dx;
+        //JtRtX1.x += 0;
+        JtRtX1.y += e.cy * dy;
+        JtRtX1.z += e.cy * dx;
 
         // Compute S = K JtRtX
 
@@ -131,15 +151,15 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, cons
         // S1 = JtRtX1*mu2/2
 
         s.S0  = JtRtX0*e.mu2_bx2;
-        s.S0 += JtRtX0*e.gamma_bx2;
+        s.S0 += (JtRtX0.x+JtRtX0.y+JtRtX0.z)*e.gamma_bx2;
         s.S1  = JtRtX1*(e.mu2_bx2*0.5f);
     }
 
-    state[index0+index1] = s;
+    state[index] = s;
 
 }
 
-__global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(unsigned int nbElemPerVertex, const GPUElement* elems, GPUElementState* state, const int* velems, float* f, const float* x)
+__global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(int nbVertex, unsigned int nbElemPerVertex, const GPUElement* elems, GPUElementState* state, const int* velems, float* f, const float* x)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -163,53 +183,54 @@ __global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(unsigned int nbEl
 
     velems+=index0*nbElemPerVertex+index1;
 
-    for (int s = 0; s < nbElemPerVertex; s++)
-    {
-        int i = *velems;
-        velems+=BSIZE;
-        if (i != -1)
+    if (index0+index1 < nbVertex)
+        for (int s = 0; s < nbElemPerVertex; s++)
         {
-            int eindex = i >> 2;
-            i &= 3;
-            GPUElement e = elems[eindex];
-            GPUElementState s = state[eindex];
-
-            float3 Ji;
-
-            switch (i)
+            int i = *velems -1;
+            velems+=BSIZE;
+            if (i != -1)
             {
-            case 0: // point a
-                Ji.x = -e.Jbx_bx;
-                Ji.y = -e.Jby_bx-e.dz;
-                Ji.z = -e.Jbz_bx+e.dy-e.cy;
-                break;
-            case 1: // point b
-                Ji.x = e.Jbx_bx;
-                Ji.y = e.Jby_bx;
-                Ji.z = e.Jbz_bx;
-                break;
-            case 2: // point c
-                Ji.x = 0;
-                Ji.y = e.dz;
-                Ji.z = -e.dy;
-                break;
-            case 3: // point d
-                Ji.x = 0;
-                Ji.y = 0;
-                Ji.z = e.cy;
-                break;
-            }
-            // Ji  = (Jix 0   0  Jiy  0  Jiz)
-            //       ( 0 Jiy  0  Jix Jiz  0 )
-            //       ( 0  0  Jiz  0  Jiy Jix)
-            float3 JiS = mul(Ji,s.S0);
-            JiS.x += Ji.y*s.S1.x + Ji.z*s.S1.z;
-            JiS.y += Ji.x*s.S1.x + Ji.z*s.S1.y;
-            JiS.z += Ji.y*s.S1.y + Ji.x*s.S1.z;
+                int eindex = i >> 2;
+                i &= 3;
+                GPUElement e = elems[eindex];
+                GPUElementState s = state[eindex];
 
-            force += s.Rt.mulT(JiS);
+                float3 Ji;
+
+                switch (i)
+                {
+                case 0: // point a
+                    Ji.x = -e.Jbx_bx;
+                    Ji.y = -e.Jby_bx-e.dz;
+                    Ji.z = -e.Jbz_bx+e.dy-e.cy;
+                    break;
+                case 1: // point b
+                    Ji.x = e.Jbx_bx;
+                    Ji.y = e.Jby_bx;
+                    Ji.z = e.Jbz_bx;
+                    break;
+                case 2: // point c
+                    Ji.x = 0;
+                    Ji.y = e.dz;
+                    Ji.z = -e.dy;
+                    break;
+                case 3: // point d
+                    Ji.x = 0;
+                    Ji.y = 0;
+                    Ji.z = e.cy;
+                    break;
+                }
+                // Ji  = (Jix 0   0  Jiy  0  Jiz)
+                //       ( 0 Jiy  0  Jix Jiz  0 )
+                //       ( 0  0  Jiz  0  Jiy Jix)
+                float3 JiS;
+                JiS.x = Ji.x*s.S0.x                             + Ji.y*s.S1.x               + Ji.z*s.S1.z;
+                JiS.y =               Ji.y*s.S0.y               + Ji.x*s.S1.x + Ji.z*s.S1.y              ;
+                JiS.z =                             Ji.z*s.S0.z               + Ji.y*s.S1.y + Ji.x*s.S1.z;
+
+                force -= s.Rt.mulT(JiS);
+            }
         }
-    }
 
     __syncthreads();
 
@@ -245,38 +266,50 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcDForce_kernel(int nbElem, con
         float3 B = ((const float3*)x)[e.ib];
         B = s.Rt * (B-A);
 
-        // Jb  = (Jbx 0 0 Jby 0 Jbz)
-        //       (0 Jby 0 Jbx Jbz 0)
-        //       (0 0 Jbz 0 Jby Jbx)
+        // Jtb = (Jbx  0   0 )
+        //       ( 0  Jby  0 )
+        //       ( 0   0  Jbz)
+        //       (Jby Jbx  0 )
+        //       ( 0  Jbz Jby)
+        //       (Jbz  0  Jbx)
         JtRtX0.x = e.Jbx_bx * B.x;
-        JtRtX0.y = e.Jby_bx * B.y;
-        JtRtX0.z = e.Jbz_bx * B.x;
+        JtRtX0.y =                  e.Jby_bx * B.y;
+        JtRtX0.z =                                   e.Jbz_bx * B.z;
         JtRtX1.x = e.Jby_bx * B.x + e.Jbx_bx * B.y;
-        JtRtX1.y = e.Jbz_bx * B.y + e.Jby_bx * B.z;
-        JtRtX1.z = e.Jbz_bx * B.x + e.Jbx_bx * B.z;
+        JtRtX1.y =                  e.Jbz_bx * B.y + e.Jby_bx * B.z;
+        JtRtX1.z = e.Jbz_bx * B.x                  + e.Jbx_bx * B.z;
 
         float3 C = ((const float3*)x)[e.ic];
         C = s.Rt * (C-A);
 
-        // Jc  = (0 0   0 dz 0 -dy)
-        //       (0 dz  0 0 -dy  0)
-        //       (0 0 -dy 0  dz  0)
-
-        JtRtX0.y += e.dz * C.y;
-        JtRtX0.z -= e.dy * C.z;
+        // Jtc = ( 0   0   0 )
+        //       ( 0   dz  0 )
+        //       ( 0   0  -dy)
+        //       ( dz  0   0 )
+        //       ( 0  -dy  dz)
+        //       (-dy  0   0 )
+        //JtRtX0.x += 0;
+        JtRtX0.y +=              e.dz * C.y;
+        JtRtX0.z +=                         - e.dy * C.z;
         JtRtX1.x += e.dz * C.x;
-        JtRtX1.y += e.dz * C.z - e.dy * C.y;
+        JtRtX1.y +=            - e.dy * C.y + e.dz * C.z;
         JtRtX1.z -= e.dy * C.x;
 
-        // Jd  = (0 0  0 0 0 cy)
-        //       (0 0  0 0 cy 0)
-        //       (0 0 cy 0  0 0)
+        // Jtd = ( 0   0   0 )
+        //       ( 0   0   0 )
+        //       ( 0   0   cy)
+        //       ( 0   0   0 )
+        //       ( 0   cy  0 )
+        //       ( cy  0   0 )
         float3 D = ((const float3*)x)[e.id];
         D = s.Rt * (D-A);
 
-        JtRtX0.z += e.cy * D.z;
-        JtRtX1.y -= e.dy * D.y;
-        JtRtX1.z -= e.dy * D.x;
+        //JtRtX0.x += 0;
+        //JtRtX0.y += 0;
+        JtRtX0.z +=                           e.cy * D.z;
+        //JtRtX1.x += 0;
+        JtRtX1.y +=              e.cy * D.y;
+        JtRtX1.z += e.cy * D.x;
 
         // Compute S = K JtRtX
 
@@ -290,11 +323,11 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcDForce_kernel(int nbElem, con
         // S1 = JtRtX1*mu2/2
 
         s.S0  = JtRtX0*e.mu2_bx2;
-        s.S0 += JtRtX0*e.gamma_bx2;
+        s.S0 += (JtRtX0.x+JtRtX0.y+JtRtX0.z)*e.gamma_bx2;
         s.S1  = JtRtX1*(e.mu2_bx2*0.5f);
     }
 
-    state[index0+index1] = s;
+    state[index] = s;
 
 }
 
@@ -309,7 +342,7 @@ void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbElem, unsigned int n
     TetrahedronFEMForceFieldCuda3f_calcForce_kernel<<< grid1, threads1>>>(nbElem, (const GPUElement*)elems, (GPUElementState*)state, (const float*)x);
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)f, (const float*)x);
+    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)f, (const float*)x);
 }
 
 void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx)
@@ -319,7 +352,7 @@ void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int 
     TetrahedronFEMForceFieldCuda3f_calcDForce_kernel<<< grid1, threads1>>>(nbElem, (const GPUElement*)elems, (GPUElementState*)state, (const float*)dx);
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)df, (const float*)dx);
+    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)df, (const float*)dx);
 }
 
 #if defined(__cplusplus)

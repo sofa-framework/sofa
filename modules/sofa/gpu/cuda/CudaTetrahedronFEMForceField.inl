@@ -100,6 +100,60 @@ void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f,
         (      Deriv*)f.deviceWrite() + data.vertex0,
         (const Coord*)x.deviceRead()  + data.vertex0,
         (const Deriv*)v.deviceRead()  + data.vertex0);
+
+#if 0
+    // compare with CPU version
+
+    const VecElement& elems = *_indexedElements;
+    for (unsigned int i=0; i<elems.size(); i++)
+    {
+        Index a = elems[i][0];
+        Index b = elems[i][1];
+        Index c = elems[i][2];
+        Index d = elems[i][3];
+        Transformation Rt;
+        computeRotationLarge(Rt, x, a, b, c);
+        const TetrahedronFEMForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::GPUElementState& s = data.state[i];
+        const TetrahedronFEMForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::GPUElement& e = data.elems[i];
+        Mat3x3f Rdiff = Rt-s.Rt;
+        if ((Rdiff[0].norm2()+Rdiff[1].norm2()+Rdiff[2].norm2()) > 0.000001f)
+        {
+            std::cout << "CPU Rt "<<i<<" = "<<Rt<<std::endl;
+            std::cout << "GPU Rt "<<i<<" = "<<s.Rt<<std::endl;
+            std::cout << "DIFF   "<<i<<" = "<<Rdiff<<std::endl;
+        }
+        Coord xb = Rt*(x[b]-x[a]);
+        Coord xc = Rt*(x[c]-x[a]);
+        Coord xd = Rt*(x[d]-x[a]);
+
+        Displacement D;
+        D[0] = 0;
+        D[1] = 0;
+        D[2] = 0;
+        D[3] = _rotatedInitialElements[i][1][0] - xb[0];
+        D[4] = _rotatedInitialElements[i][1][1] - xb[1];
+        D[5] = _rotatedInitialElements[i][1][2] - xb[2];
+        D[6] = _rotatedInitialElements[i][2][0] - xc[0];
+        D[7] = _rotatedInitialElements[i][2][1] - xc[1];
+        D[8] = _rotatedInitialElements[i][2][2] - xc[2];
+        D[9] = _rotatedInitialElements[i][3][0] - xd[0];
+        D[10]= _rotatedInitialElements[i][3][1] - xd[1];
+        D[11]= _rotatedInitialElements[i][3][2] - xd[2];
+        Vec<6,float> S = -((_materialsStiffnesses[i]) * ((_strainDisplacements[i]).multTranspose(D)))*(e.bx);
+
+        Vec<6,float> Sdiff = S-s.S;
+
+        if (Sdiff.norm2() > 0.0001f)
+        {
+            std::cout << "    D "<<i<<" = "<<D<<std::endl;
+            std::cout << "CPU S "<<i<<" = "<<S<<std::endl;
+            std::cout << "GPU S "<<i<<" = "<<s.S<<std::endl;
+            std::cout << "DIFF   "<<i<<" = "<<Sdiff<<std::endl;
+        }
+
+    }
+#endif
+
 }
 
 template <>

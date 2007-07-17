@@ -38,10 +38,10 @@ public:
 
     This matrix is used to compute the initial position of each element in the local rotated coordinate frame, with the origin on A, as follow:
     \f{eqnarray*}
-        a &=& R^t \cdot (A-A) = \begin{pmatrix} 0   & 0   & 0   \end{pmatrix} \\
-        b &=& R^t \cdot (B-A) = \begin{pmatrix} b_x & 0   & 0   \end{pmatrix} \\
-        c &=& R^t \cdot (C-A) = \begin{pmatrix} c_x & c_y & 0   \end{pmatrix} \\
-        d &=& R^t \cdot (D-A) = \begin{pmatrix} d_x & d_y & d_z \end{pmatrix} \\
+        a &=& R^t \cdot (A-A) = \left( 0   \quad 0   \quad 0   \right) \\
+        b &=& R^t \cdot (B-A) = \left( b_x \quad 0   \quad 0   \right) \\
+        c &=& R^t \cdot (C-A) = \left( c_x \quad c_y \quad 0   \right) \\
+        d &=& R^t \cdot (D-A) = \left( d_x \quad d_y \quad d_z \right) \\
     \f}
 
     The material stiffness is handled by a \f$6 \times 6\f$ matrix K computed as follow:
@@ -89,9 +89,11 @@ public:
     Also, as the sum of applied forces must be zero, we know that:
     \f{eqnarray*}
         Ja+Jb+Jc+Jd &=& 0 \\
-        -p(bcd)+p(cda)-p(dab)+b(abc) &=& 0 \\
-        - b \times c - c \times d - d \times b + c \times d + d \times a + a \times c - d \times a - a \times b - b \times d + a \times b + b \times c + c \times a
-        &=& 0 \\
+        -p(bcd)+p(cda)-p(dab)+b(abc) &=& - b \times c - c \times d - d \times b \\
+                                     &+& c \times d + d \times a + a \times c \\
+                                     &-& d \times a - a \times b - b \times d \\
+                                     &+& a \times b + b \times c + c \times a \\
+                                     &=& 0 \\
         Ja &=& -Jb-Jc-Jd
     \f}
 
@@ -145,7 +147,7 @@ public:
     struct GPUElementState
     {
         /// rotation matrix
-        Mat<3,3,float> R;
+        Mat<3,3,float> Rt;
         /// current internal strain
         Vec<6,float> S;
         /// unused value to align to 64 bytes
@@ -170,6 +172,8 @@ public:
         nbElementPerVertex = nbelemperv;
         int nbloc = (nbVertex+BSIZE-1)/BSIZE;
         velems.resize(nbloc*nbElementPerVertex*BSIZE);
+        for (unsigned int i=0; i<velems.size(); i++)
+            velems[i] = 0;
     }
     void setV(int vertex, int num, int index)
     {
@@ -179,11 +183,18 @@ public:
         velems[ bloc*BSIZE*nbElementPerVertex // start of the bloc
                 + num*BSIZE                     // offset to the element
                 + b_x                           // offset to the vertex
-              ] = index;
+              ] = index+1;
     }
 
     void setE(int i, const Element& indices, const Coord& a, const Coord& b, const Coord& c, const Coord& d, const MaterialStiffness& K, const StrainDisplacement& J)
     {
+        /*std::cout << "CPU Info:\n a = "<<a<<"\n b = "<<b<<"\n c = "<<c<<"\n d = "<<d<<"\n K = "
+            <<K[0]<<"\n     "<<K[1]<<"\n     "<<K[2]<<"\n     "
+            <<K[3]<<"\n     "<<K[4]<<"\n     "<<K[5]<<"\n J="
+            <<J[0]<<"\n     "<<J[1]<<"\n     "<<J[2]<<"\n     "
+            <<J[3]<<"\n     "<<J[4]<<"\n     "<<J[5]<<"\n     "
+            <<J[6]<<"\n     "<<J[7]<<"\n     "<<J[8]<<"\n     "
+            <<J[9]<<"\n     "<<J[10]<<"\n     "<<J[11]<<std::endl;*/
         GPUElement& e = elems[i];
         e.ia = indices[0] - vertex0;
         e.ib = indices[1] - vertex0;
@@ -194,11 +205,35 @@ public:
         e.dx = d[0]; e.dy = d[1]; e.dz = d[2];
         float bx2 = e.bx * e.bx;
         e.gamma_bx2 = K[0][1] * bx2;
-        e.mu2_bx2 = K[3][3] * bx2;
+        e.mu2_bx2 = 2*K[3][3] * bx2;
         e.Jbx_bx = (e.cy * e.dz) / e.bx;
         e.Jby_bx = (-e.cx * e.dz) / e.bx;
         e.Jbz_bx = (e.cx*e.dy - e.cy*e.dx) / e.bx;
         e.dummy = 0;
+        /*std::cout << "GPU Info:\n b = "<<e.bx<<"\n c = "<<e.cx<<" "<<e.cy<<"\n d = "<<e.dx<<" "<<e.dy<<" "<<e.dz<<"\n K = "
+            <<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "
+            <<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "
+            <<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2+e.mu2_bx2)/bx2<<" 0 0 0\n     "
+
+            <<"0 0 0 "<<(e.mu2_bx2/2)/bx2<<" 0 0\n     "
+            <<"0 0 0 0 "<<(e.mu2_bx2/2)/bx2<<" 0\n     "
+            <<"0 0 0 0 0 "<<(e.mu2_bx2/2)/bx2<<"\n J = "
+
+            <<(-e.Jbx_bx)*e.bx<<" 0 0 "<<(-e.Jby_bx-e.dz)*e.bx<<" 0 "<<(-e.Jbz_bx+e.dy-e.cy)*e.bx<<"\n     "
+            <<"0 "<<(-e.Jby_bx-e.dz)*e.bx<<" 0 "<<(-e.Jbx_bx)*e.bx<<" "<<(-e.Jbz_bx+e.dy-e.cy)*e.bx<<" 0\n     "
+            <<"0 0 "<<(-e.Jbz_bx+e.dy-e.cy)*e.bx<<" 0 "<<(-e.Jby_bx-e.dz)*e.bx<<" "<<(-e.Jbx_bx)*e.bx<<"\n     "
+
+            <<(e.Jbx_bx)*e.bx<<" 0 0 "<<(e.Jby_bx)*e.bx<<" 0 "<<(e.Jbz_bx)*e.bx<<"\n     "
+            <<"0 "<<(e.Jby_bx)*e.bx<<" 0 "<<(e.Jbx_bx)*e.bx<<" "<<(e.Jbz_bx)*e.bx<<" 0\n     "
+            <<"0 0 "<<(e.Jbz_bx)*e.bx<<" 0 "<<(e.Jby_bx)*e.bx<<" "<<(e.Jbx_bx)*e.bx<<"\n     "
+
+            <<(0)*e.bx<<" 0 0 "<<(e.dz)*e.bx<<" 0 "<<(-e.dy)*e.bx<<"\n     "
+            <<"0 "<<(e.dz)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(-e.dy)*e.bx<<" 0\n     "
+            <<"0 0 "<<(-e.dy)*e.bx<<" 0 "<<(e.dz)*e.bx<<" "<<(0)*e.bx<<"\n     "
+
+            <<(0)*e.bx<<" 0 0 "<<(0)*e.bx<<" 0 "<<(e.cy)*e.bx<<"\n     "
+            <<"0 "<<(0)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(e.cy)*e.bx<<" 0\n     "
+            <<"0 0 "<<(e.cy)*e.bx<<" 0 "<<(0)*e.bx<<" "<<(0)*e.bx<<std::endl;*/
     }
 };
 
