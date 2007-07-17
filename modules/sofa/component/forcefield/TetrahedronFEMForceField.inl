@@ -427,21 +427,24 @@ void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatri
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d)
 {
+    const Real youngModulus = f_youngModulus.getValue();
+    const Real poissonRatio = f_poissonRatio.getValue();
+
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;
     _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
             = _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] =
-                    _materialsStiffnesses[i][2][1] = f_poissonRatio.getValue()/(1-f_poissonRatio.getValue());
+                    _materialsStiffnesses[i][2][1] = poissonRatio/(1-poissonRatio);
     _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] = _materialsStiffnesses[i][0][5] = 0;
     _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] = _materialsStiffnesses[i][1][5] = 0;
     _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] = _materialsStiffnesses[i][2][5] = 0;
     _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] = _materialsStiffnesses[i][3][5] = 0;
     _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] = _materialsStiffnesses[i][4][5] = 0;
     _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] = _materialsStiffnesses[i][5][4] = 0;
-    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1-2*f_poissonRatio.getValue())/(2*(1-f_poissonRatio.getValue()));
-    _materialsStiffnesses[i] *= (f_youngModulus.getValue()*(1-f_poissonRatio.getValue()))/((1+f_poissonRatio.getValue())*(1-2*f_poissonRatio.getValue()));
+    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] = (1-2*poissonRatio)/(2*(1-poissonRatio));
+    _materialsStiffnesses[i] *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
-    /*Real gamma = (f_youngModulus.getValue()*f_poissonRatio.getValue()) / ((1+f_poissonRatio.getValue())*(1-2*f_poissonRatio.getValue()));
-    Real 		mu2 = f_youngModulus.getValue() / (1+f_poissonRatio.getValue());
+    /*Real gamma = (youngModulus*poissonRatio) / ((1+poissonRatio)*(1-2*poissonRatio));
+    Real 		mu2 = youngModulus / (1+poissonRatio);
     _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] =	_materialsStiffnesses[i][0][5] = 0;
     _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] =	_materialsStiffnesses[i][1][5] = 0;
     _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] =	_materialsStiffnesses[i][2][5] = 0;

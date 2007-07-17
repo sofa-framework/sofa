@@ -50,6 +50,7 @@ CUDA_SOURCES += mycuda.cu \
            CudaUniformMass.cu \
            CudaFixedConstraint.cu \
            CudaSpringForceField.cu \
+           CudaTetrahedronFEMForceField.cu \
            CudaPlaneForceField.cu \
            CudaSphereForceField.cu \
            CudaBarycentricMapping.cu

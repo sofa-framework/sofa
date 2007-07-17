@@ -12,28 +12,37 @@ namespace cuda
 
 extern "C"
 {
-    void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, const void* velems, void* df, const void* dx);
+    void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* f, const void* x, const void* v);
+    void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx);
 }
 
-struct GPUElement
+class __align__(16) GPUElement
 {
+public:
     /// index of the 4 connected vertices
-    int tetra[4];
+    //Vec<4,int> tetra;
+    int ia,ib,ic,id;
     /// material stiffness matrix
-    float K[6*6];
-    /// strain-displacement matrix
-    float J[12*6];
+    //Mat<6,6,Real> K;
+    float gamma_bx2, mu2_bx2;
     /// initial position of the vertices in the local (rotated) coordinate system
-    float initpos[4*3];
+    //Vec3f initpos[4];
+    float bx,cx;
+    float cy,dx,dy,dz;
+    /// strain-displacement matrix
+    //Mat<12,6,Real> J;
+    float Jbx_bx,Jby_bx,Jbz_bx;
+    /// unused value to align to 64 bytes
+    float dummy;
 };
 
-struct GPUElementState
+class __align__(16) GPUElementState
 {
-    /// rotation matrix
-    float R[3*3];
+public:
+    /// transposed rotation matrix
+    matrix3 Rt;
     /// current internal strain
-    float S[6];
+    float3 S0,S1;
     /// unused value to align to 64 bytes
     float dummy;
 };
@@ -42,192 +51,275 @@ struct GPUElementState
 // GPU-side methods //
 //////////////////////
 
-__global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(unsigned int nbElemPerVertex, const GPUElement* elems, GPUElementState* state, const int* velems, float* f, const float* x, const float* v)
+__global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, const GPUElement* elems, GPUElementState* state, const float* x)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
-    /*
-    	//! Dynamically allocated shared memory to reorder global memory access
-    	extern  __shared__  float temp[];
+    int index = index0+index1;
 
-    	// First copy x and v inside temp
-    	int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
-    	temp[index1        ] = x[iext        ];
-    	temp[index1+  BSIZE] = x[iext+  BSIZE];
-    	temp[index1+2*BSIZE] = x[iext+2*BSIZE];
-    	temp[index1+3*BSIZE] = v[iext        ];
-    	temp[index1+4*BSIZE] = v[iext+  BSIZE];
-    	temp[index1+5*BSIZE] = v[iext+2*BSIZE];
+    GPUElement e = elems[index];
 
-    	__syncthreads();
+    GPUElementState s;
 
-    	int index3 = umul24(index1,3); //3*index1;
-    	float3 pos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
-    	float3 vel1 = make_float3(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
-    	float3 force = make_float3(0.0f,0.0f,0.0f);
+    if (index < nbElem)
+    {
+        float3 B = ((const float3*)x)[e.ib];
+        float3 C = ((const float3*)x)[e.ic];
+        float3 D = ((const float3*)x)[e.id];
+        float3 A = ((const float3*)x)[e.ia];
 
-    	springs+=index0*nbSpringPerVertex+index1;
-    	dfdx+=index0*nbSpringPerVertex+index1;
+        B -= A;
+        C -= A;
+        D -= A;
 
-    	for (int s = 0;s < nbSpringPerVertex; s++)
-    	{
-    		GPUSpring spring = *springs;
-    		springs+=BSIZE;
-    		if (spring.index != -1)
-    		{
-    			//Coord u = p2[b]-p1[a];
-    			//Real d = u.norm();
-    			//Real inverseLength = 1.0f/d;
-    			//u *= inverseLength;
-    			//Real elongation = (Real)(d - spring.initpos);
-    			//ener += elongation * elongation * spring.ks /2;
-    			//Deriv relativeVelocity = v2[b]-v1[a];
-    			//Real elongationVelocity = dot(u,relativeVelocity);
-    			//Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
-    			//Deriv force = u*forceIntensity;
-    			//f1[a]+=force;
-    			//f2[b]-=force;
+        // Compute R
+        float bx = norm(B);
+        s.Rt.x = B/bx;
+        s.Rt.z = cross(B,C);
+        s.Rt.y = cross(s.Rt.z,B);
+        s.Rt.y *= invnorm(s.Rt.y);
+        s.Rt.z *= invnorm(s.Rt.z);
 
-    			float3 u, relativeVelocity;
+        // Compute JtRtX = JbtRtB + JctRtC + JdtRtD
 
-    			if (spring.index >= index0 && spring.index < index0+BSIZE)
-    			{ // 'local' point
-    				int i = spring.index - index0;
-    				u = make_float3(temp[3*i  ], temp[3*i+1], temp[3*i+2]);
-    				relativeVelocity = make_float3(temp[3*i  +3*BSIZE], temp[3*i+1+3*BSIZE], temp[3*i+2+3*BSIZE]);
-    			}
-    			else
-    			{ // general case
-    				u = ((const float3*)x)[spring.index];
-    				relativeVelocity = ((const float3*)v)[spring.index];
-    			}
+        float3 JtRtX0,JtRtX1;
 
-    			u -= pos1;
-    			relativeVelocity -= vel1;
+        // RtB = (bx 0 0)
+        // Jb  = (Jbx 0 0 Jby 0 Jbz)
+        //       (0 Jby 0 Jbx Jbz 0)
+        //       (0 0 Jbz 0 Jby Jbx)
+        JtRtX0.x = e.Jbx_bx * bx;
+        JtRtX0.y = 0;
+        JtRtX0.z = 0;
+        JtRtX1.x = e.Jby_bx * bx;
+        JtRtX1.y = 0;
+        JtRtX1.z = e.Jbz_bx * bx;
 
-    			float inverseLength = 1/sqrt(dot(u,u));
-    			float d = __fdividef(1,inverseLength);
-    			u *= inverseLength;
-    			float elongation = d - spring.initpos;
-    			float elongationVelocity = dot(u,relativeVelocity);
-    			float forceIntensity = spring.ks*elongation+spring.kd*elongationVelocity;
-    			force += u*forceIntensity;
+        // RtC = (cx cy 0)
+        // Jc  = (0 0   0 dz 0 -dy)
+        //       (0 dz  0 0 -dy  0)
+        //       (0 0 -dy 0  dz  0)
+        float cx = dot(C,s.Rt.x);
+        float cy = dot(C,s.Rt.y);
 
-    			*dfdx = forceIntensity*inverseLength;
-    		}
-    		dfdx+=BSIZE;
-    	}
+        JtRtX0.y += e.dz * cy;
+        JtRtX1.x += e.dz * cx;
+        JtRtX1.y -= e.dy * cy;
+        JtRtX1.z -= e.dy * cx;
 
-    	__syncthreads();
+        // RtD = (dx dy dz)
+        // Jd  = (0 0  0 0 0 cy)
+        //       (0 0  0 0 cy 0)
+        //       (0 0 cy 0  0 0)
+        float dx = dot(D,s.Rt.x);
+        float dy = dot(D,s.Rt.y);
+        float dz = dot(D,s.Rt.z);
 
-    	temp[index3  ] = force.x;
-    	temp[index3+1] = force.y;
-    	temp[index3+2] = force.z;
+        JtRtX0.z += e.cy * dz;
+        JtRtX1.y -= e.dy * dy;
+        JtRtX1.z -= e.dy * dx;
 
-    	__syncthreads();
+        // Compute S = K JtRtX
 
-    	f[iext        ] += temp[index1        ];
-    	f[iext+  BSIZE] += temp[index1+  BSIZE];
-    	f[iext+2*BSIZE] += temp[index1+2*BSIZE];
-    */
+        // K = [ gamma+mu2 gamma gamma 0 0 0 ]
+        //     [ gamma gamma+mu2 gamma 0 0 0 ]
+        //     [ gamma gamma gamma+mu2 0 0 0 ]
+        //     [ 0 0 0             mu2/2 0 0 ]
+        //     [ 0 0 0             0 mu2/2 0 ]
+        //     [ 0 0 0             0 0 mu2/2 ]
+        // S0 = JtRtX0*mu2 + dot(JtRtX0,(gamma gamma gamma))
+        // S1 = JtRtX1*mu2/2
+
+        s.S0  = JtRtX0*e.mu2_bx2;
+        s.S0 += JtRtX0*e.gamma_bx2;
+        s.S1  = JtRtX1*(e.mu2_bx2*0.5f);
+    }
+
+    state[index0+index1] = s;
+
 }
 
-__global__ void TetrahedronFEMForceFieldCuda3f_addDForce_kernel(unsigned int nbElemPerVertex, const GPUElement* elems, const GPUElementState* state, const int* velems, float* df, const float* dx)
+__global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(unsigned int nbElemPerVertex, const GPUElement* elems, GPUElementState* state, const int* velems, float* f, const float* x)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
+    int index3 = umul24(index1,3); //3*index1;
+
+    //! Dynamically allocated shared memory to reorder global memory access
+    extern  __shared__  float temp[];
+
+    // First copy x inside temp
+    int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
     /*
-    	//! Dynamically allocated shared memory to reorder global memory access
-    	extern  __shared__  float temp[];
+        temp[index1        ] = x[iext        ];
+        temp[index1+  BSIZE] = x[iext+  BSIZE];
+        temp[index1+2*BSIZE] = x[iext+2*BSIZE];
 
-    	// First copy dx and x inside temp
-    	int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
-    	temp[index1        ] = dx[iext        ];
-    	temp[index1+  BSIZE] = dx[iext+  BSIZE];
-    	temp[index1+2*BSIZE] = dx[iext+2*BSIZE];
-    	temp[index1+3*BSIZE] = x[iext        ];
-    	temp[index1+4*BSIZE] = x[iext+  BSIZE];
-    	temp[index1+5*BSIZE] = x[iext+2*BSIZE];
+        __syncthreads();
 
-    	__syncthreads();
-
-    	int index3 = umul24(index1,3); //3*index1;
-    	float3 dpos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
-    	float3 pos1 = make_float3(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]);
-    	float3 dforce = make_float3(0.0f,0.0f,0.0f);
-
-    	springs+=index0*nbSpringPerVertex+index1;
-    	dfdx+=index0*nbSpringPerVertex+index1;
-
-    	for (int s = 0;s < nbSpringPerVertex; s++)
-    	{
-    		GPUSpring spring = *springs;
-    		springs+=BSIZE;
-    		if (spring.index != -1)
-    		{
-    			float tgt = *dfdx;
-    			float3 du;
-    			float3 u;
-
-    			if (spring.index >= index0 && spring.index < index0+BSIZE)
-    			{ // 'local' point
-    				int i = spring.index - index0;
-    				du = make_float3(temp[3*i  ], temp[3*i+1], temp[3*i+2]);
-    				u = make_float3(temp[3*i  +3*BSIZE], temp[3*i+1+3*BSIZE], temp[3*i+2+3*BSIZE]);
-    			}
-    			else
-    			{ // general case
-    				du = ((const float3*)dx)[spring.index];
-    				u = ((const float3*)x)[spring.index];
-    			}
-
-    			du -= dpos1;
-    			u -= pos1;
-
-    			float uxux = u.x*u.x;
-    			float uyuy = u.y*u.y;
-    			float uzuz = u.z*u.z;
-    			float uxuy = u.x*u.y;
-    			float uxuz = u.x*u.z;
-    			float uyuz = u.y*u.z;
-    			float fact = (spring.ks-tgt)/(uxux+uyuy+uzuz);
-    			dforce.x += fact*(uxux*du.x+uxuy*du.y+uxuz*du.z)+tgt*du.x;
-    			dforce.y += fact*(uxuy*du.x+uyuy*du.y+uyuz*du.z)+tgt*du.y;
-    			dforce.z += fact*(uxuz*du.x+uyuz*du.y+uzuz*du.z)+tgt*du.z;
-    		}
-    		dfdx+=BSIZE;
-    	}
-
-    	__syncthreads();
-
-    	temp[index3  ] = dforce.x;
-    	temp[index3+1] = dforce.y;
-    	temp[index3+2] = dforce.z;
-
-    	__syncthreads();
-
-    	f[iext        ] += temp[index1        ];
-    	f[iext+  BSIZE] += temp[index1+  BSIZE];
-    	f[iext+2*BSIZE] += temp[index1+2*BSIZE];
+        float3 pos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
     */
+    float3 force = make_float3(0.0f,0.0f,0.0f);
+
+    velems+=index0*nbElemPerVertex+index1;
+
+    for (int s = 0; s < nbElemPerVertex; s++)
+    {
+        int i = *velems;
+        velems+=BSIZE;
+        if (i != -1)
+        {
+            int eindex = i >> 2;
+            i &= 3;
+            GPUElement e = elems[eindex];
+            GPUElementState s = state[eindex];
+
+            float3 Ji;
+
+            switch (i)
+            {
+            case 0: // point a
+                Ji.x = -e.Jbx_bx;
+                Ji.y = -e.Jby_bx-e.dz;
+                Ji.z = -e.Jbz_bx+e.dy-e.cy;
+                break;
+            case 1: // point b
+                Ji.x = e.Jbx_bx;
+                Ji.y = e.Jby_bx;
+                Ji.z = e.Jbz_bx;
+                break;
+            case 2: // point c
+                Ji.x = 0;
+                Ji.y = e.dz;
+                Ji.z = -e.dy;
+                break;
+            case 3: // point d
+                Ji.x = 0;
+                Ji.y = 0;
+                Ji.z = e.cy;
+                break;
+            }
+            // Ji  = (Jix 0   0  Jiy  0  Jiz)
+            //       ( 0 Jiy  0  Jix Jiz  0 )
+            //       ( 0  0  Jiz  0  Jiy Jix)
+            float3 JiS = mul(Ji,s.S0);
+            JiS.x += Ji.y*s.S1.x + Ji.z*s.S1.z;
+            JiS.y += Ji.x*s.S1.x + Ji.z*s.S1.y;
+            JiS.z += Ji.y*s.S1.y + Ji.x*s.S1.z;
+
+            force += s.Rt.mulT(JiS);
+        }
+    }
+
+    __syncthreads();
+
+    temp[index3  ] = force.x;
+    temp[index3+1] = force.y;
+    temp[index3+2] = force.z;
+
+    __syncthreads();
+
+    f[iext        ] += temp[index1        ];
+    f[iext+  BSIZE] += temp[index1+  BSIZE];
+    f[iext+2*BSIZE] += temp[index1+2*BSIZE];
+}
+
+__global__ void TetrahedronFEMForceFieldCuda3f_calcDForce_kernel(int nbElem, const GPUElement* elems, GPUElementState* state, const float* x)
+{
+    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index1 = threadIdx.x;
+    int index = index0+index1;
+
+    GPUElement e = elems[index];
+
+    GPUElementState s = state[index];
+
+    if (index < nbElem)
+    {
+        // Compute JtRtX = JbtRtB + JctRtC + JdtRtD
+
+        float3 A = ((const float3*)x)[e.ia];
+        float3 JtRtX0,JtRtX1;
+
+
+        float3 B = ((const float3*)x)[e.ib];
+        B = s.Rt * (B-A);
+
+        // Jb  = (Jbx 0 0 Jby 0 Jbz)
+        //       (0 Jby 0 Jbx Jbz 0)
+        //       (0 0 Jbz 0 Jby Jbx)
+        JtRtX0.x = e.Jbx_bx * B.x;
+        JtRtX0.y = e.Jby_bx * B.y;
+        JtRtX0.z = e.Jbz_bx * B.x;
+        JtRtX1.x = e.Jby_bx * B.x + e.Jbx_bx * B.y;
+        JtRtX1.y = e.Jbz_bx * B.y + e.Jby_bx * B.z;
+        JtRtX1.z = e.Jbz_bx * B.x + e.Jbx_bx * B.z;
+
+        float3 C = ((const float3*)x)[e.ic];
+        C = s.Rt * (C-A);
+
+        // Jc  = (0 0   0 dz 0 -dy)
+        //       (0 dz  0 0 -dy  0)
+        //       (0 0 -dy 0  dz  0)
+
+        JtRtX0.y += e.dz * C.y;
+        JtRtX0.z -= e.dy * C.z;
+        JtRtX1.x += e.dz * C.x;
+        JtRtX1.y += e.dz * C.z - e.dy * C.y;
+        JtRtX1.z -= e.dy * C.x;
+
+        // Jd  = (0 0  0 0 0 cy)
+        //       (0 0  0 0 cy 0)
+        //       (0 0 cy 0  0 0)
+        float3 D = ((const float3*)x)[e.id];
+        D = s.Rt * (D-A);
+
+        JtRtX0.z += e.cy * D.z;
+        JtRtX1.y -= e.dy * D.y;
+        JtRtX1.z -= e.dy * D.x;
+
+        // Compute S = K JtRtX
+
+        // K = [ gamma+mu2 gamma gamma 0 0 0 ]
+        //     [ gamma gamma+mu2 gamma 0 0 0 ]
+        //     [ gamma gamma gamma+mu2 0 0 0 ]
+        //     [ 0 0 0             mu2/2 0 0 ]
+        //     [ 0 0 0             0 mu2/2 0 ]
+        //     [ 0 0 0             0 0 mu2/2 ]
+        // S0 = JtRtX0*mu2 + dot(JtRtX0,(gamma gamma gamma))
+        // S1 = JtRtX1*mu2/2
+
+        s.S0  = JtRtX0*e.mu2_bx2;
+        s.S0 += JtRtX0*e.gamma_bx2;
+        s.S1  = JtRtX1*(e.mu2_bx2*0.5f);
+    }
+
+    state[index0+index1] = s;
+
 }
 
 //////////////////////
 // CPU-side methods //
 //////////////////////
 
-void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* f, const void* x, const void* v)
+void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* f, const void* x, const void* v)
 {
-    dim3 threads(BSIZE,1);
-    dim3 grid((size+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*6*sizeof(float) >>>(nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)f, (const float*)x, (const float*)v);
+    dim3 threads1(BSIZE,1);
+    dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
+    TetrahedronFEMForceFieldCuda3f_calcForce_kernel<<< grid1, threads1>>>(nbElem, (const GPUElement*)elems, (GPUElementState*)state, (const float*)x);
+    dim3 threads2(BSIZE,1);
+    dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
+    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)f, (const float*)x);
 }
 
-void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, const void* velems, void* df, const void* dx)
+void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx)
 {
-    dim3 threads(BSIZE,1);
-    dim3 grid((size+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid, threads, BSIZE*6*sizeof(float) >>>(nbElemPerVertex, (const GPUElement*)elems, (const GPUElementState*)state, (const int*)velems, (float*)df, (const float*)dx);
+    dim3 threads1(BSIZE,1);
+    dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
+    TetrahedronFEMForceFieldCuda3f_calcDForce_kernel<<< grid1, threads1>>>(nbElem, (const GPUElement*)elems, (GPUElementState*)state, (const float*)dx);
+    dim3 threads2(BSIZE,1);
+    dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
+    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbElemPerVertex, (const GPUElement*)elems, (GPUElementState*)state, (const int*)velems, (float*)df, (const float*)dx);
 }
 
 #if defined(__cplusplus)
