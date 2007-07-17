@@ -110,10 +110,10 @@ public:
     virtual void accumulateDf() { }
 
     /// Translate the MechanicalObject
-    virtual void applyTranslation(double dx, double dy, double dz)=0;
+    virtual void applyTranslation(const double dx, const double dy, const double dz)=0;
 
     /// Scale the MechanicalObject
-    virtual void applyScale(double s)=0;
+    virtual void applyScale(const double s)=0;
 
     /// Identify one vector stored in MechanicalState
     class VecId
