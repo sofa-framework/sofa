@@ -660,6 +660,7 @@ public:
     DataField<double> maxVDist;
 
     Mat4x4f matrix, lastMatrix;
+    float mscale; ///< scale part from input matrix
     int distanceLastIt;
     int matrixLastIt;
     double motionLastTime;
@@ -678,7 +679,7 @@ public:
         , stampBB("BB", flowvr::TypeArray::create(6, flowvr::TypeInt::create()))
         , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
         , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
-        , distanceLastIt(-20), matrixLastIt(-20), motionLastTime(-1000), curDistGrid(NULL), emptyGrid(NULL)
+        , mscale(1.0f), distanceLastIt(-20), matrixLastIt(-20), motionLastTime(-1000), curDistGrid(NULL), emptyGrid(NULL)
         , grid(NULL) //, rigid(NULL)
     {
         pInDistance->stamps->add(&stampSizes);
@@ -740,6 +741,7 @@ public:
         double time = getContext()->getTime();
 
         bool newmotion = false;
+        bool newscale = false;
         if (pInMatrix->isConnected())
         {
             flowvr::Message msgmatrix;
@@ -750,8 +752,22 @@ public:
             {
                 lastMatrix = matrix;
                 matrix = *msgmatrix.data.getRead<Mat4x4f>(0);
+
+                // remove scale component
+                float newscale = 0.0f;
+                for(int j=0; j<3; j++)
+                    for(int i=0; i<3; i++)
+                        newscale += matrix[j][i]*matrix[j][i];
+                newscale = rsqrt(newscale/9);
+                if (newscale != mscale)
+                    newscale = true;
+                for(int j=0; j<3; j++)
+                    for(int i=0; i<3; i++)
+                        matrix[j][i] /= newscale;
+                mscale = newscale;
+
                 matrixLastIt = matrixIt;
-                if (lastMatrix != matrix)
+                if (lastMatrix != matrix || newscale)
                     newmotion = true;
 
                 //if(rigid)
@@ -764,12 +780,12 @@ public:
         int distanceIt = -1;
         distance.stamps.read(pInDistance->stamps->it,distanceIt);
         //const unsigned int nbv = points.data.getSize()/sizeof(Vec3f);
-        if (distanceIt != distanceLastIt)
+        if (distanceIt != distanceLastIt || newscale)
         {
             distanceLastIt = distanceIt;
             //const Vec3f* vertices = points.data.getRead<Vec3f>(0);
             const Vec3f trans = mod->f_trans.getValue();
-            const float scale = mod->f_scale.getValue();
+            const float scale = mod->f_scale.getValue()*mscale;
 
             int nz = 64;
             int ny = 64;
@@ -797,10 +813,10 @@ public:
             }
             else
             {
-                DistanceGrid::Coord pmin = trans + p0;
-                DistanceGrid::Coord pmax = pmin + Vec3f(dp[0]*(nx-1),dp[1]*(ny-1),dp[2]*(ny-2));
-                DistanceGrid::Coord bbmin = pmin + Vec3f(dp[0]*bbox[0],dp[1]*bbox[1],dp[2]*bbox[2]);
-                DistanceGrid::Coord bbmax = pmin + Vec3f(dp[0]*bbox[3],dp[1]*bbox[4],dp[2]*bbox[5]);
+                DistanceGrid::Coord pmin = trans + p0*scale;
+                DistanceGrid::Coord pmax = pmin + Vec3f(dp[0]*(nx-1),dp[1]*(ny-1),dp[2]*(ny-2))*scale;
+                DistanceGrid::Coord bbmin = pmin + Vec3f(dp[0]*bbox[0],dp[1]*bbox[1],dp[2]*bbox[2])*scale;
+                DistanceGrid::Coord bbmax = pmin + Vec3f(dp[0]*bbox[3],dp[1]*bbox[4],dp[2]*bbox[5])*scale;
 
                 if (scale==1.0f)
                 {

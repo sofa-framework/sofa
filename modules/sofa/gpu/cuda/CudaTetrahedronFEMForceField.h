@@ -38,10 +38,10 @@ public:
 
     This matrix is used to compute the initial position of each element in the local rotated coordinate frame, with the origin on A, as follow:
     \f{eqnarray*}
-        a &=& R^t \cdot (A-A) = \begin{pmatrix} 0   & 0   & 0   \end{pmatrix}
-        b &=& R^t \cdot (B-A) = \begin{pmatrix} b_x & 0   & 0   \end{pmatrix}
-        c &=& R^t \cdot (C-A) = \begin{pmatrix} c_x & c_y & 0   \end{pmatrix}
-        d &=& R^t \cdot (D-A) = \begin{pmatrix} d_x & d_y & d_z \end{pmatrix}
+        a &=& R^t \cdot (A-A) = \begin{pmatrix} 0   & 0   & 0   \end{pmatrix} \\
+        b &=& R^t \cdot (B-A) = \begin{pmatrix} b_x & 0   & 0   \end{pmatrix} \\
+        c &=& R^t \cdot (C-A) = \begin{pmatrix} c_x & c_y & 0   \end{pmatrix} \\
+        d &=& R^t \cdot (D-A) = \begin{pmatrix} d_x & d_y & d_z \end{pmatrix} \\
     \f}
 
     The material stiffness is handled by a \f$6 \times 6\f$ matrix K computed as follow:
@@ -54,8 +54,8 @@ public:
             0 & 0 & 0 & \mu^2/2 & 0 & 0 \\
             0 & 0 & 0 & 0 & \mu^2/2 & 0 \\
             0 & 0 & 0 & 0 & 0 & \mu^2/2 \\
-            \end{pmatrix}
-        \gamma &=& \frac{youngModulus}{6 vol(ABCD)}\frac{poissonRatio}{(1 + poissonRatio)(1 - 2 poissonRatio)}
+            \end{pmatrix} \\
+        \gamma &=& \frac{youngModulus}{6 vol(ABCD)}\frac{poissonRatio}{(1 + poissonRatio)(1 - 2 poissonRatio)} \\
         \mu^2 &=& \frac{youngModulus}{6 vol(ABCD)}\frac{1}{1+poissonRatio}
     \f}
 
@@ -75,58 +75,66 @@ public:
             p_x(abc) & 0 & 0 & p_y(abc) & 0 & p_z(abc) \\
             0 & p_y(abc) & 0 & p_x(abc) & p_z(abc) & 0 \\
             0 & 0 & p_z(abc) & 0 & p_y(abc) & p_x(abc) \\
-            \end{pmatrix}
+            \end{pmatrix} \\
         p(uvw) &=& u \times v + v \times w + w \times u
     \f}
 
     Given the zeros in abcd, we have:
     \f{eqnarray*}
-        Jb &=& p(cda) = c \times d + d \times a + a \times c = \begin{pmatrix}c_x \\ c_y \\ 0\end{pmatrix} \times \begin{pmatrix}d_x \\ d_y \\ d_z\end{pmatrix} = \begin{pmatrix}c_y d_z \\ - c_x d_z \\ c_x d_y - c_y d_x\end{pmatrix}
-        Jc &=& -p(dab) = - d \times a - a \times b - b \times d = - \begin{pmatrix}b_x \\ 0 \\ 0\end{pmatrix} \times \begin{pmatrix}d_x \\ d_y \\ d_z\end{pmatrix} = \begin{pmatrix}0 \\ b_x d_z \\ - b_x d_y\end{pmatrix}
+        Jb &=& p(cda) = c \times d + d \times a + a \times c = \begin{pmatrix}c_x \\ c_y \\ 0\end{pmatrix} \times \begin{pmatrix}d_x \\ d_y \\ d_z\end{pmatrix} = \begin{pmatrix}c_y d_z \\ - c_x d_z \\ c_x d_y - c_y d_x\end{pmatrix} \\
+        Jc &=& -p(dab) = - d \times a - a \times b - b \times d = - \begin{pmatrix}b_x \\ 0 \\ 0\end{pmatrix} \times \begin{pmatrix}d_x \\ d_y \\ d_z\end{pmatrix} = \begin{pmatrix}0 \\ b_x d_z \\ - b_x d_y\end{pmatrix} \\
         Jd &=& p(abc) = a \times b + b \times c + c \times a = \begin{pmatrix}b_x \\ 0 \\ 0\end{pmatrix} \times \begin{pmatrix}c_x \\ c_y \\ 0\end{pmatrix} = \begin{pmatrix}0 \\ 0 \\ b_x c_y\end{pmatrix}
     \f}
 
     Also, as the sum of applied forces must be zero, we know that:
     \f{eqnarray*}
-        Ja+Jb+Jc+Jd &=& 0
-        -p(bcd)+p(cda)-p(dab)+b(abc) &=& 0
+        Ja+Jb+Jc+Jd &=& 0 \\
+        -p(bcd)+p(cda)-p(dab)+b(abc) &=& 0 \\
         - b \times c - c \times d - d \times b + c \times d + d \times a + a \times c - d \times a - a \times b - b \times d + a \times b + b \times c + c \times a
-        &=& 0
+        &=& 0 \\
         Ja &=& -Jb-Jc-Jd
     \f}
 
     The forces will be computed using \f$F = R J K J^t R^t X\f$.
     We can apply a scaling factor to J if we divide K by its square: \f$F = R (1/b_x J) (b_x^2 K) (1/b_x J)^t R^t X\f$.
 
-    This allows us to do all computations from the values \f$\begin{pmatrix}b_x & c_x & c_y & d_x & d_y & d_z & \gamma b_x^2 & \mu^2 b_x^2 & Jb_x/b_x & Jb_y/b_x & Jb_z/b_x\end{pmatrix}\f$. Including the 4 vertex indices, this represents 15 values, so we have one extra available variable to align the structure to 64 octets.
+    This allows us to do all computations from the values \f$\left(b_x \quad c_x \quad c_y \quad d_x \quad d_y \quad d_z \quad \gamma b_x^2 \quad \mu^2 b_x^2 \quad Jb_x/b_x \quad Jb_y/b_x \quad Jb_z/b_x\right)\f$. Including the 4 vertex indices, this represents 15 values, so we have one extra available variable to align the structure to 64 octets.
 
     To allow for easy coalesced accesses on the GPU, the data could be split in group of 16 bytes, or 4 32-bits values.
 
     */
     struct GPUElement
     {
-        /// index of the 4 connected vertices
+        /// @name index of the 4 connected vertices
+        /// @{
         //Vec<4,int> tetra;
         int ia,ib,ic,id;
+        /// @}
         //};
         //struct GPUElement2
         //{
-        /// material stiffness matrix
+        /// @name material stiffness matrix
+        /// @{
         //Mat<6,6,Real> K;
         float gamma_bx2, mu2_bx2;
-        /// initial position of the vertices in the local (rotated) coordinate system
+        /// @}
+        /// @name initial position of the vertices in the local (rotated) coordinate system
+        /// @{
         //Vec3f initpos[4];
         float bx,cx;
         //};
         //struct GPUElement3
         //{
         float cy,dx,dy,dz;
+        /// @}
         //};
         //struct GPUElement4
         //{
         /// strain-displacement matrix
+        /// @{
         //Mat<12,6,Real> J;
         float Jbx_bx,Jby_bx,Jbz_bx;
+        /// @}
         /// unused value to align to 64 bytes
         float dummy;
     };
