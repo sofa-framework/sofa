@@ -29,6 +29,7 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/gl/Cylinder.h>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <iostream>
@@ -65,14 +66,6 @@ JointSpringForceField<DataTypes>::JointSpringForceField(Vec _kst, Vec _ksr, doub
 }
 
 
-
-template<class DataTypes>
-void JointSpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    if (arg->getAttribute("filename"))
-        this->load(arg->getAttribute("filename"));
-    this->InteractionForceField::parse(arg);
-}
 
 template <class DataTypes>
 class JointSpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader
@@ -223,7 +216,7 @@ void JointSpringForceField<DataTypes>::draw()
     glDisable(GL_LIGHTING);
     bool external = (this->object1!=this->object2);
     const vector<Spring>& springs = this->springs.getValue();
-    glBegin(GL_LINES);
+
     for (unsigned int i=0; i<springs.size(); i++)
     {
         Real d = (p2[springs[i].m2]-p1[springs[i].m1]).getCenter().norm();
@@ -241,10 +234,25 @@ void JointSpringForceField<DataTypes>::draw()
             else
                 glColor4f(0,1,0.5f,1);
         }
+        glBegin(GL_LINES);
         helper::gl::glVertexT(p1[springs[i].m1].getCenter());
         helper::gl::glVertexT(p2[springs[i].m2].getCenter());
+        glEnd();
+
+        if(springs[i].ksr[0] < 1000)
+        {
+            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(1,0,0));
+        }
+        if(springs[i].ksr[1] < 1000)
+        {
+            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(0,1,0));
+        }
+        if(springs[i].ksr[2] < 1000)
+        {
+            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(0,0,1));
+        }
     }
-    glEnd();
+
 }
 
 } // namespace forcefield

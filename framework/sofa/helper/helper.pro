@@ -24,6 +24,7 @@ HEADERS += \
           FnDispatcher.h \
           FnDispatcher.inl \
           gl/Axis.h \
+          gl/Cylinder.h \
           gl/Capture.h \
           gl/glfont.h \
           gl/GLshader.h \
@@ -63,6 +64,7 @@ SOURCES += \
           FnDispatcher.cpp \
           Factory.cpp \
           gl/Axis.cpp \
+          gl/Cylinder.cpp \
           gl/Capture.cpp \
           gl/glfont.cpp \
           gl/GLshader.cpp \

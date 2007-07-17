@@ -76,32 +76,32 @@ public:
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::load(const char *filename)
 {
-    initPos.resize(0);
+    /*   initPos.resize(0);
 
-    if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".xs3"))
-    {
-        Loader loader(this);
-        loader.helper::io::MassSpringLoader::load(filename);
-    }
-    else if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".sph"))
-    {
-        Loader loader(this);
-        loader.helper::io::SphereLoader::load(filename);
-    }
-    else if (strlen(filename)>0)
-    {
-        // Default to mesh loader
-        helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
-        if (mesh!=NULL)
-        {
-            initPos.resize(mesh->getVertices().size());
-            for (unsigned int i=0; i<mesh->getVertices().size(); i++)
-            {
-                Out::DataTypes::set(initPos[i], mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
-            }
-            delete mesh;
-        }
-    }
+       if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".xs3"))
+       {
+           Loader loader(this);
+           loader.helper::io::MassSpringLoader::load(filename);
+       }
+       else
+       if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".sph"))
+       {
+           Loader loader(this);
+           loader.helper::io::SphereLoader::load(filename);
+       }
+       else if (strlen(filename)>0)
+       { // Default to mesh loader
+           helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
+           if (mesh!=NULL)
+           {
+               initPos.resize(mesh->getVertices().size());
+               for (unsigned int i=0;i<mesh->getVertices().size();i++)
+               {
+                   Out::DataTypes::set(initPos[i].getCenter(), mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
+               }
+               delete mesh;
+           }
+       }*/
 }
 
 template <class BasicMapping>
@@ -171,7 +171,8 @@ void SkinningMapping<BasicMapping>::init()
                 coefs[nbRefs.getValue()*i+m].setValue(minDists[m]*minDists[m]);
                 repartition[nbRefs.getValue()*i+m].setValue( minInds[m]);
 
-                initPos[nbRefs.getValue()*i+m] = (posTo - xfrom[minInds[m]].getCenter());
+                initPos[nbRefs.getValue()*i+m].getCenter() = (posTo - xfrom[minInds[m]].getCenter());
+                initPos[nbRefs.getValue()*i+m].getOrientation() = xfrom[minInds[m]].getOrientation();
             }
         }
         delete [] minInds;
@@ -198,8 +199,11 @@ void SkinningMapping<BasicMapping>::apply( typename Out::VecCoord& out, const ty
         for (unsigned int m=0 ; m<nbRefs.getValue(); m++)
         {
             translation = in[repartition[nbRefs.getValue()*i+m].getValue()].getCenter();
-            in[repartition[nbRefs.getValue()*i+m].getValue()].writeRotationMatrix(rotation);
-            rotatedPoints[nbRefs.getValue()*i+m] = rotation*initPos[nbRefs.getValue()*i+m];
+            Quat relativeRot = initPos[nbRefs.getValue()*i+m].getOrientation().inverse() * in[repartition[nbRefs.getValue()*i+m].getValue()].getOrientation();
+            //in[repartition[nbRefs.getValue()*i+m].getValue()].writeRotationMatrix(rotation);
+            relativeRot.toMatrix(rotation);
+            rotatedPoints[nbRefs.getValue()*i+m] = rotation * (initPos[nbRefs.getValue()*i+m].getCenter());
+
             out[i] += rotatedPoints[nbRefs.getValue()*i+m] * coefs[nbRefs.getValue()*i+m].getValue() ;
             out[i] += translation * coefs[nbRefs.getValue()*i+m].getValue();
         }

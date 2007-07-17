@@ -60,7 +60,7 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
 
 protected:
-    std::vector<Coord> initPos;
+    std::vector<InCoord> initPos;
     Coord translation;
     Mat rotation;
     std::vector<Coord> rotatedPoints;

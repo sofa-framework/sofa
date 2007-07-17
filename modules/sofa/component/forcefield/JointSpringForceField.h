@@ -135,7 +135,7 @@ public:
     JointSpringForceField(MechanicalState* object1, MechanicalState* object2, Vec _kst=Vec(100.0,100.0,100.0), Vec _ksr=Vec(100.0,100.0,100.0), double _kd=5.0);
     JointSpringForceField(Vec _kst=Vec(100.0,100.0,100.0), Vec _ksr=Vec(100.0,100.0,100.0), double _kd=5.0);
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+    //virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     bool load(const char *filename);
 
