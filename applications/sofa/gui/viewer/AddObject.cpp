@@ -54,6 +54,7 @@ AddObject::AddObject( QWidget* parent , const char*, bool, Qt::WFlags )
     positionX->setText("0");
     positionY->setText("0");
     positionZ->setText("0");
+    scaleValue->setText("1");
 
     openFilePath->setText(NULL);
 
@@ -79,8 +80,6 @@ void AddObject::fileOpen()
 #else
     std::string object_fileName(s.latin1());
 #endif
-
-    std::cout << object_fileName << "\n";
 
     openFilePath->setText(QString(object_fileName.c_str()));
 }

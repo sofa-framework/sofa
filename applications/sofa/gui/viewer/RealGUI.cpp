@@ -38,7 +38,6 @@
 
 
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/simulation/tree/InitAction.h>
 #include <sofa/simulation/tree/MutationListener.h>
 #include <sofa/simulation/tree/Colors.h>
@@ -51,6 +50,9 @@
 #include <sofa/simulation/automatescheduler/Node.h>
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/component/topology/MeshTopology.h>
+
+
 #include <limits.h>
 
 namespace sofa
@@ -341,6 +343,35 @@ void RealGUI::init()
     m_dumpStateStream = 0;
     m_displayComputationTime = false;
     m_exportGnuplot = false;
+
+    //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
+    std::string object("object.txt");
+    if (!sofa::helper::system::DataRepository.findFile(  object ) )
+        return;
+
+
+    object = sofa::helper::system::DataRepository.getFile(  object );
+    char str [80];
+    FILE * pFile;
+
+    pFile = fopen ( object.c_str() ,"r");
+    int end=0;
+    end = fscanf(pFile, "BoundingBox: %f %f %f %f %f %f\n",
+            &object_BoundingBox[0],&object_BoundingBox[1],&object_BoundingBox[2],&object_BoundingBox[3],&object_BoundingBox[4],&object_BoundingBox[5]);
+    if (end == EOF) return;
+
+    end = fscanf(pFile, "Scale: %f %f\n",
+            &object_Scale[0], &object_Scale[1]);
+    if (end == EOF) return;
+
+    while (true)
+    {
+        end = fscanf(pFile, "%s", str);
+        if (end == EOF) return;
+        std::cout << str << " Added to objects\n";
+        list_object.push_back(std::string(str));
+    }
+
 }
 
 void RealGUI::addViewer()
@@ -1265,6 +1296,34 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
         _animationOBJcounter = 0;
         break;
     }
+    case Qt::Key_N:
+        // -- new object added in the scene whithin a Bounding Box and a scale range
+    {
+        int index_object = (int)(( rand()/ ((float)RAND_MAX) ) * list_object.size());
+
+        for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
+        {
+            if(  (*it).second->itemPos() == 0 )
+            {
+                node_clicked = dynamic_cast< sofa::simulation::tree::GNode *>( (*it).first );
+                break;
+            }
+        }
+
+        if (currentTab != TabGraph)
+            graphListener->unfreeze(node_clicked);
+
+        if (node_clicked == NULL) return;
+
+        loadObject(list_object[index_object],
+                (object_BoundingBox[3]-object_BoundingBox[0]) * ( rand()/ ((float)RAND_MAX) )  + object_BoundingBox[0],
+                (object_BoundingBox[4]-object_BoundingBox[1]) * ( rand()/ ((float)RAND_MAX) )  + object_BoundingBox[1],
+                (object_BoundingBox[5]-object_BoundingBox[2]) * ( rand()/ ((float)RAND_MAX) )  + object_BoundingBox[2],
+                (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
+
+        if (currentTab != TabGraph)
+            graphListener->freeze(node_clicked);
+    }
     default:break;
     }
 }
@@ -1341,9 +1400,17 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
     }
     else node_clicked = searchNode(viewer->getScene());
 
-    //Creation of the context Menu
-    int indexMenu[3];
     QPopupMenu *contextMenu = new QPopupMenu(graphView, "ContextMenu");
+    //Creation of the context Menu
+    if (node_clicked != NULL)
+    {
+        contextMenu->insertItem("Collapse", this, SLOT(graphCollapse()));
+        contextMenu->insertItem("Expand", this, SLOT(graphExpand()));
+        contextMenu->insertSeparator ();
+    }
+
+    int indexMenu[3];
+
     indexMenu[0] = contextMenu->insertItem("Add Node", this, SLOT(graphAddObject()));
     indexMenu[1] = contextMenu->insertItem("Remove Node", this, SLOT(graphRemoveObject()));
     indexMenu[2] = contextMenu->insertItem("Modify", this, SLOT(graphModify()));
@@ -1495,48 +1562,84 @@ GNode *RealGUI::searchNode(GNode *node)
     return NULL;
 }
 
+
 /*****************************************************************************************************************/
-void RealGUI::loadObject()
+//Translate an object
+void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, double scale)
 {
 
-    std::string position[3];
-
-#ifdef QT_MODULE_QT3SUPPORT
-    std::string object_fileName(dialog->openFilePath->text().toStdString());
-    position[0] = dialog->positionX->text().toStdString();
-    position[1] = dialog->positionY->text().toStdString();
-    position[2] = dialog->positionZ->text().toStdString();
-#else
-    std::string object_fileName(dialog->openFilePath->text().latin1());
-    position[0] = dialog->positionX->text().latin1();
-    position[1] = dialog->positionY->text().latin1();
-    position[2] = dialog->positionZ->text().latin1();
-#endif
+    if (node == NULL) return;
+    GNode::ObjectIterator obj_it = node->object.begin();
+    //Verify if it exists a mesh topology. In that case, we have to recursively translate the mechanical object and the visual model
+    bool mesh_topology = false;
+    bool mechanical_object = false;
 
 
-    //Loading of the xml file
-    xml::BaseElement* xml = xml::load(object_fileName.c_str());
-    if (xml == NULL) return;
+    //Using the graph corresponding to the current node, we explorate it to find a Topology Element
+    if (graphListener->items[node] == NULL) return;
 
-    if (xml->getAttribute("dx")) xml->setAttribute("dx",position[0].c_str());
-    if (xml->getAttribute("dy")) xml->setAttribute("dy",position[1].c_str());
-    if (xml->getAttribute("dz")) xml->setAttribute("dz",position[2].c_str());
-
-    xml::BaseElement::child_iterator<> it = xml->begin();
-    xml::BaseElement::child_iterator<> end = xml->end();
-    while (it != end)
+    Q3ListViewItem *element = graphListener->items[node]->firstChild();
+    while (element != NULL)
     {
-        std::cout<<	it->getName() << " " << it->getType() <<"\n";
+        //We search in the element of the current node, the presence of a MeshTopology: depending on its presence, it will modify the range of the translation
+        if (element->firstChild() == NULL)
+        {
+            std::string name = element->text(0);
+            std::string::size_type end_name = name.rfind(' ');
+            if (end_name != std::string::npos)
+                name.resize(end_name-1);
 
-        if (it->getAttribute("dx")) it->setAttribute("dx",position[0].c_str());
-        if (it->getAttribute("dy")) it->setAttribute("dy",position[1].c_str());
-        if (it->getAttribute("dz")) it->setAttribute("dz",position[2].c_str());
+            if (name == "MeshTopology")
+                mesh_topology = true;
 
-        ++it;
+        }
+        element = element->nextSibling();
     }
 
+    //We translate the elements
+    while (obj_it != node->object.end())
+    {
+        if (dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it))
+        {
+            core::componentmodel::behavior::BaseMechanicalState *mechanical = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it);
+            mechanical->applyTranslation(dx, dy, dz);
+            mechanical->applyScale(scale);
+            mechanical_object = true;
+        }
 
-    helper::system::SetDirectory chdir( object_fileName.c_str());
+        if (dynamic_cast< sofa::component::visualmodel::VisualModelImpl* >(*obj_it))
+        {
+            sofa::component::visualmodel::VisualModelImpl *visual = dynamic_cast< sofa::component::visualmodel::VisualModelImpl* >(*obj_it);
+            visual->applyTranslation(dx, dy, dz);
+            visual->applyScale(scale);
+        }
+        obj_it++;
+    }
+
+    //We don't need to go any further:
+    if (mechanical_object && !mesh_topology)
+        return;
+
+    //We search recursively with the childs of the currend node
+    GNode::ChildIterator it  = node->child.begin();
+    GNode::ChildIterator end = node->child.end();
+    while (it != end)
+    {
+        transformObject( *it, dx, dy, dz, scale);
+        it++;
+    }
+}
+
+/*****************************************************************************************************************/
+void RealGUI::loadObject(std::string path, double dx, double dy, double dz, double scale)
+{
+
+    //Loading of the xml file
+    xml::BaseElement* xml = xml::load(path.c_str());
+    if (xml == NULL) return;
+
+
+    helper::system::SetDirectory chdir( path.c_str());
 
     std::cout << "Initializing objects"<<std::endl;
     if (!xml->init())
@@ -1553,13 +1656,12 @@ void RealGUI::loadObject()
     }
 
     std::cout << "Initializing simulation "<<new_node->getName()<<std::endl;
-
     new_node->execute<InitAction>();
 
     if (node_clicked->child.begin() ==  node_clicked->child.end() &&  node_clicked->object.begin() == node_clicked->object.end())
     {
         //Temporary Root : the current graph is empty, and has only a single node "Root"
-        viewer->setScene(new_node, object_fileName.c_str());
+        viewer->setScene(new_node, path.c_str());
         graphListener->removeChild(NULL, node_clicked);
         graphListener->addChild(NULL, new_node);
     }
@@ -1568,6 +1670,10 @@ void RealGUI::loadObject()
         node_clicked->addChild( new_node);
         graphListener->addObject(node_clicked, (core::objectmodel::BaseObject*)new_node);
     }
+
+    //Apply the Transformation
+    transformObject( new_node, dx, dy, dz, scale);
+
     viewer->SwitchToPresetView();
     viewer->getQWidget()->update();
 
@@ -1575,6 +1681,65 @@ void RealGUI::loadObject()
     item_clicked = NULL;
 }
 
+void RealGUI::loadObject()
+{
+    std::string position[3];
+    std::string scale;
+#ifdef QT_MODULE_QT3SUPPORT
+    std::string object_fileName(dialog->openFilePath->text().toStdString());
+    position[0] = dialog->positionX->text().toStdString();
+    position[1] = dialog->positionY->text().toStdString();
+    position[2] = dialog->positionZ->text().toStdString();
+    scale       = dialog->scaleValue->text().toStdString();
+#else
+    std::string object_fileName(dialog->openFilePath->text().latin1());
+    position[0] = dialog->positionX->text().latin1();
+    position[1] = dialog->positionY->text().latin1();
+    position[2] = dialog->positionZ->text().latin1();
+    scale       = dialog->scaleValue->text().latin1();
+#endif
+
+    loadObject(object_fileName, atof(position[0].c_str()),atof(position[1].c_str()),atof(position[2].c_str()),atof(scale.c_str()));
+
+}
+
+/*****************************************************************************************************************/
+//Visibility Option in grah : expand or collapse a node : easier to get access to a node, and see its properties properly
+void RealGUI::graphCollapse()
+{
+    if (item_clicked != NULL)
+    {
+        QListViewItem* child;
+        child = item_clicked->firstChild();
+        while (child != NULL)
+        {
+            child->setOpen(false);
+            child = child->nextSibling();
+        }
+        item_clicked->setOpen(true);
+    }
+}
+
+void RealGUI::graphExpand()
+{
+    item_clicked->setOpen(true);
+    Q3ListViewItem *item_clicked_back = item_clicked;
+    if (item_clicked != NULL)
+    {
+        QListViewItem* child;
+        child = item_clicked->firstChild();
+        while (child != NULL)
+        {
+            item_clicked = child;
+
+            child->setOpen(true);
+            graphExpand();
+            child = child->nextSibling();
+        }
+    }
+    item_clicked = item_clicked_back;
+
+}
 /*****************************************************************************************************************/
 void RealGUI::modifyUnlock()
 {

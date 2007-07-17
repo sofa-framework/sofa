@@ -35,8 +35,6 @@ public:
 
     WFloatLineEdit(QWidget *parent,const char *name);
 
-
-
     float   minFloatValue() const { return (m_fMinValue);}
     float   getMinFloatValue() { emit(returnPressed()); return minFloatValue();}
     void    setMinFloatValue(float f) {m_fMinValue=f; m_DblValid->setBottom(m_fMinValue); }

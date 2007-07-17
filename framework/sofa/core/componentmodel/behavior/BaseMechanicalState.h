@@ -109,6 +109,12 @@ public:
     /// Add external forces derivatives to F
     virtual void accumulateDf() { }
 
+    /// Translate the MechanicalObject
+    virtual void applyTranslation(double dx, double dy, double dz)=0;
+
+    /// Scale the MechanicalObject
+    virtual void applyScale(double s)=0;
+
     /// Identify one vector stored in MechanicalState
     class VecId
     {

@@ -33,7 +33,7 @@
 #include <SofaViewer.h>
 #include <AddObject.h>
 #include <ModifyObject.h>
-
+#include <sofa/simulation/tree/xml/XML.h>
 
 #ifdef QT_MODULE_QT3SUPPORT
 #include <Q3ListViewItem>
@@ -116,7 +116,7 @@ public:
     //virtual void helpIndex();
     //virtual void helpContents();
     //virtual void helpAbout();
-
+    void loadObject(std::string path, double dx, double dy, double dz, double scale=1.0);
 
 public slots:
 
@@ -150,6 +150,8 @@ public slots:
     void graphAddObject();
     void graphRemoveObject();
     void graphModify();
+    void graphCollapse();
+    void graphExpand();
     //When adding an object in the graph
     void loadObject();
     //refresh the visualization window
@@ -176,6 +178,7 @@ protected:
 
     GNode *searchNode(GNode *node);
     GNode *verifyNode(GNode *node);
+    void   transformObject( GNode *node, double dx, double dy, double dz, double scale=1.0);
 
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
@@ -204,6 +207,10 @@ protected:
 
 private:
     std::map< core::objectmodel::Base*, QWidget* > _alreadyOpen;
+    std::vector< std::string > list_object;
+    float object_BoundingBox[6];
+    float object_Scale[2];
+
     bool setViewer(const char* name);
     void addViewer();
     void setGUI(void);

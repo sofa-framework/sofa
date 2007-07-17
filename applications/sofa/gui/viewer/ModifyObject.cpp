@@ -780,7 +780,6 @@ void ModifyObject::changeNumberPoint()
             for (int i=initial_size ; i > spin->value(); i--, element_iterator--)
             {
                 field = dynamic_cast< WFloatLineEdit *> ( (*element_iterator) );
-                //		    field->reparent(NULL, 0, QPoint(0,0));
                 delete field;
             }
             current_structure->resize(spin->value()+2);
