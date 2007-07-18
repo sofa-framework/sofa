@@ -73,7 +73,7 @@ public slots:
 signals:
     void objectUpdated();            //update done
     void dialogClosed();             //the current window has been closed
-
+    void transformObject(GNode * current_node, double translationX, double translationY, double translationZ, double scale);
 protected:
     virtual void closeEvent ( QCloseEvent * ) {emit(dialogClosed()); emit(reject());}
 

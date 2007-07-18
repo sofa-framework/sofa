@@ -158,6 +158,7 @@ public slots:
     void redraw();
     //when a dialog modify object is closed
     void modifyUnlock();
+    void transformObject( GNode *node, double dx, double dy, double dz, double scale=1.0);
 
 signals:
     void reload();
@@ -178,7 +179,6 @@ protected:
 
     GNode *searchNode(GNode *node);
     GNode *verifyNode(GNode *node);
-    void   transformObject( GNode *node, double dx, double dy, double dz, double scale=1.0);
 
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;

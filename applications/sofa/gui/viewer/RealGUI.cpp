@@ -39,6 +39,8 @@
 
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/InitAction.h>
+
+
 #include <sofa/simulation/tree/MutationListener.h>
 #include <sofa/simulation/tree/Colors.h>
 
@@ -337,7 +339,8 @@ RealGUI::~RealGUI()
 
 void RealGUI::init()
 {
-
+    node_clicked = NULL;
+    item_clicked = NULL;
     _animationOBJ = false;
     _animationOBJcounter = 0;
     m_dumpState = false;
@@ -834,6 +837,7 @@ void RealGUI::setTitle( const char* windowTitle )
 
 void RealGUI::playpauseGUI(bool value)
 {
+    startButton->setDown(value);
     if (value) {timerStep->start(0);}
     else {timerStep->stop();}
     if (getScene())  getScene()->getContext()->setAnimate(value);
@@ -1302,28 +1306,12 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     {
         int index_object = (int)(( rand()/ ((float)RAND_MAX) ) * list_object.size());
 
-        for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
-        {
-            if(  (*it).second->itemPos() == 0 )
-            {
-                node_clicked = dynamic_cast< sofa::simulation::tree::GNode *>( (*it).first );
-                break;
-            }
-        }
-
-        if (currentTab != TabGraph)
-            graphListener->unfreeze(node_clicked);
-
-        if (node_clicked == NULL) return;
-
         loadObject(list_object[index_object],
                 (object_BoundingBox[3]-object_BoundingBox[0]) * ( rand()/ ((float)RAND_MAX) )  + object_BoundingBox[0],
                 (object_BoundingBox[4]-object_BoundingBox[1]) * ( rand()/ ((float)RAND_MAX) )  + object_BoundingBox[1],
                 (object_BoundingBox[5]-object_BoundingBox[2]) * ( rand()/ ((float)RAND_MAX) )  + object_BoundingBox[2],
                 (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
 
-        if (currentTab != TabGraph)
-            graphListener->freeze(node_clicked);
     }
     default:break;
     }
@@ -1437,6 +1425,8 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
 /*****************************************************************************************************************/
 void RealGUI::graphAddObject()
 {
+    bool isAnimated = startButton->isDown();
+    playpauseGUI(false);
     //Just pop up the dialog window
     if (node_clicked != NULL)
     {
@@ -1445,11 +1435,14 @@ void RealGUI::graphAddObject()
 
         item_clicked = NULL;
     }
+    playpauseGUI(isAnimated);
 }
 
 /*****************************************************************************************************************/
 void RealGUI::graphRemoveObject()
 {
+    bool isAnimated = startButton->isDown();
+    playpauseGUI(false);
     if (node_clicked != NULL)
     {
         if (node_clicked->getParent() == NULL)
@@ -1494,11 +1487,14 @@ void RealGUI::graphRemoveObject()
         node_clicked = NULL;
         item_clicked = NULL;
     }
+    playpauseGUI(isAnimated);
 }
 
 /*****************************************************************************************************************/
 void RealGUI::graphModify()
 {
+    bool isAnimated = startButton->isDown();
+    playpauseGUI(false);
     if (item_clicked != NULL)
     {
         core::objectmodel::Base* node=NULL;
@@ -1520,6 +1516,7 @@ void RealGUI::graphModify()
         connect ( this, SIGNAL( newScene()), dialogModify, SLOT( closeNow()));
         item_clicked = NULL;
     }
+    playpauseGUI(isAnimated);
 }
 /*****************************************************************************************************************/
 //Nodes in the graph can have the same name. To find the right one, we have to verify the pointer itself.
@@ -1568,7 +1565,6 @@ GNode *RealGUI::searchNode(GNode *node)
 //Translate an object
 void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, double scale)
 {
-
     if (node == NULL) return;
     GNode::ObjectIterator obj_it = node->object.begin();
     //Verify if it exists a mesh topology. In that case, we have to recursively translate the mechanical object and the visual model
@@ -1600,26 +1596,30 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
     //We translate the elements
     while (obj_it != node->object.end())
     {
-        if (dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it))
-        {
-            core::componentmodel::behavior::BaseMechanicalState *mechanical = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it);
-            mechanical->applyTranslation(dx, dy, dz);
-            mechanical->applyScale(scale);
-// 		mechanical_object = true;
-        }
-
         if (dynamic_cast< sofa::component::visualmodel::VisualModelImpl* >(*obj_it))
         {
             sofa::component::visualmodel::VisualModelImpl *visual = dynamic_cast< sofa::component::visualmodel::VisualModelImpl* >(*obj_it);
             visual->applyTranslation(dx, dy, dz);
             visual->applyScale(scale);
+            std::cout << "Transformation of the Visual Model : " << node->getName()<<"\n";
         }
+
+        if (dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it))
+        {
+            core::componentmodel::behavior::BaseMechanicalState *mechanical = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it);
+            mechanical->applyTranslation(dx, dy, dz);
+            mechanical->applyScale(scale);
+            std::cout << "Transformation of the Mechanical State : " << node->getName()<<"\n";
+// 		mechanical_object = true;
+        }
+
         obj_it++;
     }
 
     //We don't need to go any further:
 // 	if (mechanical_object && !mesh_topology)
 // 	    return;
+
 
     //We search recursively with the childs of the currend node
     GNode::ChildIterator it  = node->child.begin();
@@ -1629,11 +1629,30 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
         transformObject( *it, dx, dy, dz, scale);
         it++;
     }
+
+
 }
 
 /*****************************************************************************************************************/
 void RealGUI::loadObject(std::string path, double dx, double dy, double dz, double scale)
 {
+    bool isAnimated = startButton->isDown();
+    playpauseGUI(false);
+    if (node_clicked == NULL)
+    {
+        for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
+        {
+            if(  (*it).second->itemPos() == 0 )
+            {
+                node_clicked = dynamic_cast< sofa::simulation::tree::GNode *>( (*it).first );
+                break;
+            }
+        }
+        if (node_clicked == NULL) return;
+    }
+
+    if (currentTab != TabGraph)
+        graphListener->unfreeze(node_clicked);
 
     //Loading of the xml file
     xml::BaseElement* xml = xml::load(path.c_str());
@@ -1658,7 +1677,6 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
 
     std::cout << "Initializing simulation "<<new_node->getName()<<std::endl;
     new_node->execute<InitAction>();
-
     if (node_clicked->child.begin() ==  node_clicked->child.end() &&  node_clicked->object.begin() == node_clicked->object.end())
     {
         //Temporary Root : the current graph is empty, and has only a single node "Root"
@@ -1678,8 +1696,14 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
     viewer->SwitchToPresetView();
     viewer->getQWidget()->update();
 
+
+
+    if (currentTab != TabGraph)
+        graphListener->freeze(node_clicked);
+
     node_clicked = NULL;
     item_clicked = NULL;
+    playpauseGUI(isAnimated);
 }
 
 void RealGUI::loadObject()
@@ -1708,6 +1732,9 @@ void RealGUI::loadObject()
 //Visibility Option in grah : expand or collapse a node : easier to get access to a node, and see its properties properly
 void RealGUI::graphCollapse()
 {
+    bool isAnimated = startButton->isDown ();
+
+    playpauseGUI(false);
     if (item_clicked != NULL)
     {
         QListViewItem* child;
@@ -1719,10 +1746,14 @@ void RealGUI::graphCollapse()
         }
         item_clicked->setOpen(true);
     }
+
+    playpauseGUI(isAnimated);
 }
 
 void RealGUI::graphExpand()
 {
+    bool isAnimated = startButton->isDown();
+    playpauseGUI(false);
     item_clicked->setOpen(true);
     Q3ListViewItem *item_clicked_back = item_clicked;
     if (item_clicked != NULL)
@@ -1739,7 +1770,7 @@ void RealGUI::graphExpand()
         }
     }
     item_clicked = item_clicked_back;
-
+    playpauseGUI(isAnimated);
 }
 /*****************************************************************************************************************/
 void RealGUI::modifyUnlock()

@@ -55,6 +55,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/topology/PointSubset.h>
+#include <sofa/simulation/tree/InitAction.h>
 #include "WFloatLineEdit.h"
 
 #if !defined(INFINITY)
@@ -83,6 +84,7 @@ ModifyObject::ModifyObject( QWidget* parent_, const char*, bool, Qt::WFlags ): p
 {
     connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
     connect ( this, SIGNAL( dialogClosed() ) , parent_, SLOT( modifyUnlock()));
+    connect ( this, SIGNAL( transformObject(GNode *, double, double, double, double)), parent, SLOT(transformObject(GNode *, double, double, double, double)));
 }
 
 ModifyObject::~ModifyObject()
@@ -462,6 +464,52 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             }
         }
 
+        //If the current element is a node, we add a box to perform geometric transformation: translation, scaling
+        if(dynamic_cast< GNode *>(node_clicked))
+        {
+            Q3GroupBox *box = new Q3GroupBox(tab1, QString("Transformation"));
+            box->setColumns(4);
+            box->setTitle(QString("Transformation"));
+            new QLabel(QString("Translation"), box);
+
+            WFloatLineEdit* editTranslationX = new WFloatLineEdit( box, "editTranslationX" );
+            list_Object->push_front( (QObject *) editTranslationX);
+
+            editTranslationX->setMinFloatValue( (float)-INFINITY );
+            editTranslationX->setMaxFloatValue( (float)INFINITY );
+
+            WFloatLineEdit* editTranslationY = new WFloatLineEdit( box, "editTranslationY" );
+            list_Object->push_front( (QObject *) editTranslationY);
+
+            editTranslationY->setMinFloatValue( (float)-INFINITY );
+            editTranslationY->setMaxFloatValue( (float)INFINITY );
+
+            WFloatLineEdit* editTranslationZ = new WFloatLineEdit( box, "editTranslationZ" );
+            list_Object->push_front( (QObject *) editTranslationZ);
+
+            editTranslationZ->setMinFloatValue( (float)-INFINITY );
+            editTranslationZ->setMaxFloatValue( (float)INFINITY );
+
+            new QLabel(QString("Scale"), box);
+            WFloatLineEdit* editScale = new WFloatLineEdit( box, "editScale" );
+            list_Object->push_front( (QObject *) editScale);
+
+            editScale->setMinFloatValue( (float)-INFINITY );
+            editScale->setMaxFloatValue( (float)INFINITY );
+
+            editTranslationX->setFloatValue(0);
+            editTranslationY->setFloatValue(0);
+            editTranslationZ->setFloatValue(0);
+            editScale->setFloatValue(1);
+
+            connect( editTranslationX, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+            connect( editTranslationY, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+            connect( editTranslationZ, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+            connect( editScale, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+
+            tabPropertiesLayout->addWidget( box );
+        }
+
 
         //Adding buttons at the bottom of the dialog
         QHBoxLayout *lineLayout = new QHBoxLayout( 0, 0, 6, "Button Layout");
@@ -515,7 +563,8 @@ void ModifyObject::changeValue()
 //*******************************************************************************************************************
 void ModifyObject::closeDialog()
 {
-    updateValues();
+    if (buttonUpdate->isEnabled())
+        updateValues();
     emit(accept());
 }
 
@@ -530,6 +579,24 @@ void ModifyObject::updateValues()
     {
 
         std::list< QObject *>::iterator list_it=list_Object->begin();
+        //If the current element is a node of the graph, we first apply the transformations
+        if (GNode* current_node = dynamic_cast< GNode *>(node))
+        {
+            WFloatLineEdit* editScale        = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+            WFloatLineEdit* editTranslationZ = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+            WFloatLineEdit* editTranslationY = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+            WFloatLineEdit* editTranslationX = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+            emit( transformObject(current_node,
+                    editTranslationX->getFloatValue(),editTranslationY->getFloatValue(),editTranslationZ->getFloatValue(),
+                    editScale->getFloatValue()));
+
+            editTranslationX->setFloatValue(0);
+            editTranslationY->setFloatValue(0);
+            editTranslationZ->setFloatValue(0);
+            editScale->setFloatValue(1);
+            //current_node->execute<InitAction>();
+        }
+
         std::list< std::list< QObject*> * >::iterator block_iterator=list_PointSubset->begin();
 
         const std::map< std::string, core::objectmodel::FieldBase* >& fields = node->getFields();

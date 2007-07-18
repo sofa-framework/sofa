@@ -97,6 +97,29 @@
                 </widget>
             </hbox>
         </widget>
+        <widget class="QLayoutWidget" row="2" column="0">
+            <property name="name">
+                <cstring>scaleLayout</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>scaleText</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Scale</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>scaleValue</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
         <widget class="QLayoutWidget" row="3" column="0">
             <property name="name">
                 <cstring>buttonLayout</cstring>
@@ -161,29 +184,6 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="2" column="0">
-            <property name="name">
-                <cstring>scaleLayout</cstring>
-            </property>
-            <hbox>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel">
-                    <property name="name">
-                        <cstring>scaleText</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Scale</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit">
-                    <property name="name">
-                        <cstring>scaleValue</cstring>
-                    </property>
-                </widget>
-            </hbox>
-        </widget>
     </grid>
 </widget>
 <images>
@@ -192,6 +192,12 @@
     </image>
 </images>
 <connections>
+    <connection>
+        <sender>openFileButton</sender>
+        <signal>clicked()</signal>
+        <receiver>DialogAddObject</receiver>
+        <slot>fileOpen()</slot>
+    </connection>
     <connection>
         <sender>buttonOk</sender>
         <signal>clicked()</signal>
@@ -203,12 +209,6 @@
         <signal>clicked()</signal>
         <receiver>DialogAddObject</receiver>
         <slot>reject()</slot>
-    </connection>
-    <connection>
-        <sender>openFileButton</sender>
-        <signal>clicked()</signal>
-        <receiver>DialogAddObject</receiver>
-        <slot>fileOpen()</slot>
     </connection>
 </connections>
 <slots>
