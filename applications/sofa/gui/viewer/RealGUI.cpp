@@ -1373,6 +1373,7 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
         dialog->hide();
     }
 
+
     //Creation of a popup menu at the mouse position
     item_clicked=item;
     //Search in the graph if the element clicked is a node
@@ -1388,6 +1389,7 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
 
     }
     else node_clicked = searchNode(viewer->getScene());
+
 
     QPopupMenu *contextMenu = new QPopupMenu(graphView, "ContextMenu");
     //Creation of the context Menu
@@ -1601,7 +1603,6 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
             sofa::component::visualmodel::VisualModelImpl *visual = dynamic_cast< sofa::component::visualmodel::VisualModelImpl* >(*obj_it);
             visual->applyTranslation(dx, dy, dz);
             visual->applyScale(scale);
-            std::cout << "Transformation of the Visual Model : " << node->getName()<<"\n";
         }
 
         if (dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it))
@@ -1609,7 +1610,6 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
             core::componentmodel::behavior::BaseMechanicalState *mechanical = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it);
             mechanical->applyTranslation(dx, dy, dz);
             mechanical->applyScale(scale);
-            std::cout << "Transformation of the Mechanical State : " << node->getName()<<"\n";
 // 		mechanical_object = true;
         }
 

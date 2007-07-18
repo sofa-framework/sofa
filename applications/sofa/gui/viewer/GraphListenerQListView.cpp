@@ -252,8 +252,9 @@ void GraphListenerQListView::addChild(GNode* parent, GNode* child)
             std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
             return;
         }
-        if (std::string(child->getName(),0,7) != "default")
-            item->setText(0, child->getName().c_str());
+
+        //	    if (std::string(child->getName(),0,7) != "default")
+        item->setText(0, child->getName().c_str());
         QPixmap* pix = getPixmap(child);
         if (pix)
             item->setPixmap(0, *pix);
