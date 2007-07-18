@@ -25,7 +25,8 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/TriangleOctree.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/proximity.h>
+#include <sofa/component/collision/RayTriangleIntersection.h>
+#include <sofa/component/collision/RayTriangleIntersection.h>
 
 #include <sofa/component/collision/Triangle.h>
 #include <sofa/core/CollisionElement.h>
@@ -136,7 +137,6 @@ int TriangleOctree::nearestTriangle (int minIndex,
         const Vector3 & origin,
         const Vector3 & direction, traceResult &result)
 {
-    static DistancePointTri proximitySolver;
     static RayTriangleIntersection intersectionSolver;
     Vector3 P;
     Triangle t1 (tm, minIndex);
@@ -475,7 +475,6 @@ int TriangleOctree::findInputTriangle (int inputTriangle,
         const Vector3 & origin,
         const Vector3 & direction)
 {
-    static DistancePointTri proximitySolver;
     static RayTriangleIntersection intersectionSolver;
     Vector3 P;
 

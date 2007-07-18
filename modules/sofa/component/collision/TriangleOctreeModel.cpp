@@ -178,18 +178,14 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
 
 
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    bool updated = updateFromTopology();
     int size2=mstate->getX()->size();
 
-    if(octreeRoot)
-    {
-        delete octreeRoot;
-        octreeRoot=NULL;
-    }
+    if (mesh)
+        updateFromTopology();
+    if (needsUpdate && !cubeModel->empty()) cubeModel->resize(0);
+    if (isStatic() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
-    if (updated && !cubeModel->empty()) cubeModel->resize(0);
-    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
-
+    needsUpdate=false;
     Vector3 minElem, maxElem;
     maxElem[0]=minElem[0]=(*mstate->getX())[0][0];
     maxElem[1]=minElem[1]=(*mstate->getX())[0][1];
