@@ -49,10 +49,21 @@ BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::BarycentricPenali
 template < class TCollisionModel1, class TCollisionModel2 >
 BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::~BarycentricPenalityContact()
 {
+}
+
+
+template < class TCollisionModel1, class TCollisionModel2 >
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::cleanup()
+{
     if (ff!=NULL)
     {
+        ff->cleanup();
         if (parent!=NULL) parent->removeObject(ff);
         delete ff;
+        parent = NULL;
+        ff = NULL;
+        mapper1.cleanup();
+        mapper2.cleanup();
     }
 }
 

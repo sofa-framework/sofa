@@ -83,6 +83,8 @@ public:
     BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     ~BarycentricPenalityContact();
 
+    void cleanup();
+
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
 
     void setDetectionOutputs(std::vector<core::componentmodel::collision::DetectionOutput>& outputs);

@@ -82,6 +82,12 @@ void BaseObject::reset()
 void BaseObject::writeState( std::ostream& )
 { }
 
+/// Called just before deleting this object
+/// Any object in the tree bellow this object that are to be removed will be removed only after this call,
+/// so any references this object holds should still be valid.
+void BaseObject::cleanup()
+{ }
+
 /// Handle an event
 void BaseObject::handleEvent( Event* e )
 {

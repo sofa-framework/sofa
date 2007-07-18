@@ -74,7 +74,7 @@ public:
 };
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::load(const char *filename)
+void SkinningMapping<BasicMapping>::load(const char * /*filename*/)
 {
     /*   initPos.resize(0);
 

@@ -1667,7 +1667,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
     if (l1 > rayLength) l1 = rayLength;
     if (l0 > l1) return 0; // outside of ray
     //const double dist = sqrt(dist2);
-    double epsilon = grid1->getCellWidth().norm()*0.1f;
+    //double epsilon = grid1->getCellWidth().norm()*0.1f;
 
     c1.updateFaces();
     DistanceGrid::Coord p1;

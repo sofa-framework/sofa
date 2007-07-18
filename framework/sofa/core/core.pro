@@ -50,6 +50,7 @@ HEADERS += \
           objectmodel/Context.h \
           objectmodel/ContextObject.h \
           objectmodel/DataField.h \
+          objectmodel/DetachNodeEvent.h \
           objectmodel/Event.h \
           objectmodel/Field.h \
           objectmodel/FieldBase.h \
@@ -72,6 +73,7 @@ SOURCES +=  \
           objectmodel/BaseObject.cpp \
           objectmodel/BaseObjectDescription.cpp \
           objectmodel/Context.cpp \
+          objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
           objectmodel/Field.cpp \
           objectmodel/KeypressedEvent.cpp \

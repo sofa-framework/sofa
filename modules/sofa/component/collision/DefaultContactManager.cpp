@@ -49,7 +49,8 @@ DefaultContactManager::DefaultContactManager()
 
 DefaultContactManager::~DefaultContactManager()
 {
-    // HACK: do not delete contacts as they might point to forcefields that are already deleted
+    // Contacts are now attached to the graph.
+    // So they will be deleted by the DeleteAction
     // FIX crash on unload bug. -- J. Allard
     //clear();
 }
@@ -57,7 +58,11 @@ DefaultContactManager::~DefaultContactManager()
 void DefaultContactManager::clear()
 {
     for (std::vector<core::componentmodel::collision::Contact*>::iterator it=contactVec.begin(); it!=contactVec.end(); ++it)
+    {
+        (*it)->removeResponse();
+        (*it)->cleanup();
         delete *it;
+    }
     contactVec.clear();
     contactMap.clear();
 }

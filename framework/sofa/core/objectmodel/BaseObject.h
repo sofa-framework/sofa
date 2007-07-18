@@ -101,6 +101,11 @@ public:
     /// Write current state to the given output stream
     virtual void writeState( std::ostream& out );
 
+    /// Called just before deleting this object
+    /// Any object in the tree bellow this object that are to be removed will be removed only after this call,
+    /// so any references this object holds should still be valid.
+    virtual void cleanup();
+
     /// @}
 
     /// @name events
