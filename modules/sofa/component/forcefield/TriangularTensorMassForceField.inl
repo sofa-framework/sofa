@@ -49,7 +49,7 @@ using std::cout;
 using std::endl;
 
 template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
+void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeRestInformation &ei,
         const Edge& ,  const std::vector< unsigned int > &,
         const std::vector< double >&)
 {
@@ -345,7 +345,7 @@ double TriangularTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCo
     return 0;
 }
 template <class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void TriangularTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
 {
     unsigned int i,v0,v1;
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
