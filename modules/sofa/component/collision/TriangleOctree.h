@@ -64,6 +64,12 @@ public:
         {
         }
     };
+    class traceResult
+    {
+    public:
+        traceResult() {}
+        double t,u,v;
+    };
     double x, y, z;
 
     double size;
@@ -87,9 +93,9 @@ public:
     }
     void draw ();
     int nearestTriangle (int minIndex, const Vector3 & origin,
-            const Vector3 & direction);
+            const Vector3 & direction,traceResult &result);
     void insert (double _x, double _y, double _z, double _inc, int t);
-    int trace (Vector3 origin, Vector3 direction);
+    int trace (Vector3 origin, Vector3 direction, traceResult &result);
     int traceVolume (Vector3 origin, Vector3 direction);
     int traceVolume (int n);
     int traceVolume (const Vector3 & origin, const Vector3 & direction,
@@ -99,7 +105,7 @@ public:
             vector < vertexData * >&vertexVec);
     int trace (const Vector3 & origin, const Vector3 & direction,
             double tx0, double ty0, double tz0, double tx1, double ty1,
-            double tz1, unsigned int a, unsigned int b);
+            double tz1, unsigned int a, unsigned int b,Vector3 &origin1,Vector3 &direction1, traceResult &result);
     int findInputTriangle (int inputTriangle, const Vector3 & origin,
             const Vector3 & direction);
 };

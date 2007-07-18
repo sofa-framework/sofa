@@ -134,43 +134,52 @@ unsigned int choose_next (double x, double y, double z,
 
 int TriangleOctree::nearestTriangle (int minIndex,
         const Vector3 & origin,
-        const Vector3 & direction)
+        const Vector3 & direction, traceResult &result)
 {
     static DistancePointTri proximitySolver;
     static RayTriangleIntersection intersectionSolver;
     Vector3 P;
     Triangle t1 (tm, minIndex);
     double minDist;
-    float t, u, v;
-    double distTmp;
-    if (intersectionSolver.
-        NewComputation (&t1, origin, direction, t, u, v))
+    double t, u, v;
+    //std::cerr<<"Triangle:"<<t1.p1()<<", "<<t1.p2()<<", "<<t1.p3()<<" origin:"<<origin<<" direction:"<<direction<<std::endl;
+    //std::cerr<<"nearest:"<<std::endl;
+    if (intersectionSolver.NewComputation (&t1, origin, direction, t, u, v))
     {
-
-
-        minDist = t;
+        result.u=u;
+        result.v=v;
+        result.t=minDist = t;
+        //std::cerr<<"tem:"<<minIndex<<std::endl;
     }
     else
     {
         minDist = 10e8;
+
         minIndex = -1;
     }
     for (int i = 0; i < objects.size (); i++)
     {
 
         Triangle t2 (tm, objects[i]);
+//	std::cerr<<"Triangle:"<<t1.p1()<<", "<<t1.p2()<<", "<<t1.p3()<<" origin:"<<origin<<" direction:"<<direction<<std::endl;
         if (!intersectionSolver.
             NewComputation (&t2, origin, direction, t, u, v))
             continue;
 
-        if (t <= minDist)
+        if (t < minDist)
         {
-            minDist = distTmp;
-            minIndex = objects[i];
-        }
 
+            result.u=u;
+            result.v=v;
+            result.t=minDist = t;
+
+            minIndex = objects[i];
+            //std::cerr<<"tem:"<<minIndex<<std::endl;
+        }
+        //std::cerr<<"direction:"<<direction<<std::endl;
 
     }
+
     return minIndex;
 }
 
@@ -178,7 +187,7 @@ int TriangleOctree::trace (const Vector3 & origin,
         const Vector3 & direction, double tx0,
         double ty0, double tz0, double tx1,
         double ty1, double tz1, unsigned int a,
-        unsigned int b)
+        unsigned int b,Vector3 &origin1,Vector3 &direction1,traceResult &result)
 {
 
 
@@ -191,7 +200,7 @@ int TriangleOctree::trace (const Vector3 & origin,
         if (objects.size ())
         {
 
-            return nearestTriangle (objects[0], origin, direction);
+            return nearestTriangle (objects[0], origin1, direction1,result);
 
         }
         else
@@ -238,9 +247,9 @@ int TriangleOctree::trace (const Vector3 & origin,
         tzm = 0.5 * (tz0 + tz1);
         break;
     case 5:
-        txm = origin[0] < 0.5 * (x0 + x1) ? +INF : -INF;
+        txm = (origin[0] < (0.5 * (x0 + x1)) )? +INF : -INF;
         tym = 0.5 * (ty0 + ty1);
-        tzm = origin[2] < 0.5 * (z0 + z1) ? +INF : -INF;
+        tzm = (origin[2] < (0.5 * (z0 + z1) ))? +INF : -INF;
         break;
     case 6:
         txm = origin[0] < 0.5 * (x0 + x1) ? +INF : -INF;
@@ -301,7 +310,7 @@ int TriangleOctree::trace (const Vector3 & origin,
 
     while (true)
     {
-        int idxMin;
+        int idxMin=-1;
         switch (current_octant)
         {
         case 0:
@@ -309,9 +318,9 @@ int TriangleOctree::trace (const Vector3 & origin,
             {
                 idxMin =
                     childVec[a]->trace (origin, direction, tx0, ty0, tz0,
-                            txm, tym, tzm, a, b);
+                            txm, tym, tzm, a, b,origin1,direction1,result);
                 if (idxMin != -1)
-                    return nearestTriangle (idxMin, origin, direction);
+                    return nearestTriangle (idxMin, origin1, direction1,result);
             }
             current_octant = choose_next (txm, tym, tzm, 4, 2, 1);
             break;
@@ -324,9 +333,9 @@ int TriangleOctree::trace (const Vector3 & origin,
             {
                 idxMin =
                     childVec[1 ^ a]->trace (origin, direction, tx0, ty0,
-                            tzm, txm, tym, tz1, a, b);
+                            tzm, txm, tym, tz1, a, b,origin1,direction1,result);
                 if (idxMin != -1)
-                    return nearestTriangle (idxMin, origin, direction);
+                    return nearestTriangle (idxMin, origin1, direction1,result);
             }
             current_octant = choose_next (txm, tym, tz1, 5, 3, END);
             break;
@@ -338,9 +347,9 @@ int TriangleOctree::trace (const Vector3 & origin,
             {
                 idxMin =
                     childVec[2 ^ a]->trace (origin, direction, tx0, tym,
-                            tz0, txm, ty1, tzm, a, b);
+                            tz0, txm, ty1, tzm, a, b,origin1,direction1,result);
                 if (idxMin != -1)
-                    return nearestTriangle (idxMin, origin, direction);
+                    return nearestTriangle (idxMin, origin1, direction1,result);
             }
             current_octant = choose_next (txm, ty1, tzm, 6, END, 3);
             break;
@@ -349,9 +358,9 @@ int TriangleOctree::trace (const Vector3 & origin,
             {
                 idxMin =
                     childVec[3 ^ a]->trace (origin, direction, tx0, tym,
-                            tzm, txm, ty1, tz1, a, b);
+                            tzm, txm, ty1, tz1, a, b,origin1,direction1,result);
                 if (idxMin != -1)
-                    return nearestTriangle (idxMin, origin, direction);
+                    return nearestTriangle (idxMin, origin1, direction1,result);
             }
             current_octant = choose_next (txm, ty1, tz1, 7, END, END);
             break;
@@ -360,9 +369,9 @@ int TriangleOctree::trace (const Vector3 & origin,
             {
                 idxMin =
                     childVec[4 ^ a]->trace (origin, direction, txm, ty0,
-                            tz0, tx1, tym, tzm, a, b);
+                            tz0, tx1, tym, tzm, a, b,origin1,direction1,result);
                 if (idxMin != -1)
-                    return nearestTriangle (idxMin, origin, direction);
+                    return nearestTriangle (idxMin, origin1, direction1,result);
             }
             current_octant = choose_next (tx1, tym, tzm, END, 6, 5);
             break;
@@ -371,9 +380,9 @@ int TriangleOctree::trace (const Vector3 & origin,
             {
                 idxMin =
                     childVec[5 ^ a]->trace (origin, direction, txm, ty0,
-                            tzm, tx1, tym, tz1, a, b);
+                            tzm, tx1, tym, tz1, a, b,origin1,direction1,result);
                 if (idxMin != -1)
-                    return nearestTriangle (idxMin, origin, direction);
+                    return nearestTriangle (idxMin, origin1, direction1,result);
             }
             current_octant = choose_next (tx1, tym, tz1, END, 7, END);
             break;
@@ -382,9 +391,9 @@ int TriangleOctree::trace (const Vector3 & origin,
             {
                 idxMin =
                     childVec[6 ^ a]->trace (origin, direction, txm, tym,
-                            tz0, tx1, ty1, tzm, a, b);
+                            tz0, tx1, ty1, tzm, a, b,origin1,direction1,result);
                 if (idxMin != -1)
-                    return nearestTriangle (idxMin, origin, direction);
+                    return nearestTriangle (idxMin, origin1, direction1,result);
             }
             current_octant = choose_next (tx1, ty1, tzm, END, END, 7);
             break;
@@ -393,30 +402,35 @@ int TriangleOctree::trace (const Vector3 & origin,
             {
                 idxMin =
                     childVec[7 ^ a]->trace (origin, direction, txm, tym,
-                            tzm, tx1, ty1, tz1, a, b);
+                            tzm, tx1, ty1, tz1, a, b,origin1,direction1,result);
                 if (idxMin != -1)
-                    return nearestTriangle (idxMin, origin, direction);
+                    return nearestTriangle (idxMin, origin1, direction1,result);
             }
         case END:
-            return -1;
+            return idxMin;
             //      return false;
         }
     }
 
 
 }
-int TriangleOctree::trace (Vector3 origin, Vector3 direction)
+int TriangleOctree::trace (Vector3 origin, Vector3 direction,traceResult &result)
 {
     unsigned int a = 0;
     unsigned int b = 0;
+    //const double EPSILON = 1e-18;
+    const double EPSILON = 0;
+    Vector3 origin1=origin;
+    Vector3 direction1=direction;
 
     if (direction[0] == 0.0)
     {
-        //direction.m_x = EPSILON;
+        direction[0]=EPSILON;
         b |= 4;
     }
     else if (direction[0] < 0.0)
     {
+
         origin[0] = -origin[0];
         direction[0] = -direction[0];
         a |= 4;
@@ -424,6 +438,7 @@ int TriangleOctree::trace (Vector3 origin, Vector3 direction)
 
     if (direction[1] == 0.0)
     {
+        direction[1]=EPSILON;
         b |= 2;
     }
     else if (direction[1] < 0.0)
@@ -435,6 +450,7 @@ int TriangleOctree::trace (Vector3 origin, Vector3 direction)
 
     if (direction[2] == 0.0)
     {
+        direction[2]=EPSILON;
         b |= 1;
     }
     else if (direction[2] < 0.0)
@@ -450,8 +466,8 @@ int TriangleOctree::trace (Vector3 origin, Vector3 direction)
     double tz0 = (-CUBE_SIZE - origin[2]) / direction[2];
     double tz1 = (CUBE_SIZE - origin[2]) / direction[2];
     if (bb_max3 (tx0, ty0, tz0) < bb_min3 (tx1, ty1, tz1))
-        trace (origin, direction, tx0, ty0, tz0, tx1, ty1, tz1, a, b);
-
+        return trace (origin, direction, tx0, ty0, tz0, tx1, ty1, tz1, a, b,origin1,direction1,result);
+    return -1;
 
 }
 
@@ -464,7 +480,7 @@ int TriangleOctree::findInputTriangle (int inputTriangle,
     Vector3 P;
 
     double minDist;
-    float t, u, v;
+    double t, u, v;
     double distTmp;
 
     for (int i = 0; i < objects.size (); i++)
