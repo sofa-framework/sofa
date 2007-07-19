@@ -111,6 +111,8 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             {
                 std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::componentmodel::collision::Contact* >::iterator contactIt2 = contactIt;
                 ++contactIt2;
+                contactIt->second->removeResponse();
+                contactIt->second->cleanup();
                 delete contactIt->second;
                 contactMap.erase(contactIt);
                 contactIt = contactIt2;
