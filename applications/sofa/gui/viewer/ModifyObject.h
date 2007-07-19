@@ -58,8 +58,13 @@ class ModifyObject : public QDialog
     Q_OBJECT
 public:
 
-    ModifyObject( QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
-    ~ModifyObject();
+    ModifyObject( int Id, core::objectmodel::Base* node, Q3ListViewItem* item_clicked, QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
+    ~ModifyObject()
+    {
+        delete buttonUpdate;
+        delete list_Object;
+        delete list_PointSubset;
+    }
 
     void setNode(core::objectmodel::Base* node, Q3ListViewItem* item_clicked=NULL); //create all the widgets of the dialog window
 
@@ -67,15 +72,19 @@ public slots:
     void updateValues();             //update the node with the values of the field
     void changeValue();              //each time a field is modified
     void changeNumberPoint();        //used to dynamically add points in an object of type pointSubset
-    void closeDialog();              //called when Ok pressed
-    void closeNow() {emit(reject());} //called from outside to close the current widget
+    void closeNow () {emit(reject());} //called from outside to close the current widget
+    void reject   () { emit(dialogClosed(Id)); QDialog::reject();}                //When closing a window, inform the parent.
+    void accept   () { updateValues(); emit(dialogClosed(Id)); QDialog::accept();} //if closing by using Ok button, update the values
 
 signals:
-    void objectUpdated();            //update done
-    void dialogClosed();             //the current window has been closed
+    void objectUpdated();              //update done
+    void dialogClosed(int);            //the current window has been closed: we give the Id of the current window
     void transformObject(GNode * current_node, double translationX, double translationY, double translationZ, double scale);
+
+
 protected:
-    virtual void closeEvent ( QCloseEvent * ) {emit(dialogClosed()); emit(reject());}
+    virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
+    void updateContext( GNode *node );
 
     QWidget *parent;
     core::objectmodel::Base* node;
@@ -83,6 +92,8 @@ protected:
     QPushButton *buttonUpdate;
     std::list< QObject* >                 *list_Object;
     std::list< std::list< QObject* > * >  *list_PointSubset;
+
+    int Id;
 };
 
 } // namespace qt

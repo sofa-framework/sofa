@@ -254,7 +254,7 @@ sofa::simulation::tree::GNode* RealGUI::currentSimulation()
 
 
 RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*options*/)
-    : viewerName(viewername), viewer(NULL),  modifyDialogOpened(0),  currentTab(NULL), graphListener(NULL), dialog(NULL)
+    : viewerName(viewername), viewer(NULL), currentTab(NULL), graphListener(NULL), dialog(NULL)
 {
 
     left_stack = new QWidgetStack(splitter2);
@@ -347,6 +347,9 @@ void RealGUI::init()
     m_dumpStateStream = 0;
     m_displayComputationTime = false;
     m_exportGnuplot = false;
+
+    map_modifyDialogOpened.clear();
+    current_Id_modifyDialog = 0;
 
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
     std::string object("object.txt");
@@ -602,7 +605,10 @@ void RealGUI::fileOpen(const char* filename)
     if (dialog != NULL) dialog->hide();
     //Hide all the dialogs to modify the graph
     emit( newScene());
-    modifyDialogOpened = 0;
+
+    //Clear the list of modified dialog opened
+    current_Id_modifyDialog=0;
+    map_modifyDialogOpened.clear();
 
     //left_stack->removeWidget(viewer->getQWidget());
     //graphListener->removeChild(NULL, groot);
@@ -1304,6 +1310,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     case Qt::Key_N:
         // -- new object added in the scene whithin a Bounding Box and a scale range
     {
+        if (list_object.size() == 0) return;
         int index_object = (int)(( rand()/ ((float)RAND_MAX) ) * list_object.size());
 
         loadObject(list_object[index_object],
@@ -1414,12 +1421,10 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
         contextMenu->setItemEnabled(indexMenu[0],false);
         contextMenu->setItemEnabled(indexMenu[1],false);
     }
-    //if some modifying dialog windows are still open, we mustn't allow the user to remove nodes, it could lead to NULL pointer.
-    else if ( modifyDialogOpened != 0)
-    {
-        contextMenu->setItemEnabled(indexMenu[1],false);
-    }
 
+    //If one of the elements or child of the current node is beeing modified, you cannot allow the user to erase the node
+    else if ( !isErasable(node_clicked) )
+        contextMenu->setItemEnabled(indexMenu[1],false);
 
 }
 
@@ -1510,11 +1515,28 @@ void RealGUI::graphModify()
         }
 
         //Opening of a dialog window automatically created
-        ModifyObject *dialogModify = new ModifyObject(this,node->getName().data());
-        dialogModify->setNode(node, item_clicked);
+
+        ModifyObject *dialogModify = new ModifyObject(++current_Id_modifyDialog, node, item_clicked,this,node->getName().data() );
+
+        //If the item clicked is a node, we add it to the list of the element modified
+        if (dynamic_cast<GNode *>(node))
+            map_modifyDialogOpened.insert(make_pair(current_Id_modifyDialog, node));
+        else
+        {
+            //If the item clicked is just an element of the node, we add the node containing it
+            for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
+            {
+                if(  (*it).second == item_clicked->parent() )
+                {
+                    map_modifyDialogOpened.insert(make_pair(current_Id_modifyDialog, (*it).first));
+                    break;
+                }
+            }
+        }
+
         dialogModify->show();
         dialogModify->raise();
-        modifyDialogOpened++;
+
         connect ( this, SIGNAL( newScene()), dialogModify, SLOT( closeNow()));
         item_clicked = NULL;
     }
@@ -1535,6 +1557,29 @@ GNode *RealGUI::verifyNode(GNode *node)
     return NULL;
 }
 
+
+bool RealGUI::isErasable(core::objectmodel::Base* element)
+{
+
+    if (GNode *node = dynamic_cast<GNode *>(element))
+    {
+        //we look into the list of element currently modified if the element is present.
+        std::map< int, core::objectmodel::Base* >::iterator dialog_it;
+        for (dialog_it = map_modifyDialogOpened.begin(); dialog_it !=map_modifyDialogOpened.end(); dialog_it++)
+        {
+            if (element == (*dialog_it).second) return false;
+        }
+
+        //The element has not been found, we explorate its childs
+        GNode::ChildIterator it;
+        for (it = node->child.begin(); it != node->child.end(); it++)
+        {
+            if (!isErasable((*it))) return false; //If a child of the current node cannot be erased, the parent (the currend node) cannot be too.
+        }
+
+    }
+    return true;
+}
 /*****************************************************************************************************************/
 //Recursive search through the GNode graph.
 GNode *RealGUI::searchNode(GNode *node)
@@ -1570,30 +1615,30 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
     if (node == NULL) return;
     GNode::ObjectIterator obj_it = node->object.begin();
     //Verify if it exists a mesh topology. In that case, we have to recursively translate the mechanical object and the visual model
-// 	bool mesh_topology = false;
-// 	bool mechanical_object = false;
+    // 	bool mesh_topology = false;
+    // 	bool mechanical_object = false;
 
 
-// 	//Using the graph corresponding to the current node, we explorate it to find a Topology Element
-// 	if (graphListener->items[node] == NULL) return;
+    // 	//Using the graph corresponding to the current node, we explorate it to find a Topology Element
+    // 	if (graphListener->items[node] == NULL) return;
 
-// 	Q3ListViewItem *element = graphListener->items[node]->firstChild();
-// 	while (element != NULL)
-// 	  {
-// 	    //We search in the element of the current node, the presence of a MeshTopology: depending on its presence, it will modify the range of the translation
-// 	    if (element->firstChild() == NULL)
-// 	      {
-// 		std::string name = element->text(0);
-// 		std::string::size_type end_name = name.rfind(' ');
-// 		if (end_name != std::string::npos)
-// 		    name.resize(end_name-1);
+    // 	Q3ListViewItem *element = graphListener->items[node]->firstChild();
+    // 	while (element != NULL)
+    // 	  {
+    // 	    //We search in the element of the current node, the presence of a MeshTopology: depending on its presence, it will modify the range of the translation
+    // 	    if (element->firstChild() == NULL)
+    // 	      {
+    // 		std::string name = element->text(0);
+    // 		std::string::size_type end_name = name.rfind(' ');
+    // 		if (end_name != std::string::npos)
+    // 		    name.resize(end_name-1);
 
-// 		if (name == "MeshTopology")
-// 		    mesh_topology = true;
+    // 		if (name == "MeshTopology")
+    // 		    mesh_topology = true;
 
-// 	      }
-// 	    element = element->nextSibling();
-// 	  }
+    // 	      }
+    // 	    element = element->nextSibling();
+    // 	  }
 
     //We translate the elements
     while (obj_it != node->object.end())
@@ -1610,15 +1655,15 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
             core::componentmodel::behavior::BaseMechanicalState *mechanical = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(*obj_it);
             mechanical->applyTranslation(dx, dy, dz);
             mechanical->applyScale(scale);
-// 		mechanical_object = true;
+            // 		mechanical_object = true;
         }
 
         obj_it++;
     }
 
     //We don't need to go any further:
-// 	if (mechanical_object && !mesh_topology)
-// 	    return;
+    // 	if (mechanical_object && !mesh_topology)
+    // 	    return;
 
 
     //We search recursively with the childs of the currend node
@@ -1773,9 +1818,9 @@ void RealGUI::graphExpand()
     playpauseGUI(isAnimated);
 }
 /*****************************************************************************************************************/
-void RealGUI::modifyUnlock()
+void RealGUI::modifyUnlock(int Id)
 {
-    modifyDialogOpened --;
+    map_modifyDialogOpened.erase(Id);
 }
 
 } // namespace qt

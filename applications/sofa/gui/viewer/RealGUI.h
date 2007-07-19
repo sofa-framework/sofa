@@ -157,7 +157,7 @@ public slots:
     //refresh the visualization window
     void redraw();
     //when a dialog modify object is closed
-    void modifyUnlock();
+    void modifyUnlock(int Id);
     void transformObject( GNode *node, double dx, double dy, double dz, double scale=1.0);
 
 signals:
@@ -179,6 +179,7 @@ protected:
 
     GNode *searchNode(GNode *node);
     GNode *verifyNode(GNode *node);
+    bool isErasable(core::objectmodel::Base* element);
 
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
@@ -186,7 +187,6 @@ protected:
     bool _animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;
 
-    int modifyDialogOpened;
 
     QWidget* currentTab;
     GraphListenerQListView* graphListener;
@@ -206,7 +206,9 @@ protected:
     sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
 
 private:
-    std::map< core::objectmodel::Base*, QWidget* > _alreadyOpen;
+
+    std::map< int, core::objectmodel::Base* >       map_modifyDialogOpened;
+    int current_Id_modifyDialog;
     std::vector< std::string > list_object;
     float object_BoundingBox[6];
     float object_Scale[2];

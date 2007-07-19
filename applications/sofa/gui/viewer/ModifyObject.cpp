@@ -80,16 +80,17 @@ typedef QGrid     Q3Grid;
 #endif
 
 
-ModifyObject::ModifyObject( QWidget* parent_, const char*, bool, Qt::WFlags ): parent(parent_), node(NULL), list_Object(NULL)
+ModifyObject::ModifyObject(int Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags f ): parent(parent_), node(NULL), list_Object(NULL),Id(Id_)
 {
+    //Constructor of the QDialog
+    QDialog( parent_, name, f);
+    //Initialization of the Widget
+    setNode(node_clicked, item_clicked);
     connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
-    connect ( this, SIGNAL( dialogClosed() ) , parent_, SLOT( modifyUnlock()));
+    connect ( this, SIGNAL( dialogClosed(int) ) , parent_, SLOT( modifyUnlock(int)));
     connect ( this, SIGNAL( transformObject(GNode *, double, double, double, double)), parent, SLOT(transformObject(GNode *, double, double, double, double)));
 }
 
-ModifyObject::~ModifyObject()
-{
-}
 
 //Set the default file
 void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked)
@@ -490,7 +491,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             editTranslationZ->setMinFloatValue( (float)-INFINITY );
             editTranslationZ->setMaxFloatValue( (float)INFINITY );
 
-            new QLabel(QString("Scale"), box);
+            QLabel *textScale = new QLabel(QString("Scale"), box);
             WFloatLineEdit* editScale = new WFloatLineEdit( box, "editScale" );
             list_Object->push_front( (QObject *) editScale);
 
@@ -506,6 +507,11 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             connect( editTranslationY, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
             connect( editTranslationZ, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
             connect( editScale, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+
+            //Option still experimental : disabled !!!!
+            textScale->hide();
+            editScale->hide();
+
 
             tabPropertiesLayout->addWidget( box );
         }
@@ -536,11 +542,9 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
         //Signals and slots connections
         connect( buttonUpdate,   SIGNAL( clicked() ), this, SLOT( updateValues() ) );
-        connect( buttonOk,       SIGNAL( clicked() ), this, SLOT( closeDialog() ) );
+        connect( buttonOk,       SIGNAL( clicked() ), this, SLOT( accept() ) );
         connect( buttonCancel,   SIGNAL( clicked() ), this, SLOT( reject() ) );
 
-        connect( buttonOk,       SIGNAL( clicked() ), parent, SLOT( modifyUnlock() ) );
-        connect( buttonCancel,   SIGNAL( clicked() ), parent, SLOT( modifyUnlock() ) );
 
         //Title of the Dialog
         setCaption((node->getTypeName()+"::"+node->getName()).data());
@@ -559,20 +563,10 @@ void ModifyObject::changeValue()
     buttonUpdate->setEnabled(true);
 }
 
-
-//*******************************************************************************************************************
-void ModifyObject::closeDialog()
-{
-    if (buttonUpdate->isEnabled())
-        updateValues();
-    emit(accept());
-}
-
-
 //*******************************************************************************************************************
 void ModifyObject::updateValues()
 {
-    if (buttonUpdate == NULL) return;
+    if (buttonUpdate == NULL || !buttonUpdate->isEnabled() ) return;
 
     //Make the update of all the values
     if (node && list_Object != NULL)
@@ -586,15 +580,21 @@ void ModifyObject::updateValues()
             WFloatLineEdit* editTranslationZ = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
             WFloatLineEdit* editTranslationY = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
             WFloatLineEdit* editTranslationX = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
-            emit( transformObject(current_node,
-                    editTranslationX->getFloatValue(),editTranslationY->getFloatValue(),editTranslationZ->getFloatValue(),
-                    editScale->getFloatValue()));
+            if (!(editTranslationX->getFloatValue() == 0 &&
+                    editTranslationY->getFloatValue() == 0 &&
+                    editTranslationZ->getFloatValue() == 0 &&
+                    editScale->getFloatValue() == 1 ))
+            {
+                emit( transformObject(current_node,
+                        editTranslationX->getFloatValue(),editTranslationY->getFloatValue(),editTranslationZ->getFloatValue(),
+                        editScale->getFloatValue()));
 
-            editTranslationX->setFloatValue(0);
-            editTranslationY->setFloatValue(0);
-            editTranslationZ->setFloatValue(0);
-            editScale->setFloatValue(1);
-            //current_node->execute<InitAction>();
+                editTranslationX->setFloatValue(0);
+                editTranslationY->setFloatValue(0);
+                editTranslationZ->setFloatValue(0);
+                editScale->setFloatValue(1);
+                //current_node->execute<InitAction>();
+            }
         }
 
         std::list< std::list< QObject*> * >::iterator block_iterator=list_PointSubset->begin();
@@ -788,10 +788,31 @@ void ModifyObject::updateValues()
         }
 
     }
+
+    updateContext(dynamic_cast< GNode *>(node));
+
     emit (objectUpdated());
     buttonUpdate->setEnabled(false);
 }
 
+
+//*******************************************************************************************************************
+//Update the Context of a whole node, including its childs
+void ModifyObject::updateContext( GNode *node )
+{
+    if (node == NULL) return;
+    //Update the context of the childs
+
+    GNode::ChildIterator it  = node->child.begin();
+    while (it != node->child.end())
+    {
+        core::objectmodel::Context *current_context = dynamic_cast< core::objectmodel::Context *>(node->getContext());
+        (*it)->copyContext( (*current_context));
+        updateContext( (*it) );
+        it++;
+    }
+
+}
 //*******************************************************************************************************************
 //Method called when the number of one of the PointSubset block has been modified : we need to recreate the block modified
 void ModifyObject::changeNumberPoint()

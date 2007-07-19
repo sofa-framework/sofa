@@ -29,9 +29,11 @@
 #ifdef QT_MODULE_QT3SUPPORT
 #include <Q3FileDialog>
 #include <QLineEdit>
+#include <QLabel>
 #else
 #include <qfiledialog.h>
 #include <qlineedit.h>
+#include <qlabel.h>
 #endif
 
 namespace sofa
@@ -55,6 +57,9 @@ AddObject::AddObject( QWidget* parent , const char*, bool, Qt::WFlags )
     positionY->setText("0");
     positionZ->setText("0");
     scaleValue->setText("1");
+    //Option still experimental : disabled
+    scaleValue->hide();
+    scaleText->hide();
 
     openFilePath->setText(NULL);
 
