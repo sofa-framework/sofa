@@ -82,10 +82,10 @@ void OctreeDetection::findPairsSurface (CubeModel * cm1,
 {
     core::CollisionModel * finalcm1 = cm1->getLast ();
     core::CollisionModel * finalcm2 = cm2->getLast ();
-//	std::cerr << "Model " << gettypename (typeid (*finalcm1)) << std::
-//	  endl;
-//	std::cerr << "Model " << gettypename (typeid (*finalcm2)) << std::
-//	  endl;
+//      std::cerr << "Model " << gettypename (typeid (*finalcm1)) << std::
+//        endl;
+//      std::cerr << "Model " << gettypename (typeid (*finalcm2)) << std::
+//        endl;
 
     DetectionOutputVector & outputs =
         outputsMap[std::make_pair (finalcm1, finalcm2)];
@@ -224,16 +224,15 @@ void OctreeDetection::findPairsSurfaceTriangleSimple (CubeModel * cm1,
         intersector = intersectionMethod->findIntersector (tm1, tm2);
     if (!intersector)
         return;
-    for(int i=0; i<tm1->elems.size(); i++)
-        for(int j=0; j<tm2->elems.size(); j++)
+    for (int i = 0; i < tm1->elems.size (); i++)
+        for (int j = 0; j < tm2->elems.size (); j++)
         {
             Triangle tri1 (tm1, (int) i);
             Triangle tri2 (tm2, (int) j);
             if (intersector->canIntersect (tri1, tri2))
             {
                 //std::cerr<<"intersect triangle"<<std::endl;
-                intersector->intersect (tri1, tri2,
-                        outputs);
+                intersector->intersect (tri1, tri2, outputs);
             }
 
 
@@ -288,17 +287,17 @@ void OctreeDetection::findPairsSurfaceTriangle (CubeModel * cm1,
     vector < TriangleOctree * >octree2;
     if (!tm1->octreeRoot)
     {
-        std::cerr<<"build"<<std::endl;
+        std::cerr << "build" << std::endl;
         tm1->buildOctree ();
     }
 
     if (!tm2->octreeRoot)
     {
-        std::cerr<<"build"<<std::endl;
+        std::cerr << "build" << std::endl;
         tm2->buildOctree ();
     }
     octree1.push_back (tm1->octreeRoot);
-    vector<bool> testedTriangle(tm1->elems.size(),false);
+    vector < bool > testedTriangle (tm1->elems.size (), false);
     while (octree1.size ())
     {
         TriangleOctree & t1 = *octree1.back ();
@@ -306,9 +305,13 @@ void OctreeDetection::findPairsSurfaceTriangle (CubeModel * cm1,
 
         vector < TriangleOctree * >octree2;
         octree2.push_back (tm2->octreeRoot);
-        if (t1.objects.size ()&&!(( (*minVect2)[0] > t1.x + t1.size || t1.x> (*maxVect2)[0])
-                ||( (*minVect2)[1] > t1.y + t1.size || t1.y> (*maxVect2)[1])
-                ||( (*minVect2)[2] > t1.z + t1.size || t1.z> (*maxVect2)[2])))
+        if (t1.objects.size ()
+            &&
+            !(((*minVect2)[0] > t1.x + t1.size || t1.x > (*maxVect2)[0])
+                    || ((*minVect2)[1] > t1.y + t1.size
+                            || t1.y > (*maxVect2)[1])
+                    || ((*minVect2)[2] > t1.z + t1.size
+                            || t1.z > (*maxVect2)[2])))
         {
             while (octree2.size ())
             {
@@ -329,36 +332,34 @@ void OctreeDetection::findPairsSurfaceTriangle (CubeModel * cm1,
                                 dynamic_cast < TriangleModel * >(tm2);
                             Triangle tri1 (tmm1, (int) t1.objects[o1]);
                             Triangle tri2 (tmm2, (int) t2.objects[o2]);
-                            TriangleModel::TriangleData & td =
-                                tmm2->elems[t2.objects[o2]];
                             if (intersector->intersect (tri1, tri2,
-                                    outputs)<=0)
+                                    outputs) <= 0)
 
                             {
                                 //continue;
 //std::cerr<<"ray"<<std::endl;
-                                if(1&&testedTriangle[t1.objects[o1]])
+                                if (1 && testedTriangle[t1.objects[o1]])
                                     continue;
-                                testedTriangle[t1.objects[o1]]=true;
+                                testedTriangle[t1.objects[o1]] = true;
                                 double cosAngle;
                                 int resTriangle = -1;
                                 int resTriangle2 = -1;
 
                                 Vector3 point;
                                 Vector3 trianglePoints[3];
-                                int nPoints=0;
-                                if(tri1.flags()&TriangleModel::FLAG_P1)
-                                    trianglePoints[nPoints++] = tri1.p1();
-                                if(tri1.flags()&TriangleModel::FLAG_P2)
-                                    trianglePoints[nPoints++] = tri1.p2();
-                                if(tri1.flags()&TriangleModel::FLAG_P3)
-                                    trianglePoints[nPoints++] = tri1.p3();
+                                int nPoints = 0;
+                                if (tri1.flags () & TriangleModel::FLAG_P1)
+                                    trianglePoints[nPoints++] = tri1.p1 ();
+                                if (tri1.flags () & TriangleModel::FLAG_P2)
+                                    trianglePoints[nPoints++] = tri1.p2 ();
+                                if (tri1.flags () & TriangleModel::FLAG_P3)
+                                    trianglePoints[nPoints++] = tri1.p3 ();
 
 
-                                for(int t=0; t<nPoints; t++)
+                                for (int t = 0; t < nPoints; t++)
                                 {
 
-                                    point=trianglePoints[t];
+                                    point = trianglePoints[t];
                                     //point=(tri1.p1()+tri1.p2()+tri1.p3())/3;
 
 
@@ -378,22 +379,25 @@ void OctreeDetection::findPairsSurfaceTriangle (CubeModel * cm1,
                                     Triangle *triang2 =
                                         new Triangle (tm2, resTriangle);
 
-                                    cosAngle = dot (tri1.n (), triang2->n ());
+                                    cosAngle =
+                                        dot (tri1.n (), triang2->n ());
                                     if (cosAngle < 0)
                                     {
                                         int indice;
                                         double times;
-                                        if(tri1.n()[0])
-                                            indice=0;
-                                        else if(tri1.n()[1])
-                                            indice=1;
-                                        else if(tri1.n()[2])
-                                            indice=2;
+                                        if (tri1.n ()[0])
+                                            indice = 0;
+                                        else if (tri1.n ()[1])
+                                            indice = 1;
+                                        else if (tri1.n ()[2])
+                                            indice = 2;
                                         Vector3 Q =
-                                            (1 - res.u - res.v) * triang2->p1 () +
+                                            (1 - res.u -
+                                                    res.v) * triang2->p1 () +
                                             res.u * triang2->p2 () +
                                             res.v * triang2->p3 ();
-                                        outputs.resize (outputs.size () + 1);
+                                        outputs.resize (outputs.size () +
+                                                1);
                                         DetectionOutput *detection =
                                             &*(outputs.end () - 1);
                                         detection->elem =
@@ -403,10 +407,14 @@ void OctreeDetection::findPairsSurfaceTriangle (CubeModel * cm1,
                                             (tri1, *triang2);
                                         detection->point[0] = point;
 
-                                        times=(Q[indice]-point[indice])/tri1.n()[indice];
-                                        detection->point[1] = point-tri1.n()*times;
+                                        times =
+                                            (Q[indice] -
+                                                    point[indice]) /
+                                            tri1.n ()[indice];
+                                        detection->point[1] =
+                                            point - tri1.n () * times;
                                         //detection->normal = (point - Q) / res.t;
-                                        detection->normal = tri1.n();
+                                        detection->normal = tri1.n ();
                                         //std::cerr<<"point normal"<< tri1.n()<<"norm2:"<<detection->normal<<std::endl;
                                         detection->distance = res.t;
 
@@ -415,7 +423,7 @@ void OctreeDetection::findPairsSurfaceTriangle (CubeModel * cm1,
                             }
                             else
                             {
-                                testedTriangle[t1.objects[o1]]=true;
+                                testedTriangle[t1.objects[o1]] = true;
                             }
                         }
                 }
@@ -444,12 +452,12 @@ void OctreeDetection::findPairsSurfaceTriangle (CubeModel * cm1,
             if (t1.childVec[i])
             {
                 /*if (t1.childVec[i]->x < ((*minVect2)[0]-2)
-                    && t1.childVec[i]->y <( (*minVect2)[2]-2)
-                    && t1.childVec[i]->z < ((*minVect2)[3]-2)
-                    && (t1.childVec[i]->x+t1.childVec[i]->size) > ((*maxVect2)[0]+2)
-                    && (t1.childVec[i]->y+t1.childVec[i]->size) > ((*maxVect2)[2]+2)
-                    && (t1.childVec[i]->z+t1.childVec[i]->size) > ((*maxVect2)[3]+2))
-                */
+                   && t1.childVec[i]->y <( (*minVect2)[2]-2)
+                   && t1.childVec[i]->z < ((*minVect2)[3]-2)
+                   && (t1.childVec[i]->x+t1.childVec[i]->size) > ((*maxVect2)[0]+2)
+                   && (t1.childVec[i]->y+t1.childVec[i]->size) > ((*maxVect2)[2]+2)
+                   && (t1.childVec[i]->z+t1.childVec[i]->size) > ((*maxVect2)[3]+2))
+                 */
                 {
                     octree1.push_back (t1.childVec[i]);
                 }
@@ -522,13 +530,15 @@ void OctreeDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
         {
             point = (*points)[trianglePoints[k]];
 //
-// 		point += (*points)[trianglePoints[k]];
-// 	      }
-// 	    point /= 3;
+//              point += (*points)[trianglePoints[k]];
+//            }
+//          point /= 3;
             if ( /*(!testedPoints[trianglePoints[k]])&& */ (point[0]) <
                     (*maxVect)[0]
-                    && (point[1]) < (*maxVect)[1] && (point[2]) < (*maxVect)[2]
-                    && (point[0]) > (*minVect)[0] && (point[1]) > (*minVect)[1]
+                    && (point[1]) < (*maxVect)[1]
+                    && (point[2]) < (*maxVect)[2]
+                    && (point[0]) > (*minVect)[0]
+                    && (point[1]) > (*minVect)[1]
                     && (point[2]) > (*minVect)[2])
             {
 
@@ -544,7 +554,8 @@ void OctreeDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
                 resTriangle2 =
                     tm1->octreeRoot->trace (point, -(tm1->elems[j].normal),
                             res2);
-                if (resTriangle2 == -1 || resTriangle2 != j && res2.t < res.t)
+                if (resTriangle2 == -1 || resTriangle2 != j
+                    && res2.t < res.t)
                 {
                     resTriangle = -1;
                     //std::cerr<<j<<" res"<<resTriangle2<<" t:"<<res.t<<" t2:"<<res2.t<<std::endl;
@@ -556,12 +567,14 @@ void OctreeDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
                 if (resTriangle == -1)
                     continue;
                 cosAngle =
-                    dot (tm1->elems[j].normal, tm2->elems[resTriangle].normal);
+                    dot (tm1->elems[j].normal,
+                            tm2->elems[resTriangle].normal);
                 cosAngle2 =
-                    dot (tm1->elems[j].normal, tm1->elems[resTriangle2].normal);
-                if (cosAngle < 0/*&&cosAngle2<0*/)
+                    dot (tm1->elems[j].normal,
+                            tm1->elems[resTriangle2].normal);
+                if (cosAngle < 0 /*&&cosAngle2<0 */ )
                 {
-                    int index=0;
+                    int index = 0;
                     double ratio;
                     //std::cerr<<"t1        "<<tm1->getName()<<"t2 "<< tm2->getName()<<std::endl;
                     Triangle *triang1 = new Triangle (tm2, resTriangle);
@@ -569,12 +582,12 @@ void OctreeDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
                         (1 - res.u - res.v) * triang1->p1 () +
                         res.u * triang1->p2 () + res.v * triang1->p3 ();
                     outputs.resize (outputs.size () + 1);
-                    if(tm1->elems[resTriangle2].normal[0])
-                        index=0;
-                    else if(tm1->elems[resTriangle2].normal[1])
-                        index=1;
-                    else if(tm1->elems[resTriangle2].normal[2])
-                        index=2;
+                    if (tm1->elems[resTriangle2].normal[0])
+                        index = 0;
+                    else if (tm1->elems[resTriangle2].normal[1])
+                        index = 1;
+                    else if (tm1->elems[resTriangle2].normal[2])
+                        index = 2;
 
                     //std::cerr<<Q<<"u  "<<res.u<<" v "<<res.v<<std::endl;
                     DetectionOutput *detection = &*(outputs.end () - 1);
@@ -587,12 +600,15 @@ void OctreeDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
 
 
 
-                    ratio=(point - Q)[index]/tm1->elems[resTriangle2].normal[index];
-                    detection->point[1] = point-tm1->elems[resTriangle2].normal*ratio;
+                    ratio =
+                        (point -
+                                Q)[index] / tm1->elems[resTriangle2].normal[index];
+                    detection->point[1] =
+                        point - tm1->elems[resTriangle2].normal * ratio;
                     detection->normal = (point - detection->point[1]);
 
-                    detection->distance =  detection->normal.norm();
-                    detection->normal /=detection->distance;
+                    detection->distance = detection->normal.norm ();
+                    detection->normal /= detection->distance;
 
 
                     //      sleep(1);
@@ -673,7 +689,7 @@ void OctreeDetection::addCollisionPair (const std::pair <
         t0 = CTime::getRefTime ();
         findPairsSurfaceTriangle (cm1, cm2);
         t1 = CTime::getRefTime ();
-        findPairsSurfaceTriangle(cm2, cm1);
+        findPairsSurfaceTriangle (cm2, cm1);
         t2 = CTime::getRefTime ();
         std::cerr << "Octree construction:" << (t1 -
                 t0) /
