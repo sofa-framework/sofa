@@ -86,7 +86,12 @@ AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent 
             }
             button = new QRadioButton( buttonGroup, QString(current_name.c_str()) );
             button->setText(current_name.c_str());
+
+#ifdef QT_MODULE_QT3SUPPORT
+            gridLayout1->addWidget( button, i+1, 0 );
+#else
             buttonGroupLayout->addWidget( button, i+1, 0 );
+#endif
         }
     }
 
@@ -161,7 +166,7 @@ void AddObject::buttonUpdate(int Id)
     //Id = 0 : custom radio button clicked: we need to show the selector of the file
     if (Id == 0)
     {
-        openFilePath->setText(fileName);
+        openFilePath->setText(fileName.c_str());
         openFileText->show();
         openFilePath->show();
         openFileButton->show();
