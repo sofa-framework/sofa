@@ -703,6 +703,11 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 #endif
 
                 if (!grid2->inBBox( p2, margin )) continue;
+                if (!grid2->inGrid( p2 ))
+                {
+                    std::cerr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName()<<std::endl;
+                    continue;
+                }
 
                 float d = grid2->interp(p2);
                 if (d >= margin) continue;
@@ -939,6 +944,11 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 #endif
 
                 if (!grid1->inBBox( p1, margin )) continue;
+                if (!grid1->inGrid( p1 ))
+                {
+                    std::cerr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<std::endl;
+                    continue;
+                }
 
                 float d = grid1->interp(p1);
                 if (d >= margin) continue;
@@ -991,6 +1001,11 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     else p1 = p2;
 
     if (!grid1->inBBox( p1, margin )) return 0;
+    if (!grid1->inGrid( p1 ))
+    {
+        std::cerr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<std::endl;
+        return 0;
+    }
 
     float d = grid1->interp(p1);
     if (d >= margin) return 0;
@@ -1038,6 +1053,11 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     else p1 = p2;
 
     if (!grid1->inBBox( p1, margin )) return 0;
+    if (!grid1->inGrid( p1 ))
+    {
+        std::cerr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<std::endl;
+        return 0;
+    }
 
     float d = grid1->interp(p1);
     if (d >= margin) return 0;
@@ -1088,26 +1108,34 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
         }
         else p1 = p2;
 
-        if (!grid1->inBBox( p1, margin )) return 0;
+        if (grid1->inBBox( p1, margin ))
+        {
+            if (!grid1->inGrid( p1 ))
+            {
+                std::cerr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<std::endl;
+            }
+            else
+            {
+                float d = grid1->interp(p1);
+                if (d >= margin) return 0;
 
-        float d = grid1->interp(p1);
-        if (d >= margin) return 0;
+                Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+                grad.normalize();
 
-        Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
-        grad.normalize();
+                //p1 -= grad * d; // push p1 back to the surface
 
-        //p1 -= grad * d; // push p1 back to the surface
+                contacts.resize(contacts.size()+1);
+                DetectionOutput *detection = &*(contacts.end()-1);
 
-        contacts.resize(contacts.size()+1);
-        DetectionOutput *detection = &*(contacts.end()-1);
-
-        detection->point[0] = Vector3(p1) - grad * d;
-        detection->point[1] = Vector3(p2);
-        detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-        detection->distance = d - d0;
-        detection->elem.first = e1;
-        detection->elem.second = e2;
-        detection->id = e2.getIndex()*3+0;
+                detection->point[0] = Vector3(p1) - grad * d;
+                detection->point[1] = Vector3(p2);
+                detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
+                detection->distance = d - d0;
+                detection->elem.first = e1;
+                detection->elem.second = e2;
+                detection->id = e2.getIndex()*3+0;
+            }
+        }
     }
 
     if (f2&TriangleModel::FLAG_P2)
@@ -1121,26 +1149,34 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
         }
         else p1 = p2;
 
-        if (!grid1->inBBox( p1, margin )) return 0;
+        if (grid1->inBBox( p1, margin ))
+        {
+            if (!grid1->inGrid( p1 ))
+            {
+                std::cerr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<std::endl;
+            }
+            else
+            {
+                float d = grid1->interp(p1);
+                if (d >= margin) return 0;
 
-        float d = grid1->interp(p1);
-        if (d >= margin) return 0;
+                Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+                grad.normalize();
 
-        Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
-        grad.normalize();
+                //p1 -= grad * d; // push p1 back to the surface
 
-        //p1 -= grad * d; // push p1 back to the surface
+                contacts.resize(contacts.size()+1);
+                DetectionOutput *detection = &*(contacts.end()-1);
 
-        contacts.resize(contacts.size()+1);
-        DetectionOutput *detection = &*(contacts.end()-1);
-
-        detection->point[0] = Vector3(p1) - grad * d;
-        detection->point[1] = Vector3(p2);
-        detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-        detection->distance = d - d0;
-        detection->elem.first = e1;
-        detection->elem.second = e2;
-        detection->id = e2.getIndex()*3+1;
+                detection->point[0] = Vector3(p1) - grad * d;
+                detection->point[1] = Vector3(p2);
+                detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
+                detection->distance = d - d0;
+                detection->elem.first = e1;
+                detection->elem.second = e2;
+                detection->id = e2.getIndex()*3+1;
+            }
+        }
     }
 
     if (f2&TriangleModel::FLAG_P3)
@@ -1154,26 +1190,34 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
         }
         else p1 = p2;
 
-        if (!grid1->inBBox( p1, margin )) return 0;
+        if (grid1->inBBox( p1, margin ))
+        {
+            if (!grid1->inGrid( p1 ))
+            {
+                std::cerr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<std::endl;
+            }
+            else
+            {
+                float d = grid1->interp(p1);
+                if (d >= margin) return 0;
 
-        float d = grid1->interp(p1);
-        if (d >= margin) return 0;
+                Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+                grad.normalize();
 
-        Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
-        grad.normalize();
+                //p1 -= grad * d; // push p1 back to the surface
 
-        //p1 -= grad * d; // push p1 back to the surface
+                contacts.resize(contacts.size()+1);
+                DetectionOutput *detection = &*(contacts.end()-1);
 
-        contacts.resize(contacts.size()+1);
-        DetectionOutput *detection = &*(contacts.end()-1);
-
-        detection->point[0] = Vector3(p1) - grad * d;
-        detection->point[1] = Vector3(p2);
-        detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-        detection->distance = d - d0;
-        detection->elem.first = e1;
-        detection->elem.second = e2;
-        detection->id = e2.getIndex()*3+2;
+                detection->point[0] = Vector3(p1) - grad * d;
+                detection->point[1] = Vector3(p2);
+                detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
+                detection->distance = d - d0;
+                detection->elem.first = e1;
+                detection->elem.second = e2;
+                detection->id = e2.getIndex()*3+2;
+            }
+        }
     }
     return 1;
 }
@@ -1346,6 +1390,11 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                 DistanceGrid::Coord p2 = translation + rotation*p1;
 
                 if (!grid2->inBBox( p2, margin )) continue;
+                if (!grid2->inGrid( p2 ))
+                {
+                    std::cerr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName()<<std::endl;
+                    continue;
+                }
 
                 float d = grid2->interp(p2);
                 if (d >= margin) continue;
