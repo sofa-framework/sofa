@@ -882,6 +882,7 @@ class FlowVRRenderUpdateEvent : public FlowVRRenderEvent
 public:
     virtual ~FlowVRRenderUpdateEvent() {}
     flowvr::render::ChunkRenderWriter* scene;
+    bool* scratch;
 };
 
 std::vector<flowvr::ID> prevP;
@@ -1017,7 +1018,7 @@ public:
     {
     }
 
-    virtual void flowvrRenderUpdate(flowvr::render::ChunkRenderWriter* /*scene*/)
+    virtual void flowvrRenderUpdate(flowvr::render::ChunkRenderWriter* /*scene*/, bool* /*scratch*/)
     {
     }
 
@@ -1029,7 +1030,7 @@ public:
             if (FlowVRRenderInitEvent* ev = dynamic_cast<FlowVRRenderInitEvent*>(event))
                 flowvrRenderInit(ev->scene, ev->scratch);
             if (FlowVRRenderUpdateEvent* ev = dynamic_cast<FlowVRRenderUpdateEvent*>(event))
-                flowvrRenderUpdate(ev->scene);
+                flowvrRenderUpdate(ev->scene, ev->scratch);
         }
     }
 };
@@ -1071,6 +1072,7 @@ public:
         FlowVRRenderUpdateEvent ev;
         ev.from = mod;
         ev.scene = &scene;
+        ev.scratch = &scratch;
         getContext()->propagateEvent(&ev);
         scene.put(pOutScene, scratch);
         scratch = true;
@@ -1105,7 +1107,7 @@ protected:
     flowvr::ModuleAPI* module;
 public:
     FlowVRRenderVisualModel()
-        : scene(NULL), module(NULL)
+        : scene(NULL), scratch(NULL), module(NULL)
     {
     }
 
@@ -1126,14 +1128,13 @@ public:
         if (this->module!=NULL)
             renderInit();
     }
-    void flowvrRenderUpdate(flowvr::render::ChunkRenderWriter* scene)
+    void flowvrRenderUpdate(flowvr::render::ChunkRenderWriter* scene, bool* scratch)
     {
         if (this->scene == NULL)
         {
             std::cout << "LIVE creation of FlowVRRenderVisualModel detected."<<std::endl;
             this->module = mod->module;
-            this->scene = scene;
-            renderInit();
+            flowvrRenderInit(scene, scratch);
         }
         renderUpdate();
     }
