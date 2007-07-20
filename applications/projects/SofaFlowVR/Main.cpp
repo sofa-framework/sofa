@@ -754,17 +754,17 @@ public:
                 matrix = *msgmatrix.data.getRead<Mat4x4f>(0);
 
                 // remove scale component
-                float newscale = 0.0f;
+                float newmscale = 0.0f;
                 for(int j=0; j<3; j++)
                     for(int i=0; i<3; i++)
-                        newscale += matrix[j][i]*matrix[j][i];
-                newscale = rsqrt(newscale/9);
-                if (newscale != mscale)
+                        newmscale += matrix[j][i]*matrix[j][i];
+                newmscale = rsqrt(newmscale/3);
+                if (newmscale != mscale)
                     newscale = true;
                 for(int j=0; j<3; j++)
                     for(int i=0; i<3; i++)
-                        matrix[j][i] /= newscale;
-                mscale = newscale;
+                        matrix[j][i] /= newmscale;
+                mscale = newmscale;
 
                 matrixLastIt = matrixIt;
                 if (lastMatrix != matrix || newscale)
