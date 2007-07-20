@@ -1126,8 +1126,15 @@ public:
         if (this->module!=NULL)
             renderInit();
     }
-    void flowvrRenderUpdate(flowvr::render::ChunkRenderWriter* /*scene*/)
+    void flowvrRenderUpdate(flowvr::render::ChunkRenderWriter* scene)
     {
+        if (this->scene == NULL)
+        {
+            std::cout << "LIVE creation of FlowVRRenderVisualModel detected."<<std::endl;
+            this->module = mod->module;
+            this->scene = scene;
+            renderInit();
+        }
         renderUpdate();
     }
 
