@@ -360,25 +360,82 @@ void RealGUI::init()
     object = sofa::helper::system::DataRepository.getFile(  object );
     char str [80];
     FILE * pFile;
+    float object_BoundingBox[6];
+
 
     pFile = fopen ( object.c_str() ,"r");
     int end=0;
-    end = fscanf(pFile, "BoundingBox: %f %f %f %f %f %f\n",
+    end = fscanf(pFile, "Default BoundingBox: %f %f %f %f %f %f\n",
             &object_BoundingBox[0],&object_BoundingBox[1],&object_BoundingBox[2],&object_BoundingBox[3],&object_BoundingBox[4],&object_BoundingBox[5]);
     if (end == EOF) return;
 
-    end = fscanf(pFile, "Scale: %f %f\n",
+    //The first bounding box of the list is the default bounding box
+    for (int i=0; i<6; i++) list_object_BoundingBox.push_back(object_BoundingBox[i]);
+
+    end = fscanf(pFile, "Default Scale: %f %f\n",
             &object_Scale[0], &object_Scale[1]);
     if (end == EOF) return;
 
+    list_object.clear();
+    bool read = true;
     while (true)
     {
-        end = fscanf(pFile, "%s", str);
-        if (end == EOF) return;
-        std::cout << str << " Added to objects\n";
+        if (read)
+        {
+            end = fscanf(pFile, "%s", str);
+            read = true;
+            if (end == EOF) break;
+        }
+        read = true;
         list_object.push_back(std::string(str));
+
+        end = fscanf(pFile, "%s", str);
+
+        //If the user specified a bounding box, we add it in the list of the bounding box
+        if (!strcmp(str,"BoundingBox:"))
+        {
+            if (end == EOF)
+                break;
+
+            end = fscanf(pFile, "%f %f %f %f %f %f",
+                    &object_BoundingBox[0],&object_BoundingBox[1],&object_BoundingBox[2],&object_BoundingBox[3],&object_BoundingBox[4],& object_BoundingBox[5]);
+
+            if (end == EOF)
+            {
+                for (int i=0; i<6; i++) list_object_BoundingBox.push_back(list_object_BoundingBox[i]);
+            }
+            else
+            {
+                for (int i=0; i<6; i++) list_object_BoundingBox.push_back(object_BoundingBox[i]);
+            }
+
+            read = true;
+        }
+        else if(list_object.size() != 0)
+        {
+            //If no bounding box was specified, we add the default bounding box
+            for (int i=0; i<6; i++) list_object_BoundingBox.push_back(list_object_BoundingBox[i]);
+            if (feof(pFile)) break;
+            read = false;
+        }
+
     }
 
+    //We remove from the list the default Bounding box: each object has its own bounding box now.
+    //We do it to preserve the correspondance between the index of the list_object and the list_object_BoundingBox
+    for (int i=0; i<6; i++) list_object_BoundingBox.erase(list_object_BoundingBox.begin());
+    for (unsigned int i=0; i<list_object.size(); i++)
+    {
+        std::cout << list_object[i] << " Added with the BoundingBox: \t["
+                << list_object_BoundingBox[i*6+0] << " "
+                << list_object_BoundingBox[i*6+1] << " "
+                << list_object_BoundingBox[i*6+2] << "]\t["
+                << list_object_BoundingBox[i*6+3] << " "
+                << list_object_BoundingBox[i*6+4] << " "
+                << list_object_BoundingBox[i*6+5] << "]\n";
+
+    }
+    fclose(pFile);
 }
 
 void RealGUI::addViewer()
@@ -1314,11 +1371,81 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
         int index_object = (int)(( rand()/ ((float)RAND_MAX) ) * list_object.size());
 
         loadObject(list_object[index_object],
-                (object_BoundingBox[3]-object_BoundingBox[0]) * ( rand()/ ((float)RAND_MAX) )  + object_BoundingBox[0],
-                (object_BoundingBox[4]-object_BoundingBox[1]) * ( rand()/ ((float)RAND_MAX) )  + object_BoundingBox[1],
-                (object_BoundingBox[5]-object_BoundingBox[2]) * ( rand()/ ((float)RAND_MAX) )  + object_BoundingBox[2],
+                (list_object_BoundingBox [6*index_object+3]-list_object_BoundingBox[6*index_object+0]) * ( rand()/ ((float)RAND_MAX) )
+                + list_object_BoundingBox[6*index_object+0],
+                (list_object_BoundingBox [6*index_object+4]-list_object_BoundingBox[6*index_object+1]) * ( rand()/ ((float)RAND_MAX) )
+                + list_object_BoundingBox[6*index_object+1],
+                (list_object_BoundingBox [6*index_object+5]-list_object_BoundingBox[6*index_object+2]) * ( rand()/ ((float)RAND_MAX) )
+                + list_object_BoundingBox[6*index_object+2],
                 (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
+        break;
 
+    }
+    case Qt::Key_1:
+    {
+        if (list_object.size() < 1) return;
+        int i= 0;
+        loadObject(list_object[i],
+                (list_object_BoundingBox[6*i+3]-list_object_BoundingBox[6*i+0]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+0],
+                (list_object_BoundingBox[6*i+4]-list_object_BoundingBox[6*i+1]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+1],
+                (list_object_BoundingBox[6*i+5]-list_object_BoundingBox[6*i+2]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+2],
+                (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
+        break;
+    }
+    case Qt::Key_2:
+    {
+        if (list_object.size() < 2) return;
+        int i= 1;
+        loadObject(list_object[i],
+                (list_object_BoundingBox[6*i+3]-list_object_BoundingBox[6*i+0]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+0],
+                (list_object_BoundingBox[6*i+4]-list_object_BoundingBox[6*i+1]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+1],
+                (list_object_BoundingBox[6*i+5]-list_object_BoundingBox[6*i+2]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+2],
+                (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
+        break;
+    }
+    case Qt::Key_3:
+    {
+        if (list_object.size() < 3) return;
+        int i= 2;
+        loadObject(list_object[i],
+                (list_object_BoundingBox[6*i+3]-list_object_BoundingBox[6*i+0]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+0],
+                (list_object_BoundingBox[6*i+4]-list_object_BoundingBox[6*i+1]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+1],
+                (list_object_BoundingBox[6*i+5]-list_object_BoundingBox[6*i+2]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+2],
+                (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
+        break;
+    }
+    case Qt::Key_4:
+    {
+        if (list_object.size() < 4) return;
+        int i= 3;
+        loadObject(list_object[i],
+                (list_object_BoundingBox[6*i+3]-list_object_BoundingBox[6*i+0]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+0],
+                (list_object_BoundingBox[6*i+4]-list_object_BoundingBox[6*i+1]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+1],
+                (list_object_BoundingBox[6*i+5]-list_object_BoundingBox[6*i+2]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+2],
+                (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
+        break;
+    }
+    case Qt::Key_5:
+    {
+        if (list_object.size() < 5) return;
+        int i= 4;
+        loadObject(list_object[i],
+                (list_object_BoundingBox[6*i+3]-list_object_BoundingBox[6*i+0]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+0],
+                (list_object_BoundingBox[6*i+4]-list_object_BoundingBox[6*i+1]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+1],
+                (list_object_BoundingBox[6*i+5]-list_object_BoundingBox[6*i+2]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+2],
+                (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
+        break;
+    }
+    case Qt::Key_6:
+    {
+        if (list_object.size() < 6) return;
+        int i= 5;
+        loadObject(list_object[i],
+                (list_object_BoundingBox[6*i+3]-list_object_BoundingBox[6*i+0]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+0],
+                (list_object_BoundingBox[6*i+4]-list_object_BoundingBox[6*i+1]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+1],
+                (list_object_BoundingBox[6*i+5]-list_object_BoundingBox[6*i+2]) * ( rand()/ ((float)RAND_MAX) )  + list_object_BoundingBox[6*i+2],
+                (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
+        break;
     }
     default:break;
     }
@@ -1375,7 +1502,7 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
     if (dialog == NULL)
     {
         //Creation of the file dialog
-        dialog = new AddObject(this);
+        dialog = new AddObject(&list_object, this);
         dialog->setPath(viewer->getSceneFileName());
         dialog->hide();
     }
@@ -1681,13 +1808,22 @@ void RealGUI::transformObject(GNode *node, double dx, double dy, double dz, doub
 /*****************************************************************************************************************/
 void RealGUI::loadObject(std::string path, double dx, double dy, double dz, double scale)
 {
+    //Verify if the file exists
+    if (!sofa::helper::system::DataRepository.findFile(  path ))
+        return;
+
+    path = sofa::helper::system::DataRepository.getFile(  path );
+
+    //Desactivate the animate-> no more graph modification
     bool isAnimated = startButton->isDown();
     playpauseGUI(false);
+    //If we add the object without clicking on the graph (direct use of the method),
+    //the object will be added to the root node
     if (node_clicked == NULL)
     {
         for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
         {
-            if(  (*it).second->itemPos() == 0 )
+            if(  (*it).second->itemPos() == 0 ) //Root node position
             {
                 node_clicked = dynamic_cast< sofa::simulation::tree::GNode *>( (*it).first );
                 break;
@@ -1696,6 +1832,7 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
         if (node_clicked == NULL) return;
     }
 
+    //We allow unlock the graph to make all the changes now
     if (currentTab != TabGraph)
         graphListener->unfreeze(node_clicked);
 
@@ -1738,11 +1875,12 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
     //Apply the Transformation
     transformObject( new_node, dx, dy, dz, scale);
 
+    //Update the view
     viewer->SwitchToPresetView();
     viewer->getQWidget()->update();
 
 
-
+    //freeze the graph if needed and animate
     if (currentTab != TabGraph)
         graphListener->freeze(node_clicked);
 
@@ -1751,27 +1889,6 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
     playpauseGUI(isAnimated);
 }
 
-void RealGUI::loadObject()
-{
-    std::string position[3];
-    std::string scale;
-#ifdef QT_MODULE_QT3SUPPORT
-    std::string object_fileName(dialog->openFilePath->text().toStdString());
-    position[0] = dialog->positionX->text().toStdString();
-    position[1] = dialog->positionY->text().toStdString();
-    position[2] = dialog->positionZ->text().toStdString();
-    scale       = dialog->scaleValue->text().toStdString();
-#else
-    std::string object_fileName(dialog->openFilePath->text().latin1());
-    position[0] = dialog->positionX->text().latin1();
-    position[1] = dialog->positionY->text().latin1();
-    position[2] = dialog->positionZ->text().latin1();
-    scale       = dialog->scaleValue->text().latin1();
-#endif
-
-    loadObject(object_fileName, atof(position[0].c_str()),atof(position[1].c_str()),atof(position[2].c_str()),atof(scale.c_str()));
-
-}
 
 /*****************************************************************************************************************/
 //Visibility Option in grah : expand or collapse a node : easier to get access to a node, and see its properties properly

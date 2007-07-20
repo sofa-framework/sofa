@@ -2538,6 +2538,12 @@ TO CHANGE THE BACKGROUND: press the KEY B.<br>\
 TO SAVE THE VIEW: press the KEY W.<br>\
 <br>\
 <hr><br>\
+TO ADD A PRESET OBJECT: press KEY 1 to 6.<br>\
+<br>\
+<hr><br>\
+TO ADD A RANDOM OBJECT: press KEY N.<br>\
+<br>\
+<hr><br>\
 TO QUIT ::sofa:: press the KEY ESCAPE.<br>");
     return text;
 }

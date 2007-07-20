@@ -1977,6 +1977,12 @@ TO EXPORT TO .OBJ: press the KEY O<br>\
 The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br>\
 <br>\
 <hr><br>\
+TO ADD A PRESET OBJECT: press KEY 1 to 6.<br>\
+<br>\
+<hr><br>\
+TO ADD A RANDOM OBJECT: press KEY N.<br>\
+<br>\
+<hr><br>\
 TO QUIT ::sofa:: press the KEY ESCAPE<br>");
 
     return text;

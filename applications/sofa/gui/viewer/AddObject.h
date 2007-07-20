@@ -25,6 +25,7 @@
 #ifndef ADDOBECJT_H
 #define ADDOBECJT_H
 
+#include <vector>
 #include "DialogAddObject.h"
 
 namespace sofa
@@ -41,16 +42,23 @@ class AddObject : public DialogAddObject
     Q_OBJECT
 public:
 
-    AddObject( QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
+    AddObject( std::vector< std::string > *list_object_, QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
 
 
     void setPath(const std::string path);
 
 public slots:
     void fileOpen();
+    void buttonUpdate(int);
+    void accept();
+
+signals:
+    void loadObject(std::string, double, double, double, double);
+
 
 protected:
     std::string fileName;
+    std::vector< std::string > *list_object;
 
 };
 

@@ -24,16 +24,26 @@
 *******************************************************************************/
 
 #include "AddObject.h"
+
 #include <iostream>
+#include <sstream>
 
 #ifdef QT_MODULE_QT3SUPPORT
 #include <Q3FileDialog>
 #include <QLineEdit>
 #include <QLabel>
+#include <QRadioButton>
+#include <QPushButton>
+#include <Q3ButtonGroup>
+#include <QGridLayout>
 #else
 #include <qfiledialog.h>
 #include <qlineedit.h>
 #include <qlabel.h>
+#include <qradiobutton.h>
+#include <qpushbutton.h>
+#include <qbuttongroup.h>
+#include <qlayout.h>
 #endif
 
 namespace sofa
@@ -47,12 +57,39 @@ namespace guiviewer
 
 
 #ifndef QT_MODULE_QT3SUPPORT
-typedef QFileDialog Q3FileDialog;
+typedef QFileDialog  Q3FileDialog;
+typedef QButtonGroup Q3ButtonGroup;
 #endif
 
 
-AddObject::AddObject( QWidget* parent , const char*, bool, Qt::WFlags )
+AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent , const char* name, bool , Qt::WFlags ):	DialogAddObject(parent, name), list_object(list_object_)
 {
+    //At the creation of the dialog window, we enable the custom object
+    custom->setChecked(true);
+
+
+    //Creation of the list of radio button corresponding to the preset objects: they are specified in the sofa/scenes/object.txt file
+    if (list_object != NULL)
+    {
+        QRadioButton *button;
+        std::string current_name;
+
+        for (int i=0; i<(int)list_object->size(); i++)
+        {
+            std::ostringstream ofilename;
+            current_name = (*list_object)[i];
+            std::string::size_type pos=current_name.rfind('/');
+
+            if (pos != std::string::npos)
+            {
+                current_name = current_name.substr(pos+1, current_name.size()-pos-5);
+            }
+            button = new QRadioButton( buttonGroup, QString(current_name.c_str()) );
+            button->setText(current_name.c_str());
+            buttonGroupLayout->addWidget( button, i+1, 0 );
+        }
+    }
+
     positionX->setText("0");
     positionY->setText("0");
     positionZ->setText("0");
@@ -63,9 +100,36 @@ AddObject::AddObject( QWidget* parent , const char*, bool, Qt::WFlags )
 
     openFilePath->setText(NULL);
 
-    connect( (QObject *) buttonOk, SIGNAL( clicked() ), parent, SLOT( loadObject()));
+    //Make the connection between this widget and the parent
+    connect( this, SIGNAL(loadObject(std::string, double, double, double, double)), parent, SLOT(loadObject(std::string, double, double, double, double)));
+    //For tje Modifications of the state of the radio buttons
+    connect( buttonGroup, SIGNAL( clicked(int) ), this, SLOT (buttonUpdate(int)));
 }
 
+//**************************************************************************************
+//When the Ok Button is clicked, this method is called: we just have to emit a signal to the parent, with the information on the object
+void AddObject::accept()
+{
+    std::string position[3];
+    std::string scale;
+#ifdef QT_MODULE_QT3SUPPORT
+    std::string object_fileName(openFilePath->text().toStdString());
+    position[0] = positionX->text().toStdString();
+    position[1] = positionY->text().toStdString();
+    position[2] = positionZ->text().toStdString();
+    scale       = scaleValue->text().toStdString();
+#else
+    std::string object_fileName(openFilePath->text().latin1());
+    position[0] = positionX->text().latin1();
+    position[1] = positionY->text().latin1();
+    position[2] = positionZ->text().latin1();
+    scale       = scaleValue->text().latin1();
+#endif
+    emit( loadObject(object_fileName, atof(position[0].c_str()),atof(position[1].c_str()),atof(position[2].c_str()),atof(scale.c_str())));
+    QDialog::accept();
+}
+
+//**************************************************************************************
 //Set the default file
 void AddObject::setPath(const std::string path)
 {
@@ -73,7 +137,7 @@ void AddObject::setPath(const std::string path)
     openFilePath->setText(QString(fileName.c_str()));
 }
 
-
+//**************************************************************************************
 //Open a file Dialog and set the path of the selected path in the text field.
 void AddObject::fileOpen()
 {
@@ -89,7 +153,27 @@ void AddObject::fileOpen()
     openFilePath->setText(QString(object_fileName.c_str()));
 }
 
-
+//**************************************************************************************
+//The state of the radio buttons has been modified
+//we update the content of the dialog window
+void AddObject::buttonUpdate(int Id)
+{
+    //Id = 0 : custom radio button clicked: we need to show the selector of the file
+    if (Id == 0)
+    {
+        openFilePath->setText(fileName);
+        openFileText->show();
+        openFilePath->show();
+        openFileButton->show();
+    }
+    else
+    {
+        openFilePath->setText((*list_object)[Id-1].c_str());
+        openFileText->hide();
+        openFilePath->hide();
+        openFileButton->hide();
+    }
+}
 } // namespace qt
 
 } // namespace gui

@@ -116,7 +116,6 @@ public:
     //virtual void helpIndex();
     //virtual void helpContents();
     //virtual void helpAbout();
-    void loadObject(std::string path, double dx, double dy, double dz, double scale=1.0);
 
 public slots:
 
@@ -153,7 +152,7 @@ public slots:
     void graphCollapse();
     void graphExpand();
     //When adding an object in the graph
-    void loadObject();
+    void loadObject(std::string path, double dx, double dy, double dz, double scale=1.0);
     //refresh the visualization window
     void redraw();
     //when a dialog modify object is closed
@@ -210,7 +209,8 @@ private:
     std::map< int, core::objectmodel::Base* >       map_modifyDialogOpened;
     int current_Id_modifyDialog;
     std::vector< std::string > list_object;
-    float object_BoundingBox[6];
+    std::vector< float > list_object_BoundingBox;
+    /* 	  float object_BoundingBox[6]; */
     float object_Scale[2];
 
     bool setViewer(const char* name);
