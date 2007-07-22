@@ -1647,7 +1647,7 @@ void RealGUI::graphModify()
 
         //If the item clicked is a node, we add it to the list of the element modified
         if (dynamic_cast<GNode *>(node))
-            map_modifyDialogOpened.insert(make_pair(current_Id_modifyDialog, node));
+            map_modifyDialogOpened.insert(std::make_pair(current_Id_modifyDialog, node));
         else
         {
             //If the item clicked is just an element of the node, we add the node containing it
@@ -1655,7 +1655,7 @@ void RealGUI::graphModify()
             {
                 if(  (*it).second == item_clicked->parent() )
                 {
-                    map_modifyDialogOpened.insert(make_pair(current_Id_modifyDialog, (*it).first));
+                    map_modifyDialogOpened.insert(std::make_pair(current_Id_modifyDialog, (*it).first));
                     break;
                 }
             }
