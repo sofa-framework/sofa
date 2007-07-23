@@ -77,6 +77,7 @@ public:
     typedef typename InDataTypes::Real Real;
     typedef TDataTypes DataTypes;
     typedef TSphere<DataTypes> Element;
+    friend class TSphere<DataTypes>;
 
 protected:
     std::vector<Real> radius;
@@ -85,12 +86,6 @@ protected:
 
     class Loader;
 public:
-    typedef TDataTypes InDataTypes;
-    typedef TDataTypes DataTypes;
-    typedef TSphere<DataTypes> Element;
-    typedef component::MechanicalObject<InDataTypes> Inherit;
-
-    friend class Element;
 
     TSphereModel(double radius = 1.0);
 
@@ -101,6 +96,8 @@ public:
     void applyScale (const double s);
 
     sofa::core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this; }
+
+    Real getRadius(int i) const { return this->radius[i]; }
 
     // -- CollisionModel interface
 
@@ -138,19 +135,19 @@ inline TSphere<TDataTypes>::TSphere(core::CollisionElementIterator& i)
 template<class TDataTypes>
 inline const typename TDataTypes::Coord& TSphere<TDataTypes>::center() const
 {
-    return (*this->model->getX())[index];
+    return (*this->model->getX())[this->index];
 }
 
 template<class TDataTypes>
 inline const typename TDataTypes::Deriv& TSphere<TDataTypes>::v() const
 {
-    return (*this->model->getV())[index];
+    return (*this->model->getV())[this->index];
 }
 
 template<class TDataTypes>
 inline typename TDataTypes::Real TSphere<TDataTypes>::r() const
 {
-    return this->model->radius[index];
+    return this->model->getRadius(this->index);
 }
 
 } // namespace collision

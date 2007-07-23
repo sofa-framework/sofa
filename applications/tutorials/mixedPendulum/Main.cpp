@@ -35,7 +35,7 @@ typedef sofa::core::componentmodel::behavior::MappedModel<OglTypes> OglMappedMod
 typedef sofa::defaulttype::StdRigidTypes<3,double> RigidTypes;
 typedef RigidTypes::Coord RigidCoord;
 typedef RigidTypes::Quat Quaternion;
-typedef sofa::defaulttype::StdRigidMass<3,double> RigidMass;
+typedef sofa::defaulttype::RigidMass<3,double> RigidMass;
 typedef sofa::component::mass::UniformMass<RigidTypes,RigidMass> RigidUniformMasses;
 typedef sofa::core::componentmodel::behavior::MechanicalState<RigidTypes> RigidStates;
 typedef sofa::component::MechanicalObject<RigidTypes> RigidDOFs;

@@ -265,11 +265,11 @@ public:
         return model->getMechanicalState();
     }
 
-    void resize(int size)
+    void resize(int /*size*/)
     {
     }
 
-    int addPoint(const Vector3& P, int index)
+    int addPoint(const Vector3& /*P*/, int index)
     {
         return index;
     }
@@ -428,7 +428,7 @@ public:
         {
             // add velocity visualization
             sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
-            child->addObject(visu);
+            this->child->addObject(visu);
             visu->useAlpha.setValue(true);
             visu->vscale.setValue(model->getContext()->getDt());
             sofa::component::mapping::IdentityMapping< core::Mapping< MMechanicalState , core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >* map = new sofa::component::mapping::IdentityMapping< core::Mapping< MMechanicalState , core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > > ( outmodel, visu );
@@ -442,17 +442,17 @@ public:
     int addPoint(const Vector3& P, int index)
     {
         int i = Inherit::addPoint(P, index);
-        if (!mapping)
+        if (!this->mapping)
         {
             MCollisionModel* model = this->model;
             MMechanicalState* outmodel = this->outmodel;
-            DataTypes::Coord& x = (*outmodel->getX())[i];
-            DataTypes::Deriv& v = (*outmodel->getV())[i];
+            typename DataTypes::Coord& x = (*outmodel->getX())[i];
+            typename DataTypes::Deriv& v = (*outmodel->getV())[i];
             if (model->isTransformed(index))
                 x = model->getTranslation(index) + model->getRotation(index) * P;
             else
                 x = P;
-            v = DataTypes::Deriv();
+            v = typename DataTypes::Deriv();
 
             // estimating velocity
             double gdt = model->getPrevDt(index);

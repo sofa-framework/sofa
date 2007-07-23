@@ -8,7 +8,7 @@
 namespace projects
 {
 
-bool GenerateRigid(sofa::defaulttype::RigidMass& mass, sofa::defaulttype::Vec3d& center, sofa::helper::io::Mesh* mesh);
+bool GenerateRigid(sofa::defaulttype::Rigid3Mass& mass, sofa::defaulttype::Vec3d& center, sofa::helper::io::Mesh* mesh);
 
 }
 

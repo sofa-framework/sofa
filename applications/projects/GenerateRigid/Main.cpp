@@ -33,7 +33,7 @@ int main(int argc, char** argv)
     }
 
     Vec3d center;
-    RigidMass mass;
+    Rigid3Mass mass;
 
 
     projects::GenerateRigid(mass, center, mesh);

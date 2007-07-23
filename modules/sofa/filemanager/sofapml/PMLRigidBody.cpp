@@ -351,19 +351,19 @@ void PMLRigidBody::createMass(StructuralComponent* body)
         //add uniform or diagonal mass to model
         if (massList.size() ==1)
         {
-            mass = new UniformMass<RigidTypes,RigidMass>;
-            RigidMass m(masse);
+            mass = new UniformMass<Rigid3Types,Rigid3Mass>;
+            Rigid3Mass m(masse);
             m.inertiaMatrix = iMatrix;
-            ((UniformMass<RigidTypes,RigidMass>*)mass)->setMass( m );
+            ((UniformMass<Rigid3Types,Rigid3Mass>*)mass)->setMass( m );
         }
         else
         {
-            mass = new DiagonalMass<RigidTypes,RigidMass>;
+            mass = new DiagonalMass<Rigid3Types,Rigid3Mass>;
             for (unsigned int j=0 ; j<massList.size(); j++)
             {
-                RigidMass m(massList[j]);
+                Rigid3Mass m(massList[j]);
                 m.inertiaMatrix = iMatrix;
-                ((DiagonalMass<RigidTypes,RigidMass>*)mass)->addMass( m );
+                ((DiagonalMass<Rigid3Types,Rigid3Mass>*)mass)->addMass( m );
             }
         }
     }
@@ -400,10 +400,10 @@ void PMLRigidBody::createMass(StructuralComponent* body)
             cerr<<"WARNING building "<<name<<" object : inertia matrix not properly defined."<<endl;
             return;
         }
-        mass = new UniformMass<RigidTypes,RigidMass>;
-        RigidMass m(1.0);
+        mass = new UniformMass<Rigid3Types,Rigid3Mass>;
+        Rigid3Mass m(1.0);
         m.inertiaMatrix = iMatrix;
-        ((UniformMass<RigidTypes,RigidMass>*)mass)->setMass( m );
+        ((UniformMass<Rigid3Types,Rigid3Mass>*)mass)->setMass( m );
     }
 
     if (mass)
