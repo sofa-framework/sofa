@@ -348,8 +348,13 @@ void RealGUI::init()
     m_displayComputationTime = false;
     m_exportGnuplot = false;
 
-    map_modifyDialogOpened.clear();
+
     current_Id_modifyDialog = 0;
+    map_modifyDialogOpened.clear();
+    list_object_added.clear();
+    list_object_removed.clear();
+    list_object_initial.clear();
+
 
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
     std::string object("object.txt");
@@ -424,17 +429,18 @@ void RealGUI::init()
     //We remove from the list the default Bounding box: each object has its own bounding box now.
     //We do it to preserve the correspondance between the index of the list_object and the list_object_BoundingBox
     for (int i=0; i<6; i++) list_object_BoundingBox.erase(list_object_BoundingBox.begin());
-    for (unsigned int i=0; i<list_object.size(); i++)
-    {
-        std::cout << list_object[i] << " Added with the BoundingBox: \t["
-                << list_object_BoundingBox[i*6+0] << " "
-                << list_object_BoundingBox[i*6+1] << " "
-                << list_object_BoundingBox[i*6+2] << "]\t["
-                << list_object_BoundingBox[i*6+3] << " "
-                << list_object_BoundingBox[i*6+4] << " "
-                << list_object_BoundingBox[i*6+5] << "]\n";
+    //Debug
+    // 	for (unsigned int i=0;i<list_object.size();i++)
+    // 	  {
+    // 	    std::cout << list_object[i] << " Added with the BoundingBox: \t["
+    // 		      << list_object_BoundingBox[i*6+0] << " "
+    // 		      << list_object_BoundingBox[i*6+1] << " "
+    // 		      << list_object_BoundingBox[i*6+2] << "]\t["
+    // 		      << list_object_BoundingBox[i*6+3] << " "
+    // 		      << list_object_BoundingBox[i*6+4] << " "
+    // 		      << list_object_BoundingBox[i*6+5] << "]\n";
 
-    }
+    // 	  }
     fclose(pFile);
 }
 
@@ -667,6 +673,8 @@ void RealGUI::fileOpen(const char* filename)
     current_Id_modifyDialog=0;
     map_modifyDialogOpened.clear();
 
+    list_object_added.clear();
+    list_object_removed.clear();
     //left_stack->removeWidget(viewer->getQWidget());
     //graphListener->removeChild(NULL, groot);
     //delete viewer;
@@ -758,6 +766,15 @@ void RealGUI::setScene(GNode* groot, const char* filename)
     //dumpGraph(groot, new Q3ListViewItem(graphView));
     graphListener = new GraphListenerQListView(graphView);
     graphListener->addChild(NULL, groot);
+
+    //Create the list of the object present at the beginning of the scene
+    for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
+    {
+        if (GNode *current_node = dynamic_cast< GNode *>((*it).first) )
+        {list_object_initial.push_back(current_node); list_object_initial.push_back(dynamic_cast< GNode *>(current_node->getParent()));}
+    }
+
+
     if (currentTab != TabGraph)
     {
         std::cout << "Hide Graph"<<std::endl;
@@ -1120,10 +1137,73 @@ void RealGUI::setDt(const QString& value)
 void RealGUI::resetScene()
 {
     GNode* groot = getScene();
+
+    //Hide the dialog to add a new object in the graph
+    if (dialog != NULL) dialog->hide();
+    //Hide all the dialogs to modify the graph
+    emit( newScene());
+
+    //Clear the list of modified dialog opened
+    current_Id_modifyDialog=0;
+    map_modifyDialogOpened.clear();
+
+    //**************************************************************
+    //GRAPH MANAGER
+    //Remove all the objects added
+    std::list< GNode *>::iterator it;
+    bool node_removed ;
+    for (it=list_object_added.begin(); it != list_object_added.end(); it++)
+    {
+        node_removed = false;
+
+        //Verify if they have not been removed before
+        std::list< GNode *>::iterator it_removed;
+        for (it_removed=list_object_removed.begin(); it_removed != list_object_removed.end(); it_removed++)
+        {
+            if ( (*it_removed) == (*it) ) { node_removed=true; continue;} //node already removed
+        }
+        if (node_removed) continue;
+        (*it)->getParent()->removeChild((*it));
+        graphListener->removeChild(NULL, (*it));
+        delete (*it);
+    }
+
+    list_object_added.clear();
+
+
+    //Add all the objects present at initial time
+    //Begin from the last removed item: the last one can be the parent of one removed lately in the simulation
+    it=list_object_removed.end();
+
+    while (true)
+    {
+        if ( it == list_object_removed.begin()) break;
+        --it;
+        std::list< GNode *>::iterator it_initial;
+        for (it_initial=list_object_initial.begin(); it_initial != list_object_initial.end(); it_initial++)
+        {
+            if ( (*it_initial) == (*it) )
+            {
+                it_initial++; //points to the parent of the node
+                (*it_initial)->addChild( (*it) );
+                graphListener->addObject( dynamic_cast<GNode *>(*it_initial), (core::objectmodel::BaseObject*)(*it));
+                continue;
+            }
+            //We have to increment 2 times the iterator: le list_object_initial contains first the node, then its father
+            it_initial++;
+        }
+    }
+
+    list_object_removed.clear();
+
+
+    //Reset the scene
     if (groot)
     {
         Simulation::reset(groot);
         eventNewTime();
+
+        viewer->SwitchToPresetView();
         viewer->getQWidget()->update();
     }
 }
@@ -1518,11 +1598,11 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
     if (node_clicked->getName() == item_clicked->text(0).ascii())
     {
         //The node clicked has the same name as the root, but we need to verify the pointer of the node clicked
-        node_clicked = verifyNode(node_clicked);
-        if (node_clicked == NULL) node_clicked = searchNode(viewer->getScene());
+        node_clicked = verifyNode(node_clicked, item_clicked);
+        if (node_clicked == NULL) node_clicked = searchNode(viewer->getScene(), item_clicked);
 
     }
-    else node_clicked = searchNode(viewer->getScene());
+    else node_clicked = searchNode(viewer->getScene(), item_clicked);
 
 
     QPopupMenu *contextMenu = new QPopupMenu(graphView, "ContextMenu");
@@ -1614,6 +1694,7 @@ void RealGUI::graphRemoveObject()
         {
             node_clicked->getParent()->removeChild(node_clicked);
             graphListener->removeChild(NULL, node_clicked);
+            list_object_removed.push_back(node_clicked);
         }
 
         viewer->SwitchToPresetView();
@@ -1672,7 +1753,7 @@ void RealGUI::graphModify()
 /*****************************************************************************************************************/
 //Nodes in the graph can have the same name. To find the right one, we have to verify the pointer itself.
 //We return the Nodes clicked
-GNode *RealGUI::verifyNode(GNode *node)
+GNode *RealGUI::verifyNode(GNode *node, Q3ListViewItem *item_clicked)
 {
     std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator = graphListener->items.find(node);
 
@@ -1709,7 +1790,7 @@ bool RealGUI::isErasable(core::objectmodel::Base* element)
 }
 /*****************************************************************************************************************/
 //Recursive search through the GNode graph.
-GNode *RealGUI::searchNode(GNode *node)
+GNode *RealGUI::searchNode(GNode *node, Q3ListViewItem *item_clicked)
 {
     if (node == NULL) return NULL;
 
@@ -1722,12 +1803,12 @@ GNode *RealGUI::searchNode(GNode *node)
         result = node->getChild(item_clicked->text(0).ascii());
         if ( result != NULL)
         {
-            result = verifyNode(result);
+            result = verifyNode(result, item_clicked);
             if (result != NULL)	return result;
         }
 
 
-        result = searchNode((*it));
+        result = searchNode((*it), item_clicked);
         if (result != NULL) return result;
     }
     //Nothing found
@@ -1870,6 +1951,8 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
     {
         node_clicked->addChild( new_node);
         graphListener->addObject(node_clicked, (core::objectmodel::BaseObject*)new_node);
+
+        list_object_added.push_back(new_node);
     }
 
     //Apply the Transformation

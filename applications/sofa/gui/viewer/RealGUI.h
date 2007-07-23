@@ -176,8 +176,8 @@ protected:
     void keyPressEvent ( QKeyEvent * e );
 
 
-    GNode *searchNode(GNode *node);
-    GNode *verifyNode(GNode *node);
+    GNode *searchNode(GNode *node, Q3ListViewItem *item_clicked);
+    GNode *verifyNode(GNode *node, Q3ListViewItem *item_clicked);
     bool isErasable(core::objectmodel::Base* element);
 
     bool m_dumpState;
@@ -205,13 +205,22 @@ protected:
     sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
 
 private:
-
+    //Map: Id -> Node currently modified. Used to avoid dependancies during removing actions
     std::map< int, core::objectmodel::Base* >       map_modifyDialogOpened;
+    //unique ID to pass to a modify object dialog
     int current_Id_modifyDialog;
+
+    //At initialization: list of the path to the basic objects you can add to the scene
     std::vector< std::string > list_object;
+    //Bounding Box of each object
     std::vector< float > list_object_BoundingBox;
-    /* 	  float object_BoundingBox[6]; */
+    //currently unused: scale is experimental
     float object_Scale[2];
+
+    std::list< GNode *> list_object_added;
+    std::list< GNode *> list_object_removed;
+    std::list< GNode *> list_object_initial;
+
 
     bool setViewer(const char* name);
     void addViewer();
