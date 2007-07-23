@@ -24,6 +24,7 @@
 *******************************************************************************/
 #include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
 #include <stdlib.h>
 #include <iostream>
 #include <string>
@@ -53,21 +54,14 @@ void MeshOBJ::init (std::string filename)
     FILE *f = fopen(filename.c_str(), "r");
     if (f)
     {
-        readOBJ (f);
+        readOBJ (f,filename.c_str());
         fclose(f);
     }
     else
         std::cerr << "File " << filename << " not found " << std::endl;
 }
 
-// -------------------------------------------------------------------------
-// _glmFirstPass: first pass at a Wavefront OBJ file that gets all the
-//  			  statistics of the model (such as #vertices, #normals, etc)
-//
-//  	model - properly initialized GLMmodel structure
-//  	file  - (fopen'd) file descriptor
-// --------------------------------------------------------------------------
-void MeshOBJ::readOBJ (FILE* file)
+void MeshOBJ::readOBJ (FILE* file, const char* filename)
 {
     vector< vector<int> > vertNormTexIndices;
     vector<int>vIndices, nIndices, tIndices;
@@ -121,11 +115,15 @@ void MeshOBJ::readOBJ (FILE* file)
             }
             break;
         case 'm':
+        {
             fgets(buf, sizeof(buf), file);
             sscanf(buf, "%s %s", buf, buf);
             //mtllibname = strdup(buf);
-            readMTL(buf);
-            break;
+            //fscanf(file, "%s", buf);
+            std::string mtlfile = sofa::helper::system::SetDirectory::GetRelativeFromFile(buf, filename);
+            readMTL(mtlfile.c_str());
+        }
+        break;
         case 'u':
         {
             /* eat up rest of line */
@@ -135,8 +133,9 @@ void MeshOBJ::readOBJ (FILE* file)
             vector<Material>::iterator itEnd = materials.end();
             for (; it != itEnd; it++)
             {
-                if (strcmp ((*it).name.c_str(), matName) == 0)
+                if (it->name == matName)
                 {
+                    std::cout << "Using material "<<it->name<<std::endl;
                     material = (*it);
                     material.activated = true;
                 }
@@ -226,7 +225,7 @@ void MeshOBJ::readOBJ (FILE* file)
 //    model - properly initialized GLMmodel structure
 //    name  - name of the material library
 // -----------------------------------------------------
-void MeshOBJ::readMTL(char* filename)
+void MeshOBJ::readMTL(const char* filename)
 {
     FILE* file;
     char buf[128];
@@ -288,14 +287,17 @@ void MeshOBJ::readMTL(char* filename)
                 case 'd':
                     fscanf(file, "%lf %lf %lf", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]);
                     mat->useDiffuse = true;
+                    std::cout << mat->name << " diffuse = "<<mat->diffuse[0]<<' '<<mat->diffuse[1]<<' '<<mat->diffuse[2]<<std::endl;
                     break;
                 case 's':
                     fscanf(file, "%lf %lf %lf", &mat->specular[0], &mat->specular[1], &mat->specular[2]);
                     mat->useSpecular = true;
+                    std::cout << mat->name << " specular = "<<mat->specular[0]<<' '<<mat->specular[1]<<' '<<mat->specular[2]<<std::endl;
                     break;
                 case 'a':
                     fscanf(file, "%lf %lf %lf", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]);
                     mat->useAmbient = true;
+                    std::cout << mat->name << " ambient = "<<mat->ambient[0]<<' '<<mat->ambient[1]<<' '<<mat->ambient[2]<<std::endl;
                     break;
                 default:
                     /* eat up rest of line */

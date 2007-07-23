@@ -44,8 +44,8 @@ private:
 
     std::vector<Material> materials;
 
-    void readOBJ (FILE *file);
-    void readMTL (char *filename);
+    void readOBJ (FILE *file, const char* filename);
+    void readMTL (const char *filename);
 
 public:
 

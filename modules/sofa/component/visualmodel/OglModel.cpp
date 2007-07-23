@@ -77,16 +77,27 @@ void OglModel::internalDraw()
     //Enable<GL_BLEND> blending;
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
-    if (material.useAmbient)
-        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient);
-    if (material.useDiffuse)
-        glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse);
-    if (material.useSpecular)
+    //if (material.useAmbient)
+    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, material.ambient);
+    //if (material.useDiffuse)
+    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, material.diffuse);
+    //if (material.useSpecular)
+    static const float zero[4] = { 0, 0, 0, 0};
+    if (material.useSpecular && material.shininess > 0.0001)
+    {
         glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, material.specular);
+        //if (material.useShininess)
+        glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, material.shininess);
+    }
+    else
+    {
+        glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, zero);
+        glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 1.0f);
+    }
     if (material.useEmissive)
         glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, material.emissive);
-    if (material.useShininess)
-        glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, material.shininess);
+    else
+        glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, zero);
 
     glVertexPointer (3, GL_FLOAT, 0, vertices.getData());
     glNormalPointer (GL_FLOAT, 0, vnormals.getData());

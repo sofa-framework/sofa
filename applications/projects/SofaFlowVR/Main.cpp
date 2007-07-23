@@ -952,24 +952,24 @@ public:
         return id;
     }
 
-    flowvr::ID loadSharedVertexShader(flowvr::render::ChunkRenderWriter* scene, const char* filename)
+    flowvr::ID loadSharedVertexShader(flowvr::render::ChunkRenderWriter* scene, const std::string& filename, const std::string& predefs="")
     {
-        flowvr::ID& id = prevVS[filename];
+        flowvr::ID& id = prevVS[filename+"\n"+predefs];
         if (!id)
         {
             id = mod->module->generateID();
-            scene->loadVertexShader(id, filename);
+            scene->loadVertexShader(id, filename, (predefs.empty()?NULL:predefs.c_str()));
         }
         return id;
     }
 
-    flowvr::ID loadSharedPixelShader(flowvr::render::ChunkRenderWriter* scene, const char* filename)
+    flowvr::ID loadSharedPixelShader(flowvr::render::ChunkRenderWriter* scene, const std::string& filename, const std::string& predefs="")
     {
-        flowvr::ID& id = prevPS[filename];
+        flowvr::ID& id = prevPS[filename+"\n"+predefs];
         if (!id)
         {
             id = mod->module->generateID();
-            scene->loadPixelShader(id, filename);
+            scene->loadPixelShader(id, filename, (predefs.empty()?NULL:predefs.c_str()));
         }
         return id;
     }
@@ -1286,6 +1286,12 @@ public:
         {
             *scratch = false;
             idP = addPrimitive(scene, getName().c_str());
+
+            std::string predefs;
+            bool useSpecular = material.useSpecular && material.shininess > 0.0001 && (material.specular[0] > 0.0001 || material.specular[1] > 0.0001 || material.specular[2] > 0.0001);
+            if (useSpecular)
+                predefs += "#define SPECULAR 1\n";
+
             const char* vshader;
             if (!vShader.getValue().empty())
                 vshader = vShader.getValue().c_str();
@@ -1296,20 +1302,20 @@ public:
             else
                 vshader = "shaders/obj_v.cg";
 
-            idVS = loadSharedVertexShader(scene, vshader);
+            idVS = loadSharedVertexShader(scene, vshader, predefs);
             scene->addParamID(idP, flowvr::render::ChunkPrimParam::VSHADER, "", idVS);
 
             const char* pshader;
             if (!pShader.getValue().empty())
                 pshader = pShader.getValue().c_str();
             else if (!texture.empty() && useTangent.getValue())
-                pshader = "shaders/obj_color_tangent_p.cg";
+                pshader = "shaders/obj_mat_color_tangent_p.cg";
             else if (!texture.empty())
-                pshader = "shaders/obj_color_p.cg";
+                pshader = "shaders/obj_mat_color_p.cg";
             else
-                pshader = "shaders/obj_p.cg";
+                pshader = "shaders/obj_mat_p.cg";
 
-            idPS = loadSharedPixelShader(scene, pshader);
+            idPS = loadSharedPixelShader(scene, pshader, predefs);
             scene->addParamID(idP, flowvr::render::ChunkPrimParam::PSHADER, "", idPS);
 
             if (!texture.empty())
@@ -1317,15 +1323,19 @@ public:
                 idTex = loadSharedTexture(scene,texture.c_str());
                 scene->addParamID(idP, flowvr::render::ChunkPrimParam::TEXTURE, "texcolor", idTex);
             }
-            scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "Proj", flowvr::render::ChunkPrimParam::Projection);
-            scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "ModelViewProj", flowvr::render::ChunkPrimParam::ModelViewProjection);
-            scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "ModelViewIT", flowvr::render::ChunkPrimParam::ModelView_InvTrans);
-            scene->addParamEnum(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "ModelViewT", flowvr::render::ChunkPrimParam::ModelView_Trans);
-            ftl::Vec3f light(1,1,2); light.normalize();
-            scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "lightdir", light);
-            scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "lightdir", light);
-            ftl::Vec4f color ( material.diffuse );
-            scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "color", color); //ftl::Vec4f(1, 1, 1, 0.5));
+            ftl::Vec4f ambient  ( 0.3f, 0.3f, 0.3f, 1.0f);
+            ftl::Vec3f diffuse  ( 0.6f, 0.6f, 0.6f);
+            ftl::Vec4f specular ( 0.9f, 0.9f, 0.9f, 16.0f);
+            if (material.useAmbient) for (int i=0; i<3; i++) ambient[i] = (float)material.ambient[i] * 0.5f;
+            ambient[3] = material.diffuse[3]; // alpha
+            if (material.useDiffuse) for (int i=0; i<3; i++) diffuse[i] = (float)material.diffuse[i];
+            if (material.useSpecular) for (int i=0; i<3; i++) specular[i] = (float)material.specular[i];
+            specular[3] = material.shininess;
+            //scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "color", color); //ftl::Vec4f(1, 1, 1, 0.5));
+            scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_ambient" , ambient );
+            scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_diffuse" , diffuse );
+            if (useSpecular)
+                scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_specular", specular);
 
             // add user-defined textures
             for (std::map<std::string,std::string>::const_iterator it = paramT.begin(), itend = paramT.end(); it != itend; ++it)

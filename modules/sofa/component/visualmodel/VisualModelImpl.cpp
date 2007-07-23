@@ -112,7 +112,7 @@ Material& Material::operator=(const helper::io::Mesh::Material &matLoaded)
         specular[i] = (float) matLoaded.specular[i];
         emissive[i] = 0.0;
     }
-    emissive[3] = 1.0;
+    //emissive[3] = 0.0;
     shininess = (float) matLoaded.shininess;
     name = matLoaded.name;
     useDiffuse = matLoaded.useDiffuse;
@@ -135,7 +135,7 @@ Material::Material()
     ambient[3] = 1.0;
     diffuse[3] = 1.0;
     specular[3] = 1.0;
-    emissive[3] = 1.0;
+    emissive[3] = 0.0;
 
     shininess = 45;
     name = "Default";
