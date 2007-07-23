@@ -42,20 +42,31 @@ void TetrahedronFEMForceField<CudaVec3fTypes>::reinit()
     _rotations.resize( elems.size() );
     _rotatedInitialElements.resize(elems.size());
 
+    std::vector<int> activeElems;
     for (unsigned int i=0; i<elems.size(); i++)
     {
-        Index a = elems[i][0];
-        Index b = elems[i][1];
-        Index c = elems[i][2];
-        Index d = elems[i][3];
-        computeMaterialStiffness(i,a,b,c,d);
-        initLarge(i,a,b,c,d);
+        if (!_trimgrid || _trimgrid->isCubeActive(i/6))
+        {
+            activeElems.push_back(i);
+        }
+    }
+
+    for (unsigned int i=0; i<activeElems.size(); i++)
+    {
+        int ei = activeElems[i];
+        Index a = elems[ei][0];
+        Index b = elems[ei][1];
+        Index c = elems[ei][2];
+        Index d = elems[ei][3];
+        computeMaterialStiffness(ei,a,b,c,d);
+        initLarge(ei,a,b,c,d);
     }
 
     std::map<int,int> nelems;
-    for (unsigned int i=0; i<elems.size(); i++)
+    for (unsigned int i=0; i<activeElems.size(); i++)
     {
-        const Element& e = elems[i];
+        int ei = activeElems[i];
+        const Element& e = elems[ei];
         for (unsigned int j=0; j<e.size(); j++)
             ++nelems[e[j]];
     }
@@ -70,17 +81,18 @@ void TetrahedronFEMForceField<CudaVec3fTypes>::reinit()
         v0 = nelems.begin()->first;
         nbv = nelems.rbegin()->first - v0 + 1;
     }
-    data.init(elems.size(), v0, nbv, nmax);
+    data.init(activeElems.size(), v0, nbv, nmax);
 
     nelems.clear();
-    for (unsigned int i=0; i<elems.size(); i++)
+    for (unsigned int i=0; i<activeElems.size(); i++)
     {
-        const Element& e = elems[i];
-        const Coord& a = _rotatedInitialElements[i][0];
-        const Coord& b = _rotatedInitialElements[i][1];
-        const Coord& c = _rotatedInitialElements[i][2];
-        const Coord& d = _rotatedInitialElements[i][3];
-        data.setE(i, e, a, b, c, d, _materialsStiffnesses[i], _strainDisplacements[i]);
+        int ei = activeElems[i];
+        const Element& e = elems[ei];
+        const Coord& a = _rotatedInitialElements[ei][0];
+        const Coord& b = _rotatedInitialElements[ei][1];
+        const Coord& c = _rotatedInitialElements[ei][2];
+        const Coord& d = _rotatedInitialElements[ei][3];
+        data.setE(i, e, a, b, c, d, _materialsStiffnesses[ei], _strainDisplacements[ei]);
         for (unsigned int j=0; j<e.size(); j++)
             data.setV(e[j], nelems[e[j]]++, i*e.size()+j);
     }
@@ -89,6 +101,18 @@ void TetrahedronFEMForceField<CudaVec3fTypes>::reinit()
 template <>
 void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
+    // Count active cubes in topology
+    if (_trimgrid)
+    {
+        int nactive = 0;
+        int ncubes = _trimgrid->getNbCubes();
+        for (int i=0; i<ncubes; i++)
+            if (_trimgrid->isCubeActive(i)) ++nactive;
+        if (data.elems.size() != 6*nactive)
+            reinit();
+    }
+
+
     f.resize(x.size());
     TetrahedronFEMForceFieldCuda3f_addForce(
         data.elems.size(),
