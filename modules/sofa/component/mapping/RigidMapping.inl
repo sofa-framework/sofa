@@ -105,6 +105,40 @@ void RigidMapping<BasicMapping>::load(const char *filename)
 }
 
 template <class BasicMapping>
+int RigidMapping<BasicMapping>::addPoint(const Coord& c)
+{
+    int i = points.size();
+    points.push_back(c);
+    return i;
+}
+
+template <class BasicMapping>
+int RigidMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
+{
+    int i = points.size();
+    points.push_back(c);
+    if (!repartition.getValue().empty())
+    {
+        repartition.beginEdit()->push_back(indexFrom);
+        repartition.endEdit();
+    }
+    else if (!i)
+    {
+        index.setValue(indexFrom);
+    }
+    else if (index.getValue() != indexFrom)
+    {
+        sofa::helper::vector<unsigned int>& rep = *repartition.beginEdit();
+        rep.clear();
+        rep.reserve(i+1);
+        rep.insert(rep.end(),index.getValue(),i);
+        rep.push_back(indexFrom);
+        repartition.endEdit();
+    }
+    return i;
+}
+
+template <class BasicMapping>
 void RigidMapping<BasicMapping>::init()
 {
     if (this->points.empty() && this->toModel!=NULL)
@@ -122,6 +156,8 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::clear()
 {
     this->points.clear();
+    this->repartition.beginEdit()->clear();
+    this->repartition.endEdit();
 }
 
 template <class BasicMapping>

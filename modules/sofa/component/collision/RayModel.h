@@ -72,6 +72,7 @@ protected:
 
     std::set<BaseRayContact*> contacts;
 public:
+    typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef Ray Element;
     friend class Ray;

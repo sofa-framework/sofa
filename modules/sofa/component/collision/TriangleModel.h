@@ -87,12 +87,14 @@ protected:
     bool needsUpdate;
     void updateFromTopology();
 public:
+    typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;
     typedef DataTypes::VecDeriv VecDeriv;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Triangle Element;
+    typedef topology::MeshTopology Topology;
     friend class Triangle;
 
     enum TriangleFlag

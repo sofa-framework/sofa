@@ -71,12 +71,16 @@ public:
 
     bool testIntersection(Cube& ,Cube&);
     bool testIntersection(Point&, Point&);
+    template<class Sphere>
     bool testIntersection(Sphere&, Point&);
+    template<class Sphere>
     bool testIntersection(Sphere&, Sphere&);
     bool testIntersection(Line&, Point&);
+    template<class Sphere>
     bool testIntersection(Line&, Sphere&);
     bool testIntersection(Line&, Line&);
     bool testIntersection(Triangle&, Point&);
+    template<class Sphere>
     bool testIntersection(Triangle&, Sphere&);
     bool testIntersection(Triangle&, Line&);
     bool testIntersection(Triangle&, Triangle&);
@@ -84,12 +88,16 @@ public:
 
     int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
     int computeIntersection(Point&, Point&, DetectionOutputVector&);
+    template<class Sphere>
     int computeIntersection(Sphere&, Point&, DetectionOutputVector&);
+    template<class Sphere>
     int computeIntersection(Sphere&, Sphere&, DetectionOutputVector&);
     int computeIntersection(Line&, Point&, DetectionOutputVector&);
+    template<class Sphere>
     int computeIntersection(Line&, Sphere&, DetectionOutputVector&);
     int computeIntersection(Line&, Line&, DetectionOutputVector&);
     int computeIntersection(Triangle&, Point&, DetectionOutputVector&);
+    template<class Sphere>
     int computeIntersection(Triangle&, Sphere&, DetectionOutputVector&);
     int computeIntersection(Triangle&, Line&, DetectionOutputVector&);
     int computeIntersection(Triangle&, Triangle&, DetectionOutputVector&);

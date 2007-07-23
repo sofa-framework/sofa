@@ -42,7 +42,7 @@ using simulation::tree::GNode;
 
 template < class TCollisionModel1, class TCollisionModel2 >
 BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), mapper1(model1), mapper2(model2), ff(NULL), parent(NULL)
+    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(NULL), parent(NULL)
 {
 }
 
@@ -73,8 +73,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
     const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
-        MechanicalState1* mstate1 = mapper1.createMapping();
-        MechanicalState2* mstate2 = mapper2.createMapping();
+        MechanicalState1* mstate1 = mapper1.createMapping(model1);
+        MechanicalState2* mstate2 = mapper2.createMapping(model2);
         ff = new ResponseForceField(mstate1,mstate2);
     }
 

@@ -20,7 +20,7 @@ using simulation::tree::GNode;
 
 template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
-    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), mapper1(model1), mapper2(model2), c(NULL), parent(NULL)
+    : model1(model1), model2(model2), intersectionMethod(intersectionMethod), c(NULL), parent(NULL)
 {
     mu = 0.0;
 }
@@ -64,9 +64,9 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Det
     if (c==NULL)
     {
         // Get the mechanical model from mapper1 to fill the constraint vector
-        MechanicalState1* mmodel1 = mapper1.createMapping();
+        MechanicalState1* mmodel1 = mapper1.createMapping(model1);
         // Get the mechanical model from mapper2 to fill the constraints vector
-        MechanicalState2* mmodel2 = mapper2.createMapping();
+        MechanicalState2* mmodel2 = mapper2.createMapping(model2);
         c = new constraint::UnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
     }
 

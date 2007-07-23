@@ -75,12 +75,14 @@ protected:
     int meshRevision;
     bool updateFromTopology();
 public:
+    typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;
     typedef DataTypes::VecDeriv VecDeriv;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Line Element;
+    typedef MeshTopology Topology;
     friend class Line;
 
     LineModel();

@@ -592,11 +592,11 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
 // Specialization for rigids
 template <>
 inline void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
-        void* , vector<RigidMass> &);
+        void* , vector<Rigid3dMass> &);
 
 template <>
 inline void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
-        void* , vector<RigidMass> &);
+        void* , vector<Rigid3dMass> &);
 
 template <>
 double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x );

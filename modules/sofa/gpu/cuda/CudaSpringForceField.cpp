@@ -5,6 +5,20 @@
 namespace sofa
 {
 
+namespace component
+{
+
+namespace forcefield
+{
+
+template class SpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class StiffSpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+template class MeshSpringForceField<sofa::gpu::cuda::CudaVec3fTypes>;
+
+} // namespace forcefield
+
+} // namespace component
+
 namespace gpu
 {
 
@@ -32,6 +46,7 @@ int TriangleBendingSpringsCudaClass = core::RegisterObject("Supports GPU-side co
 int QuadBendingSpringsCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::forcefield::QuadBendingSprings<CudaVec3fTypes> >()
         ;
+
 
 } // namespace cuda
 

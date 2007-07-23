@@ -80,6 +80,9 @@ public:
     {
     }
 
+    int addPoint(const Coord& c);
+    int addPoint(const Coord& c, int indexFrom);
+
     void init();
 
     void parse(core::objectmodel::BaseObjectDescription* arg)

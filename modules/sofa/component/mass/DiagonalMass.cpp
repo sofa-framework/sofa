@@ -112,13 +112,13 @@ double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoo
 
 template <>
 void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
-        void* , vector<RigidMass> &)
+        void* , vector<Rigid3dMass> &)
 {
 }
 
 template <>
 void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
-        void* , vector<RigidMass> &)
+        void* , vector<Rigid3dMass> &)
 {
 }
 

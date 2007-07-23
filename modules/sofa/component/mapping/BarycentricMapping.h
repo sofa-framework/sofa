@@ -78,9 +78,13 @@ public:
     virtual void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 };
 
+/// Template class for barycentric mapping topology-specific mappers
+template<class Topology, class In, class Out>
+class TopologyBarycentricMapper;
+
 /// Class allowing barycentric mapping computation on a RegularGridTopology
 template<class In, class Out>
-class RegularGridMapper : public BarycentricMapper<In,Out>
+class TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> : public BarycentricMapper<In,Out>
 {
 public:
     typedef BarycentricMapper<In,Out> Inherit;
@@ -91,7 +95,7 @@ protected:
     std::vector<CubeData> map;
     topology::RegularGridTopology* topology;
 public:
-    RegularGridMapper(topology::RegularGridTopology* topology) : topology(topology)
+    TopologyBarycentricMapper(topology::RegularGridTopology* topology) : topology(topology)
     {}
 
     void clear(int reserve=0);
@@ -109,7 +113,7 @@ public:
 
 /// Class allowing barycentric mapping computation on a MeshTopology
 template<class In, class Out>
-class MeshMapper : public BarycentricMapper<In,Out>
+class TopologyBarycentricMapper<topology::MeshTopology, In, Out> : public BarycentricMapper<In,Out>
 {
 public:
     typedef BarycentricMapper<In,Out> Inherit;
@@ -125,7 +129,7 @@ protected:
     topology::MeshTopology* topology;
 
 public:
-    MeshMapper(topology::MeshTopology* topology) : topology(topology)
+    TopologyBarycentricMapper(topology::MeshTopology* topology) : topology(topology)
     {}
 
     void clear(int reserve3d=0, int reserve2d=0, int reserve1d=0);
@@ -179,6 +183,8 @@ public:
 protected:
 
     typedef BarycentricMapper<InDataTypes,OutDataTypes> Mapper;
+    typedef TopologyBarycentricMapper<topology::MeshTopology, InDataTypes, OutDataTypes> MeshMapper;
+    typedef TopologyBarycentricMapper<topology::RegularGridTopology, InDataTypes, OutDataTypes> RegularGridMapper;
 
     Mapper* mapper;
 

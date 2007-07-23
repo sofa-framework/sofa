@@ -79,24 +79,24 @@ template class BarycentricMapping< Mapping< MechanicalState<Vec3dTypes>, MappedM
 template class BarycentricMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
 
 // MeshMapper
-template class MeshMapper< Vec3dTypes, Vec3dTypes >;
-template class MeshMapper< Vec3fTypes, Vec3fTypes >;
-template class MeshMapper< Vec3dTypes, Vec3fTypes >;
-template class MeshMapper< Vec3fTypes, Vec3dTypes >;
-template class MeshMapper< Vec3dTypes, ExtVec3dTypes >;
-template class MeshMapper< Vec3fTypes, ExtVec3fTypes >;
-template class MeshMapper< Vec3dTypes, ExtVec3fTypes >;
-template class MeshMapper< Vec3fTypes, ExtVec3dTypes >;
+template class TopologyBarycentricMapper<topology::MeshTopology, Vec3dTypes, Vec3dTypes >;
+template class TopologyBarycentricMapper<topology::MeshTopology, Vec3fTypes, Vec3fTypes >;
+template class TopologyBarycentricMapper<topology::MeshTopology, Vec3dTypes, Vec3fTypes >;
+template class TopologyBarycentricMapper<topology::MeshTopology, Vec3fTypes, Vec3dTypes >;
+template class TopologyBarycentricMapper<topology::MeshTopology, Vec3dTypes, ExtVec3dTypes >;
+template class TopologyBarycentricMapper<topology::MeshTopology, Vec3fTypes, ExtVec3fTypes >;
+template class TopologyBarycentricMapper<topology::MeshTopology, Vec3dTypes, ExtVec3fTypes >;
+template class TopologyBarycentricMapper<topology::MeshTopology, Vec3fTypes, ExtVec3dTypes >;
 
 // RegularGridMapper
-template class RegularGridMapper< Vec3dTypes, Vec3dTypes >;
-template class RegularGridMapper< Vec3fTypes, Vec3fTypes >;
-template class RegularGridMapper< Vec3dTypes, Vec3fTypes >;
-template class RegularGridMapper< Vec3fTypes, Vec3dTypes >;
-template class RegularGridMapper< Vec3dTypes, ExtVec3dTypes >;
-template class RegularGridMapper< Vec3fTypes, ExtVec3fTypes >;
-template class RegularGridMapper< Vec3dTypes, ExtVec3fTypes >;
-template class RegularGridMapper< Vec3fTypes, ExtVec3dTypes >;
+template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3dTypes, Vec3dTypes >;
+template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3fTypes, Vec3fTypes >;
+template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3dTypes, Vec3fTypes >;
+template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3fTypes, Vec3dTypes >;
+template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3dTypes, ExtVec3dTypes >;
+template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3fTypes, ExtVec3fTypes >;
+template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3dTypes, ExtVec3fTypes >;
+template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3fTypes, ExtVec3dTypes >;
 
 } // namespace mapping
 

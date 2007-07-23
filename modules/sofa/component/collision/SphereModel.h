@@ -41,38 +41,58 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class SphereModel;
+template<class DataTypes>
+class TSphereModel;
 
-class Sphere : public core::TCollisionElementIterator<SphereModel>
+template<class DataTypes>
+class TSphere;
+
+typedef TSphereModel<Vec3Types> SphereModel;
+typedef TSphere<Vec3Types> Sphere;
+
+template<class DataTypes>
+class TSphere : public core::TCollisionElementIterator<TSphereModel<DataTypes> >
 {
 public:
-    Sphere(SphereModel* model, int index);
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    TSphere(TSphereModel<DataTypes>* model, int index);
 
-    explicit Sphere(core::CollisionElementIterator& i);
+    explicit TSphere(core::CollisionElementIterator& i);
 
-    const Vector3& center() const;
+    const Coord& center() const;
 
-    const Vector3& v() const;
+    const Deriv& v() const;
 
-    double r() const;
+    Real r() const;
 };
 
-class SphereModel : public component::MechanicalObject<Vec3Types>, public core::CollisionModel, public core::VisualModel
+template<class TDataTypes>
+class TSphereModel : public component::MechanicalObject<TDataTypes>, public core::CollisionModel, public core::VisualModel
 {
+public:
+    typedef TDataTypes InDataTypes;
+    typedef component::MechanicalObject<InDataTypes> Inherit;
+    typedef typename InDataTypes::Real Real;
+    typedef TDataTypes DataTypes;
+    typedef TSphere<DataTypes> Element;
+
 protected:
-    std::vector<double> radius;
+    std::vector<Real> radius;
 
     DataField<double> defaultRadius;
 
     class Loader;
 public:
-    typedef Vec3Types DataTypes;
-    typedef Sphere Element;
-    typedef component::MechanicalObject<Vec3Types> Inherit;
+    typedef TDataTypes InDataTypes;
+    typedef TDataTypes DataTypes;
+    typedef TSphere<DataTypes> Element;
+    typedef component::MechanicalObject<InDataTypes> Inherit;
 
-    friend class Sphere;
+    friend class Element;
 
-    SphereModel(double radius = 1.0);
+    TSphereModel(double radius = 1.0);
 
     int addSphere(const Vector3& pos, double radius);
     void setSphere(int index, const Vector3& pos, double radius);
@@ -80,10 +100,12 @@ public:
     virtual bool load(const char* filename);
     void applyScale (const double s);
 
+    sofa::core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this; }
+
     // -- CollisionModel interface
 
     // remove ambiguity
-    int getSize() const { return Inherit::getSize(); }
+    int getSize() const { return this->Inherit::getSize(); }
 
     virtual void resize(int size);
 
@@ -102,28 +124,33 @@ public:
     void update() { }
 };
 
-inline Sphere::Sphere(SphereModel* model, int index)
-    : core::TCollisionElementIterator<SphereModel>(model, index)
+template<class TDataTypes>
+inline TSphere<TDataTypes>::TSphere(TSphereModel<TDataTypes>* model, int index)
+    : core::TCollisionElementIterator<TSphereModel<TDataTypes> >(model, index)
 {}
 
-inline Sphere::Sphere(core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<SphereModel>(static_cast<SphereModel*>(i.getCollisionModel()), i.getIndex())
+template<class TDataTypes>
+inline TSphere<TDataTypes>::TSphere(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<TSphereModel<TDataTypes> >(static_cast<TSphereModel<TDataTypes>*>(i.getCollisionModel()), i.getIndex())
 {
 }
 
-inline const Vector3& Sphere::center() const
+template<class TDataTypes>
+inline const typename TDataTypes::Coord& TSphere<TDataTypes>::center() const
 {
-    return (*model->getX())[index];
+    return (*this->model->getX())[index];
 }
 
-inline const Vector3& Sphere::v() const
+template<class TDataTypes>
+inline const typename TDataTypes::Deriv& TSphere<TDataTypes>::v() const
 {
-    return (*model->getV())[index];
+    return (*this->model->getV())[index];
 }
 
-inline double Sphere::r() const
+template<class TDataTypes>
+inline typename TDataTypes::Real TSphere<TDataTypes>::r() const
 {
-    return model->radius[index];
+    return this->model->radius[index];
 }
 
 } // namespace collision

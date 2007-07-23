@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_H
 
 #include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
@@ -52,21 +53,29 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-template < class TCollisionModel >
+/// This class will be specialized to whatever mapper is required
+template < class TCollisionModel, class DataTypes = typename TCollisionModel::DataTypes >
+class ContactMapper;
+
+/// Base class for all mappers using BarycentricMapping
+template < class TCollisionModel, class DataTypes >
 class BarycentricContactMapper
 {
 public:
     typedef TCollisionModel MCollisionModel;
-    typedef core::componentmodel::behavior::MechanicalState<typename MCollisionModel::DataTypes> MMechanicalState;
-    typedef component::MechanicalObject<typename MCollisionModel::DataTypes> MMechanicalObject;
-    typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping< MMechanicalState, MMechanicalState > > MMapping;
-    typedef mapping::MeshMapper<typename MCollisionModel::DataTypes, typename MCollisionModel::DataTypes> MeshMapper;
+    typedef typename MCollisionModel::InDataTypes InDataTypes;
+    typedef typename MCollisionModel::Topology InTopology;
+    typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
+    typedef component::MechanicalObject<DataTypes> MMechanicalObject;
+    typedef mapping::BarycentricMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    typedef mapping::TopologyBarycentricMapper<InTopology,InDataTypes, DataTypes> MMapper;
     MCollisionModel* model;
     MMapping* mapping;
-    MeshMapper* mapper;
+    MMapper* mapper;
 
-    BarycentricContactMapper(MCollisionModel* model)
-        : model(model), mapping(NULL), mapper(NULL)
+    BarycentricContactMapper()
+        : model(NULL), mapping(NULL), mapper(NULL)
     {
     }
 
@@ -88,8 +97,9 @@ public:
         }
     }
 
-    MMechanicalState* createMapping()
+    MMechanicalState* createMapping(MCollisionModel* model)
     {
+        this->model = model;
         simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
         if (parent==NULL)
         {
@@ -98,7 +108,7 @@ public:
         }
         simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
         MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-        mapper = new MeshMapper(model->getTopology());
+        mapper = new MMapper(model->getTopology());
         mapping = new MMapping(model->getMechanicalState(), mstate, mapper); child->addObject(mapping);
         return mstate;
     }
@@ -111,8 +121,6 @@ public:
             mapping->getMechTo()->resize(size);
         }
     }
-
-    int addPoint(const Vector3& P, int index);
 
     void update()
     {
@@ -128,72 +136,122 @@ public:
     }
 };
 
-template<>
-inline int BarycentricContactMapper<LineModel>::addPoint(const Vector3& P, int index)
-{
-    return mapper->createPointInLine(P, index, model->getMechanicalState()->getX());
-}
-
-template<>
-inline int BarycentricContactMapper<TriangleModel>::addPoint(const Vector3& P, int index)
-{
-    if (index < model->getTopology()->getNbTriangles())
-        return mapper->createPointInTriangle(P, index, model->getMechanicalState()->getX());
-    else
-        return mapper->createPointInQuad(P, (index - model->getTopology()->getNbTriangles())/2, model->getMechanicalState()->getX());
-}
-
-template<>
-class BarycentricContactMapper<PointModel>
+/// Mapper for LineModel
+template<class DataTypes>
+class ContactMapper<LineModel, DataTypes> : public BarycentricContactMapper<LineModel, DataTypes>
 {
 public:
-    typedef PointModel MCollisionModel;
-    typedef core::componentmodel::behavior::MechanicalState<MCollisionModel::DataTypes> MMechanicalState;
-    MCollisionModel* model;
+    int addPoint(const Vector3& P, int index)
+    {
+        return this->mapper->createPointInLine(P, index, this->model->getMechanicalState()->getX());
+    }
 
-    BarycentricContactMapper(MCollisionModel* model)
-        : model(model)
+};
+
+/// Mapper for TriangleModel
+template<class DataTypes>
+class ContactMapper<TriangleModel, DataTypes> : public BarycentricContactMapper<TriangleModel, DataTypes>
+{
+public:
+    int addPoint(const Vector3& P, int index)
+    {
+        int nbt = this->model->getTopology()->getNbTriangles();
+        if (index < nbt)
+            return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
+        else
+            return this->mapper->createPointInQuad(P, (index - nbt)/2, this->model->getMechanicalState()->getX());
+    }
+};
+
+/// Base class for IdentityMapping based mappers
+template<class TCollisionModel, class DataTypes>
+class IdentityContactMapper
+{
+public:
+    typedef TCollisionModel MCollisionModel;
+    typedef typename MCollisionModel::InDataTypes InDataTypes;
+    typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
+    typedef component::MechanicalObject<DataTypes> MMechanicalObject;
+    typedef mapping::IdentityMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    MCollisionModel* model;
+    MMapping* mapping;
+
+    IdentityContactMapper()
+        : model(NULL), mapping(NULL)
     {
     }
 
     void cleanup()
     {
+        if (mapping!=NULL)
+        {
+            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+            if (parent!=NULL)
+            {
+                simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
+                child->removeObject(mapping->getTo());
+                child->removeObject(mapping);
+                parent->removeChild(child);
+                delete mapping->getTo();
+                delete mapping;
+                delete child;
+            }
+        }
     }
 
-    MMechanicalState* createMapping()
+    MMechanicalState* createMapping(MCollisionModel* model)
     {
-        return model->getMechanicalState();
+        this->model = model;
+        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+        if (parent==NULL)
+        {
+            std::cerr << "ERROR: IdentityContactMapper only works for scenegraph scenes.\n";
+            return NULL;
+        }
+        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+        MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
+        mapping = new MMapping(model->getMechanicalState(), mstate); child->addObject(mapping);
+        return mstate;
     }
 
-    void resize(int /*size*/)
+    void resize(int size)
     {
     }
 
-    int addPoint(const Vector3& /*P*/, int index)
+    int addPoint(const Vector3& P, int index)
     {
         return index;
     }
 
     void update()
     {
+        if (mapping!=NULL)
+        {
+            mapping->updateMapping();
+        }
     }
 
-    double radius(const Point& /*e*/)
+    double radius(const typename TCollisionModel::Element& /*e*/)
     {
         return 0.0;
     }
 };
 
-template <>
-class BarycentricContactMapper<SphereTreeModel>
+/// Specialization of IdentityContactMapper when mapping to the same DataTypes, as no mapping is required in this case
+template<class TCollisionModel>
+class IdentityContactMapper<TCollisionModel, typename TCollisionModel::InDataTypes>
 {
 public:
-    typedef SphereTreeModel MCollisionModel;
-    typedef core::componentmodel::behavior::MechanicalState<MCollisionModel::DataTypes> MMechanicalState;
+    typedef TCollisionModel MCollisionModel;
+    typedef typename MCollisionModel::InDataTypes InDataTypes;
+    typedef typename MCollisionModel::InDataTypes DataTypes;
+    typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
     MCollisionModel* model;
 
-    BarycentricContactMapper(MCollisionModel* model)
-        : model(model)
+    IdentityContactMapper()
+        : model(NULL)
     {
     }
 
@@ -201,16 +259,17 @@ public:
     {
     }
 
-    MMechanicalState* createMapping()
+    MMechanicalState* createMapping(MCollisionModel* model)
     {
-        return model;
+        this->model = model;
+        return model->getMechanicalState();
     }
 
-    void resize(int /*size*/)
+    void resize(int size)
     {
     }
 
-    int addPoint(const Vector3& /*P*/, int index)
+    int addPoint(const Vector3& P, int index)
     {
         return index;
     }
@@ -219,71 +278,60 @@ public:
     {
     }
 
+    double radius(const typename TCollisionModel::Element& /*e*/)
+    {
+        return 0.0;
+    }
+};
+
+/// Mapper for PointModel
+template<class DataTypes>
+class ContactMapper<PointModel, DataTypes> : public IdentityContactMapper<PointModel, DataTypes>
+{
+public:
+};
+
+/// Mapper for SphereModel
+template<class InDataTypes, class DataTypes>
+class ContactMapper<TSphereModel<InDataTypes>, DataTypes> : public IdentityContactMapper<TSphereModel<InDataTypes>, DataTypes>
+{
+public:
+    double radius(const TSphere<InDataTypes>& e)
+    {
+        return e.r();
+    }
+};
+
+/// Mapper for SphereTreeModel
+template<class DataTypes>
+class ContactMapper<SphereTreeModel, DataTypes> : public IdentityContactMapper<SphereTreeModel, DataTypes>
+{
+public:
     double radius(const SingleSphere& e)
     {
         return e.r();
     }
 };
 
-
-template <>
-class BarycentricContactMapper<SphereModel>
+/// Base class for all mappers using RigidMapping
+template < class TCollisionModel, class DataTypes >
+class RigidContactMapper
 {
 public:
-    typedef SphereModel MCollisionModel;
-    typedef core::componentmodel::behavior::MechanicalState<MCollisionModel::DataTypes> MMechanicalState;
-    MCollisionModel* model;
-
-    BarycentricContactMapper(MCollisionModel* model)
-        : model(model)
-    {
-    }
-
-    void cleanup()
-    {
-    }
-
-    MMechanicalState* createMapping()
-    {
-        return model;
-    }
-
-    void resize(int /*size*/)
-    {
-    }
-
-    int addPoint(const Vector3& /*P*/, int index)
-    {
-        return index;
-    }
-
-    void update()
-    {
-    }
-
-    double radius(const Sphere& e)
-    {
-        return e.r();
-    }
-};
-
-template <>
-class BarycentricContactMapper<RigidDistanceGridCollisionModel>
-{
-public:
-    typedef RigidDistanceGridCollisionModel MCollisionModel;
-    typedef sofa::defaulttype::Vec3Types DataTypes;
-    typedef sofa::core::componentmodel::behavior::MechanicalState<Rigid3Types> InMechanicalState;
-    typedef sofa::core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
-    typedef sofa::component::MechanicalObject<DataTypes> MMechanicalObject;
-    typedef mapping::RigidMapping<core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    typedef TCollisionModel MCollisionModel;
+    typedef typename MCollisionModel::InDataTypes InDataTypes;
+    typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
+    typedef component::MechanicalObject<DataTypes> MMechanicalObject;
+    typedef mapping::RigidMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
     MCollisionModel* model;
     simulation::tree::GNode* child;
     MMapping* mapping;
     MMechanicalState* outmodel;
     int nbp;
-    BarycentricContactMapper(MCollisionModel* model)
-        : model(model), child(NULL), mapping(NULL), outmodel(NULL), nbp(0)
+
+    RigidContactMapper()
+        : model(NULL), child(NULL), mapping(NULL), outmodel(NULL), nbp(0)
     {
     }
 
@@ -292,104 +340,128 @@ public:
         if (child!=NULL)
         {
             simulation::tree::Simulation::unload(child);
-            //child->removeObject(outmodel);
-            //if (mapping)
-            //{
-            //	child->removeObject(mapping);
-            //	delete mapping;
-            //}
-            //parent->removeChild(child);
-            //delete outmodel;
-            //delete child;
         }
     }
 
-    MMechanicalState* createMapping()
+    MMechanicalState* createMapping(MCollisionModel* model)
     {
-        InMechanicalState* instate = model->getRigidModel();
+        this->model = model;
+        InMechanicalState* instate = model->getMechanicalState();
         if (instate!=NULL)
         {
             simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(instate->getContext());
             if (parent==NULL)
             {
-                std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
+                std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
                 return NULL;
             }
             child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
             outmodel = new MMechanicalObject; child->addObject(outmodel);
-            mapping = new MMapping(model->getRigidModel(), outmodel); child->addObject(mapping);
-            return outmodel;
+            mapping = new MMapping(instate, outmodel); child->addObject(mapping);
         }
         else
         {
             simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
             if (parent==NULL)
             {
-                std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
+                std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
                 return NULL;
             }
             child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
             outmodel = new MMechanicalObject; child->addObject(outmodel);
             mapping = NULL;
+        }
+        return outmodel;
+    }
 
+    void resize(int size)
+    {
+        if (mapping!=NULL)
+            mapping->clear();
+        if (outmodel!=NULL)
+            outmodel->resize(size);
+        nbp = 0;
+    }
+
+    int addPoint(const Vector3& P, int index)
+    {
+        int i = nbp++;
+        if ((int)outmodel->getX()->size() <= i)
+            outmodel->resize(i+1);
+        if (mapping)
+        {
+            i = mapping->addPoint(P,index);
+        }
+        else
+        {
+            (*outmodel->getX())[i] = P;
+        }
+        return i;
+    }
+
+    void update()
+    {
+        if (mapping!=NULL)
+        {
+            mapping->updateMapping();
+        }
+    }
+
+    double radius(const typename TCollisionModel::Element& /*e*/)
+    {
+        return 0.0;
+    }
+};
+
+/// Mapper for RigidDistanceGridCollisionModel
+template <class DataTypes>
+class ContactMapper<RigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes>
+{
+public:
+    typedef RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes> Inherit;
+    typedef typename Inherit::MMechanicalState MMechanicalState;
+    typedef typename Inherit::MCollisionModel MCollisionModel;
+    MMechanicalState* createMapping(MCollisionModel* model)
+    {
+        MMechanicalState* outmodel = Inherit::createMapping(model);
+        if (this->child!=NULL && this->mapping==NULL)
+        {
             // add velocity visualization
             sofa::component::visualmodel::DrawV* visu = new sofa::component::visualmodel::DrawV;
             child->addObject(visu);
             visu->useAlpha.setValue(true);
             visu->vscale.setValue(model->getContext()->getDt());
             sofa::component::mapping::IdentityMapping< core::Mapping< MMechanicalState , core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >* map = new sofa::component::mapping::IdentityMapping< core::Mapping< MMechanicalState , core::componentmodel::behavior::MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > > ( outmodel, visu );
-            child->addObject(map);
+            this->child->addObject(map);
             visu->init();
             map->init();
-
-
-
-            return outmodel;
         }
-    }
-
-    void resize(int size)
-    {
-        if (mapping!=NULL)
-        {
-            mapping->clear();
-        }
-        if (outmodel!=NULL)
-        {
-            outmodel->resize(size);
-        }
-        nbp = 0;
+        return outmodel;
     }
 
     int addPoint(const Vector3& P, int index)
     {
-        int i = nbp++; //outmodel->getX()->size();
-        if ((int)outmodel->getX()->size() <= i)
-            outmodel->resize(i+1);
-        if (mapping)
+        int i = Inherit::addPoint(P, index);
+        if (!mapping)
         {
-            mapping->index.setValue(index);
-            (*outmodel->getX())[i] = P;
-        }
-        else
-        {
+            MCollisionModel* model = this->model;
+            MMechanicalState* outmodel = this->outmodel;
             DataTypes::Coord& x = (*outmodel->getX())[i];
             DataTypes::Deriv& v = (*outmodel->getV())[i];
             if (model->isTransformed(index))
-            {
-                x = model->getTranslation(index) + model->getRotation() * P;
-                v = (x - (model->getPrevTranslation(index) + model->getPrevRotation() * P)) * (1.0/model->getContext()->getDt());
-            }
+                x = model->getTranslation(index) + model->getRotation(index) * P;
             else
-            {
                 x = P;
-                v = DataTypes::Deriv();
-            }
+            v = DataTypes::Deriv();
 
             // estimating velocity
             double gdt = model->getPrevDt(index);
             if (gdt > 0.000001)
             {
+                if (model->isTransformed(index))
+                {
+                    v = (x - (model->getPrevTranslation(index) + model->    getPrevRotation(index) * P)) * (1.0/gdt);
+                }
                 DistanceGrid* prevGrid = model->getPrevGrid(index);
                 //DistanceGrid* grid = model->getGrid(index);
                 //if (prevGrid != NULL && prevGrid != grid && prevGrid->inGrid(P))
@@ -405,113 +477,27 @@ public:
                     }
                 }
             }
-            (*outmodel->getV())[i] = v;
         }
         return i;
     }
-
-    void update()
-    {
-        if (mapping!=NULL)
-        {
-            mapping->init();
-            mapping->updateMapping();
-        }
-    }
-
-    double radius(const MCollisionModel::Element& /*e*/)
-    {
-        return 0.0;
-    }
 };
 
-template <>
-class BarycentricContactMapper<FFDDistanceGridCollisionModel>
+/// Mapper for FFDDistanceGridCollisionModel
+template <class DataTypes>
+class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public BarycentricContactMapper<FFDDistanceGridCollisionModel,DataTypes>
 {
 public:
-    typedef FFDDistanceGridCollisionModel MCollisionModel;
-    typedef sofa::defaulttype::Vec3Types DataTypes;
-    typedef sofa::core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
-    typedef sofa::component::MechanicalObject<DataTypes> MMechanicalObject;
-    typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping< MMechanicalState, MMechanicalState > > MMapping;
-    typedef mapping::RegularGridMapper<DataTypes, DataTypes> MMapper;
-    MCollisionModel* model;
-    simulation::tree::GNode* child;
-    MMapping* mapping;
-    MMapper* mapper;
-
-    BarycentricContactMapper(MCollisionModel* model)
-        : model(model), child(NULL), mapping(NULL), mapper(NULL)
-    {
-    }
-
-    void cleanup()
-    {
-        if (child!=NULL)
-        {
-            simulation::tree::Simulation::unload(child);
-            //simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
-            //if (parent!=NULL)
-            //{
-            //	simulation::tree::GNode* child = dynamic_cast<simulation::tree::GNode*>(mapping->getContext());
-            //	child->removeObject(mapping->getTo());
-            //	child->removeObject(mapping);
-            //	parent->removeChild(child);
-            //	delete mapping->getTo();
-            //	delete mapping;
-            //	delete child;
-            //}
-        }
-    }
-
-    MMechanicalState* createMapping()
-    {
-        simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getDeformModel()->getContext());
-        if (parent==NULL)
-        {
-            std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
-            return NULL;
-        }
-        child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
-        MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-        mapper = new MMapper(model->getDeformGrid());
-        mapping = new MMapping(model->getDeformModel(), mstate, mapper); child->addObject(mapping);
-        return mstate;
-    }
-
-    void resize(int size)
-    {
-        if (mapping!=NULL)
-        {
-            mapper->clear();
-            mapping->getMechTo()->resize(size);
-        }
-    }
-
     int addPoint(const Vector3& P, int index)
     {
         Vector3 bary;
-        int elem = model->getDeformCube(index).elem; //getDeformGrid()->findCube(P,bary[0],bary[1],bary[2]);
-        bary = model->getDeformCube(index).baryCoords(P);
-        if (elem == -1)
-        {
-            std::cerr<<"WARNING: BarycentricContactMapper from FFDDistanceGridCollisionModel on point no within any the FFD grid."<<std::endl;
-            elem = model->getDeformGrid()->findNearestCube(P,bary[0],bary[1],bary[2]);
-        }
-        return mapper->addPointInCube(elem,bary.ptr());
-    }
-
-    void update()
-    {
-        if (mapping!=NULL)
-        {
-            mapping->updateMapping();
-        }
-    }
-
-    double radius(const MCollisionModel::Element& /*e*/)
-    {
-        return 0.0;
+        int elem = this->model->getDeformCube(index).elem; //getDeformGrid()->findCube(P,bary[0],bary[1],bary[2]);
+        bary = this->model->getDeformCube(index).baryCoords(P);
+        //if (elem == -1)
+        //{
+        //    std::cerr<<"WARNING: BarycentricContactMapper from FFDDistanceGridCollisionModel on point no within any the FFD grid."<<std::endl;
+        //    elem = model->getDeformGrid()->findNearestCube(P,bary[0],bary[1],bary[2]);
+        //}
+        return this->mapper->addPointInCube(elem,bary.ptr());
     }
 };
 

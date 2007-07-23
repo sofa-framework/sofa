@@ -22,8 +22,11 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/component/collision/SphereModel.inl>
-#include <sofa/core/ObjectFactory.h>
+#ifndef SOFA_GPU_CUDA_CUDACONTACTMAPPER_H
+#define SOFA_GPU_CUDA_CUDACONTACTMAPPER_H
+
+#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
 
 
 namespace sofa
@@ -35,14 +38,43 @@ namespace component
 namespace collision
 {
 
-SOFA_DECL_CLASS(Sphere)
+using namespace sofa::defaulttype;
 
-int SphereModelClass = core::RegisterObject("Collision model representing a set of spheres")
-        .add< TSphereModel<Vec3Types> >(true)
-        .add< TSphereModel<Vec3fTypes> >()
-        .addAlias("Sphere")
-        .addAlias("SphereModel")
-        ;
+
+/// Mapper for CudaRigidDistanceGridCollisionModel
+template <class DataTypes>
+class ContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes>
+{
+public:
+    typedef RigidContactMapper<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,DataTypes> Inherit;
+    typedef typename Inherit::MMechanicalState MMechanicalState;
+    typedef typename Inherit::MCollisionModel MCollisionModel;
+
+    int addPoint(const Vector3& P, int index)
+    {
+        int i = Inherit::addPoint(P, index);
+        if (!mapping)
+        {
+            MCollisionModel* model = this->model;
+            MMechanicalState* outmodel = this->outmodel;
+            DataTypes::Coord& x = (*outmodel->getX())[i];
+            DataTypes::Deriv& v = (*outmodel->getV())[i];
+            if (model->isTransformed(index))
+            {
+                x = model->getTranslation(index) + model->getRotation(index) * P;
+            }
+            else
+            {
+                x = P;
+            }
+            v = DataTypes::Deriv();
+        }
+        return i;
+    }
+};
+
+
+
 
 } // namespace collision
 
@@ -50,3 +82,4 @@ int SphereModelClass = core::RegisterObject("Collision model representing a set 
 
 } // namespace sofa
 
+#endif

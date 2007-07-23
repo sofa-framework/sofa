@@ -63,19 +63,19 @@ void MechanicalObject<defaulttype::Rigid3Types>::getCompliance(double**W)
     Deriv weighedNormal;
     Deriv InvM_wN;
 
-    const sofa::defaulttype::RigidMass* massValue;
+    const sofa::defaulttype::Rigid3Mass* massValue;
 
     simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
 
     if (node != NULL)
     {
         core::componentmodel::behavior::BaseMass*_m = node->mass;
-        component::mass::UniformMass<defaulttype::RigidTypes, defaulttype::RigidMass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::RigidTypes, defaulttype::RigidMass>*> (_m);
+        component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
         massValue = &( m->getMass());//.getValue() );
     }
     else
     {
-        massValue = new sofa::defaulttype::RigidMass();
+        massValue = new sofa::defaulttype::Rigid3Mass();
         printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
     }
 

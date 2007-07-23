@@ -26,6 +26,12 @@ void UniformMass<gpu::cuda::CudaVec3fTypes, float>::addForce(VecDeriv& f, const 
 template <>
 bool UniformMass<gpu::cuda::CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
 
+template <>
+double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
+
+template <>
+void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw();
+
 } // namespace mass
 
 } // namespace component

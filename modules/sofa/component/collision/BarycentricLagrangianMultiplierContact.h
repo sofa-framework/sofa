@@ -27,8 +27,10 @@ public:
     typedef TCollisionModel1 CollisionModel1;
     typedef TCollisionModel2 CollisionModel2;
     typedef core::componentmodel::collision::Intersection Intersection;
-    typedef core::componentmodel::behavior::MechanicalState<typename CollisionModel1::DataTypes> MechanicalState1;
-    typedef core::componentmodel::behavior::MechanicalState<typename CollisionModel2::DataTypes> MechanicalState2;
+    typedef typename CollisionModel1::DataTypes DataTypes1;
+    typedef typename CollisionModel2::DataTypes DataTypes2;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes1> MechanicalState1;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
 protected:
@@ -36,8 +38,8 @@ protected:
     CollisionModel2* model2;
     Intersection* intersectionMethod;
 
-    BarycentricContactMapper<CollisionModel1> mapper1;
-    BarycentricContactMapper<CollisionModel2> mapper2;
+    ContactMapper<CollisionModel1,DataTypes1> mapper1;
+    ContactMapper<CollisionModel2,DataTypes2> mapper2;
 
     constraint::LagrangianMultiplierContactConstraint<Vec3Types>* ff;
     core::objectmodel::BaseContext* parent;

@@ -7,6 +7,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
 
 namespace sofa
@@ -292,7 +293,7 @@ public:
     typedef CudaVector<SparseDeriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
-    typedef	sofa::helper::vector<SparseVecDeriv> VecConst;
+    typedef    sofa::helper::vector<SparseVecDeriv> VecConst;
 
     static void set(Coord& c, double x, double y, double z)
     {
@@ -352,6 +353,111 @@ inline const char* CudaVec2fTypes::Name()
     return "CudaVec2f";
 }
 
+template<int N, typename real>
+class CudaRigidTypes;
+
+template<typename real>
+class CudaRigidTypes<3, real>
+{
+public:
+    typedef real Real;
+    typedef sofa::defaulttype::RigidCoord<3,real> Coord;
+    typedef sofa::defaulttype::RigidDeriv<3,real> Deriv;
+    typedef typename Coord::Vec3 Vec3;
+    typedef typename Coord::Quat Quat;
+    typedef CudaVector<Coord> VecCoord;
+    typedef CudaVector<Deriv> VecDeriv;
+
+    template <class T>
+    class SparseData
+    {
+    public:
+        SparseData(unsigned int _index, const T& _data): index(_index), data(_data) {};
+        unsigned int index;
+        T data;
+    };
+
+    typedef SparseData<Coord> SparseCoord;
+    typedef SparseData<Deriv> SparseDeriv;
+
+    typedef CudaVector<SparseCoord> SparseVecCoord;
+    typedef CudaVector<SparseDeriv> SparseVecDeriv;
+
+    //! All the Constraints applied to a state Vector
+    typedef    sofa::helper::vector<SparseVecDeriv> VecConst;
+
+    static void set(Coord& r, double x, double y, double z)
+    {
+        Vec3& c = r.getCenter();
+        if (c.size()>0)
+            c[0] = (typename Coord::value_type)x;
+        if (c.size()>1)
+            c[1] = (typename Coord::value_type)y;
+        if (c.size()>2)
+            c[2] = (typename Coord::value_type)z;
+    }
+
+    static void get(double& x, double& y, double& z, const Coord& r)
+    {
+        const Vec3& c = r.getCenter();
+        x = (c.size()>0) ? (double) c[0] : 0.0;
+        y = (c.size()>1) ? (double) c[1] : 0.0;
+        z = (c.size()>2) ? (double) c[2] : 0.0;
+    }
+
+    static void add(Coord& r, double x, double y, double z)
+    {
+        Vec3& c = r.getCenter();
+        if (c.size()>0)
+            c[0] += (typename Coord::value_type)x;
+        if (c.size()>1)
+            c[1] += (typename Coord::value_type)y;
+        if (c.size()>2)
+            c[2] += (typename Coord::value_type)z;
+    }
+
+    static void set(Deriv& r, double x, double y, double z)
+    {
+        Vec3& c = r.getVCenter();
+        if (c.size()>0)
+            c[0] = (typename Coord::value_type)x;
+        if (c.size()>1)
+            c[1] = (typename Coord::value_type)y;
+        if (c.size()>2)
+            c[2] = (typename Coord::value_type)z;
+    }
+
+    static void get(double& x, double& y, double& z, const Deriv& r)
+    {
+        const Vec3& c = r.getVCenter();
+        x = (c.size()>0) ? (double) c[0] : 0.0;
+        y = (c.size()>1) ? (double) c[1] : 0.0;
+        z = (c.size()>2) ? (double) c[2] : 0.0;
+    }
+
+    static void add(Deriv& r, double x, double y, double z)
+    {
+        Vec3& c = r.getVCenter();
+        if (c.size()>0)
+            c[0] += (typename Coord::value_type)x;
+        if (c.size()>1)
+            c[1] += (typename Coord::value_type)y;
+        if (c.size()>2)
+            c[2] += (typename Coord::value_type)z;
+    }
+
+    static const char* Name();
+};
+
+//typedef CudaVectorTypes<Vec3d,Vec3d,double> CudaVec3dTypes;
+typedef CudaRigidTypes<3,float> CudaRigid3fTypes;
+typedef CudaRigid3fTypes CudaRigid3Types;
+
+template<>
+inline const char* CudaRigid3fTypes::Name()
+{
+    return "CudaRigid3f";
+}
 
 } // namespace cuda
 

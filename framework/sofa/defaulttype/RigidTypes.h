@@ -50,10 +50,10 @@ template<int N, typename real>
 class RigidCoord;
 
 template<int N, typename real>
-class StdRigidTypes;
+class RigidMass;
 
 template<int N, typename real>
-class StdRigidMass;
+class StdRigidTypes;
 
 //=============================================================================
 // 3D Rigids
@@ -198,7 +198,7 @@ public:
     }
 
     //template<typename real2>
-    //void operator =(const typename StdRigidTypes<3,real2>::Coord& c)
+    //void operator =(const RigidCoord<3,real2>& c)
     //{
     //    center = c.getCenter();
     //    orientation = c.getOrientation();
@@ -351,6 +351,71 @@ public:
 };
 
 template<typename real>
+class RigidMass<3, real>
+{
+public:
+    typedef real Real;
+    typedef Mat<3,3,Real> Mat3x3;
+    Real mass,volume;
+    Mat3x3 inertiaMatrix;	      // Inertia matrix of the object
+    Mat3x3 inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
+    Mat3x3 invInertiaMatrix;	  // inverse of inertiaMatrix
+    Mat3x3 invInertiaMassMatrix; // inverse of inertiaMassMatrix
+    RigidMass(Real m=1)
+    {
+        mass = m;
+        volume = 1;
+        inertiaMatrix.identity();
+        recalc();
+    }
+    void operator=(Real m)
+    {
+        mass = m;
+        recalc();
+    }
+    void recalc()
+    {
+        inertiaMassMatrix = inertiaMatrix * mass;
+        invInertiaMatrix.invert(inertiaMatrix);
+        invInertiaMassMatrix.invert(inertiaMassMatrix);
+    }
+
+    inline friend std::ostream& operator << (std::ostream& out, const RigidMass<3, real>& m )
+    {
+        out<<m.mass;
+        out<<" "<<m.volume;
+        out<<" "<<m.inertiaMatrix;
+        return out;
+    }
+    inline friend std::istream& operator >> (std::istream& in, RigidMass<3, real>& m )
+    {
+        in>>m.mass;
+        in>>m.volume;
+        in>>m.inertiaMatrix;
+        return in;
+    }
+};
+
+template<int N, typename real>
+inline RigidDeriv<N,real> operator*(const RigidDeriv<N,real>& d, const RigidMass<N,real>& m)
+{
+    RigidDeriv<N,real> res;
+    res.getVCenter() = d.getVCenter() * m.mass;
+    res.getVOrientation() = m.inertiaMassMatrix * d.getVOrientation();
+    return res;
+}
+
+template<int N, typename real>
+inline RigidDeriv<N, real> operator/(const RigidDeriv<N, real>& d, const RigidMass<N, real>& m)
+{
+    RigidDeriv<N, real> res;
+    res.getVCenter() = d.getVCenter() / m.mass;
+    res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
+    return res;
+}
+
+
+template<typename real>
 class StdRigidTypes<3, real>
 {
 public:
@@ -426,80 +491,15 @@ public:
     static const char* Name();
 };
 
-template<typename real>
-class StdRigidMass<3, real>
-{
-public:
-    typedef real Real;
-    typedef Mat<3,3,Real> Mat3x3;
-    Real mass,volume;
-    Mat3x3 inertiaMatrix;	      // Inertia matrix of the object
-    Mat3x3 inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
-    Mat3x3 invInertiaMatrix;	  // inverse of inertiaMatrix
-    Mat3x3 invInertiaMassMatrix; // inverse of inertiaMassMatrix
-    StdRigidMass(Real m=1)
-    {
-        mass = m;
-        volume = 1;
-        inertiaMatrix.identity();
-        recalc();
-    }
-    void operator=(Real m)
-    {
-        mass = m;
-        recalc();
-    }
-    void recalc()
-    {
-        inertiaMassMatrix = inertiaMatrix * mass;
-        invInertiaMatrix.invert(inertiaMatrix);
-        invInertiaMassMatrix.invert(inertiaMassMatrix);
-    }
-
-    inline friend std::ostream& operator << (std::ostream& out, const StdRigidMass<3, real>& m )
-    {
-        out<<m.mass;
-        out<<" "<<m.volume;
-        out<<" "<<m.inertiaMatrix;
-        return out;
-    }
-    inline friend std::istream& operator >> (std::istream& in, StdRigidMass<3, real>& m )
-    {
-        in>>m.mass;
-        in>>m.volume;
-        in>>m.inertiaMatrix;
-        return in;
-    }
-};
-
-template<int N, typename real>
-inline typename StdRigidTypes<N,real>::Deriv operator*(const typename StdRigidTypes<N,real>::Deriv& d, const StdRigidMass<N,real>& m)
-{
-    typename StdRigidTypes<N,real>::Deriv res;
-    res.getVCenter() = d.getVCenter() * m.mass;
-    res.getVOrientation() = m.inertiaMassMatrix * d.getVOrientation();
-    return res;
-}
-
-template<int N, typename real>
-inline typename StdRigidTypes<N, real>::Deriv operator/(const typename StdRigidTypes<N, real>::Deriv& d, const StdRigidMass<N, real>& m)
-{
-    typename StdRigidTypes<N, real>::Deriv res;
-    res.getVCenter() = d.getVCenter() / m.mass;
-    res.getVOrientation() = m.invInertiaMassMatrix * d.getVOrientation();
-    return res;
-}
-
-
 typedef StdRigidTypes<3,double> Rigid3dTypes;
 typedef StdRigidTypes<3,float> Rigid3fTypes;
 typedef Rigid3dTypes Rigid3Types;
 typedef Rigid3Types RigidTypes;
 
-typedef StdRigidMass<3,double> Rigid3dMass;
-typedef StdRigidMass<3,float> Rigid3fMass;
+typedef RigidMass<3,double> Rigid3dMass;
+typedef RigidMass<3,float> Rigid3fMass;
 typedef Rigid3dMass Rigid3Mass;
-typedef Rigid3Mass RigidMass;
+//typedef Rigid3Mass RigidMass;
 
 /// Note: Many scenes use Rigid as template for 3D double-precision rigid type. Changing it to Rigid3d would break backward compatibility.
 template<> inline const char* Rigid3dTypes::Name() { return "Rigid"; }
@@ -759,6 +759,67 @@ public:
     enum { static_size = 3 };
 };
 
+template<class real>
+class RigidMass<2, real>
+{
+public:
+    typedef real Real;
+    Real mass,volume;
+    Real inertiaMatrix;	      // Inertia matrix of the object
+    Real inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
+    Real invInertiaMatrix;	  // inverse of inertiaMatrix
+    Real invInertiaMassMatrix; // inverse of inertiaMassMatrix
+    RigidMass(Real m=1)
+    {
+        mass = m;
+        volume = 1;
+        inertiaMatrix = 1;
+        recalc();
+    }
+    void operator=(Real m)
+    {
+        mass = m;
+        recalc();
+    }
+    /// Mass for a circle
+    RigidMass(Real m, Real radius)
+    {
+        mass = m;
+        volume = radius*radius*R_PI;
+        inertiaMatrix = (radius*radius)/2;
+        recalc();
+    }
+    /// Mass for a rectangle
+    RigidMass(Real m, Real xwidth, Real ywidth)
+    {
+        mass = m;
+        volume = xwidth*xwidth + ywidth*ywidth;
+        inertiaMatrix = volume/12;
+        recalc();
+    }
+
+    void recalc()
+    {
+        inertiaMassMatrix = inertiaMatrix * mass;
+        invInertiaMatrix = 1/(inertiaMatrix);
+        invInertiaMassMatrix = 1/(inertiaMassMatrix);
+    }
+    inline friend std::ostream& operator << (std::ostream& out, const RigidMass<2,Real>& m )
+    {
+        out<<m.mass;
+        out<<" "<<m.volume;
+        out<<" "<<m.inertiaMatrix;
+        return out;
+    }
+    inline friend std::istream& operator >> (std::istream& in, RigidMass<2,Real>& m )
+    {
+        in>>m.mass;
+        in>>m.volume;
+        in>>m.inertiaMatrix;
+        return in;
+    }
+};
+
 /** Degrees of freedom of 2D rigid bodies.
 */
 template<typename real>
@@ -834,73 +895,12 @@ public:
 
 };
 
-template<class real>
-class StdRigidMass<2, real>
-{
-public:
-    typedef real Real;
-    Real mass,volume;
-    Real inertiaMatrix;	      // Inertia matrix of the object
-    Real inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
-    Real invInertiaMatrix;	  // inverse of inertiaMatrix
-    Real invInertiaMassMatrix; // inverse of inertiaMassMatrix
-    StdRigidMass(Real m=1)
-    {
-        mass = m;
-        volume = 1;
-        inertiaMatrix = 1;
-        recalc();
-    }
-    void operator=(Real m)
-    {
-        mass = m;
-        recalc();
-    }
-    /// Mass for a circle
-    StdRigidMass(Real m, Real radius)
-    {
-        mass = m;
-        volume = radius*radius*R_PI;
-        inertiaMatrix = (radius*radius)/2;
-        recalc();
-    }
-    /// Mass for a rectangle
-    StdRigidMass(Real m, Real xwidth, Real ywidth)
-    {
-        mass = m;
-        volume = xwidth*xwidth + ywidth*ywidth;
-        inertiaMatrix = volume/12;
-        recalc();
-    }
-
-    void recalc()
-    {
-        inertiaMassMatrix = inertiaMatrix * mass;
-        invInertiaMatrix = 1/(inertiaMatrix);
-        invInertiaMassMatrix = 1/(inertiaMassMatrix);
-    }
-    inline friend std::ostream& operator << (std::ostream& out, const StdRigidMass<2,Real>& m )
-    {
-        out<<m.mass;
-        out<<" "<<m.volume;
-        out<<" "<<m.inertiaMatrix;
-        return out;
-    }
-    inline friend std::istream& operator >> (std::istream& in, StdRigidMass<2,Real>& m )
-    {
-        in>>m.mass;
-        in>>m.volume;
-        in>>m.inertiaMatrix;
-        return in;
-    }
-};
-
 typedef StdRigidTypes<2,double> Rigid2dTypes;
 typedef StdRigidTypes<2,float> Rigid2fTypes;
 typedef Rigid2dTypes Rigid2Types;
 
-typedef StdRigidMass<2,double> Rigid2dMass;
-typedef StdRigidMass<2,float> Rigid2fMass;
+typedef RigidMass<2,double> Rigid2dMass;
+typedef RigidMass<2,float> Rigid2fMass;
 typedef Rigid2dMass Rigid2Mass;
 
 template<> inline const char* Rigid2dTypes::Name() { return "Rigid2d"; }
@@ -928,51 +928,51 @@ Deriv inertiaForce( const SV& /*sv*/, const Vec& /*a*/, const M& /*m*/, const Co
 
 /// Specialization of the inertia force for defaulttype::Rigid3dTypes
 template <>
-inline defaulttype::StdRigidTypes<3, double>::Deriv inertiaForce<
-defaulttype::StdRigidTypes<3, double>::Coord,
-            defaulttype::StdRigidTypes<3, double>::Deriv,
+inline defaulttype::RigidDeriv<3, double> inertiaForce<
+defaulttype::RigidCoord<3, double>,
+            defaulttype::RigidDeriv<3, double>,
             objectmodel::BaseContext::Vec3,
-            defaulttype::StdRigidMass<3, double>,
+            defaulttype::RigidMass<3, double>,
             objectmodel::BaseContext::SpatialVector
             >
             (
                     const objectmodel::BaseContext::SpatialVector& vframe,
                     const objectmodel::BaseContext::Vec3& aframe,
-                    const defaulttype::StdRigidMass<3, double>& mass,
-                    const defaulttype::StdRigidTypes<3, double>::Coord& x,
-                    const defaulttype::StdRigidTypes<3, double>::Deriv& v
+                    const defaulttype::RigidMass<3, double>& mass,
+                    const defaulttype::RigidCoord<3, double>& x,
+                    const defaulttype::RigidDeriv<3, double>& v
             )
 {
-    defaulttype::StdRigidTypes<3, double>::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
-    defaulttype::StdRigidTypes<3, double>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+    defaulttype::RigidDeriv<3, double>::Vec3 omega( vframe.lineVec[0], vframe.lineVec[1], vframe.lineVec[2] );
+    defaulttype::RigidDeriv<3, double>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
 
     finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return defaulttype::StdRigidTypes<3, double>::Deriv( finertia, zero );
+    return defaulttype::RigidDeriv<3, double>( finertia, zero );
     /// \todo replace zero by Jomega.cross(omega)
 }
 
 /// Specialization of the inertia force for defaulttype::Rigid3fTypes
 template <>
-inline defaulttype::StdRigidTypes<3, float>::Deriv inertiaForce<
-defaulttype::StdRigidTypes<3, float>::Coord,
-            defaulttype::StdRigidTypes<3, float>::Deriv,
+inline defaulttype::RigidDeriv<3, float> inertiaForce<
+defaulttype::RigidCoord<3, float>,
+            defaulttype::RigidDeriv<3, float>,
             objectmodel::BaseContext::Vec3,
-            defaulttype::StdRigidMass<3, float>,
+            defaulttype::RigidMass<3, float>,
             objectmodel::BaseContext::SpatialVector
             >
             (
                     const objectmodel::BaseContext::SpatialVector& vframe,
                     const objectmodel::BaseContext::Vec3& aframe,
-                    const defaulttype::StdRigidMass<3, float>& mass,
-                    const defaulttype::StdRigidTypes<3, float>::Coord& x,
-                    const defaulttype::StdRigidTypes<3, float>::Deriv& v
+                    const defaulttype::RigidMass<3, float>& mass,
+                    const defaulttype::RigidCoord<3, float>& x,
+                    const defaulttype::RigidDeriv<3, float>& v
             )
 {
-    defaulttype::StdRigidTypes<3, float>::Vec3 omega( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
-    defaulttype::StdRigidTypes<3, float>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
+    defaulttype::RigidDeriv<3, float>::Vec3 omega( (float)vframe.lineVec[0], (float)vframe.lineVec[1], (float)vframe.lineVec[2] );
+    defaulttype::RigidDeriv<3, float>::Vec3 origin = x.getCenter(), finertia, zero(0,0,0);
 
     finertia = -( aframe + omega.cross( omega.cross(origin) + v.getVCenter()*2 ))*mass.mass;
-    return defaulttype::StdRigidTypes<3, float>::Deriv( finertia, zero );
+    return defaulttype::RigidDeriv<3, float>( finertia, zero );
     /// \todo replace zero by Jomega.cross(omega)
 }
 

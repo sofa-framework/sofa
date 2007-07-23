@@ -44,6 +44,8 @@ template<class DataTypes>
 class PenalityContactForceField : public core::componentmodel::behavior::InteractionForceField, public core::VisualModel
 {
 public:
+    typedef DataTypes DataTypes1;
+    typedef DataTypes DataTypes2;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

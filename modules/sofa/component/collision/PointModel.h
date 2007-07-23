@@ -59,6 +59,7 @@ public:
 class PointModel : public core::CollisionModel, public core::VisualModel
 {
 public:
+    typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;
     typedef DataTypes::VecDeriv VecDeriv;

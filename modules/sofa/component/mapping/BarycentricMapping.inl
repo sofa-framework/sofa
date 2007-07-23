@@ -49,14 +49,14 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 template <class In, class Out>
-void RegularGridMapper<In,Out>::clear(int reserve)
+void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::clear(int reserve)
 {
     map.clear();
     if (reserve>0) map.reserve(reserve);
 }
 
 template <class In, class Out>
-int RegularGridMapper<In,Out>::addPointInCube(int cubeIndex, const Real* baryCoords)
+int TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::addPointInCube(int cubeIndex, const Real* baryCoords)
 {
     map.resize(map.size()+1);
     CubeData& data = *map.rbegin();
@@ -68,7 +68,7 @@ int RegularGridMapper<In,Out>::addPointInCube(int cubeIndex, const Real* baryCoo
 }
 
 template <class In, class Out>
-void RegularGridMapper<In,Out>::init()
+void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::init()
 {
 }
 
@@ -77,7 +77,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::RegularGridTopology* to
 {
     const OutVecCoord& out = *this->toModel->getX();
     int outside = 0;
-    RegularGridMapper<InDataTypes,OutDataTypes>* mapper = new RegularGridMapper<InDataTypes,OutDataTypes>(topology);
+    RegularGridMapper* mapper = new RegularGridMapper(topology);
     this->mapper = mapper;
     mapper->clear(out.size());
     for (unsigned int i=0; i<out.size(); i++)
@@ -96,7 +96,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::RegularGridTopology* to
 }
 
 template <class In, class Out>
-void MeshMapper<In,Out>::clear(int reserve3d, int reserve2d, int reserve1d)
+void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::clear(int reserve3d, int reserve2d, int reserve1d)
 {
     map1d.clear(); if (reserve1d>0) map1d.reserve(reserve1d);
     map2d.clear(); if (reserve2d>0) map2d.reserve(reserve2d);
@@ -104,7 +104,7 @@ void MeshMapper<In,Out>::clear(int reserve3d, int reserve2d, int reserve1d)
 }
 
 template <class In, class Out>
-int MeshMapper<In,Out>::addPointInLine(int lineIndex, const Real* baryCoords)
+int TopologyBarycentricMapper<topology::MeshTopology,In,Out>::addPointInLine(int lineIndex, const Real* baryCoords)
 {
     map1d.resize(map1d.size()+1);
     MappingData1D& data = *map1d.rbegin();
@@ -114,7 +114,7 @@ int MeshMapper<In,Out>::addPointInLine(int lineIndex, const Real* baryCoords)
 }
 
 template <class In, class Out>
-int MeshMapper<In,Out>::addPointInTriangle(int triangleIndex, const Real* baryCoords)
+int TopologyBarycentricMapper<topology::MeshTopology,In,Out>::addPointInTriangle(int triangleIndex, const Real* baryCoords)
 {
     map2d.resize(map2d.size()+1);
     MappingData2D& data = *map2d.rbegin();
@@ -125,7 +125,7 @@ int MeshMapper<In,Out>::addPointInTriangle(int triangleIndex, const Real* baryCo
 }
 
 template <class In, class Out>
-int MeshMapper<In,Out>::addPointInQuad(int quadIndex, const Real* baryCoords)
+int TopologyBarycentricMapper<topology::MeshTopology,In,Out>::addPointInQuad(int quadIndex, const Real* baryCoords)
 {
     map2d.resize(map2d.size()+1);
     MappingData2D& data = *map2d.rbegin();
@@ -136,7 +136,7 @@ int MeshMapper<In,Out>::addPointInQuad(int quadIndex, const Real* baryCoords)
 }
 
 template <class In, class Out>
-int MeshMapper<In,Out>::addPointInTetra(int tetraIndex, const Real* baryCoords)
+int TopologyBarycentricMapper<topology::MeshTopology,In,Out>::addPointInTetra(int tetraIndex, const Real* baryCoords)
 {
     map3d.resize(map3d.size()+1);
     MappingData3D& data = *map3d.rbegin();
@@ -148,7 +148,7 @@ int MeshMapper<In,Out>::addPointInTetra(int tetraIndex, const Real* baryCoords)
 }
 
 template <class In, class Out>
-int MeshMapper<In,Out>::addPointInCube(int cubeIndex, const Real* baryCoords)
+int TopologyBarycentricMapper<topology::MeshTopology,In,Out>::addPointInCube(int cubeIndex, const Real* baryCoords)
 {
     map3d.resize(map3d.size()+1);
     MappingData3D& data = *map3d.rbegin();
@@ -160,7 +160,7 @@ int MeshMapper<In,Out>::addPointInCube(int cubeIndex, const Real* baryCoords)
 }
 
 template <class In, class Out>
-int MeshMapper<In,Out>::createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points)
+int TopologyBarycentricMapper<topology::MeshTopology,In,Out>::createPointInLine(const typename Out::Coord& p, int lineIndex, const typename In::VecCoord* points)
 {
     Real baryCoords[1];
     const topology::MeshTopology::Line& elem = topology->getLine(lineIndex);
@@ -172,7 +172,7 @@ int MeshMapper<In,Out>::createPointInLine(const typename Out::Coord& p, int line
 }
 
 template <class In, class Out>
-int MeshMapper<In,Out>::createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points)
+int TopologyBarycentricMapper<topology::MeshTopology,In,Out>::createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points)
 {
     Real baryCoords[2];
     const topology::MeshTopology::Triangle& elem = topology->getTriangle(triangleIndex);
@@ -190,7 +190,7 @@ int MeshMapper<In,Out>::createPointInTriangle(const typename Out::Coord& p, int 
 }
 
 template <class In, class Out>
-int MeshMapper<In,Out>::createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points)
+int TopologyBarycentricMapper<topology::MeshTopology,In,Out>::createPointInQuad(const typename Out::Coord& p, int quadIndex, const typename In::VecCoord* points)
 {
     Real baryCoords[2];
     const topology::MeshTopology::Quad& elem = topology->getQuad(quadIndex);
@@ -210,7 +210,7 @@ int MeshMapper<In,Out>::createPointInQuad(const typename Out::Coord& p, int quad
 }
 
 template <class In, class Out>
-void MeshMapper<In,Out>::init()
+void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::init()
 {
 }
 
@@ -220,7 +220,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::MeshTopology* topology)
     const OutVecCoord& out = *this->toModel->getX();
     const InVecCoord& in = *this->fromModel->getX();
     int outside = 0;
-    MeshMapper<InDataTypes,OutDataTypes>* mapper = new MeshMapper<InDataTypes,OutDataTypes>(topology);
+    MeshMapper* mapper = new MeshMapper(topology);
     this->mapper = mapper;
     const topology::MeshTopology::SeqTetras& tetras = topology->getTetras();
     const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();
@@ -379,7 +379,7 @@ void BarycentricMapping<BasicMapping>::apply( typename Out::VecCoord& out, const
 }
 
 template <class In, class Out>
-void RegularGridMapper<In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize(map.size());
     for(unsigned int i=0; i<map.size(); i++)
@@ -400,7 +400,7 @@ void RegularGridMapper<In,Out>::apply( typename Out::VecCoord& out, const typena
 }
 
 template <class In, class Out>
-void MeshMapper<In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize(map1d.size()+map2d.size()+map3d.size());
     const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
@@ -489,7 +489,7 @@ void BarycentricMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, cons
 }
 
 template <class In, class Out>
-void RegularGridMapper<In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     for(unsigned int i=0; i<map.size(); i++)
     {
@@ -509,7 +509,7 @@ void RegularGridMapper<In,Out>::applyJ( typename Out::VecDeriv& out, const typen
 }
 
 template <class In, class Out>
-void MeshMapper<In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     //cerr<<"    BarycentricMapping<BasicMapping>::MeshMapper::applyJ"<<endl;
     out.resize(map1d.size()+map2d.size()+map3d.size());
@@ -598,7 +598,7 @@ void BarycentricMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, cons
 }
 
 template <class In, class Out>
-void RegularGridMapper<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     for(unsigned int i=0; i<map.size(); i++)
     {
@@ -619,7 +619,7 @@ void RegularGridMapper<In,Out>::applyJT( typename In::VecDeriv& out, const typen
 }
 
 template <class In, class Out>
-void MeshMapper<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
     const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
@@ -722,7 +722,7 @@ void BarycentricMapping<BasicMapping>::draw()
 }
 
 template <class In, class Out>
-void RegularGridMapper<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
     glBegin (GL_LINES);
     for (unsigned int i=0; i<map.size(); i++)
@@ -754,7 +754,7 @@ void RegularGridMapper<In,Out>::draw(const typename Out::VecCoord& out, const ty
 }
 
 template <class In, class Out>
-void MeshMapper<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
     const topology::MeshTopology::SeqLines& lines = this->topology->getLines();
     const topology::MeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
@@ -902,7 +902,7 @@ void BarycentricMapping<BasicMapping>::applyJT( typename In::VecConst& out, cons
 }
 
 template <class In, class Out>
-void RegularGridMapper<In,Out>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
 //    printf("\n applyJT() in BaricentricMapping  [RegularGridMapper] ");
     int offset = out.size();
@@ -931,7 +931,7 @@ void RegularGridMapper<In,Out>::applyJT( typename In::VecConst& out, const typen
 }
 
 template <class In, class Out>
-void MeshMapper<In,Out>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
 //    printf("\n applyJT() in BaricentricMapping  [MeshMapper] \n");
     const topology::MeshTopology::SeqLines& lines = this->topology->getLines();

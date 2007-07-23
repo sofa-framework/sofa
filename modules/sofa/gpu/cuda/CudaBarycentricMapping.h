@@ -17,7 +17,7 @@ namespace mapping
 {
 
 template <>
-class RegularGridMapper<gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes> : public BarycentricMapper<gpu::cuda::CudaVec3fTypes,gpu::cuda::CudaVec3fTypes>
+class TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes> : public BarycentricMapper<gpu::cuda::CudaVec3fTypes,gpu::cuda::CudaVec3fTypes>
 {
 public:
     typedef gpu::cuda::CudaVec3fTypes In;
@@ -27,9 +27,11 @@ public:
     typedef Inherit::OutReal OutReal;
 protected:
     gpu::cuda::CudaVector<CubeData> map;
+    int maxNOut;
+    gpu::cuda::CudaVector< std::pair<int,float> > mapT;
     topology::RegularGridTopology* topology;
 public:
-    RegularGridMapper(topology::RegularGridTopology* topology) : topology(topology)
+    TopologyBarycentricMapper(topology::RegularGridTopology* topology) : maxNOut(0), topology(topology)
     {}
 
     void clear(int reserve=0);

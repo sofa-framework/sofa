@@ -376,9 +376,9 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeNumberPoint() ) );
                     }
                 }
-                //StdRigidMass<3, double>
-                else if( fieldname == "StdRigidMass<3, double>" || fieldname == "StdRigidMass<3, float>" ||
-                        fieldname == "StdRigidMass<3,double>" || fieldname == "StdRigidMass<3,float>")
+                //RigidMass<3, double>
+                else if( fieldname == "RigidMass<3, double>" || fieldname == "RigidMass<3, float>" ||
+                        fieldname == "RigidMass<3,double>" || fieldname == "RigidMass<3,float>")
                 {
                     box->setColumns(2);
 
@@ -414,9 +414,9 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     }
 
 
-                    if( DataField<StdRigidMass<3, double> > * ff = dynamic_cast< DataField<StdRigidMass<3, double> > * >( (*it).second )  )
+                    if( DataField<RigidMass<3, double> > * ff = dynamic_cast< DataField<RigidMass<3, double> > * >( (*it).second )  )
                     {
-                        StdRigidMass<3, double> current_mass = ff->getValue();
+                        RigidMass<3, double> current_mass = ff->getValue();
                         editMass->setFloatValue(current_mass.mass);
                         editVolume->setFloatValue(current_mass.volume);
 
@@ -430,9 +430,9 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         }
                     }
 
-                    if( DataField<StdRigidMass<3, float> > * ff = dynamic_cast< DataField<StdRigidMass<3, float> > * >( (*it).second )  )
+                    if( DataField<RigidMass<3, float> > * ff = dynamic_cast< DataField<RigidMass<3, float> > * >( (*it).second )  )
                     {
-                        StdRigidMass<3, float> current_mass = ff->getValue();
+                        RigidMass<3, float> current_mass = ff->getValue();
                         editMass->setFloatValue(current_mass.mass);
                         editVolume->setFloatValue(current_mass.volume);
                         for (int row=0; row<3; row++)
@@ -741,13 +741,13 @@ void ModifyObject::updateValues()
                 block_iterator++;
 
             }
-            else if( fieldname == "StdRigidMass<3, double>" || fieldname == "StdRigidMass<3, float>" ||
-                    fieldname == "StdRigidMass<3,double>" || fieldname == "StdRigidMass<3,float>")
+            else if( fieldname == "RigidMass<3, double>" || fieldname == "RigidMass<3, float>" ||
+                    fieldname == "RigidMass<3,double>" || fieldname == "RigidMass<3,float>")
             {
 
-                if( DataField<StdRigidMass<3, double> > * ff = dynamic_cast< DataField<StdRigidMass<3, double> > * >( (*it).second )  )
+                if( DataField<RigidMass<3, double> > * ff = dynamic_cast< DataField<RigidMass<3, double> > * >( (*it).second )  )
                 {
-                    StdRigidMass<3, double> current_mass = ff->getValue();
+                    RigidMass<3, double> current_mass = ff->getValue();
 
                     WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
                     current_mass.mass = (double) mass->getFloatValue();
@@ -763,9 +763,9 @@ void ModifyObject::updateValues()
                     }
                     ff->setValue(current_mass);
                 }
-                if( DataField<StdRigidMass<3, float> > * ff = dynamic_cast< DataField<StdRigidMass<3, float> > * >( (*it).second )  )
+                if( DataField<RigidMass<3, float> > * ff = dynamic_cast< DataField<RigidMass<3, float> > * >( (*it).second )  )
                 {
-                    StdRigidMass<3, float> current_mass = ff->getValue();
+                    RigidMass<3, float> current_mass = ff->getValue();
 
                     WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
                     current_mass.mass =  mass->getFloatValue();

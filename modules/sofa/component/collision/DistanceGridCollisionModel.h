@@ -1,4 +1,3 @@
-
 #ifndef SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_H
 #define SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_H
 
@@ -450,6 +449,7 @@ protected:
 
     void updateGrid();
 public:
+    typedef Rigid3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef RigidDistanceGridCollisionElement Element;
 
@@ -459,7 +459,8 @@ public:
 
     ~RigidDistanceGridCollisionModel();
 
-    core::componentmodel::behavior::MechanicalState<RigidTypes>* getRigidModel() { return rigid; }
+    core::componentmodel::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
+    core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
 
     void init();
 
@@ -729,7 +730,9 @@ protected:
 
     void updateGrid();
 public:
+    typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
+    typedef topology::RegularGridTopology Topology;
     typedef FFDDistanceGridCollisionElement Element;
 
     DataField< bool > usePoints;
@@ -738,8 +741,13 @@ public:
 
     ~FFDDistanceGridCollisionModel();
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* getDeformModel() { return ffd; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
     topology::RegularGridTopology* getDeformGrid() { return ffdGrid; }
+
+    // alias used by ContactMapper
+
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
+    topology::RegularGridTopology* getTopology() { return ffdGrid; }
 
     void init();
 

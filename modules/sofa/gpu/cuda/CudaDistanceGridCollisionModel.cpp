@@ -18,10 +18,12 @@ namespace cuda
 
 SOFA_DECL_CLASS(CudaDistanceGridCollisionModel)
 
-//int CudaDistanceGridCollisionModelClass = core::RegisterObject("GPU-based grid distance field using CUDA")
-//.add< CudaDistanceGridCollisionModel >()
-//.addAlias("CudaDistanceGrid")
-//;
+int CudaRigidDistanceGridCollisionModelClass = core::RegisterObject("GPU-based grid distance field using CUDA")
+        .add< CudaRigidDistanceGridCollisionModel >()
+        .addAlias("CudaDistanceGridCollisionModel")
+        .addAlias("CudaRigidDistanceGrid")
+        .addAlias("CudaDistanceGrid")
+        ;
 
 using namespace defaulttype;
 
@@ -402,6 +404,312 @@ std::map<CudaDistanceGrid::CudaDistanceGridParams, CudaDistanceGrid*>& CudaDista
     static std::map<CudaDistanceGridParams, CudaDistanceGrid*> instance;
     return instance;
 }
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+CudaRigidDistanceGridCollisionModel::CudaRigidDistanceGridCollisionModel()
+    : modified(true)
+    , filename( dataField( &filename, "filename", "load distance grid from specified file"))
+    , scale( dataField( &scale, 1.0, "scale", "scaling factor for input file"))
+    , box( dataField( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    , nx( dataField( &nx, 64, "nx", "number of values on X axis") )
+    , ny( dataField( &ny, 64, "ny", "number of values on Y axis") )
+    , nz( dataField( &nz, 64, "nz", "number of values on Z axis") )
+    , dumpfilename( dataField( &dumpfilename, "dumpfilename","write distance grid to specified file"))
+    , usePoints( dataField( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
+{
+    rigid = NULL;
+}
+
+CudaRigidDistanceGridCollisionModel::~CudaRigidDistanceGridCollisionModel()
+{
+    for (unsigned int i=0; i<elems.size(); i++)
+        if (elems[i].grid!=NULL) elems[i].grid->release();
+}
+
+void CudaRigidDistanceGridCollisionModel::init()
+{
+    std::cout << "> CudaRigidDistanceGridCollisionModel::init()"<<std::endl;
+    this->core::CollisionModel::init();
+    rigid = dynamic_cast< core::componentmodel::behavior::MechanicalState<RigidTypes>* > (getContext()->getMechanicalState());
+
+    CudaDistanceGrid* grid = NULL;
+    if (filename.getValue().empty())
+    {
+        if (elems.size()==0 || elems[0].grid==NULL)
+            std::cerr << "ERROR: CudaRigidDistanceGridCollisionModel requires an input filename.\n";
+        // else the grid has already been set
+        return;
+    }
+    std::cout << "CudaRigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<filename.getValue();
+    if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
+    if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
+    std::cout << std::endl;
+    grid = CudaDistanceGrid::loadShared(filename.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+
+    resize(1);
+    elems[0].grid = grid;
+    if (grid && !dumpfilename.getValue().empty())
+    {
+        std::cout << "CudaRigidDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
+        grid->save(dumpfilename.getValue());
+    }
+    std::cout << "< CudaRigidDistanceGridCollisionModel::init()"<<std::endl;
+}
+
+void CudaRigidDistanceGridCollisionModel::resize(int s)
+{
+    this->core::CollisionModel::resize(s);
+    elems.resize(s);
+}
+
+void CudaRigidDistanceGridCollisionModel::setGrid(CudaDistanceGrid* surf, int index)
+{
+    if (elems[index].grid == surf) return;
+    if (elems[index].grid!=NULL) elems[index].grid->release();
+    elems[index].grid = surf->addRef();
+    modified = true;
+}
+
+void CudaRigidDistanceGridCollisionModel::setNewState(int index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+{
+    if (grid != elems[index].grid)
+        grid->addRef();
+    if (elems[index].prevGrid!=NULL && elems[index].prevGrid!=elems[index].grid)
+        elems[index].prevGrid->release();
+    elems[index].prevGrid = elems[index].grid;
+    elems[index].grid = grid;
+    elems[index].prevRotation = elems[index].rotation;
+    elems[index].rotation = rotation;
+    elems[index].prevTranslation = elems[index].translation;
+    elems[index].translation = translation;
+    if (!elems[index].isTransformed)
+    {
+        Matrix3 I; I.identity();
+        if (!(rotation == I) || !(translation == Vector3()))
+            elems[index].isTransformed = true;
+    }
+    elems[index].prevDt = dt;
+    modified = true;
+}
+
+using sofa::component::collision::CubeModel;
+
+/// Create or update the bounding volume hierarchy.
+void CudaRigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
+{
+    CubeModel* cubeModel = this->createPrevious<CubeModel>();
+
+    if (!modified && isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+
+    updateGrid();
+
+    cubeModel->resize(size);
+    for (int i=0; i<size; i++)
+    {
+        //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
+        Vector3 emin, emax;
+        if (rigid)
+        {
+            const RigidTypes::Coord& xform = (*rigid->getX())[i];
+            elems[i].translation = xform.getCenter();
+            xform.getOrientation().toMatrix(elems[i].rotation);
+            elems[i].isTransformed = true;
+        }
+        if (elems[i].isTransformed)
+        {
+            //std::cout << "Grid "<<i<<" transformation: <"<<elems[i].rotation<<"> x + <"<<elems[i].translation<<">"<<std::endl;
+            Vector3 corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(0);
+            emin = corner;
+            emax = emin;
+            for (int j=1; j<8; j++)
+            {
+                corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(j);
+                for(int c=0; c<3; c++)
+                    if (corner[c] < emin[c]) emin[c] = corner[c];
+                    else if (corner[c] > emax[c]) emax[c] = corner[c];
+            }
+        }
+        else
+        {
+            emin = elems[i].grid->getBBMin();
+            emax = elems[i].grid->getBBMax();
+        }
+        cubeModel->setParentOf(i, emin, emax); // define the bounding box of the current element
+        //std::cout << "Grid "<<i<<" within  <"<<emin<<">-<"<<emax<<">"<<std::endl;
+    }
+    cubeModel->computeBoundingTree(maxDepth);
+    modified = false;
+}
+
+void CudaRigidDistanceGridCollisionModel::updateGrid()
+{
+}
+
+void CudaRigidDistanceGridCollisionModel::draw()
+{
+    if (!isActive()) return;
+    if (getContext()->getShowCollisionModels())
+    {
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glDisable(GL_LIGHTING);
+        if (isStatic())
+            glColor3f(0.5, 0.5, 0.5);
+        else
+            glColor3f(1.0, 0.0, 0.0);
+        glPointSize(3);
+        for (unsigned int i=0; i<elems.size(); i++)
+        {
+            draw(i);
+        }
+        glPointSize(1);
+        if (getContext()->getShowWireFrame())
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
+    if (getPrevious()!=NULL && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+        dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+}
+
+void CudaRigidDistanceGridCollisionModel::draw(int index)
+{
+    if (elems[index].isTransformed)
+    {
+        glPushMatrix();
+        // float m[16];
+        // (*rigid->getX())[index].writeOpenGlMatrix( m );
+        // glMultMatrixf(m);
+        Mat4x4d m;
+        m.identity();
+        m = elems[index].rotation;
+        m.transpose();
+        m[3] = Vec4d(elems[index].translation,1.0);
+        glMultMatrixd(m.ptr());
+    }
+
+    CudaDistanceGrid* grid = getGrid(index);
+    CudaDistanceGrid::Coord corners[8];
+    for(unsigned int i=0; i<8; i++)
+        corners[i] = grid->getCorner(i);
+    //glEnable(GL_BLEND);
+    //glDepthMask(0);
+    if (isStatic())
+        glColor4f(0.25f, 0.25f, 0.25f, 0.1f);
+    else
+        glColor4f(0.5f, 0.5f, 0.5f, 0.1f);
+    glBegin(GL_LINES);
+    {
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
+    }
+    glEnd();
+    glDisable(GL_BLEND);
+    glDepthMask(1);
+    for(unsigned int i=0; i<8; i++)
+        corners[i] = grid->getBBCorner(i);
+    //glEnable(GL_BLEND);
+    //glDepthMask(0);
+
+    if (isStatic())
+        glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
+    else
+        glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+    glBegin(GL_LINES);
+    {
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[4].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[3].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[2].ptr());
+        glVertex3fv(corners[1].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[6].ptr());
+        glVertex3fv(corners[5].ptr()); glVertex3fv(corners[7].ptr());
+        glVertex3fv(corners[0].ptr()); glVertex3fv(corners[1].ptr());
+        glVertex3fv(corners[2].ptr()); glVertex3fv(corners[3].ptr());
+        glVertex3fv(corners[4].ptr()); glVertex3fv(corners[5].ptr());
+        glVertex3fv(corners[6].ptr()); glVertex3fv(corners[7].ptr());
+    }
+    glEnd();
+
+    const float mindist = -(grid->getPMax()-grid->getPMin()).norm()*0.1f;
+    const float maxdist = (grid->getPMax()-grid->getPMin()).norm()*0.025f;
+
+    if (grid->meshPts.empty())
+    {
+        glBegin(GL_POINTS);
+        {
+            for (int z=0, ind=0; z<grid->getNz(); z++)
+                for (int y=0; y<grid->getNy(); y++)
+                    for (int x=0; x<grid->getNx(); x++, ind++)
+                    {
+                        CudaDistanceGrid::Coord p = grid->coord(x,y,z);
+                        CudaDistanceGrid::Real d = (*grid)[ind];
+                        if (d < mindist || d > maxdist) continue;
+                        d /= maxdist;
+                        if (d<0)
+                            glColor3d(1+d*0.25, 0, 1+d);
+                        else
+                            glColor3d(0, 1-d*0.25, 1-d);
+                        glVertex3fv(p.ptr());
+                    }
+        }
+        glEnd();
+    }
+    else
+    {
+        glColor3d(1, 1 ,1);
+        glBegin(GL_POINTS);
+        for (unsigned int i=0; i<grid->meshPts.size(); i++)
+        {
+            CudaDistanceGrid::Coord p = grid->meshPts[i];
+            glVertex3fv(p.ptr());
+        }
+        glEnd();
+        glBegin(GL_LINES);
+        for (unsigned int i=0; i<grid->meshPts.size(); i++)
+        {
+            CudaDistanceGrid::Coord p = grid->meshPts[i];
+            glColor3d(1, 1 ,1);
+            CudaDistanceGrid::Coord grad = grid->grad(p);
+            grad.normalize();
+            for (int j = -2; j <= 2; j++)
+            {
+                CudaDistanceGrid::Coord p2 = p + grad * (j*maxdist/2);
+                CudaDistanceGrid::Real d = grid->eval(p2);
+                //if (rabs(d) > maxdist) continue;
+                d /= maxdist;
+                if (d<0)
+                    glColor3d(1+d*0.25, 0, 1+d);
+                else
+                    glColor3d(0, 1-d*0.25, 1-d);
+                glVertex3fv(p2.ptr());
+                if (j>-2 && j < 2)
+                    glVertex3fv(p2.ptr());
+            }
+        }
+        glEnd();
+    }
+    if (elems[index].isTransformed)
+    {
+        glPopMatrix();
+    }
+}
+
+
+
 
 } // namespace cuda
 

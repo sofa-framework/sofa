@@ -367,6 +367,182 @@ protected:
     static std::map<CudaDistanceGridParams, CudaDistanceGrid*>& getShared();
 
 };
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+class CudaRigidDistanceGridCollisionModel;
+
+class CudaRigidDistanceGridCollisionElement : public core::TCollisionElementIterator<CudaRigidDistanceGridCollisionModel>
+{
+public:
+    CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, int index);
+
+    explicit CudaRigidDistanceGridCollisionElement(core::CollisionElementIterator& i);
+
+    CudaDistanceGrid* getGrid();
+
+    bool isTransformed();
+    const Matrix3& getRotation();
+    const Vector3& getTranslation();
+
+    void setGrid(CudaDistanceGrid* surf);
+
+    /// @name Previous state data
+    /// Used to estimate velocity in case the distance grid itself is dynamic
+    /// @{
+    CudaDistanceGrid* getPrevGrid();
+    const Matrix3& getPrevRotation();
+    const Vector3& getPrevTranslation();
+    double getPrevDt();
+    /// @}
+
+    /// Set new grid and transform, keeping the old state to estimate velocity
+    void setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+};
+
+class CudaRigidDistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
+{
+protected:
+
+    class ElementData
+    {
+    public:
+        Matrix3 rotation;
+        Vector3 translation;
+        CudaDistanceGrid* grid;
+
+        /// @name Previous state data
+        /// Used to estimate velocity in case the distance grid itself is dynamic
+        /// @{
+        CudaDistanceGrid* prevGrid; ///< Previous grid
+        Matrix3 prevRotation; ///< Previous rotation
+        Vector3 prevTranslation; ///< Previous translation
+        double prevDt; ///< Time difference between previous and current state
+        /// @}
+
+        bool isTransformed; ///< True if translation/rotation was set
+        ElementData() : grid(NULL), prevGrid(NULL), prevDt(0.0), isTransformed(false) { rotation.identity(); prevRotation.identity(); }
+    };
+
+    std::vector<ElementData> elems;
+    bool modified;
+
+    // Input data parameters
+    DataField< std::string > filename;
+    DataField< double > scale;
+    DataField< helper::fixed_array<CudaDistanceGrid::Coord,2> > box;
+    DataField< int > nx;
+    DataField< int > ny;
+    DataField< int > nz;
+    DataField< std::string > dumpfilename;
+
+    core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
+
+    void updateGrid();
+public:
+    typedef Rigid3Types InDataTypes;
+    typedef Vec3Types DataTypes;
+    typedef CudaRigidDistanceGridCollisionElement Element;
+
+    DataField< bool > usePoints;
+
+    CudaRigidDistanceGridCollisionModel();
+
+    ~CudaRigidDistanceGridCollisionModel();
+
+    core::componentmodel::behavior::MechanicalState<InDataTypes>* getRigidModel() { return rigid; }
+    core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return rigid; }
+
+    void init();
+
+    CudaDistanceGrid* getGrid(int index=0)
+    {
+        return elems[index].grid;
+    }
+    bool isTransformed(int index=0)
+    {
+        return elems[index].isTransformed;
+    }
+    const Matrix3& getRotation(int index=0)
+    {
+        return elems[index].rotation;
+    }
+    const Vector3& getTranslation(int index=0)
+    {
+        return elems[index].translation;
+    }
+
+    void setGrid(CudaDistanceGrid* surf, int index=0);
+
+    CudaDistanceGrid* getPrevGrid(int index=0)
+    {
+        return elems[index].prevGrid;
+    }
+    const Matrix3& getPrevRotation(int index=0)
+    {
+        return elems[index].prevRotation;
+    }
+    const Vector3& getPrevTranslation(int index=0)
+    {
+        return elems[index].prevTranslation;
+    }
+    double getPrevDt(int index=0)
+    {
+        return elems[index].prevDt;
+    }
+
+    /// Set new grid and transform, keeping the old state to estimate velocity
+    void setNewState(int index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+
+    /// @}
+
+    /// Set new grid and transform, keeping the old state to estimate velocity
+    void setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+
+    // -- CollisionModel interface
+
+    void resize(int size);
+
+    /// Create or update the bounding volume hierarchy.
+    void computeBoundingTree(int maxDepth=0);
+
+    void draw(int index);
+
+    // -- VisualModel interface
+
+    void draw();
+
+    void initTextures() { }
+
+    void update() { }
+};
+
+inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, int index)
+    : core::TCollisionElementIterator<CudaRigidDistanceGridCollisionModel>(model, index)
+{}
+
+inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<CudaRigidDistanceGridCollisionModel>(static_cast<CudaRigidDistanceGridCollisionModel*>(i.getCollisionModel()), i.getIndex())
+{
+}
+
+inline CudaDistanceGrid* CudaRigidDistanceGridCollisionElement::getGrid() { return model->getGrid(index); }
+inline void CudaRigidDistanceGridCollisionElement::setGrid(CudaDistanceGrid* surf) { return model->setGrid(surf, index); }
+
+inline bool CudaRigidDistanceGridCollisionElement::isTransformed() { return model->isTransformed(index); }
+inline const Matrix3& CudaRigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
+inline const Vector3& CudaRigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
+
+inline CudaDistanceGrid* CudaRigidDistanceGridCollisionElement::getPrevGrid() { return model->getPrevGrid(index); }
+inline const Matrix3& CudaRigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
+inline const Vector3& CudaRigidDistanceGridCollisionElement::getPrevTranslation() { return model->getPrevTranslation(index); }
+inline double CudaRigidDistanceGridCollisionElement::getPrevDt() { return model->getPrevDt(index); }
+
+inline void CudaRigidDistanceGridCollisionElement::setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
+{
+    return model->setNewState(dt, grid, rotation, translation);
+}
 
 } // namespace cuda
 

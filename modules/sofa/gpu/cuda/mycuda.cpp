@@ -23,6 +23,7 @@ SOFA_LINK_CLASS(CudaIdentityMapping)
 SOFA_LINK_CLASS(CudaBarycentricMapping)
 SOFA_LINK_CLASS(CudaDistanceGridCollisionModel)
 SOFA_LINK_CLASS(CudaTetrahedronFEMForceField)
+SOFA_LINK_CLASS(CudaCollision)
 
 void mycudaLogError(int err, const char* src)
 {
