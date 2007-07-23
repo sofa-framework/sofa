@@ -1341,6 +1341,14 @@ public:
             if (useSpecular)
                 scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_specular", specular);
 
+            if (ambient[3] < 1.0)
+            {
+                // enable alpha blending
+                scene->addParam(idP,flowvr::render::ChunkPrimParam::PARAMOPENGL,"Blend",true);
+                scene->addParam(idP,flowvr::render::ChunkPrimParam::ORDER,"",1);
+                scene->addParam(idP,flowvr::render::ChunkPrimParam::PARAMOPENGL,"DepthWrite",false);
+            }
+
             // add user-defined textures
             for (std::map<std::string,std::string>::const_iterator it = paramT.begin(), itend = paramT.end(); it != itend; ++it)
             {
