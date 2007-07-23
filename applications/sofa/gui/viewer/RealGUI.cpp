@@ -1639,7 +1639,7 @@ void RealGUI::RightClickedItemInSceneView(QListViewItem *item, const QPoint& poi
 /*****************************************************************************************************************/
 void RealGUI::graphAddObject()
 {
-    bool isAnimated = startButton->isDown();
+    bool isAnimated = startButton->isDown() || startButton->isChecked();;
     playpauseGUI(false);
     //Just pop up the dialog window
     if (node_clicked != NULL)
@@ -1655,7 +1655,7 @@ void RealGUI::graphAddObject()
 /*****************************************************************************************************************/
 void RealGUI::graphRemoveObject()
 {
-    bool isAnimated = startButton->isDown();
+    bool isAnimated = startButton->isDown() || startButton->isChecked();;
     playpauseGUI(false);
     if (node_clicked != NULL)
     {
@@ -1708,7 +1708,8 @@ void RealGUI::graphRemoveObject()
 /*****************************************************************************************************************/
 void RealGUI::graphModify()
 {
-    bool isAnimated = startButton->isDown();
+
+    bool isAnimated = startButton->isDown() || startButton->isChecked();
     playpauseGUI(false);
     if (item_clicked != NULL)
     {
@@ -1896,7 +1897,7 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
     path = sofa::helper::system::DataRepository.getFile(  path );
 
     //Desactivate the animate-> no more graph modification
-    bool isAnimated = startButton->isDown();
+    bool isAnimated = startButton->isDown() || startButton->isChecked();;
     playpauseGUI(false);
     //If we add the object without clicking on the graph (direct use of the method),
     //the object will be added to the root node
@@ -1997,7 +1998,7 @@ void RealGUI::graphCollapse()
 
 void RealGUI::graphExpand()
 {
-    bool isAnimated = startButton->isDown();
+    bool isAnimated = startButton->isDown() || startButton->isChecked();;
     playpauseGUI(false);
     item_clicked->setOpen(true);
     Q3ListViewItem *item_clicked_back = item_clicked;
