@@ -462,12 +462,14 @@ public:
                 }
                 else
                 {
+                    float scale2 = 1.0;
+                    if (matrix[3][3] != 0) scale2 = 1/matrix[3][3];
                     for (unsigned int i=0; i<nbv; i++)
                     {
                         Vec3f v = vertices[i]*scale;
                         v += trans;
                         Vec4f tv = matrix * Vec4f(v[0],v[1],v[2],1.0f);
-                        x[i] = Vec3f(tv[0],tv[1],tv[2]);
+                        x[i] = Vec3f(tv[0],tv[1],tv[2])*scale2;
                     }
                 }
             }
@@ -499,12 +501,14 @@ public:
                 }
                 else
                 {
+                    float scale2 = 1.0;
+                    if (matrix[3][3] != 0) scale2 = 1/matrix[3][3];
                     for (unsigned int i=0; i<nbv; i++)
                     {
                         Vec3f v = vertices[i]*scale;
                         v += trans;
                         Vec4f tv = matrix * Vec4f(v[0],v[1],v[2],1.0f);
-                        x[i] = Vec3d(tv[0],tv[1],tv[2]);
+                        x[i] = Vec3d(tv[0],tv[1],tv[2])*scale2;
                     }
                 }
                 if (doComputeV)
