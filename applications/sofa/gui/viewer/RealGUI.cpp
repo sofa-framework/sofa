@@ -1527,7 +1527,49 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
                 (object_Scale[1]-object_Scale[0]) * ( rand()/ ((float)RAND_MAX) ) + object_Scale[0]);
         break;
     }
-    default:break;
+
+    case Qt::Key_7:
+    {
+        std::string object("demo1.scn");
+        if (!sofa::helper::system::DataRepository.findFile(  object ) )
+            return;
+
+
+        object = sofa::helper::system::DataRepository.getFile(  object );
+
+        fileOpen(object.c_str());
+        break;
+    }
+
+    case Qt::Key_8:
+    {
+        std::string object("demo2.scn");
+        if (!sofa::helper::system::DataRepository.findFile(  object ) )
+            return;
+
+
+        object = sofa::helper::system::DataRepository.getFile(  object );
+
+        fileOpen(object.c_str());
+        break;
+    }
+
+    case Qt::Key_9:
+    {
+        std::string object("demo3.scn");
+        if (!sofa::helper::system::DataRepository.findFile(  object ) )
+            return;
+
+
+        object = sofa::helper::system::DataRepository.getFile(  object );
+
+        fileOpen(object.c_str());
+        break;
+    }
+    default:
+    {
+        break;
+    }
     }
 }
 
