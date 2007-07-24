@@ -57,7 +57,7 @@ public:
     virtual const std::string&             getSceneFileName() {  return sceneFileName;}
 
     virtual void setup() {}
-    virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL)=0;
+    virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false)=0;
     virtual void SwitchToPresetView()=0;
     virtual QString helpString()=0;
     virtual bool ready() { return true; }

@@ -2419,7 +2419,7 @@ void QtViewer::screenshot(const std::string filename)
 }
 
 
-void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filename)
+void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filename, bool keepParams)
 {
     std::ostringstream ofilename;
     std::string screenshot_prefix;
@@ -2456,7 +2456,7 @@ void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filena
         _panSpeed = (sceneMaxBBox-sceneMinBBox).norm()*0.5;
         _zoomSpeed = (sceneMaxBBox-sceneMinBBox).norm();
 
-        SwitchToPresetView();
+        if (!keepParams) SwitchToPresetView();
         if (interactor != NULL)
             interactor = NULL;
     }

@@ -183,7 +183,7 @@ protected:
     void StoreLightMatrices();
 
 public:
-    void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL);
+    void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false);
     sofa::simulation::tree::GNode* getScene()
     {
         return groot;

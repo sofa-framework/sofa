@@ -602,7 +602,7 @@ bool RealGUI::setViewer(const char* name)
 
     std::string filename = viewer->getSceneFileName();
     GNode* groot = new GNode; // empty scene to do the transition
-    setScene(groot,filename.c_str());
+    setScene(groot,filename.c_str(), true); // keep the current display flags
     left_stack->removeWidget(viewer->getQWidget());
     delete viewer;
     viewer = NULL;
@@ -658,11 +658,16 @@ bool RealGUI::setViewer(const char* name)
         graphListener->removeChild(NULL, groot);
 
     addViewer();
-    fileOpen(filename.c_str());
+    fileOpen(filename.c_str(), true); // keep the current display flags
     return true;
 }
 
 void RealGUI::fileOpen(const char* filename)
+{
+    fileOpen(filename, false);
+}
+
+void RealGUI::fileOpen(const char* filename, bool keepParams)
 {
     //Hide the dialog to add a new object in the graph
     if (dialog != NULL) dialog->hide();
@@ -686,7 +691,7 @@ void RealGUI::fileOpen(const char* filename)
         qFatal("Failed to load %s",filename);
         return;
     }
-    setScene(groot, filename);
+    setScene(groot, filename, keepParams);
 }
 
 #ifdef SOFA_PML
@@ -723,7 +728,7 @@ void RealGUI::lmlOpen(const char* filename)
 }
 #endif
 
-void RealGUI::setScene(GNode* groot, const char* filename)
+void RealGUI::setScene(GNode* groot, const char* filename, bool keepParams)
 {
     if (viewer->getScene()!=NULL)
     {
@@ -743,20 +748,37 @@ void RealGUI::setScene(GNode* groot, const char* filename)
     //this->groot = groot;
     //sceneFileName = filename;
 
-    viewer->setScene(groot, filename);
+    viewer->setScene(groot, filename, keepParams);
     eventNewTime();
 
+    if (!keepParams)
+    {
+        showVisual->setChecked(groot->getShowVisualModels());
+        showBehavior->setChecked(groot->getShowBehaviorModels());
+        showCollision->setChecked(groot->getShowCollisionModels());
+        showBoundingCollision->setChecked(groot->getShowBoundingCollisionModels());
+        showForceField->setChecked(groot->getShowForceFields());
+        showInteractionForceField->setChecked(groot->getShowInteractionForceFields());
+        showMapping->setChecked(groot->getShowMappings());
+        showMechanicalMapping->setChecked(groot->getShowMechanicalMappings());
+        showWireFrame->setChecked(groot->getShowWireFrame());
+        showNormals->setChecked(groot->getShowNormals());
+    }
+    else
+    {
+        groot->setShowVisualModels(showVisual->isChecked());
+        groot->setShowBehaviorModels(showBehavior->isChecked());
+        groot->setShowCollisionModels(showCollision->isChecked());
+        groot->setShowBoundingCollisionModels(showBoundingCollision->isChecked());
+        groot->setShowForceFields(showForceField->isChecked());
+        groot->setShowInteractionForceFields(showInteractionForceField->isChecked());
+        groot->setShowMappings(showMapping->isChecked());
+        groot->setShowMechanicalMappings(showMechanicalMapping->isChecked());
+        groot->setShowWireFrame(showWireFrame->isChecked());
+        groot->setShowNormals(showNormals->isChecked());
+        Simulation::updateContext(groot);
+    }
 
-    showVisual->setChecked(groot->getShowVisualModels());
-    showBehavior->setChecked(groot->getShowBehaviorModels());
-    showCollision->setChecked(groot->getShowCollisionModels());
-    showBoundingCollision->setChecked(groot->getShowBoundingCollisionModels());
-    showForceField->setChecked(groot->getShowForceFields());
-    showInteractionForceField->setChecked(groot->getShowInteractionForceFields());
-    showMapping->setChecked(groot->getShowMappings());
-    showMechanicalMapping->setChecked(groot->getShowMechanicalMappings());
-    showWireFrame->setChecked(groot->getShowWireFrame());
-    showNormals->setChecked(groot->getShowNormals());
     startButton->setOn(groot->getContext()->getAnimate());
     dtEdit->setText(QString::number(groot->getDt()));
 
@@ -853,10 +875,10 @@ void RealGUI::fileReload()
         else if(s.endsWith(".lml"))
             lmlOpen(s);
         else
-            fileOpen(s);
+            fileOpen(s, true);
     }
 #else
-    fileOpen(filename.c_str());
+    fileOpen(filename.c_str(), true);
 #endif
 
 

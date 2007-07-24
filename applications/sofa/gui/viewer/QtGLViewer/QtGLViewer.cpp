@@ -1865,7 +1865,7 @@ void QtGLViewer::screenshot(const std::string filename)
 }
 
 
-void QtGLViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filename)
+void QtGLViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filename, bool keepParams)
 {
 
     std::ostringstream ofilename;
@@ -1903,7 +1903,7 @@ void QtGLViewer::setScene(sofa::simulation::tree::GNode* scene, const char* file
     initTexturesDone = false;
     sceneBBoxIsValid = false;
 
-    SwitchToPresetView();
+    if (!keepParams) SwitchToPresetView();
     update();
 
 }

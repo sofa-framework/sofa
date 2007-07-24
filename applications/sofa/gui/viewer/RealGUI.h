@@ -91,9 +91,11 @@ public:
     RealGUI( const char* viewername, const std::vector<std::string>& options = std::vector<std::string>() );
     ~RealGUI();
 
+
     virtual void fileOpen(const char* filename); //, int TYPE=NORMAL);
+    virtual void fileOpen(const char* filename, bool keepParams); //, int TYPE=NORMAL);
     virtual void fileSaveAs(const char* filename);
-    virtual void setScene(GNode* groot, const char* filename=NULL);
+    virtual void setScene(GNode* groot, const char* filename=NULL, bool keepParams=false);
     virtual void setTitle( const char* windowTitle );
 
     //public slots:
