@@ -131,7 +131,7 @@ public:
     DataField<int> f_method; ///< the computation method of the displacements
     DataField<Real> f_poissonRatio;
     DataField<Real> f_youngModulus;
-    DataField<vector<Real>> f_localStiffnessFactor;
+    DataField< vector<Real> > f_localStiffnessFactor;
     //DataField<Real> f_dampingRatio;
     DataField<bool> f_updateStiffnessMatrix;
     DataField<bool> f_assembling;
