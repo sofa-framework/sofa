@@ -110,7 +110,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
                 f  = (j&1)?(map[i].baryCoords[0]):(1-map[i].baryCoords[0]);
                 f *= (j&2)?(map[i].baryCoords[1]):(1-map[i].baryCoords[1]);
                 f *= (j&4)?(map[i].baryCoords[2]):(1-map[i].baryCoords[2]);
-                std::cout << "mapT["<<b<<"*"<<maxNOut*BSIZE<<"+"<<num<<"*"<<BSIZE<<"+"<<index<<"] = < "<<i<<", "<<f<<">"<<std::endl;
+                //std::cout << "mapT["<<b<<"*"<<maxNOut*BSIZE<<"+"<<num<<"*"<<BSIZE<<"+"<<index<<"] = < "<<i<<", "<<f<<">"<<std::endl;
                 mapT[(maxNOut*b+num)*BSIZE+index] = std::make_pair(i,f);
             }
         }

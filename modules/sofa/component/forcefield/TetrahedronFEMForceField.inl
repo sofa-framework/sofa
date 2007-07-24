@@ -140,9 +140,20 @@ void TetrahedronFEMForceField<DataTypes>::init()
         */
         _indexedElements = tetras;
     }
-
-    VecCoord& p = *this->mstate->getX();
-    _initialPoints = p;
+    if (_mesh->hasPos())
+    {
+        // use positions from topology
+        _initialPoints.resize(_mesh->getNbPoints());
+        for (unsigned int i=0; i<_initialPoints.size(); i++)
+        {
+            _initialPoints[i] = Coord(_mesh->getPX(i),_mesh->getPY(i),_mesh->getPZ(i));
+        }
+    }
+    else
+    {
+        VecCoord& p = *this->mstate->getX();
+        _initialPoints = p;
+    }
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
@@ -427,7 +438,8 @@ void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatri
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d)
 {
-    const Real youngModulus = f_youngModulus.getValue();
+    const vector<Real>& localStiffnessFactor = f_localStiffnessFactor.getValue();
+    const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*f_youngModulus.getValue();
     const Real poissonRatio = f_poissonRatio.getValue();
 
     _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = 1;

@@ -131,7 +131,8 @@ public:
     DataField<int> f_method; ///< the computation method of the displacements
     DataField<Real> f_poissonRatio;
     DataField<Real> f_youngModulus;
-    DataField<Real> f_dampingRatio;
+    DataField<vector<Real>> f_localStiffnessFactor;
+    //DataField<Real> f_dampingRatio;
     DataField<bool> f_updateStiffnessMatrix;
     DataField<bool> f_assembling;
 
@@ -139,9 +140,10 @@ public:
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
         , f_method(dataField(&f_method,(int)LARGE,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
-        , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
-        , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus",""))
-        , f_dampingRatio(dataField(&f_dampingRatio,(Real)0,"dampingRatio",""))
+        , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
+        , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
+        , f_localStiffnessFactor(dataField(&f_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
+        //, f_dampingRatio(dataField(&f_dampingRatio,(Real)0,"dampingRatio",""))
         , f_updateStiffnessMatrix(dataField(&f_updateStiffnessMatrix,true,"updateStiffnessMatrix",""))
         , f_assembling(dataField(&f_assembling,false,"assembling",""))
     {}
