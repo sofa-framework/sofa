@@ -120,11 +120,11 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
     RegularGridMapperCuda3f_applyJT(insize, maxNOut, gridsize, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
 }
 
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecConst& out, const Out::VecConst& in )
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
 {
 }
 
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::draw( const Out::VecCoord& out, const In::VecCoord& in)
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
 {
 }
 

@@ -186,7 +186,7 @@ public:
               ] = index+1;
     }
 
-    void setE(int i, const Element& indices, const Coord& a, const Coord& b, const Coord& c, const Coord& d, const MaterialStiffness& K, const StrainDisplacement& J)
+    void setE(int i, const Element& indices, const Coord& /*a*/, const Coord& b, const Coord& c, const Coord& d, const MaterialStiffness& K, const StrainDisplacement& /*J*/)
     {
         /*std::cout << "CPU Info:\n a = "<<a<<"\n b = "<<b<<"\n c = "<<c<<"\n d = "<<d<<"\n K = "
             <<K[0]<<"\n     "<<K[1]<<"\n     "<<K[2]<<"\n     "

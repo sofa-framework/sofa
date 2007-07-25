@@ -53,12 +53,12 @@ public:
     int addPoint(const Vector3& P, int index)
     {
         int i = Inherit::addPoint(P, index);
-        if (!mapping)
+        if (!this->mapping)
         {
             MCollisionModel* model = this->model;
             MMechanicalState* outmodel = this->outmodel;
-            DataTypes::Coord& x = (*outmodel->getX())[i];
-            DataTypes::Deriv& v = (*outmodel->getV())[i];
+            typename DataTypes::Coord& x = (*outmodel->getX())[i];
+            typename DataTypes::Deriv& v = (*outmodel->getV())[i];
             if (model->isTransformed(index))
             {
                 x = model->getTranslation(index) + model->getRotation(index) * P;
@@ -67,7 +67,7 @@ public:
             {
                 x = P;
             }
-            v = DataTypes::Deriv();
+            v = typename DataTypes::Deriv();
         }
         return i;
     }

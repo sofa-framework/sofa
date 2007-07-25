@@ -1,6 +1,9 @@
 #ifdef SOFA_HAVE_GLEW
 #include <GL/glew.h>
 #endif
+#ifdef SOFA_HAVE_FLOWVR
+#include <flowvr/render/mesh.h>
+#endif
 #include "CudaDistanceGridCollisionModel.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/CubeModel.h>

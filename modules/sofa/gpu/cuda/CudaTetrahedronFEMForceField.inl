@@ -108,7 +108,7 @@ void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f,
         int ncubes = _trimgrid->getNbCubes();
         for (int i=0; i<ncubes; i++)
             if (_trimgrid->isCubeActive(i)) ++nactive;
-        if (data.elems.size() != 6*nactive)
+        if ((int)data.elems.size() != 6*nactive)
             reinit();
     }
 
