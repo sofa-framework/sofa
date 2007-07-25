@@ -674,14 +674,13 @@ void CudaRigidDistanceGridCollisionModel::draw(int index)
         glBegin(GL_POINTS);
         for (unsigned int i=0; i<grid->meshPts.size(); i++)
         {
-            CudaDistanceGrid::Coord p = grid->meshPts[i];
-            glVertex3fv(p.ptr());
+            glVertex3fv(grid->meshPts[i].ptr());
         }
         glEnd();
         glBegin(GL_LINES);
         for (unsigned int i=0; i<grid->meshPts.size(); i++)
         {
-            CudaDistanceGrid::Coord p = grid->meshPts[i];
+            CudaDistanceGrid::Coord p ( grid->meshPts[i].ptr() );
             glColor3d(1, 1 ,1);
             CudaDistanceGrid::Coord grad = grid->grad(p);
             grad.normalize();

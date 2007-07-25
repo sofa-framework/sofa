@@ -29,6 +29,7 @@ public:
     typedef float Real;
     static Real maxDist() { return (Real)1e10; }
     typedef Vec3f Coord;
+    //typedef Vec4f SamplingPoint; ///< 3D coordinates + radius
     typedef CudaVector<Real> VecReal;
     typedef CudaVector<Coord> VecCoord;
 
@@ -63,6 +64,9 @@ public:
     int getNy() const { return ny; }
     int getNz() const { return nz; }
     const Coord& getCellWidth() const { return cellWidth; }
+    const Coord& getInvCellWidth() const { return invCellWidth; }
+    const VecReal& getDists() const { return dists; }
+    VecReal& getDists() { return dists; }
 
     int size() const { return nxnynz; }
 
@@ -273,6 +277,7 @@ public:
         return d2;
     }
 
+    //CudaVector<SamplingPoint> meshPts;
     CudaVector<Coord> meshPts;
     sofa::component::topology::MeshTopology::SeqTriangles meshTriangles;
     sofa::component::topology::MeshTopology::SeqQuads meshQuads;

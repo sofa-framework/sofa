@@ -1,5 +1,5 @@
 #include "CudaDistanceGridCollisionModel.h"
-#include "CudaMechanicalObject.h"
+#include "CudaSphereModel.h"
 #include <sofa/component/collision/NewProximityIntersection.inl>
 #include <sofa/component/collision/DiscreteIntersection.inl>
 #include <sofa/component/collision/RayPickInteractor.h>
@@ -33,7 +33,6 @@ namespace cuda
 SOFA_DECL_CLASS(CudaCollision)
 
 using namespace sofa::component::collision;
-typedef sofa::component::collision::TSphereModel<CudaVec3fTypes> CudaSphereModel;
 
 class CudaProximityIntersection : public sofa::component::collision::NewProximityIntersection
 {
