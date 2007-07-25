@@ -437,7 +437,7 @@ void TriangleSetTopologyModifier< DataTypes >::removeEdgesProcess( const std::ve
             {
 
                 edgeIndex=container->getEdgeIndexInTriangle(container->m_triangleEdge[(*itt)],lastEdge);
-                assert(edgeIndex!= -1);
+                assert((int)edgeIndex!= -1);
                 container->m_triangleEdge[(*itt)][(unsigned int)edgeIndex]=indices[i];
             }
 

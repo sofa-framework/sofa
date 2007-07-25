@@ -52,7 +52,10 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
 RigidDistanceGridCollisionModel::~RigidDistanceGridCollisionModel()
 {
     for (unsigned int i=0; i<elems.size(); i++)
+    {
         if (elems[i].grid!=NULL) elems[i].grid->release();
+        if (elems[i].prevGrid!=NULL) elems[i].prevGrid->release();
+    }
 }
 
 void RigidDistanceGridCollisionModel::init()
@@ -101,9 +104,8 @@ void RigidDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
 
 void RigidDistanceGridCollisionModel::setNewState(int index, double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
 {
-    if (grid != elems[index].grid)
-        grid->addRef();
-    if (elems[index].prevGrid!=NULL && elems[index].prevGrid!=elems[index].grid)
+    grid->addRef();
+    if (elems[index].prevGrid!=NULL)
         elems[index].prevGrid->release();
     elems[index].prevGrid = elems[index].grid;
     elems[index].grid = grid;
@@ -351,8 +353,9 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
 
 FFDDistanceGridCollisionModel::~FFDDistanceGridCollisionModel()
 {
-    for (unsigned int i=0; i<elems.size(); i++)
-        if (elems[i].grid!=NULL) elems[i].grid->release();
+    //for (unsigned int i=0; i<elems.size(); i++)
+    //    if (elems[i].grid!=NULL) elems[i].grid->release();
+    if (elems.size()>0 && elems[0].grid!=NULL) elems[0].grid->release();
 }
 
 void FFDDistanceGridCollisionModel::init()
@@ -383,22 +386,30 @@ void FFDDistanceGridCollisionModel::init()
         std::cout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
         grid->save(dumpfilename.getValue());
     }
-
     /// place points in ffd elements
     int nbp = grid->meshPts.size();
     elems.resize(ffdGrid->getNbCubes());
+    std::cout << "FFDDistanceGridCollisionModel: placing "<<nbp<<" points in "<<ffdGrid->getNbCubes()<<" cubes."<<std::endl;
     for (int i=0; i<nbp; i++)
     {
         Vec3Types::Coord p0 = grid->meshPts[i];
         Vector3 bary;
         int elem = ffdGrid->findCube(p0,bary[0],bary[1],bary[2]);
         if (elem == -1) continue;
-        DeformedCube::Point p;
-        p.index = i;
-        p.bary = bary;
-        elems[elem].points.push_back(p);
+        if ((unsigned)elem >= elems.size())
+        {
+            std::cerr << "ERROR (FFDDistanceGridCollisionModel): point "<<i<<" "<<p0<<" in invalid cube "<<elem<<std::endl;
+        }
+        else
+        {
+            DeformedCube::Point p;
+            p.index = i;
+            p.bary = bary;
+            elems[elem].points.push_back(p);
+        }
     }
     /// fill other data and remove inactive elements
+    std::cout << "FFDDistanceGridCollisionModel: initializing "<<ffdGrid->getNbCubes()<<" cubes."<<std::endl;
     int c=0;
     for (int e=0; e<ffdGrid->getNbCubes(); e++)
     {
@@ -418,6 +429,7 @@ void FFDDistanceGridCollisionModel::init()
         }
     }
     resize(c);
+    std::cout << "FFDDistanceGridCollisionModel: "<<c<<" active cubes."<<std::endl;
     std::cout << "< FFDDistanceGridCollisionModel::init()"<<std::endl;
 }
 
@@ -653,6 +665,15 @@ DistanceGrid::DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defau
     , invCellWidth((nx-1)/(pmax[0]-pmin[0]), (ny-1)/(pmax[1]-pmin[1]),(nz-1)/(pmax[2]-pmin[2]))
     , cubeDim(0)
 {
+}
+
+DistanceGrid::~DistanceGrid()
+{
+    std::map<DistanceGridParams, DistanceGrid*>& shared = getShared();
+    std::map<DistanceGridParams, DistanceGrid*>::iterator it = shared.begin();
+    while (it != shared.end() && it->second != this) ++it;
+    if (it != shared.end())
+        shared.erase(it); // remove this grid from the list of already loaded grids
 }
 
 /// Add one reference to this grid. Note that loadShared already does this.

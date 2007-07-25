@@ -385,7 +385,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 else if (gnormal[1] >  0.99f) gnormal = Vector3( 0.0f, 1.0f,  0.0f);
                 if (gnormal[2] < -0.99f) gnormal = Vector3( 0.0f, 0.0f, -1.0f);
                 else if (gnormal[2] >  0.99f) gnormal = Vector3( 0.0f, 0.0f,  1.0f);
-                for (unsigned int i=0; i<x1.size(); i++)
+                for (unsigned int i=0; i<x2.size(); i++)
                 {
                     DistanceGrid::Coord p2 = x2[i];
                     DistanceGrid::Coord p1 = rotation.multTranspose(p2-translation);
@@ -413,7 +413,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
             else
             {
                 // general case
-                for (unsigned int i=0; i<x1.size(); i++)
+                for (unsigned int i=0; i<x2.size(); i++)
                 {
                     DistanceGrid::Coord p2 = x2[i];
                     DistanceGrid::Coord p1 = rotation.multTranspose(p2-translation);
@@ -1031,9 +1031,9 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                     if (err < 0.005f)
                     {
                         // we found the corresponding point, but is is only valid if inside the current cube
-                        if (b[0] > -0.001f && b[0] < 1.001f
-                            && b[1] > -0.001f && b[1] < 1.001f
-                            && b[2] > -0.001f && b[2] < 1.001f)
+                        if (b[0] > 0.001f && b[0] < 0.999f
+                            && b[1] > 0.001f && b[1] < 0.999f
+                            && b[2] > 0.001f && b[2] < 0.999f)
                         {
                             DistanceGrid::Coord pinit = c1.initpos(b);
                             DistanceGrid::Real d = grid1->interp(pinit);
@@ -1070,9 +1070,9 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                 }
                 if (iter == 5)
                 {
-                    if (b[0] > -0.001f && b[0] < 1.001f
-                        && b[1] > -0.001f && b[1] < 1.001f
-                        && b[2] > -0.001f && b[2] < 1.001f)
+                    if (b[0] > 0.001f && b[0] < 0.999f
+                        && b[1] > 0.001f && b[1] < 0.999f
+                        && b[2] > 0.001f && b[2] < 0.999f)
                         std::cerr << "ERROR: FFD-Rigid collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<std::endl;
                 }
             }
@@ -1137,9 +1137,9 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                 if (err < 0.005f)
                 {
                     // we found the corresponding point, but is is only valid if inside the current cube
-                    if (b[0] > -0.001f && b[0] < 1.001f
-                        && b[1] > -0.001f && b[1] < 1.001f
-                        && b[2] > -0.001f && b[2] < 1.001f)
+                    if (b[0] > 0.001f && b[0] < 0.999f
+                        && b[1] > 0.001f && b[1] < 0.999f
+                        && b[2] > 0.001f && b[2] < 0.999f)
                     {
                         DistanceGrid::Coord pinit = c2.initpos(b);
                         DistanceGrid::Real d = grid2->interp(pinit);
@@ -1176,9 +1176,9 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
             }
             if (iter == 5)
             {
-                if (b[0] > -0.001f && b[0] < 1.001f
-                    && b[1] > -0.001f && b[1] < 1.001f
-                    && b[2] > -0.001f && b[2] < 1.001f)
+                if (b[0] > 0.001f && b[0] < 0.999f
+                    && b[1] > 0.001f && b[1] < 0.999f
+                    && b[2] > 0.001f && b[2] < 0.999f)
                     std::cerr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p2 = "<<p2<<" b = "<<b<<" c000 = "<<c2.corners[0]<<" c100 = "<<c2.corners[1]<<" c010 = "<<c2.corners[2]<<" c110 = "<<c2.corners[3]<<" c001 = "<<c2.corners[4]<<" c101 = "<<c2.corners[5]<<" c011 = "<<c2.corners[6]<<" c111 = "<<c2.corners[7]<<" pinit = "<<c2.initpos(b)<<" pdeform = "<<c2.deform(b)<<" err = "<<err1<<std::endl;
             }
         }
@@ -1214,9 +1214,9 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                 if (err < 0.005f)
                 {
                     // we found the corresponding point, but is is only valid if inside the current cube
-                    if (b[0] > -0.001f && b[0] < 1.001f
-                        && b[1] > -0.001f && b[1] < 1.001f
-                        && b[2] > -0.001f && b[2] < 1.001f)
+                    if (b[0] > 0.001f && b[0] < 0.999f
+                        && b[1] > 0.001f && b[1] < 0.999f
+                        && b[2] > 0.001f && b[2] < 0.999f)
                     {
                         DistanceGrid::Coord pinit = c1.initpos(b);
                         DistanceGrid::Real d = grid1->interp(pinit);
@@ -1253,9 +1253,9 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
             }
             if (iter == 5)
             {
-                if (b[0] > -0.001f && b[0] < 1.001f
-                    && b[1] > -0.001f && b[1] < 1.001f
-                    && b[2] > -0.001f && b[2] < 1.001f)
+                if (b[0] > 0.001f && b[0] < 0.999f
+                    && b[1] > 0.001f && b[1] < 0.999f
+                    && b[2] > 0.001f && b[2] < 0.999f)
                     std::cerr << "ERROR: FFD-FFD collision failed to converge to undeformed point: p1 = "<<p1<<" b = "<<b<<" c000 = "<<c1.corners[0]<<" c100 = "<<c1.corners[1]<<" c010 = "<<c1.corners[2]<<" c110 = "<<c1.corners[3]<<" c001 = "<<c1.corners[4]<<" c101 = "<<c1.corners[5]<<" c011 = "<<c1.corners[6]<<" c111 = "<<c1.corners[7]<<" pinit = "<<c1.initpos(b)<<" pdeform = "<<c1.deform(b)<<" err = "<<err1<<std::endl;
             }
         }

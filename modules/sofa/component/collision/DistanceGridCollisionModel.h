@@ -34,6 +34,10 @@ public:
 
     DistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax, defaulttype::ExtVectorAllocator<Real>* alloc);
 
+protected:
+    ~DistanceGrid();
+
+public:
     /// Load a distance grid
     static DistanceGrid* load(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
 
@@ -122,13 +126,13 @@ public:
         coefs[1] = (p[1]-pmin[1])*invCellWidth[1];
         coefs[2] = (p[2]-pmin[2])*invCellWidth[2];
         int x = rfloor(coefs[0]);
-        if (x==-1) x=0; else if (x==nx-1) x=nx-2;
+        if (x<0) x=0; else if (x>=nx-1) x=nx-2;
         coefs[0] -= x;
         int y = rfloor(coefs[1]);
-        if (y==-1) y=0; else if (y==ny-1) y=ny-2;
+        if (y<0) y=0; else if (y>=ny-1) y=ny-2;
         coefs[1] -= y;
         int z = rfloor(coefs[2]);
-        if (z==-1) z=0; else if (z==nz-1) z=nz-2;
+        if (z<0) z=0; else if (z>=nz-1) z=nz-2;
         coefs[2] -= z;
         return x+nx*(y+ny*(z));
     }

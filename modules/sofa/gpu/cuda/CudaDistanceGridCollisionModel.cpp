@@ -44,6 +44,15 @@ CudaDistanceGrid::CudaDistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pma
     dists.resize(nxnynz);
 }
 
+CudaDistanceGrid::~CudaDistanceGrid()
+{
+    std::map<CudaDistanceGridParams, CudaDistanceGrid*>& shared = getShared();
+    std::map<CudaDistanceGridParams, CudaDistanceGrid*>::iterator it = shared.begin();
+    while (it != shared.end() && it->second != this) ++it;
+    if (it != shared.end())
+        shared.erase(it); // remove this grid from the list of already loaded grids
+}
+
 /// Add one reference to this grid. Note that loadShared already does this.
 CudaDistanceGrid* CudaDistanceGrid::addRef()
 {
@@ -430,7 +439,10 @@ CudaRigidDistanceGridCollisionModel::CudaRigidDistanceGridCollisionModel()
 CudaRigidDistanceGridCollisionModel::~CudaRigidDistanceGridCollisionModel()
 {
     for (unsigned int i=0; i<elems.size(); i++)
+    {
         if (elems[i].grid!=NULL) elems[i].grid->release();
+        if (elems[i].prevGrid!=NULL) elems[i].prevGrid->release();
+    }
 }
 
 void CudaRigidDistanceGridCollisionModel::init()
@@ -479,9 +491,8 @@ void CudaRigidDistanceGridCollisionModel::setGrid(CudaDistanceGrid* surf, int in
 
 void CudaRigidDistanceGridCollisionModel::setNewState(int index, double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation)
 {
-    if (grid != elems[index].grid)
-        grid->addRef();
-    if (elems[index].prevGrid!=NULL && elems[index].prevGrid!=elems[index].grid)
+    grid->addRef();
+    if (elems[index].prevGrid!=NULL)
         elems[index].prevGrid->release();
     elems[index].prevGrid = elems[index].grid;
     elems[index].grid = grid;

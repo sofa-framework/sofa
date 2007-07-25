@@ -126,7 +126,7 @@ int RigidMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
     {
         index.setValue(indexFrom);
     }
-    else if (index.getValue() != indexFrom)
+    else if ((int)index.getValue() != indexFrom)
     {
         sofa::helper::vector<unsigned int>& rep = *repartition.beginEdit();
         rep.clear();

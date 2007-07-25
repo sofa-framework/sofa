@@ -724,7 +724,7 @@ public:
                 //rigid = grid->getRigidModel();
 
                 // just create a dummy distance grid for now
-                emptyGrid = new DistanceGrid(2,2,2,DistanceGrid::Coord(0,0,0),DistanceGrid::Coord(0.001f,0.001f,0.001f));
+                emptyGrid = new DistanceGrid(2,2,2,DistanceGrid::Coord(0,0,-100),DistanceGrid::Coord(0.001f,0.001f,-99.999f));
                 for (int i=0; i<emptyGrid->size(); i++)
                     (*emptyGrid)[i] = emptyGrid->maxDist();
                 grid->resize(1);
@@ -786,68 +786,70 @@ public:
             }
         }
 
-        module->get(pInDistance, distance);
-
-        int distanceIt = -1;
-        if (distance.valid())
-            distance.stamps.read(pInDistance->stamps->it,distanceIt);
-        //const unsigned int nbv = points.data.getSize()/sizeof(Vec3f);
-        if (distance.valid() && (distanceIt != distanceLastIt || newscale))
+        if (pInDistance->isConnected())
         {
-            distanceLastIt = distanceIt;
-            //const Vec3f* vertices = points.data.getRead<Vec3f>(0);
-            const Vec3f trans = mod->f_trans.getValue();
-            const float scale = mod->f_scale.getValue()*mscale;
+            module->get(pInDistance, distance);
 
-            int nz = 0;
-            int ny = 0;
-            int nx = 0;
-            Vec3f p0, dp;
-            int bbox[6] = {-1,-1,-1,-1,-1,-1};
-            distance.stamps.read(stampSizes[0], nz);
-            distance.stamps.read(stampSizes[1], ny);
-            distance.stamps.read(stampSizes[2], nx);
-            distance.stamps.read(stampP0[0], p0[0]);
-            distance.stamps.read(stampP0[1], p0[1]);
-            distance.stamps.read(stampP0[2], p0[2]);
-            distance.stamps.read(stampDP[0], dp[0]);
-            distance.stamps.read(stampDP[1], dp[1]);
-            distance.stamps.read(stampDP[2], dp[2]);
-            for (int i=0; i<6; i++)
-                distance.stamps.read(stampBB[i], bbox[i]);
-
-            if (!nx || !ny || !nz || bbox[0] > bbox[3])
+            int distanceIt = -1;
+            distance.stamps.read(pInDistance->stamps->it,distanceIt);
+            //const unsigned int nbv = points.data.getSize()/sizeof(Vec3f);
+            if (distanceIt != distanceLastIt || newscale)
             {
-                // empty grid
-                curDistGrid->release();
-                curDistGrid = emptyGrid->addRef();
-                grid->setActive(false);
-            }
-            else
-            {
-                DistanceGrid::Coord pmin = trans + p0*scale;
-                DistanceGrid::Coord pmax = pmin + Vec3f(dp[0]*(nx-1),dp[1]*(ny-1),dp[2]*(ny-2))*scale;
-                DistanceGrid::Coord bbmin = pmin + Vec3f(dp[0]*bbox[0],dp[1]*bbox[1],dp[2]*bbox[2])*scale;
-                DistanceGrid::Coord bbmax = pmin + Vec3f(dp[0]*bbox[3],dp[1]*bbox[4],dp[2]*bbox[5])*scale;
+                distanceLastIt = distanceIt;
+                //const Vec3f* vertices = points.data.getRead<Vec3f>(0);
+                const Vec3f trans = mod->f_trans.getValue();
+                const float scale = mod->f_scale.getValue()*mscale;
 
-                if (scale==1.0f)
+                int nz = 0;
+                int ny = 0;
+                int nx = 0;
+                Vec3f p0, dp;
+                int bbox[6] = {-1,-1,-1,-1,-1,-1};
+                distance.stamps.read(stampSizes[0], nz);
+                distance.stamps.read(stampSizes[1], ny);
+                distance.stamps.read(stampSizes[2], nx);
+                distance.stamps.read(stampP0[0], p0[0]);
+                distance.stamps.read(stampP0[1], p0[1]);
+                distance.stamps.read(stampP0[2], p0[2]);
+                distance.stamps.read(stampDP[0], dp[0]);
+                distance.stamps.read(stampDP[1], dp[1]);
+                distance.stamps.read(stampDP[2], dp[2]);
+                for (int i=0; i<6; i++)
+                    distance.stamps.read(stampBB[i], bbox[i]);
+
+                if (!nx || !ny || !nz || bbox[0] > bbox[3])
                 {
+                    // empty grid
                     curDistGrid->release();
-                    curDistGrid = new DistanceGrid(nx,ny,nz, pmin, pmax, new SofaFlowVRAllocator<DistanceGrid::Real>(distance.data));
+                    curDistGrid = emptyGrid->addRef();
+                    grid->setActive(false);
                 }
                 else
                 {
-                    curDistGrid->release();
-                    curDistGrid = new DistanceGrid(nx,ny,nz, pmin, pmax);
-                    const float* in = distance.data.getRead<float>();
-                    for (int i=0; i<curDistGrid->size(); i++)
-                        (*curDistGrid)[i] = in[i]*scale;
+                    DistanceGrid::Coord pmin = trans + p0*scale;
+                    DistanceGrid::Coord pmax = pmin + Vec3f(dp[0]*(nx-1),dp[1]*(ny-1),dp[2]*(ny-2))*scale;
+                    DistanceGrid::Coord bbmin = pmin + Vec3f(dp[0]*bbox[0],dp[1]*bbox[1],dp[2]*bbox[2])*scale;
+                    DistanceGrid::Coord bbmax = pmin + Vec3f(dp[0]*bbox[3],dp[1]*bbox[4],dp[2]*bbox[5])*scale;
+
+                    if (scale==1.0f)
+                    {
+                        curDistGrid->release();
+                        curDistGrid = new DistanceGrid(nx,ny,nz, pmin, pmax, new SofaFlowVRAllocator<DistanceGrid::Real>(distance.data));
+                    }
+                    else
+                    {
+                        curDistGrid->release();
+                        curDistGrid = new DistanceGrid(nx,ny,nz, pmin, pmax);
+                        const float* in = distance.data.getRead<float>();
+                        for (int i=0; i<curDistGrid->size(); i++)
+                            (*curDistGrid)[i] = in[i]*scale;
+                    }
+                    curDistGrid->setBBMin(bbmin);
+                    curDistGrid->setBBMax(bbmax);
+                    grid->setActive(true);
                 }
-                curDistGrid->setBBMin(bbmin);
-                curDistGrid->setBBMax(bbmax);
-                grid->setActive(true);
+                newmotion = true;
             }
-            newmotion = true;
         }
 
         if (newmotion)

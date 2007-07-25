@@ -35,6 +35,11 @@ public:
 
     CudaDistanceGrid(int nx, int ny, int nz, Coord pmin, Coord pmax);
 
+protected:
+    ~CudaDistanceGrid();
+
+public:
+
     /// Load a distance grid
     static CudaDistanceGrid* load(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
 
