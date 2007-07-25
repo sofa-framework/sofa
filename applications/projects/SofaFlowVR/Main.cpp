@@ -763,11 +763,18 @@ public:
                     for(int i=0; i<3; i++)
                         newmscale += matrix[j][i]*matrix[j][i];
                 newmscale = rsqrt(newmscale/3);
-                if (newmscale != mscale)
-                    newscale = true;
                 for(int j=0; j<3; j++)
                     for(int i=0; i<3; i++)
                         matrix[j][i] /= newmscale;
+                if (matrix[3][3] != 0 && matrix[3][3] != 1)
+                {
+                    for(int i=0; i<3; i++)
+                        matrix[i][3] /= matrix[3][3];
+                    newmscale /= matrix[3][3];
+                    matrix[3][3] = 1;
+                }
+                if (newmscale != mscale)
+                    newscale = true;
                 mscale = newmscale;
 
                 matrixLastIt = matrixIt;
