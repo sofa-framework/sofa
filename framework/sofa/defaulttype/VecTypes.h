@@ -50,6 +50,7 @@ public:
     typedef TReal Real;
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
+    typedef vector<Real> VecReal;
 
 
     template <class T>
@@ -233,6 +234,7 @@ public:
     typedef TReal Real;
     typedef ExtVector<Coord> VecCoord;
     typedef ExtVector<Deriv> VecDeriv;
+    typedef ExtVector<Real> VecReal;
 
     template <class T>
     class SparseData

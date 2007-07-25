@@ -445,6 +445,7 @@ public:
 
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
+    typedef vector<Real> VecReal;
 
     static void set(Coord& c, double x, double y, double z)
     {
@@ -849,6 +850,7 @@ public:
 
     typedef SparseData<Coord> SparseCoord;
     typedef SparseData<Deriv> SparseDeriv;
+    typedef vector<Real> VecReal;
 
     typedef vector<SparseCoord> SparseVecCoord;
     typedef vector<SparseDeriv> SparseVecDeriv;

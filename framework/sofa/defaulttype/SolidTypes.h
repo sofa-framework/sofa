@@ -324,6 +324,7 @@ public:
     typedef SpatialVector Deriv;
     typedef Coord VecCoord;
     typedef Deriv VecDeriv;
+    typedef Real  VecReal;
     //         typedef std::vector<Coord> VecCoord;
     //         typedef std::vector<SpatialVector> VecDeriv;
 

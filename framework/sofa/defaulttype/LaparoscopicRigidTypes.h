@@ -246,6 +246,7 @@ public:
 
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
+    typedef vector<Real> VecReal;
 
     static void set(Coord& c, double x, double, double)
     {

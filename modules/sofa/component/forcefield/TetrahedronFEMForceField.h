@@ -63,6 +63,7 @@ class TetrahedronFEMForceField : public core::componentmodel::behavior::ForceFie
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::VecReal VecReal;
     typedef VecCoord Vector;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
@@ -131,7 +132,7 @@ public:
     DataField<int> f_method; ///< the computation method of the displacements
     DataField<Real> f_poissonRatio;
     DataField<Real> f_youngModulus;
-    DataField< vector<Real> > f_localStiffnessFactor;
+    DataField<VecReal> f_localStiffnessFactor;
     //DataField<Real> f_dampingRatio;
     DataField<bool> f_updateStiffnessMatrix;
     DataField<bool> f_assembling;

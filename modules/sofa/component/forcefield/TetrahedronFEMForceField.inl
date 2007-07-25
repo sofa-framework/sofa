@@ -146,7 +146,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         _initialPoints.resize(_mesh->getNbPoints());
         for (unsigned int i=0; i<_initialPoints.size(); i++)
         {
-            _initialPoints[i] = Coord(_mesh->getPX(i),_mesh->getPY(i),_mesh->getPZ(i));
+            _initialPoints[i] = Coord((Real)_mesh->getPX(i),(Real)_mesh->getPY(i),(Real)_mesh->getPZ(i));
         }
     }
     else
@@ -438,7 +438,7 @@ void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatri
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d)
 {
-    const vector<Real>& localStiffnessFactor = f_localStiffnessFactor.getValue();
+    const VecReal& localStiffnessFactor = f_localStiffnessFactor.getValue();
     const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_indexedElements->size()])*f_youngModulus.getValue();
     const Real poissonRatio = f_poissonRatio.getValue();
 

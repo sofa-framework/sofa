@@ -30,6 +30,7 @@ class BeamFEMForceField : public core::componentmodel::behavior::ForceField<Data
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::VecReal VecReal;
     typedef VecCoord Vector;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
@@ -148,7 +149,7 @@ protected:
 
 ////////////// large displacements method
     //vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
-    vector<Real> _initialLength;
+    VecReal _initialLength;
     vector<Transformation> _rotations;
     vector<Transformation> _nodeRotations;
     void initLarge(int i, Index a, Index b);

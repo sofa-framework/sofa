@@ -75,12 +75,14 @@ public:
     typedef TDataTypes InDataTypes;
     typedef component::MechanicalObject<InDataTypes> Inherit;
     typedef typename InDataTypes::Real Real;
+    typedef typename InDataTypes::VecReal VecReal;
+
     typedef TDataTypes DataTypes;
     typedef TSphere<DataTypes> Element;
     friend class TSphere<DataTypes>;
 
 protected:
-    std::vector<Real> radius;
+    VecReal radius;
 
     DataField<double> defaultRadius;
 
