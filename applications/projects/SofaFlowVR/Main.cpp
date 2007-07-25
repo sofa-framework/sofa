@@ -789,18 +789,19 @@ public:
         module->get(pInDistance, distance);
 
         int distanceIt = -1;
-        distance.stamps.read(pInDistance->stamps->it,distanceIt);
+        if (distance.valid())
+            distance.stamps.read(pInDistance->stamps->it,distanceIt);
         //const unsigned int nbv = points.data.getSize()/sizeof(Vec3f);
-        if (distanceIt != distanceLastIt || newscale)
+        if (distance.valid() && (distanceIt != distanceLastIt || newscale))
         {
             distanceLastIt = distanceIt;
             //const Vec3f* vertices = points.data.getRead<Vec3f>(0);
             const Vec3f trans = mod->f_trans.getValue();
             const float scale = mod->f_scale.getValue()*mscale;
 
-            int nz = 64;
-            int ny = 64;
-            int nx = 64;
+            int nz = 0;
+            int ny = 0;
+            int nx = 0;
             Vec3f p0, dp;
             int bbox[6] = {-1,-1,-1,-1,-1,-1};
             distance.stamps.read(stampSizes[0], nz);
@@ -815,7 +816,7 @@ public:
             for (int i=0; i<6; i++)
                 distance.stamps.read(stampBB[i], bbox[i]);
 
-            if (bbox[0] > bbox[3])
+            if (!nx || !ny || !nz || bbox[0] > bbox[3])
             {
                 // empty grid
                 curDistGrid->release();
