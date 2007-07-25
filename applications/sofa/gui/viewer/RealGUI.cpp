@@ -22,6 +22,7 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
+#include "RealGUI.h"
 
 #ifdef SOFA_GUI_QTOGREVIEWER
 #include "QtOgreViewer/QtOgreViewer.h"
@@ -34,7 +35,7 @@
 #ifdef SOFA_GUI_QGLVIEWER
 #include "QtGLViewer/QtGLViewer.h"
 #endif
-#include "RealGUI.h"
+
 
 
 #include <sofa/simulation/tree/Simulation.h>
@@ -356,6 +357,12 @@ void RealGUI::init()
     list_object_initial.clear();
 
 
+    int end;
+    char str [80];
+    FILE * pFile;
+
+    //*********************************************************************************************************************************
+    //List of objects
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
     std::string object("object.txt");
     if (!sofa::helper::system::DataRepository.findFile(  object ) )
@@ -363,13 +370,14 @@ void RealGUI::init()
 
 
     object = sofa::helper::system::DataRepository.getFile(  object );
-    char str [80];
-    FILE * pFile;
+
+
+
     float object_BoundingBox[6];
 
 
     pFile = fopen ( object.c_str() ,"r");
-    int end=0;
+
     end = fscanf(pFile, "Default BoundingBox: %f %f %f %f %f %f\n",
             &object_BoundingBox[0],&object_BoundingBox[1],&object_BoundingBox[2],&object_BoundingBox[3],&object_BoundingBox[4],&object_BoundingBox[5]);
     if (end == EOF) return;
@@ -423,7 +431,6 @@ void RealGUI::init()
             if (feof(pFile)) break;
             read = false;
         }
-
     }
 
     //We remove from the list the default Bounding box: each object has its own bounding box now.
@@ -442,6 +449,27 @@ void RealGUI::init()
 
     // 	  }
     fclose(pFile);
+
+    //*********************************************************************************************************************************
+    //Path to the SIGGRAPH demos
+    //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
+    std::string demo_path("demos.txt");
+    if (!sofa::helper::system::DataRepository.findFile(  demo_path ) )
+        return;
+
+    demo_path = sofa::helper::system::DataRepository.getFile(  demo_path );
+
+
+    pFile = fopen ( demo_path.c_str() ,"r");
+    end = fscanf(pFile, "%s", str);
+    list_demo[0] = std::string(str);
+    end = fscanf(pFile, "%s", str);
+    list_demo[1] = std::string(str);
+    end = fscanf(pFile, "%s", str);
+    list_demo[2] = std::string(str);
+    fclose(pFile);
+
+    std::cout << list_demo[0] << " " << list_demo[0] << " " << list_demo[0] << " " << "\n";
 }
 
 void RealGUI::addViewer()
@@ -1552,7 +1580,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 
     case Qt::Key_7:
     {
-        std::string object("demo1.scn");
+        std::string object(list_demo[0]);
         if (!sofa::helper::system::DataRepository.findFile(  object ) )
             return;
 
@@ -1565,7 +1593,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 
     case Qt::Key_8:
     {
-        std::string object("demo2.scn");
+        std::string object(list_demo[1]);
         if (!sofa::helper::system::DataRepository.findFile(  object ) )
             return;
 
@@ -1578,7 +1606,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 
     case Qt::Key_9:
     {
-        std::string object("demo3.scn");
+        std::string object(list_demo[2]);
         if (!sofa::helper::system::DataRepository.findFile(  object ) )
             return;
 

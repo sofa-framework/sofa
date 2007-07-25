@@ -25,6 +25,13 @@
 #ifndef SOFA_GUI_VIEWER_REALGUI_H
 #define SOFA_GUI_VIEWER_REALGUI_H
 
+#ifdef SOFA_PML
+#include <sofa/filemanager/sofapml/PMLReader.h>
+#include <sofa/filemanager/sofapml/LMLReader.h>
+using namespace sofa::filemanager::pml;
+#endif
+
+
 #include <sofa/gui/SofaGUI.h>
 
 #include <GUI.h>
@@ -45,11 +52,6 @@ typedef QStackedWidget QWidgetStack;
 #include "qlistview.h"
 #endif
 
-#ifdef SOFA_PML
-#include <sofa/filemanager/sofapml/PMLReader.h>
-#include <sofa/filemanager/sofapml/LMLReader.h>
-using namespace sofa::filemanager::pml;
-#endif
 
 namespace sofa
 {
@@ -214,6 +216,8 @@ private:
 
     //At initialization: list of the path to the basic objects you can add to the scene
     std::vector< std::string > list_object;
+    std::string list_demo[3];
+
     //Bounding Box of each object
     std::vector< float > list_object_BoundingBox;
     //currently unused: scale is experimental
@@ -222,6 +226,7 @@ private:
     std::list< GNode *> list_object_added;
     std::list< GNode *> list_object_removed;
     std::list< GNode *> list_object_initial;
+
 
 
     bool setViewer(const char* name);
