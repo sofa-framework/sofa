@@ -94,7 +94,7 @@ class FlowVRPreInitEvent : public FlowVREvent
 {
 public:
     virtual ~FlowVRPreInitEvent() {}
-    std::vector<flowvr::Port*>* ports;
+    std::set<flowvr::Port*>* ports;
 };
 
 class FlowVRInitEvent : public FlowVREvent
@@ -144,7 +144,7 @@ public:
     {
     }
 
-    virtual void flowvrPreInit(std::vector<flowvr::Port*>* /*ports*/)
+    virtual void flowvrPreInit(std::set<flowvr::Port*>* /*ports*/)
     {
     }
 
@@ -231,6 +231,8 @@ public:
     DataField<double> f_dt;
     DataField<float> f_scale;
     DataField<Vec3f> f_trans;
+    DataField< vector<std::string> > f_inputPorts;
+    DataField< vector<std::string> > f_outputPorts;
     int it;
     double lasttime;
     bool step;
@@ -239,6 +241,8 @@ public:
         , f_dt(dataField(&f_dt,0.0,"dt","simulation time interval between flowvr iteration"))
         , f_scale(dataField(&f_scale,1.0f,"scale","scale"))
         , f_trans(dataField(&f_trans,Vec3f(0,0,0),"translation","translation"))
+        , f_inputPorts(dataField(&f_inputPorts,"inputPorts","additional input ports to be defined"))
+        , f_outputPorts(dataField(&f_outputPorts,"outputPorts","additional output ports to be defined"))
         , it(-1)
         , lasttime(0.0), step(false)
     {
@@ -248,14 +252,22 @@ public:
     virtual void init()
     {
         if (module!=NULL) return;
-        std::vector<flowvr::Port*> ports;
+        std::set<flowvr::Port*> ports;
         std::cout << "Sending FlowVRPreInit"<<std::endl;
         FlowVRPreInitEvent ev;
         ev.from = this;
         ev.ports = &ports;
         getContext()->propagateEvent(&ev);
-        //module = flowvr::initModule(ports);
-        module = createModule(ports);
+        const vector<std::string>& inputPorts = f_inputPorts.getValue();
+        for (vector<std::string>::const_iterator it = inputPorts.begin(); it != inputPorts.end(); ++it)
+            ports.insert(createInputPort(it->c_str()));
+        const vector<std::string>& outputPorts = f_outputPorts.getValue();
+        for (vector<std::string>::const_iterator it = outputPorts.begin(); it != outputPorts.end(); ++it)
+            ports.insert(createOutputPort(it->c_str()));
+        std::vector<flowvr::Port*> vports;
+        vports.insert(vports.end(), ports.begin(), ports.end());
+        //module = flowvr::initModule(vports);
+        module = createModule(vports);
         if (module == NULL)
         {
             std::cerr << "SofaFlowVR: module creation failed. Exit."<<std::endl;
@@ -382,12 +394,12 @@ public:
         }
     }
 
-    virtual void flowvrPreInit(std::vector<flowvr::Port*>* ports)
+    virtual void flowvrPreInit(std::set<flowvr::Port*>* ports)
     {
         std::cout << "Received FlowVRPreInit"<<std::endl;
-        ports->push_back(pInFacets);
-        ports->push_back(pInPoints);
-        ports->push_back(pInMatrix);
+        ports->insert(pInFacets);
+        ports->insert(pInPoints);
+        ports->insert(pInMatrix);
     }
 
     virtual void init()
@@ -705,11 +717,11 @@ public:
         }
     }
 
-    virtual void flowvrPreInit(std::vector<flowvr::Port*>* ports)
+    virtual void flowvrPreInit(std::set<flowvr::Port*>* ports)
     {
         std::cout << "Received FlowVRPreInit"<<std::endl;
-        ports->push_back(pInDistance);
-        ports->push_back(pInMatrix);
+        ports->insert(pInDistance);
+        ports->insert(pInMatrix);
     }
 
     virtual void init()
@@ -1062,10 +1074,10 @@ public:
         clearSharedResources(&scene);
     }
 
-    virtual void flowvrPreInit(std::vector<flowvr::Port*>* ports)
+    virtual void flowvrPreInit(std::set<flowvr::Port*>* ports)
     {
         std::cout << "Received FlowVRPreInit"<<std::endl;
-        ports->push_back(pOutScene);
+        ports->insert(pOutScene);
     }
 
     virtual void flowvrBeginIteration(flowvr::ModuleAPI* /*module*/)
