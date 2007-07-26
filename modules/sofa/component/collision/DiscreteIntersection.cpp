@@ -406,7 +406,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     detection->distance = d;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
-                    detection->id = i;
+                    detection->id = i + i0;
                     ++nc;
                 }
             }
@@ -450,7 +450,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     detection->distance = d;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
-                    detection->id = i;
+                    detection->id = i + i0;
                     ++nc;
                 }
             }

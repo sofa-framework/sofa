@@ -41,6 +41,11 @@ __device__ void operator-=(float3& a, float b)
     a.z -= b;
 }
 
+__device__ float3 operator-(float3& a)
+{
+    return make_float3(-a.x, -a.y, -a.z);
+}
+
 __device__ float3 operator*(float3 a, float b)
 {
     return make_float3(a.x*b, a.y*b, a.z*b);

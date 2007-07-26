@@ -102,6 +102,19 @@ public:
         if (prevHostPointer != NULL)
             free(prevHostPointer);
     }
+    /// resize the vector without calling constructors or destructors, and without synchronizing the device and host copy
+    void fastResize(size_type s)
+    {
+        if (s == vectorSize) return;
+        reserve(s);
+        vectorSize = s;
+        if (!vectorSize)
+        {
+            // special case when the vector is now empty -> host and device are valid
+            deviceIsValid = true;
+            hostIsValid = true;
+        }
+    }
     void resize(size_type s)
     {
         if (s == vectorSize) return;
@@ -135,6 +148,12 @@ public:
             }
         }
         vectorSize = s;
+        if (!vectorSize)
+        {
+            // special case when the vector is now empty -> host and device are valid
+            deviceIsValid = true;
+            hostIsValid = true;
+        }
     }
     void swap(CudaVector<T>& v)
     {
@@ -229,12 +248,6 @@ public:
         }
         if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
         return in;
-    }
-    void fastResize(size_type s)
-    {
-        if (s == vectorSize) return;
-        reserve(s);
-        vectorSize = s;
     }
 protected:
     void copyToHost() const

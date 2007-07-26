@@ -101,6 +101,8 @@ public:
 
     Real getRadius(int i) const { return this->radius[i]; }
 
+    const VecReal& getR() const { return this->radius; }
+
     // -- CollisionModel interface
 
     // remove ambiguity

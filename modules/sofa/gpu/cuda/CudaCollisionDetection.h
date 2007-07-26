@@ -45,13 +45,15 @@ public:
     typedef sofa::component::collision::BruteForceDetection Inherit;
     struct GPUTest
     {
+        void* result;
+        const void* points;
+        const void* radius;
+        const void* grid;
         Mat3x3f rotation;
         Vec3f translation;
         float margin;
         int nbPoints;
-        const void* points;
         int gridnx, gridny, gridnz;
-        const void* grid;
         Vec3f gridbbmin, gridbbmax;
         Vec3f gridp0, gridinvdp;
     };
@@ -70,53 +72,76 @@ public:
     class Test
     {
     public:
-        int index;
-        CudaVector<GPUContact> gpucontacts;
-        Test() : index(0) {}
-        virtual ~Test() {}
-        /// Set the pair of elements to test
-        virtual void setElems(sofa::core::CollisionElementIterator elem1, sofa::core::CollisionElementIterator elem2)=0;
-        /// Fill the info to send to the graphics cars
-        virtual void init(GPUTest& test)=0;
+        vector< CudaVector<GPUContact>* > results;
+        Test() {}
+        virtual ~Test()
+        {
+            for (unsigned int i=0; i<results.size(); ++i)
+                if (results[i])
+                    delete results[i];
+        }
+        virtual bool useGPU()=0;
+        /// Returns how many tests are required
+        virtual int nbTests()=0;
+        /// Fill the info to send to the graphics card
+        virtual void init(GPUTest* tests)=0;
         /// Create the list of SOFA contacts from the contacts detected by the GPU
-        virtual void fillContacts(DetectionOutputVector& contacts)=0;
+        virtual void fillContacts(DetectionOutputVector& contacts, const int* nresults)=0;
+    };
+
+    class CPUTest : public Test
+    {
+    public:
+        CPUTest() {}
+        bool useGPU() { return false; }
+        int nbTests() { return 0; }
+        void init(GPUTest* /*tests*/) {}
+        void fillContacts(DetectionOutputVector& /*contacts*/, const int* /*nresults*/) {}
     };
 
     class RigidRigidTest : public Test
     {
     public:
-        CudaRigidDistanceGridCollisionElement elem1;
-        CudaRigidDistanceGridCollisionElement elem2;
-        /// Set the pair of elements to test
-        void setElems(sofa::core::CollisionElementIterator elem1, sofa::core::CollisionElementIterator elem2)
-        {
-            this->elem1 = CudaRigidDistanceGridCollisionElement(elem1);
-            this->elem2 = CudaRigidDistanceGridCollisionElement(elem2);
-        }
-        /// Fill the info to send to the graphics cars
-        void init(GPUTest& test);
+        CudaRigidDistanceGridCollisionModel* model1;
+        CudaRigidDistanceGridCollisionModel* model2;
+        RigidRigidTest(CudaRigidDistanceGridCollisionModel* model1, CudaRigidDistanceGridCollisionModel* model2);
+        bool useGPU() { return true; }
+        /// Returns how many tests are required
+        virtual int nbTests();
+        /// Fill the info to send to the graphics card
+        virtual void init(GPUTest* tests);
         /// Create the list of SOFA contacts from the contacts detected by the GPU
-        void fillContacts(DetectionOutputVector& contacts);
+        void fillContacts(DetectionOutputVector& contacts, const int* nresults);
+
+    protected:
+        void init(GPUTest& test, CudaVector<GPUContact>& gpucontacts, CudaRigidDistanceGridCollisionElement elem1, CudaRigidDistanceGridCollisionElement elem2);
+        void fillContacts(DetectionOutputVector& contacts, int nresults, CudaVector<GPUContact>& gpucontacts, CudaRigidDistanceGridCollisionElement e1, CudaRigidDistanceGridCollisionElement e2, bool invert);
     };
 
     class SphereRigidTest : public Test
     {
     public:
-        CudaSphere elem1;
-        CudaRigidDistanceGridCollisionElement elem2;
-        /// Set the pair of elements to test
-        void setElems(sofa::core::CollisionElementIterator elem1, sofa::core::CollisionElementIterator elem2)
-        {
-            this->elem1 = CudaSphere(elem1);
-            this->elem2 = CudaRigidDistanceGridCollisionElement(elem2);
-        }
-        /// Fill the info to send to the graphics cars
-        void init(GPUTest& test);
+        CudaSphereModel* model1;
+        CudaRigidDistanceGridCollisionModel* model2;
+        SphereRigidTest(CudaSphereModel* model1, CudaRigidDistanceGridCollisionModel* model2);
+        bool useGPU() { return true; }
+        /// Returns how many tests are required
+        virtual int nbTests();
+        /// Fill the info to send to the graphics card
+        virtual void init(GPUTest* tests);
         /// Create the list of SOFA contacts from the contacts detected by the GPU
-        void fillContacts(DetectionOutputVector& contacts);
+        void fillContacts(DetectionOutputVector& contacts, const int* nresults);
     };
 
-    typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel*>, vector<Test*> > TestMap;
+    struct Entry
+    {
+        int index; // negative if not active
+        Test* test;
+        Entry() : index(-1), test(NULL) {}
+        ~Entry() { if (test!=NULL) delete test; }
+    };
+
+    typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel*>, Entry > TestMap;
 
     TestMap tests;
 
@@ -124,6 +149,8 @@ public:
     virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
     virtual void endNarrowPhase();
 
+protected:
+    Test* createTest(core::CollisionModel* model1, core::CollisionModel* model2);
 };
 
 } // namespace cuda
