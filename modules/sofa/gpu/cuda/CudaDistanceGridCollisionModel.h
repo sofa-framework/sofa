@@ -388,7 +388,7 @@ class CudaRigidDistanceGridCollisionElement : public core::TCollisionElementIter
 public:
     CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, int index);
 
-    explicit CudaRigidDistanceGridCollisionElement(core::CollisionElementIterator& i);
+    explicit CudaRigidDistanceGridCollisionElement(const core::CollisionElementIterator& i);
 
     CudaDistanceGrid* getGrid();
 
@@ -532,7 +532,7 @@ inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElem
     : core::TCollisionElementIterator<CudaRigidDistanceGridCollisionModel>(model, index)
 {}
 
-inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(core::CollisionElementIterator& i)
+inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<CudaRigidDistanceGridCollisionModel>(static_cast<CudaRigidDistanceGridCollisionModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
