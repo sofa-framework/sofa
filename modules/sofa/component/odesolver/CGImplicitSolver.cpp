@@ -78,8 +78,8 @@ void CGImplicitSolver::solve(double dt)
     MultiVector b(this, VecId::V_DERIV);
     MultiVector p(this, VecId::V_DERIV);
     MultiVector q(this, VecId::V_DERIV);
-    MultiVector q2(this, VecId::V_DERIV);
-    MultiVector r(this, VecId::V_DERIV);
+    //MultiVector q2(this, VecId::V_DERIV);
+    //MultiVector r(this, VecId::V_DERIV);
     MultiVector x(this, VecId::V_DERIV);
 
     double h = dt;
@@ -115,7 +115,8 @@ void CGImplicitSolver::solve(double dt)
     double rho, rho_1=0, alpha, beta;
 
     v_clear( x );
-    v_eq(r,b); // initial residual
+    //v_eq(r,b); // initial residual
+    MultiVector& r = b; // b is never used after this point
 
     /*if( printLog )
     {
@@ -139,7 +140,7 @@ void CGImplicitSolver::solve(double dt)
 
         if (nb_iter>1)
         {
-            double normr = rho; //sqrt(r.dot(r));
+            double normr = sqrt(rho); //sqrt(r.dot(r));
             if (normr/normb <= f_tolerance.getValue())
             {
                 endcond = "tolerance";
