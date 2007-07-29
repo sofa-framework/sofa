@@ -364,7 +364,7 @@ void PMLFemForceField::createVisualModel(StructuralComponent* body)
     double * color = body->getColor();
     vmodel->setColor((float)color[0], (float)color[1], (float)color[2], (float)color[3]);
     vmodel->load("","","");
-    BaseMapping * mapping = new IdentityMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >((MechanicalState<Vec3dTypes>*)mmodel, vmodel);
+    BaseMapping * mapping = new IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel< ExtVectorTypes< Vec<3,GLfloat>, Vec<3,GLfloat> > > > >((MechanicalState<Vec3dTypes>*)mmodel, vmodel);
     parentNode->addObject(mapping);
     parentNode->addObject(vmodel);
 
