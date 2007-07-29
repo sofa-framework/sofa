@@ -22,14 +22,15 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_H
-#define SOFA_COMPONENT_MASS_UNIFORMMASS_H
+#ifndef SOFA_COMPONENT_MAPPEDOBJECT_H
+#define SOFA_COMPONENT_MAPPEDOBJECT_H
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
+#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/objectmodel/XField.h>
+#include <sofa/core/objectmodel/VField.h>
+#include <vector>
+#include <assert.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -37,68 +38,51 @@ namespace sofa
 namespace component
 {
 
-namespace mass
-{
+using namespace core::componentmodel::behavior;
+using namespace core::objectmodel;
 
-using namespace sofa::defaulttype;
-
-template <class DataTypes, class MassType>
-class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>, public core::VisualModel
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class DataTypes>
+class MappedObjectInternalData
 {
 public:
-    typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
+};
+
+template <class DataTypes>
+class MappedObject : public MappedModel<DataTypes>
+{
+public:
+    typedef MappedModel<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-//protected:
-    DataField<MassType> mass;    ///< the mass of each particle
-    DataField<double> totalMass; ///< if >0 : total mass of this body
+    typedef typename DataTypes::Real Real;
+
+protected:
+
+    MappedObjectInternalData<DataTypes> data;
 
 public:
-    UniformMass();
 
-    ~UniformMass();
+    MappedObject();
 
-    void setMass(const MassType& mass);
-    const MassType& getMass() const { return mass.getValue(); }
+    virtual ~MappedObject();
 
-    double getTotalMass() const { return totalMass.getValue(); }
-    void setTotalMass(double m);
+    virtual void init();
 
-    // -- Mass interface
+    DataField<VecCoord> f_X;
+    DataField<VecDeriv> f_V;
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-    void init();
+    VecCoord* getX()  { return f_X.beginEdit(); }
+    VecDeriv* getV()  { return f_V.beginEdit(); }
 
-    void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
-
-    void accFromF(VecDeriv& a, const VecDeriv& f);
-
-    void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    double getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
-
-    double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
-
-    // -- VisualModel interface
-
-    void draw();
-
-    bool addBBox(double* minBBox, double* maxBBox);
-
-    void initTextures()
-    { }
-
-    void update()
-    { }
+    const VecCoord* getX()  const { return &f_X.getValue();  }
+    const VecDeriv* getV()  const { return &f_V.getValue();  }
 };
-
-} // namespace mass
 
 } // namespace component
 
 } // namespace sofa
 
 #endif
-

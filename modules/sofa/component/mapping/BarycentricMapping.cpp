@@ -50,14 +50,14 @@ int BarycentricMappingClass = core::RegisterObject("Mapping using barycentric co
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
         ;
 
 // Mech -> Mech
@@ -67,16 +67,16 @@ template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes
 template class BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
 
 // Mech -> Mapped
-template class BarycentricMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-template class BarycentricMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-template class BarycentricMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-template class BarycentricMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
 
 // Mech -> ExtMapped
-template class BarycentricMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class BarycentricMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
-template class BarycentricMapping< Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
-template class BarycentricMapping< Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class BarycentricMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
 
 // MeshMapper
 template class TopologyBarycentricMapper<topology::MeshTopology, Vec3dTypes, Vec3dTypes >;

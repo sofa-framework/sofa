@@ -49,11 +49,11 @@ using namespace core::componentmodel::behavior;
 // Register in the Factory
 int LaparoscopicRigidMappingClass = core::RegisterObject("TODO-LaparoscopicRigidMappingClass")
         .add< LaparoscopicRigidMapping< MechanicalMapping< MechanicalState<LaparoscopicRigidTypes>, MechanicalState<RigidTypes> > > >()
-        .add< LaparoscopicRigidMapping< Mapping< MechanicalState<LaparoscopicRigidTypes>, MappedModel<RigidTypes> > > >()
+        .add< LaparoscopicRigidMapping< Mapping< State<LaparoscopicRigidTypes>, MappedModel<RigidTypes> > > >()
         ;
 
 template class LaparoscopicRigidMapping< MechanicalMapping<MechanicalState<LaparoscopicRigidTypes>, MechanicalState<RigidTypes> > >;
-template class LaparoscopicRigidMapping< Mapping<MechanicalState<LaparoscopicRigidTypes>, MappedModel<RigidTypes> > >;
+template class LaparoscopicRigidMapping< Mapping< State<LaparoscopicRigidTypes>, MappedModel<RigidTypes> > >;
 
 } // namespace mapping
 

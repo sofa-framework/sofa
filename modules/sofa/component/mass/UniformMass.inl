@@ -83,20 +83,24 @@ void UniformMass<DataTypes, MassType>::init()
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx)
+void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
+    MassType m = mass.getValue();
+    if (factor != 1.0)
+        m *= (typename DataTypes::Real)factor;
     for (unsigned int i=0; i<dx.size(); i++)
     {
-        res[i] += dx[i] * mass.getValue();
+        res[i] += dx[i] * m;
     }
 }
 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
+    const MassType& m = mass.getValue();
     for (unsigned int i=0; i<f.size(); i++)
     {
-        a[i] = f[i] / mass.getValue();
+        a[i] = f[i] / m;
     }
 }
 

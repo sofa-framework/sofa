@@ -48,16 +48,16 @@ using namespace core::componentmodel::behavior;
 int RigidMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
         .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< RigidMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< RigidMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< RigidMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< RigidMapping< Mapping< MechanicalState<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
         .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< RigidMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< RigidMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< RigidMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< RigidMapping< Mapping< MechanicalState<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
         .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > > >()
         .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2fTypes> > > >()
         .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid2fTypes>, MechanicalState<Vec2dTypes> > > >()
@@ -68,12 +68,12 @@ int RigidMappingClass = core::RegisterObject("Set the positions and velocities o
 template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
 template class RigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
 
-template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
-template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
+template class RigidMapping< Mapping< State<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
+template class RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
 
-template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class RigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
 
 
 /// Template specialization for 2D rigids

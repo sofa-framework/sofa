@@ -52,10 +52,10 @@ Mass<DataTypes>::~Mass()
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::addMDx()
+void Mass<DataTypes>::addMDx(double factor)
 {
     if (this->mstate)
-        addMDx(*this->mstate->getF(), *this->mstate->getDx());
+        addMDx(*this->mstate->getF(), *this->mstate->getDx(), factor);
 }
 
 template<class DataTypes>

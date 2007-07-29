@@ -394,6 +394,12 @@ public:
         in>>m.inertiaMatrix;
         return in;
     }
+    void operator *=(Real fact)
+    {
+        mass *= fact;
+        inertiaMassMatrix *= fact;
+        invInertiaMassMatrix /= fact;
+    }
 };
 
 template<int N, typename real>
@@ -818,6 +824,12 @@ public:
         in>>m.volume;
         in>>m.inertiaMatrix;
         return in;
+    }
+    void operator *=(Real fact)
+    {
+        mass *= fact;
+        inertiaMassMatrix *= fact;
+        invInertiaMassMatrix /= fact;
     }
 };
 

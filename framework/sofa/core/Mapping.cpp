@@ -50,16 +50,28 @@ template class Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalStat
 template class Mapping< MechanicalState<StdRigidTypes<3,float> >, MechanicalState<Vec3fTypes> >;
 
 // Mech -> Mapped
-template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> >;
-template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> >;
-template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> >;
-template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> >;
+//template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3dTypes> >;
+//template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3fTypes> >;
+//template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<Vec3fTypes> >;
+//template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<Vec3dTypes> >;
 
 // Mech -> ExtMapped
-template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
-template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
-template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
-template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
+//template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
+//template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
+//template class Mapping< MechanicalState<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+//template class Mapping< MechanicalState<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
+
+// * -> Mapped
+template class Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> >;
+template class Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> >;
+template class Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> >;
+template class Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> >;
+
+// * -> ExtMapped
+template class Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> >;
+template class Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> >;
+template class Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> >;
+template class Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> >;
 
 } // namespace core
 

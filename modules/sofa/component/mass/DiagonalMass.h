@@ -119,7 +119,7 @@ public:
     void resize(int vsize);
 
     // -- Mass interface
-    void addMDx(VecDeriv& f, const VecDeriv& dx);
+    void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
 
     void accFromF(VecDeriv& a, const VecDeriv& f);
 

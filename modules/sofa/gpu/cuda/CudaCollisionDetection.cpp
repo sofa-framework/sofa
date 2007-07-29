@@ -93,7 +93,8 @@ void CudaCollisionDetection::endNarrowPhase()
                 ntests += test->nbTests();
             }
         }
-    std::cout << "CudaCollisionDetection: Launching "<<ntests<<"/"<<tests.size()<<" tests on GPU..."<<std::endl;
+    if (ntests>0)
+        std::cout << "CudaCollisionDetection: Launching "<<ntests<<"/"<<tests.size()<<" tests on GPU..."<<std::endl;
 
     if (ntests > 0)
     {

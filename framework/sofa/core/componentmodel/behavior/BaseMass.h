@@ -56,8 +56,8 @@ public:
     /// @name Vector operations
     /// @{
 
-    /// f += M dx
-    virtual void addMDx() = 0;
+    /// f += factor M dx
+    virtual void addMDx(double factor = 1.0) = 0;
 
     /// dx = M^-1 f
     virtual void accFromF() = 0;

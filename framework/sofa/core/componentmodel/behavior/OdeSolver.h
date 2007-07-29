@@ -106,7 +106,7 @@ public:
     virtual void propagateDx(VecId dx) = 0;
     /// Apply projective constraints to the given vector
     virtual void projectResponse(VecId dx, double **W=NULL) = 0;
-    virtual void addMdx(VecId res, VecId dx) = 0; ///< res += M.dx
+    virtual void addMdx(VecId res, VecId dx, double factor) = 0; ///< res += M.dx
     virtual void integrateVelocity(VecId res, VecId x, VecId v, double dt) = 0; ///< res = x + v.dt
     virtual void accFromF(VecId a, VecId f) = 0; ///< a = M^-1 . f
     /// Propagate the given state (time, position and velocity) through all mappings

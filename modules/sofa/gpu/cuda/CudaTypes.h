@@ -381,6 +381,7 @@ public:
     typedef typename Coord::Quat Quat;
     typedef CudaVector<Coord> VecCoord;
     typedef CudaVector<Deriv> VecDeriv;
+    typedef CudaVector<Real> VecReal;
 
     template <class T>
     class SparseData

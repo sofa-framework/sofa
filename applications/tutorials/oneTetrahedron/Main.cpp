@@ -20,13 +20,13 @@ typedef sofa::defaulttype::Vec3Types MyTypes;
 typedef MyTypes::Deriv Vec3;
 typedef sofa::component::visualmodel::GLExtVec3fTypes OglTypes;
 
-typedef sofa::core::componentmodel::behavior::MechanicalState<MyTypes> MyMechanicalState;
+typedef sofa::core::componentmodel::behavior::State<MyTypes> MyState;
 typedef sofa::core::componentmodel::behavior::MappedModel<OglTypes> OglMappedModel;
 
 using sofa::core::Mapping;
 using sofa::component::mapping::BarycentricMapping;
 
-typedef BarycentricMapping< Mapping< MyMechanicalState, OglMappedModel > > MyMapping;
+typedef BarycentricMapping< Mapping< MyState, OglMappedModel > > MyMapping;
 
 // ---------------------------------------------------------------------
 // ---

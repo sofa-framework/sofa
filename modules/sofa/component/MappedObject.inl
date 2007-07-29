@@ -22,14 +22,11 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_H
-#define SOFA_COMPONENT_MASS_UNIFORMMASS_H
+#ifndef SOFA_COMPONENT_MAPPEDOBJECT_INL
+#define SOFA_COMPONENT_MAPPEDOBJECT_INL
 
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
+#include <sofa/component/MappedObject.h>
+#include <sofa/core/componentmodel/topology/Topology.h>
 
 namespace sofa
 {
@@ -37,64 +34,37 @@ namespace sofa
 namespace component
 {
 
-namespace mass
+template <class DataTypes>
+MappedObject<DataTypes>::MappedObject()
+    : f_X( dataField(&f_X, "position", "position vector") )
+    , f_V( dataField(&f_V, "velocity", "velocity vector") )
 {
+}
 
-using namespace sofa::defaulttype;
-
-template <class DataTypes, class MassType>
-class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>, public core::VisualModel
+template <class DataTypes>
+MappedObject<DataTypes>::~MappedObject()
 {
-public:
-    typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-//protected:
-    DataField<MassType> mass;    ///< the mass of each particle
-    DataField<double> totalMass; ///< if >0 : total mass of this body
+}
 
-public:
-    UniformMass();
-
-    ~UniformMass();
-
-    void setMass(const MassType& mass);
-    const MassType& getMass() const { return mass.getValue(); }
-
-    double getTotalMass() const { return totalMass.getValue(); }
-    void setTotalMass(double m);
-
-    // -- Mass interface
-
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-    void init();
-
-    void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
-
-    void accFromF(VecDeriv& a, const VecDeriv& f);
-
-    void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    double getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
-
-    double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
-
-    // -- VisualModel interface
-
-    void draw();
-
-    bool addBBox(double* minBBox, double* maxBBox);
-
-    void initTextures()
-    { }
-
-    void update()
-    { }
-};
-
-} // namespace mass
+template <class DataTypes>
+void MappedObject<DataTypes>::init()
+{
+    if (getX()->size() == 0)
+    {
+        core::componentmodel::topology::Topology* topo = dynamic_cast<core::componentmodel::topology::Topology*>(this->getContext()->getTopology());
+        if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
+        {
+            VecCoord& x = *getX();
+            int nbp = topo->getNbPoints();
+            std::cout<<"Setting "<<nbp<<" points from topology."<<std::endl;
+            x.resize(nbp);
+            for (int i=0; i<nbp; i++)
+            {
+                DataTypes::set(x[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
+            }
+        }
+    }
+}
 
 } // namespace component
 

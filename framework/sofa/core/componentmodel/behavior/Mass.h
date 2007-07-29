@@ -66,11 +66,11 @@ public:
     /// @name Vector operations
     /// @{
 
-    /// f += M dx
+    /// f += factor M dx
     ///
     /// This method retrieves the force and dx vector and call the internal
     /// addMDx(VecDeriv&,const VecDeriv&) method implemented by the component.
-    virtual void addMDx();
+    virtual void addMDx(double factor = 1.0);
 
     /// dx = M^-1 f
     ///
@@ -78,10 +78,10 @@ public:
     /// accFromF(VecDeriv&,const VecDeriv&) method implemented by the component.
     virtual void accFromF();
 
-    /// f += M dx
+    /// f += factor M dx
     ///
     /// This method must be implemented by the component.
-    virtual void addMDx(VecDeriv& f, const VecDeriv& dx) = 0;
+    virtual void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0) = 0;
 
     /// dx = M^-1 f
     ///

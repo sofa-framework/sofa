@@ -50,7 +50,7 @@ int RigidRigidMappingClass = core::RegisterObject("Set the positions and velocit
         ;
 
 template class RigidRigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
-template class RigidRigidMapping< Mapping<MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
+template class RigidRigidMapping< Mapping< State<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
 
 } // namespace mapping
 

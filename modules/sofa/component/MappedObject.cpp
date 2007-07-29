@@ -22,14 +22,11 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_UNIFORMMASS_H
-#define SOFA_COMPONENT_MASS_UNIFORMMASS_H
-
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/Mass.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
-#include <sofa/component/contextobject/CoordinateSystem.h>
+#include <sofa/component/MappedObject.inl>
 
 namespace sofa
 {
@@ -37,68 +34,43 @@ namespace sofa
 namespace component
 {
 
-namespace mass
-{
+using namespace core::componentmodel::behavior;
+using namespace defaulttype;
 
-using namespace sofa::defaulttype;
+SOFA_DECL_CLASS(MappedObject)
 
-template <class DataTypes, class MassType>
-class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>, public core::VisualModel
-{
-public:
-    typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-//protected:
-    DataField<MassType> mass;    ///< the mass of each particle
-    DataField<double> totalMass; ///< if >0 : total mass of this body
+int MappedObjectClass = core::RegisterObject("Mapped state vectors")
+        .add< MappedObject<Vec3dTypes> >(true) // default template
+        .add< MappedObject<Vec3fTypes> >()
+        .add< MappedObject<Rigid3dTypes> >()
+        .add< MappedObject<Rigid3fTypes> >()
+        .add< MappedObject<LaparoscopicRigid3Types> >()
+        .add< MappedObject<Vec2dTypes> >()
+        .add< MappedObject<Vec2fTypes> >()
+        .add< MappedObject<Rigid2dTypes> >()
+        .add< MappedObject<Rigid2fTypes> >()
+        .add< MappedObject<Vec1dTypes> >()
+        .add< MappedObject<Vec1fTypes> >()
+        .add< MappedObject<Vec6dTypes> >()
+        .add< MappedObject<Vec6fTypes> >()
+        ;
 
-public:
-    UniformMass();
+// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 
-    ~UniformMass();
+template class MappedObject<defaulttype::Vec3fTypes>;
+template class MappedObject<defaulttype::Vec3dTypes>;
+template class MappedObject<defaulttype::Vec2fTypes>;
+template class MappedObject<defaulttype::Vec2dTypes>;
+template class MappedObject<defaulttype::Vec1fTypes>;
+template class MappedObject<defaulttype::Vec1dTypes>;
 
-    void setMass(const MassType& mass);
-    const MassType& getMass() const { return mass.getValue(); }
+template class MappedObject<defaulttype::Rigid3dTypes>;
+template class MappedObject<defaulttype::Rigid3fTypes>;
+template class MappedObject<defaulttype::Rigid2dTypes>;
+template class MappedObject<defaulttype::Rigid2fTypes>;
 
-    double getTotalMass() const { return totalMass.getValue(); }
-    void setTotalMass(double m);
-
-    // -- Mass interface
-
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-    void init();
-
-    void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
-
-    void accFromF(VecDeriv& a, const VecDeriv& f);
-
-    void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    double getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
-
-    double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
-
-    // -- VisualModel interface
-
-    void draw();
-
-    bool addBBox(double* minBBox, double* maxBBox);
-
-    void initTextures()
-    { }
-
-    void update()
-    { }
-};
-
-} // namespace mass
+template class MappedObject<defaulttype::LaparoscopicRigid3Types>;
 
 } // namespace component
 
 } // namespace sofa
-
-#endif
-

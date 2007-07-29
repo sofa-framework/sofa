@@ -22,12 +22,12 @@ SOFA_DECL_CLASS(CudaBarycentricMapping)
 
 int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
-//.add< BarycentricMapping< Mapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< BarycentricMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<Vec3dTypes> > > >()
+//.add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< BarycentricMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3dTypes> > > >()
         ;
 
 } // namespace cuda

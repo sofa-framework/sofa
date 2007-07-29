@@ -97,31 +97,34 @@ void CGImplicitSolver::solve(double dt)
 
     if (f_rayleighMass.getValue() != 0.0)
     {
-        f.clear();
-        addMdx(f,vel);
-        b.peq(f,-f_rayleighMass.getValue());     // b = f0 + (h+rs)df/dx v - rd M v
+        //f.clear();
+        //addMdx(f,vel);
+        //b.peq(f,-f_rayleighMass.getValue());     // b = f0 + (h+rs)df/dx v - rd M v
+        addMdx(b,VecId(),-f_rayleighMass.getValue()); // no need to propagate vel as dx again
     }
 
 
     b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
     projectResponse(b);          // b is projected to the constrained space
 
-    double normb = sqrt(b.dot(b));
+    double normb2 = b.dot(b);
+    double normb = sqrt(normb2);
 
 
     // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
+
     v_clear( x );
     v_eq(r,b); // initial residual
 
-    if( printLog )
+    /*if( printLog )
     {
         cerr<<"CGImplicitSolver, dt = "<< dt <<endl;
         cerr<<"CGImplicitSolver, initial x = "<< pos <<endl;
         cerr<<"CGImplicitSolver, initial v = "<< vel <<endl;
         cerr<<"CGImplicitSolver, f0 = "<< b <<endl;
         cerr<<"CGImplicitSolver, r0 = "<< r <<endl;
-    }
+    }*/
 
     unsigned nb_iter;
     const char* endcond = "iterations";
@@ -132,63 +135,77 @@ void CGImplicitSolver::solve(double dt)
 
         //z = r; // no precond
         //rho = r.dot(z);
-        rho = r.dot(r);
+        rho = (nb_iter==1) ? normb2 : r.dot(r);
 
+        if (nb_iter>1)
+        {
+            double normr = rho; //sqrt(r.dot(r));
+            if (normr/normb <= f_tolerance.getValue())
+            {
+                endcond = "tolerance";
+                break;
+            }
+        }
 
         if( nb_iter==1 )
             p = r; //z;
         else
         {
             beta = rho / rho_1;
-            p *= beta;
-            p += r; //z;
+            //p *= beta;
+            //p += r; //z;
+            v_op(p,r,p,beta); // p = p*beta + r
         }
 
-        if( printLog )
+        /*if( printLog )
         {
             cerr<<"p : "<<p<<endl;
-        }
+        }*/
 
         // matrix-vector product
         propagateDx(p);          // dx = p
         computeDf(q);            // q = df/dx p
 
-        if( printLog )
+        /*if( printLog )
         {
             cerr<<"q = df/dx p : "<<q<<endl;
-        }
+        }*/
 
         q *= -h*(h+f_rayleighStiffness.getValue());  // q = -h(h+rs) df/dx p
 
-        if( printLog )
+        /*if( printLog )
         {
             cerr<<"q = -h(h+rs) df/dx p : "<<q<<endl;
-        }
+        }*/
         //
         // 		cerr<<"-h(h+rs) df/dx p : "<<q<<endl;
         // 		cerr<<"f_rayleighMass.getValue() : "<<f_rayleighMass.getValue()<<endl;
 
         // apply global Rayleigh damping
         if (f_rayleighMass.getValue()==0.0)
-            addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
+        {
+            //addMdx( q, p);           // q = Mp -h(h+rs) df/dx p
+            addMdx(q); // no need to propagate p as dx again
+        }
         else
         {
-            q2.clear();
-            addMdx( q2, p);
-            q.peq(q2,(1+h*f_rayleighMass.getValue())); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
+            //q2.clear();
+            //addMdx( q2, p);
+            //q.peq(q2,(1+h*f_rayleighMass.getValue())); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
+            addMdx(q,VecId(),(1+h*f_rayleighMass.getValue())); // no need to propagate p as dx again
         }
-        if( printLog )
+        /*if( printLog )
         {
             cerr<<"q = Mp -h(h+rs) df/dx p +hr Mp  =  "<<q<<endl;
-        }
+        }*/
 
         // filter the product to take the constraints into account
         //
         projectResponse(q);     // q is projected to the constrained space
-        if( printLog )
+        /*if( printLog )
         {
             cerr<<"q after constraint projection : "<<q<<endl;
-        }
+        }*/
 
         double den = p.dot(q);
 
@@ -205,20 +222,12 @@ void CGImplicitSolver::solve(double dt)
         alpha = rho/den;
         x.peq(p,alpha);                 // x = x + alpha p
         r.peq(q,-alpha);                // r = r - alpha r
-        if( printLog )
-        {
+        /*if( printLog ){
             cerr<<"den = "<<den<<", alpha = "<<alpha<<endl;
             cerr<<"x : "<<x<<endl;
             cerr<<"r : "<<r<<endl;
-        }
+        }*/
 
-
-        double normr = sqrt(r.dot(r));
-        if (normr/normb <= f_tolerance.getValue())
-        {
-            endcond = "tolerance";
-            break;
-        }
         rho_1 = rho;
     }
     // x is the solution of the system
@@ -232,9 +241,9 @@ void CGImplicitSolver::solve(double dt)
     if( printLog )
     {
         cerr<<"CGImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
-        cerr<<"CGImplicitSolver::solve, solution = "<<x<<endl;
-        cerr<<"CGImplicitSolver, final x = "<< pos <<endl;
-        cerr<<"CGImplicitSolver, final v = "<< vel <<endl;
+        //cerr<<"CGImplicitSolver::solve, solution = "<<x<<endl;
+        //cerr<<"CGImplicitSolver, final x = "<< pos <<endl;
+        //cerr<<"CGImplicitSolver, final v = "<< vel <<endl;
     }
 }
 

@@ -34,9 +34,9 @@ using namespace gpu::cuda;
 
 // -- Mass interface
 template <>
-void UniformMass<CudaVec3fTypes, float>::addMDx(VecDeriv& res, const VecDeriv& dx)
+void UniformMass<CudaVec3fTypes, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
-    UniformMassCuda3f_addMDx(dx.size(), mass.getValue(), res.deviceWrite(), dx.deviceRead());
+    UniformMassCuda3f_addMDx(dx.size(), (float)(mass.getValue()*factor), res.deviceWrite(), dx.deviceRead());
 }
 
 template <>

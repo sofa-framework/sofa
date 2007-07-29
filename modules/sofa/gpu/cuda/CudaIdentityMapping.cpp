@@ -26,11 +26,11 @@ int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computati
         .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< IdentityMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< IdentityMapping< Mapping< MechanicalState<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
         ;
 
 } // namespace cuda

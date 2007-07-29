@@ -26,6 +26,7 @@
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MECHANICALSTATE_H
 
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/componentmodel/behavior/State.h>
 
 namespace sofa
 {
@@ -47,6 +48,7 @@ namespace behavior
  *  \li \code Real \endcode : scalar values (float or double).
  *  \li \code Coord \endcode : position values.
  *  \li \code Deriv \endcode : derivative values (velocity, forces, displacements).
+ *  \li \code VecReal \endcode : container of scalar values with the same API as std::vector.
  *  \li \code VecCoord \endcode : container of Coord values with the same API as std::vector.
  *  \li \code VecDeriv \endcode : container of Deriv values with the same API as std::vector.
  *  \li \code SparseDeriv \endcode : index + Deriv value (entry of a sparse vector).
@@ -62,7 +64,7 @@ namespace behavior
  *
  */
 template<class TDataTypes>
-class MechanicalState : public BaseMechanicalState
+class MechanicalState : public BaseMechanicalState, public State<TDataTypes>
 {
 public:
     typedef TDataTypes DataTypes;
@@ -72,6 +74,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     /// Derivative values (velocity, forces, displacements).
     typedef typename DataTypes::Deriv Deriv;
+    /// Container of scalar values with the same API as std::vector.
+    typedef typename DataTypes::VecReal VecReal;
     /// Container of Coord values with the same API as std::vector.
     typedef typename DataTypes::VecCoord VecCoord;
     /// Container of Deriv values with the same API as std::vector.

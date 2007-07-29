@@ -20,6 +20,7 @@ template<class DataTypes>
 class LagrangianMultiplierConstraint : public core::componentmodel::behavior::BaseConstraint
 {
 public:
+    typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -32,6 +33,7 @@ public:
         typedef typename DataTypes::Real Real;
         typedef Real Coord;
         typedef Real Deriv;
+        typedef ::vector<Real> VecReal;
         typedef ::vector<Coord> VecCoord;
         typedef ::vector<Deriv> VecDeriv;
 

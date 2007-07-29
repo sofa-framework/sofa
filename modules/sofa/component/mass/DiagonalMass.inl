@@ -294,14 +294,23 @@ void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx)
+void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
 
     const MassVector &masses= f_mass.getValue();
-
-    for (unsigned int i=0; i<dx.size(); i++)
+    if (factor == 1.0)
     {
-        res[i] += dx[i] * masses[i];
+        for (unsigned int i=0; i<dx.size(); i++)
+        {
+            res[i] += dx[i] * masses[i];
+        }
+    }
+    else
+    {
+        for (unsigned int i=0; i<dx.size(); i++)
+        {
+            res[i] += (dx[i] * masses[i]) * factor;
+        }
     }
 }
 
