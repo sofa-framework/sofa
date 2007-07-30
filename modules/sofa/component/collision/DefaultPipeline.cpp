@@ -253,6 +253,7 @@ void DefaultPipeline::draw()
     DetectionOutputMap& outputsMap = narrowPhaseDetection->getDetectionOutputs();
     for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
     {
+        /*
         DetectionOutputVector& outputs = it->second;
         for (DetectionOutputVector::iterator it2 = outputs.begin(); it2!=outputs.end(); it2++)
         {
@@ -264,6 +265,7 @@ void DefaultPipeline::draw()
             glVertex3dv(d->point[0].ptr());
             glVertex3dv(d->point[1].ptr());
         }
+        */
     }
     glEnd();
     glLineWidth(1);

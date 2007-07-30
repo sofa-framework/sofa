@@ -90,11 +90,11 @@ void CudaCollisionDetection::endNarrowPhase()
             if (test->useGPU())
             {
                 it->second.index = ntests;
-                ntests += test->nbTests();
+                ntests += test->init();
             }
         }
-    if (ntests>0)
-        std::cout << "CudaCollisionDetection: Launching "<<ntests<<"/"<<tests.size()<<" tests on GPU..."<<std::endl;
+    //if (ntests>0)
+    //std::cout << "CudaCollisionDetection: Launching "<<ntests<<"/"<<tests.size()<<" tests on GPU..."<<std::endl;
 
     if (ntests > 0)
     {
@@ -109,7 +109,7 @@ void CudaCollisionDetection::endNarrowPhase()
                 Test* test = it->second.test;
                 if (test->useGPU())
                 {
-                    test->init(&gputests[it->second.index]);
+                    test->fillInfo(&gputests[it->second.index]);
                 }
             }
 
@@ -155,12 +155,36 @@ void CudaCollisionDetection::endNarrowPhase()
                 Test* test = it->second.test;
                 if (test->useGPU())
                 {
-                    test->fillContacts(this->outputsMap[it->first], results+it->second.index);
+                    GPUOutputVector* tresults = &it->second.test->results;
+                    this->outputsMap[it->first] = tresults;
+                    for (unsigned int t=0; t<tresults->nbTests(); t++)
+                    {
+                        tresults->test(t).curSize = results[it->second.index + t];
+                    }
+                    //test->fillContacts(this->outputsMap[it->first], results+it->second.index);
                 }
             }
     }
 
-    Inherit::endNarrowPhase();
+    //Inherit::endNarrowPhase();
+
+    DetectionOutputMap::iterator it = outputsMap.begin();
+    while(it!=outputsMap.end())
+    {
+        if (!it->second || it->second->empty())
+        {
+            DetectionOutputMap::iterator it2 = it;
+            ++it2;
+            if (!dynamic_cast<GPUOutputVector*>(it->second))
+                delete it->second;
+            outputsMap.erase(it);
+            it = it2;
+        }
+        else
+        {
+            ++it;
+        }
+    }
 }
 
 
@@ -172,11 +196,18 @@ CudaCollisionDetection::Test* CudaCollisionDetection::createTest(core::Collision
             return new RigidRigidTest(rigid1, rigid2);
         else if (CudaSphereModel* sphere2 = dynamic_cast<CudaSphereModel*>(model2))
             return new SphereRigidTest(sphere2, rigid1);
+        else if (CudaPointModel* point2 = dynamic_cast<CudaPointModel*>(model2))
+            return new PointRigidTest(point2, rigid1);
     }
     else if (CudaSphereModel* sphere1 = dynamic_cast<CudaSphereModel*>(model1))
     {
         if (CudaRigidDistanceGridCollisionModel* rigid2 = dynamic_cast<CudaRigidDistanceGridCollisionModel*>(model2))
             return new SphereRigidTest(sphere1, rigid2);
+    }
+    else if (CudaPointModel* point1 = dynamic_cast<CudaPointModel*>(model1))
+    {
+        if (CudaRigidDistanceGridCollisionModel* rigid2 = dynamic_cast<CudaRigidDistanceGridCollisionModel*>(model2))
+            return new PointRigidTest(point1, rigid2);
     }
     std::cout << "CudaCollisionDetection::CPUTest "<<model1->getClassName()<<" - "<<model2->getClassName()<<std::endl;
     return new CPUTest;
@@ -190,14 +221,14 @@ CudaCollisionDetection::RigidRigidTest::RigidRigidTest( CudaRigidDistanceGridCol
 }
 
 /// Returns how many tests are required
-int CudaCollisionDetection::RigidRigidTest::nbTests()
+int CudaCollisionDetection::RigidRigidTest::init()
 {
+    results.clear();
     if (!model1->isActive() || !model2->isActive()) return 0;
     bool useP1 = model1->usePoints.getValue();
-    bool useP2 = model1->usePoints.getValue();
+    bool useP2 = model2->usePoints.getValue();
     if (!useP1 && !useP2) return 0;
-    int n = 0;
-
+    int i0 = model1->getSize();
     for (CudaRigidDistanceGridCollisionElement e1 = CudaRigidDistanceGridCollisionElement(model1->begin()); e1!=model1->end(); ++e1)
         for (CudaRigidDistanceGridCollisionElement e2 = CudaRigidDistanceGridCollisionElement(model2->begin()); e2!=model2->end(); ++e2)
         {
@@ -205,51 +236,47 @@ int CudaCollisionDetection::RigidRigidTest::nbTests()
             CudaDistanceGrid* g2 = e2.getGrid();
             if (g1 && g2)
             {
-                if (useP1 && !g1->meshPts.empty()) ++n;
-                if (useP2 && !g2->meshPts.empty()) ++n;
+                if (useP1 && !g1->meshPts.empty()) results.addTest(std::make_pair(e1.getIndex(), i0+e2.getIndex()), g1->meshPts.size());
+                if (useP2 && !g2->meshPts.empty()) results.addTest(std::make_pair(i0+e2.getIndex(), e1.getIndex()), g2->meshPts.size());
             }
         }
-    return n;
+    return results.nbTests();
 }
 
 /// Fill the info to send to the graphics card
-void CudaCollisionDetection::RigidRigidTest::init(GPUTest* tests)
+void CudaCollisionDetection::RigidRigidTest::fillInfo(GPUTest* tests)
 {
-    if (!model1->isActive() || !model2->isActive()) return;
-    bool useP1 = model1->usePoints.getValue();
-    bool useP2 = model1->usePoints.getValue();
-    if (!useP1 && !useP2) return;
-
-    int n = 0;
-    for (CudaRigidDistanceGridCollisionElement e1 = CudaRigidDistanceGridCollisionElement(model1->begin()); e1!=model1->end(); ++e1)
-        for (CudaRigidDistanceGridCollisionElement e2 = CudaRigidDistanceGridCollisionElement(model2->begin()); e2!=model2->end(); ++e2)
-        {
-            CudaDistanceGrid* g1 = e1.getGrid();
-            CudaDistanceGrid* g2 = e2.getGrid();
-            if (g1 && g2)
-            {
-                if (useP1 && !g1->meshPts.empty())
-                {
-                    if (n >= (int)results.size())
-                        results.resize(n+1);
-                    if (!results[n]) results[n] = new CudaVector<GPUContact>;
-                    init(tests[n], *results[n], e1, e2);
-                    ++n;
-                }
-                if (useP2 && !g2->meshPts.empty())
-                {
-                    if (n >= (int)results.size())
-                        results.resize(n+1);
-                    if (!results[n]) results[n] = new CudaVector<GPUContact>;
-                    init(tests[n], *results[n], e2, e1);
-                    ++n;
-                }
-            }
-        }
+    if (results.nbTests()==0) return;
+    GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
+    int i0 = model1->getSize();
+    for (unsigned int i=0; i<results.nbTests(); i++)
+    {
+        GPUOutputVector::TestEntry& e = results.test(i);
+        GPUTest& test = tests[i];
+        CudaRigidDistanceGridCollisionElement elem1((e.elems.first  < i0)?model1:model2,(e.elems.first  < i0)?e.elems.first :e.elems.first -i0);
+        CudaRigidDistanceGridCollisionElement elem2((e.elems.second < i0)?model1:model2,(e.elems.second < i0)?e.elems.second:e.elems.second-i0);
+        const CudaVector<Vec3f>& p1 = elem1.getGrid()->meshPts;
+        CudaDistanceGrid& g2 = *elem2.getGrid();
+        test.nbPoints = p1.size();
+        test.result = gresults + e.firstIndex;
+        test.points = p1.deviceRead();
+        test.radius = NULL;
+        test.gridnx = g2.getNx();
+        test.gridny = g2.getNy();
+        test.gridnz = g2.getNz();
+        test.gridbbmin = g2.getBBMin();
+        test.gridbbmax = g2.getBBMax();
+        test.gridp0 = g2.getPMin();
+        test.gridinvdp = g2.getInvCellWidth();
+        test.grid = g2.getDists().deviceRead();
+        test.margin = 0;
+        test.rotation = elem2.getRotation().multTranspose(elem1.getRotation());
+        test.translation = elem2.getRotation().multTranspose(elem1.getTranslation()-elem2.getTranslation());
+    }
 }
-
+/*
 /// Fill the info to send to the graphics card
-void CudaCollisionDetection::RigidRigidTest::init(GPUTest& test, CudaVector<GPUContact>& gpucontacts, CudaRigidDistanceGridCollisionElement elem1, CudaRigidDistanceGridCollisionElement elem2)
+void CudaCollisionDetection::RigidRigidTest::fillInfo(GPUTest& test, CudaVector<GPUContact>& gpucontacts, CudaRigidDistanceGridCollisionElement elem1, CudaRigidDistanceGridCollisionElement elem2)
 {
     const CudaVector<Vec3f>& p1 = elem1.getGrid()->meshPts;
     CudaDistanceGrid& g2 = *elem2.getGrid();
@@ -272,18 +299,19 @@ void CudaCollisionDetection::RigidRigidTest::init(GPUTest& test, CudaVector<GPUC
     gpucontacts.fastResize(test.nbPoints);
     test.result = gpucontacts.deviceWrite();
 }
-
+*/
+/*
 /// Create the list of SOFA contacts from the contacts detected by the GPU
 void CudaCollisionDetection::RigidRigidTest::fillContacts(DetectionOutputVector& contacts, const int* nresults)
 {
     if (!model1->isActive() || !model2->isActive()) return;
     bool useP1 = model1->usePoints.getValue();
-    bool useP2 = model1->usePoints.getValue();
+    bool useP2 = model2->usePoints.getValue();
     if (!useP1 && !useP2) return;
 
     int n = 0;
-    for (CudaRigidDistanceGridCollisionElement e1 = CudaRigidDistanceGridCollisionElement(model1->begin()); e1!=model1->end(); ++e1)
-        for (CudaRigidDistanceGridCollisionElement e2 = CudaRigidDistanceGridCollisionElement(model2->begin()); e2!=model2->end(); ++e2)
+    for (CudaRigidDistanceGridCollisionElement e1 = CudaRigidDistanceGridCollisionElement(model1->begin()); e1!=model1->end();++e1)
+        for (CudaRigidDistanceGridCollisionElement e2 = CudaRigidDistanceGridCollisionElement(model2->begin()); e2!=model2->end();++e2)
         {
             CudaDistanceGrid* g1 = e1.getGrid();
             CudaDistanceGrid* g2 = e2.getGrid();
@@ -342,6 +370,7 @@ void CudaCollisionDetection::RigidRigidTest::fillContacts(DetectionOutputVector&
         }
     }
 }
+*/
 
 CudaCollisionDetection::SphereRigidTest::SphereRigidTest( CudaSphereModel* model1, CudaRigidDistanceGridCollisionModel* model2 )
     : model1(model1), model2(model2)
@@ -351,63 +380,54 @@ CudaCollisionDetection::SphereRigidTest::SphereRigidTest( CudaSphereModel* model
 
 
 /// Returns how many tests are required
-int CudaCollisionDetection::SphereRigidTest::nbTests()
+int CudaCollisionDetection::SphereRigidTest::init()
 {
+    results.clear();
     if (!model1->isActive() || !model2->isActive()) return 0;
     const CudaVector<Vec3f>& p1 = *model1->getMechanicalState()->getX();
     if (p1.empty()) return 0;
 
-    int n = 0;
     for (CudaRigidDistanceGridCollisionElement e2 = CudaRigidDistanceGridCollisionElement(model2->begin()); e2!=model2->end(); ++e2)
     {
         CudaDistanceGrid* g2 = e2.getGrid();
         if (g2)
-            ++n;
+            results.addTest(std::make_pair(0, e2.getIndex()), p1.size());
     }
-    return n;
+    return results.nbTests();
 }
 
 /// Fill the info to send to the graphics card
-void CudaCollisionDetection::SphereRigidTest::init(GPUTest* tests)
+void CudaCollisionDetection::SphereRigidTest::fillInfo(GPUTest* tests)
 {
-    if (!model1->isActive() || !model2->isActive()) return;
+    if (results.nbTests()==0) return;
+    GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
     const CudaVector<Vec3f>& p1 = *model1->getMechanicalState()->getX();
-    if (p1.empty()) return;
-
-
-    int n = 0;
-    for (CudaRigidDistanceGridCollisionElement elem2 = CudaRigidDistanceGridCollisionElement(model2->begin()); elem2!=model2->end(); ++elem2)
+    for (unsigned int i=0; i<results.nbTests(); i++)
     {
+        GPUOutputVector::TestEntry& e = results.test(i);
+        GPUTest& test = tests[i];
+        //CudaRigidDistanceGridCollisionElement elem1((e.elems.first  < i0)?model1:model2,(e.elems.first  < i0)?e.elems.first :e.elems.first -i0);
+        CudaRigidDistanceGridCollisionElement elem2(model2, e.elems.second);
         CudaDistanceGrid* g2 = elem2.getGrid();
-        if (g2)
-        {
-            if (n >= (int)results.size())
-                results.resize(n+1);
-            if (!results[n]) results[n] = new CudaVector<GPUContact>;
-            GPUTest& test = tests[n];
-            test.nbPoints = p1.size();
-            results[n]->fastResize(test.nbPoints);
-            test.result = results[n]->deviceWrite();
-            test.points = p1.deviceRead();
-            test.radius = model1->getR().deviceRead();
-            test.grid = g2->getDists().deviceRead();
-            test.gridnx = g2->getNx();
-            test.gridny = g2->getNy();
-            test.gridnz = g2->getNz();
-            test.gridbbmin = g2->getBBMin();
-            test.gridbbmax = g2->getBBMax();
-            test.gridp0 = g2->getPMin();
-            test.gridinvdp = g2->getInvCellWidth();
-            test.margin = 0; //model1->getRadius(0);
-            test.rotation.transpose(Mat3x3f(elem2.getRotation()));
-            test.translation = test.rotation*(-elem2.getTranslation());
-
-            ++n;
-        }
+        test.nbPoints = p1.size();
+        test.result = gresults + e.firstIndex;
+        test.points = p1.deviceRead();
+        test.radius = model1->getR().deviceRead();
+        test.grid = g2->getDists().deviceRead();
+        test.gridnx = g2->getNx();
+        test.gridny = g2->getNy();
+        test.gridnz = g2->getNz();
+        test.gridbbmin = g2->getBBMin();
+        test.gridbbmax = g2->getBBMax();
+        test.gridp0 = g2->getPMin();
+        test.gridinvdp = g2->getInvCellWidth();
+        test.margin = 0; //model1->getRadius(0);
+        test.rotation.transpose(Mat3x3f(elem2.getRotation()));
+        test.translation = test.rotation*(-elem2.getTranslation());
     }
 }
 
-
+/*
 /// Create the list of SOFA contacts from the contacts detected by the GPU
 void CudaCollisionDetection::SphereRigidTest::fillContacts(DetectionOutputVector& contacts, const int* nresults)
 {
@@ -446,6 +466,60 @@ void CudaCollisionDetection::SphereRigidTest::fillContacts(DetectionOutputVector
             }
             ++n;
         }
+    }
+}
+*/
+
+CudaCollisionDetection::PointRigidTest::PointRigidTest( CudaPointModel* model1, CudaRigidDistanceGridCollisionModel* model2 )
+    : model1(model1), model2(model2)
+{
+    std::cout << "CudaCollisionDetection::PointRigidTest "<<model1->getClassName()<<" - "<<model2->getClassName()<<std::endl;
+}
+
+/// Returns how many tests are required
+int CudaCollisionDetection::PointRigidTest::init()
+{
+    results.clear();
+    if (!model1->isActive() || !model2->isActive()) return 0;
+    for (CudaPoint e1 = CudaPoint(model1->begin()); e1!=model1->end(); ++e1)
+        for (CudaRigidDistanceGridCollisionElement e2 = CudaRigidDistanceGridCollisionElement(model2->begin()); e2!=model2->end(); ++e2)
+        {
+            //CudaDistanceGrid* g1 = e1.getGrid();
+            CudaDistanceGrid* g2 = e2.getGrid();
+            if (g2)
+                results.addTest(std::make_pair(e1.getIndex(), e2.getIndex()), e1.getSize());
+        }
+    return results.nbTests();
+}
+
+/// Fill the info to send to the graphics card
+void CudaCollisionDetection::PointRigidTest::fillInfo(GPUTest* tests)
+{
+    if (results.nbTests()==0) return;
+    GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
+    for (unsigned int i=0; i<results.nbTests(); i++)
+    {
+        GPUOutputVector::TestEntry& e = results.test(i);
+        GPUTest& test = tests[i];
+        CudaPoint elem1(model1, e.elems.first);
+        CudaRigidDistanceGridCollisionElement elem2(model2,e.elems.second);
+        const CudaVector<Vec3f>& p1 = *model1->getMechanicalState()->getX();
+        CudaDistanceGrid& g2 = *elem2.getGrid();
+        test.nbPoints = elem1.getSize();
+        test.result = gresults + e.firstIndex;
+        test.points = p1.deviceRead(elem1.i0());
+        test.radius = NULL;
+        test.gridnx = g2.getNx();
+        test.gridny = g2.getNy();
+        test.gridnz = g2.getNz();
+        test.gridbbmin = g2.getBBMin();
+        test.gridbbmax = g2.getBBMax();
+        test.gridp0 = g2.getPMin();
+        test.gridinvdp = g2.getInvCellWidth();
+        test.grid = g2.getDists().deviceRead();
+        test.margin = 0;
+        test.rotation.transpose(elem2.getRotation());
+        test.translation = elem2.getRotation().multTranspose(-elem2.getTranslation());
     }
 }
 

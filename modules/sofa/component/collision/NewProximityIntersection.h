@@ -86,30 +86,30 @@ public:
     bool testIntersection(Triangle&, Triangle&);
     bool testIntersection(Ray&, Triangle&);
 
-    int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
-    int computeIntersection(Point&, Point&, DetectionOutputVector&);
+    int computeIntersection(Cube&, Cube&, OutputVector*);
+    int computeIntersection(Point&, Point&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(Sphere&, Point&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Point&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(Sphere&, Sphere&, DetectionOutputVector&);
-    int computeIntersection(Line&, Point&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Sphere&, OutputVector*);
+    int computeIntersection(Line&, Point&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(Line&, Sphere&, DetectionOutputVector&);
-    int computeIntersection(Line&, Line&, DetectionOutputVector&);
-    int computeIntersection(Triangle&, Point&, DetectionOutputVector&);
+    int computeIntersection(Line&, Sphere&, OutputVector*);
+    int computeIntersection(Line&, Line&, OutputVector*);
+    int computeIntersection(Triangle&, Point&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(Triangle&, Sphere&, DetectionOutputVector&);
-    int computeIntersection(Triangle&, Line&, DetectionOutputVector&);
-    int computeIntersection(Triangle&, Triangle&, DetectionOutputVector&);
-    int computeIntersection(Ray&, Triangle&, DetectionOutputVector&);
+    int computeIntersection(Triangle&, Sphere&, OutputVector*);
+    int computeIntersection(Triangle&, Line&, OutputVector*);
+    int computeIntersection(Triangle&, Triangle&, OutputVector*);
+    int computeIntersection(Ray&, Triangle&, OutputVector*);
 
-    static inline int doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, DetectionOutputVector& contacts, int id);
+    static inline int doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id);
 
-    static inline int doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, DetectionOutputVector& contacts, int id, bool swapElems = false);
+    static inline int doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, OutputVector* contacts, int id, bool swapElems = false);
 
-    static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, DetectionOutputVector& contacts, int id);
+    static inline int doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id);
 
-    static inline int doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& n, const Vector3& q, DetectionOutputVector& contacts, int id, bool swapElems = false);
+    static inline int doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& n, const Vector3& q, OutputVector* contacts, int id, bool swapElems = false);
 
 protected:
 };

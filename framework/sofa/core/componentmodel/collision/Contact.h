@@ -49,13 +49,12 @@ using namespace sofa::defaulttype;
 class Contact : public virtual objectmodel::BaseObject
 {
 public:
-    typedef Intersection::DetectionOutputVector DetectionOutputVector;
 
     virtual ~Contact() { }
 
     virtual std::pair< core::CollisionModel*, core::CollisionModel* > getCollisionModels() = 0;
 
-    virtual void setDetectionOutputs(DetectionOutputVector& outputs) = 0;
+    virtual void setDetectionOutputs(DetectionOutputVector* outputs) = 0;
 
     virtual void createResponse(objectmodel::BaseContext* group) = 0;
 

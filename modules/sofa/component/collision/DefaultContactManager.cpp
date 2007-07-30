@@ -80,7 +80,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
     DetectionOutputMap::iterator outputsIt = outputsMap.begin();
     std::map< std::pair<core::CollisionModel*,core::CollisionModel*>, core::componentmodel::collision::Contact* >::iterator contactIt = contactMap.begin();
     int nbContact = 0;
-    DetectionOutputVector emptyContacts;
+    //static DetectionOutputVector emptyContacts;
     while (outputsIt!=outputsMap.end() || contactIt!=contactMap.end())
     {
         if (outputsIt!=outputsMap.end() && (contactIt == contactMap.end() || outputsIt->first < contactIt->first))
@@ -105,7 +105,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             //std::cout << "Deleting inactive "<<contacttype<<" contact"<<std::endl;
             if (contactIt->second->keepAlive())
             {
-                contactIt->second->setDetectionOutputs(emptyContacts);
+                contactIt->second->setDetectionOutputs(NULL);
             }
             else
             {

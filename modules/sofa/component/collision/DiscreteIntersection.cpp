@@ -111,12 +111,12 @@ bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)
 //	return false;
 //}
 
-int DiscreteIntersection::computeIntersection(Cube&, Cube&, DetectionOutputVector&)
+int DiscreteIntersection::computeIntersection(Cube&, Cube&, OutputVector*)
 {
     return 0; /// \todo
 }
 
-//int DiscreteIntersection::computeIntersection(Triangle&, Triangle&, DetectionOutputVector&)
+//int DiscreteIntersection::computeIntersection(Triangle&, Triangle&, OutputVector*)
 //{
 //	std::cout<<"Distance correction between Triangle - Triangle"<<std::endl;
 //	return 0;
@@ -129,7 +129,7 @@ bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, 
 
 //#define DEBUG_XFORM
 
-int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, OutputVector* contacts)
 {
     int nc = 0;
     DistanceGrid* grid1 = e1.getGrid();
@@ -259,8 +259,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
                     p2 -= normal * d; // push p2 to the surface
 
-                    contacts.resize(contacts.size()+1);
-                    DetectionOutput *detection = &*(contacts.end()-1);
+                    contacts->resize(contacts->size()+1);
+                    DetectionOutput *detection = &*(contacts->end()-1);
 
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
@@ -306,8 +306,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
                     //p2 -= normal * d; // push p2 to the surface
 
-                    contacts.resize(contacts.size()+1);
-                    DetectionOutput *detection = &*(contacts.end()-1);
+                    contacts->resize(contacts->size()+1);
+                    DetectionOutput *detection = &*(contacts->end()-1);
 
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
@@ -351,8 +351,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
                 //p2 -= grad * d; // push p2 back to the surface
 
-                contacts.resize(contacts.size()+1);
-                DetectionOutput *detection = &*(contacts.end()-1);
+                contacts->resize(contacts->size()+1);
+                DetectionOutput *detection = &*(contacts->end()-1);
 
                 detection->point[0] = Vector3(p1);
                 detection->point[1] = Vector3(p2) - grad * d;
@@ -401,8 +401,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
                     p1 -= normal * d; // push p2 to the surface
 
-                    contacts.resize(contacts.size()+1);
-                    DetectionOutput *detection = &*(contacts.end()-1);
+                    contacts->resize(contacts->size()+1);
+                    DetectionOutput *detection = &*(contacts->end()-1);
 
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
@@ -445,8 +445,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     p1[axis] = sign*cubeDim1;
                     Vector3 gnormal = r1.col(axis) * sign;
 
-                    contacts.resize(contacts.size()+1);
-                    DetectionOutput *detection = &*(contacts.end()-1);
+                    contacts->resize(contacts->size()+1);
+                    DetectionOutput *detection = &*(contacts->end()-1);
 
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
@@ -547,8 +547,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 }
 
 
-                contacts.resize(contacts.size()+1);
-                DetectionOutput *detection = &*(contacts.end()-1);
+                contacts->resize(contacts->size()+1);
+                DetectionOutput *detection = &*(contacts->end()-1);
 
                 detection->point[0] = Vector3(p1); // - normal * d;
                 detection->point[1] = Vector3(p2);
@@ -592,8 +592,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
                 //p1 -= grad * d; // push p1 back to the surface
 
-                contacts.resize(contacts.size()+1);
-                DetectionOutput *detection = &*(contacts.end()-1);
+                contacts->resize(contacts->size()+1);
+                DetectionOutput *detection = &*(contacts->end()-1);
 
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
@@ -614,7 +614,7 @@ bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, 
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Point& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Point& e2, OutputVector* contacts)
 {
     DistanceGrid* grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();
@@ -648,8 +648,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
     //p1 -= grad * d; // push p1 back to the surface
 
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
 
     detection->point[0] = Vector3(p1) - grad * d;
     detection->point[1] = Vector3(p2);
@@ -666,7 +666,7 @@ bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, 
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Triangle& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Triangle& e2, OutputVector* contacts)
 {
     const int f2 = e2.flags();
     if (!(f2&TriangleModel::FLAG_POINTS)) return 0; // no points associated with this triangle
@@ -705,8 +705,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
                 //p1 -= grad * d; // push p1 back to the surface
 
-                contacts.resize(contacts.size()+1);
-                DetectionOutput *detection = &*(contacts.end()-1);
+                contacts->resize(contacts->size()+1);
+                DetectionOutput *detection = &*(contacts->end()-1);
 
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
@@ -746,8 +746,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
                 //p1 -= grad * d; // push p1 back to the surface
 
-                contacts.resize(contacts.size()+1);
-                DetectionOutput *detection = &*(contacts.end()-1);
+                contacts->resize(contacts->size()+1);
+                DetectionOutput *detection = &*(contacts->end()-1);
 
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
@@ -787,8 +787,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
                 //p1 -= grad * d; // push p1 back to the surface
 
-                contacts.resize(contacts.size()+1);
-                DetectionOutput *detection = &*(contacts.end()-1);
+                contacts->resize(contacts->size()+1);
+                DetectionOutput *detection = &*(contacts->end()-1);
 
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
@@ -808,7 +808,7 @@ bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement& /
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Ray& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Ray& e2, OutputVector* contacts)
 {
     Vector3 rayOrigin(e2.origin());
     Vector3 rayDirection(e2.direction());
@@ -907,8 +907,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
         {
             // intersection found
 
-            contacts.resize(contacts.size()+1);
-            DetectionOutput *detection = &*(contacts.end()-1);
+            contacts->resize(contacts->size()+1);
+            DetectionOutput *detection = &*(contacts->end()-1);
 
             detection->point[0] = p;
             detection->point[1] = e2.origin() + e2.direction()*l0;
@@ -928,7 +928,7 @@ bool DiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, Ri
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, RigidDistanceGridCollisionElement& e2, OutputVector* contacts)
 {
     int nc = 0;
     DistanceGrid* grid1 = e1.getGrid();
@@ -985,8 +985,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
 
                 //p2 -= grad * d; // push p2 back to the surface
 
-                contacts.resize(contacts.size()+1);
-                DetectionOutput *detection = &*(contacts.end()-1);
+                contacts->resize(contacts->size()+1);
+                DetectionOutput *detection = &*(contacts->end()-1);
 
                 detection->point[0] = grid1->meshPts[c1.points[i].index];
                 detection->point[1] = Vector3(p2) - grad * d;
@@ -1048,8 +1048,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                                 grad = c1.deformDir(c1.baryCoords(pinit),grad);
                                 grad.normalize();
 
-                                contacts.resize(contacts.size()+1);
-                                DetectionOutput *detection = &*(contacts.end()-1);
+                                contacts->resize(contacts->size()+1);
+                                DetectionOutput *detection = &*(contacts->end()-1);
 
                                 detection->point[0] = Vector3(pinit);
                                 detection->point[1] = Vector3(p2);
@@ -1090,7 +1090,7 @@ bool DiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, FF
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, FFDDistanceGridCollisionElement& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, FFDDistanceGridCollisionElement& e2, OutputVector* contacts)
 {
     int nc = 0;
     DistanceGrid* grid1 = e1.getGrid();
@@ -1154,8 +1154,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                             grad = c2.deformDir(c2.baryCoords(pinit),grad);
                             grad.normalize();
 
-                            contacts.resize(contacts.size()+1);
-                            DetectionOutput *detection = &*(contacts.end()-1);
+                            contacts->resize(contacts->size()+1);
+                            DetectionOutput *detection = &*(contacts->end()-1);
 
                             detection->point[0] = Vector3(grid1->meshPts[c1.points[i].index]);
                             detection->point[1] = Vector3(pinit);
@@ -1231,8 +1231,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                             grad = c1.deformDir(c1.baryCoords(pinit),grad);
                             grad.normalize();
 
-                            contacts.resize(contacts.size()+1);
-                            DetectionOutput *detection = &*(contacts.end()-1);
+                            contacts->resize(contacts->size()+1);
+                            DetectionOutput *detection = &*(contacts->end()-1);
 
                             detection->point[0] = Vector3(pinit);
                             detection->point[1] = Vector3(grid2->meshPts[c2.points[i].index]);
@@ -1271,7 +1271,7 @@ bool DiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, Po
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Point& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Point& e2, OutputVector* contacts)
 {
 
     DistanceGrid* grid1 = e1.getGrid();
@@ -1322,8 +1322,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                     grad = c1.deformDir(c1.baryCoords(pinit),grad);
                     grad.normalize();
 
-                    contacts.resize(contacts.size()+1);
-                    DetectionOutput *detection = &*(contacts.end()-1);
+                    contacts->resize(contacts->size()+1);
+                    DetectionOutput *detection = &*(contacts->end()-1);
 
                     detection->point[0] = Vector3(pinit);
                     detection->point[1] = Vector3(p2);
@@ -1361,7 +1361,7 @@ bool DiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, Tr
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Triangle& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Triangle& e2, OutputVector* contacts)
 {
     const int f2 = e2.flags();
     if (!(f2&TriangleModel::FLAG_POINTS)) return 0; // no points associated with this triangle
@@ -1416,8 +1416,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                         grad = c1.deformDir(c1.baryCoords(pinit),grad);
                         grad.normalize();
 
-                        contacts.resize(contacts.size()+1);
-                        DetectionOutput *detection = &*(contacts.end()-1);
+                        contacts->resize(contacts->size()+1);
+                        DetectionOutput *detection = &*(contacts->end()-1);
 
                         detection->point[0] = Vector3(pinit);
                         detection->point[1] = Vector3(p2);
@@ -1488,8 +1488,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                         grad = c1.deformDir(c1.baryCoords(pinit),grad);
                         grad.normalize();
 
-                        contacts.resize(contacts.size()+1);
-                        DetectionOutput *detection = &*(contacts.end()-1);
+                        contacts->resize(contacts->size()+1);
+                        DetectionOutput *detection = &*(contacts->end()-1);
 
                         detection->point[0] = Vector3(pinit);
                         detection->point[1] = Vector3(p2);
@@ -1560,8 +1560,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                         grad = c1.deformDir(c1.baryCoords(pinit),grad);
                         grad.normalize();
 
-                        contacts.resize(contacts.size()+1);
-                        DetectionOutput *detection = &*(contacts.end()-1);
+                        contacts->resize(contacts->size()+1);
+                        DetectionOutput *detection = &*(contacts->end()-1);
 
                         detection->point[0] = Vector3(pinit);
                         detection->point[1] = Vector3(p2);
@@ -1599,7 +1599,7 @@ bool DiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement& /*e
     return true;
 }
 
-int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Ray& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Ray& e2, OutputVector* contacts)
 {
     Vector3 rayOrigin(e2.origin());
     Vector3 rayDirection(e2.direction());
@@ -1673,8 +1673,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
             {
                 // intersection found
 
-                contacts.resize(contacts.size()+1);
-                DetectionOutput *detection = &*(contacts.end()-1);
+                contacts->resize(contacts->size()+1);
+                DetectionOutput *detection = &*(contacts->end()-1);
 
                 detection->point[0] = c1.initpos(b);
                 detection->point[1] = e2.origin() + e2.direction()*rayPos;

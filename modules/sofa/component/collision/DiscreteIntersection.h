@@ -57,6 +57,29 @@ protected:
     core::componentmodel::collision::IntersectorMap intersectors;
 
 public:
+    template<class Model1, class Model2>
+    sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>* createOutputVector(Model1*, Model2*)
+    {
+        return new sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>;
+    }
+
+    template<class Model1, class Model2>
+    sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>* getOutputVector(sofa::core::componentmodel::collision::DetectionOutputVector* contacts)
+    {
+        return static_cast<sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>*>(contacts);
+    }
+
+    typedef sofa::helper::vector<sofa::core::componentmodel::collision::DetectionOutput> OutputVector;
+
+    int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
+    {
+        return 0;
+    }
+
+    int endIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
+    {
+        return 0;
+    }
 
     bool testIntersection(Cube&, Cube&);
 
@@ -83,29 +106,29 @@ public:
     bool testIntersection(FFDDistanceGridCollisionElement&, Triangle&);
     bool testIntersection(FFDDistanceGridCollisionElement&, Ray&);
 
-    int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
+    int computeIntersection(Cube&, Cube&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(Sphere&, Sphere&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Sphere&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(Sphere&, Cube&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Cube&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(Sphere&, Ray&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Ray&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(Sphere&, Triangle&, DetectionOutputVector&);
-    //int computeIntersection(Triangle&, Triangle&, DetectionOutputVector&);
-    int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, DetectionOutputVector&);
-    int computeIntersection(RigidDistanceGridCollisionElement&, Point&, DetectionOutputVector&);
+    int computeIntersection(Sphere&, Triangle&, OutputVector*);
+    //int computeIntersection(Triangle&, Triangle&, OutputVector*);
+    int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
+    int computeIntersection(RigidDistanceGridCollisionElement&, Point&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(RigidDistanceGridCollisionElement&, Sphere&, DetectionOutputVector&);
-    int computeIntersection(RigidDistanceGridCollisionElement&, Triangle&, DetectionOutputVector&);
-    int computeIntersection(RigidDistanceGridCollisionElement&, Ray&, DetectionOutputVector&);
-    int computeIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, DetectionOutputVector&);
-    int computeIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&, DetectionOutputVector&);
-    int computeIntersection(FFDDistanceGridCollisionElement&, Point&, DetectionOutputVector&);
+    int computeIntersection(RigidDistanceGridCollisionElement&, Sphere&, OutputVector*);
+    int computeIntersection(RigidDistanceGridCollisionElement&, Triangle&, OutputVector*);
+    int computeIntersection(RigidDistanceGridCollisionElement&, Ray&, OutputVector*);
+    int computeIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
+    int computeIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&, OutputVector*);
+    int computeIntersection(FFDDistanceGridCollisionElement&, Point&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(FFDDistanceGridCollisionElement&, Sphere&, DetectionOutputVector&);
-    int computeIntersection(FFDDistanceGridCollisionElement&, Triangle&, DetectionOutputVector&);
-    int computeIntersection(FFDDistanceGridCollisionElement&, Ray&, DetectionOutputVector&);
+    int computeIntersection(FFDDistanceGridCollisionElement&, Sphere&, OutputVector*);
+    int computeIntersection(FFDDistanceGridCollisionElement&, Triangle&, OutputVector*);
+    int computeIntersection(FFDDistanceGridCollisionElement&, Ray&, OutputVector*);
 
 };
 

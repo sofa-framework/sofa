@@ -43,68 +43,12 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-template<class Elem1, class Elem2,
-         bool (*CanIntersectFn)(Elem1&, Elem2&),
-         int (*IntersectFn)(Elem1&, Elem2&, std::vector<DetectionOutput>&)
-         >
-class FnElementIntersector : public ElementIntersector
-{
-public:
-    /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
-    {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        return CanIntersectFn(e1, e2);
-    }
-
-    /// Compute the intersection between 2 elements.
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, std::vector<DetectionOutput>& contacts)
-    {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        return IntersectFn(e1, e2, contacts);
-    }
-
-    std::string name() const
-    {
-        return gettypename(typeid(Elem1))+std::string("-")+gettypename(typeid(Elem2));
-    }
-};
-
-template<class Elem1, class Elem2,
-         bool (*CanIntersectFn)(Elem2&, Elem1&),
-         int (*IntersectFn)(Elem1&, Elem2&, std::vector<DetectionOutput>&)
-         >
-class MirrorFnElementIntersector : public ElementIntersector
-{
-public:
-    /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
-    {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        return CanIntersectFn(e2, e1);
-    }
-
-    /// Compute the intersection between 2 elements.
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, std::vector<DetectionOutput>& contacts)
-    {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        return IntersectFn(e2, e1, contacts);
-    }
-
-    std::string name() const
-    {
-        return gettypename(typeid(Elem2))+std::string("-")+gettypename(typeid(Elem1));
-    }
-};
-
 template<class Elem1, class Elem2, class T>
 class MemberElementIntersector : public ElementIntersector
 {
 public:
+    typedef typename Elem1::Model Model1;
+    typedef typename Elem2::Model Model2;
     MemberElementIntersector(T* ptr) : impl(ptr) {}
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
     bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
@@ -114,17 +58,38 @@ public:
         return impl->testIntersection(e1, e2);
     }
 
+    /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
+    /// If the given contacts vector is NULL, then this method should allocate it.
+    int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector*& contacts)
+    {
+        Model1* m1 = static_cast<Model1*>(model1);
+        Model2* m2 = static_cast<Model2*>(model2);
+        if (contacts == NULL)
+        {
+            contacts = impl->createOutputVector<Model1,Model2>(m1,m2);
+        }
+        return impl->beginIntersection(m1, m2, impl->getOutputVector<Model1,Model2>(contacts));
+    }
+
     /// Compute the intersection between 2 elements.
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  std::vector<DetectionOutput>& contacts)
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2,  DetectionOutputVector* contacts)
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
-        return impl->computeIntersection(e1, e2, contacts);
+        return impl->computeIntersection(e1, e2, impl->getOutputVector<Model1,Model2>(contacts));
     }
 
     std::string name() const
     {
         return gettypename(typeid(Elem1))+std::string("-")+gettypename(typeid(Elem2));
+    }
+
+    /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
+    int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector* contacts)
+    {
+        Model1* m1 = static_cast<Model1*>(model1);
+        Model2* m2 = static_cast<Model2*>(model2);
+        return impl->endIntersection(m1, m2, impl->getOutputVector<Model1,Model2>(contacts));
     }
 
 protected:
@@ -135,6 +100,8 @@ template<class Elem1, class Elem2, class T>
 class MirrorMemberElementIntersector : public ElementIntersector
 {
 public:
+    typedef typename Elem1::Model Model1;
+    typedef typename Elem2::Model Model2;
     MirrorMemberElementIntersector(T* ptr) : impl(ptr) {}
     /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
     bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
@@ -144,12 +111,33 @@ public:
         return impl->testIntersection(e2, e1);
     }
 
+    /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
+    /// If the given contacts vector is NULL, then this method should allocate it.
+    int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector*& contacts)
+    {
+        Model1* m1 = static_cast<Model1*>(model1);
+        Model2* m2 = static_cast<Model2*>(model2);
+        if (contacts == NULL)
+        {
+            contacts = impl->createOutputVector<Model2,Model1>(m2,m1);
+        }
+        return impl->beginIntersection(m2, m1, impl->getOutputVector<Model2,Model1>(contacts));
+    }
+
     /// Compute the intersection between 2 elements.
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, std::vector<DetectionOutput>& contacts)
+    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector* contacts)
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
-        return impl->computeIntersection(e2, e1, contacts);
+        return impl->computeIntersection(e2, e1, impl->getOutputVector<Model2,Model1>(contacts));
+    }
+
+    /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
+    int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector* contacts)
+    {
+        Model1* m1 = static_cast<Model1*>(model1);
+        Model2* m2 = static_cast<Model2*>(model2);
+        return impl->endIntersection(m2, m1, impl->getOutputVector<Model2,Model1>(contacts));
     }
 
     std::string name() const
@@ -160,20 +148,6 @@ public:
 protected:
     T* impl;
 };
-
-template<class Model1, class Model2,
-         bool (*CanIntersectFn)(typename Model1::Element&, typename Model2::Element&),
-         int (*IntersectFn)(typename Model1::Element&, typename Model2::Element&, std::vector<DetectionOutput>&),
-         bool mirror
-         >
-void IntersectorMap::add()
-{
-    (*this)[std::make_pair(helper::TypeInfo(typeid(Model1)),helper::TypeInfo(typeid(Model2)))] =
-        new FnElementIntersector<typename Model1::Element, typename Model2::Element, CanIntersectFn, IntersectFn>;
-    if (mirror)
-        (*this)[std::make_pair(helper::TypeInfo(typeid(Model2)),helper::TypeInfo(typeid(Model1)))] =
-            new MirrorFnElementIntersector<typename Model2::Element, typename Model1::Element, CanIntersectFn, IntersectFn>;
-}
 
 template<class Model1, class Model2, class T,
          bool mirror

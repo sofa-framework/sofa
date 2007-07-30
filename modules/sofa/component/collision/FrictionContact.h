@@ -33,6 +33,8 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<DataTypes2> MechanicalState2;
     typedef typename CollisionModel1::Element CollisionElement1;
     typedef typename CollisionModel2::Element CollisionElement2;
+    typedef core::componentmodel::collision::DetectionOutputVector OutputVector;
+    typedef core::componentmodel::collision::TDetectionOutputVector<CollisionModel1,CollisionModel2> TOutputVector;
 
 protected:
     CollisionModel1* model1;
@@ -54,7 +56,7 @@ public:
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
 
-    void setDetectionOutputs(DetectionOutputVector& outputs);
+    void setDetectionOutputs(OutputVector* outputs);
 
     void createResponse(core::objectmodel::BaseContext* group);
 

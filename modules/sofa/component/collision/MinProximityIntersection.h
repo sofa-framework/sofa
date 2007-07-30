@@ -84,17 +84,17 @@ public:
     bool testIntersection(Point&, Point&);
     bool testIntersection(Ray&, Triangle&);
 
-    int computeIntersection(Cube&, Cube&, DetectionOutputVector&);
-    int computeIntersection(Sphere&, Sphere&, DetectionOutputVector&);
-    int computeIntersection(Sphere&, Triangle&, DetectionOutputVector&);
-    int computeIntersection(Sphere&, Line&, DetectionOutputVector&);
-    int computeIntersection(Sphere&, Point&, DetectionOutputVector&);
-    int computeIntersection(Sphere&, Ray&, DetectionOutputVector&);
-    int computeIntersection(Point&, Triangle&, DetectionOutputVector&);
-    int computeIntersection(Line&, Line&, DetectionOutputVector&);
-    int computeIntersection(Point&, Line&, DetectionOutputVector&);
-    int computeIntersection(Point&, Point&, DetectionOutputVector&);
-    int computeIntersection(Ray&, Triangle&, DetectionOutputVector&);
+    int computeIntersection(Cube&, Cube&, OutputVector*);
+    int computeIntersection(Sphere&, Sphere&, OutputVector*);
+    int computeIntersection(Sphere&, Triangle&, OutputVector*);
+    int computeIntersection(Sphere&, Line&, OutputVector*);
+    int computeIntersection(Sphere&, Point&, OutputVector*);
+    int computeIntersection(Sphere&, Ray&, OutputVector*);
+    int computeIntersection(Point&, Triangle&, OutputVector*);
+    int computeIntersection(Line&, Line&, OutputVector*);
+    int computeIntersection(Point&, Line&, OutputVector*);
+    int computeIntersection(Point&, Point&, OutputVector*);
+    int computeIntersection(Ray&, Triangle&, OutputVector*);
 
 };
 

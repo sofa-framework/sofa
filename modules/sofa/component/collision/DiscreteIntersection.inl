@@ -150,7 +150,7 @@ bool DiscreteIntersection::testIntersection(Sphere& sph1, Ray& ray2)
 }
 
 template<class Sphere>
-int DiscreteIntersection::computeIntersection( Sphere& sph, Triangle& triangle, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection( Sphere& sph, Triangle& triangle, OutputVector* contacts)
 {
     double EPSILON = 0.00001;
     //Vertices of the triangle:
@@ -194,8 +194,8 @@ int DiscreteIntersection::computeIntersection( Sphere& sph, Triangle& triangle, 
 #define SAMESIDE(ap1,ap2,ap3,ap4) (((cross((ap4-ap3),(ap1-ap3))) * (cross((ap4-ap3),(ap2-ap3)))) >= 0)
     if ( (SAMESIDE(projPoint,p0,p1,p2) && SAMESIDE(projPoint,p1,p0,p2) && SAMESIDE(projPoint,p2,p0,p1)))
     {
-        contacts.resize(contacts.size()+1);
-        DetectionOutput *detection = &*(contacts.end()-1);
+        contacts->resize(contacts->size()+1);
+        DetectionOutput *detection = &*(contacts->end()-1);
         detection->normal = -normal;
         detection->point[1] = projPoint;
         detection->point[0] = sph.center() - detection->normal * sph.r();
@@ -254,7 +254,7 @@ int DiscreteIntersection::computeIntersection( Sphere& sph, Triangle& triangle, 
 
 
 template<class Sphere>
-int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, OutputVector* contacts)
 {
     double r = sph1.r() + sph2.r();
     Vector3 dist = sph2.center() - sph1.center();
@@ -262,8 +262,8 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, Detect
     if (dist.norm2() >= r*r)
         return 0;
 
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
     detection->normal = dist;
     double distSph1Sph2 = detection->normal.norm();
     detection->normal /= distSph1Sph2;
@@ -279,14 +279,14 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, Detect
 }
 
 template<class Sphere>
-int DiscreteIntersection::computeIntersection(Sphere& /*sph1*/, Cube& /*cube*/, DetectionOutputVector& /*contacts*/)
+int DiscreteIntersection::computeIntersection(Sphere& /*sph1*/, Cube& /*cube*/, OutputVector* /*contacts*/)
 {
     //to do
     return 0;
 }
 
 template<class Sphere>
-int DiscreteIntersection::computeIntersection(Sphere& sph1, Ray& ray2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(Sphere& sph1, Ray& ray2, OutputVector* contacts)
 {
     // Center of the sphere
     const Vector3 sph1Pos(sph1.center());
@@ -305,8 +305,8 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, Ray& ray2, Detection
 
     const double dist = sqrt(dist2);
 
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
 
     detection->point[1] = ray2Origin + ray2Direction*rayPosInside;
     detection->normal = detection->point[1] - sph1Pos;
@@ -327,7 +327,7 @@ bool DiscreteIntersection::testIntersection(RigidDistanceGridCollisionElement&, 
 }
 
 template<class Sphere>
-int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Sphere& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement& e1, Sphere& e2, OutputVector* contacts)
 {
     DistanceGrid* grid1 = e1.getGrid();
     bool useXForm = e1.isTransformed();
@@ -361,8 +361,8 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
 
     //p1 -= grad * d; // push p1 back to the surface
 
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
 
     detection->point[0] = Vector3(p1) - grad * d;
     detection->point[1] = Vector3(p2);
@@ -381,7 +381,7 @@ bool DiscreteIntersection::testIntersection(FFDDistanceGridCollisionElement&, Sp
 }
 
 template<class Sphere>
-int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Sphere& e2, DetectionOutputVector& contacts)
+int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e1, Sphere& e2, OutputVector* contacts)
 {
 
     DistanceGrid* grid1 = e1.getGrid();
@@ -430,8 +430,8 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                     grad = c1.deformDir(c1.baryCoords(pinit),grad);
                     grad.normalize();
 
-                    contacts.resize(contacts.size()+1);
-                    DetectionOutput *detection = &*(contacts.end()-1);
+                    contacts->resize(contacts->size()+1);
+                    DetectionOutput *detection = &*(contacts->end()-1);
 
                     detection->point[0] = Vector3(pinit);
                     detection->point[1] = Vector3(p2);

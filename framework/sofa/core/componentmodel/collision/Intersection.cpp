@@ -67,7 +67,7 @@ bool Intersection::isSupported(core::CollisionElementIterator elem1, core::Colli
     ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
     return i != NULL;
 }
-
+/*
 /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present).
 /// Note that this method is deprecated in favor of findIntersector
 bool Intersection::canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
@@ -89,7 +89,7 @@ int Intersection::intersect(core::CollisionElementIterator elem1, core::Collisio
     else
         return i->intersect(elem1, elem2, contacts);
 }
-
+*/
 } // namespace collision
 
 } // namespace componentmodel

@@ -47,10 +47,11 @@ class CollisionElementIterator;
  *  element (such as a Cube in a CubeModel).
  *
  */
-template<class Model>
+template<class TModel>
 class TCollisionElementIterator
 {
 public:
+    typedef TModel Model;
 
     /// Constructor.
     /// In most cases it will be used by the CollisionModel to

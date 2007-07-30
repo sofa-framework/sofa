@@ -28,6 +28,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/helper/vector.h>
 #include <iostream>
 
 namespace sofa
@@ -47,8 +48,27 @@ using namespace sofa::defaulttype;
 // uncomment if you want to use the freePoint information
 //#define DETECTIONOUTPUT_FREEMOTION
 
+
+
 /**
- *  \brief Description of a contact point, as detected by the NarrowPhaseDetection using the Intersection class, and forwarded by the ContactManager to the Contact response class.
+ *  \brief Abstract description of a set of contact point.
+ */
+
+class DetectionOutputVector
+{
+public:
+    virtual ~DetectionOutputVector() {}
+    /// Clear the content of this vector
+    virtual void clear() = 0;
+    /// Current size (number of detected contacts
+    virtual unsigned int size() const = 0;
+    /// Test if the vector is empty
+    bool empty() const { return size()==0; }
+};
+
+
+/**
+ *  \brief Generic description of a contact point, used for most collision models except special cases such as GPU-based collisions.
  *
  *  Each contact point is described by :
  *
@@ -87,6 +107,30 @@ public:
     DetectionOutput()
         : elem(NULL, NULL), id(0), distance(0.0), deltaT(0.0)
     {
+    }
+};
+
+
+
+/**
+ *  \brief Generic description of a set of contact point between two specific collision models
+ */
+
+template<class CM1, class CM2>
+class TDetectionOutputVector : public DetectionOutputVector, public sofa::helper::vector<DetectionOutput>
+{
+public:
+    typedef sofa::helper::vector<DetectionOutput> Vector;
+    virtual ~TDetectionOutputVector() {}
+    /// Clear the content of this vector
+    virtual void clear()
+    {
+        return this->Vector::clear();
+    }
+    /// Current size (number of detected contacts
+    virtual unsigned int size() const
+    {
+        return this->Vector::size();
     }
 };
 

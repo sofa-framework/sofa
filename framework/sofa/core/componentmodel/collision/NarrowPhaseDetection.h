@@ -45,8 +45,7 @@ namespace collision
 class NarrowPhaseDetection : virtual public Detection
 {
 public:
-    typedef Intersection::DetectionOutputVector DetectionOutputVector;
-    typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector > DetectionOutputMap;
+    typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
 protected:
     //std::vector< std::pair<core::CollisionElementIterator, core::CollisionElementIterator> > elemPairs;
     DetectionOutputMap outputsMap;
@@ -57,7 +56,10 @@ public:
     virtual void beginNarrowPhase()
     {
         for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
-            it->second.clear();
+        {
+            if (it->second)
+                it->second->clear();
+        }
     }
 
     virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;
@@ -74,10 +76,11 @@ public:
         DetectionOutputMap::iterator it = outputsMap.begin();
         while(it!=outputsMap.end())
         {
-            if (it->second.empty())
+            if (!it->second || it->second->empty())
             {
                 DetectionOutputMap::iterator it2 = it;
                 ++it2;
+                delete it->second;
                 outputsMap.erase(it);
                 it = it2;
             }

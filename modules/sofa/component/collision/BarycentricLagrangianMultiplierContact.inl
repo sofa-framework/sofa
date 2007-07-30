@@ -33,8 +33,9 @@ BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::~Bary
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(std::vector<DetectionOutput>& outputs)
+void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
+    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
     const double minDist2 = 0.01f;
     std::vector<DetectionOutput*> contacts;

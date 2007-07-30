@@ -137,7 +137,9 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         return;
     //std::cout << "Final intersector " << finalintersector->name() << " for "<<finalcm1->getName()<<" - "<<finalcm2->getName()<<std::endl;
 
-    DetectionOutputVector& outputs = outputsMap[std::make_pair(finalcm1, finalcm2)];
+    sofa::core::componentmodel::collision::DetectionOutputVector*& outputs = outputsMap[std::make_pair(finalcm1, finalcm2)];
+
+    finalintersector->beginIntersect(finalcm1, finalcm2, outputs);
 
     if (finalcm1 == cm1 || finalcm2 == cm2)
     {
@@ -355,12 +357,14 @@ void BruteForceDetection::draw()
 
     for (DetectionOutputMap::iterator it = outputsMap.begin(); it!=outputsMap.end(); it++)
     {
+        /*
         DetectionOutputVector& outputs = it->second;
         for (DetectionOutputVector::iterator it2 = outputs.begin(); it2!=outputs.end(); it2++)
         {
             it2->elem.first.draw();
             it2->elem.second.draw();
         }
+        */
     }
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     glLineWidth(1);

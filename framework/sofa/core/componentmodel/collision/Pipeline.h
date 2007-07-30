@@ -67,7 +67,6 @@ protected:
 
 public:
     typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
-    typedef NarrowPhaseDetection::DetectionOutputVector DetectionOutputVector;
 
     Pipeline();
 

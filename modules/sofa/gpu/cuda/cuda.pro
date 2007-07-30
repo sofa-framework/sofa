@@ -31,6 +31,10 @@ HEADERS += mycuda.h \
            CudaIdentityMapping.inl \
            CudaBarycentricMapping.h \
            CudaBarycentricMapping.inl \
+           CudaRigidMapping.h \
+           CudaRigidMapping.inl \
+           CudaSubsetMapping.h \
+           CudaSubsetMapping.inl \
            CudaDistanceGridCollisionModel.h \
            CudaContactMapper.h \
            CudaCollisionDetection.h \
@@ -47,6 +51,8 @@ SOURCES += mycuda.cpp \
            CudaSphereForceField.cpp \
            CudaIdentityMapping.cpp \
            CudaBarycentricMapping.cpp \
+           CudaRigidMapping.cpp \
+           CudaSubsetMapping.cpp \
            CudaDistanceGridCollisionModel.cpp \
            CudaCollision.cpp \
            CudaCollisionDetection.cpp \
@@ -61,4 +67,6 @@ CUDA_SOURCES += mycuda.cu \
            CudaPlaneForceField.cu \
            CudaSphereForceField.cu \
            CudaBarycentricMapping.cu \
+           CudaRigidMapping.cu \
+           CudaSubsetMapping.cu \
            CudaCollisionDetection.cu

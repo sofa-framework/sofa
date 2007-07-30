@@ -30,6 +30,9 @@ class CudaPoint : public core::TCollisionElementIterator<CudaPointModel>
 public:
     CudaPoint(CudaPointModel* model, int index);
 
+    int i0();
+    int getSize();
+
     explicit CudaPoint(core::CollisionElementIterator& i);
 };
 
@@ -86,6 +89,19 @@ inline CudaPoint::CudaPoint(CudaPointModel* model, int index)
 inline CudaPoint::CudaPoint(core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<CudaPointModel>(static_cast<CudaPointModel*>(i.getCollisionModel()), i.getIndex())
 {
+}
+
+inline int CudaPoint::i0()
+{
+    return model->groupSize.getValue()*index;
+}
+
+inline int CudaPoint::getSize()
+{
+    if (index == model->getSize()-1)
+        return model->getMechanicalState()->getX()->size();
+    else
+        return model->groupSize.getValue();
 }
 
 } // namespace cuda

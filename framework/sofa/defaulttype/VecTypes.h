@@ -172,6 +172,10 @@ public:
             std::cerr << "Error: invalide resize request ("<<size<<">"<<maxsize<<") on external vector without allocator.\n";
         }
     }
+    void clear()
+    {
+        resize(0);
+    }
     void push_back(const T& v)
     {
         int i = this->size();

@@ -68,8 +68,9 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::cleanup()
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
-void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(std::vector<DetectionOutput>& outputs)
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
+    TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {

@@ -166,27 +166,27 @@ public:
         VSWAP(bool     , hostIsValid);
 #undef VSWAP
     }
-    const void* deviceRead() const
+    const void* deviceRead(int i=0) const
     {
         copyToDevice();
-        return devicePointer;
+        return ((const T*)devicePointer)+i;
     }
-    void* deviceWrite()
+    void* deviceWrite(int i=0)
     {
         copyToDevice();
         hostIsValid = false;
-        return devicePointer;
+        return ((T*)devicePointer)+i;
     }
-    const T* hostRead() const
+    const T* hostRead(int i=0) const
     {
         copyToHost();
-        return hostPointer;
+        return hostPointer+i;
     }
-    T* hostWrite()
+    T* hostWrite(int i=0)
     {
         copyToHost();
         deviceIsValid = false;
-        return hostPointer;
+        return hostPointer+i;
     }
     bool isHostValid() const
     {

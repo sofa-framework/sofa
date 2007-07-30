@@ -45,6 +45,33 @@ void SubsetMapping<BaseMapping>::init()
             indices[i] = first+i;
         f_indices.endEdit();
     }
+    else if (f_indices.getValue().empty())
+    {
+        // We have to construct the correspondance index
+        const InVecCoord& in   = *this->fromModel->getX();
+        const OutVecCoord& out = *this->toModel->getX();
+        IndexArray& indices = *f_indices.beginEdit();
+        indices.resize(out.size());
+        // searching for the first corresponding point in the 'from' model (there might be several ones).
+        for (unsigned int i = 0; i < out.size(); ++i)
+        {
+            bool found = false;
+            for (unsigned int j = 0;  j < in.size() && !found; ++j )
+            {
+                if ( (out[i] - in[j]).norm() < 1.0e-10 )
+                {
+                    indices[i] = j;
+                    found = true;
+                }
+            }
+            if (!found)
+            {
+                std::cerr<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model."<<std::endl;
+                indices[i] = 0;
+            }
+        }
+        f_indices.endEdit();
+    }
     else
     {
         IndexArray& indices = *f_indices.beginEdit();
@@ -52,7 +79,7 @@ void SubsetMapping<BaseMapping>::init()
         {
             if ((unsigned)indices[i] >= inSize)
             {
-                std::cerr << "SubsetMapping: incorrect index "<<indices[i]<<" (input size "<<inSize<<")\n";
+                std::cerr << "ERROR(SubsetMapping): incorrect index "<<indices[i]<<" (input size "<<inSize<<")\n";
                 indices.erase(indices.begin()+i);
                 --i;
             }
@@ -60,6 +87,12 @@ void SubsetMapping<BaseMapping>::init()
         f_indices.endEdit();
     }
     this->Inherit::init();
+    postInit();
+}
+
+template <class BaseMapping>
+void SubsetMapping<BaseMapping>::postInit()
+{
 }
 
 template <class BaseMapping>

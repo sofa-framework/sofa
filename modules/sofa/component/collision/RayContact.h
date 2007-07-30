@@ -55,14 +55,6 @@ public:
 
     ~BaseRayContact();
 
-    void setDetectionOutputs(std::vector<core::componentmodel::collision::DetectionOutput>& outputs)
-    {
-        //collisions = outputs;
-        collisions.resize(outputs.size());
-        for (unsigned int i=0; i< outputs.size(); ++i)
-            collisions[i] = &outputs[i];
-    }
-
     const std::vector<core::componentmodel::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
 
     void createResponse(core::objectmodel::BaseContext* /*group*/)
@@ -81,6 +73,7 @@ public:
     typedef RayModel CollisionModel1;
     typedef CM2 CollisionModel2;
     typedef core::componentmodel::collision::Intersection Intersection;
+    typedef core::componentmodel::collision::TDetectionOutputVector<CollisionModel1, CollisionModel2> OutputVector;
 protected:
     CollisionModel2* model2;
     core::objectmodel::BaseContext* parent;
@@ -88,6 +81,15 @@ public:
     RayContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
         : BaseRayContact(model1, intersectionMethod), model2(model2)
     {
+    }
+
+    void setDetectionOutputs(core::componentmodel::collision::DetectionOutputVector* outputs)
+    {
+        OutputVector* o = static_cast<OutputVector*>(outputs);
+        //collisions = outputs;
+        collisions.resize(o->size());
+        for (unsigned int i=0; i< o->size(); ++i)
+            collisions[i] = &(*o)[i];
     }
 
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }

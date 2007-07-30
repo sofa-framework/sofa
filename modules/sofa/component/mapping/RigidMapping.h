@@ -40,6 +40,13 @@ namespace component
 namespace mapping
 {
 
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class InDataTypes, class OutDataTypes>
+class RigidMappingInternalData
+{
+public:
+};
+
 template <class BasicMapping>
 class RigidMapping : public BasicMapping, public core::VisualModel
 {
@@ -58,11 +65,12 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
 
 protected:
-    std::vector<Coord> points;
+    VecCoord points;
     Coord translation;
     //Real orientation[4];
     Mat rotation;
-    std::vector<Coord> rotatedPoints;
+    VecCoord rotatedPoints;
+    RigidMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
     class Loader;
     void load(const char* filename);
     DataField<sofa::helper::vector<unsigned int> >  repartition;

@@ -117,7 +117,7 @@ bool MinProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
     return true;
 }
 
-int MinProximityIntersection::computeIntersection(Cube&, Cube&, DetectionOutputVector& /*contacts*/)
+int MinProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/)
 {
     return 0; /// \todo
 }
@@ -160,7 +160,7 @@ bool MinProximityIntersection::testIntersection(Line& e1, Line& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, DetectionOutputVector& contacts)
+int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e1.p2()-e1.p1();
@@ -205,8 +205,8 @@ int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, DetectionO
 #endif
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
@@ -275,7 +275,7 @@ bool MinProximityIntersection::testIntersection(Point& e1, Triangle& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Point& e1, Triangle& e2, DetectionOutputVector& contacts)
+int MinProximityIntersection::computeIntersection(Point& e1, Triangle& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
@@ -322,8 +322,8 @@ int MinProximityIntersection::computeIntersection(Point& e1, Triangle& e2, Detec
 #endif
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0]=Q;
@@ -378,7 +378,7 @@ bool MinProximityIntersection::testIntersection(Point& e1, Line& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Point& e1, Line& e2, DetectionOutputVector& contacts)
+int MinProximityIntersection::computeIntersection(Point& e1, Line& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
@@ -414,8 +414,8 @@ int MinProximityIntersection::computeIntersection(Point& e1, Line& e2, Detection
 #endif
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
@@ -445,7 +445,7 @@ bool MinProximityIntersection::testIntersection(Point& e1, Point& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, DetectionOutputVector& contacts)
+int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     Vector3 P,Q,PQ;
@@ -461,8 +461,8 @@ int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, Detectio
         return 0;
 
     const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
@@ -521,7 +521,7 @@ bool MinProximityIntersection::testIntersection(Sphere& e1, Triangle& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Sphere& e1, Triangle& e2, DetectionOutputVector& contacts)
+int MinProximityIntersection::computeIntersection(Sphere& e1, Triangle& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     const Vector3 x13 = e2.p1()-e2.p2();
@@ -557,8 +557,8 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Triangle& e2, Dete
         return 0;
 
     const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0]=Q;
@@ -602,7 +602,7 @@ bool MinProximityIntersection::testIntersection(Sphere& e1, Line& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Sphere& e1, Line& e2, DetectionOutputVector& contacts)
+int MinProximityIntersection::computeIntersection(Sphere& e1, Line& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     const Vector3 x32 = e2.p1()-e2.p2();
@@ -629,8 +629,8 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Line& e2, Detectio
         return 0;
 
     const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e2, e1);
     detection->id = e1.getIndex();
     detection->point[0]=Q;
@@ -658,7 +658,7 @@ bool MinProximityIntersection::testIntersection(Sphere& e1, Point& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Sphere& e1, Point& e2, DetectionOutputVector& contacts)
+int MinProximityIntersection::computeIntersection(Sphere& e1, Point& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
     Vector3 P,Q,PQ;
@@ -669,8 +669,8 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Point& e2, Detecti
         return 0;
 
     const double contactDist = getContactDistance() + e1.r() + e1.getProximity() + e2.getProximity();
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
     detection->id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
     detection->point[0]=P;
@@ -709,7 +709,7 @@ bool MinProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, DetectionOutputVector& contacts)
+int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + t1.getProximity() + t2.getProximity();
 
@@ -729,8 +729,8 @@ int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Detecti
         return 0;
 
     const double contactDist = alarmDist;
-    contacts.resize(contacts.size()+1);
-    DetectionOutput *detection = &*(contacts.end()-1);
+    contacts->resize(contacts->size()+1);
+    DetectionOutput *detection = &*(contacts->end()-1);
 
     detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t2, t1);
     detection->id = t1.getIndex();
