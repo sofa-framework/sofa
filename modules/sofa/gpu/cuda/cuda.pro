@@ -34,6 +34,7 @@ HEADERS += mycuda.h \
            CudaDistanceGridCollisionModel.h \
            CudaContactMapper.h \
            CudaCollisionDetection.h \
+           CudaPointModel.h \
            CudaSphereModel.h
 
 SOURCES += mycuda.cpp \
@@ -48,7 +49,8 @@ SOURCES += mycuda.cpp \
            CudaBarycentricMapping.cpp \
            CudaDistanceGridCollisionModel.cpp \
            CudaCollision.cpp \
-           CudaCollisionDetection.cpp
+           CudaCollisionDetection.cpp \
+           CudaPointModel.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \

@@ -24,8 +24,6 @@
 *******************************************************************************/
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/Point.h>
-#include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <GL/gl.h>
