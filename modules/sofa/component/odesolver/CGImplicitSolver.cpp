@@ -222,7 +222,7 @@ void CGImplicitSolver::solve(double dt)
         }
         alpha = rho/den;
         x.peq(p,alpha);                 // x = x + alpha p
-        r.peq(q,-alpha);                // r = r - alpha r
+        r.peq(q,-alpha);                // r = r - alpha q
         /*if( printLog ){
             cerr<<"den = "<<den<<", alpha = "<<alpha<<endl;
             cerr<<"x : "<<x<<endl;
