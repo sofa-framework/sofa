@@ -13,6 +13,9 @@ namespace gpu
 namespace cuda
 {
 
+using sofa::defaulttype::Mat3x3f;
+using sofa::defaulttype::Vec3f;
+
 extern "C"
 {
     void RigidMappingCuda3f_apply(unsigned int size, const Mat3x3f& rotation, const Vec3f& translation, void* out, void* rotated, const void* in);

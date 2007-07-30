@@ -64,7 +64,7 @@ public:
     }
 
     template<class Model1, class Model2>
-    sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>* getOutputVector(sofa::core::componentmodel::collision::DetectionOutputVector* contacts)
+    sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>* getOutputVector(Model1*, Model2*, sofa::core::componentmodel::collision::DetectionOutputVector* contacts)
     {
         return static_cast<sofa::core::componentmodel::collision::TDetectionOutputVector<Model1,Model2>*>(contacts);
     }

@@ -5,6 +5,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_INL
 
 #include <sofa/component/forcefield/SpringForceField.h>
+#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
@@ -24,8 +25,8 @@ namespace forcefield
 {
 
 template<class DataTypes>
-SpringForceField<DataTypes>::SpringForceField(MechanicalState* object1, MechanicalState* object2, double _ks, double _kd)
-    : object1(object1), object2(object2)
+SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, double _ks, double _kd)
+    : Inherit(mstate1, mstate2)
     , ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
     , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
@@ -34,13 +35,11 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* object1, Mechanic
 
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(double _ks, double _kd)
-    : object1(NULL), object2(NULL)
-    , ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
+    : ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
     , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
 {
 }
-
 
 
 template<class DataTypes>
@@ -48,7 +47,7 @@ void SpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription
 {
     if (arg->getAttribute("filename"))
         this->load(arg->getAttribute("filename"));
-    this->InteractionForceField::parse(arg);
+    this->Inherit::parse(arg);
 }
 
 template <class DataTypes>
@@ -79,15 +78,7 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
-    this->InteractionForceField::init();
-    if( object1==NULL )
-    {
-        sofa::core::objectmodel::BaseObject* mstate = getContext()->getMechanicalState();
-        assert(mstate!=NULL);
-        MechanicalState* state = dynamic_cast<MechanicalState*>(mstate );
-        assert( state!= NULL );
-        object1 = object2 = state;
-    }
+    this->Inherit::init();
 }
 
 template<class DataTypes>
@@ -112,27 +103,19 @@ void SpringForceField<DataTypes>::addSpringForce(double& ener, VecDeriv& f1, con
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addForce()
+void SpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
-    assert(this->object1);
-    assert(this->object2);
-    VecDeriv& f1 = *this->object1->getF();
-    const VecCoord& p1 = *this->object1->getX();
-    const VecDeriv& v1 = *this->object1->getV();
-    VecDeriv& f2 = *this->object2->getF();
-    const VecCoord& p2 = *this->object2->getX();
-    const VecDeriv& v2 = *this->object2->getV();
-    f1.resize(p1.size());
-    f2.resize(p2.size());
+    f1.resize(x1.size());
+    f2.resize(x2.size());
     m_potentialEnergy = 0;
     for (unsigned int i=0; i<this->springs.getValue().size(); i++)
     {
-        this->addSpringForce(m_potentialEnergy,f1,p1,v1,f2,p2,v2, i, this->springs.getValue()[i]);
+        this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, this->springs.getValue()[i]);
     }
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addDForce()
+void SpringForceField<DataTypes>::addDForce(VecDeriv&, VecDeriv&, const VecDeriv&, const VecDeriv&)
 {
     std::cerr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead.\n";
 }
@@ -140,15 +123,15 @@ void SpringForceField<DataTypes>::addDForce()
 template<class DataTypes>
 void SpringForceField<DataTypes>::draw()
 {
-    if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
-    const VecCoord& p1 = *this->object1->getX();
-    const VecCoord& p2 = *this->object2->getX();
+    if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
+    const VecCoord& p1 = *this->mstate1->getX();
+    const VecCoord& p2 = *this->mstate2->getX();
     /*        cerr<<"SpringForceField<DataTypes>::draw() "<<getName()<<endl;
             cerr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<endl;
             cerr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<endl;
             cerr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<endl;*/
     glDisable(GL_LIGHTING);
-    bool external = (this->object1!=this->object2);
+    bool external = (this->mstate1!=this->mstate2);
     //if (!external)
     //	glColor4f(1,1,1,1);
     const vector<Spring>& springs = this->springs.getValue();

@@ -116,7 +116,7 @@ void VectorSpringForceField<DataTypes>::addSpring(int m1, int m2, double ks, dou
 
 template <class DataTypes>
 VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _object)
-    : object1(_object), object2(_object)
+    : Inherit(_object, _object)
     , m_potentialEnergy( 0.0 ), useTopology( false ), topology ( NULL )
     , m_filename( dataField(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
     , m_stiffness( dataField(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
@@ -128,7 +128,7 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
 
 template <class DataTypes>
 VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _object1, MechanicalState* _object2)
-    : object1(_object1), object2(_object2)
+    : Inherit(_object1, _object2)
     , m_potentialEnergy( 0.0 ), useTopology( false ), topology ( NULL )
     , m_filename( dataField(&m_filename,std::string(""),"filename","File name from which the spring informations are loaded") )
     , m_stiffness( dataField(&m_stiffness,1.0,"stiffness","Default edge stiffness used in absence of file information") )
@@ -141,16 +141,8 @@ VectorSpringForceField<DataTypes>::VectorSpringForceField(MechanicalState* _obje
 template <class DataTypes>
 void VectorSpringForceField<DataTypes>::init()
 {
-    this->InteractionForceField::init();
-    if( object1==NULL )
-    {
-        sofa::core::objectmodel::BaseObject* mstate = getContext()->getMechanicalState();
-        assert(mstate!=NULL);
-        MechanicalState* state = dynamic_cast<MechanicalState*>(mstate );
-        assert( state!= NULL );
-        object1 = object2 = state;
-        topology = dynamic_cast<topology::EdgeSetTopology<DataTypes>*>(getContext()->getMainTopology());
-    }
+    this->Inherit::init();
+    topology = dynamic_cast<topology::EdgeSetTopology<DataTypes>*>(getContext()->getMainTopology());
 
     if (!m_filename.getValue().empty())
     {
@@ -176,7 +168,7 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
     //EdgeSetGeometryAlgorithms<DataTypes> *ga=topology->getEdgeSetGeometryAlgorithms();
     //EdgeLengthArrayInterface<Real,DataTypes> elai(springArray);
     //ga->computeEdgeLength(elai);
-    const VecCoord& x0 = *this->object1->getX0();
+    const VecCoord& x0 = *this->mstate1->getX0();
     unsigned int i;
     for (i=0; i<ea.size(); ++i)
     {
@@ -223,23 +215,15 @@ void VectorSpringForceField<DataTypes>::handleEvent( Event* e )
 
 template<class DataTypes>
 //void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& v)
-void VectorSpringForceField<DataTypes>::addForce()
+void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
     //assert(this->mstate);
     m_potentialEnergy = 0;
     const std::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
     Coord u;
 
-    VecDeriv& f1 = *object1->getF();
-    const VecCoord& p1 = *object1->getX();
-    const VecDeriv& v1 = *object1->getV();
-
-    VecDeriv& f2 = *object2->getF();
-    const VecCoord& p2 = *object2->getX();
-    const VecDeriv& v2 = *object2->getV();
-
-    f1.resize(p1.size());
-    f2.resize(p2.size());
+    f1.resize(x1.size());
+    f2.resize(x2.size());
 
     Deriv relativeVelocity,force;
     for (unsigned int i=0; i<ea.size(); i++)
@@ -247,7 +231,7 @@ void VectorSpringForceField<DataTypes>::addForce()
         const topology::Edge &e=ea[i];
         const Spring &s=springArray[i];
         // paul---------------------------------------------------------------
-        Deriv current_direction = p2[e.second]-p1[e.first];
+        Deriv current_direction = x2[e.second]-x1[e.first];
         Deriv squash_vector = current_direction - s.restVector;
         Deriv relativeVelocity = v2[e.second]-v1[e.first];
         force = (squash_vector * s.ks) + (relativeVelocity * s.kd);
@@ -259,17 +243,11 @@ void VectorSpringForceField<DataTypes>::addForce()
 
 template<class DataTypes>
 //void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
-void VectorSpringForceField<DataTypes>::addDForce()
+void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
 {
     const std::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
     Deriv dforce,d;
     unsigned int i;
-
-    VecDeriv& df1 = *object1->getF();
-    const VecCoord& dx1 = *object1->getDx();
-
-    VecDeriv& df2 = *object2->getF();
-    const VecCoord& dx2 = *object2->getDx();
 
     df1.resize(dx1.size());
     df2.resize(dx2.size());
@@ -289,11 +267,11 @@ void VectorSpringForceField<DataTypes>::addDForce()
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::draw()
 {
-    if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields()))
+    if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields()))
         return;
     //const VecCoord& p = *this->mstate->getX();
-    const VecCoord& p1 = *this->object1->getX();
-    const VecCoord& p2 = *this->object2->getX();
+    const VecCoord& x1 = *this->mstate1->getX();
+    const VecCoord& x2 = *this->mstate2->getX();
     const std::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
 
     glDisable(GL_LIGHTING);
@@ -306,8 +284,8 @@ void VectorSpringForceField<DataTypes>::draw()
 
         glColor4f(0,1,1,0.5f);
 
-        glVertex3d(p1[e.first][0],p1[e.first][1],p1[e.first][2]);
-        glVertex3d(p2[e.second][0],p2[e.second][1],p2[e.second][2]);
+        glVertex3d(x1[e.first][0],x1[e.first][1],x1[e.first][2]);
+        glVertex3d(x2[e.second][0],x2[e.second][1],x2[e.second][2]);
     }
     glEnd();
 }

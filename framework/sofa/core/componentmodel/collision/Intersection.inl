@@ -66,9 +66,9 @@ public:
         Model2* m2 = static_cast<Model2*>(model2);
         if (contacts == NULL)
         {
-            contacts = impl->createOutputVector<Model1,Model2>(m1,m2);
+            contacts = impl->createOutputVector(m1,m2);
         }
-        return impl->beginIntersection(m1, m2, impl->getOutputVector<Model1,Model2>(contacts));
+        return impl->beginIntersection(m1, m2, impl->getOutputVector(m1, m2, contacts));
     }
 
     /// Compute the intersection between 2 elements.
@@ -76,7 +76,7 @@ public:
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
-        return impl->computeIntersection(e1, e2, impl->getOutputVector<Model1,Model2>(contacts));
+        return impl->computeIntersection(e1, e2, impl->getOutputVector(e1.getCollisionModel(), e2.getCollisionModel(), contacts));
     }
 
     std::string name() const
@@ -89,7 +89,7 @@ public:
     {
         Model1* m1 = static_cast<Model1*>(model1);
         Model2* m2 = static_cast<Model2*>(model2);
-        return impl->endIntersection(m1, m2, impl->getOutputVector<Model1,Model2>(contacts));
+        return impl->endIntersection(m1, m2, impl->getOutputVector(m1, m2, contacts));
     }
 
 protected:
@@ -119,9 +119,9 @@ public:
         Model2* m2 = static_cast<Model2*>(model2);
         if (contacts == NULL)
         {
-            contacts = impl->createOutputVector<Model2,Model1>(m2,m1);
+            contacts = impl->createOutputVector(m2,m1);
         }
-        return impl->beginIntersection(m2, m1, impl->getOutputVector<Model2,Model1>(contacts));
+        return impl->beginIntersection(m2, m1, impl->getOutputVector(m2, m1, contacts));
     }
 
     /// Compute the intersection between 2 elements.
@@ -129,7 +129,7 @@ public:
     {
         Elem1 e1(elem1);
         Elem2 e2(elem2);
-        return impl->computeIntersection(e2, e1, impl->getOutputVector<Model2,Model1>(contacts));
+        return impl->computeIntersection(e2, e1, impl->getOutputVector(e2.getCollisionModel(), e1.getCollisionModel(), contacts));
     }
 
     /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
@@ -137,7 +137,7 @@ public:
     {
         Model1* m1 = static_cast<Model1*>(model1);
         Model2* m2 = static_cast<Model2*>(model2);
-        return impl->endIntersection(m2, m1, impl->getOutputVector<Model2,Model1>(contacts));
+        return impl->endIntersection(m2, m1, impl->getOutputVector(m2, m1, contacts));
     }
 
     std::string name() const

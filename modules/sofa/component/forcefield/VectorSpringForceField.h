@@ -23,10 +23,11 @@ using namespace sofa::defaulttype;
 
 template<class DataTypes>
 class VectorSpringForceField
-    : public core::componentmodel::behavior::InteractionForceField, public core::VisualModel
+    : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public core::VisualModel
 //: public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
 {
 public:
+    typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -49,9 +50,6 @@ public:
         }
     };
 protected:
-
-    MechanicalState* object1;
-    MechanicalState* object2;
 
     double m_potentialEnergy;
     /// true if the springs are initialized from the topology
@@ -86,10 +84,8 @@ public:
 
     bool load(const char *filename);
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return object1; }
-    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return object2; }
-    core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
-    core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
     virtual void init();
 
@@ -97,14 +93,14 @@ public:
 
     virtual void handleEvent( Event* e );
 
-    virtual void addForce();
+    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
     //virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual void addDForce();
+    virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
     //virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
     //virtual double getPotentialEnergy(const VecCoord& )
-    virtual double getPotentialEnergy()
+    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&)
     { return m_potentialEnergy; }
 
     Real getStiffness() const
@@ -138,48 +134,6 @@ public:
     class Loader;
     friend class Loader;
 
-
-    static std::string templateName(const VectorSpringForceField<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-    /// Pre-construction check method called by ObjectFactory.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
-        {
-            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
-                return false;
-            if (dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
-                return false;
-        }
-        else
-        {
-            if (dynamic_cast<MechanicalState*>(context->getMechanicalState()) == NULL)
-                return false;
-        }
-        return core::componentmodel::behavior::InteractionForceField::canCreate(obj, context, arg);
-    }
-
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::componentmodel::behavior::InteractionForceField::create(obj, context, arg);
-        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
-        {
-            obj->object1 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->object2 = dynamic_cast<MechanicalState*>(arg->findObject(arg->getAttribute("object2","..")));
-        }
-        else if (context)
-        {
-            obj->object1 =
-                obj->object2 =
-                        dynamic_cast<MechanicalState*>(context->getMechanicalState());
-        }
-    }
 };
 
 } // namespace forcefield

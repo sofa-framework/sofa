@@ -75,7 +75,7 @@ void SpringForceField<gpu::cuda::CudaVec3fTypes>::init();
 
 // -- InteractionForceField interface
 template <>
-void SpringForceField<gpu::cuda::CudaVec3fTypes>::addForce();
+void SpringForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
 //
 // StiffSpringForceField
@@ -86,10 +86,10 @@ void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::init();
 
 // -- InteractionForceField interface
 template <>
-void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::addForce();
+void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
 template <>
-void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::addDForce();
+void StiffSpringForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
 
 } // namespace forcefield
 

@@ -19,6 +19,8 @@ HEADERS += \
           componentmodel/behavior/ForceField.inl \
           componentmodel/behavior/InteractionForceField.h \
           componentmodel/behavior/InteractionConstraint.h \
+          componentmodel/behavior/PairInteractionForceField.h \
+          componentmodel/behavior/PairInteractionForceField.inl \
           componentmodel/behavior/MappedModel.h \
           componentmodel/behavior/Mass.h \
           componentmodel/behavior/Mass.inl \
@@ -84,7 +86,8 @@ SOURCES +=  \
           componentmodel/behavior/BaseForceField.cpp \
           componentmodel/behavior/ForceField.cpp \
           componentmodel/behavior/Mass.cpp \
-          componentmodel/behavior/MechanicalMapping.cpp 
+          componentmodel/behavior/MechanicalMapping.cpp \
+          componentmodel/behavior/PairInteractionForceField.cpp
 
 SOFA_DIR = ../../..
 TEMPLATE = lib

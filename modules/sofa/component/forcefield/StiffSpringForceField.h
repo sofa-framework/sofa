@@ -60,13 +60,10 @@ public:
     virtual void init();
 
     /// Accumulate f corresponding to x,v
-    virtual void addForce();
+    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
 
     /// Accumulate df corresponding to dx
-    virtual void addDForce();
-
-    /// Return the potential energy of the springs
-    virtual double getPotentialEnergy() { return m_potentialEnergy; }
+    virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
 };
 
 } // namespace forcefield

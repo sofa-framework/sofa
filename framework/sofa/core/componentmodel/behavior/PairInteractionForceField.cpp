@@ -22,52 +22,39 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
-
-#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include "PairInteractionForceField.inl"
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace interactionforcefield
+namespace componentmodel
 {
 
-template<class DataTypes>
-class RepulsiveSpringForceField : public forcefield::StiffSpringForceField<DataTypes>
+namespace behavior
 {
-public:
-    typedef forcefield::StiffSpringForceField<DataTypes> Inherit;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
-    typedef typename Inherit::Mat Mat;
-    typedef typename Inherit::Spring Spring;
-    enum { N = Inherit::N };
-public:
 
-    RepulsiveSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
-        : forcefield::StiffSpringForceField<DataTypes>(object1, object2)
-    {
-    }
+using namespace sofa::defaulttype;
+template class PairInteractionForceField<Vec3dTypes>;
+template class PairInteractionForceField<Vec3fTypes>;
+template class PairInteractionForceField<Vec2dTypes>;
+template class PairInteractionForceField<Vec2fTypes>;
+template class PairInteractionForceField<Vec1dTypes>;
+template class PairInteractionForceField<Vec1fTypes>;
+template class PairInteractionForceField<Rigid3dTypes>;
+template class PairInteractionForceField<Rigid3fTypes>;
+template class PairInteractionForceField<Rigid2dTypes>;
+template class PairInteractionForceField<Rigid2fTypes>;
 
-    RepulsiveSpringForceField()
-    {
-    }
 
-    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-    virtual double getPotentialEnergy();
-};
+} // namespace behavior
 
-} // namespace interactionforcefield
+} // namespace componentmodel
 
-} // namespace component
+} // namespace core
 
 } // namespace sofa
-
-#endif

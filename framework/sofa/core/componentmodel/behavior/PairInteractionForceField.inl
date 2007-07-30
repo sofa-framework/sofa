@@ -22,51 +22,76 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_REPULSIVESPRINGFORCEFIELD_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_INL
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_PAIRINTERACTIONFORCEFIELD_INL
 
-#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/core/objectmodel/Field.h>
+#include "PairInteractionForceField.h"
 
 namespace sofa
 {
 
-namespace component
+namespace core
 {
 
-namespace interactionforcefield
+namespace componentmodel
+{
+
+namespace behavior
 {
 
 template<class DataTypes>
-class RepulsiveSpringForceField : public forcefield::StiffSpringForceField<DataTypes>
+PairInteractionForceField<DataTypes>::PairInteractionForceField(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
+    : mstate1(mm1), mstate2(mm2)
 {
-public:
-    typedef forcefield::StiffSpringForceField<DataTypes> Inherit;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
-    typedef typename Inherit::Mat Mat;
-    typedef typename Inherit::Spring Spring;
-    enum { N = Inherit::N };
-public:
+}
 
-    RepulsiveSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
-        : forcefield::StiffSpringForceField<DataTypes>(object1, object2)
+template<class DataTypes>
+PairInteractionForceField<DataTypes>::~PairInteractionForceField()
+{
+}
+
+template<class DataTypes>
+void PairInteractionForceField<DataTypes>::init()
+{
+    InteractionForceField::init();
+    if (mstate1 == NULL || mstate2 == NULL)
     {
+        mstate1 = mstate2 = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     }
+}
 
-    RepulsiveSpringForceField()
-    {
-    }
+template<class DataTypes>
+void PairInteractionForceField<DataTypes>::addForce()
+{
+    if (mstate1 && mstate2)
+        addForce(*mstate1->getF(), *mstate2->getF(),
+                *mstate1->getX(), *mstate2->getX(),
+                *mstate1->getV(), *mstate2->getV());
+}
 
-    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-    virtual double getPotentialEnergy();
-};
+template<class DataTypes>
+void PairInteractionForceField<DataTypes>::addDForce()
+{
+    if (mstate1 && mstate2)
+        addDForce(*mstate1->getF(),  *mstate2->getF(),
+                *mstate1->getDx(), *mstate2->getDx());
+}
 
-} // namespace interactionforcefield
 
-} // namespace component
+template<class DataTypes>
+double PairInteractionForceField<DataTypes>::getPotentialEnergy()
+{
+    if (mstate1 && mstate2)
+        return getPotentialEnergy(*mstate1->getX(), *mstate2->getX());
+    else return 0;
+}
+
+} // namespace behavior
+
+} // namespace componentmodel
+
+} // namespace core
 
 } // namespace sofa
 

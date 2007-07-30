@@ -23,8 +23,8 @@ int CudaPointModelClass = core::RegisterObject("GPU-based point collision model 
 using namespace defaulttype;
 
 CudaPointModel::CudaPointModel()
-    : mstate(NULL)
-    , groupSize( dataField( &groupSize, (int)BSIZE, "groupSize", "number of point per collision element" ) )
+    : groupSize( dataField( &groupSize, (int)BSIZE, "groupSize", "number of point per collision element" ) )
+    , mstate(NULL)
 {
 }
 

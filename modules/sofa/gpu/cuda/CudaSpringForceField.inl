@@ -42,11 +42,11 @@ using namespace gpu::cuda;
 template <>
 void SpringForceField<CudaVec3fTypes>::init()
 {
-    this->InteractionForceField::init();
+    this->Inherit::init();
     const sofa::helper::vector<Spring>& springs = this->springs.getValue();
     if (!springs.empty())
     {
-        bool external = (this->object1!=this->object2);
+        bool external = (this->mstate1!=this->mstate2);
         if (external)
         {
             std::map<int,int> nsprings1;
@@ -120,15 +120,13 @@ void SpringForceField<CudaVec3fTypes>::init()
 
 // -- InteractionForceField interface
 template <>
-void SpringForceField<CudaVec3fTypes>::addForce()
+void SpringForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
-    assert(this->object1);
-    assert(this->object2);
-    if (this->object1 == this->object2)
+    if (this->mstate1 == this->mstate2)
     {
-        VecDeriv& f = *this->object1->getF();
-        const VecCoord& x = *this->object1->getX();
-        const VecDeriv& v = *this->object1->getV();
+        VecDeriv& f = f1;
+        const VecCoord& x = x1;
+        const VecDeriv& v = v1;
         f.resize(x.size());
         int d = data.springs1.vertex0;
         if (data.springs1.nbSpringPerVertex > 0)
@@ -143,12 +141,6 @@ void SpringForceField<CudaVec3fTypes>::addForce()
     }
     else
     {
-        VecDeriv& f1 = *this->object1->getF();
-        const VecCoord& x1 = *this->object1->getX();
-        const VecDeriv& v1 = *this->object1->getV();
-        VecDeriv& f2 = *this->object2->getF();
-        const VecCoord& x2 = *this->object2->getX();
-        const VecDeriv& v2 = *this->object2->getV();
         f1.resize(x1.size());
         f2.resize(x2.size());
         int d1 = data.springs1.vertex0;
@@ -188,15 +180,13 @@ void StiffSpringForceField<CudaVec3fTypes>::init()
 
 // -- InteractionForceField interface
 template <>
-void StiffSpringForceField<CudaVec3fTypes>::addForce()
+void StiffSpringForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
-    assert(this->object1);
-    assert(this->object2);
-    if (this->object1 == this->object2)
+    if (this->mstate1 == this->mstate2)
     {
-        VecDeriv& f = *this->object1->getF();
-        const VecCoord& x = *this->object1->getX();
-        const VecDeriv& v = *this->object1->getV();
+        VecDeriv& f = f1;
+        const VecCoord& x = x1;
+        const VecDeriv& v = v1;
         f.resize(x.size());
         int d = data.springs1.vertex0;
         if (data.springs1.nbSpringPerVertex > 0)
@@ -212,12 +202,6 @@ void StiffSpringForceField<CudaVec3fTypes>::addForce()
     }
     else
     {
-        VecDeriv& f1 = *this->object1->getF();
-        const VecCoord& x1 = *this->object1->getX();
-        const VecDeriv& v1 = *this->object1->getV();
-        VecDeriv& f2 = *this->object2->getF();
-        const VecCoord& x2 = *this->object2->getX();
-        const VecDeriv& v2 = *this->object2->getV();
         f1.resize(x1.size());
         f2.resize(x2.size());
         int d1 = data.springs1.vertex0;
@@ -250,23 +234,21 @@ void StiffSpringForceField<CudaVec3fTypes>::addForce()
 }
 
 template <>
-void StiffSpringForceField<CudaVec3fTypes>::addDForce()
+void StiffSpringForceField<CudaVec3fTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
 {
-    assert(this->object1);
-    assert(this->object2);
-    if (this->object1 == this->object2)
+    if (this->mstate1 == this->mstate2)
     {
-        VecDeriv& f = *this->object1->getF();
-        const VecDeriv& dx = *this->object1->getDx();
-        const VecCoord& x = *this->object1->getX();
-        f.resize(x.size());
+        VecDeriv& df = df1;
+        const VecDeriv& dx = dx1;
+        const VecCoord& x = *this->mstate1->getX();
+        df.resize(x.size());
         int d = data.springs1.vertex0;
         if (data.springs1.nbSpringPerVertex > 0)
         {
             StiffSpringForceFieldCuda3f_addDForce(data.springs1.nbVertex,
                     data.springs1.nbSpringPerVertex,
                     data.springs1.springs.deviceRead(),
-                    (      Deriv*)f.deviceWrite() + d,
+                    (      Deriv*)df.deviceWrite() + d,
                     (const Deriv*)dx.deviceRead() + d,
                     (const Coord*)x.deviceRead()  + d,
                     data.springs1.dfdx.deviceRead());
@@ -274,14 +256,10 @@ void StiffSpringForceField<CudaVec3fTypes>::addDForce()
     }
     else
     {
-        VecDeriv& f1 = *this->object1->getF();
-        const VecDeriv& dx1 = *this->object1->getDx();
-        const VecCoord& x1 = *this->object1->getX();
-        VecDeriv& f2 = *this->object2->getF();
-        const VecDeriv& dx2 = *this->object2->getDx();
-        const VecCoord& x2 = *this->object2->getX();
-        f1.resize(x1.size());
-        f2.resize(x2.size());
+        const VecCoord& x1 = *this->mstate1->getX();
+        const VecCoord& x2 = *this->mstate2->getX();
+        df1.resize(x1.size());
+        df2.resize(x2.size());
         int d1 = data.springs1.vertex0;
         int d2 = data.springs2.vertex0;
         if (data.springs1.nbSpringPerVertex > 0)
@@ -289,7 +267,7 @@ void StiffSpringForceField<CudaVec3fTypes>::addDForce()
             StiffSpringForceFieldCuda3f_addExternalDForce(data.springs1.nbVertex,
                     data.springs1.nbSpringPerVertex,
                     data.springs1.springs.deviceRead(),
-                    (      Deriv*)f1.deviceWrite() + d1,
+                    (      Deriv*)df1.deviceWrite() + d1,
                     (const Coord*)x1.deviceRead()  + d1,
                     (const Deriv*)dx1.deviceRead()  + d1,
                     (const Coord*)x2.deviceRead()  + d2,
@@ -301,7 +279,7 @@ void StiffSpringForceField<CudaVec3fTypes>::addDForce()
             StiffSpringForceFieldCuda3f_addExternalDForce(data.springs2.nbVertex,
                     data.springs2.nbSpringPerVertex,
                     data.springs2.springs.deviceRead(),
-                    (      Deriv*)f2.deviceWrite() + d2,
+                    (      Deriv*)df2.deviceWrite() + d2,
                     (const Deriv*)dx2.deviceRead() + d2,
                     (const Coord*)x2.deviceRead()  + d2,
                     (const Deriv*)dx1.deviceRead() + d1,

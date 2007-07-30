@@ -56,8 +56,8 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction
     TriangularTensorMassForceField<DataTypes> *ff= (TriangularTensorMassForceField<DataTypes> *)param;
     if (ff)
     {
-        TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
-        assert(_mesh!=0);
+        //TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
+        //assert(_mesh!=0);
         unsigned int u,v;
         /// set to zero the stiffness matrix
         for (u=0; u<3; ++u)

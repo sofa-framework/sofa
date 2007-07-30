@@ -38,26 +38,18 @@ namespace interactionforcefield
 {
 
 template<class DataTypes>
-void RepulsiveSpringForceField<DataTypes>::addForce()
+void RepulsiveSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
-    assert(this->object1);
-    assert(this->object2);
     const vector<Spring>& springs= this->springs.getValue();
     this->dfdx.resize(springs.size());
-    VecDeriv& f1 = *this->object1->getF();
-    const VecCoord& p1 = *this->object1->getX();
-    const VecDeriv& v1 = *this->object1->getV();
-    VecDeriv& f2 = *this->object2->getF();
-    const VecCoord& p2 = *this->object2->getX();
-    const VecDeriv& v2 = *this->object2->getV();
-    f1.resize(p1.size());
-    f2.resize(p2.size());
+    f1.resize(x1.size());
+    f2.resize(x2.size());
     for (unsigned int i=0; i<springs.size(); i++)
     {
 #if 1
         int a = springs[i].m1;
         int b = springs[i].m2;
-        Coord u = p2[b]-p1[a];
+        Coord u = x2[b]-x1[a];
         Real d = u.norm();
         if (d < springs[i].initpos)
         {

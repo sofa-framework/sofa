@@ -37,7 +37,7 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<int,int> >& s
         if (sset.count(std::make_pair(m2,m1))>0) return;
         sset.insert(std::make_pair(m2,m1));
     }
-    Real l = ((*this->object2->getX())[m2] - (*this->object1->getX())[m1]).norm();
+    Real l = ((*this->mstate2->getX())[m2] - (*this->mstate1->getX())[m1]).norm();
     this->springs.beginEdit()->push_back(typename SpringForceField<DataTypes>::Spring(m1,m2,stiffness/l, damping/l, l));
     this->springs.endEdit();
 }
@@ -45,15 +45,13 @@ void MeshSpringForceField<DataTypes>::addSpring(std::set<std::pair<int,int> >& s
 template<class DataTypes>
 void MeshSpringForceField<DataTypes>::init()
 {
-    assert(this->object1);
-    assert(this->object2);
     this->StiffSpringForceField<DataTypes>::clear();
-    if(!(this->object1) || !(this->object2))
-        this->object2 = this->object1 = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
+    if(!(this->mstate1) || !(this->mstate2))
+        this->mstate2 = this->mstate1 = dynamic_cast<sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *>(this->getContext()->getMechanicalState());
 
-    if (this->object1==this->object2)
+    if (this->mstate1==this->mstate2)
     {
-        topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(this->object1->getContext()->getTopology());
+        topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(this->mstate1->getContext()->getTopology());
         if (topology != NULL)
         {
             std::set< std::pair<int,int> > sset;

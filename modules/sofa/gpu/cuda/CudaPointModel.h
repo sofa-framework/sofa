@@ -33,7 +33,7 @@ public:
     int i0();
     int getSize();
 
-    explicit CudaPoint(core::CollisionElementIterator& i);
+    explicit CudaPoint(const core::CollisionElementIterator& i);
 };
 
 class CudaPointModel : public core::CollisionModel, public core::VisualModel
@@ -86,7 +86,7 @@ inline CudaPoint::CudaPoint(CudaPointModel* model, int index)
     : core::TCollisionElementIterator<CudaPointModel>(model, index)
 {}
 
-inline CudaPoint::CudaPoint(core::CollisionElementIterator& i)
+inline CudaPoint::CudaPoint(const core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<CudaPointModel>(static_cast<CudaPointModel*>(i.getCollisionModel()), i.getIndex())
 {
 }

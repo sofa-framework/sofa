@@ -17,6 +17,8 @@ namespace component
 namespace constraint
 {
 
+/// \TODO use PairInteractionForceField in LagrangianMultiplierContactConstraint
+
 template<class DataTypes>
 class LagrangianMultiplierContactConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::InteractionForceField, public core::VisualModel
 {
