@@ -815,6 +815,71 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
                     }
                 }
             }
+            else if (v == b)
+            {
+                if (f==1.0)
+                {
+                    // v += a
+                    if (v.type == VecId::V_COORD)
+                    {
+                        VecCoord* vv = getVecCoord(v.index);
+                        if (a.type == VecId::V_COORD)
+                        {
+                            VecCoord* va = getVecCoord(a.index);
+                            vv->resize(va->size());
+                            for (unsigned int i=0; i<vv->size(); i++)
+                                (*vv)[i] += (*va)[i];
+                        }
+                        else
+                        {
+                            VecDeriv* va = getVecDeriv(a.index);
+                            vv->resize(va->size());
+                            for (unsigned int i=0; i<vv->size(); i++)
+                                (*vv)[i] += (*va)[i];
+                        }
+                    }
+                    else if (a.type == VecId::V_DERIV)
+                    {
+                        VecDeriv* vv = getVecDeriv(v.index);
+                        VecDeriv* va = getVecDeriv(a.index);
+                        vv->resize(va->size());
+                        for (unsigned int i=0; i<vv->size(); i++)
+                            (*vv)[i] += (*va)[i];
+                    }
+                    else
+                    {
+                        // ERROR
+                        std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+                        return;
+                    }
+                }
+                else
+                {
+                    // v = a+v*f
+                    if (v.type == VecId::V_COORD)
+                    {
+                        VecCoord* vv = getVecCoord(v.index);
+                        VecCoord* va = getVecCoord(a.index);
+                        vv->resize(va->size());
+                        for (unsigned int i=0; i<vv->size(); i++)
+                        {
+                            (*vv)[i] *= (Real)f;
+                            (*vv)[i] += (*va)[i];
+                        }
+                    }
+                    else
+                    {
+                        VecDeriv* vv = getVecDeriv(v.index);
+                        VecDeriv* va = getVecDeriv(a.index);
+                        vv->resize(va->size());
+                        for (unsigned int i=0; i<vv->size(); i++)
+                        {
+                            (*vv)[i] *= (Real)f;
+                            (*vv)[i] += (*va)[i];
+                        }
+                    }
+                }
+            }
             else
             {
                 if (f==1.0)
