@@ -78,6 +78,14 @@ void PairInteractionForceField<DataTypes>::addDForce()
                 *mstate1->getDx(), *mstate2->getDx());
 }
 
+template<class DataTypes>
+void PairInteractionForceField<DataTypes>::addDForceV()
+{
+    if (mstate1 && mstate2)
+        addDForce(*mstate1->getF(),  *mstate2->getF(),
+                *mstate1->getV(), *mstate2->getV());
+}
+
 
 template<class DataTypes>
 double PairInteractionForceField<DataTypes>::getPotentialEnergy()

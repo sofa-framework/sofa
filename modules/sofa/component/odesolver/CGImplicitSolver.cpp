@@ -90,8 +90,9 @@ void CGImplicitSolver::solve(double dt)
 
     // compute the right-hand term of the equation system
     computeForce(b);             // b = f0
-    propagateDx(vel);            // dx = v
-    computeDf(f);                // f = df/dx v
+    //propagateDx(vel);            // dx = v
+    //computeDf(f);                // f = df/dx v
+    computeDfV(f);                // f = df/dx v
     b.peq(f,h+f_rayleighStiffness.getValue());      // b = f0 + (h+rs)df/dx v
 
 

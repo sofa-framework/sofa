@@ -99,6 +99,16 @@ public:
     /// implemented by the component.
     virtual void addDForce();
 
+    /// Same as addDForce(), except the velocity vector should be used instead of dx.
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// $ df += K V $
+    ///
+    /// This method retrieves the force and velocity vector from the two MechanicalState
+    /// and call the internal addDForce(VecDeriv&,VecDeriv&,const VecDeriv&,const VecDeriv&) method
+    /// implemented by the component.
+    virtual void addDForceV();
+
     /// Get the potential energy associated to this ForceField.
     ///
     /// Used to extimate the total energy of the system by some

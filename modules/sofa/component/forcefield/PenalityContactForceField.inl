@@ -78,22 +78,14 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, const Deri
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addForce()
+void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& /*v1*/, const VecDeriv& /*v2*/)
 {
-    assert(this->object1);
-    assert(this->object2);
-    VecDeriv& f1 = *this->object1->getF();
-    const VecCoord& p1 = *this->object1->getX();
-    //const VecDeriv& v1 = *this->object1->getV();
-    VecDeriv& f2 = *this->object2->getF();
-    const VecCoord& p2 = *this->object2->getX();
-    //const VecDeriv& v2 = *this->object2->getV();
-    f1.resize(p1.size());
-    f2.resize(p2.size());
+    f1.resize(x1.size());
+    f2.resize(x2.size());
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
-        Coord u = p2[c.m2]-p1[c.m1];
+        Coord u = x2[c.m2]-x1[c.m1];
         c.pen = c.dist - u*c.norm;
         if (c.pen > 0)
         {
@@ -106,16 +98,10 @@ void PenalityContactForceField<DataTypes>::addForce()
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addDForce()
+void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
 {
-    VecDeriv& f1  = *this->object1->getF();
-    //const VecCoord& p1 = *this->object1->getX();
-    const VecDeriv& dx1 = *this->object1->getDx();
-    VecDeriv& f2  = *this->object2->getF();
-    //const VecCoord& p2 = *this->object2->getX();
-    const VecDeriv& dx2 = *this->object2->getDx();
-    f1.resize(dx1.size());
-    f2.resize(dx2.size());
+    df1.resize(dx1.size());
+    df2.resize(dx2.size());
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         const Contact& c = contacts[i];
@@ -126,14 +112,14 @@ void PenalityContactForceField<DataTypes>::addDForce()
             //if (c.pen < 0) dpen += c.pen; // start penality at distance 0
             Real dfN = c.ks * dpen;
             Deriv dforce = -c.norm*dfN;
-            f1[c.m1]+=dforce;
-            f2[c.m2]-=dforce;
+            df1[c.m1]+=dforce;
+            df2[c.m2]-=dforce;
         }
     }
 }
 
 template <class DataTypes>
-double PenalityContactForceField<DataTypes>::getPotentialEnergy()
+double PenalityContactForceField<DataTypes>::getPotentialEnergy(const VecCoord&, const VecCoord&)
 {
     cerr<<"PenalityContactForceField::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;
@@ -142,9 +128,9 @@ double PenalityContactForceField<DataTypes>::getPotentialEnergy()
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::draw()
 {
-    if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
-    const VecCoord& p1 = *this->object1->getX();
-    const VecCoord& p2 = *this->object2->getX();
+    if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
+    const VecCoord& p1 = *this->mstate1->getX();
+    const VecCoord& p2 = *this->mstate2->getX();
     glDisable(GL_LIGHTING);
 
     glBegin(GL_LINES);

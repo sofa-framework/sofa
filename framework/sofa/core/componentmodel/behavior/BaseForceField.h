@@ -83,6 +83,12 @@ public:
     /// $ df += K dx $
     virtual void addDForce() = 0;
 
+    /// Same as addDForce(), except the velocity vector should be used instead of dx.
+    ///
+    /// If the ForceField can be represented as a matrix, this method computes
+    /// $ df += K v $
+    virtual void addDForceV() = 0;
+
     /// Get the potential energy associated to this ForceField.
     ///
     /// Used to extimate the total energy of the system by some

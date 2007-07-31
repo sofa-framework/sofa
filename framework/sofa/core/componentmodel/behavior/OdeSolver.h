@@ -116,6 +116,8 @@ public:
     virtual void computeForce(VecId result) = 0;
     /// Compute the current force delta (given the latest propagated displacement)
     virtual void computeDf(VecId df) = 0;
+    /// Compute the current force delta (given the latest propagated velocity)
+    virtual void computeDfV(VecId df) = 0;
     /// Compute the acceleration corresponding to the given state (time, position and velocity)
     virtual void computeAcc(double t, VecId a, VecId x, VecId v) = 0;
 

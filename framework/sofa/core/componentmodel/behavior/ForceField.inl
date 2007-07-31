@@ -72,6 +72,13 @@ void ForceField<DataTypes>::addDForce()
         addDForce(*mstate->getF(), *mstate->getDx());
 }
 
+template<class DataTypes>
+void ForceField<DataTypes>::addDForceV()
+{
+    if (mstate)
+        addDForce(*mstate->getF(), *mstate->getV());
+}
+
 
 template<class DataTypes>
 double ForceField<DataTypes>::getPotentialEnergy()

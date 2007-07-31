@@ -35,16 +35,8 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addConstraint(int m1, int 
 }
 
 template<class DataTypes>
-void LagrangianMultiplierAttachConstraint<DataTypes>::addForce()
+void LagrangianMultiplierAttachConstraint<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& p1, const VecCoord& p2, const VecDeriv& /*v1*/, const VecDeriv& /*v2*/)
 {
-    assert(this->object1);
-    assert(this->object2);
-    VecDeriv& f1 = *this->object1->getF();
-    VecCoord& p1 = *this->object1->getX();
-    //VecDeriv& v1 = *this->object1->getV();
-    VecDeriv& f2 = *this->object2->getF();
-    VecCoord& p2 = *this->object2->getX();
-    //VecDeriv& v2 = *this->object2->getV();
     f1.resize(p1.size());
     f2.resize(p2.size());
 
@@ -89,14 +81,8 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addForce()
 }
 
 template<class DataTypes>
-void LagrangianMultiplierAttachConstraint<DataTypes>::addDForce()
+void LagrangianMultiplierAttachConstraint<DataTypes>::addDForce(VecDeriv& f1, VecDeriv& f2, const VecDeriv& dx1, const VecDeriv& dx2)
 {
-    VecDeriv& f1  = *this->object1->getF();
-    //VecCoord& p1 = *this->object1->getX();
-    VecDeriv& dx1 = *this->object1->getDx();
-    VecDeriv& f2  = *this->object2->getF();
-    //VecCoord& p2 = *this->object2->getX();
-    VecDeriv& dx2 = *this->object2->getDx();
     f1.resize(dx1.size());
     f2.resize(dx2.size());
 
@@ -128,7 +114,7 @@ void LagrangianMultiplierAttachConstraint<DataTypes>::addDForce()
 }
 
 template <class DataTypes>
-double LagrangianMultiplierAttachConstraint<DataTypes>::getPotentialEnergy()
+double LagrangianMultiplierAttachConstraint<DataTypes>::getPotentialEnergy(const VecCoord&, const VecCoord&)
 {
     cerr<<"LagrangianMultiplierAttachConstraint::getPotentialEnergy-not-implemented !!!"<<endl;
     return 0;
@@ -138,9 +124,9 @@ double LagrangianMultiplierAttachConstraint<DataTypes>::getPotentialEnergy()
 template<class DataTypes>
 void LagrangianMultiplierAttachConstraint<DataTypes>::draw()
 {
-    if (!((this->object1 == this->object2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
-    const VecCoord& p1 = *this->object1->getX();
-    const VecCoord& p2 = *this->object2->getX();
+    if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
+    const VecCoord& p1 = *this->mstate1->getX();
+    const VecCoord& p2 = *this->mstate2->getX();
     const LMVecCoord& lambda = *this->lambda->getX();
     glDisable(GL_LIGHTING);
 
