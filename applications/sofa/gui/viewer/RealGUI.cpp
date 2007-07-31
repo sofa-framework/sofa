@@ -1253,7 +1253,7 @@ void RealGUI::resetScene()
         Simulation::reset(groot);
         eventNewTime();
 
-        viewer->SwitchToPresetView();
+        //viewer->SwitchToPresetView();
         viewer->getQWidget()->update();
     }
 }
