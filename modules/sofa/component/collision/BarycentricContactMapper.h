@@ -28,6 +28,7 @@
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
+#include <sofa/component/mapping/SubsetMapping.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/Simulation.h>
@@ -377,7 +378,7 @@ public:
     void resize(int size)
     {
         if (mapping!=NULL)
-            mapping->clear();
+            mapping->clear(size);
         if (outmodel!=NULL)
             outmodel->resize(size);
         nbp = 0;
@@ -498,6 +499,106 @@ public:
         //    elem = model->getDeformGrid()->findNearestCube(P,bary[0],bary[1],bary[2]);
         //}
         return this->mapper->addPointInCube(elem,bary.ptr());
+    }
+};
+
+/// Base class for all mappers using SubsetMapping
+template < class TCollisionModel, class DataTypes >
+class SubsetContactMapper
+{
+public:
+    typedef TCollisionModel MCollisionModel;
+    typedef typename MCollisionModel::InDataTypes InDataTypes;
+    typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MMechanicalState;
+    typedef component::MechanicalObject<DataTypes> MMechanicalObject;
+    typedef mapping::SubsetMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
+    MCollisionModel* model;
+    simulation::tree::GNode* child;
+    MMapping* mapping;
+    MMechanicalState* outmodel;
+    int nbp;
+
+    SubsetContactMapper()
+        : model(NULL), child(NULL), mapping(NULL), outmodel(NULL), nbp(0)
+    {
+    }
+
+    void cleanup()
+    {
+        if (child!=NULL)
+        {
+            simulation::tree::Simulation::unload(child);
+        }
+    }
+
+    MMechanicalState* createMapping(MCollisionModel* model)
+    {
+        this->model = model;
+        InMechanicalState* instate = model->getMechanicalState();
+        if (instate!=NULL)
+        {
+            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(instate->getContext());
+            if (parent==NULL)
+            {
+                std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
+                return NULL;
+            }
+            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+            outmodel = new MMechanicalObject; child->addObject(outmodel);
+            mapping = new MMapping(instate, outmodel); child->addObject(mapping);
+        }
+        else
+        {
+            simulation::tree::GNode* parent = dynamic_cast<simulation::tree::GNode*>(model->getContext());
+            if (parent==NULL)
+            {
+                std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
+                return NULL;
+            }
+            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+            outmodel = new MMechanicalObject; child->addObject(outmodel);
+            mapping = NULL;
+        }
+        return outmodel;
+    }
+
+    void resize(int size)
+    {
+        if (mapping!=NULL)
+            mapping->clear(size);
+        if (outmodel!=NULL)
+            outmodel->resize(size);
+        nbp = 0;
+    }
+
+    int addPoint(const Vector3& P, int index)
+    {
+        int i = nbp++;
+        if ((int)outmodel->getX()->size() <= i)
+            outmodel->resize(i+1);
+        if (mapping)
+        {
+            i = mapping->addPoint(P,index);
+        }
+        else
+        {
+            (*outmodel->getX())[i] = P;
+        }
+        return i;
+    }
+
+    void update()
+    {
+        if (mapping!=NULL)
+        {
+            mapping->updateMapping();
+        }
+    }
+
+    double radius(const typename TCollisionModel::Element& /*e*/)
+    {
+        return 0.0;
     }
 };
 

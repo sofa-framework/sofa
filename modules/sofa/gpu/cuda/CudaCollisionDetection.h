@@ -63,10 +63,11 @@ public:
         int firstIndex; ///< Index of the first result in the results array
         int maxSize; ///< Maximum number of contacts resulting from this test
         int curSize; ///< Current number of detected contacts
+        int newIndex; ///< Index of the first result in a new compacted array
         std::pair<int,int> elems; ///< Elements
-        TestEntry() : firstIndex(0), maxSize(0), curSize(0), elems(std::make_pair(0,0)) {}
+        TestEntry() : firstIndex(0), maxSize(0), curSize(0), newIndex(0), elems(std::make_pair(0,0)) {}
     };
-    sofa::helper::vector< TestEntry > tests;
+    sofa::gpu::cuda::CudaVector< TestEntry > tests;
 
     ~GPUDetectionOutputVector()
     {
@@ -99,10 +100,28 @@ public:
         e.firstIndex = results.size();
         e.maxSize = maxSize;
         e.curSize = 0;
-        results.fastResize(e.firstIndex+e.maxSize);
+        e.newIndex = 0;
+        results.fastResize(e.firstIndex+maxSize);
         tests.push_back(e);
         return t;
     }
+};
+
+
+
+template<>
+class TDetectionOutputVector<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
+{
+};
+
+template<>
+class TDetectionOutputVector<sofa::gpu::cuda::CudaSphereModel,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
+{
+};
+
+template<>
+class TDetectionOutputVector<sofa::gpu::cuda::CudaPointModel,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
+{
 };
 
 } // namespace collision
@@ -116,6 +135,8 @@ namespace gpu
 
 namespace cuda
 {
+
+
 
 class CudaCollisionDetection : public sofa::component::collision::BruteForceDetection
 {

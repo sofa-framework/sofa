@@ -160,6 +160,18 @@ public:
     const value_type& operator[](size_type i) const { return data[i]; }
     size_type size() const { return cursize; }
     bool empty() const { return cursize==0; }
+    void reserve(size_type size)
+    {
+        if (size <= maxsize)
+            return;
+        size_type temp = cursize;
+        if (allocator)
+            allocator->resize(data, size, maxsize, temp);
+        else
+        {
+            std::cerr << "Error: invalid reserve request ("<<size<<">"<<maxsize<<") on external vector without allocator.\n";
+        }
+    }
     void resize(size_type size)
     {
         if (size <= maxsize)
@@ -169,7 +181,7 @@ public:
         else
         {
             cursize = maxsize;
-            std::cerr << "Error: invalide resize request ("<<size<<">"<<maxsize<<") on external vector without allocator.\n";
+            std::cerr << "Error: invalid resize request ("<<size<<">"<<maxsize<<") on external vector without allocator.\n";
         }
     }
     void clear()

@@ -64,13 +64,13 @@ public:
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-protected:
     VecCoord points;
+    VecCoord rotatedPoints;
+    RigidMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
+protected:
     Coord translation;
     //Real orientation[4];
     Mat rotation;
-    VecCoord rotatedPoints;
-    RigidMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
     class Loader;
     void load(const char* filename);
     DataField<sofa::helper::vector<unsigned int> >  repartition;
@@ -113,7 +113,7 @@ public:
     void initTextures() { }
     void update() { }
 
-    void clear();
+    void clear(int reserve=0);
 
     void setRepartition(unsigned int value);
     void setRepartition(std::vector<unsigned int> values);

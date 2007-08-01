@@ -153,9 +153,10 @@ void RigidMapping<BasicMapping>::init()
 }
 
 template <class BasicMapping>
-void RigidMapping<BasicMapping>::clear()
+void RigidMapping<BasicMapping>::clear(int reserve)
 {
     this->points.clear();
+    if (reserve) this->points.reserve(reserve);
     this->repartition.beginEdit()->clear();
     this->repartition.endEdit();
 }

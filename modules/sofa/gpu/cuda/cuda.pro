@@ -69,4 +69,5 @@ CUDA_SOURCES += mycuda.cu \
            CudaBarycentricMapping.cu \
            CudaRigidMapping.cu \
            CudaSubsetMapping.cu \
-           CudaCollisionDetection.cu
+           CudaCollisionDetection.cu \
+           CudaContactMapper.cu

@@ -49,19 +49,27 @@ public:
             nout[map[i]]++;
         for (int i=0; i<insize; i++)
             if (nout[i] > maxNOut) maxNOut = nout[i];
-        int nbloc = (insize+BSIZE-1)/BSIZE;
-        std::cout << "CudaSubsetMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs."<<std::endl;
-        mapT.resize(nbloc*(BSIZE*maxNOut));
-        for (unsigned int i=0; i<mapT.size(); i++)
-            mapT[i] = -1;
-        nout.clear();
-        nout.resize(insize);
-        for (unsigned int i=0; i<map.size(); i++)
+        if (maxNOut <= 1)
         {
-            int index = map[i];
-            int num = nout[index]++;
-            int b = (index / BSIZE); index -= b*BSIZE;
-            mapT[(maxNOut*b+num)*BSIZE+index] = i;
+            // at most one duplicated points per input. mapT is not necessary
+            mapT.clear();
+        }
+        else
+        {
+            int nbloc = (insize+BSIZE-1)/BSIZE;
+            std::cout << "CudaSubsetMapping: mapT with "<<maxNOut<<" entries per DOF and "<<nbloc<<" blocs."<<std::endl;
+            mapT.resize(nbloc*(BSIZE*maxNOut));
+            for (unsigned int i=0; i<mapT.size(); i++)
+                mapT[i] = -1;
+            nout.clear();
+            nout.resize(insize);
+            for (unsigned int i=0; i<map.size(); i++)
+            {
+                int index = map[i];
+                int num = nout[index]++;
+                int b = (index / BSIZE); index -= b*BSIZE;
+                mapT[(maxNOut*b+num)*BSIZE+index] = i;
+            }
         }
     }
 };

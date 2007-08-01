@@ -15,6 +15,7 @@ extern "C"
     void SubsetMappingCuda3f_apply(unsigned int size, const void* map, void* out, const void* in);
     void SubsetMappingCuda3f_applyJ(unsigned int size, const void* map, void* out, const void* in);
     void SubsetMappingCuda3f_applyJT(unsigned int insize, unsigned int maxNOut, const void* mapT, void* out, const void* in);
+    void SubsetMappingCuda3f_applyJT1(unsigned int insize, const void* map, void* out, const void* in);
 }
 
 //////////////////////
@@ -87,6 +88,32 @@ __global__ void SubsetMappingCuda3f_applyJT_kernel(unsigned int size, unsigned i
     out[index1+2*BSIZE] += temp[index1+2*BSIZE];
 }
 
+__global__ void SubsetMappingCuda3f_applyJT1_kernel(unsigned int size, const int* map, float* out, const float* in)
+{
+
+    int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    int index1 = threadIdx.x;
+
+    //! Dynamically allocated shared memory to reorder global memory access
+    extern  __shared__  float temp[];
+
+    in += umul24(index0,3);
+    temp[index1        ] = in[index1        ];
+    temp[index1+  BSIZE] = in[index1+  BSIZE];
+    temp[index1+2*BSIZE] = in[index1+2*BSIZE];
+
+    __syncthreads();
+
+    int index3 = umul24(3,index1);
+    float3 res = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
+
+    int c = map[index0+index1];
+    if (index0+index1 < size)
+    {
+        ((float3*)out)[c] += res;
+    }
+}
+
 //////////////////////
 // CPU-side methods //
 //////////////////////
@@ -110,6 +137,13 @@ void SubsetMappingCuda3f_applyJT(unsigned int insize, unsigned int maxNOut, cons
     dim3 threads(BSIZE,1);
     dim3 grid((insize+BSIZE-1)/BSIZE,1);
     SubsetMappingCuda3f_applyJT_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(insize, maxNOut, (const int*)mapT, (float*)out, (const float*)in);
+}
+
+void SubsetMappingCuda3f_applyJT1(unsigned int size, const void* map, void* out, const void* in)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    SubsetMappingCuda3f_applyJT1_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*)map, (float*)out, (const float*)in);
 }
 
 #if defined(__cplusplus)

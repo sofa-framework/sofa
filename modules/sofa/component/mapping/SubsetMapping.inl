@@ -27,6 +27,27 @@ SubsetMapping<BaseMapping>::~SubsetMapping()
 {
 }
 
+
+template <class BaseMapping>
+void SubsetMapping<BaseMapping>::clear(int reserve)
+{
+    IndexArray& indices = *f_indices.beginEdit();
+    indices.clear();
+    if (reserve) indices.reserve(reserve);
+    f_indices.endEdit();
+}
+
+template <class BaseMapping>
+int SubsetMapping<BaseMapping>::addPoint(int index)
+{
+    IndexArray& indices = *f_indices.beginEdit();
+    int i = indices.size();
+    indices.push_back(index);
+    f_indices.endEdit();
+    return i;
+}
+
+
 template <class BaseMapping>
 void SubsetMapping<BaseMapping>::init()
 {

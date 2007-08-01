@@ -42,7 +42,6 @@ public:
     typedef typename In::Deriv InDeriv;
     typedef typename InCoord::value_type Real;
 
-protected:
     /// Correspondance array
     typedef helper::vector<unsigned int> IndexArray;
     DataField < IndexArray > f_indices;
@@ -50,9 +49,12 @@ protected:
     DataField < int > f_last;
     SubsetMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
     void postInit();
-public:
 
     SubsetMapping(In* from, Out* to);
+
+    void clear(int reserve);
+
+    int addPoint(int index);
 
     void init();
 

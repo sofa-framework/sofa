@@ -18,6 +18,7 @@ extern "C"
     void SubsetMappingCuda3f_apply(unsigned int size, const void* map, void* out, const void* in);
     void SubsetMappingCuda3f_applyJ(unsigned int size, const void* map, void* out, const void* in);
     void SubsetMappingCuda3f_applyJT(unsigned int insize, unsigned int maxNOut, const void* mapT, void* out, const void* in);
+    void SubsetMappingCuda3f_applyJT1(unsigned int size, const void* map, void* out, const void* in);
 }
 
 } // namespace cuda
@@ -119,7 +120,10 @@ void SubsetMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa
 {
     if (data.map.size() == 0) return;
     unsigned int insize = out.size();
-    SubsetMappingCuda3f_applyJT(insize, data.maxNOut, data.mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+    if (data.mapT.empty())
+        SubsetMappingCuda3f_applyJT1(data.map.size(), data.map.deviceRead(), out.deviceWrite(), in.deviceRead());
+    else
+        SubsetMappingCuda3f_applyJT(insize, data.maxNOut, data.mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
 }
 
 template <>

@@ -157,9 +157,12 @@ void CudaCollisionDetection::endNarrowPhase()
                 {
                     GPUOutputVector* tresults = &it->second.test->results;
                     this->outputsMap[it->first] = tresults;
+                    int newIndex = 0;
                     for (unsigned int t=0; t<tresults->nbTests(); t++)
                     {
                         tresults->test(t).curSize = results[it->second.index + t];
+                        tresults->test(t).newIndex = newIndex;
+                        newIndex += tresults->test(t).curSize;
                     }
                     //test->fillContacts(this->outputsMap[it->first], results+it->second.index);
                 }
