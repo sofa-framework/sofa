@@ -40,20 +40,20 @@ using namespace sofa::defaulttype;
 using namespace core::componentmodel::collision;
 using simulation::tree::GNode;
 
-template < class TCollisionModel1, class TCollisionModel2 >
-BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::BarycentricPenalityContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), ff(NULL), parent(NULL)
 {
 }
 
-template < class TCollisionModel1, class TCollisionModel2 >
-BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::~BarycentricPenalityContact()
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::~BarycentricPenalityContact()
 {
 }
 
 
-template < class TCollisionModel1, class TCollisionModel2 >
-void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::cleanup()
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::cleanup()
 {
     if (ff!=NULL)
     {
@@ -67,8 +67,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::cleanup()
     }
 }
 
-template < class TCollisionModel1, class TCollisionModel2 >
-void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::setDetectionOutputs(OutputVector* o)
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     const bool printLog = this->f_printLog.getValue();
@@ -187,8 +187,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::setDetection
     mapper2.update();
 }
 
-template < class TCollisionModel1, class TCollisionModel2 >
-void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::createResponse(core::objectmodel::BaseContext* group)
 {
     if (ff!=NULL)
     {
@@ -207,8 +207,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::createRespon
     }
 }
 
-template < class TCollisionModel1, class TCollisionModel2 >
-void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::removeResponse()
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::removeResponse()
 {
     if (ff!=NULL)
     {
@@ -222,8 +222,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::removeRespon
     }
 }
 
-template < class TCollisionModel1, class TCollisionModel2 >
-void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2>::draw()
+template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
+void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw()
 {
 //	if (dynamic_cast<core::VisualModel*>(ff)!=NULL)
 //		dynamic_cast<core::VisualModel*>(ff)->draw();
