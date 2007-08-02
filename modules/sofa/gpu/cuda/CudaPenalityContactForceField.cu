@@ -17,7 +17,7 @@ extern "C"
     void PenalityContactForceFieldCuda3f_addDForce(unsigned int size, const void* contacts, const void* pen, void* f1, const void* dx1, void* f2, const void* dx2);
 }
 
-struct __align__(16) GPUContact
+struct /*__align__(16)*/ GPUContact
 {
     int p1;
     float3 p2;
@@ -25,7 +25,7 @@ struct __align__(16) GPUContact
     float3 normal;
 };
 
-struct __align__(8) GPUTestEntry
+struct /*__align__(8)*/ GPUTestEntry
 {
     int firstIndex;
     int curSize;
@@ -54,9 +54,9 @@ __global__ void PenalityContactForceFieldCuda3f_setContacts_kernel(const GPUTest
         //float3 n = xform * make_float3(0,0,-1); //c.normal;
         float d = c.distance + d0;
         //float ks = sqrt(stiffness / d);
-        float ks = rsqrt(d / stiffness);
-        //n *= ks;
-        //d *= ks;
+        float ks = rsqrt(d / (stiffness*0.000001));
+        n *= ks;
+        d *= ks;
         contacts[curTestEntry.newIndex + threadIdx.x] =  make_float4(n.x,n.y,n.z,d);
     }
 }

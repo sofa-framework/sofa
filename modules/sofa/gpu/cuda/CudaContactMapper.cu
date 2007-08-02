@@ -16,7 +16,7 @@ extern "C"
     void SubsetContactMapperCuda3f_setPoints1(unsigned int size, unsigned int nbTests, unsigned int maxPoints, unsigned int nbPointsPerElem, const void* tests, const void* contacts, void* map);
 }
 
-struct __align__(16) GPUContact
+struct /*__align__(16)*/ GPUContact
 {
     int p1;
     float3 p2;
@@ -24,7 +24,7 @@ struct __align__(16) GPUContact
     float3 normal;
 };
 
-struct __align__(8) GPUTestEntry
+struct /*__align__(8)*/ GPUTestEntry
 {
     int firstIndex;
     int curSize;
