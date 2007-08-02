@@ -7,7 +7,8 @@
 #include <sofa/component/collision/RayContact.h>
 #include "CudaContactMapper.h"
 #include <sofa/component/collision/BarycentricPenalityContact.inl>
-#include <sofa/component/forcefield/PenalityContactForceField.inl>
+#include <sofa/component/forcefield/PenalityContactForceField.h>
+#include "CudaPenalityContactForceField.h"
 #include <fstream>
 #include <GL/gl.h>
 
@@ -37,13 +38,11 @@ void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionMod
     int insize = outputs.size();
     mapper1.setPoints1(&outputs);
     mapper2.setPoints2(&outputs);
+    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
     int size = insize;
+#if 0
     ff->clear(size);
     //int i = 0;
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
-    //for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    //{
-    //    DetectionOutput* o = &*it;
     for (int i=0; i<insize; i++)
     {
         int index = i; //oldIndex[i];
@@ -59,11 +58,16 @@ void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionMod
         //index1 = mapper1.addPoint(o->point[0], index1);
         //// Create mapping for second point
         //index2 = mapper2.addPoint(o->point[1], index2);
-        double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
+        double distance = d0 + outputs.get(i)->distance; // + mapper1.radius(elem1) + mapper2.radius(elem2);
         double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0))/distance;
         double mu_v = (model1->getContactFriction(0) + model1->getContactFriction(0));
-        ff->addContact(index1, index2, defaulttype::Vec3f(0,0,1) /* o->normal */, (float)distance, (float)stiffness, (float)mu_v/* *distance */, (float)mu_v, index);
+        ff->addContact(index1, index2, outputs.get(i)->normal, (float)distance, (float)stiffness, (float)mu_v, (float)mu_v, index);
     }
+#else
+    double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
+    double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0)); ///distance;
+    ff->setContacts((float)distance, (float)stiffness, &outputs);
+#endif
     // Update mappings
     mapper1.update();
     mapper2.update();
@@ -84,13 +88,11 @@ void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionMo
     int insize = outputs.size();
     mapper1.setPoints1(&outputs);
     mapper2.setPoints2(&outputs);
+    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
     int size = insize;
+#if 0
     ff->clear(size);
     //int i = 0;
-    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
-    //for (std::vector<DetectionOutput>::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    //{
-    //    DetectionOutput* o = &*it;
     for (int i=0; i<insize; i++)
     {
         int index = i; //oldIndex[i];
@@ -106,11 +108,16 @@ void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionMo
         //index1 = mapper1.addPoint(o->point[0], index1);
         //// Create mapping for second point
         //index2 = mapper2.addPoint(o->point[1], index2);
-        double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
+        double distance = d0 + outputs.get(i)->distance; // + mapper1.radius(elem1) + mapper2.radius(elem2);
         double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0))/distance;
         double mu_v = (model1->getContactFriction(0) + model1->getContactFriction(0));
-        ff->addContact(index1, index2, defaulttype::Vec3f(0,0,-1) /* o->normal */, (float)distance, (float)stiffness, (float)mu_v/* *distance */, (float)mu_v, index);
+        ff->addContact(index1, index2, outputs.get(i)->normal, (float)distance, (float)stiffness, (float)mu_v, (float)mu_v, index);
     }
+#else
+    double distance = d0; // + mapper1.radius(elem1) + mapper2.radius(elem2);
+    double stiffness = (model1->getContactStiffness(0) * model1->getContactStiffness(0)); ///distance;
+    ff->setContacts((float)distance, (float)stiffness, &outputs);
+#endif
     // Update mappings
     mapper1.update();
     mapper2.update();

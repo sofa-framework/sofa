@@ -90,7 +90,8 @@ public:
 
     unsigned int nbTests() { return tests.size(); }
 
-    TestEntry& test(int i) { return tests[i]; }
+    const TestEntry& rtest(int i) { return tests[i]; }
+    TestEntry& wtest(int i) { return tests[i]; }
 
     int addTest(std::pair<int,int> elems, int maxSize)
     {
@@ -104,6 +105,16 @@ public:
         results.fastResize(e.firstIndex+maxSize);
         tests.push_back(e);
         return t;
+    }
+
+    const GPUDetectionOutput* get(int i)
+    {
+        unsigned int t=0;
+        while(t<nbTests() && rtest(t).newIndex > i) ++t;
+        if (t<nbTests())
+            return &(results[rtest(t).firstIndex + (i-rtest(t).newIndex)]);
+        else
+            return NULL;
     }
 };
 

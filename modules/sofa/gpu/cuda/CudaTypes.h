@@ -262,9 +262,9 @@ protected:
     void copyToDevice() const
     {
         if (deviceIsValid) return;
-//#ifndef NDEBUG
+#ifndef NDEBUG
         std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName(typeid(*this))<<": "<<vectorSize*sizeof(T)<<" B"<<std::endl;
-//#endif
+#endif
         mycudaMemcpyHostToDevice(devicePointer, hostPointer, vectorSize*sizeof(T));
         deviceIsValid = true;
     }

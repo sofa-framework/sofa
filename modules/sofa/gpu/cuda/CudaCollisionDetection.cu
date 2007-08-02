@@ -1,5 +1,6 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
+#include <stdio.h>
 
 #if defined(__cplusplus)
 namespace sofa
@@ -57,7 +58,7 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
 
     float3 p;
     float distance;
-    float3 grad;
+    float3 grad = make_float3(0,0,-1);
     int n = 0;
     if (threadIdx.x < curTest.nbPoints)
     {
@@ -65,7 +66,7 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
         p = curTest.rotation * p;
         p += curTest.translation;
 
-        float3 grad;
+        float3 grad = make_float3(-1,0,0);
         float3 coefs = mul(p-curTest.gridp0, curTest.gridinvdp);
         int x = __float2int_rd(coefs.x);
         int y = __float2int_rd(coefs.y);
@@ -109,8 +110,10 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
                 dy1_dy0 = d101_d001 + (d111_d011 - d101_d001)*coefs.y - dy0;
                 grad.x = dy0 + (dy1_dy0)*coefs.z;
                 grad *= invnorm(grad);
-                //p -= grad*distance;
-                distance -= r;
+                p -= grad*distance;
+                //distance -= r;
+                distance = r;
+                //grad = make_float3(0,1,1);
             }
         }
     }
@@ -130,7 +133,8 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
         c.p1 = threadIdx.x;
         c.p2 = p;
         c.distance = distance;
-        c.normal = -grad;
+        //c.normal = make_float3(-1,1,1); //make_float3(-grad.x,-grad.y,-grad.z); //-grad;
+        c.normal = make_float3(-grad.x,-grad.y,-grad.z); //-grad;
         curTest.result[scan[threadIdx.x]-1] = c;
 
     }
@@ -144,6 +148,7 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
 
 void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults)
 {
+    printf("sizeof(GPUTest)=%d\nsizeof(GPUContact)=%d\nsizeof(matrix3)=%d\n",sizeof(GPUTest),sizeof(GPUContact),sizeof(matrix3));
     const GPUTest* gputests = (const GPUTest*)tests;
     // round up to 16
     //maxPoints = (maxPoints+15)&-16;

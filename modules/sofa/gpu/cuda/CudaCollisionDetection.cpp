@@ -160,9 +160,9 @@ void CudaCollisionDetection::endNarrowPhase()
                     int newIndex = 0;
                     for (unsigned int t=0; t<tresults->nbTests(); t++)
                     {
-                        tresults->test(t).curSize = results[it->second.index + t];
-                        tresults->test(t).newIndex = newIndex;
-                        newIndex += tresults->test(t).curSize;
+                        tresults->wtest(t).curSize = results[it->second.index + t];
+                        tresults->wtest(t).newIndex = newIndex;
+                        newIndex += tresults->rtest(t).curSize;
                     }
                     //test->fillContacts(this->outputsMap[it->first], results+it->second.index);
                 }
@@ -254,7 +254,7 @@ void CudaCollisionDetection::RigidRigidTest::fillInfo(GPUTest* tests)
     int i0 = model1->getSize();
     for (unsigned int i=0; i<results.nbTests(); i++)
     {
-        GPUOutputVector::TestEntry& e = results.test(i);
+        const GPUOutputVector::TestEntry& e = results.rtest(i);
         GPUTest& test = tests[i];
         CudaRigidDistanceGridCollisionElement elem1((e.elems.first  < i0)?model1:model2,(e.elems.first  < i0)?e.elems.first :e.elems.first -i0);
         CudaRigidDistanceGridCollisionElement elem2((e.elems.second < i0)?model1:model2,(e.elems.second < i0)?e.elems.second:e.elems.second-i0);
@@ -407,7 +407,7 @@ void CudaCollisionDetection::SphereRigidTest::fillInfo(GPUTest* tests)
     const CudaVector<Vec3f>& p1 = *model1->getMechanicalState()->getX();
     for (unsigned int i=0; i<results.nbTests(); i++)
     {
-        GPUOutputVector::TestEntry& e = results.test(i);
+        const GPUOutputVector::TestEntry& e = results.rtest(i);
         GPUTest& test = tests[i];
         //CudaRigidDistanceGridCollisionElement elem1((e.elems.first  < i0)?model1:model2,(e.elems.first  < i0)?e.elems.first :e.elems.first -i0);
         CudaRigidDistanceGridCollisionElement elem2(model2, e.elems.second);
@@ -502,7 +502,7 @@ void CudaCollisionDetection::PointRigidTest::fillInfo(GPUTest* tests)
     GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
     for (unsigned int i=0; i<results.nbTests(); i++)
     {
-        GPUOutputVector::TestEntry& e = results.test(i);
+        const GPUOutputVector::TestEntry& e = results.rtest(i);
         GPUTest& test = tests[i];
         CudaPoint elem1(model1, e.elems.first);
         CudaRigidDistanceGridCollisionElement elem2(model2,e.elems.second);
