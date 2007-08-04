@@ -6,6 +6,8 @@ include($$SOFA_DIR/sofa.cfg)
 
 TARGET = sofagpucuda$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
+#CONFIG -= dynamiclib
+#CONFIG += staticlib
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += $$SOFA_EXT_LIBS
 

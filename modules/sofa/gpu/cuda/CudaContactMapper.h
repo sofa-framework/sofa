@@ -138,8 +138,8 @@ public:
         int maxp = 0;
         for (int i=0; i<nt; i++)
             if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
-        mapping->data.map.fastResize(n);
-        SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, model->groupSize.getValue(), outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->data.map.deviceWrite());
+        this->mapping->data.map.fastResize(n);
+        SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, this->model->groupSize.getValue(), outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->data.map.deviceWrite());
     }
 };
 
@@ -166,7 +166,7 @@ public:
         int maxp = 0;
         for (int i=0; i<nt; i++)
             if (outputs->rtest(i).curSize > maxp) maxp = outputs->rtest(i).curSize;
-        mapping->data.map.fastResize(n);
+        this->mapping->data.map.fastResize(n);
         SubsetContactMapperCuda3f_setPoints1(n, nt, maxp, 0, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->data.map.deviceWrite());
     }
 };

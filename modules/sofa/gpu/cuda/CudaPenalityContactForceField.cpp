@@ -92,7 +92,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(int m1, int m2, const
 
 void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffness, sofa::core::componentmodel::collision::GPUDetectionOutputVector* outputs, defaulttype::Mat3x3f* normXForm)
 {
-#if 0
+#if 1
     int n = outputs->size();
     contacts.fastResize(n);
     pen.fastResize(n);
@@ -126,9 +126,9 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
 void PenalityContactForceField<CudaVec3fTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
     pen.resize(contacts.size());
-#if 0
     f1.resize(x1.size());
     f2.resize(x2.size());
+#if 0
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         sofa::defaulttype::Vec4f c = contacts[i];

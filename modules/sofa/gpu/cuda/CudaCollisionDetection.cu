@@ -99,7 +99,7 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
             float r = 0;
             if (curTest.radius)
             {
-                r = curTest.radius[blockIdx.x];
+                r = curTest.radius[threadIdx.x];
             }
             if (distance < curTest.margin+r)
             {

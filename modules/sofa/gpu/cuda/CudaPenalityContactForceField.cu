@@ -54,7 +54,7 @@ __global__ void PenalityContactForceFieldCuda3f_setContacts_kernel(const GPUTest
         //float3 n = xform * make_float3(0,0,-1); //c.normal;
         float d = c.distance + d0;
         //float ks = sqrt(stiffness / d);
-        float ks = rsqrt(d / (stiffness*0.000001));
+        float ks = rsqrt(d / stiffness);
         n *= ks;
         d *= ks;
         contacts[curTestEntry.newIndex + threadIdx.x] =  make_float4(n.x,n.y,n.z,d);
@@ -91,7 +91,7 @@ __global__ void PenalityContactForceFieldCuda3f_addForce_kernel(int size, const 
     float3 u = make_float3(temp[index_3  ], temp[index_3+1], temp[index_3+2]);
     float4 c = contacts[index];
     float p = c.w - (u.x*c.x+u.y*c.y+u.z*c.z);
-    //pen[index] = p;
+    pen[index] = p;
     float3 force = make_float3(0,0,0);
     if (p>0)
     {
@@ -105,14 +105,14 @@ __global__ void PenalityContactForceFieldCuda3f_addForce_kernel(int size, const 
     temp[index_3+2] = force.z;
 
     __syncthreads();
-    /*
+
     f1[index        ] += temp[index        ];
     f1[index+  BSIZE] += temp[index+  BSIZE];
     f1[index+2*BSIZE] += temp[index+2*BSIZE];
 
     f2[index        ] -= temp[index        ];
     f2[index+  BSIZE] -= temp[index+  BSIZE];
-    f2[index+2*BSIZE] -= temp[index+2*BSIZE];*/
+    f2[index+2*BSIZE] -= temp[index+2*BSIZE];
 }
 
 __global__ void PenalityContactForceFieldCuda3f_addDForce_kernel(int size, const float4* contacts, const float* pen, float* df1, const float* dx1, float* df2, const float* dx2)
@@ -155,14 +155,14 @@ __global__ void PenalityContactForceFieldCuda3f_addDForce_kernel(int size, const
     temp[index_3+2] = force.z;
 
     __syncthreads();
-    /*
+
     df1[index        ] += temp[index        ];
     df1[index+  BSIZE] += temp[index+  BSIZE];
     df1[index+2*BSIZE] += temp[index+2*BSIZE];
 
     df2[index        ] -= temp[index        ];
     df2[index+  BSIZE] -= temp[index+  BSIZE];
-    df2[index+2*BSIZE] -= temp[index+2*BSIZE];*/
+    df2[index+2*BSIZE] -= temp[index+2*BSIZE];
 }
 
 //////////////////////
