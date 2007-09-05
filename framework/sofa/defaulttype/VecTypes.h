@@ -248,9 +248,9 @@ public:
     typedef TCoord Coord;
     typedef TDeriv Deriv;
     typedef TReal Real;
-    typedef ExtVector<Coord> VecCoord;
-    typedef ExtVector<Deriv> VecDeriv;
-    typedef ExtVector<Real> VecReal;
+    typedef ResizableExtVector<Coord> VecCoord;
+    typedef ResizableExtVector<Deriv> VecDeriv;
+    typedef ResizableExtVector<Real> VecReal;
 
     template <class T>
     class SparseData
