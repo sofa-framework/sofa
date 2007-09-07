@@ -5,12 +5,38 @@
 \usepackage{hyperref}
 \usepackage[latin1]{inputenc}
 
+\usepackage{listings}
+\lstset{showstringspaces=false,frame=trBL,frameround=tttt,tabsize=8,basicstyle=\tiny,breaklines=true,breakatwhitespace=true}
+\lstdefinestyle{bash}{language=bash}
+\lstdefinestyle{Perl}{language=Perl}
+\lstdefinestyle{C++}{language=C++}
+\lstdefinestyle{DTD}{language=XML}
+\lstdefinestyle{XML}{language=XML,usekeywordsintag=false,markfirstintag=true}
+\newcommand{\includecode}[2]{\lstinputlisting[style=#1]{#2}}
+%\lstnewenvironment{code}{}{}
+\lstnewenvironment{code_bash}{\lstset{style=bash}}{}
+\lstnewenvironment{code_perl}{\lstset{style=Perl}}{}
+\lstnewenvironment{code_cpp}{\lstset{style=C++}}{}
+\lstnewenvironment{code_dtd}{\lstset{style=DTD}}{}
+\lstnewenvironment{code_xml}{\lstset{style=XML}}{}
+
+\newcommand{\textcode}[1]{{\small {\tt #1}}}
+
+% ---- format de page A4
+% 	\setlength{\textwidth }{16cm}	% largeur de ligne
+% 	\setlength{\textheight}{23cm}   % hauteur du texte
+	\setlength{\oddsidemargin}{-17mm} % marge pages impaires
+	\setlength{\evensidemargin}{-17mm}% marge pages paires
+% 	\setlength{\topmargin}{0cm} 	
+% 	\setlength{\headheight}{14pt} 
+% 	\setlength{\headsep}{0.5cm} 
+
 \title[Introdution to SOFA]{An Introduction to Sofa}
 \author[Faure]{%
   François~Faure\inst{1} }
 \institute[Univ. Grenoble]{
   \inst{1}%
-  University Joseph Fourier, Grenoble\\
+  Grenoble Universities\\
   INRIA - Evasion
   }
 \date[September 2007]{September 11th 2007}
@@ -24,16 +50,59 @@
     \titlepage
   }
 
-\section{Overview}
+%\section{Overview}
+
+\begin{frame}
+ \frametitle{SOFA - Simulation Open Framework Architecture}
+\begin{itemize}
+ \item Open Source framework primarily targeted at real-time simulation
+\begin{itemize}
+ \item create complex and evolving simulations by combining new algorithms with algorithms already included in SOFA
+  \item modify most parameters of the simulation: deformable behavior, surface representation, solver, constraints, collision algorithm, etc. by simply editing an XML file
+ \item build complex models from simpler ones using a scene-graph description
+ \item efficiently simulate the dynamics of interacting objects using abstract equation solvers
+ \item reuse and easily compare a variety of available methods 
+\end{itemize}
+\item Currently developed by four research teams in two institutes: INRIA(Alcove, Asclepios, Evasion),  CIMIT(SimGroup,MIT/Harvard/MGH)
+%\item 15 developers, 30 users
+\end{itemize}
+\end{frame}
 
 \begin{frame}
  \frametitle{Main Features}
 \begin{itemize}
  \item High modularity using a scene graph
  \item Multiple models of the same object can be synchronized using mappings
+ \item Current implementations:
+\begin{itemize}
+ \item deformable objects (springs, FEM)
+ \item rigid bodies (6-dof) 
+ \item fluids (SPH, Eulerian)
+ \item collision detection: spheres, triangles
+ \item explicit and implicit time integration
+\end{itemize}
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Using Sofa}
+\begin{itemize}
+ \item In your application, as an external simulation library (C++, LGPL license)
+ \item As a stand-alone application with one of the default user interfaces (Qt,Glut) and renderers (OpenGL, Ogre)
+\begin{figure}
+ \centering
+ \includegraphics[width=0.7\linewidth]{sofa-window.png}
+ % sofa-window.png: 161083904x0 pixel, 0dpi, infxnan cm, bb=
+ \caption{Sofa stand-alone with Qt GUI and OpenGL rendering.}
+ \label{fig:sofa-window}
+\end{figure}
+
 \end{itemize}
 
 \end{frame}
+
 
 \begin{frame}
  \frametitle{Data structure}
@@ -67,9 +136,15 @@ Example: A mass-spring string and a rigid body
 \begin{frame}
 \frametitle{Why using scene graphs}
 \begin{itemize}
- \item standard graphics tool (VRML, Java3D, ...)
+ \item standard graphics tool 
+\begin{itemize}
+ \item modeling languages: VRML1, VRML2, X3D...
+ \item libraries: OpenInventor, Java3D, OpenSG, OpenSceneGraph,...
+\end{itemize}
+\item simple structure (Directed Acyclic Graph): no cyclic dependencies 
+\item abstraction and modularity
  \item dynamically add or remove objects in the scene
- \item replacing a component while leaving the others unchanged
+ %\item replacing a component while leaving the others unchanged
  \item I/O file format
 \end{itemize}
 \end{frame}
@@ -119,13 +194,13 @@ Example: A mass-spring string and a rigid body
 \end{columns}
 \end{frame}
 
-\begin{frame}
- \frametitle{A more complete picture of the scene graph}
-\begin{itemize}
- \item The graph displayed in the GUI shows only the hierarchy:\\ \includegraphics[width=0.5\linewidth]{mixed7.png}
- \item Additional pointers appear in the graph exported and displayed using graphviz: \includegraphics[width=\linewidth]{mixed8.png}
-\end{itemize}
-\end{frame}
+% \begin{frame}
+%  \frametitle{A more complete picture of the scene graph}
+% \begin{itemize}
+%  \item The graph displayed in the GUI shows only the hierarchy:\\ \includegraphics[width=0.5\linewidth]{mixed7.png}
+%  \item Additional pointers appear in the graph exported and displayed using graphviz: \includegraphics[width=\linewidth]{mixed8.png}
+% \end{itemize}
+% \end{frame}
 
 
 \begin{frame}
@@ -140,12 +215,10 @@ Example: A mass-spring string and a rigid body
 \end{frame}
 
 \begin{frame}
- \frametitle{Interacting bodies}
-Complete graph with pointers
+ \frametitle{A more complete picture of the scene graph}
 \begin{itemize}
- \item We attach a point to the rigid body using a mapping
- \item We insert a spring between this point and the string
-\end{itemize}
+ \item The graph displayed in the GUI shows only the hierarchy
+ \item Additional pointers are used: \end{itemize}
 \begin{figure}
  \includegraphics[width=0.99\linewidth]{mixedPendulum-graph.png}
 \end{figure}
@@ -206,6 +279,163 @@ Sofa Actions:
 \end{itemize}
 
 \end{frame}
+
+
+\begin{frame}
+ \frametitle{Example of action}
+\begin{itemize}
+ \item Accumulate forces, top-down callbaks:
+\begin{itemize}
+ \item masses accumulate their weight
+ \item force fields (springs) accumulate their force
+\end{itemize}
+ \item each force is applied to the local Degrees of Freedom (DOF)
+ \item except the interaction force
+\end{itemize}
+
+\begin{center}
+ \includegraphics[width=0.5\linewidth]{slides-fig-ftopdown}
+ % slides-fig-ftopdown.: 1179648x0 pixel, 0dpi, infxnan cm, bb=
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Example of action (continued)}
+
+\begin{itemize}
+ \item Accumulate forces, bottom-up callbacks:
+\begin{itemize}
+ \item mappings accumulate force from child to parent
+\end{itemize}
+ \item At the end, the net force applied to the independent (i.e. non-mapped) DOF is computed.
+\end{itemize}
+\begin{center}
+ \includegraphics[width=0.5\linewidth]{slides-fig-fbottomup}
+\end{center}
+
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Another action}
+\begin{itemize}
+ \item Compute acceleration, top-down callbacks:
+\begin{itemize}
+ \item masses compute $M^{-1}f$
+\end{itemize}
+\item modularity: uniform or diagonal (or matrix-) masses
+\end{itemize}
+\begin{center}
+ \includegraphics[width=0.5\linewidth]{slides-fig-accFromF}
+\end{center}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+ \frametitle{Degrees of Freedom (DOF)}
+\begin{itemize}
+ \item can be of different types (particles/rigids, float/double, ...)
+ \item are stored in template class \texttt{MechanicalObject<DataType>}
+ \item example of DataType (simplified):
+\begin{code_cpp}
+class Vec3fTypes
+{
+  public:
+  // Basic data
+      typedef float        Real;
+      typedef Vec<3,float> Coord; // coordinates 
+      typedef Vec<3,float> Deriv; // all the rest: velocities, forces,...
+
+  // Data containers
+      typedef vector<Real>  VecReal;
+      typedef vector<Coord> VecCoord;
+      typedef vector<Deriv> VecDeriv;
+};
+\end{code_cpp}
+\item \texttt{Coord} differs from \texttt{Deriv} in 6-dof rigid bodies
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Abstract state vectors}
+\begin{itemize}
+ \item Due to different DataTypes, the state vectors (x,v,f,a,aux,...) are scattered in the MechanicalObjects
+ %\begin{center}
+ \includegraphics[width=1.1\linewidth]{MechanicalObject-particle-rigid}
+%\end{center}
+\item A MultiVector is a union of state vectors with a common index
+\item Standard vector mathematics is implemented (sums, dot products...)
+\item But no [],size(),begin(),end()
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+ \frametitle{Using state vectors}
+\begin{itemize}
+ \item Reserved indices are used to denote x,v,f,dx
+ \item Auxiliary vectors can be used, e.g. in the beginning of Runge-Kutta2:
+\end{itemize}
+\begin{code_cpp}
+    // Allocate auxiliary vectors 
+    MultiVector acc(this, VecId::V_DERIV);
+    MultiVector newX(this, VecId::V_COORD);
+    MultiVector newV(this, VecId::V_DERIV);
+
+    // Compute state derivative. vel is the derivative of pos  
+    computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel 
+
+    // Perform a dt/2 step along the derivative
+    newX = pos;
+    newX.peq(vel, dt/2.); // newX = pos + vel dt/2
+    newV = vel;
+    newV.peq(acc, dt/2.); // newV = vel + acc dt/2
+\end{code_cpp}
+\end{frame}
+
+
+
+\begin{frame}
+ \frametitle{Algorithms}
+At each time step:
+\begin{enumerate}
+ \item Collisions are modeled by springs using a CollisionAction
+ \item Differential Equation solvers update x and v 
+ \item Mappings propagate the new state to all the layers and external buffers (rendering)
+\end{enumerate}
+ODE solvers and collision modeling modules are easily customizable.
+\end{frame}
+
+
+\begin{frame}
+ \frametitle{Conclusion}
+Strengths:
+\begin{itemize}
+ \item Interaction of multiple models using mappings
+ \item Efficient simulation of deformable bodies using implicit time integration
+ \item Highly customizable
+\end{itemize}
+Weaknesses:
+\begin{itemize}
+ \item Documentation is not complete 
+ \item Main loop is not yet customizable 
+ \item Constraint-based methods are difficult to implement
+ \item Still a lot to do: friction, haptics, faster collision detection...
+\end{itemize}
+Future work:
+\begin{itemize}
+ \item get rid of weaknesses
+ \item parallelisation (GPU, clusters)
+ \item easy debugging
+\end{itemize}
+
+\end{frame}
+
 
 
 
