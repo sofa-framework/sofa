@@ -25,8 +25,8 @@ open=false
 
 [item:slides.tex]
 archive=true
-column=37
+column=0
 encoding=ISO 8859-1
 highlight=LaTeX
-line=220
+line=51
 open=true
