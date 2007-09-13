@@ -127,7 +127,7 @@ public:
     {
         return this->Vector::clear();
     }
-    /// Current size (number of detected contacts
+    /// Current size (number of detected contacts)
     virtual unsigned int size() const
     {
         return this->Vector::size();

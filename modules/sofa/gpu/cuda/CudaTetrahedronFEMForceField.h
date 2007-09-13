@@ -148,7 +148,7 @@ public:
     {
         /// rotation matrix
         Mat<3,3,float> Rt;
-        /// current internal strain
+        /// current internal stress
         Vec<6,float> S;
         /// unused value to align to 64 bytes
         float dummy;
