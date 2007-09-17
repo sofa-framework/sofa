@@ -1068,6 +1068,7 @@ void RealGUI::step()
             ++_animationOBJcounter;
         }
     }
+    emit newStep();
 }
 
 //*****************************************************************************************
@@ -1855,6 +1856,7 @@ void RealGUI::graphModify()
         dialogModify->raise();
 
         connect ( this, SIGNAL( newScene()), dialogModify, SLOT( closeNow()));
+        connect ( this, SIGNAL( newStep()),  dialogModify, SLOT( updateTables()));
         item_clicked = NULL;
     }
     playpauseGUI(isAnimated);

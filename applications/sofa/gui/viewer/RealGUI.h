@@ -165,11 +165,8 @@ public slots:
 
 signals:
     void reload();
-    void newFPS(const QString&);
-    void newFPS(double);
-    void newTime(const QString&);
-    void newTime(double);
     void newScene();
+    void newStep();
 
 
 protected:

@@ -33,9 +33,13 @@
 #include <QDialog>
 #include <Q3ListViewItem>
 #include <Q3ListView>
+#include <Q3Table>
+#include <Q3GroupBox>
 #else
 #include <qdialog.h>
 #include <qlistview.h>
+#include <qtable.h>
+#include <qgroupbox.h>
 #endif
 
 
@@ -52,6 +56,8 @@ namespace guiviewer
 
 #ifndef QT_MODULE_QT3SUPPORT
 typedef QListViewItem Q3ListViewItem;
+typedef QTable    Q3Table;
+typedef QGroupBox Q3GroupBox;
 #endif
 class ModifyObject : public QDialog
 {
@@ -62,14 +68,14 @@ public:
     ~ModifyObject()
     {
         delete buttonUpdate;
-        delete list_Object;
-        delete list_PointSubset;
     }
 
     void setNode(core::objectmodel::Base* node, Q3ListViewItem* item_clicked=NULL); //create all the widgets of the dialog window
 
 public slots:
     void updateValues();             //update the node with the values of the field
+    void updateTables();             //update the tables of value at each step of the simulation
+    void saveTables();               //Save in datafield the content of a
     void changeValue();              //each time a field is modified
     void changeNumberPoint();        //used to dynamically add points in an object of type pointSubset
     void closeNow () {emit(reject());} //called from outside to close the current widget
@@ -83,16 +89,22 @@ signals:
 
 
 protected:
+
+
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
     void updateContext( GNode *node );
+
+    bool createTable( Q3Table* vectorTable, FieldBase* field, Q3GroupBox *box=NULL );
+    void storeTable(Q3Table* table, FieldBase* field);
+
 
     QWidget *parent;
     core::objectmodel::Base* node;
     Q3ListViewItem * item;
     QPushButton *buttonUpdate;
-    std::list< QObject* >                 *list_Object;
-    std::list< std::list< QObject* > * >  *list_PointSubset;
-
+    std::list< QObject* >                         list_Object;
+    std::list< std::list< QObject* > * >          list_PointSubset;
+    std::list< std::pair< Q3Table*, FieldBase*> > list_Table;
     int Id;
 };
 
