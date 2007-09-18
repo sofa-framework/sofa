@@ -55,6 +55,7 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/forcefield/SpringForceField.h>
+#include <sofa/component/forcefield/JointSpringForceField.h>
 #include <sofa/simulation/tree/InitAction.h>
 #include "WFloatLineEdit.h"
 
@@ -402,6 +403,24 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         }
                     }
 
+                    new QLabel("Inertia Mass Matrix", box);
+                    Q3Grid* massgrid= new Q3Grid(3,box);
+                    WFloatLineEdit *massmatrix[3][3];
+                    for (int row=0; row<3; row++)
+                    {
+                        for (int column=0; column<3; column++)
+                        {
+
+                            std::ostringstream oindex;
+                            oindex << "InertiaMassMassmatrix_" << row<<column;
+
+                            massmatrix[row][column] = new WFloatLineEdit( massgrid, oindex.str().c_str() );
+
+                            list_Object.push_back( massmatrix[row][column] );
+                            massmatrix[row][column]->setMinFloatValue( (float)-INFINITY );
+                            massmatrix[row][column]->setMaxFloatValue( (float)INFINITY );
+                        }
+                    }
 
                     if( DataField<RigidMass<3, double> > * ff = dynamic_cast< DataField<RigidMass<3, double> > * >( (*it).second )  )
                     {
@@ -415,6 +434,15 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                             {
                                 matrix[row][column]->setFloatValue(current_mass.inertiaMatrix[row][column]);
                                 connect( matrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                            }
+                        }
+
+                        for (int row=0; row<3; row++)
+                        {
+                            for (int column=0; column<3; column++)
+                            {
+                                massmatrix[row][column]->setFloatValue(current_mass.inertiaMassMatrix[row][column]);
+                                connect( massmatrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                             }
                         }
                     }
@@ -432,10 +460,77 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                                 connect( matrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                             }
                         }
+
+                        for (int row=0; row<3; row++)
+                        {
+                            for (int column=0; column<3; column++)
+                            {
+                                massmatrix[row][column]->setFloatValue(current_mass.inertiaMassMatrix[row][column]);
+                                connect( massmatrix[row][column], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                            }
+                        }
                     }
                     connect( editMass, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                     connect( editVolume, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
 
+                }
+                //********************************************************************************************************//
+                //RigidMass<2, double>,RigidMass<2, float>
+                else if( dynamic_cast< DataField<RigidMass<2, double> > * >( (*it).second ) ||
+                        dynamic_cast< DataField<RigidMass<2, float> > * >( (*it).second ))
+                {
+                    box->setColumns(2);
+
+                    WFloatLineEdit* editMass = new WFloatLineEdit( box, "editMass" );
+                    list_Object.push_back( (QObject *) editMass);
+                    editMass->setMinFloatValue( 0.0f );
+                    editMass->setMaxFloatValue( (float)INFINITY );
+
+                    new QLabel("Volume", box);
+                    WFloatLineEdit* editVolume = new WFloatLineEdit( box, "editMass" );
+                    list_Object.push_back( (QObject *) editVolume);
+                    editVolume->setMinFloatValue( 0.0f );
+                    editVolume->setMaxFloatValue( (float)INFINITY );
+
+
+                    new QLabel("Inertia Matrix", box);
+
+                    WFloatLineEdit* editInertiaMatrix = new WFloatLineEdit( box, "editInertia" );
+                    list_Object.push_back( (QObject *) editInertiaMatrix);
+                    editInertiaMatrix->setMinFloatValue( 0.0f );
+                    editInertiaMatrix->setMaxFloatValue( (float)INFINITY );
+
+                    new QLabel("Inertia Mass Matrix", box);
+
+                    WFloatLineEdit* editInertiaMassMatrix = new WFloatLineEdit( box, "editInertiaMass" );
+                    list_Object.push_back( (QObject *) editInertiaMassMatrix);
+                    editInertiaMassMatrix->setMinFloatValue( 0.0f );
+                    editInertiaMassMatrix->setMaxFloatValue( (float)INFINITY );
+
+
+
+                    if( DataField<RigidMass<2, double> > * ff = dynamic_cast< DataField<RigidMass<2, double> > * >( (*it).second )  )
+                    {
+                        RigidMass<2, double> current_mass = ff->getValue();
+                        editMass->setFloatValue(current_mass.mass);
+                        editVolume->setFloatValue(current_mass.volume);
+                        editInertiaMatrix->setFloatValue(current_mass.inertiaMatrix);
+                        editInertiaMassMatrix->setFloatValue(current_mass.inertiaMassMatrix);
+                    }
+
+                    else if( DataField<RigidMass<2, float> > * ff = dynamic_cast< DataField<RigidMass<2, float> > * >( (*it).second )  )
+                    {
+                        RigidMass<2, float> current_mass = ff->getValue();
+                        editMass->setFloatValue(current_mass.mass);
+                        editVolume->setFloatValue(current_mass.volume);
+                        editInertiaMatrix->setFloatValue(current_mass.inertiaMatrix);
+                        editInertiaMassMatrix->setFloatValue(current_mass.inertiaMassMatrix);
+
+                    }
+                    connect( editMass, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                    connect( editVolume, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                    connect( editInertiaMatrix, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                    connect( editInertiaMassMatrix, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
                 //RigidCoord<3, double>,RigidCoord<3, float>
@@ -828,6 +923,14 @@ void ModifyObject::updateValues()
                         current_mass.inertiaMatrix[row][column] = (double) matrix_element->getFloatValue();
                     }
                 }
+                for (int row=0; row<3; row++)
+                {
+                    for (int column=0; column<3; column++)
+                    {
+                        WFloatLineEdit* matrix_element = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                        current_mass.inertiaMassMatrix[row][column] = (double) matrix_element->getFloatValue();
+                    }
+                }
                 ff->setValue(current_mass);
             }
             //*******************************************************************************************************************
@@ -847,9 +950,46 @@ void ModifyObject::updateValues()
                         current_mass.inertiaMatrix[row][column] = (double) matrix_element->getFloatValue();
                     }
                 }
+                for (int row=0; row<3; row++)
+                {
+                    for (int column=0; column<3; column++)
+                    {
+                        WFloatLineEdit* matrix_element = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                        current_mass.inertiaMassMatrix[row][column] = (double) matrix_element->getFloatValue();
+                    }
+                }
                 ff->setValue(current_mass);
             }
+            //*******************************************************************************************************************
+            else if( DataField<RigidMass<2, double> > * ff = dynamic_cast< DataField<RigidMass<2, double> > * >( (*it).second )  )
+            {
+                RigidMass<2, double> current_mass = ff->getValue();
 
+                WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.mass = (double) mass->getFloatValue();
+                WFloatLineEdit* volume = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.volume = (double) volume->getFloatValue();
+                WFloatLineEdit* inertiaMatrix = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.inertiaMatrix = (double) inertiaMatrix->getFloatValue();
+
+                ff->setValue(current_mass);
+            }
+            //*******************************************************************************************************************
+            else if( DataField<RigidMass<2, float> > * ff = dynamic_cast< DataField<RigidMass<2, float> > * >( (*it).second )  )
+            {
+                RigidMass<2, float> current_mass = ff->getValue();
+
+                WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.mass =  mass->getFloatValue();
+                WFloatLineEdit* volume = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.volume =  volume->getFloatValue();
+                WFloatLineEdit* inertiaMatrix = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.inertiaMatrix = (double) inertiaMatrix->getFloatValue();
+                WFloatLineEdit* inertiaMassMatrix = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.inertiaMassMatrix = (double) inertiaMassMatrix->getFloatValue();
+
+                ff->setValue(current_mass);
+            }
             ++i;
         }
 
@@ -908,11 +1048,22 @@ void ModifyObject::changeNumberPoint()
             table->setNumRows( spin->value() );
             for (int i=initial_number; i< spin->value(); i++)  table->setText(i,0,QString(std::string("0").c_str()));
         }
-
     }
     emit( changeValue() );
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //**************************************************************************************************************************************
@@ -1253,6 +1404,99 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
         }
         return true;
     }
+
+    //********************************************************************************************************//
+    //vector< Vec2f >
+    else if (Field< vector< Vec2f > >  *ff = dynamic_cast< Field< vector< Vec2f > >  * >( field ))
+    {
+
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            vectorTable = new Q3Table(ff->getValue().size(),2, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->setColumnStretchable(0,true);
+            vectorTable->setColumnStretchable(1,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+
+        vector< Vec2f > value = ff->getValue();
+
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[2];
+            for (int j=0; j<2; j++)
+            {
+                oss[j] << value[i][j];
+                vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
+            }
+        }
+        return true;
+
+    }
+    //********************************************************************************************************//
+    //vector< Vec2d >
+    else if ( Field< vector< Vec2d> >   *ff = dynamic_cast< Field< vector< Vec2d > >   * >( field ) )
+    {
+
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            vectorTable = new Q3Table(ff->getValue().size(),2, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->setColumnStretchable(0,true);
+            vectorTable->setColumnStretchable(1,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+        vector< Vec2d > value = ff->getValue();
+
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[2];
+            for (int j=0; j<2; j++)
+            {
+                oss[j] << value[i][j];
+                vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
+            }
+        }
+        return true;
+    }
+    //********************************************************************************************************//
+    //vector< Vec< 2, int> >
+    else if(  Field< vector< Vec< 2, int> > >   *ff = dynamic_cast< Field< vector< Vec< 2, int> > >   * >( field ))
+    {
+
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+
+            box->setColumns(1);
+            vectorTable = new Q3Table(ff->getValue().size(),2, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->setColumnStretchable(0,true);
+            vectorTable->setColumnStretchable(1,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+        vector< Vec< 2, int> > value = ff->getValue();
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[2];
+            for (int j=0; j<2; j++)
+            {
+                oss[j] << value[i][j];
+                vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
+            }
+        }
+        return true;
+    }
     //********************************************************************************************************//
     //PointData< double >
     else if(  DataField< sofa::component::topology::PointData<double > >   *ff = dynamic_cast< DataField< sofa::component::topology::PointData<double > >   * >( field))
@@ -1410,6 +1654,32 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
         return true;
     }
     //********************************************************************************************************//
+    //vector< unsigned int >
+    else if(  DataField< vector< unsigned int > >   *ff = dynamic_cast< DataField< vector< unsigned int> >   * >( field))
+    {
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+
+            box->setColumns(1);
+
+            vectorTable = new Q3Table(ff->getValue().size(),1, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->setColumnStretchable(0,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+        sofa::component::topology::PointData<unsigned int > value = ff->getValue();
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss;
+            oss << value[i];
+            vectorTable->setText(i,0,std::string(oss.str()).c_str());
+        }
+        return true;
+    }
+    //********************************************************************************************************//
     //vector<Rigid3dTypes::Coord>
     else if (Field< vector<Rigid3dTypes::Coord> >  *ff = dynamic_cast< Field< vector<Rigid3dTypes::Coord>  >   * >( field ))
     {
@@ -1421,6 +1691,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
+            vectorTable->setReadOnly(true);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	    vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1473,6 +1744,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
+            vectorTable->setReadOnly(true);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1526,6 +1798,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
+            vectorTable->setReadOnly(true);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1578,6 +1851,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
+            vectorTable->setReadOnly(true);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1630,6 +1904,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),2, box);
+            vectorTable->setReadOnly(true);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1676,6 +1951,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),2, box);
+            vectorTable->setReadOnly(true);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1722,6 +1998,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),2, box);
+            vectorTable->setReadOnly(true);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1768,6 +2045,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),2, box);
+            vectorTable->setReadOnly(true);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1802,6 +2080,71 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
         return true;
     }
     //********************************************************************************************************//
+    //vector<SpringForceField< Vec6dTypes >::Spring>
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  * >( field ))
+    {
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            vectorTable = new Q3Table(ff->getValue().size(),5, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
+            vectorTable->horizontalHeader()->setLabel(2,QString("Ks : stiffness")); vectorTable->setColumnStretchable(2,true);
+            vectorTable->horizontalHeader()->setLabel(3,QString("Kd : damping")); vectorTable->setColumnStretchable(3,true);
+            vectorTable->horizontalHeader()->setLabel(4,QString("Rest Length")); vectorTable->setColumnStretchable(4,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+
+        vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > value = ff->getValue();
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[5];
+            oss[0] << value[i].m1;      vectorTable->setText(i,0,std::string(oss[0].str()).c_str());
+            oss[1] << value[i].m2;      vectorTable->setText(i,1,std::string(oss[1].str()).c_str());
+            oss[2] << value[i].ks;      vectorTable->setText(i,2,std::string(oss[2].str()).c_str());
+            oss[3] << value[i].kd;      vectorTable->setText(i,3,std::string(oss[3].str()).c_str());
+            oss[4] << value[i].initpos; vectorTable->setText(i,4,std::string(oss[4].str()).c_str());
+        }
+        return true;
+    }
+    //********************************************************************************************************//
+    //vector<SpringForceField< Vec6fTypes >::Spring>
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  * >( field ))
+    {
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            vectorTable = new Q3Table(ff->getValue().size(),5, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
+            vectorTable->horizontalHeader()->setLabel(2,QString("Ks : stiffness")); vectorTable->setColumnStretchable(2,true);
+            vectorTable->horizontalHeader()->setLabel(3,QString("Kd : damping")); vectorTable->setColumnStretchable(3,true);
+            vectorTable->horizontalHeader()->setLabel(4,QString("Rest Length")); vectorTable->setColumnStretchable(4,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+
+        vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > value = ff->getValue();
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[5];
+            oss[0] << value[i].m1;      vectorTable->setText(i,0,std::string(oss[0].str()).c_str());
+            oss[1] << value[i].m2;      vectorTable->setText(i,1,std::string(oss[1].str()).c_str());
+            oss[2] << value[i].ks;      vectorTable->setText(i,2,std::string(oss[2].str()).c_str());
+            oss[3] << value[i].kd;      vectorTable->setText(i,3,std::string(oss[3].str()).c_str());
+            oss[4] << value[i].initpos; vectorTable->setText(i,4,std::string(oss[4].str()).c_str());
+        }
+        return true;
+    }
+
+    //********************************************************************************************************//
     //vector<SpringForceField< Vec3dTypes >::Spring>
     else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  * >( field ))
     {
@@ -1811,8 +2154,8 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
             list_Table.push_back(std::make_pair(vectorTable, field));
-            vectorTable->horizontalHeader()->setLabel(0,QString("Mass 1")); vectorTable->setColumnStretchable(0,true);
-            vectorTable->horizontalHeader()->setLabel(1,QString("Mass 2")); vectorTable->setColumnStretchable(1,true);
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
             vectorTable->horizontalHeader()->setLabel(2,QString("Ks : stiffness")); vectorTable->setColumnStretchable(2,true);
             vectorTable->horizontalHeader()->setLabel(3,QString("Kd : damping")); vectorTable->setColumnStretchable(3,true);
             vectorTable->horizontalHeader()->setLabel(4,QString("Rest Length")); vectorTable->setColumnStretchable(4,true);
@@ -1843,8 +2186,8 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
             list_Table.push_back(std::make_pair(vectorTable, field));
-            vectorTable->horizontalHeader()->setLabel(0,QString("Mass 1")); vectorTable->setColumnStretchable(0,true);
-            vectorTable->horizontalHeader()->setLabel(1,QString("Mass 2")); vectorTable->setColumnStretchable(1,true);
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
             vectorTable->horizontalHeader()->setLabel(2,QString("Ks : stiffness")); vectorTable->setColumnStretchable(2,true);
             vectorTable->horizontalHeader()->setLabel(3,QString("Kd : damping")); vectorTable->setColumnStretchable(3,true);
             vectorTable->horizontalHeader()->setLabel(4,QString("Rest Length")); vectorTable->setColumnStretchable(4,true);
@@ -1866,7 +2209,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
         return true;
     }
     //********************************************************************************************************//
-    //vector<SpringForceField< Vec3dTypes >::Spring>
+    //vector<SpringForceField< Vec2dTypes >::Spring>
     else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  * >( field ))
     {
         if (!vectorTable)
@@ -1875,8 +2218,8 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
             list_Table.push_back(std::make_pair(vectorTable, field));
-            vectorTable->horizontalHeader()->setLabel(0,QString("Mass 1")); vectorTable->setColumnStretchable(0,true);
-            vectorTable->horizontalHeader()->setLabel(1,QString("Mass 2")); vectorTable->setColumnStretchable(1,true);
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
             vectorTable->horizontalHeader()->setLabel(2,QString("Ks : stiffness")); vectorTable->setColumnStretchable(2,true);
             vectorTable->horizontalHeader()->setLabel(3,QString("Kd : damping")); vectorTable->setColumnStretchable(3,true);
             vectorTable->horizontalHeader()->setLabel(4,QString("Rest Length")); vectorTable->setColumnStretchable(4,true);
@@ -1907,8 +2250,8 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             box->setColumns(1);
             vectorTable = new Q3Table(ff->getValue().size(),5, box);
             list_Table.push_back(std::make_pair(vectorTable, field));
-            vectorTable->horizontalHeader()->setLabel(0,QString("Mass 1")); vectorTable->setColumnStretchable(0,true);
-            vectorTable->horizontalHeader()->setLabel(1,QString("Mass 2")); vectorTable->setColumnStretchable(1,true);
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
             vectorTable->horizontalHeader()->setLabel(2,QString("Ks : stiffness")); vectorTable->setColumnStretchable(2,true);
             vectorTable->horizontalHeader()->setLabel(3,QString("Kd : damping")); vectorTable->setColumnStretchable(3,true);
             vectorTable->horizontalHeader()->setLabel(4,QString("Rest Length")); vectorTable->setColumnStretchable(4,true);
@@ -1929,8 +2272,202 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
         }
         return true;
     }
+    //********************************************************************************************************//
+    //vector<SpringForceField< Vec1dTypes >::Spring>
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  * >( field ))
+    {
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            vectorTable = new Q3Table(ff->getValue().size(),5, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
+            vectorTable->horizontalHeader()->setLabel(2,QString("Ks : stiffness")); vectorTable->setColumnStretchable(2,true);
+            vectorTable->horizontalHeader()->setLabel(3,QString("Kd : damping")); vectorTable->setColumnStretchable(3,true);
+            vectorTable->horizontalHeader()->setLabel(4,QString("Rest Length")); vectorTable->setColumnStretchable(4,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+
+        vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > value = ff->getValue();
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[5];
+            oss[0] << value[i].m1;      vectorTable->setText(i,0,std::string(oss[0].str()).c_str());
+            oss[1] << value[i].m2;      vectorTable->setText(i,1,std::string(oss[1].str()).c_str());
+            oss[2] << value[i].ks;      vectorTable->setText(i,2,std::string(oss[2].str()).c_str());
+            oss[3] << value[i].kd;      vectorTable->setText(i,3,std::string(oss[3].str()).c_str());
+            oss[4] << value[i].initpos; vectorTable->setText(i,4,std::string(oss[4].str()).c_str());
+        }
+        return true;
+    }
+    //********************************************************************************************************//
+    //vector<SpringForceField< Vec1fTypes >::Spring>
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  * >( field ))
+    {
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            vectorTable = new Q3Table(ff->getValue().size(),5, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1")); vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2")); vectorTable->setColumnStretchable(1,true);
+            vectorTable->horizontalHeader()->setLabel(2,QString("Ks : stiffness")); vectorTable->setColumnStretchable(2,true);
+            vectorTable->horizontalHeader()->setLabel(3,QString("Kd : damping")); vectorTable->setColumnStretchable(3,true);
+            vectorTable->horizontalHeader()->setLabel(4,QString("Rest Length")); vectorTable->setColumnStretchable(4,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+
+        vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > value = ff->getValue();
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[5];
+            oss[0] << value[i].m1;      vectorTable->setText(i,0,std::string(oss[0].str()).c_str());
+            oss[1] << value[i].m2;      vectorTable->setText(i,1,std::string(oss[1].str()).c_str());
+            oss[2] << value[i].ks;      vectorTable->setText(i,2,std::string(oss[2].str()).c_str());
+            oss[3] << value[i].kd;      vectorTable->setText(i,3,std::string(oss[3].str()).c_str());
+            oss[4] << value[i].initpos; vectorTable->setText(i,4,std::string(oss[4].str()).c_str());
+        }
+        return true;
+    }
+    //********************************************************************************************************//
+    //vector<JointSpringForceField< Rigid3dTypes >::Spring>
+    else if (DataField< vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  * >( field ))
+    {
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            vectorTable = new Q3Table(ff->getValue().size(),16, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1"));
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2"));
+            vectorTable->horizontalHeader()->setLabel(2,QString("KsTx : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(3,QString("KsTy : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(4,QString("KsTz : Stiffness"));
+
+            vectorTable->horizontalHeader()->setLabel(5,QString("KsRx : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(6,QString("KsRy : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(7,QString("KsRz : Stiffness"));
+
+            vectorTable->horizontalHeader()->setLabel(8,QString("Kd : damping"));
+
+            vectorTable->horizontalHeader()->setLabel(9,QString("Rest Length Pos X"));
+            vectorTable->horizontalHeader()->setLabel(10,QString("Rest Length Pos Y"));
+            vectorTable->horizontalHeader()->setLabel(11,QString("Rest Length Pos Z"));
+
+            vectorTable->horizontalHeader()->setLabel(12,QString("Rest Length Quat X"));
+            vectorTable->horizontalHeader()->setLabel(13,QString("Rest Length Quat Y"));
+            vectorTable->horizontalHeader()->setLabel(14,QString("Rest Length Quat Z"));
+            vectorTable->horizontalHeader()->setLabel(15,QString("Rest Length Quat W"));
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+
+        vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > value = ff->getValue();
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[16];
+            oss[0]  << value[i].m1;           vectorTable->setText(i ,0 ,std::string(oss[0] .str()).c_str());
+            oss[1]  << value[i].m2;           vectorTable->setText(i ,1 ,std::string(oss[1] .str()).c_str());
+            oss[2]  << value[i].kst[0];       vectorTable->setText(i ,2 ,std::string(oss[2] .str()).c_str());
+            oss[3]  << value[i].kst[1];       vectorTable->setText(i ,3 ,std::string(oss[3] .str()).c_str());
+            oss[4]  << value[i].kst[2];       vectorTable->setText(i ,4 ,std::string(oss[4] .str()).c_str());
+            oss[5]  << value[i].ksr[0];       vectorTable->setText(i ,5 ,std::string(oss[5] .str()).c_str());
+            oss[6]  << value[i].ksr[1];       vectorTable->setText(i ,6 ,std::string(oss[6] .str()).c_str());
+            oss[7]  << value[i].ksr[2];       vectorTable->setText(i ,7 ,std::string(oss[7] .str()).c_str());
+            oss[8]  << value[i].kd;           vectorTable->setText(i ,8 ,std::string(oss[8] .str()).c_str());
+            oss[9]  << value[i].initTrans[0]; vectorTable->setText(i ,9 ,std::string(oss[9] .str()).c_str());
+            oss[10] << value[i].initTrans[1]; vectorTable->setText(i,10 ,std::string(oss[10].str()).c_str());
+            oss[11] << value[i].initTrans[2]; vectorTable->setText(i,11 ,std::string(oss[11].str()).c_str());
+            oss[12] << value[i].initRot[0];   vectorTable->setText(i,12 ,std::string(oss[12].str()).c_str());
+            oss[13] << value[i].initRot[1];   vectorTable->setText(i,13 ,std::string(oss[13].str()).c_str());
+            oss[14] << value[i].initRot[2];   vectorTable->setText(i,14 ,std::string(oss[14].str()).c_str());
+            oss[15] << value[i].initRot[3];   vectorTable->setText(i,15 ,std::string(oss[15].str()).c_str());
+        }
+        return true;
+    }
+
+    //********************************************************************************************************//
+    //vector<JointSpringForceField< Rigid3fTypes >::Spring>
+    else if (DataField< vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  * >( field ))
+    {
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            vectorTable = new Q3Table(ff->getValue().size(),16, box);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("Index 1"));
+            vectorTable->horizontalHeader()->setLabel(1,QString("Index 2"));
+            vectorTable->horizontalHeader()->setLabel(2,QString("KsTx : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(3,QString("KsTy : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(4,QString("KsTz : Stiffness"));
+
+            vectorTable->horizontalHeader()->setLabel(5,QString("KsRx : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(6,QString("KsRy : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(7,QString("KsRz : Stiffness"));
+
+            vectorTable->horizontalHeader()->setLabel(8,QString("Kd : damping"));
+
+            vectorTable->horizontalHeader()->setLabel(9,QString("Rest Length Pos X"));
+            vectorTable->horizontalHeader()->setLabel(10,QString("Rest Length Pos Y"));
+            vectorTable->horizontalHeader()->setLabel(11,QString("Rest Length Pos Z"));
+
+            vectorTable->horizontalHeader()->setLabel(12,QString("Rest Length Quat X"));
+            vectorTable->horizontalHeader()->setLabel(13,QString("Rest Length Quat Y"));
+            vectorTable->horizontalHeader()->setLabel(14,QString("Rest Length Quat Z"));
+            vectorTable->horizontalHeader()->setLabel(15,QString("Rest Length Quat W"));
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+        }
+
+        vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > value = ff->getValue();
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[16];
+            oss[0]  << value[i].m1;           vectorTable->setText(i ,0 ,std::string(oss[0] .str()).c_str());
+            oss[1]  << value[i].m2;           vectorTable->setText(i ,1 ,std::string(oss[1] .str()).c_str());
+            oss[2]  << value[i].kst[0];       vectorTable->setText(i ,2 ,std::string(oss[2] .str()).c_str());
+            oss[3]  << value[i].kst[1];       vectorTable->setText(i ,3 ,std::string(oss[3] .str()).c_str());
+            oss[4]  << value[i].kst[2];       vectorTable->setText(i ,4 ,std::string(oss[4] .str()).c_str());
+            oss[5]  << value[i].ksr[0];       vectorTable->setText(i ,5 ,std::string(oss[5] .str()).c_str());
+            oss[6]  << value[i].ksr[1];       vectorTable->setText(i ,6 ,std::string(oss[6] .str()).c_str());
+            oss[7]  << value[i].ksr[2];       vectorTable->setText(i ,7 ,std::string(oss[7] .str()).c_str());
+            oss[8]  << value[i].kd;           vectorTable->setText(i ,8 ,std::string(oss[8] .str()).c_str());
+            oss[9]  << value[i].initTrans[0]; vectorTable->setText(i ,9 ,std::string(oss[9] .str()).c_str());
+            oss[10] << value[i].initTrans[1]; vectorTable->setText(i,10 ,std::string(oss[10].str()).c_str());
+            oss[11] << value[i].initTrans[2]; vectorTable->setText(i,11 ,std::string(oss[11].str()).c_str());
+            oss[12] << value[i].initRot[0];   vectorTable->setText(i,12 ,std::string(oss[12].str()).c_str());
+            oss[13] << value[i].initRot[1];   vectorTable->setText(i,13 ,std::string(oss[13].str()).c_str());
+            oss[14] << value[i].initRot[2];   vectorTable->setText(i,14 ,std::string(oss[14].str()).c_str());
+            oss[15] << value[i].initRot[3];   vectorTable->setText(i,15 ,std::string(oss[15].str()).c_str());
+        }
+        return true;
+    }
+
     return false;
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //**************************************************************************************************************************************
@@ -1946,12 +2483,23 @@ void ModifyObject::saveTables()
 }
 
 
+
+
+
+
+
+
+
+
+
 //**************************************************************************************************************************************
 //Read the content of a QTable and store its values in a datafield
 void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
 {
 
     QString value;
+
+    //**************************************************************************************************************************************
     if (DataField< vector< Vec3f > >  *ff = dynamic_cast< DataField< vector< Vec3f > >  * >( field ))
     {
         QString vec_value[3];
@@ -1969,6 +2517,8 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         ff->setValue( new_value );
 
     }
+
+    //**************************************************************************************************************************************
     else if ( DataField< vector< Vec3d> >   *ff = dynamic_cast< DataField< vector< Vec3d > >   * >( field ) )
     {
 
@@ -1987,6 +2537,8 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         ff->setValue( new_value );
 
     }
+
+    //**************************************************************************************************************************************
     else if( DataField< vector< Vec< 3, int> > >  *ff = dynamic_cast< DataField< vector< Vec< 3, int> > >  * >( field ))
     {
         QString vec_value[3];
@@ -2003,6 +2555,8 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         }
         ff->setValue( new_value );
     }
+
+    //**************************************************************************************************************************************
     else if (Field< vector< Vec3f > >  *ff = dynamic_cast< Field< vector< Vec3f > >  * >( field ))
     {
         QString vec_value[3];
@@ -2020,6 +2574,7 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         ff->setValue( new_value );
 
     }
+    //**************************************************************************************************************************************
     else if ( Field< vector< Vec3d> >   *ff = dynamic_cast< Field< vector< Vec3d > >   * >( field ) )
     {
 
@@ -2038,6 +2593,7 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         ff->setValue( new_value );
 
     }
+    //**************************************************************************************************************************************
     else if( Field< vector< Vec< 3, int> > >  *ff = dynamic_cast< Field< vector< Vec< 3, int> > >  * >( field ))
     {
         QString vec_value[3];
@@ -2056,6 +2612,7 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
 
     }
 
+    //**************************************************************************************************************************************
     else if (DataField< vector< Vec2f > >  *ff = dynamic_cast< DataField< vector< Vec2f > >  * >( field ))
     {
 
@@ -2073,6 +2630,7 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         ff->setValue( new_value );
 
     }
+    //**************************************************************************************************************************************
     else if ( DataField< vector< Vec2d> >   *ff = dynamic_cast< DataField< vector< Vec2d > >   * >( field ) )
     {
         QString vec_value[2];
@@ -2089,6 +2647,7 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         ff->setValue( new_value );
 
     }
+    //**************************************************************************************************************************************
     else if(  DataField< vector< Vec< 2, int> > >   *ff = dynamic_cast< DataField< vector< Vec< 2, int> > >   * >( field ))
     {
 
@@ -2105,6 +2664,121 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         }
         ff->setValue( new_value );
     }
+
+    //**************************************************************************************************************************************
+    else if (Field< vector< Vec2f > >  *ff = dynamic_cast< Field< vector< Vec2f > >  * >( field ))
+    {
+
+        QString vec_value[2];
+        vector< Vec2f > new_value;
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            for (int j=0; j<2; j++)
+            {
+                vec_value[j] = table->text(i,j);
+            }
+            new_value.push_back( Vec2f( atof(vec_value[0]),
+                    atof(vec_value[1])  ));
+        }
+        ff->setValue( new_value );
+
+    }
+    //**************************************************************************************************************************************
+    else if ( Field< vector< Vec2d> >   *ff = dynamic_cast< Field< vector< Vec2d > >   * >( field ) )
+    {
+        QString vec_value[2];
+        vector< Vec2d > new_value;
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            for (int j=0; j<2; j++)
+            {
+                vec_value[j] = table->text(i,j);
+            }
+            new_value.push_back( Vec2d( atof(vec_value[0]),
+                    atof(vec_value[1])  ));
+        }
+        ff->setValue( new_value );
+
+    }
+    //**************************************************************************************************************************************
+    else if(  Field< vector< Vec< 2, int> > >   *ff = dynamic_cast< Field< vector< Vec< 2, int> > >   * >( field ))
+    {
+
+        QString vec_value[2];
+        vector< Vec< 2, int> > new_value;
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            for (int j=0; j<2; j++)
+            {
+                vec_value[j] = table->text(i,j);
+            }
+            new_value.push_back( Vec< 2, int>( atoi(vec_value[0]),
+                    atoi(vec_value[1])  ));
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if(  DataField< vector< double > >   *ff = dynamic_cast< DataField< vector< double> >   * >( field))
+    {
+        QString vec_value;
+        vector< double  > new_value;
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            vec_value = table->text(i,0);
+            new_value.push_back( atof(vec_value) );
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if(  DataField< vector< float > >   *ff = dynamic_cast< DataField< vector< float> >   * >( field))
+    {
+        QString vec_value;
+        vector< float  > new_value;
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            vec_value = table->text(i,0);
+            new_value.push_back( atof(vec_value) );
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if(  DataField< vector< int > >   *ff = dynamic_cast< DataField< vector< int> >   * >( field))
+    {
+        QString vec_value;
+        vector< int  > new_value;
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            vec_value = table->text(i,0);
+            new_value.push_back( atoi(vec_value) );
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if(  DataField< vector< unsigned int > >   *ff = dynamic_cast< DataField< vector< unsigned int> >   * >( field))
+    {
+        QString vec_value;
+        vector< unsigned int  > new_value;
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            vec_value = table->text(i,0);
+            new_value.push_back( atoi(vec_value) );
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if(  DataField< sofa::component::topology::PointData<double > >   *ff = dynamic_cast< DataField< sofa::component::topology::PointData<double > >   * >( field))
+    {
+
+        QString vec_value;
+        sofa::component::topology::PointData<double > new_value;
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            vec_value = table->text(i,0);
+            new_value.push_back( atof(vec_value) );
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
     else if(  DataField< sofa::component::topology::PointData<float > >   *ff = dynamic_cast< DataField< sofa::component::topology::PointData<float > >   * >( field))
     {
 
@@ -2117,18 +2791,293 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         }
         ff->setValue( new_value );
     }
-    else if(  DataField< vector< float > >   *ff = dynamic_cast< DataField< vector< float> >   * >( field))
+    //**************************************************************************************************************************************
+    else if(  DataField< sofa::component::topology::PointData<int > >   *ff = dynamic_cast< DataField< sofa::component::topology::PointData<int > >   * >( field))
     {
+
         QString vec_value;
-        vector< float  > new_value;
+        sofa::component::topology::PointData<int > new_value;
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
             vec_value = table->text(i,0);
-            new_value.push_back( atof(vec_value) );
+            new_value.push_back( atoi(vec_value) );
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
+    }
+
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[16];
+            sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring current_spring;
+            for (int j=0; j<16; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int)values[1];
+
+            current_spring.kst[0]       = values[2];
+            current_spring.kst[1]       = values[3];
+            current_spring.kst[2]       = values[4];
+
+            current_spring.ksr[0]       = values[5];
+            current_spring.ksr[1]       = values[6];
+            current_spring.ksr[2]       = values[7];
+
+            current_spring.kd           = values[8];
+
+            current_spring.initTrans[0] = values[9];
+            current_spring.initTrans[1] = values[10];
+            current_spring.initTrans[2] = values[11];
+
+            current_spring.initRot[0]   = values[12];
+            current_spring.initRot[1]   = values[13];
+            current_spring.initRot[2]   = values[14];
+            current_spring.initRot[3]   = values[15];
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
+    }
+    //**************************************************************************************************************************************
+    else if (DataField< vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  * >( field ))
+    {
+        vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[16];
+            sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring current_spring;
+            for (int j=0; j<16; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int)values[1];
+
+            current_spring.kst[0]       = values[2];
+            current_spring.kst[1]       = values[3];
+            current_spring.kst[2]       = values[4];
+
+            current_spring.ksr[0]       = values[5];
+            current_spring.ksr[1]       = values[6];
+            current_spring.ksr[2]       = values[7];
+
+            current_spring.kd           = values[8];
+
+            current_spring.initTrans[0] = values[9];
+            current_spring.initTrans[1] = values[10];
+            current_spring.initTrans[2] = values[11];
+
+            current_spring.initRot[0]   = values[12];
+            current_spring.initRot[1]   = values[13];
+            current_spring.initRot[2]   = values[14];
+            current_spring.initRot[3]   = values[15];
+            new_value.push_back(current_spring);
         }
         ff->setValue( new_value );
     }
 }
+
+
+
+
 
 
 
@@ -2159,6 +3108,7 @@ void ModifyObject::createVector(const Vec<6,double> &value, Q3GroupBox *box)
         connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
     }
 }
+
 void ModifyObject::createVector(const Vec<6,float> &value, Q3GroupBox *box)
 {
 
