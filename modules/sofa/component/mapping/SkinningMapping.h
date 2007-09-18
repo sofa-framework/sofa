@@ -68,23 +68,24 @@ protected:
     class Loader;
     void load(const char* filename);
 
-    DataField<unsigned int> * repartition;
-    DataField<double> * coefs;
+    DataField<sofa::helper::vector<unsigned int> > repartition;
+    DataField<sofa::helper::vector<double> >  coefs;
     DataField<unsigned int> nbRefs;
+
+    bool computeWeights;
 
 public:
 
     SkinningMapping(In* from, Out* to)
         : Inherit(from, to)
-        , nbRefs(dataField(&nbRefs,(unsigned)3,"nbRefs","nb refernces for skinning"))
+        , nbRefs(dataField(&nbRefs,(unsigned)3,"nbRefs","nb references for skinning"))
+        , coefs(dataField(&coefs,"coefs","weights list for the influences of the references Dofs"))
+        , repartition(dataField(&repartition,"repartition","repartition between input DOFs and skinned vertices"))
+        , computeWeights(true)
     {
     }
 
-    virtual ~SkinningMapping()
-    {
-        delete [] repartition;
-        delete [] coefs;
-    }
+    virtual ~SkinningMapping() {}
 
     void init();
 
@@ -109,6 +110,10 @@ public:
     void clear();
 
     void setNbRefs(unsigned int nb) { nbRefs.setValue(nb); }
+
+    void setWeightCoefs(std::vector<double> &weights);
+    void setRepartition(std::vector<unsigned int> &rep);
+    void setComputeWeights(bool val) {computeWeights=val;}
 
 protected:
 

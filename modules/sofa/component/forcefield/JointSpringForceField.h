@@ -69,7 +69,7 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef Vec<N,Real> Vec;
 
-protected:
+
     class Spring
     {
     public:
@@ -100,6 +100,18 @@ protected:
             ksr = Vec(ksrx,ksry,ksrz);
         }
 
+        Vec getRotationStiffnesses() {return ksr;}
+
+        void setRotationStiffnesses(Real ksrx, Real ksry, Real ksrz)
+        {
+            ksr = Vec(ksrx,ksry,ksrz);
+        }
+
+        void setDamping(Real _kd)
+        {
+            kd = _kd;
+        }
+
 
         inline friend std::istream& operator >> ( std::istream& in, Spring& s )
         {
@@ -115,6 +127,7 @@ protected:
 
     };
 
+protected:
     double m_potentialEnergy;
     DataField<Vec> kst;
     DataField<Vec> ksr;
@@ -154,6 +167,8 @@ public:
     void setStiffnessTranslation(Vec _kst) { kst.setValue(_kst); }
     void setStiffnessRotation(Vec _ksr) { ksr.setValue(_ksr); }
     void setDamping(double _kd) { kd.setValue(_kd); }
+
+    sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
 
     // -- VisualModel interface
     void draw();

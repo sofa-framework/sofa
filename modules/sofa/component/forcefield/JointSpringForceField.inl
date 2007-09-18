@@ -103,9 +103,16 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     int a = spring.m1;
     int b = spring.m2;
 
-    Mat Mr01, Mr10;
+    Mat Mr01, Mr10, Mr02, Mr20, Mr01t, Mr10t, Mr02t, Mr20t;
     p1[a].writeRotationMatrix(Mr01);
+    Mr01t.transpose(Mr01);
     invertMatrix(Mr10, Mr01);
+    //Mr10t.transpose(Mr10);
+    p2[b].writeRotationMatrix(Mr02);
+    Mr02t.transpose(Mr02);
+    //invertMatrix(Mr20, Mr02);
+    //Mr20t.transpose(Mr20);
+
     Vec damping(spring.kd, spring.kd, spring.kd);
 
     springRef[a] = p1[a];
@@ -118,11 +125,20 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     //compute torsion
     Mp1p2.getOrientation() = spring.initRot.inverse() * Mp1p2.getOrientation();
 
-    //compute directional force
+    //compute directional force (relative translation is expressed in world coordinates)
     Vec f0 = Mr01 * (spring.kst.linearProduct(Mr10 * Mp1p2.getCenter())) + damping.linearProduct(Vp1p2.getVCenter());
-    //compute rotational force
-    Vec R0 = Mr01 * (spring.ksr.linearProduct(/*Mr10 * */Mp1p2.getOrientation().toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
+    //compute rotational force (relative orientation is expressed in p1)
+    Vec R0 = Mr01 * (spring.ksr.linearProduct(Mp1p2.getOrientation().toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
+    /*
+    	Vec ksr0 = Mr10 * spring.ksr;
+    	std::cout<<" ksr : "<<spring.ksr<<endl;
+    	std::cout<<" ksr0 : "<<ksr0<<endl;
 
+    	Vec R0;
+    	R0  = cross(Mr01t[0],Mr02t[0]) * spring.ksr[0];
+    	R0 += cross(Mr01t[1],Mr02t[1]) * spring.ksr[1];
+    	R0 += cross(Mr01t[2],Mr02t[2]) * spring.ksr[2];
+    */
     const Deriv force(f0, R0 );
 
     //affect forces
@@ -140,16 +156,28 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
     const int b = spring.m2;
     const Deriv Mdx1dx2 = dx2[b]-dx1[a];
 
-    Mat Mr01, Mr10;
+    Mat Mr01, Mr10, Mr02, Mr20, Mr01t, Mr10t, Mr02t, Mr20t;
     springRef[a].writeRotationMatrix(Mr01);
+    Mr01t.transpose(Mr01);
     invertMatrix(Mr10, Mr01);
+    //Mr10t.transpose(Mr10);
+    springRef[b].writeRotationMatrix(Mr02);
+    Mr02t.transpose(Mr02);
+    //invertMatrix(Mr20, Mr02);
+    //Mr20t.transpose(Mr20);
 
     //compute directional force
-    Vec f0 = Mr01 * (spring.kst.linearProduct(Mr10*Mdx1dx2.getVCenter() ));
+    Vec df0 = Mr01 * (spring.kst.linearProduct(Mr10*Mdx1dx2.getVCenter() ));
     //compute rotational force
-    Vec R0 = Mr01 * (spring.ksr.linearProduct(Mr10* Mdx1dx2.getVOrientation()));
+    Vec dR0 = Mr01 * (spring.ksr.linearProduct(Mr10* Mdx1dx2.getVOrientation()));
+    /*
+    	Vec dR0;
+    	dR0  = cross( cross(Mdx1dx2.getVOrientation(),Mr01t[0]) , Mr02t[0]) * -spring.ksr[0];
+    	dR0 += cross( cross(Mdx1dx2.getVOrientation(),Mr01t[1]) , Mr02t[1]) * -spring.ksr[1];
+    	dR0 += cross( cross(Mdx1dx2.getVOrientation(),Mr01t[2]) , Mr02t[2]) * -spring.ksr[2];
+    */
 
-    const Deriv dforce(f0,R0);
+    const Deriv dforce(df0,dR0);
 
     f1[a]+=dforce;
     f2[b]-=dforce;

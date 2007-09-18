@@ -61,15 +61,15 @@ public:
     Loader(SkinningMapping<BasicMapping>* dest) : dest(dest) {}
     virtual void addMass(double px, double py, double pz, double, double, double, double, double, bool, bool)
     {
-        Coord c;
+        /*Coord c;
         Out::DataTypes::set(c,px,py,pz);
-        dest->initPos.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->initPos.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));*/
     }
     virtual void addSphere(double px, double py, double pz, double)
     {
-        Coord c;
+        /*Coord c;
         Out::DataTypes::set(c,px,py,pz);
-        dest->initPos.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->initPos.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));*/
     }
 };
 
@@ -107,15 +107,19 @@ void SkinningMapping<BasicMapping>::load(const char * /*filename*/)
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::init()
 {
-    if (this->initPos.empty() && this->toModel!=NULL)
+    if (this->initPos.empty() && this->toModel!=NULL && computeWeights==true && coefs.getValue().size()==0)
     {
         VecCoord& xto = *this->toModel->getX();
         VecInCoord& xfrom = *this->fromModel->getX();
         initPos.resize(nbRefs.getValue()*xto.size());
 
         //init the arrays
-        repartition = new DataField<unsigned int>[nbRefs.getValue()*xto.size()];
-        coefs = new DataField<double>[nbRefs.getValue()*xto.size()];
+        sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
+        m_reps.clear();
+        m_reps.resize(nbRefs.getValue()*xto.size());
+        sofa::helper::vector<double> m_coefs = coefs.getValue();
+        m_coefs.clear();
+        m_coefs.resize(nbRefs.getValue()*xto.size());
 
         Coord posTo;
 
@@ -168,16 +172,38 @@ void SkinningMapping<BasicMapping>::init()
 
             for (unsigned int m=0; m<nbRefs.getValue(); m++)
             {
-                coefs[nbRefs.getValue()*i+m].setValue(minDists[m]*minDists[m]);
-                repartition[nbRefs.getValue()*i+m].setValue( minInds[m]);
+                m_coefs[nbRefs.getValue()*i+m] = minDists[m]*minDists[m];
+                m_reps[nbRefs.getValue()*i+m] = minInds[m];
 
                 initPos[nbRefs.getValue()*i+m].getCenter() = (posTo - xfrom[minInds[m]].getCenter());
                 initPos[nbRefs.getValue()*i+m].getOrientation() = xfrom[minInds[m]].getOrientation();
             }
         }
+        repartition.setValue(m_reps);
+        coefs.setValue(m_coefs);
         delete [] minInds;
         delete [] minDists;
     }
+    else if (computeWeights == false || coefs.getValue().size()!=0)
+    {
+        sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
+        sofa::helper::vector<double> m_coefs = coefs.getValue();
+        VecCoord& xto = *this->toModel->getX();
+        VecInCoord& xfrom = *this->fromModel->getX();
+        initPos.resize(nbRefs.getValue()*xto.size());
+        Coord posTo;
+
+        for (unsigned int i=0; i<xto.size(); i++)
+        {
+            posTo = xto[i];
+            for (unsigned int m=0; m<nbRefs.getValue(); m++)
+            {
+                initPos[nbRefs.getValue()*i+m].getCenter() = (posTo - xfrom[m_reps[nbRefs.getValue()*i+m]].getCenter());
+                initPos[nbRefs.getValue()*i+m].getOrientation() = xfrom[m_reps[nbRefs.getValue()*i+m]].getOrientation();
+            }
+        }
+    }
+
     this->BasicMapping::init();
 }
 
@@ -187,9 +213,31 @@ void SkinningMapping<BasicMapping>::clear()
     this->initPos.clear();
 }
 
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::setWeightCoefs(std::vector<double> &weights)
+{
+    sofa::helper::vector<double> * m_coefs = coefs.beginEdit();
+    m_coefs->clear();
+    m_coefs->insert(m_coefs->begin(), weights.begin(), weights.end() );
+    coefs.endEdit();
+}
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::setRepartition(std::vector<unsigned int> &rep)
+{
+    sofa::helper::vector<unsigned int> * m_reps = repartition.beginEdit();
+    m_reps->clear();
+    m_reps->insert(m_reps->begin(), rep.begin(), rep.end() );;
+    repartition.endEdit();
+}
+
+
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+    sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
+    sofa::helper::vector<double> m_coefs = coefs.getValue();
     rotatedPoints.resize(initPos.size());
     out.resize(initPos.size()/nbRefs.getValue());
 
@@ -198,14 +246,14 @@ void SkinningMapping<BasicMapping>::apply( typename Out::VecCoord& out, const ty
         out[i] = Coord();
         for (unsigned int m=0 ; m<nbRefs.getValue(); m++)
         {
-            translation = in[repartition[nbRefs.getValue()*i+m].getValue()].getCenter();
-            Quat relativeRot = initPos[nbRefs.getValue()*i+m].getOrientation().inverse() * in[repartition[nbRefs.getValue()*i+m].getValue()].getOrientation();
+            translation = in[m_reps[nbRefs.getValue()*i+m] ].getCenter();
+            Quat relativeRot = initPos[nbRefs.getValue()*i+m].getOrientation().inverse() * in[m_reps[nbRefs.getValue()*i+m] ].getOrientation();
             //in[repartition[nbRefs.getValue()*i+m].getValue()].writeRotationMatrix(rotation);
             relativeRot.toMatrix(rotation);
             rotatedPoints[nbRefs.getValue()*i+m] = rotation * (initPos[nbRefs.getValue()*i+m].getCenter());
 
-            out[i] += rotatedPoints[nbRefs.getValue()*i+m] * coefs[nbRefs.getValue()*i+m].getValue() ;
-            out[i] += translation * coefs[nbRefs.getValue()*i+m].getValue();
+            out[i] += rotatedPoints[nbRefs.getValue()*i+m] * m_coefs[nbRefs.getValue()*i+m];
+            out[i] += translation * m_coefs[nbRefs.getValue()*i+m];
         }
     }
 }
@@ -213,6 +261,9 @@ void SkinningMapping<BasicMapping>::apply( typename Out::VecCoord& out, const ty
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
+    sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
+    sofa::helper::vector<double> m_coefs = coefs.getValue();
+
     Deriv v,omega;
     out.resize(initPos.size()/nbRefs.getValue());
 
@@ -221,9 +272,9 @@ void SkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const t
         out[i] = Deriv();
         for (unsigned int m=0 ; m<nbRefs.getValue(); m++)
         {
-            v = in[repartition[nbRefs.getValue()*i+m].getValue()].getVCenter();
-            omega = in[repartition[nbRefs.getValue()*i+m].getValue()].getVOrientation();
-            out[i] +=  (v - cross(rotatedPoints[nbRefs.getValue()*i+m],omega)) * coefs[nbRefs.getValue()*i+m].getValue();
+            v = in[m_reps[nbRefs.getValue()*i+m]].getVCenter();
+            omega = in[m_reps[nbRefs.getValue()*i+m]].getVOrientation();
+            out[i] +=  (v - cross(rotatedPoints[nbRefs.getValue()*i+m],omega)) * m_coefs[nbRefs.getValue()*i+m];
         }
     }
 }
@@ -232,6 +283,9 @@ void SkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const t
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
+    sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
+    sofa::helper::vector<double> m_coefs = coefs.getValue();
+
     Deriv v,omega;
     for(unsigned int i=0; i<in.size(); i++)
     {
@@ -240,8 +294,8 @@ void SkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
             Deriv f = in[i];
             v = f;
             omega = cross(rotatedPoints[nbRefs.getValue()*i+m],f);
-            out[repartition[nbRefs.getValue()*i+m].getValue()].getVCenter() += v * coefs[nbRefs.getValue()*i+m].getValue();
-            out[repartition[nbRefs.getValue()*i+m].getValue()].getVOrientation() += omega * coefs[nbRefs.getValue()*i+m].getValue();
+            out[m_reps[nbRefs.getValue()*i+m] ].getVCenter() += v * m_coefs[nbRefs.getValue()*i+m];
+            out[m_reps[nbRefs.getValue()*i+m] ].getVOrientation() += omega * m_coefs[nbRefs.getValue()*i+m];
         }
     }
 
@@ -253,13 +307,25 @@ void SkinningMapping<BasicMapping>::draw()
 {
     if (!getShow(this)) return;
     glDisable (GL_LIGHTING);
-    glPointSize(7);
+    glPointSize(1);
     glColor4f (1,1,0,1);
-    glBegin (GL_POINTS);
-    const typename Out::VecCoord& x = *this->toModel->getX();
-    for (unsigned int i=0; i<x.size(); i++)
+    glBegin (GL_LINES);
+
+    const typename Out::VecCoord& xOut = *this->toModel->getX();
+    const typename In::VecCoord& xIn = *this->fromModel->getX();
+    sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
+    sofa::helper::vector<double> m_coefs = coefs.getValue();
+
+    for (unsigned int i=0; i<xOut.size(); i++)
     {
-        helper::gl::glVertexT(x[i]);
+        for (unsigned int m=0 ; m<nbRefs.getValue(); m++)
+        {
+            if(m_coefs[nbRefs.getValue()*i+m] > 0.0)
+            {
+                helper::gl::glVertexT(xIn[m_reps[nbRefs.getValue()*i+m] ].getCenter());
+                helper::gl::glVertexT(xOut[i]);
+            }
+        }
     }
     glEnd();
 }
