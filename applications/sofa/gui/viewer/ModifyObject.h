@@ -73,14 +73,14 @@ public:
     void setNode(core::objectmodel::Base* node, Q3ListViewItem* item_clicked=NULL); //create all the widgets of the dialog window
 
 public slots:
-    void updateValues();             //update the node with the values of the field
-    void updateTables();             //update the tables of value at each step of the simulation
-    void saveTables();               //Save in datafield the content of a
-    void changeValue();              //each time a field is modified
-    void changeNumberPoint();        //used to dynamically add points in an object of type pointSubset
+    void updateValues();              //update the node with the values of the field
+    void updateTables();              //update the tables of value at each step of the simulation
+    void saveTables();                //Save in datafield the content of a
+    void changeValue();               //each time a field is modified
+    void changeNumberPoint();         //used to dynamically add points in an object of type pointSubset
     void closeNow () {emit(reject());} //called from outside to close the current widget
-    void reject   () { emit(dialogClosed(Id)); QDialog::reject();}                //When closing a window, inform the parent.
-    void accept   () { updateValues(); emit(dialogClosed(Id)); QDialog::accept();} //if closing by using Ok button, update the values
+    void reject   () {                 emit(dialogClosed(Id)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
+    void accept   () { updateValues(); emit(dialogClosed(Id)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values
 
 signals:
     void objectUpdated();              //update done
@@ -90,13 +90,35 @@ signals:
 
 protected:
 
-
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
     void updateContext( GNode *node );
 
-    bool createTable( Q3Table* vectorTable, FieldBase* field, Q3GroupBox *box=NULL );
+    bool createTable(FieldBase* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
     void storeTable(Q3Table* table, FieldBase* field);
 
+    void createVector(const Vec<6,double>  &value, Q3GroupBox *box);
+    void createVector(const Vec<6,float>   &value, Q3GroupBox *box);
+    void createVector(const Vec<4,double>  &value, Q3GroupBox *box);
+    void createVector(const Vec<4,float>   &value, Q3GroupBox *box);
+    void createVector(const Vec<3,double>  &value, Q3GroupBox *box);
+    void createVector(const Vec<3,float>   &value, Q3GroupBox *box);
+    void createVector(const Vec<2,double>  &value, Q3GroupBox *box);
+    void createVector(const Vec<2,float>   &value, Q3GroupBox *box);
+    void createVector(const Vec<1,double>  &value, Q3GroupBox *box);
+    void createVector(const Vec<1,float>   &value, Q3GroupBox *box);
+    void createVector(const Quater<double> &value, Q3GroupBox *box);
+    void createVector(const Quater<float>  &value, Q3GroupBox *box);
+
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<6,double> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<6,float> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<4,double> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<4,float> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<3,double> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<3,float> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<2,double> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<2,float> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<1,double> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<1,float> > *ff);
 
     QWidget *parent;
     core::objectmodel::Base* node;
