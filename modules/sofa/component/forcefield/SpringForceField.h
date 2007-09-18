@@ -42,7 +42,6 @@ public:
     typedef typename Coord::value_type Real;
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
-protected:
     class Spring
     {
     public:
@@ -69,6 +68,7 @@ protected:
         }
 
     };
+protected:
 
     double m_potentialEnergy;
     DataField<double> ks;
