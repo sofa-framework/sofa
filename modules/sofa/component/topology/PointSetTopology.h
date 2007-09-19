@@ -354,7 +354,7 @@ public:
     {
         return object;
     }
-    /** creates a TopologyChangeAction and therefore warns all components that
+    /** creates a TopologyChangeVisitor and therefore warns all components that
     some topological changes have occured */
     virtual void propagateTopologicalChanges();
 

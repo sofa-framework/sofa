@@ -52,7 +52,7 @@ namespace behavior
  *
  *  While all computations required to do the integration step are handled by
  *  this object, they should not be implemented directly in it, but instead
- *  the solver propagates orders (or Action) to the other components in the
+ *  the solver propagates orders (or Visitor) to the other components in the
  *  scenegraph that will locally execute them. This allow for greater
  *  flexibility (the solver can just ask for the forces to be computed without
  *  knowing what type of forces are present), as well as performances
@@ -77,9 +77,9 @@ public:
     /// Method called at initialization, during the backwards traversal of the data structure.
     virtual void bwdInit() {}
 
-    /// @name Actions and MultiVectors
+    /// @name Visitors and MultiVectors
     /// These methods provides an abstract view of the mechanical system to animate.
-    /// They are implemented by executing Actions in the subtree of the scene-graph below this solver.
+    /// They are implemented by executing Visitors in the subtree of the scene-graph below this solver.
     /// @{
 
     /// @name Vector operations

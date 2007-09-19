@@ -23,8 +23,8 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-//#include <sofa/simulation/tree/MechanicalAction.h>
-//#include <sofa/simulation/tree/MechanicalVPrintAction.h>
+//#include <sofa/simulation/tree/MechanicalVisitor.h>
+//#include <sofa/simulation/tree/MechanicalVPrintVisitor.h>
 
 
 #include <stdlib.h>
@@ -91,82 +91,82 @@ double OdeSolver::finish()
 OdeSolver::VecId OdeSolver::v_alloc(VecId::Type t)
 {
     VecId v(t, vectors[t].alloc());
-    MechanicalVAllocAction(v).execute( getContext() );
+    MechanicalVAllocVisitor(v).execute( getContext() );
     return v;
 }
 
 void OdeSolver::v_free(VecId v)
 {
     if (vectors[v.type].free(v.index))
-        MechanicalVFreeAction(v).execute( getContext() );
+        MechanicalVFreeVisitor(v).execute( getContext() );
 }
 
 void OdeSolver::v_clear(VecId v) ///< v=0
 {
-    MechanicalVOpAction(v).execute( getContext() );
+    MechanicalVOpVisitor(v).execute( getContext() );
 }
 
 void OdeSolver::v_eq(VecId v, VecId a) ///< v=a
 {
-    MechanicalVOpAction(v,a).execute( getContext() );
+    MechanicalVOpVisitor(v,a).execute( getContext() );
 }
 
 void OdeSolver::v_peq(VecId v, VecId a, double f) ///< v+=f*a
 {
-    MechanicalVOpAction(v,v,a,f).execute( getContext() );
+    MechanicalVOpVisitor(v,v,a,f).execute( getContext() );
 }
 void OdeSolver::v_teq(VecId v, double f) ///< v*=f
 {
-    MechanicalVOpAction(v,VecId::null(),v,f).execute( getContext() );
+    MechanicalVOpVisitor(v,VecId::null(),v,f).execute( getContext() );
 }
 void OdeSolver::v_dot(VecId a, VecId b) ///< a dot b ( get result using finish )
 {
     result = 0;
-    MechanicalVDotAction(a,b,&result).execute( getContext() );
+    MechanicalVDotVisitor(a,b,&result).execute( getContext() );
 }
 
 void OdeSolver::propagateDx(VecId dx)
 {
-    MechanicalPropagateDxAction(dx).execute( getContext() );
+    MechanicalPropagateDxVisitor(dx).execute( getContext() );
 }
 
 void OdeSolver::projectResponse(VecId dx, double **W)
 {
-    MechanicalApplyConstraintsAction(dx, W).execute( getContext() );
+    MechanicalApplyConstraintsVisitor(dx, W).execute( getContext() );
 }
 
 void OdeSolver::addMdx(VecId res, VecId dx)
 {
-    MechanicalAddMDxAction(res,dx).execute( getContext() );
+    MechanicalAddMDxVisitor(res,dx).execute( getContext() );
 }
 
 void OdeSolver::integrateVelocity(VecId res, VecId x, VecId v, double dt)
 {
-    MechanicalVOpAction(res,x,v,dt).execute( getContext() );
+    MechanicalVOpVisitor(res,x,v,dt).execute( getContext() );
 }
 
 void OdeSolver::accFromF(VecId a, VecId f)
 {
-    MechanicalAccFromFAction(a,f).execute( getContext() );
+    MechanicalAccFromFVisitor(a,f).execute( getContext() );
 }
 
 void OdeSolver::propagatePositionAndVelocity(double t, VecId x, VecId v)
 {
-    MechanicalPropagatePositionAndVelocityAction(t,x,v).execute( getContext() );
+    MechanicalPropagatePositionAndVelocityVisitor(t,x,v).execute( getContext() );
 }
 
 void OdeSolver::computeForce(VecId result)
 {
-    MechanicalResetForceAction(result).execute( getContext() );
+    MechanicalResetForceVisitor(result).execute( getContext() );
     finish();
-    MechanicalComputeForceAction(result).execute( getContext() );
+    MechanicalComputeForceVisitor(result).execute( getContext() );
 }
 
 void OdeSolver::computeDf(VecId df)
 {
-    MechanicalResetForceAction(df).execute( getContext() );
+    MechanicalResetForceVisitor(df).execute( getContext() );
     finish();
-    MechanicalComputeDfAction(df).execute( getContext() );
+    MechanicalComputeDfVisitor(df).execute( getContext() );
 }
 
 void OdeSolver::computeAcc(double t, VecId a, VecId x, VecId v)
@@ -185,16 +185,16 @@ void OdeSolver::computeAcc(double t, VecId a, VecId x, VecId v)
 
 void OdeSolver::computeContactForce(VecId result)
 {
-    MechanicalResetForceAction(result).execute( getContext() );
+    MechanicalResetForceVisitor(result).execute( getContext() );
     finish();
-    MechanicalComputeContactForceAction(result).execute( getContext() );
+    MechanicalComputeContactForceVisitor(result).execute( getContext() );
 }
 
 void OdeSolver::computeContactDf(VecId df)
 {
-    MechanicalResetForceAction(df).execute( getContext() );
+    MechanicalResetForceVisitor(df).execute( getContext() );
     finish();
-    //MechanicalComputeDfAction(df).execute( getContext() );
+    //MechanicalComputeDfVisitor(df).execute( getContext() );
 }
 
 void OdeSolver::computeContactAcc(double t, VecId a, VecId x, VecId v)
@@ -213,13 +213,13 @@ void OdeSolver::computeContactAcc(double t, VecId a, VecId x, VecId v)
 
 void OdeSolver::print( VecId v, std::ostream& out )
 {
-    MechanicalVPrintAction(v,out).execute( getContext() );
+    MechanicalVPrintVisitor(v,out).execute( getContext() );
 }
 
 void OdeSolver::printWithElapsedTime( VecId v,  unsigned time, std::ostream& out )
 {
     const double fact = 1000000.0 / (100*helper::system::thread::CTime::getTicksPerSec());
-    MechanicalVPrintWithElapsedTimeAction(v,(int)((fact*time+0.5)*0.001), out).execute( getContext() );
+    MechanicalVPrintWithElapsedTimeVisitor(v,(int)((fact*time+0.5)*0.001), out).execute( getContext() );
 }
 
 // BaseMatrix & BaseVector Computations
@@ -227,26 +227,26 @@ void OdeSolver::addMBK_ToMatrix(defaulttype::BaseMatrix *A, double mFact, double
 {
     if (A != NULL)
     {
-        MechanicalAddMBK_ToMatrixAction(A, mFact, bFact, kFact, offset).execute( getContext() );
+        MechanicalAddMBK_ToMatrixVisitor(A, mFact, bFact, kFact, offset).execute( getContext() );
     }
 }
 
 void OdeSolver::addMBKdx_ToVector(VecId res, VecId dx, double mFact, double bFact, double kFact)
 {
-    MechanicalAddMBKdx_ToVectorAction(res, dx, mFact, bFact, kFact);
+    MechanicalAddMBKdx_ToVectorVisitor(res, dx, mFact, bFact, kFact);
 }
 
 void OdeSolver::multiVector2BasicVector(VecId src, defaulttype::BaseVector *dest, unsigned int offset)
 {
     if (dest != NULL)
     {
-        MechanicalMultiVector2BasicVectorAction(src, dest, offset);
+        MechanicalMultiVector2BasicVectorVisitor(src, dest, offset);
     }
 }
 
 void OdeSolver::getMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
 {
-    MechanicalGetMatrixDimensionAction(nbRow, nbCol).execute( getContext() );
+    MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
 }
 
 /*
@@ -254,7 +254,7 @@ void OdeSolver::computeMatrix(defaulttype::SofaBaseMatrix *mat, double mFact, do
 {
     if (mat != NULL)
     {
-        MechanicalComputeMatrixAction(mat, mFact, bFact, kFact, offset).execute( getContext() );
+        MechanicalComputeMatrixVisitor(mat, mFact, bFact, kFact, offset).execute( getContext() );
     }
 }
 
@@ -263,7 +263,7 @@ void OdeSolver::computeOpVector(defaulttype::SofaBaseVector *vect, unsigned int 
 {
     if (vect != NULL)
     {
-        MechanicalComputeVectorAction(vect, offset).execute( getContext() );
+        MechanicalComputeVectorVisitor(vect, offset).execute( getContext() );
     }
 }
 
@@ -272,7 +272,7 @@ void OdeSolver::matResUpdatePosition(defaulttype::SofaBaseVector *vect, unsigned
 {
     if (vect != NULL)
     {
-        MechanicalMatResUpdatePositionAction(vect, offset).execute( getContext() );
+        MechanicalMatResUpdatePositionVisitor(vect, offset).execute( getContext() );
     }
 }
 */

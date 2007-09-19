@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include "GenGraphForm.h"
-#include <sofa/simulation/tree/ExportDotAction.h>
+#include <sofa/simulation/tree/ExportDotVisitor.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -252,7 +252,7 @@ void GenGraphForm::doExport()
         return;
     }
     {
-        sofa::simulation::tree::ExportDotAction act(&fdot);
+        sofa::simulation::tree::ExportDotVisitor act(&fdot);
         act.showNode = this->showNodes->isOn();
         act.showObject = this->showObjects->isOn();
         act.showBehaviorModel = this->showBehaviorModels->isOn();
@@ -273,7 +273,7 @@ void GenGraphForm::doExport()
         act.labelNodeClass = this->labelNodeClass->isOn();
         act.labelObjectName = this->labelObjectName->isOn();
         act.labelObjectClass = this->labelObjectClass->isOn();
-        graph->executeAction(&act);
+        graph->executeVisitor(&act);
     }
     fdot.close();
 

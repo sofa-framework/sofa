@@ -26,8 +26,8 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/MechanicalAction.h>
-#include <sofa/simulation/tree/UpdateMappingAction.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/tree/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/ObjectFactory.h>
@@ -2230,8 +2230,8 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                     _mouseInteractorSavedPosY = eventY;
                 }
             }
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityAction>();
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingAction>();
+            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
+            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
         }
     }
     else

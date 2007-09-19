@@ -26,21 +26,21 @@
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/tree/init.h>
-#include <sofa/simulation/tree/PrintAction.h>
-#include <sofa/simulation/tree/ExportGnuplotAction.h>
-#include <sofa/simulation/tree/InitAction.h>
-#include <sofa/simulation/tree/AnimateAction.h>
-#include <sofa/simulation/tree/MechanicalAction.h>
-#include <sofa/simulation/tree/CollisionAction.h>
-#include <sofa/simulation/tree/UpdateContextAction.h>
-#include <sofa/simulation/tree/UpdateMappingAction.h>
-#include <sofa/simulation/tree/ResetAction.h>
-#include <sofa/simulation/tree/VisualAction.h>
-#include <sofa/simulation/tree/DeleteAction.h>
-#include <sofa/simulation/tree/ExportOBJAction.h>
-#include <sofa/simulation/tree/WriteStateAction.h>
-#include <sofa/simulation/tree/XMLPrintAction.h>
-#include <sofa/simulation/tree/PropagateEventAction.h>
+#include <sofa/simulation/tree/PrintVisitor.h>
+#include <sofa/simulation/tree/ExportGnuplotVisitor.h>
+#include <sofa/simulation/tree/InitVisitor.h>
+#include <sofa/simulation/tree/AnimateVisitor.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/tree/CollisionVisitor.h>
+#include <sofa/simulation/tree/UpdateContextVisitor.h>
+#include <sofa/simulation/tree/UpdateMappingVisitor.h>
+#include <sofa/simulation/tree/ResetVisitor.h>
+#include <sofa/simulation/tree/VisualVisitor.h>
+#include <sofa/simulation/tree/DeleteVisitor.h>
+#include <sofa/simulation/tree/ExportOBJVisitor.h>
+#include <sofa/simulation/tree/WriteStateVisitor.h>
+#include <sofa/simulation/tree/XMLPrintVisitor.h>
+#include <sofa/simulation/tree/PropagateEventVisitor.h>
 #include <sofa/simulation/tree/AnimateBeginEvent.h>
 #include <sofa/simulation/tree/AnimateEndEvent.h>
 #include <fstream>
@@ -89,11 +89,11 @@ GNode* Simulation::load(const char *filename)
 
     //root->init();
     //exportXML( root, "toto.scn" );
-    root->execute<InitAction>();
+    root->execute<InitVisitor>();
 
     // As mappings might be initialized after visual models, it is necessary to update them
     // BUGFIX (Jeremie A.): disabled as initTexture was not called yet, and the GUI might not even be up yet
-    //root->execute<VisualUpdateAction>();
+    //root->execute<VisualUpdateVisitor>();
 
     std::cout << "load done."<<std::endl;
 
@@ -106,7 +106,7 @@ GNode* Simulation::load(const char *filename)
 void Simulation::print(GNode* root)
 {
     if (!root) return;
-    root->execute<PrintAction>();
+    root->execute<PrintVisitor>();
 }
 
 /// Print all object in the graph
@@ -116,12 +116,12 @@ void Simulation::printXML(GNode* root, const char* fileName)
     if( fileName!=NULL )
     {
         std::ofstream out(fileName);
-        XMLPrintAction print(out);
+        XMLPrintVisitor print(out);
         root->execute(print);
     }
     else
     {
-        XMLPrintAction print(std::cout);
+        XMLPrintVisitor print(std::cout);
         root->execute(print);
     }
 }
@@ -130,7 +130,7 @@ void Simulation::printXML(GNode* root, const char* fileName)
 void Simulation::init(GNode* root)
 {
     if (!root) return;
-    root->execute<InitAction>();
+    root->execute<InitVisitor>();
 }
 
 /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
@@ -142,28 +142,28 @@ void Simulation::animate(GNode* root, double dt)
 
     {
         AnimateBeginEvent ev(dt);
-        PropagateEventAction act(&ev);
+        PropagateEventVisitor act(&ev);
         root->execute(act);
     }
 
     //std::cout << "animate\n";
     double nextTime = root->getTime() + root->getDt();
 
-    // CHANGE to support MasterSolvers : CollisionAction is now activated within AnimateAction
-    //root->execute<CollisionAction>();
+    // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
+    //root->execute<CollisionVisitor>();
 
-    AnimateAction act;
+    AnimateVisitor act;
     act.setDt(dt);
     root->execute(act);
     root->setTime( nextTime );
-    root->execute<UpdateContextAction>();
+    root->execute<UpdateContextVisitor>();
 
-    root->execute<UpdateMappingAction>();
-    root->execute<VisualUpdateAction>();
+    root->execute<UpdateMappingVisitor>();
+    root->execute<VisualUpdateVisitor>();
 
     {
         AnimateEndEvent ev(dt);
-        PropagateEventAction act(&ev);
+        PropagateEventVisitor act(&ev);
         root->execute(act);
     }
 }
@@ -172,27 +172,27 @@ void Simulation::animate(GNode* root, double dt)
 void Simulation::reset(GNode* root)
 {
     if (!root) return;
-    root->execute<ResetAction>();
-    root->execute<MechanicalPropagatePositionAndVelocityAction>();
-    root->execute<UpdateMappingAction>();
-    root->execute<VisualUpdateAction>();
+    root->execute<ResetVisitor>();
+    root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
+    root->execute<UpdateMappingVisitor>();
+    root->execute<VisualUpdateVisitor>();
 }
 
 /// Initialize the textures
 void Simulation::initTextures(GNode* root)
 {
     if (!root) return;
-    root->execute<VisualInitTexturesAction>();
+    root->execute<VisualInitTexturesVisitor>();
     // Do a visual update now as it is not done in load() anymore
     /// \todo Separate this into another method?
-    root->execute<VisualUpdateAction>();
+    root->execute<VisualUpdateVisitor>();
 }
 
 
 /// Compute the bounding box of the scene.
 void Simulation::computeBBox(GNode* root, double* minBBox, double* maxBBox)
 {
-    VisualComputeBBoxAction act;
+    VisualComputeBBoxVisitor act;
     if (root)
         root->execute(act);
     minBBox[0] = act.minBBox[0];
@@ -207,7 +207,7 @@ void Simulation::computeBBox(GNode* root, double* minBBox, double* maxBBox)
 void Simulation::updateContext(GNode* root)
 {
     if (!root) return;
-    root->execute<UpdateContextAction>();
+    root->execute<UpdateContextVisitor>();
 }
 
 /// Render the scene
@@ -215,9 +215,9 @@ void Simulation::draw(GNode* root)
 {
     if (!root) return;
     //std::cout << "draw\n";
-    VisualDrawAction act(VisualDrawAction::Std);
+    VisualDrawVisitor act(VisualDrawVisitor::Std);
     root->execute(&act);
-    VisualDrawAction act2(VisualDrawAction::Transparent);
+    VisualDrawVisitor act2(VisualDrawVisitor::Transparent);
     root->execute(&act2);
 }
 
@@ -226,7 +226,7 @@ void Simulation::drawShadows(GNode* root)
 {
     if (!root) return;
     //std::cout << "drawShadows\n";
-    VisualDrawAction act(VisualDrawAction::Shadow);
+    VisualDrawVisitor act(VisualDrawVisitor::Shadow);
     root->execute(&act);
 }
 
@@ -234,7 +234,7 @@ void Simulation::drawShadows(GNode* root)
 void Simulation::unload(GNode* root)
 {
     if (!root) return;
-    root->execute<DeleteAction>();
+    root->execute<DeleteVisitor>();
     if (root->getParent()!=NULL)
         root->getParent()->removeChild(root);
     delete root;
@@ -250,7 +250,7 @@ void Simulation::exportOBJ(GNode* root, const char* filename, bool exportMTL)
 
     if (!exportMTL)
     {
-        ExportOBJAction act(&fout);
+        ExportOBJVisitor act(&fout);
         root->execute(&act);
     }
     else
@@ -270,7 +270,7 @@ void Simulation::exportOBJ(GNode* root, const char* filename, bool exportMTL)
         mtl << "# Generated from SOFA Simulation" << std::endl;
         fout << "mtllib "<<mtlfilename<<'\n';
 
-        ExportOBJAction act(&fout,&mtl);
+        ExportOBJVisitor act(&fout,&mtl);
         root->execute(&act);
     }
 }
@@ -280,14 +280,14 @@ void Simulation::exportXML(GNode* root, const char* filename)
 {
     if (!root) return;
     std::ofstream fout(filename);
-    XMLPrintAction act(fout);
+    XMLPrintVisitor act(fout);
     root->execute(&act);
 }
 
 void Simulation::dumpState( GNode* root, std::ofstream& out )
 {
     out<<root->getTime()<<" ";
-    WriteStateAction(out).execute(root);
+    WriteStateVisitor(out).execute(root);
     out<<endl;
 }
 
@@ -295,14 +295,14 @@ void Simulation::dumpState( GNode* root, std::ofstream& out )
 void Simulation::initGnuplot(GNode* root)
 {
     if (!root) return;
-    root->execute<InitGnuplotAction>();
+    root->execute<InitGnuplotVisitor>();
 }
 
 /// Update gnuplot file output
 void Simulation::exportGnuplot(GNode* root, double time)
 {
     if (!root) return;
-    ExportGnuplotAction expg(time);
+    ExportGnuplotVisitor expg(time);
     root->execute(expg);
 }
 

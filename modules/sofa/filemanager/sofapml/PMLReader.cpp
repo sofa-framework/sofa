@@ -31,7 +31,7 @@
 #include "sofa/component/collision/DefaultContactManager.h"
 #include "sofa/component/collision/MinProximityIntersection.h"
 #include "sofa/component/collision/BruteForceDetection.h"
-#include "sofa/simulation/tree/VisualAction.h"
+#include "sofa/simulation/tree/VisualVisitor.h"
 #include "sofa/simulation/tree/Simulation.h"
 
 using namespace sofa::component::collision;
@@ -119,7 +119,7 @@ void PMLReader::BuildStructure(GNode* root)
         BruteForceDetection * bfd = new BruteForceDetection;
         MinProximityIntersection * mpi = new MinProximityIntersection;
         //computes the distance contact from the bounding box
-        VisualComputeBBoxAction act;
+        VisualComputeBBoxVisitor act;
         Simulation::init(root);
         root->execute(act);
         double dx=(act.maxBBox[0]-act.minBBox[0]);

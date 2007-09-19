@@ -44,7 +44,7 @@
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/simulation/tree/ActionScheduler.h>
+#include <sofa/simulation/tree/VisitorScheduler.h>
 #include <stdlib.h>
 #include <vector>
 #include <string>
@@ -64,7 +64,7 @@ namespace simulation
 namespace tree
 {
 
-class Action;
+class Visitor;
 class MutationListener;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
@@ -105,7 +105,7 @@ public:
     /// Move an object from another node
     virtual void moveObject(core::objectmodel::BaseObject* obj);
 
-    /// Must be called after each graph modification. Do not call it directly, apply an InitAction instead.
+    /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
     virtual void initialize();
 
     /// Get parent node (or NULL if no hierarchy or for root node)
@@ -132,23 +132,23 @@ public:
     void updateContext();
 
 
-    /// @name Actions and graph traversal
+    /// @name Visitors and graph traversal
     /// @{
 
     /// Execute a recursive action starting from this node
-    virtual void executeAction(Action* action);
+    virtual void executeVisitor(Visitor* action);
 
     /// Execute a recursive action starting from this node
-    void execute(Action& action)
+    void execute(Visitor& action)
     {
-        Action* p = &action;
-        executeAction(p);
+        Visitor* p = &action;
+        executeVisitor(p);
     }
 
     /// Execute a recursive action starting from this node
-    void execute(Action* p)
+    void execute(Visitor* p)
     {
-        executeAction(p);
+        executeVisitor(p);
     }
 
     /// Execute a recursive action starting from this node
@@ -156,8 +156,8 @@ public:
     void execute()
     {
         Act action;
-        Action* p = &action;
-        executeAction(p);
+        Visitor* p = &action;
+        executeVisitor(p);
     }
 
     /// List all objects of this node deriving from a given class
@@ -414,7 +414,7 @@ public:
     Sequence<core::CollisionModel> collisionModel;
 
     Single<core::componentmodel::collision::Pipeline> collisionPipeline;
-    Single<ActionScheduler> actionScheduler;
+    Single<VisitorScheduler> actionScheduler;
 
     GNode* setDebug(bool);
     bool getDebug() const;
@@ -450,13 +450,13 @@ public:
     const NodeTimer& getTotalTime() const { return totalTime; }
 
     /// Get time log of all categories
-    const std::map<std::string, NodeTimer>& getActionTime() const { return actionTime; }
+    const std::map<std::string, NodeTimer>& getVisitorTime() const { return actionTime; }
 
     /// Get time log of a given category
-    const NodeTimer& getActionTime(const std::string& s) { return actionTime[s]; }
+    const NodeTimer& getVisitorTime(const std::string& s) { return actionTime[s]; }
 
     /// Get time log of a given category
-    const NodeTimer& getActionTime(const char* s) { return actionTime[s]; }
+    const NodeTimer& getVisitorTime(const char* s) { return actionTime[s]; }
 
     /// Get time log of all objects
     const std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> >& getObjectTime() const { return objectTime; }
@@ -495,7 +495,7 @@ protected:
     /// @name Performance Timing Log
     /// @{
 
-    std::stack<Action*> actionStack;
+    std::stack<Visitor*> actionStack;
     NodeTimer totalTime;
     std::map<std::string, NodeTimer> actionTime;
     std::map<std::string, std::map<core::objectmodel::BaseObject*, ObjectTimer> > objectTime;
@@ -516,10 +516,10 @@ protected:
 
     /// Execute a recursive action starting from this node.
     /// This method bypass the actionScheduler of this node if any.
-    void doExecuteAction(Action* action);
+    void doExecuteVisitor(Visitor* action);
 
-    // ActionScheduler can use doExecuteAction() method
-    friend class ActionScheduler;
+    // VisitorScheduler can use doExecuteVisitor() method
+    friend class VisitorScheduler;
 
 };
 

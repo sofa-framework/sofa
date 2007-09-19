@@ -1,0 +1,45 @@
+#include <sofa/simulation/tree/ExportGnuplotVisitor.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <iostream>
+using std::cerr;
+using std::endl;
+
+namespace sofa
+{
+
+namespace simulation
+{
+
+namespace tree
+{
+
+Visitor::Result InitGnuplotVisitor::processNodeTopDown(GNode* node)
+{
+    if (node->mechanicalState != NULL )
+    {
+        node->mechanicalState->initGnuplot();
+    }
+    return RESULT_CONTINUE;
+}
+
+ExportGnuplotVisitor::ExportGnuplotVisitor( double time )
+    : m_time(time)
+{}
+
+Visitor::Result ExportGnuplotVisitor::processNodeTopDown(GNode* node)
+{
+    if (node->mechanicalState != NULL )
+    {
+        node->mechanicalState->exportGnuplot(m_time);
+    }
+    return RESULT_CONTINUE;
+}
+
+
+} // namespace tree
+
+} // namespace simulation
+
+} // namespace sofa
+

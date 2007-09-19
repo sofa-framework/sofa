@@ -85,6 +85,18 @@ public:
 
     void setParentOf(int childIndex, const Vector3& min, const Vector3& max);
 
+
+    unsigned int getNumberCells() { return elems.size();};
+
+    void getBoundingTree ( std::vector< std::pair< Vector3, Vector3> > &bounding )
+    {
+        bounding.resize(elems.size());
+        for (unsigned int index=0; index<elems.size(); index++)
+        {
+            bounding[index] = std::make_pair( elems[index].minBBox, elems[index].maxBBox);
+        }
+    }
+
     int getLeafIndex(int index) const
     {
         return elems[index].leaf.getIndex();

@@ -2,8 +2,8 @@
 #define SOFA_COMPONENT_MISC_READSTATE_INL
 
 #include "ReadState.h"
-#include <sofa/simulation/tree/MechanicalAction.h>
-#include <sofa/simulation/tree/UpdateMappingAction.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/tree/UpdateMappingVisitor.h>
 
 #include <sstream>
 
@@ -98,10 +98,10 @@ void ReadState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
         if (updated)
         {
             //std::cout<<"update from file"<<std::endl;
-            sofa::simulation::tree::MechanicalPropagatePositionAndVelocityAction action1;
-            this->getContext()->executeAction(&action1);
-            sofa::simulation::tree::UpdateMappingAction action2;
-            this->getContext()->executeAction(&action2);
+            sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor action1;
+            this->getContext()->executeVisitor(&action1);
+            sofa::simulation::tree::UpdateMappingVisitor action2;
+            this->getContext()->executeVisitor(&action2);
         }
     }
     if (/* simulation::tree::AnimateEndEvent* ev = */ dynamic_cast<simulation::tree::AnimateEndEvent*>(event))

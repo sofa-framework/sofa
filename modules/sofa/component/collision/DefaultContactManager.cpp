@@ -50,7 +50,7 @@ DefaultContactManager::DefaultContactManager()
 DefaultContactManager::~DefaultContactManager()
 {
     // Contacts are now attached to the graph.
-    // So they will be deleted by the DeleteAction
+    // So they will be deleted by the DeleteVisitor
     // FIX crash on unload bug. -- J. Allard
     //clear();
 }

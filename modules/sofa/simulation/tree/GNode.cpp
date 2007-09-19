@@ -23,8 +23,8 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/Action.h>
-#include <sofa/simulation/tree/PropagateEventAction.h>
+#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/tree/PropagateEventVisitor.h>
 #include <sofa/simulation/tree/MutationListener.h>
 #include <sofa/simulation/tree/xml/NodeElement.h>
 #include <iostream>
@@ -225,7 +225,7 @@ void GNode::doAddObject(BaseObject* obj)
     collisionModel.add(dynamic_cast< core::CollisionModel* >(obj));
     contextObject.add(dynamic_cast< core::objectmodel::ContextObject* >(obj));
     collisionPipeline.add(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
-    actionScheduler.add(dynamic_cast< ActionScheduler* >(obj));
+    actionScheduler.add(dynamic_cast< VisitorScheduler* >(obj));
 }
 
 /// Remove an object
@@ -253,7 +253,7 @@ void GNode::doRemoveObject(BaseObject* obj)
     collisionModel.remove(dynamic_cast< core::CollisionModel* >(obj));
     contextObject.remove(dynamic_cast<core::objectmodel::ContextObject* >(obj));
     collisionPipeline.remove(dynamic_cast< core::componentmodel::collision::Pipeline* >(obj));
-    actionScheduler.remove(dynamic_cast< ActionScheduler* >(obj));
+    actionScheduler.remove(dynamic_cast< VisitorScheduler* >(obj));
     // Remove references to this object in time log tables
     if (!objectTime.empty())
     {
@@ -291,7 +291,7 @@ void GNode::initialize()
     //
     updateContext();
 
-    // this is now done by the InitAction
+    // this is now done by the InitVisitor
     //for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++) {
     //    (*it)->init();
     //}
@@ -358,29 +358,29 @@ void GNode::updateContext()
 
 
 /// Execute a recursive action starting from this node
-void GNode::executeAction(Action* action)
+void GNode::executeVisitor(Visitor* action)
 {
     if (actionScheduler)
-        actionScheduler->executeAction(this,action);
+        actionScheduler->executeVisitor(this,action);
     else
-        doExecuteAction(action);
+        doExecuteVisitor(action);
 }
 
 /// Execute a recursive action starting from this node
 /// This method bypass the actionScheduler of this node if any.
-void GNode::doExecuteAction(Action* action)
+void GNode::doExecuteVisitor(Visitor* action)
 {
     if (getLogTime())
     {
         const ctime_t t0 = CTime::getTime();
         ctime_t tChild = 0;
         actionStack.push(action);
-        if(action->processNodeTopDown(this) != Action::RESULT_PRUNE)
+        if(action->processNodeTopDown(this) != Visitor::RESULT_PRUNE)
         {
             ctime_t ct0 = CTime::getTime();
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
             {
-                (*it)->executeAction(action);
+                (*it)->executeVisitor(action);
             }
             tChild = CTime::getTime() - ct0;
         }
@@ -401,7 +401,7 @@ void GNode::doExecuteAction(Action* action)
         if (!actionStack.empty())
         {
             // remove time from calling action log
-            Action* prev = actionStack.top();
+            Visitor* prev = actionStack.top();
             NodeTimer& t = actionTime[prev->getCategoryName()];
             t.tNode -= tTree;
             t.tTree -= tTree;
@@ -409,11 +409,11 @@ void GNode::doExecuteAction(Action* action)
     }
     else
     {
-        if(action->processNodeTopDown(this) != Action::RESULT_PRUNE)
+        if(action->processNodeTopDown(this) != Visitor::RESULT_PRUNE)
         {
             for(ChildIterator it = child.begin(); it != child.end(); ++it)
             {
-                (*it)->executeAction(action);
+                (*it)->executeVisitor(action);
             }
         }
         action->processNodeBottomUp(this);
@@ -442,8 +442,8 @@ GNode* GNode::getTreeNode(const std::string& name)
 /// Propagate an event
 void GNode::propagateEvent( Event* event )
 {
-    PropagateEventAction act(event);
-    this->executeAction(&act);
+    PropagateEventVisitor act(event);
+    this->executeVisitor(&act);
 }
 
 GNode* GNode::setDebug(bool b)

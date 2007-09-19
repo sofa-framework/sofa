@@ -4,7 +4,7 @@
 #include <sofa/component/topology/TetrahedronSetTopology.h>
 #include <sofa/component/topology/PointSetTopology.inl>
 #include <sofa/component/topology/TopologyChangedEvent.h>
-#include <sofa/simulation/tree/PropagateEventAction.h>
+#include <sofa/simulation/tree/PropagateEventVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <algorithm>
 #include <functional>

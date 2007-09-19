@@ -37,7 +37,7 @@ namespace tree
 {
 
 class GNode;
-class Action;
+class Visitor;
 
 /// Abstract class allowing actions to store local data as a stack while traversing the graph.
 class LocalStorage

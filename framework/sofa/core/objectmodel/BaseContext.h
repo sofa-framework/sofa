@@ -36,7 +36,7 @@ namespace simulation
 {
 namespace tree
 {
-class Action;
+class Visitor;
 }
 }
 
@@ -287,11 +287,11 @@ public:
 
     /// @}
 
-    /// @name Actions.
+    /// @name Visitors.
     /// @{
 
     /// apply an action
-    virtual void executeAction( simulation::tree::Action* );
+    virtual void executeVisitor( simulation::tree::Visitor* );
 
     /// Propagate an event
     virtual void propagateEvent( Event* );

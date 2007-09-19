@@ -56,7 +56,7 @@
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/component/forcefield/JointSpringForceField.h>
-#include <sofa/simulation/tree/InitAction.h>
+#include <sofa/simulation/tree/InitVisitor.h>
 #include "WFloatLineEdit.h"
 
 #if !defined(INFINITY)
@@ -738,7 +738,7 @@ void ModifyObject::updateValues()
                 editTranslationY->setFloatValue(0);
                 editTranslationZ->setFloatValue(0);
                 editScale->setFloatValue(1);
-                //current_node->execute<InitAction>();
+                //current_node->execute<InitVisitor>();
             }
         }
 

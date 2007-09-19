@@ -26,8 +26,8 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/MechanicalAction.h>
-#include <sofa/simulation/tree/UpdateMappingAction.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/tree/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -1554,7 +1554,7 @@ void SimpleGUI::eventNewStep()
     {
         std::cout << "========== ITERATION " << frameCounter << " ==========\n";
         const simulation::tree::GNode::NodeTimer& total = groot->getTotalTime();
-        const std::map<std::string, simulation::tree::GNode::NodeTimer>& times = groot->getActionTime();
+        const std::map<std::string, simulation::tree::GNode::NodeTimer>& times = groot->getVisitorTime();
         const std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, simulation::tree::GNode::ObjectTimer> >& objtimes = groot->getObjectTime();
         const double fact = 1000000.0 / (100*groot->getTimeFreq());
         for (std::map<std::string, simulation::tree::GNode::NodeTimer>::const_iterator it = times.begin(); it != times.end(); ++it)
@@ -2278,8 +2278,8 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
                     _mouseInteractorSavedPosY = eventY;
                 }
             }
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityAction>();
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingAction>();
+            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
+            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
         }
     }
     else

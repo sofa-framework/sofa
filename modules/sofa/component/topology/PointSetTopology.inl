@@ -3,7 +3,7 @@
 
 
 #include <sofa/component/topology/PointSetTopology.h>
-#include <sofa/simulation/tree/TopologyChangeAction.h>
+#include <sofa/simulation/tree/TopologyChangeVisitor.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/helper/io/MeshTopologyLoader.h>
 
@@ -328,8 +328,8 @@ PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,c
 template<class DataTypes>
 void PointSetTopology<DataTypes>::propagateTopologicalChanges()
 {
-    sofa::simulation::tree::TopologyChangeAction a;
-    getContext()->executeAction(&a);
+    sofa::simulation::tree::TopologyChangeVisitor a;
+    getContext()->executeVisitor(&a);
     // BUGFIX (Jeremie A. 06/12/07): remove the changes we just propagated, so that we don't send then again next time
     this->resetTopologyChangeList();
 }

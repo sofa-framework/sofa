@@ -39,7 +39,7 @@
 
 
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/InitAction.h>
+#include <sofa/simulation/tree/InitVisitor.h>
 
 
 #include <sofa/simulation/tree/MutationListener.h>
@@ -299,7 +299,7 @@ RealGUI::RealGUI( const char* viewername, const std::vector<std::string>& /*opti
     //connect( screenshotButton, SIGNAL( clicked() ), viewer->getQWidget(), SLOT( screenshot() ) );
     //connect( xmlSave_pushButton, SIGNAL( pressed() ), this, SLOT( saveXML() ) );
     connect( ExportGraphButton, SIGNAL( clicked() ), this, SLOT( exportGraph() ) );
-    //connect( exportGraphAction, SIGNAL( activated() ), viewer, SLOT( exportGraph() ) );
+    //connect( exportGraphVisitor, SIGNAL( activated() ), viewer, SLOT( exportGraph() ) );
     //connect( sizeW, SIGNAL( valueChanged(int) ), viewer->getQWidget(), SLOT( setSizeW(int) ) );
     //connect( sizeH, SIGNAL( valueChanged(int) ), viewer->getQWidget(), SLOT( setSizeH(int) ) );
     connect( dumpStateCheckBox, SIGNAL( toggled(bool) ), this, SLOT( dumpState(bool) ) );
@@ -1106,7 +1106,7 @@ void RealGUI::eventNewStep()
 
         std::cout << "========== ITERATION " << frameCounter << " ==========\n";
         const sofa::simulation::tree::GNode::NodeTimer& total = groot->getTotalTime();
-        const std::map<std::string, sofa::simulation::tree::GNode::NodeTimer>& times = groot->getActionTime();
+        const std::map<std::string, sofa::simulation::tree::GNode::NodeTimer>& times = groot->getVisitorTime();
         const std::map<std::string, std::map<sofa::core::objectmodel::BaseObject*, sofa::simulation::tree::GNode::ObjectTimer> >& objtimes = groot->getObjectTime();
         const double fact = 1000000.0 / (100*groot->getTimeFreq());
         for (std::map<std::string, sofa::simulation::tree::GNode::NodeTimer>::const_iterator it = times.begin(); it != times.end(); ++it)
@@ -2055,7 +2055,7 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
     }
 
     std::cout << "Initializing simulation "<<new_node->getName()<<std::endl;
-    new_node->execute<InitAction>();
+    new_node->execute<InitVisitor>();
     if (node_clicked->child.begin() ==  node_clicked->child.end() &&  node_clicked->object.begin() == node_clicked->object.end())
     {
         //Temporary Root : the current graph is empty, and has only a single node "Root"

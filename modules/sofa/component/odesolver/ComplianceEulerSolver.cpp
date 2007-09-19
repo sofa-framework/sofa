@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/component/odesolver/ComplianceEulerSolver.h>
-#include <sofa/simulation/tree/MechanicalAction.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -84,7 +84,7 @@ void ComplianceEulerSolver::solve(double dt)
         vel.peq(acc,dt);
         pos.peq(vel,dt); // Computes position after a constraint movement
         dx.peq(acc,(dt*dt));
-        simulation::tree::MechanicalPropagateAndAddDxAction(dx).execute(context);
+        simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(context);
     }
     else // f = mass * gravity
     {
@@ -93,7 +93,7 @@ void ComplianceEulerSolver::solve(double dt)
         velFree.peq(acc,dt);
         posFree.eq(pos);
         posFree.peq(velFree,dt);
-        simulation::tree::MechanicalPropagateFreePositionAction().execute(context);
+        simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);
     }
 
     firstCallToSolve.setValue(!firstCallToSolve.getValue());
