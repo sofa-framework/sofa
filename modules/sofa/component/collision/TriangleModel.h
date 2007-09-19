@@ -134,9 +134,9 @@ public:
             //For each triangle of the model, we store the coordinates of the vertices and information about each of them
             Triangle t(this, i);
             //Point 1
-            array_coord[(*offset_coord)  ]    = t.p1()[0];
-            array_coord[(*offset_coord)+1]    = t.p1()[1];
-            array_coord[(*offset_coord)+2]    = t.p1()[2];
+            array_coord[(*offset_coord)  ]    = (float) t.p1()[0];
+            array_coord[(*offset_coord)+1]    = (float) t.p1()[1];
+            array_coord[(*offset_coord)+2]    = (float) t.p1()[2];
 
             array_identity[(*offset_coord)  ] = Id_triangle;
             array_identity[(*offset_coord)+1] = Id;
@@ -145,9 +145,9 @@ public:
 
 
             //Point 2
-            array_coord[(*offset_coord)]   = t.p2()[0];
-            array_coord[(*offset_coord)+1] = t.p2()[1];
-            array_coord[(*offset_coord)+2] = t.p2()[2];
+            array_coord[(*offset_coord)]   = (float) t.p2()[0];
+            array_coord[(*offset_coord)+1] = (float) t.p2()[1];
+            array_coord[(*offset_coord)+2] = (float) t.p2()[2];
 
             array_identity[(*offset_coord)  ] = Id_triangle;
             array_identity[(*offset_coord)+1] = Id;
@@ -156,9 +156,9 @@ public:
 
 
             //Point 3
-            array_coord[(*offset_coord)]   = t.p3()[0];
-            array_coord[(*offset_coord)+1] = t.p3()[1];
-            array_coord[(*offset_coord)+2] = t.p3()[2];
+            array_coord[(*offset_coord)]   = (float) t.p3()[0];
+            array_coord[(*offset_coord)+1] = (float) t.p3()[1];
+            array_coord[(*offset_coord)+2] = (float) t.p3()[2];
 
             array_identity[(*offset_coord)  ] = Id_triangle;
             array_identity[(*offset_coord)+1] = Id;
