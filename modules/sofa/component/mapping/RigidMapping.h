@@ -93,6 +93,8 @@ public:
 
     void init();
 
+    void disable();
+
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
         if (arg->getAttribute("filename"))

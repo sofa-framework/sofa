@@ -125,6 +125,18 @@ void RigidRigidMapping<BasicMapping>::clear()
 }
 
 template <class BasicMapping>
+void RigidRigidMapping<BasicMapping>::disable()
+{
+    if (!this->points.empty() && this->toModel!=NULL)
+    {
+        VecCoord& x = *this->toModel->getX();
+        x.resize(points.size());
+        for (unsigned int i=0; i<points.size(); i++)
+            x[i] = points[i];
+    }
+}
+
+template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::setRepartition(unsigned int value)
 {
     vector<unsigned int>& rep = *this->repartition.beginEdit();

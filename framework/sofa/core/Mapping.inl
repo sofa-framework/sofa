@@ -75,6 +75,11 @@ void Mapping<In,Out>::init()
 }
 
 template <class In, class Out>
+void Mapping<In,Out>::disable()
+{
+}
+
+template <class In, class Out>
 void Mapping<In,Out>::setModels(In* from, Out* to)
 {
     this->fromModel = from;

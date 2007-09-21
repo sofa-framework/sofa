@@ -99,6 +99,10 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(GNode* node)
     m_out<<">"<<endl;
 
     ++level;
+
+    if (node->mechanicalMapping != NULL)
+        (*(node->mechanicalMapping.begin()))->disable();
+
     processObjects(node->object);
 
 

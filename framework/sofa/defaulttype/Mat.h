@@ -583,10 +583,10 @@ typedef Mat4x4d Matrix4;
 template <int L, int C, typename real>
 std::ostream& operator<<(std::ostream& o, const Mat<L,C,real>& m)
 {
-    o << '<' << m[0];
+    o << '[' << m[0];
     for (int i=1; i<L; i++)
         o << ',' << m[i];
-    o << '>';
+    o << ']';
     return o;
 }
 
@@ -595,7 +595,7 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
 {
     int c;
     c = in.peek();
-    while (c==' ' || c=='\n' || c=='<')
+    while (c==' ' || c=='\n' || c=='[')
     {
         in.get();
         c = in.peek();
@@ -612,7 +612,7 @@ std::istream& operator>>(std::istream& in, sofa::defaulttype::Mat<L,C,real>& m)
         in >> m[i];
     }
     c = in.peek();
-    while (c==' ' || c=='\n' || c=='>')
+    while (c==' ' || c=='\n' || c==']')
     {
         in.get();
         c = in.peek();

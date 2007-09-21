@@ -153,6 +153,18 @@ void RigidMapping<BasicMapping>::init()
 }
 
 template <class BasicMapping>
+void RigidMapping<BasicMapping>::disable()
+{
+    if (!this->points.empty() && this->toModel!=NULL)
+    {
+        VecCoord& x = *this->toModel->getX();
+        x.resize(points.size());
+        for (unsigned int i=0; i<points.size(); i++)
+            x[i] = points[i];
+    }
+}
+
+template <class BasicMapping>
 void RigidMapping<BasicMapping>::clear(int reserve)
 {
     this->points.clear();

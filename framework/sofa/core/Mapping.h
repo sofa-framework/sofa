@@ -102,6 +102,11 @@ public:
     /// and applyJ(Out::VecDeriv&,const In::VecDeriv&) methods.
     virtual void updateMapping();
 
+    /// Disable the mapping to get the original coordinates of the mapped model.
+    ///
+    /// It is for instance used in RigidMapping to get the local coordinates of the object.
+    virtual void disable();
+
     /// Pre-construction check method called by ObjectFactory.
     ///
     /// This implementation read the object1 and object2 attributes and check

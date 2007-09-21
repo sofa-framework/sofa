@@ -58,6 +58,10 @@ public:
 
     /// Accessor to the output model of this mapping
     virtual objectmodel::BaseObject* getTo() = 0;
+
+    /// Disable the mapping to get the original coordinates of the mapped model.
+    virtual void disable()=0;
+
 };
 
 } // namespace core
