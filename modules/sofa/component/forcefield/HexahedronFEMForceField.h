@@ -35,17 +35,40 @@
 #include <sofa/defaulttype/Mat.h>
 
 
-// corotational tetrahedron from
-// @InProceedings{NPF05,
-//   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
-//   title        = "Efficient, Physically Plausible Finite Elements",
-//   booktitle    = "Eurographics (short papers)",
-//   month        = "august",
+
+
+
+// WARNING: indices ordering is different than in topology node
+//
+//        ^ Y
+//        |
+// 	      7---------6
+//       /	       /|
+//      /	      / |
+//     3---------2  |
+//     |		 |  |
+//     |  4------|--5-->X
+//     | / 	     | /
+//     |/	     |/
+//     0---------1
+//    /
+//   Z
+
+
+// Corotational hexahedron from
+// @Article{NMPCPF05,
+//   author       = "Nesme, Matthieu and Marchal, Maud and Promayon, Emmanuel and Chabanas, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
+//   title        = "Physically Realistic Interactive Simulation for Biological Soft Tissues",
+//   journal      = "Recent Research Developments in Biomechanics",
+//   volume       = "2",
 //   year         = "2005",
-//   editor       = "J. Dingliana and F. Ganovelli",
-//   keywords     = "animation, physical model, elasticity, finite elements",
-//   url          = "http://www-evasion.imag.fr/Publications/2005/NPF05"
+//   keywords     = "surgical simulation physical animation truth cube",
+//   url          = "http://www-evasion.imag.fr/Publications/2005/NMPCPF05"
 // }
+
+
+
+
 
 
 namespace sofa
@@ -60,108 +83,104 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
-
-/// This class can be overridden if needed for additionnal storage within template specializations.
-template<class DataTypes>
-class TetrahedronFEMForceFieldInternalData
-{
-public:
-};
-
-
 /** Compute Finite Element forces based on tetrahedral elements.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class HexahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::VecReal VecReal;
     typedef VecCoord Vector;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
     typedef topology::MeshTopology::index_type Index;
-    typedef topology::MeshTopology::Tetra Element;
-    typedef topology::MeshTopology::SeqTetras VecElement;
+    typedef topology::MeshTopology::Cube Element;
+    typedef topology::MeshTopology::SeqCubes VecElement;
 
-    enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
-            LARGE = 1,   ///< Symbol of large displacements tetrahedron solver
-            POLAR = 2
-         }; ///< Symbol of polar displacements tetrahedron solver
+    static const int LARGE = 0;   ///< Symbol of large displacements tetrahedron solver
+    static const int POLAR = 1;   ///< Symbol of polar displacements tetrahedron solver
 
 protected:
+    //component::MechanicalObject<DataTypes>* object;
 
-    /// @name Per element (tetrahedron) data
-    /// @{
+    typedef Vec<24, Real> Displacement;		///< the displacement vector
 
-    /// Displacement vector (deformation of the 4 corners of a tetrahedron
-    typedef Vec<12, Real> Displacement;
+    typedef Mat<6, 6, Real> MaterialStiffness;	///< the matrix of material stiffness
+    typedef vector<MaterialStiffness> VecMaterialStiffness;         ///< a vector of material stiffness matrices
+    VecMaterialStiffness _materialsStiffnesses;					///< the material stiffness matrices vector
 
-    /// Material stiffness matrix of a tetrahedron
-    typedef Mat<6, 6, Real> MaterialStiffness;
+    typedef Mat<24, 24, Real> ElementStiffness;
+    typedef vector<ElementStiffness> VecElementStiffness;
+    VecElementStiffness _elementStiffnesses;
 
-    /// Strain-displacement matrix
-    typedef Mat<12, 6, Real> StrainDisplacement;
+    typedef Mat<3, 3, Real> Mat33;
+    typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
 
-    /// Rigid transformation (rotation) matrix
-    typedef Mat<3, 3, Real> Transformation;
 
-    /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
-    typedef Mat<12, 12, Real> StiffnessMatrix;
-
-    /// @}
-
-    /// Vector of material stiffness of each tetrahedron
-    typedef vector<MaterialStiffness> VecMaterialStiffness;
-    typedef vector<StrainDisplacement> VecStrainDisplacement;  ///< a vector of strain-displacement matrices
-
-    /// Vector of material stiffness matrices of each tetrahedron
-    VecMaterialStiffness _materialsStiffnesses;
-    VecStrainDisplacement _strainDisplacements;   ///< the strain-displacement matrices vector
-
-    /// @name Full system matrix assembly support
-    /// @{
+//         typedef Mat<24, 24, Real> StiffnessMatrix;
 
     typedef std::pair<int,Real> Col_Value;
     typedef vector< Col_Value > CompressedValue;
     typedef vector< CompressedValue > CompressedMatrix;
-
     CompressedMatrix _stiffnesses;
-    /// @}
-
     double m_potentialEnergy;
+
 
     topology::MeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
     VecCoord _initialPoints; ///< the intial positions of the points
 
-    TetrahedronFEMForceFieldInternalData<DataTypes> data;
+private:
+    Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
+    static const int _indices[8]; ///< indices ordering is different than in topology node
 
 public:
 
     DataField<int> f_method; ///< the computation method of the displacements
     DataField<Real> f_poissonRatio;
     DataField<Real> f_youngModulus;
-    DataField<VecReal> f_localStiffnessFactor;
-    //DataField<Real> f_dampingRatio;
     DataField<bool> f_updateStiffnessMatrix;
     DataField<bool> f_assembling;
 
-    TetrahedronFEMForceField()
+
+    HexahedronFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
-        , f_method(dataField(&f_method,(int)LARGE,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
-        , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
-        , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
-        , f_localStiffnessFactor(dataField(&f_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
-        //, f_dampingRatio(dataField(&f_dampingRatio,(Real)0,"dampingRatio",""))
-        , f_updateStiffnessMatrix(dataField(&f_updateStiffnessMatrix,true,"updateStiffnessMatrix",""))
+        , f_method(dataField(&f_method,0,"method","0: large displacements by QR, 1: large displacements by polar"))
+        , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
+        , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus",""))
+        , f_updateStiffnessMatrix(dataField(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
         , f_assembling(dataField(&f_assembling,false,"assembling",""))
-    {}
+    {
+        _coef[0][0]=-1;
+        _coef[1][0]=1;
+        _coef[2][0]=1;
+        _coef[3][0]=-1;
+        _coef[4][0]=-1;
+        _coef[5][0]=1;
+        _coef[6][0]=1;
+        _coef[7][0]=-1;
+        _coef[0][1]=-1;
+        _coef[1][1]=-1;
+        _coef[2][1]=1;
+        _coef[3][1]=1;
+        _coef[4][1]=-1;
+        _coef[5][1]=-1;
+        _coef[6][1]=1;
+        _coef[7][1]=1;
+        _coef[0][2]=-1;
+        _coef[1][2]=-1;
+        _coef[2][2]=-1;
+        _coef[3][2]=-1;
+        _coef[4][2]=1;
+        _coef[5][2]=1;
+        _coef[6][2]=1;
+        _coef[7][2]=1;
+    }
 
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
@@ -174,6 +193,8 @@ public:
     void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 
     void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
+
+    //	component::MechanicalObject<DataTypes>* getObject() { return object; }
 
     virtual void init();
     virtual void reinit();
@@ -197,33 +218,26 @@ public:
 
 protected:
 
-    void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
-    Real peudo_determinant_for_coef ( const Mat<2, 3, Real>&  M );
 
-    void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
+    void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes);
+    Mat33 integrateStiffness( const Real xmin, const Real xmax, const Real ymin, const Real ymax, const Real zmin, const Real zmax, int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  );
 
-    void computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d);
+    void computeMaterialStiffness(int i);
 
-    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
+    void computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
 
-    ////////////// small displacements method
-    void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
-    void accumulateForceSmall( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
 
     ////////////// large displacements method
-    vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
+    vector<fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
     vector<Transformation> _rotations;
-    void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
-    void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
-    void accumulateForceLarge( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3 );
+    void initLarge(int i, const Element&elem);
+    void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
+    void accumulateForceLarge( Vector& f, const Vector & p, int i, const Element&elem  );
 
     ////////////// polar decomposition method
-    vector<Transformation> _initialTransformation;
-    void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
-    void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
-    void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
+    void initPolar(int i, const Element&elem);
+    void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
+    void accumulateForcePolar( Vector& f, const Vector & p, int i, const Element&elem  );
 };
 
 } // namespace forcefield

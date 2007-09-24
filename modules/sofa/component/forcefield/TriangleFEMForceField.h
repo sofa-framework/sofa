@@ -40,6 +40,19 @@
 
 
 
+// corotational triangle from
+// @InProceedings{NPF05,
+//   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
+//   title        = "Efficient, Physically Plausible Finite Elements",
+//   booktitle    = "Eurographics (short papers)",
+//   month        = "august",
+//   year         = "2005",
+//   editor       = "J. Dingliana and F. Ganovelli",
+//   keywords     = "animation, physical model, elasticity, finite elements",
+//   url          = "http://www-evasion.imag.fr/Publications/2005/NPF05"
+// }
+
+
 
 namespace sofa
 {
