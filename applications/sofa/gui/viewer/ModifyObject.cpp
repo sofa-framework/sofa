@@ -74,6 +74,7 @@ namespace guiviewer
 
 using namespace  sofa::defaulttype;
 using sofa::component::topology::PointSubset;
+using sofa::core::objectmodel::FieldBase;
 
 #ifndef QT_MODULE_QT3SUPPORT
 typedef QGrid     Q3Grid;

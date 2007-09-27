@@ -93,8 +93,8 @@ protected:
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
     void updateContext( GNode *node );
 
-    bool createTable(FieldBase* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
-    void storeTable(Q3Table* table, FieldBase* field);
+    bool createTable(core::objectmodel::FieldBase* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
+    void storeTable(Q3Table* table, core::objectmodel::FieldBase* field);
 
     void createVector(const Vec<6,double>  &value, Q3GroupBox *box);
     void createVector(const Vec<6,float>   &value, Q3GroupBox *box);
@@ -126,7 +126,7 @@ protected:
     QPushButton *buttonUpdate;
     std::list< QObject* >                         list_Object;
     std::list< std::list< QObject* > * >          list_PointSubset;
-    std::list< std::pair< Q3Table*, FieldBase*> > list_Table;
+    std::list< std::pair< Q3Table*, core::objectmodel::FieldBase*> > list_Table;
     int Id;
 };
 
