@@ -91,7 +91,7 @@ SOURCES +=  \
 
 SOFA_DIR = ../../..
 TEMPLATE = lib
-include($$SOFA_DIR/sofa.cfg)
+include($${SOFA_DIR}/sofa.cfg)
 TARGET = sofacore$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX

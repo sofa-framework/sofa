@@ -54,16 +54,6 @@ int main(int, char** argv)
     GNode* groot = new sofa::simulation::tree::GNode;
     groot->setName( "root" );
 
-    // One solver for all the graph
-    OdeSolver* solver = new OdeSolver;
-    groot->addObject(solver);
-    solver->f_printLog.setValue(false);
-
-    // Set gravity for all the graph
-    Gravity* gravity =  new Gravity;
-    groot->addObject(gravity);
-    gravity->f_gravity.setValue( Vec3(0,-10,0) );
-
 
     //-------------------- Deformable body
     GNode* deformableBody = new GNode;
@@ -139,6 +129,16 @@ int main(int, char** argv)
     groot->addObject(iff);
     iff->setName("Interaction force");
     iff->addSpring( 1,0, 10., 1., splength );
+
+    // ----------------  One solver for the whole  graph
+    OdeSolver* solver = new OdeSolver;
+    groot->addObject(solver);
+    solver->f_printLog.setValue(false);
+
+    // Set gravity for the whole graph
+    Gravity* gravity =  new Gravity;
+    groot->addObject(gravity);
+    gravity->f_gravity.setValue( Vec3(0,-10,0) );
 
 
 

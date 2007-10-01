@@ -2,7 +2,7 @@
 
 SOFA_DIR = ../../../..
 TEMPLATE = lib
-include($$SOFA_DIR/sofa.cfg)
+include($${SOFA_DIR}/sofa.cfg)
 
 TARGET = sofaguiglut$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES

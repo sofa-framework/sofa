@@ -1,7 +1,7 @@
 SOFA_DIR=../../..
 TEMPLATE = app
 
-include($$SOFA_DIR/sofa.cfg)
+include($${SOFA_DIR}/sofa.cfg)
 
 TARGET = oneTetrahedron$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin

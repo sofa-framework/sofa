@@ -15,6 +15,8 @@
     <ignoreparts/>
     <secondaryLanguages/>
     <versioncontrol>kdevsubversion</versioncontrol>
+    <projectname>mixedPendulum</projectname>
+    <defaultencoding/>
   </general>
   <kdevfileview>
     <groups>
@@ -104,8 +106,13 @@
       <terminal>false</terminal>
       <autocompile>true</autocompile>
       <envvars>
-        <envvar value="../../../lib/linux:$LD_LIBRARY_PATH" name="LD_LIBRARY_PATH" />
+        <envvar value="../../../lib/linux:../lib/linux:$LD_LIBRARY_PATH" name="LD_LIBRARY_PATH" />
       </envvars>
+      <globaldebugarguments/>
+      <globalcwd>/disc/ffaure/sofa-dev/trunk/Sofa/applications/tutorials/mixedPendulum</globalcwd>
+      <useglobalprogram>true</useglobalprogram>
+      <autoinstall>false</autoinstall>
+      <autokdesu>false</autokdesu>
     </run>
     <general>
       <activedir></activedir>
@@ -120,6 +127,11 @@
       <runmultiplejobs>false</runmultiplejobs>
     </make>
     <subclassing/>
+    <qmake>
+      <savebehaviour>2</savebehaviour>
+      <replacePaths>false</replacePaths>
+      <disableDefaultOpts>true</disableDefaultOpts>
+    </qmake>
   </kdevtrollproject>
   <kdevfilecreate>
     <filetypes/>
@@ -143,6 +155,21 @@
       <codeCompletionDelay>250</codeCompletionDelay>
       <argumentsHintDelay>400</argumentsHintDelay>
       <headerCompletionDelay>250</headerCompletionDelay>
+      <showOnlyAccessibleItems>false</showOnlyAccessibleItems>
+      <completionBoxItemOrder>0</completionBoxItemOrder>
+      <howEvaluationContextMenu>true</howEvaluationContextMenu>
+      <showCommentWithArgumentHint>true</showCommentWithArgumentHint>
+      <statusBarTypeEvaluation>false</statusBarTypeEvaluation>
+      <namespaceAliases>std=_GLIBCXX_STD;__gnu_cxx=std</namespaceAliases>
+      <processPrimaryTypes>true</processPrimaryTypes>
+      <processFunctionArguments>false</processFunctionArguments>
+      <preProcessAllHeaders>false</preProcessAllHeaders>
+      <parseMissingHeadersExperimental>false</parseMissingHeadersExperimental>
+      <resolveIncludePathsUsingMakeExperimental>false</resolveIncludePathsUsingMakeExperimental>
+      <alwaysParseInBackground>true</alwaysParseInBackground>
+      <usePermanentCaching>true</usePermanentCaching>
+      <alwaysIncludeNamespaces>false</alwaysIncludeNamespaces>
+      <includePaths>.;</includePaths>
     </codecompletion>
     <creategettersetter>
       <prefixGet/>
@@ -155,11 +182,21 @@
     <qt>
       <used>false</used>
       <version>3</version>
-      <root>/usr/lib/qt3</root>
+      <root>/usr/lib/qt-3.3/</root>
+      <includestyle>3</includestyle>
+      <designerintegration>EmbeddedKDevDesigner</designerintegration>
+      <qmake>/usr/lib/qt-3.3/bin/qmake</qmake>
+      <designer>/usr/lib/qt-3.3//bin/designer</designer>
+      <designerpluginpaths/>
     </qt>
     <designerintegration>
       <qtdesigner/>
     </designerintegration>
+    <splitheadersource>
+      <enabled>false</enabled>
+      <synchronize>true</synchronize>
+      <orientation>Vertical</orientation>
+    </splitheadersource>
   </kdevcppsupport>
   <cppsupportpart>
     <filetemplates>

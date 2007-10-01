@@ -3,7 +3,7 @@
 # 
 
 SOFA_DIR = ../..
-include($$SOFA_DIR/sofa.cfg)
+include($${SOFA_DIR}/sofa.cfg)
 
 TARGET = load$$LIBSUFFIX
 TEMPLATE = lib

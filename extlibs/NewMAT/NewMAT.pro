@@ -2,10 +2,10 @@
 
 SOFA_DIR = ../..
 TEMPLATE = lib
-include($$SOFA_DIR/sofa.cfg)
+include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = NewMAT$$LIBSUFFIX
-CONFIG += $$CONFIGLIBRARIES
+TARGET = NewMAT$${LIBSUFFIX}
+CONFIG += $${CONFIGLIBRARIES}
 
 #DEFINES += use_namespace 
 

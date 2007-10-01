@@ -1,7 +1,7 @@
-SOFA_DIR=.
+SOFA_DIR =.
 TEMPLATE = subdirs
 
-include($$SOFA_DIR/sofa.cfg)
+include($${SOFA_DIR}/sofa.cfg) 
 
 SUBDIRS += extlibs/NewMAT
 SUBDIRS += extlibs/SLC
