@@ -216,9 +216,9 @@ int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVect
     detection->freePoint[1]=Qfree;
 #endif
     detection->normal=PQ;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    detection->distance -= contactDist;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    detection->value -= contactDist;
     return 1;
 }
 
@@ -333,16 +333,16 @@ int MinProximityIntersection::computeIntersection(Point& e1, Triangle& e2, Outpu
     detection->freePoint[1]=Pfree;
 #endif
     detection->normal = QP;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
 
     //printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
     //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
     //{ // The elements are interpenetrating
     //	detection->normal = -detection->normal;
-    //	detection->distance = -detection->distance;
+    //	detection->value = -detection->value;
     //}
-    detection->distance -= contactDist;
+    detection->value -= contactDist;
     return 1;
 }
 
@@ -426,9 +426,9 @@ int MinProximityIntersection::computeIntersection(Point& e1, Line& e2, OutputVec
     detection->freePoint[1]=Pfree;
 #endif
     detection->normal=QP;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    detection->distance -= contactDist;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    detection->value -= contactDist;
     return 1;
 }
 
@@ -472,9 +472,9 @@ int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
     detection->freePoint[1]=Pfree;
 #endif
     detection->normal=PQ;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    detection->distance -= contactDist;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    detection->value -= contactDist;
     return 1;
 }
 
@@ -564,9 +564,9 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Triangle& e2, Outp
     detection->point[0]=Q;
     detection->point[1]=P;
     detection->normal=QP;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    detection->distance -= contactDist;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    detection->value -= contactDist;
     return 1;
 }
 
@@ -636,9 +636,9 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Line& e2, OutputVe
     detection->point[0]=Q;
     detection->point[1]=P;
     detection->normal=QP;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    detection->distance -= contactDist;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    detection->value -= contactDist;
     return 1;
 }
 
@@ -676,9 +676,9 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Point& e2, OutputV
     detection->point[0]=P;
     detection->point[1]=Q;
     detection->normal=PQ;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    detection->distance -= contactDist;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    detection->value -= contactDist;
     return 1;
 }
 
@@ -741,8 +741,8 @@ int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputV
     detection->freePoint[0] = Q;
 #endif
     detection->normal=t2.n();
-    detection->distance = PQ.norm();
-    detection->distance -= contactDist;
+    detection->value = PQ.norm();
+    detection->value -= contactDist;
     return 1;
 }
 

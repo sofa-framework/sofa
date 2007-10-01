@@ -93,9 +93,9 @@ inline int NewProximityIntersection::doIntersectionLineLine(double dist2, const 
     detection->point[0]=p;
     detection->point[1]=q;
     detection->normal=pq;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    //detection->distance -= contactDist;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    //detection->value -= contactDist;
     return 1;
 }
 
@@ -143,9 +143,9 @@ inline int NewProximityIntersection::doIntersectionLinePoint(double dist2, const
         detection->point[1]=q;
         detection->normal = pq;
     }
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    //detection->distance -= contactDist;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    //detection->value -= contactDist;
     return 1;
 }
 
@@ -164,9 +164,9 @@ inline int NewProximityIntersection::doIntersectionPointPoint(double dist2, cons
     detection->point[0]=p;
     detection->point[1]=q;
     detection->normal=pq;
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
-    //detection->distance -= contactDist;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
+    //detection->value -= contactDist;
     return 1;
 }
 
@@ -276,16 +276,16 @@ inline int NewProximityIntersection::doIntersectionTrianglePoint(double dist2, i
         detection->point[1]=q;
         detection->normal = pq;
     }
-    detection->distance = detection->normal.norm();
-    detection->normal /= detection->distance;
+    detection->value = detection->normal.norm();
+    detection->normal /= detection->value;
 
     //printf("\n normale : x = %f , y = %f, z = %f",detection->normal.x(),detection->normal.y(),detection->normal.z());
     //if (e2.getCollisionModel()->isStatic() && detection->normal * e2.n() < -0.95)
     //{ // The elements are interpenetrating
     //	detection->normal = -detection->normal;
-    //	detection->distance = -detection->distance;
+    //	detection->value = -detection->value;
     //}
-    //detection->distance -= contactDist;
+    //detection->value -= contactDist;
     return 1;
 }
 
@@ -309,7 +309,7 @@ int NewProximityIntersection::computeIntersection(Sphere& e1, Point& e2, OutputV
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;
@@ -335,7 +335,7 @@ int NewProximityIntersection::computeIntersection(Sphere& e1, Sphere& e2, Output
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;
@@ -359,7 +359,7 @@ int NewProximityIntersection::computeIntersection(Line& e1, Sphere& e2, OutputVe
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;
@@ -384,7 +384,7 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Sphere& e2, Outp
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;

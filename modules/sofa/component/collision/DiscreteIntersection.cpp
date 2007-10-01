@@ -265,7 +265,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
                     detection->normal = gnormal;
-                    detection->distance = d;
+                    detection->value = d;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
                     detection->id = i;
@@ -312,7 +312,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
                     detection->normal = gnormal;
-                    detection->distance = d;
+                    detection->value = d;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
                     detection->id = i;
@@ -357,7 +357,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 detection->point[0] = Vector3(p1);
                 detection->point[1] = Vector3(p2) - grad * d;
                 detection->normal = r2 * -grad; // normal in global space from p1's surface
-                detection->distance = d;
+                detection->value = d;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = i;
@@ -407,7 +407,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
                     detection->normal = gnormal;
-                    detection->distance = d;
+                    detection->value = d;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
                     detection->id = i + i0;
@@ -451,7 +451,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     detection->point[0] = Vector3(p1);
                     detection->point[1] = Vector3(p2);
                     detection->normal = gnormal;
-                    detection->distance = d;
+                    detection->value = d;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
                     detection->id = i + i0;
@@ -553,7 +553,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 detection->point[0] = Vector3(p1); // - normal * d;
                 detection->point[1] = Vector3(p2);
                 detection->normal = normal;
-                detection->distance = d;
+                detection->value = d;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = i0+i;
@@ -598,7 +598,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
                 detection->normal = r1 * grad; // normal in global space from p1's surface
-                detection->distance = d;
+                detection->value = d;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = i0+i;
@@ -654,7 +654,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     detection->point[0] = Vector3(p1) - grad * d;
     detection->point[1] = Vector3(p2);
     detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-    detection->distance = d - d0;
+    detection->value = d - d0;
     detection->elem.first = e1;
     detection->elem.second = e2;
     detection->id = e2.getIndex();
@@ -711,7 +711,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
                 detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-                detection->distance = d - d0;
+                detection->value = d - d0;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = e2.getIndex()*3+0;
@@ -752,7 +752,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
                 detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-                detection->distance = d - d0;
+                detection->value = d - d0;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = e2.getIndex()*3+1;
@@ -793,7 +793,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
                 detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-                detection->distance = d - d0;
+                detection->value = d - d0;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = e2.getIndex()*3+2;
@@ -913,7 +913,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
             detection->point[0] = p;
             detection->point[1] = e2.origin() + e2.direction()*l0;
             detection->normal = -e2.direction(); // normal in global space from p1's surface
-            detection->distance = dist;
+            detection->value = dist;
             detection->elem.first = e1;
             detection->elem.second = e2;
             detection->id = e2.getIndex();
@@ -991,7 +991,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                 detection->point[0] = grid1->meshPts[c1.points[i].index];
                 detection->point[1] = Vector3(p2) - grad * d;
                 detection->normal = r2 * -grad; // normal in global space from p1's surface
-                detection->distance = d - d0;
+                detection->value = d - d0;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = i0 + c1.points[i].index;
@@ -1054,7 +1054,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                                 detection->point[0] = Vector3(pinit);
                                 detection->point[1] = Vector3(p2);
                                 detection->normal = Vector3(grad); // normal in global space from p1's surface
-                                detection->distance = d - d0;
+                                detection->value = d - d0;
                                 detection->elem.first = e1;
                                 detection->elem.second = e2;
                                 detection->id = i;
@@ -1160,7 +1160,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                             detection->point[0] = Vector3(grid1->meshPts[c1.points[i].index]);
                             detection->point[1] = Vector3(pinit);
                             detection->normal = Vector3(-grad); // normal in global space from p1's surface
-                            detection->distance = d - d0;
+                            detection->value = d - d0;
                             detection->elem.first = e1;
                             detection->elem.second = e2;
                             detection->id = c1.points[i].index;
@@ -1237,7 +1237,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                             detection->point[0] = Vector3(pinit);
                             detection->point[1] = Vector3(grid2->meshPts[c2.points[i].index]);
                             detection->normal = Vector3(grad); // normal in global space from p1's surface
-                            detection->distance = d - d0;
+                            detection->value = d - d0;
                             detection->elem.first = e1;
                             detection->elem.second = e2;
                             detection->id = i0+c2.points[i].index;
@@ -1328,7 +1328,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                     detection->point[0] = Vector3(pinit);
                     detection->point[1] = Vector3(p2);
                     detection->normal = Vector3(grad); // normal in global space from p1's surface
-                    detection->distance = d - d0;
+                    detection->value = d - d0;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
                     detection->id = e2.getIndex();
@@ -1422,7 +1422,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                         detection->point[0] = Vector3(pinit);
                         detection->point[1] = Vector3(p2);
                         detection->normal = Vector3(grad); // normal in global space from p1's surface
-                        detection->distance = d - d0;
+                        detection->value = d - d0;
                         detection->elem.first = e1;
                         detection->elem.second = e2;
                         detection->id = e2.getIndex()*3+0;
@@ -1494,7 +1494,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                         detection->point[0] = Vector3(pinit);
                         detection->point[1] = Vector3(p2);
                         detection->normal = Vector3(grad); // normal in global space from p1's surface
-                        detection->distance = d - d0;
+                        detection->value = d - d0;
                         detection->elem.first = e1;
                         detection->elem.second = e2;
                         detection->id = e2.getIndex()*3+1;
@@ -1566,7 +1566,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                         detection->point[0] = Vector3(pinit);
                         detection->point[1] = Vector3(p2);
                         detection->normal = Vector3(grad); // normal in global space from p1's surface
-                        detection->distance = d - d0;
+                        detection->value = d - d0;
                         detection->elem.first = e1;
                         detection->elem.second = e2;
                         detection->id = e2.getIndex()*3+2;
@@ -1679,7 +1679,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                 detection->point[0] = c1.initpos(b);
                 detection->point[1] = e2.origin() + e2.direction()*rayPos;
                 detection->normal = -e2.direction(); // normal in global space from p1's surface
-                detection->distance = d;
+                detection->value = d;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = e2.getIndex();

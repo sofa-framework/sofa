@@ -76,7 +76,7 @@ public:
  *  \item id: unique id of the contact for the given pair of collision models.
  *  \item point: contact points on the surface of each model.
  *  \item normal: normal of the contact, pointing outward from the first model.
- *  \item distance: signed distance (negative if objects are interpenetrating).
+ *  \item value: signed distance (negative if objects are interpenetrating).
  *  \item deltaT: estimated of time of contact.
  *
  *  The contact id is used to filter redundant contacts (only the contact with
@@ -100,12 +100,15 @@ public:
 #endif
     /// Normal of the contact, pointing outward from the first model
     Vector3 normal;
+    /*
     /// Signed distance (negative if objects are interpenetrating). If using a proximity-based detection, this is the actual distance between the objets minus the specified contact distance.
-    double distance;
+    */
+    /// Store information for the collision Response. Depending on the kind of contact, can be a distance, or a pression, ...
+    double value;
     /// If using a continuous collision detection, estimated of time of contact.
     double deltaT;
     DetectionOutput()
-        : elem(NULL, NULL), id(0), distance(0.0), deltaT(0.0)
+        : elem(NULL, NULL), id(0), value(0.0), deltaT(0.0)
     {
     }
 };

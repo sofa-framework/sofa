@@ -128,7 +128,7 @@ int NewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;
@@ -150,7 +150,7 @@ int NewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVec
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;
@@ -174,7 +174,7 @@ int NewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVect
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;
@@ -197,7 +197,7 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Outpu
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;
@@ -246,7 +246,7 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Output
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;
@@ -300,7 +300,7 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, Ou
         for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
         {
             detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->distance -= contactDist;
+            detection->value -= contactDist;
         }
     }
     return n;
@@ -362,8 +362,8 @@ int NewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputV
     detection->freePoint[0] = Q;
 #endif
     detection->normal=t2.n();
-    detection->distance = PQ.norm();
-    detection->distance -= contactDist;
+    detection->value = PQ.norm();
+    detection->value -= contactDist;
     return 1;
 }
 

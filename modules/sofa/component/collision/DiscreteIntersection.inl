@@ -200,7 +200,7 @@ int DiscreteIntersection::computeIntersection( Sphere& sph, Triangle& triangle, 
         detection->point[1] = projPoint;
         detection->point[0] = sph.center() - detection->normal * sph.r();
 
-        detection->distance = -distance;
+        detection->value = -distance;
         //detection->elem.first = triangle;
         //detection->elem.second = sph;
         detection->elem.first = sph;
@@ -270,7 +270,7 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, Sphere& sph2, Output
     detection->point[0] = sph1.center() + detection->normal * sph1.r();
     detection->point[1] = sph2.center() - detection->normal * sph2.r();
 
-    detection->distance = distSph1Sph2 - r;
+    detection->value = distSph1Sph2 - r;
     detection->elem.first = sph1;
     detection->elem.second = sph2;
     detection->id = (sph1.getCollisionModel()->getSize() > sph2.getCollisionModel()->getSize()) ? sph1.getIndex() : sph2.getIndex();
@@ -312,7 +312,7 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, Ray& ray2, OutputVec
     detection->normal = detection->point[1] - sph1Pos;
     detection->normal /= dist;
     detection->point[0] = sph1Pos + detection->normal * radius1;
-    detection->distance = dist - radius1;
+    detection->value = dist - radius1;
     detection->elem.first = sph1;
     detection->elem.second = ray2;
     detection->id = ray2.getIndex();
@@ -367,7 +367,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     detection->point[0] = Vector3(p1) - grad * d;
     detection->point[1] = Vector3(p2);
     detection->normal = (useXForm) ? r1 * grad : grad; // normal in global space from p1's surface
-    detection->distance = d - d0;
+    detection->value = d - d0;
     detection->elem.first = e1;
     detection->elem.second = e2;
     detection->id = e2.getIndex();
@@ -436,7 +436,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
                     detection->point[0] = Vector3(pinit);
                     detection->point[1] = Vector3(p2);
                     detection->normal = Vector3(grad); // normal in global space from p1's surface
-                    detection->distance = d - d0;
+                    detection->value = d - d0;
                     detection->elem.first = e1;
                     detection->elem.second = e2;
                     detection->id = e2.getIndex();
