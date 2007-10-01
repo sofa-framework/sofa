@@ -98,7 +98,7 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         {
             int i2 = -1-index;
             DetectionOutput* o2 = &outputs[i2];
-            if (o2->distance <= o->distance)
+            if (o2->value <= o->value)
             {
                 // current contact is ignored
                 oldIndex[i] = -1;
