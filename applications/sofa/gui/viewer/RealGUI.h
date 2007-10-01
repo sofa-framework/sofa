@@ -213,6 +213,7 @@ private:
 
     //At initialization: list of the path to the basic objects you can add to the scene
     std::vector< std::string > list_object;
+
     std::string list_demo[3];
 
     //Bounding Box of each object
@@ -223,7 +224,7 @@ private:
     std::list< GNode *> list_object_added;
     std::list< GNode *> list_object_removed;
     std::list< GNode *> list_object_initial;
-
+    std::list< GNode* > list_node_contactPoints;
 
 
     bool setViewer(const char* name);

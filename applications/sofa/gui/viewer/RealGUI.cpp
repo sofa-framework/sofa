@@ -352,9 +352,7 @@ void RealGUI::init()
 
     current_Id_modifyDialog = 0;
     map_modifyDialogOpened.clear();
-    list_object_added.clear();
-    list_object_removed.clear();
-    list_object_initial.clear();
+
 
 
     int end;
@@ -697,6 +695,11 @@ void RealGUI::fileOpen(const char* filename)
 
 void RealGUI::fileOpen(const char* filename, bool keepParams)
 {
+    list_object_added.clear();
+    list_object_removed.clear();
+    list_object_initial.clear();
+    list_node_contactPoints.clear();
+
     //Hide the dialog to add a new object in the graph
     if (dialog != NULL) dialog->hide();
     //Hide all the dialogs to modify the graph
@@ -706,8 +709,7 @@ void RealGUI::fileOpen(const char* filename, bool keepParams)
     current_Id_modifyDialog=0;
     map_modifyDialogOpened.clear();
 
-    list_object_added.clear();
-    list_object_removed.clear();
+
     //left_stack->removeWidget(viewer->getQWidget());
     //graphListener->removeChild(NULL, groot);
     //delete viewer;
@@ -720,6 +722,8 @@ void RealGUI::fileOpen(const char* filename, bool keepParams)
         return;
     }
     setScene(groot, filename, keepParams);
+
+
 }
 
 #ifdef SOFA_PML
@@ -758,6 +762,7 @@ void RealGUI::lmlOpen(const char* filename)
 
 void RealGUI::setScene(GNode* groot, const char* filename, bool keepParams)
 {
+
     if (viewer->getScene()!=NULL)
     {
 
@@ -821,7 +826,12 @@ void RealGUI::setScene(GNode* groot, const char* filename, bool keepParams)
     for( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it)
     {
         if (GNode *current_node = dynamic_cast< GNode *>((*it).first) )
-        {list_object_initial.push_back(current_node); list_object_initial.push_back(dynamic_cast< GNode *>(current_node->getParent()));}
+        {
+            list_object_initial.push_back(current_node);
+            list_object_initial.push_back(dynamic_cast< GNode *>(current_node->getParent()));
+            if (current_node->getName() == "contactPoints" )
+                list_node_contactPoints.push_back(current_node);
+        }
     }
 
 
@@ -1198,10 +1208,16 @@ void RealGUI::resetScene()
     current_Id_modifyDialog=0;
     map_modifyDialogOpened.clear();
 
+
+    std::list< GNode *>::iterator it;
     //**************************************************************
     //GRAPH MANAGER
+    bool isFrozen = graphListener->frozen;
+    graphListener->unfreeze(groot);
+    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator;
+
+
     //Remove all the objects added
-    std::list< GNode *>::iterator it;
     bool node_removed ;
     for (it=list_object_added.begin(); it != list_object_added.end(); it++)
     {
@@ -1247,6 +1263,29 @@ void RealGUI::resetScene()
 
     list_object_removed.clear();
 
+
+    //Remove all the nodes contactPoints except those present at initialization
+    for (graph_iterator = graphListener->items.begin(); graph_iterator != graphListener->items.end(); graph_iterator++)
+    {
+        if( (*graph_iterator).first->getName() == std::string("contactPoints") && dynamic_cast< GNode *>( (*graph_iterator).first))
+        {
+            for (it=list_node_contactPoints.begin(); it != list_node_contactPoints.end(); it++)
+            {
+                if ( (*graph_iterator).first == (*it)) break;
+            }
+            if (it != list_node_contactPoints.end()) continue;
+            GNode *contactPointsNode = dynamic_cast< GNode *> ((*graph_iterator).first);
+            GNode *parent            = dynamic_cast< GNode *> (contactPointsNode->getParent());
+            parent->removeChild( contactPointsNode);
+            graphListener->removeChild(parent, contactPointsNode);
+
+            //Deleting this pointer leads to a seg fault due to the command mapping->getContext() in the "BarycentricContactMapper.h"
+            //delete contactPointsNode;
+        }
+    }
+
+
+    if (isFrozen) graphListener->freeze(groot);
 
     //Reset the scene
     if (groot)
@@ -2012,7 +2051,7 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
 #else
     bool isAnimated = startButton->isDown();
 #endif
-    ;
+
     playpauseGUI(false);
     //If we add the object without clicking on the graph (direct use of the method),
     //the object will be added to the root node
@@ -2056,6 +2095,7 @@ void RealGUI::loadObject(std::string path, double dx, double dy, double dz, doub
 
     std::cout << "Initializing simulation "<<new_node->getName()<<std::endl;
     new_node->execute<InitVisitor>();
+
     if (node_clicked->child.begin() ==  node_clicked->child.end() &&  node_clicked->object.begin() == node_clicked->object.end())
     {
         //Temporary Root : the current graph is empty, and has only a single node "Root"
