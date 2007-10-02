@@ -146,7 +146,7 @@ protected:
         }
     } CubeForIntersection;
     /// return true if there is an intersection between a SegmentForIntersection and a CubeForIntersection
-    bool SparseGridTopology::intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  );
+    bool intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  );
 
 
 };
