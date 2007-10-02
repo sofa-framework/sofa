@@ -28,7 +28,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
-
+#include <sofa/core/objectmodel/DataField.h>
 namespace sofa
 {
 
@@ -41,22 +41,52 @@ namespace io
 using sofa::helper::vector;
 using sofa::defaulttype::Vector3;
 
+using sofa::defaulttype::Vec4f;
+
 class Mesh
 {
 public:
 
-    struct Material
+    class Material
     {
-        std::string name;
-        bool useDiffuse;
-        double diffuse[4];
-        bool useAmbient;
-        double ambient[4];
-        bool useSpecular;
-        double specular[4];
-        bool useShininess;
-        double shininess;
-        bool activated;
+    public:
+        std::string 	name;		/* name of material */
+        Vec4f  diffuse ;	/* diffuse component */
+        Vec4f  ambient ;	/* ambient component */
+        Vec4f  specular;	/* specular component */
+        Vec4f  emissive;	/* emmissive component */
+        float  shininess;	/* specular exponent */
+        bool   useDiffuse;
+        bool   useSpecular;
+        bool   useAmbient;
+        bool   useEmissive;
+        bool   useShininess;
+        bool   activated;
+
+        void setColor(float r, float g, float b, float a);
+
+        inline friend std::ostream& operator << (std::ostream& out, const Material& m )
+        {
+            out   << m.name << "\"";
+            out<< " diffuse=\""       << m.diffuse      << "\"\n";
+            out<< " usediffuse=\""    << m.useDiffuse   << "\"\n";
+            out<< " ambient=\""       <<  m.ambient     << "\"\n";
+            out<< " useambient=\""    <<  m.useAmbient  << "\"\n";
+            out<< " specular=\""      <<  m.specular    << "\"\n";
+            out<< " usespecular=\""   <<  m.useSpecular << "\"\n";
+            out<< " emissive=\""      <<  m.emissive    << "\"\n";
+            out<< " useemissive=\""   <<  m.useEmissive << "\"\n";
+            out<< " shininess=\""     << m.shininess    << "\"\n";;
+            out<< " useshininess=\""  << m.useShininess;
+            return out;
+        }
+        inline friend std::istream& operator >> (std::istream& in, Material & m )
+        {
+            /*         in>>m.mass; */
+            /*         in>>m.volume; */
+            /*         in>>m.inertiaMatrix; */
+            return in;
+        }
 
         Material();
     };
@@ -66,7 +96,7 @@ protected:
     vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
     vector<Vector3> normals;
     vector< vector < vector <int> > > facets;
-    Material material;
+    sofa::core::objectmodel::DataField< Material > material;
 
     std::string textureName;
 public:
@@ -83,7 +113,7 @@ public:
         //std::cout << "facets size : " << facets.size() << std::endl;
         return facets;
     };
-    Material& getMaterial() {return material;};
+    const Material& getMaterial() {return material.getValue();};
 
     std::string& getTextureName()
     {

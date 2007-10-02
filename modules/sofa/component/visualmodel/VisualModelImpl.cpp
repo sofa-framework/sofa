@@ -94,6 +94,56 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*R_PI/180));
     }
+
+    sofa::helper::io::Mesh::Material M=material.getValue();
+    float r,g,b,a;
+    if (arg->getAttribute("ambient")!=NULL)
+    {
+        sscanf(arg->getAttribute("ambient"),"%f %f %f %f", &r, &g, &b, &a);
+        M.ambient = Vec4f(r,g,b,a);
+    }
+    if (arg->getAttribute("useambient")!=NULL)
+    {
+        M.useAmbient = atoi(arg->getAttribute("useambient"))!=0;
+    }
+    if (arg->getAttribute("diffuse")!=NULL)
+    {
+        sscanf(arg->getAttribute("diffuse"),"%f %f %f %f", &r, &g, &b, &a);
+        M.diffuse = Vec4f(r,g,b,a);
+    }
+    if (arg->getAttribute("usediffuse")!=NULL)
+    {
+        M.useDiffuse = atoi(arg->getAttribute("usediffuse"))!=0;
+    }
+    if (arg->getAttribute("emissive")!=NULL)
+    {
+        sscanf(arg->getAttribute("emissive"),"%f %f %f %f", &r, &g, &b, &a);
+        M.emissive = Vec4f(r,g,b,a);
+    }
+    if (arg->getAttribute("useemissive")!=NULL)
+    {
+        M.useEmissive = atoi(arg->getAttribute("useemissive"))!=0;
+    }
+    if (arg->getAttribute("specular")!=NULL)
+    {
+        sscanf(arg->getAttribute("specular"),"%f %f %f %f", &r, &g, &b, &a);
+        M.specular = Vec4f(r,g,b,a);
+    }
+    if (arg->getAttribute("usespecular")!=NULL)
+    {
+        M.useSpecular = atoi(arg->getAttribute("usespecular"))!=0;
+    }
+
+    if (arg->getAttribute("shininess")!=NULL)
+    {
+        sscanf(arg->getAttribute("shininess"),"%f", &a);
+        M.shininess = a;
+    }
+    if (arg->getAttribute("useshininess")!=NULL)
+    {
+        M.useShininess = atoi(arg->getAttribute("useshininess"))!=0;
+    }
+    material.setValue(M);
 }
 
 SOFA_DECL_CLASS(VisualModelImpl)
@@ -103,51 +153,8 @@ int VisualModelImplClass = core::RegisterObject("Generic visual model. If a view
         .addAlias("VisualModel")
         ;
 
-Material& Material::operator=(const helper::io::Mesh::Material &matLoaded)
-{
-    for (int i = 0; i < 4; i++)
-    {
-        ambient[i] = (float) matLoaded.ambient[i];
-        diffuse[i] = (float) matLoaded.diffuse[i];
-        specular[i] = (float) matLoaded.specular[i];
-        emissive[i] = 0.0;
-    }
-    //emissive[3] = 0.0;
-    shininess = (float) matLoaded.shininess;
-    name = matLoaded.name;
-    useDiffuse = matLoaded.useDiffuse;
-    useSpecular = matLoaded.useSpecular;
-    useAmbient = matLoaded.useAmbient;
-    useEmissive = false;
-    useShininess = matLoaded.useShininess;
-    return *this;
-}
-
-Material::Material()
-{
-    for (int i = 0; i < 3; i++)
-    {
-        ambient[i] = 0.75;
-        diffuse[i] = 0.75;
-        specular[i] = 1.0;
-        emissive[i] = 0.0;
-    }
-    ambient[3] = 1.0;
-    diffuse[3] = 1.0;
-    specular[3] = 1.0;
-    emissive[3] = 0.0;
-
-    shininess = 45;
-    name = "Default";
-    useAmbient = true;
-    useDiffuse = true;
-    useSpecular = false;
-    useEmissive = false;
-    useShininess = false;
-}
-
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)
-    : useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true) //, tex(NULL)
+    :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),material(dataField(&material,"material","Material")) //, tex(NULL)
 {
     inputVertices = &vertices;
 }
@@ -159,7 +166,7 @@ VisualModelImpl::~VisualModelImpl()
 
 bool VisualModelImpl::isTransparent()
 {
-    return (material.useDiffuse && material.diffuse[3] < 1.0);
+    return (material.getValue().useDiffuse && material.getValue().diffuse[3] < 1.0);
 }
 
 void VisualModelImpl::draw()
@@ -211,10 +218,14 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             const vector<Vector3> &normalsImport = objLoader->getNormals();
             const vector<Vector3> &texCoordsImport = objLoader->getTexCoords();
 
-            helper::io::Mesh::Material &materialImport = objLoader->getMaterial();
+            const helper::io::Mesh::Material &materialImport = objLoader->getMaterial();
 
             if (materialImport.activated)
-                material = materialImport;
+            {
+                helper::io::Mesh::Material M;
+                M = materialImport;
+                material.setValue(M);
+            }
 
             std::cout << "Vertices Import size : " << verticesImport.size() << " (" << normalsImport.size() << " normals)." << std::endl;
 
@@ -564,21 +575,11 @@ void VisualModelImpl::flipFaces()
     }
 }
 
-void Material::setColor(float r, float g, float b, float a)
-{
-    float f[4] = { r, g, b, a };
-    for (int i=0; i<4; i++)
-    {
-        ambient[i] *= f[i];
-        diffuse[i] *= f[i];
-        specular[i] *= f[i];
-        emissive[i] *= f[i];
-    }
-}
-
 void VisualModelImpl::setColor(float r, float g, float b, float a)
 {
-    material.setColor(r,g,b,a);
+    helper::io::Mesh::Material M = material.getValue();
+    M.setColor(r,g,b,a);
+    material.setValue(M);
 }
 
 static int hexval(char c)
@@ -800,18 +801,18 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         }
         *mtl << "newmtl "<<name<<"\n";
         *mtl << "illum 4\n";
-        if (material.useAmbient)
-            *mtl << "Ka "<<material.ambient[0]<<' '<<material.ambient[1]<<' '<<material.ambient[2]<<"\n";
-        if (material.useDiffuse)
-            *mtl << "Kd "<<material.diffuse[0]<<' '<<material.diffuse[1]<<' '<<material.diffuse[2]<<"\n";
+        if (material.getValue().useAmbient)
+            *mtl << "Ka "<<material.getValue().ambient[0]<<' '<<material.getValue().ambient[1]<<' '<<material.getValue().ambient[2]<<"\n";
+        if (material.getValue().useDiffuse)
+            *mtl << "Kd "<<material.getValue().diffuse[0]<<' '<<material.getValue().diffuse[1]<<' '<<material.getValue().diffuse[2]<<"\n";
         *mtl << "Tf 1.00 1.00 1.00\n";
         *mtl << "Ni 1.00\n";
-        if (material.useSpecular)
-            *mtl << "Ks "<<material.specular[0]<<' '<<material.specular[1]<<' '<<material.specular[2]<<"\n";
-        if (material.useShininess)
-            *mtl << "Ns "<<material.shininess<<"\n";
-        if (material.useDiffuse && material.diffuse[3]<1.0)
-            *mtl << "Tf "<<material.diffuse[3]<<' '<<material.diffuse[3]<<' '<<material.diffuse[3]<<"\n";
+        if (material.getValue().useSpecular)
+            *mtl << "Ks "<<material.getValue().specular[0]<<' '<<material.getValue().specular[1]<<' '<<material.getValue().specular[2]<<"\n";
+        if (material.getValue().useShininess)
+            *mtl << "Ns "<<material.getValue().shininess<<"\n";
+        if (material.getValue().useDiffuse && material.getValue().diffuse[3]<1.0)
+            *mtl << "Tf "<<material.getValue().diffuse[3]<<' '<<material.getValue().diffuse[3]<<' '<<material.getValue().diffuse[3]<<"\n";
 
         *out << "usemtl "<<name<<'\n';
     }

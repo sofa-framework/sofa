@@ -588,6 +588,58 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     }
 
                 }
+                else if(DataField<helper::io::Mesh::Material > *ff = dynamic_cast< DataField<helper::io::Mesh::Material > * >( (*it).second ) )
+                {
+                    helper::io::Mesh::Material material = ff->getValue();
+                    new QLabel("Component", box);
+                    new QLabel("R", box); new QLabel("G", box); new QLabel("B", box);	new QLabel("A", box);
+
+                    QCheckBox* checkBox;
+                    //Ambient Component
+                    checkBox = new QCheckBox(box); list_Object.push_back( (QObject *) checkBox);
+                    checkBox->setChecked(material.useAmbient);
+                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
+                    new QLabel("Ambient", box);
+                    createVector(material.ambient, box);
+
+
+                    //Diffuse Component
+                    checkBox = new QCheckBox(box); list_Object.push_back( (QObject *) checkBox);
+                    checkBox->setChecked(material.useDiffuse);
+                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
+                    new QLabel("Diffuse", box);
+                    createVector(material.diffuse, box);
+
+
+                    //Specular Component
+                    checkBox = new QCheckBox(box); list_Object.push_back( (QObject *) checkBox);
+                    checkBox->setChecked(material.useSpecular);
+                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
+                    new QLabel("Specular", box);
+                    createVector(material.specular, box);
+
+
+                    //Emissive Component
+                    checkBox = new QCheckBox(box); list_Object.push_back( (QObject *) checkBox);
+                    checkBox->setChecked(material.useEmissive);
+                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
+                    new QLabel("Emissive", box);
+                    createVector(material.emissive, box);
+
+                    //Shininess Component
+                    checkBox = new QCheckBox(box); list_Object.push_back( (QObject *) checkBox);
+                    checkBox->setChecked(material.useShininess);
+                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
+                    new QLabel("Shininess", box);
+                    WFloatLineEdit* editShininess = new WFloatLineEdit( box, "editShininess" );
+                    list_Object.push_back( (QObject *) editShininess);
+                    editShininess->setMinFloatValue( 0.0f );
+                    editShininess->setMaxFloatValue( (float)INFINITY );
+                    editShininess->setFloatValue( material.shininess);
+                    connect( editShininess, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+
+                    box->setColumns(6);
+                }
                 //********************************************************************************************************//
                 //Types that needs a QTable: vector of elements
                 else if (createTable( (*it).second, box));
@@ -990,6 +1042,34 @@ void ModifyObject::updateValues()
                 current_mass.inertiaMassMatrix = (double) inertiaMassMatrix->getFloatValue();
 
                 ff->setValue(current_mass);
+            }
+            else if (DataField<helper::io::Mesh::Material > *ff = dynamic_cast< DataField<helper::io::Mesh::Material > * >( (*it).second ))
+            {
+                helper::io::Mesh::Material M;  QCheckBox* checkBox;    WFloatLineEdit* value;
+
+                //Ambient
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useAmbient = checkBox->isOn();
+                for (int i=0; i<4; i++) { value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;	M.ambient[i] = value->getFloatValue();}
+                //Diffuse
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useDiffuse = checkBox->isOn();
+                for (int i=0; i<4; i++) { value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;	M.diffuse[i] = value->getFloatValue();}
+                //Specular
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useSpecular = checkBox->isOn();
+                for (int i=0; i<4; i++) { value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;	M.specular[i] = value->getFloatValue();}
+                //Emissive
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useEmissive = checkBox->isOn();
+                for (int i=0; i<4; i++) { value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;  M.emissive[i] = value->getFloatValue();}
+                //Shininess
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useShininess = checkBox->isOn();
+                value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                M.shininess = value->getFloatValue();
+
+                ff->setValue(M);
             }
             ++i;
         }

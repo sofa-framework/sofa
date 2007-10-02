@@ -39,21 +39,31 @@ namespace io
 
 Mesh::Material::Material()
 {
+    ambient =  Vec4f( 0.75f,0.75f,0.75f,1.0f);
+    diffuse =  Vec4f( 0.75f,0.75f,0.75f,1.0f);
+    specular =  Vec4f( 1.0f,1.0f,1.0f,1.0f);
+    emissive =  Vec4f( 0.0f,0.0f,0.0f,0.0f);
+
+    shininess =  45.0f;
+    name = "Default";
+    useAmbient =  true;
+    useDiffuse =  true;
+    useSpecular =  false;
+    useEmissive =  false;
+    useShininess =  false;
     activated = false;
-    useDiffuse = false;
-    useAmbient = false;
-    useSpecular = false;
-    useShininess = false;
-    for (int i = 0; i < 3; i++)
+}
+
+void Mesh::Material::setColor(float r, float g, float b, float a)
+{
+    float f[4] = { r, g, b, a };
+    for (int i=0; i<4; i++)
     {
-        diffuse[i] = 0.0;
-        ambient[i] = 0.0;
-        specular[i] = 0.0;
+        ambient = Vec4f(f[0],f[1],f[2],f[3]);
+        diffuse = Vec4f(f[0],f[1],f[2],f[3]);
+        specular = Vec4f(f[0],f[1],f[2],f[3]);
+        emissive = Vec4f(f[0],f[1],f[2],f[3]);
     }
-    diffuse[3] = 1.0;
-    ambient[3] = 1.0;
-    specular[3] = 1.0;
-    shininess = 0.0;
 }
 
 Mesh* Mesh::Create(std::string filename)

@@ -46,25 +46,6 @@ namespace visualmodel
 
 using namespace sofa::defaulttype;
 
-struct Material
-{
-    std::string	name;		/* name of material */
-    float	diffuse[4];	/* diffuse component */
-    float	ambient[4];	/* ambient component */
-    float	specular[4];	/* specular component */
-    float	emissive[4];	/* emmissive component */
-    float	shininess;	/* specular exponent */
-    bool useDiffuse;
-    bool useSpecular;
-    bool useAmbient;
-    bool useEmissive;
-    bool useShininess;
-
-    Material& operator= (const helper::io::Mesh::Material &matLoaded);
-    void setColor(float r, float g, float b, float a);
-
-    Material();
-};
 
 class RigidMappedModel : public core::componentmodel::behavior::MappedModel< Rigid3fTypes >
 {
@@ -147,7 +128,7 @@ protected:
     /// If it is empty then each vertex correspond to one normal
     ResizableExtVector<int> vertNormIdx;
 
-    Material material;
+
 
     Vec3f bbox[2];
 
@@ -155,6 +136,7 @@ protected:
     {}
 
 public:
+    DataField< sofa::helper::io::Mesh::Material > material;
 
     VisualModelImpl();
 
