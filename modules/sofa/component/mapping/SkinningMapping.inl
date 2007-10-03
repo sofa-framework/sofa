@@ -59,13 +59,13 @@ class SkinningMapping<BasicMapping>::Loader : public helper::io::MassSpringLoade
 public:
     SkinningMapping<BasicMapping>* dest;
     Loader(SkinningMapping<BasicMapping>* dest) : dest(dest) {}
-    virtual void addMass(double px, double py, double pz, double, double, double, double, double, bool, bool)
+    virtual void addMass(double /*px*/, double /*py*/, double /*pz*/, double, double, double, double, double, bool, bool)
     {
         /*Coord c;
         Out::DataTypes::set(c,px,py,pz);
         dest->initPos.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));*/
     }
-    virtual void addSphere(double px, double py, double pz, double)
+    virtual void addSphere(double /*px*/, double /*py*/, double /*pz*/, double)
     {
         /*Coord c;
         Out::DataTypes::set(c,px,py,pz);

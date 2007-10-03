@@ -78,9 +78,9 @@ public:
 
     SkinningMapping(In* from, Out* to)
         : Inherit(from, to)
-        , nbRefs(dataField(&nbRefs,(unsigned)3,"nbRefs","nb references for skinning"))
-        , coefs(dataField(&coefs,"coefs","weights list for the influences of the references Dofs"))
         , repartition(dataField(&repartition,"repartition","repartition between input DOFs and skinned vertices"))
+        , coefs(dataField(&coefs,"coefs","weights list for the influences of the references Dofs"))
+        , nbRefs(dataField(&nbRefs,(unsigned)3,"nbRefs","nb references for skinning"))
         , computeWeights(true)
     {
     }

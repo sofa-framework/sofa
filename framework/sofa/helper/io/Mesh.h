@@ -80,7 +80,7 @@ public:
             out<< " useshininess=\""  << m.useShininess;
             return out;
         }
-        inline friend std::istream& operator >> (std::istream& in, Material & m )
+        inline friend std::istream& operator >> (std::istream& in, Material & /*m*/ )
         {
             /*         in>>m.mass; */
             /*         in>>m.volume; */
