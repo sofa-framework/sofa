@@ -96,6 +96,12 @@ public:
         return m_value;
     }
 
+    inline friend std::ostream & operator << (std::ostream &out, const DataField& df)
+    {
+        out<<df.getValue();
+        return out;
+    }
+
 protected:
     /// Value
     T m_value;
