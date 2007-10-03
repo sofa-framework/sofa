@@ -429,6 +429,17 @@ public:
                 );
     }
 
+
+    /// sum of all elements of the vector
+    real sum() const
+    {
+        real sum = 0.0;
+        for (int i=0; i<N; i++)
+            sum += this->elems[i];
+        return sum;
+    }
+
+
     /// @name Tests operators
     /// @{
 

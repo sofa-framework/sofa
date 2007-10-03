@@ -109,6 +109,19 @@ public:
         std::copy(p, p+N, this->begin()->begin());
     }
 
+    /// number of lines
+    real getNbLines() const
+    {
+        return L;
+    }
+
+    /// number of colums
+    real getNbCols() const
+    {
+        return C;
+    }
+
+
     /// Assignment from an array of elements (stored per line).
     void operator=(const real* p)
     {
