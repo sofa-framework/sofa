@@ -80,8 +80,7 @@ using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
-using sofa::simulation::tree::Simulation;
-
+using sofa::simulation::tree::getSimulation;
 //extern UserInterface*	GUI;
 //extern OBJmodel*		cubeModel;
 // Quaternion QtGLViewer::_newQuat;
@@ -959,7 +958,7 @@ void QtGLViewer::DisplayOBJs(bool shadowPass)
     {
         std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        Simulation::initTextures(groot);
+        getSimulation()->initTextures(groot);
         //---------------------------------------------------
         initTexturesDone = true;
     }
@@ -967,9 +966,9 @@ void QtGLViewer::DisplayOBJs(bool shadowPass)
     if (!groot->getMultiThreadSimulation())
     {
         if (shadowPass)
-            Simulation::drawShadows(groot);
+            getSimulation()->drawShadows(groot);
         else
-            Simulation::draw(groot);
+            getSimulation()->draw(groot);
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);
@@ -1238,7 +1237,7 @@ void QtGLViewer::DrawScene(void)
 
 void QtGLViewer::viewAll()
 {
-    Simulation::computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
 
     sceneBBoxIsValid = true;
     QGLViewer::setSceneBoundingBox(   qglviewer::Vec(sceneMinBBox.ptr()),qglviewer::Vec(sceneMaxBBox.ptr()) );

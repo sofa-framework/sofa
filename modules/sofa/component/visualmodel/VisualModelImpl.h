@@ -112,11 +112,18 @@ protected:
     bool useNormals; ///< True if normals should be read from file
     bool castShadow; ///< True if object cast shadows
 
+    /*     DataField< ResizableExtVector<Coord> > vertices; */
+    Field< ResizableExtVector<Coord> > field_vertices;
     ResizableExtVector<Coord> vertices;
+
+    Field< ResizableExtVector<Coord> > field_vnormals;
     ResizableExtVector<Coord> vnormals;
+    Field< ResizableExtVector<TexCoord> > field_vtexcoords;
     ResizableExtVector<TexCoord> vtexcoords;
 
+    Field< ResizableExtVector<Triangle> > field_triangles;
     ResizableExtVector<Triangle> triangles;
+    Field< ResizableExtVector<Quad> > field_quads;
     ResizableExtVector<Quad> quads;
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
@@ -128,7 +135,7 @@ protected:
     /// If it is empty then each vertex correspond to one normal
     ResizableExtVector<int> vertNormIdx;
 
-
+    DataField< std::string > texturename;
 
     Vec3f bbox[2];
 

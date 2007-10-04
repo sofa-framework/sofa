@@ -35,7 +35,9 @@ namespace core
 
 template <class In, class Out>
 Mapping<In,Out>::Mapping(In* from, Out* to)
-    : fromModel(from), toModel(to)
+    : fromModel(from), toModel(to),
+      object1(dataField(&object1, std::string("../.."), "object1", "First object to map")),
+      object2(dataField(&object2, std::string(".."), "object2", "Second object to map"))
 {
 }
 

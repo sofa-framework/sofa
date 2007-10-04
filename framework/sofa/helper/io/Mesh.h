@@ -67,24 +67,46 @@ public:
 
         inline friend std::ostream& operator << (std::ostream& out, const Material& m )
         {
+            /*
             out   << m.name << "\"";
-            out<< " diffuse=\""       << m.diffuse      << "\"\n";
-            out<< " usediffuse=\""    << m.useDiffuse   << "\"\n";
-            out<< " ambient=\""       <<  m.ambient     << "\"\n";
-            out<< " useambient=\""    <<  m.useAmbient  << "\"\n";
-            out<< " specular=\""      <<  m.specular    << "\"\n";
-            out<< " usespecular=\""   <<  m.useSpecular << "\"\n";
-            out<< " emissive=\""      <<  m.emissive    << "\"\n";
-            out<< " useemissive=\""   <<  m.useEmissive << "\"\n";
-            out<< " shininess=\""     << m.shininess    << "\"\n";;
-            out<< " useshininess=\""  << m.useShininess;
+            out<< " diffuse=\""       << m.diffuse      << "\"";
+            out<< " usediffuse=\""    << m.useDiffuse   << "\"";
+            out<< " ambient=\""       <<  m.ambient     << "\"";
+            out<< " useambient=\""    <<  m.useAmbient  << "\"";
+            out<< " specular=\""      <<  m.specular    << "\"";
+            out<< " usespecular=\""   <<  m.useSpecular << "\"";
+            out<< " emissive=\""      <<  m.emissive    << "\"";
+            out<< " useemissive=\""   <<  m.useEmissive << "\"";
+            out<< " shininess=\""     << m.shininess    << "\"";;
+            out<< " useshininess=\""  << m.useShininess;*/
+
+            out   << m.name         << " ";
+            out  <<  m.diffuse      << " ";
+            out  <<  m.useDiffuse   << " ";
+            out  <<  m.ambient      << " ";
+            out  <<  m.useAmbient   << " ";
+            out  <<  m.specular     << " ";
+            out  <<  m.useSpecular  << " ";
+            out  <<  m.emissive     << " ";
+            out  <<  m.useEmissive  << " ";
+            out  <<  m.shininess    << " ";;
+            out  <<  m.useShininess;
             return out;
         }
-        inline friend std::istream& operator >> (std::istream& in, Material & /*m*/ )
+        inline friend std::istream& operator >> (std::istream& in, Material &m )
         {
-            /*         in>>m.mass; */
-            /*         in>>m.volume; */
-            /*         in>>m.inertiaMatrix; */
+
+            in  >>  m.name        ;
+            in  >>  m.diffuse     ;
+            in  >>  m.useDiffuse  ;
+            in  >>  m.ambient     ;
+            in  >>  m.useAmbient  ;
+            in  >>  m.specular    ;
+            in  >>  m.useSpecular ;
+            in  >>  m.emissive    ;
+            in  >>  m.useEmissive ;
+            in  >>  m.shininess   ;
+            in  >>  m.useShininess;
             return in;
         }
 

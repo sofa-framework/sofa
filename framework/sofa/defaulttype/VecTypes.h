@@ -198,6 +198,32 @@ public:
     const T* begin() const { return getData(); }
     T* end() { return getData()+size(); }
     const T* end() const { return getData()+size(); }
+
+
+/// Output stream
+    inline friend std::ostream& operator<< ( std::ostream& os, const ExtVector<T>& vec )
+    {
+        if( vec.size()>0 )
+        {
+            for( unsigned int i=0; i<vec.size()-1; ++i ) os<<vec[i]<<" ";
+            os<<vec[vec.size()-1];
+        }
+        return os;
+    }
+
+/// Input stream
+    inline friend std::istream& operator>> ( std::istream& in, ExtVector<T>& vec )
+    {
+        T t;
+        vec.clear();
+        while(in>>t)
+        {
+            vec.push_back(t);
+        }
+        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        return in;
+    }
+
 };
 
 template<class T>

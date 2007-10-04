@@ -55,6 +55,8 @@ protected:
     /// Output Model
     Out* toModel;
 
+    DataField< std::string > object1;
+    DataField< std::string > object2;
 public:
     /// Constructor, taking input and output models as parameters.
     ///
@@ -138,9 +140,15 @@ public:
             (arg?dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))):NULL));
         if (context) context->addObject(obj);
         if ((arg) && (arg->getAttribute("object1")))
+        {
+            obj->object1.setValue( arg->getAttribute("object1") );
             arg->removeAttribute("object1");
+        }
         if ((arg) && (arg->getAttribute("object2")))
+        {
+            obj->object2.setValue( arg->getAttribute("object2") );
             arg->removeAttribute("object2");
+        }
         if (arg) obj->parse(arg);
     }
 };

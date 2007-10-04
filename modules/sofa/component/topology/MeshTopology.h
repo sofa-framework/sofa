@@ -75,8 +75,10 @@ public:
     {
         if (arg->getAttribute("filename"))
         {
+            filename.setValue( arg->getAttribute("filename") );
             this->load(arg->getAttribute("filename"));
-        } arg->removeAttribute("filename");
+        }
+        arg->removeAttribute("filename");
         this->core::componentmodel::topology::Topology::parse(arg);
     }
 
@@ -141,6 +143,9 @@ protected:
     bool         validCubes;
 
     int revision;
+
+    DataField< std::string > filename;
+
     void invalidate();
 
     virtual void updateLines()     { }

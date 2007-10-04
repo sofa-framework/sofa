@@ -56,8 +56,8 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     std::string filename = arg->getAttribute("filename","");
     std::string loader = arg->getAttribute("loader","");
-    std::string texturename = arg->getAttribute("texturename","");
-    obj->load(filename, loader, texturename);
+    texturename.setValue( arg->getAttribute("texturename",""));
+    obj->load(filename, loader, texturename.getValue());
     if (arg->getAttribute("flip")!=NULL)
     {
         obj->flipFaces();
@@ -95,55 +95,6 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
         obj->applyRotation(Quat(Vec3d(0,0,1), atof(arg->getAttribute("rz","0.0"))*R_PI/180));
     }
 
-    sofa::helper::io::Mesh::Material M=material.getValue();
-    float r,g,b,a;
-    if (arg->getAttribute("ambient")!=NULL)
-    {
-        sscanf(arg->getAttribute("ambient"),"%f %f %f %f", &r, &g, &b, &a);
-        M.ambient = Vec4f(r,g,b,a);
-    }
-    if (arg->getAttribute("useambient")!=NULL)
-    {
-        M.useAmbient = atoi(arg->getAttribute("useambient"))!=0;
-    }
-    if (arg->getAttribute("diffuse")!=NULL)
-    {
-        sscanf(arg->getAttribute("diffuse"),"%f %f %f %f", &r, &g, &b, &a);
-        M.diffuse = Vec4f(r,g,b,a);
-    }
-    if (arg->getAttribute("usediffuse")!=NULL)
-    {
-        M.useDiffuse = atoi(arg->getAttribute("usediffuse"))!=0;
-    }
-    if (arg->getAttribute("emissive")!=NULL)
-    {
-        sscanf(arg->getAttribute("emissive"),"%f %f %f %f", &r, &g, &b, &a);
-        M.emissive = Vec4f(r,g,b,a);
-    }
-    if (arg->getAttribute("useemissive")!=NULL)
-    {
-        M.useEmissive = atoi(arg->getAttribute("useemissive"))!=0;
-    }
-    if (arg->getAttribute("specular")!=NULL)
-    {
-        sscanf(arg->getAttribute("specular"),"%f %f %f %f", &r, &g, &b, &a);
-        M.specular = Vec4f(r,g,b,a);
-    }
-    if (arg->getAttribute("usespecular")!=NULL)
-    {
-        M.useSpecular = atoi(arg->getAttribute("usespecular"))!=0;
-    }
-
-    if (arg->getAttribute("shininess")!=NULL)
-    {
-        sscanf(arg->getAttribute("shininess"),"%f", &a);
-        M.shininess = a;
-    }
-    if (arg->getAttribute("useshininess")!=NULL)
-    {
-        M.useShininess = atoi(arg->getAttribute("useshininess"))!=0;
-    }
-    material.setValue(M);
 }
 
 SOFA_DECL_CLASS(VisualModelImpl)
@@ -154,8 +105,20 @@ int VisualModelImplClass = core::RegisterObject("Generic visual model. If a view
         ;
 
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)
-    :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),material(dataField(&material,"material","Material")) //, tex(NULL)
+    :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),
+       field_vertices    (Field< ResizableExtVector<Coord>    >(&vertices,    "vertices of the model") ),
+       field_vnormals    (Field< ResizableExtVector<Coord>    >(&vnormals,    "normals of the model") ),
+       field_vtexcoords  (Field< ResizableExtVector<TexCoord> >(&vtexcoords,  "coordinates of the texture") ),
+       field_triangles   (Field< ResizableExtVector<Triangle> >(&triangles,   "triangles of the model") ),
+       field_quads       (Field< ResizableExtVector<Quad>     >(&quads,       "quads of the model") ),
+       texturename       (dataField                            (&texturename, "texturename","Name of the Texture")),
+       material(dataField(&material,"material","Material")) //, tex(NULL)
 {
+    this->addField(&field_vertices,"position");       field_vertices.beginEdit();
+    this->addField(&field_vnormals,"normals");        field_vnormals.beginEdit();
+    this->addField(&field_vtexcoords,"texcoord");     field_vtexcoords.beginEdit();
+    this->addField(&field_triangles,"triangles");     field_triangles.beginEdit();
+    this->addField(&field_quads,"quads");             field_quads.beginEdit();
     inputVertices = &vertices;
 }
 
@@ -362,7 +325,8 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     }
     else
     {
-        useTopology = true;
+        if (vertices.size() == 0)  useTopology = true;
+        else  computeBBox();
         modified = true;
     }
 
