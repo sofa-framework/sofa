@@ -43,19 +43,6 @@ namespace component
 namespace forcefield
 {
 
-template<class DataTypes>
-void LennardJonesForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->Inherit::parse(arg);
-    if (arg->getAttribute("alpha"))  this->setAlpha((typename DataTypes::Coord::value_type)atof(arg->getAttribute("alpha")));
-    if (arg->getAttribute("beta"))  this->setBeta((typename DataTypes::Coord::value_type)atof(arg->getAttribute("beta")));
-    if (arg->getAttribute("fmax"))  this->setFMax((typename DataTypes::Coord::value_type)atof(arg->getAttribute("fmax")));
-    if (arg->getAttribute("dmax"))  this->setDMax((typename DataTypes::Coord::value_type)atof(arg->getAttribute("dmax")));
-    else if (arg->getAttribute("d0"))  this->setDMax(2*(typename DataTypes::Coord::value_type)atof(arg->getAttribute("d0")));
-    if (arg->getAttribute("d0"))  this->setD0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("d0")));
-    if (arg->getAttribute("p0"))  this->setP0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("p0")));
-    if (arg->getAttribute("damping"))  this->setP0((typename DataTypes::Coord::value_type)atof(arg->getAttribute("damping")));
-}
 
 template<class DataTypes>
 void LennardJonesForceField<DataTypes>::init()
@@ -64,20 +51,20 @@ void LennardJonesForceField<DataTypes>::init()
 
     assert( this->mstate );
 
-    a = (p0 * (Real)pow(d0,alpha)) / (1-alpha/beta);
-    b = (p0 * (Real)pow(d0,beta)) / (beta/alpha-1);
-    std::cout << "Lennard-Jones initialized: alpha="<<alpha<<" beta="<<beta<<" d0="<<d0<<" p0="<<p0<<" a="<<a<<" b="<<b<<std::endl;
+    a = (p0.getValue() * (Real)pow(d0.getValue(),alpha.getValue())) / (1-alpha.getValue()/beta.getValue());
+    b = (p0.getValue() * (Real)pow(d0.getValue(),beta.getValue())) / (beta.getValue()/alpha.getValue()-1);
+    std::cout << "Lennard-Jones initialized: alpha="<<alpha.getValue()<<" beta="<<beta.getValue()<<" d0="<<d0.getValue()<<" p0="<<p0.getValue()<<" a="<<a<<" b="<<b<<std::endl;
     // Validity check: compute force and potential at d0
-    Real f0 = a*alpha*(Real)pow(d0,-alpha-1)-b*beta*(Real)pow(d0,-beta-1);
+    Real f0 = a*alpha.getValue()*(Real)pow(d0.getValue(),-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d0.getValue(),-beta.getValue()-1);
     if (fabs(f0)>0.001)
         std::cerr << "Lennard-Jones initialization failed: f0="<<f0<<std::endl;
-    Real cp0 = (a*(Real)pow(d0,-alpha)-b*(Real)pow(d0,-beta));
-    if (fabs(cp0/p0-1)>0.001)
+    Real cp0 = (a*(Real)pow(d0.getValue(),-alpha.getValue())-b*(Real)pow(d0.getValue(),-beta.getValue()));
+    if (fabs(cp0/p0.getValue()-1)>0.001)
         std::cerr << "Lennard-Jones initialization failed: cp0="<<cp0<<std::endl;
     // Debug
-    for (Real d = 0; d<dmax; d+= dmax/60)
+    for (Real d = 0; d<dmax.getValue(); d+= dmax.getValue()/60)
     {
-        Real f = a*alpha*(Real)pow(d,-alpha-1)-b*beta*(Real)pow(d,-beta-1);
+        Real f = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1)-b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
         std::cout << "f("<<d<<")="<<f<<std::endl;
     }
 }
@@ -85,7 +72,7 @@ void LennardJonesForceField<DataTypes>::init()
 template<class DataTypes>
 void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
 {
-    Real dmax2 = dmax*dmax;
+    Real dmax2 = dmax.getValue()*dmax.getValue();
     this->dforces.clear();
     f1.resize(p1.size());
     for (unsigned int ib=1; ib<p1.size(); ib++)
@@ -98,27 +85,27 @@ void LennardJonesForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
             const Real d2 = u.norm2();
             if (d2 >= dmax2) continue;
             const Real d = (Real)sqrt(d2);
-            const Real fa = a*alpha*(Real)pow(d,-alpha-1);
-            const Real fb = b*beta*(Real)pow(d,-beta-1);
+            const Real fa = a*alpha.getValue()*(Real)pow(d,-alpha.getValue()-1);
+            const Real fb = b*beta.getValue()*(Real)pow(d,-beta.getValue()-1);
             Real forceIntensity = fa - fb;
             //std::cout << ia<<"-"<<ib<<" d="<<d<<" f="<<forceIntensity<<std::endl;
             DForce df;
             df.a = ia;
             df.b = ib;
-            if (forceIntensity > fmax)
+            if (forceIntensity > fmax.getValue())
             {
-                forceIntensity = fmax;
+                forceIntensity = fmax.getValue();
                 df.df = 0;
             }
             else
             {
-                df.df = ((-alpha-1)*fa - (-beta-1)*fb)/(d*d2);
+                df.df = ((-alpha.getValue()-1)*fa - (-beta.getValue()-1)*fb)/(d*d2);
             }
             this->dforces.push_back(df);
             Deriv force = u*(forceIntensity/d);
 
             // Add damping
-            force += (v1[ib]-v1[ia])*damping;
+            force += (v1[ib]-v1[ia])*damping.getValue();
 
             f1[ia]+=force;
             f1[ib]-=force;
@@ -159,7 +146,7 @@ void LennardJonesForceField<DataTypes>::draw()
     const VecCoord& p1 = *this->mstate->getX();
     glDisable(GL_LIGHTING);
     glBegin(GL_LINES);
-    const Real d02 = this->d0*this->d0;
+    const Real d02 = this->d0.getValue()*this->d0.getValue();
     for (unsigned int i=0; i<this->dforces.size(); i++)
     {
         const DForce& df = this->dforces[i];

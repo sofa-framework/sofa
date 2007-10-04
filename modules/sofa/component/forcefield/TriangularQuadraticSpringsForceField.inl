@@ -155,6 +155,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleDestroyFunctio
 }
 template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::TriangularQuadraticSpringsForceField()
     : _mesh(NULL)
+    , _initialPoints(dataField(&_initialPoints,"initialPoints", "Initial Position"))
     , updateMatrix(true)
     , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(dataField(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
@@ -203,10 +204,12 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     /// prepare to store info in the edge array
     edgeInfo.resize(container->getNumberOfEdges());
 
-    // get restPosition
-    VecCoord& p = *this->mstate->getX();
-    _initialPoints = p;
-
+    if (_initialPoints.getValue().size() == 0)
+    {
+        // get restPosition
+        VecCoord& p = *this->mstate->getX();
+        _initialPoints.setValue(p);
+    }
     unsigned int i;
     const std::vector<Edge> &edgeArray=container->getEdgeArray();
     for (i=0; i<container->getNumberOfEdges(); ++i)

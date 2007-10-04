@@ -132,7 +132,7 @@ protected:
     topology::MeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
-    VecCoord _initialPoints; ///< the intial positions of the points
+    DataField< VecCoord > _initialPoints; ///< the intial positions of the points
 
 private:
     Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
@@ -150,6 +150,7 @@ public:
     HexahedronFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
+        , _initialPoints(dataField(&_initialPoints,"initialPoints", "Initial Position"))
         , f_method(dataField(&f_method,0,"method","0: large displacements by QR, 1: large displacements by polar"))
         , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus",""))

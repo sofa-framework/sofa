@@ -43,8 +43,11 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
     _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
 
     // get restPosition
-    VecCoord& p = *this->mstate->getX();
-    _initialPoints = p;
+    if (_initialPoints.getValue().size() == 0)
+    {
+        VecCoord& p = *this->mstate->getX();
+        _initialPoints.setValue(p);
+    }
     if (usePlaneSelection)
         selectEdgesAlongPlane();
 
@@ -106,8 +109,8 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
     for(i=0; i<nbEdges; i++ )
     {
-        edgeInfo[i].length=(_initialPoints[edgeInfo[i].index[0]] -
-                _initialPoints[edgeInfo[i].index[1]]).norm();
+        edgeInfo[i].length=(_initialPoints.getValue()[edgeInfo[i].index[0]] -
+                _initialPoints.getValue()[edgeInfo[i].index[1]]).norm();
 
         edgeInfo[i].force=pressure*edgeInfo[i].length;
         //	std::cerr<< "force=" << edgeInfo[i].force<< std::endl;

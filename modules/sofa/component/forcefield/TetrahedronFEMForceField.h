@@ -137,7 +137,7 @@ protected:
     topology::MeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
-    VecCoord _initialPoints; ///< the intial positions of the points
+    DataField< VecCoord > _initialPoints; ///< the intial positions of the points
 
     TetrahedronFEMForceFieldInternalData<DataTypes> data;
 
@@ -154,6 +154,7 @@ public:
     TetrahedronFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
+        , _initialPoints(dataField(&_initialPoints, "initialPoints", "Initial Position"))
         , f_method(dataField(&f_method,(int)LARGE,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
         , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
         , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
@@ -220,7 +221,7 @@ protected:
     void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3 );
 
     ////////////// polar decomposition method
-    vector<Transformation> _initialTransformation;
+    vector<Transformation>  _initialTransformation;
     void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p, typename VecElement::const_iterator elementIt, Index elementIndex );
     void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );

@@ -102,7 +102,7 @@ protected:
 
     topology::MeshTopology* _mesh;
     const VecElement *_indexedElements;
-    VecCoord _initialPoints; ///< the intial positions of the points
+    DataField< VecCoord > _initialPoints; ///< the intial positions of the points
 //     int _method; ///< the computation method of the displacements
 //     Real _poissonRatio;
 //     Real _youngModulus;

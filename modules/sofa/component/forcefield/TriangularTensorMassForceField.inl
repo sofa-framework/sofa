@@ -264,6 +264,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionF
 
 template <class DataTypes> TriangularTensorMassForceField<DataTypes>::TriangularTensorMassForceField()
     : _mesh(NULL)
+    , _initialPoints(dataField(&_initialPoints,"initialPoints", "Initial Position"))
     , updateMatrix(true)
     , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(dataField(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
@@ -308,9 +309,12 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     /// prepare to store info in the edge array
     edgeInfo.resize(container->getNumberOfEdges());
 
-    // get restPosition
-    VecCoord& p = *this->mstate->getX();
-    _initialPoints = p;
+    if (_initialPoints.getValue().size() == 0)
+    {
+        // get restPosition
+        VecCoord& p = *this->mstate->getX();
+        _initialPoints.setValue(p);
+    }
 
     unsigned int i;
     // set edge tensor to 0
@@ -363,8 +367,8 @@ void TriangularTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecC
         einfo=&edgeInfo[i];
         v0=edgeArray[i].first;
         v1=edgeArray[i].second;
-        dp0=x[v0]-_initialPoints[v0];
-        dp1=x[v1]-_initialPoints[v1];
+        dp0=x[v0]-_initialPoints.getValue()[v0];
+        dp1=x[v1]-_initialPoints.getValue()[v1];
         dp = dp1-dp0;
 
         f[v1]+=einfo->DfDx*dp;

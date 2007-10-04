@@ -34,14 +34,32 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    struct Contact
+    class Contact
     {
+    public:
         int index;
         Coord normal;
         Real fact;
+        Contact( int index=0, Coord normal=Coord(),Real fact=Real(0))
+            : index(index),normal(normal),fact(fact)
+        {
+        }
+
+        inline friend std::istream& operator >> ( std::istream& in, Contact& c )
+        {
+            in>>c.index>>c.normal>>c.fact;
+            return in;
+        }
+
+        inline friend std::ostream& operator << ( std::ostream& out, const Contact& c )
+        {
+            out << c.index << " " << c.normal << " " << c.fact ;
+            return out;
+        }
+
     };
 
-    std::vector< Contact > contacts;
+    DataField<sofa::helper::vector<Contact> > contacts;
 
     SphereForceFieldInternalData<DataTypes> data;
 
@@ -55,7 +73,8 @@ public:
     DataField<bool> bDraw;
 
     SphereForceField()
-        : sphereCenter(dataField(&sphereCenter, "center", "sphere center"))
+        : contacts(dataField(&contacts,"contacts", "Contacts"))
+        , sphereCenter(dataField(&sphereCenter, "center", "sphere center"))
         , sphereRadius(dataField(&sphereRadius, (Real)1, "radius", "sphere radius"))
         , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(dataField(&damping, (Real)5, "damping", "force damping"))

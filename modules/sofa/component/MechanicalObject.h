@@ -70,6 +70,8 @@ protected:
     VecDeriv* f;
     VecDeriv* dx;
     VecCoord* x0;
+    VecCoord* rest_position;
+
     VecDeriv* v0;
     VecDeriv* internalForces;
     VecDeriv* externalForces;
@@ -118,13 +120,16 @@ public:
     XField<DataTypes>* const f_X;
     VField<DataTypes>* const f_V;
 
+    XField<DataTypes>* const f_rest_position;
+
     VecCoord* getX()  { f_X->beginEdit(); return x;  }
     VecDeriv* getV()  { f_V->beginEdit(); return v;  }
     VecDeriv* getF()  { return f;  }
     VecDeriv* getDx() { return dx; }
     VecConst* getC() { return c;}
     VecCoord* getXfree() { return xfree; }
-    VecDeriv* getVfree()  { return vfree;  }
+    VecDeriv* getVfree() { return vfree;  }
+    VecCoord* getRestX() { return rest_position;}
 
     const VecCoord* getX()  const { return x;  }
     const VecCoord* getX0()  const { return x0;  }
@@ -135,6 +140,7 @@ public:
     const VecConst* getC() const { return c; }
     const VecCoord* getXfree() const { return xfree; }
     const VecDeriv* getVfree()  const { return vfree;  }
+    const VecCoord* getRestX() const { return rest_position;}
 
     virtual void init();
 

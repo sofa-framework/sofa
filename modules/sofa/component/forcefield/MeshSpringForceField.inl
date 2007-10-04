@@ -57,10 +57,10 @@ void MeshSpringForceField<DataTypes>::init()
             std::set< std::pair<int,int> > sset;
             int n;
             Real s, d;
-            if (this->linesStiffness != 0.0 || this->linesDamping != 0.0)
+            if (this->linesStiffness.getValue() != 0.0 || this->linesDamping.getValue() != 0.0)
             {
-                s = this->linesStiffness;
-                d = this->linesDamping;
+                s = this->linesStiffness.getValue();
+                d = this->linesDamping.getValue();
                 n = topology->getNbLines();
                 for (int i=0; i<n; ++i)
                 {
@@ -68,10 +68,10 @@ void MeshSpringForceField<DataTypes>::init()
                     this->addSpring(sset, e[0], e[1], s, d);
                 }
             }
-            if (this->trianglesStiffness != 0.0 || this->trianglesDamping != 0.0)
+            if (this->trianglesStiffness.getValue() != 0.0 || this->trianglesDamping.getValue() != 0.0)
             {
-                s = this->trianglesStiffness;
-                d = this->trianglesDamping;
+                s = this->trianglesStiffness.getValue();
+                d = this->trianglesDamping.getValue();
                 n = topology->getNbTriangles();
                 for (int i=0; i<n; ++i)
                 {
@@ -81,10 +81,10 @@ void MeshSpringForceField<DataTypes>::init()
                     this->addSpring(sset, e[1], e[2], s, d);
                 }
             }
-            if (this->quadsStiffness != 0.0 || this->quadsDamping != 0.0)
+            if (this->quadsStiffness.getValue() != 0.0 || this->quadsDamping.getValue() != 0.0)
             {
-                s = this->quadsStiffness;
-                d = this->quadsDamping;
+                s = this->quadsStiffness.getValue();
+                d = this->quadsDamping.getValue();
                 n = topology->getNbQuads();
                 for (int i=0; i<n; ++i)
                 {
@@ -97,10 +97,10 @@ void MeshSpringForceField<DataTypes>::init()
                     this->addSpring(sset, e[2], e[3], s, d);
                 }
             }
-            if (this->tetrasStiffness != 0.0 || this->tetrasDamping != 0.0)
+            if (this->tetrasStiffness.getValue() != 0.0 || this->tetrasDamping.getValue() != 0.0)
             {
-                s = this->tetrasStiffness;
-                d = this->tetrasDamping;
+                s = this->tetrasStiffness.getValue();
+                d = this->tetrasDamping.getValue();
                 n = topology->getNbTetras();
                 for (int i=0; i<n; ++i)
                 {
@@ -113,10 +113,10 @@ void MeshSpringForceField<DataTypes>::init()
                     this->addSpring(sset, e[2], e[3], s, d);
                 }
             }
-            if (this->cubesStiffness != 0.0 || this->cubesDamping != 0.0)
+            if (this->cubesStiffness.getValue() != 0.0 || this->cubesDamping.getValue() != 0.0)
             {
-                s = this->cubesStiffness;
-                d = this->cubesDamping;
+                s = this->cubesStiffness.getValue();
+                d = this->cubesDamping.getValue();
                 n = topology->getNbCubes();
                 for (int i=0; i<n; ++i)
                 {
@@ -137,17 +137,7 @@ void MeshSpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescrip
 {
     this->StiffSpringForceField<DataTypes>::parse(arg);
     if (arg->getAttribute("stiffness"))          this->setStiffness         ((Real)atof(arg->getAttribute("stiffness")));
-    if (arg->getAttribute("linesStiffness"))     this->setLinesStiffness    ((Real)atof(arg->getAttribute("linesStiffness")));
-    if (arg->getAttribute("trianglesStiffness")) this->setTrianglesStiffness((Real)atof(arg->getAttribute("trianglesStiffness")));
-    if (arg->getAttribute("quadsStiffness"))     this->setQuadsStiffness    ((Real)atof(arg->getAttribute("quadsStiffness")));
-    if (arg->getAttribute("tetrasStiffness"))    this->setTetrasStiffness   ((Real)atof(arg->getAttribute("tetrasStiffness")));
-    if (arg->getAttribute("cubesStiffness"))     this->setCubesStiffness    ((Real)atof(arg->getAttribute("cubesStiffness")));
     if (arg->getAttribute("damping"))            this->setDamping           ((Real)atof(arg->getAttribute("damping")));
-    if (arg->getAttribute("linesDamping"))       this->setLinesDamping      ((Real)atof(arg->getAttribute("linesDamping")));
-    if (arg->getAttribute("trianglesDamping"))   this->setTrianglesDamping  ((Real)atof(arg->getAttribute("trianglesDamping")));
-    if (arg->getAttribute("quadsDamping"))       this->setQuadsDamping      ((Real)atof(arg->getAttribute("quadsDamping")));
-    if (arg->getAttribute("tetrasDamping"))      this->setTetrasDamping     ((Real)atof(arg->getAttribute("tetrasDamping")));
-    if (arg->getAttribute("cubesDamping"))       this->setCubesDamping      ((Real)atof(arg->getAttribute("cubesDamping")));
 }
 
 } // namespace forcefield

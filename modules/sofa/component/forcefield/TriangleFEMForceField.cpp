@@ -60,6 +60,7 @@ TriangleFEMForceField<DataTypes>::
 TriangleFEMForceField()
     : _mesh(NULL)
     , _indexedElements(NULL)
+    , _initialPoints(dataField(&_initialPoints, "initialPoints", "Initial Position"))
     , method(LARGE)
     , f_method(dataField(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
     , f_poisson(dataField(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
@@ -108,8 +109,11 @@ void TriangleFEMForceField<DataTypes>::init()
         _indexedElements = trias;
     }
 
-    VecCoord& p = *this->mstate->getX();
-    _initialPoints = p;
+    if (_initialPoints.getValue().size() == 0)
+    {
+        VecCoord& p = *this->mstate->getX();
+        _initialPoints.setValue(p);
+    }
 
     _strainDisplacements.resize(_indexedElements->size());
     _rotations.resize(_indexedElements->size());
@@ -379,10 +383,10 @@ void TriangleFEMForceField<DataTypes>::accumulateForceSmall( VecCoord &f, const 
     Displacement D;
     D[0] = 0;
     D[1] = 0;
-    D[2] = (_initialPoints[b][0]-_initialPoints[a][0]) - deforme_b[0];
+    D[2] = (_initialPoints.getValue()[b][0]-_initialPoints.getValue()[a][0]) - deforme_b[0];
     D[3] = 0;
-    D[4] = (_initialPoints[c][0]-_initialPoints[a][0]) - deforme_c[0];
-    D[5] = (_initialPoints[c][1]-_initialPoints[a][1]) - deforme_c[1];
+    D[4] = (_initialPoints.getValue()[c][0]-_initialPoints.getValue()[a][0]) - deforme_c[0];
+    D[5] = (_initialPoints.getValue()[c][1]-_initialPoints.getValue()[a][1]) - deforme_c[1];
 
 
     StrainDisplacement J;
@@ -477,12 +481,12 @@ void TriangleFEMForceField<DataTypes>::initLarge()
         // second vector in the plane of the two first edges
         // third vector orthogonal to first and second
         Transformation R_0_1;
-        //cerr<<"TriangleFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.size() = "<<_initialPoints.size()<<endl;
-        computeRotationLarge( R_0_1, _initialPoints, a, b, c );
+        //cerr<<"TriangleFEMForceField<DataTypes>::initLarge(), x.size() = "<<_object->getX()->size()<<", _initialPoints.getValue().size() = "<<_initialPoints.getValue().size()<<endl;
+        computeRotationLarge( R_0_1, _initialPoints.getValue(), a, b, c );
 
-        _rotatedInitialElements[i][0] = R_0_1 * _initialPoints[a];
-        _rotatedInitialElements[i][1] = R_0_1 * _initialPoints[b];
-        _rotatedInitialElements[i][2] = R_0_1 * _initialPoints[c];
+        _rotatedInitialElements[i][0] = R_0_1 * _initialPoints.getValue()[a];
+        _rotatedInitialElements[i][1] = R_0_1 * _initialPoints.getValue()[b];
+        _rotatedInitialElements[i][2] = R_0_1 * _initialPoints.getValue()[c];
 
         _rotatedInitialElements[i][1] -= _rotatedInitialElements[i][0];
         _rotatedInitialElements[i][2] -= _rotatedInitialElements[i][0];

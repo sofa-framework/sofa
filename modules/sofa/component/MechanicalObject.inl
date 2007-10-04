@@ -45,14 +45,18 @@ namespace component
 
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), x0(NULL), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
+    : x(new VecCoord), v(new VecDeriv), x0(NULL),rest_position(new VecCoord), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
     , f_X( new XField<DataTypes>(&x, "position coordinates ot the degrees of freedom") )
     , f_V( new VField<DataTypes>(&v, "velocity coordinates ot the degrees of freedom") )
+    , f_rest_position( new XField<DataTypes>(&rest_position, "rest position coordinates of the degrees of freedom"))
 {
     this->addField(f_X, "position");
     f_X->beginEdit();
     this->addField(f_V, "velocity");
     f_V->beginEdit();
+    this->addField(f_rest_position,"rest_position");
+    f_rest_position->beginEdit();
+
     /*    x = new VecCoord;
         v = new VecDeriv;*/
     internalForces = f = new VecDeriv;
@@ -507,7 +511,11 @@ void MechanicalObject<DataTypes>::init()
     *this->v0 = *v;
 
     // free position = position
-    *this->xfree = *x;
+    //*this->xfree = *x;
+
+    if (f_rest_position->getValue().size() == 0)
+        *rest_position = *x0;
+
 }
 
 //

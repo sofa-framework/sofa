@@ -41,7 +41,7 @@ void SphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, con
     const Coord center = sphereCenter.getValue();
     const Real r = sphereRadius.getValue();
     const Real r2 = r*r;
-    this->contacts.clear();
+    this->contacts.beginEdit()->clear();
     f1.resize(p1.size());
     for (unsigned int i=0; i<p1.size(); i++)
     {
@@ -59,23 +59,25 @@ void SphereForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, con
             c.index = i;
             c.normal = dp / norm;
             c.fact = r / norm;
-            this->contacts.push_back(c);
+            this->contacts.beginEdit()->push_back(c);
         }
     }
+    this->contacts.endEdit();
 }
 
 template<class DataTypes>
 void SphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1)
 {
     df1.resize(dx1.size());
-    for (unsigned int i=0; i<this->contacts.size(); i++)
+    for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
     {
-        const Contact& c = this->contacts[i];
+        const Contact& c = (*this->contacts.beginEdit())[i];
         assert((unsigned)c.index<dx1.size());
         Deriv du = dx1[c.index];
         Deriv dforce; dforce = -this->stiffness.getValue()*(c.normal * ((du*c.normal)*c.fact) + du * (1 - c.fact));
         df1[c.index] += dforce;
     }
+    this->contacts.endEdit();
 }
 
 template<class DataTypes>
@@ -84,7 +86,7 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
     const Coord center = sphereCenter.getValue();
     const Real r = sphereRadius.getValue();
     const Real r2 = r*r;
-    this->contacts.clear();
+    this->contacts.beginEdit()->clear();
     for (unsigned int i=0; i<x.size(); i++)
     {
         Coord dp = x[i] - center;
@@ -96,9 +98,10 @@ void SphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
             c.index = i;
             c.normal = dp / norm;
             c.fact = r / norm;
-            this->contacts.push_back(c);
+            this->contacts.beginEdit()->push_back(c);
         }
     }
+    this->contacts.endEdit();
 }
 
 template <class DataTypes>

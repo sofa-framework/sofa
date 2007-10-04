@@ -19,13 +19,7 @@ void SparseGridSpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectD
 {
     this->Inherit::parse(arg);
     if (arg->getAttribute("stiffness")) this->setStiffness((Real)atof(arg->getAttribute("stiffness")));
-    if (arg->getAttribute("linesStiffness")) this->setLinesStiffness((Real)atof(arg->getAttribute("linesStiffness")));
-    if (arg->getAttribute("quadsStiffness")) this->setQuadsStiffness((Real)atof(arg->getAttribute("quadsStiffness")));
-    if (arg->getAttribute("cubesStiffness")) this->setCubesStiffness((Real)atof(arg->getAttribute("cubesStiffness")));
     if (arg->getAttribute("damping")) this->setDamping((Real)atof(arg->getAttribute("damping")));
-    if (arg->getAttribute("linesDamping")) this->setLinesDamping((Real)atof(arg->getAttribute("linesDamping")));
-    if (arg->getAttribute("quadsDamping")) this->setQuadsDamping((Real)atof(arg->getAttribute("quadsDamping")));
-    if (arg->getAttribute("cubesDamping")) this->setCubesDamping((Real)atof(arg->getAttribute("cubesDamping")));
 }
 
 using std::cout;
@@ -69,14 +63,14 @@ void SparseGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2,
                 j = (*iter).first.j;
                 k = (*iter).first.k;
 
-                if (this->linesStiffness != 0.0 || this->linesDamping != 0.0)
+                if (this->linesStiffness.getValue() != 0.0 || this->linesDamping.getValue() != 0.0)
                 {
                     typename SparseGridSpringForceField<DataTypes>::Spring spring;
 
                     /// add x axis springs
                     spring.initpos = topology->getDx().norm();
-                    spring.ks = this->linesStiffness / spring.initpos;
-                    spring.kd = this->linesDamping / spring.initpos;
+                    spring.ks = this->linesStiffness.getValue() / spring.initpos;
+                    spring.kd = this->linesDamping.getValue() / spring.initpos;
 
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
@@ -94,8 +88,8 @@ void SparseGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2,
 
                     /// add y axis springs
                     spring.initpos = topology->getDy().norm();
-                    spring.ks = this->linesStiffness / spring.initpos;
-                    spring.kd = this->linesDamping / spring.initpos;
+                    spring.ks = this->linesStiffness.getValue() / spring.initpos;
+                    spring.kd = this->linesDamping.getValue() / spring.initpos;
 
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
@@ -113,8 +107,8 @@ void SparseGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2,
 
                     /// add z axis springs
                     spring.initpos = topology->getDz().norm();
-                    spring.ks = this->linesStiffness / spring.initpos;
-                    spring.kd = this->linesDamping / spring.initpos;
+                    spring.ks = this->linesStiffness.getValue() / spring.initpos;
+                    spring.kd = this->linesDamping.getValue() / spring.initpos;
 
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
@@ -131,7 +125,7 @@ void SparseGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2,
                     this->addSpringForce(this->m_potentialEnergy,f1,x1,v1,f2,p2,v2, index++, spring);
                 }
 
-                if (this->quadsStiffness != 0.0 || this->quadsDamping != 0.0)
+                if (this->quadsStiffness.getValue() != 0.0 || this->quadsDamping.getValue() != 0.0)
                 {
                     typename SparseGridSpringForceField<DataTypes>::Spring spring1;
                     typename SparseGridSpringForceField<DataTypes>::Spring spring2;
@@ -139,12 +133,12 @@ void SparseGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2,
                     /// add xy plane springs
                     // lines (x,y,z) -> (x+1,y+1,z)
                     spring1.initpos = (topology->getDx()+topology->getDy()).norm();
-                    spring1.ks = this->linesStiffness / spring1.initpos;
-                    spring1.kd = this->linesDamping / spring1.initpos;
+                    spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
+                    spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                     // lines (x+1,y,z) -> (x,y+1,z)
                     spring2.initpos = (topology->getDx()-topology->getDy()).norm();
-                    spring2.ks = this->linesStiffness / spring2.initpos;
-                    spring2.kd = this->linesDamping / spring2.initpos;
+                    spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
+                    spring2.kd = this->linesDamping.getValue() / spring2.initpos;
 
                     /// add the 4th springs
                     spring1.m1 = topology->point(i,j,k);
@@ -163,12 +157,12 @@ void SparseGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2,
                     /// add xz plane springs
                     // lines (x,y,z) -> (x+1,y,z+1)
                     spring1.initpos = (topology->getDx()+topology->getDz()).norm();
-                    spring1.ks = this->linesStiffness / spring1.initpos;
-                    spring1.kd = this->linesDamping / spring1.initpos;
+                    spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
+                    spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                     // lines (x+1,y,z) -> (x,y,z+1)
                     spring2.initpos = (topology->getDx()-topology->getDz()).norm();
-                    spring2.ks = this->linesStiffness / spring2.initpos;
-                    spring2.kd = this->linesDamping / spring2.initpos;
+                    spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
+                    spring2.kd = this->linesDamping.getValue() / spring2.initpos;
 
                     /// add the 4th springs
                     spring1.m1 = topology->point(i,j,k);
@@ -187,12 +181,12 @@ void SparseGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2,
                     /// add yz plane springs
                     // lines (x,y,z) -> (x,y+1,z+1)
                     spring1.initpos = (topology->getDy()+topology->getDz()).norm();
-                    spring1.ks = this->linesStiffness / spring1.initpos;
-                    spring1.kd = this->linesDamping / spring1.initpos;
+                    spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
+                    spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                     // lines (x,y+1,z) -> (x,y,z+1)
                     spring2.initpos = (topology->getDy()-topology->getDz()).norm();
-                    spring2.ks = this->linesStiffness / spring2.initpos;
-                    spring2.kd = this->linesDamping / spring2.initpos;
+                    spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
+                    spring2.kd = this->linesDamping.getValue() / spring2.initpos;
 
                     /// add the 4th springs
                     spring1.m1 = topology->point(i,j,k);
@@ -249,14 +243,14 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
                 k = (*iter).first.k;
 
 
-                if (this->linesStiffness != 0.0 || this->linesDamping != 0.0)
+                if (this->linesStiffness.getValue() != 0.0 || this->linesDamping.getValue() != 0.0)
                 {
                     typename SparseGridSpringForceField<DataTypes>::Spring spring;
 
                     /// add axis spring x
                     spring.initpos = topology->getDx().norm();
-                    spring.ks = this->linesStiffness / spring.initpos;
-                    spring.kd = this->linesDamping / spring.initpos;
+                    spring.ks = this->linesStiffness.getValue() / spring.initpos;
+                    spring.kd = this->linesDamping.getValue() / spring.initpos;
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i+1,j,k);
@@ -273,8 +267,8 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
 
                     /// add axis spring y
                     spring.initpos = topology->getDy().norm();
-                    spring.ks = this->linesStiffness / spring.initpos;
-                    spring.kd = this->linesDamping / spring.initpos;
+                    spring.ks = this->linesStiffness.getValue() / spring.initpos;
+                    spring.kd = this->linesDamping.getValue() / spring.initpos;
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i,j+1,k);
@@ -291,8 +285,8 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
 
                     ///add axis spring z
                     spring.initpos = topology->getDz().norm();
-                    spring.ks = this->linesStiffness / spring.initpos;
-                    spring.kd = this->linesDamping / spring.initpos;
+                    spring.ks = this->linesStiffness.getValue() / spring.initpos;
+                    spring.kd = this->linesDamping.getValue() / spring.initpos;
 
                     /// add the 4th springs
                     spring.m1 = topology->point(i,j,k);
@@ -309,7 +303,7 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
                     this->addSpringDForce(df1,dx1,df2,dx2, index++, spring);
                 }
 
-                if (this->quadsStiffness != 0.0 || this->quadsDamping != 0.0)
+                if (this->quadsStiffness.getValue() != 0.0 || this->quadsDamping.getValue() != 0.0)
                 {
                     typename SparseGridSpringForceField<DataTypes>::Spring spring1;
                     typename SparseGridSpringForceField<DataTypes>::Spring spring2;
@@ -317,12 +311,12 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
                     /// add plane springs  xy
                     // lines (x,y,z) -> (x+1,y+1,z)
                     spring1.initpos = (topology->getDx()+topology->getDy()).norm();
-                    spring1.ks = this->linesStiffness / spring1.initpos;
-                    spring1.kd = this->linesDamping / spring1.initpos;
+                    spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
+                    spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                     // lines (x+1,y,z) -> (x,y+1,z)
                     spring2.initpos = (topology->getDx()-topology->getDy()).norm();
-                    spring2.ks = this->linesStiffness / spring2.initpos;
-                    spring2.kd = this->linesDamping / spring2.initpos;
+                    spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
+                    spring2.kd = this->linesDamping.getValue() / spring2.initpos;
 
                     /// add the 4th springs
                     spring1.m1 = topology->point(i,j,k);
@@ -341,12 +335,12 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
                     /// add plane springs  xz
                     // lines (x,y,z) -> (x+1,y,z+1)
                     spring1.initpos = (topology->getDx()+topology->getDz()).norm();
-                    spring1.ks = this->linesStiffness / spring1.initpos;
-                    spring1.kd = this->linesDamping / spring1.initpos;
+                    spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
+                    spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                     // lines (x+1,y,z) -> (x,y,z+1)
                     spring2.initpos = (topology->getDx()-topology->getDz()).norm();
-                    spring2.ks = this->linesStiffness / spring2.initpos;
-                    spring2.kd = this->linesDamping / spring2.initpos;
+                    spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
+                    spring2.kd = this->linesDamping.getValue() / spring2.initpos;
 
                     /// add the 4th springs
                     spring1.m1 = topology->point(i,j,k);
@@ -365,12 +359,12 @@ void SparseGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& d
                     /// add plane springs  yz
                     // lines (x,y,z) -> (x,y+1,z+1)
                     spring1.initpos = (topology->getDy()+topology->getDz()).norm();
-                    spring1.ks = this->linesStiffness / spring1.initpos;
-                    spring1.kd = this->linesDamping / spring1.initpos;
+                    spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
+                    spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                     // lines (x,y+1,z) -> (x,y,z+1)
                     spring2.initpos = (topology->getDy()-topology->getDz()).norm();
-                    spring2.ks = this->linesStiffness / spring2.initpos;
-                    spring2.kd = this->linesDamping / spring2.initpos;
+                    spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
+                    spring2.kd = this->linesDamping.getValue() / spring2.initpos;
 
                     /// add the 4th springs
                     spring1.m1 = topology->point(i,j,k);
@@ -432,14 +426,14 @@ void SparseGridSpringForceField<DataTypes>::draw()
                 j = (*iter).first.j;
                 k = (*iter).first.k;
 
-                if (this->linesStiffness != 0.0 || this->linesDamping != 0.0)
+                if (this->linesStiffness.getValue() != 0.0 || this->linesDamping.getValue() != 0.0)
                 {
                     typename SparseGridSpringForceField<DataTypes>::Spring spring;
 
                     /// draw axis spring x
                     spring.initpos = topology->getDx().norm();
-                    spring.ks = this->linesStiffness / spring.initpos;
-                    spring.kd = this->linesDamping / spring.initpos;
+                    spring.ks = this->linesStiffness.getValue() / spring.initpos;
+                    spring.kd = this->linesDamping.getValue() / spring.initpos;
                     /// draw the 4th springs
 
                     spring.m1 = topology->point(i,j,k);
@@ -461,8 +455,8 @@ void SparseGridSpringForceField<DataTypes>::draw()
 
                     ///draw axis spring y
                     spring.initpos = topology->getDy().norm();
-                    spring.ks = this->linesStiffness / spring.initpos;
-                    spring.kd = this->linesDamping / spring.initpos;
+                    spring.ks = this->linesStiffness.getValue() / spring.initpos;
+                    spring.kd = this->linesDamping.getValue() / spring.initpos;
                     /// draw the 4th springs
                     spring.m1 = topology->point(i,j,k);
                     spring.m2 = topology->point(i,j+1,k);
@@ -483,8 +477,8 @@ void SparseGridSpringForceField<DataTypes>::draw()
 
                     ///draw axis spring z
                     spring.initpos = topology->getDz().norm();
-                    spring.ks = this->linesStiffness / spring.initpos;
-                    spring.kd = this->linesDamping / spring.initpos;
+                    spring.ks = this->linesStiffness.getValue() / spring.initpos;
+                    spring.kd = this->linesDamping.getValue() / spring.initpos;
 
                     /// draw the 4th springs
                     spring.m1 = topology->point(i,j,k);
@@ -511,12 +505,12 @@ void SparseGridSpringForceField<DataTypes>::draw()
                     /// draw plane springs  xy
                     // lines (x,y,z) -> (x+1,y+1,z)
                     spring1.initpos = (topology->getDx()+topology->getDy()).norm();
-                    spring1.ks = this->linesStiffness / spring1.initpos;
-                    spring1.kd = this->linesDamping / spring1.initpos;
+                    spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
+                    spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                     // lines (x+1,y,z) -> (x,y+1,z)
                     spring2.initpos = (topology->getDx()-topology->getDy()).norm();
-                    spring2.ks = this->linesStiffness / spring2.initpos;
-                    spring2.kd = this->linesDamping / spring2.initpos;
+                    spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
+                    spring2.kd = this->linesDamping.getValue() / spring2.initpos;
 
                     /// draw the 4th springs
                     spring1.m1 = topology->point(i,j,k);
@@ -539,12 +533,12 @@ void SparseGridSpringForceField<DataTypes>::draw()
                     /// draw plane springs  xz
                     // lines (x,y,z) -> (x+1,y,z+1)
                     spring1.initpos = (topology->getDx()+topology->getDz()).norm();
-                    spring1.ks = this->linesStiffness / spring1.initpos;
-                    spring1.kd = this->linesDamping / spring1.initpos;
+                    spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
+                    spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                     // lines (x+1,y,z) -> (x,y,z+1)
                     spring2.initpos = (topology->getDx()-topology->getDz()).norm();
-                    spring2.ks = this->linesStiffness / spring2.initpos;
-                    spring2.kd = this->linesDamping / spring2.initpos;
+                    spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
+                    spring2.kd = this->linesDamping.getValue() / spring2.initpos;
 
                     /// draw the 4th springs
                     spring1.m1 = topology->point(i,j,k);
@@ -567,12 +561,12 @@ void SparseGridSpringForceField<DataTypes>::draw()
                     /// draw plane springs  yz
                     // lines (x,y,z) -> (x,y+1,z+1)
                     spring1.initpos = (topology->getDy()+topology->getDz()).norm();
-                    spring1.ks = this->linesStiffness / spring1.initpos;
-                    spring1.kd = this->linesDamping / spring1.initpos;
+                    spring1.ks = this->linesStiffness.getValue() / spring1.initpos;
+                    spring1.kd = this->linesDamping.getValue() / spring1.initpos;
                     // lines (x,y+1,z) -> (x,y,z+1)
                     spring2.initpos = (topology->getDy()-topology->getDz()).norm();
-                    spring2.ks = this->linesStiffness / spring2.initpos;
-                    spring2.kd = this->linesDamping / spring2.initpos;
+                    spring2.ks = this->linesStiffness.getValue() / spring2.initpos;
+                    spring2.kd = this->linesDamping.getValue() / spring2.initpos;
 
                     /// draw the 4th springs
                     spring1.m1 = topology->point(i,j,k);

@@ -154,6 +154,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleDestroyFunct
 }
 template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::TriangularBiquadraticSpringsForceField()
     : _mesh(NULL)
+    , _initialPoints(dataField(&_initialPoints,"initialPoints", "Initial Position"))
     , updateMatrix(true)
     , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     , f_youngModulus(dataField(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
@@ -203,9 +204,11 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     edgeInfo.resize(container->getNumberOfEdges());
 
     // get restPosition
-    VecCoord& p = *this->mstate->getX();
-    _initialPoints = p;
-
+    if (_initialPoints.getValue().size() == 0)
+    {
+        VecCoord& p = *this->mstate->getX();
+        _initialPoints.setValue(p);
+    }
     unsigned int i;
     const std::vector<Edge> &edgeArray=container->getEdgeArray();
     for (i=0; i<container->getNumberOfEdges(); ++i)

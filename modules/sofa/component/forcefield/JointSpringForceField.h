@@ -73,12 +73,12 @@ public:
     class Spring
     {
     public:
-        int     m1, m2;		// the two extremities of the spring: masses m1 and m2
+        int  m1, m2;		// the two extremities of the spring: masses m1 and m2
         Vec  kst;			// spring stiffness translation on each axe
         Vec  ksr;			// spring stiffness rotation on each axe
-        Real  kd;			// damping factor
+        Real kd;			// damping factor
         Vec  initTrans;	// rest length of the spring
-        Quat  initRot;	// rest length of the spring
+        Quat initRot;	// rest length of the spring
 
         Spring(int m1=0, int m2=0, Vec ks=Vec(), Real _kd=0.0)
             : m1(m1), m2(m2), kd(_kd)

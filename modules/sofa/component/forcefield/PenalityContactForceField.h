@@ -55,8 +55,11 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
 protected:
-    struct Contact
+
+    class Contact
     {
+    public:
+
         int m1, m2;   ///< the two extremities of the spring: masses m1 and m2
         Deriv norm;   ///< contact normal, from m1 to m2
         Real dist;    ///< minimum distance between the points
@@ -65,17 +68,36 @@ protected:
         Real mu_v;    ///< viscous friction coefficient
         Real pen;     ///< current penetration
         int age;      ///< how old is this contact
+
+
+        Contact(int _m1=0, int _m2=0, Deriv _norm=Deriv(0), Real _dist=Real(0), Real _ks=Real(0), Real _mu_s=Real(0), Real _mu_v=Real(0), Real _pen=Real(0), int _age=0)
+            : m1(_m1),m2(_m2),norm(_norm),dist(_dist),ks(_ks),mu_s(_mu_s),mu_v(_mu_v),pen(_pen),age(_age)
+        {
+        }
+
+
+        inline friend std::istream& operator >> ( std::istream& in, Contact& c )
+        {
+            in>>c.m1>>c.m2>>c.norm>>c.dist>>c.ks>>c.mu_s>>c.mu_v>>c.pen>>c.age;
+            return in;
+        }
+
+        inline friend std::ostream& operator << ( std::ostream& out, const Contact& c )
+        {
+            out << c.m1<< " " <<c.m2<< " " <<c.norm<< " " <<c.dist<<" " <<c.ks<<" " <<c.mu_s<<" " <<c.mu_v<<" " <<c.pen<<" " <<c.age;
+            return out;
+        }
     };
 
-    std::vector<Contact> contacts;
+    DataField<sofa::helper::vector<Contact> > contacts;
 
     // contacts from previous frame
-    std::vector<Contact> prevContacts;
+    sofa::helper::vector<Contact> prevContacts;
 
 public:
 
     PenalityContactForceField(MechanicalState* object1, MechanicalState* object2)
-        : Inherit(object1, object2)
+        : Inherit(object1, object2), contacts(dataField(&contacts,"contacts", "Contacts"))
     {
     }
 

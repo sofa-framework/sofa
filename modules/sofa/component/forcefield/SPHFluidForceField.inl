@@ -46,27 +46,22 @@ namespace forcefield
 
 template<class DataTypes>
 SPHFluidForceField<DataTypes>::SPHFluidForceField()
-    : particleRadius(1), particleMass(1), pressureStiffness(100), density0(1), viscosity(0.001f), surfaceTension(0), grid(NULL)
+    : particleRadius   (dataField(&particleRadius   ,Real(1)     , "radius", "Radius of a Particle")),
+      particleMass     (dataField(&particleMass     ,Real(1)     , "mass", "Mass of a Particle")),
+      pressureStiffness(dataField(&pressureStiffness,Real(100)   , "pressure", "Pressure")),
+      density0         (dataField(&density0         ,Real(1)     , "density", "Density")),
+      viscosity        (dataField(&viscosity        ,Real(0.001f), "viscosity", "Viscosity")),
+      surfaceTension   (dataField(&surfaceTension   ,Real(0)     , "surfaceTension", "Surface Tension")),
+      grid(NULL)
 {
 }
 
-template<class DataTypes>
-void SPHFluidForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->Inherit::parse(arg);
-    if (arg->getAttribute("radius"))  this->setParticleRadius((Real)atof(arg->getAttribute("radius")));
-    if (arg->getAttribute("mass"))  this->setParticleMass((Real)atof(arg->getAttribute("mass")));
-    if (arg->getAttribute("pressure"))  this->setPressureStiffness((Real)atof(arg->getAttribute("pressure")));
-    if (arg->getAttribute("density"))  this->setDensity0((Real)atof(arg->getAttribute("density")));
-    if (arg->getAttribute("viscosity"))  this->setViscosity((Real)atof(arg->getAttribute("viscosity")));
-    if (arg->getAttribute("surfaceTension"))  this->setSurfaceTension((Real)atof(arg->getAttribute("surfaceTension")));
-}
 
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::init()
 {
     this->Inherit::init();
-    grid = new Grid(particleRadius);
+    grid = new Grid(particleRadius.getValue());
     int n = (*this->mstate->getX()).size();
     particles.resize(n);
     for (int i=0; i<n; i++)
@@ -75,7 +70,7 @@ void SPHFluidForceField<DataTypes>::init()
 #ifdef SOFA_DEBUG_SPATIALGRIDCONTAINER
         particles[i].neighbors2.clear();
 #endif
-        particles[i].density = density0;
+        particles[i].density = density0.getValue();
         particles[i].pressure = 0;
         particles[i].normal.clear();
         particles[i].curvature = 0;
@@ -85,12 +80,12 @@ void SPHFluidForceField<DataTypes>::init()
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
-    const Real h = particleRadius;
+    const Real h = particleRadius.getValue();
     const Real h2 = h*h;
-    const Real m = particleMass;
+    const Real m = particleMass.getValue();
     const Real m2 = m*m;
-    const Real k = pressureStiffness;
-    const Real d0 = density0;
+    const Real k = pressureStiffness.getValue();
+    const Real d0 = density0.getValue();
     const Vec3d localg = this->getContext()->getLocalGravity();
     Deriv g;
     DataTypes::set ( g, localg[0], localg[1], localg[2]);
@@ -225,7 +220,7 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
     }
 
     // Compute surface normal and curvature
-    if (surfaceTension > 0)
+    if (surfaceTension.getValue() > 0)
     {
         for (int i=0; i<n; i++)
         {
@@ -264,17 +259,17 @@ void SPHFluidForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, con
             f[j] -= fpressure;
 
             // Viscosity
-            Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity / (Pi.density * Pj.density) * laplacianWv(r_h,ClaplacianWv) );
+            Deriv fviscosity = ( v[j] - v[i] ) * ( m2 * viscosity.getValue() / (Pi.density * Pj.density) * laplacianWv(r_h,ClaplacianWv) );
             f[i] += fviscosity;
             f[j] -= fviscosity;
         }
 
-        if (surfaceTension > 0)
+        if (surfaceTension.getValue() > 0)
         {
             Real n = Pi.normal.norm();
             if (n > 0.000001)
             {
-                Deriv fsurface = Pi.normal * ( - m * surfaceTension * Pi.curvature / n );
+                Deriv fsurface = Pi.normal * ( - m * surfaceTension.getValue() * Pi.curvature / n );
                 f[i] += fsurface;
             }
         }
@@ -382,7 +377,7 @@ void SPHFluidForceField<DataTypes>::draw()
     for (unsigned int i=0; i<particles.size(); i++)
     {
         Particle& Pi = particles[i];
-        float f = (float)(Pi.density / density0);
+        float f = (float)(Pi.density / density0.getValue());
         f = 1+10*(f-1);
         if (f < 1)
         {

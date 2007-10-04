@@ -101,15 +101,17 @@ void HexahedronFEMForceField<DataTypes>::init()
         _indexedElements = & (_mesh->getCubes());
     }
 
-
-    VecCoord& p = *this->mstate->getX();
-    _initialPoints = p;
+    if (_initialPoints.getValue().size() == 0)
+    {
+        VecCoord& p = *this->mstate->getX();
+        _initialPoints.setValue(p);
+    }
 
     _materialsStiffnesses.resize(_indexedElements->size() );
     _rotations.resize( _indexedElements->size() );
     _rotatedInitialElements.resize(_indexedElements->size());
     _elementStiffnesses.resize(_indexedElements->size());
-    // 	_stiffnesses.resize( _initialPoints.size()*3 ); // assembly ?
+    // 	_stiffnesses.resize( _initialPoints.getValue().size()*3 ); // assembly ?
 
     reinit();
 }
@@ -412,7 +414,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
 
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = _initialPoints[elem[_indices[w]]];
+        nodes[w] = _initialPoints.getValue()[elem[_indices[w]]];
 
 
     Coord horizontal;
@@ -423,7 +425,7 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     computeRotationLarge( R_0_1, horizontal,vertical);
 
     for(int w=0; w<8; ++w)
-        _rotatedInitialElements[i][_indices[w]] = R_0_1*_initialPoints[elem[w]];
+        _rotatedInitialElements[i][_indices[w]] = R_0_1*_initialPoints.getValue()[elem[w]];
 
 
     computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], nodes );
@@ -519,7 +521,7 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
 {
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = _initialPoints[elem[_indices[j]]];
+        nodes[j] = _initialPoints.getValue()[elem[_indices[j]]];
 
     Transformation R_0_1; // Rotation matrix (deformed and displaced Tetrahedron/world)
     computeRotationPolar( R_0_1, nodes );

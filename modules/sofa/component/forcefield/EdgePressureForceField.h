@@ -63,7 +63,7 @@ protected:
 
     topology::MeshTopology* _mesh;
     const VecElement *_indexedElements;
-    VecCoord _initialPoints;										///< the intial positions of the points
+    DataField< VecCoord > _initialPoints;										///< the intial positions of the points
 
     Deriv pressure;
 
@@ -79,6 +79,7 @@ public:
     EdgePressureForceField()
         : nbEdges(0)
         , _mesh(NULL)
+        , _initialPoints(dataField(&_initialPoints, "initialPoints", "Initial Position"))
         , usePlaneSelection(false)
     {
     }

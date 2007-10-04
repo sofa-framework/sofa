@@ -30,7 +30,6 @@
 #include <sofa/core/VisualModel.h>
 #include <vector>
 
-
 namespace sofa
 {
 
@@ -52,9 +51,10 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    Real a,b,alpha,beta,dmax,fmax;
-    Real d0,p0;
-    Real damping;
+    Real a,b;
+    DataField<Real> alpha,beta,dmax,fmax;
+    DataField<Real> d0,p0;
+    DataField<Real> damping;
 
     struct DForce
     {
@@ -66,19 +66,27 @@ protected:
 
 public:
     LennardJonesForceField()
-        : a(1), b(1), alpha(6), beta(12), dmax(2), fmax(1), d0(1), p0(1), damping(0)
+        : a(1)
+        , b(1)
+        , alpha  (dataField(&alpha  ,Real(6), "alpha"  ,"Alpha"))
+        , beta   (dataField(&beta   ,Real(12),"beta"   ,"Beta"))
+        , dmax   (dataField(&dmax   ,Real(2), "dmax"   ,"DMax"))
+        , fmax   (dataField(&fmax   ,Real(1), "fmax"   ,"FMax"))
+        , d0     (dataField(&d0     ,Real(1), "d0"     ,"d0"))
+        , p0     (dataField(&p0     ,Real(1), "p0"     ,"p0"))
+        , damping(dataField(&damping,Real(0), "damping","Damping"))
     {
     }
 
-    void setAlpha(Real v) { alpha = v; }
-    void setBeta(Real v) { beta = v; }
-    void setFMax(Real v) { fmax = v; }
-    void setDMax(Real v) { dmax = v; }
-    void setD0(Real v) { d0 = v; }
-    void setP0(Real v) { p0 = v; }
-    void setDamping(Real v) { damping = v; }
+    void setAlpha(Real v) { alpha.setValue(v); }
+    void setBeta(Real v) { beta.setValue(v); }
+    void setFMax(Real v) { fmax.setValue(v); }
+    void setDMax(Real v) { dmax.setValue(v); }
+    void setD0(Real v) { d0.setValue(v); }
+    void setP0(Real v) { p0.setValue(v); }
+    void setDamping(Real v) { damping.setValue(v); }
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
+
     virtual void init();
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);

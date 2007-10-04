@@ -60,12 +60,12 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    Real particleRadius;
-    Real particleMass;
-    Real pressureStiffness; ///< 100 - 1000 m2/s2
-    Real density0; ///< 1000 kg/m3 for water
-    Real viscosity;
-    Real surfaceTension;
+    DataField< Real > particleRadius;
+    DataField< Real > particleMass;
+    DataField< Real > pressureStiffness; ///< 100 - 1000 m2/s2
+    DataField< Real > density0; ///< 1000 kg/m3 for water
+    DataField< Real > viscosity;
+    DataField< Real > surfaceTension;
     //Real a,b,alpha,beta,dmax,fmax;
     //Real d0,p0;
     //Real damping;
@@ -288,20 +288,18 @@ protected:
 public:
     SPHFluidForceField();
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-
-    Real getParticleRadius() const { return particleRadius; }
-    void setParticleRadius(Real v) { particleRadius = v;    }
-    Real getParticleMass() const { return particleMass; }
-    void setParticleMass(Real v) { particleMass = v;    }
-    Real getPressureStiffness() const { return pressureStiffness; }
-    void setPressureStiffness(Real v) { pressureStiffness = v;    }
-    Real getDensity0() const { return density0; }
-    void setDensity0(Real v) { density0 = v;    }
-    Real getViscosity() const { return viscosity; }
-    void setViscosity(Real v) { viscosity = v;    }
-    Real getSurfaceTension() const { return surfaceTension; }
-    void setSurfaceTension(Real v) { surfaceTension = v;    }
+    Real getParticleRadius() const { return particleRadius.getValue(); }
+    void setParticleRadius(Real v) { particleRadius.setValue(v);    }
+    Real getParticleMass() const { return particleMass.getValue(); }
+    void setParticleMass(Real v) { particleMass.setValue(v);    }
+    Real getPressureStiffness() const { return pressureStiffness.getValue(); }
+    void setPressureStiffness(Real v) { pressureStiffness.setValue(v);    }
+    Real getDensity0() const { return density0.getValue(); }
+    void setDensity0(Real v) { density0.setValue(v);    }
+    Real getViscosity() const { return viscosity.getValue(); }
+    void setViscosity(Real v) { viscosity.setValue(v);    }
+    Real getSurfaceTension() const { return surfaceTension.getValue(); }
+    void setSurfaceTension(Real v) { surfaceTension.setValue(v);    }
 
     Real getParticleField(int i, Real r2_h2)
     {
@@ -311,7 +309,7 @@ public:
 
     Real getParticleFieldConstant(Real h)
     {
-        return constWc(h)*particleMass;
+        return constWc(h)*particleMass.getValue();
     }
 
     virtual void init();

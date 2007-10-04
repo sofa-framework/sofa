@@ -47,18 +47,19 @@ namespace forcefield
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::clear(int reserve)
 {
-    prevContacts.swap(contacts); // save old contacts in prevContacts
-    contacts.clear();
+    prevContacts.swap(*contacts.beginEdit()); // save old contacts in prevContacts
+    contacts.beginEdit()->clear();
     if (reserve)
-        contacts.reserve(reserve);
+        contacts.beginEdit()->reserve(reserve);
+    contacts.endEdit();
 }
 
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v, int oldIndex)
 {
-    int i = contacts.size();
-    contacts.resize(i+1);
-    Contact& c = contacts[i];
+    int i = contacts.getValue().size();
+    contacts.beginEdit()->resize(i+1);
+    Contact& c = (*contacts.beginEdit())[i];
     c.m1 = m1;
     c.m2 = m2;
     c.norm = norm;
@@ -75,6 +76,7 @@ void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, const Deri
     {
         c.age = 0;
     }
+    contacts.endEdit();
 }
 
 template<class DataTypes>
@@ -82,9 +84,9 @@ void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
 {
     f1.resize(x1.size());
     f2.resize(x2.size());
-    for (unsigned int i=0; i<contacts.size(); i++)
+    for (unsigned int i=0; i<contacts.getValue().size(); i++)
     {
-        Contact& c = contacts[i];
+        Contact& c = (*contacts.beginEdit())[i];
         Coord u = x2[c.m2]-x1[c.m1];
         c.pen = c.dist - u*c.norm;
         if (c.pen > 0)
@@ -95,6 +97,7 @@ void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
             f2[c.m2]-=force;
         }
     }
+    contacts.endEdit();
 }
 
 template<class DataTypes>
@@ -102,9 +105,9 @@ void PenalityContactForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df
 {
     df1.resize(dx1.size());
     df2.resize(dx2.size());
-    for (unsigned int i=0; i<contacts.size(); i++)
+    for (unsigned int i=0; i<contacts.getValue().size(); i++)
     {
-        const Contact& c = contacts[i];
+        const Contact& c = contacts.getValue()[i];
         if (c.pen > 0) // + dpen > 0)
         {
             Coord du = dx2[c.m2]-dx1[c.m1];
@@ -134,9 +137,9 @@ void PenalityContactForceField<DataTypes>::draw()
     glDisable(GL_LIGHTING);
 
     glBegin(GL_LINES);
-    for (unsigned int i=0; i<contacts.size(); i++)
+    for (unsigned int i=0; i<contacts.getValue().size(); i++)
     {
-        const Contact& c = contacts[i];
+        const Contact& c = contacts.getValue()[i];
         Real d = c.dist - (p2[c.m2]-p1[c.m1])*c.norm;
         if (c.age > 10) //c.spen > c.mu_s * c.ks * 0.99)
             if (d > 0)
@@ -156,9 +159,9 @@ void PenalityContactForceField<DataTypes>::draw()
     {
         glColor4f(1,1,0,1);
         glBegin(GL_LINES);
-        for (unsigned int i=0; i<contacts.size(); i++)
+        for (unsigned int i=0; i<contacts.getValue().size(); i++)
         {
-            const Contact& c = contacts[i];
+            const Contact& c = contacts.getValue()[i];
             Coord p = p1[c.m1] - c.norm;
             helper::gl::glVertexT(p1[c.m1]);
             helper::gl::glVertexT(p);

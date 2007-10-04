@@ -65,14 +65,17 @@ void BeamFEMForceField<DataTypes>::init()
     }
     _indexedElements = & (_mesh->getLines());
 
-    VecCoord& p = *this->mstate->getX();
-    _initialPoints = p;
+    if (_initialPoints.getValue().size() == 0)
+    {
+        VecCoord& p = *this->mstate->getRestX();
+        _initialPoints.setValue(p);
+    }
 
     //_strainDisplacements.resize( _indexedElements->size() );
-    //_stiffnesses.resize( _initialPoints.size()*3 );
+    //_stiffnesses.resize( _initialPoints.getValue().size()*3 );
     //_materialsStiffnesses.resize(_indexedElements->size() );
     _stiffnessMatrices.resize(_indexedElements->size() );
-    _forces.resize( _initialPoints.size() );
+    _forces.resize( _initialPoints.getValue().size() );
 
     //case LARGE :
     {
@@ -84,7 +87,7 @@ void BeamFEMForceField<DataTypes>::init()
         {
             Index a = (*it)[0];
             Index b = (*it)[1];
-            defaulttype::Vec<3,Real> dp; dp = _initialPoints[a].getCenter()-_initialPoints[b].getCenter();
+            defaulttype::Vec<3,Real> dp; dp = _initialPoints.getValue()[a].getCenter()-_initialPoints.getValue()[b].getCenter();
             _initialLength[i] = dp.norm();
             //computeMaterialStiffness(i,a,b);
             computeStiffness(i,a,b);
@@ -448,12 +451,12 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index , Index )
     /*
 
             Transformation R_0_1;
-            computeRotationLarge( R_0_1, _initialPoints, a, b, c);
+            computeRotationLarge( R_0_1, _initialPoints.getValue(), a, b, c);
 
-            _rotatedInitialElements[i][0] = R_0_1*_initialPoints[a];
-            _rotatedInitialElements[i][1] = R_0_1*_initialPoints[b];
-            _rotatedInitialElements[i][2] = R_0_1*_initialPoints[c];
-            _rotatedInitialElements[i][3] = R_0_1*_initialPoints[d];
+            _rotatedInitialElements[i][0] = R_0_1*_initialPoints.getValue()[a];
+            _rotatedInitialElements[i][1] = R_0_1*_initialPoints.getValue()[b];
+            _rotatedInitialElements[i][2] = R_0_1*_initialPoints.getValue()[c];
+            _rotatedInitialElements[i][3] = R_0_1*_initialPoints.getValue()[d];
 
     //         cerr<<"a,b,c : "<<a<<" "<<b<<" "<<c<<endl;
     //         cerr<<"_initialPoints : "<<_initialPoints<<endl;
