@@ -201,7 +201,7 @@ public:
     ///
     /// Default to false if the collision models are attached to the same
     /// context (i.e. the same node in the scenegraph).
-    virtual bool canCollideWith(CollisionModel* model) { return model->getContext() != this->getContext(); }
+    virtual bool canCollideWith(CollisionModel* model) { return model->getContext() != this->getContext(); } // (B. ANDRE : Why not remplace by "true" to avoid self-collisions ?)
     //virtual bool canCollideWith(CollisionModel* model) { return model != this; }
 
     /// \brief Test if two elements can collide with each other.
