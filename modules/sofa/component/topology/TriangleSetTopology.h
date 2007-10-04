@@ -404,6 +404,11 @@ public:
     void computeTriangleArea( BasicArrayInterface<Real> &ai) const;
     /// computes the initial area  of triangle no i and returns it
     Real computeRestTriangleArea(const unsigned int i) const;
+
+    // Computes the intersection of the vector from point a to point b and the triangle indexed by t
+    bool computeSegmentTriangleIntersection(const Coord& a, const Coord& b, const unsigned int ind_t,
+            std::vector<unsigned int> &indices,
+            double &baryCoef, double& coord_kmin);
 };
 
 

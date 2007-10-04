@@ -278,11 +278,13 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const std::v
                     it=std::find( shell1.begin(), shell1.end(), oldTriangleIndex );
                     (*it)=indices[i];
 
+
                     std::vector< unsigned int > &shell2 = container->m_triangleVertexShell[ t[2] ];
                     // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                     assert(std::find( shell2.begin(), shell2.end(), oldTriangleIndex ) !=shell2.end());
                     it=std::find( shell2.begin(), shell2.end(), oldTriangleIndex );
                     (*it)=indices[i];
+
 
                 }
                 if (container->m_triangleEdgeShell.size()>0)
@@ -495,13 +497,98 @@ void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(std::vector< un
     // inform other objects that the triangles are going to be removed
     topology->propagateTopologicalChanges();
     // now destroy the old triangles.
+
     modifier->removeTrianglesProcess(  triangles ,true);
+
     assert(topology->getTriangleSetTopologyContainer()->checkTopology());
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////TriangleSetGeometryAlgorithms//////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+/// Dot product for 3-elements vectors.
+template<typename real>
+inline real dotProduct(const Vec<3,real>& a, const Vec<3,real>& b)
+{
+    return a.x()*b.x()+a.y()*b.y()+a.z()*b.z();
+}
+
+/// Cross product for 3-elements vectors.
+template<typename real>
+inline Vec<3,real> crossProduct(const Vec<3,real>& a, const Vec<3,real>& b)
+{
+    return Vec<3,real>(a.y()*b.z() - a.z()*b.y(),
+            a.z()*b.x() - a.x()*b.z(),
+            a.x()*b.y() - a.y()*b.x());
+}
+
+/// Test intersection of the segment defined by (pa, vproj_ab) and the edge (p1,p2)
+template<typename real>
+bool test_intersect(const Vec<3,real>& p1, const Vec<3,real>& p2, const Vec<3,real>& pa, const Vec<3,real>& vproj_ab, double &coord_p, double &coord_k)
+{
+
+    // HYP : vproj_ab not equal to zero
+
+    bool is_validated=false;
+    Vec<3,real> proj_b=vproj_ab+pa;
+
+    Vec<3,real> vi=crossProduct(p2-p1,vproj_ab);
+    Vec<3,real> vj=crossProduct(pa-p1,vproj_ab);
+
+    if(vi.x() != 0.0)
+    {
+
+        coord_p=vj.x()/vi.x();
+        coord_k=(((real) coord_p)*(p2-p1)+(p1-pa)).x()/vproj_ab.x();
+        is_validated=(coord_k>0.0 && (coord_p>=0.0 && coord_p<=1.0));
+
+    }
+    else
+    {
+        if(vi.y() != 0.0)
+        {
+
+            coord_p=vj.y()/vi.y();
+            coord_k=(((real) coord_p)*(p2-p1)+(p1-pa)).x()/vproj_ab.x();
+            is_validated=(coord_k>0.0 && (coord_p>=0.0 && coord_p<=1.0));
+        }
+        else
+        {
+            if(vi.z() != 0.0)
+            {
+
+                coord_p=vj.z()/vi.z();
+                coord_k=(((real) coord_p)*(p2-p1)+(p1-pa)).x()/vproj_ab.x();
+                is_validated=(coord_k>0.0 && (coord_p>=0.0 && coord_p<=1.0));
+
+            }
+            else   // p1-p2 and vproj_ab are parallel
+            {
+
+                if(vj.x()==0.0 && vj.y()==0.0 && vj.z()==0.0)  // p1-p2 and vproj_ab are on the same line
+                {
+                    coord_p=0.0;
+                    coord_k=(((real) coord_p)*(p2-p1)+(p1-pa)).x()/vproj_ab.x();
+                    if(coord_k<=0)
+                    {
+                        coord_p=1.0;
+                    }
+
+                    is_validated=true;
+
+                }
+                else   // p1-p2 and vproj_ab are disjoint
+                {
+                    is_validated=false;
+                }
+
+            }
+        }
+    }
+
+    return is_validated;
+
+}
 
 /// Cross product for 3-elements vectors.
 template<typename real>
@@ -565,6 +652,116 @@ void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleArea( BasicArrayIn
         ai[i]=(Real)(areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])/2.0);
     }
 }
+
+
+// Computes the intersection of the segment from point a to point b and the triangle indexed by t
+template<class DataTypes>
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersection(const Coord& a, const Coord& b, const unsigned int ind_t,
+        std::vector<unsigned int> &indices,
+        double &baryCoef, double& coord_kmin)
+{
+
+    // HYP : indices.size == 2
+
+    bool is_validated = false;
+
+    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
+    const Triangle &t=container->getTriangle(ind_t);
+    const typename DataTypes::VecCoord& p = *topology->getDOF()->getX();
+
+    const typename DataTypes::Coord& c0=p[t[0]];
+    const typename DataTypes::Coord& c1=p[t[1]];
+    const typename DataTypes::Coord& c2=p[t[2]];
+
+    const Vec<3,Real> &p0 = (Vec<3,Real>) (c0[0],c0[1],c0[2]);
+    const Vec<3,Real> &p1 = (Vec<3,Real>) (c1[0],c1[1],c1[2]);
+    const Vec<3,Real> &p2 = (Vec<3,Real>) (c2[0],c2[1],c2[2]);
+
+    const Vec<3,Real> &pa = (Vec<3,Real>) (a[0],a[1],a[2]);
+    const Vec<3,Real> &pb = (Vec<3,Real>) (b[0],b[1],b[2]);
+
+
+    Vec<3,Real> v_normal = crossProduct(p2-p0,p1-p0);
+
+    Real norm_v_normal = v_normal.norm();
+    if(norm_v_normal != 0.0)
+    {
+
+        v_normal/=norm_v_normal;
+
+        Vec<3,Real> v_ab = pb-pa;
+        const Vec<3,Real> &vproj_ab = v_ab - dotProduct(v_ab,v_normal)*v_normal; // projection
+
+        Real norm_v_ab = v_ab.norm();
+        if(norm_v_ab != 0.0)
+        {
+
+            double init_coord=0.0;
+            double& coord_p=init_coord;
+            double& coord_k=init_coord;
+
+            coord_kmin=init_coord;
+
+            // Test of edge (p0,p1) :
+            if(test_intersect(p0,p1,pa,vproj_ab,coord_p,coord_k))
+            {
+                is_validated=true;
+
+                indices[0]=t[0];
+                indices[1]=t[1];
+                baryCoef=coord_p;
+                coord_kmin=coord_k;
+            }
+
+            // Test of edge (p1,p2) :
+            if(test_intersect(p1,p2,pa,vproj_ab,coord_p,coord_k))
+            {
+                is_validated=true;
+
+                if(coord_k<coord_kmin)
+                {
+                    indices[0]=t[1];
+                    indices[1]=t[2];
+                    baryCoef=coord_p;
+                    coord_kmin=coord_k;
+                }
+            }
+
+            // Test of edge (p2,p0) :
+            if(test_intersect(p1,p2,pa,vproj_ab,coord_p,coord_k))
+            {
+                is_validated=true;
+
+                if(coord_k<coord_kmin)
+                {
+
+                    indices[0]=t[2];
+                    indices[1]=t[0];
+                    baryCoef=coord_p;
+                    coord_kmin=coord_k;
+                }
+            }
+
+        }
+        else
+        {
+            is_validated=false; // points a and b are projected to the same point on triangle t
+        }
+
+
+    }
+    else
+    {
+        is_validated=false; // triangle t is flat
+    }
+
+    return is_validated;
+
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////TriangleSetTopology//////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////

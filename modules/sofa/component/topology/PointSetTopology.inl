@@ -190,6 +190,7 @@ void PointSetTopologyModifier<DataTypes>::addPointsWarning(const unsigned int nP
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::removePointsWarning(const std::vector<unsigned int> &indices)
 {
+
     // Warning that these vertices will be deleted
     PointsRemoved *e=new PointsRemoved(indices);
     addTopologyChange(e);
@@ -200,7 +201,7 @@ void PointSetTopologyModifier<DataTypes>::removePointsWarning(const std::vector<
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::removePointsProcess( std::vector<unsigned int> &indices)
 {
-    std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
+    // BUG FIXED : do not sort indices here
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
     PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
