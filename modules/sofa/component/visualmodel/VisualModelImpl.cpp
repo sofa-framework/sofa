@@ -734,6 +734,40 @@ void VisualModelImpl::handleTopologyChange()
             break;
         }
 
+        // Case "POINTSREMOVED" added to propagate the treatment to the Visual Model
+
+        case core::componentmodel::topology::POINTSREMOVED:
+        {
+            sofa::core::componentmodel::topology::BaseTopology* bt = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+            sofa::core::componentmodel::topology::TopologyContainer *container=bt->getTopologyContainer();
+            sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
+
+            if (tstc)
+            {
+                const std::vector< std::vector<unsigned int> > &tvsa=tstc->getTriangleVertexShellArray();
+                unsigned int last = tvsa.size() -1;
+                unsigned int i,j;
+
+                const std::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                for ( i = 0; i < tab.size(); ++i)
+                {
+                    const std::vector<unsigned int> &shell=tvsa[last];
+                    for (j=0; j<shell.size(); ++j)
+                    {
+                        if ((unsigned)triangles[shell[j]][0]==last)
+                            triangles[shell[j]][0]=tab[i];
+                        else if ((unsigned)triangles[shell[j]][1]==last)
+                            triangles[shell[j]][1]=tab[i];
+                        else if ((unsigned)triangles[shell[j]][2]==last)
+                            triangles[shell[j]][2]=tab[i];
+                    }
+                    --last;
+                }
+            }
+            break;
+
+        }
+
         default:
             // Ignore events that are not Triangle  related.
             break;
