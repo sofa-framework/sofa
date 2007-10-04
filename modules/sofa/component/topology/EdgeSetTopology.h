@@ -361,8 +361,7 @@ public:
 };
 
 
-/** Describes a topological object that only consists as a set of points :
-it is a base class for all topological objects */
+/** Describes a topological object that only consists as a set of points and lines connecting these points */
 template<class DataTypes>
 class EdgeSetTopology : public PointSetTopology <DataTypes>
 {

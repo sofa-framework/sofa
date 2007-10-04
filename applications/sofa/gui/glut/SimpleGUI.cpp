@@ -65,7 +65,7 @@ using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
-using sofa::simulation::tree::Simulation;
+using sofa::simulation::tree::getSimulation;
 
 
 SimpleGUI* SimpleGUI::instance = NULL;
@@ -1065,16 +1065,16 @@ void SimpleGUI::DisplayOBJs(bool shadowPass)
     {
         std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        Simulation::initTextures(groot);
+        simulation::tree::getSimulation()->initTextures(groot);
         //---------------------------------------------------
         initTexturesDone = true;
     }
 
     {
         if (shadowPass)
-            Simulation::drawShadows(groot);
+            getSimulation()->drawShadows(groot);
         else
-            Simulation::draw(groot);
+            getSimulation()->draw(groot);
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);
@@ -1370,7 +1370,7 @@ void SimpleGUI::calcProjection()
 
     //if (!sceneBBoxIsValid)
     {
-        Simulation::computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
     }
     //std::cout << "Scene BBox = "<<sceneMinBBox<<" - "<<sceneMaxBBox<<"\n";
@@ -1879,7 +1879,7 @@ void SimpleGUI::keyPressEvent ( int k )
                 std::string filename = sceneFileName;
                 Quaternion q = _newQuat;
                 Transformation t = _sceneTransform;
-                simulation::tree::GNode* newroot = Simulation::load(filename.c_str());
+                simulation::tree::GNode* newroot = getSimulation()->load(filename.c_str());
                 if (newroot == NULL)
                 {
                     std::cerr << "Failed to load "<<filename<<std::endl;
@@ -2426,12 +2426,12 @@ void SimpleGUI::step()
         if (_waitForRender) return;
         //groot->setLogTime(true);
 
-        Simulation::animate(groot);
+        getSimulation()->animate(groot);
 
         if( m_dumpState )
-            Simulation::dumpState( groot, *m_dumpStateStream );
+            getSimulation()->dumpState( groot, *m_dumpStateStream );
         if( m_exportGnuplot )
-            Simulation::exportGnuplot( groot, groot->getTime() );
+            getSimulation()->exportGnuplot( groot, groot->getTime() );
 
 
         _waitForRender = true;
@@ -2488,7 +2488,7 @@ void SimpleGUI::resetScene()
 {
     if (groot)
     {
-        Simulation::reset(groot);
+        getSimulation()->reset(groot);
         redraw();
     }
 }
@@ -2520,7 +2520,7 @@ void SimpleGUI::showVisual(bool value)
     if (groot)
     {
         groot->getContext()->setShowVisualModels(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2530,7 +2530,7 @@ void SimpleGUI::showBehavior(bool value)
     if (groot)
     {
         groot->getContext()->setShowBehaviorModels(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2540,7 +2540,7 @@ void SimpleGUI::showCollision(bool value)
     if (groot)
     {
         groot->getContext()->setShowCollisionModels(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2550,7 +2550,7 @@ void SimpleGUI::showBoundingCollision(bool value)
     if (groot)
     {
         groot->getContext()->setShowBoundingCollisionModels(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2560,7 +2560,7 @@ void SimpleGUI::showMapping(bool value)
     if (groot)
     {
         groot->getContext()->setShowMappings(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2570,7 +2570,7 @@ void SimpleGUI::showMechanicalMapping(bool value)
     if (groot)
     {
         groot->getContext()->setShowMechanicalMappings(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2580,7 +2580,7 @@ void SimpleGUI::showForceField(bool value)
     if (groot)
     {
         groot->getContext()->setShowForceFields(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2590,7 +2590,7 @@ void SimpleGUI::showInteractionForceField(bool value)
     if (groot)
     {
         groot->getContext()->setShowInteractionForceFields(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2600,7 +2600,7 @@ void SimpleGUI::showWireFrame(bool value)
     if (groot)
     {
         groot->getContext()->setShowWireFrame(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2610,7 +2610,7 @@ void SimpleGUI::showNormals(bool value)
     if (groot)
     {
         groot->getContext()->setShowNormals(value);
-        Simulation::updateContext(groot);
+        getSimulation()->updateContext(groot);
     }
     redraw();
 }
@@ -2645,7 +2645,7 @@ void SimpleGUI::exportOBJ(bool exportMTL)
     ofilename << ".obj";
     std::string filename = ofilename.str();
     std::cout << "Exporting OBJ Scene "<<filename<<std::endl;
-    Simulation::exportOBJ(groot, filename.c_str(),exportMTL);
+    getSimulation()->exportOBJ(groot, filename.c_str(),exportMTL);
 }
 
 void SimpleGUI::setScene(sofa::simulation::tree::GNode* scene, const char* filename)
@@ -2682,8 +2682,8 @@ void SimpleGUI::setExportGnuplot( bool exp )
     m_exportGnuplot = exp;
     if( m_exportGnuplot )
     {
-        Simulation::initGnuplot( groot );
-        Simulation::exportGnuplot( groot, groot->getTime() );
+        getSimulation()->initGnuplot( groot );
+        getSimulation()->exportGnuplot( groot, groot->getTime() );
     }
 }
 

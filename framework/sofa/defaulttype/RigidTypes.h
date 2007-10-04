@@ -69,7 +69,7 @@ public:
     typedef Vec<3,Real> Vec3;
     typedef helper::Quater<Real> Quat;
 
-private:
+protected:
     Vec3 vCenter;
     Vec3 vOrientation;
 public:
@@ -150,6 +150,14 @@ public:
     Vec3& getVOrientation (void) { return vOrientation; }
     const Vec3& getVCenter (void) const { return vCenter; }
     const Vec3& getVOrientation (void) const { return vOrientation; }
+
+    Vec3& getLinear () { return vCenter; }
+    const Vec3& getLinear () const { return vCenter; }
+    Vec3& getAngular () { return vOrientation; }
+    const Vec3& getAngular () const { return vOrientation; }
+
+
+
     /// write to an output stream
     inline friend std::ostream& operator << ( std::ostream& out, const RigidDeriv<3,real>& v )
     {
@@ -172,7 +180,7 @@ public:
     typedef Vec<3,Real> Vec3;
     typedef helper::Quater<Real> Quat;
 
-private:
+protected:
     Vec3 center;
     Quat orientation;
 public:

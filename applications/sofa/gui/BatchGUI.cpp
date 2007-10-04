@@ -23,7 +23,7 @@ int BatchGUI::mainLoop()
         std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
         for (int i=0; i<nbIter; i++)
         {
-            sofa::simulation::tree::Simulation::animate(groot);
+            sofa::simulation::tree::getSimulation()->animate(groot);
         }
         std::cout <<nbIter<<" iterations done." << std::endl;
     }

@@ -26,6 +26,7 @@
 #define SOFA_SIMULATION_TREE_SIMULATION_H
 
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
 {
@@ -36,61 +37,82 @@ namespace simulation
 namespace tree
 {
 
-class Simulation
+/** Main controller of the scene.
+Defines how the scene is inited at the beginning, and updated at each time step.
+Derives from BaseObject in order to model the parameters as DataFields, which makes their edition easy in the GUI.
+*/
+class Simulation: public virtual sofa::core::objectmodel::BaseObject
 {
 public:
 
-    /// Load a scene from a file
+    /** Load a scene from a file.
+    Static method because at this point, the Simulation component is not yet created.
+    If a Simulation component is found in the graph, then it is used.
+    Otherwise, a default Simulation will be created at the first call to method getSimulation()
+    */
     static GNode* load(const char* filename);
 
+    Simulation();
+
     /// Print all object in the graph
-    static void print(GNode* root);
+    virtual void print(GNode* root);
 
     /// Print all object in the graph in XML format
-    static void printXML(GNode* root, const char* fileName=0);
+    virtual void printXML(GNode* root, const char* fileName=0);
 
     /// Initialize the objects
-    static void init(GNode* root);
+    virtual void init(GNode* root);
 
     /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
-    static void animate(GNode* root, double dt=0.0);
+    virtual void animate(GNode* root, double dt=0.0);
 
     /// Reset to initial state
-    static void reset(GNode* root);
+    virtual void reset(GNode* root);
 
     /// Initialize the textures
-    static void initTextures(GNode* root);
+    virtual void initTextures(GNode* root);
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    static void updateContext(GNode* root);
+    virtual void updateContext(GNode* root);
 
     /// Compute the bounding box of the scene.
-    static void computeBBox(GNode* root, double* minBBox, double* maxBBox);
+    virtual void computeBBox(GNode* root, double* minBBox, double* maxBBox);
 
     /// Render the scene
-    static void draw(GNode* root);
+    virtual void draw(GNode* root);
 
     /// Render the scene - Shadows pass
-    static void drawShadows(GNode* root);
+    virtual void drawShadows(GNode* root);
 
     /// Delete a scene from memory. After this call the pointer is invalid
-    static void unload(GNode* root);
+    virtual void unload(GNode* root);
 
     /// Export a scene to an OBJ 3D Scene
-    static void exportOBJ(GNode* root, const char* filename, bool exportMTL = true);
+    virtual void exportOBJ(GNode* root, const char* filename, bool exportMTL = true);
 
     /// Export a scene to XML
-    static void exportXML(GNode* root, const char* filename);
+    virtual void exportXML(GNode* root, const char* filename);
 
     /// Dump the current state in the given stream
-    static void dumpState( GNode* root, std::ofstream& out );
+    virtual void dumpState( GNode* root, std::ofstream& out );
 
     /// Initialize gnuplot export (open files)
-    static void initGnuplot( GNode* root );
+    virtual void initGnuplot( GNode* root );
     /// Dump the current state in gnuplot files
-    static void exportGnuplot( GNode* root, double time );
+    virtual void exportGnuplot( GNode* root, double time );
+
+    /// Number of mechanical steps within an animation step
+    DataField<unsigned> numMechSteps;
 
 };
+
+/// Set the (unique) simulation which controls the scene
+void setSimulation(Simulation*);
+
+/** Get the (unique) simulation which controls the scene.
+Automatically creates one if no Simulation has been set.
+*/
+Simulation* getSimulation();
 
 } // namespace tree
 

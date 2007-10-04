@@ -54,6 +54,10 @@ int main(int, char** argv)
     GNode* groot = new sofa::simulation::tree::GNode;
     groot->setName( "root" );
 
+    // One solver for all the graph
+    OdeSolver* solver = new OdeSolver;
+    groot->addObject(solver);
+    solver->setName("S");
 
     //-------------------- Deformable body
     GNode* deformableBody = new GNode;
@@ -64,7 +68,7 @@ int main(int, char** argv)
     ParticleDOFs* DOF = new ParticleDOFs;
     deformableBody->addObject(DOF);
     DOF->resize(2);
-    DOF->setName("DOF");
+    DOF->setName("Dof1");
     ParticleTypes::VecCoord& x = *DOF->getX();
     x[0] = Vec3(0,0,0);
     x[1] = Vec3(endPos,0,0);
@@ -73,18 +77,18 @@ int main(int, char** argv)
     ParticleMasses* mass = new ParticleMasses;
     deformableBody->addObject(mass);
     mass->setMass(1);
-    mass->setName("mass");
+    mass->setName("M1");
 
     // Fixed point
     ParticleFixedConstraint* constraints = new ParticleFixedConstraint;
     deformableBody->addObject(constraints);
-    constraints->setName("constraints");
+    constraints->setName("C");
     constraints->addConstraint(0);
 
     // force field
     ParticleStiffSpringForceField* spring = new ParticleStiffSpringForceField;
     deformableBody->addObject(spring);
-    spring->setName("internal spring");
+    spring->setName("F1");
     spring->addSpring( 1,0, 10., 1, splength );
 
 
@@ -97,13 +101,14 @@ int main(int, char** argv)
     RigidDOFs* rigidDOF = new RigidDOFs;
     rigidBody->addObject(rigidDOF);
     rigidDOF->resize(1);
-    rigidDOF->setName("rigidDOF");
+    rigidDOF->setName("Dof2");
     RigidTypes::VecCoord& rigid_x = *rigidDOF->getX();
     rigid_x[0] = RigidCoord( Vec3(endPos-attach+splength,0,0), Quaternion::identity() );
 
     // mass
     RigidUniformMasses* rigidMass = new RigidUniformMasses;
     rigidBody->addObject(rigidMass);
+    rigidMass->setName("M2");
 
 
     //-------------------- the particles attached to the rigid body
@@ -115,25 +120,21 @@ int main(int, char** argv)
     ParticleDOFs* rigidParticleDOF = new ParticleDOFs;
     rigidParticles->addObject(rigidParticleDOF);
     rigidParticleDOF->resize(1);
-    rigidParticleDOF->setName("rigidParticleDOF");
+    rigidParticleDOF->setName("Dof3");
     ParticleTypes::VecCoord& rp_x = *rigidParticleDOF->getX();
     rp_x[0] = Vec3(attach,0,0);
 
     // mapping from the rigid body DOF to the skin DOF, to rigidly attach the skin to the body
     RigidToParticleRigidMechanicalMapping* rigidMapping = new RigidToParticleRigidMechanicalMapping(rigidDOF,rigidParticleDOF);
     rigidParticles->addObject( rigidMapping );
+    rigidMapping->setName("Map23");
 
 
     // ---------------- Interaction force between the deformable and the rigid body
     ParticleStiffSpringForceField* iff = new ParticleStiffSpringForceField( DOF, rigidParticleDOF );
     groot->addObject(iff);
-    iff->setName("Interaction force");
+    iff->setName("F13");
     iff->addSpring( 1,0, 10., 1., splength );
-
-    // ----------------  One solver for the whole  graph
-    OdeSolver* solver = new OdeSolver;
-    groot->addObject(solver);
-    solver->f_printLog.setValue(false);
 
     // Set gravity for the whole graph
     Gravity* gravity =  new Gravity;
@@ -143,7 +144,7 @@ int main(int, char** argv)
 
 
     //=========================== Init the scene
-    sofa::simulation::tree::Simulation::init(groot);
+    sofa::simulation::tree::getSimulation()->init(groot);
     groot->setAnimate(false);
     groot->setShowNormals(false);
     groot->setShowInteractionForceFields(true);

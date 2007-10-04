@@ -120,7 +120,7 @@ void PMLReader::BuildStructure(GNode* root)
         MinProximityIntersection * mpi = new MinProximityIntersection;
         //computes the distance contact from the bounding box
         VisualComputeBBoxVisitor act;
-        Simulation::init(root);
+        getSimulation()->init(root);
         root->execute(act);
         double dx=(act.maxBBox[0]-act.minBBox[0]);
         double dy=(act.maxBBox[1]-act.minBBox[1]);
@@ -140,7 +140,7 @@ void PMLReader::BuildStructure(GNode* root)
     //if there is 2 bodies with the same type and some nodes in common, we merge them
     processFusions(root);
 
-    sofa::simulation::tree::Simulation::init(root);
+    sofa::simulation::tree::getSimulation()->init(root);
 }
 
 //create the body structure

@@ -27,6 +27,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/tree/init.h>
 #include <sofa/simulation/tree/PrintVisitor.h>
+#include <sofa/simulation/tree/FindByTypeVisitor.h>
 #include <sofa/simulation/tree/ExportGnuplotVisitor.h>
 #include <sofa/simulation/tree/InitVisitor.h>
 #include <sofa/simulation/tree/AnimateVisitor.h>
@@ -43,6 +44,7 @@
 #include <sofa/simulation/tree/PropagateEventVisitor.h>
 #include <sofa/simulation/tree/AnimateBeginEvent.h>
 #include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/core/ObjectFactory.h>
 #include <fstream>
 
 
@@ -57,39 +59,59 @@ namespace tree
 
 using namespace sofa::defaulttype;
 
+/// The (unique) simulation which controls the scene
+Simulation* theSimulation = NULL;
+
+void setSimulation ( Simulation* s )
+{
+    theSimulation = s;
+}
+
+Simulation* getSimulation()
+{
+    if ( theSimulation==NULL )
+        theSimulation = new Simulation;
+    return theSimulation;
+}
+
 /// Load a scene from a file
-GNode* Simulation::load(const char *filename)
+GNode* Simulation::load ( const char *filename )
 {
     ::sofa::simulation::tree::init();
     std::cerr << "Loading simulation XML file "<<filename<<std::endl;
-    xml::BaseElement* xml = xml::load(filename);
-    if (xml==NULL)
+    xml::BaseElement* xml = xml::load ( filename );
+    if ( xml==NULL )
     {
         return NULL;
     }
 
     // We go the the current file's directory so that all relative path are correct
-    helper::system::SetDirectory chdir(filename);
+    helper::system::SetDirectory chdir ( filename );
 
     std::cout << "Initializing objects"<<std::endl;
-    if (!xml->init())
+    if ( !xml->init() )
     {
         std::cerr << "Objects initialization failed."<<std::endl;
     }
 
-    GNode* root = dynamic_cast<GNode*>(xml->getObject());
-    if (root == NULL)
+    GNode* root = dynamic_cast<GNode*> ( xml->getObject() );
+    if ( root == NULL )
     {
         std::cerr << "Objects initialization failed."<<std::endl;
         delete xml;
         return NULL;
     }
 
-    std::cout << "Initializing simulation "<<root->getName()<<std::endl;
+    std::cout << "Initializing simulation "<<root->getName() <<std::endl;
 
-    //root->init();
-    //exportXML( root, "toto.scn" );
-    root->execute<InitVisitor>();
+    // Find the Simulation component in the scene
+    FindByTypeVisitor<Simulation> findSimu;
+    findSimu.execute(root);
+    if( !findSimu.found.empty() )
+        setSimulation( findSimu.found[0] );
+    // if no Simulation is found, getSimulation() will automatically create one, of the default type.
+
+    getSimulation()->init ( root );
 
     // As mappings might be initialized after visual models, it is necessary to update them
     // BUGFIX (Jeremie A.): disabled as initTexture was not called yet, and the GUI might not even be up yet
@@ -102,76 +124,85 @@ GNode* Simulation::load(const char *filename)
     return root;
 }
 
+Simulation::Simulation()
+    : numMechSteps( dataField(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") )
+{}
+
 /// Print all object in the graph
-void Simulation::print(GNode* root)
+void Simulation::print ( GNode* root )
 {
-    if (!root) return;
+    if ( !root ) return;
     root->execute<PrintVisitor>();
 }
 
 /// Print all object in the graph
-void Simulation::printXML(GNode* root, const char* fileName)
+void Simulation::printXML ( GNode* root, const char* fileName )
 {
-    if (!root) return;
-    if( fileName!=NULL )
+    if ( !root ) return;
+    if ( fileName!=NULL )
     {
-        std::ofstream out(fileName);
-        XMLPrintVisitor print(out);
-        root->execute(print);
+        std::ofstream out ( fileName );
+        XMLPrintVisitor print ( out );
+        root->execute ( print );
     }
     else
     {
-        XMLPrintVisitor print(std::cout);
-        root->execute(print);
+        XMLPrintVisitor print ( std::cout );
+        root->execute ( print );
     }
 }
 
 /// Initialize the scene.
-void Simulation::init(GNode* root)
+void Simulation::init ( GNode* root )
 {
-    if (!root) return;
+    if ( !root ) return;
     root->execute<InitVisitor>();
 }
 
 /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
-void Simulation::animate(GNode* root, double dt)
+void Simulation::animate ( GNode* root, double dt )
 {
-    if (!root) return;
-    if (root->getMultiThreadSimulation())
+    if ( !root ) return;
+    if ( root->getMultiThreadSimulation() )
         return;
 
     {
-        AnimateBeginEvent ev(dt);
-        PropagateEventVisitor act(&ev);
-        root->execute(act);
+        AnimateBeginEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        root->execute ( act );
     }
 
     //std::cout << "animate\n";
-    double nextTime = root->getTime() + root->getDt();
+    double startTime = root->getTime();
+    double mechanicalDt = dt/numMechSteps.getValue();
+    //double nextTime = root->getTime() + root->getDt();
 
     // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
     //root->execute<CollisionVisitor>();
 
     AnimateVisitor act;
-    act.setDt(dt);
-    root->execute(act);
-    root->setTime( nextTime );
-    root->execute<UpdateContextVisitor>();
+    act.setDt ( mechanicalDt );
+    for( unsigned i=0; i<numMechSteps.getValue(); i++ )
+    {
+        root->execute ( act );
+        root->setTime ( startTime + (i+1)*mechanicalDt );
+        root->execute<UpdateContextVisitor>();
+    }
 
     root->execute<UpdateMappingVisitor>();
     root->execute<VisualUpdateVisitor>();
 
     {
-        AnimateEndEvent ev(dt);
-        PropagateEventVisitor act(&ev);
-        root->execute(act);
+        AnimateEndEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        root->execute ( act );
     }
 }
 
 /// Reset to initial state
-void Simulation::reset(GNode* root)
+void Simulation::reset ( GNode* root )
 {
-    if (!root) return;
+    if ( !root ) return;
     root->execute<ResetVisitor>();
     root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
     root->execute<UpdateMappingVisitor>();
@@ -179,9 +210,9 @@ void Simulation::reset(GNode* root)
 }
 
 /// Initialize the textures
-void Simulation::initTextures(GNode* root)
+void Simulation::initTextures ( GNode* root )
 {
-    if (!root) return;
+    if ( !root ) return;
     root->execute<VisualInitTexturesVisitor>();
     // Do a visual update now as it is not done in load() anymore
     /// \todo Separate this into another method?
@@ -190,11 +221,11 @@ void Simulation::initTextures(GNode* root)
 
 
 /// Compute the bounding box of the scene.
-void Simulation::computeBBox(GNode* root, double* minBBox, double* maxBBox)
+void Simulation::computeBBox ( GNode* root, double* minBBox, double* maxBBox )
 {
     VisualComputeBBoxVisitor act;
-    if (root)
-        root->execute(act);
+    if ( root )
+        root->execute ( act );
     minBBox[0] = act.minBBox[0];
     minBBox[1] = act.minBBox[1];
     minBBox[2] = act.minBBox[2];
@@ -204,107 +235,116 @@ void Simulation::computeBBox(GNode* root, double* minBBox, double* maxBBox)
 }
 
 /// Update contexts. Required before drawing the scene if root flags are modified.
-void Simulation::updateContext(GNode* root)
+void Simulation::updateContext ( GNode* root )
 {
-    if (!root) return;
+    if ( !root ) return;
     root->execute<UpdateContextVisitor>();
 }
 
 /// Render the scene
-void Simulation::draw(GNode* root)
+void Simulation::draw ( GNode* root )
 {
-    if (!root) return;
+    if ( !root ) return;
     //std::cout << "draw\n";
-    VisualDrawVisitor act(VisualDrawVisitor::Std);
-    root->execute(&act);
-    VisualDrawVisitor act2(VisualDrawVisitor::Transparent);
-    root->execute(&act2);
+    VisualDrawVisitor act ( VisualDrawVisitor::Std );
+    root->execute ( &act );
+    VisualDrawVisitor act2 ( VisualDrawVisitor::Transparent );
+    root->execute ( &act2 );
 }
 
 /// Render the scene - shadow pass
-void Simulation::drawShadows(GNode* root)
+void Simulation::drawShadows ( GNode* root )
 {
-    if (!root) return;
+    if ( !root ) return;
     //std::cout << "drawShadows\n";
-    VisualDrawVisitor act(VisualDrawVisitor::Shadow);
-    root->execute(&act);
+    VisualDrawVisitor act ( VisualDrawVisitor::Shadow );
+    root->execute ( &act );
 }
 
 /// Delete a scene from memory. After this call the pointer is invalid
-void Simulation::unload(GNode* root)
+void Simulation::unload ( GNode* root )
 {
-    if (!root) return;
+    if ( !root ) return;
     root->execute<DeleteVisitor>();
-    if (root->getParent()!=NULL)
-        root->getParent()->removeChild(root);
+    if ( root->getParent() !=NULL )
+        root->getParent()->removeChild ( root );
     delete root;
 }
 
 /// Export a scene to an OBJ 3D Scene
-void Simulation::exportOBJ(GNode* root, const char* filename, bool exportMTL)
+void Simulation::exportOBJ ( GNode* root, const char* filename, bool exportMTL )
 {
-    if (!root) return;
-    std::ofstream fout(filename);
+    if ( !root ) return;
+    std::ofstream fout ( filename );
 
     fout << "# Generated from SOFA Simulation" << std::endl;
 
-    if (!exportMTL)
+    if ( !exportMTL )
     {
-        ExportOBJVisitor act(&fout);
-        root->execute(&act);
+        ExportOBJVisitor act ( &fout );
+        root->execute ( &act );
     }
     else
     {
-        const char *path1 = strrchr(filename, '/');
-        const char *path2 = strrchr(filename, '\\');
-        const char* path = (path1==NULL) ? ((path2==NULL)?filename : path2+1) : (path2==NULL) ? path1+1 : ((path1-filename) > (path2-filename)) ? path1+1 : path2+1;
+        const char *path1 = strrchr ( filename, '/' );
+        const char *path2 = strrchr ( filename, '\\' );
+        const char* path = ( path1==NULL ) ? ( ( path2==NULL ) ?filename : path2+1 ) : ( path2==NULL ) ? path1+1 : ( ( path1-filename ) > ( path2-filename ) ) ? path1+1 : path2+1;
 
-        const char *ext = strrchr(path, '.');
+        const char *ext = strrchr ( path, '.' );
 
-        if (!ext) ext = path + strlen(path);
-        std::string mtlfilename(path, ext);
+        if ( !ext ) ext = path + strlen ( path );
+        std::string mtlfilename ( path, ext );
         mtlfilename += ".mtl";
-        std::string mtlpathname(filename, ext);
+        std::string mtlpathname ( filename, ext );
         mtlpathname += ".mtl";
-        std::ofstream mtl(mtlpathname.c_str());
+        std::ofstream mtl ( mtlpathname.c_str() );
         mtl << "# Generated from SOFA Simulation" << std::endl;
         fout << "mtllib "<<mtlfilename<<'\n';
 
-        ExportOBJVisitor act(&fout,&mtl);
-        root->execute(&act);
+        ExportOBJVisitor act ( &fout,&mtl );
+        root->execute ( &act );
     }
 }
 
 /// Export a scene to XML
-void Simulation::exportXML(GNode* root, const char* filename)
+void Simulation::exportXML ( GNode* root, const char* filename )
 {
-    if (!root) return;
-    std::ofstream fout(filename);
-    XMLPrintVisitor act(fout);
-    root->execute(&act);
+    if ( !root ) return;
+    std::ofstream fout ( filename );
+    XMLPrintVisitor act ( fout );
+    root->execute ( &act );
 }
 
-void Simulation::dumpState( GNode* root, std::ofstream& out )
+void Simulation::dumpState ( GNode* root, std::ofstream& out )
 {
-    out<<root->getTime()<<" ";
-    WriteStateVisitor(out).execute(root);
+    out<<root->getTime() <<" ";
+    WriteStateVisitor ( out ).execute ( root );
     out<<endl;
 }
 
 /// Initialize gnuplot file output
-void Simulation::initGnuplot(GNode* root)
+void Simulation::initGnuplot ( GNode* root )
 {
-    if (!root) return;
+    if ( !root ) return;
     root->execute<InitGnuplotVisitor>();
 }
 
 /// Update gnuplot file output
-void Simulation::exportGnuplot(GNode* root, double time)
+void Simulation::exportGnuplot ( GNode* root, double time )
 {
-    if (!root) return;
-    ExportGnuplotVisitor expg(time);
-    root->execute(expg);
+    if ( !root ) return;
+    ExportGnuplotVisitor expg ( time );
+    root->execute ( expg );
 }
+
+
+SOFA_DECL_CLASS ( Simulation );
+// Register in the Factory
+int SimulationClass = core::RegisterObject ( "Main simulation algorithm" )
+        .add< Simulation >()
+        ;
+
+
 
 } // namespace tree
 

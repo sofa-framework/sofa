@@ -79,7 +79,7 @@ using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
-using sofa::simulation::tree::Simulation;
+using sofa::simulation::tree::getSimulation;
 
 //extern UserInterface*	GUI;
 //extern OBJmodel*		cubeModel;
@@ -953,7 +953,7 @@ void QtViewer::DisplayOBJs(bool shadowPass)
     {
         std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
-        Simulation::initTextures(groot);
+        getSimulation()->initTextures(groot);
         //---------------------------------------------------
         initTexturesDone = true;
     }
@@ -961,9 +961,9 @@ void QtViewer::DisplayOBJs(bool shadowPass)
     if (!groot->getMultiThreadSimulation())
     {
         if (shadowPass)
-            Simulation::drawShadows(groot);
+            getSimulation()->drawShadows(groot);
         else
-            Simulation::draw(groot);
+            getSimulation()->draw(groot);
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);
@@ -1299,7 +1299,7 @@ void QtViewer::calcProjection()
     //if (!sceneBBoxIsValid)
     if (groot)
     {
-        Simulation::computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
     }
     //std::cout << "Scene BBox = "<<sceneMinBBox<<" - "<<sceneMaxBBox<<"\n";
@@ -1754,7 +1754,7 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
         // 			//	std::string filename = sceneFileName;
         // 			//	Quaternion q = _newQuat;
         // 			//	Transformation t = _sceneTransform;
-        // 			//	simulation::tree::GNode* newroot = Simulation::load(filename.c_str());
+        // 			//	simulation::tree::GNode* newroot = getSimulation()->load(filename.c_str());
         // 			//	if (newroot == NULL)
         // 			//	{
         // 			//		std::cout << "Failed to load "<<filename<<std::endl;
@@ -2451,7 +2451,7 @@ void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filena
     if (newScene)
     {
         initTexturesDone = false;
-        Simulation::computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
         _panSpeed = (sceneMaxBBox-sceneMinBBox).norm()*0.5;
         _zoomSpeed = (sceneMaxBBox-sceneMinBBox).norm();

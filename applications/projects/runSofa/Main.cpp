@@ -85,7 +85,7 @@ int main(int argc, char** argv)
         sofa::helper::system::DataRepository.findFile(fileName);
     }
 
-    groot = sofa::simulation::tree::Simulation::load(fileName.c_str());
+    groot = sofa::simulation::tree::getSimulation()->load(fileName.c_str());
 
     if (groot==NULL)
     {
@@ -111,7 +111,7 @@ int main(int argc, char** argv)
         std::cout << "Computing 1000 iterations." << std::endl;
         for (int i=0; i<1000; i++)
         {
-            sofa::simulation::tree::Simulation::animate(groot);
+            sofa::simulation::tree::getSimulation()->animate(groot);
         }
         std::cout << "1000 iterations done." << std::endl;
     }
@@ -123,6 +123,6 @@ int main(int argc, char** argv)
     }
 
     if (groot!=NULL)
-        sofa::simulation::tree::Simulation::unload(groot);
+        sofa::simulation::tree::getSimulation()->unload(groot);
     return 0;
 }
