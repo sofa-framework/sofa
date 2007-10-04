@@ -185,7 +185,7 @@ void Simulation::animate ( GNode* root, double dt )
     for( unsigned i=0; i<numMechSteps.getValue(); i++ )
     {
         root->execute ( act );
-        root->setTime ( startTime + (i+1)*mechanicalDt );
+        root->setTime ( startTime + (i+1)* act.getDt() );
         root->execute<UpdateContextVisitor>();
     }
 
