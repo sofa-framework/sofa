@@ -91,6 +91,8 @@ public:
     void applyConstraint(defaulttype::SofaBaseMatrix *mat, unsigned int &offset);
     void applyConstraint(defaulttype::SofaBaseVector *vect, unsigned int &offset);
 
+    // Handle topological changes
+    virtual void handleTopologyChange();
 
     // -- VisualModel interface
 
@@ -99,6 +101,15 @@ public:
     void initTextures() { }
 
     void update() { }
+
+protected :
+
+    // Define TestNewPointFunction
+    static bool FCTestNewPointFunction(int, void*, const std::vector< unsigned int > &, const std::vector< double >& );
+
+    // Define RemovalFunction
+    static void FCRemovalFunction ( int , void*);
+
 };
 
 } // namespace constraint

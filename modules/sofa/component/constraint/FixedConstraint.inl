@@ -30,6 +30,9 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
+
+#include <sofa/component/topology/PointSubset.h>
+
 using std::cerr;
 using std::endl;
 
@@ -42,8 +45,38 @@ namespace component
 namespace constraint
 {
 
+using namespace core::componentmodel::topology;
+
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
+
+
+// Define TestNewPointFunction
+template< class DataTypes>
+bool FixedConstraint<DataTypes>::FCTestNewPointFunction(int nbPoints, void* param, const std::vector< unsigned int > &, const std::vector< double >& )
+{
+    FixedConstraint<DataTypes> *fc= (FixedConstraint<DataTypes> *)param;
+    if (fc)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+// Define RemovalFunction
+template< class DataTypes>
+void FixedConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
+{
+    FixedConstraint<DataTypes> *fc= (FixedConstraint<DataTypes> *)param;
+    if (fc)
+    {
+        fc->removeConstraint((unsigned int) pointIndex);
+    }
+    return;
+}
 
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
@@ -53,6 +86,28 @@ FixedConstraint<DataTypes>::FixedConstraint()
     // default to indice 0
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
+}
+
+
+// Handle topological changes
+template <class DataTypes> void FixedConstraint<DataTypes>::handleTopologyChange()
+{
+    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+
+    topology::PointSubset my_subset = f_indices.getValue();
+
+    // Force the initialization of defined functions and parameters
+    my_subset.setTestFunction(FCTestNewPointFunction);
+    my_subset.setRemovalFunction(FCRemovalFunction);
+
+    my_subset.setTestParameter( (void *) this );
+    my_subset.setRemovalParameter( (void *) this );
+
+    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+
+    my_subset.handleTopologyEvents(itBegin,itEnd);
+
 }
 
 template <class DataTypes>
@@ -94,6 +149,16 @@ void FixedConstraint<DataTypes>::init()
     //std::set<int> tmpset(indices.begin(), indices.end());
     //indices = SetIndex(tmpset.begin(),tmpset.end());
     //f_indices.endEdit();
+
+    // Initialize functions and parameters
+    topology::PointSubset my_subset = f_indices.getValue();
+
+    my_subset.setTestFunction(FCTestNewPointFunction);
+    my_subset.setRemovalFunction(FCRemovalFunction);
+
+    my_subset.setTestParameter( (void *) this );
+    my_subset.setRemovalParameter( (void *) this );
+
 }
 
 template <class DataTypes>
