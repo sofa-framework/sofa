@@ -128,6 +128,11 @@ Simulation::Simulation()
     : numMechSteps( dataField(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") )
 {}
 
+Simulation::~Simulation()
+{
+    setSimulation( NULL );
+}
+
 /// Print all object in the graph
 void Simulation::print ( GNode* root )
 {

@@ -45,7 +45,7 @@ SOFA_DECL_CLASS(MatrixMass)
 
 // Register in the Factory
 int MatrixMassClass = core::RegisterObject("Define a specific mass for each particle")
-        .addAlias("MatrixMass")
+//.addAlias("MatrixMass")
 // .add< MatrixMass<Vec3dTypes,double> >()
 // .add< MatrixMass<Vec3fTypes,float> >()
 // .add< MatrixMass<Vec2dTypes,double> >()

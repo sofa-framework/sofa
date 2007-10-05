@@ -53,6 +53,7 @@ public:
     static GNode* load(const char* filename);
 
     Simulation();
+    virtual ~Simulation();
 
     /// Print all object in the graph
     virtual void print(GNode* root);
