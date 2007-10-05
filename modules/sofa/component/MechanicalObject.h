@@ -129,7 +129,7 @@ public:
     VecConst* getC() { return c;}
     VecCoord* getXfree() { return xfree; }
     VecDeriv* getVfree() { return vfree;  }
-    VecCoord* getRestX() { return rest_position;}
+    /* 	VecCoord* getRestX() { return rest_position;} */
 
     const VecCoord* getX()  const { return x;  }
     const VecCoord* getX0()  const { return x0;  }
@@ -140,7 +140,7 @@ public:
     const VecConst* getC() const { return c; }
     const VecCoord* getXfree() const { return xfree; }
     const VecDeriv* getVfree()  const { return vfree;  }
-    const VecCoord* getRestX() const { return rest_position;}
+    /* 	const VecCoord* getRestX() const { return rest_position;} */
 
     virtual void init();
 

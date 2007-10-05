@@ -67,7 +67,7 @@ void BeamFEMForceField<DataTypes>::init()
 
     if (_initialPoints.getValue().size() == 0)
     {
-        VecCoord& p = *this->mstate->getRestX();
+        VecCoord& p = *this->mstate->getX();
         _initialPoints.setValue(p);
     }
 

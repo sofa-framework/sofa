@@ -148,8 +148,11 @@ void TetrahedronFEMForceField<DataTypes>::init()
     }
     else
     {
-        VecCoord& p = *this->mstate->getRestX();
-        (*_initialPoints.beginEdit()) = p;
+        if (_initialPoints.getValue().size() == 0)
+        {
+            VecCoord& p = *this->mstate->getX();
+            (*_initialPoints.beginEdit()) = p;
+        }
     }
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
