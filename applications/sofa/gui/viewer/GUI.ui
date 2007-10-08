@@ -7,15 +7,23 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>0</y>
+            <y>97</y>
             <width>1074</width>
-            <height>991</height>
+            <height>797</height>
         </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>1</hsizetype>
+            <vsizetype>0</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
     </property>
     <property name="minimumSize">
         <size>
-            <width>458</width>
-            <height>991</height>
+            <width>248</width>
+            <height>751</height>
         </size>
     </property>
     <property name="caption">
@@ -24,6 +32,9 @@
     <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
+        </property>
+        <property name="resizeMode">
+            <enum>FreeResize</enum>
         </property>
         <widget class="QSplitter">
             <property name="name">
