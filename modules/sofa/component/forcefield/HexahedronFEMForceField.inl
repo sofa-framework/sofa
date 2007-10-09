@@ -238,9 +238,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     Mat33 J_1; // only accurate for orthogonal regular hexa
 // 	m_assign( J_1, 0.0 );
     Coord l = nodes[6] - nodes[0];
-    J_1[0][0]=2.0 / l[0];
-    J_1[1][1]=2.0 / l[1];
-    J_1[2][2]=2.0 / l[2];
+    J_1[0][0]=2.0f / l[0];
+    J_1[1][1]=2.0f / l[1];
+    J_1[2][2]=2.0f / l[2];
 
 
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
@@ -290,50 +290,50 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 template<class DataTypes>
 typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataTypes>::integrateStiffness( const Real xmin, const Real xmax, const Real ymin, const Real ymax, const Real zmin, const Real zmax, int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  )
 {
-    Real t1 = signx0*signy0;
+    Real t1 = (Real)(signx0*signy0);
     Real t2 = signz0*w;
     Real t3 = t2*signx1;
     Real t5 = xmax-xmin;
-    Real t6 = t5*signy1/2.0;
+    Real t6 = t5*signy1/2.0f;
     Real t7 = ymax-ymin;
     Real t9 = zmax-zmin;
-    Real t11 = t6*t7*signz1*t9/4.0;
-    Real t13 = t1*t3*t11/36.0;
-    Real t14 = signy0*signz0;
+    Real t11 = t6*t7*signz1*t9/4.0f;
+    Real t13 = t1*t3*t11/36.0f;
+    Real t14 = (Real)(signy0*signz0);
 
-    Real t17 = 1.0+signx1*(xmax+xmin)/2.0;
+    Real t17 = 1.0f+signx1*(xmax+xmin)/2.0f;
     Real t18 = w*t17;
-    Real t20 = signy1*t7/2.0;
-    Real t21 = signz1*t9/2.0;
+    Real t20 = signy1*t7/2.0f;
+    Real t21 = signz1*t9/2.0f;
     Real t22 = t20*t21;
     Real t23 = t14*t18*t22;
-    Real t25 = signx0*signz0;
+    Real t25 = (Real)(signx0*signz0);
     Real t26 = u*signx1;
-    Real t30 = 1.0+signy1*(ymax+ymin)/2.0;
-    Real t31 = t5*t30/2.0;
+    Real t30 = 1.0f+signy1*(ymax+ymin)/2.0f;
+    Real t31 = t5*t30/2.0f;
     Real t32 = t31*t21;
-    Real t34 = t25*t26*t32/24.0;
+    Real t34 = t25*t26*t32/24.0f;
     Real t35 = signz0*u;
 
-    Real t39 = t1*t35*signx1*t11/72.0;
-    Real t43 = 1.0+signz1*(zmax+zmin)/2.0;
-    Real t45 = t6*t7*t43/2.0;
-    Real t47 = t1*t26*t45/24.0;
+    Real t39 = t1*t35*signx1*t11/72.0f;
+    Real t43 = 1.0f+signz1*(zmax+zmin)/2.0f;
+    Real t45 = t6*t7*t43/2.0f;
+    Real t47 = t1*t26*t45/24.0f;
     Real t48 = w*signx1;
     Real t49 = t1*t48;
     Real t50 = t49*t45;
-    Real t51 = t50/24.0;
+    Real t51 = t50/24.0f;
     Real t52 = t2*t17;
-    Real t54 = t30*signz1*t9/2.0;
-    Real t56 = t52*t54/8.0;
+    Real t54 = t30*signz1*t9/2.0f;
+    Real t56 = t52*t54/8.0f;
 
     Real t57 = signy0*w;
     Real t58 = t57*t17;
     Real t59 = t20*t43;
-    Real t61 = t58*t59/8.0;
+    Real t61 = t58*t59/8.0f;
     Real t62 = t25*t48;
     Real t63 = t62*t32;
-    Real t64 = t63/24.0;
+    Real t64 = t63/24.0f;
     Real t67 = t31*t43;
     Real t71 = v*t17;
     Real t75 = t14*t48;
@@ -344,21 +344,21 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 
     Real t107 = signx0*w;
     Real t108 = t107*t17;
-    Real t116 = t14*u*t17*t22/24.0;
-    Real t117 = t23/24.0;
-    Real t124 = t107*signx1*t67/8.0;
+    Real t116 = t14*u*t17*t22/24.0f;
+    Real t117 = t23/24.0f;
+    Real t124 = t107*signx1*t67/8.0f;
     Real t142 = signz0*v;
 
     Mat33 K;
-    K[0][0] = t13+t23/12.0+t34+t39+t47+t51+t56+t61+t64+signx0*u*signx1*t67/8.0;
-    K[0][1] = t25*t71*t22/24.0+t75*t32/24.0+t79*t59/8.0+t57*signx1*t67/8.0;
-    K[0][2] = t1*t71*t22/24.0+t75*t45/24.0+t79*t54/8.0+t3*t67/8.0;
-    K[1][0] = t97*t32/24.0+t25*t18*t22/24.0+t103*signx1*t67/8.0+t108*t59/8.0;
-    K[1][1] = t13+t39+t63/12.0+t116+t51+t56+t117+t47+signy0*u*t17*t59/8.0+t124;
-    K[1][2] = t1*t96*t32/24.0+t62*t45/24.0+t103*t17*t54/8.0+t52*t59/8.0;
-    K[2][0] = t97*t45/24.0+t1*t18*t22/24.0+t142*signx1*t67/8.0+t108*t54/8.0;
-    K[2][1] = t25*t96*t45/24.0+t49*t32/24.0+t142*t17*t59/8.0+t58*t54/8.0;
-    K[2][2] = t13+t64+t117+t39+t50/12.0+t61+t116+t34+t35*t17*t54/8.0+t124;
+    K[0][0] = t13+t23/12.0f+t34+t39+t47+t51+t56+t61+t64+signx0*u*signx1*t67/8.0f;
+    K[0][1] = t25*t71*t22/24.0f+t75*t32/24.0f+t79*t59/8.0f+t57*signx1*t67/8.0f;
+    K[0][2] = t1*t71*t22/24.0f+t75*t45/24.0f+t79*t54/8.0f+t3*t67/8.0f;
+    K[1][0] = t97*t32/24.0f+t25*t18*t22/24.0f+t103*signx1*t67/8.0f+t108*t59/8.0f;
+    K[1][1] = t13+t39+t63/12.0f+t116+t51+t56+t117+t47+signy0*u*t17*t59/8.0f+t124;
+    K[1][2] = t1*t96*t32/24.0f+t62*t45/24.0f+t103*t17*t54/8.0f+t52*t59/8.0f;
+    K[2][0] = t97*t45/24.0f+t1*t18*t22/24.0f+t142*signx1*t67/8.0f+t108*t54/8.0f;
+    K[2][1] = t25*t96*t45/24.0f+t49*t32/24.0f+t142*t17*t59/8.0f+t58*t54/8.0f;
+    K[2][2] = t13+t64+t117+t39+t50/12.0f+t61+t116+t34+t35*t17*t54/8.0f+t124;
 
     return J_1 * K;
 }
@@ -663,42 +663,42 @@ void HexahedronFEMForceField<DataTypes>::draw()
 
 
 
-        glColor3f(0.7, 0.7, 0.1);
+        glColor3f(0.7f, 0.7f, 0.1f);
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pc);
         helper::gl::glVertexT(pd);
         glEnd();
-        glColor3f(0.7, 0, 0);
+        glColor3f(0.7f, 0, 0);
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pe);
         helper::gl::glVertexT(pf);
         helper::gl::glVertexT(pg);
         helper::gl::glVertexT(ph);
         glEnd();
-        glColor3f(0, 0.7, 0);
+        glColor3f(0, 0.7f, 0);
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pc);
         helper::gl::glVertexT(pd);
         helper::gl::glVertexT(ph);
         helper::gl::glVertexT(pg);
         glEnd();
-        glColor3f(0, 0, 0.7);
+        glColor3f(0, 0, 0.7f);
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pf);
         helper::gl::glVertexT(pe);
         glEnd();
-        glColor3f(0.1, 0.7, 0.7);
+        glColor3f(0.1f, 0.7f, 0.7f);
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pd);
         helper::gl::glVertexT(ph);
         helper::gl::glVertexT(pe);
         glEnd();
-        glColor3f(0.7, 0.1, 0.7);
+        glColor3f(0.7f, 0.1f, 0.7f);
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pc);
@@ -727,7 +727,7 @@ void HexahedronFEMForceField<DataTypes>::contributeToMatrixDimension(unsigned in
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeMatrix(sofa::defaulttype::SofaBaseMatrix */*mat*/, double /*m*/, double /*b*/, double /*k*/, unsigned int &/*offset*/)
+void HexahedronFEMForceField<DataTypes>::computeMatrix(sofa::defaulttype::SofaBaseMatrix * /*mat*/, double /*m*/, double /*b*/, double /*k*/, unsigned int & /*offset*/)
 {
 
 }
@@ -735,14 +735,14 @@ void HexahedronFEMForceField<DataTypes>::computeMatrix(sofa::defaulttype::SofaBa
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeVector(sofa::defaulttype::SofaBaseVector */*vect*/, unsigned int &/*offset*/)
+void HexahedronFEMForceField<DataTypes>::computeVector(sofa::defaulttype::SofaBaseVector * /*vect*/, unsigned int & /*offset*/)
 {
 
 }
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::matResUpdatePosition(sofa::defaulttype::SofaBaseVector */*vect*/, unsigned int &/*offset*/)
+void HexahedronFEMForceField<DataTypes>::matResUpdatePosition(sofa::defaulttype::SofaBaseVector * /*vect*/, unsigned int & /*offset*/)
 {
 
 }

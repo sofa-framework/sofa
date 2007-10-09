@@ -322,7 +322,7 @@ void SparseGridTopology::updateCubes()
 bool SparseGridTopology::intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  )
 {
     Vec3 afAWdU, afADdU, afAWxDdU;
-    float fRhs;
+    Real fRhs;
 
 
     Vec3 kDiff = seg.center - cube.center;

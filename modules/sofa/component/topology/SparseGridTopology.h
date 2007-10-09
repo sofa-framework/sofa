@@ -50,6 +50,7 @@ class SparseGridTopology : public MeshTopology
 public:
 
     typedef Vec3d Vec3;
+    typedef double Real;
     typedef fixed_array<Vec3d,8> CubeCorners;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type;
 
@@ -110,7 +111,7 @@ protected:
     {
         Vec3 center;
         Vec3 dir;
-        float norm;
+        Real norm;
         segmentForIntersection(const Vec3& s0, const Vec3& s1)
         {
             center = (s0+s1)*.5;

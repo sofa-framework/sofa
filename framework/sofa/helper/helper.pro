@@ -61,7 +61,6 @@ HEADERS += \
 SOURCES += \
           ArgumentParser.cpp \
           BackTrace.cpp \
-          FnDispatcher.cpp \
           Factory.cpp \
           gl/Axis.cpp \
           gl/Cylinder.cpp \

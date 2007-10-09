@@ -264,13 +264,13 @@ void MeshOBJ::readMTL(const char* filename)
                 {
                 case 'i':
                 {
-                    double optical_density;
-                    fscanf(file, "%lf", (double*)&optical_density);
+                    float optical_density;
+                    fscanf(file, "%f", &optical_density);
                     break;
                 }
                 case 's':
-                    fscanf(file, "%lf", (double*)&mat->shininess);
-                    /* wavefront shininess is from [0, 1000], so scale for OpenGL */
+                    fscanf(file, "%f", &mat->shininess);
+                    // wavefront shininess is from [0, 1000], so scale for OpenGL
                     //mat->shininess /= 1000.0;
                     //mat->shininess *= 128.0;
                     mat->useShininess = true;
@@ -285,17 +285,17 @@ void MeshOBJ::readMTL(const char* filename)
                 switch (buf[1])
                 {
                 case 'd':
-                    fscanf(file, "%lf %lf %lf", (double*)&mat->diffuse[0], (double*)&mat->diffuse[1], (double*)&mat->diffuse[2]);
+                    fscanf(file, "%f %f %f", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]);
                     mat->useDiffuse = true;
                     std::cout << mat->name << " diffuse = "<<mat->diffuse[0]<<' '<<mat->diffuse[1]<<' '<<mat->diffuse[2]<<std::endl;
                     break;
                 case 's':
-                    fscanf(file, "%lf %lf %lf", (double*)&mat->specular[0], (double*)&mat->specular[1], (double*)&mat->specular[2]);
+                    fscanf(file, "%f %f %f", &mat->specular[0], &mat->specular[1], &mat->specular[2]);
                     mat->useSpecular = true;
                     std::cout << mat->name << " specular = "<<mat->specular[0]<<' '<<mat->specular[1]<<' '<<mat->specular[2]<<std::endl;
                     break;
                 case 'a':
-                    fscanf(file, "%lf %lf %lf", (double*)&mat->ambient[0], (double*)&mat->ambient[1], (double*)&mat->ambient[2]);
+                    fscanf(file, "%f %f %f", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]);
                     mat->useAmbient = true;
                     std::cout << mat->name << " ambient = "<<mat->ambient[0]<<' '<<mat->ambient[1]<<' '<<mat->ambient[2]<<std::endl;
                     break;
@@ -308,7 +308,7 @@ void MeshOBJ::readMTL(const char* filename)
             case 'd':
             case 'T':
                 // transparency value
-                fscanf(file, "%lf", (double*)&mat->diffuse[3]);
+                fscanf(file, "%f", &mat->diffuse[3]);
                 break;
             default:
                 /* eat up rest of line */
