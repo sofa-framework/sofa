@@ -41,13 +41,8 @@ using std::endl;
 void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->GridTopology::parse(arg);
-    const char* xmin = arg->getAttribute("xmin",arg->getAttribute("min","0"));
-    const char* ymin = arg->getAttribute("ymin",arg->getAttribute("min","0"));
-    const char* zmin = arg->getAttribute("zmin",arg->getAttribute("min","0"));
-    const char* xmax = arg->getAttribute("xmax",arg->getAttribute("max",arg->getAttribute("nx","1")));
-    const char* ymax = arg->getAttribute("ymax",arg->getAttribute("max",arg->getAttribute("ny","1")));
-    const char* zmax = arg->getAttribute("zmax",arg->getAttribute("max",arg->getAttribute("nz","1")));
-    this->setPos(atof(xmin),atof(xmax),atof(ymin),atof(ymax),atof(zmin),atof(zmax));
+
+    this->setPos(xmin.getValue(),xmax.getValue(),ymin.getValue(),ymax.getValue(),zmin.getValue(),zmax.getValue());
 }
 
 SOFA_DECL_CLASS(RegularGridTopology)
@@ -58,11 +53,23 @@ int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
         ;
 
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
-    : GridTopology(nx, ny, nz)
+    : GridTopology(nx, ny, nz),
+      xmin(dataField(&xmin,0.0f,"xmin", "X min")),
+      xmax(dataField(&xmax,1.0f,"xmax", "X max")),
+      ymin(dataField(&ymin,0.0f,"ymin", "Y min")),
+      ymax(dataField(&ymax,1.0f,"ymax", "Y max")),
+      zmin(dataField(&zmin,0.0f,"zmin", "Z min")),
+      zmax(dataField(&zmax,1.0f,"zmax", "Z max"))
 {
 }
 
 RegularGridTopology::RegularGridTopology()
+    : xmin(dataField(&xmin,0.0f,"xmin", "X min")),
+      xmax(dataField(&xmax,1.0f,"xmax", "X max")),
+      ymin(dataField(&ymin,0.0f,"ymin", "Y min")),
+      ymax(dataField(&ymax,1.0f,"ymax", "Y max")),
+      zmin(dataField(&zmin,0.0f,"zmin", "Z min")),
+      zmax(dataField(&zmax,1.0f,"zmax", "Z max"))
 {
 }
 

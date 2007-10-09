@@ -50,6 +50,7 @@ public:
     typedef typename In::Real Real;
     typedef typename Out::Real OutReal;
 
+protected:
     template<int NC, int NP>
     class MappingData
     {
@@ -57,8 +58,25 @@ public:
         int in_index;
         //unsigned int points[NP];
         Real baryCoords[NC];
+
+        inline friend std::istream& operator >> ( std::istream& in, BarycentricMapper< In, Out >::MappingData<NC,NP > &m )
+        {
+            in>>m.in_index;
+            for (int i=0; i<NC; i++) in >> m.baryCoords[i];
+            return in;
+        }
+
+        inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapper< In, Out >::MappingData< NC , NP> & m )
+        {
+            out << m.in_index;
+            for (int i=0; i<NC; i++)
+                out << " " << m.baryCoords[i];
+            return out;
+        }
+
     };
 
+public:
     typedef MappingData<1,2> LineData;
     typedef MappingData<2,3> TriangleData;
     typedef MappingData<2,4> QuadData;
@@ -68,14 +86,17 @@ public:
     typedef MappingData<2,0> MappingData2D;
     typedef MappingData<3,0> MappingData3D;
 
-    virtual ~BarycentricMapper()
-    {}
+    virtual ~BarycentricMapper() {}
     virtual void init() = 0;
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) = 0;
     virtual void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
+
+    //Nothing to do
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapper< In, Out > & ) {return in;}
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapper< In, Out > &  ) { return out; }
 };
 
 /// Template class for barycentric mapping topology-specific mappers
@@ -92,11 +113,15 @@ public:
     typedef typename Inherit::OutReal OutReal;
     typedef typename Inherit::CubeData CubeData;
 protected:
-    std::vector<CubeData> map;
+    sofa::helper::vector<CubeData> map;
     topology::RegularGridTopology* topology;
 public:
     TopologyBarycentricMapper(topology::RegularGridTopology* topology) : topology(topology)
     {}
+
+    bool empty() {return map.size()==0;}
+
+    void setTopology( topology::RegularGridTopology* t ) { topology = t; }
 
     void clear(int reserve=0);
 
@@ -109,6 +134,19 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> &b )
+    {
+        in >> b.map;
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> & b )
+    {
+        out << b.map;
+        return out;
+    }
+
 };
 
 /// Class allowing barycentric mapping computation on a MeshTopology
@@ -187,6 +225,7 @@ protected:
     typedef TopologyBarycentricMapper<topology::RegularGridTopology, InDataTypes, OutDataTypes> RegularGridMapper;
 
     Mapper* mapper;
+    Field< RegularGridMapper >* f_grid;
 
     void calcMap(topology::RegularGridTopology* topo);
 
@@ -194,12 +233,22 @@ protected:
 
 public:
     BarycentricMapping(In* from, Out* to)
-        : Inherit(from, to), mapper(NULL)
-    {}
+        : Inherit(from, to), mapper(NULL),
+          f_grid (new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Mapping"))
+    {
+        this->addField( f_grid, "map");	f_grid->beginEdit();
+    }
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
-    {}
+    {
+        if (RegularGridMapper* m = dynamic_cast< RegularGridMapper* >(mapper))
+            f_grid = new Field< RegularGridMapper >( m,"Mapping");
+        else
+            f_grid = new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Mapping");
+
+        this->addField( f_grid, "map");	f_grid->beginEdit();
+    }
 
     virtual ~BarycentricMapping()
     {

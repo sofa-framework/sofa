@@ -417,7 +417,7 @@ void  Base::writeFields ( std::ostream& out )
     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a )
     {
         FieldBase* field = (*a).second;
-        if( field->isSet() )
+        if( field->isSet() && !field->getValueString().empty())
             out << (*a).first << "=\""<< field->getValueString() << "\" ";
     }
 }
@@ -427,7 +427,7 @@ void  Base::xmlWriteFields ( std::ostream& out, unsigned level )
     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a )
     {
         FieldBase* field = (*a).second;
-        if( field->isSet() )
+        if( field->isSet() && !field->getValueString().empty())
         {
             for (unsigned i=0; i<=level; i++)
                 out << "\t";

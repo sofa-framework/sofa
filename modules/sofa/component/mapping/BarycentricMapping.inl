@@ -75,24 +75,36 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::init()
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::calcMap(topology::RegularGridTopology* topology)
 {
-    const OutVecCoord& out = *this->toModel->getX();
-    int outside = 0;
-    RegularGridMapper* mapper = new RegularGridMapper(topology);
-    this->mapper = mapper;
-    mapper->clear(out.size());
-    for (unsigned int i=0; i<out.size(); i++)
+
+    if (f_grid->beginEdit()->empty())
     {
-        Vec3d coefs;
-        int cube = topology->findCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
-        if (cube==-1)
+        const OutVecCoord& out = *this->toModel->getX();
+        int outside = 0;
+        RegularGridMapper* mapper = new RegularGridMapper(topology);
+
+        this->mapper = mapper;
+        mapper->clear(out.size());
+        for (unsigned int i=0; i<out.size(); i++)
         {
-            ++outside;
-            cube = topology->findNearestCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+            Vec3d coefs;
+            int cube = topology->findCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+            if (cube==-1)
+            {
+                ++outside;
+                cube = topology->findNearestCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+            }
+            Vec<3,Real> baryCoords = coefs;
+            mapper->addPointInCube(cube, baryCoords.ptr());
         }
-        Vec<3,Real> baryCoords = coefs;
-        mapper->addPointInCube(cube, baryCoords.ptr());
+        if (outside>0) std::cerr << "WARNING: Barycentric mapping with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
+        f_grid->setValue(*mapper);
+
     }
-    if (outside>0) std::cerr << "WARNING: Barycentric mapping with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
+    else
+    {
+        f_grid->beginEdit()->setTopology(topology);
+        this->mapper = f_grid->beginEdit();
+    }
 }
 
 template <class In, class Out>
@@ -221,6 +233,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::MeshTopology* topology)
     const InVecCoord& in = *this->fromModel->getX();
     int outside = 0;
     MeshMapper* mapper = new MeshMapper(topology);
+
     this->mapper = mapper;
     const topology::MeshTopology::SeqTetras& tetras = topology->getTetras();
     const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();

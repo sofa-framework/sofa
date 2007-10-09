@@ -64,20 +64,20 @@ public:
     {
         Coord c;
         Out::DataTypes::set(c,px,py,pz);
-        dest->points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
     virtual void addSphere(double px, double py, double pz, double)
     {
         Coord c;
         Out::DataTypes::set(c,px,py,pz);
-        dest->points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
 };
 
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::load(const char *filename)
 {
-    points.resize(0);
+    points.beginEdit()->resize(0);
 
     if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".xs3"))
     {
@@ -95,10 +95,10 @@ void RigidRigidMapping<BasicMapping>::load(const char *filename)
         helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
         if (mesh!=NULL)
         {
-            points.resize(mesh->getVertices().size());
+            points.beginEdit()->resize(mesh->getVertices().size());
             for (unsigned int i=0; i<mesh->getVertices().size(); i++)
             {
-                Out::DataTypes::set(points[i], mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
+                Out::DataTypes::set((*points.beginEdit())[i], mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
             }
             delete mesh;
         }
@@ -108,12 +108,12 @@ void RigidRigidMapping<BasicMapping>::load(const char *filename)
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::init()
 {
-    if (this->points.empty() && this->toModel!=NULL)
+    if (this->points.getValue().empty() && this->toModel!=NULL)
     {
         VecCoord& x = *this->toModel->getX();
-        points.resize(x.size());
+        points.beginEdit()->resize(x.size());
         for (unsigned int i=0; i<x.size(); i++)
-            points[i] = x[i];
+            (*points.beginEdit())[i] = x[i];
     }
     this->BasicMapping::init();
 }
@@ -121,20 +121,22 @@ void RigidRigidMapping<BasicMapping>::init()
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::clear()
 {
-    this->points.clear();
+    (*this->points.beginEdit()).clear();
 }
 
+/*
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::disable()
 {
-    if (!this->points.empty() && this->toModel!=NULL)
-    {
-        VecCoord& x = *this->toModel->getX();
-        x.resize(points.size());
-        for (unsigned int i=0; i<points.size(); i++)
-            x[i] = points[i];
-    }
+	if (!this->points.getValue().empty() && this->toModel!=NULL)
+	{
+		VecCoord& x = *this->toModel->getX();
+		x.resize(points.getValue().size());
+		for (unsigned int i=0;i<points.getValue().size();i++)
+			x[i] = points.getValue()[i];
+	}
 }
+*/
 
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::setRepartition(unsigned int value)
@@ -167,17 +169,17 @@ void RigidRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
     unsigned int cptOut;
     unsigned int val;
 
-    out.resize(points.size());
-    pointsR0.resize(points.size());
+    out.resize(points.getValue().size());
+    pointsR0.resize(points.getValue().size());
 
     switch (repartition.getValue().size())
     {
     case 0 : //no value specified : simple rigid mapping
         in[index.getValue()].writeRotationMatrix(rotation);
-        for(unsigned int i=0; i<points.size(); i++)
+        for(unsigned int i=0; i<points.getValue().size(); i++)
         {
-            pointsR0[i].getCenter() = rotation*(points[i]).getCenter();
-            out[i] = in[index.getValue()].mult(points[i]);
+            pointsR0[i].getCenter() = rotation*(points.getValue()[i]).getCenter();
+            out[i] = in[index.getValue()].mult(points.getValue()[i]);
         }
         break;
 
@@ -190,8 +192,8 @@ void RigidRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
             in[ifrom].writeRotationMatrix(rotation);
             for(unsigned int ito=0; ito<val; ito++)
             {
-                pointsR0[cptOut].getCenter() = rotation*(points[cptOut]).getCenter();
-                out[cptOut] = in[ifrom].mult(points[cptOut]);
+                pointsR0[cptOut].getCenter() = rotation*(points.getValue()[cptOut]).getCenter();
+                out[cptOut] = in[ifrom].mult(points.getValue()[cptOut]);
                 cptOut++;
             }
         }
@@ -210,8 +212,8 @@ void RigidRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
             in[ifrom].writeRotationMatrix(rotation);
             for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
             {
-                pointsR0[cptOut].getCenter() = rotation*(points[cptOut]).getCenter();
-                out[cptOut] = in[ifrom].mult(points[cptOut]);
+                pointsR0[cptOut].getCenter() = rotation*(points.getValue()[cptOut]).getCenter();
+                out[cptOut] = in[ifrom].mult(points.getValue()[cptOut]);
                 cptOut++;
             }
         }
@@ -223,7 +225,7 @@ template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForces, const typename In::VecDeriv& parentForces )
 {
     Vec v,omega;
-    childForces.resize(points.size());
+    childForces.resize(points.getValue().size());
     unsigned int cptchildForces;
     unsigned int val;
 
@@ -232,7 +234,7 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
     case 0:
         v = parentForces[index.getValue()].getVCenter();
         omega = parentForces[index.getValue()].getVOrientation();
-        for(unsigned int i=0; i<points.size(); i++)
+        for(unsigned int i=0; i<points.getValue().size(); i++)
         {
             childForces[i].getVCenter() =  v + cross(omega,pointsR0[i].getCenter());
             childForces[i].getVOrientation() = omega;
@@ -290,7 +292,7 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
     switch(repartition.getValue().size())
     {
     case 0 :
-        for(unsigned int i=0; i<points.size(); i++)
+        for(unsigned int i=0; i<points.getValue().size(); i++)
         {
             // out = Jt in
             // Jt = [ I     ]

@@ -86,8 +86,8 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
     Real omega;
     v = in[0].getVCenter();
     omega = (Real)in[0].getVOrientation();
-    out.resize(points.size());
-    for(unsigned int i=0; i<points.size(); i++)
+    out.resize(points.getValue().size());
+    for(unsigned int i=0; i<points.getValue().size(); i++)
     {
         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
     }
@@ -100,8 +100,8 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
     Real omega;
     v = in[0].getVCenter();
     omega = (Real)in[0].getVOrientation();
-    out.resize(points.size());
-    for(unsigned int i=0; i<points.size(); i++)
+    out.resize(points.getValue().size());
+    for(unsigned int i=0; i<points.getValue().size(); i++)
     {
         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
     }
@@ -114,8 +114,8 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
     Real omega;
     v = in[0].getVCenter();
     omega = (Real)in[0].getVOrientation();
-    out.resize(points.size());
-    for(unsigned int i=0; i<points.size(); i++)
+    out.resize(points.getValue().size());
+    for(unsigned int i=0; i<points.getValue().size(); i++)
     {
         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
     }
@@ -128,8 +128,8 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
     Real omega;
     v = in[0].getVCenter();
     omega = (Real)in[0].getVOrientation();
-    out.resize(points.size());
-    for(unsigned int i=0; i<points.size(); i++)
+    out.resize(points.getValue().size());
+    for(unsigned int i=0; i<points.getValue().size(); i++)
     {
         out[i] =  v + Deriv(-rotatedPoints[i][1],rotatedPoints[i][0])*omega;
     }
@@ -141,7 +141,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 {
     Deriv v;
     Real omega = (Real)0;
-    for(unsigned int i=0; i<points.size(); i++)
+    for(unsigned int i=0; i<points.getValue().size(); i++)
     {
         Deriv f = in[i];
         v += f;
@@ -156,7 +156,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 {
     Deriv v;
     Real omega = (Real)0;
-    for(unsigned int i=0; i<points.size(); i++)
+    for(unsigned int i=0; i<points.getValue().size(); i++)
     {
         Deriv f = in[i];
         v += f;
@@ -171,7 +171,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 {
     Deriv v;
     Real omega = (Real)0;
-    for(unsigned int i=0; i<points.size(); i++)
+    for(unsigned int i=0; i<points.getValue().size(); i++)
     {
         Deriv f = in[i];
         v += f;
@@ -186,7 +186,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 {
     Deriv v;
     Real omega = (Real)0;
-    for(unsigned int i=0; i<points.size(); i++)
+    for(unsigned int i=0; i<points.getValue().size(); i++)
     {
         Deriv f = in[i];
         v += f;

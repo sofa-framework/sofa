@@ -63,20 +63,20 @@ public:
     {
         Coord c;
         Out::DataTypes::set(c,px,py,pz);
-        dest->points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
     virtual void addSphere(double px, double py, double pz, double)
     {
         Coord c;
         Out::DataTypes::set(c,px,py,pz);
-        dest->points.push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
+        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
     }
 };
 
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::load(const char *filename)
 {
-    points.resize(0);
+    points.beginEdit()->resize(0);
 
     if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".xs3"))
     {
@@ -94,10 +94,10 @@ void RigidMapping<BasicMapping>::load(const char *filename)
         helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
         if (mesh!=NULL)
         {
-            points.resize(mesh->getVertices().size());
+            points.beginEdit()->resize(mesh->getVertices().size());
             for (unsigned int i=0; i<mesh->getVertices().size(); i++)
             {
-                Out::DataTypes::set(points[i], mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
+                Out::DataTypes::set((*points.beginEdit())[i], mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
             }
             delete mesh;
         }
@@ -107,16 +107,16 @@ void RigidMapping<BasicMapping>::load(const char *filename)
 template <class BasicMapping>
 int RigidMapping<BasicMapping>::addPoint(const Coord& c)
 {
-    int i = points.size();
-    points.push_back(c);
+    int i = points.getValue().size();
+    points.beginEdit()->push_back(c);
     return i;
 }
 
 template <class BasicMapping>
 int RigidMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
 {
-    int i = points.size();
-    points.push_back(c);
+    int i = points.getValue().size();
+    points.beginEdit()->push_back(c);
     if (!repartition.getValue().empty())
     {
         repartition.beginEdit()->push_back(indexFrom);
@@ -141,34 +141,35 @@ int RigidMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::init()
 {
-    if (this->points.empty() && this->toModel!=NULL)
+    if (this->points.getValue().empty() && this->toModel!=NULL)
     {
         VecCoord& x = *this->toModel->getX();
         //std::cout << "RigidMapping: init "<<x.size()<<" points."<<std::endl;
-        points.resize(x.size());
+        points.beginEdit()->resize(x.size());
         for (unsigned int i=0; i<x.size(); i++)
-            points[i] = x[i];
+            (*points.beginEdit())[i] = x[i];
     }
     this->BasicMapping::init();
 }
-
+/*
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::disable()
 {
-    if (!this->points.empty() && this->toModel!=NULL)
-    {
-        VecCoord& x = *this->toModel->getX();
-        x.resize(points.size());
-        for (unsigned int i=0; i<points.size(); i++)
-            x[i] = points[i];
-    }
-}
 
+	if (!this->points.getValue().empty() && this->toModel!=NULL)
+	{
+		VecCoord& x = *this->toModel->getX();
+		x.resize(points.getValue().size());
+		for (unsigned int i=0;i<points.getValue().size();i++)
+			x[i] = points.getValue()[i];
+	}
+}
+*/
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::clear(int reserve)
 {
-    this->points.clear();
-    if (reserve) this->points.reserve(reserve);
+    this->points.beginEdit()->clear();
+    if (reserve) this->points.beginEdit()->reserve(reserve);
     this->repartition.beginEdit()->clear();
     this->repartition.endEdit();
 }
@@ -204,8 +205,8 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
     unsigned int cptOut;
     unsigned int val;
 
-    rotatedPoints.resize(points.size());
-    out.resize(points.size());
+    rotatedPoints.resize(points.getValue().size());
+    out.resize(points.getValue().size());
 
     switch (repartition.getValue().size())
     {
@@ -213,9 +214,9 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
         translation = in[index.getValue()].getCenter();
         in[index.getValue()].writeRotationMatrix(rotation);
 
-        for(unsigned int i=0; i<points.size(); i++)
+        for(unsigned int i=0; i<points.getValue().size(); i++)
         {
-            rotatedPoints[i] = rotation*points[i];
+            rotatedPoints[i] = rotation*points.getValue()[i];
             out[i] = rotatedPoints[i];
             out[i] += translation;
         }
@@ -233,7 +234,7 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
 
             for(unsigned int ito=0; ito<val; ito++)
             {
-                rotatedPoints[cptOut] = rotation* points[cptOut];
+                rotatedPoints[cptOut] = rotation* points.getValue()[cptOut];
                 out[cptOut] = rotatedPoints[cptOut];
                 out[cptOut] += translation;
                 cptOut++;
@@ -256,7 +257,7 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
 
             for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
             {
-                rotatedPoints[cptOut] = rotation* points[cptOut];
+                rotatedPoints[cptOut] = rotation* points.getValue()[cptOut];
                 out[cptOut] = rotatedPoints[cptOut];
                 out[cptOut] += translation;
                 cptOut++;
@@ -270,7 +271,7 @@ template <class BasicMapping>
 void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     Deriv v,omega;
-    out.resize(points.size());
+    out.resize(points.getValue().size());
     unsigned int cptOut;
     unsigned int val;
 
@@ -279,7 +280,7 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     case 0:
         v = in[index.getValue()].getVCenter();
         omega = in[index.getValue()].getVOrientation();
-        for(unsigned int i=0; i<points.size(); i++)
+        for(unsigned int i=0; i<points.getValue().size(); i++)
         {
             // out = J in
             // J = [ I -OM^ ]
@@ -364,7 +365,7 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
     switch(repartition.getValue().size())
     {
     case 0 :
-        for(unsigned int i=0; i<points.size(); i++)
+        for(unsigned int i=0; i<points.getValue().size(); i++)
         {
             // out = Jt in
             // Jt = [ I     ]

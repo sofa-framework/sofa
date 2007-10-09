@@ -64,8 +64,8 @@ public:
     typedef Vec<N,Real> Vec;
 
 protected:
-    std::vector<Coord> points;
-    std::vector<Coord> pointsR0;
+    DataField < VecCoord > points;
+    VecCoord pointsR0;
     Mat rotation;
     class Loader;
     void load(const char* filename);
@@ -73,13 +73,15 @@ protected:
 
 public:
     DataField<unsigned> index;
+    DataField< std::string > filename;
 
     RigidRigidMapping(In* from, Out* to)
-        : Inherit(from, to)
+        : Inherit(from, to),
+          points(dataField(&points, "initialPoints", "Initial position of the points")),
+          repartition(dataField(&repartition,"repartition","number of dest dofs per entry dof")),
+          index(dataField(&index,(unsigned)0,"index","input DOF index")),
+          filename(dataField(&filename,"filename","Filename"))
     {
-        index = dataField(&index,(unsigned)0,"index","input DOF index");
-        repartition = dataField(&repartition,"repartition","number of dest dofs per entry dof");
-
     }
 
     virtual ~RigidRigidMapping()
@@ -88,12 +90,12 @@ public:
 
     void init();
 
-    void disable();
+    //	void disable(); //useless now that points are saved in a DataField
 
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
-        if (arg->getAttribute("filename"))
-            this->load(arg->getAttribute("filename"));
+        if (!filename.getValue().empty())
+            this->load(filename.getValue().c_str());
         this->Inherit::parse(arg);
     }
 

@@ -64,7 +64,7 @@ public:
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-    VecCoord points;
+    DataField< VecCoord > points;
     VecCoord rotatedPoints;
     RigidMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
 protected:
@@ -76,12 +76,16 @@ protected:
     DataField<sofa::helper::vector<unsigned int> >  repartition;
 public:
     DataField<unsigned int> index;
+    DataField< std::string > filename;
 
     RigidMapping(In* from, Out* to)
-        : Inherit(from, to)
+        : Inherit(from, to),
+          points(dataField(&points,"initialPoints", "Local Coordinates of the points")),
+          repartition(dataField(&repartition,"repartition","number of dest dofs per entry dof")),
+          index(dataField(&index,(unsigned)0,"index","input DOF index")),
+          filename(dataField(&filename,"filename","Filename"))
     {
-        index = dataField(&index,(unsigned)0,"index","input DOF index");
-        repartition = dataField(&repartition,"repartition","number of dest dofs per entry dof");
+
     }
 
     virtual ~RigidMapping()
@@ -93,12 +97,11 @@ public:
 
     void init();
 
-    void disable();
+    //void disable(); //useless now that points are saved in a DataField
 
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
-        if (arg->getAttribute("filename"))
-            this->load(arg->getAttribute("filename"));
+        if (!filename.getValue().empty()) this->load(filename.getValue().c_str());
         this->Inherit::parse(arg);
     }
 

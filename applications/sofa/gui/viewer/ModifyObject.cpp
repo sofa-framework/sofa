@@ -243,7 +243,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //string
                 else if( DataField<std::string> * ff = dynamic_cast< DataField<std::string> * >( (*it).second )  )
                 {
-
+// 			if (ff->getValue().empty()) continue;
                     QLineEdit* lineEdit = new QLineEdit(box);
                     list_Object.push_back( (QObject *) lineEdit);
 
@@ -1673,7 +1673,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
 
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
-        sofa::component::topology::PointData<double > value = ff->getValue();
+        vector< double > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -1699,7 +1699,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
 
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
-        sofa::component::topology::PointData<float > value = ff->getValue();
+        vector< float > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -1725,7 +1725,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
 
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
-        sofa::component::topology::PointData<int > value = ff->getValue();
+        vector< int > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -1751,7 +1751,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
 
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
-        sofa::component::topology::PointData<unsigned int > value = ff->getValue();
+        vector< unsigned int > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {

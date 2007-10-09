@@ -1,0 +1,18 @@
+
+<Node name="TorusRigid">
+	<Object type="CGImplicit" iterations="100" threshold="0.00000001" rayleighStiffness="0.01" />
+	<Object type="MechanicalObject" template="Rigid" dx="0" dy="0" dz="0" />
+	<Object type="UniformMass" filename="BehaviorModels/torus.rigid" />
+	<Node name="Visu">
+		<Object type="OglModel" name="Visual" filename="VisualModels/torus.obj" color="gray" />
+		<Object type="RigidMapping" object1="../.." object2="Visual" />
+	</Node>
+	<Node name="Surf2">
+		<Object type="Mesh" filename="CollisionModels/torus_for_collision.obj" />
+		<Object type="MechanicalObject" />
+		<Object type="Triangle" />
+		<Object type="Line" />
+		<Object type="Point" />
+		<Object type="RigidMapping" />
+	</Node>
+</Node>
