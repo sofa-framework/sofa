@@ -586,7 +586,7 @@ void create(GNode*& obj, xml::Element<core::objectmodel::BaseNode>* arg)
     obj = new GNode();
     obj->parse(arg);
     obj->setDt(atof(arg->getAttribute("dt","0.01")));
-    obj->setTime(atof(arg->getAttribute("t","0.0")));
+    obj->setTime(atof(arg->getAttribute("time","0.0")));
     obj->setAnimate((atoi(arg->getAttribute("animate","0"))!=0));
     obj->setDebug((atoi(arg->getAttribute("debug","0"))!=0));
     obj->setShowCollisionModels((atoi(arg->getAttribute("showCollisionModels","0"))!=0));

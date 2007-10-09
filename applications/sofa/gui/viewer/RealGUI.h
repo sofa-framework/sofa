@@ -221,6 +221,7 @@ private:
     //currently unused: scale is experimental
     float object_Scale[2];
 
+    float initial_time;
     std::list< GNode *> list_object_added;
     std::list< GNode *> list_object_removed;
     std::list< GNode *> list_object_initial;

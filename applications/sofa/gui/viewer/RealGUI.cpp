@@ -721,6 +721,7 @@ void RealGUI::fileOpen ( const char* filename, bool keepParams )
         qFatal ( "Failed to load %s",filename );
         return;
     }
+
     setScene ( groot, filename, keepParams );
 
 
@@ -782,6 +783,7 @@ void RealGUI::setScene ( GNode* groot, const char* filename, bool keepParams )
     //sceneFileName = filename;
 
     viewer->setScene ( groot, filename, keepParams );
+    initial_time = groot->getTime();
     eventNewTime();
 
     if ( !keepParams )
@@ -814,6 +816,7 @@ void RealGUI::setScene ( GNode* groot, const char* filename, bool keepParams )
 
     startButton->setOn ( groot->getContext()->getAnimate() );
     dtEdit->setText ( QString::number ( groot->getDt() ) );
+
 
     graphView->setSorting ( -1 );
     //graphView->setTreeStepSize(10);
@@ -1291,6 +1294,7 @@ void RealGUI::resetScene()
     if ( groot )
     {
         getSimulation()->reset ( groot );
+        groot->setTime(initial_time);
         eventNewTime();
 
         //viewer->SwitchToPresetView();
