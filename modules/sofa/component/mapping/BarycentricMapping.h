@@ -51,7 +51,7 @@ public:
     typedef typename Out::Real OutReal;
 
 protected:
-    template<int NC, int NP>
+    template< int NC,  int NP>
     class MappingData
     {
     public:
@@ -59,14 +59,14 @@ protected:
         //unsigned int points[NP];
         Real baryCoords[NC];
 
-        inline friend std::istream& operator >> ( std::istream& in, BarycentricMapper< In, Out >::MappingData<NC,NP > &m )
+        inline friend std::istream& operator >> ( std::istream& in, MappingData< NC, NP> &m )
         {
             in>>m.in_index;
             for (int i=0; i<NC; i++) in >> m.baryCoords[i];
             return in;
         }
 
-        inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapper< In, Out >::MappingData< NC , NP> & m )
+        inline friend std::ostream& operator << ( std::ostream& out, const MappingData< NC , NP > & m )
         {
             out << m.in_index;
             for (int i=0; i<NC; i++)
