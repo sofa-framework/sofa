@@ -197,10 +197,8 @@ public:
 
     inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::MeshTopology, In, Out> &b )
     {
-        std::cout << "INLINLINLIN\n";
         unsigned int size_vec;
         in >> size_vec;
-
         b.map1d.clear();
         MappingData1D value1d;
         for (unsigned int i=0; i<size_vec; i++)
