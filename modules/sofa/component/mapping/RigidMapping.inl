@@ -204,6 +204,8 @@ void RigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
 {
     unsigned int cptOut;
     unsigned int val;
+    Coord translation;
+    Mat rotation;
 
     rotatedPoints.resize(points.getValue().size());
     out.resize(points.getValue().size());

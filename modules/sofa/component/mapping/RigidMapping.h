@@ -67,67 +67,60 @@ public:
     DataField< VecCoord > points;
     VecCoord rotatedPoints;
     RigidMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
-protected:
-    Coord translation;
-    //Real orientation[4];
-    Mat rotation;
-    class Loader;
-    void load(const char* filename);
-    DataField<sofa::helper::vector<unsigned int> >  repartition;
-public:
     DataField<unsigned int> index;
     DataField< std::string > filename;
 
-    RigidMapping(In* from, Out* to)
-        : Inherit(from, to),
-          points(dataField(&points,"initialPoints", "Local Coordinates of the points")),
-          repartition(dataField(&repartition,"repartition","number of dest dofs per entry dof")),
-          index(dataField(&index,(unsigned)0,"index","input DOF index")),
-          filename(dataField(&filename,"filename","Filename"))
+    RigidMapping ( In* from, Out* to )
+        : Inherit ( from, to ),
+          points ( dataField ( &points,"initialPoints", "Local Coordinates of the points" ) ),
+          index ( dataField ( &index, ( unsigned ) 0,"index","input DOF index" ) ),
+          filename ( dataField ( &filename,"filename","Filename" ) ),
+          repartition ( dataField ( &repartition,"repartition","number of dest dofs per entry dof" ) )
     {
-
     }
 
     virtual ~RigidMapping()
-    {
-    }
+    {}
 
-    int addPoint(const Coord& c);
-    int addPoint(const Coord& c, int indexFrom);
+    int addPoint ( const Coord& c );
+    int addPoint ( const Coord& c, int indexFrom );
 
     void init();
 
     //void disable(); //useless now that points are saved in a DataField
 
-    void parse(core::objectmodel::BaseObjectDescription* arg)
+    void parse ( core::objectmodel::BaseObjectDescription* arg )
     {
-        if (!filename.getValue().empty()) this->load(filename.getValue().c_str());
-        this->Inherit::parse(arg);
+        if ( !filename.getValue().empty() ) this->load ( filename.getValue().c_str() );
+        this->Inherit::parse ( arg );
     }
 
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    virtual void apply ( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
-    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    virtual void applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
 
-    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    virtual void applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
 
     // -- VisualModel interface
     void draw();
     void initTextures() { }
     void update() { }
 
-    void clear(int reserve=0);
+    void clear ( int reserve=0 );
 
-    void setRepartition(unsigned int value);
-    void setRepartition(std::vector<unsigned int> values);
+    void setRepartition ( unsigned int value );
+    void setRepartition ( std::vector<unsigned int> values );
 
 protected:
+    class Loader;
+    void load ( const char* filename );
+    DataField<sofa::helper::vector<unsigned int> >  repartition;
 
-    bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
+    bool getShow ( const core::objectmodel::BaseObject* m ) const { return m->getContext()->getShowMappings(); }
 
-    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
+    bool getShow ( const core::componentmodel::behavior::BaseMechanicalMapping* m ) const { return m->getContext()->getShowMechanicalMappings(); }
 };
 
 } // namespace mapping
