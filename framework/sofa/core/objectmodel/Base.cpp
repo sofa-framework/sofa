@@ -343,10 +343,11 @@ void  Base::parseFields ( std::list<std::string> str )
         str.pop_front();
 
         // field name
-        if( m_fieldMap.find(name) != m_fieldMap.end() )
+        unsigned int index = findField(name);
+        if( index!=m_fieldVec.size() )
         {
             std::string s = str.front();
-            if( !(m_fieldMap[ name ]->read( s )))
+            if( !(m_fieldVec[ index ].second->read( s )))
                 std::cerr<< "ERROR: could not read value for option " << name <<": "<< s << std::endl;
         }
         else
@@ -368,9 +369,10 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
         {
             key=(*i).first;
             val=*(*i).second;
-            if( m_fieldMap.find(key) != m_fieldMap.end() )
+            unsigned int index = findField(key);
+            if( index!=m_fieldVec.size() )
             {
-                if( !(m_fieldMap[ key ]->read( val )))
+                if( !(m_fieldVec[ index ].second->read( val )))
                     std::cerr<< "ERROR: could not read value for option " << key <<": "<< val << std::endl;
             }
             else
@@ -386,52 +388,55 @@ void  Base::parseFields ( const std::map<std::string,std::string*>& args )
 void  Base::parse ( BaseObjectDescription* arg )
 {
     //this->parseFields ( arg->getAttributeMap() );
-    for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a )
+    for (unsigned int i=0; i<m_fieldVec.size(); i++)
     {
-        const char* val = arg->getAttribute(a->first);
+        const char* val = arg->getAttribute(m_fieldVec[i].first);
         if (val)
         {
             string valueString = val;
-            if( !(a->second->read( valueString )))
-                std::cerr<< "ERROR: could not read value for option " << a->first <<": "<< val << std::endl;
+            if( !(m_fieldVec[ i ].second->read( valueString )))
+                std::cerr<< "ERROR: could not read value for option " << m_fieldVec[ i ].first <<": "<< val << std::endl;
         }
     }
 }
 
 void  Base::writeFields ( std::map<std::string,std::string*>& args )
 {
-    for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a )
+//     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
+    for (unsigned int i=0; i<m_fieldVec.size(); i++)
     {
         string valueString;
-        FieldBase* field = (*a).second;
+        FieldBase* field = m_fieldVec[i].second;
 
-        if( args[(*a).first] != NULL )
-            *args[(*a).first] = field->getValueString();
+        if( args[m_fieldVec[i].first] != NULL )
+            *args[ m_fieldVec[i].first] = field->getValueString();
         else
-            args[(*a).first] =  new string(field->getValueString());
+            args[ m_fieldVec[i].first] =  new string(field->getValueString());
     }
 }
 
 void  Base::writeFields ( std::ostream& out )
 {
-    for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a )
+//     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
+    for (unsigned int i=0; i<m_fieldVec.size(); i++)
     {
-        FieldBase* field = (*a).second;
+        FieldBase* field = m_fieldVec[ i ].second;
         if( field->isSet() && !field->getValueString().empty())
-            out << (*a).first << "=\""<< field->getValueString() << "\" ";
+            out <<  m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
     }
 }
 
 void  Base::xmlWriteFields ( std::ostream& out, unsigned level )
 {
-    for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a )
+//     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
+    for (unsigned int i=0; i<m_fieldVec.size(); i++)
     {
-        FieldBase* field = (*a).second;
+        FieldBase* field = m_fieldVec[ i ].second;
         if( field->isSet() && !field->getValueString().empty())
         {
-            for (unsigned i=0; i<=level; i++)
+            for (unsigned l=0; l<=level; l++)
                 out << "\t";
-            out << (*a).first << "=\""<< field->getValueString() << "\""<<std::endl;
+            out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\""<<std::endl;
         }
     }
 }

@@ -154,18 +154,37 @@ public:
     /// Write the current field values to the given XML output stream
     void xmlWriteFields (std::ostream& out, unsigned level);
 
+    /// Find a field give its name, if not found, the index is the size of the vector
+    unsigned int findField( const char* name ) const
+    {
+        unsigned int i;
+        for ( i=0; i<m_fieldVec.size(); i++)
+        {
+            if (m_fieldVec[i].first == std::string(name)) return i;
+        }
+        return i;
+    }
+    unsigned int findField( const std::string &name ) const
+    {
+        unsigned int i;
+        for ( i=0; i<m_fieldVec.size(); i++)
+        {
+            if (m_fieldVec[i].first == name) return i;
+        }
+        return i;
+    }
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
     DataField<T> dataField( DataField<T>* field, char* name, char* help )
     {
         std::string ln(name);
-        if( ln.size()>0 && m_fieldMap.find(ln) != m_fieldMap.end() )
+        if( ln.size()>0 && findField(name)!=m_fieldVec.size() )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
         }
         //field = tmp;
-        m_fieldMap[name] = field;
+        m_fieldVec.push_back( std::make_pair(std::string(name),field));
         return DataField<T>(help);
     }
 
@@ -174,13 +193,13 @@ public:
     DataField<T> dataField( DataField<T>* field, const T& value, char* name, char* help )
     {
         std::string ln(name);
-        if( ln.size()>0 && m_fieldMap.find(ln) != m_fieldMap.end() )
+        if( ln.size()>0 && findField(name)!=m_fieldVec.size()  )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
         }
         //field = tmp;
-        m_fieldMap[name] = field;
+        m_fieldVec.push_back( std::make_pair(std::string(name),field));
         return DataField<T>(value,help);
     }
 
@@ -189,13 +208,13 @@ public:
     Field<T> field( Field<T>* field, T* ptr, char* name, char* help )
     {
         std::string ln(name);
-        if( ln.size()>0 && m_fieldMap.find(ln) != m_fieldMap.end() )
+        if( ln.size()>0 && findField(name)!=m_fieldVec.size() )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
         }
         //field = tmp;
-        m_fieldMap[name] = field;
+        m_fieldVec.push_back( std::make_pair(std::string(name),field));
         return Field<T>(ptr,help);
     }
 
@@ -204,22 +223,22 @@ public:
     virtual void parse ( BaseObjectDescription* arg );
 
     /// Accessor to the map containing all the fields of this object
-    std::map< std::string, FieldBase* > getFields() { return m_fieldMap; }
+    std::vector< std::pair<std::string, FieldBase*> > getFields() { return m_fieldVec; }
 
 protected:
     /// name -> Field object
-    std::map< std::string, FieldBase* > m_fieldMap;
+    std::vector< std::pair<std::string, FieldBase*> > m_fieldVec;
 
     /// Add a field. Note that this method should only be called if the field was not initialized with the dataField<T> of field<T> methods
     void addField( FieldBase* f, char* name )
     {
         std::string ln(name);
-        if( ln.size()>0 && m_fieldMap.find(ln) != m_fieldMap.end() )
+        if( ln.size()>0 && findField(name)!=m_fieldVec.size() )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
         }
-        m_fieldMap[name] = f;
+        m_fieldVec.push_back( std::make_pair(std::string(name),f));
     }
 };
 

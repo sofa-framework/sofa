@@ -35,7 +35,6 @@ using namespace sofa::filemanager::pml;
 #include <sofa/gui/SofaGUI.h>
 
 #include <GUI.h>
-#include <GUIField.h>
 #include <GraphListenerQListView.h>
 #include <SofaViewer.h>
 #include <AddObject.h>

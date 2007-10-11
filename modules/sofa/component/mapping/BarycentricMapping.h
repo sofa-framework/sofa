@@ -119,7 +119,7 @@ public:
     TopologyBarycentricMapper(topology::RegularGridTopology* topology) : topology(topology)
     {}
 
-    bool empty() {return map.size()==0;}
+    bool empty() const {return map.size()==0;}
 
     void setTopology( topology::RegularGridTopology* t ) { topology = t; }
 
@@ -161,15 +161,17 @@ public:
     typedef typename Inherit::MappingData2D MappingData2D;
     typedef typename Inherit::MappingData3D MappingData3D;
 protected:
-    std::vector< MappingData1D > map1d;
-    std::vector< MappingData2D > map2d;
-    std::vector< MappingData3D > map3d;
+    sofa::helper::vector< MappingData1D >  map1d;
+    sofa::helper::vector< MappingData2D >  map2d;
+    sofa::helper::vector< MappingData3D >  map3d;
     topology::MeshTopology* topology;
 
 public:
     TopologyBarycentricMapper(topology::MeshTopology* topology) : topology(topology)
     {}
 
+    bool empty() const {return map1d.size()==0 && map2d.size()==0 && map3d.size()==0;}
+    void setTopology( topology::MeshTopology* t ) { topology = t; }
     void clear(int reserve3d=0, int reserve2d=0, int reserve1d=0);
 
     int addPointInLine(int lineIndex, const Real* baryCoords);
@@ -192,6 +194,60 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::MeshTopology, In, Out> &b )
+    {
+        std::cout << "INLINLINLIN\n";
+        unsigned int size_vec;
+        in >> size_vec;
+
+        b.map1d.clear();
+        MappingData1D value1d;
+        for (unsigned int i=0; i<size_vec; i++)
+        {
+            in >> value1d;
+            b.map1d.push_back(value1d);
+        }
+
+        in >> size_vec;
+        b.map2d.clear();
+        MappingData2D value2d;
+        for (unsigned int i=0; i<size_vec; i++)
+        {
+            in >> value2d;
+            b.map2d.push_back(value2d);
+        }
+
+        in >> size_vec;
+        b.map3d.clear();
+        MappingData3D value3d;
+        for (unsigned int i=0; i<size_vec; i++)
+        {
+            in >> value3d;
+            b.map3d.push_back(value3d);
+        }
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::MeshTopology, In, Out> & b )
+    {
+
+        out << b.map1d.size();
+        out << " " ;
+        out << b.map1d;
+        out << " " ;
+        out << b.map2d.size();
+        out << " " ;
+        out << b.map2d;
+        out << " " ;
+        out << b.map3d.size();
+        out << " " ;
+        out << b.map3d;
+
+        return out;
+    }
+
+
 };
 
 template <class BasicMapping>
@@ -226,7 +282,7 @@ protected:
 
     Mapper* mapper;
     Field< RegularGridMapper >* f_grid;
-
+    Field< MeshMapper >*        f_mesh;
     void calcMap(topology::RegularGridTopology* topo);
 
     void calcMap(topology::MeshTopology* topo);
@@ -234,20 +290,32 @@ protected:
 public:
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL),
-          f_grid (new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Mapping"))
+          f_grid (new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping")),
+          f_mesh (new Field< MeshMapper >       ( new MeshMapper( NULL ),"Mesh Mapping"))
     {
-        this->addField( f_grid, "map");	f_grid->beginEdit();
+        this->addField( f_grid, "gridmap");	f_grid->beginEdit();
+        this->addField( f_mesh, "meshmap");	f_mesh->beginEdit();
     }
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
     {
+        //Regular Grid Case
         if (RegularGridMapper* m = dynamic_cast< RegularGridMapper* >(mapper))
-            f_grid = new Field< RegularGridMapper >( m,"Mapping");
+            f_grid = new Field< RegularGridMapper >( m,"Regular Grid Mapping");
         else
-            f_grid = new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Mapping");
+            f_grid = new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping");
 
-        this->addField( f_grid, "map");	f_grid->beginEdit();
+        this->addField( f_grid, "gridmap");	f_grid->beginEdit();
+
+        //Mesh Case
+        if (MeshMapper* m = dynamic_cast< MeshMapper* >(mapper))
+            f_mesh = new Field< MeshMapper >( m,"Mesh Mapping");
+        else
+            f_mesh = new Field< MeshMapper >( new MeshMapper( NULL ),"Mesh Mapping");
+
+        this->addField( f_mesh, "meshmap");	f_mesh->beginEdit();
+
     }
 
     virtual ~BarycentricMapping()

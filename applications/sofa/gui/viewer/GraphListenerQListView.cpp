@@ -24,7 +24,6 @@
 *******************************************************************************/
 
 #include <GenGraphForm.h>
-#include "GUIField.h"
 #include "RealGUI.h"
 #include "iconnode.xpm"
 
@@ -343,11 +342,11 @@ void GraphListenerQListView::addObject(GNode* parent, core::objectmodel::BaseObj
         std::string::size_type pos = name.find('<');
         if (pos != std::string::npos)
             name.erase(pos);
-        if (std::string(object->getName(),0,7) != "default")
-        {
-            name += "  ";
-            name += object->getName();
-        }
+// 	    if (std::string(object->getName(),0,7) != "default")
+// 	      {
+        name += "  ";
+        name += object->getName();
+// 	      }
         item->setText(0, name.c_str());
         QPixmap* pix = getPixmap(object);
         if (pix)

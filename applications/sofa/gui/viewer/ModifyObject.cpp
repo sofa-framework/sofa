@@ -124,11 +124,11 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
         //All the pointers to the QObjects will be kept in memory in list_Object
 
-        const std::map< std::string, core::objectmodel::FieldBase* >& fields = node->getFields();
+        const std::vector< std::pair<std::string, FieldBase*> >& fields = node->getFields();
 
         int i=0;
 
-        for( std::map< std::string, core::objectmodel::FieldBase* >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
+        for( std::vector< std::pair<std::string, FieldBase*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
 
             //For each element, we create a layout
@@ -797,10 +797,10 @@ void ModifyObject::updateValues()
 
         std::list< std::list< QObject*> * >::iterator block_iterator=list_PointSubset.begin();
 
-        const std::map< std::string, core::objectmodel::FieldBase* >& fields = node->getFields();
+        const std::vector< std::pair<std::string, FieldBase*> >& fields = node->getFields();
         int i=0;
 
-        for( std::map< std::string, core::objectmodel::FieldBase* >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
+        for( std::vector< std::pair<std::string, FieldBase*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
 
             //*******************************************************************************************************************
@@ -854,13 +854,20 @@ void ModifyObject::updateValues()
 
                 QLineEdit* lineEdit = dynamic_cast< QLineEdit *> ( (*list_it) ); list_it++;
 
-#ifdef QT_MODULE_QT3SUPPORT
-                std::string value(lineEdit->text());
-                ff->setValue(value.c_str());
-#else
-                ff->setValue(lineEdit->text());
-#endif
-                if ((*it).first == std::string("name")) item->setText(0,lineEdit->text());
+                ff->setValue(lineEdit->text().ascii());
+
+
+                if(!strcmp(ff->help,"object name") )
+                {
+                    std::string name=item->text(0).ascii();
+                    std::string::size_type pos = name.rfind(' ');
+                    if (pos != std::string::npos)
+                        name.resize(pos-1);
+                    name += "  ";
+
+                    name+=lineEdit->text().ascii();
+                    item->setText(0,name.c_str());
+                }
             }
             //*******************************************************************************************************************
             else if( dynamic_cast< DataField<Vec6f> * >( (*it).second )         ||

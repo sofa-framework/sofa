@@ -229,133 +229,143 @@ void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::init()
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::calcMap(topology::MeshTopology* topology)
 {
-    const OutVecCoord& out = *this->toModel->getX();
-    const InVecCoord& in = *this->fromModel->getX();
-    int outside = 0;
-    MeshMapper* mapper = new MeshMapper(topology);
 
-    this->mapper = mapper;
-    const topology::MeshTopology::SeqTetras& tetras = topology->getTetras();
-    const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();
-    const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-    const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-    std::vector<Mat3x3d> bases;
-    std::vector<Vec3d> centers;
-    if (tetras.empty() && cubes.empty())
+    if (f_mesh->beginEdit()->empty())
     {
-        // no 3D elements -> map on 2D elements
-        mapper->clear(0,out.size(),0); // reserve space for 2D mapping
-        int c0 = triangles.size();
-        bases.resize(triangles.size()+quads.size());
-        centers.resize(triangles.size()+quads.size());
-        for (unsigned int t = 0; t < triangles.size(); t++)
+        const OutVecCoord& out = *this->toModel->getX();
+        const InVecCoord& in = *this->fromModel->getX();
+        int outside = 0;
+        MeshMapper* mapper = new MeshMapper(topology);
+
+        this->mapper = mapper;
+        const topology::MeshTopology::SeqTetras& tetras = topology->getTetras();
+        const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();
+        const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
+        const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
+        std::vector<Mat3x3d> bases;
+        std::vector<Vec3d> centers;
+        if (tetras.empty() && cubes.empty())
         {
-            Mat3x3d m,mt;
-            m[0] = in[triangles[t][1]]-in[triangles[t][0]];
-            m[1] = in[triangles[t][2]]-in[triangles[t][0]];
-            m[2] = cross(m[0],m[1]);
-            mt.transpose(m);
-            bases[t].invert(mt);
-            centers[t] = (in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]])/3;
-        }
-        for (unsigned int c = 0; c < quads.size(); c++)
-        {
-            Mat3x3d m,mt;
-            m[0] = in[quads[c][1]]-in[quads[c][0]];
-            m[1] = in[quads[c][3]]-in[quads[c][0]];
-            m[2] = cross(m[0],m[1]);
-            mt.transpose(m);
-            bases[c0+c].invert(mt);
-            centers[c0+c] = (in[quads[c][0]]+in[quads[c][1]]+in[quads[c][2]]+in[quads[c][3]])*0.25;
-        }
-        for (unsigned int i=0; i<out.size(); i++)
-        {
-            Vec3d pos = out[i];
-            Vec<3,Real> coefs;
-            int index = -1;
-            double distance = 1e10;
+            // no 3D elements -> map on 2D elements
+            mapper->clear(0,out.size(),0); // reserve space for 2D mapping
+            int c0 = triangles.size();
+            bases.resize(triangles.size()+quads.size());
+            centers.resize(triangles.size()+quads.size());
             for (unsigned int t = 0; t < triangles.size(); t++)
             {
-                Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
-                double d = std::max(std::max(-v[0],-v[1]),std::max((v[2]<0?-v[2]:v[2])-0.01,v[0]+v[1]-1));
-                if (d>0) d = (pos-centers[t]).norm2();
-                if (d<distance) { coefs = v; distance = d; index = t; }
+                Mat3x3d m,mt;
+                m[0] = in[triangles[t][1]]-in[triangles[t][0]];
+                m[1] = in[triangles[t][2]]-in[triangles[t][0]];
+                m[2] = cross(m[0],m[1]);
+                mt.transpose(m);
+                bases[t].invert(mt);
+                centers[t] = (in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]])/3;
             }
             for (unsigned int c = 0; c < quads.size(); c++)
             {
-                Vec3d v = bases[c0+c] * (pos - in[quads[c][0]]);
-                double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(v[1]-1,v[0]-1),std::max(v[2]-0.01,-v[2]-0.01)));
-                if (d>0) d = (pos-centers[c0+c]).norm2();
-                if (d<distance) { coefs = v; distance = d; index = c0+c; }
+                Mat3x3d m,mt;
+                m[0] = in[quads[c][1]]-in[quads[c][0]];
+                m[1] = in[quads[c][3]]-in[quads[c][0]];
+                m[2] = cross(m[0],m[1]);
+                mt.transpose(m);
+                bases[c0+c].invert(mt);
+                centers[c0+c] = (in[quads[c][0]]+in[quads[c][1]]+in[quads[c][2]]+in[quads[c][3]])*0.25;
             }
-            if (distance>0)
+            for (unsigned int i=0; i<out.size(); i++)
             {
-                ++outside;
+                Vec3d pos = out[i];
+                Vec<3,Real> coefs;
+                int index = -1;
+                double distance = 1e10;
+                for (unsigned int t = 0; t < triangles.size(); t++)
+                {
+                    Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
+                    double d = std::max(std::max(-v[0],-v[1]),std::max((v[2]<0?-v[2]:v[2])-0.01,v[0]+v[1]-1));
+                    if (d>0) d = (pos-centers[t]).norm2();
+                    if (d<distance) { coefs = v; distance = d; index = t; }
+                }
+                for (unsigned int c = 0; c < quads.size(); c++)
+                {
+                    Vec3d v = bases[c0+c] * (pos - in[quads[c][0]]);
+                    double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(v[1]-1,v[0]-1),std::max(v[2]-0.01,-v[2]-0.01)));
+                    if (d>0) d = (pos-centers[c0+c]).norm2();
+                    if (d<distance) { coefs = v; distance = d; index = c0+c; }
+                }
+                if (distance>0)
+                {
+                    ++outside;
+                }
+                if (index < c0)
+                    mapper->addPointInTriangle(index, coefs.ptr());
+                else
+                    mapper->addPointInQuad(index-c0, coefs.ptr());
             }
-            if (index < c0)
-                mapper->addPointInTriangle(index, coefs.ptr());
-            else
-                mapper->addPointInQuad(index-c0, coefs.ptr());
         }
-    }
-    else
-    {
-        mapper->clear(out.size(),0,0); // reserve space for 3D mapping
-        int c0 = tetras.size();
-        bases.resize(tetras.size()+cubes.size());
-        centers.resize(tetras.size()+cubes.size());
-        for (unsigned int t = 0; t < tetras.size(); t++)
+        else
         {
-            Mat3x3d m,mt;
-            m[0] = in[tetras[t][1]]-in[tetras[t][0]];
-            m[1] = in[tetras[t][2]]-in[tetras[t][0]];
-            m[2] = in[tetras[t][3]]-in[tetras[t][0]];
-            mt.transpose(m);
-            bases[t].invert(mt);
-            centers[t] = (in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]])*0.25;
-            //std::cout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<std::endl;
-        }
-        for (unsigned int c = 0; c < cubes.size(); c++)
-        {
-            Mat3x3d m,mt;
-            m[0] = in[cubes[c][1]]-in[cubes[c][0]];
-            m[1] = in[cubes[c][2]]-in[cubes[c][0]];
-            m[2] = in[cubes[c][4]]-in[cubes[c][0]];
-            mt.transpose(m);
-            bases[c0+c].invert(mt);
-            centers[c0+c] = (in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]])*0.125;
-        }
-        for (unsigned int i=0; i<out.size(); i++)
-        {
-            Vec3d pos = out[i];
-            Vec<3,Real> coefs;
-            int index = -1;
-            double distance = 1e10;
+            mapper->clear(out.size(),0,0); // reserve space for 3D mapping
+            int c0 = tetras.size();
+            bases.resize(tetras.size()+cubes.size());
+            centers.resize(tetras.size()+cubes.size());
             for (unsigned int t = 0; t < tetras.size(); t++)
             {
-                Vec3d v = bases[t] * (pos - in[tetras[t][0]]);
-                double d = std::max(std::max(-v[0],-v[1]),std::max(-v[2],v[0]+v[1]+v[2]-1));
-                if (d>0) d = (pos-centers[t]).norm2();
-                if (d<distance) { coefs = v; distance = d; index = t; }
+                Mat3x3d m,mt;
+                m[0] = in[tetras[t][1]]-in[tetras[t][0]];
+                m[1] = in[tetras[t][2]]-in[tetras[t][0]];
+                m[2] = in[tetras[t][3]]-in[tetras[t][0]];
+                mt.transpose(m);
+                bases[t].invert(mt);
+                centers[t] = (in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]])*0.25;
+                //std::cout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<std::endl;
             }
             for (unsigned int c = 0; c < cubes.size(); c++)
             {
-                Vec3d v = bases[c0+c] * (pos - in[cubes[c][0]]);
-                double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(-v[2],v[0]-1),std::max(v[1]-1,v[2]-1)));
-                if (d>0) d = (pos-centers[c0+c]).norm2();
-                if (d<distance) { coefs = v; distance = d; index = c0+c; }
+                Mat3x3d m,mt;
+                m[0] = in[cubes[c][1]]-in[cubes[c][0]];
+                m[1] = in[cubes[c][2]]-in[cubes[c][0]];
+                m[2] = in[cubes[c][4]]-in[cubes[c][0]];
+                mt.transpose(m);
+                bases[c0+c].invert(mt);
+                centers[c0+c] = (in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]])*0.125;
             }
-            if (distance>0)
+            for (unsigned int i=0; i<out.size(); i++)
             {
-                ++outside;
+                Vec3d pos = out[i];
+                Vec<3,Real> coefs;
+                int index = -1;
+                double distance = 1e10;
+                for (unsigned int t = 0; t < tetras.size(); t++)
+                {
+                    Vec3d v = bases[t] * (pos - in[tetras[t][0]]);
+                    double d = std::max(std::max(-v[0],-v[1]),std::max(-v[2],v[0]+v[1]+v[2]-1));
+                    if (d>0) d = (pos-centers[t]).norm2();
+                    if (d<distance) { coefs = v; distance = d; index = t; }
+                }
+                for (unsigned int c = 0; c < cubes.size(); c++)
+                {
+                    Vec3d v = bases[c0+c] * (pos - in[cubes[c][0]]);
+                    double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(-v[2],v[0]-1),std::max(v[1]-1,v[2]-1)));
+                    if (d>0) d = (pos-centers[c0+c]).norm2();
+                    if (d<distance) { coefs = v; distance = d; index = c0+c; }
+                }
+                if (distance>0)
+                {
+                    ++outside;
+                }
+                if (index < c0)
+                    mapper->addPointInTetra(index, coefs.ptr());
+                else
+                    mapper->addPointInCube(index-c0, coefs.ptr());
             }
-            if (index < c0)
-                mapper->addPointInTetra(index, coefs.ptr());
-            else
-                mapper->addPointInCube(index-c0, coefs.ptr());
         }
+        if (outside>0) std::cerr << "WARNING: Barycentric mapping with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
+        f_mesh->setValue(*mapper);
     }
-    if (outside>0) std::cerr << "WARNING: Barycentric mapping with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
+    else
+    {
+        f_mesh->beginEdit()->setTopology(topology);
+        this->mapper = f_mesh->beginEdit();
+    }
 }
 
 template <class BasicMapping>
