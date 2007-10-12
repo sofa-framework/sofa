@@ -1780,7 +1780,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
-            vectorTable->setReadOnly(true);
+            vectorTable->setReadOnly(false);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	    vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1833,7 +1833,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
-            vectorTable->setReadOnly(true);
+            vectorTable->setReadOnly(false);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1887,7 +1887,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
-            vectorTable->setReadOnly(true);
+            vectorTable->setReadOnly(false);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1940,7 +1940,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),3, box);
-            vectorTable->setReadOnly(true);
+            vectorTable->setReadOnly(false);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -1993,7 +1993,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),2, box);
-            vectorTable->setReadOnly(true);
+            vectorTable->setReadOnly(false);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -2040,7 +2040,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),2, box);
-            vectorTable->setReadOnly(true);
+            vectorTable->setReadOnly(false);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -2087,7 +2087,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),2, box);
-            vectorTable->setReadOnly(true);
+            vectorTable->setReadOnly(false);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
@@ -2134,7 +2134,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             new QLabel("Center", box);
 
             vectorTable = new Q3Table(ff->getValue().size(),2, box);
-            vectorTable->setReadOnly(true);
+            vectorTable->setReadOnly(false);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
