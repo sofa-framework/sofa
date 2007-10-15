@@ -58,12 +58,13 @@ public:
 
     SparseGridTopology();
 
-    SparseGridTopology(int nx, int ny, int nz);
-
 
     bool load(const char* filename);
-    void init();
+    virtual void init();
 
+    /// an vertex indice for a given vertex position in space
+    typedef std::map<Vec3,int> MapBetweenCornerPositionAndIndice;
+    void init( MapBetweenCornerPositionAndIndice& mapBetweenCornerPositionAndIndice ); ///< an initialisation keeping the map between space coordinates and indice of vertices
 
     int getNx() const { return nx.getValue(); }
     int getNy() const { return ny.getValue(); }
@@ -73,8 +74,12 @@ public:
     void setNy(int n) { ny.setValue(n); }
     void setNz(int n) { nz.setValue(n); }
 
-    int getNbCubes();
-    int getNbQuads();
+    void setXmin(double n) { xmin.setValue(n); }
+    void setYmin(double n) { ymin.setValue(n); }
+    void setZmin(double n) { zmin.setValue(n); }
+    void setXmax(double n) { xmax.setValue(n); }
+    void setYmax(double n) { ymax.setValue(n); }
+    void setZmax(double n) { zmax.setValue(n); }
 
     bool hasPos()  const { return true; }
 
@@ -105,6 +110,7 @@ protected:
     std::vector<Type> _types; ///< BOUNDARY or FULL filled cells
     /// start from a seed cell (i,j,k) the OUTSIDE filling is propagated to neighboor cells until meet a BOUNDARY cell (this function is called from all border cells of the RegularGrid)
     void propagateFrom( const int i, const int j, const int k,  RegularGridTopology& regularGrid, vector<Type>& regularGridTypes, vector<bool>& alreadyTested  );
+
 
     /// to compute valid cubes (intersection between mesh segments and cubes)
     typedef struct segmentForIntersection

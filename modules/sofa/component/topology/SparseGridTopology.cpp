@@ -69,6 +69,14 @@ bool SparseGridTopology::load(const char* filename)
 
 void SparseGridTopology::init()
 {
+    MapBetweenCornerPositionAndIndice tmpmap;
+    init(tmpmap);
+}
+
+
+
+void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPositionIndiceMap )
+{
     this->MeshTopology::init();
     invalidate();
 
@@ -131,7 +139,7 @@ void SparseGridTopology::init()
 
 
             vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
-            std::map<Vec3,int> cubeCornerPositionIndiceMap; // to compute cube corner indice values
+// 			MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
 
             for(int i=0; i<regularGrid.getNbCubes(); ++i) // all possible cubes (even empty)
             {
@@ -207,7 +215,7 @@ void SparseGridTopology::init()
 
             // compute corner indices
             int cornerCounter=0;
-            for(std::map<Vec3,int>::iterator it=cubeCornerPositionIndiceMap.begin(); it!=cubeCornerPositionIndiceMap.end(); ++it,++cornerCounter)
+            for(MapBetweenCornerPositionAndIndice::iterator it=cubeCornerPositionIndiceMap.begin(); it!=cubeCornerPositionIndiceMap.end(); ++it,++cornerCounter)
             {
                 (*it).second = cornerCounter;
                 seqPoints.push_back( (*it).first );

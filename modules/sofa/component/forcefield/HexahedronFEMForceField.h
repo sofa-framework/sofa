@@ -83,10 +83,10 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
-/** Compute Finite Element forces based on tetrahedral elements.
+/** Compute Finite Element forces based on hexahedral elements.
 */
 template<class DataTypes>
-class HexahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class HexahedronFEMForceField : virtual public core::componentmodel::behavior::ForceField<DataTypes>, virtual public core::VisualModel
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -134,7 +134,7 @@ protected:
     const VecElement *_indexedElements;
     DataField< VecCoord > _initialPoints; ///< the intial positions of the points
 
-private:
+
     Mat<8,3,int> _coef; ///< coef of each vertices to compute the strain stress matrix
     static const int _indices[8]; ///< indices ordering is different than in topology node
 
