@@ -3,9 +3,9 @@ img_extIsRegExp=false
 img_extensions=.eps .pdf .dvi .ps .fig .gif .jpg .jpeg .png
 kileprversion=1
 kileversion=1.9.3
-lastDocument=document.tex
+lastDocument=
 masterDocument=
-name=SOFA documentation
+name=introduction
 pkg_extIsRegExp=false
 pkg_extensions=.cls .sty .dtx
 src_extIsRegExp=false
@@ -15,18 +15,18 @@ src_extensions=.tex .ltx .bib .mp
 MakeIndex=
 QuickBuild=
 
-[item:document.tex]
+[item:introduction.kilepr]
 archive=true
-column=0
-encoding=ISO 8859-1
-highlight=LaTeX
-line=40
-open=true
+column=2687084
+encoding=
+highlight=
+line=0
+open=false
 
 [item:introduction.tex]
 archive=true
-column=0
-encoding=ISO 8859-1
-highlight=LaTeX
+column=13078864
+encoding=
+highlight=
 line=0
-open=true
+open=false
