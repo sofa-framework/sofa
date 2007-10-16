@@ -32,7 +32,7 @@ Figure~\ref{fig:mixedPendulum} shows a simple scene composed of two different ob
  \caption{A pendulum composed of a rigid body (reference frame and yellow point) attached to an elastic string (green) fixed at one end (pink point). The corresponding scene graph is displayed on the left.}
  \label{fig:mixedPendulum}
 \end{figure}
-This scene is modeled and simulated in C++ as shown in appendix~\ref{cpp:hybrid}. The corresponding scene graph is shown in figure~\ref{fig:mixedPendulum-graph}. Note that the graph in the left of figure~\ref{fig:mixedPendulum} only displays a hierarchical view, while the whole graph includes additional pointers displayed as dashed arrows in figure~\ref{fig:mixedPendulum-graph}.
+This scene is modeled and simulated in C++ as shown in section~\ref{cpp:hybrid}. The corresponding scene graph is shown in figure~\ref{fig:mixedPendulum-graph}. Note that the graph in the left of figure~\ref{fig:mixedPendulum} only displays a hierarchical view, while the whole graph includes additional pointers displayed as dashed arrows in figure~\ref{fig:mixedPendulum-graph}.
 \begin{figure}
  \centering
  \includegraphics[width=\linewidth]{mixedPendulum-graph}
@@ -95,7 +95,7 @@ The liver exhibits three different geometries for mechanics, rendering and colli
  \caption{A liver. Top: scene graph. Bottom: visual model, mechanical model, collision model, respectively.}
  \label{fig:liver}
 \end{figure}
-The corresponding xml code is given in appendix~\ref{xml:liver}.
+The corresponding xml code is given in section~\ref{xml:liver}.
 \label{bla:liver}
 
 On top of the scene, collision-related components allow a user to interact with the collision models using rays casted from the mouse pointer and hitting collision models. Collision is discussed in section~\ref{sec:collision}.
@@ -267,31 +267,28 @@ In a \texttt{CGImplicitSolver}, its stiffness is not taken into account, which m
 
 The default collision manager of Sofa circumvents this problem by dynamically gathering the objects in contact in a common mechanical group.
 
-\section{Mostly used components and methods}
-\subsection{ForceFields}
-\subsection{Constraints}
-\subsection{Masses}
-\subsection{Mappings}
-\subsection{ContextObjects}
-
-\section{Collision detection} \label{sec:collision}
-
-% \section{Constraint-based methods}
+% \section{Mostly used components and methods}
+% \subsection{ForceFields}
+% \subsection{Constraints}
+% \subsection{Masses}
+% \subsection{Mappings}
+% \subsection{ContextObjects}
 % 
-% \section{File format}
+% \section{Collision detection} \label{sec:collision}
+% 
+% 
+% \section{Limitations}
 
-\section{Limitations}
-
-\pagebreak
-\appendix
+% \pagebreak
+% \appendix
 \section{Code of the examples}
 \subsection{The hybrid pendulum}\label{cpp:hybrid}
 This is the code of the example commented in section~\ref{sec:commentedExample}.
-\includecode{C++}{../../applications/tutorials/mixedPendulum/Main.cpp}
+\includecode{C++}{applications/tutorials/mixedPendulum/Main.cpp}
 
 \subsection{A liver}\label{xml:liver}
 This is the XML code of the liver discussed in section~\ref{sec:multimodel} page~\pageref{bla:liver}.
-\includecode{XML}{../../scenes/liver.scn}
+\includecode{XML}{scenes/liver.scn}
 
 % \include{sofaMechanical}
 % 

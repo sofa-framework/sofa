@@ -21,7 +21,7 @@ column=56
 encoding=ISO 8859-1
 highlight=LaTeX
 line=107
-open=true
+open=false
 
 [item:sceneequations.kilepr]
 archive=true
