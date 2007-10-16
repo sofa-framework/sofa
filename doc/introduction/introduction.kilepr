@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .pdf .dvi .ps .fig .gif .jpg .jpeg .png
 kileprversion=1
 kileversion=1.9.3
-lastDocument=main.tex
+lastDocument=document.tex
 masterDocument=
 name=SOFA documentation
 pkg_extIsRegExp=false
@@ -15,58 +15,18 @@ src_extensions=.tex .ltx .bib .mp
 MakeIndex=
 QuickBuild=
 
-[item:appendices.tex]
-archive=true
-column=0
-encoding=ISO 8859-15
-highlight=LaTeX
-line=7
-open=false
-
-[item:extendingSofa.tex]
-archive=true
-column=102
-encoding=ISO 8859-15
-highlight=LaTeX
-line=763
-open=false
-
-[item:macros_docu.tex]
-archive=true
-column=44
-encoding=ISO 8859-15
-highlight=LaTeX
-line=1
-open=false
-
-[item:main.tex]
+[item:document.tex]
 archive=true
 column=0
 encoding=ISO 8859-1
 highlight=LaTeX
-line=43
+line=40
 open=true
 
-[item:physicallyBasedAnimation.tex]
+[item:introduction.tex]
 archive=true
 column=0
 encoding=ISO 8859-1
 highlight=LaTeX
-line=121
-open=false
-
-[item:sofaMechanical.tex]
-archive=true
-column=34
-encoding=ISO 8859-1
-highlight=LaTeX
-line=17
-open=false
-
-[item:sofadocumentation.kilepr]
-archive=true
-column=147158208
-encoding=
-highlight=
 line=0
-open=false
+open=true
