@@ -51,7 +51,7 @@ namespace behavior
  *  It is also a ForceField, computing gravity-related forces.
  */
 template<class DataTypes>
-class Mass : public ForceField<DataTypes>, public BaseMass
+class Mass : virtual public ForceField<DataTypes>, public BaseMass
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
