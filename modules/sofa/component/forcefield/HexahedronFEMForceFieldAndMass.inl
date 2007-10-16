@@ -135,17 +135,17 @@ template<class DataTypes>
 typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceFieldAndMass<DataTypes>::integrateMass( const Real xmin, const Real xmax, const Real ymin, const Real ymax, const Real zmin, const Real zmax, int signx0, int signy0, int signz0, int signx1, int signy1, int signz1  )
 {
     Real t3 = xmax-xmin;
-    Real t6 = 1.0+signy1*(ymax+ymin)/2.0;
-    Real t7 = t3*t6/2.0;
+    Real t6 = 1.0f+signy1*(ymax+ymin)/2.0f;
+    Real t7 = t3*t6/2.0f;
     Real t8 = zmax-zmin;
-    Real t9 = signz1*t8/2.0;
-    Real t16 = 1.0+signx1*(xmax+xmin)/2.0;
+    Real t9 = signz1*t8/2.0f;
+    Real t16 = 1.0f+signx1*(xmax+xmin)/2.0f;
     Real t18 = ymax-ymin;
-    Real t19 = signy1*t18/2.0;
-    Real t23 = signx0*signy0;
-    Real t26 = t3*signy1/2.0;
-    Real t40 = 1.0+signz1*(zmax+zmin)/2.0;
-    return (signx0*signz0*signx1*t7*t9/72.0+signy0*signz0*t16*t19*t9/72.0+t23*signz0*signx1*t26*t18*signz1*t8/864.0+signz0*t16*t6*signz1*t8/48.0+t23*signx1*t26*t18*t40/144.0+t16*t6*t40/8.0+signx0*signx1*t7*t40/24.0+signy0*t16*t19*t40/24.0)*_density.getValue();
+    Real t19 = signy1*t18/2.0f;
+    Real t23 = (Real)(signx0*signy0);
+    Real t26 = t3*signy1/2.0f;
+    Real t40 = 1.0f+signz1*(zmax+zmin)/2.0f;
+    return (signx0*signz0*signx1*t7*t9/72.0f+signy0*signz0*t16*t19*t9/72.0f+t23*signz0*signx1*t26*t18*signz1*t8/864.0f+signz0*t16*t6*signz1*t8/48.0f+t23*signx1*t26*t18*t40/144.0f+t16*t6*t40/8.0f+signx0*signx1*t7*t40/24.0f+signy0*t16*t19*t40/24.0f)*_density.getValue();
 }
 
 
