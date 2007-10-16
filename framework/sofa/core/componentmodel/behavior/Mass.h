@@ -88,6 +88,11 @@ public:
     /// This method must be implemented by the component.
     virtual void accFromF(VecDeriv& a, const VecDeriv& f) = 0;
 
+
+    /// Mass forces (gravity)
+    virtual void addForce(VecDeriv& /*f*/, const VecCoord& /*x*/, const VecDeriv& /*v*/)
+    {}
+
     /// Mass forces (gravity) often have null derivative
     virtual void addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/)
     {}

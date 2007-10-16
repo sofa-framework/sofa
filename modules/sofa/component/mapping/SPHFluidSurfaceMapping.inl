@@ -47,17 +47,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
-template <class In, class Out>
-void SPHFluidSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->Inherit::parse(arg);
-    if (arg->getAttribute("radius"))
-        this->setRadius(atof(arg->getAttribute("radius")));
-    if (arg->getAttribute("step"))
-        this->setStep(atof(arg->getAttribute("step")));
-    if (arg->getAttribute("isoValue"))
-        this->setIsoValue(atof(arg->getAttribute("isoValue")));
-}
 
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::init()
@@ -72,10 +61,10 @@ void SPHFluidSurfaceMapping<In,Out>::init()
     }
     if (sph)
     {
-        //mRadius = sph->getParticleRadius();
-        mIsoValue /= sph->getParticleFieldConstant((InReal)mRadius);
+        //mRadius.getValue() = sph->getParticleRadius();
+        mIsoValue.setValue( mIsoValue.getValue()/ sph->getParticleFieldConstant((InReal)mRadius.getValue()));
     }
-    grid = new Grid((InReal)mStep);
+    grid = new Grid((InReal)mStep.getValue());
 }
 
 template <class In, class Out>
@@ -159,11 +148,11 @@ template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& in )
 {
     if (!sph) return;
-    //const InReal invStep = (InReal)(1/mStep);
+    //const InReal invStep = (InReal)(1/mStep.getValue());
     out.resize(0);
     clear();
     if (in.size()==0) return;
-    const InReal r = (InReal)(getRadius()); // / mStep);
+    const InReal r = (InReal)(getRadius()); // / mStep.getValue());
     grid->begin();
     for (unsigned int ip=0; ip<in.size(); ip++)
     {
@@ -363,7 +352,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
     if (!grid) return;
     grid->draw();
 
-    float scale = (float)mStep;
+    float scale = (float)mStep.getValue();
     typename Grid::iterator end = grid->gridEnd();
     typename Grid::iterator it;
 
@@ -385,7 +374,7 @@ void SPHFluidSurfaceMapping<In,Out>::draw()
             {
                 for (x=0; x<GRIDDIM; x++)
                 {
-                    if (c->data.val > mIsoValue)
+                    if (c->data.val > mIsoValue.getValue())
                         glVertex3f((x0+x)*scale,(y0+y)*scale,(z0+z)*scale);
                     c+=DX;
                 }

@@ -58,7 +58,12 @@ public:
     typedef typename InCoord::value_type InReal;
 
     ImplicitSurfaceMapping(In* from, Out* to)
-        : Inherit(from, to), mStep(0.5), mRadius(2.0), mIsoValue(0.5), mGridMin(-100,-100,-100), mGridMax(100, 100, 100)
+        : Inherit(from, to),
+          mStep(dataField(&mStep,0.5,"step","Step")),
+          mRadius(dataField(&mRadius,2.0,"radius","Radius")),
+          mIsoValue(dataField(&mIsoValue,0.5,"isoValue","Iso Value")),
+          mGridMin(dataField(&mGridMin,InCoord(-100,-100,-100),"min","Grid Min")),
+          mGridMax(dataField(&mGridMax,InCoord(100,100,100),"max","Grid Max"))
     {
     }
 
@@ -68,22 +73,22 @@ public:
 
     virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    double getStep() const { return mStep; }
-    void setStep(double val) { mStep = val; }
+    double getStep() const { return mStep.getValue(); }
+    void setStep(double val) { mStep.setValue(val); }
 
-    double getRadius() const { return mRadius; }
-    void setRadius(double val) { mRadius = val; }
+    double getRadius() const { return mRadius.getValue(); }
+    void setRadius(double val) { mRadius.setValue(val); }
 
-    double getIsoValue() const { return mIsoValue; }
-    void setIsoValue(double val) { mIsoValue = val; }
+    double getIsoValue() const { return mIsoValue.getValue(); }
+    void setIsoValue(double val) { mIsoValue.setValue(val); }
 
-    const InCoord& getGridMin() const { return mGridMin; }
-    void setGridMin(const InCoord& val) { mGridMin = val; }
-    void setGridMin(double x, double y, double z) { mGridMin = InCoord((InReal)x,(InReal)y,(InReal)z); }
+    const InCoord& getGridMin() const { return mGridMin.getValue(); }
+    void setGridMin(const InCoord& val) { mGridMin.setValue(val); }
+    void setGridMin(double x, double y, double z) { mGridMin.setValue( InCoord((InReal)x,(InReal)y,(InReal)z)); }
 
-    const InCoord& getGridMax() const { return mGridMax; }
-    void setGridMax(const InCoord& val) { mGridMax = val; }
-    void setGridMax(double x, double y, double z) { mGridMax = InCoord((InReal)x,(InReal)y,(InReal)z); }
+    const InCoord& getGridMax() const { return mGridMax.getValue(); }
+    void setGridMax(const InCoord& val) { mGridMax.setValue(val); }
+    void setGridMax(double x, double y, double z) { mGridMax.setValue( InCoord((InReal)x,(InReal)y,(InReal)z)); }
 
     void apply( OutVecCoord& out, const InVecCoord& in );
 
@@ -91,12 +96,12 @@ public:
 
     //void applyJT( InVecDeriv& out, const OutVecDeriv& in );
 protected:
-    double mStep;
-    double mRadius;
-    double mIsoValue;
+    DataField <double > mStep;
+    DataField <double > mRadius;
+    DataField <double > mIsoValue;
 
-    InCoord mGridMin;
-    InCoord mGridMax;
+    DataField< InCoord > mGridMin;
+    DataField< InCoord > mGridMax;
 
     // Marching cube data
 
@@ -105,9 +110,21 @@ protected:
     {
         int p[3];
         OutReal data;
+        inline friend std::istream& operator >> ( std::istream& in, CubeData& c)
+        {
+            in >> c.p[0] >> c.p[1] >> c.p[2] >> c.data;
+
+            return in;
+        }
+
+        inline friend std::ostream& operator << ( std::ostream& out, const CubeData& c)
+        {
+            out << c.p[0] << " " << c.p[1] << " " << c.p[2] << " " << c.data ;
+            return out;
+        }
     };
 
-    std::vector<CubeData> planes;
+    DataField < sofa::helper::vector<CubeData> > planes;
     typename std::vector<CubeData>::iterator P0; /// Pointer to first plane
     typename std::vector<CubeData>::iterator P1; /// Pointer to second plane
 
@@ -120,7 +137,7 @@ protected:
         OutCoord pos = OutCoord((OutReal)x,(OutReal)y,(OutReal)z);
         pos[C] -= (iso-v0)/(v1-v0);
         out.resize(p+1);
-        out[p] = pos * mStep;
+        out[p] = pos * mStep.getValue();
         return p;
     }
 
@@ -151,24 +168,24 @@ protected:
 
 /* Convention:
 
-         Z
-         ^
-         |
-         4----4----5
-        /|        /|
-       7 |       5 |
-      /  8      /  9
-     7---+6----6   |
-     |   |     |   |
-     |   0----0+---1--> X
-    11  /     10  /
-     | 3       | 1
-     |/        |/
-     3----2----2
-    /
+   Z
+   ^
+   |
+   4----4----5
+   /|        /|
+   7 |       5 |
+   /  8      /  9
+   7---+6----6   |
+   |   |     |   |
+   |   0----0+---1--> X
+   11  /     10  /
+   | 3       | 1
+   |/        |/
+   3----2----2
    /
- |_
-Y
+   /
+   |_
+   Y
 
 */
 

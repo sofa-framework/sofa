@@ -109,7 +109,11 @@ public:
     typedef typename InCoord::value_type InReal;
 
     SPHFluidSurfaceMapping(In* from, Out* to)
-        : Inherit(from, to), mStep(0.5), mRadius(2.0), mIsoValue(0.5), sph(NULL), grid(NULL)
+        : Inherit(from, to),
+          mStep(dataField(&mStep,0.5,"step","Step")),
+          mRadius(dataField(&mRadius,2.0,"radius","Radius")),
+          mIsoValue(dataField(&mIsoValue,0.5,"isoValue", "Iso Value")),
+          sph(NULL), grid(NULL)
     {}
 
     virtual ~SPHFluidSurfaceMapping()
@@ -117,32 +121,30 @@ public:
 
     double getStep() const
     {
-        return mStep;
+        return mStep.getValue();
     }
     void setStep(double val)
     {
-        mStep = val;
+        mStep.setValue(val);
     }
 
     double getRadius() const
     {
-        return mRadius;
+        return mRadius.getValue();
     }
     void setRadius(double val)
     {
-        mRadius = val;
+        mRadius.setValue(val);
     }
 
     double getIsoValue() const
     {
-        return mIsoValue;
+        return mIsoValue.getValue();
     }
     void setIsoValue(double val)
     {
-        mIsoValue = val;
+        mIsoValue.setValue(val);
     }
-
-    void parse(core::objectmodel::BaseObjectDescription* arg);
 
     void init();
 
@@ -159,10 +161,11 @@ public:
     void update()
     { }
 
+
 protected:
-    double mStep;
-    double mRadius;
-    double mIsoValue;
+    DataField< double > mStep;
+    DataField< double > mRadius;
+    DataField< double > mIsoValue;
 
     typedef forcefield::SPHFluidForceField<typename In::DataTypes> SPHForceField;
     SPHForceField* sph;
@@ -191,7 +194,7 @@ protected:
         OutCoord pos = OutCoord((OutReal)x,(OutReal)y,(OutReal)z);
         pos[C] += (iso-v0)/(v1-v0);
         out.resize(p+1);
-        out[p] = pos * mStep;
+        out[p] = pos * mStep.getValue();
         return p;
     }
 

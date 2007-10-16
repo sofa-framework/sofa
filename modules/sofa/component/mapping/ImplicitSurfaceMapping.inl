@@ -48,20 +48,14 @@ template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->Inherit::parse(arg);
-    if (arg->getAttribute("radius"))
-        this->setRadius(atof(arg->getAttribute("radius")));
-    if (arg->getAttribute("step"))
-        this->setStep(atof(arg->getAttribute("step")));
-    if (arg->getAttribute("isoValue"))
-        this->setIsoValue(atof(arg->getAttribute("isoValue")));
-    if (arg->getAttribute("min") || arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))
-        this->setGridMin(atof(arg->getAttribute("minx",arg->getAttribute("min","-100.0"))),
-                atof(arg->getAttribute("miny",arg->getAttribute("min","-100.0"))),
-                atof(arg->getAttribute("minz",arg->getAttribute("min","-100.0"))));
-    if (arg->getAttribute("max") || arg->getAttribute("maxx") || arg->getAttribute("maxy") || arg->getAttribute("maxz"))
-        this->setGridMax(atof(arg->getAttribute("maxx",arg->getAttribute("max","100.0"))),
-                atof(arg->getAttribute("maxy",arg->getAttribute("max","100.0"))),
-                atof(arg->getAttribute("maxz",arg->getAttribute("max","100.0"))));
+    if ( arg->getAttribute("minx") || arg->getAttribute("miny") || arg->getAttribute("minz"))
+        this->setGridMin(atof(arg->getAttribute("minx","-100.0")),
+                atof(arg->getAttribute("miny","-100.0")),
+                atof(arg->getAttribute("minz","-100.0")));
+    if (arg->getAttribute("maxx") || arg->getAttribute("maxy") || arg->getAttribute("maxz"))
+        this->setGridMax(atof(arg->getAttribute("maxx","100.0")),
+                atof(arg->getAttribute("maxy","100.0")),
+                atof(arg->getAttribute("maxz","100.0")));
 }
 
 template<class Real>
@@ -73,7 +67,7 @@ Real sqr(Real r)
 template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& in )
 {
-    InReal invStep = (InReal)(1/mStep);
+    InReal invStep = (InReal)(1/mStep.getValue());
     out.resize(0);
     clear();
     if (in.size()==0) return;
@@ -81,14 +75,14 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
     InReal ymin, ymax;
     xmin = xmax = in[0][0]*invStep;
     ymin = ymax = in[0][1]*invStep;
-    const InReal r = (InReal)(getRadius() / mStep);
+    const InReal r = (InReal)(getRadius() / mStep.getValue());
     std::map<int, std::list< InCoord > > sortParticles;
     for (unsigned int ip=0; ip<in.size(); ip++)
     {
         InCoord c0 = in[ip];
-        if (c0[0] < mGridMin[0] || c0[0] > mGridMax[0] ||
-            c0[1] < mGridMin[1] || c0[1] > mGridMax[1] ||
-            c0[2] < mGridMin[2] || c0[2] > mGridMax[2])
+        if (c0[0] < (*mGridMin.beginEdit())[0] || c0[0] > (*mGridMax.beginEdit())[0] ||
+            c0[1] < (*mGridMin.beginEdit())[1] || c0[1] > (*mGridMax.beginEdit())[1] ||
+            c0[2] < (*mGridMin.beginEdit())[2] || c0[2] > (*mGridMax.beginEdit())[2])
             continue;
         InCoord c = c0 * invStep;
         if (c[0] < xmin)
@@ -112,9 +106,9 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
     const int x0 = rceil(xmin-r) - 1;
     const int nx = rfloor(xmax+r) - x0 + 2;
 
-    planes.resize(2*nx*ny);
-    P0 = planes.begin()+0;
-    P1 = planes.begin()+nx*ny;
+    (*planes.beginEdit()).resize(2*nx*ny);
+    P0 = (*planes.beginEdit()).begin()+0;
+    P1 = (*planes.beginEdit()).begin()+nx*ny;
 
     //////// MARCHING CUBE ////////
 
@@ -170,7 +164,7 @@ void ImplicitSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
         i=0;
         int edgecube[12];
         const int edgepts[12] = {0,1,0,1,0,1,0,1,2,2,2,2};
-        typename std::vector<CubeData>::iterator base = planes.begin();
+        typename std::vector<CubeData>::iterator base = (*planes.beginEdit()).begin();
         int ip0 = P0-base;
         int ip1 = P1-base;
         edgecube[0]  = (ip0   -dy);
@@ -256,7 +250,7 @@ void ImplicitSurfaceMapping<In,Out>::newPlane()
     typename std::vector<CubeData>::iterator P = P0;
     P0 = P1;
     P1 = P;
-    int n = planes.size()/2;
+    int n = planes.getValue().size()/2;
     for (int i=0; i<n; ++i,++P)
         *P = c;
     //plane0.swap(plane1);
