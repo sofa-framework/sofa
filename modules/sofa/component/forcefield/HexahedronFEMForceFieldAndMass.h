@@ -42,16 +42,12 @@ public:
 
 
 
-    DataField<Real> _density;
 
 
 
 
-    HexahedronFEMForceFieldAndMass()
-        :Mass()
-        ,HexahedronFEMForceField()
-        , _density(dataField(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
-    {};
+
+    HexahedronFEMForceFieldAndMass();
 
 
     virtual void init( );
@@ -91,9 +87,16 @@ public:
 
 
 
+    void setDensity(Real d) {_density.setValue( d );}
+    Real getDensity() {return _density.getValue();}
+
+
+
 protected :
 
     VecElementMass _elementMasses; ///< mass matrices per element
+
+    DataField<Real> _density;
 
 
 };

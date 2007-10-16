@@ -27,6 +27,8 @@
 
 
 #include "HexahedronFEMForceFieldAndMass.h"
+#include "HexahedronFEMForceField.inl"
+// #include <sofa/core/componentmodel/behavior/ForceField.inl>
 
 namespace sofa
 {
@@ -39,6 +41,15 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 using std::cerr; using std::endl;
+
+
+template<class DataTypes>
+HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
+    : Mass()
+    , HexahedronFEMForceField()
+    , _density(dataField(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
+{}
+
 
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
@@ -186,10 +197,10 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(VecDeriv& /*a*/, const 
 
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
     HexahedronFEMForceField::addForce(f,x,v);
-    Mass::addForce(f,x,v);
+//         Mass::addForce(f,x,v);
 }
 
 
