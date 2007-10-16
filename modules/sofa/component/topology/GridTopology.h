@@ -50,29 +50,35 @@ public:
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
         this->MeshTopology::parse(arg);
+
+        const char* nx = arg->getAttribute("nx","1");
+        const char* ny = arg->getAttribute("ny","1");
+        const char* nz = arg->getAttribute("nz","1");
+        n.setValue(Vec<3,int>(atoi(nx),atoi(ny),atoi(nz)));
+
         this->setSize();
     }
 
-    int getNx() const { return nx.getValue(); }
-    int getNy() const { return ny.getValue(); }
-    int getNz() const { return nz.getValue(); }
+    int getNx() const { return n.getValue()[0]; }
+    int getNy() const { return n.getValue()[1]; }
+    int getNz() const { return n.getValue()[2]; }
 
-    void setNx(int n) { nx.setValue(n); setSize(); }
-    void setNy(int n) { ny.setValue(n); setSize(); }
-    void setNz(int n) { nz.setValue(n); setSize(); }
+    void setNx(int n_) { (*n.beginEdit())[0] = n_; setSize(); }
+    void setNy(int n_) { (*n.beginEdit())[1] = n_; setSize(); }
+    void setNz(int n_) { (*n.beginEdit())[2] = n_; setSize(); }
 
-    //int getNbPoints() const { return nx.getValue()*ny.getValue()*nz.getValue(); }
+    //int getNbPoints() const { return n.getValue()[0]*n.getValue()[1]*n.getValue()[2]; }
 
-    int getNbCubes() { return (nx.getValue()-1)*(ny.getValue()-1)*(nz.getValue()-1); }
+    int getNbCubes() { return (n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1); }
 
     int getNbQuads()
     {
-        if (nz.getValue() == 1)
-            return (nx.getValue()-1)*(ny.getValue()-1);
-        else if (ny.getValue() == 1)
-            return (nx.getValue()-1)*(nz.getValue()-1);
+        if (n.getValue()[2] == 1)
+            return (n.getValue()[0]-1)*(n.getValue()[1]-1);
+        else if (n.getValue()[1] == 1)
+            return (n.getValue()[0]-1)*(n.getValue()[2]-1);
         else
-            return (ny.getValue()-1)*(nz.getValue()-1);
+            return (n.getValue()[1]-1)*(n.getValue()[2]-1);
     }
 
     Cube getCube(int i);
@@ -81,13 +87,11 @@ public:
     Quad getQuad(int i);
     Quad getQuad(int x, int y, int z);
 
-    int point(int x, int y, int z) const { return x+nx.getValue()*(y+ny.getValue()*z); }
-    int cube(int x, int y, int z) const { return x+(nx.getValue()-1)*(y+(ny.getValue()-1)*z); }
+    int point(int x, int y, int z) const { return x+n.getValue()[0]*(y+n.getValue()[1]*z); }
+    int cube(int x, int y, int z) const { return x+(n.getValue()[0]-1)*(y+(n.getValue()[1]-1)*z); }
 
 protected:
-    DataField<int> nx;
-    DataField<int> ny;
-    DataField<int> nz;
+    DataField< Vec<3, int> > n;
 
     virtual void setSize();
     void updateLines();

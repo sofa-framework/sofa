@@ -253,8 +253,10 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
                 //********************************************************************************************************//
                 //Vec6f, Vec6d
-                else if( dynamic_cast< DataField<Vec6f> * >( (*it).second ) ||
-                        dynamic_cast< DataField<Vec6d> * >( (*it).second ) )
+                else if( dynamic_cast< DataField<Vec6f> * > ( (*it).second ) ||
+                        dynamic_cast< DataField<Vec6d> * > ( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<6,int> > *> ( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<6,unsigned int> >* > ( (*it).second ) )
                 {
 
                     if( DataField<Vec6f> * ff = dynamic_cast< DataField<Vec6f> * >( (*it).second )  )
@@ -265,11 +267,21 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     {
                         createVector(ff->getValue(), box);
                     }
+                    else if(DataField<Vec<6,int> > * ff = dynamic_cast< DataField<Vec<6,int> >* >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
+                    else if(DataField<Vec<6,unsigned int> > * ff = dynamic_cast< DataField<Vec<6,unsigned int> >* >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
                 }
                 //********************************************************************************************************//
                 //Vec4f,Vec4d
                 else if( dynamic_cast< DataField<Vec4f> * >( (*it).second ) ||
-                        dynamic_cast< DataField<Vec4d> * >( (*it).second )   )
+                        dynamic_cast< DataField<Vec4d> * >( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<4,int> > *>( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<4,unsigned int> >* >  ( (*it).second )  )
                 {
 
 
@@ -281,11 +293,21 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     {
                         createVector(ff->getValue(), box);
                     }
+                    else if(DataField<Vec<4,int> > * ff = dynamic_cast< DataField<Vec<4,int> >* >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
+                    else if(DataField<Vec<4,unsigned int> > * ff = dynamic_cast< DataField<Vec<4,unsigned int> >* >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
                 }
                 //********************************************************************************************************//
                 //Vec3f,Vec3d
                 else if( dynamic_cast< DataField<Vec3f> * >( (*it).second ) ||
-                        dynamic_cast< DataField<Vec3d> * >( (*it).second ))
+                        dynamic_cast< DataField<Vec3d> * >( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<3,int> > *>( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<3,unsigned int> >* >  ( (*it).second ))
                 {
 
                     if( DataField<Vec3f> * ff = dynamic_cast< DataField<Vec3f> * >( (*it).second )  )
@@ -296,12 +318,22 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     {
                         createVector(ff->getValue(), box);
                     }
+                    else if(DataField<Vec<3,int> > * ff = dynamic_cast< DataField<Vec<3,int> >* >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
+                    else if(DataField<Vec<3,unsigned int> > * ff = dynamic_cast< DataField<Vec<3,unsigned int> >* >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
 
                 }
                 //********************************************************************************************************//
                 //Vec2f,Vec2d
                 else if( dynamic_cast< DataField<Vec2f> * >( (*it).second ) ||
-                        dynamic_cast< DataField<Vec2d> * >( (*it).second ))
+                        dynamic_cast< DataField<Vec2d> * >( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<2,int> > * >( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<2,unsigned int> > * >  ( (*it).second ))
                 {
 
 
@@ -313,12 +345,22 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     {
                         createVector(ff->getValue(), box);
                     }
+                    else if(DataField<Vec<2,int> > * ff = dynamic_cast< DataField<Vec<2,int> >* >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
+                    else if(DataField<Vec<2,unsigned int> > * ff = dynamic_cast< DataField<Vec<2,unsigned int> >* >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
 
                 }
                 //********************************************************************************************************//
                 //Vec1f,Vec1d
                 else if( dynamic_cast< DataField<Vec1f> * >( (*it).second ) ||
-                        dynamic_cast< DataField<Vec1d> * >( (*it).second ) )
+                        dynamic_cast< DataField<Vec1d> * >( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<1,int> > * >( (*it).second ) ||
+                        dynamic_cast< DataField<Vec<1,unsigned int> > *  > ( (*it).second ))
                 {
 
                     if( DataField<Vec1f> * ff = dynamic_cast< DataField<Vec1f> * >( (*it).second )  )
@@ -326,6 +368,14 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         createVector(ff->getValue(), box);
                     }
                     else if(DataField<Vec1d> * ff = dynamic_cast< DataField<Vec1d> * >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
+                    else if(DataField<Vec<1,int> > * ff = dynamic_cast< DataField<Vec<1,int> > * >( (*it).second )  )
+                    {
+                        createVector(ff->getValue(), box);
+                    }
+                    else if(DataField<Vec<1,unsigned int> > * ff = dynamic_cast< DataField<Vec<1,unsigned int> > * >( (*it).second )  )
                     {
                         createVector(ff->getValue(), box);
                     }
@@ -871,7 +921,9 @@ void ModifyObject::updateValues()
             }
             //*******************************************************************************************************************
             else if( dynamic_cast< DataField<Vec6f> * >( (*it).second )         ||
-                    dynamic_cast< DataField<Vec6d> * >( (*it).second ) )
+                    dynamic_cast< DataField<Vec6d> * >( (*it).second )         ||
+                    dynamic_cast< DataField<Vec<6,int> > * >( (*it).second )   ||
+                    dynamic_cast< DataField<Vec<6,unsigned int> > * >( (*it).second )   )
             {
                 if( DataField<Vec6f> * ff = dynamic_cast< DataField<Vec6f> * >( (*it).second )  )
                 {
@@ -881,12 +933,22 @@ void ModifyObject::updateValues()
                 {
                     storeVector(list_it, ff);
                 }
+                else if( DataField<Vec<6,int> > * ff = dynamic_cast< DataField<Vec<6,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataField<Vec<6, unsigned int> > * ff = dynamic_cast< DataField<Vec<6, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
 
 
             }
             //*******************************************************************************************************************
-            else if(  dynamic_cast< DataField<Vec4f> * >( (*it).second )          ||
-                    dynamic_cast< DataField<Vec4d> * >( (*it).second ) )
+            else if(  dynamic_cast< DataField<Vec4f> * >( (*it).second )           ||
+                    dynamic_cast< DataField<Vec4d> * >( (*it).second )           ||
+                    dynamic_cast< DataField<Vec<4,int> > * >( (*it).second )     ||
+                    dynamic_cast< DataField<Vec<4,unsigned int> > * >( (*it).second )  )
             {
 
                 if( DataField<Vec4f> * ff = dynamic_cast< DataField<Vec4f> * >( (*it).second )  )
@@ -897,11 +959,21 @@ void ModifyObject::updateValues()
                 {
                     storeVector(list_it, ff);
                 }
+                else if( DataField<Vec<4,int> > * ff = dynamic_cast< DataField<Vec<4,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataField<Vec<4, unsigned int> > * ff = dynamic_cast< DataField<Vec<4, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
 
             }
             //*******************************************************************************************************************
-            else if( dynamic_cast< DataField<Vec3f> * >( (*it).second )        ||
-                    dynamic_cast< DataField<Vec3d> * >( (*it).second )  )
+            else if( dynamic_cast< DataField<Vec3f> * >( (*it).second )         ||
+                    dynamic_cast< DataField<Vec3d> * >( (*it).second )         ||
+                    dynamic_cast< DataField<Vec<3,int> > * >( (*it).second )   ||
+                    dynamic_cast< DataField<Vec<3,unsigned int> > * >( (*it).second )  )
             {
 
                 if( DataField<Vec3f> * ff = dynamic_cast< DataField<Vec3f> * >( (*it).second )  )
@@ -912,12 +984,22 @@ void ModifyObject::updateValues()
                 {
                     storeVector(list_it, ff);
                 }
+                else if( DataField<Vec<3,int> > * ff = dynamic_cast< DataField<Vec<3,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataField<Vec<3, unsigned int> > * ff = dynamic_cast< DataField<Vec<3, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
 
 
             }
             //*******************************************************************************************************************
             else if( dynamic_cast< DataField<Vec2f> * >( (*it).second )          ||
-                    dynamic_cast< DataField<Vec2d> * >( (*it).second ))
+                    dynamic_cast< DataField<Vec2d> * >( (*it).second )          ||
+                    dynamic_cast< DataField<Vec<2,int> > * >( (*it).second )    ||
+                    dynamic_cast< DataField<Vec<2,unsigned int> > * >( (*it).second )  )
             {
 
 
@@ -929,11 +1011,21 @@ void ModifyObject::updateValues()
                 {
                     storeVector(list_it, ff);
                 }
+                else if( DataField<Vec<2,int> > * ff = dynamic_cast< DataField<Vec<2,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataField<Vec<2, unsigned int> > * ff = dynamic_cast< DataField<Vec<2, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
 
             }
             //*******************************************************************************************************************
             else if( dynamic_cast< DataField<Vec1f> * >( (*it).second )         ||
-                    dynamic_cast< DataField<Vec1d> * >( (*it).second ))
+                    dynamic_cast< DataField<Vec1d> * >( (*it).second )         ||
+                    dynamic_cast< DataField<Vec<1,int> > * >( (*it).second )   ||
+                    dynamic_cast< DataField<Vec<1,unsigned int> > * >( (*it).second )  )
             {
 
 
@@ -945,7 +1037,14 @@ void ModifyObject::updateValues()
                 {
                     storeVector(list_it, ff);
                 }
-
+                else if( DataField<Vec<1,int> > * ff = dynamic_cast< DataField<Vec<1,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataField<Vec<1, unsigned int> > * ff = dynamic_cast< DataField<Vec<1, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
 
             }
             //*******************************************************************************************************************
@@ -3224,6 +3323,61 @@ void ModifyObject::createVector(const Vec<6,float> &value, Q3GroupBox *box)
         connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
     }
 }
+
+void ModifyObject::createVector(const Vec<6,int> &value, Q3GroupBox *box)
+{
+
+    const int size = 6;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)-INFINITY );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
+void ModifyObject::createVector(const Vec<6,unsigned int> &value, Q3GroupBox *box)
+{
+
+    const int size = 6;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)0 );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
 void ModifyObject::createVector(const Vec<4,double> &value, Q3GroupBox *box)
 {
 
@@ -3270,6 +3424,61 @@ void ModifyObject::createVector(const Vec<4,float> &value, Q3GroupBox *box)
     for (int i=0; i<size; i++)
     {
         editSFFloat[i]->setFloatValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
+
+void ModifyObject::createVector(const Vec<4,int> &value, Q3GroupBox *box)
+{
+
+    const int size = 4;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)-INFINITY );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
+void ModifyObject::createVector(const Vec<4,unsigned int> &value, Q3GroupBox *box)
+{
+
+    const int size = 4;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)0 );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
     }
     for (int i=0; i<size; i++)
     {
@@ -3330,6 +3539,60 @@ void ModifyObject::createVector(const Vec<3,float> &value, Q3GroupBox *box)
     }
 }
 
+void ModifyObject::createVector(const Vec<3,int> &value, Q3GroupBox *box)
+{
+
+    const int size = 3;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)-INFINITY );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
+void ModifyObject::createVector(const Vec<3,unsigned int> &value, Q3GroupBox *box)
+{
+
+    const int size = 3;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)0 );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
 void ModifyObject::createVector(const Vec<2,double> &value, Q3GroupBox *box)
 {
 
@@ -3357,6 +3620,7 @@ void ModifyObject::createVector(const Vec<2,double> &value, Q3GroupBox *box)
     }
 }
 
+
 void ModifyObject::createVector(const Vec<2,float> &value, Q3GroupBox *box)
 {
 
@@ -3377,6 +3641,60 @@ void ModifyObject::createVector(const Vec<2,float> &value, Q3GroupBox *box)
     for (int i=0; i<size; i++)
     {
         editSFFloat[i]->setFloatValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
+void ModifyObject::createVector(const Vec<2,int> &value, Q3GroupBox *box)
+{
+
+    const int size = 2;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)-INFINITY );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
+void ModifyObject::createVector(const Vec<2,unsigned int> &value, Q3GroupBox *box)
+{
+
+    const int size = 2;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)0 );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
     }
     for (int i=0; i<size; i++)
     {
@@ -3438,6 +3756,60 @@ void ModifyObject::createVector(const Vec<1,float> &value, Q3GroupBox *box)
     }
 }
 
+void ModifyObject::createVector(const Vec<1,int> &value, Q3GroupBox *box)
+{
+
+    const int size = 1;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)-INFINITY );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
+void ModifyObject::createVector(const Vec<1,unsigned int> &value, Q3GroupBox *box)
+{
+
+    const int size = 1;
+    box->setColumns(size+1);
+
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        std::ostringstream oss;
+        oss << "editSFFloat_" << i;
+        editSFFloat[i] = new WFloatLineEdit( box, QString(std::string(oss.str()).c_str())   );
+        list_Object.push_back( (QObject *) editSFFloat[i]);
+
+        editSFFloat[i]->setMinFloatValue( (float)0 );
+        editSFFloat[i]->setMaxFloatValue( (float)INFINITY );
+    }
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i]->setIntValue(value[i]);
+    }
+    for (int i=0; i<size; i++)
+    {
+        connect( editSFFloat[i], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+    }
+}
+
 void ModifyObject::createVector(const Quater<double> &value, Q3GroupBox *box)
 {
     Vec<4,double> new_value(value[0], value[1], value[2], value[3]);
@@ -3475,6 +3847,35 @@ void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataFie
     for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getFloatValue();
     ff->setValue(value);
 }
+
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<6,int> > *ff)
+{
+    const int size=6;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, int> value;
+    for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getIntValue();
+    ff->setValue(value);
+}
+
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<6,unsigned int> > *ff)
+{
+    const int size=6;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, unsigned int> value;
+    for (int i=0; i<size; i++)  value[i] =  (unsigned int) editSFFloat[i]->getIntValue();
+    ff->setValue(value);
+}
+
 void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<4,double> > *ff)
 {
     const int size=4;
@@ -3501,6 +3902,35 @@ void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataFie
     for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getFloatValue();
     ff->setValue(value);
 }
+
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<4,int> > *ff)
+{
+    const int size=4;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, int> value;
+    for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getIntValue();
+    ff->setValue(value);
+}
+
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<4,unsigned int> > *ff)
+{
+    const int size=4;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, unsigned int> value;
+    for (int i=0; i<size; i++)  value[i] =  (unsigned int) editSFFloat[i]->getIntValue();
+    ff->setValue(value);
+}
+
 void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<3,double> > *ff)
 {
     const int size=3;
@@ -3525,6 +3955,33 @@ void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataFie
 
     Vec<size, float> value;
     for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getFloatValue();
+    ff->setValue(value);
+}
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<3,int> > *ff)
+{
+    const int size=3;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, int> value;
+    for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getIntValue();
+    ff->setValue(value);
+}
+
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<3,unsigned int> > *ff)
+{
+    const int size=3;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, unsigned int> value;
+    for (int i=0; i<size; i++)  value[i] =  (unsigned int) editSFFloat[i]->getIntValue();
     ff->setValue(value);
 }
 void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<2,double> > *ff)
@@ -3553,6 +4010,33 @@ void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataFie
     for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getFloatValue();
     ff->setValue(value);
 }
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<2,int> > *ff)
+{
+    const int size=2;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, int> value;
+    for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getIntValue();
+    ff->setValue(value);
+}
+
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<2,unsigned int> > *ff)
+{
+    const int size=2;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, unsigned int> value;
+    for (int i=0; i<size; i++)  value[i] =  (unsigned int) editSFFloat[i]->getIntValue();
+    ff->setValue(value);
+}
 void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<1,double> > *ff)
 {
     const int size=1;
@@ -3577,6 +4061,33 @@ void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataFie
 
     Vec<size, float> value;
     for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getFloatValue();
+    ff->setValue(value);
+}
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<1,int> > *ff)
+{
+    const int size=1;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, int> value;
+    for (int i=0; i<size; i++)  value[i] =  editSFFloat[i]->getIntValue();
+    ff->setValue(value);
+}
+
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<1,unsigned int> > *ff)
+{
+    const int size=1;
+    WFloatLineEdit* editSFFloat[size];
+    for (int i=0; i<size; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<size, unsigned int> value;
+    for (int i=0; i<size; i++)  value[i] =  (unsigned int) editSFFloat[i]->getIntValue();
     ff->setValue(value);
 }
 

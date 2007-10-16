@@ -84,7 +84,7 @@ public:
     virtual int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz);
 
 protected:
-    DataField< float > xmin, xmax, ymin, ymax, zmin, zmax;
+    DataField< Vec3f > min, max;
     /// Position of point 0
     Vec3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other
