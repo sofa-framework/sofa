@@ -41,15 +41,22 @@ using std::endl;
 void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->GridTopology::parse(arg);
-    const char* xmin = arg->getAttribute("xmin","0");
-    const char* ymin = arg->getAttribute("ymin","0");
-    const char* zmin = arg->getAttribute("zmin","0");
-    const char* xmax = arg->getAttribute("xmax","1");
-    const char* ymax = arg->getAttribute("ymax","1");
-    const char* zmax = arg->getAttribute("zmax","1");
-
-    min.setValue(Vec3f(atof(xmin),atof(ymin),atof(zmin)));
-    max.setValue(Vec3f(atof(xmax),atof(ymax),atof(zmax)));
+    const char* xmin = arg->getAttribute("xmin");
+    const char* ymin = arg->getAttribute("ymin");
+    const char* zmin = arg->getAttribute("zmin");
+    const char* xmax = arg->getAttribute("xmax");
+    const char* ymax = arg->getAttribute("ymax");
+    const char* zmax = arg->getAttribute("zmax");
+    if (arg->getAttribute("xmin") != NULL &&
+        arg->getAttribute("ymin") != NULL &&
+        arg->getAttribute("zmin") != NULL &&
+        arg->getAttribute("xmax") != NULL &&
+        arg->getAttribute("ymax") != NULL &&
+        arg->getAttribute("zmax") != NULL )
+    {
+        min.setValue(Vec3f(atof(xmin),atof(ymin),atof(zmin)));
+        max.setValue(Vec3f(atof(xmax),atof(ymax),atof(zmax)));
+    }
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 }
 

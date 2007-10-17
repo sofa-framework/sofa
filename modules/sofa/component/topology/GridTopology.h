@@ -51,10 +51,14 @@ public:
     {
         this->MeshTopology::parse(arg);
 
-        const char* nx = arg->getAttribute("nx","1");
-        const char* ny = arg->getAttribute("ny","1");
-        const char* nz = arg->getAttribute("nz","1");
-        n.setValue(Vec<3,int>(atoi(nx),atoi(ny),atoi(nz)));
+
+        if (arg->getAttribute("nx")!=NULL && arg->getAttribute("ny")!=NULL && arg->getAttribute("nz")!=NULL )
+        {
+            const char* nx = arg->getAttribute("nx");
+            const char* ny = arg->getAttribute("ny");
+            const char* nz = arg->getAttribute("nz");
+            n.setValue(Vec<3,int>(atoi(nx),atoi(ny),atoi(nz)));
+        }
 
         this->setSize();
     }
