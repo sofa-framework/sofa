@@ -2,7 +2,7 @@
 	<Object type="CollisionPipeline" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="NewProximityIntersection" name="Proximity" alarmDistance="0.3" contactDistance="0.2" />
-	<Object type="CollisionResponse" name="Response" contact="default" />
+	<Object type="CollisionResponse" name="Response" response="default" />
 	<Node name="Chain">
 		<Node name="TorusFixed">
 			<Object type="Mesh" filename="CollisionModels/torus2_for_collision.obj" />

@@ -4,7 +4,7 @@
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="VoxelGridDetection" name="Voxel" min="-40" max="40" n="8" draw="0" />
 	<Object type="MinProximityIntersection" name="Proximity" alarmDistance="1.0" contactDistance="0.5" />
-	<Object type="CollisionResponse" name="Response" contact="default" />
+	<Object type="CollisionResponse" name="Response" response="default" />
 	<Node name="Poutre1">
 		<Object type="CGImplicit" iterations="10"/>
 		<Node name="M1">

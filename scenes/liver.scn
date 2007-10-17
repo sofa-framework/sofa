@@ -3,7 +3,7 @@
 	<Object type="CollisionPipeline" verbose="0" />
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="VoxelGridDetection" name="Voxel" min="-40" max="40" n="8" draw="0" />
-	<Object type="CollisionResponse" contact="default" />
+	<Object type="CollisionResponse" response="default" />
 	<!--<Object type="CollisionGroup" />-->
 	<Node name="Liver">
 		<Object type="CGImplicit" iterations="25"/>

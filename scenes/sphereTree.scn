@@ -7,7 +7,7 @@
 	<!-- Required for a MechanicalObject" template="Rigid -->
 	<Object type="TestDetection" name="TestDetection" />
 
-	<Object type="CollisionResponse" name="Response" contact="default" />
+	<Object type="CollisionResponse" name="Response" response="default" />
 	
 	<Node name="lamp1">
 		<Object type="CGImplicit" iterations="50"/>

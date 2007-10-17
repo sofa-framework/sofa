@@ -2,7 +2,7 @@
     <Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
     <Object type="BruteForceDetection" name="N2" />
     <Object type="MinProximityIntersection" name="Proximity" alarmDistance="0.03" contactDistance="0.02" />
-    <Object type="CollisionResponse" name="Response" contact="default" />
+    <Object type="CollisionResponse" name="Response" response="default" />
     <Object type="CollisionGroup" name="Group" />
    <Node name="beam">
       <Object type="CGImplicit" threshold="0.000000001" tolerance="0.0000000001" rayleighStiffness="0" />
