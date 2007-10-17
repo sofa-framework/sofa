@@ -675,12 +675,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     const typename DataTypes::Coord& c1=p[t[1]];
     const typename DataTypes::Coord& c2=p[t[2]];
 
-    const Vec<3,Real> &p0 = (Vec<3,Real>) (c0[0],c0[1],c0[2]);
-    const Vec<3,Real> &p1 = (Vec<3,Real>) (c1[0],c1[1],c1[2]);
-    const Vec<3,Real> &p2 = (Vec<3,Real>) (c2[0],c2[1],c2[2]);
+    const Vec<3,Real> p0 (c0[0],c0[1],c0[2]);
+    const Vec<3,Real> p1 (c1[0],c1[1],c1[2]);
+    const Vec<3,Real> p2 (c2[0],c2[1],c2[2]);
 
-    const Vec<3,Real> &pa = (Vec<3,Real>) (a[0],a[1],a[2]);
-    const Vec<3,Real> &pb = (Vec<3,Real>) (b[0],b[1],b[2]);
+    const Vec<3,Real> pa (a[0],a[1],a[2]);
+    const Vec<3,Real> pb (b[0],b[1],b[2]);
 
 
     Vec<3,Real> v_normal = crossProduct(p2-p0,p1-p0);
