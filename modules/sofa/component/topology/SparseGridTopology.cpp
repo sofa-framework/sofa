@@ -110,18 +110,32 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
                     if( vertices[w][2] > zmax.getValue() ) zmax.setValue( vertices[w][2] );
                     else if( vertices[w][2] < zmin.getValue() ) zmin.setValue( vertices[w][2] );
                 }
+
+                // increase the box a little
+                Vec3 diff ( fabs(xmax.getValue()-xmin.getValue()), fabs(ymax.getValue()-ymin.getValue()),fabs(zmax.getValue()-zmin.getValue()) );
+                diff /= 100.0;
+                xmax.setValue( xmax.getValue() + diff[0] );
+                xmin.setValue( xmin.getValue() - diff[0] );
+                ymax.setValue( ymax.getValue() + diff[1] );
+                ymin.setValue( ymin.getValue() - diff[1] );
+                zmax.setValue( zmax.getValue() + diff[2] );
+                zmin.setValue( zmin.getValue() - diff[2] );
             }
 
 
-            RegularGridTopology regularGrid;
-            regularGrid.setSize(getNx(),getNy(),getNz());
-            regularGrid.setPos(xmin.getValue(), xmax.getValue(), ymin.getValue(), ymax.getValue(), zmin.getValue(), zmax.getValue());
+
+            _regularGrid.setSize(getNx(),getNy(),getNz());
+            _regularGrid.setPos(xmin.getValue(), xmax.getValue(), ymin.getValue(), ymax.getValue(), zmin.getValue(), zmax.getValue());
 
 
-            // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
-            vector<Type> regularGridTypes(regularGrid.getNbCubes());
-            for(int w=0; w<regularGrid.getNbCubes(); ++w)
-                regularGridTypes[w]=INSIDE;
+
+            vector<Type> _regularGridTypes(_regularGrid.getNbCubes()); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
+            _indicesOfRegularCubeInSparseGrid.resize( _regularGrid.getNbCubes() ); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
+            for(int w=0; w<_regularGrid.getNbCubes(); ++w)
+            {
+                _regularGridTypes[w]=INSIDE;
+                _indicesOfRegularCubeInSparseGrid[w] = -1;
+            }
 
             // find all initial mesh edges to compute intersection with cubes
             const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
@@ -141,12 +155,13 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
             vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
 // 			MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
 
-            for(int i=0; i<regularGrid.getNbCubes(); ++i) // all possible cubes (even empty)
+            for(int i=0; i<_regularGrid.getNbCubes(); ++i) // all possible cubes (even empty)
             {
-                Cube c = regularGrid.getCube(i);
+                Cube c = _regularGrid.getCube(i);
                 CubeCorners corners;
                 for(int j=0; j<8; ++j)
-                    corners[j] = regularGrid.getPoint( c[j] );
+                    corners[j] = _regularGrid.getPoint( c[j] );
+
                 CubeForIntersection cubeForIntersection( corners );
 
                 for(std::set< SegmentForIntersection,ltSegmentForIntersection >::iterator it=segmentsForIntersection.begin(); it!=segmentsForIntersection.end(); ++it)
@@ -154,12 +169,13 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
                     if(intersectionSegmentBox( *it, cubeForIntersection ))
                     {
                         _types.push_back(BOUNDARY);
-                        regularGridTypes[i]=BOUNDARY;
+                        _regularGridTypes[i]=BOUNDARY;
 
                         for(int k=0; k<8; ++k)
                             cubeCornerPositionIndiceMap[corners[k]] = 0;
 
                         cubeCorners.push_back(corners);
+                        _indicesOfRegularCubeInSparseGrid[i] = cubeCorners.size()-1;
 
                         break;
                     }
@@ -169,43 +185,43 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
 
             // TODO: regarder les cellules pleines, et les ajouter
 
-            vector<bool> alreadyTested(regularGrid.getNbCubes());
-            for(int w=0; w<regularGrid.getNbCubes(); ++w)
+            vector<bool> alreadyTested(_regularGrid.getNbCubes());
+            for(int w=0; w<_regularGrid.getNbCubes(); ++w)
                 alreadyTested[w]=false;
 
             // x==0 and x=nx-2
-            for(int y=0; y<regularGrid.getNy()-1; ++y)
-                for(int z=0; z<regularGrid.getNz()-1; ++z)
+            for(int y=0; y<_regularGrid.getNy()-1; ++y)
+                for(int z=0; z<_regularGrid.getNz()-1; ++z)
                 {
-                    propagateFrom( 0, y, z, regularGrid, regularGridTypes, alreadyTested );
-                    propagateFrom( regularGrid.getNx()-2, y, z, regularGrid, regularGridTypes, alreadyTested );
+                    propagateFrom( 0, y, z, _regularGrid, _regularGridTypes, alreadyTested );
+                    propagateFrom( _regularGrid.getNx()-2, y, z, _regularGrid, _regularGridTypes, alreadyTested );
                 }
             // y==0 and y=ny-2
-            for(int x=0; x<regularGrid.getNx()-1; ++x)
-                for(int z=0; z<regularGrid.getNz()-1; ++z)
+            for(int x=0; x<_regularGrid.getNx()-1; ++x)
+                for(int z=0; z<_regularGrid.getNz()-1; ++z)
                 {
-                    propagateFrom( x, 0, z, regularGrid, regularGridTypes, alreadyTested );
-                    propagateFrom( x, regularGrid.getNy()-2, z, regularGrid, regularGridTypes, alreadyTested );
+                    propagateFrom( x, 0, z, _regularGrid, _regularGridTypes, alreadyTested );
+                    propagateFrom( x, _regularGrid.getNy()-2, z, _regularGrid, _regularGridTypes, alreadyTested );
                 }
             // z==0 and z==Nz-2
-            for(int y=0; y<regularGrid.getNy()-1; ++y)
-                for(int x=0; x<regularGrid.getNx()-1; ++x)
+            for(int y=0; y<_regularGrid.getNy()-1; ++y)
+                for(int x=0; x<_regularGrid.getNx()-1; ++x)
                 {
-                    propagateFrom( x, y, 0, regularGrid, regularGridTypes, alreadyTested );
-                    propagateFrom( x, y, regularGrid.getNz()-2, regularGrid, regularGridTypes, alreadyTested );
+                    propagateFrom( x, y, 0, _regularGrid, _regularGridTypes, alreadyTested );
+                    propagateFrom( x, y, _regularGrid.getNz()-2, _regularGrid, _regularGridTypes, alreadyTested );
                 }
 
             // add INSIDE cubes to valid cells
-            for(int w=0; w<regularGrid.getNbCubes(); ++w)
-                if( regularGridTypes[w] == INSIDE )
+            for(int w=0; w<_regularGrid.getNbCubes(); ++w)
+                if( _regularGridTypes[w] == INSIDE )
                 {
                     _types.push_back(INSIDE);
 
-                    Cube c = regularGrid.getCube(w);
+                    Cube c = _regularGrid.getCube(w);
                     CubeCorners corners;
                     for(int j=0; j<8; ++j)
                     {
-                        corners[j] = regularGrid.getPoint( c[j] );
+                        corners[j] = _regularGrid.getPoint( c[j] );
                         cubeCornerPositionIndiceMap[corners[j]] = 0;
                     }
 
@@ -232,10 +248,38 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
             }
 
             delete mesh;
+
+
+
+
+// 		  for(unsigned i=0;i<seqCubes.size();++i)
+// 		  {
+// 			  Cube c = seqCubes[i];
+// 			  for(int w=0;w<8;++w)
+// 			  {
+// 				  cerr<<"sparse w : "<<c[w]<<"    "<<seqPoints[c[w]]<<endl;
+// 			  }
+// 			  cerr<<"------\n";
+// 			  c = _regularGrid.getCube( i );
+// 			  for(int w=0;w<8;++w)
+// 			  {
+// 				  cerr<<"regular w : "<<c[w]<<"    "<<_regularGrid.getPoint( c[w] )<<endl;
+// 			  }
+// 			  cerr<<"------\n";
+// 		  }
+
+
+
+
         }
         else
             std::cerr << "SparseGridTopology: loading mesh "<<filename.getValue()<<" failed."<<std::endl;
     }
+
+
+
+
+
 
 
 }
@@ -248,6 +292,36 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
 ///////////////////////////////////////////
 
 
+
+
+/// return the cube containing the given point (or -1 if not found),
+/// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
+int SparseGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double &fz)
+{
+    int indiceInRegularGrid = _regularGrid.findCube( pos,fx,fy,fz);
+    if( indiceInRegularGrid == -1 )
+        return -1;
+    else
+        return _indicesOfRegularCubeInSparseGrid[indiceInRegularGrid];
+}
+
+/// return the cube containing the given point (or -1 if not found),
+/// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
+int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz)
+{
+    int indiceInRegularGrid =  _indicesOfRegularCubeInSparseGrid[_regularGrid.findNearestCube( pos,fx,fy,fz)];
+    if( indiceInRegularGrid == -1 )
+        return -1;
+    else
+        return _indicesOfRegularCubeInSparseGrid[indiceInRegularGrid];
+}
+
+
+
+
+///////////////////////////////////////////
+///////////////////////////////////////////
+///////////////////////////////////////////
 
 
 
@@ -386,24 +460,24 @@ bool SparseGridTopology::intersectionSegmentBox( const SegmentForIntersection& s
 }
 
 
-void SparseGridTopology::propagateFrom( const int i, const int j, const int k,  RegularGridTopology& regularGrid, vector<Type>& regularGridTypes, vector<bool>& alreadyTested  )
+void SparseGridTopology::propagateFrom( const int i, const int j, const int k,  RegularGridTopology& _regularGrid, vector<Type>& _regularGridTypes, vector<bool>& alreadyTested  )
 {
-    assert( i>=0 && i<=regularGrid.getNx()-2 && j>=0 && j<=regularGrid.getNy()-2 && k>=0 && k<=regularGrid.getNz()-2 );
+    assert( i>=0 && i<=_regularGrid.getNx()-2 && j>=0 && j<=_regularGrid.getNy()-2 && k>=0 && k<=_regularGrid.getNz()-2 );
 
-    unsigned indice = regularGrid.cube( i, j, k );
+    unsigned indice = _regularGrid.cube( i, j, k );
 
-    if( alreadyTested[indice] || regularGridTypes[indice] == BOUNDARY )
+    if( alreadyTested[indice] || _regularGridTypes[indice] == BOUNDARY )
         return;
 
     alreadyTested[indice] = true;
-    regularGridTypes[indice] = OUTSIDE;
+    _regularGridTypes[indice] = OUTSIDE;
 
-    if(i>0) propagateFrom( i-1, j, k, regularGrid, regularGridTypes, alreadyTested );
-    if(i<regularGrid.getNx()-2) propagateFrom( i+1, j, k, regularGrid, regularGridTypes, alreadyTested );
-    if(j>0) propagateFrom( i, j-1, k, regularGrid, regularGridTypes, alreadyTested );
-    if(j<regularGrid.getNy()-2) propagateFrom( i, j+1, k, regularGrid, regularGridTypes, alreadyTested );
-    if(k>0) propagateFrom( i, j, k-1, regularGrid, regularGridTypes, alreadyTested );
-    if(k<regularGrid.getNz()-2) propagateFrom( i, j, k+1, regularGrid, regularGridTypes, alreadyTested );
+    if(i>0) propagateFrom( i-1, j, k, _regularGrid, _regularGridTypes, alreadyTested );
+    if(i<_regularGrid.getNx()-2) propagateFrom( i+1, j, k, _regularGrid, _regularGridTypes, alreadyTested );
+    if(j>0) propagateFrom( i, j-1, k, _regularGrid, _regularGridTypes, alreadyTested );
+    if(j<_regularGrid.getNy()-2) propagateFrom( i, j+1, k, _regularGrid, _regularGridTypes, alreadyTested );
+    if(k>0) propagateFrom( i, j, k-1, _regularGrid, _regularGridTypes, alreadyTested );
+    if(k<_regularGrid.getNz()-2) propagateFrom( i, j, k+1, _regularGrid, _regularGridTypes, alreadyTested );
 }
 
 

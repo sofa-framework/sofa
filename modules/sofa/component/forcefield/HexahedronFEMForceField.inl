@@ -73,6 +73,7 @@ using namespace sofa::defaulttype;
 
 
 template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,1,3,2,4,5,7,6};
+// template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,4,6,2,1,5,7,3};
 
 
 template<class DataTypes>
@@ -114,6 +115,25 @@ void HexahedronFEMForceField<DataTypes>::init()
     // 	_stiffnesses.resize( _initialPoints.getValue().size()*3 ); // assembly ?
 
     reinit();
+
+
+// 	unsigned int i=0;
+// 	typename VecElement::const_iterator it;
+// 	for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+// 	{
+// 		Element c = *it;
+// 		for(int w=0;w<8;++w)
+// 		{
+// 			cerr<<"sparse w : "<<c[w]<<"    "<<_initialPoints.getValue()[c[w]]<<endl;
+// 		}
+// 		cerr<<"------\n";
+// 	}
+
+
+
+
+
+
 }
 
 
@@ -236,15 +256,21 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes)
 {
     Mat33 J_1; // only accurate for orthogonal regular hexa
-// 	m_assign( J_1, 0.0 );
-    Coord l = nodes[6] - nodes[0];
-    J_1[0][0]=2.0f / l[0];
-    J_1[1][1]=2.0f / l[1];
-    J_1[2][2]=2.0f / l[2];
+// 	J_1.fill( 0.0 );
+// 	Coord l = nodes[6] - nodes[0];
+// 	J_1[0][0]=2.0f / l[0];
+// 	J_1[1][1]=2.0f / l[1];
+// 	J_1[2][2]=2.0f / l[2];
 
 
-    Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
-// 	Real vol_8 = 1.0 / 8.0;
+    J_1[0][0]= 1;
+    J_1[1][1]= 1;
+    J_1[2][2]= 1;
+
+    //TODO: prendre en compte le jacobien, pourquoi ca ne marche pas ??????
+
+    Real vol = ((nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm());
+    vol /= 8.0; // juste 1/
 
     K.clear();
 

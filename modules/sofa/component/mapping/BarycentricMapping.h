@@ -30,6 +30,7 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/topology/SparseGridTopology.h>
 #include <vector>
 
 
@@ -148,6 +149,53 @@ public:
     }
 
 };
+
+/// Class allowing barycentric mapping computation on a SparseGridTopology
+template<class In, class Out>
+class TopologyBarycentricMapper<topology::SparseGridTopology, In, Out> : public BarycentricMapper<In,Out>
+{
+public:
+    typedef BarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::CubeData CubeData;
+protected:
+    sofa::helper::vector<CubeData> map;
+    topology::SparseGridTopology* topology;
+public:
+    TopologyBarycentricMapper(topology::SparseGridTopology* topology) : topology(topology)
+    {}
+
+    bool empty() const {return map.size()==0;}
+
+    void setTopology( topology::SparseGridTopology* t ) { topology = t; }
+
+    void clear(int reserve=0);
+
+    int addPointInCube(int cubeIndex, const Real* baryCoords);
+
+    void init();
+
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::SparseGridTopology, In, Out> &b )
+    {
+        in >> b.map;
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::SparseGridTopology, In, Out> & b )
+    {
+        out << b.map;
+        return out;
+    }
+
+};
+
 
 /// Class allowing barycentric mapping computation on a MeshTopology
 template<class In, class Out>
@@ -277,21 +325,25 @@ protected:
     typedef BarycentricMapper<InDataTypes,OutDataTypes> Mapper;
     typedef TopologyBarycentricMapper<topology::MeshTopology, InDataTypes, OutDataTypes> MeshMapper;
     typedef TopologyBarycentricMapper<topology::RegularGridTopology, InDataTypes, OutDataTypes> RegularGridMapper;
+    typedef TopologyBarycentricMapper<topology::SparseGridTopology, InDataTypes, OutDataTypes> SparseGridMapper;
 
     Mapper* mapper;
     Field< RegularGridMapper >* f_grid;
+    Field< SparseGridMapper >* f_sparsegrid;
     Field< MeshMapper >*        f_mesh;
     void calcMap(topology::RegularGridTopology* topo);
-
+    void calcMap(topology::SparseGridTopology* topo);
     void calcMap(topology::MeshTopology* topo);
 
 public:
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL),
           f_grid (new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping")),
+          f_sparsegrid (new Field< SparseGridMapper >( new SparseGridMapper( NULL ),"Sparse Grid Mapping")),
           f_mesh (new Field< MeshMapper >       ( new MeshMapper( NULL ),"Mesh Mapping"))
     {
         this->addField( f_grid, "gridmap");	f_grid->beginEdit();
+        this->addField( f_sparsegrid, "sparsegridmap");	f_sparsegrid->beginEdit();
         this->addField( f_mesh, "meshmap");	f_mesh->beginEdit();
     }
 
@@ -305,6 +357,14 @@ public:
             f_grid = new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping");
 
         this->addField( f_grid, "gridmap");	f_grid->beginEdit();
+
+        //Sparse Grid Case
+        if (SparseGridMapper* m = dynamic_cast< SparseGridMapper* >(mapper))
+            f_sparsegrid = new Field< SparseGridMapper >( m,"Sparse Grid Mapping");
+        else
+            f_sparsegrid = new Field< SparseGridMapper >( new SparseGridMapper( NULL ),"Sparse Grid Mapping");
+
+        this->addField( f_sparsegrid, "sparsegridmap");	f_sparsegrid->beginEdit();
 
         //Mesh Case
         if (MeshMapper* m = dynamic_cast< MeshMapper* >(mapper))

@@ -200,7 +200,29 @@ template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
     HexahedronFEMForceField::addForce(f,x,v);
-//         Mass::addForce(f,x,v);
+
+
+    // TODO: compute real gravity force
+    Real masse = .1;
+
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set ( theGravity, g[0], g[1], g[2]);
+
+    // velocity-based stuff
+    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
+    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
+
+    // project back to local frame
+    vframe = this->getContext()->getPositionInWorld() / vframe;
+    aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
+
+    // add weight and inertia force
+    for (unsigned int i=0; i<f.size(); i++)
+    {
+        f[i] += theGravity*masse + core::componentmodel::behavior::inertiaForce(vframe,aframe,masse,x[i],v[i]);
+    }
 }
 
 

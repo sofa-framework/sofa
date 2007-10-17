@@ -98,6 +98,16 @@ template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3fTyp
 template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3dTypes, ExtVec3fTypes >;
 template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3fTypes, ExtVec3dTypes >;
 
+// SparseGridMapper
+template class TopologyBarycentricMapper<topology::SparseGridTopology, Vec3dTypes, Vec3dTypes >;
+template class TopologyBarycentricMapper<topology::SparseGridTopology, Vec3fTypes, Vec3fTypes >;
+template class TopologyBarycentricMapper<topology::SparseGridTopology, Vec3dTypes, Vec3fTypes >;
+template class TopologyBarycentricMapper<topology::SparseGridTopology, Vec3fTypes, Vec3dTypes >;
+template class TopologyBarycentricMapper<topology::SparseGridTopology, Vec3dTypes, ExtVec3dTypes >;
+template class TopologyBarycentricMapper<topology::SparseGridTopology, Vec3fTypes, ExtVec3fTypes >;
+template class TopologyBarycentricMapper<topology::SparseGridTopology, Vec3dTypes, ExtVec3fTypes >;
+template class TopologyBarycentricMapper<topology::SparseGridTopology, Vec3fTypes, ExtVec3dTypes >;
+
 } // namespace mapping
 
 } // namespace component

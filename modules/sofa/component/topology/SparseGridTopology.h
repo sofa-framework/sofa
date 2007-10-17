@@ -44,7 +44,8 @@ using namespace sofa::defaulttype;
 
 /** A sparse grid topology. Like a sparse FFD building from the bounding box of the object. Starting from a RegularGrid, only valid cells containing matter (ie intersecting the original surface mesh or totally inside the object) are considered.
 Valid cells are tagged by a Type BOUNDARY or INSIDE
- */
+WARNING: the corresponding node in the XML file has to be placed BEFORE the MechanicalObject node, in order to excute its init() before the MechanicalObject one in order to be able to give dofs
+   */
 class SparseGridTopology : public MeshTopology
 {
 public:
@@ -83,6 +84,14 @@ public:
 
     bool hasPos()  const { return true; }
 
+    /// return the cube containing the given point (or -1 if not found),
+    /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
+    virtual int findCube(const Vec3& pos, double& fx, double &fy, double &fz);
+
+    /// return the cube containing the given point (or -1 if not found),
+    /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
+    virtual int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz);
+
 protected:
 
     DataField<int> nx;
@@ -104,7 +113,8 @@ protected:
     void updateCubes();
 
 
-
+    RegularGridTopology _regularGrid;
+    vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
 
 
     std::vector<Type> _types; ///< BOUNDARY or FULL filled cells
