@@ -35,11 +35,9 @@
 #include "sofa/component/MechanicalObject.h"
 #include "sofa/defaulttype/RigidTypes.h"
 #include "sofa/defaulttype/Quat.h"
-using namespace sofa::defaulttype;
 
 
 #include <map>
-using namespace std;
 
 
 namespace sofa
@@ -51,6 +49,8 @@ namespace filemanager
 namespace pml
 {
 
+using namespace sofa::defaulttype;
+using namespace std;
 
 class PMLRigidBody: public PMLBody
 {

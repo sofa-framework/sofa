@@ -44,8 +44,6 @@ namespace componentmodel
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 class Contact : public virtual objectmodel::BaseObject
 {
 public:

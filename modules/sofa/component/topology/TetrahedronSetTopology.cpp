@@ -144,7 +144,7 @@ void TetrahedronSetTopologyContainer::createTetrahedronTriangleArray ()
                 v[0]=t[(j+1)%4]; v[1]=t[(j+2)%4]; v[2]=t[(j+3)%4];
                 std::sort(v,v+2);
                 // sort vertices in lexicographics order
-                tr=make_array<unsigned int>(v[0],v[1],v[2]);
+                tr=helper::make_array<unsigned int>(v[0],v[1],v[2]);
                 itt=triangleMap.find(tr);
                 if (itt==triangleMap.end())
                 {

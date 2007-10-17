@@ -4,7 +4,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/component/MechanicalObject.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa
@@ -33,9 +33,9 @@ public:
         typedef typename DataTypes::Real Real;
         typedef Real Coord;
         typedef Real Deriv;
-        typedef ::vector<Real> VecReal;
-        typedef ::vector<Coord> VecCoord;
-        typedef ::vector<Deriv> VecDeriv;
+        typedef helper::vector<Real> VecReal;
+        typedef helper::vector<Coord> VecCoord;
+        typedef helper::vector<Deriv> VecDeriv;
 
         template <class T>
         class SparseData
@@ -49,11 +49,11 @@ public:
         typedef SparseData<Coord> SparseCoord;
         typedef SparseData<Deriv> SparseDeriv;
 
-        typedef ::vector<SparseCoord> SparseVecCoord;
-        typedef ::vector<SparseDeriv> SparseVecDeriv;
+        typedef helper::vector<SparseCoord> SparseVecCoord;
+        typedef helper::vector<SparseDeriv> SparseVecDeriv;
 
         //! All the Constraints applied to a state Vector
-        typedef	::vector<SparseVecDeriv> VecConst;
+        typedef	helper::vector<SparseVecDeriv> VecConst;
 
 
         static void set(Coord& c, double x, double , double )

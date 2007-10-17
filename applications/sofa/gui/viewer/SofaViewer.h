@@ -40,9 +40,9 @@ namespace gui
 namespace viewer
 {
 
-using namespace sofa::simulation::automatescheduler;
+//      using namespace sofa::simulation::automatescheduler;
 
-class SofaViewer : public Automate::DrawCB
+class SofaViewer : public sofa::simulation::automatescheduler::Automate::DrawCB
 {
 
 public:

@@ -29,7 +29,6 @@
 #include "PMLBody.h"
 
 #include <map>
-using namespace std;
 
 
 namespace sofa
@@ -40,6 +39,7 @@ namespace filemanager
 
 namespace pml
 {
+using namespace std;
 
 class PMLMappedBody: public PMLBody
 {

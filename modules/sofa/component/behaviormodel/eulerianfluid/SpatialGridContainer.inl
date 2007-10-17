@@ -53,6 +53,8 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
+using namespace sofa::helper;
+
 template<class DataTypes>
 typename SpatialGridContainer<DataTypes>::Grid SpatialGridContainer<DataTypes>::emptyGrid;
 

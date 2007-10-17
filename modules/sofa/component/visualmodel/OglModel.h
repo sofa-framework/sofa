@@ -49,8 +49,6 @@ namespace component
 namespace visualmodel
 {
 
-using namespace sofa::defaulttype;
-
 class OglModel : public VisualModelImpl
 {
 private:
@@ -70,8 +68,8 @@ public:
     void initTextures();
 };
 
-typedef Vec<3,GLfloat> GLVec3f;
-typedef ExtVectorTypes<GLVec3f,GLVec3f> GLExtVec3fTypes;
+typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;
+typedef sofa::defaulttype::ExtVectorTypes<GLVec3f,GLVec3f> GLExtVec3fTypes;
 
 } // namespace visualmodel
 

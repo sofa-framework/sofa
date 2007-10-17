@@ -185,7 +185,7 @@ protected :
     void applyStiffnessSmall( VecCoord& f, Real h, const VecCoord& x );
 
     ////////////// large displacements method
-    std::vector< fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
+    std::vector< helper::fixed_array <Coord, 3> > _rotatedInitialElements;   ///< The initials positions in its frame
     std::vector< Transformation > _rotations;
     void initLarge();
     void computeRotationLarge( Transformation &r, const VecCoord &p, const Index &a, const Index &b, const Index &c);

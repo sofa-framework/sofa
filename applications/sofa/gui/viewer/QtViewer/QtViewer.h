@@ -43,7 +43,6 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/component/collision/RayPickInteractor.h>
 #include <sofa/simulation/tree/xml/Element.h>
-#include <sofa/simulation/automatescheduler/Automate.h>
 
 namespace sofa
 {
@@ -54,14 +53,15 @@ namespace gui
 namespace qt
 {
 
-using namespace sofa::defaulttype;
+//using namespace sofa::defaulttype;
+using sofa::defaulttype::Vector3;
+using sofa::defaulttype::Quaternion;
 using namespace sofa::helper::gl;
 using namespace sofa::helper::system::thread;
-using namespace sofa::simulation::automatescheduler;
 using namespace sofa::component::collision;
 
 
-class QtViewer :public QGLWidget,  public sofa::gui::viewer::SofaViewer//public Automate::DrawCB
+class QtViewer :public QGLWidget,  public sofa::gui::viewer::SofaViewer
 {
     Q_OBJECT
 

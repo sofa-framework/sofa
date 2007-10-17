@@ -39,9 +39,9 @@ namespace topology
 {
 
 /// defining Triangles as 3 DOFs indices
-typedef fixed_array<unsigned int,3> Triangle;
+typedef helper::fixed_array<unsigned int,3> Triangle;
 /// defining TriangleEdges as 3 Edge indices
-typedef fixed_array<unsigned int,3> TriangleEdges;
+typedef helper::fixed_array<unsigned int,3> TriangleEdges;
 
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses

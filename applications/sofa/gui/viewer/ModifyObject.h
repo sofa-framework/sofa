@@ -54,6 +54,9 @@ namespace gui
 namespace guiviewer
 {
 
+using sofa::helper::Quater;
+using sofa::defaulttype::Vec;
+
 #ifndef QT_MODULE_QT3SUPPORT
 typedef QListViewItem Q3ListViewItem;
 typedef QTable    Q3Table;

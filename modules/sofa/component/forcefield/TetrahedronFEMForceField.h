@@ -213,7 +213,7 @@ protected:
     void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
 
     ////////////// large displacements method
-    vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
+    vector<helper::fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
     vector<Transformation> _rotations;
     void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);

@@ -79,6 +79,7 @@ using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
+using namespace sofa::simulation::automatescheduler;
 using sofa::simulation::tree::getSimulation;
 
 //extern UserInterface*	GUI;

@@ -61,7 +61,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    typedef vector<MassType> VecMass;
+    typedef helper::vector<MassType> VecMass;
 
 
     DataField< VecMass > f_mass;

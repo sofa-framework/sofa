@@ -47,7 +47,7 @@ public:
     virtual void addTriangle(int p1, int p2, int p3)
     {
         //unsigned int p[3];p[0]=(unsigned int) p1;p[1]=(unsigned int) p2;p[2]=(unsigned int) p;
-        tstm->addTriangle(Triangle(make_array<unsigned int>((unsigned int)p1,(unsigned int)p2,(unsigned int) p3)));
+        tstm->addTriangle(Triangle(helper::make_array<unsigned int>((unsigned int)p1,(unsigned int)p2,(unsigned int) p3)));
     }
 };
 template<class DataTypes>

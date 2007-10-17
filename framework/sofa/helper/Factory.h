@@ -151,4 +151,7 @@ public:
 
 } // namespace sofa
 
+// Creator is often used without namespace qualifiers
+using sofa::helper::Creator;
+
 #endif

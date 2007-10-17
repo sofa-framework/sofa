@@ -30,7 +30,7 @@ public:
 
 public:
 
-    DataField<vector<unsigned> > points;
+    DataField< helper::vector<unsigned> > points;
     DataField<VecDeriv > forces;
 
     ConstantForceField();

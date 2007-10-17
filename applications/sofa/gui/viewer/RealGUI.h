@@ -26,9 +26,8 @@
 #define SOFA_GUI_VIEWER_REALGUI_H
 
 #ifdef SOFA_PML
-#include <sofa/filemanager/sofapml/PMLReader.h>
-#include <sofa/filemanager/sofapml/LMLReader.h>
-using namespace sofa::filemanager::pml;
+#  include <sofa/filemanager/sofapml/PMLReader.h>
+#  include <sofa/filemanager/sofapml/LMLReader.h>
 #endif
 
 
@@ -64,6 +63,9 @@ namespace guiviewer
 //enum TYPE{ NORMAL, PML, LML};
 
 using sofa::simulation::tree::GNode;
+#ifdef SOFA_PML
+using namespace sofa::filemanager::pml;
+#endif
 
 class RealGUI : public ::GUI, public SofaGUI
 {

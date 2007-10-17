@@ -36,13 +36,8 @@
 #include "sofa/component/collision/LineModel.h"
 #include "sofa/component/collision/PointModel.h"
 #include "sofa/component/forcefield/MeshSpringForceField.h"
-using namespace sofa::component::topology;
-using namespace sofa::component::collision;
-using namespace sofa::component::forcefield;
-
 
 #include <map>
-using namespace std;
 
 
 namespace sofa
@@ -53,6 +48,11 @@ namespace filemanager
 
 namespace pml
 {
+
+using namespace sofa::component::topology;
+using namespace sofa::component::collision;
+using namespace sofa::component::forcefield;
+using namespace std;
 
 class PMLStiffSpringForceField: public PMLBody
 {

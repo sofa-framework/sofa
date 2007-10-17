@@ -36,6 +36,7 @@ namespace constraint
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 SOFA_DECL_CLASS(FixedPlaneConstraint)
 

@@ -37,22 +37,13 @@
 #include "sofa/component/visualmodel/OglModel.h"
 #include "sofa/core/CollisionModel.h"
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
-using namespace sofa::core::componentmodel::topology;
-using namespace sofa::component::visualmodel;
-using namespace sofa::component;
 
 #include "sofa/defaulttype/Vec3Types.h"
-using namespace sofa::defaulttype;
 #include <sofa/simulation/tree/GNode.h>
-using namespace sofa::simulation::tree;
 
 //#include "sofa/component/StiffSpringForceField.h"
-//using namespace sofa::component;
 
 #include <map>
-using namespace std;
 
 
 namespace sofa
@@ -63,6 +54,14 @@ namespace filemanager
 
 namespace pml
 {
+using namespace sofa::core;
+using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::componentmodel::topology;
+using namespace sofa::component::visualmodel;
+using namespace sofa::component;
+using namespace sofa::defaulttype;
+using namespace sofa::simulation::tree;
+using namespace std;
 
 
 class PMLBody

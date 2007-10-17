@@ -229,7 +229,7 @@ protected:
 
 
     ////////////// large displacements method
-    vector<fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
+    vector<helper::fixed_array<Coord,8> > _rotatedInitialElements;   ///< The initials positions in its frame
     vector<Transformation> _rotations;
     void initLarge(int i, const Element&elem);
     void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);

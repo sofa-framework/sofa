@@ -52,6 +52,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/helper/io/Mesh.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/topology/PointData.h>
 #include <sofa/component/forcefield/SpringForceField.h>

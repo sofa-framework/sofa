@@ -39,11 +39,11 @@ namespace topology
 {
 
 /// defining Tetrahedra as 3 DOFs indices
-typedef fixed_array<unsigned int,4> Tetrahedron;
+typedef helper::fixed_array<unsigned int,4> Tetrahedron;
 /// defining TetrahedronTriangles as 4 Triangles indices
-typedef fixed_array<unsigned int,4> TetrahedronTriangles;
+typedef helper::fixed_array<unsigned int,4> TetrahedronTriangles;
 /// defining TetrahedronEdges as 6 Edge indices
-typedef fixed_array<unsigned int,6> TetrahedronEdges;
+typedef helper::fixed_array<unsigned int,6> TetrahedronEdges;
 
 
 

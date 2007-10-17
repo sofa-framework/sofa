@@ -41,8 +41,6 @@ namespace componentmodel
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-
 class ElementIntersector
 {
 protected:

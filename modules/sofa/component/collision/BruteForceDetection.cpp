@@ -52,6 +52,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 using namespace collision;
 
 SOFA_DECL_CLASS(BruteForce)

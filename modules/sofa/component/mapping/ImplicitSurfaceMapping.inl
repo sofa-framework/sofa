@@ -43,6 +43,7 @@ namespace mapping
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 template <class In, class Out>
 void ImplicitSurfaceMapping<In,Out>::parse(core::objectmodel::BaseObjectDescription* arg)

@@ -60,7 +60,7 @@ public:
     typedef typename DataTypes::Real Real;
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
-    typedef vector<MassType> MassVector;
+    typedef helper::vector<MassType> MassVector;
 
 
     typedef enum

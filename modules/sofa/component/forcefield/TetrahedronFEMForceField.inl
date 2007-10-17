@@ -796,7 +796,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const
     //cerr<<"R_0_2 large : "<<R_0_2<<endl;
 
     // positions of the deformed and displaced Tetrahedron in its frame
-    fixed_array<Coord,4> deforme;
+    helper::fixed_array<Coord,4> deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2*p[index[i]];
 
@@ -996,7 +996,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const
     _rotations[elementIndex].transpose( R_0_2 );
 
     // positions of the deformed and displaced Tetrahedre in its frame
-    fixed_array<Coord, 4>  deforme;
+    helper::fixed_array<Coord, 4>  deforme;
     for(int i=0; i<4; ++i)
         deforme[i] = R_0_2 * p[index[i]];
 

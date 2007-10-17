@@ -27,15 +27,12 @@
 #ifndef LMLREADER_H
 #define LMLREADER_H
 
-
 #include <Loads.h>
 #include <map>
 
 #include "sofa/core/componentmodel/behavior/MechanicalState.h"
 #include "sofa/defaulttype/Vec3Types.h"
-using namespace sofa::defaulttype;
 #include <sofa/simulation/tree/GNode.h>
-using namespace sofa::simulation::tree;
 
 namespace sofa
 {
@@ -45,6 +42,9 @@ namespace filemanager
 
 namespace pml
 {
+
+using namespace sofa::defaulttype;
+using namespace sofa::simulation::tree;
 
 class PMLReader;
 

@@ -15,6 +15,7 @@ namespace constraint
 SOFA_DECL_CLASS(LagrangianMultiplierContactConstraint)
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 
 template class LagrangianMultiplierContactConstraint<Vec3dTypes>;
 template class LagrangianMultiplierContactConstraint<Vec3fTypes>;

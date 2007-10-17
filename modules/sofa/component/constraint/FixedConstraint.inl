@@ -48,6 +48,7 @@ namespace constraint
 using namespace core::componentmodel::topology;
 
 using namespace sofa::defaulttype;
+using namespace sofa::helper;
 using namespace sofa::core::componentmodel::behavior;
 
 

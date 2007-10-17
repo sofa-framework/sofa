@@ -242,7 +242,7 @@ void LMLConstraint<DataTypes>::draw()
     for (std::vector<unsigned int>::const_iterator it = this->targets.begin(); it != this->targets.end(); ++it)
     {
         if ((*it2)[0]==0 && (*it2)[1]==0 && (*it2)[2]==0 )
-            gl::glVertexT(x[*it]);
+            helper::gl::glVertexT(x[*it]);
         it2++;
     }
     glEnd();
@@ -256,8 +256,8 @@ void LMLConstraint<DataTypes>::draw()
     {
         if ((*it2)[0]==1 || (*it2)[1]==1 || (*it2)[2]==1 )
         {
-            gl::glVertexT(x[*it]);
-            gl::glVertexT(x[*it]+*it3);
+            helper::gl::glVertexT(x[*it]);
+            helper::gl::glVertexT(x[*it]+*it3);
         }
         it3++;
         it2++;

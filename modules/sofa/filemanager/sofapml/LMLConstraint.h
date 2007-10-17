@@ -31,15 +31,12 @@
 #include "sofa/core/componentmodel/behavior/Constraint.h"
 #include "sofa/core/componentmodel/behavior/MechanicalState.h"
 #include "sofa/core/VisualModel.h"
-using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
 
 #include <vector>
 #include <map>
 
 #include <Loads.h>
 
-using namespace std;
 
 namespace sofa
 {
@@ -49,6 +46,10 @@ namespace filemanager
 
 namespace pml
 {
+
+using namespace sofa::core;
+using namespace sofa::core::componentmodel::behavior;
+using namespace std;
 
 template<class DataTypes>
 class LMLConstraint : public Constraint<DataTypes>, public VisualModel

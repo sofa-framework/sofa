@@ -17,6 +17,9 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace core::componentmodel::collision;
 using simulation::tree::GNode;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)

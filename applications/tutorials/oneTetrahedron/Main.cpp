@@ -33,7 +33,7 @@ typedef BarycentricMapping< Mapping< MyState, OglMappedModel > > MyMapping;
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    parse("This is a SOFA application.")
+    sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
 
     sofa::gui::SofaGUI::Init(argv[0]);

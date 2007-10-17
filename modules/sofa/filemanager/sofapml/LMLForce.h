@@ -32,12 +32,9 @@
 #include "sofa/core/componentmodel/behavior/ForceField.h"
 #include "sofa/core/componentmodel/behavior/MechanicalState.h"
 #include "sofa/core/VisualModel.h"
-using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
 
 #include <map>
 
-using namespace std;
 
 namespace sofa
 {
@@ -48,6 +45,9 @@ namespace filemanager
 namespace pml
 {
 
+using namespace sofa::core;
+using namespace sofa::core::componentmodel::behavior;
+using namespace std;
 
 template<class DataTypes>
 class LMLForce : public ForceField<DataTypes>, public VisualModel

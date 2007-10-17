@@ -10,6 +10,7 @@ namespace collision
 {
 
 using namespace defaulttype;
+using namespace sofa::helper;
 using simulation::tree::GNode;
 
 //unsigned int StaticCpt::staticCpt = 0;

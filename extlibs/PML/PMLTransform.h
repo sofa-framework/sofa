@@ -24,7 +24,7 @@
 
 #include <map>
 #include <vector>
-using namespace std;
+//using namespace std;
 
 class CellProperties;
 
@@ -80,7 +80,7 @@ public :
 
 	/// get the iterator on the correct atom index in the neighMap
 	/// if non existant create it
-	static map<unsigned int, Cell*>::iterator getIterator(unsigned int index);
+	static std::map<unsigned int, Cell*>::iterator getIterator(unsigned int index);
 
 	/// generate the neighborhoods
 	static StructuralComponent * generateNeighborhood(StructuralComponent *sc);

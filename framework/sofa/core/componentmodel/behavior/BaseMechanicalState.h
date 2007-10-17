@@ -28,7 +28,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <iostream>
 
-using namespace sofa::helper;
 
 namespace sofa
 {
