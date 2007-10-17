@@ -1,7 +1,6 @@
 <!-- Collision Response Test -->
 <Node name="root"  dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="1">
 	<Object type="CollisionPipeline" verbose="0" />
-	<Object type="VoxelGridDetection" name="Voxel" min="-40" max="40" n="8" draw="0" />
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="CollisionResponse" name="Response" response="default" />
 	<Node name="Poutre1">
