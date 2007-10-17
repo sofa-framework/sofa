@@ -1,3 +1,35 @@
+% ---- graphiques
+\usepackage[pdftex]{graphicx}
+\usepackage{html}
+
+% ---- inclusion de codes
+\usepackage{listings}
+\lstset{showstringspaces=false,frame=trBL,frameround=tttt,tabsize=4,basicstyle=\tiny,breaklines=true,breakatwhitespace=true}
+\lstdefinestyle{bash}{language=bash}
+\lstdefinestyle{Perl}{language=Perl}
+\lstdefinestyle{C++}{language=C++}
+\lstdefinestyle{DTD}{language=XML}
+\lstdefinestyle{XML}{language=XML,usekeywordsintag=false,markfirstintag=true}
+%begin{latexonly}
+\newcommand{\includecode}[2]{
+\lstinputlisting[style=#1]{#2}
+}
+%end{latexonly}
+\begin{htmlonly}
+\newcommand{\includecode}[2]{  \htmladdnormallink{#2}{../../#2} }
+\end{htmlonly}
+%\lstnewenvironment{code}{}{}
+\lstnewenvironment{code_bash}{\lstset{style=bash}}{}
+\lstnewenvironment{code_perl}{\lstset{style=Perl}}{}
+\lstnewenvironment{code_cpp}{\lstset{style=C++}}{}
+\lstnewenvironment{code_dtd}{\lstset{style=DTD}}{}
+\lstnewenvironment{code_xml}{\lstset{style=XML}}{}
+
+\newcommand{\textcode}[1]{{\small {\tt #1}}}
+
+
+
+
 \newcommand{\sofa}{SOFA }
 \newcommand{\todo}[1]{}
 \newcommand{\eg}{\textit{e.g.} }

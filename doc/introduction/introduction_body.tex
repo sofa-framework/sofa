@@ -98,7 +98,7 @@ The liver exhibits three different geometries for mechanics, rendering and colli
 The corresponding xml code is given in section~\ref{xml:liver}.
 \label{bla:liver}
 
-On top of the scene, collision-related components allow a user to interact with the collision models using rays casted from the mouse pointer and hitting collision models. Collision is discussed in section~\ref{sec:collision}.
+On top of the scene, collision-related components allow a user to interact with the collision models using rays casted from the mouse pointer and hitting collision models. %Collision is discussed in section~\ref{sec:collision}.
 
 The liver is modeled using three nodes, in two levels. The parent level contains the mechanical dofs (particle positions and velocities) in a \texttt{MechanicalObject} component. These dofs are the mechanically independent degrees of freedom of the object, in Lagrange's formalism. The node also contains components related to the dynamics of the particles, such as mass and internal forces. We call it the \textit{behavior model}.
 
@@ -136,27 +136,27 @@ repeat {
 \caption{Pseudocode for a standard simulation program.}
 \label{pc:animationloop}
 \end{figure}
-In \sofa, each of the simulation methods is implemented as a recursive graph traversal, \texttt{InitAction}, \texttt{AnimateAction} and \texttt{VisualDrawAction}, respectively. Actions are explained in the next section.
+In \sofa, each of the simulation methods is implemented as a recursive graph traversal, \texttt{InitVisitor}, \texttt{AnimateVisitor} and \texttt{VisualDrawVisitor}, respectively. Visitors are explained in the next section.
 
-\subsection{Actions}
-The data structure is processed using visitors called \emph{actions}. 
-They recursively traverse the tree structure and call appropriate virtual methods to a subset of components during the \textit{Top-Down Traversal} (TDT), using virtual method \texttt{Action::processNodeTopDown}, then during the \textit{Bottom-Up Traversal} (BUT), using virtual method \texttt{Action::processNodeBottomUp}. 
+\subsection{Visitors}
+The data structure is processed using visitors called \emph{visitors}. 
+They recursively traverse the tree structure and call appropriate virtual methods to a subset of components during the \textit{Top-Down Traversal} (TDT), using virtual method \texttt{Visitor::processNodeTopDown}, then during the \textit{Bottom-Up Traversal} (BUT), using virtual method \texttt{Visitor::processNodeBottomUp}. 
 
-For example, the \texttt{VisualDrawAction} draws the \texttt{VisualModel} components during the TDT, and does nothing during the BUT.
-The \texttt{MechanicalComputeForceAction} accumulates the forces in the appropriate dof vectors during the TDT, then propagates the forces to the parent dofs using the mechanical mappings during the BUT.
+For example, the \texttt{VisualDrawVisitor} draws the \texttt{VisualModel} components during the TDT, and does nothing during the BUT.
+The \texttt{MechanicalComputeForceVisitor} accumulates the forces in the appropriate dof vectors during the TDT, then propagates the forces to the parent dofs using the mechanical mappings during the BUT.
 
-When processed by an action $a$, a component can fire another action $b$ through its associated sub-tree. Action $a$ can continue once action $b$ is finished.
-During the TDT, each traversed component decides wether the calling action continues, or prunes the sub-tree associated with the component, or terminates.
+When processed by a visitor$a$, a component can fire another visitor $b$ through its associated sub-tree. Visitor $a$ can continue once visitor $b$ is finished.
+During the TDT, each traversed component decides wether the calling visitor continues, or prunes the sub-tree associated with the component, or terminates.
 
 The components directly access their sibling components only, except for the mappings.
-A component traversed by an action can indirectly access the data in its associated sub-tree in read-write mode using actions, whereas data in its parent graph is read-only and only partially accessible using method \texttt{getContext}.
-Sibling nodes of the same type can be traversed by actions in arbitrary order.
+A component traversed by a visitor can indirectly access the data in its associated sub-tree in read-write mode using visitors, whereas data in its parent graph is read-only and only partially accessible using method \texttt{getContext}.
+Sibling nodes of the same type can be traversed by visitors in arbitrary order.
 
-The actions belong to namespace \texttt{simulation::tree}.
+The visitors belong to namespace \texttt{simulation::tree}.
 
 \subsection{ODE Solvers}
-When an \texttt{AnimateAction} traverses a node with an \texttt{OdeSolver} component, 
-the solver takes the control of its associated subtree and prunes the \texttt{AnimateAction}. The solver triggers actions in its associated subtree to perform the standard mechanical computations and integrate time.
+When an \texttt{AnimateVisitor} traverses a node with an \texttt{OdeSolver} component, 
+the solver takes the control of its associated subtree and prunes the \texttt{AnimateVisitor}. The solver triggers visitors in its associated subtree to perform the standard mechanical computations and integrate time.
 
 The simplest solver is the explicit Euler method, implemented in \texttt{EulerSolver}. The algorithm is shown as pseudocode in figure~\ref{pc:expliciteuler}.
 \begin{figure}
@@ -183,29 +183,29 @@ The solvers represent state vectors as \texttt{MultiVector} objects using symbol
 There are four staticly predefined identificators: \texttt{VecId::position()}, \texttt{VecId::velocity()}, \texttt{VecId::force()} and \texttt{VecId::dx()}.
 A \texttt{Multivector} declared by a solver with a given VecId implicitly refers to all the state vectors in the different \texttt{MechanicalObject} components with the same \texttt{VecId} in the solver's subtree.
 
-Vector operations can be remotely triggered by a solver using an action of a given type, which defines the operator, and given \texttt{VecId}s, which define the operands.
+Vector operations can be remotely triggered by a solver using a visitor of a given type, which defines the operator, and given \texttt{VecId}s, which define the operands.
 During the subtree traversal, the operator is applied to the given vectors of the traversed \texttt{MechanicalObject} components.
 
-For example, let us comment the actions performed by the \texttt{EulerSolver} shown in figure~\ref{fig:mixedPendulum}. Its implementation is in method \texttt{component::odesolver::EulerSolver::solve(double)}.
+For example, let us comment the visitors performed by the \texttt{EulerSolver} shown in figure~\ref{fig:mixedPendulum}. Its implementation is in method \texttt{component::odesolver::EulerSolver::solve(double)}.
 First, multivectors are declared. 
 
-Then method \texttt{core::componentmodel::behavior::OdeSolver::computeForce(VecId)} is called. It first fires a \texttt{MechanicalResteForceAction} to reset the force vectors of all the \texttt{MechanicalObject} components. It then fires a  \texttt{MechanicalComputeForceAction}. During the TDT, each component derived from \texttt{core::componentmodel::behavior::BaseForceField} computes and accumulates its force in its sibling \texttt{MechanicalObject}. In the example shown in figure~\ref{fig:mixedPendulum}, \texttt{F13} adds its contribution to \texttt{Dof1} and \texttt{Dof2}, then \texttt{F1} and \texttt{M1} add their contributions to \texttt{Dof1}, then \texttt{M2} to \texttt{Dof2}. Then during the BUT, the mechanical mappings sum up the forces of their chid dof to their parent dof, \textit{i.e} the force in \texttt{Dof3} to \texttt{Dof2} through \texttt{M23} in the same example. 
+Then method \texttt{core::componentmodel::behavior::OdeSolver::computeForce(VecId)} is called. It first fires a \texttt{MechanicalResteForceVisitor} to reset the force vectors of all the \texttt{MechanicalObject} components. It then fires a  \texttt{MechanicalComputeForceVisitor}. During the TDT, each component derived from \texttt{core::componentmodel::behavior::BaseForceField} computes and accumulates its force in its sibling \texttt{MechanicalObject}. In the example shown in figure~\ref{fig:mixedPendulum}, \texttt{F13} adds its contribution to \texttt{Dof1} and \texttt{Dof2}, then \texttt{F1} and \texttt{M1} add their contributions to \texttt{Dof1}, then \texttt{M2} to \texttt{Dof2}. Then during the BUT, the mechanical mappings sum up the forces of their chid dof to their parent dof, \textit{i.e} the force in \texttt{Dof3} to \texttt{Dof2} through \texttt{M23} in the same example. 
 Note that branches \texttt{deformableBody} and \texttt{rigidBody} can be processed in parallel.
 At the end, the force vector in \texttt{Dof1} contains the net force applied to the particles, and the force vector in \texttt{Dof2} contains the net (six-dimensional) force applied to the rigid body. 
 
-Then method \texttt{OdeSolver::accFromF(VecId,VecId)} fires a \texttt{MechanicalAccFromFAction}. Each component derived from \texttt{core::componentmodel::behavior::BaseMass} computes the accelerations corresponding to the forces in its sibling \texttt{MechanicalObject}.
+Then method \texttt{OdeSolver::accFromF(VecId,VecId)} fires a \texttt{MechanicalAccFromFVisitor}. Each component derived from \texttt{core::componentmodel::behavior::BaseMass} computes the accelerations corresponding to the forces in its sibling \texttt{MechanicalObject}.
 
-Then method \texttt{OdeSolver::projectResponse} fires a \texttt{MechanicalApplyConstraintsAction}. All the \texttt{core::componentmodel::behavior::BaseConstraint} components (component \texttt{C} in the example) filter the acceleration vector to maintain some points fixed.
+Then method \texttt{OdeSolver::projectResponse} fires a \texttt{MechanicalApplyConstraintsVisitor}. All the \texttt{core::componentmodel::behavior::BaseConstraint} components (component \texttt{C} in the example) filter the acceleration vector to maintain some points fixed.
 
-Once the acceleration is computed, multivector methods are used to update the positions and velocities. Here again, actions are used to perform the desired operation in each traversed \texttt{MechanicalObject}.
+Once the acceleration is computed, multivector methods are used to update the positions and velocities. Here again, visitors are used to perform the desired operation in each traversed \texttt{MechanicalObject}.
 
 MultiVector operations are pruned at the first level for efficiency, because the solvers deal with the mechanically independent state variables rather than the mapped variables. 
 Moreover, the mapped coordinates can not be assumed to vary linearly along with their parent variables.
-Applying a \texttt{MechanicalPropagatePositionAndVelocityAction} is thus necessary to update the mapped dofs based on the mechanically independent dofs. 
-This action is automatically performed after time integration, as one can see in the code of method \\ \texttt{MechanicalIntegrationAction::fwdOdeSolver}.
+Applying a \texttt{MechanicalPropagatePositionAndVelocityVisitor} is thus necessary to update the mapped dofs based on the mechanically independent dofs. 
+This visitor is automatically performed after time integration, as one can see in the code of method \\ \texttt{MechanicalIntegrationVisitor::fwdOdeSolver}.
 It is also used by some solvers when auxiliary states are needed, as discussed in section~\ref{sec:statevectors}, in order to update the mapped dofs.
 
-\todo{Call tree of AnimateAction, restricted to sofa::core and sofa::simulation::tree}
+\todo{Call tree of AnimateVisitor, restricted to sofa::core and sofa::simulation::tree}
 
 \todo{Discuss independent and shared solvers}
 
@@ -235,14 +235,14 @@ To ensure consistency and make the use of auxiliary states transparent, the othe
 These methods return pointers to the appropriate vectors, as illustrated in figure~\ref{fig:mechanicalobject}.
 
 Internal  \texttt{MechanicalObject} switches are performed by methods \texttt{MechanicalObject::setX()}, \texttt{setV()}, \texttt{setF()} and  \texttt{setDx()}. 
-These methods are applied by the actions which take multivectors as parameters, before they use other components. See, for example, method\\ \texttt{MechanicalPropagatePositionAndVelocityAction::fwdMechanicalState}.
+These methods are applied by the visitors which take multivectors as parameters, before they use other components. See, for example, method\\ \texttt{MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalState}.
 
 Note that some constraint-based animation methods require large state vectors and matrices encompassing all the mechanical objects of the scene.
 Such methods are currently under development in \sofa, and they are not yet documented.
-They use actions to count the total number of scalar dofs and to gather them in large state vectors, as well as to build mechanical matrices  such as mass, stiffness, damping and compliance etc.
+They use visitors to count the total number of scalar dofs and to gather them in large state vectors, as well as to build mechanical matrices  such as mass, stiffness, damping and compliance etc.
 
 \subsection{Mechanical groups}
-During the simulation, each solver prunes the \texttt{AnimateAction} which traverses it and manages its associated subtree by itself using other actions. 
+During the simulation, each solver prunes the \texttt{AnimateVisitor} which traverses it and manages its associated subtree by itself using other visitors. 
 We call \emph{mechanical group} the objects animated by a given solver.
 Each mechanical group corresponds to a subtree in the scene graph.
 In the example discussed in section~\ref{sec:commentedExample}, there is one mechanical group because a single solver located near the root manages the whole scene. 
@@ -259,8 +259,8 @@ In the example shown in figure~\ref{fig:twoSolvers}, the same deformable body is
 A mechanical group can include interaction forces between elements of the group, and such interaction forces are handled by the solver as expected.
 Interaction forces can also occur between objects which do not belong to the same group.
 In this case, the interaction force is located at a higher hierarchical level than the objects it applies to, as shown in figure~\ref{fig:twoSolvers}.
-It can not be traversed by actions fired by the solvers.
-Its evaluation is performed by the \texttt{AnimateAction}, and accumulated as external forces in the associated \texttt{MechanicalObject} components.
+It can not be traversed by visitors fired by the solvers.
+Its evaluation is performed by the \texttt{AnimateVisitor}, and accumulated as external forces in the associated \texttt{MechanicalObject} components.
 Consequently, it acts as a constant constant force during each whole animation step.
 In a \texttt{RungeKutta2Solver}, during the force computation at midpoint, its value is the same as at the starting point.
 In a \texttt{CGImplicitSolver}, its stiffness is not taken into account, which may introduce instabilities if its actual stiffness is high.
@@ -283,12 +283,13 @@ The default collision manager of Sofa circumvents this problem by dynamically ga
 % \appendix
 \section{Code of the examples}
 \subsection{The hybrid pendulum}\label{cpp:hybrid}
-This is the code of the example commented in section~\ref{sec:commentedExample}.
+This is the code of the example commented in section~\ref{sec:commentedExample} :
 \includecode{C++}{applications/tutorials/mixedPendulum/Main.cpp}
 
 \subsection{A liver}\label{xml:liver}
-This is the XML code of the liver discussed in section~\ref{sec:multimodel} page~\pageref{bla:liver}.
+This is the XML code of the liver discussed in section~\ref{sec:multimodel} page~\pageref{bla:liver} :
 \includecode{XML}{scenes/liver.scn}
+
 
 % \include{sofaMechanical}
 % 
