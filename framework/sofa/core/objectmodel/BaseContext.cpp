@@ -94,19 +94,19 @@ bool BaseContext::getMultiThreadSimulation() const
 /// Display flags: Collision Models
 bool BaseContext::getShowCollisionModels() const
 {
-    return true;
+    return false;
 }
 
 /// Display flags: Bounding Collision Models
 bool BaseContext::getShowBoundingCollisionModels() const
 {
-    return true;
+    return false;
 }
 
 /// Display flags: Behavior Models
 bool BaseContext::getShowBehaviorModels() const
 {
-    return true;
+    return false;
 }
 
 /// Display flags: Visual Models
@@ -118,37 +118,37 @@ bool BaseContext::getShowVisualModels() const
 /// Display flags: Mappings
 bool BaseContext::getShowMappings() const
 {
-    return true;
+    return false;
 }
 
 /// Display flags: Mechanical Mappings
 bool BaseContext::getShowMechanicalMappings() const
 {
-    return true;
+    return false;
 }
 
 /// Display flags: ForceFields
 bool BaseContext::getShowForceFields() const
 {
-    return true;
+    return false;
 }
 
 /// Display flags: InteractionForceFields
 bool BaseContext::getShowInteractionForceFields() const
 {
-    return true;
+    return false;
 }
 
 /// Display flags: WireFrame
 bool BaseContext::getShowWireFrame() const
 {
-    return true;
+    return false;
 }
 
 /// Display flags: Normals
 bool BaseContext::getShowNormals() const
 {
-    return true;
+    return false;
 }
 
 /// Multiresolution

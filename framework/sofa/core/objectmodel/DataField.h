@@ -139,6 +139,24 @@ bool DataField<std::string>::read( std::string& str )
     return true;
 }
 
+/// Specialization for reading booleans
+template<>
+inline
+bool DataField<bool>::read( std::string& str )
+{
+    if (str.empty())
+        return false;
+    if (str[0] == 'T' || str[0] == 't')
+        m_value = true;
+    else if (str[0] == 'F' || str[0] == 'f')
+        m_value = false;
+    else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
+        m_value = (atoi(str.c_str()) != 0);
+    else return false;
+    m_isSet = true;
+    return true;
+}
+
 /// General case for printing default value
 template<class T>
 inline

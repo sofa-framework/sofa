@@ -580,11 +580,12 @@ std::string GNode::getPathName() const
     str += getName();
     return str;
 }
-
 void create(GNode*& obj, xml::Element<core::objectmodel::BaseNode>* arg)
 {
     obj = new GNode();
     obj->parse(arg);
+    /*
+    // This is no longer necessary as datafields are now used to parse attributes
     obj->setDt(atof(arg->getAttribute("dt","0.01")));
     obj->setTime(atof(arg->getAttribute("time","0.0")));
     obj->setAnimate((atoi(arg->getAttribute("animate","0"))!=0));
@@ -599,7 +600,7 @@ void create(GNode*& obj, xml::Element<core::objectmodel::BaseNode>* arg)
     obj->setShowInteractionForceFields((atoi(arg->getAttribute("showInteractionForceFields",arg->getAttribute("showForceFields","0")))!=0));
     obj->setShowWireFrame((atoi(arg->getAttribute("showWireFrame","0"))!=0));
     obj->setShowNormals((atoi(arg->getAttribute("showNormals","0"))!=0));
-
+    */
 }
 
 SOFA_DECL_CLASS(GNode)
