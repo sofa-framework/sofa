@@ -168,22 +168,22 @@ private:
     /*!
     	Stores the lines influenced by each vertice
     */
-    vector<vector<influencedLineType>> linesInfluencedByVertice;
+    vector<vector<influencedLineType> > linesInfluencedByVertice;
 
     /*!
     	Stores the vertices influenced by each line
     */
-    vector<vector<influencedVerticeType>> verticesInfluencedByLine;
+    vector<vector<influencedVerticeType> > verticesInfluencedByLine;
 
     /*!
     	Stores the first level line neighborhood
     */
-    vector<std::set<int>> neighborhoodLinesSet;
+    vector<std::set<int> > neighborhoodLinesSet;
 
     /*!
     	Stores the n level line neighborhood
     */
-    vector<std::set<int>> neighborhood;
+    vector<std::set<int> > neighborhood;
 };
 
 } // namespace mapping

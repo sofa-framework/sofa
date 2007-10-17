@@ -109,7 +109,7 @@ void LineSetSkinningMapping<BasicMapping>::init()
     for(unsigned int line1Index=0; line1Index< (unsigned) t->getNbLines(); line1Index++)
     {
         std::set<int> result;
-        std::insert_iterator<std::set<int>> res_ins(result, result.begin());
+        std::insert_iterator<std::set<int> > res_ins(result, result.begin());
 
         neighborhood[line1Index] = neighborhoodLinesSet[line1Index];
 
@@ -239,7 +239,7 @@ void LineSetSkinningMapping<BasicMapping>::apply( typename Out::VecCoord& out, c
 
     for (unsigned int verticeIndex=0; verticeIndex<out.size(); verticeIndex++)
     {
-        out[verticeIndex] = Out::Coord();
+        out[verticeIndex] = typename Out::Coord();
         for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
@@ -259,7 +259,7 @@ void LineSetSkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, 
 
     for (unsigned int verticeIndex=0; verticeIndex<out.size(); verticeIndex++)
     {
-        out[verticeIndex] = Out::Deriv();
+        out[verticeIndex] = typename Out::Deriv();
         for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
             influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
