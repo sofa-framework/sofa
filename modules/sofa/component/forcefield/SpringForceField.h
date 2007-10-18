@@ -8,7 +8,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
 
 namespace sofa
@@ -110,7 +110,7 @@ public:
 
     void clear(int reserve=0)
     {
-        vector<Spring>& springs = *this->springs.beginEdit();
+        sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
         springs.clear();
         if (reserve) springs.reserve(reserve);
         this->springs.endEdit();

@@ -12,8 +12,6 @@
 #include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -23,6 +21,9 @@ namespace component
 
 namespace forcefield
 {
+
+using std::cerr;
+using std::endl;
 
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, double _ks, double _kd)
@@ -58,7 +59,7 @@ public:
     Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
     virtual void addSpring(int m1, int m2, double ks, double kd, double initpos)
     {
-        vector<Spring>& springs = *dest->springs.beginEdit();
+        helper::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(m1,m2,ks,kd,initpos));
         dest->springs.endEdit();
     }
@@ -134,7 +135,7 @@ void SpringForceField<DataTypes>::draw()
     bool external = (this->mstate1!=this->mstate2);
     //if (!external)
     //	glColor4f(1,1,1,1);
-    const vector<Spring>& springs = this->springs.getValue();
+    const helper::vector<Spring>& springs = this->springs.getValue();
     glBegin(GL_LINES);
     for (unsigned int i=0; i<springs.size(); i++)
     {

@@ -56,8 +56,8 @@ template<class DataTypes>
 void ConstantForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& )
 {
     f1.resize(p1.size());
-    const vector<unsigned>& indices = points.getValue();
-    const vector<Deriv>& f = forces.getValue();
+    const VecIndex& indices = points.getValue();
+    const VecDeriv& f = forces.getValue();
     for (unsigned int i=0; i<indices.size(); i++)
     {
         f1[indices[i]]+=f[i];
@@ -69,8 +69,8 @@ void ConstantForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, c
 template <class DataTypes>
 double ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
 {
-    const vector<unsigned>& indices = points.getValue();
-    const vector<Deriv>& f = forces.getValue();
+    const VecIndex& indices = points.getValue();
+    const VecDeriv& f = forces.getValue();
     double e=0;
     for (unsigned int i=0; i<indices.size(); i++)
     {
@@ -86,8 +86,8 @@ template<class DataTypes>
 void ConstantForceField<DataTypes>::draw()
 {
     if (!getContext()->getShowForceFields()) return;  /// \todo put this in the parent class
-    const vector<unsigned>& indices = points.getValue();
-    const vector<Deriv>& f = forces.getValue();
+    const VecIndex& indices = points.getValue();
+    const VecDeriv& f = forces.getValue();
     const VecCoord& x = *this->mstate->getX();
     glDisable(GL_LIGHTING);
     glBegin(GL_LINES);

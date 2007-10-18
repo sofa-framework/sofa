@@ -179,7 +179,7 @@ public:
 
     void clear(int reserve=0)
     {
-        vector<Spring>& springs = *this->springs.beginEdit();
+        helper::vector<Spring>& springs = *this->springs.beginEdit();
         springs.clear();
         if (reserve) springs.reserve(reserve);
         this->springs.endEdit();

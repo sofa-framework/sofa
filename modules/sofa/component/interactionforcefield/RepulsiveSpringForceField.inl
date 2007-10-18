@@ -36,11 +36,13 @@ namespace component
 
 namespace interactionforcefield
 {
+using std::cerr;
+using std::endl;
 
 template<class DataTypes>
 void RepulsiveSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
-    const vector<Spring>& springs= this->springs.getValue();
+    const helper::vector<Spring>& springs= this->springs.getValue();
     this->dfdx.resize(springs.size());
     f1.resize(x1.size());
     f2.resize(x2.size());

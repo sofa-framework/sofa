@@ -51,7 +51,7 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2
     f1.resize(x1.size());
     f2.resize(x2.size());
     m_potentialEnergy = 0;
-    const vector<Spring>& springs = this->springs.getValue();
+    const helper::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)
     {
         if (topology != NULL)
@@ -257,7 +257,7 @@ void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& 
     // Calc any custom springs
     this->StiffSpringForceField<DataTypes>::addDForce(df1, df2, dx1, dx2);
     // Compute topological springs
-    const vector<Spring>& springs = this->springs.getValue();
+    const helper::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)
     {
         if (topology != NULL)

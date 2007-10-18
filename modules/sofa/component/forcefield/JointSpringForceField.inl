@@ -74,7 +74,7 @@ public:
     Loader(JointSpringForceField<DataTypes>* dest) : dest(dest) {}
     virtual void addSpring(int m1, int m2, Vec kst, Vec ksr, Real kd)
     {
-        vector<Spring>& springs = *dest->springs.beginEdit();
+        helper::vector<Spring>& springs = *dest->springs.beginEdit();
         springs.push_back(Spring(m1,m2,kst, ksr,kd));
         dest->springs.endEdit();
     }
@@ -187,7 +187,7 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
 template<class DataTypes>
 void JointSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
-    vector<Spring>& springs = *this->springs.beginEdit();
+    helper::vector<Spring>& springs = *this->springs.beginEdit();
 
     springRef.resize(x1.size());
     f1.resize(x1.size());
@@ -206,7 +206,7 @@ void JointSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, c
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    const vector<Spring>& springs = this->springs.getValue();
+    const helper::vector<Spring>& springs = this->springs.getValue();
     for (unsigned int i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i]);
@@ -222,7 +222,7 @@ void JointSpringForceField<DataTypes>::draw()
 
     glDisable(GL_LIGHTING);
     bool external = (this->mstate1!=this->mstate2);
-    const vector<Spring>& springs = this->springs.getValue();
+    const helper::vector<Spring>& springs = this->springs.getValue();
 
     for (unsigned int i=0; i<springs.size(); i++)
     {

@@ -5,6 +5,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/DataField.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -26,12 +27,12 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-
+    typedef helper::vector<unsigned> VecIndex;
 
 public:
 
-    DataField< helper::vector<unsigned> > points;
-    DataField<VecDeriv > forces;
+    DataField< VecIndex > points;
+    DataField< VecDeriv > forces;
 
     ConstantForceField();
 

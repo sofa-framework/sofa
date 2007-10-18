@@ -86,7 +86,7 @@ void StiffSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
 template<class DataTypes>
 void StiffSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
 {
-    const vector<Spring>& springs= this->springs.getValue();
+    const helper::vector<Spring>& springs= this->springs.getValue();
     this->dfdx.resize(springs.size());
     f1.resize(x1.size());
     f2.resize(x2.size());
@@ -106,7 +106,7 @@ void StiffSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, c
     df2.resize(dx2.size());
     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, dx1 = "<<dx1<<endl;
     //cerr<<"StiffSpringForceField<DataTypes>::addDForce, df1 before = "<<f1<<endl;
-    const vector<Spring>& springs = this->springs.getValue();
+    const helper::vector<Spring>& springs = this->springs.getValue();
     for (unsigned int i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i]);
