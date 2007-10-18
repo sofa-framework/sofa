@@ -1,6 +1,11 @@
 % ---- graphiques
 \usepackage[pdftex]{graphicx}
+
+% for latex2html
 \usepackage{html}
+
+% for accents
+\usepackage[latin1]{inputenc}
 
 % ---- inclusion de codes
 \usepackage{listings}
@@ -60,7 +65,7 @@
 \newcommand{\EV}[1]{\stackrel{\rightarrow}{#1}}  % espace vectoriel
 \newcommand{\EA}[1]{#1}                          % espace affine
 
-% vectprs, matrices
+% vectors, matrices
 %\newcommand{\point}[1]{\mbox{$#1$}}          % un point
 \newcommand{\point}[1]{\ensuremath{#1}}          % un point
 \newcommand{\mat}[1]{\bm{#1}}         % matrice
@@ -79,13 +84,13 @@
 % bases, reperes
 \newcommand{\vecin}[2]{\mbox{${}^{#2}#1$}}    % vecteur 1 dans repere 2
 \newcommand{\Base}[1]{\ensuremath{\mathcal B_{#1}}} % Symbole du repere 1
-\newcommand{\chbase}[3]{\mbox{${}_{#2}^{#3}\mat{#1}$}}  % operateur 1 fait le passage de la base 2 vers la base 3
-%\newcommand{\pchbase}[2]{\chbase{\mat{B}}{#1}{#2}}  % matrice de passage de la base 1 vers la base 2
-\newcommand{\pchbase}[2]{\chbase{B}{#1}{#2}}  % matrice de passage de la base 1 vers la base 2
+\newcommand{\chbase}[3]{\mbox{${}_{#2}^{#3}\mat{#1}$}}  % operateur 1 fait le passage de la base 3 vers la base 2
+%\newcommand{\pchbase}[2]{\chbase{\mat{B}}{#1}{#2}}  % matrice de passage de la base 2 vers la base 1
+\newcommand{\pchbase}[2]{\chbase{B}{#1}{#2}}  % matrice de passage de la base 2 vers la base 1
 \newcommand{\Rep}[1]{\ensuremath{\mathcal R_{#1}}} % Symbole du repere 1
 \newcommand{\rep}[1]{\Rep{#1}}                 % Symbole du repere 1
 %\newcommand{\pchrep}[2]{\chbase{\mat{F}}{#1}{#2}}  % matrice de passage du repere 1 vers le repere 2, F comme Frame
-\newcommand{\pchrep}[2]{\chbase{\bm{C}}{#1}{#2}}  % matrice de passage du repere 1 vers le repere 2
+\newcommand{\pchrep}[2]{\chbase{\bm{C}}{#1}{#2}}  % matrice de passage du repere 2 vers le repere 1
 
 %% Operateur de passage du repere 1 par rapport a 2
 %\newcommand{\ChgRep}[2]{\mbox{\boldmath $R_{#1}^{#2}$}}
