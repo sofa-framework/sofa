@@ -34,7 +34,7 @@ namespace sofa
 namespace gui
 {
 
-namespace guiviewer
+namespace qt
 {
 
 class AddObject : public DialogAddObject

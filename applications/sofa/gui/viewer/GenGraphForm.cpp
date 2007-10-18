@@ -50,7 +50,7 @@ namespace sofa
 namespace gui
 {
 
-namespace guiviewer
+namespace qt
 {
 
 #ifndef QT_MODULE_QT3SUPPORT

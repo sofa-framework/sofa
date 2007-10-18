@@ -46,7 +46,7 @@ namespace sofa
 namespace gui
 {
 
-namespace guiviewer
+namespace qt
 {
 
 class GenGraphForm : public BaseGenGraphForm

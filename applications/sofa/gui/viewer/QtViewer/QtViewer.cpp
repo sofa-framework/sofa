@@ -75,6 +75,12 @@ namespace gui
 
 namespace qt
 {
+
+namespace viewer
+{
+
+namespace qt
+{
 using std::cout;
 using std::endl;
 using namespace sofa::defaulttype;
@@ -269,8 +275,8 @@ void QtViewer::initializeGL(void)
 
     if (!initialized)
     {
-        //std::cout << "progname=" << sofa::gui::guiviewer::progname << std::endl;
-        //sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::guiviewer::progname));
+        //std::cout << "progname=" << sofa::gui::qt::progname << std::endl;
+        //sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::qt::progname));
 
         // Define light parameters
         //_lightPosition[0] = 0.0f;
@@ -1097,39 +1103,39 @@ void QtViewer::DrawScene(void)
 
         glLightfv( GL_LIGHT0, GL_POSITION, _lightPosition );
         /*
-          {
-          glEnable(GL_TEXTURE_2D);
-          glActiveTextureARB(GL_TEXTURE0_ARB);
-          glBindTexture(GL_TEXTURE_2D, g_Texture[SHADOW_ID]);
-          glTexEnvi(GL_TEXTURE_2D,GL_TEXTURE_ENV_MODE,  GL_REPLACE);
-          Disable<GL_DEPTH_TEST> dtoff;
-          Disable<GL_LIGHTING> dlight;
-          glColor3f(1,1,1);
-          glViewport(0, 0, 128, 128);
-          glMatrixMode(GL_PROJECTION);
-          glPushMatrix();
-          glLoadIdentity();
-          glOrtho(0,1,0,1,-1,1);
-          glMatrixMode(GL_MODELVIEW);
-          glPushMatrix();{
-          glLoadIdentity();
-          glBegin(GL_QUADS);{
-          glTexCoord2f(0,0);
-          glVertex2f(0,0);
-          glTexCoord2f(0,1);
-          glVertex2f(0,1);
-          glTexCoord2f(1,1);
-          glVertex2f(1,1);
-          glTexCoord2f(1,0);
-          glVertex2f(1,0);
-          }glEnd();
-          }glPopMatrix();
-          glMatrixMode(GL_PROJECTION);
-          glPopMatrix();
-          glMatrixMode(GL_MODELVIEW);
-          glViewport(0, 0, GetWidth(), GetHeight());
-          }
-        */
+        {
+        glEnable(GL_TEXTURE_2D);
+        glActiveTextureARB(GL_TEXTURE0_ARB);
+        glBindTexture(GL_TEXTURE_2D, g_Texture[SHADOW_ID]);
+        glTexEnvi(GL_TEXTURE_2D,GL_TEXTURE_ENV_MODE,  GL_REPLACE);
+        Disable<GL_DEPTH_TEST> dtoff;
+        Disable<GL_LIGHTING> dlight;
+        glColor3f(1,1,1);
+        glViewport(0, 0, 128, 128);
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glOrtho(0,1,0,1,-1,1);
+        glMatrixMode(GL_MODELVIEW);
+        glPushMatrix();{
+        glLoadIdentity();
+        glBegin(GL_QUADS);{
+        glTexCoord2f(0,0);
+        glVertex2f(0,0);
+        glTexCoord2f(0,1);
+        glVertex2f(0,1);
+        glTexCoord2f(1,1);
+        glVertex2f(1,1);
+        glTexCoord2f(1,0);
+        glVertex2f(1,0);
+        }glEnd();
+        }glPopMatrix();
+        glMatrixMode(GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+        glViewport(0, 0, GetWidth(), GetHeight());
+        }
+             */
 
 
         // Render the world and apply the shadow map texture to it
@@ -2549,8 +2555,11 @@ TO QUIT ::sofa:: press the KEY ESCAPE.<br>");
     return text;
 }
 
+}// namespace qt
 
-} // namespace qt
+} // namespace viewer
+
+}
 
 } // namespace gui
 

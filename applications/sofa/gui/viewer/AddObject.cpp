@@ -52,7 +52,7 @@ namespace sofa
 namespace gui
 {
 
-namespace guiviewer
+namespace qt
 {
 
 

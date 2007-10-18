@@ -1,3 +1,4 @@
+
 /*******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
 *                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
@@ -53,6 +54,12 @@ namespace gui
 namespace qt
 {
 
+namespace viewer
+{
+
+namespace qt
+{
+
 //using namespace sofa::defaulttype;
 using sofa::defaulttype::Vector3;
 using sofa::defaulttype::Quaternion;
@@ -61,7 +68,7 @@ using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
 
-class QtViewer :public QGLWidget,  public sofa::gui::viewer::SofaViewer
+class QtViewer :public QGLWidget,  public sofa::gui::qt::viewer::SofaViewer
 {
     Q_OBJECT
 
@@ -267,6 +274,10 @@ protected:
 };
 
 } // namespace qt
+
+} // namespace viewer
+
+} //namespace qt
 
 } // namespace gui
 

@@ -53,9 +53,14 @@ namespace sofa
 namespace gui
 {
 
-namespace guiqglviewer
+namespace qt
 {
 
+namespace viewer
+{
+
+namespace qgl
+{
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using namespace sofa::helper::system::thread;
@@ -63,7 +68,7 @@ using namespace sofa::simulation::automatescheduler;
 using namespace sofa::component::collision;
 
 
-class QtGLViewer :public QGLViewer,   public sofa::gui::viewer::SofaViewer
+class QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::SofaViewer
 {
     Q_OBJECT
 private:
@@ -228,7 +233,11 @@ signals:
     void resizeH( int );
 };
 
-} // namespace qt
+} // namespace qgl
+
+} // namespace viewer
+
+} //namespace qt
 
 } // namespace gui
 

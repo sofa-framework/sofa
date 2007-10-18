@@ -57,7 +57,7 @@ namespace sofa
 namespace gui
 {
 
-namespace guiviewer
+namespace qt
 {
 
 //enum TYPE{ NORMAL, PML, LML};
@@ -89,7 +89,7 @@ public:
 
     const char* viewerName;
 
-    sofa::gui::viewer::SofaViewer* viewer;
+    sofa::gui::qt::viewer::SofaViewer* viewer;
 
     RealGUI( const char* viewername, const std::vector<std::string>& options = std::vector<std::string>() );
     ~RealGUI();

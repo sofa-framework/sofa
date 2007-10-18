@@ -65,7 +65,7 @@ namespace sofa
 namespace gui
 {
 
-namespace guiviewer
+namespace qt
 {
 using sofa::simulation::tree::GNode;
 using sofa::simulation::tree::Simulation;

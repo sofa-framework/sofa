@@ -73,7 +73,13 @@ namespace sofa
 namespace gui
 {
 
-namespace guiqglviewer
+namespace qt
+{
+
+namespace viewer
+{
+
+namespace qgl
 {
 
 using std::cout;
@@ -254,7 +260,7 @@ void QtGLViewer::init(void)
     if (!initialized)
     {
         //std::cout << "progname="<<sofa::gui::qt::progname<<std::endl;
-        //sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::guiviewer::progname));
+        //sofa::helper::system::SetDirectory cwd(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::gui::qt::progname));
 
         // Define light parameters
         //_lightPosition[0] = 0.0f;
@@ -1991,7 +1997,11 @@ TO QUIT ::sofa:: press the KEY ESCAPE<br>");
 
 
 
-} // namespace qt
+} // namespace qgl
+
+} // namespace viewer
+
+} //namespace qt
 
 } // namespace gui
 

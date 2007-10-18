@@ -29,6 +29,9 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "RealGUI.h"
 
+#include <sofa/component/forcefield/SpringForceField.h>
+#include <sofa/defaulttype/Vec.h>
+
 #ifdef QT_MODULE_QT3SUPPORT
 #include <QDialog>
 #include <Q3ListViewItem>
@@ -51,7 +54,7 @@ namespace sofa
 namespace gui
 {
 
-namespace guiviewer
+namespace qt
 {
 
 using sofa::helper::Quater;
@@ -99,49 +102,40 @@ protected:
     bool createTable(core::objectmodel::FieldBase* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
     void storeTable(Q3Table* table, core::objectmodel::FieldBase* field);
 
-    void createVector(const Vec<6,double>  &value, Q3GroupBox *box);
-    void createVector(const Vec<6,float>   &value, Q3GroupBox *box);
-    void createVector(const Vec<6,int>     &value, Q3GroupBox *box);
-    void createVector(const Vec<6,unsigned int>   &value, Q3GroupBox *box);
-    void createVector(const Vec<4,double>  &value, Q3GroupBox *box);
-    void createVector(const Vec<4,float>   &value, Q3GroupBox *box);
-    void createVector(const Vec<4,int>     &value, Q3GroupBox *box);
-    void createVector(const Vec<4,unsigned int>   &value, Q3GroupBox *box);
-    void createVector(const Vec<3,double>  &value, Q3GroupBox *box);
-    void createVector(const Vec<3,float>   &value, Q3GroupBox *box);
-    void createVector(const Vec<3,int>     &value, Q3GroupBox *box);
-    void createVector(const Vec<3,unsigned int>   &value, Q3GroupBox *box);
-    void createVector(const Vec<2,double>  &value, Q3GroupBox *box);
-    void createVector(const Vec<2,float>   &value, Q3GroupBox *box);
-    void createVector(const Vec<2,int>     &value, Q3GroupBox *box);
-    void createVector(const Vec<2,unsigned int>   &value, Q3GroupBox *box);
-    void createVector(const Vec<1,double>  &value, Q3GroupBox *box);
-    void createVector(const Vec<1,float>   &value, Q3GroupBox *box);
-    void createVector(const Vec<1,int>     &value, Q3GroupBox *box);
-    void createVector(const Vec<1,unsigned int>   &value, Q3GroupBox *box);
-    void createVector(const Quater<double> &value, Q3GroupBox *box);
-    void createVector(const Quater<float>  &value, Q3GroupBox *box);
+    //*********************************************************
+    template< int N, class T>
+    void createVector(const Vec<N,T> &value, Q3GroupBox *box);
+    template< int N, class T>
+    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<N,T> > *ff);
+    //*********************************************************
+    template< class T>
+    bool createQtTable(DataField< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    template<class T>
+    void storeQtTable( Q3Table* table, DataField< sofa::helper::vector< T > >* ff );
+    //*********************************************************
+    template< class T>
+    bool createQtTable(Field< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    template< class T>
+    void storeQtTable( Q3Table* table, Field< sofa::helper::vector< T > >* ff );
+    //*********************************************************
+    template< int N, class T>
+    bool createQtTable(DataField< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    template< int N, class T>
+    void storeQtTable( Q3Table* table, DataField< sofa::helper::vector< Vec<N,T> > >* ff );
+    //*********************************************************
+    template< int N, class T>
+    bool createQtTable(Field< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    template< int N, class T>
+    void storeQtTable( Q3Table* table, Field< sofa::helper::vector< Vec<N,T> > >* ff );
+    //*********************************************************
 
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<6,double> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<6,float> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<6,int> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<6,unsigned int> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<4,double> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<4,float> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<4,int> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<4,unsigned int> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<3,double> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<3,float> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<3,int> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<3,unsigned int> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<2,double> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<2,float> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<2,int> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<2,unsigned int> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<1,double> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<1,float> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<1,int> > *ff);
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<1,unsigned int> > *ff);
+
+    void createVector(const Quater<double> &value, Q3GroupBox *box); //will be created as a Vec<4,double>
+    void createVector(const Quater<float>  &value, Q3GroupBox *box); //will be created as a Vec<4,float>
+
+    template< int N, class T>
+    void storeQtTable( Q3Table* table, DataField<  sofa::helper::vector<typename sofa::component::forcefield::SpringForceField< typename sofa::defaulttype::StdVectorTypes< Vec<N,T>,Vec<N,T>,T > >::Spring > >  * ff );
+
 
     QWidget *parent;
     core::objectmodel::Base* node;

@@ -37,6 +37,9 @@ namespace sofa
 namespace gui
 {
 
+namespace qt
+{
+
 namespace viewer
 {
 
@@ -90,7 +93,7 @@ protected:
     virtual void resizeH( int )=0;
 
 };
-
+}
 }
 }
 }

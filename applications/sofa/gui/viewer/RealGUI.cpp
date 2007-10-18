@@ -119,7 +119,7 @@ namespace sofa
 namespace gui
 {
 
-namespace guiviewer
+namespace qt
 {
 
 #ifdef QT_MODULE_QT3SUPPORT
@@ -168,21 +168,21 @@ int RealGUI::InitGUI ( const char* name, const std::vector<std::string>& /* opti
 #ifdef SOFA_GUI_QGLVIEWER
     if ( !name[0] || !strcmp ( name,"qglviewer" ) )
     {
-        return sofa::gui::guiqglviewer::QtGLViewer::EnableViewer();
+        return sofa::gui::qt::viewer::qgl::QtGLViewer::EnableViewer();
     }
     else
 #endif
 #ifdef SOFA_GUI_QTVIEWER
         if ( !name[0] || !strcmp ( name,"qt" ) )
         {
-            return sofa::gui::qt::QtViewer::EnableViewer();
+            return sofa::gui::qt::viewer::qt::QtViewer::EnableViewer();
         }
         else
 #endif
 #ifdef SOFA_GUI_QTOGREVIEWER
             if ( !name[0] || !strcmp ( name,"ogre" ) )
             {
-                return sofa::gui::qtogreviewer::QtOgreViewer::EnableViewer();
+                return sofa::gui::qt::viewer::qtogre::QtOgreViewer::EnableViewer();
             }
             else
 #endif
@@ -501,7 +501,7 @@ void RealGUI::addViewer()
 #ifdef SOFA_GUI_QGLVIEWER
     if ( !name[0] || !strcmp ( name,"qglviewer" ) )
     {
-        viewer = new sofa::gui::guiqglviewer::QtGLViewer ( left_stack, "viewer" );
+        viewer = new sofa::gui::qt::viewer::qgl::QtGLViewer ( left_stack, "viewer" );
         viewerQGLViewerAction->setOn ( true );
     }
     else
@@ -509,7 +509,7 @@ void RealGUI::addViewer()
 #ifdef SOFA_GUI_QTVIEWER
         if ( !name[0] || !strcmp ( name,"qt" ) )
         {
-            viewer = new sofa::gui::qt::QtViewer ( left_stack, "viewer" );
+            viewer = new sofa::gui::qt::viewer::qt::QtViewer ( left_stack, "viewer" );
             viewerOpenGLAction->setOn ( true );
         }
         else
@@ -517,7 +517,7 @@ void RealGUI::addViewer()
 #ifdef SOFA_GUI_QTOGREVIEWER
             if ( !name[0] || !strcmp ( name,"ogre" ) )
             {
-                viewer = new sofa::gui::qtogreviewer::QtOgreViewer ( left_stack , "viewer" );
+                viewer = new sofa::gui::qt::viewer::qtogre::QtOgreViewer ( left_stack , "viewer" );
                 viewerOGREAction->setOn ( true );
             }
             else
@@ -636,21 +636,21 @@ bool RealGUI::setViewer ( const char* name )
 #ifdef SOFA_GUI_QTVIEWER
     if ( !strcmp ( viewerName,"qt" ) )
     {
-        sofa::gui::qt::QtViewer::DisableViewer();
+        sofa::gui::qt::viewer::qt::QtViewer::DisableViewer();
     }
     else
 #endif
 #ifdef SOFA_GUI_QGLVIEWER
         if ( !strcmp ( viewerName,"qglviewer" ) )
         {
-            sofa::gui::guiqglviewer::QtGLViewer::DisableViewer();
+            sofa::gui::qt::viewer::qgl::QtGLViewer::DisableViewer();
         }
         else
 #endif
 #ifdef SOFA_GUI_QTOGREVIEWER
             if ( !strcmp ( viewerName,"ogre" ) )
             {
-                sofa::gui::qtogreviewer::QtOgreViewer::DisableViewer();
+                sofa::gui::qt::viewer::qtogre::QtOgreViewer::DisableViewer();
             }
             else
 #endif
@@ -659,21 +659,21 @@ bool RealGUI::setViewer ( const char* name )
 #ifdef SOFA_GUI_QTVIEWER
     if ( !strcmp ( name,"qt" ) )
     {
-        sofa::gui::qt::QtViewer::EnableViewer();
+        sofa::gui::qt::viewer::qt::QtViewer::EnableViewer();
     }
     else
 #endif
 #ifdef SOFA_GUI_QGLVIEWER
         if ( !strcmp ( name,"qglviewer" ) )
         {
-            sofa::gui::guiqglviewer::QtGLViewer::EnableViewer();
+            sofa::gui::qt::viewer::qgl::QtGLViewer::EnableViewer();
         }
         else
 #endif
 #ifdef SOFA_GUI_QTOGREVIEWER
             if ( !strcmp ( name,"ogre" ) )
             {
-                sofa::gui::qtogreviewer::QtOgreViewer::EnableViewer();
+                sofa::gui::qt::viewer::qtogre::QtOgreViewer::EnableViewer();
             }
 #endif
 
@@ -1428,7 +1428,7 @@ void RealGUI::exportGraph ( sofa::simulation::tree::GNode* root )
 {
 
     if ( root == NULL ) return;
-    sofa::gui::guiviewer::GenGraphForm* form = new sofa::gui::guiviewer::GenGraphForm;
+    sofa::gui::qt::GenGraphForm* form = new sofa::gui::qt::GenGraphForm;
     form->setScene ( root );
     form->show();
 }

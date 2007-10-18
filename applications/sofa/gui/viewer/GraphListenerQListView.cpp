@@ -40,7 +40,7 @@ namespace sofa
 namespace gui
 {
 
-namespace guiviewer
+namespace qt
 {
 #ifdef QT_MODULE_QT3SUPPORT
 typedef Q3PopupMenu QPopupMenu;
@@ -446,6 +446,6 @@ void GraphListenerQListView::unfreeze(GNode* groot)
 
 
 
-} //guiviewer
+} //qt
 } //gui
 } //sofa
