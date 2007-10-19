@@ -47,9 +47,13 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
     const double minDist2 = 0.0001f;
     std::vector<DetectionOutput*> contacts;
     contacts.reserve(outputs.size());
-    for (DetectionOutputVector::iterator it = outputs.begin(); it!=outputs.end(); it++)
+
+    int SIZE = outputs.size();
+
+    for (int cpt=0; cpt<SIZE; cpt++)
     {
-        DetectionOutput* o = &*it;
+        DetectionOutput* o = &outputs[cpt];
+
         bool found = false;
         for (unsigned int i=0; i<contacts.size() && !found; i++)
         {
@@ -57,9 +61,27 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
             if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
                 found = true;
         }
+
         if (!found)
             contacts.push_back(o);
     }
+
+    /*
+    for (DetectionOutputVector::iterator it = outputs.begin(); it!=outputs.end(); it++)
+    {
+    	DetectionOutput* o = &*it;
+    	bool found = false;
+    	for (unsigned int i=0; i<contacts.size() && !found; i++)
+    	{
+    		DetectionOutput* p = contacts[i];
+    		if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
+    			found = true;
+    	}
+    	if (!found)
+    		contacts.push_back(o);
+    }
+    */
+
     if (contacts.size()<outputs.size())
     {
         //std::cout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << std::endl;

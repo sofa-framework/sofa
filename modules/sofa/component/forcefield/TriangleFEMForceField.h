@@ -35,9 +35,6 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-#include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/defaulttype/SofaBaseVector.h>
-
 
 
 // corotational triangle from
@@ -124,21 +121,6 @@ public:
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
     virtual double getPotentialEnergy(const VecCoord& x);
-
-
-    // -- Temporary added here for matrix ForceField
-    void contributeToMatrixDimension(unsigned int * const, unsigned int * const)
-    {}
-    ;
-    void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &)
-    {}
-    ;
-    void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &)
-    {}
-    ;
-    void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int & )
-    {}
-    ;
 
 
     // -- VisualModel interface

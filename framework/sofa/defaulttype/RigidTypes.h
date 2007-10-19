@@ -170,6 +170,26 @@ public:
         in>>v.vCenter>>v.vOrientation;
         return in;
     }
+
+    static unsigned int size() {return 6;};
+
+    /// Access to i-th element.
+    real& operator()(int i)
+    {
+        if (i<3)
+            return this->vCenter(i);
+        else
+            return this->vOrientation(i-3);
+    }
+
+    /// Const access to i-th element.
+    const real& operator()(int i) const
+    {
+        if (i<3)
+            return this->vCenter(i);
+        else
+            return this->vOrientation(i-3);
+    }
 };
 
 template<typename real>
@@ -356,6 +376,26 @@ public:
         return 3;
     }
     enum { static_size = 3 };
+
+    static unsigned int size() {return 7;};
+
+    /// Access to i-th element.
+    real& operator()(int i)
+    {
+        if (i<3)
+            return this->center(i);
+        else
+            return this->orientation[i-3];
+    }
+
+    /// Const access to i-th element.
+    const real& operator()(int i) const
+    {
+        if (i<3)
+            return this->center(i);
+        else
+            return this->orientation[i-3];
+    }
 };
 
 template<typename real>
@@ -598,6 +638,26 @@ public:
         in>>v.vCenter>>v.vOrientation;
         return in;
     }
+
+    static unsigned int size() {return 3;};
+
+    /// Access to i-th element.
+    real& operator()(int i)
+    {
+        if (i<2)
+            return this->vCenter(i);
+        else
+            return this->vOrientation;
+    }
+
+    /// Const access to i-th element.
+    const real& operator()(int i) const
+    {
+        if (i<2)
+            return this->vCenter(i);
+        else
+            return this->vOrientation;
+    }
 };
 
 template<typename real>
@@ -772,6 +832,26 @@ public:
         return 3;
     }
     enum { static_size = 3 };
+
+    static unsigned int size() {return 3;};
+
+    /// Access to i-th element.
+    real& operator()(int i)
+    {
+        if (i<2)
+            return this->center(i);
+        else
+            return this->orientation;
+    }
+
+    /// Const access to i-th element.
+    const real& operator()(int i) const
+    {
+        if (i<2)
+            return this->center(i);
+        else
+            return this->orientation;
+    }
 };
 
 template<class real>

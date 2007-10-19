@@ -28,8 +28,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 
-#include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/defaulttype/SofaBaseVector.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseVector.h>
 
 #include <vector>
 
@@ -86,8 +86,12 @@ public:
 
     virtual void applyConstraint(unsigned int&, double&);
 
-    virtual void applyConstraint(defaulttype::SofaBaseMatrix *, unsigned int &);
-    virtual void applyConstraint(defaulttype::SofaBaseVector *, unsigned int &);
+    /// Project the global Mechanical Matrix to constrained space using offset parameter
+    virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int & /*offset*/);
+
+    /// Project the global Mechanical Vector to constrained space using offset parameter
+    virtual void applyConstraint(defaulttype::BaseVector *, unsigned int & /*offset*/);
+
 
     virtual void getConstraintValue(double * /*, unsigned int &*/) {}
     // virtual void resetContactCpt(){};

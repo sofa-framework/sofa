@@ -222,61 +222,6 @@ void OdeSolver::printWithElapsedTime( VecId v,  unsigned time, std::ostream& out
     MechanicalVPrintWithElapsedTimeVisitor(v,(int)((fact*time+0.5)*0.001), out).execute( getContext() );
 }
 
-// BaseMatrix & BaseVector Computations
-void OdeSolver::addMBK_ToMatrix(defaulttype::BaseMatrix *A, double mFact, double bFact, double kFact, unsigned int offset)
-{
-    if (A != NULL)
-    {
-        MechanicalAddMBK_ToMatrixVisitor(A, mFact, bFact, kFact, offset).execute( getContext() );
-    }
-}
-
-void OdeSolver::addMBKdx_ToVector(VecId res, VecId dx, double mFact, double bFact, double kFact)
-{
-    MechanicalAddMBKdx_ToVectorVisitor(res, dx, mFact, bFact, kFact);
-}
-
-void OdeSolver::multiVector2BasicVector(VecId src, defaulttype::BaseVector *dest, unsigned int offset)
-{
-    if (dest != NULL)
-    {
-        MechanicalMultiVector2BasicVectorVisitor(src, dest, offset);
-    }
-}
-
-void OdeSolver::getMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
-{
-    MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
-}
-
-/*
-void OdeSolver::computeMatrix(defaulttype::SofaBaseMatrix *mat, double mFact, double bFact, double kFact, unsigned int offset)
-{
-    if (mat != NULL)
-    {
-        MechanicalComputeMatrixVisitor(mat, mFact, bFact, kFact, offset).execute( getContext() );
-    }
-}
-
-
-void OdeSolver::computeOpVector(defaulttype::SofaBaseVector *vect, unsigned int offset)
-{
-    if (vect != NULL)
-    {
-        MechanicalComputeVectorVisitor(vect, offset).execute( getContext() );
-    }
-}
-
-
-void OdeSolver::matResUpdatePosition(defaulttype::SofaBaseVector *vect, unsigned int offset)
-{
-    if (vect != NULL)
-    {
-        MechanicalMatResUpdatePositionVisitor(vect, offset).execute( getContext() );
-    }
-}
-*/
-
 #endif
 
 } // namespace behavior

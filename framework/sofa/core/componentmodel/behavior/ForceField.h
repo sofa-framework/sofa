@@ -27,8 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/BaseForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/defaulttype/SofaBaseVector.h>
+#include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
 {
@@ -155,6 +154,14 @@ public:
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
     virtual double getPotentialEnergy(const VecCoord& x) =0;
+
+    /// This method retrieves dx vector and call the internal
+    /// addKDxToVector(defaulttype::BaseVector *,const VecDeriv&, double, unsigned int&) method implemented by the component.
+    virtual void addKDxToVector(defaulttype::BaseVector * resVect, double kFact, unsigned int& offset);
+
+    /// Compute the right-hand side vector of the system matrix.
+    /// V += kFact * K * dx
+    virtual void addKDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv* /*dx*/, double /*kFact*/, unsigned int& /*offset*/) {};
 
     /// @}
 

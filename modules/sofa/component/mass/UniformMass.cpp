@@ -493,6 +493,49 @@ void UniformMass<Vec6dTypes, double>::draw()
     glEnd();
 }
 
+
+template <>
+void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, double mFact, unsigned int& offset)
+{
+    unsigned int derivDim = Deriv::size();
+    double m = mass.getValue();
+
+    unsigned int vecDim = mstate->getX()->size();
+
+    const double* g = this->getContext()->getLocalGravity().ptr();
+
+    for (unsigned int i=0; i<vecDim; i++)
+        for (unsigned int j=0; j<derivDim; j++)
+        {
+            if (dx != NULL)
+                resVect->element(offset + i * derivDim + j) += mFact * m * g[j] * (*dx)[i][0];
+            else
+                resVect->element(offset + i * derivDim + j) += mFact * m * g[j];
+        }
+}
+
+template <>
+void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, double mFact, unsigned int& offset)
+{
+    unsigned int derivDim = Deriv::size();
+    float m = mass.getValue();
+
+    unsigned int vecDim = mstate->getX()->size();
+
+    const double* g = this->getContext()->getLocalGravity().ptr();
+
+    for (unsigned int i=0; i<vecDim; i++)
+        for (unsigned int j=0; j<derivDim; j++)
+        {
+            if (dx != NULL)
+                resVect->element(offset + i * derivDim + j) += mFact * m * g[j] * (*dx)[i][0];
+            else
+                resVect->element(offset + i * derivDim + j) += mFact * m * g[j];
+        }
+}
+
+
+
 SOFA_DECL_CLASS(UniformMass)
 
 template class UniformMass<Vec3dTypes,double>;

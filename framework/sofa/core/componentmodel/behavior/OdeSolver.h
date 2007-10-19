@@ -131,15 +131,11 @@ public:
     /// @{
 
     // BaseMatrix & BaseVector Computations
-
     virtual void addMBK_ToMatrix(defaulttype::BaseMatrix *A, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0) = 0;
-    virtual void addMBKdx_ToVector(VecId res, VecId dx, double mFact=1.0, double bFact=1.0, double kFact=1.0) = 0;
+    virtual void addMBKdx_ToVector(defaulttype::BaseVector *V, VecId dx, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0) = 0;
     virtual void getMatrixDimension(unsigned int * const, unsigned int * const) = 0;
-    virtual void multiVector2BasicVector(VecId src, defaulttype::BaseVector *dest=NULL, unsigned int offset=0) = 0;
-
-//    virtual void computeMatrix(defaulttype::SofaBaseMatrix *mat=NULL, double mFact=1.0, double bFact=1.0, double kFact=1.0, unsigned int offset=0);
-//    virtual void computeOpVector(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
-//    virtual void matResUpdatePosition(defaulttype::SofaBaseVector *vect=NULL, unsigned int offset=0);
+    virtual void multiVector2BaseVector(VecId src, defaulttype::BaseVector *dest=NULL, unsigned int offset=0) = 0;
+    virtual void multiVectorPeqBaseVector(VecId dest, defaulttype::BaseVector *src=NULL, unsigned int offset=0) = 0;
 
     /// @}
 
@@ -155,8 +151,6 @@ public:
     /// @}
 
 protected:
-    //defaulttype::SofaBaseMatrix *mat;
-
     /// Helper class allocating IDs to temporary vectors.
     class VectorIndexAlloc
     {

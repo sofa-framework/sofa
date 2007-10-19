@@ -104,6 +104,13 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
     }
 }
 
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, double mFact, unsigned int& offset)
+{
+
+}
+
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {

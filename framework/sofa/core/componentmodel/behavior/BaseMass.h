@@ -26,6 +26,8 @@
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEMASS_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
 {
@@ -64,6 +66,12 @@ public:
 
     /// vMv/2
     virtual double getKineticEnergy() = 0;
+
+    /// Add Mass contribution to global Matrix assembling
+    virtual void addMToMatrix(defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/) = 0;
+
+    /// Add Mass contribution to global Vector assembling
+    virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, double /*mFact*/, unsigned int& /*offset*/, bool /*dxNull*/) = 0;
 
     /// @}
 

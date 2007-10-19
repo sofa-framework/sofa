@@ -73,6 +73,18 @@ double Mass<DataTypes>::getKineticEnergy()
     return 0;
 }
 
+template<class DataTypes>
+void Mass<DataTypes>::addMDxToVector(defaulttype::BaseVector *resVect, double mFact, unsigned int& offset, bool dxNull)
+{
+    if (this->mstate)
+    {
+        if (!dxNull)
+            addMDxToVector(resVect, this->mstate->getDx(), mFact, offset);
+        else
+            addMDxToVector(resVect, NULL, mFact, offset);
+    }
+}
+
 } // namespace behavior
 
 } // namespace componentmodel

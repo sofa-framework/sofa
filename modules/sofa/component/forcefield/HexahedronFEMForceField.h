@@ -206,11 +206,6 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
-    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const);
-    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double, double, double, unsigned int &);
-    virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &);
-    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int &);
-
 
     // -- VisualModel interface
     void draw();

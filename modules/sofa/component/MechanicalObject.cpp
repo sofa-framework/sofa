@@ -29,6 +29,7 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/mass/UniformMass.h>
 
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
@@ -169,6 +170,449 @@ void MechanicalObject<defaulttype::Rigid3Types>::resetContactForce()
     for( unsigned i=0; i<force.size(); ++i )
         force[i] = Deriv();
 }
+
+
+
+template <>
+void MechanicalObject<defaulttype::Vec3fTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        (*nbRow) += v->size() * Deriv::size();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec3dTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        //(*nbRow) += v->size() * Deriv::size();
+        (*nbRow) += v->size() * DataTypeInfo<Deriv>::getSize();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec2fTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        (*nbRow) += v->size() * Deriv::size();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec2dTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        (*nbRow) += v->size() * Deriv::size();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec1fTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        (*nbRow) += v->size() * Deriv::size();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec1dTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        (*nbRow) += v->size() * Deriv::size();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Rigid3dTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        (*nbRow) += v->size() * Deriv::size();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Rigid3fTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        (*nbRow) += v->size() * Deriv::size();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Rigid2dTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        (*nbRow) += v->size() * Deriv::size();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Rigid2fTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    if (v->size() != 0)
+    {
+        (*nbRow) += v->size() * Deriv::size();
+        (*nbCol) = *nbRow;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec3fTypes>::setOffset(unsigned int &offset)
+{
+    if (v->size() != 0)
+    {
+        offset += v->size() * Deriv::size();
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec3dTypes>::setOffset(unsigned int &offset)
+{
+    if (v->size() != 0)
+    {
+        offset += v->size() * Deriv::size();
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec2fTypes>::setOffset(unsigned int &offset)
+{
+    if (v->size() != 0)
+    {
+        offset += v->size() * Deriv::size();
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec2dTypes>::setOffset(unsigned int &offset)
+{
+    if (v->size() != 0)
+    {
+        offset += v->size() * Deriv::size();
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec1fTypes>::setOffset(unsigned int &offset)
+{
+    if (v->size() != 0)
+    {
+        offset += v->size() * Deriv::size();
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec1dTypes>::setOffset(unsigned int &offset)
+{
+    if (v->size() != 0)
+    {
+        offset += v->size() * Deriv::size();
+    }
+}
+
+
+
+//template <>
+//void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::contributeToMatrixDimension(unsigned int * const /*nbRow*/, unsigned int * const /*nbCol*/)
+//{
+//}
+//
+//template <>
+//void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::setOffset(unsigned int &/*offset*/)
+//{
+//}
+//
+//template <>
+//void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::loadInBaseVector(defaulttype::BaseVector * /*dest*/, VecId /*src*/, unsigned int &/*offset*/)
+//{
+//}
+//
+//template <>
+//void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::addBaseVectorToState(VecId /*dest*/, defaulttype::BaseVector * /*src*/, unsigned int &/*offset*/)
+//{
+//}
+
+
+
+template <>
+void MechanicalObject<defaulttype::Vec3fTypes>::loadInBaseVector(defaulttype::BaseVector *dest, VecId src, unsigned int &offset)
+{
+    VecDeriv* vSrc = getVecDeriv(src.index);
+    unsigned int derivDim = Deriv::size();
+    unsigned int j(0);
+
+    for (unsigned int i=0; i<vSrc->size(); i++)
+        for (unsigned int j=0; j<derivDim; j++)
+            dest->element(offset + i * derivDim + j) = (*vSrc)[i](j);
+
+
+    offset += vSrc->size() * derivDim;
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec3dTypes>::loadInBaseVector(defaulttype::BaseVector *dest, VecId src, unsigned int &offset)
+{
+    VecDeriv* vSrc = getVecDeriv(src.index);
+    unsigned int derivDim = Deriv::size();
+    unsigned int j(0);
+
+    for (unsigned int i=0; i<vSrc->size(); i++)
+        for (unsigned int j=0; j<derivDim; j++)
+            dest->element(offset + i * derivDim + j) = (*vSrc)[i](j);
+
+    offset += vSrc->size() * derivDim;
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec2fTypes>::loadInBaseVector(defaulttype::BaseVector *dest, VecId src, unsigned int &offset)
+{
+    VecDeriv* vSrc = getVecDeriv(src.index);
+    unsigned int derivDim = Deriv::size();
+    unsigned int j(0);
+
+    for (unsigned int i=0; i<vSrc->size(); i++)
+        for (unsigned int j=0; j<derivDim; j++)
+            dest->element(offset + i * derivDim + j) = (*vSrc)[i](j);
+
+    offset += vSrc->size() * derivDim;
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec2dTypes>::loadInBaseVector(defaulttype::BaseVector *dest, VecId src, unsigned int &offset)
+{
+    VecDeriv* vSrc = getVecDeriv(src.index);
+    unsigned int derivDim = Deriv::size();
+    unsigned int j(0);
+
+    for (unsigned int i=0; i<vSrc->size(); i++)
+        for (unsigned int j=0; j<derivDim; j++)
+            dest->element(offset + i * derivDim + j) = (*vSrc)[i](j);
+
+    offset += vSrc->size() * derivDim;
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec1fTypes>::loadInBaseVector(defaulttype::BaseVector *dest, VecId src, unsigned int &offset)
+{
+    VecDeriv* vSrc = getVecDeriv(src.index);
+    unsigned int derivDim = Deriv::size();
+    unsigned int j(0);
+
+    for (unsigned int i=0; i<vSrc->size(); i++)
+        for (unsigned int j=0; j<derivDim; j++)
+            dest->element(offset + i * derivDim + j) = (*vSrc)[i](j);
+
+    offset += vSrc->size() * derivDim;
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec1dTypes>::loadInBaseVector(defaulttype::BaseVector *dest, VecId src, unsigned int &offset)
+{
+    VecDeriv* vSrc = getVecDeriv(src.index);
+    unsigned int derivDim = Deriv::size();
+    unsigned int j(0);
+
+    for (unsigned int i=0; i<vSrc->size(); i++)
+        for (unsigned int j=0; j<derivDim; j++)
+            dest->element(offset + i * derivDim + j) = (*vSrc)[i](j);
+
+    offset += vSrc->size() * derivDim;
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec3fTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+    std::cout << "addBaseVectorToState3f\n";
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        unsigned int coordDim = Coord::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        unsigned int coordDim = Deriv::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+
+        offset += vDest->size() * coordDim;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec3dTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+    std::cout << "addBaseVectorToState3d\n";
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        unsigned int coordDim = Coord::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        unsigned int coordDim = Deriv::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+
+        offset += vDest->size() * coordDim;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec2fTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        unsigned int coordDim = Coord::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        unsigned int coordDim = Deriv::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+
+        offset += vDest->size() * coordDim;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec2dTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        unsigned int coordDim = Coord::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        unsigned int coordDim = Deriv::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+
+        offset += vDest->size() * coordDim;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec1fTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        unsigned int coordDim = Coord::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        unsigned int coordDim = Deriv::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+
+        offset += vDest->size() * coordDim;
+    }
+}
+
+template <>
+void MechanicalObject<defaulttype::Vec1dTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        unsigned int coordDim = Coord::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        unsigned int coordDim = Deriv::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+            for (unsigned int j=0; j<coordDim; j++)
+                (*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+
+        offset += vDest->size() * coordDim;
+    }
+}
+
 
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 

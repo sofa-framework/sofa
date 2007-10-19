@@ -177,7 +177,7 @@ void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 
 // Matrix Integration interface
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseMatrix *mat, unsigned int &offset)
+void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset)
 {
     std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
     const SetIndexArray & indices = f_indices.getValue().getArray();
@@ -185,7 +185,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseMatrix *ma
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
         // Reset Fixed Row
-        for (int i=0; i<mat->colDim(); i++)
+        for (int i=0; i<mat->colSize(); i++)
         {
             mat->element(i, 3 * (*it) + offset) = 0.0;
             mat->element(i, 3 * (*it) + offset + 1) = 0.0;
@@ -193,7 +193,7 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseMatrix *ma
         }
 
         // Reset Fixed Col
-        for (int i=0; i<mat->rowDim(); i++)
+        for (int i=0; i<mat->rowSize(); i++)
         {
             mat->element(3 * (*it) + offset, i) = 0.0;
             mat->element(3 * (*it) + offset + 1, i) = 0.0;
@@ -216,19 +216,19 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseMatrix *ma
 }
 
 template <class DataTypes>
-void FixedConstraint<DataTypes>::applyConstraint(defaulttype::SofaBaseVector *vect, unsigned int &offset)
+void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset)
 {
     std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
     const SetIndexArray & indices = f_indices.getValue().getArray();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        vect->element(3 * (*it)
-                + offset) = 0.0;
+        vect->element(3 * (*it) + offset) = 0.0;
         vect->element(3 * (*it) + offset + 1) = 0.0;
         vect->element(3 * (*it) + offset + 2) = 0.0;
     }
 }
+
 
 template <class DataTypes>
 void FixedConstraint<DataTypes>::draw()

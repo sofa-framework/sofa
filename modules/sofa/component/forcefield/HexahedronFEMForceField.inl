@@ -739,42 +739,6 @@ void HexahedronFEMForceField<DataTypes>::draw()
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
-{
-    if (this->mstate)
-    {
-        VecDeriv& p = *this->mstate->getV();
-        if (p.size() != 0)
-        {
-            (*nbRow) += p.size() * p[0].size();
-            (*nbCol) = *nbRow;
-        }
-    }
-}
-
-
-template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeMatrix(sofa::defaulttype::SofaBaseMatrix * /*mat*/, double /*m*/, double /*b*/, double /*k*/, unsigned int & /*offset*/)
-{
-
-}
-
-
-
-template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeVector(sofa::defaulttype::SofaBaseVector * /*vect*/, unsigned int & /*offset*/)
-{
-
-}
-
-
-template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::matResUpdatePosition(sofa::defaulttype::SofaBaseVector * /*vect*/, unsigned int & /*offset*/)
-{
-
-}
-
 } // namespace forcefield
 
 } // namespace component

@@ -27,7 +27,6 @@
 
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/defaulttype/SolidTypes.h>
-//#include <sofa/defaulttype/SofaBaseMatrix.h>
 #include <set>
 
 namespace sofa

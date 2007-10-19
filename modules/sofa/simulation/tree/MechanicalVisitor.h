@@ -38,8 +38,8 @@
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/Constraint.h>
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/BaseVector.h>
+//#include <sofa/defaulttype/BaseMatrix.h>
+//#include <sofa/defaulttype/BaseVector.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -969,101 +969,7 @@ public:
     }
 };
 
-/** Compute the size of a dynamics matrix (mass or stiffness) of the whole scene */
-class MechanicalGetMatrixDimensionVisitor : public MechanicalVisitor
-{
-public:
-    unsigned int * const nbRow;
-    unsigned int * const nbCol;
-    MechanicalGetMatrixDimensionVisitor(unsigned int * const _nbRow, unsigned int * const _nbCol)
-        : nbRow(_nbRow), nbCol(_nbCol)
-    {}
 
-    virtual Result fwdForceField(GNode*, core::componentmodel::behavior::BaseForceField *ff)
-    {
-        ff->contributeToMatrixDimension(nbRow, nbCol);
-        return RESULT_CONTINUE;
-    }
-};
-
-
-/** Accumulate the entries of a dynamics matrix (mass or stiffness) of the whole scene */
-class MechanicalAddMBK_ToMatrixVisitor : public MechanicalVisitor
-{
-public:
-    BaseMatrix *mat;
-    double m, b, k;
-    unsigned int offset, offsetBckUp;
-
-    MechanicalAddMBK_ToMatrixVisitor(BaseMatrix *_mat, double _m=1.0, double _b=1.0, double _k=1.0, unsigned int _offset=0)
-        : mat(_mat),m(_m),b(_b),k(_k),offset(_offset), offsetBckUp(_offset)
-    {}
-
-    virtual Result fwdForceField(GNode* /*node*/, core::componentmodel::behavior::BaseForceField* /*ff*/)
-    {
-        // ff->computeMatrix(mat,m,b,k,offset);
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
-    {
-        // c->applyConstraint(mat, offsetBckUp);
-        offsetBckUp = offset;
-        return RESULT_CONTINUE;
-    }
-};
-
-
-/** Accumulate the entries of a dynamics vector (e.g. force) of the whole scene */
-class MechanicalAddMBKdx_ToVectorVisitor : public MechanicalVisitor
-{
-public:
-//    SofaBaseVector *vect;
-    unsigned int offset, offsetBckUp;
-
-    MechanicalAddMBKdx_ToVectorVisitor(VecId /*res*/, VecId /*dx*/, double /*mFact=1.0*/, double /*bFact=1.0*/, double /*kFact=1.0*/)
-    {}
-
-    virtual Result fwdForceField(GNode* /*node*/, core::componentmodel::behavior::BaseForceField* /*ff*/)
-    {
-        //	ff->computeVector(vect, offset);
-        return RESULT_CONTINUE;
-    }
-
-    virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
-    {
-        //	c->applyConstraint(vect, offsetBckUp);
-        offsetBckUp = offset;
-        return RESULT_CONTINUE;
-    }
-};
-
-class MechanicalMultiVector2BasicVectorVisitor : public MechanicalVisitor
-{
-public:
-    MechanicalMultiVector2BasicVectorVisitor(VecId /*src*/, defaulttype::BaseVector * /*dest=NULL */, unsigned int /* offset=0 */)
-    {
-    }
-};
-
-/*
-class MechanicalMatResUpdatePositionVisitor : public MechanicalVisitor
-{
-public:
-    SofaBaseVector *vect;
-    unsigned int offset;
-
-    MechanicalMatResUpdatePositionVisitor(SofaBaseVector *_vect, unsigned int _offset=0)
-            : vect(_vect), offset(_offset)
-    {}
-
-    virtual Result fwdForceField(GNode* node, core::componentmodel::behavior::BaseForceField* ff)
-    {
-        ff->matResUpdatePosition(vect, offset);
-        return RESULT_CONTINUE;
-    }
-};
-*/
 
 // ACTION : Compute Compliance on mechanical models
 class MechanicalComputeComplianceVisitor : public MechanicalVisitor

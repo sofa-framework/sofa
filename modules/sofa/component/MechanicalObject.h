@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/XField.h>
 #include <sofa/core/objectmodel/VField.h>
+#include <sofa/defaulttype/BaseVector.h>
 #include <vector>
 #include <assert.h>
 #include <fstream>
@@ -198,6 +199,23 @@ public:
     /// Get the indices of the particles located in the given bounding box
     void getIndicesInSpace(std::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
 
+
+    /// @Base Matrices and Vectors Interface
+    /// @{
+
+    /// Add the Mechanical State Dimension [DOF number * DOF dimension] to the global matrix dimension
+    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const);
+
+    /// Load local mechanical data stored in the state in a global BaseVector basically stored in solvers
+    virtual void loadInBaseVector(defaulttype::BaseVector *, VecId , unsigned int &);
+
+    /// Add data stored in a BaseVector to a local mechanical vector of the MechanicalState
+    virtual void addBaseVectorToState(VecId , defaulttype::BaseVector *, unsigned int &);
+
+    /// Update offset index during the subgraph traversal
+    virtual void setOffset(unsigned int &);
+
+    /// @}
 
     // new : get compliance on the constraints
     virtual void getCompliance(double **w);

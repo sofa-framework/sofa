@@ -27,8 +27,6 @@
 
 #include <sofa/core/componentmodel/behavior/BaseForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/defaulttype/SofaBaseVector.h>
 
 namespace sofa
 {
@@ -64,17 +62,6 @@ public:
     /// \todo Rename to getMechState2()
     /// \todo Replace with an accessor to a list of states, as an InteractionForceField can be applied to more than two.
     virtual BaseMechanicalState* getMechModel2() = 0;
-
-
-    /// @name Matrix operations
-    /// @{
-
-    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) {};
-    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix *, double , double , double, unsigned int &) {};
-    virtual void computeVector(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
-    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector *, unsigned int &) {};
-
-    /// @}
 };
 
 } // namespace behavior

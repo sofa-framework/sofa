@@ -75,6 +75,22 @@ public:
         {
             return "LMTypes";
         }
+
+        static unsigned int size() {return 0;};
+
+        Real& operator()(int i)
+        {
+            Real r(0.0);
+            return r;
+        }
+
+        /// Const access to i-th element.
+        const Real& operator()(int i) const
+        {
+            Real r(0.0);
+            return r;
+        }
+
     };
     typedef typename LMTypes::VecCoord LMCoord;
     typedef typename LMTypes::VecDeriv LMDeriv;

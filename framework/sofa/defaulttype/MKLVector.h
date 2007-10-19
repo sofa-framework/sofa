@@ -22,34 +22,56 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include "BaseForceField.h"
+#ifndef SOFA_DEFAULTTYPE_MKLVECTOR_H
+#define SOFA_DEFAULTTYPE_MKLVECTOR_H
+
+#include <sofa/defaulttype/BaseVector.h>
+
+#include <MKL/vect_dyn.h>
 
 namespace sofa
 {
 
-namespace core
+namespace defaulttype
 {
 
-namespace componentmodel
+class MKLVector : public BaseVector
 {
+    friend class MKLMatrix;
 
-namespace behavior
-{
+public:
 
-void BaseForceField::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
-{
+    MKLVector()
+    {
+        impl = new Dynamic_Vector<double>();
+    }
 
-}
+    virtual ~MKLVector()
+    {
+        delete impl;
+    }
 
-void BaseForceField::addKDxToVector(sofa::defaulttype::BaseVector *, double, unsigned int &)
-{
+    virtual void resize(int dim)
+    {
+        impl->resize(dim);
+    };
 
-}
+    virtual double &element(int i)
+    {
+        return impl->operator[](i);
+    };
 
-} // namespace behavior
+    virtual int size(void)
+    {
+        return impl->size();
+    };
 
-} // namespace componentmodel
+private:
+    Dynamic_Vector<double> *impl;
+};
 
-} // namespace core
+} // namespace defaulttype
 
 } // namespace sofa
+
+#endif

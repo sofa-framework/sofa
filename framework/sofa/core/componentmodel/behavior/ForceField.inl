@@ -88,6 +88,15 @@ double ForceField<DataTypes>::getPotentialEnergy()
     else return 0;
 }
 
+template<class DataTypes>
+void ForceField<DataTypes>::addKDxToVector(defaulttype::BaseVector *resVect, double kFact, unsigned int& offset)
+{
+    if (mstate)
+    {
+        addKDxToVector(resVect, mstate->getDx(), kFact, offset);
+    }
+}
+
 } // namespace behavior
 
 } // namespace componentmodel

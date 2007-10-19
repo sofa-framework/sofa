@@ -26,8 +26,8 @@
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEFORCEFIELD_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/defaulttype/SofaBaseVector.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
 {
@@ -100,27 +100,15 @@ public:
     /// @name Matrix operations
     /// @{
 
-    /// Compute the system matrix corresponding to m M + b B + k K
+    /// Compute the system matrix corresponding to m M
     ///
     /// \param matrix matrix to add the result to
     /// \param mFact coefficient for mass values
-    /// \param bFact coefficient for damping values
-    /// \param kFact coefficient for stiffness values
-    /// \param offset current row/column offset, must be incremented
-    ///   by this method
-    virtual void computeMatrix(sofa::defaulttype::SofaBaseMatrix * matrix, double mFact, double bFact, double kFact, unsigned int &offset);
-
-    /// Compute the system matrix dimmensions bo adding the number of lines and
-    /// columns associated with this ForceField.
-    ///
-    /// \todo Isn't the dimensions related to the MechanicalState and not the
-    /// ForceFields ?
-    virtual void contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol);
+    /// \param offset current row/column offset
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * matrix, double kFact, unsigned int &offset);
 
     /// Compute the right-hand side vector of the system matrix.
-    virtual void computeVector(sofa::defaulttype::SofaBaseVector * vect, unsigned int &offset);
-
-    virtual void matResUpdatePosition(sofa::defaulttype::SofaBaseVector * vect, unsigned int &offset);
+    virtual void addKDxToVector(sofa::defaulttype::BaseVector * vect, double kFact, unsigned int &offset);
 
     /// @}
 };

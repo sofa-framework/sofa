@@ -29,8 +29,8 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/SofaBaseMatrix.h>
-#include <sofa/defaulttype/SofaBaseVector.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseVector.h>
 #include <sofa/helper/vector.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <set>
@@ -88,8 +88,8 @@ public:
     virtual void projectVelocity(VecDeriv& /*dx*/) {} ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& /*x*/) {} ///< project x to constrained space (x models a position)
 
-    void applyConstraint(defaulttype::SofaBaseMatrix *mat, unsigned int &offset);
-    void applyConstraint(defaulttype::SofaBaseVector *vect, unsigned int &offset);
+    void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset);
+    void applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset);
 
     // Handle topological changes
     virtual void handleTopologyChange();

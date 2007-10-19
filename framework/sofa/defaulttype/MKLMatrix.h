@@ -22,34 +22,77 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include "BaseForceField.h"
+#ifndef SOFA_DEFAULTTYPE_MKLMATRIX_H
+#define SOFA_DEFAULTTYPE_MKLMATRIX_H
+
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/MKLVector.h>
+
+#include <MKL/mat_dyn.h>
+#include <mkl_lapack.h>
 
 namespace sofa
 {
 
-namespace core
+namespace defaulttype
 {
 
-namespace componentmodel
+class MKLMatrix : public BaseMatrix
 {
+public:
 
-namespace behavior
-{
+    MKLMatrix()
+    {
+        impl = new Dynamic_Matrix<double>;
+    }
 
-void BaseForceField::addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/)
-{
+    virtual ~MKLMatrix()
+    {
+        delete impl;
+    }
 
-}
+    virtual void resize(int nbRow, int nbCol)
+    {
+        impl->resize(nbRow, nbCol);
+        //	(*impl) = 0.0;
+    };
 
-void BaseForceField::addKDxToVector(sofa::defaulttype::BaseVector *, double, unsigned int &)
-{
+    virtual int rowSize(void)
+    {
+        return impl->rows;
+    };
 
-}
+    virtual int colSize(void)
+    {
+        return impl->columns;
+    };
 
-} // namespace behavior
+    virtual double &element(int i, int j)
+    {
+        return *(impl->operator[](j) + i);
+    };
 
-} // namespace componentmodel
+    virtual void solve(MKLVector *rHTerm)
+    {
+        int n=impl->rows;
+        int nrhs=1;
+        int lda = n;
+        int ldb = n;
+        int info;
+        int *ipiv = new int[n];
 
-} // namespace core
+        // solve Ax=b
+        // b is overwritten by the linear system solution
+        dgesv(&n,&nrhs,impl->m,&lda,ipiv,rHTerm->impl->v,&ldb,&info);
+    };
+
+
+private:
+    Dynamic_Matrix<double> *impl;
+};
+
+
+} // namespace defaulttype
 
 } // namespace sofa
+#endif

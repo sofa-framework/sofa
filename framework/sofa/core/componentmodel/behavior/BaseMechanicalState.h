@@ -26,6 +26,7 @@
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEMECHANICALSTATE_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/BaseVector.h>
 #include <iostream>
 
 
@@ -202,6 +203,18 @@ public:
     virtual void resetContactForce(void) {}
 
     virtual void addDxToCollisionModel(void) = 0; //{}
+
+    /// Add the Mechanical State Dimension [DOF number * DOF dimension] to the global matrix dimension
+    virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const) = 0;
+
+    /// Load local mechanical data stored in the state in a global BaseVector basically stored in solvers
+    virtual void loadInBaseVector(defaulttype::BaseVector *, VecId , unsigned int &) = 0;
+
+    /// Add data stored in a BaseVector to a local mechanical vector of the MechanicalState
+    virtual void addBaseVectorToState(VecId , defaulttype::BaseVector *, unsigned int &) = 0;
+
+    /// Update offset index during the subgraph traversal
+    virtual void setOffset(unsigned int &) = 0;
 
     /// @}
 

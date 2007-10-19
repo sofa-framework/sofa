@@ -30,6 +30,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
+#include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
 {
@@ -80,6 +81,8 @@ public:
     double getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
 
     double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
+
+    void addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv *dx, double mFact, unsigned int& offset);
 
     // -- VisualModel interface
 

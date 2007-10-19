@@ -458,6 +458,78 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+{
+    /*
+    if (v->size() != 0)
+    {
+    	(*nbRow) += v->size() * Deriv::size();
+    	(*nbCol) = *nbRow;
+    }
+    */
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::setOffset(unsigned int &offset)
+{
+    /*
+    if (v->size() != 0)
+    {
+    	offset += v->size() * Deriv::size();
+    }
+    */
+}
+
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector *dest, VecId src, unsigned int &offset)
+{
+    /*
+    VecDeriv* vSrc = getVecDeriv(src.index);
+    unsigned int derivDim = Deriv::size();
+    unsigned int j(0);
+
+    for (unsigned int i=0; i<vSrc->size(); i++)
+    	for (unsigned int j=0; j<derivDim; j++)
+    		dest->element(offset + i * derivDim + j) = (*vSrc)[i](j);
+
+    offset += vSrc->size() * derivDim;
+    */
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+    /*
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+    	unsigned int coordDim = Coord::size();
+
+    	for (unsigned int i=0; i<vDest->size(); i++)
+    	{
+    		for (unsigned int j=0; j<coordDim; j++)
+    			(*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+    	}
+
+    	offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+    	unsigned int coordDim = Deriv::size();
+
+    	for (unsigned int i=0; i<vDest->size(); i++)
+    		for (unsigned int j=0; j<coordDim; j++)
+    			(*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+
+    	offset += vDest->size() * coordDim;
+    }
+    */
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::getCompliance (double** /*W*/)
 {
 }

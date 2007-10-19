@@ -44,11 +44,11 @@ void BaseConstraint::applyConstraint(unsigned int&, double&)
 {
 }
 
-void BaseConstraint::applyConstraint(defaulttype::SofaBaseMatrix *, unsigned int &)
+void BaseConstraint::applyConstraint(defaulttype::BaseMatrix *, unsigned int &)
 {
 }
 
-void BaseConstraint::applyConstraint(defaulttype::SofaBaseVector *, unsigned int &)
+void BaseConstraint::applyConstraint(defaulttype::BaseVector *, unsigned int &)
 {
 }
 

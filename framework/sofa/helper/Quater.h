@@ -235,6 +235,8 @@ public:
         in>>v._q[0]>>v._q[1]>>v._q[2]>>v._q[3];
         return in;
     }
+
+    static unsigned int size() {return 4;};
 };
 
 //typedef Quater<double> Quat; ///< alias

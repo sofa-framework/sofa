@@ -103,6 +103,21 @@ public:
     /// This method must be implemented by the component.
     virtual double getKineticEnergy( const VecDeriv& v )=0;
 
+
+    /// Mat += mFact * M
+    ///
+    /// This method must be implemented by the component. Offset parameter gives the current Matrix block starting point.
+    virtual void addMToMatrix(defaulttype::BaseMatrix * /*mat*/, double /*mFact*/, unsigned int &/*offset*/) {};
+
+    /// This method retrieves dx vector and call the internal
+    /// addMDxToVector(defaulttype::BaseVector *,const VecDeriv&, double, unsigned int&) method implemented by the component.
+    virtual void addMDxToVector(defaulttype::BaseVector * resVect, double mFact, unsigned int& offset, bool dxNull);
+
+    /// V += mFact * M * dx
+    ///
+    /// This method must be implemented by the component. Offset parameter gives the current Vector starting point.
+    virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv * /*dx*/, double /*mFact*/, unsigned int& /*offset*/) {};
+
     /// @}
 };
 
