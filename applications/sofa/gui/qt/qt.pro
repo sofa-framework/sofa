@@ -5,7 +5,7 @@
 
 
 
-HEADERS += SofaViewer.h \
+HEADERS += viewer/SofaViewer.h \
            Main.h \
            RealGUI.h \
            GraphListenerQListView.h \

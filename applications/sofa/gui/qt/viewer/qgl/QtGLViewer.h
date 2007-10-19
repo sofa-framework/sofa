@@ -33,7 +33,7 @@
 #include <string.h>
 #include <fstream>
 
-#include "SofaViewer.h"
+#include <viewer/SofaViewer.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/helper/gl/Transformation.h>

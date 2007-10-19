@@ -35,7 +35,7 @@
 
 #include <GUI.h>
 #include <GraphListenerQListView.h>
-#include <SofaViewer.h>
+#include <viewer/SofaViewer.h>
 #include <AddObject.h>
 #include <ModifyObject.h>
 #include <sofa/simulation/tree/xml/XML.h>
