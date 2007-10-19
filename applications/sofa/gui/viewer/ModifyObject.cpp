@@ -2442,7 +2442,12 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         storeQtTable( table, ff);
     }
     //**************************************************************************************************************************************
-    else if (Field< vector< Vec<3,float> > >  *ff = dynamic_cast< Field< vector< Vec<3,float> > >  * >( field ))
+    else if( DataField< vector< Vec< 3, unsigned int> > >   *ff = dynamic_cast< DataField< vector< Vec< 3, unsigned int> > >   * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if ( Field< vector< Vec<3,float> > >  *ff = dynamic_cast< Field< vector< Vec<3,float> > >  * >( field ))
     {
         storeQtTable( table, ff);
     }
@@ -2451,123 +2456,295 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if( Field< vector< Vec< 3, int> > >  *ff = dynamic_cast< Field< vector< Vec< 3, int> > >  * >( field ))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
-    else if (DataField< vector< Vec<2,float> > >  *ff = dynamic_cast< DataField< vector< Vec<2,float> > >  * >( field ))
+    //**************************************************************************************************************************************
+    else if(  Field< vector< Vec< 3, unsigned int> > >   *ff = dynamic_cast< Field< vector< Vec< 3, unsigned int> > >   * >( field ))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
+    else if ( DataField< vector< Vec<2,float> > >  *ff = dynamic_cast< DataField< vector< Vec<2,float> > >  * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
     else if ( DataField< vector< Vec<2,double> > >   *ff = dynamic_cast< DataField< vector< Vec<2,double> > >   * >( field ) )
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
-    else if(  DataField< vector< Vec< 2, int> > >   *ff = dynamic_cast< DataField< vector< Vec< 2, int> > >   * >( field ))
+    //**************************************************************************************************************************************
+    else if( DataField< vector< Vec< 2, int> > >   *ff = dynamic_cast< DataField< vector< Vec< 2, int> > >   * >( field ))
     {
         storeQtTable( table, ff);
     }
-
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
+    else if( DataField< vector< Vec< 2, unsigned int> > >   *ff = dynamic_cast< DataField< vector< Vec< 2, unsigned int> > >   * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
     else if (Field< vector< Vec<2,float> > >  *ff = dynamic_cast< Field< vector< Vec<2,float> > >  * >( field ))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if ( Field< vector< Vec<2,double> > >   *ff = dynamic_cast< Field< vector< Vec<2,double> > >   * >( field ) )
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if(  Field< vector< Vec< 2, int> > >   *ff = dynamic_cast< Field< vector< Vec< 2, int> > >   * >( field ))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
+    else if(  Field< vector< Vec< 2, unsigned int> > >   *ff = dynamic_cast< Field< vector< Vec< 2, unsigned int> > >   * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
     else if(  DataField< vector< double > >   *ff = dynamic_cast< DataField< vector< double> >   * >( field))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if(  DataField< vector< float > >   *ff = dynamic_cast< DataField< vector< float> >   * >( field))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if(  DataField< vector< int > >   *ff = dynamic_cast< DataField< vector< int> >   * >( field))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if(  DataField< vector< unsigned int > >   *ff = dynamic_cast< DataField< vector< unsigned int> >   * >( field))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if(  Field< vector< double > >   *ff = dynamic_cast< Field< vector< double> >   * >( field))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if(  Field< vector< float > >   *ff = dynamic_cast< Field< vector< float> >   * >( field))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if(  Field< vector< int > >   *ff = dynamic_cast< Field< vector< int> >   * >( field))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if(  Field< vector< unsigned int > >   *ff = dynamic_cast< Field< vector< unsigned int> >   * >( field))
     {
         storeQtTable( table, ff);
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  * >( field ))
     {
-        storeQtTable<6,double>( table, ff);
+        vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  * >( field ))
     {
-        storeQtTable<6,float>( table, ff);
+        vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            float values[5];
+            sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  * >( field ))
     {
-        storeQtTable<3,double>( table, ff);
+
+        vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  * >( field ))
     {
-        storeQtTable<3,float>( table, ff);
+
+        vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            float values[5];
+            sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  * >( field ))
     {
-        storeQtTable<2,double>( table, ff);
+
+        vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  * >( field ))
     {
-        storeQtTable<2,float>( table, ff);
+
+        vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            float values[5];
+            sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  * >( field ))
     {
-        storeQtTable<1,double>( table, ff);
+
+        vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            double values[5];
+            sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  * >( field ))
     {
-        storeQtTable<1,float>( table, ff);
+
+        vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > new_value;
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            float values[5];
+            sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring current_spring;
+            for (int j=0; j<5; j++)
+            {
+                values[j] = atof(table->text(i,j));
+            }
+            current_spring.m1 = (int) values[0];
+            current_spring.m2 = (int) values[1];
+
+            current_spring.ks       = values[2];
+            current_spring.kd       = values[3];
+            current_spring.initpos  = values[4];
+
+            new_value.push_back(current_spring);
+        }
+        ff->setValue( new_value );
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3dTypes>::Spring > >  * >( field ))
     {
         sofa::helper::vector<  sofa::component::forcefield::JointSpringForceField< Rigid3dTypes >::Spring > new_value;
@@ -2605,7 +2782,7 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
         }
         ff->setValue( new_value );
     }
-//**************************************************************************************************************************************
+    //**************************************************************************************************************************************
     else if (DataField< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::JointSpringForceField< Rigid3fTypes>::Spring > >  * >( field ))
     {
         sofa::helper::vector<  sofa::component::forcefield::JointSpringForceField< Rigid3fTypes >::Spring > new_value;
