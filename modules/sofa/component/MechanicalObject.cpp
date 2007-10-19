@@ -29,7 +29,7 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/mass/UniformMass.h>
 
-#include <sofa/defaulttype/DataTypeInfo.h>
+//#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
@@ -188,8 +188,8 @@ void MechanicalObject<defaulttype::Vec3dTypes>::contributeToMatrixDimension(unsi
 {
     if (v->size() != 0)
     {
-        //(*nbRow) += v->size() * Deriv::size();
-        (*nbRow) += v->size() * DataTypeInfo<Deriv>::getSize();
+        (*nbRow) += v->size() * Deriv::size();
+        //	(*nbRow) += v->size() * DataTypeInfo<Deriv>::getSize();
         (*nbCol) = *nbRow;
     }
 }
