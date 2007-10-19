@@ -2833,17 +2833,16 @@ bool ModifyObject::createQtTable(DataField< sofa::helper::vector< Vec<N,T> > > *
 template< int N, class T>
 void ModifyObject::storeQtTable( Q3Table* table, DataField< sofa::helper::vector< Vec<N,T> > >* ff )
 {
-    QString vec_value[N];
+
     sofa::helper::vector< Vec<N,T> > new_value;
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
+        Vec<N,T> vec_value;
         for (int j=0; j<N; j++)
         {
-            vec_value[j] = table->text(i,j);
+            vec_value[j] = (T) atof(table->text(i,j));
         }
-        new_value.push_back( Vec<N,T>( (T)atof(vec_value[0]),
-                (T)atof(vec_value[1]),
-                (T)atof(vec_value[2])  ));
+        new_value.push_back( vec_value );
     }
     ff->setValue( new_value );
 }
@@ -2882,17 +2881,17 @@ bool ModifyObject::createQtTable(Field< sofa::helper::vector< Vec<N,T> > > *ff, 
 template< int N, class T>
 void ModifyObject::storeQtTable( Q3Table* table, Field< sofa::helper::vector< Vec<N,T> > >* ff )
 {
-    QString vec_value[N];
     sofa::helper::vector< Vec<N,T> > new_value;
     for (unsigned int i=0; i<ff->getValue().size(); i++)
     {
+        Vec<N,T> vec_value;
         for (int j=0; j<N; j++)
         {
-            vec_value[j] = table->text(i,j);
+            vec_value[j] = (T) atof(table->text(i,j));
         }
-        new_value.push_back( Vec<N,T>( (T)atof(vec_value[0]),
-                (T)atof(vec_value[1]),
-                (T)atof(vec_value[2])  ));
+
+        new_value.push_back( vec_value );
+
     }
     ff->setValue( new_value );
 }
