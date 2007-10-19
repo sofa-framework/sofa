@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include "RealGUI.h"
 
+#include <sofa/component/topology/PointData.h>
 #include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -102,6 +103,10 @@ protected:
     bool createTable(core::objectmodel::FieldBase* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
     void storeTable(Q3Table* table, core::objectmodel::FieldBase* field);
 
+
+    void createVector(const Quater<double> &value, Q3GroupBox *box); //will be created as a Vec<4,double>
+    void createVector(const Quater<float>  &value, Q3GroupBox *box); //will be created as a Vec<4,float>
+
     //*********************************************************
     template< int N, class T>
     void createVector(const Vec<N,T> &value, Q3GroupBox *box);
@@ -128,10 +133,12 @@ protected:
     template< int N, class T>
     void storeQtTable( Q3Table* table, Field< sofa::helper::vector< Vec<N,T> > >* ff );
     //*********************************************************
+    template< class T>
+    bool createQtTable(DataField< sofa::component::topology::PointData< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    template< class T>
+    void storeQtTable( Q3Table* table, DataField< sofa::component::topology::PointData< T > >* ff );
+    //*********************************************************
 
-
-    void createVector(const Quater<double> &value, Q3GroupBox *box); //will be created as a Vec<4,double>
-    void createVector(const Quater<float>  &value, Q3GroupBox *box); //will be created as a Vec<4,float>
 
     QWidget *parent;
     core::objectmodel::Base* node;

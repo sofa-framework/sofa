@@ -1240,120 +1240,6 @@ void ModifyObject::changeNumberPoint()
 
 
 
-//*******************************************************************************************************************
-template< int N, class T>
-bool ModifyObject::createQtTable(DataField< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
-{
-    if (!vectorTable)
-    {
-        if (ff->getValue().size() == 0)  return false;
-        box->setColumns(1);
-        vectorTable = new Q3Table(ff->getValue().size(),N, box);
-        list_Table.push_back(std::make_pair(vectorTable, ff));
-        if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
-        if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
-        if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
-
-        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-    }
-    sofa::helper::vector< Vec<N,T> > value = ff->getValue();
-
-
-    for (unsigned int i=0; i<ff->getValue().size(); i++)
-    {
-        std::ostringstream oss[N];
-        for (int j=0; j<N; j++)
-        {
-            oss[j] << value[i][j];
-            vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
-        }
-    }
-    return true;
-}
-//********************************************************************************************************************
-template< int N, class T>
-bool ModifyObject::createQtTable(Field< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
-{
-    if (!vectorTable)
-    {
-        if (ff->getValue().size() == 0)  return false;
-        box->setColumns(1);
-        vectorTable = new Q3Table(ff->getValue().size(),N, box);
-        list_Table.push_back(std::make_pair(vectorTable, ff));
-        if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
-        if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
-        if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
-
-        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-    }
-    sofa::helper::vector< Vec<N,T> > value = ff->getValue();
-
-
-    for (unsigned int i=0; i<ff->getValue().size(); i++)
-    {
-        std::ostringstream oss[N];
-        for (int j=0; j<N; j++)
-        {
-            oss[j] << value[i][j];
-            vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
-        }
-    }
-    return true;
-}
-//********************************************************************************************************************
-template< class T>
-bool ModifyObject::createQtTable(DataField< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
-{
-    if (!vectorTable)
-    {
-        if (ff->getValue().size() == 0)  return false;
-
-        box->setColumns(1);
-
-        vectorTable = new Q3Table(ff->getValue().size(),1, box);
-        list_Table.push_back(std::make_pair(vectorTable, ff));
-        vectorTable->setColumnStretchable(0,true);
-
-        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-    }
-    vector< T > value = ff->getValue();
-
-    for (unsigned int i=0; i<ff->getValue().size(); i++)
-    {
-        std::ostringstream oss;
-        oss << value[i];
-        vectorTable->setText(i,0,std::string(oss.str()).c_str());
-    }
-    return true;
-}
-//********************************************************************************************************************
-template< class T>
-bool ModifyObject::createQtTable(Field< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
-{
-    if (!vectorTable)
-    {
-        if (ff->getValue().size() == 0)  return false;
-
-        box->setColumns(1);
-
-        vectorTable = new Q3Table(ff->getValue().size(),1, box);
-        list_Table.push_back(std::make_pair(vectorTable, ff));
-        vectorTable->setColumnStretchable(0,true);
-
-        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-    }
-    vector< T > value = ff->getValue();
-
-    for (unsigned int i=0; i<ff->getValue().size(); i++)
-    {
-        std::ostringstream oss;
-        oss << value[i];
-        vectorTable->setText(i,0,std::string(oss.str()).c_str());
-    }
-    return true;
-}
-
-
 
 
 //**************************************************************************************************************************************
@@ -1534,6 +1420,30 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
     //********************************************************************************************************//
     //vector< unsigned int >
     else if(  Field< vector< unsigned int > >   *ff = dynamic_cast< Field< vector< unsigned int> >   * >( field))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< double >
+    else if(  DataField<sofa::component::topology::PointData< double > >   *ff = dynamic_cast< DataField<sofa::component::topology::PointData< double> >   * >( field))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< float >
+    else if(  DataField<sofa::component::topology::PointData< float > >   *ff = dynamic_cast< DataField<sofa::component::topology::PointData< float> >   * >( field))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< int >
+    else if(  DataField<sofa::component::topology::PointData< int > >   *ff = dynamic_cast< DataField<sofa::component::topology::PointData< int> >   * >( field))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< unsigned int >
+    else if(  DataField<sofa::component::topology::PointData< unsigned int > >   *ff = dynamic_cast< DataField<sofa::component::topology::PointData< unsigned int> >   * >( field))
     {
         return createQtTable(ff,box,vectorTable);
     }
@@ -1939,7 +1849,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
     }
     //********************************************************************************************************//
     //vector<SpringForceField< Vec6dTypes >::Spring>
-    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  * >( field ))
+    else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > >  * >( field ))
     {
         if (!vectorTable)
         {
@@ -1956,7 +1866,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
 
-        vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > value = ff->getValue();
+        sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6dTypes>::Spring > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -1971,7 +1881,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
     }
     //********************************************************************************************************//
     //vector<SpringForceField< Vec6fTypes >::Spring>
-    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  * >( field ))
+    else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > >  * >( field ))
     {
         if (!vectorTable)
         {
@@ -1988,7 +1898,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
 
-        vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > value = ff->getValue();
+        sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec6fTypes>::Spring > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -2004,7 +1914,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
 
     //********************************************************************************************************//
     //vector<SpringForceField< Vec3dTypes >::Spring>
-    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  * >( field ))
+    else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > >  * >( field ))
     {
         if (!vectorTable)
         {
@@ -2021,7 +1931,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
 
-        vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > value = ff->getValue();
+        sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3dTypes>::Spring > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -2036,7 +1946,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
     }
     //********************************************************************************************************//
     //vector<SpringForceField< Vec3fTypes >::Spring>
-    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  * >( field ))
+    else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > >  * >( field ))
     {
         if (!vectorTable)
         {
@@ -2053,7 +1963,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
 
-        vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > value = ff->getValue();
+        sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec3fTypes>::Spring > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -2068,7 +1978,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
     }
     //********************************************************************************************************//
     //vector<SpringForceField< Vec2dTypes >::Spring>
-    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  * >( field ))
+    else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > >  * >( field ))
     {
         if (!vectorTable)
         {
@@ -2085,7 +1995,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
 
-        vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > value = ff->getValue();
+        sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2dTypes>::Spring > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -2100,7 +2010,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
     }
     //********************************************************************************************************//
     //vector<SpringForceField< Vec2fTypes >::Spring>
-    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  * >( field ))
+    else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > >  * >( field ))
     {
         if (!vectorTable)
         {
@@ -2117,7 +2027,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
 
-        vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > value = ff->getValue();
+        sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec2fTypes>::Spring > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -2132,7 +2042,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
     }
     //********************************************************************************************************//
     //vector<SpringForceField< Vec1dTypes >::Spring>
-    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  * >( field ))
+    else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > >  * >( field ))
     {
         if (!vectorTable)
         {
@@ -2149,7 +2059,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
 
-        vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > value = ff->getValue();
+        sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1dTypes>::Spring > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -2164,7 +2074,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
     }
     //********************************************************************************************************//
     //vector<SpringForceField< Vec1fTypes >::Spring>
-    else if (DataField< vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  *ff = dynamic_cast< DataField< vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  * >( field ))
+    else if (DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  *ff = dynamic_cast< DataField< sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > >  * >( field ))
     {
         if (!vectorTable)
         {
@@ -2181,7 +2091,7 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
 
-        vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > value = ff->getValue();
+        sofa::helper::vector<sofa::component::forcefield::SpringForceField< Vec1fTypes>::Spring > value = ff->getValue();
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
@@ -2317,95 +2227,6 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
 
 
 
-template<class T>
-void ModifyObject::storeQtTable( Q3Table* table, DataField< sofa::helper::vector< T > >* ff )
-{
-    QString vec_value;
-    vector< T > new_value;
-    for (unsigned int i=0; i<ff->getValue().size(); i++)
-    {
-        vec_value = table->text(i,0);
-        new_value.push_back( (T)atof(vec_value) );
-    }
-    ff->setValue( new_value );
-}
-
-template<class T>
-void ModifyObject::storeQtTable( Q3Table* table, Field< sofa::helper::vector< T > >* ff )
-{
-    QString vec_value;
-    vector< T > new_value;
-    for (unsigned int i=0; i<ff->getValue().size(); i++)
-    {
-        vec_value = table->text(i,0);
-        new_value.push_back( (T)atof(vec_value) );
-    }
-    ff->setValue( new_value );
-}
-
-template< int N, class T>
-void ModifyObject::storeQtTable( Q3Table* table, DataField< sofa::helper::vector< Vec<N,T> > >* ff )
-{
-    QString vec_value[N];
-    sofa::helper::vector< Vec<N,T> > new_value;
-    for (unsigned int i=0; i<ff->getValue().size(); i++)
-    {
-        for (int j=0; j<N; j++)
-        {
-            vec_value[j] = table->text(i,j);
-        }
-        new_value.push_back( Vec<N,T>( (T)atof(vec_value[0]),
-                (T)atof(vec_value[1]),
-                (T)atof(vec_value[2])  ));
-    }
-    ff->setValue( new_value );
-}
-
-
-template< int N, class T>
-void ModifyObject::storeQtTable( Q3Table* table, Field< sofa::helper::vector< Vec<N,T> > >* ff )
-{
-    QString vec_value[N];
-    sofa::helper::vector< Vec<N,T> > new_value;
-    for (unsigned int i=0; i<ff->getValue().size(); i++)
-    {
-        for (int j=0; j<N; j++)
-        {
-            vec_value[j] = table->text(i,j);
-        }
-        new_value.push_back( Vec<N,T>( (T)atof(vec_value[0]),
-                (T)atof(vec_value[1]),
-                (T)atof(vec_value[2])  ));
-    }
-    ff->setValue( new_value );
-}
-
-
-
-template< int N, class T>
-void storeQtTable( Q3Table* table, DataField<  sofa::helper::vector<typename sofa::component::forcefield::SpringForceField< typename sofa::defaulttype::StdVectorTypes< Vec<N,T>,Vec<N,T>,T > >::Spring > >  * ff )
-{
-    sofa::helper::vector<typename sofa::component::forcefield::SpringForceField< typename sofa::defaulttype::StdVectorTypes< Vec<N,T>,Vec<N,T>,T > >::Spring > new_value;
-    for (unsigned int i=0; i<ff->getValue().size(); i++)
-    {
-        typename T::Real values[5];
-        typename sofa::component::forcefield::SpringForceField< typename sofa::defaulttype::StdVectorTypes< Vec<N,T>,Vec<N,T>,T > >::Spring current_spring;
-        for (int j=0; j<5; j++)
-        {
-            values[j] = atof(table->text(i,j));
-        }
-        current_spring.m1 = (int) values[0];
-        current_spring.m2 = (int) values[1];
-
-        current_spring.ks       = values[2];
-        current_spring.kd       = values[3];
-        current_spring.initpos  = values[4];
-
-        new_value.push_back(current_spring);
-    }
-    ff->setValue( new_value );
-}
-
 
 //**************************************************************************************************************************************
 //save in datafield the values of the tables
@@ -2424,8 +2245,6 @@ void ModifyObject::saveTables()
 //Read the content of a QTable and store its values in a datafield
 void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
 {
-
-
     //**************************************************************************************************************************************
     if (DataField< vector< Vec<3,float> > >  *ff = dynamic_cast< DataField< vector< Vec<3,float> > >  * >( field ))
     {
@@ -2543,6 +2362,26 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
     }
     //**************************************************************************************************************************************
     else if(  Field< vector< unsigned int > >   *ff = dynamic_cast< Field< vector< unsigned int> >   * >( field))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if(  DataField<sofa::component::topology::PointData< double > >   *ff = dynamic_cast< DataField<sofa::component::topology::PointData< double> >   * >( field))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if(  DataField<sofa::component::topology::PointData< float > >   *ff = dynamic_cast< DataField<sofa::component::topology::PointData< float> >   * >( field))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if(  DataField<sofa::component::topology::PointData< int > >   *ff = dynamic_cast< DataField<sofa::component::topology::PointData< int> >   * >( field))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if(  DataField<sofa::component::topology::PointData< unsigned int > >   *ff = dynamic_cast< DataField<sofa::component::topology::PointData< unsigned int> >   * >( field))
     {
         storeQtTable( table, ff);
     }
@@ -2822,6 +2661,23 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
     }
 }
 
+
+//********************************************************************************************************************
+void ModifyObject::createVector(const Quater<double> &value, Q3GroupBox *box)
+{
+    Vec<4,double> new_value(value[0], value[1], value[2], value[3]);
+    createVector(new_value, box);
+}
+//********************************************************************************************************************
+void ModifyObject::createVector(const Quater<float> &value, Q3GroupBox *box)
+{
+    Vec<4,float> new_value(value[0], value[1], value[2], value[3]);
+    createVector(new_value, box);
+}
+
+
+//********************************************************************************************************************
+//TEMPLATE FUNCTIONS
 //********************************************************************************************************************
 template< int N, class T>
 void ModifyObject::createVector(const Vec<N,T> &value, Q3GroupBox *box)
@@ -2849,18 +2705,6 @@ void ModifyObject::createVector(const Vec<N,T> &value, Q3GroupBox *box)
     }
 }
 //********************************************************************************************************************
-void ModifyObject::createVector(const Quater<double> &value, Q3GroupBox *box)
-{
-    Vec<4,double> new_value(value[0], value[1], value[2], value[3]);
-    createVector(new_value, box);
-}
-//********************************************************************************************************************
-void ModifyObject::createVector(const Quater<float> &value, Q3GroupBox *box)
-{
-    Vec<4,float> new_value(value[0], value[1], value[2], value[3]);
-    createVector(new_value, box);
-}
-//********************************************************************************************************************
 template< int N, class T>
 void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<N,T> > *ff)
 {
@@ -2874,7 +2718,226 @@ void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataFie
     for (int i=0; i<N; i++)  value[i] =  (T) editSFFloat[i]->getFloatValue();
     ff->setValue(value);
 }
+//********************************************************************************************************************
+//********************************************************************************************************************
+template< class T>
+bool ModifyObject::createQtTable(DataField< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
+{
+    if (!vectorTable)
+    {
+        if (ff->getValue().size() == 0)  return false;
 
+        box->setColumns(1);
+
+        vectorTable = new Q3Table(ff->getValue().size(),1, box);
+        list_Table.push_back(std::make_pair(vectorTable, ff));
+        vectorTable->setColumnStretchable(0,true);
+
+        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+    }
+    vector< T > value = ff->getValue();
+
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        std::ostringstream oss;
+        oss << value[i];
+        vectorTable->setText(i,0,std::string(oss.str()).c_str());
+    }
+    return true;
+}
+//********************************************************************************************************************
+template<class T>
+void ModifyObject::storeQtTable( Q3Table* table, DataField< sofa::helper::vector< T > >* ff )
+{
+    QString vec_value;
+    vector< T > new_value;
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        vec_value = table->text(i,0);
+        new_value.push_back( (T)atof(vec_value) );
+    }
+    ff->setValue( new_value );
+}
+//********************************************************************************************************************
+//********************************************************************************************************************
+template< class T>
+bool ModifyObject::createQtTable(Field< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
+{
+    if (!vectorTable)
+    {
+        if (ff->getValue().size() == 0)  return false;
+
+        box->setColumns(1);
+
+        vectorTable = new Q3Table(ff->getValue().size(),1, box);
+        list_Table.push_back(std::make_pair(vectorTable, ff));
+        vectorTable->setColumnStretchable(0,true);
+
+        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+    }
+    vector< T > value = ff->getValue();
+
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        std::ostringstream oss;
+        oss << value[i];
+        vectorTable->setText(i,0,std::string(oss.str()).c_str());
+    }
+    return true;
+}
+//********************************************************************************************************************
+template<class T>
+void ModifyObject::storeQtTable( Q3Table* table, Field< sofa::helper::vector< T > >* ff )
+{
+    QString vec_value;
+    vector< T > new_value;
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        vec_value = table->text(i,0);
+        new_value.push_back( (T)atof(vec_value) );
+    }
+    ff->setValue( new_value );
+}
+//********************************************************************************************************************
+//********************************************************************************************************************
+template< int N, class T>
+bool ModifyObject::createQtTable(DataField< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
+{
+    if (!vectorTable)
+    {
+        if (ff->getValue().size() == 0)  return false;
+        box->setColumns(1);
+        vectorTable = new Q3Table(ff->getValue().size(),N, box);
+        list_Table.push_back(std::make_pair(vectorTable, ff));
+        if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
+        if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
+        if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
+
+        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+    }
+    sofa::helper::vector< Vec<N,T> > value = ff->getValue();
+
+
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        std::ostringstream oss[N];
+        for (int j=0; j<N; j++)
+        {
+            oss[j] << value[i][j];
+            vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
+        }
+    }
+    return true;
+}
+//*******************************************************************************************************************
+template< int N, class T>
+void ModifyObject::storeQtTable( Q3Table* table, DataField< sofa::helper::vector< Vec<N,T> > >* ff )
+{
+    QString vec_value[N];
+    sofa::helper::vector< Vec<N,T> > new_value;
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        for (int j=0; j<N; j++)
+        {
+            vec_value[j] = table->text(i,j);
+        }
+        new_value.push_back( Vec<N,T>( (T)atof(vec_value[0]),
+                (T)atof(vec_value[1]),
+                (T)atof(vec_value[2])  ));
+    }
+    ff->setValue( new_value );
+}
+//********************************************************************************************************************
+//********************************************************************************************************************
+template< int N, class T>
+bool ModifyObject::createQtTable(Field< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
+{
+    if (!vectorTable)
+    {
+        if (ff->getValue().size() == 0)  return false;
+        box->setColumns(1);
+        vectorTable = new Q3Table(ff->getValue().size(),N, box);
+        list_Table.push_back(std::make_pair(vectorTable, ff));
+        if (N>=0) {vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);}
+        if (N>=1) {vectorTable->horizontalHeader()->setLabel(1,QString("Y"));   vectorTable->setColumnStretchable(1,true);}
+        if (N>=2) {vectorTable->horizontalHeader()->setLabel(2,QString("Z"));   vectorTable->setColumnStretchable(2,true);}
+
+        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+    }
+    sofa::helper::vector< Vec<N,T> > value = ff->getValue();
+
+
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        std::ostringstream oss[N];
+        for (int j=0; j<N; j++)
+        {
+            oss[j] << value[i][j];
+            vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
+        }
+    }
+    return true;
+}
+//********************************************************************************************************************
+template< int N, class T>
+void ModifyObject::storeQtTable( Q3Table* table, Field< sofa::helper::vector< Vec<N,T> > >* ff )
+{
+    QString vec_value[N];
+    sofa::helper::vector< Vec<N,T> > new_value;
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        for (int j=0; j<N; j++)
+        {
+            vec_value[j] = table->text(i,j);
+        }
+        new_value.push_back( Vec<N,T>( (T)atof(vec_value[0]),
+                (T)atof(vec_value[1]),
+                (T)atof(vec_value[2])  ));
+    }
+    ff->setValue( new_value );
+}
+//********************************************************************************************************************
+//********************************************************************************************************************
+template< class T>
+bool ModifyObject::createQtTable(DataField< sofa::component::topology::PointData< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable )
+{
+    if (!vectorTable)
+    {
+        if (ff->getValue().size() == 0)  return false;
+
+        box->setColumns(1);
+
+        vectorTable = new Q3Table(ff->getValue().size(),1, box);
+        list_Table.push_back(std::make_pair(vectorTable, ff));
+        vectorTable->setColumnStretchable(0,true);
+
+        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+    }
+    vector< T > value = ff->getValue();
+
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        std::ostringstream oss;
+        oss << value[i];
+        vectorTable->setText(i,0,std::string(oss.str()).c_str());
+    }
+    return true;
+}
+//********************************************************************************************************************
+template<class T>
+void ModifyObject::storeQtTable( Q3Table* table, DataField< sofa::component::topology::PointData< T >  >* ff )
+{
+    QString vec_value;
+    sofa::component::topology::PointData< T > new_value;
+    for (unsigned int i=0; i<ff->getValue().size(); i++)
+    {
+        vec_value = table->text(i,0);
+        new_value.push_back( (T)atof(vec_value) );
+    }
+    ff->setValue( new_value );
+}
+//********************************************************************************************************************
+//********************************************************************************************************************
 
 } // namespace qt
 
