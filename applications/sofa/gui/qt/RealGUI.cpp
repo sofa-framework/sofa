@@ -25,15 +25,15 @@
 #include "RealGUI.h"
 
 #ifdef SOFA_GUI_QTOGREVIEWER
-#include "QtOgreViewer/QtOgreViewer.h"
+#include "viewer/qtogre/QtOgreViewer.h"
 #endif
 
 #ifdef SOFA_GUI_QTVIEWER
-#include "QtViewer/QtViewer.h"
+#include "viewer/qt/QtViewer.h"
 #endif
 
 #ifdef SOFA_GUI_QGLVIEWER
-#include "QtGLViewer/QtGLViewer.h"
+#include "viewer/qgl/QtGLViewer.h"
 #endif
 
 
