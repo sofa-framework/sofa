@@ -29,6 +29,8 @@
 #include <vector>
 #include <map>
 
+#include <sofa/defaulttype/Vec.h> // typing "Vec"
+
 namespace sofa
 {
 
@@ -37,6 +39,7 @@ namespace component
 
 namespace topology
 {
+using namespace sofa::defaulttype; // typing "Vec"
 
 /// defining Triangles as 3 DOFs indices
 typedef helper::fixed_array<unsigned int,3> Triangle;
@@ -381,6 +384,23 @@ public:
     *
     */
     virtual void removeTriangles(std::vector< unsigned int >& triangles);
+
+    // Prepares the incision along the list of points (ind_edge,coord) intersected by the vector from point a to point b
+    // and the triangular mesh
+    double Prepare_InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int &new_ind_ta, unsigned int &newind_tb);
+
+
+    // Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b
+    // and the triangular mesh
+    void InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb);
+
+    // Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b
+    // and the triangular mesh
+    void RemoveAlongTrianglesList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb);
+
+    // Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
+    void InciseAlongLinesList(const std::vector< Vec<3,double> >& input_points, const std::vector< unsigned int > &input_triangles);
+
 };
 
 /**
@@ -405,10 +425,38 @@ public:
     /// computes the initial area  of triangle no i and returns it
     Real computeRestTriangleArea(const unsigned int i) const;
 
+    // barycentric coefficients of point p in triangle (a,b,c) indexed by ind_t
+    std::vector< double > computeTriangleBarycoefs( const Vec<3,double> &p, unsigned int ind_t);
+
+    // Computes the point defined by 2 indices of vertex and 1 barycentric coordinate
+    Vec<3,double> computeBaryEdgePoint(std::vector< unsigned int>& indices, const double &coord_p);
+
+    // Computes the normal vector of a triangle indexed by ind_t (not normed)
+    Vec<3,double> computeTriangleNormal(const unsigned int ind_t);
+
+    // Computes the opposite point to ind_p
+    Vec<3,double> getOppositePoint(unsigned int ind_p, std::vector< unsigned int>& indices, const double &coord_p);
+
+    // Test if a triangle indexed by ind_t (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
+    bool is_triangle_in_plane(const unsigned int ind_t, const unsigned int ind_p, const Vec<3,double>& plane_vect);
+
+
+    // Prepares the duplication of a vertex
+    void Prepare_VertexDuplication(const unsigned int ind_p, const unsigned int ind_t_from, const unsigned int ind_t_to,
+            const std::vector< unsigned int>& indices_from, const double &coord_from, const std::vector< unsigned int>& indices_to, const double &coord_to,
+            std::vector< unsigned int > &triangles_list_1, std::vector< unsigned int > &triangles_list_2);
+
+
+
     // Computes the intersection of the vector from point a to point b and the triangle indexed by t
-    bool computeSegmentTriangleIntersection(const Coord& a, const Coord& b, const unsigned int ind_t,
+    bool computeSegmentTriangleIntersection(bool is_entered, const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_t,
             std::vector<unsigned int> &indices,
             double &baryCoef, double& coord_kmin);
+
+    // Computes the the list of points (ind_edge,coord) intersected by the vector from point a to point b
+    // and the triangular mesh
+    bool computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb,
+            std::vector< unsigned int > &triangles_list, std::vector< std::vector< unsigned int> > &indices_list, std::vector< double >& coords_list);
 };
 
 
