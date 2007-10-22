@@ -453,7 +453,7 @@ public:
             std::vector<unsigned int> &indices,
             double &baryCoef, double& coord_kmin);
 
-    // Computes the the list of points (ind_edge,coord) intersected by the vector from point a to point b
+    // Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b
     // and the triangular mesh
     bool computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb,
             std::vector< unsigned int > &triangles_list, std::vector< std::vector< unsigned int> > &indices_list, std::vector< double >& coords_list);
