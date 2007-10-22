@@ -262,7 +262,7 @@ public:
      *
      * \sa removePointsProcess
      */
-    void removePointsWarning( const std::vector<unsigned int> &indices);
+    void removePointsWarning(std::vector<unsigned int> &indices);
 
 
 
