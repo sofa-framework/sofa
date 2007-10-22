@@ -1971,11 +1971,15 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
         case QEvent::MouseButtonPress:
             if (e->button() == Qt::LeftButton)
             {
-                interactor->newEvent("pick");
+                interactor->newEvent("pick"); // Shift+Leftclick to deform the mesh
             }
-            else if (e->button() == Qt::RightButton)
+            else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
             {
                 interactor->newEvent("pick2");
+            }
+            else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+            {
+                interactor->newEvent("pick3");
             }
             break;
         case QEvent::MouseButtonRelease:
