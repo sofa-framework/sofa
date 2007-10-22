@@ -2012,13 +2012,17 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         switch (type)
         {
         case MouseButtonPress:
-            if (button == GLUT_LEFT_BUTTON)
+            if (button == GLUT_LEFT_BUTTON) // Shift+Leftclick to deform the mesh
             {
                 interactor->newEvent("pick");
             }
-            else if (button == GLUT_RIGHT_BUTTON)
+            else if (button == GLUT_RIGHT_BUTTON) // Shift+Rightclick to remove triangles
             {
                 interactor->newEvent("pick2");
+            }
+            else if (button == GLUT_MIDDLE_BUTTON) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+            {
+                interactor->newEvent("pick3");
             }
             break;
         case MouseButtonRelease:
