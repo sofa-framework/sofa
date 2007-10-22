@@ -173,9 +173,10 @@ inline void MassTriangleDestroyFunction(const std::vector<unsigned int> &triangl
             masses[t[0]]-=mass;
             masses[t[1]]-=mass;
             masses[t[2]]-=mass;
-            std::cerr<< "mass vertex " << t[0]<< " = " << masses[t[0]]<<std::endl;
-            std::cerr<< "mass vertex " << t[1]<< " = " << masses[t[1]]<<std::endl;
-            std::cerr<< "mass vertex " << t[2]<< " = " << masses[t[2]]<<std::endl;
+            // Commented to prevent from printing in case of triangle removal
+            //std::cerr<< "mass vertex " << t[0]<< " = " << masses[t[0]]<<std::endl;
+            //std::cerr<< "mass vertex " << t[1]<< " = " << masses[t[1]]<<std::endl;
+            //std::cerr<< "mass vertex " << t[2]<< " = " << masses[t[2]]<<std::endl;
         }
 
     }
