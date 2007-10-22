@@ -357,7 +357,6 @@ void MechanicalObject<defaulttype::Vec3fTypes>::loadInBaseVector(defaulttype::Ba
 {
     VecDeriv* vSrc = getVecDeriv(src.index);
     unsigned int derivDim = Deriv::size();
-    unsigned int j(0);
 
     for (unsigned int i=0; i<vSrc->size(); i++)
         for (unsigned int j=0; j<derivDim; j++)
@@ -372,7 +371,6 @@ void MechanicalObject<defaulttype::Vec3dTypes>::loadInBaseVector(defaulttype::Ba
 {
     VecDeriv* vSrc = getVecDeriv(src.index);
     unsigned int derivDim = Deriv::size();
-    unsigned int j(0);
 
     for (unsigned int i=0; i<vSrc->size(); i++)
         for (unsigned int j=0; j<derivDim; j++)
@@ -386,7 +384,6 @@ void MechanicalObject<defaulttype::Vec2fTypes>::loadInBaseVector(defaulttype::Ba
 {
     VecDeriv* vSrc = getVecDeriv(src.index);
     unsigned int derivDim = Deriv::size();
-    unsigned int j(0);
 
     for (unsigned int i=0; i<vSrc->size(); i++)
         for (unsigned int j=0; j<derivDim; j++)
@@ -400,7 +397,6 @@ void MechanicalObject<defaulttype::Vec2dTypes>::loadInBaseVector(defaulttype::Ba
 {
     VecDeriv* vSrc = getVecDeriv(src.index);
     unsigned int derivDim = Deriv::size();
-    unsigned int j(0);
 
     for (unsigned int i=0; i<vSrc->size(); i++)
         for (unsigned int j=0; j<derivDim; j++)
@@ -414,7 +410,6 @@ void MechanicalObject<defaulttype::Vec1fTypes>::loadInBaseVector(defaulttype::Ba
 {
     VecDeriv* vSrc = getVecDeriv(src.index);
     unsigned int derivDim = Deriv::size();
-    unsigned int j(0);
 
     for (unsigned int i=0; i<vSrc->size(); i++)
         for (unsigned int j=0; j<derivDim; j++)
@@ -428,7 +423,6 @@ void MechanicalObject<defaulttype::Vec1dTypes>::loadInBaseVector(defaulttype::Ba
 {
     VecDeriv* vSrc = getVecDeriv(src.index);
     unsigned int derivDim = Deriv::size();
-    unsigned int j(0);
 
     for (unsigned int i=0; i<vSrc->size(); i++)
         for (unsigned int j=0; j<derivDim; j++)

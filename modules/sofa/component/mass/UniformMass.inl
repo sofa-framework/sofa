@@ -106,7 +106,7 @@ void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv* dx, double mFact, unsigned int& offset)
+void UniformMass<DataTypes, MassType>::addMDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv* /*dx*/, double /*mFact*/, unsigned int& /*offset*/)
 {
 
 }

@@ -257,8 +257,8 @@ class MechanicalAddMBKdx_ToVectorVisitor : public MechanicalMatrixVisitor
 {
 public:
     BaseVector *vect;
-    double m, b, k;
     VecId dx;
+    double m, b, k;
 //    unsigned int offset, offsetBckUp;
 
     MechanicalAddMBKdx_ToVectorVisitor(BaseVector *_vect, VecId _dx, double _m=0.0, double _b=0.0, double _k=0.0, unsigned int _offset=0)
@@ -319,8 +319,8 @@ public:
 class MechanicalMultiVector2BaseVectorVisitor : public MechanicalMatrixVisitor
 {
 public:
-    BaseVector *vect;
     VecId src;
+    BaseVector *vect;
     unsigned int offset;
 
     MechanicalMultiVector2BaseVectorVisitor(VecId _src, defaulttype::BaseVector * _vect, unsigned int _offset=0)
@@ -342,8 +342,8 @@ public:
 class MechanicalMultiVectorPeqBaseVectorVisitor : public MechanicalMatrixVisitor
 {
 public:
-    VecId dest;
     BaseVector *src;
+    VecId dest;
     unsigned int offset;
 
     MechanicalMultiVectorPeqBaseVectorVisitor(VecId _dest, defaulttype::BaseVector * _src, unsigned int _offset=0)

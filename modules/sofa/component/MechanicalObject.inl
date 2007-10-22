@@ -458,7 +458,7 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
+void MechanicalObject<DataTypes>::contributeToMatrixDimension(unsigned int * const /*nbRow*/, unsigned int * const /*nbCol*/)
 {
     /*
     if (v->size() != 0)
@@ -471,7 +471,7 @@ void MechanicalObject<DataTypes>::contributeToMatrixDimension(unsigned int * con
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setOffset(unsigned int &offset)
+void MechanicalObject<DataTypes>::setOffset(unsigned int &/*offset*/)
 {
     /*
     if (v->size() != 0)
@@ -483,7 +483,7 @@ void MechanicalObject<DataTypes>::setOffset(unsigned int &offset)
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector *dest, VecId src, unsigned int &offset)
+void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * /*dest*/, VecId /*src*/, unsigned int &/*offset*/)
 {
     /*
     VecDeriv* vSrc = getVecDeriv(src.index);
@@ -499,7 +499,7 @@ void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector *dest
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+void MechanicalObject<DataTypes>::addBaseVectorToState(VecId /*dest*/, defaulttype::BaseVector * /*src*/, unsigned int &/*offset*/)
 {
     /*
     if (dest.type == VecId::V_COORD)
