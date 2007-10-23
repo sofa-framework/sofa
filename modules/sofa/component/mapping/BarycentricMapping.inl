@@ -436,6 +436,111 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::MeshTopology* topology)
     }
 }
 
+
+
+
+
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::clear(int reserve)
+{
+    map.clear(); if (reserve>0) map.reserve(reserve);
+}
+
+template <class In, class Out>
+int TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::addPointInTriangle(int triangleIndex, const Real* baryCoords)
+{
+    map.resize(map.size()+1);
+    MappingData& data = *map.rbegin();
+    data.in_index = triangleIndex;
+    data.baryCoords[0] = baryCoords[0];
+    data.baryCoords[1] = baryCoords[1];
+    return map.size()-1;
+}
+
+template <class In, class Out>
+int TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points)
+{
+    Real baryCoords[2];
+    const topology::Triangle& elem = topology->getTriangleSetTopologyContainer()->getTriangle(triangleIndex);
+    const typename In::Coord p0 = (*points)[elem[0]];
+    const typename In::Coord pA = (*points)[elem[1]] - p0;
+    const typename In::Coord pB = (*points)[elem[2]] - p0;
+    typename In::Coord pos = p - p0;
+    // First project to plane
+    typename In::Coord normal = cross(pA, pB);
+    Real norm2 = normal.norm2();
+    pos -= normal*((pos*normal)/norm2);
+    baryCoords[0] = (Real)sqrt(cross(pB, pos).norm2() / norm2);
+    baryCoords[1] = (Real)sqrt(cross(pA, pos).norm2() / norm2);
+    return this->addPointInTriangle(triangleIndex, baryCoords);
+}
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::init()
+{
+}
+
+template <class BasicMapping>
+void BarycentricMapping<BasicMapping>::calcMap(topology::TriangleSetTopology<InDataTypes>* topology)
+{
+
+    if (f_mesh->beginEdit()->empty())
+    {
+        const OutVecCoord& out = *this->toModel->getX();
+        const InVecCoord& in = *this->fromModel->getX();
+        int outside = 0;
+        TriangleSetMapper* mapper = new TriangleSetMapper(topology);
+
+        this->mapper = mapper;
+        const std::vector<topology::Triangle>& triangles = topology->getTriangleSetTopologyContainer()->getTriangleArray();
+        std::vector<Mat3x3d> bases;
+        std::vector<Vec3d> centers;
+        {
+            // no 3D elements -> map on 2D elements
+            mapper->clear(out.size()); // reserve space for 2D mapping
+            bases.resize(triangles.size());
+            centers.resize(triangles.size());
+            for (unsigned int t = 0; t < triangles.size(); t++)
+            {
+                Mat3x3d m,mt;
+                m[0] = in[triangles[t][1]]-in[triangles[t][0]];
+                m[1] = in[triangles[t][2]]-in[triangles[t][0]];
+                m[2] = cross(m[0],m[1]);
+                mt.transpose(m);
+                bases[t].invert(mt);
+                centers[t] = (in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]])/3;
+            }
+            for (unsigned int i=0; i<out.size(); i++)
+            {
+                Vec3d pos = out[i];
+                Vec<3,Real> coefs;
+                int index = -1;
+                double distance = 1e10;
+                for (unsigned int t = 0; t < triangles.size(); t++)
+                {
+                    Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
+                    double d = std::max(std::max(-v[0],-v[1]),std::max((v[2]<0?-v[2]:v[2])-0.01,v[0]+v[1]-1));
+                    if (d>0) d = (pos-centers[t]).norm2();
+                    if (d<distance) { coefs = v; distance = d; index = t; }
+                }
+                if (distance>0)
+                {
+                    ++outside;
+                }
+                mapper->addPointInTriangle(index, coefs.ptr());
+            }
+        }
+        if (outside>0) std::cerr << "WARNING: Barycentric mapping (in TriangleSetTopology) with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
+        f_triangle->setValue(*mapper);
+    }
+    else
+    {
+        f_triangle->beginEdit()->setTopology(topology);
+        this->mapper = f_triangle->beginEdit();
+    }
+}
+
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::init()
 {
@@ -460,6 +565,17 @@ void BarycentricMapping<BasicMapping>::init()
                     std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;
                 }
             }
+        }
+    }
+    core::componentmodel::topology::BaseTopology* topology2 = dynamic_cast<core::componentmodel::topology::BaseTopology*>(this->fromModel->getContext()->getMainTopology());
+    if (topology2!=NULL)
+    {
+        topology::TriangleSetTopology<InDataTypes>* t1 = dynamic_cast<topology::TriangleSetTopology<InDataTypes>*>(topology2);
+        if (t1!=NULL)
+            this->calcMap(t1);
+        else
+        {
+            std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;
         }
     }
     if (mapper != NULL)
@@ -599,6 +715,25 @@ void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::apply( typename O
     }
 }
 
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+//void TriangleSetTopologyBarycentricMapper<In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+{
+    out.resize(map.size());
+    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+    // 2D elements
+    for(unsigned int i=0; i<map.size(); i++)
+    {
+        const Real fx = map[i].baryCoords[0];
+        const Real fy = map[i].baryCoords[1];
+        int index = map[i].in_index;
+        const topology::Triangle& triangle = triangles[index];
+        out[i] = in[triangle[0]] * (1-fx-fy)
+                + in[triangle[1]] * fx
+                + in[triangle[2]] * fy;
+    }
+}
+
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
@@ -726,6 +861,25 @@ void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::applyJ( typename 
                         + in[cube[7]] * ((  fx) * (  fy) * (  fz));
             }
         }
+    }
+}
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+//void TriangleSetTopologyBarycentricMapper<In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+{
+    out.resize(map.size());
+    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+    // 2D elements
+    for(unsigned int i=0; i<map.size(); i++)
+    {
+        const Real fx = map[i].baryCoords[0];
+        const Real fy = map[i].baryCoords[1];
+        int index = map[i].in_index;
+        const topology::Triangle& triangle = triangles[index];
+        out[i] = in[triangle[0]] * (1-fx-fy)
+                + in[triangle[1]] * fx
+                + in[triangle[2]] * fy;
     }
 }
 
@@ -858,6 +1012,25 @@ void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::applyJT( typename
                 out[cube[7]] += v * ((  fx) * (  fy) * (  fz));
             }
         }
+    }
+}
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+//void TriangleSetTopologyBarycentricMapper<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+{
+    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+    // 2D elements
+    for(unsigned int i=0; i<map.size(); i++)
+    {
+        const typename Out::Deriv v = in[i];
+        const OutReal fx = (OutReal)map[i].baryCoords[0];
+        const OutReal fy = (OutReal)map[i].baryCoords[1];
+        int index = map[i].in_index;
+        const topology::Triangle& triangle = triangles[index];
+        out[triangle[0]] += v * (1-fx-fy);
+        out[triangle[1]] += v * fx;
+        out[triangle[2]] += v * fy;
     }
 }
 
@@ -1080,6 +1253,39 @@ void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::draw(const typena
 }
 
 
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+//void TriangleSetTopologyBarycentricMapper<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+{
+    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+
+    glBegin (GL_LINES);
+    // 2D elements
+    {
+        for(unsigned int i=0; i<map.size(); i++)
+        {
+            const Real fx = map[i].baryCoords[0];
+            const Real fy = map[i].baryCoords[1];
+            int index = map[i].in_index;
+            const topology::Triangle& triangle = triangles[index];
+            Real f[3];
+            f[0] = (1-fx-fy);
+            f[1] = fx;
+            f[2] = fy;
+            for (int j=0; j<3; j++)
+            {
+                if (f[j]<=-0.0001 || f[j]>=0.0001)
+                {
+                    glColor3f((float)f[j],1,(float)f[j]);
+                    helper::gl::glVertexT(out[i]);
+                    helper::gl::glVertexT(in[triangle[j]]);
+                }
+            }
+        }
+    }
+    glEnd();
+}
+
 /************************************* PropagateConstraint ***********************************/
 
 
@@ -1242,6 +1448,30 @@ void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::applyJT( typename
                     out[i+offset].push_back(typename In::SparseDeriv(cube[7], (typename In::Deriv) cIn.data * ((  fx) * (  fy) * (  fz))));
                 }
             }
+        }
+    }
+}
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+//void TriangleSetTopologyBarycentricMapper<In,Out>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+{
+    int offset = out.size();
+    out.resize(offset+in.size());
+    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        for(unsigned int j=0; j<in[i].size(); j++)
+        {
+            const typename Out::SparseDeriv cIn = in[i][j];
+            const topology::Triangle triangle = triangles[this->map[cIn.index].in_index];
+            const OutReal fx = (OutReal)map[cIn.index].baryCoords[0];
+            const OutReal fy = (OutReal)map[cIn.index].baryCoords[1];
+
+            out[i+offset].push_back(typename In::SparseDeriv(triangle[0], (typename In::Deriv) (cIn.data * (1-fx-fy))));
+            out[i+offset].push_back(typename In::SparseDeriv(triangle[1], (typename In::Deriv) (cIn.data * (fx))));
+            out[i+offset].push_back(typename In::SparseDeriv(triangle[2], (typename In::Deriv) (cIn.data * (fy))));
         }
     }
 }

@@ -88,6 +88,16 @@ template class TopologyBarycentricMapper<topology::MeshTopology, Vec3fTypes, Ext
 template class TopologyBarycentricMapper<topology::MeshTopology, Vec3dTypes, ExtVec3fTypes >;
 template class TopologyBarycentricMapper<topology::MeshTopology, Vec3fTypes, ExtVec3dTypes >;
 
+// TriangleSetMapper
+template class TopologyBarycentricMapper<topology::TriangleSetTopology<Vec3dTypes>, Vec3dTypes, Vec3dTypes >;
+template class TopologyBarycentricMapper<topology::TriangleSetTopology<Vec3fTypes>, Vec3fTypes, Vec3fTypes >;
+template class TopologyBarycentricMapper<topology::TriangleSetTopology<Vec3dTypes>, Vec3dTypes, Vec3fTypes >;
+template class TopologyBarycentricMapper<topology::TriangleSetTopology<Vec3fTypes>, Vec3fTypes, Vec3dTypes >;
+template class TopologyBarycentricMapper<topology::TriangleSetTopology<Vec3dTypes>, Vec3dTypes, ExtVec3dTypes >;
+template class TopologyBarycentricMapper<topology::TriangleSetTopology<Vec3fTypes>, Vec3fTypes, ExtVec3fTypes >;
+template class TopologyBarycentricMapper<topology::TriangleSetTopology<Vec3dTypes>, Vec3dTypes, ExtVec3fTypes >;
+template class TopologyBarycentricMapper<topology::TriangleSetTopology<Vec3fTypes>, Vec3fTypes, ExtVec3dTypes >;
+
 // RegularGridMapper
 template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3dTypes, Vec3dTypes >;
 template class TopologyBarycentricMapper<topology::RegularGridTopology, Vec3fTypes, Vec3fTypes >;
