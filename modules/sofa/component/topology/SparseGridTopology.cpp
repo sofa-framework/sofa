@@ -26,6 +26,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/fixed_array.h>
+#include <sofa/helper/polygon_cube_intersection/polygon_cube_intersection.h>
 
 
 using std::cerr;
@@ -51,7 +52,9 @@ int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
 SparseGridTopology::SparseGridTopology(): nx(dataField(&nx,0,"nx","x grid resolution")), ny(dataField(&ny,0,"ny","y grid resolution")), nz(dataField(&nz,0,"nz","z grid resolution")),
     xmin(dataField(&xmin,0.0,"xmin","xmin grid")),ymin(dataField(&ymin,0.0,"ymin","ymin grid")),zmin(dataField(&zmin,0.0,"zmin","zmin grid")),
     xmax(dataField(&xmax,0.0,"xmax","xmax grid")),ymax(dataField(&ymax,0.0,"ymax","ymax grid")),zmax(dataField(&zmax,0.0,"zmax","zmax grid"))
-{}
+{
+    _alreadyInit = false;
+}
 
 
 
@@ -69,6 +72,8 @@ bool SparseGridTopology::load(const char* filename)
 
 void SparseGridTopology::init()
 {
+    if(_alreadyInit) return;
+
     MapBetweenCornerPositionAndIndice tmpmap;
     init(tmpmap);
 }
@@ -77,6 +82,9 @@ void SparseGridTopology::init()
 
 void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPositionIndiceMap )
 {
+    if(_alreadyInit) return;
+    _alreadyInit = true;
+
     this->MeshTopology::init();
     invalidate();
 
@@ -137,23 +145,24 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
                 _indicesOfRegularCubeInSparseGrid[w] = -1;
             }
 
-            // find all initial mesh edges to compute intersection with cubes
-            const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
-            std::set< SegmentForIntersection,ltSegmentForIntersection > segmentsForIntersection;
-            for (unsigned int i=0; i<facets.size(); i++)
-            {
-                const helper::vector<int>& facet = facets[i][0];
-                for (unsigned int j=2; j<facet.size(); j++) // Triangularize
-                {
-                    segmentsForIntersection.insert( SegmentForIntersection( vertices[facet[0]],vertices[facet[j]] ) );
-                    segmentsForIntersection.insert( SegmentForIntersection( vertices[facet[0]],vertices[facet[j-1]] ) );
-                    segmentsForIntersection.insert( SegmentForIntersection( vertices[facet[j]],vertices[facet[j-1]] ) );
-                }
-            }
+// 			// find all initial mesh edges to compute intersection with cubes
+//             const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
+//             std::set< SegmentForIntersection,ltSegmentForIntersection > segmentsForIntersection;
+//             for (unsigned int i=0;i<facets.size();i++)
+//             {
+//               const helper::vector<int>& facet = facets[i][0];
+//               for (unsigned int j=2; j<facet.size(); j++) // Triangularize
+//               {
+//                 segmentsForIntersection.insert( SegmentForIntersection( vertices[facet[0]],vertices[facet[j]] ) );
+//                 segmentsForIntersection.insert( SegmentForIntersection( vertices[facet[0]],vertices[facet[j-1]] ) );
+//                 segmentsForIntersection.insert( SegmentForIntersection( vertices[facet[j]],vertices[facet[j-1]] ) );
+//               }
+//             }
 
 
             vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
 // 			MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
+
 
             for(int i=0; i<_regularGrid.getNbCubes(); ++i) // all possible cubes (even empty)
             {
@@ -162,24 +171,71 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
                 for(int j=0; j<8; ++j)
                     corners[j] = _regularGrid.getPoint( c[j] );
 
-                CubeForIntersection cubeForIntersection( corners );
+//               CubeForIntersection cubeForIntersection( corners );
+//
+//               for(std::set< SegmentForIntersection,ltSegmentForIntersection >::iterator it=segmentsForIntersection.begin();it!=segmentsForIntersection.end();++it)
+//                 {
+//                   if(intersectionSegmentBox( *it, cubeForIntersection ))
+//                   {
+//                     _types.push_back(BOUNDARY);
+// 					_regularGridTypes[i]=BOUNDARY;
+//
+//                     for(int k=0;k<8;++k)
+//                       cubeCornerPositionIndiceMap[corners[k]] = 0;
+//
+// 					cubeCorners.push_back(corners);
+// 					_indicesOfRegularCubeInSparseGrid[i] = cubeCorners.size()-1;
+//
+//                     break;
+//                   }
+//                 }
 
-                for(std::set< SegmentForIntersection,ltSegmentForIntersection >::iterator it=segmentsForIntersection.begin(); it!=segmentsForIntersection.end(); ++it)
+                Vec3 cubeDiagonal = corners[7] - corners[0];
+                Vec3 cubeCenter = corners[0] + cubeDiagonal*.5;
+
+
+                bool notAlreadyIntersected = true;
+
+                const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
+                for (unsigned int f=0; f<facets.size() && notAlreadyIntersected; f++)
                 {
-                    if(intersectionSegmentBox( *it, cubeForIntersection ))
+                    const helper::vector<int>& facet = facets[f][0];
+                    for (unsigned int j=2; j<facet.size()&& notAlreadyIntersected; j++) // Triangularize
                     {
-                        _types.push_back(BOUNDARY);
-                        _regularGridTypes[i]=BOUNDARY;
+                        const Vec3& A = vertices[facet[0]];
+                        const Vec3& B = vertices[facet[j-1]];
+                        const Vec3& C = vertices[facet[j]];
 
-                        for(int k=0; k<8; ++k)
-                            cubeCornerPositionIndiceMap[corners[k]] = 0;
+                        // Scale the triangle to the unit cube matching
+                        float points[3][3];
+                        for (unsigned short w=0; w<3; ++w)
+                        {
+                            points[0][w] = (A[w]-cubeCenter[w])/cubeDiagonal[w];
+                            points[1][w] = (B[w]-cubeCenter[w])/cubeDiagonal[w];
+                            points[2][w] = (C[w]-cubeCenter[w])/cubeDiagonal[w];
+                        }
 
-                        cubeCorners.push_back(corners);
-                        _indicesOfRegularCubeInSparseGrid[i] = cubeCorners.size()-1;
+                        float normal[3];
+                        helper::polygon_cube_intersection::get_polygon_normal(normal,3,points);
 
-                        break;
+                        if (helper::polygon_cube_intersection::fast_polygon_intersects_cube(3,points,normal,0,0))
+                        {
+                            _types.push_back(BOUNDARY);
+                            _regularGridTypes[i]=BOUNDARY;
+
+                            for(int k=0; k<8; ++k)
+                                cubeCornerPositionIndiceMap[corners[k]] = 0;
+
+                            cubeCorners.push_back(corners);
+                            _indicesOfRegularCubeInSparseGrid[i] = cubeCorners.size()-1;
+
+                            notAlreadyIntersected=false;
+                        }
+
                     }
                 }
+
+
             }
 
 
@@ -278,7 +334,8 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
 
 
 
-
+    cerr<<seqCubes.size()<<"       ";
+    cerr<<_types.size()<<endl;
 
 
 
@@ -309,6 +366,7 @@ int SparseGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz)
 {
+    // TODO: faire un vrai nearest, qui ne projete pas seulement sur les bords de la bbox, mais sur les bords des cellules activees
     int indiceInRegularGrid =  _indicesOfRegularCubeInSparseGrid[_regularGrid.findNearestCube( pos,fx,fy,fz)];
     if( indiceInRegularGrid == -1 )
         return -1;
@@ -401,63 +459,63 @@ void SparseGridTopology::updateCubes()
 ////////////////////////////////////////
 ////////////////////////////////////////
 
-bool SparseGridTopology::intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  )
-{
-    Vec3 afAWdU, afADdU, afAWxDdU;
-    Real fRhs;
-
-
-    Vec3 kDiff = seg.center - cube.center;
-
-    afAWdU[0] = fabs( seg.dir* cube.dir[0]);
-    afADdU[0] = fabs( kDiff * cube.dir[0] );
-    fRhs = cube.norm[0] + seg.norm*afAWdU[0];
-    if (afADdU[0] > fRhs)
-    {
-        return false;
-    }
-
-    afAWdU[1] = fabs(seg.dir*cube.dir[1]);
-    afADdU[1] = fabs(kDiff*cube.dir[1]);
-    fRhs = cube.norm[1] + seg.norm*afAWdU[1];
-    if (afADdU[1] > fRhs)
-    {
-        return false;
-    }
-
-    afAWdU[2] = fabs(seg.dir*cube.dir[2]);
-    afADdU[2] = fabs(kDiff*cube.dir[2]);
-    fRhs = cube.norm[2] + seg.norm*afAWdU[2];
-    if (afADdU[2] > fRhs)
-    {
-        return false;
-    }
-
-    Vec3 kWxD = seg.dir.cross(kDiff);
-
-    afAWxDdU[0] = fabs(kWxD*cube.dir[0]);
-    fRhs = cube.norm[1]*afAWdU[2] + cube.norm[2]*afAWdU[1];
-    if (afAWxDdU[0] > fRhs)
-    {
-        return false;
-    }
-
-    afAWxDdU[1] = fabs(kWxD*cube.dir[1]);
-    fRhs = cube.norm[0]*afAWdU[2] + cube.norm[2]*afAWdU[0];
-    if (afAWxDdU[1] > fRhs)
-    {
-        return false;
-    }
-
-    afAWxDdU[2] = fabs(kWxD*cube.dir[2]);
-    fRhs = cube.norm[0]*afAWdU[1] +cube.norm[1]*afAWdU[0];
-    if (afAWxDdU[2] > fRhs)
-    {
-        return false;
-    }
-
-    return true;
-}
+//     bool SparseGridTopology::intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  )
+//     {
+//       Vec3 afAWdU, afADdU, afAWxDdU;
+//       Real fRhs;
+//
+//
+//       Vec3 kDiff = seg.center - cube.center;
+//
+//       afAWdU[0] = fabs( seg.dir* cube.dir[0]);
+//       afADdU[0] = fabs( kDiff * cube.dir[0] );
+//       fRhs = cube.norm[0] + seg.norm*afAWdU[0];
+//       if (afADdU[0] > fRhs)
+//       {
+//         return false;
+//       }
+//
+//       afAWdU[1] = fabs(seg.dir*cube.dir[1]);
+//       afADdU[1] = fabs(kDiff*cube.dir[1]);
+//       fRhs = cube.norm[1] + seg.norm*afAWdU[1];
+//       if (afADdU[1] > fRhs)
+//       {
+//         return false;
+//       }
+//
+//       afAWdU[2] = fabs(seg.dir*cube.dir[2]);
+//       afADdU[2] = fabs(kDiff*cube.dir[2]);
+//       fRhs = cube.norm[2] + seg.norm*afAWdU[2];
+//       if (afADdU[2] > fRhs)
+//       {
+//         return false;
+//       }
+//
+//       Vec3 kWxD = seg.dir.cross(kDiff);
+//
+//       afAWxDdU[0] = fabs(kWxD*cube.dir[0]);
+//       fRhs = cube.norm[1]*afAWdU[2] + cube.norm[2]*afAWdU[1];
+//       if (afAWxDdU[0] > fRhs)
+//       {
+//         return false;
+//       }
+//
+//       afAWxDdU[1] = fabs(kWxD*cube.dir[1]);
+//       fRhs = cube.norm[0]*afAWdU[2] + cube.norm[2]*afAWdU[0];
+//       if (afAWxDdU[1] > fRhs)
+//       {
+//         return false;
+//       }
+//
+//       afAWxDdU[2] = fabs(kWxD*cube.dir[2]);
+//       fRhs = cube.norm[0]*afAWdU[1] +cube.norm[1]*afAWdU[0];
+//       if (afAWxDdU[2] > fRhs)
+//       {
+//         return false;
+//       }
+//
+//       return true;
+//     }
 
 
 void SparseGridTopology::propagateFrom( const int i, const int j, const int k,  RegularGridTopology& _regularGrid, vector<Type>& _regularGridTypes, vector<bool>& alreadyTested  )
@@ -483,10 +541,21 @@ void SparseGridTopology::propagateFrom( const int i, const int j, const int k,  
 
 
 
+/////////////////////
 
 
+const SparseGridTopology::SeqCubes& SparseGridTopology::getCubes()
+{
+    if( !_alreadyInit ) init();
+    return MeshTopology::getCubes();
+}
 
 
+int SparseGridTopology::getNbPoints() const
+{
+    if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
+    return MeshTopology::getNbPoints();
+}
 
 
 } // namespace topology

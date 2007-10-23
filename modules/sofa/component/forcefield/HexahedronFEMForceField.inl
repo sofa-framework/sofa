@@ -27,14 +27,14 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/HexahedronFEMForceField.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/GridTopology.h>
 #include <sofa/helper/PolarDecompose.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
 #include <iostream>
 #include <set>
 #include <GL/gl.h>
+
+
 using std::cerr;
 using std::endl;
 using std::set;
@@ -43,19 +43,16 @@ using std::set;
 
 // WARNING: indices ordering is different than in topology node
 //
-//        ^ Y
-//        |
-// 	      7---------6
-//       /	       /|
-//      /	      / |
-//     3---------2  |
-//     |		 |  |
-//     |  4------|--5-->X
+// 	   Y  7---------6
+//     ^ /	       /|
+//     |/	 Z    / |
+//     3----^----2  |
+//     |   /	 |  |
+//     |  4------|--5
 //     | / 	     | /
 //     |/	     |/
-//     0---------1
-//    /
-//   Z
+//     0---------1-->X
+
 
 
 
@@ -73,7 +70,6 @@ using namespace sofa::defaulttype;
 
 
 template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,1,3,2,4,5,7,6};
-// template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,4,6,2,1,5,7,3};
 
 
 template<class DataTypes>
@@ -101,6 +97,8 @@ void HexahedronFEMForceField<DataTypes>::init()
     {
         _indexedElements = & (_mesh->getCubes());
     }
+    _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
+    _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_mesh);
 
     if (_initialPoints.getValue().size() == 0)
     {
@@ -253,7 +251,7 @@ double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes)
+void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes, const int elementIndice)
 {
     Mat33 J_1; // only accurate for orthogonal regular hexa
     J_1.fill( 0.0 );
@@ -301,6 +299,11 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
         {
             K[j][i] = K[i][j];
         }
+
+
+    // if sparseGrid -> the filling ratio is taken into account
+    if( _sparseGrid )
+        K *= (_sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
 
 }
 
@@ -451,7 +454,8 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
         _rotatedInitialElements[i][_indices[w]] = R_0_1*_initialPoints.getValue()[elem[w]];
 
 
-    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], nodes );
+    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], nodes, i );
+
 
 // 		if(i==0) cerr<<_elementStiffnesses[i]<<endl;
 }
@@ -515,8 +519,8 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
     }
 
 
-    if(f_updateStiffnessMatrix.getValue())
-        computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
+// 	if(f_updateStiffnessMatrix.getValue())
+// 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
 
 
     Displacement F; //forces
@@ -555,7 +559,8 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
         _rotatedInitialElements[i][j] = R_0_1 * nodes[j];
     }
 
-    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], nodes );
+    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], nodes, i );
+
 }
 
 
@@ -622,10 +627,8 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
     //forces
     Displacement F;
 
-    if(f_updateStiffnessMatrix.getValue())
-    {
-        computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
-    }
+// 	if(f_updateStiffnessMatrix.getValue())
+// 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
 
     // compute force on element
     computeForce( F, D, _elementStiffnesses[i] );
@@ -665,7 +668,7 @@ void HexahedronFEMForceField<DataTypes>::draw()
     int i;
     for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
     {
-// 		if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
+        if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
         Index a = (*it)[0];
         Index b = (*it)[1];
         Index d = (*it)[2];
@@ -674,7 +677,8 @@ void HexahedronFEMForceField<DataTypes>::draw()
         Index f = (*it)[5];
         Index h = (*it)[6];
         Index g = (*it)[7];
-        Coord center = (x[a]+x[b]+x[c]+x[d]+x[e]+x[g]+x[f]+x[h])*0.0625f;
+
+        Coord center = (x[a]+x[b]+x[c]+x[d]+x[e]+x[g]+x[f]+x[h])*0.0625;
         Coord pa = (x[a]+center)*(Real)0.666667;
         Coord pb = (x[b]+center)*(Real)0.666667;
         Coord pc = (x[c]+center)*(Real)0.666667;
@@ -686,42 +690,53 @@ void HexahedronFEMForceField<DataTypes>::draw()
 
 
 
-        glColor3f(0.7f, 0.7f, 0.1f);
+
+        if(_sparseGrid )
+        {
+            glEnable(GL_BLEND);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        }
+
+
+// 		if( _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY )
+// 			continue;
+
+        glColor4f(0.7f, 0.7f, 0.1f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pc);
         helper::gl::glVertexT(pd);
         glEnd();
-        glColor3f(0.7f, 0, 0);
+        glColor4f(0.7f, 0, 0, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pe);
         helper::gl::glVertexT(pf);
         helper::gl::glVertexT(pg);
         helper::gl::glVertexT(ph);
         glEnd();
-        glColor3f(0, 0.7f, 0);
+        glColor4f(0, 0.7f, 0, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pc);
         helper::gl::glVertexT(pd);
         helper::gl::glVertexT(ph);
         helper::gl::glVertexT(pg);
         glEnd();
-        glColor3f(0, 0, 0.7f);
+        glColor4f(0, 0, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pf);
         helper::gl::glVertexT(pe);
         glEnd();
-        glColor3f(0.1f, 0.7f, 0.7f);
+        glColor4f(0.1f, 0.7f, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pd);
         helper::gl::glVertexT(ph);
         helper::gl::glVertexT(pe);
         glEnd();
-        glColor3f(0.7f, 0.1f, 0.7f);
+        glColor4f(0.7f, 0.1f, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pc);
@@ -732,6 +747,9 @@ void HexahedronFEMForceField<DataTypes>::draw()
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+    if(_sparseGrid )
+        glDisable(GL_BLEND);
 }
 
 } // namespace forcefield

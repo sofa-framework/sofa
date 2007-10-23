@@ -56,7 +56,9 @@ HEADERS += \
           system/FileRepository.h \
           system/thread/CTime.h \
           system/thread/debug.h \
-          vector.h 
+          vector.h \
+	  polygon_cube_intersection/vec.h \
+	  polygon_cube_intersection/polygon_cube_intersection.h
           
 SOURCES += \
           ArgumentParser.cpp \
@@ -85,4 +87,6 @@ SOURCES += \
           system/SetDirectory.cpp \
           system/FileRepository.cpp \
           system/thread/CTime.cpp \
-          system/thread/debug.cpp
+          system/thread/debug.cpp \
+	  polygon_cube_intersection/polygon_cube_intersection.C \
+	  polygon_cube_intersection/fast_polygon_cube_intersection.C 

@@ -30,6 +30,7 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/FittedRegularGridTopology.h>
+#include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -40,19 +41,15 @@
 
 // WARNING: indices ordering is different than in topology node
 //
-//        ^ Y
-//        |
-// 	      7---------6
-//       /	       /|
-//      /	      / |
-//     3---------2  |
-//     |		 |  |
-//     |  4------|--5-->X
+// 	   Y  7---------6
+//     ^ /	       /|
+//     |/	 Z    / |
+//     3----^----2  |
+//     |   /	 |  |
+//     |  4------|--5
 //     | / 	     | /
 //     |/	     |/
-//     0---------1
-//    /
-//   Z
+//     0---------1-->X
 
 
 // Corotational hexahedron from
@@ -120,8 +117,6 @@ protected:
     typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
 
 
-//         typedef Mat<24, 24, Real> StiffnessMatrix;
-
     typedef std::pair<int,Real> Col_Value;
     typedef vector< Col_Value > CompressedValue;
     typedef vector< CompressedValue > CompressedMatrix;
@@ -131,6 +126,7 @@ protected:
 
     topology::MeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
+    topology::SparseGridTopology* _sparseGrid;
     const VecElement *_indexedElements;
     DataField< VecCoord > _initialPoints; ///< the intial positions of the points
 
@@ -143,7 +139,7 @@ public:
     DataField<int> f_method; ///< the computation method of the displacements
     DataField<Real> f_poissonRatio;
     DataField<Real> f_youngModulus;
-    DataField<bool> f_updateStiffnessMatrix;
+//         DataField<bool> f_updateStiffnessMatrix;
     DataField<bool> f_assembling;
 
 
@@ -154,7 +150,7 @@ public:
         , f_method(dataField(&f_method,0,"method","0: large displacements by QR, 1: large displacements by polar"))
         , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus",""))
-        , f_updateStiffnessMatrix(dataField(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
+//             , f_updateStiffnessMatrix(dataField(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
         , f_assembling(dataField(&f_assembling,false,"assembling",""))
     {
         _coef[0][0]=-1;
@@ -191,7 +187,7 @@ public:
 
     void setMethod(int val) { this->f_method.setValue(val); }
 
-    void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
+// 		void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 
     void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
 
@@ -215,7 +211,7 @@ public:
 protected:
 
 
-    void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes);
+    void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes, const int elementIndice);
     Mat33 integrateStiffness( const Real xmin, const Real xmax, const Real ymin, const Real ymax, const Real zmin, const Real zmax, int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  );
 
     void computeMaterialStiffness(int i);

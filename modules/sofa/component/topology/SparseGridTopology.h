@@ -92,6 +92,9 @@ public:
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
     virtual int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz);
 
+    /// return the type of the i-th cube
+    Type getType( int i ) { return _types[i];}
+
 protected:
 
     DataField<int> nx;
@@ -122,48 +125,52 @@ protected:
     void propagateFrom( const int i, const int j, const int k,  RegularGridTopology& regularGrid, vector<Type>& regularGridTypes, vector<bool>& alreadyTested  );
 
 
-    /// to compute valid cubes (intersection between mesh segments and cubes)
-    typedef struct segmentForIntersection
-    {
-        Vec3 center;
-        Vec3 dir;
-        Real norm;
-        segmentForIntersection(const Vec3& s0, const Vec3& s1)
-        {
-            center = (s0+s1)*.5;
-            dir = center-s0;
-            norm = dir.norm();
-            dir /= norm;
-        };
+
+    /*	/// to compute valid cubes (intersection between mesh segments and cubes)
+    typedef struct segmentForIntersection{
+    	Vec3 center;
+    	Vec3 dir;
+    	Real norm;
+    	segmentForIntersection(const Vec3& s0, const Vec3& s1)
+    	{
+    		center = (s0+s1)*.5;
+    		dir = center-s0;
+    		norm = dir.norm();
+    		dir /= norm;
+    	};
     } SegmentForIntersection;
     struct ltSegmentForIntersection // for set of SegmentForIntersection
     {
-        bool operator()(const SegmentForIntersection& s0, const SegmentForIntersection& s1) const
-        {
-            return s0.center < s1.center || s0.norm < s1.norm;
-        }
+    	bool operator()(const SegmentForIntersection& s0, const SegmentForIntersection& s1) const
+    	{
+    		return s0.center < s1.center || s0.norm < s1.norm;
+    	}
     };
-    typedef struct cubeForIntersection
-    {
-        Vec3 center;
-        fixed_array<Vec3,3> dir;
-        Vec3 norm;
-        cubeForIntersection( const CubeCorners&  corners )
-        {
-            center = (corners[7] + corners[0]) * .5;
+    typedef struct cubeForIntersection{
+    	Vec3 center;
+    	fixed_array<Vec3,3> dir;
+    	Vec3 norm;
+    	cubeForIntersection( const CubeCorners&  corners )
+    	{
+    		center = (corners[7] + corners[0]) * .5;
 
-            norm[0] = (center[0] - corners[0][0]);
-            dir[0] = Vec3(1,0,0);
+    		norm[0] = (center[0] - corners[0][0]);
+    		dir[0] = Vec3(1,0,0);
 
-            norm[1] = (center[1] - corners[0][1]);
-            dir[1] = Vec3(0,1,0);
+    		norm[1] = (center[1] - corners[0][1]);
+    		dir[1] = Vec3(0,1,0);
 
-            norm[2] = (center[2] - corners[0][2]);
-            dir[2] = Vec3(0,0,1);
-        }
+    		norm[2] = (center[2] - corners[0][2]);
+    		dir[2] = Vec3(0,0,1);
+    	}
     } CubeForIntersection;
     /// return true if there is an intersection between a SegmentForIntersection and a CubeForIntersection
-    bool intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  );
+    bool intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  ); */
+
+
+    bool _alreadyInit;
+    const SeqCubes& getCubes();
+    int getNbPoints() const;
 
 
 };

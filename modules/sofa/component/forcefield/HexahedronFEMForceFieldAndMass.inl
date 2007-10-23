@@ -28,7 +28,7 @@
 
 #include "HexahedronFEMForceFieldAndMass.h"
 #include "HexahedronFEMForceField.inl"
-// #include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/component/topology/SparseGridTopology.h>
 
 namespace sofa
 {
@@ -59,6 +59,30 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 
     computeElementMasses();
 
+
+    _particleMasses.resize( this->_initialPoints.getValue().size() );
+
+    typename topology::SparseGridTopology* sparseGrid = dynamic_cast<typename topology::SparseGridTopology*>(this->_mesh);
+    int i=0;
+    for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+    {
+        Vec<8,Coord> nodes;
+        for(int w=0; w<8; ++w)
+            nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
+
+        // volume of a element
+        Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
+
+        if( sparseGrid ) // if sparseGrid -> the filling ratio is taken into account
+            volume *= (sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+
+        // mass of a particle...
+        Real mass = ( volume * _density.getValue() ) / 8.0;
+
+        // ... is added to each particle of the element
+        for(int w=0; w<8; ++w)
+            _particleMasses[ (*it)[w] ] += mass;
+    }
 
 }
 
@@ -191,6 +215,7 @@ template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/)
 {
     cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::accFromF not yet implemented\n";
+    // need to built the big global mass matrix and to inverse it...
 }
 
 
@@ -202,13 +227,11 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const Vec
     HexahedronFEMForceField::addForce(f,x,v);
 
 
-    // TODO: compute real gravity force
-    Real masse = 0.1f;
 
     // gravity
-    Vec3d g ( this->getContext()->getLocalGravity() );
-    Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
+// 		Vec3d g ( this->getContext()->getLocalGravity() );
+// 		Deriv theGravity;
+// 		DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
     // velocity-based stuff
     core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
@@ -219,9 +242,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const Vec
     aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
 
     // add weight and inertia force
-    for (unsigned int i=0; i<f.size(); i++)
+    for (unsigned int i=0; i<_particleMasses.size(); i++)
     {
-        f[i] += theGravity*masse + core::componentmodel::behavior::inertiaForce(vframe,aframe,masse,x[i],v[i]);
+        f[i] += this->getContext()->getLocalGravity()*_particleMasses[i] + core::componentmodel::behavior::inertiaForce(vframe,aframe,_particleMasses[i],x[i],v[i]);
     }
 }
 

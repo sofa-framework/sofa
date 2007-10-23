@@ -39,11 +39,7 @@ public:
     typedef typename HexahedronFEMForceField::VecElement VecElement;
     typedef typename HexahedronFEMForceField::VecElementStiffness VecElementMass;
     typedef typename HexahedronFEMForceField::ElementStiffness ElementMass;
-
-
-
-
-
+    typedef helper::vector<Real> MassVector;
 
 
 
@@ -97,6 +93,8 @@ protected :
     VecElementMass _elementMasses; ///< mass matrices per element
 
     DataField<Real> _density;
+
+    MassVector _particleMasses; ///< masses per particle in order to compute gravity
 
 
 };

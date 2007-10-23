@@ -52,6 +52,8 @@ void MeshSpringForceField<DataTypes>::init()
     if (this->mstate1==this->mstate2)
     {
         topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(this->mstate1->getContext()->getTopology());
+
+
         if (topology != NULL)
         {
             std::set< std::pair<int,int> > sset;
@@ -113,6 +115,7 @@ void MeshSpringForceField<DataTypes>::init()
                     this->addSpring(sset, e[2], e[3], s, d);
                 }
             }
+
             if (this->cubesStiffness.getValue() != 0.0 || this->cubesDamping.getValue() != 0.0)
             {
                 s = this->cubesStiffness.getValue();
@@ -124,7 +127,9 @@ void MeshSpringForceField<DataTypes>::init()
                     topology::MeshTopology::Cube e = topology->getCube(i);
                     for (int i=0; i<8; i++)
                         for (int j=i+1; j<8; j++)
+                        {
                             this->addSpring(sset, e[i], e[j], s, d);
+                        }
                 }
             }
         }
