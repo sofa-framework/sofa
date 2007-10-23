@@ -43,7 +43,7 @@ Context::Context()
     , showCollisionModels_(dataField(&showCollisionModels_,false,"showCollisionModels","display flag"))
     , showBoundingCollisionModels_( dataField(&showBoundingCollisionModels_,false,"showBoundingCollisionModels","display flag"))
     , showBehaviorModels_(dataField(&showBehaviorModels_,false,"showBehaviorModels","display flag"))
-    , showVisualModels_(dataField(&showVisualModels_,false,"showVisualModels","display flag"))
+    , showVisualModels_(dataField(&showVisualModels_,true,"showVisualModels","display flag"))
     , showMappings_(dataField(&showMappings_,false,"showMappings","display flag"))
     , showMechanicalMappings_(dataField(&showMechanicalMappings_,false,"showMechanicalMappings","display flag"))
     , showForceFields_(dataField(&showForceFields_,false,"showForceFields","display flag"))
@@ -59,20 +59,20 @@ Context::Context()
     setGravityInWorld(objectmodel::BaseContext::getLocalGravity());
     setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
     setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
-    setDt(objectmodel::BaseContext::getDt());
-    setTime(objectmodel::BaseContext::getTime());
-    setAnimate(objectmodel::BaseContext::getAnimate());
-    setShowCollisionModels(objectmodel::BaseContext::getShowCollisionModels());
-    setShowBoundingCollisionModels(objectmodel::BaseContext::getShowBoundingCollisionModels());
-    setShowBehaviorModels(objectmodel::BaseContext::getShowBehaviorModels());
-    setShowVisualModels(objectmodel::BaseContext::getShowVisualModels());
-    setShowMappings(objectmodel::BaseContext::getShowMappings());
-    setShowMechanicalMappings(objectmodel::BaseContext::getShowMechanicalMappings());
-    setShowForceFields(objectmodel::BaseContext::getShowForceFields());
-    setShowInteractionForceFields(objectmodel::BaseContext::getShowInteractionForceFields());
-    setShowWireFrame(objectmodel::BaseContext::getShowWireFrame());
-    setShowNormals(objectmodel::BaseContext::getShowNormals());
-    setMultiThreadSimulation(objectmodel::BaseContext::getMultiThreadSimulation());
+    //setDt(objectmodel::BaseContext::getDt());
+    //setTime(objectmodel::BaseContext::getTime());
+    //setAnimate(objectmodel::BaseContext::getAnimate());
+    //setShowCollisionModels(objectmodel::BaseContext::getShowCollisionModels());
+    //setShowBoundingCollisionModels(objectmodel::BaseContext::getShowBoundingCollisionModels());
+    //setShowBehaviorModels(objectmodel::BaseContext::getShowBehaviorModels());
+    //setShowVisualModels(objectmodel::BaseContext::getShowVisualModels());
+    //setShowMappings(objectmodel::BaseContext::getShowMappings());
+    //setShowMechanicalMappings(objectmodel::BaseContext::getShowMechanicalMappings());
+    //setShowForceFields(objectmodel::BaseContext::getShowForceFields());
+    //setShowInteractionForceFields(objectmodel::BaseContext::getShowInteractionForceFields());
+    //setShowWireFrame(objectmodel::BaseContext::getShowWireFrame());
+    //setShowNormals(objectmodel::BaseContext::getShowNormals());
+    //setMultiThreadSimulation(objectmodel::BaseContext::getMultiThreadSimulation());
 }
 
 

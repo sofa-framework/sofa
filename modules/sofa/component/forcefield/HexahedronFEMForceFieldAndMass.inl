@@ -203,7 +203,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const Vec
 
 
     // TODO: compute real gravity force
-    Real masse = (Real).1;
+    Real masse = 0.1f;
 
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
