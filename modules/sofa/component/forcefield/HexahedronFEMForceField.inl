@@ -310,37 +310,37 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 template<class DataTypes>
 typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataTypes>::integrateStiffness( const Real xmin, const Real xmax, const Real ymin, const Real ymax, const Real zmin, const Real zmax, int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  )
 {
-    Real t1 = signx0*signy0;
+    Real t1 = (Real) (signx0*signy0);
     Real t2 = signz0*w;
     Real t3 = t2*signx1;
     Real t4 = t1*t3;
     Real t5 = xmax-xmin;
-    Real t6 = t5*signy1/2.0;
+    Real t6 = (Real) (t5*signy1/2.0);
     Real t7 = ymax-ymin;
-    Real t8 = t6*t7/2.0;
+    Real t8 = (Real) (t6*t7/2.0);
     Real t9 = zmax-zmin;
-    Real t10 = signz1*t9/2.0;
+    Real t10 = (Real) (signz1*t9/2.0);
     Real t12 = t8*t10*J_1[0][0];
     Real t15 = signz0*u;
     Real t17 = t1*t15*signx1;
-    Real t20 = signy0*signz0;
-    Real t23 = 1.0+signx1*(xmax+xmin)/2.0;
+    Real t20 = (Real) (signy0*signz0);
+    Real t23 = (Real) (1.0+signx1*(xmax+xmin)/2.0);
     Real t24 = w*t23;
-    Real t26 = signy1*t7/2.0;
+    Real t26 = (Real) (signy1*t7/2.0);
     Real t27 = t26*t10;
     Real t28 = t20*t24*t27;
-    Real t29 = signx0*signz0;
+    Real t29 = (Real) (signx0*signz0);
     Real t30 = u*signx1;
-    Real t34 = 1.0+signy1*(ymax+ymin)/2.0;
-    Real t35 = t5*t34/2.0;
+    Real t34 = (Real) (1.0+signy1*(ymax+ymin)/2.0);
+    Real t35 = (Real) (t5*t34/2.0);
     Real t36 = t35*t10;
     Real t37 = t29*t30*t36;
-    Real t44 = 1.0+signz1*(zmax+zmin)/2.0;
-    Real t46 = t6*t7*t44/2.0;
+    Real t44 = (Real) (1.0+signz1*(zmax+zmin)/2.0);
+    Real t46 = (Real) (t6*t7*t44/2.0);
     Real t47 = t1*t30*t46;
     Real t53 = t35*t44;
     Real t55 = t2*t23;
-    Real t57 = t34*signz1*t9/2.0;
+    Real t57 = (Real) (t34*signz1*t9/2.0);
     Real t58 = t55*t57;
     Real t59 = signy0*w;
     Real t60 = t59*t23;
@@ -365,23 +365,23 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     Real t168 = signz0*v;
     Real t190 = t8*t10*J_1[2][2];
     Mat33 K;
-    K[0][0] = t4*t12/36.0+t17*t12/72.0+(t28+t37)*J_1[0][0]/24.0+(t47+t28)*J_1[0][0]/
-            24.0+(signx0*u*signx1*t53+t58+t62)*J_1[0][0]/8.0+(t68+t70)*J_1[0][0]/24.0;
-    K[0][1] = (t29*t75*t27+t78*t36)*J_1[1][1]/24.0+(t84*t61+t59*signx1*t53)*J_1[1][1]
-            /8.0;
-    K[0][2] = (t1*t75*t27+t78*t46)*J_1[2][2]/24.0+(t84*t57+t3*t53)*J_1[2][2]/8.0;
-    K[1][0] = (t105*t36+t29*t24*t27)*J_1[0][0]/24.0+(t112*signx1*t53+t116*t61)
-            *J_1[0][0]/8.0;
-    K[1][1] = t17*t123/72.0+t4*t123/36.0+(t70+t130)*J_1[1][1]/24.0+(t68+t28)*
-            J_1[1][1]/24.0+(signy0*u*t23*t61+t58+t141)*J_1[1][1]/8.0+(t47+t70)*J_1[1][1]/24.0;
-    K[1][2] = (t1*t104*t36+t69*t46)*J_1[2][2]/24.0+(t112*t23*t57+t55*t61)*J_1[2][2]/
-            8.0;
-    K[2][0] = (t105*t46+t1*t24*t27)*J_1[0][0]/24.0+(t168*signx1*t53+t116*t57)*
-            J_1[0][0]/8.0;
-    K[2][1] = (t29*t104*t46+t67*t36)*J_1[1][1]/24.0+(t168*t23*t61+t60*t57)*J_1[1][1]/
-            8.0;
-    K[2][2] = t4*t190/36.0+(t28+t70)*J_1[2][2]/24.0+t17*t190/72.0+(t68+t130)*
-            J_1[2][2]/24.0+(t15*t23*t57+t62+t141)*J_1[2][2]/8.0+(t68+t37)*J_1[2][2]/24.0;
+    K[0][0] = (Real) (t4*t12/36.0+t17*t12/72.0+(t28+t37)*J_1[0][0]/24.0+(t47+t28)*J_1[0][0]/
+            24.0+(signx0*u*signx1*t53+t58+t62)*J_1[0][0]/8.0+(t68+t70)*J_1[0][0]/24.0);
+    K[0][1] = (Real) ((t29*t75*t27+t78*t36)*J_1[1][1]/24.0+(t84*t61+t59*signx1*t53)*J_1[1][1]
+            /8.0);
+    K[0][2] = (Real) ((t1*t75*t27+t78*t46)*J_1[2][2]/24.0+(t84*t57+t3*t53)*J_1[2][2]/8.0);
+    K[1][0] = (Real) ((t105*t36+t29*t24*t27)*J_1[0][0]/24.0+(t112*signx1*t53+t116*t61)
+            *J_1[0][0]/8.0);
+    K[1][1] = (Real) (t17*t123/72.0+t4*t123/36.0+(t70+t130)*J_1[1][1]/24.0+(t68+t28)*
+            J_1[1][1]/24.0+(signy0*u*t23*t61+t58+t141)*J_1[1][1]/8.0+(t47+t70)*J_1[1][1]/24.0);
+    K[1][2] = (Real) ((t1*t104*t36+t69*t46)*J_1[2][2]/24.0+(t112*t23*t57+t55*t61)*J_1[2][2]/
+            8.0);
+    K[2][0] = (Real) ((t105*t46+t1*t24*t27)*J_1[0][0]/24.0+(t168*signx1*t53+t116*t57)*
+            J_1[0][0]/8.0);
+    K[2][1] = (Real) ((t29*t104*t46+t67*t36)*J_1[1][1]/24.0+(t168*t23*t61+t60*t57)*J_1[1][1]/
+            8.0);
+    K[2][2] = (Real) (t4*t190/36.0+(t28+t70)*J_1[2][2]/24.0+t17*t190/72.0+(t68+t130)*
+            J_1[2][2]/24.0+(t15*t23*t57+t62+t141)*J_1[2][2]/8.0+(t68+t37)*J_1[2][2]/24.0);
 
     return J_1 * K;
 }
