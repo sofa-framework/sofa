@@ -112,7 +112,7 @@ protected:
     /** \brief Creates the EdgeSet array.
      *
      * This function is only called by derived classes to create a list of edges from a set of triangles or tetrahedra
-    */
+     */
     virtual void createEdgeSetArray() {}
 
 public:
@@ -201,17 +201,18 @@ public:
      *
      * \sa addEdgesProcess
      */
-    void addEdgesWarning(const unsigned int nEdges,
+    virtual void addEdgesWarning(const unsigned int nEdges,
             const std::vector< Edge >& edgesList,
             const std::vector< unsigned int >& edgesIndexList,
             const std::vector< std::vector< unsigned int > > & ancestors= (const std::vector< std::vector<unsigned int > >) 0 ,
-            const std::vector< std::vector< double > >& baryCoefs= (const std::vector< std::vector< double > >)0) ;
+            const std::vector< std::vector< double > >& baryCoefs= (const std::vector< std::vector< double > >)0);
+
 
     /** \brief Add some edges to this topology.
      *
      * \sa addEdgesWarning
      */
-    virtual void addEdgesProcess(const std::vector< Edge > &edges);
+    void addEdgesProcess(const std::vector< Edge > &edges);
 
     /** \brief Sends a message to warn that some edges are about to be deleted.
      *
@@ -291,17 +292,17 @@ class EdgeSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
 public:
 
     /** \brief Remove a set  of edges
-    @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
-    *
-    */
+        @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
+        *
+        */
     virtual void removeEdges(std::vector< unsigned int >& edges);
 
     /** \brief add a set  of edges
-    @param edges an array of pair of vertex indices describing the edge to be created
-    @param ancestors for each edge to be created provides an array of edge ancestors (optional)
-    @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
-    *
-    */
+        @param edges an array of pair of vertex indices describing the edge to be created
+        @param ancestors for each edge to be created provides an array of edge ancestors (optional)
+        @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
+        *
+        */
     virtual void addEdges(const std::vector< Edge >& edges,
             const std::vector< std::vector< unsigned int > > & ancestors= (const std::vector< std::vector<unsigned int > >) 0 ,
             const std::vector< std::vector< double > >& baryCoefs= (const std::vector< std::vector< double > >)0) ;
@@ -324,8 +325,8 @@ public:
     }
 };
 /** \brief A class used as an interface with an array : Useful to compute geometric information on each edge in an efficient way
-     *
-     */
+ *
+ */
 template < class T>
 class BasicArrayInterface
 {

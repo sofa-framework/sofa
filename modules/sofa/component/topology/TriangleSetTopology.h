@@ -51,6 +51,23 @@ typedef helper::fixed_array<unsigned int,3> TriangleEdges;
 /////////////////////////////////////////////////////////
 
 
+template< class Real>
+bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c);
+
+template< class Real>
+bool is_point_in_halfplane(const Vec<3,Real>& p, unsigned int e0, unsigned int e1, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c, unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2);
+
+void snapping_test_triangle(double epsilon, double alpha0, double alpha1, double alpha2, bool& is_snap_0, bool& is_snap_1, bool& is_snap_2);
+void snapping_test_edge(double epsilon, double alpha0, double alpha1, bool& is_snap_0, bool& is_snap_1);
+
+template< class Real>
+inline Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b);
+
+template< class Real>
+inline Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b );
+
+template< class Real>
+inline Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>&  );
 
 /** indicates that some triangles were added */
 class TrianglesAdded : public core::componentmodel::topology::TopologyChange
@@ -120,23 +137,23 @@ class TriangleSetTopologyContainer : public EdgeSetTopologyContainer
 {
 private:
     /** \brief Creates the array of edge indices for each triangle
-    *
-    * This function is only called if the TriangleEdge array is required.
-    * m_triangleEdge[i] contains the 3 indices of the 3 edges opposite to the ith vertex
-    */
+     *
+     * This function is only called if the TriangleEdge array is required.
+     * m_triangleEdge[i] contains the 3 indices of the 3 edges opposite to the ith vertex
+     */
     void createTriangleEdgeArray();
     /** \brief Creates the Triangle Vertex Shell Array
-    *
-    * This function is only called if the TriangleVertexShell array is required.
-    * m_triangleVertexShell[i] contains the indices of all triangles adjacent to the ith vertex
-    */
+     *
+     * This function is only called if the TriangleVertexShell array is required.
+     * m_triangleVertexShell[i] contains the indices of all triangles adjacent to the ith vertex
+     */
     void createTriangleVertexShellArray();
 
     /** \brief Creates the Triangle Edge Shell Array
-    *
-    * This function is only called if the TriangleVertexShell array is required.
-    * m_triangleEdgeShell[i] contains the indices of all triangles adjacent to the ith edge
-    */
+     *
+     * This function is only called if the TriangleVertexShell array is required.
+     * m_triangleEdgeShell[i] contains the indices of all triangles adjacent to the ith edge
+     */
     void createTriangleEdgeShellArray();
 protected:
     /// provides the set of triangles
@@ -152,13 +169,13 @@ protected:
     /** \brief Creates the TriangleSet array.
      *
      * This function is only called by derived classes to create a list of triangles from a set of tetrahedra for instance
-    */
+     */
     virtual void createTriangleSetArray() {}
 
     /** \brief Creates the EdgeSet array.
      *
      * Create the set of edges when needed.
-    */
+     */
     virtual void createEdgeSetArray() {createTriangleEdgeArray();}
 
 public:
@@ -237,8 +254,8 @@ private:
      */
     std::vector< unsigned int > &getTriangleVertexShellForModification(const unsigned int vertexIndex);
     /** \brief Returns a non-const triangle edge shell given the index of an edge for subsequent modification
-      *
-      */
+     *
+     */
     std::vector< unsigned int > &getTriangleEdgeShellForModification(const unsigned int edgeIndex);
 
 
@@ -278,6 +295,14 @@ public:
             const std::vector< std::vector< unsigned int > > & ancestors= (const std::vector< std::vector<unsigned int > >) 0 ,
             const std::vector< std::vector< double > >& baryCoefs= (const std::vector< std::vector< double > >)0) ;
 
+    void addEdgesWarning(const unsigned int nEdges,
+            const std::vector< Edge >& edgesList,
+            const std::vector< unsigned int >& edgesIndexList,
+            const std::vector< std::vector< unsigned int > > & ancestors= (const std::vector< std::vector<unsigned int > >) 0 ,
+            const std::vector< std::vector< double > >& baryCoefs= (const std::vector< std::vector< double > >)0)
+    {
+        EdgeSetTopologyModifier<DataTypes>::addEdgesWarning( nEdges,edgesList,edgesIndexList,ancestors,baryCoefs);
+    }
 
 
     /** \brief Actually Add some triangles to this topology.
@@ -304,20 +329,19 @@ public:
     virtual void removeTrianglesProcess( const std::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
     /** \brief Add some edges to this topology.
-    *
-    * \sa addEdgesWarning
-    */
-    virtual void addEdgesProcess(const std::vector< Edge > &edges);
-
+     *
+     * \sa addEdgesWarning
+     */
+    void addEdgesProcess(const std::vector< Edge > &edges);
 
     /** \brief Remove a subset of edges
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeEdgesWarning
-    *
-    * @param removeIsolatedItems if true isolated vertices are also removed
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    */
+     *
+     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+     * \sa removeEdgesWarning
+     *
+     * @param removeIsolatedItems if true isolated vertices are also removed
+     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+     */
     virtual void removeEdgesProcess( const std::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
 
@@ -375,20 +399,21 @@ class TriangleSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataType
 
 public:
 
+    typedef typename DataTypes::Real Real;
+
     TriangleSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)
     {
     }
 
     /** \brief Remove a set  of triangles
-    @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)
-    *
-    */
+        @param triangles an array of triangle indices to be removed (note that the array is not const since it needs to be sorted)
+        *
+        */
     virtual void removeTriangles(std::vector< unsigned int >& triangles);
 
     // Prepares the incision along the list of points (ind_edge,coord) intersected by the vector from point a to point b
     // and the triangular mesh
-    double Prepare_InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int &new_ind_ta, unsigned int &newind_tb);
-
+    double Prepare_InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int new_ind_ta, unsigned int newind_tb);
 
     // Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b
     // and the triangular mesh
@@ -438,7 +463,7 @@ public:
     Vec<3,double> getOppositePoint(unsigned int ind_p, std::vector< unsigned int>& indices, const double &coord_p);
 
     // Test if a triangle indexed by ind_t (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
-    bool is_triangle_in_plane(const unsigned int ind_t, const unsigned int ind_p, const Vec<3,double>& plane_vect);
+    bool is_triangle_in_plane(const unsigned int ind_t, const unsigned int ind_p, const Vec<3,Real>& plane_vect);
 
 
     // Prepares the duplication of a vertex

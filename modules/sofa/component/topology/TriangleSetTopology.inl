@@ -553,7 +553,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(std::vector< un
 // if a and b are distinct but belong to the same triangle indexed by ind_a (= ind_p), then remesh the input triangle (such that a and b belongs to distinct triangles indexed by new_ind_ta and new_ind_tb) and return true
 
 template<class DataTypes>
-double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int &new_ind_ta, unsigned int &new_ind_tb)
+double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int new_ind_ta, unsigned int new_ind_tb)
 {
 
     // Initialization of output variables
@@ -570,7 +570,7 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
     assert(modifier != 0);
 
     const Triangle &ta=container->getTriangle(ind_ta);
-    const Triangle &tb=container->getTriangle(ind_tb);
+// 	const Triangle &tb=container->getTriangle(ind_tb);
 
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
     unsigned int nb_points =  vect_c.size() -1;
@@ -620,11 +620,11 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
 
         triangles_to_remove.push_back(ind_ta);
 
-        modifier->addPointsProcess((const unsigned int) acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
+        modifier->addPointsProcess( acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
 
-        modifier->addPointsWarning((const unsigned int) acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
+        modifier->addPointsWarning( acc_nb_points - nb_points, p_ancestors, p_baryCoefs);
 
-        modifier->addTrianglesProcess((const std::vector< Triangle > &) triangles_to_create) ; // WARNING included after
+        modifier->addTrianglesProcess( triangles_to_create) ; // WARNING included after
 
         topology->propagateTopologicalChanges();
 
@@ -635,42 +635,41 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
         if(is_validated)  // localize the sub_triangles indexed by new_ind_ta and new_ind_tb
         {
 
-            std::vector< double > p_mid;
-            p_mid.push_back((double) (0.5*(a[0]+b[0]))); p_mid.push_back((double) (0.5*(a[1]+b[1]))); p_mid.push_back((double) (0.5*(a[2]+b[2])));
+            const Vec<3,double> p_mid(0.5*(a+b));
 
             /*
-            double is_a_0_01 = 0.5*a[0]*a[2]-p_mid[0]*p_mid[2];
-            double is_a_1_01 = 0.5*a[1]*a[2]-p_mid[1]*p_mid[2];
-            bool is_a_in_01 = (is_a_0_01>=0.0) && (is_a_1_01>=0.0);
+              double is_a_0_01 = 0.5*a[0]*a[2]-p_mid[0]*p_mid[2];
+              double is_a_1_01 = 0.5*a[1]*a[2]-p_mid[1]*p_mid[2];
+              bool is_a_in_01 = (is_a_0_01>=0.0) && (is_a_1_01>=0.0);
 
-            double is_a_1_12 = 0.5*a[1]*a[0]-p_mid[1]*p_mid[0];
-            double is_a_2_12 = 0.5*a[2]*a[0]-p_mid[2]*p_mid[0];
-            bool is_a_in_12 = (is_a_1_12>=0.0) && (is_a_2_12>=0.0);
+              double is_a_1_12 = 0.5*a[1]*a[0]-p_mid[1]*p_mid[0];
+              double is_a_2_12 = 0.5*a[2]*a[0]-p_mid[2]*p_mid[0];
+              bool is_a_in_12 = (is_a_1_12>=0.0) && (is_a_2_12>=0.0);
 
-            double is_a_2_20 = 0.5*a[2]*a[1]-p_mid[2]*p_mid[1];
-            double is_a_0_20 = 0.5*a[0]*a[1]-p_mid[0]*p_mid[1];
-            bool is_a_in_20 = (is_a_2_20>=0.0) && (is_a_0_20>=0.0);
+              double is_a_2_20 = 0.5*a[2]*a[1]-p_mid[2]*p_mid[1];
+              double is_a_0_20 = 0.5*a[0]*a[1]-p_mid[0]*p_mid[1];
+              bool is_a_in_20 = (is_a_2_20>=0.0) && (is_a_0_20>=0.0);
 
-            double is_b_0_01 = 0.5*b[0]*b[2]-p_mid[0]*p_mid[2];
-            double is_b_1_01 = 0.5*b[1]*b[2]-p_mid[1]*p_mid[2];
-            bool is_b_in_01 = (is_b_0_01>=0.0) && (is_b_1_01>=0.0);
+              double is_b_0_01 = 0.5*b[0]*b[2]-p_mid[0]*p_mid[2];
+              double is_b_1_01 = 0.5*b[1]*b[2]-p_mid[1]*p_mid[2];
+              bool is_b_in_01 = (is_b_0_01>=0.0) && (is_b_1_01>=0.0);
 
-            double is_b_1_12 = 0.5*b[1]*b[0]-p_mid[1]*p_mid[0];
-            double is_b_2_12 = 0.5*b[2]*b[0]-p_mid[2]*p_mid[0];
-            bool is_b_in_12 = (is_b_1_12>=0.0) && (is_b_2_12>=0.0);
+              double is_b_1_12 = 0.5*b[1]*b[0]-p_mid[1]*p_mid[0];
+              double is_b_2_12 = 0.5*b[2]*b[0]-p_mid[2]*p_mid[0];
+              bool is_b_in_12 = (is_b_1_12>=0.0) && (is_b_2_12>=0.0);
 
-            double is_b_2_20 = 0.5*b[2]*b[1]-p_mid[2]*p_mid[1];
-            double is_b_0_20 = 0.5*b[0]*b[1]-p_mid[0]*p_mid[1];
-            bool is_b_in_20 = (is_b_2_20>=0.0) && (is_b_0_20>=0.0);
+              double is_b_2_20 = 0.5*b[2]*b[1]-p_mid[2]*p_mid[1];
+              double is_b_0_20 = 0.5*b[0]*b[1]-p_mid[0]*p_mid[1];
+              bool is_b_in_20 = (is_b_2_20>=0.0) && (is_b_0_20>=0.0);
 
             */
 
-            if(is_double_point_in_triangle(a, (const Vec<3,double>& ) p_mid, (const Vec<3,double>& ) ta[0], (const Vec<3,double>& ) ta[1])) //is_a_in_01){ // a in (0,1)
+            if(is_point_in_triangle(a, p_mid, (const Vec<3,double>& ) ta[0], (const Vec<3,double>& )ta[1])) //is_a_in_01){ // a in (0,1)
             {
 
                 new_ind_ta=acc_nb_triangles-2;
 
-                if(is_double_point_in_triangle(b, (const Vec<3,double>& ) p_mid, (const Vec<3,double>& ) ta[1], (const Vec<3,double>& ) ta[2])) //is_b_in_12){ // b in (1,2)
+                if(is_point_in_triangle(b, p_mid,(const Vec<3,double>& )ta[1],(const Vec<3,double>& )ta[2])) //is_b_in_12){ // b in (1,2)
                 {
                     new_ind_tb=acc_nb_triangles-1;
 
@@ -682,12 +681,12 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
             }
             else
             {
-                if(is_double_point_in_triangle(a, (const Vec<3,double>& ) p_mid, (const Vec<3,double>& ) ta[1], (const Vec<3,double>& ) ta[2])) //is_a_in_12){ // a in (1,2)
+                if(is_point_in_triangle(a, p_mid, (const Vec<3,double>& ) ta[1], (const Vec<3,double>& )ta[2])) //is_a_in_12){ // a in (1,2)
                 {
 
                     new_ind_ta=acc_nb_triangles-1;
 
-                    if(is_double_point_in_triangle(b, (const Vec<3,double>& ) p_mid, (const Vec<3,double>& ) ta[2], (const Vec<3,double>& ) ta[0])) //is_b_in_20){ // b in (2,0)
+                    if(is_point_in_triangle(b, p_mid,(const Vec<3,double>& )ta[2], (const Vec<3,double>& ) ta[0])) //is_b_in_20){ // b in (2,0)
                     {
                         new_ind_tb=acc_nb_triangles;
 
@@ -702,7 +701,7 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
 
                     new_ind_ta=acc_nb_triangles;
 
-                    if(is_double_point_in_triangle(b, (const Vec<3,double>& ) p_mid, (const Vec<3,double>& ) ta[0], (const Vec<3,double>& ) ta[1])) //is_b_in_01){ // b in (0,1)
+                    if(is_point_in_triangle(b, p_mid,(const Vec<3,double>& ) ta[0], (const Vec<3,double>& )ta[1])) //is_b_in_01){ // b in (0,1)
                     {
                         new_ind_tb=acc_nb_triangles-2;
 
@@ -716,7 +715,7 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
 
             // Call the method "InciseAlongPointsList" on the new parameters
 
-            InciseAlongPointsList((const Vec<3,double>&) a, (const Vec<3,double>&) b, (const unsigned int) new_ind_ta, (const unsigned int) new_ind_tb);
+            InciseAlongPointsList( a,  b,  new_ind_ta, new_ind_tb);
 
         }
 
@@ -802,12 +801,12 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(const Vec
     double is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
 
     /*
-    if(is_snapping_a){
-    	std::cout << "INFO_print : is_snapping_a" <<  std::endl;
-    }
-    if(is_snapping_b){
-    	std::cout << "INFO_print : is_snapping_b" <<  std::endl;
-    }
+      if(is_snapping_a){
+      std::cout << "INFO_print : is_snapping_a" <<  std::endl;
+      }
+      if(is_snapping_b){
+      std::cout << "INFO_print : is_snapping_b" <<  std::endl;
+      }
     */
 
     bool is_intersected=false;
@@ -1415,12 +1414,12 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const std:
     double is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
 
     /*
-    if(is_snapping_a){
-    	std::cout << "INFO_print : is_snapping_a" <<  std::endl;
-    }
-    if(is_snapping_b){
-    	std::cout << "INFO_print : is_snapping_b" <<  std::endl;
-    }
+      if(is_snapping_a){
+      std::cout << "INFO_print : is_snapping_a" <<  std::endl;
+      }
+      if(is_snapping_b){
+      std::cout << "INFO_print : is_snapping_b" <<  std::endl;
+      }
     */
 
     if(is_validated)  // intersection successfull
@@ -1882,91 +1881,34 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const std:
 ////////////////////////////////////TriangleSetGeometryAlgorithms//////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-/// Dot product for 3-elements vectors.
-template<typename real>
-inline real dotProduct(const Vec<3,real>& a, const Vec<3,real>& b)
-{
-    return a.x()*b.x()+a.y()*b.y()+a.z()*b.z();
-}
-
-/// Cross product for 3-elements vectors.
-template<typename real>
-inline Vec<3,real> crossProduct(const Vec<3,real>& a, const Vec<3,real>& b)
-{
-    return Vec<3,real>(a.y()*b.z() - a.z()*b.y(),
-            a.z()*b.x() - a.x()*b.z(),
-            a.x()*b.y() - a.y()*b.x());
-}
-
 /// Test for REAL if a point p is in a triangle indexed by (a,b,c)
-template<typename real>
-bool is_point_in_triangle(const Vec<3,real>& p, const Vec<3,real>& a, const Vec<3,real>& b, const Vec<3,real>& c)
+
+template<class Real>
+bool is_point_in_triangle(const Vec<3,Real>& p, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c)
 {
 
-    Vec<3,real> ptest = p;
+    Vec<3,Real> ptest = p;
 
-    Vec<3,real> p0 = a;
-    Vec<3,real> p1 = b;
-    Vec<3,real> p2 = c;
+    Vec<3,Real> p0 = a;
+    Vec<3,Real> p1 = b;
+    Vec<3,Real> p2 = c;
 
-    Vec<3,real> v_normal = crossProduct(p2-p0,p1-p0);
+    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
 
-    real norm_v_normal = dotProduct(v_normal,v_normal);
+    Real norm_v_normal = v_normal*(v_normal);
     if(norm_v_normal != 0.0)
     {
 
         //v_normal/=norm_v_normal;
 
-        if(dotProduct(ptest-p0,v_normal)==0.0)  // p is in the plane defined by the triangle (p0,p1,p2)
+        if((ptest-p0)*(v_normal)==0.0)  // p is in the plane defined by the triangle (p0,p1,p2)
         {
 
-            Vec<3,real> n_01 = crossProduct(p1-p0,v_normal);
-            Vec<3,real> n_12 = crossProduct(p2-p1,v_normal);
-            Vec<3,real> n_20 = crossProduct(p0-p2,v_normal);
+            Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+            Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+            Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
 
-            return ((dotProduct(ptest-p0,n_01) >= 0.0) && (dotProduct(ptest-p1,n_12) >= 0.0) && (dotProduct(ptest-p2,n_20) >= 0.0));
-
-        }
-        else   // p is not in the plane defined by the triangle (p0,p1,p2)
-        {
-            //std::cout << "INFO_print : p is not in the plane defined by the triangle (p0,p1,p2)" << std::endl;
-            return false;
-        }
-
-    }
-    else   // triangle is flat
-    {
-        //std::cout << "INFO_print : triangle is flat" << std::endl;
-        return false;
-    }
-}
-
-/// Test for DOUBLE if a point p is in a triangle indexed by (a,b,c)
-bool is_double_point_in_triangle(const Vec<3,double>& p, const Vec<3,double>& a, const Vec<3,double>& b, const Vec<3,double>& c)
-{
-
-    Vec<3,double> ptest = (Vec<3,double>) p;
-
-    Vec<3,double> p0 = (Vec<3,double>) a;
-    Vec<3,double> p1 = (Vec<3,double>) b;
-    Vec<3,double> p2 = (Vec<3,double>) c;
-
-    Vec<3,double> v_normal = (Vec<3,double>) crossProduct(p2-p0,p1-p0);
-
-    double norm_v_normal = (double) dotProduct(v_normal,v_normal);
-    if(norm_v_normal != 0.0)
-    {
-
-        //v_normal/=norm_v_normal;
-
-        if((double) dotProduct(ptest-p0,v_normal)==0.0)  // p is in the plane defined by the triangle (p0,p1,p2)
-        {
-
-            Vec<3,double> n_01 = (Vec<3,double>) crossProduct(p1-p0,v_normal);
-            Vec<3,double> n_12 = (Vec<3,double>) crossProduct(p2-p1,v_normal);
-            Vec<3,double> n_20 = (Vec<3,double>) crossProduct(p0-p2,v_normal);
-
-            return (((double) dotProduct(ptest-p0,n_01) >= 0.0) && ((double) dotProduct(ptest-p1,n_12) >= 0.0) && ((double) dotProduct(ptest-p2,n_20) >= 0.0));
+            return (((ptest-p0)*(n_01) >= 0.0) && ((ptest-p1)*(n_12) >= 0.0) && ((ptest-p2)*(n_20) >= 0.0));
 
         }
         else   // p is not in the plane defined by the triangle (p0,p1,p2)
@@ -1984,19 +1926,20 @@ bool is_double_point_in_triangle(const Vec<3,double>& p, const Vec<3,double>& a,
 }
 
 /// Test if a point p is in the right halfplane
-template<typename real>
-bool is_point_in_halfplane(const Vec<3,real>& p, unsigned int e0, unsigned int e1, const Vec<3,real>& a, const Vec<3,real>& b, const Vec<3,real>& c, unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2)
+
+template<class Real>
+bool is_point_in_halfplane(const Vec<3,Real>& p, unsigned int e0, unsigned int e1, const Vec<3,Real>& a, const Vec<3,Real>& b, const Vec<3,Real>& c, unsigned int ind_p0, unsigned int ind_p1, unsigned int ind_p2)
 {
 
-    Vec<3,real> ptest = p;
+    Vec<3,Real> ptest = p;
 
-    Vec<3,real> p0 = a;
-    Vec<3,real> p1 = b;
-    Vec<3,real> p2 = c;
+    Vec<3,Real> p0 = a;
+    Vec<3,Real> p1 = b;
+    Vec<3,Real> p2 = c;
 
-    Vec<3,real> v_normal = crossProduct(p2-p0,p1-p0);
+    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
 
-    real norm_v_normal = dotProduct(v_normal,v_normal);
+    Real norm_v_normal = (v_normal)*(v_normal);
     if(norm_v_normal != 0.0)
     {
 
@@ -2004,24 +1947,24 @@ bool is_point_in_halfplane(const Vec<3,real>& p, unsigned int e0, unsigned int e
 
         if(ind_p0==e0 || ind_p0==e1)
         {
-            Vec<3,real> n_12 = crossProduct(p2-p1,v_normal);
-            return (dotProduct(ptest-p1,n_12) >= 0.0);
+            Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
+            return ((ptest-p1)*(n_12) >= 0.0);
 
         }
         else
         {
             if(ind_p1==e0 || ind_p1==e1)
             {
-                Vec<3,real> n_20 = crossProduct(p0-p2,v_normal);
-                return (dotProduct(ptest-p2,n_20) >= 0.0);
+                Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
+                return ((ptest-p2)*(n_20) >= 0.0);
 
             }
             else
             {
                 if(ind_p2==e0 || ind_p2==e1)
                 {
-                    Vec<3,real> n_01 = crossProduct(p1-p0,v_normal);
-                    return (dotProduct(ptest-p0,n_01) >= 0.0);
+                    Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
+                    return ((ptest-p0)*(n_01) >= 0.0);
 
                 }
                 else
@@ -2042,26 +1985,26 @@ bool is_point_in_halfplane(const Vec<3,real>& p, unsigned int e0, unsigned int e
 }
 
 /// Cross product for 3-elements vectors.
-template<typename real>
-inline real areaProduct(const Vec<3,real>& a, const Vec<3,real>& b)
+template< class Real>
+Real areaProduct(const Vec<3,Real>& a, const Vec<3,Real>& b)
 {
-    return Vec<3,real>(a.y()*b.z() - a.z()*b.y(),
+    return Vec<3,Real>(a.y()*b.z() - a.z()*b.y(),
             a.z()*b.x() - a.x()*b.z(),
             a.x()*b.y() - a.y()*b.x()).norm();
 }
 
 /// area from 2-elements vectors.
-template <typename real>
-inline real areaProduct(const defaulttype::Vec<2,real>& a, const defaulttype::Vec<2,real>& b )
+template< class Real>
+Real areaProduct(const defaulttype::Vec<2,Real>& a, const defaulttype::Vec<2,Real>& b )
 {
     return a[0]*b[1] - a[1]*b[0];
 }
 /// area for 1-elements vectors.
-template <typename real>
-inline real areaProduct(const defaulttype::Vec<1,real>& , const defaulttype::Vec<1,real>&  )
+template< class Real>
+Real areaProduct(const defaulttype::Vec<1,Real>& , const defaulttype::Vec<1,Real>&  )
 {
     assert(false);
-    return (real)0;
+    return (Real)0;
 }
 
 
@@ -2165,7 +2108,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(s
 
     TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
-    TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
+//       TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
 
     const typename DataTypes::Coord& c1=vect_c[indices[0]];
@@ -2187,7 +2130,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsig
 
     TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
-    TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
+//       TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
 
     const typename DataTypes::Coord& c1=vect_c[indices[0]];
@@ -2242,7 +2185,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(
     Vec<3,Real> p2;
     p2[0] = (Real) (c2[0]); p2[1] = (Real) (c2[1]); p2[2] = (Real) (c2[2]);
 
-    Vec<3,Real> normal_t=(Vec<3,Real>) dotProduct(p1-p0, p2-p0); // sure ???
+    Vec<3,Real> normal_t=(p1-p0).cross( p2-p0); // sure ???
 
     return ((Vec<3,double>) normal_t);
 
@@ -2272,8 +2215,8 @@ std::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::computeTriangl
     Vec<3,Real> c;
     c[0] = (Real) (c2[0]); c[1] = (Real) (c2[1]); c[2] = (Real) (c2[2]);
 
-    Vec<3,double> M = (Vec<3,double>) crossProduct(b-a,c-a);
-    double norm2_M = dotProduct(M,M);
+    Vec<3,double> M = (Vec<3,double>) (b-a).cross(c-a);
+    double norm2_M = M*(M);
 
     if(norm2_M==0.0)  // triangle (a,b,c) is flat
     {
@@ -2281,11 +2224,11 @@ std::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::computeTriangl
     }
     else
     {
-        Vec<3,double> N = (Vec<3,double>) M/norm2_M;
+        Vec<3,Real> N =  M/norm2_M;
 
-        double coef_a = (double) dotProduct((const Vec<3,Real>&) crossProduct(b-p,c-p),(const Vec<3,Real>&) N);
-        double coef_b = (double) dotProduct((const Vec<3,Real>&) crossProduct(c-p,a-p),(const Vec<3,Real>&) N);
-        double coef_c = (double) dotProduct((const Vec<3,Real>&) crossProduct(a-p,b-p),(const Vec<3,Real>&) N);
+        Real coef_a = N*((b-p).cross(c-p));
+        Real coef_b = N*((c-p).cross(a-p));
+        Real coef_c = N*((a-p).cross(b-p));
 
         baryCoefs.push_back(coef_a); baryCoefs.push_back(coef_b); baryCoefs.push_back(coef_c);
     }
@@ -2295,7 +2238,7 @@ std::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::computeTriangl
 
 // Test if a triangle indexed by ind_triangle (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::is_triangle_in_plane(const unsigned int ind_t, const unsigned int ind_p,  const Vec<3,double>&plane_vect)
+bool TriangleSetGeometryAlgorithms< DataTypes >::is_triangle_in_plane(const unsigned int ind_t, const unsigned int ind_p,  const Vec<3,Real>&plane_vect)
 {
 
 
@@ -2341,7 +2284,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_triangle_in_plane(const unsi
     Vec<3,Real> p2;
     p2[0] = (Real) (c2[0]); p2[1] = (Real) (c2[1]); p2[2] = (Real) (c2[2]);
 
-    return(dotProduct(p1-p0, (Vec<3,Real>) plane_vect)>=0.0 && dotProduct(p1-p0, (Vec<3,Real>) plane_vect)>=0.0);
+    return((p1-p0)*( plane_vect)>=0.0 && (p1-p0)*( plane_vect)>=0.0);
 
 
 }
@@ -2394,12 +2337,12 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
     {
 
         normal_from=(Vec<3,Real>) computeTriangleNormal(ind_t_from);
-        plane_from=crossProduct(vect_from, normal_from); // inverse ??
+        plane_from=vect_from.cross( normal_from); // inverse ??
 
     }
     else
     {
-        // HYP : only 2 edges maximum are adjacent to the same triangle (otherwise : compute the one which minimizes the normed dotProduct and which gives the positive crossProduct)
+        // HYP : only 2 edges maximum are adjacent to the same triangle (otherwise : compute the one which minimizes the normed dotProduct and which gives the positive cross)
 
         unsigned int ind_edge;
 
@@ -2450,7 +2393,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
                 Vec<3,Real> normal_from_2=(Vec<3,Real>) computeTriangleNormal(ind_t_from);
 
                 normal_from=(normal_from_1+normal_from_2)/2.0;
-                plane_from=crossProduct(vect_from, normal_from);
+                plane_from=vect_from.cross( normal_from);
 
             }
             else
@@ -2466,12 +2409,12 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
 
         normal_to=(Vec<3,Real>) computeTriangleNormal(ind_t_to);
 
-        plane_to=crossProduct(vect_to, normal_to);
+        plane_to=vect_to.cross( normal_to);
 
     }
     else
     {
-        // HYP : only 2 edges maximum are adjacent to the same triangle (otherwise : compute the one which minimizes the normed dotProduct and which gives the positive crossProduct)
+        // HYP : only 2 edges maximum are adjacent to the same triangle (otherwise : compute the one which minimizes the normed dotProduct and which gives the positive cross)
 
         unsigned int ind_edge;
 
@@ -2520,7 +2463,7 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
                 Vec<3,Real> normal_to_2=(Vec<3,Real>) computeTriangleNormal(ind_t_to);
 
                 normal_to=(normal_to_1+normal_to_2)/2.0;
-                plane_to=crossProduct(vect_to, normal_to);
+                plane_to=vect_to.cross( normal_to);
 
             }
             else
@@ -2544,8 +2487,8 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
         if(shell.size()>1)
         {
 
-            Vec<3,Real> normal_test = crossProduct(plane_from, plane_to);
-            double value_test = (double) dotProduct((normal_from+normal_to), normal_test);
+            Vec<3,Real> normal_test = plane_from.cross( plane_to);
+            Real value_test =   normal_test*(normal_from+normal_to);
 
             if(value_test<=0.0)
             {
@@ -2631,8 +2574,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     // HYP : point a is in triangle indexed by t
     // is_entered == true => indices.size() == 2
 
-    unsigned int ind_first;
-    unsigned int ind_second;
+    unsigned int ind_first=0;
+    unsigned int ind_second=0;
 
     if(indices.size()>1)
     {
@@ -2673,7 +2616,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     pb[0] = (Real) (b[0]); pb[1] = (Real) (b[1]); pb[2] = (Real) (b[2]);
 
 
-    Vec<3,Real> v_normal = crossProduct(p2-p0,p1-p0);
+    Vec<3,Real> v_normal = (p2-p0).cross(p1-p0);
     //Vec<3,Real> v_normal = (Vec<3,Real>) computeTriangleNormal(ind_t);
 
     Real norm_v_normal = v_normal.norm(); // couteux : racine carree
@@ -2685,19 +2628,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
         v_normal/=norm_v_normal;
 
         Vec<3,Real> v_ab = pb-pa;
-        Vec<3,Real> v_ab_proj = v_ab - dotProduct(v_ab,v_normal)*v_normal; // projection
+        Vec<3,Real> v_ab_proj = v_ab - v_ab*(v_normal)*v_normal; // projection
         Vec<3,Real> pb_proj = v_ab_proj + pa;
 
         Vec<3,Real> v_01 = p1-p0;
         Vec<3,Real> v_12 = p2-p1;
         Vec<3,Real> v_20 = p0-p2;
 
-        Vec<3,Real> n_proj = crossProduct(v_ab_proj,v_normal);
-        Vec<3,Real> n_01 = crossProduct(v_01,v_normal);
-        Vec<3,Real> n_12 = crossProduct(v_12,v_normal);
-        Vec<3,Real> n_20 = crossProduct(v_20,v_normal);
+        Vec<3,Real> n_proj =v_ab_proj.cross(v_normal);
+        Vec<3,Real> n_01 = v_01.cross(v_normal);
+        Vec<3,Real> n_12 = v_12.cross(v_normal);
+        Vec<3,Real> n_20 = v_20.cross(v_normal);
 
-        Real norm2_v_ab_proj = dotProduct(v_ab_proj,v_ab_proj);
+        Real norm2_v_ab_proj = v_ab_proj*(v_ab_proj);
 
         if(norm2_v_ab_proj != 0.0)  // pb_proj != pa
         {
@@ -2723,19 +2666,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
                 /// Test of edge (p0,p1) :
 
-                s_t = dotProduct(p0-p1,n_proj);
-                s_k = dotProduct(pa-pb_proj,n_01);
+                s_t = (p0-p1)*n_proj;
+                s_k = (pa-pb_proj)*n_01;
 
                 // s_t == 0.0 iff s_k == 0.0
 
                 if(s_t==0.0)  // (pa,pb_proj) and (p0,p1) are parallel
                 {
 
-                    if(dotProduct(p0-pa,n_proj)==0.0)  // (pa,pb_proj) and (p0,p1) are on the same line
+                    if((p0-pa)*(n_proj)==0.0)  // (pa,pb_proj) and (p0,p1) are on the same line
                     {
 
-                        coord_test1 = dotProduct(pa-p0,pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
-                        coord_test2 = dotProduct(pa-p1,pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
+                        coord_test1 = (pa-p0)*(pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
+                        coord_test2 = (pa-p1)*(pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
 
                         if(coord_test1>=0)
                         {
@@ -2765,8 +2708,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 else   // s_t != 0.0 and s_k != 0.0
                 {
 
-                    coord_k=double(dotProduct(pa-p0,n_01))*1.0/double(s_k);
-                    coord_t=double(dotProduct(p0-pa,n_proj))*1.0/double(s_t);
+                    coord_k=double((pa-p0)*(n_01))*1.0/double(s_k);
+                    coord_t=double((p0-pa)*(n_proj))*1.0/double(s_t);
 
 
                     is_intersected = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
@@ -2796,19 +2739,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
                 /// Test of edge (p1,p2) :
 
-                s_t = dotProduct(p1-p2,n_proj);
-                s_k = dotProduct(pa-pb_proj,n_12);
+                s_t = (p1-p2)*(n_proj);
+                s_k = (pa-pb_proj)*(n_12);
 
                 // s_t == 0.0 iff s_k == 0.0
 
                 if(s_t==0.0)  // (pa,pb_proj) and (p1,p2) are parallel
                 {
 
-                    if(dotProduct(p1-pa,n_proj)==0.0)  // (pa,pb_proj) and (p1,p2) are on the same line
+                    if((p1-pa)*(n_proj)==0.0)  // (pa,pb_proj) and (p1,p2) are on the same line
                     {
 
-                        coord_test1 = dotProduct(pa-p1,pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
-                        coord_test2 = dotProduct(pa-p2,pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
+                        coord_test1 = (pa-p1)*(pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
+                        coord_test2 = (pa-p2)*(pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
 
                         if(coord_test1>=0)
                         {
@@ -2836,8 +2779,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 else   // s_t != 0.0 and s_k != 0.0
                 {
 
-                    coord_k=double(dotProduct(pa-p1,n_12))*1.0/double(s_k);
-                    coord_t=double(dotProduct(p1-pa,n_proj))*1.0/double(s_t);
+                    coord_k=double((pa-p1)*(n_12))*1.0/double(s_k);
+                    coord_t=double((p1-pa)*(n_proj))*1.0/double(s_t);
 
                     is_intersected = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
                 }
@@ -2867,19 +2810,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
                 /// Test of edge (p2,p0) :
 
-                s_t = dotProduct(p2-p0,n_proj);
-                s_k = dotProduct(pa-pb_proj,n_20);
+                s_t = (p2-p0)*(n_proj);
+                s_k = (pa-pb_proj)*(n_20);
 
                 // s_t == 0.0 iff s_k == 0.0
 
                 if(s_t==0.0)  // (pa,pb_proj) and (p2,p0) are parallel
                 {
 
-                    if(dotProduct(p2-pa,n_proj)==0.0)  // (pa,pb_proj) and (p2,p0) are on the same line
+                    if((p2-pa)*(n_proj)==0.0)  // (pa,pb_proj) and (p2,p0) are on the same line
                     {
 
-                        coord_test1 = dotProduct(pa-p2,pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
-                        coord_test2 = dotProduct(pa-p0,pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
+                        coord_test1 = (pa-p2)*(pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
+                        coord_test2 = (pa-p0)*(pa-pb_proj)/norm2_v_ab_proj; // HYP : pb_proj != pa
 
                         if(coord_test1>=0)
                         {
@@ -2907,8 +2850,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 else   // s_t != 0.0 and s_k != 0.0
                 {
 
-                    coord_k=double(dotProduct(pa-p2,n_20))*1.0/double(s_k);
-                    coord_t=double(dotProduct(p2-pa,n_proj))*1.0/double(s_t);
+                    coord_k=double((pa-p2)*(n_20))*1.0/double(s_k);
+                    coord_t=double((p2-pa)*(n_proj))*1.0/double(s_t);
 
                     is_intersected = ((coord_k > 0.0) && (coord_t >= 0.0 && coord_t <= 1.0));
                 }
@@ -2953,7 +2896,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 // Computes the list of points (edge,coord) intersected by the segment from point a to point b
 // and the triangular mesh
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb,
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int // ind_tb
+        ,
         std::vector< unsigned int > &triangles_list, std::vector< std::vector<unsigned int> > &indices_list, std::vector< double >& coords_list)
 {
 
@@ -2961,7 +2905,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
 
-    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+//       const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
 
     bool is_validated=true;
     bool is_intersected=true;
@@ -2991,7 +2935,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     is_intersected=computeSegmentTriangleIntersection(false, p_const, b, (const unsigned int) ind_t_current, indices, coord_t, coord_k);
 
     coord_k_test=coord_k;
-    dist_min=dotProduct((Vec<3,Real>&)(b-a),(Vec<3,Real>&)(b-a));
+    dist_min=(b-a)*(b-a);
 
     while((coord_k_test<1.0 && is_validated) && is_intersected)
     {
@@ -3013,9 +2957,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
         Vec<3,Real> p_t_aux;
         p_t_aux[0] = (Real) (c_t_current[0]); p_t_aux[1] = (Real) (c_t_current[1]); p_t_aux[2] = (Real) (c_t_current[2]);
-        const Vec<3,Real>& p_t_current = p_t_aux;
+// 	const Vec<3,Real>& p_t_current = p_t_aux;
 
-        const Triangle &t=container->getTriangle((const unsigned int) ind_t_current);
+// 	const Triangle &t=container->getTriangle((const unsigned int) ind_t_current);
 
         if(coord_t==0.0 || coord_t==1.0)  // current point indexed by ind_t_current is on a vertex
         {
@@ -3068,9 +3012,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                             Vec<3,Real> p2_aux;
                             p2_aux[0] = (Real) (c2[0]); p2_aux[1] = (Real) (c2[1]); p2_aux[2] = (Real) (c2[2]);
 
-                            const Vec<3,Real>& p0 = p0_aux;
-                            const Vec<3,Real>& p1 = p1_aux;
-                            const Vec<3,Real>& p2 = p2_aux;
+// 		  const Vec<3,Real>& p0 = p0_aux;
+// 		  const Vec<3,Real>& p1 = p1_aux;
+// 		  const Vec<3,Real>& p2 = p2_aux;
 
                             const Vec<3,double>& p_const_current=p_current;
                             is_intersected=computeSegmentTriangleIntersection(true, p_const_current, b, ind_triangle, indices, coord_t, coord_k);
@@ -3083,7 +3027,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                                 c_t_test[1]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][1]))+coord_t*((double) (vect_c[indices[1]][1])));
                                 c_t_test[2]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][2]))+coord_t*((double) (vect_c[indices[1]][2])));
 
-                                double dist_test=dotProduct((Vec<3,Real>&)(b-c_t_test),(Vec<3,Real>&)(b-c_t_test));
+                                double dist_test=(b-c_t_test)*(b-c_t_test);
 
                                 if(is_test_init)
                                 {
@@ -3107,18 +3051,18 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                                 }
 
                                 /*
-                                if(is_test_init){
+                                  if(is_test_init){
 
-                                	if(coord_k<coord_k_test){
-                                		coord_k_test=coord_k;
-                                		ind_t_current=ind_triangle;
-                                	}
+                                  if(coord_k<coord_k_test){
+                                  coord_k_test=coord_k;
+                                  ind_t_current=ind_triangle;
+                                  }
 
-                                }else{
-                                	is_test_init=true;
-                                	coord_k_test=coord_k;
-                                	ind_t_current=ind_triangle;
-                                }
+                                  }else{
+                                  is_test_init=true;
+                                  coord_k_test=coord_k;
+                                  ind_t_current=ind_triangle;
+                                  }
                                 */
                             }
 
@@ -3189,9 +3133,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                             Vec<3,Real> p2_aux;
                             p2_aux[0] = (Real) (c2[0]); p2_aux[1] = (Real) (c2[1]); p2_aux[2] = (Real) (c2[2]);
 
-                            const Vec<3,Real>& p0 = p0_aux;
-                            const Vec<3,Real>& p1 = p1_aux;
-                            const Vec<3,Real>& p2 = p2_aux;
+// 		  const Vec<3,Real>& p0 = p0_aux;
+// 		  const Vec<3,Real>& p1 = p1_aux;
+// 		  const Vec<3,Real>& p2 = p2_aux;
 
                             // is_in_next_triangle=is_point_in_halfplane(p_t_current, indices[0], indices[1], p0, p1, p2, t[0], t[1], t[2]); // Comment : HYP = conform mesh
 
@@ -3208,7 +3152,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                                 c_t_test[1]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][1]))+coord_t*((double) (vect_c[indices[1]][1])));
                                 c_t_test[2]=(double) ((1.0-coord_t)*((double) (vect_c[indices[0]][2]))+coord_t*((double) (vect_c[indices[1]][2])));
 
-                                double dist_test=dotProduct((Vec<3,Real>&)(b-c_t_test),(Vec<3,Real>&)(b-c_t_test));
+                                double dist_test=(b-c_t_test)*(b-c_t_test);
 
                                 if(is_test_init)
                                 {
@@ -3232,18 +3176,18 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                                 }
 
                                 /*
-                                if(is_test_init){
+                                  if(is_test_init){
 
-                                	if(coord_k<coord_k_test){
-                                		coord_k_test=coord_k;
-                                		ind_t_current=ind_triangle;
-                                	}
+                                  if(coord_k<coord_k_test){
+                                  coord_k_test=coord_k;
+                                  ind_t_current=ind_triangle;
+                                  }
 
-                                }else{
-                                	is_test_init=true;
-                                	coord_k_test=coord_k;
-                                	ind_t_current=ind_triangle;
-                                }
+                                  }else{
+                                  is_test_init=true;
+                                  coord_k_test=coord_k;
+                                  ind_t_current=ind_triangle;
+                                  }
                                 */
                             }
                             //}
@@ -3296,7 +3240,6 @@ TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> 
     this->m_topologyAlgorithms= new TriangleSetTopologyAlgorithms<DataTypes>(this);
     this->m_geometryAlgorithms= new TriangleSetGeometryAlgorithms<DataTypes>(this);
 }
-
 
 } // namespace topology
 
