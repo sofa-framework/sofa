@@ -1,11 +1,3 @@
-namespace sofa
-{
-
-namespace helper
-{
-
-namespace polygon_cube_intersection
-{
 /*
  * vec.h --  Vector macros for 2,3, and 4 dimensions,
  *           for any  combination of C scalar types.
@@ -125,6 +117,16 @@ namespace polygon_cube_intersection
 #ifndef VEC_H
 #define VEC_H 4
 #include <math.h>	/* for definition of floor() */
+
+namespace sofa
+{
+
+namespace helper
+{
+
+namespace polygon_cube_intersection
+{
+
 #define SET2(to,from)	\
 		((to)[0] = (from)[0], \
 		 (to)[1] = (from)[1])
@@ -915,8 +917,9 @@ namespace polygon_cube_intersection
 #define ADJOINT4i(to,m) ADJOINT4safe(int,to,m)
 #define ADJOINT4l(to,m) ADJOINT4safe(long,to,m)
 #define ADJOINT4r(to,m) ADJOINT4safe(real,to,m)
-#endif /* VEC_H */
 
 }
 }
 }
+
+#endif /* VEC_H */

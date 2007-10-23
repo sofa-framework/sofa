@@ -88,5 +88,5 @@ SOURCES += \
           system/FileRepository.cpp \
           system/thread/CTime.cpp \
           system/thread/debug.cpp \
-	  polygon_cube_intersection/polygon_cube_intersection.C \
-	  polygon_cube_intersection/fast_polygon_cube_intersection.C 
+	  polygon_cube_intersection/polygon_cube_intersection.cpp \
+	  polygon_cube_intersection/fast_polygon_cube_intersection.cpp 

@@ -1,9 +1,8 @@
-#ifndef _SOFA_HELPER_PCUBE_
-#define _SOFA_HELPER_PCUBE_
+#ifndef SOFA_HELPER_PCUBE_H
+#define SOFA_HELPER_PCUBE_H
 
 namespace sofa
 {
-
 namespace helper
 {
 namespace polygon_cube_intersection
@@ -166,12 +165,8 @@ real *
 get_polygon_normal(real normal[3],
         int nverts, const real verts[/* nverts */][3]);
 
-
-
-
+}
+}
+}
 
 #endif
-
-}
-}
-}

@@ -21,14 +21,13 @@
 #include "polygon_cube_intersection.h"
 #include "vec.h"
 
-
 namespace sofa
 {
+namespace helper
+{
+namespace polygon_cube_intersection
+{
 
-	namespace helper
-	{
-		namespace polygon_cube_intersection
-		{
 #define FOR(i,n) for ((i) = 0; (i) < (n); ++(i))
 #define MAXDIM2(v) ((v)[0] > (v)[1] ? 0 : 1)
 #define MAXDIM3(v) ((v)[0] > (v)[2] ? MAXDIM2(v) : MAXDIM2((v)+1)+1)
@@ -52,8 +51,8 @@ namespace sofa
  */
 extern int
 polygon_contains_point_3d(int nverts, const float verts[/* nverts */][3],
-			const float polynormal[3],
-			float point[3])
+        const float polynormal[3],
+        float point[3])
 {
     float abspolynormal[3];
     int zaxis, xaxis, yaxis, i, count;
@@ -65,31 +64,39 @@ polygon_contains_point_3d(int nverts, const float verts[/* nverts */][3],
      * (the one in which the polygon normal is largest)
      */
     FOR(i,3)
-	abspolynormal[i] = ABS(polynormal[i]);
+    abspolynormal[i] = ABS(polynormal[i]);
     zaxis = MAXDIM3(abspolynormal);
 
-    if (polynormal[zaxis] < 0) {
-	xaxis = (zaxis+2)%3;
-	yaxis = (zaxis+1)%3;
-    } else {
-	xaxis = (zaxis+1)%3;
-	yaxis = (zaxis+2)%3;
+    if (polynormal[zaxis] < 0)
+    {
+        xaxis = (zaxis+2)%3;
+        yaxis = (zaxis+1)%3;
+    }
+    else
+    {
+        xaxis = (zaxis+1)%3;
+        yaxis = (zaxis+2)%3;
     }
 
     count = 0;
-    FOR(i,nverts) {
-	v = verts[i];
-	w = verts[(i+1)%nverts];
-	if ((xdirection = seg_contains_point(v[xaxis], w[xaxis], point[xaxis]))) {
-	    if (seg_contains_point(v[yaxis], w[yaxis], point[yaxis])) {
-		if (xdirection * (point[xaxis]-v[xaxis])*(w[yaxis]-v[yaxis]) <= 
-		    xdirection * (point[yaxis]-v[yaxis])*(w[xaxis]-v[xaxis]))
-		    count += xdirection;
-	    } else {
-		if (v[yaxis] <= point[yaxis])
-		    count += xdirection;
-	    }
-	}
+    FOR(i,nverts)
+    {
+        v = verts[i];
+        w = verts[(i+1)%nverts];
+        if ((xdirection = seg_contains_point(v[xaxis], w[xaxis], point[xaxis])))
+        {
+            if (seg_contains_point(v[yaxis], w[yaxis], point[yaxis]))
+            {
+                if (xdirection * (point[xaxis]-v[xaxis])*(w[yaxis]-v[yaxis]) <=
+                    xdirection * (point[yaxis]-v[yaxis])*(w[xaxis]-v[xaxis]))
+                    count += xdirection;
+            }
+            else
+            {
+                if (v[yaxis] <= point[yaxis])
+                    count += xdirection;
+            }
+        }
     }
     return count;
 }
@@ -115,7 +122,7 @@ segment_intersects_cube(const float v0[3], const float v1[3])
     VMV3(edgevec, v1, v0);
 
     FOR(i,3)
-	edgevec_signs[i] = SIGN_NONZERO(edgevec[i]);
+    edgevec_signs[i] = SIGN_NONZERO(edgevec[i]);
 
     /*
      * Test the three cube faces on the v1-ward side of the cube--
@@ -124,9 +131,10 @@ segment_intersects_cube(const float v0[3], const float v1[3])
      * if v1 is outside any of their planes then there is no intersection.
      */
 
-    FOR(i,3) {
-	if (v0[i] * edgevec_signs[i] >  .5) return 0;
-	if (v1[i] * edgevec_signs[i] < -.5) return 0;
+    FOR(i,3)
+    {
+        if (v0[i] * edgevec_signs[i] >  .5) return 0;
+        if (v1[i] * edgevec_signs[i] < -.5) return 0;
     }
 
     /*
@@ -137,57 +145,58 @@ segment_intersects_cube(const float v0[3], const float v1[3])
      * centered at the endpoints.
      */
 
-    FOR(i,3) {
-	float rhomb_normal_dot_v0, rhomb_normal_dot_cubedge;
+    FOR(i,3)
+    {
+        float rhomb_normal_dot_v0, rhomb_normal_dot_cubedge;
 
-	iplus1 = (i+1)%3;
-	iplus2 = (i+2)%3;
+        iplus1 = (i+1)%3;
+        iplus2 = (i+2)%3;
 
 #ifdef THE_EASY_TO_UNDERSTAND_WAY
 
-	{
-	float rhomb_normal[3], cubedge_midpoint[3];
+        {
+            float rhomb_normal[3], cubedge_midpoint[3];
 
-	/*
-	 * rhomb_normal = VXV3(edgevec, unit vector in direction i),
-	 * being cavalier about which direction it's facing
-	 */
-	rhomb_normal[i] = 0;
-	rhomb_normal[iplus1] = edgevec[iplus2];
-	rhomb_normal[iplus2] = -edgevec[iplus1];
+            /*
+             * rhomb_normal = VXV3(edgevec, unit vector in direction i),
+             * being cavalier about which direction it's facing
+             */
+            rhomb_normal[i] = 0;
+            rhomb_normal[iplus1] = edgevec[iplus2];
+            rhomb_normal[iplus2] = -edgevec[iplus1];
 
-	/*
-	 *  We now are describing a plane parallel to
-	 *  both segment and the cube edge in question.
-	 *  if |DOT3(rhomb_normal, an arbitrary point on the segment)| >
-	 *  |DOT3(rhomb_normal, an arbitrary point on the cube edge in question|
-	 *  then the origin is outside this pair of opposite faces.
-	 *  (This is equivalent to saying that the line
-	 *  containing the segment is "outside" (i.e. further away from the
-	 *  origin than) the line containing the cube edge.
-	 */
+            /*
+             *  We now are describing a plane parallel to
+             *  both segment and the cube edge in question.
+             *  if |DOT3(rhomb_normal, an arbitrary point on the segment)| >
+             *  |DOT3(rhomb_normal, an arbitrary point on the cube edge in question|
+             *  then the origin is outside this pair of opposite faces.
+             *  (This is equivalent to saying that the line
+             *  containing the segment is "outside" (i.e. further away from the
+             *  origin than) the line containing the cube edge.
+             */
 
-	cubedge_midpoint[i] = 0;
-	cubedge_midpoint[iplus1] = edgevec_signs[iplus1]*.5;
-	cubedge_midpoint[iplus2] = -edgevec_signs[iplus2]*.5;
+            cubedge_midpoint[i] = 0;
+            cubedge_midpoint[iplus1] = edgevec_signs[iplus1]*.5;
+            cubedge_midpoint[iplus2] = -edgevec_signs[iplus2]*.5;
 
-	rhomb_normal_dot_v0 = DOT3(rhomb_normal, v0);
-	rhomb_normal_dot_cubedge = DOT3(rhomb_normal,cubedge_midpoint);
-	}
+            rhomb_normal_dot_v0 = DOT3(rhomb_normal, v0);
+            rhomb_normal_dot_cubedge = DOT3(rhomb_normal,cubedge_midpoint);
+        }
 
 #else /* the efficient way */
 
-	rhomb_normal_dot_v0 = edgevec[iplus2] * v0[iplus1]
-			    - edgevec[iplus1] * v0[iplus2];
+        rhomb_normal_dot_v0 = edgevec[iplus2] * v0[iplus1]
+                - edgevec[iplus1] * v0[iplus2];
 
-	rhomb_normal_dot_cubedge = .5 *
-				(edgevec[iplus2] * edgevec_signs[iplus1] +
-				 edgevec[iplus1] * edgevec_signs[iplus2]);
+        rhomb_normal_dot_cubedge = .5f *
+                (edgevec[iplus2] * edgevec_signs[iplus1] +
+                        edgevec[iplus1] * edgevec_signs[iplus2]);
 
 #endif /* the efficient way */
 
-	if (SQR(rhomb_normal_dot_v0) > SQR(rhomb_normal_dot_cubedge))
-	    return 0;	/* origin is outside this pair of opposite planes */
+        if (SQR(rhomb_normal_dot_v0) > SQR(rhomb_normal_dot_cubedge))
+            return 0;	/* origin is outside this pair of opposite planes */
     }
     return 1;
 }
@@ -205,9 +214,9 @@ segment_intersects_cube(const float v0[3], const float v1[3])
  */
 extern int
 polygon_intersects_cube(int nverts, const float verts[/* nverts */][3],
-			const float polynormal[3],
-			int ,/* already_know_vertices_are_outside_cube unused*/
-			int already_know_edges_are_outside_cube)
+        const float polynormal[3],
+        int ,/* already_know_vertices_are_outside_cube unused*/
+        int already_know_edges_are_outside_cube)
 {
     int i, best_diagonal[3];
     float p[3], t;
@@ -216,16 +225,16 @@ polygon_intersects_cube(int nverts, const float verts[/* nverts */][3],
      * If any edge intersects the cube, return 1.
      */
     if (!already_know_edges_are_outside_cube)
-	FOR(i,nverts)
-	    if (segment_intersects_cube(verts[i], verts[(i+1)%nverts]))
-		return 1;
+        FOR(i,nverts)
+        if (segment_intersects_cube(verts[i], verts[(i+1)%nverts]))
+            return 1;
 
     /*
      * If the polygon normal is zero and none of its edges intersect the
      * cube, then it doesn't intersect the cube
      */
     if (ISZEROVEC3(polynormal))
-	return 0;
+        return 0;
 
     /*
      * Now that we know that none of the polygon's edges intersects the cube,
@@ -240,7 +249,7 @@ polygon_intersects_cube(int nverts, const float verts[/* nverts */][3],
      */
 
     FOR(i,3)
-	best_diagonal[i] = SIGN_NONZERO(polynormal[i]);
+    best_diagonal[i] = SIGN_NONZERO(polynormal[i]);
 
     /*
      * Okay, we have the diagonal of interest.
@@ -260,10 +269,10 @@ polygon_intersects_cube(int nverts, const float verts[/* nverts */][3],
      * magnitude dot-product with polynormal)
      */
     t = DOT3(polynormal, verts[0])
-      / DOT3(polynormal, best_diagonal);
+        / DOT3(polynormal, best_diagonal);
 
     if (!IN_CLOSED_INTERVAL(-.5, t, .5))
-	return 0;  /* intersection point is not in cube */
+        return 0;  /* intersection point is not in cube */
 
     SXV3(p, t, best_diagonal);    /* p = t * best_diagonal */
 
@@ -272,7 +281,7 @@ polygon_intersects_cube(int nverts, const float verts[/* nverts */][3],
 
 extern float *
 get_polygon_normal(float normal[3],
-		   int nverts, const float verts[/* nverts */][3])
+        int nverts, const float verts[/* nverts */][3])
 {
     int i;
     float tothis[3], toprev[3], cross[3];
@@ -282,18 +291,16 @@ get_polygon_normal(float normal[3],
      */
     ZEROVEC3(normal);
     VMV3(toprev, verts[1], verts[0]);  	/* 3 subtracts */
-    for (i = 2; i <= nverts-1; ++i) {   /* n-2 times... */
-	VMV3(tothis, verts[i], verts[0]);    /* 3 subtracts */
-	VXV3(cross, toprev, tothis);         /* 3 subtracts, 6 multiplies */
-	VPV3(normal, normal, cross);         /* 3 adds */
-	SET3(toprev, tothis);
+    for (i = 2; i <= nverts-1; ++i)     /* n-2 times... */
+    {
+        VMV3(tothis, verts[i], verts[0]);    /* 3 subtracts */
+        VXV3(cross, toprev, tothis);         /* 3 subtracts, 6 multiplies */
+        VPV3(normal, normal, cross);         /* 3 adds */
+        SET3(toprev, tothis);
     }
     return normal;
 }
 
-
-
-
-	}
+}
 }
 }
