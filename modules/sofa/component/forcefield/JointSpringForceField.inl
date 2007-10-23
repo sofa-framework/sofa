@@ -30,6 +30,7 @@
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Cylinder.h>
+#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <iostream>
@@ -52,6 +53,8 @@ JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1
     , ksr(dataField(&ksr,_ksr,"stiffnessRotation","uniform stiffness for the all springs"))
     , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
     , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , showLawfulTorsion(dataField(&showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation"))
+    , showExtraTorsion(dataField(&showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation"))
 {
 }
 
@@ -61,35 +64,11 @@ JointSpringForceField<DataTypes>::JointSpringForceField(Vec _kst, Vec _ksr, doub
     , ksr(dataField(&ksr,_ksr,"stiffnessRotation","uniform stiffness for the all springs"))
     , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
     , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , showLawfulTorsion(dataField(&showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation"))
+    , showExtraTorsion(dataField(&showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation"))
 {
 }
 
-
-
-template <class DataTypes>
-class JointSpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader
-{
-public:
-    JointSpringForceField<DataTypes>* dest;
-    Loader(JointSpringForceField<DataTypes>* dest) : dest(dest) {}
-    virtual void addSpring(int m1, int m2, Vec kst, Vec ksr, Real kd)
-    {
-        helper::vector<Spring>& springs = *dest->springs.beginEdit();
-        springs.push_back(Spring(m1,m2,kst, ksr,kd));
-        dest->springs.endEdit();
-    }
-};
-
-template <class DataTypes>
-bool JointSpringForceField<DataTypes>::load(const char *filename)
-{
-    if (filename && filename[0])
-    {
-        Loader loader(this);
-        return loader.load(filename);
-    }
-    else return false;
-}
 
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::init()
@@ -98,25 +77,21 @@ void JointSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , const Spring& spring)
+void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring)
 {
     int a = spring.m1;
     int b = spring.m2;
 
-    Mat Mr01, Mr10, Mr02, Mr20, Mr01t, Mr10t, Mr02t, Mr20t;
+    Mat Mr01, Mr10;
     p1[a].writeRotationMatrix(Mr01);
-    Mr01t.transpose(Mr01);
     invertMatrix(Mr10, Mr01);
-    //Mr10t.transpose(Mr10);
-    p2[b].writeRotationMatrix(Mr02);
-    Mr02t.transpose(Mr02);
-    //invertMatrix(Mr20, Mr02);
-    //Mr20t.transpose(Mr20);
 
     Vec damping(spring.kd, spring.kd, spring.kd);
 
+    //store the referential of the spring (p1) to use it in addSpringDForce()
     springRef[a] = p1[a];
 
+    //compute p2 position and velocity, relative to p1 referential
     Coord Mp1p2 = p2[b] - p1[a];
     Deriv Vp1p2 = v2[b] - v1[a];
 
@@ -125,22 +100,25 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     //compute torsion
     Mp1p2.getOrientation() = spring.initRot.inverse() * Mp1p2.getOrientation();
 
+    //-- decomposing spring torsion in 2 parts (lawful rotation and illicit rotation) to fix bug with large rotations
+    Vec dRangles = Mp1p2.getOrientation().toEulerVector();
+    //lawful torsion = spring torsion in the axis where ksr is null
+    Vec lawfulRots((Real) spring.ksr[0]==0.0?(Real)1.0:(Real)0.0, spring.ksr[1]==0.0?(Real)1.0:(Real)0.0, spring.ksr[2]==0.0?(Real)1.0:(Real)0.0);
+    spring.lawfulTorsion = Quat::createFromRotationVector(dRangles.linearProduct(lawfulRots));;
+    Mat MRLT;
+    spring.lawfulTorsion.toMatrix(MRLT);
+    //extra torsion = spring torsion in the other axis (ksr not null), expressed in the lawful torsion reference axis
+    // |--> we apply rotation forces on it, and then go back to world reference axis
+    spring.extraTorsion = spring.lawfulTorsion.inverse()*Mp1p2.getOrientation();
+
+
     //compute directional force (relative translation is expressed in world coordinates)
-    Vec f0 = Mr01 * (spring.kst.linearProduct(Mr10 * Mp1p2.getCenter())) + damping.linearProduct(Vp1p2.getVCenter());
+    Vec fT0 = Mr01 * (spring.kst.linearProduct(Mr10 * Mp1p2.getCenter())) + damping.linearProduct(Vp1p2.getVCenter());
     //compute rotational force (relative orientation is expressed in p1)
-    Vec R0 = Mr01 * (spring.ksr.linearProduct(Mp1p2.getOrientation().toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
-    /*
-    	Vec ksr0 = Mr10 * spring.ksr;
-    	std::cout<<" ksr : "<<spring.ksr<<endl;
-    	std::cout<<" ksr0 : "<<ksr0<<endl;
+    //Vec fR0 = Mr01 * (spring.ksr.linearProduct(Mp1p2.getOrientation().toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
+    Vec fR0 = Mr01 * MRLT * ( spring.ksr.linearProduct(spring.extraTorsion.toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
 
-    	Vec R0;
-    	R0  = cross(Mr01t[0],Mr02t[0]) * spring.ksr[0];
-    	R0 += cross(Mr01t[1],Mr02t[1]) * spring.ksr[1];
-    	R0 += cross(Mr01t[2],Mr02t[2]) * spring.ksr[2];
-    */
-    const Deriv force(f0, R0 );
-
+    const Deriv force(fT0, fR0 );
     //affect forces
     f1[a] += force;
     f2[b] -= force;
@@ -156,26 +134,14 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
     const int b = spring.m2;
     const Deriv Mdx1dx2 = dx2[b]-dx1[a];
 
-    Mat Mr01, Mr10, Mr02, Mr20, Mr01t, Mr10t, Mr02t, Mr20t;
+    Mat Mr01, Mr10;
     springRef[a].writeRotationMatrix(Mr01);
-    Mr01t.transpose(Mr01);
     invertMatrix(Mr10, Mr01);
-    //Mr10t.transpose(Mr10);
-    springRef[b].writeRotationMatrix(Mr02);
-    Mr02t.transpose(Mr02);
-    //invertMatrix(Mr20, Mr02);
-    //Mr20t.transpose(Mr20);
 
     //compute directional force
     Vec df0 = Mr01 * (spring.kst.linearProduct(Mr10*Mdx1dx2.getVCenter() ));
     //compute rotational force
     Vec dR0 = Mr01 * (spring.ksr.linearProduct(Mr10* Mdx1dx2.getVOrientation()));
-    /*
-    	Vec dR0;
-    	dR0  = cross( cross(Mdx1dx2.getVOrientation(),Mr01t[0]) , Mr02t[0]) * -spring.ksr[0];
-    	dR0 += cross( cross(Mdx1dx2.getVOrientation(),Mr01t[1]) , Mr02t[1]) * -spring.ksr[1];
-    	dR0 += cross( cross(Mdx1dx2.getVOrientation(),Mr01t[2]) , Mr02t[2]) * -spring.ksr[2];
-    */
 
     const Deriv dforce(df0,dR0);
 
@@ -190,6 +156,7 @@ void JointSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, cons
     helper::vector<Spring>& springs = *this->springs.beginEdit();
 
     springRef.resize(x1.size());
+
     f1.resize(x1.size());
     f2.resize(x2.size());
     m_potentialEnergy = 0;
@@ -258,6 +225,12 @@ void JointSpringForceField<DataTypes>::draw()
         {
             helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(0,0,1));
         }
+
+        //---debugging
+        if (showLawfulTorsion.getValue())
+            helper::gl::Axis::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation()*springs[i].lawfulTorsion, 0.5);
+        if (showExtraTorsion.getValue())
+            helper::gl::Axis::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation()*springs[i].extraTorsion, 0.5);
     }
 
 }

@@ -78,23 +78,25 @@ public:
         Vec  ksr;			// spring stiffness rotation on each axe
         Real kd;			// damping factor
         Vec  initTrans;	// rest length of the spring
-        Quat initRot;	// rest length of the spring
+        Quat initRot;	// rest orientation of the spring
+        Quat lawfulTorsion; //general (lawful) torsion of the springs (used to fix a bug with large rotations)
+        Quat extraTorsion;  //extra (illicit) torsion of the springs (used to fix a bug with large rotations)
 
         Spring(int m1=0, int m2=0, Vec ks=Vec(), Real _kd=0.0)
-            : m1(m1), m2(m2), kd(_kd)
+            : m1(m1), m2(m2), kd(_kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
         {
             kst = ksr = ks;
         }
 
         Spring(int m1, int m2, Vec _kst, Vec _ksr, Real kd)
-            : m1(m1), m2(m2), kd(kd)
+            : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
         {
             kst = _kst;
             ksr = _ksr;
         }
 
         Spring(int m1, int m2, Real kstx, Real ksty, Real kstz, Real ksrx, Real ksry, Real ksrz, Real kd)
-            : m1(m1), m2(m2), kd(kd)
+            : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
         {
             kst = Vec(kstx,ksty,kstz);
             ksr = Vec(ksrx,ksry,ksrz);
@@ -128,28 +130,32 @@ public:
     };
 
 protected:
+
     double m_potentialEnergy;
+    /// general directional stiffness (use it to define the same stiffness on all springs)
     DataField<Vec> kst;
+    /// general rotational stiffness (use it to define the same stiffness on all springs)
     DataField<Vec> ksr;
+    /// general damping (use it to define the same damping on all springs)
     DataField<double> kd;
+    /// the list of the springs
     DataField<sofa::helper::vector<Spring> > springs;
-    class Loader;
+    /// the list of the local referentials of the springs
     VecCoord springRef;
+    ///bool to allow the display of the 2 parts of springs torsions
+    DataField<bool> showLawfulTorsion;
+    DataField<bool> showExtraTorsion;
 
     JointSpringForceFieldInternalData<DataTypes> data;
 
     /// Accumulate the spring force and compute and store its stiffness
-    void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
+    void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, /*const*/ Spring& spring);
     /// Apply the stiffness, i.e. accumulate df given dx
     void addSpringDForce(VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, const Spring& spring);
 
 public:
     JointSpringForceField(MechanicalState* object1, MechanicalState* object2, Vec _kst=Vec(100.0,100.0,100.0), Vec _ksr=Vec(100.0,100.0,100.0), double _kd=5.0);
     JointSpringForceField(Vec _kst=Vec(100.0,100.0,100.0), Vec _ksr=Vec(100.0,100.0,100.0), double _kd=5.0);
-
-    //virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-
-    bool load(const char *filename);
 
     core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }

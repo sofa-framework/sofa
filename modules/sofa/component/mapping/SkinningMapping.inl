@@ -305,29 +305,29 @@ void SkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::draw()
 {
-    if (!getShow(this)) return;
-    glDisable (GL_LIGHTING);
-    glPointSize(1);
-    glColor4f (1,1,0,1);
-    glBegin (GL_LINES);
+    /*	if (!getShow(this)) return;
+    	glDisable (GL_LIGHTING);
+    	glPointSize(1);
+    	glColor4f (1,1,0,1);
+    	glBegin (GL_LINES);
 
-    const typename Out::VecCoord& xOut = *this->toModel->getX();
-    const typename In::VecCoord& xIn = *this->fromModel->getX();
-    sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
-    sofa::helper::vector<double> m_coefs = coefs.getValue();
+    	const typename Out::VecCoord& xOut = *this->toModel->getX();
+    	const typename In::VecCoord& xIn = *this->fromModel->getX();
+    	sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
+    	sofa::helper::vector<double> m_coefs = coefs.getValue();
 
-    for (unsigned int i=0; i<xOut.size(); i++)
-    {
-        for (unsigned int m=0 ; m<nbRefs.getValue(); m++)
-        {
-            if(m_coefs[nbRefs.getValue()*i+m] > 0.0)
-            {
-                helper::gl::glVertexT(xIn[m_reps[nbRefs.getValue()*i+m] ].getCenter());
-                helper::gl::glVertexT(xOut[i]);
-            }
-        }
-    }
-    glEnd();
+    	for (unsigned int i=0; i<xOut.size(); i++)
+    	{
+    		for (unsigned int m=0 ; m<nbRefs.getValue(); m++)
+    		{
+    			if(m_coefs[nbRefs.getValue()*i+m] > 0.0){
+    				helper::gl::glVertexT(xIn[m_reps[nbRefs.getValue()*i+m] ].getCenter());
+    				helper::gl::glVertexT(xOut[i]);
+    			}
+    		}
+    	}
+    	glEnd();
+    */
 }
 
 } // namespace mapping
