@@ -98,6 +98,8 @@ public:
     /// getKineticEnergy(const VecDeriv&) method implemented by the component.
     virtual double getKineticEnergy();
 
+    virtual double getPotentialEnergy() { return 0.0;}
+
     /// vMv/2
     ///
     /// This method must be implemented by the component.
