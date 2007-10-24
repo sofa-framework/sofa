@@ -303,7 +303,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
     // if sparseGrid -> the filling ratio is taken into account
     if( _sparseGrid )
-        K *= (_sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+        K *= (Real)(_sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
 
 }
 
@@ -701,42 +701,42 @@ void HexahedronFEMForceField<DataTypes>::draw()
 // 		if( _sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY )
 // 			continue;
 
-        glColor4f(0.7f, 0.7f, 0.1f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
+        glColor4f(0.7f, 0.7f, 0.1f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pc);
         helper::gl::glVertexT(pd);
         glEnd();
-        glColor4f(0.7f, 0, 0, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
+        glColor4f(0.7f, 0, 0, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pe);
         helper::gl::glVertexT(pf);
         helper::gl::glVertexT(pg);
         helper::gl::glVertexT(ph);
         glEnd();
-        glColor4f(0, 0.7f, 0, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
+        glColor4f(0, 0.7f, 0, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pc);
         helper::gl::glVertexT(pd);
         helper::gl::glVertexT(ph);
         helper::gl::glVertexT(pg);
         glEnd();
-        glColor4f(0, 0, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
+        glColor4f(0, 0, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pf);
         helper::gl::glVertexT(pe);
         glEnd();
-        glColor4f(0.1f, 0.7f, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
+        glColor4f(0.1f, 0.7f, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pa);
         helper::gl::glVertexT(pd);
         helper::gl::glVertexT(ph);
         helper::gl::glVertexT(pe);
         glEnd();
-        glColor4f(0.7f, 0.1f, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0));
+        glColor4f(0.7f, 0.1f, 0.7f, (_sparseGrid && _sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5f:1.0f));
         glBegin(GL_POLYGON);
         helper::gl::glVertexT(pb);
         helper::gl::glVertexT(pc);

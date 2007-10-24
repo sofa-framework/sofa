@@ -210,9 +210,9 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
                         float points[3][3];
                         for (unsigned short w=0; w<3; ++w)
                         {
-                            points[0][w] = (A[w]-cubeCenter[w])/cubeDiagonal[w];
-                            points[1][w] = (B[w]-cubeCenter[w])/cubeDiagonal[w];
-                            points[2][w] = (C[w]-cubeCenter[w])/cubeDiagonal[w];
+                            points[0][w] = (float) ((A[w]-cubeCenter[w])/cubeDiagonal[w]);
+                            points[1][w] = (float) ((B[w]-cubeCenter[w])/cubeDiagonal[w]);
+                            points[2][w] = (float) ((C[w]-cubeCenter[w])/cubeDiagonal[w]);
                         }
 
                         float normal[3];
