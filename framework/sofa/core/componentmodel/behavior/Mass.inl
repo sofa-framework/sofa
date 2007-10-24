@@ -100,11 +100,11 @@ void Mass<DataTypes>::exportGnuplot(double time)
 {
     if( m_gnuplotFileEc!=NULL )
     {
-        (*m_gnuplotFileEc) << time <<"\t"<< getKineticEnergy() << std::endl;
+        (*m_gnuplotFileEc) << time <<"\t"<< this->getKineticEnergy() << std::endl;
     }
     if( m_gnuplotFileEp!=NULL )
     {
-        (*m_gnuplotFileEp) << time <<"\t"<< getPotentialEnergy() << std::endl;
+        (*m_gnuplotFileEp) << time <<"\t"<< this->getPotentialEnergy() << std::endl;
     }
 }
 
