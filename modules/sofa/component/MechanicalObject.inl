@@ -31,6 +31,7 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 #include <assert.h>
 #include <iostream>
@@ -458,75 +459,75 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::contributeToMatrixDimension(unsigned int * const /*nbRow*/, unsigned int * const /*nbCol*/)
+void MechanicalObject<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)
 {
-    /*
     if (v->size() != 0)
     {
-    	(*nbRow) += v->size() * Deriv::size();
-    	(*nbCol) = *nbRow;
+        (*nbRow) += v->size() * DataTypeInfo<Deriv>::size();
+        (*nbCol) = *nbRow;
     }
-    */
 }
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::setOffset(unsigned int &/*offset*/)
+void MechanicalObject<DataTypes>::setOffset(unsigned int &offset)
 {
-    /*
     if (v->size() != 0)
     {
-    	offset += v->size() * Deriv::size();
+        offset += v->size() * DataTypeInfo<Deriv>::size();
     }
-    */
 }
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * /*dest*/, VecId /*src*/, unsigned int &/*offset*/)
+void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * dest, VecId src, unsigned int &offset)
 {
-    /*
     VecDeriv* vSrc = getVecDeriv(src.index);
-    unsigned int derivDim = Deriv::size();
+    unsigned int derivDim = DataTypeInfo<Deriv>::size();
     unsigned int j(0);
 
     for (unsigned int i=0; i<vSrc->size(); i++)
-    	for (unsigned int j=0; j<derivDim; j++)
-    		dest->element(offset + i * derivDim + j) = (*vSrc)[i](j);
+        for (unsigned int j=0; j<derivDim; j++)
+            DataTypeInfo<Deriv>::getValue((*vSrc)[i],j,dest->element(offset + i * derivDim + j));
 
     offset += vSrc->size() * derivDim;
-    */
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::addBaseVectorToState(VecId /*dest*/, defaulttype::BaseVector * /*src*/, unsigned int &/*offset*/)
+void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
 {
-    /*
     if (dest.type == VecId::V_COORD)
     {
         VecCoord* vDest = getVecCoord(dest.index);
-    	unsigned int coordDim = Coord::size();
+        unsigned int coordDim = DataTypeInfo<Coord>::size();
 
-    	for (unsigned int i=0; i<vDest->size(); i++)
-    	{
-    		for (unsigned int j=0; j<coordDim; j++)
-    			(*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
-    	}
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<coordDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Coord>::setValue((*vDest)[i], j, tmp + src->element(offset + i * coordDim + j));
+            }
+        }
 
-    	offset += vDest->size() * coordDim;
+        offset += vDest->size() * coordDim;
     }
     else
     {
         VecDeriv* vDest = getVecDeriv(dest.index);
-    	unsigned int coordDim = Deriv::size();
+        unsigned int derivDim = DataTypeInfo<Deriv>::size();
 
-    	for (unsigned int i=0; i<vDest->size(); i++)
-    		for (unsigned int j=0; j<coordDim; j++)
-    			(*vDest)[i](j) += (Real)src->element(offset + i * coordDim + j);
+        for (unsigned int i=0; i<vDest->size(); i++)
+            for (unsigned int j=0; j<derivDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Deriv>::setValue((*vDest)[i], j, tmp + src->element(offset + i * derivDim + j));
+            }
 
-    	offset += vDest->size() * coordDim;
+        offset += vDest->size() * derivDim;
     }
-    */
 }
 
 template <class DataTypes>

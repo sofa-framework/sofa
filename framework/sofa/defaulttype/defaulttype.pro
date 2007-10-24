@@ -16,6 +16,7 @@ INCLUDEPATH -= $$SOFA_DIR/applications
 HEADERS += \
 	  BaseMatrix.h \
 	  BaseVector.h \
+	  DataTypeInfo.h \
           Frame.h \ 
           LaparoscopicRigidTypes.h \
           Mat.h \

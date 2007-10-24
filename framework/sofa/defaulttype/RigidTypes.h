@@ -65,6 +65,7 @@ template<typename real>
 class RigidDeriv<3, real>
 {
 public:
+    typedef real value_type;
     typedef real Real;
     typedef Vec<3,Real> Vec3;
     typedef helper::Quater<Real> Quat;
@@ -174,7 +175,7 @@ public:
     static unsigned int size() {return 6;};
 
     /// Access to i-th element.
-    real& operator()(int i)
+    real& operator[](int i)
     {
         if (i<3)
             return this->vCenter(i);
@@ -183,7 +184,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator()(int i) const
+    const real& operator[](int i) const
     {
         if (i<3)
             return this->vCenter(i);
@@ -196,6 +197,7 @@ template<typename real>
 class RigidCoord<3,real>
 {
 public:
+    typedef real value_type;
     typedef real Real;
     typedef Vec<3,Real> Vec3;
     typedef helper::Quater<Real> Quat;
@@ -380,7 +382,7 @@ public:
     static unsigned int size() {return 7;};
 
     /// Access to i-th element.
-    real& operator()(int i)
+    real& operator[](int i)
     {
         if (i<3)
             return this->center(i);
@@ -389,7 +391,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator()(int i) const
+    const real& operator[](int i) const
     {
         if (i<3)
             return this->center(i);
@@ -402,6 +404,7 @@ template<typename real>
 class RigidMass<3, real>
 {
 public:
+    typedef real value_type;
     typedef real Real;
     typedef Mat<3,3,Real> Mat3x3;
     Real mass,volume;
@@ -569,6 +572,7 @@ template<typename real>
 class RigidDeriv<2,real>
 {
 public:
+    typedef real value_type;
     typedef real Real;
     typedef Vec<2,Real> Vec2;
 private:
@@ -642,7 +646,7 @@ public:
     static unsigned int size() {return 3;};
 
     /// Access to i-th element.
-    real& operator()(int i)
+    real& operator[](int i)
     {
         if (i<2)
             return this->vCenter(i);
@@ -651,7 +655,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator()(int i) const
+    const real& operator[](int i) const
     {
         if (i<2)
             return this->vCenter(i);
@@ -664,6 +668,7 @@ template<typename real>
 class RigidCoord<2,real>
 {
 public:
+    typedef real value_type;
     typedef real Real;
     typedef Vec<2,Real> Vec2;
 private:
@@ -836,7 +841,7 @@ public:
     static unsigned int size() {return 3;};
 
     /// Access to i-th element.
-    real& operator()(int i)
+    real& operator[](int i)
     {
         if (i<2)
             return this->center(i);
@@ -845,7 +850,7 @@ public:
     }
 
     /// Const access to i-th element.
-    const real& operator()(int i) const
+    const real& operator[](int i) const
     {
         if (i<2)
             return this->center(i);
@@ -858,6 +863,7 @@ template<class real>
 class RigidMass<2, real>
 {
 public:
+    typedef real value_type;
     typedef real Real;
     Real mass,volume;
     Real inertiaMatrix;	      // Inertia matrix of the object

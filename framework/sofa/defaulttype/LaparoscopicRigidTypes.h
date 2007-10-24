@@ -26,6 +26,7 @@
 #define SOFA_DEFAULTTYPE_LAPAROSCOPICRIGIDTYPES_H
 
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/helper/vector.h>
@@ -312,6 +313,56 @@ inline LaparoscopicRigid3Types::Deriv operator/(const LaparoscopicRigid3Types::D
 }
 
 typedef LaparoscopicRigid3Types LaparoscopicRigidTypes; ///< Alias
+
+template<>
+class DataTypeInfo<LaparoscopicRigidTypes::Coord>
+{
+public:
+    static unsigned int size() { return 5; }
+
+    template <typename T>
+    static void getValue(const LaparoscopicRigidTypes::Coord &type, unsigned int index, T& value)
+    {
+        if (index < 1)
+            value = static_cast<T>(type.getTranslation());
+        else
+            value = static_cast<T>(type.getOrientation()[index-1]);
+    }
+
+    template<typename T>
+    static void setValue(LaparoscopicRigidTypes::Coord &type, unsigned int index, const T& value )
+    {
+        if (index < 1)
+            type.getTranslation() = static_cast<double>(value);
+        else
+            type.getOrientation()[index-1] = static_cast<double>(value);
+    }
+};
+
+template<>
+class DataTypeInfo<LaparoscopicRigidTypes::Deriv>
+{
+public:
+    static unsigned int size() { return 4; }
+
+    template <typename T>
+    static void getValue(const LaparoscopicRigidTypes::Deriv &type, unsigned int index, T& value)
+    {
+        if (index < 1)
+            value = static_cast<T>(type.getVTranslation());
+        else
+            value = static_cast<T>(type.getVOrientation()[index-1]);
+    }
+
+    template<typename T>
+    static void setValue(LaparoscopicRigidTypes::Deriv &type, unsigned int index, const T& value )
+    {
+        if (index < 1)
+            type.getVTranslation() = static_cast<double>(value);
+        else
+            type.getVOrientation()[index-1] = static_cast<double>(value);
+    }
+};
 
 } // namespace defaulttype
 
