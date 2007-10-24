@@ -85,6 +85,30 @@ void Mass<DataTypes>::addMDxToVector(defaulttype::BaseVector *resVect, double mF
     }
 }
 
+template<class DataTypes>
+void Mass<DataTypes>::initGnuplot()
+{
+    if( !this->getName().empty() )
+    {
+        m_gnuplotFileEc = new std::ofstream( (this->getName()+"_Ec.txt").c_str() );
+        m_gnuplotFileEp = new std::ofstream( (this->getName()+"_Ep.txt").c_str() );
+    }
+}
+
+template<class DataTypes>
+void Mass<DataTypes>::exportGnuplot(double time)
+{
+    if( m_gnuplotFileEc!=NULL )
+    {
+        (*m_gnuplotFileEc) << time <<"\t"<< getKineticEnergy() << std::endl;
+    }
+    if( m_gnuplotFileEp!=NULL )
+    {
+        (*m_gnuplotFileEp) << time <<"\t"<< getPotentialEnergy() << std::endl;
+    }
+}
+
+
 } // namespace behavior
 
 } // namespace componentmodel

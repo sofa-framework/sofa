@@ -54,8 +54,8 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         const char* xmax = arg->getAttribute("xmax");
         const char* ymax = arg->getAttribute("ymax");
         const char* zmax = arg->getAttribute("zmax");
-        min.setValue(Vec3f(atof(xmin),atof(ymin),atof(zmin)));
-        max.setValue(Vec3f(atof(xmax),atof(ymax),atof(zmax)));
+        min.setValue(Vec3(atof(xmin),atof(ymin),atof(zmin)));
+        max.setValue(Vec3(atof(xmax),atof(ymax),atof(zmax)));
     }
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 }
@@ -69,14 +69,14 @@ int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
 
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz),
-      min(dataField(&min,Vec3f(0.0f,0.0f,0.0f),"min", "Min")),
-      max(dataField(&max,Vec3f(1.0f,1.0f,1.0f),"max", "Max"))
+      min(dataField(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min")),
+      max(dataField(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
 {
 }
 
 RegularGridTopology::RegularGridTopology()
-    : min(dataField(&min,Vec3f(0.0f,0.0f,0.0f),"min", "Min")),
-      max(dataField(&max,Vec3f(1.0f,1.0f,1.0f),"max", "Max"))
+    : min(dataField(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min")),
+      max(dataField(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
 {
 }
 

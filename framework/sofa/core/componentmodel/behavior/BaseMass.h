@@ -73,6 +73,11 @@ public:
     /// Add Mass contribution to global Vector assembling
     virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, double /*mFact*/, unsigned int& /*offset*/, bool /*dxNull*/) = 0;
 
+    /// initialization to export kinetic and potential energy to gnuplot files format
+    virtual void initGnuplot()=0;
+
+    /// export kinetic and potential energy state at "time" to a gnuplot file
+    virtual void exportGnuplot(double time)=0;
     /// @}
 
 };

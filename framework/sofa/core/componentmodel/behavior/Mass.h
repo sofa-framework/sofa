@@ -118,6 +118,18 @@ public:
     /// This method must be implemented by the component. Offset parameter gives the current Vector starting point.
     virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv * /*dx*/, double /*mFact*/, unsigned int& /*offset*/) {};
 
+    /// initialization to export kinetic and potential energy to gnuplot files format
+    virtual void initGnuplot();
+
+    /// export kinetic and potential energy state at "time" to a gnuplot file
+    virtual void exportGnuplot(double time);
+
+protected:
+    /// stream to export Kinematic Energy to gnuplot files
+    std::ofstream* m_gnuplotFileEc;
+    /// stream to export Potential Energy to gnuplot files
+    std::ofstream* m_gnuplotFileEp;
+
     /// @}
 };
 

@@ -20,6 +20,10 @@ Visitor::Result InitGnuplotVisitor::processNodeTopDown(GNode* node)
     {
         node->mechanicalState->initGnuplot();
     }
+    if (node->mass != NULL )
+    {
+        node->mass->initGnuplot();
+    }
     return RESULT_CONTINUE;
 }
 
@@ -32,6 +36,10 @@ Visitor::Result ExportGnuplotVisitor::processNodeTopDown(GNode* node)
     if (node->mechanicalState != NULL )
     {
         node->mechanicalState->exportGnuplot(m_time);
+    }
+    if (node->mass!= NULL )
+    {
+        node->mass->exportGnuplot(m_time);
     }
     return RESULT_CONTINUE;
 }
