@@ -90,21 +90,16 @@ void Mass<DataTypes>::initGnuplot()
 {
     if( !this->getName().empty() )
     {
-        m_gnuplotFileEc = new std::ofstream( (this->getName()+"_Ec.txt").c_str() );
-        m_gnuplotFileEp = new std::ofstream( (this->getName()+"_Ep.txt").c_str() );
+        m_gnuplotFileEnergy = new std::ofstream( (this->getName()+"_Energy.txt").c_str() );
     }
 }
 
 template<class DataTypes>
 void Mass<DataTypes>::exportGnuplot(double time)
 {
-    if( m_gnuplotFileEc!=NULL )
+    if( m_gnuplotFileEnergy!=NULL )
     {
-        (*m_gnuplotFileEc) << time <<"\t"<< this->getKineticEnergy() << std::endl;
-    }
-    if( m_gnuplotFileEp!=NULL )
-    {
-        (*m_gnuplotFileEp) << time <<"\t"<< this->getPotentialEnergy() << std::endl;
+        (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy() <<"\t"<< this->getPotentialEnergy() <<"\t"<< this->getPotentialEnergy()+this->getKineticEnergy()<< std::endl;
     }
 }
 

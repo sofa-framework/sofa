@@ -98,7 +98,7 @@ public:
     /// getKineticEnergy(const VecDeriv&) method implemented by the component.
     virtual double getKineticEnergy();
 
-    virtual double getPotentialEnergy() { return 0.0;}
+    //virtual double getPotentialEnergy();
 
     /// vMv/2
     ///
@@ -127,10 +127,8 @@ public:
     virtual void exportGnuplot(double time);
 
 protected:
-    /// stream to export Kinematic Energy to gnuplot files
-    std::ofstream* m_gnuplotFileEc;
-    /// stream to export Potential Energy to gnuplot files
-    std::ofstream* m_gnuplotFileEp;
+    /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
+    std::ofstream* m_gnuplotFileEnergy;
 
     /// @}
 };
