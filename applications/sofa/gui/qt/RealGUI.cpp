@@ -1637,7 +1637,7 @@ void RealGUI::slot_recordSimulation( bool value)
         std::ofstream out(simulationFileName.c_str());
         if (!out.fail())
         {
-            out << output << " " << initialTime->text() << " " << finalTime->text() << " " << dtEdit->text();
+            out << output << " " << initialTime->text().ascii() << " " << finalTime->text().ascii() << " " << dtEdit->text().ascii();
             out.close();
         }
         std::cout << "Simulation parameters saved in "<<simulationFileName<<std::endl;
