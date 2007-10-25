@@ -1093,7 +1093,11 @@ void RealGUI::editRecordDirectory()
     std::string filename = viewer->getSceneFileName();
     QString s = Q3FileDialog::getExistingDirectory ( filename.empty() ?NULL:filename.c_str(),  this, "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
+    {
         record_directory = s.ascii();
+        if (record_directory.at(record_directory.size()-1) != '/') record_directory+="/";
+    }
+
 }
 
 void RealGUI::editGnuplotDirectory()
@@ -1103,6 +1107,8 @@ void RealGUI::editGnuplotDirectory()
     if (s.length() > 0)
     {
         gnuplot_directory = s.ascii();
+        if (gnuplot_directory.at(gnuplot_directory.size()-1) != '/') gnuplot_directory+="/";
+
         getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
         setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     }
