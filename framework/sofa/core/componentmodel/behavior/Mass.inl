@@ -42,7 +42,7 @@ namespace behavior
 
 template<class DataTypes>
 Mass<DataTypes>::Mass(MechanicalState<DataTypes> *mm)
-    : ForceField<DataTypes>(mm)
+    : ForceField<DataTypes>(mm),m_gnuplotFileEnergy(NULL)
 {
 }
 
@@ -86,11 +86,14 @@ void Mass<DataTypes>::addMDxToVector(defaulttype::BaseVector *resVect, double mF
 }
 
 template<class DataTypes>
-void Mass<DataTypes>::initGnuplot()
+void Mass<DataTypes>::initGnuplot(const std::string path)
 {
     if( !this->getName().empty() )
     {
-        m_gnuplotFileEnergy = new std::ofstream( (this->getName()+"_Energy.txt").c_str() );
+
+        if (m_gnuplotFileEnergy != NULL) delete m_gnuplotFileEnergy;
+        m_gnuplotFileEnergy = new std::ofstream( (path+this->getName()+"_Energy.txt").c_str() );
+
     }
 }
 

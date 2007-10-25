@@ -58,6 +58,7 @@ public:
 
     virtual sofa::simulation::tree::GNode* getScene()        {  return groot;}
     virtual const std::string&             getSceneFileName() {  return sceneFileName;}
+    virtual void                           setSceneFileName(const std::string &f) {sceneFileName = f;};
 
     virtual void setup() {}
     virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false)=0;

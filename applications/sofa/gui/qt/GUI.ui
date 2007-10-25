@@ -7,9 +7,9 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>97</y>
+            <y>0</y>
             <width>1074</width>
-            <height>797</height>
+            <height>835</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -22,8 +22,8 @@
     </property>
     <property name="minimumSize">
         <size>
-            <width>248</width>
-            <height>751</height>
+            <width>252</width>
+            <height>835</height>
         </size>
     </property>
     <property name="caption">
@@ -579,7 +579,7 @@
                             <cstring>stepButton</cstring>
                         </property>
                         <property name="text">
-                            <string>S&amp;TEP</string>
+                            <string>S&amp;tep</string>
                         </property>
                         <property name="accel">
                             <string>Alt+T</string>
@@ -684,7 +684,7 @@
                             <cstring>startButton</cstring>
                         </property>
                         <property name="text">
-                            <string>&amp;ANIM</string>
+                            <string>&amp;Animate</string>
                         </property>
                         <property name="accel">
                             <string>Alt+A</string>
@@ -720,22 +720,13 @@
         <action name="fileExitAction"/>
     </item>
     <item text="&amp;Edit" name="editMenu">
-        <action name="editUndoAction"/>
-        <action name="editRedoAction"/>
-        <separator/>
-        <action name="editCutAction"/>
-        <action name="editCopyAction"/>
-        <action name="editPasteAction"/>
-        <separator/>
-        <action name="editFindAction"/>
+        <action name="editRecordDirectoryAction"/>
+        <action name="editGnuplotDirectoryAction"/>
     </item>
     <item text="&amp;View" name="View">
-        <action name="ViewerAction"/>
-        <item text="Viewer" name="popupMenu_18" accel="">
-            <action name="viewerOpenGLAction"/>
-            <action name="viewerQGLViewerAction"/>
-            <action name="viewerOGREAction"/>
-        </item>
+        <action name="viewerOpenGLAction"/>
+        <action name="viewerQGLViewerAction"/>
+        <action name="viewerOGREAction"/>
     </item>
     <item text="&amp;Help" name="helpMenu">
         <action name="helpContentsAction"/>
@@ -1104,6 +1095,28 @@
             <string>&amp;OGRE</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>editRecordDirectoryAction</cstring>
+        </property>
+        <property name="text">
+            <string>Record Directory...</string>
+        </property>
+        <property name="menuText">
+            <string>Record Directory...</string>
+        </property>
+    </action>
+    <action>
+        <property name="name">
+            <cstring>editGnuplotDirectoryAction</cstring>
+        </property>
+        <property name="text">
+            <string>Gnuplot Directory...</string>
+        </property>
+        <property name="menuText">
+            <string>Gnuplot Directory...</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -1270,7 +1283,22 @@
         <receiver>GUI</receiver>
         <slot>RightClickedItemInSceneView(QListViewItem*,const QPoint&amp;,int)</slot>
     </connection>
+    <connection>
+        <sender>editRecordDirectoryAction</sender>
+        <signal>activated()</signal>
+        <receiver>GUI</receiver>
+        <slot>editRecordDirectory()</slot>
+    </connection>
+    <connection>
+        <sender>editGnuplotDirectoryAction</sender>
+        <signal>activated()</signal>
+        <receiver>GUI</receiver>
+        <slot>editGnuplotDirectory()</slot>
+    </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">GUI.ui.h</include>
+</includes>
 <slots>
     <slot>fileNew()</slot>
     <slot>fileOpen()</slot>
@@ -1292,8 +1320,10 @@
     <slot>helpContents()</slot>
     <slot>helpAbout()</slot>
     <slot>saveXML()</slot>
-    <slot>DoubleClickeItemInSceneView(QListViewItem*)</slot>
-    <slot>RightClickedItemInSceneView(QListViewItem*, const QPoint&amp;, int)</slot>
+    <slot>DoubleClickeItemInSceneView( QListViewItem * )</slot>
+    <slot>RightClickedItemInSceneView( QListViewItem *, const QPoint &amp;, int )</slot>
+    <slot>editRecordDirectory()</slot>
+    <slot>editGnuplotDirectory()</slot>
 </slots>
 <layoutdefaults spacing="2" margin="5"/>
 </UI>

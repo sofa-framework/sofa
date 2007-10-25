@@ -39,15 +39,18 @@
 #include <AddObject.h>
 #include <ModifyObject.h>
 #include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/helper/system/SetDirectory.h>
 
 #ifdef QT_MODULE_QT3SUPPORT
 #include <Q3ListViewItem>
 #include <QStackedWidget>
+#include <QSlider>
 typedef Q3ListViewItem QListViewItem;
 typedef QStackedWidget QWidgetStack;
 #else
 #include <qwidgetstack.h>
 #include "qlistview.h"
+#include <qslider.h>
 #endif
 
 
@@ -97,6 +100,7 @@ public:
 
     virtual void fileOpen(const char* filename); //, int TYPE=NORMAL);
     virtual void fileOpen(const char* filename, bool keepParams); //, int TYPE=NORMAL);
+    virtual void fileOpenSimu(const char* filename, bool keepParams); //, int TYPE=NORMAL);
     virtual void fileSaveAs(const char* filename);
     virtual void setScene(GNode* groot, const char* filename=NULL, bool keepParams=false);
     virtual void setTitle( const char* windowTitle );
@@ -122,6 +126,9 @@ public:
     //virtual void helpContents();
     //virtual void helpAbout();
 
+    virtual void editRecordDirectory();
+    virtual void editGnuplotDirectory();
+
 public slots:
 
     void DoubleClickeItemInSceneView(QListViewItem * item);
@@ -143,6 +150,21 @@ public slots:
     void slot_showInteractionForceField(bool);
     void slot_showWireFrame(bool);
     void slot_showNormals(bool);
+
+
+    void slot_recordSimulation( bool);
+    void slot_backward( );
+    void slot_stepbackward( );
+    void slot_playbackward(  );
+    void slot_playforward(  ) ;
+    void slot_stepforward( ) ;
+    void slot_forward( );
+    void slot_sliderValue(int);
+    void slot_loadrecord_timevalue();
+
+
+
+
     void exportGraph();
     void exportGraph(sofa::simulation::tree::GNode*);
     void exportOBJ(bool exportMTL=true);
@@ -150,6 +172,8 @@ public slots:
     void displayComputationTime(bool);
     void setExportGnuplot(bool);
     void currentTabChanged(QWidget*);
+
+
     //Used in Context Menu
     void graphAddObject();
     void graphRemoveObject();
@@ -177,6 +201,7 @@ protected:
     void init();
     void keyPressEvent ( QKeyEvent * e );
 
+    void playSimulation(bool);
 
     GNode *searchNode(GNode *node, Q3ListViewItem *item_clicked);
     GNode *verifyNode(GNode *node, Q3ListViewItem *item_clicked);
@@ -196,6 +221,32 @@ protected:
     QTimer* timerStep;
     QLabel* fpsLabel;
     QLabel* timeLabel;
+
+
+    inline double getRecordInitialTime() const;
+    inline void   setRecordInitialTime(const double time);
+    inline double getRecordFinalTime  () const;
+    inline void   setRecordFinalTime  (const double time);
+    inline double getRecordTime       () const;
+    inline void   setRecordTime       (const double time);
+
+    QPushButton* record;
+    QPushButton* backward_record;
+    QPushButton* stepbackward_record;
+    QPushButton* playbackward_record;
+    QPushButton* playforward_record;
+    QPushButton* stepforward_record;
+    QPushButton* forward_record;
+
+    QLineEdit* loadRecordTime;
+    QLabel* initialTime;
+    QLabel* finalTime;
+    QSlider* timeSlider;
+
+    std::string simulation_name;
+    std::string record_directory;
+    std::string gnuplot_directory;
+
     QWidgetStack* left_stack;
     AddObject *dialog;
 
@@ -227,7 +278,7 @@ private:
     std::list< GNode *> list_object_removed;
     std::list< GNode *> list_object_initial;
     std::list< GNode* > list_node_contactPoints;
-
+    bool record_simulation;
 
     bool setViewer(const char* name);
     void addViewer();

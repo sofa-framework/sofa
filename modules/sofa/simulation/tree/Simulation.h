@@ -104,6 +104,7 @@ public:
 
     /// Number of mechanical steps within an animation step
     DataField<unsigned> numMechSteps;
+    DataField<std::string> gnuplotDirectory;
 
 };
 

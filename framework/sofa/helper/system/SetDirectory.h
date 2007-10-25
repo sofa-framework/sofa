@@ -57,6 +57,9 @@ public:
     /// Get the parent directory of a given file, i.e. if given "a/b/c", return "a/b".
     static std::string GetParentDir(const char* filename);
 
+    /// Get the filename from an absolute path description, i.e. if given"a/b/c", return "c"
+    static std::string GetFileName(const char* filename);
+
     /// Get the full path of the current process. The given filename should be the value of argv[0].
     static std::string GetProcessFullPath(const char* filename);
 

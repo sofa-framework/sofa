@@ -121,7 +121,7 @@ public:
     virtual void addMDxToVector(defaulttype::BaseVector * /*resVect*/, const VecDeriv * /*dx*/, double /*mFact*/, unsigned int& /*offset*/) {};
 
     /// initialization to export kinetic and potential energy to gnuplot files format
-    virtual void initGnuplot();
+    virtual void initGnuplot(const std::string path);
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
     virtual void exportGnuplot(double time);

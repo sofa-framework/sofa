@@ -84,12 +84,14 @@ MechanicalObject<DataTypes>::MechanicalObject()
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::initGnuplot()
+void MechanicalObject<DataTypes>::initGnuplot(const std::string path)
 {
     if( !this->getName().empty() )
     {
-        m_gnuplotFileX = new std::ofstream( (this->getName()+"_x.txt").c_str() );
-        m_gnuplotFileV = new std::ofstream( (this->getName()+"_v.txt").c_str() );
+        if (m_gnuplotFileX != NULL) delete m_gnuplotFileX;
+        if (m_gnuplotFileV != NULL) delete m_gnuplotFileV;
+        m_gnuplotFileX = new std::ofstream( (path + this->getName()+"_x.txt").c_str() );
+        m_gnuplotFileV = new std::ofstream( (path + this->getName()+"_v.txt").c_str() );
     }
 }
 

@@ -149,7 +149,7 @@ public:
 
     virtual void writeState( std::ostream& out );
 
-    virtual void initGnuplot();
+    virtual void initGnuplot(const std::string path);
     virtual void exportGnuplot(double time);
 
     virtual void resize( int vsize);

@@ -221,7 +221,7 @@ public:
     /// @name Data output
     /// @{
     virtual void printDOF( VecId, std::ostream& =std::cerr ) = 0;
-    virtual void initGnuplot() {}
+    virtual void initGnuplot(const std::string) {}
     virtual void exportGnuplot(double) {}
     virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr ) {return 0;};
     /// @}

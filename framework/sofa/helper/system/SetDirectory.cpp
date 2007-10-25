@@ -123,6 +123,16 @@ std::string SetDirectory::GetParentDir(const char* filename)
         return s.substr(0,pos);
 }
 
+std::string SetDirectory::GetFileName(const char* filename)
+{
+    std::string s = filename;
+    std::string::size_type pos = s.find_last_of("/\\");
+    if (pos == std::string::npos)
+        return s; // no directory
+    else
+        return s.substr(pos+1);
+}
+
 std::string SetDirectory::GetRelativeFromDir(const char* filename, const char* basename)
 {
     if (!filename || !filename[0]) return "";
