@@ -88,7 +88,7 @@ extern simulation::tree::GNode* groot;
 #include <Q3FileDialog>
 #include <QTabWidget>
 #include <Q3PopupMenu>
-
+#include <QToolTip>
 #else
 #include <qwidget.h>
 #include <qwidgetstack.h>
@@ -107,6 +107,7 @@ extern simulation::tree::GNode* groot;
 #include <qfiledialog.h>
 #include <qtabwidget.h>
 #include <qpopupmenu.h>
+#include <qtooltip.h>
 #endif
 
 #include <GenGraphForm.h>
@@ -293,6 +294,14 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     playforward_record     = new QPushButton( statusBar(), "Play Forward"); playforward_record->setToggleButton(true);
     stepforward_record     = new QPushButton( statusBar(), "Step Forward");
     forward_record         = new QPushButton( statusBar(), "Forward");
+
+    QToolTip::add(record               , tr( "Record" ) );
+    QToolTip::add(backward_record      , tr( "Load Initial Time" ) );
+    QToolTip::add(stepbackward_record  , tr( "Make one step backward" ) );
+    QToolTip::add(playbackward_record  , tr( "Continuous play backward" ) );
+    QToolTip::add(playforward_record   , tr( "Continuous play forward" ) );
+    QToolTip::add(stepforward_record   , tr( "Make one step forward" ) );
+    QToolTip::add(forward_record       , tr( "Load Final Time" ) );
 
 
     // Image for the record button

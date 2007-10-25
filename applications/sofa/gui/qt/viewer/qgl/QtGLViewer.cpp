@@ -1611,13 +1611,17 @@ bool QtGLViewer::updateInteractor(QMouseEvent * e)
             {
                 interactor->newEvent("pick2");
             }
+            else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+            {
+                interactor->newEvent("pick3");
+            }
             break;
         case QEvent::MouseButtonRelease:
-            //if (e->button() == Qt::LeftButton)
-        {
-            interactor->newEvent("release");
-        }
-        break;
+            if (e->button() == Qt::LeftButton)
+            {
+                interactor->newEvent("release");
+            }
+            break;
         default: break;
         }
         Vector3 p0, px, py, pz;
@@ -1776,6 +1780,11 @@ bool QtGLViewer::updateInteractor(QMouseEvent * e)
             static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
         }
         return true;
+    }
+    else
+    {
+        if (interactor!=NULL)
+            interactor->newEvent("hide");
     }
     return false;
 }
