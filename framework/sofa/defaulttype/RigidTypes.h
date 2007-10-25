@@ -216,7 +216,6 @@ public:
     {
     }
 
-    typedef real value_type;
 
     void clear() { center.clear(); orientation.clear(); }
 
@@ -678,7 +677,6 @@ public:
     RigidCoord (const Vec2 &posCenter, const Real &orient)
         : center(posCenter), orientation(orient) {}
     RigidCoord () { clear(); }
-    typedef real value_type;
 
     void clear() { center.clear(); orientation = 0; }
 

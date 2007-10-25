@@ -57,13 +57,13 @@ public:
     static unsigned int size() { return 1; }
 
     template <typename T>
-    static void getValue(const double &type, unsigned int index, T& value)
+    static void getValue(const double &type, unsigned int /* index */, T& value)
     {
         value = static_cast<T>(type);
     }
 
     template<typename T>
-    static void setValue(double &type, unsigned int index, const T& value )
+    static void setValue(double &type, unsigned int /* index */, const T& value )
     {
         type = static_cast<double>(value);
     }
@@ -74,16 +74,16 @@ class DataTypeInfo<float>
 {
 public:
     static unsigned int size() { return 1; }
-    static double getValue(const float &type, unsigned int index) { return type; }
+    static double getValue(const float &type, unsigned int /* index */) { return type; }
 
     template <typename T>
-    static void getValue(const float &type, unsigned int index, T& value)
+    static void getValue(const float &type, unsigned int /* index */, T& value)
     {
         value = static_cast<T>(type);
     }
 
     template<typename T>
-    static void setValue(float &type, unsigned int index, const T& value )
+    static void setValue(float &type, unsigned int /* index */, const T& value )
     {
         type = static_cast<float>(value);
     }

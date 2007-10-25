@@ -39,11 +39,11 @@
 
 namespace sofa
 {
-//using namespace core::objectmodel;
+
 
 namespace component
 {
-
+using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
     : x(new VecCoord), v(new VecDeriv), x0(NULL),rest_position(new VecCoord), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
@@ -59,7 +59,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     f_rest_position->beginEdit();
 
     /*    x = new VecCoord;
-        v = new VecDeriv;*/
+      v = new VecDeriv;*/
     internalForces = f = new VecDeriv;
     externalForces = new VecDeriv;
     dx = new VecDeriv;
@@ -80,7 +80,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     translation[2]=0.0;
     scale = 1.0;
     /*    cerr<<"MechanicalObject<DataTypes>::MechanicalObject, x.size() = "<<x->size()<<endl;
-        cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
+      cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
 }
 
 template <class DataTypes>
@@ -112,15 +112,15 @@ MechanicalObject<DataTypes>::operator = (const MechanicalObject& obj)
 {
     resize( obj.getSize() );
     /*    *getX() = *obj.getX();
-        if( obj.x0 != NULL ){
-            x0 = new VecCoord;
-            *x0 = *obj.x0;
-        }
-        *getV() = *obj.getV();
-        if( obj.v0 != NULL ){
-            v0 = new VecDeriv;
-            *v0 = *obj.v0;
-        }*/
+      if( obj.x0 != NULL ){
+      x0 = new VecCoord;
+      *x0 = *obj.x0;
+      }
+      *getV() = *obj.getV();
+      if( obj.v0 != NULL ){
+      v0 = new VecDeriv;
+      *v0 = *obj.v0;
+      }*/
     return *this;
 }
 
@@ -484,7 +484,6 @@ void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * des
 {
     VecDeriv* vSrc = getVecDeriv(src.index);
     unsigned int derivDim = DataTypeInfo<Deriv>::size();
-    unsigned int j(0);
 
     for (unsigned int i=0; i<vSrc->size(); i++)
         for (unsigned int j=0; j<derivDim; j++)
@@ -1247,7 +1246,7 @@ void MechanicalObject<DataTypes>::resetForce()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetConstraint()
 {
-//	std::cout << "resetConstraint()\n";
+    //	std::cout << "resetConstraint()\n";
     VecConst& c= *getC();
     c.clear();
 
@@ -1273,23 +1272,23 @@ std::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId()
 }
 
 /*
-template <class DataTypes>
-bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
-{
+  template <class DataTypes>
+  bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+  {
   const VecCoord& x = *getX();
   if (x.size() <= 0) return false;
   double p[3] = {0,0,0};
   for (unsigned int i=0; i<x.size(); i++)
   {
-    DataTypes::get(p[0], p[1], p[2], x[i]);
-    for (int c=0;c<3;c++)
-    {
-      if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
-      if (p[c] < minBBox[c]) minBBox[c] = p[c];
-    }
+  DataTypes::get(p[0], p[1], p[2], x[i]);
+  for (int c=0;c<3;c++)
+  {
+  if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+  if (p[c] < minBBox[c]) minBBox[c] = p[c];
+  }
   }
   return true;
-}
+  }
 */
 
 //
