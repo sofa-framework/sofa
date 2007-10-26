@@ -358,7 +358,7 @@ double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy( const Rigid3dT
     Vec3d g ( this->getContext()->getLocalGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += g*mass.getValue().mass*x[i].getCenter();
+        e -= g*mass.getValue().mass*x[i].getCenter();
     }
     return e;
 }
@@ -372,7 +372,7 @@ double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy( const Rigid3fT
     Vec3d g ( this->getContext()->getLocalGravity() );
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += g*mass.getValue().mass*x[i].getCenter();
+        e -= g*mass.getValue().mass*x[i].getCenter();
     }
     return e;
 }
@@ -386,7 +386,7 @@ double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const Rigid2dT
     Vec2d g; g = this->getContext()->getLocalGravity();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += g*mass.getValue().mass*x[i].getCenter();
+        e -= g*mass.getValue().mass*x[i].getCenter();
     }
     return e;
 }
@@ -400,7 +400,7 @@ double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const Rigid2fT
     Vec2d g; g = this->getContext()->getLocalGravity();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += g*mass.getValue().mass*x[i].getCenter();
+        e -= g*mass.getValue().mass*x[i].getCenter();
     }
     return e;
 }

@@ -51,7 +51,7 @@ double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoo
     ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
+        e -= theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
     }
     return e;
 }
@@ -68,7 +68,7 @@ double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoo
     ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
+        e -= theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
     }
     return e;
 }
@@ -85,7 +85,7 @@ double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoo
     ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
+        e -= theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
     }
     return e;
 }
@@ -103,7 +103,7 @@ double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoo
     ( theGravity, g[0], g[1], g[2]);
     for (unsigned int i=0; i<x.size(); i++)
     {
-        e += theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
+        e -= theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
     }
     return e;
 }
