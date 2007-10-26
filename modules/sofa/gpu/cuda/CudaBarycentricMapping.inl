@@ -44,7 +44,7 @@ int TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaV
     map.resize(map.size()+1);
     CubeData& data = map[map.size()-1];
     //data.in_index = cubeIndex;
-    data.in_index = topology->getCube(cubeIndex)[0];
+    data.in_index = topology->getCubeCopy(cubeIndex)[0];
     data.baryCoords[0] = baryCoords[0];
     data.baryCoords[1] = baryCoords[1];
     data.baryCoords[2] = baryCoords[2];

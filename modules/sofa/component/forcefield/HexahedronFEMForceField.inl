@@ -87,18 +87,35 @@ template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::init()
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
-    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
-    if ( _mesh==NULL ||  _mesh->getNbCubes()<=0 )
+    if( this->getContext()->getTopology()==NULL )
     {
-        std::cerr << "ERROR(HexahedronFEMForceField): object must have a hexahedric MeshTopology.\n";
+        std::cerr << "ERROR(HexahedronFEMForceField): object must have a Topology.\n";
         return;
     }
-    if (!_mesh->getCubes().empty())
+
+    _mesh = dynamic_cast<sofa::component::topology::MeshTopology*>(this->getContext()->getTopology());
+    if ( _mesh==NULL)
     {
-        _indexedElements = & (_mesh->getCubes());
+        std::cerr << "ERROR(HexahedronFEMForceField): object must have a MeshTopology.\n";
+        return;
     }
+    else if( _mesh->getNbCubes()<=0 )
+    {
+        std::cerr << "ERROR(HexahedronFEMForceField): object must have a hexahedric MeshTopology.\n";
+        std::cerr << _mesh->getName()<<std::endl;
+        std::cerr << _mesh->getTypeName()<<std::endl;
+        cerr<<_mesh->getNbPoints()<<endl;
+        return;
+    }
+// 	if (!_mesh->getCubes().empty())
+// 	else
+// 	{
+    _indexedElements = & (_mesh->getCubes());
+// 	}
     _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
     _sparseGrid = dynamic_cast<topology::SparseGridTopology*>(_mesh);
+
+
 
     if (_initialPoints.getValue().size() == 0)
     {

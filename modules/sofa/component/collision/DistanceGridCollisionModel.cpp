@@ -418,7 +418,7 @@ void FFDDistanceGridCollisionModel::init()
             if (c != e)
                 elems[c].points.swap(elems[e].points); // move the list of points to the new
             elems[c].elem = e;
-            topology::MeshTopology::Cube cube = ffdGrid->getCube(e);
+            topology::MeshTopology::Cube cube = ffdGrid->getCubeCopy(e);
             elems[c].initP0 = ffdGrid->getPoint(cube[0]);
             elems[c].initDP = ffdGrid->getPoint(cube[7])-elems[c].initP0;
             elems[c].invDP[0] = 1/elems[c].initDP[0];

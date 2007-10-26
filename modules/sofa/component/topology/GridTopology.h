@@ -73,7 +73,7 @@ public:
 
     //int getNbPoints() const { return n.getValue()[0]*n.getValue()[1]*n.getValue()[2]; }
 
-    int getNbCubes() { return (n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1); }
+    virtual int getNbCubes() { return (n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1); }
 
     int getNbQuads()
     {
@@ -85,10 +85,10 @@ public:
             return (n.getValue()[1]-1)*(n.getValue()[2]-1);
     }
 
-    Cube getCube(int i);
+    Cube getCubeCopy(int i);
     Cube getCube(int x, int y, int z);
 
-    Quad getQuad(int i);
+    Quad getQuadCopy(int i);
     Quad getQuad(int x, int y, int z);
 
     int point(int x, int y, int z) const { return x+n.getValue()[0]*(y+n.getValue()[1]*z); }
@@ -98,9 +98,9 @@ protected:
     DataField< Vec<3, int> > n;
 
     virtual void setSize();
-    void updateLines();
-    void updateQuads();
-    void updateCubes();
+    virtual void updateLines();
+    virtual void updateQuads();
+    virtual void updateCubes();
 };
 
 } // namespace topology

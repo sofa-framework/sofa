@@ -123,7 +123,7 @@ void GridTopology::updateCubes()
                         point(x  ,y+1,z+1),point(x+1,y+1,z+1)));
 }
 
-GridTopology::Cube GridTopology::getCube(int i)
+GridTopology::Cube GridTopology::getCubeCopy(int i)
 {
     int x = i%(n.getValue()[0]-1); i/=(n.getValue()[0]-1);
     int y = i%(n.getValue()[1]-1); i/=(n.getValue()[1]-1);
@@ -139,7 +139,7 @@ GridTopology::Cube GridTopology::getCube(int x, int y, int z)
             point(x  ,y+1,z+1),point(x+1,y+1,z+1));
 }
 
-GridTopology::Quad GridTopology::getQuad(int i)
+GridTopology::Quad GridTopology::getQuadCopy(int i)
 {
     if (n.getValue()[0] == 1)
     {

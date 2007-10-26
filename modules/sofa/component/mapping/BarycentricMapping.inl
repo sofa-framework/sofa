@@ -597,7 +597,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::apply( typ
     out.resize(map.size());
     for(unsigned int i=0; i<map.size(); i++)
     {
-        const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::RegularGridTopology::Cube cube = this->topology->getCubeCopy(this->map[i].in_index);
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -746,7 +746,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::applyJ( ty
 {
     for(unsigned int i=0; i<map.size(); i++)
     {
-        const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::RegularGridTopology::Cube cube = this->topology->getCubeCopy(this->map[i].in_index);
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -895,7 +895,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::applyJT( t
     for(unsigned int i=0; i<map.size(); i++)
     {
         const typename Out::Deriv v = in[i];
-        const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::RegularGridTopology::Cube cube = this->topology->getCubeCopy(this->map[i].in_index);
         const OutReal fx = (OutReal)map[i].baryCoords[0];
         const OutReal fy = (OutReal)map[i].baryCoords[1];
         const OutReal fz = (OutReal)map[i].baryCoords[2];
@@ -1059,7 +1059,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::draw(const
     glBegin (GL_LINES);
     for (unsigned int i=0; i<map.size(); i++)
     {
-        const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[i].in_index);
+        const topology::RegularGridTopology::Cube cube = this->topology->getCubeCopy(this->map[i].in_index);
         const Real fx = map[i].baryCoords[0];
         const Real fy = map[i].baryCoords[1];
         const Real fz = map[i].baryCoords[2];
@@ -1310,7 +1310,7 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::applyJT( t
         for(unsigned int j=0; j<in[i].size(); j++)
         {
             const typename Out::SparseDeriv cIn = in[i][j];
-            const topology::RegularGridTopology::Cube cube = this->topology->getCube(this->map[cIn.index].in_index);
+            const topology::RegularGridTopology::Cube cube = this->topology->getCubeCopy(this->map[cIn.index].in_index);
             const OutReal fx = (OutReal)map[cIn.index].baryCoords[0];
             const OutReal fy = (OutReal)map[cIn.index].baryCoords[1];
             const OutReal fz = (OutReal)map[cIn.index].baryCoords[2];

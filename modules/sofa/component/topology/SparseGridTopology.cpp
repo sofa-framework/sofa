@@ -166,7 +166,7 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
 
             for(int i=0; i<_regularGrid.getNbCubes(); ++i) // all possible cubes (even empty)
             {
-                Cube c = _regularGrid.getCube(i);
+                Cube c = _regularGrid.getCubeCopy(i);
                 CubeCorners corners;
                 for(int j=0; j<8; ++j)
                     corners[j] = _regularGrid.getPoint( c[j] );
@@ -273,7 +273,7 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
                 {
                     _types.push_back(INSIDE);
 
-                    Cube c = _regularGrid.getCube(w);
+                    Cube c = _regularGrid.getCubeCopy(w);
                     CubeCorners corners;
                     for(int j=0; j<8; ++j)
                     {
@@ -316,7 +316,7 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
 // 				  cerr<<"sparse w : "<<c[w]<<"    "<<seqPoints[c[w]]<<endl;
 // 			  }
 // 			  cerr<<"------\n";
-// 			  c = _regularGrid.getCube( i );
+// 			  c = _regularGrid.getCubeCopy( i );
 // 			  for(int w=0;w<8;++w)
 // 			  {
 // 				  cerr<<"regular w : "<<c[w]<<"    "<<_regularGrid.getPoint( c[w] )<<endl;
@@ -374,6 +374,11 @@ int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy,
         return _indicesOfRegularCubeInSparseGrid[indiceInRegularGrid];
 }
 
+
+SparseGridTopology::Type SparseGridTopology::getType( int i )
+{
+    return _types[i];
+}
 
 
 

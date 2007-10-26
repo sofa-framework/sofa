@@ -82,29 +82,29 @@ public:
         this->core::componentmodel::topology::Topology::parse(arg);
     }
 
-    int getNbPoints() const;
+    virtual int getNbPoints() const;
 
     // Complete sequence accessors
 
-    const SeqLines& getLines();
-    const SeqTriangles& getTriangles();
-    const SeqQuads& getQuads();
-    const SeqTetras& getTetras();
-    const SeqCubes& getCubes();
+    virtual const SeqLines& getLines();
+    virtual const SeqTriangles& getTriangles();
+    virtual const SeqQuads& getQuads();
+    virtual const SeqTetras& getTetras();
+    virtual const SeqCubes& getCubes();
 
     // Random accessors
 
-    int getNbLines();
-    int getNbTriangles();
-    int getNbQuads();
-    int getNbTetras();
-    int getNbCubes();
+    virtual int getNbLines();
+    virtual int getNbTriangles();
+    virtual int getNbQuads();
+    virtual int getNbTetras();
+    virtual int getNbCubes();
 
-    const Line& getLine(index_type i);
-    const Triangle& getTriangle(index_type i);
-    const Quad& getQuad(index_type i);
-    const Tetra& getTetra(index_type i);
-    const Cube& getCube(index_type i);
+    virtual const Line& getLine(index_type i);
+    virtual const Triangle& getTriangle(index_type i);
+    virtual const Quad& getQuad(index_type i);
+    virtual const Tetra& getTetra(index_type i);
+    virtual const Cube& getCube(index_type i);
 
     /// return true if the given cube is active, i.e. it is not empty
     virtual bool isCubeActive(int /*index*/) { return true; }

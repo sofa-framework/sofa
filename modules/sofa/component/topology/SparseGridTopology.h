@@ -82,6 +82,13 @@ public:
     void setYmax(double n) { ymax.setValue(n); }
     void setZmax(double n) { zmax.setValue(n); }
 
+    double getXmin() { return xmin.getValue(); }
+    double getYmin() { return ymin.getValue(); }
+    double getZmin() { return zmin.getValue(); }
+    double getXmax() { return xmax.getValue(); }
+    double getYmax() { return ymax.getValue(); }
+    double getZmax() { return zmax.getValue(); }
+
     bool hasPos()  const { return true; }
 
     /// return the cube containing the given point (or -1 if not found),
@@ -93,7 +100,7 @@ public:
     virtual int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz);
 
     /// return the type of the i-th cube
-    Type getType( int i ) { return _types[i];}
+    virtual Type getType( int i );
 
 protected:
 
@@ -111,9 +118,9 @@ protected:
 
     DataField< std::string > filename;  ///< Mesh used to initialize filled portion of the grid
 
-    void updateLines();
-    void updateQuads();
-    void updateCubes();
+    virtual void updateLines();
+    virtual void updateQuads();
+    virtual void updateCubes();
 
 
     RegularGridTopology _regularGrid;
@@ -167,10 +174,16 @@ protected:
     /// return true if there is an intersection between a SegmentForIntersection and a CubeForIntersection
     bool intersectionSegmentBox( const SegmentForIntersection& seg, const CubeForIntersection& cube  ); */
 
-
     bool _alreadyInit;
-    const SeqCubes& getCubes();
-    int getNbPoints() const;
+
+public :
+    virtual const SeqCubes& getCubes();
+    virtual int getNbPoints() const;
+
+    virtual int getNbCubes()
+    {
+        return getCubes().size();
+    }
 
 
 };
