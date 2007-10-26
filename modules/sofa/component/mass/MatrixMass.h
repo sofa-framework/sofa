@@ -76,7 +76,7 @@ public:
 
     MatrixMass()
         :  f_mass( dataField(&f_mass, "massMatrices", "values of the particles masses") )
-        , _lumped( dataField( &this->_lumped, false, "lumped", "") )
+        , _lumped( dataField( &_lumped, false, "lumped", "") )
         , _defaultValue( dataField(&_defaultValue, (Real)1.0,"defaultValue", "real default value") )
         ,_usingDefaultDiagonalMatrices(false)
     {
