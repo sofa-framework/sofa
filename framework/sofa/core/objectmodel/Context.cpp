@@ -381,6 +381,11 @@ void Context::copyContext(const Context& c)
     localFrame_ = c.localFrame_;
     spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
     velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
+
+    // for multiresolution
+    finestLevel_ = c.finestLevel_;
+    coarsestLevel_ = c.coarsestLevel_;
+    currentLevel_ = c.currentLevel_;
 }
 
 std::ostream& operator << (std::ostream& out, const Context& c )
