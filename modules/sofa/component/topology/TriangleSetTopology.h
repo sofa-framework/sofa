@@ -417,7 +417,7 @@ public:
 
     // Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b
     // and the triangular mesh
-    void InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb);
+    bool InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb);
 
     // Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b
     // and the triangular mesh

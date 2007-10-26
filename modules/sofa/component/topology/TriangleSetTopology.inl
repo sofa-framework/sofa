@@ -733,10 +733,12 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
 // Point b belongs to the triangle sindexed by ind_tb
 
 template<class DataTypes>
-void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb)
+bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb)
 {
 
     // HYP : a!=b and ind_ta != ind_tb
+
+    double epsilon = 0.2; // INFO : epsilon is a threshold in [0,1] to control the snapping of the extremities to the closest vertex
 
     // Access the topology
     TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -745,9 +747,6 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(const Vec
 
     TriangleSetTopologyModifier< DataTypes >* modifier  = static_cast< TriangleSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
-
-    const Triangle &ta=container->getTriangle(ind_ta);
-    const Triangle &tb=container->getTriangle(ind_tb);
 
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
     unsigned int nb_points =  vect_c.size() -1;
@@ -765,9 +764,6 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(const Vec
     std::vector< Triangle > triangles_to_create;
     std::vector< unsigned int > triangles_to_remove;
 
-    unsigned int ta_to_remove;
-    unsigned int tb_to_remove;
-
     // Initialization for INTERSECTION method
     std::vector< unsigned int > triangles_list_init;
     std::vector< unsigned int > &triangles_list = triangles_list_init;
@@ -778,43 +774,14 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(const Vec
     std::vector< double > coords_list_init;
     std::vector< double >& coords_list=coords_list_init;
 
-    // Initialization for SNAPPING method
-
-    bool is_snap_a0_init=false; bool is_snap_a1_init=false; bool is_snap_a2_init=false;
-    bool& is_snap_a0=is_snap_a0_init;
-    bool& is_snap_a1=is_snap_a1_init;
-    bool& is_snap_a2=is_snap_a2_init;
-
-    bool is_snap_b0_init=false; bool is_snap_b1_init=false; bool is_snap_b2_init=false;
-    bool& is_snap_b0=is_snap_b0_init;
-    bool& is_snap_b1=is_snap_b1_init;
-    bool& is_snap_b2=is_snap_b2_init;
-
-    double epsilon = 0.2; // INFO : epsilon is a threshold in [0,1] to control the snapping of the extremities to the closest vertex
-
-    std::vector< double > a_baryCoefs = topology->getTriangleSetGeometryAlgorithms()->computeTriangleBarycoefs((const Vec<3,double> &) a, ind_ta);
-    snapping_test_triangle(epsilon, a_baryCoefs[0], a_baryCoefs[1], a_baryCoefs[2], is_snap_a0, is_snap_a1, is_snap_a2);
-    double is_snapping_a = is_snap_a0 || is_snap_a1 || is_snap_a2;
-
-    std::vector< double > b_baryCoefs = topology->getTriangleSetGeometryAlgorithms()->computeTriangleBarycoefs((const Vec<3,double> &) b, ind_tb);
-    snapping_test_triangle(epsilon, b_baryCoefs[0], b_baryCoefs[1], b_baryCoefs[2], is_snap_b0, is_snap_b1, is_snap_b2);
-    double is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
-
-    /*
-      if(is_snapping_a){
-      std::cout << "INFO_print : is_snapping_a" <<  std::endl;
-      }
-      if(is_snapping_b){
-      std::cout << "INFO_print : is_snapping_b" <<  std::endl;
-      }
-    */
-
     bool is_intersected=false;
 
     // Call the method "computeIntersectedPointsList" to get the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
     is_intersected = topology->getTriangleSetGeometryAlgorithms()->computeIntersectedPointsList(a, b, ind_ta, ind_tb, triangles_list, indices_list, coords_list);
 
-    if(is_intersected)  // intersection successfull
+    unsigned int elem_size = triangles_list.size();
+
+    if(elem_size>0)  // intersection successfull
     {
 
         /// force the creation of TriangleEdgeShellArray
@@ -826,15 +793,27 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(const Vec
         unsigned int p1_prev=0;
         unsigned int p2_prev=0;
 
+        // Treatment of particular case for first extremity a
+
+        const Triangle &ta=container->getTriangle(ind_ta);
+        unsigned int ta_to_remove;
         unsigned int p1_a=indices_list[0][0];
         unsigned int p2_a=indices_list[0][1];
-        unsigned int p1_b=indices_list[indices_list.size()-1][0];
-        unsigned int p2_b=indices_list[indices_list.size()-1][1];
 
-        // Plan to remove triangles indexed by ind_ta and ind_tb
-        triangles_to_remove.push_back(ind_ta); triangles_to_remove.push_back(ind_tb);
+        // Plan to remove triangles indexed by ind_ta
+        triangles_to_remove.push_back(ind_ta);
 
-        // Treatment of particular case for first extremity a
+        // Initialization for SNAPPING method for point a
+
+        bool is_snap_a0_init=false; bool is_snap_a1_init=false; bool is_snap_a2_init=false;
+        bool& is_snap_a0=is_snap_a0_init;
+        bool& is_snap_a1=is_snap_a1_init;
+        bool& is_snap_a2=is_snap_a2_init;
+
+        std::vector< double > a_baryCoefs = topology->getTriangleSetGeometryAlgorithms()->computeTriangleBarycoefs((const Vec<3,double> &) a, ind_ta);
+        snapping_test_triangle(epsilon, a_baryCoefs[0], a_baryCoefs[1], a_baryCoefs[2], is_snap_a0, is_snap_a1, is_snap_a2);
+        double is_snapping_a = is_snap_a0 || is_snap_a1 || is_snap_a2;
+
 
         std::vector< unsigned int > a_first_ancestors;
         std::vector< double > a_first_baryCoefs;
@@ -1122,130 +1101,157 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(const Vec
 
         }
 
-        // Treatment of particular case for second extremity b
-        std::vector< unsigned int > b_first_ancestors;
-        std::vector< double > b_first_baryCoefs;
-
-        if(!is_snapping_b)
+        if(is_intersected)
         {
 
-            /// Register the creation of point b
 
-            b_first_ancestors.push_back(tb[0]); b_first_ancestors.push_back(tb[1]); b_first_ancestors.push_back(tb[2]);
-            p_ancestors.push_back(b_first_ancestors);
-            p_baryCoefs.push_back(b_baryCoefs);
+            // Treatment of particular case for second extremity b
 
-            acc_nb_points=acc_nb_points+1;
+            const Triangle &tb=container->getTriangle(ind_tb);
+            unsigned int tb_to_remove;
+            unsigned int p1_b=indices_list[indices_list.size()-1][0];
+            unsigned int p2_b=indices_list[indices_list.size()-1][1];
 
-            /// Register the creation of triangles incident to point b
 
-            unsigned int ind_b =  acc_nb_points; // last point registered to be created
+            // Plan to remove triangles indexed by ind_tb
+            triangles_to_remove.push_back(ind_tb);
 
-            std::vector< Triangle > b_triangles;
-            Triangle t_b01 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,(unsigned int)tb[0],(unsigned int) tb[1])); // ta[2] is ind_a
-            Triangle t_b12 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,(unsigned int)tb[1],(unsigned int) tb[2]));
-            Triangle t_b20 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,(unsigned int)tb[2],(unsigned int) tb[0]));
-            triangles_to_create.push_back(t_b01); triangles_to_create.push_back(t_b12); triangles_to_create.push_back(t_b20);
+            // Initialization for SNAPPING method for point b
 
-            acc_nb_triangles=acc_nb_triangles+3;
+            bool is_snap_b0_init=false; bool is_snap_b1_init=false; bool is_snap_b2_init=false;
+            bool& is_snap_b0=is_snap_b0_init;
+            bool& is_snap_b1=is_snap_b1_init;
+            bool& is_snap_b2=is_snap_b2_init;
 
-            /// Register the removal of triangles incident to point b
+            std::vector< double > b_baryCoefs = topology->getTriangleSetGeometryAlgorithms()->computeTriangleBarycoefs((const Vec<3,double> &) b, ind_tb);
+            snapping_test_triangle(epsilon, b_baryCoefs[0], b_baryCoefs[1], b_baryCoefs[2], is_snap_b0, is_snap_b1, is_snap_b2);
+            double is_snapping_b = is_snap_b0 || is_snap_b1 || is_snap_b2;
 
-            if(tb[0]!=p1_b && tb[0]!=p2_b)
+            std::vector< unsigned int > b_first_ancestors;
+            std::vector< double > b_first_baryCoefs;
+
+            if(!is_snapping_b)
             {
-                tb_to_remove=acc_nb_triangles-1;
-            }
-            else
-            {
-                if(tb[1]!=p1_b && tb[1]!=p2_b)
+
+                /// Register the creation of point b
+
+                b_first_ancestors.push_back(tb[0]); b_first_ancestors.push_back(tb[1]); b_first_ancestors.push_back(tb[2]);
+                p_ancestors.push_back(b_first_ancestors);
+                p_baryCoefs.push_back(b_baryCoefs);
+
+                acc_nb_points=acc_nb_points+1;
+
+                /// Register the creation of triangles incident to point b
+
+                unsigned int ind_b =  acc_nb_points; // last point registered to be created
+
+                std::vector< Triangle > b_triangles;
+                Triangle t_b01 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,(unsigned int)tb[0],(unsigned int) tb[1])); // ta[2] is ind_a
+                Triangle t_b12 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,(unsigned int)tb[1],(unsigned int) tb[2]));
+                Triangle t_b20 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_b,(unsigned int)tb[2],(unsigned int) tb[0]));
+                triangles_to_create.push_back(t_b01); triangles_to_create.push_back(t_b12); triangles_to_create.push_back(t_b20);
+
+                acc_nb_triangles=acc_nb_triangles+3;
+
+                /// Register the removal of triangles incident to point b
+
+                if(tb[0]!=p1_b && tb[0]!=p2_b)
                 {
-                    tb_to_remove=acc_nb_triangles;
+                    tb_to_remove=acc_nb_triangles-1;
                 }
-                else   // (tb[2]!=p1_b && tb[2]!=p2_b)
+                else
                 {
-                    tb_to_remove=acc_nb_triangles-2;
+                    if(tb[1]!=p1_b && tb[1]!=p2_b)
+                    {
+                        tb_to_remove=acc_nb_triangles;
+                    }
+                    else   // (tb[2]!=p1_b && tb[2]!=p2_b)
+                    {
+                        tb_to_remove=acc_nb_triangles-2;
+                    }
                 }
-            }
-            triangles_to_remove.push_back(tb_to_remove);
+                triangles_to_remove.push_back(tb_to_remove);
 
-            Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 2,(unsigned int) p1_b,(unsigned int)ind_b));
-            Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int)ind_b,(unsigned int) p2_b));
-            triangles_to_create.push_back(t_pb1); triangles_to_create.push_back(t_pb2);
-
-            acc_nb_triangles=acc_nb_triangles+2;
-
-        }
-        else   // snapping b to the vertex indexed by ind_b, which is the closest to point b
-        {
-
-            // localize the closest vertex
-            unsigned int ind_b;
-            unsigned int p0_b;
-
-            if(tb[0]!=p1_b && tb[0]!=p2_b)
-            {
-                p0_b=tb[0];
-            }
-            else
-            {
-                if(tb[1]!=p1_b && tb[1]!=p2_b)
-                {
-                    p0_b=tb[1];
-                }
-                else  // tb[2]!=p1_b && tb[2]!=p2_b
-                {
-                    p0_b=tb[2];
-                }
-            }
-
-            if(is_snap_b0)  // is_snap_b1 == false and is_snap_b2 == false
-            {
-                /// VERTEX 0
-                ind_b=tb[0];
-            }
-            else
-            {
-                if(is_snap_b1)  // is_snap_b0 == false and is_snap_b2 == false
-                {
-                    /// VERTEX 1
-                    ind_b=tb[1];
-                }
-                else   // is_snap_b2 == true and (is_snap_b0 == false and is_snap_b1 == false)
-                {
-                    /// VERTEX 2
-                    ind_b=tb[2];
-                }
-            }
-
-            /// Register the creation of triangles incident to point indexed by ind_b
-
-            if(ind_b==p1_b)
-            {
-                Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points,(unsigned int) p1_b,(unsigned int) p0_b));
-                Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points,(unsigned int) p0_b, (unsigned int) p2_b));
+                Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 2,(unsigned int) p1_b,(unsigned int)ind_b));
+                Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int)ind_b,(unsigned int) p2_b));
                 triangles_to_create.push_back(t_pb1); triangles_to_create.push_back(t_pb2);
 
+                acc_nb_triangles=acc_nb_triangles+2;
+
             }
-            else
+            else   // snapping b to the vertex indexed by ind_b, which is the closest to point b
             {
 
-                if(ind_b==p2_b)
+                // localize the closest vertex
+                unsigned int ind_b;
+                unsigned int p0_b;
+
+                if(tb[0]!=p1_b && tb[0]!=p2_b)
                 {
-                    Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int) p1_b,(unsigned int) p0_b));
-                    Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int) p0_b, (unsigned int) p2_b));
+                    p0_b=tb[0];
+                }
+                else
+                {
+                    if(tb[1]!=p1_b && tb[1]!=p2_b)
+                    {
+                        p0_b=tb[1];
+                    }
+                    else  // tb[2]!=p1_b && tb[2]!=p2_b
+                    {
+                        p0_b=tb[2];
+                    }
+                }
+
+                if(is_snap_b0)  // is_snap_b1 == false and is_snap_b2 == false
+                {
+                    /// VERTEX 0
+                    ind_b=tb[0];
+                }
+                else
+                {
+                    if(is_snap_b1)  // is_snap_b0 == false and is_snap_b2 == false
+                    {
+                        /// VERTEX 1
+                        ind_b=tb[1];
+                    }
+                    else   // is_snap_b2 == true and (is_snap_b0 == false and is_snap_b1 == false)
+                    {
+                        /// VERTEX 2
+                        ind_b=tb[2];
+                    }
+                }
+
+                /// Register the creation of triangles incident to point indexed by ind_b
+
+                if(ind_b==p1_b)
+                {
+                    Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points,(unsigned int) p1_b,(unsigned int) p0_b));
+                    Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points,(unsigned int) p0_b, (unsigned int) p2_b));
                     triangles_to_create.push_back(t_pb1); triangles_to_create.push_back(t_pb2);
 
                 }
                 else
                 {
 
-                    Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int) p1_b,(unsigned int) ind_b));
-                    Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points,(unsigned int) ind_b, (unsigned int)p2_b));
-                    triangles_to_create.push_back(t_pb1); triangles_to_create.push_back(t_pb2);
+                    if(ind_b==p2_b)
+                    {
+                        Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int) p1_b,(unsigned int) p0_b));
+                        Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int) p0_b, (unsigned int) p2_b));
+                        triangles_to_create.push_back(t_pb1); triangles_to_create.push_back(t_pb2);
+
+                    }
+                    else
+                    {
+
+                        Triangle t_pb1 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points - 1,(unsigned int) p1_b,(unsigned int) ind_b));
+                        Triangle t_pb2 = Triangle(helper::make_array<unsigned int>((unsigned int) acc_nb_points,(unsigned int) ind_b, (unsigned int)p2_b));
+                        triangles_to_create.push_back(t_pb1); triangles_to_create.push_back(t_pb2);
+                    }
                 }
+
+                acc_nb_triangles+=2;
             }
 
-            acc_nb_triangles+=2;
         }
 
         // Create all the points registered to be created
@@ -1266,6 +1272,8 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(const Vec
         // Propagate the topological changes *** QUESTION : is it necessary ???
         topology->propagateTopologicalChanges();
     }
+
+    return is_intersected && (elem_size>0);
 }
 
 // Removes triangles along the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
