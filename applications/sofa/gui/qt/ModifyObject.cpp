@@ -2112,28 +2112,31 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
         {
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
-            vectorTable = new Q3Table(ff->getValue().size(),16, box);
+            vectorTable = new Q3Table(ff->getValue().size(),20, box);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1"));
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2"));
-            vectorTable->horizontalHeader()->setLabel(2,QString("KsTx : Stiffness"));
-            vectorTable->horizontalHeader()->setLabel(3,QString("KsTy : Stiffness"));
-            vectorTable->horizontalHeader()->setLabel(4,QString("KsTz : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(2,QString("is free Tx"));
+            vectorTable->horizontalHeader()->setLabel(3,QString("is free Ty"));
+            vectorTable->horizontalHeader()->setLabel(4,QString("is free Tz"));
+            vectorTable->horizontalHeader()->setLabel(5,QString("is free Rx"));
+            vectorTable->horizontalHeader()->setLabel(6,QString("is free Ry"));
+            vectorTable->horizontalHeader()->setLabel(7,QString("is free Rz"));
+            vectorTable->horizontalHeader()->setLabel(8,QString("soft stiffness Trans"));
+            vectorTable->horizontalHeader()->setLabel(9,QString("hard stiffness Trans"));
+            vectorTable->horizontalHeader()->setLabel(10,QString("soft stiffness Rot"));
+            vectorTable->horizontalHeader()->setLabel(11,QString("hard stiffness Rot"));
 
-            vectorTable->horizontalHeader()->setLabel(5,QString("KsRx : Stiffness"));
-            vectorTable->horizontalHeader()->setLabel(6,QString("KsRy : Stiffness"));
-            vectorTable->horizontalHeader()->setLabel(7,QString("KsRz : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(12,QString("Kd : damping"));
 
-            vectorTable->horizontalHeader()->setLabel(8,QString("Kd : damping"));
+            vectorTable->horizontalHeader()->setLabel(13,QString("Rest Length Pos X"));
+            vectorTable->horizontalHeader()->setLabel(14,QString("Rest Length Pos Y"));
+            vectorTable->horizontalHeader()->setLabel(15,QString("Rest Length Pos Z"));
 
-            vectorTable->horizontalHeader()->setLabel(9,QString("Rest Length Pos X"));
-            vectorTable->horizontalHeader()->setLabel(10,QString("Rest Length Pos Y"));
-            vectorTable->horizontalHeader()->setLabel(11,QString("Rest Length Pos Z"));
-
-            vectorTable->horizontalHeader()->setLabel(12,QString("Rest Length Quat X"));
-            vectorTable->horizontalHeader()->setLabel(13,QString("Rest Length Quat Y"));
-            vectorTable->horizontalHeader()->setLabel(14,QString("Rest Length Quat Z"));
-            vectorTable->horizontalHeader()->setLabel(15,QString("Rest Length Quat W"));
+            vectorTable->horizontalHeader()->setLabel(16,QString("Rest Length Quat X"));
+            vectorTable->horizontalHeader()->setLabel(17,QString("Rest Length Quat Y"));
+            vectorTable->horizontalHeader()->setLabel(18,QString("Rest Length Quat Z"));
+            vectorTable->horizontalHeader()->setLabel(19,QString("Rest Length Quat W"));
 
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
@@ -2142,23 +2145,27 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
-            std::ostringstream oss[16];
-            oss[0]  << value[i].m1;           vectorTable->setText(i ,0 ,std::string(oss[0] .str()).c_str());
-            oss[1]  << value[i].m2;           vectorTable->setText(i ,1 ,std::string(oss[1] .str()).c_str());
-            oss[2]  << value[i].kst[0];       vectorTable->setText(i ,2 ,std::string(oss[2] .str()).c_str());
-            oss[3]  << value[i].kst[1];       vectorTable->setText(i ,3 ,std::string(oss[3] .str()).c_str());
-            oss[4]  << value[i].kst[2];       vectorTable->setText(i ,4 ,std::string(oss[4] .str()).c_str());
-            oss[5]  << value[i].ksr[0];       vectorTable->setText(i ,5 ,std::string(oss[5] .str()).c_str());
-            oss[6]  << value[i].ksr[1];       vectorTable->setText(i ,6 ,std::string(oss[6] .str()).c_str());
-            oss[7]  << value[i].ksr[2];       vectorTable->setText(i ,7 ,std::string(oss[7] .str()).c_str());
-            oss[8]  << value[i].kd;           vectorTable->setText(i ,8 ,std::string(oss[8] .str()).c_str());
-            oss[9]  << value[i].initTrans[0]; vectorTable->setText(i ,9 ,std::string(oss[9] .str()).c_str());
-            oss[10] << value[i].initTrans[1]; vectorTable->setText(i,10 ,std::string(oss[10].str()).c_str());
-            oss[11] << value[i].initTrans[2]; vectorTable->setText(i,11 ,std::string(oss[11].str()).c_str());
-            oss[12] << value[i].initRot[0];   vectorTable->setText(i,12 ,std::string(oss[12].str()).c_str());
-            oss[13] << value[i].initRot[1];   vectorTable->setText(i,13 ,std::string(oss[13].str()).c_str());
-            oss[14] << value[i].initRot[2];   vectorTable->setText(i,14 ,std::string(oss[14].str()).c_str());
-            oss[15] << value[i].initRot[3];   vectorTable->setText(i,15 ,std::string(oss[15].str()).c_str());
+            std::ostringstream oss[20];
+            oss[0]  << value[i].m1;						vectorTable->setText(i ,0 ,std::string(oss[0] .str()).c_str());
+            oss[1]  << value[i].m2;						vectorTable->setText(i ,1 ,std::string(oss[1] .str()).c_str());
+            oss[2]  << value[i].freeMovements[0];       vectorTable->setText(i ,2 ,std::string(oss[2] .str()).c_str());
+            oss[3]  << value[i].freeMovements[1];       vectorTable->setText(i ,3 ,std::string(oss[3] .str()).c_str());
+            oss[4]  << value[i].freeMovements[2];       vectorTable->setText(i ,4 ,std::string(oss[4] .str()).c_str());
+            oss[5]  << value[i].freeMovements[3];       vectorTable->setText(i ,5 ,std::string(oss[5] .str()).c_str());
+            oss[6]  << value[i].freeMovements[4];       vectorTable->setText(i ,6 ,std::string(oss[6] .str()).c_str());
+            oss[7]  << value[i].freeMovements[5];       vectorTable->setText(i ,7 ,std::string(oss[7] .str()).c_str());
+            oss[8]  << value[i].softStiffnessTrans;     vectorTable->setText(i ,8 ,std::string(oss[8] .str()).c_str());
+            oss[9]  << value[i].hardStiffnessTrans;     vectorTable->setText(i ,9 ,std::string(oss[9] .str()).c_str());
+            oss[10]  << value[i].softStiffnessRot;      vectorTable->setText(i ,10 ,std::string(oss[10] .str()).c_str());
+            oss[11]  << value[i].hardStiffnessRot;      vectorTable->setText(i ,11 ,std::string(oss[11] .str()).c_str());
+            oss[12]  << value[i].kd;					vectorTable->setText(i ,12 ,std::string(oss[12] .str()).c_str());
+            oss[13]  << value[i].initTrans[0];			vectorTable->setText(i ,13 ,std::string(oss[13] .str()).c_str());
+            oss[14] << value[i].initTrans[1];			vectorTable->setText(i,14 ,std::string(oss[14].str()).c_str());
+            oss[15] << value[i].initTrans[2]; 			vectorTable->setText(i,15 ,std::string(oss[15].str()).c_str());
+            oss[16] << value[i].initRot[0];   			vectorTable->setText(i,16 ,std::string(oss[16].str()).c_str());
+            oss[17] << value[i].initRot[1];   			vectorTable->setText(i,17 ,std::string(oss[17].str()).c_str());
+            oss[18] << value[i].initRot[2];   			vectorTable->setText(i,18 ,std::string(oss[18].str()).c_str());
+            oss[19] << value[i].initRot[3];   			vectorTable->setText(i,19 ,std::string(oss[19].str()).c_str());
         }
         return true;
     }
@@ -2171,28 +2178,31 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
         {
             if (ff->getValue().size() == 0)  return false;
             box->setColumns(1);
-            vectorTable = new Q3Table(ff->getValue().size(),16, box);
+            vectorTable = new Q3Table(ff->getValue().size(),20, box);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("Index 1"));
             vectorTable->horizontalHeader()->setLabel(1,QString("Index 2"));
-            vectorTable->horizontalHeader()->setLabel(2,QString("KsTx : Stiffness"));
-            vectorTable->horizontalHeader()->setLabel(3,QString("KsTy : Stiffness"));
-            vectorTable->horizontalHeader()->setLabel(4,QString("KsTz : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(2,QString("is free Tx"));
+            vectorTable->horizontalHeader()->setLabel(3,QString("is free Ty"));
+            vectorTable->horizontalHeader()->setLabel(4,QString("is free Tz"));
+            vectorTable->horizontalHeader()->setLabel(5,QString("is free Rx"));
+            vectorTable->horizontalHeader()->setLabel(6,QString("is free Ry"));
+            vectorTable->horizontalHeader()->setLabel(7,QString("is free Rz"));
+            vectorTable->horizontalHeader()->setLabel(8,QString("soft stiffness Trans"));
+            vectorTable->horizontalHeader()->setLabel(9,QString("hard stiffness Trans"));
+            vectorTable->horizontalHeader()->setLabel(10,QString("soft stiffness Rot"));
+            vectorTable->horizontalHeader()->setLabel(11,QString("hard stiffness Rot"));
 
-            vectorTable->horizontalHeader()->setLabel(5,QString("KsRx : Stiffness"));
-            vectorTable->horizontalHeader()->setLabel(6,QString("KsRy : Stiffness"));
-            vectorTable->horizontalHeader()->setLabel(7,QString("KsRz : Stiffness"));
+            vectorTable->horizontalHeader()->setLabel(12,QString("Kd : damping"));
 
-            vectorTable->horizontalHeader()->setLabel(8,QString("Kd : damping"));
+            vectorTable->horizontalHeader()->setLabel(13,QString("Rest Length Pos X"));
+            vectorTable->horizontalHeader()->setLabel(14,QString("Rest Length Pos Y"));
+            vectorTable->horizontalHeader()->setLabel(15,QString("Rest Length Pos Z"));
 
-            vectorTable->horizontalHeader()->setLabel(9,QString("Rest Length Pos X"));
-            vectorTable->horizontalHeader()->setLabel(10,QString("Rest Length Pos Y"));
-            vectorTable->horizontalHeader()->setLabel(11,QString("Rest Length Pos Z"));
-
-            vectorTable->horizontalHeader()->setLabel(12,QString("Rest Length Quat X"));
-            vectorTable->horizontalHeader()->setLabel(13,QString("Rest Length Quat Y"));
-            vectorTable->horizontalHeader()->setLabel(14,QString("Rest Length Quat Z"));
-            vectorTable->horizontalHeader()->setLabel(15,QString("Rest Length Quat W"));
+            vectorTable->horizontalHeader()->setLabel(16,QString("Rest Length Quat X"));
+            vectorTable->horizontalHeader()->setLabel(17,QString("Rest Length Quat Y"));
+            vectorTable->horizontalHeader()->setLabel(18,QString("Rest Length Quat Z"));
+            vectorTable->horizontalHeader()->setLabel(19,QString("Rest Length Quat W"));
 
             connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
         }
@@ -2201,23 +2211,27 @@ bool ModifyObject::createTable( FieldBase* field,Q3GroupBox *box, Q3Table* vecto
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
-            std::ostringstream oss[16];
-            oss[0]  << value[i].m1;           vectorTable->setText(i ,0 ,std::string(oss[0] .str()).c_str());
-            oss[1]  << value[i].m2;           vectorTable->setText(i ,1 ,std::string(oss[1] .str()).c_str());
-            oss[2]  << value[i].kst[0];       vectorTable->setText(i ,2 ,std::string(oss[2] .str()).c_str());
-            oss[3]  << value[i].kst[1];       vectorTable->setText(i ,3 ,std::string(oss[3] .str()).c_str());
-            oss[4]  << value[i].kst[2];       vectorTable->setText(i ,4 ,std::string(oss[4] .str()).c_str());
-            oss[5]  << value[i].ksr[0];       vectorTable->setText(i ,5 ,std::string(oss[5] .str()).c_str());
-            oss[6]  << value[i].ksr[1];       vectorTable->setText(i ,6 ,std::string(oss[6] .str()).c_str());
-            oss[7]  << value[i].ksr[2];       vectorTable->setText(i ,7 ,std::string(oss[7] .str()).c_str());
-            oss[8]  << value[i].kd;           vectorTable->setText(i ,8 ,std::string(oss[8] .str()).c_str());
-            oss[9]  << value[i].initTrans[0]; vectorTable->setText(i ,9 ,std::string(oss[9] .str()).c_str());
-            oss[10] << value[i].initTrans[1]; vectorTable->setText(i,10 ,std::string(oss[10].str()).c_str());
-            oss[11] << value[i].initTrans[2]; vectorTable->setText(i,11 ,std::string(oss[11].str()).c_str());
-            oss[12] << value[i].initRot[0];   vectorTable->setText(i,12 ,std::string(oss[12].str()).c_str());
-            oss[13] << value[i].initRot[1];   vectorTable->setText(i,13 ,std::string(oss[13].str()).c_str());
-            oss[14] << value[i].initRot[2];   vectorTable->setText(i,14 ,std::string(oss[14].str()).c_str());
-            oss[15] << value[i].initRot[3];   vectorTable->setText(i,15 ,std::string(oss[15].str()).c_str());
+            std::ostringstream oss[20];
+            oss[0]  << value[i].m1;						vectorTable->setText(i ,0 ,std::string(oss[0] .str()).c_str());
+            oss[1]  << value[i].m2;						vectorTable->setText(i ,1 ,std::string(oss[1] .str()).c_str());
+            oss[2]  << value[i].freeMovements[0];       vectorTable->setText(i ,2 ,std::string(oss[2] .str()).c_str());
+            oss[3]  << value[i].freeMovements[1];       vectorTable->setText(i ,3 ,std::string(oss[3] .str()).c_str());
+            oss[4]  << value[i].freeMovements[2];       vectorTable->setText(i ,4 ,std::string(oss[4] .str()).c_str());
+            oss[5]  << value[i].freeMovements[3];       vectorTable->setText(i ,5 ,std::string(oss[5] .str()).c_str());
+            oss[6]  << value[i].freeMovements[4];       vectorTable->setText(i ,6 ,std::string(oss[6] .str()).c_str());
+            oss[7]  << value[i].freeMovements[5];       vectorTable->setText(i ,7 ,std::string(oss[7] .str()).c_str());
+            oss[8]  << value[i].softStiffnessTrans;     vectorTable->setText(i ,8 ,std::string(oss[8] .str()).c_str());
+            oss[9]  << value[i].hardStiffnessTrans;     vectorTable->setText(i ,9 ,std::string(oss[9] .str()).c_str());
+            oss[10]  << value[i].softStiffnessRot;      vectorTable->setText(i ,10 ,std::string(oss[10] .str()).c_str());
+            oss[11]  << value[i].hardStiffnessRot;      vectorTable->setText(i ,11 ,std::string(oss[11] .str()).c_str());
+            oss[12]  << value[i].kd;					vectorTable->setText(i ,12 ,std::string(oss[12] .str()).c_str());
+            oss[13]  << value[i].initTrans[0];			vectorTable->setText(i ,13 ,std::string(oss[13] .str()).c_str());
+            oss[14] << value[i].initTrans[1];			vectorTable->setText(i,14 ,std::string(oss[14].str()).c_str());
+            oss[15] << value[i].initTrans[2]; 			vectorTable->setText(i,15 ,std::string(oss[15].str()).c_str());
+            oss[16] << value[i].initRot[0];   			vectorTable->setText(i,16 ,std::string(oss[16].str()).c_str());
+            oss[17] << value[i].initRot[1];   			vectorTable->setText(i,17 ,std::string(oss[17].str()).c_str());
+            oss[18] << value[i].initRot[2];   			vectorTable->setText(i,18 ,std::string(oss[18].str()).c_str());
+            oss[19] << value[i].initRot[3];   			vectorTable->setText(i,19 ,std::string(oss[19].str()).c_str());
         }
         return true;
     }
@@ -2590,33 +2604,37 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
-            double values[16];
+            double values[20];
             sofa::component::forcefield::JointSpringForceField< Rigid3dTypes >::Spring current_spring;
-            for (int j=0; j<16; j++)
+            for (int j=0; j<20; j++)
             {
                 values[j] = atof(table->text(i,j));
             }
             current_spring.m1 = (int) values[0];
             current_spring.m2 = (int)values[1];
 
-            current_spring.kst[0]       = values[2];
-            current_spring.kst[1]       = values[3];
-            current_spring.kst[2]       = values[4];
+            current_spring.freeMovements[0]       = values[2];
+            current_spring.freeMovements[1]       = values[3];
+            current_spring.freeMovements[2]       = values[4];
+            current_spring.freeMovements[3]       = values[5];
+            current_spring.freeMovements[4]       = values[6];
+            current_spring.freeMovements[5]       = values[7];
 
-            current_spring.ksr[0]       = values[5];
-            current_spring.ksr[1]       = values[6];
-            current_spring.ksr[2]       = values[7];
+            current_spring.softStiffnessTrans     = values[8];
+            current_spring.hardStiffnessTrans     = values[9];
+            current_spring.softStiffnessRot       = values[10];
+            current_spring.hardStiffnessRot       = values[11];
 
-            current_spring.kd           = values[8];
+            current_spring.kd           = values[12];
 
-            current_spring.initTrans[0] = values[9];
-            current_spring.initTrans[1] = values[10];
-            current_spring.initTrans[2] = values[11];
+            current_spring.initTrans[0] = values[13];
+            current_spring.initTrans[1] = values[14];
+            current_spring.initTrans[2] = values[15];
 
-            current_spring.initRot[0]   = values[12];
-            current_spring.initRot[1]   = values[13];
-            current_spring.initRot[2]   = values[14];
-            current_spring.initRot[3]   = values[15];
+            current_spring.initRot[0]   = values[16];
+            current_spring.initRot[1]   = values[17];
+            current_spring.initRot[2]   = values[18];
+            current_spring.initRot[3]   = values[19];
             new_value.push_back(current_spring);
         }
         ff->setValue( new_value );
@@ -2628,33 +2646,37 @@ void ModifyObject::storeTable(Q3Table* table, FieldBase* field)
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
         {
-            float values[16];
+            float values[20];
             sofa::component::forcefield::JointSpringForceField< Rigid3fTypes >::Spring current_spring;
-            for (int j=0; j<16; j++)
+            for (int j=0; j<20; j++)
             {
                 values[j] = atof(table->text(i,j));
             }
             current_spring.m1 = (int) values[0];
             current_spring.m2 = (int)values[1];
 
-            current_spring.kst[0]       = values[2];
-            current_spring.kst[1]       = values[3];
-            current_spring.kst[2]       = values[4];
+            current_spring.freeMovements[0]       = values[2];
+            current_spring.freeMovements[1]       = values[3];
+            current_spring.freeMovements[2]       = values[4];
+            current_spring.freeMovements[3]       = values[5];
+            current_spring.freeMovements[4]       = values[6];
+            current_spring.freeMovements[5]       = values[7];
 
-            current_spring.ksr[0]       = values[5];
-            current_spring.ksr[1]       = values[6];
-            current_spring.ksr[2]       = values[7];
+            current_spring.softStiffnessTrans     = values[8];
+            current_spring.hardStiffnessTrans     = values[9];
+            current_spring.softStiffnessRot       = values[10];
+            current_spring.hardStiffnessRot       = values[11];
 
-            current_spring.kd           = values[8];
+            current_spring.kd           = values[12];
 
-            current_spring.initTrans[0] = values[9];
-            current_spring.initTrans[1] = values[10];
-            current_spring.initTrans[2] = values[11];
+            current_spring.initTrans[0] = values[13];
+            current_spring.initTrans[1] = values[14];
+            current_spring.initTrans[2] = values[15];
 
-            current_spring.initRot[0]   = values[12];
-            current_spring.initRot[1]   = values[13];
-            current_spring.initRot[2]   = values[14];
-            current_spring.initRot[3]   = values[15];
+            current_spring.initRot[0]   = values[16];
+            current_spring.initRot[1]   = values[17];
+            current_spring.initRot[2]   = values[18];
+            current_spring.initRot[3]   = values[19];
             new_value.push_back(current_spring);
         }
         ff->setValue( new_value );

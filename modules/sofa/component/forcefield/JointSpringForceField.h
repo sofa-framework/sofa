@@ -73,57 +73,60 @@ public:
     class Spring
     {
     public:
-        int  m1, m2;		// the two extremities of the spring: masses m1 and m2
-        Vec  kst;			// spring stiffness translation on each axe
-        Vec  ksr;			// spring stiffness rotation on each axe
-        Real kd;			// damping factor
-        Vec  initTrans;	// rest length of the spring
-        Quat initRot;	// rest orientation of the spring
-        Quat lawfulTorsion; //general (lawful) torsion of the springs (used to fix a bug with large rotations)
-        Quat extraTorsion;  //extra (illicit) torsion of the springs (used to fix a bug with large rotations)
+        int  m1, m2;			/// the two extremities of the spring: masses m1 and m2
+        Real kd;				/// damping factor
+        Vec  initTrans;		/// rest length of the spring
+        Quat initRot;			/// rest orientation of the spring
+        Quat lawfulTorsion;	/// general (lawful) torsion of the springs (used to fix a bug with large rotations)
+        Quat extraTorsion;	/// extra (illicit) torsion of the springs (used to fix a bug with large rotations)
 
-        Spring(int m1=0, int m2=0, Vec ks=Vec(), Real _kd=0.0)
-            : m1(m1), m2(m2), kd(_kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
+        sofa::defaulttype::Vec<6,bool> freeMovements;	///defines the axis where the movements is free. (0,1,2)--> translation axis (3,4,5)-->rotation axis
+        Real softStiffnessTrans;	///stiffness to apply on axis where the translations are free (default 0.0)
+        Real hardStiffnessTrans;	///stiffness to apply on axis where the translations are forbidden (default 10000.0)
+        Real softStiffnessRot;	///stiffness to apply on axis where the rotations are free (default 0.0)
+        Real hardStiffnessRot;	///stiffness to apply on axis where the rotations are forbidden (default 10000.0)
+
+        Spring()
+            : m1(0), m2(0), kd(0), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
+            , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000)
         {
-            kst = ksr = ks;
         }
 
-        Spring(int m1, int m2, Vec _kst, Vec _ksr, Real kd)
-            : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
+        Spring(int m1, int m2, sofa::defaulttype::Vec<6,bool> freeAxis, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real kd)
+            : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1), freeMovements(freeAxis)
+            , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr)
         {
-            kst = _kst;
-            ksr = _ksr;
         }
 
-        Spring(int m1, int m2, Real kstx, Real ksty, Real kstz, Real ksrx, Real ksry, Real ksrz, Real kd)
-            : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
+        Spring(int m1, int m2, bool isFreeTx, bool isFreeTy, bool isFreeTz, bool isFreeRx, bool isFreeRy, bool isFreeRz, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real kd)
+            : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1), freeMovements(isFreeTx, isFreeTy, isFreeTz, isFreeRx, isFreeRy, isFreeRz)
+            , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr)
         {
-            kst = Vec(kstx,ksty,kstz);
-            ksr = Vec(ksrx,ksry,ksrz);
         }
 
-        Vec getRotationStiffnesses() {return ksr;}
+        Real getHardStiffnessRotation() {return hardStiffnessRot;}
+        Real getSoftStiffnessRotation() {return softStiffnessRot;}
 
-        void setRotationStiffnesses(Real ksrx, Real ksry, Real ksrz)
+        void setHardStiffnessRotation(Real ksr) {	  hardStiffnessRot = ksr;  }
+        void setSoftStiffnessRotation(Real ksr) {	  softStiffnessRot = ksr;  }
+
+        void setFreeMovements(bool isFreeTx, bool isFreeTy, bool isFreeTz, bool isFreeRx, bool isFreeRy, bool isFreeRz)
         {
-            ksr = Vec(ksrx,ksry,ksrz);
+            freeMovements = sofa::defaulttype::Vec<6,bool>(isFreeTx, isFreeTy, isFreeTz, isFreeRx, isFreeRy, isFreeRz);
         }
 
-        void setDamping(Real _kd)
-        {
-            kd = _kd;
-        }
+        void setDamping(Real _kd) {  kd = _kd;	  }
 
 
         inline friend std::istream& operator >> ( std::istream& in, Spring& s )
         {
-            in>>s.m1>>s.m2>>s.kst>>s.ksr>>s.kd>>s.initTrans>>s.initRot;
+            in>>s.m1>>s.m2>>s.freeMovements>>s.softStiffnessTrans>>s.hardStiffnessTrans>>s.softStiffnessRot>>s.hardStiffnessRot>>s.kd>>s.initTrans>>s.initRot;
             return in;
         }
 
         inline friend std::ostream& operator << ( std::ostream& out, const Spring& s )
         {
-            out<<s.m1<<" "<<s.m2<<" "<<s.kst<<" "<<s.ksr<<" "<<s.kd<<" "<<s.initTrans<<" "<<s.initRot;
+            out<<s.m1<<" "<<s.m2<<" "<<s.freeMovements<<" "<<s.softStiffnessTrans<<" "<<s.hardStiffnessTrans<<" "<<s.softStiffnessRot<<" "<<s.hardStiffnessRot<<" "<<s.kd<<" "<<s.initTrans<<" "<<s.initRot;
             return out;
         }
 
@@ -145,6 +148,7 @@ protected:
     ///bool to allow the display of the 2 parts of springs torsions
     DataField<bool> showLawfulTorsion;
     DataField<bool> showExtraTorsion;
+
 
     JointSpringForceFieldInternalData<DataTypes> data;
 
@@ -191,9 +195,9 @@ public:
         this->springs.endEdit();
     }
 
-    void addSpring(int m1, int m2, Vec ks, Real kd, Vec initLentghs, Vec initAngles)
+    void addSpring(int m1, int m2, sofa::defaulttype::Vec<6,bool> freeAxis, Real softKs, Real hardKs, Real kd, Vec initLentghs, Vec initAngles)
     {
-        Spring s(m1,m2,ks,kd);
+        Spring s(m1,m2,freeAxis, softKs, hardKs, softKs, hardKs, kd);
         s.initTrans = initLentghs;
         s.initRot = Quat::createFromRotationVector(initAngles);
 
@@ -201,9 +205,9 @@ public:
         springs.endEdit();
     }
 
-    void addSpring(int m1, int m2, Vec kst, Vec ksr, Real kd, Vec initLentghs, Vec initAngles)
+    void addSpring(int m1, int m2, sofa::defaulttype::Vec<6,bool> freeAxis, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real kd, Vec initLentghs, Vec initAngles)
     {
-        Spring s(m1,m2,kst, ksr, kd);
+        Spring s(m1,m2,freeAxis, softKst, hardKst, softKsr, hardKsr, kd);
         s.initTrans = initLentghs;
         s.initRot = Quat::createFromRotationVector(initAngles);
 
