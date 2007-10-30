@@ -24,6 +24,7 @@
 *******************************************************************************/
 #if defined (WIN32)
 # include <windows.h>
+# include <GL/gl.h>
 #elif defined (__linux__)
 # include <X11/Xlib.h>
 # include <X11/Xutil.h>
