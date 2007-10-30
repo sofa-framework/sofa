@@ -40,7 +40,11 @@
 #ifdef _WIN32
 #include <windows.h>
 #endif
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #include <iostream>
 using std::cerr;
 using std::endl;

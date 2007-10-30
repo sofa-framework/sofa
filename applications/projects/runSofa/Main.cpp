@@ -7,7 +7,11 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
 
+#if defined (__APPLE__)
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>
+#endif
 
 #ifndef WIN32
 #include <dlfcn.h>
@@ -81,7 +85,7 @@ int main(int argc, char** argv)
 
     if (fileName.empty())
     {
-        fileName = "liver.scn";
+        fileName = "demoLiverFEM.scn";
         sofa::helper::system::DataRepository.findFile(fileName);
     }
 

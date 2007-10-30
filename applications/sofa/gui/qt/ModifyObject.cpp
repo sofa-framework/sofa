@@ -49,6 +49,7 @@
 
 #include <sofa/component/forcefield/JointSpringForceField.h>
 #include <sofa/component/topology/PointSubset.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 
@@ -1184,7 +1185,7 @@ void ModifyObject::updateValues()
             }
             ++i;
         }
-        if (BaseObject *obj = dynamic_cast< BaseObject* >(node))
+        if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
             obj->reinit();
     }
 

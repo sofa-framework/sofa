@@ -24,9 +24,13 @@
 *******************************************************************************/
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <GL/gl.h>
 #include <algorithm>
 #include <math.h>
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
 
 namespace sofa

@@ -28,7 +28,11 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/Visitor.h>
 #include <sofa/core/VisualModel.h>
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #include <iostream>
 
 #ifdef _WIN32

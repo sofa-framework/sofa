@@ -29,7 +29,11 @@
 #include <sofa/component/forcefield/WashingMachineForceField.h>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #include <iostream>
 using std::cerr;
 using std::endl;

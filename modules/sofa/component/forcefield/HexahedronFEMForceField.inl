@@ -32,8 +32,11 @@
 #include <assert.h>
 #include <iostream>
 #include <set>
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
-
+#endif
 
 using std::cerr;
 using std::endl;
@@ -250,7 +253,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 template <class DataTypes>
 double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 {
-    cerr<<"HexahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<endl;
+    std::cerr<<"HexahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;
 }
 

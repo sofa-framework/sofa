@@ -24,7 +24,12 @@
 *******************************************************************************/
 #include <sofa/helper/gl/Cylinder.h>
 
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
+
 #include <assert.h>
 #include <algorithm>
 #include <iostream>

@@ -22,16 +22,19 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifdef WIN32
+#if defined (WIN32)
 # include <windows.h>
-#else
+#elif defined (__linux__)
 # include <X11/Xlib.h>
 # include <X11/Xutil.h>
 # include <GL/glx.h>
+# include <GL/gl.h>
+#elif defined (__APPLE__)
+# include <OpenGL/gl.h>
 #endif
 
 #include <string.h>
-#include <GL/gl.h>
+
 
 #include <sofa/helper/gl/glfont.h>
 

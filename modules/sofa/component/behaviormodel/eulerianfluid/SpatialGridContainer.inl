@@ -38,7 +38,11 @@
 #define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_INL
 
 #include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.h>
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 
 namespace sofa

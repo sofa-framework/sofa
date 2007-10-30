@@ -26,8 +26,11 @@
 #define SOFA_HELPER_GL_TEMPLATE_H
 
 #include <sofa/helper/system/config.h>
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
-
+#endif
 namespace sofa
 {
 

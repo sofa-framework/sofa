@@ -29,8 +29,13 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/gl/template.h>
 #include <math.h>
-#include <GL/gl.h>
 #include <iostream>
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+
 using std::cerr;
 using std::endl;
 

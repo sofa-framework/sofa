@@ -47,8 +47,10 @@ namespace helper
 namespace system
 {
 
-#ifdef WIN32
+#if defined (WIN32)
 FileRepository DataRepository("SOFA_DATA_PATH", "../scenes;../share");
+#elif defined (__APPLE__)
+FileRepository DataRepository("SOFA_DATA_PATH", "../Resources/scenes:../Resources/share");
 #else
 FileRepository DataRepository("SOFA_DATA_PATH", "../scenes:../share");
 #endif

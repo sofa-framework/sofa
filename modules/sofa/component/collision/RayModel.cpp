@@ -25,7 +25,11 @@
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
+#if defined (__APPLE__)
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>
+#endif
 
 
 namespace sofa

@@ -3,7 +3,11 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/helper/gl/template.h>
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>

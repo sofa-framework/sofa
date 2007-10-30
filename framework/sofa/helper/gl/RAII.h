@@ -25,7 +25,12 @@
 #ifndef SOFA_HELPER_GL_RAII_H
 #define SOFA_HELPER_GL_RAII_H
 
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
+
 /* Opengl Resource Acquisition Is Initialisation */
 /* with this tool, we know at any moment what is the state of the openGL machine */
 

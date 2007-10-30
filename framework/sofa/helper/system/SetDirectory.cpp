@@ -202,7 +202,7 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         char path[1024];
         unsigned int size;
         _NSGetExecutablePath( path, &size );
-        std::cout << "Current process: "<<path<<std::endl;
+        std::cout << "Current process path: "<<path<<std::endl;
 
         return path;
     }

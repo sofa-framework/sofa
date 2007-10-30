@@ -27,7 +27,11 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/ObjectFactory.h>
 
+#if defined (__APPLE__)
+#include <OpenGL/gl.h>
+#else
 #include <GL/gl.h>
+#endif
 
 #define VERBOSE(a) if (bVerbose.getValue()) a; else
 
