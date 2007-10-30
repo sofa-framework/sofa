@@ -47,6 +47,10 @@
 #endif
 
 
+#include <qwt_plot.h>
+
+#include <qwt_plot_curve.h>
+
 class QPushButton;
 
 namespace sofa
@@ -100,9 +104,12 @@ protected:
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
     void updateContext( GNode *node );
 
+    void createGraphMass(QTabWidget *);
+    void updateHistory();
+    void updateEnergy();
+
     bool createTable(core::objectmodel::FieldBase* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
     void storeTable(Q3Table* table, core::objectmodel::FieldBase* field);
-
 
     void createVector(const Quater<double> &value, Q3GroupBox *box); //will be created as a Vec<4,double>
     void createVector(const Quater<float>  &value, Q3GroupBox *box); //will be created as a Vec<4,float>
@@ -141,6 +148,7 @@ protected:
 
 
     QWidget *parent;
+    QTabWidget *dialogTab;
     core::objectmodel::Base* node;
     Q3ListViewItem * item;
     QPushButton *buttonUpdate;
@@ -148,6 +156,11 @@ protected:
     std::list< std::list< QObject* > * >          list_PointSubset;
     std::list< std::pair< Q3Table*, core::objectmodel::FieldBase*> > list_Table;
     int Id;
+
+    std::vector< double > history;
+    std::vector< double > energy_history[3];
+    QwtPlot *graphEnergy;
+    QwtPlotCurve *energy_curve[3];
 };
 
 } // namespace qt

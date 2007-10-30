@@ -5,6 +5,8 @@ include($${SOFA_DIR}/sofa.cfg)
 
 SUBDIRS += extlibs/NewMAT
 SUBDIRS += extlibs/SLC
+SUBDIRS += extlibs/qwt
+
 # PML
 	SUBDIRS += extlibs/PML
 	SUBDIRS += extlibs/LML

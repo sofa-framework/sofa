@@ -25,7 +25,6 @@
 
 #include "ModifyObject.h"
 #include <iostream>
-
 #ifdef QT_MODULE_QT3SUPPORT
 #include <QLineEdit>
 #include <QPushButton>
@@ -55,6 +54,8 @@
 
 #include "WFloatLineEdit.h"
 
+#include <qwt_legend.h>
+
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
 #endif
@@ -77,8 +78,11 @@ typedef QGrid     Q3Grid;
 #endif
 
 
-ModifyObject::ModifyObject(int Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags f ): parent(parent_), node(NULL), Id(Id_)
+ModifyObject::ModifyObject(int Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags f ):
+    parent(parent_), node(NULL), Id(Id_)
 {
+
+    energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
     //Constructor of the QDialog
     QDialog( parent_, name, f);
     //Initialization of the Widget
@@ -99,7 +103,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
     QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
 
     //Tabulation widget
-    QTabWidget *dialogTab = new QTabWidget(this);
+    dialogTab = new QTabWidget(this);
     generalLayout->addWidget(dialogTab);
 
     //Each tab
@@ -108,7 +112,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
     bool visualTab = false;
     QWidget *tab2 = NULL; //tab for visualization info: only created if needed ( boolean visualTab gives this answer ).
-
 
     QVBoxLayout *tabPropertiesLayout = new QVBoxLayout( tab1, 0, 1, "tabPropertiesLayout");
     QVBoxLayout *tabVisualizationLayout = NULL;
@@ -709,8 +712,14 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         }
 
         //If the current element is a node, we add a box to perform geometric transformation: translation, scaling
-        if(dynamic_cast< GNode *>(node_clicked))
+        if(GNode *gnode = dynamic_cast< GNode *>(node_clicked))
         {
+
+            if (gnode->mass!= NULL )
+            {
+                createGraphMass(dialogTab);
+            }
+
             Q3GroupBox *box = new Q3GroupBox(tab1, QString("Transformation"));
             box->setColumns(3);
             box->setTitle(QString("Transformation"));
@@ -906,9 +915,9 @@ void ModifyObject::updateValues()
                 if(!strcmp(ff->help,"object name") )
                 {
                     std::string name=item->text(0).ascii();
-                    std::string::size_type pos = name.rfind(' ');
+                    std::string::size_type pos = name.find(' ');
                     if (pos != std::string::npos)
-                        name.resize(pos-1);
+                        name.resize(pos);
                     name += "  ";
 
                     name+=lineEdit->text().ascii();
@@ -1205,6 +1214,75 @@ void ModifyObject::updateContext( GNode *node )
     }
 
 }
+
+
+void  ModifyObject::createGraphMass(QTabWidget *dialogTab)
+{
+
+
+    QWidget *tabMassStats = new QWidget(); dialogTab->addTab(tabMassStats, QString("Energy Stats"));
+    QVBoxLayout *tabMassStatsLayout = new QVBoxLayout( tabMassStats, 0, 1, "tabMassStats");
+
+
+    std::cout << "Create Graph Energy \n";
+
+#ifdef QT_MODULE_QT3SUPPORT
+    graphEnergy = new QwtPlot(QwtText("Energy"),tabMassStats);
+#else
+    graphEnergy = new QwtPlot(tabMassStats,"Energy");
+#endif
+    history.clear();
+    energy_history[0].clear();
+    energy_history[1].clear();
+    energy_history[2].clear();
+
+    energy_curve[0] = new QwtPlotCurve("Kinetic");	        energy_curve[0]->attach(graphEnergy);
+    energy_curve[1] = new QwtPlotCurve("Potential");	energy_curve[1]->attach(graphEnergy);
+    energy_curve[2] = new QwtPlotCurve("Mechanical");	energy_curve[2]->attach(graphEnergy);
+
+    energy_curve[0]->setPen(QPen(Qt::red));
+    energy_curve[1]->setPen(QPen(Qt::green));
+    energy_curve[2]->setPen(QPen(Qt::blue));
+
+    graphEnergy->setAxisTitle(QwtPlot::xBottom, "Time/seconds");
+    graphEnergy->setTitle("Energy Graph");
+    graphEnergy->insertLegend(new QwtLegend(), QwtPlot::BottomLegend);
+
+    tabMassStatsLayout->addWidget(graphEnergy);
+}
+
+void ModifyObject::updateHistory()
+{
+    if (GNode *gnode = dynamic_cast<GNode *>(node))
+    {
+        if ( gnode->mass)
+        {
+            history.push_back(gnode->getTime());
+            updateEnergy();
+        }
+    }
+}
+
+void ModifyObject::updateEnergy()
+{
+
+    GNode *gnode = dynamic_cast<GNode *>(node);
+
+    unsigned int index = energy_history[0].size();
+    energy_history[0].push_back(gnode->mass->getKineticEnergy());
+    energy_history[1].push_back(gnode->forceField[0]->getPotentialEnergy()); //The first forcefield is the one associated with the mass
+    energy_history[2].push_back(energy_history[0][index] + energy_history[1][index]);
+
+    if (dialogTab->currentPageIndex() == 2)
+    {
+        energy_curve[0]->setRawData(&history[0],&(energy_history[0][0]), history.size());
+        energy_curve[1]->setRawData(&history[0],&(energy_history[1][0]), history.size());
+        energy_curve[2]->setRawData(&history[0],&(energy_history[2][0]), history.size());
+        graphEnergy->replot();
+    }
+
+}
+
 //*******************************************************************************************************************
 //Method called when the number of one of the PointSubset block has been modified : we need to recreate the block modified
 void ModifyObject::changeNumberPoint()
@@ -1246,6 +1324,7 @@ void ModifyObject::changeNumberPoint()
 //Called each time a new step of the simulation if computed
 void ModifyObject::updateTables()
 {
+    updateHistory();
     std::list< std::pair< Q3Table*, FieldBase*> >::iterator it_list_Table;
     for (it_list_Table = list_Table.begin(); it_list_Table != list_Table.end(); it_list_Table++)
     {

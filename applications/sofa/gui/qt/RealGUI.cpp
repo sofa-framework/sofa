@@ -1719,7 +1719,6 @@ void RealGUI::slot_sliderValue(int value)
     setRecordTime(time);
     timeSlider->setValue(value);
     timeSlider->update();
-
     playSimulation(true);
 }
 
@@ -1728,12 +1727,23 @@ void RealGUI::slot_loadrecord_timevalue()
     double init_time = getRecordInitialTime();
     double current_time = getRecordTime();
     int value = (int)((current_time - init_time)/( atof(dtEdit->text()))+0.5);
+
     if (value >= timeSlider->minValue() && value <= timeSlider->maxValue())
+    {
         timeSlider->setValue(value);
+    }
     else if (value < timeSlider->minValue())
+    {
         timeSlider->setValue(timeSlider->minValue());
+        setRecordTime(getRecordInitialTime());
+    }
     else if (value > timeSlider->maxValue())
+    {
         timeSlider->setValue(timeSlider->maxValue());
+        setRecordTime(getRecordFinalTime());
+    }
+    playSimulation(true);
+
 }
 
 void RealGUI::playSimulation(bool forward)

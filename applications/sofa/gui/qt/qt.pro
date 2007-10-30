@@ -4,7 +4,6 @@
 # Cible : une bibliotheque:  sofaguiviewer$$LIBSUFFIX
 
 
-
 HEADERS += viewer/SofaViewer.h \
            Main.h \
            RealGUI.h \
