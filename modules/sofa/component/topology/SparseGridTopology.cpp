@@ -61,6 +61,7 @@ SparseGridTopology::SparseGridTopology(): nx(dataField(&nx,0,"nx","x grid resolu
 bool SparseGridTopology::load(const char* filename)
 {
     this->filename.setValue( filename );
+    cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
     return true;
 }
 
@@ -88,15 +89,17 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
     this->MeshTopology::init();
     invalidate();
 
+
+
     if (!filename.getValue().empty())
     {
-        // 						std::cout << "SparseGridTopology: using mesh "<<filename.getValue()<<std::endl;
+//           						std::cout << "SparseGridTopology: using mesh "<<filename.getValue()<<std::endl;
         helper::io::Mesh* mesh = helper::io::Mesh::Create(filename.getValue().c_str());
+
 
         if (mesh)
         {
             const helper::vector<Vec3>& vertices = mesh->getVertices();
-
 
             // if not given sizes -> bounding box
             if( xmin.getValue()==0.0 && xmax.getValue()==0.0 && ymin.getValue()==0.0 && ymax.getValue()==0.0 && zmin.getValue()==0.0 && zmax.getValue()==0.0 )
@@ -333,7 +336,7 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
     }
 
 
-
+    cerr<<"SparseGridTopology::init() :     cubes size = ";
     cerr<<seqCubes.size()<<"       ";
     cerr<<_types.size()<<endl;
 
@@ -366,12 +369,45 @@ int SparseGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double
 /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
 int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz)
 {
-    // TODO: faire un vrai nearest, qui ne projete pas seulement sur les bords de la bbox, mais sur les bords des cellules activees
-    int indiceInRegularGrid =  _indicesOfRegularCubeInSparseGrid[_regularGrid.findNearestCube( pos,fx,fy,fz)];
-    if( indiceInRegularGrid == -1 )
-        return -1;
-    else
-        return _indicesOfRegularCubeInSparseGrid[indiceInRegularGrid];
+    int indice = 0;
+    float lgmin = 99999999;
+
+    for(unsigned w=0; w<seqCubes.size(); ++w)
+    {
+        if(_types[w]!=BOUNDARY)continue;
+
+
+        const Cube& c = getCube( w );
+        int c0 = c[0];
+        int c7 = c[7];
+        Vec3 p0(getPX(c0),getPY(c0),getPZ(c0));
+        Vec3 p7(getPX(c7),getPY(c7),getPZ(c7));
+
+        Vec3 barycenter = (p0+p7) * .5;
+
+        float lg = (pos-barycenter).norm();
+        if( lg < lgmin )
+        {
+            lgmin = lg;
+            indice = w;
+        }
+
+    }
+
+    const Cube& c = getCube( indice );
+    int c0 = c[0];
+    int c7 = c[7];
+    Vec3 p0(getPX(c0),getPY(c0),getPZ(c0));
+    Vec3 p7(getPX(c7),getPY(c7),getPZ(c7));
+
+    Vec3 relativePos = pos-p0;
+    Vec3 diagonal = p7 - p0;
+
+    fx = relativePos[0] / diagonal[0];
+    fy = relativePos[1] / diagonal[1];
+    fz = relativePos[2] / diagonal[2];
+
+    return indice;
 }
 
 
