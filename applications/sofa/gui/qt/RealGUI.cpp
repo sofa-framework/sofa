@@ -1331,6 +1331,7 @@ void RealGUI::eventNewTime()
 
         if (record_simulation)
         {
+            setRecordTime(time);
             double final_time = getRecordFinalTime();
 
             if ((int)(1000*final_time) < (int)(1000*time))
@@ -1344,7 +1345,7 @@ void RealGUI::eventNewTime()
                 timeSlider->setValue(timeSlider->value()+1);
             }
             timeSlider->update();
-            std::string filename = viewer->getSceneFileName();
+            std::string filename = simulation_name;
             filename = sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
 
             std::string::size_type point = filename.rfind('.');
@@ -1626,12 +1627,22 @@ void RealGUI::slot_recordSimulation( bool value)
             std::string filename = viewer->getSceneFileName();
 
             //if no simulation has been recorded
-            if (timeSlider->maxValue() == 0) simulation_name = filename;
-            filename = sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
+            if (timeSlider->maxValue() == 0)
+            {
+                simulation_name = filename;
 
-            std::string output(record_directory + filename);
-            fileSaveAs(output.c_str());
-            fileOpen(output.c_str(), true); //change the local directory
+                filename = sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
+
+                std::string::size_type point = filename.rfind('.');
+                if (point != std::string::npos) filename.resize(point);
+
+                std::ostringstream ofilename;
+                ofilename << record_directory << filename << "_" << loadRecordTime->text().ascii() << ".scn";
+
+
+                fileSaveAs(ofilename.str().c_str());
+                fileOpen(ofilename.str().c_str(), true); //change the local directory
+            }
             record_simulation=true;
             playpauseGUI(true);
         }
@@ -1647,7 +1658,6 @@ void RealGUI::slot_recordSimulation( bool value)
         std::string simulationFileName = simulation_name + ".simu";
 
         std::string output(record_directory + filename);
-
 
         std::ofstream out(simulationFileName.c_str());
         if (!out.fail())
@@ -1731,6 +1741,7 @@ void RealGUI::slot_loadrecord_timevalue()
     if (value >= timeSlider->minValue() && value <= timeSlider->maxValue())
     {
         timeSlider->setValue(value);
+        setRecordTime(getRecordTime());
     }
     else if (value < timeSlider->minValue())
     {
@@ -1746,6 +1757,8 @@ void RealGUI::slot_loadrecord_timevalue()
 
 }
 
+
+//Given a direction  (forward, or backward), load the samples of the simulation between the initial and final time.
 void RealGUI::playSimulation(bool forward)
 {
     if (timeSlider->maxValue() == 0)
@@ -1754,11 +1767,12 @@ void RealGUI::playSimulation(bool forward)
         playforward_record->setOn(false);
         return;
     }
+
+    const std::string originalName = viewer->getSceneFileName();
     std::string filename = viewer->getSceneFileName();
-    std::string::size_type point = filename.rfind('.');
+    std::string::size_type point = filename.rfind('_');
     if (point != std::string::npos) filename.resize(point);
 
-    std::string originalName = filename + std::string(".scn");
 
     QString init_time  = initialTime->text();
     QString final_time = finalTime->text();
@@ -1795,11 +1809,7 @@ void RealGUI::playSimulation(bool forward)
     {
         std::string stepFilename;
         std::ostringstream ofilename;
-        if (atof(loadRecordTime->text()) != init_time_value)
-            ofilename << filename << "_" << loadRecordTime->text().ascii();
-        else
-            ofilename << filename ;
-        ofilename << ".scn";
+        ofilename << filename << "_" << loadRecordTime->text().ascii() << ".scn";
         stepFilename = ofilename.str();
 
         if ( sofa::helper::system::DataRepository.findFile (stepFilename) )
@@ -1828,7 +1838,7 @@ void RealGUI::playSimulation(bool forward)
         if (forward && playforward_record->isOn())
         {
             time+=atof(dtEdit->text());
-            if ((int)(1000*time) <= (int)(1000*final_time_value))
+            if ((int)(1000*time+0.5) <= (int)(1000*final_time_value+0.5))
             {
                 setRecordTime(time);
                 timeSlider->setValue(timeSlider->value()+1);
@@ -1840,7 +1850,7 @@ void RealGUI::playSimulation(bool forward)
         {
             time-=atof(dtEdit->text());
 
-            if ((int)(1000*time) >= (int)(1000*init_time_value))
+            if ((int)(1000*time+0.5) >= (int)(1000*init_time_value+0.5))
             {
                 setRecordTime(time);
                 timeSlider->setValue(timeSlider->value()-1);
@@ -1857,34 +1867,34 @@ double RealGUI::getRecordInitialTime() const
 {
     std::string init_time = initialTime->text().ascii();
     init_time.resize(init_time.size()-2);
-    return atof((init_time.substr(6)).c_str());
+    return fabs(atof((init_time.substr(6)).c_str()));
 }
 void RealGUI::setRecordInitialTime(double time)
 {
     char buf[100];
-    sprintf ( buf, "Init: %.3f s", time );
+    sprintf ( buf, "Init: %.3f s", fabs(time) );
     initialTime->setText ( buf );
 }
 double RealGUI::getRecordFinalTime() const
 {
     std::string final_time = finalTime->text().ascii();
     final_time.resize(final_time.size()-2);
-    return atof((final_time.substr(5)).c_str());
+    return fabs(atof((final_time.substr(5)).c_str()));
 }
 void RealGUI::setRecordFinalTime(double time)
 {
     char buf[100];
-    sprintf ( buf, "End: %.3f s", time );
+    sprintf ( buf, "End: %.3f s", fabs(time) );
     finalTime->setText( buf );
 }
 double RealGUI::getRecordTime() const
 {
-    return atof(loadRecordTime->text().ascii());
+    return fabs(atof(loadRecordTime->text().ascii()));
 }
 void RealGUI::setRecordTime(double time)
 {
     char buf[100];
-    sprintf ( buf, "%.3f", time );
+    sprintf ( buf, "%.3f", fabs(time) );
     loadRecordTime->setText( buf );
 }
 
