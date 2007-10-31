@@ -70,6 +70,7 @@ bool MeshTopologyLoader::load(const char *filename)
     int nquads = 0;
     int ntetras = 0;
     int ncubes = 0;
+    int gmshFormat = 0;
 
     if ((file = fopen(fname.c_str(), "r")) == NULL)
     {
@@ -82,8 +83,31 @@ bool MeshTopologyLoader::load(const char *filename)
         fclose(file);
         return false;
     }
-    std::cout << cmd << std::endl;
-    if (!strncmp(cmd,"$NOD",4)) // Gmsh format
+
+    std::cout << "Loading Gmsh topology '" << filename << "' - ";
+
+    if (!strncmp(cmd,"$MeshFormat",11)) // Reading gmsh 2.0 file
+    {
+        gmshFormat = 2;
+        std::cout << "Gmsh format 2.0" << std::endl;
+        readLine(cmd, sizeof(cmd), file); // we don't care about this line
+        readLine(cmd, sizeof(cmd), file);
+        if (strncmp(cmd,"$EndMeshFormat",14)) // it should end with $EndMeshFormat
+        {
+            fclose(file);
+            return false;
+        }
+        else
+            readLine(cmd, sizeof(cmd), file);
+    }
+    else
+    {
+        gmshFormat = 1;
+        std::cout << "Gmsh format 1.0" << std::endl;
+    }
+    std::cout << "Hello" << std::endl;
+
+    if (!strncmp(cmd,"$NOD",4) || !strncmp(cmd,"$Nodes",6)) // Gmsh format
     {
         std::cout << "Loading Gmsh topology '" << filename << "'" << std::endl;
         fscanf(file, "%d\n", &npoints);
@@ -97,22 +121,23 @@ bool MeshTopologyLoader::load(const char *filename)
             addPoint(x, y, z);
             if ((int)pmap.size() <= index) pmap.resize(index+1);
             pmap[index] = i;
+            //std::cout << "pmap[" << index << "] = " << pmap[index] << std::endl;
         }
 
         readLine(cmd, sizeof(cmd), file);
         //std::cout << cmd << std::endl;
-        if (strncmp(cmd,"$ENDNOD",7))
+        if (strncmp(cmd,"$ENDNOD",7) && strncmp(cmd,"$EndNodes",9))
         {
-            std::cerr << "'$ENDNOD' expected, found '" << cmd << "'" << std::endl;
+            std::cerr << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'" << std::endl;
             fclose(file);
             return false;
         }
 
         readLine(cmd, sizeof(cmd), file);
         //std::cout << cmd << std::endl;
-        if (strncmp(cmd,"$ELM",4))
+        if (strncmp(cmd,"$ELM",4) && strncmp(cmd,"$Elements",9))
         {
-            std::cerr << "'$ELM' expected, found '" << cmd << "'" << std::endl;
+            std::cerr << "'$ELM' or '$Elements' expected, found '" << cmd << "'" << std::endl;
             fclose(file);
             return false;
         }
@@ -122,8 +147,45 @@ bool MeshTopologyLoader::load(const char *filename)
 
         for (int i=0; i<nelems; ++i)
         {
-            int index, etype, rphys, relem, nnodes;
-            fscanf(file, "%d %d %d %d %d", &index, &etype, &rphys, &relem, &nnodes);
+            int index, etype, rphys, relem, nnodes, ntags, tag;
+            if (gmshFormat==1)
+            {
+                // version 1.0 format is
+                // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
+                fscanf(file, "%d %d %d %d %d", &index, &etype, &rphys, &relem, &nnodes);
+            }
+            else if (gmshFormat == 2)
+            {
+                // version 2.0 format is
+                // elm-number elm-type number-of-tags < tag > ... node-number-list
+                fscanf(file, "%d %d %d", &index, &etype, &ntags);
+                for (int t=0; t<ntags; t++)
+                    fscanf(file, "%d", &tag); // read the tag but don't use it
+
+                switch (etype)
+                {
+                case 1: // Line
+                    nnodes = 2;
+                    break;
+                case 2: // Triangle
+                    nnodes = 3;
+                    break;
+                case 3: // Quad
+                    nnodes = 4;
+                    break;
+                case 4: // Tetra
+                    nnodes = 4;
+                    break;
+                case 5: // Hexa
+                    nnodes = 8;
+                    break;
+                default:
+                    std::cerr << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found. Exiting..." << std::endl;
+                    fclose(file);
+                    return false;
+                }
+            }
+
             std::vector<int> nodes;
             nodes.resize(nnodes);
             for (int n=0; n<nnodes; ++n)
@@ -131,55 +193,45 @@ bool MeshTopologyLoader::load(const char *filename)
                 int t = 0;
                 fscanf(file, "%d",&t);
                 nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
+                //std::cout << "nodes[" << n << "] = " << nodes[n] << std::endl;
             }
+
             switch (etype)
             {
             case 1: // Line
-                if (nnodes == 2)
-                {
-                    addLine(nodes[0], nodes[1]);
-                    ++nlines;
-                }
+                addLine(nodes[0], nodes[1]);
+                ++nlines;
                 break;
             case 2: // Triangle
-                if (nnodes == 3)
-                {
-                    addTriangle(nodes[0], nodes[1], nodes[2]);
-                    ++ntris;
-                }
+                addTriangle(nodes[0], nodes[1], nodes[2]);
+                //std::cout << "Adding triangle (" << nodes[0] << ", " << nodes[1] << ", " << nodes[2] << ")" << std::endl;
+                ++ntris;
                 break;
             case 3: // Quad
-                if (nnodes == 4)
-                {
-                    addQuad(nodes[0], nodes[1], nodes[2], nodes[3]);
-                    ++nquads;
-                }
+                addQuad(nodes[0], nodes[1], nodes[2], nodes[3]);
+                ++nquads;
                 break;
             case 4: // Tetra
-                if (nnodes == 4)
-                {
-                    addTetra(nodes[0], nodes[1], nodes[2], nodes[3]);
-                    ++ntetras;
-                }
+                addTetra(nodes[0], nodes[1], nodes[2], nodes[3]);
+                ++ntetras;
                 break;
             case 5: // Hexa
-                if (nnodes == 8)
-                {
-                    addCube(nodes[0], nodes[1], nodes[2], nodes[3],
-                            nodes[4], nodes[5], nodes[6], nodes[7]);
-                    ++ncubes;
-                }
+                addCube(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4], nodes[5], nodes[6], nodes[7]);
+                ++ncubes;
                 break;
             }
             skipToEOL(file);
         }
         readLine(cmd, sizeof(cmd), file);
-        std::cout << cmd << std::endl;
-        if (strncmp(cmd,"$ENDELM",7))
+        if (strncmp(cmd,"$ENDELM",7) && strncmp(cmd,"$EndElements",12))
         {
-            std::cerr << "'$ENDELM' expected, found '" << cmd << "'" << std::endl;
+            std::cerr << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'" << std::endl;
             fclose(file);
             return false;
+        }
+        else
+        {
+            std::cout << "Done parsing Gmsh file." << std::endl;
         }
     }
     else if (!strncmp(cmd,"Xsp",3))
