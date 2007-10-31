@@ -34,6 +34,10 @@ void init()
 
 #if defined (WIN32) || (__APPLE__)
 ////////// BEGIN CLASS LIST //////////
+SOFA_LINK_CLASS(ArticulatedHierarchyContainer)
+SOFA_LINK_CLASS(ArticulatedSystemMapping)
+SOFA_LINK_CLASS(Articulation)
+SOFA_LINK_CLASS(ArticulationCenter)
 SOFA_LINK_CLASS(BarycentricLagrangianMultiplierContact)
 SOFA_LINK_CLASS(BarycentricMapping)
 SOFA_LINK_CLASS(BarycentricPenalityContact)
