@@ -15,6 +15,12 @@ SUBDIRS += extlibs/qwt
 	SUBDIRS -= extlibs/LML
 }
 
+# FlowVR
+	SUBDIRS += extlibs/miniFlowVR
+contains(DEFINES,SOFA_HAVE_FLOWVR){
+	SUBDIRS -= extlibs/miniFlowVR
+}
+
 SUBDIRS += framework
 SUBDIRS += modules
 SUBDIRS += applications

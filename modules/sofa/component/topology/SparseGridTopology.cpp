@@ -370,7 +370,7 @@ int SparseGridTopology::findCube(const Vec3& pos, double& fx, double &fy, double
 int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz)
 {
     int indice = 0;
-    float lgmin = 99999999;
+    float lgmin = 99999999.0f;
 
     for(unsigned w=0; w<seqCubes.size(); ++w)
     {
@@ -385,7 +385,7 @@ int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy,
 
         Vec3 barycenter = (p0+p7) * .5;
 
-        float lg = (pos-barycenter).norm();
+        float lg = (float)((pos-barycenter).norm());
         if( lg < lgmin )
         {
             lgmin = lg;
