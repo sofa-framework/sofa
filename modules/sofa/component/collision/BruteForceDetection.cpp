@@ -77,7 +77,7 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 {
     if (cm->empty())
         return;
-    for (std::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
+    for (sofa::helper::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
     {
         core::CollisionModel* cm2 = *it;
         if (cm->isStatic() && cm2->isStatic())

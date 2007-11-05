@@ -48,14 +48,14 @@ public:
 
 protected:
     CollisionModel1* model1;
-    std::vector<core::componentmodel::collision::DetectionOutput*> collisions;
+    sofa::helper::vector<core::componentmodel::collision::DetectionOutput*> collisions;
 
 public:
     BaseRayContact(CollisionModel1* model1, core::componentmodel::collision::Intersection* instersectionMethod);
 
     ~BaseRayContact();
 
-    const std::vector<core::componentmodel::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
+    const sofa::helper::vector<core::componentmodel::collision::DetectionOutput*>& getDetectionOutputs() const { return collisions; }
 
     void createResponse(core::objectmodel::BaseContext* /*group*/)
     {

@@ -9,11 +9,7 @@
 #include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <iostream>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
 #include <GL/gl.h>
-#endif
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -31,8 +27,8 @@ template<class DataTypes>
 void VectorSpringForceField<DataTypes>::springCreationFunction(int /*index*/,
         void* param, Spring& t,
         const topology::Edge& e,
-        const std::vector< unsigned int > &ancestors,
-        const std::vector< double >& coefs)
+        const sofa::helper::vector< unsigned int > &ancestors,
+        const sofa::helper::vector< double >& coefs)
 {
     VectorSpringForceField<DataTypes> *ff= static_cast<VectorSpringForceField<DataTypes> *>(param);
     if (ff)
@@ -166,7 +162,7 @@ template <class DataTypes>
 void VectorSpringForceField<DataTypes>::createDefaultSprings()
 {
     topology::EdgeSetTopologyContainer *container=topology->getEdgeSetTopologyContainer();
-    const std::vector<topology::Edge> &ea=container->getEdgeArray();
+    const sofa::helper::vector<topology::Edge> &ea=container->getEdgeArray();
     std::cout << "Creating "<<ea.size()<<" Vector Springs from EdgeSetTopology"<<std::endl;
     springArray.resize(ea.size());
     //EdgeSetGeometryAlgorithms<DataTypes> *ga=topology->getEdgeSetGeometryAlgorithms();
@@ -195,7 +191,7 @@ void VectorSpringForceField<DataTypes>::handleEvent( Event* e )
                 if (topology->getEdgeSetTopologyContainer()->getNumberOfEdges()>12)
                 {
                     topology::EdgeSetTopologyAlgorithms<DataTypes> *esta=topology->getEdgeSetTopologyAlgorithms();
-                    std::vector<unsigned int> edgeArray;
+                    sofa::helper::vector<unsigned int> edgeArray;
                     edgeArray.push_back(12);
                     esta->removeEdges(edgeArray);
                 }
@@ -223,7 +219,7 @@ void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, con
 {
     //assert(this->mstate);
     m_potentialEnergy = 0;
-    const std::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
+    const sofa::helper::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
     Coord u;
 
     f1.resize(x1.size());
@@ -249,7 +245,7 @@ template<class DataTypes>
 //void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
 void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2)
 {
-    const std::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
+    const sofa::helper::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
     Deriv dforce,d;
     unsigned int i;
 
@@ -276,7 +272,7 @@ void VectorSpringForceField<DataTypes>::draw()
     //const VecCoord& p = *this->mstate->getX();
     const VecCoord& x1 = *this->mstate1->getX();
     const VecCoord& x2 = *this->mstate2->getX();
-    const std::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
+    const sofa::helper::vector<topology::Edge> &ea=(useTopology)?topology->getEdgeSetTopologyContainer()->getEdgeArray() : edgeArray;
 
     glDisable(GL_LIGHTING);
 

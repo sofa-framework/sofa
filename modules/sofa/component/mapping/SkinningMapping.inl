@@ -215,7 +215,7 @@ void SkinningMapping<BasicMapping>::clear()
 
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::setWeightCoefs(std::vector<double> &weights)
+void SkinningMapping<BasicMapping>::setWeightCoefs(sofa::helper::vector<double> &weights)
 {
     sofa::helper::vector<double> * m_coefs = coefs.beginEdit();
     m_coefs->clear();
@@ -224,7 +224,7 @@ void SkinningMapping<BasicMapping>::setWeightCoefs(std::vector<double> &weights)
 }
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::setRepartition(std::vector<unsigned int> &rep)
+void SkinningMapping<BasicMapping>::setRepartition(sofa::helper::vector<unsigned int> &rep)
 {
     sofa::helper::vector<unsigned int> * m_reps = repartition.beginEdit();
     m_reps->clear();

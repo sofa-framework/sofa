@@ -101,7 +101,7 @@ void Pipeline::computeCollisionDetection()
 {
     simulation::tree::GNode* root = dynamic_cast<simulation::tree::GNode*>(getContext());
     if(root == NULL) return;
-    std::vector<CollisionModel*> collisionModels;
+    sofa::helper::vector<CollisionModel*> collisionModels;
     root->getTreeObjects<CollisionModel>(&collisionModels);
     doCollisionDetection(collisionModels);
 }

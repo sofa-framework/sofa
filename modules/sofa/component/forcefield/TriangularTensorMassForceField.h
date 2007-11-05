@@ -141,12 +141,12 @@ protected :
 
     static void TriangularTMEdgeCreationFunction(int edgeIndex, void* param,
             EdgeRestInformation &ei,
-            const Edge& ,  const std::vector< unsigned int > &,
-            const std::vector< double >&);
+            const Edge& ,  const sofa::helper::vector< unsigned int > &,
+            const sofa::helper::vector< double >&);
 
-    static void TriangularTMTriangleCreationFunction(const std::vector<unsigned int> &triangleAdded,
+    static void TriangularTMTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
             void* param, vector<EdgeRestInformation> &edgeData);
-    static void TriangularTMTriangleDestructionFunction ( const std::vector<unsigned int> &triangleAdded,
+    static void TriangularTMTriangleDestructionFunction ( const sofa::helper::vector<unsigned int> &triangleAdded,
             void* param, vector<EdgeRestInformation> &edgeData);
 
 };

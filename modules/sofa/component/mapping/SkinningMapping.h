@@ -60,10 +60,10 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
 
 protected:
-    std::vector<InCoord> initPos;
+    sofa::helper::vector<InCoord> initPos;
     Coord translation;
     Mat rotation;
-    std::vector<Coord> rotatedPoints;
+    sofa::helper::vector<Coord> rotatedPoints;
 
     class Loader;
     void load(const char* filename);
@@ -111,8 +111,8 @@ public:
 
     void setNbRefs(unsigned int nb) { nbRefs.setValue(nb); }
 
-    void setWeightCoefs(std::vector<double> &weights);
-    void setRepartition(std::vector<unsigned int> &rep);
+    void setWeightCoefs(sofa::helper::vector<double> &weights);
+    void setRepartition(sofa::helper::vector<unsigned int> &rep);
     void setComputeWeights(bool val) {computeWeights=val;}
 
 protected:

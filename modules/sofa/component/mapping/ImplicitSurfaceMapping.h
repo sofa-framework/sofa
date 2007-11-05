@@ -125,8 +125,8 @@ protected:
     };
 
     DataField < sofa::helper::vector<CubeData> > planes;
-    typename std::vector<CubeData>::iterator P0; /// Pointer to first plane
-    typename std::vector<CubeData>::iterator P1; /// Pointer to second plane
+    typename sofa::helper::vector<CubeData>::iterator P0; /// Pointer to first plane
+    typename sofa::helper::vector<CubeData>::iterator P1; /// Pointer to second plane
 
     void newPlane();
 

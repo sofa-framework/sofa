@@ -57,7 +57,7 @@ protected:
         }
     };
 
-    std::vector<EdgePressureInformation> edgeInfo;
+    sofa::helper::vector<EdgePressureInformation> edgeInfo;
 
     unsigned int nbEdges;  // number of edge pressure forces
 

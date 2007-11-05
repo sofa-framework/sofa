@@ -54,7 +54,7 @@ using namespace sofa::core::componentmodel::behavior;
 
 // Define TestNewPointFunction
 template< class DataTypes>
-bool FixedConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const std::vector< unsigned int > &, const std::vector< double >& )
+bool FixedConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
 {
     FixedConstraint<DataTypes> *fc= (FixedConstraint<DataTypes> *)param;
     if (fc)

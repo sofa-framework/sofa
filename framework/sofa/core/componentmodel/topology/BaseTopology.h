@@ -49,7 +49,14 @@ enum TopologyChangeType
     TRIANGLESRENUMBERING, ///< For TrianglesRenumbering class.
     TETRAHEDRAADDED,     ///< For TrianglesAdded class.
     TETRAHEDRAREMOVED,   ///< For TrianglesRemoved class.
-    TETRAHEDRARENUMBERING ///< For TrianglesRenumbering class.
+    TETRAHEDRARENUMBERING, ///< For TrianglesRenumbering class.
+
+    QUADSADDED,     ///< For QuadsAdded class.
+    QUADSREMOVED,   ///< For QuadsRemoved class.
+    QUADSRENUMBERING, ///< For QuadsRenumbering class.
+    HEXAHEDRAADDED,     ///< For TrianglesAdded class.
+    HEXAHEDRAREMOVED,   ///< For TrianglesRemoved class.
+    HEXAHEDRARENUMBERING ///< For TrianglesRenumbering class.
 
 };
 

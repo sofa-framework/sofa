@@ -127,7 +127,7 @@ protected:
     vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
 
 
-    std::vector<Type> _types; ///< BOUNDARY or FULL filled cells
+    sofa::helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
     /// start from a seed cell (i,j,k) the OUTSIDE filling is propagated to neighboor cells until meet a BOUNDARY cell (this function is called from all border cells of the RegularGrid)
     void propagateFrom( const int i, const int j, const int k,  RegularGridTopology& regularGrid, vector<Type>& regularGridTypes, vector<bool>& alreadyTested  );
 

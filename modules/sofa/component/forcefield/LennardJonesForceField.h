@@ -62,7 +62,7 @@ protected:
         Real df;
     };
 
-    std::vector<DForce> dforces;
+    sofa::helper::vector<DForce> dforces;
 
 public:
     LennardJonesForceField()

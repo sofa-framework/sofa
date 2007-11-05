@@ -29,7 +29,7 @@ PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topol
 {
 }
 
-PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector<unsigned int>& DOFIndex)
+PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector<unsigned int>& DOFIndex)
     : core::componentmodel::topology::TopologyContainer(top), m_DOFIndex(DOFIndex)
 {
 }
@@ -53,7 +53,7 @@ void PointSetTopologyContainer::createPointSetIndex()
 
 
 
-const std::vector<int> &PointSetTopologyContainer::getPointSetIndexArray()
+const sofa::helper::vector<int> &PointSetTopologyContainer::getPointSetIndexArray()
 {
     if (!m_PointSetIndex.size())
         createPointSetIndex();
@@ -65,7 +65,7 @@ unsigned int PointSetTopologyContainer::getPointSetIndexSize() const
     return m_PointSetIndex.size();
 }
 
-std::vector<int> &PointSetTopologyContainer::getPointSetIndexArrayForModification()
+sofa::helper::vector<int> &PointSetTopologyContainer::getPointSetIndexArrayForModification()
 {
     if (!m_PointSetIndex.size())
         createPointSetIndex();
@@ -86,12 +86,12 @@ unsigned int PointSetTopologyContainer::getNumberOfVertices() const
     return m_DOFIndex.size();
 }
 
-const std::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArray() const
+const sofa::helper::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArray() const
 {
     return m_DOFIndex;
 }
 
-std::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArrayForModification()
+sofa::helper::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArrayForModification()
 {
     return m_DOFIndex;
 }

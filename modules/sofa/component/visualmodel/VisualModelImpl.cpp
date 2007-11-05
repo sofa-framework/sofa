@@ -683,7 +683,7 @@ void VisualModelImpl::computeMeshFromTopology(sofa::core::componentmodel::topolo
     sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
     if (tstc)
     {
-        const std::vector<sofa::component::topology::Triangle> &triangleArray=tstc->getTriangleArray();
+        const sofa::helper::vector<sofa::component::topology::Triangle> &triangleArray=tstc->getTriangleArray();
         triangles.resize(triangleArray.size());
         for (unsigned int i=0; i<tstc->getNumberOfTriangles(); ++i)
             triangles[i] = triangleArray[i];
@@ -719,7 +719,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::TRIANGLESREMOVED:
         {
-            const std::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
+            const sofa::helper::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::TrianglesRemoved *>( *itBegin ) )->getArray();
             unsigned int last = triangles.size() -1;
             Triangle tmp;
             for (unsigned int i = 0; i < tab.size(); ++i)
@@ -744,14 +744,14 @@ void VisualModelImpl::handleTopologyChange()
 
             if (tstc)
             {
-                const std::vector< std::vector<unsigned int> > &tvsa=tstc->getTriangleVertexShellArray();
+                const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=tstc->getTriangleVertexShellArray();
                 unsigned int last = tvsa.size() -1;
                 unsigned int i,j;
 
-                const std::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+                const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
                 for ( i = 0; i < tab.size(); ++i)
                 {
-                    const std::vector<unsigned int> &shell=tvsa[last];
+                    const sofa::helper::vector<unsigned int> &shell=tvsa[last];
                     for (j=0; j<shell.size(); ++j)
                     {
                         if ((unsigned)triangles[shell[j]][0]==last)

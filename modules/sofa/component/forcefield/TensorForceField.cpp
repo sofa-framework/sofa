@@ -253,7 +253,7 @@ TensorForceField<DataTypes>::addForce ()
     f.resize( p.size() ); // ??really needed??
 
     // computing difference between current position and rest position
-    std::vector< Coord > pos;
+    sofa::helper::vector< Coord > pos;
     for (unsigned int i = 0; i < p.size(); ++i )
     {
         Coord dif = p[i] - vertex_[i];
@@ -334,7 +334,7 @@ TensorForceField<DataTypes>::addDForce()
     f.resize( p.size() ); // ??really needed??
 
     // computing difference between current position and rest position
-    /*std::vector< Coord > pos;
+    /*sofa::helper::vector< Coord > pos;
     for (unsigned int i = 0; i < p.size(); ++i ) {
       Coord dif = p[i] - vertex_[i];
       pos.push_back(dif);

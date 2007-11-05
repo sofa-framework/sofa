@@ -51,7 +51,7 @@ public core::componentmodel::collision::NarrowPhaseDetection,
 public core::VisualModel
 {
 private:
-    std::vector < core::CollisionModel * >collisionModels;
+    sofa::helper::vector < core::CollisionModel * >collisionModels;
     DataField < bool > bDraw;
 
 public:

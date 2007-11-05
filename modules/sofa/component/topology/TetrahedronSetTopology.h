@@ -38,7 +38,7 @@ namespace component
 namespace topology
 {
 
-/// defining Tetrahedra as 3 DOFs indices
+/// defining Tetrahedra as 4 DOFs indices
 typedef helper::fixed_array<unsigned int,4> Tetrahedron;
 /// defining TetrahedronTriangles as 4 Triangles indices
 typedef helper::fixed_array<unsigned int,4> TetrahedronTriangles;
@@ -60,19 +60,19 @@ class TetrahedraAdded : public core::componentmodel::topology::TopologyChange
 public:
     unsigned int nTetrahedra;
 
-    std::vector< Tetrahedron > tetrahedronArray;
+    sofa::helper::vector< Tetrahedron > tetrahedronArray;
 
-    std::vector< unsigned int > tetrahedronIndexArray;
+    sofa::helper::vector< unsigned int > tetrahedronIndexArray;
 
-    std::vector< std::vector< unsigned int > > ancestorsList;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
 
-    std::vector< std::vector< double > > coefs;
+    sofa::helper::vector< sofa::helper::vector< double > > coefs;
 
     TetrahedraAdded(const unsigned int nT,
-            const std::vector< Tetrahedron >& _tetrahedronArray = (const std::vector< Tetrahedron >)0,
-            const std::vector< unsigned int >& tetrahedraIndex = (const std::vector< unsigned int >)0,
-            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
-            const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0)
+            const sofa::helper::vector< Tetrahedron >& _tetrahedronArray = (const sofa::helper::vector< Tetrahedron >)0,
+            const sofa::helper::vector< unsigned int >& tetrahedraIndex = (const sofa::helper::vector< unsigned int >)0,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0)
         : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::TETRAHEDRAADDED), nTetrahedra(nT), tetrahedronArray(_tetrahedronArray), tetrahedronIndexArray(tetrahedraIndex),ancestorsList(ancestors), coefs(baryCoefs)
     {   }
 
@@ -90,14 +90,14 @@ class TetrahedraRemoved : public core::componentmodel::topology::TopologyChange
 {
 
 public:
-    std::vector<unsigned int> removedTetrahedraArray;
+    sofa::helper::vector<unsigned int> removedTetrahedraArray;
 
 public:
-    TetrahedraRemoved(const std::vector<unsigned int> _tArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::TETRAHEDRAREMOVED), removedTetrahedraArray(_tArray)
+    TetrahedraRemoved(const sofa::helper::vector<unsigned int> _tArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::TETRAHEDRAREMOVED), removedTetrahedraArray(_tArray)
     {
     }
 
-    const std::vector<unsigned int> &getArray() const
+    const sofa::helper::vector<unsigned int> &getArray() const
     {
         return removedTetrahedraArray;
     }
@@ -155,18 +155,18 @@ private:
     void createTetrahedronTriangleShellArray();
 protected:
     /// provides the set of tetrahedra
-    std::vector<Tetrahedron> m_tetrahedron;
+    sofa::helper::vector<Tetrahedron> m_tetrahedron;
     /// provides the set of edges for each tetrahedron
-    std::vector<TetrahedronEdges> m_tetrahedronEdge;
+    sofa::helper::vector<TetrahedronEdges> m_tetrahedronEdge;
     /// provides the set of triangles for each tetrahedron
-    std::vector<TetrahedronTriangles> m_tetrahedronTriangle;
+    sofa::helper::vector<TetrahedronTriangles> m_tetrahedronTriangle;
 
     /// for each vertex provides the set of tetrahedra adjacent to that vertex
-    std::vector< std::vector< unsigned int > > m_tetrahedronVertexShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_tetrahedronVertexShell;
     /// for each edge provides the set of tetrahedra adjacent to that edge
-    std::vector< std::vector< unsigned int > > m_tetrahedronEdgeShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_tetrahedronEdgeShell;
     /// for each triangle provides the set of tetrahedra adjacent to that edge
-    std::vector< std::vector< unsigned int > > m_tetrahedronTriangleShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_tetrahedronTriangleShell;
 
 
     /** \brief Creates the EdgeSet array.
@@ -191,7 +191,7 @@ public:
     /** \brief Returns the Tetrahedron array.
      *
      */
-    const std::vector<Tetrahedron> &getTetrahedronArray();
+    const sofa::helper::vector<Tetrahedron> &getTetrahedronArray();
 
     /** \brief Returns the ith Tetrahedron.
      *
@@ -206,12 +206,12 @@ public:
     /** \brief Returns the Tetrahedron Vertex Shells array.
      *
      */
-    const std::vector< std::vector<unsigned int> > &getTetrahedronVertexShellArray() ;
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTetrahedronVertexShellArray() ;
 
     /** \brief Returns the set of tetrahedra adjacent to a given vertex.
      *
      */
-    const std::vector< unsigned int > &getTetrahedronVertexShell(const unsigned int i) ;
+    const sofa::helper::vector< unsigned int > &getTetrahedronVertexShell(const unsigned int i) ;
 
     /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
      *
@@ -220,7 +220,7 @@ public:
     /** \brief Returns the Tetrahedron Edges  array.
      *
      */
-    const std::vector< TetrahedronEdges > &getTetrahedronEdgeArray() ;
+    const sofa::helper::vector< TetrahedronEdges > &getTetrahedronEdgeArray() ;
 
     /** \brief Returns the 6 edges adjacent to a given tetrahedron.
      *
@@ -230,7 +230,7 @@ public:
     /** \brief Returns the Tetrahedron Triangles  array.
      *
      */
-    const std::vector< TetrahedronTriangles > &getTetrahedronTriangleArray() ;
+    const sofa::helper::vector< TetrahedronTriangles > &getTetrahedronTriangleArray() ;
 
     /** \brief Returns the 4 triangles adjacent to a given tetrahedron.
      *
@@ -241,22 +241,22 @@ public:
     /** \brief Returns the Tetrahedron Edge Shells array.
      *
      */
-    const std::vector< std::vector<unsigned int> > &getTetrahedronEdgeShellArray() ;
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTetrahedronEdgeShellArray() ;
 
     /** \brief Returns the set of tetrahedra adjacent to a given edge.
      *
      */
-    const std::vector< unsigned int > &getTetrahedronEdgeShell(const unsigned int i) ;
+    const sofa::helper::vector< unsigned int > &getTetrahedronEdgeShell(const unsigned int i) ;
 
     /** \brief Returns the Tetrahedron Triangle Shells array.
          *
          */
-    const std::vector< std::vector<unsigned int> > &getTetrahedronTriangleShellArray() ;
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTetrahedronTriangleShellArray() ;
 
     /** \brief Returns the set of tetrahedra adjacent to a given triangle.
      *
      */
-    const std::vector< unsigned int > &getTetrahedronTriangleShell(const unsigned int i) ;
+    const sofa::helper::vector< unsigned int > &getTetrahedronTriangleShell(const unsigned int i) ;
 
 
     /** Returns the indices of a tetrahedron given four vertex indices : returns -1 if none */
@@ -268,8 +268,8 @@ public:
 
 
     TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
-            const std::vector< unsigned int > &DOFIndex = (const std::vector< unsigned int >)0,
-            const std::vector< Tetrahedron >         &tetrahedra    = (const std::vector< Tetrahedron >)        0 );
+            const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
+            const sofa::helper::vector< Tetrahedron >         &tetrahedra    = (const sofa::helper::vector< Tetrahedron >)        0 );
 
     template< typename DataTypes >
     friend class TetrahedronSetTopologyModifier;
@@ -277,11 +277,11 @@ protected:
     /** \brief Returns a non-const tetrahedron vertex shell given a vertex index for subsequent modification
      *
      */
-    std::vector< unsigned int > &getTetrahedronVertexShellForModification(const unsigned int vertexIndex);
+    sofa::helper::vector< unsigned int > &getTetrahedronVertexShellForModification(const unsigned int vertexIndex);
     /** \brief Returns a non-const tetrahedron edge shell given the index of an edge for subsequent modification
       *
       */
-    std::vector< unsigned int > &getTetrahedronEdgeShellForModification(const unsigned int edgeIndex);
+    sofa::helper::vector< unsigned int > &getTetrahedronEdgeShellForModification(const unsigned int edgeIndex);
 
 
 };
@@ -315,10 +315,10 @@ public:
      * \sa addTetrahedraProcess
      */
     void addTetrahedraWarning(const unsigned int nTetrahedra,
-            const std::vector< Tetrahedron >& tetrahedraList,
-            const std::vector< unsigned int >& tetrahedraIndexList,
-            const std::vector< std::vector< unsigned int > > & ancestors= (const std::vector< std::vector<unsigned int > >) 0 ,
-            const std::vector< std::vector< double > >& baryCoefs= (const std::vector< std::vector< double > >)0) ;
+            const sofa::helper::vector< Tetrahedron >& tetrahedraList,
+            const sofa::helper::vector< unsigned int >& tetrahedraIndexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors= (const sofa::helper::vector< sofa::helper::vector<unsigned int > >) 0 ,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs= (const sofa::helper::vector< sofa::helper::vector< double > >)0) ;
 
 
 
@@ -326,7 +326,7 @@ public:
      *
      * \sa addTetrahedraWarning
      */
-    virtual void addTetrahedraProcess(const std::vector< Tetrahedron > &tetrahedra);
+    virtual void addTetrahedraProcess(const sofa::helper::vector< Tetrahedron > &tetrahedra);
 
     /** \brief Sends a message to warn that some tetrahedra are about to be deleted.
      *
@@ -334,7 +334,7 @@ public:
      *
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
      */
-    void removeTetrahedraWarning( std::vector<unsigned int> &tetrahedra);
+    void removeTetrahedraWarning( sofa::helper::vector<unsigned int> &tetrahedra);
 
     /** \brief Remove a subset of tetrahedra
      *
@@ -344,13 +344,13 @@ public:
      * \sa removeTetrahedraWarning
      * @param removeIsolatedItems if true remove isolated triangles, edges and vertices
      */
-    virtual void removeTetrahedraProcess( const std::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
+    virtual void removeTetrahedraProcess( const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
     /** \brief Actually Add some triangles to this topology.
        *
        * \sa addTrianglesWarning
        */
-    virtual void addTrianglesProcess(const std::vector< Triangle > &triangles);
+    virtual void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles);
 
 
     /** \brief Remove a subset of triangles
@@ -358,13 +358,13 @@ public:
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
      * @param removeIsolatedItems if true remove isolated edges and vertices
      */
-    virtual void removeTrianglesProcess(const std::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
+    virtual void removeTrianglesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
     /** \brief Add some edges to this topology.
     *
     * \sa addEdgesWarning
     */
-    virtual void addEdgesProcess(const std::vector< Edge > &edges);
+    virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
 
 
     /** \brief Remove a subset of edges
@@ -375,7 +375,7 @@ public:
     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
     * @param removeIsolatedItems if true remove isolated vertices
     */
-    virtual void removeEdgesProcess( const std::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
+    virtual void removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
 
 
@@ -389,8 +389,8 @@ public:
      * \sa addPointsWarning
      */
     virtual void addPointsProcess(const unsigned int nPoints,
-            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
-            const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0 );
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
 
 
@@ -401,7 +401,7 @@ public:
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
      * \sa removePointsWarning
      */
-    virtual void removePointsProcess( std::vector<unsigned int> &indices);
+    virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices);
 
 
 
@@ -409,7 +409,7 @@ public:
      *
      * \see MechanicalObject::renumberValues
      */
-    virtual void renumberPointsProcess( const std::vector<unsigned int> &index );
+    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index );
 
 
 protected:

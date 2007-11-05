@@ -30,19 +30,19 @@ class EdgesAdded : public core::componentmodel::topology::TopologyChange
 public:
     unsigned int nEdges;
 
-    std::vector< Edge > edgeArray;
+    sofa::helper::vector< Edge > edgeArray;
 
-    std::vector< unsigned int > edgeIndexArray;
+    sofa::helper::vector< unsigned int > edgeIndexArray;
 
-    std::vector< std::vector< unsigned int > > ancestorsList;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
 
-    std::vector< std::vector< double > > coefs;
+    sofa::helper::vector< sofa::helper::vector< double > > coefs;
 
     EdgesAdded(const unsigned int nE,
-            const std::vector< Edge >& edgesList = (const std::vector< Edge >)0,
-            const std::vector< unsigned int >& edgesIndex = (const std::vector< unsigned int >)0,
-            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
-            const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0)
+            const sofa::helper::vector< Edge >& edgesList = (const sofa::helper::vector< Edge >)0,
+            const sofa::helper::vector< unsigned int >& edgesIndex = (const sofa::helper::vector< unsigned int >)0,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0)
         : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::EDGESADDED), nEdges(nE), edgeArray(edgesList), edgeIndexArray(edgesIndex),ancestorsList(ancestors), coefs(baryCoefs)
     {   }
 
@@ -60,10 +60,10 @@ class EdgesRemoved : public core::componentmodel::topology::TopologyChange
 {
 
 public:
-    std::vector<unsigned int> removedEdgesArray;
+    sofa::helper::vector<unsigned int> removedEdgesArray;
 
 public:
-    EdgesRemoved(const std::vector<unsigned int> _eArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::EDGESREMOVED), removedEdgesArray(_eArray)
+    EdgesRemoved(const sofa::helper::vector<unsigned int> _eArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::EDGESREMOVED), removedEdgesArray(_eArray)
     {
         std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") created"<<std::endl;
     }
@@ -72,7 +72,7 @@ public:
         std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") destroyed"<<std::endl;
     }
 
-    const std::vector<unsigned int> &getArray() const
+    const sofa::helper::vector<unsigned int> &getArray() const
     {
         return removedEdgesArray;
     }
@@ -105,9 +105,9 @@ private:
 
 protected:
     /*** The array that stores the set of edges in the edge set */
-    std::vector<Edge> m_edge;
+    sofa::helper::vector<Edge> m_edge;
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
-    std::vector< std::vector< unsigned int > > m_edgeVertexShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_edgeVertexShell;
 
     /** \brief Creates the EdgeSet array.
      *
@@ -119,7 +119,7 @@ public:
     /** \brief Returns the Edge array.
      *
      */
-    const std::vector<Edge> &getEdgeArray();
+    const sofa::helper::vector<Edge> &getEdgeArray();
 
 
 
@@ -140,12 +140,12 @@ public:
     /** \brief Returns the Edge Shell array.
      *
      */
-    const std::vector< std::vector<unsigned int> > &getEdgeVertexShellArray() ;
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getEdgeVertexShellArray() ;
 
     /** \brief Returns the edge shell of the ith DOF.
      *
      */
-    const std::vector< unsigned int > &getEdgeVertexShell(const unsigned int i) ;
+    const sofa::helper::vector< unsigned int > &getEdgeVertexShell(const unsigned int i) ;
     /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
      *
      */
@@ -158,8 +158,8 @@ public:
     virtual bool checkTopology() const;
 
 
-    EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector< unsigned int > &DOFIndex = (const std::vector< unsigned int >)0,
-            const std::vector< Edge >         &edges    = (const std::vector< Edge >)        0 );
+    EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
+            const sofa::helper::vector< Edge >         &edges    = (const sofa::helper::vector< Edge >)        0 );
 
     template< typename DataTypes >
     friend class EdgeSetTopologyModifier;
@@ -167,7 +167,7 @@ protected:
     /** \brief Returns a non-const edge shell of the ith DOF for subsequent modification
      *
      */
-    std::vector< unsigned int > &getEdgeVertexShellForModification(const unsigned int i);
+    sofa::helper::vector< unsigned int > &getEdgeVertexShellForModification(const unsigned int i);
 
 };
 
@@ -202,23 +202,23 @@ public:
      * \sa addEdgesProcess
      */
     virtual void addEdgesWarning(const unsigned int nEdges,
-            const std::vector< Edge >& edgesList,
-            const std::vector< unsigned int >& edgesIndexList,
-            const std::vector< std::vector< unsigned int > > & ancestors= (const std::vector< std::vector<unsigned int > >) 0 ,
-            const std::vector< std::vector< double > >& baryCoefs= (const std::vector< std::vector< double > >)0);
+            const sofa::helper::vector< Edge >& edgesList,
+            const sofa::helper::vector< unsigned int >& edgesIndexList,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors= (const sofa::helper::vector< sofa::helper::vector<unsigned int > >) 0 ,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs= (const sofa::helper::vector< sofa::helper::vector< double > >)0);
 
 
     /** \brief Add some edges to this topology.
      *
      * \sa addEdgesWarning
      */
-    void addEdgesProcess(const std::vector< Edge > &edges);
+    void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
 
     /** \brief Sends a message to warn that some edges are about to be deleted.
      *
      * \sa removeEdgesProcess
      */
-    void removeEdgesWarning( std::vector<unsigned int> &edges);
+    void removeEdgesWarning( sofa::helper::vector<unsigned int> &edges);
 
     /** \brief Effectively Remove a subset of edges. Eventually remove isolated vertices
      *
@@ -231,7 +231,7 @@ public:
      *
      * @param removeIsolatedItems if true isolated vertices are also removed
      */
-    virtual void removeEdgesProcess(const std::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
+    virtual void removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
     /** \brief Add some edges to this topology.
      *
@@ -243,8 +243,8 @@ public:
      * \sa addPointsWarning
      */
     virtual void addPointsProcess(const unsigned int nPoints,
-            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
-            const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0 );
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
 
 
@@ -255,24 +255,24 @@ public:
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
      * \sa removePointsWarning
      */
-    virtual void removePointsProcess( std::vector<unsigned int> &indices);
+    virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices);
 
     /** \brief Reorder this topology.
      *
      * \see MechanicalObject::renumberValues
      */
-    virtual void renumberPointsProcess( const std::vector<unsigned int> &index );
+    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index );
 
     /** \brief Fuse the edges.
      *
      */
-    virtual void fuseEdgesProcess(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair);
+    virtual void fuseEdgesProcess(const sofa::helper::vector< std::pair< unsigned int, unsigned int > >& edgesPair);
 
     /** \brief Split the edges.
      *
      */
-    virtual void splitEdgesProcess( std::vector<unsigned int> &indices,
-            const std::vector< std::vector< double > >& baryCoefs = std::vector< std::vector< double > >(0));
+    virtual void splitEdgesProcess( sofa::helper::vector<unsigned int> &indices,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = sofa::helper::vector< sofa::helper::vector< double > >(0));
 
 protected:
     void addEdge(Edge e);
@@ -295,7 +295,7 @@ public:
         @param edges an array of edge indices to be removed (note that the array is not const since it needs to be sorted)
         *
         */
-    virtual void removeEdges(std::vector< unsigned int >& edges);
+    virtual void removeEdges(sofa::helper::vector< unsigned int >& edges);
 
     /** \brief add a set  of edges
         @param edges an array of pair of vertex indices describing the edge to be created
@@ -303,21 +303,21 @@ public:
         @param baryCoefs for each edge provides the barycentric coordinates (sum to 1) associated with each ancestor (optional)
         *
         */
-    virtual void addEdges(const std::vector< Edge >& edges,
-            const std::vector< std::vector< unsigned int > > & ancestors= (const std::vector< std::vector<unsigned int > >) 0 ,
-            const std::vector< std::vector< double > >& baryCoefs= (const std::vector< std::vector< double > >)0) ;
+    virtual void addEdges(const sofa::helper::vector< Edge >& edges,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors= (const sofa::helper::vector< sofa::helper::vector<unsigned int > >) 0 ,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs= (const sofa::helper::vector< sofa::helper::vector< double > >)0) ;
 
 
     /** \brief Fuse a list of pair edges.
      *
      */
-    virtual void fuseEdges(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair);
+    virtual void fuseEdges(const sofa::helper::vector< std::pair< unsigned int, unsigned int > >& edgesPair);
 
     /** \brief Split an array of edges. On each edge, a vertex is created based on its barycentric coordinates
      *
      */
-    virtual void splitEdges( std::vector<unsigned int> &indices,
-            const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0 );
+    virtual void splitEdges( sofa::helper::vector<unsigned int> &indices,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
 
     EdgeSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)

@@ -26,8 +26,8 @@ class GridCell
 {
 private:
     //Vector3 minVect, maxVect; // minx, miny, minz; maxx, maxy, maxz
-    std::vector<core::CollisionElementIterator> collisElems; // elements wich are added at each iteration
-    std::vector<core::CollisionElementIterator> collisElemsImmobile[2]; // elements which are added only once
+    sofa::helper::vector<core::CollisionElementIterator> collisElems; // elements wich are added at each iteration
+    sofa::helper::vector<core::CollisionElementIterator> collisElemsImmobile[2]; // elements which are added only once
 
     Vector3 minCell, maxCell;
     int timeStamp;
@@ -35,7 +35,7 @@ public:
     // Adding a sphere in a cell of the voxel grid.
     // When adding a sphere, we test if there are collision with the sphere in the cell
     // then we add it in the vector sphere
-    void add(VoxelGrid* grid, core::CollisionElementIterator collElem, std::vector<core::CollisionElementIterator> &vectCollis, int phase);
+    void add(VoxelGrid* grid, core::CollisionElementIterator collElem, sofa::helper::vector<core::CollisionElementIterator> &vectCollis, int phase);
     void eraseAll(int timeStampMethod);
     GridCell();
 

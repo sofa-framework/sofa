@@ -37,7 +37,7 @@ protected:
         int m1, m2;   ///< the two attached points
     };
 
-    std::vector<ConstraintData> constraints;
+    sofa::helper::vector<ConstraintData> constraints;
 
 public:
 

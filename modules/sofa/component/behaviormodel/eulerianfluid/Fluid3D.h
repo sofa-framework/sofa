@@ -111,8 +111,8 @@ protected:
         int p[3];
     };
 
-    std::vector<Vertex> points;
-    std::vector<Face> facets;
+    sofa::helper::vector<Vertex> points;
+    sofa::helper::vector<Face> facets;
 
     /// For each cube, store the vertex indices on each 3 first edges, and the data value
     struct CubeData
@@ -121,9 +121,9 @@ protected:
     };
 
     // temporary storage for marching cube
-    std::vector<CubeData> planes;
-    //typename std::vector<CubeData>::iterator P0; /// Pointer to first plane
-    //typename std::vector<CubeData>::iterator P1; /// Pointer to second plane
+    sofa::helper::vector<CubeData> planes;
+    //typename sofa::helper::vector<CubeData>::iterator P0; /// Pointer to first plane
+    //typename sofa::helper::vector<CubeData>::iterator P1; /// Pointer to second plane
 
     template<int C>
     int addPoint(int x,int y,int z, real v0, real v1, real iso)

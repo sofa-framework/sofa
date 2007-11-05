@@ -83,7 +83,7 @@ protected:
     // The storage is a SparseMatrix
     // Each constraint (Type TConst) contains the index of the related DOF
     VecConst *c;
-    std::vector<unsigned int> constraintId;
+    sofa::helper::vector<unsigned int> constraintId;
 
     double translation[3];
     double scale;
@@ -91,8 +91,8 @@ protected:
     /// @name Integration-related data
     /// @{
 
-    std::vector< VecCoord * > vectorsCoord;
-    std::vector< VecDeriv * > vectorsDeriv;
+    sofa::helper::vector< VecCoord * > vectorsCoord;
+    sofa::helper::vector< VecDeriv * > vectorsDeriv;
     int vsize; ///< Number of elements to allocate in vectors
 
     void setVecCoord(unsigned int index, VecCoord* v);
@@ -181,7 +181,7 @@ public:
      * Result of this method is :
      * newValue[ i ] = oldValue[ index[i] ];
      */
-    void renumberValues( const std::vector<unsigned int> &index );
+    void renumberValues( const sofa::helper::vector<unsigned int> &index );
 
 
 
@@ -189,7 +189,7 @@ public:
      *
      * Sum of the coefs should usually equal to 1.0
      */
-    void computeWeightedValue( const unsigned int i, const std::vector< unsigned int >& ancestors, const std::vector< double >& coefs);
+    void computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs);
 
 
     virtual void applyTranslation (const double dx,const double dy,const double dz);
@@ -197,7 +197,7 @@ public:
     virtual void applyScale (const double s);
 
     /// Get the indices of the particles located in the given bounding box
-    void getIndicesInSpace(std::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
+    void getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
 
 
     /// @Base Matrices and Vectors Interface
@@ -226,7 +226,7 @@ public:
     virtual void addDxToCollisionModel(void);
 
     void setConstraintId(unsigned int);
-    std::vector<unsigned int>& getConstraintId();
+    sofa::helper::vector<unsigned int>& getConstraintId();
 
 
     /// @name Integration related methods

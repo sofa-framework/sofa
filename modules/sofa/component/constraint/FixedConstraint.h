@@ -105,7 +105,7 @@ public:
 protected :
 
     // Define TestNewPointFunction
-    static bool FCTestNewPointFunction(int, void*, const std::vector< unsigned int > &, const std::vector< double >& );
+    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
 
     // Define RemovalFunction
     static void FCRemovalFunction ( int , void*);

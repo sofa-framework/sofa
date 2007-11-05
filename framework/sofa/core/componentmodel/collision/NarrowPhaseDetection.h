@@ -47,7 +47,7 @@ class NarrowPhaseDetection : virtual public Detection
 public:
     typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
 protected:
-    //std::vector< std::pair<core::CollisionElementIterator, core::CollisionElementIterator> > elemPairs;
+    //sofa::helper::vector< std::pair<core::CollisionElementIterator, core::CollisionElementIterator> > elemPairs;
     DetectionOutputMap outputsMap;
 
 public:
@@ -64,9 +64,9 @@ public:
 
     virtual void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair) = 0;
 
-    virtual void addCollisionPairs(const std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
+    virtual void addCollisionPairs(const sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >& v)
     {
-        for (std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
+        for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
             addCollisionPair(*it);
     }
 
@@ -91,7 +91,7 @@ public:
         }
     }
 
-    //std::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
+    //sofa::helper::vector<std::pair<core::CollisionElementIterator, core::CollisionElementIterator> >& getCollisionElementPairs() { return elemPairs; }
 
     DetectionOutputMap& getDetectionOutputs()
     {

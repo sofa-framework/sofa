@@ -128,14 +128,14 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
 {
     if (!cm->isStatic() || gettimestamp(cm) < 0)
     {
-        //const std::vector<CollisionElementIterator>& vectElems = cm->getCollisionElements();
+        //const sofa::helper::vector<CollisionElementIterator>& vectElems = cm->getCollisionElements();
         CollisionElementIterator it = cm->begin();
         CollisionElementIterator itEnd = cm->end();
 
         const bool proximity  = intersectionMethod->useProximity();
         const double distance = intersectionMethod->getAlarmDistance();
 
-        std::vector<CollisionElementIterator> collisionElems;
+        sofa::helper::vector<CollisionElementIterator> collisionElems;
         Vector3 minBBox, maxBBox;
         Vector3 ijk, lmn;
         bool collisionDetected = false;
@@ -170,8 +170,8 @@ void VoxelGrid::add(CollisionModel *cm, int phase)
             }
 
             // get the collision pair or self collision pair for this model
-            std::vector<CollisionElementIterator>::const_iterator itCollis = collisionElems.begin();
-            std::vector<CollisionElementIterator>::const_iterator itCollisEnd = collisionElems.end();
+            sofa::helper::vector<CollisionElementIterator>::const_iterator itCollis = collisionElems.begin();
+            sofa::helper::vector<CollisionElementIterator>::const_iterator itCollisEnd = collisionElems.end();
 
             for (; itCollis != itCollisEnd; itCollis++)
             {
@@ -215,8 +215,8 @@ void VoxelGrid::addCollisionPair(const std::pair<CollisionModel*, CollisionModel
     if (cm1->empty() || cm2->empty())
         return;
 
-    //const std::vector<CollisionElementIterator>& vectElems1 = cm1->getCollisionElements();
-    //const std::vector<CollisionElementIterator>& vectElems2 = cm2->getCollisionElements();
+    //const sofa::helper::vector<CollisionElementIterator>& vectElems1 = cm1->getCollisionElements();
+    //const sofa::helper::vector<CollisionElementIterator>& vectElems2 = cm2->getCollisionElements();
 
     if (!intersectionMethod->isSupported(cm1, cm2))
         return;
@@ -281,8 +281,8 @@ void VoxelGrid::draw()
             }
         }
     }
-    std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it = elemPairs.begin();
-    std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator itEnd = elemPairs.end();
+    sofa::helper::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it = elemPairs.begin();
+    sofa::helper::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator itEnd = elemPairs.end();
     if (elemPairs.size() >= 1)
     {
         glDisable(GL_LIGHTING);
@@ -299,7 +299,7 @@ void VoxelGrid::draw()
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void GridCell::add(VoxelGrid* grid, CollisionElementIterator collisionElem, std::vector<CollisionElementIterator> &vectCollis, int phase)
+void GridCell::add(VoxelGrid* grid, CollisionElementIterator collisionElem, sofa::helper::vector<CollisionElementIterator> &vectCollis, int phase)
 {
     Intersection* intersectionMethod = grid->getIntersectionMethod();
     const bool proximity  = intersectionMethod->useProximity();
@@ -313,8 +313,8 @@ void GridCell::add(VoxelGrid* grid, CollisionElementIterator collisionElem, std:
     simulation::tree::GNode::ctime_t t0 = 0;
 
     {
-        std::vector < CollisionElementIterator >	::iterator it	 = collisElems.begin();
-        std::vector < CollisionElementIterator >	::iterator itEnd = collisElems.end();
+        sofa::helper::vector < CollisionElementIterator >	::iterator it	 = collisElems.begin();
+        sofa::helper::vector < CollisionElementIterator >	::iterator itEnd = collisElems.end();
 
         if (proximity)
         {
@@ -345,8 +345,8 @@ void GridCell::add(VoxelGrid* grid, CollisionElementIterator collisionElem, std:
         }
     }
     {
-        std::vector < CollisionElementIterator >::iterator it = collisElemsImmobile[phase].begin();
-        std::vector < CollisionElementIterator >::iterator itEnd = collisElemsImmobile[phase].end();
+        sofa::helper::vector < CollisionElementIterator >::iterator it = collisElemsImmobile[phase].begin();
+        sofa::helper::vector < CollisionElementIterator >::iterator itEnd = collisElemsImmobile[phase].end();
         for (; it < itEnd; it++)
         {
             if (!collisionElem.canCollideWith(*it)) continue;

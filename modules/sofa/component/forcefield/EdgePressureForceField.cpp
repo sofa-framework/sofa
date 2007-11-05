@@ -148,7 +148,7 @@ template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 {
     VecCoord& x = *this->mstate->getX();
-    std::vector<unsigned int> vArray;
+    sofa::helper::vector<unsigned int> vArray;
     Index i,j,k,l,m;
     int n;
     std::set<std::pair<unsigned int,unsigned int> > edgeSet;

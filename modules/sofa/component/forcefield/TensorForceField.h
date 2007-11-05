@@ -147,12 +147,12 @@ private:
     Real alpha_;
     // Lame coefficient
     Real lambda_, mu_;
-    std::vector< Coord >    vertex_      ;
-    std::vector< Edge >         edge_        ;
-    std::vector< Triangle >     triangle_    ;
-    std::vector< Tetrahedron >  tetrahedron_ ;
-    std::vector< VertexTensor > vertexTensor_;
-    std::vector< EdgeTensor >   edgeTensor_  ;
+    sofa::helper::vector< Coord >    vertex_      ;
+    sofa::helper::vector< Edge >         edge_        ;
+    sofa::helper::vector< Triangle >     triangle_    ;
+    sofa::helper::vector< Tetrahedron >  tetrahedron_ ;
+    sofa::helper::vector< VertexTensor > vertexTensor_;
+    sofa::helper::vector< EdgeTensor >   edgeTensor_  ;
 
 private:
     // load the topological informations from a file.

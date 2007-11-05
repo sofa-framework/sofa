@@ -54,7 +54,7 @@ void EdgeSetTopologyContainer::createEdgeVertexShellArray ()
 
 
 
-const std::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
+const sofa::helper::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
 {
     if (!m_edge.size())
         createEdgeSetArray();
@@ -64,8 +64,8 @@ const std::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
 
 int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned int v2)
 {
-    const std::vector< unsigned int > &es1=getEdgeVertexShell(v1) ;
-    const std::vector<Edge> &ea=getEdgeArray();
+    const sofa::helper::vector< unsigned int > &es1=getEdgeVertexShell(v1) ;
+    const sofa::helper::vector<Edge> &ea=getEdgeArray();
     unsigned int i=0;
     int result= -1;
     while ((i<es1.size()) && (result== -1))
@@ -93,7 +93,7 @@ bool EdgeSetTopologyContainer::checkTopology() const
         unsigned int i,j;
         for (i=0; i<m_edgeVertexShell.size(); ++i)
         {
-            const std::vector<unsigned int> &es=m_edgeVertexShell[i];
+            const sofa::helper::vector<unsigned int> &es=m_edgeVertexShell[i];
             for (j=0; j<es.size(); ++j)
                 assert((m_edge[es[j]].first==i) ||  (m_edge[es[j]].second==i));
         }
@@ -112,7 +112,7 @@ unsigned int EdgeSetTopologyContainer::getNumberOfEdges()
 
 
 
-const std::vector< std::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeVertexShellArray()
+const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeVertexShellArray()
 {
     if (!m_edgeVertexShell.size())
         createEdgeVertexShellArray();
@@ -124,7 +124,7 @@ const std::vector< std::vector<unsigned int> > &EdgeSetTopologyContainer::getEdg
 
 
 
-const std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShell(const unsigned int i)
+const sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShell(const unsigned int i)
 {
     if (!m_edgeVertexShell.size())
         createEdgeVertexShellArray();
@@ -132,7 +132,7 @@ const std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShell(
 }
 
 
-std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShellForModification(const unsigned int i)
+sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShellForModification(const unsigned int i)
 {
     if (!m_edgeVertexShell.size())
         createEdgeVertexShellArray();
@@ -148,8 +148,8 @@ std::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShellForModi
 */
 
 
-EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector< unsigned int > &DOFIndex,
-        const std::vector< Edge >         &edges )
+EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector< unsigned int > &DOFIndex,
+        const sofa::helper::vector< Edge >         &edges )
     : PointSetTopologyContainer( top, DOFIndex ), m_edge( edges )
 {
 

@@ -37,7 +37,7 @@ protected:
         Coord pos;    ///< constrained position of the point
     };
 
-    std::vector<PointConstraint> constraints;
+    sofa::helper::vector<PointConstraint> constraints;
 
 public:
 

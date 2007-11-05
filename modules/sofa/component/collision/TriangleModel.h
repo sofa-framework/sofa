@@ -79,7 +79,7 @@ protected:
         Vector3 normal;
     };
 
-    std::vector<TriangleInfo> elems;
+    sofa::helper::vector<TriangleInfo> elems;
 
     class Loader;
 

@@ -70,7 +70,7 @@ protected:
         int i1,i2;
     };
 
-    std::vector<LineData> elems;
+    sofa::helper::vector<LineData> elems;
 
     int meshRevision;
     bool updateFromTopology();

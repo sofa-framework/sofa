@@ -51,13 +51,13 @@ namespace collision
 class Pipeline : public virtual sofa::core::objectmodel::BaseObject
 {
 protected:
-    //std::vector<DetectionOutput*> detectionOutputs;
+    //sofa::helper::vector<DetectionOutput*> detectionOutputs;
 
-    std::vector<Intersection*> intersectionMethods;
-    std::vector<BroadPhaseDetection*> broadPhaseDetections;
-    std::vector<NarrowPhaseDetection*> narrowPhaseDetections;
-    std::vector<ContactManager*> contactManagers;
-    std::vector<CollisionGroupManager*> groupManagers;
+    sofa::helper::vector<Intersection*> intersectionMethods;
+    sofa::helper::vector<BroadPhaseDetection*> broadPhaseDetections;
+    sofa::helper::vector<NarrowPhaseDetection*> narrowPhaseDetections;
+    sofa::helper::vector<ContactManager*> contactManagers;
+    sofa::helper::vector<CollisionGroupManager*> groupManagers;
 
     Intersection* intersectionMethod;
     BroadPhaseDetection* broadPhaseDetection;
@@ -88,13 +88,13 @@ public:
         computeCollisionResponse();
     }
 
-    //std::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }
+    //sofa::helper::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }
 
 protected:
     /// Remove collision response from last step
     virtual void doCollisionReset() = 0;
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void doCollisionDetection(const std::vector<core::CollisionModel*>& collisionModels) = 0;
+    virtual void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels) = 0;
     /// Add collision response in the simulation graph
     virtual void doCollisionResponse() = 0;
 };

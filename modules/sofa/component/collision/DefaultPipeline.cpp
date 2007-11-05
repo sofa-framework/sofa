@@ -77,8 +77,8 @@ void DefaultPipeline::doCollisionReset()
     // clear all contacts
     if (contactManager!=NULL)
     {
-        const std::vector<Contact*>& contacts = contactManager->getContacts();
-        for (std::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+        const sofa::helper::vector<Contact*>& contacts = contactManager->getContacts();
+        for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
         {
             (*it)->removeResponse();
         }
@@ -92,7 +92,7 @@ void DefaultPipeline::doCollisionReset()
     }
 }
 
-void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionModel*>& collisionModels)
+void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels)
 {
     core::objectmodel::BaseContext* scene = getContext();
     simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(scene);
@@ -102,8 +102,8 @@ void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionMode
 
     // clear all detection outputs
     //{
-    //std::vector< DetectionOutput* >::iterator it = detectionOutputs.begin();
-    //std::vector< DetectionOutput* >::iterator itEnd = detectionOutputs.end();
+    //sofa::helper::vector< DetectionOutput* >::iterator it = detectionOutputs.begin();
+    //sofa::helper::vector< DetectionOutput* >::iterator itEnd = detectionOutputs.end();
     //for (; it != itEnd; it++)
     //	delete *it;
     //}
@@ -113,14 +113,14 @@ void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionMode
     // First, we compute a bounding volume for the collision model (for example bounding sphere)
     // or we have loaded a collision model that knows its other model
 
-    std::vector<CollisionModel*> vectBoundingVolume;
+    sofa::helper::vector<CollisionModel*> vectBoundingVolume;
     {
         if (node) t0 = node->startTime();
         const bool continuous = intersectionMethod->useContinuous();
         const double dt       = getContext()->getDt();
 
-        std::vector<CollisionModel*>::const_iterator it = collisionModels.begin();
-        std::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
+        sofa::helper::vector<CollisionModel*>::const_iterator it = collisionModels.begin();
+        sofa::helper::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
         int nActive = 0;
         for (; it != itEnd; it++)
         {
@@ -149,7 +149,7 @@ void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionMode
     VERBOSE(std::cout << "NarrowPhaseDetection "<<narrowPhaseDetection->getName()<<std::endl);
     if (node) t0 = node->startTime();
     narrowPhaseDetection->beginNarrowPhase();
-    std::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
+    sofa::helper::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
     VERBOSE(std::cout << vectCMPair.size()<<" colliding model pairs"<<std::endl);
     narrowPhaseDetection->addCollisionPairs(vectCMPair);
     narrowPhaseDetection->endNarrowPhase();
@@ -158,9 +158,9 @@ void DefaultPipeline::doCollisionDetection(const std::vector<core::CollisionMode
     VERBOSE(std::cout << "CollisionDetection "<<std::endl);
     // then we start the real detection between primitives
     {
-        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >& vectElemPair = narrowPhaseDetection->getCollisionElementPairs();
-        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it4 = vectElemPair.begin();
-        std::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it4End = vectElemPair.end();
+        sofa::helper::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >& vectElemPair = narrowPhaseDetection->getCollisionElementPairs();
+        sofa::helper::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it4 = vectElemPair.begin();
+        sofa::helper::vector<std::pair<CollisionElementIterator, CollisionElementIterator> >::iterator it4End = vectElemPair.end();
 
         // Cache the intersector used
         ElementIntersector* intersector = NULL;
@@ -209,12 +209,12 @@ void DefaultPipeline::doCollisionResponse()
 
     // finally we start the creation of collisionGroup
 
-    const std::vector<Contact*>& contacts = contactManager->getContacts();
+    const sofa::helper::vector<Contact*>& contacts = contactManager->getContacts();
 
     // First we remove all contacts with static objects and directly add them
-    std::vector<Contact*> notStaticContacts;
+    sofa::helper::vector<Contact*> notStaticContacts;
 
-    for (std::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
+    for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
     {
         Contact* c = *it;
         if (c->getCollisionModels().first->isStatic())
@@ -233,7 +233,7 @@ void DefaultPipeline::doCollisionResponse()
     if (groupManager==NULL)
     {
         VERBOSE(std::cout << "Linking all contacts to Scene"<<std::endl);
-        for (std::vector<Contact*>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); it++)
+        for (sofa::helper::vector<Contact*>::const_iterator it = notStaticContacts.begin(); it!=notStaticContacts.end(); it++)
         {
             (*it)->createResponse(scene);
         }

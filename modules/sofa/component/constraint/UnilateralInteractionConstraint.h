@@ -52,7 +52,7 @@ protected:
         Coord Pfree, Qfree;
     };
 
-    std::vector<Contact> contacts;
+    sofa::helper::vector<Contact> contacts;
     Real epsilon;
 
 public:

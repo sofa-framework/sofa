@@ -50,14 +50,14 @@ using namespace core::componentmodel::topology;
 template<class MassType>
 void MassPointCreationFunction(int ,
         void* , MassType & t,
-        const std::vector< unsigned int > &,
-        const std::vector< double >&)
+        const sofa::helper::vector< unsigned int > &,
+        const sofa::helper::vector< double >&)
 {
     t=0;
 }
 
 template< class DataTypes, class MassType>
-inline void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
+inline void MassEdgeCreationFunction(const sofa::helper::vector<unsigned int> &edgeAdded,
         void* param, vector<MassType> &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
@@ -66,7 +66,7 @@ inline void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
         EdgeSetTopology<DataTypes> *est = dynamic_cast<EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(est!=0);
         EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
-        const std::vector<Edge> &edgeArray=container->getEdgeArray();
+        const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
         EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
         typename DataTypes::Real md=dm->getMassDensity();
         typename DataTypes::Real mass;
@@ -87,7 +87,7 @@ inline void MassEdgeCreationFunction(const std::vector<unsigned int> &edgeAdded,
 }
 
 template< class DataTypes, class MassType>
-inline void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved,
+inline void MassEdgeDestroyFunction(const sofa::helper::vector<unsigned int> &edgeRemoved,
         void* param, vector<MassType> &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
@@ -96,7 +96,7 @@ inline void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved
         EdgeSetTopology<DataTypes> *est = dynamic_cast<EdgeSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(est!=0);
         EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
-        const std::vector<Edge> &edgeArray=container->getEdgeArray();
+        const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
         EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
         typename DataTypes::Real md=dm->getMassDensity();
         typename DataTypes::Real mass;
@@ -117,7 +117,7 @@ inline void MassEdgeDestroyFunction(const std::vector<unsigned int> &edgeRemoved
 }
 
 template< class DataTypes, class MassType>
-inline void MassTriangleCreationFunction(const std::vector<unsigned int> &triangleAdded,
+inline void MassTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
         void* param, vector<MassType> &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
@@ -126,7 +126,7 @@ inline void MassTriangleCreationFunction(const std::vector<unsigned int> &triang
         TriangleSetTopology<DataTypes> *tst = dynamic_cast<TriangleSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(tst!=0);
         TriangleSetTopologyContainer *container=tst->getTriangleSetTopologyContainer();
-        const std::vector<Triangle> &triangleArray=container->getTriangleArray();
+        const sofa::helper::vector<Triangle> &triangleArray=container->getTriangleArray();
         TriangleSetGeometryAlgorithms<DataTypes> *ga=tst->getTriangleSetGeometryAlgorithms();
         typename DataTypes::Real md=dm->getMassDensity();
         typename DataTypes::Real mass;
@@ -148,7 +148,7 @@ inline void MassTriangleCreationFunction(const std::vector<unsigned int> &triang
 }
 
 template< class DataTypes, class MassType>
-inline void MassTriangleDestroyFunction(const std::vector<unsigned int> &triangleRemoved,
+inline void MassTriangleDestroyFunction(const sofa::helper::vector<unsigned int> &triangleRemoved,
         void* param, vector<MassType> &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
@@ -157,7 +157,7 @@ inline void MassTriangleDestroyFunction(const std::vector<unsigned int> &triangl
         TriangleSetTopology<DataTypes> *tst = dynamic_cast<TriangleSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(tst!=0);
         TriangleSetTopologyContainer *container=tst->getTriangleSetTopologyContainer();
-        const std::vector<Triangle> &triangleArray=container->getTriangleArray();
+        const sofa::helper::vector<Triangle> &triangleArray=container->getTriangleArray();
         TriangleSetGeometryAlgorithms<DataTypes> *ga=tst->getTriangleSetGeometryAlgorithms();
         typename DataTypes::Real md=dm->getMassDensity();
         typename DataTypes::Real mass;
@@ -183,7 +183,7 @@ inline void MassTriangleDestroyFunction(const std::vector<unsigned int> &triangl
 }
 
 template< class DataTypes, class MassType>
-inline void MassTetrahedronCreationFunction(const std::vector<unsigned int> &tetrahedronAdded,
+inline void MassTetrahedronCreationFunction(const sofa::helper::vector<unsigned int> &tetrahedronAdded,
         void* param, vector<MassType> &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
@@ -192,7 +192,7 @@ inline void MassTetrahedronCreationFunction(const std::vector<unsigned int> &tet
         TetrahedronSetTopology<DataTypes> *tst = dynamic_cast<TetrahedronSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(tst!=0);
         TetrahedronSetTopologyContainer *container=tst->getTetrahedronSetTopologyContainer();
-        const std::vector<Tetrahedron> &tetrahedronArray=container->getTetrahedronArray();
+        const sofa::helper::vector<Tetrahedron> &tetrahedronArray=container->getTetrahedronArray();
         TetrahedronSetGeometryAlgorithms<DataTypes> *ga=tst->getTetrahedronSetGeometryAlgorithms();
         typename DataTypes::Real md=dm->getMassDensity();
         typename DataTypes::Real mass;
@@ -216,7 +216,7 @@ inline void MassTetrahedronCreationFunction(const std::vector<unsigned int> &tet
 }
 
 template< class DataTypes, class MassType>
-inline void MassTetrahedronDestroyFunction(const std::vector<unsigned int> &tetrahedronRemoved,
+inline void MassTetrahedronDestroyFunction(const sofa::helper::vector<unsigned int> &tetrahedronRemoved,
         void* param, vector<MassType> &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
@@ -225,7 +225,7 @@ inline void MassTetrahedronDestroyFunction(const std::vector<unsigned int> &tetr
         TetrahedronSetTopology<DataTypes> *tst = dynamic_cast<TetrahedronSetTopology<DataTypes>*>(dm->getContext()->getMainTopology());
         assert(tst!=0);
         TetrahedronSetTopologyContainer *container=tst->getTetrahedronSetTopologyContainer();
-        const std::vector<Tetrahedron> &tetrahedronArray=container->getTetrahedronArray();
+        const sofa::helper::vector<Tetrahedron> &tetrahedronArray=container->getTetrahedronArray();
         TetrahedronSetGeometryAlgorithms<DataTypes> *ga=tst->getTetrahedronSetGeometryAlgorithms();
         typename DataTypes::Real md=dm->getMassDensity();
         typename DataTypes::Real mass;
@@ -431,7 +431,7 @@ void DiagonalMass<DataTypes, MassType>::init()
             TetrahedronSetTopologyContainer *container=tst->getTetrahedronSetTopologyContainer();
             TetrahedronSetGeometryAlgorithms<DataTypes> *ga=tst->getTetrahedronSetGeometryAlgorithms();
 
-            const std::vector<Tetrahedron> &ta=container->getTetrahedronArray();
+            const sofa::helper::vector<Tetrahedron> &ta=container->getTetrahedronArray();
             // resize array
             clear();
             masses.resize(tst->getDOFNumber());
@@ -461,7 +461,7 @@ void DiagonalMass<DataTypes, MassType>::init()
             TriangleSetTopologyContainer *container=trst->getTriangleSetTopologyContainer();
             TriangleSetGeometryAlgorithms<DataTypes> *ga=trst->getTriangleSetGeometryAlgorithms();
 
-            const std::vector<Triangle> &ta=container->getTriangleArray();
+            const sofa::helper::vector<Triangle> &ta=container->getTriangleArray();
             // resize array
             clear();
             masses.resize(trst->getDOFNumber());
@@ -491,7 +491,7 @@ void DiagonalMass<DataTypes, MassType>::init()
             EdgeSetTopologyContainer *container=est->getEdgeSetTopologyContainer();
             EdgeSetGeometryAlgorithms<DataTypes> *ga=est->getEdgeSetGeometryAlgorithms();
 
-            const std::vector<Edge> &ea=container->getEdgeArray();
+            const sofa::helper::vector<Edge> &ea=container->getEdgeArray();
             // resize array
             clear();
             masses.resize(est->getDOFNumber());
@@ -601,11 +601,11 @@ bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
 
 // Specialization for rigids
 template <>
-inline void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
+inline void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
         void* , vector<Rigid3dMass> &);
 
 template <>
-inline void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
+inline void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
         void* , vector<Rigid3dMass> &);
 
 template <>

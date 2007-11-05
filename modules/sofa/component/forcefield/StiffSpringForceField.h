@@ -37,7 +37,7 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
 
 protected:
-    std::vector<Mat>  dfdx;
+    sofa::helper::vector<Mat>  dfdx;
     double m_potentialEnergy;
 
     /// Accumulate the spring force and compute and store its stiffness

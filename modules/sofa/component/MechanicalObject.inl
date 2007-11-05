@@ -291,7 +291,7 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::renumberValues( const std::vector< unsigned int > &index )
+void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< unsigned int > &index )
 {
 
     // standard state vectors
@@ -304,13 +304,13 @@ void MechanicalObject<DataTypes>::renumberValues( const std::vector< unsigned in
     VecDeriv dx_cp = (*dx);
 
     // temporary state vectors
-    std::vector< VecCoord > vecCoord_cp;
+    sofa::helper::vector< VecCoord > vecCoord_cp;
     vecCoord_cp.resize( vectorsCoord.size() );
     for (unsigned int i = 0; i < vectorsCoord.size(); ++i)
     {
         vecCoord_cp[i] = ( *(vectorsCoord[i]) );
     }
-    std::vector< VecDeriv > vecDeriv_cp;
+    sofa::helper::vector< VecDeriv > vecDeriv_cp;
     vecDeriv_cp.resize( vectorsDeriv.size() );
     for (unsigned int i = 0; i < vectorsDeriv.size(); ++i)
     {
@@ -401,7 +401,7 @@ void MechanicalObject<DataTypes>::applyScale(const double s)
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::getIndicesInSpace(std::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
+void MechanicalObject<DataTypes>::getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const
 {
     const VecCoord& X = *getX();
     for( unsigned i=0; i<X.size(); ++i )
@@ -416,7 +416,7 @@ void MechanicalObject<DataTypes>::getIndicesInSpace(std::vector<unsigned>& indic
 }
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const std::vector< unsigned int >& ancestors, const std::vector< double >& coefs)
+void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs)
 {
     /// HD interpolate position, speed,force,...
     /// assume all coef sum to 1.0
@@ -1268,7 +1268,7 @@ void MechanicalObject<DataTypes>::setConstraintId(unsigned int i)
 }
 
 template <class DataTypes>
-std::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId()
+sofa::helper::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId()
 {
     return constraintId;
 }

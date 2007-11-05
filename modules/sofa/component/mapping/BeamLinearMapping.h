@@ -58,12 +58,12 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
 
 protected:
-    std::vector<Coord> points;
+    sofa::helper::vector<Coord> points;
     //Coord translation;
     //Real orientation[4];
     //Mat rotation;
-    std::vector<Coord> rotatedPoints0;
-    std::vector<Coord> rotatedPoints1;
+    sofa::helper::vector<Coord> rotatedPoints0;
+    sofa::helper::vector<Coord> rotatedPoints1;
 public:
     DataField<unsigned> index;
 

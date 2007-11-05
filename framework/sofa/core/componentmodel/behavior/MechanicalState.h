@@ -48,9 +48,9 @@ namespace behavior
  *  \li \code Real \endcode : scalar values (float or double).
  *  \li \code Coord \endcode : position values.
  *  \li \code Deriv \endcode : derivative values (velocity, forces, displacements).
- *  \li \code VecReal \endcode : container of scalar values with the same API as std::vector.
- *  \li \code VecCoord \endcode : container of Coord values with the same API as std::vector.
- *  \li \code VecDeriv \endcode : container of Deriv values with the same API as std::vector.
+ *  \li \code VecReal \endcode : container of scalar values with the same API as sofa::helper::vector.
+ *  \li \code VecCoord \endcode : container of Coord values with the same API as sofa::helper::vector.
+ *  \li \code VecDeriv \endcode : container of Deriv values with the same API as sofa::helper::vector.
  *  \li \code SparseDeriv \endcode : index + Deriv value (entry of a sparse vector).
  *  \li \code SparseVecDeriv \endcode : sparse vector of Deriv values (defining coefficient of a constraint).
  *  \li \code VecConst \endcode : vector of constraints (i.e. of SparseVecDeriv).
@@ -74,11 +74,11 @@ public:
     typedef typename DataTypes::Coord Coord;
     /// Derivative values (velocity, forces, displacements).
     typedef typename DataTypes::Deriv Deriv;
-    /// Container of scalar values with the same API as std::vector.
+    /// Container of scalar values with the same API as sofa::helper::vector.
     typedef typename DataTypes::VecReal VecReal;
-    /// Container of Coord values with the same API as std::vector.
+    /// Container of Coord values with the same API as sofa::helper::vector.
     typedef typename DataTypes::VecCoord VecCoord;
-    /// Container of Deriv values with the same API as std::vector.
+    /// Container of Deriv values with the same API as sofa::helper::vector.
     typedef typename DataTypes::VecDeriv VecDeriv;
     /// Index + Deriv value (entry of a sparse vector).
     typedef typename DataTypes::SparseDeriv SparseDeriv;
@@ -126,7 +126,7 @@ public:
 
 
     /// Get the indices of the particles located in the given bounding box
-    virtual void getIndicesInSpace(std::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
+    virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
 
     virtual std::string getTemplateName() const
     {
@@ -141,7 +141,7 @@ public:
     /// Add a constraint ID
     virtual void setConstraintId(unsigned int ) = 0;
     /// Return the constraint IDs corresponding to the entries in the constraints matrix returned by getC()
-    virtual std::vector<unsigned int>& getConstraintId() = 0;
+    virtual sofa::helper::vector<unsigned int>& getConstraintId() = 0;
 };
 
 } // namespace behavior

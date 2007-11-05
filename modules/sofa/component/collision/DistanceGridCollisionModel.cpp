@@ -484,7 +484,7 @@ void FFDDistanceGridCollisionModel::updateGrid()
     for (int index=0; index<size; index++)
     {
         DeformedCube& cube = getDeformCube( index );
-        const std::vector<topology::MeshTopology::Cube>& cubeCorners = ffdGrid->getCubes();
+        const sofa::helper::vector<topology::MeshTopology::Cube>& cubeCorners = ffdGrid->getCubes();
         const Vec3Types::VecCoord& x = *ffd->getX();
         {
             int e = cube.elem;

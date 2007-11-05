@@ -26,11 +26,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
 #include <GL/gl.h>
-#endif
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
 
@@ -54,8 +50,8 @@ using std::endl;
 
 template< class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeRestInformation &ei,
-        const Edge& ,  const std::vector< unsigned int > &,
-        const std::vector< double >&)
+        const Edge& ,  const sofa::helper::vector< unsigned int > &,
+        const sofa::helper::vector< double >&)
 {
     TriangularQuadraticSpringsForceField<DataTypes> *ff= (TriangularQuadraticSpringsForceField<DataTypes> *)param;
     if (ff)
@@ -76,8 +72,8 @@ template< class DataTypes>
 void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFunction (int triangleIndex, void* param,
         TriangleRestInformation &tinfo,
         const Triangle& ,
-        const std::vector< unsigned int > &,
-        const std::vector< double >&)
+        const sofa::helper::vector< unsigned int > &,
+        const sofa::helper::vector< double >&)
 {
     TriangularQuadraticSpringsForceField<DataTypes> *ff= (TriangularQuadraticSpringsForceField<DataTypes> *)param;
     if (ff)
@@ -85,8 +81,8 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFuncti
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        //const std::vector<Edge> &edgeArray=container->getEdgeArray();
-        const std::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
+        //const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
+        const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
         unsigned int j,k,l;
 
         EdgeData<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation> &edgeInfo=ff->getEdgeInfo();
@@ -142,7 +138,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleDestroyFunctio
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        const std::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
+        const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
         unsigned int j;
 
         EdgeData<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation> &edgeInfo=ff->getEdgeInfo();
@@ -215,19 +211,19 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
         _initialPoints.setValue(p);
     }
     unsigned int i;
-    const std::vector<Edge> &edgeArray=container->getEdgeArray();
+    const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
     for (i=0; i<container->getNumberOfEdges(); ++i)
     {
         TRQSEdgeCreationFunction(i, (void*) this, edgeInfo[i],
-                edgeArray[i],  (const std::vector< unsigned int > )0,
-                (const std::vector< double >)0);
+                edgeArray[i],  (const sofa::helper::vector< unsigned int > )0,
+                (const sofa::helper::vector< double >)0);
     }
-    const std::vector<Triangle> &triangleArray=container->getTriangleArray();
+    const sofa::helper::vector<Triangle> &triangleArray=container->getTriangleArray();
     for (i=0; i<container->getNumberOfTriangles(); ++i)
     {
         TRQSTriangleCreationFunction(i, (void*) this, triangleInfo[i],
-                triangleArray[i],  (const std::vector< unsigned int > )0,
-                (const std::vector< double >)0);
+                triangleArray[i],  (const sofa::helper::vector< unsigned int > )0,
+                (const sofa::helper::vector< double >)0);
     }
 
     edgeInfo.setCreateFunction(TRQSEdgeCreationFunction);
@@ -254,9 +250,9 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, cons
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
     unsigned int nbEdges=container->getNumberOfEdges();
     unsigned int nbTriangles=container->getNumberOfTriangles();
-    const std::vector<Edge> &edgeArray=container->getEdgeArray();
-    const std::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
-    const std::vector< Triangle> &triangleArray=container->getTriangleArray() ;
+    const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
+    const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
+    const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
 
     Real val,L;
@@ -325,9 +321,9 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, co
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
     //unsigned int nbEdges=container->getNumberOfEdges();
     unsigned int nbTriangles=container->getNumberOfTriangles();
-    //const std::vector<Edge> &edgeArray=container->getEdgeArray();
-    const std::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
-    const std::vector< Triangle> &triangleArray=container->getTriangleArray() ;
+    //const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
+    const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
+    const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
     TriangleRestInformation *tinfo;
 
@@ -462,7 +458,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::draw()
     VecCoord& x = *this->mstate->getX();
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
     unsigned int nbTriangles=container->getNumberOfTriangles();
-    const std::vector< Triangle> &triangleArray=container->getTriangleArray() ;
+    const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
 
     glDisable(GL_LIGHTING);

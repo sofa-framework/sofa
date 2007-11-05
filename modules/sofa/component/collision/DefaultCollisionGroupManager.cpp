@@ -77,7 +77,7 @@ DefaultCollisionGroupManager::~DefaultCollisionGroupManager()
 {
 }
 
-void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const std::vector<Contact*>& contacts)
+void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact*>& contacts)
 {
     int groupIndex = 1;
     simulation::tree::GNode* groot = dynamic_cast<simulation::tree::GNode*>(scene);
@@ -95,10 +95,10 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
 
     // Map storing group merging history
     std::map<simulation::tree::GNode*, simulation::tree::GNode*> mergedGroups;
-    std::vector<simulation::tree::GNode*> contactGroup;
-    std::vector<simulation::tree::GNode*> removedGroup;
+    sofa::helper::vector<simulation::tree::GNode*> contactGroup;
+    sofa::helper::vector<simulation::tree::GNode*> removedGroup;
     contactGroup.reserve(contacts.size());
-    for(std::vector<Contact*>::const_iterator cit = contacts.begin(); cit != contacts.end(); cit++)
+    for(sofa::helper::vector<Contact*>::const_iterator cit = contacts.begin(); cit != contacts.end(); cit++)
     {
         Contact* contact = *cit;
         simulation::tree::GNode* group1 = getIntegrationNode(contact->getCollisionModels().first);
@@ -196,7 +196,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     if (node) t0 = node->endTime(t0, "collision/contacts", this);
 
     // delete removed groups
-    for (std::vector<simulation::tree::GNode*>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
+    for (sofa::helper::vector<simulation::tree::GNode*>::iterator it = removedGroup.begin(); it!=removedGroup.end(); ++it)
         delete *it;
     removedGroup.clear();
 

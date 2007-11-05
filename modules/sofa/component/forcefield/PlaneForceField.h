@@ -34,7 +34,7 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    std::vector<unsigned int> contacts;
+    sofa::helper::vector<unsigned int> contacts;
 
     PlaneForceFieldInternalData<DataTypes> data;
 

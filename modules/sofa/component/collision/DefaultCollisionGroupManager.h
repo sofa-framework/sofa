@@ -43,17 +43,17 @@ class DefaultCollisionGroupManager : public core::componentmodel::collision::Col
 {
 public:
     std::set<simulation::tree::GNode*> groupSet;
-    std::vector<core::objectmodel::BaseContext*> groupVec;
+    sofa::helper::vector<core::objectmodel::BaseContext*> groupVec;
 public:
     DefaultCollisionGroupManager();
 
     virtual ~DefaultCollisionGroupManager();
 
-    virtual void createGroups(core::objectmodel::BaseContext* scene, const std::vector<core::componentmodel::collision::Contact*>& contacts);
+    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::componentmodel::collision::Contact*>& contacts);
 
     virtual void clearGroups(core::objectmodel::BaseContext* scene);
 
-    virtual const std::vector<core::objectmodel::BaseContext*>& getGroups() { return groupVec; }
+    virtual const sofa::helper::vector<core::objectmodel::BaseContext*>& getGroups() { return groupVec; }
 
 protected:
     virtual simulation::tree::GNode* getIntegrationNode(core::CollisionModel* model);

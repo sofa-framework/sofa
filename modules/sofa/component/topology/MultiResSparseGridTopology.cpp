@@ -259,7 +259,7 @@ int MultiResSparseGridTopology::findNearestCube(const Vec3& pos, double& fx, dou
     return ixTmp + iyTmp*DimX + izTmp*DimX*DimY;
 
 }
-// int MultiResSparseGridTopology::getIndicesInSpace( std::vector<int>& indices,
+// int MultiResSparseGridTopology::getIndicesInSpace( sofa::helper::vector<int>& indices,
 //         float xmin,float xmax,float ymin,float ymax,float zmin,float zmax )
 // {
 // 	float x,y,z;

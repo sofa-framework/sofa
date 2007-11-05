@@ -58,7 +58,7 @@ protected:
     /// Remove collision response from last step
     virtual void doCollisionReset();
     /// Detect new collisions. Note that this step must not modify the simulation graph
-    virtual void doCollisionDetection(const std::vector<core::CollisionModel*>& collisionModels);
+    virtual void doCollisionDetection(const sofa::helper::vector<core::CollisionModel*>& collisionModels);
     /// Add collision response in the simulation graph
     virtual void doCollisionResponse();
 };

@@ -70,8 +70,8 @@ protected:
 
     class CubeSortPredicate;
 
-    std::vector<CubeData> elems;
-    std::vector<int> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
+    sofa::helper::vector<CubeData> elems;
+    sofa::helper::vector<int> parentOf; ///< Given the index of a child leaf element, store the index of the parent cube
 
 public:
     typedef core::CollisionElementIterator ChildIterator;
@@ -88,7 +88,7 @@ public:
 
     unsigned int getNumberCells() { return elems.size();};
 
-    void getBoundingTree ( std::vector< std::pair< Vector3, Vector3> > &bounding )
+    void getBoundingTree ( sofa::helper::vector< std::pair< Vector3, Vector3> > &bounding )
     {
         bounding.resize(elems.size());
         for (unsigned int index=0; index<elems.size(); index++)

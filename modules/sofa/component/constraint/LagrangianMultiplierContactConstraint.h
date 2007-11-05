@@ -46,7 +46,7 @@ protected:
         Real pen;     ///< current penetration
     };
 
-    std::vector<Contact> contacts;
+    sofa::helper::vector<Contact> contacts;
 
 public:
 

@@ -57,7 +57,7 @@ DefaultContactManager::~DefaultContactManager()
 
 void DefaultContactManager::clear()
 {
-    for (std::vector<core::componentmodel::collision::Contact*>::iterator it=contactVec.begin(); it!=contactVec.end(); ++it)
+    for (sofa::helper::vector<core::componentmodel::collision::Contact*>::iterator it=contactVec.begin(); it!=contactVec.end(); ++it)
     {
         (*it)->removeResponse();
         (*it)->cleanup();
@@ -70,7 +70,7 @@ void DefaultContactManager::clear()
 void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
 {
     //outputsMap.clear();
-    //for (std::vector<core::componentmodel::collision::DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
+    //for (sofa::helper::vector<core::componentmodel::collision::DetectionOutput*>::const_iterator it = outputs.begin(); it!=outputs.end(); ++it)
     //{
     //	core::componentmodel::collision::DetectionOutput* o = *it;
     //	outputsMap[std::make_pair(o->elem.first.getCollisionModel(),o->elem.second.getCollisionModel())].push_back(o);
@@ -140,7 +140,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
 
 void DefaultContactManager::draw()
 {
-    for (std::vector<core::componentmodel::collision::Contact*>::iterator it = contactVec.begin(); it!=contactVec.end(); it++)
+    for (sofa::helper::vector<core::componentmodel::collision::Contact*>::iterator it = contactVec.begin(); it!=contactVec.end(); it++)
     {
         if (dynamic_cast<core::VisualModel*>(*it)!=NULL)
             dynamic_cast<core::VisualModel*>(*it)->draw();

@@ -314,8 +314,8 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::MeshTopology* topology)
         const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();
         const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
         const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-        std::vector<Mat3x3d> bases;
-        std::vector<Vec3d> centers;
+        sofa::helper::vector<Mat3x3d> bases;
+        sofa::helper::vector<Vec3d> centers;
         if (tetras.empty() && cubes.empty())
         {
             // no 3D elements -> map on 2D elements
@@ -497,9 +497,9 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::TriangleSetTopology<InD
         TriangleSetMapper* mapper = new TriangleSetMapper(topology);
 
         this->mapper = mapper;
-        const std::vector<topology::Triangle>& triangles = topology->getTriangleSetTopologyContainer()->getTriangleArray();
-        std::vector<Mat3x3d> bases;
-        std::vector<Vec3d> centers;
+        const sofa::helper::vector<topology::Triangle>& triangles = topology->getTriangleSetTopologyContainer()->getTriangleArray();
+        sofa::helper::vector<Mat3x3d> bases;
+        sofa::helper::vector<Vec3d> centers;
         {
             // no 3D elements -> map on 2D elements
             mapper->clear(out.size()); // reserve space for 2D mapping
@@ -724,7 +724,7 @@ void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::apply(
 //void TriangleSetTopologyBarycentricMapper<In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize(map.size());
-    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+    const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
     // 2D elements
     for(unsigned int i=0; i<map.size(); i++)
     {
@@ -873,7 +873,7 @@ void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJ
 //void TriangleSetTopologyBarycentricMapper<In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     out.resize(map.size());
-    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+    const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
     // 2D elements
     for(unsigned int i=0; i<map.size(); i++)
     {
@@ -1023,7 +1023,7 @@ template <class In, class Out>
 void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 //void TriangleSetTopologyBarycentricMapper<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+    const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
     // 2D elements
     for(unsigned int i=0; i<map.size(); i++)
     {
@@ -1261,7 +1261,7 @@ template <class In, class Out>
 void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 //void TriangleSetTopologyBarycentricMapper<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+    const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
 
     glBegin (GL_LINES);
     // 2D elements
@@ -1462,7 +1462,7 @@ void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJ
 {
     int offset = out.size();
     out.resize(offset+in.size());
-    const std::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
+    const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangleSetTopologyContainer()->getTriangleArray();
 
     for(unsigned int i=0; i<in.size(); i++)
     {

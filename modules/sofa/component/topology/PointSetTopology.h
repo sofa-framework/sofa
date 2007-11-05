@@ -47,13 +47,13 @@ class PointsAdded : public core::componentmodel::topology::TopologyChange
 public:
     unsigned int nVertices;
 
-    std::vector< std::vector< unsigned int > > ancestorsList;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
 
-    std::vector< std::vector< double       > > coefs;
+    sofa::helper::vector< sofa::helper::vector< double       > > coefs;
 
     PointsAdded(const unsigned int nV,
-            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
-            const std::vector< std::vector< double       > >& baryCoefs = (const std::vector< std::vector< double       > >)0)
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
+            const sofa::helper::vector< sofa::helper::vector< double       > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double       > >)0)
         : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSADDED), nVertices(nV), ancestorsList(ancestors), coefs(baryCoefs)
     { }
 
@@ -71,14 +71,14 @@ class PointsRemoved : public core::componentmodel::topology::TopologyChange
 {
 
 public:
-    std::vector<unsigned int> removedVertexArray;
+    sofa::helper::vector<unsigned int> removedVertexArray;
 
 public:
-    PointsRemoved(const std::vector<unsigned int>& _vArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSREMOVED), removedVertexArray(_vArray)
+    PointsRemoved(const sofa::helper::vector<unsigned int>& _vArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSREMOVED), removedVertexArray(_vArray)
     {
     }
 
-    const std::vector<unsigned int> &getArray() const
+    const sofa::helper::vector<unsigned int> &getArray() const
     {
         return removedVertexArray;
     }
@@ -92,13 +92,13 @@ class PointsRenumbering : public core::componentmodel::topology::TopologyChange
 {
 
 public:
-    std::vector<unsigned int> indexArray;
+    sofa::helper::vector<unsigned int> indexArray;
 
-    PointsRenumbering(const std::vector< unsigned int >& indices = (const std::vector< unsigned int >)0)
+    PointsRenumbering(const sofa::helper::vector< unsigned int >& indices = (const sofa::helper::vector< unsigned int >)0)
         : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::POINTSRENUMBERING), indexArray(indices)
     { }
 
-    const std::vector<unsigned int> &getIndexArray() const
+    const sofa::helper::vector<unsigned int> &getIndexArray() const
     {
         return indexArray;
     }
@@ -128,9 +128,9 @@ private:
 
 protected:
     /** an array that gives the DOF index of a subset of DOFs */
-    std::vector<unsigned int> m_DOFIndex;
+    sofa::helper::vector<unsigned int> m_DOFIndex;
     /** an array that takes as input the index a DOF and as an ouput the index in the m_DOFIndex array */
-    std::vector<int> m_PointSetIndex;
+    sofa::helper::vector<int> m_PointSetIndex;
 
 
 public:
@@ -138,7 +138,7 @@ public:
      *
      * See getPointSetIndex(const unsigned int i) for more explanation.
      */
-    const std::vector<int>& getPointSetIndexArray();
+    const sofa::helper::vector<int>& getPointSetIndexArray();
 
 
 
@@ -161,7 +161,7 @@ public:
      *
      * See getDOFIndex(const int i) for more explanation.
      */
-    const std::vector<unsigned int>& getDOFIndexArray() const;
+    const sofa::helper::vector<unsigned int>& getDOFIndexArray() const;
 
     /** \brief Returns the index in the mechanical object of the DOF corresponding to the ith point of this topology.
      *
@@ -174,7 +174,7 @@ public:
 
     /** \brief Constructor from a a Base Topology and a set of DOF indices
       */
-    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const std::vector<unsigned int>& DOFIndex);
+    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector<unsigned int>& DOFIndex);
 
     /** \brief Checks if the Topology is coherent
      *
@@ -189,10 +189,10 @@ protected:
     *
     * See getDOFIndex(const int i) for more explanation.
     */
-    std::vector<unsigned int>& getDOFIndexArrayForModification();
+    sofa::helper::vector<unsigned int>& getDOFIndexArrayForModification();
     /** \brief Returns the PointSetIndex array for modification.
      */
-    std::vector<int>& getPointSetIndexArrayForModification();
+    sofa::helper::vector<int>& getPointSetIndexArrayForModification();
 };
 
 // forward declaration
@@ -238,8 +238,8 @@ public:
      * \sa addPointsProcess
      */
     void addPointsWarning(const unsigned int nPoints,
-            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >) 0,
-            const std::vector< std::vector< double       > >& coefs     = (const std::vector< std::vector< double       > >) 0);
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >) 0,
+            const sofa::helper::vector< sofa::helper::vector< double       > >& coefs     = (const sofa::helper::vector< sofa::helper::vector< double       > >) 0);
 
 
 
@@ -253,8 +253,8 @@ public:
      * \sa addPointsWarning
      */
     virtual void addPointsProcess(const unsigned int nPoints,
-            const std::vector< std::vector< unsigned int > >& ancestors = (const std::vector< std::vector< unsigned int > >)0,
-            const std::vector< std::vector< double > >& baryCoefs = (const std::vector< std::vector< double > >)0 );
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
 
 
@@ -262,7 +262,7 @@ public:
      *
      * \sa removePointsProcess
      */
-    void removePointsWarning(std::vector<unsigned int> &indices);
+    void removePointsWarning(sofa::helper::vector<unsigned int> &indices);
 
 
 
@@ -275,7 +275,7 @@ public:
      *
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
      */
-    virtual void removePointsProcess( std::vector<unsigned int> &indices);
+    virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices);
 
 
 
@@ -283,7 +283,7 @@ public:
      *
      * \see MechanicalObject::renumberValues
      */
-    virtual void renumberPointsProcess( const std::vector<unsigned int> &index );
+    virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index );
 
 protected:
     /// modifies the mechanical object and creates the point set container

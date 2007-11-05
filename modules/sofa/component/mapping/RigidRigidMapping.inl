@@ -148,13 +148,13 @@ void RigidRigidMapping<BasicMapping>::setRepartition(unsigned int value)
 }
 
 template <class BasicMapping>
-void RigidRigidMapping<BasicMapping>::setRepartition(std::vector<unsigned int> values)
+void RigidRigidMapping<BasicMapping>::setRepartition(sofa::helper::vector<unsigned int> values)
 {
     vector<unsigned int>& rep = *this->repartition.beginEdit();
     rep.clear();
     rep.reserve(values.size());
     //repartition.setValue(values);
-    std::vector<unsigned int>::iterator it = values.begin();
+    sofa::helper::vector<unsigned int>::iterator it = values.begin();
     while (it != values.end())
     {
         rep.push_back(*it);

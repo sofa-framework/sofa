@@ -57,7 +57,7 @@ protected:
     /// the EdgeSet topology used to get the list of edges
     sofa::component::topology::EdgeSetTopology<DataTypes> *topology;
     /// indices in case we don't use the topology
-    std::vector<topology::Edge> edgeArray;
+    sofa::helper::vector<topology::Edge> edgeArray;
     /// where the springs information are stored
     sofa::component::topology::EdgeData<Spring> springArray;
 
@@ -73,8 +73,8 @@ protected:
     static void springCreationFunction(int /*index*/,
             void* param, Spring& t,
             const topology::Edge& e,
-            const std::vector< unsigned int > &ancestors,
-            const std::vector< double >& coefs);
+            const sofa::helper::vector< unsigned int > &ancestors,
+            const sofa::helper::vector< double >& coefs);
 
 public:
 

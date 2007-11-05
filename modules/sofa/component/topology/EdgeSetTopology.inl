@@ -49,6 +49,7 @@ public:
         estm->addEdge(Edge((unsigned int)p1,(unsigned int)p2));
     }
 };
+
 template<class DataTypes>
 void EdgeSetTopologyModifier<DataTypes>::addEdge(Edge e)
 {
@@ -75,7 +76,7 @@ bool EdgeSetTopologyModifier<DataTypes>::load(const char *filename)
 }
 
 template<class DataTypes>
-void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const std::vector< Edge > &edges)
+void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
     EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
@@ -83,7 +84,7 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const std::vector< Edge
     assert (container != 0);
     if (container->m_edge.size()>0)
     {
-        const std::vector< std::vector<unsigned int> > &sa=container->getEdgeVertexShellArray();
+        const sofa::helper::vector< sofa::helper::vector<unsigned int> > &sa=container->getEdgeVertexShellArray();
         for (unsigned int i = 0; i < edges.size(); ++i)
         {
             const Edge &e = edges[i];
@@ -92,8 +93,10 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const std::vector< Edge
             // check if there already exists an edge
             assert(container->getEdgeIndex(e.first,e.second)== -1);
             container->m_edge.push_back(e);
+
             if (sa.size()>0)
             {
+
                 container->getEdgeVertexShellForModification( e.first ).push_back( container->m_edge.size() - 1 );
                 container->getEdgeVertexShellForModification( e.second ).push_back( container->m_edge.size() - 1 );
             }
@@ -104,10 +107,10 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const std::vector< Edge
 
 
 template<class DataTypes>
-void EdgeSetTopologyModifier<DataTypes>::addEdgesWarning(const unsigned int nEdges, const std::vector< Edge >& edgesList,
-        const std::vector< unsigned int >& edgesIndexList,
-        const std::vector< std::vector< unsigned int > > & ancestors,
-        const std::vector< std::vector< double > >& baryCoefs)
+void EdgeSetTopologyModifier<DataTypes>::addEdgesWarning(const unsigned int nEdges, const sofa::helper::vector< Edge >& edgesList,
+        const sofa::helper::vector< unsigned int >& edgesIndexList,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
     // Warning that edges just got created
     EdgesAdded *e=new EdgesAdded(nEdges, edgesList,edgesIndexList,ancestors,baryCoefs);
@@ -118,7 +121,7 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesWarning(const unsigned int nEdg
 
 
 template<class DataTypes>
-void EdgeSetTopologyModifier<DataTypes>::removeEdgesWarning( std::vector<unsigned int> &edges )
+void EdgeSetTopologyModifier<DataTypes>::removeEdgesWarning( sofa::helper::vector<unsigned int> &edges )
 {
     /// sort vertices to remove in a descendent order
     std::sort( edges.begin(), edges.end(), std::greater<unsigned int>() );
@@ -131,7 +134,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesWarning( std::vector<unsigne
 
 
 template<class DataTypes>
-void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const std::vector<unsigned int> &indices,const bool removeIsolatedItems)
+void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems)
 {
     EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
@@ -144,7 +147,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const std::vector<un
 
     if (container->m_edge.size()>0)
     {
-        std::vector<unsigned int> vertexToBeRemoved;
+        sofa::helper::vector<unsigned int> vertexToBeRemoved;
 
         for (unsigned int i = 0; i < indices.size(); ++i)
         {
@@ -154,7 +157,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const std::vector<un
             if (container->m_edgeVertexShell.size()>0)
             {
 
-                std::vector< unsigned int > &shell = container->m_edgeVertexShell[ point1 ];
+                sofa::helper::vector< unsigned int > &shell = container->m_edgeVertexShell[ point1 ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell.begin(), shell.end(), indices[i] ) !=shell.end());
                 shell.erase( std::find( shell.begin(), shell.end(), indices[i] ) );
@@ -163,7 +166,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const std::vector<un
                     vertexToBeRemoved.push_back(point1);
                 }
 
-                std::vector< unsigned int > &shell2 = container->m_edgeVertexShell[ point2 ];
+                sofa::helper::vector< unsigned int > &shell2 = container->m_edgeVertexShell[ point2 ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the other point
                 assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
                 shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
@@ -188,13 +191,13 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const std::vector<un
                 point1 = e->first; point2 = e->second;
 
                 //replaces the edge index oldEdgeIndex with indices[i] for the first vertex
-                std::vector< unsigned int > &shell3 = container->m_edgeVertexShell[ point1 ];
+                sofa::helper::vector< unsigned int > &shell3 = container->m_edgeVertexShell[ point1 ];
                 assert(std::find( shell3.begin(), shell3.end(), oldEdgeIndex ) !=shell3.end());
-                std::vector< unsigned int >::iterator it=std::find( shell3.begin(), shell3.end(), oldEdgeIndex );
+                sofa::helper::vector< unsigned int >::iterator it=std::find( shell3.begin(), shell3.end(), oldEdgeIndex );
                 (*it)=indices[i];
 
                 //replaces the edge index oldEdgeIndex with indices[i] for the second vertex
-                std::vector< unsigned int > &shell4 = container->m_edgeVertexShell[ point2 ];
+                sofa::helper::vector< unsigned int > &shell4 = container->m_edgeVertexShell[ point2 ];
                 assert(std::find( shell4.begin(), shell4.end(), oldEdgeIndex ) !=shell4.end());
                 it=std::find( shell4.begin(), shell4.end(), oldEdgeIndex );
                 (*it)=indices[i];
@@ -216,8 +219,8 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const std::vector<un
 
 template<class DataTypes >
 void EdgeSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int nPoints,
-        const std::vector< std::vector< unsigned int > >& ancestors,
-        const std::vector< std::vector< double > >& baryCoefs)
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
     // start by calling the standard method.
     PointSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs );
@@ -233,7 +236,7 @@ void EdgeSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int n
 
 
 template< class DataTypes >
-void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( std::vector<unsigned int> &indices)
+void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::vector<unsigned int> &indices)
 {
     // now update the local container structures
     EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -278,7 +281,7 @@ void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( std::vector<unsi
 
 
 template< class DataTypes >
-void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const std::vector<unsigned int> &index)
+void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index)
 {
     // start by calling the standard method
     PointSetTopologyModifier< DataTypes >::renumberPointsProcess( index );
@@ -289,7 +292,7 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const std::vec
     EdgeSetTopologyContainer * container = static_cast<EdgeSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
 
-    std::vector< std::vector< unsigned int > > EdgeVertexShell_cp = container->m_edgeVertexShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > EdgeVertexShell_cp = container->m_edgeVertexShell;
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         container->m_edgeVertexShell[i] = EdgeVertexShell_cp[ index[i] ];
@@ -307,7 +310,7 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const std::vec
 
 
 template<class DataTypes>
-void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair)
+void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::vector< std::pair< unsigned int, unsigned int > >& edgesPair)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast< EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert(topology != 0);
@@ -318,9 +321,9 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const std::vector< s
 
 
     // first create the edges
-    std::vector< Edge > v;
-    std::vector< unsigned int > edgeIndexList;
-    std::vector<std::vector<unsigned int> > ancestorsArray;
+    sofa::helper::vector< Edge > v;
+    sofa::helper::vector< unsigned int > edgeIndexList;
+    sofa::helper::vector<sofa::helper::vector<unsigned int> > ancestorsArray;
     unsigned int nbEdges=container->getNumberOfEdges();
 
     for (unsigned int i = 0; i < edgesPair.size(); ++i)
@@ -338,7 +341,7 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const std::vector< s
         v.push_back(e1);
         v.push_back(e2);
         edgeIndexList.push_back(nbEdges+i);
-        std::vector<unsigned int> ancestors;
+        sofa::helper::vector<unsigned int> ancestors;
         ancestors[0]=i1;
         ancestors[1]=i2;
         ancestorsArray.push_back(ancestors);
@@ -355,7 +358,7 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const std::vector< s
     // addTopologyChange( ea );
 
     // now warn about the destruction of the old edges
-    std::vector< unsigned int > indices;
+    sofa::helper::vector< unsigned int > indices;
     for (unsigned int i = 0; i < edgesPair.size(); ++i)
     {
         indices.push_back( edgesPair[i].first  );
@@ -380,8 +383,8 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const std::vector< s
 
 
 template<class DataTypes>
-void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( std::vector<unsigned int> &indices,
-        const std::vector< std::vector< double > >& baryCoefs)
+void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( sofa::helper::vector<unsigned int> &indices,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
@@ -389,12 +392,12 @@ void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( std::vector<unsign
     EdgeSetTopologyModifier< DataTypes >* modifier  = this;
     assert(container != 0);
 
-    std::vector< std::vector< double > > defaultBaryCoefs;
+    sofa::helper::vector< sofa::helper::vector< double > > defaultBaryCoefs;
 
-    std::vector< std::vector< unsigned int > > v;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > v;
     v.resize(indices.size());
-    std::vector< Edge >  edges;
-    std::vector< unsigned int >  edgesIndex;
+    sofa::helper::vector< Edge >  edges;
+    sofa::helper::vector< unsigned int >  edgesIndex;
     for (unsigned int i = 0; i < indices.size(); ++i)
     {
         unsigned int p1 = container->getEdge( indices[i] ).first,
@@ -444,7 +447,7 @@ void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( std::vector<unsign
 }
 
 template<class DataTypes>
-void EdgeSetTopologyAlgorithms< DataTypes >::removeEdges(std::vector< unsigned int >& edges)
+void EdgeSetTopologyAlgorithms< DataTypes >::removeEdges(sofa::helper::vector< unsigned int >& edges)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
@@ -458,9 +461,9 @@ void EdgeSetTopologyAlgorithms< DataTypes >::removeEdges(std::vector< unsigned i
     modifier->removeEdgesProcess( edges );
 }
 template<class DataTypes>
-void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const std::vector< Edge >& edges,
-        const std::vector< std::vector< unsigned int > > & ancestors ,
-        const std::vector< std::vector< double > >& baryCoefs)
+void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper::vector< Edge >& edges,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors ,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
@@ -471,7 +474,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const std::vector< Edge >&
     /// actually add edges in the topology container
     modifier->addEdgesProcess(edges);
 
-    std::vector<unsigned int> edgesIndex;
+    sofa::helper::vector<unsigned int> edgesIndex;
     unsigned int i;
     for (i=0; i<edges.size(); ++i)
     {
@@ -484,7 +487,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const std::vector< Edge >&
 
 }
 template<class DataTypes>
-void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const std::vector< std::pair< unsigned int, unsigned int > >& edgesPair)
+void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const sofa::helper::vector< std::pair< unsigned int, unsigned int > >& edgesPair)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
@@ -494,8 +497,8 @@ void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const std::vector< std::p
 }
 
 template<class DataTypes>
-void EdgeSetTopologyAlgorithms< DataTypes >::splitEdges( std::vector<unsigned int> &indices,
-        const std::vector< std::vector< double > >& baryCoefs)
+void EdgeSetTopologyAlgorithms< DataTypes >::splitEdges( sofa::helper::vector<unsigned int> &indices,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
@@ -547,7 +550,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterfac
     EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
-    const std::vector<Edge> &ea=container->getEdgeArray();
+    const sofa::helper::vector<Edge> &ea=container->getEdgeArray();
     const typename DataTypes::VecCoord& p = *topology->getDOF()->getX();
     unsigned int i;
     for (i=0; i<ea.size(); ++i)

@@ -26,11 +26,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
 #include <GL/gl.h>
-#endif
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
 
@@ -54,8 +50,8 @@ using std::endl;
 
 template< class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeRestInformation &ei,
-        const Edge& ,  const std::vector< unsigned int > &,
-        const std::vector< double >&)
+        const Edge& ,  const sofa::helper::vector< unsigned int > &,
+        const sofa::helper::vector< double >&)
 {
     TriangularTensorMassForceField<DataTypes> *ff= (TriangularTensorMassForceField<DataTypes> *)param;
     if (ff)
@@ -76,7 +72,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction
 }
 
 template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunction (const std::vector<unsigned int> &triangleAdded,
+void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunction (const sofa::helper::vector<unsigned int> &triangleAdded,
         void* param, vector<EdgeRestInformation> &edgeData)
 {
     TriangularTensorMassForceField<DataTypes> *ff= (TriangularTensorMassForceField<DataTypes> *)param;
@@ -85,9 +81,9 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunc
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        const std::vector< Edge > &edgeArray=container->getEdgeArray() ;
-        const std::vector< Triangle > &triangleArray=container->getTriangleArray() ;
-        const std::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
+        const sofa::helper::vector< Edge > &edgeArray=container->getEdgeArray() ;
+        const sofa::helper::vector< Triangle > &triangleArray=container->getTriangleArray() ;
+        const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
 
         unsigned int i,j,k,l,u,v;
 
@@ -171,7 +167,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunc
 }
 
 template< class DataTypes>
-void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionFunction (const std::vector<unsigned int> &triangleRemoved,
+void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionFunction (const sofa::helper::vector<unsigned int> &triangleRemoved,
         void* param, vector<EdgeRestInformation> &edgeData)
 {
     TriangularTensorMassForceField<DataTypes> *ff= (TriangularTensorMassForceField<DataTypes> *)param;
@@ -180,9 +176,9 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionF
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        const std::vector< Edge > &edgeArray=container->getEdgeArray() ;
-        const std::vector< Triangle > &triangleArray=container->getTriangleArray() ;
-        const std::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
+        const sofa::helper::vector< Edge > &edgeArray=container->getEdgeArray() ;
+        const sofa::helper::vector< Triangle > &triangleArray=container->getTriangleArray() ;
+        const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
 
         unsigned int i,j,k,l,u,v;
 
@@ -322,15 +318,15 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
 
     unsigned int i;
     // set edge tensor to 0
-    const std::vector<Edge> &edgeArray=container->getEdgeArray();
+    const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
     for (i=0; i<container->getNumberOfEdges(); ++i)
     {
         TriangularTMEdgeCreationFunction(i, (void*) this, edgeInfo[i],
-                edgeArray[i],  (const std::vector< unsigned int > )0,
-                (const std::vector< double >)0);
+                edgeArray[i],  (const sofa::helper::vector< unsigned int > )0,
+                (const sofa::helper::vector< double >)0);
     }
     // create edge tensor by calling the triangle creation function
-    std::vector<unsigned int> triangleAdded;
+    sofa::helper::vector<unsigned int> triangleAdded;
     for (i=0; i<container->getNumberOfTriangles(); ++i)
         triangleAdded.push_back(i);
     TriangularTMTriangleCreationFunction(triangleAdded,(void*) this,
@@ -358,7 +354,7 @@ void TriangularTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecC
     unsigned int i,v0,v1;
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
     unsigned int nbEdges=container->getNumberOfEdges();
-    const std::vector<Edge> &edgeArray=container->getEdgeArray();
+    const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
 
     EdgeRestInformation *einfo;
 
@@ -388,7 +384,7 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const Ve
     unsigned int i,v0,v1;
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
     unsigned int nbEdges=container->getNumberOfEdges();
-    const std::vector<Edge> &edgeArray=container->getEdgeArray();
+    const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
 
     EdgeRestInformation *einfo;
 
@@ -434,7 +430,7 @@ void TriangularTensorMassForceField<DataTypes>::draw()
     VecCoord& x = *this->mstate->getX();
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
     unsigned int nbTriangles=container->getNumberOfTriangles();
-    const std::vector< Triangle> &triangleArray=container->getTriangleArray() ;
+    const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
 
     glDisable(GL_LIGHTING);

@@ -46,8 +46,8 @@ public:
         DataTypes::set(c,px,py,pz);
         pointArray.push_back(c);
     }
-
 };
+
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::loadPointSet(PointSetTopologyLoader<DataTypes> *loader)
 {
@@ -60,7 +60,7 @@ void PointSetTopologyModifier<DataTypes>::loadPointSet(PointSetTopologyLoader<Da
         /// resize the DOF stored in the mechanical object
         topology->object->resize(loader->pointArray.size());
         /// resize the point set container
-        std::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
+        sofa::helper::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
         DOFIndex.resize(loader->pointArray.size());
         /// store position and vertex index in containers
         unsigned int index;
@@ -116,8 +116,8 @@ void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
 
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nPoints,
-        const std::vector< std::vector< unsigned int > >& ancestors,
-        const std::vector< std::vector< double > >& baryCoefs)
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
@@ -129,23 +129,23 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
     // resizing the state vectors
     topology->object->resize( prevSizeMechObj + nPoints );
 
-    if ( ancestors != (const std::vector< std::vector< unsigned int > >)0 )
+    if ( ancestors != (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0 )
     {
-        assert( baryCoefs == (const std::vector< std::vector< double > >)0 || ancestors.size() == baryCoefs.size() );
+        assert( baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || ancestors.size() == baryCoefs.size() );
 
-        std::vector< std::vector< double > > coefs;
+        sofa::helper::vector< sofa::helper::vector< double > > coefs;
         coefs.resize(ancestors.size());
 
         for (unsigned int i = 0; i < ancestors.size(); ++i)
         {
-            assert( baryCoefs == (const std::vector< std::vector< double > >)0 || baryCoefs[i].size() == 0 || ancestors[i].size() == baryCoefs[i].size() );
+            assert( baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || baryCoefs[i].size() == 0 || ancestors[i].size() == baryCoefs[i].size() );
             coefs[i].resize(ancestors[i].size());
 
 
             for (unsigned int j = 0; j < ancestors[i].size(); ++j)
             {
                 // constructng default coefs if none were defined
-                if (baryCoefs == (const std::vector< std::vector< double > >)0 || baryCoefs[i].size() == 0)
+                if (baryCoefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || baryCoefs[i].size() == 0)
                     coefs[i][j] = 1.0f / ancestors[i].size();
                 else
                     coefs[i][j] = baryCoefs[i][j];
@@ -159,7 +159,7 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
     }
 
     // setting the new indices
-    std::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
+    sofa::helper::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
     DOFIndex.resize(prevSizeContainer + nPoints);
     for (unsigned int i = 0; i < nPoints; ++i)
     {
@@ -176,8 +176,8 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
 
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::addPointsWarning(const unsigned int nPoints,
-        const std::vector< std::vector< unsigned int > > &ancestors,
-        const std::vector< std::vector< double       > >& coefs)
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > &ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double       > >& coefs)
 {
     // Warning that vertices just got created
     PointsAdded *e=new PointsAdded(nPoints, ancestors, coefs);
@@ -188,7 +188,7 @@ void PointSetTopologyModifier<DataTypes>::addPointsWarning(const unsigned int nP
 
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::removePointsWarning(std::vector<unsigned int> &indices)
+void PointSetTopologyModifier<DataTypes>::removePointsWarning(sofa::helper::vector<unsigned int> &indices)
 {
 
     std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() ); // BUG FIXED : sort indices here
@@ -200,7 +200,7 @@ void PointSetTopologyModifier<DataTypes>::removePointsWarning(std::vector<unsign
 
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::removePointsProcess( std::vector<unsigned int> &indices)
+void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vector<unsigned int> &indices)
 {
     // BUG FIXED : do not sort indices here
     //std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
@@ -242,7 +242,7 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess( std::vector<unsig
 
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::renumberPointsProcess( const std::vector<unsigned int> &index)
+void PointSetTopologyModifier<DataTypes>::renumberPointsProcess( const sofa::helper::vector<unsigned int> &index)
 {
 
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
@@ -263,7 +263,7 @@ typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCent
     PointSetTopology<DataTypes> *parent=static_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     typename DataTypes::VecCoord& p = *parent->getDOF()->getX();
     PointSetTopologyContainer *ps=static_cast<PointSetTopologyContainer *>( parent->getTopologyContainer());
-    const std::vector<unsigned int> &va=ps->getDOFIndexArray();
+    const sofa::helper::vector<unsigned int> &va=ps->getDOFIndexArray();
     unsigned int i;
     for(i=0; i<ps->getNumberOfVertices(); i++)
     {
@@ -285,7 +285,7 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
     PointSetTopology<DataTypes> *parent=static_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     typename DataTypes::VecCoord& p = *parent->getDOF()->getX();
     PointSetTopologyContainer *ps=static_cast<PointSetTopologyContainer *>( parent->getTopologyContainer());
-    const std::vector<unsigned int> &va=ps->getDOFIndexArray();
+    const sofa::helper::vector<unsigned int> &va=ps->getDOFIndexArray();
     unsigned int i;
     for(i=0; i<ps->getNumberOfVertices(); i++)
     {

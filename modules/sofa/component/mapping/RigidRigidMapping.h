@@ -115,7 +115,7 @@ public:
     void clear();
 
     void setRepartition(unsigned int value);
-    void setRepartition(std::vector<unsigned int> values);
+    void setRepartition(sofa::helper::vector<unsigned int> values);
 
 protected:
 

@@ -47,7 +47,7 @@ class ContactManager : public virtual objectmodel::BaseObject
 {
 public:
     typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
-    typedef std::vector<Contact*> ContactVector;
+    typedef sofa::helper::vector<Contact*> ContactVector;
 
     virtual ~ContactManager() { }
 

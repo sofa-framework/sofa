@@ -46,12 +46,12 @@ class BroadPhaseDetection : virtual public Detection
 protected:
     // it's an information to update the collisionMethod (like voxelgrid)
     int timeStamp;
-    std::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
+    sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
 
     /// Contains the collisions models
     /// which are included in the broadphase
     /// but which are not in collisions with another model
-    std::vector<core::CollisionModel*> cmNoCollision;
+    sofa::helper::vector<core::CollisionModel*> cmNoCollision;
 
 public:
     virtual ~BroadPhaseDetection() { }
@@ -64,9 +64,9 @@ public:
 
     virtual void addCollisionModel(core::CollisionModel *cm) = 0;
 
-    virtual void addCollisionModels(const std::vector<core::CollisionModel *> v)
+    virtual void addCollisionModels(const sofa::helper::vector<core::CollisionModel *> v)
     {
-        for (std::vector<core::CollisionModel *>::const_iterator it = v.begin(); it<v.end(); it++)
+        for (sofa::helper::vector<core::CollisionModel *>::const_iterator it = v.begin(); it<v.end(); it++)
             addCollisionModel(*it);
     }
 
@@ -74,11 +74,11 @@ public:
     {
     }
 
-    std::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
+    sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
 
     void removeCmNoCollision(core::CollisionModel* cm)
     {
-        std::vector<core::CollisionModel*>::iterator it = std::find(cmNoCollision.begin(), cmNoCollision.end(), cm);
+        sofa::helper::vector<core::CollisionModel*>::iterator it = std::find(cmNoCollision.begin(), cmNoCollision.end(), cm);
         if (it != cmNoCollision.end())
         {
             cmNoCollision.erase(it);
@@ -90,7 +90,7 @@ public:
         cmNoCollision.push_back(cm);
     }
 
-    std::vector<core::CollisionModel*>& getListNoCollisionModel() {return cmNoCollision;};
+    sofa::helper::vector<core::CollisionModel*>& getListNoCollisionModel() {return cmNoCollision;};
 };
 
 } // namespace collision

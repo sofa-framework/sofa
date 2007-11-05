@@ -66,7 +66,7 @@ class BaseRayContact;
 class RayModel : public component::MechanicalObject<Vec3Types>, public core::CollisionModel, public core::VisualModel
 {
 protected:
-    std::vector<double> length;
+    sofa::helper::vector<double> length;
 
     DataField<double> defaultLength;
 

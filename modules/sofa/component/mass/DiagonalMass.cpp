@@ -111,13 +111,13 @@ double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoo
 
 
 template <>
-void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
+void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
         void* , vector<Rigid3dMass> &)
 {
 }
 
 template <>
-void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const std::vector<unsigned int> &,
+void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
         void* , vector<Rigid3dMass> &)
 {
 }

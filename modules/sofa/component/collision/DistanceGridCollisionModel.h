@@ -438,7 +438,7 @@ protected:
         ElementData() : grid(NULL), prevGrid(NULL), prevDt(0.0), isTransformed(false) { rotation.identity(); prevRotation.identity(); }
     };
 
-    std::vector<ElementData> elems;
+    sofa::helper::vector<ElementData> elems;
     bool modified;
 
     // Input data parameters
@@ -719,7 +719,7 @@ public:
 
 protected:
 
-    std::vector<DeformedCube> elems;
+    sofa::helper::vector<DeformedCube> elems;
 
     // Input data parameters
     DataField< std::string > filename;

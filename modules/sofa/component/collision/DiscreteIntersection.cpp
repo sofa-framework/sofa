@@ -964,7 +964,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
         if (grid2->inBBox( center2, margin + c1.radius ))
         {
             c1.updatePoints();
-            const std::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
+            const sofa::helper::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
             for (unsigned int i=0; i<x1.size(); i++)
             {
                 DistanceGrid::Coord p1 = x1[i];
@@ -1114,7 +1114,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
         c1.updatePoints();
         c2.updateFaces();
         const DistanceGrid::Real cubesize = c2.invDP.norm();
-        const std::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
+        const sofa::helper::vector<DistanceGrid::Coord>& x1 = c1.deformedPoints;
         for (unsigned int i=0; i<x1.size(); i++)
         {
             DistanceGrid::Coord p2 = x1[i];
@@ -1191,7 +1191,7 @@ int DiscreteIntersection::computeIntersection(FFDDistanceGridCollisionElement& e
         c2.updatePoints();
         c1.updateFaces();
         const DistanceGrid::Real cubesize = c1.invDP.norm();
-        const std::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
+        const sofa::helper::vector<DistanceGrid::Coord>& x2 = c2.deformedPoints;
         for (unsigned int i=0; i<x2.size(); i++)
         {
             DistanceGrid::Coord p1 = x2[i];
