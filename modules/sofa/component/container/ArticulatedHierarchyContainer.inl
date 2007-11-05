@@ -46,11 +46,11 @@ ArticulatedHierarchyContainer::ArticulationCenter::Articulation::Articulation():
 }
 
 ArticulatedHierarchyContainer::ArticulationCenter::ArticulationCenter():
+    parentIndex(dataField(&parentIndex, "parentIndex", "Parent of the center articulation")),
+    childIndex(dataField(&childIndex, "childIndex", "Child of the center articulation")),
     globalPosition(dataField(&globalPosition, "globalPosition", "Global position of the articulation center")),
     posOnParent(dataField(&posOnParent, "posOnParent", "Parent position of the articulation center")),
-    posOnChild(dataField(&posOnChild, "posOnChild", "Child position of the articulation center")),
-    parentIndex(dataField(&parentIndex, "parentIndex", "Parent of the center articulation")),
-    childIndex(dataField(&childIndex, "childIndex", "Child of the center articulation"))
+    posOnChild(dataField(&posOnChild, "posOnChild", "Child position of the articulation center"))
 {
 }
 

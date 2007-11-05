@@ -43,6 +43,11 @@ HEADERS += \
           io/MeshTrian.h \
           io/SphereLoader.h \
           io/TriangleLoader.h \
+	  io/bvh/BVHChannels.h \
+	  io/bvh/BVHJoint.h \
+	  io/bvh/BVHLoader.h \
+	  io/bvh/BVHMotion.h \
+	  io/bvh/BVHOffset.h \
           LCPcalc.h \
           LCPSolver.h \
           LCPSolver.inl \
@@ -82,6 +87,9 @@ SOURCES += \
           io/MeshTrian.cpp \
           io/SphereLoader.cpp \
           io/TriangleLoader.cpp \
+	  io/bvh/BVHJoint.cpp \
+	  io/bvh/BVHLoader.cpp \
+	  io/bvh/BVHMotion.cpp \
           LCPcalc.cpp \
           Quater.cpp \
           system/SetDirectory.cpp \
