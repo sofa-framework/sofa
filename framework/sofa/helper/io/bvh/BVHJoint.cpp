@@ -55,7 +55,7 @@ namespace bvh
 int BVHJoint::lastId = 0;
 
 BVHJoint::BVHJoint(const char *_name, bool _endSite, BVHJoint *_parent)
-    :endSite(_endSite),parent(_parent)
+    :parent(_parent),endSite(_endSite)
 {
     offset = NULL;
     channels = NULL;
