@@ -308,7 +308,8 @@ BaseOption* CmdLine::getOpt(const std::string longname_)
     return NULL;
   }
 
-  void CmdLine::setDesc(const std::string desc)
+  void CmdLine::setDesc(const std::string // desc
+			)
   {
     //    strcpy(description,desc.c_str()); 
   }

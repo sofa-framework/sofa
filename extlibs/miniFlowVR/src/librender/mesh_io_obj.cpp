@@ -49,13 +49,12 @@ public:
   std::vector<Vec3i> t_fp;
 
   int v0;
-
+  int merge;
   int smoothgroup;
   enum { SMOOTHGROUP_SHIFT = 20 };
 
   //std::vector<int> t_v_g; // group of points using this position
 
-  int merge;
 
   MeshObjData(Mesh* m): mesh(m), v0(0), merge(0), smoothgroup(0) {}
 
@@ -626,7 +625,7 @@ public:
 	  mesh->points_g[j] = pg0;
 	  if (n != last_n)
 	  {
-	    if (mesh->groups_p0.size() == pg0)
+	    if ((int)mesh->groups_p0.size() == pg0)
 	      mesh->groups_p0.push_back(j);            // new group
 	    else
 	      mesh->groups_p0.push_back(-j);            // new subgroup
@@ -691,7 +690,7 @@ bool Mesh::saveObj(FILE* fp, int& v0, int &vn0, int &vt0) const
   bool group    = getAttrib(MESH_POINTS_GROUP);
   std::cout<<nbp()<<" points, "<<nbf()<<" faces"<<std::endl;
 
-  fprintf(fp,"# OBJ output by FlowVR Render\n",fp);
+  fprintf(fp,"# OBJ output by FlowVR Render\n");
 
   // first output material libs
   std::set<std::string> mtllibs;

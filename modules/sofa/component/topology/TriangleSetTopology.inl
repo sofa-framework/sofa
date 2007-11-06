@@ -737,15 +737,15 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
     double epsilon = 0.2; // INFO : epsilon is a threshold in [0,1] to control the snapping of the extremities to the closest vertex
 
-    unsigned int x_i1;
-    unsigned int x_i2;
-    unsigned int x_i3;
-    unsigned int x_i1_to;
-    unsigned int x_i2_to;
-    unsigned int x_p1;
-    unsigned int x_p2;
-    unsigned int x_p1_to;
-    unsigned int x_p2_to;
+    unsigned int x_i1=0;
+    unsigned int x_i2=0;
+    unsigned int x_i3=0;
+    unsigned int x_i1_to=0;
+    unsigned int x_i2_to=0;
+    unsigned int x_p1=0;
+    unsigned int x_p2=0;
+    unsigned int x_p1_to=0;
+    unsigned int x_p2_to=0;
 
     // Access the topology
     TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -868,7 +868,6 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
             sofa::helper::vector< unsigned int > shell_b =(sofa::helper::vector< unsigned int >) (tvsa[b_last]);
             unsigned int ind_t_test;
             unsigned int i=0;
-
 
             if(shell_b.size()>0)
             {
@@ -2399,7 +2398,7 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(s
 
     TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
-//       TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
+    //       TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
 
     const typename DataTypes::Coord& c1=vect_c[indices[0]];
@@ -2666,7 +2665,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
             unsigned int ind_triangle=0;
             unsigned ind_t_false_init;
             unsigned &ind_t_false = ind_t_false_init;
-
             if(shell.size()>1)
             {
 
@@ -2719,7 +2717,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const V
 
     TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
-
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
 
     const typename DataTypes::Coord& c3=vect_c[ind_q3];
@@ -3405,7 +3402,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 // Computes the list of points (edge,coord) intersected by the segment from point a to point b
 // and the triangular mesh
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb,
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int /* ind_tb */,
         sofa::helper::vector< unsigned int > &triangles_list, sofa::helper::vector< sofa::helper::vector<unsigned int> > &indices_list, sofa::helper::vector< double >& coords_list)
 {
 
@@ -3431,7 +3428,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     unsigned int ind_edge;
     unsigned int ind_index;
-    unsigned int ind_triangle = ind_tb; // to avoid a warning because parameter ind_tb is not used
+    unsigned int ind_triangle;
     double coord_k_test=init_k_test;
 
     const Vec<3,double>& p_const=p_current;
@@ -3550,19 +3547,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                                 }
 
                                 /*
-                                  if(is_test_init){
+                                if(is_test_init){
 
-                                  if(coord_k<coord_k_test){
-                                  coord_k_test=coord_k;
-                                  ind_t_current=ind_triangle;
-                                  }
+                                if(coord_k<coord_k_test){
+                                coord_k_test=coord_k;
+                                ind_t_current=ind_triangle;
+                                }
 
-                                  }else{
-                                  is_test_init=true;
-                                  coord_k_test=coord_k;
-                                  ind_t_current=ind_triangle;
-                                  }
-                                */
+                                }else{
+                                is_test_init=true;
+                                coord_k_test=coord_k;
+                                ind_t_current=ind_triangle;
+                                }
+                                     */
                             }
 
                         }

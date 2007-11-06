@@ -34,7 +34,7 @@ namespace render
 {
 
 template<class Real>
-void Mesh::calcExtDistMap(Mat4x4f mat, Real* dest, int nx, int ny, int nz, float maxDist, float fact)
+void Mesh::calcExtDistMap(Mat4x4f mat, Real* dest, int nx, int ny, int nz, float /*maxDist*/, float fact)
 {
   close(); // make sure the mesh is closed
   calcNormals(true);

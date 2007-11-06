@@ -545,7 +545,7 @@ void Mesh::calcTangents(std::vector<Vec3f>& tangent1, std::vector<Vec3f>& tangen
     
   // see http://www.terathon.com/code/tangent.php
   
-  for (unsigned int i=0;i<nbf();i++)
+  for (int i=0;i<nbf();i++)
   {
     int i1 = getFP(i)[0];
     int i2 = getFP(i)[1];
