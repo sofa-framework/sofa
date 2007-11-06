@@ -868,7 +868,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
             sofa::helper::vector< unsigned int > shell_b =(sofa::helper::vector< unsigned int >) (tvsa[b_last]);
             unsigned int ind_t_test;
             unsigned int i=0;
-            const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleVertexShellArray();
+
 
             if(shell_b.size()>0)
             {
@@ -2535,7 +2535,7 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
 
     TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
-    TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
+
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
 
     const typename DataTypes::Coord& c0=vect_c[ind_p1];
@@ -2600,11 +2600,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
     if(norm_v_normal != 0.0)
     {
 
-        //v_normal/=norm_v_normal;
-        double v_test = (double) ((ptest-p0)*(v_normal));
-
-        //if(v_test==0.0){ // p is in the plane defined by the triangle (p0,p1,p2)
-
         Vec<3,Real> n_01 = (p1-p0).cross(v_normal);
         Vec<3,Real> n_12 = (p2-p1).cross(v_normal);
         Vec<3,Real> n_20 = (p0-p2).cross(v_normal);
@@ -2668,7 +2663,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
 
             unsigned int i =0;
             bool is_in_next_triangle=false;
-            unsigned int ind_triangle;
+            unsigned int ind_triangle=0;
             unsigned ind_t_false_init;
             unsigned &ind_t_false = ind_t_false_init;
 
@@ -2706,11 +2701,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_PointinTriangle(bool is_test
         }
         return is_inside;
 
-        //}else{ // p is not in the plane defined by the triangle (p0,p1,p2)
-        //std::cout << "INFO_print : p is not in the plane defined by the triangle (p0,p1,p2)" << std::endl;
-        //	return false;
-        //}
-
     }
     else   // triangle is flat
     {
@@ -2729,7 +2719,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const V
 
     TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
-    TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
+
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
 
     const typename DataTypes::Coord& c3=vect_c[ind_q3];
@@ -3423,8 +3413,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
 
-//       const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
-
     bool is_validated=true;
     bool is_intersected=true;
 
@@ -3443,7 +3431,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     unsigned int ind_edge;
     unsigned int ind_index;
-    unsigned int ind_triangle;
+    unsigned int ind_triangle = ind_tb; // to avoid a warning because parameter ind_tb is not used
     double coord_k_test=init_k_test;
 
     const Vec<3,double>& p_const=p_current;
@@ -3461,7 +3449,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         ind_edge=container->getEdgeIndex(indices[0],indices[1]);
         sofa::helper::vector< unsigned int > indices_first_list; indices_first_list.push_back(indices[0]); indices_first_list.push_back(indices[1]);
         triangles_list.push_back(ind_t_current);
-        indices_list.push_back(indices_first_list); // ind_edge
+        indices_list.push_back(indices_first_list);
         coords_list.push_back(coord_t);
 
         const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
@@ -3475,9 +3463,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
         Vec<3,Real> p_t_aux;
         p_t_aux[0] = (Real) (c_t_current[0]); p_t_aux[1] = (Real) (c_t_current[1]); p_t_aux[2] = (Real) (c_t_current[2]);
-// 	const Vec<3,Real>& p_t_current = p_t_aux;
-
-// 	const Triangle &t=container->getTriangle((const unsigned int) ind_t_current);
 
         if(coord_t==0.0 || coord_t==1.0)  // current point indexed by ind_t_current is on a vertex
         {
@@ -3618,7 +3603,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                 sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (tesa[ind_edge]);
                 ind_triangle=shell[0];
                 unsigned int i=0;
-                //bool is_in_next_triangle=false;
+
                 bool is_test_init=false;
 
                 unsigned int ind_from = ind_t_current;
@@ -3647,9 +3632,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                             Vec<3,Real> p2_aux;
                             p2_aux[0] = (Real) (c2[0]); p2_aux[1] = (Real) (c2[1]); p2_aux[2] = (Real) (c2[2]);
 
-                            // is_in_next_triangle=is_point_in_halfplane(p_t_current, indices[0], indices[1], p0, p1, p2, t[0], t[1], t[2]); // Comment : HYP = conform mesh
-
-                            //if(is_in_next_triangle){
 
                             const Vec<3,double>& p_const_current=p_current;
                             is_intersected=computeSegmentTriangleIntersection(true, p_const_current, b, ind_triangle, indices, coord_t, coord_k);
@@ -3670,8 +3652,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                                     if(dist_test<dist_min && coord_k<=1)  //dist_test<dist_min
                                     {
 
-                                        //std::cout << "INFO_print : dist_test = " << dist_test << ", dist_min = " << dist_min << std::endl;
-
                                         coord_k_test=coord_k;
                                         dist_min=dist_test;
                                         ind_t_current=ind_triangle;
@@ -3685,22 +3665,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                                     ind_t_current=ind_triangle;
                                 }
 
-                                /*
-                                  if(is_test_init){
-
-                                  if(coord_k<coord_k_test){
-                                  coord_k_test=coord_k;
-                                  ind_t_current=ind_triangle;
-                                  }
-
-                                  }else{
-                                  is_test_init=true;
-                                  coord_k_test=coord_k;
-                                  ind_t_current=ind_triangle;
-                                  }
-                                */
                             }
-                            //}
+
 
                         }
 

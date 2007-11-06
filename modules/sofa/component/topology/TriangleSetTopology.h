@@ -467,7 +467,7 @@ public:
     Vec<3,double> computeTriangleNormal(const unsigned int ind_t);
 
     // Tests how to triangularize a quad whose vertices are defined by (p_q1, p_q2, ind_q3, ind_q4) according to the Delaunay criterion
-    bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const Vec<3,double>& p_q1, const Vec<3,double>& p_q2, unsigned int ind_q3, unsigned int ind_q4);
+    bool isQuadDeulaunayOriented(const Vec<3,double>& p_q1, const Vec<3,double>& p_q2, unsigned int ind_q3, unsigned int ind_q4);
 
     // Computes the opposite point to ind_p
     Vec<3,double> getOppositePoint(unsigned int ind_p, sofa::helper::vector< unsigned int>& indices, const double &coord_p);
