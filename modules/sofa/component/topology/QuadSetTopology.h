@@ -72,15 +72,15 @@ class QuadsAdded : public core::componentmodel::topology::TopologyChange
 public:
     unsigned int nQuads;
 
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
-
-    sofa::helper::vector< sofa::helper::vector< double > > coefs;
-
 protected:
-
     sofa::helper::vector< Quad > quadArray;
 
     sofa::helper::vector< unsigned int > quadIndexArray;
+
+public:
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
+
+    sofa::helper::vector< sofa::helper::vector< double > > coefs;
 
 public:
 

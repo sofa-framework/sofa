@@ -60,14 +60,17 @@ class HexahedraAdded : public core::componentmodel::topology::TopologyChange
 public:
     unsigned int nHexahedra;
 
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
-
-    sofa::helper::vector< sofa::helper::vector< double > > coefs;
-
 protected:
     sofa::helper::vector< Hexahedron > hexahedronArray;
 
     sofa::helper::vector< unsigned int > hexahedronIndexArray;
+
+public:
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
+
+    sofa::helper::vector< sofa::helper::vector< double > > coefs;
+
+
 
 public:
 
