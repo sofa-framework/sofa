@@ -394,6 +394,16 @@ public:
         return r;
     }
 
+    /// Scalar division operator.
+    Mat<L,C,real> operator/(real f) const
+    {
+        Mat<L,C,real> r;
+        for(int i=0; i<L; i++)
+            for(int j=0; j<C; j++)
+                r[i][j] = (*this)[i][j] / f;
+        return r;
+    }
+
     /// Scalar multiplication assignment operator.
     void operator *=(real r)
     {
