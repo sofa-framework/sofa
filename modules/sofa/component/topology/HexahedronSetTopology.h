@@ -57,17 +57,19 @@ typedef helper::fixed_array<unsigned int,12> HexahedronEdges;
 class HexahedraAdded : public core::componentmodel::topology::TopologyChange
 {
 
-protected:
-    sofa::helper::vector< Hexahedron > hexahedronArray;
-
-    sofa::helper::vector< unsigned int > hexahedronIndexArray;
-
 public:
     unsigned int nHexahedra;
 
     sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
 
     sofa::helper::vector< sofa::helper::vector< double > > coefs;
+
+protected:
+    sofa::helper::vector< Hexahedron > hexahedronArray;
+
+    sofa::helper::vector< unsigned int > hexahedronIndexArray;
+
+public:
 
     HexahedraAdded(const unsigned int nT,
             const sofa::helper::vector< Hexahedron >& _hexahedronArray = (const sofa::helper::vector< Hexahedron >)0,

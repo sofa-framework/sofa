@@ -76,6 +76,14 @@ public:
 
     sofa::helper::vector< sofa::helper::vector< double > > coefs;
 
+protected:
+
+    sofa::helper::vector< Quad > quadArray;
+
+    sofa::helper::vector< unsigned int > quadIndexArray;
+
+public:
+
     QuadsAdded(const unsigned int nT,
             const sofa::helper::vector< Quad >& _quadArray = (const sofa::helper::vector< Quad >)0,
             const sofa::helper::vector< unsigned int >& quadsIndex = (const sofa::helper::vector< unsigned int >)0,
@@ -93,12 +101,6 @@ public:
     {
         return quadArray[i];
     }
-
-protected:
-
-    sofa::helper::vector< Quad > quadArray;
-
-    sofa::helper::vector< unsigned int > quadIndexArray;
 
 };
 

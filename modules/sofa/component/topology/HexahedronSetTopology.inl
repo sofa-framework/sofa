@@ -477,7 +477,7 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sof
                     sofa::helper::vector< unsigned int > &shell4 =  container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][4]];
                     // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                     assert(std::find( shell4.begin(), shell4.end(), oldHexahedronIndex ) !=shell4.end());
-                    it=std::find( shell1.begin(), shell1.end(), oldHexahedronIndex );
+                    it=std::find( shell4.begin(), shell4.end(), oldHexahedronIndex );
                     (*it)=indices[i];
 
                     sofa::helper::vector< unsigned int > &shell5 =  container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][5]];
@@ -780,22 +780,22 @@ inline real tripleProduct(const Vec<1,real>& , const Vec<1,real>& ,const Vec<1,r
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeHexahedronVolume( const unsigned int i) const
 {
-    HexahedronSetTopology< DataTypes > *topology = dynamic_cast<HexahedronSetTopology< DataTypes >* >(this->m_basicTopology);
-    assert (topology != 0);
-    HexahedronSetTopologyContainer * container = static_cast< HexahedronSetTopologyContainer* >(topology->getTopologyContainer());
-    const Hexahedron &t=container->getHexahedron(i);
-    const VecCoord& p = *topology->getDOF()->getX();
+    //HexahedronSetTopology< DataTypes > *topology = dynamic_cast<HexahedronSetTopology< DataTypes >* >(this->m_basicTopology);
+    //assert (topology != 0);
+    //HexahedronSetTopologyContainer * container = static_cast< HexahedronSetTopologyContainer* >(topology->getTopologyContainer());
+    //const Hexahedron &t=container->getHexahedron(i);
+    //const VecCoord& p = *topology->getDOF()->getX();
     Real volume=(Real)(0.0); // todo
     return volume;
 }
 template< class DataTypes>
 typename DataTypes::Real HexahedronSetGeometryAlgorithms< DataTypes >::computeRestHexahedronVolume( const unsigned int i) const
 {
-    HexahedronSetTopology< DataTypes > *topology = dynamic_cast<HexahedronSetTopology< DataTypes >* >(this->m_basicTopology);
-    assert (topology != 0);
-    HexahedronSetTopologyContainer * container = static_cast< HexahedronSetTopologyContainer* >(topology->getTopologyContainer());
-    const Hexahedron &t=container->getHexahedron(i);
-    const VecCoord& p = *topology->getDOF()->getX0();
+    //HexahedronSetTopology< DataTypes > *topology = dynamic_cast<HexahedronSetTopology< DataTypes >* >(this->m_basicTopology);
+    //assert (topology != 0);
+    //HexahedronSetTopologyContainer * container = static_cast< HexahedronSetTopologyContainer* >(topology->getTopologyContainer());
+    //const Hexahedron &t=container->getHexahedron(i);
+    //const VecCoord& p = *topology->getDOF()->getX0();
     Real volume=(Real)(0.0); // todo
     return volume;
 
@@ -809,11 +809,11 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::computeHexahedronVolume( BasicA
     assert (topology != 0);
     HexahedronSetTopologyContainer * container = static_cast< HexahedronSetTopologyContainer* >(topology->getTopologyContainer());
     //const sofa::helper::vector<Hexahedron> &ta=container->getHexahedronArray();
-    const typename DataTypes::VecCoord& p = *topology->getDOF()->getX();
+    //const typename DataTypes::VecCoord& p = *topology->getDOF()->getX();
     unsigned int i;
     for (i=0; i<container->getNumberOfHexahedra(); ++i) //ta.size();++i) {
     {
-        const Hexahedron &t=container->getHexahedron(i); //ta[i];
+        //const Hexahedron &t=container->getHexahedron(i); //ta[i];
         ai[i]=(Real)(0.0); // todo
     }
 }
