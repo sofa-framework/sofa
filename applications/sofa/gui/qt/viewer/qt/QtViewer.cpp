@@ -246,7 +246,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
     interactor = NULL;
-    camera_type = CAMERA_PERSPECTIVE;
 
 }
 
@@ -370,15 +369,14 @@ void QtViewer::initializeGL(void)
         CreateRenderTexture(g_DepthTexture, SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT);
         CreateRenderTexture(ShadowTextureMask, SHADOW_MASK_SIZE, SHADOW_MASK_SIZE, GL_LUMINANCE, GL_LUMINANCE);
 
-        if (_glshadow = CShader::InitGLSL())
+        if (_shadow )
         {
-            // Here we pass in our new vertex and fragment shader files to our shader object.
-            g_Shader.InitShaders(sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.vert"), sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.frag"));
-        }
-        else
-        {
-            printf("WARNING QtViewer : shadows are not supported !\n");
-            _shadow = false;
+            if ( !CShader::InitGLSL() ) { printf("WARNING QtViewer : shadows are not supported !\n"); _shadow=false;}
+            else
+            {
+                // Here we pass in our new vertex and fragment shader files to our shader object.
+                g_Shader.InitShaders(sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.vert"), sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.frag"));
+            }
         }
 
         // change status so we only do this stuff once
@@ -390,7 +388,7 @@ void QtViewer::initializeGL(void)
     }
 
     // switch to preset view
-    SwitchToPresetView();
+    resetView();
 }
 
 // ---------------------------------------------------------
@@ -1103,39 +1101,39 @@ void QtViewer::DrawScene(void)
 
         glLightfv( GL_LIGHT0, GL_POSITION, _lightPosition );
         /*
-        {
-        glEnable(GL_TEXTURE_2D);
-        glActiveTextureARB(GL_TEXTURE0_ARB);
-        glBindTexture(GL_TEXTURE_2D, g_Texture[SHADOW_ID]);
-        glTexEnvi(GL_TEXTURE_2D,GL_TEXTURE_ENV_MODE,  GL_REPLACE);
-        Disable<GL_DEPTH_TEST> dtoff;
-        Disable<GL_LIGHTING> dlight;
-        glColor3f(1,1,1);
-        glViewport(0, 0, 128, 128);
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-        glOrtho(0,1,0,1,-1,1);
-        glMatrixMode(GL_MODELVIEW);
-        glPushMatrix();{
-        glLoadIdentity();
-        glBegin(GL_QUADS);{
-        glTexCoord2f(0,0);
-        glVertex2f(0,0);
-        glTexCoord2f(0,1);
-        glVertex2f(0,1);
-        glTexCoord2f(1,1);
-        glVertex2f(1,1);
-        glTexCoord2f(1,0);
-        glVertex2f(1,0);
-        }glEnd();
-        }glPopMatrix();
-        glMatrixMode(GL_PROJECTION);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
-        glViewport(0, 0, GetWidth(), GetHeight());
-        }
-             */
+          {
+          glEnable(GL_TEXTURE_2D);
+          glActiveTextureARB(GL_TEXTURE0_ARB);
+          glBindTexture(GL_TEXTURE_2D, g_Texture[SHADOW_ID]);
+          glTexEnvi(GL_TEXTURE_2D,GL_TEXTURE_ENV_MODE,  GL_REPLACE);
+          Disable<GL_DEPTH_TEST> dtoff;
+          Disable<GL_LIGHTING> dlight;
+          glColor3f(1,1,1);
+          glViewport(0, 0, 128, 128);
+          glMatrixMode(GL_PROJECTION);
+          glPushMatrix();
+          glLoadIdentity();
+          glOrtho(0,1,0,1,-1,1);
+          glMatrixMode(GL_MODELVIEW);
+          glPushMatrix();{
+          glLoadIdentity();
+          glBegin(GL_QUADS);{
+          glTexCoord2f(0,0);
+          glVertex2f(0,0);
+          glTexCoord2f(0,1);
+          glVertex2f(0,1);
+          glTexCoord2f(1,1);
+          glVertex2f(1,1);
+          glTexCoord2f(1,0);
+          glVertex2f(1,0);
+          }glEnd();
+          }glPopMatrix();
+          glMatrixMode(GL_PROJECTION);
+          glPopMatrix();
+          glMatrixMode(GL_MODELVIEW);
+          glViewport(0, 0, GetWidth(), GetHeight());
+          }
+        */
 
 
         // Render the world and apply the shadow map texture to it
@@ -1609,10 +1607,6 @@ void QtViewer::ApplyMouseInteractorTransformation(int x, int y)
 // --- Handle events (mouse, keyboard, ...)
 // ----------------------------------------
 
-bool QtViewer::isControlPressed() const
-{
-    return m_isControlPressed;
-}
 
 void QtViewer::keyPressEvent ( QKeyEvent * e )
 {
@@ -1628,77 +1622,6 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
     else  // control the GUI
         switch(e->key())
         {
-
-        case Qt::Key_S:
-            // --- save screenshot
-        {
-            screenshot(capture.findFilename());
-            break;
-        }
-        case Qt::Key_V:
-            // --- save video
-        {
-            _video = !_video;
-            capture.setCounter();
-            break;
-        }
-        case Qt::Key_W:
-            // --- save current view
-        {
-            saveView();
-            break;
-        }
-
-        // 	case Qt::Key_O:
-        // 		// --- export to OBJ
-        // 		{
-        // 			exportOBJ();
-        // 			break;
-        // 		}
-        // 	case Qt::Key_P:
-        // 		// --- export to a succession of OBJ to make a video
-        // 		{
-        // 			_animationOBJ = !_animationOBJ;
-        // 			_animationOBJcounter = 0;
-        // 			break;
-        // 		}
-        case Qt::Key_R:
-            // --- draw axis
-        {
-            _axis = !_axis;
-            update();
-            break;
-        }
-        case Qt::Key_B:
-            // --- change background
-        {
-            _background = (_background+1)%3;
-            update();
-            break;
-        }
-
-        case Qt::Key_L:
-            // --- draw shadows
-        {
-            if (_glshadow)
-            {
-                _shadow = !_shadow;
-                update();
-            }
-            else
-            {
-                printf("WARNING QtViewer : shadows are not supported !\n");
-                _shadow=false;
-            }
-            break;
-        }
-        case Qt::Key_T:
-        {
-            if (camera_type == CAMERA_PERSPECTIVE) camera_type = CAMERA_ORTHOGRAPHIC;
-            else                                   camera_type = CAMERA_PERSPECTIVE;
-            update();
-            break;
-        }
         case Qt::Key_A:
             // --- switch automate display mode
         {
@@ -1720,18 +1643,12 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
                 {
                     _automateDisplayed = false;
                     //Fl::remove_idle(displayAutomateCB);
-                    SwitchToPresetView();
+                    resetView();
                     sofa::helper::gl::glfntClose();
                 }
             }
 
             update();
-            break;
-        }
-
-        case Qt::Key_Escape:
-        {
-            exit(0);
             break;
         }
 
@@ -1752,79 +1669,15 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
             }
             break;
         }
-        // 	case Qt::Key_F5:
-        // 		{
-        // 			emit reload();
-        // 			//if (!sceneFileName.empty())
-        // 			//{
-        // 			//	std::cout << "Reloading "<<sceneFileName<<std::endl;
-        // 			//	std::string filename = sceneFileName;
-        // 			//	Quaternion q = _newQuat;
-        // 			//	Transformation t = _sceneTransform;
-        // 			//	simulation::tree::GNode* newroot = getSimulation()->load(filename.c_str());
-        // 			//	if (newroot == NULL)
-        // 			//	{
-        // 			//		std::cout << "Failed to load "<<filename<<std::endl;
-        // 			//		std::string s = "Failed to load ";
-        // 			//		s += filename;
-        // 			//		qFatal(s.c_str());
-        // 			//		break;
-        // 			//	}
-        // 			//	setScene(newroot, filename.c_str());
-        // 			//	_newQuat = q;
-        // 			//	_sceneTransform = t;
-        // 			//}
-
-        // 			break;
-        // 		}
-        case Qt::Key_Control:
-        {
-            m_isControlPressed = true;
-            //cerr<<"QtViewer::keyPressEvent, CONTROL pressed"<<endl;
-            break;
-        }
         default:
         {
-            e->ignore();
+            SofaViewer::keyPressEvent(e);
         }
+        update();
         }
-    /*
-      if (Fl::get_key(FL_Control_L) || Fl::get_key(FL_Control_R))
-      {
-      if ((_mouseInteractorTranslationMode) && (!_mouseInteractorRotationMode))
-      {
-      _mouseInteractorRotationMode = true;
-      }
-      }
-      else
-      {
-      _mouseInteractorRotationMode = false;
-      }
-    */
 }
 
 
-void QtViewer::keyReleaseEvent ( QKeyEvent * e )
-{
-    //cerr<<"QtViewer::keyReleaseEvent, key = "<<e->key()<<endl;
-    switch(e->key())
-    {
-    case Qt::Key_Control:
-    {
-        m_isControlPressed = false;
-        //cerr<<"QtViewer::keyPressEvent, CONTROL released"<<endl;
-    }
-    default:
-    {
-        e->ignore();
-    }
-    }
-    if( isControlPressed() ) // pass event to the scene data structure
-    {
-        sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
-        if (groot) groot->propagateEvent(&keyEvent);
-    }
-}
 
 void QtViewer::wheelEvent(QWheelEvent* e)
 {
@@ -1925,20 +1778,12 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
             // Mouse left button is released
             if ((e->button() == Qt::LeftButton) && (_translationMode == XY_TRANSLATION))
             {
-                if (_mouseInteractorMoving)
-                {
-                    //_mouseInteractorRelativePosition = Vector3::ZERO;
-                    _mouseInteractorMoving = false;
-                }
+                _mouseInteractorMoving = false;
             }
             // Mouse right button is released
             else if ((e->button() == Qt::RightButton) && (_translationMode == Z_TRANSLATION))
             {
-                if (_mouseInteractorMoving)
-                {
-                    //_mouseInteractorRelativePosition = Vector3::ZERO;
-                    _mouseInteractorMoving = false;
-                }
+                _mouseInteractorMoving = false;
             }
             break;
 
@@ -1951,74 +1796,8 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
     }
     else if (e->state()&Qt::ShiftButton)
     {
-
         _moving = false;
-        //_sceneTransform.ApplyInverse();
-        if (interactor==NULL)
-        {
-            interactor = new RayPickInteractor();
-            interactor->setName("mouse");
-            if (groot)
-            {
-                simulation::tree::GNode* child = new simulation::tree::GNode("mouse");
-                groot->addChild(child);
-                child->addObject(interactor);
-            }
-        }
-        interactor->newEvent("show");
-        switch (e->type())
-        {
-        case QEvent::MouseButtonPress:
-            if (e->button() == Qt::LeftButton)
-            {
-                interactor->newEvent("pick"); // Shift+Leftclick to deform the mesh
-            }
-            else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
-            {
-                interactor->newEvent("pick2");
-            }
-            else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
-            {
-                interactor->newEvent("pick3");
-            }
-            break;
-        case QEvent::MouseButtonRelease:
-            //if (e->button() == Qt::LeftButton)
-        {
-            interactor->newEvent("release");
-        }
-        break;
-        default: break;
-        }
-        Vector3 p0, px, py, pz;
-        gluUnProject(eventX, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(p0[0]), &(p0[1]), &(p0[2]));
-        gluUnProject(eventX+1, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(px[0]), &(px[1]), &(px[2]));
-        gluUnProject(eventX, lastViewport[3]-1-(eventY+1), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(py[0]), &(py[1]), &(py[2]));
-        gluUnProject(eventX, lastViewport[3]-1-(eventY), 0.1, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(pz[0]), &(pz[1]), &(pz[2]));
-        px -= p0;
-        py -= p0;
-        pz -= p0;
-        px.normalize();
-        py.normalize();
-        pz.normalize();
-        Mat4x4d transform;
-        transform.identity();
-        transform[0][0] = px[0];
-        transform[1][0] = px[1];
-        transform[2][0] = px[2];
-        transform[0][1] = py[0];
-        transform[1][1] = py[1];
-        transform[2][1] = py[2];
-        transform[0][2] = pz[0];
-        transform[1][2] = pz[1];
-        transform[2][2] = pz[2];
-        transform[0][3] = p0[0];
-        transform[1][3] = p0[1];
-        transform[2][3] = p0[2];
-        Mat3x3d mat; mat = transform;
-        Quat q; q.fromMatrix(mat);
-        //std::cout << p0[0]<<' '<<p0[1]<<' '<<p0[2] << " -> " << pz[0]<<' '<<pz[1]<<' '<<pz[2] << std::endl;
-        interactor->newPosition(p0, q, transform);
+        SofaViewer::mouseEvent(e);
     }
     else if (e->state()&Qt::AltButton)
     {
@@ -2350,10 +2129,43 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
     }
 }
 
+void QtViewer::moveRayPickInteractor(int eventX, int eventY)
+{
+    Vector3 p0, px, py, pz;
+    gluUnProject(eventX, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(p0[0]), &(p0[1]), &(p0[2]));
+    gluUnProject(eventX+1, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(px[0]), &(px[1]), &(px[2]));
+    gluUnProject(eventX, lastViewport[3]-1-(eventY+1), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(py[0]), &(py[1]), &(py[2]));
+    gluUnProject(eventX, lastViewport[3]-1-(eventY), 0.1, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(pz[0]), &(pz[1]), &(pz[2]));
+    px -= p0;
+    py -= p0;
+    pz -= p0;
+    px.normalize();
+    py.normalize();
+    pz.normalize();
+    Mat4x4d transform;
+    transform.identity();
+    transform[0][0] = px[0];
+    transform[1][0] = px[1];
+    transform[2][0] = px[2];
+    transform[0][1] = py[0];
+    transform[1][1] = py[1];
+    transform[2][1] = py[2];
+    transform[0][2] = pz[0];
+    transform[1][2] = pz[1];
+    transform[2][2] = pz[2];
+    transform[0][3] = p0[0];
+    transform[1][3] = p0[1];
+    transform[2][3] = p0[2];
+    Mat3x3d mat; mat = transform;
+    Quat q; q.fromMatrix(mat);
+    //std::cout << p0[0]<<' '<<p0[1]<<' '<<p0[2] << " -> " << pz[0]<<' '<<pz[1]<<' '<<pz[2] << std::endl;
+    interactor->newPosition(p0, q, transform);
+}
+
 // -------------------------------------------------------------------
 // ---
 // -------------------------------------------------------------------
-void QtViewer::SwitchToPresetView()
+void QtViewer::resetView()
 {
     if (!sceneFileName.empty())
     {
@@ -2370,6 +2182,7 @@ void QtViewer::SwitchToPresetView()
             in >> _newQuat[3];
             _newQuat.normalize();
             in.close();
+            update();
             return;
         }
     }
@@ -2383,6 +2196,7 @@ void QtViewer::SwitchToPresetView()
     _newQuat[1] = -0.83;
     _newQuat[2] = -0.26;
     _newQuat[3] = -0.44;
+    update();
     //ResetScene();
 }
 
@@ -2399,13 +2213,6 @@ void QtViewer::SwitchToAutomateView()
     _newQuat[1] = 0.0;
     _newQuat[2] = 0.0;
     _newQuat[3] = 0.0;
-}
-
-
-void QtViewer::resetView()
-{
-    SwitchToPresetView();
-    update();
 }
 
 void QtViewer::saveView()
@@ -2467,7 +2274,7 @@ void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filena
         _panSpeed = (sceneMaxBBox-sceneMinBBox).norm()*0.5;
         _zoomSpeed = (sceneMaxBBox-sceneMinBBox).norm();
 
-        if (!keepParams) SwitchToPresetView();
+        if (!keepParams) resetView();
         if (interactor != NULL)
             interactor = NULL;
     }
@@ -2508,54 +2315,21 @@ void QtViewer::setSizeH( int size )
 QString QtViewer::helpString()
 {
     QString text(
-        "<H1>QtViewer</H1><br>\
-<hr><br>\
-TO NAVIGATE: use the MOUSE.<br>\
-<hr><br>\
-TO SWITCH INTERACTION MODE: press the KEY C.<br>\
-Allow or not the navigation with the mouse.<br>\
-<br>\
-<hr><br>\
-TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA: press the KEY T<br>\
-<br>\
-<hr><br>\
-TO PICK: press SHIFT and LEFT MOUSE BUTTON to pick objects.<br>\
-<br>\
-<hr><br>\
-TO DRAW SHADOWS: press the KEY L<br>\
-<br>\
-<hr><br>\
-TO DRAW THE SCENE AXIS: press the KEY R.<br>\
-<br>\
-<hr><br>\
-TO SAVE A SCREENSHOT: press the KEY S.<br>\
-The captured images are saved in the running project directory under the name format capturexxxx.bmp<br>\
-<br>\
-<hr><br>\
-TO SAVE A VIDEO: press the KEY V.<br>\
-Each time the frame is updated a screenshot is saved.<br>\
-<br>\
-<hr><br>\
-TO EXPORT TO .OBJ: press the KEY O.<br>\
-The generated files scene-time.obj and scene-time.mtl are saved in the running project directory.<br>\
-<br>\
-<hr><br>\
-TO SAVE THE VIEW: press the KEY W.<br>\
-<br>\
-<hr><br>\
-TO CHANGE THE BACKGROUND: press the KEY B.<br>\
-<br>\
-<hr><br>\
-TO SAVE THE VIEW: press the KEY W.<br>\
-<br>\
-<hr><br>\
-TO ADD A PRESET OBJECT: press KEY 1 to 6.<br>\
-<br>\
-<hr><br>\
-TO ADD A RANDOM OBJECT: press KEY N.<br>\
-<br>\
-<hr><br>\
-TO QUIT ::sofa:: press the KEY ESCAPE.<br>");
+        "<H1>QtViewer</H1><hr>\
+<li><b>Mouse</b>: TO NAVIGATE<br></li>\
+<li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
+<li><b>C</b>: TO CENTER THE VIEW<br></li>\
+<li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
+<li><b>C</b>: TO SWITCH INTERACTION MODE: press the KEY C.<br>\
+Allow or not the navigation with the mouse.<br></li>\
+<li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+<li><b>L</b>: TO DRAW SHADOWS<br></li>\
+<li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
+<li><b>I</b>: TO SAVE A SCREENSHOT<br>\
+The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
+<li><b>V</b>: TO SAVE A VIDEO<br>\
+Each time the frame is updated a screenshot is saved<br></li>\
+<li><b>Esc</b>: TO QUIT ::sofa:: <br></li>");
     return text;
 }
 

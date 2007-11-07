@@ -40,7 +40,6 @@
 #include <sofa/helper/gl/Trackball.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/collision/RayPickInteractor.h>
 #include <sofa/simulation/tree/xml/Element.h>
 #include <sofa/simulation/automatescheduler/Automate.h>
 
@@ -93,11 +92,6 @@ private:
 
 
 
-    bool			_video;
-    bool			_axis;
-    int 			_background;
-    bool			_shadow;
-    bool			_glshadow;
     //     float			_zoomSpeed;
     //     float			_panSpeed;
     //     Transformation	_sceneTransform;
@@ -116,7 +110,6 @@ private:
     bool			_automateDisplayed;
     ctime_t			_beginTime;
 
-    RayPickInteractor* interactor;
 
     int	_navigationMode;
     bool _mouseInteractorMoving;
@@ -160,7 +153,6 @@ protected:
 public:
     void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false);
 
-    void			SwitchToPresetView();
     void			SwitchToAutomateView();
     //void			reshape(int width, int height);
     int GetWidth()
@@ -175,6 +167,9 @@ public:
     void wait() {_waitForRender = true;};
 
     void	UpdateOBJ(void);
+
+    void moveRayPickInteractor(int eventX, int eventY);
+    void moveLaparoscopic(QMouseEvent *e);
     // 	static Quaternion _newQuat;
 
     // Display scene from the automate
@@ -203,19 +198,16 @@ private:
     void	DisplayMenu(void);
     void	DrawScene();
     void	DrawAutomate();
-    void	ApplySceneTransformation(int x, int y);
     //int		handle(int event);	// required by FLTK
 
 protected:
     //virtual bool event ( QEvent * e );
-    bool m_isControlPressed;
-    bool isControlPressed() const;
     virtual void keyPressEvent ( QKeyEvent * e );
     virtual void keyReleaseEvent ( QKeyEvent * e );
     virtual void mousePressEvent ( QMouseEvent * e );
     virtual void mouseReleaseEvent ( QMouseEvent * e );
     virtual void mouseMoveEvent ( QMouseEvent * e );
-    bool updateInteractor( QMouseEvent * e );
+    bool mouseEvent( QMouseEvent * e );
 
 
 

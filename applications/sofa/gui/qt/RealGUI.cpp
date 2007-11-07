@@ -210,7 +210,7 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     if ( groot )
         gui->setScene ( groot, filename );
 
-    //gui->viewer->SwitchToPresetView();
+    //gui->viewer->resetView();
 
     application->setMainWidget ( gui );
 
@@ -1483,7 +1483,7 @@ void RealGUI::resetScene()
         groot->setTime(initial_time);
         eventNewTime();
 
-        //viewer->SwitchToPresetView();
+        //viewer->resetView();
         viewer->getQWidget()->update();
     }
 }
@@ -2195,7 +2195,7 @@ void RealGUI::graphRemoveObject()
             list_object_removed.push_back ( node_clicked );
         }
 
-        viewer->SwitchToPresetView();
+        viewer->resetView();
         viewer->getQWidget()->update();
         node_clicked = NULL;
         item_clicked = NULL;
@@ -2463,7 +2463,7 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz, do
     transformObject ( new_node, dx, dy, dz, scale );
 
     //Update the view
-    viewer->SwitchToPresetView();
+    viewer->resetView();
     viewer->getQWidget()->update();
 
 

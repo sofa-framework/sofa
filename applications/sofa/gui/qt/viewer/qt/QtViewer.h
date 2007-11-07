@@ -42,7 +42,6 @@
 #include <sofa/helper/gl/Trackball.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/collision/RayPickInteractor.h>
 #include <sofa/simulation/tree/xml/Element.h>
 
 namespace sofa
@@ -93,8 +92,6 @@ private:
 
     enum { MINMOVE = 10 };
 
-    enum {CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC};
-    int camera_type;
 
     QTimer* timerAnimate;
     int				_W, _H;
@@ -110,12 +107,7 @@ private:
     int				_savedMouseX, _savedMouseY;
     bool			_spinning;
     bool			_moving;
-    bool			_video;
 
-    bool			_axis;
-    int 			_background;
-    bool			_shadow;
-    bool			_glshadow;
     float			_zoomSpeed;
     float			_panSpeed;
     Transformation	_sceneTransform;
@@ -137,7 +129,7 @@ private:
     Texture			*texLogo;
     bool			_automateDisplayed;
     ctime_t			_beginTime;
-    RayPickInteractor* interactor;
+
     double lastProjectionMatrix[16];
     double lastModelviewMatrix[16];
     GLint lastViewport[4];
@@ -166,7 +158,7 @@ public:
     void wait() {_waitForRender = true;};
 
 public slots:
-    virtual void resetView();
+    void resetView();
     virtual void saveView();
     virtual void screenshot(const std::string filename);
     virtual void setSizeW(int);
@@ -195,7 +187,7 @@ public:
     {
         return groot;
     }
-    void			SwitchToPresetView();
+
     void			SwitchToAutomateView();
     //void			reshape(int width, int height);
     int GetWidth()
@@ -208,7 +200,7 @@ public:
     };
 
     void	UpdateOBJ(void);
-
+    void moveRayPickInteractor(int eventX, int eventY);
     /////////////////
     // Interaction //
     /////////////////
@@ -261,11 +253,8 @@ private:
 
 protected:
     //virtual bool event ( QEvent * e );
-    bool m_isControlPressed;
-    bool isControlPressed() const;
 
     virtual void keyPressEvent ( QKeyEvent * e );
-    virtual void keyReleaseEvent ( QKeyEvent * e );
     virtual void mousePressEvent ( QMouseEvent * e );
     virtual void mouseReleaseEvent ( QMouseEvent * e );
     virtual void mouseMoveEvent ( QMouseEvent * e );

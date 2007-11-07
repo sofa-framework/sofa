@@ -30,6 +30,9 @@
 
 #include <sofa/simulation/automatescheduler/Automate.h>
 #include <sofa/helper/gl/Capture.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/component/collision/RayPickInteractor.h>
 
 namespace sofa
 {
@@ -42,7 +45,7 @@ namespace qt
 
 namespace viewer
 {
-
+enum {CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC};
 //      using namespace sofa::simulation::automatescheduler;
 
 class SofaViewer : public sofa::simulation::automatescheduler::Automate::DrawCB
@@ -50,7 +53,7 @@ class SofaViewer : public sofa::simulation::automatescheduler::Automate::DrawCB
 
 public:
     SofaViewer ()
-        : groot(NULL)
+        : groot(NULL), m_isControlPressed(false), _video(false), _shadow(false), _axis(false), camera_type(CAMERA_PERSPECTIVE)
     {}
     ~SofaViewer() {}
 
@@ -62,7 +65,7 @@ public:
 
     virtual void setup() {}
     virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false)=0;
-    virtual void SwitchToPresetView()=0;
+    virtual void resetView()=0;
     virtual QString helpString()=0;
     virtual bool ready() { return true; }
     virtual void wait() {}
@@ -73,16 +76,170 @@ public:
     virtual void        screenshot(const std::string filename)=0;
 
 protected:
+
+
+
+    // ---------------------- Here are the Keyboard controls   ----------------------
+    void keyPressEvent ( QKeyEvent * e )
+    {
+        switch(e->key())
+        {
+        case Qt::Key_B:
+            // --- change background
+        {
+            _background = (_background+1)%3;
+            break;
+        }
+        case Qt::Key_L:
+            // --- draw shadows
+        {
+            _shadow = !_shadow;
+            break;
+        }
+        case Qt::Key_R:
+            // --- draw axis
+        {
+            _axis = !_axis;
+            break;
+        }
+        case Qt::Key_S:
+        {
+            screenshot(capture.findFilename());
+            break;
+        }
+        case Qt::Key_T:
+        {
+            if (camera_type == CAMERA_PERSPECTIVE) camera_type = CAMERA_ORTHOGRAPHIC;
+            else                                   camera_type = CAMERA_PERSPECTIVE;
+            break;
+        }
+        case Qt::Key_V:
+            // --- save video
+        {
+            _video = !_video;
+            capture.setCounter();
+            break;
+        }
+        case Qt::Key_W:
+            // --- save current view
+        {
+            saveView();
+            break;
+        }
+        case Qt::Key_Control:
+        {
+            m_isControlPressed = true;
+            //cerr<<"QtViewer::keyPressEvent, CONTROL pressed"<<endl;
+            break;
+        }
+        case Qt::Key_Escape:
+        {
+            exit(0);
+            break;
+        }
+        default:
+        {
+            e->ignore();
+        }
+        }
+    }
+
+
+    void keyReleaseEvent ( QKeyEvent * e )
+    {
+        switch(e->key())
+        {
+        case Qt::Key_Control:
+        {
+            m_isControlPressed = false;
+        }
+        default:
+        {
+            e->ignore();
+        }
+        }
+        if( isControlPressed() )
+        {
+            sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
+            if (groot) groot->propagateEvent(&keyEvent);
+        }
+    }
+
+
+
+
+    bool isControlPressed() const
+    {
+        return m_isControlPressed;
+    }
+
+
+
+    // ---------------------- Here are the Mouse controls   ----------------------
+
+    void mouseEvent( QMouseEvent *e)
+    {
+        if (e->state()&Qt::ShiftButton)
+        {
+            //_sceneTransform.ApplyInverse();
+            if (interactor==NULL)
+            {
+                interactor = new sofa::component::collision::RayPickInteractor();
+                interactor->setName("mouse");
+                if (groot)
+                {
+                    simulation::tree::GNode* child = new simulation::tree::GNode("mouse");
+                    groot->addChild(child);
+                    child->addObject(interactor);
+                }
+            }
+            interactor->newEvent("show");
+            switch (e->type())
+            {
+            case QEvent::MouseButtonPress:
+                if (e->button() == Qt::LeftButton)
+                {
+                    interactor->newEvent("pick"); // Shift+Leftclick to deform the mesh
+                }
+                else if (e->button() == Qt::RightButton) // Shift+Rightclick to remove triangles
+                {
+                    interactor->newEvent("pick2");
+                }
+                else if (e->button() == Qt::MidButton) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+                {
+                    interactor->newEvent("pick3");
+                }
+                break;
+            case QEvent::MouseButtonRelease:
+                //if (e->button() == Qt::LeftButton)
+            {
+                interactor->newEvent("release");
+            }
+            break;
+            default: break;
+            }
+            moveRayPickInteractor(e->x(), e->y());
+        }
+
+    }
+
+    virtual void moveRayPickInteractor(int , int ) {};
+
     sofa::helper::gl::Capture capture;
     sofa::simulation::tree::GNode* groot;
     std::string sceneFileName;
 
-
+    bool m_isControlPressed;
+    bool _video;
+    bool _shadow;
+    bool _axis;
+    int  camera_type;
+    int _background;
+    sofa::component::collision::RayPickInteractor* interactor;
     //*************************************************************
     // QT
     //*************************************************************
     //SLOTS
-    virtual void resetView()=0;
     virtual void saveView()=0;
     virtual void setSizeW(int)=0;
     virtual void setSizeH(int)=0;
