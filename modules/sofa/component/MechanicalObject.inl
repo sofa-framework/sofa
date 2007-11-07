@@ -585,7 +585,7 @@ void MechanicalObject<DataTypes>::init()
     *this->v0 = *v;
 
     // free position = position
-    //*this->xfree = *x;
+    *this->xfree = *x;
 
     if (f_rest_position->getValue().size() == 0)
         *rest_position = *x0;

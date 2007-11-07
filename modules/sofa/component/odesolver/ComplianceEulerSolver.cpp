@@ -77,7 +77,7 @@ void ComplianceEulerSolver::solve(double dt)
         cerr<<"ComplianceEulerSolver, initial v = "<< vel <<endl;
     }
 
-    if (firstCallToSolve.getValue()) // f = contact force
+    if (!firstCallToSolve.getValue()) // f = contact force
     {
         computeContactAcc(getTime(), acc, pos, vel);
         vel.eq(velFree); // computes velocity after a constraint movement

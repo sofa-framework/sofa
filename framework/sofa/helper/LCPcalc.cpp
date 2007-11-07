@@ -2,6 +2,7 @@
 #include <vector>
 #include <algorithm>
 #include <functional>
+#include <iostream>
 
 namespace sofa
 {
@@ -1170,6 +1171,67 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
     return 0;
 
 
+}
+
+
+/* Resoud un LCP écrit sous la forme U = q + M.F
+ * dim : dimension du pb
+ * res[0..dim-1] = U
+ * res[dim..2*dim-1] = F
+ */
+void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double &tol, int &numItMax)
+{
+
+    int compteur;	// compteur de boucle
+    int compteur2, compteur3;	// compteur de boucle
+
+    double f_1;
+    double error;
+
+    for (compteur=0; compteur<numItMax; compteur++)
+    {
+
+        error=0;
+        for (compteur2=0; compteur2<dim; compteur2++)
+        {
+            //res[compteur2]=(FemClipsReal)0.0;
+            res[compteur2]=q[compteur2];
+            for (compteur3=0; compteur3<dim; compteur3++)
+            {
+                res[compteur2]+=M[compteur2][compteur3]* res[dim+compteur3]/* + q[compteur2]*/;
+            }
+            res[compteur2] -= M[compteur2][compteur2]* res[dim+compteur2];
+            f_1 = res[dim+compteur2];
+
+            if (res[compteur2]<0)
+            {
+                res[dim+compteur2]=-res[compteur2]/M[compteur2][compteur2];
+            }
+            else
+            {
+                res[dim+compteur2]=(FemClipsReal)0.0;
+            }
+
+            error +=abs( M[compteur2][compteur2] * (res[dim+compteur2] - f_1) );
+
+
+        }
+
+        if (error < tol)
+        {
+            //	std::cout << "convergence in gaussSeidelLCP1 with " << compteur << " iterations\n";
+            break;
+        }
+    }
+
+    for (compteur=0; compteur<dim; compteur++)
+        res[compteur] = res[compteur+dim];
+
+    if (error >= tol)
+    {
+        std::cout << "No convergence in gaussSeidelLCP1 : error = " << error << std::endl;
+        //	afficheLCP(q, M, res, dim);
+    }
 }
 
 } // namespace helper

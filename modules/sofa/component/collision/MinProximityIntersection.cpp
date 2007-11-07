@@ -69,7 +69,7 @@ void MinProximityIntersection::init()
     intersectors.add<LineModel, LineModel, MinProximityIntersection, false>(this);
     intersectors.add<PointModel, TriangleModel, MinProximityIntersection, true>(this);
     intersectors.add<PointModel, LineModel, MinProximityIntersection, true>(this);
-    if (useSphereTriangle.getValue())
+    if (usePointPoint.getValue())
         intersectors.add<PointModel, PointModel, MinProximityIntersection, false>(this);
     else
         intersectors.ignore<PointModel, PointModel, false>();
