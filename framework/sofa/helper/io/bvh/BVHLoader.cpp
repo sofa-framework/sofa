@@ -43,7 +43,7 @@ BVHJoint *BVHLoader::load(const char *filename)
 
     if (file)
     {
-        BVHJoint *retBVHJoint;
+        BVHJoint *retBVHJoint = NULL;
         char buf[256];
 
         while (fscanf(file, "%s", buf) != EOF)
