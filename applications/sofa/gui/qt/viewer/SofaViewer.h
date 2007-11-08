@@ -34,6 +34,14 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/component/collision/RayPickInteractor.h>
 
+#ifdef QT_MODULE_QT3SUPPORT
+#include <QEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#else
+#include <qevent.h>
+#endif
+
 namespace sofa
 {
 
