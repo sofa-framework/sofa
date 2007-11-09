@@ -132,8 +132,6 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
     Cube cube1 (cm1, 0);
     Cube cube2 (cm2, 0);
 
-    const Vector3 & minVect1 = cube1.minVect ();
-    const Vector3 & maxVect1 = cube1.maxVect ();
 
     const Vector3 & minVect2 = cube2.minVect ();
     const Vector3 & maxVect2 = cube2.maxVect ();
@@ -247,7 +245,6 @@ void RayTraceDetection::findPairsVolume (CubeModel * cm1, CubeModel * cm2)
 
             detection->value = -(res.t);
 
-            static int64_t incr = 0;
             detection->id = tri1.getIndex()*3+t;
             found = true;
 

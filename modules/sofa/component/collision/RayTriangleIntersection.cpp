@@ -44,7 +44,6 @@ bool
 RayTriangleIntersection::NewComputation(Triangle *triP, const Vector3 &origin, const Vector3 &direction,   double &t,  double &u, double &v)
 
 {
-    double EPSILON = 0.000001;
     t = 0; u = 0; v = 0;
 
     Vector3 edge1 = triP->p2() - triP->p1();

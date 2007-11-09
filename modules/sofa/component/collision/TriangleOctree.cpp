@@ -155,7 +155,7 @@ int TriangleOctree::nearestTriangle (int minIndex,
 
         minIndex = -1;
     }
-    for (int i = 0; i < objects.size (); i++)
+    for (unsigned int i = 0; i < objects.size (); i++)
     {
 
         Triangle t2 (tm, objects[i]);
@@ -191,7 +191,7 @@ int TriangleOctree::nearestTriangle (int minIndex,
 
         double cosAng=dot(direction,t3.n());
 
-        for(int i=0; i<tm->pTri[pointR].size(); i++)
+        for(unsigned int i=0; i<tm->pTri[pointR].size(); i++)
         {
             Triangle t2(tm,tm->pTri[pointR][i]);
             double cosAng2=dot(direction,t2.n());
@@ -243,7 +243,7 @@ int TriangleOctree::trace (const Vector3 & origin,
     const double &z1 = z + size;
     const double INF = 1e9;
 
-    double txm, tym, tzm;
+    double txm=0, tym=0, tzm=0;
 
     switch (b)
     {

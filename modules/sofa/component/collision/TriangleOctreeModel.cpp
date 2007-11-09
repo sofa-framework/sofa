@@ -61,18 +61,6 @@ TriangleAABB::TriangleAABB (Triangle & t)
         m_size =
             bb_max3 (fabs (bb[1] - bb[0]), fabs (bb[3] - bb[2]),
                     fabs (bb[5] - bb[4]));
-        if (!m_size)
-        {
-            std::cerr << "zero:" << t.p1 () << ", " << t.p2 () << ", " << t.
-                    p3 () << std::endl;
-            std::
-            cerr << "values1:" << bb[1] << " " << bb[0] << "," << bb[3] <<
-                    " " << bb[2] << "," << bb[5] << " " << bb[4] << std::endl;
-            std::cerr << "values:" << abs (bb[1] -
-                    bb[0]) << "," << abs (bb[3] -
-                            bb[2]) << ","
-                    << abs (bb[5] - bb[4]) << std::endl;
-        }
 
 
     }
@@ -126,16 +114,13 @@ void TriangleOctreeModel::draw ()
     }
 }
 
-int TriangleOctreeModel::fillOctree (int tId, int d, Vector3 v)
+int TriangleOctreeModel::fillOctree (int tId, int /*d*/, Vector3 /*v*/)
 {
 
 
     Vector3 center;
-    Vector3 pt[3];
     Triangle t (this, tId);
-    double triang[3][3];
     Vector3 corner (-cubeSize, -cubeSize, -cubeSize);
-    double normal[3];
 
     TriangleAABB aabb (t);
     double *bb = aabb.getAABB ();
@@ -242,7 +227,7 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     }
 }
 
-void TriangleOctreeModel::computeContinuousBoundingTree(double dt, int maxDepth)
+void TriangleOctreeModel::computeContinuousBoundingTree(double/* dt*/, int maxDepth)
 {
     computeBoundingTree(maxDepth);
 
@@ -250,10 +235,9 @@ void TriangleOctreeModel::computeContinuousBoundingTree(double dt, int maxDepth)
 void TriangleOctreeModel::buildOctree ()
 {
     octreeRoot = new TriangleOctree (this);
-    TriangleOctree & tm2 = *octreeRoot;
 
     /*for each triangle add it to the octree*/
-    for (int i = 0; i < elems.size (); i++)
+    for (size_t i = 0; i < elems.size (); i++)
     {
 
         fillOctree (i);
