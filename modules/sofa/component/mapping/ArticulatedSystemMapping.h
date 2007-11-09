@@ -107,6 +107,8 @@ public:
     *	Stores al the articulation centers
     */
     vector<ArticulatedHierarchyContainer::ArticulationCenter*> articulationCenters;
+
+    ArticulatedHierarchyContainer* ahc;
 };
 
 } // namespace mapping

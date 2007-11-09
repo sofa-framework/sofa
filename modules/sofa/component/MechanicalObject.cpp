@@ -171,7 +171,83 @@ void MechanicalObject<defaulttype::Rigid3Types>::resetContactForce()
         force[i] = Deriv();
 }
 
+template<>
+void MechanicalObject<defaulttype::Vec1dTypes>::getCompliance(double**W)
+{
+    const VecConst& constraints = *getC();
+    unsigned int numConstraints = constraints.size();
 
+    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
+    {
+        int sizeCurRowConst = constraints[curRowConst].size();
+        int indexCurRowConst = constraintId[curRowConst];
+
+        for(int i = 0; i < sizeCurRowConst; i++)
+        {
+            int indexCurColConst;
+
+            for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
+            {
+                int sizeCurColConst = constraints[curColConst].size();
+                indexCurColConst = constraintId[curColConst];
+
+                for(int j = 0; j < sizeCurColConst; j++)
+                {
+                    if (constraints[curRowConst][i].index == constraints[curColConst][j].index)
+                    {
+                        W[indexCurRowConst][indexCurColConst] += (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
+                    }
+                }
+            }
+
+            for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+            {
+                indexCurColConst = constraintId[curColConst];
+                W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+            }
+
+        }
+    }
+}
+
+template<>
+void MechanicalObject<defaulttype::Vec1dTypes>::applyContactForce(double *f)
+{
+
+    VecDeriv& force = *this->externalForces;
+    const VecConst& constraints = *getC();
+    unsigned int numConstraints = constraints.size();
+
+    force.resize((*this->x).size());
+
+    for(unsigned int c1 = 0; c1 < numConstraints; c1++)
+    {
+        int indexC1 = constraintId[c1];
+
+        if (f[indexC1] != 0.0)
+        {
+            int sizeC1 = constraints[c1].size();
+            for(int i = 0; i < sizeC1; i++)
+            {
+                force[constraints[c1][i].index] += constraints[c1][i].data * f[indexC1];
+            }
+        }
+    }
+    VecDeriv& dx = *this->dx;
+
+    for (unsigned int i=0; i<dx.size(); i++)
+    {
+        dx[i] = force[i]/10000.0;
+    }
+}
+
+template<>
+void MechanicalObject<defaulttype::Vec1dTypes>::resetContactForce()
+{
+    VecDeriv& force = *this->externalForces;
+    for( unsigned i=0; i<force.size(); ++i )
+        force[i] = Deriv();
+}
 
 // g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 

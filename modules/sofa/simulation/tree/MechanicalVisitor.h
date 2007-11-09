@@ -24,7 +24,7 @@
 *******************************************************************************/
 #ifndef SOFA_SIMULATION_TREE_MECHANICALACTION_H
 #define SOFA_SIMULATION_TREE_MECHANICALACTION_H
-
+#define SOFA_SUPPORT_MAPPED_MASS
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
@@ -981,7 +981,7 @@ public:
     virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
     {
         ms->getCompliance(_W);
-        return RESULT_CONTINUE;
+        return RESULT_PRUNE;
     }
     virtual Result fwdMappedMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* ms)
     {

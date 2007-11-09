@@ -58,6 +58,7 @@ public:
     {
     public:
         SparseData(unsigned int _index, const T& _data): index(_index), data(_data) {};
+        SparseData() {};
         unsigned int index;
         T data;
     };

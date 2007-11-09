@@ -157,13 +157,26 @@ public:
             return AP2 - AP1;
         }
 
-        const vector<Articulation*> getArticulations();
+        vector<Articulation*> getArticulations();
     };
 
-    ArticulatedHierarchyContainer() {};
-    ~ArticulatedHierarchyContainer() {};
+    ArticulatedHierarchyContainer()
+    {
+    }
+    ~ArticulatedHierarchyContainer() {}
 
-    const vector<ArticulationCenter*> getArticulationCenters();
+    void init()
+    {
+        GNode* context = dynamic_cast<GNode*>(this->getContext());
+        context->getTreeObjects<ArticulationCenter>(&articulationCenters);
+    }
+
+    vector<ArticulationCenter*> getArticulationCenters();
+    ArticulationCenter* getArticulationCenterAsChild(int index);
+    vector<ArticulationCenter*> getAcendantList(int index);
+
+    vector<ArticulationCenter*> articulationCenters;
+    vector<ArticulationCenter*> acendantList;
 };
 
 } // namespace container

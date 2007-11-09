@@ -46,23 +46,45 @@ ArticulatedHierarchyContainer::ArticulationCenter::Articulation::Articulation():
 }
 
 ArticulatedHierarchyContainer::ArticulationCenter::ArticulationCenter():
-    parentIndex(dataField(&parentIndex, "parentIndex", "Parent of the center articulation")),
-    childIndex(dataField(&childIndex, "childIndex", "Child of the center articulation")),
     globalPosition(dataField(&globalPosition, "globalPosition", "Global position of the articulation center")),
     posOnParent(dataField(&posOnParent, "posOnParent", "Parent position of the articulation center")),
-    posOnChild(dataField(&posOnChild, "posOnChild", "Child position of the articulation center"))
+    posOnChild(dataField(&posOnChild, "posOnChild", "Child position of the articulation center")),
+    parentIndex(dataField(&parentIndex, "parentIndex", "Parent of the center articulation")),
+    childIndex(dataField(&childIndex, "childIndex", "Child of the center articulation"))
 {
 }
 
-const vector<ArticulatedHierarchyContainer::ArticulationCenter*> ArticulatedHierarchyContainer::getArticulationCenters()
+ArticulatedHierarchyContainer::ArticulationCenter* ArticulatedHierarchyContainer::getArticulationCenterAsChild(int index)
 {
-    vector<ArticulationCenter*> articulationCenters;
-    GNode* context = dynamic_cast<GNode*>(this->getContext());
-    context->getTreeObjects<ArticulationCenter>(&articulationCenters);
+    vector<ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
+    vector<ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
+    for (; ac != acEnd; ac++)
+    {
+        if ((*ac)->childIndex.getValue() == index)
+            return (*ac);
+    }
+    return (*ac);
+}
+
+vector<ArticulatedHierarchyContainer::ArticulationCenter*> ArticulatedHierarchyContainer::getAcendantList(int index)
+{
+    unsigned int i=0;
+    acendantList.clear();
+    while (index !=0)
+    {
+        acendantList.push_back(getArticulationCenterAsChild(index));
+        index = acendantList[i]->parentIndex.getValue();
+        i++;
+    }
+    return acendantList;
+}
+
+vector<ArticulatedHierarchyContainer::ArticulationCenter*> ArticulatedHierarchyContainer::getArticulationCenters()
+{
     return articulationCenters;
 }
 
-const vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> ArticulatedHierarchyContainer::ArticulationCenter::getArticulations()
+vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> ArticulatedHierarchyContainer::ArticulationCenter::getArticulations()
 {
     vector<Articulation*> articulations;
     GNode* context = dynamic_cast<GNode*>(this->getContext());
