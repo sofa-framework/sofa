@@ -96,13 +96,12 @@ protected:
     EdgeData<EdgeRestInformation> edgeInfo;
 
     TriangleSetTopology<DataTypes> * _mesh;
-    DataField< VecCoord > _initialPoints;///< the intial positions of the points
+    VecCoord  _initialPoints;///< the intial positions of the points
 
     bool updateMatrix;
 
     DataField<Real> f_poissonRatio;
     DataField<Real> f_youngModulus;
-    DataField<Real> f_dampingRatio;
 
     Real lambda;  /// first Lame coefficient
     Real mu;    /// second Lame coefficient
