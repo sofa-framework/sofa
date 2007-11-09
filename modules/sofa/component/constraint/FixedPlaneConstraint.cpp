@@ -44,7 +44,7 @@ template class FixedPlaneConstraint<Vec3dTypes>;
 template class FixedPlaneConstraint<Vec3fTypes>;
 
 
-int FixedPlaneConstraintClass = core::RegisterObject("TODO-FixedPlaneConstraintClass")
+int FixedPlaneConstraintClass = core::RegisterObject("FixedPlaneConstraint")
         .add< FixedPlaneConstraint<Vec3dTypes> >()
         .add< FixedPlaneConstraint<Vec3fTypes> >()
         ;
