@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/TriangleSetTopology.h>
+#include <sofa/component/topology/TetrahedronSetTopology.h>
 #include <sofa/helper/io/Mesh.h>
 
 namespace sofa

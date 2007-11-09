@@ -680,13 +680,29 @@ void VisualModelImpl::computeMeshFromTopology(sofa::core::componentmodel::topolo
         }
     }
     TopologyContainer *container=bt->getTopologyContainer();
-    sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
-    if (tstc)
+    sofa::component::topology::TetrahedronSetTopologyContainer *testc= dynamic_cast<sofa::component::topology::TetrahedronSetTopologyContainer *>(container);
+    if (testc)
     {
-        const sofa::helper::vector<sofa::component::topology::Triangle> &triangleArray=tstc->getTriangleArray();
-        triangles.resize(triangleArray.size());
-        for (unsigned int i=0; i<tstc->getNumberOfTriangles(); ++i)
-            triangles[i] = triangleArray[i];
+        const sofa::helper::vector<sofa::component::topology::Triangle> &triangleArray=testc->getTriangleArray();
+        for (unsigned int i=0; i<testc->getNumberOfTriangles(); ++i)
+        {
+            if (testc->getTetrahedronTriangleShell(i).size()==1)
+            {
+                Triangle t; t[0]=triangleArray[i][0]; t[1]=triangleArray[i][1]; t[2]=triangleArray[i][2];
+                triangles.push_back(t);
+            }
+        }
+    }
+    else
+    {
+        sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
+        if (tstc)
+        {
+            const sofa::helper::vector<sofa::component::topology::Triangle> &triangleArray=tstc->getTriangleArray();
+            triangles.resize(triangleArray.size());
+            for (unsigned int i=0; i<tstc->getNumberOfTriangles(); ++i)
+                triangles[i] = triangleArray[i];
+        }
     }
 }
 void VisualModelImpl::handleTopologyChange()
