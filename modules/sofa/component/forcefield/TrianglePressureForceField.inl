@@ -74,11 +74,11 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
 
 
 template <class DataTypes>
-void TrianglePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
+void TrianglePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 {
     Deriv force;
 
-    topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
+    typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
     const std::vector<Triangle> &ta=tst->getTriangleSetTopologyContainer()->getTriangleArray();
 
     for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )
@@ -103,7 +103,7 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 {
     topology::TriangleSetGeometryAlgorithms<DataTypes> *esga=tst->getTriangleSetGeometryAlgorithms();
 
-    topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
+    typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
 
     for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )
     {
@@ -116,7 +116,7 @@ void TrianglePressureForceField<DataTypes>::initTriangleInformation()
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::updateTriangleInformation()
 {
-    topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
+    typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
 
     for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )
     {
@@ -195,7 +195,7 @@ void TrianglePressureForceField<DataTypes>::draw()
     glBegin(GL_TRIANGLES);
     glColor4f(0,1,0,1);
 
-    topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
+    typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
     const std::vector<Triangle> &ta=tst->getTriangleSetTopologyContainer()->getTriangleArray();
 
     for(it=trianglePressureMap.begin(); it!=trianglePressureMap.end(); it++ )

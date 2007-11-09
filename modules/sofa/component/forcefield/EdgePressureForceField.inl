@@ -72,11 +72,11 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 
 
 template <class DataTypes>
-void EdgePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
+void EdgePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 {
     Deriv force;
 
-    topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
+    typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
     const std::vector<Edge> &ea=est->getEdgeSetTopologyContainer()->getEdgeArray();
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
@@ -100,7 +100,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
     topology::EdgeSetGeometryAlgorithms<DataTypes> *esga=est->getEdgeSetGeometryAlgorithms();
 
-    topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
+    typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
@@ -113,7 +113,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 {
-    topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
+    typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
@@ -192,7 +192,7 @@ void EdgePressureForceField<DataTypes>::draw()
     glBegin(GL_LINES);
     glColor4f(0,1,0,1);
 
-    topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
+    typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
     const std::vector<Edge> &ea=est->getEdgeSetTopologyContainer()->getEdgeArray();
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )

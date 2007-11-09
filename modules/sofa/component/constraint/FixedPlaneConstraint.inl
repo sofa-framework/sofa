@@ -90,7 +90,7 @@ FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::addConstraint
 }
 
 template <class DataTypes>
-FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::removeConstraint(int index)
+FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::removeConstraint(int /*index*/)
 {
     return this;
 }
@@ -161,7 +161,7 @@ template <class DataTypes> void FixedPlaneConstraint<DataTypes>::handleTopologyC
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
-    indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,getMState()->getSize());
+    indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
 
 }
 

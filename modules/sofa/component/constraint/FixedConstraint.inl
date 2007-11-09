@@ -98,7 +98,7 @@ template <class DataTypes> void FixedConstraint<DataTypes>::handleTopologyChange
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,getMState()->getSize());
+    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
 
 }
 
