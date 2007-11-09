@@ -218,15 +218,15 @@ void JointSpringForceField<DataTypes>::draw()
         helper::gl::glVertexT(p2[springs[i].m2].getCenter());
         glEnd();
 
-        if(springs[i].freeMovements[3] == 0)
+        if(springs[i].freeMovements[3] == 1)
         {
             helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(1,0,0));
         }
-        if(springs[i].freeMovements[4] == 0)
+        if(springs[i].freeMovements[4] == 1)
         {
             helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(0,1,0));
         }
-        if(springs[i].freeMovements[5] == 0)
+        if(springs[i].freeMovements[5] == 1)
         {
             helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(0,0,1));
         }
