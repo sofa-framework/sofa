@@ -304,6 +304,16 @@ public:
         return false;
     }
 
+
+    bool isSymetric() const
+    {
+        for (int i=0; i<L; i++)
+            for (int j=i+1; j<C; j++)
+                if( this->elems[i][j] !=  this->elems[j][i] ) return false;
+        return true;
+    }
+
+
     /// @}
 
     // LINEAR ALGEBRA
