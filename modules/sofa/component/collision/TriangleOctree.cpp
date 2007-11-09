@@ -66,7 +66,7 @@ void TriangleOctree::draw ()
 {
 
     Vector3 center;
-    if (internal || objects.size ())
+    if ( objects.size ())
     {
         center =
             (Vector3 (x, y, z) + Vector3 (size / 2, size / 2, size / 2));
@@ -142,14 +142,12 @@ int TriangleOctree::nearestTriangle (int minIndex,
     Triangle t1 (tm, minIndex);
     double minDist;
     double t, u, v;
-    //std::cerr<<"Triangle:"<<t1.p1()<<", "<<t1.p2()<<", "<<t1.p3()<<" origin:"<<origin<<" direction:"<<direction<<std::endl;
-    //std::cerr<<"nearest:"<<std::endl;
     if (intersectionSolver.NewComputation (&t1, origin, direction, t, u, v))
     {
         result.u=u;
         result.v=v;
         result.t=minDist = t;
-        //std::cerr<<"tem:"<<minIndex<<std::endl;
+
     }
     else
     {
@@ -161,7 +159,6 @@ int TriangleOctree::nearestTriangle (int minIndex,
     {
 
         Triangle t2 (tm, objects[i]);
-//	std::cerr<<"Triangle:"<<t1.p1()<<", "<<t1.p2()<<", "<<t1.p3()<<" origin:"<<origin<<" direction:"<<direction<<std::endl;
         if (!intersectionSolver.
             NewComputation (&t2, origin, direction, t, u, v))
             continue;
@@ -174,9 +171,38 @@ int TriangleOctree::nearestTriangle (int minIndex,
             result.t=minDist = t;
 
             minIndex = objects[i];
-            //std::cerr<<"tem:"<<minIndex<<std::endl;
+
         }
-        //std::cerr<<"direction:"<<direction<<std::endl;
+
+
+    }
+    /*u=p2 v=p3 p1=1-u+v*/
+    int pointR=-1;
+    Triangle t3(tm,minIndex);
+    if(result.u>0.99)
+        pointR=t3.p2Index();
+
+    if(result.v>0.99)
+        pointR=t3.p3Index();
+    if((result.u+result.v)<0.01)
+        pointR=t3.p1Index();
+    if(0&&pointR!=-1)
+    {
+
+        double cosAng=dot(direction,t3.n());
+
+        for(int i=0; i<tm->pTri[pointR].size(); i++)
+        {
+            Triangle t2(tm,tm->pTri[pointR][i]);
+            double cosAng2=dot(direction,t2.n());
+            if(cosAng2>cosAng)
+            {
+                cosAng=cosAng2;
+                minIndex=tm->pTri[pointR][i];
+            }
+
+
+        }
 
     }
 
@@ -270,7 +296,7 @@ int TriangleOctree::trace (const Vector3 & origin,
     {
         if (tx0 > tz0)
         {
-            // max(tx0, ty0, tz0) is tx0. Entry plane is YZ.
+//		max(tx0, ty0, tz0) is tx0. Entry plane is YZ.
             if (tym < tx0)
                 current_octant |= 2;
             if (tzm < tx0)
@@ -278,7 +304,7 @@ int TriangleOctree::trace (const Vector3 & origin,
         }
         else
         {
-            // max(tx0, ty0, tz0) is tz0. Entry plane is XY.
+            //	max(tx0, ty0, tz0) is tz0. Entry plane is XY.
             if (txm < tz0)
                 current_octant |= 4;
             if (tym < tz0)
@@ -289,7 +315,7 @@ int TriangleOctree::trace (const Vector3 & origin,
     {
         if (ty0 > tz0)
         {
-            // max(tx0, ty0, tz0) is ty0. Entry plane is XZ.
+            //max(tx0, ty0, tz0) is ty0. Entry plane is XZ.
             if (txm < ty0)
                 current_octant |= 4;
             if (tzm < ty0)
@@ -297,7 +323,7 @@ int TriangleOctree::trace (const Vector3 & origin,
         }
         else
         {
-            // max(tx0, ty0, tz0) is tz0. Entry plane is XY.
+            //	max(tx0, ty0, tz0) is tz0. Entry plane is XY.
             if (txm < tz0)
                 current_octant |= 4;
             if (tym < tz0)
@@ -305,7 +331,7 @@ int TriangleOctree::trace (const Vector3 & origin,
         }
     }
 
-    // This special state indicates algorithm termination.
+//	This special state indicates algorithm termination.
     const unsigned int END = 8;
 
     while (true)
@@ -407,18 +433,21 @@ int TriangleOctree::trace (const Vector3 & origin,
                     return nearestTriangle (idxMin, origin1, direction1,result);
             }
         case END:
+            if(idxMin==-1&&objects.size())
+                return nearestTriangle (objects[0], origin1, direction1,result);
             return idxMin;
-            //      return false;
         }
     }
 
 
 }
+
+
 int TriangleOctree::trace (Vector3 origin, Vector3 direction,traceResult &result)
 {
     unsigned int a = 0;
     unsigned int b = 0;
-    //const double EPSILON = 1e-18;
+    //const double EPSILON = 1e-8;
     const double EPSILON = 0;
     Vector3 origin1=origin;
     Vector3 direction1=direction;
@@ -471,449 +500,8 @@ int TriangleOctree::trace (Vector3 origin, Vector3 direction,traceResult &result
 
 }
 
-int TriangleOctree::findInputTriangle (int inputTriangle,
-        const Vector3 & origin,
-        const Vector3 & direction)
-{
-    static RayTriangleIntersection intersectionSolver;
-    Vector3 P;
-
-    double minDist;
-    double t, u, v;
-    double distTmp;
-
-    for (int i = 0; i < objects.size (); i++)
-    {
-
-        Triangle t2 (tm, objects[i]);
-        if (!intersectionSolver.
-            NewComputation (&t2, origin, direction, t, u, v))
-            continue;
 
 
-        if (objects[i] != inputTriangle)
-        {
-            inputTriangle = (inputTriangle != -1) ? -1 : objects[i];
-
-        }
-
-
-    }
-    return inputTriangle;
-}
-int TriangleOctree::traceVolume (const Vector3 & origin,
-        const Vector3 & direction, double tx0,
-        double ty0, double tz0, double tx1,
-        double ty1, double tz1, unsigned int a,
-        unsigned int b, int inputTriangle,
-        vector < vertexData * >&vertexVec)
-{
-
-
-    if (tx1 < 0.0 || ty1 < 0.0 || tz1 < 0.0)
-        return -1;
-
-
-    if (objects.size ()||internal)
-    {
-
-        if (inputTriangle != -1 )
-        {
-
-            int dx;
-            int dy;
-            int dz;
-//std::cerr<<"not -1"<<std::endl;
-            for (int i = 0; i < vertexVec.size (); i++)
-            {
-                unsigned int id = vertexVec[i]->childId;
-
-                TriangleOctree *tp = vertexVec[i]->parent;
-                double size2 = tp->size / 2;
-                if (!tp->childVec[id])
-                {
-                    dz = id & 1;
-                    id >>= 1;
-                    dy = id & 1;
-                    id >>= 1;
-                    dx = id & 1;
-
-
-                    tp->childVec[vertexVec[i]->childId] =
-                        new TriangleOctree (tp->tm, tp->x + dx * size2,
-                                tp->y + dy * size2,
-                                tp->z + dz * size2, size2);
-                    tp->childVec[vertexVec[i]->childId]->internal = true;
-                }
-            }
-
-        }
-
-        inputTriangle = (inputTriangle != -1) ? -1 : 1;
-        return inputTriangle;
-        /*   int tmpInputTriangle =
-             findInputTriangle (inputTriangle, origin, direction);
-
-           if (inputTriangle != -1 && tmpInputTriangle == -1)
-             {
-
-        int dx;
-        int dy;
-        int dz;
-
-        for (int i = 0; i < vertexVec.size (); i++)
-          {
-            int id = vertexVec[i]->childId;
-
-            TriangleOctree *tp = vertexVec[i]->parent;
-            double size2 = tp->size / 2;
-            if (tp->childVec[id])
-              {
-        	dz = id & 1;
-        	id >>= 1;
-        	dy = id & 1;
-        	id >>= 1;
-        	dx = id & 1;
-
-
-        	tp->childVec[vertexVec[i]->childId] =
-        	  new TriangleOctree (tp->tm, tp->x + dx * size2,
-        			      tp->y + dy * size2,
-        			      tp->z + dz * size2, size2);
-        	tp->childVec[vertexVec[i]->childId]->internal = true;
-              }
-          }
-
-             }
-           inputTriangle = tmpInputTriangle;
-        */
-    }
-
-
-    const double &x0 = x;
-    const double &y0 = y;
-    const double &z0 = z;
-    const double &x1 = x + size;
-    const double &y1 = y + size;
-    const double &z1 = z + size;
-    const double INF = 1e9;
-
-    double txm, tym, tzm;
-
-    switch (b)
-    {
-    case 0:
-        txm = 0.5 * (tx0 + tx1);
-        tym = 0.5 * (ty0 + ty1);
-        tzm = 0.5 * (tz0 + tz1);
-        break;
-    case 1:
-        txm = 0.5 * (tx0 + tx1);
-        tym = 0.5 * (ty0 + ty1);
-        tzm = origin[2] < 0.5 * (z0 + z1) ? +INF : -INF;
-        break;
-    case 2:
-        txm = 0.5 * (tx0 + tx1);
-        tym = origin[1] < 0.5 * (y0 + y1) ? +INF : -INF;
-        tzm = 0.5 * (tz0 + tz1);
-        break;
-    case 3:
-        txm = 0.5 * (tx0 + tx1);
-        tym = origin[1] < 0.5 * (y0 + y1) ? +INF : -INF;
-        tzm = origin[2] < 0.5 * (z0 + z1) ? +INF : -INF;
-        break;
-    case 4:
-        txm = origin[0] < 0.5 * (x0 + x1) ? +INF : -INF;
-        tym = 0.5 * (ty0 + ty1);
-        tzm = 0.5 * (tz0 + tz1);
-        break;
-    case 5:
-        txm = origin[0] < 0.5 * (x0 + x1) ? +INF : -INF;
-        tym = 0.5 * (ty0 + ty1);
-        tzm = origin[2] < 0.5 * (z0 + z1) ? +INF : -INF;
-        break;
-    case 6:
-        txm = origin[0] < 0.5 * (x0 + x1) ? +INF : -INF;
-        tym = origin[1] < 0.5 * (y0 + y1) ? +INF : -INF;
-        tzm = 0.5 * (tz0 + tz1);
-        break;
-    case 7:
-        txm = origin[0] < 0.5 * (x0 + x1) ? +INF : -INF;
-        tym = origin[1] < 0.5 * (y0 + y1) ? +INF : -INF;
-        tzm = origin[2] < 0.5 * (z0 + z1) ? +INF : -INF;
-        break;
-    default:
-        assert (!"Internal failure.");
-    }
-    unsigned int current_octant = 0;
-
-    if (tx0 > ty0)
-    {
-        if (tx0 > tz0)
-        {
-            // max(tx0, ty0, tz0) is tx0. Entry plane is YZ.
-            if (tym < tx0)
-                current_octant |= 2;
-            if (tzm < tx0)
-                current_octant |= 1;
-        }
-        else
-        {
-            // max(tx0, ty0, tz0) is tz0. Entry plane is XY.
-            if (txm < tz0)
-                current_octant |= 4;
-            if (tym < tz0)
-                current_octant |= 2;
-        }
-    }
-    else
-    {
-        if (ty0 > tz0)
-        {
-            // max(tx0, ty0, tz0) is ty0. Entry plane is XZ.
-            if (txm < ty0)
-                current_octant |= 4;
-            if (tzm < ty0)
-                current_octant |= 1;
-        }
-        else
-        {
-            // max(tx0, ty0, tz0) is tz0. Entry plane is XY.
-            if (txm < tz0)
-                current_octant |= 4;
-            if (tym < tz0)
-                current_octant |= 2;
-        }
-    }
-
-    // This special state indicates algorithm termination.
-    const unsigned int END = 8;
-
-    while (true)
-    {
-        int idxMin;
-        switch (current_octant)
-        {
-        case 0:
-            if (childVec[a])
-            {
-
-                inputTriangle =
-                    childVec[a]->traceVolume (origin, direction, tx0, ty0,
-                            tz0, txm, tym, tzm, a, b,
-                            inputTriangle, vertexVec);
-
-            }
-            else
-            {
-                if (inputTriangle != -1 && !objects.size ())
-                {
-                    vertexVec.push_back (new vertexData (this, a));
-                }
-            }
-
-            current_octant = choose_next (txm, tym, tzm, 4, 2, 1);
-            break;
-
-
-
-
-        case 1:
-            if (childVec[1 ^ a])
-            {
-                inputTriangle =
-                    childVec[1 ^ a]->traceVolume (origin, direction, tx0,
-                            ty0, tzm, txm, tym, tz1,
-                            a, b, inputTriangle,
-                            vertexVec);
-            }
-            else
-            {
-                if (inputTriangle != -1 && !objects.size ())
-                {
-                    vertexVec.push_back (new vertexData (this, 1 ^ a));
-                }
-            }
-            current_octant = choose_next (txm, tym, tz1, 5, 3, END);
-            break;
-
-
-
-        case 2:
-            if (childVec[2 ^ a])
-            {
-                inputTriangle =
-                    childVec[2 ^ a]->traceVolume (origin, direction, tx0,
-                            tym, tz0, txm, ty1, tzm,
-                            a, b, inputTriangle,
-                            vertexVec);
-            }
-            else
-            {
-                if (inputTriangle != -1 && !objects.size ())
-                {
-                    vertexVec.push_back (new vertexData (this, 2 ^ a));
-                }
-            }
-            current_octant = choose_next (txm, ty1, tzm, 6, END, 3);
-            break;
-        case 3:
-            if (childVec[3 ^ a])
-            {
-                inputTriangle =
-                    childVec[3 ^ a]->traceVolume (origin, direction, tx0,
-                            tym, tzm, txm, ty1, tz1,
-                            a, b, inputTriangle,
-                            vertexVec);
-            }
-            else
-            {
-                if (inputTriangle != -1 && !objects.size ())
-                {
-                    vertexVec.push_back (new vertexData (this, 3 ^ a));
-                }
-            }
-            current_octant = choose_next (txm, ty1, tz1, 7, END, END);
-            break;
-        case 4:
-            if (childVec[4 ^ a])
-            {
-                inputTriangle =
-                    childVec[4 ^ a]->traceVolume (origin, direction, txm,
-                            ty0, tz0, tx1, tym, tzm,
-                            a, b, inputTriangle,
-                            vertexVec);
-            }
-            else
-            {
-                if (inputTriangle != -1 && !objects.size ())
-                {
-                    vertexVec.push_back (new vertexData (this, 4 ^ a));
-                }
-            }
-            current_octant = choose_next (tx1, tym, tzm, END, 6, 5);
-            break;
-        case 5:
-            if (childVec[5 ^ a])
-            {
-                inputTriangle =
-                    childVec[5 ^ a]->traceVolume (origin, direction, txm,
-                            ty0, tzm, tx1, tym, tz1,
-                            a, b, inputTriangle,
-                            vertexVec);
-            }
-            else
-            {
-                if (inputTriangle != -1 && !objects.size ())
-                {
-                    vertexVec.push_back (new vertexData (this, 5 ^ a));
-                }
-            }
-            current_octant = choose_next (tx1, tym, tz1, END, 7, END);
-            break;
-        case 6:
-            if (childVec[6 ^ a])
-            {
-                inputTriangle =
-                    childVec[6 ^ a]->traceVolume (origin, direction, txm,
-                            tym, tz0, tx1, ty1, tzm,
-                            a, b, inputTriangle,
-                            vertexVec);
-            }
-            else
-            {
-                if (inputTriangle != -1 && !objects.size ())
-                {
-                    vertexVec.push_back (new vertexData (this, 6 ^ a));
-                }
-            }
-            current_octant = choose_next (tx1, ty1, tzm, END, END, 7);
-            break;
-        case 7:
-            if (childVec[7 ^ a])
-            {
-                inputTriangle =
-                    childVec[7 ^ a]->traceVolume (origin, direction, txm,
-                            tym, tzm, tx1, ty1, tz1,
-                            a, b, inputTriangle,
-                            vertexVec);
-            }
-            else
-            {
-                if (inputTriangle != -1 && !objects.size ())
-                {
-                    vertexVec.push_back (new vertexData (this, 7 ^ a));
-                }
-            }
-        case END:
-            return inputTriangle;
-            //      return false;
-        }
-    }
-
-    return inputTriangle;
-}
-int TriangleOctree::traceVolume (Vector3 origin, Vector3 direction)
-{
-    unsigned int a = 0;
-    unsigned int b = 0;
-
-    if (direction[0] == 0.0)
-    {
-        //direction.m_x = EPSILON;
-        b |= 4;
-    }
-    else if (direction[0] < 0.0)
-    {
-        origin[0] = -origin[0];
-        direction[0] = -direction[0];
-        a |= 4;
-    }
-
-    if (direction[1] == 0.0)
-    {
-        b |= 2;
-    }
-    else if (direction[1] < 0.0)
-    {
-        origin[1] = -origin[1];
-        direction[1] = -direction[1];
-        a |= 2;
-    }
-
-    if (direction[2] == 0.0)
-    {
-        b |= 1;
-    }
-    else if (direction[2] < 0.0)
-    {
-        origin[2] = -origin[2];
-        direction[2] = -direction[2];
-        a |= 1;
-    }
-    double tx0 = (-CUBE_SIZE - origin[0]) / direction[0];
-    double tx1 = (CUBE_SIZE - origin[0]) / direction[0];
-    double ty0 = (-CUBE_SIZE - origin[1]) / direction[1];
-    double ty1 = (CUBE_SIZE - origin[1]) / direction[1];
-    double tz0 = (-CUBE_SIZE - origin[2]) / direction[2];
-    double tz1 = (CUBE_SIZE - origin[2]) / direction[2];
-    vector < vertexData * >vd;
-    if (bb_max3 (tx0, ty0, tz0) < bb_min3 (tx1, ty1, tz1))
-        traceVolume (origin, direction, tx0, ty0, tz0, tx1, ty1, tz1, a, b,
-                -1, vd);
-
-
-}
-int TriangleOctree::traceVolume (int n)
-{
-    double inc = 2 * (double) CUBE_SIZE / n;
-    for (double i = -CUBE_SIZE; i < CUBE_SIZE; i += inc)
-        for (double j = -CUBE_SIZE; j < CUBE_SIZE; j += inc)
-        {
-
-            traceVolume (Vector3 (-CUBE_SIZE, i, j), Vector3 (1, 0, 0));
-        }
-}
 
 
 }				// namespace collision

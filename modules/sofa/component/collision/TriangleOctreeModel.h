@@ -22,8 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMODEL_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMODEL_H
+#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMDEL_H
+#define SOFA_COMPONENT_COLLISION_TRIANGLEOCTREEMDEL_H
 
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/VisualModel.h>
@@ -34,7 +34,6 @@
 #include <sofa/component/collision/TriangleOctree.h>
 
 
-/*This fixed size must be changed*/
 namespace sofa
 {
 
@@ -53,26 +52,25 @@ class TriangleOctreeModel:public  TriangleModel
 {
 public:
     TriangleOctreeModel();
-
+    /*the triangles assiciated to a point*/
+    vector<vector<int> > pTri;
+    /*the normals for each point*/
+    vector<Vector3> pNorms;
+    /*the size of the octree cube*/
     int cubeSize;
+    /*the first node of the octree*/
     TriangleOctree *octreeRoot;
-    vector < Vector4 > octreeVec;
+    //vector < Vector4 > octreeVec;
     void	draw();
     virtual void computeBoundingTree(int maxDepth=0);
-
-    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0)
-    {
-        if(octreeRoot)
-        {
-            delete octreeRoot;
-            octreeRoot=NULL;
-        }
-        //buildOctree();
-        this->TriangleModel::computeContinuousBoundingTree(0);
-    }
+    virtual void computeContinuousBoundingTree(double dt, int maxDepth=0);
+    /*init the octree creation*/
     void buildOctree ();
+protected:
+    /*used to add a triangle  to the octree*/
     int fillOctree (int t, int d = 0, Vector3 v = Vector3 (0, 0, 0));
 };
+/*class used to manage the Bounding Box for each triangle*/
 class TriangleAABB
 {
 

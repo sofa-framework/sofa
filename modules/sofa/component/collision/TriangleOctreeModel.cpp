@@ -57,33 +57,31 @@ TriangleAABB::TriangleAABB (Triangle & t)
 
         bb[i * 2] = bb_min3 (t.p1 ()[i], t.p2 ()[i], t.p3 ()[i]);
         bb[(i * 2) + 1] = bb_max3 (t.p1 ()[i], t.p2 ()[i], t.p3 ()[i]);
-        //std::cerr<<"p1:"<<t.p1 ()[i]<<" p2:"<<t.p2 ()[i]<<" p3:"<<  t.p3 ()[i]<<std::endl;
-        //std::cerr<<"min:"<<bb[i*2]<<" max:"<<bb[(i*2)+1] <<std::endl;
-    }
-    m_size =
-        bb_max3 (fabs (bb[1] - bb[0]), fabs (bb[3] - bb[2]),
-                fabs (bb[5] - bb[4]));
-    if (!m_size)
-    {
-        std::cerr << "zero:" << t.p1 () << ", " << t.p2 () << ", " << t.
-                p3 () << std::endl;
-        std::
-        cerr << "values1:" << bb[1] << " " << bb[0] << "," << bb[3] <<
-                " " << bb[2] << "," << bb[5] << " " << bb[4] << std::endl;
-        std::cerr << "values:" << abs (bb[1] -
-                bb[0]) << "," << abs (bb[3] -
-                        bb[2]) << ","
-                << abs (bb[5] - bb[4]) << std::endl;
-    }
-    //std::cerr<<"size:"<<m_size<<std::endl;
 
+        m_size =
+            bb_max3 (fabs (bb[1] - bb[0]), fabs (bb[3] - bb[2]),
+                    fabs (bb[5] - bb[4]));
+        if (!m_size)
+        {
+            std::cerr << "zero:" << t.p1 () << ", " << t.p2 () << ", " << t.
+                    p3 () << std::endl;
+            std::
+            cerr << "values1:" << bb[1] << " " << bb[0] << "," << bb[3] <<
+                    " " << bb[2] << "," << bb[5] << " " << bb[4] << std::endl;
+            std::cerr << "values:" << abs (bb[1] -
+                    bb[0]) << "," << abs (bb[3] -
+                            bb[2]) << ","
+                    << abs (bb[5] - bb[4]) << std::endl;
+        }
+
+
+    }
 }
-//
 
 
-int TriangleOctreeModelClass =
-    core::RegisterObject ("collision model using a triangular mesh").add <
-    TriangleOctreeModel > ().addAlias ("TriangleOctree");
+
+
+int TriangleOctreeModelClass =	core::RegisterObject ("collision model using a triangular mesh mapped to an Octree").add <	TriangleOctreeModel > ().addAlias ("TriangleOctree");
 
 TriangleOctreeModel::TriangleOctreeModel ()
 {
@@ -175,73 +173,92 @@ int TriangleOctreeModel::fillOctree (int tId, int d, Vector3 v)
 }
 void TriangleOctreeModel::computeBoundingTree(int maxDepth)
 {
-
+    if(octreeRoot)
+    {
+        delete octreeRoot;
+        octreeRoot=NULL;
+    }
 
     CubeModel* cubeModel = createPrevious<CubeModel>();
+    updateFromTopology();
+
+    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
     int size2=mstate->getX()->size();
-
-    if (mesh)
-        updateFromTopology();
-    if (needsUpdate && !cubeModel->empty()) cubeModel->resize(0);
-    if (isStatic() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
-
-    needsUpdate=false;
+    pNorms.resize(size2);
+    for(int i=0; i<size2; i++)
+    {
+        pNorms[i]=Vector3(0,0,0);
+    }
     Vector3 minElem, maxElem;
     maxElem[0]=minElem[0]=(*mstate->getX())[0][0];
     maxElem[1]=minElem[1]=(*mstate->getX())[0][1];
     maxElem[2]=minElem[2]=(*mstate->getX())[0][2];
 
     cubeModel->resize(1);  // size = number of triangles
-    for (int i=1; i<size2; i++)
+    for (int i=1; i<size; i++)
     {
-        for(int c=0; c<3; c++)
+        Triangle t(this,i);
+        pNorms[elems[i].i1]+=t.n();
+        pNorms[elems[i].i2]+=t.n();
+        pNorms[elems[i].i3]+=t.n();
+        const Vector3* pt[3];
+        pt[0] = &t.p1();
+        pt[1] = &t.p2();
+        pt[2] = &t.p3();
+        t.n() = cross(*pt[1]-*pt[0],*pt[2]-*pt[0]);
+        t.n().normalize();
+
+        for (int p=0; p<3; p++)
         {
-            if ((*mstate->getX())[i][c] > maxElem[c]) maxElem[c] = (*mstate->getX())[i][c];
-            if ((*mstate->getX())[i][c] < minElem[c]) minElem[c] = (*mstate->getX())[i][c];
 
+
+            for(int c=0; c<3; c++)
+            {
+                if ((*pt[p])[c] > maxElem[c]) maxElem[c] = (*pt[p])[c];
+                if ((*pt[p])[c] < minElem[c]) minElem[c] = (*pt[p])[c];
+
+            }
         }
-
 
     }
 
     cubeModel->setParentOf(0, minElem, maxElem); // define the bounding box of the current triangle
     cubeModel->computeBoundingTree(maxDepth);
+    for(int i=0; i<size2; i++)
+    {
+        pNorms[i].normalize();
+    }
+    if(!pTri.size())
+    {
+        /*creates the list of triangles that are associated to a point*/
+        pTri.resize(size2);
+        for(int i=0; i<size; i++)
+        {
+            pTri[elems[i].i1].push_back(i);
+
+            pTri[elems[i].i2].push_back(i);
+            pTri[elems[i].i3].push_back(i);
+        }
+    }
 }
 
+void TriangleOctreeModel::computeContinuousBoundingTree(double dt, int maxDepth)
+{
+    computeBoundingTree(maxDepth);
 
+}
 void TriangleOctreeModel::buildOctree ()
 {
-    ctime_t t0, t1, t2;
-    //if (octreeRoot)
-    //{
-    //delete octreeRoot;
-    // octreeRoot = NULL;
-    //}
-    t0 = CTime::getRefTime ();
-
     octreeRoot = new TriangleOctree (this);
     TriangleOctree & tm2 = *octreeRoot;
 
-
+    /*for each triangle add it to the octree*/
     for (int i = 0; i < elems.size (); i++)
     {
 
         fillOctree (i);
 
     }
-    t1 = CTime::getRefTime ();
-//std::cerr<<"X:"<<octreeRoot->x<<std::endl;
-//	octreeRoot->traceVolume (200);
-//	std::cerr<<"X:"<<octreeRoot->x<<std::endl;
-    t2 = CTime::getRefTime ();
-
-
-//	std::cerr << "Octree construction:" << (t1 -
-//						t0) /
-//	  ((double) CTime::getRefTicksPerSec () /
-//	   1000) << " traceVolume:" << (t2 -
-//					t1) /
-//	  ((double) CTime::getRefTicksPerSec () / 1000) << std::endl;
 }
 
 }				// namespace collision

@@ -32,7 +32,8 @@
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#define CUBE_SIZE 80
+/*THIS STATIC CUBE SIZE MUST BE CHANGE, it represents the size of the occtree cube*/
+#define CUBE_SIZE 200
 #define bb_max(a,b) (((a)>(b))?(a):(b))
 #define bb_max3(a,b,c) bb_max((bb_max(a,b)),c)
 
@@ -67,10 +68,11 @@ public:
     class traceResult
     {
     public:
-        traceResult() {}
+        traceResult():t(0),u(0),v(0) {}
         double t,u,v;
     };
     double x, y, z;
+    bool visited;
 
     double size;
     bool val;
@@ -82,6 +84,7 @@ public:
 
 
     ~TriangleOctree ();
+    /*the default cube has xmin=-CUBE_SIZE xmax=CUBE_SIZE, ymin=-CUBE_SIZE, ymax=CUBE_SIZE, zmin=-CUBE_SIZE,zmax=CUBE_SIZE*/
     TriangleOctree (TriangleOctreeModel * _tm, double _x = (double)-CUBE_SIZE, double _y = (double)-CUBE_SIZE, double _z =(double) -CUBE_SIZE, double _size = 2 * CUBE_SIZE):x (_x), y (_y), z (_z), size (_size),
         tm
         (_tm)
@@ -96,18 +99,10 @@ public:
             const Vector3 & direction,traceResult &result);
     void insert (double _x, double _y, double _z, double _inc, int t);
     int trace (Vector3 origin, Vector3 direction, traceResult &result);
-    int traceVolume (Vector3 origin, Vector3 direction);
-    int traceVolume (int n);
-    int traceVolume (const Vector3 & origin, const Vector3 & direction,
-            double tx0, double ty0, double tz0,
-            double tx1, double ty1, double tz1,
-            unsigned int a, unsigned int b, int intputTriangle,
-            vector < vertexData * >&vertexVec);
     int trace (const Vector3 & origin, const Vector3 & direction,
             double tx0, double ty0, double tz0, double tx1, double ty1,
             double tz1, unsigned int a, unsigned int b,Vector3 &origin1,Vector3 &direction1, traceResult &result);
-    int findInputTriangle (int inputTriangle, const Vector3 & origin,
-            const Vector3 & direction);
+
 };
 
 }				// namespace collision

@@ -22,7 +22,7 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/component/collision/NewProximityIntersection.h>
+
 #include <sofa/component/collision/RayTriangleIntersection.h>
 
 #include <sofa/component/collision/Sphere.h>
@@ -64,7 +64,7 @@ using namespace collision;
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
 
-SOFA_DECL_CLASS (Octree)
+SOFA_DECL_CLASS (RayTraceDetection)
 int RayTraceDetectionClass =
     core::
     RegisterObject

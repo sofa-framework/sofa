@@ -55,6 +55,9 @@ public:
     const Vector3& p1() const;
     const Vector3& p2() const;
     const Vector3& p3() const;
+    const int p1Index() const;
+    const int p2Index() const;
+    const int p3Index() const;
 
     const Vector3& p1Free() const;
     const Vector3& p2Free() const;
@@ -212,6 +215,10 @@ inline const Vector3& Triangle::p3() const { return (*model->mstate->getX())[mod
 inline const Vector3& Triangle::p1Free() const { return (*model->mstate->getXfree())[model->elems[index].i1]; }
 inline const Vector3& Triangle::p2Free() const { return (*model->mstate->getXfree())[model->elems[index].i2]; }
 inline const Vector3& Triangle::p3Free() const { return (*model->mstate->getXfree())[model->elems[index].i3]; }
+
+inline const int Triangle::p1Index() const { return model->elems[index].i1; }
+inline const int Triangle::p2Index() const { return model->elems[index].i2; }
+inline const int Triangle::p3Index() const { return model->elems[index].i3; }
 
 inline const Vector3& Triangle::v1() const { return (*model->mstate->getV())[model->elems[index].i1]; }
 inline const Vector3& Triangle::v2() const { return (*model->mstate->getV())[model->elems[index].i2]; }

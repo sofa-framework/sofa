@@ -44,6 +44,7 @@ bool
 RayTriangleIntersection::NewComputation(Triangle *triP, const Vector3 &origin, const Vector3 &direction,   double &t,  double &u, double &v)
 
 {
+    double EPSILON = 0.000001;
     t = 0; u = 0; v = 0;
 
     Vector3 edge1 = triP->p2() - triP->p1();
@@ -55,27 +56,32 @@ RayTriangleIntersection::NewComputation(Triangle *triP, const Vector3 &origin, c
     pvec = direction.cross(edge2);
 
     det = dot(edge1, pvec);
+    if(det==0.0)
+    {
 
-    if (fabs(triP->n()*direction) < 0.00001f)
         return false;
 
-    inv_det = 1.0f / det;
+    }
+// 	    if (fabs(triP->n()*direction) < 0.0000)
+//                 return false;
+
+    inv_det = 1.0 / det;
 
     tvec = origin - triP->p1();
 
     u = dot(tvec, pvec) * inv_det;
-    if (u < 0.00001f||u >1)
+    if (u < 0.000001||u >0.999999900000)
         return false;
 
     qvec = tvec.cross(edge1);
 
     v = dot(direction, qvec) * inv_det;
-    if (v < -0.001f || (u +v) > 1.001f)
+    if (v < 0.00001|| (u +v) > 0.999999900000)
         return false;
 
     t = dot(edge2, qvec) * inv_det;
 
-    if (t < 0)
+    if (t <=0.000001||isnan(t)||isnan(v)||isnan(u))
         return false;
 
     return true;
