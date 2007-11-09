@@ -18,9 +18,7 @@
 *                                                                              *
 * Contact information: contact@sofa-framework.org                              *
 *                                                                              *
-* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
-* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
-* and F. Poyer                                                                 *
+* Authors:  E. Hermann                                                                *
 *******************************************************************************/
 #ifndef SOFA_COMPONENT_COLLISION_OCTREEDETECTION_H
 #define SOFA_COMPONENT_COLLISION_OCTREEDETECTION_H
@@ -44,53 +42,52 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-// inherit of VisualModel for debugging, then we can see the voxel grid
-class OctreeDetection:public core::componentmodel::collision::
-    BroadPhaseDetection,
+**
+*  \brief It is a Ray Trace based collision detection algorithm
+*
+*   For each point in one object, we trace a ray following de oposite of the point's normal
+*    up to find a triangle in the other object. Both triangles are tested to evaluate if they are in
+* colliding state.
+*/
+class RayTraceDetection:public core::componentmodel::collision::
+BroadPhaseDetection,
 public core::componentmodel::collision::NarrowPhaseDetection,
 public core::VisualModel
 {
 private:
-    sofa::helper::vector < core::CollisionModel * >collisionModels;
-    DataField < bool > bDraw;
+sofa::helper::vector < core::CollisionModel * >collisionModels;
+DataField < bool > bDraw;
 
 public:
+typedef sofa::helper::vector<sofa::core::componentmodel::collision::DetectionOutput>    OutputVector;
+RayTraceDetection ();
 
-    OctreeDetection ();
+void setDraw (bool val)
+{
+bDraw.setValue (val);
+}
+void selfCollision (TriangleOctreeModel * cm1);
+void addCollisionModel (core::CollisionModel * cm);
+void addCollisionPair (const std::pair < core::CollisionModel *,
+core::CollisionModel * >&cmPair);
 
-    void setDraw (bool val)
-    {
-        bDraw.setValue (val);
-    }
+void findPairsVolume (CubeModel * cm1,
+CubeModel * cm2);
 
-    void addCollisionModel (core::CollisionModel * cm);
-    void addCollisionPair (const std::pair < core::CollisionModel *,
-            core::CollisionModel * >&cmPair);
-    void findPairs (CubeModel * cm1,
-            CubeModel * cm2);
-    void findPairsSurface (CubeModel * cm1,
-            CubeModel * cm2);
-    void findPairsVolume (CubeModel * cm1,
-            CubeModel * cm2);
-    void findPairsSurfaceTriangle(CubeModel * cm1,
-            CubeModel * cm2);
-    void findPairsSurfaceTriangleSimple(CubeModel * cm1,
-            CubeModel * cm2);
+virtual void beginBroadPhase()
+{
+core::componentmodel::collision::BroadPhaseDetection::beginBroadPhase();
+collisionModels.clear();
+}
 
-    virtual void beginBroadPhase()
-    {
-        core::componentmodel::collision::BroadPhaseDetection::beginBroadPhase();
-        collisionModels.clear();
-    }
-
-    /* for debugging, VisualModel */
-    void draw ();
-    void initTextures ()
-    {
-    }
-    void update ()
-    {
-    }
+/* for debugging, VisualModel */
+void draw ();
+void initTextures ()
+{
+}
+void update ()
+{
+}
 };
 
 }				// namespace collision
