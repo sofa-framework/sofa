@@ -95,19 +95,10 @@ template <class DataTypes> void FixedConstraint<DataTypes>::handleTopologyChange
 {
     sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
 
-    topology::PointSubset my_subset = f_indices.getValue();
-
-    // Force the initialization of defined functions and parameters
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
-
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
-    my_subset.handleTopologyEvents(itBegin,itEnd);
+    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,getMState()->getSize());
 
 }
 
@@ -144,12 +135,6 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::init()
 {
     this->core::componentmodel::behavior::Constraint<DataTypes>::init();
-    //f_listening.setValue(true);
-    // sort indices and remove duplicates by copying them to a std::set
-    //SetIndex& indices = *f_indices.beginEdit();
-    //std::set<int> tmpset(indices.begin(), indices.end());
-    //indices = SetIndex(tmpset.begin(),tmpset.end());
-    //f_indices.endEdit();
 
     // Initialize functions and parameters
     topology::PointSubset my_subset = f_indices.getValue();
