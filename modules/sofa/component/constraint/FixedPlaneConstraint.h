@@ -29,6 +29,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
 #include <set>
+#include <sofa/component/topology/PointSubset.h>
 
 
 namespace sofa
@@ -49,27 +50,28 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef topology::PointSubset SetIndex;
     typedef typename Coord::value_type   Real    ;
 
 protected:
-    std::set<int> indices; // the set of vertex indices
+    DataField<SetIndex> indices; // the set of vertex indices
     /// direction on which the constraint applies
-    Coord direction;
+    DataField<Coord> direction;
     /// whether vertices should be selected from 2 parallel planes
     bool selectVerticesFromPlanes;
 
-    Real dmin; // coordinates min of the plane for the vertex selection
-    Real dmax;// coordinates max of the plane for the vertex selection
+    DataField<Real> dmin; // coordinates min of the plane for the vertex selection
+    DataField<Real> dmax;// coordinates max of the plane for the vertex selection
 public:
     FixedPlaneConstraint();
 
     ~FixedPlaneConstraint();
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-
     FixedPlaneConstraint<DataTypes>* addConstraint(int index);
-    FixedPlaneConstraint<DataTypes>* removeConstraint(int index);
 
+    FixedPlaneConstraint<DataTypes>* removeConstraint(int index);
+    // Handle topological changes
+    virtual void handleTopologyChange();
     // -- Constraint interface
     void projectResponse(VecDeriv& dx);
     virtual void projectVelocity(VecDeriv& /*dx*/) {} ///< project dx to constrained space (dx models a velocity)
@@ -89,10 +91,18 @@ public:
 
     void update() { }
 protected:
+protected :
+
+    // Define TestNewPointFunction
+    static bool FPCTestNewPointFunction(int, void*, const helper::vector< unsigned int > &, const helper::vector< double >& );
+
+    // Define RemovalFunction
+    static void FPCRemovalFunction ( int , void*);
+
     bool isPointInPlane(Coord p)
     {
-        Real d=dot(p,direction);
-        if ((d>dmin)&& (d<dmax))
+        Real d=dot(p,direction.getValue());
+        if ((d>dmin.getValue())&& (d<dmax.getValue()))
             return true;
         else
             return false;

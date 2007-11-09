@@ -38,12 +38,16 @@ namespace component
 
 namespace constraint
 {
-
+using namespace core::componentmodel::topology;
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::FixedPlaneConstraint()
-    : direction(0.0,0.0,1.0)
+    :
+    indices( dataField(&indices,"indices","Indices of the fixed points"))
+    , direction( dataField(&direction,"direction","normal direction of the plane"))
+    , dmin( dataField(&dmin,(Real)0,"dmin","Minimum plane distance from the origin"))
+    , dmax( dataField(&dmax,(Real)0,"dmax","Maximum plane distance from the origin") )
 {
     selectVerticesFromPlanes=false;
 }
@@ -52,67 +56,42 @@ template <class DataTypes>
 FixedPlaneConstraint<DataTypes>::~FixedPlaneConstraint()
 {
 }
-
-
-template <class DataTypes>
-void FixedPlaneConstraint<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
+// Define TestNewPointFunction
+template< class DataTypes>
+bool FixedPlaneConstraint<DataTypes>::FPCTestNewPointFunction(int /*nbPoints*/, void* param, const helper::vector< unsigned int > &, const helper::vector< double >& )
 {
-    Inherit::parse(arg);
-    FixedPlaneConstraint<DataTypes>* obj = this;
-    if (arg->getAttribute("indices"))
+    FixedPlaneConstraint<DataTypes> *fc= (FixedPlaneConstraint<DataTypes> *)param;
+    if (fc)
     {
-        const char* str = arg->getAttribute("indices");
-        const char* str2 = NULL;
-        for(;;)
-        {
-            int v = (int)strtod(str,(char**)&str2);
-            if (str2==str) break;
-            str = str2;
-            obj->addConstraint(v);
-        }
+        return true;
     }
-    if (arg->getAttribute("direction"))
+    else
     {
-        const char* str = arg->getAttribute("direction");
-        const char* str2 = NULL;
-        Real val[3];
-        unsigned int i;
-        for(i=0; i<3; i++)
-        {
-            val[i] = (Real)strtod(str,(char**)&str2);
-            if (str2==str) break;
-            str = str2;
-        }
-        Coord dir(val);
-        obj->setDirection(dir);
-    }
-    if (arg->getAttribute("distance"))
-    {
-        const char* str = arg->getAttribute("distance");
-        const char* str2 = NULL;
-        Real val[2];
-        unsigned int i;
-        for(i=0; i<2; i++)
-        {
-            val[i] = (Real)strtod(str,(char**)&str2);
-            if (str2==str) break;
-            str = str2;
-        }
-        obj->setDminAndDmax(val[0],val[1]);
+        return false;
     }
 }
 
+// Define RemovalFunction
+template< class DataTypes>
+void FixedPlaneConstraint<DataTypes>::FPCRemovalFunction(int pointIndex, void* param)
+{
+    FixedPlaneConstraint<DataTypes> *fc= (FixedPlaneConstraint<DataTypes> *)param;
+    if (fc)
+    {
+        fc->removeConstraint((unsigned int) pointIndex);
+    }
+    return;
+}
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::addConstraint(int index)
 {
-    this->indices.insert(index);
+    indices.beginEdit()->push_back(index);
     return this;
 }
 
 template <class DataTypes>
 FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::removeConstraint(int index)
 {
-    this->indices.erase(index);
     return this;
 }
 
@@ -120,11 +99,12 @@ FixedPlaneConstraint<DataTypes>*  FixedPlaneConstraint<DataTypes>::removeConstra
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
+    Coord dir=direction.getValue();
 
-    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    for (helper::vector< unsigned int >::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
     {
         /// only constraint one projection of the displacement to be zero
-        res[*it]-= direction*dot(res[*it],direction);
+        res[*it]-= dir*dot(res[*it],dir);
     }
 
 }
@@ -133,7 +113,7 @@ void FixedPlaneConstraint<DataTypes>::setDirection(Coord dir)
 {
     if (dir.norm2()>0)
     {
-        direction=dir;
+        direction.setValue(dir);
     }
 }
 
@@ -153,12 +133,38 @@ template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::init()
 {
     this->core::componentmodel::behavior::Constraint<DataTypes>::init();
-
+    /// test that dmin or dmax are different from zero
+    if (dmin.getValue()!=dmax.getValue())
+        selectVerticesFromPlanes=true;
 
     if (selectVerticesFromPlanes)
         selectVerticesAlongPlane();
 
+    topology::PointSubset my_subset = indices.getValue();
+
+    // Force the initialization of defined functions and parameters
+    my_subset.setTestFunction(FPCTestNewPointFunction);
+    my_subset.setRemovalFunction(FPCRemovalFunction);
+
+    my_subset.setTestParameter( (void *) this );
+    my_subset.setRemovalParameter( (void *) this );
+
 }
+
+// Handle topological changes
+template <class DataTypes> void FixedPlaneConstraint<DataTypes>::handleTopologyChange()
+{
+    sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+
+
+
+    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
+    std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+
+    indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,getMState()->getSize());
+
+}
+
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::draw()
 {
@@ -168,7 +174,7 @@ void FixedPlaneConstraint<DataTypes>::draw()
     glPointSize(10);
     glColor4f (1,1.0,0.5,1);
     glBegin (GL_POINTS);
-    for (std::set<int>::const_iterator it = this->indices.begin(); it != this->indices.end(); ++it)
+    for (helper::vector< unsigned int >::const_iterator it = this->indices.getValue().begin(); it != this->indices.getValue().end(); ++it)
     {
         helper::gl::glVertexT(x[*it]);
     }
