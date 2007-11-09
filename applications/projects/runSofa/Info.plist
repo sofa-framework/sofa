@@ -1,0 +1,45 @@
+   <!DOCTYPE plist PUBLIC
+        "-//Apple Computer//DTD PLIST 1.0//EN"
+        "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+    <plist version="1.0">
+    <dict>
+        <key>CFBundleDocumentTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeExtensions</key>
+                <array>
+                    <string>scn</string>
+                </array>
+                <key>CFBundleTypeIconFile</key>
+                <string>runSOFA.icns</string>
+                <key>CFBundleTypeMIMETypes</key>
+                <array>
+                    <string>image/x-scn</string>
+                </array>
+                <key>CFBundleTypeName</key>
+                <string>SOFA scene</string>
+                <key>CFBundleTypeRole</key>
+                <string>Viewer</string>
+                <key>LSIsAppleDefaultForType</key>
+                <true/>
+            </dict>
+        </array>
+        <key>CFBundleIconFile</key>
+        <string>runSOFA.icns</string>
+        <key>CFBundleExecutable</key>
+        <string>runSOFA</string>
+        <key>CFBundleIdentifier</key>
+        <string>com.inria.sofa</string>
+        <key>CFBundleInfoDictionaryVersion</key>
+        <string>6.0</string>
+        <key>CFBundlePackageType</key>
+        <string>APPL</string>
+        <key>CFBundleSignature</key>
+        <string>????</string>
+        <key>CFBundleVersion</key>
+        <string>1.0</string>
+        <key>CSResourcesFileMapped</key>
+        <true/>
+    </dict>
+    </plist>
+
