@@ -45,7 +45,7 @@ public:
     {
     }
 
-    virtual void addTetrahedron(int p1, int p2, int p3,int p4)
+    virtual void addTetra(int p1, int p2, int p3,int p4)
     {
         tstm->addTetrahedron(Tetrahedron(helper::make_array<unsigned int>((unsigned int)p1,(unsigned int)p2,(unsigned int) p3,(unsigned int) p4)));
     }

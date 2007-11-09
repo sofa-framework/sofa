@@ -227,6 +227,13 @@ public:
      */
     const TetrahedronEdges &getTetrahedronEdges(const unsigned int i) ;
 
+    /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
+    *
+    */
+    std::pair<unsigned int,unsigned int> getLocalTetrahedronEdges (const unsigned int i) const;
+
+
+
     /** \brief Returns the Tetrahedron Triangles  array.
      *
      */
@@ -264,12 +271,14 @@ public:
 
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
-    int getVertexIndexInTetrahedron(Tetrahedron &t,unsigned int vertexIndex) const;
+    int getVertexIndexInTetrahedron(const Tetrahedron &t,unsigned int vertexIndex) const;
 
 
     TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
             const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
             const sofa::helper::vector< Tetrahedron >         &tetrahedra    = (const sofa::helper::vector< Tetrahedron >)        0 );
+
+
 
     template< typename DataTypes >
     friend class TetrahedronSetTopologyModifier;

@@ -1,7 +1,7 @@
 #include <sofa/component/topology/TetrahedronSetTopology.h>
 #include <sofa/component/topology/TetrahedronSetTopology.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -17,6 +17,13 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(TetrahedronSetTopology)
 
+int TetrahedronSetTopologyClass = core::RegisterObject("Tetrahedron set topology")
+        .add< TetrahedronSetTopology<Vec3dTypes> >()
+        .add< TetrahedronSetTopology<Vec3fTypes> >()
+        .add< TetrahedronSetTopology<Vec2dTypes> >()
+        .add< TetrahedronSetTopology<Vec2fTypes> >()
+        .add< TetrahedronSetTopology<Vec1dTypes> >()
+        .add< TetrahedronSetTopology<Vec1fTypes> >();
 
 template class TetrahedronSetTopology<Vec3dTypes>;
 template class TetrahedronSetTopology<Vec3fTypes>;
@@ -42,13 +49,11 @@ template class TetrahedronSetGeometryAlgorithms<Vec1dTypes>;
 
 // implementation TetrahedronSetTopologyContainer
 
-
 void TetrahedronSetTopologyContainer::createTetrahedronEdgeArray ()
 {
     m_tetrahedronEdge.resize( getNumberOfTetrahedra());
     unsigned int j;
     int edgeIndex;
-    unsigned int edgeTetrahedronDescriptionArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
 
     if (m_edge.size()>0)
     {
@@ -58,8 +63,8 @@ void TetrahedronSetTopologyContainer::createTetrahedronEdgeArray ()
             // adding edge i in the edge shell of both points
             for (j=0; j<6; ++j)
             {
-                edgeIndex=getEdgeIndex(t[edgeTetrahedronDescriptionArray[j][0]],
-                        t[edgeTetrahedronDescriptionArray[j][1]]);
+                edgeIndex=getEdgeIndex(t[tetrahedronEdgeArray[j][0]],
+                        t[tetrahedronEdgeArray[j][1]]);
                 assert(edgeIndex!= -1);
                 m_tetrahedronEdge[i][j]=edgeIndex;
             }
@@ -78,8 +83,8 @@ void TetrahedronSetTopologyContainer::createTetrahedronEdgeArray ()
             Tetrahedron &t=m_tetrahedron[i];
             for (j=0; j<6; ++j)
             {
-                v1=t[edgeTetrahedronDescriptionArray[j][0]];
-                v2=t[edgeTetrahedronDescriptionArray[j][1]];
+                v1=t[tetrahedronEdgeArray[j][0]];
+                v2=t[tetrahedronEdgeArray[j][1]];
                 // sort vertices in lexicographics order
                 if (v1<v2)
                 {
@@ -134,22 +139,35 @@ void TetrahedronSetTopologyContainer::createTetrahedronTriangleArray ()
         std::map<Triangle,unsigned int> triangleMap;
         std::map<Triangle,unsigned int>::iterator itt;
         Triangle tr;
-        unsigned int v[3];
+        unsigned int v[3],val;
         /// create the m_edge array at the same time than it fills the m_tetrahedronEdge array
         for (unsigned int i = 0; i < m_tetrahedron.size(); ++i)
         {
             Tetrahedron &t=m_tetrahedron[i];
             for (j=0; j<4; ++j)
             {
-                v[0]=t[(j+1)%4]; v[1]=t[(j+2)%4]; v[2]=t[(j+3)%4];
-                std::sort(v,v+2);
-                // sort vertices in lexicographics order
-                tr=helper::make_array<unsigned int>(v[0],v[1],v[2]);
+                if (j%2)
+                {
+                    v[0]=t[(j+1)%4]; v[1]=t[(j+2)%4]; v[2]=t[(j+3)%4];
+                }
+                else
+                {
+                    v[0]=t[(j+1)%4]; v[2]=t[(j+2)%4]; v[1]=t[(j+3)%4];
+                }
+                //		std::sort(v,v+2);
+                // sort v such that v[0] is the smallest one
+                while ((v[0]>v[1]) || (v[0]>v[2]))
+                {
+                    val=v[0]; v[0]=v[1]; v[1]=v[2]; v[2]=val;
+                }
+                // check if a triangle with an opposite orientation already exists
+                tr=helper::make_array<unsigned int>(v[0],v[2],v[1]);
                 itt=triangleMap.find(tr);
                 if (itt==triangleMap.end())
                 {
                     // edge not in edgeMap so create a new one
                     triangleIndex=triangleMap.size();
+                    tr=helper::make_array<unsigned int>(v[0],v[1],v[2]);
                     triangleMap[tr]=triangleIndex;
                     m_triangle.push_back(tr);
                 }
@@ -281,6 +299,11 @@ const sofa::helper::vector< TetrahedronEdges> &TetrahedronSetTopologyContainer::
         createTetrahedronEdgeArray();
     return m_tetrahedronEdge;
 }
+std::pair<unsigned int,unsigned int> TetrahedronSetTopologyContainer::getLocalTetrahedronEdges (const unsigned int i) const
+{
+    assert(i<6);
+    return std::pair<unsigned int,unsigned int> (tetrahedronEdgeArray[i][0],tetrahedronEdgeArray[i][1]);
+}
 
 const sofa::helper::vector< TetrahedronTriangles> &TetrahedronSetTopologyContainer::getTetrahedronTriangleArray()
 {
@@ -327,7 +350,7 @@ const TetrahedronTriangles &TetrahedronSetTopologyContainer::getTetrahedronTrian
     return m_tetrahedronTriangle[i];
 }
 
-int TetrahedronSetTopologyContainer::getVertexIndexInTetrahedron(Tetrahedron &t,unsigned int vertexIndex) const
+int TetrahedronSetTopologyContainer::getVertexIndexInTetrahedron(const Tetrahedron &t,unsigned int vertexIndex) const
 {
 
     if (t[0]==vertexIndex)
@@ -369,24 +392,24 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(core::component
 
 
 // factory related stuff
-
+/*
 template<class DataTypes>
 void create(TetrahedronSetTopology<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
 {
-    simulation::tree::xml::createWithParent< TetrahedronSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
-    if (obj!=NULL)
-    {
-        if (arg->getAttribute("filename"))
-            obj->load(arg->getAttribute("filename"));
-    }
+	simulation::tree::xml::createWithParent< TetrahedronSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
+	if (obj!=NULL)
+	{
+		if (arg->getAttribute("filename"))
+			obj->load(arg->getAttribute("filename"));
+	}
 }
 
 Creator<simulation::tree::xml::ObjectFactory, TetrahedronSetTopology<Vec3dTypes> >
-TetrahedronSetTopologyVec3dClass("TetrahedronSetTopology", true);
+  TetrahedronSetTopologyVec3dClass("TetrahedronSetTopology", true);
 
 Creator<simulation::tree::xml::ObjectFactory, TetrahedronSetTopology<Vec3fTypes> >
-TetrahedronSetTopologyVec3fClass("TetrahedronSetTopology", true);
-
+  TetrahedronSetTopologyVec3fClass("TetrahedronSetTopology", true);
+*/
 
 } // namespace topology
 
