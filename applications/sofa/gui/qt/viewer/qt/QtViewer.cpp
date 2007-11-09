@@ -41,7 +41,11 @@
 #ifdef WIN32
 #include <GL/glaux.h>
 #endif
+#if defined (__APPLE__)
+#include <GLUT/glut.h>
+#else
 #include <GL/glut.h>
+#endif
 #include <qevent.h>
 #include "GenGraphForm.h"
 #include "Main.h"
