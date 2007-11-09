@@ -28,12 +28,10 @@
 #include <sofa/component/topology/EdgeSetTopology.h>
 #include <vector>
 #include <map>
-
 #include <sofa/defaulttype/Vec.h> // typing "Vec"
 
 namespace sofa
 {
-
 namespace component
 {
 
@@ -231,10 +229,10 @@ public:
 
 
     /** returns the index (either 0, 1 ,2) of the vertex whose global index is vertexIndex. Returns -1 if none */
-    int getVertexIndexInTriangle(Triangle &t,unsigned int vertexIndex) const;
+    int getVertexIndexInTriangle(const Triangle &t,const unsigned int vertexIndex) const;
 
     /** returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none */
-    int getEdgeIndexInTriangle(TriangleEdges &t,unsigned int edheIndex) const;
+    int getEdgeIndexInTriangle(const TriangleEdges &t,const unsigned int edgeIndex) const;
 
     /** \brief Checks if the Triangle Set Topology is coherent
      *

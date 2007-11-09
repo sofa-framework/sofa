@@ -236,7 +236,7 @@ const TriangleEdges &TriangleSetTopologyContainer::getTriangleEdge(const unsigne
     return m_triangleEdge[i];
 }
 
-int TriangleSetTopologyContainer::getVertexIndexInTriangle(Triangle &t,unsigned int vertexIndex) const
+int TriangleSetTopologyContainer::getVertexIndexInTriangle(const Triangle &t,const unsigned int vertexIndex) const
 {
 
     if (t[0]==vertexIndex)
@@ -248,7 +248,7 @@ int TriangleSetTopologyContainer::getVertexIndexInTriangle(Triangle &t,unsigned 
     else
         return -1;
 }
-int TriangleSetTopologyContainer::getEdgeIndexInTriangle(TriangleEdges &t,unsigned int edgeIndex) const
+int TriangleSetTopologyContainer::getEdgeIndexInTriangle(const TriangleEdges &t,const unsigned int edgeIndex) const
 {
 
     if (t[0]==edgeIndex)

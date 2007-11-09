@@ -2350,10 +2350,11 @@ void snapping_test_edge(double epsilon, double alpha0, double alpha1, bool& is_s
 }
 
 
+
 template< class DataTypes>
 typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleArea( const unsigned int i) const
 {
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const Triangle &t=container->getTriangle(i);
@@ -2364,7 +2365,7 @@ typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeTria
 template< class DataTypes>
 typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeRestTriangleArea( const unsigned int i) const
 {
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const Triangle &t=container->getTriangle(i);
@@ -2373,11 +2374,13 @@ typename DataTypes::Real TriangleSetGeometryAlgorithms< DataTypes >::computeRest
     return area;
 }
 
+
+
 /// computes the edge length of all edges are store in the array interface
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleArea( BasicArrayInterface<Real> &ai) const
 {
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const sofa::helper::vector<Triangle> &ta=container->getTriangleArray();
@@ -2388,6 +2391,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::computeTriangleArea( BasicArrayIn
         const Triangle &t=ta[i];
         ai[i]=(Real)(areaProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]])/2.0);
     }
+
 }
 
 
@@ -2396,10 +2400,12 @@ template<class DataTypes>
 Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(sofa::helper::vector< unsigned int>& indices, const double &coord_p)
 {
 
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     //       TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+
 
     const typename DataTypes::Coord& c1=vect_c[indices[0]];
     const typename DataTypes::Coord& c2=vect_c[indices[1]];
@@ -2418,9 +2424,11 @@ template<class DataTypes>
 Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsigned int ind_p, sofa::helper::vector< unsigned int>& indices, const double &coord_p)
 {
 
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+
 
     const typename DataTypes::Coord& c1=vect_c[indices[0]];
     const typename DataTypes::Coord& c2=vect_c[indices[1]];
@@ -2457,11 +2465,13 @@ template<class DataTypes>
 Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeTriangleNormal(const unsigned int ind_t)
 {
 
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const Triangle &t=container->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+
 
     const typename DataTypes::Coord& c0=vect_c[t[0]];
     const typename DataTypes::Coord& c1=vect_c[t[1]];
@@ -2487,11 +2497,13 @@ sofa::helper::vector< double > TriangleSetGeometryAlgorithms< DataTypes >::compu
 
     sofa::helper::vector< double > baryCoefs;
 
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const Triangle &t=container->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+
 
     const typename DataTypes::Coord& c0=vect_c[t[0]];
     const typename DataTypes::Coord& c1=vect_c[t[1]];
@@ -2749,7 +2761,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::is_triangle_in_plane(const unsi
 {
 
 
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const Triangle &t=container->getTriangle(ind_t);
@@ -2807,9 +2820,10 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
     //HYP : if coord_from or coord_to == 0.0 or 1.0, ind_p is distinct from ind_from and from ind_to
 
 
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
+
 
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
 
@@ -3095,11 +3109,13 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     bool is_validated = false;
     bool is_intersected = false;
 
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
     const Triangle &t=container->getTriangle(ind_t);
     const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+
 
     bool is_full_01=(is_entered && ((t[0] == ind_first && t[1] == ind_second) || (t[1] == ind_first && t[0] == ind_second)));
     bool is_full_12=(is_entered && ((t[1] == ind_first && t[2] == ind_second) || (t[2] == ind_first && t[1] == ind_second)));
@@ -3406,15 +3422,17 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         sofa::helper::vector< unsigned int > &triangles_list, sofa::helper::vector< sofa::helper::vector<unsigned int> > &indices_list, sofa::helper::vector< double >& coords_list)
 {
 
-    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyContainer * container = static_cast< TriangleSetTopologyContainer* >(topology->getTopologyContainer());
 
     bool is_validated=true;
     bool is_intersected=true;
 
+
     sofa::helper::vector<unsigned int> init_indices;
     sofa::helper::vector<unsigned int> &indices=init_indices;
+
 
     double init_t=0.0;
     double init_k=0.0;
