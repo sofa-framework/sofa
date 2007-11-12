@@ -557,8 +557,8 @@ public:
 
     // Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b
     // and the triangular mesh
-    bool computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb,
-            sofa::helper::vector< unsigned int > &triangles_list, sofa::helper::vector< sofa::helper::vector< unsigned int> > &indices_list, sofa::helper::vector< double >& coords_list);
+    bool computeIntersectedPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, unsigned int& ind_tb,
+            sofa::helper::vector< unsigned int > &triangles_list, sofa::helper::vector< sofa::helper::vector< unsigned int> > &indices_list, sofa::helper::vector< double >& coords_list, bool& is_on_boundary);
 };
 
 
