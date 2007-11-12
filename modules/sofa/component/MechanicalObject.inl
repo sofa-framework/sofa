@@ -46,18 +46,18 @@ namespace component
 using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), x0(NULL),rest_position(new VecCoord), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
-    , f_X( new XField<DataTypes>(&x, "position coordinates ot the degrees of freedom") )
-    , f_V( new VField<DataTypes>(&v, "velocity coordinates ot the degrees of freedom") )
-    , f_rest_position( new XField<DataTypes>(&rest_position, "rest position coordinates of the degrees of freedom"))
+    : x(new VecCoord), v(new VecDeriv), x0(new VecCoord),reset_position(new VecCoord), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
+    , f_X ( new XField<DataTypes>(&x,  "position coordinates ot the degrees of freedom") )
+    , f_V ( new VField<DataTypes>(&v,  "velocity coordinates ot the degrees of freedom") )
+    , f_X0( new XField<DataTypes>(&x0, "rest position coordinates ot the degrees of freedom") )
 {
+    initialized = false;
     this->addField(f_X, "position");
     f_X->beginEdit();
     this->addField(f_V, "velocity");
     f_V->beginEdit();
-    this->addField(f_rest_position,"rest_position");
-    f_rest_position->beginEdit();
-
+    this->addField(f_X0,"rest_position");
+    f_X0->beginEdit();
     /*    x = new VecCoord;
       v = new VecDeriv;*/
     internalForces = f = new VecDeriv;
@@ -350,7 +350,7 @@ void MechanicalObject<DataTypes>::resize(const int size)
 {
     (*x).resize(size);
     // Note (Jeremie A.): should we really update initial position vector size ???
-    if (x0!=NULL)
+    if (initialized && x0!=NULL)
         (*x0).resize(size);
     (*v).resize(size);
     if (v0!=NULL)
@@ -578,18 +578,22 @@ void MechanicalObject<DataTypes>::init()
             }
         }
     }
-    // Save initial state
-    this->x0 = new VecCoord;
-    *this->x0 = *x;
+    // Save initial state for reset button
+    this->reset_position = new VecCoord;
+    *this->reset_position = *x;
     this->v0 = new VecDeriv;
     *this->v0 = *v;
-
     // free position = position
     *this->xfree = *x;
 
-    if (f_rest_position->getValue().size() == 0)
-        *rest_position = *x0;
+    //Rest position
 
+    if (x0->size() == 0)
+    {
+        *x0 = *x;
+    }
+
+    initialized = true;
 }
 
 //
@@ -599,11 +603,11 @@ void MechanicalObject<DataTypes>::init()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reset()
 {
-    if (x0 == NULL)
+    if (reset_position == NULL)
         return;
     // Back to initial state
-    this->resize(this->x0->size());
-    *this->x = *x0;
+    this->resize(this->reset_position->size());
+    *this->x = *reset_position;
     *this->v = *v0;
 
     *this->xfree = *x;

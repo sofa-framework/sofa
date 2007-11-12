@@ -34,6 +34,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h> // for marching cube tables
+#include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <vector>
 
 namespace sofa
@@ -114,7 +115,8 @@ public:
           mRadius(dataField(&mRadius,2.0,"radius","Radius")),
           mIsoValue(dataField(&mIsoValue,0.5,"isoValue", "Iso Value")),
           sph(NULL), grid(NULL)
-    {}
+    {
+    }
 
     virtual ~SPHFluidSurfaceMapping()
     {}

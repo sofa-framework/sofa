@@ -261,7 +261,7 @@ typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCent
     typename DataTypes::Coord center;
     // get restPosition
     PointSetTopology<DataTypes> *parent=static_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
-    typename DataTypes::VecCoord& p = *parent->getDOF()->getX();
+    typename DataTypes::VecCoord& p = *parent->getDOF()->getX0();
     PointSetTopologyContainer *ps=static_cast<PointSetTopologyContainer *>( parent->getTopologyContainer());
     const sofa::helper::vector<unsigned int> &va=ps->getDOFIndexArray();
     unsigned int i;
@@ -283,7 +283,7 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
     Real val;
     // get restPosition
     PointSetTopology<DataTypes> *parent=static_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
-    typename DataTypes::VecCoord& p = *parent->getDOF()->getX();
+    typename DataTypes::VecCoord& p = *parent->getDOF()->getX0();
     PointSetTopologyContainer *ps=static_cast<PointSetTopologyContainer *>( parent->getTopologyContainer());
     const sofa::helper::vector<unsigned int> &va=ps->getDOFIndexArray();
     unsigned int i;
@@ -313,21 +313,34 @@ void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real /*
 
 
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////PointSetTopology/////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
-PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj=NULL) : object(obj)
+PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj=NULL) :
+    object(obj)
+    , f_m_topologyContainer(new Field< PointSetTopologyContainer >(new PointSetTopologyContainer(this), "Point Container"))
 {
-    m_topologyContainer= new PointSetTopologyContainer(this);
-    m_topologyModifier= new PointSetTopologyModifier<DataTypes>(this);
-    m_topologyAlgorithms= new PointSetTopologyAlgorithms<DataTypes>(this);
-    m_geometryAlgorithms= new PointSetGeometryAlgorithms<DataTypes>(this);
+    m_topologyContainer=f_m_topologyContainer->beginEdit();
+    m_topologyModifier=(new PointSetTopologyModifier<DataTypes>(this));
+    m_topologyAlgorithms=(new PointSetTopologyAlgorithms<DataTypes>(this));
+    m_geometryAlgorithms=(new PointSetGeometryAlgorithms<DataTypes>(this));
+
+    this->addField(this->f_m_topologyContainer, "pointcontainer");
 }
 template<class DataTypes>
 PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,const PointSetTopology *) : object(obj)
+    , f_m_topologyContainer(new Field< PointSetTopologyContainer >(new PointSetTopologyContainer(this), "Point Container"))
 {
+
+    m_topologyContainer=f_m_topologyContainer->beginEdit();
+    m_topologyModifier=(new PointSetTopologyModifier<DataTypes>(this));
+    m_topologyAlgorithms=(new PointSetTopologyAlgorithms<DataTypes>(this));
+    m_geometryAlgorithms=(new PointSetGeometryAlgorithms<DataTypes>(this));
+
+    this->addField(this->f_m_topologyContainer, "pointcontainer");
 }
 
 template<class DataTypes>

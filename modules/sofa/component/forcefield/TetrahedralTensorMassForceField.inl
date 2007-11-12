@@ -316,7 +316,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     if (_initialPoints.size() == 0)
     {
         // get restPosition
-        VecCoord& p = *this->mstate->getX();
+        VecCoord& p = *this->mstate->getX0();
         _initialPoints=p;
     }
 

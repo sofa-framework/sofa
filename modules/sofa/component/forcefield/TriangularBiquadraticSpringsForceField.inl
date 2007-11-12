@@ -210,7 +210,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
     // get restPosition
     if (_initialPoints.getValue().size() == 0)
     {
-        VecCoord& p = *this->mstate->getX();
+        VecCoord& p = *this->mstate->getX0();
         _initialPoints.setValue(p);
     }
     unsigned int i;

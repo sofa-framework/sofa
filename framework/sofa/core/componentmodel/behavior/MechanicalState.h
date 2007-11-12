@@ -101,8 +101,8 @@ public:
     virtual VecCoord* getXfree() = 0;
     /// Return the current position vector (read-write access).
     virtual VecCoord* getX() = 0;
-    /*     /// Return the current position vector (read-write access). */
-    /*     virtual VecCoord* getRestX() = 0; */
+    /// Return the current position vector (read-write access).
+    virtual VecCoord* getX0() = 0;
 
     /// Return the current position vector (read-only access).
     virtual const VecCoord* getX()  const = 0;
@@ -116,10 +116,7 @@ public:
     virtual const VecConst* getC() const = 0;
     /// Return the free-motion position vector (read-only access).
     virtual const VecCoord* getXfree()  const = 0;
-    /*     /// Return the current position vector (read-only access). */
-    /*     virtual const VecCoord* getRestX()  const = 0; */
-
-    /// Return the initial position vector (read-only access).
+    /// Return the current position vector (read-only access).
     virtual const VecCoord* getX0()  const = 0;
     /// Return the initial velocity vector (read-only access).
     virtual const VecDeriv* getV0()  const = 0;

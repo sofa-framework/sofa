@@ -242,8 +242,8 @@ protected :
 
 protected:
     /** \brief Free each Topology changes in the list and remove them from the list
-      *
-      */
+     *
+     */
     void resetTopologyChangeList() const;
 
 };
@@ -271,6 +271,17 @@ public:
     {
         return m_changeList;
     }
+    /*
+            inline friend std::ostream& operator<< (std::ostream& out, const TopologyContainer& )
+            {
+    	  return out;
+            }
+
+            /// Needed to be compliant with DataFields.
+            inline friend std::istream& operator>>(std::istream& in, TopologyContainer& )
+            {
+    	  return in;
+      	}*/
 protected:
     /// The topology this object describes.
     BaseTopology *m_basicTopology;
@@ -280,14 +291,14 @@ protected:
 
 
     /** \brief Adds a TopologyChange to the list.
-    *
-    * Needed by topologies linked to this one to know what happened and what to do to take it into account.
-    *
-    * Only TopologyModifier and TopologyAlgorithms objects of this topology should have access to this method.
-    *
-    * Question : Is this wrapper really needed since member m_changeTopology is protected and TopologyModifier
-    * and TopologyAlgorithms are friend classes?
-    */
+     *
+     * Needed by topologies linked to this one to know what happened and what to do to take it into account.
+     *
+     * Only TopologyModifier and TopologyAlgorithms objects of this topology should have access to this method.
+     *
+     * Question : Is this wrapper really needed since member m_changeTopology is protected and TopologyModifier
+     * and TopologyAlgorithms are friend classes?
+     */
     void addTopologyChange(const TopologyChange *topologyChange)
     {
         m_changeList.push_back(topologyChange);

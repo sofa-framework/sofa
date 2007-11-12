@@ -366,8 +366,8 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::
     }
     modifier->removeEdgesWarning(indices );
 
-//            EdgesRemoved er( indices );
-//            addTopologyChange( er );
+    //            EdgesRemoved er( indices );
+    //            addTopologyChange( er );
 
     // propagate the warnings
     this->m_basicTopology->propagateTopologicalChanges();
@@ -567,9 +567,10 @@ void EdgeSetTopology<DataTypes>::init()
 {
 }
 template<class DataTypes>
-EdgeSetTopology<DataTypes>::EdgeSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0)
+EdgeSetTopology<DataTypes>::EdgeSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0),
+    f_m_topologyContainer(new Field< EdgeSetTopologyContainer >(new EdgeSetTopologyContainer(this), "Edge Container"))
 {
-    this->m_topologyContainer= new EdgeSetTopologyContainer(this);
+    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
     this->m_topologyModifier= new EdgeSetTopologyModifier<DataTypes>(this);
     this->m_topologyAlgorithms= new EdgeSetTopologyAlgorithms<DataTypes>(this);
     this->m_geometryAlgorithms= new EdgeSetGeometryAlgorithms<DataTypes>(this);

@@ -140,6 +140,33 @@ public:
      */
     const sofa::helper::vector<int>& getPointSetIndexArray();
 
+    inline friend std::ostream& operator<< (std::ostream& out, const PointSetTopologyContainer& t)
+    {
+        out << t.m_DOFIndex.size() << " " <<t.m_DOFIndex << " "
+            << t.m_PointSetIndex.size() << " " << t.m_PointSetIndex;
+        return out;
+    }
+
+    /// Needed to be compliant with DataFields.
+    inline friend std::istream& operator>>(std::istream& in, PointSetTopologyContainer& t)
+    {
+        unsigned int s;
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            unsigned int value;
+            in >> value;
+            t.m_DOFIndex.push_back(value);
+        }
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            unsigned int value;
+            in >> value;
+            t.m_PointSetIndex.push_back(value);
+        }
+        return in;
+    }
 
 
     /** \brief Returns the index in this topology of the point corresponding to the ith DOF of the mechanical object, or -1 if the ith DOF is not in this topology.
@@ -148,8 +175,8 @@ public:
     int getPointSetIndex(const unsigned int i);
 
     /** \brief Returns the number of vertices in this index array
-    *
-    */
+     *
+     */
     unsigned int getPointSetIndexSize() const;
 
     /** \brief Returns the number of vertices in this topology.
@@ -169,11 +196,11 @@ public:
     unsigned int getDOFIndex(const int i) const;
 
     /** \brief Constructor from a a Base Topology.
-      */
+     */
     PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top);
 
     /** \brief Constructor from a a Base Topology and a set of DOF indices
-      */
+     */
     PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector<unsigned int>& DOFIndex);
 
     /** \brief Checks if the Topology is coherent
@@ -186,9 +213,9 @@ public:
     friend class PointSetTopologyModifier;
 protected:
     /** \brief Returns the DOFIndex.
-    *
-    * See getDOFIndex(const int i) for more explanation.
-    */
+     *
+     * See getDOFIndex(const int i) for more explanation.
+     */
     sofa::helper::vector<unsigned int>& getDOFIndexArrayForModification();
     /** \brief Returns the PointSetIndex array for modification.
      */
@@ -330,7 +357,7 @@ public:
     void getEnclosingSphere(Coord &center,Real &radius) const;
 
     /** return the axis aligned bounding box : index 0 = xmin, index 1=ymin,
-    index 2 = zmin, index 3 = xmax, index 4 = ymax, index 5=zmax */
+        index 2 = zmin, index 3 = xmax, index 4 = ymax, index 5=zmax */
     void getAABB(Real bb[6]) const;
 
 };
@@ -347,6 +374,7 @@ public:
     /** the object where the mechanical DOFs are stored */
     component::MechanicalObject<DataTypes> *object;
 
+    Field< PointSetTopologyContainer > *f_m_topologyContainer;
 public:
     PointSetTopology(component::MechanicalObject<DataTypes> *obj);
 
@@ -355,14 +383,14 @@ public:
         return object;
     }
     /** creates a TopologyChangeVisitor and therefore warns all components that
-    some topological changes have occured */
+        some topological changes have occured */
     virtual void propagateTopologicalChanges();
 
     virtual void init();
 
     /** \brief Build a topology from a file : call the load member function in the modifier object
-    *
-    */
+     *
+     */
     virtual bool load(const char *filename);
     /** \brief Translates the DOF : call the applyTranslation member function in the modifier object
      *

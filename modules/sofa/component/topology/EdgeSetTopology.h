@@ -121,6 +121,28 @@ public:
      */
     const sofa::helper::vector<Edge> &getEdgeArray();
 
+    inline friend std::ostream& operator<< (std::ostream& out, const EdgeSetTopologyContainer& t)
+    {
+        out << t.m_edge.size();
+        for (unsigned int i=0; i<t.m_edge.size(); i++)
+            out << " " << t.m_edge[i].first << " " << t.m_edge[i].second ;
+
+        return out;
+    }
+
+    /// Needed to be compliant with DataFields.
+    inline friend std::istream& operator>>(std::istream& in, EdgeSetTopologyContainer& t)
+    {
+        unsigned int s;
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            unsigned int value1,value2;
+            in >> value1 >> value2;
+            t.m_edge.push_back(std::make_pair(value1, value2));
+        }
+        return in;
+    }
 
 
     /** \brief Returns the ith Edge.
@@ -370,6 +392,7 @@ class EdgeSetTopology : public PointSetTopology <DataTypes>
 public:
     EdgeSetTopology(component::MechanicalObject<DataTypes> *obj);
 
+    Field< EdgeSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
     /** \brief Returns the EdgeSetTopologyContainer object of this EdgeSetTopology.

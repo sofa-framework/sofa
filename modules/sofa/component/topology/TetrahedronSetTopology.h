@@ -120,38 +120,38 @@ class TetrahedronSetTopologyContainer : public TriangleSetTopologyContainer
 {
 private:
     /** \brief Creates the array of edge indices for each tetrahedron
-    *
-    * This function is only called if the TetrahedronEdge array is required.
-    * m_tetrahedronEdge[i] contains the 6 indices of the 6 edges of each tetrahedron
-    The number of each edge is the following : edge 0 links vertex 0 and 1, edge 1 links vertex 0 and 2,
-    edge 2 links vertex 0 and 3, edge 3 links vertex 1 and 2, edge 4 links vertex 1 and 3,
-    edge 5 links vertex 2 and 3
+     *
+     * This function is only called if the TetrahedronEdge array is required.
+     * m_tetrahedronEdge[i] contains the 6 indices of the 6 edges of each tetrahedron
+     The number of each edge is the following : edge 0 links vertex 0 and 1, edge 1 links vertex 0 and 2,
+     edge 2 links vertex 0 and 3, edge 3 links vertex 1 and 2, edge 4 links vertex 1 and 3,
+     edge 5 links vertex 2 and 3
     */
     void createTetrahedronEdgeArray();
     /** \brief Creates the array of triangle indices for each tetrahedron
-    *
-    * This function is only called if the TetrahedronTriangle array is required.
-    * m_tetrahedronTriangle[i] contains the 4 indices of the 4 triangles opposite to the ith vertex
-    */
+     *
+     * This function is only called if the TetrahedronTriangle array is required.
+     * m_tetrahedronTriangle[i] contains the 4 indices of the 4 triangles opposite to the ith vertex
+     */
     void createTetrahedronTriangleArray();
     /** \brief Creates the Tetrahedron Vertex Shell Array
-    *
-    * This function is only called if the TetrahedronVertexShell array is required.
-    * m_tetrahedronVertexShell[i] contains the indices of all tetrahedra adjacent to the ith vertex
-    */
+     *
+     * This function is only called if the TetrahedronVertexShell array is required.
+     * m_tetrahedronVertexShell[i] contains the indices of all tetrahedra adjacent to the ith vertex
+     */
     void createTetrahedronVertexShellArray();
 
     /** \brief Creates the Tetrahedron Edge Shell Array
-    *
-    * This function is only called if the TetrahedronEdheShell array is required.
-    * m_tetrahedronEdgeShell[i] contains the indices of all tetrahedra adjacent to the ith edge
-    */
+     *
+     * This function is only called if the TetrahedronEdheShell array is required.
+     * m_tetrahedronEdgeShell[i] contains the indices of all tetrahedra adjacent to the ith edge
+     */
     void createTetrahedronEdgeShellArray();
     /** \brief Creates the Tetrahedron Triangle Shell Array
-    *
-    * This function is only called if the TetrahedronTriangleShell array is required.
-    * m_tetrahedronTriangleShell[i] contains the indices of all tetrahedra adjacent to the ith edge
-    */
+     *
+     * This function is only called if the TetrahedronTriangleShell array is required.
+     * m_tetrahedronTriangleShell[i] contains the indices of all tetrahedra adjacent to the ith edge
+     */
     void createTetrahedronTriangleShellArray();
 protected:
     /// provides the set of tetrahedra
@@ -172,22 +172,76 @@ protected:
     /** \brief Creates the EdgeSet array.
      *
      * Create the set of edges when needed.
-    */
+     */
     virtual void createEdgeSetArray() {createTetrahedronEdgeArray();}
 
     /** \brief Creates the TriangleSet array.
      *
      * Create the array of triangles
-    */
+     */
     virtual void createTriangleSetArray() {createTetrahedronTriangleArray();}
 
     /** \brief Creates the TetrahedronSet array.
      *
      * This function is only called by derived classes to create a list of edges from a set of tetrahedra or tetrahedra
-    */
+     */
     virtual void createTetrahedronSetArray() {}
 
 public:
+
+    inline friend std::ostream& operator<< (std::ostream& out, const TetrahedronSetTopologyContainer& t)
+    {
+        out  << t.m_tetrahedron<< " "
+                << t.m_tetrahedronEdge<< " "
+                << t.m_tetrahedronTriangle;
+
+        out << " "<< t.m_tetrahedronVertexShell.size();
+        for (unsigned int i=0; i<t.m_tetrahedronVertexShell.size(); i++)
+        {
+            out << " " << t.m_tetrahedronVertexShell[i];
+        }
+        out <<" "<< t.m_tetrahedronEdgeShell.size();
+        for (unsigned int i=0; i<t.m_tetrahedronEdgeShell.size(); i++)
+        {
+            out << " " << t.m_tetrahedronEdgeShell[i];
+        }
+        out <<" "<< t.m_tetrahedronTriangleShell.size();
+        for (unsigned int i=0; i<t.m_tetrahedronTriangleShell.size(); i++)
+        {
+            out << " " << t.m_tetrahedronTriangleShell[i];
+        }
+        return out;
+    }
+
+    inline friend std::istream& operator>>(std::istream& in, TetrahedronSetTopologyContainer& t)
+    {
+        unsigned int s;
+        sofa::helper::vector< unsigned int > value;
+
+
+        in >> t.m_tetrahedron >> t.m_tetrahedronEdge >> t.m_tetrahedronTriangle;
+
+
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> value;
+            t.m_tetrahedronVertexShell.push_back(value);
+        }
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> value;
+            t.m_tetrahedronEdgeShell.push_back(value);
+        }
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> value;
+            t.m_tetrahedronTriangleShell.push_back(value);
+        }
+        return in;
+    }
     /** \brief Returns the Tetrahedron array.
      *
      */
@@ -228,8 +282,8 @@ public:
     const TetrahedronEdges &getTetrahedronEdges(const unsigned int i) ;
 
     /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
-    *
-    */
+     *
+     */
     std::pair<unsigned int,unsigned int> getLocalTetrahedronEdges (const unsigned int i) const;
 
 
@@ -256,8 +310,8 @@ public:
     const sofa::helper::vector< unsigned int > &getTetrahedronEdgeShell(const unsigned int i) ;
 
     /** \brief Returns the Tetrahedron Triangle Shells array.
-         *
-         */
+     *
+     */
     const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTetrahedronTriangleShellArray() ;
 
     /** \brief Returns the set of tetrahedra adjacent to a given triangle.
@@ -288,8 +342,8 @@ protected:
      */
     sofa::helper::vector< unsigned int > &getTetrahedronVertexShellForModification(const unsigned int vertexIndex);
     /** \brief Returns a non-const tetrahedron edge shell given the index of an edge for subsequent modification
-      *
-      */
+     *
+     */
     sofa::helper::vector< unsigned int > &getTetrahedronEdgeShellForModification(const unsigned int edgeIndex);
 
 
@@ -356,9 +410,9 @@ public:
     virtual void removeTetrahedraProcess( const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
     /** \brief Actually Add some triangles to this topology.
-       *
-       * \sa addTrianglesWarning
-       */
+     *
+     * \sa addTrianglesWarning
+     */
     virtual void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles);
 
 
@@ -370,20 +424,20 @@ public:
     virtual void removeTrianglesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
     /** \brief Add some edges to this topology.
-    *
-    * \sa addEdgesWarning
-    */
+     *
+     * \sa addEdgesWarning
+     */
     virtual void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
 
 
     /** \brief Remove a subset of edges
-    *
-    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-    * \sa removeEdgesWarning
-    *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
-    * @param removeIsolatedItems if true remove isolated vertices
-    */
+     *
+     * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+     * \sa removeEdgesWarning
+     *
+     * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+     * @param removeIsolatedItems if true remove isolated vertices
+     */
     virtual void removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
 
 
@@ -479,7 +533,7 @@ class TetrahedronSetTopology : public PointSetTopology <DataTypes>
 
 public:
     TetrahedronSetTopology(component::MechanicalObject<DataTypes> *obj);
-
+    Field<TetrahedronSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
     /** \brief Returns the TetrahedronSetTopologyContainer object of this TetrahedronSetTopology.

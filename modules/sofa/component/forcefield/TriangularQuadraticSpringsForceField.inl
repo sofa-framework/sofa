@@ -210,7 +210,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
     if (_initialPoints.getValue().size() == 0)
     {
         // get restPosition
-        VecCoord& p = *this->mstate->getX();
+        VecCoord& p = *this->mstate->getX0();
         _initialPoints.setValue(p);
     }
     unsigned int i;

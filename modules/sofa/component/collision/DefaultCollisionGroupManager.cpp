@@ -31,6 +31,7 @@
 #include <sofa/component/odesolver/EulerSolver.h>
 #include <sofa/component/odesolver/RungeKutta4Solver.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
+#include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/core/ObjectFactory.h>
 #include <string.h>
 
@@ -293,6 +294,12 @@ OdeSolver* createSolverCGImplicitRungeKutta4(odesolver::CGImplicitSolver& solver
     return new odesolver::CGImplicitSolver(solver1);
 }
 
+OdeSolver* createSolverStaticSolver(odesolver::StaticSolver& solver1, odesolver::StaticSolver& /*solver2*/)
+{
+    return new odesolver::StaticSolver(solver1);
+}
+
+
 } // namespace SolverMergers
 
 
@@ -312,6 +319,7 @@ SolverMerger::SolverMerger()
     solverDispatcher.add<odesolver::RungeKutta4Solver,odesolver::EulerSolver,createSolverRungeKutta4Euler,true>();
     solverDispatcher.add<odesolver::CGImplicitSolver,odesolver::EulerSolver,createSolverCGImplicitEuler,true>();
     solverDispatcher.add<odesolver::CGImplicitSolver,odesolver::RungeKutta4Solver,createSolverCGImplicitRungeKutta4,true>();
+    solverDispatcher.add<odesolver::StaticSolver,odesolver::StaticSolver,createSolverStaticSolver,true>();
 }
 
 }// namespace collision

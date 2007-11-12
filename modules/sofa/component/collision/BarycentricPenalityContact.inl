@@ -229,8 +229,8 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >
 void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes>::draw()
 {
-//	if (dynamic_cast<core::VisualModel*>(ff)!=NULL)
-//		dynamic_cast<core::VisualModel*>(ff)->draw();
+    //	if (dynamic_cast<core::VisualModel*>(ff)!=NULL)
+    //		dynamic_cast<core::VisualModel*>(ff)->draw();
 }
 
 } // namespace collision

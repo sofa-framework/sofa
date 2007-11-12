@@ -62,8 +62,10 @@ void SPHFluidSurfaceMapping<In,Out>::init()
     if (sph)
     {
         //mRadius.getValue() = sph->getParticleRadius();
-        mIsoValue.setValue( mIsoValue.getValue()/ sph->getParticleFieldConstant((InReal)mRadius.getValue()));
+        if (mIsoValue.getValue() == 0.5)
+            mIsoValue.setValue( mIsoValue.getValue()/ sph->getParticleFieldConstant((InReal)mRadius.getValue()));
     }
+
     grid = new Grid((InReal)mStep.getValue());
 }
 
