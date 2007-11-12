@@ -1380,8 +1380,8 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
     {
         switch(e->key())
         {
-
-        case Qt::Key_S:
+        case Qt::Key_A: //axis
+        case Qt::Key_S: //screenshot
         case Qt::Key_H: //shortcuts for screenshot and help page specified for qglviewer
         {
             QGLViewer::keyPressEvent(e);
@@ -1769,20 +1769,22 @@ QString QtGLViewer::helpString()
 
     QString text(
         "<H1>QtGLViewer</H1><hr>\
+<ul>\
 <li><b>Mouse</b>: TO NAVIGATE<br></li>\
 <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
+<li><b>A</b>: TO DRAW AXIS<br></li>\
 <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
 <li><b>C</b>: TO CENTER THE VIEW<br></li>\
-<li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+<li><b>S</b>: TO SAVE A SCREENSHOT<br>\
 <li><b>L</b>: TO DRAW SHADOWS<br></li>\
+<li><b>O</b>: TO EXPORT TO .OBJ<br>\
+The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
 <li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
-<li><b>I</b>: TO SAVE A SCREENSHOT<br>\
+<li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
 The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
 <li><b>V</b>: TO SAVE A VIDEO<br>\
 Each time the frame is updated a screenshot is saved<br></li>\
-<li><b>O</b>: TO EXPORT TO .OBJ<br>\
-The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
-<li><b>Esc</b>: TO QUIT ::sofa:: <br></li>");
+<li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
 
     return text;
 }

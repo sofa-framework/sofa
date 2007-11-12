@@ -28,6 +28,16 @@
 #include <qstring.h>
 #include <qwidget.h>
 
+
+
+#ifdef QT_MODULE_QT3SUPPORT
+#include <QEvent>
+#include <QMouseEvent>
+#include <QKeyEvent>
+#else
+#include <qevent.h>
+#endif
+
 #include <sofa/simulation/automatescheduler/Automate.h>
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>

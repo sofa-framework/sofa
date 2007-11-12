@@ -2320,20 +2320,20 @@ QString QtViewer::helpString()
 {
     QString text(
         "<H1>QtViewer</H1><hr>\
+<ul>\
 <li><b>Mouse</b>: TO NAVIGATE<br></li>\
 <li><b>Shift & Left Button</b>: TO PICK OBJECTS<br></li>\
-<li><b>C</b>: TO CENTER THE VIEW<br></li>\
 <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
 <li><b>C</b>: TO SWITCH INTERACTION MODE: press the KEY C.<br>\
 Allow or not the navigation with the mouse.<br></li>\
-<li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
+<li><b>S</b>: TO SAVE A SCREENSHOT<br>\
+The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
 <li><b>L</b>: TO DRAW SHADOWS<br></li>\
 <li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
-<li><b>I</b>: TO SAVE A SCREENSHOT<br>\
-The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
+<li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
 <li><b>V</b>: TO SAVE A VIDEO<br>\
 Each time the frame is updated a screenshot is saved<br></li>\
-<li><b>Esc</b>: TO QUIT ::sofa:: <br></li>");
+<li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
     return text;
 }
 
