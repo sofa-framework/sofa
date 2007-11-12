@@ -27,7 +27,7 @@ SOFA_DIR = ../../../..
 TEMPLATE = lib
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = sofaguiviewer$$LIBSUFFIX
+TARGET = sofaguiqt$$LIBSUFFIX
 
 contains (DEFINES, SOFA_QT4) {	
 

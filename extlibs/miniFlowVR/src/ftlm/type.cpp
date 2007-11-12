@@ -240,7 +240,7 @@ bool Assign<std::string>::do_assign(std::string& dest, int type, const void* dat
       {
 	if (x) dest += ", ";
 	do_assign(str, toSingle(type), data);
-	(const char*&)data += elemSize(type);
+	data = ((const char*)data) + elemSize(type);
 	dest += str;
       }
       dest += '}';
@@ -255,7 +255,7 @@ bool Assign<std::string>::do_assign(std::string& dest, int type, const void* dat
     {
       if (x) dest += ", ";
       do_assign(str, toSingle(type), data);
-      (const char*&)data += elemSize(type);
+      data = ((const char*)data) + elemSize(type);
       dest += str;
     }
     dest += '}';
