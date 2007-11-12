@@ -532,7 +532,7 @@ void TriangleSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa
 template<class DataTypes>
 void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(sofa::helper::vector< unsigned int >& triangles)
 {
-    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
     TriangleSetTopologyModifier< DataTypes >* modifier  = static_cast< TriangleSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
@@ -3748,7 +3748,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     if(is_on_boundary)
     {
-        std::cout << "INFO_print - TriangleSetTopology.inl : cut meets mesh boundary" << std::endl;
+        std::cout << "INFO_print - TriangleSetTopology.inl : cut meets a mesh boundary" << std::endl;
     }
 
     if(!is_reached && !is_on_boundary)
@@ -3769,12 +3769,16 @@ void TriangleSetTopology<DataTypes>::init()
 {
 }
 template<class DataTypes>
-TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj)
+TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj),
+    f_m_topologyContainer(new Field< TriangleSetTopologyContainer >(new TriangleSetTopologyContainer(this), "Triangle Container"))
+
 {
-    this->m_topologyContainer= new TriangleSetTopologyContainer(this);
-    this->m_topologyModifier= new TriangleSetTopologyModifier<DataTypes>(this);
-    this->m_topologyAlgorithms= new TriangleSetTopologyAlgorithms<DataTypes>(this);
-    this->m_geometryAlgorithms= new TriangleSetGeometryAlgorithms<DataTypes>(this);
+    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
+    this->m_topologyModifier=(new TriangleSetTopologyModifier<DataTypes>(this));
+    this->m_topologyAlgorithms=(new TriangleSetTopologyAlgorithms<DataTypes>(this));
+    this->m_geometryAlgorithms=(new TriangleSetGeometryAlgorithms<DataTypes>(this));
+
+    this->addField(f_m_topologyContainer, "trianglecontainer");
 }
 
 } // namespace topology
@@ -3784,3 +3788,4 @@ TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> 
 } // namespace sofa
 
 #endif // SOFA_COMPONENTS_TriangleSetTOPOLOGY_INL
+
