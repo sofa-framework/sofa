@@ -80,7 +80,7 @@ RayTriangleIntersection::NewComputation(Triangle *triP, const Vector3 &origin, c
 
     t = dot(edge2, qvec) * inv_det;
 
-    if (t <=0.000001||isnan(t)||isnan(v)||isnan(u))
+    if (t <=0.000001||t!=t||v!=v||u!=u)
         return false;
 
     return true;
