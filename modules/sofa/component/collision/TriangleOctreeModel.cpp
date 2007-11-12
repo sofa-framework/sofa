@@ -127,7 +127,7 @@ int TriangleOctreeModel::fillOctree (int tId, int /*d*/, Vector3 /*v*/)
     /*Computes the depth of the bounding box in a octree
 
      */
-    int d1 = (int) ((log10 ((CUBE_SIZE * 2)/log10(2)) / aabb.size ()));
+    int d1 = (int)((log10( (double) CUBE_SIZE * 2) / log10( (double)2) )/ aabb.size ());
     /*computes the size of the octree box that can store the bounding box */
     int divs = (1 << (d1));
     double inc = (double) (2 * CUBE_SIZE) / divs;
