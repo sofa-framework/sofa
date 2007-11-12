@@ -129,6 +129,12 @@ public:
         return in;
     }
 
+    /// Sets every element to 'value'
+    void fill( const T& value )
+    {
+        std::fill( this->begin(), this->end(), value );
+    }
+
 };
 
 // ======================  operations on standard vectors
