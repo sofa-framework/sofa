@@ -387,6 +387,12 @@ public:
     virtual void propagateTopologicalChanges();
 
     virtual void init();
+    /** \brief Returns the PointSetTopologyContainer object of this PointSetTopologyContainer.
+     */
+    PointSetTopologyContainer *getPointSetTopologyContainer() const
+    {
+        return (PointSetTopologyContainer *)this->m_topologyContainer;
+    }
 
     /** \brief Build a topology from a file : call the load member function in the modifier object
      *

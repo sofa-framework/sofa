@@ -171,12 +171,12 @@ void Quat::toAngAxis(float *ang,Vec3f *axis) const
 
 void Quat::fromDegreeAngAxis(float ang,Vec3f axis)
 {
-  return fromAngAxis(ang*PI/180.0f, axis);
+  return fromAngAxis((float)(ang*PI/180.0f), axis);
 }
 void Quat::toDegreeAngAxis(float *ang,Vec3f *axis) const
 {
   toAngAxis(ang, axis);
-  *ang *= 180.0f/PI;
+  *ang *= (float)(180.0f/PI);
 }
 
 void Quat::fromMatrix(const Mat3x3f &m)

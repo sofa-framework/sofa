@@ -567,13 +567,14 @@ void EdgeSetTopology<DataTypes>::init()
 {
 }
 template<class DataTypes>
-EdgeSetTopology<DataTypes>::EdgeSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0),
-    f_m_topologyContainer(new Field< EdgeSetTopologyContainer >(new EdgeSetTopologyContainer(this), "Edge Container"))
+EdgeSetTopology<DataTypes>::EdgeSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0)
 {
-    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
+    this->m_topologyContainer=(new EdgeSetTopologyContainer(this));
     this->m_topologyModifier= new EdgeSetTopologyModifier<DataTypes>(this);
     this->m_topologyAlgorithms= new EdgeSetTopologyAlgorithms<DataTypes>(this);
     this->m_geometryAlgorithms= new EdgeSetGeometryAlgorithms<DataTypes>(this);
+    this->f_m_topologyContainer = new Field< EdgeSetTopologyContainer >(this->getEdgeSetTopologyContainer(), "Edge Container");
+    this->addField(this->f_m_topologyContainer, "edgecontainer");
 }
 
 

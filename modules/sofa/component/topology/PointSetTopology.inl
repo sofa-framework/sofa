@@ -321,25 +321,25 @@ void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real /*
 template<class DataTypes>
 PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj=NULL) :
     object(obj)
-    , f_m_topologyContainer(new Field< PointSetTopologyContainer >(new PointSetTopologyContainer(this), "Point Container"))
 {
-    m_topologyContainer=f_m_topologyContainer->beginEdit();
+    m_topologyContainer=(new PointSetTopologyContainer(this));
     m_topologyModifier=(new PointSetTopologyModifier<DataTypes>(this));
     m_topologyAlgorithms=(new PointSetTopologyAlgorithms<DataTypes>(this));
     m_geometryAlgorithms=(new PointSetGeometryAlgorithms<DataTypes>(this));
 
+    this->f_m_topologyContainer = new Field< PointSetTopologyContainer >(this->getPointSetTopologyContainer(), "Point Container");
     this->addField(this->f_m_topologyContainer, "pointcontainer");
 }
 template<class DataTypes>
 PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,const PointSetTopology *) : object(obj)
-    , f_m_topologyContainer(new Field< PointSetTopologyContainer >(new PointSetTopologyContainer(this), "Point Container"))
 {
 
-    m_topologyContainer=f_m_topologyContainer->beginEdit();
+    m_topologyContainer=(new PointSetTopologyContainer(this));
     m_topologyModifier=(new PointSetTopologyModifier<DataTypes>(this));
     m_topologyAlgorithms=(new PointSetTopologyAlgorithms<DataTypes>(this));
     m_geometryAlgorithms=(new PointSetGeometryAlgorithms<DataTypes>(this));
 
+    this->f_m_topologyContainer = new Field< PointSetTopologyContainer >(this->getPointSetTopologyContainer(), "Point Container");
     this->addField(this->f_m_topologyContainer, "pointcontainer");
 }
 
