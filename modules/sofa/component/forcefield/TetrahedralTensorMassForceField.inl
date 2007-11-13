@@ -430,10 +430,10 @@ void TetrahedralTensorMassForceField<DataTypes>::draw()
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    VecCoord& x = *this->mstate->getX();
-    TetrahedronSetTopologyContainer *container=_mesh->getTetrahedronSetTopologyContainer();
-    unsigned int nbTriangles=container->getNumberOfTriangles();
-    const std::vector< Triangle> &triangleArray=container->getTriangleArray() ;
+// 	VecCoord& x = *this->mstate->getX();
+// 	TetrahedronSetTopologyContainer *container=_mesh->getTetrahedronSetTopologyContainer();
+// 	unsigned int nbTriangles=container->getNumberOfTriangles();
+// 	const std::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
     /*
     	glDisable(GL_LIGHTING);
