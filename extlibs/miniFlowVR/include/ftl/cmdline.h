@@ -57,7 +57,7 @@ public:
   BaseOption(const char* _longname, char _shortname, const char* _description, ArgType _arg);
   virtual ~BaseOption();
   virtual bool set() { ++count; return true; }
-  virtual bool set(const char* argval) { ++count; return true; }
+  virtual bool set(const char* /* argval */) { ++count; return true; }
   virtual std::string help()
   {
     if (description!=NULL) return std::string(description);

@@ -1186,12 +1186,12 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
     int compteur2, compteur3;	// compteur de boucle
 
     double f_1;
-    double error;
+    double error=0.0;
 
     for (compteur=0; compteur<numItMax; compteur++)
     {
 
-        error=0;
+        error=0.0;
         for (compteur2=0; compteur2<dim; compteur2++)
         {
             //res[compteur2]=(FemClipsReal)0.0;
@@ -1212,7 +1212,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
                 res[dim+compteur2]=(FemClipsReal)0.0;
             }
 
-            error +=abs( M[compteur2][compteur2] * (res[dim+compteur2] - f_1) );
+            error +=fabs( M[compteur2][compteur2] * (res[dim+compteur2] - f_1) );
 
 
         }
