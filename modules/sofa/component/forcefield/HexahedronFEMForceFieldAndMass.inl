@@ -54,10 +54,12 @@ HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 {
+
+// 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::init( ) "<<this->getName()<<endl;
     HexahedronFEMForceField::init();
     Mass::init();
 
-    computeElementMasses();
+//         computeElementMasses();
 
 
     _particleMasses.resize( this->_initialPoints.getValue().size() );
@@ -91,8 +93,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )
 {
+// 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )"<<endl;
     HexahedronFEMForceField::reinit();
-    Mass::reinit();
+//         Mass::reinit();
 
     computeElementMasses();
 }
@@ -113,14 +116,14 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
             nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
 
 
-        computeElementMass( _elementMasses[i], nodes );
+        computeElementMass( _elementMasses[i], nodes,i );
 
 
     }
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const Vec<8,Coord> &nodes)
+void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const Vec<8,Coord> &nodes, const int /*elementIndice*/)
 {
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
@@ -261,6 +264,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const Ve
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::draw()
 {
+// 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->_indexedElements->size()<<"\n";
     HexahedronFEMForceField::draw();
 
     if (!this->getContext()->getShowBehaviorModels())

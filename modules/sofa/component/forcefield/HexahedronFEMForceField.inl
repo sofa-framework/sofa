@@ -73,6 +73,7 @@ using namespace sofa::defaulttype;
 
 
 template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {0,1,3,2,4,5,7,6};
+// template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {4,5,7,6,0,1,3,2};
 
 
 template<class DataTypes>
@@ -89,6 +90,9 @@ void HexahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDesc
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::init()
 {
+    if(_alreadyInit)return;
+    else _alreadyInit=true;
+
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     if( this->getContext()->getTopology()==NULL )
     {
@@ -674,8 +678,10 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw()
 {
+// 	cerr<<"HexahedronFEMForceField<DataTypes>::draw()\n";
     if (!getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
+
 
     const VecCoord& x = *this->mstate->getX();
 

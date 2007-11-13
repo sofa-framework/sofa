@@ -177,6 +177,8 @@ public:
         _coef[5][2]=1;
         _coef[6][2]=1;
         _coef[7][2]=1;
+
+        _alreadyInit=false;
     }
 
     void parse(core::objectmodel::BaseObjectDescription* arg);
@@ -211,7 +213,7 @@ public:
 protected:
 
 
-    void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes, const int elementIndice);
+    virtual void computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes, const int elementIndice);
     Mat33 integrateStiffness( const Real xmin, const Real xmax, const Real ymin, const Real ymax, const Real zmin, const Real zmax, int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  );
 
     void computeMaterialStiffness(int i);
@@ -230,6 +232,8 @@ protected:
     void initPolar(int i, const Element&elem);
     void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
     void accumulateForcePolar( Vector& f, const Vector & p, int i, const Element&elem  );
+
+    bool _alreadyInit;
 };
 
 } // namespace forcefield

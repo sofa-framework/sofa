@@ -49,8 +49,8 @@ public:
     virtual void init( );
     virtual void reinit( );
 
-    void computeElementMasses( ); ///< compute the mass matrices
-    void computeElementMass( ElementMass &Mass, const Vec<8,Coord> &nodes); ///< compute the mass matrix of an element
+    virtual void computeElementMasses( ); ///< compute the mass matrices
+    virtual void computeElementMass( ElementMass &Mass, const Vec<8,Coord> &nodes, const int elementIndice); ///< compute the mass matrix of an element
     Real integrateMass( const Real xmin, const Real xmax, const Real ymin, const Real ymax, const Real zmin, const Real zmax, int signx0, int signy0, int signz0, int signx1, int signy1, int signz1  );
 
     virtual std::string getTemplateName() const;
