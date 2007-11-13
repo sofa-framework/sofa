@@ -53,19 +53,30 @@ public:
     typedef Vec3d Vec3;
     typedef double Real;
     typedef fixed_array<Vec3d,8> CubeCorners;
-    typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type;
+    typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio
 
 
 
     SparseGridTopology();
 
+// 					static const float WEIGHT[8][8];
+    static const float WEIGHT27[8][27];
+    static const int cornerIndicesFromFineToCoarse[8][8];
 
     bool load(const char* filename);
     virtual void init();
+    void buildAsFinest(); ///< building from a mesh file
+    void buildFromFiner(); ///< building by condensating a finer sparse grid (used if setFinerSparseGrid has initializated _finerSparseGrid before calling init() )
 
-    /// an vertex indice for a given vertex position in space
-    typedef std::map<Vec3,int> MapBetweenCornerPositionAndIndice;
-    void init( MapBetweenCornerPositionAndIndice& mapBetweenCornerPositionAndIndice ); ///< an initialisation keeping the map between space coordinates and indice of vertices
+
+    typedef std::map<Vec3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
+    typedef std::map<int,fixed_array<int,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
+    HierarchicalCubeMap _hierarchicalCubeMap;
+    typedef helper::vector<std::map<int,float> > HierarchicalPointMap; ///< a point indice -> corresponding 8 child indices on the potential _finerSparseGrid with corresponding weight
+    HierarchicalPointMap _hierarchicalPointMap;
+
+
+
 
     int getNx() const { return nx.getValue(); }
     int getNy() const { return ny.getValue(); }
@@ -102,8 +113,16 @@ public:
     /// return the type of the i-th cube
     virtual Type getType( int i );
 
+    void setFinerSparseGrid( SparseGridTopology* fsp ) {_finerSparseGrid=fsp;}
+
+    RegularGridTopology _regularGrid; ///< based on a corresponding RegularGrid
+    vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
+
+    Vec3 getPointPos( int i ) { return Vec3( seqPoints[i][0],seqPoints[i][1],seqPoints[i][2] ); }
+
 protected:
 
+    /// cutting number in all directions
     DataField<int> nx;
     DataField<int> ny;
     DataField<int> nz;
@@ -116,21 +135,21 @@ protected:
     DataField<double> ymax;
     DataField<double> zmax;
 
-    DataField< std::string > filename;  ///< Mesh used to initialize filled portion of the grid
 
     virtual void updateLines();
     virtual void updateQuads();
     virtual void updateCubes();
 
 
-    RegularGridTopology _regularGrid;
-    vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
 
 
     sofa::helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
     /// start from a seed cell (i,j,k) the OUTSIDE filling is propagated to neighboor cells until meet a BOUNDARY cell (this function is called from all border cells of the RegularGrid)
     void propagateFrom( const int i, const int j, const int k,  RegularGridTopology& regularGrid, vector<Type>& regularGridTypes, vector<bool>& alreadyTested  );
 
+
+
+    SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
 
 
     /*	/// to compute valid cubes (intersection between mesh segments and cubes)

@@ -49,11 +49,52 @@ int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
         .add< SparseGridTopology >()
         ;
 
+
+// 	  const float SparseGridTopology::WEIGHT[8][8] =
+// 	  {
+// 		  { 1, .5, .5, .25,  .5,.25,.25, .125 }, // fine cube 0 from coarser corner 0 -> what weight for a vertex?
+// 		  { .5,1,.25,.5,.25,.5,.125,.25 },
+// 		  {.5,.25,1,.5,.25,.125,.5,.25},
+// 		  {.25,.5,.5,1,.125,.25,.25,.5},
+// 		  {.5,.25,.25,.125,1,.5,.5,.25},
+// 		  {.25,.5,.125,.25,.5,1,.25,.5},
+// 		  {.25,.125,.5,.25,.5,.25,1,.5},
+// 		  {.125,.25,.25,.5,.25,.5,.5,1}
+// 	  };
+
+
+const float SparseGridTopology::WEIGHT27[8][27] =
+{
+    {1,0.5,0,0.5,0.25,0,0,0,0,0.5,0.25,0,0.25,0.125,0,0,0,0,0,0,0,0,0,0,0,0,0,}, // each weight of the jth fine vertex to the ith coarse vertex
+    {0,0,0,0,0,0,0,0,0,0.5,0.25,0,0.25,0.125,0,0,0,0,1,0.5,0,0.5,0.25,0,0,0,0},
+    {0,0,0,0.5,0.25,0,1,0.5,0,0,0,0,0.25,0.125,0,0.5,0.25,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0.25,0.125,0,0.5,0.25,0,0,0,0,0.5,0.25,0,1,0.5,0},
+    {0,0.5,1,0,0.25,0.5,0,0,0,0,0.25,0.5,0,0.125,0.25,0,0,0,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0.25,0.5,0,0.125,0.25,0,0,0,0,0.5,1,0,0.25,0.5,0,0,0},
+    {0,0,0,0,0.25,0.5,0,0.5,1,0,0,0,0,0.125,0.25,0,0.25,0.5,0,0,0,0,0,0,0,0,0},
+    {0,0,0,0,0,0,0,0,0,0,0,0,0,0.125,0.25,0,0.25,0.5,0,0,0,0,0.25,0.5,0,0.5,1}
+};
+
+const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
+{
+    { 0,9 ,3, 12 ,1 ,10 ,4 ,13}, // fine vertices forming the 0th coarse cube (with XYZ order)
+    { 9, 18, 12 ,21, 10 ,19 ,13, 22},
+    { 3, 12, 6 ,15 ,4, 13 ,7 ,16},
+    { 12, 21, 15, 24, 13, 22 ,16, 25},
+    { 1, 10, 4 ,13 ,2, 11 ,5, 14},
+    { 10, 19, 13, 22, 11, 20, 14 ,23},
+    { 4, 13, 7 ,16 ,5 ,14 ,8, 17},
+    { 13, 22, 16, 25, 14, 23 ,17 ,26}
+
+};
+
+
 SparseGridTopology::SparseGridTopology(): nx(dataField(&nx,0,"nx","x grid resolution")), ny(dataField(&ny,0,"ny","y grid resolution")), nz(dataField(&nz,0,"nz","z grid resolution")),
     xmin(dataField(&xmin,0.0,"xmin","xmin grid")),ymin(dataField(&ymin,0.0,"ymin","ymin grid")),zmin(dataField(&zmin,0.0,"zmin","zmin grid")),
     xmax(dataField(&xmax,0.0,"xmax","xmax grid")),ymax(dataField(&ymax,0.0,"ymax","ymax grid")),zmax(dataField(&zmax,0.0,"zmax","zmax grid"))
 {
     _alreadyInit = false;
+    _finerSparseGrid=NULL;
 }
 
 
@@ -74,23 +115,30 @@ bool SparseGridTopology::load(const char* filename)
 void SparseGridTopology::init()
 {
     if(_alreadyInit) return;
-
-    MapBetweenCornerPositionAndIndice tmpmap;
-    init(tmpmap);
-}
-
-
-
-void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPositionIndiceMap )
-{
-    if(_alreadyInit) return;
     _alreadyInit = true;
 
     this->MeshTopology::init();
     invalidate();
 
 
+    if( _finerSparseGrid != NULL )
+        buildFromFiner();
+    else
+        buildAsFinest();
 
+    cerr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
+    cerr<<seqCubes.size()<<"       ";
+    cerr<<_types.size()<<endl;
+}
+
+
+
+
+
+
+void SparseGridTopology::buildAsFinest(  )
+{
+// 		  cerr<<"SparseGridTopology::buildAsFinest(  )\n";
     if (!filename.getValue().empty())
     {
 //           						std::cout << "SparseGridTopology: using mesh "<<filename.getValue()<<std::endl;
@@ -164,7 +212,7 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
 
 
             vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
-// 			MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
+            MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
 
 
             for(int i=0; i<_regularGrid.getNbCubes(); ++i) // all possible cubes (even empty)
@@ -283,8 +331,8 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
                         corners[j] = _regularGrid.getPoint( c[j] );
                         cubeCornerPositionIndiceMap[corners[j]] = 0;
                     }
-
                     cubeCorners.push_back(corners);
+                    _indicesOfRegularCubeInSparseGrid[w] = cubeCorners.size()-1;
                 }
 
 
@@ -309,42 +357,197 @@ void SparseGridTopology::init( MapBetweenCornerPositionAndIndice& cubeCornerPosi
             delete mesh;
 
 
-
-
-// 		  for(unsigned i=0;i<seqCubes.size();++i)
-// 		  {
-// 			  Cube c = seqCubes[i];
-// 			  for(int w=0;w<8;++w)
-// 			  {
-// 				  cerr<<"sparse w : "<<c[w]<<"    "<<seqPoints[c[w]]<<endl;
-// 			  }
-// 			  cerr<<"------\n";
-// 			  c = _regularGrid.getCubeCopy( i );
-// 			  for(int w=0;w<8;++w)
-// 			  {
-// 				  cerr<<"regular w : "<<c[w]<<"    "<<_regularGrid.getPoint( c[w] )<<endl;
-// 			  }
-// 			  cerr<<"------\n";
-// 		  }
-
-
-
-
         }
         else
             std::cerr << "SparseGridTopology: loading mesh "<<filename.getValue()<<" failed."<<std::endl;
     }
 
-
-    cerr<<"SparseGridTopology::init() :     cubes size = ";
-    cerr<<seqCubes.size()<<"       ";
-    cerr<<_types.size()<<endl;
-
-
-
 }
 
 
+
+void SparseGridTopology::buildFromFiner(  )
+{
+// 		cerr<<"SparseGridTopology::buildFromFiner(  )\n";
+
+
+    setNx( _finerSparseGrid->getNx()/2+1 );
+    setNy( _finerSparseGrid->getNy()/2+1 );
+    setNz( _finerSparseGrid->getNz()/2+1 );
+
+    _regularGrid.setSize(getNx(),getNy(),getNz());
+
+    xmin = _finerSparseGrid->getXmin();
+    xmax = _finerSparseGrid->getXmax();
+    ymin = _finerSparseGrid->getYmin();
+    ymax = _finerSparseGrid->getYmax();
+    zmin = _finerSparseGrid->getZmin();
+    zmax = _finerSparseGrid->getZmax();
+    _regularGrid.setPos(xmin.getValue(), xmax.getValue(), ymin.getValue(), ymax.getValue(), zmin.getValue(), zmax.getValue());
+
+    _indicesOfRegularCubeInSparseGrid.resize( _regularGrid.getNbCubes() ); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
+    for(int w=0; w<_regularGrid.getNbCubes(); ++w)
+    {
+        _indicesOfRegularCubeInSparseGrid[w] = -1;
+    }
+
+    vector< CubeCorners > cubeCorners; // saving temporary positions of all cube corners
+    MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
+
+
+    for(int i=0; i<getNx()-1; i++)
+        for(int j=0; j<getNy()-1; j++)
+            for(int k=0; k<getNz()-1; k++)
+            {
+                int x = 2*i;
+                int y = 2*j;
+                int z = 2*k;
+
+                fixed_array<int,8> fineIndices;
+                fineIndices[0] = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid.cube( x,y,z) ];
+                fineIndices[1] = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid.cube( x+1,y,z ) ];
+                fineIndices[2] = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid.cube( x,y+1,z ) ];
+                fineIndices[3] = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid.cube( x+1,y+1,z ) ];
+                fineIndices[4] = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid.cube( x,y,z+1 ) ];
+                fineIndices[5] = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid.cube( x+1,y,z+1 ) ];
+                fineIndices[6] = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid.cube( x,y+1,z+1 ) ];
+                fineIndices[7] = _finerSparseGrid->_indicesOfRegularCubeInSparseGrid[ _finerSparseGrid->_regularGrid.cube( x+1,y+1,z+1 ) ];
+
+                bool inside = true;
+                bool outside = true;
+                for( int w=0; w<8 && (inside || outside); ++w)
+                {
+                    if( fineIndices[w] == -1 ) inside=false;
+                    else
+                    {
+
+                        if( _finerSparseGrid->getType( fineIndices[w] ) == BOUNDARY ) { inside=false; outside=false; }
+                        else if( _finerSparseGrid->getType( fineIndices[w] ) == INSIDE ) {outside=false;}
+                    }
+                }
+
+                if(outside) continue;
+                if( inside ) _types.push_back(INSIDE);
+                else _types.push_back(BOUNDARY);
+
+
+                int coarseRegularIndice = _regularGrid.cube( i,j,k );
+                Cube c = _regularGrid.getCubeCopy( coarseRegularIndice );
+
+                CubeCorners corners;
+                for(int w=0; w<8; ++w)
+                {
+                    corners[w] = _regularGrid.getPoint( c[w] );
+                    cubeCornerPositionIndiceMap[corners[w]] = 0;
+                }
+
+                cubeCorners.push_back(corners);
+
+                _indicesOfRegularCubeInSparseGrid[coarseRegularIndice] = cubeCorners.size()-1;
+
+                _hierarchicalCubeMap[cubeCorners.size()-1]=fineIndices;
+            }
+
+
+    // compute corner indices
+    int cornerCounter=0;
+    for(MapBetweenCornerPositionAndIndice::iterator it=cubeCornerPositionIndiceMap.begin(); it!=cubeCornerPositionIndiceMap.end(); ++it,++cornerCounter)
+    {
+        (*it).second = cornerCounter;
+        seqPoints.push_back( (*it).first );
+    }
+    nbPoints = cubeCornerPositionIndiceMap.size();
+
+    for( unsigned w=0; w<cubeCorners.size(); ++w)
+    {
+        Cube c;
+        for(int j=0; j<8; ++j)
+            c[j] = cubeCornerPositionIndiceMap[cubeCorners[w][j]];
+
+        seqCubes.push_back(c);
+    }
+
+
+    // for interpolation and restriction
+    _hierarchicalPointMap.resize(seqPoints.size());
+    for( unsigned w=0; w<seqCubes.size(); ++w)
+    {
+        const fixed_array<int, 8>& child = _hierarchicalCubeMap[w];
+
+
+
+        helper::vector<int> fineCorners(27);
+        fineCorners.fill(-1);
+        for(int fineCube=0; fineCube<8; ++fineCube)
+        {
+            if( child[fineCube] == -1 ) continue;
+
+            const Cube& cube = _finerSparseGrid->getCube(child[fineCube]);
+
+            for(int vertex=0; vertex<8; ++vertex)
+            {
+// 					if( fineCorners[cornerIndicesFromFineToCoarse[fineCube][vertex]]!=-1 && fineCorners[cornerIndicesFromFineToCoarse[fineCube][vertex]]!=cube[vertex] )
+// 						cerr<<"couille fineCorners\n";
+                fineCorners[cornerIndicesFromFineToCoarse[fineCube][vertex]]=cube[vertex];
+            }
+
+        }
+
+
+        for(int coarseCornerLocalIndice=0; coarseCornerLocalIndice<8; ++coarseCornerLocalIndice)
+        {
+            for( int fineVertexLocalIndice=0; fineVertexLocalIndice<27; ++fineVertexLocalIndice)
+            {
+                if( fineCorners[fineVertexLocalIndice] == -1 ) continue; // this fine vertex is not in any fine cube
+
+                int coarseCornerGlobalIndice = seqCubes[w][coarseCornerLocalIndice];
+                int fineVertexGlobalIndice = fineCorners[fineVertexLocalIndice];
+
+                if( WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice] )
+                    _hierarchicalPointMap[coarseCornerGlobalIndice][fineVertexGlobalIndice] = WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice];
+            }
+        }
+
+    }
+
+// 		for(unsigned i=0;i<_finerSparseGrid->seqPoints.size();++i)
+// 		{
+// 			cerr<<i<<" : "<<_finerSparseGrid->seqPoints[i]<<endl;
+// 		}
+//
+// 		for(unsigned i=0;i<_finerSparseGrid->seqCubes.size();++i)
+// 		{
+// 			cerr<<i<<" : "<<_finerSparseGrid->seqCubes[i]<<endl;
+//
+// 		}
+
+
+
+
+// // 		afficher la _hierarchicalPointMap
+// 		for(unsigned i=0;i<_hierarchicalPointMap.size();++i)
+// 		{
+// 			cerr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_hierarchicalPointMap[i].size()<<" : ";
+// 			for(std::map<int,float>::iterator it = _hierarchicalPointMap[i].begin();it != _hierarchicalPointMap[i].end() ; ++it )
+// 			{
+// 				cerr<<(*it).first<<", "<<(*it).second<<" # ";
+// 			}
+// 			cerr<<endl;
+// 		}
+
+
+// 		for(int o=0;o<_hierarchicalPointMap.size();++o)
+// 		{
+// 			cerr<<o<<" : ";
+// 			for(std::set<int>::iterator it=_hierarchicalPointMap[o].begin();it!=_hierarchicalPointMap[o].end();++it)
+// 				cerr<<*it<<" ";
+// 			cerr<<endl;
+// 		}
+
+
+// 		cerr<<"seqCubes : "<<seqCubes<<endl;
+// 		cerr<<"seqPoints : "<<seqPoints<<endl;
+}
 
 
 ///////////////////////////////////////////
@@ -376,7 +579,6 @@ int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy,
     {
         if(_types[w]!=BOUNDARY)continue;
 
-
         const Cube& c = getCube( w );
         int c0 = c[0];
         int c7 = c[7];
@@ -391,7 +593,6 @@ int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy,
             lgmin = lg;
             indice = w;
         }
-
     }
 
     const Cube& c = getCube( indice );
