@@ -282,6 +282,7 @@ public:
             {
     	  return in;
       	}*/
+    void setTopology(BaseTopology *b) { m_basicTopology = b;}
 protected:
     /// The topology this object describes.
     BaseTopology *m_basicTopology;

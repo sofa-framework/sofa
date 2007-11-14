@@ -664,10 +664,11 @@ void TetrahedronSetTopology<DataTypes>::init()
 {
 }
 template<class DataTypes>
-TetrahedronSetTopology<DataTypes>::TetrahedronSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0), f_m_topologyContainer(new Field< TetrahedronSetTopologyContainer >(new TetrahedronSetTopologyContainer(this), "Tetrahedron Container"))
+TetrahedronSetTopology<DataTypes>::TetrahedronSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0), f_m_topologyContainer(new Field< TetrahedronSetTopologyContainer >(new TetrahedronSetTopologyContainer(), "Tetrahedron Container"))
 
 {
     this->m_topologyContainer=f_m_topologyContainer->beginEdit();
+    this->m_topologyContainer->setTopology(this);
     this->m_topologyModifier= new TetrahedronSetTopologyModifier<DataTypes>(this);
     this->m_topologyAlgorithms= new TetrahedronSetTopologyAlgorithms<DataTypes>(this);
     this->m_geometryAlgorithms= new TetrahedronSetGeometryAlgorithms<DataTypes>(this);

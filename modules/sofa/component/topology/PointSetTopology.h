@@ -197,11 +197,11 @@ public:
 
     /** \brief Constructor from a a Base Topology.
      */
-    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top);
+    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL);
 
     /** \brief Constructor from a a Base Topology and a set of DOF indices
      */
-    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector<unsigned int>& DOFIndex);
+    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector<unsigned int>& );
 
     /** \brief Checks if the Topology is coherent
      *

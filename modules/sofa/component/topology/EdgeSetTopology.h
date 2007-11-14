@@ -180,7 +180,7 @@ public:
     virtual bool checkTopology() const;
 
 
-    EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
+    EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL, const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
             const sofa::helper::vector< Edge >         &edges    = (const sofa::helper::vector< Edge >)        0 );
 
     template< typename DataTypes >
