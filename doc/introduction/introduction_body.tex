@@ -19,7 +19,7 @@ For example, you can replace spring forces with finite element forces by simply 
 
 Moreover, simulation algorithms, such as time integration or collision detection and modeling, are also modeled as components in the scene graph. This provides us with the same flexibility for algorithms as for models.
 
-Flexibility allows one to focus on its own domain of competence, while re-using the other's contributions on other topics. 
+Flexibility allows one to focus on its own domain of competence, while re-using the other's contributions on other topics.
 However, efficiency is a major issue, and we have tried to design a framework which allows both efficiency and flexibility.
 
 
@@ -42,7 +42,7 @@ This scene is modeled and simulated in C++ as shown in section~\ref{cpp:hybrid}.
 
 The scene is modeled as a tree structure with four nodes:
 \begin{itemize}
- \item \texttt{root} 
+ \item \texttt{root}
  \item \texttt{deformableBody} corresponds to the elastic string
  \item \texttt{rigidBody} corrsponds to the rigid object
  \item \texttt{rigidParticles} corresponds to a set of particles (only one in this case) attached to the rigid body
@@ -50,10 +50,10 @@ The scene is modeled as a tree structure with four nodes:
 Each node can have children nodes and \textit{components}. Each component implements a reduced set of functionalities.
 
 
-One of the most important type of component is the \texttt{MechanicalObject}, which contains a list of \textit{degrees of freedom} (DOF), i.e. coordinates, velocities, and associated auxiliary vectors such as forces and accelerations. 
+One of the most important type of component is the \texttt{MechanicalObject}, which contains a list of \textit{degrees of freedom} (DOF), i.e. coordinates, velocities, and associated auxiliary vectors such as forces and accelerations.
 All the coordinates in a \texttt{MechanicalObject} have the same type, e.g. 3D vectors particles, or (translation, rotation) pairs for rigid bodies. \texttt{MechanicalObject}, like many other \sofa classes, is a generic (C++ template) class instantiated on the types of DOF it stores.
 The particle DOFs are drawn as white points, whereas the rigid body DOFs are drawn as red, green, blue reference frame axes.
-There can be at most one \texttt{MechanicalObject} attached to a given node. This guarantees that all the components attached to the same node process the same types of DOF. Consequently, the particles and the rigid body necessarily belong to different nodes. 
+There can be at most one \texttt{MechanicalObject} attached to a given node. This guarantees that all the components attached to the same node process the same types of DOF. Consequently, the particles and the rigid body necessarily belong to different nodes.
 
 In this example, the masses are stored in \texttt{UniformMass} components.
 The types of their values are related to the types of their associated DOF.
@@ -65,7 +65,7 @@ The \texttt{StiffSpringForceField} stores a list of springs, each of them modele
 
 The rigid body is connected to the deformable string by a spring.
 Since this spring is shared by the two bodies, it is modeled in the \texttt{StiffSpringForceField} attached to a common ancestor, the graph root in this example.
-Our springs can only connect particles. We thus need to attach a particle to the rigid body. Since the particle DOFs types are different from the rigid body DOF types, they have to be stored in another \texttt{MechanicalObject}, called \texttt{rigidParticleDOF} in this example, and attached to a different node. 
+Our springs can only connect particles. We thus need to attach a particle to the rigid body. Since the particle DOFs types are different from the rigid body DOF types, they have to be stored in another \texttt{MechanicalObject}, called \texttt{rigidParticleDOF} in this example, and attached to a different node.
 However, \texttt{rigidParticleDOF} is not a set of independent DOF, since they are fixed in the reference frame of the rigid body. We thus attach it to a child node of the rigid body, and connect it to \texttt{rigidDOF} using a \texttt{RigidMapping}. This component stores the coordinates of the particle in the reference frame of the rigid body. Its task is to propagate the position, velocity and displacement of the rigid body down to the yellow particle, and conversely, to propagate the forces applied to the particle up to the rigid body.
 
 Mappings are one of the major features of \sofa. They allow us to use different geometric models for a given body, e.g. a coarse tetrahedral mesh for viscoelastic internal forces, a set of spheres for collision detection and modeling, and a fine triangular mesh for rendering.
@@ -74,9 +74,9 @@ The gravity applied to the scene is modeled in the \texttt{Gravity} component ne
 
 The abstract component classes are defined in namespace \texttt{core::componentmodel}.
 
-So far, we have discussed the physical model of the scene. 
-To animate it, we need to solve an \textit{Ordinary Differential Equation} (ODE) in time. 
-There are plenty of ODE solvers, and \sofa allows the design and the re-use of a wide variety of them. 
+So far, we have discussed the physical model of the scene.
+To animate it, we need to solve an \textit{Ordinary Differential Equation} (ODE) in time.
+There are plenty of ODE solvers, and \sofa allows the design and the re-use of a wide variety of them.
 Here we use a simple explicit Euler method, modeled using an \texttt{EulerSolver} component.
 It triggers computations such as force acumulation, acceleration computation and linear operations on state vectors.
 More sophisticated solvers are available in \sofa, and can be used by simply replacing the  \texttt{EulerSolver} component by another one, e.g \texttt{RungeKutta4} or \texttt{CGImplicit}.
@@ -102,14 +102,14 @@ On top of the scene, collision-related components allow a user to interact with 
 
 The liver is modeled using three nodes, in two levels. The parent level contains the mechanical dofs (particle positions and velocities) in a \texttt{MechanicalObject} component. These dofs are the mechanically independent degrees of freedom of the object, in Lagrange's formalism. The node also contains components related to the dynamics of the particles, such as mass and internal forces. We call it the \textit{behavior model}.
 
-The two other nodes are in the lower level because during the simulation, their coordinates are totally defined by the coordinates of their parent node. Thus, they do not belong to the set of mechanically independent dofs. \emph{Mappings} are used to compute their positions and velocities based on their parent's, using the pointers represented as dashed arrows. Mappings are not symmetric. The motion of the parent dofs is mapped to the children dofs, whereas the motion of the children dofs is not mapped to their parent. This ensures consistency. 
+The two other nodes are in the lower level because during the simulation, their coordinates are totally defined by the coordinates of their parent node. Thus, they do not belong to the set of mechanically independent dofs. \emph{Mappings} are used to compute their positions and velocities based on their parent's, using the pointers represented as dashed arrows. Mappings are not symmetric. The motion of the parent dofs is mapped to the children dofs, whereas the motion of the children dofs is not mapped to their parent. This ensures consistency.
 
 The \texttt{VisualModel} has vertices which are used for rendering, along with other rendering data such as a list of polygons, normals, etc. The mapping is one-way and the mapped dofs have no mechanical influence.
 
 The \texttt{SphereModel} class derives from \texttt{MechanicalObject}, with an additional radius value. It also derives from \texttt{CollisionModel}, which allows it to be processed by the collision detection and modeling pipeline. When contact or mouse interaction forces are applied to the spheres, the forces are propagated bottom-up to their parent dofs by the mapping. This allows the contact forces to be taken into account in the dynamics equations. The mapping is thus two-ways and derives from \texttt{MechanicalMapping} instead of \texttt{Mapping}. This is why it has a different color in the image of the scene graph.
-Again, the mechanical mappings are not symmetric: the forces are propagated from the children to the parents, not the other way round. 
+Again, the mechanical mappings are not symmetric: the forces are propagated from the children to the parents, not the other way round.
 
-Mappings only propagate positions top-down, whereas MechanicalMappings additionally propagate velocities top-down and forces bottom-up. 
+Mappings only propagate positions top-down, whereas MechanicalMappings additionally propagate velocities top-down and forces bottom-up.
 
 Mapped models can be designed independently of their parent models, provided that the adequate (mechanical) mapping is available. This results in a high flexibility. For example, collision spheres can be replaced by collision triangles without changing anything in the behavior model or in the visual model. Similarly, other visual models can be used without modifying the behavior and collision models, and different behavior models can be used with the same collision and visual models, as illustrated in figure~\ref{fig:behaviormodels}.
 
@@ -129,8 +129,8 @@ A typical simulation program, controlled by an application such as the Graphics 
 \begin{code_cpp}
 init();
 repeat {
-	animate();
-	draw();
+    animate();
+    draw();
 }
 \end{code_cpp}
 \caption{Pseudocode for a standard simulation program.}
@@ -139,8 +139,8 @@ repeat {
 In \sofa, each of the simulation methods is implemented as a recursive graph traversal, \texttt{InitVisitor}, \texttt{AnimateVisitor} and \texttt{VisualDrawVisitor}, respectively. Visitors are explained in the next section.
 
 \subsection{Visitors}
-The data structure is processed using visitors called \emph{visitors}. 
-They recursively traverse the tree structure and call appropriate virtual methods to a subset of components during the \textit{Top-Down Traversal} (TDT), using virtual method \texttt{Visitor::processNodeTopDown}, then during the \textit{Bottom-Up Traversal} (BUT), using virtual method \texttt{Visitor::processNodeBottomUp}. 
+The data structure is processed using visitors called \emph{visitors}.
+They recursively traverse the tree structure and call appropriate virtual methods to a subset of components during the \textit{Top-Down Traversal} (TDT), using virtual method \texttt{Visitor::processNodeTopDown}, then during the \textit{Bottom-Up Traversal} (BUT), using virtual method \texttt{Visitor::processNodeBottomUp}.
 
 For example, the \texttt{VisualDrawVisitor} draws the \texttt{VisualModel} components during the TDT, and does nothing during the BUT.
 The \texttt{MechanicalComputeForceVisitor} accumulates the forces in the appropriate dof vectors during the TDT, then propagates the forces to the parent dofs using the mechanical mappings during the BUT.
@@ -155,7 +155,7 @@ Sibling nodes of the same type can be traversed by visitors in arbitrary order.
 The visitors belong to namespace \texttt{simulation::tree}.
 
 \subsection{ODE Solvers}
-When an \texttt{AnimateVisitor} traverses a node with an \texttt{OdeSolver} component, 
+When an \texttt{AnimateVisitor} traverses a node with an \texttt{OdeSolver} component,
 the solver takes the control of its associated subtree and prunes the \texttt{AnimateVisitor}. The solver triggers visitors in its associated subtree to perform the standard mechanical computations and integrate time.
 
 The simplest solver is the explicit Euler method, implemented in \texttt{EulerSolver}. The algorithm is shown as pseudocode in figure~\ref{pc:expliciteuler}.
@@ -171,12 +171,12 @@ v += a * dt;
 \caption{Pseudocode for explicit Euler integration.}
 \label{pc:expliciteuler}
 \end{figure}
-Net force is computed in the first line. 
+Net force is computed in the first line.
 In the second line, the acceleration is deduced by dividing the force by the mass.
 Then the accelerations of the fixed points are canceled.
 Finally, position and velocity are updated.
 
-This algorithm can not be directly implemented in \sofa because there are no state vectors x,v,f,a which gather the state values of all the objects in the scene. 
+This algorithm can not be directly implemented in \sofa because there are no state vectors x,v,f,a which gather the state values of all the objects in the scene.
 The solver processes an arbitrary number of objects, of possibly different types, such as particles and rigid bodies. Each physical object carries its state values and auxiliary vectors in its own \texttt{MechanicalObject} component, which is not directly accessible to the solver.
 
 The solvers represent state vectors as \texttt{MultiVector} objects using symbolic identificators implemented in class \texttt{VecId}.
@@ -187,11 +187,11 @@ Vector operations can be remotely triggered by a solver using a visitor of a giv
 During the subtree traversal, the operator is applied to the given vectors of the traversed \texttt{MechanicalObject} components.
 
 For example, let us comment the visitors performed by the \texttt{EulerSolver} shown in figure~\ref{fig:mixedPendulum}. Its implementation is in method \texttt{component::odesolver::EulerSolver::solve(double)}.
-First, multivectors are declared. 
+First, multivectors are declared.
 
-Then method \texttt{core::componentmodel::behavior::OdeSolver::computeForce(VecId)} is called. It first fires a \texttt{MechanicalResteForceVisitor} to reset the force vectors of all the \texttt{MechanicalObject} components. It then fires a  \texttt{MechanicalComputeForceVisitor}. During the TDT, each component derived from \texttt{core::componentmodel::behavior::BaseForceField} computes and accumulates its force in its sibling \texttt{MechanicalObject}. In the example shown in figure~\ref{fig:mixedPendulum}, \texttt{F13} adds its contribution to \texttt{Dof1} and \texttt{Dof2}, then \texttt{F1} and \texttt{M1} add their contributions to \texttt{Dof1}, then \texttt{M2} to \texttt{Dof2}. Then during the BUT, the mechanical mappings sum up the forces of their chid dof to their parent dof, \textit{i.e} the force in \texttt{Dof3} to \texttt{Dof2} through \texttt{M23} in the same example. 
+Then method \texttt{core::componentmodel::behavior::OdeSolver::computeForce(VecId)} is called. It first fires a \texttt{MechanicalResteForceVisitor} to reset the force vectors of all the \texttt{MechanicalObject} components. It then fires a  \texttt{MechanicalComputeForceVisitor}. During the TDT, each component derived from \texttt{core::componentmodel::behavior::BaseForceField} computes and accumulates its force in its sibling \texttt{MechanicalObject}. In the example shown in figure~\ref{fig:mixedPendulum}, \texttt{F13} adds its contribution to \texttt{Dof1} and \texttt{Dof2}, then \texttt{F1} and \texttt{M1} add their contributions to \texttt{Dof1}, then \texttt{M2} to \texttt{Dof2}. Then during the BUT, the mechanical mappings sum up the forces of their chid dof to their parent dof, \textit{i.e} the force in \texttt{Dof3} to \texttt{Dof2} through \texttt{M23} in the same example.
 Note that branches \texttt{deformableBody} and \texttt{rigidBody} can be processed in parallel.
-At the end, the force vector in \texttt{Dof1} contains the net force applied to the particles, and the force vector in \texttt{Dof2} contains the net (six-dimensional) force applied to the rigid body. 
+At the end, the force vector in \texttt{Dof1} contains the net force applied to the particles, and the force vector in \texttt{Dof2} contains the net (six-dimensional) force applied to the rigid body.
 
 Then method \texttt{OdeSolver::accFromF(VecId,VecId)} fires a \texttt{MechanicalAccFromFVisitor}. Each component derived from \texttt{core::componentmodel::behavior::BaseMass} computes the accelerations corresponding to the forces in its sibling \texttt{MechanicalObject}.
 
@@ -199,9 +199,9 @@ Then method \texttt{OdeSolver::projectResponse} fires a \texttt{MechanicalApplyC
 
 Once the acceleration is computed, multivector methods are used to update the positions and velocities. Here again, visitors are used to perform the desired operation in each traversed \texttt{MechanicalObject}.
 
-MultiVector operations are pruned at the first level for efficiency, because the solvers deal with the mechanically independent state variables rather than the mapped variables. 
+MultiVector operations are pruned at the first level for efficiency, because the solvers deal with the mechanically independent state variables rather than the mapped variables.
 Moreover, the mapped coordinates can not be assumed to vary linearly along with their parent variables.
-Applying a \texttt{MechanicalPropagatePositionAndVelocityVisitor} is thus necessary to update the mapped dofs based on the mechanically independent dofs. 
+Applying a \texttt{MechanicalPropagatePositionAndVelocityVisitor} is thus necessary to update the mapped dofs based on the mechanically independent dofs.
 This visitor is automatically performed after time integration, as one can see in the code of method \\ \texttt{MechanicalIntegrationVisitor::fwdOdeSolver}.
 It is also used by some solvers when auxiliary states are needed, as discussed in section~\ref{sec:statevectors}, in order to update the mapped dofs.
 
@@ -211,12 +211,12 @@ It is also used by some solvers when auxiliary states are needed, as discussed i
 
 \section{State vectors} \label{sec:statevectors}
 The state vectors contain the coordinates, velocites, and other dof-related values such as force and acceleration.
-They are stored in \texttt{MechanicalObject} components. 
-This template class can be instanciated on a variety of types to model particles, rigid bodies or other types of bodies. 
-The template parameter is a \texttt{DataTypes} class which describes data and data containers, such as the the type of coordinates and coordinate derivatives used. 
+They are stored in \texttt{MechanicalObject} components.
+This template class can be instanciated on a variety of types to model particles, rigid bodies or other types of bodies.
+The template parameter is a \texttt{DataTypes} class which describes data and data containers, such as the the type of coordinates and coordinate derivatives used.
 These two types are the same in the case of particles, but they are different in the case of rigid bodies.
 
-Each \texttt{MechanicalObject} can represent a set of physical objects of the same type, such as particles. 
+Each \texttt{MechanicalObject} can represent a set of physical objects of the same type, such as particles.
 The coordinate state vectors are defined by the \texttt{VecCoord} type, while the derivatives (velocity, acceleration, force, small displacement) are defined by the \texttt{VecDeriv} type.
 Each \texttt{MechanicalObject} stores two arrays of state vectors, one for coordinates and the other for derivatives, as illustrated in figure~\ref{fig:mechanicalobject}.
 \begin{figure}
@@ -229,12 +229,12 @@ Each \texttt{MechanicalObject} stores two arrays of state vectors, one for coord
 
 Auxiliary vectors are necessary for complex solvers, such as \texttt{RungeKutta2Solver}. This solver first performs a half-length Euler step, then evaluates the derivative of this new state (called the \emph{midpoint}), and finally uses this derivative to update the initial state over a whole time step.
 
-To compute the forces at the midpoint while keeping the initial state for further use, we use the auxiliary vectors \texttt{newX} and \texttt{newV}. 
+To compute the forces at the midpoint while keeping the initial state for further use, we use the auxiliary vectors \texttt{newX} and \texttt{newV}.
 However, components such as forces and constraints use state vectors, and we have to make sure that they use the right ones.
-To ensure consistency and make the use of auxiliary states transparent, the other components get access to the state vectors using methods \texttt{MechanicalObject::getX()}, \texttt{getV()}, \texttt{getF()} and  \texttt{getDx()}. 
+To ensure consistency and make the use of auxiliary states transparent, the other components get access to the state vectors using methods \texttt{MechanicalObject::getX()}, \texttt{getV()}, \texttt{getF()} and  \texttt{getDx()}.
 These methods return pointers to the appropriate vectors, as illustrated in figure~\ref{fig:mechanicalobject}.
 
-Internal  \texttt{MechanicalObject} switches are performed by methods \texttt{MechanicalObject::setX()}, \texttt{setV()}, \texttt{setF()} and  \texttt{setDx()}. 
+Internal  \texttt{MechanicalObject} switches are performed by methods \texttt{MechanicalObject::setX()}, \texttt{setV()}, \texttt{setF()} and  \texttt{setDx()}.
 These methods are applied by the visitors which take multivectors as parameters, before they use other components. See, for example, method\\ \texttt{MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalState}.
 
 Note that some constraint-based animation methods require large state vectors and matrices encompassing all the mechanical objects of the scene.
@@ -242,10 +242,10 @@ Such methods are currently under development in \sofa, and they are not yet docu
 They use visitors to count the total number of scalar dofs and to gather them in large state vectors, as well as to build mechanical matrices  such as mass, stiffness, damping and compliance etc.
 
 \subsection{Mechanical groups}
-During the simulation, each solver prunes the \texttt{AnimateVisitor} which traverses it and manages its associated subtree by itself using other visitors. 
+During the simulation, each solver prunes the \texttt{AnimateVisitor} which traverses it and manages its associated subtree by itself using other visitors.
 We call \emph{mechanical group} the objects animated by a given solver.
 Each mechanical group corresponds to a subtree in the scene graph.
-In the example discussed in section~\ref{sec:commentedExample}, there is one mechanical group because a single solver located near the root manages the whole scene. 
+In the example discussed in section~\ref{sec:commentedExample}, there is one mechanical group because a single solver located near the root manages the whole scene.
 However, using separate solvers for different objects can sometimes increase efficiency.
 In the example shown in figure~\ref{fig:twoSolvers}, the same deformable body is animated using a \texttt{RungeKutta2Solver} while the rigid body is animated using an \texttt{EulerSolver}.
 \begin{figure}
@@ -273,10 +273,10 @@ The default collision manager of Sofa circumvents this problem by dynamically ga
 % \subsection{Masses}
 % \subsection{Mappings}
 % \subsection{ContextObjects}
-% 
+%
 % \section{Collision detection} \label{sec:collision}
-% 
-% 
+%
+%
 % \section{Limitations}
 
 % \pagebreak
@@ -284,25 +284,402 @@ The default collision manager of Sofa circumvents this problem by dynamically ga
 \section{Code of the examples}
 \subsection{The hybrid pendulum}\label{cpp:hybrid}
 This is the code of the example commented in section~\ref{sec:commentedExample} :
-\includecode{C++}{applications/tutorials/mixedPendulum/Main.cpp}
+\includecode{C++}{../applications/tutorials/mixedPendulum/Main.cpp}
 
 \subsection{A liver}\label{xml:liver}
 This is the XML code of the liver discussed in section~\ref{sec:multimodel} page~\pageref{bla:liver} :
-\includecode{XML}{scenes/liver.scn}
+\includecode{XML}{../scenes/liver.scn}
+
+\section{How to use mesh topologies in SOFA}
+
+H. Delingette, B. André
+
+\subsection{Introduction}
+
+\subsubsection{BTW, What is a mesh topology ?}
+
+A mesh is usually described as a set of points that are connected by
+edges, triangles or any other type of mesh element. Thus it is
+useful to make a clear a distinction between two different aspects
+of a mesh :
+
+\begin{itemize}
+
+ \item \textbf{Mesh Geometry} : the mesh geometry consists in the position of the mesh vertices.
+This information depends on the space where the mesh in embedded.
+For instance in a 2D triangulation, each vertex position is a 2D
+vector while in a 3D triangulation, each vertex position is a 3D
+vector. Therefore the mesh geometry can be described as an array of
+vector whose size is the number of mesh vertices. In SOFA, we use
+the word Degree Of Freedom (DOF) to describe such an array because
+it can be used to store other geometric information (rigid
+transformation, first or second derivatives, etc.).
+
+ \item \textbf{Mesh Topology} : the mesh topology describes how the vertices are
+connected with each other. For instance, it describes the set of
+triangles by specifying the 3 vertex indices that make each
+triangle. A mesh topology manipulates vertex indices (as unsigned
+int) and therefore is independent of the embedding space. For
+instance, a 2D and a 3D triangulation may have the same mesh
+topology but with different mesh geometry.
+
+\end{itemize}
+
+
+\subsubsection{Why do I need to bother with mesh topologies ?}
+
+As discuss above, mesh topology is an essential part of a mesh and
+therefore any computation task that requires a mesh needs to know
+how to use a mesh topology.\\ This includes:
+
+\begin{itemize}
+
+ \item \textbf{Mesh Visualization},
+
+ \item \textbf{Collision detection} : some collision detection are mesh based (e.g.
+triangles or edges),
+
+ \item \textbf{Mechanical Modeling} : deforming a mesh also requires to the
+knowledge of a mesh topology. For instance a spring mass model
+requires knowing about the edges that connects pair of vertices,
+
+ \item \textbf{Haptic rendering},
+
+ \item \textbf{Description of scalar} (temperature, electric potential, etc.) or
+vectorial fields (speed, fiber orientation, etc.)
+
+\end{itemize}
+
+Using a mesh topology is relatively simple since it consists in
+having access to arrays of indices corresponding to vertex indices
+or edge indices or other topological items.
+\\
+
+A more tricky part consists a) in changing locally or globally this
+topology (adding a triangle, removing an edge) and b) in propagating
+those changes to all objects using the mesh topology to perform a
+task (visualization, deformation, etc.)
+
+\subsubsection{How are Mesh Topologies designed in SOFA ?}
+
+The mesh geometry in SOFA is stored in a MechanicalObject which is a
+template class because it depends on the embedding space (2D or 3D
+Euclidian space), the vector class and the required floating point
+accuracy (float vs double).
+\\
+
+A mesh topology is stored in a different object than the mesh
+geometry.
+\\
+
+One important aspect of the design of mesh topologies in SOFA is the
+fact that they are stored in a hierarchical manner. For instance, a
+triangulation object derives from an edge set object since a
+triangulation can be also viewed as a set of edges, each triangle
+having 3 edges. This is very important to design generic software
+components. Indeed, following the same example, with this design, a
+spring mass mechanical model that only requires the knowledge of
+edges (pairs of vertices) can also be used on a triangulation or any
+other mesh (quad, hexahedral, tetrahedral mesh)  that derives from
+an edge set object.
+\\
+
+Another interesting feature in SOFA is the ability to provide
+multiple topology descriptions for the same mesh. For instance a
+quad element (see figure below) has four DOFs which can be connected
+with 2 triangles or 6 edges. Thus, the same mesh geometry can be
+described by 3 different mesh topologies. SOFA uses the mechanism of
+topological mapping to provide multiple topologies associated with
+the same mesh geometry. Those mappings also apply to map a subset of
+the mesh topology into a new mesh topology.  For instance the border
+of a tetrahedral mesh can be mapped into triangulation mesh or edges
+of a triangulated mesh can be mapped into a polygonal mesh.\\
+
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Quad_Multiple_Topologies}
+  \caption{Multiple topology descriptions of the Quad.}
+ \label{fig:Quad_Multiple_Topologies}
+\end{figure}
+
+Another important aspect of the design is the fact that topological
+changes (mesh cutting or refinement) are handled in SOFA.  For the
+programmer, it implies that specific containers must be used to
+store data for each software component. For instance, a spring mass
+model must store the spring stiffness of each edge. Therefore the
+container of spring stiffness must have the same size than the
+number of edges in the mesh. In SOFA, to cope with topological
+changes that can add or remove the number of edges, it is mandatory
+to use a specific container (in such case EdgeData container) that
+will automatically resize itself when topological changes occur.
+
+\subsubsection{What are the different mesh topologies supported in SOFA ?}
+
+
+\subsection{Using Mesh Topologies}
+
+\subsubsection{What is a mesh topology object ?}
+\subsubsection{What is the difference with the old MeshTopology object ?}
+\subsubsection{What are the different mesh topology objects in SOFA ?}
+
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Hierarchy_Topologies}
+  \caption{A generic and hierarchical topology is described from a class called BaseTopology.}
+ \label{fig:Hierarchy_Topologies}
+\end{figure}
+
+BaseTopology class provides an implementation which handles
+topological changes, full topological relationships and geometric
+computation.
+
+\subsubsection{How do I have access to the adjacency information between items ?}
+\subsubsection{What to do if I need to know only basic topology information ?}
+\subsubsection{What are the geometry algorithms stored in each topology classes ?}
+
+\subsection{Handling Topological Changes}
+
+\subsubsection{How does it work ?}
+\subsubsection{What container should I use to handle the topology changes ?}
+\subsubsection{How to write the different callback functions associated with the containers ?}
+
+Topological changes are handled in a way which is as much
+transparent for the user as possible.
+
+
+\subsubsection{The 4 components of a BaseTopology object}
+
+\begin{verbatim}
+
+Class BaseTopology<DataTypes> {
+
+// A container for info to be stored and methods to access adjacency :
+//   - Adjacency Information is only computed when needed
+//   - Non template class
+//   - Store TopologicalChange list
+
+TopologyContainer *container ;
+
+// A modifier for low-level methods to change topology :
+//   - Cannot be accessed from user
+//   - Modifier also changes the DOFs in the Mechanical Object
+//   - Low level methods to add or to remove an item
+TopologyModifiers<DataTypes> *modifier ;
+
+// TopologyAlgorithms for high-level methods to change topology (user access) :
+//   - Accessed from the user
+//   - High level algorithms to refine, cut mesh
+TopologyAlgorithms<DataTypes> *topologyAlgorithms ;
+
+// Geometry Algorithms methods to get geometry information :
+//   - Compute geometric information (normal, curvature, area, length)
+GeometryAlgorithms<DataTypes> *geometryAlgorithms ;
+
+};
+
+\end{verbatim}
+
+
+\subsubsection{Implementation for objects inherited from each other (Point,
+Edge, Triangle, Tetrahedron}
+
+
+\begin{itemize}
+
+ \item PointSetTopology (inherited from BaseTopology) :
+
+    \begin{itemize}
+
+    \item Container (useless) : For each point gives its index
+
+    \item Modifier : addPointsProcess, removePointsProcess, renumberPointsProcess, addPointsWarning, removePointsWarning, propagateTopologicalChanges
+
+    \item Geometry : computeCenter, computeRadius,
+    getAABB()
+
+    \end{itemize}
+
+
+\item EdgeSetTopology (inherited from PointSetTopology)
+
+    \begin{itemize}
+
+    \item Container : array of edges, array of vertex-edge shell
+
+    \item Modifier : addEdgesProcess, removeEdgesProcess, fuseEdgesProcess, splitEdgesProcess,
+   addEdgesWarning, removeEdgesWarning
+
+    \item Geometry : getEdgeLength, getRestEdgeLength
+
+    \end{itemize}
+
+
+\item TriangleSetTopology (inherited from EdgeSetTopology)
+
+    \begin{itemize}
+
+    \item Container : array of triangles, of vertex- and edge-triangle shell
+
+    \item Modifier : addTrianglesProcess, removeTrianglesProcess, addTrianglesWarning, removeTrianglesWarning
+
+    \item Topology Algorithms : InciseAlongPointsList, RemoveAlongTrianglesList
+
+    \item Geometry : computeTriangleNormal
+
+    \end{itemize}
+
+
+\item TetrahedronSetTopology (inherited from TriangleSetTopology)
+
+    \begin{itemize}
+
+    \item Container : array of tetrahedra, array of vertex-, edge-, triangle-tetrahedra shell
+
+    \item Modifier : addTetrahedraProcess, removeTetrahedraProcess, addTetrahedraWarning, removeTetrahedraWarning
+
+    \item Geometry : computeTetrahedronVolume
+
+    \end{itemize}
+
+\end{itemize}
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{UML_TriangleSetTopology}
+  \caption{UML diagram describing the 4 components of TriangleSetTopology class.}
+ \label{fig:UML_TriangleSetTopology}
+\end{figure}
+
+\newpage
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{UML_BaseTopology}
+  \caption{UML diagram showing the use of a TopologyChanges List from BaseTopology class.}
+ \label{fig:UML_BaseTopology}
+\end{figure}
+
+\newpage
+
+\subsubsection{Definition of data structures to be "aware" of topological
+changes}
+
+Force Fields, Constraints, Mapping and other modules may require to
+store information for each topological item (point, edge, triangle,
+etc.).
+\\
+
+Two container data structures are defined to handle topological
+changes by matching the types of TopologyChanges :
+
+\begin{itemize}
+
+    \item PointData$<$MyType$>$, EdgeData$<$MyType$>$ are arrays (same as std::vector) of item of type MyType
+
+    \item PointSubset, EdgeSubset are arrays of points or edges
+
+\end{itemize}
+
+Used-defined functions are called when an item is created or
+destroyed.
+\\
+
+In higher level classes (for example
+TriangularQuadraticSpringForceField, DiagonalMass or FixedConstraint
+classes), the user only provides callback functions to handle :
+
+\begin{itemize}
+
+    \item the creation of a topological item
+    \item the destruction of a topological item
+
+\end{itemize}
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth, height=0.95\textheight]{UML_Topological_Changes}
+  \caption{These UML diagrams show the use of EdgeData, PointData and
+PointSubset to handle topological changes implying modifications
+respectively in ForceField, Mass and Constraint modules.}
+ \label{fig:UML_Topological_Changes}
+\end{figure}
+
+\newpage
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Order_Notifications}
+  \caption{Order to respect when adding or removing an item (see the
+explanations in the following example).}
+ \label{fig:Order_Notifications}
+\end{figure}
+
+\begin{itemize}
+
+    \item "WARN" means : add the current topological change (add or delete a list of items) in the list of TopologyChanges
+
+    \item "PROPAGATE" means :  traverse the simulation tree with a TopologyChangeVistor to send
+    the current topological change event to all force fields, constraints,
+    mappings, etc.
+
+\end{itemize}
+
+\subsubsection{Example : What happens when I split an Edge ?}
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Topology_Example_1}
+ \includegraphics[width=0.95\linewidth]{Topology_Example_2}
+  \caption{What happens when I split an Edge ? - Step 1. 2.}
+ \label{fig:Topology_Example_12}
+\end{figure}
+
+\newpage
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Topology_Example_3}
+ \includegraphics[width=0.95\linewidth]{Topology_Example_4}
+  \caption{What happens when I split an Edge ? - Step 3. 4.}
+ \label{fig:Topology_Example_34}
+\end{figure}
+
+\newpage
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Topology_Example_5}
+ \includegraphics[width=0.95\linewidth]{Topology_Example_6}
+  \caption{What happens when I split an Edge ? - Step 5. 6.}
+ \label{fig:Topology_Example_56}
+\end{figure}
+
+\newpage
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Topology_Example_7}
+ \includegraphics[width=0.95\linewidth]{Topology_Example_8}
+  \caption{What happens when I split an Edge ? - Step 7. 8.}
+ \label{fig:Topology_Example_78}
+\end{figure}
+
+\newpage
+
+\begin{figure}
+ \centering
+ \includegraphics[width=0.95\linewidth]{Topology_Example_9}
+  \caption{What happens when I split an Edge ? - Step 9.}
+ \label{fig:Topology_Example_9}
+\end{figure}
 
 
 % \include{sofaMechanical}
-% 
+%
 % \include{extendingSofa}
-% 
+%
 % \include{physicallyBasedAnimation}
-% 
+%
 % \include{appendices}
-
-
-
-
-
-
-
-
