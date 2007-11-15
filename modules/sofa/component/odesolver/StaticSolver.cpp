@@ -52,24 +52,22 @@ StaticSolver::StaticSolver()
 {
 }
 
-void StaticSolver::solve(double)
+void StaticSolver::solve(double dt, VecId b)
 {
+    /*std::cout << "Static Solver will solve knowing b!! "<< this->getName() << "\n";*/
     //objectmodel::BaseContext* group = getContext();
     OdeSolver* group = this;
     MultiVector pos(group, VecId::position());
     MultiVector vel(group, VecId::velocity());
     MultiVector dx(group, VecId::dx());
     MultiVector f(group, VecId::force());
-    MultiVector b(group, VecId::V_DERIV);
     MultiVector p(group, VecId::V_DERIV);
     MultiVector q(group, VecId::V_DERIV);
     MultiVector r(group, VecId::V_DERIV);
     MultiVector x(group, VecId::V_DERIV);
     MultiVector z(group, VecId::V_DERIV);
 
-    // compute the right-hand term of the equation system
-    group->computeForce(b);             // b = f0
-    b.teq(-1);                          // b = -f0
+//    b.teq(-1);                          // b = -f0
     group->projectResponse(b);         // b is projected to the constrained space
     //     cerr<<"StaticSolver::solve, initial position = "<<pos<<endl;
     //     cerr<<"StaticSolver::solve, b = "<<b<<endl;
@@ -125,6 +123,17 @@ void StaticSolver::solve(double)
         cerr<<"StaticSolver::solve, solution = "<<x<<endl;*/
     pos.peq( x );
     /*    cerr<<"StaticSolver::solve, new pos = "<<pos<<endl;*/
+}
+void StaticSolver::solve(double dt)
+{
+    //objectmodel::BaseContext* group = getContext();
+    OdeSolver* group = this;
+    MultiVector b(group, VecId::V_DERIV);
+
+    // compute the right-hand term of the equation system
+    group->computeForce(b);             // b = f0
+    b.teq(-1);
+    solve(dt, b);
 }
 
 int StaticSolverClass = core::RegisterObject("A solver which seeks the static equilibrium of the scene it monitors")

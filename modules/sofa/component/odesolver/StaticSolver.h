@@ -54,7 +54,7 @@ public:
     StaticSolver();
 
     //virtual const char* getTypeName() const { return "StaticSolver"; }
-
+    void solve(double dt, VecId b);
     void solve (double dt);
 };
 
