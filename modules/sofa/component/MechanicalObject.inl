@@ -46,7 +46,7 @@ namespace component
 using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), x0(new VecCoord),reset_position(new VecCoord), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
+    : x(new VecCoord), v(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
     , f_X ( new XField<DataTypes>(&x,  "position coordinates ot the degrees of freedom") )
     , f_V ( new VField<DataTypes>(&v,  "velocity coordinates ot the degrees of freedom") )
     , f_X0( new XField<DataTypes>(&x0, "rest position coordinates ot the degrees of freedom") )
@@ -579,7 +579,7 @@ void MechanicalObject<DataTypes>::init()
         }
     }
     // Save initial state for reset button
-    this->reset_position = new VecCoord;
+    if (reset_position == NULL) this->reset_position = new VecCoord;
     *this->reset_position = *x;
     this->v0 = new VecDeriv;
     *this->v0 = *v;
@@ -606,7 +606,7 @@ void MechanicalObject<DataTypes>::reset()
     if (reset_position == NULL)
         return;
     // Back to initial state
-    this->resize(this->reset_position->size());
+    this->resize(reset_position->size());
     *this->x = *reset_position;
     *this->v = *v0;
 
