@@ -27,24 +27,23 @@ namespace forcefield
 // v = sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1
 // dv/dxj = xj/rj² * 1/sqrt(x0²/r0²+x1²/r1²+x2²/r2²)
 
-// f  = -stiffness * v * normalize(dv/dp)
-// f  = -stiffness * v * normalize(vec(x0/r0²,x1/r1²,x2/r2²))
+// f  = -stiffness * v * (dv/dp) / norm(dv/dp)
 
 // fi = -stiffness * (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1) * (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
 
 // dfi/dxj = -stiffness * [ d(sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)/dxj *   (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//	                      +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)     * d(xi/ri²)/dxj / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//	                      +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)     *  (xi/ri²) * d(1/sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))/dxj ]
+//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)     * d(xi/ri²)/dxj / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
+//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)     *  (xi/ri²) * d(1/sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))/dxj ]
 // dfi/dxj = -stiffness * [ xj/rj² * 1/sqrt(x0²/r0²+x1²/r1²+x2²/r2²) * (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//	                      +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (i==j)/ri² / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//	                      +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (xi/ri²) * (-1/2*2xj/rj^4*1/(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
+//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (i==j)/ri² / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
+//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (xi/ri²) * (-1/2*2xj/rj^4*1/(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
 // dfi/dxj = -stiffness * [ xj/rj² * 1/sqrt(x0²/r0²+x1²/r1²+x2²/r2²) * (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//	                      +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (i==j)/ri² / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//	                      +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (xi/ri²) * (-xj/rj^4*1/(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
+//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (i==j)/ri² / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
+//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (xi/ri²) * (-xj/rj^4*1/(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
 
 // dfi/dxj = -stiffness * [ (xj/rj²) * (xi/ri²) * 1/(sqrt(x0²/r0²+x1²/r1²+x2²/r2²) * sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))
-//	                      +  v       * (i==j) / (ri²*sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))
-//	                      +  v       * (xi/ri²) * (xj/rj²) * 1/(rj²*(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
+//                          +  v       * (i==j) / (ri²*sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))
+//                          +  v       * (xi/ri²) * (xj/rj²) * 1/(rj²*(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
 
 
 template<class DataTypes>
@@ -52,7 +51,9 @@ void EllipsoidForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, 
 {
     const Coord center = this->center.getValue();
     const Coord r = this->vradius.getValue();
-    const Real stiff = this->stiffness.getValue();
+    const Real stiffness = this->stiffness.getValue();
+    const Real stiffabs = helper::rabs(stiffness);
+    //const Real s2 = (stiff < 0 ? - stiff*stiff : stiff*stiff );
     Coord inv_r2;
     for (int j=0; j<N; j++) inv_r2[j] = 1/(r[j]*r[j]);
     sofa::helper::vector<Contact>* contacts = this->contacts.beginEdit();
@@ -63,25 +64,25 @@ void EllipsoidForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, 
         Coord dp = p1[i] - center;
         Real norm2 = 0;
         for (int j=0; j<N; j++) norm2 += (dp[j]*dp[j])*inv_r2[j];
-        Real d = (norm2-1)*stiff;
-        if (d<0)
+        //Real d = (norm2-1)*s2;
+        if ((norm2-1)*stiffness<0)
         {
-            d = helper::rsqrt(d*stiff);
+            Real norm = helper::rsqrt(norm2);
+            Real v = norm-1;
             Coord grad;
             for (int j=0; j<N; j++) grad[j] = dp[j]*inv_r2[j];
             Real gnorm2 = grad.norm2();
             Real gnorm = helper::rsqrt(gnorm2);
             //grad /= gnorm; //.normalize();
-            Real norm = helper::rsqrt(norm2);
-            Real forceIntensity = -stiff*d/gnorm;
-            Real dampingIntensity = -this->damping.getValue()*d;
+            Real forceIntensity = -stiffabs*v/gnorm;
+            Real dampingIntensity = this->damping.getValue()*helper::rabs(v);
             Deriv force = forceIntensity*grad - v1[i]*dampingIntensity;
             f1[i]+=force;
             Contact c;
             c.index = i;
-            Real fact1 = -stiff / (helper::rsqrt(norm2) * gnorm);
-            Real fact2 = d / gnorm;
-            Real fact3 = d / gnorm2;
+            Real fact1 = -stiffabs / (norm * gnorm);
+            Real fact2 = -stiffabs*v / gnorm;
+            Real fact3 = -stiffabs*v / gnorm2;
             for (int ci = 0; ci < N; ++ci)
             {
                 for (int cj = 0; cj < N; ++cj)
@@ -126,15 +127,16 @@ void EllipsoidForceField<DataTypes>::draw()
     DataTypes::get(cx, cy, cz, center.getValue());
     double rx=1, ry=1, rz=1;
     DataTypes::get(rx, ry, rz, vradius.getValue());
-
+    glEnable(GL_CULL_FACE);
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
-    glColor3f(0.0f, 0.0f, 1.0f);
+    glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
     glPushMatrix();
     glTranslated(cx, cy, cz);
-    glScaled(rx, ry, rz);
-    glutSolidSphere(1,32,16); // slightly reduce rendered radius
+    glScaled(rx, ry, (stiffness.getValue()>0?rz:-rz));
+    glutSolidSphere(1,32,16);
     glPopMatrix();
+    glDisable(GL_CULL_FACE);
     glDisable(GL_LIGHTING);
     glDisable(GL_COLOR_MATERIAL);
 }

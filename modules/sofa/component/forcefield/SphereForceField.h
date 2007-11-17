@@ -78,8 +78,8 @@ public:
         , sphereRadius(dataField(&sphereRadius, (Real)1, "radius", "sphere radius"))
         , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness"))
         , damping(dataField(&damping, (Real)5, "damping", "force damping"))
-        , color(dataField(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
-        , bDraw(dataField(&bDraw, true, "draw", "enable/disable drawing of plane"))
+        , color(dataField(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "sphere color"))
+        , bDraw(dataField(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
     {
     }
 

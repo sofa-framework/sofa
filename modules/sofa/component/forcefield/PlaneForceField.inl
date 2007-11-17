@@ -173,7 +173,7 @@ void PlaneForceField<DataTypes>::draw2(float size)
 
     glColor4f(1,0,0,1);
     glDisable(GL_LIGHTING);
-    // lignes pour les points pass� dessous
+    // lines for points penetrating the plane
     glBegin(GL_LINES);
     for (unsigned int i=0; i<p1.size(); i++)
     {

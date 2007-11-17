@@ -127,7 +127,7 @@ void SphereForceField<DataTypes>::draw()
 
     glEnable(GL_LIGHTING);
     glEnable(GL_COLOR_MATERIAL);
-    glColor3f(0.0f, 0.0f, 1.0f);
+    glColor3f(color.getValue()[0],color.getValue()[1],color.getValue()[2]);
     glPushMatrix();
     glTranslated(center[0], center[1], center[2]);
     glutSolidSphere(r*0.99,32,16); // slightly reduce rendered radius

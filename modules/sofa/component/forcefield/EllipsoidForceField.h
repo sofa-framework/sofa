@@ -79,8 +79,8 @@ public:
         , vradius(dataField(&vradius, "vradius", "ellipsoid radius"))
         , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
         , damping(dataField(&damping, (Real)5, "damping", "force damping"))
-        , color(dataField(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
-        , bDraw(dataField(&bDraw, true, "draw", "enable/disable drawing of plane"))
+        , color(dataField(&color, defaulttype::Vec3f(0.0f,0.5f,1.0f), "color", "ellipsoid color"))
+        , bDraw(dataField(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
     {
     }
 
