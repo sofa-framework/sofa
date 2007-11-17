@@ -528,7 +528,7 @@ public:
     {
         if (child!=NULL)
         {
-            simulation::tree::Simulation::unload(child);
+            simulation::tree::getSimulation()->unload(child);
         }
     }
 

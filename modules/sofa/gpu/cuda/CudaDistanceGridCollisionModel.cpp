@@ -330,7 +330,7 @@ void CudaDistanceGrid::calcCubeDistance(Real dim, int np)
                 if (out)
                     d = (p - s).norm();
                 else
-                    d = rmax(rmax(rabs(s[0]),rabs(s[1])),rabs(s[2])) - dim2;
+                    d = helper::rmax(helper::rmax(helper::rabs(s[0]),helper::rabs(s[1])),helper::rabs(s[2])) - dim2;
                 dists[i] = d - (dim-dim2);
             }
     //computeBBox();

@@ -38,6 +38,9 @@ using namespace gpu::cuda;
 template <>
 void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
+    const VecCoord& points = this->points.getValue();
+    Coord translation;
+    Mat rotation;
     rotatedPoints.resize(points.size());
     out.fastResize(points.size());
 
@@ -56,6 +59,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 template <>
 void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
+    const VecCoord& points = this->points.getValue();
     Deriv v,omega;
     out.fastResize(points.size());
     v = in[index.getValue()].getVCenter();
@@ -72,6 +76,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 template <>
 void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
 {
+    const VecCoord& points = this->points.getValue();
     Deriv v,omega;
     int nbloc = ((points.size()+BSIZE-1)/BSIZE);
     data.tmp.fastResize(2*nbloc);
@@ -88,6 +93,9 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 template <>
 void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
 {
+    const VecCoord& points = this->points.getValue();
+    Coord translation;
+    Mat rotation;
     rotatedPoints.resize(points.size());
     out.fastResize(points.size());
 
@@ -106,6 +114,7 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
 template <>
 void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
 {
+    const VecCoord& points = this->points.getValue();
     Deriv v,omega;
     out.fastResize(points.size());
     v = in[index.getValue()].getVCenter();

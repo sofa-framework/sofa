@@ -34,6 +34,10 @@ public:
     TopologyBarycentricMapper(topology::RegularGridTopology* topology) : maxNOut(0), topology(topology)
     {}
 
+    bool empty() const {return map.size()==0;}
+
+    void setTopology( topology::RegularGridTopology* t ) { topology = t; }
+
     void clear(int reserve=0);
 
     int addPointInCube(int cubeIndex, const Real* baryCoords);
@@ -45,6 +49,18 @@ public:
     void applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
     void applyJT( In::VecConst& out, const Out::VecConst& in );
     void draw( const Out::VecCoord& out, const In::VecCoord& in);
+
+    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> &b )
+    {
+        in >> b.map;
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> & b )
+    {
+        out << b.map;
+        return out;
+    }
 };
 
 } // namespace mapping

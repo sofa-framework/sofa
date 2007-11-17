@@ -366,7 +366,7 @@ void MechanicalObject<CudaVec3fTypes>::resetForce()
 }
 
 template <>
-void MechanicalObject<CudaVec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
+void MechanicalObject<CudaVec3fTypes>::getIndicesInSpace(helper::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const
 {
     const VecCoord& x = *getX();
     for( unsigned i=0; i<x.size(); ++i )

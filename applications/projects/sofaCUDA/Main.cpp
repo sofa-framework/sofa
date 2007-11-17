@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 
     if (!fileName.empty())
     {
-        groot = Simulation::load(fileName.c_str());
+        groot = getSimulation()->load(fileName.c_str());
     }
 
     if (groot==NULL)
@@ -65,7 +65,7 @@ int main(int argc, char** argv)
 
         std::cout << "Computing first iteration." << std::endl;
 
-        Simulation::animate(groot);
+        getSimulation()->animate(groot);
 
         //=======================================
         // Run the main loop
@@ -84,7 +84,7 @@ int main(int argc, char** argv)
                 std::cout << '.' << std::flush;
                 ++n;
             }
-            Simulation::animate(groot);
+            getSimulation()->animate(groot);
         }
 
         t1 = CTime::getRefTime();
@@ -97,10 +97,10 @@ int main(int argc, char** argv)
         flog.close();
         std::string objname = fileName.substr(0,fileName.length()-4)+"-scene.obj";
         std::cout << "Exporting to OBJ " << objname << std::endl;
-        Simulation::exportOBJ(groot, objname.c_str());
+        getSimulation()->exportOBJ(groot, objname.c_str());
         std::string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
         std::cout << "Exporting to XML " << xmlname << std::endl;
-        Simulation::exportXML(groot, xmlname.c_str());
+        getSimulation()->exportXML(groot, xmlname.c_str());
 
     }
     else

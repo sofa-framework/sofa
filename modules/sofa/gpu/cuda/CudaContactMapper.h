@@ -104,9 +104,9 @@ public:
             this->outmodel->resize(n);
         if (this->mapping)
         {
-            this->mapping->points.fastResize(n);
+            this->mapping->points.beginEdit()->fastResize(n);
             this->mapping->rotatedPoints.fastResize(n);
-            RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->points.deviceWrite());
+            RigidContactMapperCuda3f_setPoints2(n, nt, maxp, outputs->tests.deviceRead(), outputs->results.deviceRead(), this->mapping->points.beginEdit()->deviceWrite());
         }
         else
         {

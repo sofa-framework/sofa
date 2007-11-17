@@ -31,7 +31,7 @@ template <>
 void MechanicalObject<gpu::cuda::CudaVec3fTypes>::resetForce();
 
 template <>
-void MechanicalObject<gpu::cuda::CudaVec3fTypes>::getIndicesInSpace(std::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const;
+void MechanicalObject<gpu::cuda::CudaVec3fTypes>::getIndicesInSpace(helper::vector<unsigned>& indices,Real xmin,Real xmax,Real ymin,Real ymax,Real zmin,Real zmax) const;
 
 } // namespace component
 

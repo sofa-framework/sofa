@@ -60,10 +60,10 @@ void PenalityContactForceField<CudaVec3fTypes>::clear(int reserve)
 }
 
 //template<>
-void PenalityContactForceField<CudaVec3fTypes>::addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v, int oldIndex)
+void PenalityContactForceField<CudaVec3fTypes>::addContact(int /*m1*/, int /*m2*/, const Deriv& norm, Real dist, Real ks, Real /*mu_s*/, Real /*mu_v*/, int /*oldIndex*/)
 {
-    int i = contacts.size();
     /*
+    int i = contacts.size();
     contacts.resize(i+1);
     Contact& c = contacts[i];
     c.m1 = m1;
@@ -84,7 +84,7 @@ void PenalityContactForceField<CudaVec3fTypes>::addContact(int m1, int m2, const
     }
     */
     sofa::defaulttype::Vec4f c(norm, dist);
-    Real fact = rsqrt(ks);
+    Real fact = helper::rsqrt(ks);
     c *= fact;
     contacts.push_back(c);
     pen.push_back(0);
@@ -104,7 +104,7 @@ void PenalityContactForceField<CudaVec3fTypes>::setContacts(Real d0, Real stiffn
         Real ks = stiffness / distance;
         Coord n = (normXForm)?(*normXForm)*o->normal : o->normal;
         defaulttype::Vec4f c(n, distance);
-        c *= rsqrt(ks);
+        c *= helper::rsqrt(ks);
         contacts[i] = c;
         pen[i] = 0;
     }
