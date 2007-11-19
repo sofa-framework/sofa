@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <sofa/helper/static_assert.h>
 
+
 namespace sofa
 {
 
@@ -309,7 +310,7 @@ public:
     {
         for (int i=0; i<L; i++)
             for (int j=i+1; j<C; j++)
-                if( this->elems[i][j] !=  this->elems[j][i] ) return false;
+                if( fabs( this->elems[i][j] - this->elems[j][i] ) > EQUALITY_THRESHOLD ) return false;
         return true;
     }
 

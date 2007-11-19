@@ -102,6 +102,16 @@ public:
         return out;
     }
 
+    inline bool operator ==( const T& value ) const
+    {
+        return getValue()==value;
+    }
+
+    inline void operator =( const T& value )
+    {
+        this->setValue(value);
+    }
+
 protected:
     /// Value
     T m_value;

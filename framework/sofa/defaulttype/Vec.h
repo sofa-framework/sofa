@@ -31,6 +31,9 @@
 #include <functional>
 //#define SOFA_DEFAULTTYPE_VEC_H
 
+
+#define EQUALITY_THRESHOLD 1e-6
+
 namespace sofa
 {
 
@@ -446,14 +449,14 @@ public:
     bool operator==(const Vec& b) const
     {
         for (int i=0; i<N; i++)
-            if (!(this->elems[i]==b[i])) return false;
+            if ( fabs( this->elems[i] - b[i] ) > EQUALITY_THRESHOLD ) return false;
         return true;
     }
 
     bool operator!=(const Vec& b) const
     {
         for (int i=0; i<N; i++)
-            if (this->elems[i]!=b[i]) return true;
+            if ( fabs( this->elems[i] - b[i] ) > EQUALITY_THRESHOLD ) return true;
         return false;
     }
 
