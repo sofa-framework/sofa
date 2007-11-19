@@ -373,7 +373,7 @@ geometry.
 \\
 
 One important aspect of the design of mesh topologies in SOFA is the
-fact that they are stored in a hierarchical manner. For instance, a
+fact that they are organized in a class hierarchy. For instance, a
 triangulation object derives from an edge set object since a
 triangulation can be also viewed as a set of edges, each triangle
 having 3 edges. This is very important to design generic software
@@ -492,7 +492,7 @@ Edge, Triangle, Tetrahedron}
 
     \begin{itemize}
 
-    \item Container (useless) : For each point gives its index
+    \item Container : For each point gives its global index. This is useful for subset topologies (subset triangulation, ...) where the number of vertices involved in the topology may not be the same as the total number of vertices. 
 
     \item Modifier : addPointsProcess, removePointsProcess, renumberPointsProcess, addPointsWarning, removePointsWarning, propagateTopologicalChanges
 
