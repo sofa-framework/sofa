@@ -50,6 +50,9 @@ public:
     Data<bool> usePointPoint;
     Data<double> alarmDistance;
     Data<double> contactDistance;
+    Data<bool> filterIntersection;
+    Data<double> angleCone;
+
 
     MinProximityIntersection();
 
@@ -96,6 +99,13 @@ public:
     int computeIntersection(Point&, Point&, OutputVector*);
     int computeIntersection(Ray&, Triangle&, OutputVector*);
 
+    /// These methods check the validity of a found intersection.
+    /// According to the local configuration around the found intersected primitive,
+    /// we build a "Region Of Interest" geometric cone.
+    /// Pertinent intersections have to belong to this cone, others are not taking into account anymore.
+    bool testValidity(Point&, const Vector3&);
+    bool testValidity(Line&, const Vector3&);
+    bool testValidity(Triangle&, const Vector3&);
 };
 
 } // namespace collision

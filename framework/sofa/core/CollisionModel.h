@@ -70,6 +70,7 @@ public:
         , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
         , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
         , size(0), previous(NULL), next(NULL)
+        , bFiltered(initData(&bFiltered, false, "filtered", "flag indicating if the model has to build its neighborhood to filter contacts"))
     {
     }
 
@@ -143,6 +144,14 @@ public:
     virtual bool isStatic() { return bStatic.getValue(); }
 
     virtual void setStatic(bool val=true) { bStatic.setValue(val); }
+
+    /// \brief Return true if this CollisionModel must build its neigborhood
+    /// basically to be used in filtered proximity detection
+    ///
+    /// Default to false.
+    virtual bool isFiltered() { return bFiltered.getValue(); }
+
+    virtual void setFiltered(bool val=true) { bFiltered.setValue(val); }
 
     /// Create or update the bounding volume hierarchy.
     virtual void computeBoundingTree(int maxDepth=0) = 0;
@@ -261,6 +270,8 @@ protected:
     Data<double> contactStiffness;
 
     Data<double> contactFriction;
+
+    Data<bool> bFiltered;
 
     /// Number of collision elements
     int size;

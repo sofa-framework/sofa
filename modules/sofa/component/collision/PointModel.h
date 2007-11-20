@@ -30,6 +30,7 @@
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <vector>
 
 namespace sofa
 {
@@ -54,6 +55,9 @@ public:
     const Vector3& p() const;
     const Vector3& pFree() const;
     const Vector3& v() const;
+
+    void getLineNeighbors(std::vector<const Vector3> &) const;
+    void getTriangleNeighbors(std::vector<std::pair<Vector3, Vector3> > &) const;
 };
 
 class PointModel : public core::CollisionModel, public core::VisualModel
@@ -69,6 +73,9 @@ public:
     friend class Point;
 
     PointModel();
+
+    std::vector< std::vector<int> > lineNeighbors;
+    std::vector< std::vector< std::pair<int, int> > > triangleNeighbors;
 
     virtual void init();
 

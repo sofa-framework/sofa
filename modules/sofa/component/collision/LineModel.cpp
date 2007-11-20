@@ -80,6 +80,49 @@ void LineModel::init()
         return;
     }
     updateFromTopology();
+
+    // If the CollisionDetection Method uses the filtration method based on cones
+    if (this->isFiltered())
+    {
+        // Triangle neighborhood construction
+        if (mesh != NULL)
+        {
+            const int nTriangles = mesh->getNbTriangles();
+            if (nTriangles != 0)
+            {
+                for (int i=0; i<size; i++)
+                {
+                    Line l(this,i);
+                    elems[i].tRight = -1;
+                    elems[i].tLeft = -1;
+
+                    const Vector3& pt1 = l.p1();
+                    const Vector3& pt2 = l.p2();
+
+                    for (int j=0; j<nTriangles; j++)
+                    {
+                        MeshTopology::Triangle idx = mesh->getTriangle(j);
+                        Vector3 a = (*mstate->getX())[idx[0]];
+                        Vector3 b = (*mstate->getX())[idx[1]];
+                        Vector3 c = (*mstate->getX())[idx[2]];
+
+                        if ((a == pt1) && (b == pt2))
+                            elems[i].tLeft = idx[2];
+                        else if ((b == pt1) && (c == pt2))
+                            elems[i].tLeft = idx[0];
+                        else if ((c == pt1) && (a == pt2))
+                            elems[i].tLeft = idx[1];
+                        else if ((a == pt2) && (b == pt1))
+                            elems[i].tRight = idx[2];
+                        else if ((b == pt2) && (c == pt1))
+                            elems[i].tRight = idx[0];
+                        else if ((c == pt2) && (a == pt1))
+                            elems[i].tRight = idx[1];
+                    }
+                }
+            }
+        }
+    }
 }
 
 bool LineModel::updateFromTopology()

@@ -221,52 +221,30 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v /*
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw()
 {
-//	if (!getContext()->getShowInteractionForceFields()) return;
-//
-//	glDisable(GL_LIGHTING);
-//	glBegin(GL_LINES);
-//	glColor4f(1,0,0,1);
-//	for (unsigned int i=0; i<contacts.size(); i++)
-//	{
-//		glLineWidth(1);
-//		glColor4f(1,0,0,1);
-//		const Contact& c = contacts[i];
-//		helper::gl::glVertexT(c.P);
-//		helper::gl::glVertexT(c.Q);
-//
-//		if (c.dfree < 0)
-//		{
-//			glLineWidth(5);
-//			glColor4f(0,1,0,1);
-//			helper::gl::glVertexT(c.Pfree);
-//			helper::gl::glVertexT(c.Qfree);
-//		}
-//
-//
-//	}
-//	glEnd();
-///*
-//	glLineWidth(5);
-//	//if (getContext()->getShowNormals())
-//	{
-//		glColor4f(1,1,0,1);
-//		glBegin(GL_LINES);
-//		for (unsigned int i=0; i<contacts.size(); i++)
-//		{
-//			const Contact& c = contacts[i];
-//			//if (c.pen > 0) continue;
-//			//std::cout << " lambda["<<i<<"]="<<lambda[i]<<std::endl;
-//			Coord p = p1[c.m1] - c.norm * lambda[i];
-//			helper::gl::glVertexT(p1[c.m1]);
-//			helper::gl::glVertexT(p);
-//			p = p2[c.m2] + c.norm * lambda[i];
-//			helper::gl::glVertexT(p2[c.m2]);
-//			helper::gl::glVertexT(p);
-//		}
-//		glEnd();
-//	}
-//*/
-//	glLineWidth(1);
+    if (!getContext()->getShowInteractionForceFields()) return;
+
+    glDisable(GL_LIGHTING);
+    glBegin(GL_LINES);
+    glColor4f(1,0,0,1);
+    for (unsigned int i=0; i<contacts.size(); i++)
+    {
+        glLineWidth(1);
+        glColor4f(1,0,0,1);
+        const Contact& c = contacts[i];
+        helper::gl::glVertexT(c.P);
+        helper::gl::glVertexT(c.Q);
+
+        if (c.dfree < 0)
+        {
+            glLineWidth(5);
+            glColor4f(0,1,0,1);
+            helper::gl::glVertexT(c.Pfree);
+            helper::gl::glVertexT(c.Qfree);
+        }
+
+
+    }
+    glEnd();
 }
 
 
