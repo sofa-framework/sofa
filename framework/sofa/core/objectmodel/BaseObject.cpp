@@ -40,8 +40,8 @@ namespace objectmodel
 
 BaseObject::BaseObject()
     : Base()
-    , f_listening(dataField( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
-    , f_printLog(dataField( &f_printLog, false, "printLog", "if true, print logs at run-time"))
+    , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
+    , f_printLog(initData( &f_printLog, false, "printLog", "if true, print logs at run-time"))
     , context_(NULL)
 /*        , m_isListening(false)
         , m_printLog(false)*/

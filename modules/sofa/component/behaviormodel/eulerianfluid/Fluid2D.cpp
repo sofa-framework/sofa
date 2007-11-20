@@ -49,13 +49,13 @@ int Fluid2DClass = core::RegisterObject("Eulerian 2D fluid")
 
 Fluid2D::Fluid2D()
     : nx(16), ny(16), cellwidth(1.0f),
-      f_nx ( field(&f_nx, &nx, "nx", "grid size along x axis") ),
-      f_ny ( field(&f_ny, &ny, "ny", "grid size along y axis") ),
-      f_cellwidth ( field(&f_cellwidth, &cellwidth, "cellwidth", "width of each cell") ),
-      f_height ( dataField(&f_height, 5.0f, "height", "initial fluid height") ),
-      f_dir ( dataField(&f_dir, vec2(0,1), "dir", "initial fluid surface normal") ),
-      f_tstart ( dataField(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
-      f_tstop ( dataField(&f_tstop, 60.0f, "tstop", "stopping time for fluid source") )
+      f_nx ( initDataPtr(&f_nx, &nx, "nx", "grid size along x axis") ),
+      f_ny ( initDataPtr(&f_ny, &ny, "ny", "grid size along y axis") ),
+      f_cellwidth ( initDataPtr(&f_cellwidth, &cellwidth, "cellwidth", "width of each cell") ),
+      f_height ( initData(&f_height, 5.0f, "height", "initial fluid height") ),
+      f_dir ( initData(&f_dir, vec2(0,1), "dir", "initial fluid surface normal") ),
+      f_tstart ( initData(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
+      f_tstop ( initData(&f_tstop, 60.0f, "tstop", "stopping time for fluid source") )
 {
     fluid = new Grid2D;
     fnext = new Grid2D;

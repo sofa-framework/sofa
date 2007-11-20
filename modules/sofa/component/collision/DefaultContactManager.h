@@ -47,7 +47,7 @@ protected:
 
     void clear();
 public:
-    DataField<std::string> response;
+    Data<std::string> response;
 
     DefaultContactManager();
     ~DefaultContactManager();

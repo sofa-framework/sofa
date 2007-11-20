@@ -45,7 +45,7 @@ namespace objectmodel
  *  \brief Abstract base class for all fields, independently of their type.
  *
  */
-class FieldBase
+class BaseData
 {
 public:
     /** Constructor
@@ -53,13 +53,13 @@ public:
      *  \param h help
      *  \param m true iff the argument is mandatory
      */
-    FieldBase( const char* h)
+    BaseData( const char* h)
         : help(h)
         , m_isSet(false)
     {}
 
     /// Base destructor: does nothing.
-    virtual ~FieldBase() {}
+    virtual ~BaseData() {}
 
     /// Read the command line
     virtual bool read( std::string& str ) = 0;

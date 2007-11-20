@@ -28,7 +28,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/Data.h>
 namespace sofa
 {
 
@@ -118,7 +118,7 @@ protected:
     vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
     vector<Vector3> normals;
     vector< vector < vector <int> > > facets;
-    sofa::core::objectmodel::DataField< Material > material;
+    sofa::core::objectmodel::Data< Material > material;
 
     std::string textureName;
 public:

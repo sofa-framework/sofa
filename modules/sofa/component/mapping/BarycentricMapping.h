@@ -398,10 +398,10 @@ protected:
     typedef TopologyBarycentricMapper<topology::SparseGridTopology, InDataTypes, OutDataTypes> SparseGridMapper;
 
     Mapper* mapper;
-    Field< RegularGridMapper >* f_grid;
-    Field< SparseGridMapper >* f_sparsegrid;
-    Field< MeshMapper >*        f_mesh;
-    Field< TriangleSetMapper >*        f_triangle;
+    DataPtr< RegularGridMapper >* f_grid;
+    DataPtr< SparseGridMapper >* f_sparsegrid;
+    DataPtr< MeshMapper >*        f_mesh;
+    DataPtr< TriangleSetMapper >*        f_triangle;
     void calcMap(topology::RegularGridTopology* topo);
     void calcMap(topology::SparseGridTopology* topo);
     void calcMap(topology::MeshTopology* topo);
@@ -410,10 +410,10 @@ protected:
 public:
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
-        , f_grid (new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping"))
-        , f_sparsegrid (new Field< SparseGridMapper >( new SparseGridMapper( NULL ),"Sparse Grid Mapping"))
-        , f_mesh (new Field< MeshMapper >       ( new MeshMapper( NULL ),"Mesh Mapping"))
-        , f_triangle (new Field< TriangleSetMapper >       ( new TriangleSetMapper( NULL ),"TriangleSet Mapping"))
+        , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping"))
+        , f_sparsegrid (new DataPtr< SparseGridMapper >( new SparseGridMapper( NULL ),"Sparse Grid Mapping"))
+        , f_mesh (new DataPtr< MeshMapper >       ( new MeshMapper( NULL ),"Mesh Mapping"))
+        , f_triangle (new DataPtr< TriangleSetMapper >       ( new TriangleSetMapper( NULL ),"TriangleSet Mapping"))
     {
         this->addField( f_grid, "gridmap");	f_grid->beginEdit();
         this->addField( f_sparsegrid, "sparsegridmap");	f_sparsegrid->beginEdit();
@@ -426,33 +426,33 @@ public:
     {
         //Regular Grid Case
         if (RegularGridMapper* m = dynamic_cast< RegularGridMapper* >(mapper))
-            f_grid = new Field< RegularGridMapper >( m,"Regular Grid Mapping");
+            f_grid = new DataPtr< RegularGridMapper >( m,"Regular Grid Mapping");
         else
-            f_grid = new Field< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping");
+            f_grid = new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping");
 
         this->addField( f_grid, "gridmap");	f_grid->beginEdit();
 
         //Sparse Grid Case
         if (SparseGridMapper* m = dynamic_cast< SparseGridMapper* >(mapper))
-            f_sparsegrid = new Field< SparseGridMapper >( m,"Sparse Grid Mapping");
+            f_sparsegrid = new DataPtr< SparseGridMapper >( m,"Sparse Grid Mapping");
         else
-            f_sparsegrid = new Field< SparseGridMapper >( new SparseGridMapper( NULL ),"Sparse Grid Mapping");
+            f_sparsegrid = new DataPtr< SparseGridMapper >( new SparseGridMapper( NULL ),"Sparse Grid Mapping");
 
         this->addField( f_sparsegrid, "sparsegridmap");	f_sparsegrid->beginEdit();
 
         //Mesh Case
         if (MeshMapper* m = dynamic_cast< MeshMapper* >(mapper))
-            f_mesh = new Field< MeshMapper >( m,"Mesh Mapping");
+            f_mesh = new DataPtr< MeshMapper >( m,"Mesh Mapping");
         else
-            f_mesh = new Field< MeshMapper >( new MeshMapper( NULL ),"Mesh Mapping");
+            f_mesh = new DataPtr< MeshMapper >( new MeshMapper( NULL ),"Mesh Mapping");
 
         this->addField( f_mesh, "meshmap");	f_mesh->beginEdit();
 
         //TriangleSet Case
         if (TriangleSetMapper* m = dynamic_cast< TriangleSetMapper* >(mapper))
-            f_triangle = new Field< TriangleSetMapper >( m,"TriangleSet Mapping");
+            f_triangle = new DataPtr< TriangleSetMapper >( m,"TriangleSet Mapping");
         else
-            f_triangle = new Field< TriangleSetMapper >( new TriangleSetMapper( NULL ),"TriangleSet Mapping");
+            f_triangle = new DataPtr< TriangleSetMapper >( new TriangleSetMapper( NULL ),"TriangleSet Mapping");
 
         this->addField( f_triangle, "trianglemap");	f_triangle->beginEdit();
 

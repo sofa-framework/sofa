@@ -26,13 +26,13 @@
 #define SOFA_CORE_OBJECTMODEL_BASE_H
 
 #include <sofa/helper/system/config.h>
-#include <sofa/core/objectmodel/Field.h>
-#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/DataPtr.h>
+#include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <string>
 
-using sofa::core::objectmodel::Field;
-using sofa::core::objectmodel::DataField;
+using sofa::core::objectmodel::DataPtr;
+using sofa::core::objectmodel::Data;
 
 namespace sofa
 {
@@ -57,7 +57,7 @@ public:
     virtual ~Base();
 
     /// Name of the object.
-    DataField<std::string> name;
+    Data<std::string> name;
 
     /// Accessor to the object name
     std::string getName() const;
@@ -146,13 +146,13 @@ public:
     virtual void parseFields ( const std::map<std::string,std::string*>& str );
 
     /// Write the current field values to the given map of name -> value pairs
-    void writeFields (std::map<std::string,std::string*>& str);
+    void writeDatas (std::map<std::string,std::string*>& str);
 
     /// Write the current field values to the given text output stream
-    void writeFields (std::ostream& out);
+    void writeDatas (std::ostream& out);
 
     /// Write the current field values to the given XML output stream
-    void xmlWriteFields (std::ostream& out, unsigned level);
+    void xmlWriteDatas (std::ostream& out, unsigned level);
 
     /// Find a field give its name, if not found, the index is the size of the vector
     unsigned int findField( const char* name ) const
@@ -175,7 +175,7 @@ public:
     }
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
-    DataField<T> dataField( DataField<T>* field, char* name, char* help )
+    Data<T> initData( Data<T>* field, char* name, char* help )
     {
         std::string ln(name);
         if( ln.size()>0 && findField(name)!=m_fieldVec.size() )
@@ -185,12 +185,12 @@ public:
         }
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(std::string(name),field));
-        return DataField<T>(help);
+        return Data<T>(help);
     }
 
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
-    DataField<T> dataField( DataField<T>* field, const T& value, char* name, char* help )
+    Data<T> initData( Data<T>* field, const T& value, char* name, char* help )
     {
         std::string ln(name);
         if( ln.size()>0 && findField(name)!=m_fieldVec.size()  )
@@ -200,12 +200,12 @@ public:
         }
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(std::string(name),field));
-        return DataField<T>(value,help);
+        return Data<T>(value,help);
     }
 
     /// Helper method used to initialize a field pointing to a value of type T
     template<class T>
-    Field<T> field( Field<T>* field, T* ptr, char* name, char* help )
+    DataPtr<T> initDataPtr( DataPtr<T>* field, T* ptr, char* name, char* help )
     {
         std::string ln(name);
         if( ln.size()>0 && findField(name)!=m_fieldVec.size() )
@@ -215,7 +215,7 @@ public:
         }
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(std::string(name),field));
-        return Field<T>(ptr,help);
+        return DataPtr<T>(ptr,help);
     }
 
 
@@ -223,14 +223,14 @@ public:
     virtual void parse ( BaseObjectDescription* arg );
 
     /// Accessor to the map containing all the fields of this object
-    std::vector< std::pair<std::string, FieldBase*> > getFields() { return m_fieldVec; }
+    std::vector< std::pair<std::string, BaseData*> > getFields() { return m_fieldVec; }
 
 protected:
     /// name -> Field object
-    std::vector< std::pair<std::string, FieldBase*> > m_fieldVec;
+    std::vector< std::pair<std::string, BaseData*> > m_fieldVec;
 
-    /// Add a field. Note that this method should only be called if the field was not initialized with the dataField<T> of field<T> methods
-    void addField( FieldBase* f, char* name )
+    /// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
+    void addField( BaseData* f, char* name )
     {
         std::string ln(name);
         if( ln.size()>0 && findField(name)!=m_fieldVec.size() )

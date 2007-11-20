@@ -123,17 +123,17 @@ public:
 protected:
 
     /// cutting number in all directions
-    DataField<int> nx;
-    DataField<int> ny;
-    DataField<int> nz;
+    Data<int> nx;
+    Data<int> ny;
+    Data<int> nz;
 
     /// bounding box positions, by default the real bounding box is used
-    DataField<double> xmin;
-    DataField<double> ymin;
-    DataField<double> zmin;
-    DataField<double> xmax;
-    DataField<double> ymax;
-    DataField<double> zmax;
+    Data<double> xmin;
+    Data<double> ymin;
+    Data<double> zmin;
+    Data<double> xmax;
+    Data<double> ymax;
+    Data<double> zmax;
 
 
     virtual void updateLines();

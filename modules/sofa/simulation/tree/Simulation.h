@@ -39,7 +39,7 @@ namespace tree
 
 /** Main controller of the scene.
 Defines how the scene is inited at the beginning, and updated at each time step.
-Derives from BaseObject in order to model the parameters as DataFields, which makes their edition easy in the GUI.
+Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
 */
 class Simulation: public virtual sofa::core::objectmodel::BaseObject
 {
@@ -103,8 +103,8 @@ public:
     virtual void exportGnuplot( GNode* root, double time );
 
     /// Number of mechanical steps within an animation step
-    DataField<unsigned> numMechSteps;
-    DataField<std::string> gnuplotDirectory;
+    Data<unsigned> numMechSteps;
+    Data<std::string> gnuplotDirectory;
 
 };
 

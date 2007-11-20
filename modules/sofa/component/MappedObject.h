@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_MAPPEDOBJECT_H
 
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
-#include <sofa/core/objectmodel/XField.h>
-#include <sofa/core/objectmodel/VField.h>
+#include <sofa/core/objectmodel/XDataPtr.h>
+#include <sofa/core/objectmodel/VDataPtr.h>
 #include <vector>
 #include <assert.h>
 #include <fstream>
@@ -71,8 +71,8 @@ public:
 
     virtual void init();
 
-    DataField<VecCoord> f_X;
-    DataField<VecDeriv> f_V;
+    Data<VecCoord> f_X;
+    Data<VecDeriv> f_V;
 
     VecCoord* getX()  { return f_X.beginEdit(); }
     VecDeriv* getV()  { return f_V.beginEdit(); }

@@ -3769,7 +3769,7 @@ void TriangleSetTopology<DataTypes>::init()
 {
 }
 template<class DataTypes>
-TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj),f_m_topologyContainer(new Field< TriangleSetTopologyContainer >(new TriangleSetTopologyContainer(), "Triangle Container"))
+TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj),f_m_topologyContainer(new DataPtr< TriangleSetTopologyContainer >(new TriangleSetTopologyContainer(), "Triangle Container"))
 
 {
     this->m_topologyContainer=f_m_topologyContainer->beginEdit();

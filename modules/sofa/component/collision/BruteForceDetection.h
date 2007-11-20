@@ -52,7 +52,7 @@ class BruteForceDetection :
 {
 private:
     sofa::helper::vector<core::CollisionModel*> collisionModels;
-    DataField<bool> bDraw;
+    Data<bool> bDraw;
 
 public:
 

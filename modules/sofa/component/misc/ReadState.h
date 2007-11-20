@@ -31,8 +31,8 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    DataField < std::string > f_filename;
-    DataField < double > f_interval;
+    Data < std::string > f_filename;
+    Data < double > f_interval;
 
 protected:
     core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;

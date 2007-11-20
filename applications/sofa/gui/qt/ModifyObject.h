@@ -108,8 +108,8 @@ protected:
     void updateHistory();
     void updateEnergy();
 
-    bool createTable(core::objectmodel::FieldBase* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
-    void storeTable(Q3Table* table, core::objectmodel::FieldBase* field);
+    bool createTable(core::objectmodel::BaseData* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL );
+    void storeTable(Q3Table* table, core::objectmodel::BaseData* field);
 
     void createVector(const Quater<double> &value, Q3GroupBox *box); //will be created as a Vec<4,double>
     void createVector(const Quater<float>  &value, Q3GroupBox *box); //will be created as a Vec<4,float>
@@ -118,32 +118,32 @@ protected:
     template< int N, class T>
     void createVector(const Vec<N,T> &value, Q3GroupBox *box);
     template< int N, class T>
-    void storeVector(std::list< QObject *>::iterator &list_it, DataField< Vec<N,T> > *ff);
+    void storeVector(std::list< QObject *>::iterator &list_it, Data< Vec<N,T> > *ff);
     //*********************************************************
     template< class T>
-    bool createQtTable(DataField< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    bool createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template<class T>
-    void storeQtTable( Q3Table* table, DataField< sofa::helper::vector< T > >* ff );
+    void storeQtTable( Q3Table* table, Data< sofa::helper::vector< T > >* ff );
     //*********************************************************
     template< class T>
-    bool createQtTable(Field< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    bool createQtTable(DataPtr< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< class T>
-    void storeQtTable( Q3Table* table, Field< sofa::helper::vector< T > >* ff );
+    void storeQtTable( Q3Table* table, DataPtr< sofa::helper::vector< T > >* ff );
     //*********************************************************
     template< int N, class T>
-    bool createQtTable(DataField< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    bool createQtTable(Data< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< int N, class T>
-    void storeQtTable( Q3Table* table, DataField< sofa::helper::vector< Vec<N,T> > >* ff );
+    void storeQtTable( Q3Table* table, Data< sofa::helper::vector< Vec<N,T> > >* ff );
     //*********************************************************
     template< int N, class T>
-    bool createQtTable(Field< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    bool createQtTable(DataPtr< sofa::helper::vector< Vec<N,T> > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< int N, class T>
-    void storeQtTable( Q3Table* table, Field< sofa::helper::vector< Vec<N,T> > >* ff );
+    void storeQtTable( Q3Table* table, DataPtr< sofa::helper::vector< Vec<N,T> > >* ff );
     //*********************************************************
     template< class T>
-    bool createQtTable(DataField< sofa::component::topology::PointData< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
+    bool createQtTable(Data< sofa::component::topology::PointData< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );
     template< class T>
-    void storeQtTable( Q3Table* table, DataField< sofa::component::topology::PointData< T > >* ff );
+    void storeQtTable( Q3Table* table, Data< sofa::component::topology::PointData< T > >* ff );
     //*********************************************************
 
 
@@ -154,7 +154,7 @@ protected:
     QPushButton *buttonUpdate;
     std::list< QObject* >                         list_Object;
     std::list< std::list< QObject* > * >          list_PointSubset;
-    std::list< std::pair< Q3Table*, core::objectmodel::FieldBase*> > list_Table;
+    std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> > list_Table;
     int Id;
 
     std::vector< double > history;

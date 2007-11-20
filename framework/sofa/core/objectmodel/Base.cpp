@@ -54,7 +54,7 @@ using std::string;
 
 Base::Base()
 {
-    name = dataField(&name,std::string("unnamed"),"name","object name");
+    name = initData(&name,std::string("unnamed"),"name","object name");
 }
 
 Base::~Base()
@@ -400,13 +400,13 @@ void  Base::parse ( BaseObjectDescription* arg )
     }
 }
 
-void  Base::writeFields ( std::map<std::string,std::string*>& args )
+void  Base::writeDatas ( std::map<std::string,std::string*>& args )
 {
-//     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
+//     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
     for (unsigned int i=0; i<m_fieldVec.size(); i++)
     {
         string valueString;
-        FieldBase* field = m_fieldVec[i].second;
+        BaseData* field = m_fieldVec[i].second;
 
         if( args[m_fieldVec[i].first] != NULL )
             *args[ m_fieldVec[i].first] = field->getValueString();
@@ -415,23 +415,23 @@ void  Base::writeFields ( std::map<std::string,std::string*>& args )
     }
 }
 
-void  Base::writeFields ( std::ostream& out )
+void  Base::writeDatas ( std::ostream& out )
 {
-//     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
+//     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
     for (unsigned int i=0; i<m_fieldVec.size(); i++)
     {
-        FieldBase* field = m_fieldVec[ i ].second;
+        BaseData* field = m_fieldVec[ i ].second;
         if( field->isSet() && !field->getValueString().empty())
             out << "<Attribute " << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\"/>";
     }
 }
 
-void  Base::xmlWriteFields ( std::ostream& out, unsigned level )
+void  Base::xmlWriteDatas ( std::ostream& out, unsigned level )
 {
-//     for( std::map<string,FieldBase*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
+//     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
     for (unsigned int i=0; i<m_fieldVec.size(); i++)
     {
-        FieldBase* field = m_fieldVec[ i ].second;
+        BaseData* field = m_fieldVec[ i ].second;
         if( field->isSet() && !field->getValueString().empty())
         {
             for (unsigned l=0; l<level; l++)

@@ -47,9 +47,9 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
     : x(new VecCoord), v(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
-    , f_X ( new XField<DataTypes>(&x,  "position coordinates ot the degrees of freedom") )
-    , f_V ( new VField<DataTypes>(&v,  "velocity coordinates ot the degrees of freedom") )
-    , f_X0( new XField<DataTypes>(&x0, "rest position coordinates ot the degrees of freedom") )
+    , f_X ( new XDataPtr<DataTypes>(&x,  "position coordinates ot the degrees of freedom") )
+    , f_V ( new VDataPtr<DataTypes>(&v,  "velocity coordinates ot the degrees of freedom") )
+    , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates ot the degrees of freedom") )
 {
     initialized = false;
     this->addField(f_X, "position");

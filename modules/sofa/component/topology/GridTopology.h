@@ -95,7 +95,7 @@ public:
     int cube(int x, int y, int z) const { return x+(n.getValue()[0]-1)*(y+(n.getValue()[1]-1)*z); }
 
 protected:
-    DataField< Vec<3, int> > n;
+    Data< Vec<3, int> > n;
 
     virtual void setSize();
     virtual void updateLines();

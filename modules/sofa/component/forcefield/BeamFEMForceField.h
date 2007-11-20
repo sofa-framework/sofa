@@ -75,12 +75,12 @@ protected:
     topology::MeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
-    DataField< VecCoord > _initialPoints; ///< the intial positions of the points
+    Data< VecCoord > _initialPoints; ///< the intial positions of the points
     int _method; ///< the computation method of the displacements
-    DataField<Real> _poissonRatio;
-    DataField<Real> _youngModulus;
-    DataField<bool> _timoshenko;
-    DataField<Real> _radius;
+    Data<Real> _poissonRatio;
+    Data<Real> _youngModulus;
+    Data<bool> _timoshenko;
+    Data<Real> _radius;
     bool _updateStiffnessMatrix;
     bool _assembling;
 
@@ -100,12 +100,12 @@ public:
     BeamFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
-        , _initialPoints(dataField(&_initialPoints, "initialPoints", "Initial Position"))
+        , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
         , _method(0)
-        , _poissonRatio(dataField(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
-        , _youngModulus(dataField(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
-        , _timoshenko(dataField(&_timoshenko,true,"timoshenko","use Timoshenko beam (non-null section shear area)"))
-        , _radius(dataField(&_radius,(Real)0.1,"radius","radius of the section"))
+        , _poissonRatio(initData(&_poissonRatio,(Real)0.49f,"poissonRatio","Potion Ratio"))
+        , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
+        , _timoshenko(initData(&_timoshenko,true,"timoshenko","use Timoshenko beam (non-null section shear area)"))
+        , _radius(initData(&_radius,(Real)0.1,"radius","radius of the section"))
         , _updateStiffnessMatrix(true)
         , _assembling(false)
     {

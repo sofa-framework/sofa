@@ -51,10 +51,10 @@ int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
 
 MeshTopology::MeshTopology()
     : nbPoints(0)
-    , seqLines(dataField(&seqLines,"lines","List of line indices")), validLines(false)
-    , seqTriangles(dataField(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
+    , seqLines(initData(&seqLines,"lines","List of line indices")), validLines(false)
+    , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
     , validQuads(false), validTetras(false), validCubes(false), revision(0)
-    , filename(dataField(&filename,"filename","Filename of the object"))
+    , filename(initData(&filename,"filename","Filename of the object"))
 {
 }
 

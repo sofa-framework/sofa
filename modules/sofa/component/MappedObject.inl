@@ -36,8 +36,8 @@ namespace component
 
 template <class DataTypes>
 MappedObject<DataTypes>::MappedObject()
-    : f_X( dataField(&f_X, "position", "position vector") )
-    , f_V( dataField(&f_V, "velocity", "velocity vector") )
+    : f_X( initData(&f_X, "position", "position vector") )
+    , f_V( initData(&f_V, "velocity", "velocity vector") )
 {
 }
 

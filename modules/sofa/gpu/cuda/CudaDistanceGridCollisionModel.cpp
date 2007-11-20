@@ -424,14 +424,14 @@ std::map<CudaDistanceGrid::CudaDistanceGridParams, CudaDistanceGrid*>& CudaDista
 
 CudaRigidDistanceGridCollisionModel::CudaRigidDistanceGridCollisionModel()
     : modified(true)
-    , filename( dataField( &filename, "filename", "load distance grid from specified file"))
-    , scale( dataField( &scale, 1.0, "scale", "scaling factor for input file"))
-    , box( dataField( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
-    , nx( dataField( &nx, 64, "nx", "number of values on X axis") )
-    , ny( dataField( &ny, 64, "ny", "number of values on Y axis") )
-    , nz( dataField( &nz, 64, "nz", "number of values on Z axis") )
-    , dumpfilename( dataField( &dumpfilename, "dumpfilename","write distance grid to specified file"))
-    , usePoints( dataField( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
+    , filename( initData( &filename, "filename", "load distance grid from specified file"))
+    , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
+    , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    , nx( initData( &nx, 64, "nx", "number of values on X axis") )
+    , ny( initData( &ny, 64, "ny", "number of values on Y axis") )
+    , nz( initData( &nz, 64, "nz", "number of values on Z axis") )
+    , dumpfilename( initData( &dumpfilename, "dumpfilename","write distance grid to specified file"))
+    , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
 {
     rigid = NULL;
 }

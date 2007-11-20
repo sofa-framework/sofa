@@ -97,11 +97,11 @@ public:
     double getPZ(int i) const { return getPoint(i)[2]; }
 
 protected:
-    DataField<int> nx;
-    DataField<int> ny;
-    DataField<int> nz;
-    DataField<bool> internalPoints;
-    DataField<bool> splitNormals;
+    Data<int> nx;
+    Data<int> ny;
+    Data<int> nz;
+    Data<bool> internalPoints;
+    Data<bool> splitNormals;
 
     /// Position of point 0
     Vec3 p0;

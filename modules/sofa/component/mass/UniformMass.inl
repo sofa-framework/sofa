@@ -49,8 +49,8 @@ using namespace sofa::defaulttype;
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
-    : mass( dataField(&mass, MassType(1.0f), "mass", "Mass of each particle") )
-    , totalMass( dataField(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
+    : mass( initData(&mass, MassType(1.0f), "mass", "Mass of each particle") )
+    , totalMass( initData(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
 {}
 
 template <class DataTypes, class MassType>

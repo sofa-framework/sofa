@@ -51,12 +51,12 @@ namespace forcefield
 
 template<class DataTypes>
 SPHFluidForceField<DataTypes>::SPHFluidForceField()
-    : particleRadius   (dataField(&particleRadius   ,Real(1)     , "radius", "Radius of a Particle")),
-      particleMass     (dataField(&particleMass     ,Real(1)     , "mass", "Mass of a Particle")),
-      pressureStiffness(dataField(&pressureStiffness,Real(100)   , "pressure", "Pressure")),
-      density0         (dataField(&density0         ,Real(1)     , "density", "Density")),
-      viscosity        (dataField(&viscosity        ,Real(0.001f), "viscosity", "Viscosity")),
-      surfaceTension   (dataField(&surfaceTension   ,Real(0)     , "surfaceTension", "Surface Tension")),
+    : particleRadius   (initData(&particleRadius   ,Real(1)     , "radius", "Radius of a Particle")),
+      particleMass     (initData(&particleMass     ,Real(1)     , "mass", "Mass of a Particle")),
+      pressureStiffness(initData(&pressureStiffness,Real(100)   , "pressure", "Pressure")),
+      density0         (initData(&density0         ,Real(1)     , "density", "Density")),
+      viscosity        (initData(&viscosity        ,Real(0.001f), "viscosity", "Viscosity")),
+      surfaceTension   (initData(&surfaceTension   ,Real(0)     , "surfaceTension", "Surface Tension")),
       grid(NULL)
 {
 }

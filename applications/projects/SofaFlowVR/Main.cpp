@@ -121,12 +121,12 @@ public:
 class FlowVRObject : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    DataField<std::string> modName;
+    Data<std::string> modName;
     FlowVRModule* mod;
 
 
     FlowVRObject()
-        : modName(dataField(&modName, "module", "Name of FlowVR Module"))
+        : modName(initData(&modName, "module", "Name of FlowVR Module"))
         , mod(NULL)
     {
         f_listening.setValue(true);
@@ -228,21 +228,21 @@ class FlowVRModule : public FlowVRObject
 {
 public:
     flowvr::ModuleAPI* module;
-    DataField<double> f_dt;
-    DataField<float> f_scale;
-    DataField<Vec3f> f_trans;
-    DataField< vector<std::string> > f_inputPorts;
-    DataField< vector<std::string> > f_outputPorts;
+    Data<double> f_dt;
+    Data<float> f_scale;
+    Data<Vec3f> f_trans;
+    Data< vector<std::string> > f_inputPorts;
+    Data< vector<std::string> > f_outputPorts;
     int it;
     double lasttime;
     bool step;
     FlowVRModule()
         : module(NULL)
-        , f_dt(dataField(&f_dt,0.0,"dt","simulation time interval between flowvr iteration"))
-        , f_scale(dataField(&f_scale,1.0f,"scale","scale"))
-        , f_trans(dataField(&f_trans,Vec3f(0,0,0),"translation","translation"))
-        , f_inputPorts(dataField(&f_inputPorts,"inputPorts","additional input ports to be defined"))
-        , f_outputPorts(dataField(&f_outputPorts,"outputPorts","additional output ports to be defined"))
+        , f_dt(initData(&f_dt,0.0,"dt","simulation time interval between flowvr iteration"))
+        , f_scale(initData(&f_scale,1.0f,"scale","scale"))
+        , f_trans(initData(&f_trans,Vec3f(0,0,0),"translation","translation"))
+        , f_inputPorts(initData(&f_inputPorts,"inputPorts","additional input ports to be defined"))
+        , f_outputPorts(initData(&f_outputPorts,"outputPorts","additional output ports to be defined"))
         , it(-1)
         , lasttime(0.0), step(false)
     {
@@ -356,8 +356,8 @@ public:
     flowvr::InputPort* pInPoints;
     flowvr::InputPort* pInMatrix;
 
-    DataField<bool> computeV;
-    DataField<double> maxVDist;
+    Data<bool> computeV;
+    Data<double> maxVDist;
 
     // Velocity is estimated by searching the nearest primitive from each new point
     // To do it we need to create an additionnal PointModel collision model, as well as a Detection and Intersection class
@@ -377,8 +377,8 @@ public:
 
     FlowVRInputMesh()
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
-        , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
-        , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
         , facetsLastIt(-20), pointsLastIt(-20), matrixLastIt(-20), motionLastTime(-1000)
     {
@@ -674,8 +674,8 @@ public:
     flowvr::InputPort* pInMatrix;
     flowvr::StampInfo stampSizes, stampP0, stampDP, stampBB;
 
-    DataField<bool> computeV;
-    DataField<double> maxVDist;
+    Data<bool> computeV;
+    Data<double> maxVDist;
 
     Mat4x4f matrix, lastMatrix;
     float mscale; ///< scale part from input matrix
@@ -695,8 +695,8 @@ public:
         , stampP0("P0", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
         , stampDP("DP", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
         , stampBB("BB", flowvr::TypeArray::create(6, flowvr::TypeInt::create()))
-        , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
-        , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , mscale(1.0f), distanceLastIt(-20), matrixLastIt(-20), motionLastTime(-1000), curDistGrid(NULL), emptyGrid(NULL)
         , grid(NULL) //, rigid(NULL)
     {
@@ -1191,9 +1191,9 @@ public:
     typedef Inherit::VecCoord VecCoord;
     typedef Inherit::Coord Coord;
 
-    DataField<std::string> vShader;
-    DataField<std::string> pShader;
-    DataField<bool> useTangent;
+    Data<std::string> vShader;
+    Data<std::string> pShader;
+    Data<bool> useTangent;
     std::string texture;
 
     std::map<std::string,std::string> paramT;
@@ -1219,10 +1219,10 @@ public:
     int lastNormRev;
 
     FlowVRRenderMesh()
-        : vShader(dataField(&vShader, std::string(""), "vshader", "vertex shader name"))
-        , pShader(dataField(&pShader, std::string(""), "pshader", "pixel shader name"))
-        , useTangent(dataField(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
-//    , color(dataField(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
+        : vShader(initData(&vShader, std::string(""), "vshader", "vertex shader name"))
+        , pShader(initData(&pShader, std::string(""), "pshader", "pixel shader name"))
+        , useTangent(initData(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
+//    , color(initData(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
 //    , topology(NULL)
 //    , mmodel(NULL)
         , idP(0)

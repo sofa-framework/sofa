@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/core/objectmodel/FieldBase.h>
+#include <sofa/core/objectmodel/BaseData.h>
 #include <stdlib.h>
 #include <string>
 #include <sstream>
@@ -52,27 +52,27 @@ namespace objectmodel
  *
  */
 template < class T = void* >
-class DataField : public sofa::core::objectmodel::FieldBase
+class Data : public sofa::core::objectmodel::BaseData
 {
 public:
 
     /** Constructor
     \param helpMsg help on the field
      */
-    DataField( const char* helpMsg=0 )
-        : FieldBase(helpMsg)
+    Data( const char* helpMsg=0 )
+        : BaseData(helpMsg)
     {}
 
     /** Constructor
     \param value default value
     \param helpMsg help on the field
      */
-    DataField( const T& value, const char* helpMsg=0 )
-        : FieldBase(helpMsg)
+    Data( const T& value, const char* helpMsg=0 )
+        : BaseData(helpMsg)
         , m_value(value)
     {}
 
-    virtual ~DataField()
+    virtual ~Data()
     {}
 
     inline void setHelpMsg( const char* msg ) { this->help = msg; }
@@ -96,7 +96,7 @@ public:
         return m_value;
     }
 
-    inline friend std::ostream & operator << (std::ostream &out, const DataField& df)
+    inline friend std::ostream & operator << (std::ostream &out, const Data& df)
     {
         out<<df.getValue();
         return out;
@@ -142,7 +142,7 @@ protected:
 /// Specialization for reading strings
 template<>
 inline
-bool DataField<std::string>::read( std::string& str )
+bool Data<std::string>::read( std::string& str )
 {
     m_value = str;
     m_isSet = true;
@@ -152,7 +152,7 @@ bool DataField<std::string>::read( std::string& str )
 /// Specialization for reading booleans
 template<>
 inline
-bool DataField<bool>::read( std::string& str )
+bool Data<bool>::read( std::string& str )
 {
     if (str.empty())
         return false;
@@ -170,7 +170,7 @@ bool DataField<bool>::read( std::string& str )
 /// General case for printing default value
 template<class T>
 inline
-void DataField<T>::printValue( std::ostream& out=std::cout ) const
+void Data<T>::printValue( std::ostream& out=std::cout ) const
 {
     out << m_value << " ";
 }
@@ -178,7 +178,7 @@ void DataField<T>::printValue( std::ostream& out=std::cout ) const
 /// General case for printing default value
 template<class T>
 inline
-std::string DataField<T>::getValueString() const
+std::string Data<T>::getValueString() const
 {
     std::ostringstream out;
     out << m_value;
@@ -187,9 +187,9 @@ std::string DataField<T>::getValueString() const
 
 template<class T>
 inline
-std::string DataField<T>::getValueTypeString() const
+std::string Data<T>::getValueTypeString() const
 {
-    return FieldBase::typeName(&m_value);
+    return BaseData::typeName(&m_value);
 }
 
 

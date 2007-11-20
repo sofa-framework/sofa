@@ -64,11 +64,11 @@ public:
     typedef CollisionElementIterator Iterator;
 
     CollisionModel()
-        : bStatic(dataField(&bStatic, false, "static", "flag indicating if an object is immobile"))
-        , bActive(dataField(&bActive, true, "active", "flag indicating if this collision model is active and should be included in collision detections"))
-        , proximity(dataField(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
-        , contactStiffness(dataField(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
-        , contactFriction(dataField(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
+        : bStatic(initData(&bStatic, false, "static", "flag indicating if an object is immobile"))
+        , bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in collision detections"))
+        , proximity(initData(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
+        , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
+        , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
         , size(0), previous(NULL), next(NULL)
     {
     }
@@ -252,15 +252,15 @@ public:
 
 protected:
 
-    DataField<bool> bStatic;
+    Data<bool> bStatic;
 
-    DataField<bool> bActive;
+    Data<bool> bActive;
 
-    DataField<double> proximity;
+    Data<double> proximity;
 
-    DataField<double> contactStiffness;
+    Data<double> contactStiffness;
 
-    DataField<double> contactFriction;
+    Data<double> contactFriction;
 
     /// Number of collision elements
     int size;

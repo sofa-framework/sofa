@@ -28,17 +28,17 @@ using std::endl;
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, double _ks, double _kd)
     : Inherit(mstate1, mstate2)
-    , ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
-    , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
-    , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
+    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
+    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
 {
 }
 
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(double _ks, double _kd)
-    : ks(dataField(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
-    , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
-    , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    : ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
+    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
+    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
 {
 }
 

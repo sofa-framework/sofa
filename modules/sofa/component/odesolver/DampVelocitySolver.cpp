@@ -26,8 +26,8 @@ int DampVelocitySolverClass = core::RegisterObject("Reduce the velocities")
 SOFA_DECL_CLASS(DampVelocity);
 
 DampVelocitySolver::DampVelocitySolver()
-    : rate( dataField( &rate, 0.99, "rate", "Factor used to reduce the velocities. Typically between 0 and 1.") )
-    , threshold( dataField( &threshold, 0.0, "threshold", "Threshold under which the velocities are canceled.") )
+    : rate( initData( &rate, 0.99, "rate", "Factor used to reduce the velocities. Typically between 0 and 1.") )
+    , threshold( initData( &threshold, 0.0, "threshold", "Threshold under which the velocities are canceled.") )
 {}
 
 void DampVelocitySolver::solve(double dt)

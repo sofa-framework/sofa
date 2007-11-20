@@ -53,8 +53,8 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
 //protected:
-    DataField<MassType> mass;    ///< the mass of each particle
-    DataField<double> totalMass; ///< if >0 : total mass of this body
+    Data<MassType> mass;    ///< the mass of each particle
+    Data<double> totalMass; ///< if >0 : total mass of this body
 
 public:
     UniformMass();

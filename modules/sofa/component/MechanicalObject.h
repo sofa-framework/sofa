@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_MECHANICALOBJECT_H
 
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/objectmodel/XField.h>
-#include <sofa/core/objectmodel/VField.h>
+#include <sofa/core/objectmodel/XDataPtr.h>
+#include <sofa/core/objectmodel/VDataPtr.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <vector>
 #include <assert.h>
@@ -119,10 +119,10 @@ public:
 
     virtual void parse ( BaseObjectDescription* arg );
 
-    XField<DataTypes>* const f_X;
-    VField<DataTypes>* const f_V;
+    XDataPtr<DataTypes>* const f_X;
+    VDataPtr<DataTypes>* const f_V;
 
-    XField<DataTypes>* const f_X0;
+    XDataPtr<DataTypes>* const f_X0;
 
     VecCoord* getX()  { f_X->beginEdit(); return x;  }
     VecDeriv* getV()  { f_V->beginEdit(); return v;  }

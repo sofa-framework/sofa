@@ -158,12 +158,12 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleDestroyFunctio
 }
 template <class DataTypes> TriangularQuadraticSpringsForceField<DataTypes>::TriangularQuadraticSpringsForceField()
     : _mesh(NULL)
-    , _initialPoints(dataField(&_initialPoints,"initialPoints", "Initial Position"))
+    , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
     , updateMatrix(true)
-    , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_youngModulus(dataField(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
-    , f_dampingRatio(dataField(&f_dampingRatio,(Real)0.,"dampingRatio","Ratio damping/stiffness"))
-    , f_useAngularSprings(dataField(&f_useAngularSprings,true,"useAngularSprings","If Angular Springs should be used or not"))
+    , f_poissonRatio(initData(&f_poissonRatio,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
+    , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
+    , f_dampingRatio(initData(&f_dampingRatio,(Real)0.,"dampingRatio","Ratio damping/stiffness"))
+    , f_useAngularSprings(initData(&f_useAngularSprings,true,"useAngularSprings","If Angular Springs should be used or not"))
     , lambda(0)
     , mu(0)
 {

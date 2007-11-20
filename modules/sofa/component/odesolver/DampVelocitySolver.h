@@ -21,8 +21,8 @@ class DampVelocitySolver : public sofa::simulation::tree::OdeSolverImpl
 public:
     DampVelocitySolver();
     void solve (double dt);
-    DataField<double> rate;
-    DataField<double> threshold;
+    Data<double> rate;
+    Data<double> threshold;
 };
 
 } // namespace odesolver

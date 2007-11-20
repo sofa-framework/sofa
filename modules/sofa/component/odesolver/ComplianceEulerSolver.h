@@ -21,7 +21,7 @@ class ComplianceEulerSolver : public sofa::simulation::tree::OdeSolverImpl
 public:
     ComplianceEulerSolver();
     void solve (double dt);
-    DataField<bool> firstCallToSolve;
+    Data<bool> firstCallToSolve;
 };
 
 } // namespace odesolver

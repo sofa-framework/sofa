@@ -65,11 +65,11 @@ protected:
     sofa::helper::vector<Coord> rotatedPoints0;
     sofa::helper::vector<Coord> rotatedPoints1;
 public:
-    DataField<unsigned> index;
+    Data<unsigned> index;
 
     BeamLinearMapping(In* from, Out* to)
         : Inherit(from, to)
-        //, index(dataField(&index,(unsigned)0,"index","input DOF index"))
+        //, index(initData(&index,(unsigned)0,"index","input DOF index"))
     {
     }
 

@@ -71,9 +71,9 @@ public:
 protected:
 
     double m_potentialEnergy;
-    DataField<double> ks;
-    DataField<double> kd;
-    DataField<sofa::helper::vector<Spring> > springs;
+    Data<double> ks;
+    Data<double> kd;
+    Data<sofa::helper::vector<Spring> > springs;
     class Loader;
 
     SpringForceFieldInternalData<DataTypes> data;

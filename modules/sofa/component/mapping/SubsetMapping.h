@@ -44,9 +44,9 @@ public:
 
     /// Correspondance array
     typedef helper::vector<unsigned int> IndexArray;
-    DataField < IndexArray > f_indices;
-    DataField < int > f_first;
-    DataField < int > f_last;
+    Data < IndexArray > f_indices;
+    Data < int > f_first;
+    Data < int > f_last;
     SubsetMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
     void postInit();
 

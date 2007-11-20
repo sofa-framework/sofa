@@ -202,7 +202,7 @@ public:
         return out;
     }
 
-    /// Needed to be compliant with DataFields.
+    /// Needed to be compliant with Datas.
     inline friend std::istream& operator>>(std::istream& in, TriangleSetTopologyContainer& t)
     {
         unsigned int s;
@@ -570,7 +570,7 @@ class TriangleSetTopology : public EdgeSetTopology <DataTypes>
 
 public:
     TriangleSetTopology(component::MechanicalObject<DataTypes> *obj);
-    Field< TriangleSetTopologyContainer > *f_m_topologyContainer;
+    DataPtr< TriangleSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
     /** \brief Returns the TriangleSetTopologyContainer object of this TriangleSetTopology.

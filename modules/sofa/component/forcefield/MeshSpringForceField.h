@@ -24,31 +24,31 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    DataField< Real >  linesStiffness;
-    DataField< Real >  linesDamping;
-    DataField< Real >  trianglesStiffness;
-    DataField< Real >  trianglesDamping;
-    DataField< Real >  quadsStiffness;
-    DataField< Real >  quadsDamping;
-    DataField< Real >  tetrasStiffness;
-    DataField< Real >  tetrasDamping;
-    DataField< Real >  cubesStiffness;
-    DataField< Real >  cubesDamping;
+    Data< Real >  linesStiffness;
+    Data< Real >  linesDamping;
+    Data< Real >  trianglesStiffness;
+    Data< Real >  trianglesDamping;
+    Data< Real >  quadsStiffness;
+    Data< Real >  quadsDamping;
+    Data< Real >  tetrasStiffness;
+    Data< Real >  tetrasDamping;
+    Data< Real >  cubesStiffness;
+    Data< Real >  cubesDamping;
 
     void addSpring(std::set<std::pair<int,int> >& sset, int m1, int m2, Real stiffness, Real damping);
 
 public:
     MeshSpringForceField()
-        : linesStiffness(dataField(&linesStiffness,Real(0),"linesStiffness","Stiffness for the Lines")),
-          linesDamping(dataField(&linesDamping,Real(0),"linesDamping","Damping for the Lines")),
-          trianglesStiffness(dataField(&trianglesStiffness,Real(0),"trianglesStiffness","Stiffness for the Triangles")),
-          trianglesDamping(dataField(&trianglesDamping,Real(0),"trianglesDamping","Damping for the Triangles")),
-          quadsStiffness(dataField(&quadsStiffness,Real(0),"quadsStiffness","Stiffness for the Quads")),
-          quadsDamping(dataField(&quadsDamping,Real(0),"quadsDamping","Damping for the Quads")),
-          tetrasStiffness(dataField(&tetrasStiffness,Real(0),"tetrasStiffness","Stiffness for the Tetras")),
-          tetrasDamping(dataField(&tetrasDamping,Real(0),"tetrasDamping","Damping for the Tetras")),
-          cubesStiffness(dataField(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes")),
-          cubesDamping(dataField(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes"))
+        : linesStiffness(initData(&linesStiffness,Real(0),"linesStiffness","Stiffness for the Lines")),
+          linesDamping(initData(&linesDamping,Real(0),"linesDamping","Damping for the Lines")),
+          trianglesStiffness(initData(&trianglesStiffness,Real(0),"trianglesStiffness","Stiffness for the Triangles")),
+          trianglesDamping(initData(&trianglesDamping,Real(0),"trianglesDamping","Damping for the Triangles")),
+          quadsStiffness(initData(&quadsStiffness,Real(0),"quadsStiffness","Stiffness for the Quads")),
+          quadsDamping(initData(&quadsDamping,Real(0),"quadsDamping","Damping for the Quads")),
+          tetrasStiffness(initData(&tetrasStiffness,Real(0),"tetrasStiffness","Stiffness for the Tetras")),
+          tetrasDamping(initData(&tetrasDamping,Real(0),"tetrasDamping","Damping for the Tetras")),
+          cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes")),
+          cubesDamping(initData(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes"))
     {
     }
 

@@ -59,11 +59,11 @@ public:
 
     ImplicitSurfaceMapping(In* from, Out* to)
         : Inherit(from, to),
-          mStep(dataField(&mStep,0.5,"step","Step")),
-          mRadius(dataField(&mRadius,2.0,"radius","Radius")),
-          mIsoValue(dataField(&mIsoValue,0.5,"isoValue","Iso Value")),
-          mGridMin(dataField(&mGridMin,InCoord(-100,-100,-100),"min","Grid Min")),
-          mGridMax(dataField(&mGridMax,InCoord(100,100,100),"max","Grid Max"))
+          mStep(initData(&mStep,0.5,"step","Step")),
+          mRadius(initData(&mRadius,2.0,"radius","Radius")),
+          mIsoValue(initData(&mIsoValue,0.5,"isoValue","Iso Value")),
+          mGridMin(initData(&mGridMin,InCoord(-100,-100,-100),"min","Grid Min")),
+          mGridMax(initData(&mGridMax,InCoord(100,100,100),"max","Grid Max"))
     {
     }
 
@@ -96,12 +96,12 @@ public:
 
     //void applyJT( InVecDeriv& out, const OutVecDeriv& in );
 protected:
-    DataField <double > mStep;
-    DataField <double > mRadius;
-    DataField <double > mIsoValue;
+    Data <double > mStep;
+    Data <double > mRadius;
+    Data <double > mIsoValue;
 
-    DataField< InCoord > mGridMin;
-    DataField< InCoord > mGridMax;
+    Data< InCoord > mGridMin;
+    Data< InCoord > mGridMax;
 
     // Marching cube data
 
@@ -124,7 +124,7 @@ protected:
         }
     };
 
-    DataField < sofa::helper::vector<CubeData> > planes;
+    Data < sofa::helper::vector<CubeData> > planes;
     typename sofa::helper::vector<CubeData>::iterator P0; /// Pointer to first plane
     typename sofa::helper::vector<CubeData>::iterator P1; /// Pointer to second plane
 

@@ -55,8 +55,8 @@ protected:
     /// Output Model
     Out* toModel;
 
-    DataField< std::string > object1;
-    DataField< std::string > object2;
+    Data< std::string > object1;
+    Data< std::string > object2;
 public:
     /// Constructor, taking input and output models as parameters.
     ///

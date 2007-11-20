@@ -84,7 +84,7 @@ public:
 protected:
     VecReal radius;
 
-    DataField<double> defaultRadius;
+    Data<double> defaultRadius;
 
     class Loader;
 public:

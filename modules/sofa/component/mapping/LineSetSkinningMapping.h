@@ -71,9 +71,9 @@ public:
 
     LineSetSkinningMapping(In* from, Out* to)
         : Inherit(from, to)
-        , nvNeighborhood(dataField(&nvNeighborhood,(unsigned int)3,"neighborhoodLevel","Set the neighborhood line level"))
-        , numberInfluencedLines(dataField(&numberInfluencedLines,(unsigned int)4,"numberInfluencedLines","Set the number of most influenced lines by each vertice"))
-        , weightCoef(dataField(&weightCoef, (int) 4,"weightCoef","Set the coefficient used to compute the weight of lines"))
+        , nvNeighborhood(initData(&nvNeighborhood,(unsigned int)3,"neighborhoodLevel","Set the neighborhood line level"))
+        , numberInfluencedLines(initData(&numberInfluencedLines,(unsigned int)4,"numberInfluencedLines","Set the number of most influenced lines by each vertice"))
+        , weightCoef(initData(&weightCoef, (int) 4,"weightCoef","Set the coefficient used to compute the weight of lines"))
     {
     }
 
@@ -105,17 +105,17 @@ protected:
     /*!
     	Set the neighborhood line level
     */
-    DataField<unsigned int> nvNeighborhood;
+    Data<unsigned int> nvNeighborhood;
 
     /*!
     	Set the number of most influenced lines by each vertice
     */
-    DataField<unsigned int> numberInfluencedLines;
+    Data<unsigned int> numberInfluencedLines;
 
     /*!
     	Set the coefficient used to compute the weight of lines
     */
-    DataField<int> weightCoef;
+    Data<int> weightCoef;
 
     bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
 

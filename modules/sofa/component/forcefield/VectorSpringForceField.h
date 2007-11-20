@@ -62,11 +62,11 @@ protected:
     sofa::component::topology::EdgeData<Spring> springArray;
 
     /// the filename where to load the spring information
-    DataField<std::string> m_filename;
+    Data<std::string> m_filename;
     /// By default, assume that all edges have the same stiffness
-    DataField<double> m_stiffness;
+    Data<double> m_stiffness;
     /// By default, assume that all edges have the same viscosity
-    DataField<double> m_viscosity;
+    Data<double> m_viscosity;
 
     void resizeArray(unsigned int n);
 

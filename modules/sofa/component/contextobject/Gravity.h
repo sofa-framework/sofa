@@ -54,7 +54,7 @@ class Gravity : public core::objectmodel::ContextObject
 public:
     Gravity();
 
-    DataField<Vec3> f_gravity; ///< Gravity in the world coordinate system
+    Data<Vec3> f_gravity; ///< Gravity in the world coordinate system
 
     /// Modify the context of the GNode
     void apply();

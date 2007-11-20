@@ -99,7 +99,7 @@ protected:
 
     topology::MeshTopology* _mesh;
     const VecElement *_indexedElements;
-    DataField< VecCoord > _initialPoints; ///< the intial positions of the points
+    Data< VecCoord > _initialPoints; ///< the intial positions of the points
 //     int _method; ///< the computation method of the displacements
 //     Real _poissonRatio;
 //     Real _youngModulus;
@@ -133,10 +133,10 @@ public:
     ;
 
     int method;
-    DataField<std::string> f_method;
-    DataField<Real> f_poisson;
-    DataField<Real> f_young;
-    DataField<Real> f_damping;
+    Data<std::string> f_method;
+    Data<Real> f_poisson;
+    Data<Real> f_young;
+    Data<Real> f_damping;
 
     Real getPoisson() { return f_poisson.getValue(); }
     void setPoisson(Real val) { f_poisson.setValue(val); }

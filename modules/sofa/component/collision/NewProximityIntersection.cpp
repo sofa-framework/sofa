@@ -54,8 +54,8 @@ int NewProximityIntersectionClass = core::RegisterObject("TODO-NewProximityInter
         ;
 
 NewProximityIntersection::NewProximityIntersection()
-    : alarmDistance(dataField(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
-    , contactDistance(dataField(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
+    : alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
+    , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
 {
 }
 

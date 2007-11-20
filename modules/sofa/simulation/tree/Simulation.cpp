@@ -125,8 +125,8 @@ GNode* Simulation::load ( const char *filename )
 }
 
 Simulation::Simulation()
-    : numMechSteps( dataField(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") ),
-      gnuplotDirectory( dataField(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved"))
+    : numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") ),
+      gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved"))
 {}
 
 Simulation::~Simulation()

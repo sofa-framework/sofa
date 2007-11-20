@@ -26,12 +26,12 @@ public:
 
     void solve (double dt);
 
-    DataField<unsigned> f_maxIter;
-    DataField<double> f_tolerance;
-    DataField<double> f_smallDenominatorThreshold;
-    DataField<double> f_rayleighStiffness;
-    DataField<double> f_rayleighMass;
-    DataField<double> f_velocityDamping;
+    Data<unsigned> f_maxIter;
+    Data<double> f_tolerance;
+    Data<double> f_smallDenominatorThreshold;
+    Data<double> f_rayleighStiffness;
+    Data<double> f_rayleighMass;
+    Data<double> f_velocityDamping;
 
 protected:
     bool firstCallToSolve;

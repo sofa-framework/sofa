@@ -87,21 +87,21 @@ public:
             /**
             *	this variable defines the motion axis
             */
-            DataField<Vector3> axis;
+            Data<Vector3> axis;
             /**
             *	If true, this variable sets a rotation motion
             *	otherwise it does nothing
             */
-            DataField<bool> rotation;
+            Data<bool> rotation;
             /**
             *	If true, this variable sets a translation motion
             *	otherwise it does nothing
             */
-            DataField<bool> translation;
+            Data<bool> translation;
             /**
             *	This is global index to number the articulations
             */
-            DataField<int> articulationIndex;
+            Data<int> articulationIndex;
         };
 
         /**
@@ -121,26 +121,26 @@ public:
         *	All DOF's can be identified, in an univocal way, by an index
         *	this variable will store the index of the parentDOF of the articulation center
         */
-        DataField<int> parentIndex;
+        Data<int> parentIndex;
         /**
         *	All DOF's can be identified, in an univocal way, by an index
         *	this variable will store the index of the childDOF of the articulation center
         */
-        DataField<int> childIndex;
+        Data<int> childIndex;
         /**
         *	Global position for the articulation center. It's not necessary to provide it at initialization.
         *	This will be computed in mapping using the global position of the parent DOF and the local position
         *	of the center articulation
         */
-        DataField<Vector3> globalPosition;
+        Data<Vector3> globalPosition;
         /**
         *	It stores the local position of the center articulation in relation to the global position of the parentDOF
         */
-        DataField<Vector3> posOnParent;
+        Data<Vector3> posOnParent;
         /**
         *	It stores the local position of the center articulation in relation to the global position of the childDOF
         */
-        DataField<Vector3> posOnChild;
+        Data<Vector3> posOnChild;
 
         Vector3 initTranslateChild(Quat objectRotation)
         {

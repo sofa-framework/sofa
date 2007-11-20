@@ -71,9 +71,9 @@ public:
         TOPOLOGY_TETRAHEDRONSET=3
     } TopologyType;
 
-    DataField< VecMass > f_mass;
+    Data< VecMass > f_mass;
     /// the mass density used to compute the mass from a mesh topology and geometry
-    DataField< Real > m_massDensity;
+    Data< Real > m_massDensity;
 protected:
     //VecMass masses;
 

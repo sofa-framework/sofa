@@ -68,7 +68,7 @@ class RayModel : public component::MechanicalObject<Vec3Types>, public core::Col
 protected:
     sofa::helper::vector<double> length;
 
-    DataField<double> defaultLength;
+    Data<double> defaultLength;
 
     std::set<BaseRayContact*> contacts;
 public:

@@ -69,14 +69,14 @@ int RegularGridTopologyClass = core::RegisterObject("Regular grid in 3D")
 
 RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz),
-      min(dataField(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min")),
-      max(dataField(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
+      min(initData(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min")),
+      max(initData(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
 {
 }
 
 RegularGridTopology::RegularGridTopology()
-    : min(dataField(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min")),
-      max(dataField(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
+    : min(initData(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min")),
+      max(initData(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
 {
 }
 

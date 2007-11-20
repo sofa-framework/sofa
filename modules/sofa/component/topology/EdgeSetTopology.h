@@ -130,7 +130,7 @@ public:
         return out;
     }
 
-    /// Needed to be compliant with DataFields.
+    /// Needed to be compliant with Datas.
     inline friend std::istream& operator>>(std::istream& in, EdgeSetTopologyContainer& t)
     {
         unsigned int s;
@@ -392,7 +392,7 @@ class EdgeSetTopology : public PointSetTopology <DataTypes>
 public:
     EdgeSetTopology(component::MechanicalObject<DataTypes> *obj);
 
-    Field< EdgeSetTopologyContainer > *f_m_topologyContainer;
+    DataPtr< EdgeSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
     /** \brief Returns the EdgeSetTopologyContainer object of this EdgeSetTopology.

@@ -31,10 +31,10 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    DataField < std::string > f_filename;
-    DataField < bool > f_writeX;
-    DataField < bool > f_writeV;
-    DataField < double > f_interval;
+    Data < std::string > f_filename;
+    Data < bool > f_writeX;
+    Data < bool > f_writeV;
+    Data < double > f_interval;
 
 
 protected:

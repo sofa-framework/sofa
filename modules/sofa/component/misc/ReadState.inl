@@ -18,8 +18,8 @@ namespace misc
 
 template<class DataTypes>
 ReadState<DataTypes>::ReadState()
-    : f_filename( dataField(&f_filename, "filename", "output file name"))
-    , f_interval( dataField(&f_interval, 0.0, "interval", "time duration between outputs"))
+    : f_filename( initData(&f_filename, "filename", "output file name"))
+    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
     , mmodel(NULL)
     , infile(NULL)
     , nextTime(0)

@@ -16,10 +16,10 @@ namespace misc
 
 template<class DataTypes>
 WriteState<DataTypes>::WriteState()
-    : f_filename( dataField(&f_filename, "filename", "output file name"))
-    , f_writeX( dataField(&f_writeX, true, "writeX", "flag enabling output of X vector"))
-    , f_writeV( dataField(&f_writeV, false, "writeV", "flag enabling output of V vector"))
-    , f_interval( dataField(&f_interval, 0.0, "interval", "time duration between outputs"))
+    : f_filename( initData(&f_filename, "filename", "output file name"))
+    , f_writeX( initData(&f_writeX, true, "writeX", "flag enabling output of X vector"))
+    , f_writeV( initData(&f_writeV, false, "writeV", "flag enabling output of V vector"))
+    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
     , mmodel(NULL)
     , outfile(NULL)
     , nextTime(0)

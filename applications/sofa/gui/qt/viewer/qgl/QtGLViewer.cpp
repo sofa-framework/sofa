@@ -1403,6 +1403,7 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         default:
         {
             SofaViewer::keyPressEvent(e);
+            QGLViewer::keyPressEvent(e);
         }
         }
     }

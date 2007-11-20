@@ -49,23 +49,23 @@ namespace forcefield
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1, MechanicalState* object2, Vec _kst, Vec _ksr, double _kd)
     : Inherit(object1, object2)
-    , kst(dataField(&kst,_kst,"stiffnessTranslation","uniform stiffness for the all springs"))
-    , ksr(dataField(&ksr,_ksr,"stiffnessRotation","uniform stiffness for the all springs"))
-    , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
-    , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
-    , showLawfulTorsion(dataField(&showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation"))
-    , showExtraTorsion(dataField(&showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation"))
+    , kst(initData(&kst,_kst,"stiffnessTranslation","uniform stiffness for the all springs"))
+    , ksr(initData(&ksr,_ksr,"stiffnessRotation","uniform stiffness for the all springs"))
+    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
+    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , showLawfulTorsion(initData(&showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation"))
+    , showExtraTorsion(initData(&showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation"))
 {
 }
 
 template<class DataTypes>
 JointSpringForceField<DataTypes>::JointSpringForceField(Vec _kst, Vec _ksr, double _kd)
-    : kst(dataField(&kst,_kst,"stiffnessTranslation","uniform stiffness for the all springs"))
-    , ksr(dataField(&ksr,_ksr,"stiffnessRotation","uniform stiffness for the all springs"))
-    , kd(dataField(&kd,_kd,"damping","uniform damping for the all springs"))
-    , springs(dataField(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
-    , showLawfulTorsion(dataField(&showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation"))
-    , showExtraTorsion(dataField(&showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation"))
+    : kst(initData(&kst,_kst,"stiffnessTranslation","uniform stiffness for the all springs"))
+    , ksr(initData(&ksr,_ksr,"stiffnessRotation","uniform stiffness for the all springs"))
+    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
+    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , showLawfulTorsion(initData(&showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation"))
+    , showExtraTorsion(initData(&showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation"))
 {
 }
 

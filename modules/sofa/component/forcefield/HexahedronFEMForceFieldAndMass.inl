@@ -47,7 +47,7 @@ template<class DataTypes>
 HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
     : Mass()
     , HexahedronFEMForceField()
-    , _density(dataField(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
+    , _density(initData(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
 {}
 
 

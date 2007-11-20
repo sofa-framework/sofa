@@ -28,8 +28,8 @@
 #include <sofa/component/behaviormodel/eulerianfluid/Grid2D.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/objectmodel/Field.h>
-#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/DataPtr.h>
+#include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h>
 
 
@@ -61,13 +61,13 @@ protected:
     Grid2D* ftemp;
 
 public:
-    sofa::core::objectmodel::Field<int> f_nx;
-    sofa::core::objectmodel::Field<int> f_ny;
-    sofa::core::objectmodel::Field<real> f_cellwidth;
-    sofa::core::objectmodel::DataField<real> f_height;
-    sofa::core::objectmodel::DataField<vec2> f_dir;
-    sofa::core::objectmodel::DataField<real> f_tstart;
-    sofa::core::objectmodel::DataField<real> f_tstop;
+    sofa::core::objectmodel::DataPtr<int> f_nx;
+    sofa::core::objectmodel::DataPtr<int> f_ny;
+    sofa::core::objectmodel::DataPtr<real> f_cellwidth;
+    sofa::core::objectmodel::Data<real> f_height;
+    sofa::core::objectmodel::Data<vec2> f_dir;
+    sofa::core::objectmodel::Data<real> f_tstart;
+    sofa::core::objectmodel::Data<real> f_tstop;
 
     Fluid2D();
     virtual ~Fluid2D();

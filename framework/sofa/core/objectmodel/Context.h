@@ -26,7 +26,7 @@
 #define SOFA_CORE_OBJECTMODEL_CONTEXT_H
 
 #include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/Data.h>
 
 #include <iostream>
 #include <map>
@@ -41,7 +41,7 @@ namespace objectmodel
 {
 
 /**
- *  \brief Implementation of BaseContext, storing all shared parameters in DataFields.
+ *  \brief Implementation of BaseContext, storing all shared parameters in Datas.
  *
  */
 class Context : public BaseContext
@@ -53,27 +53,27 @@ public:
     typedef BaseContext::Quat Quat;
     typedef BaseContext::SpatialVector SpatialVector;
 
-    DataField<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
-    DataField<double> dt_;
-    DataField<double> time_;
-    DataField<bool> animate_;
-    DataField<bool> showCollisionModels_;
-    DataField<bool> showBoundingCollisionModels_;
-    DataField<bool> showBehaviorModels_;
-    DataField<bool> showVisualModels_;
-    DataField<bool> showMappings_;
-    DataField<bool> showMechanicalMappings_;
-    DataField<bool> showForceFields_;
-    DataField<bool> showInteractionForceFields_;
-    DataField<bool> showWireFrame_;
-    DataField<bool> showNormals_;
-    DataField<bool> multiThreadSimulation_;
+    Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
+    Data<double> dt_;
+    Data<double> time_;
+    Data<bool> animate_;
+    Data<bool> showCollisionModels_;
+    Data<bool> showBoundingCollisionModels_;
+    Data<bool> showBehaviorModels_;
+    Data<bool> showVisualModels_;
+    Data<bool> showMappings_;
+    Data<bool> showMechanicalMappings_;
+    Data<bool> showForceFields_;
+    Data<bool> showInteractionForceFields_;
+    Data<bool> showWireFrame_;
+    Data<bool> showNormals_;
+    Data<bool> multiThreadSimulation_;
 
     /// @name For multiresolution (UNSTABLE)
     /// @{
-    DataField<int> currentLevel_;
-    DataField<int> coarsestLevel_;
-    DataField<int> finestLevel_;
+    Data<int> currentLevel_;
+    Data<int> coarsestLevel_;
+    Data<int> finestLevel_;
     /// @}
 
 

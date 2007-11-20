@@ -137,31 +137,31 @@ protected:
     topology::MeshTopology* _mesh;
     topology::FittedRegularGridTopology* _trimgrid;
     const VecElement *_indexedElements;
-    DataField< VecCoord > _initialPoints; ///< the intial positions of the points
+    Data< VecCoord > _initialPoints; ///< the intial positions of the points
 
     TetrahedronFEMForceFieldInternalData<DataTypes> data;
 
 public:
 
-    DataField<int> f_method; ///< the computation method of the displacements
-    DataField<Real> f_poissonRatio;
-    DataField<Real> f_youngModulus;
-    DataField<VecReal> f_localStiffnessFactor;
-    //DataField<Real> f_dampingRatio;
-    DataField<bool> f_updateStiffnessMatrix;
-    DataField<bool> f_assembling;
+    Data<int> f_method; ///< the computation method of the displacements
+    Data<Real> f_poissonRatio;
+    Data<Real> f_youngModulus;
+    Data<VecReal> f_localStiffnessFactor;
+    //Data<Real> f_dampingRatio;
+    Data<bool> f_updateStiffnessMatrix;
+    Data<bool> f_assembling;
 
     TetrahedronFEMForceField()
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
-        , _initialPoints(dataField(&_initialPoints, "initialPoints", "Initial Position"))
-        , f_method(dataField(&f_method,(int)LARGE,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
-        , f_poissonRatio(dataField(&f_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
-        , f_youngModulus(dataField(&f_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
-        , f_localStiffnessFactor(dataField(&f_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
-        //, f_dampingRatio(dataField(&f_dampingRatio,(Real)0,"dampingRatio",""))
-        , f_updateStiffnessMatrix(dataField(&f_updateStiffnessMatrix,true,"updateStiffnessMatrix",""))
-        , f_assembling(dataField(&f_assembling,false,"assembling",""))
+        , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
+        , f_method(initData(&f_method,(int)LARGE,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
+        , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
+        , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
+        , f_localStiffnessFactor(initData(&f_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
+        //, f_dampingRatio(initData(&f_dampingRatio,(Real)0,"dampingRatio",""))
+        , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,true,"updateStiffnessMatrix",""))
+        , f_assembling(initData(&f_assembling,false,"assembling",""))
     {}
 
     void parse(core::objectmodel::BaseObjectDescription* arg);

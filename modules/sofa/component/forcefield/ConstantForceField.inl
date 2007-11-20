@@ -47,8 +47,8 @@ namespace forcefield
 
 template<class DataTypes>
 ConstantForceField<DataTypes>::ConstantForceField()
-    : points(dataField(&points, "points", "points where the forces are applied"))
-    , forces(dataField(&forces, "forces", "applied forces"))
+    : points(initData(&points, "points", "points where the forces are applied"))
+    , forces(initData(&forces, "forces", "applied forces"))
 {}
 
 

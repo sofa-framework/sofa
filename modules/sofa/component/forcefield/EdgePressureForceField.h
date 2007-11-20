@@ -49,25 +49,25 @@ protected:
 
     topology::EdgeSetTopology<DataTypes>* est;
 
-    DataField<Deriv> pressure;
+    Data<Deriv> pressure;
 
-    DataField<std::string> edgeList;
+    Data<std::string> edgeList;
 
     /// the normal used to define the edge subjected to the pressure force.
-    DataField<Deriv> normal;
+    Data<Deriv> normal;
 
-    DataField<Real> dmin; // coordinates min of the plane for the vertex selection
-    DataField<Real> dmax;// coordinates max of the plane for the vertex selection
+    Data<Real> dmin; // coordinates min of the plane for the vertex selection
+    Data<Real> dmax;// coordinates max of the plane for the vertex selection
 
 public:
 
     EdgePressureForceField():
         est(0)
-        , pressure(dataField(&pressure, "pressure", "Pressure force per unit area"))
-        , edgeList(dataField(&edgeList,std::string(0),"edgeList", "Indices of edges separated with commas where a pressure is applied"))
-        , normal(dataField(&normal,"normal", "Normal direction for the plane selection of edges"))
-        , dmin(dataField(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
-        , dmax(dataField(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+        , pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+        , edgeList(initData(&edgeList,std::string(0),"edgeList", "Indices of edges separated with commas where a pressure is applied"))
+        , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
+        , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+        , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
     {
     }
 

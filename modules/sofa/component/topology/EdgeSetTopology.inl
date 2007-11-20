@@ -568,7 +568,7 @@ void EdgeSetTopology<DataTypes>::init()
 }
 template<class DataTypes>
 EdgeSetTopology<DataTypes>::EdgeSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0),
-    f_m_topologyContainer(new Field< EdgeSetTopologyContainer >(new EdgeSetTopologyContainer(), "Edge Container"))
+    f_m_topologyContainer(new DataPtr< EdgeSetTopologyContainer >(new EdgeSetTopologyContainer(), "Edge Container"))
 
 {
     this->m_topologyContainer=f_m_topologyContainer->beginEdit();

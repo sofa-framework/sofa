@@ -60,12 +60,12 @@ public:
     typedef typename Coord::value_type Real;
 
 protected:
-    DataField< Real > particleRadius;
-    DataField< Real > particleMass;
-    DataField< Real > pressureStiffness; ///< 100 - 1000 m2/s2
-    DataField< Real > density0; ///< 1000 kg/m3 for water
-    DataField< Real > viscosity;
-    DataField< Real > surfaceTension;
+    Data< Real > particleRadius;
+    Data< Real > particleMass;
+    Data< Real > pressureStiffness; ///< 100 - 1000 m2/s2
+    Data< Real > density0; ///< 1000 kg/m3 for water
+    Data< Real > viscosity;
+    Data< Real > surfaceTension;
     //Real a,b,alpha,beta,dmax,fmax;
     //Real d0,p0;
     //Real damping;

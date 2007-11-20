@@ -74,7 +74,7 @@ int RayTraceDetectionClass =
 using namespace core::objectmodel;
 
 RayTraceDetection::
-RayTraceDetection ():bDraw (dataField
+RayTraceDetection ():bDraw (initData
             (&bDraw, false, "draw",
                     "enable/disable display of results"))
 {

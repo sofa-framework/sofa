@@ -46,8 +46,8 @@ namespace collision
 class NewProximityIntersection : public DiscreteIntersection
 {
 public:
-    DataField<double> alarmDistance;
-    DataField<double> contactDistance;
+    Data<double> alarmDistance;
+    Data<double> contactDistance;
 
     NewProximityIntersection();
 

@@ -38,19 +38,19 @@ namespace container
 {
 
 ArticulatedHierarchyContainer::ArticulationCenter::Articulation::Articulation():
-    axis(dataField(&axis, (Vector3) Vector3(1,0,0), "rotationAxis", "Set the rotation axis for the articulation")),
-    rotation(dataField(&rotation, (bool) true, "rotation", "Rotation")),
-    translation(dataField(&translation, (bool) false, "translation", "Translation")),
-    articulationIndex(dataField(&articulationIndex, (int) 0, "articulationIndex", "Articulation index"))
+    axis(initData(&axis, (Vector3) Vector3(1,0,0), "rotationAxis", "Set the rotation axis for the articulation")),
+    rotation(initData(&rotation, (bool) true, "rotation", "Rotation")),
+    translation(initData(&translation, (bool) false, "translation", "Translation")),
+    articulationIndex(initData(&articulationIndex, (int) 0, "articulationIndex", "Articulation index"))
 {
 }
 
 ArticulatedHierarchyContainer::ArticulationCenter::ArticulationCenter():
-    parentIndex(dataField(&parentIndex, "parentIndex", "Parent of the center articulation")),
-    childIndex(dataField(&childIndex, "childIndex", "Child of the center articulation")),
-    globalPosition(dataField(&globalPosition, "globalPosition", "Global position of the articulation center")),
-    posOnParent(dataField(&posOnParent, "posOnParent", "Parent position of the articulation center")),
-    posOnChild(dataField(&posOnChild, "posOnChild", "Child position of the articulation center"))
+    parentIndex(initData(&parentIndex, "parentIndex", "Parent of the center articulation")),
+    childIndex(initData(&childIndex, "childIndex", "Child of the center articulation")),
+    globalPosition(initData(&globalPosition, "globalPosition", "Global position of the articulation center")),
+    posOnParent(initData(&posOnParent, "posOnParent", "Parent position of the articulation center")),
+    posOnChild(initData(&posOnChild, "posOnChild", "Child position of the articulation center"))
 {
 }
 

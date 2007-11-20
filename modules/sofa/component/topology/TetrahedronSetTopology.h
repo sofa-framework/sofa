@@ -533,7 +533,7 @@ class TetrahedronSetTopology : public PointSetTopology <DataTypes>
 
 public:
     TetrahedronSetTopology(component::MechanicalObject<DataTypes> *obj);
-    Field<TetrahedronSetTopologyContainer > *f_m_topologyContainer;
+    DataPtr<TetrahedronSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
     /** \brief Returns the TetrahedronSetTopologyContainer object of this TetrahedronSetTopology.

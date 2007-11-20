@@ -28,8 +28,8 @@
 #include <sofa/component/behaviormodel/eulerianfluid/Grid3D.h>
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/objectmodel/Field.h>
-#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/DataPtr.h>
+#include <sofa/core/objectmodel/Data.h>
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h>
 
 namespace sofa
@@ -59,15 +59,15 @@ protected:
     Grid3D* ftemp;
 
 public:
-    sofa::core::objectmodel::Field<int> f_nx;
-    sofa::core::objectmodel::Field<int> f_ny;
-    sofa::core::objectmodel::Field<int> f_nz;
-    sofa::core::objectmodel::Field<real> f_cellwidth;
-    sofa::core::objectmodel::DataField<vec3> f_center;
-    sofa::core::objectmodel::DataField<real> f_height;
-    sofa::core::objectmodel::DataField<vec3> f_dir;
-    sofa::core::objectmodel::DataField<real> f_tstart;
-    sofa::core::objectmodel::DataField<real> f_tstop;
+    sofa::core::objectmodel::DataPtr<int> f_nx;
+    sofa::core::objectmodel::DataPtr<int> f_ny;
+    sofa::core::objectmodel::DataPtr<int> f_nz;
+    sofa::core::objectmodel::DataPtr<real> f_cellwidth;
+    sofa::core::objectmodel::Data<vec3> f_center;
+    sofa::core::objectmodel::Data<real> f_height;
+    sofa::core::objectmodel::Data<vec3> f_dir;
+    sofa::core::objectmodel::Data<real> f_tstart;
+    sofa::core::objectmodel::Data<real> f_tstop;
 
     Fluid3D();
     virtual ~Fluid3D();

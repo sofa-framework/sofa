@@ -52,9 +52,9 @@ public:
 
 protected:
     Real a,b;
-    DataField<Real> alpha,beta,dmax,fmax;
-    DataField<Real> d0,p0;
-    DataField<Real> damping;
+    Data<Real> alpha,beta,dmax,fmax;
+    Data<Real> d0,p0;
+    Data<Real> damping;
 
     struct DForce
     {
@@ -68,13 +68,13 @@ public:
     LennardJonesForceField()
         : a(1)
         , b(1)
-        , alpha  (dataField(&alpha  ,Real(6), "alpha"  ,"Alpha"))
-        , beta   (dataField(&beta   ,Real(12),"beta"   ,"Beta"))
-        , dmax   (dataField(&dmax   ,Real(2), "dmax"   ,"DMax"))
-        , fmax   (dataField(&fmax   ,Real(1), "fmax"   ,"FMax"))
-        , d0     (dataField(&d0     ,Real(1), "d0"     ,"d0"))
-        , p0     (dataField(&p0     ,Real(1), "p0"     ,"p0"))
-        , damping(dataField(&damping,Real(0), "damping","Damping"))
+        , alpha  (initData(&alpha  ,Real(6), "alpha"  ,"Alpha"))
+        , beta   (initData(&beta   ,Real(12),"beta"   ,"Beta"))
+        , dmax   (initData(&dmax   ,Real(2), "dmax"   ,"DMax"))
+        , fmax   (initData(&fmax   ,Real(1), "fmax"   ,"FMax"))
+        , d0     (initData(&d0     ,Real(1), "d0"     ,"d0"))
+        , p0     (initData(&p0     ,Real(1), "p0"     ,"p0"))
+        , damping(initData(&damping,Real(0), "damping","Damping"))
     {
     }
 

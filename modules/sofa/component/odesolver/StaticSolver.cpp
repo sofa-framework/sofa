@@ -47,12 +47,12 @@ using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
 
 StaticSolver::StaticSolver()
-    : f_maxCGIter( dataField(&f_maxCGIter,(unsigned)25,"iterations","Maximum number of iterations for the conjugated gradient algorithmIndices of the fixed points") )
-    , f_smallDenominatorThreshold( dataField(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
+    : f_maxCGIter( initData(&f_maxCGIter,(unsigned)25,"iterations","Maximum number of iterations for the conjugated gradient algorithmIndices of the fixed points") )
+    , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
 {
 }
 
-void StaticSolver::solve(double dt, VecId b)
+void StaticSolver::solve(double , VecId b)
 {
     /*std::cout << "Static Solver will solve knowing b!! "<< this->getName() << "\n";*/
     //objectmodel::BaseContext* group = getContext();

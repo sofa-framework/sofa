@@ -54,14 +54,14 @@ public:
     typedef typename Coord::value_type   Real    ;
 
 protected:
-    DataField<SetIndex> indices; // the set of vertex indices
+    Data<SetIndex> indices; // the set of vertex indices
     /// direction on which the constraint applies
-    DataField<Coord> direction;
+    Data<Coord> direction;
     /// whether vertices should be selected from 2 parallel planes
     bool selectVerticesFromPlanes;
 
-    DataField<Real> dmin; // coordinates min of the plane for the vertex selection
-    DataField<Real> dmax;// coordinates max of the plane for the vertex selection
+    Data<Real> dmin; // coordinates min of the plane for the vertex selection
+    Data<Real> dmax;// coordinates max of the plane for the vertex selection
 public:
     FixedPlaneConstraint();
 

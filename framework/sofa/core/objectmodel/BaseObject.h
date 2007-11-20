@@ -112,7 +112,7 @@ public:
     ///   Methods related to Event processing
     /// @{
 
-    DataField<bool> f_listening;
+    Data<bool> f_listening;
 
     /// Handle an event
     virtual void handleEvent( Event* );
@@ -125,7 +125,7 @@ public:
     /// @name debug
     ///   Methods related to debugging
     ///@{
-    DataField<bool> f_printLog;
+    Data<bool> f_printLog;
     ///@}
 
     /// @name data access

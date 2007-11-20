@@ -49,15 +49,15 @@ int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")
 
 Fluid3D::Fluid3D()
     : nx(16), ny(16), nz(16), cellwidth(1.0f),
-      f_nx ( field(&f_nx, &nx, "nx", "grid size along x axis") ),
-      f_ny ( field(&f_ny, &ny, "ny", "grid size along y axis") ),
-      f_nz ( field(&f_nz, &nz, "nz", "grid size along z axis") ),
-      f_cellwidth ( field(&f_cellwidth, &cellwidth, "cellwidth", "width of each cell") ),
-      f_center ( dataField(&f_center, vec3(0,0,0), "center", "position of grid center") ),
-      f_height ( dataField(&f_height, 5.0f, "height", "initial fluid height") ),
-      f_dir ( dataField(&f_dir, vec3(0,1,0), "dir", "initial fluid surface normal") ),
-      f_tstart ( dataField(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
-      f_tstop ( dataField(&f_tstop, 60.0f, "tstop", "stopping time for fluid source") )
+      f_nx ( initDataPtr(&f_nx, &nx, "nx", "grid size along x axis") ),
+      f_ny ( initDataPtr(&f_ny, &ny, "ny", "grid size along y axis") ),
+      f_nz ( initDataPtr(&f_nz, &nz, "nz", "grid size along z axis") ),
+      f_cellwidth ( initDataPtr(&f_cellwidth, &cellwidth, "cellwidth", "width of each cell") ),
+      f_center ( initData(&f_center, vec3(0,0,0), "center", "position of grid center") ),
+      f_height ( initData(&f_height, 5.0f, "height", "initial fluid height") ),
+      f_dir ( initData(&f_dir, vec3(0,1,0), "dir", "initial fluid surface normal") ),
+      f_tstart ( initData(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
+      f_tstop ( initData(&f_tstop, 60.0f, "tstop", "stopping time for fluid source") )
 {
     fluid = new Grid3D;
     fnext = new Grid3D;

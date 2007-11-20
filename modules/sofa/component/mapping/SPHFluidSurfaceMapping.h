@@ -111,9 +111,9 @@ public:
 
     SPHFluidSurfaceMapping(In* from, Out* to)
         : Inherit(from, to),
-          mStep(dataField(&mStep,0.5,"step","Step")),
-          mRadius(dataField(&mRadius,2.0,"radius","Radius")),
-          mIsoValue(dataField(&mIsoValue,0.5,"isoValue", "Iso Value")),
+          mStep(initData(&mStep,0.5,"step","Step")),
+          mRadius(initData(&mRadius,2.0,"radius","Radius")),
+          mIsoValue(initData(&mIsoValue,0.5,"isoValue", "Iso Value")),
           sph(NULL), grid(NULL)
     {
     }
@@ -165,9 +165,9 @@ public:
 
 
 protected:
-    DataField< double > mStep;
-    DataField< double > mRadius;
-    DataField< double > mIsoValue;
+    Data< double > mStep;
+    Data< double > mRadius;
+    Data< double > mIsoValue;
 
     typedef forcefield::SPHFluidForceField<typename In::DataTypes> SPHForceField;
     SPHForceField* sph;

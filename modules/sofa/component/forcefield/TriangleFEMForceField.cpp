@@ -64,12 +64,12 @@ TriangleFEMForceField<DataTypes>::
 TriangleFEMForceField()
     : _mesh(NULL)
     , _indexedElements(NULL)
-    , _initialPoints(dataField(&_initialPoints, "initialPoints", "Initial Position"))
+    , _initialPoints(initData(&_initialPoints, "initialPoints", "Initial Position"))
     , method(LARGE)
-    , f_method(dataField(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
-    , f_poisson(dataField(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_young(dataField(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
-    , f_damping(dataField(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
+    , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
+    , f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
+    , f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
+    , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
 {}
 
 template <class DataTypes>

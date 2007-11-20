@@ -128,11 +128,11 @@ protected:
     int nbPoints;
     vector< fixed_array<double,3> > seqPoints;
 
-    DataField<SeqLines> seqLines;
+    Data<SeqLines> seqLines;
     bool validLines;
 
     //SeqTriangles   seqTriangles;
-    DataField<SeqTriangles> seqTriangles;
+    Data<SeqTriangles> seqTriangles;
     bool         validTriangles;
     SeqQuads       seqQuads;
     bool         validQuads;
@@ -144,7 +144,7 @@ protected:
 
     int revision;
 
-    DataField< std::string > filename;
+    Data< std::string > filename;
 
     void invalidate();
 

@@ -52,7 +52,7 @@ int RayModelClass = core::RegisterObject("Collision model representing a ray in 
 using namespace sofa::defaulttype;
 
 RayModel::RayModel(double length)
-    : defaultLength(dataField(&defaultLength, length, "", "TODO"))
+    : defaultLength(initData(&defaultLength, length, "", "TODO"))
 {
 }
 

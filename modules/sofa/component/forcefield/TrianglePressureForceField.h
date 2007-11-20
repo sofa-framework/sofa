@@ -48,25 +48,25 @@ protected:
 
     topology::TriangleSetTopology<DataTypes>* tst;
 
-    DataField<Deriv> pressure;
+    Data<Deriv> pressure;
 
-    DataField<std::string> triangleList;
+    Data<std::string> triangleList;
 
     /// the normal used to define the edge subjected to the pressure force.
-    DataField<Deriv> normal;
+    Data<Deriv> normal;
 
-    DataField<Real> dmin; // coordinates min of the plane for the vertex selection
-    DataField<Real> dmax;// coordinates max of the plane for the vertex selection
+    Data<Real> dmin; // coordinates min of the plane for the vertex selection
+    Data<Real> dmax;// coordinates max of the plane for the vertex selection
 
 public:
 
     TrianglePressureForceField():
         tst(0)
-        , pressure(dataField(&pressure, "pressure", "Pressure force per unit area"))
-        , triangleList(dataField(&triangleList,std::string(),"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
-        , normal(dataField(&normal,"normal", "Normal direction for the plane selection of triangles"))
-        , dmin(dataField(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
-        , dmax(dataField(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+        , pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
+        , triangleList(initData(&triangleList,std::string(),"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
+        , normal(initData(&normal,"normal", "Normal direction for the plane selection of triangles"))
+        , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
+        , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
     {
     }
 

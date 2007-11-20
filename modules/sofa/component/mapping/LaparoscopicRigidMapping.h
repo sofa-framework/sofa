@@ -55,13 +55,13 @@ public:
     //typedef typename Coord::value_type Real;
 
 public:
-    DataField<defaulttype::Vector3> pivot;
-    DataField<defaulttype::Quat> rotation;
+    Data<defaulttype::Vector3> pivot;
+    Data<defaulttype::Quat> rotation;
 
     LaparoscopicRigidMapping(In* from, Out* to)
         : Inherit(from, to)
-        , pivot(dataField(&pivot, defaulttype::Vector3(0,0,0), "pivot","TODO-pivot"))
-        , rotation(dataField(&rotation, defaulttype::Quat(0,0,0,1), "rotation", "TODO-rotation"))
+        , pivot(initData(&pivot, defaulttype::Vector3(0,0,0), "pivot","TODO-pivot"))
+        , rotation(initData(&rotation, defaulttype::Quat(0,0,0,1), "rotation", "TODO-rotation"))
     {
     }
 

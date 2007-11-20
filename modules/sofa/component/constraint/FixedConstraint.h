@@ -45,7 +45,7 @@ namespace constraint
 {
 
 using helper::vector;
-using core::objectmodel::DataField;
+using core::objectmodel::Data;
 using namespace sofa::core::objectmodel;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -72,7 +72,7 @@ protected:
     FixedConstraintInternalData<DataTypes> data;
 
 public:
-    DataField<SetIndex> f_indices;
+    Data<SetIndex> f_indices;
 
     FixedConstraint();
 

@@ -48,7 +48,7 @@ public:
     typedef CudaPoint Element;
     friend class CudaPoint;
 
-    DataField<int> groupSize;
+    Data<int> groupSize;
 
     CudaPointModel();
 

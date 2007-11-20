@@ -68,7 +68,7 @@ void XMLPrintVisitor::processObject(T obj)
 
     m_out << ">\n";
 
-    obj->xmlWriteFields( m_out, level+1 );
+    obj->xmlWriteDatas( m_out, level+1 );
 
 
     for (int i=0; i<level; i++)
@@ -96,7 +96,7 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(GNode* node)
     m_out << "<Node>\n";
 
     ++level;
-    node->xmlWriteFields(m_out,level);
+    node->xmlWriteDatas(m_out,level);
 
 
     if (node->mechanicalMapping != NULL)

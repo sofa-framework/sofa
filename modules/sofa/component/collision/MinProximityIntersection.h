@@ -46,10 +46,10 @@ namespace collision
 class MinProximityIntersection : public DiscreteIntersection
 {
 public:
-    DataField<bool> useSphereTriangle;
-    DataField<bool> usePointPoint;
-    DataField<double> alarmDistance;
-    DataField<double> contactDistance;
+    Data<bool> useSphereTriangle;
+    Data<bool> usePointPoint;
+    Data<double> alarmDistance;
+    Data<double> contactDistance;
 
     MinProximityIntersection();
 

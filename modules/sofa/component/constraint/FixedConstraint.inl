@@ -82,7 +82,7 @@ void FixedConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
 template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
     : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
-    , f_indices( dataField(&f_indices,"indices","Indices of the fixed points") )
+    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);

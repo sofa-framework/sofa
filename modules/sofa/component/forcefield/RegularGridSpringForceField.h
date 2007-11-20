@@ -29,34 +29,34 @@ public:
     //virtual const char* getTypeName() const { return "RegularGridSpringForceField"; }
 
 protected:
-    DataField< Real > linesStiffness;
-    DataField< Real > linesDamping;
-    DataField< Real > quadsStiffness;
-    DataField< Real > quadsDamping;
-    DataField< Real > cubesStiffness;
-    DataField< Real > cubesDamping;
+    Data< Real > linesStiffness;
+    Data< Real > linesDamping;
+    Data< Real > quadsStiffness;
+    Data< Real > quadsDamping;
+    Data< Real > cubesStiffness;
+    Data< Real > cubesDamping;
 
 public:
     RegularGridSpringForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object1, core::componentmodel::behavior::MechanicalState<DataTypes>* object2)
         : StiffSpringForceField<DataTypes>(object1, object2),
-          linesStiffness  (dataField(&linesStiffness,Real(0),"linesStiffness","Lines Stiffness"))
-          , linesDamping  (dataField(&linesDamping  ,Real(0),"linesDamping"  ,"Lines Damping"))
-          , quadsStiffness(dataField(&quadsStiffness,Real(0),"quadsStiffness","Quads Stiffness"))
-          , quadsDamping  (dataField(&quadsDamping  ,Real(0),"quadsDamping"  ,"Quads Damping"))
-          , cubesStiffness(dataField(&cubesStiffness,Real(0),"cubesStiffness","Cubes Stiffness"))
-          , cubesDamping  (dataField(&cubesDamping  ,Real(0),"cubesDamping"  ,"Cubes Damping"))
+          linesStiffness  (initData(&linesStiffness,Real(0),"linesStiffness","Lines Stiffness"))
+          , linesDamping  (initData(&linesDamping  ,Real(0),"linesDamping"  ,"Lines Damping"))
+          , quadsStiffness(initData(&quadsStiffness,Real(0),"quadsStiffness","Quads Stiffness"))
+          , quadsDamping  (initData(&quadsDamping  ,Real(0),"quadsDamping"  ,"Quads Damping"))
+          , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Cubes Stiffness"))
+          , cubesDamping  (initData(&cubesDamping  ,Real(0),"cubesDamping"  ,"Cubes Damping"))
           , topology(NULL), trimmedTopology(NULL)
     {
     }
 
     RegularGridSpringForceField()
         :
-        linesStiffness  (dataField(&linesStiffness,Real(0),"linesStiffness","Lines Stiffness"))
-        , linesDamping  (dataField(&linesDamping  ,Real(0),"linesDamping"  ,"Lines Damping"))
-        , quadsStiffness(dataField(&quadsStiffness,Real(0),"quadsStiffness","Quads Stiffness"))
-        , quadsDamping  (dataField(&quadsDamping  ,Real(0),"quadsDamping"  ,"Quads Damping"))
-        , cubesStiffness(dataField(&cubesStiffness,Real(0),"cubesStiffness","Cubes Stiffness"))
-        , cubesDamping  (dataField(&cubesDamping  ,Real(0),"cubesDamping"  ,"Cubes Damping"))
+        linesStiffness  (initData(&linesStiffness,Real(0),"linesStiffness","Lines Stiffness"))
+        , linesDamping  (initData(&linesDamping  ,Real(0),"linesDamping"  ,"Lines Damping"))
+        , quadsStiffness(initData(&quadsStiffness,Real(0),"quadsStiffness","Quads Stiffness"))
+        , quadsDamping  (initData(&quadsDamping  ,Real(0),"quadsDamping"  ,"Quads Damping"))
+        , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Cubes Stiffness"))
+        , cubesDamping  (initData(&cubesDamping  ,Real(0),"cubesDamping"  ,"Cubes Damping"))
         , topology(NULL), trimmedTopology(NULL)
     {
     }

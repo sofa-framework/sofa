@@ -41,7 +41,7 @@ namespace behavior
 
 template<class DataTypes>
 Constraint<DataTypes>::Constraint(MechanicalState<DataTypes> *mm)
-    :  endTime( dataField(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value. Une a negative value for infinite constraints") )
+    :  endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value. Une a negative value for infinite constraints") )
     , mstate(mm)
 {
 }

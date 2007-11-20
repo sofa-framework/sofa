@@ -43,7 +43,7 @@ int DefaultContactManagerClass = core::RegisterObject("Default class to create r
         ;
 
 DefaultContactManager::DefaultContactManager()
-    : response(dataField(&response, std::string("default"), "response", "contact response class"))
+    : response(initData(&response, std::string("default"), "response", "contact response class"))
 {
 }
 

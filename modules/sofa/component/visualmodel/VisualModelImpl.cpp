@@ -106,13 +106,13 @@ int VisualModelImplClass = core::RegisterObject("Generic visual model. If a view
 
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)
     :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),
-       field_vertices    (Field< ResizableExtVector<Coord>    >(&vertices,    "vertices of the model") ),
-       field_vnormals    (Field< ResizableExtVector<Coord>    >(&vnormals,    "normals of the model") ),
-       field_vtexcoords  (Field< ResizableExtVector<TexCoord> >(&vtexcoords,  "coordinates of the texture") ),
-       field_triangles   (Field< ResizableExtVector<Triangle> >(&triangles,   "triangles of the model") ),
-       field_quads       (Field< ResizableExtVector<Quad>     >(&quads,       "quads of the model") ),
-       texturename       (dataField                            (&texturename, "texturename","Name of the Texture")),
-       material(dataField(&material,"material","Material")) //, tex(NULL)
+       field_vertices    (DataPtr< ResizableExtVector<Coord>    >(&vertices,    "vertices of the model") ),
+       field_vnormals    (DataPtr< ResizableExtVector<Coord>    >(&vnormals,    "normals of the model") ),
+       field_vtexcoords  (DataPtr< ResizableExtVector<TexCoord> >(&vtexcoords,  "coordinates of the texture") ),
+       field_triangles   (DataPtr< ResizableExtVector<Triangle> >(&triangles,   "triangles of the model") ),
+       field_quads       (DataPtr< ResizableExtVector<Quad>     >(&quads,       "quads of the model") ),
+       texturename       (initData                            (&texturename, "texturename","Name of the Texture")),
+       material(initData(&material,"material","Material")) //, tex(NULL)
 {
     this->addField(&field_vertices,"position");       field_vertices.beginEdit();
     this->addField(&field_vnormals,"normals");        field_vnormals.beginEdit();

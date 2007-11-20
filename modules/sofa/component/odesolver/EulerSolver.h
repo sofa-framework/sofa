@@ -23,7 +23,7 @@ class EulerSolver : public sofa::simulation::tree::OdeSolverImpl
 public:
     EulerSolver();
     void solve (double dt);
-    DataField<bool> symplectic;
+    Data<bool> symplectic;
 };
 
 } // namespace odesolver

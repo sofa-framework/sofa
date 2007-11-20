@@ -58,17 +58,17 @@ int CubeTopologyClass = core::RegisterObject("Surface of a cube in 3D")
         ;
 
 CubeTopology::CubeTopology(int _nx, int _ny, int _nz)
-    : nx(dataField(&nx,_nx,"nx","x grid resolution")), ny(dataField(&ny,_ny,"ny","y grid resolution")), nz(dataField(&nz,_nz,"nz","z grid resolution"))
-    , internalPoints(dataField(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
-    , splitNormals(dataField(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
+    : nx(initData(&nx,_nx,"nx","x grid resolution")), ny(initData(&ny,_ny,"ny","y grid resolution")), nz(initData(&nz,_nz,"nz","z grid resolution"))
+    , internalPoints(initData(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
+    , splitNormals(initData(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
 {
     setSize();
 }
 
 CubeTopology::CubeTopology()
-    : nx(dataField(&nx,0,"nx","x grid resolution")), ny(dataField(&ny,0,"ny","y grid resolution")), nz(dataField(&nz,0,"nz","z grid resolution"))
-    , internalPoints(dataField(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
-    , splitNormals(dataField(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
+    : nx(initData(&nx,0,"nx","x grid resolution")), ny(initData(&ny,0,"ny","y grid resolution")), nz(initData(&nz,0,"nz","z grid resolution"))
+    , internalPoints(initData(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
+    , splitNormals(initData(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
 {
 }
 

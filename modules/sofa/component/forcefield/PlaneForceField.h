@@ -4,7 +4,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/Data.h>
 
 namespace sofa
 {
@@ -40,20 +40,20 @@ protected:
 
 public:
 
-    DataField<Deriv> planeNormal;
-    DataField<Real> planeD;
-    DataField<Real> stiffness;
-    DataField<Real> damping;
-    DataField<defaulttype::Vec3f> color;
-    DataField<bool> bDraw;
+    Data<Deriv> planeNormal;
+    Data<Real> planeD;
+    Data<Real> stiffness;
+    Data<Real> damping;
+    Data<defaulttype::Vec3f> color;
+    Data<bool> bDraw;
 
     PlaneForceField()
-        : planeNormal(dataField(&planeNormal, "normal", "plane normal"))
-        , planeD(dataField(&planeD, (Real)0, "d", "plane d coef"))
-        , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness"))
-        , damping(dataField(&damping, (Real)5, "damping", "force damping"))
-        , color(dataField(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
-        , bDraw(dataField(&bDraw, false, "draw", "enable/disable drawing of plane"))
+        : planeNormal(initData(&planeNormal, "normal", "plane normal"))
+        , planeD(initData(&planeD, (Real)0, "d", "plane d coef"))
+        , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
+        , damping(initData(&damping, (Real)5, "damping", "force damping"))
+        , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
+        , bDraw(initData(&bDraw, false, "draw", "enable/disable drawing of plane"))
     {
         Deriv n;
         DataTypes::set(n, 0, 1, 0);

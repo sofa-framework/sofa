@@ -4,7 +4,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/Data.h>
 
 namespace sofa
 {
@@ -59,27 +59,27 @@ protected:
 
     };
 
-    DataField<sofa::helper::vector<Contact> > contacts;
+    Data<sofa::helper::vector<Contact> > contacts;
 
     SphereForceFieldInternalData<DataTypes> data;
 
 public:
 
-    DataField<Coord> sphereCenter;
-    DataField<Real> sphereRadius;
-    DataField<Real> stiffness;
-    DataField<Real> damping;
-    DataField<defaulttype::Vec3f> color;
-    DataField<bool> bDraw;
+    Data<Coord> sphereCenter;
+    Data<Real> sphereRadius;
+    Data<Real> stiffness;
+    Data<Real> damping;
+    Data<defaulttype::Vec3f> color;
+    Data<bool> bDraw;
 
     SphereForceField()
-        : contacts(dataField(&contacts,"contacts", "Contacts"))
-        , sphereCenter(dataField(&sphereCenter, "center", "sphere center"))
-        , sphereRadius(dataField(&sphereRadius, (Real)1, "radius", "sphere radius"))
-        , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness"))
-        , damping(dataField(&damping, (Real)5, "damping", "force damping"))
-        , color(dataField(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "sphere color"))
-        , bDraw(dataField(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
+        : contacts(initData(&contacts,"contacts", "Contacts"))
+        , sphereCenter(initData(&sphereCenter, "center", "sphere center"))
+        , sphereRadius(initData(&sphereRadius, (Real)1, "radius", "sphere radius"))
+        , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
+        , damping(initData(&damping, (Real)5, "damping", "force damping"))
+        , color(initData(&color, defaulttype::Vec3f(0.0f,0.0f,1.0f), "color", "sphere color"))
+        , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the sphere"))
     {
     }
 

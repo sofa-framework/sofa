@@ -64,9 +64,9 @@ public:
     typedef helper::vector<MassType> VecMass;
 
 
-    DataField< VecMass > f_mass;
-    DataField< bool >    _lumped;
-    DataField< Real >    _defaultValue;
+    Data< VecMass > f_mass;
+    Data< bool >    _lumped;
+    Data< Real >    _defaultValue;
 
     VecMass _lumpedMasses; ///< lumped mass matrices
 
@@ -75,11 +75,11 @@ public:
 
 
     MatrixMass()
-        :  f_mass( dataField(&f_mass, "massMatrices", "values of the particles masses") )
-        , _defaultValue( dataField(&_defaultValue, (Real)1.0,"defaultValue", "real default value") )
+        :  f_mass( initData(&f_mass, "massMatrices", "values of the particles masses") )
+        , _defaultValue( initData(&_defaultValue, (Real)1.0,"defaultValue", "real default value") )
         ,_usingDefaultDiagonalMatrices(false)
     {
-        _lumped = dataField( &this->_lumped, false, "lumped", "");
+        _lumped = initData( &this->_lumped, false, "lumped", "");
     };
 
     ~MatrixMass();

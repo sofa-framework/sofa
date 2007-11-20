@@ -4,7 +4,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/Data.h>
 
 namespace sofa
 {
@@ -60,27 +60,27 @@ protected:
 
     };
 
-    DataField<sofa::helper::vector<Contact> > contacts;
+    Data<sofa::helper::vector<Contact> > contacts;
 
     EllipsoidForceFieldInternalData<DataTypes> data;
 
 public:
 
-    DataField<Coord> center;
-    DataField<Coord> vradius;
-    DataField<Real> stiffness;
-    DataField<Real> damping;
-    DataField<defaulttype::Vec3f> color;
-    DataField<bool> bDraw;
+    Data<Coord> center;
+    Data<Coord> vradius;
+    Data<Real> stiffness;
+    Data<Real> damping;
+    Data<defaulttype::Vec3f> color;
+    Data<bool> bDraw;
 
     EllipsoidForceField()
-        : contacts(dataField(&contacts,"contacts", "Contacts"))
-        , center(dataField(&center, "center", "ellipsoid center"))
-        , vradius(dataField(&vradius, "vradius", "ellipsoid radius"))
-        , stiffness(dataField(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
-        , damping(dataField(&damping, (Real)5, "damping", "force damping"))
-        , color(dataField(&color, defaulttype::Vec3f(0.0f,0.5f,1.0f), "color", "ellipsoid color"))
-        , bDraw(dataField(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
+        : contacts(initData(&contacts,"contacts", "Contacts"))
+        , center(initData(&center, "center", "ellipsoid center"))
+        , vradius(initData(&vradius, "vradius", "ellipsoid radius"))
+        , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness (positive to repulse outward, negative inward)"))
+        , damping(initData(&damping, (Real)5, "damping", "force damping"))
+        , color(initData(&color, defaulttype::Vec3f(0.0f,0.5f,1.0f), "color", "ellipsoid color"))
+        , bDraw(initData(&bDraw, true, "draw", "enable/disable drawing of the ellipsoid"))
     {
     }
 

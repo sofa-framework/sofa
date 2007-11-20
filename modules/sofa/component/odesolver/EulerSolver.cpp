@@ -26,7 +26,7 @@ int EulerSolverClass = core::RegisterObject("A simple explicit time integrator")
 SOFA_DECL_CLASS(Euler);
 
 EulerSolver::EulerSolver()
-    : symplectic( dataField( &symplectic, true, "symplectic", "If true, the velocities are updated before the velocities and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
+    : symplectic( initData( &symplectic, true, "symplectic", "If true, the velocities are updated before the velocities and the method is symplectic (more robust). If false, the positions are updated before the velocities (standard Euler, less robust).") )
 {}
 
 void EulerSolver::solve(double dt)

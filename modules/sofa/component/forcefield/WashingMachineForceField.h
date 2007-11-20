@@ -64,23 +64,23 @@ public:
     typedef PlaneForceField<DataTypes> PlaneForceField;
 
 protected:
-    core::objectmodel::DataField<Coord> _center;
-    core::objectmodel::DataField<Deriv> _size;
-    core::objectmodel::DataField<Real> _speed;
+    core::objectmodel::Data<Coord> _center;
+    core::objectmodel::Data<Deriv> _size;
+    core::objectmodel::Data<Real> _speed;
 
-    core::objectmodel::DataField<Real> _stiffness;
-    core::objectmodel::DataField<Real> _damping;
+    core::objectmodel::Data<Real> _stiffness;
+    core::objectmodel::Data<Real> _damping;
 
     defaulttype::Vec<6,PlaneForceField*> _planes;
 
 public:
     WashingMachineForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object=NULL, const std::string& /*name*/="")
         : core::componentmodel::behavior::ForceField<DataTypes>(object)
-        , _center(dataField(&_center, Coord(0,0,0), "center", "box center"))
-        , _size(dataField(&_size, Deriv(1,1,1), "size", "box size"))
-        , _speed(dataField(&_speed, (Real)0.01, "speed", "rotation speed"))
-        , _stiffness(dataField(&_stiffness, (Real)500.0, "stiffness", "penality force stiffness"))
-        , _damping(dataField(&_damping, (Real)5.0, "damping", "penality force damping"))
+        , _center(initData(&_center, Coord(0,0,0), "center", "box center"))
+        , _size(initData(&_size, Deriv(1,1,1), "size", "box size"))
+        , _speed(initData(&_speed, (Real)0.01, "speed", "rotation speed"))
+        , _stiffness(initData(&_stiffness, (Real)500.0, "stiffness", "penality force stiffness"))
+        , _damping(initData(&_damping, (Real)5.0, "damping", "penality force damping"))
     {
     }
 

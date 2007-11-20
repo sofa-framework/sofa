@@ -64,7 +64,7 @@ public:
 
     virtual ~Constraint();
 
-    DataField<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     bool isActive() const; ///< if false, the constraint does nothing
 
     virtual void init();

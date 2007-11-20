@@ -136,18 +136,18 @@ protected:
 
     double m_potentialEnergy;
     /// general directional stiffness (use it to define the same stiffness on all springs)
-    DataField<Vec> kst;
+    Data<Vec> kst;
     /// general rotational stiffness (use it to define the same stiffness on all springs)
-    DataField<Vec> ksr;
+    Data<Vec> ksr;
     /// general damping (use it to define the same damping on all springs)
-    DataField<double> kd;
+    Data<double> kd;
     /// the list of the springs
-    DataField<sofa::helper::vector<Spring> > springs;
+    Data<sofa::helper::vector<Spring> > springs;
     /// the list of the local referentials of the springs
     VecCoord springRef;
     ///bool to allow the display of the 2 parts of springs torsions
-    DataField<bool> showLawfulTorsion;
-    DataField<bool> showExtraTorsion;
+    Data<bool> showLawfulTorsion;
+    Data<bool> showExtraTorsion;
 
 
     JointSpringForceFieldInternalData<DataTypes> data;

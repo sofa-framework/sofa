@@ -54,10 +54,10 @@ int MinProximityIntersectionClass = core::RegisterObject("TODO-MinProximityInter
         ;
 
 MinProximityIntersection::MinProximityIntersection()
-    : useSphereTriangle(dataField(&useSphereTriangle, true, "useSphereTriangle","activate Sphere-Triangle intersection tests"))
-    , usePointPoint(dataField(&usePointPoint, true, "usePointPoint","activate Point-Point intersection tests"))
-    , alarmDistance(dataField(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
-    , contactDistance(dataField(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
+    : useSphereTriangle(initData(&useSphereTriangle, true, "useSphereTriangle","activate Sphere-Triangle intersection tests"))
+    , usePointPoint(initData(&usePointPoint, true, "usePointPoint","activate Point-Point intersection tests"))
+    , alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
+    , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
 {
 }
 

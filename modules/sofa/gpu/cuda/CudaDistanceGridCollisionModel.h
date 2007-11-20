@@ -439,13 +439,13 @@ protected:
     bool modified;
 
     // Input data parameters
-    DataField< std::string > filename;
-    DataField< double > scale;
-    DataField< helper::fixed_array<CudaDistanceGrid::Coord,2> > box;
-    DataField< int > nx;
-    DataField< int > ny;
-    DataField< int > nz;
-    DataField< std::string > dumpfilename;
+    Data< std::string > filename;
+    Data< double > scale;
+    Data< helper::fixed_array<CudaDistanceGrid::Coord,2> > box;
+    Data< int > nx;
+    Data< int > ny;
+    Data< int > nz;
+    Data< std::string > dumpfilename;
 
     core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
 
@@ -455,7 +455,7 @@ public:
     typedef Vec3Types DataTypes;
     typedef CudaRigidDistanceGridCollisionElement Element;
 
-    DataField< bool > usePoints;
+    Data< bool > usePoints;
 
     CudaRigidDistanceGridCollisionModel();
 

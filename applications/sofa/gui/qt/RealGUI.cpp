@@ -259,10 +259,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), graphListener ( NULL ), dialog ( NULL )
 {
 
-    left_stack = new QWidgetStack ( splitter2 );
-#ifndef QT_MODULE_QT3SUPPORT
-    GUILayout->addWidget ( left_stack );
-#endif
+    left_stack = new QWidgetStack ( splitter2, "splitter" );
 
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
 

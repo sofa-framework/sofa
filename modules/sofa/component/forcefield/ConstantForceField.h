@@ -4,7 +4,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/core/objectmodel/DataField.h>
+#include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
 
 namespace sofa
@@ -31,8 +31,8 @@ public:
 
 public:
 
-    DataField< VecIndex > points;
-    DataField< VecDeriv > forces;
+    Data< VecIndex > points;
+    Data< VecDeriv > forces;
 
     ConstantForceField();
 

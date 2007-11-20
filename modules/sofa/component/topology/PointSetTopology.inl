@@ -320,7 +320,7 @@ void  PointSetGeometryAlgorithms<DataTypes>::getAABB(typename DataTypes::Real /*
 
 template<class DataTypes>
 PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj) :
-    object(obj), f_m_topologyContainer(new Field< PointSetTopologyContainer >(new PointSetTopologyContainer(), "Point Container"))
+    object(obj), f_m_topologyContainer(new DataPtr< PointSetTopologyContainer >(new PointSetTopologyContainer(), "Point Container"))
 {
     m_topologyContainer=f_m_topologyContainer->beginEdit();
     this->m_topologyContainer->setTopology(this);
@@ -332,7 +332,7 @@ PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj) 
 }
 
 template<class DataTypes>
-PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,const PointSetTopology *) : object(obj), f_m_topologyContainer(new Field< PointSetTopologyContainer >(new PointSetTopologyContainer(), "Point Container"))
+PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,const PointSetTopology *) : object(obj), f_m_topologyContainer(new DataPtr< PointSetTopologyContainer >(new PointSetTopologyContainer(), "Point Container"))
 
 {
     m_topologyContainer=f_m_topologyContainer->beginEdit();

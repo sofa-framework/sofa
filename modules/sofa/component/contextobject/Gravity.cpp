@@ -42,7 +42,7 @@ using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
 
 Gravity::Gravity()
-    : f_gravity( dataField(&f_gravity,Vec3(0,0,0),"gravity","Gravity in the world coordinate system") )
+    : f_gravity( initData(&f_gravity,Vec3(0,0,0),"gravity","Gravity in the world coordinate system") )
 {
 }
 

@@ -285,10 +285,10 @@ bool generateFactoryPHPDoc(const std::string& filename, const std::string& url)
                 }
                 else
                 {
-                    std::vector< std::pair<std::string, sofa::core::objectmodel::FieldBase* > > fields = object->getFields();
-                    for (std::vector< std::pair< std::string, sofa::core::objectmodel::FieldBase*>  >::iterator itf = fields.begin(), itfend = fields.end(); itf != itfend; ++itf)
+                    std::vector< std::pair<std::string, sofa::core::objectmodel::BaseData* > > fields = object->getFields();
+                    for (std::vector< std::pair< std::string, sofa::core::objectmodel::BaseData*>  >::iterator itf = fields.begin(), itfend = fields.end(); itf != itfend; ++itf)
                     {
-                        sofa::core::objectmodel::FieldBase* f = itf->second;
+                        sofa::core::objectmodel::BaseData* f = itf->second;
                         out << "<tr class=\"sofa-field\">";
                         out << "<td></td>";
                         out << "<td class=\"sofa-field-name\">";

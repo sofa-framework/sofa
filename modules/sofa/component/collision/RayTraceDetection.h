@@ -56,7 +56,7 @@ public core::VisualModel
 {
 private:
     sofa::helper::vector < core::CollisionModel * >collisionModels;
-    DataField < bool > bDraw;
+    Data < bool > bDraw;
 
 public:
     typedef sofa::helper::vector<sofa::core::componentmodel::collision::DetectionOutput>    OutputVector;

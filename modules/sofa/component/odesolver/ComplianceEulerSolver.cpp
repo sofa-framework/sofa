@@ -51,7 +51,7 @@ int ComplianceEulerSolverClass = core::RegisterObject("A simple explicit time in
 SOFA_DECL_CLASS(ComplianceEuler);
 
 ComplianceEulerSolver::ComplianceEulerSolver()
-    : firstCallToSolve( dataField( &firstCallToSolve, true, "firstCallToSolve", "If true, the free movement is computed, if false, the constraint movement is computed"))
+    : firstCallToSolve( initData( &firstCallToSolve, true, "firstCallToSolve", "If true, the free movement is computed, if false, the constraint movement is computed"))
 {
 }
 

@@ -147,7 +147,7 @@ public:
         return out;
     }
 
-    /// Needed to be compliant with DataFields.
+    /// Needed to be compliant with Datas.
     inline friend std::istream& operator>>(std::istream& in, PointSetTopologyContainer& t)
     {
         unsigned int s;
@@ -374,7 +374,7 @@ public:
     /** the object where the mechanical DOFs are stored */
     component::MechanicalObject<DataTypes> *object;
 
-    Field< PointSetTopologyContainer > *f_m_topologyContainer;
+    DataPtr< PointSetTopologyContainer > *f_m_topologyContainer;
 public:
     PointSetTopology(component::MechanicalObject<DataTypes> *obj);
 

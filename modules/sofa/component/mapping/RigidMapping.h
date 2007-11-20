@@ -64,18 +64,18 @@ public:
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-    DataField< VecCoord > points;
+    Data< VecCoord > points;
     VecCoord rotatedPoints;
     RigidMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
-    DataField<unsigned int> index;
-    DataField< std::string > filename;
+    Data<unsigned int> index;
+    Data< std::string > filename;
 
     RigidMapping ( In* from, Out* to )
         : Inherit ( from, to ),
-          points ( dataField ( &points,"initialPoints", "Local Coordinates of the points" ) ),
-          index ( dataField ( &index, ( unsigned ) 0,"index","input DOF index" ) ),
-          filename ( dataField ( &filename,"filename","Filename" ) ),
-          repartition ( dataField ( &repartition,"repartition","number of dest dofs per entry dof" ) )
+          points ( initData ( &points,"initialPoints", "Local Coordinates of the points" ) ),
+          index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) ),
+          filename ( initData ( &filename,"filename","Filename" ) ),
+          repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
     {
     }
 
@@ -87,7 +87,7 @@ public:
 
     void init();
 
-    //void disable(); //useless now that points are saved in a DataField
+    //void disable(); //useless now that points are saved in a Data
 
     void parse ( core::objectmodel::BaseObjectDescription* arg )
     {
@@ -116,7 +116,7 @@ public:
 protected:
     class Loader;
     void load ( const char* filename );
-    DataField<sofa::helper::vector<unsigned int> >  repartition;
+    Data<sofa::helper::vector<unsigned int> >  repartition;
 
     bool getShow ( const core::objectmodel::BaseObject* m ) const { return m->getContext()->getShowMappings(); }
 

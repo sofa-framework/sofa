@@ -89,9 +89,9 @@ const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 };
 
 
-SparseGridTopology::SparseGridTopology(): nx(dataField(&nx,0,"nx","x grid resolution")), ny(dataField(&ny,0,"ny","y grid resolution")), nz(dataField(&nz,0,"nz","z grid resolution")),
-    xmin(dataField(&xmin,0.0,"xmin","xmin grid")),ymin(dataField(&ymin,0.0,"ymin","ymin grid")),zmin(dataField(&zmin,0.0,"zmin","zmin grid")),
-    xmax(dataField(&xmax,0.0,"xmax","xmax grid")),ymax(dataField(&ymax,0.0,"ymax","ymax grid")),zmax(dataField(&zmax,0.0,"zmax","zmax grid"))
+SparseGridTopology::SparseGridTopology(): nx(initData(&nx,0,"nx","x grid resolution")), ny(initData(&ny,0,"ny","y grid resolution")), nz(initData(&nz,0,"nz","z grid resolution")),
+    xmin(initData(&xmin,0.0,"xmin","xmin grid")),ymin(initData(&ymin,0.0,"ymin","ymin grid")),zmin(initData(&zmin,0.0,"zmin","zmin grid")),
+    xmax(initData(&xmax,0.0,"xmax","xmax grid")),ymax(initData(&ymax,0.0,"ymax","ymax grid")),zmax(initData(&zmax,0.0,"zmax","zmax grid"))
 {
     _alreadyInit = false;
     _finerSparseGrid=NULL;

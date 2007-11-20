@@ -41,9 +41,9 @@ namespace collision
 class DefaultPipeline : public sofa::simulation::tree::PipelineImpl, public core::VisualModel
 {
 public:
-    DataField<bool> bVerbose;
-    DataField<bool> bDraw;
-    DataField<int> depth;
+    Data<bool> bVerbose;
+    Data<bool> bDraw;
+    Data<int> depth;
 
     DefaultPipeline();
 
