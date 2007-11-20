@@ -93,20 +93,20 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
     }
     else
     {
-        //std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
+// 	  std::cout << "ObjectFactory: class "<<classname<<" FOUND."<<std::endl;
         ClassEntry* entry = it->second;
         if(templatename.empty()) templatename = entry->defaultTemplate;
         std::map<std::string, Creator*>::iterator it2 = entry->creatorMap.find(templatename);
         if (it2 != entry->creatorMap.end())
         {
-            //std::cout << "ObjectFactory: template "<<templatename<<" FOUND."<<std::endl;
+// 	      std::cout << "ObjectFactory: template "<<templatename<<" FOUND."<<std::endl;
             Creator* c = it2->second;
             if (c->canCreate(context, arg))
                 creators.push_back(c);
         }
         else
         {
-            //std::cout << "ObjectFactory: template "<<templatename<<" NOT FOUND."<<std::endl;
+// 	      std::cout << "ObjectFactory: template "<<templatename<<" NOT FOUND."<<std::endl;
             std::list< std::pair< std::string, Creator*> >::iterator it3;
             for (it3 = entry->creatorList.begin(); it3 != entry->creatorList.end(); ++it3)
             {
@@ -126,6 +126,7 @@ objectmodel::BaseObject* ObjectFactory::createObject(objectmodel::BaseContext* c
         {
             std::cerr<<"WARNING: ObjectFactory: Several possibilities found for type "<<classname<<"<"<<templatename<<">."<<std::endl;
         }
+// 	    std::cout << "Create Instance : " << arg->getFullName() << "\n";
         object = creators[0]->createInstance(context, arg);
     }
     return object;

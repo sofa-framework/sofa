@@ -58,7 +58,7 @@ bool SphereLoader::load(const char *filename)
         std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
         return false;
     }
-    std::cout << "Loading model'" << filename << "'" << std::endl;
+// 	std::cout << "Loading model'" << filename << "'" << std::endl;
 
     int totalNumSpheres=0;
 
@@ -96,7 +96,7 @@ bool SphereLoader::load(const char *filename)
             skipToEOL(file);
         }
     }
-    printf("Model contains %d spheres\n", totalNumSpheres);
+// 	printf("Model contains %d spheres\n", totalNumSpheres);
 
     (void) fclose(file);
 

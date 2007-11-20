@@ -60,7 +60,7 @@ bool MassSpringLoader::load(const char *filename)
         std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
         return false;
     }
-    std::cout << "Loading model '" << filename << "'" << std::endl;
+// 	std::cout << "Loading model '" << filename << "'" << std::endl;
     int totalNumMasses=0;
     int totalNumSprings=0;
     // Check first line
@@ -100,7 +100,7 @@ bool MassSpringLoader::load(const char *filename)
         setNumSprings(totalNumSprings);
     }
 
-    std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
+// 	std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
 
     std::vector<Vec3d> masses;
     if (totalNumMasses>0)

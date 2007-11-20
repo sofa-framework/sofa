@@ -22,57 +22,69 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_HELPER_FACTORY_INL
-#define SOFA_HELPER_FACTORY_INL
-
-#include <sofa/helper/Factory.h>
-#include <iostream>
-#include <typeinfo>
-
-// added by Sylvere F.
-// this inclusion must be done but not in this part of code. For the moment, I don't know where ;)
-#include <string>
+#include <sofa/simulation/tree/xml/AttributeElement.h>
+#include <sofa/simulation/tree/xml/Element.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace simulation
 {
 
-
-template <typename TKey, class TObject, typename TArgument>
-TObject* Factory<TKey, TObject, TArgument>::createObject(Key key, Argument arg)
+namespace tree
 {
 
-    Object* object;
-    Creator* creator;
-    typename std::multimap<Key, Creator*>::iterator it = registry.lower_bound(key);
-    typename std::multimap<Key, Creator*>::iterator end = registry.upper_bound(key);
-    while (it != end)
+namespace xml
+{
+
+using namespace sofa::defaulttype;
+using helper::Creator;
+
+//template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
+
+AttributeElement::AttributeElement(const std::string& name, const std::string& type, BaseElement* parent)
+    : Element<core::objectmodel::BaseObject>(name, type, parent)
+{
+}
+
+AttributeElement::~AttributeElement()
+{
+}
+
+bool AttributeElement::initNode()
+{
+    std::string info;
+    getAttribute( "type", ""); //the type argument is not relevant for an attribute
+    info = getAttribute( "name", "");
+    if (info.find("default") == std::string::npos)
+        getParentElement()->setAttribute("name", info.c_str());
+
+
+    for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {
-        creator = (*it).second;
-        object = creator->createInstance(arg);
-        if (object != NULL)
+        if (!it->second.isAccessed())
         {
-            /*
-            std::cout<<"Object type "<<key<<" created: "<<gettypename(typeid(*object))<<std::endl;*/
-            return object;
+            getParentElement()->setAttribute(it->first, it->second.c_str());
         }
-        ++it;
     }
-    std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
-    return NULL;
+    return true;
 }
 
-template <typename TKey, class TObject, typename TArgument>
-Factory<TKey, TObject, TArgument>* Factory<TKey, TObject, TArgument>::getInstance()
+SOFA_DECL_CLASS(Attribute)
+
+Creator<BaseElement::NodeFactory, AttributeElement> AttributeNodeClass("Attribute");
+
+const char* AttributeElement::getClass() const
 {
-    static Factory<Key, Object, Argument> instance;
-    return &instance;
+    return AttributeNodeClass.c_str();
 }
 
-} // namespace helper
+} // namespace xml
+
+} // namespace tree
+
+} // namespace simulation
 
 } // namespace sofa
 
-#endif

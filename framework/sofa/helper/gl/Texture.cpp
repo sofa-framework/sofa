@@ -37,7 +37,7 @@ namespace gl
 void Texture::init(void)
 {
     glGenTextures(1, &id); // Create The Texture
-    std::cout << "Create "<<image->getWidth()<<"x"<<image->getHeight()<<" Texture "<<id<<std::endl;
+//     std::cout << "Create "<<image->getWidth()<<"x"<<image->getHeight()<<" Texture "<<id<<std::endl;
     // Typical Texture Generation Using Data From The Bitmap
     glBindTexture(GL_TEXTURE_2D, id);
     switch(image->getNbBits())
@@ -54,7 +54,7 @@ void Texture::init(void)
     }
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    std::cout << "Texture "<<id<<" Created"<<std::endl;
+//     std::cout << "Texture "<<id<<" Created"<<std::endl;
 }
 
 void Texture::bind(void)

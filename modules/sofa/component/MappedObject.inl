@@ -56,7 +56,7 @@ void MappedObject<DataTypes>::init()
         {
             VecCoord& x = *getX();
             int nbp = topo->getNbPoints();
-            std::cout<<"Setting "<<nbp<<" points from topology."<<std::endl;
+//             std::cout<<"Setting "<<nbp<<" points from topology."<<std::endl;
             x.resize(nbp);
             for (int i=0; i<nbp; i++)
             {

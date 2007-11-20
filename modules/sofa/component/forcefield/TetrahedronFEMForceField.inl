@@ -162,7 +162,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
 
     reinit(); // compute per-element stiffness matrices and other precomputed values
 
-    std::cout << "TetrahedronFEMForceField: init OK, "<<_indexedElements->size()<<" tetra."<<std::endl;
+//     std::cout << "TetrahedronFEMForceField: init OK, "<<_indexedElements->size()<<" tetra."<<std::endl;
 }
 
 

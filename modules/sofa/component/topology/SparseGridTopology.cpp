@@ -102,7 +102,7 @@ SparseGridTopology::SparseGridTopology(): nx(dataField(&nx,0,"nx","x grid resolu
 bool SparseGridTopology::load(const char* filename)
 {
     this->filename.setValue( filename );
-    cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
+// 		cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
     return true;
 }
 
@@ -126,7 +126,7 @@ void SparseGridTopology::init()
     else
         buildAsFinest();
 
-    cerr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
+// 		  cerr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
     cerr<<seqCubes.size()<<"       ";
     cerr<<_types.size()<<endl;
 }
@@ -358,8 +358,8 @@ void SparseGridTopology::buildAsFinest(  )
 
 
         }
-        else
-            std::cerr << "SparseGridTopology: loading mesh "<<filename.getValue()<<" failed."<<std::endl;
+//         else
+//           std::cerr << "SparseGridTopology: loading mesh "<<filename.getValue()<<" failed."<<std::endl;
     }
 
 }

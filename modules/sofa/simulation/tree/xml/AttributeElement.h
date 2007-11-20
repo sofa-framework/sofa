@@ -22,56 +22,41 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_HELPER_FACTORY_INL
-#define SOFA_HELPER_FACTORY_INL
+#ifndef SOFA_SIMULATION_TREE_XML_ATTRIBUTEELEMENT_H
+#define SOFA_SIMULATION_TREE_XML_ATTRIBUTEELEMENT_H
 
-#include <sofa/helper/Factory.h>
-#include <iostream>
-#include <typeinfo>
-
-// added by Sylvere F.
-// this inclusion must be done but not in this part of code. For the moment, I don't know where ;)
-#include <string>
+#include <sofa/simulation/tree/xml/Element.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace simulation
 {
 
-
-template <typename TKey, class TObject, typename TArgument>
-TObject* Factory<TKey, TObject, TArgument>::createObject(Key key, Argument arg)
+namespace tree
 {
 
-    Object* object;
-    Creator* creator;
-    typename std::multimap<Key, Creator*>::iterator it = registry.lower_bound(key);
-    typename std::multimap<Key, Creator*>::iterator end = registry.upper_bound(key);
-    while (it != end)
-    {
-        creator = (*it).second;
-        object = creator->createInstance(arg);
-        if (object != NULL)
-        {
-            /*
-            std::cout<<"Object type "<<key<<" created: "<<gettypename(typeid(*object))<<std::endl;*/
-            return object;
-        }
-        ++it;
-    }
-    std::cerr<<"Object type "<<key<<" creation failed."<<std::endl;
-    return NULL;
-}
-
-template <typename TKey, class TObject, typename TArgument>
-Factory<TKey, TObject, TArgument>* Factory<TKey, TObject, TArgument>::getInstance()
+namespace xml
 {
-    static Factory<Key, Object, Argument> instance;
-    return &instance;
-}
 
-} // namespace helper
+class AttributeElement : public Element<core::objectmodel::BaseObject>
+{
+public:
+    AttributeElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
+
+    virtual ~AttributeElement();
+
+    virtual bool initNode();
+
+    virtual const char* getClass() const;
+};
+
+} // namespace xml
+
+} // namespace tree
+
+} // namespace simulation
 
 } // namespace sofa
 

@@ -78,7 +78,7 @@ Simulation* getSimulation()
 GNode* Simulation::load ( const char *filename )
 {
     ::sofa::simulation::tree::init();
-    std::cerr << "Loading simulation XML file "<<filename<<std::endl;
+// 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
     xml::BaseElement* xml = xml::load ( filename );
     if ( xml==NULL )
     {
@@ -88,7 +88,7 @@ GNode* Simulation::load ( const char *filename )
     // We go the the current file's directory so that all relative path are correct
     helper::system::SetDirectory chdir ( filename );
 
-    std::cout << "Initializing objects"<<std::endl;
+// 				std::cout << "Initializing objects"<<std::endl;
     if ( !xml->init() )
     {
         std::cerr << "Objects initialization failed."<<std::endl;
@@ -102,7 +102,7 @@ GNode* Simulation::load ( const char *filename )
         return NULL;
     }
 
-    std::cout << "Initializing simulation "<<root->getName() <<std::endl;
+// 				std::cout << "Initializing simulation "<<root->getName() <<std::endl;
 
     // Find the Simulation component in the scene
     FindByTypeVisitor<Simulation> findSimu;
@@ -117,7 +117,7 @@ GNode* Simulation::load ( const char *filename )
     // BUGFIX (Jeremie A.): disabled as initTexture was not called yet, and the GUI might not even be up yet
     //root->execute<VisualUpdateVisitor>();
 
-    std::cout << "load done."<<std::endl;
+// 				std::cout << "load done."<<std::endl;
 
     delete xml;
 

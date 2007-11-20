@@ -568,7 +568,7 @@ void MechanicalObject<DataTypes>::init()
         if (topo!=NULL && topo->hasPos() && topo->getContext() == this->getContext())
         {
             int nbp = topo->getNbPoints();
-            std::cout<<"Setting "<<nbp<<" points from topology."<<std::endl;
+// 	      std::cout<<"Setting "<<nbp<<" points from topology."<<std::endl;
             this->resize(nbp);
             for (int i=0; i<nbp; i++)
             {

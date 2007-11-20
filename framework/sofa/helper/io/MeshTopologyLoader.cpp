@@ -84,12 +84,12 @@ bool MeshTopologyLoader::load(const char *filename)
         return false;
     }
 
-    std::cout << "Loading Gmsh topology '" << filename << "' - ";
+// 	std::cout << "Loading Gmsh topology '" << filename << "' - ";
 
     if (!strncmp(cmd,"$MeshFormat",11)) // Reading gmsh 2.0 file
     {
         gmshFormat = 2;
-        std::cout << "Gmsh format 2.0" << std::endl;
+// 		std::cout << "Gmsh format 2.0" << std::endl;
         readLine(cmd, sizeof(cmd), file); // we don't care about this line
         readLine(cmd, sizeof(cmd), file);
         if (strncmp(cmd,"$EndMeshFormat",14)) // it should end with $EndMeshFormat
@@ -103,13 +103,13 @@ bool MeshTopologyLoader::load(const char *filename)
     else
     {
         gmshFormat = 1;
-        std::cout << "Gmsh format 1.0" << std::endl;
+// 		std::cout << "Gmsh format 1.0" << std::endl;
     }
-    std::cout << "Hello" << std::endl;
+
 
     if (!strncmp(cmd,"$NOD",4) || !strncmp(cmd,"$Nodes",6)) // Gmsh format
     {
-        std::cout << "Loading Gmsh topology '" << filename << "'" << std::endl;
+// 		std::cout << "Loading Gmsh topology '" << filename << "'" << std::endl;
         fscanf(file, "%d\n", &npoints);
         setNbPoints(npoints);
         std::vector<int> pmap;
@@ -231,7 +231,7 @@ bool MeshTopologyLoader::load(const char *filename)
         }
         else
         {
-            std::cout << "Done parsing Gmsh file." << std::endl;
+// 			std::cout << "Done parsing Gmsh file." << std::endl;
         }
     }
     else if (!strncmp(cmd,"Xsp",3))
@@ -345,7 +345,7 @@ bool MeshTopologyLoader::load(const char *filename)
     }
     else
     {
-        std::cout << "Loading mesh topology '" << filename << "'" << std::endl;
+// 		std::cout << "Loading mesh topology '" << filename << "'" << std::endl;
         while (fscanf(file, "%s", cmd) != EOF)
         {
             if (!strcmp(cmd,"line"))
@@ -456,14 +456,14 @@ bool MeshTopologyLoader::load(const char *filename)
             }
         }
     }
-    std::cout << "Loading topology complete:";
-    if (npoints>0) std::cout << ' ' << npoints << " points";
-    if (nlines>0)  std::cout << ' ' << nlines  << " lines";
-    if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
-    if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-    if (ntetras>0) std::cout << ' ' << ntetras << " tetrahedra";
-    if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
-    std::cout << std::endl;
+// 	std::cout << "Loading topology complete:";
+// 	if (npoints>0) std::cout << ' ' << npoints << " points";
+// 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
+// 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
+// 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
+// 	if (ntetras>0) std::cout << ' ' << ntetras << " tetrahedra";
+// 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
+// 	std::cout << std::endl;
     fclose(file);
     return true;
 }

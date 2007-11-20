@@ -422,7 +422,7 @@ void  Base::writeFields ( std::ostream& out )
     {
         FieldBase* field = m_fieldVec[ i ].second;
         if( field->isSet() && !field->getValueString().empty())
-            out <<  m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
+            out << "<Attribute " << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\"/>";
     }
 }
 
@@ -434,9 +434,9 @@ void  Base::xmlWriteFields ( std::ostream& out, unsigned level )
         FieldBase* field = m_fieldVec[ i ].second;
         if( field->isSet() && !field->getValueString().empty())
         {
-            for (unsigned l=0; l<=level; l++)
+            for (unsigned l=0; l<level; l++)
                 out << "\t";
-            out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\""<<std::endl;
+            out << "<Attribute " << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\"/>"<<std::endl;
         }
     }
 }

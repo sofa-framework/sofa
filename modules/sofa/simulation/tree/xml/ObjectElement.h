@@ -49,6 +49,8 @@ public:
 
     virtual bool initNode();
 
+    virtual bool init();
+
     virtual const char* getClass() const;
 };
 

@@ -26,6 +26,7 @@
 #include <sofa/simulation/tree/xml/Element.inl>
 #include <sofa/core/ObjectFactory.h>
 
+
 namespace sofa
 {
 
@@ -52,12 +53,23 @@ ObjectElement::~ObjectElement()
 {
 }
 
+
+bool ObjectElement::init()
+{
+    for (child_iterator<> it = begin(); it != end(); ++it)
+    {
+        it->initNode();
+    }
+    return initNode();
+}
+
 bool ObjectElement::initNode()
 {
     //if (!Element<core::objectmodel::BaseObject>::initNode()) return false;
     core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(getParent()->getObject());
 
-    std::cout << "ObjectElement: creating "<<getAttribute( "type", "" )<<std::endl;
+//     std::cout << "ObjectElement: creating "<<getAttribute( "type", "" )<<std::endl;
+
 
     core::objectmodel::BaseObject *obj = core::ObjectFactory::CreateObject(ctx, this);
 

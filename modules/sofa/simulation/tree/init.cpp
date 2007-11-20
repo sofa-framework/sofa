@@ -16,7 +16,7 @@ void init()
     static bool first = true;
     if (first)
     {
-        std::cout << "Sofa components initialized."<<std::endl;
+//         std::cout << "Sofa components initialized."<<std::endl;
 
         //std::ofstream ofile("sofa-classes.html");
         //ofile << "<html><body>\n";

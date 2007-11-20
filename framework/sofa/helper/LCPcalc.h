@@ -72,8 +72,6 @@ private:
 // Gauss-Seidel like algorithm for contacts
 int nlcp_gaussseidel(int, double *, double**, double *, double &, double &, int &);
 
-void aeiou ();
-
 } // namespace helper
 
 } // namespace sofa

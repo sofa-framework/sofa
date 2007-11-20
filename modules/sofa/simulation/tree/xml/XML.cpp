@@ -59,7 +59,7 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
     {
         if (node->getName() == nodename)
         {
-            std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
+//             std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
             node->setAttribute(attr, value);
         }
     }
@@ -67,7 +67,7 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
     {
         if (node->getAttribute( attr ))
         {
-            std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
+//             std::cout << "XML: Replacing attribute " << attr << " in " << node->getName() << " by " << value << std::endl;
             node->setAttribute(attr, value);
         }
     }
@@ -80,6 +80,11 @@ void recReplaceAttribute(BaseElement* node, const char* attr, const char* value,
     }
 }
 
+
+BaseElement* includeNode  (xmlNodePtr root,const char *basefilename);
+BaseElement* attributeNode(xmlNodePtr root,const char *basefilename);
+
+
 BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot = false)
 {
     //if (!xmlStrcmp(root->name,(const xmlChar*)"text")) return NULL;
@@ -89,68 +94,7 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
 
     if (!xmlStrcmp(root->name,(const xmlChar*)"include"))
     {
-        std::string filename;
-        xmlChar *pfilename = xmlGetProp(root, (const xmlChar*) "href");
-        if (pfilename)
-        {
-            filename = (const char*)pfilename;
-            xmlFree(pfilename);
-        }
-        if (filename.empty())
-        {
-            std::cerr << "ERROR: xml include tag requires non empty filename or href attribute." << std::endl;
-            return NULL;
-        }
-        std::cout << "XML: Including external file " << filename << " from " << basefilename << std::endl;
-        sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename);
-        xmlDocPtr doc; // the resulting document tree
-        doc = xmlParseFile(filename.c_str());
-        if (doc == NULL)
-        {
-            std::cerr << "ERROR: Failed to parse " << filename << std::endl;
-            return NULL;
-        }
-
-        xmlNodePtr newroot = xmlDocGetRootElement(doc);
-        if (newroot == NULL)
-        {
-            std::cerr << "ERROR: empty document in " << filename << std::endl;
-            xmlFreeDoc(doc);
-            return NULL;
-        }
-        BaseElement* result = createNode(newroot, filename.c_str(), true);
-        if (result)
-        {
-            // Copy attributes
-            for (xmlAttrPtr attr = root->properties; attr!=NULL; attr = attr->next)
-            {
-                if (attr->children==NULL) continue;
-                if (!xmlStrcmp(attr->name,(const xmlChar*)"href")) continue;
-                if (!xmlStrcmp(attr->name,(const xmlChar*)"name"))
-                {
-                    // only set the name of the root node
-                    result->setName((const char*)attr->children->content);
-                }
-                else
-                {
-                    const char* attrname = (const char*)attr->name;
-                    const char* value = (const char*)attr->children->content;
-                    if (const char* sep = strstr(attrname,"__"))
-                    {
-                        // replace attribute in nodes with a given name
-                        std::string nodename(attrname, sep);
-                        recReplaceAttribute(result, sep+2, value, nodename.c_str());
-                    }
-                    else
-                    {
-                        // replace attribute in all nodes already containing it
-                        recReplaceAttribute(result, attrname, value);
-                    }
-                }
-            }
-        }
-        xmlFreeDoc(doc);
-        return result;
+        return includeNode(root, basefilename);
     }
 
     std::string name, type;
@@ -185,6 +129,7 @@ BaseElement* createNode(xmlNodePtr root, const char *basefilename, bool isRoot =
     }
 
     BaseElement* node = BaseElement::Create((const char*)root->name,name,type);
+
     if (node == NULL)
     {
         std::cerr << "Node "<<root->name<<" name "<<name<<" type "<<type<<" creation failed.\n";
@@ -282,11 +227,79 @@ BaseElement* load(const char *filename)
         std::cerr << "XML Graph creation failed."<<std::endl;
         return NULL;
     }
-
-    dumpNode(graph);
+    /*
+    dumpNode(graph);*/
 
     return graph;
 }
+
+
+BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
+{
+    std::string filename;
+    xmlChar *pfilename = xmlGetProp(root, (const xmlChar*) "href");
+    if (pfilename)
+    {
+        filename = (const char*)pfilename;
+        xmlFree(pfilename);
+    }
+    if (filename.empty())
+    {
+        std::cerr << "ERROR: xml include tag requires non empty filename or href attribute." << std::endl;
+        return NULL;
+    }
+    /*  std::cout << "XML: Including external file " << filename << " from " << basefilename << std::endl;*/
+    sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename);
+    xmlDocPtr doc; // the resulting document tree
+    doc = xmlParseFile(filename.c_str());
+    if (doc == NULL)
+    {
+        std::cerr << "ERROR: Failed to parse " << filename << std::endl;
+        return NULL;
+    }
+
+    xmlNodePtr newroot = xmlDocGetRootElement(doc);
+    if (newroot == NULL)
+    {
+        std::cerr << "ERROR: empty document in " << filename << std::endl;
+        xmlFreeDoc(doc);
+        return NULL;
+    }
+    BaseElement* result = createNode(newroot, filename.c_str(), true);
+    if (result)
+    {
+        // Copy attributes
+        for (xmlAttrPtr attr = root->properties; attr!=NULL; attr = attr->next)
+        {
+            if (attr->children==NULL) continue;
+            if (!xmlStrcmp(attr->name,(const xmlChar*)"href")) continue;
+            if (!xmlStrcmp(attr->name,(const xmlChar*)"name"))
+            {
+                // only set the name of the root node
+                result->setName((const char*)attr->children->content);
+            }
+            else
+            {
+                const char* attrname = (const char*)attr->name;
+                const char* value = (const char*)attr->children->content;
+                if (const char* sep = strstr(attrname,"__"))
+                {
+                    // replace attribute in nodes with a given name
+                    std::string nodename(attrname, sep);
+                    recReplaceAttribute(result, sep+2, value, nodename.c_str());
+                }
+                else
+                {
+                    // replace attribute in all nodes already containing it
+                    recReplaceAttribute(result, attrname, value);
+                }
+            }
+        }
+    }
+    xmlFreeDoc(doc);
+    return result;
+}
+
 
 } // namespace xml
 

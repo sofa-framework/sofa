@@ -155,7 +155,8 @@ bool MeshTopology::load(const char* filename)
                     int i2 = facet[(j+1)%facet.size()];
                     if (edges.count(std::make_pair(i1,i2))!=0)
                     {
-                        std::cerr << "ERROR: Duplicate edge.\n";
+                        /*
+                        std::cerr << "ERROR: Duplicate edge.\n";*/
                     }
                     else if (edges.count(std::make_pair(i2,i1))==0)
                     {

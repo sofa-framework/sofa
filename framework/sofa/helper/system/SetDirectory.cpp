@@ -190,7 +190,7 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         char path[1024];
         memset(path,0,sizeof(path));
         readlink("/proc/self/exe",path,sizeof(path)-1);
-        std::cout << "Current process: "<< path <<std::endl;
+// 		std::cout << "Current process: "<< path <<std::endl;
         if (path[0])
             return path;
         else
@@ -202,7 +202,7 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
         char path[1024];
         unsigned int size;
         _NSGetExecutablePath( path, &size );
-        std::cout << "Current process path: "<<path<<std::endl;
+// 		std::cout << "Current process path: "<<path<<std::endl;
 
         return path;
     }

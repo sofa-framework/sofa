@@ -190,7 +190,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                 material.setValue(M);
             }
 
-            std::cout << "Vertices Import size : " << verticesImport.size() << " (" << normalsImport.size() << " normals)." << std::endl;
+//             std::cout << "Vertices Import size : " << verticesImport.size() << " (" << normalsImport.size() << " normals)." << std::endl;
 
             int nbVIn = verticesImport.size();
             // First we compute for each point how many pair of normal/texcoord indices are used
@@ -269,9 +269,9 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             if (!vsplit) nbNOut = nbVOut;
             else if (nbNOut == nbVOut) vertNormIdx.resize(0);
 
-            std::cout << "Vertices Export size : " << nbVOut << " (" << nbNOut << " normals)." << std::endl;
+//             std::cout << "Vertices Export size : " << nbVOut << " (" << nbNOut << " normals)." << std::endl;
 
-            std::cout << "Facets Import size : " << facetsImport.size() << std::endl;
+//             std::cout << "Facets Import size : " << facetsImport.size() << std::endl;
 
             // Then we create the triangles and quads
 
@@ -309,12 +309,12 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
                 }
             }
 
-            std::cout << "Facets Export size : ";
-            if (!triangles.empty())
-                std::cout << triangles.size() << " triangles";
-            if (!quads.empty())
-                std::cout << quads.size() << " quads";
-            std::cout << "." << std::endl;
+//             std::cout << "Facets Export size : ";
+//             if (!triangles.empty())
+//                 std::cout << triangles.size() << " triangles";
+//             if (!quads.empty())
+//                 std::cout << quads.size() << " quads";
+//             std::cout << "." << std::endl;
 
             //for (unsigned int i = 0; i < triangles.size() ; i++)
             //    std::cout << "T"<<i<<": "<<triangles[i][0]<<" "<<triangles[i][1]<<" "<<triangles[i][2]<<std::endl;

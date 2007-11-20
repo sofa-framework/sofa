@@ -56,7 +56,7 @@ static std::string xmlencode(const std::string& str)
 template<class T>
 void XMLPrintVisitor::processObject(T obj)
 {
-    for (int i=0; i<=level; i++)
+    for (int i=0; i<level; i++)
         m_out << "\t";
 
     std::string classname = obj->getClassName();
@@ -65,12 +65,15 @@ void XMLPrintVisitor::processObject(T obj)
     m_out << "<Object type=\"" << xmlencode(classname) << "\"";
     if (!templatename.empty())
         m_out << " template=\"" << xmlencode(templatename) << "\"";
-    m_out << "\n";
+
+    m_out << ">\n";
+
     obj->xmlWriteFields( m_out, level+1 );
 
-    for (int i=0; i<=level; i++)
+
+    for (int i=0; i<level; i++)
         m_out << "\t";
-    m_out << "/>" << std::endl;
+    m_out << "</Object>" << std::endl;
 }
 
 template<class Seq>
@@ -90,21 +93,16 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(GNode* node)
 {
     for (int i=0; i<level; i++)
         m_out << "\t";
-    m_out << "<Node ";
-
-    node->xmlWriteFields(m_out,level);
-
-    for (int i=0; i<level; i++)
-        m_out << "\t";
-    m_out<<">"<<endl;
+    m_out << "<Node>\n";
 
     ++level;
+    node->xmlWriteFields(m_out,level);
+
 
     if (node->mechanicalMapping != NULL)
         (*(node->mechanicalMapping.begin()))->disable();
 
     processObjects(node->object);
-
 
     return RESULT_CONTINUE;
 }

@@ -135,7 +135,7 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             {
                 if (it->name == matName)
                 {
-                    std::cout << "Using material "<<it->name<<std::endl;
+// 							std::cout << "Using material "<<it->name<<std::endl;
                     (*it).activated = true;
                     material.setValue(*it);
                 }
@@ -193,10 +193,10 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
     }
 
     // announce the model statistics
-    std::cout << " Vertices: " << vertices.size() << std::endl;
-    std::cout << " Normals: " << normals.size() << std::endl;
-    std::cout << " Texcoords: " << texCoords.size() << std::endl;
-    std::cout << " Triangles: " << facets.size() << std::endl;
+// 	std::cout << " Vertices: " << vertices.size() << std::endl;
+// 	std::cout << " Normals: " << normals.size() << std::endl;
+// 	std::cout << " Texcoords: " << texCoords.size() << std::endl;
+// 	std::cout << " Triangles: " << facets.size() << std::endl;
     if (vertices.size()>0)
     {
         // compute bbox
@@ -214,7 +214,7 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             }
         }
 
-        std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
+// 		std::cout << "BBox: <"<<minBB[0]<<','<<minBB[1]<<','<<minBB[2]<<">-<"<<maxBB[0]<<','<<maxBB[1]<<','<<maxBB[2]<<">\n";
     }
 
 }
@@ -287,17 +287,17 @@ void MeshOBJ::readMTL(const char* filename)
                 case 'd':
                     fscanf(file, "%f %f %f", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]);
                     mat->useDiffuse = true;
-                    std::cout << mat->name << " diffuse = "<<mat->diffuse[0]<<' '<<mat->diffuse[1]<<' '<<mat->diffuse[2]<<std::endl;
+                    /*std::cout << mat->name << " diffuse = "<<mat->diffuse[0]<<' '<<mat->diffuse[1]<<'*/ /*'<<mat->diffuse[2]<<std::endl;*/
                     break;
                 case 's':
                     fscanf(file, "%f %f %f", &mat->specular[0], &mat->specular[1], &mat->specular[2]);
                     mat->useSpecular = true;
-                    std::cout << mat->name << " specular = "<<mat->specular[0]<<' '<<mat->specular[1]<<' '<<mat->specular[2]<<std::endl;
+                    /*std::cout << mat->name << " specular = "<<mat->specular[0]<<' '<<mat->specular[1]<<'*/ /*'<<mat->specular[2]<<std::endl;*/
                     break;
                 case 'a':
                     fscanf(file, "%f %f %f", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]);
                     mat->useAmbient = true;
-                    std::cout << mat->name << " ambient = "<<mat->ambient[0]<<' '<<mat->ambient[1]<<' '<<mat->ambient[2]<<std::endl;
+                    /*std::cout << mat->name << " ambient = "<<mat->ambient[0]<<' '<<mat->ambient[1]<<'*/ /*'<<mat->ambient[2]<<std::endl;*/
                     break;
                 default:
                     /* eat up rest of line */

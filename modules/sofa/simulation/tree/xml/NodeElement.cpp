@@ -64,7 +64,7 @@ bool NodeElement::initNode()
     if (!Element<core::objectmodel::BaseNode>::initNode()) return false;
     if (getTypedObject()!=NULL && getParentElement()!=NULL && dynamic_cast<core::objectmodel::BaseNode*>(getParentElement()->getObject())!=NULL)
     {
-        std::cout << "Adding Child "<<getName()<<" to "<<getParentElement()->getName()<<std::endl;
+// 		std::cout << "Adding Child "<<getName()<<" to "<<getParentElement()->getName()<<std::endl;
         dynamic_cast<core::objectmodel::BaseNode*>(getParentElement()->getObject())->addChild(getTypedObject());
     }
     return true;

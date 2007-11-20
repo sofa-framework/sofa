@@ -59,6 +59,7 @@ class BaseElement : public core::objectmodel::BaseObjectDescription
 private:
     //std::string name;
     //std::string type;
+
     std::string basefile;
     BaseElement* parent;
     typedef std::list<BaseElement*> ChildList;
