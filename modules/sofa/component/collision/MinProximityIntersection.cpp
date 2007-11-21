@@ -841,9 +841,9 @@ int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputV
 
 bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
 {
-    const Vector3 &pt = p.p();
+    Vector3 pt = p.p();
 
-    std::vector<const Vector3> neighborsPt;
+    std::vector<Vector3> neighborsPt;
     p.getLineNeighbors(neighborsPt);
 
     for (unsigned int i=0; i<neighborsPt.size(); i++)

@@ -56,7 +56,7 @@ public:
     const Vector3& pFree() const;
     const Vector3& v() const;
 
-    void getLineNeighbors(std::vector<const Vector3> &) const;
+    void getLineNeighbors(std::vector<Vector3> &) const;
     void getTriangleNeighbors(std::vector<std::pair<Vector3, Vector3> > &) const;
 };
 

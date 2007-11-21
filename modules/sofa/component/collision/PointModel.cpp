@@ -250,7 +250,7 @@ void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
     }
 }
 
-void Point::getLineNeighbors(std::vector<const Vector3> &nV) const
+void Point::getLineNeighbors(std::vector< Vector3> &nV) const
 {
     std::vector<int> v = model->lineNeighbors[index];
 
