@@ -46,7 +46,7 @@ void Texture::init(void)
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->getWidth(), image->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image->getData());
         break;
     case 24:
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->getWidth(), image->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image->getData());
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->getWidth(), image->getHeight(), 0, GL_BGR, GL_UNSIGNED_BYTE, image->getData());
         break;
     case 8:
         glTexImage2D(GL_TEXTURE_2D, 0, GL_INTENSITY, image->getWidth(), image->getHeight(), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image->getData());

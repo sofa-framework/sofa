@@ -121,6 +121,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             //mtllibname = strdup(buf);
             //fscanf(file, "%s", buf);
             std::string mtlfile = sofa::helper::system::SetDirectory::GetRelativeFromFile(buf, filename);
+//std::cerr << "Buf = " << buf << std::endl;
+//std::cerr << "Filename = " << filename << std::endl;
+
             readMTL(mtlfile.c_str());
         }
         break;
@@ -135,7 +138,7 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             {
                 if (it->name == matName)
                 {
-// 							std::cout << "Using material "<<it->name<<std::endl;
+                    std::cout << "Using material "<<it->name<<std::endl;
                     (*it).activated = true;
                     material.setValue(*it);
                 }
