@@ -33,7 +33,7 @@
 #include <GL/gl.h>
 #endif
 
-#define VERBOSE(a) if (bVerbose.getValue()) a; else
+#define VERBOSE(a) if (bVerbose.getValue()) a; else {}
 
 namespace sofa
 {

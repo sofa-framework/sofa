@@ -66,7 +66,7 @@ void Trace::setTraceLevel(int level)
     mTraceLevel = level;
 }
 
-void Trace::print(int level, char *chaine)
+void Trace::print(int level, const char *chaine)
 {
     switch( level )
     {
@@ -88,7 +88,7 @@ void Trace::print(int level, char *chaine)
     }
 }
 
-TraceProfile::TraceProfile(char *name, int index, int size)
+TraceProfile::TraceProfile(const char *name, int index, int size)
 {
     this->index = index;
     this->name = new char[strlen(name)+1];

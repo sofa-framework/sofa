@@ -160,10 +160,11 @@ public:
     /// Find a field give its name, if not found, the index is the size of the vector
     unsigned int findField( const char* name ) const
     {
+        std::string ln(name);
         unsigned int i;
         for ( i=0; i<m_fieldVec.size(); i++)
         {
-            if (m_fieldVec[i].first == std::string(name)) return i;
+            if (m_fieldVec[i].first == ln) return i;
         }
         return i;
     }
@@ -178,46 +179,46 @@ public:
     }
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
-    Data<T> initData( Data<T>* field, char* name, char* help )
+    Data<T> initData( Data<T>* field, const char* name, const char* help )
     {
         std::string ln(name);
-        if( ln.size()>0 && findField(name)!=m_fieldVec.size() )
+        if( ln.size()>0 && findField(ln)!=m_fieldVec.size() )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
         }
         //field = tmp;
-        m_fieldVec.push_back( std::make_pair(std::string(name),field));
+        m_fieldVec.push_back( std::make_pair(ln,field));
         return Data<T>(help);
     }
 
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
-    Data<T> initData( Data<T>* field, const T& value, char* name, char* help )
+    Data<T> initData( Data<T>* field, const T& value, const char* name, const char* help )
     {
         std::string ln(name);
-        if( ln.size()>0 && findField(name)!=m_fieldVec.size()  )
+        if( ln.size()>0 && findField(ln)!=m_fieldVec.size()  )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
         }
         //field = tmp;
-        m_fieldVec.push_back( std::make_pair(std::string(name),field));
+        m_fieldVec.push_back( std::make_pair(ln,field));
         return Data<T>(value,help);
     }
 
     /// Helper method used to initialize a field pointing to a value of type T
     template<class T>
-    DataPtr<T> initDataPtr( DataPtr<T>* field, T* ptr, char* name, char* help )
+    DataPtr<T> initDataPtr( DataPtr<T>* field, T* ptr, const char* name, const char* help )
     {
         std::string ln(name);
-        if( ln.size()>0 && findField(name)!=m_fieldVec.size() )
+        if( ln.size()>0 && findField(ln)!=m_fieldVec.size() )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
         }
         //field = tmp;
-        m_fieldVec.push_back( std::make_pair(std::string(name),field));
+        m_fieldVec.push_back( std::make_pair(ln,field));
         return DataPtr<T>(ptr,help);
     }
 
@@ -233,15 +234,15 @@ protected:
     std::vector< std::pair<std::string, BaseData*> > m_fieldVec;
 
     /// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
-    void addField( BaseData* f, char* name )
+    void addField( BaseData* f, const char* name )
     {
         std::string ln(name);
-        if( ln.size()>0 && findField(name)!=m_fieldVec.size() )
+        if( ln.size()>0 && findField(ln)!=m_fieldVec.size() )
         {
             std::cerr << "field name " << ln << " already used in this class or in a parent class !...aborting" << std::endl;
             exit( 1 );
         }
-        m_fieldVec.push_back( std::make_pair(std::string(name),f));
+        m_fieldVec.push_back( std::make_pair(ln,f));
     }
 };
 

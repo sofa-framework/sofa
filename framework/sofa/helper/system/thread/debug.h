@@ -57,7 +57,7 @@ public:
     Trace();
 
     static void setTraceLevel(int level);
-    static void print(int level, char *chaine);
+    static void print(int level, const char *chaine);
 };
 
 
@@ -73,7 +73,7 @@ public:
     ctime_t beginTime;
     ctime_t endTime;
 
-    TraceProfile(char *name, int index, int size);
+    TraceProfile(const char *name, int index, int size);
     ~TraceProfile();
 
     void addTime(int instant, int time);
