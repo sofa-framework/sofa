@@ -961,7 +961,7 @@ void QtGLViewer::DisplayOBJs(bool shadowPass)
 
     if (!initTexturesDone)
     {
-        std::cout << "-----------------------------------> initTexturesDone\n";
+//		std::cout << "-----------------------------------> initTexturesDone\n";
         //---------------------------------------------------
         getSimulation()->initTextures(groot);
         //---------------------------------------------------

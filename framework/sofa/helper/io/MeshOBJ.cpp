@@ -231,8 +231,7 @@ void MeshOBJ::readMTL(const char* filename)
     char buf[128];
     file = fopen(filename, "r");
     Material *mat = NULL;
-    if (!file)
-        std::cerr << "readMTL() failed: can't open material file " << filename << std::endl;
+    if (!file);//std::cerr << "readMTL() failed: can't open material file " << filename << std::endl;
     else
     {
         /* now, read in the data */

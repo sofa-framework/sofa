@@ -227,8 +227,9 @@ BaseElement* load(const char *filename)
         std::cerr << "XML Graph creation failed."<<std::endl;
         return NULL;
     }
-    /*
-    dumpNode(graph);*/
+
+    //print the graph scene
+    //dumpNode(graph);
 
     return graph;
 }

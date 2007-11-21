@@ -100,7 +100,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::RegularGridTopology* to
             Vec<3,Real> baryCoords = coefs;
             mapper->addPointInCube(cube, baryCoords.ptr());
         }
-        if (outside>0) std::cerr << "WARNING: Barycentric mapping (in RegularGridTopology) with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
+//	   if (outside>0) std::cerr << "WARNING: Barycentric mapping (in RegularGridTopology) with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
         f_grid->setValue(*mapper);
 
     }
@@ -163,7 +163,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::SparseGridTopology* top
             Vec<3,Real> baryCoords = coefs;
             mapper->addPointInCube(cube, baryCoords.ptr());
         }
-        if (outside>0) std::cerr << "WARNING: Barycentric mapping (in SparseGridTopology) with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
+//		if (outside>0) std::cerr << "WARNING: Barycentric mapping (in SparseGridTopology) with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
         f_sparsegrid->setValue(*mapper);
 
     }
@@ -430,7 +430,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::MeshTopology* topology)
                     mapper->addPointInCube(index-c0, coefs.ptr());
             }
         }
-        if (outside>0) std::cerr << "WARNING: Barycentric mapping (in MeshGridTopology) with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
+//	if (outside>0) std::cerr << "WARNING: Barycentric mapping (in MeshGridTopology) with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
         f_mesh->setValue(*mapper);
     }
     else
@@ -535,7 +535,7 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::TriangleSetTopology<InD
                 mapper->addPointInTriangle(index, coefs.ptr());
             }
         }
-        if (outside>0) std::cerr << "WARNING: Barycentric mapping (in TriangleSetTopology) with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
+//	if (outside>0) std::cerr << "WARNING: Barycentric mapping (in TriangleSetTopology) with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
         f_triangle->setValue(*mapper);
     }
     else

@@ -22,10 +22,11 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/simulation/tree/xml/ObjectElement.h>
+
+#include <sofa/simulation/tree/xml/DataElement.h>
+#include <sofa/simulation/tree/xml/AttributeElement.h>
 #include <sofa/simulation/tree/xml/Element.inl>
 #include <sofa/core/ObjectFactory.h>
-
 
 namespace sofa
 {
@@ -44,69 +45,46 @@ using helper::Creator;
 
 //template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
 
-ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* parent)
+DataElement::DataElement(const std::string& name, const std::string& type, BaseElement* parent)
     : Element<core::objectmodel::BaseObject>(name, type, parent)
 {
 }
 
-ObjectElement::~ObjectElement()
+DataElement::~DataElement()
 {
 }
 
-
-bool ObjectElement::init()
+bool DataElement::initNode()
 {
-    int i=0;
-    for (child_iterator<> it = begin(); it != end(); ++it)
+    AttributeElement *p = dynamic_cast< AttributeElement *>( getParentElement());
+    std::string info;
+    getAttribute( "type", "");
+    info = getAttribute( "name", "");
+
+    if (info.find("default") == std::string::npos)
     {
-        i++;
-        it->init();
+        p->setValue(info);
+        return true;
     }
 
-    return initNode();
-}
-
-bool ObjectElement::initNode()
-{
-    //if (!Element<core::objectmodel::BaseObject>::initNode()) return false;
-    core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(getParent()->getObject());
-
-//     std::cout << "ObjectElement: creating "<<getAttribute( "type", "" )<<std::endl;
-
-
-    core::objectmodel::BaseObject *obj = core::ObjectFactory::CreateObject(ctx, this);
-
-    if (obj == NULL)
-        obj = Factory::CreateObject(this->getType(), this);
-    if (obj == NULL)
-        return false;
-    setObject(obj);
-    obj->setName(getName());
-
-    // display any unused attributes
-    std::string unused;
     for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {
         if (!it->second.isAccessed())
         {
-            unused += ' ';
-            unused += it->first;
+            p->setValue(it->second);
         }
     }
-    if (!unused.empty())
-    {
-        std::cerr << "WARNING: Unused attribute(s) in "<<getFullName()<<" :"<<unused<<std::endl;
-    }
+
     return true;
 }
 
-SOFA_DECL_CLASS(Object)
+SOFA_DECL_CLASS(Data)
 
-Creator<BaseElement::NodeFactory, ObjectElement> ObjectNodeClass("Object");
+Creator<BaseElement::NodeFactory, DataElement> DataNodeClass("Data");
 
-const char* ObjectElement::getClass() const
+const char* DataElement::getClass() const
 {
-    return ObjectNodeClass.c_str();
+    return DataNodeClass.c_str();
 }
 
 } // namespace xml

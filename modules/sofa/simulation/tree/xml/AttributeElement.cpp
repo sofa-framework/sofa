@@ -52,22 +52,23 @@ AttributeElement::~AttributeElement()
 {
 }
 
+bool AttributeElement::init()
+{
+    int i=0;
+    for (child_iterator<> it = begin(); it != end(); ++it)
+    {
+        i++;
+        it->initNode();
+    }
+    return initNode();
+}
+
 bool AttributeElement::initNode()
 {
     std::string info;
-    getAttribute( "type", ""); //the type argument is not relevant for an attribute
+    std::string name = getAttribute( "type", "");
     info = getAttribute( "name", "");
-    if (info.find("default") == std::string::npos)
-        getParentElement()->setAttribute("name", info.c_str());
-
-
-    for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
-    {
-        if (!it->second.isAccessed())
-        {
-            getParentElement()->setAttribute(it->first, it->second.c_str());
-        }
-    }
+    getParentElement()->setAttribute(name, value.c_str());
     return true;
 }
 

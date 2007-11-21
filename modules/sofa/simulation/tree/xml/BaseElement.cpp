@@ -145,7 +145,6 @@ bool BaseElement::init()
     {
         res &= it->init();
     }
-    if (getObject() != NULL) getObject()->setName(getName());
     return res;
 }
 

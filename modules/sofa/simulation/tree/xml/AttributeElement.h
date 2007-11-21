@@ -47,9 +47,15 @@ public:
 
     virtual ~AttributeElement();
 
+    virtual bool init();
+
     virtual bool initNode();
 
     virtual const char* getClass() const;
+
+    void setValue(const std::string _value) {value=_value;}
+private:
+    std::string value;
 };
 
 } // namespace xml

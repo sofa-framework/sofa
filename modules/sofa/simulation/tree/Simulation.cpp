@@ -118,7 +118,6 @@ GNode* Simulation::load ( const char *filename )
     //root->execute<VisualUpdateVisitor>();
 
 // 				std::cout << "load done."<<std::endl;
-
     delete xml;
 
     return root;
