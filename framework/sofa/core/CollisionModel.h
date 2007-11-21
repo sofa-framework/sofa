@@ -69,8 +69,8 @@ public:
         , proximity(initData(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
         , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
         , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
-        , size(0), previous(NULL), next(NULL)
         , bFiltered(initData(&bFiltered, false, "filtered", "flag indicating if the model has to build its neighborhood to filter contacts"))
+        , size(0), previous(NULL)  , next(NULL)
     {
     }
 
