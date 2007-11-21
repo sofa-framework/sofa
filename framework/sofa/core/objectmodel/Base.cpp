@@ -426,6 +426,19 @@ void  Base::writeDatas ( std::ostream& out )
     }
 }
 
+void Base::xmlWriteNodeDatas (std::ostream& out, unsigned level )
+{
+    for (unsigned int i=0; i<m_fieldVec.size(); i++)
+    {
+        BaseData* field = m_fieldVec[ i ].second;
+        if( field->isSet() && !field->getValueString().empty())
+        {
+            for (unsigned l=0; i!=0 && l<level; l++)
+                out << "\t";
+            out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" "<<std::endl;
+        }
+    }
+}
 void  Base::xmlWriteDatas ( std::ostream& out, unsigned level )
 {
 //     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {

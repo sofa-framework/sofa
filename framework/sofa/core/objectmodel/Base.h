@@ -151,6 +151,9 @@ public:
     /// Write the current field values to the given text output stream
     void writeDatas (std::ostream& out);
 
+    /// Write the current Node values to the given XML output stream
+    void xmlWriteNodeDatas (std::ostream& out, unsigned level);
+
     /// Write the current field values to the given XML output stream
     void xmlWriteDatas (std::ostream& out, unsigned level);
 

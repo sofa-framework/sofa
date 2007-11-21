@@ -93,11 +93,14 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(GNode* node)
 {
     for (int i=0; i<level; i++)
         m_out << "\t";
-    m_out << "<Node>\n";
+    m_out << "<Node ";
 
     ++level;
-    node->xmlWriteDatas(m_out,level);
+    node->xmlWriteNodeDatas(m_out,level);
 
+    for (int i=0; i<level; i++)
+        m_out << "\t";
+    m_out << " >\n";
 
     if (node->mechanicalMapping != NULL)
         (*(node->mechanicalMapping.begin()))->disable();
