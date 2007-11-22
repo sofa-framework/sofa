@@ -116,7 +116,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     if (jointChildren.size()==0)
         return;
 
-    std::string str = name;
+    std::string str(name);
     str.append("/");
     str.append(bvhjoint->getName());
 
