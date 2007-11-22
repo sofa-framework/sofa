@@ -397,6 +397,21 @@ void BVHJoint::debug(int tab)
     }
 }
 
+int BVHJoint::getId()
+{
+    return id;
+}
+
+char* BVHJoint::getName()
+{
+    return name;
+}
+
+BVHOffset* BVHJoint::getOffset()
+{
+    return offset;
+}
+
 } // namespace bvh
 
 } // namespace io

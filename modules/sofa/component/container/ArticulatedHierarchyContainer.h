@@ -28,6 +28,9 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/simulation/tree/GNode.h>
+#include <sofa/helper/io/bvh/BVHLoader.h>
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -102,6 +105,8 @@ public:
             *	This is global index to number the articulations
             */
             Data<int> articulationIndex;
+
+            std::vector<double> motion;
         };
 
         /**
@@ -142,6 +147,8 @@ public:
         */
         Data<Vector3> posOnChild;
 
+        vector<Articulation*> articulations;
+
         Vector3 initTranslateChild(Quat objectRotation)
         {
             Vector3 PAParent = posOnParent.getValue() - Vector3(0,0,0);
@@ -160,16 +167,13 @@ public:
         vector<Articulation*> getArticulations();
     };
 
-    ArticulatedHierarchyContainer()
-    {
-    }
+    ArticulatedHierarchyContainer();
+
     ~ArticulatedHierarchyContainer() {}
 
-    void init()
-    {
-        GNode* context = dynamic_cast<GNode*>(this->getContext());
-        context->getTreeObjects<ArticulationCenter>(&articulationCenters);
-    }
+    void parse (sofa::core::objectmodel::BaseObjectDescription* arg);
+
+    void init();
 
     vector<ArticulationCenter*> getArticulationCenters();
     ArticulationCenter* getArticulationCenterAsChild(int index);
@@ -177,6 +181,16 @@ public:
 
     vector<ArticulationCenter*> articulationCenters;
     vector<ArticulationCenter*> acendantList;
+
+    bool chargedFromFile;
+    int numOfFrames;
+    double dtbvh;
+
+private:
+
+    unsigned int id;
+    sofa::helper::io::bvh::BVHJoint* joint;
+    void buildCenterArticulationsTree(sofa::helper::io::bvh::BVHJoint*, int id_buf, char* name, simulation::tree::GNode* node);
 };
 
 } // namespace container

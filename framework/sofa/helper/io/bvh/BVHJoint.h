@@ -98,6 +98,10 @@ public:
     int getNumJoints(char *s=NULL);
     int accumulateNumJoints(void);
     int getNumSegments(char *s=NULL);
+    int getId();
+    char* getName();
+    BVHOffset* getOffset();
+
 
 private:
     BVHOffset *offset;

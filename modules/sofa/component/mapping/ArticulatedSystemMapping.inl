@@ -48,6 +48,9 @@ void ArticulatedSystemMapping<BasicMapping>::init()
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
 
     OutVecCoord& xto = *this->toModel->getX();
+    InVecCoord& xfrom = *this->fromModel->getX();
+
+    apply(xto, xfrom);
 
     for (; ac != acEnd; ac++)
     {
@@ -112,8 +115,6 @@ template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     OutVecCoord& xto = *this->toModel->getX();
-    //InVecCoord& xfree = *this->fromModel->getX();
-    //apply(xto, xfree);
 
     out[0] = OutDeriv();
 
@@ -161,8 +162,6 @@ template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     OutVecCoord& xto = *this->toModel->getX();
-    //InVecCoord& xfree = *this->fromModel->getX();
-    //apply(xto, xfree);
 
     OutVecDeriv fObjects6DBuf = in;
 
@@ -210,8 +209,6 @@ template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
     OutVecCoord& xto = *this->toModel->getX();
-    //InVecCoord& xfree = *this->fromModel->getX();
-    //apply(xto, xfree);
 
     out.resize(in.size());
 
@@ -265,17 +262,23 @@ template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::draw()
 {
     if (!getShow(this)) return;
+    OutVecCoord& xto = *this->toModel->getX();
     glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0,0,0);
-    glBegin (GL_POINTS);
-    std::vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
-    std::vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
-    for (; ac != acEnd; ac++)
+    glPointSize(2);
+    for (unsigned int i=0; i<articulationCenters.size(); i++)
     {
-        helper::gl::glVertexT((*ac)->globalPosition.getValue());
+        glColor4f (1,0,0,0);
+        glBegin (GL_LINES);
+        helper::gl::glVertexT(xto[articulationCenters[i]->parentIndex.getValue()].getCenter());
+        helper::gl::glVertexT(articulationCenters[i]->globalPosition.getValue());
+        helper::gl::glVertexT(articulationCenters[i]->globalPosition.getValue());
+        helper::gl::glVertexT(xto[articulationCenters[i]->childIndex.getValue()].getCenter());
+        glEnd();
+        glColor4f (0,1,0,0);
+        glBegin (GL_POINTS);
+        helper::gl::glVertexT(articulationCenters[i]->globalPosition.getValue());
+        glEnd();
     }
-    glEnd();
 }
 
 } // namespace mapping
