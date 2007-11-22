@@ -107,7 +107,7 @@
                                         <string>Visual Model</string>
                                     </property>
                                     <property name="checked">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                                 <widget class="QCheckBox">
@@ -118,7 +118,7 @@
                                         <string>Behavior Model</string>
                                     </property>
                                     <property name="checked">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                                 <widget class="QCheckBox">
@@ -129,7 +129,7 @@
                                         <string>Collision Model</string>
                                     </property>
                                     <property name="checked">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                                 <widget class="QCheckBox">
@@ -140,18 +140,21 @@
                                         <string>Bounding Tree</string>
                                     </property>
                                     <property name="checked">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                                 <widget class="QCheckBox">
                                     <property name="name">
                                         <cstring>showMapping</cstring>
                                     </property>
+                                    <property name="mouseTracking">
+                                        <bool>false</bool>
+                                    </property>
                                     <property name="text">
                                         <string>Mapping</string>
                                     </property>
                                     <property name="checked">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                                 <widget class="QCheckBox">
@@ -162,7 +165,7 @@
                                         <string>Mechanical Mapping</string>
                                     </property>
                                     <property name="checked">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                                 <widget class="QCheckBox">
@@ -173,7 +176,7 @@
                                         <string>Force Field</string>
                                     </property>
                                     <property name="checked">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                                 <widget class="QCheckBox">
@@ -184,7 +187,7 @@
                                         <string>Interaction</string>
                                     </property>
                                     <property name="checked">
-                                        <bool>true</bool>
+                                        <bool>false</bool>
                                     </property>
                                 </widget>
                                 <spacer>
@@ -727,6 +730,8 @@
         <action name="viewerOpenGLAction"/>
         <action name="viewerQGLViewerAction"/>
         <action name="viewerOGREAction"/>
+        <separator/>
+        <action name="viewExecution_GraphAction"/>
     </item>
     <item text="&amp;Help" name="helpMenu">
         <action name="helpContentsAction"/>
@@ -1117,6 +1122,17 @@
             <string>Gnuplot Directory...</string>
         </property>
     </action>
+    <action>
+        <property name="name">
+            <cstring>viewExecution_GraphAction</cstring>
+        </property>
+        <property name="text">
+            <string>Execution Graph</string>
+        </property>
+        <property name="menuText">
+            <string>Execution Graph</string>
+        </property>
+    </action>
 </actions>
 <images>
     <image name="image0">
@@ -1295,10 +1311,13 @@
         <receiver>GUI</receiver>
         <slot>editGnuplotDirectory()</slot>
     </connection>
+    <connection>
+        <sender>viewExecution_GraphAction</sender>
+        <signal>activated()</signal>
+        <receiver>GUI</receiver>
+        <slot>viewExecutionGraph()</slot>
+    </connection>
 </connections>
-<includes>
-    <include location="local" impldecl="in implementation">GUI.ui.h</include>
-</includes>
 <slots>
     <slot>fileNew()</slot>
     <slot>fileOpen()</slot>
@@ -1324,6 +1343,7 @@
     <slot>RightClickedItemInSceneView( QListViewItem *, const QPoint &amp;, int )</slot>
     <slot>editRecordDirectory()</slot>
     <slot>editGnuplotDirectory()</slot>
+    <slot>viewExecutionGraph()</slot>
 </slots>
 <layoutdefaults spacing="2" margin="5"/>
 </UI>

@@ -858,20 +858,7 @@ void RealGUI::setScene ( GNode* groot, const char* filename, bool keepParams )
     }
     eventNewTime();
 
-    if ( !keepParams )
-    {
-        showVisual->setChecked ( groot->getShowVisualModels() );
-        showBehavior->setChecked ( groot->getShowBehaviorModels() );
-        showCollision->setChecked ( groot->getShowCollisionModels() );
-        showBoundingCollision->setChecked ( groot->getShowBoundingCollisionModels() );
-        showForceField->setChecked ( groot->getShowForceFields() );
-        showInteractionForceField->setChecked ( groot->getShowInteractionForceFields() );
-        showMapping->setChecked ( groot->getShowMappings() );
-        showMechanicalMapping->setChecked ( groot->getShowMechanicalMappings() );
-        showWireFrame->setChecked ( groot->getShowWireFrame() );
-        showNormals->setChecked ( groot->getShowNormals() );
-    }
-    else
+    if ( keepParams )
     {
         groot->setShowVisualModels ( showVisual->isChecked() );
         groot->setShowBehaviorModels ( showBehavior->isChecked() );
@@ -883,7 +870,7 @@ void RealGUI::setScene ( GNode* groot, const char* filename, bool keepParams )
         groot->setShowMechanicalMappings ( showMechanicalMapping->isChecked() );
         groot->setShowWireFrame ( showWireFrame->isChecked() );
         groot->setShowNormals ( showNormals->isChecked() );
-        getSimulation()->updateContext ( groot );
+        //getSimulation()->updateVisualContext ( groot );
     }
 
     startButton->setOn ( groot->getContext()->getAnimate() );
@@ -1053,8 +1040,6 @@ void RealGUI::fileReload()
     else
         fileOpen ( s, true );
 #endif
-
-
 
 }
 
@@ -1494,7 +1479,7 @@ void RealGUI::slot_showVisual ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowVisualModels ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -1505,7 +1490,7 @@ void RealGUI::slot_showBehavior ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowBehaviorModels ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -1516,7 +1501,7 @@ void RealGUI::slot_showCollision ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowCollisionModels ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -1527,7 +1512,7 @@ void RealGUI::slot_showBoundingCollision ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowBoundingCollisionModels ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -1538,7 +1523,7 @@ void RealGUI::slot_showMapping ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowMappings ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -1549,7 +1534,7 @@ void RealGUI::slot_showMechanicalMapping ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowMechanicalMappings ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -1560,7 +1545,7 @@ void RealGUI::slot_showForceField ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowForceFields ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -1571,7 +1556,7 @@ void RealGUI::slot_showInteractionForceField ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowInteractionForceFields ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -1582,7 +1567,7 @@ void RealGUI::slot_showWireFrame ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowWireFrame ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -1593,7 +1578,7 @@ void RealGUI::slot_showNormals ( bool value )
     if ( groot )
     {
         groot->getContext()->setShowNormals ( value );
-        getSimulation()->updateContext ( groot );
+        getSimulation()->updateVisualContext ( groot );
     }
     viewer->getQWidget()->update();
 }
@@ -2523,6 +2508,12 @@ void RealGUI::graphExpand()
 void RealGUI::modifyUnlock ( int Id )
 {
     map_modifyDialogOpened.erase ( Id );
+}
+
+
+void RealGUI::viewExecutionGraph()
+{
+
 }
 
 } // namespace qt

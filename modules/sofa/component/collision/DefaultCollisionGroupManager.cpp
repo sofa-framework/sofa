@@ -130,7 +130,7 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     // create a new group
                     group = new simulation::tree::GNode(groupName);
                     parent->addChild(group);
-                    group->updateContext();
+                    group->updateSimulationContext();
                     group->moveChild(group1);
                     group->moveChild(group2);
                     groupSet.insert(group);

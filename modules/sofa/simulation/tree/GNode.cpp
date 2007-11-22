@@ -289,7 +289,7 @@ void GNode::initialize()
     }
 
     //
-    updateContext();
+    updateSimulationContext();
 
     // this is now done by the InitVisitor
     //for (Sequence<GNode>::iterator it = child.begin(); it != child.end(); it++) {
@@ -354,6 +354,58 @@ void GNode::updateContext()
     /*        getContext()->setGravity( getContext()->getLocalFrame().backProjectVector(getContext()->getWorldGravity()) );*/
 
     if( debug_ ) std::cerr<<"GNode::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+}
+
+void GNode::updateSimulationContext()
+{
+    if( getParent() != NULL )
+    {
+        copySimulationContext(*parent);
+    }
+    // Apply local modifications to the context
+    if (getLogTime())
+    {
+        for( unsigned i=0; i<contextObject.size(); ++i )
+        {
+            contextObject[i]->init();
+            contextObject[i]->apply();
+        }
+    }
+    else
+    {
+        for( unsigned i=0; i<contextObject.size(); ++i )
+        {
+            contextObject[i]->init();
+            contextObject[i]->apply();
+        }
+    }
+    if( debug_ ) std::cerr<<"GNode::updateSimulationContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
+}
+
+void GNode::updateVisualContext()
+{
+    if( getParent() != NULL )
+    {
+        copyVisualContext(*parent);
+    }
+    // Apply local modifications to the context
+    if (getLogTime())
+    {
+        for( unsigned i=0; i<contextObject.size(); ++i )
+        {
+            contextObject[i]->init();
+            contextObject[i]->apply();
+        }
+    }
+    else
+    {
+        for( unsigned i=0; i<contextObject.size(); ++i )
+        {
+            contextObject[i]->init();
+            contextObject[i]->apply();
+        }
+    }
+    if( debug_ ) std::cerr<<"GNode::updateVisualContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
 }
 
 

@@ -47,6 +47,11 @@ public:
     RegularGridTopology(int nx, int ny, int nz);
     RegularGridTopology();
 
+    virtual void reinit()
+    {
+        setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
+
+    }
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
     void setP0(const Vec3& val) { p0 = val; }

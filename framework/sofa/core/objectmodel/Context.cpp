@@ -361,21 +361,17 @@ void Context::copyContext(const Context& c)
 {
     // BUGFIX 12/01/06 (Jeremie A.): Can't use operator= on the class as it will copy other data in the BaseContext class (such as name)...
     // *this = c;
+    copySimulationContext(c);
+    copyVisualContext(c);
+}
 
+
+void Context::copySimulationContext(const Context& c)
+{
     worldGravity_.setValue(c.worldGravity_.getValue());  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     dt_.setValue(c.dt_.getValue());
     time_.setValue(c.time_.getValue());
     animate_.setValue(c.animate_.getValue());
-    showCollisionModels_.setValue(c.showCollisionModels_.getValue());
-    showBoundingCollisionModels_.setValue(c.showBoundingCollisionModels_.getValue());
-    showBehaviorModels_.setValue(c.showBehaviorModels_.getValue());
-    showVisualModels_.setValue(c.showVisualModels_.getValue());
-    showMappings_.setValue(c.showMappings_.getValue());
-    showMechanicalMappings_.setValue(c.showMechanicalMappings_.getValue());
-    showForceFields_.setValue(c.showForceFields_.getValue());
-    showInteractionForceFields_.setValue(c.showInteractionForceFields_.getValue());
-    showWireFrame_.setValue(c.showWireFrame_.getValue());
-    showNormals_.setValue(c.showNormals_.getValue());
     multiThreadSimulation_.setValue(c.multiThreadSimulation_.getValue());
 
     localFrame_ = c.localFrame_;
@@ -386,6 +382,20 @@ void Context::copyContext(const Context& c)
     finestLevel_ = c.finestLevel_;
     coarsestLevel_ = c.coarsestLevel_;
     currentLevel_ = c.currentLevel_;
+}
+
+void Context::copyVisualContext(const Context& c)
+{
+    showCollisionModels_.setValue(c.showCollisionModels_.getValue());
+    showBoundingCollisionModels_.setValue(c.showBoundingCollisionModels_.getValue());
+    showBehaviorModels_.setValue(c.showBehaviorModels_.getValue());
+    showVisualModels_.setValue(c.showVisualModels_.getValue());
+    showMappings_.setValue(c.showMappings_.getValue());
+    showMechanicalMappings_.setValue(c.showMechanicalMappings_.getValue());
+    showForceFields_.setValue(c.showForceFields_.getValue());
+    showInteractionForceFields_.setValue(c.showInteractionForceFields_.getValue());
+    showWireFrame_.setValue(c.showWireFrame_.getValue());
+    showNormals_.setValue(c.showNormals_.getValue());
 }
 
 std::ostream& operator << (std::ostream& out, const Context& c )

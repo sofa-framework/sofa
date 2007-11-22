@@ -51,6 +51,18 @@ public:
     virtual bool isThreadSafe() const { return true; }
 };
 
+class UpdateSimulationContextVisitor : public UpdateContextVisitor
+{
+public:
+    virtual Result processNodeTopDown(GNode* node);
+};
+
+class UpdateVisualContextVisitor : public UpdateContextVisitor
+{
+public:
+    virtual Result processNodeTopDown(GNode* node);
+};
+
 } // namespace tree
 
 } // namespace simulation

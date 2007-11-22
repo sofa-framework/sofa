@@ -76,6 +76,9 @@ public:
     /// Update contexts. Required before drawing the scene if root flags are modified.
     virtual void updateContext(GNode* root);
 
+    /// Update contexts. Required before drawing the scene if root flags are modified.
+    virtual void updateVisualContext(GNode* root);
+
     /// Compute the bounding box of the scene.
     virtual void computeBBox(GNode* root, double* minBBox, double* maxBBox);
 

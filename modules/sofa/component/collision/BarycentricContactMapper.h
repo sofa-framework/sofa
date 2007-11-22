@@ -107,7 +107,7 @@ public:
             std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
         MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
         mapper = new MMapper(model->getTopology());
         mapping = new MMapping(model->getMechanicalState(), mstate, mapper); child->addObject(mapping);
@@ -210,7 +210,7 @@ public:
             std::cerr << "ERROR: IdentityContactMapper only works for scenegraph scenes.\n";
             return NULL;
         }
-        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+        simulation::tree::GNode* child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
         MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
         mapping = new MMapping(model->getMechanicalState(), mstate); child->addObject(mapping);
         return mstate;
@@ -356,7 +356,7 @@ public:
                 std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
                 return NULL;
             }
-            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
             outmodel = new MMechanicalObject; child->addObject(outmodel);
             mapping = new MMapping(instate, outmodel); child->addObject(mapping);
         }
@@ -368,7 +368,7 @@ public:
                 std::cerr << "ERROR: RigidContactMapper only works for scenegraph scenes.\n";
                 return NULL;
             }
-            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
             outmodel = new MMechanicalObject; child->addObject(outmodel);
             mapping = NULL;
         }
@@ -544,7 +544,7 @@ public:
                 std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
                 return NULL;
             }
-            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
             outmodel = new MMechanicalObject; child->addObject(outmodel);
             mapping = new MMapping(instate, outmodel); child->addObject(mapping);
         }
@@ -556,7 +556,7 @@ public:
                 std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
                 return NULL;
             }
-            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateContext();
+            child = new simulation::tree::GNode("contactPoints"); parent->addChild(child); child->updateSimulationContext();
             outmodel = new MMechanicalObject; child->addObject(outmodel);
             mapping = NULL;
         }

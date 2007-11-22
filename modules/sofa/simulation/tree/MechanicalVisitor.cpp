@@ -144,7 +144,7 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDow
 {
     //cerr<<" MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDown "<<node->getName()<<endl;
     node->setTime(t);
-    node->updateContext();
+    node->updateSimulationContext();
     return MechanicalVisitor::processNodeTopDown( node);
 }
 

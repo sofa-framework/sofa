@@ -592,7 +592,7 @@ public:
     virtual Result processNodeTopDown(GNode* node)
     {
         node->setTime(t);
-        node->updateContext();
+        node->updateSimulationContext();
         return MechanicalVisitor::processNodeTopDown( node);
     }
     virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)

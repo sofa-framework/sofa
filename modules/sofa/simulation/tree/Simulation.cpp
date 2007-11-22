@@ -191,7 +191,7 @@ void Simulation::animate ( GNode* root, double dt )
     {
         root->execute ( act );
         root->setTime ( startTime + (i+1)* act.getDt() );
-        root->execute<UpdateContextVisitor>();
+        root->execute<UpdateSimulationContextVisitor>();
     }
 
     root->execute<UpdateMappingVisitor>();
@@ -246,6 +246,12 @@ void Simulation::updateContext ( GNode* root )
     root->execute<UpdateContextVisitor>();
 }
 
+/// Update only Visual contexts. Required before drawing the scene if root flags are modified.
+void Simulation::updateVisualContext ( GNode* root )
+{
+    if ( !root ) return;
+    root->execute<UpdateVisualContextVisitor>();
+}
 /// Render the scene
 void Simulation::draw ( GNode* root )
 {

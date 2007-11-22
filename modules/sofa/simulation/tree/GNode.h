@@ -128,9 +128,14 @@ public:
 
     /// @}
 
-    /// Update the context values, based on parent and local ContextObjects
+    /// Update the whole context values, based on parent and local ContextObjects
     void updateContext();
 
+    /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
+    void updateSimulationContext();
+
+    /// Update the visual context values, based on parent and local ContextObjects
+    void updateVisualContext();
 
     /// @name Visitors and graph traversal
     /// @{

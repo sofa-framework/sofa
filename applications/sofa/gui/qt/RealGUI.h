@@ -122,6 +122,7 @@ public:
     virtual void viewerOpenGL();
     virtual void viewerQGLViewer();
     virtual void viewerOGRE();
+    virtual void viewExecutionGraph();
     //virtual void helpIndex();
     //virtual void helpContents();
     //virtual void helpAbout();

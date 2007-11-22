@@ -224,6 +224,12 @@ public:
     /// Copy the context variables from the given instance
     void copyContext(const Context& c);
 
+    /// Copy the context variables of visualization from the given instance
+    void copySimulationContext(const Context& c);
+
+    /// Copy the context variables of visualization from the given instance
+    void copyVisualContext(const Context& c);
+
     friend std::ostream& operator << (std::ostream& out, const Context& c );
 
 };

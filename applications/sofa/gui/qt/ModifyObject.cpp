@@ -913,7 +913,7 @@ void ModifyObject::updateValues()
                 ff->setValue(lineEdit->text().ascii());
 
 
-                if(!strcmp(ff->help,"object name") )
+                if( !dynamic_cast< GNode *>(node) && !strcmp(ff->help,"object name") )
                 {
                     std::string name=item->text(0).ascii();
                     std::string::size_type pos = name.find(' ');
@@ -1204,7 +1204,6 @@ void ModifyObject::updateContext( GNode *node )
 {
     if (node == NULL) return;
     //Update the context of the childs
-
     GNode::ChildIterator it  = node->child.begin();
     while (it != node->child.end())
     {
@@ -1224,8 +1223,6 @@ void  ModifyObject::createGraphMass(QTabWidget *dialogTab)
     QWidget *tabMassStats = new QWidget(); dialogTab->addTab(tabMassStats, QString("Energy Stats"));
     QVBoxLayout *tabMassStatsLayout = new QVBoxLayout( tabMassStats, 0, 1, "tabMassStats");
 
-
-    std::cout << "Create Graph Energy \n";
 
 #ifdef QT_MODULE_QT3SUPPORT
     graphEnergy = new QwtPlot(QwtText("Energy"),tabMassStats);
