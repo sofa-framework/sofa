@@ -61,7 +61,7 @@ static GLuint LettersDL=0;
 
 void glfntInit(void) {}
 void glfntClose(void) {}
-void glfntWriteBitmap(float x,float y,char *s) {}
+void glfntWriteBitmap(float /*x*/, float /*y*/, char * /*s*/ ) {}
 
 #endif
 

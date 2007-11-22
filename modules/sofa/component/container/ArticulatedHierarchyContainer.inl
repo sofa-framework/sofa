@@ -110,7 +110,7 @@ void ArticulatedHierarchyContainer::parse (sofa::core::objectmodel::BaseObjectDe
     }
 }
 
-void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::io::bvh::BVHJoint* bvhjoint, int id_buf, char* name, simulation::tree::GNode* node)
+void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::io::bvh::BVHJoint* bvhjoint, int id_buf, const char* name, simulation::tree::GNode* node)
 {
     std::vector<sofa::helper::io::bvh::BVHJoint*> jointChildren = bvhjoint->getChildren();
     if (jointChildren.size()==0)

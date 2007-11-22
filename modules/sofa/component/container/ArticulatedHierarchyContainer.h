@@ -190,7 +190,7 @@ private:
 
     unsigned int id;
     sofa::helper::io::bvh::BVHJoint* joint;
-    void buildCenterArticulationsTree(sofa::helper::io::bvh::BVHJoint*, int id_buf, char* name, simulation::tree::GNode* node);
+    void buildCenterArticulationsTree(sofa::helper::io::bvh::BVHJoint*, int id_buf, const char* name, simulation::tree::GNode* node);
 };
 
 } // namespace container
