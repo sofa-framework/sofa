@@ -335,14 +335,18 @@ void Context::setShowNormals(bool val)
 
 bool Context::setCurrentLevel(int l)
 {
-    /// \TODO Shouldn't we test against finestLevel instead of 0?
-    if( l > coarsestLevel_.getValue() || l < 0 ) return false;
-    if( l == coarsestLevel_.getValue() )
+    if( l > coarsestLevel_.getValue() )
     {
-        currentLevel_.setValue(l);
+        currentLevel_.setValue(coarsestLevel_.getValue());
+        return false;
+    }
+    else if( l < finestLevel_.getValue() )
+    {
+        currentLevel_.setValue(finestLevel_.getValue());
         return false;
     }
     currentLevel_.setValue(l);
+    if( l == coarsestLevel_.getValue() ) return false;
     return true;
 }
 void Context::setCoarsestLevel(int l)
@@ -361,6 +365,7 @@ void Context::copyContext(const Context& c)
 {
     // BUGFIX 12/01/06 (Jeremie A.): Can't use operator= on the class as it will copy other data in the BaseContext class (such as name)...
     // *this = c;
+
     copySimulationContext(c);
     copyVisualContext(c);
 }
@@ -379,9 +384,10 @@ void Context::copySimulationContext(const Context& c)
     velocityBasedLinearAccelerationInWorld_ = c.velocityBasedLinearAccelerationInWorld_;
 
     // for multiresolution
-    finestLevel_ = c.finestLevel_;
-    coarsestLevel_ = c.coarsestLevel_;
-    currentLevel_ = c.currentLevel_;
+// 	finestLevel_ = c.finestLevel_;
+// 	coarsestLevel_ = c.coarsestLevel_;
+// 	currentLevel_ = c.currentLevel_;
+
 }
 
 void Context::copyVisualContext(const Context& c)

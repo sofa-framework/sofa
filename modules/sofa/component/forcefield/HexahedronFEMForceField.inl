@@ -218,12 +218,14 @@ void HexahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForcePolar( f, p, i, *it );
         }
+
 }
 
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x)
 {
-    v.resize(x.size());
+    if( v.size()!=x.size() ) v.resize(x.size());
+
 
     unsigned int i=0;
     typename VecElement::const_iterator it;
@@ -249,9 +251,11 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         Displacement F;
         computeForce( F, X, _elementStiffnesses[i] );
 
+
         for(int w=0; w<8; ++w)
             v[(*it)[_indices[w]]] -= _rotations[i] * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
     }
+
 }
 
 template <class DataTypes>
@@ -508,6 +512,17 @@ void HexahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &r
     r[2][0] = edgez[0];
     r[2][1] = edgez[1];
     r[2][2] = edgez[2];
+
+
+// 	r[0][0] = 1;
+// 	r[0][1] = 0;
+// 	r[0][2] = 0;
+// 	r[1][0] = 0;
+// 	r[1][1] = 1;
+// 	r[1][2] = 0;
+// 	r[2][0] = 0;
+// 	r[2][1] = 0;
+// 	r[2][2] = 1;
 }
 
 template<class DataTypes>
@@ -704,15 +719,27 @@ void HexahedronFEMForceField<DataTypes>::draw()
         Index h = (*it)[6];
         Index g = (*it)[7];
 
-        Coord center = (x[a]+x[b]+x[c]+x[d]+x[e]+x[g]+x[f]+x[h])*0.0625;
-        Coord pa = (x[a]+center)*(Real)0.666667;
-        Coord pb = (x[b]+center)*(Real)0.666667;
-        Coord pc = (x[c]+center)*(Real)0.666667;
-        Coord pd = (x[d]+center)*(Real)0.666667;
-        Coord pe = (x[e]+center)*(Real)0.666667;
-        Coord pf = (x[f]+center)*(Real)0.666667;
-        Coord pg = (x[g]+center)*(Real)0.666667;
-        Coord ph = (x[h]+center)*(Real)0.666667;
+// 		Coord center = (x[a]+x[b]+x[c]+x[d]+x[e]+x[g]+x[f]+x[h])*0.0625;
+// 		Real percentage = 0.666667;
+// 		Coord pa = (x[a]+center)*percentage;
+// 		Coord pb = (x[b]+center)*percentage;
+// 		Coord pc = (x[c]+center)*percentage;
+// 		Coord pd = (x[d]+center)*percentage;
+// 		Coord pe = (x[e]+center)*percentage;
+// 		Coord pf = (x[f]+center)*percentage;
+// 		Coord pg = (x[g]+center)*percentage;
+// 		Coord ph = (x[h]+center)*percentage;
+
+        Coord center = (x[a]+x[b]+x[c]+x[d]+x[e]+x[g]+x[f]+x[h])*0.125;
+        Real percentage = 0.15;
+        Coord pa = x[a]-(x[a]-center)*percentage;
+        Coord pb = x[b]-(x[b]-center)*percentage;
+        Coord pc = x[c]-(x[c]-center)*percentage;
+        Coord pd = x[d]-(x[d]-center)*percentage;
+        Coord pe = x[e]-(x[e]-center)*percentage;
+        Coord pf = x[f]-(x[f]-center)*percentage;
+        Coord pg = x[g]-(x[g]-center)*percentage;
+        Coord ph = x[h]-(x[h]-center)*percentage;
 
 
 

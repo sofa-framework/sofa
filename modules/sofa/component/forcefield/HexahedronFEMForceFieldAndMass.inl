@@ -54,6 +54,7 @@ HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 {
+    if(this->_alreadyInit)return;
 
 // 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::init( ) "<<this->getName()<<endl;
     HexahedronFEMForceField::init();
@@ -61,10 +62,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
 
 //         computeElementMasses();
 
-
+// 		_particleMasses.clear();
     _particleMasses.resize( this->_initialPoints.getValue().size() );
 
-    typename topology::SparseGridTopology* sparseGrid = dynamic_cast<typename topology::SparseGridTopology*>(this->_mesh);
     int i=0;
     for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
     {
@@ -75,8 +75,8 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
         // volume of a element
         Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
-        if( sparseGrid ) // if sparseGrid -> the filling ratio is taken into account
-            volume *= (Real) (sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+        if( this->_sparseGrid ) // if sparseGrid -> the filling ratio is taken into account
+            volume *= (Real) (this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
 
         // mass of a particle...
         Real mass = Real (( volume * _density.getValue() ) / 8.0);
@@ -123,7 +123,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const Vec<8,Coord> &nodes, const int /*elementIndice*/)
+void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const Vec<8,Coord> &nodes, const int elementIndice)
 {
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
@@ -155,6 +155,9 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass 
         {
             Mass[j][i] = Mass[i][j];
         }
+
+    if( this->_sparseGrid )
+        Mass *= (Real)(this->_sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
 }
 
 
@@ -228,8 +231,6 @@ template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
     HexahedronFEMForceField::addForce(f,x,v);
-
-
 
     // gravity
 // 		Vec3d g ( this->getContext()->getLocalGravity() );
