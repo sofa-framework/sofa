@@ -101,7 +101,8 @@ void CGImplicitSolver::solve(double dt)
         //f.clear();
         //addMdx(f,vel);
         //b.peq(f,-f_rayleighMass.getValue());     // b = f0 + (h+rs)df/dx v - rd M v
-        addMdx(b,VecId(),-f_rayleighMass.getValue()); // no need to propagate vel as dx again
+        //addMdx(b,VecId(),-f_rayleighMass.getValue()); // no need to propagate vel as dx again
+        addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
     }
 
 

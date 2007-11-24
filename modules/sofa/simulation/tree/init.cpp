@@ -32,7 +32,6 @@ void init()
 
 } // namespace sofa
 
-#if defined (WIN32) || (__APPLE__)
 ////////// BEGIN CLASS LIST //////////
 SOFA_LINK_CLASS(ArticulatedHierarchyContainer)
 SOFA_LINK_CLASS(ArticulatedSystemMapping)
@@ -154,5 +153,3 @@ SOFA_LINK_CLASS(WashingMachineForceField)
 SOFA_LINK_CLASS(ReadState)
 SOFA_LINK_CLASS(WriteState)
 SOFA_LINK_CLASS(QuadBendingSprings)
-#endif
-

@@ -112,16 +112,22 @@ void UniformMass<DataTypes, MassType>::addMDxToVector(defaulttype::BaseVector * 
 }
 
 template <class DataTypes, class MassType>
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
 void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+#else
+void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
+#endif
 {
     // weight
     const double* g = this->getContext()->getLocalGravity().ptr();
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
-    Deriv mg = theGravity * mass.getValue();
+    const MassType& m = mass.getValue();
+    Deriv mg = theGravity * m;
     //cerr<<"UniformMass<DataTypes, MassType>::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<endl;
 
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
     // velocity-based stuff
     core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
     core::objectmodel::BaseContext::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
@@ -135,12 +141,16 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, 
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates= "<<vframe<<endl;
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates= "<<aframe<<endl;
 //     cerr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<endl;
+#endif
 
     // add weight and inertia force
     for (unsigned int i=0; i<f.size(); i++)
     {
-        //f[i] += mg;
-        f[i] += mg + core::componentmodel::behavior::inertiaForce(vframe,aframe,mass.getValue(),x[i],v[i]);
+#ifdef SOFA_SUPPORT_MOVING_FRAMES
+        f[i] += mg + core::componentmodel::behavior::inertiaForce(vframe,aframe,m,x[i],v[i]);
+#else
+        f[i] += mg;
+#endif
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce(), vframe = "<<vframe<<", aframe = "<<aframe<<", x = "<<x[i]<<", v = "<<v[i]<<endl;
         //cerr<<"UniformMass<DataTypes, MassType>::computeForce() = "<<mg + Core::inertiaForce(vframe,aframe,mass,x[i],v[i])<<endl;
     }
@@ -151,9 +161,10 @@ template <class DataTypes, class MassType>
 double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 {
     double e=0;
+    const MassType& m = mass.getValue();
     for (unsigned int i=0; i<v.size(); i++)
     {
-        e+= v[i]*mass.getValue()*v[i];
+        e+= v[i]*m*v[i];
     }
     //cerr<<"UniformMass<DataTypes, MassType>::getKineticEnergy = "<<e/2<<endl;
     return e/2;
@@ -163,18 +174,20 @@ template <class DataTypes, class MassType>
 double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
 {
     double e = 0;
+    const MassType& m = mass.getValue();
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
     DataTypes::set
     ( theGravity, g[0], g[1], g[2]);
+    Deriv mg = theGravity * m;
     //cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, theGravity = "<<theGravity<<endl;
     for (unsigned int i=0; i<x.size(); i++)
     {
         /*        cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, mass = "<<mass<<endl;
                 cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, x = "<<x[i]<<endl;
                 cerr<<"UniformMass<DataTypes, MassType>::getPotentialEnergy, remove "<<theGravity*mass*x[i]<<endl;*/
-        e -= theGravity*mass.getValue()*x[i];
+        e -= mg*x[i];
     }
     return e;
 }
