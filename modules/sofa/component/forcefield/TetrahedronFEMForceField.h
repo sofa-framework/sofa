@@ -98,7 +98,7 @@ protected:
     /// @{
 
     /// Displacement vector (deformation of the 4 corners of a tetrahedron
-    typedef Vec<12, Real> Displacement;
+    typedef VecNoInit<12, Real> Displacement;
 
     /// Material stiffness matrix of a tetrahedron
     typedef Mat<6, 6, Real> MaterialStiffness;
@@ -107,7 +107,7 @@ protected:
     typedef Mat<12, 6, Real> StrainDisplacement;
 
     /// Rigid transformation (rotation) matrix
-    typedef Mat<3, 3, Real> Transformation;
+    typedef MatNoInit<3, 3, Real> Transformation;
 
     /// Stiffness matrix ( = RJKJtRt  with K the Material stiffness matrix, J the strain-displacement matrix, and R the transformation matrix if any )
     typedef Mat<12, 12, Real> StiffnessMatrix;

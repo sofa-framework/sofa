@@ -40,6 +40,8 @@ namespace sofa
 namespace defaulttype
 {
 
+enum NoInit { NOINIT }; ///< use when calling Vec or Mat constructor to skip initialization of values to 0
+
 template <int N, typename real=float>
 class Vec : public helper::fixed_array<real,N>
 {
@@ -48,8 +50,12 @@ public:
     /// Default constructor: sets all values to 0.
     Vec()
     {
-        //this->assign(0);
-        this->assign(real());// modified by Matthieu Nesme -> takes into account if the template type is more complex than a real-like.
+        this->clear();
+    }
+
+    /// Fast constructor: no initialization
+    explicit Vec(NoInit)
+    {
     }
 
     /// Specific constructor for 1-element vectors.
@@ -232,7 +238,7 @@ public:
     /// Sets every element to 0.
     void clear()
     {
-        this->assign(0);
+        this->assign(real());
     }
 
     /// Sets every element to r.
@@ -300,7 +306,7 @@ public:
     template<class real2>
     Vec<N,real> operator*(real2 f) const
     {
-        Vec<N,real> r;
+        Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]*(real)f;
         return r;
@@ -318,7 +324,7 @@ public:
     template<class real2>
     Vec<N,real> operator/(real2 f) const
     {
-        Vec<N,real> r;
+        Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i] = this->elems[i]/(real)f;
         return r;
@@ -346,7 +352,7 @@ public:
     template<class real2>
     Vec<N,real> linearProduct(const Vec<N,real2>& v) const
     {
-        Vec<N,real> r;
+        Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=this->elems[i]*(real)v[i];
         return r;
@@ -356,7 +362,7 @@ public:
     template<class real2>
     Vec<N,real> operator+(const Vec<N,real2>& v) const
     {
-        Vec<N,real> r;
+        Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=this->elems[i]+(real)v[i];
         return r;
@@ -374,7 +380,7 @@ public:
     template<class real2>
     Vec<N,real> operator-(const Vec<N,real2>& v) const
     {
-        Vec<N,real> r;
+        Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=this->elems[i]-(real)v[i];
         return r;
@@ -391,12 +397,11 @@ public:
     /// Vector negation.
     Vec<N,real> operator-() const
     {
-        Vec<N,real> r;
+        Vec<N,real> r(NOINIT);
         for (int i=0; i<N; i++)
             r[i]=-this->elems[i];
         return r;
     }
-
 
     /// Squared norm.
     real norm2() const
@@ -461,6 +466,31 @@ public:
     }
 
     /// @}
+};
+
+/// Same as Vec except the values are not initialized by default
+template <int N, typename real=float>
+class VecNoInit : public Vec<N,real>
+{
+public:
+    VecNoInit()
+        : Vec<N,real>(NOINIT)
+    {
+    }
+
+    /// Assignment operator from an array of values.
+    template<typename real2>
+    void operator=(const real2* p)
+    {
+        this->Vec<N,real>::operator=(p);
+    }
+
+    /// Assignment from a vector with different dimensions.
+    template<int M, typename real2>
+    void operator=(const Vec<M,real2>& v)
+    {
+        this->Vec<N,real>::operator=(v);
+    }
 };
 
 /// Read from an input stream

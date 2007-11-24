@@ -421,13 +421,13 @@ typename TetrahedronFEMForceField<DataTypes>::Real TetrahedronFEMForceField<Data
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot )
 {
-    Mat<6, 12, Real> Jt;
+    MatNoInit<6, 12, Real> Jt;
     Jt.transpose( J );
 
-    Mat<12, 12, Real> JKJt;
+    MatNoInit<12, 12, Real> JKJt;
     JKJt = J*K*Jt;
 
-    Mat<12, 12, Real> RR,RRt;
+    MatNoInit<12, 12, Real> RR,RRt;
     RR.clear();
     RRt.clear();
     for(int i=0; i<3; ++i)
@@ -517,7 +517,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
     J[11][0]  J[11][1]            J[11][3]
     */
 
-    Vec<6,Real> JtD;
+    VecNoInit<6,Real> JtD;
     JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
             J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
             J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
@@ -545,7 +545,7 @@ inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, 
 //         cerr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<endl;
 //         cerr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<endl;
 
-    Vec<6,Real> KJtD;
+    VecNoInit<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
             /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
     KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
@@ -974,7 +974,7 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, In
     _initialTransformation[i] = A;
 
     Transformation R_0_1;
-    Mat<3,3,Real> S;
+    MatNoInit<3,3,Real> S;
     polar_decomp(A, R_0_1, S);
 
     _rotatedInitialElements[i][0] = R_0_1*_initialPoints[a];
@@ -996,7 +996,7 @@ void TetrahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const
     A[2] = p[index[3]]-p[index[0]];
 
     Transformation R_0_2;
-    Mat<3,3,Real> S;
+    MatNoInit<3,3,Real> S;
     polar_decomp(A, R_0_2, S);
 
     _rotations[elementIndex].transpose( R_0_2 );

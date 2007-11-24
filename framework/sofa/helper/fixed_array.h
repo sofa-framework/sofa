@@ -169,33 +169,37 @@ public:
     template <typename T2>
     fixed_array<T,N>& operator= (const fixed_array<T2,N>& rhs)
     {
-        std::copy(rhs.begin(),rhs.end(), begin());
+        //std::copy(rhs.begin(),rhs.end(), begin());
+        for (size_type i=0; i<N; i++)
+            elems[i] = rhs[i];
         return *this;
     }
 
     // assign one value to all elements
     void assign (const T& value)
     {
-        std::fill_n(begin(),size(),value);
+        //std::fill_n(begin(),size(),value);
+        for (size_type i=0; i<N; i++)
+            elems[i] = value;
     }
 
     inline friend std::ostream& operator << (std::ostream& out, const fixed_array<T,N>& a)
     {
-        for( unsigned i=0; i<N; i++ )
+        for( size_type i=0; i<N; i++ )
             out<<a.elems[i]<<" ";
         return out;
     }
 
     inline friend std::istream& operator >> (std::istream& in, fixed_array<T,N>& a)
     {
-        for( unsigned i=0; i<N; i++ )
+        for( size_type i=0; i<N; i++ )
             in>>a.elems[i];
         return in;
     }
 
     inline bool operator < (const fixed_array& v ) const
     {
-        for( unsigned i=0; i<N; i++ )
+        for( size_type i=0; i<N; i++ )
         {
             if( elems[i]<v[i] )
                 return true;  // (*this)<v
