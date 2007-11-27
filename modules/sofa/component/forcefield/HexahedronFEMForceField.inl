@@ -80,11 +80,11 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-    std::string method = arg->getAttribute("method","");
-    if (method == "large")
+    if (f_method == "large")
         this->setMethod(LARGE);
-    else if (method == "polar")
+    else if (f_method == "polar")
         this->setMethod(POLAR);
+
 }
 
 template <class DataTypes>
@@ -162,7 +162,7 @@ void HexahedronFEMForceField<DataTypes>::init()
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::reinit()
 {
-    switch(f_method.getValue())
+    switch(method)
     {
     case LARGE :
     {
@@ -206,7 +206,7 @@ void HexahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
     unsigned int i=0;
     typename VecElement::const_iterator it;
 
-    if(f_method.getValue()==LARGE)
+    if(method==LARGE)
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
         {
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;

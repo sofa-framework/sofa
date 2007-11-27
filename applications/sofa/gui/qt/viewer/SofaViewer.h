@@ -44,6 +44,11 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/component/collision/RayPickInteractor.h>
 
+//instruments handling
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#include <sofa/simulation/tree/MechanicalVisitor.h>
+#include <sofa/simulation/tree/UpdateMappingVisitor.h>
+
 #ifdef QT_MODULE_QT3SUPPORT
 #include <QEvent>
 #include <QMouseEvent>
@@ -63,6 +68,15 @@ namespace qt
 
 namespace viewer
 {
+
+using namespace sofa::defaulttype;
+enum
+{
+    BTLEFT_MODE = 101,
+    BTRIGHT_MODE = 102,
+    BTMIDDLE_MODE = 103,
+};
+
 enum {CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC};
 //      using namespace sofa::simulation::automatescheduler;
 
@@ -241,6 +255,124 @@ protected:
 
     }
 
+    // ---------------------- Here are the controls for instruments  ----------------------
+    void moveLaparoscopic( QMouseEvent *e)
+    {
+        int eventX = e->x();
+        int eventY = e->y();
+
+        std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > instruments;
+        groot->getTreeObjects<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>, std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > >(&instruments);
+        //std::cout << instruments.size() << " instruments\n";
+        if (!instruments.empty())
+        {
+            sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* instrument = instruments[0];
+            switch (e->type())
+            {
+            case QEvent::MouseButtonPress:
+                // Mouse left button is pushed
+                if (e->button() == Qt::LeftButton)
+                {
+                    _navigationMode = BTLEFT_MODE;
+                    _mouseInteractorMoving = true;
+                    _mouseInteractorSavedPosX = eventX;
+                    _mouseInteractorSavedPosY = eventY;
+                }
+                // Mouse right button is pushed
+                else if (e->button() == Qt::RightButton)
+                {
+                    _navigationMode = BTRIGHT_MODE;
+                    _mouseInteractorMoving = true;
+                    _mouseInteractorSavedPosX = eventX;
+                    _mouseInteractorSavedPosY = eventY;
+                }
+                // Mouse middle button is pushed
+                else if (e->button() == Qt::MidButton)
+                {
+                    _navigationMode = BTMIDDLE_MODE;
+                    _mouseInteractorMoving = true;
+                    _mouseInteractorSavedPosX = eventX;
+                    _mouseInteractorSavedPosY = eventY;
+                }
+                break;
+
+            case QEvent::MouseMove:
+                //
+                break;
+
+            case QEvent::MouseButtonRelease:
+                // Mouse left button is released
+                if (e->button() == Qt::LeftButton)
+                {
+                    if (_mouseInteractorMoving)
+                    {
+                        _mouseInteractorMoving = false;
+                    }
+                }
+                // Mouse right button is released
+                else if (e->button() == Qt::RightButton)
+                {
+                    if (_mouseInteractorMoving)
+                    {
+                        _mouseInteractorMoving = false;
+                    }
+                }
+                // Mouse middle button is released
+                else if (e->button() == Qt::MidButton)
+                {
+                    if (_mouseInteractorMoving)
+                    {
+                        _mouseInteractorMoving = false;
+                    }
+                }
+                break;
+
+            default:
+                break;
+            }
+            if (_mouseInteractorMoving && _navigationMode == BTLEFT_MODE)
+            {
+                int dx = eventX - _mouseInteractorSavedPosX;
+                int dy = eventY - _mouseInteractorSavedPosY;
+                if (dx || dy)
+                {
+                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
+                    /* 			update(); */
+                    _mouseInteractorSavedPosX = eventX;
+                    _mouseInteractorSavedPosY = eventY;
+                }
+            }
+            else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
+            {
+                int dx = eventX - _mouseInteractorSavedPosX;
+                int dy = eventY - _mouseInteractorSavedPosY;
+                if (dx || dy)
+                {
+                    /* 			if (!groot || !groot->getContext()->getAnimate()) */
+                    /* 			  update(); */
+                    _mouseInteractorSavedPosX = eventX;
+                    _mouseInteractorSavedPosY = eventY;
+                }
+            }
+            else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
+            {
+                int dx = eventX - _mouseInteractorSavedPosX;
+                int dy = eventY - _mouseInteractorSavedPosY;
+                if (dx || dy)
+                {
+                    (*instrument->getX())[0].getTranslation() += (dy)*0.01;
+                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
+                    /* 			if (!groot || !groot->getContext()->getAnimate()) */
+                    /* 			  update(); */
+                    _mouseInteractorSavedPosX = eventX;
+                    _mouseInteractorSavedPosY = eventY;
+                }
+            }
+            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
+            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
+        }
+    }
+
     virtual void moveRayPickInteractor(int , int ) {};
 
     sofa::helper::gl::Capture capture;
@@ -254,6 +386,13 @@ protected:
     int  camera_type;
     int _background;
     sofa::component::collision::RayPickInteractor* interactor;
+
+    //instruments handling
+    int	_navigationMode;
+    bool _mouseInteractorMoving;
+    int _mouseInteractorSavedPosX;
+    int _mouseInteractorSavedPosY;
+
     //*************************************************************
     // QT
     //*************************************************************

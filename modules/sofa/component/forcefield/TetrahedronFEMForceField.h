@@ -144,7 +144,8 @@ protected:
 public:
 
     DataPtr< VecCoord > f_initialPoints; ///< the intial positions of the points
-    Data<int> f_method; ///< the computation method of the displacements
+    int method;
+    Data<std::string> f_method; ///< the computation method of the displacements
     Real   _poissonRatio;
     DataPtr<Real> f_poissonRatio;
     Real   _youngModulus;
@@ -160,7 +161,7 @@ public:
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
         , f_initialPoints(initDataPtr(&f_initialPoints, &_initialPoints, "initialPoints", "Initial Position"))
-        , f_method(initData(&f_method,(int)LARGE,"method","0: small displacements, 1: large displacements by QR, 2: large displacements by polar"))
+        , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
         ,  _poissonRatio((Real)0.45f)
         , f_poissonRatio(initDataPtr(&f_poissonRatio,&_poissonRatio,"poissonRatio","FEM Poisson Ratio"))
         ,  _youngModulus((Real)5000)
@@ -178,7 +179,7 @@ public:
 
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
 
-    void setMethod(int val) { this->f_method.setValue(val); }
+    void setMethod(int val) { method = val; }
 
     void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 

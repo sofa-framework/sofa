@@ -26,8 +26,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/MechanicalVisitor.h>
-#include <sofa/simulation/tree/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/ObjectFactory.h>
@@ -64,7 +62,6 @@
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
 
 // define this if you want video and OBJ capture to be only done once per N iteration
@@ -1803,6 +1800,10 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
         _moving = false;
         SofaViewer::mouseEvent(e);
     }
+    else if (e->state()&Qt::ControlButton)
+    {
+        moveLaparoscopic(e);
+    }
     else if (e->state()&Qt::AltButton)
     {
         _moving = false;
@@ -1911,121 +1912,6 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
                 _mouseInteractorSavedPosX = eventX;
                 _mouseInteractorSavedPosY = eventY;
             }
-        }
-    }
-    else if (e->state()&Qt::ControlButton)
-    {
-        std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > instruments;
-        if (groot) groot->getTreeObjects<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>, std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > >(&instruments);
-        //std::cout << instruments.size() << " instruments\n";
-        if (!instruments.empty())
-        {
-            _moving = false;
-            sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* instrument = instruments[0];
-            switch (e->type())
-            {
-            case QEvent::MouseButtonPress:
-                // Mouse left button is pushed
-                if (e->button() == Qt::LeftButton)
-                {
-                    _navigationMode = BTLEFT_MODE;
-                    _mouseInteractorMoving = true;
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-                // Mouse right button is pushed
-                else if (e->button() == Qt::RightButton)
-                {
-
-                    _navigationMode = BTRIGHT_MODE;
-                    _mouseInteractorMoving = true;
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-                // Mouse middle button is pushed
-                else if (e->button() == Qt::MidButton)
-                {
-                    _navigationMode = BTMIDDLE_MODE;
-                    _mouseInteractorMoving = true;
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-                break;
-
-            case QEvent::MouseMove:
-                //
-                break;
-
-            case QEvent::MouseButtonRelease:
-                // Mouse left button is released
-                if (e->button() == Qt::LeftButton)
-                {
-                    if (_mouseInteractorMoving)
-                    {
-                        _mouseInteractorMoving = false;
-                    }
-                }
-                // Mouse right button is released
-                else if (e->button() == Qt::RightButton)
-                {
-                    if (_mouseInteractorMoving)
-                    {
-                        _mouseInteractorMoving = false;
-                    }
-                }
-                // Mouse middle button is released
-                else if (e->button() == Qt::MidButton)
-                {
-                    if (_mouseInteractorMoving)
-                    {
-                        _mouseInteractorMoving = false;
-                    }
-                }
-                break;
-
-            default:
-                break;
-            }
-            if (_mouseInteractorMoving && _navigationMode == BTLEFT_MODE)
-            {
-                int dx = eventX - _mouseInteractorSavedPosX;
-                int dy = eventY - _mouseInteractorSavedPosY;
-                if (dx || dy)
-                {
-                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
-                    update();
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-            }
-            else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
-            {
-                int dx = eventX - _mouseInteractorSavedPosX;
-                int dy = eventY - _mouseInteractorSavedPosY;
-                if (dx || dy)
-                {
-                    if (!groot || !groot->getContext()->getAnimate())
-                        update();
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-            }
-            else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
-            {
-                int dx = eventX - _mouseInteractorSavedPosX;
-                int dy = eventY - _mouseInteractorSavedPosY;
-                if (dx || dy)
-                {
-                    (*instrument->getX())[0].getTranslation() += (dy)*0.01;
-                    (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
-                    if (!groot || !groot->getContext()->getAnimate())
-                        update();
-                    _mouseInteractorSavedPosX = eventX;
-                    _mouseInteractorSavedPosY = eventY;
-                }
-            }
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
-            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
         }
     }
     else

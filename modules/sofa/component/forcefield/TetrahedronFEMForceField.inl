@@ -822,13 +822,13 @@ template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-    std::string method = arg->getAttribute("method","");
-    if (method == "small")
+    if (f_method == "small")
         this->setMethod(SMALL);
-    else if (method == "large")
+    else if (f_method == "large")
         this->setMethod(LARGE);
-    else if (method == "polar")
+    else if (f_method == "polar")
         this->setMethod(POLAR);
+
     this->setComputeGlobalMatrix(std::string(arg->getAttribute("computeGlobalMatrix","false"))=="true");
 }
 
@@ -942,7 +942,7 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
 
     unsigned int i;
     typename VecElement::const_iterator it;
-    switch(f_method.getValue())
+    switch(method)
     {
     case SMALL :
     {
@@ -1001,7 +1001,7 @@ void TetrahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord&
 
     unsigned int i;
     typename VecElement::const_iterator it;
-    switch(f_method.getValue())
+    switch(method)
     {
     case SMALL :
     {
@@ -1040,7 +1040,7 @@ void TetrahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv
     unsigned int i;
     typename VecElement::const_iterator it;
 
-    switch(f_method.getValue())
+    switch(method)
     {
     case SMALL :
     {

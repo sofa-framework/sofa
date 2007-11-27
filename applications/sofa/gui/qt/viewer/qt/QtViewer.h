@@ -78,10 +78,6 @@ private:
         TRACKBALL_MODE = 1,
         PAN_MODE = 2,
         ZOOM_MODE = 3,
-
-        BTLEFT_MODE = 101,
-        BTRIGHT_MODE = 102,
-        BTMIDDLE_MODE = 103,
     };
     // Interaction
     enum
@@ -98,7 +94,7 @@ private:
     int				_clearBuffer;
     bool			_lightModelTwoSides;
     float			_lightPosition[4];
-    int				_navigationMode;
+
     Trackball		_currentTrackball;
     Trackball		_newTrackball;
     //	Quaternion		_currentQuat;
@@ -207,9 +203,6 @@ public:
 
     bool _mouseInteractorTranslationMode;
     bool _mouseInteractorRotationMode;
-    bool _mouseInteractorMoving;
-    int _mouseInteractorSavedPosX;
-    int _mouseInteractorSavedPosY;
     int _translationMode;
     Quaternion _mouseInteractorCurrentQuat;
     Vector3 _mouseInteractorAbsolutePosition;

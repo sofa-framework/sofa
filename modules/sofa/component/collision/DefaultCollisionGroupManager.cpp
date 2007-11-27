@@ -130,6 +130,10 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
                     // create a new group
                     group = new simulation::tree::GNode(groupName);
                     parent->addChild(group);
+
+                    core::objectmodel::Context *current_context = dynamic_cast< core::objectmodel::Context *>(parent->getContext());
+                    group->copyVisualContext( (*current_context));
+
                     group->updateSimulationContext();
                     group->moveChild(group1);
                     group->moveChild(group2);

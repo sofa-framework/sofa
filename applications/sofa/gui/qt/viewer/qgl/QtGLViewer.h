@@ -72,13 +72,6 @@ class QtGLViewer :public QGLViewer,   public sofa::gui::qt::viewer::SofaViewer
     Q_OBJECT
 private:
 
-    enum
-    {
-        BTLEFT_MODE = 101,
-        BTRIGHT_MODE = 102,
-        BTMIDDLE_MODE = 103,
-    };
-
     QTimer* timerAnimate;
     int				_W, _H;
     int				_clearBuffer;
@@ -110,11 +103,6 @@ private:
     bool			_automateDisplayed;
     ctime_t			_beginTime;
 
-
-    int	_navigationMode;
-    bool _mouseInteractorMoving;
-    int _mouseInteractorSavedPosX;
-    int _mouseInteractorSavedPosY;
 
     bool _waitForRender;
 
@@ -169,7 +157,7 @@ public:
     void	UpdateOBJ(void);
 
     void moveRayPickInteractor(int eventX, int eventY);
-    void moveLaparoscopic(QMouseEvent *e);
+
     // 	static Quaternion _newQuat;
 
     // Display scene from the automate

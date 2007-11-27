@@ -99,10 +99,9 @@ public:
 
 
     virtual void fileOpen(const char* filename); //, int TYPE=NORMAL);
-    virtual void fileOpen(const char* filename, bool keepParams); //, int TYPE=NORMAL);
-    virtual void fileOpenSimu(const char* filename, bool keepParams); //, int TYPE=NORMAL);
+    virtual void fileOpenSimu(const char* filename); //, int TYPE=NORMAL);
     virtual void fileSaveAs(const char* filename);
-    virtual void setScene(GNode* groot, const char* filename=NULL, bool keepParams=false);
+    virtual void setScene(GNode* groot, const char* filename=NULL);
     virtual void setTitle( const char* windowTitle );
 
     //public slots:

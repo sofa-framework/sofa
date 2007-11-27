@@ -690,7 +690,7 @@ bool RealGUI::setViewer ( const char* name )
 
     std::string filename = viewer->getSceneFileName();
     GNode* groot = new GNode; // empty scene to do the transition
-    setScene ( groot,filename.c_str(), true ); // keep the current display flags
+    setScene ( groot,filename.c_str() ); // keep the current display flags
     left_stack->removeWidget ( viewer->getQWidget() );
     delete viewer;
     viewer = NULL;
@@ -748,19 +748,13 @@ bool RealGUI::setViewer ( const char* name )
     addViewer();
 
     if (filename.rfind(".simu") != std::string::npos)
-        fileOpenSimu(filename.c_str(), true );
+        fileOpenSimu(filename.c_str() );
     else
-        fileOpen ( filename.c_str(), true ); // keep the current display flags
+        fileOpen ( filename.c_str() ); // keep the current display flags
     return true;
 }
 
-
 void RealGUI::fileOpen ( const char* filename )
-{
-    fileOpen ( filename, false );
-}
-
-void RealGUI::fileOpen ( const char* filename, bool keepParams )
 {
     list_object_added.clear();
     list_object_removed.clear();
@@ -789,7 +783,7 @@ void RealGUI::fileOpen ( const char* filename, bool keepParams )
         return;
     }
 
-    setScene ( groot, filename, keepParams );
+    setScene ( groot, filename );
     //need to create again the output streams !!
 
     getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
@@ -830,7 +824,7 @@ void RealGUI::lmlOpen ( const char* filename )
 }
 #endif
 
-void RealGUI::setScene ( GNode* groot, const char* filename, bool keepParams )
+void RealGUI::setScene ( GNode* groot, const char* filename )
 {
     if ( viewer->getScene() !=NULL )
     {
@@ -847,7 +841,7 @@ void RealGUI::setScene ( GNode* groot, const char* filename, bool keepParams )
     //this->groot = groot;
     //sceneFileName = filename;
     record_simulation = false;
-    viewer->setScene ( groot, filename, keepParams );
+    viewer->setScene ( groot, filename );
     initial_time = groot->getTime();
 
     if (timeSlider->maxValue() == 0)
@@ -858,20 +852,18 @@ void RealGUI::setScene ( GNode* groot, const char* filename, bool keepParams )
     }
     eventNewTime();
 
-    if ( keepParams )
-    {
-        groot->setShowVisualModels ( showVisual->isChecked() );
-        groot->setShowBehaviorModels ( showBehavior->isChecked() );
-        groot->setShowCollisionModels ( showCollision->isChecked() );
-        groot->setShowBoundingCollisionModels ( showBoundingCollision->isChecked() );
-        groot->setShowForceFields ( showForceField->isChecked() );
-        groot->setShowInteractionForceFields ( showInteractionForceField->isChecked() );
-        groot->setShowMappings ( showMapping->isChecked() );
-        groot->setShowMechanicalMappings ( showMechanicalMapping->isChecked() );
-        groot->setShowWireFrame ( showWireFrame->isChecked() );
-        groot->setShowNormals ( showNormals->isChecked() );
-        //getSimulation()->updateVisualContext ( groot );
-    }
+    groot->setShowVisualModels ( showVisual->isChecked() );
+    groot->setShowBehaviorModels ( showBehavior->isChecked() );
+    groot->setShowCollisionModels ( showCollision->isChecked() );
+    groot->setShowBoundingCollisionModels ( showBoundingCollision->isChecked() );
+    groot->setShowForceFields ( showForceField->isChecked() );
+    groot->setShowInteractionForceFields ( showInteractionForceField->isChecked() );
+    groot->setShowMappings ( showMapping->isChecked() );
+    groot->setShowMechanicalMappings ( showMechanicalMapping->isChecked() );
+    groot->setShowWireFrame ( showWireFrame->isChecked() );
+    groot->setShowNormals ( showNormals->isChecked() );
+    //getSimulation()->updateVisualContext ( groot );
+
 
     startButton->setOn ( groot->getContext()->getAnimate() );
     dtEdit->setText ( QString::number ( groot->getDt() ) );
@@ -934,7 +926,7 @@ void RealGUI::screenshot()
     }
 }
 
-void RealGUI::fileOpenSimu ( const char* s, bool keepParams=false )
+void RealGUI::fileOpenSimu ( const char* s )
 {
     std::ifstream in(s);
     if (!in.fail())
@@ -954,7 +946,7 @@ void RealGUI::fileOpenSimu ( const char* s, bool keepParams=false )
             simulation_name = s;
             std::string::size_type pointSimu = simulation_name.rfind(".simu");
             simulation_name.resize(pointSimu);
-            fileOpen(filename.c_str(), keepParams);
+            fileOpen(filename.c_str());
             char buf[100];
 
             sprintf ( buf, "Init: %s s",initT.c_str()  );
@@ -1030,15 +1022,15 @@ void RealGUI::fileReload()
         else if ( s.endsWith ( ".lml" ) )
             lmlOpen ( s );
         else if (s.endsWith( ".simu") )
-            fileOpenSimu(s, true);
+            fileOpenSimu(s);
         else
-            fileOpen ( s, true );
+            fileOpen ( s );
     }
 #else
     if (s.endsWith( ".simu") )
-        fileOpenSimu(s, true);
+        fileOpenSimu(s);
     else
-        fileOpen ( s, true );
+        fileOpen ( s );
 #endif
 
 }
@@ -1623,7 +1615,7 @@ void RealGUI::slot_recordSimulation( bool value)
 
 
                 fileSaveAs(ofilename.str().c_str());
-                fileOpen(ofilename.str().c_str(), true); //change the local directory
+                fileOpen(ofilename.str().c_str()); //change the local directory
             }
             record_simulation=true;
             playpauseGUI(true);
@@ -1797,7 +1789,7 @@ void RealGUI::playSimulation(bool forward)
         if ( sofa::helper::system::DataRepository.findFile (stepFilename) )
         {
             stepFilename = sofa::helper::system::DataRepository.getFile ( stepFilename );
-            fileOpen(stepFilename.c_str(),true);
+            fileOpen(stepFilename.c_str());
 
             if ( m_exportGnuplot )
                 getSimulation()->exportGnuplot ( getScene(), getScene()->getTime() );

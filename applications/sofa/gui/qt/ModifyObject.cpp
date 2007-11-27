@@ -250,7 +250,72 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     lineEdit->setText(QString(ff->getValue().c_str()));
                     connect( lineEdit, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
                 }
+                //********************************************************************************************************//
+                //int
+                else if( DataPtr<int> * ff = dynamic_cast< DataPtr<int> * >( (*it).second )  )
+                {
+                    QSpinBox* spinBox = new QSpinBox((int)INT_MIN,(int)INT_MAX,1,box);
+                    list_Object.push_back( (QObject *) spinBox);
 
+                    spinBox->setValue(ff->getValue());
+                    connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeValue() ) );
+                }
+                //********************************************************************************************************//
+                //unsigned int
+                else if( DataPtr<unsigned int> * ff = dynamic_cast< DataPtr<unsigned int> * >( (*it).second )  )
+                {
+                    QSpinBox* spinBox = new QSpinBox((int)0,(int)INT_MAX,1,box);
+                    list_Object.push_back( (QObject *) spinBox);
+
+                    spinBox->setValue(ff->getValue());
+                    connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeValue() ) );
+                }
+                //********************************************************************************************************//
+                //float
+                else if( DataPtr<float> * ff = dynamic_cast< DataPtr<float> * >( (*it).second )  )
+                {
+                    WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
+                    list_Object.push_back( (QObject *) editSFFloat);
+
+                    editSFFloat->setMinFloatValue( (float)-INFINITY );
+                    editSFFloat->setMaxFloatValue( (float)INFINITY );
+
+                    editSFFloat->setFloatValue(ff->getValue());
+                    connect( editSFFloat, SIGNAL( textChanged(const QString &) ), this, SLOT( changeValue() ) );
+                }
+                //********************************************************************************************************//
+                //double
+                else if(DataPtr<double> * ff = dynamic_cast< DataPtr<double> * >( (*it).second )  )
+                {
+
+                    WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
+                    list_Object.push_back( (QObject *) editSFFloat);
+
+                    editSFFloat->setMinFloatValue( (float)-INFINITY );
+                    editSFFloat->setMaxFloatValue( (float)INFINITY );
+
+                    editSFFloat->setFloatValue(ff->getValue());
+                    connect( editSFFloat, SIGNAL( textChanged(const QString &) ), this, SLOT( changeValue() ) );
+                }
+                //********************************************************************************************************//
+                //string
+                else if( DataPtr<std::string> * ff = dynamic_cast< DataPtr<std::string> * >( (*it).second )  )
+                {
+                    // 			if (ff->getValue().empty()) continue;
+                    QLineEdit* lineEdit = new QLineEdit(box);
+                    list_Object.push_back( (QObject *) lineEdit);
+
+                    lineEdit->setText(QString(ff->getValue().c_str()));
+                    connect( lineEdit, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+                }
+                else if(DataPtr<bool> *ff = dynamic_cast< DataPtr< bool> * > ( (*it).second) )
+                {
+                    QCheckBox* checkBox = new QCheckBox(box);
+                    list_Object.push_back( (QObject *) checkBox);
+
+                    checkBox->setChecked(ff->getValue());
+                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
+                }
                 //********************************************************************************************************//
                 //Vec6f, Vec6d
                 else if( dynamic_cast< Data<Vec6f> * > ( (*it).second ) ||

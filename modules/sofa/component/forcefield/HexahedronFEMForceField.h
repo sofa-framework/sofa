@@ -136,7 +136,8 @@ protected:
 
 public:
 
-    Data<int> f_method; ///< the computation method of the displacements
+    int method;
+    Data<std::string> f_method; ///< the computation method of the displacements
     Data<Real> f_poissonRatio;
     Data<Real> f_youngModulus;
 //         Data<bool> f_updateStiffnessMatrix;
@@ -147,7 +148,7 @@ public:
         : _mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
         , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
-        , f_method(initData(&f_method,0,"method","0: large displacements by QR, 1: large displacements by polar"))
+        , f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
         , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
 //             , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
@@ -187,7 +188,7 @@ public:
 
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
 
-    void setMethod(int val) { this->f_method.setValue(val); }
+    void setMethod(int val) { method = val; }
 
 // 		void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 
