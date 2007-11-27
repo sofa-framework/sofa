@@ -104,7 +104,7 @@
                                         <cstring>showVisual</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Visual Model</string>
+                                        <string>show/hide All Visual Models</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
@@ -115,7 +115,7 @@
                                         <cstring>showBehavior</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Behavior Model</string>
+                                        <string>show/hide All Behavior Models</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
@@ -126,7 +126,7 @@
                                         <cstring>showCollision</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Collision Model</string>
+                                        <string>show/hide All Collision Models</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
@@ -137,7 +137,7 @@
                                         <cstring>showBoundingCollision</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Bounding Tree</string>
+                                        <string>show/hide All Bounding Trees</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
@@ -151,7 +151,7 @@
                                         <bool>false</bool>
                                     </property>
                                     <property name="text">
-                                        <string>Mapping</string>
+                                        <string>show/hide All Mappings</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
@@ -162,7 +162,7 @@
                                         <cstring>showMechanicalMapping</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Mechanical Mapping</string>
+                                        <string>show/hide All Mechanical Mappings</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
@@ -173,7 +173,7 @@
                                         <cstring>showForceField</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Force Field</string>
+                                        <string>show/hide All Force Fields</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
@@ -184,7 +184,7 @@
                                         <cstring>showInteractionForceField</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Interaction</string>
+                                        <string>show/hide All Interactions</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
@@ -215,7 +215,7 @@
                                         <bool>true</bool>
                                     </property>
                                     <property name="text">
-                                        <string>Wire Frame</string>
+                                        <string>show/hide Wire Frame</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
@@ -226,7 +226,7 @@
                                         <cstring>showNormals</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>Normals</string>
+                                        <string>show/hide Normals</string>
                                     </property>
                                     <property name="checked">
                                         <bool>false</bool>
