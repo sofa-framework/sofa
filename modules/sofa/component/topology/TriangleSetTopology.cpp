@@ -284,6 +284,8 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer(core::componentmodel:
 }
 bool TriangleSetTopologyContainer::checkTopology() const
 {
+    //std::cout << "*** CHECK TriangleSetTopologyContainer ***" << std::endl;
+
     EdgeSetTopologyContainer::checkTopology();
     if (m_triangleVertexShell.size()>0)
     {
@@ -292,8 +294,16 @@ bool TriangleSetTopologyContainer::checkTopology() const
         {
             const sofa::helper::vector<unsigned int> &tvs=m_triangleVertexShell[i];
             for (j=0; j<tvs.size(); ++j)
-                assert((m_triangle[tvs[j]][0]==i) ||  (m_triangle[tvs[j]][1]==i) || (m_triangle[tvs[j]][2]==i));
+            {
+                bool check_triangle_vertex_shell = (m_triangle[tvs[j]][0]==i) ||  (m_triangle[tvs[j]][1]==i) || (m_triangle[tvs[j]][2]==i);
+                if(!check_triangle_vertex_shell)
+                {
+                    std::cout << "*** CHECK FAILED : check_triangle_vertex_shell, i = " << i << " , j = " << j << std::endl;
+                }
+                assert(check_triangle_vertex_shell);
+            }
         }
+        //std::cout << "******** DONE : check_triangle_vertex_shell" << std::endl;
     }
 
     if (m_triangleEdgeShell.size()>0)
@@ -303,12 +313,19 @@ bool TriangleSetTopologyContainer::checkTopology() const
         {
             const sofa::helper::vector<unsigned int> &tes=m_triangleEdgeShell[i];
             for (j=0; j<tes.size(); ++j)
-                assert((m_triangleEdge[tes[j]][0]==i) ||  (m_triangleEdge[tes[j]][1]==i) || (m_triangleEdge[tes[j]][2]==i));
+            {
+                bool check_triangle_edge_shell = (m_triangleEdge[tes[j]][0]==i) ||  (m_triangleEdge[tes[j]][1]==i) || (m_triangleEdge[tes[j]][2]==i);
+                if(!check_triangle_edge_shell)
+                {
+                    std::cout << "*** CHECK FAILED : check_triangle_edge_shell, i = " << i << " , j = " << j << std::endl;
+                }
+                assert(check_triangle_edge_shell);
+            }
         }
+        //std::cout << "******** DONE : check_triangle_edge_shell" << std::endl;
     }
     return true;
 }
-
 
 // factory related stuff
 /*

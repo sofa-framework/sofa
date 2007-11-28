@@ -31,6 +31,9 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/topology/TriangleSetTopology.h>
+#include <sofa/component/topology/TetrahedronSetTopology.h>
+
+#include <map>
 
 namespace sofa
 {
@@ -83,6 +86,9 @@ protected:
     };
 
     sofa::helper::vector<TriangleInfo> elems;
+
+    sofa::helper::vector<unsigned int> Loc2GlobVec;
+    std::map<unsigned int, unsigned int> Glob2LocMap;
 
     class Loader;
 
@@ -189,6 +195,9 @@ public:
     void buildOctree();
 
     unsigned int getNbTriangles() const;
+
+    std::map<unsigned int, unsigned int> getGlob2LocMap() { return Glob2LocMap;}
+    sofa::helper::vector<unsigned int> getLoc2GlobVec() { return Loc2GlobVec;}
 
     //virtual const char* getTypeName() const { return "Triangle"; }
 

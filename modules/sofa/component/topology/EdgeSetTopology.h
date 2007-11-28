@@ -65,11 +65,11 @@ public:
 public:
     EdgesRemoved(const sofa::helper::vector<unsigned int> _eArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::EDGESREMOVED), removedEdgesArray(_eArray)
     {
-        std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") created"<<std::endl;
+        //std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") created"<<std::endl;
     }
     ~EdgesRemoved()
     {
-        std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") destroyed"<<std::endl;
+        //std::cout << "EdgeRemoved("<<removedEdgesArray.size()<<") destroyed"<<std::endl;
     }
 
     const sofa::helper::vector<unsigned int> &getArray() const
