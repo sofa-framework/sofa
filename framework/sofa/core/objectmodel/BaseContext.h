@@ -184,6 +184,9 @@ public:
     /// Dynamic Topology
     virtual BaseObject* getMainTopology() const;
 
+    /// Global Shader
+    virtual BaseObject* getShader() const;
+
     /// @}
 
     /// @name Parameters Setters

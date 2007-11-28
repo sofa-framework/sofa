@@ -30,6 +30,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/VisualModel.h>
+#include <sofa/core/Shader.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.h>
@@ -125,6 +126,9 @@ public:
 
     /// Dynamic Topology
     virtual core::objectmodel::BaseObject* getMainTopology() const;
+
+    /// Shader
+    virtual core::objectmodel::BaseObject* getShader() const;
 
     /// @}
 
@@ -404,6 +408,7 @@ public:
     Single<core::componentmodel::behavior::BaseMechanicalMapping> mechanicalMapping;
     Single<core::componentmodel::behavior::BaseMass> mass;
     Single<core::componentmodel::topology::Topology> topology;
+    Single<sofa::core::Shader> shader;
 
     //warning : basic topology are not yet used in the release version
     Sequence<core::componentmodel::topology::BaseTopology> basicTopology;

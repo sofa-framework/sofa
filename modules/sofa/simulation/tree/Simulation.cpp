@@ -257,8 +257,18 @@ void Simulation::draw ( GNode* root )
 {
     if ( !root ) return;
     //std::cout << "draw\n";
-    VisualDrawVisitor act ( VisualDrawVisitor::Std );
-    root->execute ( &act );
+    if ( root->getShader() )
+    {
+        //std::cout << "With Shader Draw." << std::endl;
+        VisualDrawVisitor acts ( VisualDrawVisitor::StdWithShader );
+        root->execute ( &acts );
+    }
+    else
+    {
+        //std::cout << "No Shader Draw." << std::endl;
+        VisualDrawVisitor act ( VisualDrawVisitor::Std );
+        root->execute ( &act );
+    }
     VisualDrawVisitor act2 ( VisualDrawVisitor::Transparent );
     root->execute ( &act2 );
 }

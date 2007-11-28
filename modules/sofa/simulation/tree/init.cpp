@@ -153,3 +153,8 @@ SOFA_LINK_CLASS(WashingMachineForceField)
 SOFA_LINK_CLASS(ReadState)
 SOFA_LINK_CLASS(WriteState)
 SOFA_LINK_CLASS(QuadBendingSprings)
+SOFA_LINK_CLASS(OglShader)
+SOFA_LINK_CLASS(DirectionalLight)
+SOFA_LINK_CLASS(PositionalLight)
+SOFA_LINK_CLASS(SpotLight)
+

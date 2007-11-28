@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/VisualVisitor.h>
+#include <sofa/component/visualmodel/VisualModelImpl.h>
 
 namespace sofa
 {
@@ -46,7 +47,7 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
     glPopMatrix();
     return RESULT_CONTINUE;
 }
-void VisualDrawVisitor::processVisualModel(GNode*, core::VisualModel* vm)
+void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
 {
     //cerr<<"VisualDrawVisitor::processVisualModel "<<vm->getName()<<endl;
     switch(pass)
@@ -54,6 +55,22 @@ void VisualDrawVisitor::processVisualModel(GNode*, core::VisualModel* vm)
     case Std:
         vm->draw();
         break;
+    case StdWithShader:
+    {
+        //we assume that the resulting shader can't be null.
+        core::objectmodel::BaseObject* obj = node->getShader();
+        sofa::core::Shader* shader = dynamic_cast<sofa::core::Shader*>(obj);
+
+        sofa::component::visualmodel::VisualModelImpl* vmi =  dynamic_cast<sofa::component::visualmodel::VisualModelImpl*> (vm);
+        if (vmi)
+            shader->start();
+
+        vm->draw();
+
+        if (vmi)
+            shader->stop();
+        break;
+    }
     case Transparent:
         vm->drawTransparent();
         break;
