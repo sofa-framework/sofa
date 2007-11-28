@@ -60,6 +60,7 @@ OglModel::~OglModel()
 
 void OglModel::internalDraw()
 {
+
     //std::cerr<<" OglModel::draw()"<<std::endl;
     if (!getContext()->getShowVisualModels()) return;
     if (getContext()->getShowWireFrame())
@@ -170,6 +171,7 @@ void OglModel::internalDraw()
             glPopMatrix();
         }
     }
+
 }
 
 bool OglModel::loadTexture(const std::string& filename)

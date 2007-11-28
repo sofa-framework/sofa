@@ -217,6 +217,11 @@ BaseObject* BaseContext::getMainTopology() const
 {
     return NULL;
 }
+/// Shader
+BaseObject* BaseContext::getShader() const
+{
+    return NULL;
+}
 
 /// Propagate an event
 void BaseContext::propagateEvent( Event* )

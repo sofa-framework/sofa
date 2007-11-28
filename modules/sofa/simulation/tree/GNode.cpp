@@ -186,6 +186,17 @@ core::objectmodel::BaseObject* GNode::getMainTopology() const
         return NULL;
 }
 
+/// Shader
+core::objectmodel::BaseObject* GNode::getShader() const
+{
+    if (shader)
+        return shader;
+    else if (parent)
+        return parent->getShader();
+    else
+        return NULL;
+}
+
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool GNode::addObject(BaseObject* obj)
 {
@@ -216,6 +227,7 @@ void GNode::doAddObject(BaseObject* obj)
     mass.add(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
     topology.add(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
     basicTopology.add(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
+    shader.add(dynamic_cast< sofa::core::Shader* >(obj));
 
     if (!interactionForceField.add(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj)))
         forceField.add(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
@@ -243,6 +255,7 @@ void GNode::doRemoveObject(BaseObject* obj)
     mass.remove(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
     topology.remove(dynamic_cast< core::componentmodel::topology::Topology* >(obj));
     basicTopology.remove(dynamic_cast< core::componentmodel::topology::BaseTopology* >(obj));
+    shader.remove(dynamic_cast<sofa::core::Shader* >(obj));
 
     forceField.remove(dynamic_cast< core::componentmodel::behavior::BaseForceField* >(obj));
     interactionForceField.remove(dynamic_cast< core::componentmodel::behavior::InteractionForceField* >(obj));
