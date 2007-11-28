@@ -87,6 +87,8 @@ const Edge &EdgeSetTopologyContainer::getEdge(const unsigned int i)
 }
 bool EdgeSetTopologyContainer::checkTopology() const
 {
+    //std::cout << "*** CHECK EdgeSetTopologyContainer ***" << std::endl;
+
     PointSetTopologyContainer::checkTopology();
     if (m_edgeVertexShell.size()>0)
     {
@@ -94,13 +96,21 @@ bool EdgeSetTopologyContainer::checkTopology() const
         for (i=0; i<m_edgeVertexShell.size(); ++i)
         {
             const sofa::helper::vector<unsigned int> &es=m_edgeVertexShell[i];
+
             for (j=0; j<es.size(); ++j)
-                assert((m_edge[es[j]].first==i) ||  (m_edge[es[j]].second==i));
+            {
+                bool check_edge_vertex_shell = (m_edge[es[j]].first==i) ||  (m_edge[es[j]].second==i);
+                if(!check_edge_vertex_shell)
+                {
+                    std::cout << "*** CHECK FAILED : check_edge_vertex_shell, i = " << i << " , j = " << j << std::endl;
+                }
+                assert(check_edge_vertex_shell);
+            }
         }
+        //std::cout << "******** DONE : check_edge_vertex_shell" << std::endl;
     }
     return true;
 }
-
 
 
 unsigned int EdgeSetTopologyContainer::getNumberOfEdges()

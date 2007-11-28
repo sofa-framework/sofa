@@ -327,6 +327,17 @@ public:
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
     int getVertexIndexInTetrahedron(const Tetrahedron &t,unsigned int vertexIndex) const;
 
+    /** returns the index (either 0, 1 ,2, 3, 4 or 5) of the edge whose global index is edgeIndex. Returns -1 if none */
+    int getEdgeIndexInTetrahedron(const TetrahedronEdges &t,unsigned int edgeIndex) const;
+
+    /** returns the index (either 0, 1 ,2 or 3) of the triangle whose global index is triangleIndex. Returns -1 if none */
+    int getTriangleIndexInTetrahedron(const TetrahedronTriangles &t,unsigned int triangleIndex) const;
+
+
+    /** \brief Checks if the Tetrahedron Set Topology is coherent
+     *
+     */
+    virtual bool checkTopology() const;
 
     TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
             const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
@@ -490,14 +501,23 @@ public:
  * A class that performs topology algorithms on an TetrahedronSet.
  */
 template < class DataTypes >
-class TetrahedronSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
+class TetrahedronSetTopologyAlgorithms : public TriangleSetTopologyAlgorithms<DataTypes>
 {
 
 public:
 
-    TetrahedronSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)
+    typedef typename DataTypes::Real Real;
+
+    TetrahedronSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : TriangleSetTopologyAlgorithms<DataTypes>(top)
     {
     }
+
+    /** \brief Remove a set  of tetrahedra
+      @param tetrahedra an array of tetrahedron indices to be removed (note that the array is not const since it needs to be sorted)
+      *
+      */
+    virtual void removeTetrahedra(sofa::helper::vector< unsigned int >& tetrahedra);
+
 };
 
 /**
@@ -528,7 +548,7 @@ public:
 /** Describes a topological object that only consists as a set of points :
 it is a base class for all topological objects */
 template<class DataTypes>
-class TetrahedronSetTopology : public PointSetTopology <DataTypes>
+class TetrahedronSetTopology : public TriangleSetTopology <DataTypes>
 {
 
 public:

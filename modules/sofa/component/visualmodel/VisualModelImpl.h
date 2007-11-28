@@ -33,8 +33,12 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/TriangleSetTopology.h>
+#include <sofa/component/topology/QuadSetTopology.h>
 #include <sofa/component/topology/TetrahedronSetTopology.h>
+#include <sofa/component/topology/HexahedronSetTopology.h>
 #include <sofa/helper/io/Mesh.h>
+
+#include <map>
 
 namespace sofa
 {
@@ -105,6 +109,7 @@ protected:
     typedef Vec<2, float> TexCoord;
     typedef helper::fixed_array<int, 3> Triangle;
     typedef helper::fixed_array<int, 4> Quad;
+    //typedef helper::fixed_array<int, 4> Tetrahedron;
 
     //ResizableExtVector<Coord>* inputVertices;
 
@@ -126,6 +131,9 @@ protected:
     ResizableExtVector<Triangle> triangles;
     DataPtr< ResizableExtVector<Quad> > field_quads;
     ResizableExtVector<Quad> quads;
+
+    sofa::helper::vector<unsigned int> Loc2GlobVec;
+    std::map<unsigned int, unsigned int> Glob2LocMap;
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertice

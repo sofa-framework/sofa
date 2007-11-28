@@ -365,6 +365,40 @@ int TetrahedronSetTopologyContainer::getVertexIndexInTetrahedron(const Tetrahedr
         return -1;
 }
 
+int TetrahedronSetTopologyContainer::getEdgeIndexInTetrahedron(const TetrahedronEdges &t,const unsigned int edgeIndex) const
+{
+
+    if (t[0]==edgeIndex)
+        return 0;
+    else if (t[1]==edgeIndex)
+        return 1;
+    else if (t[2]==edgeIndex)
+        return 2;
+    else if (t[3]==edgeIndex)
+        return 3;
+    else if (t[4]==edgeIndex)
+        return 4;
+    else if (t[5]==edgeIndex)
+        return 5;
+    else
+        return -1;
+}
+
+int TetrahedronSetTopologyContainer::getTriangleIndexInTetrahedron(const TetrahedronTriangles &t,const unsigned int triangleIndex) const
+{
+
+    if (t[0]==triangleIndex)
+        return 0;
+    else if (t[1]==triangleIndex)
+        return 1;
+    else if (t[2]==triangleIndex)
+        return 2;
+    else if (t[3]==triangleIndex)
+        return 3;
+    else
+        return -1;
+}
+
 sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::getTetrahedronEdgeShellForModification(const unsigned int i)
 {
     if (!m_tetrahedronEdgeShell.size())
@@ -389,6 +423,69 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(core::component
 
 }
 
+bool TetrahedronSetTopologyContainer::checkTopology() const
+{
+    //std::cout << "*** CHECK TetrahedronSetTopologyContainer ***" << std::endl;
+
+    TriangleSetTopologyContainer::checkTopology();
+    if (m_tetrahedronVertexShell.size()>0)
+    {
+        unsigned int i,j;
+        for (i=0; i<m_tetrahedronVertexShell.size(); ++i)
+        {
+            const sofa::helper::vector<unsigned int> &tvs=m_tetrahedronVertexShell[i];
+            for (j=0; j<tvs.size(); ++j)
+            {
+                bool check_tetra_vertex_shell = (m_tetrahedron[tvs[j]][0]==i) ||  (m_tetrahedron[tvs[j]][1]==i) || (m_tetrahedron[tvs[j]][2]==i) || (m_tetrahedron[tvs[j]][3]==i);
+                if(!check_tetra_vertex_shell)
+                {
+                    std::cout << "*** CHECK FAILED : check_tetra_vertex_shell, i = " << i << " , j = " << j << std::endl;
+                }
+                assert(check_tetra_vertex_shell);
+            }
+        }
+        //std::cout << "******** DONE : check_tetra_vertex_shell" << std::endl;
+    }
+
+    if (m_tetrahedronEdgeShell.size()>0)
+    {
+        unsigned int i,j;
+        for (i=0; i<m_tetrahedronEdgeShell.size(); ++i)
+        {
+            const sofa::helper::vector<unsigned int> &tes=m_tetrahedronEdgeShell[i];
+            for (j=0; j<tes.size(); ++j)
+            {
+                bool check_tetra_edge_shell = (m_tetrahedronEdge[tes[j]][0]==i) ||  (m_tetrahedronEdge[tes[j]][1]==i) || (m_tetrahedronEdge[tes[j]][2]==i) || (m_tetrahedronEdge[tes[j]][3]==i) || (m_tetrahedronEdge[tes[j]][4]==i) || (m_tetrahedronEdge[tes[j]][5]==i);
+                if(!check_tetra_edge_shell)
+                {
+                    std::cout << "*** CHECK FAILED : check_tetra_edge_shell, i = " << i << " , j = " << j << std::endl;
+                }
+                assert(check_tetra_edge_shell);
+            }
+        }
+        //std::cout << "******** DONE : check_tetra_edge_shell" << std::endl;
+    }
+
+    if (m_tetrahedronTriangleShell.size()>0)
+    {
+        unsigned int i,j;
+        for (i=0; i<m_tetrahedronTriangleShell.size(); ++i)
+        {
+            const sofa::helper::vector<unsigned int> &tes=m_tetrahedronTriangleShell[i];
+            for (j=0; j<tes.size(); ++j)
+            {
+                bool check_tetra_triangle_shell = (m_tetrahedronTriangle[tes[j]][0]==i) ||  (m_tetrahedronTriangle[tes[j]][1]==i) || (m_tetrahedronTriangle[tes[j]][2]==i) || (m_tetrahedronTriangle[tes[j]][3]==i);
+                if(!check_tetra_triangle_shell)
+                {
+                    std::cout << "*** CHECK FAILED : check_tetra_triangle_shell, i = " << i << " , j = " << j << std::endl;
+                }
+                assert(check_tetra_triangle_shell);
+            }
+        }
+        //std::cout << "******** DONE : check_tetra_triangle_shell" << std::endl;
+    }
+    return true;
+}
 
 
 // factory related stuff

@@ -210,7 +210,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::
             topology->propagateTopologicalChanges();
             this->removePointsProcess(vertexToBeRemoved);
         }
-        std::cout << "EdgeSetTopology: container has now "<<container->m_edge.size()<<" edges."<<std::endl;
+        //std::cout << "EdgeSetTopology: container has now "<<container->m_edge.size()<<" edges."<<std::endl;
     }
 }
 
@@ -245,8 +245,8 @@ void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::ve
     assert (container != 0);
 
     // forces the construction of the edge shell array if it does not exists
-    if (container->m_edge.size()>0)
-        container->getEdgeVertexShellArray();
+    //if (container->m_edge.size()>0)
+    container->getEdgeVertexShellArray();
 
     // start by calling the standard method.
     PointSetTopologyModifier< DataTypes >::removePointsProcess( indices );
@@ -444,6 +444,9 @@ void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( sofa::helper::vect
 
     // Removing the old edges
     modifier->removeEdgesProcess( indices );
+
+    //assert(topology->getEdgeSetTopologyContainer()->checkTopology());
+    topology->getEdgeSetTopologyContainer()->checkTopology();
 }
 
 template<class DataTypes>

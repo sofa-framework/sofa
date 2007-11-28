@@ -103,13 +103,21 @@ unsigned int PointSetTopologyContainer::getDOFIndex(const int i) const
 bool PointSetTopologyContainer::checkTopology() const
 {
 
+    //std::cout << "*** CHECK PointSetTopologyContainer ***" << std::endl;
+
     if (m_PointSetIndex.size()>0)
     {
         unsigned int i;
         for (i=0; i<m_DOFIndex.size(); ++i)
         {
-            assert(m_PointSetIndex[m_DOFIndex[i]]!= -1);
+            bool check_vertex = m_PointSetIndex[m_DOFIndex[i]]!= -1;
+            if(!check_vertex)
+            {
+                std::cout << "*** CHECK FAILED : check_vertex, i = " << i << std::endl;
+            }
+            assert(check_vertex);
         }
+        //std::cout << "******** DONE : check_point" << std::endl;
     }
     return true;
 }

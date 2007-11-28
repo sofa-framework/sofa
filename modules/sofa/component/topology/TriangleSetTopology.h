@@ -461,14 +461,14 @@ public:
  * A class that performs topology algorithms on an TriangleSet.
  */
 template < class DataTypes >
-class TriangleSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
+class TriangleSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
 {
 
 public:
 
     typedef typename DataTypes::Real Real;
 
-    TriangleSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)
+    TriangleSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : EdgeSetTopologyAlgorithms<DataTypes>(top)
     {
     }
 
