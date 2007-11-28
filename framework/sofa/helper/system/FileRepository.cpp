@@ -50,7 +50,7 @@ namespace system
 #if defined (WIN32)
 FileRepository DataRepository("SOFA_DATA_PATH", "../scenes;../share");
 #elif defined (__APPLE__)
-FileRepository DataRepository("SOFA_DATA_PATH", "../Resources/scenes:../Resources/share");
+FileRepository DataRepository("SOFA_DATA_PATH", "../scenes:../share:../Resources/scenes:../Resources:../../../../scenes:../../../../share");
 #else
 FileRepository DataRepository("SOFA_DATA_PATH", "../scenes:../share");
 #endif
@@ -80,6 +80,7 @@ FileRepository::FileRepository(const char* envVar, const char* relativePath)
             p0 = p1+1;
         }
     }
+    //print();
 }
 
 FileRepository::~FileRepository()
@@ -154,7 +155,10 @@ bool FileRepository::findFile(std::string& filename, const std::string& basedir)
     if (filename.substr(0,2)=="./" || filename.substr(0,3)=="../") return false; // local file path
     for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
         if (findFileIn(filename, *it)) return true;
-    std::cerr << "File "<<filename<<" NOT FOUND"<<std::endl;
+    std::cerr << "File "<<filename<<" NOT FOUND in "<<basedir;
+    for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
+        std::cerr << ':'<<*it;
+    std::cerr<<std::endl;
     return false;
 }
 

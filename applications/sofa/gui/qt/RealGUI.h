@@ -251,7 +251,7 @@ protected:
     AddObject *dialog;
 
 
-    //these are already stored in the viewe
+    //these are already stored in the viewer
     //do not duplicate them
     //sofa::simulation::tree::GNode* groot;
     //std::string sceneFileName;
@@ -291,6 +291,11 @@ private:
     PMLReader *pmlreader;
     LMLReader *lmlreader;
 #endif
+
+    QString getExistingDirectory ( const QString & dir = QString(), const char * name = 0, const QString & caption = QString() );
+    QString getOpenFileName ( const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 );
+    QString getSaveFileName ( const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 );
+
 };
 
 

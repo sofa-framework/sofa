@@ -14,7 +14,7 @@
                 <string>runSOFA.icns</string>
                 <key>CFBundleTypeMIMETypes</key>
                 <array>
-                    <string>image/x-scn</string>
+                    <string>application/sofa-scn+xml</string>
                 </array>
                 <key>CFBundleTypeName</key>
                 <string>SOFA scene</string>
@@ -24,20 +24,22 @@
                 <true/>
             </dict>
         </array>
+        <key>CFBundleName</key>
+        <string>runSOFA</string>
         <key>CFBundleIconFile</key>
         <string>runSOFA.icns</string>
         <key>CFBundleExecutable</key>
-        <string>runSOFA</string>
+        <string>runSofa</string>
         <key>CFBundleIdentifier</key>
-        <string>com.inria.sofa</string>
+        <string>org.sofa-framework.runsofa</string>
         <key>CFBundleInfoDictionaryVersion</key>
         <string>6.0</string>
         <key>CFBundlePackageType</key>
         <string>APPL</string>
         <key>CFBundleSignature</key>
-        <string>????</string>
+        <string>sofa</string>
         <key>CFBundleVersion</key>
-        <string>1.0</string>
+        <string>SVN</string>
         <key>CSResourcesFileMapped</key>
         <true/>
     </dict>

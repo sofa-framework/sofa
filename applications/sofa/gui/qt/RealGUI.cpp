@@ -85,6 +85,7 @@ extern simulation::tree::GNode* groot;
 #include <QCursor>
 #include <QAction>
 #include <QMessageBox>
+#include <QFileDialog>
 #include <Q3FileDialog>
 #include <QTabWidget>
 #include <Q3PopupMenu>
@@ -125,7 +126,7 @@ namespace qt
 
 #ifdef QT_MODULE_QT3SUPPORT
 typedef Q3ListView QListView;
-typedef Q3FileDialog QFileDialog;
+//      typedef Q3FileDialog QFileDialog;
 typedef Q3DockWindow QDockWindow;
 typedef QStackedWidget QWidgetStack;
 typedef Q3TextEdit QTextEdit;
@@ -196,13 +197,39 @@ int RealGUI::InitGUI ( const char* name, const std::vector<std::string>& /* opti
 extern QApplication* application; // = NULL;
 extern RealGUI* gui;
 
+#ifdef SOFA_QT4
+/// Custom QApplication class handling FileOpen events for MacOS
+class QSOFAApplication : public QApplication
+{
+public:
+    QSOFAApplication(int argc, char ** argv)
+        : QApplication(argc,argv)
+    {
+    }
+protected:
+    bool event(QEvent *event)
+    {
+        switch (event->type())
+        {
+        case QEvent::FileOpen:
+            static_cast<RealGUI*>(mainWidget())->fileOpen(static_cast<QFileOpenEvent *>(event)->file());
+            return true;
+        default:
+            return QApplication::event(event);
+        }
+    }
+};
+#else
+typedef QApplication QSOFAApplication;
+#endif
+
 SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::tree::GNode* groot, const char* filename )
 {
     {
         int argc=1;
         char* argv[1];
         argv[0] = strdup ( SofaGUI::GetProgramName() );
-        application = new QApplication ( argc,argv );
+        application = new QSOFAApplication ( argc,argv );
         free ( argv[0] );
     }
     // create interface
@@ -901,10 +928,9 @@ void RealGUI::screenshot()
 
     QString filename;
 
-    filename = QFileDialog::getSaveFileName (
+    filename = getSaveFileName (
             viewer->screenshotName().c_str(),
             "Images (*.png *.bmp *.jpg)",
-            this,
             "save file dialog"
             "Choose a filename to save under" );
     viewer->getQWidget()->repaint();
@@ -971,39 +997,32 @@ void RealGUI::fileOpen()
 {
     std::string filename = viewer->getSceneFileName();
 
+    QString s = getOpenFileName ( filename.empty() ?NULL:filename.c_str(),
 #ifdef SOFA_PML
-    QString s = Q3FileDialog::getOpenFileName ( filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.simu *.pml *.lml)",  this, "open file dialog",  "Choose a file to open" );
+            "Scenes (*.scn *.simu *.pml *.lml)",
+#else
+            "Scenes (*.scn *.simu)",
+#endif
+            "open file dialog",  "Choose a file to open" );
 
     if ( s.length() >0 )
     {
+#ifdef SOFA_PML
         if ( s.endsWith ( ".pml" ) )
             pmlOpen ( s );
         else if ( s.endsWith ( ".lml" ) )
             lmlOpen ( s );
-        else if (s.endsWith( ".simu") )
-            fileOpenSimu(s);
         else
-        {
-            fileOpen (s);
-            timeSlider->setValue(0);
-            timeSlider->setMaxValue(0);
-        }
-    }
-#else
-    QString s = Q3FileDialog::getOpenFileName ( filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.simu)", this, "open file dialog", "Choose a file to open" );
-
-    if ( s.length() >0 )
-    {
-        if (s.endsWith( ".simu") )
-            fileOpenSimu(s);
-        else
-        {
-            fileOpen ( s);
-            timeSlider->setValue(0);
-            timeSlider->setMaxValue(0);
-        }
-    }
 #endif
+            if (s.endsWith( ".simu") )
+                fileOpenSimu(s);
+            else
+            {
+                fileOpen (s);
+                timeSlider->setValue(0);
+                timeSlider->setMaxValue(0);
+            }
+    }
 }
 
 void RealGUI::fileReload()
@@ -1040,7 +1059,7 @@ void RealGUI::fileSaveAs()
     QString s;
     std::string filename = viewer->getSceneFileName();
 #ifdef SOFA_PML
-    s = Q3FileDialog::getSaveFileName ( filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.pml)",  this, "save file dialog",  "Choose where the scene will be saved" );
+    s = getSaveFileName ( filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.pml)", "save file dialog",  "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
         if ( pmlreader && s.endsWith ( ".pml" ) )
@@ -1049,7 +1068,7 @@ void RealGUI::fileSaveAs()
             fileSaveAs ( s );
     }
 #else
-    s = Q3FileDialog::getSaveFileName ( filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn)", this, "save file dialog", "Choose where the scene will be saved" );
+    s = getSaveFileName ( filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
         fileSaveAs ( s );
 #endif
@@ -1074,7 +1093,7 @@ void RealGUI::saveXML()
 void RealGUI::editRecordDirectory()
 {
     std::string filename = viewer->getSceneFileName();
-    QString s = Q3FileDialog::getExistingDirectory ( filename.empty() ?NULL:filename.c_str(),  this, "open directory dialog",  "Choose a directory" );
+    QString s = getExistingDirectory ( filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         record_directory = s.ascii();
@@ -1086,7 +1105,7 @@ void RealGUI::editRecordDirectory()
 void RealGUI::editGnuplotDirectory()
 {
     std::string filename = viewer->getSceneFileName();
-    QString s = Q3FileDialog::getExistingDirectory ( filename.empty() ?NULL:filename.c_str(),  this, "open directory dialog",  "Choose a directory" );
+    QString s = getExistingDirectory ( filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         gnuplot_directory = s.ascii();
@@ -1095,6 +1114,42 @@ void RealGUI::editGnuplotDirectory()
         getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
         setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
     }
+}
+
+QString RealGUI::getExistingDirectory ( const QString & dir , const char * name , const QString & caption )
+{
+#ifdef SOFA_QT4
+    QFileDialog::Options options = QFileDialog::ShowDirsOnly;
+    //	options |= QFileDialog::DontUseNativeDialog;
+    options |= QFileDialog::DontUseSheet;
+    return QFileDialog::getExistingDirectory ( this, name?QString(name):caption, dir, options );
+#else
+    return Q3FileDialog::getExistingDirectory( dir, this, name, caption );
+#endif
+}
+
+QString RealGUI::getOpenFileName ( const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
+{
+#ifdef SOFA_QT4
+    QFileDialog::Options options = 0;
+    //	options |= QFileDialog::DontUseNativeDialog;
+    options |= QFileDialog::DontUseSheet;
+    return QFileDialog::getOpenFileName ( this, name?QString(name):caption, startWith, filter, selectedFilter, options );
+#else
+    return Q3FileDialog::getOpenFileName ( startWith, filter, this, name, caption, selectedFilter );
+#endif
+}
+
+QString RealGUI::getSaveFileName ( const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
+{
+#ifdef SOFA_QT4
+    QFileDialog::Options options = 0;
+    //	options |= QFileDialog::DontUseNativeDialog;
+    options |= QFileDialog::DontUseSheet;
+    return QFileDialog::getSaveFileName ( this, name?QString(name):caption, startWith, filter, selectedFilter, options );
+#else
+    return Q3FileDialog::getSaveFileName ( startWith, filter, this, name, caption, selectedFilter );
+#endif
 }
 
 void RealGUI::setTitle ( const char* windowTitle )
