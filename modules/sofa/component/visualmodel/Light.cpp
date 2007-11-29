@@ -76,7 +76,7 @@ void Light::initTextures()
     glEnable(GL_LIGHTING);
     glEnable(lightID);
 
-    GLfloat c[4] = { color.getValue()[0], color.getValue()[1], color.getValue()[2], 1.0 };
+    GLfloat c[4] = { (GLfloat) color.getValue()[0], (GLfloat)color.getValue()[1], (GLfloat)color.getValue()[2], 1.0 };
     glLightfv(lightID, GL_AMBIENT, c);
     glLightfv(lightID, GL_DIFFUSE, c);
     glLightfv(lightID, GL_SPECULAR, c);
@@ -122,9 +122,9 @@ void DirectionalLight::draw()
     Light::draw();
 
     GLfloat dir[4];
-    dir[0]=direction.getValue()[0];
-    dir[1]=direction.getValue()[1];
-    dir[2]=direction.getValue()[2];
+    dir[0]=(GLfloat)(direction.getValue()[0]);
+    dir[1]=(GLfloat)(direction.getValue()[1]);
+    dir[2]=(GLfloat)(direction.getValue()[2]);
     dir[3]=0.0; // directional
 
     glLightfv(lightID, GL_POSITION, dir);
@@ -159,9 +159,9 @@ void PositionalLight::draw()
     Light::draw();
 
     GLfloat pos[4];
-    pos[0]=position.getValue()[0];
-    pos[1]=position.getValue()[1];
-    pos[2]=position.getValue()[2];
+    pos[0]=(GLfloat)(position.getValue()[0]);
+    pos[1]=(GLfloat)(position.getValue()[1]);
+    pos[2]=(GLfloat)(position.getValue()[2]);
     pos[3]=1.0; // positional
     glLightfv(lightID, GL_POSITION, pos);
 
@@ -198,7 +198,7 @@ void SpotLight::draw()
 {
     PositionalLight::draw();
 
-    GLfloat dir[]= {direction.getValue()[0], direction.getValue()[1], direction.getValue()[2]};
+    GLfloat dir[]= {(GLfloat)(direction.getValue()[0]), (GLfloat)(direction.getValue()[1]), (GLfloat)(direction.getValue()[2])};
     glLightf(lightID, GL_SPOT_CUTOFF, cutoff.getValue());
     glLightfv(lightID, GL_SPOT_DIRECTION, dir);
     glLightf(lightID, GL_SPOT_EXPONENT, 20.0);
