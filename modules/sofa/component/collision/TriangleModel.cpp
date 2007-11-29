@@ -350,7 +350,7 @@ void TriangleModel::handleTopologyChange()
             if((changeType == core::componentmodel::topology::TETRAHEDRAREMOVED) || (((!testc) && changeType == core::componentmodel::topology::TRIANGLESREMOVED)))
             {
 
-                unsigned int my_size;
+                unsigned int my_size = 0;
                 if(testc)
                 {
                     my_size = testc->getTetrahedronTriangleShellArray().size();
@@ -380,7 +380,7 @@ void TriangleModel::handleTopologyChange()
                 {
 
                     unsigned int my_glob = iter_check->first;
-                    unsigned int my_loc = iter_check->second;
+                    //unsigned int my_loc = iter_check->second;
                     iter_check++;
 
                     if(my_glob!=Loc2GlobVec[Glob2LocMap[my_glob]])
@@ -600,7 +600,7 @@ void TriangleModel::handleTopologyChange()
                 if (testc)
                 {
 
-                    const sofa::helper::vector<sofa::component::topology::Triangle> &triangleArray=testc->getTriangleArray();
+                    //const sofa::helper::vector<sofa::component::topology::Triangle> &triangleArray=testc->getTriangleArray();
                     const sofa::helper::vector<sofa::component::topology::Tetrahedron> &tetrahedronArray=testc->getTetrahedronArray();
 
                     const sofa::helper::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::TetrahedraRemoved *>( *itBegin ) )->getArray();

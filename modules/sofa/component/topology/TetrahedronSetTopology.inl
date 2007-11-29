@@ -792,7 +792,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::removeTetrahedra(sofa::helpe
     assert(modifier != 0);
     /// add the topological changes in the queue
 
-    TetrahedronSetTopologyContainer * container = static_cast< TetrahedronSetTopologyContainer* >(topology->getTopologyContainer());
+    //TetrahedronSetTopologyContainer * container = static_cast< TetrahedronSetTopologyContainer* >(topology->getTopologyContainer());
 
     modifier->removeTetrahedraWarning(tetrahedra);
 
