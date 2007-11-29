@@ -331,7 +331,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     }
     // create edge tensor by calling the tetrahedron creation function
     std::vector<unsigned int> tetrahedronAdded;
-    for (i=0; i<container->getNumberOfTetrahedra(); ++i)
+    for (i=0; i<1/*container->getNumberOfTetrahedra()*/; ++i)
         tetrahedronAdded.push_back(i);
     TetrahedralTMTetrahedronCreationFunction(tetrahedronAdded,(void*) this,
             edgeInfo);

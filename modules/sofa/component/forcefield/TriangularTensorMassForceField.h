@@ -122,6 +122,15 @@ public:
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
 
+    void setYoungModulus(const double modulus)
+    {
+        f_youngModulus.setValue((Real)modulus);
+    }
+    void setPoissonRatio(const double ratio)
+    {
+        f_poissonRatio.setValue((Real)ratio);
+    }
+
     // handle topological changes
     virtual void handleTopologyChange();
 

@@ -126,6 +126,14 @@ public:
     // handle topological changes
     virtual void handleTopologyChange();
 
+    void setYoungModulus(const double modulus)
+    {
+        f_youngModulus.setValue((Real)modulus);
+    }
+    void setPoissonRatio(const double ratio)
+    {
+        f_poissonRatio.setValue((Real)ratio);
+    }
     // -- VisualModel interface
     void draw();
     void initTextures() { };

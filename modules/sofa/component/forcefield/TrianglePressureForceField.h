@@ -87,6 +87,11 @@ public:
     void initTextures() { };
     void update() { };
 
+    void setDminAndDmax(const double _dmin, const double _dmax)
+    {
+        dmin.setValue((Real)_dmin); dmax.setValue((Real)_dmax);
+    }
+    void setNormal(const Coord n) { normal.setValue(n);}
 
     void setPressure(Deriv _pressure) { this->pressure = _pressure; updateTriangleInformation(); }
 

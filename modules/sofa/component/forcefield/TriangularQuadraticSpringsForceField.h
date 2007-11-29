@@ -140,6 +140,20 @@ public:
     virtual Real getLambda() const { return lambda;}
     virtual Real getMu() const { return mu;}
 
+    void setYoungModulus(const double modulus)
+    {
+        f_youngModulus.setValue((Real)modulus);
+    }
+    void setPoissonRatio(const double ratio)
+    {
+        f_poissonRatio.setValue((Real)ratio);
+    }
+    void includeAngularSprings(const bool useAngularSprings)
+    {
+        f_useAngularSprings.setValue(useAngularSprings);
+    }
+
+
     // handle topological changes
     virtual void handleTopologyChange();
 
