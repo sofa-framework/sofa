@@ -233,8 +233,6 @@ protected:
             TetrahedronInformation &,
             const Tetrahedron& , const helper::vector< unsigned int > &, const helper::vector< double >&);
 
-    friend  static void CFTetrahedronCreationFunction (int , void* , TetrahedronInformation &,
-            const Tetrahedron& , const helper::vector< unsigned int > &, const helper::vector< double >&);
 
 
 };
