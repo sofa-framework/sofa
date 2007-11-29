@@ -390,7 +390,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, co
                             tinfo->gamma[i]*edgeInfo[tea[j]].dl+
                             tinfo->gamma[j]*edgeInfo[tea[i]].dl);
 
-                    val2= -val1 - tinfo->stiffness[k]*edgeInfo[tea[k]].currentLength;
+                    val2= -val1 - tinfo->stiffness[k]*edgeInfo[tea[k]].restLength;
                     val1/=edgeInfo[tea[k]].currentLength;
                     val2/=edgeInfo[tea[k]].currentLength*edgeInfo[tea[k]].currentLength*edgeInfo[tea[k]].currentLength;
                     valk=tinfo->gamma[k]/(edgeInfo[tea[j]].currentLength*
