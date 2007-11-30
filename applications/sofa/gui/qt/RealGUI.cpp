@@ -786,7 +786,7 @@ void RealGUI::fileOpen ( const char* filename )
     list_object_added.clear();
     list_object_removed.clear();
     list_object_initial.clear();
-    list_node_contactPoints.clear();
+
 
     //Hide the dialog to add a new object in the graph
     if ( dialog != NULL ) dialog->hide();
@@ -910,8 +910,6 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
         {
             list_object_initial.push_back ( current_node );
             list_object_initial.push_back ( dynamic_cast< GNode *> ( current_node->getParent() ) );
-            if ( current_node->getName() == "contactPoints" )
-                list_node_contactPoints.push_back ( current_node );
         }
     }
 
@@ -1482,25 +1480,6 @@ void RealGUI::resetScene()
     list_object_removed.clear();
 
 
-    //Remove all the nodes contactPoints except those present at initialization
-    for ( graph_iterator = graphListener->items.begin(); graph_iterator != graphListener->items.end(); graph_iterator++ )
-    {
-        if ( ( *graph_iterator ).first->getName() == std::string ( "contactPoints" ) && dynamic_cast< GNode *> ( ( *graph_iterator ).first ) )
-        {
-            for ( it=list_node_contactPoints.begin(); it != list_node_contactPoints.end(); it++ )
-            {
-                if ( ( *graph_iterator ).first == ( *it ) ) break;
-            }
-            if ( it != list_node_contactPoints.end() ) continue;
-            GNode *contactPointsNode = dynamic_cast< GNode *> ( ( *graph_iterator ).first );
-            GNode *parent            = dynamic_cast< GNode *> ( contactPointsNode->getParent() );
-            parent->removeChild ( contactPointsNode );
-            graphListener->removeChild ( parent, contactPointsNode );
-
-            //Deleting this pointer leads to a seg fault due to the command mapping->getContext() in the "BarycentricContactMapper.h"
-            //delete contactPointsNode;
-        }
-    }
 
 
     if ( isFrozen ) graphListener->freeze ( groot );

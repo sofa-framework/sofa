@@ -277,7 +277,6 @@ private:
     std::list< GNode *> list_object_added;
     std::list< GNode *> list_object_removed;
     std::list< GNode *> list_object_initial;
-    std::list< GNode* > list_node_contactPoints;
     bool record_simulation;
 
     bool setViewer(const char* name);
