@@ -30,6 +30,7 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/Factory.h>
 
+#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <vector>
 
 namespace sofa
@@ -64,6 +65,9 @@ public:
     typedef helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> > Factory;
 
     static Contact* Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod);
+
+    virtual void getCorrespondingCollisionModels( const core::componentmodel::behavior::InteractionForceField *,
+            core::CollisionModel*& /* */, core::CollisionModel*& /* */) {};
 };
 
 template<class RealContact>

@@ -59,13 +59,15 @@ void PenalityContactForceField<DataTypes>::clear(int reserve)
 }
 
 template<class DataTypes>
-void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v, int oldIndex)
+void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v, int oldIndex)
 {
     int i = contacts.getValue().size();
     contacts.beginEdit()->resize(i+1);
     Contact& c = (*contacts.beginEdit())[i];
     c.m1 = m1;
     c.m2 = m2;
+    c.index1 = index1;
+    c.index2 = index2;
     c.norm = norm;
     c.dist = dist;
     c.ks = ks;
@@ -175,6 +177,55 @@ void PenalityContactForceField<DataTypes>::draw()
         }
         glEnd();
     }
+}
+
+
+template<class DataTypes>
+void PenalityContactForceField<DataTypes>::grabPoint(
+    const core::componentmodel::behavior::MechanicalState<defaulttype::Vec3Types> *tool,
+    const helper::vector< unsigned int > &index,
+    helper::vector< std::pair< core::objectmodel::BaseObject*, defaulttype::Vec3f> > &result,
+    helper::vector< unsigned int > &triangle,
+    helper::vector< unsigned int > &index_point)
+{
+    if (static_cast< core::objectmodel::BaseObject *>(this->mstate1) == static_cast< const BaseObject *>(tool))
+    {
+        for (unsigned int i=0; i<contacts.getValue().size(); i++)
+        {
+            for (unsigned int j=0; j<index.size(); j++)
+            {
+                if (contacts.getValue()[i].m1  == (int)index[j])
+                {
+                    result.push_back(std::make_pair(static_cast< BaseObject *>(this),
+                            (*this->mstate2->getX())[contacts.getValue()[i].m2])
+                                    );
+                    triangle.push_back(contacts.getValue()[i].index2);
+                    index_point.push_back(index[j]);
+                }
+            }
+        }
+    }
+    else if (static_cast< BaseObject *>(this->mstate2) == static_cast< const BaseObject *>(tool))
+    {
+
+        for (unsigned int i=0; i<contacts.getValue().size(); i++)
+        {
+            for (unsigned int j=0; j<index.size(); j++)
+            {
+                if (contacts.getValue()[i].m2  == (int)index[j])
+                {
+                    result.push_back(std::make_pair(static_cast< BaseObject *>(this),
+                            (*this->mstate1->getX())[contacts.getValue()[i].m1])
+                                    );
+
+                    triangle.push_back(contacts.getValue()[i].index1);
+                    index_point.push_back(index[j]);
+                }
+            }
+        }
+    }
+
+
 }
 
 

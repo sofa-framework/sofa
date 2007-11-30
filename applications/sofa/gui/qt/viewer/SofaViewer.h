@@ -46,6 +46,7 @@
 
 //instruments handling
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#include <sofa/simulation/tree/GrabVisitor.h>
 #include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/simulation/tree/UpdateMappingVisitor.h>
 
@@ -256,6 +257,7 @@ protected:
     }
 
     // ---------------------- Here are the controls for instruments  ----------------------
+
     void moveLaparoscopic( QMouseEvent *e)
     {
         int eventX = e->x();
@@ -323,6 +325,7 @@ protected:
                     if (_mouseInteractorMoving)
                     {
                         _mouseInteractorMoving = false;
+                        static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::GrabVisitor>();
                     }
                 }
                 break;

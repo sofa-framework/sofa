@@ -60,7 +60,6 @@
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
 
 // define this if you want video and OBJ capture to be only done once per N iteration

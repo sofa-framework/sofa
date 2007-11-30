@@ -696,14 +696,14 @@ public:
 
     void operator +=(const RigidCoord<2,real>& a)
     {
-        std::cout << "+="<<std::endl;
+//         std::cout << "+="<<std::endl;
         center += a.getCenter();
         orientation += a.getOrientation();
     }
 
     void operator*=(double a)
     {
-        std::cout << "*="<<std::endl;
+//         std::cout << "*="<<std::endl;
         center *= (Real)a;
         orientation *= (Real)a;
     }
