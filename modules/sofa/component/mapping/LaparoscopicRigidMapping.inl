@@ -155,7 +155,7 @@ void LaparoscopicRigidMapping<BasicMapping>::processGrab()
                 component::forcefield::StiffSpringForceField<Vec3Types>* contactff = new component::forcefield::StiffSpringForceField<Vec3Types>(mstate,mstate2);
                 forcefields.push_back(contactff);
                 //index1 - index2 - ks - kd - initlen
-                contactff->addSpring(getVisitor.index_point[i], 0, 100000, 0, 0);
+                contactff->addSpring(getVisitor.index_point[i], 0, 100000000, 0, 0);
                 child->addObject(contactff);
             }
         }
@@ -172,7 +172,8 @@ void LaparoscopicRigidMapping<BasicMapping>::processRelease()
     }
     for (unsigned int i=0; i<nodes.size(); i++)
     {
-        nodes[i]->execute<simulation::tree::DeleteVisitor>();
+        using simulation::tree::DeleteVisitor;
+        nodes[i]->execute<DeleteVisitor>();
         nodes[i]->getParent()->removeChild(nodes[i]);
         delete nodes[i];
     }
