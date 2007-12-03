@@ -22,14 +22,13 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTMANAGER_H
-#define SOFA_CORE_COMPONENTMODEL_COLLISION_CONTACTMANAGER_H
+#ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_COLLISIONALGORITHM_H
+#define SOFA_CORE_COMPONENTMODEL_COLLISION_COLLISIONALGORITHM_H
 
-#include <sofa/core/componentmodel/collision/CollisionAlgorithm.h>
-#include <sofa/core/componentmodel/collision/Contact.h>
-#include <sofa/core/componentmodel/collision/NarrowPhaseDetection.h>
-
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <vector>
+#include <map>
+#include <algorithm>
 
 namespace sofa
 {
@@ -43,46 +42,31 @@ namespace componentmodel
 namespace collision
 {
 
-class ContactManager : public virtual CollisionAlgorithm
+class CollisionAlgorithm : public virtual objectmodel::BaseObject
 {
 public:
-    typedef NarrowPhaseDetection::DetectionOutputMap DetectionOutputMap;
-    typedef sofa::helper::vector<Contact*> ContactVector;
+    /// Collision 'pipeline' instance, allowing to store multiple internal states
+    typedef void* Instance;
+protected:
+    /// Current collision 'pipeline' instance, allowing to store multiple internal states
+    Instance instance;
+public:
 
-    ContactManager()
-        : intersectionMethod(NULL)
+    CollisionAlgorithm()
+        : instance(NULL)
     {
     }
 
-    virtual ~ContactManager() { }
-
-    virtual void createContacts(DetectionOutputMap& outputs) = 0;
-
-    virtual const ContactVector& getContacts() { return contacts; }
-
-    /// virtual because subclasses might do precomputations based on intersection algorithms
-    virtual void setIntersectionMethod(Intersection* v) { intersectionMethod = v;    }
-    Intersection* getIntersectionMethod() const         { return intersectionMethod; }
+    /// Allow to store multiple internal states by specifying a different collision pipeline 'instance'
+    virtual void setInstance(Instance inst)
+    {
+        if (instance == inst) return;
+        changeInstance(inst);
+        instance = inst;
+    }
 
 protected:
-    /// Current intersection method
-    Intersection* intersectionMethod;
-
-    ContactVector contacts;
-
-
-    /// All intersection methods
-    std::map<Instance,Intersection*> storedIntersectionMethod;
-
-    std::map<Instance,ContactVector> storedContacts;
-
-    virtual void changeInstance(Instance inst)
-    {
-        storedIntersectionMethod[instance] = intersectionMethod;
-        intersectionMethod = storedIntersectionMethod[inst];
-        storedContacts[instance].swap(contacts);
-        contacts.swap(storedContacts[inst]);
-    }
+    virtual void changeInstance(Instance)=0;
 };
 
 } // namespace collision

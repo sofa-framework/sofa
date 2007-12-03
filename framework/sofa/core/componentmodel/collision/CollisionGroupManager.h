@@ -25,8 +25,8 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_COLLISION_COLLISIONGROUPMANAGER_H
 #define SOFA_CORE_COMPONENTMODEL_COLLISION_COLLISIONGROUPMANAGER_H
 
+#include <sofa/core/componentmodel/collision/CollisionAlgorithm.h>
 #include <sofa/core/componentmodel/collision/Contact.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 
 #include <vector>
 
@@ -44,8 +44,11 @@ namespace collision
 
 //class Scene;
 
-class CollisionGroupManager : public virtual objectmodel::BaseObject
+class CollisionGroupManager : public virtual CollisionAlgorithm
 {
+protected:
+    sofa::helper::vector<core::objectmodel::BaseContext*> groups;
+
 public:
     virtual ~CollisionGroupManager() { }
 
@@ -53,7 +56,17 @@ public:
 
     virtual void clearGroups(objectmodel::BaseContext* scene) = 0;
 
-    virtual const sofa::helper::vector<objectmodel::BaseContext*>& getGroups() = 0;
+    virtual const sofa::helper::vector<objectmodel::BaseContext*>& getGroups() { return groups; };
+
+protected:
+
+    std::map<Instance,sofa::helper::vector<core::objectmodel::BaseContext*> > storedGroups;
+
+    virtual void changeInstance(Instance inst)
+    {
+        storedGroups[instance].swap(groups);
+        groups.swap(storedGroups[inst]);
+    }
 };
 
 } // namespace collision

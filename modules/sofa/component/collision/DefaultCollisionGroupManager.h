@@ -42,8 +42,8 @@ namespace collision
 class DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
 {
 public:
-    std::set<simulation::tree::GNode*> groupSet;
-    sofa::helper::vector<core::objectmodel::BaseContext*> groupVec;
+    typedef std::set<simulation::tree::GNode*> GroupSet;
+    GroupSet groupSet;
 public:
     DefaultCollisionGroupManager();
 
@@ -53,10 +53,17 @@ public:
 
     virtual void clearGroups(core::objectmodel::BaseContext* scene);
 
-    virtual const sofa::helper::vector<core::objectmodel::BaseContext*>& getGroups() { return groupVec; }
-
 protected:
     virtual simulation::tree::GNode* getIntegrationNode(core::CollisionModel* model);
+
+    std::map<Instance,GroupSet> storedGroupSet;
+
+    virtual void changeInstance(Instance inst)
+    {
+        core::componentmodel::collision::CollisionGroupManager::changeInstance(inst);
+        storedGroupSet[instance].swap(groupSet);
+        groupSet.swap(storedGroupSet[inst]);
+    }
 };
 
 } // namespace collision

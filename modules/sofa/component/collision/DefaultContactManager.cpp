@@ -57,13 +57,13 @@ DefaultContactManager::~DefaultContactManager()
 
 void DefaultContactManager::clear()
 {
-    for (sofa::helper::vector<core::componentmodel::collision::Contact*>::iterator it=contactVec.begin(); it!=contactVec.end(); ++it)
+    for (sofa::helper::vector<core::componentmodel::collision::Contact*>::iterator it=contacts.begin(); it!=contacts.end(); ++it)
     {
         (*it)->removeResponse();
         (*it)->cleanup();
         delete *it;
     }
-    contactVec.clear();
+    contacts.clear();
     contactMap.clear();
 }
 
@@ -128,19 +128,19 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
         }
     }
     // now update contactVec
-    contactVec.clear();
-    contactVec.reserve(nbContact);
+    contacts.clear();
+    contacts.reserve(nbContact);
     contactIt = contactMap.begin();
     while (contactIt!=contactMap.end())
     {
-        contactVec.push_back(contactIt->second);
+        contacts.push_back(contactIt->second);
         ++contactIt;
     }
 }
 
 void DefaultContactManager::draw()
 {
-    for (sofa::helper::vector<core::componentmodel::collision::Contact*>::iterator it = contactVec.begin(); it!=contactVec.end(); it++)
+    for (sofa::helper::vector<core::componentmodel::collision::Contact*>::iterator it = contacts.begin(); it!=contacts.end(); it++)
     {
         if (dynamic_cast<core::VisualModel*>(*it)!=NULL)
             dynamic_cast<core::VisualModel*>(*it)->draw();
