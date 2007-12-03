@@ -947,7 +947,9 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
             QRadioButton *button = new QRadioButton(tabInstrument);  button->setText(QString( s->instruments[i]->getName().c_str() ) );
             list_instrument->insert(button); layout->addWidget(button);  s->instruments[i]->setActive(false);
         }
+#ifndef QT_MODULE_QT3SUPPORT
         layout->addWidget(list_instrument);
+#endif
     }
 }
 
