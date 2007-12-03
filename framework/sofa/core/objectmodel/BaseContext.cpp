@@ -164,10 +164,10 @@ int BaseContext::getFinestLevel() const
 {
     return 0;
 }
-unsigned int BaseContext::nbLevels() const
-{
-    return getCoarsestLevel() - getFinestLevel() + 1;
-}
+// unsigned int BaseContext::nbLevels() const
+// {
+// 	return getCoarsestLevel() - getFinestLevel() + 1;
+// }
 
 //////////////////////////////
 // Local Coordinates System //
