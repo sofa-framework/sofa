@@ -46,11 +46,7 @@ class NarrowPhaseDetection : virtual public Detection
 {
 public:
     typedef std::map< std::pair<core::CollisionModel*, core::CollisionModel* >, DetectionOutputVector* > DetectionOutputMap;
-protected:
-    //sofa::helper::vector< std::pair<core::CollisionElementIterator, core::CollisionElementIterator> > elemPairs;
-    DetectionOutputMap outputsMap;
 
-public:
     virtual ~NarrowPhaseDetection() { }
 
     virtual void beginNarrowPhase()
@@ -69,7 +65,6 @@ public:
         for (sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> >::const_iterator it = v.begin(); it!=v.end(); it++)
             addCollisionPair(*it);
     }
-
 
     virtual void endNarrowPhase()
     {
@@ -96,6 +91,16 @@ public:
     DetectionOutputMap& getDetectionOutputs()
     {
         return outputsMap;
+    }
+
+protected:
+    DetectionOutputMap outputsMap;
+    std::map<Instance, DetectionOutputMap> storedOutputsMap;
+
+    virtual void changeInstanceNP(Instance inst)
+    {
+        storedOutputsMap[instance].swap(outputsMap);
+        outputsMap.swap(storedOutputsMap[inst]);
     }
 };
 

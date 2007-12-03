@@ -26,8 +26,10 @@
 #define SOFA_CORE_COMPONENTMODEL_COLLISION_DETECTION_H
 
 #include <sofa/core/CollisionModel.h>
+#include <sofa/core/componentmodel/collision/CollisionAlgorithm.h>
 #include <sofa/core/componentmodel/collision/Intersection.h>
 #include <vector>
+#include <map>
 #include <algorithm>
 
 namespace sofa
@@ -42,11 +44,13 @@ namespace componentmodel
 namespace collision
 {
 
-class Detection : public virtual objectmodel::BaseObject
+class Detection : public virtual CollisionAlgorithm
 {
 protected:
     /// Current intersection method
     Intersection* intersectionMethod;
+    /// All intersection methods
+    std::map<Instance,Intersection*> storedIntersectionMethod;
 public:
 
     Detection()
@@ -57,6 +61,19 @@ public:
     /// virtual because subclasses might do precomputations based on intersection algorithms
     virtual void setIntersectionMethod(Intersection* v) { intersectionMethod = v;    }
     Intersection* getIntersectionMethod() const         { return intersectionMethod; }
+
+protected:
+    virtual void changeInstanceBP(Instance) {}
+    virtual void changeInstanceNP(Instance) {}
+    virtual void changeInstance(Instance inst)
+    {
+        storedIntersectionMethod[instance] = intersectionMethod;
+        intersectionMethod = storedIntersectionMethod[inst];
+        // callback overriden by BroadPhaseDetection
+        changeInstanceBP(inst);
+        // callback overriden by NarrowPhaseDetection
+        changeInstanceNP(inst);
+    }
 };
 
 } // namespace collision

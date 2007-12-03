@@ -43,9 +43,6 @@ namespace collision
 
 class BroadPhaseDetection : virtual public Detection
 {
-protected:
-    sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
-
 public:
     virtual ~BroadPhaseDetection() { }
 
@@ -67,6 +64,16 @@ public:
     }
 
     sofa::helper::vector<std::pair<core::CollisionModel*, core::CollisionModel*> >& getCollisionModelPairs() { return cmPairs; }
+
+protected:
+    sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > cmPairs;
+    std::map<Instance,sofa::helper::vector< std::pair<core::CollisionModel*, core::CollisionModel*> > > storedCmPairs;
+
+    virtual void changeInstanceBP(Instance inst)
+    {
+        storedCmPairs[instance].swap(cmPairs);
+        cmPairs.swap(storedCmPairs[inst]);
+    }
 };
 
 } // namespace collision

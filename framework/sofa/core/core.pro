@@ -30,6 +30,7 @@ HEADERS += \
           componentmodel/behavior/MechanicalState.h \
           componentmodel/behavior/OdeSolver.h \
           componentmodel/collision/BroadPhaseDetection.h \
+          componentmodel/collision/CollisionAlgorithm.h \
           componentmodel/collision/CollisionGroupManager.h \
           componentmodel/collision/Contact.h \
           componentmodel/collision/ContactManager.h \
