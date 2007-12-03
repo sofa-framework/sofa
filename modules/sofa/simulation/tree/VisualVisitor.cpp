@@ -41,7 +41,11 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
 
-    //cerr<<"VisualDrawVisitor::processNodeTopDown "<<node->getName()<<endl;
+    if (node->getShader())
+    {
+        pass = StdWithShader;
+    }
+    else pass = Std;
     this->VisualVisitor::processNodeTopDown(node);
 
     glPopMatrix();
@@ -62,13 +66,15 @@ void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
         sofa::core::Shader* shader = dynamic_cast<sofa::core::Shader*>(obj);
 
         sofa::component::visualmodel::VisualModelImpl* vmi =  dynamic_cast<sofa::component::visualmodel::VisualModelImpl*> (vm);
-        if (vmi)
-            shader->start();
 
+        if (vmi)
+        {
+            shader->start();
+        }
         vm->draw();
 
-        if (vmi)
-            shader->stop();
+        if (vmi) ;
+        shader->stop();
         break;
     }
     case Transparent:
