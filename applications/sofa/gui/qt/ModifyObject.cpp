@@ -989,6 +989,9 @@ void ModifyObject::updateValues()
                     name+=lineEdit->text().ascii();
                     item->setText(0,name.c_str());
                 }
+                else if (dynamic_cast< GNode *>(node))
+                    item->setText(0,lineEdit->text().ascii());
+
             }
             //*******************************************************************************************************************
             else if( dynamic_cast< Data<Vec6f> * >( (*it).second )         ||
@@ -1252,6 +1255,7 @@ void ModifyObject::updateValues()
         }
         if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
             obj->reinit();
+        else if (GNode *n = dynamic_cast< GNode *>(node)) n->reinit();
     }
 
     saveTables();

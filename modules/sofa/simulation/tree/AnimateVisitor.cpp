@@ -67,6 +67,7 @@ void AnimateVisitor::processOdeSolver(GNode* /*node*/, core::componentmodel::beh
 
 Visitor::Result AnimateVisitor::processNodeTopDown(GNode* node)
 {
+    if (!node->is_activated.getValue()) return Visitor::RESULT_PRUNE;
     if (dt == 0) setDt(node->getDt());
     for_each(this, node, node->behaviorModel, &AnimateVisitor::processBehaviorModel);
     if (node->masterSolver != NULL)

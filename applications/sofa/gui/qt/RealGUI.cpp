@@ -90,6 +90,8 @@ extern simulation::tree::GNode* groot;
 #include <QTabWidget>
 #include <Q3PopupMenu>
 #include <QToolTip>
+#include <QButtonGroup>
+#include <QRadioButton>
 #else
 #include <qwidget.h>
 #include <qwidgetstack.h>
@@ -109,6 +111,8 @@ extern simulation::tree::GNode* groot;
 #include <qtabwidget.h>
 #include <qpopupmenu.h>
 #include <qtooltip.h>
+#include <qbuttongroup.h>
+#include <qradiobutton.h>
 #endif
 
 #include <GenGraphForm.h>
@@ -283,7 +287,7 @@ sofa::simulation::tree::GNode* RealGUI::currentSimulation()
 
 
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*options*/ )
-    : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), graphListener ( NULL ), dialog ( NULL )
+    : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL )
 {
 
     left_stack = new QWidgetStack ( splitter2 );
@@ -798,11 +802,17 @@ void RealGUI::fileOpen ( const char* filename )
     map_modifyDialogOpened.clear();
 
 
-    //left_stack->removeWidget(viewer->getQWidget());
-    //graphListener->removeChild(NULL, groot);
-    //delete viewer;
-    //viewer = NULL;
-    //addViewer(filename);
+    if ( viewer->getScene() !=NULL )
+    {
+        getSimulation()->unload ( viewer->getScene() );
+        if ( graphListener!=NULL )
+        {
+            delete graphListener;
+            graphListener = NULL;
+        }
+        graphView->clear();
+    }
+
     GNode* groot = getSimulation()->load ( filename );
     if ( groot == NULL )
     {
@@ -853,20 +863,14 @@ void RealGUI::lmlOpen ( const char* filename )
 
 void RealGUI::setScene ( GNode* groot, const char* filename )
 {
-    if ( viewer->getScene() !=NULL )
+    if (tabInstrument!= NULL)
     {
-        getSimulation()->unload ( viewer->getScene() );
-        if ( graphListener!=NULL )
-        {
-            delete graphListener;
-            graphListener = NULL;
-        }
-        graphView->clear();
+        tabs->removePage(tabInstrument);
+        delete tabInstrument;
+        tabInstrument = NULL;
     }
 
     setTitle ( filename );
-    //this->groot = groot;
-    //sceneFileName = filename;
     record_simulation = false;
     viewer->setScene ( groot, filename );
     initial_time = groot->getTime();
@@ -918,6 +922,45 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     {
         graphListener->freeze ( groot );
     }
+
+    simulation::tree::Simulation *s = simulation::tree::getSimulation();
+
+    //In case instruments are present in the scene, we create a new tab, and display the listr
+    if (s->instruments.size() != 0)
+    {
+        tabInstrument = new QWidget();
+        tabs->addTab(tabInstrument, QString("Instrument"));
+
+        QVBoxLayout *layout = new QVBoxLayout( tabInstrument, 0, 1, "tabInstrument");
+
+
+        QButtonGroup *list_instrument = new QButtonGroup(tabInstrument);
+        list_instrument->setExclusive(true);
+
+        connect ( list_instrument, SIGNAL ( clicked(int) ), this, SLOT ( changeInstrument(int) ) );
+
+        QRadioButton *button = new QRadioButton(tabInstrument); button->setText("None");
+        list_instrument->insert(button); layout->addWidget(button); button->setChecked(true);
+
+        for (unsigned int i=0; i<s->instruments.size(); i++)
+        {
+            QRadioButton *button = new QRadioButton(tabInstrument);  button->setText(QString( s->instruments[i]->getName().c_str() ) );
+            list_instrument->insert(button); layout->addWidget(button);  s->instruments[i]->setActive(false);
+        }
+        layout->addWidget(list_instrument);
+    }
+}
+
+void RealGUI::changeInstrument(int id)
+{
+    Simulation *s = getSimulation();
+    if (s->instrumentInUse.getValue() >= 0 && s->instrumentInUse.getValue() < (int)s->instruments.size())
+        s->instruments[s->instrumentInUse.getValue()]->setActive(false);
+
+    getSimulation()->instrumentInUse.setValue(id-1);
+    if (s->instrumentInUse.getValue() >= 0 && s->instrumentInUse.getValue() < (int)s->instruments.size())
+        s->instruments[s->instrumentInUse.getValue()]->setActive(true);
+    viewer->getQWidget()->update();
 }
 
 
@@ -2107,33 +2150,33 @@ void RealGUI::RightClickedItemInSceneView ( QListViewItem *item, const QPoint& p
     else node_clicked = searchNode ( viewer->getScene(), item_clicked );
 
 
+
     QPopupMenu *contextMenu = new QPopupMenu ( graphView, "ContextMenu" );
+
+
     //Creation of the context Menu
     if ( node_clicked != NULL )
     {
         contextMenu->insertItem ( "Collapse", this, SLOT ( graphCollapse() ) );
         contextMenu->insertItem ( "Expand", this, SLOT ( graphExpand() ) );
         contextMenu->insertSeparator ();
+        /*****************************************************************************************************************/
+        if (node_clicked->isActive())
+            contextMenu->insertItem ( "Desactivate", this, SLOT ( graphDesactivateNode() ) );
+        else
+            contextMenu->insertItem ( "Activate", this, SLOT ( graphActivateNode() ) );
+        contextMenu->insertSeparator ();
+        /*****************************************************************************************************************/
+        contextMenu->insertItem ( "Add Node", this, SLOT ( graphAddObject() ) );
+        int index_menu = contextMenu->insertItem ( "Remove Node", this, SLOT ( graphRemoveObject() ) );
+
+        //If one of the elements or child of the current node is beeing modified, you cannot allow the user to erase the node
+        if ( !isErasable ( node_clicked ) )
+            contextMenu->setItemEnabled ( index_menu,false );
+
     }
-
-    int indexMenu[3];
-
-    indexMenu[0] = contextMenu->insertItem ( "Add Node", this, SLOT ( graphAddObject() ) );
-    indexMenu[1] = contextMenu->insertItem ( "Remove Node", this, SLOT ( graphRemoveObject() ) );
-    indexMenu[2] = contextMenu->insertItem ( "Modify", this, SLOT ( graphModify() ) );
+    contextMenu->insertItem ( "Modify", this, SLOT ( graphModify() ) );
     contextMenu->popup ( point, index );
-
-
-    //Enable the option ADD and REMOVE only for the Nodes.
-    if ( node_clicked == NULL )
-    {
-        contextMenu->setItemEnabled ( indexMenu[0],false );
-        contextMenu->setItemEnabled ( indexMenu[1],false );
-    }
-
-    //If one of the elements or child of the current node is beeing modified, you cannot allow the user to erase the node
-    else if ( !isErasable ( node_clicked ) )
-        contextMenu->setItemEnabled ( indexMenu[1],false );
 
 }
 
@@ -2259,6 +2302,22 @@ void RealGUI::graphModify()
     }
     playpauseGUI ( isAnimated );
 }
+
+/*****************************************************************************************************************/
+void RealGUI::graphDesactivateNode()
+{
+    node_clicked->setActive(false);
+    viewer->getQWidget()->update();
+    node_clicked->reinit();
+}
+
+void RealGUI::graphActivateNode()
+{
+    node_clicked->setActive(true);
+    viewer->getQWidget()->update();
+    node_clicked->reinit();
+}
+
 /*****************************************************************************************************************/
 //Nodes in the graph can have the same name. To find the right one, we have to verify the pointer itself.
 //We return the Nodes clicked
@@ -2331,31 +2390,6 @@ void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz, do
 {
     if ( node == NULL ) return;
     GNode::ObjectIterator obj_it = node->object.begin();
-    //Verify if it exists a mesh topology. In that case, we have to recursively translate the mechanical object and the visual model
-    // 	bool mesh_topology = false;
-    // 	bool mechanical_object = false;
-
-
-    // 	//Using the graph corresponding to the current node, we explorate it to find a Topology Element
-    // 	if (graphListener->items[node] == NULL) return;
-
-    // 	Q3ListViewItem *element = graphListener->items[node]->firstChild();
-    // 	while (element != NULL)
-    // 	  {
-    // 	    //We search in the element of the current node, the presence of a MeshTopology: depending on its presence, it will modify the range of the translation
-    // 	    if (element->firstChild() == NULL)
-    // 	      {
-    // 		std::string name = element->text(0);
-    // 		std::string::size_type end_name = name.rfind(' ');
-    // 		if (end_name != std::string::npos)
-    // 		    name.resize(end_name-1);
-
-    // 		if (name == "MeshTopology")
-    // 		    mesh_topology = true;
-
-    // 	      }
-    // 	    element = element->nextSibling();
-    // 	  }
 
     //We translate the elements
     while ( obj_it != node->object.end() )

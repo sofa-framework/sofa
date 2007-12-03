@@ -58,7 +58,7 @@ Light::~Light()
         GLfloat amb[4] = { 0.0, 0.0, 0.0, 1.0 };
         GLfloat diff[4] = { 1.0, 1.0, 1.0, 1.0 };
         GLfloat spec[4] = { 0.0, 0.0, 0.0, 1.0 };
-        GLfloat c[4] = { 1.0, 1.0, 1.0, 1.0 };
+// 		GLfloat c[4] = { 1.0, 1.0, 1.0, 1.0 };
         GLfloat pos[4] = { 0.0, 0.0, 1.0, 0.0 };
         glLightfv(lightID, GL_AMBIENT, amb);
         glLightfv(lightID, GL_DIFFUSE, diff);

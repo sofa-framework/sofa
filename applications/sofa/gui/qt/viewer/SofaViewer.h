@@ -49,7 +49,7 @@
 #include <sofa/simulation/tree/GrabVisitor.h>
 #include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/simulation/tree/UpdateMappingVisitor.h>
-
+#include <sofa/simulation/tree/Simulation.h>
 #ifdef QT_MODULE_QT3SUPPORT
 #include <QEvent>
 #include <QMouseEvent>
@@ -260,12 +260,19 @@ protected:
 
     void moveLaparoscopic( QMouseEvent *e)
     {
+
+        int index_instrument = simulation::tree::getSimulation()->instrumentInUse.getValue();
+        if (index_instrument < 0 || index_instrument > (int)simulation::tree::getSimulation()->instruments.size()) return;
+
+        simulation::tree::GNode *instrument = simulation::tree::getSimulation()->instruments[index_instrument];
+        if (instrument == NULL) return;
+
         int eventX = e->x();
         int eventY = e->y();
 
         std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > instruments;
-        groot->getTreeObjects<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>, std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > >(&instruments);
-        //std::cout << instruments.size() << " instruments\n";
+        instrument->getTreeObjects<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>, std::vector< sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* > >(&instruments);
+
         if (!instruments.empty())
         {
             sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::LaparoscopicRigidTypes>* instrument = instruments[0];
@@ -340,7 +347,7 @@ protected:
                 if (dx || dy)
                 {
                     (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
-                    /* 			update(); */
+
                     _mouseInteractorSavedPosX = eventX;
                     _mouseInteractorSavedPosY = eventY;
                 }
@@ -351,8 +358,6 @@ protected:
                 int dy = eventY - _mouseInteractorSavedPosY;
                 if (dx || dy)
                 {
-                    /* 			if (!groot || !groot->getContext()->getAnimate()) */
-                    /* 			  update(); */
                     _mouseInteractorSavedPosX = eventX;
                     _mouseInteractorSavedPosY = eventY;
                 }
@@ -365,14 +370,13 @@ protected:
                 {
                     (*instrument->getX())[0].getTranslation() += (dy)*0.01;
                     (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
-                    /* 			if (!groot || !groot->getContext()->getAnimate()) */
-                    /* 			  update(); */
                     _mouseInteractorSavedPosX = eventX;
                     _mouseInteractorSavedPosY = eventY;
                 }
             }
             static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
             static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
+            getQWidget()->update();
         }
     }
 

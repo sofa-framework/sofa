@@ -58,6 +58,17 @@ GNode::GNode(const std::string& name, GNode* parent)
 GNode::~GNode()
 {}
 
+/// Update the parameters of the GNode
+void GNode::reinit()
+{
+    GNode *context = static_cast<GNode *>(getContext());
+    for (GNode::ChildIterator it= context->child.begin(); it != context->child.end(); ++it)
+    {
+        (*it)->is_activated.setValue(is_activated.getValue());
+        (*it)->reinit();
+    }
+}
+
 /// Add a child node
 void GNode::doAddChild(GNode* node)
 {
@@ -375,6 +386,7 @@ void GNode::updateSimulationContext()
     {
         copySimulationContext(*parent);
     }
+
     // Apply local modifications to the context
     if (getLogTime())
     {
@@ -425,6 +437,7 @@ void GNode::updateVisualContext()
 /// Execute a recursive action starting from this node
 void GNode::executeVisitor(Visitor* action)
 {
+    if (!this->is_activated.getValue()) return;
     if (actionScheduler)
         actionScheduler->executeVisitor(this,action);
     else

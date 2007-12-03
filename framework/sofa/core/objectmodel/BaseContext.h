@@ -83,6 +83,12 @@ public:
     /// @name Parameters
     /// @{
 
+    /// The Context is active
+    virtual const bool isActive() const;
+
+    /// State of the context
+    virtual void setActive(bool) {};
+
     /// Simulation time
     virtual double getTime() const;
 

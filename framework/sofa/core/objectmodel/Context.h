@@ -53,6 +53,7 @@ public:
     typedef BaseContext::Quat Quat;
     typedef BaseContext::SpatialVector SpatialVector;
 
+    Data<bool> is_activated;
     Data<Vec3> worldGravity_;  ///< Gravity IN THE WORLD COORDINATE SYSTEM.
     Data<double> dt_;
     Data<double> time_;
@@ -88,6 +89,10 @@ public:
     /// @name Parameters
     /// @{
 
+    /// The Context is active
+    virtual const bool isActive() const;
+    /// State of the context
+    virtual void setActive(bool val);
     /// Gravity in the local coordinate system
     virtual Vec3 getLocalGravity() const;
     /// Gravity in the local coordinate system

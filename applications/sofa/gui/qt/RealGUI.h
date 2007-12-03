@@ -173,6 +173,7 @@ public slots:
     void setExportGnuplot(bool);
     void currentTabChanged(QWidget*);
 
+    void changeInstrument(int);
 
     //Used in Context Menu
     void graphAddObject();
@@ -180,6 +181,8 @@ public slots:
     void graphModify();
     void graphCollapse();
     void graphExpand();
+    void graphDesactivateNode();
+    void graphActivateNode();
     //When adding an object in the graph
     void loadObject(std::string path, double dx, double dy, double dz, double scale=1.0);
     //refresh the visualization window
@@ -215,6 +218,8 @@ protected:
 
 
     QWidget* currentTab;
+    QWidget *tabInstrument;
+
     GraphListenerQListView* graphListener;
     QListViewItem *item_clicked;
     GNode *node_clicked;
@@ -263,17 +268,16 @@ private:
     //unique ID to pass to a modify object dialog
     int current_Id_modifyDialog;
 
-    //At initialization: list of the path to the basic objects you can add to the scene
-    std::vector< std::string > list_object;
 
-    std::string list_demo[3];
-
-    //Bounding Box of each object
-    std::vector< float > list_object_BoundingBox;
     //currently unused: scale is experimental
     float object_Scale[2];
 
     float initial_time;
+
+    //At initialization: list of the path to the basic objects you can add to the scene
+    std::vector< std::string > list_object;
+    //Bounding Box of each object
+    std::vector< float > list_object_BoundingBox;
     std::list< GNode *> list_object_added;
     std::list< GNode *> list_object_removed;
     std::list< GNode *> list_object_initial;
