@@ -28,8 +28,8 @@ int OglShaderClass = core::RegisterObject("OglShader")
         ;
 
 OglShader::OglShader():
-    vertFilename(initData(&vertFilename, (std::string) "test.vert", "vert", "Set the vertex shader filename to load")),
-    fragFilename(initData(&fragFilename, (std::string) "test.frag", "frag", "Set the fragment shader filename to load"))
+    vertFilename(initData(&vertFilename, (std::string) "toonShading.vert", "vert", "Set the vertex shader filename to load")),
+    fragFilename(initData(&fragFilename, (std::string) "toonShading.frag", "frag", "Set the fragment shader filename to load"))
 {
 
 

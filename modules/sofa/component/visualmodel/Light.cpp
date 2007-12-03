@@ -54,13 +54,17 @@ Light::~Light()
         glDisable(lightID);
     else
     {
-        glEnable(GL_LIGHT0);
+        //glEnable(GL_LIGHT0);
+        GLfloat amb[4] = { 0.0, 0.0, 0.0, 1.0 };
+        GLfloat diff[4] = { 1.0, 1.0, 1.0, 1.0 };
+        GLfloat spec[4] = { 0.0, 0.0, 0.0, 1.0 };
         GLfloat c[4] = { 1.0, 1.0, 1.0, 1.0 };
-        GLfloat d[4] = { 0.0, 5.0, 10.0, 1.0 };
-        glLightfv(lightID, GL_AMBIENT, c);
-        glLightfv(lightID, GL_DIFFUSE, c);
-        glLightfv(lightID, GL_SPECULAR, c);
-        glLightfv(lightID, GL_POSITION, d );
+        GLfloat pos[4] = { 0.0, 0.0, 1.0, 0.0 };
+        glLightfv(lightID, GL_AMBIENT, amb);
+        glLightfv(lightID, GL_DIFFUSE, diff);
+        glLightfv(lightID, GL_SPECULAR, spec);
+        glLightfv(lightID, GL_POSITION, pos );
+
     }
     LightTable::getInstance()->removeLightID(name.getValue());
 }
