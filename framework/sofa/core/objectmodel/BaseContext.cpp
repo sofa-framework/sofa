@@ -24,6 +24,10 @@
 *******************************************************************************/
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/topology/BaseTopology.h>
+#include <sofa/core/Shader.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -199,30 +203,45 @@ const BaseContext::Vec3& BaseContext::getVelocityBasedLinearAccelerationInWorld(
 }
 
 
-///////////////
-// Variables //
-///////////////
+////////////////
+// Containers //
+////////////////
 
+/// Generic object access
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void* BaseContext::getObject(const ClassInfo& /*class_info*/, SearchDirection /*dir*/) const
+{
+    return NULL;
+}
+
+/// Generic list of objects access
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void BaseContext::getObjects(const ClassInfo& /*class_info*/, GetObjectsCallBack& /*container*/, SearchDirection /*dir*/) const
+{
+}
 
 /// Mechanical Degrees-of-Freedom
 BaseObject* BaseContext::getMechanicalState() const
 {
-    return NULL;
+    return this->get<sofa::core::componentmodel::behavior::BaseMechanicalState>();
 }
 
 /// Topology
 BaseObject* BaseContext::getTopology() const
 {
-    return NULL;
+    return this->get<sofa::core::componentmodel::topology::Topology>();
 }
 /// Topology
 BaseObject* BaseContext::getMainTopology() const
 {
-    return NULL;
+    return this->get<sofa::core::componentmodel::topology::BaseTopology>();
 }
 /// Shader
 BaseObject* BaseContext::getShader() const
 {
+    return this->get<sofa::core::Shader>();
     return NULL;
 }
 

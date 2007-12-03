@@ -151,6 +151,69 @@ const core::objectmodel::BaseContext* GNode::getContext() const
     return this;
 }
 
+
+/// Generic object access
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir) const
+{
+    void *result = NULL;
+    for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
+    {
+        result = class_info.dynamicCast(*it);
+        if (result != NULL) break;
+    }
+    if (result == NULL)
+    {
+        switch(dir)
+        {
+        case Local:
+            break;
+        case SearchUp:
+            if (parent) result = parent->getObject(class_info, dir);
+            break;
+        case SearchDown:
+            for(ChildIterator it = child.begin(); it != child.end(); ++it)
+            {
+                result = (*it)->getObject(class_info, dir);
+                if (result != NULL) break;
+            }
+            break;
+        }
+    }
+    return result;
+}
+
+/// Generic list of objects access
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir) const
+{
+    for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
+    {
+        void* result = class_info.dynamicCast(*it);
+        if (result != NULL)
+            container(result);
+    }
+
+    {
+        switch(dir)
+        {
+        case Local:
+            break;
+        case SearchUp:
+            if (parent) parent->getObjects(class_info, container, dir);
+            break;
+        case SearchDown:
+            for(ChildIterator it = child.begin(); it != child.end(); ++it)
+            {
+                (*it)->getObjects(class_info, container, dir);
+            }
+            break;
+        }
+    }
+}
+
 /// Mechanical Degrees-of-Freedom
 core::objectmodel::BaseObject* GNode::getMechanicalState() const
 {

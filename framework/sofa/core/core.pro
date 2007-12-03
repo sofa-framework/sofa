@@ -50,6 +50,7 @@ HEADERS += \
           objectmodel/BaseNode.h \
           objectmodel/BaseObject.h \
           objectmodel/BaseObjectDescription.h \
+          objectmodel/ClassInfo.h \
           objectmodel/Context.h \
           objectmodel/ContextObject.h \
           objectmodel/Data.h \
@@ -75,6 +76,7 @@ SOURCES +=  \
           objectmodel/BaseContext.cpp \
           objectmodel/BaseObject.cpp \
           objectmodel/BaseObjectDescription.cpp \
+          objectmodel/ClassInfo.cpp \
           objectmodel/Context.cpp \
           objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
