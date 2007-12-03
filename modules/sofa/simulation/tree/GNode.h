@@ -116,8 +116,18 @@ public:
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual const core::objectmodel::BaseNode* getParent() const;
 
-    /// @name Variables
+    /// @name Containers
     /// @{
+
+    /// Generic object access
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const;
+
+    /// Generic list of objects access
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
 
     /// Mechanical Degrees-of-Freedom
     virtual core::objectmodel::BaseObject* getMechanicalState() const;
@@ -174,25 +184,14 @@ public:
     template<class Object, class Container>
     void getNodeObjects(Container* list)
     {
-        //list->insert(list->end(),this->object.begin(),this->object.end());
-        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
-        {
-            Object* o = dynamic_cast<Object*>(*it);
-            if (o!=NULL)
-                list->push_back(o);
-        }
+        this->get<Object, Container>(*list, Local);
     }
 
     /// List all objects of this node and sub-nodes deriving from a given class
     template<class Object, class Container>
     void getTreeObjects(Container* list)
     {
-        this->getNodeObjects<Object, Container>(list);
-        for (ChildIterator it = this->child.begin(); it != this->child.end(); ++it)
-        {
-            GNode* n = *it;
-            n->getTreeObjects<Object, Container>(list);
-        }
+        this->get<Object, Container>(*list, SearchDown);
     }
 
     /// Return an object of this node deriving from a given class, or NULL if not found.
@@ -200,24 +199,13 @@ public:
     template<class Object>
     void getNodeObject(Object*& result)
     {
-        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
-        {
-            Object* o = dynamic_cast<Object*>(*it);
-            if (o != NULL)
-            {
-                result = o;
-                return;
-            }
-        }
-        result = NULL;
+        result = this->get<Object>(Local);
     }
 
     template<class Object>
     Object* getNodeObject()
     {
-        Object* result;
-        this->getNodeObject(result);
-        return result;
+        return this->get<Object>(Local);
     }
 
     /// Return an object of this node and sub-nodes deriving from a given class, or NULL if not found.
@@ -225,22 +213,13 @@ public:
     template<class Object>
     void getTreeObject(Object*& result)
     {
-        this->getNodeObject(result);
-        if (result != NULL) return;
-        for (ChildIterator it = this->child.begin(); it != this->child.end(); ++it)
-        {
-            GNode* n = *it;
-            n->getTreeObject(result);
-            if (result != NULL) return;
-        }
+        result = this->get<Object>(SearchDown);
     }
 
     template<class Object>
     Object* getTreeObject()
     {
-        Object* result;
-        this->getTreeObject(result);
-        return result;
+        return this->get<Object>(SearchDown);
     }
 
     /// Find a child node given its name
