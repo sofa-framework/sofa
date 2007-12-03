@@ -124,24 +124,24 @@ public:
 
     XDataPtr<DataTypes>* const f_X0;
 
-    VecCoord* getX()  { f_X->beginEdit(); return x;  }
-    VecDeriv* getV()  { f_V->beginEdit(); return v;  }
-    VecDeriv* getF()  { return f;  }
-    VecDeriv* getDx() { return dx; }
-    VecConst* getC() { return c;}
-    VecCoord* getXfree() { return xfree; }
-    VecDeriv* getVfree() { return vfree;  }
+    virtual VecCoord* getX()  { f_X->beginEdit(); return x;  }
+    virtual VecDeriv* getV()  { f_V->beginEdit(); return v;  }
+    virtual VecDeriv* getF()  { return f;  }
+    virtual VecDeriv* getDx() { return dx; }
+    virtual VecConst* getC() { return c;}
+    virtual VecCoord* getXfree() { return xfree; }
+    virtual VecDeriv* getVfree() { return vfree;  }
     VecCoord* getX0() { return x0;}
 
-    const VecCoord* getX()  const { return x;  }
-    const VecCoord* getX0()  const { return x0;  }
-    const VecDeriv* getV()  const { return v;  }
-    const VecDeriv* getV0()  const { return v0;  }
-    const VecDeriv* getF()  const { return f;  }
-    const VecDeriv* getDx() const { return dx; }
-    const VecConst* getC() const { return c; }
-    const VecCoord* getXfree() const { return xfree; }
-    const VecDeriv* getVfree()  const { return vfree;  }
+    virtual const VecCoord* getX()  const { return x;  }
+    virtual const VecCoord* getX0()  const { return x0;  }
+    virtual const VecDeriv* getV()  const { return v;  }
+    virtual const VecDeriv* getV0()  const { return v0;  }
+    virtual const VecDeriv* getF()  const { return f;  }
+    virtual const VecDeriv* getDx() const { return dx; }
+    virtual const VecConst* getC() const { return c; }
+    virtual const VecCoord* getXfree() const { return xfree; }
+    virtual const VecDeriv* getVfree()  const { return vfree;  }
 
     virtual void init();
 

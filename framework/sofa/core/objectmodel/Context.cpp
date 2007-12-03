@@ -340,9 +340,10 @@ bool Context::setCurrentLevel(int l)
         currentLevel_.setValue(coarsestLevel_.getValue());
         return false;
     }
-    else if( l < finestLevel_.getValue() )
+    else if( l < 0 /*finestLevel_.getValue()*/ )
     {
-        currentLevel_.setValue(finestLevel_.getValue());
+// 		currentLevel_.setValue(finestLevel_.getValue());
+        currentLevel_.setValue( 0 );
         return false;
     }
     currentLevel_.setValue(l);
