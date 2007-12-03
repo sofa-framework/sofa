@@ -125,7 +125,8 @@ GNode* Simulation::load ( const char *filename )
 
 Simulation::Simulation()
     : numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") ),
-      gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved"))
+      gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved")),
+      instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used"))
 {}
 
 Simulation::~Simulation()
@@ -162,6 +163,19 @@ void Simulation::init ( GNode* root )
 {
     if ( !root ) return;
     root->execute<InitVisitor>();
+
+    //Get the list of instruments present in the scene graph
+    getInstruments(root);
+}
+
+void Simulation::getInstruments( GNode *node)
+{
+    std::string name = node->getName(); name.resize(10);
+    if (name == "Instrument") instruments.push_back(node);
+    for (GNode::ChildIterator it= node->child.begin(); it != node->child.end(); ++it)
+    {
+        getInstruments((*it));
+    }
 }
 
 /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
@@ -291,6 +305,8 @@ void Simulation::unload ( GNode* root )
     if ( root->getParent() !=NULL )
         root->getParent()->removeChild ( root );
     delete root;
+    instruments.clear();
+    instrumentInUse.setValue(-1);
 }
 
 /// Export a scene to an OBJ 3D Scene

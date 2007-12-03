@@ -27,6 +27,7 @@
 
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
 namespace sofa
 {
@@ -63,6 +64,9 @@ public:
 
     /// Initialize the objects
     virtual void init(GNode* root);
+
+    /// Find the list of nodes called "Instrument" and keep it in the vector instuments
+    void getInstruments( GNode *node);
 
     /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
     virtual void animate(GNode* root, double dt=0.0);
@@ -109,6 +113,8 @@ public:
     Data<unsigned> numMechSteps;
     Data<std::string> gnuplotDirectory;
 
+    helper::vector< GNode* > instruments;
+    Data< int > instrumentInUse;
 };
 
 /// Set the (unique) simulation which controls the scene

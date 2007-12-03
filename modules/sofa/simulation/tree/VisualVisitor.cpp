@@ -73,7 +73,7 @@ void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
         }
         vm->draw();
 
-        if (vmi) ;
+// 		if (vmi) ;
         shader->stop();
         break;
     }

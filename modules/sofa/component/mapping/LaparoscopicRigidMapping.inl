@@ -149,7 +149,7 @@ void LaparoscopicRigidMapping<BasicMapping>::processGrab()
                 }
             }
 
-            //Add the String
+            //Add the Spring
             if (mstate2)
             {
                 component::forcefield::StiffSpringForceField<Vec3Types>* contactff = new component::forcefield::StiffSpringForceField<Vec3Types>(mstate,mstate2);

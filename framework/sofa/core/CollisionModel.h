@@ -29,6 +29,8 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/CollisionElement.h>
 
+
+
 namespace sofa
 {
 
@@ -65,7 +67,7 @@ public:
 
     CollisionModel()
         : bStatic(initData(&bStatic, false, "static", "flag indicating if an object is immobile"))
-        , bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in collision detections"))
+//   , bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in collision detections"))
         , proximity(initData(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
         , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
         , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
@@ -133,9 +135,13 @@ public:
     /// \brief Return true if this CollisionModel should be used for collisions.
     ///
     /// Default to true.
+    virtual bool isActive() { return getContext()->isActive(); }
+
+    virtual void setActive(bool val=true) { getContext()->setActive(val); }
+    /*
     virtual bool isActive() { return bActive.getValue(); }
 
-    virtual void setActive(bool val=true) { bActive.setValue(val); }
+    virtual void setActive(bool val=true) { bActive.setValue(val); }*/
 
     /// \brief Return true if this CollisionModel is attached to an immobile
     /// <i>obstacle</i> object.
@@ -263,7 +269,7 @@ protected:
 
     Data<bool> bStatic;
 
-    Data<bool> bActive;
+//    Data<bool> bActive;
 
     Data<double> proximity;
 

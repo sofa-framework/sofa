@@ -36,7 +36,8 @@ namespace objectmodel
 {
 
 Context::Context()
-    : worldGravity_(initData(&worldGravity_, Vec3(0,0,0),"gravity","Gravity in the world coordinate system"))
+    : is_activated(initData(&is_activated, true, "activated", "To Activate a node"))
+    , worldGravity_(initData(&worldGravity_, Vec3(0,0,0),"gravity","Gravity in the world coordinate system"))
     , dt_(initData(&dt_,0.01,"dt","Time step"))
     , time_(initData(&time_,0.,"time","Current time"))
     , animate_(initData(&animate_,false,"animate","???"))
@@ -75,6 +76,11 @@ Context::Context()
     //setMultiThreadSimulation(objectmodel::BaseContext::getMultiThreadSimulation());
 }
 
+/// The Context is active
+const bool Context::isActive() const {return is_activated.getValue();}
+
+/// State of the context
+void Context::setActive(bool val) { is_activated.setValue(val);}
 
 /// Projection from the local coordinate system to the world coordinate system.
 const Context::Frame& Context::getPositionInWorld() const

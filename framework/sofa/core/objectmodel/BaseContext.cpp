@@ -53,6 +53,9 @@ BaseContext* BaseContext::getDefault()
 // Parameters //
 ////////////////
 
+/// The Context is active
+const bool BaseContext::isActive() const { return true;};
+
 /// Gravity in the local coordinate system
 BaseContext::Vec3 BaseContext::getLocalGravity() const
 {
