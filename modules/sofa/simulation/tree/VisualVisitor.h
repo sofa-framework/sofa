@@ -70,8 +70,9 @@ public:
 class VisualDrawVisitor : public VisualVisitor
 {
 public:
-    enum Pass { Std, StdWithShader, Transparent, Shadow };
+    enum Pass { Std, Transparent, Shadow };
     Pass pass;
+    bool hasShader;
     VisualDrawVisitor(Pass pass = Std)
         : pass(pass)
     {
