@@ -59,13 +59,13 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
+SOFA_DECL_CLASS(TriangularBendingSprings)
+
 template class TriangularBendingSprings<Vec3fTypes>;
 template class TriangularBendingSprings<Vec3dTypes>;
 template class TriangularBendingSprings<Vec2fTypes>;
 template class TriangularBendingSprings<Vec2dTypes>;
 
-
-SOFA_DECL_CLASS(TriangularBendingSprings)
 
 // Register in the Factory
 int TriangularBendingSpringsClass = core::RegisterObject("Springs added to a triangular mesh to prevent bending")

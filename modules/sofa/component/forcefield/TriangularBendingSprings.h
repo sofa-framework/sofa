@@ -91,10 +91,6 @@ public:
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord    Coord   ;
-    typedef typename DataTypes::Deriv    Deriv   ;
-
     class Mat3 : public fixed_array<Deriv,3>
     {
     public:
