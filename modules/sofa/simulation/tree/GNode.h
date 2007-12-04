@@ -119,12 +119,17 @@ public:
     /// @name Containers
     /// @{
 
-    /// Generic object access
+    /// Generic object access, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const;
 
-    /// Generic list of objects access
+    /// Generic object access, given a path from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const;
+
+    /// Generic list of objects access, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
@@ -222,11 +227,14 @@ public:
         return this->get<Object>(SearchDown);
     }
 
+    /// Find an object given its name
+    core::objectmodel::BaseObject* getObject(const std::string& name) const;
+
     /// Find a child node given its name
-    GNode* getChild(const std::string& name);
+    GNode* getChild(const std::string& name) const;
 
     /// Get a descendant node given its name
-    GNode* getTreeNode(const std::string& name);
+    GNode* getTreeNode(const std::string& name) const;
 
     /// Propagate an event
     virtual void propagateEvent( core::objectmodel::Event* event );

@@ -197,10 +197,15 @@ public:
     /// Global Shader
     virtual BaseObject* getShader() const;
 
-    /// Generic object access
+    /// Generic object access, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void* getObject(const ClassInfo& class_info, SearchDirection dir = SearchUp) const;
+
+    /// Generic object access, given a path from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const ClassInfo& class_info, const std::string& path) const;
 
     class GetObjectsCallBack
     {
@@ -209,16 +214,23 @@ public:
         virtual void operator()(void* ptr) = 0;
     };
 
-    /// Generic list of objects access
+    /// Generic list of objects access, possibly searching up or down from the current context
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void getObjects(const ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const;
 
-    /// Generic object access template wrapper
+    /// Generic object access template wrapper, possibly searching up or down from the current context
     template<class T>
     T* get(SearchDirection dir = SearchUp) const
     {
         return reinterpret_cast<T*>(this->getObject(classid(T), dir));
+    }
+
+    /// Generic object access template wrapper, given a path from the current context
+    template<class T>
+    T* get(const std::string& path) const
+    {
+        return reinterpret_cast<T*>(this->getObject(classid(T), path));
     }
 
     template<class T, class Container>
@@ -233,7 +245,7 @@ public:
         }
     };
 
-    /// Generic list of objects access template wrapper
+    /// Generic list of objects access template wrapper, possibly searching up or down from the current context
     template<class T, class Container>
     void get(Container& list, SearchDirection dir = SearchUp) const
     {
