@@ -107,7 +107,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleCreationFunction (
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
 
-        const sofa::helper::vector< Edge > &edgeArray=container->getEdgeArray() ;
+        //const sofa::helper::vector< Edge > &edgeArray=container->getEdgeArray() ;
         const sofa::helper::vector< Triangle > &triangleArray=container->getTriangleArray() ;
         const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
 
@@ -225,7 +225,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleDestructionFunctio
         TriangleSetTopology<DataTypes> *_mesh=ff->getTriangularTopology();
         assert(_mesh!=0);
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        const sofa::helper::vector< Edge > &edgeArray=container->getEdgeArray() ;
+        //const sofa::helper::vector< Edge > &edgeArray=container->getEdgeArray() ;
         const sofa::helper::vector< Triangle > &triangleArray=container->getTriangleArray() ;
         const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
 
@@ -309,7 +309,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleDestructionFunctio
                         ei.m1 = t1[i1];
                         ei.m2 = t2[i2];
 
-                        TriangularBendingSprings<DataTypes> *fftest= (TriangularBendingSprings<DataTypes> *)param;
+                        //TriangularBendingSprings<DataTypes> *fftest= (TriangularBendingSprings<DataTypes> *)param;
                         ei.ks=m_ks; //(fftest->ks).getValue();
                         ei.kd=m_kd; //(fftest->kd).getValue();
 
@@ -582,7 +582,7 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
 
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
     unsigned int nbEdges=container->getNumberOfEdges();
-    const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
+    //const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
 
     EdgeInformation *einfo;
 
@@ -663,7 +663,7 @@ void TriangularBendingSprings<DataTypes>::addDForce(VecDeriv& df, const VecDeriv
 
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
     unsigned int nbEdges=container->getNumberOfEdges();
-    const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
+    //const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
 
     EdgeInformation *einfo;
 
@@ -730,8 +730,8 @@ void TriangularBendingSprings<DataTypes>::draw()
     VecCoord& x = *this->mstate->getX();
     //VecCoord& x_rest = *this->mstate->getX0();
     TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-    unsigned int nbTriangles=container->getNumberOfTriangles();
-    const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
+    //unsigned int nbTriangles=container->getNumberOfTriangles();
+    //const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
 
     glDisable(GL_LIGHTING);
