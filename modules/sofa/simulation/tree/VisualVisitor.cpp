@@ -41,11 +41,8 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
 
-    if (node->getShader())
-    {
-        pass = StdWithShader;
-    }
-    else pass = Std;
+    hasShader = node->getShader();
+
     this->VisualVisitor::processNodeTopDown(node);
 
     glPopMatrix();
@@ -54,32 +51,36 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
 void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
 {
     //cerr<<"VisualDrawVisitor::processVisualModel "<<vm->getName()<<endl;
+    core::objectmodel::BaseObject* obj = NULL;
+    sofa::core::Shader* shader = NULL;
+    sofa::component::visualmodel::VisualModelImpl* vmi = NULL;
+    if (hasShader)
+    {
+        obj = node->getShader();
+        shader = dynamic_cast<sofa::core::Shader*>(obj);
+        vmi =  dynamic_cast<sofa::component::visualmodel::VisualModelImpl*> (vm);
+    }
+
     switch(pass)
     {
     case Std:
-        vm->draw();
-        break;
-    case StdWithShader:
     {
-        //we assume that the resulting shader can't be null.
-        core::objectmodel::BaseObject* obj = node->getShader();
-        sofa::core::Shader* shader = dynamic_cast<sofa::core::Shader*>(obj);
-
-        sofa::component::visualmodel::VisualModelImpl* vmi =  dynamic_cast<sofa::component::visualmodel::VisualModelImpl*> (vm);
-
-        if (vmi)
-        {
+        if (shader && vmi)
             shader->start();
-        }
         vm->draw();
-
-// 		if (vmi) ;
-        shader->stop();
+        if (shader && vmi)
+            shader->stop();
         break;
     }
     case Transparent:
+    {
+        if (shader && vmi)
+            shader->start();
         vm->drawTransparent();
+        if (shader && vmi)
+            shader->stop();
         break;
+    }
     case Shadow:
         vm->drawShadow();
         break;
