@@ -71,8 +71,9 @@ public:
     std::string name() const { return pt->name(); }
     operator const std::type_info&() const { return *pt; }
     helper::TypeInfo type() const { return sofa::helper::TypeInfo(*pt); }
-    int operator==(const ClassInfo& t) const { return *pt == *t.pt; }
-    int operator<(const ClassInfo& t) const { return pt->before(*t.pt); }
+    bool operator==(const ClassInfo& t) const { return *pt == *t.pt; }
+    bool operator!=(const ClassInfo& t) const { return *pt != *t.pt; }
+    bool operator<(const ClassInfo& t) const { return (bool)(pt->before(*t.pt)); }
 
     virtual void* dynamicCast(Base* obj) const = 0;
 

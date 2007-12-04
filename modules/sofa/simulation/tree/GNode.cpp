@@ -152,7 +152,7 @@ const core::objectmodel::BaseContext* GNode::getContext() const
 }
 
 
-/// Generic object access
+/// Generic object access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir) const
@@ -184,7 +184,79 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, Sea
     return result;
 }
 
-/// Generic list of objects access
+/// Generic object access, given a path from the current context
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const
+{
+    if (path.empty())
+    {
+        return getObject(class_info, Local);
+    }
+    else if (path[0] == '/')
+    {
+        if (parent) return parent->getObject(class_info, path);
+        else return getObject(class_info,std::string(path,1));
+    }
+    else if (std::string(path,0,2)==std::string("./"))
+    {
+        std::string newpath = std::string(path, 2);
+        while (!newpath.empty() && path[0] == '/')
+            newpath.erase(0);
+        return getObject(newpath);
+    }
+    else if (std::string(path,0,3)==std::string("../"))
+    {
+        std::string newpath = std::string(path, 3);
+        while (!newpath.empty() && path[0] == '/')
+            newpath.erase(0);
+        if (parent) return parent->getObject(newpath);
+        else return getObject(newpath);
+    }
+    else
+    {
+        std::string::size_type pend = path.find('/');
+        if (pend == std::string::npos) pend = path.length();
+        std::string name ( path, 0, pend );
+        GNode* child = getChild(name);
+        if (child)
+        {
+            while (pend < path.length() && path[pend] == '/')
+                ++pend;
+            return child->getObject(class_info, std::string(path, pend));
+        }
+        else if (pend < path.length())
+        {
+            std::cerr << "ERROR: child node "<<name<<" not found in "<<getPathName()<<std::endl;
+            return NULL;
+        }
+        else
+        {
+            core::objectmodel::BaseObject* obj = getObject(name);
+            if (obj == NULL)
+            {
+                std::cerr << "ERROR: object "<<name<<" not found in "<<getPathName()<<std::endl;
+                return NULL;
+            }
+            else
+            {
+                void* result = class_info.dynamicCast(obj);
+                if (result == NULL)
+                {
+                    std::cerr << "ERROR: object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name()<<std::endl;
+                    return NULL;
+                }
+                else
+                {
+                    return result;
+                }
+            }
+        }
+    }
+}
+
+
+/// Generic list of objects access, possibly searching up or down from the current context
 ///
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir) const
@@ -561,8 +633,17 @@ void GNode::doExecuteVisitor(Visitor* action)
     }
 }
 
+/// Find an object given its name
+core::objectmodel::BaseObject* GNode::getObject(const std::string& name) const
+{
+    for (ObjectIterator it = object.begin(), itend = object.end(); it != itend; ++it)
+        if ((*it)->getName() == name)
+            return *it;
+    return NULL;
+}
+
 /// Find a child node given its name
-GNode* GNode::getChild(const std::string& name)
+GNode* GNode::getChild(const std::string& name) const
 {
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
         if ((*it)->getName() == name)
@@ -571,7 +652,7 @@ GNode* GNode::getChild(const std::string& name)
 }
 
 /// Get a descendant node given its name
-GNode* GNode::getTreeNode(const std::string& name)
+GNode* GNode::getTreeNode(const std::string& name) const
 {
     GNode* result = NULL;
     result = getChild(name);
