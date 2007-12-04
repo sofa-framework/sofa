@@ -1,3 +1,4 @@
+
 /*******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
 *                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
@@ -60,6 +61,10 @@ protected:
         : type(ti)
     {
         classes[sofa::helper::TypeInfo(*ti)] = this;
+    }
+
+    virtual ~ClassInfo()
+    {
     }
 public:
 
