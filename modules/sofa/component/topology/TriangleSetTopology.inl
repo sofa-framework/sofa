@@ -207,14 +207,14 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
 
     /// only remove isolated edges if the structures exists since removeEdges
     /// will remove isolated vertices
-    //if (removeIsolatedItems)
-    //{
-    /// force the creation of the Triangle Edge Shell array to detect isolated edges
-    //if (container->m_triangleEdge.size()>0)
-    container->getTriangleEdgeShellArray();
-    /// force the creation of the Triangle Shell array to detect isolated vertices
-    container->getTriangleVertexShellArray();
-    //}
+    if (removeIsolatedItems)
+    {
+        /// force the creation of the Triangle Edge Shell array to detect isolated edges
+        if (container->m_triangleEdge.size()>0)
+            container->getTriangleEdgeShellArray();
+        /// force the creation of the Triangle Shell array to detect isolated vertices
+        container->getTriangleVertexShellArray();
+    }
 
 
     if (container->m_triangle.size()>0)
@@ -463,8 +463,8 @@ void TriangleSetTopologyModifier< DataTypes >::removeEdgesProcess( const sofa::h
     TriangleSetTopologyContainer * container = static_cast<TriangleSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
 
-    //if (container->m_triangleEdge.size()>0)
-    container->getTriangleEdgeShellArray();
+    if (container->m_triangleEdge.size()>0)
+        container->getTriangleEdgeShellArray();
 
     // start by calling the standard method.
     EdgeSetTopologyModifier< DataTypes >::removeEdgesProcess(indices,removeIsolatedItems);
@@ -544,8 +544,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(sofa::helper::v
 
     modifier->removeTrianglesProcess(  triangles ,true);
 
-    //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
-    topology->getTriangleSetTopologyContainer()->checkTopology();
+    assert(topology->getTriangleSetTopologyContainer()->checkTopology());
 }
 
 // Preparation of "InciseAlongPointsList" :
@@ -1566,13 +1565,13 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create) ; // WARNING called after the creation process by the method "addTrianglesProcess"
 
         // Propagate the topological changes *** not necessary
-        //topology->propagateTopologicalChanges();
+        topology->propagateTopologicalChanges();
 
         // Remove all the triangles registered to be removed
         removeTriangles(triangles_to_remove); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
 
         // Propagate the topological changes *** not necessary
-        //topology->propagateTopologicalChanges();
+        topology->propagateTopologicalChanges();
 
     }
 
@@ -2192,13 +2191,13 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
         modifier->addTrianglesProcess((const sofa::helper::vector< Triangle > &) triangles_to_create) ; // WARNING called after the creation process by the method "addTrianglesProcess"
 
         // Propagate the topological changes *** not necessary
-        //topology->propagateTopologicalChanges();
+        topology->propagateTopologicalChanges();
 
         // Remove all the triangles registered to be removed
         removeTriangles(triangles_to_remove); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
 
         // Propagate the topological changes *** not necessary
-        //topology->propagateTopologicalChanges();
+        topology->propagateTopologicalChanges();
     }
 }
 
@@ -3744,17 +3743,17 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     if(is_reached)
     {
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut is reached" << std::endl;
+        std::cout << "INFO_print - TriangleSetTopology.inl : cut is reached" << std::endl;
     }
 
     if(is_on_boundary)
     {
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut meets a mesh boundary" << std::endl;
+        std::cout << "INFO_print - TriangleSetTopology.inl : cut meets a mesh boundary" << std::endl;
     }
 
     if(!is_reached && !is_on_boundary)
     {
-        std::cout << "INFO_print - TriangleSetTopology.inl : Cut is not reached" << std::endl;
+        std::cout << "INFO_print - TriangleSetTopology.inl : cut is not reached" << std::endl;
         ind_tb=ind_triangle;
     }
 
@@ -3770,16 +3769,14 @@ void TriangleSetTopology<DataTypes>::init()
 {
 }
 template<class DataTypes>
-TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj),f_m_topologyContainer(new DataPtr< TriangleSetTopologyContainer >(new TriangleSetTopologyContainer(), "Triangle Container"))
-
+TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj)
 {
-    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
-    this->m_topologyContainer->setTopology(this);
-    this->m_topologyContainer->setTopology(this);
+    this->m_topologyContainer=(new TriangleSetTopologyContainer(this));
     this->m_topologyModifier=(new TriangleSetTopologyModifier<DataTypes>(this));
     this->m_topologyAlgorithms=(new TriangleSetTopologyAlgorithms<DataTypes>(this));
     this->m_geometryAlgorithms=(new TriangleSetGeometryAlgorithms<DataTypes>(this));
 
+    this->f_m_topologyContainer = new Field< TriangleSetTopologyContainer >(this->getTriangleSetTopologyContainer(), "Triangle Container");
     this->addField(f_m_topologyContainer, "trianglecontainer");
 }
 
@@ -3789,5 +3786,5 @@ TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> 
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENTS_TriangleSetTOPOLOGY_INL
+#endif // SOFA_COMPONENTS_TriangleSetTOPOLOGY_INL 
 
