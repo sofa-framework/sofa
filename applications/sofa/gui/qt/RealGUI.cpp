@@ -940,12 +940,19 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
         connect ( list_instrument, SIGNAL ( clicked(int) ), this, SLOT ( changeInstrument(int) ) );
 
         QRadioButton *button = new QRadioButton(tabInstrument); button->setText("None");
-        list_instrument->insert(button); layout->addWidget(button); button->setChecked(true);
+        list_instrument->insert(button); layout->addWidget(button);
 
         for (unsigned int i=0; i<s->instruments.size(); i++)
         {
             QRadioButton *button = new QRadioButton(tabInstrument);  button->setText(QString( s->instruments[i]->getName().c_str() ) );
-            list_instrument->insert(button); layout->addWidget(button);  s->instruments[i]->setActive(false);
+            list_instrument->insert(button); layout->addWidget(button);
+            if (i==0)
+            {
+                button->setChecked(true); changeInstrument(1);
+            }
+            else
+                s->instruments[i]->setActive(false);
+
         }
 #ifndef QT_MODULE_QT3SUPPORT
         layout->addWidget(list_instrument);
