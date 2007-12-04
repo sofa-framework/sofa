@@ -82,7 +82,7 @@ public:
     static BaseContext* getDefault();
 
     /// Specification of where to search for queried objects
-    enum SearchDirection { SearchUp = -1, Local = 0, SearchDown = 1 };
+    enum SearchDirection { SearchUp = -1, Local = 0, SearchDown = 1, SearchRoot = 2 };
 
     /// @name Parameters
     /// @{

@@ -157,6 +157,11 @@ const core::objectmodel::BaseContext* GNode::getContext() const
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir) const
 {
+    if (dir == SearchRoot)
+    {
+        if (parent != NULL) return parent->getObject(class_info, dir);
+        else dir = SearchDown; // we are the root, search down from here.
+    }
     void *result = NULL;
     for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
@@ -178,6 +183,9 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, Sea
                 result = (*it)->getObject(class_info, dir);
                 if (result != NULL) break;
             }
+            break;
+        case SearchRoot:
+            std::cerr << "SearchRoot SHOULD NOT BE POSSIBLE HERE!\n";
             break;
         }
     }
@@ -261,6 +269,15 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir) const
 {
+    if (dir == SearchRoot)
+    {
+        if (parent != NULL)
+        {
+            parent->getObjects(class_info, container, dir);
+            return;
+        }
+        else dir = SearchDown; // we are the root, search down from here.
+    }
     for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
         void* result = class_info.dynamicCast(*it);
@@ -281,6 +298,9 @@ void GNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, Get
             {
                 (*it)->getObjects(class_info, container, dir);
             }
+            break;
+        case SearchRoot:
+            std::cerr << "SearchRoot SHOULD NOT BE POSSIBLE HERE!\n";
             break;
         }
     }
