@@ -70,7 +70,7 @@ using std::endl;
 using namespace core::componentmodel::behavior;
 
 template< class DataTypes>
-void TriangularBendingSprings<DataTypes>::TriangularBSEdgeCreationFunction(int edgeIndex, void* param, EdgeInformation &ei,
+void TriangularBendingSprings<DataTypes>::TriangularBSEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeInformation &ei,
         const Edge& ,  const sofa::helper::vector< unsigned int > &,
         const sofa::helper::vector< double >&)
 {
@@ -729,7 +729,7 @@ void TriangularBendingSprings<DataTypes>::draw()
 
     VecCoord& x = *this->mstate->getX();
     //VecCoord& x_rest = *this->mstate->getX0();
-    TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
+    //TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
     //unsigned int nbTriangles=container->getNumberOfTriangles();
     //const sofa::helper::vector< Triangle> &triangleArray=container->getTriangleArray() ;
 
