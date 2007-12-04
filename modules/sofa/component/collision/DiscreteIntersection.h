@@ -90,8 +90,10 @@ public:
     template<class Sphere>
     bool testIntersection(Sphere&, Ray&);
     template<class Sphere>
-    bool testIntersection(Sphere& , Triangle&);
-    //bool testIntersection(Triangle& ,Triangle&);
+    bool testIntersection(Sphere&, Triangle&);
+    //bool testIntersection(Triangle&, Triangle&);
+    bool testIntersection(Triangle&, Line&);
+    bool testIntersection(Triangle&, Ray&);
     bool testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
     bool testIntersection(RigidDistanceGridCollisionElement&, Point&);
     template<class Sphere>
@@ -116,6 +118,8 @@ public:
     template<class Sphere>
     int computeIntersection(Sphere&, Triangle&, OutputVector*);
     //int computeIntersection(Triangle&, Triangle&, OutputVector*);
+    int computeIntersection(Triangle&, Line&, OutputVector*);
+    int computeIntersection(Triangle&, Ray&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, Point&, OutputVector*);
     template<class Sphere>

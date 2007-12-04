@@ -42,7 +42,11 @@ public:
     operator const std::type_info&() const { return *pt; }
     bool operator==(const TypeInfo& t) const { return *pt == *t.pt; }
     bool operator!=(const TypeInfo& t) const { return *pt != *t.pt; }
-    bool operator<(const TypeInfo& t) const { return (bool)(pt->before(*t.pt)); }
+#ifdef _MSC_VER
+    bool operator<(const TypeInfo& t) const { return (pt->before(*t.pt)!=0); }
+#else
+    bool operator<(const TypeInfo& t) const { return pt->before(*t.pt); }
+#endif
 };
 
 template <class BaseClass, typename ResulT = void>

@@ -73,7 +73,11 @@ public:
     helper::TypeInfo type() const { return sofa::helper::TypeInfo(*pt); }
     bool operator==(const ClassInfo& t) const { return *pt == *t.pt; }
     bool operator!=(const ClassInfo& t) const { return *pt != *t.pt; }
-    bool operator<(const ClassInfo& t) const { return (bool)(pt->before(*t.pt)); }
+#ifdef _MSC_VER
+    bool operator<(const ClassInfo& t) const { return (pt->before(*t.pt)!=0); }
+#else
+    bool operator<(const ClassInfo& t) const { return pt->before(*t.pt); }
+#endif
 
     virtual void* dynamicCast(Base* obj) const = 0;
 
