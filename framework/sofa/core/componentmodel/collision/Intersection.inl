@@ -154,10 +154,18 @@ template<class Model1, class Model2, class T,
          >
 void IntersectorMap::add(T* ptr)
 {
-    (*this)[std::make_pair(helper::TypeInfo(typeid(Model1)),helper::TypeInfo(typeid(Model2)))] =
+    const objectmodel::ClassInfo* c1 = &classid(Model1);
+    const objectmodel::ClassInfo* c2 = &classid(Model2);
+    classes.insert(c1);
+    classes.insert(c2);
+    castMap.clear();
+    // rebuild castMap
+    for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+        castMap.insert(std::make_pair((*it)->type(),(*it)->type()));
+    (*this)[std::make_pair(c1->type(),c2->type())] =
         new MemberElementIntersector<typename Model1::Element, typename Model2::Element, T>(ptr);
     if (mirror)
-        (*this)[std::make_pair(helper::TypeInfo(typeid(Model2)),helper::TypeInfo(typeid(Model1)))] =
+        (*this)[std::make_pair(c2->type(),c1->type())] =
             new MirrorMemberElementIntersector<typename Model2::Element, typename Model1::Element, T>(ptr);
 }
 
@@ -166,10 +174,18 @@ template<class Model1, class Model2,
          >
 void IntersectorMap::ignore()
 {
-    (*this)[std::make_pair(helper::TypeInfo(typeid(Model1)),helper::TypeInfo(typeid(Model2)))] =
+    const objectmodel::ClassInfo* c1 = &classid(Model1);
+    const objectmodel::ClassInfo* c2 = &classid(Model2);
+    classes.insert(c1);
+    classes.insert(c2);
+    castMap.clear();
+    // rebuild castMap
+    for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+        castMap.insert(std::make_pair((*it)->type(),(*it)->type()));
+    (*this)[std::make_pair(c1->type(),c2->type())] =
         NULL;
     if (mirror)
-        (*this)[std::make_pair(helper::TypeInfo(typeid(Model2)),helper::TypeInfo(typeid(Model1)))] =
+        (*this)[std::make_pair(c2->type(),c1->type())] =
             NULL;
 }
 

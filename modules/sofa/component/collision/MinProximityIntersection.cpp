@@ -29,7 +29,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/componentmodel/collision/Intersection.inl>
-#include <sofa/component/collision/RayPickInteractor.h>
+//#include <sofa/component/collision/RayPickInteractor.h>
 #include <iostream>
 #include <algorithm>
 
@@ -88,7 +88,7 @@ void MinProximityIntersection::init()
         intersectors.ignore<SphereModel, PointModel, true>();
     }
     intersectors.add<RayModel, TriangleModel, MinProximityIntersection, true>(this);
-    intersectors.add<RayPickInteractor, TriangleModel, MinProximityIntersection, true>(this);
+    //intersectors.add<RayPickInteractor, TriangleModel, MinProximityIntersection, true>(this);
 }
 
 //static MinProximityIntersection* proximityInstance = NULL;

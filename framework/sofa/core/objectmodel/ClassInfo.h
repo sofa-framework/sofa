@@ -56,9 +56,9 @@ class Base;
 class ClassInfo
 {
 protected:
-    const std::type_info* type;
+    const std::type_info* pt;
     ClassInfo(const std::type_info* ti)
-        : type(ti)
+        : pt(ti)
     {
         classes[sofa::helper::TypeInfo(*ti)] = this;
     }
@@ -68,9 +68,11 @@ protected:
     }
 public:
 
-    std::string name() const { return type->name(); }
-    int operator==(const ClassInfo& t) const { return *type == *t.type; }
-    int operator<(const ClassInfo& t) const { return type->before(*t.type); }
+    std::string name() const { return pt->name(); }
+    operator const std::type_info&() const { return *pt; }
+    helper::TypeInfo type() const { return sofa::helper::TypeInfo(*pt); }
+    int operator==(const ClassInfo& t) const { return *pt == *t.pt; }
+    int operator<(const ClassInfo& t) const { return pt->before(*t.pt); }
 
     virtual void* dynamicCast(Base* obj) const = 0;
 
