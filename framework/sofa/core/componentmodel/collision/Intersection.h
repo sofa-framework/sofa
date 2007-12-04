@@ -63,6 +63,10 @@ public:
     virtual std::string name() const = 0;
 };
 
+/// Table storing associations between types of collision models and intersectors implementing intersection tests
+///
+/// This class uses the new ClassInfo metaclass to be able to recognize derived classes. So it is no longer necessary
+/// to register all derived collision models (i.e. an intersector registered for RayModel will also be used for RayPickIntersector).
 class IntersectorMap : public std::map< std::pair< helper::TypeInfo, helper::TypeInfo >, ElementIntersector* >
 {
 public:
@@ -76,7 +80,13 @@ public:
              >
     void ignore();
 
+    helper::TypeInfo getType(core::CollisionModel* model);
+
     ElementIntersector* get(core::CollisionModel* model1, core::CollisionModel* model2);
+
+protected:
+    std::map< helper::TypeInfo, helper::TypeInfo > castMap;
+    std::set< const objectmodel::ClassInfo* > classes;
 };
 
 class Intersection : public virtual objectmodel::BaseObject
@@ -91,15 +101,7 @@ public:
     /// Test if intersection between 2 types of elements is supported, i.e. an intersection test is implemented for this combinaison of types.
     /// Note that this method is deprecated in favor of findIntersector
     virtual bool isSupported(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2);
-    /*
-    	/// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present).
-    	/// Note that this method is deprecated in favor of findIntersector
-    	virtual bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2);
 
-    	/// Compute the intersection between 2 elements.
-    	/// Note that this method is deprecated in favor of findIntersector
-    	virtual int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector* contacts);
-    */
     /// returns true if algorithm uses proximity detection
     virtual bool useProximity() const { return false; }
 

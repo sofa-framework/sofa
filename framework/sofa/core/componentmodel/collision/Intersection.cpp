@@ -40,16 +40,37 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
+helper::TypeInfo IntersectorMap::getType(core::CollisionModel* model)
+{
+    helper::TypeInfo t(typeid(*model));
+    const std::map<helper::TypeInfo,helper::TypeInfo>::iterator it = castMap.find(t);
+    if (it == castMap.end())
+    {
+        helper::TypeInfo t2 = t;
+        for (std::set<const objectmodel::ClassInfo* >::iterator it = classes.begin(); it != classes.end(); ++it)
+            if ((*it)->isInstance(model))
+            {
+                t2 = (*it)->type();
+                break;
+            }
+        castMap.insert(std::make_pair(t,t2));
+        return t2;
+    }
+    else return it->second;
+}
+
 ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::CollisionModel* model2)
 {
+    helper::TypeInfo t1 = getType(model1);
+    helper::TypeInfo t2 = getType(model2);
     iterator it =
-        this->find(std::make_pair(TypeInfo(typeid(*model1)),TypeInfo(typeid(*model2))));
+        this->find(std::make_pair(t1,t2));
     if (it == this->end())
     {
         std::cerr << "ERROR: Element Intersector "
-                << gettypename(typeid(*model1)) << "-"
-                << gettypename(typeid(*model2)) << " NOT FOUND.\n";
-        (*this)[std::make_pair(TypeInfo(typeid(*model1)),TypeInfo(typeid(*model2)))] = NULL;
+                << gettypename(t1) << "-"
+                << gettypename(t2) << " NOT FOUND.\n";
+        (*this)[std::make_pair(t1,t2)] = NULL;
         return NULL;
     }
     else
@@ -67,29 +88,7 @@ bool Intersection::isSupported(core::CollisionElementIterator elem1, core::Colli
     ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
     return i != NULL;
 }
-/*
-/// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present).
-/// Note that this method is deprecated in favor of findIntersector
-bool Intersection::canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
-{
-    ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
-    if (i == NULL)
-        return false;
-    else
-        return i->canIntersect(elem1, elem2);
-}
 
-/// Compute the intersection between 2 elements.
-/// Note that this method is deprecated in favor of findIntersector
-int Intersection::intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector& contacts)
-{
-    ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
-    if (i == NULL)
-        return 0;
-    else
-        return i->intersect(elem1, elem2, contacts);
-}
-*/
 } // namespace collision
 
 } // namespace componentmodel

@@ -27,7 +27,7 @@
 #include <sofa/component/collision/DiscreteIntersection.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/collision/Intersection.inl>
-#include <sofa/component/collision/RayPickInteractor.h>
+//#include <sofa/component/collision/RayPickInteractor.h>
 #include <sofa/component/collision/ProximityIntersection.h>
 #include <sofa/component/collision/proximity.h>
 #include <iostream>
@@ -58,8 +58,8 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<CubeModel,       CubeModel,         DiscreteIntersection, false> (this);
     intersectors.add<SphereModel,     SphereModel,       DiscreteIntersection, false> (this);
     intersectors.add<SphereModel,     RayModel,          DiscreteIntersection, true>  (this);
-    intersectors.add<SphereModel,     RayPickInteractor, DiscreteIntersection, true>  (this);
-    intersectors.add<SphereTreeModel, RayPickInteractor, DiscreteIntersection, true>  (this);
+    //intersectors.add<SphereModel,     RayPickInteractor, DiscreteIntersection, true>  (this);
+    intersectors.add<SphereTreeModel, RayModel, DiscreteIntersection, true>  (this);
     intersectors.add<SphereTreeModel, SphereTreeModel,   DiscreteIntersection, false> (this);
     intersectors.add<SphereTreeModel, CubeModel,         DiscreteIntersection, true>  (this);
     intersectors.add<SphereTreeModel, TriangleModel,     DiscreteIntersection, true>  (this);
@@ -71,14 +71,14 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<RigidDistanceGridCollisionModel, SphereModel,                     DiscreteIntersection, true>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, TriangleModel,                   DiscreteIntersection, true>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, RayModel,                        DiscreteIntersection, true>  (this);
-    intersectors.add<RigidDistanceGridCollisionModel, RayPickInteractor,               DiscreteIntersection, true>  (this);
+    //intersectors.add<RigidDistanceGridCollisionModel, RayPickInteractor,               DiscreteIntersection, true>  (this);
     intersectors.add<FFDDistanceGridCollisionModel,   RigidDistanceGridCollisionModel, DiscreteIntersection, true>  (this);
     intersectors.add<FFDDistanceGridCollisionModel,   FFDDistanceGridCollisionModel,   DiscreteIntersection, false> (this);
     intersectors.add<FFDDistanceGridCollisionModel, PointModel,                        DiscreteIntersection, true>  (this);
     intersectors.add<FFDDistanceGridCollisionModel, SphereModel,                       DiscreteIntersection, true>  (this);
     intersectors.add<FFDDistanceGridCollisionModel, TriangleModel,                     DiscreteIntersection, true>  (this);
     intersectors.add<FFDDistanceGridCollisionModel,   RayModel,                        DiscreteIntersection, true>  (this);
-    intersectors.add<FFDDistanceGridCollisionModel,   RayPickInteractor,               DiscreteIntersection, true>  (this);
+    //intersectors.add<FFDDistanceGridCollisionModel,   RayPickInteractor,               DiscreteIntersection, true>  (this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
