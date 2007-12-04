@@ -1,3 +1,4 @@
+
 /*******************************************************************************
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
 *                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
@@ -172,8 +173,8 @@ void LaparoscopicRigidMapping<BasicMapping>::processRelease()
     }
     for (unsigned int i=0; i<nodes.size(); i++)
     {
-        using simulation::tree::DeleteVisitor;
-        nodes[i]->execute<DeleteVisitor>();
+        simulation::tree::DeleteVisitor v;
+        nodes[i]->execute(v);
         nodes[i]->getParent()->removeChild(nodes[i]);
         delete nodes[i];
     }
