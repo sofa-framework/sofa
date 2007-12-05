@@ -740,8 +740,10 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
 // Point b belongs to the triangle sindexed by ind_tb
 
 template<class DataTypes>
-bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_first_cut, const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb,
-        unsigned int& b_last, sofa::helper::vector< unsigned int > &p12_last, sofa::helper::vector< unsigned int > &i123_last, sofa::helper::vector< sofa::helper::vector<unsigned int> > &new_points, sofa::helper::vector< sofa::helper::vector<unsigned int> > &closest_vertices)
+bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_first_cut, const Vec<3,double>& a, const Vec<3,double>& b,
+        const unsigned int ind_ta, const unsigned int ind_tb,
+        unsigned int& a_last, sofa::helper::vector< unsigned int > &a_p12_last, sofa::helper::vector< unsigned int > &a_i123_last,
+        unsigned int& b_last, sofa::helper::vector< unsigned int > &b_p12_last, sofa::helper::vector< unsigned int > &b_i123_last, sofa::helper::vector< sofa::helper::vector<unsigned int> > &new_points, sofa::helper::vector< sofa::helper::vector<unsigned int> > &closest_vertices)
 {
 
     double epsilon = 0.2; // INFO : epsilon is a threshold in [0,1] to control the snapping of the extremities to the closest vertex
@@ -861,11 +863,11 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
     if(!is_first_cut)
     {
 
-        x_p1 = p12_last[0];
-        x_p2 = p12_last[1];
-        x_i1 = i123_last[0];
-        x_i2 = i123_last[1];
-        x_i3 = i123_last[2];
+        x_p1 = b_p12_last[0];
+        x_p2 = b_p12_last[1];
+        x_i1 = b_i123_last[0];
+        x_i2 = b_i123_last[1];
+        x_i3 = b_i123_last[2];
 
         const typename DataTypes::Coord& b_point_last=vect_c[b_last];
 
@@ -1004,6 +1006,12 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
             unsigned int ind_a =  acc_nb_points; // last point registered to be created
 
+            a_last=ind_a; // OUPTUT
+
+            a_p12_last.clear();
+            a_p12_last.push_back(acc_nb_points+1); // OUPTUT
+            a_p12_last.push_back(acc_nb_points+2); // OUPTUT
+
             sofa::helper::vector< Triangle > a_triangles;
             Triangle t_a01 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_a,(unsigned int)ta[0],(unsigned int) ta[1]));
             Triangle t_a12 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_a,(unsigned int)ta[1],(unsigned int) ta[2]));
@@ -1014,19 +1022,28 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
             /// Register the removal of triangles incident to point a
 
+            a_i123_last.clear();
+            a_i123_last.push_back(p1_a); // OUPTUT
+            a_i123_last.push_back(p2_a); // OUPTUT
+
             if(ta[0]!=p1_a && ta[0]!=p2_a)
             {
                 ta_to_remove=acc_nb_triangles-1;
+                a_i123_last.push_back(ta[0]); // OUPTUT
+
             }
             else
             {
                 if(ta[1]!=p1_a && ta[1]!=p2_a)
                 {
                     ta_to_remove=acc_nb_triangles;
+                    a_i123_last.push_back(ta[1]); // OUPTUT
+
                 }
                 else   // (ta[2]!=p1_a && ta[2]!=p2_a)
                 {
                     ta_to_remove=acc_nb_triangles-2;
+                    a_i123_last.push_back(ta[2]); // OUPTUT
                 }
             }
             triangles_to_remove.push_back(ta_to_remove);
@@ -1294,9 +1311,9 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
 
             ind_tb_new=ind_tb_final;
 
-            p12_last.clear();
-            p12_last.push_back(acc_nb_points-1); // OUPTUT
-            p12_last.push_back(acc_nb_points); // OUPTUT
+            b_p12_last.clear();
+            b_p12_last.push_back(acc_nb_points-1); // OUPTUT
+            b_p12_last.push_back(acc_nb_points); // OUPTUT
 
             // Treatment of particular case for second extremity b
 
@@ -1305,9 +1322,9 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
             unsigned int p1_b=indices_list[indices_list.size()-1][0];
             unsigned int p2_b=indices_list[indices_list.size()-1][1];
 
-            i123_last.clear();
-            i123_last.push_back(p1_b); // OUPTUT
-            i123_last.push_back(p2_b); // OUPTUT
+            b_i123_last.clear();
+            b_i123_last.push_back(p1_b); // OUPTUT
+            b_i123_last.push_back(p2_b); // OUPTUT
 
             // Plan to remove triangles indexed by ind_tb_new
             triangles_to_remove.push_back(ind_tb_new);
@@ -1369,19 +1386,19 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
                 if(tb[0]!=p1_b && tb[0]!=p2_b)
                 {
                     tb_to_remove=acc_nb_triangles-1;
-                    i123_last.push_back(tb[0]); // OUTPUT
+                    b_i123_last.push_back(tb[0]); // OUTPUT
                 }
                 else
                 {
                     if(tb[1]!=p1_b && tb[1]!=p2_b)
                     {
                         tb_to_remove=acc_nb_triangles;
-                        i123_last.push_back(tb[1]); // OUTPUT
+                        b_i123_last.push_back(tb[1]); // OUTPUT
                     }
                     else   // (tb[2]!=p1_b && tb[2]!=p2_b)
                     {
                         tb_to_remove=acc_nb_triangles-2;
-                        i123_last.push_back(tb[2]); // OUTPUT
+                        b_i123_last.push_back(tb[2]); // OUTPUT
                     }
                 }
                 triangles_to_remove.push_back(tb_to_remove);
@@ -1403,19 +1420,19 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
                 if(tb[0]!=p1_b && tb[0]!=p2_b)
                 {
                     p0_b=tb[0];
-                    i123_last.push_back(tb[0]); // OUTPUT
+                    b_i123_last.push_back(tb[0]); // OUTPUT
                 }
                 else
                 {
                     if(tb[1]!=p1_b && tb[1]!=p2_b)
                     {
                         p0_b=tb[1];
-                        i123_last.push_back(tb[1]); // OUTPUT
+                        b_i123_last.push_back(tb[1]); // OUTPUT
                     }
                     else  // tb[2]!=p1_b && tb[2]!=p2_b
                     {
                         p0_b=tb[2];
-                        i123_last.push_back(tb[2]); // OUTPUT
+                        b_i123_last.push_back(tb[2]); // OUTPUT
                     }
                 }
 
