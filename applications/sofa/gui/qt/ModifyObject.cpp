@@ -51,6 +51,7 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 
 #include "WFloatLineEdit.h"
@@ -1992,6 +1993,106 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             vectorTable2->setText(i,0,std::string(oss2.str()).c_str());
         }
         return true;
+    }
+    //********************************************************************************************************//
+    //vector<LaparoscopicRigid3Types::Coord>
+    else if (DataPtr< vector<LaparoscopicRigid3Types::Coord> >  *ff = dynamic_cast< DataPtr< vector<LaparoscopicRigid3Types::Coord>  >   * >( field ))
+    {
+
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            new QLabel("Translation", box);
+
+            vectorTable = new Q3Table(ff->getValue().size(),1, box);
+            vectorTable->setReadOnly(false);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("X"));	    vectorTable->setColumnStretchable(0,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+            new QLabel("Orientation", box);
+
+            vectorTable2 = new Q3Table(ff->getValue().size(),4, box);
+            list_Table.push_back(std::make_pair(vectorTable2, field));
+            vectorTable2->horizontalHeader()->setLabel(0,QString("X"));	    vectorTable2->setColumnStretchable(0,true);
+            vectorTable2->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable2->setColumnStretchable(1,true);
+            vectorTable2->horizontalHeader()->setLabel(2,QString("Z"));      vectorTable2->setColumnStretchable(2,true);
+            vectorTable2->horizontalHeader()->setLabel(3,QString("W"));      vectorTable2->setColumnStretchable(3,true);
+
+            connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+        }
+        vector<LaparoscopicRigid3Types::Coord> value = ff->getValue();
+
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss;
+
+            {
+                oss << value[i].getTranslation();
+                vectorTable->setText(i,0,std::string(oss.str()).c_str());
+            }
+            std::ostringstream oss2[4];
+            for (int j=0; j<4; j++)
+            {
+                oss2[j] << value[i].getOrientation()[j];
+                vectorTable2->setText(i,j,std::string(oss2[j].str()).c_str());
+            }
+        }
+        return true;
+    }
+    //********************************************************************************************************//
+    //vector<LaparoscopicRigid3Types::Deriv>
+    else if (DataPtr< vector<LaparoscopicRigid3Types::Deriv> >  *ff = dynamic_cast< DataPtr< vector<LaparoscopicRigid3Types::Deriv>  >   * >( field ))
+    {
+
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            new QLabel("Translation", box);
+
+            vectorTable = new Q3Table(ff->getValue().size(),1, box);
+            vectorTable->setReadOnly(false);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+            new QLabel("Orientation", box);
+
+            vectorTable2 = new Q3Table(ff->getValue().size(),3, box);
+            list_Table.push_back(std::make_pair(vectorTable2, field));
+            vectorTable2->horizontalHeader()->setLabel(0,QString("X"));	 vectorTable2->setColumnStretchable(0,true);
+            vectorTable2->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable2->setColumnStretchable(1,true);
+            vectorTable2->horizontalHeader()->setLabel(2,QString("Z"));      vectorTable2->setColumnStretchable(2,true);
+
+            connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+        }
+        vector<LaparoscopicRigid3Types::Deriv> value = ff->getValue();
+
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss;
+
+            {
+                oss << value[i].getVTranslation();
+                vectorTable->setText(i,0,std::string(oss.str()).c_str());
+            }
+            std::ostringstream oss2[3];
+            for (int j=0; j<3; j++)
+            {
+                oss2[j] << value[i].getVOrientation()[j];
+                vectorTable2->setText(i,j,std::string(oss2[j].str()).c_str());
+            }
+        }
+        return true;
+
     }
     //********************************************************************************************************//
     //vector<SpringForceField< Vec6dTypes >::Spring>
