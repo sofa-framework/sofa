@@ -52,6 +52,9 @@ public:
 
     explicit Line(core::CollisionElementIterator& i);
 
+    unsigned i1() const;
+    unsigned i2() const;
+
     const Vector3& p1() const;
     const Vector3& p2() const;
 
@@ -135,6 +138,9 @@ inline Line::Line(core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<LineModel>(static_cast<LineModel*>(i.getCollisionModel()), i.getIndex())
 {
 }
+
+inline unsigned Line::i1() const { return model->elems[index].i1; }
+inline unsigned Line::i2() const { return model->elems[index].i2; }
 
 inline const Vector3& Line::p1() const { return (*model->mstate->getX())[model->elems[index].i1]; }
 inline const Vector3& Line::p2() const { return (*model->mstate->getX())[model->elems[index].i2]; }
