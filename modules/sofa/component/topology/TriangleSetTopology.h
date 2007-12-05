@@ -484,7 +484,9 @@ public:
 
     // Incises along the list of points (ind_edge,coord) intersected by the vector from point a to point b
     // and the triangular mesh
-    bool InciseAlongPointsList(bool is_first_cut, const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int& b_last, sofa::helper::vector< unsigned int > &p12_last, sofa::helper::vector< unsigned int > &i123_last,
+    bool InciseAlongPointsList(bool is_first_cut, const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb,
+            unsigned int& a_last, sofa::helper::vector< unsigned int > &a_p12_last, sofa::helper::vector< unsigned int > &a_i123_last,
+            unsigned int& b_last, sofa::helper::vector< unsigned int > &b_p12_last, sofa::helper::vector< unsigned int > &b_i123_last,
             sofa::helper::vector< sofa::helper::vector<unsigned int> > &new_points, sofa::helper::vector< sofa::helper::vector<unsigned int> > &closest_vertices);
 
     // Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b
