@@ -105,6 +105,7 @@ void TriangleMeshModel::init()
         return;
     }
     updateFromTopology();
+    updateNormals();
 }
 
 void TriangleSetModel::init()
@@ -152,9 +153,9 @@ void TriangleSetModel::init()
 
         const sofa::helper::vector<sofa::component::topology::Triangle> &ta=tstc->getTriangleArray();
 
-        resize(ta.size());
-
         triangles = &ta;
+
+        resize(ta.size());
         //Loc2GlobVec.resize(ta.size());
 
         //for(unsigned int i=0;i<ta.size();++i) {
@@ -542,6 +543,7 @@ void TriangleSetModel::handleTopologyChange()
 
                         }
 
+                        mytriangles.resize( elems.size() - 1 );
                         resize( elems.size() - 1 );
                         Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last])); // OK ??? // Loc2GlobVec[ind_last]
                         Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
@@ -657,6 +659,7 @@ void TriangleSetModel::handleTopologyChange()
                                     Loc2GlobVec.push_back(k);
                                     Glob2LocMap[k]=Loc2GlobVec.size()-1;
 
+                                    mytriangles.resize( prev_size + 1 );
                                     resize( prev_size + 1 );
                                 }
                             }
@@ -810,6 +813,7 @@ void TriangleSetModel::handleTopologyChange()
                 break;
             }; // switch( changeType )
 
+            mytriangles.resize( elems.size() ); // not necessary
             resize( elems.size() ); // not necessary
 
             ++itBegin;
