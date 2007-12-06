@@ -89,7 +89,9 @@ protected:
     class Loader;
 public:
 
-    TSphereModel(double radius = 1.0);
+    TSphereModel();
+
+    TSphereModel(double radius);
 
     int addSphere(const Vector3& pos, double radius);
     void setSphere(int index, const Vector3& pos, double radius);
@@ -102,6 +104,8 @@ public:
     Real getRadius(int i) const { return this->radius[i]; }
 
     const VecReal& getR() const { return this->radius; }
+
+    virtual void init();
 
     // -- CollisionModel interface
 
