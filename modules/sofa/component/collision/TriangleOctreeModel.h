@@ -48,7 +48,7 @@ using namespace sofa::defaulttype;
 class TriangleOctree;
 class TriangleModel;
 
-class TriangleOctreeModel:public  TriangleModel
+class TriangleOctreeModel:public  TriangleMeshModel
 {
 public:
     TriangleOctreeModel();

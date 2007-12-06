@@ -81,20 +81,22 @@ class TriangleModel : public core::CollisionModel, public core::VisualModel
 protected:
     struct TriangleInfo
     {
-        int i1,i2,i3,flags;
+        //int i1,i2,i3;
+        int flags;
         Vector3 normal;
     };
 
     sofa::helper::vector<TriangleInfo> elems;
+    const sofa::helper::vector<topology::Triangle>* triangles;
 
-    sofa::helper::vector<unsigned int> Loc2GlobVec;
-    std::map<unsigned int, unsigned int> Glob2LocMap;
-
-    class Loader;
+    sofa::helper::vector<topology::Triangle> mytriangles;
 
     int meshRevision;
     bool needsUpdate;
-    void updateFromTopology();
+    virtual void updateFromTopology();
+    virtual void updateFlags(int ntri=-1);
+    virtual void updateNormals();
+
 public:
     typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
@@ -103,7 +105,7 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Triangle Element;
-    typedef topology::MeshTopology Topology;
+    //typedef topology::MeshTopology Topology;
     friend class Triangle;
 
     enum TriangleFlag
@@ -132,51 +134,8 @@ public:
 
     void draw(int index);
 
-    void fillArrays( float *array_coord,float *array_identity, int *offset_coord, float Id)
-    {
-        unsigned int nbTriangle = getNbTriangles();
+    void fillArrays( float *array_coord,float *array_identity, int *offset_coord, float Id);
 
-        float step_Id = 1/((float) nbTriangle);
-        float Id_triangle = 0;
-        for (unsigned int i=0; i<nbTriangle; i++)
-        {
-            //For each triangle of the model, we store the coordinates of the vertices and information about each of them
-            Triangle t(this, i);
-            //Point 1
-            array_coord[(*offset_coord)  ]    = (float) t.p1()[0];
-            array_coord[(*offset_coord)+1]    = (float) t.p1()[1];
-            array_coord[(*offset_coord)+2]    = (float) t.p1()[2];
-
-            array_identity[(*offset_coord)  ] = Id_triangle;
-            array_identity[(*offset_coord)+1] = Id;
-            array_identity[(*offset_coord)+2] = 0.0f;
-            (*offset_coord) += 3;
-
-
-            //Point 2
-            array_coord[(*offset_coord)]   = (float) t.p2()[0];
-            array_coord[(*offset_coord)+1] = (float) t.p2()[1];
-            array_coord[(*offset_coord)+2] = (float) t.p2()[2];
-
-            array_identity[(*offset_coord)  ] = Id_triangle;
-            array_identity[(*offset_coord)+1] = Id;
-            array_identity[(*offset_coord)+2] = 0.0f;
-            (*offset_coord) += 3;
-
-
-            //Point 3
-            array_coord[(*offset_coord)]   = (float) t.p3()[0];
-            array_coord[(*offset_coord)+1] = (float) t.p3()[1];
-            array_coord[(*offset_coord)+2] = (float) t.p3()[2];
-
-            array_identity[(*offset_coord)  ] = Id_triangle;
-            array_identity[(*offset_coord)+1] = Id;
-            array_identity[(*offset_coord)+2] = 0.0f;
-            (*offset_coord) += 3;
-
-            Id_triangle +=  step_Id;
-        }
-    }
     // -- VisualModel interface
 
     void draw();
@@ -185,27 +144,12 @@ public:
 
     void update() { }
 
-    // handle topological changes
-    virtual void handleTopologyChange();
-
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
-
-    topology::MeshTopology* getTopology() { return mesh; }
 
     void buildOctree();
 
-    unsigned int getNbTriangles() const;
-
-    std::map<unsigned int, unsigned int> getGlob2LocMap() { return Glob2LocMap;}
-    sofa::helper::vector<unsigned int> getLoc2GlobVec() { return Loc2GlobVec;}
-
-    //virtual const char* getTypeName() const { return "Triangle"; }
-
 protected:
-
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
-    topology::MeshTopology* mesh;
-
 };
 
 inline Triangle::Triangle(TriangleModel* model, int index)
@@ -214,29 +158,74 @@ inline Triangle::Triangle(TriangleModel* model, int index)
 
 inline Triangle::Triangle(core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<TriangleModel>(static_cast<TriangleModel*>(i.getCollisionModel()), i.getIndex())
-{
-}
+{}
 
-inline const Vector3& Triangle::p1() const { return (*model->mstate->getX())[model->elems[index].i1]; }
-inline const Vector3& Triangle::p2() const { return (*model->mstate->getX())[model->elems[index].i2]; }
-inline const Vector3& Triangle::p3() const { return (*model->mstate->getX())[model->elems[index].i3]; }
+inline const Vector3& Triangle::p1() const { return (*model->mstate->getX())[(*(model->triangles))[index][0]]; }
+inline const Vector3& Triangle::p2() const { return (*model->mstate->getX())[(*(model->triangles))[index][1]]; }
+inline const Vector3& Triangle::p3() const { return (*model->mstate->getX())[(*(model->triangles))[index][2]]; }
 
-inline const Vector3& Triangle::p1Free() const { return (*model->mstate->getXfree())[model->elems[index].i1]; }
-inline const Vector3& Triangle::p2Free() const { return (*model->mstate->getXfree())[model->elems[index].i2]; }
-inline const Vector3& Triangle::p3Free() const { return (*model->mstate->getXfree())[model->elems[index].i3]; }
+inline const Vector3& Triangle::p1Free() const { return (*model->mstate->getXfree())[(*(model->triangles))[index][0]]; }
+inline const Vector3& Triangle::p2Free() const { return (*model->mstate->getXfree())[(*(model->triangles))[index][1]]; }
+inline const Vector3& Triangle::p3Free() const { return (*model->mstate->getXfree())[(*(model->triangles))[index][2]]; }
 
-inline const int Triangle::p1Index() const { return model->elems[index].i1; }
-inline const int Triangle::p2Index() const { return model->elems[index].i2; }
-inline const int Triangle::p3Index() const { return model->elems[index].i3; }
+inline const int Triangle::p1Index() const { return (*(model->triangles))[index][0]; }
+inline const int Triangle::p2Index() const { return (*(model->triangles))[index][1]; }
+inline const int Triangle::p3Index() const { return (*(model->triangles))[index][2]; }
 
-inline const Vector3& Triangle::v1() const { return (*model->mstate->getV())[model->elems[index].i1]; }
-inline const Vector3& Triangle::v2() const { return (*model->mstate->getV())[model->elems[index].i2]; }
-inline const Vector3& Triangle::v3() const { return (*model->mstate->getV())[model->elems[index].i3]; }
+inline const Vector3& Triangle::v1() const { return (*model->mstate->getV())[(*(model->triangles))[index][0]]; }
+inline const Vector3& Triangle::v2() const { return (*model->mstate->getV())[(*(model->triangles))[index][1]]; }
+inline const Vector3& Triangle::v3() const { return (*model->mstate->getV())[(*(model->triangles))[index][2]]; }
 
 inline const Vector3& Triangle::n() const { return model->elems[index].normal; }
 inline       Vector3& Triangle::n()       { return model->elems[index].normal; }
 
 inline int            Triangle::flags() const { return model->elems[index].flags; }
+
+class TriangleMeshModel : public TriangleModel
+{
+protected:
+    int meshRevision;
+    void updateFromTopology();
+
+public:
+    typedef topology::MeshTopology Topology;
+
+    TriangleMeshModel();
+
+    virtual void init();
+
+    Topology* getTopology() { return mesh; }
+
+protected:
+    Topology* mesh;
+};
+
+class TriangleSetModel : public TriangleModel
+{
+public:
+    typedef topology::TriangleSetTopology<DataTypes> Topology;
+
+    TriangleSetModel();
+
+    virtual void init();
+
+    Topology* getTopology() { return mesh; }
+
+    // handle topological changes
+    virtual void handleTopologyChange();
+
+    const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
+    const sofa::helper::vector<unsigned int>& getLoc2GlobVec() { return Loc2GlobVec;}
+
+protected:
+
+    Topology* mesh;
+
+    sofa::helper::vector<unsigned int> Loc2GlobVec;
+    std::map<unsigned int, unsigned int> Glob2LocMap;
+
+    void updateFromTopology();
+};
 
 } // namespace collision
 

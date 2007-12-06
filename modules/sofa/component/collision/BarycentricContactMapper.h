@@ -149,9 +149,9 @@ public:
 
 };
 
-/// Mapper for TriangleModel
+/// Mapper for TriangleMeshModel
 template<class DataTypes>
-class ContactMapper<TriangleModel, DataTypes> : public BarycentricContactMapper<TriangleModel, DataTypes>
+class ContactMapper<TriangleMeshModel, DataTypes> : public BarycentricContactMapper<TriangleMeshModel, DataTypes>
 {
 public:
     int addPoint(const Vector3& P, int index)
@@ -161,6 +161,17 @@ public:
             return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
         else
             return this->mapper->createPointInQuad(P, (index - nbt)/2, this->model->getMechanicalState()->getX());
+    }
+};
+
+/// Mapper for TriangleSetModel
+template<class DataTypes>
+class ContactMapper<TriangleSetModel, DataTypes> : public BarycentricContactMapper<TriangleSetModel, DataTypes>
+{
+public:
+    int addPoint(const Vector3& P, int index)
+    {
+        return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
     }
 };
 
