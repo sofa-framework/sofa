@@ -171,10 +171,7 @@ class ContactMapper<TriangleSetModel, DataTypes> : public BarycentricContactMapp
 public:
     int addPoint(const Vector3& P, int index)
     {
-        const sofa::helper::vector<unsigned int>& l2g = this->model->getLoc2GlobVec();
-        if (!l2g.empty())
-            index = l2g[index];
-        return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
+        return this->mapper->createPointInTriangle(P, this->model->convertLoc2Glob(index), this->model->getMechanicalState()->getX());
     }
 };
 
