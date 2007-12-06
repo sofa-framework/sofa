@@ -117,7 +117,7 @@ void LaparoscopicRigidMapping<BasicMapping>::processGrab()
         component::MechanicalObject<Vec3Types>* mstate2 = NULL;
         simulation::tree::GNode* child = NULL;
         simulation::tree::GNode* parent = static_cast< GNode * >(model->getContext());
-        if (model->getTopology())
+        if (parent)
         {
             //Create Node with the contact points
             child = new simulation::tree::GNode("contactTool"); nodes.push_back(child);
@@ -125,29 +125,43 @@ void LaparoscopicRigidMapping<BasicMapping>::processGrab()
             child->updateContext();
             mstate2 = new component::MechanicalObject<Vec3Types>;
             child->addObject(mstate2);
-
-            typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping<core::componentmodel::behavior::MechanicalState<TriangleModel::DataTypes>, core::componentmodel::behavior::MechanicalState<Vec3Types> > > TriangleMapping;
-            typedef mapping::TopologyBarycentricMapper<topology::MeshTopology,TriangleModel::DataTypes, Vec3Types> TriangleMapper;
-            TriangleMapper* mapper = new TriangleMapper(model->getTopology());
-            TriangleMapping* mapping = new TriangleMapping(model->getMechanicalState(),mstate2,mapper);
-
-            child->addObject(mapping);
-            mstate2->resize(1);
-            (*mstate2->getX())[0] = getVisitor.collisions[i].second;
-            mstate2->init();
-            mapper->clear();
-
+            if(TriangleMeshModel* tmodel = dynamic_cast<TriangleMeshModel*>(model))
             {
+                typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping<core::componentmodel::behavior::MechanicalState<TriangleModel::DataTypes>, core::componentmodel::behavior::MechanicalState<Vec3Types> > > TriangleMapping;
+                typedef mapping::TopologyBarycentricMapper<TriangleMeshModel::Topology,TriangleMeshModel::DataTypes, Vec3Types> TriangleMapper;
+                TriangleMapper* mapper = new TriangleMapper(tmodel->getTopology());
+                TriangleMapping* mapping = new TriangleMapping(tmodel->getMechanicalState(),mstate2,mapper);
+                child->addObject(mapping);
+                mstate2->resize(1);
+                (*mstate2->getX())[0] = getVisitor.collisions[i].second;
+                mstate2->init();
+                mapper->clear();
+                {
+                    int index = triangle.getIndex();
+                    if (index < tmodel->getTopology()->getNbTriangles())
+                    {
+                        mapper->createPointInTriangle(getVisitor.collisions[i].second, index, tmodel->getMechanicalState()->getX());
+                    }
+                    else
+                    {
+                        mapper->createPointInQuad(getVisitor.collisions[i].second, (index - tmodel->getTopology()->getNbTriangles())/2, tmodel->getMechanicalState()->getX());
+                    }
+                }
+            }
+            else if(TriangleSetModel* tmodel = dynamic_cast<TriangleSetModel*>(model))
+            {
+                TriangleSetModel::Topology* t = tmodel->getTopology();
+                typedef mapping::BarycentricMapping<core::componentmodel::behavior::MechanicalMapping<core::componentmodel::behavior::MechanicalState<TriangleModel::DataTypes>, core::componentmodel::behavior::MechanicalState<Vec3Types> > > TriangleMapping;
+                typedef mapping::TopologyBarycentricMapper<TriangleSetModel::Topology, TriangleSetModel::DataTypes, Vec3Types> TriangleMapper;
+                TriangleMapper* mapper = new TriangleMapper(t);
+                TriangleMapping* mapping = new TriangleMapping(model->getMechanicalState(),mstate2,mapper);
+                child->addObject(mapping);
+                mstate2->resize(1);
+                (*mstate2->getX())[0] = getVisitor.collisions[i].second;
+                mstate2->init();
+                mapper->clear();
                 int index = triangle.getIndex();
-
-                if (index < model->getTopology()->getNbTriangles())
-                {
-                    mapper->createPointInTriangle(getVisitor.collisions[i].second, index, model->getMechanicalState()->getX());
-                }
-                else
-                {
-                    mapper->createPointInQuad(getVisitor.collisions[i].second, (index - model->getTopology()->getNbTriangles())/2, model->getMechanicalState()->getX());
-                }
+                mapper->createPointInTriangle(getVisitor.collisions[i].second, index, tmodel->getMechanicalState()->getX());
             }
 
             //Add the Spring

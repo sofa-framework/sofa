@@ -38,29 +38,38 @@ using simulation::tree::GNode;
 
 SOFA_DECL_CLASS(BarycentricPenalityContact)
 
+Creator<Contact::Factory, BarycentricPenalityContact<SphereModel, SphereModel> > SphereSpherePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<SphereModel, PointModel> > SpherePointPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, TriangleMeshModel> > SphereTreeTriangleMeshContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, TriangleSetModel> > SphereTreeTriangleSetContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<PointModel, PointModel> > PointPointPenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<LineModel, PointModel> > LinePointPenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<LineModel, LineModel> > LineLinePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, PointModel> > TrianglePointPenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, LineModel> > TriangleLinePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, TriangleModel> > TriangleTrianglePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<SphereModel, SphereModel> > SphereSpherePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<SphereModel, PointModel> > SpherePointPenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<LineModel, SphereModel> > LineSpherePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<TriangleModel, SphereModel> > TriangleSpherePenalityContactClass("default",true);
-Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, SphereTreeModel> > SphereTreeSphereTreeContactClass("default", true);
-Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, TriangleModel> > SphereTreeTriangleContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleMeshModel, SphereModel> > TriangleMeshSpherePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleMeshModel, PointModel> > TriangleMeshPointPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleMeshModel, LineModel> > TriangleMeshLinePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleMeshModel, TriangleMeshModel> > TriangleMeshTriangleMeshPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleMeshModel, TriangleSetModel> > TriangleMeshTriangleSetPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleSetModel, SphereModel> > TriangleSetSpherePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleSetModel, PointModel> > TriangleSetPointPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleSetModel, LineModel> > TriangleSetLinePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleSetModel, TriangleMeshModel> > TriangleSetTriangleMeshPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<TriangleSetModel, TriangleSetModel> > TriangleSetTriangleSetPenalityContactClass("default",true);
 
 Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > DistanceGridDistanceGridContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, PointModel> > DistanceGridPointContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, SphereModel> > DistanceGridSphereContactClass("default", true);
-Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, TriangleModel> > DistanceGridTriangleContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, TriangleMeshModel> > DistanceGridTriangleMeshContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<RigidDistanceGridCollisionModel, TriangleSetModel> > DistanceGridTriangleSetContactClass("default", true);
 
 Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, FFDDistanceGridCollisionModel> > FFDDistanceGridContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, RigidDistanceGridCollisionModel> > FFDDistanceGridRigidDistanceGridContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, PointModel> > FFDDistanceGridPointContactClass("default", true);
 Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, SphereModel> > FFDDistanceGridSphereContactClass("default", true);
-Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, TriangleModel> > FFDDistanceGridTriangleContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, TriangleMeshModel> > FFDDistanceGridTriangleMeshContactClass("default", true);
+Creator<Contact::Factory, BarycentricPenalityContact<FFDDistanceGridCollisionModel, TriangleSetModel> > FFDDistanceGridTriangleSetContactClass("default", true);
 
 
 } // namespace collision

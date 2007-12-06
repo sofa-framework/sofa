@@ -63,19 +63,6 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-SOFA_DECL_CLASS(TriangularFEMForceField)
-
-template class TriangularFEMForceField<Vec3dTypes>;
-template class TriangularFEMForceField<Vec3fTypes>;
-
-
-// Register in the Factory
-int TriangularFEMForceFieldClass = core::RegisterObject("Triangular finite elements")
-        .add< TriangularFEMForceField<Vec3dTypes> >()
-        .add< TriangularFEMForceField<Vec3fTypes> >()
-        ;
-
-
 template< class DataTypes>
 void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction (int /*triangleIndex*/, void* param,
         TriangleInformation &tinfo,
@@ -836,6 +823,19 @@ void TriangularFEMForceField<DataTypes>::draw()
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
+
+
+SOFA_DECL_CLASS(TriangularFEMForceField)
+
+template class TriangularFEMForceField<Vec3dTypes>;
+template class TriangularFEMForceField<Vec3fTypes>;
+
+
+// Register in the Factory
+int TriangularFEMForceFieldClass = core::RegisterObject("Triangular finite elements")
+        .add< TriangularFEMForceField<Vec3dTypes> >()
+        .add< TriangularFEMForceField<Vec3fTypes> >()
+        ;
 
 
 } // namespace forcefield

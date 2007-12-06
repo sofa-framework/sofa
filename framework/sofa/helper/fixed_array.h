@@ -45,12 +45,15 @@
 // See http://www.boost.org/libs/array for Documentation.
 
 // FF added operator <
+// JA added constructors from tuples
 #ifndef SOFA_HELPER_FIXED_ARRAY_H
 #define SOFA_HELPER_FIXED_ARRAY_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
+
+#include <sofa/helper/static_assert.h>
 
 #include <cstddef>
 #include <stdexcept>
@@ -79,6 +82,127 @@ public:
     typedef const T&       const_reference;
     typedef std::size_t    size_type;
     typedef std::ptrdiff_t difference_type;
+
+    fixed_array()
+    {
+    }
+
+
+    /// Specific constructor for 1-element vectors.
+    explicit fixed_array(value_type r1)
+    {
+        BOOST_STATIC_ASSERT(N==1);
+        this->elems[0]=r1;
+    }
+
+    /// Specific constructor for 2-elements vectors.
+    fixed_array(value_type r1, value_type r2)
+    {
+        BOOST_STATIC_ASSERT(N == 2);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+    }
+
+    /// Specific constructor for 3-elements vectors.
+    fixed_array(value_type r1, value_type r2, value_type r3)
+    {
+        BOOST_STATIC_ASSERT(N == 3);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+    }
+
+    /// Specific constructor for 4-elements vectors.
+    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4)
+    {
+        BOOST_STATIC_ASSERT(N == 4);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+    }
+
+    /// Specific constructor for 5-elements vectors.
+    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5)
+    {
+        BOOST_STATIC_ASSERT(N == 5);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
+    }
+
+    /// Specific constructor for 6-elements vectors.
+    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6)
+    {
+        BOOST_STATIC_ASSERT(N == 6);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
+        this->elems[5]=r6;
+    }
+
+    /// Specific constructor for 7-elements vectors.
+    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7)
+    {
+        BOOST_STATIC_ASSERT(N == 7);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
+        this->elems[5]=r6;
+        this->elems[6]=r7;
+    }
+
+    /// Specific constructor for 8-elements vectors.
+    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8)
+    {
+        BOOST_STATIC_ASSERT(N == 8);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
+        this->elems[5]=r6;
+        this->elems[6]=r7;
+        this->elems[7]=r8;
+    }
+
+    /// Specific constructor for 9-elements vectors.
+    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9)
+    {
+        BOOST_STATIC_ASSERT(N == 9);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
+        this->elems[5]=r6;
+        this->elems[6]=r7;
+        this->elems[7]=r8;
+        this->elems[8]=r9;
+    }
+
+    /// Specific constructor for 10-elements vectors.
+    fixed_array(value_type r1, value_type r2, value_type r3, value_type r4, value_type r5, value_type r6, value_type r7, value_type r8, value_type r9, value_type r10)
+    {
+        BOOST_STATIC_ASSERT(N == 10);
+        this->elems[0]=r1;
+        this->elems[1]=r2;
+        this->elems[2]=r3;
+        this->elems[3]=r4;
+        this->elems[4]=r5;
+        this->elems[5]=r6;
+        this->elems[6]=r7;
+        this->elems[7]=r8;
+        this->elems[8]=r9;
+        this->elems[9]=r10;
+    }
+
 
     // iterator support
     iterator begin()
@@ -253,6 +377,45 @@ inline fixed_array<T, 4> make_array(const T& v0, const T& v1, const T& v2, const
 }
 
 template<class T>
+inline fixed_array<T, 5> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4)
+{
+    fixed_array<T, 5> v;
+    v[0] = v0;
+    v[1] = v1;
+    v[2] = v2;
+    v[3] = v3;
+    v[4] = v4;
+    return v;
+}
+
+template<class T>
+inline fixed_array<T, 6> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5)
+{
+    fixed_array<T, 6> v;
+    v[0] = v0;
+    v[1] = v1;
+    v[2] = v2;
+    v[3] = v3;
+    v[4] = v4;
+    v[5] = v5;
+    return v;
+}
+
+template<class T>
+inline fixed_array<T, 7> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6)
+{
+    fixed_array<T, 7> v;
+    v[0] = v0;
+    v[1] = v1;
+    v[2] = v2;
+    v[3] = v3;
+    v[4] = v4;
+    v[5] = v5;
+    v[6] = v6;
+    return v;
+}
+
+template<class T>
 inline fixed_array<T, 8> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6, const T& v7)
 {
     fixed_array<T, 8> v;
@@ -264,6 +427,39 @@ inline fixed_array<T, 8> make_array(const T& v0, const T& v1, const T& v2, const
     v[5] = v5;
     v[6] = v6;
     v[7] = v7;
+    return v;
+}
+
+template<class T>
+inline fixed_array<T, 9> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6, const T& v7, const T& v8)
+{
+    fixed_array<T, 9> v;
+    v[0] = v0;
+    v[1] = v1;
+    v[2] = v2;
+    v[3] = v3;
+    v[4] = v4;
+    v[5] = v5;
+    v[6] = v6;
+    v[7] = v7;
+    v[8] = v8;
+    return v;
+}
+
+template<class T>
+inline fixed_array<T, 10> make_array(const T& v0, const T& v1, const T& v2, const T& v3, const T& v4, const T& v5, const T& v6, const T& v7, const T& v8, const T& v9)
+{
+    fixed_array<T, 10> v;
+    v[0] = v0;
+    v[1] = v1;
+    v[2] = v2;
+    v[3] = v3;
+    v[4] = v4;
+    v[5] = v5;
+    v[6] = v6;
+    v[7] = v7;
+    v[8] = v8;
+    v[9] = v9;
     return v;
 }
 

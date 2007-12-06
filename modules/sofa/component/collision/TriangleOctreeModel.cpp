@@ -73,7 +73,6 @@ int TriangleOctreeModelClass =	core::RegisterObject ("collision model using a tr
 
 TriangleOctreeModel::TriangleOctreeModel ()
 {
-    TriangleModel();
     octreeRoot = NULL;
     cubeSize = CUBE_SIZE;
 }
@@ -158,6 +157,7 @@ int TriangleOctreeModel::fillOctree (int tId, int /*d*/, Vector3 /*v*/)
 }
 void TriangleOctreeModel::computeBoundingTree(int maxDepth)
 {
+    const helper::vector<topology::Triangle>& tri = *triangles;
     if(octreeRoot)
     {
         delete octreeRoot;
@@ -183,9 +183,9 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     for (int i=1; i<size; i++)
     {
         Triangle t(this,i);
-        pNorms[elems[i].i1]+=t.n();
-        pNorms[elems[i].i2]+=t.n();
-        pNorms[elems[i].i3]+=t.n();
+        pNorms[tri[i][0]]+=t.n();
+        pNorms[tri[i][1]]+=t.n();
+        pNorms[tri[i][2]]+=t.n();
         const Vector3* pt[3];
         pt[0] = &t.p1();
         pt[1] = &t.p2();
@@ -219,10 +219,10 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
         pTri.resize(size2);
         for(int i=0; i<size; i++)
         {
-            pTri[elems[i].i1].push_back(i);
+            pTri[tri[i][0]].push_back(i);
 
-            pTri[elems[i].i2].push_back(i);
-            pTri[elems[i].i3].push_back(i);
+            pTri[tri[i][1]].push_back(i);
+            pTri[tri[i][2]].push_back(i);
         }
     }
 }
