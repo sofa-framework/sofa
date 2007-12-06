@@ -101,6 +101,6 @@
 		<Object type="StiffSpringForceField" name="ExternalSprings4" filename="BehaviorModels/linkSmCube27.xs3" object1="M4/Points" object2="M5" />
 		<Object type="StiffSpringForceField" name="ExternalSprings5" filename="BehaviorModels/linkSmCube27.xs3" object1="M5" object2="M6/Points" />
 	</Node>
-	<Object type="Sphere" name="Floor" filename="CollisionModels/floor.sph" static="1" dy="-20" />
+	<Object type="Sphere" name="Floor" filename="CollisionModels/floor.sph" simulated="0" moving="0" dy="-20" />
 	<Object type="OglModel" name="FloorV" filename="VisualModels/floor.obj" texturename="VisualModels/floor.bmp" dy="-20" />
 </Node>

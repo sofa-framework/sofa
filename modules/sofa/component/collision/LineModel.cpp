@@ -130,13 +130,13 @@ bool LineModel::updateFromTopology()
     int revision = mesh->getRevision();
     if (revision == meshRevision) return false;
 
-    const int npoints = mstate->getX()->size();
-    const int nlines = mesh->getNbLines();
+    const unsigned int npoints = mstate->getX()->size();
+    const unsigned int nlines = mesh->getNbLines();
     resize(nlines);
     int index = 0;
     //VecCoord& x = *mstate->getX();
     //VecDeriv& v = *mstate->getV();
-    for (int i=0; i<nlines; i++)
+    for (unsigned int i=0; i<nlines; i++)
     {
         MeshTopology::Line idx = mesh->getLine(i);
         if (idx[0] >= npoints || idx[1] >= npoints)
@@ -163,16 +163,13 @@ void LineModel::draw(int index)
 
 void LineModel::draw()
 {
-    if (isActive() && getContext()->getShowCollisionModels())
+    if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glDisable(GL_LIGHTING);
-        if (isStatic())
-            glColor3f(0.5, 0.5, 0.5);
-        else
-            glColor3f(1.0, 0.0, 0.0);
+        glColor4fv(getColor4f());
 
         for (int i=0; i<size; i++)
         {
@@ -185,7 +182,7 @@ void LineModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
@@ -194,7 +191,7 @@ void LineModel::computeBoundingTree(int maxDepth)
     CubeModel* cubeModel = createPrevious<CubeModel>();
     bool updated = updateFromTopology();
     if (updated) cubeModel->resize(0);
-    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+    if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 
@@ -227,7 +224,7 @@ void LineModel::computeContinuousBoundingTree(double dt, int maxDepth)
     CubeModel* cubeModel = createPrevious<CubeModel>();
     bool updated = updateFromTopology();
     if (updated) cubeModel->resize(0);
-    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+    if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 

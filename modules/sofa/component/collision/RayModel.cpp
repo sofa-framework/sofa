@@ -96,26 +96,23 @@ void RayModel::draw(int index)
 
 void RayModel::draw()
 {
-    if (isActive() && getContext()->getShowCollisionModels())
+    if (getContext()->getShowCollisionModels())
     {
         glDisable(GL_LIGHTING);
-        if (isStatic())
-            glColor3f(0.5, 0.5, 0.5);
-        else
-            glColor3f(1.0, 0.0, 0.0);
+        glColor4fv(getColor4f());
         for (int i=0; i<size; i++)
         {
             draw(i);
         }
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
 void RayModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 

@@ -81,7 +81,7 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
         // Create mapping for second point
         index2 = mapper2.addPoint(o->point[1], index2);
         double distance = intersectionMethod->getContactDistance() + mapper1.radius(elem1) + mapper2.radius(elem2);
-        if (model1->isStatic() || model2->isStatic()) // create stiffer springs for static models as only half of the force is really applied
+        if (!model1->isSimulated() || !model2->isSimulated()) // create stiffer springs for non-animated models as only half of the force is really applied
             ff->addContact(index1, index2, o->normal, distance, 300, 0.00f, 0.00f); /// \todo compute stiffness and damping
         else
             ff->addContact(index1, index2, o->normal, distance, 150, 0.00f, 0.00f); /// \todo compute stiffness and damping

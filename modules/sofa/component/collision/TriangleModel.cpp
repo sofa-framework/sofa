@@ -190,14 +190,14 @@ void TriangleModel::updateFromTopology()
 
 void TriangleMeshModel::updateFromTopology()
 {
-    const int npoints = mstate->getX()->size();
-    const int ntris = mesh->getNbTriangles();
-    const int nquads = mesh->getNbQuads();
-    const int newsize = ntris+2*nquads;
+    const unsigned npoints = mstate->getX()->size();
+    const unsigned ntris = mesh->getNbTriangles();
+    const unsigned nquads = mesh->getNbQuads();
+    const unsigned newsize = ntris+2*nquads;
     needsUpdate=true;
 
     int revision = mesh->getRevision();
-    if (revision == meshRevision && newsize==size)
+    if (revision == meshRevision && newsize==(unsigned)size)
     {
         needsUpdate=false;
         return;
@@ -215,7 +215,7 @@ void TriangleMeshModel::updateFromTopology()
         triangles = &mytriangles;
         mytriangles.resize(newsize);
         int index = 0;
-        for (int i=0; i<ntris; i++)
+        for (unsigned i=0; i<ntris; i++)
         {
             topology::MeshTopology::Triangle idx = mesh->getTriangle(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints)
@@ -228,7 +228,7 @@ void TriangleMeshModel::updateFromTopology()
             mytriangles[index] = idx;
             ++index;
         }
-        for (int i=0; i<nquads; i++)
+        for (unsigned i=0; i<nquads; i++)
         {
             topology::MeshTopology::Quad idx = mesh->getQuad(i);
             if (idx[0] >= npoints || idx[1] >= npoints || idx[2] >= npoints || idx[3] >= npoints)
@@ -260,7 +260,7 @@ void TriangleModel::updateFlags(int ntri)
     //VecDeriv& v = *mstate->getV();
     vector<bool> pflags(mstate->getSize());
     std::set<std::pair<int,int> > eflags;
-    for (int i=0; i<triangles->size(); i++)
+    for (unsigned i=0; i<triangles->size(); i++)
     {
         int f = 0;
         topology::Triangle t = (*triangles)[i];
@@ -283,7 +283,7 @@ void TriangleModel::updateFlags(int ntri)
         {
             f |= FLAG_E12;
         }
-        if (i < ntri && eflags.insert( (t[1]<t[2])?std::make_pair(t[1],t[2]):std::make_pair(t[2],t[1]) ).second) // don't use the diagonal edge of quads
+        if (i < (unsigned)ntri && eflags.insert( (t[1]<t[2])?std::make_pair(t[1],t[2]):std::make_pair(t[2],t[1]) ).second) // don't use the diagonal edge of quads
         {
             f |= FLAG_E23;
         }
@@ -397,15 +397,15 @@ void TriangleSetModel::handleTopologyChange()
                             else
                             {
 
-                                if(mytriangles[Glob2LocMap[j_check]][0] > (int) last)
+                                if(mytriangles[Glob2LocMap[j_check]][0] > last)
                                 {
                                     std::cout << "INFO_print : Coll !!! POINT 0 OUT for j_check = " << j_check << " , triangle = "<< Glob2LocMap[j_check] << " , point = " << mytriangles[Glob2LocMap[j_check]][0] << std::endl;
                                 }
-                                if(mytriangles[Glob2LocMap[j_check]][1] > (int) last)
+                                if(mytriangles[Glob2LocMap[j_check]][1] > last)
                                 {
                                     std::cout << "INFO_print : Coll !!! POINT 1 OUT for j_check = " << j_check << " , triangle = "<< Glob2LocMap[j_check] << " , point = " << mytriangles[Glob2LocMap[j_check]][1] << std::endl;
                                 }
-                                if(mytriangles[Glob2LocMap[j_check]][2] > (int) last)
+                                if(mytriangles[Glob2LocMap[j_check]][2] > last)
                                 {
                                     std::cout << "INFO_print : Coll !!! POINT 2 OUT for j_check = " << j_check << " , triangle = "<< Glob2LocMap[j_check] << " , point = " << mytriangles[Glob2LocMap[j_check]][2] << std::endl;
                                 }
@@ -836,7 +836,7 @@ void TriangleModel::draw(int index)
 
 void TriangleModel::draw()
 {
-    if (isActive() && getContext()->getShowCollisionModels())
+    if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -845,12 +845,7 @@ void TriangleModel::draw()
         //Enable<GL_BLEND> blending;
         //glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-        static const float color[4] = { 1.0f, 0.2f, 0.0f, 1.0f};
-        static const float colorStatic[4] = { 0.5f, 0.5f, 0.5f, 1.0f};
-        if (isStatic())
-            glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, colorStatic);
-        else
-            glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, getColor4f());
         static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f};
         static const float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f};
         glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive);
@@ -867,7 +862,7 @@ void TriangleModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
@@ -876,7 +871,7 @@ void TriangleModel::computeBoundingTree(int maxDepth)
     CubeModel* cubeModel = createPrevious<CubeModel>();
     updateFromTopology();
     if (needsUpdate && !cubeModel->empty()) cubeModel->resize(0);
-    if (isStatic() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
+    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate=false;
     Vector3 minElem, maxElem;
@@ -916,7 +911,7 @@ void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
     CubeModel* cubeModel = createPrevious<CubeModel>();
     updateFromTopology();
     if (needsUpdate) cubeModel->resize(0);
-    if (isStatic() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
+    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate=false;
     Vector3 minElem, maxElem;

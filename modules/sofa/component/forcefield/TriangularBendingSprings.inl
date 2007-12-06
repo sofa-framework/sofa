@@ -592,9 +592,57 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
     m_potentialEnergy = 0;
     /*        cerr<<"TriangularBendingSprings<DataTypes>::addForce()"<<endl;*/
 
+
+//		sofa::core::componentmodel::topology::BaseTopology* bt = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
+//		sofa::core::componentmodel::topology::TopologyContainer *container=bt->getTopologyContainer();
+
+//		sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
+#if 0
+    const sofa::helper::vector< Edge > &edgeArray=container->getEdgeArray() ;
+    const sofa::helper::vector< Triangle > &triangleArray=container->getTriangleArray() ;
+    //const sofa::helper::vector< TriangleEdges > &triangleEdgeArray=container->getTriangleEdgeArray() ;
+    const VecCoord& x_rest = *this->mstate->getX0();
+#endif
+
     for(unsigned int i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInfo[i];
+
+        // safety check
+#if 0
+        {
+            EdgeInformation e2;
+            const sofa::helper::vector< unsigned int > shell = container->getTriangleEdgeShell(i);
+            if (shell.size() != 2)
+                e2.is_activated = false;
+            else
+            {
+                e2.is_activated = true;
+                e2.m1 = -1;
+                e2.m2 = -1;
+                for (int j=0; j<3; j++)
+                    if (triangleArray[shell[0]][j] != edgeArray[i].first && triangleArray[shell[0]][j] != edgeArray[i].second)
+                        e2.m1 = triangleArray[shell[0]][j];
+                for (int j=0; j<3; j++)
+                    if (triangleArray[shell[1]][j] != edgeArray[i].first && triangleArray[shell[1]][j] != edgeArray[i].second)
+                        e2.m2 = triangleArray[shell[1]][j];
+                if (e2.m1 >= 0 && e2.m2 >= 0)
+                {
+                    e2.restlength = (x_rest[e2.m2]-x_rest[e2.m1]).norm();
+                }
+            }
+
+            if (e2.is_activated != einfo->is_activated) std::cerr << "ERROR: EdgeInfo["<<i<<"].is_activated = "<<einfo->is_activated<<" while it should be "<<e2.is_activated<<"\n";
+            else if (e2.is_activated)
+            {
+                if (!((e2.m1 == einfo->m1 && e2.m2 == einfo->m2) || (e2.m1 == einfo->m2 && e2.m2 == einfo->m1)))
+                    std::cerr << "ERROR: EdgeInfo["<<i<<"] points = "<<einfo->m1<<"-"<<einfo->m2<<" while it should be "<<e2.m1<<"-"<<e2.m2<<"\n";
+                if (e2.restlength != einfo->restlength)
+                    std::cerr << "ERROR: EdgeInfo["<<i<<"] length = "<<einfo->restlength<<" while it should be "<<e2.restlength<<"\n";
+            }
+        }
+
+#endif
 
         /*            cerr<<"TriangularBendingSprings<DataTypes>::addForce() between "<<springs[i].m1<<" and "<<springs[i].m2<<endl;*/
 

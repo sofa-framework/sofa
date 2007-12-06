@@ -91,9 +91,9 @@
 	<Node name="Floor">
 		<Object type="Mesh" filename="CollisionModels/floor2b.obj" />
 		<Object type="MechanicalObject" dy="-10.25" scale="0.5" />
-		<Object type="Triangle" name="Floor" static="1" />
-		<Object type="Line" name="Floor" static="1" />
-		<Object type="Point" name="Floor" static="1" />
+		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
+		<Object type="Line" name="Floor" simulated="0" moving="0" />
+		<Object type="Point" name="Floor" simulated="0" moving="0" />
 		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor2b.obj" scale="0.5" notexturename="VisualModels/floor.bmp" color="gray" dy="-10" />
 	</Node>
 </Node>

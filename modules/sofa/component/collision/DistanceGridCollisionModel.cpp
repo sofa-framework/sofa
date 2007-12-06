@@ -132,7 +132,7 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = this->createPrevious<CubeModel>();
 
-    if (!modified && isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    if (!modified && !isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
     updateGrid();
 
@@ -186,10 +186,7 @@ void RigidDistanceGridCollisionModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDisable(GL_LIGHTING);
-        if (isStatic())
-            glColor3f(0.5, 0.5, 0.5);
-        else
-            glColor3f(1.0, 0.0, 0.0);
+        glColor4fv(getColor4f());
         glPointSize(3);
         for (unsigned int i=0; i<elems.size(); i++)
         {
@@ -225,7 +222,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
         corners[i] = grid->getCorner(i);
     //glEnable(GL_BLEND);
     //glDepthMask(0);
-    if (isStatic())
+    if (!isSimulated())
         glColor4f(0.25f, 0.25f, 0.25f, 0.1f);
     else
         glColor4f(0.5f, 0.5f, 0.5f, 0.1f);
@@ -252,7 +249,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
     //glEnable(GL_BLEND);
     //glDepthMask(0);
 
-    if (isStatic())
+    if (!isSimulated())
         glColor4f(0.5f, 0.5f, 0.5f, 1.0f);
     else
         glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
@@ -453,7 +450,7 @@ void FFDDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = this->createPrevious<CubeModel>();
 
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
     updateGrid();
 
@@ -563,10 +560,7 @@ void FFDDistanceGridCollisionModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         glDisable(GL_LIGHTING);
-        if (isStatic())
-            glColor3f(0.5, 0.5, 0.5);
-        else
-            glColor3f(1.0, 0.0, 0.0);
+        glColor4fv(getColor4f());
         for (unsigned int i=0; i<elems.size(); i++)
         {
             draw(i);
@@ -585,7 +579,7 @@ void FFDDistanceGridCollisionModel::draw(int index)
     //glEnable(GL_BLEND);
     //glDepthMask(0);
     float cscale;
-    if (isStatic())
+    if (!isSimulated())
         cscale = 0.5f;
     else
         cscale = 1.0f;

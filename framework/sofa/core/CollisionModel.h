@@ -66,12 +66,14 @@ public:
     typedef CollisionElementIterator Iterator;
 
     CollisionModel()
-        : bStatic(initData(&bStatic, false, "static", "flag indicating if an object is immobile"))
-//   , bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in collision detections"))
+        : bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in default collision detections"))
+        , bMoving(initData(&bMoving, true, "moving", "flag indicating if this object is changing position between iterations"))
+        , bSimulated(initData(&bSimulated, true, "simulated", "flag indicating if this object is controlled by a simulation"))
         , proximity(initData(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
         , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
         , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
         , bFiltered(initData(&bFiltered, false, "filtered", "flag indicating if the model has to build its neighborhood to filter contacts"))
+        , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
         , size(0), previous(NULL)  , next(NULL)
     {
     }
@@ -135,27 +137,32 @@ public:
     /// \brief Return true if this CollisionModel should be used for collisions.
     ///
     /// Default to true.
-    virtual bool isActive() { return getContext()->isActive(); }
+    virtual bool isActive() const { return bActive.getValue() && getContext()->isActive(); }
 
-    virtual void setActive(bool val=true) { getContext()->setActive(val); }
-    /*
-    virtual bool isActive() { return bActive.getValue(); }
+    virtual void setActive(bool val=true) { bActive.setValue(val); }
 
-    virtual void setActive(bool val=true) { bActive.setValue(val); }*/
-
-    /// \brief Return true if this CollisionModel is attached to an immobile
-    /// <i>obstacle</i> object.
+    /// \brief Return true if this CollisionModel is changing position between
+    /// iterations.
     ///
-    /// Default to false.
-    virtual bool isStatic() { return bStatic.getValue(); }
+    /// Default to true.
+    virtual bool isMoving() const { return bMoving.getValue(); }
 
-    virtual void setStatic(bool val=true) { bStatic.setValue(val); }
+    virtual void setMoving(bool val=true) { bMoving.setValue(val); }
+
+    /// \brief Return true if this CollisionModel is attached to a simulation.
+    /// It is false for immobile or procedurally animated objects that don't
+    /// use contact forces
+    ///
+    /// Default to true.
+    virtual bool isSimulated() const { return bSimulated.getValue(); }
+
+    virtual void setSimulated(bool val=true) { bSimulated.setValue(val); }
 
     /// \brief Return true if this CollisionModel must build its neigborhood
     /// basically to be used in filtered proximity detection
     ///
     /// Default to false.
-    virtual bool isFiltered() { return bFiltered.getValue(); }
+    virtual bool isFiltered() const { return bFiltered.getValue(); }
 
     virtual void setFiltered(bool val=true) { bFiltered.setValue(val); }
 
@@ -265,11 +272,16 @@ public:
 
     /// @}
 
+    /// Get a color that can be used to display this CollisionModel
+    const float* getColor4f() const;
+
 protected:
 
-    Data<bool> bStatic;
+    Data<bool> bActive;
 
-//    Data<bool> bActive;
+    Data<bool> bMoving;
+
+    Data<bool> bSimulated;
 
     Data<double> proximity;
 
@@ -278,6 +290,8 @@ protected:
     Data<double> contactFriction;
 
     Data<bool> bFiltered;
+
+    Data<defaulttype::Vec4f> color;
 
     /// Number of collision elements
     int size;
@@ -299,7 +313,8 @@ protected:
                 delete previous;
             pmodel = new DerivedModel();
             pmodel->setContext(getContext());
-            pmodel->setStatic(isStatic());
+            pmodel->setMoving(isMoving());
+            pmodel->setSimulated(isSimulated());
             pmodel->proximity.setValue(proximity.getValue());
             previous = pmodel;
             pmodel->setNext(this);

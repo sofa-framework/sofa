@@ -80,7 +80,7 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
     for (sofa::helper::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
     {
         core::CollisionModel* cm2 = *it;
-        if (cm->isStatic() && cm2->isStatic())
+        if (!cm->isSimulated() && !cm2->isSimulated())
             continue;
         if (!cm->canCollideWith(cm2))
             continue;
@@ -129,7 +129,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
     //int size0 = elemPairs.size();
     //std::cout << "Narrow phase "<<cm1->getLast()->getName()<<" - "<<cm2->getLast()->getName()<<std::endl;
 
-    if (cm1->isStatic() && cm2->isStatic())
+    if (!cm1->isSimulated() && !cm2->isSimulated())
         return;
 
     if (cm1->empty() || cm2->empty())

@@ -178,7 +178,7 @@ void CubeModel::draw()
         ++level;
         color *= 0.5f;
     }
-    if (isStatic())
+    if (isSimulated())
         glColor4f(1.0f, 1.0f, 1.0f, color);
     else
         glColor4f(1.0f, 1.0f, 0.0f, color);

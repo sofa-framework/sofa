@@ -262,7 +262,7 @@ void RayTraceDetection::addCollisionModel (core::CollisionModel * cm)
             collisionModels.begin (); it != collisionModels.end (); ++it)
     {
         core::CollisionModel * cm2 = *it;
-        if (cm->isStatic () && cm2->isStatic ())
+        if (!cm->isSimulated() && !cm2->isSimulated())
             continue;
         if (!cm->canCollideWith (cm2))
             continue;

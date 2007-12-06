@@ -124,8 +124,8 @@
 	<Node name="Floor">
 		<Object type="Mesh" filename="CollisionModels/floor3.obj" />
 		<Object type="MechanicalObject" dy="-20" />
-		<Object type="Triangle" name="Floor" static="1" />
-		<Object type="Line" name="Floor" static="1" />
+		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
+		<Object type="Line" name="Floor" simulated="0" moving="0" />
 		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor3.obj" texturename="VisualModels/floor.bmp" dy="-20" />
 	</Node>
 </Node>

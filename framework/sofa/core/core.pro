@@ -66,6 +66,7 @@ HEADERS += \
           ObjectFactory.h
  
 SOURCES +=  \
+          CollisionModel.cpp \
           componentmodel/behavior/MasterSolver.cpp \
           componentmodel/behavior/OdeSolver.cpp \
           componentmodel/collision/Contact.cpp \
