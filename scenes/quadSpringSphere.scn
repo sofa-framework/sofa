@@ -11,9 +11,9 @@
 			zmin="-20" zmax="20" />
 		<Object type="MechanicalObject" />
 		<!--
-		<Object type="Triangle" static="1" />
-		<Object type="Line" static="1" />
-		<Object type="Point" static="1" />
+		<Object type="Triangle" simulated="0" moving="0" />
+		<Object type="Line" simulated="0" moving="0" />
+		<Object type="Point" simulated="0" moving="0" />
 			  -->
 		<Node name="Visu">
 			<Object type="OglModel" name="Visual" color="red"/>

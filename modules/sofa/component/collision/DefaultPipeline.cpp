@@ -166,17 +166,17 @@ void DefaultPipeline::doCollisionResponse()
 
     const sofa::helper::vector<Contact*>& contacts = contactManager->getContacts();
 
-    // First we remove all contacts with static objects and directly add them
+    // First we remove all contacts with non-simulated objects and directly add them
     sofa::helper::vector<Contact*> notStaticContacts;
 
     for (sofa::helper::vector<Contact*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++)
     {
         Contact* c = *it;
-        if (c->getCollisionModels().first->isStatic())
+        if (!c->getCollisionModels().first->isSimulated())
         {
             c->createResponse(c->getCollisionModels().second->getContext());
         }
-        else if (c->getCollisionModels().second->isStatic())
+        else if (!c->getCollisionModels().second->isSimulated())
         {
             c->createResponse(c->getCollisionModels().first->getContext());
         }

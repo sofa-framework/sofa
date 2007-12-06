@@ -91,13 +91,7 @@ void TriangleOctreeModel::draw ()
         //Enable<GL_BLEND> blending;
         //glLightModeli(GL  _LIGHT_MODEL_TWO_SIDE, GL_TRUE);
 
-        static const float color[4] = { 1.0f, 0.2f, 0.0f, 1.0f };
-        static const float colorStatic[4] = { 0.5f, 0.5f, 0.5f, 1.0f };
-        if (isStatic ())
-            glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE,
-                    colorStatic);
-        else
-            glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, color);
+        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE, getColor4f());
         static const float emissive[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
         static const float specular[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
         glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive);
@@ -167,7 +161,7 @@ void TriangleOctreeModel::computeBoundingTree(int maxDepth)
     CubeModel* cubeModel = createPrevious<CubeModel>();
     updateFromTopology();
 
-    if (isStatic() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+    if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
     int size2=mstate->getX()->size();
     pNorms.resize(size2);
     for(int i=0; i<size2; i++)

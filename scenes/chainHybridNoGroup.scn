@@ -7,7 +7,7 @@
 		<Node name="TorusFixed">
 			<Object type="Mesh" filename="CollisionModels/torus2_for_collision.obj" />
 			<Object type="MechanicalObject" />
-			<Object type="Triangle" static="1" />
+			<Object type="Triangle" simulated="0" moving="0" />
 			<Object type="OglModel" name="Visual" filename="VisualModels/torus2.obj" color="gray" />
 		</Node>
 		<Node name="TorusFEM">
@@ -86,7 +86,7 @@
 	<Node name="Floor">
 		<Object type="Mesh" filename="CollisionModels/floor2.obj" />
 		<Object type="MechanicalObject" scale="0.2" dy="-5" />
-		<Object type="Triangle" name="Floor" static="1" />
+		<Object type="Triangle" name="Floor" simulated="0" moving="0" />
 		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor2.obj" texturename="VisualModels/floor.bmp" scale="0.2" dy="-4.75" />
 	</Node>
 	-->

@@ -158,17 +158,14 @@ void PointModel::draw(int index)
 
 void PointModel::draw()
 {
-    if (isActive() && getContext()->getShowCollisionModels())
+    if (getContext()->getShowCollisionModels())
     {
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
         glDisable(GL_LIGHTING);
         glPointSize(3);
-        if (isStatic())
-            glColor3f(0.5, 0.5, 0.5);
-        else
-            glColor3f(1.0, 0.0, 0.0);
+        glColor4fv(getColor4f());
 
         for (int i=0; i<size; i++)
         {
@@ -181,7 +178,7 @@ void PointModel::draw()
         if (getContext()->getShowWireFrame())
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if (isActive() && getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
+    if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
@@ -196,7 +193,7 @@ void PointModel::computeBoundingTree(int maxDepth)
         updated = true;
     }
     if (updated) cubeModel->resize(0);
-    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+    if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     cubeModel->resize(size);
     if (!empty())
@@ -222,7 +219,7 @@ void PointModel::computeContinuousBoundingTree(double dt, int maxDepth)
         resize(npoints);
         updated = true;
     }
-    if (isStatic() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+    if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
 

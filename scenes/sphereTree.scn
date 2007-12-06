@@ -18,16 +18,16 @@
 			<Object type="RigidMapping" object1="../.." object2="../Visual" />
 		</Node>
 		<Node name="Surf">
-			<Object type="SphereTree" filename="CollisionModels/lamp600-medial.sph" static="0" scale="0.1"/>
+			<Object type="SphereTree" filename="CollisionModels/lamp600-medial.sph" simulated="1" moving="1" scale="0.1"/>
 			<Object type="RigidMapping" />
 		</Node>
 	</Node>
 
 	<!-- Definition of static models model -->
-	<Object type="SphereTree" name="lamp2" filename="CollisionModels/lamp600-medial.sph" static="1" scale="0.1" dx="-8" dy="-1" dz="10"  />
+	<Object type="SphereTree" name="lamp2" filename="CollisionModels/lamp600-medial.sph" simulated="0" moving="0" scale="0.1" dx="-8" dy="-1" dz="10"  />
 	<Object type="OglModel" name="lamp2" filename="VisualModels/lamp600.obj" texturename="VisualModels/brushed_metal.bmp" scale="0.1" dx="-8" dy="-1" dz="10"/>
 
-	<Object type="SphereTree" name="lamp3" filename="CollisionModels/lamp600-medial.sph" static="1" scale="0.1" dx="8" dy="-2" dz="-10"/>
+	<Object type="SphereTree" name="lamp3" filename="CollisionModels/lamp600-medial.sph" simulated="0" moving="0" scale="0.1" dx="8" dy="-2" dz="-10"/>
 	<Object type="OglModel" name="lamp3" filename="VisualModels/lamp600.obj" texturename="VisualModels/floor.bmp" scale="0.1" dx="8" dy="-2" dz="-10"/>
 
 

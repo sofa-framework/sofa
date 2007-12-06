@@ -23,6 +23,6 @@
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
-	<Object type="Sphere" name="Floor" filename="CollisionModels/floor.sph" static="1" dy="-12.5" />
+	<Object type="Sphere" name="Floor" filename="CollisionModels/floor.sph" simulated="0" moving="0" dy="-12.5" />
 	<Object type="OglModel" name="FloorV" filename="VisualModels/floor2.obj" texturename="VisualModels/floor2.bmp" dy="-12.5" />
 </Node>

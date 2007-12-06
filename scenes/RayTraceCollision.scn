@@ -232,7 +232,7 @@
 	<Node name="Floor">
 		<Object type="Mesh" filename="CollisionModels/floor2b.obj" />
 		<Object type="MechanicalObject" dy="-10" scale="0.5" />
-		<Object type="TriangleOctree" name="Floor" static="1" />
+		<Object type="TriangleOctree" name="Floor" simulated="0" moving="0" />
 		<Object type="OglModel" name="FloorV" filename="CollisionModels/floor2b.obj" scale="0.5" notexturename="VisualModels/floor.bmp" color="lightgray" dy="-10" />
 	</Node>
 </Node>
