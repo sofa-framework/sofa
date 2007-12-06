@@ -135,7 +135,7 @@ public:
     void draw(int index);
 
     void fillArrays( float *array_coord,float *array_identity, int *offset_coord, float Id);
-
+    unsigned int getNbTriangles() const {return size;}
     // -- VisualModel interface
 
     void draw();
