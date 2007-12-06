@@ -25,7 +25,7 @@ template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), c(NULL), parent(NULL)
 {
-    mu = 0.0;
+    mu = 0.5;
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -66,22 +66,6 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
             contacts.push_back(o);
     }
 
-    /*
-    for (DetectionOutputVector::iterator it = outputs.begin(); it!=outputs.end(); it++)
-    {
-    	DetectionOutput* o = &*it;
-    	bool found = false;
-    	for (unsigned int i=0; i<contacts.size() && !found; i++)
-    	{
-    		DetectionOutput* p = contacts[i];
-    		if ((o->point[0]-p->point[0]).norm2()+(o->point[1]-p->point[1]).norm2() < minDist2)
-    			found = true;
-    	}
-    	if (!found)
-    		contacts.push_back(o);
-    }
-    */
-
     if (contacts.size()<outputs.size())
     {
         //std::cout << "Removed " << (outputs.size()-contacts.size()) <<" / " << outputs.size() << " collision points." << std::endl;
@@ -108,6 +92,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         CollisionElement2 elem2(o->elem.second);
         int index1 = elem1.getIndex();
         int index2 = elem2.getIndex();
+
         //double constraintValue = ((o->point[1] - o->point[0]) * o->normal) - intersectionMethod->getContactDistance();
 
         // Create mapping for first point
@@ -117,7 +102,10 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         // Checks if friction is considered
         if (mu < 0.0 || mu > 1.0)
             cerr << endl << "Error: mu has to take values between 0.0 and 1.0" << endl;
-        c->addContact(mu, o->normal, o->point[1], o->point[0], intersectionMethod->getContactDistance(), index1, index2, o->freePoint[1], o->freePoint[0]);
+
+        // Polynome de Cantor de N² sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
+        long index = cantorPolynomia(cantorPolynomia(index1, index2),id);
+        c->addContact(mu, o->normal, o->point[1], o->point[0], intersectionMethod->getContactDistance(), index1, index2, o->freePoint[1], o->freePoint[0], index);
     }
     // Update mappings
     mapper1.update();
