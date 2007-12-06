@@ -1009,8 +1009,8 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
             a_last=ind_a; // OUPTUT
 
             a_p12_last.clear();
-            a_p12_last.push_back(acc_nb_points+1); // OUPTUT
             a_p12_last.push_back(acc_nb_points+2); // OUPTUT
+            a_p12_last.push_back(acc_nb_points+1); // OUPTUT
 
             sofa::helper::vector< Triangle > a_triangles;
             Triangle t_a01 = Triangle(helper::make_array<unsigned int>((unsigned int)ind_a,(unsigned int)ta[0],(unsigned int) ta[1]));
@@ -1023,8 +1023,8 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
             /// Register the removal of triangles incident to point a
 
             a_i123_last.clear();
-            a_i123_last.push_back(p1_a); // OUPTUT
             a_i123_last.push_back(p2_a); // OUPTUT
+            a_i123_last.push_back(p1_a); // OUPTUT
 
             if(ta[0]!=p1_a && ta[0]!=p2_a)
             {
