@@ -70,7 +70,7 @@ private:
 };
 
 // Gauss-Seidel like algorithm for contacts
-int nlcp_gaussseidel(int, double *, double**, double *, double &, double &, int &);
+int nlcp_gaussseidel(int, double *, double**, double *, double &, double &, int &, bool );
 
 } // namespace helper
 

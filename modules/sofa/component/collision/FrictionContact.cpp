@@ -13,8 +13,8 @@ using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::tree::GNode;
 
-//unsigned int StaticCpt::staticCpt = 0;
-//unsigned int StaticCpt::constraintCpt = 0;
+unsigned int Identifier::cpt=0;
+std::list<unsigned int> Identifier::availableId;
 
 SOFA_DECL_CLASS(FrictionContact)
 

@@ -19,11 +19,10 @@ namespace constraint
 {
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree)
+void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id)
 {
     // compute dt and delta
     Real delta = dot(P-Q, norm) - contactDistance;
-
     Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
     Real dt;
     int i = contacts.size();
@@ -45,6 +44,8 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     c.s = c.s / c.s.norm();
     c.t = cross((-norm), c.s);
     c.mu = mu;
+    c.contactId = id;
+
 
     if (rabs(delta - deltaFree) > 0.001 * delta)
     {
@@ -54,7 +55,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
             sofa::defaulttype::Vector3 Qt, Pt;
             Qt = Q*(1-dt) + Qfree*dt;
             Pt = P*(1-dt) + Pfree*dt;
-            c.dfree = dot(Pfree-Pt, c.norm) - dot(Qfree-Qt, c.norm);
+            c.dfree = deltaFree;// dot(Pfree-Pt, c.norm) - dot(Qfree-Qt, c.norm);
             c.dfree_t = dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
             c.dfree_s = dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
             //printf("\n ! dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
@@ -64,7 +65,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
             if (deltaFree < 0.0)
             {
                 dt=0.0;
-                c.dfree = dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
+                c.dfree = deltaFree; // dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
                 //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
                 c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
                 c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
@@ -86,71 +87,6 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
         c.dfree_s = 0;
         //printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
     }
-//
-//	// compute dt and delta
-//	Real delta = dot(P-Q, norm) - contactDistance;
-//
-//	Real deltaFree = dot(Pfree-Qfree, norm) - contactDistance;
-//	Real dt;
-//	int i = contacts.size();
-//	contacts.resize(i+1);
-//	Contact& c = contacts[i];
-//
-//// for visu
-//	c.P = P;
-//	c.Q = Q;
-//	c.Pfree = Pfree;
-//	c.Qfree = Qfree;
-////
-//	c.m1 = m1;
-//	c.m2 = m2;
-//	c.norm = norm;
-//	c.delta = delta;
-//	c.t = Deriv(norm.z(), norm.x(), norm.y());
-//	c.s = cross(norm,c.t);
-//	c.s = c.s / c.s.norm();
-//	c.t = cross((-norm), c.s);
-//	c.mu = mu;
-//
-//	if (rabs(delta - deltaFree) > 0.001 * delta)
-//	{
-//		dt = delta / (delta - deltaFree);
-//		if (dt > 0.0 && dt < 1.0  ){
-//			sofa::defaulttype::Vector3 Qt, Pt;
-//			Qt = Q*(1-dt) + Qfree*dt;
-//			Pt = P*(1-dt) + Pfree*dt;
-//			c.dfree = dot(Pfree-Pt, c.norm) - dot(Qfree-Qt, c.norm);
-//			c.dfree_t = dot(Pfree-Pt, c.t) - dot(Qfree-Qt, c.t);
-//			c.dfree_s = dot(Pfree-Pt, c.s) - dot(Qfree-Qt, c.s);
-//			//printf("\n ! dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-//		}
-//		else
-//		{
-//			if (delta < 0.0)
-//			{
-//				dt=0.0;
-//				c.dfree = dot(Pfree-P, c.norm) - dot(Qfree-Q, c.norm);
-//				//printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-//				c.dfree_t = dot(Pfree-P, c.t) - dot(Qfree-Q, c.t);
-//				c.dfree_s = dot(Pfree-P, c.s) - dot(Qfree-Q, c.s);
-//			}
-//			else
-//			{
-//				dt=1.0;
-//				c.dfree = deltaFree;
-//				c.dfree_t = 0;
-//				c.dfree_s = 0;
-//			}
-//		}
-//	}
-//	else
-//	{
-//		dt = 0;
-//		c.dfree = deltaFree;
-//		c.dfree_t = 0;
-//		c.dfree_s = 0;
-//		//printf("\n dt = %f, c.dfree = %f, deltaFree=%f, delta = %f", dt, c.dfree, deltaFree, delta);
-//	}
 }
 
 
@@ -166,6 +102,7 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
     for (unsigned int i=0; i<contacts.size(); i++)
     {
         Contact& c = contacts[i];
+
         mu = c.mu;
         c.id = contactId++;
 
@@ -203,7 +140,7 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v /*, unsigned int &numContacts*/)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v)
 {
     for (unsigned int i=0; i<contacts.size(); i++)
     {
@@ -213,6 +150,29 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintValue(double* v /*
         {
             v[c.id+1] = c.dfree_t; // dfree_t & dfree_s are added to v to compute the friction
             v[c.id+2] = c.dfree_s;
+        }
+    }
+}
+
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offset)
+{
+    if (!yetIntegrated)
+    {
+        for (unsigned int i=0; i<contacts.size(); i++)
+        {
+            Contact& c = contacts[i];
+            id[offset++] = -c.contactId;
+        }
+
+        yetIntegrated = true;
+    }
+    else
+    {
+        for (unsigned int i=0; i<contacts.size(); i++)
+        {
+            Contact& c = contacts[i];
+            id[offset++] = c.contactId;
         }
     }
 }
@@ -241,13 +201,9 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
             helper::gl::glVertexT(c.Pfree);
             helper::gl::glVertexT(c.Qfree);
         }
-
-
     }
     glEnd();
 }
-
-
 
 } // namespace constraint
 

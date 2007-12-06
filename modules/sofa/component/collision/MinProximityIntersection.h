@@ -106,6 +106,10 @@ public:
     bool testValidity(Point&, const Vector3&);
     bool testValidity(Line&, const Vector3&);
     bool testValidity(Triangle&, const Vector3&);
+
+private:
+    double mainAlarmDistance;
+    double mainContactDistance;
 };
 
 } // namespace collision

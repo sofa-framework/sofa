@@ -45,6 +45,7 @@ protected:
         Real dfree_t;   ///< QPfree * t
         Real dfree_s;   ///< QPfree * s
         unsigned int id;
+        long contactId;
         double mu;		///< angle for friction
 
         // for visu
@@ -54,23 +55,24 @@ protected:
 
     sofa::helper::vector<Contact> contacts;
     Real epsilon;
+    bool yetIntegrated;
 
 public:
 
     unsigned int constraintId;
 
     UnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
-        : object1(object1), object2(object2), epsilon(Real(0.001))
+        : object1(object1), object2(object2), epsilon(Real(0.001)),yetIntegrated(false)
     {
     }
 
     UnilateralInteractionConstraint(MechanicalState* object)
-        : object1(object), object2(object), epsilon(Real(0.001))
+        : object1(object), object2(object), epsilon(Real(0.001)),yetIntegrated(false)
     {
     }
 
     UnilateralInteractionConstraint()
-        : object1(NULL), object2(NULL), epsilon(Real(0.001))
+        : object1(NULL), object2(NULL), epsilon(Real(0.001)),yetIntegrated(false)
     {
     }
 
@@ -92,9 +94,11 @@ public:
 
     virtual void applyConstraint(unsigned int & /*contactId*/, double & /*mu*/);
 
-    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree = Coord(), Coord Qfree = Coord());
+    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree = Coord(), Coord Qfree = Coord(), long id=0);
 
     virtual void getConstraintValue(double* v /*, unsigned int &numContacts */);
+
+    virtual void getConstraintId(long* id, unsigned int &offset);
 
     // Previous Constraint Interface
     virtual void projectResponse() {};
@@ -142,8 +146,6 @@ public:
     void draw();
     void initTextures() { }
     void update() { }
-
-
 };
 } // namespace constraint
 
