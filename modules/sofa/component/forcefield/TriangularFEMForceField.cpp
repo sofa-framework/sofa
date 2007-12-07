@@ -27,7 +27,8 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/topology/TriangleData.inl>
-//#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/EdgeData.inl>
+#include <sofa/component/topology/PointData.inl>
 #if defined (__APPLE__)
 #include <OpenGL/gl.h>
 #else
@@ -36,6 +37,7 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>
+#include <algorithm>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <assert.h>
 
@@ -126,7 +128,15 @@ void TriangularFEMForceField<DataTypes>::TRQSTriangleCreationFunction (int /*tri
     }
 
 }
-
+/*
+template< class DataTypes>
+void TriangularFEMForceField<DataTypes>::TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeInformation &ei,
+                                         const Edge& ,  const sofa::helper::vector< unsigned int > &,
+                                         const sofa::helper::vector< double >&)
+{
+	ei.fracturable = false;
+}
+*/
 
 
 template <class DataTypes>
@@ -152,6 +162,8 @@ template <class DataTypes> void TriangularFEMForceField<DataTypes>::handleTopolo
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
     triangleInfo.handleTopologyEvents(itBegin,itEnd);
+    edgeInfo.handleTopologyEvents(itBegin,itEnd);
+    vertexInfo.handleTopologyEvents(itBegin,itEnd);
 }
 
 template <class DataTypes>
@@ -210,12 +222,22 @@ void TriangularFEMForceField<DataTypes>::init()
                 (const sofa::helper::vector< double >)0);
     }
 
-
+    /*
+    	const sofa::helper::vector<Edge> &edgeArray=container->getEdgeArray();
+    	for (i=0;i<container->getNumberOfEdges();++i) {
+    		TRQSEdgeCreationFunction(i, (void*) this, edgeInfo[i],
+    			edgeArray[i],  (const sofa::helper::vector< unsigned int > )0,
+    			(const sofa::helper::vector< double >)0);
+    	}
+    */
     triangleInfo.setCreateFunction(TRQSTriangleCreationFunction);
+    //edgeInfo.setCreateFunction(TRQSEdgeCreationFunction);
     //triangleInfo.setDestroyFunction(TRQSTriangleDestroyFunction);
 
     triangleInfo.setCreateParameter( (void *) this );
     triangleInfo.setDestroyParameter( (void *) this );
+    //edgeInfo.setCreateParameter( (void *) this );
+    //edgeInfo.setDestroyParameter( (void *) this );
 
     //_strainDisplacements.resize(container->getNumberOfTriangles());
     //_rotations.resize(container->getNumberOfTriangles());
@@ -347,20 +369,74 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
         const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tesa=container->getEdgeVertexShellArray();
         const sofa::helper::vector< Edge > &edgeArray = container->getEdgeArray() ;
 
+        for( unsigned int i=0; i<edgeArray.size(); i++ )
+            edgeInfo[i].fracturable = false;
+
         if (nbPoints > 0)
         {
+
             double max = vertexInfo[0].sumEigenValues;
             unsigned int mostDeformableVertexIndex = 0;
+
+            /*
             for( unsigned int i=1; i<nbPoints; i++ )
             {
-                if (vertexInfo[i].sumEigenValues > max)
-                {
-                    mostDeformableVertexIndex = i;
-                    max = vertexInfo[i].sumEigenValues;
-                }
+            	if (vertexInfo[i].sumEigenValues > max)
+            	{
+            		mostDeformableVertexIndex = i;
+            		max = vertexInfo[i].sumEigenValues;
+            	}
+            }
+            */
+
+            std::vector<std::pair<double, unsigned int>> mostDeformableVertexIndexA(nbPoints);
+
+            for( unsigned int i=0; i<nbPoints; i++ )
+            {
+                mostDeformableVertexIndexA[i].first = vertexInfo[i].sumEigenValues;
+                mostDeformableVertexIndexA[i].second = i;
             }
 
-            if (max > 0.2)
+            std::sort( mostDeformableVertexIndexA.begin(), mostDeformableVertexIndexA.end() );
+
+            /*
+            for( unsigned int i=0; i<nbPoints; i++ )
+            {
+            	std::cout << mostDeformableVertexIndexA[i].first << " ";
+            }
+            std::cout << "\n";
+            */
+
+            bool vertexOnBorder(false);
+            unsigned int curIndex = nbPoints-1;
+
+            while ((!vertexOnBorder)&&(curIndex>=0))
+            {
+                mostDeformableVertexIndex = mostDeformableVertexIndexA[curIndex].second;
+                max=mostDeformableVertexIndexA[curIndex].first;
+                // Check if the Vertex is on the border
+                sofa::helper::vector< unsigned int > edgeNeighbors = tesa[mostDeformableVertexIndex];
+                sofa::helper::vector< unsigned int >::iterator it = edgeNeighbors.begin();
+                sofa::helper::vector< unsigned int >::iterator itEnd = edgeNeighbors.end();
+                const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleEdgeShellArray();
+
+
+                while (it != itEnd)
+                {
+                    sofa::helper::vector<unsigned int> triangles = tvsa[*it];
+                    if (triangles.size() == 1)
+                    {
+                        vertexOnBorder = true;
+                        break;
+                    }
+                    ++it;
+                }
+
+                curIndex--;
+            }
+
+            std::cout << "max=" << max << std::endl;
+            if (vertexOnBorder && (max > 0.05))
             {
                 double minDotProduct = 1000.0;
                 unsigned int fracturableIndex = 0;
@@ -383,9 +459,13 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
                     {
                         if (fabs(vertexInfo[mostDeformableVertexIndex].meanStrainDirection * (x[b] - x[a])) < minDotProduct)
                         {
-                            minDotProduct = fabs(vertexInfo[mostDeformableVertexIndex].meanStrainDirection * (x[b] - x[a]));
-                            fracturableIndex = *it;
-                            fracture = true;
+                            sofa::helper::vector< unsigned int > triangleEdgeShell = container->getTriangleEdgeShell(*it);
+                            if (triangleEdgeShell.size() != 1)
+                            {
+                                minDotProduct = fabs(vertexInfo[mostDeformableVertexIndex].meanStrainDirection * (x[b] - x[a]));
+                                fracturableIndex = *it;
+                                fracture = true;
+                            }
                         }
                     }
 
@@ -397,6 +477,8 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
             }
         }
     }
+
+//	std::cout << "EOF AddForce\n";
 }
 
 
@@ -954,6 +1036,27 @@ void TriangularFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h
     }
 }
 
+template<class DataTypes>
+int TriangularFEMForceField<DataTypes>::getFracturedEdge()
+{
+    if (f_fracturable.getValue())
+    {
+        TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
+        const sofa::helper::vector< Edge> &edgeArray=container->getEdgeArray() ;
+        unsigned int nbEdges = container->getNumberOfEdges();
+
+        for( unsigned int i=0; i<nbEdges; i++ )
+        {
+            if (edgeInfo[i].fracturable)
+            {
+                return i;
+            }
+        }
+    }
+
+    return -1;
+}
+
 
 template<class DataTypes>
 void TriangularFEMForceField<DataTypes>::draw()
@@ -991,60 +1094,63 @@ void TriangularFEMForceField<DataTypes>::draw()
     }
     glEnd();
 
+    /*
     if (f_fracturable.getValue())
     {
-        const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleVertexShellArray();
-        unsigned int nbPoints = tvsa.size();
+    	const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=container->getTriangleVertexShellArray();
+    	unsigned int nbPoints = tvsa.size();
 
-        if (nbPoints > 0)
-        {
-            double max = vertexInfo[0].sumEigenValues;
-            unsigned int mostDeformableVertexIndex = 0;
-            for( unsigned int i=1; i<nbPoints; i++ )
-            {
-                if (vertexInfo[i].sumEigenValues > max)
-                {
-                    mostDeformableVertexIndex = i;
-                    max = vertexInfo[i].sumEigenValues;
-                }
-            }
+    	if (nbPoints > 0)
+    	{
+    		double max = vertexInfo[0].sumEigenValues;
+    		unsigned int mostDeformableVertexIndex = 0;
+    		for( unsigned int i=1; i<nbPoints; i++ )
+    		{
+    			if (vertexInfo[i].sumEigenValues > max)
+    			{
+    				mostDeformableVertexIndex = i;
+    				max = vertexInfo[i].sumEigenValues;
+    			}
+    		}
 
-            glPointSize(8);
-            glBegin(GL_POINTS);
-            glColor4f(1,1,1,1);
-            helper::gl::glVertexT(x[mostDeformableVertexIndex]);
-            glEnd();
-            glPointSize(1);
-        }
+    		glPointSize(8);
+    		glBegin(GL_POINTS);
+    		glColor4f(1,1,1,1);
+    		helper::gl::glVertexT(x[mostDeformableVertexIndex]);
+    		glEnd();
+    		glPointSize(1);
+    	}
 
 
-        for( unsigned int i=0; i<nbPoints; i++ )
-        {
-            glBegin(GL_LINES);
-            glColor4f(1,0,1,1);
-            helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection * 0.01);
-            helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection * 0.01);
-            glEnd();
-        }
+    	for( unsigned int i=0; i<nbPoints; i++ )
+    	{
+    		glBegin(GL_LINES);
+    		glColor4f(1,0,1,1);
+    	//	helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection * 0.01);
+    	//	helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection * 0.01);
+    		helper::gl::glVertexT(x[i]-vertexInfo[i].meanStrainDirection * 2.5);
+    		helper::gl::glVertexT(x[i]+vertexInfo[i].meanStrainDirection * 2.5);
+    		glEnd();
+    	}
 
-        const sofa::helper::vector< Edge> &edgeArray=container->getEdgeArray() ;
-        unsigned int nbEdges = container->getNumberOfEdges();
+    	const sofa::helper::vector< Edge> &edgeArray=container->getEdgeArray() ;
+    	unsigned int nbEdges = container->getNumberOfEdges();
 
-        for( unsigned int i=0; i<nbEdges; i++ )
-        {
-            if (edgeInfo[i].fracturable)
-            {
-                glLineWidth(7);
-                glBegin(GL_LINES);
-                glColor4f(1,0.5,0.25,1);
-                helper::gl::glVertexT(x[edgeArray[i].first]);
-                helper::gl::glVertexT(x[edgeArray[i].second]);
-                glEnd();
-                glLineWidth(1);
-                edgeInfo[i].fracturable = false;
-            }
-        }
+    	for( unsigned int i=0; i<nbEdges; i++ )
+    	{
+    		if (edgeInfo[i].fracturable)
+    		{
+    			glLineWidth(7);
+    			glBegin(GL_LINES);
+    			glColor4f(1,0.5,0.25,1);
+    			helper::gl::glVertexT(x[edgeArray[i].first]);
+    			helper::gl::glVertexT(x[edgeArray[i].second]);
+    			glEnd();
+    			glLineWidth(1);
+    		}
+    	}
     }
+    */
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

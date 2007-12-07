@@ -2321,6 +2321,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     if (!pa_is_on_border && !pb_is_on_border)
     {
         std::cerr << "InciseAlongEdge: ERROR edge "<<ind_edge<<" is not on border." << std::endl;
+        return -1;
     }
 
     // now we can split the edge
