@@ -51,7 +51,8 @@ public:
     DiscreteIntersection();
 
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-    virtual core::componentmodel::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2);
+    /// @param swapModel output value set to true if the collision models must be swapped before calling the intersector.
+    virtual core::componentmodel::collision::ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels);
 
 protected:
     core::componentmodel::collision::IntersectorMap intersectors;

@@ -55,38 +55,38 @@ int DiscreteIntersectionClass = core::RegisterObject("TODO-DiscreteIntersectionC
 
 DiscreteIntersection::DiscreteIntersection()
 {
-    intersectors.add<CubeModel,       CubeModel,         DiscreteIntersection, false> (this);
-    intersectors.add<SphereModel,     SphereModel,       DiscreteIntersection, false> (this);
-    intersectors.add<SphereModel,     RayModel,          DiscreteIntersection, true>  (this);
-    //intersectors.add<SphereModel,     RayPickInteractor, DiscreteIntersection, true>  (this);
-    intersectors.add<SphereTreeModel, RayModel, DiscreteIntersection, true>  (this);
-    intersectors.add<SphereTreeModel, SphereTreeModel,   DiscreteIntersection, false> (this);
-    intersectors.add<SphereTreeModel, CubeModel,         DiscreteIntersection, true>  (this);
-    intersectors.add<SphereTreeModel, TriangleModel,     DiscreteIntersection, true>  (this);
-    //intersectors.add<SphereTreeModel, SphereModel,       DiscreteIntersection, true>  (this);
-    //intersectors.add<SphereModel,     TriangleModel,     DiscreteIntersection, true>  (this);
-    //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection, false> (this);
-    intersectors.add<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel, DiscreteIntersection, false> (this);
-    intersectors.add<RigidDistanceGridCollisionModel, PointModel,                      DiscreteIntersection, true>  (this);
-    intersectors.add<RigidDistanceGridCollisionModel, SphereModel,                     DiscreteIntersection, true>  (this);
-    intersectors.add<RigidDistanceGridCollisionModel, TriangleModel,                   DiscreteIntersection, true>  (this);
-    intersectors.add<RigidDistanceGridCollisionModel, RayModel,                        DiscreteIntersection, true>  (this);
-    //intersectors.add<RigidDistanceGridCollisionModel, RayPickInteractor,               DiscreteIntersection, true>  (this);
-    intersectors.add<FFDDistanceGridCollisionModel,   RigidDistanceGridCollisionModel, DiscreteIntersection, true>  (this);
-    intersectors.add<FFDDistanceGridCollisionModel,   FFDDistanceGridCollisionModel,   DiscreteIntersection, false> (this);
-    intersectors.add<FFDDistanceGridCollisionModel, PointModel,                        DiscreteIntersection, true>  (this);
-    intersectors.add<FFDDistanceGridCollisionModel, SphereModel,                       DiscreteIntersection, true>  (this);
-    intersectors.add<FFDDistanceGridCollisionModel, TriangleModel,                     DiscreteIntersection, true>  (this);
-    intersectors.add<FFDDistanceGridCollisionModel,   RayModel,                        DiscreteIntersection, true>  (this);
-    //intersectors.add<FFDDistanceGridCollisionModel,   RayPickInteractor,               DiscreteIntersection, true>  (this);
-    intersectors.add<TriangleModel,     LineModel,       DiscreteIntersection, true>  (this);
-    intersectors.add<TriangleModel,     RayModel,        DiscreteIntersection, true>  (this);
+    intersectors.add<CubeModel,       CubeModel,         DiscreteIntersection> (this);
+    intersectors.add<SphereModel,     SphereModel,       DiscreteIntersection> (this);
+    intersectors.add<SphereModel,     RayModel,          DiscreteIntersection>  (this);
+    //intersectors.add<SphereModel,     RayPickInteractor, DiscreteIntersection>  (this);
+    intersectors.add<SphereTreeModel, RayModel, DiscreteIntersection>  (this);
+    intersectors.add<SphereTreeModel, SphereTreeModel,   DiscreteIntersection> (this);
+    intersectors.add<SphereTreeModel, CubeModel,         DiscreteIntersection>  (this);
+    intersectors.add<SphereTreeModel, TriangleModel,     DiscreteIntersection>  (this);
+    //intersectors.add<SphereTreeModel, SphereModel,       DiscreteIntersection>  (this);
+    //intersectors.add<SphereModel,     TriangleModel,     DiscreteIntersection>  (this);
+    //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection> (this);
+    intersectors.add<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel, DiscreteIntersection> (this);
+    intersectors.add<RigidDistanceGridCollisionModel, PointModel,                      DiscreteIntersection>  (this);
+    intersectors.add<RigidDistanceGridCollisionModel, SphereModel,                     DiscreteIntersection>  (this);
+    intersectors.add<RigidDistanceGridCollisionModel, TriangleModel,                   DiscreteIntersection>  (this);
+    intersectors.add<RigidDistanceGridCollisionModel, RayModel,                        DiscreteIntersection>  (this);
+    //intersectors.add<RigidDistanceGridCollisionModel, RayPickInteractor,               DiscreteIntersection>  (this);
+    intersectors.add<FFDDistanceGridCollisionModel,   RigidDistanceGridCollisionModel, DiscreteIntersection>  (this);
+    intersectors.add<FFDDistanceGridCollisionModel,   FFDDistanceGridCollisionModel,   DiscreteIntersection> (this);
+    intersectors.add<FFDDistanceGridCollisionModel, PointModel,                        DiscreteIntersection>  (this);
+    intersectors.add<FFDDistanceGridCollisionModel, SphereModel,                       DiscreteIntersection>  (this);
+    intersectors.add<FFDDistanceGridCollisionModel, TriangleModel,                     DiscreteIntersection>  (this);
+    intersectors.add<FFDDistanceGridCollisionModel,   RayModel,                        DiscreteIntersection>  (this);
+    //intersectors.add<FFDDistanceGridCollisionModel,   RayPickInteractor,               DiscreteIntersection>  (this);
+    intersectors.add<TriangleModel,     LineModel,       DiscreteIntersection>  (this);
+    intersectors.add<TriangleModel,     RayModel,        DiscreteIntersection>  (this);
 }
 
 /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* object1, core::CollisionModel* object2)
+ElementIntersector* DiscreteIntersection::findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels)
 {
-    return intersectors.get(object1, object2);
+    return intersectors.get(object1, object2, swapModels);
 }
 
 bool DiscreteIntersection::testIntersection(Cube& cube1, Cube& cube2)

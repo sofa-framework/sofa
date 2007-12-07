@@ -96,62 +96,7 @@ protected:
     T* impl;
 };
 
-template<class Elem1, class Elem2, class T>
-class MirrorMemberElementIntersector : public ElementIntersector
-{
-public:
-    typedef typename Elem1::Model Model1;
-    typedef typename Elem2::Model Model2;
-    MirrorMemberElementIntersector(T* ptr) : impl(ptr) {}
-    /// Test if 2 elements can collide. Note that this can be conservative (i.e. return true even when no collision is present)
-    bool canIntersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
-    {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        return impl->testIntersection(e2, e1);
-    }
-
-    /// Begin intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-    /// If the given contacts vector is NULL, then this method should allocate it.
-    int beginIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector*& contacts)
-    {
-        Model1* m1 = static_cast<Model1*>(model1);
-        Model2* m2 = static_cast<Model2*>(model2);
-        if (contacts == NULL)
-        {
-            contacts = impl->createOutputVector(m2,m1);
-        }
-        return impl->beginIntersection(m2, m1, impl->getOutputVector(m2, m1, contacts));
-    }
-
-    /// Compute the intersection between 2 elements.
-    int intersect(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2, DetectionOutputVector* contacts)
-    {
-        Elem1 e1(elem1);
-        Elem2 e2(elem2);
-        return impl->computeIntersection(e2, e1, impl->getOutputVector(e2.getCollisionModel(), e1.getCollisionModel(), contacts));
-    }
-
-    /// End intersection tests between two collision models. Return the number of contacts written in the contacts vector.
-    int endIntersect(core::CollisionModel* model1, core::CollisionModel* model2, DetectionOutputVector* contacts)
-    {
-        Model1* m1 = static_cast<Model1*>(model1);
-        Model2* m2 = static_cast<Model2*>(model2);
-        return impl->endIntersection(m2, m1, impl->getOutputVector(m2, m1, contacts));
-    }
-
-    std::string name() const
-    {
-        return gettypename(typeid(Elem2))+std::string("-")+gettypename(typeid(Elem1));
-    }
-
-protected:
-    T* impl;
-};
-
-template<class Model1, class Model2, class T,
-         bool mirror
-         >
+template<class Model1, class Model2, class T>
 void IntersectorMap::add(T* ptr)
 {
     const objectmodel::ClassInfo* c1 = &classid(Model1);
@@ -164,14 +109,9 @@ void IntersectorMap::add(T* ptr)
         castMap.insert(std::make_pair((*it)->type(),(*it)->type()));
     (*this)[std::make_pair(c1->type(),c2->type())] =
         new MemberElementIntersector<typename Model1::Element, typename Model2::Element, T>(ptr);
-    if (mirror)
-        (*this)[std::make_pair(c2->type(),c1->type())] =
-            new MirrorMemberElementIntersector<typename Model2::Element, typename Model1::Element, T>(ptr);
 }
 
-template<class Model1, class Model2,
-         bool mirror
-         >
+template<class Model1, class Model2>
 void IntersectorMap::ignore()
 {
     const objectmodel::ClassInfo* c1 = &classid(Model1);
@@ -184,9 +124,6 @@ void IntersectorMap::ignore()
         castMap.insert(std::make_pair((*it)->type(),(*it)->type()));
     (*this)[std::make_pair(c1->type(),c2->type())] =
         NULL;
-    if (mirror)
-        (*this)[std::make_pair(c2->type(),c1->type())] =
-            NULL;
 }
 
 } // namespace collision

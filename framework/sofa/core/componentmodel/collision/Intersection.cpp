@@ -59,22 +59,30 @@ helper::TypeInfo IntersectorMap::getType(core::CollisionModel* model)
     else return it->second;
 }
 
-ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::CollisionModel* model2)
+ElementIntersector* IntersectorMap::get(core::CollisionModel* model1, core::CollisionModel* model2, bool& swapModels)
 {
     helper::TypeInfo t1 = getType(model1);
     helper::TypeInfo t2 = getType(model2);
     iterator it =
         this->find(std::make_pair(t1,t2));
-    if (it == this->end())
+    if (it != this->end())
     {
-        std::cerr << "ERROR: Element Intersector "
-                << gettypename(t1) << "-"
-                << gettypename(t2) << " NOT FOUND.\n";
-        (*this)[std::make_pair(t1,t2)] = NULL;
-        return NULL;
-    }
-    else
+        swapModels = false;
         return it->second;
+    }
+
+    it = this->find(std::make_pair(t2,t1));
+    if (it != this->end())
+    {
+        swapModels = true;
+        return it->second;
+    }
+
+    std::cerr << "ERROR: Element Intersector "
+            << gettypename(t1) << "-"
+            << gettypename(t2) << " NOT FOUND.\n";
+    (*this)[std::make_pair(t1,t2)] = NULL;
+    return NULL;
 }
 
 Intersection::~Intersection()
@@ -85,7 +93,8 @@ Intersection::~Intersection()
 /// Note that this method is deprecated in favor of findIntersector
 bool Intersection::isSupported(core::CollisionElementIterator elem1, core::CollisionElementIterator elem2)
 {
-    ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel());
+    bool swap;
+    ElementIntersector* i = findIntersector(elem1.getCollisionModel(), elem2.getCollisionModel(), swap);
     return i != NULL;
 }
 
