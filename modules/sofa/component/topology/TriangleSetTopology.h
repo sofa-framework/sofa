@@ -496,6 +496,11 @@ public:
     // Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
     void InciseAlongLinesList(const sofa::helper::vector< Vec<3,double> >& input_points, const sofa::helper::vector< unsigned int > &input_triangles);
 
+    /** \brief Duplicate the given edge. Only works of at least one of its points is adjacent to a border.
+     * @returns the index of the newly created edge, or -1 if the incision failed.
+     */
+    virtual int InciseAlongEdge(unsigned int edge);
+
 };
 
 /**
