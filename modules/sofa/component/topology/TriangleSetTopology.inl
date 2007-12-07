@@ -2426,7 +2426,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     // Propagate the topological changes *** not necessary
     //topology->propagateTopologicalChanges();
 
-    return 0; // todo: get new edge indice
+    return (pb_is_on_border?1:0)+(pa_is_on_border?1:0); // todo: get new edge indice
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

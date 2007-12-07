@@ -119,6 +119,12 @@ protected:
     void createVector(const Vec<N,T> &value, Q3GroupBox *box);
     template< int N, class T>
     void storeVector(std::list< QObject *>::iterator &list_it, Data< Vec<N,T> > *ff);
+    template<class T>
+    void storeVector(std::list< QObject *>::iterator &list_it, Data< Quater<T> > *ff);
+    template< int N, class T>
+    void storeVector(std::list< QObject *>::iterator &list_it, Vec<N,T> *ff);
+    template<class T>
+    void storeVector(std::list< QObject *>::iterator &list_it, Quater<T> *ff);
     //*********************************************************
     template< class T>
     bool createQtTable(Data< sofa::helper::vector< T > > *ff, Q3GroupBox *box, Q3Table* vectorTable );

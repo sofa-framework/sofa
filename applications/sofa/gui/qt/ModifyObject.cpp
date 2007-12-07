@@ -1122,6 +1122,13 @@ void ModifyObject::updateValues()
                 }
 
             }
+            else if( Data<RigidCoord<3,double> > * ff = dynamic_cast< Data<RigidCoord<3,double> > * >( (*it).second )  )
+            {
+                RigidCoord<3,double> v;
+                storeVector(list_it, &v.getCenter());
+                storeVector(list_it, &v.getOrientation());
+                ff->setValue(v);
+            }
             //*******************************************************************************************************************
             else if( Data<PointSubset> * ff = dynamic_cast< Data<PointSubset> * >( (*it).second ))
             {
@@ -2986,6 +2993,45 @@ void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, Data< V
     Vec<N, T> value;
     for (int i=0; i<N; i++)  value[i] =  (T) editSFFloat[i]->getFloatValue();
     ff->setValue(value);
+}
+template<class T>
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, Data< Quater<T> > *ff)
+{
+    WFloatLineEdit* editSFFloat[4];
+    for (int i=0; i<4; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Quater<T> value;
+    for (int i=0; i<4; i++)  value[i] =  (T) editSFFloat[i]->getFloatValue();
+    ff->setValue(value);
+}
+template< int N, class T>
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, Vec<N,T> *ff)
+{
+    WFloatLineEdit* editSFFloat[N];
+    for (int i=0; i<N; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<N, T> value;
+    for (int i=0; i<N; i++)  value[i] =  (T) editSFFloat[i]->getFloatValue();
+    *ff = value;
+}
+template<class T>
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, Quater<T> *ff)
+{
+    WFloatLineEdit* editSFFloat[4];
+    for (int i=0; i<4; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Quater<T> value;
+    for (int i=0; i<4; i++)  value[i] =  (T) editSFFloat[i]->getFloatValue();
+    *ff = value;
 }
 //********************************************************************************************************************
 //********************************************************************************************************************
