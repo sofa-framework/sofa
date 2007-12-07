@@ -60,7 +60,15 @@ OglModel::~OglModel()
 
 void OglModel::internalDraw()
 {
-
+    /*if (getContext()->getMainTopology())
+    {
+        int nbp = getContext()->get<core::componentmodel::behavior::BaseMechanicalState>()->getSize();
+        int nbv = vertices.size();
+        if (nbp != nbv)
+        {
+            std::cerr << "nbp mismatch: "<<nbp<<" "<<nbv<<std::endl;
+        }
+    }*/
     //std::cerr<<" OglModel::draw()"<<std::endl;
     if (!getContext()->getShowVisualModels()) return;
     if (getContext()->getShowWireFrame())
