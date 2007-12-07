@@ -381,9 +381,9 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
                     if (vertexInfo[mostDeformableVertexIndex].meanStrainDirection.norm() != 0.0)
                     {
-                        if (abs(vertexInfo[mostDeformableVertexIndex].meanStrainDirection * (x[b] - x[a])) < minDotProduct)
+                        if (fabs(vertexInfo[mostDeformableVertexIndex].meanStrainDirection * (x[b] - x[a])) < minDotProduct)
                         {
-                            minDotProduct = abs(vertexInfo[mostDeformableVertexIndex].meanStrainDirection * (x[b] - x[a]));
+                            minDotProduct = fabs(vertexInfo[mostDeformableVertexIndex].meanStrainDirection * (x[b] - x[a]));
                             fracturableIndex = *it;
                             fracture = true;
                         }
@@ -874,9 +874,9 @@ void TriangularFEMForceField<DataTypes>::accumulateForceLarge(VecCoord &f, const
         double maxEigenValue;
         computeEigenStrain(v, J, D, maxEigenValue);
 
-        if (abs(maxEigenValue) > 0.1)
+        if (fabs(maxEigenValue) > 0.1)
         {
-            triangleInfo[elementIndex].eigenValue = abs(maxEigenValue);
+            triangleInfo[elementIndex].eigenValue = fabs(maxEigenValue);
         }
         else
         {
