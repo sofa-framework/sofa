@@ -37,7 +37,9 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/TriangleData.h>
 #include <sofa/component/topology/EdgeData.h>
-
+#include <sofa/component/topology/PointData.h>
+#include <NewMAT/newmat.h>
+#include <NewMAT/newmatap.h>
 
 // corotational triangle from
 // @InProceedings{NPF05,
@@ -116,14 +118,36 @@ protected:
         /// polar method
         Transformation initialTransformation;
 
+        Coord principalStrainDirection;
+        double eigenValue;
+
         TriangleInformation()
         {
         }
     };
 
-    TriangleData<TriangleInformation> triangleInfo;
+    class EdgeInformation
+    {
+    public:
+        EdgeInformation()
+            :fracturable(false) {};
 
-    //EdgeData<EdgeInformation> edgeInfo;
+        bool fracturable;
+    };
+
+    class VertexInformation
+    {
+    public:
+        VertexInformation()
+            :sumEigenValues(0.0) {};
+
+        Coord meanStrainDirection;
+        double sumEigenValues;
+    };
+
+    TriangleData<TriangleInformation> triangleInfo;
+    PointData<VertexInformation> vertexInfo;
+    EdgeData<EdgeInformation> edgeInfo;
 
     TriangleSetTopology<DataTypes> * _mesh;
     //const VecElement *_indexedElements;
@@ -171,6 +195,7 @@ public:
     Data<Real> f_poisson;
     Data<Real> f_young;
     Data<Real> f_damping;
+    Data<bool> f_fracturable;
 
     Real getPoisson() { return f_poisson.getValue(); }
     void setPoisson(Real val) { f_poisson.setValue(val); }
@@ -187,6 +212,8 @@ public:
 //     }
 
 protected :
+
+    void computeEigenStrain( Coord &v, StrainDisplacement &J, Displacement &Depl , double &maxEigenValue);
 
     //EdgeData<EdgeInformation> &getEdgeInfo() {return edgeInfo;}
 
