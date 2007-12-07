@@ -71,18 +71,15 @@ class IntersectorMap : public std::map< std::pair< helper::TypeInfo, helper::Typ
 {
 public:
 
-    template<class Model1, class Model2, class T, bool mirror
-    >
+    template<class Model1, class Model2, class T>
     void add(T* ptr);
 
-    template<class Model1, class Model2,
-             bool mirror
-             >
+    template<class Model1, class Model2>
     void ignore();
 
     helper::TypeInfo getType(core::CollisionModel* model);
 
-    ElementIntersector* get(core::CollisionModel* model1, core::CollisionModel* model2);
+    ElementIntersector* get(core::CollisionModel* model1, core::CollisionModel* model2, bool& swapModels);
 
 protected:
     std::map< helper::TypeInfo, helper::TypeInfo > castMap;
@@ -96,7 +93,8 @@ public:
     virtual ~Intersection();
 
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-    virtual ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2) = 0;
+    /// @param swapModel output value set to true if the collision models must be swapped before calling the intersector.
+    virtual ElementIntersector* findIntersector(core::CollisionModel* object1, core::CollisionModel* object2, bool& swapModels) = 0;
 
     /// Test if intersection between 2 types of elements is supported, i.e. an intersection test is implemented for this combinaison of types.
     /// Note that this method is deprecated in favor of findIntersector

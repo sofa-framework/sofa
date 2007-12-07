@@ -160,7 +160,25 @@ public:
         if (index < nbt)
             return this->mapper->createPointInTriangle(P, index, this->model->getMechanicalState()->getX());
         else
-            return this->mapper->createPointInQuad(P, (index - nbt)/2, this->model->getMechanicalState()->getX());
+        {
+            int qindex = (index - nbt)/2;
+            int nbq = this->model->getTopology()->getNbQuads();
+            if (qindex < nbq)
+                return this->mapper->createPointInQuad(P, qindex, this->model->getMechanicalState()->getX());
+            else
+            {
+                std::cerr << "ContactMapper<TriangleMeshModel>: ERROR invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<std::endl;
+                simulation::tree::GNode* n = dynamic_cast<simulation::tree::GNode*>(this->model->getContext());
+                std::string path;
+                if (n !=NULL)
+                {
+                    path = n->getPathName();
+                    path.append("/");
+                }
+                std::cerr << "model="<<path<<this->model->getName()<<" size="<<this->model->getSize()<<std::endl;
+                return -1;
+            }
+        }
     }
 };
 

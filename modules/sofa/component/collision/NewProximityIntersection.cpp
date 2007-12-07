@@ -61,32 +61,21 @@ NewProximityIntersection::NewProximityIntersection()
 
 void NewProximityIntersection::init()
 {
-    intersectors.add<CubeModel, CubeModel, NewProximityIntersection, false>(this);
-    intersectors.add<PointModel, PointModel, NewProximityIntersection, false>(this);
-    intersectors.add<SphereModel, PointModel, NewProximityIntersection, true>(this);
-    intersectors.add<SphereModel, SphereModel, NewProximityIntersection, false>(this);
-    intersectors.add<LineModel, PointModel, NewProximityIntersection, true>(this);
-    intersectors.add<LineModel, SphereModel, NewProximityIntersection, true>(this);
-    intersectors.add<LineModel, LineModel, NewProximityIntersection, false>(this);
-    intersectors.add<TriangleModel, PointModel, NewProximityIntersection, true>(this);
-    intersectors.add<TriangleModel, SphereModel, NewProximityIntersection, true>(this);
-    intersectors.add<TriangleModel, LineModel, NewProximityIntersection, true>(this);
-    intersectors.add<TriangleModel, TriangleModel, NewProximityIntersection, false>(this);
+    intersectors.add<CubeModel, CubeModel, NewProximityIntersection>(this);
+    intersectors.add<PointModel, PointModel, NewProximityIntersection>(this);
+    intersectors.add<SphereModel, PointModel, NewProximityIntersection>(this);
+    intersectors.add<SphereModel, SphereModel, NewProximityIntersection>(this);
+    intersectors.add<LineModel, PointModel, NewProximityIntersection>(this);
+    intersectors.add<LineModel, SphereModel, NewProximityIntersection>(this);
+    intersectors.add<LineModel, LineModel, NewProximityIntersection>(this);
+    intersectors.add<TriangleModel, PointModel, NewProximityIntersection>(this);
+    intersectors.add<TriangleModel, SphereModel, NewProximityIntersection>(this);
+    intersectors.add<TriangleModel, LineModel, NewProximityIntersection>(this);
+    intersectors.add<TriangleModel, TriangleModel, NewProximityIntersection>(this);
 
-    intersectors.add<RayModel, TriangleModel, NewProximityIntersection, true>(this);
-    intersectors.add<RayPickInteractor, TriangleModel, NewProximityIntersection, true>(this);
+    intersectors.add<RayModel, TriangleModel, NewProximityIntersection>(this);
+    intersectors.add<RayPickInteractor, TriangleModel, NewProximityIntersection>(this);
 }
-
-//static NewProximityIntersection* proximityInstance = NULL;
-
-/// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-ElementIntersector* NewProximityIntersection::findIntersector(core::CollisionModel* object1, core::CollisionModel* object2)
-{
-    //proximityInstance = this;
-    return this->DiscreteIntersection::findIntersector(object1, object2);
-}
-
-
 
 bool NewProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
 {
@@ -261,6 +250,16 @@ bool NewProximityIntersection::testIntersection(Triangle&, Triangle&)
 
 int NewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts)
 {
+    if (e1.getIndex() >= e1.getCollisionModel()->getSize())
+    {
+        std::cerr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e1 index "<<e1.getIndex()<<" on CM "<<e1.getCollisionModel()->getName()<<" of size "<<e1.getCollisionModel()->getSize()<<std::endl;
+        return 0;
+    }
+    if (e2.getIndex() >= e2.getCollisionModel()->getSize())
+    {
+        std::cerr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e2 index "<<e2.getIndex()<<" on CM "<<e2.getCollisionModel()->getName()<<" of size "<<e2.getCollisionModel()->getSize()<<std::endl;
+        return 0;
+    }
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const double dist2 = alarmDist*alarmDist;
     const Vector3& p1 = e1.p1();
@@ -297,10 +296,14 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, Ou
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
+//        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
+        for (int i=0; i<n; ++i)
         {
-            detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            detection->value -= contactDist;
+            //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            //detection->value -= contactDist;
+            (*contacts)[contacts->size()-n+i].elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
+            (*contacts)[contacts->size()-n+i].value -= contactDist;
+
         }
     }
     return n;

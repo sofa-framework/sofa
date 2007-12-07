@@ -66,43 +66,32 @@ MinProximityIntersection::MinProximityIntersection()
 
 void MinProximityIntersection::init()
 {
-    intersectors.add<CubeModel, CubeModel, MinProximityIntersection, false>(this);
-    intersectors.ignore<TriangleModel, TriangleModel, false>();
-    intersectors.ignore<LineModel, TriangleModel, true>();
-    intersectors.add<LineModel, LineModel, MinProximityIntersection, false>(this);
-    intersectors.add<PointModel, TriangleModel, MinProximityIntersection, true>(this);
-    intersectors.add<PointModel, LineModel, MinProximityIntersection, true>(this);
+    intersectors.add<CubeModel, CubeModel, MinProximityIntersection>(this);
+    intersectors.ignore<TriangleModel, TriangleModel>();
+    intersectors.ignore<LineModel, TriangleModel>();
+    intersectors.add<LineModel, LineModel, MinProximityIntersection>(this);
+    intersectors.add<PointModel, TriangleModel, MinProximityIntersection>(this);
+    intersectors.add<PointModel, LineModel, MinProximityIntersection>(this);
     if (usePointPoint.getValue())
-        intersectors.add<PointModel, PointModel, MinProximityIntersection, false>(this);
+        intersectors.add<PointModel, PointModel, MinProximityIntersection>(this);
     else
-        intersectors.ignore<PointModel, PointModel, false>();
+        intersectors.ignore<PointModel, PointModel>();
     if (useSphereTriangle.getValue())
     {
-        intersectors.add<SphereModel, TriangleModel, MinProximityIntersection, true>(this);
-        intersectors.add<SphereModel, LineModel, MinProximityIntersection, true>(this);
-        intersectors.add<SphereModel, PointModel, MinProximityIntersection, true>(this);
+        intersectors.add<SphereModel, TriangleModel, MinProximityIntersection>(this);
+        intersectors.add<SphereModel, LineModel, MinProximityIntersection>(this);
+        intersectors.add<SphereModel, PointModel, MinProximityIntersection>(this);
     }
     else
     {
-        intersectors.ignore<SphereModel, TriangleModel, true>();
-        intersectors.ignore<SphereModel, LineModel, true>();
-        intersectors.ignore<SphereModel, PointModel, true>();
+        intersectors.ignore<SphereModel, TriangleModel>();
+        intersectors.ignore<SphereModel, LineModel>();
+        intersectors.ignore<SphereModel, PointModel>();
     }
-    intersectors.add<RayModel, TriangleModel, MinProximityIntersection, true>(this);
-    //intersectors.add<RayPickInteractor, TriangleModel, MinProximityIntersection, true>(this);
+    intersectors.add<RayModel, TriangleModel, MinProximityIntersection>(this);
+    //intersectors.add<RayPickInteractor, TriangleModel, MinProximityIntersection>(this);
 
 }
-
-//static MinProximityIntersection* proximityInstance = NULL;
-
-/// Return the intersector class handling the given pair of collision models, or NULL if not supported.
-ElementIntersector* MinProximityIntersection::findIntersector(core::CollisionModel* object1, core::CollisionModel* object2)
-{
-    //proximityInstance = this;
-    return this->DiscreteIntersection::findIntersector(object1, object2);
-}
-
-
 
 bool MinProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
 {
