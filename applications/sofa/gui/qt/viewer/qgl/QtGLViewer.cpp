@@ -227,7 +227,9 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
     m_isControlPressed = false;
 
     setManipulatedFrame( new qglviewer::ManipulatedFrame() );
-
+    //near and far plane are better placed
+    camera()->setZNearCoefficient(0.001);
+    camera()->setZClippingCoefficient(5);
 }
 
 
