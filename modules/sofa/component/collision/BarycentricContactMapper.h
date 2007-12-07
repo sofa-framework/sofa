@@ -168,14 +168,7 @@ public:
             else
             {
                 std::cerr << "ContactMapper<TriangleMeshModel>: ERROR invalid contact element index "<<index<<" on a topology with "<<nbt<<" triangles and "<<nbq<<" quads."<<std::endl;
-                simulation::tree::GNode* n = dynamic_cast<simulation::tree::GNode*>(this->model->getContext());
-                std::string path;
-                if (n !=NULL)
-                {
-                    path = n->getPathName();
-                    path.append("/");
-                }
-                std::cerr << "model="<<path<<this->model->getName()<<" size="<<this->model->getSize()<<std::endl;
+                std::cerr << "model="<<this->model->getName()<<" size="<<this->model->getSize()<<std::endl;
                 return -1;
             }
         }
