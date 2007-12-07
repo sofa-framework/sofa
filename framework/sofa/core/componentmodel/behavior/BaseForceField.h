@@ -111,6 +111,10 @@ public:
     virtual void addKDxToVector(sofa::defaulttype::BaseVector * vect, double kFact, unsigned int &offset);
 
     /// @}
+
+    // TEMPORARY there... allow to get from the ForceField the fractured Edge index
+    // When its computation is in the forcefield itself
+    virtual int getFracturedEdge() {return -1;};
 };
 
 } // namespace behavior

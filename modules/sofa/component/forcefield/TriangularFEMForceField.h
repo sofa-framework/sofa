@@ -211,6 +211,8 @@ public:
 //         return _object;
 //     }
 
+    int getFracturedEdge();
+
 protected :
 
     void computeEigenStrain( Coord &v, StrainDisplacement &J, Displacement &Depl , double &maxEigenValue);
@@ -218,9 +220,9 @@ protected :
     //EdgeData<EdgeInformation> &getEdgeInfo() {return edgeInfo;}
 
     /*
-    static void TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeInformation &ei,
-                                         const Edge& ,  const sofa::helper::vector< unsigned int > &,
-                                         const sofa::helper::vector< double >&);
+        static void TRQSEdgeCreationFunction(int edgeIndex, void* param, EdgeInformation &ei,
+                                             const Edge& ,  const sofa::helper::vector< unsigned int > &,
+                                             const sofa::helper::vector< double >&);
     */
     static void TRQSTriangleCreationFunction (int , void* ,
             TriangleInformation &,

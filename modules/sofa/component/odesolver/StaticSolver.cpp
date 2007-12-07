@@ -104,7 +104,11 @@ void StaticSolver::solve(double , VecId b)
         double den = p.dot(q);
         /*        cerr<<"StaticSolver::solve, den = "<<den<<endl;*/
         if( fabs(den)<f_smallDenominatorThreshold.getValue() )
+        {
+            std::cout << "nb_iter = " << nb_iter << std::endl;
             break;
+        }
+
         alpha = rho/den;
         /*        cerr<<"StaticSolver::solve, rho = "<< rho <<endl;
                 cerr<<"StaticSolver::solve, den = "<< den <<endl;
