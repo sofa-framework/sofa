@@ -1384,6 +1384,11 @@ void QtViewer::calcProjection()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
+    xFactor *= 0.01;
+    yFactor *= 0.01;
+    zNear *= 0.01;
+    zFar *= 10.0;
+
     zForeground = -zNear - offset;
     zBackground = -zFar + offset;
 
@@ -1392,7 +1397,7 @@ void QtViewer::calcProjection()
                 yNear * yFactor, zNear, zFar);
     else
     {
-        float ratio = zFar/(zNear*2.0);
+        float ratio = zFar/(zNear*20);
         glOrtho( (-xNear * xFactor)*ratio , (xNear * xFactor)*ratio , (-yNear * yFactor)*ratio,
                 (yNear * yFactor)*ratio, zNear, zFar);
     }
