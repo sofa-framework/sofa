@@ -208,14 +208,14 @@ void Simulation::animate ( GNode* root, double dt )
         root->execute<UpdateSimulationContextVisitor>();
     }
 
-    root->execute<UpdateMappingVisitor>();
-    root->execute<VisualUpdateVisitor>();
-
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
         root->execute ( act );
     }
+
+    root->execute<UpdateMappingVisitor>();
+    root->execute<VisualUpdateVisitor>();
 }
 
 /// Reset to initial state

@@ -617,11 +617,12 @@ void VisualModelImpl::setColor(std::string color)
 
 void VisualModelImpl::update()
 {
+    //std::cout << "VisualModelImpl::update()"<<std::endl;
     if (modified && !vertices.empty() || useTopology)
     {
         if (useTopology)
         {
-            /** HD : build also a Ogl description from main Topology. But it needs to be build only since the topology update
+            /** HD : build also a Ogl description from main Topology. But it needs to be build only once since the topology update
             is taken care of by the handleTopologyChange() routine */
             sofa::core::componentmodel::topology::BaseTopology* pst = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
             if (pst)
@@ -766,7 +767,7 @@ void VisualModelImpl::handleTopologyChange()
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
-
+    //std::cout << "VisualModelImpl::handleTopologicalChange()"<<std::endl;
 
 
 
