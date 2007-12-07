@@ -389,7 +389,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
             }
             */
 
-            std::vector<std::pair<double, unsigned int>> mostDeformableVertexIndexA(nbPoints);
+            std::vector< std::pair< double, unsigned int > > mostDeformableVertexIndexA(nbPoints);
 
             for( unsigned int i=0; i<nbPoints; i++ )
             {
@@ -408,7 +408,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
             */
 
             bool vertexOnBorder(false);
-            unsigned int curIndex = nbPoints-1;
+            int curIndex = nbPoints-1;
 
             while ((!vertexOnBorder)&&(curIndex>=0))
             {
@@ -1042,7 +1042,7 @@ int TriangularFEMForceField<DataTypes>::getFracturedEdge()
     if (f_fracturable.getValue())
     {
         TriangleSetTopologyContainer *container=_mesh->getTriangleSetTopologyContainer();
-        const sofa::helper::vector< Edge> &edgeArray=container->getEdgeArray() ;
+        //	const sofa::helper::vector< Edge> &edgeArray=container->getEdgeArray() ;
         unsigned int nbEdges = container->getNumberOfEdges();
 
         for( unsigned int i=0; i<nbEdges; i++ )
