@@ -41,7 +41,6 @@ public:
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
     typedef typename Coord2::value_type Real2;
-    typedef typename
 
 
     enum { N=Coord1::static_size };
