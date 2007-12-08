@@ -933,19 +933,32 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
 
         QVBoxLayout *layout = new QVBoxLayout( tabInstrument, 0, 1, "tabInstrument");
 
-
         QButtonGroup *list_instrument = new QButtonGroup(tabInstrument);
         list_instrument->setExclusive(true);
 
+#ifdef SOFA_QT4
+        connect ( list_instrument, SIGNAL ( buttonClicked(int) ), this, SLOT ( changeInstrument(int) ) );
+#else
         connect ( list_instrument, SIGNAL ( clicked(int) ), this, SLOT ( changeInstrument(int) ) );
+#endif
 
         QRadioButton *button = new QRadioButton(tabInstrument); button->setText("None");
-        list_instrument->insert(button); layout->addWidget(button);
+#ifdef SOFA_QT4
+        list_instrument->addButton(button, 0);
+#else
+        list_instrument->insert(button);
+#endif
+        layout->addWidget(button);
 
         for (unsigned int i=0; i<s->instruments.size(); i++)
         {
             QRadioButton *button = new QRadioButton(tabInstrument);  button->setText(QString( s->instruments[i]->getName().c_str() ) );
-            list_instrument->insert(button); layout->addWidget(button);
+#ifdef SOFA_QT4
+            list_instrument->addButton(button, i+1);
+#else
+            list_instrument->insert(button);
+#endif
+            layout->addWidget(button);
             if (i==0)
             {
                 button->setChecked(true); changeInstrument(1);
@@ -954,7 +967,10 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
                 s->instruments[i]->setActive(false);
 
         }
-#ifndef QT_MODULE_QT3SUPPORT
+#ifdef SOFA_QT4
+        layout->addStretch(1);
+#endif
+#ifndef SOFA_QT4
         layout->addWidget(list_instrument);
 #endif
     }
@@ -962,6 +978,7 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
 
 void RealGUI::changeInstrument(int id)
 {
+    std::cout << "Activation instrument "<<id<<std::endl;
     Simulation *s = getSimulation();
     if (s->instrumentInUse.getValue() >= 0 && s->instrumentInUse.getValue() < (int)s->instruments.size())
         s->instruments[s->instrumentInUse.getValue()]->setActive(false);
