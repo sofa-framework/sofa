@@ -27,6 +27,7 @@
 #define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_INL
 
 #include <sofa/component/mapping/ArticulatedSystemMapping.h>
+#include <sofa/core/objectmodel/BaseContext.h>
 
 namespace sofa
 {
@@ -42,7 +43,11 @@ void ArticulatedSystemMapping<BasicMapping>::init()
 {
     GNode* context = dynamic_cast<GNode*>(this->fromModel->getContext());
     context->getNodeObject(ahc);
+    //ahc = this->fromModel->getContext()->get<container::ArticulatedHierarchyContainer>();
     articulationCenters = ahc->getArticulationCenters();
+
+    //rootModel = this->fromModel->getContext()->get<InRoot>();
+    context->parent->getNodeObject(rootModel);
 
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
@@ -66,6 +71,10 @@ void ArticulatedSystemMapping<BasicMapping>::init()
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+    // Copy the root position if a rigid root model is present
+    if (rootModel)
+        out[0] = (*rootModel->getX())[0];
+
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
     vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
 

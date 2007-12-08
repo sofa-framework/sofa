@@ -73,8 +73,12 @@ public:
     typedef typename In::Real Real;
     typedef typename OutCoord::value_type OutReal;
 
+    typedef sofa::core::componentmodel::behavior::MechanicalState<typename Out::DataTypes> InRoot;
+
+    InRoot* rootModel;
+
     ArticulatedSystemMapping(In* from, Out* to)
-        : Inherit(from, to)
+        : Inherit(from, to), rootModel(NULL), ahc(NULL)
     {
     }
 
