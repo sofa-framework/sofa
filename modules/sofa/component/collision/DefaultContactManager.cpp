@@ -87,11 +87,18 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
         {
             // new contact
             //std::cout << "Creation new "<<contacttype<<" contact"<<std::endl;
-            core::componentmodel::collision::Contact* contact = core::componentmodel::collision::Contact::Create(response.getValue(), outputsIt->first.first, outputsIt->first.second, intersectionMethod);
+            core::CollisionModel* model1 = outputsIt->first.first;
+            core::CollisionModel* model2 = outputsIt->first.second;
+            std::string response1 = model1->getContactResponse();
+            std::string response2 = model2->getContactResponse();
+            std::string responseUsed = response.getValue();
+            if (!response1.empty()) responseUsed = response1;
+            else if (!response2.empty()) responseUsed = response2;
+            core::componentmodel::collision::Contact* contact = core::componentmodel::collision::Contact::Create(responseUsed, model1, model2, intersectionMethod);
             if (contact == NULL) std::cerr << "Contact creation failed"<<std::endl;
             else
             {
-                contactMap[std::make_pair(outputsIt->first.first, outputsIt->first.second)] = contact;
+                contactMap[std::make_pair(model1, model2)] = contact;
                 contact->f_printLog.setValue(this->f_printLog.getValue());
                 contact->init();
                 contact->setDetectionOutputs(outputsIt->second);
