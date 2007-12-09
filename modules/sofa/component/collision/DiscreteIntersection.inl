@@ -131,19 +131,19 @@ bool DiscreteIntersection::testIntersection( Sphere& sph, Triangle& triangle)
 }
 
 template<class Sphere>
-bool DiscreteIntersection::testIntersection(Sphere& sph1, Ray& ray2)
+bool DiscreteIntersection::testIntersection(Ray& ray1, Sphere& sph2)
 {
     //std::cout<<"intersectionSphereRay: Collision between Sphere - Ray"<<std::endl;
     // Center of the sphere
-    const Vector3 sph1Pos(sph1.center());
+    const Vector3 sph2Pos(sph2.center());
     // Radius of the sphere
-    const double radius1 = sph1.r();
+    const double radius1 = sph2.r();
 
-    const Vector3 ray2Origin(ray2.origin());
-    const Vector3 ray2Direction(ray2.direction());
-    const double length2 = ray2.l();
-    const Vector3 tmp = sph1Pos - ray2Origin;
-    const double rayPos = tmp*ray2Direction;
+    const Vector3 ray1Origin(ray1.origin());
+    const Vector3 ray1Direction(ray1.direction());
+    const double length2 = ray1.l();
+    const Vector3 tmp = sph2Pos - ray1Origin;
+    const double rayPos = tmp*ray1Direction;
     const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
     const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
     return (dist2 < (radius1*radius1));
@@ -286,18 +286,18 @@ int DiscreteIntersection::computeIntersection(Sphere& /*sph1*/, Cube& /*cube*/, 
 }
 
 template<class Sphere>
-int DiscreteIntersection::computeIntersection(Sphere& sph1, Ray& ray2, OutputVector* contacts)
+int DiscreteIntersection::computeIntersection(Ray& ray1, Sphere& sph2, OutputVector* contacts)
 {
     // Center of the sphere
-    const Vector3 sph1Pos(sph1.center());
+    const Vector3 sph2Pos(sph2.center());
     // Radius of the sphere
-    const double radius1 = sph1.r();
+    const double radius1 = sph2.r();
 
-    const Vector3 ray2Origin(ray2.origin());
-    const Vector3 ray2Direction(ray2.direction());
-    const double length2 = ray2.l();
-    const Vector3 tmp = sph1Pos - ray2Origin;
-    const double rayPos = tmp*ray2Direction;
+    const Vector3 ray1Origin(ray1.origin());
+    const Vector3 ray1Direction(ray1.direction());
+    const double length2 = ray1.l();
+    const Vector3 tmp = sph2Pos - ray1Origin;
+    const double rayPos = tmp*ray1Direction;
     const double rayPosInside = std::max(std::min(rayPos,length2),0.0);
     const double dist2 = tmp.norm2() - (rayPosInside*rayPosInside);
     if (dist2 >= (radius1*radius1))
@@ -308,14 +308,14 @@ int DiscreteIntersection::computeIntersection(Sphere& sph1, Ray& ray2, OutputVec
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-    detection->point[1] = ray2Origin + ray2Direction*rayPosInside;
-    detection->normal = detection->point[1] - sph1Pos;
+    detection->point[0] = ray1Origin + ray1Direction*rayPosInside;
+    detection->normal = sph2Pos - detection->point[0];
     detection->normal /= dist;
-    detection->point[0] = sph1Pos + detection->normal * radius1;
+    detection->point[1] = sph2Pos - detection->normal * radius1;
     detection->value = dist - radius1;
-    detection->elem.first = sph1;
-    detection->elem.second = ray2;
-    detection->id = ray2.getIndex();
+    detection->elem.first = ray1;
+    detection->elem.second = sph2;
+    detection->id = ray1.getIndex();
 
     return 1;
 }

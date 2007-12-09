@@ -95,7 +95,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             if (!response1.empty()) responseUsed = response1;
             else if (!response2.empty()) responseUsed = response2;
             core::componentmodel::collision::Contact* contact = core::componentmodel::collision::Contact::Create(responseUsed, model1, model2, intersectionMethod);
-            if (contact == NULL) std::cerr << "Contact creation failed"<<std::endl;
+            if (contact == NULL) std::cerr << "Contact "<<responseUsed<<" between " << model1->getClassName()<<" and "<<model2->getClassName() << " creation failed"<<std::endl;
             else
             {
                 contactMap[std::make_pair(model1, model2)] = contact;
