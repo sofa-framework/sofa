@@ -62,12 +62,15 @@ public:
     /// Return true if this contact should be kept alive, even if objects are no longer in collision
     virtual bool keepAlive() { return false; }
 
-    typedef helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> > Factory;
-
-    static Contact* Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod);
+    /// Control the keepAlive flag of the contact. Note that not all contacts support this method
+    virtual void setKeepAlive(bool /* val */) {}
 
     virtual void getCorrespondingCollisionModels( const core::componentmodel::behavior::InteractionForceField *,
             core::CollisionModel*& /* */, core::CollisionModel*& /* */) {};
+
+    typedef helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> > Factory;
+
+    static Contact* Create(const std::string& type, core::CollisionModel* model1, core::CollisionModel* model2, Intersection* intersectionMethod);
 };
 
 template<class RealContact>

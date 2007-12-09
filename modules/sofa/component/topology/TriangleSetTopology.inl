@@ -2227,9 +2227,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
     }
 }
 
-/** \brief Duplicate the given edge. Only works of at least one of its points is adjacent to a border.
-  * @returns the index of the newly created edge, or -1 if the incision failed.
-  */
+// Duplicate the given edge. Only works of at least one of its points is adjacent to a border.
 template<class DataTypes>
 int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_edge)
 {

@@ -72,6 +72,7 @@ public:
         , proximity(initData(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
         , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
         , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
+        , contactResponse(initData(&contactResponse, "contactResponse", "if set, indicate to the ContactManager that this model should use the given class of contacts. Note that this is only indicative, and in particular if both collision models specify a different class it is up to the manager to choose."))
         , bFiltered(initData(&bFiltered, false, "filtered", "flag indicating if the model has to build its neighborhood to filter contacts"))
         , color(initData(&color, defaulttype::Vec4f(1,0,0,1), "color", "color used to display the collision model if requested"))
         , size(0), previous(NULL)  , next(NULL)
@@ -270,6 +271,9 @@ public:
     /// Contact friction (damping) coefficient
     double getContactFriction(int /*index*/) { return contactFriction.getValue(); }
 
+    /// Contact response algorithm
+    std::string getContactResponse() { return contactResponse.getValue(); }
+
     /// @}
 
     /// Get a color that can be used to display this CollisionModel
@@ -288,6 +292,8 @@ protected:
     Data<double> contactStiffness;
 
     Data<double> contactFriction;
+
+    Data<std::string> contactResponse;
 
     Data<bool> bFiltered;
 
