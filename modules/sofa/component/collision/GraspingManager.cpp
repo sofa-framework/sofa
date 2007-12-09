@@ -1,8 +1,8 @@
 #include "GraspingManager.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/collision/DetectionOutput.h>
-#include <sofa/core/objectmodel/KeyPressedEvent.h>
-#include <sofa/core/objectmodel/KeyReleasedEvent.h>
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/simulation/tree/AnimateBeginEvent.h>
 #include <sofa/simulation/tree/AnimateEndEvent.h>
 #include <sofa/helper/gl/template.h>
