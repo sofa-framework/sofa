@@ -113,6 +113,8 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             if (contactIt->second->keepAlive())
             {
                 contactIt->second->setDetectionOutputs(NULL);
+                ++nbContact;
+                ++contactIt;
             }
             else
             {
