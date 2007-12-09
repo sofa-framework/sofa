@@ -248,6 +248,7 @@ protected:
     //virtual bool event ( QEvent * e );
 
     virtual void keyPressEvent ( QKeyEvent * e );
+    virtual void keyReleaseEvent ( QKeyEvent * e );
     virtual void mousePressEvent ( QMouseEvent * e );
     virtual void mouseReleaseEvent ( QMouseEvent * e );
     virtual void mouseMoveEvent ( QMouseEvent * e );
