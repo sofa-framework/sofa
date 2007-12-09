@@ -1618,7 +1618,7 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
 {
     if( isControlPressed() ) // pass event to the scene data structure
     {
-        //cerr<<"QtViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
+        cerr<<"QtViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
         if (groot)
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
@@ -1683,6 +1683,10 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
         }
 }
 
+void QtViewer::keyReleaseEvent ( QKeyEvent * e )
+{
+    SofaViewer::keyReleaseEvent(e);
+}
 
 
 void QtViewer::wheelEvent(QWheelEvent* e)
