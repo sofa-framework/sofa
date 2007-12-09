@@ -89,25 +89,25 @@ public:
     template<class Sphere>
     bool testIntersection(Sphere&, Cube&);
     template<class Sphere>
-    bool testIntersection(Sphere&, Ray&);
+    bool testIntersection(Ray&, Sphere&);
     template<class Sphere>
     bool testIntersection(Sphere&, Triangle&);
     //bool testIntersection(Triangle&, Triangle&);
     bool testIntersection(Triangle&, Line&);
-    bool testIntersection(Triangle&, Ray&);
+    bool testIntersection(Ray&, Triangle&);
     bool testIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
     bool testIntersection(RigidDistanceGridCollisionElement&, Point&);
     template<class Sphere>
     bool testIntersection(RigidDistanceGridCollisionElement&, Sphere&);
     bool testIntersection(RigidDistanceGridCollisionElement&, Triangle&);
-    bool testIntersection(RigidDistanceGridCollisionElement&, Ray&);
+    bool testIntersection(Ray&, RigidDistanceGridCollisionElement&);
     bool testIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&);
     bool testIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&);
     bool testIntersection(FFDDistanceGridCollisionElement&, Point&);
     template<class Sphere>
     bool testIntersection(FFDDistanceGridCollisionElement&, Sphere&);
     bool testIntersection(FFDDistanceGridCollisionElement&, Triangle&);
-    bool testIntersection(FFDDistanceGridCollisionElement&, Ray&);
+    bool testIntersection(Ray&, FFDDistanceGridCollisionElement&);
 
     int computeIntersection(Cube&, Cube&, OutputVector*);
     template<class Sphere>
@@ -115,25 +115,25 @@ public:
     template<class Sphere>
     int computeIntersection(Sphere&, Cube&, OutputVector*);
     template<class Sphere>
-    int computeIntersection(Sphere&, Ray&, OutputVector*);
+    int computeIntersection(Ray&, Sphere&, OutputVector*);
     template<class Sphere>
     int computeIntersection(Sphere&, Triangle&, OutputVector*);
     //int computeIntersection(Triangle&, Triangle&, OutputVector*);
     int computeIntersection(Triangle&, Line&, OutputVector*);
-    int computeIntersection(Triangle&, Ray&, OutputVector*);
+    int computeIntersection(Ray&, Triangle&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, Point&, OutputVector*);
     template<class Sphere>
     int computeIntersection(RigidDistanceGridCollisionElement&, Sphere&, OutputVector*);
     int computeIntersection(RigidDistanceGridCollisionElement&, Triangle&, OutputVector*);
-    int computeIntersection(RigidDistanceGridCollisionElement&, Ray&, OutputVector*);
+    int computeIntersection(Ray&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(FFDDistanceGridCollisionElement&, RigidDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(FFDDistanceGridCollisionElement&, FFDDistanceGridCollisionElement&, OutputVector*);
     int computeIntersection(FFDDistanceGridCollisionElement&, Point&, OutputVector*);
     template<class Sphere>
     int computeIntersection(FFDDistanceGridCollisionElement&, Sphere&, OutputVector*);
     int computeIntersection(FFDDistanceGridCollisionElement&, Triangle&, OutputVector*);
-    int computeIntersection(FFDDistanceGridCollisionElement&, Ray&, OutputVector*);
+    int computeIntersection(Ray&, FFDDistanceGridCollisionElement&, OutputVector*);
 
 };
 
