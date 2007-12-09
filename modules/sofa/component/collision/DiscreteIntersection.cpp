@@ -62,17 +62,17 @@ DiscreteIntersection::DiscreteIntersection()
     intersectors.add<SphereTreeModel, TriangleModel,     DiscreteIntersection>  (this);
     //intersectors.add<SphereTreeModel, SphereModel,       DiscreteIntersection>  (this);
     //intersectors.add<SphereModel,     TriangleModel,     DiscreteIntersection>  (this);
+    intersectors.add<TriangleModel,     LineModel,       DiscreteIntersection>  (this);
     //intersectors.add<TriangleModel,   TriangleModel,     DiscreteIntersection> (this);
-    intersectors.add<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel, DiscreteIntersection> (this);
     intersectors.add<RigidDistanceGridCollisionModel, PointModel,                      DiscreteIntersection>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, SphereModel,                     DiscreteIntersection>  (this);
     intersectors.add<RigidDistanceGridCollisionModel, TriangleModel,                   DiscreteIntersection>  (this);
-    intersectors.add<FFDDistanceGridCollisionModel,   RigidDistanceGridCollisionModel, DiscreteIntersection>  (this);
-    intersectors.add<FFDDistanceGridCollisionModel,   FFDDistanceGridCollisionModel,   DiscreteIntersection> (this);
+    intersectors.add<RigidDistanceGridCollisionModel, RigidDistanceGridCollisionModel, DiscreteIntersection> (this);
     intersectors.add<FFDDistanceGridCollisionModel, PointModel,                        DiscreteIntersection>  (this);
     intersectors.add<FFDDistanceGridCollisionModel, SphereModel,                       DiscreteIntersection>  (this);
     intersectors.add<FFDDistanceGridCollisionModel, TriangleModel,                     DiscreteIntersection>  (this);
-    intersectors.add<TriangleModel,     LineModel,       DiscreteIntersection>  (this);
+    intersectors.add<FFDDistanceGridCollisionModel,   RigidDistanceGridCollisionModel, DiscreteIntersection>  (this);
+    intersectors.add<FFDDistanceGridCollisionModel,   FFDDistanceGridCollisionModel,   DiscreteIntersection> (this);
 
     intersectors.add<RayModel, SphereModel,                     DiscreteIntersection>  (this);
     intersectors.add<RayModel, SphereTreeModel,                 DiscreteIntersection>  (this);

@@ -67,30 +67,28 @@ MinProximityIntersection::MinProximityIntersection()
 void MinProximityIntersection::init()
 {
     intersectors.add<CubeModel, CubeModel, MinProximityIntersection>(this);
-    intersectors.ignore<TriangleModel, TriangleModel>();
-    intersectors.ignore<LineModel, TriangleModel>();
-    intersectors.add<LineModel, LineModel, MinProximityIntersection>(this);
-    intersectors.add<PointModel, TriangleModel, MinProximityIntersection>(this);
-    intersectors.add<PointModel, LineModel, MinProximityIntersection>(this);
     if (usePointPoint.getValue())
         intersectors.add<PointModel, PointModel, MinProximityIntersection>(this);
     else
         intersectors.ignore<PointModel, PointModel>();
+    intersectors.add<LineModel, LineModel, MinProximityIntersection>(this);
+    intersectors.add<LineModel, PointModel, MinProximityIntersection>(this);
+    intersectors.add<TriangleModel, PointModel, MinProximityIntersection>(this);
+    intersectors.ignore<TriangleModel, LineModel>();
+    intersectors.ignore<TriangleModel, TriangleModel>();
     if (useSphereTriangle.getValue())
     {
-        intersectors.add<SphereModel, TriangleModel, MinProximityIntersection>(this);
-        intersectors.add<SphereModel, LineModel, MinProximityIntersection>(this);
         intersectors.add<SphereModel, PointModel, MinProximityIntersection>(this);
+        intersectors.add<TriangleModel, SphereModel, MinProximityIntersection>(this);
+        intersectors.add<LineModel, SphereModel, MinProximityIntersection>(this);
     }
     else
     {
-        intersectors.ignore<SphereModel, TriangleModel>();
-        intersectors.ignore<SphereModel, LineModel>();
         intersectors.ignore<SphereModel, PointModel>();
+        intersectors.ignore<LineModel, SphereModel>();
+        intersectors.ignore<TriangleModel, SphereModel>();
     }
     intersectors.add<RayModel, TriangleModel, MinProximityIntersection>(this);
-    //intersectors.add<RayPickInteractor, TriangleModel, MinProximityIntersection>(this);
-
 }
 
 bool MinProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
@@ -242,7 +240,7 @@ int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVect
     return 1;
 }
 
-bool MinProximityIntersection::testIntersection(Point& e1, Triangle& e2)
+bool MinProximityIntersection::testIntersection(Triangle& e2, Point& e1)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
@@ -304,7 +302,7 @@ bool MinProximityIntersection::testIntersection(Point& e1, Triangle& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Point& e1, Triangle& e2, OutputVector* contacts)
+int MinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
@@ -385,7 +383,7 @@ int MinProximityIntersection::computeIntersection(Point& e1, Triangle& e2, Outpu
     return 1;
 }
 
-bool MinProximityIntersection::testIntersection(Point& e1, Line& e2)
+bool MinProximityIntersection::testIntersection(Line& e2, Point& e1)
 {
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -428,7 +426,7 @@ bool MinProximityIntersection::testIntersection(Point& e1, Line& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Point& e1, Line& e2, OutputVector* contacts)
+int MinProximityIntersection::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
@@ -572,7 +570,7 @@ int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
 
 
 
-bool MinProximityIntersection::testIntersection(Sphere& e1, Triangle& e2)
+bool MinProximityIntersection::testIntersection(Triangle& e2, Sphere& e1)
 {
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
@@ -614,7 +612,7 @@ bool MinProximityIntersection::testIntersection(Sphere& e1, Triangle& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Sphere& e1, Triangle& e2, OutputVector* contacts)
+int MinProximityIntersection::computeIntersection(Triangle& e2, Sphere& e1, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
@@ -666,7 +664,7 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Triangle& e2, Outp
     return 1;
 }
 
-bool MinProximityIntersection::testIntersection(Sphere& e1, Line& e2)
+bool MinProximityIntersection::testIntersection(Line& e2, Sphere& e1)
 {
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
@@ -699,7 +697,7 @@ bool MinProximityIntersection::testIntersection(Sphere& e1, Line& e2)
         return false;
 }
 
-int MinProximityIntersection::computeIntersection(Sphere& e1, Line& e2, OutputVector* contacts)
+int MinProximityIntersection::computeIntersection(Line& e2, Sphere& e1, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
@@ -785,9 +783,6 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Point& e2, OutputV
     return 1;
 }
 
-
-
-
 bool MinProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
 {
     Vector3 P,Q,PQ;
@@ -837,15 +832,15 @@ int MinProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputV
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t2, t1);
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
     detection->id = t1.getIndex();
-    detection->point[0]=P;
-    detection->point[1]=Q;
+    detection->point[1]=P;
+    detection->point[0]=Q;
 #ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0] = P;
+    detection->freePoint[1] = P;
     detection->freePoint[0] = Q;
 #endif
-    detection->normal=t2.n();
+    detection->normal=-t2.n();
     detection->value = PQ.norm();
     detection->value -= contactDist;
     return 1;

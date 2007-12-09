@@ -29,7 +29,6 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/componentmodel/collision/Intersection.inl>
-#include <sofa/component/collision/RayPickInteractor.h>
 #include <iostream>
 #include <algorithm>
 
@@ -74,7 +73,6 @@ void NewProximityIntersection::init()
     intersectors.add<TriangleModel, TriangleModel, NewProximityIntersection>(this);
 
     intersectors.add<RayModel, TriangleModel, NewProximityIntersection>(this);
-    intersectors.add<RayPickInteractor, TriangleModel, NewProximityIntersection>(this);
 }
 
 bool NewProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
@@ -357,14 +355,14 @@ int NewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputV
     contacts->resize(contacts->size()+1);
     DetectionOutput *detection = &*(contacts->end()-1);
 
-    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t2, t1);
-    detection->point[0]=P;
-    detection->point[1]=Q;
+    detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(t1, t2);
+    detection->point[1]=P;
+    detection->point[0]=Q;
 #ifdef DETECTIONOUTPUT_FREEMOTION
-    detection->freePoint[0] = P;
+    detection->freePoint[1] = P;
     detection->freePoint[0] = Q;
 #endif
-    detection->normal=t2.n();
+    detection->normal=-t2.n();
     detection->value = PQ.norm();
     detection->value -= contactDist;
     return 1;
