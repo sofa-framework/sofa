@@ -33,6 +33,8 @@
 
 using namespace flowvr::render;
 
+extern void tesselateMesh(Mesh& obj, int rec=1, bool onSphere=false);
+
 int main(int argc, char** argv)
 {
     bool normalize = false;
@@ -45,6 +47,8 @@ int main(int argc, char** argv)
     Vec3f rotation;
     Vec3f scale(1,1,1);
     float dilate = 0.0f;
+    int tesselate = 0;
+    bool sphere = false;
     ftl::CmdLine cmd("Usage: meshconv [options] mesh.input [mesh.output]");
     cmd.opt("normalize",'n',"transform points so that the center is at <0,0,0> and the max coodinate is 1",&normalize);
     cmd.opt("flip",'f',"flip normals",&flip);
@@ -56,6 +60,8 @@ int main(int argc, char** argv)
     cmd.opt("rotate",'r',"rotate the mesh using euler angles in degree",&rotation);
     cmd.opt("scale",'s',"scale the mesh using 3 coefficients",&scale);
     cmd.opt("dilate",'d',"dilate (i.e. displace vertices of the given distance along their normals)",&dilate);
+    cmd.opt("tesselate",'a',"tesselate (split each edge in 2 resursivly n times)",&tesselate);
+    cmd.opt("sphere",'S',"consider the mesh as a sphere for tesselation",&sphere);
     bool error=false;
     if (!cmd.parse(argc,argv,&error))
         return error?1:0;
@@ -160,6 +166,12 @@ int main(int argc, char** argv)
 
     if (dilate != 0.0f)
         obj.dilate(dilate);
+
+    if (tesselate > 0)
+    {
+        std::cout << "Tesselating mesh..."<<std::endl;
+        tesselateMesh(obj, tesselate, sphere);
+    }
 
     if (wnormals)
         obj.setAttrib(Mesh::MESH_POINTS_NORMAL,true);

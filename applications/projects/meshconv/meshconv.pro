@@ -9,6 +9,6 @@ CONFIG += $$CONFIGPROJECTCMD
 #LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_LIBS
 
-SOURCES = meshconv.cpp
+SOURCES = meshconv.cpp tesselate.cpp
 
 HEADERS = 
