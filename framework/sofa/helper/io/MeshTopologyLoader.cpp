@@ -23,6 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/io/MeshTopologyLoader.h>
+#include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -61,6 +62,46 @@ bool MeshTopologyLoader::load(const char *filename)
 {
     std::string fname = filename;
     if (!sofa::helper::system::DataRepository.findFile(fname)) return false;
+
+    if ((strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".obj"))
+        || (strlen(filename)>6 && !strcmp(filename+strlen(filename)-6,".trian")))
+    {
+        helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
+        if (mesh==NULL) return false;
+
+        setNbPoints(mesh->getVertices().size());
+        for (unsigned int i=0; i<mesh->getVertices().size(); i++)
+        {
+            addPoint(mesh->getVertices()[i][0],mesh->getVertices()[i][1],mesh->getVertices()[i][2]);
+        }
+
+        const vector< vector < vector <int> > > & facets = mesh->getFacets();
+        for (unsigned int i=0; i<facets.size(); i++)
+        {
+            const vector<int>& facet = facets[i][0];
+            if (facet.size()==2)
+            {
+                // Line
+                if (facet[0]<facet[1])
+                    addLine(facet[0],facet[1]);
+                else
+                    addLine(facet[1],facet[0]);
+            }
+            else if (facet.size()==4)
+            {
+                // Quat
+                addQuad(facet[0],facet[1],facet[2],facet[3]);
+            }
+            else
+            {
+                // Triangularize
+                for (unsigned int j=2; j<facet.size(); j++)
+                    addTriangle(facet[0],facet[j-1],facet[j]);
+            }
+        }
+        delete mesh;
+        return true;
+    }
 
     char cmd[1024];
     FILE* file;
