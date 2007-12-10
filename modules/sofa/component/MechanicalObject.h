@@ -124,6 +124,8 @@ public:
 
     XDataPtr<DataTypes>* const f_X0;
 
+    Data<Real> restScale;
+
     virtual VecCoord* getX()  { f_X->beginEdit(); return x;  }
     virtual VecDeriv* getV()  { f_V->beginEdit(); return v;  }
     virtual VecDeriv* getF()  { return f;  }

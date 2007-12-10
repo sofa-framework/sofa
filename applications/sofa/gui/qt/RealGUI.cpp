@@ -2083,9 +2083,9 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
 {
     // ignore if there are modifiers (i.e. CTRL of SHIFT)
 #ifdef SOFA_QT4
-    if (e->state() & (Qt::KeyButtonMask)) return;
-#else
     if (e->modifiers()) return;
+#else
+    if (e->state() & (Qt::KeyButtonMask)) return;
 #endif
     switch ( e->key() )
     {

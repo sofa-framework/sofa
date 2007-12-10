@@ -50,6 +50,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , f_X ( new XDataPtr<DataTypes>(&x,  "position coordinates ot the degrees of freedom") )
     , f_V ( new VDataPtr<DataTypes>(&v,  "velocity coordinates ot the degrees of freedom") )
     , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates ot the degrees of freedom") )
+    , restScale(initData(&restScale, (Real)1, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
 {
     initialized = false;
     this->addField(f_X, "position");
@@ -649,6 +650,12 @@ void MechanicalObject<DataTypes>::init()
     if (x0->size() == 0)
     {
         *x0 = *x;
+        if (restScale.getValue() != (Real)1)
+        {
+            Real s = restScale.getValue();
+            for (unsigned int i=0; i<x0->size(); i++)
+                (*x0)[i] *= s;
+        }
     }
 
     initialized = true;
