@@ -89,9 +89,12 @@ bool ImageBMP::load(std::string filename)
     fseek(file, 4, SEEK_CUR);
     /* get the width of the bitmap */
     fread(&width, sizeof(int), 1, file);
+    if (width < 0) width = -width;
     //printf("Width of Bitmap: %d\n", texture->width);
     /* get the height of the bitmap */
     fread(&height, sizeof(int), 1, file);
+    bool upsidedown = false;
+    if (height < 0) { height = -height; upsidedown = true; }
     //printf("Height of Bitmap: %d\n", texture->height);
     /* get the number of planes (must be set to 1) */
     fread(&biPlanes, sizeof(short int), 1, file);
@@ -117,11 +120,12 @@ bool ImageBMP::load(std::string filename)
     /* calculate the size of the image in bytes */
     biSizeImage = width * height * nc;
     // std::cout << "Size of the image data: " << biSizeImage << std::endl;
+    std::cout << "ImageBMP "<<filename<<" "<<width<<"x"<<height<<"x"<<nbBits<<" = "<<biSizeImage<<" bytes"<<std::endl;
     data = (unsigned char*) malloc(biSizeImage);
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);
 
-    if (((width*nc)%4)==0)
+    if (((width*nc)%4)==0 && !upsidedown)
     {
         if (!fread(data, biSizeImage, 1, file))
         {
@@ -131,15 +135,16 @@ bool ImageBMP::load(std::string filename)
     }
     else
     {
+        int pad = (4-((width*nc)%4))%4;
+        char buf[3];
         for (int y=0; y<height; y++)
         {
-            if (!fread(data+y*width*nc, width*nc, 1, file))
+            if (!fread(data+(upsidedown?height-1-y:y)*width*nc, width*nc, 1, file))
             {
                 std::cerr << "Error loading file!\n";
                 return false;
             }
-            char buf[3];
-            if (!fread(buf, 4-((width*nc)%4), 1, file))
+            if (pad && !fread(buf, 4-((width*nc)%4), 1, file))
             {
                 std::cerr << "Error loading file!\n";
                 return false;
