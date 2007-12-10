@@ -103,6 +103,7 @@ public:
         _update_pos_relative = true;
         vars.center =center.getValue();
         printf("\n vars.center : %f %f %f",vars.center.x(),vars.center.y(),vars.center.z());
+        _orientation.clear();
     }
 
     void setStiffness(Real1 stiff)
@@ -117,6 +118,7 @@ public:
 
     virtual void addForce(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& p1, const VecCoord2& p2, const VecDeriv1& v1, const VecDeriv2& v2);
 
+    virtual void addForce2(VecDeriv1& f1, VecDeriv2& f2, const VecCoord1& p1, const VecCoord2& p2, const VecDeriv1& v1, const VecDeriv2& v2);
 
     virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
 
@@ -141,6 +143,9 @@ protected:
     } vars;
 
     bool _update_pos_relative;
+    VecCoord1 X1;
+    VecCoord2 X2;
+    Quat _orientation;
 };
 
 } // namespace interactionforcefield
