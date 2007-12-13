@@ -76,42 +76,27 @@ void OglModel::internalDraw()
 
     glEnable(GL_LIGHTING);
 
+    //Enable<GL_BLEND> blending;
+    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
+    glColor3f(1.0 , 1.0, 1.0);
+    Vec4f ambient = material.getValue().useAmbient?material.getValue().ambient:Vec4f();
+    Vec4f diffuse = material.getValue().useDiffuse?material.getValue().diffuse:Vec4f();
+    Vec4f specular = material.getValue().useSpecular?material.getValue().specular:Vec4f();
+    Vec4f emissive = material.getValue().useEmissive?material.getValue().emissive:Vec4f();
     if (isTransparent())
     {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(GL_FALSE);
+        emissive[3] = diffuse[3];
+        ambient[3] = 0;
+//	diffuse[3] = 0;
+//	specular[3] = 0;
     }
-    static const float zero[4] = { 0, 0, 0, 0};
-    //Enable<GL_BLEND> blending;
-    glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
-    glColor3f(1.0 , 1.0, 1.0);
-    if (material.getValue().useAmbient)
-        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, &(material.getValue().ambient[0]));
-    else
-        glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, zero);
-
-    if (material.getValue().useDiffuse)
-        glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, &(material.getValue().diffuse[0]));
-    else
-        glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, zero);
-//     if (material.useSpecular)
-
-    if (material.getValue().useSpecular && material.getValue().shininess > 0.0001)
-    {
-        glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, &(material.getValue().specular[0]));
-        if (material.getValue().useShininess)
-            glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, material.getValue().shininess);
-    }
-    else
-    {
-        glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, zero);
-        glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, 1.0f);
-    }
-    if (material.getValue().useEmissive)
-        glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, &(material.getValue().emissive[0]));
-    else
-        glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, zero);
+    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.ptr());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
 
     glVertexPointer (3, GL_FLOAT, 0, vertices.getData());
     glNormalPointer (GL_FLOAT, 0, vnormals.getData());
