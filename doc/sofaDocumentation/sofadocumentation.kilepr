@@ -25,8 +25,8 @@ open=false
 
 [item:sofadocumentation.tex]
 archive=true
-column=15
+column=0
 encoding=ISO 8859-1
 highlight=LaTeX
-line=31
+line=0
 open=true
