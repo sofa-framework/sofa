@@ -956,14 +956,14 @@ void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
     }
 }
 
-void TriangleModel::fillArrays( float *array_coord,float *array_identity, int *offset_coord, float Id)
+void TriangleModel::fillArrays( float *array_coord,float *array_identity, int *offset_coord, int Id)
 {
-    unsigned int nbTriangle = size; //getNbTriangles();
-
-    float step_Id = 1/((float) nbTriangle);
-    float Id_triangle = 0;
-    for (unsigned int i=0; i<nbTriangle; i++)
+    const float factor = 1.0f/128.0f;
+    const float step_Id = 1.0f/((float) size);
+    float Id_triangle = Id+1;
+    for ( int i=0; i<size; i++)
     {
+        const float valueId = Id_triangle*factor;
         //For each triangle of the model, we store the coordinates of the vertices and information about each of them
         Triangle t(this, i);
         //Point 1
@@ -971,31 +971,28 @@ void TriangleModel::fillArrays( float *array_coord,float *array_identity, int *o
         array_coord[(*offset_coord)+1]    = (float) t.p1()[1];
         array_coord[(*offset_coord)+2]    = (float) t.p1()[2];
 
-        array_identity[(*offset_coord)  ] = Id_triangle;
-        array_identity[(*offset_coord)+1] = Id;
+        array_identity[(*offset_coord)  ] = valueId;
+        array_identity[(*offset_coord)+1] = 0.0f;
         array_identity[(*offset_coord)+2] = 0.0f;
         (*offset_coord) += 3;
-
-
         //Point 2
         array_coord[(*offset_coord)]   = (float) t.p2()[0];
         array_coord[(*offset_coord)+1] = (float) t.p2()[1];
         array_coord[(*offset_coord)+2] = (float) t.p2()[2];
 
-        array_identity[(*offset_coord)  ] = Id_triangle;
-        array_identity[(*offset_coord)+1] = Id;
+
+        array_identity[(*offset_coord)  ] = valueId;
+        array_identity[(*offset_coord)+1] = 1.0f;
         array_identity[(*offset_coord)+2] = 0.0f;
         (*offset_coord) += 3;
-
-
         //Point 3
-        array_coord[(*offset_coord)]   = (float) t.p3()[0];
+        array_coord[(*offset_coord)  ] = (float) t.p3()[0];
         array_coord[(*offset_coord)+1] = (float) t.p3()[1];
         array_coord[(*offset_coord)+2] = (float) t.p3()[2];
 
-        array_identity[(*offset_coord)  ] = Id_triangle;
-        array_identity[(*offset_coord)+1] = Id;
-        array_identity[(*offset_coord)+2] = 0.0f;
+        array_identity[(*offset_coord)  ] = valueId;
+        array_identity[(*offset_coord)+1] = 0.0f;
+        array_identity[(*offset_coord)+2] = 1.0f;
         (*offset_coord) += 3;
 
         Id_triangle +=  step_Id;
