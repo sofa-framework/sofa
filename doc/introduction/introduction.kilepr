@@ -3,7 +3,7 @@ img_extIsRegExp=false
 img_extensions=.eps .pdf .dvi .ps .fig .gif .jpg .jpeg .png
 kileprversion=1
 kileversion=1.9.3
-lastDocument=introduction.tex
+lastDocument=introduction_body.tex
 masterDocument=
 name=introduction
 pkg_extIsRegExp=false
@@ -25,16 +25,16 @@ open=false
 
 [item:introduction.tex]
 archive=true
-column=31
+column=10
 encoding=ISO 8859-1
 highlight=LaTeX
 line=1
-open=true
+open=false
 
 [item:introduction_body.tex]
 archive=true
-column=0
+column=37
 encoding=ISO 8859-1
 highlight=LaTeX
-line=41
-open=true
+line=290
+open=false
