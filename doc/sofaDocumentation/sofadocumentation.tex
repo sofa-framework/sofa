@@ -25,6 +25,8 @@ This is the Sofa documentation
 
 % This chapter is borrowed from a stand-alone document defined in directory introduction/
 \chapter{Introduction to \sofa}
+Fran\c{c}ois Faure
+
 \graphicspath{{../introduction/}}  % to include images
 \input{../introduction/introduction_body}
 
@@ -32,17 +34,21 @@ This is the Sofa documentation
 \chapter{Design}
 \graphicspath{{../design/}}  % to include images
 \input{../design/design_body}
+
+
 \chapter{Modules}
 \graphicspath{{../modules/}}  % to include images
 In this document we explain the usage and the fucntionalities of the modules developped using the Core Sofa Framework.
 \input{../modules/modules_body}
+
+
 % This chapter is defined here
 \chapter{How to contribute to this documentation}
 \section{Document structure}
 This document gathers the content of other documents located in different subdirectories. These documents can also be compiled as stand-alone documents.
 The structure can be illustrated as follows:
 \begin{itemize}
- \item \texttt{sofadocumentation.tex} : the root document.
+ \item \texttt{sofaDocumentation/sofadocumentation.tex} : the root document.
  \item \texttt{macros\_docu.tex} : custom commands and macros. This file is included by the root document.
  \item \texttt{introduction} : a subdirectory containing a chapter of this document.
 \begin{itemize}
@@ -57,16 +63,7 @@ The structure can be illustrated as follows:
 The graphics are handled by: \texttt{\textbackslash usepackage[pdftex]\{graphicx\}}. This allows the inclusion of \texttt{.png} images rather than \texttt{.eps}, which makes the image files much smaller, and compilation of \texttt{html} faster. The result of the compilation is a \texttt{.pdf} rather than a \texttt{.dvi} file.
 
 \subsection{Include paths}
-The root document includes files in the subdirectories, which in turn include files too. The problem is that the path from the subdirectory (used when compiling a stand-alone article) is not the same as from the parent directory (used when compiling the whole report).
-It seems that \LaTeX has no include path command to circumvent this problem.
-
-Fortunately, \LaTeX uses an environment variable named TEXINPUTS which represents a list of directories to search. We use this variable to allow file inclusion, by adding the parent directories to the list. The command lines depend on the shell, e.g.:
-\begin{itemize}
- \item using bash: \texttt{export TEXINPUTS=\$\{TEXINPUTS\}:..:../.. ; latex sofadocumentation.tex}
- \item using tcsh: \texttt{setenv TEXINPUTS \$\{TEXINPUTS\}:..:../.. ; latex sofadocumentation.tex}
-\end{itemize}
-
-Using the \texttt{Kile} graphical front-end, you can customize the command line in menu \texttt{Settings/Kile/Tools/Build}, select tool \texttt{LATEX} and write the appropriate command line in the \texttt{Command} field.
+The root document includes files in the subdirectories, which in turn include files too. The path from the subdirectory (used when compiling a stand-alone article) is the same as from the parent directory (used when compiling the whole report).
 
 \subsection{HTML}
 HTML can be generated using the following command:\\
