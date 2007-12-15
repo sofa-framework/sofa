@@ -31,7 +31,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <iostream>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 
 using std::cerr;
 using std::endl;

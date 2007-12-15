@@ -2,7 +2,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <fstream>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 #ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
 #endif

@@ -41,7 +41,7 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
     node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
     glMultMatrixd( glMatrix );
 
-    hasShader = node->getShader();
+    hasShader = (node->getShader()!=NULL);
 
     this->VisualVisitor::processNodeTopDown(node);
 

@@ -35,8 +35,8 @@
 #include <sofa/helper/system/thread/CTime.h>
 
 #include <cmath>
-#include <sofa/helper/gl/gl.h>
-#include <sofa/helper/gl/glut.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 
 
 namespace sofa

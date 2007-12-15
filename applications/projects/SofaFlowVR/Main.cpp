@@ -33,7 +33,8 @@
 
 #include <sofa/gui/SofaGUI.h>
 
-#include <GL/glut.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;

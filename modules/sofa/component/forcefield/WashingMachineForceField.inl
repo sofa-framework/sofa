@@ -28,7 +28,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/WashingMachineForceField.h>
 #include <sofa/helper/system/config.h>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 #include <assert.h>
 #include <iostream>
 using std::cerr;

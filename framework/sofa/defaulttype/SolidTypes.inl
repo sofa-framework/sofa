@@ -37,7 +37,7 @@
 #define SOFA_DEFAULTTYPE_SOLIDTYPES_INL
 
 #include <sofa/defaulttype/SolidTypes.h>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

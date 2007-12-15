@@ -29,7 +29,7 @@
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/component/topology/PointData.inl>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <vector>

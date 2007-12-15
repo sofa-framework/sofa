@@ -6,8 +6,8 @@
 #include <sofa/helper/FnDispatcher.h>
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <map>
-#include <GL/gl.h>
-#include <GL/glut.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 
 
 /* for debugging the collision method */

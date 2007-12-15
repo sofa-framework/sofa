@@ -1,20 +1,12 @@
 #include <sofa/component/forcefield/TensorForceField.h>
 #include <sofa/core/ObjectFactory.h>
-#include <GL/gl.h>
+#include <sofa/helper/system/gl.h>
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/defaulttype/Vec3Types.h>
 
-
-
 using std::cerr;
 using std::endl;
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
-
 
 namespace sofa
 {

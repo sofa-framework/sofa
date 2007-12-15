@@ -28,7 +28,7 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/Visitor.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 #include <iostream>
 
 using std::cerr;

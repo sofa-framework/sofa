@@ -28,8 +28,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
-#include <sofa/helper/gl/gl.h>
-#include <sofa/helper/gl/glu.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glu.h>
 
 #include <map>
 
