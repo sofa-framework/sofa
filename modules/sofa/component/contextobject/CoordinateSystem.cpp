@@ -31,17 +31,10 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <iostream>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
+#include <sofa/helper/gl/gl.h>
 
 using std::cerr;
 using std::endl;
-#ifdef WIN32
-# include <windows.h>
-#endif
 
 namespace sofa
 {
@@ -81,11 +74,7 @@ void CoordinateSystem::setTransform( const Frame& f )
 //
 CoordinateSystem::Vec CoordinateSystem::getOrigin() const
 {
-//<<<<<<< .mine
     return positionInParent_.getOrigin();
-    /*=======
-        return this->relativePosition_.getOriginInParent();
-    >>>>>>> .r414*/
 }
 //
 // CoordinateSystem* CoordinateSystem::setOrientation( const Rot& r )
@@ -96,11 +85,7 @@ CoordinateSystem::Vec CoordinateSystem::getOrigin() const
 //
 CoordinateSystem::Rot CoordinateSystem::getOrientation( ) const
 {
-//<<<<<<< .mine
     return positionInParent_.getOrientation();
-    /*=======
-        return this->relativePosition_.getOrientation();
-    >>>>>>> .r414*/
 }
 //
 // CoordinateSystem* CoordinateSystem::set( const Vec& v, const Rot& r )

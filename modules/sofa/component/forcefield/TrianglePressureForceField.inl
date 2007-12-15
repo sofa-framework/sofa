@@ -2,17 +2,8 @@
 #include <sofa/component/topology/TriangleSubsetData.inl>
 #include <sofa/component/topology/TetrahedronSetTopology.h>
 #include <sofa/helper/gl/template.h>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 #include <vector>
 #include <set>
-
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 // #define DEBUG_TRIANGLEFEM
 

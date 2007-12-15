@@ -26,11 +26,6 @@
 #include <fstream> // for reading the file
 #include <iostream> //for debugging
 #include <sofa/helper/gl/template.h>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/component/topology/EdgeData.inl>
 

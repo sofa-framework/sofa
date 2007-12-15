@@ -34,18 +34,8 @@
 #include <queue>
 #include <stack>
 
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/gl.h>
-#include <GL/glut.h>
-#endif
-
-/* for debugging the collision method */
-#ifdef _WIN32
-#include <windows.h>
-#endif
+#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/gl/glut.h>
 
 namespace sofa
 {

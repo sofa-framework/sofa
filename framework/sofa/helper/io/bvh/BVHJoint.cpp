@@ -24,19 +24,9 @@
 *******************************************************************************/
 #include <sofa/helper/io/bvh/BVHJoint.h>
 
-#ifdef _WIN32
-#include <windows.h>
-#endif // _WIN32
-
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <GLUT/glut.h>
-#else
-#include<GL/gl.h>
-#include<GL/glu.h>
-#include<GL/glut.h>
-#endif
+#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/gl/glu.h>
+#include <sofa/helper/gl/glut.h>
 
 #include <iostream>
 

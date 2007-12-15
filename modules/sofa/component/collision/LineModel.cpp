@@ -28,11 +28,7 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
+#include <sofa/helper/gl/gl.h>
 
 namespace sofa
 {

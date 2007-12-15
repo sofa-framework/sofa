@@ -1,11 +1,6 @@
 #include <sofa/component/forcefield/EdgePressureForceField.h>
 #include <sofa/component/topology/EdgeSubsetData.inl>
 #include <sofa/helper/gl/template.h>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 #include <vector>
 #include <set>
 

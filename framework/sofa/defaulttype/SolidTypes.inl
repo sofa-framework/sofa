@@ -37,14 +37,7 @@
 #define SOFA_DEFAULTTYPE_SOLIDTYPES_INL
 
 #include <sofa/defaulttype/SolidTypes.h>
-#ifdef _WIN32
-#include <windows.h>
-#endif
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
+#include <sofa/helper/gl/gl.h>
 #include <iostream>
 using std::cerr;
 using std::endl;

@@ -39,8 +39,8 @@
 #include <map>
 #include <queue>
 #include <stack>
-#include <GL/gl.h>
-#include <GL/glut.h>
+#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/gl/glut.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 

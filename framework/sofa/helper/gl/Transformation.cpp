@@ -23,13 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/system/config.h>
-
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
+#include <sofa/helper/gl/gl.h>
 
 namespace sofa
 {

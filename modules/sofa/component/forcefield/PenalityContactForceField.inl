@@ -29,11 +29,6 @@
 #include <sofa/component/forcefield/PenalityContactForceField.h>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 #include <sofa/helper/gl/template.h>
 #include <iostream>
 using std::cerr;

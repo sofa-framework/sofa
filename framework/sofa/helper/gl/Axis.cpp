@@ -24,11 +24,7 @@
 *******************************************************************************/
 #include <sofa/helper/gl/Axis.h>
 
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
+#include <sofa/helper/gl/gl.h>
 
 #include <assert.h>
 #include <algorithm>

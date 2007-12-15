@@ -2,11 +2,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <fstream>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
+#include <sofa/helper/gl/gl.h>
 #ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
 #endif
