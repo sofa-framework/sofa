@@ -76,6 +76,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     const bool printLog = this->f_printLog.getValue();
     if (ff==NULL)
     {
+        std::cout << "Creating BarycentricStickContact springs"<<std::endl;
         MechanicalState1* mstate1 = mapper1.createMapping(model1);
         MechanicalState2* mstate2 = mapper2.createMapping(model2);
         ff = new ResponseForceField(mstate1,mstate2);
@@ -190,6 +191,7 @@ void BarycentricStickContact<TCollisionModel1,TCollisionModel2,ResponseDataTypes
     // Update mappings
     mapper1.update();
     mapper2.update();
+    std::cout << size << "BarycentricStickContact springs created"<<std::endl;
 }
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes >

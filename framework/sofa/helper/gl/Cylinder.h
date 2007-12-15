@@ -25,18 +25,11 @@
 #ifndef SOFA_HELPER_GL_CYLINDER_H
 #define SOFA_HELPER_GL_CYLINDER_H
 
-#ifdef WIN32
-# include <windows.h>
-# include <mmsystem.h>
-#endif
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 
-#ifdef __APPLE__
-#include <OpenGL/glu.h>
-#else
-#include <GL/glu.h>
-#endif
+#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/gl/glu.h>
 
 #include <map>
 

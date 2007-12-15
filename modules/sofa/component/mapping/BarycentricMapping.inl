@@ -30,11 +30,6 @@
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/helper/gl/template.h>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 #include <algorithm>
 #include <iostream>
 using std::cerr;

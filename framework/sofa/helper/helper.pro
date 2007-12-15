@@ -23,6 +23,9 @@ HEADERS += \
           Factory.inl \
           FnDispatcher.h \
           FnDispatcher.inl \
+          gl/gl.h \
+          gl/glu.h \
+          gl/glut.h \
           gl/Axis.h \
           gl/Cylinder.h \
           gl/Capture.h \

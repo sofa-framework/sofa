@@ -3,11 +3,6 @@
 
 #include <sofa/component/constraint/UnilateralInteractionConstraint.h>
 #include <sofa/defaulttype/Vec.h>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 #include <sofa/helper/gl/template.h>
 namespace sofa
 {

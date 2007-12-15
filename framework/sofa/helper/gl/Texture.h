@@ -25,15 +25,7 @@
 #ifndef SOFA_HELPER_GL_TEXTURE_H
 #define SOFA_HELPER_GL_TEXTURE_H
 
-#ifdef _WIN32
-#include <windows.h>
-#endif // _WIN32
-
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
+#include <sofa/helper/gl/gl.h>
 
 #include <sofa/helper/io/Image.h>
 

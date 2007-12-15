@@ -6,12 +6,8 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
-
-#if defined (__APPLE__)
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
+#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/gl/glut.h>
 
 #ifndef WIN32
 #include <dlfcn.h>
