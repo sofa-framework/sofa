@@ -28,7 +28,7 @@
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -956,7 +956,7 @@ void TriangleModel::fillArrays( float *array_coord,float *array_identity, int *o
 {
     const float factor = 1.0f/128.0f;
     const float step_Id = 1.0f/((float) size);
-    float Id_triangle = Id+1;
+    float Id_triangle = (float)Id+1;
     for ( int i=0; i<size; i++)
     {
         const float valueId = Id_triangle*factor;

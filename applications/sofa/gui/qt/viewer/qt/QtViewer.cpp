@@ -39,7 +39,7 @@
 #ifdef WIN32
 #include <GL/glaux.h>
 #endif
-#include <sofa/helper/gl/glut.h>
+#include <sofa/helper/system/glut.h>
 #include <qevent.h>
 #include "GenGraphForm.h"
 #include "Main.h"

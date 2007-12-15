@@ -38,7 +38,7 @@
 #define SOFA_COMPONENT_BEHAVIORMODEL_EULERIANFLUID_SPATIALGRIDCONTAINER_INL
 
 #include <sofa/component/behaviormodel/eulerianfluid/SpatialGridContainer.h>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 
 
 namespace sofa

@@ -10,7 +10,7 @@
 #include <sofa/component/forcefield/PenalityContactForceField.h>
 #include "CudaPenalityContactForceField.h"
 #include <fstream>
-#include <GL/gl.h>
+#include <sofa/helper/system/gl.h>
 
 namespace sofa
 {

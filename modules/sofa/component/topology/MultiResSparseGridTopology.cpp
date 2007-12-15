@@ -1,11 +1,8 @@
 #include <sofa/component/topology/MultiResSparseGridTopology.h>
 #include <sofa/simulation/tree/xml/ObjectFactory.h>
-#include <GL/gl.h>
+#include <sofa/helper/system/gl.h>
 #include <string>
 #include <fstream>
-#ifdef WIN32
-#include <windows.h>
-#endif
 using sofa::defaulttype::Vec3f;
 using std::ifstream;
 using std::string;

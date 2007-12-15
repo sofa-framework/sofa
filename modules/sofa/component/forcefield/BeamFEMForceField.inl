@@ -12,7 +12,7 @@
 #include <assert.h>
 #include <iostream>
 #include <set>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 
 using std::cerr;
 using std::endl;

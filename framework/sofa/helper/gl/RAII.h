@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_GL_RAII_H
 #define SOFA_HELPER_GL_RAII_H
 
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 
 /* Opengl Resource Acquisition Is Initialisation */
 /* with this tool, we know at any moment what is the state of the openGL machine */

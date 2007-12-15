@@ -8,7 +8,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <fstream>
-#include <GL/gl.h>
+#include <sofa/helper/system/gl.h>
 
 namespace sofa
 {

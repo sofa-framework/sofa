@@ -25,8 +25,8 @@
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/helper/gl/gl.h>
-#include <sofa/helper/gl/glut.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 
 
 namespace sofa

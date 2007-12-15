@@ -24,9 +24,9 @@
 *******************************************************************************/
 #include <sofa/helper/io/bvh/BVHJoint.h>
 
-#include <sofa/helper/gl/gl.h>
-#include <sofa/helper/gl/glu.h>
-#include <sofa/helper/gl/glut.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glu.h>
+#include <sofa/helper/system/glut.h>
 
 #include <iostream>
 

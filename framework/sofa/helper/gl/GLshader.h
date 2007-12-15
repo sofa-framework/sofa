@@ -25,8 +25,8 @@
 #ifndef SOFA_HELPER_GL_GLSHADER_H
 #define SOFA_HELPER_GL_GLSHADER_H
 
-#include <sofa/helper/gl/gl.h>
-#include <sofa/helper/gl/glu.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glu.h>
 
 #include <string>
 

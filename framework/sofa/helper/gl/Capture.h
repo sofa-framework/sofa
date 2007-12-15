@@ -25,7 +25,7 @@
 #ifndef SOFA_HELPER_GL_CAPTURE_H
 #define SOFA_HELPER_GL_CAPTURE_H
 
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 
 #include <sofa/helper/io/Image.h>
 

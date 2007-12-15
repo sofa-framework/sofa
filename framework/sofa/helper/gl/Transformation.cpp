@@ -23,7 +23,7 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/helper/gl/Transformation.h>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 
 namespace sofa
 {

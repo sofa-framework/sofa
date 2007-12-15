@@ -6,8 +6,8 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
-#include <sofa/helper/gl/gl.h>
-#include <sofa/helper/gl/glut.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 
 #ifndef WIN32
 #include <dlfcn.h>

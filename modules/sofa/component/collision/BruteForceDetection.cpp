@@ -34,8 +34,8 @@
 #include <queue>
 #include <stack>
 
-#include <sofa/helper/gl/gl.h>
-#include <sofa/helper/gl/glut.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 
 namespace sofa
 {

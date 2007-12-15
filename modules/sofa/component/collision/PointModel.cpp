@@ -26,7 +26,7 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
-#include <sofa/helper/gl/gl.h>
+#include <sofa/helper/system/gl.h>
 
 namespace sofa
 {
