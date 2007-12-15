@@ -171,7 +171,7 @@ void tesselateMesh(Mesh& obj, int rec=1, bool onSphere=false)
             edges[0] = obj.getEdgeFace(points[0],points[1]);
             edges[1] = obj.getEdgeFace(points[1],points[2]);
             edges[2] = obj.getEdgeFace(points[2],points[0]);
-            if ((unsigned)edges[0] >= obj.nbp() || (unsigned)edges[1] >= obj.nbp() || (unsigned)edges[2] >= obj.nbp())
+            if ((unsigned)edges[0] >= (unsigned)obj.nbp() || (unsigned)edges[1] >= (unsigned)obj.nbp() || (unsigned)edges[2] >= (unsigned)obj.nbp())
             {
                 std::cerr << "ERROR: invalid edge points " << edges << " in face " <<i<<" = "<<points<<std::endl;
                 continue;
