@@ -5,15 +5,10 @@
 #include "SphereForceField.h"
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 #include <assert.h>
 #include <iostream>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/gl.h>
-#include <GL/glut.h>
-#endif
 
 namespace sofa
 {

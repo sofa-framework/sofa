@@ -86,8 +86,8 @@ public:
     Data<bool> bDraw;
 
     ConicalForceField()
-        : coneCenter(initData(&coneCenter, (Coord) "0.0,0.0,0.0", "coneCenter", "cone center"))
-        , coneHeight(initData(&coneHeight, (Coord) "0.0,0.0,0.0","coneHeight", "cone height"))
+        : coneCenter(initData(&coneCenter, "coneCenter", "cone center"))
+        , coneHeight(initData(&coneHeight, "coneHeight", "cone height"))
         , coneAngle(initData(&coneAngle, (Real)10, "coneAngle", "cone angle"))
 
         , stiffness(initData(&stiffness, (Real)500, "stiffness", "force stiffness"))
