@@ -4,16 +4,11 @@
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include "InteractionEllipsoidForceField.h"
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 #include <sofa/helper/rmath.h>
 #include <assert.h>
 #include <iostream>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#include <GLUT/glut.h>
-#else
-#include <GL/gl.h>
-#include <GL/glut.h>
-#endif
 
 namespace sofa
 {
@@ -196,7 +191,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce(VecDeriv1&
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addForce2(VecDeriv1& f1, VecDeriv2& f2,
         const VecCoord1& p1, const VecCoord2& p2,
-        const VecDeriv1& v1, const VecDeriv2& v2)
+        const VecDeriv1& v1, const VecDeriv2& /* v2 */)
 {
 
     Quat Cq = p2[object2_dof_index.getValue()].getOrientation();
@@ -260,7 +255,7 @@ void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1
 }
 
 template <class DataTypes1, class DataTypes2>
-double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2)
+double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& /* x1 */, const VecCoord2& /* x2 */)
 {
     std::cerr<<"InteractionEllipsoidForceField::getPotentialEnergy-not-implemented !!!"<<std::endl;
     return 0;

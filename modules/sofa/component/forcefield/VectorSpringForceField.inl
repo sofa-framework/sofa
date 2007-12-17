@@ -7,13 +7,8 @@
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/system/gl.h>
 #include <assert.h>
-#include <iostream>
-#if defined (__APPLE__)
-#include <OpenGL/gl.h>
-#else
-#include <GL/gl.h>
-#endif
 #include <iostream>
 using std::cerr;
 using std::endl;

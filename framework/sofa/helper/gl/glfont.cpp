@@ -52,9 +52,6 @@ namespace helper
 namespace gl
 {
 
-static GLuint LettersDL=0;
-
-
 #if __APPLE__
 
 // nothing yet
@@ -66,6 +63,9 @@ void glfntWriteBitmap(float /*x*/, float /*y*/, char * /*s*/ ) {}
 #endif
 
 #ifdef WIN32
+
+static GLuint LettersDL=0;
+
 void glfntInit(void)
 {
     HDC hdc;
@@ -99,6 +99,8 @@ void glfntWriteBitmap(float x,float y,char *s)
 #endif // WIN32
 
 #ifdef __linux__
+
+static GLuint LettersDL=0;
 
 static unsigned int last;
 

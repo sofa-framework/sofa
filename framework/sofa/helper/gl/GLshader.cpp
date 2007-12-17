@@ -37,7 +37,9 @@
 #  include <GL/glx.h>
 #endif
 #ifdef __APPLE__
-#include "mach-o/dyld.h"
+//CHANGE(Jeremie A.): NS* methods to access symbols are deprecated in favor of standard dl* methods
+//#include "mach-o/dyld.h"
+#include <dlfcn.h>
 #endif
 
 
@@ -79,6 +81,8 @@ PFNGLGETINFOLOGARBPROC			glGetInfoLogARB = NULL;
 ///////////////////////////////////// INIT GLSL \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\*
 
 #ifdef __APPLE__
+//CHANGE(Jeremie A.): NS* methods to access symbols are deprecated in favor of standard dl* methods
+#if 0
 void *NSGLGetProcAddress(const char *name)
 {
     NSSymbol symbol;
@@ -109,6 +113,7 @@ void *NSGLGetProcAddress(const char *name)
     return NSAddressOfSymbol(symbol);
 }
 #endif
+#endif
 
 #if defined (WIN32)
 PROC glewGetProcAddress(const char* name)
@@ -121,7 +126,9 @@ void (*glewGetProcAddress(const char* name))(void)
 #if defined(_WIN32)
     return wglGetProcAddress((LPCSTR)name);
 #elif defined(__APPLE__)
-    return NSGLGetProcAddress(name);
+//CHANGE(Jeremie A.): NS* methods to access symbols are deprecated in favor of standard dl* methods
+//    return NSGLGetProcAddress(name);
+    return dlsym(RTLD_DEFAULT, name);
 #elif defined(__sgi) || defined(__sun)
     return dlGetProcAddress(name);
 #else /* __linux */
