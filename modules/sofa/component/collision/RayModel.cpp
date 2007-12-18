@@ -51,6 +51,7 @@ using namespace sofa::defaulttype;
 RayModel::RayModel(double length)
     : defaultLength(initData(&defaultLength, length, "", "TODO"))
 {
+    this->contactResponse.setValue("ray"); // use RayContact response class
 }
 
 void RayModel::resize(int size)
