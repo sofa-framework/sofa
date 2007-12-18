@@ -59,8 +59,13 @@ public:
 
 class UpdateVisualContextVisitor : public UpdateContextVisitor
 {
+
 public:
+    int filter;
+    UpdateVisualContextVisitor(int FILTER=0):filter(FILTER)
+    {};
     virtual Result processNodeTopDown(GNode* node);
+
 };
 
 } // namespace tree

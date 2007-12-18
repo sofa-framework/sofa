@@ -403,16 +403,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
     connect ( ResetSceneButton, SIGNAL ( clicked() ), this, SLOT ( resetScene() ) );
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
-    connect ( showVisual, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showVisual ( bool ) ) );
-    connect ( showBehavior, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showBehavior ( bool ) ) );
-    connect ( showCollision, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showCollision ( bool ) ) );
-    connect ( showBoundingCollision, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showBoundingCollision ( bool ) ) );
-    connect ( showMapping, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showMapping ( bool ) ) );
-    connect ( showMechanicalMapping, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showMechanicalMapping ( bool ) ) );
-    connect ( showForceField, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showForceField ( bool ) ) );
-    connect ( showInteractionForceField, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showInteractionForceField ( bool ) ) );
-    connect ( showWireFrame, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showWireFrame ( bool ) ) );
-    connect ( showNormals, SIGNAL ( toggled ( bool ) ), this, SLOT ( slot_showNormals ( bool ) ) );
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );
     connect ( ExportGraphButton, SIGNAL ( clicked() ), this, SLOT ( exportGraph() ) );
     connect ( dumpStateCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( dumpState ( bool ) ) );
@@ -883,16 +873,7 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     }
     eventNewTime();
 
-    groot->setShowVisualModels ( showVisual->isChecked() );
-    groot->setShowBehaviorModels ( showBehavior->isChecked() );
-    groot->setShowCollisionModels ( showCollision->isChecked() );
-    groot->setShowBoundingCollisionModels ( showBoundingCollision->isChecked() );
-    groot->setShowForceFields ( showForceField->isChecked() );
-    groot->setShowInteractionForceFields ( showInteractionForceField->isChecked() );
-    groot->setShowMappings ( showMapping->isChecked() );
-    groot->setShowMechanicalMappings ( showMechanicalMapping->isChecked() );
-    groot->setShowWireFrame ( showWireFrame->isChecked() );
-    groot->setShowNormals ( showNormals->isChecked() );
+
     //getSimulation()->updateVisualContext ( groot );
 
 
@@ -1247,36 +1228,36 @@ void RealGUI::playpauseGUI ( bool value )
 void RealGUI::setGUI ( void )
 {
     textEdit1->setText ( viewer->helpString() );
-
-#ifdef SOFA_GUI_QTOGREVIEWER
-    //Hide unused options
-    if ( !strcmp ( viewerName,"ogre" ) )
-    {
-        showVisual->hide();
-        showBehavior->hide();
-        showCollision->hide();
-        showBoundingCollision->hide();
-        showMapping->hide();
-        showMechanicalMapping->hide();
-        showForceField->hide();
-        showInteractionForceField->hide();
-        showWireFrame->hide();
-        showNormals->hide();
-    }
-    else
-    {
-        showVisual->show();
-        showBehavior->show();
-        showCollision->show();
-        showBoundingCollision->show();
-        showMapping->show();
-        showMechanicalMapping->show();
-        showForceField->show();
-        showInteractionForceField->show();
-        showWireFrame->show();
-        showNormals->show();
-    }
-#endif
+    /*
+    #ifdef SOFA_GUI_QTOGREVIEWER
+    	//Hide unused options
+    	if ( !strcmp ( viewerName,"ogre" ) )
+    	  {
+    	    showVisual->hide();
+    	    showBehavior->hide();
+    	    showCollision->hide();
+    	    showBoundingCollision->hide();
+    	    showMapping->hide();
+    	    showMechanicalMapping->hide();
+    	    showForceField->hide();
+    	    showInteractionForceField->hide();
+    	    showWireFrame->hide();
+    	    showNormals->hide();
+    	  }
+    	else
+    	  {
+    	    showVisual->show();
+    	    showBehavior->show();
+    	    showCollision->show();
+    	    showBoundingCollision->show();
+    	    showMapping->show();
+    	    showMechanicalMapping->show();
+    	    showForceField->show();
+    	    showInteractionForceField->show();
+    	    showWireFrame->show();
+    	    showNormals->show();
+    	  }
+    #endif*/
 }
 //###################################################################################################################
 
@@ -1566,117 +1547,6 @@ void RealGUI::resetScene()
 }
 
 
-//*****************************************************************************************
-// Set what to display
-void RealGUI::slot_showVisual ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowVisualModels ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
-
-void RealGUI::slot_showBehavior ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowBehaviorModels ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
-
-void RealGUI::slot_showCollision ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowCollisionModels ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
-
-void RealGUI::slot_showBoundingCollision ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowBoundingCollisionModels ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
-
-void RealGUI::slot_showMapping ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowMappings ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
-
-void RealGUI::slot_showMechanicalMapping ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowMechanicalMappings ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
-
-void RealGUI::slot_showForceField ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowForceFields ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
-
-void RealGUI::slot_showInteractionForceField ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowInteractionForceFields ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
-
-void RealGUI::slot_showWireFrame ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowWireFrame ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
-
-void RealGUI::slot_showNormals ( bool value )
-{
-    GNode* groot = getScene();
-    if ( groot )
-    {
-        groot->getContext()->setShowNormals ( value );
-        getSimulation()->updateVisualContext ( groot );
-    }
-    viewer->getQWidget()->update();
-}
 
 //-----------------------------------------------------------------------------------
 //Recording a simulation
@@ -2256,16 +2126,16 @@ void RealGUI::graphRemoveObject()
             groot->setShowWireFrame ( 0 );
             groot->setShowNormals ( 0 );
 
-            showVisual->setChecked ( groot->getShowVisualModels() );
-            showBehavior->setChecked ( groot->getShowBehaviorModels() );
-            showCollision->setChecked ( groot->getShowCollisionModels() );
-            showBoundingCollision->setChecked ( groot->getShowBoundingCollisionModels() );
-            showForceField->setChecked ( groot->getShowForceFields() );
-            showInteractionForceField->setChecked ( groot->getShowInteractionForceFields() );
-            showMapping->setChecked ( groot->getShowMappings() );
-            showMechanicalMapping->setChecked ( groot->getShowMechanicalMappings() );
-            showWireFrame->setChecked ( groot->getShowWireFrame() );
-            showNormals->setChecked ( groot->getShowNormals() );
+// 		showVisual->setChecked ( groot->getShowVisualModels() );
+// 		showBehavior->setChecked ( groot->getShowBehaviorModels() );
+// 		showCollision->setChecked ( groot->getShowCollisionModels() );
+// 		showBoundingCollision->setChecked ( groot->getShowBoundingCollisionModels() );
+// 		showForceField->setChecked ( groot->getShowForceFields() );
+// 		showInteractionForceField->setChecked ( groot->getShowInteractionForceFields() );
+// 		showMapping->setChecked ( groot->getShowMappings() );
+// 		showMechanicalMapping->setChecked ( groot->getShowMechanicalMappings() );
+// 		showWireFrame->setChecked ( groot->getShowWireFrame() );
+// 		showNormals->setChecked ( groot->getShowNormals() );
 
             viewer->setScene ( groot, viewer->getSceneFileName().c_str() );
             graphListener->removeChild ( NULL, node_clicked );
@@ -2352,7 +2222,7 @@ void RealGUI::graphActivateNode()
 
 /*****************************************************************************************************************/
 //Nodes in the graph can have the same name. To find the right one, we have to verify the pointer itself.
-//We return the Nodes clicked
+//We return the Node clicked
 GNode *RealGUI::verifyNode ( GNode *node, Q3ListViewItem *item_clicked )
 {
     std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator = graphListener->items.find ( node );

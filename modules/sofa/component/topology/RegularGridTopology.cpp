@@ -40,6 +40,12 @@ using std::endl;
 
 void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
+    float scale=1.0f;
+    if (arg->getAttribute("scale")!=NULL)
+    {
+        scale = atof(arg->getAttribute("scale"));
+    }
+
     this->GridTopology::parse(arg);
     if (arg->getAttribute("xmin") != NULL &&
         arg->getAttribute("ymin") != NULL &&
@@ -54,10 +60,11 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
         const char* xmax = arg->getAttribute("xmax");
         const char* ymax = arg->getAttribute("ymax");
         const char* zmax = arg->getAttribute("zmax");
-        min.setValue(Vec3(atof(xmin),atof(ymin),atof(zmin)));
-        max.setValue(Vec3(atof(xmax),atof(ymax),atof(zmax)));
+        min.setValue(Vec3(atof(xmin)*scale,atof(ymin)*scale,atof(zmin)*scale));
+        max.setValue(Vec3(atof(xmax)*scale,atof(ymax)*scale,atof(zmax)*scale));
     }
     this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
+
 }
 
 SOFA_DECL_CLASS(RegularGridTopology)

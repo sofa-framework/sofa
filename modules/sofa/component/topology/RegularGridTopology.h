@@ -61,6 +61,7 @@ public:
 
     void setPos(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax);
 
+
     const Vec3& getP0() const { return p0; }
     const Vec3& getDx() const { return dx; }
     const Vec3& getDy() const { return dy; }
