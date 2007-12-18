@@ -56,16 +56,16 @@ public:
     virtual std::string getTemplateName() const;
 
     // -- Mass interface
-    void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
+    virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
 
-    void accFromF(VecDeriv& a, const VecDeriv& f);
+    virtual  void accFromF(VecDeriv& a, const VecDeriv& f);
 
-    void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+    virtual  void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    double getKineticEnergy(const VecDeriv& /*v*/)  ///< vMv/2 using dof->getV()
+    virtual double getKineticEnergy(const VecDeriv& /*v*/)  ///< vMv/2 using dof->getV()
     {std::cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented\n"; return 0;}
 
-    double getPotentialEnergy(const VecCoord& /*x*/)   ///< Mgx potential in a uniform gravity field, null at origin
+    virtual double getPotentialEnergy(const VecCoord& /*x*/)   ///< Mgx potential in a uniform gravity field, null at origin
     {std::cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getPotentialEnergy not yet implemented\n"; return 0;}
 
     virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
@@ -75,11 +75,11 @@ public:
 
     virtual void draw();
 
-    bool addBBox(double* minBBox, double* maxBBox);
+    virtual bool addBBox(double* minBBox, double* maxBBox);
 
-    void initTextures() { }
+    virtual void initTextures() { }
 
-    void update() { }
+    virtual void update() { }
 
 
 

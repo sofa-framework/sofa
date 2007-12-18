@@ -70,12 +70,24 @@ public:
 
 
     typedef std::map<Vec3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
-    typedef std::map<int,fixed_array<int,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
+
+    /// connexion between several coarsened levels
+    typedef std::vector<fixed_array<int,8> > HierarchicalCubeMap; ///< a cube indice -> corresponding 8 child indices on the potential _finerSparseGrid
     HierarchicalCubeMap _hierarchicalCubeMap;
-    typedef helper::vector<std::map<int,float> > HierarchicalPointMap; ///< a point indice -> corresponding 8 child indices on the potential _finerSparseGrid with corresponding weight
+    typedef helper::vector<int> InverseHierarchicalCubeMap; ///< a fine cube indice -> corresponding coarser cube indice
+    InverseHierarchicalCubeMap _inverseHierarchicalCubeMap;
+
+    typedef std::map<int,float> AHierarchicalPointMap;
+// 					typedef helper::vector< std::pair<int,float> >  AHierarchicalPointMap;
+    typedef helper::vector< AHierarchicalPointMap > HierarchicalPointMap; ///< a point indice -> corresponding 8 child indices on the potential _finerSparseGrid with corresponding weight
     HierarchicalPointMap _hierarchicalPointMap;
 
 
+    enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED};
+    typedef helper::vector< helper::fixed_array<int,NUM_CONNECTED> > NodeAdjacency; ///< a node -> its 6 neighboors
+    NodeAdjacency _nodeAdjacency;
+    typedef helper::vector< helper::vector<int> >NodeCubesAdjacency; ///< a node -> its 8 neighboor cells
+    NodeCubesAdjacency _nodeCubesAdjacency;
 
 
     int getNx() const { return nx.getValue(); }
@@ -114,6 +126,8 @@ public:
     virtual Type getType( int i );
 
     void setFinerSparseGrid( SparseGridTopology* fsp ) {_finerSparseGrid=fsp;}
+    void setCoarserSparseGrid( SparseGridTopology* csp ) {_coarserSparseGrid=csp;}
+
 
     RegularGridTopology _regularGrid; ///< based on a corresponding RegularGrid
     vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
@@ -150,6 +164,7 @@ protected:
 
 
     SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
+    SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid
 
 
     /*	/// to compute valid cubes (intersection between mesh segments and cubes)
@@ -204,6 +219,7 @@ public :
         return getCubes().size();
     }
 
+    virtual vector< fixed_array<double,3> >& getPoints() {return this->seqPoints;}
 
 };
 
