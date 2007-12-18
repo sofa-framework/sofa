@@ -227,12 +227,12 @@ protected:
     vector<Transformation> _rotations;
     void initLarge(int i, const Element&elem);
     void computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey);
-    void accumulateForceLarge( Vector& f, const Vector & p, int i, const Element&elem  );
+    virtual void accumulateForceLarge( Vector& f, const Vector & p, int i, const Element&elem  );
 
     ////////////// polar decomposition method
     void initPolar(int i, const Element&elem);
     void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
-    void accumulateForcePolar( Vector& f, const Vector & p, int i, const Element&elem  );
+    virtual void accumulateForcePolar( Vector& f, const Vector & p, int i, const Element&elem  );
 
     bool _alreadyInit;
 };

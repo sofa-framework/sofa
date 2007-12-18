@@ -126,9 +126,63 @@ void SparseGridTopology::init()
     else
         buildAsFinest();
 
+
+
+    _nodeAdjacency.resize(seqPoints.size() );
+    for(unsigned i=0; i<seqPoints.size(); ++i)
+        _nodeAdjacency[i].assign(-1);
+
+    for(unsigned i=0; i<seqCubes.size(); ++i)
+    {
+        _nodeAdjacency[ seqCubes[i][0] ][RIGHT] = seqCubes[i][1];
+        _nodeAdjacency[ seqCubes[i][0] ][UP] = seqCubes[i][2];
+        _nodeAdjacency[ seqCubes[i][0] ][BEHIND] = seqCubes[i][4];
+
+        _nodeAdjacency[ seqCubes[i][1] ][LEFT] = seqCubes[i][0];
+        _nodeAdjacency[ seqCubes[i][1] ][UP] = seqCubes[i][3];
+        _nodeAdjacency[ seqCubes[i][1] ][BEHIND] = seqCubes[i][5];
+
+        _nodeAdjacency[ seqCubes[i][2] ][RIGHT] = seqCubes[i][3];
+        _nodeAdjacency[ seqCubes[i][2] ][DOWN] = seqCubes[i][0];
+        _nodeAdjacency[ seqCubes[i][2] ][BEHIND] = seqCubes[i][6];
+
+        _nodeAdjacency[ seqCubes[i][3] ][LEFT] = seqCubes[i][2];
+        _nodeAdjacency[ seqCubes[i][3] ][DOWN] = seqCubes[i][1];
+        _nodeAdjacency[ seqCubes[i][3] ][BEHIND] = seqCubes[i][7];
+
+        _nodeAdjacency[ seqCubes[i][4] ][RIGHT] = seqCubes[i][5];
+        _nodeAdjacency[ seqCubes[i][4] ][UP] = seqCubes[i][6];
+        _nodeAdjacency[ seqCubes[i][4] ][BEFORE] = seqCubes[i][0];
+
+        _nodeAdjacency[ seqCubes[i][5] ][LEFT] = seqCubes[i][4];
+        _nodeAdjacency[ seqCubes[i][5] ][UP] = seqCubes[i][7];
+        _nodeAdjacency[ seqCubes[i][5] ][BEFORE] = seqCubes[i][1];
+
+        _nodeAdjacency[ seqCubes[i][6] ][RIGHT] = seqCubes[i][7];
+        _nodeAdjacency[ seqCubes[i][6] ][DOWN] = seqCubes[i][4];
+        _nodeAdjacency[ seqCubes[i][6] ][BEFORE] = seqCubes[i][2];
+
+        _nodeAdjacency[ seqCubes[i][7] ][LEFT] = seqCubes[i][6];
+        _nodeAdjacency[ seqCubes[i][7] ][DOWN] = seqCubes[i][5];
+        _nodeAdjacency[ seqCubes[i][7] ][BEFORE] = seqCubes[i][3];
+    }
+
+
+// 		  _nodeCubesAdjacency.clear();
+    _nodeCubesAdjacency.resize(seqPoints.size() );
+    for(unsigned i=0; i<seqCubes.size(); ++i)
+    {
+        for(int j=0; j<8; ++j)
+        {
+            _nodeCubesAdjacency[ seqCubes[i][j] ].push_back( i );
+        }
+    }
+
+    cerr<<"_nodeCubesAdjacency :"<<_nodeCubesAdjacency<<endl;
+
 // 		  cerr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
-    cerr<<seqCubes.size()<<"       ";
-    cerr<<_types.size()<<endl;
+// 		  cerr<<seqCubes.size()<<"       ";
+// 		  cerr<<_types.size()<<endl;
 }
 
 
@@ -445,7 +499,8 @@ void SparseGridTopology::buildFromFiner(  )
 
                 _indicesOfRegularCubeInSparseGrid[coarseRegularIndice] = cubeCorners.size()-1;
 
-                _hierarchicalCubeMap[cubeCorners.size()-1]=fineIndices;
+// 			_hierarchicalCubeMap[cubeCorners.size()-1]=fineIndices;
+                _hierarchicalCubeMap.push_back( fineIndices );
             }
 
 
@@ -505,6 +560,7 @@ void SparseGridTopology::buildFromFiner(  )
 
                 if( WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice] )
                     _hierarchicalPointMap[coarseCornerGlobalIndice][fineVertexGlobalIndice] = WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice];
+// 						_hierarchicalPointMap[coarseCornerGlobalIndice].push_back( std::pair<int,float>(fineVertexGlobalIndice, WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice]) );
             }
         }
 
@@ -547,6 +603,15 @@ void SparseGridTopology::buildFromFiner(  )
 
 // 		cerr<<"seqCubes : "<<seqCubes<<endl;
 // 		cerr<<"seqPoints : "<<seqPoints<<endl;
+
+
+
+    _finerSparseGrid->_coarserSparseGrid = this;
+    _finerSparseGrid->_inverseHierarchicalCubeMap.resize( _finerSparseGrid->seqCubes.size() );
+    for( unsigned i=0; i<_hierarchicalCubeMap.size(); ++i)
+        for(int w=0; w<8; ++w)
+            _finerSparseGrid->_inverseHierarchicalCubeMap[ _hierarchicalCubeMap[i][w] ] = i;
+
 }
 
 
