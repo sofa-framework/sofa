@@ -155,7 +155,7 @@ public:
     void updateSimulationContext();
 
     /// Update the visual context values, based on parent and local ContextObjects
-    void updateVisualContext();
+    void updateVisualContext(int FILTER=0);
 
     /// @name Visitors and graph traversal
     /// @{

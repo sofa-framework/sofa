@@ -48,7 +48,7 @@ Visitor::Result UpdateSimulationContextVisitor::processNodeTopDown(GNode* node)
 
 Visitor::Result UpdateVisualContextVisitor::processNodeTopDown(GNode* node)
 {
-    node->updateVisualContext();
+    node->updateVisualContext(filter);
     return RESULT_CONTINUE;
 }
 

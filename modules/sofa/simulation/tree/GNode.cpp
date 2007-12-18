@@ -562,11 +562,28 @@ void GNode::updateSimulationContext()
     if( debug_ ) std::cerr<<"GNode::updateSimulationContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
 }
 
-void GNode::updateVisualContext()
+void GNode::updateVisualContext(int FILTER)
 {
     if( getParent() != NULL )
     {
-        copyVisualContext(*parent);
+        if (!FILTER)
+            copyVisualContext(*parent);
+        else
+        {
+            switch(FILTER)
+            {
+            case 1:  showVisualModels_.setValue((*parent).showVisualModels_.getValue());  break;
+            case 2:  showBehaviorModels_.setValue((*parent).showBehaviorModels_.getValue());  break;
+            case 3:  showCollisionModels_.setValue((*parent).showCollisionModels_.getValue());  break;
+            case 4:  showBoundingCollisionModels_.setValue((*parent).showBoundingCollisionModels_.getValue());  break;
+            case 5:  showMappings_.setValue((*parent).showMappings_.getValue());  break;
+            case 6:  showMechanicalMappings_.setValue((*parent).showMechanicalMappings_.getValue());  break;
+            case 7:  showForceFields_.setValue((*parent).showForceFields_.getValue());  break;
+            case 8:  showInteractionForceFields_.setValue((*parent).showInteractionForceFields_.getValue()); break;
+            case 9:  showWireFrame_.setValue((*parent).showWireFrame_.getValue()); break;
+            case 10: showNormals_.setValue((*parent).showNormals_.getValue()); break;
+            }
+        }
     }
     // Apply local modifications to the context
     if (getLogTime())

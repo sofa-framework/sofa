@@ -65,6 +65,21 @@ namespace qt
 
 //enum TYPE{ NORMAL, PML, LML};
 
+enum
+{
+    ALL,
+    VISUALMODELS,
+    BEHAVIORMODELS,
+    COLLISIONMODELS,
+    BOUNDINGTREES,
+    MAPPINGS,
+    MECHANICALMAPPINGS,
+    FORCEFIELDS,
+    INTERACTIONS,
+    WIREFRAME,
+    NORMALS
+};
+
 using sofa::simulation::tree::GNode;
 #ifdef SOFA_PML
 using namespace sofa::filemanager::pml;
@@ -140,17 +155,63 @@ public slots:
     void setDt(const QString&);
     void resetScene();
     void screenshot();
-    void slot_showVisual(bool);
-    void slot_showBehavior(bool);
-    void slot_showCollision(bool);
-    void slot_showBoundingCollision(bool);
-    void slot_showMapping(bool);
-    void slot_showMechanicalMapping(bool);
-    void slot_showForceField(bool);
-    void slot_showInteractionForceField(bool);
-    void slot_showWireFrame(bool);
-    void slot_showNormals(bool);
 
+    void showVisualModels()      {showhideElements(VISUALMODELS,true);};
+    void showBehaviorModels()    {showhideElements(BEHAVIORMODELS,true);};
+    void showCollisionModels()   {showhideElements(COLLISIONMODELS,true);};
+    void showBoundingTrees()     {showhideElements(BOUNDINGTREES,true);};
+    void showMappings()          {showhideElements(MAPPINGS,true);};
+    void showMechanicalMappings() {showhideElements(MECHANICALMAPPINGS,true);};
+    void showForceFields()       {showhideElements(FORCEFIELDS,true);};
+    void showInteractions()      {showhideElements(INTERACTIONS,true);};
+    void showAll()               {showhideElements(ALL,true);};
+    void showWireFrame()         {showhideElements(WIREFRAME,true);};
+    void showNormals()           {showhideElements(NORMALS,true);};
+
+    void hideVisualModels()      {showhideElements(VISUALMODELS,false);};
+    void hideBehaviorModels()    {showhideElements(BEHAVIORMODELS,false);};
+    void hideCollisionModels()   {showhideElements(COLLISIONMODELS,false);};
+    void hideBoundingTrees()     {showhideElements(BOUNDINGTREES,false);};
+    void hideMappings()          {showhideElements(MAPPINGS,false);};
+    void hideMechanicalMappings() {showhideElements(MECHANICALMAPPINGS,false);};
+    void hideForceFields()       {showhideElements(FORCEFIELDS,false);};
+    void hideInteractions()      {showhideElements(INTERACTIONS,false);};
+    void hideAll()               {showhideElements(ALL,false);};
+    void hideWireFrame()         {showhideElements(WIREFRAME,false);};
+    void hideNormals()           {showhideElements(NORMALS,false);};
+
+    void showhideElements(int FILTER, bool value)
+    {
+        GNode* groot = getScene();
+        if ( groot )
+        {
+            switch(FILTER)
+            {
+            case ALL:
+                groot->getContext()->setShowVisualModels ( value );
+                groot->getContext()->setShowBehaviorModels ( value );
+                groot->getContext()->setShowCollisionModels ( value );
+                groot->getContext()->setShowBoundingCollisionModels ( value );
+                groot->getContext()->setShowMappings ( value );
+                groot->getContext()->setShowMechanicalMappings ( value );
+                groot->getContext()->setShowForceFields ( value );
+                groot->getContext()->setShowInteractionForceFields ( value );
+                break;
+            case VISUALMODELS:       groot->getContext()->setShowVisualModels ( value ); break;
+            case BEHAVIORMODELS:     groot->getContext()->setShowBehaviorModels ( value ); break;
+            case COLLISIONMODELS:    groot->getContext()->setShowCollisionModels ( value ); break;
+            case BOUNDINGTREES:      groot->getContext()->setShowBoundingCollisionModels ( value );  break;
+            case MAPPINGS:           groot->getContext()->setShowMappings ( value ); break;
+            case MECHANICALMAPPINGS: groot->getContext()->setShowMechanicalMappings ( value ); break;
+            case FORCEFIELDS:        groot->getContext()->setShowForceFields ( value ); break;
+            case INTERACTIONS:       groot->getContext()->setShowInteractionForceFields ( value ); break;
+            case WIREFRAME:          groot->getContext()->setShowWireFrame ( value ); break;
+            case NORMALS:            groot->getContext()->setShowNormals ( value ); break;
+            }
+            sofa::simulation::tree::getSimulation()->updateVisualContext ( groot, FILTER );
+        }
+        viewer->getQWidget()->update();
+    }
 
     void slot_recordSimulation( bool);
     void slot_backward( );

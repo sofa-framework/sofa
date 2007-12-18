@@ -260,11 +260,12 @@ void Simulation::updateContext ( GNode* root )
     root->execute<UpdateContextVisitor>();
 }
 
-/// Update only Visual contexts. Required before drawing the scene if root flags are modified.
-void Simulation::updateVisualContext ( GNode* root )
+/// Update only Visual contexts. Required before drawing the scene if root flags are modified.( can filter by specifying a specific element)
+void Simulation::updateVisualContext ( GNode* root, int FILTER)
 {
     if ( !root ) return;
-    root->execute<UpdateVisualContextVisitor>();
+    UpdateVisualContextVisitor vis(FILTER);
+    vis.execute(root);
 }
 /// Render the scene
 void Simulation::draw ( GNode* root )
