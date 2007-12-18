@@ -72,6 +72,8 @@ void NewProximityIntersection::init()
     intersectors.add<TriangleModel, LineModel, NewProximityIntersection>(this);
     intersectors.add<TriangleModel, TriangleModel, NewProximityIntersection>(this);
 
+    intersectors.ignore<RayModel, PointModel>();
+    intersectors.ignore<RayModel, LineModel>();
     intersectors.add<RayModel, TriangleModel, NewProximityIntersection>(this);
 }
 

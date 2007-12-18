@@ -88,6 +88,8 @@ void MinProximityIntersection::init()
         intersectors.ignore<LineModel, SphereModel>();
         intersectors.ignore<TriangleModel, SphereModel>();
     }
+    intersectors.ignore<RayModel, PointModel>();
+    intersectors.ignore<RayModel, LineModel>();
     intersectors.add<RayModel, TriangleModel, MinProximityIntersection>(this);
 }
 

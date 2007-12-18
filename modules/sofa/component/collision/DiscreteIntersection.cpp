@@ -76,6 +76,8 @@ DiscreteIntersection::DiscreteIntersection()
 
     intersectors.add<RayModel, SphereModel,                     DiscreteIntersection>  (this);
     intersectors.add<RayModel, SphereTreeModel,                 DiscreteIntersection>  (this);
+    intersectors.ignore<RayModel, PointModel>();
+    intersectors.ignore<RayModel, LineModel>();
     intersectors.add<RayModel, TriangleModel,                   DiscreteIntersection>  (this);
     intersectors.add<RayModel, RigidDistanceGridCollisionModel, DiscreteIntersection>  (this);
     intersectors.add<RayModel, FFDDistanceGridCollisionModel,   DiscreteIntersection>  (this);
