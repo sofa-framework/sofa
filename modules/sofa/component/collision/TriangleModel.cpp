@@ -955,7 +955,7 @@ void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
 void TriangleModel::fillArrays( float *array_coord,float *array_identity, int *offset_coord, int Id)
 {
     const float factor = 1.0f/128.0f;
-    const float step_Id = 1.0f/((float) size);
+    const float step_Id = 1.0f/((float) size*2.0f);
     float Id_triangle = (float)Id+1;
     for ( int i=0; i<size; i++)
     {
