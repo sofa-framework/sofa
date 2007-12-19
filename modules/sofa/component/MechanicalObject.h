@@ -129,6 +129,7 @@ public:
     virtual VecCoord* getX()  { f_X->beginEdit(); return x;  }
     virtual VecDeriv* getV()  { f_V->beginEdit(); return v;  }
     virtual VecDeriv* getF()  { return f;  }
+    virtual VecDeriv* getExternalForces()  { return externalForces;  }
     virtual VecDeriv* getDx() { return dx; }
     virtual VecConst* getC() { return c;}
     virtual VecCoord* getXfree() { return xfree; }
@@ -140,6 +141,7 @@ public:
     virtual const VecDeriv* getV()  const { return v;  }
     virtual const VecDeriv* getV0()  const { return v0;  }
     virtual const VecDeriv* getF()  const { return f;  }
+    virtual const VecDeriv* getExternalForces()  const { return externalForces;  }
     virtual const VecDeriv* getDx() const { return dx; }
     virtual const VecConst* getC() const { return c; }
     virtual const VecCoord* getXfree() const { return xfree; }
@@ -219,11 +221,11 @@ public:
 
     /// @}
 
-    // new : get compliance on the constraints
-    virtual void getCompliance(double **w);
-    // apply contact force AND compute the subsequent dX
-    virtual void applyContactForce(double *f);
-    virtual void resetContactForce(void);
+    //// new : get compliance on the constraints
+    //virtual void getCompliance(double **w);
+    //// apply contact force AND compute the subsequent dX
+    //virtual void applyContactForce(double *f);
+    //virtual void resetContactForce(void);
 
     virtual void addDxToCollisionModel(void);
 
