@@ -89,10 +89,14 @@ public:
 
     virtual ~MechanicalState() { }
 
+    /// Return the free-motion velocity vector (read-write access).
+    virtual VecDeriv* getVfree() = 0;
     /// Return the current velocity vector (read-write access).
     virtual VecDeriv* getV() = 0;
     /// Return the force vector (read-write access).
     virtual VecDeriv* getF() = 0;
+    /// Return the external forces vector (read-write access).
+    virtual VecDeriv* getExternalForces() = 0;
     /// Return the displacement vector (read-write access).
     virtual VecDeriv* getDx() = 0;
     /// Return the constraints system matrix (read-write access).
@@ -110,12 +114,16 @@ public:
     virtual const VecDeriv* getV()  const = 0;
     /// Return the force vector (read-only access).
     virtual const VecDeriv* getF()  const = 0;
+    /// Return the external forces vector (read-write access).
+    virtual const VecDeriv* getExternalForces() const = 0;
     /// Return the displacement vector (read-only access).
     virtual const VecDeriv* getDx() const = 0;
     /// Return the constraints system matrix (read-only access).
     virtual const VecConst* getC() const = 0;
     /// Return the free-motion position vector (read-only access).
     virtual const VecCoord* getXfree()  const = 0;
+    /// Return the free-motion velocity vector (read-only access).
+    virtual const VecDeriv* getVfree() const = 0;
     /// Return the current position vector (read-only access).
     virtual const VecCoord* getX0()  const = 0;
     /// Return the initial velocity vector (read-only access).

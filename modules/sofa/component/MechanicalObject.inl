@@ -590,20 +590,20 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
     }
 }
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::getCompliance (double** /*W*/)
-{
-}
+//template <class DataTypes>
+//void MechanicalObject<DataTypes>::getCompliance (double** /*W*/)
+//{
+//}
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::applyContactForce(double* /*f*/)
-{
-}
+//template <class DataTypes>
+//void MechanicalObject<DataTypes>::applyContactForce(double* /*f*/)
+//{
+//}
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::resetContactForce()
-{
-}
+//template <class DataTypes>
+//void MechanicalObject<DataTypes>::resetContactForce()
+//{
+//}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addDxToCollisionModel()
@@ -1365,12 +1365,12 @@ sofa::helper::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId
 //
 // Template specializations
 
-template<>
-void MechanicalObject<defaulttype::Rigid3Types>::getCompliance (double**W);
-template<>
-void MechanicalObject<defaulttype::Rigid3Types>::applyContactForce(double *f);
-template<>
-void MechanicalObject<defaulttype::Rigid3Types>::resetContactForce();
+//template<>
+//void MechanicalObject<defaulttype::Rigid3Types>::getCompliance (double**W);
+//template<>
+//void MechanicalObject<defaulttype::Rigid3Types>::applyContactForce(double *f);
+//template<>
+//void MechanicalObject<defaulttype::Rigid3Types>::resetContactForce();
 
 
 } // namespace component

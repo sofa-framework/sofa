@@ -31,6 +31,7 @@ HEADERS += \
           componentmodel/behavior/MechanicalMapping.inl \
           componentmodel/behavior/MechanicalState.h \
           componentmodel/behavior/OdeSolver.h \
+          componentmodel/collision/BaseContactCorrection.h \
           componentmodel/collision/BroadPhaseDetection.h \
           componentmodel/collision/CollisionAlgorithm.h \
           componentmodel/collision/CollisionGroupManager.h \
