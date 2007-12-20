@@ -165,70 +165,70 @@ bool Context::getMultiThreadSimulation() const
 bool Context::getShowCollisionModels() const
 {
     if (showCollisionModels_.getValue() < 0) return false;
-    else return showCollisionModels_.getValue();
+    else return (bool)showCollisionModels_.getValue();
 }
 
 /// Display flags: Bounding Collision Models
 bool Context::getShowBoundingCollisionModels() const
 {
     if (showBoundingCollisionModels_.getValue() < 0) return false;
-    else return showBoundingCollisionModels_.getValue();
+    else return (bool)showBoundingCollisionModels_.getValue();
 }
 
 /// Display flags: Behavior Models
 bool Context::getShowBehaviorModels() const
 {
     if (showBehaviorModels_.getValue() < 0) return false;
-    else  return showBehaviorModels_.getValue();
+    else  return (bool)showBehaviorModels_.getValue();
 }
 
 /// Display flags: Visual Models
 bool Context::getShowVisualModels() const
 {
     if (showVisualModels_.getValue() < 0) return true;
-    else return showVisualModels_.getValue();
+    else return (bool)showVisualModels_.getValue();
 }
 
 /// Display flags: Mappings
 bool Context::getShowMappings() const
 {
     if (showMappings_.getValue() < 0) return false;
-    else return showMappings_.getValue();
+    else return (bool)showMappings_.getValue();
 }
 
 /// Display flags: Mechanical Mappings
 bool Context::getShowMechanicalMappings() const
 {
     if (showMechanicalMappings_.getValue() < 0) return false;
-    else return showMechanicalMappings_.getValue();
+    else return (bool)showMechanicalMappings_.getValue();
 }
 
 /// Display flags: ForceFields
 bool Context::getShowForceFields() const
 {
     if (showForceFields_.getValue() < 0) return false;
-    else return showForceFields_.getValue();
+    else return (bool)showForceFields_.getValue();
 }
 
 /// Display flags: InteractionForceFields
 bool Context::getShowInteractionForceFields() const
 {
     if (showInteractionForceFields_.getValue() < 0) return false;
-    else return showInteractionForceFields_.getValue();
+    else return (bool)showInteractionForceFields_.getValue();
 }
 
 /// Display flags: WireFrame
 bool Context::getShowWireFrame() const
 {
     if (showWireFrame_.getValue() < 0) return false;
-    else return showWireFrame_.getValue();
+    else return (bool)showWireFrame_.getValue();
 }
 
 /// Display flags: Normal
 bool Context::getShowNormals() const
 {
     if (showNormals_.getValue() < 0) return false;
-    else return showNormals_.getValue();
+    else return (bool)showNormals_.getValue();
 }
 
 
