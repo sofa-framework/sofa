@@ -443,12 +443,42 @@ void GNode::doRemoveObject(BaseObject* obj)
     }
 }
 
+void GNode::initVisualContext()
+{
+    if (getParent() != NULL)
+    {
+        if (showVisualModels_.getValue() == -1)            showVisualModels_.setValue(static_cast<GNode *>(getParent())->showVisualModels_.getValue());
+        if (showBehaviorModels_.getValue() == -1)          showBehaviorModels_.setValue(static_cast<GNode *>(getParent())->showBehaviorModels_.getValue());
+        if (showCollisionModels_.getValue() == -1)         showCollisionModels_.setValue(static_cast<GNode *>(getParent())->showCollisionModels_.getValue());
+        if (showBoundingCollisionModels_.getValue() == -1) showBoundingCollisionModels_.setValue(static_cast<GNode *>(getParent())->showBoundingCollisionModels_.getValue());
+        if (showMappings_.getValue() == -1)                showMappings_.setValue(static_cast<GNode *>(getParent())->showMappings_.getValue());
+        if (showMechanicalMappings_.getValue() == -1)      showMechanicalMappings_.setValue(static_cast<GNode *>(getParent())->showMechanicalMappings_.getValue());
+        if (showForceFields_.getValue() == -1)             showForceFields_.setValue(static_cast<GNode *>(getParent())->showForceFields_.getValue());
+        if (showInteractionForceFields_.getValue() == -1)  showInteractionForceFields_.setValue(static_cast<GNode *>(getParent())->showInteractionForceFields_.getValue());
+        if (showWireFrame_.getValue() == -1)               showWireFrame_.setValue(static_cast<GNode *>(getParent())->showWireFrame_.getValue());
+        if (showNormals_.getValue() == -1)                 showNormals_.setValue(static_cast<GNode *>(getParent())->showNormals_.getValue());
+    }
+}
 
+void GNode::setDefaultVisualContextValue()
+{
+    if (showVisualModels_.getValue() == -1)            showVisualModels_.setValue(true);
+    if (showBehaviorModels_.getValue() == -1)          showBehaviorModels_.setValue(false);
+    if (showCollisionModels_.getValue() == -1)         showCollisionModels_.setValue(false);
+    if (showBoundingCollisionModels_.getValue() == -1) showBoundingCollisionModels_.setValue(false);
+    if (showMappings_.getValue() == -1)                showMappings_.setValue(false);
+    if (showMechanicalMappings_.getValue() == -1)      showMechanicalMappings_.setValue(false);
+    if (showForceFields_.getValue() == -1)             showForceFields_.setValue(false);
+    if (showInteractionForceFields_.getValue() == -1)  showInteractionForceFields_.setValue(false);
+    if (showWireFrame_.getValue() == -1)               showWireFrame_.setValue(false);
+    if (showNormals_.getValue() == -1)                 showNormals_.setValue(false);
+}
 
 void GNode::initialize()
 {
     //cerr<<"GNode::initialize()"<<endl;
 
+    initVisualContext();
     // Put the OdeSolver, if any, in first position. This makes sure that the OdeSolver component is initialized only when all its sibling and children components are already initialized.
     /// @todo Putting the solver first means that it will be initialized *before* any sibling or childrens. Is that what we want? -- Jeremie A.
     Sequence<BaseObject>::iterator i=object.begin(), iend=object.end();

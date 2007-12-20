@@ -110,6 +110,9 @@ public:
     /// Must be called after each graph modification. Do not call it directly, apply an InitVisitor instead.
     virtual void initialize();
 
+    /// Called after initialization of the GNode to set the default value of the visual context.
+    virtual void setDefaultVisualContextValue();
+
     /// Get parent node (or NULL if no hierarchy or for root node)
     virtual core::objectmodel::BaseNode* getParent();
 
@@ -515,6 +518,9 @@ protected:
     /// Execute a recursive action starting from this node.
     /// This method bypass the actionScheduler of this node if any.
     void doExecuteVisitor(Visitor* action);
+
+    /// Called during initialization to corectly propagate the visual context to the children
+    void initVisualContext();
 
     // VisitorScheduler can use doExecuteVisitor() method
     friend class VisitorScheduler;

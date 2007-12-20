@@ -40,17 +40,17 @@ Context::Context()
     , worldGravity_(initData(&worldGravity_, Vec3(0,0,0),"gravity","Gravity in the world coordinate system"))
     , dt_(initData(&dt_,0.01,"dt","Time step"))
     , time_(initData(&time_,0.,"time","Current time"))
-    , animate_(initData(&animate_,false,"animate","???"))
-    , showCollisionModels_(initData(&showCollisionModels_,false,"showCollisionModels","display flag"))
-    , showBoundingCollisionModels_( initData(&showBoundingCollisionModels_,false,"showBoundingCollisionModels","display flag"))
-    , showBehaviorModels_(initData(&showBehaviorModels_,false,"showBehaviorModels","display flag"))
-    , showVisualModels_(initData(&showVisualModels_,true,"showVisualModels","display flag"))
-    , showMappings_(initData(&showMappings_,false,"showMappings","display flag"))
-    , showMechanicalMappings_(initData(&showMechanicalMappings_,false,"showMechanicalMappings","display flag"))
-    , showForceFields_(initData(&showForceFields_,false,"showForceFields","display flag"))
-    , showInteractionForceFields_(initData(&showInteractionForceFields_,false,"showInteractionForceFields","display flag"))
-    , showWireFrame_(initData(&showWireFrame_,false,"showWireFrame","display flag"))
-    , showNormals_(initData(&showNormals_,false,"showNormals","display flag"))
+    , animate_(initData(&animate_,false,"animate","Animate the Simulation(applied at initialization only)"))
+    , showVisualModels_           (initData(&showVisualModels_,           -1, "showVisualModels","display Visual Models"))
+    , showBehaviorModels_         (initData(&showBehaviorModels_,         -1,"showBehaviorModels","display Behavior Models"))
+    , showCollisionModels_        (initData(&showCollisionModels_,        -1,"showCollisionModels","display Collision Models"))
+    , showBoundingCollisionModels_(initData(&showBoundingCollisionModels_,-1,"showBoundingCollisionModels","display Bounding Collision Models"))
+    , showMappings_               (initData(&showMappings_,               -1,"showMappings","display Mappings"))
+    , showMechanicalMappings_     (initData(&showMechanicalMappings_,     -1,"showMechanicalMappings","display Mechanical Mappings"))
+    , showForceFields_            (initData(&showForceFields_,            -1,"showForceFields","display Force Fields"))
+    , showInteractionForceFields_ (initData(&showInteractionForceFields_, -1,"showInteractionForceFields","display Interaction Force Fields"))
+    , showWireFrame_              (initData(&showWireFrame_,              -1,"showWireFrame","display in WireFrame"))
+    , showNormals_                (initData(&showNormals_,                -1,"showNormals","display Normals"))
     , multiThreadSimulation_(initData(&multiThreadSimulation_,false,"multiThreadSimulation","Apply multithreaded simulation"))
     , currentLevel_(initData(&currentLevel_,0,"currentLevel","Current level of details"))
     , coarsestLevel_(initData(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
@@ -164,61 +164,71 @@ bool Context::getMultiThreadSimulation() const
 /// Display flags: Collision Models
 bool Context::getShowCollisionModels() const
 {
-    return showCollisionModels_.getValue();
+    if (showCollisionModels_.getValue() < 0) return false;
+    else return showCollisionModels_.getValue();
 }
 
 /// Display flags: Bounding Collision Models
 bool Context::getShowBoundingCollisionModels() const
 {
-    return showBoundingCollisionModels_.getValue();
+    if (showBoundingCollisionModels_.getValue() < 0) return false;
+    else return showBoundingCollisionModels_.getValue();
 }
 
 /// Display flags: Behavior Models
 bool Context::getShowBehaviorModels() const
 {
-    return showBehaviorModels_.getValue();
+    if (showBehaviorModels_.getValue() < 0) return false;
+    else  return showBehaviorModels_.getValue();
 }
 
 /// Display flags: Visual Models
 bool Context::getShowVisualModels() const
 {
-    return showVisualModels_.getValue();
+    if (showVisualModels_.getValue() < 0) return true;
+    else return showVisualModels_.getValue();
 }
 
 /// Display flags: Mappings
 bool Context::getShowMappings() const
 {
-    return showMappings_.getValue();
+    if (showMappings_.getValue() < 0) return false;
+    else return showMappings_.getValue();
 }
 
 /// Display flags: Mechanical Mappings
 bool Context::getShowMechanicalMappings() const
 {
-    return showMechanicalMappings_.getValue();
+    if (showMechanicalMappings_.getValue() < 0) return false;
+    else return showMechanicalMappings_.getValue();
 }
 
 /// Display flags: ForceFields
 bool Context::getShowForceFields() const
 {
-    return showForceFields_.getValue();
+    if (showForceFields_.getValue() < 0) return false;
+    else return showForceFields_.getValue();
 }
 
 /// Display flags: InteractionForceFields
 bool Context::getShowInteractionForceFields() const
 {
-    return showInteractionForceFields_.getValue();
+    if (showInteractionForceFields_.getValue() < 0) return false;
+    else return showInteractionForceFields_.getValue();
 }
 
 /// Display flags: WireFrame
 bool Context::getShowWireFrame() const
 {
-    return showWireFrame_.getValue();
+    if (showWireFrame_.getValue() < 0) return false;
+    else return showWireFrame_.getValue();
 }
 
 /// Display flags: Normal
 bool Context::getShowNormals() const
 {
-    return showNormals_.getValue();
+    if (showNormals_.getValue() < 0) return false;
+    else return showNormals_.getValue();
 }
 
 
