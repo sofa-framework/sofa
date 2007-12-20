@@ -43,7 +43,7 @@ void RegularGridTopology::parse(core::objectmodel::BaseObjectDescription* arg)
     float scale=1.0f;
     if (arg->getAttribute("scale")!=NULL)
     {
-        scale = atof(arg->getAttribute("scale"));
+        scale = (float)atof(arg->getAttribute("scale"));
     }
 
     this->GridTopology::parse(arg);

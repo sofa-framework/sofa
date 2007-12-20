@@ -58,16 +58,16 @@ public:
     Data<double> dt_;
     Data<double> time_;
     Data<bool> animate_;
-    Data<bool> showCollisionModels_;
-    Data<bool> showBoundingCollisionModels_;
-    Data<bool> showBehaviorModels_;
-    Data<bool> showVisualModels_;
-    Data<bool> showMappings_;
-    Data<bool> showMechanicalMappings_;
-    Data<bool> showForceFields_;
-    Data<bool> showInteractionForceFields_;
-    Data<bool> showWireFrame_;
-    Data<bool> showNormals_;
+    Data<int> showVisualModels_;
+    Data<int> showBehaviorModels_;
+    Data<int> showCollisionModels_;
+    Data<int> showBoundingCollisionModels_;
+    Data<int> showMappings_;
+    Data<int> showMechanicalMappings_;
+    Data<int> showForceFields_;
+    Data<int> showInteractionForceFields_;
+    Data<int> showWireFrame_;
+    Data<int> showNormals_;
     Data<bool> multiThreadSimulation_;
 
     /// @name For multiresolution (UNSTABLE)

@@ -88,6 +88,7 @@ public slots:
     void updateTables();              //update the tables of value at each step of the simulation
     void saveTables();                //Save in datafield the content of a
     void changeValue();               //each time a field is modified
+    void changeVisualValue();               //each time a field of the Visualization tab is modified
     void changeNumberPoint();         //used to dynamically add points in an object of type pointSubset
     void closeNow () {emit(reject());} //called from outside to close the current widget
     void reject   () {                 emit(dialogClosed(Id)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
@@ -162,7 +163,7 @@ protected:
     std::list< std::list< QObject* > * >          list_PointSubset;
     std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> > list_Table;
     int Id;
-
+    bool visualContentModified;
     std::vector< double > history;
     std::vector< double > energy_history[3];
     QwtPlot *graphEnergy;

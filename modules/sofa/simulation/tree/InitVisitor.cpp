@@ -62,6 +62,8 @@ void InitVisitor::processNodeBottomUp(GNode* node)
 //         cerr<<"InitVisitor::processNodeBottomUp(), initializing solver "<<(*i)->getName()<<endl;
 //         (*i)->init();
 //     }
+
+    node->setDefaultVisualContextValue();
     if( !node->solver.empty() )
         for( unsigned i=0; i<node->solver.size(); i++ )
             node->solver[i]->bwdInit();

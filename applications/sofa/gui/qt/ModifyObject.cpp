@@ -81,7 +81,7 @@ typedef QGrid     Q3Grid;
 
 
 ModifyObject::ModifyObject(int Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags f ):
-    parent(parent_), node(NULL), Id(Id_)
+    parent(parent_), node(NULL), Id(Id_),visualContentModified(false)
 {
 
     energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
@@ -141,14 +141,15 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             //label->setGeometry( 10, i*25+5, 200, 20 );
 
             const std::string& fieldname = (*it).second->getValueTypeString();
-            if( Data<bool> * ff = dynamic_cast< Data<bool> * >( (*it).second )  )
+            std::string name((*it).first);
+            name.resize(4);
+            if (name == "show")
             {
-                //Remove from the dialog window everything about showing collision models, visual models...
-                //Don't have any effect if the scene is animated: the root will erase the value.
-                std::string name((*it).first);
-                name.resize(4);
-                if (name == "show")
+                if( Data<int> * ff = dynamic_cast< Data<int> * >( (*it).second ))
                 {
+                    //Remove from the dialog window everything about showing collision models, visual models...
+                    //Don't have any effect if the scene is animated: the root will erase the value.
+
                     if (!visualTab)
                     {
                         visualTab = true;
@@ -160,32 +161,25 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     std::string box_name(oss.str());
                     box = new Q3GroupBox(tab2, QString(box_name.c_str()));
                     tabVisualizationLayout->addWidget( box );
+
+
+                    box->setColumns(4);
+                    box->setTitle(QString((*it).first.c_str()));
+
+                    if( strcmp((*it).second->help,"TODO") )new QLabel((*it).second->help, box);
+
+                    // the bool line edit
+                    QCheckBox* checkBox = new QCheckBox(box);
+                    list_Object.push_back( (QObject *) checkBox);
+
+                    //checkBox->setGeometry( 205, i*25+5, 170, 20 );
+
+                    checkBox->setChecked(ff->getValue());
+                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeVisualValue() ) );
+                    continue;
                 }
-                else
-                {
-                    std::string box_name(oss.str());
-                    box = new Q3GroupBox(tab1, QString(box_name.c_str()));
-                    tabPropertiesLayout->addWidget( box );
-                }
-
-                box->setColumns(4);
-                box->setTitle(QString((*it).first.c_str()));
-
-                if( strcmp((*it).second->help,"TODO") )new QLabel((*it).second->help, box);
-
-                // the bool line edit
-                QCheckBox* checkBox = new QCheckBox(box);
-                list_Object.push_back( (QObject *) checkBox);
-
-                //checkBox->setGeometry( 205, i*25+5, 170, 20 );
-
-                checkBox->setChecked(ff->getValue());
-                connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
-
-
-                continue;
             }
-            else
+
             {
                 std::string box_name(oss.str());
                 box = new Q3GroupBox(tab1, QString(box_name.c_str()));
@@ -202,6 +196,16 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
                     spinBox->setValue(ff->getValue());
                     connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeValue() ) );
+                }
+                //********************************************************************************************************//
+                //char
+                else if( Data<bool> * ff = dynamic_cast< Data<bool> * >( (*it).second )  )
+                {
+                    QCheckBox* checkBox = new QCheckBox(box);
+                    list_Object.push_back( (QObject *) checkBox);
+
+                    checkBox->setChecked(ff->getValue());
+                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
                 //unsigned int
@@ -270,6 +274,16 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
                     spinBox->setValue(ff->getValue());
                     connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( changeValue() ) );
+                }
+                //********************************************************************************************************//
+                //char
+                else if( DataPtr<bool> * ff = dynamic_cast< DataPtr<bool> * >( (*it).second )  )
+                {
+                    QCheckBox* checkBox = new QCheckBox(box);
+                    list_Object.push_back( (QObject *) checkBox);
+
+                    checkBox->setChecked(ff->getValue());
+                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeValue() ) );
                 }
                 //********************************************************************************************************//
                 //float
@@ -881,7 +895,12 @@ void ModifyObject::changeValue()
     if (buttonUpdate == NULL) return;
     buttonUpdate->setEnabled(true);
 }
-
+void ModifyObject::changeVisualValue()
+{
+    if (buttonUpdate == NULL) return;
+    buttonUpdate->setEnabled(true);
+    visualContentModified = true;
+}
 //*******************************************************************************************************************
 void ModifyObject::updateValues()
 {
@@ -1268,10 +1287,11 @@ void ModifyObject::updateValues()
 
     saveTables();
 
-    updateContext(dynamic_cast< GNode *>(node));
+    if (visualContentModified) updateContext(dynamic_cast< GNode *>(node));
 
     emit (objectUpdated());
     buttonUpdate->setEnabled(false);
+    visualContentModified = false;
 }
 
 
