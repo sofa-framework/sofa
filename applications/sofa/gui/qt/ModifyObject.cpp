@@ -943,12 +943,20 @@ void ModifyObject::updateValues()
 
         for( std::vector< std::pair<std::string, BaseData*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
-
             //*******************************************************************************************************************
             if( Data<int> * ff = dynamic_cast< Data<int> * >( (*it).second )  )
             {
-                QSpinBox* spinBox = dynamic_cast< QSpinBox *> ( (*list_it) ); list_it++;
-                ff->setValue(spinBox->value());
+                if (dynamic_cast< QSpinBox *> ( (*list_it) ))
+                {
+                    QSpinBox* spinBox = dynamic_cast< QSpinBox *> ( (*list_it) ); list_it++;
+                    ff->setValue(spinBox->value());
+                }
+                else
+                {
+                    QCheckBox* checkBox = dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                    ff->setValue(checkBox->isOn());
+                }
+
             }
             //*******************************************************************************************************************
             else if( Data<unsigned int> * ff = dynamic_cast< Data<unsigned int> * >( (*it).second )  )
@@ -977,17 +985,11 @@ void ModifyObject::updateValues()
 
             }
             //*******************************************************************************************************************
-            else if( dynamic_cast< Data<bool> * >( (*it).second ))
+            else if( Data<bool> * ff = dynamic_cast< Data<bool> * >( (*it).second ))
             {
                 // the bool line edit
-
-                if( Data<bool> * ff = dynamic_cast< Data<bool> * >( (*it).second )  )
-                {
-                    QCheckBox* checkBox = dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
-
-                    ff->setValue(checkBox->isOn());
-                }
-
+                QCheckBox* checkBox = dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                ff->setValue(checkBox->isOn());
             }
             //*******************************************************************************************************************
             else if( Data<std::string> * ff = dynamic_cast< Data<std::string> * >( (*it).second )  )
