@@ -180,6 +180,11 @@ public:
     /// To reset it to the default storage use \code setV(VecId::freePosition()) \endcode
     virtual void setXfree(VecId v) = 0; //{}
 
+    /// Make the free-motion velocity vector point to the identified vector.
+    ///
+    /// To reset it to the default storage use \code setV(VecId::freeVelocity()) \endcode
+    virtual void setVfree(VecId v) = 0; //{}
+
     /// Make the velocity vector point to the identified vector.
     ///
     /// To reset it to the default storage use \code setV(VecId::velocity()) \endcode
