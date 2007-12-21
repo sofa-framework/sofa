@@ -24,7 +24,7 @@
 *******************************************************************************/
 #ifndef SOFA_SIMULATION_TREE_MECHANICALACTION_H
 #define SOFA_SIMULATION_TREE_MECHANICALACTION_H
-#define SOFA_SUPPORT_MAPPED_MASS
+//#define SOFA_SUPPORT_MAPPED_MASS
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
@@ -377,13 +377,14 @@ class MechanicalPropagateAndAddDxVisitor : public MechanicalVisitor
 {
 public:
     VecId dx;
-    MechanicalPropagateAndAddDxVisitor(VecId dx) : dx(dx)
+    MechanicalPropagateAndAddDxVisitor(VecId dx = VecId::dx()) : dx(dx)
     {}
-    virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
-    {
-        mm->setDx(dx);
-        return RESULT_CONTINUE;
-    }
+
+    //virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    //{
+    //    mm->setDx(dx);
+    //    return RESULT_CONTINUE;
+    //}
     virtual Result fwdMechanicalMapping(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->propagateDx();
@@ -585,8 +586,12 @@ class MechanicalPropagateFreePositionVisitor : public MechanicalVisitor
 {
 public:
     double t;
-    VecId xfree;
-    MechanicalPropagateFreePositionVisitor(double time=0, VecId xfree = VecId::freePosition()): t(time), xfree(xfree)
+    VecId x;
+    VecId v;
+    //MechanicalPropagateFreePositionVisitor(double time=0, VecId xfree = VecId::freePosition()): t(time), xfree(xfree)
+    //{
+    //}
+    MechanicalPropagateFreePositionVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity()): t(time), x(x), v(v)
     {
     }
     virtual Result processNodeTopDown(GNode* node)
@@ -597,7 +602,8 @@ public:
     }
     virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
-        mm->setXfree(xfree);
+        mm->setXfree(x);
+        mm->setVfree(v);
         return RESULT_CONTINUE;
     }
     virtual Result fwdMechanicalMapping(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)

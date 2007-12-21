@@ -260,6 +260,8 @@ public:
 
     virtual void setXfree(VecId v);
 
+    virtual void setVfree(VecId v);
+
     virtual void setV(VecId v);
 
     virtual void setF(VecId v);

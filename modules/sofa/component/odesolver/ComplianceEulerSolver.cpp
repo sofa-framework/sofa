@@ -77,24 +77,38 @@ void ComplianceEulerSolver::solve(double dt)
         cerr<<"ComplianceEulerSolver, initial v = "<< vel <<endl;
     }
 
-    if (!firstCallToSolve.getValue()) // f = contact force
-    {
-        computeContactAcc(getTime(), acc, pos, vel);
-        vel.eq(velFree); // computes velocity after a constraint movement
-        vel.peq(acc,dt);
-        pos.peq(vel,dt); // Computes position after a constraint movement
-        dx.peq(acc,(dt*dt));
-        simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(context);
-    }
-    else // f = mass * gravity
-    {
-        computeAcc(getTime(), acc, pos, vel);
-        velFree.eq(vel);
-        velFree.peq(acc,dt);
-        posFree.eq(pos);
-        posFree.peq(velFree,dt);
-        simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);
-    }
+
+    //if (!firstCallToSolve.getValue()) // f = contact force
+    //{
+    //	/*
+    //	computeContactAcc(getTime(), acc, pos, vel);
+    //	vel.eq(velFree); // computes velocity after a constraint movement
+    //	vel.peq(acc,dt);
+    //	pos.peq(vel,dt); // Computes position after a constraint movement
+    //	dx.peq(acc,(dt*dt));
+    //	*/
+
+    //	simulation::tree::MechanicalPropagateAndAddDxVisitor().execute(context);
+    //}
+    //else // f = mass * gravity
+    //{
+
+    //computeAcc(getTime(), acc, pos, vel);
+    //velFree.eq(vel);
+    //velFree.peq(acc,dt);
+    //posFree.eq(pos);
+    //posFree.peq(velFree,dt);
+    //simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);
+
+    computeAcc(getTime(), acc, pos, vel);
+    vel.eq(vel);
+    vel.peq(acc,dt);
+    pos.eq(pos);
+    pos.peq(vel,dt);
+    //simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);
+
+//}
+
 
     firstCallToSolve.setValue(!firstCallToSolve.getValue());
 

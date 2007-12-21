@@ -1215,6 +1215,19 @@ void MechanicalObject<DataTypes>::setXfree(VecId v)
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::setVfree(VecId v)
+{
+    if (v.type == VecId::V_DERIV)
+    {
+        this->vfree = getVecDeriv(v.index);
+    }
+    else
+    {
+        std::cerr << "Invalid setVfree operation ("<<v<<")\n";
+    }
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::setV(VecId v)
 {
     if (v.type == VecId::V_DERIV)

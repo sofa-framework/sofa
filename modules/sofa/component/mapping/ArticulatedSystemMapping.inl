@@ -211,6 +211,12 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
                 out[(*a)->articulationIndex.getValue()].x() += dot(axis, T.getVCenter());
             }
         }
+
+// debug //
+        /*		printf("\n in[1] : %f %f %f - %f %f %f out[0]= %f ; out[1] = %f", in[1].getVCenter().x(), in[1].getVCenter().y(), in[1].getVCenter().z(),
+        																in[1].getVOrientation().x(), in[1].getVOrientation().y(), in[1].getVOrientation().z(),
+        															out[0].x(), out[1].x());
+        //////////*/
     }
 }
 
