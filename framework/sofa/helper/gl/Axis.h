@@ -72,6 +72,10 @@ public:
     static void draw(const Vector3& center, const double orient[4][4], double length=1);
     static void draw(const double *mat, double length=1.0);
 
+    //Draw a nice vector (cylinder + cone) given 2 points and a radius (used to draw the cylinder)
+    static void draw(const Vector3& center, const Vector3& ext, const double& radius);
+    //Draw a cylinder given two points and the radius of the extremities (to have a cone, simply set one radius to zero)
+    static void draw(const Vector3& center, const Vector3& ext, const double& r1, const double& r2);
 private:
 
     Vector3 length;
