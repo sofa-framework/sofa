@@ -68,7 +68,7 @@ void ComplianceEulerSolver::solve(double dt)
 
     bool printLog = f_printLog.getValue();
 
-    simulation::tree::GNode *context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
+// 	simulation::tree::GNode *context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
 
     if( printLog )
     {
