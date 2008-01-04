@@ -225,7 +225,11 @@ public:
     ///
     /// Default to false if the collision models are attached to the same
     /// context (i.e. the same node in the scenegraph).
-    virtual bool canCollideWith(CollisionModel* model) { return model->getContext() != this->getContext(); } // (B. ANDRE : Why not remplace by "true" to avoid self-collisions ?)
+    virtual bool canCollideWith(CollisionModel* model)
+    {
+        if (model == this) return bSelfCollision.getValue();
+        return model->getContext() != this->getContext();
+    } // (B. ANDRE : Why not remplace by "true" to avoid self-collisions ?)
     //virtual bool canCollideWith(CollisionModel* model) { return model != this; }
 
     /// \brief Test if two elements can collide with each other.
@@ -236,8 +240,6 @@ public:
     /// Default to canCollideWith(model2)
     virtual bool canCollideWithElement(int /*index*/, CollisionModel* model2, int /*index2*/) { return canCollideWith(model2); }
 
-    /// Self Collision attribute
-    bool canSelfCollide() {return bSelfCollision.getValue();}
 
     /// Render an collision element.
     virtual void draw(int /*index*/) {}
