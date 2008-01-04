@@ -69,6 +69,7 @@ public:
         : bActive(initData(&bActive, true, "active", "flag indicating if this collision model is active and should be included in default collision detections"))
         , bMoving(initData(&bMoving, true, "moving", "flag indicating if this object is changing position between iterations"))
         , bSimulated(initData(&bSimulated, true, "simulated", "flag indicating if this object is controlled by a simulation"))
+        , bSelfCollision(initData(&bSelfCollision, false, "selfCollision", "flag indication if the object can self collide"))
         , proximity(initData(&proximity, 0.0, "proximity", "Distance to the actual (visual) surface"))
         , contactStiffness(initData(&contactStiffness, 10.0, "contactStiffness", "Default contact stiffness"))
         , contactFriction(initData(&contactFriction, 0.01, "contactFriction", "Default contact friction (damping) coefficient"))
@@ -235,6 +236,9 @@ public:
     /// Default to canCollideWith(model2)
     virtual bool canCollideWithElement(int /*index*/, CollisionModel* model2, int /*index2*/) { return canCollideWith(model2); }
 
+    /// Self Collision attribute
+    bool canSelfCollide() {return bSelfCollision.getValue();}
+
     /// Render an collision element.
     virtual void draw(int /*index*/) {}
 
@@ -286,6 +290,8 @@ protected:
     Data<bool> bMoving;
 
     Data<bool> bSimulated;
+
+    Data<bool> bSelfCollision;
 
     Data<double> proximity;
 
