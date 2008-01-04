@@ -77,6 +77,7 @@ using sofa::core::objectmodel::BaseData;
 
 #ifndef QT_MODULE_QT3SUPPORT
 typedef QGrid     Q3Grid;
+typedef QScrollView Q3ScrollView;
 #endif
 
 
@@ -107,6 +108,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
     //Tabulation widget
     dialogTab = new QTabWidget(this);
     generalLayout->addWidget(dialogTab);
+
 
     //Each tab
     QWidget *tab1 = new QWidget();
@@ -145,8 +147,9 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             name.resize(4);
             if (name == "show")
             {
-                if( Data<int> * ff = dynamic_cast< Data<int> * >( (*it).second ))
+                if( dynamic_cast< Data<int> * >( (*it).second ) || dynamic_cast< Data<bool> * >( (*it).second ) )
                 {
+
                     //Remove from the dialog window everything about showing collision models, visual models...
                     //Don't have any effect if the scene is animated: the root will erase the value.
 
@@ -173,9 +176,18 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     list_Object.push_back( (QObject *) checkBox);
 
                     //checkBox->setGeometry( 205, i*25+5, 170, 20 );
+                    if (Data<int> *ff=dynamic_cast< Data<int> * >( (*it).second))
+                    {
+                        checkBox->setChecked(ff->getValue());
+                        connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeVisualValue() ) );
+                    }
+                    else
+                    {
+                        Data<bool> *ff= dynamic_cast< Data<bool> * >( (*it).second );
+                        checkBox->setChecked(ff->getValue());
+                        connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeVisualValue() ) );
+                    }
 
-                    checkBox->setChecked(ff->getValue());
-                    connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeVisualValue() ) );
                     continue;
                 }
             }
@@ -186,7 +198,19 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 box->setColumns(4);
                 box->setTitle(QString((*it).first.c_str()));
 
-                if( strcmp((*it).second->help,"TODO") )new QLabel((*it).second->help, box);
+
+                std::string label_text=(*it).second->help;
+                if (label_text.size() > 70)
+                {
+                    unsigned int cut = label_text.size()/70;
+                    for (unsigned index_cut=1; index_cut<=cut; index_cut++)
+                    {
+                        std::string::size_type numero_char=label_text.rfind(' ',70*index_cut);
+                        label_text = label_text.insert(numero_char+1,1,'\n');
+                    }
+                }
+                if (label_text != "TODO") new QLabel(label_text.c_str(), box);
+
                 //********************************************************************************************************//
                 //int
                 if( Data<int> * ff = dynamic_cast< Data<int> * >( (*it).second )  )
