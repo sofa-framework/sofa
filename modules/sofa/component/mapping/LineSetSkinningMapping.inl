@@ -280,16 +280,16 @@ void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, 
 
     InVecCoord& xfrom = *this->fromModel->getX();
 
-    //for(unsigned int lineIndex=0; lineIndex< (unsigned) t->getNbLines(); lineIndex++)
-    //{
-    //	for (unsigned int verticeInfluencedIndex=0; verticeInfluencedIndex<verticesInfluencedByLine[lineIndex].size(); verticeInfluencedIndex++)
-    //	{
-    //		influencedVerticeType vertice = verticesInfluencedByLine[lineIndex][verticeInfluencedIndex];
-    //		Vector3 IP = xfrom[t->getLine(lineIndex)[0]].getOrientation().rotate(vertice.position);
-    //		out[vertice.verticeIndex].getVCenter() += in[vertice.verticeIndex] * vertice.weight;
-    //		out[vertice.verticeIndex].getVOrientation() += IP.cross(in[vertice.verticeIndex]) * vertice.weight;
-    //	}
-    //}
+    for(unsigned int lineIndex=0; lineIndex< (unsigned) t->getNbLines(); lineIndex++)
+    {
+        for (unsigned int verticeInfluencedIndex=0; verticeInfluencedIndex<verticesInfluencedByLine[lineIndex].size(); verticeInfluencedIndex++)
+        {
+            influencedVerticeType vertice = verticesInfluencedByLine[lineIndex][verticeInfluencedIndex];
+            Vector3 IP = xfrom[t->getLine(lineIndex)[0]].getOrientation().rotate(vertice.position);
+            out[vertice.verticeIndex].getVCenter() += in[vertice.verticeIndex] * vertice.weight;
+            out[vertice.verticeIndex].getVOrientation() += IP.cross(in[vertice.verticeIndex]) * vertice.weight;
+        }
+    }
 }
 
 template <class BasicMapping>
