@@ -39,7 +39,7 @@ namespace io
 
 Mesh::Material::Material()
 {
-    ambient =  Vec4f( 0.75f,0.75f,0.75f,1.0f);
+    ambient =  Vec4f( 0.2f,0.2f,0.2f,1.0f);
     diffuse =  Vec4f( 0.75f,0.75f,0.75f,1.0f);
     specular =  Vec4f( 1.0f,1.0f,1.0f,1.0f);
     emissive =  Vec4f( 0.0f,0.0f,0.0f,0.0f);
@@ -59,7 +59,7 @@ void Mesh::Material::setColor(float r, float g, float b, float a)
     float f[4] = { r, g, b, a };
     for (int i=0; i<4; i++)
     {
-        ambient = Vec4f(f[0],f[1],f[2],f[3]);
+        ambient = Vec4f(f[0]*0.2f,f[1]*0.2f,f[2]*0.2f,f[3]);
         diffuse = Vec4f(f[0],f[1],f[2],f[3]);
         specular = Vec4f(f[0],f[1],f[2],f[3]);
         emissive = Vec4f(f[0],f[1],f[2],f[3]);

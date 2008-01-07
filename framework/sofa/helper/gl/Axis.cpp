@@ -297,7 +297,7 @@ void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const do
 {
     int i;
     double theta;
-    Vector3 n,p,q,perp;
+    Vec3d n,p,q,perp;
 
     double theta2 = 2*3.141592653;
     double m = 16; //precision
@@ -310,8 +310,8 @@ void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const do
     on the plane of the disk:
     */
 
-    if      (n[1] != 0 || n[2] != 0)  perp = Vector3(1,0,0);
-    else                              perp = Vector3(0,1,0);
+    if      (n[1] != 0 || n[2] != 0)  perp = Vec3d(1,0,0);
+    else                              perp = Vec3d(0,1,0);
 
 
     q = perp.cross(n);
@@ -328,18 +328,18 @@ void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const do
         n.normalize();
 
         p = p1 + n*r1;
-        glNormal3f(n[0],n[1],n[2]);   glTexCoord2f(i/(double)m,0.0);
-        glVertex3f(p[0],p[1],p[2]);
+        glNormal3d(n[0],n[1],n[2]);   glTexCoord2d(i/(double)m,0.0);
+        glVertex3d(p[0],p[1],p[2]);
 
         p = p2 + n*r2;
-        glNormal3f(n[0],n[1],n[2]);   glTexCoord2f(i/(double)m,1.0);
-        glVertex3f(p[0],p[1],p[2]);
+        glNormal3d(n[0],n[1],n[2]);   glTexCoord2d(i/(double)m,1.0);
+        glVertex3d(p[0],p[1],p[2]);
 
     }
     glEnd();
 
     glBegin(GL_TRIANGLE_FAN);
-    glVertex3f(p1[0],p1[1],p1[2]);
+    glVertex3d(p1[0],p1[1],p1[2]);
     for (i=0; i<=m && r1 != 0; i++)
     {
         theta = i * (theta2) / m;
@@ -348,13 +348,13 @@ void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const do
         n.normalize();
 
         p = p1 + n*r1;
-        glNormal3f(n[0],n[1],n[2]);  glTexCoord2f(i/(double)m,0.0);
-        glVertex3f(p[0],p[1],p[2]);
+        glNormal3d(n[0],n[1],n[2]);  glTexCoord2d(i/(double)m,0.0);
+        glVertex3d(p[0],p[1],p[2]);
     }
     glEnd();
 
     glBegin(GL_TRIANGLE_FAN);
-    glVertex3f(p2[0],p2[1],p2[2]);
+    glVertex3d(p2[0],p2[1],p2[2]);
     for (i=0; i<=m && r2 != 0; i++)
     {
         theta = i * (theta2) / m;
@@ -363,8 +363,8 @@ void Axis::draw(const Vector3& p1, const Vector3& p2, const double& r1, const do
         n.normalize();
 
         p = p2 + n*r2;
-        glNormal3f(n[0],n[1],n[2]);  glTexCoord2f(i/(double)m,1.0);
-        glVertex3f(p[0],p[1],p[2]);
+        glNormal3d(n[0],n[1],n[2]);  glTexCoord2d(i/(double)m,1.0);
+        glVertex3d(p[0],p[1],p[2]);
     }
     glEnd();
 
