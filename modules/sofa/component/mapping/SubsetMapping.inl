@@ -163,10 +163,9 @@ void SubsetMapping<BaseMapping>::applyJT( typename In::VecConst& out, const type
         for(unsigned int j=0; j<in[c].size(); j++)
         {
             const typename Out::SparseDeriv cIn = in[c][j];
-            out[c+offset].push_back(In::SparseDeriv( indices[cIn.index] , (typename In::Deriv) cIn.data ));
+            out[c+offset].push_back(typename In::SparseDeriv( indices[cIn.index] , (typename In::Deriv) cIn.data ));
         }
     }
-
 
 }
 
