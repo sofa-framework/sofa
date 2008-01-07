@@ -428,6 +428,12 @@ void TriangleSetModel::handleTopologyChange()
             switch( changeType )
             {
 
+            case core::componentmodel::topology::ENDING_EVENT:
+            {
+                needsUpdate=true;
+                break;
+            }
+
             case core::componentmodel::topology::TRIANGLESADDED:
             {
 
@@ -445,7 +451,7 @@ void TriangleSetModel::handleTopologyChange()
                 }
                 resize( mytriangles.size());
                 //Loc2GlobVec.resize( mytriangles.size());
-                needsUpdate=true;
+                //needsUpdate=true;
 
 
                 //init();
@@ -572,7 +578,7 @@ void TriangleSetModel::handleTopologyChange()
                     --last;
                 }
 
-                needsUpdate=true;
+                //needsUpdate=true;
 
                 //init();
                 //}
@@ -663,7 +669,7 @@ void TriangleSetModel::handleTopologyChange()
                     }
                 }
 
-                needsUpdate=true;
+                //needsUpdate=true;
 
 
                 //init();
@@ -728,65 +734,54 @@ void TriangleSetModel::handleTopologyChange()
                             }
                         }
 
-                        if (testc)
-                        {
+                        /*
+                        if (testc) {
 
-                            for (unsigned int j_loc=0; j_loc<mytriangles.size(); ++j_loc)
-                            {
+                        	for (unsigned int j_loc=0;j_loc<mytriangles.size();++j_loc) {
 
-                                bool is_forgotten = false;
-                                if ((unsigned)mytriangles[j_loc][0]==last)
-                                {
-                                    mytriangles[j_loc][0]=tab[i];
-                                    is_forgotten=true;
+                        		bool is_forgotten = false;
+                        		if ((unsigned)mytriangles[j_loc][0]==last){
+                        			mytriangles[j_loc][0]=tab[i];
+                        			is_forgotten=true;
 
-                                }
-                                else
-                                {
-                                    if ((unsigned)mytriangles[j_loc][1]==last)
-                                    {
-                                        mytriangles[j_loc][1]=tab[i];
-                                        is_forgotten=true;
+                        		}else{
+                        			if ((unsigned)mytriangles[j_loc][1]==last){
+                        				mytriangles[j_loc][1]=tab[i];
+                        				is_forgotten=true;
 
-                                    }
-                                    else
-                                    {
-                                        if ((unsigned)mytriangles[j_loc][2]==last)
-                                        {
-                                            mytriangles[j_loc][2]=tab[i];
-                                            is_forgotten=true;
-                                        }
-                                    }
+                        			}else{
+                        				if ((unsigned)mytriangles[j_loc][2]==last){
+                        					mytriangles[j_loc][2]=tab[i];
+                        					is_forgotten=true;
+                        				}
+                        			}
 
-                                }
+                        		}
 
-                                if(is_forgotten)
-                                {
+                        		if(is_forgotten){
 
-                                    unsigned int ind_forgotten = Loc2GlobVec[j];
-                                    std::map<unsigned int, unsigned int>::iterator iter = Glob2LocMap.find(ind_forgotten);
+                        			unsigned int ind_forgotten = Loc2GlobVec[j];
+                        			std::map<unsigned int, unsigned int>::iterator iter = Glob2LocMap.find(ind_forgotten);
 
-                                    if(iter == Glob2LocMap.end() )
-                                    {
-                                        //std::cout << "INFO_print : Coll - triangle is forgotten in MAP !!! global index = "  << ind_forgotten << std::endl;
-                                        //Glob2LocMap[ind_forgotten] = j;
-                                    }
+                        			if(iter == Glob2LocMap.end() ) {
+                        				//std::cout << "INFO_print : Coll - triangle is forgotten in MAP !!! global index = "  << ind_forgotten << std::endl;
+                        				//Glob2LocMap[ind_forgotten] = j;
+                        			}
 
-                                    bool is_in_shell = false;
-                                    for (unsigned int j_glob=0; j_glob<shell.size(); ++j_glob)
-                                    {
-                                        is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
-                                    }
+                        			bool is_in_shell = false;
+                        			for (unsigned int j_glob=0;j_glob<shell.size();++j_glob) {
+                        				is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
+                        			}
 
-                                    if(!is_in_shell)
-                                    {
-                                        //std::cout << "INFO_print : Coll - triangle is forgotten in SHELL !!! global index = "  << ind_forgotten << std::endl;
-                                    }
+                        			if(!is_in_shell) {
+                        				//std::cout << "INFO_print : Coll - triangle is forgotten in SHELL !!! global index = "  << ind_forgotten << std::endl;
+                        			}
 
-                                }
+                        		}
 
-                            }
+                        	}
                         }
+                        */
 
                         --last;
                     }
@@ -800,7 +795,7 @@ void TriangleSetModel::handleTopologyChange()
 
                 //}
 
-                needsUpdate=true;
+                //needsUpdate=true;
                 //init();
                 break;
             }

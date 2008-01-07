@@ -462,6 +462,10 @@ void EdgeSetTopologyAlgorithms< DataTypes >::removeEdges(sofa::helper::vector< u
     topology->propagateTopologicalChanges();
     // now destroy the old edges.
     modifier->removeEdgesProcess( edges );
+
+    //assert(topology->getEdgeSetTopologyContainer()->checkTopology());
+    topology->getEdgeSetTopologyContainer()->checkTopology();
+
 }
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper::vector< Edge >& edges,

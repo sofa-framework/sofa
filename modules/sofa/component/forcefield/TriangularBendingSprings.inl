@@ -810,7 +810,7 @@ void TriangularBendingSprings<DataTypes>::draw()
             if (external)
             {
                 if (d<edgeInfo[i].restlength*0.9999)
-                    glColor4f(0,0,1,1); // (1,0,0,1);
+                    glColor4f(1,0,0,1);
                 else
                     glColor4f(0,1,0,1);
             }
