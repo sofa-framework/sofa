@@ -899,6 +899,13 @@ void VisualModelImpl::handleTopologyChange()
         switch( changeType )
         {
 
+
+        case core::componentmodel::topology::ENDING_EVENT:
+        {
+            update();
+            break;
+        }
+
         case core::componentmodel::topology::TRIANGLESADDED:
         {
 
@@ -1199,77 +1206,65 @@ void VisualModelImpl::handleTopologyChange()
                         }
                     }
 
-                    if (testc)
-                    {
+                    /*
+                    if (testc) {
 
-                        for (unsigned int j_loc=0; j_loc<triangles.size(); ++j_loc)
-                        {
+                    	for (unsigned int j_loc=0;j_loc<triangles.size();++j_loc) {
 
-                            bool is_forgotten = false;
-                            if ((unsigned)triangles[j_loc][0]==last)
-                            {
-                                triangles[j_loc][0]=tab[i];
-                                is_forgotten=true;
+                    		bool is_forgotten = false;
+                    		if ((unsigned)triangles[j_loc][0]==last){
+                    			triangles[j_loc][0]=tab[i];
+                    			is_forgotten=true;
 
-                            }
-                            else
-                            {
-                                if ((unsigned)triangles[j_loc][1]==last)
-                                {
-                                    triangles[j_loc][1]=tab[i];
-                                    is_forgotten=true;
+                    		}else{
+                    			if ((unsigned)triangles[j_loc][1]==last){
+                    				triangles[j_loc][1]=tab[i];
+                    				is_forgotten=true;
 
-                                }
-                                else
-                                {
-                                    if ((unsigned)triangles[j_loc][2]==last)
-                                    {
-                                        triangles[j_loc][2]=tab[i];
-                                        is_forgotten=true;
-                                    }
-                                }
+                    			}else{
+                    				if ((unsigned)triangles[j_loc][2]==last){
+                    					triangles[j_loc][2]=tab[i];
+                    					is_forgotten=true;
+                    				}
+                    			}
 
-                            }
+                    		}
 
-                            if(is_forgotten)
-                            {
+                    		if(is_forgotten){
 
-                                unsigned int ind_forgotten = Loc2GlobVec[j_loc];
-                                std::map<unsigned int, unsigned int>::iterator iter = Glob2LocMap.find(ind_forgotten);
+                    			unsigned int ind_forgotten = Loc2GlobVec[j_loc];
+                    			std::map<unsigned int, unsigned int>::iterator iter = Glob2LocMap.find(ind_forgotten);
 
-                                if(iter == Glob2LocMap.end() )
-                                {
-                                    std::cout << "INFO_print : Vis - triangle is forgotten in MAP !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )" << std::endl;
-                                    //Glob2LocMap[ind_forgotten] = j;
-                                }
+                    			if(iter == Glob2LocMap.end() ) {
+                    				std::cout << "INFO_print : Vis - triangle is forgotten in MAP !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )" << std::endl;
+                    				//Glob2LocMap[ind_forgotten] = j;
+                    			}
 
-                                bool is_in_shell = false;
-                                for (unsigned int j_glob=0; j_glob<shell.size(); ++j_glob)
-                                {
-                                    is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
-                                }
+                    			bool is_in_shell = false;
+                    			for (unsigned int j_glob=0;j_glob<shell.size();++j_glob) {
+                    				is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
+                    			}
 
-                                if(!is_in_shell)
-                                {
-                                    std::cout << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )" << std::endl;
+                    			if(!is_in_shell) {
+                    				std::cout << "INFO_print : Vis - triangle is forgotten in SHELL !!! global indices (point, triangle) = ( "  << last << " , " << ind_forgotten  << " )" << std::endl;
 
-                                    if(ind_forgotten<tstc->getTriangleArray().size())
-                                    {
-                                        const sofa::component::topology::Triangle t_forgotten = tstc->getTriangle(ind_forgotten);
-                                        std::cout << "INFO_print : Vis - last = " << last << std::endl;
-                                        std::cout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab << std::endl;
-                                        std::cout << "INFO_print : Vis - t_local rectified = " << triangles[j_loc] << std::endl;
-                                        std::cout << "INFO_print : Vis - t_global = " << t_forgotten << std::endl;
+                    				if(ind_forgotten<tstc->getTriangleArray().size()){
+                    					const sofa::component::topology::Triangle t_forgotten = tstc->getTriangle(ind_forgotten);
+                    					std::cout << "INFO_print : Vis - last = " << last << std::endl;
+                    					std::cout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab = " << tab << std::endl;
+                    					std::cout << "INFO_print : Vis - t_local rectified = " << triangles[j_loc] << std::endl;
+                    					std::cout << "INFO_print : Vis - t_global = " << t_forgotten << std::endl;
 
 
-                                    }
+                    				}
 
-                                }
+                    			}
 
-                            }
+                    		}
 
-                        }
+                    	}
                     }
+                    */
 
                     --last;
                 }

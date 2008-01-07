@@ -37,6 +37,7 @@ class TopologicalMapping;
 enum TopologyChangeType
 {
     BASE,               ///< For TopologyChange class, should never be used.
+    ENDING_EVENT,       ///< To notify the end for the current sequence of topological change events
     POINTSINDICESSWAP,  ///< For PointsIndicesSwap class.
     POINTSADDED,        ///< For PointsAdded class.
     POINTSREMOVED,      ///< For PointsRemoved class.
@@ -93,6 +94,16 @@ public:
     virtual ~TopologyChange() { };
 };
 
+/** notifies the end for the current sequence of topological change events */
+class EndingEvent : public core::componentmodel::topology::TopologyChange
+{
+
+public:
+    EndingEvent() : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::ENDING_EVENT)
+    {
+    }
+
+};
 
 
 /** \brief Base class that gives access to the 4 topology related objects and an array of topology modifications.
@@ -383,6 +394,16 @@ protected:
     {
         m_basicTopology->getTopologyContainer()->addTopologyChange(topologyChange);
     }
+
+public:
+    /** \notify the end for the current sequence of topological change events.
+     */
+    void notifyEndingEvent()
+    {
+        EndingEvent *e=new EndingEvent();
+        addTopologyChange(e);
+    }
+
 };
 
 
