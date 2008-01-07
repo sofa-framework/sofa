@@ -183,8 +183,8 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     }
                     else
                     {
-                        Data<bool> *ff= dynamic_cast< Data<bool> * >( (*it).second );
-                        checkBox->setChecked(ff->getValue());
+                        Data<bool> *fff= dynamic_cast< Data<bool> * >( (*it).second );
+                        checkBox->setChecked(fff->getValue());
                         connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeVisualValue() ) );
                     }
 
