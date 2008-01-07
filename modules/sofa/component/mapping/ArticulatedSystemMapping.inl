@@ -43,29 +43,17 @@ void ArticulatedSystemMapping<BasicMapping>::init()
 {
     GNode* context = dynamic_cast<GNode*>(this->fromModel->getContext());
     context->getNodeObject(ahc);
-    //ahc = this->fromModel->getContext()->get<container::ArticulatedHierarchyContainer>();
     articulationCenters = ahc->getArticulationCenters();
-
-    //rootModel = this->fromModel->getContext()->get<InRoot>();
-    context->parent->getNodeObject(rootModel);
-
-    vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator ac = articulationCenters.begin();
-    vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
 
     OutVecCoord& xto = *this->toModel->getX();
     InVecCoord& xfrom = *this->fromModel->getX();
 
+    core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->toModel->getContext()->getTopology());
+    _topology = dynamic_cast<topology::MeshTopology*>(topology);
+
+    context->parent->getNodeObject(rootModel);
+
     apply(xto, xfrom);
-
-    for (; ac != acEnd; ac++)
-    {
-        int parent = (*ac)->parentIndex.getValue();
-
-        // The position of the articulation center can be deduced using the 6D position of the parent:
-        // only useful for visualisation of the mapping
-        (*ac)->globalPosition.setValue(xto[parent].getCenter() +
-                xto[parent].getOrientation().rotate((*ac)->posOnParent.getValue()));
-    }
 }
 
 template <class BasicMapping>
@@ -118,6 +106,20 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
             }
         }
     }
+
+    _topology->clear();
+
+    ac = articulationCenters.begin();
+    ac++;
+    for(unsigned int n=0; n<out.size(); n++)
+    {
+        _topology->addPoint(out[n].getCenter().x(), out[n].getCenter().y(),out[n].getCenter().z() );
+    }
+
+    for (; ac != acEnd; ac++)
+    {
+        _topology->addLine((*ac)->parentIndex.getValue(), (*ac)->childIndex.getValue());
+    }
 }
 
 template <class BasicMapping>
@@ -163,6 +165,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
             {
                 out[child].getVCenter() += axis*value.x();
             }
+
         }
     }
 }
@@ -211,12 +214,6 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecDeriv& out
                 out[(*a)->articulationIndex.getValue()].x() += dot(axis, T.getVCenter());
             }
         }
-
-// debug //
-        /*		printf("\n in[1] : %f %f %f - %f %f %f out[0]= %f ; out[1] = %f", in[1].getVCenter().x(), in[1].getVCenter().y(), in[1].getVCenter().z(),
-        																in[1].getVOrientation().x(), in[1].getVOrientation().y(), in[1].getVOrientation().z(),
-        															out[0].x(), out[1].x());
-        //////////*/
     }
 }
 
@@ -252,9 +249,11 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                 vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator a = articulations.begin();
                 vector<ArticulatedHierarchyContainer::ArticulationCenter::Articulation*>::const_iterator aEnd = articulations.end();
 
+                int parent = (*ac)->parentIndex.getValue();
+
                 for (; a != aEnd; a++)
                 {
-                    Vector3 axis = xto[childIndex].getOrientation().rotate((*a)->axis.getValue());
+                    Vector3 axis = xto[parent].getOrientation().rotate((*a)->axis.getValue());
 
                     InSparseDeriv constArt;
                     constArt.index = (*a)->articulationIndex.getValue();
@@ -265,6 +264,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                     if ((*a)->translation.getValue())
                     {
                         constArt.data = dot(axis, T.getVCenter());
+                        //printf("\n weightedNormalArticulation : %f", constArt.data);
                     }
                     out[i].push_back(constArt);
                 }
@@ -280,18 +280,15 @@ void ArticulatedSystemMapping<BasicMapping>::draw()
     OutVecCoord& xto = *this->toModel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(2);
-    for (unsigned int i=0; i<articulationCenters.size(); i++)
+
+    for (int i=0; i<_topology->getNbLines(); i++)
     {
+        int node1 = _topology->getLine(i)[0];
+        int node2 = _topology->getLine(i)[1];
         glColor4f (1,0,0,0);
         glBegin (GL_LINES);
-        helper::gl::glVertexT(xto[articulationCenters[i]->parentIndex.getValue()].getCenter());
-        helper::gl::glVertexT(articulationCenters[i]->globalPosition.getValue());
-        helper::gl::glVertexT(articulationCenters[i]->globalPosition.getValue());
-        helper::gl::glVertexT(xto[articulationCenters[i]->childIndex.getValue()].getCenter());
-        glEnd();
-        glColor4f (0,1,0,0);
-        glBegin (GL_POINTS);
-        helper::gl::glVertexT(articulationCenters[i]->globalPosition.getValue());
+        helper::gl::glVertexT(xto[node1].getCenter());
+        helper::gl::glVertexT(xto[node2].getCenter());
         glEnd();
     }
 }

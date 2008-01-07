@@ -113,6 +113,8 @@ public:
     vector<ArticulatedHierarchyContainer::ArticulationCenter*> articulationCenters;
 
     ArticulatedHierarchyContainer* ahc;
+
+    component::topology::MeshTopology* _topology;
 };
 
 } // namespace mapping
