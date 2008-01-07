@@ -25,7 +25,7 @@ template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), c(NULL), parent(NULL)
 {
-    mu = 0.5;
+    mu = 0.6;
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -37,6 +37,22 @@ FrictionContact<TCollisionModel1,TCollisionModel2>::~FrictionContact()
         delete c;
     }
 }
+template < class TCollisionModel1, class TCollisionModel2 >
+void FrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
+{
+    if (c!=NULL)
+    {
+        c->cleanup();
+        if (parent!=NULL)
+            parent->removeObject(c);
+        delete c;
+        parent = NULL;
+        c = NULL;
+        mapper1.cleanup();
+        mapper2.cleanup();
+    }
+}
+
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
 template < class TCollisionModel1, class TCollisionModel2 >

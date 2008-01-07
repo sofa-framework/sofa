@@ -81,6 +81,8 @@ public:
     FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod);
     virtual ~FrictionContact();
 
+    void cleanup();
+
     std::pair<core::CollisionModel*,core::CollisionModel*> getCollisionModels() { return std::make_pair(model1,model2); }
 
     void setDetectionOutputs(OutputVector* outputs);
