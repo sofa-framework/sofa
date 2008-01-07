@@ -428,12 +428,6 @@ void TriangleSetModel::handleTopologyChange()
             switch( changeType )
             {
 
-            case core::componentmodel::topology::ENDING_EVENT:
-            {
-                needsUpdate=true;
-                break;
-            }
-
             case core::componentmodel::topology::TRIANGLESADDED:
             {
 
@@ -451,7 +445,7 @@ void TriangleSetModel::handleTopologyChange()
                 }
                 resize( mytriangles.size());
                 //Loc2GlobVec.resize( mytriangles.size());
-                //needsUpdate=true;
+                needsUpdate=true;
 
 
                 //init();
@@ -578,7 +572,7 @@ void TriangleSetModel::handleTopologyChange()
                     --last;
                 }
 
-                //needsUpdate=true;
+                needsUpdate=true;
 
                 //init();
                 //}
@@ -669,7 +663,7 @@ void TriangleSetModel::handleTopologyChange()
                     }
                 }
 
-                //needsUpdate=true;
+                needsUpdate=true;
 
 
                 //init();
@@ -734,54 +728,65 @@ void TriangleSetModel::handleTopologyChange()
                             }
                         }
 
-                        /*
-                        if (testc) {
+                        if (testc)
+                        {
 
-                        	for (unsigned int j_loc=0;j_loc<mytriangles.size();++j_loc) {
+                            for (unsigned int j_loc=0; j_loc<mytriangles.size(); ++j_loc)
+                            {
 
-                        		bool is_forgotten = false;
-                        		if ((unsigned)mytriangles[j_loc][0]==last){
-                        			mytriangles[j_loc][0]=tab[i];
-                        			is_forgotten=true;
+                                bool is_forgotten = false;
+                                if ((unsigned)mytriangles[j_loc][0]==last)
+                                {
+                                    mytriangles[j_loc][0]=tab[i];
+                                    is_forgotten=true;
 
-                        		}else{
-                        			if ((unsigned)mytriangles[j_loc][1]==last){
-                        				mytriangles[j_loc][1]=tab[i];
-                        				is_forgotten=true;
+                                }
+                                else
+                                {
+                                    if ((unsigned)mytriangles[j_loc][1]==last)
+                                    {
+                                        mytriangles[j_loc][1]=tab[i];
+                                        is_forgotten=true;
 
-                        			}else{
-                        				if ((unsigned)mytriangles[j_loc][2]==last){
-                        					mytriangles[j_loc][2]=tab[i];
-                        					is_forgotten=true;
-                        				}
-                        			}
+                                    }
+                                    else
+                                    {
+                                        if ((unsigned)mytriangles[j_loc][2]==last)
+                                        {
+                                            mytriangles[j_loc][2]=tab[i];
+                                            is_forgotten=true;
+                                        }
+                                    }
 
-                        		}
+                                }
 
-                        		if(is_forgotten){
+                                if(is_forgotten)
+                                {
 
-                        			unsigned int ind_forgotten = Loc2GlobVec[j];
-                        			std::map<unsigned int, unsigned int>::iterator iter = Glob2LocMap.find(ind_forgotten);
+                                    unsigned int ind_forgotten = Loc2GlobVec[j];
+                                    std::map<unsigned int, unsigned int>::iterator iter = Glob2LocMap.find(ind_forgotten);
 
-                        			if(iter == Glob2LocMap.end() ) {
-                        				//std::cout << "INFO_print : Coll - triangle is forgotten in MAP !!! global index = "  << ind_forgotten << std::endl;
-                        				//Glob2LocMap[ind_forgotten] = j;
-                        			}
+                                    if(iter == Glob2LocMap.end() )
+                                    {
+                                        //std::cout << "INFO_print : Coll - triangle is forgotten in MAP !!! global index = "  << ind_forgotten << std::endl;
+                                        //Glob2LocMap[ind_forgotten] = j;
+                                    }
 
-                        			bool is_in_shell = false;
-                        			for (unsigned int j_glob=0;j_glob<shell.size();++j_glob) {
-                        				is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
-                        			}
+                                    bool is_in_shell = false;
+                                    for (unsigned int j_glob=0; j_glob<shell.size(); ++j_glob)
+                                    {
+                                        is_in_shell = is_in_shell || (shell[j_glob] == ind_forgotten);
+                                    }
 
-                        			if(!is_in_shell) {
-                        				//std::cout << "INFO_print : Coll - triangle is forgotten in SHELL !!! global index = "  << ind_forgotten << std::endl;
-                        			}
+                                    if(!is_in_shell)
+                                    {
+                                        //std::cout << "INFO_print : Coll - triangle is forgotten in SHELL !!! global index = "  << ind_forgotten << std::endl;
+                                    }
 
-                        		}
+                                }
 
-                        	}
+                            }
                         }
-                        */
 
                         --last;
                     }
@@ -795,7 +800,7 @@ void TriangleSetModel::handleTopologyChange()
 
                 //}
 
-                //needsUpdate=true;
+                needsUpdate=true;
                 //init();
                 break;
             }
@@ -947,46 +952,46 @@ void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
     }
 }
 
-void TriangleModel::fillArrays( float *array_coord,float *array_identity, int *offset_coord, int Id)
+void TriangleModel::fillArrays( float *array_coord,float *array_identity, unsigned int nbModels, int Id)
 {
-    const float factor = 1.0f/32.0f;
-    const float step_Id = 1.0f/((float) size+1);
-    float Id_triangle = (float)Id+1;
-    for ( int i=0; i<size; i++)
+    const float Id_Mesh = (Id+1)/((float)nbModels);
+    const float factor = 1/((float)size);
+
+    for ( int i=0; i<3*size; i+=3)
     {
-        const float valueId = Id_triangle*factor;
+        const float Id_Triangle = (i/3)*factor;
+
         //For each triangle of the model, we store the coordinates of the vertices and information about each of them
-        Triangle t(this, i);
+        Triangle t(this, i/3);
         //Point 1
-        array_coord[(*offset_coord)  ]    = (float) t.p1()[0];
-        array_coord[(*offset_coord)+1]    = (float) t.p1()[1];
-        array_coord[(*offset_coord)+2]    = (float) t.p1()[2];
+        array_coord[i*3  ]    = (float) t.p1()[0];
+        array_coord[i*3+1]    = (float) t.p1()[1];
+        array_coord[i*3+2]    = (float) t.p1()[2];
 
-        array_identity[(*offset_coord)  ] = valueId;
-        array_identity[(*offset_coord)+1] = 0.0f;
-        array_identity[(*offset_coord)+2] = 0.0f;
-        (*offset_coord) += 3;
+        array_identity[i*4  ] = Id_Mesh;
+        array_identity[i*4+1] = 0.0f;
+        array_identity[i*4+2] = 0.0f;
+        array_identity[i*4+3] = Id_Triangle;
+
         //Point 2
-        array_coord[(*offset_coord)]   = (float) t.p2()[0];
-        array_coord[(*offset_coord)+1] = (float) t.p2()[1];
-        array_coord[(*offset_coord)+2] = (float) t.p2()[2];
+        array_coord[(i+1)*3+0] = (float) t.p2()[0];
+        array_coord[(i+1)*3+1] = (float) t.p2()[1];
+        array_coord[(i+1)*3+2] = (float) t.p2()[2];
 
+        array_identity[(i+1)*4+0] = Id_Mesh;
+        array_identity[(i+1)*4+1] = 1.0f;
+        array_identity[(i+1)*4+2] = 0.0f;
+        array_identity[(i+1)*4+3] = Id_Triangle;
 
-        array_identity[(*offset_coord)  ] = valueId;
-        array_identity[(*offset_coord)+1] = 1.0f;
-        array_identity[(*offset_coord)+2] = 0.0f;
-        (*offset_coord) += 3;
         //Point 3
-        array_coord[(*offset_coord)  ] = (float) t.p3()[0];
-        array_coord[(*offset_coord)+1] = (float) t.p3()[1];
-        array_coord[(*offset_coord)+2] = (float) t.p3()[2];
+        array_coord[(i+2)*3+0] = (float) t.p3()[0];
+        array_coord[(i+2)*3+1] = (float) t.p3()[1];
+        array_coord[(i+2)*3+2] = (float) t.p3()[2];
 
-        array_identity[(*offset_coord)  ] = valueId;
-        array_identity[(*offset_coord)+1] = 0.0f;
-        array_identity[(*offset_coord)+2] = 1.0f;
-        (*offset_coord) += 3;
-
-        Id_triangle +=  step_Id;
+        array_identity[(i+2)*4+0]  = Id_Mesh;
+        array_identity[(i+2)*4+1]  = 0.0f;
+        array_identity[(i+2)*4+2] = 1.0f;
+        array_identity[(i+2)*4+3] = Id_Triangle;
     }
 }
 

@@ -135,7 +135,7 @@ public:
     void draw(int index);
 
     // -- Function only used to retrieve information about the coordinates and number of triangle of the current Triangle Model: it is only used for CPU->GPU transfert( creation of a VBO )
-    void fillArrays( float *array_coord,float *array_identity, int *offset_coord, int Id);
+    void fillArrays( float *array_coord,float *array_identity, unsigned int nbModels, int Id);
 
     // -- VisualModel interface
 
