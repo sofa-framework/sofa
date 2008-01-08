@@ -269,8 +269,7 @@ protected:
     void playSimulation(bool);
 
     //Graph Stats
-    void graphCreateStats(GNode *groot);
-    bool graphAddNodeCollisionModels(GNode *node, QListViewItem *parent);
+    bool graphCreateStats(GNode *groot,QListViewItem *parent);
     bool graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v,QListViewItem *parent);
     void graphUpdateStats();
 
