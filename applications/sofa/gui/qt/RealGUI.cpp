@@ -56,6 +56,10 @@
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
+#include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/LineModel.h>
+#include <sofa/component/collision/PointModel.h>
+#include <sofa/component/collision/SphereModel.h>
 
 #include <limits.h>
 
@@ -888,6 +892,9 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     graphListener = new GraphListenerQListView ( graphView );
     graphListener->addChild ( NULL, groot );
 
+    //Create Stats about the simulation
+    graphCreateStats(groot);
+
     //Create the list of the object present at the beginning of the scene
     for ( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it )
     {
@@ -1305,6 +1312,7 @@ void RealGUI::step()
         viewer->getQWidget()->setUpdatesEnabled ( true );
 #endif
         viewer->getQWidget()->update();
+        if (currentTab == TabStats) graphUpdateStats();
     }
 
 
@@ -2004,6 +2012,9 @@ void RealGUI::currentTabChanged ( QWidget* widget )
             graphListener->freeze ( groot );
         }
     }
+    else if (currentTab == TabStats)
+        graphUpdateStats();
+
     currentTab = widget;
 }
 
@@ -2409,7 +2420,8 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz, do
     //Update the view
     viewer->resetView();
     viewer->getQWidget()->update();
-
+    //update the stats graph
+    graphAddNodeCollisionModels(viewer->getScene(),NULL);
 
     //freeze the graph if needed and animate
     if ( currentTab != TabGraph )
@@ -2469,9 +2481,92 @@ void RealGUI::graphExpand()
 /*****************************************************************************************************************/
 void RealGUI::modifyUnlock ( int Id )
 {
+    graphUpdateStats();
     map_modifyDialogOpened.erase ( Id );
 }
 
+/*****************************************************************************************************************/
+// Fill the listview in the stats tab with information baout the number of points/line/triangle/sphere of the collision models present in the scene
+void RealGUI::graphCreateStats(GNode *groot)
+{
+    //GUI::StatsCounter->childCount();
+
+    //Test if there are Collision Models directly in the root
+    graphAddNodeCollisionModels(groot, NULL);
+
+}
+
+//Add the current node and its child to the stats graph.
+bool RealGUI::graphAddNodeCollisionModels( GNode *node, QListViewItem *parent)
+{
+
+    sofa::helper::vector< sofa::core::CollisionModel* > list_collisionModels;
+    node->get< sofa::core::CollisionModel >( list_collisionModels);
+    //Creation of the item in the graph
+    Q3ListViewItem *item;
+    if (parent == NULL)
+    {
+        GUI::StatsCounter->clear(); items_stats.clear();
+        item = new Q3ListViewItem(GUI::StatsCounter);
+    }
+    else
+        item = new Q3ListViewItem(parent);
+    item->setText(0,node->getName().c_str());  item->setOpen(true);
+    items_stats.insert(std::make_pair(node, item));
+    QPixmap* pix = sofa::gui::qt::getPixmap(node);
+    if (pix)
+        item->setPixmap(0, *pix);
+
+    bool usedNode = false;
+    //Add the current Collision Models
+    usedNode = graphAddCollisionModelsStat(list_collisionModels,item);
+
+    //Recursive call
+    for (GNode::ChildIterator it= node->child.begin(); it != node->child.end(); ++it)
+    {
+        usedNode |= graphAddNodeCollisionModels((*it), item);
+    }
+
+    if (!usedNode) delete item;
+    return usedNode;
+}
+
+//Add a list of Collision model to the graph
+bool RealGUI::graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v,QListViewItem *parent)
+{
+    bool oneAdded = false;
+    for (unsigned int i=0; i<v.size(); i++)
+    {
+        if (!v[i]->isActive()) continue;
+        Q3ListViewItem *item = new Q3ListViewItem(parent);
+        item->setText(0,v[i]->getName().c_str());
+
+        if      (dynamic_cast< sofa::component::collision::TriangleModel* >(v[i])) item->setText(1, "Triangle");
+        else if (dynamic_cast< sofa::component::collision::LineModel* >(v[i]))     item->setText(1, "Line");
+        else if (dynamic_cast< sofa::component::collision::PointModel* >(v[i]))    item->setText(1, "Point");
+        else if (dynamic_cast< sofa::component::collision::TSphereModel<Vec3Types>* >(v[i]))  item->setText(1, "Sphere");
+
+        item->setText(2,QString::number(v[i]->getSize()));
+        items_stats.insert(std::make_pair(v[i], item));
+        oneAdded = true;
+    }
+    return oneAdded;
+}
+
+//update the value of the graph
+void RealGUI::graphUpdateStats()
+{
+    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
+    for (it=items_stats.begin(); it!= items_stats.end(); it++)
+    {
+        (*it).second->setText(0,(*it).first->getName());
+        if (sofa::core::CollisionModel* cm = dynamic_cast< sofa::core::CollisionModel* >((*it).first))
+        {
+            (*it).second->setText(2,QString::number(cm->getSize()));
+        }
+    }
+    GUI::StatsCounter->update();
+}
 
 void RealGUI::viewExecutionGraph()
 {

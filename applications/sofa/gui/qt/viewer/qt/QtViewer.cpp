@@ -2217,10 +2217,14 @@ QString QtViewer::helpString()
 <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
 <li><b>C</b>: TO SWITCH INTERACTION MODE: press the KEY C.<br>\
 Allow or not the navigation with the mouse.<br></li>\
+<li><b>L</b>: TO DRAW SHADOWS<br></li>\
+<li><b>O</b>: TO EXPORT TO .OBJ<br>\
+The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\
+<li><b>P</b>: TO SAVE A SEQUENCE OF OBJ<br>\
+Each time the frame is updated an obj is exported<br></li>\
+<li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
 <li><b>S</b>: TO SAVE A SCREENSHOT<br>\
 The captured images are saved in the running project directory under the name format capturexxxx.bmp<br></li>\
-<li><b>L</b>: TO DRAW SHADOWS<br></li>\
-<li><b>R</b>: TO DRAW THE SCENE AXIS<br></li>\
 <li><b>T</b>: TO CHANGE BETWEEN A PERSPECTIVE OR AN ORTHOGRAPHIC CAMERA<br></li>\
 <li><b>V</b>: TO SAVE A VIDEO<br>\
 Each time the frame is updated a screenshot is saved<br></li>\
