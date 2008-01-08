@@ -2558,7 +2558,7 @@ void RealGUI::graphUpdateStats()
     std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
     for (it=items_stats.begin(); it!= items_stats.end(); it++)
     {
-        (*it).second->setText(0,(*it).first->getName());
+        (*it).second->setText(0,(*it).first->getName().c_str());
         if (sofa::core::CollisionModel* cm = dynamic_cast< sofa::core::CollisionModel* >((*it).first))
         {
             (*it).second->setText(2,QString::number(cm->getSize()));
