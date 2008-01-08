@@ -893,7 +893,7 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     graphListener->addChild ( NULL, groot );
 
     //Create Stats about the simulation
-    graphCreateStats(groot);
+    graphCreateStats(groot,NULL);
 
     //Create the list of the object present at the beginning of the scene
     for ( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it )
@@ -2012,7 +2012,7 @@ void RealGUI::currentTabChanged ( QWidget* widget )
             graphListener->freeze ( groot );
         }
     }
-    else if (currentTab == TabStats)
+    else if (widget == TabStats)
         graphUpdateStats();
 
     currentTab = widget;
@@ -2165,6 +2165,8 @@ void RealGUI::graphRemoveObject()
         item_clicked = NULL;
     }
     playpauseGUI ( isAnimated );
+
+    graphCreateStats(viewer->getScene(),NULL);
 }
 
 /*****************************************************************************************************************/
@@ -2222,6 +2224,8 @@ void RealGUI::graphDesactivateNode()
     node_clicked->setActive(false);
     viewer->getQWidget()->update();
     node_clicked->reinit();
+
+    graphCreateStats(viewer->getScene(),NULL);
 }
 
 void RealGUI::graphActivateNode()
@@ -2229,6 +2233,8 @@ void RealGUI::graphActivateNode()
     node_clicked->setActive(true);
     viewer->getQWidget()->update();
     node_clicked->reinit();
+
+    graphCreateStats(viewer->getScene(),NULL);
 }
 
 /*****************************************************************************************************************/
@@ -2421,7 +2427,7 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz, do
     viewer->resetView();
     viewer->getQWidget()->update();
     //update the stats graph
-    graphAddNodeCollisionModels(viewer->getScene(),NULL);
+    graphCreateStats(viewer->getScene(),NULL);
 
     //freeze the graph if needed and animate
     if ( currentTab != TabGraph )
@@ -2486,18 +2492,10 @@ void RealGUI::modifyUnlock ( int Id )
 }
 
 /*****************************************************************************************************************/
-// Fill the listview in the stats tab with information baout the number of points/line/triangle/sphere of the collision models present in the scene
-void RealGUI::graphCreateStats(GNode *groot)
-{
-    //GUI::StatsCounter->childCount();
-
-    //Test if there are Collision Models directly in the root
-    graphAddNodeCollisionModels(groot, NULL);
-
-}
+// Fill the listview in the stats tab with information about the number of points/line/triangle/sphere of the collision models present in the scene
 
 //Add the current node and its child to the stats graph.
-bool RealGUI::graphAddNodeCollisionModels( GNode *node, QListViewItem *parent)
+bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
 {
 
     sofa::helper::vector< sofa::core::CollisionModel* > list_collisionModels;
@@ -2524,7 +2522,7 @@ bool RealGUI::graphAddNodeCollisionModels( GNode *node, QListViewItem *parent)
     //Recursive call
     for (GNode::ChildIterator it= node->child.begin(); it != node->child.end(); ++it)
     {
-        usedNode |= graphAddNodeCollisionModels((*it), item);
+        usedNode |= graphCreateStats((*it), item);
     }
 
     if (!usedNode) delete item;
@@ -2556,6 +2554,7 @@ bool RealGUI::graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::Coll
 //update the value of the graph
 void RealGUI::graphUpdateStats()
 {
+
     std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
     for (it=items_stats.begin(); it!= items_stats.end(); it++)
     {
