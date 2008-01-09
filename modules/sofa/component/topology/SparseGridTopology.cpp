@@ -65,7 +65,7 @@ int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
 
 const float SparseGridTopology::WEIGHT27[8][27] =
 {
-    {1,0.5,0,0.5,0.25,0,0,0,0,0.5,0.25,0,0.25,0.125,0,0,0,0,0,0,0,0,0,0,0,0,0,}, // each weight of the jth fine vertex to the ith coarse vertex
+    {1,0.5,0,0.5,0.25,0,0,0,0,0.5,0.25,0,0.25,0.125,0,0,0,0,0,0,0,0,0,0,0,0,0}, // each weight of the jth fine vertex to the ith coarse vertex
     {0,0,0,0,0,0,0,0,0,0.5,0.25,0,0.25,0.125,0,0,0,0,1,0.5,0,0.5,0.25,0,0,0,0},
     {0,0,0,0.5,0.25,0,1,0.5,0,0,0,0,0.25,0.125,0,0.5,0.25,0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0,0,0,0.25,0.125,0,0.5,0.25,0,0,0,0,0.5,0.25,0,1,0.5,0},
@@ -85,7 +85,6 @@ const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
     { 10, 19, 13, 22, 11, 20, 14 ,23},
     { 4, 13, 7 ,16 ,5 ,14 ,8, 17},
     { 13, 22, 16, 25, 14, 23 ,17 ,26}
-
 };
 
 
@@ -105,10 +104,6 @@ bool SparseGridTopology::load(const char* filename)
 // 		cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
     return true;
 }
-
-
-
-
 
 
 
@@ -178,7 +173,7 @@ void SparseGridTopology::init()
         }
     }
 
-    cerr<<"_nodeCubesAdjacency :"<<_nodeCubesAdjacency<<endl;
+// 		  cerr<<"_nodeCubesAdjacency :"<<_nodeCubesAdjacency<<endl;
 
 // 		  cerr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
 // 		  cerr<<seqCubes.size()<<"       ";
@@ -525,6 +520,8 @@ void SparseGridTopology::buildFromFiner(  )
 
     // for interpolation and restriction
     _hierarchicalPointMap.resize(seqPoints.size());
+    _finerSparseGrid->_inverseHierarchicalPointMap.resize(_finerSparseGrid->seqPoints.size());
+    _finerSparseGrid->_inversePointMap.resize(_finerSparseGrid->seqPoints.size()); _finerSparseGrid->_inversePointMap.fill(-1);
     for( unsigned w=0; w<seqCubes.size(); ++w)
     {
         const fixed_array<int, 8>& child = _hierarchicalCubeMap[w];
@@ -559,8 +556,20 @@ void SparseGridTopology::buildFromFiner(  )
                 int fineVertexGlobalIndice = fineCorners[fineVertexLocalIndice];
 
                 if( WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice] )
+                {
                     _hierarchicalPointMap[coarseCornerGlobalIndice][fineVertexGlobalIndice] = WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice];
 // 						_hierarchicalPointMap[coarseCornerGlobalIndice].push_back( std::pair<int,float>(fineVertexGlobalIndice, WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice]) );
+
+
+                    _finerSparseGrid->_inverseHierarchicalPointMap[fineVertexGlobalIndice][coarseCornerGlobalIndice] = WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice];
+
+                    if( WEIGHT27[coarseCornerLocalIndice][fineVertexLocalIndice] == 1.0 )
+                    {
+                        _finerSparseGrid->_inversePointMap[fineVertexGlobalIndice] = coarseCornerGlobalIndice;
+// 							cerr<<getPX(coarseCornerGlobalIndice)<<" "<<getPY(coarseCornerGlobalIndice)<<" "<<getPZ(coarseCornerGlobalIndice)<<" ----- ";
+// 							cerr<<_finerSparseGrid->getPX(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPY(fineVertexGlobalIndice)<<" "<<_finerSparseGrid->getPZ(fineVertexGlobalIndice)<<endl;
+                    }
+                }
             }
         }
 
@@ -589,6 +598,25 @@ void SparseGridTopology::buildFromFiner(  )
 // 				cerr<<(*it).first<<", "<<(*it).second<<" # ";
 // 			}
 // 			cerr<<endl;
+// 		}
+// //
+// // 		// // 		afficher la _inverseHierarchicalPointMap
+
+// 		cerr<<"_inverseHierarchicalPointMap :"<<endl;
+// 		for(unsigned i=0;i<_finerSparseGrid->_inverseHierarchicalPointMap.size();++i)
+// 		{
+// 			cerr<<"POINT "<<i<<" "<<seqPoints[i]<<" : "<<_finerSparseGrid->_inverseHierarchicalPointMap[i].size()<<" : ";
+// 			for(std::map<int,float>::iterator it = _finerSparseGrid->_inverseHierarchicalPointMap[i].begin();it != _finerSparseGrid->_inverseHierarchicalPointMap[i].end() ; ++it )
+// 			{
+// 				cerr<<(*it).first<<", "<<(*it).second<<" # ";
+// 			}
+// 			cerr<<endl;
+// 		}
+
+// 		cerr<<"_inversePointMap :"<<endl;
+// 		for(unsigned i=0;i<_finerSparseGrid->_inversePointMap.size();++i)
+// 		{
+// 			cerr<<"POINT "<<i<<" -> "<<_finerSparseGrid->_inversePointMap[i]<<endl;
 // 		}
 
 

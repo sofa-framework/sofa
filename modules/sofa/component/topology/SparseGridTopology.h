@@ -79,15 +79,21 @@ public:
 
     typedef std::map<int,float> AHierarchicalPointMap;
 // 					typedef helper::vector< std::pair<int,float> >  AHierarchicalPointMap;
-    typedef helper::vector< AHierarchicalPointMap > HierarchicalPointMap; ///< a point indice -> corresponding 8 child indices on the potential _finerSparseGrid with corresponding weight
+    typedef helper::vector< AHierarchicalPointMap > HierarchicalPointMap; ///< a point indice -> corresponding 27 child indices on the potential _finerSparseGrid with corresponding weight
     HierarchicalPointMap _hierarchicalPointMap;
+    typedef helper::vector< AHierarchicalPointMap > InverseHierarchicalPointMap; ///< a fine point indice -> corresponding some parent points for interpolation
+    InverseHierarchicalPointMap _inverseHierarchicalPointMap;
+    typedef helper::vector< int > InversePointMap; ///< a fine point indice -> corresponding points in coarser level
+    InversePointMap _inversePointMap;
 
 
-    enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED};
-    typedef helper::vector< helper::fixed_array<int,NUM_CONNECTED> > NodeAdjacency; ///< a node -> its 6 neighboors
+    enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED_NODES};
+    typedef helper::vector< helper::fixed_array<int,NUM_CONNECTED_NODES> > NodeAdjacency; ///< a node -> its 6 neighboors
     NodeAdjacency _nodeAdjacency;
     typedef helper::vector< helper::vector<int> >NodeCubesAdjacency; ///< a node -> its 8 neighboor cells
     NodeCubesAdjacency _nodeCubesAdjacency;
+    typedef helper::vector< helper::vector<int> >NodeCornersAdjacency; ///< a node -> its 8 corners of neighboor cells
+    NodeCornersAdjacency _nodeCornersAdjacency;
 
 
     int getNx() const { return nx.getValue(); }
