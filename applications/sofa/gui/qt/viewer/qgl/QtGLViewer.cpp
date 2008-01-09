@@ -1672,6 +1672,8 @@ The captured images are saved in the running project directory under the name fo
 <li><b>S</b>: TO SAVE A SCREENSHOT<br>\
 <li><b>V</b>: TO SAVE A VIDEO<br>\
 Each time the frame is updated a screenshot is saved<br></li>\
+<li><b>P</b>: TO SAVE A OBJ SEQUENCE<br>\
+Each time the frame is updated an obj is saved<br></li>\
 <li><b>Esc</b>: TO QUIT ::sofa:: <br></li></ul>");
 
     return text;
