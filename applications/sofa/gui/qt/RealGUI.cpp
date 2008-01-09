@@ -295,7 +295,6 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 {
 
     left_stack = new QWidgetStack ( splitter2 );
-
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
 
     fpsLabel = new QLabel ( "9999.9 FPS", statusBar() );
@@ -2497,7 +2496,7 @@ void RealGUI::modifyUnlock ( int Id )
 //Add the current node and its child to the stats graph.
 bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
 {
-
+    bool initialization = false;
     sofa::helper::vector< sofa::core::CollisionModel* > list_collisionModels;
     node->get< sofa::core::CollisionModel >( list_collisionModels);
     //Creation of the item in the graph
@@ -2506,6 +2505,7 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
     {
         GUI::StatsCounter->clear(); items_stats.clear();
         item = new Q3ListViewItem(GUI::StatsCounter);
+        initialization = true;
     }
     else
         item = new Q3ListViewItem(parent);
@@ -2526,6 +2526,66 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
     }
 
     if (!usedNode) delete item;
+
+    if (usedNode && initialization)
+    {
+        //create global stats
+        std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
+        unsigned int counter[4]= {0,0,0,0};
+        for (it=items_stats.begin(); it!= items_stats.end(); it++)
+        {
+            if (!dynamic_cast< GNode *>((*it).first))
+            {
+                if ( std::string((*it).second->text(1).ascii()) == "Triangle")
+                {
+                    counter[0]+=atoi((*it).second->text(2));
+                }
+                else if ( std::string((*it).second->text(1).ascii()) == "Line")
+                {
+                    counter[1]+=atoi((*it).second->text(2));
+                }
+                else if ( std::string((*it).second->text(1).ascii()) == "Point")
+                {
+                    counter[2]+=atoi((*it).second->text(2));
+                }
+                else if ( std::string((*it).second->text(1).ascii()) == "Sphere")
+                {
+                    counter[3]+=atoi((*it).second->text(2));
+                }
+            }
+        }
+        std::string textStats("Collision Elements present: <ul>");
+        if (counter[0] != 0)
+        {
+            char buf[100];
+            sprintf ( buf, "<li>Triangles: %d</li>", counter[0] );
+            textStats += buf;
+        }
+
+        if (counter[1] != 0)
+        {
+            char buf[100];
+            sprintf ( buf, "<li>Lines: %d</li>", counter[1] );
+            textStats += buf;
+        }
+
+        if (counter[2] != 0)
+        {
+            char buf[100];
+            sprintf ( buf, "<li>Points: %d</li>", counter[2] );
+            textStats += buf;
+        }
+
+        if (counter[3] != 0)
+        {
+            char buf[100];
+            sprintf ( buf, "<li>Spheres: %d</li>", counter[3] );
+            textStats += buf;
+        }
+        textStats += "</ul>";
+        statsLabel->setText( textStats.c_str());
+        statsLabel->update();
+    }
     return usedNode;
 }
 

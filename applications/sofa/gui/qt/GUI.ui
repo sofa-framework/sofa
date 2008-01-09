@@ -710,6 +710,14 @@
                                         <string>Create gnuplot files for each named element of the simulation</string>
                                     </property>
                                 </widget>
+                                <widget class="QLabel">
+                                    <property name="name">
+                                        <cstring>statsLabel</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>Collision Elements present :</string>
+                                    </property>
+                                </widget>
                                 <widget class="QListView">
                                     <column>
                                         <property name="text">
