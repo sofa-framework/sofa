@@ -2510,7 +2510,7 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
     else
         item = new Q3ListViewItem(parent);
     item->setText(0,node->getName().c_str());  item->setOpen(true);
-    items_stats.insert(std::make_pair(node, item));
+
     QPixmap* pix = sofa::gui::qt::getPixmap(node);
     if (pix)
         item->setPixmap(0, *pix);
@@ -2525,8 +2525,9 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
         usedNode |= graphCreateStats((*it), item);
     }
 
-    if (!usedNode) delete item;
+    if (!usedNode) {delete item; return false;}
 
+    items_stats.insert(std::make_pair(node, item));
     if (usedNode && initialization)
     {
         //create global stats
@@ -2582,10 +2583,12 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
             sprintf ( buf, "<li>Spheres: %d</li>", counter[3] );
             textStats += buf;
         }
+
         textStats += "</ul>";
         statsLabel->setText( textStats.c_str());
         statsLabel->update();
     }
+
     return usedNode;
 }
 
