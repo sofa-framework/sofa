@@ -82,7 +82,7 @@ void TriangleModel::init()
     this->CollisionModel::init();
     mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
 
-    elems.clear();
+    //elems.clear();
 
     if (mstate==NULL)
     {

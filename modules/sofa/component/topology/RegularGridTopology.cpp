@@ -89,6 +89,8 @@ RegularGridTopology::RegularGridTopology()
 
 void RegularGridTopology::setPos(double xmin, double xmax, double ymin, double ymax, double zmin, double zmax)
 {
+    min.setValue(Vec3(xmin,ymin,zmin));
+    max.setValue(Vec3(xmax,ymax,zmax));
     setP0(Vec3(xmin,ymin,zmin));
     if (n.getValue()[0]>1)
         setDx(Vec3((xmax-xmin)/(n.getValue()[0]-1),0,0));

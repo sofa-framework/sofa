@@ -273,9 +273,11 @@ public:
 
     /// Contact stiffness
     double getContactStiffness(int /*index*/) { return contactStiffness.getValue(); }
+    void setContactStiffness(double stiffness) { contactStiffness.setValue(stiffness); }
 
     /// Contact friction (damping) coefficient
     double getContactFriction(int /*index*/) { return contactFriction.getValue(); }
+    void setContactFriction(double friction) { contactFriction.setValue(friction); }
 
     /// Contact response algorithm
     std::string getContactResponse() { return contactResponse.getValue(); }
