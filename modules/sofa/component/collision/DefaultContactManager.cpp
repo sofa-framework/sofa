@@ -99,6 +99,7 @@ void DefaultContactManager::createContacts(DetectionOutputMap& outputsMap)
             else
             {
                 contactMap[std::make_pair(model1, model2)] = contact;
+                contact->setName(model1->getName()+std::string("-")+model2->getName());
                 contact->f_printLog.setValue(this->f_printLog.getValue());
                 contact->init();
                 contact->setDetectionOutputs(outputsIt->second);

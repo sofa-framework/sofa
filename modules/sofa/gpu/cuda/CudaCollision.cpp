@@ -146,24 +146,21 @@ public:
     virtual void init()
     {
         sofa::component::collision::NewProximityIntersection::init();
-        intersectors.add<CudaSphereModel, RayModel,          DiscreteIntersection, true>(this);
-        intersectors.add<CudaSphereModel, RayPickInteractor, DiscreteIntersection, true>(this);
-        //intersectors.add<CudaSphereModel, PointModel,        DiscreteIntersection, true>(this);
-        intersectors.add<CudaSphereModel, CudaSphereModel,   DiscreteIntersection, false>(this);
-        //intersectors.add<LineModel,       CudaSphereModel,   CudaProximityIntersection, true>(this);
-        intersectors.add<TriangleModel,   CudaSphereModel,   CudaProximityIntersection, true>(this);
+        intersectors.add<RayModel,        CudaSphereModel,   DiscreteIntersection>(this);
+        //intersectors.add<CudaSphereModel, PointModel,        DiscreteIntersection>(this);
+        intersectors.add<CudaSphereModel, CudaSphereModel,   DiscreteIntersection>(this);
+        //intersectors.add<LineModel,       CudaSphereModel,   CudaProximityIntersection>(this);
+        intersectors.add<TriangleModel,   CudaSphereModel,   CudaProximityIntersection>(this);
     }
 
 };
 
 
-int CudaProximityIntersectionClass = core::RegisterObject("TODO-CudaProximityIntersection")
+int CudaProximityIntersectionClass = core::RegisterObject("GPGPU Proximity Intersection based on CUDA")
         .add< CudaProximityIntersection >()
         ;
 
-sofa::helper::Creator<core::componentmodel::collision::Contact::Factory, component::collision::RayContact<CudaSphereModel> > RayCudaSphereContactClass("default",true);
-sofa::helper::Creator<core::componentmodel::collision::Contact::Factory, component::collision::RayContact<CudaSphereModel> > RayCudaSphereContactClass2("LagrangianMultiplier",true);
-sofa::helper::Creator<core::componentmodel::collision::Contact::Factory, component::collision::RayContact<CudaSphereModel> > RayCudaSphereContactClass3("FrictionContact",true);
+sofa::helper::Creator<core::componentmodel::collision::Contact::Factory, component::collision::RayContact<CudaSphereModel> > RayCudaSphereContactClass("ray",true);
 
 
 //sofa::helper::Creator<sofa::core::componentmodel::collision::Contact::Factory, sofa::component::collision::BarycentricPenalityContact<CudaRigidDistanceGridCollisionModel, CudaRigidDistanceGridCollisionModel,CudaVec3fTypes> > CudaDistanceGridCudaDistanceGridContactClass("default", true);
