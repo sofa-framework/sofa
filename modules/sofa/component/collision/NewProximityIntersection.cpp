@@ -48,7 +48,7 @@ using namespace helper;
 
 SOFA_DECL_CLASS(NewProximityIntersection)
 
-int NewProximityIntersectionClass = core::RegisterObject("TODO-NewProximityIntersection")
+int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity Intersection based on Triangle-Triangle tests, ignoring Edge-Edge cases")
         .add< NewProximityIntersection >()
         ;
 
