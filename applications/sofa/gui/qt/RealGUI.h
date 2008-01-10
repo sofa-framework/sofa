@@ -272,6 +272,8 @@ protected:
     bool graphCreateStats(GNode *groot,QListViewItem *parent);
     bool graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v,QListViewItem *parent);
     void graphUpdateStats();
+    void graphSummary();
+
 
     GNode *searchNode(GNode *node, Q3ListViewItem *item_clicked);
     GNode *verifyNode(GNode *node, Q3ListViewItem *item_clicked);
@@ -332,7 +334,7 @@ protected:
 private:
     //Map: Id -> Node currently modified. Used to avoid dependancies during removing actions
     std::map< int, core::objectmodel::Base* >            map_modifyDialogOpened;
-    std::map<core::objectmodel::Base*, Q3ListViewItem* > items_stats;
+    std::vector<std::pair<core::objectmodel::Base*, Q3ListViewItem*> > items_stats;
     //unique ID to pass to a modify object dialog
     int current_Id_modifyDialog;
 

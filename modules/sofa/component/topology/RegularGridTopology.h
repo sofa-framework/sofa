@@ -75,6 +75,9 @@ public:
     double getPY(int i) const { return getPoint(i)[1]; }
     double getPZ(int i) const { return getPoint(i)[2]; }
 
+    Vec3   getMin() const { return min.getValue();}
+    Vec3   getMax() const { return max.getValue();}
+
     /// return the cube containing the given point (or -1 if not found).
     virtual int findCube(const Vec3& pos);
 

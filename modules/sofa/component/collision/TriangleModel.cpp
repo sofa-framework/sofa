@@ -25,6 +25,8 @@
 #include <sofa/component/collision/TriangleModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Triangle.h>
+#include <sofa/simulation/tree/GNode.h>
+#include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/core/CollisionElement.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
@@ -957,6 +959,28 @@ void TriangleModel::fillArrays( float *array_coord,float *array_identity, unsign
     const float Id_Mesh = (Id+1)/((float)nbModels);
     const float factor = 1/((float)size);
 
+    //compute the bounding box of the mechanical object
+    sofa::helper::vector< sofa::core::componentmodel::behavior::MechanicalState< Vec3Types >* > mecha;
+
+
+    Vec3d boundingbox[2] = {Vec3d(0,0,0),Vec3d(0,0,0)};
+    Vec3d sizeBB(1,1,1);
+    //looking for a regular grid
+    if (dynamic_cast<  sofa::simulation::tree::GNode * >(getContext())->getParent() != NULL)
+    {
+        sofa::helper::vector< sofa::component::topology::RegularGridTopology* > grid;
+        dynamic_cast< sofa::simulation::tree::GNode *>(getContext())->getParent()->getContext()->get< sofa::component::topology::RegularGridTopology >(grid);
+        if (grid.size() != 0)
+        {
+            sofa::helper::vector< MechanicalState< Vec3Types >* > list_M;
+            sofa::helper::vector< Vec3d > &dof = *dynamic_cast<sofa::simulation::tree::GNode *>(getContext())->getParent()->getContext()->get< MechanicalState< Vec3Types > >()->getX();
+
+            boundingbox[0] = dof[ grid[0]->getIndex(0,0,0) ];
+            boundingbox[1] = dof[ grid[0]->getIndex( grid[0]->getNx()-1,grid[0]->getNy()-1, grid[0]->getNz()-1) ];
+            sizeBB = boundingbox[1] - boundingbox[0];
+        }
+    }
+    sizeBB[0] = 1.0/sizeBB[0]; sizeBB[1] = 1.0/sizeBB[1]; sizeBB[2] = 1.0/sizeBB[2];
     for ( int i=0; i<3*size; i+=3)
     {
         const float Id_Triangle = (i/3)*factor;
@@ -964,9 +988,9 @@ void TriangleModel::fillArrays( float *array_coord,float *array_identity, unsign
         //For each triangle of the model, we store the coordinates of the vertices and information about each of them
         Triangle t(this, i/3);
         //Point 1
-        array_coord[i*3  ]    = (float) t.p1()[0];
-        array_coord[i*3+1]    = (float) t.p1()[1];
-        array_coord[i*3+2]    = (float) t.p1()[2];
+        array_coord[i*3  ]    = (float) (t.p1()[0]-boundingbox[0][0])*sizeBB[0];
+        array_coord[i*3+1]    = (float) (t.p1()[1]-boundingbox[0][1])*sizeBB[1];
+        array_coord[i*3+2]    = (float) (t.p1()[2]-boundingbox[0][2])*sizeBB[2];
 
         array_identity[i*4  ] = Id_Mesh;
         array_identity[i*4+1] = 0.0f;
@@ -974,9 +998,9 @@ void TriangleModel::fillArrays( float *array_coord,float *array_identity, unsign
         array_identity[i*4+3] = Id_Triangle;
 
         //Point 2
-        array_coord[(i+1)*3+0] = (float) t.p2()[0];
-        array_coord[(i+1)*3+1] = (float) t.p2()[1];
-        array_coord[(i+1)*3+2] = (float) t.p2()[2];
+        array_coord[(i+1)*3+0] = (float) (t.p2()[0]-boundingbox[0][0])*sizeBB[0];
+        array_coord[(i+1)*3+1] = (float) (t.p2()[1]-boundingbox[0][1])*sizeBB[1];
+        array_coord[(i+1)*3+2] = (float) (t.p2()[2]-boundingbox[0][2])*sizeBB[2];
 
         array_identity[(i+1)*4+0] = Id_Mesh;
         array_identity[(i+1)*4+1] = 1.0f;
@@ -984,9 +1008,9 @@ void TriangleModel::fillArrays( float *array_coord,float *array_identity, unsign
         array_identity[(i+1)*4+3] = Id_Triangle;
 
         //Point 3
-        array_coord[(i+2)*3+0] = (float) t.p3()[0];
-        array_coord[(i+2)*3+1] = (float) t.p3()[1];
-        array_coord[(i+2)*3+2] = (float) t.p3()[2];
+        array_coord[(i+2)*3+0] = (float) (t.p3()[0]-boundingbox[0][0])*sizeBB[0];
+        array_coord[(i+2)*3+1] = (float) (t.p3()[1]-boundingbox[0][1])*sizeBB[1];
+        array_coord[(i+2)*3+2] = (float) (t.p3()[2]-boundingbox[0][2])*sizeBB[2];
 
         array_identity[(i+2)*4+0]  = Id_Mesh;
         array_identity[(i+2)*4+1]  = 0.0f;
