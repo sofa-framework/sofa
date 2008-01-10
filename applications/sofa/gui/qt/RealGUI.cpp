@@ -2486,7 +2486,7 @@ void RealGUI::graphExpand()
 /*****************************************************************************************************************/
 void RealGUI::modifyUnlock ( int Id )
 {
-    graphUpdateStats();
+    graphUpdateStats( );
     map_modifyDialogOpened.erase ( Id );
 }
 
@@ -2503,12 +2503,14 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
     Q3ListViewItem *item;
     if (parent == NULL)
     {
-        GUI::StatsCounter->clear(); items_stats.clear();
+        items_stats.clear();
+        GUI::StatsCounter->clear();
         item = new Q3ListViewItem(GUI::StatsCounter);
         initialization = true;
     }
     else
         item = new Q3ListViewItem(parent);
+
     item->setText(0,node->getName().c_str());  item->setOpen(true);
 
     QPixmap* pix = sofa::gui::qt::getPixmap(node);
@@ -2524,72 +2526,14 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
     {
         usedNode |= graphCreateStats((*it), item);
     }
-
     if (!usedNode) {delete item; return false;}
 
-    items_stats.insert(std::make_pair(node, item));
-    if (usedNode && initialization)
+    items_stats.push_back(std::make_pair(node, item));
+    if (initialization)
     {
-        //create global stats
-        std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
-        unsigned int counter[4]= {0,0,0,0};
-        for (it=items_stats.begin(); it!= items_stats.end(); it++)
-        {
-            if (!dynamic_cast< GNode *>((*it).first))
-            {
-                if ( std::string((*it).second->text(1).ascii()) == "Triangle")
-                {
-                    counter[0]+=atoi((*it).second->text(2));
-                }
-                else if ( std::string((*it).second->text(1).ascii()) == "Line")
-                {
-                    counter[1]+=atoi((*it).second->text(2));
-                }
-                else if ( std::string((*it).second->text(1).ascii()) == "Point")
-                {
-                    counter[2]+=atoi((*it).second->text(2));
-                }
-                else if ( std::string((*it).second->text(1).ascii()) == "Sphere")
-                {
-                    counter[3]+=atoi((*it).second->text(2));
-                }
-            }
-        }
-        std::string textStats("Collision Elements present: <ul>");
-        if (counter[0] != 0)
-        {
-            char buf[100];
-            sprintf ( buf, "<li>Triangles: %d</li>", counter[0] );
-            textStats += buf;
-        }
-
-        if (counter[1] != 0)
-        {
-            char buf[100];
-            sprintf ( buf, "<li>Lines: %d</li>", counter[1] );
-            textStats += buf;
-        }
-
-        if (counter[2] != 0)
-        {
-            char buf[100];
-            sprintf ( buf, "<li>Points: %d</li>", counter[2] );
-            textStats += buf;
-        }
-
-        if (counter[3] != 0)
-        {
-            char buf[100];
-            sprintf ( buf, "<li>Spheres: %d</li>", counter[3] );
-            textStats += buf;
-        }
-
-        textStats += "</ul>";
-        statsLabel->setText( textStats.c_str());
-        statsLabel->update();
+        graphSummary();
     }
-
-    return usedNode;
+    return true;
 }
 
 //Add a list of Collision model to the graph
@@ -2608,7 +2552,7 @@ bool RealGUI::graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::Coll
         else if (dynamic_cast< sofa::component::collision::TSphereModel<Vec3Types>* >(v[i]))  item->setText(1, "Sphere");
 
         item->setText(2,QString::number(v[i]->getSize()));
-        items_stats.insert(std::make_pair(v[i], item));
+        items_stats.push_back(std::make_pair(v[i], item));
         oneAdded = true;
     }
     return oneAdded;
@@ -2617,17 +2561,77 @@ bool RealGUI::graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::Coll
 //update the value of the graph
 void RealGUI::graphUpdateStats()
 {
-
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
-    for (it=items_stats.begin(); it!= items_stats.end(); it++)
+    for (unsigned int i=0; i< items_stats.size(); i++)
     {
-        (*it).second->setText(0,(*it).first->getName().c_str());
-        if (sofa::core::CollisionModel* cm = dynamic_cast< sofa::core::CollisionModel* >((*it).first))
+        items_stats[i].second->setText(0,items_stats[i].first->getName().c_str());
+        if (sofa::core::CollisionModel* cm = dynamic_cast< sofa::core::CollisionModel* >(items_stats[i].first))
         {
-            (*it).second->setText(2,QString::number(cm->getSize()));
+            items_stats[i].second->setText(2,QString::number(cm->getSize()));
         }
     }
+    graphSummary();
     GUI::StatsCounter->update();
+}
+
+
+//create global stats
+void RealGUI::graphSummary()
+{
+    unsigned int counter[4]= {0,0,0,0};
+    for (unsigned int i=0; i < items_stats.size(); i++)
+    {
+        if (!dynamic_cast< GNode *>(items_stats[i].first))
+        {
+            if ( std::string(items_stats[i].second->text(1).ascii()) == "Triangle")
+            {
+                counter[0]+=atoi(items_stats[i].second->text(2));
+            }
+            else if ( std::string(items_stats[i].second->text(1).ascii()) == "Line")
+            {
+                counter[1]+=atoi(items_stats[i].second->text(2));
+            }
+            else if ( std::string(items_stats[i].second->text(1).ascii()) == "Point")
+            {
+                counter[2]+=atoi(items_stats[i].second->text(2));
+            }
+            else if ( std::string(items_stats[i].second->text(1).ascii()) == "Sphere")
+            {
+                counter[3]+=atoi(items_stats[i].second->text(2));
+            }
+        }
+    }
+    std::string textStats("Collision Elements present: <ul>");
+    if (counter[0] != 0)
+    {
+        char buf[100];
+        sprintf ( buf, "<li>Triangles: %d</li>", counter[0] );
+        textStats += buf;
+    }
+
+    if (counter[1] != 0)
+    {
+        char buf[100];
+        sprintf ( buf, "<li>Lines: %d</li>", counter[1] );
+        textStats += buf;
+    }
+
+    if (counter[2] != 0)
+    {
+        char buf[100];
+        sprintf ( buf, "<li>Points: %d</li>", counter[2] );
+        textStats += buf;
+    }
+
+    if (counter[3] != 0)
+    {
+        char buf[100];
+        sprintf ( buf, "<li>Spheres: %d</li>", counter[3] );
+        textStats += buf;
+    }
+
+    textStats += "</ul>";
+    statsLabel->setText( textStats.c_str());
+    statsLabel->update();
 }
 
 void RealGUI::viewExecutionGraph()
