@@ -24,6 +24,7 @@
 *******************************************************************************/
 
 #include "AddObject.h"
+#include "RealGUI.h"
 
 #include <iostream>
 #include <sstream>
@@ -146,7 +147,7 @@ void AddObject::setPath(const std::string path)
 //Open a file Dialog and set the path of the selected path in the text field.
 void AddObject::fileOpen()
 {
-    QString s  = Q3FileDialog::getOpenFileName(fileName.empty()?NULL:fileName.c_str(), "Sofa Element (*.xml *.scn)",  this, "open file dialog",  "Choose a file to open" );
+    QString s  = RealGUI::getOpenFileName(this, QString(fileName.c_str()), "Sofa Element (*.xml *.scn)", "open file dialog",  "Choose a file to open" );
 
     if (s.isNull() ) return;
 #ifdef QT_MODULE_QT3SUPPORT
