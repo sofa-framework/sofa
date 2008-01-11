@@ -982,7 +982,7 @@ void RealGUI::screenshot()
 
     QString filename;
 
-    filename = getSaveFileName (
+    filename = getSaveFileName ( this,
             viewer->screenshotName().c_str(),
             "Images (*.png *.bmp *.jpg)",
             "save file dialog"
@@ -1051,7 +1051,7 @@ void RealGUI::fileOpen()
 {
     std::string filename = viewer->getSceneFileName();
 
-    QString s = getOpenFileName ( filename.empty() ?NULL:filename.c_str(),
+    QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
 #ifdef SOFA_PML
             "Scenes (*.scn *.simu *.pml *.lml)",
 #else
@@ -1113,7 +1113,7 @@ void RealGUI::fileSaveAs()
     QString s;
     std::string filename = viewer->getSceneFileName();
 #ifdef SOFA_PML
-    s = getSaveFileName ( filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.pml)", "save file dialog",  "Choose where the scene will be saved" );
+    s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.pml)", "save file dialog",  "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
         if ( pmlreader && s.endsWith ( ".pml" ) )
@@ -1122,7 +1122,7 @@ void RealGUI::fileSaveAs()
             fileSaveAs ( s );
     }
 #else
-    s = getSaveFileName ( filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn)", "save file dialog", "Choose where the scene will be saved" );
+    s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
         fileSaveAs ( s );
 #endif
@@ -1147,7 +1147,7 @@ void RealGUI::saveXML()
 void RealGUI::editRecordDirectory()
 {
     std::string filename = viewer->getSceneFileName();
-    QString s = getExistingDirectory ( filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
+    QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         record_directory = s.ascii();
@@ -1159,7 +1159,7 @@ void RealGUI::editRecordDirectory()
 void RealGUI::editGnuplotDirectory()
 {
     std::string filename = viewer->getSceneFileName();
-    QString s = getExistingDirectory ( filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
+    QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         gnuplot_directory = s.ascii();
@@ -1170,37 +1170,37 @@ void RealGUI::editGnuplotDirectory()
     }
 }
 
-QString RealGUI::getExistingDirectory ( const QString & dir , const char * name , const QString & caption )
+QString RealGUI::getExistingDirectory ( QWidget* parent, const QString & dir , const char * name , const QString & caption )
 {
 #ifdef SOFA_QT4
     QFileDialog::Options options = QFileDialog::ShowDirsOnly;
     //	options |= QFileDialog::DontUseNativeDialog;
     options |= QFileDialog::DontUseSheet;
-    return QFileDialog::getExistingDirectory ( this, name?QString(name):caption, dir, options );
+    return QFileDialog::getExistingDirectory ( parent, name?QString(name):caption, dir, options );
 #else
     return Q3FileDialog::getExistingDirectory( dir, this, name, caption );
 #endif
 }
 
-QString RealGUI::getOpenFileName ( const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
+QString RealGUI::getOpenFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
 {
 #ifdef SOFA_QT4
     QFileDialog::Options options = 0;
     //	options |= QFileDialog::DontUseNativeDialog;
     options |= QFileDialog::DontUseSheet;
-    return QFileDialog::getOpenFileName ( this, name?QString(name):caption, startWith, filter, selectedFilter, options );
+    return QFileDialog::getOpenFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
 #else
     return Q3FileDialog::getOpenFileName ( startWith, filter, this, name, caption, selectedFilter );
 #endif
 }
 
-QString RealGUI::getSaveFileName ( const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
+QString RealGUI::getSaveFileName ( QWidget* parent, const QString & startWith, const QString & filter, const char * name, const QString & caption, QString * selectedFilter )
 {
 #ifdef SOFA_QT4
     QFileDialog::Options options = 0;
     //	options |= QFileDialog::DontUseNativeDialog;
     options |= QFileDialog::DontUseSheet;
-    return QFileDialog::getSaveFileName ( this, name?QString(name):caption, startWith, filter, selectedFilter, options );
+    return QFileDialog::getSaveFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
 #else
     return Q3FileDialog::getSaveFileName ( startWith, filter, this, name, caption, selectedFilter );
 #endif
