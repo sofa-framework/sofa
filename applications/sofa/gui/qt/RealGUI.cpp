@@ -1178,7 +1178,7 @@ QString RealGUI::getExistingDirectory ( QWidget* parent, const QString & dir , c
     options |= QFileDialog::DontUseSheet;
     return QFileDialog::getExistingDirectory ( parent, name?QString(name):caption, dir, options );
 #else
-    return Q3FileDialog::getExistingDirectory( dir, this, name, caption );
+    return Q3FileDialog::getExistingDirectory( dir, parent, name, caption );
 #endif
 }
 
@@ -1190,7 +1190,7 @@ QString RealGUI::getOpenFileName ( QWidget* parent, const QString & startWith, c
     options |= QFileDialog::DontUseSheet;
     return QFileDialog::getOpenFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
 #else
-    return Q3FileDialog::getOpenFileName ( startWith, filter, this, name, caption, selectedFilter );
+    return Q3FileDialog::getOpenFileName ( startWith, filter, parent, name, caption, selectedFilter );
 #endif
 }
 
@@ -1202,7 +1202,7 @@ QString RealGUI::getSaveFileName ( QWidget* parent, const QString & startWith, c
     options |= QFileDialog::DontUseSheet;
     return QFileDialog::getSaveFileName ( parent, name?QString(name):caption, startWith, filter, selectedFilter, options );
 #else
-    return Q3FileDialog::getSaveFileName ( startWith, filter, this, name, caption, selectedFilter );
+    return Q3FileDialog::getSaveFileName ( startWith, filter, parent, name, caption, selectedFilter );
 #endif
 }
 
