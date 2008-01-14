@@ -965,12 +965,12 @@ void TriangleModel::fillArrays( float *array_coord,float *array_identity, unsign
 
     Vec3d boundingbox[2] = {Vec3d(0,0,0),Vec3d(0,0,0)};
     Vec3d sizeBB(1,1,1);
-    //looking for a regular grid
+    //looking for a regular grid 2x2x2
     if (dynamic_cast<  sofa::simulation::tree::GNode * >(getContext())->getParent() != NULL)
     {
         sofa::helper::vector< sofa::component::topology::RegularGridTopology* > grid;
         dynamic_cast< sofa::simulation::tree::GNode *>(getContext())->getParent()->getContext()->get< sofa::component::topology::RegularGridTopology >(grid);
-        if (grid.size() != 0)
+        if (grid.size() != 0 &&  grid[0]->getNx() ==2 && grid[0]->getNy() == 2 &&  grid[0]->getNz() == 2)
         {
             sofa::helper::vector< MechanicalState< Vec3Types >* > list_M;
             sofa::helper::vector< Vec3d > &dof = *dynamic_cast<sofa::simulation::tree::GNode *>(getContext())->getParent()->getContext()->get< MechanicalState< Vec3Types > >()->getX();
