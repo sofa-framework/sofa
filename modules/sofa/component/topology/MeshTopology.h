@@ -116,6 +116,7 @@ public:
     virtual double getPX(int i) const;
     virtual double getPY(int i) const;
     virtual double getPZ(int i) const;
+    virtual std::string getFilename() const {return filename.getValue();}
 
     // for procedural creation without file loader
     void addPoint(double px, double py, double pz);
