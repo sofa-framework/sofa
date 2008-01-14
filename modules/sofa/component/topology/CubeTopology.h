@@ -96,6 +96,8 @@ public:
     double getPY(int i) const { return getPoint(i)[1]; }
     double getPZ(int i) const { return getPoint(i)[2]; }
 
+    void setSplitNormals(bool b) {splitNormals.setValue(b);}
+
 protected:
     Data<int> nx;
     Data<int> ny;
