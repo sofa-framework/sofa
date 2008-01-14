@@ -1311,7 +1311,7 @@ void RealGUI::step()
         viewer->getQWidget()->setUpdatesEnabled ( true );
 #endif
         viewer->getQWidget()->update();
-        if (currentTab == TabStats) graphUpdateStats();
+        if (currentTab == TabStats) graphCreateStats(viewer->getScene(),NULL);
     }
 
 
@@ -2012,7 +2012,7 @@ void RealGUI::currentTabChanged ( QWidget* widget )
         }
     }
     else if (widget == TabStats)
-        graphUpdateStats();
+        graphCreateStats(viewer->getScene(),NULL);
 
     currentTab = widget;
 }
@@ -2352,8 +2352,9 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz, do
 {
     //Verify if the file exists
     if ( !sofa::helper::system::DataRepository.findFile ( path ) )
+    {
         return;
-
+    }
     path = sofa::helper::system::DataRepository.getFile ( path );
 
     //Desactivate the animate-> no more graph modification
@@ -2419,14 +2420,14 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz, do
         list_object_added.push_back ( new_node );
     }
 
+    //update the stats graph
+    graphCreateStats(viewer->getScene(),NULL);
     //Apply the Transformation
     transformObject ( new_node, dx, dy, dz, scale );
 
     //Update the view
     viewer->resetView();
     viewer->getQWidget()->update();
-    //update the stats graph
-    graphCreateStats(viewer->getScene(),NULL);
 
     //freeze the graph if needed and animate
     if ( currentTab != TabGraph )
@@ -2486,7 +2487,8 @@ void RealGUI::graphExpand()
 /*****************************************************************************************************************/
 void RealGUI::modifyUnlock ( int Id )
 {
-    graphUpdateStats( );
+    graphCreateStats(viewer->getScene(),NULL);
+
     map_modifyDialogOpened.erase ( Id );
 }
 
@@ -2503,13 +2505,22 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
     Q3ListViewItem *item;
     if (parent == NULL)
     {
-        items_stats.clear();
-        GUI::StatsCounter->clear();
+        if (items_stats.size() != 0)
+        {
+            delete items_stats[0].second;
+            items_stats.clear();
+            GUI::StatsCounter->clear();
+        }
+
         item = new Q3ListViewItem(GUI::StatsCounter);
         initialization = true;
     }
     else
         item = new Q3ListViewItem(parent);
+
+    int index = items_stats.size();
+
+    items_stats.push_back(std::make_pair(node, item));
 
     item->setText(0,node->getName().c_str());  item->setOpen(true);
 
@@ -2526,9 +2537,12 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
     {
         usedNode |= graphCreateStats((*it), item);
     }
-    if (!usedNode) {delete item; return false;}
+    if (!usedNode)
+    {
+        items_stats.erase(items_stats.begin()+index);
+        delete item; return false;
+    }
 
-    items_stats.push_back(std::make_pair(node, item));
     if (initialization)
     {
         graphSummary();
@@ -2550,27 +2564,12 @@ bool RealGUI::graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::Coll
         else if (dynamic_cast< sofa::component::collision::LineModel* >(v[i]))     item->setText(1, "Line");
         else if (dynamic_cast< sofa::component::collision::PointModel* >(v[i]))    item->setText(1, "Point");
         else if (dynamic_cast< sofa::component::collision::TSphereModel<Vec3Types>* >(v[i]))  item->setText(1, "Sphere");
-
+        else continue;
         item->setText(2,QString::number(v[i]->getSize()));
         items_stats.push_back(std::make_pair(v[i], item));
         oneAdded = true;
     }
     return oneAdded;
-}
-
-//update the value of the graph
-void RealGUI::graphUpdateStats()
-{
-    for (unsigned int i=0; i< items_stats.size(); i++)
-    {
-        items_stats[i].second->setText(0,items_stats[i].first->getName().c_str());
-        if (sofa::core::CollisionModel* cm = dynamic_cast< sofa::core::CollisionModel* >(items_stats[i].first))
-        {
-            items_stats[i].second->setText(2,QString::number(cm->getSize()));
-        }
-    }
-    graphSummary();
-    GUI::StatsCounter->update();
 }
 
 
