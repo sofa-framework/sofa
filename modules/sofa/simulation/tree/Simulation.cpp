@@ -291,12 +291,12 @@ void Simulation::drawShadows ( GNode* root )
 void Simulation::unload ( GNode* root )
 {
     if ( !root ) return;
+    instruments.clear();
+    instrumentInUse.setValue(-1);
     root->execute<DeleteVisitor>();
     if ( root->getParent() !=NULL )
         root->getParent()->removeChild ( root );
     delete root;
-    instruments.clear();
-    instrumentInUse.setValue(-1);
 }
 
 /// Export a scene to an OBJ 3D Scene
