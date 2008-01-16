@@ -126,6 +126,10 @@ public:
     /// export kinetic and potential energy state at "time" to a gnuplot file
     virtual void exportGnuplot(double time);
 
+    /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
+    virtual void addGravityToV(double dt)=0;
+
+
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files
     std::ofstream* m_gnuplotFileEnergy;

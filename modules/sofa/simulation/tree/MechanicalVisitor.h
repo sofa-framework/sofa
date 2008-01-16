@@ -1044,6 +1044,28 @@ public:
     }
 };
 
+/** Add dt*mass*Gravity to the velocity
+	This is called if the mass wants to be added separately to the mm from the other forces
+ */
+class MechanicalAddSeparateGravityVisitor : public MechanicalVisitor
+{
+public:
+
+    double dt;
+    MechanicalAddSeparateGravityVisitor(double dt) : dt(dt)
+    {}
+
+    /// Process the BaseMass
+    virtual Result fwdMass(GNode* /*node*/, core::componentmodel::behavior::BaseMass* mass)
+    {
+        if( mass->m_separateGravity.getValue() )
+            mass->addGravityToV(dt);
+
+        return RESULT_CONTINUE;
+    }
+
+};
+
 
 } // namespace tree
 

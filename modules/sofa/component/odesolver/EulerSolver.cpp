@@ -44,6 +44,7 @@ void EulerSolver::solve(double dt)
         cerr<<"EulerSolver, initial v = "<< vel <<endl;
     }
 
+    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
     computeForce(f);
     accFromF(acc, f);
     projectResponse(acc);

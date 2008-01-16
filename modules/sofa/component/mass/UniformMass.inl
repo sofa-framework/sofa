@@ -112,12 +112,34 @@ void UniformMass<DataTypes, MassType>::addMDxToVector(defaulttype::BaseVector * 
 }
 
 template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::addGravityToV(double dt)
+{
+    if (this->mstate)
+    {
+        VecDeriv& v = *this->mstate->getV();
+        const double* g = this->getContext()->getLocalGravity().ptr();
+        Deriv theGravity;
+        DataTypes::set( theGravity, g[0], g[1], g[2]);
+        Deriv hg = theGravity * dt;
+
+        for (unsigned int i=0; i<v.size(); i++)
+        {
+            v[i] += hg;
+        }
+    }
+}
+
+template <class DataTypes, class MassType>
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 #else
 void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 #endif
 {
+    //if gravity was added separately (in solver's "solve" method), then nothing to do here
+    if(this->m_separateGravity.getValue())
+        return;
+
     // weight
     const double* g = this->getContext()->getLocalGravity().ptr();
     Deriv theGravity;

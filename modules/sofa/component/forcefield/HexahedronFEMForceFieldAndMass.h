@@ -70,6 +70,7 @@ public:
 
     virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
 
+    void addGravityToV(double dt);
 
     // visual model
 

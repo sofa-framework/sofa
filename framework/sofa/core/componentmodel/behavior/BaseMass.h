@@ -78,7 +78,17 @@ public:
 
     /// export kinetic and potential energy state at "time" to a gnuplot file
     virtual void exportGnuplot(double time)=0;
+
+    /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
+    virtual void addGravityToV(double dt)=0;
+
     /// @}
+
+
+    /// Member specifying if the gravity is added separately to the DOFs velocities (in solve method),
+    /// or if is added with the other forces(addForceMethod)
+    Data<bool> m_separateGravity;
+
 
 };
 

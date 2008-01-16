@@ -59,6 +59,7 @@ void ComplianceCGImplicitSolver::solve(double dt)
         prevPos.eq(pos);
     }
 
+    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     firstCallToSolve = !firstCallToSolve;
 

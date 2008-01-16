@@ -85,6 +85,8 @@ void BiCGStabImplicitSolver::solve(double dt)
         cerr<<"BiCGStabImplicitSolver, initial v = "<< vel <<endl;
     }
 
+    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+
     // compute the right-hand term of the equation system
     group->computeForce(b);             // b = f0
     if( getDebug() )

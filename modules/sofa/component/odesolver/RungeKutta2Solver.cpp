@@ -39,6 +39,8 @@ void RungeKutta2Solver::solve(double dt)
 
     double startTime = this->getTime();
 
+    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+
     // Compute state derivative. vel is the derivative of pos
     computeAcc (startTime, acc, pos, vel); // acc is the derivative of vel
 

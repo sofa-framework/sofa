@@ -84,6 +84,8 @@ public:
 
     void addMDxToVector(defaulttype::BaseVector *resVect, const VecDeriv *dx, double mFact, unsigned int& offset);
 
+    void addGravityToV(double dt);
+
     // -- VisualModel interface
 
     void draw();
