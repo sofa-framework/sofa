@@ -132,10 +132,33 @@ double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord&  )
 }
 
 
+template <class DataTypes, class MassType>
+void MatrixMass<DataTypes, MassType>::addGravityToV(double dt)
+{
+    if(this->mstate)
+    {
+        VecDeriv& v = *this->mstate->getV();
+
+        // gravity
+        Vec3d g ( this->getContext()->getLocalGravity() * dt );
+        Deriv theGravity;
+        DataTypes::set ( theGravity, g[0], g[1], g[2]);
+        Deriv hg = theGravity * dt;
+
+        // add weight and inertia force
+        for (unsigned int i=0; i<v.size(); i++)
+        {
+            v[i] += hg;
+        }
+    }
+}
 
 template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
+    //if gravity was added separately (in solver's "solve" method), then nothing to do here
+    if(this->m_separateGravity.getValue())
+        return;
 
     const VecMass &masses= *_usedMassMatrices;
 

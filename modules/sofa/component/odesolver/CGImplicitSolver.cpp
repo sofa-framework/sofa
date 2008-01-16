@@ -85,6 +85,7 @@ void CGImplicitSolver::solve(double dt)
     double h = dt;
     bool printLog = f_printLog.getValue();
 
+    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     projectResponse(vel);          // initial velocities are projected to the constrained space
 

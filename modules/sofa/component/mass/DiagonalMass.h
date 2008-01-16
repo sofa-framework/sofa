@@ -129,6 +129,8 @@ public:
 
     double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
 
+    void addGravityToV(double dt/*, defaulttype::BaseVector& v*/);
+
     // -- VisualModel interface
 
     void draw();

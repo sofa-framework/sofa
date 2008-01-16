@@ -45,6 +45,8 @@ void RungeKutta4Solver::solve(double dt)
 
     double startTime = this->getTime();
 
+    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+
     //First step
     //std::cout << "RK4 Step 1\n";
     k1v = vel;

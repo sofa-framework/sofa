@@ -41,6 +41,8 @@ void DampVelocitySolver::solve(double dt)
         cerr<<"DampVelocitySolver, initial v = "<< vel <<endl;
     }
 
+    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+
     vel.teq( exp(-rate.getValue()*dt) );
     if( threshold.getValue() != 0.0 )
         vel.threshold( threshold.getValue() );

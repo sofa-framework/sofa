@@ -100,6 +100,8 @@ void ComplianceEulerSolver::solve(double dt)
     //posFree.peq(velFree,dt);
     //simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);
 
+    addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
+
     computeAcc(getTime(), acc, pos, vel);
     vel.eq(vel);
     vel.peq(acc,dt);

@@ -516,8 +516,31 @@ void DiagonalMass<DataTypes, MassType>::init()
 }
 
 template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::addGravityToV(double dt)
+{
+    if(this->mstate)
+    {
+        VecDeriv& v = *this->mstate->getV();
+
+        // gravity
+        Vec3d g ( this->getContext()->getLocalGravity() );
+        Deriv theGravity;
+        DataTypes::set ( theGravity, g[0], g[1], g[2]);
+        Deriv hg = theGravity * dt;
+
+        for (unsigned int i=0; i<v.size(); i++)
+        {
+            v[i] += hg;
+        }
+    }
+}
+
+template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
+    //if gravity was added separately (in solver's "solve" method), then nothing to do here
+    if(this->m_separateGravity.getValue())
+        return;
 
     const MassVector &masses= f_mass.getValue();
 

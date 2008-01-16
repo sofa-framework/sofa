@@ -44,6 +44,7 @@ template<class DataTypes>
 Mass<DataTypes>::Mass(MechanicalState<DataTypes> *mm)
     : ForceField<DataTypes>(mm),m_gnuplotFileEnergy(NULL)
 {
+    m_separateGravity = initData(&m_separateGravity , false, "separateGravity ", "add separately gravity to velocity computation") ;
 }
 
 template<class DataTypes>
