@@ -60,6 +60,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
     typedef topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
 
