@@ -201,8 +201,8 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
     }
 
 
-    helper::vector<Real>::iterator it_t = f_keyTimes.beginEdit()->begin();
-    VecDeriv::iterator it_m = f_keyMovements.beginEdit()->begin();
+    typename helper::vector<Real>::const_iterator it_t = f_keyTimes.getValue().begin();
+    typename VecDeriv::const_iterator it_m = f_keyMovements.getValue().begin();
 
     //WARNING : we consider that the key-events are in chronological order
     //here we search between which keyTimes we are, to know which are the movements to interpolate
@@ -243,8 +243,6 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
         }
     }
 
-    f_keyTimes.endEdit();
-    f_keyMovements.endEdit();
 }
 
 // Matrix Integration interface
