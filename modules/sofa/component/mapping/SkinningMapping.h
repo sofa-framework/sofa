@@ -102,6 +102,9 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+
+
     // -- VisualModel interface
     void draw();
     void initTextures() { }
