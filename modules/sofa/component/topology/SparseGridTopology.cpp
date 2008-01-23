@@ -65,35 +65,39 @@ int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
 
 const float SparseGridTopology::WEIGHT27[8][27] =
 {
-    {1,0.5,0,0.5,0.25,0,0,0,0,0.5,0.25,0,0.25,0.125,0,0,0,0,0,0,0,0,0,0,0,0,0}, // each weight of the jth fine vertex to the ith coarse vertex
-    {0,0,0,0,0,0,0,0,0,0.5,0.25,0,0.25,0.125,0,0,0,0,1,0.5,0,0.5,0.25,0,0,0,0},
-    {0,0,0,0.5,0.25,0,1,0.5,0,0,0,0,0.25,0.125,0,0.5,0.25,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0.25,0.125,0,0.5,0.25,0,0,0,0,0.5,0.25,0,1,0.5,0},
-    {0,0.5,1,0,0.25,0.5,0,0,0,0,0.25,0.5,0,0.125,0.25,0,0,0,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0.25,0.5,0,0.125,0.25,0,0,0,0,0.5,1,0,0.25,0.5,0,0,0},
-    {0,0,0,0,0.25,0.5,0,0.5,1,0,0,0,0,0.125,0.25,0,0.25,0.5,0,0,0,0,0,0,0,0,0},
-    {0,0,0,0,0,0,0,0,0,0,0,0,0,0.125,0.25,0,0.25,0.5,0,0,0,0,0.25,0.5,0,0.5,1}
+    // each weight of the jth fine vertex to the ith coarse vertex
+    {1.0, 0.5, 0.0, 0.5, 0.25, 0.0, 0.0, 0.0, 0.0, 0.5, 0.25, 0.0, 0.25, 0.125, 0.0,  0.0, 0.0,  0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0, 0.5, 0.25, 0.0, 0.25, 0.125, 0.0,  0.0, 0.0,  0.0, 1.0, 0.5, 0.0, 0.5, 0.25, 0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.5, 0.25, 0.0, 1.0, 0.5, 0.0, 0.0, 0.0,  0.0, 0.25, 0.125, 0.0,  0.5, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.25, 0.125, 0.0,  0.5, 0.25, 0.0, 0.0, 0.0, 0.0, 0.5, 0.25, 0.0, 1.0, 0.5, 0.0},
+    {0.0, 0.5, 1.0, 0.0, 0.25, 0.5, 0.0, 0.0, 0.0, 0.0, 0.25, 0.5, 0.0,  0.125, 0.25, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.5, 0.0,  0.125, 0.25, 0.0, 0.0,  0.0, 0.0, 0.5, 1.0, 0.0, 0.25, 0.5, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.25, 0.5, 0.0, 0.5, 1.0, 0.0, 0.0,  0.0, 0.0,  0.125, 0.25, 0.0, 0.25, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0},
+    {0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0, 0.0, 0.0, 0.0, 0.0,  0.0, 0.0,  0.125, 0.25, 0.0, 0.25, 0.5, 0.0, 0.0, 0.0, 0.0, 0.25, 0.5, 0.0, 0.5, 1.0}
 };
 
 const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 {
-    { 0,9 ,3, 12 ,1 ,10 ,4 ,13}, // fine vertices forming the 0th coarse cube (with XYZ order)
-    { 9, 18, 12 ,21, 10 ,19 ,13, 22},
-    { 3, 12, 6 ,15 ,4, 13 ,7 ,16},
-    { 12, 21, 15, 24, 13, 22 ,16, 25},
-    { 1, 10, 4 ,13 ,2, 11 ,5, 14},
-    { 10, 19, 13, 22, 11, 20, 14 ,23},
-    { 4, 13, 7 ,16 ,5 ,14 ,8, 17},
-    { 13, 22, 16, 25, 14, 23 ,17 ,26}
+    // fine vertices forming the ith coarse cube (with XYZ order)
+    {  0,  9,  3, 12,  1, 10,  4, 13},
+    {  9, 18, 12, 21, 10, 19, 13, 22},
+    {  3, 12,  6, 15,  4, 13,  7, 16},
+    { 12, 21, 15, 24, 13, 22, 16, 25},
+    {  1, 10,  4, 13,  2, 11,  5, 14},
+    { 10, 19, 13, 22, 11, 20, 14, 23},
+    {  4, 13,  7, 16,  5, 14,  8, 17},
+    { 13, 22, 16, 25, 14, 23, 17, 26}
 };
 
 
-SparseGridTopology::SparseGridTopology(): nx(initData(&nx,0,"nx","x grid resolution")), ny(initData(&ny,0,"ny","y grid resolution")), nz(initData(&nz,0,"nz","z grid resolution")),
-    xmin(initData(&xmin,0.0,"xmin","xmin grid")),ymin(initData(&ymin,0.0,"ymin","ymin grid")),zmin(initData(&zmin,0.0,"zmin","zmin grid")),
-    xmax(initData(&xmax,0.0,"xmax","xmax grid")),ymax(initData(&ymax,0.0,"ymax","ymax grid")),zmax(initData(&zmax,0.0,"zmax","zmax grid"))
+SparseGridTopology::SparseGridTopology()
+    : nx(initData(&nx,0,"nx","x grid resolution")), ny(initData(&ny,0,"ny","y grid resolution")), nz(initData(&nz,0,"nz","z grid resolution")),
+      xmin(initData(&xmin,0.0,"xmin","xmin grid")), ymin(initData(&ymin,0.0,"ymin","ymin grid")), zmin(initData(&zmin,0.0,"zmin","zmin grid")),
+      xmax(initData(&xmax,0.0,"xmax","xmax grid")), ymax(initData(&ymax,0.0,"ymax","ymax grid")), zmax(initData(&zmax,0.0,"zmax","zmax grid"))
 {
     _alreadyInit = false;
-    _finerSparseGrid=NULL;
+    _finerSparseGrid = NULL;
+    _coarserSparseGrid = NULL;
 }
 
 

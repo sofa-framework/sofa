@@ -131,9 +131,10 @@ public:
     /// return the type of the i-th cube
     virtual Type getType( int i );
 
+    SparseGridTopology* getFinerSparseGrid() const {return _finerSparseGrid;}
     void setFinerSparseGrid( SparseGridTopology* fsp ) {_finerSparseGrid=fsp;}
+    SparseGridTopology* getCoarserSparseGrid() const {return _coarserSparseGrid;}
     void setCoarserSparseGrid( SparseGridTopology* csp ) {_coarserSparseGrid=csp;}
-
 
     RegularGridTopology _regularGrid; ///< based on a corresponding RegularGrid
     vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
