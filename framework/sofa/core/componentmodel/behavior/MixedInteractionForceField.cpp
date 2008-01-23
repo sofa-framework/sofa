@@ -44,18 +44,23 @@ template class MixedInteractionForceField<Vec3dTypes, Vec3dTypes>;
 template class MixedInteractionForceField<Vec3fTypes, Vec3fTypes>;
 template class MixedInteractionForceField<Vec2dTypes, Vec2dTypes>;
 template class MixedInteractionForceField<Vec2fTypes, Vec2fTypes>;
-/*
+
 template class MixedInteractionForceField<Vec1dTypes, Vec1dTypes>;
 template class MixedInteractionForceField<Vec1fTypes, Vec1fTypes>;
 template class MixedInteractionForceField<Rigid3dTypes, Rigid3dTypes> ;
 template class MixedInteractionForceField<Rigid3fTypes, Rigid3fTypes> ;
 template class MixedInteractionForceField<Rigid2dTypes, Rigid2dTypes> ;
 template class MixedInteractionForceField<Rigid2fTypes, Rigid2fTypes> ;
-*/
+
 template class MixedInteractionForceField<Vec3dTypes, Rigid3dTypes> ;
 template class MixedInteractionForceField<Vec3fTypes, Rigid3fTypes> ;
 template class MixedInteractionForceField<Vec2dTypes, Rigid2dTypes> ;
 template class MixedInteractionForceField<Vec2fTypes, Rigid2fTypes> ;
+
+template class MixedInteractionForceField<Rigid3dTypes, Vec3dTypes> ;
+template class MixedInteractionForceField<Rigid3fTypes, Vec3fTypes> ;
+template class MixedInteractionForceField<Rigid2dTypes, Vec2dTypes> ;
+template class MixedInteractionForceField<Rigid2fTypes, Vec2fTypes> ;
 
 } // namespace behavior
 

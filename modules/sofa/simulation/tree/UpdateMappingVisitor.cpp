@@ -39,9 +39,19 @@ void UpdateMappingVisitor::processMapping(GNode*, core::BaseMapping* obj)
     obj->updateMapping();
 }
 
+void UpdateMappingVisitor::processMechanicalMapping(GNode*, core::componentmodel::behavior::BaseMechanicalMapping* obj)
+{
+    if (!obj->isMechanical())
+    {
+        obj->propagateX();
+        obj->propagateV();
+    }
+}
+
 Visitor::Result UpdateMappingVisitor::processNodeTopDown(GNode* node)
 {
     for_each(this, node, node->mapping, &UpdateMappingVisitor::processMapping);
+    for_each(this, node, node->mechanicalMapping, &UpdateMappingVisitor::processMechanicalMapping);
     return RESULT_CONTINUE;
 }
 
