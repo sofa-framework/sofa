@@ -127,7 +127,9 @@ RegularGridTopology::Vec3 RegularGridTopology::getPoint(int x, int y, int z) con
 /// return the cube containing the given point (or -1 if not found).
 int RegularGridTopology::findCube(const Vec3& pos)
 {
-    if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2) return -1;
+    if (n.getValue()[0]<2 || n.getValue()[1]<2 || n.getValue()[2]<2)
+        return -1;
+
     Vec3 p = pos-p0;
     double x = p*dx*inv_dx2;
     double y = p*dy*inv_dy2;
@@ -135,7 +137,9 @@ int RegularGridTopology::findCube(const Vec3& pos)
     int ix = int(x+1000000)-1000000; // Do not round toward 0...
     int iy = int(y+1000000)-1000000;
     int iz = int(z+1000000)-1000000;
-    if ((unsigned)ix<(unsigned)n.getValue()[0]-2 && (unsigned)iy<(unsigned)n.getValue()[1]-2 && (unsigned)iz<(unsigned)n.getValue()[2]-2)
+    if (   (unsigned)ix <= (unsigned)n.getValue()[0]-2
+            && (unsigned)iy <= (unsigned)n.getValue()[1]-2
+            && (unsigned)iz <= (unsigned)n.getValue()[2]-2 )
     {
         return cube(ix,iy,iz);
     }
