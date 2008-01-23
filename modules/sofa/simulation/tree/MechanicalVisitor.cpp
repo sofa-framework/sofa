@@ -58,6 +58,11 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(GNode* node)
             if (node->mechanicalMapping != NULL)
             {
                 //cerr<<"MechanicalVisitor::processNodeTopDown, node "<<node->getName()<<" is a mapped model"<<endl;
+                if (!node->mechanicalMapping->isMechanical())
+                {
+                    // stop all mechhanical computations
+                    return RESULT_PRUNE;
+                }
                 Result res2;
                 ctime_t t0 = begin(node, node->mechanicalMapping);
                 res = this->fwdMechanicalMapping(node, node->mechanicalMapping);
@@ -107,12 +112,15 @@ void MechanicalVisitor::processNodeBottomUp(GNode* node)
     {
         if (node->mechanicalMapping != NULL)
         {
-            ctime_t t0 = begin(node, node->mechanicalState);
-            this->bwdMappedMechanicalState(node, node->mechanicalState);
-            end(node, node->mechanicalState, t0);
-            t0 = begin(node, node->mechanicalMapping);
-            this->bwdMechanicalMapping(node, node->mechanicalMapping);
-            end(node, node->mechanicalMapping, t0);
+            if (node->mechanicalMapping->isMechanical())
+            {
+                ctime_t t0 = begin(node, node->mechanicalState);
+                this->bwdMappedMechanicalState(node, node->mechanicalState);
+                end(node, node->mechanicalState, t0);
+                t0 = begin(node, node->mechanicalMapping);
+                this->bwdMechanicalMapping(node, node->mechanicalMapping);
+                end(node, node->mechanicalMapping, t0);
+            }
         }
         else
         {
