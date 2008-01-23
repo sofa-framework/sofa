@@ -113,10 +113,14 @@ public:
     void clear();
 
     void setNbRefs(unsigned int nb) { nbRefs.setValue(nb); }
-
     void setWeightCoefs(sofa::helper::vector<double> &weights);
     void setRepartition(sofa::helper::vector<unsigned int> &rep);
     void setComputeWeights(bool val) {computeWeights=val;}
+
+    unsigned int getNbRefs() { return nbRefs.getValue(); }
+    const sofa::helper::vector<double>& getWeightCoefs() { return coefs.getValue(); }
+    const sofa::helper::vector<unsigned int>& getRepartition() { return repartition.getValue(); }
+    bool getComputeWeights() { return computeWeights; }
 
 protected:
 
