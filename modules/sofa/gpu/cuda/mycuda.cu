@@ -1,5 +1,5 @@
 #include "mycuda.h"
-
+#include <cuda_gl_interop.h>
 #if defined(__cplusplus)
 namespace sofa
 {
@@ -61,6 +61,19 @@ void mycudaFree(void *devPtr)
     cudaCheck(cudaFree(devPtr),"cudaFree");
 }
 
+void mycudaMallocHost(void **hostPtr, size_t size)
+{
+    if (!cudaInitCalled) mycudaInit(0);
+    myprintf("CUDA: mallocHost(%d).\n",size);
+    cudaCheck(cudaMallocHost(hostPtr, size),"cudaMallocHost");
+}
+
+void mycudaFreeHost(void *hostPtr)
+{
+    myprintf("CUDA: freeHost().\n");
+    cudaCheck(cudaFreeHost(hostPtr),"cudaFreeHost");
+}
+
 void mycudaMemcpyHostToDevice(void *dst, const void *src, size_t count)
 {
     cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyHostToDevice),"cudaMemcpyHostToDevice");
@@ -74,6 +87,27 @@ void mycudaMemcpyDeviceToDevice(void *dst, const void *src, size_t count)
 void mycudaMemcpyDeviceToHost(void *dst, const void *src, size_t count)
 {
     cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyDeviceToHost),"cudaMemcpyDeviceToHost");
+}
+
+void mycudaGLRegisterBufferObject(int id)
+{
+    if (!cudaInitCalled) mycudaInit(0);
+    cudaCheck(cudaGLRegisterBufferObject((GLuint)id),"cudaGLRegisterBufferObject");
+}
+
+void mycudaGLUnregisterBufferObject(int id)
+{
+    cudaCheck(cudaGLUnregisterBufferObject((GLuint)id),"cudaGLUnregisterBufferObject");
+}
+
+void mycudaGLMapBufferObject(void** ptr, int id)
+{
+    cudaCheck(cudaGLMapBufferObject(ptr, (GLuint)id),"cudaGLMapBufferObject");
+}
+
+void mycudaGLUnmapBufferObject(int id)
+{
+    cudaCheck(cudaGLUnmapBufferObject((GLuint)id),"cudaGLUnmapBufferObject");
 }
 
 #if defined(__cplusplus)
