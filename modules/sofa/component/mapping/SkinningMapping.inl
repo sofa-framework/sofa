@@ -236,8 +236,8 @@ void SkinningMapping<BasicMapping>::setRepartition(sofa::helper::vector<unsigned
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
-    sofa::helper::vector<double> m_coefs = coefs.getValue();
+    const sofa::helper::vector<unsigned int>& m_reps = repartition.getValue();
+    const sofa::helper::vector<double>& m_coefs = coefs.getValue();
     rotatedPoints.resize(initPos.size());
     out.resize(initPos.size()/nbRefs.getValue());
 
@@ -261,8 +261,8 @@ void SkinningMapping<BasicMapping>::apply( typename Out::VecCoord& out, const ty
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
-    sofa::helper::vector<double> m_coefs = coefs.getValue();
+    const sofa::helper::vector<unsigned int>& m_reps = repartition.getValue();
+    const sofa::helper::vector<double>& m_coefs = coefs.getValue();
 
     Deriv v,omega;
     out.resize(initPos.size()/nbRefs.getValue());
@@ -283,8 +283,8 @@ void SkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const t
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    sofa::helper::vector<unsigned int> m_reps = repartition.getValue();
-    sofa::helper::vector<double> m_coefs = coefs.getValue();
+    const sofa::helper::vector<unsigned int>& m_reps = repartition.getValue();
+    const sofa::helper::vector<double>& m_coefs = coefs.getValue();
 
     Deriv v,omega;
     for(unsigned int i=0; i<in.size(); i++)
@@ -301,6 +301,46 @@ void SkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
 
 }
 
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+{
+    const sofa::helper::vector<unsigned int>& m_reps = repartition.getValue();
+    const sofa::helper::vector<double>& m_coefs = coefs.getValue();
+    const unsigned int nbr = nbRefs.getValue();
+    const unsigned int nbi = this->fromModel->getSize();
+    Deriv omega;
+    typename In::VecDeriv v;
+    sofa::helper::vector<bool> flags;
+    int outSize = out.size();
+    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
+    for(unsigned int j=0; j<in.size(); j++)
+    {
+        v.clear();
+        v.resize(nbi);
+        flags.clear();
+        flags.resize(nbi);
+        for (unsigned int id=0; id<in[0].size(); ++id)
+        {
+            unsigned int i = in[0][id].index;
+            Deriv f = in[0][id].data;
+            for (unsigned int m=0 ; m<nbr; m++)
+            {
+                omega = cross(rotatedPoints[nbr*i+m],f);
+                flags[m_reps[nbr*i+m] ] = true;
+                v[m_reps[nbr*i+m] ].getVCenter() += f * m_coefs[nbr*i+m];
+                v[m_reps[nbr*i+m] ].getVOrientation() += omega * m_coefs[nbr*i+m];
+            }
+        }
+        out[outSize+j].reserve(nbi);
+        for (unsigned int i=0 ; i<nbi; i++)
+        {
+            //if (!(v[i] == typename In::Deriv()))
+            if (flags[i])
+                out[outSize+j].push_back(typename In::SparseDeriv(i,v[i]));
+        }
+    }
+}
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::draw()

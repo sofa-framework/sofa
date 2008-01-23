@@ -1332,9 +1332,10 @@ void TopologyBarycentricMapper<topology::SparseGridTopology,In,Out>::applyJT( ty
 //    printf("\n applyJT() in BaricentricMapping  [RegularGridMapper] ");
     int offset = out.size();
     out.resize(offset+in.size());
-
     for(unsigned int i=0; i<in.size(); i++)
     {
+        std::map<int,int> outpos;
+        int nbout = 0;
         for(unsigned int j=0; j<in[i].size(); j++)
         {
             const typename Out::SparseDeriv cIn = in[i][j];
@@ -1342,15 +1343,86 @@ void TopologyBarycentricMapper<topology::SparseGridTopology,In,Out>::applyJT( ty
             const OutReal fx = (OutReal)map[cIn.index].baryCoords[0];
             const OutReal fy = (OutReal)map[cIn.index].baryCoords[1];
             const OutReal fz = (OutReal)map[cIn.index].baryCoords[2];
-
-            out[i+offset].push_back(typename In::SparseDeriv(cube[0], (typename In::Deriv) (cIn.data * ((1-fx) * (1-fy) * (1-fz)))));
-            out[i+offset].push_back(typename In::SparseDeriv(cube[1], (typename In::Deriv) (cIn.data * ((  fx) * (1-fy) * (1-fz)))));
-            out[i+offset].push_back(typename In::SparseDeriv(cube[2], (typename In::Deriv) (cIn.data * ((1-fx) * (  fy) * (1-fz)))));
-            out[i+offset].push_back(typename In::SparseDeriv(cube[3], (typename In::Deriv) (cIn.data * ((  fx) * (  fy) * (1-fz)))));
-            out[i+offset].push_back(typename In::SparseDeriv(cube[4], (typename In::Deriv) (cIn.data * ((1-fx) * (1-fy) * (  fz)))));
-            out[i+offset].push_back(typename In::SparseDeriv(cube[5], (typename In::Deriv) (cIn.data * ((  fx) * (1-fy) * (  fz)))));
-            out[i+offset].push_back(typename In::SparseDeriv(cube[6], (typename In::Deriv) (cIn.data * ((1-fx) * (  fy) * (  fz)))));
-            out[i+offset].push_back(typename In::SparseDeriv(cube[7], (typename In::Deriv) (cIn.data * ((  fx) * (  fy) * (  fz)))));
+            {
+                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert(std::make_pair(cube[0],nbout)); OutReal f = ((1-fx) * (1-fy) * (1-fz));
+                if (it.second)
+                {
+                    out[i+offset].push_back(typename In::SparseDeriv(cube[0], (typename In::Deriv) (cIn.data * f))); ++nbout;
+                }
+                else
+                    out[i+offset][it.first->second].data += (typename In::Deriv) (cIn.data * f);
+            }
+            {
+                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert(std::make_pair(cube[1],nbout)); OutReal f = ((  fx) * (1-fy) * (1-fz));
+                if (it.second)
+                {
+                    out[i+offset].push_back(typename In::SparseDeriv(cube[1], (typename In::Deriv) (cIn.data * f))); ++nbout;
+                }
+                else
+                    out[i+offset][it.first->second].data += (typename In::Deriv) (cIn.data * f);
+            }
+            {
+                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert(std::make_pair(cube[2],nbout)); OutReal f = ((1-fx) * (  fy) * (1-fz));
+                if (it.second)
+                {
+                    out[i+offset].push_back(typename In::SparseDeriv(cube[2], (typename In::Deriv) (cIn.data * f))); ++nbout;
+                }
+                else
+                    out[i+offset][it.first->second].data += (typename In::Deriv) (cIn.data * f);
+            }
+            {
+                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert(std::make_pair(cube[3],nbout)); OutReal f = ((  fx) * (  fy) * (1-fz));
+                if (it.second)
+                {
+                    out[i+offset].push_back(typename In::SparseDeriv(cube[3], (typename In::Deriv) (cIn.data * f))); ++nbout;
+                }
+                else
+                    out[i+offset][it.first->second].data += (typename In::Deriv) (cIn.data * f);
+            }
+            {
+                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert(std::make_pair(cube[4],nbout)); OutReal f = ((1-fx) * (1-fy) * (  fz));
+                if (it.second)
+                {
+                    out[i+offset].push_back(typename In::SparseDeriv(cube[4], (typename In::Deriv) (cIn.data * f))); ++nbout;
+                }
+                else
+                    out[i+offset][it.first->second].data += (typename In::Deriv) (cIn.data * f);
+            }
+            {
+                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert(std::make_pair(cube[5],nbout)); OutReal f = ((  fx) * (1-fy) * (  fz));
+                if (it.second)
+                {
+                    out[i+offset].push_back(typename In::SparseDeriv(cube[5], (typename In::Deriv) (cIn.data * f))); ++nbout;
+                }
+                else
+                    out[i+offset][it.first->second].data += (typename In::Deriv) (cIn.data * f);
+            }
+            {
+                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert(std::make_pair(cube[6],nbout)); OutReal f = ((1-fx) * (  fy) * (  fz));
+                if (it.second)
+                {
+                    out[i+offset].push_back(typename In::SparseDeriv(cube[6], (typename In::Deriv) (cIn.data * f))); ++nbout;
+                }
+                else
+                    out[i+offset][it.first->second].data += (typename In::Deriv) (cIn.data * f);
+            }
+            {
+                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert(std::make_pair(cube[7],nbout)); OutReal f = ((  fx) * (  fy) * (  fz));
+                if (it.second)
+                {
+                    out[i+offset].push_back(typename In::SparseDeriv(cube[7], (typename In::Deriv) (cIn.data * f))); ++nbout;
+                }
+                else
+                    out[i+offset][it.first->second].data += (typename In::Deriv) (cIn.data * f);
+            }
+            //out[i+offset].push_back(typename In::SparseDeriv(cube[0], (typename In::Deriv) (cIn.data * ((1-fx) * (1-fy) * (1-fz)))));
+            //out[i+offset].push_back(typename In::SparseDeriv(cube[1], (typename In::Deriv) (cIn.data * ((  fx) * (1-fy) * (1-fz)))));
+            //out[i+offset].push_back(typename In::SparseDeriv(cube[2], (typename In::Deriv) (cIn.data * ((1-fx) * (  fy) * (1-fz)))));
+            //out[i+offset].push_back(typename In::SparseDeriv(cube[3], (typename In::Deriv) (cIn.data * ((  fx) * (  fy) * (1-fz)))));
+            //out[i+offset].push_back(typename In::SparseDeriv(cube[4], (typename In::Deriv) (cIn.data * ((1-fx) * (1-fy) * (  fz)))));
+            //out[i+offset].push_back(typename In::SparseDeriv(cube[5], (typename In::Deriv) (cIn.data * ((  fx) * (1-fy) * (  fz)))));
+            //out[i+offset].push_back(typename In::SparseDeriv(cube[6], (typename In::Deriv) (cIn.data * ((1-fx) * (  fy) * (  fz)))));
+            //out[i+offset].push_back(typename In::SparseDeriv(cube[7], (typename In::Deriv) (cIn.data * ((  fx) * (  fy) * (  fz)))));
         }
     }
 }
