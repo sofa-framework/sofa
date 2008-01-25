@@ -590,21 +590,6 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
     }
 }
 
-//template <class DataTypes>
-//void MechanicalObject<DataTypes>::getCompliance (double** /*W*/)
-//{
-//}
-
-//template <class DataTypes>
-//void MechanicalObject<DataTypes>::applyContactForce(double* /*f*/)
-//{
-//}
-
-//template <class DataTypes>
-//void MechanicalObject<DataTypes>::resetContactForce()
-//{
-//}
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addDxToCollisionModel()
 {
