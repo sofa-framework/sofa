@@ -221,12 +221,6 @@ public:
 
     /// @}
 
-    //// new : get compliance on the constraints
-    //virtual void getCompliance(double **w);
-    //// apply contact force AND compute the subsequent dX
-    //virtual void applyContactForce(double *f);
-    //virtual void resetContactForce(void);
-
     virtual void addDxToCollisionModel(void);
 
     void setConstraintId(unsigned int);
