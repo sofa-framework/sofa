@@ -30,7 +30,7 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QLayoutWidget" row="3" column="0">
+        <widget class="QLayoutWidget" row="4" column="0">
             <property name="name">
                 <cstring>scaleLayout</cstring>
             </property>
@@ -87,7 +87,7 @@
                 </widget>
             </hbox>
         </widget>
-        <widget class="QLayoutWidget" row="4" column="0">
+        <widget class="QLayoutWidget" row="5" column="0">
             <property name="name">
                 <cstring>buttonLayout</cstring>
             </property>
@@ -180,6 +180,40 @@
                 <widget class="QLineEdit">
                     <property name="name">
                         <cstring>positionZ</cstring>
+                    </property>
+                </widget>
+            </hbox>
+        </widget>
+
+        <widget class="QLayoutWidget" row="3" column="0">
+            <property name="name">
+                <cstring>rotationLayout</cstring>
+            </property>
+            <hbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel">
+                    <property name="name">
+                        <cstring>rotationText</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Initial Rotation</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>rotationX</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>rotationY</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>rotationZ</cstring>
                     </property>
                 </widget>
             </hbox>

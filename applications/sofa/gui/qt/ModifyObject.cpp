@@ -54,6 +54,8 @@
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 
+#include <sofa/simulation/tree/InitVisitor.h>
+
 #include "WFloatLineEdit.h"
 
 #include <qwt_legend.h>
@@ -81,7 +83,7 @@ typedef QScrollView Q3ScrollView;
 #endif
 
 
-ModifyObject::ModifyObject(int Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags f ):
+ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags f ):
     parent(parent_), node(NULL), Id(Id_),visualContentModified(false)
 {
 
@@ -91,8 +93,8 @@ ModifyObject::ModifyObject(int Id_, core::objectmodel::Base* node_clicked, Q3Lis
     //Initialization of the Widget
     setNode(node_clicked, item_clicked);
     connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
-    connect ( this, SIGNAL( dialogClosed(int) ) , parent_, SLOT( modifyUnlock(int)));
-    connect ( this, SIGNAL( transformObject(GNode *, double, double, double, double)), parent, SLOT(transformObject(GNode *, double, double, double, double)));
+    connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
+    connect ( this, SIGNAL( transformObject(GNode *, double, double, double, double, double, double, double)), parent, SLOT(transformObject(GNode *, double, double, double, double, double, double, double)));
 }
 
 
@@ -788,7 +790,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     WFloatLineEdit* editShininess = new WFloatLineEdit( box, "editShininess" );
                     list_Object.push_back( (QObject *) editShininess);
                     editShininess->setMinFloatValue( 0.0f );
-                    editShininess->setMaxFloatValue( (float)INFINITY );
+                    editShininess->setMaxFloatValue( (float)128.0f );
                     editShininess->setFloatValue( material.shininess);
                     connect( editShininess, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
 
@@ -816,7 +818,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             }
         }
 
-        //If the current element is a node, we add a box to perform geometric transformation: translation, scaling
+        //If the current element is a node, we add a box to perform geometric transformation: translation, rotation, scaling
         if(GNode *gnode = dynamic_cast< GNode *>(node_clicked))
         {
 
@@ -826,10 +828,12 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             }
 
             Q3GroupBox *box = new Q3GroupBox(tab1, QString("Transformation"));
-            box->setColumns(3);
+            box->setColumns(4);
             box->setTitle(QString("Transformation"));
+            //********************************************************************************
+            //Translation
             new QLabel(QString("Translation"), box);
-            for (int i=0; i<2; i++) box->addSpace(0);
+// 		for (int i=0;i<3;i++) box->addSpace(0);
             WFloatLineEdit* editTranslationX = new WFloatLineEdit( box, "editTranslationX" );
             list_Object.push_front( (QObject *) editTranslationX);
 
@@ -848,6 +852,32 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             editTranslationZ->setMinFloatValue( (float)-INFINITY );
             editTranslationZ->setMaxFloatValue( (float)INFINITY );
 
+
+            //********************************************************************************
+            //Rotation
+            new QLabel(QString("Rotation"), box);
+// 		for (int i=0;i<3;i++) box->addSpace(0);
+            WFloatLineEdit* editRotationX = new WFloatLineEdit( box, "editRotationX" );
+            list_Object.push_front( (QObject *) editRotationX);
+
+            editRotationX->setMinFloatValue( (float)-INFINITY );
+            editRotationX->setMaxFloatValue( (float)INFINITY );
+
+            WFloatLineEdit* editRotationY = new WFloatLineEdit( box, "editRotationY" );
+            list_Object.push_front( (QObject *) editRotationY);
+
+            editRotationY->setMinFloatValue( (float)-INFINITY );
+            editRotationY->setMaxFloatValue( (float)INFINITY );
+
+            WFloatLineEdit* editRotationZ = new WFloatLineEdit( box, "editRotationZ" );
+            list_Object.push_front( (QObject *) editRotationZ);
+
+            editRotationZ->setMinFloatValue( (float)-INFINITY );
+            editRotationZ->setMaxFloatValue( (float)INFINITY );
+
+
+            //********************************************************************************
+            //Scale
             QLabel *textScale = new QLabel(QString("Scale"), box);
             WFloatLineEdit* editScale = new WFloatLineEdit( box, "editScale" );
             list_Object.push_front( (QObject *) editScale);
@@ -855,14 +885,25 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             editScale->setMinFloatValue( (float)-INFINITY );
             editScale->setMaxFloatValue( (float)INFINITY );
 
+
+            //********************************************************************************
+            //Default values
             editTranslationX->setFloatValue(0);
             editTranslationY->setFloatValue(0);
             editTranslationZ->setFloatValue(0);
+
+            editRotationX->setFloatValue(0);
+            editRotationY->setFloatValue(0);
+            editRotationZ->setFloatValue(0);
+
             editScale->setFloatValue(1);
 
             connect( editTranslationX, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
             connect( editTranslationY, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
             connect( editTranslationZ, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+            connect( editRotationX, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+            connect( editRotationY, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+            connect( editRotationZ, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
             connect( editScale, SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
 
             //Option still experimental : disabled !!!!
@@ -940,23 +981,35 @@ void ModifyObject::updateValues()
         if (GNode* current_node = dynamic_cast< GNode *>(node))
         {
             WFloatLineEdit* editScale        = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+            WFloatLineEdit* editRotationZ    = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+            WFloatLineEdit* editRotationY    = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+            WFloatLineEdit* editRotationX    = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
             WFloatLineEdit* editTranslationZ = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
             WFloatLineEdit* editTranslationY = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
             WFloatLineEdit* editTranslationX = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
             if (!(editTranslationX->getFloatValue() == 0 &&
                     editTranslationY->getFloatValue() == 0 &&
                     editTranslationZ->getFloatValue() == 0 &&
+                    editRotationX->getFloatValue()    == 0 &&
+                    editRotationY->getFloatValue()    == 0 &&
+                    editRotationZ->getFloatValue()    == 0 &&
                     editScale->getFloatValue() == 1 ))
             {
                 emit( transformObject(current_node,
                         editTranslationX->getFloatValue(),editTranslationY->getFloatValue(),editTranslationZ->getFloatValue(),
+                        editRotationX->getFloatValue(),editRotationY->getFloatValue(),editRotationZ->getFloatValue(),
                         editScale->getFloatValue()));
+
+                editRotationX->setFloatValue(0);
+                editRotationY->setFloatValue(0);
+                editRotationZ->setFloatValue(0);
 
                 editTranslationX->setFloatValue(0);
                 editTranslationY->setFloatValue(0);
                 editTranslationZ->setFloatValue(0);
+
                 editScale->setFloatValue(1);
-                //current_node->execute<InitVisitor>();
+                //current_node->execute<sofa::simulation::tree::InitVisitor>();
             }
         }
 
@@ -1312,7 +1365,6 @@ void ModifyObject::updateValues()
     }
 
     saveTables();
-
     if (visualContentModified) updateContext(dynamic_cast< GNode *>(node));
 
     emit (objectUpdated());
@@ -1354,16 +1406,16 @@ void  ModifyObject::createGraphMass(QTabWidget *dialogTab)
 #endif
     history.clear();
     energy_history[0].clear();
-    energy_history[1].clear();
-    energy_history[2].clear();
+//     energy_history[1].clear();
+//     energy_history[2].clear();
 
     energy_curve[0] = new QwtPlotCurve("Kinetic");	        energy_curve[0]->attach(graphEnergy);
-    energy_curve[1] = new QwtPlotCurve("Potential");	energy_curve[1]->attach(graphEnergy);
-    energy_curve[2] = new QwtPlotCurve("Mechanical");	energy_curve[2]->attach(graphEnergy);
+//     energy_curve[1] = new QwtPlotCurve("Potential");	energy_curve[1]->attach(graphEnergy);
+//     energy_curve[2] = new QwtPlotCurve("Mechanical");	energy_curve[2]->attach(graphEnergy);
 
     energy_curve[0]->setPen(QPen(Qt::red));
-    energy_curve[1]->setPen(QPen(Qt::green));
-    energy_curve[2]->setPen(QPen(Qt::blue));
+//     energy_curve[1]->setPen(QPen(Qt::green));
+//     energy_curve[2]->setPen(QPen(Qt::blue));
 
     graphEnergy->setAxisTitle(QwtPlot::xBottom, "Time/seconds");
     graphEnergy->setTitle("Energy Graph");

@@ -115,14 +115,17 @@ public:
 
     virtual void fileOpen(const char* filename); //, int TYPE=NORMAL);
     virtual void fileOpenSimu(const char* filename); //, int TYPE=NORMAL);
-    virtual void fileSaveAs(const char* filename);
     virtual void setScene(GNode* groot, const char* filename=NULL);
     virtual void setTitle( const char* windowTitle );
 
     //public slots:
+    virtual void fileNew();
     virtual void fileOpen();
-    //virtual void fileSave();
-    virtual void fileSaveAs();
+    virtual void fileSave();
+    virtual void fileSaveAs() {fileSaveAs((GNode *)NULL);};
+    virtual void fileSaveAs(GNode *node);
+    virtual void fileSaveAs(GNode* node,const char* filename);
+
     virtual void fileReload();
     //virtual void filePrint();
     virtual void fileExit();
@@ -228,6 +231,7 @@ public slots:
     void changeInstrument(int);
 
     //Used in Context Menu
+    void graphSaveObject();
     void graphAddObject();
     void graphRemoveObject();
     void graphModify();
@@ -236,12 +240,12 @@ public slots:
     void graphDesactivateNode();
     void graphActivateNode();
     //When adding an object in the graph
-    void loadObject(std::string path, double dx, double dy, double dz, double scale=1.0);
+    void loadObject(std::string path, double dx, double dy, double dz,double rx, double ry, double rz, double scale=1.0);
     //refresh the visualization window
     void redraw();
     //when a dialog modify object is closed
-    void modifyUnlock(int Id);
-    void transformObject( GNode *node, double dx, double dy, double dz, double scale=1.0);
+    void modifyUnlock(void *Id);
+    void transformObject( GNode *node, double dx, double dy, double dz, double rx, double ry, double rz, double scale=1.0);
 
 
     void exportGraph();
@@ -273,9 +277,6 @@ protected:
     bool graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v,QListViewItem *parent);
     void graphSummary();
 
-
-    GNode *searchNode(GNode *node, Q3ListViewItem *item_clicked);
-    GNode *verifyNode(GNode *node, Q3ListViewItem *item_clicked);
     bool isErasable(core::objectmodel::Base* element);
 
     bool m_dumpState;
@@ -332,10 +333,12 @@ protected:
 
 private:
     //Map: Id -> Node currently modified. Used to avoid dependancies during removing actions
-    std::map< int, core::objectmodel::Base* >            map_modifyDialogOpened;
+    std::map< void*, core::objectmodel::Base* >            map_modifyDialogOpened;
+
+    std::map< void*, QDialog* >                       map_modifyObjectWindow;
     std::vector<std::pair<core::objectmodel::Base*, Q3ListViewItem*> > items_stats;
     //unique ID to pass to a modify object dialog
-    int current_Id_modifyDialog;
+    void *current_Id_modifyDialog;
 
 
     //currently unused: scale is experimental
@@ -345,8 +348,6 @@ private:
 
     //At initialization: list of the path to the basic objects you can add to the scene
     std::vector< std::string > list_object;
-    //Bounding Box of each object
-    std::vector< float > list_object_BoundingBox;
     std::list< GNode *> list_object_added;
     std::list< GNode *> list_object_removed;
     std::list< GNode *> list_object_initial;

@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/XDataPtr.h>
 #include <sofa/core/objectmodel/VDataPtr.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/defaulttype/Quat.h>
 #include <vector>
 #include <assert.h>
 #include <fstream>
@@ -197,6 +198,8 @@ public:
 
 
     virtual void applyTranslation (const double dx,const double dy,const double dz);
+
+    virtual void applyRotation (const defaulttype::Quat q);
 
     virtual void applyScale (const double s);
 

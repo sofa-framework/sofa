@@ -83,6 +83,8 @@ void OglModel::internalDraw()
     Vec4f diffuse = material.getValue().useDiffuse?material.getValue().diffuse:Vec4f();
     Vec4f specular = material.getValue().useSpecular?material.getValue().specular:Vec4f();
     Vec4f emissive = material.getValue().useEmissive?material.getValue().emissive:Vec4f();
+    float shininess = material.getValue().useShininess?material.getValue().shininess:45;
+
     if (isTransparent())
     {
         glEnable(GL_BLEND);
@@ -97,6 +99,7 @@ void OglModel::internalDraw()
     glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
+    glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 
     glVertexPointer (3, GL_FLOAT, 0, vertices.getData());
     glNormalPointer (GL_FLOAT, 0, vnormals.getData());

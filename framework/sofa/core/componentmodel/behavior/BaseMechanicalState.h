@@ -25,6 +25,7 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEMECHANICALSTATE_H
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASEMECHANICALSTATE_H
 
+#include <sofa/defaulttype/Quat.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <iostream>
@@ -111,6 +112,9 @@ public:
 
     /// Translate the MechanicalObject
     virtual void applyTranslation(const double dx, const double dy, const double dz)=0;
+
+    /// Translate the MechanicalObject
+    virtual void applyRotation(const defaulttype::Quat q)=0;
 
     /// Scale the MechanicalObject
     virtual void applyScale(const double s)=0;

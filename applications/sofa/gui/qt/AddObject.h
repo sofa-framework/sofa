@@ -53,7 +53,7 @@ public slots:
     void accept();
 
 signals:
-    void loadObject(std::string, double, double, double, double);
+    void loadObject(std::string, double, double, double, double, double, double,double);
 
 
 protected:

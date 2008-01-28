@@ -7,9 +7,9 @@
     <property name="geometry">
         <rect>
             <x>0</x>
-            <y>0</y>
+            <y>25</y>
             <width>1074</width>
-            <height>940</height>
+            <height>890</height>
         </rect>
     </property>
     <property name="sizePolicy">
@@ -22,8 +22,8 @@
     </property>
     <property name="minimumSize">
         <size>
-            <width>363</width>
-            <height>940</height>
+            <width>316</width>
+            <height>881</height>
         </size>
     </property>
     <property name="caption">
@@ -996,6 +996,7 @@
         <bool>true</bool>
     </property>
     <item text="&amp;File" name="fileMenu">
+        <action name="fileNewAction"/>
         <action name="fileOpenAction"/>
         <action name="fileReloadAction"/>
         <action name="fileSaveAction"/>
@@ -1080,7 +1081,7 @@
             <cstring>fileSaveAction</cstring>
         </property>
         <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
         </property>
         <property name="iconSet">
             <iconset>image4</iconset>
@@ -1733,7 +1734,16 @@
         <receiver>GUI</receiver>
         <slot>hideNormals()</slot>
     </connection>
+    <connection>
+        <sender>GUI</sender>
+        <signal>usesTextLabelChanged(bool)</signal>
+        <receiver>GUI</receiver>
+        <slot>GUI_usesTextLabelChanged(bool)</slot>
+    </connection>
 </connections>
+<includes>
+    <include location="local" impldecl="in implementation">GUI.ui.h</include>
+</includes>
 <slots>
     <slot>fileNew()</slot>
     <slot>fileOpen()</slot>
@@ -1782,6 +1792,7 @@
     <slot>hideWireFrame()</slot>
     <slot>showNormals()</slot>
     <slot>hideNormals()</slot>
+    <slot>GUI_usesTextLabelChanged( bool )</slot>
 </slots>
 <layoutdefaults spacing="2" margin="5"/>
 </UI>
