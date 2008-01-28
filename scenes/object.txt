@@ -1,5 +1,5 @@
-Default BoundingBox: -1.0 -1.0 -1.0 1.0 1.0 1.0
-Default Scale: 1 1
-objFiles/obj-cube.xml
-objFiles/obj-sphere.xml BoundingBox: 0.0 0.0 -1.0 1.0 0.0 1.0
-objFiles/obj-pin.xml
+
+
+
+
+

@@ -471,11 +471,6 @@ void RealGUI::init()
     map_modifyDialogOpened.clear();
 
 
-
-    int end;
-    char str [80];
-    FILE * pFile;
-
     //*********************************************************************************************************************************
     //List of objects
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
@@ -483,76 +478,15 @@ void RealGUI::init()
     if ( !sofa::helper::system::DataRepository.findFile ( object ) )
         return;
 
-
     object = sofa::helper::system::DataRepository.getFile ( object );
-
-
-
-    float object_BoundingBox[6];
-
-
-    pFile = fopen ( object.c_str() ,"r" );
-
-    end = fscanf ( pFile, "Default BoundingBox: %f %f %f %f %f %f\n",
-            &object_BoundingBox[0],&object_BoundingBox[1],&object_BoundingBox[2],&object_BoundingBox[3],&object_BoundingBox[4],&object_BoundingBox[5] );
-    if ( end == EOF ) return;
-
-    //The first bounding box of the list is the default bounding box
-    for ( int i=0; i<6; i++ ) list_object_BoundingBox.push_back ( object_BoundingBox[i] );
-
-    end = fscanf ( pFile, "Default Scale: %f %f\n",
-            &object_Scale[0], &object_Scale[1] );
-    if ( end == EOF ) return;
-
     list_object.clear();
-    bool read = true;
-    while ( true )
+    std::ifstream end(object.c_str());
+    std::string s;
+    while( end >> s )
     {
-        if ( read )
-        {
-            end = fscanf ( pFile, "%s", str );
-            read = true;
-            if ( end == EOF ) break;
-        }
-        read = true;
-        list_object.push_back ( std::string ( str ) );
-
-        end = fscanf ( pFile, "%s", str );
-
-        //If the user specified a bounding box, we add it in the list of the bounding box
-        if ( !strcmp ( str,"BoundingBox:" ) )
-        {
-            if ( end == EOF )
-                break;
-
-            end = fscanf ( pFile, "%f %f %f %f %f %f",
-                    &object_BoundingBox[0],&object_BoundingBox[1],&object_BoundingBox[2],&object_BoundingBox[3],&object_BoundingBox[4],& object_BoundingBox[5] );
-
-            if ( end == EOF )
-            {
-                for ( int i=0; i<6; i++ ) list_object_BoundingBox.push_back ( list_object_BoundingBox[i] );
-            }
-            else
-            {
-                for ( int i=0; i<6; i++ ) list_object_BoundingBox.push_back ( object_BoundingBox[i] );
-            }
-
-            read = true;
-        }
-        else if ( list_object.size() != 0 )
-        {
-            //If no bounding box was specified, we add the default bounding box
-            for ( int i=0; i<6; i++ ) list_object_BoundingBox.push_back ( list_object_BoundingBox[i] );
-            if ( feof ( pFile ) ) break;
-            read = false;
-        }
+        list_object.push_back(s);
     }
-
-    //We remove from the list the default Bounding box: each object has its own bounding box now.
-    //We do it to preserve the correspondance between the index of the list_object and the list_object_BoundingBox
-    for ( int i=0; i<6; i++ ) list_object_BoundingBox.erase ( list_object_BoundingBox.begin() );
-
-    fclose ( pFile );
+    end.close();
 }
 
 void RealGUI::addViewer()
@@ -1046,16 +980,21 @@ void RealGUI::fileOpenSimu ( const char* s )
         }
     }
 }
-
+void RealGUI::fileNew()
+{
+    std::string newScene("newScene.scn");
+    if (sofa::helper::system::DataRepository.findFile (newScene))
+        fileOpen(sofa::helper::system::DataRepository.getFile ( newScene ).c_str());
+}
 void RealGUI::fileOpen()
 {
     std::string filename = viewer->getSceneFileName();
 
     QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
 #ifdef SOFA_PML
-            "Scenes (*.scn *.simu *.pml *.lml)",
+            "Scenes (*.scn *.xml *.simu *.pml *.lml)",
 #else
-            "Scenes (*.scn *.simu)",
+            "Scenes (*.scn *.xml *.simu)",
 #endif
             "open file dialog",  "Choose a file to open" );
 
@@ -1108,30 +1047,39 @@ void RealGUI::fileReload()
 
 }
 
-void RealGUI::fileSaveAs()
+void RealGUI::fileSave()
 {
+    GNode *node = viewer->getScene();
+    std::string filename = viewer->getSceneFileName();
+    fileSaveAs ( node,filename.c_str() );
+}
+
+
+void RealGUI::fileSaveAs(GNode *node)
+{
+    if (node == NULL) node = viewer->getScene();
     QString s;
     std::string filename = viewer->getSceneFileName();
 #ifdef SOFA_PML
-    s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.pml)", "save file dialog",  "Choose where the scene will be saved" );
+    s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.xml *.pml)", "save file dialog",  "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
         if ( pmlreader && s.endsWith ( ".pml" ) )
-            pmlreader->saveAsPML ( s );
+            pmlreader->saveAsPML ( node,s );
         else
-            fileSaveAs ( s );
+            fileSaveAs ( node,s );
     }
 #else
-    s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn)", "save file dialog", "Choose where the scene will be saved" );
+    s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
-        fileSaveAs ( s );
+        fileSaveAs ( node,s );
 #endif
 
 }
 
-void RealGUI::fileSaveAs ( const char* filename )
+void RealGUI::fileSaveAs ( GNode *node, const char* filename )
 {
-    getSimulation()->printXML ( viewer->getScene(), filename );
+    getSimulation()->printXML ( node, filename );
 }
 
 void RealGUI::fileExit()
@@ -1438,7 +1386,7 @@ void RealGUI::eventNewTime()
             sprintf ( buf, "%s_%.3f.scn",filename.c_str(), time );
             std::string output(record_directory + buf);
 
-            fileSaveAs(output.c_str());
+            fileSaveAs(viewer->getScene(),output.c_str());
         }
     }
 }
@@ -1594,7 +1542,7 @@ void RealGUI::slot_recordSimulation( bool value)
                 ofilename << record_directory << filename << "_" << loadRecordTime->text().ascii() << ".scn";
 
 
-                fileSaveAs(ofilename.str().c_str());
+                fileSaveAs(viewer->getScene(),ofilename.str().c_str());
                 fileOpen(ofilename.str().c_str()); //change the local directory
             }
             record_simulation=true;
@@ -2047,19 +1995,19 @@ void RealGUI::RightClickedItemInSceneView ( QListViewItem *item, const QPoint& p
 
     //Creation of a popup menu at the mouse position
     item_clicked=item;
+
     //Search in the graph if the element clicked is a node
-    node_clicked = viewer->getScene();
-    if ( node_clicked == NULL || item_clicked == NULL ) return;
+    node_clicked = NULL;
+    if ( item_clicked == NULL ) return;
 
-    //First initialize with the Root. Test if the node clicked on the graph has the same name as the root.
-    if ( node_clicked->getName() == item_clicked->text ( 0 ).ascii() )
+
+
+    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator;
+
+    for (graph_iterator = graphListener->items.begin(); graph_iterator != graphListener->items.end(); graph_iterator++)
     {
-        //The node clicked has the same name as the root, but we need to verify the pointer of the node clicked
-        node_clicked = verifyNode ( node_clicked, item_clicked );
-        if ( node_clicked == NULL ) node_clicked = searchNode ( viewer->getScene(), item_clicked );
-
+        if ( (*graph_iterator).second == item) {node_clicked = dynamic_cast< GNode* >( (*graph_iterator).first); break;}
     }
-    else node_clicked = searchNode ( viewer->getScene(), item_clicked );
 
 
 
@@ -2079,6 +2027,8 @@ void RealGUI::RightClickedItemInSceneView ( QListViewItem *item, const QPoint& p
             contextMenu->insertItem ( "Activate", this, SLOT ( graphActivateNode() ) );
         contextMenu->insertSeparator ();
         /*****************************************************************************************************************/
+
+        contextMenu->insertItem ( "Save Node", this, SLOT ( graphSaveObject() ) );
         contextMenu->insertItem ( "Add Node", this, SLOT ( graphAddObject() ) );
         int index_menu = contextMenu->insertItem ( "Remove Node", this, SLOT ( graphRemoveObject() ) );
 
@@ -2092,7 +2042,20 @@ void RealGUI::RightClickedItemInSceneView ( QListViewItem *item, const QPoint& p
 
 }
 
+/*****************************************************************************************************************/
+void RealGUI::graphSaveObject()
+{
+    bool isAnimated = startButton->isOn();
 
+    playpauseGUI ( false );
+    //Just pop up the dialog window
+    if ( node_clicked != NULL )
+    {
+        fileSaveAs(node_clicked);
+        item_clicked = NULL;
+    }
+    playpauseGUI ( isAnimated );
+}
 /*****************************************************************************************************************/
 void RealGUI::graphAddObject()
 {
@@ -2188,8 +2151,18 @@ void RealGUI::graphModify()
         }
 
         //Opening of a dialog window automatically created
+        current_Id_modifyDialog = node;
+        std::map< void*, QDialog* >::iterator testWindow =  map_modifyObjectWindow.find( current_Id_modifyDialog);
+        if ( testWindow != map_modifyObjectWindow.end())
+        {
+            //Object already being modified: no need to open a new window
+            (*testWindow).second->raise();
+            playpauseGUI ( isAnimated );
+            return;
+        }
 
-        ModifyObject *dialogModify = new ModifyObject ( ++current_Id_modifyDialog, node, item_clicked,this,node->getName().data() );
+        ModifyObject *dialogModify = new ModifyObject ( current_Id_modifyDialog, node, item_clicked,this,node->getName().data() );
+        map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModify));
 
         //If the item clicked is a node, we add it to the list of the element modified
         if ( dynamic_cast<GNode *> ( node ) )
@@ -2236,29 +2209,16 @@ void RealGUI::graphActivateNode()
     graphCreateStats(viewer->getScene(),NULL);
 }
 
+
 /*****************************************************************************************************************/
-//Nodes in the graph can have the same name. To find the right one, we have to verify the pointer itself.
-//We return the Node clicked
-GNode *RealGUI::verifyNode ( GNode *node, Q3ListViewItem *item_clicked )
-{
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator = graphListener->items.find ( node );
-
-    while ( graph_iterator != graphListener->items.end() )
-    {
-        if ( item_clicked == graph_iterator->second ) {return dynamic_cast< GNode*> ( graph_iterator->first );}
-        graph_iterator ++;
-    }
-    return NULL;
-}
-
-
+// Test if a node can be erased in the graph : the condition is that none of its children has a menu modify opened
 bool RealGUI::isErasable ( core::objectmodel::Base* element )
 {
 
     if ( GNode *node = dynamic_cast<GNode *> ( element ) )
     {
         //we look into the list of element currently modified if the element is present.
-        std::map< int, core::objectmodel::Base* >::iterator dialog_it;
+        std::map< void *, core::objectmodel::Base* >::iterator dialog_it;
         for ( dialog_it = map_modifyDialogOpened.begin(); dialog_it !=map_modifyDialogOpened.end(); dialog_it++ )
         {
             if ( element == ( *dialog_it ).second ) return false;
@@ -2274,48 +2234,24 @@ bool RealGUI::isErasable ( core::objectmodel::Base* element )
     }
     return true;
 }
-/*****************************************************************************************************************/
-//Recursive search through the GNode graph.
-GNode *RealGUI::searchNode ( GNode *node, Q3ListViewItem *item_clicked )
-{
-    if ( node == NULL ) return NULL;
-
-    GNode *result=NULL;
-    //For each child of the node, we are looking for one who has the same name as the one clicked
-    GNode::ChildIterator it;
-    for ( it = node->child.begin(); it != node->child.end(); it++ )
-    {
-        //a node with the same name has been found!!
-        result = node->getChild ( item_clicked->text ( 0 ).ascii() );
-        if ( result != NULL )
-        {
-            result = verifyNode ( result, item_clicked );
-            if ( result != NULL )	return result;
-        }
-
-
-        result = searchNode ( ( *it ), item_clicked );
-        if ( result != NULL ) return result;
-    }
-    //Nothing found
-    return NULL;
-}
-
 
 /*****************************************************************************************************************/
 //Translate an object
-void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz, double scale )
+void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale )
 {
     if ( node == NULL ) return;
     GNode::ObjectIterator obj_it = node->object.begin();
-
+    const double conversionDegRad = 3.141592653/180.0;
+    Vec<3, double> rotationVector = Vec<3,double>(rx,ry,rz)*conversionDegRad;
     //We translate the elements
+
     while ( obj_it != node->object.end() )
     {
         if ( dynamic_cast< sofa::component::visualmodel::VisualModelImpl* > ( *obj_it ) )
         {
             sofa::component::visualmodel::VisualModelImpl *visual = dynamic_cast< sofa::component::visualmodel::VisualModelImpl* > ( *obj_it );
             visual->applyTranslation ( dx, dy, dz );
+            visual->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
             visual->applyScale ( scale );
         }
 
@@ -2323,13 +2259,13 @@ void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz, do
         {
             core::componentmodel::behavior::BaseMechanicalState *mechanical = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( *obj_it );
             mechanical->applyTranslation ( dx, dy, dz );
+            mechanical->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
             mechanical->applyScale ( scale );
             // 		mechanical_object = true;
         }
 
         obj_it++;
     }
-
     //We don't need to go any further:
     // 	if (mechanical_object && !mesh_topology)
     // 	    return;
@@ -2340,15 +2276,14 @@ void RealGUI::transformObject ( GNode *node, double dx, double dy, double dz, do
     GNode::ChildIterator end = node->child.end();
     while ( it != end )
     {
-        transformObject ( *it, dx, dy, dz, scale );
+        transformObject ( *it, dx, dy, dz, rx,ry,rz,scale );
         it++;
     }
-
 
 }
 
 /*****************************************************************************************************************/
-void RealGUI::loadObject ( std::string path, double dx, double dy, double dz, double scale )
+void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale )
 {
     //Verify if the file exists
     if ( !sofa::helper::system::DataRepository.findFile ( path ) )
@@ -2423,7 +2358,7 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz, do
     //update the stats graph
     graphCreateStats(viewer->getScene(),NULL);
     //Apply the Transformation
-    transformObject ( new_node, dx, dy, dz, scale );
+    transformObject ( new_node, dx, dy, dz, rx,ry,rz,scale );
 
     //Update the view
     viewer->resetView();
@@ -2463,7 +2398,6 @@ void RealGUI::graphCollapse()
 
 void RealGUI::graphExpand()
 {
-
     bool isAnimated = startButton->isOn();
     playpauseGUI ( false );
     item_clicked->setOpen ( true );
@@ -2485,11 +2419,12 @@ void RealGUI::graphExpand()
     playpauseGUI ( isAnimated );
 }
 /*****************************************************************************************************************/
-void RealGUI::modifyUnlock ( int Id )
+void RealGUI::modifyUnlock ( void *Id )
 {
     graphCreateStats(viewer->getScene(),NULL);
 
-    map_modifyDialogOpened.erase ( Id );
+    map_modifyDialogOpened.erase( Id );
+    map_modifyObjectWindow.erase( Id );
 }
 
 /*****************************************************************************************************************/

@@ -1349,6 +1349,7 @@ void QtGLViewer::draw()
         DrawAutomate();
     }
 
+
     if (_video)
     {
 #ifdef CAPTURE_PERIOD

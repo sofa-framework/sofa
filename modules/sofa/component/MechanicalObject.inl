@@ -173,6 +173,11 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     {
         this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
     }
+    if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
+    {
+        Vec<3, double> rotationVector = Vec<3,double>(atof(arg->getAttribute("rx","0.0")),atof(arg->getAttribute("ry","0.0")),atof(arg->getAttribute("rz","0.0")))*3.141592653/180.0;
+        this->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
+    }
 }
 
 template <class DataTypes>
@@ -416,6 +421,20 @@ void MechanicalObject<DataTypes>::applyTranslation (const double dx,const double
         DataTypes::add
         (x[i],dx,dy,dz);
     }
+}
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
+{
+    VecCoord& x = *this->getX();
+    for (unsigned int i = 0; i < x.size(); i++)
+    {
+        Vec3d pos;
+        DataTypes::get(pos[0],pos[1],pos[2],x[i]);
+        Vec3d newposition = q.rotate(pos);
+        DataTypes::set(x[i],newposition[0],newposition[1],newposition[2]);
+    }
+    //TODO: special case of rigid bodies. need to update the orientation
 }
 
 template <class DataTypes>

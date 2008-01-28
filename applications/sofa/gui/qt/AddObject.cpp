@@ -99,6 +99,11 @@ AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent 
     positionX->setText("0");
     positionY->setText("0");
     positionZ->setText("0");
+
+    rotationX->setText("0");
+    rotationY->setText("0");
+    rotationZ->setText("0");
+
     scaleValue->setText("1");
     //Option still experimental : disabled
     scaleValue->hide();
@@ -107,7 +112,7 @@ AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent 
     openFilePath->setText(NULL);
 
     //Make the connection between this widget and the parent
-    connect( this, SIGNAL(loadObject(std::string, double, double, double, double)), parent, SLOT(loadObject(std::string, double, double, double, double)));
+    connect( this, SIGNAL(loadObject(std::string, double, double, double, double, double, double,double)), parent, SLOT(loadObject(std::string, double, double, double,double, double, double, double)));
     //For tje Modifications of the state of the radio buttons
     connect( buttonGroup, SIGNAL( clicked(int) ), this, SLOT (buttonUpdate(int)));
 }
@@ -117,21 +122,35 @@ AddObject::AddObject( std::vector< std::string > *list_object_, QWidget* parent 
 void AddObject::accept()
 {
     std::string position[3];
+    std::string rotation[3];
     std::string scale;
 #ifdef QT_MODULE_QT3SUPPORT
     std::string object_fileName(openFilePath->text().toStdString());
     position[0] = positionX->text().toStdString();
     position[1] = positionY->text().toStdString();
     position[2] = positionZ->text().toStdString();
+
+    rotation[0] = rotationX->text().toStdString();
+    rotation[1] = rotationY->text().toStdString();
+    rotation[2] = rotationZ->text().toStdString();
+
     scale       = scaleValue->text().toStdString();
 #else
     std::string object_fileName(openFilePath->text().latin1());
     position[0] = positionX->text().latin1();
     position[1] = positionY->text().latin1();
     position[2] = positionZ->text().latin1();
+
+    rotation[0] = rotationX->text().latin1();
+    rotation[1] = rotationY->text().latin1();
+    rotation[2] = rotationZ->text().latin1();
+
     scale       = scaleValue->text().latin1();
 #endif
-    emit( loadObject(object_fileName, atof(position[0].c_str()),atof(position[1].c_str()),atof(position[2].c_str()),atof(scale.c_str())));
+    emit( loadObject(object_fileName, atof(position[0].c_str()),atof(position[1].c_str()),atof(position[2].c_str()),
+            atof(rotation[0].c_str()),atof(rotation[1].c_str()),atof(rotation[2].c_str()),
+            atof(scale.c_str())));
+    setPath(object_fileName);
     QDialog::accept();
 }
 

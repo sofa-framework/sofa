@@ -75,7 +75,7 @@ class ModifyObject : public QDialog
     Q_OBJECT
 public:
 
-    ModifyObject( int Id, core::objectmodel::Base* node, Q3ListViewItem* item_clicked, QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
+    ModifyObject( void *Id, core::objectmodel::Base* node, Q3ListViewItem* item_clicked, QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
     ~ModifyObject()
     {
         delete buttonUpdate;
@@ -96,8 +96,10 @@ public slots:
 
 signals:
     void objectUpdated();              //update done
-    void dialogClosed(int);            //the current window has been closed: we give the Id of the current window
-    void transformObject(GNode * current_node, double translationX, double translationY, double translationZ, double scale);
+    void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
+    void transformObject(GNode * current_node, double translationX, double translationY, double translationZ,
+            double rotationX, double rotationY, double rotationZ,
+            double scale);
 
 
 protected:
@@ -162,7 +164,7 @@ protected:
     std::list< QObject* >                         list_Object;
     std::list< std::list< QObject* > * >          list_PointSubset;
     std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> > list_Table;
-    int Id;
+    void *Id;
     bool visualContentModified;
     std::vector< double > history;
     std::vector< double > energy_history[3];
