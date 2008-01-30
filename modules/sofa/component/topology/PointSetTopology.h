@@ -295,14 +295,15 @@ public:
 
     /** \brief Remove a subset of points
      *
-     * Elements corresponding to these points are removed form the mechanical object's state vectors.
+     * Elements corresponding to these points are removed from the mechanical object's state vectors.
      *
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
      * \sa removePointsWarning
      *
      * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
      */
-    virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices);
+    virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
 
 
 

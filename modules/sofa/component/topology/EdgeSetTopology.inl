@@ -215,8 +215,6 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::
 }
 
 
-
-
 template<class DataTypes >
 void EdgeSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
@@ -236,8 +234,10 @@ void EdgeSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int n
 
 
 template< class DataTypes >
-void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::vector<unsigned int> &indices)
+void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF)
 {
+    // Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
+
     // now update the local container structures
     EdgeSetTopology<DataTypes> *topology = dynamic_cast<EdgeSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
@@ -249,7 +249,7 @@ void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::ve
     container->getEdgeVertexShellArray();
 
     // start by calling the standard method.
-    PointSetTopologyModifier< DataTypes >::removePointsProcess( indices );
+    PointSetTopologyModifier< DataTypes >::removePointsProcess( indices, removeDOF );
 
 
 

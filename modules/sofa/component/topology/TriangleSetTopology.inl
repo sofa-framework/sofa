@@ -197,7 +197,7 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesWarning( sofa::helpe
 
 
 template<class DataTypes>
-void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems)
+void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedEdges, const bool removeIsolatedPoints)
 {
     TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
@@ -235,7 +235,7 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
                 shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell0.size()==0))
+                if ((removeIsolatedPoints) && (shell0.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[0]);
                 }
@@ -245,7 +245,7 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
                 shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell1.size()==0))
+                if ((removeIsolatedPoints) && (shell1.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[1]);
                 }
@@ -255,7 +255,7 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
                 shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell2.size()==0))
+                if ((removeIsolatedPoints) && (shell2.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[2]);
                 }
@@ -269,14 +269,14 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
                 shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell0.size()==0))
+                if ((removeIsolatedEdges) && (shell0.size()==0))
                     edgeToBeRemoved.push_back(container->m_triangleEdge[indices[i]][0]);
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_triangleEdgeShell[ container->m_triangleEdge[indices[i]][1]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
                 shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell1.size()==0))
+                if ((removeIsolatedEdges) && (shell1.size()==0))
                     edgeToBeRemoved.push_back(container->m_triangleEdge[indices[i]][1]);
 
 
@@ -284,7 +284,7 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
                 shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell2.size()==0))
+                if ((removeIsolatedEdges) && (shell2.size()==0))
                     edgeToBeRemoved.push_back(container->m_triangleEdge[indices[i]][2]);
 
             }
@@ -364,13 +364,14 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 this->removeEdgesWarning(edgeToBeRemoved);
 
             //if (vertexToBeRemoved.size()>0)
-            //  this->removePointsWarning(vertexToBeRemoved);
+            //this->removePointsWarning(vertexToBeRemoved);
 
             /// propagate to all components
             topology->propagateTopologicalChanges();
             if (edgeToBeRemoved.size()>0)
                 /// actually remove edges without looking for isolated vertices
                 this->removeEdgesProcess(edgeToBeRemoved,false);
+
 
             if (vertexToBeRemoved.size()>0)
             {
@@ -382,11 +383,10 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
             {
                 this->removePointsProcess(vertexToBeRemoved);
             }
+
         }
     }
 }
-
-
 
 template<class DataTypes >
 void TriangleSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned int nPoints,
@@ -422,8 +422,9 @@ void TriangleSetTopologyModifier< DataTypes >::addEdgesProcess(const sofa::helpe
 
 
 template< class DataTypes >
-void TriangleSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::vector<unsigned int> &indices)
+void TriangleSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF)
 {
+    // Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     // now update the local container structures
     TriangleSetTopology<DataTypes> *topology = dynamic_cast<TriangleSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
@@ -434,11 +435,12 @@ void TriangleSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper
     container->getTriangleVertexShellArray();
 
     // start by calling the standard method.
-    EdgeSetTopologyModifier< DataTypes >::removePointsProcess( indices );
+    EdgeSetTopologyModifier< DataTypes >::removePointsProcess( indices, removeDOF );
 
     int vertexIndex;
 
     unsigned int lastPoint = container->m_triangleVertexShell.size() - 1;
+
 
     for (unsigned int i = 0; i < indices.size(); ++i)
     {
@@ -538,7 +540,7 @@ void TriangleSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa
 ////////////////////////////////////TriangleSetTopologyAlgorithms//////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 template<class DataTypes>
-void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(sofa::helper::vector< unsigned int >& triangles)
+void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(sofa::helper::vector< unsigned int >& triangles, const bool removeIsolatedEdges, const bool removeIsolatedPoints)
 {
     TriangleSetTopology< DataTypes > *topology = dynamic_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
@@ -550,7 +552,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(sofa::helper::v
     topology->propagateTopologicalChanges();
     // now destroy the old triangles.
 
-    modifier->removeTrianglesProcess(  triangles ,true);
+    modifier->removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
 
     //assert(topology->getTriangleSetTopologyContainer()->checkTopology());
     topology->getTriangleSetTopologyContainer()->checkTopology();
@@ -635,7 +637,7 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
 
         topology->propagateTopologicalChanges();
 
-        removeTriangles(triangles_to_remove); // WARNING and PROPAGATED included before
+        removeTriangles(triangles_to_remove, true, true); // WARNING and PROPAGATED included before
 
         topology->propagateTopologicalChanges();
 
@@ -1594,7 +1596,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         //topology->propagateTopologicalChanges();
 
         // Remove all the triangles registered to be removed
-        removeTriangles(triangles_to_remove); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
+        removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
 
         // Propagate the topological changes *** not necessary
         //topology->propagateTopologicalChanges();
@@ -1644,7 +1646,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::RemoveAlongTrianglesList(const 
             triangles.push_back(triangles_list[i]);
 
         }
-        removeTriangles(triangles);
+        removeTriangles(triangles, true, true);
 
     }
 
@@ -2220,7 +2222,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
         //topology->propagateTopologicalChanges();
 
         // Remove all the triangles registered to be removed
-        removeTriangles(triangles_to_remove); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
+        removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
 
         // Propagate the topological changes *** not necessary
         //topology->propagateTopologicalChanges();
@@ -2420,7 +2422,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     //topology->propagateTopologicalChanges();
 
     // Remove all the triangles registered to be removed
-    removeTriangles(triangles_to_remove); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
+    removeTriangles(triangles_to_remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
 
     // Propagate the topological changes *** not necessary
     //topology->propagateTopologicalChanges();

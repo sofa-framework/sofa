@@ -525,7 +525,7 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const s
             {
                 /// actually remove triangles without looking for isolated vertices
 
-                this->removeTrianglesProcess(triangleToBeRemoved,false);
+                this->removeTrianglesProcess(triangleToBeRemoved,false,false);
 
             }
 
@@ -535,16 +535,19 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const s
                 this->removeEdgesProcess(edgeToBeRemoved,false);
             }
 
+
             if (vertexToBeRemoved.size()>0)
             {
                 this->removePointsWarning(vertexToBeRemoved);
             }
             topology->propagateTopologicalChanges();
 
+
             if (vertexToBeRemoved.size()>0)
             {
                 this->removePointsProcess(vertexToBeRemoved);
             }
+
 
         }
 
@@ -602,8 +605,9 @@ void TetrahedronSetTopologyModifier< DataTypes >::addTrianglesProcess(const sofa
 
 
 template< class DataTypes >
-void TetrahedronSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::vector<unsigned int> &indices)
+void TetrahedronSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF)
 {
+    // Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
 
     // now update the local container structures
     TetrahedronSetTopology<DataTypes> *topology = dynamic_cast<TetrahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -615,7 +619,7 @@ void TetrahedronSetTopologyModifier< DataTypes >::removePointsProcess( sofa::hel
     container->getTetrahedronVertexShellArray();
 
     // start by calling the standard method.
-    TriangleSetTopologyModifier< DataTypes >::removePointsProcess(  indices );
+    TriangleSetTopologyModifier< DataTypes >::removePointsProcess(  indices, removeDOF );
 
     int vertexIndex;
 
@@ -706,7 +710,7 @@ void TetrahedronSetTopologyModifier< DataTypes >::removeEdgesProcess( const sofa
 }
 
 template< class DataTypes >
-void TetrahedronSetTopologyModifier< DataTypes >::removeTrianglesProcess(  const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems)
+void TetrahedronSetTopologyModifier< DataTypes >::removeTrianglesProcess(  const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedEdges, const bool removeIsolatedPoints)
 {
     // now update the local container structures
     TetrahedronSetTopology<DataTypes> *topology = dynamic_cast<TetrahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -719,7 +723,7 @@ void TetrahedronSetTopologyModifier< DataTypes >::removeTrianglesProcess(  const
 
     // start by calling the standard method.
 
-    TriangleSetTopologyModifier< DataTypes >::removeTrianglesProcess( indices, removeIsolatedItems );
+    TriangleSetTopologyModifier< DataTypes >::removeTrianglesProcess( indices, removeIsolatedEdges, removeIsolatedPoints );
 
     if (container->m_tetrahedronTriangle.size()>0)
     {

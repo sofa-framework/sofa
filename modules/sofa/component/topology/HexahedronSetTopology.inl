@@ -619,10 +619,11 @@ void HexahedronSetTopologyModifier< DataTypes >::addQuadsProcess(const sofa::hel
 
 
 template< class DataTypes >
-void HexahedronSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::vector<unsigned int> &indices)
+void HexahedronSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF)
 {
+    // Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     // start by calling the standard method.
-    QuadSetTopologyModifier< DataTypes >::removePointsProcess(  indices );
+    QuadSetTopologyModifier< DataTypes >::removePointsProcess(  indices, removeDOF );
 
     // now update the local container structures
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);

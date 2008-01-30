@@ -379,8 +379,9 @@ public:
      *
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
      * \sa removePointsWarning
+     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
      */
-    virtual void removePointsProcess(sofa::helper::vector<unsigned int> &indices);
+    virtual void removePointsProcess(sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
 
 
 

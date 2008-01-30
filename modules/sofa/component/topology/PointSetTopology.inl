@@ -111,9 +111,6 @@ void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
     addTopologyChange(e);
 }
 
-
-
-
 template<class DataTypes>
 void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nPoints,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
@@ -200,11 +197,12 @@ void PointSetTopologyModifier<DataTypes>::removePointsWarning(sofa::helper::vect
 
 
 template<class DataTypes>
-void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vector<unsigned int> &indices)
+void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF)
 {
     // BUG FIXED : do not sort indices here
     //std::sort( indices.begin(), indices.end(), std::greater<unsigned int>() );
 
+    // Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
 
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
@@ -216,29 +214,38 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vec
 
     int lastIndexMech = prevSizeMechObj - 1;
 
-    // deleting the vertices
-    for (unsigned int i = 0; i < indices.size(); ++i)
+    if(removeDOF)
     {
-        // tests if the DOFIndex array is empty (if we have a main topology) or not
-        if (prevDOFIndexArraySize)
-            topology->object->replaceValue(lastIndexMech, container->getDOFIndex(indices[i]) );
-        else
-            topology->object->replaceValue(lastIndexMech, indices[i] );
+
+        // deleting the vertices
+        for (unsigned int i = 0; i < indices.size(); ++i)
+        {
+            // tests if the DOFIndex array is empty (if we have a main topology) or not
+            if (prevDOFIndexArraySize)
+                topology->object->replaceValue(lastIndexMech, container->getDOFIndex(indices[i]) );
+            else
+                topology->object->replaceValue(lastIndexMech, indices[i] );
 
 
-        --lastIndexMech;
+            --lastIndexMech;
+        }
+
+        // resizing the state vectors
+        topology->object->resize( prevSizeMechObj - indices.size() );
+
     }
-
-    // resizing the state vectors
-    topology->object->resize( prevSizeMechObj - indices.size() );
+    else
+    {
+        topology->object->resize( prevSizeMechObj );
+    }
 
     // resizing the topology container vectors
     if (prevDOFIndexArraySize)
         container->getDOFIndexArrayForModification().resize(prevDOFIndexArraySize - indices.size() );
     if (prevPointSetIndexArraySize)
         container->getPointSetIndexArrayForModification().resize(prevPointSetIndexArraySize - indices.size() );
-}
 
+}
 
 
 template<class DataTypes>
@@ -347,7 +354,9 @@ PointSetTopology<DataTypes>::PointSetTopology(MechanicalObject<DataTypes> *obj,c
 template<class DataTypes>
 void PointSetTopology<DataTypes>::propagateTopologicalChanges()
 {
+
     sofa::simulation::tree::TopologyChangeVisitor a;
+    a.resetNbIter();
     getContext()->executeVisitor(&a);
     // BUGFIX (Jeremie A. 06/12/07): remove the changes we just propagated, so that we don't send then again next time
     this->resetTopologyChangeList();
