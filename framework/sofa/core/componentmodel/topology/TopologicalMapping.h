@@ -1,8 +1,38 @@
-#ifndef SOFA_CORE_COMPONENTMODEL_TOPOLOGY_TOPOLOGICALMAPPING_H
-#define SOFA_CORE_COMPONENTMODEL_TOPOLOGY_TOPOLOGICALMAPPING_H
+/*******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
+*                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
+*                                                                              *
+* This library is free software; you can redistribute it and/or modify it      *
+* under the terms of the GNU Lesser General Public License as published by the *
+* Free Software Foundation; either version 2.1 of the License, or (at your     *
+* option) any later version.                                                   *
+*                                                                              *
+* This library is distributed in the hope that it will be useful, but WITHOUT  *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
+* for more details.                                                            *
+*                                                                              *
+* You should have received a copy of the GNU Lesser General Public License     *
+* along with this library; if not, write to the Free Software Foundation,      *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
+*                                                                              *
+* Contact information: contact@sofa-framework.org                              *
+*                                                                              *
+* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
+* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
+* and F. Poyer                                                                 *
+*******************************************************************************/
+#ifndef SOFA_CORE_TOPOLOGICALMAPPING_H
+#define SOFA_CORE_TOPOLOGICALMAPPING_H
 
-#include <sofa/core/Mapping.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
+#include <stdlib.h>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/BehaviorModel.h>
+
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
@@ -16,115 +46,51 @@ namespace componentmodel
 namespace topology
 {
 
-/** A class that translates TopologyChange objects from one topology to another so that they have a meaning and
-         * reflect the effects of the first topology changes on the second topology.
-         */
-class TopologicalMapping : public BaseMapping
+using namespace sofa::core;
+using namespace sofa::defaulttype;
+
+/**
+ *  \brief This Interface is a new kind of Mapping, called TopologicalMapping, which converts an INPUT TOPOLOGY to an OUTPUT TOPOLOGY (both topologies are of type BaseTopology)
+ *
+ * It first initializes the mesh of the output topology from the mesh of the input topology,
+ * and it creates the two Mapping Cards that maintain the correspondence between the indices of their common elements.
+ *
+ * Then, at each propagation of topological changes, it translates the topological change events that are propagated from the INPUT topology
+ * into specific actions that call element adding or element removal methods on the OUTPUT topology, and it updates the Mapping Cards.
+ *
+ * So, at each time step, the geometrical and adjacency information are consistent in both topologies.
+ *
+ */
+class TopologicalMapping : public virtual objectmodel::BaseObject
 {
-
 public:
+    virtual ~TopologicalMapping() { }
 
-    /** \brief Constructor.
-     *
-     * @param from the topology issuing TopologyChange objects (the "source").
-     * @param to   the topology for which the TopologyChange objects must be translated (the "target").
-     */
-    TopologicalMapping(BaseTopology* from, BaseTopology* to)
-        : m_from(from),
-          m_to(to)
-    {
-    }
+    /// Accessor to the INPUT topology of the TopologicalMapping :
+    virtual objectmodel::BaseObject* getFrom() = 0;
 
+    /// Accessor to the OUTPUT topology of the TopologicalMapping :
+    virtual objectmodel::BaseObject* getTo() = 0;
 
+    /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
+    virtual void updateTopologicalMapping() = 0;
 
-    /** \brief Destructor.
-     *
-     * Does nothing.
-     */
-    virtual ~TopologicalMapping()
-    {
-    }
-
-
-
-    /** \brief Returns source BaseTopology.
-     *
-     * Returns the topology issuing TopologyChange objects (the "source").
-     */
-    objectmodel::BaseObject* getFrom()
-    {
-        return m_from;
-    }
-
-
-
-    /** \brief Returns target BaseTopology.
-     *
-     * Returns the topology for which the TopologyChange objects must be translated (the "target").
-     */
-    objectmodel::BaseObject* getTo()
-    {
-        return m_to;
-    }
-
-
-
-    /** \brief Translates the TopologyChange objects from the source to the target.
-     *
-     * Translates each of the TopologyChange objects waiting in the source list so that they have a meaning and
-     * reflect the effects of the first topology changes on the second topology.
-     *
-     * Possible translating of the TopologyChange object may be, but is not limited to :
-     * - ignoring,
-     * - passing it 'as is',
-     * - changing indices,
-     * - computation of values (averaging, interpolating, etc)
-     */
-    virtual void updateSpecificTopology() = 0;
-
-
-
-    /** \brief Calls updateMapping.
-     *
-     * Standard implementation. Subclasses might have to override this behavior.
-     */
-    virtual void init()
-    {
-        updateMapping();
-    }
-
-
-
-    /** \brief Calls updateSpecificTopology.
-     *
-     */
-    virtual void updateMapping()
-    {
-        if (m_from && m_to)
-            updateSpecificTopology();
-    }
+    /// Accessor to mapping cards :
+    const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
+    const sofa::helper::vector<unsigned int>& getLoc2GlobVec() { return Loc2GlobVec;}
 
 protected:
-    /// The topology issuing TopologyChange objects (the "source").
-    BaseTopology* m_from;
 
+    // Two mapping cards :
 
+    // Array which gives for each index (local index) of an element in the OUTPUT topology
+    // the corresponding index (global index) of the same element in the INPUT topology :
+    sofa::helper::vector<unsigned int> Loc2GlobVec;
 
-    /// The topology for which the TopologyChange objects must be translated (the "target").
-    BaseTopology* m_to;
+    // Map which gives for each index (global index) of an element in the INPUT topology
+    // the corresponding index (local index) of the same element in the OUTPUT topology :
+    std::map<unsigned int, unsigned int> Glob2LocMap;
 
-
-
-    /** \brief Adds a TopologyChange object to the target list.
-     *
-     * Object added should be translated ones.
-     *
-     * @see updateSpecificTopology()
-     */
-    void addTopologyChangeToSpecificTopology(const TopologyChange *topologyChange)
-    {
-        m_to->m_changeList.push_back(topologyChange);
-    }
 
 };
 
@@ -136,4 +102,4 @@ protected:
 
 } // namespace sofa
 
-#endif // SOFA_CORE_TOPOLOGICALMAPPING_H
+#endif

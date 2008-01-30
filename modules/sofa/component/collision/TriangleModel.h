@@ -30,6 +30,7 @@
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/topology/QuadSetTopology.h> // prepares quad's detection
 #include <sofa/component/topology/TriangleSetTopology.h>
 #include <sofa/component/topology/TetrahedronSetTopology.h>
 

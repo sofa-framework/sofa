@@ -26,6 +26,12 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/simulation/tree/GNode.h>
 
+#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/componentmodel/topology/BaseTopology.h>
+
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+
 namespace sofa
 {
 
@@ -35,6 +41,14 @@ namespace simulation
 namespace tree
 {
 
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::behavior;
+
+using namespace sofa::core::componentmodel::topology;
+
+using namespace sofa::core;
+
+
 void TopologyChangeVisitor::processTopologyChange(core::objectmodel::BaseObject* obj)
 {
     obj->handleTopologyChange();
@@ -42,10 +56,39 @@ void TopologyChangeVisitor::processTopologyChange(core::objectmodel::BaseObject*
 
 Visitor::Result TopologyChangeVisitor::processNodeTopDown(GNode* node)
 {
+    bool is_TopologicalMapping = false;
+
+    for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it)!= NULL)  // find a TopologicalMapping node among the brothers (it must be the first one written)
+        {
+
+            sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
+
+            if(getNbIter() > 0)  // the propagation of topological changes comes (at least) from a father node, not from a brother
+            {
+
+                obj->updateTopologicalMapping(); // update the specific TopologicalMapping
+                is_TopologicalMapping = true;
+            }
+        }
+    }
+
+    if(is_TopologicalMapping)  // find one TopologicalMapping node among the brothers (which must be the first one written in the scene file)
+    {
+
+        // Increment the number of iterations of the method processNodeTopDown
+        incrNbIter();
+        return RESULT_PRUNE; // stop the propagation of topological changes
+    }
+
     for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         this->processTopologyChange(*it);
     }
+
+    // Increment the number of iterations of the method processNodeTopDown
+    incrNbIter();
     return RESULT_CONTINUE;
 }
 
