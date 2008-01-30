@@ -430,9 +430,10 @@ public:
     /** \brief Remove a subset of triangles
      *
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-     * @param removeIsolatedItems if true remove isolated edges and vertices
+     * @param removeIsolatedEdges if true isolated edges are also removed
+     * @param removeIsolatedPoints if true isolated vertices are also removed
      */
-    virtual void removeTrianglesProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
+    virtual void removeTrianglesProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedEdges=false, const bool removeIsolatedPoints=false);
 
     /** \brief Add some edges to this topology.
      *
@@ -474,8 +475,9 @@ public:
      *
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removePointsWarning before calling removePointsProcess.
      * \sa removePointsWarning
+     * Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
      */
-    virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices);
+    virtual void removePointsProcess( sofa::helper::vector<unsigned int> &indices, const bool removeDOF = true);
 
 
 
