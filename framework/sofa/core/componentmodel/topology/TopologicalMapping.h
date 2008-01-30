@@ -53,10 +53,10 @@ using namespace sofa::defaulttype;
  *  \brief This Interface is a new kind of Mapping, called TopologicalMapping, which converts an INPUT TOPOLOGY to an OUTPUT TOPOLOGY (both topologies are of type BaseTopology)
  *
  * It first initializes the mesh of the output topology from the mesh of the input topology,
- * and it creates the two Mapping Cards that maintain the correspondence between the indices of their common elements.
+ * and it creates the two Index Maps that maintain the correspondence between the indices of their common elements.
  *
  * Then, at each propagation of topological changes, it translates the topological change events that are propagated from the INPUT topology
- * into specific actions that call element adding or element removal methods on the OUTPUT topology, and it updates the Mapping Cards.
+ * into specific actions that call element adding or element removal methods on the OUTPUT topology, and it updates the Index Maps.
  *
  * So, at each time step, the geometrical and adjacency information are consistent in both topologies.
  *
@@ -75,13 +75,13 @@ public:
     /// Method called at each topological changes propagation which comes from the INPUT topology to adapt the OUTPUT topology :
     virtual void updateTopologicalMapping() = 0;
 
-    /// Accessor to mapping cards :
+    /// Accessor to index maps :
     const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
     const sofa::helper::vector<unsigned int>& getLoc2GlobVec() { return Loc2GlobVec;}
 
 protected:
 
-    // Two mapping cards :
+    // Two index maps :
 
     // Array which gives for each index (local index) of an element in the OUTPUT topology
     // the corresponding index (global index) of the same element in the INPUT topology :
