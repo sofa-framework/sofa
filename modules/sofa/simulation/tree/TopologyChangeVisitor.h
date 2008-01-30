@@ -53,6 +53,15 @@ public:
     /// Return a category name for this action.
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "topologyChange"; }
+
+    const unsigned int& getNbIter() { return NbIter;}
+    void resetNbIter() { NbIter=0;}
+    void incrNbIter() { NbIter+=1;}
+
+protected:
+
+    /// Flag to know the number of iterations of the overloaded method processNodeTopDown
+    unsigned int NbIter;
 };
 
 } // namespace tree
