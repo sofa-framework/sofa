@@ -383,3 +383,54 @@ explanations in the following example).}
   \caption{What happens when I split an Edge ? - Step 9.}
  \label{fig:Topology_Example_9}
 \end{figure*}
+
+\newpage
+
+$ \ \ $
+
+\newpage
+
+\subsection{Designing Topological Mappings}
+
+\subsubsection{What is a Topological Mapping ?}
+
+A TopologicalMapping is a new kind of Mapping which converts an
+input topology to an output topology (both topologies are of type
+BaseTopology).
+\\
+
+It first initializes the mesh of the output topology from the mesh
+of the input topology, and it creates the two Index Maps that
+maintain the correspondence between the indices of their common
+elements.
+\\
+
+Then, at each propagation of topological changes, it translates the
+topological change events that are propagated from the input
+topology into specific actions that call element adding methods or
+element removal methods on the output topology, and it updates the
+Index Maps.
+\\
+
+So, at each time step, the geometrical and adjacency information are
+consistent in both topologies.
+
+
+\subsubsection{Example : from TetrahedronSetTopology to TriangleSetTopology}
+
+Here is the scene-graph corresponding to the simulation of an object
+which can be represented as a tetrahedral volume (on which one
+volume force is applied) or as a triangular surface (on which two
+surface forces are applied). Note that the Visual Model and the
+Collsion Model are attached to the surface mesh of the object :
+
+
+\begin{figure*}
+ \centering
+ \includegraphics[width=1.0\linewidth]{Scene_Graph_TopologicalMapping}
+  \caption{Scene Graph illustrating a TopologicalMapping from a TetrahedronSetTopology to a TriangleSetTopology.}
+ \label{fig:Scene_Graph_TopologicalMapping}
+\end{figure*}
+
+
+% \subsubsection{Use Cases}
