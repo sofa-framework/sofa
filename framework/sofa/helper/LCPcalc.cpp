@@ -1027,6 +1027,7 @@ struct listSortAscending
 
 int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, double &tol, int &numItMax, bool useInitialF)
 {
+
     ///* Allocation */
     //A = (double **)malloc( dim*sizeof(double*) );
     //for( ic = 0 ; ic < dim; ++ic )
@@ -1176,9 +1177,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
     //afficheLCP(dfree,W,f,dim);
     return 0;
 
-
 }
-
 
 /* Resoud un LCP écrit sous la forme U = q + M.F
  * dim : dimension du pb
@@ -1187,7 +1186,6 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
  */
 void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double &tol, int &numItMax)
 {
-
     int compteur;	// compteur de boucle
     int compteur2, compteur3;	// compteur de boucle
 

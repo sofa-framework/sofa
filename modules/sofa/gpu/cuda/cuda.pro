@@ -43,7 +43,8 @@ HEADERS += mycuda.h \
            CudaPointModel.h \
            CudaSphereModel.h \
            CudaPenalityContactForceField.h \
-           CudaPenalityContactForceField.inl
+           CudaPenalityContactForceField.inl \
+	   CudaLCP.h
 
 SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
@@ -61,7 +62,8 @@ SOURCES += mycuda.cpp \
            CudaCollision.cpp \
            CudaCollisionDetection.cpp \
            CudaPointModel.cpp \
-           CudaPenalityContactForceField.cpp
+           CudaPenalityContactForceField.cpp \
+	   CudaLCP.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
@@ -76,4 +78,5 @@ CUDA_SOURCES += mycuda.cu \
            CudaSubsetMapping.cu \
            CudaCollisionDetection.cu \
            CudaContactMapper.cu \
-           CudaPenalityContactForceField.cu
+           CudaPenalityContactForceField.cu \
+	   CudaLCP.cu
