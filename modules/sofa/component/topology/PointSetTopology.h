@@ -262,15 +262,17 @@ public:
      */
     virtual void applyScale (const double s);
 
+    /*
     template< typename DataTypes >
-    friend class PointSetTopologyAlgorithms;
+      friend class PointSetTopologyAlgorithms;
 
     friend class sofa::core::componentmodel::topology::TopologicalMapping;
 
     template< typename In, typename Out >
     friend class Tetra2TriangleTopologicalMapping;
+    */
 
-protected:
+    //protected:
     /** \brief Sends a message to warn that some points were added in this topology.
      *
      * \sa addPointsProcess

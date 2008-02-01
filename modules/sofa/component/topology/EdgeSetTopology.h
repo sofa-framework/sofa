@@ -212,15 +212,17 @@ public:
     {
     }
 
+    /*
     template< typename DataTypes >
-    friend class EdgeSetTopologyAlgorithms;
+      friend class EdgeSetTopologyAlgorithms;
 
     friend class sofa::core::componentmodel::topology::TopologicalMapping;
 
     template< typename In, typename Out >
-    friend class Tetra2TriangleTopologicalMapping;
+      friend class Tetra2TriangleTopologicalMapping;
+      */
 
-protected:
+    //protected:
     /** \brief Build an edge set topology from a file : also modifies the MechanicalObject
      *
      */
