@@ -354,15 +354,17 @@ public:
      */
     virtual bool load(const char *filename);
 
+    /*
     template< typename DataTypes >
-    friend class TriangleSetTopologyAlgorithms;
+      friend class TriangleSetTopologyAlgorithms;
 
     friend class sofa::core::componentmodel::topology::TopologicalMapping;
 
     template< typename In, typename Out >
-    friend class Tetra2TriangleTopologicalMapping;
+      friend class Tetra2TriangleTopologicalMapping;
+      */
 
-protected:
+    //protected:
     /** \brief Sends a message to warn that some triangles were added in this topology.
      *
      * \sa addTrianglesProcess

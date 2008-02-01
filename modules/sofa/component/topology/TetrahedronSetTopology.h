@@ -383,10 +383,12 @@ public:
      */
     virtual bool load(const char *filename);
 
+    /*
     template< typename DataTypes >
-    friend class TetrahedronSetTopologyAlgorithms;
+      friend class TetrahedronSetTopologyAlgorithms;
+    */
 
-protected:
+    //protected:
     /** \brief Sends a message to warn that some tetrahedra were added in this topology.
      *
      * \sa addTetrahedraProcess
