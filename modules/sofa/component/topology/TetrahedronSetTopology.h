@@ -375,9 +375,6 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
-    template< typename DataTypes >
-    friend class TetrahedronSetTopologyAlgorithms;
-
     TetrahedronSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : TriangleSetTopologyModifier<DataTypes>(top)
     {
     }
@@ -385,6 +382,9 @@ public:
      *
      */
     virtual bool load(const char *filename);
+
+    template< typename DataTypes >
+    friend class TetrahedronSetTopologyAlgorithms;
 
 protected:
     /** \brief Sends a message to warn that some tetrahedra were added in this topology.

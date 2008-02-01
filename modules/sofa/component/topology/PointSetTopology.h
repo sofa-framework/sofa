@@ -237,14 +237,6 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
-    template< typename DataTypes >
-    friend class PointSetTopologyAlgorithms;
-
-    friend class sofa::core::componentmodel::topology::TopologicalMapping;
-
-    template< typename In, typename Out >
-    friend class Tetra2TriangleTopologicalMapping;
-
     PointSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : TopologyModifier(top)
     {
     }
@@ -269,6 +261,14 @@ public:
      *
      */
     virtual void applyScale (const double s);
+
+    template< typename DataTypes >
+    friend class PointSetTopologyAlgorithms;
+
+    friend class sofa::core::componentmodel::topology::TopologicalMapping;
+
+    template< typename In, typename Out >
+    friend class Tetra2TriangleTopologicalMapping;
 
 protected:
     /** \brief Sends a message to warn that some points were added in this topology.
