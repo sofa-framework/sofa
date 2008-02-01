@@ -169,6 +169,32 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
 
 }
 
+template<class DataTypes>
+void PointSetTopologyModifier<DataTypes>::addNewPoint( const sofa::helper::vector< double >& x)
+{
+    PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
+    assert (topology != 0);
+    PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
+    assert (container != 0);
+    unsigned int prevSizeMechObj   = topology->object->getSize();
+    unsigned int prevSizeContainer = container->getDOFIndexArray().size();
+
+    // resizing the state vectors
+    topology->object->resize( prevSizeMechObj + 1 );
+
+    topology->object->computeNewPoint(prevSizeMechObj, x);
+
+    // setting the new indices
+    sofa::helper::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
+    DOFIndex.resize(prevSizeContainer + 1);
+
+    DOFIndex[prevSizeContainer] = prevSizeMechObj;
+
+    //invalidating PointSetIndex, since it is no longer up-to-date
+    assert(container->getPointSetIndexSize()==0);
+
+}
+
 
 
 template<class DataTypes>

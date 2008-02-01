@@ -523,6 +523,39 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
     }
 }
 
+template <class DataTypes>
+void MechanicalObject<DataTypes>::computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x)
+{
+
+    core::componentmodel::topology::Topology* topo = dynamic_cast<core::componentmodel::topology::Topology*>(this->getContext()->getTopology());
+
+    this->resize(i+1);
+
+    DataTypes::set((*getX())[i], m_x[0]*scale+translation[0], m_x[1]*scale+translation[1], m_x[2]*scale+translation[2]);
+
+    // Save initial state for reset button
+    if (reset_position == NULL) this->reset_position = new VecCoord;
+    *this->reset_position = *x;
+    if (v0 == NULL) this->v0 = new VecDeriv;
+    *this->v0 = *v;
+    // free position = position
+    *this->xfree = *x;
+
+    //Rest position
+
+    if (x0->size() == 0)
+    {
+        *x0 = *x;
+        if (restScale.getValue() != (Real)1)
+        {
+            Real s = restScale.getValue();
+            for (unsigned int i=0; i<x0->size(); i++)
+                (*x0)[i] *= s;
+        }
+    }
+
+    initialized = true;
+}
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::contributeToMatrixDimension(unsigned int * const nbRow, unsigned int * const nbCol)

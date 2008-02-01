@@ -196,6 +196,10 @@ public:
      */
     void computeWeightedValue( const unsigned int i, const sofa::helper::vector< unsigned int >& ancestors, const sofa::helper::vector< double >& coefs);
 
+    /** \brief Compute the values attached to a new point.
+     *
+     */
+    void computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x);
 
     virtual void applyTranslation (const double dx,const double dy,const double dz);
 

@@ -237,9 +237,22 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
+    template< typename DataTypes >
+    friend class PointSetTopologyAlgorithms;
+
+    friend class sofa::core::componentmodel::topology::TopologicalMapping;
+
+    template< typename In, typename Out >
+    friend class Tetra2TriangleTopologicalMapping;
+
     PointSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : TopologyModifier(top)
     {
     }
+
+    /** \brief Build a point set topology from a file : also modifies the MechanicalObject
+    *
+    */
+    virtual bool load(const char *filename);
 
     /** \brief Swap points i1 and i2.
      *
@@ -247,10 +260,7 @@ public:
     virtual void swapPoints(const int i1,const int i2);
 
 
-    /** \brief Build a point set topology from a file : also modifies the MechanicalObject
-     *
-     */
-    virtual bool load(const char *filename);
+
     /** \brief Translates the DOF : call the applyTranslation member function in the MechanicalObject
      *
      */
@@ -260,6 +270,7 @@ public:
      */
     virtual void applyScale (const double s);
 
+protected:
     /** \brief Sends a message to warn that some points were added in this topology.
      *
      * \sa addPointsProcess
@@ -284,6 +295,10 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
 
+    /** \brief Add a new point (who has no ancestors) to this topology.
+     *
+     */
+    virtual void addNewPoint( const sofa::helper::vector< double >& x);
 
     /** \brief Sends a message to warn that some points are about to be deleted.
      *

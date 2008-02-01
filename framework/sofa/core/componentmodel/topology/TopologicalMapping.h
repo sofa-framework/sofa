@@ -22,8 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_TOPOLOGICALMAPPING_H
-#define SOFA_CORE_TOPOLOGICALMAPPING_H
+#ifndef SOFA_CORE_COMPONENTMODEL_TOPOLOGY_TOPOLOGICALMAPPING_H
+#define SOFA_CORE_COMPONENTMODEL_TOPOLOGY_TOPOLOGICALMAPPING_H
 
 #include <stdlib.h>
 #include <vector>
@@ -49,6 +49,9 @@ namespace topology
 using namespace sofa::core;
 using namespace sofa::defaulttype;
 
+class Tetra2TriangleTopologicalMapping;
+
+
 /**
  *  \brief This Interface is a new kind of Mapping, called TopologicalMapping, which converts an INPUT TOPOLOGY to an OUTPUT TOPOLOGY (both topologies are of type BaseTopology)
  *
@@ -64,6 +67,7 @@ using namespace sofa::defaulttype;
 class TopologicalMapping : public virtual objectmodel::BaseObject
 {
 public:
+
     virtual ~TopologicalMapping() { }
 
     /// Accessor to the INPUT topology of the TopologicalMapping :

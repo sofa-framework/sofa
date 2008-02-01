@@ -375,6 +375,9 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
+    template< typename DataTypes >
+    friend class TetrahedronSetTopologyAlgorithms;
+
     TetrahedronSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : TriangleSetTopologyModifier<DataTypes>(top)
     {
     }
@@ -383,7 +386,7 @@ public:
      */
     virtual bool load(const char *filename);
 
-
+protected:
     /** \brief Sends a message to warn that some tetrahedra were added in this topology.
      *
      * \sa addTetrahedraProcess
@@ -467,6 +470,7 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
+    virtual void addNewPoint( const sofa::helper::vector< double >& x) {TriangleSetTopologyModifier< DataTypes >::addNewPoint(x);};
 
 
     /** \brief Remove a subset of points
