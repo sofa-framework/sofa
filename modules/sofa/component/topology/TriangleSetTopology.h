@@ -30,6 +30,8 @@
 #include <map>
 #include <sofa/defaulttype/Vec.h> // typing "Vec"
 
+//#include <sofa/component/mapping/Tetra2TriangleTopologicalMapping.h>
+
 namespace sofa
 {
 namespace component
@@ -340,6 +342,15 @@ class TriangleSetTopologyModifier : public EdgeSetTopologyModifier <DataTypes>
 {
 
 public:
+
+    template< typename DataTypes >
+    friend class TriangleSetTopologyAlgorithms;
+
+    friend class sofa::core::componentmodel::topology::TopologicalMapping;
+
+    template< typename In, typename Out >
+    friend class Tetra2TriangleTopologicalMapping;
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
@@ -352,6 +363,7 @@ public:
     virtual bool load(const char *filename);
 
 
+protected:
     /** \brief Sends a message to warn that some triangles were added in this topology.
      *
      * \sa addTrianglesProcess
@@ -427,6 +439,7 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
 
+    virtual void addNewPoint( const sofa::helper::vector< double >& x) {EdgeSetTopologyModifier< DataTypes >::addNewPoint(x);};
 
     /** \brief Remove a subset of points
      *
@@ -448,7 +461,7 @@ public:
 
 
     //protected:
-public: // must actually be protected (has to be fixed)
+    //public: // must actually be protected (has to be fixed)
     void addTriangle(Triangle e);
 
 public:

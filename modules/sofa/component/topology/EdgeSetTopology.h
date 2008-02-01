@@ -208,9 +208,19 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
+    template< typename DataTypes >
+    friend class EdgeSetTopologyAlgorithms;
+
+    friend class sofa::core::componentmodel::topology::TopologicalMapping;
+
+    template< typename In, typename Out >
+    friend class Tetra2TriangleTopologicalMapping;
+
     EdgeSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : PointSetTopologyModifier<DataTypes>(top)
     {
     }
+
+protected:
     /** \brief Build an edge set topology from a file : also modifies the MechanicalObject
      *
      */
@@ -269,6 +279,8 @@ public:
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
 
+    virtual void addNewPoint( const sofa::helper::vector< double >& x) {PointSetTopologyModifier< DataTypes >::addNewPoint(x);};
+
 
     /** \brief Remove a subset of points
      *
@@ -297,7 +309,7 @@ public:
     virtual void splitEdgesProcess( sofa::helper::vector<unsigned int> &indices,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = sofa::helper::vector< sofa::helper::vector< double > >(0));
 
-protected:
+    //protected:
     void addEdge(Edge e);
 
 public:

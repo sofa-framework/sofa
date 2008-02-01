@@ -32,7 +32,6 @@ class GeometryAlgorithms;
 /// Translates topology events (TopologyChange objects) from a topology so that they apply on another one.
 class TopologicalMapping;
 
-
 /// The enumeration used to give unique identifiers to TopologyChange objects.
 enum TopologyChangeType
 {
@@ -123,6 +122,7 @@ class BaseTopology : public objectmodel::BaseObject
 {
 
 public :
+
     /** \brief Provides an iterator on the first element in the list of TopologyChange objects.
      */
     std::list<const TopologyChange *>::const_iterator firstChange() const;
@@ -143,14 +143,12 @@ public :
     }
 
 
-
     /** \brief Returns the TopologyModifier object of this Topology.
      */
     TopologyModifier *getTopologyModifier() const
     {
         return m_topologyModifier;
     }
-
 
 
     /** \brief Returns the TopologyAlgorithms object of this Topology if it is a main topology, 0 otherwise.
@@ -327,6 +325,7 @@ protected:
     friend class TopologyModifier;
     friend class TopologyAlgorithms;
     friend class BaseTopology;
+
 };
 
 
@@ -336,6 +335,9 @@ class TopologyModifier
 {
 
 public:
+
+    friend class TopologyMapping;
+
     /** \brief Constructor.
      *
      * @param basicTopology the topology this object applies to.
