@@ -208,6 +208,10 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
 
+    EdgeSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : PointSetTopologyModifier<DataTypes>(top)
+    {
+    }
+
     template< typename DataTypes >
     friend class EdgeSetTopologyAlgorithms;
 
@@ -215,10 +219,6 @@ public:
 
     template< typename In, typename Out >
     friend class Tetra2TriangleTopologicalMapping;
-
-    EdgeSetTopologyModifier(core::componentmodel::topology::BaseTopology *top) : PointSetTopologyModifier<DataTypes>(top)
-    {
-    }
 
 protected:
     /** \brief Build an edge set topology from a file : also modifies the MechanicalObject
