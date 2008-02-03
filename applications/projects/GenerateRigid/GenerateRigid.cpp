@@ -1,4 +1,4 @@
-#include <GenerateRigid.h>
+#include "GenerateRigid.h"
 
 #include <stdlib.h>
 #include <math.h>
