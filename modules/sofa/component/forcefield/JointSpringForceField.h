@@ -120,7 +120,7 @@ public:
             //,limitAngles(axmin,axmax,aymin,aymax,azmin,azmax)
             , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr)
         {
-            limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
+            limitAngles = sofa::defaulttype::Vec<6,Real>(axmin,axmax,aymin,aymax,azmin,azmax);
             freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
             for (unsigned int i=0; i<3; i++)
             {
@@ -213,7 +213,7 @@ public:
                         in>>s.initRot;
                     else
                     {
-                        std::cerr<<"Error parsing Spring : Unknown Attribute "<<str<<endl;
+                        std::cerr<<"Error parsing Spring : Unknown Attribute "<<str<<std::endl;
                         return in;
                     }
 
