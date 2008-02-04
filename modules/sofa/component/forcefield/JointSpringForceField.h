@@ -96,8 +96,10 @@ public:
         Spring()
             : m1(0), m2(0), kd(0), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
             , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100)
-            , freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
+            //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
         {
+            freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
+            limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
             initTrans = Vec(0,0,0);
             initRot = Quat(0,0,0,1);
         }
@@ -105,17 +107,20 @@ public:
         Spring(int m1, int m2)
             : m1(m1), m2(m2), kd(0), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
             , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100)
-            , freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
+            //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
         {
+            freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
+            limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
             initTrans = Vec(0,0,0);
             initRot = Quat(0,0,0,1);
         }
 
         Spring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
             : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
-            ,limitAngles(axmin,axmax,aymin,aymax,azmin,azmax)
+            //,limitAngles(axmin,axmax,aymin,aymax,azmin,azmax)
             , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr)
         {
+            limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
             freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
             for (unsigned int i=0; i<3; i++)
             {
@@ -255,7 +260,7 @@ public:
             if (s.initRot[3]!= 1)
                 out<<"REST_R "<<s.initRot<<"  ";
 
-            out<<"END_SPRING"<<endl;
+            out<<"END_SPRING"<<std::endl;
             return out;
         }
 
