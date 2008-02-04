@@ -48,9 +48,6 @@ void ArticulatedSystemMapping<BasicMapping>::init()
     OutVecCoord& xto = *this->toModel->getX();
     InVecCoord& xfrom = *this->fromModel->getX();
 
-    core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->toModel->getContext()->getTopology());
-    _topology = dynamic_cast<topology::MeshTopology*>(topology);
-
     context->parent->getNodeObject(rootModel);
 
     apply(xto, xfrom);
@@ -105,20 +102,6 @@ void ArticulatedSystemMapping<BasicMapping>::apply( typename Out::VecCoord& out,
                 out[child].getCenter() += axis*value.x();
             }
         }
-    }
-
-    _topology->clear();
-
-    ac = articulationCenters.begin();
-    ac++;
-    for(unsigned int n=0; n<out.size(); n++)
-    {
-        _topology->addPoint(out[n].getCenter().x(), out[n].getCenter().y(),out[n].getCenter().z() );
-    }
-
-    for (; ac != acEnd; ac++)
-    {
-        _topology->addLine((*ac)->parentIndex.getValue(), (*ac)->childIndex.getValue());
     }
 }
 
@@ -276,21 +259,10 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::draw()
 {
-    if (!getShow(this)) return;
-    OutVecCoord& xto = *this->toModel->getX();
-    glDisable (GL_LIGHTING);
-    glPointSize(2);
-
-    for (int i=0; i<_topology->getNbLines(); i++)
-    {
-        int node1 = _topology->getLine(i)[0];
-        int node2 = _topology->getLine(i)[1];
-        glColor4f (1,0,0,0);
-        glBegin (GL_LINES);
-        helper::gl::glVertexT(xto[node1].getCenter());
-        helper::gl::glVertexT(xto[node2].getCenter());
-        glEnd();
-    }
+    //if (!getShow(this)) return;
+    //OutVecCoord& xto = *this->toModel->getX();
+    //glDisable (GL_LIGHTING);
+    //glPointSize(2);
 }
 
 } // namespace mapping
