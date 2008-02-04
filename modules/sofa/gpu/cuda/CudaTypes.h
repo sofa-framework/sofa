@@ -69,7 +69,7 @@ public:
     ~CudaVector()
     {
         if ( hostPointer!=NULL )
-            free ( hostPointer );
+            mycudaFreeHost ( hostPointer );
         if ( devicePointer!=NULL )
             mycudaFree ( devicePointer );
     }
@@ -96,11 +96,13 @@ public:
             mycudaFree ( prevDevicePointer );
 
         T* prevHostPointer = hostPointer;
-        hostPointer = ( T* ) malloc ( allocSize*sizeof ( T ) );
+        void* newHostPointer = NULL;
+        mycudaMallocHost ( &newHostPointer, allocSize*sizeof ( T ) );
+        hostPointer = (T*)newHostPointer;
         if ( vectorSize!=0 && hostIsValid )
             std::copy ( prevHostPointer, prevHostPointer+vectorSize, hostPointer );
         if ( prevHostPointer != NULL )
-            free ( prevHostPointer );
+            mycudaFreeHost ( prevHostPointer );
     }
     /// resize the vector without calling constructors or destructors, and without synchronizing the device and host copy
     void fastResize ( size_type s )
@@ -339,7 +341,7 @@ public:
 
     ~CudaMatrix()
     {
-        if (hostPointer!=NULL) free(hostPointer);
+        if (hostPointer!=NULL) mycudaFreeHost(hostPointer);
         if (devicePointer!=NULL) mycudaFree(devicePointer);
     }
 
@@ -368,15 +370,17 @@ public:
             // always allocate multiples of BSIZE values
             allocSize = ( allocSize+BSIZE-1 ) &-BSIZE;
             T* prevHostPointer = hostPointer;
-            hostPointer = ( T* ) malloc ( allocSize*sizeof ( T ) );
             if ( prevHostPointer != NULL )
-                free ( prevHostPointer );
+                mycudaFreeHost ( prevHostPointer );
+            void* newHostPointer = NULL;
+            mycudaMallocHost ( &newHostPointer, allocSize*sizeof ( T ) );
+            hostPointer = (T*)newHostPointer;
         }
         void* prevDevicePointer = devicePointer;
-        //mycudaMalloc (&devicePointer,allocSize*sizeof(T));
-        mycudaMallocPitch(&devicePointer, &pitch, x*sizeof(T), y);
         if (prevDevicePointer != NULL )
             mycudaFree ( prevDevicePointer );
+        //mycudaMalloc (&devicePointer,allocSize*sizeof(T));
+        mycudaMallocPitch(&devicePointer, &pitch, x*sizeof(T), y);
         sizeX = x;
         sizeY = y;
         deviceIsValid = true;
