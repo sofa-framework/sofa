@@ -34,7 +34,7 @@
 		<Object type="FixedConstraint" template="Rigid" name="fixOrigin"
 				indices="0"
 		/>
-		
+
 		<Node>
 			<Object type="MechanicalObject" template="Rigid" name="attaches"
 					position="0 0 0 0.707914 0 0 0.707914 
@@ -51,10 +51,10 @@
 					repartition="1 2 2 2 2"
 			/>
 			<Object type="JointSpringForceField" template="Rigid" name="joint springs"
-					spring="0 1   0 0 0 0 1 0   0 30000  0 200000   0  0 0 0  0 0 0 1 
-							2 3   0 0 0 0 1 0   0 30000  0 200000   0  0 0 0  0 0 0 1
-							4 5   0 0 0 0 1 0   0 30000  0 200000   0  0 0 0  0 0 0 1
-							6 7   0 0 0 0 1 0   0 30000  0 200000   0  0 0 0  0 0 0 1"
+					spring="BEGIN_SPRING 0 1  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 200000.0  KS_B 2000.0  KD 1.0  R_LIM_X -0.80 0.80  R_LIM_Y -1.57 1.57  R_LIM_Z 0.0 0.0  END_SPRING 
+							BEGIN_SPRING 2 3  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 200000.0  KS_B 2000.0  KD 1.0  R_LIM_X -0.80 0.80  R_LIM_Y -1.57 1.57  R_LIM_Z 0.0 0.0  END_SPRING 
+							BEGIN_SPRING 4 5  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 200000.0  KS_B 2000.0  KD 1.0  R_LIM_X -0.80 0.80  R_LIM_Y -1.57 1.57  R_LIM_Z 0.0 0.0  END_SPRING 
+							BEGIN_SPRING 6 7  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 200000.0  KS_B 2000.0  KD 1.0  R_LIM_X -0.80 0.80  R_LIM_Y -1.57 1.57  R_LIM_Z 0.0 0.0  END_SPRING "
 			/>
 		</Node>
 		<Node>

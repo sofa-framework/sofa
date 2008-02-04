@@ -46,12 +46,10 @@ namespace component
 namespace forcefield
 {
 
+
 template<class DataTypes>
-JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1, MechanicalState* object2, Vec _kst, Vec _ksr, double _kd)
+JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1, MechanicalState* object2)
     : Inherit(object1, object2)
-    , kst(initData(&kst,_kst,"stiffnessTranslation","uniform stiffness for the all springs"))
-    , ksr(initData(&ksr,_ksr,"stiffnessRotation","uniform stiffness for the all springs"))
-    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , showLawfulTorsion(initData(&showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation"))
     , showExtraTorsion(initData(&showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation"))
@@ -59,11 +57,8 @@ JointSpringForceField<DataTypes>::JointSpringForceField(MechanicalState* object1
 }
 
 template<class DataTypes>
-JointSpringForceField<DataTypes>::JointSpringForceField(Vec _kst, Vec _ksr, double _kd)
-    : kst(initData(&kst,_kst,"stiffnessTranslation","uniform stiffness for the all springs"))
-    , ksr(initData(&ksr,_ksr,"stiffnessRotation","uniform stiffness for the all springs"))
-    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+JointSpringForceField<DataTypes>::JointSpringForceField()
+    : springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , showLawfulTorsion(initData(&showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation"))
     , showExtraTorsion(initData(&showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation"))
 {
@@ -111,16 +106,40 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     // |--> we apply rotation forces on it, and then go back to world reference axis
     spring.extraTorsion = spring.lawfulTorsion.inverse()*Mp1p2.getOrientation();
 
+    //--
+    //--test limit angles
+    Vec dTorsion = spring.lawfulTorsion.toEulerVector();
+    bool bloc=false;
+    for (unsigned int i=0; i<3; i++)
+    {
+        if (spring.freeMovements[3+i] && dRangles[i] < spring.limitAngles[i*2])
+        {
+            spring.bloquage[i] = spring.blocStiffnessRot;
+            dTorsion[i] -= spring.limitAngles[i*2];
+            bloc=true;
+        }
+        else if (spring.freeMovements[3+i] && dRangles[i] > spring.limitAngles[i*2+1])
+        {
+            spring.bloquage[i] = spring.blocStiffnessRot;
+            dTorsion[i] -= spring.limitAngles[i*2+1];
+            bloc=true;
+        }
+    }
+    //--
+
+    //compute stiffnesses components
     Vec kst( spring.freeMovements[0]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[1]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[2]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans);
-    Vec ksrH( spring.freeMovements[3]==0?spring.hardStiffnessRot:(Real)0.0, spring.freeMovements[4]==0?spring.hardStiffnessRot:(Real)0.0, spring.freeMovements[5]==0?spring.hardStiffnessRot:(Real)0.0);
+    Vec ksrH( spring.freeMovements[3]!=0?(Real)0.0:spring.hardStiffnessRot, spring.freeMovements[4]!=0?(Real)0.0:spring.hardStiffnessRot, spring.freeMovements[5]!=0?(Real)0.0:spring.hardStiffnessRot);
+    Vec ksrS( spring.freeMovements[3]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[4]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[5]==0?(Real)0.0:spring.softStiffnessRot);
 
     //compute directional force (relative translation is expressed in world coordinates)
     Vec fT0 = Mr01 * (kst.linearProduct(Mr10 * Mp1p2.getCenter())) + damping.linearProduct(Vp1p2.getVCenter());
     //compute rotational force (relative orientation is expressed in p1)
     Vec fR0 = Mr01 * MRLT * ( ksrH.linearProduct(spring.extraTorsion.toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
-
-    Vec ksrS( spring.freeMovements[3]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[4]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[5]==0?(Real)0.0:spring.softStiffnessRot);
     fR0 += Mr01 * ( ksrS.linearProduct(spring.lawfulTorsion.toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
+    //--
+    if(bloc)
+        fR0 += Mr01 * ( spring.bloquage.linearProduct( dTorsion)) + damping.linearProduct(Vp1p2.getVOrientation());
 
     const Deriv force(fT0, fR0 );
     //affect forces
@@ -130,7 +149,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
 }
 
 template<class DataTypes>
-void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int , const Spring& spring)
+void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int , /*const*/ Spring& spring)
 {
     const int a = spring.m1;
     const int b = spring.m2;
@@ -141,7 +160,7 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
     invertMatrix(Mr10, Mr01);
 
     Vec kst( spring.freeMovements[0]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[1]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[2]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans);
-    Vec ksr( spring.freeMovements[3]==0?spring.hardStiffnessRot:spring.softStiffnessRot, spring.freeMovements[4]==0?spring.hardStiffnessRot:spring.softStiffnessRot, spring.freeMovements[5]==0?spring.hardStiffnessRot:spring.softStiffnessRot);
+    Vec ksr( spring.freeMovements[3]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[0], spring.freeMovements[4]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[1], spring.freeMovements[5]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[2]);
 
     //compute directional force
     Vec df0 = Mr01 * (kst.linearProduct(Mr10*Mdx1dx2.getVCenter() ));
@@ -153,6 +172,8 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
     f1[a]+=dforce;
     f2[b]-=dforce;
 
+    //--
+    spring.bloquage=Vec();
 }
 
 template<class DataTypes>
@@ -178,11 +199,13 @@ void JointSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, c
     df1.resize(dx1.size());
     df2.resize(dx2.size());
 
-    const helper::vector<Spring>& springs = this->springs.getValue();
+    //const helper::vector<Spring>& springs = this->springs.getValue();
+    helper::vector<Spring>& springs = *this->springs.beginEdit();
     for (unsigned int i=0; i<springs.size(); i++)
     {
         this->addSpringDForce(df1,dx1,df2,dx2, i, springs[i]);
     }
+    this->springs.endEdit();
 }
 
 template<class DataTypes>

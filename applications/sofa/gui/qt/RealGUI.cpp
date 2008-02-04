@@ -1065,7 +1065,7 @@ void RealGUI::fileSaveAs(GNode *node)
     if ( s.length() >0 )
     {
         if ( pmlreader && s.endsWith ( ".pml" ) )
-            pmlreader->saveAsPML ( node,s );
+            pmlreader->saveAsPML ( s );
         else
             fileSaveAs ( node,s );
     }
