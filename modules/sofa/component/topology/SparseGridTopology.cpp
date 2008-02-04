@@ -415,6 +415,8 @@ void SparseGridTopology::buildAsFinest(  )
 //           std::cerr << "SparseGridTopology: loading mesh "<<filename.getValue()<<" failed."<<std::endl;
     }
 
+
+
 }
 
 
@@ -528,6 +530,7 @@ void SparseGridTopology::buildFromFiner(  )
     _hierarchicalPointMap.resize(seqPoints.size());
     _finerSparseGrid->_inverseHierarchicalPointMap.resize(_finerSparseGrid->seqPoints.size());
     _finerSparseGrid->_inversePointMap.resize(_finerSparseGrid->seqPoints.size()); _finerSparseGrid->_inversePointMap.fill(-1);
+    _pointMap.resize(seqPoints.size()); _pointMap.fill(-1);
     for( unsigned w=0; w<seqCubes.size(); ++w)
     {
         const fixed_array<int, 8>& child = _hierarchicalCubeMap[w];
@@ -580,6 +583,10 @@ void SparseGridTopology::buildFromFiner(  )
         }
 
     }
+
+
+    for( unsigned i=0; i<_finerSparseGrid->_inversePointMap.size(); ++i)
+        _pointMap[ _finerSparseGrid->_inversePointMap[i] ]=i;
 
 // 		for(unsigned i=0;i<_finerSparseGrid->seqPoints.size();++i)
 // 		{
@@ -679,6 +686,7 @@ int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy,
     for(unsigned w=0; w<seqCubes.size(); ++w)
     {
         if(_types[w]!=BOUNDARY)continue;
+// 				if(_types[w]==OUTSIDE)continue;
 
         const Cube& c = getCube( w );
         int c0 = c[0];

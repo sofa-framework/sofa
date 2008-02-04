@@ -133,12 +133,13 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass 
 {
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
+    Coord l = nodes[6] - nodes[0];
 
     Mass.clear();
 
     for(int i=0; i<8; ++i)
     {
-        Real mass = vol * integrateMass(this->_coef[i][0], this->_coef[i][1],this->_coef[i][2]);
+        Real mass = vol * integrateMass(this->_coef[i][0], this->_coef[i][1],this->_coef[i][2], 2.0f/l[0], 2.0f/l[1], 2.0f/l[2]);
 
         Mass[i*3][i*3] += mass;
         Mass[i*3+1][i*3+1] += mass;
@@ -148,7 +149,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass 
 
         for(int j=i+1; j<8; ++j)
         {
-            Real mass = vol * integrateMass(this->_coef[i][0], this->_coef[i][1],this->_coef[i][2]);
+            Real mass = vol * integrateMass(this->_coef[i][0], this->_coef[i][1],this->_coef[i][2], 2.0f/l[0], 2.0f/l[1], 2.0f/l[2]);
 
             Mass[i*3][j*3] += mass;
             Mass[i*3+1][j*3+1] += mass;
@@ -162,19 +163,29 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass 
             Mass[j][i] = Mass[i][j];
         }
 
-    if( this->_sparseGrid )
-        Mass *= (Real)(this->_sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+    if( this->_sparseGrid && this->_sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY)
+        Mass *= .5;
 }
 
 
 template<class DataTypes>
-typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceFieldAndMass<DataTypes>::integrateMass(  int signx, int signy, int signz  )
+typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceFieldAndMass<DataTypes>::integrateMass(  int signx, int signy, int signz,Real l0,Real l1,Real l2  )
 {
     Real t1 = signx*signx;
     Real t2 = signy*signy;
     Real t3 = signz*signz;
     Real t9 = t1*t2;
     return t1*t3/72.0+t2*t3/72.0+t9*t3/216.0+t3/24.0+1.0/8.0+t9/72.0+t1/24.0+t2/24.0*_density.getValue();
+
+
+// 		  Real t1 = l0*l0;
+// 		  Real t2 = t1*signx;
+// 		  Real t3 = signz*signx;
+// 		  Real t7 = t1*signy;
+// 		  return t2*t3*signz/72.0+t7*signz*signy*signz/72.0+t2*signy*t3*signy*
+// 				  signz/216.0+t1*signz*signz/24.0+t2*signy*signx*signy/72.0+t1/8.0+t2*signx/
+// 				  24.0+t7*signy/24.0 *_density.getValue() /(l0*l1*l2);
+
 }
 
 

@@ -83,8 +83,9 @@ public:
     HierarchicalPointMap _hierarchicalPointMap;
     typedef helper::vector< AHierarchicalPointMap > InverseHierarchicalPointMap; ///< a fine point indice -> corresponding some parent points for interpolation
     InverseHierarchicalPointMap _inverseHierarchicalPointMap;
-    typedef helper::vector< int > InversePointMap; ///< a fine point indice -> corresponding points in coarser level
-    InversePointMap _inversePointMap;
+    typedef helper::vector< int > PointMap;
+    PointMap _pointMap; ///< a coarse point indice -> corresponding point in finer level
+    PointMap _inversePointMap;  ///< a fine point indice -> corresponding point in coarser level
 
 
     enum {UP,DOWN,RIGHT,LEFT,BEFORE,BEHIND,NUM_CONNECTED_NODES};
@@ -170,7 +171,7 @@ protected:
 
 
 
-    SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
+    SparseGridTopology* _finerSparseGrid;   ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
     SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid
 
 

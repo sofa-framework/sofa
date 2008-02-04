@@ -51,7 +51,7 @@ public:
 
     virtual void computeElementMasses( ); ///< compute the mass matrices
     virtual void computeElementMass( ElementMass &Mass, const Vec<8,Coord> &nodes, const int elementIndice); ///< compute the mass matrix of an element
-    Real integrateMass( int signx, int signy, int signz  );
+    Real integrateMass( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
 
     virtual std::string getTemplateName() const;
 
