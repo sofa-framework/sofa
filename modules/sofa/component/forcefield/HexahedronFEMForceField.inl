@@ -325,8 +325,8 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
 
     // if sparseGrid -> the filling ratio is taken into account
-    if( _sparseGrid )
-        K *= (Real)(_sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+    if( _sparseGrid && _sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY)
+        K *= .5;
 
 }
 
@@ -336,6 +336,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 template<class DataTypes>
 typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataTypes>::integrateStiffness( int signx0, int signy0, int signz0, int signx1, int signy1, int signz1, const Real u, const Real v, const Real w, const Mat33& J_1  )
 {
+// 	Real xmax=1,ymax=1,zmax=1,xmin=-1,ymin=-1,zmin=-1;
 // 	Real t1 = (Real)(signx0*signy0);
 // 	Real t2 = signz0*w;
 // 	Real t3 = t2*signx1;
@@ -408,7 +409,7 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 // 			8.0f;
 // 	K[2][2] = t4*t190/36.0f+(t28+t70)*J_1[2][2]/24.0f+t17*t190/72.0f+(t68+t130)*
 // 			J_1[2][2]/24.0f+(t15*t23*t57+t62+t141)*J_1[2][2]/8.0f+(t68+t37)*J_1[2][2]/24.0f;
-
+//
 // 	return J_1 * K;
 
     Mat33 K;
@@ -492,7 +493,7 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
             t173*signy0*t28/12.0+t180*t12/8.0+t181*t113/24.0+t177*t18/24.0+t172*signz0*u*
             signz1/8.0+t173*t5/8.0;
 
-    return K;
+    return K /*/(J_1[0][0]*J_1[1][1]*J_1[2][2])*/;
 
 }
 
