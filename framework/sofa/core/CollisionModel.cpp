@@ -32,7 +32,7 @@ namespace core
 
 
 /// Get a color that can be used to display this CollisionModel
-const float* CollisionModel::getColor4f() const
+const float* CollisionModel::getColor4f()
 {
 
     static float defaultColorSimulatedMovingActive[4] = {1, 0.5f, 0, 1};
@@ -55,15 +55,15 @@ const float* CollisionModel::getColor4f() const
         return color.getValue().ptr();
     else if (isSimulated())
         if (isMoving())
-            if (isActive()) return defaultColorSimulatedMovingActive;
-            else            return defaultColorSimulatedMoving;
-        else if (isActive()) return defaultColorSimulatedActive;
-        else            return defaultColorSimulated;
+            if (isActive()) {setColor4f(defaultColorSimulatedMovingActive); return defaultColorSimulatedMovingActive;}
+            else            {setColor4f(defaultColorSimulatedMoving); return defaultColorSimulatedMoving;}
+        else if (isActive()) {setColor4f(defaultColorSimulatedActive); return defaultColorSimulatedActive;}
+        else            {setColor4f(defaultColorSimulated); return defaultColorSimulated;}
     else if (isMoving())
-        if (isActive()) return defaultColorMovingActive;
-        else            return defaultColorMoving;
-    else if (isActive()) return defaultColorActive;
-    else            return defaultColor;
+        if (isActive()) {setColor4f(defaultColorMovingActive); return defaultColorMovingActive;}
+        else            {setColor4f(defaultColorMoving); return defaultColorMoving;}
+    else if (isActive()) {setColor4f(defaultColorActive); return defaultColorActive;}
+    else            {setColor4f(defaultColor); return defaultColor;}
 }
 
 } // namespace core
