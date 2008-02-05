@@ -419,7 +419,7 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     Real t3 = signy0*signz0;
     Real t4 = t2*t3;
     Real t5 = w*signx1;
-    Real t6 = signy1*signz1;
+    Real t6 = (Real)(signy1*signz1);
     Real t7 = t5*t6;
     Real t10 = t1*signy0;
     Real t12 = w*signy1;
@@ -438,12 +438,12 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     Real t49 = J_1[0][0]*signy0;
     Real t50 = t49*signz0;
     Real t51 = w*J_1[1][1];
-    Real t52 = signx1*signz1;
+    Real t52 = (Real)(signx1*signz1);
     Real t53 = t51*t52;
     Real t56 = t45*signy1;
     Real t64 = v*J_1[2][2];
     Real t68 = w*J_1[2][2];
-    Real t69 = signx1*signy1;
+    Real t69 = (Real)(signx1*signy1);
     Real t70 = t68*t69;
     Real t73 = t64*signz1;
     Real t81 = J_1[1][1]*signy0;
@@ -471,27 +471,26 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
     Real t177 = t173*signz0;
     Real t180 = t172*signy0;
     Real t181 = t180*signz0;
-    K[0][0] = t4*t7/36.0+t10*signz0*t13/12.0+t16*t18/24.0+t4*t21/72.0+
-            t24*t25/24.0+t24*t28/24.0+t1*signz0*t32/8.0+t10*t12/8.0+t16*t37/24.0+t2*t17/8.0
-            ;
-    K[0][1] = t43*signz0*t45*t6/24.0+t50*t53/24.0+t43*t56/8.0+t49*t51*
-            signx1/8.0;
-    K[0][2] = t43*signy0*t64*t6/24.0+t50*t70/24.0+t43*t73/8.0+J_1[0][0]*signz0
-            *t68*signx1/8.0;
-    K[1][0] = t81*signz0*t83*t52/24.0+t88*t90/24.0+t81*t93/8.0+t87*t89*
-            signy1/8.0;
-    K[1][1] = t102*t7/36.0+t102*t21/72.0+t101*signz0*t37/12.0+t111*t113
+    K[0][0] = (float)(t4*t7/36.0+t10*signz0*t13/12.0+t16*t18/24.0+t4*t21/72.0+
+            t24*t25/24.0+t24*t28/24.0+t1*signz0*t32/8.0+t10*t12/8.0+t16*t37/24.0+t2*t17/8.0);
+    K[0][1] = (float)(t43*signz0*t45*t6/24.0+t50*t53/24.0+t43*t56/8.0+t49*t51*
+            signx1/8.0);
+    K[0][2] = (float)(t43*signy0*t64*t6/24.0+t50*t70/24.0+t43*t73/8.0+J_1[0][0]*signz0
+            *t68*signx1/8.0);
+    K[1][0] = (float)(t81*signz0*t83*t52/24.0+t88*t90/24.0+t81*t93/8.0+t87*t89*
+            signy1/8.0);
+    K[1][1] = (float)(t102*t7/36.0+t102*t21/72.0+t101*signz0*t37/12.0+t111*t113
             /24.0+t116*t28/24.0+t100*signz0*t32/8.0+t111*t13/24.0+t116*t25/24.0+t110*t112/
-            8.0+t101*t5/8.0;
-    K[1][2] = t87*signy0*t64*t52/24.0+t88*t70/24.0+t81*t73/8.0+J_1[1][1]*
-            signz0*t68*signy1/8.0;
-    K[2][0] = t144*signz0*t83*t69/24.0+t150*t90/24.0+t153*t93/8.0+t149*
-            t89*signz1/8.0;
-    K[2][1] = t149*signz0*t45*t69/24.0+t150*t53/24.0+t153*t56/8.0+t144*
-            t51*signz1/8.0;
-    K[2][2] = t174*t7/36.0+t177*t37/24.0+t181*t13/24.0+t174*t21/72.0+
+            8.0+t101*t5/8.0);
+    K[1][2] = (float)(t87*signy0*t64*t52/24.0+t88*t70/24.0+t81*t73/8.0+J_1[1][1]*
+            signz0*t68*signy1/8.0);
+    K[2][0] = (float)(t144*signz0*t83*t69/24.0+t150*t90/24.0+t153*t93/8.0+t149*
+            t89*signz1/8.0);
+    K[2][1] = (float)(t149*signz0*t45*t69/24.0+t150*t53/24.0+t153*t56/8.0+t144*
+            t51*signz1/8.0);
+    K[2][2] = (float)(t174*t7/36.0+t177*t37/24.0+t181*t13/24.0+t174*t21/72.0+
             t173*signy0*t28/12.0+t180*t12/8.0+t181*t113/24.0+t177*t18/24.0+t172*signz0*u*
-            signz1/8.0+t173*t5/8.0;
+            signz1/8.0+t173*t5/8.0);
 
     return K /*/(J_1[0][0]*J_1[1][1]*J_1[2][2])*/;
 

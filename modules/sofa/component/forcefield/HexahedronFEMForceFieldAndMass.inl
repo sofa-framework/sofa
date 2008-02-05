@@ -169,13 +169,13 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass 
 
 
 template<class DataTypes>
-typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceFieldAndMass<DataTypes>::integrateMass(  int signx, int signy, int signz,Real l0,Real l1,Real l2  )
+typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceFieldAndMass<DataTypes>::integrateMass(  int signx, int signy, int signz,Real /*l0*/,Real /*l1*/,Real /*l2*/  )
 {
-    Real t1 = signx*signx;
-    Real t2 = signy*signy;
-    Real t3 = signz*signz;
-    Real t9 = t1*t2;
-    return t1*t3/72.0+t2*t3/72.0+t9*t3/216.0+t3/24.0+1.0/8.0+t9/72.0+t1/24.0+t2/24.0*_density.getValue();
+    Real t1 = (Real)(signx*signx);
+    Real t2 = (Real)(signy*signy);
+    Real t3 = (Real)(signz*signz);
+    Real t9 = (Real)(t1*t2);
+    return (Real)(t1*t3/72.0+t2*t3/72.0+t9*t3/216.0+t3/24.0+1.0/8.0+t9/72.0+t1/24.0+t2/24.0*_density.getValue());
 
 
 // 		  Real t1 = l0*l0;

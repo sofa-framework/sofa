@@ -362,7 +362,7 @@ void SkinningMapping<BasicMapping>::draw()
         {
             if(m_coefs[nbRefs.getValue()*i+m] > 0.0)
             {
-                glColor4f (m_coefs[nbRefs.getValue()*i+m],m_coefs[nbRefs.getValue()*i+m],0,1);
+                glColor4d (m_coefs[nbRefs.getValue()*i+m],m_coefs[nbRefs.getValue()*i+m],0,1);
                 helper::gl::glVertexT(xIn[m_reps[nbRefs.getValue()*i+m] ].getCenter());
                 helper::gl::glVertexT(xOut[i]);
             }

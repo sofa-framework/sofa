@@ -80,6 +80,7 @@ public:
     {
     }
 
+
     virtual ~CollisionModel() { }
 
     /// Return true if there are no elements
@@ -285,8 +286,8 @@ public:
     /// @}
 
     /// Get a color that can be used to display this CollisionModel
-    const float* getColor4f() const;
-
+    const float* getColor4f();
+    void setColor4f(const float *c) {color.setValue(defaulttype::Vec4f(c[0],c[1],c[2],c[3]));};
 protected:
 
     Data<bool> bActive;
