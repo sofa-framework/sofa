@@ -1,7 +1,6 @@
 #include <sofa/component/topology/TriangleSetTopology.h>
 #include <sofa/component/topology/TriangleSetTopology.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-//#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -46,6 +45,13 @@ template class TriangleSetGeometryAlgorithms<Vec2fTypes>;
 template class TriangleSetGeometryAlgorithms<Vec2dTypes>;
 template class TriangleSetGeometryAlgorithms<Vec1fTypes>;
 template class TriangleSetGeometryAlgorithms<Vec1dTypes>;
+
+template class TriangleSetTopologyModifier<Vec3dTypes>;
+template class TriangleSetTopologyModifier<Vec3fTypes>;
+template class TriangleSetTopologyModifier<Vec2dTypes>;
+template class TriangleSetTopologyModifier<Vec2fTypes>;
+template class TriangleSetTopologyModifier<Vec1dTypes>;
+template class TriangleSetTopologyModifier<Vec1fTypes>;
 
 // implementation TriangleSetTopologyContainer
 
@@ -326,21 +332,6 @@ bool TriangleSetTopologyContainer::checkTopology() const
     }
     return true;
 }
-
-// factory related stuff
-/*
-template<class DataTypes>
-void create(TriangleSetTopology<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-	simulation::tree::xml::createWithParent< TriangleSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
-	if (obj!=NULL)
-	{
-		if (arg->getAttribute("filename"))
-			obj->load(arg->getAttribute("filename"));
-	}
-}
-
-*/
 
 } // namespace topology
 
