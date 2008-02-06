@@ -183,7 +183,7 @@ void PenalityContactForceField<DataTypes>::grabPoint(
     helper::vector< unsigned int > &triangle,
     helper::vector< unsigned int > &index_point)
 {
-    if (static_cast< core::objectmodel::BaseObject *>(this->mstate1) == static_cast< const BaseObject *>(tool))
+    if (static_cast< core::objectmodel::BaseObject *>(this->mstate1) == static_cast< const core::objectmodel::BaseObject *>(tool))
     {
         for (unsigned int i=0; i<contacts.getValue().size(); i++)
         {
@@ -191,7 +191,7 @@ void PenalityContactForceField<DataTypes>::grabPoint(
             {
                 if (contacts.getValue()[i].m1  == (int)index[j])
                 {
-                    result.push_back(std::make_pair(static_cast< BaseObject *>(this),
+                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this),
                             (*this->mstate2->getX())[contacts.getValue()[i].m2])
                                     );
                     triangle.push_back(contacts.getValue()[i].index2);
@@ -200,7 +200,7 @@ void PenalityContactForceField<DataTypes>::grabPoint(
             }
         }
     }
-    else if (static_cast< BaseObject *>(this->mstate2) == static_cast< const BaseObject *>(tool))
+    else if (static_cast< core::objectmodel::BaseObject *>(this->mstate2) == static_cast< const core::objectmodel::BaseObject *>(tool))
     {
 
         for (unsigned int i=0; i<contacts.getValue().size(); i++)
@@ -209,7 +209,7 @@ void PenalityContactForceField<DataTypes>::grabPoint(
             {
                 if (contacts.getValue()[i].m2  == (int)index[j])
                 {
-                    result.push_back(std::make_pair(static_cast< BaseObject *>(this),
+                    result.push_back(std::make_pair(static_cast< core::objectmodel::BaseObject *>(this),
                             (*this->mstate1->getX())[contacts.getValue()[i].m1])
                                     );
 

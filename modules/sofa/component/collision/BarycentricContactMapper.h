@@ -315,11 +315,11 @@ public:
 };
 
 /// Mapper for SphereModel
-template<class InDataTypes, class DataTypes>
-class ContactMapper<TSphereModel<InDataTypes>, DataTypes> : public IdentityContactMapper<TSphereModel<InDataTypes>, DataTypes>
+template<class TInDataTypes, class DataTypes>
+class ContactMapper<TSphereModel<TInDataTypes>, DataTypes> : public IdentityContactMapper<TSphereModel<TInDataTypes>, DataTypes>
 {
 public:
-    double radius(const TSphere<InDataTypes>& e)
+    double radius(const TSphere<TInDataTypes>& e)
     {
         return e.r();
     }
