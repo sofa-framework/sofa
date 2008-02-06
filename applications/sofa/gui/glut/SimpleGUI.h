@@ -51,7 +51,7 @@
 #  define GLAPIENTRY
 # endif
 # include <GL/glu.h>
-# ifdef WIN32
+# ifdef _MSC_VER
 #  include <GL/glaux.h>
 # endif
 # include <GL/glut.h>

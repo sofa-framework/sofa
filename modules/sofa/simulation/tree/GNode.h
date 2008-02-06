@@ -192,14 +192,14 @@ public:
     template<class Object, class Container>
     void getNodeObjects(Container* list)
     {
-        this->get<Object, Container>(*list, Local);
+        this->get<Object, Container>(list, Local);
     }
 
     /// List all objects of this node and sub-nodes deriving from a given class
     template<class Object, class Container>
     void getTreeObjects(Container* list)
     {
-        this->get<Object, Container>(*list, SearchDown);
+        this->get<Object, Container>(list, SearchDown);
     }
 
     /// Return an object of this node deriving from a given class, or NULL if not found.

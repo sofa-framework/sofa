@@ -43,7 +43,7 @@ GraspingManager::~GraspingManager()
 void GraspingManager::init()
 {
     std::vector<ToolModel*> models;
-    this->getContext()->get<ToolModel>(models, core::objectmodel::BaseContext::SearchDown);
+    this->getContext()->get<ToolModel>(&models, core::objectmodel::BaseContext::SearchDown);
     for (unsigned int i=0; i<models.size(); i++)
     {
         if (models[i]->getContactResponse() == std::string("stick"))

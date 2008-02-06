@@ -247,9 +247,9 @@ public:
 
     /// Generic list of objects access template wrapper, possibly searching up or down from the current context
     template<class T, class Container>
-    void get(Container& list, SearchDirection dir = SearchUp) const
+    void get(Container* list, SearchDirection dir = SearchUp) const
     {
-        GetObjectsCallBackT<T,Container> cb(&list);
+        GetObjectsCallBackT<T,Container> cb(list);
         this->getObjects(classid(T), cb, dir);
     }
 

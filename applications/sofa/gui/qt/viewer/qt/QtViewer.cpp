@@ -36,7 +36,7 @@
 #include <string.h>
 #include <math.h>
 
-#ifdef WIN32
+#ifdef _MSC_VER
 #include <GL/glaux.h>
 #endif
 #include <sofa/helper/system/glut.h>
