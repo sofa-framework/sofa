@@ -416,7 +416,7 @@ typename HexahedronFEMForceField<DataTypes>::Mat33 HexahedronFEMForceField<DataT
 
     Real t1 = J_1[0][0]*J_1[0][0];
     Real t2 = t1*signx0;
-    Real t3 = signy0*signz0;
+    Real t3 = (Real)(signy0*signz0);
     Real t4 = t2*t3;
     Real t5 = w*signx1;
     Real t6 = (Real)(signy1*signz1);
