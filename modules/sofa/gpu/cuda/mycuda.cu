@@ -60,7 +60,6 @@ void mycudaMallocPitch(void **devPtr, size_t* pitch, size_t width, size_t height
     if (!cudaInitCalled) mycudaInit(0);
     myprintf("CUDA: mallocPitch(%d,%d).\n",width,height);
     cudaCheck(cudaMallocPitch(devPtr, pitch, width, height),"cudaMalloc2D");
-    myprintf("pitch=%d\n",*pitch);
 }
 
 void mycudaFree(void *devPtr)

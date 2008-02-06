@@ -355,6 +355,10 @@ public:
         return sizeY;
     }
 
+    size_type getPitch() const
+    {
+        return pitch;
+    }
     bool empty() const
     {
         return sizeX==0 || sizeY==0;
@@ -408,13 +412,13 @@ public:
     /*
     const void* deviceRead ( int x=0, int y=0 ) const {
     	copyToDevice();
-    	return (const T*) ((const char*) devicePointer  + x * pitch) + y;
+    	return (const T*)(( ( const char* ) devicePointer ) +(x*pitch+y*sizeof(T)));
     }
 
     void* deviceWrite ( int x=0, int y=0 )	{
     	copyToDevice();
     	hostIsValid = false;
-    	return (const T*) ((const char*) devicePointer  + x * pitch) + y;
+    	return (T*)(( ( const char* ) devicePointer ) +(x*pitch+y*sizeof(T)));
     }
 
     const T* hostRead ( int x=0, int y=0 ) const {
@@ -426,8 +430,8 @@ public:
     	copyToHost();
     	deviceIsValid = false;
     	return hostPointer+(x*sizeY+y);
-    }*/
-
+    }
+    */
     const void* deviceRead ( int x=0, int y=0 ) const
     {
         copyToDevice();
@@ -438,7 +442,7 @@ public:
     {
         copyToDevice();
         hostIsValid = false;
-        return (const T*)(( ( const char* ) devicePointer ) +(y*pitch+x*sizeof(T)));
+        return (T*)(( ( const char* ) devicePointer ) +(y*pitch+x*sizeof(T)));
     }
 
     const T* hostRead ( int x=0, int y=0 ) const
@@ -488,7 +492,8 @@ public:
     const T& getCached (size_type x,size_type y) const {
     	checkIndex (x,y);
     	return hostPointer[x*sizeY+y];
-    }*/
+    }
+    */
 
     const T* operator[] (size_type y) const
     {
@@ -509,7 +514,8 @@ public:
     }
 
 protected:
-    /*void copyToHost() const
+    /*
+    void copyToHost() const
     {
     	if ( hostIsValid ) return;
     #ifndef NDEBUG
@@ -526,7 +532,8 @@ protected:
     #endif
     	mycudaMemcpyHostToDevice2D (devicePointer, sizeX*pitch, hostPointer, sizeX*sizeY*sizeof(float),  sizeY*sizeof(T), sizeX);
     	deviceIsValid = true;
-    }*/
+    }
+    */
 
     void copyToHost() const
     {
