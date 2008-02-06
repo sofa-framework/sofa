@@ -26,9 +26,11 @@
 #define SOFA_HELPER_SYSTEM_CONFIG_H
 
 #ifdef WIN32
+#ifdef _MSC_VER
 #define NOMINMAX
-#include <windows.h>
 #define snprintf _snprintf
+#endif
+#include <windows.h>
 #endif
 
 #ifdef _MSC_VER

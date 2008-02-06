@@ -2435,7 +2435,7 @@ bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
 {
     bool initialization = false;
     sofa::helper::vector< sofa::core::CollisionModel* > list_collisionModels;
-    node->get< sofa::core::CollisionModel >( list_collisionModels);
+    node->get< sofa::core::CollisionModel >( &list_collisionModels);
     //Creation of the item in the graph
     Q3ListViewItem *item;
     if (parent == NULL)
