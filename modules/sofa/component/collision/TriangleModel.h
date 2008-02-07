@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_TRIANGLEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -77,7 +76,7 @@ public:
     int flags() const;
 };
 
-class TriangleModel : public core::CollisionModel, public core::VisualModel
+class TriangleModel : public core::CollisionModel
 {
 protected:
     struct TriangleInfo
@@ -135,14 +134,7 @@ public:
 
     void draw(int index);
 
-
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 

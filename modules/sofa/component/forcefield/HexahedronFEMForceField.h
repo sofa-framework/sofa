@@ -27,46 +27,12 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/FittedRegularGridTopology.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-
-
-
-
-
-// WARNING: indices ordering is different than in topology node
-//
-// 	   Y  7---------6
-//     ^ /	       /|
-//     |/	 Z    / |
-//     3----^----2  |
-//     |   /	 |  |
-//     |  4------|--5
-//     | / 	     | /
-//     |/	     |/
-//     0---------1-->X
-
-
-// Corotational hexahedron from
-// @Article{NMPCPF05,
-//   author       = "Nesme, Matthieu and Marchal, Maud and Promayon, Emmanuel and Chabanas, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
-//   title        = "Physically Realistic Interactive Simulation for Biological Soft Tissues",
-//   journal      = "Recent Research Developments in Biomechanics",
-//   volume       = "2",
-//   year         = "2005",
-//   keywords     = "surgical simulation physical animation truth cube",
-//   url          = "http://www-evasion.imag.fr/Publications/2005/NMPCPF05"
-// }
-
-
-
-
-
 
 namespace sofa
 {
@@ -81,9 +47,32 @@ using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
 /** Compute Finite Element forces based on hexahedral elements.
+ *
+ * Corotational hexahedron from
+ * @Article{NMPCPF05,
+ *   author       = "Nesme, Matthieu and Marchal, Maud and Promayon, Emmanuel and Chabanas, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
+ *   title        = "Physically Realistic Interactive Simulation for Biological Soft Tissues",
+ *   journal      = "Recent Research Developments in Biomechanics",
+ *   volume       = "2",
+ *   year         = "2005",
+ *   keywords     = "surgical simulation physical animation truth cube",
+ *   url          = "http://www-evasion.imag.fr/Publications/2005/NMPCPF05"
+ * }
+ *
+ * WARNING: indices ordering is different than in topology node
+ *
+ *     Y  7---------6
+ *     ^ /         /|
+ *     |/    Z    / |
+ *     3----^----2  |
+ *     |   /     |  |
+ *     |  4------|--5
+ *     | /       | /
+ *     |/        |/
+ *     0---------1-->X
 */
 template<class DataTypes>
-class HexahedronFEMForceField : virtual public core::componentmodel::behavior::ForceField<DataTypes>, virtual public core::VisualModel
+class HexahedronFEMForceField : virtual public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -206,10 +195,7 @@ public:
     virtual double getPotentialEnergy(const VecCoord& x);
 
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
 protected:
 

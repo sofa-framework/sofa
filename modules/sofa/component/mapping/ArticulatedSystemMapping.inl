@@ -259,7 +259,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
 template <class BasicMapping>
 void ArticulatedSystemMapping<BasicMapping>::draw()
 {
-    //if (!getShow(this)) return;
+    //if (!this->getShow()) return;
     //OutVecCoord& xto = *this->toModel->getX();
     //glDisable (GL_LIGHTING);
     //glPointSize(2);

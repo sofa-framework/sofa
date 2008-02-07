@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_CUBEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -57,7 +56,7 @@ public:
     const std::pair<Cube,Cube>& subcells() const;
 };
 
-class CubeModel : public core::CollisionModel, public core::VisualModel
+class CubeModel : public core::CollisionModel
 {
 protected:
 
@@ -114,13 +113,7 @@ public:
 
     void draw(int index);
 
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 
 protected:
 

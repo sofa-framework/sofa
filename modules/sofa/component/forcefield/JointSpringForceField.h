@@ -28,7 +28,6 @@
 
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <vector>
 #include <sofa/defaulttype/Mat.h>
@@ -55,7 +54,7 @@ public:
   Use ksr vector to specify the rotational stiffnesses (on each local axe)
 */
 template<class DataTypes>
-class JointSpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public core::VisualModel
+class JointSpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
@@ -307,10 +306,7 @@ public:
 
     sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
     // -- Modifiers
 

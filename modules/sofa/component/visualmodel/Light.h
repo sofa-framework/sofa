@@ -64,11 +64,11 @@ public:
     Light();
     virtual ~Light();
 
-    virtual void initTextures() ;
+    virtual void initVisual();
     void init();
-    virtual void draw();
+    virtual void drawVisual();
     virtual void reinit();
-    void update() {} ;
+    void updateVisual() {}
 };
 
 class DirectionalLight : public Light
@@ -80,8 +80,8 @@ public:
 
     DirectionalLight();
     virtual ~DirectionalLight();
-    virtual void initTextures() ;
-    virtual void draw();
+    virtual void initVisual();
+    virtual void drawVisual();
     virtual void reinit();
 
 
@@ -97,8 +97,8 @@ public:
 
     PositionalLight();
     virtual ~PositionalLight();
-    virtual void initTextures() ;
-    virtual void draw();
+    virtual void initVisual();
+    virtual void drawVisual();
     virtual void reinit();
 
 };
@@ -112,8 +112,8 @@ protected:
 public:
     SpotLight();
     virtual ~SpotLight();
-    virtual void initTextures() ;
-    virtual void draw();
+    virtual void initVisual();
+    virtual void drawVisual();
     virtual void reinit();
 
 

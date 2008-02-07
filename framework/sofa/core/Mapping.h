@@ -151,6 +151,9 @@ public:
         }
         if (arg) obj->parse(arg);
     }
+
+protected:
+    bool getShow() const { return this->getContext()->getShowMappings(); }
 };
 
 } // namespace core

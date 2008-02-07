@@ -29,7 +29,6 @@
 // Copyright: See COPYING file that comes with this distribution
 
 #include <sofa/core/objectmodel/ContextObject.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/SolidTypes.h>
 
 namespace sofa
@@ -62,7 +61,7 @@ namespace contextobject
 
 /** Defines the local coordinate system with respect to its parent.
 */
-class CoordinateSystem : public core::objectmodel::ContextObject, public core::VisualModel
+class CoordinateSystem : public core::objectmodel::ContextObject
 {
 public:
     typedef core::objectmodel::BaseContext::SolidTypes SolidTypes;
@@ -81,12 +80,7 @@ public:
     // ContextObject
     virtual void apply();
 
-    // VisualModel
     virtual void draw();
-    virtual void initTextures()
-    {}
-    virtual void update()
-    {}
 
 
     /// Transform wrt parent

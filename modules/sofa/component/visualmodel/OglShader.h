@@ -36,10 +36,10 @@ public:
     OglShader();
     virtual ~OglShader();
 
-    void initTextures();
+    void initVisual();
     void init();
-    void draw();
-    void update();
+    void drawVisual();
+    void updateVisual();
 
     void start();
     void stop();

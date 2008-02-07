@@ -527,7 +527,7 @@ void RigidMapping< core::componentmodel::behavior::MechanicalMapping< core::comp
 template <class BasicMapping>
 void RigidMapping<BasicMapping>::draw()
 {
-    if (!getShow(this)) return;
+    if (!this->getShow()) return;
     glDisable (GL_LIGHTING);
     glPointSize(7);
     glColor4f (1,1,0,1);

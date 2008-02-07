@@ -4,7 +4,6 @@
 #include "CudaTypes.h"
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -36,7 +35,7 @@ public:
     explicit CudaPoint(const core::CollisionElementIterator& i);
 };
 
-class CudaPointModel : public core::CollisionModel, public core::VisualModel
+class CudaPointModel : public core::CollisionModel
 {
 public:
     typedef CudaVec3fTypes InDataTypes;
@@ -64,18 +63,9 @@ public:
 
     void draw(int index);
 
-    // -- VisualModel interface
-
     void draw();
 
-    void initTextures() { }
-
-    void update() { }
-
-
     core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return mstate; }
-
-    //virtual const char* getTypeName() const { return "Point"; }
 
 protected:
 

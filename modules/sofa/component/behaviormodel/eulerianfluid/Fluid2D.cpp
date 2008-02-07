@@ -95,7 +95,7 @@ void Fluid2D::updatePosition(double dt)
     Grid2D* p = fluid; fluid=fnext; fnext=p;
 }
 
-void Fluid2D::draw()
+void Fluid2D::drawVisual()
 {
     glPushMatrix();
     glTranslatef(-(nx-1)*cellwidth/2,-(ny-1)*cellwidth/2,0.0f);
@@ -201,7 +201,7 @@ void Fluid2D::draw()
     glPopMatrix();
 }
 
-void Fluid2D::update()
+void Fluid2D::updateVisual()
 {
     points.clear();
     facets.clear();

@@ -3,7 +3,6 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/vector.h>
 
@@ -18,7 +17,7 @@ namespace forcefield
 
 /** Apply constant forces to given degrees of freedom.  */
 template<class DataTypes>
-class ConstantForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class ConstantForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherit;
@@ -46,10 +45,7 @@ public:
     virtual double getPotentialEnergy(const VecCoord& x);
 
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
     bool addBBox(double* minBBox, double* maxBBox);
 
 };

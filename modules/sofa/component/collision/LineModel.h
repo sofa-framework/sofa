@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_LINEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -69,7 +68,7 @@ public:
     const Vector3* tLeft() const;
 };
 
-class LineModel : public core::CollisionModel, public core::VisualModel
+class LineModel : public core::CollisionModel
 {
 protected:
     struct LineData
@@ -108,13 +107,7 @@ public:
 
     void draw(int index);
 
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }

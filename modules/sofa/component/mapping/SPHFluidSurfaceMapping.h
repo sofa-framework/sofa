@@ -34,7 +34,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h> // for marching cube tables
-#include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <vector>
 
 namespace sofa
@@ -94,7 +93,7 @@ public:
 };
 
 template <class In, class Out>
-class SPHFluidSurfaceMapping : public core::Mapping<In, Out>, public topology::MeshTopology, public core::VisualModel
+class SPHFluidSurfaceMapping : public core::Mapping<In, Out>, public topology::MeshTopology
 {
 public:
     typedef core::Mapping<In, Out> Inherit;
@@ -156,12 +155,7 @@ public:
 
     //void applyJT( InVecDeriv& out, const OutVecDeriv& in );
 
-    // -- VisualModel interface
     void draw();
-    void initTextures()
-    { }
-    void update()
-    { }
 
 
 protected:

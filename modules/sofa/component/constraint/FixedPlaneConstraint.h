@@ -27,7 +27,6 @@
 
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <set>
 #include <sofa/component/topology/PointSubset.h>
 
@@ -42,7 +41,7 @@ namespace constraint
 {
 
 template <class DataTypes>
-class FixedPlaneConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public core::VisualModel
+class FixedPlaneConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef core::componentmodel::behavior::Constraint<DataTypes> Inherit;
@@ -83,15 +82,8 @@ public:
     void selectVerticesAlongPlane();
     void setDminAndDmax(const Real _dmin,const Real _dmax) {dmin=_dmin; dmax=_dmax; selectVerticesFromPlanes=true;}
 
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 protected:
-protected :
 
     // Define TestNewPointFunction
     static bool FPCTestNewPointFunction(int, void*, const helper::vector< unsigned int > &, const helper::vector< double >& );

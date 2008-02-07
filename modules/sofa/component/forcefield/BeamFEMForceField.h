@@ -3,7 +3,6 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/FittedRegularGridTopology.h>
 #include <sofa/helper/vector.h>
@@ -25,7 +24,7 @@ using sofa::helper::vector;
 /** Compute Finite Element forces based on 6D beam elements.
 */
 template<class DataTypes>
-class BeamFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class BeamFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -126,10 +125,7 @@ public:
     virtual double getPotentialEnergy(const VecCoord&) { return 0; }
 
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
 protected:
 

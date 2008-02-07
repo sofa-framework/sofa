@@ -27,7 +27,7 @@ namespace forcefield
 using sofa::gpu::cuda::CudaVec3fTypes;
 
 template<>
-class PenalityContactForceField<CudaVec3fTypes> : public core::componentmodel::behavior::PairInteractionForceField<CudaVec3fTypes>, public core::VisualModel
+class PenalityContactForceField<CudaVec3fTypes> : public core::componentmodel::behavior::PairInteractionForceField<CudaVec3fTypes>
 {
 public:
     typedef CudaVec3fTypes DataTypes;
@@ -84,10 +84,7 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord&, const VecCoord&);
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 };
 
 } // namespace forcefield

@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_POINTMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -60,7 +59,7 @@ public:
     void getTriangleNeighbors(std::vector<std::pair<Vector3, Vector3> > &) const;
 };
 
-class PointModel : public core::CollisionModel, public core::VisualModel
+class PointModel : public core::CollisionModel
 {
 public:
     typedef Vec3Types InDataTypes;
@@ -89,13 +88,7 @@ public:
 
     void draw(int index);
 
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }

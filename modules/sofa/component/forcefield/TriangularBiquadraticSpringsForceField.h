@@ -30,8 +30,6 @@
 #endif
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/MechanicalObject.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -54,7 +52,7 @@ using namespace sofa::component::topology;
 
 
 template<class DataTypes>
-class TriangularBiquadraticSpringsForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class TriangularBiquadraticSpringsForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
@@ -152,10 +150,7 @@ public:
         f_poissonRatio.setValue((Real)ratio);
     }
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { };
-    void update() { };
     /// compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();
 

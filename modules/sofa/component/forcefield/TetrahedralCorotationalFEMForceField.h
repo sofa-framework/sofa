@@ -27,7 +27,6 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/TetrahedronData.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
@@ -65,7 +64,7 @@ using namespace sofa::component::topology;
 /** Compute Finite Element forces based on tetrahedral elements.
 */
 template<class DataTypes>
-class TetrahedralCorotationalFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class TetrahedralCorotationalFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -196,10 +195,7 @@ public:
     // handle topological changes
     virtual void handleTopologyChange();
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
 protected:
 

@@ -29,13 +29,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/PointSubset.h>
-#include <vector>
-
-
-
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -49,7 +43,7 @@ namespace mapping
 {
 
 template <class BasicMapping>
-class LaparoscopicRigidMapping : public BasicMapping, public core::VisualModel
+class LaparoscopicRigidMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef BasicMapping Inherit;
@@ -95,10 +89,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
     void grab();
 
 protected:
@@ -108,10 +99,6 @@ protected:
     core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types > *mstate;
     bool grab_state;/*
 	  component::MechanicalObject<defaulttype::Vec3Types> *mm;*/
-
-    bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
-
-    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 
     //Find the DOFs of the laparascopic object
     core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types > *getMechanicalState()

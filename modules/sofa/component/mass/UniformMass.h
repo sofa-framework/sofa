@@ -28,7 +28,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/defaulttype/BaseVector.h>
 
@@ -44,7 +43,7 @@ namespace mass
 using namespace sofa::defaulttype;
 
 template <class DataTypes, class MassType>
-class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>, public core::VisualModel
+class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
@@ -86,17 +85,9 @@ public:
 
     void addGravityToV(double dt);
 
-    // -- VisualModel interface
-
     void draw();
 
     bool addBBox(double* minBBox, double* maxBBox);
-
-    void initTextures()
-    { }
-
-    void update()
-    { }
 };
 
 } // namespace mass

@@ -30,7 +30,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/VisualModel.h>
 #include <vector>
 
 using namespace sofa::defaulttype;
@@ -45,7 +44,7 @@ namespace mapping
 {
 
 template <class BasicMapping>
-class RigidRigidMapping : public BasicMapping, public core::VisualModel
+class RigidRigidMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef BasicMapping Inherit;
@@ -107,10 +106,7 @@ public:
 
     //void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
     void clear();
 
