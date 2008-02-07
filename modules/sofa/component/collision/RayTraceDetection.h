@@ -26,7 +26,6 @@
 #include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
 #include <sofa/core/componentmodel/collision/NarrowPhaseDetection.h>
 #include <sofa/core/CollisionElement.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
 
@@ -51,8 +50,7 @@ using namespace sofa::defaulttype;
  */
 class RayTraceDetection :public core::componentmodel::collision::
     BroadPhaseDetection,
-public core::componentmodel::collision::NarrowPhaseDetection,
-public core::VisualModel
+public core::componentmodel::collision::NarrowPhaseDetection
 {
 private:
     sofa::helper::vector < core::CollisionModel * >collisionModels;
@@ -80,14 +78,7 @@ public:
         collisionModels.clear();
     }
 
-    /* for debugging, VisualModel */
     void draw ();
-    void initTextures ()
-    {
-    }
-    void update ()
-    {
-    }
 };
 
 }				// namespace collision

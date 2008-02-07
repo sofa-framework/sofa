@@ -3,7 +3,6 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/constraint/LagrangianMultiplierConstraint.h>
-#include <sofa/core/VisualModel.h>
 #include <vector>
 
 
@@ -17,7 +16,7 @@ namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -63,10 +62,7 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 };
 
 } // namespace constraint

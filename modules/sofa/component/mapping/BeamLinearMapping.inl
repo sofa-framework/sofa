@@ -236,7 +236,7 @@ void BeamLinearMapping<BaseMapping>::applyJT( typename In::VecConst& /*out*/, co
 template <class BasicMapping>
 void BeamLinearMapping<BasicMapping>::draw()
 {
-    if (!getShow(this)) return;
+    if (!this->getShow()) return;
     glDisable (GL_LIGHTING);
     glPointSize(7);
     glColor4f (1,1,0,1);

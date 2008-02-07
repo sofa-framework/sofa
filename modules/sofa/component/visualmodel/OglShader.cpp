@@ -48,7 +48,7 @@ void OglShader::init()
 
 }
 
-void OglShader::initTextures()
+void OglShader::initVisual()
 {
     if (sofa::helper::gl::CShader::InitGLSL())
         std::cout << "GLSL OK" << std::endl;
@@ -58,7 +58,7 @@ void OglShader::initTextures()
 
 }
 
-void OglShader::draw()
+void OglShader::drawVisual()
 {
 
 }
@@ -73,7 +73,7 @@ void OglShader::start()
     m_shader.TurnOn();
 }
 
-void OglShader::update()
+void OglShader::updateVisual()
 {
 
 }

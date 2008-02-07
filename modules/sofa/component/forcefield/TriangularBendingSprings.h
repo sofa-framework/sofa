@@ -45,7 +45,6 @@
 #include <map>
 
 #include <sofa/core/componentmodel/behavior/ForceField.h> // or "BaseForceField.h" ?
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -74,7 +73,7 @@ The springs connect the vertices not belonging to the common edge. It compresses
 	@author The SOFA team </www.sofa-framework.org>
 */
 template<class DataTypes>
-class TriangularBendingSprings : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class TriangularBendingSprings : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
@@ -174,10 +173,7 @@ public:
     // handle topological changes
     virtual void handleTopologyChange();
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { };
-    void update() { };
 
 protected:
 

@@ -4,7 +4,6 @@
 #include "CudaTypes.h"
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -411,7 +410,7 @@ public:
     void setNewState(double dt, CudaDistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 };
 
-class CudaRigidDistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
+class CudaRigidDistanceGridCollisionModel : public core::CollisionModel
 {
 protected:
 
@@ -519,13 +518,7 @@ public:
 
     void draw(int index);
 
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 };
 
 inline CudaRigidDistanceGridCollisionElement::CudaRigidDistanceGridCollisionElement(CudaRigidDistanceGridCollisionModel* model, int index)

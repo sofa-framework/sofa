@@ -27,10 +27,8 @@
 
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/objectmodel/BaseObject.h>
 #include <vector>
 
 
@@ -44,7 +42,7 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class PenalityContactForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public core::VisualModel
+class PenalityContactForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
@@ -127,10 +125,7 @@ public:
             helper::vector< unsigned int > &index_point) ;
 
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 };
 
 } // namespace forcefield

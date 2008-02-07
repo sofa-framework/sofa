@@ -45,7 +45,7 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-class Fluid2D : public sofa::core::BehaviorModel, public sofa::core::VisualModel
+class Fluid2D : public sofa::core::BehaviorModel
 {
 public:
     typedef Grid2D::real real;
@@ -84,13 +84,13 @@ public:
 
     virtual void updatePosition(double dt);
 
-    virtual void draw();
+    virtual void drawVisual();
 
     virtual bool addBBox(double* minBBox, double* maxBBox);
 
-    virtual void initTextures() {}
+    virtual void initVisual() {}
 
-    virtual void update();
+    virtual void updateVisual();
 
 protected:
     // marching cube

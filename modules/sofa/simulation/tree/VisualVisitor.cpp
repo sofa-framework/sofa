@@ -23,7 +23,6 @@
 * and F. Poyer                                                                 *
 *******************************************************************************/
 #include <sofa/simulation/tree/VisualVisitor.h>
-#include <sofa/component/visualmodel/VisualModelImpl.h>
 
 namespace sofa
 {
@@ -48,36 +47,37 @@ Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
     glPopMatrix();
     return RESULT_CONTINUE;
 }
+
+void VisualDrawVisitor::processObject(GNode* node, core::objectmodel::BaseObject* o)
+{
+    if (pass == Std)
+        o->draw();
+}
+
 void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
 {
     //cerr<<"VisualDrawVisitor::processVisualModel "<<vm->getName()<<endl;
-    core::objectmodel::BaseObject* obj = NULL;
     sofa::core::Shader* shader = NULL;
-    sofa::component::visualmodel::VisualModelImpl* vmi = NULL;
     if (hasShader)
-    {
-        obj = node->getShader();
-        shader = dynamic_cast<sofa::core::Shader*>(obj);
-        vmi =  dynamic_cast<sofa::component::visualmodel::VisualModelImpl*> (vm);
-    }
+        shader = dynamic_cast<sofa::core::Shader*>(node->getShader());
 
     switch(pass)
     {
     case Std:
     {
-        if (shader && vmi)
+        if (shader)
             shader->start();
-        vm->draw();
-        if (shader && vmi)
+        vm->drawVisual();
+        if (shader)
             shader->stop();
         break;
     }
     case Transparent:
     {
-        if (shader && vmi)
+        if (shader)
             shader->start();
         vm->drawTransparent();
-        if (shader && vmi)
+        if (shader)
             shader->stop();
         break;
     }
@@ -89,12 +89,12 @@ void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
 
 void VisualUpdateVisitor::processVisualModel(GNode*, core::VisualModel* vm)
 {
-    vm->update();
+    vm->updateVisual();
 }
 
-void VisualInitTexturesVisitor::processVisualModel(GNode*, core::VisualModel* vm)
+void VisualInitVisitor::processVisualModel(GNode*, core::VisualModel* vm)
 {
-    vm->initTextures();
+    vm->initVisual();
 }
 
 VisualComputeBBoxVisitor::VisualComputeBBoxVisitor()
@@ -102,6 +102,7 @@ VisualComputeBBoxVisitor::VisualComputeBBoxVisitor()
     minBBox[0] = minBBox[1] = minBBox[2] = 1e10;
     maxBBox[0] = maxBBox[1] = maxBBox[2] = -1e10;
 }
+
 void VisualComputeBBoxVisitor::processVisualModel(GNode*, core::VisualModel* vm)
 {
     vm->addBBox(minBBox, maxBBox);

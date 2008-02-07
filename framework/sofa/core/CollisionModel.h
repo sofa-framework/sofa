@@ -245,6 +245,9 @@ public:
     /// Render an collision element.
     virtual void draw(int /*index*/) {}
 
+    /// Render the whole collision model.
+    virtual void draw() {}
+
     /// Return the first (i.e. root) CollisionModel in the hierarchy.
     CollisionModel* getFirst()
     {

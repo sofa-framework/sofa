@@ -3,7 +3,6 @@
 
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/TriangleSubsetData.h>
 
 
@@ -21,7 +20,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::topology;
 
 template<class DataTypes>
-class TrianglePressureForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class TrianglePressureForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -82,10 +81,7 @@ public:
     virtual void handleTopologyChange();
 
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { };
-    void update() { };
 
     void setDminAndDmax(const double _dmin, const double _dmax)
     {

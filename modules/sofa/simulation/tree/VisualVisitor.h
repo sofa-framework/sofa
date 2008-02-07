@@ -47,9 +47,11 @@ class VisualVisitor : public Visitor
 {
 public:
     virtual void processVisualModel(GNode* node, core::VisualModel* vm) = 0;
+    virtual void processObject(GNode* /*node*/, core::objectmodel::BaseObject* /*o*/) {}
 
     virtual Result processNodeTopDown(GNode* node)
     {
+        for_each(this, node, node->object, &VisualVisitor::processObject);
         for_each(this, node, node->visualModel, &VisualVisitor::processVisualModel);
         return RESULT_CONTINUE;
     }
@@ -70,7 +72,8 @@ public:
     {
     }
     virtual Result processNodeTopDown(GNode* node);
-    virtual void processVisualModel(GNode*, core::VisualModel* vm);
+    virtual void processVisualModel(GNode* node, core::VisualModel* vm);
+    virtual void processObject(GNode* node, core::objectmodel::BaseObject* o);
 };
 
 class VisualUpdateVisitor : public VisualVisitor
@@ -79,7 +82,7 @@ public:
     virtual void processVisualModel(GNode*, core::VisualModel* vm);
 };
 
-class VisualInitTexturesVisitor : public VisualVisitor
+class VisualInitVisitor : public VisualVisitor
 {
 public:
     virtual void processVisualModel(GNode*, core::VisualModel* vm);

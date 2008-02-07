@@ -27,7 +27,6 @@
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/topology/SparseGridTopology.h>
@@ -365,7 +364,7 @@ public:
 
 
 template <class BasicMapping>
-class BarycentricMapping : public BasicMapping, public core::VisualModel
+class BarycentricMapping : public BasicMapping
 {
 public:
     typedef BasicMapping Inherit;
@@ -474,24 +473,7 @@ public:
 
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
-    // -- VisualModel interface
     void draw();
-    void initTextures()
-    { }
-    void update()
-    { }
-
-protected:
-
-    bool getShow(const core::objectmodel::BaseObject* m) const
-    {
-        return m->getContext()->getShowMappings();
-    }
-
-    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const
-    {
-        return m->getContext()->getShowMechanicalMappings();
-    }
 
 };
 

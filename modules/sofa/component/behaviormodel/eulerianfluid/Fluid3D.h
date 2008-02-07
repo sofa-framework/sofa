@@ -87,13 +87,13 @@ public:
 
     virtual void updatePosition(double dt);
 
-    virtual void draw();
+    virtual void drawVisual();
 
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 
-    virtual void initTextures() {}
+    virtual void initVisual() {}
 
-    virtual void update();
+    virtual void updateVisual();
 
     virtual bool addBBox(double* minBBox, double* maxBBox);
 

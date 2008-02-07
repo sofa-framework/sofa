@@ -162,7 +162,7 @@ public:
 
     bool isTransparent();
 
-    void draw();
+    void drawVisual();
     void drawTransparent();
     void drawShadow();
 
@@ -193,14 +193,14 @@ public:
     virtual void computeNormals();
     virtual void computeBBox();
 
-    virtual void update();
+    virtual void updateVisual();
 
     // handle topological changes
     virtual void handleTopologyChange();
 
     void init();
 
-    void initTextures();
+    void initVisual();
 
     bool addBBox(double* minBBox, double* maxBBox);
 

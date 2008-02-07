@@ -30,7 +30,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -52,7 +51,7 @@ using namespace sofa::component::container;
 using namespace sofa::simulation::tree;
 
 template <class BasicMapping>
-class ArticulatedSystemMapping : public BasicMapping, public core::VisualModel
+class ArticulatedSystemMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef BasicMapping Inherit;
@@ -96,16 +95,7 @@ public:
 
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
-    // -- VisualModel interface
     void draw();
-
-    void initTextures() {};
-
-    void update() {};
-
-    bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
-
-    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 
     /**
     *	Stores al the articulation centers

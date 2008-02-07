@@ -26,8 +26,6 @@
 #define SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_H
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/MechanicalObject.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/FittedRegularGridTopology.h>
 #include <sofa/helper/vector.h>
@@ -72,7 +70,7 @@ public:
 /** Compute Finite Element forces based on tetrahedral elements.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class TetrahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -196,10 +194,7 @@ public:
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, double, unsigned int &);
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
 protected:
 

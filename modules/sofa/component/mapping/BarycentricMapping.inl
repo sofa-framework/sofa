@@ -1036,7 +1036,7 @@ void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJ
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::draw()
 {
-    if (!getShow(this)) return;
+    if (!this->getShow()) return;
     glDisable (GL_LIGHTING);
     glPointSize(7);
     glColor4f (1,1,0,1);

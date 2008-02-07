@@ -251,7 +251,7 @@ void LaparoscopicRigidMapping<BasicMapping>::draw()
         glEnd();
 
     }
-    if (!getShow(this)) return;
+    if (!this->getShow()) return;
 }
 
 } // namespace mapping

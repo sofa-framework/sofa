@@ -3,7 +3,6 @@
 
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <iostream>
 
 namespace sofa
@@ -16,7 +15,7 @@ namespace constraint
 {
 
 template<class DataTypes>
-class UnilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint, public core::VisualModel
+class UnilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -142,10 +141,7 @@ public:
         }
     }
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 };
 } // namespace constraint
 

@@ -134,7 +134,7 @@ bool VisualModelImpl::isTransparent()
     return (material.getValue().useDiffuse && material.getValue().diffuse[3] < 1.0);
 }
 
-void VisualModelImpl::draw()
+void VisualModelImpl::drawVisual()
 {
     if (!isTransparent())
         internalDraw();
@@ -348,7 +348,7 @@ void VisualModelImpl::applyTranslation(double dx, double dy, double dz)
     {
         x[i] += d;
     }
-    update();
+    updateVisual();
 }
 
 void VisualModelImpl::applyRotation(Quat q)
@@ -358,7 +358,7 @@ void VisualModelImpl::applyRotation(Quat q)
     {
         x[i] = q.rotate(x[i]);
     }
-    update();
+    updateVisual();
 }
 
 void VisualModelImpl::applyScale(double scale)
@@ -368,7 +368,7 @@ void VisualModelImpl::applyScale(double scale)
     {
         x[i] *= (GLfloat) scale;
     }
-    update();
+    updateVisual();
 }
 
 void VisualModelImpl::applyUVTranslation(double dU, double dV)
@@ -392,7 +392,7 @@ void VisualModelImpl::applyUVScale(double scaleU, double scaleV)
 void VisualModelImpl::init()
 {
     VisualModel::init();
-    update();
+    updateVisual();
 }
 
 void VisualModelImpl::computeNormals()
@@ -611,9 +611,9 @@ void VisualModelImpl::setColor(std::string color)
     setColor(r,g,b,a);
 }
 
-void VisualModelImpl::update()
+void VisualModelImpl::updateVisual()
 {
-    //std::cout << "VisualModelImpl::update()"<<std::endl;
+    //std::cout << "VisualModelImpl::updateVisual()"<<std::endl;
     if (modified && !vertices.empty() || useTopology)
     {
         if (useTopology)
@@ -890,7 +890,7 @@ void VisualModelImpl::handleTopologyChange()
         case core::componentmodel::topology::ENDING_EVENT:
         {
             //std::cout << "INFO_print : Vis - ENDING_EVENT" << std::endl;
-            update();
+            updateVisual();
             break;
         }
 
@@ -1259,7 +1259,7 @@ void VisualModelImpl::handleTopologyChange()
 
 
 }
-void VisualModelImpl::initTextures()
+void VisualModelImpl::initVisual()
 {
     //if (tex)
     //{

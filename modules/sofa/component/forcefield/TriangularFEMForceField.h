@@ -30,8 +30,6 @@
 #endif
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/MechanicalObject.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -40,18 +38,6 @@
 #include <sofa/component/topology/PointData.h>
 #include <NewMAT/newmat.h>
 #include <NewMAT/newmatap.h>
-
-// corotational triangle from
-// @InProceedings{NPF05,
-//   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
-//   title        = "Efficient, Physically Plausible Finite Elements",
-//   booktitle    = "Eurographics (short papers)",
-//   month        = "august",
-//   year         = "2005",
-//   editor       = "J. Dingliana and F. Ganovelli",
-//   keywords     = "animation, physical model, elasticity, finite elements",
-//   url          = "http://www-evasion.imag.fr/Publications/2005/NPF05"
-// }
 
 
 
@@ -69,8 +55,20 @@ using sofa::helper::vector;
 using namespace sofa::component::topology;
 
 
+/** corotational triangle from
+ * @InProceedings{NPF05,
+ *   author       = "Nesme, Matthieu and Payan, Yohan and Faure, Fran\c{c}ois",
+ *   title        = "Efficient, Physically Plausible Finite Elements",
+ *   booktitle    = "Eurographics (short papers)",
+ *   month        = "august",
+ *   year         = "2005",
+ *   editor       = "J. Dingliana and F. Ganovelli",
+ *   keywords     = "animation, physical model, elasticity, finite elements",
+ *   url          = "http://www-evasion.imag.fr/Publications/2005/NPF05"
+ * }
+ */
 template<class DataTypes>
-class TriangularFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public core::VisualModel
+class TriangularFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
@@ -181,14 +179,7 @@ public:
     // handle topological changes
     virtual void handleTopologyChange();
 
-    // -- VisualModel interface
     void draw();
-    void initTextures()
-    { }
-    ;
-    void update()
-    { }
-    ;
 
     int method;
     Data<std::string> f_method;

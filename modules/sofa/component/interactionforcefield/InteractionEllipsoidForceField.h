@@ -3,7 +3,6 @@
 
 #include <sofa/core/componentmodel/behavior/MixedInteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
@@ -27,7 +26,7 @@ public:
 };
 
 template<class DataTypes1, class DataTypes2>
-class InteractionEllipsoidForceField : public core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>, public core::VisualModel
+class InteractionEllipsoidForceField : public core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2> Inherit;
@@ -126,10 +125,7 @@ public:
 
     void reinit() {_update_pos_relative = true;}
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
 protected:
     struct TempVars

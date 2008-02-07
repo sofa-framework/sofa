@@ -3,7 +3,6 @@
 
 #include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
 #include <sofa/component/collision/NarrowPhaseDetection.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <vector>
@@ -43,8 +42,7 @@ public:
     void setMinMax(const Vector3 &minimum, const Vector3& maximum);
 };
 
-// inherit of VisualModel for debugging, then we can see the voxel grid
-class VoxelGrid : public BroadPhaseDetection, public NarrowPhaseDetection, public core::VisualModel
+class VoxelGrid : public BroadPhaseDetection, public NarrowPhaseDetection
 {
 private:
     Vector3 nbSubDiv;
@@ -70,10 +68,7 @@ public:
     // Create a voxel grid define by minx, miny, minz, maxx, maxy, maxz and the number of subdivision on x, y, z
     void createVoxelGrid (const Vector3 &min, const Vector3 &max, const Vector3 &nbSubdivision);
 
-    /* for debugging, VisualModel */
     void draw();
-    void initTextures() { }
-    void update() { }
 
     void add(core::CollisionModel *cm, int phase);
 

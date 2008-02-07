@@ -6,7 +6,6 @@
 
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/vector.h>
 
@@ -31,7 +30,7 @@ public:
 
 /** Define a set of springs between particles */
 template<class DataTypes>
-class SpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public core::VisualModel
+class SpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
@@ -101,10 +100,7 @@ public:
     void setStiffness(double _ks) { ks.setValue(_ks); }
     void setDamping(double _kd) { kd.setValue(_kd); }
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
     // -- Modifiers
 

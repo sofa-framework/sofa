@@ -27,7 +27,6 @@
 
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -53,7 +52,7 @@ using namespace sofa::defaulttype;
 	The movement between 2 key times is linearly interpolated
 */
 template <class DataTypes>
-class LinearMovementConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public core::VisualModel
+class LinearMovementConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -95,12 +94,9 @@ public:
     // Handle topological changes
     virtual void handleTopologyChange();
 
-    // -- VisualModel interface
     virtual void draw();
-    void initTextures() { }
-    void update() { }
 
-protected :
+protected:
 
     // Define TestNewPointFunction
     static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );

@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_SPHEREMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
@@ -69,7 +68,7 @@ public:
 };
 
 template<class TDataTypes>
-class TSphereModel : public component::MechanicalObject<TDataTypes>, public core::CollisionModel, public core::VisualModel
+class TSphereModel : public component::MechanicalObject<TDataTypes>, public core::CollisionModel
 {
 public:
     typedef TDataTypes InDataTypes;
@@ -120,13 +119,7 @@ public:
 
     void draw(int index);
 
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 };
 
 template<class TDataTypes>

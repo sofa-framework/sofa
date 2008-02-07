@@ -75,7 +75,7 @@ void Light::init()
 
 }
 
-void Light::initTextures()
+void Light::initVisual()
 {
     glEnable(GL_LIGHTING);
     glEnable(lightID);
@@ -89,11 +89,11 @@ void Light::initTextures()
 void Light::reinit()
 {
 
-    initTextures();
+    initVisual();
 
 }
 
-void Light::draw()
+void Light::drawVisual()
 {
 
 
@@ -110,20 +110,20 @@ DirectionalLight::~DirectionalLight()
 
 }
 
-void DirectionalLight::initTextures()
+void DirectionalLight::initVisual()
 {
-    Light::initTextures();
+    Light::initVisual();
 
 }
 
 void DirectionalLight::reinit()
 {
-    initTextures();
+    initVisual();
 }
 
-void DirectionalLight::draw()
+void DirectionalLight::drawVisual()
 {
-    Light::draw();
+    Light::drawVisual();
 
     GLfloat dir[4];
     dir[0]=(GLfloat)(direction.getValue()[0]);
@@ -146,21 +146,21 @@ PositionalLight::~PositionalLight()
 
 }
 
-void PositionalLight::initTextures()
+void PositionalLight::initVisual()
 {
-    Light::initTextures();
+    Light::initVisual();
 
 }
 
 void PositionalLight::reinit()
 {
-    initTextures();
+    initVisual();
 
 }
 
-void PositionalLight::draw()
+void PositionalLight::drawVisual()
 {
-    Light::draw();
+    Light::drawVisual();
 
     GLfloat pos[4];
     pos[0]=(GLfloat)(position.getValue()[0]);
@@ -186,21 +186,21 @@ SpotLight::~SpotLight()
 
 }
 
-void SpotLight::initTextures()
+void SpotLight::initVisual()
 {
-    PositionalLight::initTextures();
+    PositionalLight::initVisual();
 
 }
 
 void SpotLight::reinit()
 {
-    initTextures();
+    initVisual();
 
 }
 
-void SpotLight::draw()
+void SpotLight::drawVisual()
 {
-    PositionalLight::draw();
+    PositionalLight::drawVisual();
 
     GLfloat dir[]= {(GLfloat)(direction.getValue()[0]), (GLfloat)(direction.getValue()[1]), (GLfloat)(direction.getValue()[2])};
     glLightf(lightID, GL_SPOT_CUTOFF, cutoff.getValue());

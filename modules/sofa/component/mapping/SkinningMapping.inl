@@ -345,7 +345,7 @@ void SkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, const t
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::draw()
 {
-    if (!getShow(this)) return;
+    if (!this->getShow()) return;
     glDisable (GL_LIGHTING);
     glPointSize(1);
     glColor4f (1,1,0,1);

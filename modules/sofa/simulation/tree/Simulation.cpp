@@ -232,7 +232,7 @@ void Simulation::reset ( GNode* root )
 void Simulation::initTextures ( GNode* root )
 {
     if ( !root ) return;
-    root->execute<VisualInitTexturesVisitor>();
+    root->execute<VisualInitVisitor>();
     // Do a visual update now as it is not done in load() anymore
     /// \todo Separate this into another method?
     root->execute<VisualUpdateVisitor>();

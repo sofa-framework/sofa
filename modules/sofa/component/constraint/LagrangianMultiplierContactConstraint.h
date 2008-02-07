@@ -3,7 +3,6 @@
 
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
 #include <sofa/component/constraint/LagrangianMultiplierConstraint.h>
-#include <sofa/core/VisualModel.h>
 #include <vector>
 
 
@@ -18,7 +17,7 @@ namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierContactConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public core::VisualModel
+class LagrangianMultiplierContactConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
@@ -74,10 +73,7 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord&, const VecCoord&);
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
 };
 

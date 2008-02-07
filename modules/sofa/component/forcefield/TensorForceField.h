@@ -4,7 +4,6 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/MechanicalObject.h>
-#include <sofa/core/VisualModel.h>
 
 
 namespace sofa
@@ -25,8 +24,7 @@ namespace forcefield
  * and edges.
  */
 template <class DataTypes>
-class TensorForceField : public core::componentmodel::behavior::BaseForceField,
-    public core::VisualModel
+class TensorForceField : public core::componentmodel::behavior::BaseForceField
 {
 public:
 
@@ -44,14 +42,7 @@ public:
 
     virtual double getPotentialEnergy();
 
-    // -- VisualModel interface
     void draw();
-
-    // -- VisualModel interface
-    void initTextures();
-
-    // -- VisualModel interface
-    void update();
 
 
 public:

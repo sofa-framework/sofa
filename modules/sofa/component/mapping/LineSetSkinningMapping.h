@@ -30,7 +30,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <vector>
@@ -47,7 +46,7 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 template <class BasicMapping>
-class LineSetSkinningMapping : public BasicMapping, public core::VisualModel
+class LineSetSkinningMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef BasicMapping Inherit;
@@ -93,12 +92,7 @@ public:
 
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
-    // -- VisualModel interface
     void draw();
-
-    void initTextures() {};
-
-    void update() {};
 
 protected:
 

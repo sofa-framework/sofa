@@ -98,7 +98,7 @@ void Fluid3D::updatePosition(double dt)
     Grid3D* p = fluid; fluid=fnext; fnext=p;
 }
 
-void Fluid3D::draw()
+void Fluid3D::drawVisual()
 {
     glPushMatrix();
     vec3 center = f_center.getValue();
@@ -244,7 +244,7 @@ void Fluid3D::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl
     nindex+=points.size();
 }
 
-void Fluid3D::update()
+void Fluid3D::updateVisual()
 {
     points.clear();
     facets.clear();

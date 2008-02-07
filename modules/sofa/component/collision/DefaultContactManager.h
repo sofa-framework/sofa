@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_DEFAULTCONTACTMANAGER_H
 
 #include <sofa/core/componentmodel/collision/ContactManager.h>
-#include <sofa/core/VisualModel.h>
 #include <vector>
 
 
@@ -39,7 +38,7 @@ namespace component
 namespace collision
 {
 
-class DefaultContactManager : public core::componentmodel::collision::ContactManager, public core::VisualModel
+class DefaultContactManager : public core::componentmodel::collision::ContactManager
 {
 protected:
     typedef std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::componentmodel::collision::Contact*> ContactMap;
@@ -54,10 +53,7 @@ public:
 
     void createContacts(DetectionOutputMap& outputs);
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
 protected:
 

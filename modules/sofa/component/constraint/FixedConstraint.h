@@ -27,7 +27,6 @@
 
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
@@ -57,7 +56,7 @@ class FixedConstraintInternalData
 /** Attach given particles to their initial positions.
 */
 template <class DataTypes>
-class FixedConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public core::VisualModel
+class FixedConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -95,13 +94,7 @@ public:
     // Handle topological changes
     virtual void handleTopologyChange();
 
-    // -- VisualModel interface
-
     virtual void draw();
-
-    void initTextures() { }
-
-    void update() { }
 
 protected :
 

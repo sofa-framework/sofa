@@ -27,7 +27,6 @@
 
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/helper/vector.h>
 
 
@@ -44,7 +43,7 @@ namespace constraint
 	where \f$ x_m, A , \omega t , \phi \f$ are the mean value, the amplitude, the pulsation and the phase, respectively.
 	*/
 template <class DataTypes>
-class OscillatorConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public core::VisualModel
+class OscillatorConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -80,12 +79,7 @@ public:
     virtual void projectVelocity(VecDeriv& /*dx*/); ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& /*x*/); ///< project x to constrained space (x models a position)
 
-    // -- Visual interface
     void draw() {}
-
-    void initTextures() { }
-
-    void update() { }
 };
 
 } // namespace constraint

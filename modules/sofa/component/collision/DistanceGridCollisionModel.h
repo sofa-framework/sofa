@@ -2,7 +2,6 @@
 #define SOFA_COMPONENT_COLLISION_DISTANCEGRIDCOLLISIONMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -414,7 +413,7 @@ public:
     void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
 };
 
-class RigidDistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
+class RigidDistanceGridCollisionModel : public core::CollisionModel
 {
 protected:
 
@@ -522,13 +521,7 @@ public:
 
     void draw(int index);
 
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 };
 
 inline RigidDistanceGridCollisionElement::RigidDistanceGridCollisionElement(RigidDistanceGridCollisionModel* model, int index)
@@ -575,7 +568,7 @@ public:
     void setGrid(DistanceGrid* surf);
 };
 
-class FFDDistanceGridCollisionModel : public core::CollisionModel, public core::VisualModel
+class FFDDistanceGridCollisionModel : public core::CollisionModel
 {
 public:
     typedef DistanceGrid::Real GReal;
@@ -777,13 +770,7 @@ public:
 
     void draw(int index);
 
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 };
 
 inline FFDDistanceGridCollisionElement::FFDDistanceGridCollisionElement(FFDDistanceGridCollisionModel* model, int index)

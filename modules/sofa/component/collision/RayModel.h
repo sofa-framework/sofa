@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_COLLISION_RAYMODEL_H
 
 #include <sofa/core/CollisionModel.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <set>
@@ -63,7 +62,7 @@ public:
 
 class BaseRayContact;
 
-class RayModel : public component::MechanicalObject<Vec3Types>, public core::CollisionModel, public core::VisualModel
+class RayModel : public component::MechanicalObject<Vec3Types>, public core::CollisionModel
 {
 protected:
     sofa::helper::vector<double> length;
@@ -101,13 +100,7 @@ public:
 
     void applyTranslation(const double dx,const double dy,const double dz);
 
-    // -- VisualModel interface
-
     void draw();
-
-    void initTextures() { }
-
-    void update() { }
 };
 
 inline Ray::Ray(RayModel* model, int index)

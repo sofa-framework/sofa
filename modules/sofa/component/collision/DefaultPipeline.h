@@ -27,7 +27,6 @@
 
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 #include <sofa/simulation/tree/PipelineImpl.h>
-#include <sofa/core/VisualModel.h>
 
 namespace sofa
 {
@@ -38,7 +37,7 @@ namespace component
 namespace collision
 {
 
-class DefaultPipeline : public sofa::simulation::tree::PipelineImpl, public core::VisualModel
+class DefaultPipeline : public sofa::simulation::tree::PipelineImpl
 {
 public:
     Data<bool> bVerbose;
@@ -47,10 +46,7 @@ public:
 
     DefaultPipeline();
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
 protected:
     // -- Pipeline interface

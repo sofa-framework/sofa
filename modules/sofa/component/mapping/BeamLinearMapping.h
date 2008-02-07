@@ -28,7 +28,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/core/VisualModel.h>
 #include <vector>
 
 namespace sofa
@@ -41,7 +40,7 @@ namespace mapping
 {
 
 template <class BasicMapping>
-class BeamLinearMapping : public BasicMapping, public core::VisualModel
+class BeamLinearMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef BasicMapping Inherit;
@@ -87,18 +86,8 @@ public:
 
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
-    //virtual const char* getTypeName() const { return "BeamLinearMapping"; }
-
-protected:
-
-    bool getShow(const core::objectmodel::BaseObject* m) const { return m->getContext()->getShowMappings(); }
-
-    bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 };
 
 } // namespace mapping

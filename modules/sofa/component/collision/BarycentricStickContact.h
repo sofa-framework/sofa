@@ -45,7 +45,7 @@ namespace collision
 using namespace sofa::defaulttype;
 
 template < class TCollisionModel1, class TCollisionModel2, class ResponseDataTypes = sofa::defaulttype::Vec3Types >
-class BarycentricStickContact : public core::componentmodel::collision::Contact, public core::VisualModel
+class BarycentricStickContact : public core::componentmodel::collision::Contact
 {
 public:
     typedef TCollisionModel1 CollisionModel1;
@@ -97,10 +97,7 @@ public:
     /// Control the keepAlive flag of the contact.
     virtual void setKeepAlive(bool val) { f_keepAlive.setValue(val); }
 
-    // -- VisualModel interface
     void draw();
-    void initTextures() { }
-    void update() { }
 
 
     void getCorrespondingCollisionModels( const core::componentmodel::behavior::InteractionForceField *_ff,

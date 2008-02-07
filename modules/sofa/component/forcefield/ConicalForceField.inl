@@ -180,12 +180,6 @@ void ConicalForceField<DataTypes>::draw()
 }
 
 template<class DataTypes>
-void ConicalForceField<DataTypes>::initTextures()
-{
-
-}
-
-template<class DataTypes>
 bool ConicalForceField<DataTypes>::isIn(Coord p)
 {
     const Coord c = coneCenter.getValue();
