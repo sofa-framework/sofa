@@ -25,10 +25,12 @@
 #ifndef SOFA_COMPONENT_TOPOLOGY_SPARSEGRIDTOPOLOGY_H
 #define SOFA_COMPONENT_TOPOLOGY_SPARSEGRIDTOPOLOGY_H
 
+#include <string>
+
+#include <sofa/helper/io/Mesh.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include "RegularGridTopology.h"
-
 
 namespace sofa
 {
@@ -157,7 +159,6 @@ protected:
     Data<double> ymax;
     Data<double> zmax;
 
-
     virtual void updateLines();
     virtual void updateQuads();
     virtual void updateCubes();
@@ -166,12 +167,39 @@ protected:
 
 
     sofa::helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
+
     /// start from a seed cell (i,j,k) the OUTSIDE filling is propagated to neighboor cells until meet a BOUNDARY cell (this function is called from all border cells of the RegularGrid)
-    void propagateFrom( const int i, const int j, const int k,  RegularGridTopology& regularGrid, vector<Type>& regularGridTypes, vector<bool>& alreadyTested  );
+    void propagateFrom( const int i, const int j, const int k,
+            RegularGridTopology& regularGrid,
+            vector<Type>& regularGridTypes,
+            vector<bool>& alreadyTested  ) const;
 
+    void computeBoundingBox(const helper::vector<Vec3>& vertices,
+            double& xmin, double& xmax,
+            double& ymin, double& ymax,
+            double& zmin, double& zmax) const;
 
+    void voxelizeTriangleMesh(helper::io::Mesh* mesh,
+            RegularGridTopology& regularGrid,
+            vector<Type>& regularGridTypes) const;
 
-    SparseGridTopology* _finerSparseGrid;   ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
+    void buildFromTriangleMesh(const std::string& filename);
+
+    void buildFromRegularGridTypes(RegularGridTopology& regularGrid, const vector<Type>& regularGridTypes);
+
+    /** Create a sparse grid from a .voxel file
+    	.voxel file format (ascii):
+    	512  // num voxels x
+    	512  // num voxels y
+    	246  // num voxels z
+    	0.7  // voxels size x [mm]
+    	0.7  // voxels size y [mm]
+    	2    // voxels size z [mm]
+    	0 0 255 0 0 ... // data
+    */
+    void buildFromVoxelFile(const std::string& filename);
+
+    SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
     SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid
 
 
