@@ -22,95 +22,47 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/simulation/tree/VisualVisitor.h>
+// Author: François Faure, INRIA-UJF, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
+#ifndef SOFA_COMPONENT_ODESOLVER_CENTRALDIFFERENCESOLVER_H
+#define SOFA_COMPONENT_ODESOLVER_CENTRALDIFFERENCESOLVER_H
+
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/simulation/tree/OdeSolverImpl.h>
 
 namespace sofa
 {
 
-namespace simulation
+namespace component
 {
 
-namespace tree
+namespace odesolver
 {
 
-Visitor::Result VisualDrawVisitor::processNodeTopDown(GNode* node)
+using namespace sofa::defaulttype;
+
+/** Explicit time integrator using central difference (also known as Verlet of Leap-frop).
+ *
+ * @see http://www.dynasupport.com/support/tutorial/users.guide/time.integration
+ * @see http://en.wikipedia.org/wiki/Leapfrog_method
+ *
+ */
+class CentralDifferenceSolver : public sofa::simulation::tree::OdeSolverImpl
 {
-    glPushMatrix();
-    double glMatrix[16];
-    node->getPositionInWorld().writeOpenGlMatrix(glMatrix);
-    glMultMatrixd( glMatrix );
+public:
 
-    hasShader = (node->getShader()!=NULL);
+    CentralDifferenceSolver();
 
-    this->VisualVisitor::processNodeTopDown(node);
+    void solve (double dt);
 
-    glPopMatrix();
-    return RESULT_CONTINUE;
-}
+    Data<double> f_rayleighMass;
+};
 
-void VisualDrawVisitor::processObject(GNode* /*node*/, core::objectmodel::BaseObject* o)
-{
-    if (pass == Std)
-        o->draw();
-}
+} // namespace odesolver
 
-void VisualDrawVisitor::processVisualModel(GNode* node, core::VisualModel* vm)
-{
-    //cerr<<"VisualDrawVisitor::processVisualModel "<<vm->getName()<<endl;
-    sofa::core::Shader* shader = NULL;
-    if (hasShader)
-        shader = dynamic_cast<sofa::core::Shader*>(node->getShader());
-
-    switch(pass)
-    {
-    case Std:
-    {
-        if (shader)
-            shader->start();
-        vm->drawVisual();
-        if (shader)
-            shader->stop();
-        break;
-    }
-    case Transparent:
-    {
-        if (shader)
-            shader->start();
-        vm->drawTransparent();
-        if (shader)
-            shader->stop();
-        break;
-    }
-    case Shadow:
-        vm->drawShadow();
-        break;
-    }
-}
-
-void VisualUpdateVisitor::processVisualModel(GNode*, core::VisualModel* vm)
-{
-    vm->updateVisual();
-}
-
-void VisualInitVisitor::processVisualModel(GNode*, core::VisualModel* vm)
-{
-    vm->initVisual();
-}
-
-VisualComputeBBoxVisitor::VisualComputeBBoxVisitor()
-{
-    minBBox[0] = minBBox[1] = minBBox[2] = 1e10;
-    maxBBox[0] = maxBBox[1] = maxBBox[2] = -1e10;
-}
-
-void VisualComputeBBoxVisitor::processVisualModel(GNode*, core::VisualModel* vm)
-{
-    vm->addBBox(minBBox, maxBBox);
-}
-
-} // namespace tree
-
-} // namespace simulation
+} // namespace component
 
 } // namespace sofa
 
+#endif
