@@ -28,6 +28,7 @@ SOFA_LINK_CLASS(CudaTetrahedronFEMForceField)
 SOFA_LINK_CLASS(CudaCollision)
 SOFA_LINK_CLASS(CudaCollisionDetection)
 SOFA_LINK_CLASS(CudaPointModel)
+SOFA_LINK_CLASS(CudaTestForceField)
 
 
 void mycudaLogError(int err, const char* src)
