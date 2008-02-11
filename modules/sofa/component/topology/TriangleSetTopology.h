@@ -538,12 +538,7 @@ public:
     {
     }
 
-    const Coord& getPositionPoint(unsigned int i)
-    {
-        TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
-        const VecCoord& vect_c = *topology->getDOF()->getX();
-        return vect_c[i];
-    };
+    const Coord& getPositionPoint(unsigned int i);
 
     /// computes the area of triangle no i and returns it
     Real computeTriangleArea(const unsigned int i) const;

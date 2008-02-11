@@ -3353,6 +3353,15 @@ void TriangleSetGeometryAlgorithms< DataTypes >::Prepare_VertexDuplication(const
 
 }
 
+template<class DataTypes>
+const typename DataTypes::Coord& TriangleSetGeometryAlgorithms< DataTypes >::getPositionPoint(unsigned int i)
+{
+
+    TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    return vect_c[i];
+}
+
 // Computes the intersection of the segment from point a to point b and the triangle indexed by t
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersection(bool is_entered, const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_t,
