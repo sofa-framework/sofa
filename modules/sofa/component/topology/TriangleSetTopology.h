@@ -537,6 +537,14 @@ public:
     TriangleSetGeometryAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : EdgeSetGeometryAlgorithms<DataTypes>(top)
     {
     }
+
+    const Coord& getPositionPoint(unsigned int i)
+    {
+        TriangleSetTopology< DataTypes > *topology = static_cast<TriangleSetTopology< DataTypes >* >(this->m_basicTopology);
+        const VecCoord& vect_c = *topology->getDOF()->getX();
+        return vect_c[i];
+    };
+
     /// computes the area of triangle no i and returns it
     Real computeTriangleArea(const unsigned int i) const;
     /// computes the triangle area of all triangles are store in the array interface
