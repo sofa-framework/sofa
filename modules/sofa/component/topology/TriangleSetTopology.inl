@@ -369,6 +369,7 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
 
             /// propagate to all components
             topology->propagateTopologicalChanges();
+
             if (edgeToBeRemoved.size()>0)
                 /// actually remove edges without looking for isolated vertices
                 this->removeEdgesProcess(edgeToBeRemoved,false);
@@ -377,8 +378,8 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
             if (vertexToBeRemoved.size()>0)
             {
                 this->removePointsWarning(vertexToBeRemoved);
+                topology->propagateTopologicalChanges();
             }
-            topology->propagateTopologicalChanges();
 
             if (vertexToBeRemoved.size()>0)
             {
@@ -582,8 +583,8 @@ double TriangleSetTopologyAlgorithms< DataTypes >::Prepare_InciseAlongPointsList
 
     const Triangle &ta=container->getTriangle(ind_ta);
 
-    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
-    unsigned int nb_points =  vect_c.size() -1;
+    //const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    unsigned int nb_points =  container->getTriangleVertexShellArray().size() - 1; //vect_c.size() -1;
 
     const sofa::helper::vector<Triangle> &vect_t=container->getTriangleArray();
     unsigned int nb_triangles =  vect_t.size() -1;
@@ -833,8 +834,8 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
     TriangleSetTopologyModifier< DataTypes >* modifier  = static_cast< TriangleSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
     assert(modifier != 0);
 
-    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
-    unsigned int nb_points =  vect_c.size() -1;
+    //const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    unsigned int nb_points =  container->getTriangleVertexShellArray().size() - 1; //vect_c.size() -1;
 
     const sofa::helper::vector<Triangle> &vect_t=container->getTriangleArray();
     unsigned int nb_triangles =  vect_t.size() -1;
@@ -872,7 +873,7 @@ bool TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongPointsList(bool is_f
         x_i2 = b_i123_last[1];
         x_i3 = b_i123_last[2];
 
-        const typename DataTypes::Coord& b_point_last=vect_c[b_last];
+        const typename DataTypes::Coord& b_point_last=topology->getTriangleSetGeometryAlgorithms()->getPositionPoint(b_last); //vect_c[b_last];
 
         a_new[0]= (Real) b_point_last[0];
         a_new[1]= (Real) b_point_last[1];
@@ -1726,8 +1727,8 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
     const Triangle &ta=container->getTriangle(ind_ta);
     const Triangle &tb=container->getTriangle(ind_tb);
 
-    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
-    unsigned int nb_points =  vect_c.size() -1;
+    //const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    unsigned int nb_points =  container->getTriangleVertexShellArray().size() - 1; //vect_c.size() -1;
 
     const sofa::helper::vector<Triangle> &vect_t=container->getTriangleArray();
     unsigned int nb_triangles =  vect_t.size() -1;
@@ -2332,8 +2333,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     /// force the creation of TriangleVertexShellArray
     container->getTriangleVertexShellArray();
 
-    const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
-    unsigned int nb_points =  vect_c.size();
+    //const typename DataTypes::VecCoord& vect_c = *topology->getDOF()->getX();
+    unsigned int nb_points =  container->getTriangleVertexShellArray().size() - 1; //vect_c.size();
 
     // Variables to accumulate the number of elements registered to be created (so as to remember their indices)
     unsigned int acc_nb_points=nb_points;
