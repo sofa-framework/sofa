@@ -282,6 +282,10 @@ public:
         return r;
     }
 
+
+
+
+
     /// dot product, mostly used to compute residuals as sqrt(x*x)
     double operator*(const RigidCoord<3,real>& a) const
     {
@@ -289,6 +293,22 @@ public:
                 +orientation[0]*a.orientation[0]+orientation[1]*a.orientation[1]
                 +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
     }
+
+    /// Squared norm.
+    real norm2() const
+    {
+        real r = (this->center).elems[0]*(this->center).elems[0];
+        for (int i=1; i<3; i++)
+            r += (this->center).elems[i]*(this->center).elems[i];
+        return r;
+    }
+
+    /// Euclidean norm.
+    real norm() const
+    {
+        return helper::rsqrt(norm2());
+    }
+
 
     Vec3& getCenter () { return center; }
     Quat& getOrientation () { return orientation; }
