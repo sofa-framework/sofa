@@ -187,6 +187,11 @@ public:
     void setCastShadow(bool val) { castShadow = val;  }
     bool getCastShadow() const   { return castShadow; }
 
+    ResizableExtVector<Coord> * getVertices() {return &vertices;}
+    void setVertices(ResizableExtVector<Coord> * x) {vertices = *x;}
+    ResizableExtVector<Triangle> * getTriangles() {return &triangles;}
+    void setTriangles(ResizableExtVector<Triangle> * t) {triangles = *t;}
+
     virtual void computePositions();
     virtual void computeMesh(sofa::component::topology::MeshTopology* topology);
     virtual void computeMeshFromTopology(sofa::core::componentmodel::topology::BaseTopology* topology);
