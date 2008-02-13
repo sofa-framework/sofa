@@ -137,9 +137,9 @@ public:
     }
 };
 
-/// Mapper for LineModel
+/// Mapper for LineMeshModel
 template<class DataTypes>
-class ContactMapper<LineModel, DataTypes> : public BarycentricContactMapper<LineModel, DataTypes>
+class ContactMapper<LineMeshModel, DataTypes> : public BarycentricContactMapper<LineMeshModel, DataTypes>
 {
 public:
     int addPoint(const Vector3& P, int index)
