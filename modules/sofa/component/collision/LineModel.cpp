@@ -41,14 +41,25 @@ namespace collision
 
 SOFA_DECL_CLASS(Line)
 
-int LineModelClass = core::RegisterObject("Collision model representing a line")
-        .add< LineModel >()
+int LineMeshModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
+        .add< LineMeshModel >()
+        .addAlias("LineModel")
         .addAlias("Line")
         ;
 
 
 LineModel::LineModel()
-    : meshRevision(-1), mstate(NULL), mesh(NULL)
+    : mstate(NULL)
+{
+}
+
+LineMeshModel::LineMeshModel()
+    : meshRevision(-1), mesh(NULL)
+{
+}
+
+LineSetModel::LineSetModel()
+    : mesh(NULL)
 {
 }
 
@@ -62,14 +73,18 @@ void LineModel::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
-    mesh = dynamic_cast< MeshTopology* > (getContext()->getTopology());
 
     if (mstate==NULL)
     {
         std::cerr << "ERROR: LineModel requires a Vec3 Mechanical Model.\n";
         return;
     }
+}
 
+void LineMeshModel::init()
+{
+    LineModel::init();
+    mesh = dynamic_cast< MeshTopology* > (getContext()->getTopology());
     if (mesh==NULL)
     {
         std::cerr << "ERROR: LineModel requires a Mesh Topology.\n";
@@ -121,10 +136,20 @@ void LineModel::init()
     }
 }
 
-bool LineModel::updateFromTopology()
+void LineModel::updateFromTopology()
 {
+    needsUpdate = false;
+}
+
+void LineMeshModel::updateFromTopology()
+{
+    needsUpdate=true;
     int revision = mesh->getRevision();
-    if (revision == meshRevision) return false;
+    if (revision == meshRevision)
+    {
+        needsUpdate=false;
+        return;
+    }
 
     const unsigned int npoints = mstate->getX()->size();
     const unsigned int nlines = mesh->getNbLines();
@@ -145,7 +170,11 @@ bool LineModel::updateFromTopology()
         ++index;
     }
     meshRevision = revision;
-    return true;
+    return;
+}
+
+void LineSetModel::updateFromTopology()
+{
 }
 
 void LineModel::draw(int index)
@@ -185,10 +214,11 @@ void LineModel::draw()
 void LineModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    bool updated = updateFromTopology();
-    if (updated) cubeModel->resize(0);
-    if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+    updateFromTopology();
+    if (needsUpdate) cubeModel->resize(0);
+    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
+    needsUpdate = false;
     Vector3 minElem, maxElem;
 
     cubeModel->resize(size);
@@ -218,10 +248,11 @@ void LineModel::computeBoundingTree(int maxDepth)
 void LineModel::computeContinuousBoundingTree(double dt, int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
-    bool updated = updateFromTopology();
-    if (updated) cubeModel->resize(0);
-    if (!isMoving() && !cubeModel->empty() && !updated) return; // No need to recompute BBox if immobile
+    updateFromTopology();
+    if (needsUpdate) cubeModel->resize(0);
+    if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
+    needsUpdate=false;
     Vector3 minElem, maxElem;
 
     cubeModel->resize(size);

@@ -29,6 +29,7 @@
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/topology/EdgeSetTopology.h>
 
 namespace sofa
 {
@@ -79,9 +80,10 @@ protected:
     };
 
     sofa::helper::vector<LineData> elems;
+    bool needsUpdate;
+    virtual void updateFromTopology();
 
-    int meshRevision;
-    bool updateFromTopology();
+
 public:
     typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
@@ -90,7 +92,6 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Line Element;
-    typedef MeshTopology Topology;
     friend class Line;
 
     LineModel();
@@ -109,17 +110,13 @@ public:
 
     void draw();
 
-
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
-
-    MeshTopology* getTopology() { return mesh; }
 
     //virtual const char* getTypeName() const { return "Line"; }
 
 protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
-    MeshTopology* mesh;
 
 };
 
@@ -159,6 +156,41 @@ inline const Vector3* Line::tLeft() const
     else
         return NULL;
 }
+
+class LineMeshModel : public LineModel
+{
+protected:
+    int meshRevision;
+    void updateFromTopology();
+
+public:
+    typedef topology::MeshTopology Topology;
+
+    LineMeshModel();
+
+    virtual void init();
+
+    Topology* getTopology() { return mesh; }
+
+protected:
+    Topology* mesh;
+};
+
+class LineSetModel : public LineModel
+{
+public:
+    typedef topology::EdgeSetTopology<DataTypes> Topology;
+
+    LineSetModel();
+
+    Topology* getTopology() { return mesh; }
+
+protected:
+
+    Topology* mesh;
+
+    void updateFromTopology();
+};
 
 } // namespace collision
 

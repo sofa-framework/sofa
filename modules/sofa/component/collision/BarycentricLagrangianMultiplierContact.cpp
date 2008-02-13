@@ -16,14 +16,14 @@ using simulation::tree::GNode;
 SOFA_DECL_CLASS(BarycentricLagrangianMultiplierContact)
 
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<PointModel, PointModel> > PointPointLagrangianMultiplierContactClass("LagrangianMultiplier",true);
-Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<LineModel, PointModel> > LinePointLagrangianMultiplierContactClass("LagrangianMultiplier",true);
-Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<LineModel, LineModel> > LineLineLagrangianMultiplierContactClass("LagrangianMultiplier",true);
+Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<LineMeshModel, PointModel> > LinePointLagrangianMultiplierContactClass("LagrangianMultiplier",true);
+Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<LineMeshModel, LineMeshModel> > LineLineLagrangianMultiplierContactClass("LagrangianMultiplier",true);
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<TriangleMeshModel, PointModel> > TriangleMeshPointLagrangianMultiplierContactClass("LagrangianMultiplier",true);
-Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<TriangleMeshModel, LineModel> > TriangleMeshLineLagrangianMultiplierContactClass("LagrangianMultiplier",true);
+Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<TriangleMeshModel, LineMeshModel> > TriangleMeshLineLagrangianMultiplierContactClass("LagrangianMultiplier",true);
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<TriangleMeshModel, TriangleMeshModel> > TriangleMeshTriangleMeshLagrangianMultiplierContactClass("LagrangianMultiplier",true);
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<SphereModel, SphereModel> > SphereSphereLagrangianMultiplierContactClass("LagrangianMultiplier",true);
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<SphereModel, PointModel> > SpherePointLagrangianMultiplierContactClass("LagrangianMultiplier",true);
-Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<LineModel, SphereModel> > LineSphereLagrangianMultiplierContactClass("LagrangianMultiplier",true);
+Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<LineMeshModel, SphereModel> > LineSphereLagrangianMultiplierContactClass("LagrangianMultiplier",true);
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<TriangleMeshModel, SphereModel> > TriangleMeshSphereLagrangianMultiplierContactClass("LagrangianMultiplier",true);
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<SphereTreeModel,SphereTreeModel> > SphereTreeSphereTreeLagrangianMultiplierContactClass("LagrangianMultiplier",true);
 Creator<Contact::Factory, BarycentricLagrangianMultiplierContact<SphereTreeModel,TriangleMeshModel> > SphereTreeTriangleMeshLagrangianMultiplierContactClass("LagrangianMultiplier",true);
