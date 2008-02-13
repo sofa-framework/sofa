@@ -27,7 +27,9 @@
 
 #ifdef WIN32
 #ifdef _MSC_VER
+#ifndef NOMINMAX
 #define NOMINMAX
+#endif
 #define snprintf _snprintf
 #endif
 #include <windows.h>
