@@ -64,6 +64,9 @@
 #define INFINITY 9.0e10
 #endif
 
+
+#define WIDGET_BY_TAB 10
+
 namespace sofa
 {
 
@@ -113,13 +116,16 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
 
     //Each tab
-    QWidget *tab1 = new QWidget();
-    dialogTab->addTab(tab1, QString("Properties"));
+    unsigned int counterWidget=0;
+    unsigned int counterTab=0;
+    QWidget *currentTab=NULL;
+    bool emptyTab = false;
+
 
     bool visualTab = false;
-    QWidget *tab2 = NULL; //tab for visualization info: only created if needed ( boolean visualTab gives this answer ).
+    QWidget *tabVisualization = NULL; //tab for visualization info: only created if needed ( boolean visualTab gives this answer ).
 
-    QVBoxLayout *tabPropertiesLayout = new QVBoxLayout( tab1, 0, 1, "tabPropertiesLayout");
+    QVBoxLayout *tabPropertiesLayout=NULL;
     QVBoxLayout *tabVisualizationLayout = NULL;
 
     // displayWidget
@@ -136,6 +142,13 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         for( std::vector< std::pair<std::string, BaseData*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
 
+            if (!emptyTab && counterWidget/WIDGET_BY_TAB==counterTab)
+            {
+                emptyTab = true;
+                if (tabPropertiesLayout!= NULL) tabPropertiesLayout->addStretch();
+                currentTab= new QWidget();
+                tabPropertiesLayout = new QVBoxLayout( currentTab, 0, 1, QString("tabPropertiesLayout") + QString::number(counterWidget));
+            }
             //For each element, we create a layout
             std::ostringstream oss;
             oss << "itemLayout_" << i;
@@ -151,20 +164,20 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             {
                 if( dynamic_cast< Data<int> * >( (*it).second ) || dynamic_cast< Data<bool> * >( (*it).second ) )
                 {
-
+                    --counterWidget;
                     //Remove from the dialog window everything about showing collision models, visual models...
                     //Don't have any effect if the scene is animated: the root will erase the value.
 
                     if (!visualTab)
                     {
                         visualTab = true;
-                        tab2 = new QWidget();
-                        dialogTab->addTab(tab2, QString("Visualization"));
-                        tabVisualizationLayout = new QVBoxLayout( tab2, 0, 1, "tabVisualizationLayout");
+                        tabVisualization = new QWidget();
+
+                        tabVisualizationLayout = new QVBoxLayout( tabVisualization, 0, 1, "tabVisualizationLayout");
                     }
 
                     std::string box_name(oss.str());
-                    box = new Q3GroupBox(tab2, QString(box_name.c_str()));
+                    box = new Q3GroupBox(tabVisualization, QString(box_name.c_str()));
                     tabVisualizationLayout->addWidget( box );
 
 
@@ -196,7 +209,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
             {
                 std::string box_name(oss.str());
-                box = new Q3GroupBox(tab1, QString(box_name.c_str()));
+                box = new Q3GroupBox(currentTab, QString(box_name.c_str()));
                 box->setColumns(4);
                 box->setTitle(QString((*it).first.c_str()));
 
@@ -205,11 +218,13 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 if (label_text.size() > 70)
                 {
                     unsigned int cut = label_text.size()/70;
-                    for (unsigned index_cut=1; index_cut<=cut; index_cut++)
+                    unsigned int index_cut;
+                    for (index_cut=1; index_cut<=cut; index_cut++)
                     {
                         std::string::size_type numero_char=label_text.rfind(' ',70*index_cut);
                         label_text = label_text.insert(numero_char+1,1,'\n');
                     }
+                    counterWidget += index_cut/3; //each 3lines, a new widget is counted
                 }
                 if (label_text != "TODO") new QLabel(label_text.c_str(), box);
 
@@ -798,9 +813,13 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 }
                 //********************************************************************************************************//
                 //Types that needs a QTable: vector of elements
-                else if (createTable( (*it).second, box));
+                else if (createTable( (*it).second, box))
+                {
+                    ++counterWidget; //count for two classic widgets
+                }
                 else
                 {
+                    --counterWidget;
                     //Delete the box
                     delete box;
                     box = NULL;
@@ -810,14 +829,36 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     std::cout << "Name : " << (*it).first.c_str() << " : " <<  (*it).second->help << "\n";
                 }
             }
-
             ++i;
             if (box != NULL)
             {
+                if (emptyTab && counterWidget/WIDGET_BY_TAB == counterTab)
+                {
+                    dialogTab->addTab(currentTab, QString("Properties ") + QString::number(counterWidget/WIDGET_BY_TAB));
+                    ++counterTab;
+                    emptyTab = false;
+                }
+
+                ++counterWidget;
                 tabPropertiesLayout->addWidget( box );
             }
         }
 
+        if (tabPropertiesLayout!= NULL) tabPropertiesLayout->addStretch();
+        if (tabVisualization != NULL)
+        {
+            tabVisualizationLayout->addStretch();
+            dialogTab->addTab(tabVisualization, QString("Visualization"));
+        }
+        for (unsigned int indexTab = 0; indexTab<counterTab; indexTab++)
+        {
+            if (counterTab == 1)
+                dialogTab->setTabLabel(dialogTab->page(indexTab),
+                        QString("Properties"));
+            else
+                dialogTab->setTabLabel(dialogTab->page(indexTab),
+                        QString("Properties ") + QString::number(indexTab+1) + QString("/") + QString::number(counterTab));
+        }
         //If the current element is a node, we add a box to perform geometric transformation: translation, rotation, scaling
         if(GNode *gnode = dynamic_cast< GNode *>(node_clicked))
         {
@@ -827,7 +868,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 createGraphMass(dialogTab);
             }
 
-            Q3GroupBox *box = new Q3GroupBox(tab1, QString("Transformation"));
+            Q3GroupBox *box = new Q3GroupBox(currentTab, QString("Transformation"));
             box->setColumns(4);
             box->setTitle(QString("Transformation"));
             //********************************************************************************
@@ -1406,16 +1447,16 @@ void  ModifyObject::createGraphMass(QTabWidget *dialogTab)
 #endif
     history.clear();
     energy_history[0].clear();
-//     energy_history[1].clear();
-//     energy_history[2].clear();
+    energy_history[1].clear();
+    energy_history[2].clear();
 
     energy_curve[0] = new QwtPlotCurve("Kinetic");	        energy_curve[0]->attach(graphEnergy);
-//     energy_curve[1] = new QwtPlotCurve("Potential");	energy_curve[1]->attach(graphEnergy);
-//     energy_curve[2] = new QwtPlotCurve("Mechanical");	energy_curve[2]->attach(graphEnergy);
+    energy_curve[1] = new QwtPlotCurve("Potential");	energy_curve[1]->attach(graphEnergy);
+    energy_curve[2] = new QwtPlotCurve("Mechanical");	energy_curve[2]->attach(graphEnergy);
 
     energy_curve[0]->setPen(QPen(Qt::red));
-//     energy_curve[1]->setPen(QPen(Qt::green));
-//     energy_curve[2]->setPen(QPen(Qt::blue));
+    energy_curve[1]->setPen(QPen(Qt::green));
+    energy_curve[2]->setPen(QPen(Qt::blue));
 
     graphEnergy->setAxisTitle(QwtPlot::xBottom, "Time/seconds");
     graphEnergy->setTitle("Energy Graph");
