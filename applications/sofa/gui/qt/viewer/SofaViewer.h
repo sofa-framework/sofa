@@ -394,7 +394,7 @@ protected:
 
             if (articulatedInstrument !=  NULL)
             {
-                sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Rigid3dTypes>* instrument = dynamic_cast<MechanicalState<sofa::defaulttype::Rigid3dTypes>*>(articulatedInstrument->getMechanicalState());
+                sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Rigid3dTypes>* instrument = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< sofa::defaulttype::Rigid3dTypes >* >(articulatedInstrument->getMechanicalState());
                 switch (e->type())
                 {
                 case QEvent::MouseButtonPress:
