@@ -58,6 +58,10 @@
 #include <qevent.h>
 #endif
 
+//articulated instruments handling
+#include <sofa/simulation/tree/ArticulationsControlEvent.h>
+#include <sofa/simulation/tree/PropagateEventVisitor.h>
+
 namespace sofa
 {
 
@@ -142,8 +146,10 @@ protected:
         }
         case Qt::Key_T:
         {
-            if (camera_type == CAMERA_PERSPECTIVE) camera_type = CAMERA_ORTHOGRAPHIC;
-            else                                   camera_type = CAMERA_PERSPECTIVE;
+            if (camera_type == CAMERA_PERSPECTIVE)
+                camera_type = CAMERA_ORTHOGRAPHIC;
+            else
+                camera_type = CAMERA_PERSPECTIVE;
             break;
         }
         case Qt::Key_V:
@@ -180,6 +186,7 @@ protected:
 
     void keyReleaseEvent ( QKeyEvent * e )
     {
+
         switch(e->key())
         {
         case Qt::Key_Control:
@@ -191,10 +198,12 @@ protected:
             e->ignore();
         }
         }
+
         if( isControlPressed() )
         {
             sofa::core::objectmodel::KeyreleasedEvent keyEvent(e->key());
-            if (groot) groot->propagateEvent(&keyEvent);
+            if (groot)
+                groot->propagateEvent(&keyEvent);
         }
     }
 
@@ -340,6 +349,7 @@ protected:
             default:
                 break;
             }
+
             if (_mouseInteractorMoving && _navigationMode == BTLEFT_MODE)
             {
                 int dx = eventX - _mouseInteractorSavedPosX;
@@ -347,7 +357,6 @@ protected:
                 if (dx || dy)
                 {
                     (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
-
                     _mouseInteractorSavedPosX = eventX;
                     _mouseInteractorSavedPosY = eventY;
                 }
@@ -374,9 +383,140 @@ protected:
                     _mouseInteractorSavedPosY = eventY;
                 }
             }
+
             static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
             static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
             getQWidget()->update();
+        }
+        else
+        {
+            simulation::tree::GNode *articulatedInstrument = instrument->getTreeNode("6D_DOFs1");
+
+            if (articulatedInstrument !=  NULL)
+            {
+                sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Rigid3dTypes>* instrument = dynamic_cast<MechanicalState<sofa::defaulttype::Rigid3dTypes>*>(articulatedInstrument->getMechanicalState());
+                switch (e->type())
+                {
+                case QEvent::MouseButtonPress:
+                    // Mouse left button is pushed
+                    if (e->button() == Qt::LeftButton)
+                    {
+                        _navigationMode = BTLEFT_MODE;
+                        _mouseInteractorMoving = true;
+                        _mouseInteractorSavedPosX = eventX;
+                        _mouseInteractorSavedPosY = eventY;
+
+                        sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::LeftPressed);
+                        if (groot)
+                            groot->propagateEvent(&arcEvent);
+                    }
+                    // Mouse right button is pushed
+                    else if (e->button() == Qt::RightButton)
+                    {
+                        _navigationMode = BTRIGHT_MODE;
+                        _mouseInteractorMoving = true;
+                        _mouseInteractorSavedPosX = eventX;
+                        _mouseInteractorSavedPosY = eventY;
+
+                        sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::RightPressed);
+                        if (groot)
+                            groot->propagateEvent(&arcEvent);
+                    }
+                    // Mouse middle button is pushed
+                    else if (e->button() == Qt::MidButton)
+                    {
+                        _navigationMode = BTMIDDLE_MODE;
+                        _mouseInteractorMoving = true;
+                        _mouseInteractorSavedPosX = eventX;
+                        _mouseInteractorSavedPosY = eventY;
+                    }
+                    break;
+
+                case QEvent::MouseMove:
+                    //
+                    break;
+
+                case QEvent::MouseButtonRelease:
+                    // Mouse left button is released
+                    if (e->button() == Qt::LeftButton)
+                    {
+                        if (_mouseInteractorMoving)
+                        {
+                            _mouseInteractorMoving = false;
+                        }
+
+                        sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::LeftReleased);
+                        if (groot)
+                            groot->propagateEvent(&arcEvent);
+                    }
+                    // Mouse right button is released
+                    else if (e->button() == Qt::RightButton)
+                    {
+                        if (_mouseInteractorMoving)
+                        {
+                            _mouseInteractorMoving = false;
+                        }
+
+                        sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::RightReleased);
+                        if (groot)
+                            groot->propagateEvent(&arcEvent);
+                    }
+                    // Mouse middle button is released
+                    else if (e->button() == Qt::MidButton)
+                    {
+                        if (_mouseInteractorMoving)
+                        {
+                            _mouseInteractorMoving = false;
+                            static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::GrabVisitor>();
+                        }
+                    }
+                    break;
+
+                default:
+                    break;
+                }
+
+                if (_mouseInteractorMoving && _navigationMode == BTLEFT_MODE)
+                {
+                    int dx = eventX - _mouseInteractorSavedPosX;
+                    int dy = eventY - _mouseInteractorSavedPosY;
+                    if (dx || dy)
+                    {
+                        (*instrument->getXfree())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
+                        (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(0,1,0),dx*0.001) * Quat(Vector3(0,0,1),dy*0.001);
+                        _mouseInteractorSavedPosX = eventX;
+                        _mouseInteractorSavedPosY = eventY;
+                    }
+                }
+                else if (_mouseInteractorMoving && _navigationMode == BTMIDDLE_MODE)
+                {
+                    int dx = eventX - _mouseInteractorSavedPosX;
+                    int dy = eventY - _mouseInteractorSavedPosY;
+                    if (dx || dy)
+                    {
+                        _mouseInteractorSavedPosX = eventX;
+                        _mouseInteractorSavedPosY = eventY;
+                    }
+                }
+                else if (_mouseInteractorMoving && _navigationMode == BTRIGHT_MODE)
+                {
+                    int dx = eventX - _mouseInteractorSavedPosX;
+                    int dy = eventY - _mouseInteractorSavedPosY;
+                    if (dx || dy)
+                    {
+                        (*instrument->getXfree())[0].getCenter()[0] += (dy)*0.01;
+                        (*instrument->getXfree())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
+                        (*instrument->getX())[0].getCenter()[0] += (dy)*0.01;
+                        (*instrument->getX())[0].getOrientation() = (*instrument->getX())[0].getOrientation() * Quat(Vector3(1,0,0),dx*0.001);
+                        _mouseInteractorSavedPosX = eventX;
+                        _mouseInteractorSavedPosY = eventY;
+                    }
+                }
+
+                static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::MechanicalPropagatePositionAndVelocityVisitor>();
+                static_cast<sofa::simulation::tree::GNode*>(instrument->getContext())->execute<sofa::simulation::tree::UpdateMappingVisitor>();
+                getQWidget()->update();
+            }
         }
     }
 

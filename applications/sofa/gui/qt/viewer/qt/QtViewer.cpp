@@ -1614,7 +1614,7 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
 {
     if( isControlPressed() ) // pass event to the scene data structure
     {
-        cerr<<"QtViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
+        //	cerr<<"QtViewer::keyPressEvent, key = "<<e->key()<<" with Control pressed "<<endl;
         if (groot)
         {
             sofa::core::objectmodel::KeypressedEvent keyEvent(e->key());
@@ -1687,19 +1687,29 @@ void QtViewer::keyReleaseEvent ( QKeyEvent * e )
 
 void QtViewer::wheelEvent(QWheelEvent* e)
 {
-    int eventX = e->x();
-    int eventY = e->y();
+    if( e->state()&Qt::ControlButton )
+    {
+        if (groot)
+        {
+            sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::Wheel, e->delta());
+            groot->propagateEvent(&arcEvent);
+        }
+    }
+    else
+    {
+        int eventX = e->x();
+        int eventY = e->y();
 
+        _navigationMode = ZOOM_MODE;
+        _moving = true;
+        _spinning = false;
+        _mouseX = eventX;
+        _mouseY = eventY + e->delta();
+        _previousEyePos[2] = _sceneTransform.translation[2];
+        ApplySceneTransformation(eventX, eventY);
 
-    _navigationMode = ZOOM_MODE;
-    _moving = true;
-    _spinning = false;
-    _mouseX = eventX;
-    _mouseY = eventY + e->delta();
-    _previousEyePos[2] = _sceneTransform.translation[2];
-    ApplySceneTransformation(eventX, eventY);
-
-    _moving = false;
+        _moving = false;
+    }
 }
 
 void QtViewer::mousePressEvent ( QMouseEvent * e )
