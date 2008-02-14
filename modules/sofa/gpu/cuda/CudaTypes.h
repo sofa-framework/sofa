@@ -55,6 +55,7 @@ public:
         deviceIsValid = true;
         hostIsValid = true;
     }
+
     void operator= ( const CudaVector<T>& v )
     {
         clear();
