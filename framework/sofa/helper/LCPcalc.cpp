@@ -1226,6 +1226,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
             //	std::cout << "convergence in gaussSeidelLCP1 with " << compteur << " iterations\n";
             break;
         }
+
     }
 
     for (compteur=0; compteur<dim; compteur++)
