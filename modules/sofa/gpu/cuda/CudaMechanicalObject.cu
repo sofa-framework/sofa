@@ -2,8 +2,10 @@
 #include "CudaMath.h"
 #include "mycuda.h"
 
+#ifndef __GNUC__
 //#include <alloca.h>
 #include <malloc.h>
+#endif
 
 #if defined(__cplusplus)
 namespace sofa
@@ -379,8 +381,11 @@ void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a
         }
         else
         {
-            //float rtmp[nblocs];
+#ifdef __GNUC__
+            float rtmp[nblocs];
+#else
             float *rtmp = (float*) alloca(nblocs*sizeof(float));
+#endif
             cudaMemcpy(rtmp,tmp,nblocs*sizeof(float),cudaMemcpyDeviceToHost);
             float r = 0.0f;
             for (int i=0; i<nblocs; i++)

@@ -23,8 +23,8 @@ template<class T>
 class CudaVector
 {
 public:
-    typedef T            value_type;
-    typedef unsigned int size_type;
+    typedef T      value_type;
+    typedef size_t size_type;
 
 protected:
     size_type    vectorSize;     ///< Current size of the vector
@@ -288,8 +288,8 @@ template<class T>
 class CudaMatrix
 {
 public:
-    typedef T            value_type;
-    typedef unsigned int size_type;
+    typedef T      value_type;
+    typedef size_t size_type;
 
 protected:
     size_type    sizeX;     ///< Current size of the vector
