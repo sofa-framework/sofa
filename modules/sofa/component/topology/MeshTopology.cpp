@@ -284,27 +284,27 @@ int MeshTopology::getNbHexas()
     return getHexas().size();
 }
 
-const MeshTopology::Edge& MeshTopology::getEdge(index_type i)
+MeshTopology::Edge MeshTopology::getEdge(index_type i)
 {
     return getEdges()[i];
 }
 
-const MeshTopology::Triangle& MeshTopology::getTriangle(index_type i)
+MeshTopology::Triangle MeshTopology::getTriangle(index_type i)
 {
     return getTriangles()[i];
 }
 
-const MeshTopology::Quad& MeshTopology::getQuad(index_type i)
+MeshTopology::Quad MeshTopology::getQuad(index_type i)
 {
     return getQuads()[i];
 }
 
-const MeshTopology::Tetra& MeshTopology::getTetra(index_type i)
+MeshTopology::Tetra MeshTopology::getTetra(index_type i)
 {
     return getTetras()[i];
 }
 
-const MeshTopology::Hexa& MeshTopology::getHexa(index_type i)
+MeshTopology::Hexa MeshTopology::getHexa(index_type i)
 {
     return getHexas()[i];
 }
