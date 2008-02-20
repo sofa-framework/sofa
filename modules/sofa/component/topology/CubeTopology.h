@@ -112,9 +112,9 @@ protected:
     double inv_dx2, inv_dy2, inv_dz2;
 
     virtual void setSize();
-    void updateLines();
+    void updateEdges();
     void updateQuads();
-    //void updateCubes();
+    //void updateHexas();
 };
 
 } // namespace topology

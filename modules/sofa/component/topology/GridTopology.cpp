@@ -66,27 +66,27 @@ void GridTopology::setSize()
     invalidate();
 }
 
-void GridTopology::updateLines()
+void GridTopology::updateEdges()
 {
-    SeqLines& lines = *seqLines.beginEdit();
-    lines.clear();
-    lines.reserve((n.getValue()[0]-1)*n.getValue()[1]*n.getValue()[2]+n.getValue()[0]*(n.getValue()[1]-1)*n.getValue()[2]+n.getValue()[0]*n.getValue()[1]*(n.getValue()[2]-1));
+    SeqEdges& edges = *seqEdges.beginEdit();
+    edges.clear();
+    edges.reserve((n.getValue()[0]-1)*n.getValue()[1]*n.getValue()[2]+n.getValue()[0]*(n.getValue()[1]-1)*n.getValue()[2]+n.getValue()[0]*n.getValue()[1]*(n.getValue()[2]-1));
     // lines along X
     for (int z=0; z<n.getValue()[2]; z++)
         for (int y=0; y<n.getValue()[1]; y++)
             for (int x=0; x<n.getValue()[0]-1; x++)
-                lines.push_back(Line(point(x,y,z),point(x+1,y,z)));
+                edges.push_back(Edge(point(x,y,z),point(x+1,y,z)));
     // lines along Y
     for (int z=0; z<n.getValue()[2]; z++)
         for (int y=0; y<n.getValue()[1]-1; y++)
             for (int x=0; x<n.getValue()[0]; x++)
-                lines.push_back(Line(point(x,y,z),point(x,y+1,z)));
+                edges.push_back(Edge(point(x,y,z),point(x,y+1,z)));
     // lines along Z
     for (int z=0; z<n.getValue()[2]-1; z++)
         for (int y=0; y<n.getValue()[1]; y++)
             for (int x=0; x<n.getValue()[0]; x++)
-                lines.push_back(Line(point(x,y,z),point(x,y,z+1)));
-    seqLines.endEdit();
+                edges.push_back(Edge(point(x,y,z),point(x,y,z+1)));
+    seqEdges.endEdit();
 }
 
 void GridTopology::updateQuads()
@@ -110,30 +110,30 @@ void GridTopology::updateQuads()
                 seqQuads.push_back(Quad(point(x,y,z),point(x,y+1,z),point(x,y+1,z+1),point(x,y,z+1)));
 }
 
-void GridTopology::updateCubes()
+void GridTopology::updateHexas()
 {
-    seqCubes.clear();
-    seqCubes.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1));
+    seqHexas.clear();
+    seqHexas.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1));
     for (int z=0; z<n.getValue()[2]-1; z++)
         for (int y=0; y<n.getValue()[1]-1; y++)
             for (int x=0; x<n.getValue()[0]-1; x++)
-                seqCubes.push_back(Cube(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+                seqHexas.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
                         point(x  ,y+1,z  ),point(x+1,y+1,z  ),
                         point(x  ,y  ,z+1),point(x+1,y  ,z+1),
                         point(x  ,y+1,z+1),point(x+1,y+1,z+1)));
 }
 
-GridTopology::Cube GridTopology::getCubeCopy(int i)
+GridTopology::Hexa GridTopology::getHexaCopy(int i)
 {
     int x = i%(n.getValue()[0]-1); i/=(n.getValue()[0]-1);
     int y = i%(n.getValue()[1]-1); i/=(n.getValue()[1]-1);
     int z = i;
-    return getCube(x,y,z);
+    return getHexa(x,y,z);
 }
 
-GridTopology::Cube GridTopology::getCube(int x, int y, int z)
+GridTopology::Hexa GridTopology::getHexa(int x, int y, int z)
 {
-    return Cube(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+    return Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
             point(x  ,y+1,z  ),point(x+1,y+1,z  ),
             point(x  ,y  ,z+1),point(x+1,y  ,z+1),
             point(x  ,y+1,z+1),point(x+1,y+1,z+1));
@@ -167,23 +167,17 @@ GridTopology::Quad GridTopology::getQuadCopy(int i)
     }
 }
 
-GridTopology::Quad GridTopology::getQuad(int x, int y, int /*z*/)
+GridTopology::Quad GridTopology::getQuad(int x, int y, int z)
 {
-    /*
-    	if (x == -1)
-    		return make_array(point(1, y, z),point(1, y+1, z),
-    			point(1, y+1, z+1),point(1, y, z+1));
-
-    	else if (y == -1)
-    		return make_array(point(x, 1, z),point(x+1, 1, z),
-    			point(x+1, 1, z+1),point(x, 1, z+1));
-
-    	else
-    		return make_array(point(x, y, 1),point(x+1, y, 1),
-    			point(x+1, y+1, 1),point(x, y+1, 1));
-    */
-    return Quad(point(x, y, 1),point(x+1, y, 1),
-            point(x+1, y+1, 1),point(x, y+1, 1));
+    if (n.getValue()[2] == 1)
+        return Quad(point(x, y, 1), point(x+1, y, 1),
+                point(x+1, y+1, 1), point(x, y+1, 1));
+    else if (n.getValue()[1] == 1)
+        return Quad(point(x, 1, z), point(x+1, 1, z),
+                point(x+1, 1, z+1), point(x, 1, z+1));
+    else
+        return Quad(point(1, y, z),point(1, y+1, z),
+                point(1, y+1, z+1),point(1, y, z+1));
 }
 
 } // namespace topology

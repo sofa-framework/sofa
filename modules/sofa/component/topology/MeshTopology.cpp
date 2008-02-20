@@ -51,9 +51,9 @@ int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
 
 MeshTopology::MeshTopology()
     : nbPoints(0)
-    , seqLines(initData(&seqLines,"lines","List of line indices")), validLines(false)
+    , seqEdges(initData(&seqEdges,"lines","List of line indices")), validEdges(false)
     , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
-    , validQuads(false), validTetras(false), validCubes(false), revision(0)
+    , validQuads(false), validTetras(false), validHexas(false), revision(0)
     , filename(initData(&filename,"filename","Filename of the object"))
 {
 }
@@ -70,10 +70,10 @@ public:
         if (dest->seqPoints.size() > (unsigned)dest->nbPoints)
             dest->nbPoints = dest->seqPoints.size();
     }
-    virtual void addLine(int p1, int p2)
+    virtual void addEdge(int p1, int p2)
     {
-        dest->seqLines.beginEdit()->push_back(Line(p1,p2));
-        dest->seqLines.endEdit();
+        dest->seqEdges.beginEdit()->push_back(Edge(p1,p2));
+        dest->seqEdges.endEdit();
     }
     virtual void addTriangle(int p1, int p2, int p3)
     {
@@ -90,18 +90,18 @@ public:
     }
     virtual void addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
     {
-        dest->seqCubes.push_back(Cube(p1,p2,p3,p4,p5,p6,p7,p8));
+        dest->seqHexas.push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
     }
 };
 
 void MeshTopology::clear()
 {
     nbPoints = 0;
-    seqLines.beginEdit()->clear(); seqLines.endEdit();
+    seqEdges.beginEdit()->clear(); seqEdges.endEdit();
     seqTriangles.beginEdit()->clear(); seqTriangles.endEdit();
     seqQuads.clear();
     seqTetras.clear();
-    seqCubes.clear();
+    seqHexas.clear();
     invalidate();
 }
 
@@ -132,9 +132,9 @@ bool MeshTopology::load(const char* filename)
             {
                 // Line
                 if (facet[0]<facet[1])
-                    loader.addLine(facet[0],facet[1]);
+                    loader.addEdge(facet[0],facet[1]);
                 else
-                    loader.addLine(facet[1],facet[0]);
+                    loader.addEdge(facet[1],facet[0]);
             }
             else if (facet.size()==4)
             {
@@ -161,9 +161,9 @@ bool MeshTopology::load(const char* filename)
                     else if (edges.count(std::make_pair(i2,i1))==0)
                     {
                         if (i1>i2)
-                            loader.addLine(i1,i2);
+                            loader.addEdge(i1,i2);
                         else
-                            loader.addLine(i2,i1);
+                            loader.addEdge(i2,i1);
                         edges.insert(std::make_pair(i1,i2));
                     }
                 }
@@ -187,10 +187,10 @@ void MeshTopology::addPoint(double px, double py, double pz)
 
 }
 
-void MeshTopology::addLine( int a, int b )
+void MeshTopology::addEdge( int a, int b )
 {
-    seqLines.beginEdit()->push_back(Line(a,b));
-    seqLines.endEdit();
+    seqEdges.beginEdit()->push_back(Edge(a,b));
+    seqEdges.endEdit();
 }
 
 void MeshTopology::addTriangle( int a, int b, int c )
@@ -204,14 +204,14 @@ void MeshTopology::addTetrahedron( int a, int b, int c, int d )
     seqTetras.push_back( Tetra(a,b,c,d) );
 }
 
-const MeshTopology::SeqLines& MeshTopology::getLines()
+const MeshTopology::SeqEdges& MeshTopology::getEdges()
 {
-    if (!validLines)
+    if (!validEdges)
     {
-        updateLines();
-        validLines = true;
+        updateEdges();
+        validEdges = true;
     }
-    return seqLines.getValue();
+    return seqEdges.getValue();
 }
 
 const MeshTopology::SeqTriangles& MeshTopology::getTriangles()
@@ -244,14 +244,14 @@ const MeshTopology::SeqTetras& MeshTopology::getTetras()
     return seqTetras;
 }
 
-const MeshTopology::SeqCubes& MeshTopology::getCubes()
+const MeshTopology::SeqHexas& MeshTopology::getHexas()
 {
-    if (!validCubes)
+    if (!validHexas)
     {
-        updateCubes();
-        validCubes = true;
+        updateHexas();
+        validHexas = true;
     }
-    return seqCubes;
+    return seqHexas;
 }
 
 int MeshTopology::getNbPoints() const
@@ -259,9 +259,9 @@ int MeshTopology::getNbPoints() const
     return nbPoints;
 }
 
-int MeshTopology::getNbLines()
+int MeshTopology::getNbEdges()
 {
-    return getLines().size();
+    return getEdges().size();
 }
 
 int MeshTopology::getNbTriangles()
@@ -279,14 +279,14 @@ int MeshTopology::getNbTetras()
     return getTetras().size();
 }
 
-int MeshTopology::getNbCubes()
+int MeshTopology::getNbHexas()
 {
-    return getCubes().size();
+    return getHexas().size();
 }
 
-const MeshTopology::Line& MeshTopology::getLine(index_type i)
+const MeshTopology::Edge& MeshTopology::getEdge(index_type i)
 {
-    return getLines()[i];
+    return getEdges()[i];
 }
 
 const MeshTopology::Triangle& MeshTopology::getTriangle(index_type i)
@@ -304,9 +304,9 @@ const MeshTopology::Tetra& MeshTopology::getTetra(index_type i)
     return getTetras()[i];
 }
 
-const MeshTopology::Cube& MeshTopology::getCube(index_type i)
+const MeshTopology::Hexa& MeshTopology::getHexa(index_type i)
 {
-    return getCubes()[i];
+    return getHexas()[i];
 }
 
 bool MeshTopology::hasPos() const
@@ -331,11 +331,11 @@ double MeshTopology::getPZ(int i) const
 
 void MeshTopology::invalidate()
 {
-    validLines = false;
+    validEdges = false;
     validTriangles = false;
     validQuads = false;
     validTetras = false;
-    validQuads = false;
+    validHexas = false;
     ++revision;
     //std::cout << "MeshTopology::invalidate()"<<std::endl;
 }
