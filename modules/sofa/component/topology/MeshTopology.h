@@ -30,6 +30,7 @@
 #include <string>
 #include <iostream>
 #include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/component/topology/BaseMeshTopology.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 
@@ -46,44 +47,10 @@ using namespace sofa::defaulttype;
 using helper::vector;
 using helper::fixed_array;
 
-class MeshTopology : public core::componentmodel::topology::Topology
+class MeshTopology : public BaseMeshTopology
 {
 public:
-
-    //typedef int index_type;
-    typedef unsigned index_type;
-    typedef index_type PointID;
-    typedef index_type EdgeID;
-    typedef index_type TriangleID;
-    typedef index_type QuadID;
-    typedef index_type TetraID;
-    typedef index_type HexaID;
-
-    typedef fixed_array<PointID,2> Edge;
-    typedef fixed_array<PointID,3> Triangle;
-    typedef fixed_array<PointID,4> Quad;
-    typedef fixed_array<PointID,4> Tetra;
-    typedef fixed_array<PointID,8> Hexa;
-
-    typedef vector<Edge> SeqEdges;
-    typedef vector<Triangle> SeqTriangles;
-    typedef vector<Quad> SeqQuads;
-    typedef vector<Tetra> SeqTetras;
-    typedef vector<Hexa> SeqHexas;
-
-
-    /// @name Deprecated types, for backward-compatibility
-    /// @{
-    typedef EdgeID LineID;
-    typedef Edge Line;
-    typedef SeqEdges SeqLines;
-    typedef HexaID CubeID;
-    typedef Hexa Cube;
-    typedef SeqHexas SeqCubes;
-    /// @}
-
     MeshTopology();
-    //virtual const char* getTypeName() const { return "Mesh"; }
 
     virtual void clear();
 
@@ -107,21 +74,11 @@ public:
     virtual int getNbTetras();
     virtual int getNbHexas();
 
-    virtual const Edge& getEdge(EdgeID i);
-    virtual const Triangle& getTriangle(TriangleID i);
-    virtual const Quad& getQuad(QuadID i);
-    virtual const Tetra& getTetra(TetraID i);
-    virtual const Hexa& getHexa(HexaID i);
-
-    /// @name Deprecated names, for backward-compatibility
-    /// @{
-    const SeqLines& getLines() { return getEdges(); }
-    const SeqCubes& getCubes() { return getHexas(); }
-    int getNbLines() { return getNbEdges(); }
-    int getNbCubes() { return getNbHexas(); }
-    const Line& getLine(LineID i) { return getEdge(i); }
-    const Cube& getCube(CubeID i) { return getCube(i); }
-    /// @}
+    virtual Edge getEdge(EdgeID i);
+    virtual Triangle getTriangle(TriangleID i);
+    virtual Quad getQuad(QuadID i);
+    virtual Tetra getTetra(TetraID i);
+    virtual Hexa getHexa(HexaID i);
 
     // Points accessors (not always available)
 
@@ -134,7 +91,6 @@ public:
     // for procedural creation without file loader
     void addPoint(double px, double py, double pz);
     void addEdge( int a, int b );
-    void addLine( int a, int b ) { addEdge(a,b); }
     void addTriangle( int a, int b, int c );
     void addTetrahedron( int a, int b, int c, int d );
 
@@ -143,7 +99,7 @@ public:
 
     /// return true if the given cube is active, i.e. it contains or is surrounded by mapped points.
     /// @deprecated
-    bool isCubeActive(int /*index*/) { return true; }
+    virtual bool isCubeActive(int /*index*/) { return true; }
 
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
