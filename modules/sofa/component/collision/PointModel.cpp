@@ -39,13 +39,29 @@ namespace collision
 
 SOFA_DECL_CLASS(Point)
 
-int PointModelClass = core::RegisterObject("Collision model which represents a set of points")
-        .add< PointModel >()
+int PointMeshModelClass = core::RegisterObject("Collision model which represents a set of points")
+        .add< PointMeshModel >()
         .addAlias("Point")
+        .addAlias("PointMesh")
+        ;
+
+int PointSetModelClass = core::RegisterObject("Collision model which represents a set of points")
+        .add< PointSetModel >()
+        .addAlias("PointSet")
         ;
 
 PointModel::PointModel()
     : mstate(NULL)
+{
+}
+
+PointMeshModel::PointMeshModel()
+    : mesh(NULL)
+{
+}
+
+PointSetModel::PointSetModel()
+    : mesh(NULL)
 {
 }
 
@@ -67,6 +83,12 @@ void PointModel::init()
 
     const int npoints = mstate->getX()->size();
     resize(npoints);
+}
+
+void PointMeshModel::init()
+{
+    PointModel::init();
+    const int npoints = mstate->getX()->size();
 
     // If the CollisionDetection Method uses the filtration method based on cones
     if (this->isFiltered())
@@ -142,6 +164,10 @@ void PointModel::init()
             }
         }
     }
+}
+void PointSetModel::init()
+{
+    PointModel::init();
 }
 
 void PointModel::draw(int index)

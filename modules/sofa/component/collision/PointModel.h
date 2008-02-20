@@ -28,6 +28,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/PointSetTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <vector>
 
@@ -114,6 +115,37 @@ inline const Vector3& Point::p() const { return (*model->mstate->getX())[index];
 inline const Vector3& Point::pFree() const { return (*model->mstate->getXfree())[index]; }
 
 inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
+
+class PointMeshModel : public PointModel
+{
+public:
+    typedef topology::MeshTopology Topology;
+
+    PointMeshModel();
+
+    virtual void init();
+
+    Topology* getTopology() { return mesh; }
+
+protected:
+    Topology* mesh;
+};
+
+class PointSetModel : public PointModel
+{
+public:
+    typedef topology::PointSetTopology<DataTypes> Topology;
+
+    PointSetModel();
+
+    ///\Todo
+    virtual void init();
+
+    Topology* getTopology() { return mesh; }
+
+protected:
+    Topology* mesh;
+};
 
 } // namespace collision
 

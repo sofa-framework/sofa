@@ -47,6 +47,10 @@ int LineMeshModelClass = core::RegisterObject("collision model using a linear me
         .addAlias("Line")
         ;
 
+int LineSetModelClass = core::RegisterObject("collision model using a linear mesh, as described in MeshTopology")
+        .add< LineSetModel >()
+        .addAlias("LineSet")
+        ;
 
 LineModel::LineModel()
     : mstate(NULL)
@@ -79,6 +83,7 @@ void LineModel::init()
         std::cerr << "ERROR: LineModel requires a Vec3 Mechanical Model.\n";
         return;
     }
+
 }
 
 void LineMeshModel::init()
@@ -135,6 +140,20 @@ void LineMeshModel::init()
         }
     }
 }
+///\Todo
+void LineSetModel::init()
+{
+    LineModel::init();
+    needsUpdate = true;
+    mesh = dynamic_cast< Topology* > (getContext()->getMainTopology());
+    if (mesh==NULL)
+    {
+        std::cerr << "ERROR: LineSetModel requires a Mesh Topology.\n";
+        return;
+    }
+    updateFromTopology();
+    ///...
+}
 
 void LineModel::updateFromTopology()
 {
@@ -175,6 +194,33 @@ void LineMeshModel::updateFromTopology()
 
 void LineSetModel::updateFromTopology()
 {
+    //sofa::core::componentmodel::topology::BaseTopology* bt = mesh;
+    sofa::component::topology::EdgeSetTopologyContainer *container = mesh->getEdgeSetTopologyContainer();
+    //needsUpdate=true;
+    if (needsUpdate)
+    {
+        const unsigned int npoints = mstate->getX()->size();
+        const unsigned int nlines = container->getNumberOfEdges();
+
+        resize(nlines);
+        int index = 0;
+        //VecCoord& x = *mstate->getX();
+        //VecDeriv& v = *mstate->getV();
+        for (unsigned int i=0; i<nlines; i++)
+        {
+            sofa::component::topology::Edge idx = container->getEdge(i);
+            if (idx.first >= npoints || idx.second >= npoints)
+            {
+                std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx.first<<" "<<idx.second<<" ( total points="<<npoints<<")\n";
+                continue;
+            }
+
+            elems[index].i1 = idx.first;
+            elems[index].i2 = idx.second;
+            ++index;
+        }
+    }
+    needsUpdate=false;
 }
 
 void LineModel::draw(int index)

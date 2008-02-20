@@ -183,6 +183,9 @@ public:
 
     LineSetModel();
 
+    ///\Todo
+    virtual void init();
+
     Topology* getTopology() { return mesh; }
 
 protected:
