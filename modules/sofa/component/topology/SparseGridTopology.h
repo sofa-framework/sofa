@@ -159,9 +159,9 @@ protected:
     Data<double> ymax;
     Data<double> zmax;
 
-    virtual void updateLines();
+    virtual void updateEdges();
     virtual void updateQuads();
-    virtual void updateCubes();
+    virtual void updateHexas();
 
 
 
@@ -247,12 +247,12 @@ protected:
     bool _alreadyInit;
 
 public :
-    virtual const SeqCubes& getCubes();
+    virtual const SeqCubes& getHexas();
     virtual int getNbPoints() const;
 
-    virtual int getNbCubes()
+    virtual int getNbHexas()
     {
-        return getCubes().size();
+        return getHexas().size();
     }
 
     virtual vector< fixed_array<double,3> >& getPoints() {return this->seqPoints;}

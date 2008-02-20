@@ -162,29 +162,29 @@ int CubeTopology::point(int x, int y, int z, Plane p) const
         return x+nx*(y+ny*z);
 }
 
-void CubeTopology::updateLines()
+void CubeTopology::updateEdges()
 {
-    SeqLines& lines = *seqLines.beginEdit();
+    SeqEdges& edges = *seqEdges.beginEdit();
     const int nx = this->nx.getValue();
     const int ny = this->ny.getValue();
     const int nz = this->nz.getValue();
-    lines.clear();
-    lines.reserve((nx-1)*(2*ny+2*nz-4) + (ny-1)*(2*nx+2*nz-4) + (nz-1)*(2*nx+2*ny-4));
+    edges.clear();
+    edges.reserve((nx-1)*(2*ny+2*nz-4) + (ny-1)*(2*nx+2*nz-4) + (nz-1)*(2*nx+2*ny-4));
     for (int z=0; z<nz; z++)
         for (int y=0; y<ny; y++)
             for (int x=0; x<nx; x++)
             {
                 // lines along X
                 if (x<nx-1 && (y==0 || y==ny-1 || z==0 || z==nz-1))
-                    lines.push_back(Line(point(x,y,z),point(x+1,y,z)));
+                    edges.push_back(Edge(point(x,y,z),point(x+1,y,z)));
                 // lines along Y
                 if (y<ny-1 && (x==0 || x==nx-1 || z==0 || z==nz-1))
-                    lines.push_back(Line(point(x,y,z),point(x,y+1,z)));
+                    edges.push_back(Edge(point(x,y,z),point(x,y+1,z)));
                 // lines along Z
                 if (z<nz-1 && (x==0 || x==nx-1 || y==0 || y==ny-1))
-                    lines.push_back(Line(point(x,y,z),point(x,y,z+1)));
+                    edges.push_back(Edge(point(x,y,z),point(x,y,z+1)));
             }
-    seqLines.endEdit();
+    seqEdges.endEdit();
 }
 
 void CubeTopology::updateQuads()

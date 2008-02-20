@@ -73,7 +73,7 @@ public:
 
     //int getNbPoints() const { return n.getValue()[0]*n.getValue()[1]*n.getValue()[2]; }
 
-    virtual int getNbCubes() { return (n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1); }
+    virtual int getNbHexas() { return (n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1); }
 
     int getNbQuads()
     {
@@ -85,22 +85,27 @@ public:
             return (n.getValue()[1]-1)*(n.getValue()[2]-1);
     }
 
-    Cube getCubeCopy(int i);
-    Cube getCube(int x, int y, int z);
+    Hexa getHexaCopy(int i);
+    Hexa getHexa(int x, int y, int z);
+
+    Cube getCubeCopy(int i) { return getHexaCopy(i); }
+    Cube getCube(int x, int y, int z) { return getHexa(x,y,z); }
+
 
     Quad getQuadCopy(int i);
     Quad getQuad(int x, int y, int z);
 
     int point(int x, int y, int z) const { return x+n.getValue()[0]*(y+n.getValue()[1]*z); }
-    int cube(int x, int y, int z) const { return x+(n.getValue()[0]-1)*(y+(n.getValue()[1]-1)*z); }
+    int hexa(int x, int y, int z) const { return x+(n.getValue()[0]-1)*(y+(n.getValue()[1]-1)*z); }
+    int cube(int x, int y, int z) const { return hexa(x,y,z); }
 
 protected:
     Data< Vec<3, int> > n;
 
     virtual void setSize();
-    virtual void updateLines();
+    virtual void updateEdges();
     virtual void updateQuads();
-    virtual void updateCubes();
+    virtual void updateHexas();
 };
 
 } // namespace topology

@@ -52,18 +52,35 @@ public:
 
     //typedef int index_type;
     typedef unsigned index_type;
+    typedef index_type PointID;
+    typedef index_type EdgeID;
+    typedef index_type TriangleID;
+    typedef index_type QuadID;
+    typedef index_type TetraID;
+    typedef index_type HexaID;
 
-    typedef fixed_array<index_type,2> Line;
-    typedef fixed_array<index_type,3> Triangle;
-    typedef fixed_array<index_type,4> Quad;
-    typedef fixed_array<index_type,4> Tetra;
-    typedef fixed_array<index_type,8> Cube;
+    typedef fixed_array<PointID,2> Edge;
+    typedef fixed_array<PointID,3> Triangle;
+    typedef fixed_array<PointID,4> Quad;
+    typedef fixed_array<PointID,4> Tetra;
+    typedef fixed_array<PointID,8> Hexa;
 
-    typedef vector<Line> SeqLines;
+    typedef vector<Edge> SeqEdges;
     typedef vector<Triangle> SeqTriangles;
     typedef vector<Quad> SeqQuads;
     typedef vector<Tetra> SeqTetras;
-    typedef vector<Cube> SeqCubes;
+    typedef vector<Hexa> SeqHexas;
+
+
+    /// @name Deprecated types, for backward-compatibility
+    /// @{
+    typedef EdgeID LineID;
+    typedef Edge Line;
+    typedef SeqEdges SeqLines;
+    typedef HexaID CubeID;
+    typedef Hexa Cube;
+    typedef SeqHexas SeqCubes;
+    /// @}
 
     MeshTopology();
     //virtual const char* getTypeName() const { return "Mesh"; }
@@ -71,6 +88,62 @@ public:
     virtual void clear();
 
     virtual bool load(const char* filename);
+
+    virtual int getNbPoints() const;
+
+    // Complete sequence accessors
+
+    virtual const SeqEdges& getEdges();
+    virtual const SeqTriangles& getTriangles();
+    virtual const SeqQuads& getQuads();
+    virtual const SeqTetras& getTetras();
+    virtual const SeqHexas& getHexas();
+
+    // Random accessors
+
+    virtual int getNbEdges();
+    virtual int getNbTriangles();
+    virtual int getNbQuads();
+    virtual int getNbTetras();
+    virtual int getNbHexas();
+
+    virtual const Edge& getEdge(EdgeID i);
+    virtual const Triangle& getTriangle(TriangleID i);
+    virtual const Quad& getQuad(QuadID i);
+    virtual const Tetra& getTetra(TetraID i);
+    virtual const Hexa& getHexa(HexaID i);
+
+    /// @name Deprecated names, for backward-compatibility
+    /// @{
+    const SeqLines& getLines() { return getEdges(); }
+    const SeqCubes& getCubes() { return getHexas(); }
+    int getNbLines() { return getNbEdges(); }
+    int getNbCubes() { return getNbHexas(); }
+    const Line& getLine(LineID i) { return getEdge(i); }
+    const Cube& getCube(CubeID i) { return getCube(i); }
+    /// @}
+
+    // Points accessors (not always available)
+
+    virtual bool hasPos() const;
+    virtual double getPX(int i) const;
+    virtual double getPY(int i) const;
+    virtual double getPZ(int i) const;
+    virtual std::string getFilename() const {return filename.getValue();}
+
+    // for procedural creation without file loader
+    void addPoint(double px, double py, double pz);
+    void addEdge( int a, int b );
+    void addLine( int a, int b ) { addEdge(a,b); }
+    void addTriangle( int a, int b, int c );
+    void addTetrahedron( int a, int b, int c, int d );
+
+    // get the current revision of this mesh (use to detect changes)
+    int getRevision() const { return revision; }
+
+    /// return true if the given cube is active, i.e. it contains or is surrounded by mapped points.
+    /// @deprecated
+    bool isCubeActive(int /*index*/) { return true; }
 
     void parse(core::objectmodel::BaseObjectDescription* arg)
     {
@@ -83,55 +156,12 @@ public:
         this->core::componentmodel::topology::Topology::parse(arg);
     }
 
-    virtual int getNbPoints() const;
-
-    // Complete sequence accessors
-
-    virtual const SeqLines& getLines();
-    virtual const SeqTriangles& getTriangles();
-    virtual const SeqQuads& getQuads();
-    virtual const SeqTetras& getTetras();
-    virtual const SeqCubes& getCubes();
-
-    // Random accessors
-
-    virtual int getNbLines();
-    virtual int getNbTriangles();
-    virtual int getNbQuads();
-    virtual int getNbTetras();
-    virtual int getNbCubes();
-
-    virtual const Line& getLine(index_type i);
-    virtual const Triangle& getTriangle(index_type i);
-    virtual const Quad& getQuad(index_type i);
-    virtual const Tetra& getTetra(index_type i);
-    virtual const Cube& getCube(index_type i);
-
-    /// return true if the given cube is active, i.e. it is not empty
-    virtual bool isCubeActive(int /*index*/) { return true; }
-
-    // Points accessors (not always available)
-
-    virtual bool hasPos() const;
-    virtual double getPX(int i) const;
-    virtual double getPY(int i) const;
-    virtual double getPZ(int i) const;
-    virtual std::string getFilename() const {return filename.getValue();}
-
-    // for procedural creation without file loader
-    void addPoint(double px, double py, double pz);
-    void addLine( int a, int b );
-    void addTriangle( int a, int b, int c );
-    void addTetrahedron( int a, int b, int c, int d );
-
-    // get the current revision of this mesh (use to detect changes)
-    int getRevision() const { return revision; }
 protected:
     int nbPoints;
     vector< fixed_array<double,3> > seqPoints;
 
-    Data<SeqLines> seqLines;
-    bool validLines;
+    Data<SeqEdges> seqEdges;
+    bool validEdges;
 
     //SeqTriangles   seqTriangles;
     Data<SeqTriangles> seqTriangles;
@@ -141,8 +171,8 @@ protected:
 
     SeqTetras      seqTetras;
     bool         validTetras;
-    SeqCubes       seqCubes;
-    bool         validCubes;
+    SeqCubes       seqHexas;
+    bool         validHexas;
 
     int revision;
 
@@ -150,11 +180,11 @@ protected:
 
     void invalidate();
 
-    virtual void updateLines()     { }
+    virtual void updateEdges()     { }
     virtual void updateTriangles() { }
     virtual void updateQuads()     { }
     virtual void updateTetras()    { }
-    virtual void updateCubes()     { }
+    virtual void updateHexas()     { }
 
     class Loader;
     friend class Loader;

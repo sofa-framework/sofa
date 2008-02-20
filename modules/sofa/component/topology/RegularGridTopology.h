@@ -80,17 +80,21 @@ public:
 
     /// return the cube containing the given point (or -1 if not found).
     virtual int findCube(const Vec3& pos);
+    int findHexa(const Vec3& pos) { return findCube(pos); }
 
     /// return the nearest cube (or -1 if not found).
     virtual int findNearestCube(const Vec3& pos);
+    int findNearestHexa(const Vec3& pos) { return findNearestCube(pos); }
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
     virtual int findCube(const Vec3& pos, double& fx, double &fy, double &fz);
+    int findHexa(const Vec3& pos, double& fx, double &fy, double &fz) { return findCube(pos, fx, fy, fz); }
 
     /// return the cube containing the given point (or -1 if not found),
     /// as well as deplacements from its first corner in terms of dx, dy, dz (i.e. barycentric coordinates).
     virtual int findNearestCube(const Vec3& pos, double& fx, double &fy, double &fz);
+    int findNearestHexa(const Vec3& pos, double& fx, double &fy, double &fz) { return findNearestCube(pos, fx, fy, fz); }
 
 protected:
     Data< Vec3 > min, max;
