@@ -25,7 +25,7 @@ extern "C"
     void MechanicalObjectCudaVec3f_vAdd(unsigned int size, void* res, const void* a, const void* b);
     void MechanicalObjectCudaVec3f_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
     int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size);
-    void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp);
+    void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
 }
 
 } // namespace cuda
@@ -321,12 +321,12 @@ double MechanicalObject<CudaVec3fTypes>::vDot(VecId a, VecId b)
         int tmpsize = gpu::cuda::MechanicalObjectCudaVec3f_vDotTmpSize(va->size());
         if (tmpsize == 0)
         {
-            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), NULL);
+            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), NULL, NULL);
         }
         else
         {
             this->data.tmpdot.fastResize(tmpsize);
-            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), this->data.tmpdot.deviceWrite());
+            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), this->data.tmpdot.deviceWrite(), (float*)(&(this->data.tmpdot.getCached(0))));
         }
     }
     else if (a.type == VecId::V_DERIV && b.type == VecId::V_DERIV)
@@ -336,12 +336,12 @@ double MechanicalObject<CudaVec3fTypes>::vDot(VecId a, VecId b)
         int tmpsize = gpu::cuda::MechanicalObjectCudaVec3f_vDotTmpSize(va->size());
         if (tmpsize == 0)
         {
-            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), NULL);
+            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), NULL, NULL);
         }
         else
         {
             this->data.tmpdot.fastResize(tmpsize);
-            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), this->data.tmpdot.deviceWrite());
+            gpu::cuda::MechanicalObjectCudaVec3f_vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), this->data.tmpdot.deviceWrite(), (float*)(&(this->data.tmpdot.getCached(0))));
         }
 #ifndef NDEBUG
         // Check the result

@@ -55,10 +55,10 @@ public:
 
 #ifdef USE_TEXTURE
 
-texture<float2,1,cudaReadModeElementType> texX;
-const void* curX = NULL;
+static texture<float,1,cudaReadModeElementType> texX;
+static const void* curX = NULL;
 
-void setX(const void* x)
+static void setX(const void* x)
 {
     if (x!=curX)
     {
@@ -69,15 +69,16 @@ void setX(const void* x)
 
 __device__ float3 getX(int i)
 {
-    int i2 = i + (i>>1);
-    float2 x1 = tex1Dfetch(texX, i2);
-    float2 x2 = tex1Dfetch(texX, i2+1);
-    return (i&1)?make_float3(x1.y,x2.x,x2.y) : make_float3(x1.x,x1.y,x2.x);
+    int i3 = umul24(i,3);
+    float x1 = tex1Dfetch(texX, i3);
+    float x2 = tex1Dfetch(texX, i3+1);
+    float x3 = tex1Dfetch(texX, i3+2);
+    return make_float3(x1,x2,x3);
 }
 
 #else
 
-void setX(const void* x)
+static void setX(const void* x)
 {
 }
 
@@ -215,7 +216,7 @@ __global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(int nbVertex, uns
     */
     float3 force = make_float3(0.0f,0.0f,0.0f);
 
-    velems+=index0*nbElemPerVertex+index1;
+    velems+=umul24(index0,nbElemPerVertex)+index1;
 
     if (index0+index1 < nbVertex)
         for (int s = 0; s < nbElemPerVertex; s++)
