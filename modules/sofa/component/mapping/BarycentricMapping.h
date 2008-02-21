@@ -297,6 +297,68 @@ public:
 };
 
 
+/// Class allowing barycentric mapping computation on a EdgeSetTopology
+template<class In, class Out>
+class TopologyBarycentricMapper<topology::EdgeSetTopology<In>, In, Out> : public BarycentricMapper<In,Out>
+    //class TriangleSetTopologyBarycentricMapper : public BarycentricMapper<In,Out>
+{
+public:
+    typedef BarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::MappingData1D MappingData;
+protected:
+    sofa::helper::vector< MappingData >  map;
+    topology::EdgeSetTopology<In>* topology;
+
+public:
+    TopologyBarycentricMapper(topology::EdgeSetTopology<In>* topology) : topology(topology)
+    {}
+
+    bool empty() const {return map.size()==0;}
+    void setTopology( topology::EdgeSetTopology<In>* t ) { topology = t; }
+    void clear(int reserve=0);
+
+    int addPointInEdge(int edgeIndex, const Real* baryCoords);
+    int createPointInEdge(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points);
+
+    void init();
+
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::EdgeSetTopology<In>, In, Out> &b )
+    {
+        unsigned int size_vec;
+
+        in >> size_vec;
+        b.map.clear();
+        MappingData value;
+        for (unsigned int i=0; i<size_vec; i++)
+        {
+            in >> value;
+            b.map.push_back(value);
+        }
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const TopologyBarycentricMapper<topology::EdgeSetTopology<In>, In, Out> & b )
+    {
+
+        out << b.map.size();
+        out << " " ;
+        out << b.map;
+
+        return out;
+    }
+
+
+};
+
+
 /// Class allowing barycentric mapping computation on a TriangleSetTopology
 template<class In, class Out>
 class TopologyBarycentricMapper<topology::TriangleSetTopology<In>, In, Out> : public BarycentricMapper<In,Out>

@@ -46,7 +46,12 @@ Creator<Contact::Factory, BarycentricPenalityContact<SphereTreeModel, TriangleSe
 Creator<Contact::Factory, BarycentricPenalityContact<PointModel, PointModel> > PointPointPenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<LineMeshModel, PointModel> > LinePointPenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<LineMeshModel, LineMeshModel> > LineLinePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<LineMeshModel, LineSetModel> > LineLineSetPenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<LineMeshModel, SphereModel> > LineSpherePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<LineSetModel, PointModel> > LineSetPointPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<LineSetModel, LineMeshModel> > LineSetLinePenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<LineSetModel, LineSetModel> > LineSetLineSetPenalityContactClass("default",true);
+Creator<Contact::Factory, BarycentricPenalityContact<LineSetModel, SphereModel> > LineSetSpherePenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<TriangleMeshModel, SphereModel> > TriangleMeshSpherePenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<TriangleMeshModel, PointModel> > TriangleMeshPointPenalityContactClass("default",true);
 Creator<Contact::Factory, BarycentricPenalityContact<TriangleMeshModel, LineMeshModel> > TriangleMeshLinePenalityContactClass("default",true);
