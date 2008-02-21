@@ -129,10 +129,8 @@ private:
     double lastProjectionMatrix[16];
     double lastModelviewMatrix[16];
     GLint lastViewport[4];
-    bool    sceneBBoxIsValid;
     Vector3 sceneMinBBox;
     Vector3 sceneMaxBBox;
-    bool initTexturesDone;
 public:
 
     /// Activate this class of viewer.

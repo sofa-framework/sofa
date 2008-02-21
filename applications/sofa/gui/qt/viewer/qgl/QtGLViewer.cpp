@@ -1574,51 +1574,6 @@ void QtGLViewer::screenshot(const std::string filename)
     capture.saveScreen(filename);
 }
 
-
-void QtGLViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filename, bool keepParams)
-{
-
-    std::ostringstream ofilename;
-    std::string screenshot_prefix;
-
-    sceneFileName = (filename==NULL)?"":filename;
-
-    if (!sceneFileName.empty())
-    {
-        const char* begin = sceneFileName.c_str();
-        const char* end = strrchr(begin,'.');
-        if (!end) end = begin + sceneFileName.length();
-        ofilename << std::string(begin, end);
-        ofilename << "_";
-
-        screenshot_prefix = ofilename.str();
-
-        unsigned int position_scene = screenshot_prefix.rfind("scenes/");
-
-        if (position_scene != std::string::npos && position_scene < screenshot_prefix.size()-7)
-        {
-            screenshot_prefix.replace(position_scene, 7, "share/screenshots/");
-        }
-    }
-    else
-        screenshot_prefix = "scene_";
-
-    capture.setPrefix(screenshot_prefix);
-    if (scene != groot)
-    {
-        if (interactor != NULL)
-            interactor = NULL;
-    }
-    groot = scene;
-    initTexturesDone = false;
-    sceneBBoxIsValid = false;
-
-    if (!keepParams) resetView();
-    update();
-
-}
-
-
 /// Render Scene called during multiThread simulation using automate
 void QtGLViewer::drawFromAutomate()
 {
@@ -1662,6 +1617,7 @@ QString QtGLViewer::helpString()
 <li><b>A</b>: TO DRAW AXIS<br></li>\
 <li><b>B</b>: TO CHANGE THE BACKGROUND<br></li>\
 <li><b>C</b>: TO CENTER THE VIEW<br></li>\
+<li><b>H</b>: TO OPEN HELP of QGLViewer<br></li>\
 <li><b>L</b>: TO DRAW SHADOWS<br></li>\
 <li><b>O</b>: TO EXPORT TO .OBJ<br>\
 The generated files scene-time.obj and scene-time.mtl are saved in the running project directory<br></li>\

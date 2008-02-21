@@ -2144,46 +2144,15 @@ void QtViewer::screenshot(const std::string filename)
 
 void QtViewer::setScene(sofa::simulation::tree::GNode* scene, const char* filename, bool keepParams)
 {
-    std::ostringstream ofilename;
-    std::string screenshot_prefix;
-    sceneFileName = (filename==NULL)?"":filename;
-    if (!sceneFileName.empty())
-    {
-        const char* begin = sceneFileName.c_str();
-        const char* end = strrchr(begin,'.');
-        if (!end) end = begin + sceneFileName.length();
-        ofilename << std::string(begin, end);
-        ofilename << "_";
-
-        screenshot_prefix = ofilename.str();
-        std::string::size_type position_scene = screenshot_prefix.rfind("scenes/");
-        if (position_scene != std::string::npos)
-        {
-            screenshot_prefix.replace(position_scene, 7, "share/screenshots/");
-        }
-
-    }
-    else
-        screenshot_prefix = "scene_";
-
-    capture.setPrefix(screenshot_prefix);
 
     bool newScene = (scene != groot);
-
-    groot = scene;
+    SofaViewer::setScene(scene, filename, keepParams);
     if (newScene)
     {
-        initTexturesDone = false;
         getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        sceneBBoxIsValid = true;
         _panSpeed = (sceneMaxBBox-sceneMinBBox).norm()*0.5;
         _zoomSpeed = (sceneMaxBBox-sceneMinBBox).norm();
-
-        if (!keepParams) resetView();
-        if (interactor != NULL)
-            interactor = NULL;
     }
-    update();
 }
 
 /// Render Scene called during multiThread simulation using automate
