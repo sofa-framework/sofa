@@ -106,10 +106,10 @@ private:
 
     bool _waitForRender;
 
-    bool    sceneBBoxIsValid;
+
     Vector3 sceneMinBBox;
     Vector3 sceneMaxBBox;
-    bool initTexturesDone;
+
 public:
 
     /// Activate this class of viewer.
@@ -139,7 +139,7 @@ protected:
     void StoreLightMatrices();
 
 public:
-    void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false);
+// 	      void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false);
 
     void			SwitchToAutomateView();
     //void			reshape(int width, int height);

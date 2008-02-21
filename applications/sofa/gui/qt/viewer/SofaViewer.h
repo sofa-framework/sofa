@@ -101,7 +101,42 @@ public:
     virtual void                           setSceneFileName(const std::string &f) {sceneFileName = f;};
 
     virtual void setup() {}
-    virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false)=0;
+    virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false)
+    {
+//               if (interactor != NULL) delete interactor;
+        interactor = NULL;
+        std::ostringstream ofilename;
+        std::string screenshot_prefix;
+
+        sceneFileName = (filename==NULL)?"":filename;
+        if (!sceneFileName.empty())
+        {
+            const char* begin = sceneFileName.c_str();
+            const char* end = strrchr(begin,'.');
+            if (!end) end = begin + sceneFileName.length();
+            ofilename << std::string(begin, end);
+            ofilename << "_";
+
+            screenshot_prefix = ofilename.str();
+
+            unsigned int position_scene = screenshot_prefix.rfind("scenes/");
+
+            if (position_scene != std::string::npos && position_scene < screenshot_prefix.size()-7)
+            {
+                screenshot_prefix.replace(position_scene, 7, "share/screenshots/");
+            }
+        }
+        else
+            screenshot_prefix = "scene_";
+        capture.setPrefix(screenshot_prefix);
+
+        groot = scene;
+        initTexturesDone = false;
+        sceneBBoxIsValid = true;
+        if (!keepParams) resetView();
+    }
+
+
     virtual void resetView()=0;
     virtual QString helpString()=0;
     virtual bool ready() { return true; }
@@ -467,6 +502,8 @@ protected:
     bool _axis;
     int  camera_type;
     int _background;
+    bool initTexturesDone;
+    bool sceneBBoxIsValid;
     sofa::component::collision::RayPickInteractor* interactor;
 
     //instruments handling
