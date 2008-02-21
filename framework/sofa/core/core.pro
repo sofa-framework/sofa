@@ -63,6 +63,7 @@ HEADERS += \
           objectmodel/BaseData.h \
           objectmodel/KeypressedEvent.h \
 	  objectmodel/KeyreleasedEvent.h \
+	  objectmodel/MouseEvent.h \
           objectmodel/VDataPtr.h \
           objectmodel/XDataPtr.h \
           VisualModel.h \
@@ -87,6 +88,7 @@ SOURCES +=  \
           objectmodel/DataPtr.cpp \
           objectmodel/KeypressedEvent.cpp \
           objectmodel/KeyreleasedEvent.cpp \
+	  objectmodel/MouseEvent.cpp \
           ObjectFactory.cpp \
           Mapping.cpp \
           componentmodel/behavior/BaseConstraint.cpp \

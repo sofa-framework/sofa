@@ -42,6 +42,7 @@
 #include <sofa/helper/gl/Capture.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/component/collision/RayPickInteractor.h>
 
 //instruments handling
@@ -57,10 +58,6 @@
 #else
 #include <qevent.h>
 #endif
-
-//articulated instruments handling
-#include <sofa/simulation/tree/ArticulationsControlEvent.h>
-#include <sofa/simulation/tree/PropagateEventVisitor.h>
 
 namespace sofa
 {
@@ -229,8 +226,9 @@ protected:
             m_isControlPressed = false;
 
             // Send Control Release Info to a potential ArticulatedRigid Instrument
-            sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::Reset);
-            if (groot) groot->propagateEvent(&arcEvent);
+            sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Reset);
+            if (groot)
+                groot->propagateEvent(&mouseEvent);
         }
         default:
         {
@@ -438,14 +436,16 @@ protected:
                     // Mouse left button is pushed
                     if (e->button() == Qt::LeftButton)
                     {
-                        sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::LeftPressed, eventX, eventY);
-                        if (groot) groot->propagateEvent(&arcEvent);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::LeftPressed, eventX, eventY);
+                        if (groot)
+                            groot->propagateEvent(&mouseEvent);
                     }
                     // Mouse right button is pushed
                     else if (e->button() == Qt::RightButton)
                     {
-                        sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::RightPressed, eventX, eventY);
-                        if (groot) groot->propagateEvent(&arcEvent);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::RightPressed, eventX, eventY);
+                        if (groot)
+                            groot->propagateEvent(&mouseEvent);
                     }
                     // Mouse middle button is pushed
                     else if (e->button() == Qt::MidButton)
@@ -456,8 +456,12 @@ protected:
 
                 case QEvent::MouseMove:
                 {
-                    sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::Move, eventX, eventY);
-                    if (groot) groot->propagateEvent(&arcEvent);
+                    if (e->state()&(Qt::LeftButton|Qt::RightButton))
+                    {
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move, eventX, eventY);
+                        if (groot)
+                            groot->propagateEvent(&mouseEvent);
+                    }
                 }
                 break;
 
@@ -465,14 +469,16 @@ protected:
                     // Mouse left button is released
                     if (e->button() == Qt::LeftButton)
                     {
-                        sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::LeftReleased, eventX, eventY);
-                        if (groot) groot->propagateEvent(&arcEvent);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::LeftReleased, eventX, eventY);
+                        if (groot)
+                            groot->propagateEvent(&mouseEvent);
                     }
                     // Mouse right button is released
                     else if (e->button() == Qt::RightButton)
                     {
-                        sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::RightReleased, eventX, eventY);
-                        if (groot) groot->propagateEvent(&arcEvent);
+                        sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::RightReleased, eventX, eventY);
+                        if (groot)
+                            groot->propagateEvent(&mouseEvent);
                     }
                     // Mouse middle button is released
                     else if (e->button() == Qt::MidButton)
