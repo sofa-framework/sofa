@@ -2,11 +2,6 @@
 #include "CudaMath.h"
 #include "mycuda.h"
 
-#ifndef __GNUC__
-//#include <alloca.h>
-#include <malloc.h>
-#endif
-
 #if defined(__cplusplus)
 namespace sofa
 {
@@ -27,7 +22,7 @@ extern "C"
     void MechanicalObjectCudaVec3f_vAdd(unsigned int size, void* res, const void* a, const void* b);
     void MechanicalObjectCudaVec3f_vOp(unsigned int size, void* res, const void* a, const void* b, float f);
     int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size);
-    void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp);
+    void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
 }
 
 //////////////////////
@@ -238,17 +233,21 @@ __global__ void MechanicalObjectCudaVec3f_vDot_kernel(int size, float* res, cons
     int index0 = umul24(blockIdx.x,blockDim.x);
     int index1 = threadIdx.x;
     int n = blockDim.x; //min(blockDim.x , size-index0);
-    size = size*3;
+    size = umul24(size,3);
     float acc = 0;
-    int index = index0*3+index1;
+    float ai,bi;
+    int index = umul24(index0,3)+index1;
+    ai = a[index]; bi = b[index];
     if (index < size)
-        acc = a[index] * b[index];
+        acc = ai*bi; //a[index] * b[index];
     index += n;
+    ai = a[index]; bi = b[index];
     if (index < size)
-        acc += a[index] * b[index];
+        acc += ai*bi; //a[index] * b[index];
     index += n;
+    ai = a[index]; bi = b[index];
     if (index < size)
-        acc += a[index] * b[index];
+        acc += ai*bi; //a[index] * b[index];
 
     while(offset>0)
     {
@@ -346,7 +345,7 @@ int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size)
     return (nblocs+2)/3;
 }
 
-void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp)
+void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* rtmp)
 {
     if (size==0)
     {
@@ -356,12 +355,12 @@ void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a
     {
         int nblocs = (size+MAXTHREADS-1)/MAXTHREADS;
         int bsize = (size+nblocs-1)/nblocs;
-        //if (nblocs > 1)
-        //{
-        //	// round-up bsize to multiples of BSIZE
-        //	bsize = (bsize+BSIZE-1)&-BSIZE;
-        //	nblocs = (size+bsize-1)/bsize;
-        //}
+        if (nblocs > 1)
+        {
+            // round-up bsize to multiples of BSIZE
+            bsize = (bsize+BSIZE-1)&-BSIZE;
+            nblocs = (size+bsize-1)/bsize;
+        }
         dim3 threads(bsize,1);
         dim3 grid(nblocs,1);
         int offset;
@@ -381,11 +380,6 @@ void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a
         }
         else
         {
-#ifdef __GNUC__
-            float rtmp[nblocs];
-#else
-            float *rtmp = (float*) alloca(nblocs*sizeof(float));
-#endif
             cudaMemcpy(rtmp,tmp,nblocs*sizeof(float),cudaMemcpyDeviceToHost);
             float r = 0.0f;
             for (int i=0; i<nblocs; i++)

@@ -158,7 +158,7 @@ public:
     int getNbLines() { return getNbEdges(); }
     int getNbCubes() { return getNbHexas(); }
     Line getLine(LineID i) { return getEdge(i); }
-    Cube getCube(CubeID i) { return getCube(i); }
+    Cube getCube(CubeID i) { return getHexa(i); }
     /// @}
 
     // Points accessors (not always available)

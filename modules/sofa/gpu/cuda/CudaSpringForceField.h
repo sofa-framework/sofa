@@ -24,15 +24,30 @@ public:
     struct GPUSpring
     {
         int index; ///< -1 if no spring
-        float initpos;
+        //float initpos;
         float ks;
-        float kd;
-        GPUSpring() : index(-1), initpos(0), ks(0), kd(0) {}
-        void set(int index, float initpos, float ks, float kd)
+        //float kd;
+        GPUSpring() : index(-1), /*initpos(0),*/ ks(0)/*, kd(0)*/ {}
+        void set(int index, float /*initpos*/, float ks, float /*kd*/)
         {
             this->index = index;
-            this->initpos = initpos;
+            //this->initpos = initpos;
             this->ks = ks;
+            //this->kd = kd;
+        }
+    };
+    struct GPUSpring2
+    {
+        //int index; ///< -1 if no spring
+        float initpos;
+        //float ks;
+        float kd;
+        GPUSpring2() : /*index(-1),*/ initpos(0), /*ks(0),*/ kd(0) {}
+        void set(int /*index*/, float initpos, float /*ks*/, float kd)
+        {
+            //this->index = index;
+            this->initpos = initpos;
+            //this->ks = ks;
             this->kd = kd;
         }
     };
@@ -50,16 +65,20 @@ public:
             nbVertex = nbv;
             nbSpringPerVertex = nbsperv;
             int nbloc = (nbVertex+BSIZE-1)/BSIZE;
-            springs.resize(nbloc*nbSpringPerVertex*BSIZE);
+            springs.resize(2*nbloc*nbSpringPerVertex*BSIZE);
         }
         void set(int vertex, int spring, int index, float initpos, float ks, float kd)
         {
             int bloc = vertex/BSIZE;
             int b_x  = vertex%BSIZE;
-            springs[ bloc*BSIZE*nbSpringPerVertex // start of the bloc
-                    + spring*BSIZE                 // offset to the spring
+            springs[ 2*bloc*BSIZE*nbSpringPerVertex // start of the bloc
+                    + 2*spring*BSIZE                 // offset to the spring
                     + b_x                          // offset to the vertex
                    ].set(index, initpos, ks, kd);
+            (*(GPUSpring2*)&(springs[ 2*bloc*BSIZE*nbSpringPerVertex // start of the bloc
+                    + 2*spring*BSIZE                 // offset to the spring
+                    + b_x+BSIZE                    // offset to the vertex
+                                    ])).set(index, initpos, ks, kd);
         }
     };
     GPUSpringSet springs1; ///< springs from model1 to model2
