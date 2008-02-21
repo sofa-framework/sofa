@@ -149,6 +149,18 @@ public:
 
 };
 
+/// Mapper for LineSetModel
+template<class DataTypes>
+class ContactMapper<LineSetModel, DataTypes> : public BarycentricContactMapper<LineSetModel, DataTypes>
+{
+public:
+    int addPoint(const Vector3& P, int index)
+    {
+        return this->mapper->createPointInEdge(P, index, this->model->getMechanicalState()->getX());
+    }
+
+};
+
 /// Mapper for TriangleMeshModel
 template<class DataTypes>
 class ContactMapper<TriangleMeshModel, DataTypes> : public BarycentricContactMapper<TriangleMeshModel, DataTypes>

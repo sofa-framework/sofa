@@ -43,6 +43,7 @@ int PointMeshModelClass = core::RegisterObject("Collision model which represents
         .add< PointMeshModel >()
         .addAlias("Point")
         .addAlias("PointMesh")
+        .addAlias("PointModel")
         ;
 
 int PointSetModelClass = core::RegisterObject("Collision model which represents a set of points")

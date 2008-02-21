@@ -540,6 +540,40 @@ void BarycentricMapping<BasicMapping>::calcMap(topology::TriangleSetTopology<InD
     }
 }
 
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::clear(int reserve)
+{
+    map.clear(); if (reserve>0) map.reserve(reserve);
+}
+
+template <class In, class Out>
+int TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::addPointInEdge(int edgeIndex, const Real* baryCoords)
+{
+    map.resize(map.size()+1);
+    MappingData& data = *map.rbegin();
+    data.in_index = edgeIndex;
+    data.baryCoords[0] = baryCoords[0];
+    return map.size()-1;
+}
+
+template <class In, class Out>
+int TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::createPointInEdge(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points)
+{
+    Real baryCoords[1];
+    const topology::Edge& elem = topology->getEdgeSetTopologyContainer()->getEdge(edgeIndex);
+    const typename In::Coord p0 = (*points)[elem.first];
+    const typename In::Coord pA = (*points)[elem.second] - p0;
+    typename In::Coord pos = p - p0;
+    baryCoords[0] = dot(pA,pos)/dot(pA,pA);
+    return this->addPointInEdge(edgeIndex, baryCoords);
+}
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::init()
+{
+}
+
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::init()
 {
@@ -733,6 +767,23 @@ void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::apply(
     }
 }
 
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+//void EdgeSetTopologyBarycentricMapper<In,Out>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
+{
+    out.resize(map.size());
+    const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdgeSetTopologyContainer()->getEdgeArray();
+    // 2D elements
+    for(unsigned int i=0; i<map.size(); i++)
+    {
+        const Real fx = map[i].baryCoords[0];
+        int index = map[i].in_index;
+        const topology::Edge& edge = edges[index];
+        out[i] = in[edge.first] * (1-fx)
+                + in[edge.second] * fx;
+    }
+}
+
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
@@ -879,6 +930,23 @@ void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJ
         out[i] = in[triangle[0]] * (1-fx-fy)
                 + in[triangle[1]] * fx
                 + in[triangle[2]] * fy;
+    }
+}
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+//void EdgeSetTopologyBarycentricMapper<In,Out>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
+{
+    out.resize(map.size());
+    const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdgeSetTopologyContainer()->getEdgeArray();
+    // 2D elements
+    for(unsigned int i=0; i<map.size(); i++)
+    {
+        const Real fx = map[i].baryCoords[0];
+        int index = map[i].in_index;
+        const topology::Edge& edge = edges[index];
+        out[i] = in[edge.first] * (1-fx)
+                + in[edge.second] * fx;
     }
 }
 
@@ -1030,6 +1098,23 @@ void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJ
         out[triangle[0]] += v * (1-fx-fy);
         out[triangle[1]] += v * fx;
         out[triangle[2]] += v * fy;
+    }
+}
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+//void EdgeSetTopologyBarycentricMapper<In,Out>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
+{
+    const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdgeSetTopologyContainer()->getEdgeArray();
+    // 2D elements
+    for(unsigned int i=0; i<map.size(); i++)
+    {
+        const typename Out::Deriv v = in[i];
+        const OutReal fx = (OutReal)map[i].baryCoords[0];
+        int index = map[i].in_index;
+        const topology::Edge& edge = edges[index];
+        out[edge.first] += v * (1-fx);
+        out[edge.second] += v * fx;
     }
 }
 
@@ -1278,6 +1363,43 @@ void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::draw(c
                     glColor3f((float)f[j],1,(float)f[j]);
                     helper::gl::glVertexT(out[i]);
                     helper::gl::glVertexT(in[triangle[j]]);
+                }
+            }
+        }
+    }
+    glEnd();
+}
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+//void EdgeSetTopologyBarycentricMapper<In,Out>::draw(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+{
+    const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdgeSetTopologyContainer()->getEdgeArray();
+
+    glBegin (GL_LINES);
+    // 2D elements
+    {
+        for(unsigned int i=0; i<map.size(); i++)
+        {
+            const Real fx = map[i].baryCoords[0];
+            int index = map[i].in_index;
+            const topology::Edge& edge = edges[index];
+            {
+                const Real f = 1.0-fx;
+                if (f<=-0.0001 || f>=0.0001)
+                {
+                    glColor3f((float)f,1,(float)f);
+                    helper::gl::glVertexT(out[i]);
+                    helper::gl::glVertexT(in[edge.first]);
+                }
+            }
+            {
+                const Real f = fx;
+                if (f<=-0.0001 || f>=0.0001)
+                {
+                    glColor3f((float)f,1,(float)f);
+                    helper::gl::glVertexT(out[i]);
+                    helper::gl::glVertexT(in[edge.second]);
                 }
             }
         }
@@ -1543,6 +1665,28 @@ void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::applyJ
             out[i+offset].push_back(typename In::SparseDeriv(triangle[0], (typename In::Deriv) (cIn.data * (1-fx-fy))));
             out[i+offset].push_back(typename In::SparseDeriv(triangle[1], (typename In::Deriv) (cIn.data * (fx))));
             out[i+offset].push_back(typename In::SparseDeriv(triangle[2], (typename In::Deriv) (cIn.data * (fy))));
+        }
+    }
+}
+
+template <class In, class Out>
+void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+//void EdgeSetTopologyBarycentricMapper<In,Out>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+{
+    int offset = out.size();
+    out.resize(offset+in.size());
+    const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdgeSetTopologyContainer()->getEdgeArray();
+
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        for(unsigned int j=0; j<in[i].size(); j++)
+        {
+            const typename Out::SparseDeriv cIn = in[i][j];
+            const topology::Edge edge = edges[this->map[cIn.index].in_index];
+            const OutReal fx = (OutReal)map[cIn.index].baryCoords[0];
+
+            out[i+offset].push_back(typename In::SparseDeriv(edge.first, (typename In::Deriv) (cIn.data * (1-fx))));
+            out[i+offset].push_back(typename In::SparseDeriv(edge.second, (typename In::Deriv) (cIn.data * (fx))));
         }
     }
 }
