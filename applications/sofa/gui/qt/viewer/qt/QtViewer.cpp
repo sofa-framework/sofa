@@ -1691,8 +1691,8 @@ void QtViewer::wheelEvent(QWheelEvent* e)
     {
         if (groot)
         {
-            sofa::simulation::tree::ArticulationsControlEvent arcEvent(sofa::simulation::tree::ArticulationsControlEvent::Wheel, e->delta());
-            groot->propagateEvent(&arcEvent);
+            sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Wheel, e->delta());
+            groot->propagateEvent(&mouseEvent);
         }
     }
     else
