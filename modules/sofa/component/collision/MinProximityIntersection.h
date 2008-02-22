@@ -104,6 +104,8 @@ public:
     bool testValidity(Line&, const Vector3&);
     bool testValidity(Triangle&, const Vector3&);
 
+    void draw();
+
 private:
     double mainAlarmDistance;
     double mainContactDistance;
