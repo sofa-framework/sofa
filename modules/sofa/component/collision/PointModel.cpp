@@ -289,6 +289,9 @@ void Point::getLineNeighbors(std::vector< Vector3> &nV) const
 
 void Point::getTriangleNeighbors(std::vector< std::pair< Vector3, Vector3 > > &nV) const
 {
+    if (!model->triangleNeighbors.size())
+        return;
+
     std::vector< std::pair<int, int> > v = model->triangleNeighbors[index];
 
     std::vector< std::pair<int, int> >::iterator it = v.begin();

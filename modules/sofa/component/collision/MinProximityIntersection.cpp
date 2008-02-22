@@ -32,6 +32,7 @@
 //#include <sofa/component/collision/RayPickInteractor.h>
 #include <iostream>
 #include <algorithm>
+#include <sofa/helper/gl/template.h>
 
 #define DYNAMIC_CONE_ANGLE_COMPUTATION
 
@@ -926,6 +927,7 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
 
 bool MinProximityIntersection::testValidity(Line &l, const Vector3 &PQ)
 {
+    bool nMeanValue = false;
     Vector3 nMean;
     nMean.clear();
 
@@ -945,6 +947,7 @@ bool MinProximityIntersection::testValidity(Line &l, const Vector3 &PQ)
     {
         n1 = cross((*tRight)-pt1, pt2-pt1);
         nMean += n1;
+        nMeanValue = true;
     }
 
     // Left triangle
@@ -953,9 +956,19 @@ bool MinProximityIntersection::testValidity(Line &l, const Vector3 &PQ)
     {
         n2 = cross(pt2-pt1,(*tLeft)-pt1);
         nMean += n2;
+        nMeanValue = true;
+    }
+    if (nMeanValue)
+    {
+        nMean.normalize();
+        if ((nMean*PQ) < 0)
+            return false;
     }
 
-    nMean.normalize();
+    if (!nMeanValue)
+        return true;
+
+
 
     if (tRight != NULL)
     {
@@ -1011,7 +1024,7 @@ bool MinProximityIntersection::testValidity(Line &l, const Vector3 &PQ)
 
 #endif
 
-    return ((nMean*PQ) >= 0);
+    return true;
 }
 
 bool MinProximityIntersection::testValidity(Triangle &t, const Vector3 &PQ)
@@ -1023,6 +1036,40 @@ bool MinProximityIntersection::testValidity(Triangle &t, const Vector3 &PQ)
     Vector3 n = cross(pt2-pt1,pt3-pt1);
 
     return ( (n*PQ) >= 0.0);
+}
+
+
+void MinProximityIntersection::draw()
+{
+
+    if (!getContext()->getShowCollisionModels())
+        return;
+
+#ifdef _DEBUG
+    glLineWidth(3);
+    glBegin(GL_LINES);
+    /*
+    glColor4f(0,0,1,1);
+    for (unsigned int i=0; i<IntersectionBuf.size(); i++)
+    {
+    	helper::gl::glVertexT(IntersectionBuf[i].first);
+    	helper::gl::glVertexT(IntersectionBuf[i].second);
+    }
+    glColor4f(0,1,0,1);
+    */
+    for (unsigned int i=0; i<IntersectionBuf2.size(); i++)
+    {
+        helper::gl::glVertexT(IntersectionBuf2[i].first);
+        helper::gl::glVertexT(IntersectionBuf2[i].second);
+    }
+    glEnd();
+    glLineWidth(1);
+
+
+    // fin: suppression du buffer
+    IntersectionBuf.clear();
+    IntersectionBuf2.clear();
+#endif
 }
 
 
