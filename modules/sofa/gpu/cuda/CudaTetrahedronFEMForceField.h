@@ -110,7 +110,7 @@ public:
         /// @name index of the 4 connected vertices
         /// @{
         //Vec<4,int> tetra;
-        int ia,ib,ic,id;
+        int ia[BSIZE],ib[BSIZE],ic[BSIZE],id[BSIZE];
         /// @}
         //};
         //struct GPUElement2
@@ -118,16 +118,16 @@ public:
         /// @name material stiffness matrix
         /// @{
         //Mat<6,6,Real> K;
-        float gamma_bx2, mu2_bx2;
+        float gamma_bx2[BSIZE], mu2_bx2[BSIZE];
         /// @}
         /// @name initial position of the vertices in the local (rotated) coordinate system
         /// @{
         //Vec3f initpos[4];
-        float bx,cx;
+        float bx[BSIZE],cx[BSIZE];
         //};
         //struct GPUElement3
         //{
-        float cy,dx,dy,dz;
+        float cy[BSIZE],dx[BSIZE],dy[BSIZE],dz[BSIZE];
         /// @}
         //};
         //struct GPUElement4
@@ -135,10 +135,10 @@ public:
         /// strain-displacement matrix
         /// @{
         //Mat<12,6,Real> J;
-        float Jbx_bx,Jby_bx,Jbz_bx;
+        float Jbx_bx[BSIZE],Jby_bx[BSIZE],Jbz_bx[BSIZE];
         /// @}
         /// unused value to align to 64 bytes
-        float dummy;
+        float dummy[BSIZE];
     };
 
     gpu::cuda::CudaVector<GPUElement> elems;
@@ -154,19 +154,28 @@ public:
         float dummy;
     };
 
-    gpu::cuda::CudaVector<GPUElementState> state;
+    /// Varying data associated with each element
+    struct GPUElementForce
+    {
+        Vec<4,float> fA,fB,fC,fD;
+    };
 
+    gpu::cuda::CudaVector<GPUElementState> state;
+    gpu::cuda::CudaVector<GPUElementForce> eforce;
+    int nbElement; ///< number of elements
     int vertex0; ///< index of the first vertex connected to an element
     int nbVertex; ///< number of vertices to process to compute all elements
     int nbElementPerVertex; ///< max number of elements connected to a vertex
     /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second element, etc)
     /// No that each integer is actually equat the the index of the element * 4 + the index of this vertex inside the tetrahedron.
     gpu::cuda::CudaVector<int> velems;
-    TetrahedronFEMForceFieldInternalData() : vertex0(0), nbVertex(0), nbElementPerVertex(0) {}
+    TetrahedronFEMForceFieldInternalData() : nbElement(0), vertex0(0), nbVertex(0), nbElementPerVertex(0) {}
     void init(int nbe, int v0, int nbv, int nbelemperv)
     {
-        elems.resize(nbe);
+        nbElement = nbe;
+        elems.resize((nbe+BSIZE-1)/BSIZE);
         state.resize(nbe);
+        eforce.resize(nbe);
         vertex0 = v0;
         nbVertex = nbv;
         nbElementPerVertex = nbelemperv;
@@ -175,6 +184,7 @@ public:
         for (unsigned int i=0; i<velems.size(); i++)
             velems[i] = 0;
     }
+    int size() const { return nbElement; }
     void setV(int vertex, int num, int index)
     {
         vertex -= vertex0;
@@ -195,21 +205,21 @@ public:
             <<J[3]<<"\n     "<<J[4]<<"\n     "<<J[5]<<"\n     "
             <<J[6]<<"\n     "<<J[7]<<"\n     "<<J[8]<<"\n     "
             <<J[9]<<"\n     "<<J[10]<<"\n     "<<J[11]<<std::endl;*/
-        GPUElement& e = elems[i];
-        e.ia = indices[0] - vertex0;
-        e.ib = indices[1] - vertex0;
-        e.ic = indices[2] - vertex0;
-        e.id = indices[3] - vertex0;
-        e.bx = b[0];
-        e.cx = c[0]; e.cy = c[1];
-        e.dx = d[0]; e.dy = d[1]; e.dz = d[2];
-        float bx2 = e.bx * e.bx;
-        e.gamma_bx2 = K[0][1] * bx2;
-        e.mu2_bx2 = 2*K[3][3] * bx2;
-        e.Jbx_bx = (e.cy * e.dz) / e.bx;
-        e.Jby_bx = (-e.cx * e.dz) / e.bx;
-        e.Jbz_bx = (e.cx*e.dy - e.cy*e.dx) / e.bx;
-        e.dummy = 0;
+        GPUElement& e = elems[i/BSIZE]; i = i%BSIZE;
+        e.ia[i] = indices[0] - vertex0;
+        e.ib[i] = indices[1] - vertex0;
+        e.ic[i] = indices[2] - vertex0;
+        e.id[i] = indices[3] - vertex0;
+        e.bx[i] = b[0];
+        e.cx[i] = c[0]; e.cy[i] = c[1];
+        e.dx[i] = d[0]; e.dy[i] = d[1]; e.dz[i] = d[2];
+        float bx2 = e.bx[i] * e.bx[i];
+        e.gamma_bx2[i] = K[0][1] * bx2;
+        e.mu2_bx2[i] = 2*K[3][3] * bx2;
+        e.Jbx_bx[i] = (e.cy[i] * e.dz[i]) / e.bx[i];
+        e.Jby_bx[i] = (-e.cx[i] * e.dz[i]) / e.bx[i];
+        e.Jbz_bx[i] = (e.cx[i]*e.dy[i] - e.cy[i]*e.dx[i]) / e.bx[i];
+        e.dummy[i] = 0;
         /*std::cout << "GPU Info:\n b = "<<e.bx<<"\n c = "<<e.cx<<" "<<e.cy<<"\n d = "<<e.dx<<" "<<e.dy<<" "<<e.dz<<"\n K = "
             <<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "
             <<(e.gamma_bx2)/bx2<<" "<<(e.gamma_bx2+e.mu2_bx2)/bx2<<" "<<(e.gamma_bx2)/bx2<<" 0 0 0\n     "

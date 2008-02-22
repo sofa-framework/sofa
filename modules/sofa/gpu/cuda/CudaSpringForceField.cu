@@ -483,7 +483,7 @@ __global__ void StiffSpringForceFieldCuda3f_addExternalDForce_kernel(unsigned in
     {
         GPUSpring spring = *springs;
         springs+=BSIZE;
-        GPUSpring2 spring2 = *(const GPUSpring2*)springs;
+        //GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
         if (spring.index != -1)
         {
@@ -563,7 +563,7 @@ __global__ void StiffSpringForceFieldCuda3f_addDForce_kernel(unsigned int nbSpri
     {
         GPUSpring spring = *springs;
         springs+=BSIZE;
-        GPUSpring2 spring2 = *(const GPUSpring2*)springs;
+        //GPUSpring2 spring2 = *(const GPUSpring2*)springs;
         springs+=BSIZE;
         float tgt = *dfdx;
         dfdx+=BSIZE;

@@ -68,6 +68,16 @@ __device__ float3 operator*(float a, float3 b)
     return make_float3(a*b.x, a*b.y, a*b.z);
 }
 
+__device__ float3 make_float3(float4 f)
+{
+    return make_float3(f.x,f.y,f.z);
+}
+
+__device__ float4 make_float4(float3 f, float w=0.0)
+{
+    return make_float4(f.x,f.y,f.z,w);
+}
+
 
 __device__ float3 mul(float3 a, float3 b)
 {
@@ -99,7 +109,7 @@ __device__ float invnorm(float3 a)
     return rsqrtf(norm2(a));
 }
 
-class __align__(4) matrix3
+class /*__align__(4)*/ matrix3
 {
 public:
     float3 x,y,z;
@@ -127,6 +137,42 @@ public:
     __device__ float3 mulT(float3 v)
     {
         return x*v.x+y*v.y+z*v.z;
+    }
+    __device__ float mulX(float3 v)
+    {
+        return dot(x,v);
+    }
+    __device__ float mulY(float3 v)
+    {
+        return dot(y,v);
+    }
+    __device__ float mulZ(float3 v)
+    {
+        return dot(z,v);
+    }
+    __device__ void readAoS(const float* data)
+    {
+        x.x=*data; data+=blockDim.x;
+        x.y=*data; data+=blockDim.x;
+        x.z=*data; data+=blockDim.x;
+        y.x=*data; data+=blockDim.x;
+        y.y=*data; data+=blockDim.x;
+        y.z=*data; data+=blockDim.x;
+        z.x=*data; data+=blockDim.x;
+        z.y=*data; data+=blockDim.x;
+        z.z=*data; data+=blockDim.x;
+    }
+    __device__ void writeAoS(float* data)
+    {
+        *data=x.x; data+=blockDim.x;
+        *data=x.y; data+=blockDim.x;
+        *data=x.z; data+=blockDim.x;
+        *data=y.x; data+=blockDim.x;
+        *data=y.y; data+=blockDim.x;
+        *data=y.z; data+=blockDim.x;
+        *data=z.x; data+=blockDim.x;
+        *data=z.y; data+=blockDim.x;
+        *data=z.z; data+=blockDim.x;
     }
 };
 

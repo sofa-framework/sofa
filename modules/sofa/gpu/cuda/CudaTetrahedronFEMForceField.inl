@@ -15,8 +15,8 @@ namespace cuda
 
 extern "C"
 {
-    void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* f, const void* x, const void* v);
-    void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, const void* velems, void* df, const void* dx);
+    void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
+    void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx);
 }
 
 } // namespace cuda
@@ -108,18 +108,19 @@ void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f,
         int ncubes = _trimgrid->getNbCubes();
         for (int i=0; i<ncubes; i++)
             if (_trimgrid->isCubeActive(i)) ++nactive;
-        if ((int)data.elems.size() != 6*nactive)
+        if ((int)data.size() != 6*nactive)
             reinit();
     }
 
 
     f.resize(x.size());
     TetrahedronFEMForceFieldCuda3f_addForce(
-        data.elems.size(),
+        data.size(),
         data.nbVertex,
         data.nbElementPerVertex,
         data.elems.deviceRead(),
         data.state.deviceWrite(),
+        data.eforce.deviceWrite(),
         data.velems.deviceRead(),
         (      Deriv*)f.deviceWrite() + data.vertex0,
         (const Coord*)x.deviceRead()  + data.vertex0,
@@ -185,11 +186,12 @@ void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& d
 {
     df.resize(dx.size());
     TetrahedronFEMForceFieldCuda3f_addDForce(
-        data.elems.size(),
+        data.size(),
         data.nbVertex,
         data.nbElementPerVertex,
         data.elems.deviceRead(),
-        data.state.deviceWrite(),
+        data.state.deviceRead(),
+        data.eforce.deviceWrite(),
         data.velems.deviceRead(),
         (      Deriv*)df.deviceWrite() + data.vertex0,
         (const Deriv*)dx.deviceRead()  + data.vertex0);
