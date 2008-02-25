@@ -171,56 +171,41 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const
 // then this constraint is transformed by (Jt.n) with value (v) for the rigid model
 // There is a specificity of this propagateConstraint: we have to find the application point on the childModel
 // in order to compute the right constaint on the rigidModel.
-template <class BaseMapping>
-void BeamLinearMapping<BaseMapping>::applyJT( typename In::VecConst& /*out*/, const typename Out::VecConst& /*in*/ )
+template <class BasicMapping>
+void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
-    /*
-    //	printf("\n applyJT(VectConst, VectConst) in BeamLinearMapping");
+    const typename In::VecCoord& x = *this->fromModel->getX();
+    int outSize = out.size();
+    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
 
-    	out.resize(in.size());
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        // computation of (Jt.n) //
+        // in[i].size() = num node involved in the constraint
+        for (unsigned int j=0; j<in[i].size(); j++)
+        {
+            int index = in[i][j].index;	// index of the node
+            // interpolation//////////
+            defaulttype::Vec<N, typename In::Real> inpos = points[index];
+            int in0 = helper::rfloor(inpos[0]);
+            if (in0<0) in0 = 0; else if (in0 > (int)x.size()-2) in0 = x.size()-2;
+            inpos[0] -= in0;
+            /////////////////////////
+            Deriv w_n = (Deriv) in[i][j].data;	// weighted value of the constraint direction
 
-    	for(unsigned int i=0; i<in.size(); i++)
-    	{
-    		// computation of (Jt.n) //
-    		// computation of the ApplicationPoint position // Coord is a Vec3
-    		typename Out::Coord ApplicationPoint;
+            // Compute the mapped Constraint on the beam nodes ///
+            InDeriv direction0;
+            direction0.getVCenter() = w_n * (1-inpos[0]);
+            direction0.getVOrientation() = cross(rotatedPoints0[index], w_n) * (1-inpos[0]);
+            InDeriv direction1;
+            direction1.getVCenter() = w_n * (inpos[0]);
+            direction1.getVOrientation() = cross(rotatedPoints1[index], w_n) * (inpos[0]);
+            out[outSize+i].push_back(InSparseDeriv(in0, direction0));
+            out[outSize+i].push_back(InSparseDeriv(in0+1, direction1));
+        }
 
-    		// computation of the constaint direction
-                    typename Out::Deriv n;
-
-                    typename Out::Deriv w_n;
-
-            // in[i].size() = num node involved in the constraint
-    		for (unsigned int j=0;j<in[i].size();j++)
-    		{
-    			int index = in[i][j].index;	// index of the node
-    			w_n = (Deriv) in[i][j].data;	// weighted value of the constraint direction
-    			double w = w_n.norm();	// computation of the weight
-    			// the application point (on the child model) is computed using barycentric values //
-    			ApplicationPoint += rotatedPoints[index]*w;
-    			// we add the contribution of each weighted direction
-    			n += w_n ;
-    		}
-
-    		if (n.norm() < 0.9999 || n.norm() > 1.00001)
-    			printf("\n WARNING : constraint direction is not normalized !!!");
-
-            // apply Jt.n as a constraint for the center of mass
-            // Jt = [ I   ]
-            //      [ OM^ ]
-                    typename Out::Deriv omega_n = cross(ApplicationPoint,n);
-
-    		InDeriv direction;
-
-    		direction.getVCenter() = n;
-            direction.getVOrientation() = omega_n;
-
-    		// for rigid model, there's only the center of mass as application point (so only one vector for each constraint)
-            out[i].push_back(InSparseDeriv(index.getValue(), direction)); // 0 = index of the center of mass
-    	}
-    */
+    }
 }
-
 /// Template specialization for 2D rigids
 
 // template<>
