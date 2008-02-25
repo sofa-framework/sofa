@@ -9,6 +9,7 @@ HEADERS += \
           CollisionElement.h \
           CollisionModel.h \
           componentmodel/behavior/BaseConstraint.h \
+          componentmodel/collision/BaseConstraintCorrection.h \
           componentmodel/behavior/BaseForceField.h \
           componentmodel/behavior/BaseMass.h \
           componentmodel/behavior/BaseMechanicalMapping.h \
@@ -21,9 +22,9 @@ HEADERS += \
           componentmodel/behavior/InteractionConstraint.h \
           componentmodel/behavior/PairInteractionForceField.h \
           componentmodel/behavior/PairInteractionForceField.inl \
-		  componentmodel/behavior/MixedInteractionForceField.h \
-		  componentmodel/behavior/MixedInteractionForceField.inl \
-		  componentmodel/behavior/MappedModel.h \
+	  componentmodel/behavior/MixedInteractionForceField.h \
+	  componentmodel/behavior/MixedInteractionForceField.inl \
+	  componentmodel/behavior/MappedModel.h \
           componentmodel/behavior/Mass.h \
           componentmodel/behavior/Mass.inl \
           componentmodel/behavior/MasterSolver.h \
@@ -31,7 +32,6 @@ HEADERS += \
           componentmodel/behavior/MechanicalMapping.inl \
           componentmodel/behavior/MechanicalState.h \
           componentmodel/behavior/OdeSolver.h \
-          componentmodel/collision/BaseContactCorrection.h \
           componentmodel/collision/BroadPhaseDetection.h \
           componentmodel/collision/CollisionAlgorithm.h \
           componentmodel/collision/CollisionGroupManager.h \
