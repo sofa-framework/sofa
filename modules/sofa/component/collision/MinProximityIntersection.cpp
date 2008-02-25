@@ -1041,35 +1041,8 @@ bool MinProximityIntersection::testValidity(Triangle &t, const Vector3 &PQ)
 
 void MinProximityIntersection::draw()
 {
-
     if (!getContext()->getShowCollisionModels())
         return;
-
-#ifdef _DEBUG
-    glLineWidth(3);
-    glBegin(GL_LINES);
-    /*
-    glColor4f(0,0,1,1);
-    for (unsigned int i=0; i<IntersectionBuf.size(); i++)
-    {
-    	helper::gl::glVertexT(IntersectionBuf[i].first);
-    	helper::gl::glVertexT(IntersectionBuf[i].second);
-    }
-    glColor4f(0,1,0,1);
-    */
-    for (unsigned int i=0; i<IntersectionBuf2.size(); i++)
-    {
-        helper::gl::glVertexT(IntersectionBuf2[i].first);
-        helper::gl::glVertexT(IntersectionBuf2[i].second);
-    }
-    glEnd();
-    glLineWidth(1);
-
-
-    // fin: suppression du buffer
-    IntersectionBuf.clear();
-    IntersectionBuf2.clear();
-#endif
 }
 
 

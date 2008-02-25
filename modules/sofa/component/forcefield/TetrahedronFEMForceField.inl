@@ -129,11 +129,12 @@ inline void TetrahedronFEMForceField<DataTypes>::computeStrainDisplacement( Stra
 
 
     // 0
+    /*
     J[0][1] = J[0][2] = J[0][4] = J[1][0] =  J[1][2] =  J[1][5] =  J[2][0] =  J[2][1] =  J[2][3]  = 0;
     J[3][1] = J[3][2] = J[3][4] = J[4][0] =  J[4][2] =  J[4][5] =  J[5][0] =  J[5][1] =  J[5][3]  = 0;
     J[6][1] = J[6][2] = J[6][4] = J[7][0] =  J[7][2] =  J[7][5] =  J[8][0] =  J[8][1] =  J[8][3]  = 0;
     J[9][1] = J[9][2] = J[9][4] = J[10][0] = J[10][2] = J[10][5] = J[11][0] = J[11][1] = J[11][3] = 0;
-
+    */
     //m_deq( J, 1.2 ); //hack for stability ??
 }
 
@@ -486,6 +487,24 @@ inline void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transform
     r[2][2] = edgez[2];
 }
 
+//HACK get rotation for fast contact handling with simplified compliance
+template<class DataTypes>
+inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
+{
+
+    Transformation R0t;
+    R0t.transpose(_initialRotations[_rotationIdx[nodeIdx]]);
+    R = _rotations[_rotationIdx[nodeIdx]] * R0t;
+    //R = _rotations[_rotationIdx[nodeIdx]];
+
+    /*
+    	R[0][0] = 1.0 ; R[1][1] = 1.0 ;R[2][2] = 1.0 ;
+    	R[0][1] = 0.0 ; R[0][2] = 0.0 ;
+    	R[1][0] = 0.0 ; R[1][2] = 0.0 ;
+    	R[2][0] = 0.0 ; R[2][1] = 0.0 ;
+    */
+}
+
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c, Index&d)
 {
@@ -495,6 +514,13 @@ void TetrahedronFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Ind
     // third vector orthogonal to first and second
     Transformation R_0_1;
     computeRotationLarge( R_0_1, _initialPoints, a, b, c);
+    _initialRotations[i].transpose(R_0_1);
+
+    //save the element index as the node index
+    _rotationIdx[a] = i;
+    _rotationIdx[b] = i;
+    _rotationIdx[c] = i;
+    _rotationIdx[d] = i;
 
     _rotatedInitialElements[i][0] = R_0_1*_initialPoints[a];
     _rotatedInitialElements[i][1] = R_0_1*_initialPoints[b];
@@ -523,6 +549,7 @@ inline void TetrahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f
     // Rotation matrix (deformed and displaced Tetrahedron/world)
     Transformation R_0_2;
     computeRotationLarge( R_0_2, p, index[0],index[1],index[2]);
+
     _rotations[elementIndex].transpose(R_0_2);
     //cerr<<"R_0_2 large : "<<R_0_2<<endl;
 
@@ -702,6 +729,8 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, In
     MatNoInit<3,3,Real> S;
     polar_decomp(A, R_0_1, S);
 
+    _initialRotations[i].transpose( R_0_1);
+
     _rotatedInitialElements[i][0] = R_0_1*_initialPoints[a];
     _rotatedInitialElements[i][1] = R_0_1*_initialPoints[b];
     _rotatedInitialElements[i][2] = R_0_1*_initialPoints[c];
@@ -773,27 +802,27 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f,
     R_0_2.transpose( _rotations[i] );
 
     Displacement X;
-    Coord x_2;
+    //Coord x_2;
 
-    x_2 = R_0_2*x[a];
-    X[0] = x_2[0];
-    X[1] = x_2[1];
-    X[2] = x_2[2];
+    //x_2 = R_0_2*x[a];
+    X[0] = R_0_2[0][0] * x[a][0] + R_0_2[0][1] * x[a][1] + R_0_2[0][2] * x[a][2];//x_2[0];
+    X[1] = R_0_2[1][0] * x[a][0] + R_0_2[1][1] * x[a][1] + R_0_2[1][2] * x[a][2];//x_2[1];
+    X[2] = R_0_2[2][0] * x[a][0] + R_0_2[2][1] * x[a][1] + R_0_2[2][2] * x[a][2];//x_2[2];
 
-    x_2 = R_0_2*x[b];
-    X[3] = x_2[0];
-    X[4] = x_2[1];
-    X[5] = x_2[2];
+    //x_2 = R_0_2*x[b];
+    X[3] = R_0_2[0][0] * x[b][0] + R_0_2[0][1] * x[b][1] + R_0_2[0][2] * x[b][2];//x_2[0];
+    X[4] = R_0_2[1][0] * x[b][0] + R_0_2[1][1] * x[b][1] + R_0_2[1][2] * x[b][2];//x_2[1];
+    X[5] = R_0_2[2][0] * x[b][0] + R_0_2[2][1] * x[b][1] + R_0_2[2][2] * x[b][2];//x_2[2];
 
-    x_2 = R_0_2*x[c];
-    X[6] = x_2[0];
-    X[7] = x_2[1];
-    X[8] = x_2[2];
+    //x_2 = R_0_2*x[c];
+    X[6] = R_0_2[0][0] * x[c][0] + R_0_2[0][1] * x[c][1] + R_0_2[0][2] * x[c][2];//x_2[0];
+    X[7] = R_0_2[1][0] * x[c][0] + R_0_2[1][1] * x[c][1] + R_0_2[1][2] * x[c][2];//x_2[1];
+    X[8] = R_0_2[2][0] * x[c][0] + R_0_2[2][1] * x[c][1] + R_0_2[2][2] * x[c][2];//x_2[2];
 
-    x_2 = R_0_2*x[d];
-    X[9] = x_2[0];
-    X[10] = x_2[1];
-    X[11] = x_2[2];
+    //x_2 = R_0_2*x[d];
+    X[9] = R_0_2[0][0] * x[d][0] + R_0_2[0][1] * x[d][1] + R_0_2[0][2] * x[d][2];//x_2[0];
+    X[10] = R_0_2[1][0] * x[d][0] + R_0_2[1][1] * x[d][1] + R_0_2[1][2] * x[d][2];//x_2[1];
+    X[11] = R_0_2[2][0] * x[d][0] + R_0_2[2][1] * x[d][1] + R_0_2[2][2] * x[d][2];//x_2[2];
 
     Displacement F;
 
@@ -803,10 +832,22 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f,
 
     //cerr<<"F : "<<F<<endl;
 
-    f[a] -= _rotations[i] * Deriv( F[0], F[1],  F[2] );
-    f[b] -= _rotations[i] * Deriv( F[3], F[4],  F[5] );
-    f[c] -= _rotations[i] * Deriv( F[6], F[7],  F[8] );
-    f[d] -= _rotations[i] * Deriv( F[9], F[10], F[11] );
+    f[a][0] -= _rotations[i][0][0] *  F[0] +  _rotations[i][0][1] * F[1] + _rotations[i][0][2] * F[2];
+    f[a][1] -= _rotations[i][1][0] *  F[0] +  _rotations[i][1][1] * F[1] + _rotations[i][1][2] * F[2];
+    f[a][2] -= _rotations[i][2][0] *  F[0] +  _rotations[i][2][1] * F[1] + _rotations[i][2][2] * F[2];
+
+    f[b][0] -= _rotations[i][0][0] *  F[3] +  _rotations[i][0][1] * F[4] + _rotations[i][0][2] * F[5];
+    f[b][1] -=  _rotations[i][1][0] *  F[3] +  _rotations[i][1][1] * F[4] + _rotations[i][1][2] * F[5];
+    f[b][2] -= _rotations[i][2][0] *  F[3] +  _rotations[i][2][1] * F[4] + _rotations[i][2][2] * F[5];
+
+    f[c][0] -= _rotations[i][0][0] *  F[6] +  _rotations[i][0][1] * F[7] + _rotations[i][0][2] * F[8];
+    f[c][1] -= _rotations[i][1][0] *  F[6] +  _rotations[i][1][1] * F[7] + _rotations[i][1][2] * F[8];
+    f[c][2] -= _rotations[i][2][0] *  F[6] +  _rotations[i][2][1] * F[7] + _rotations[i][2][2] * F[8];
+
+    f[d][0] -= _rotations[i][0][0] *  F[9] +  _rotations[i][0][1] * F[10] + _rotations[i][0][2] * F[11];
+    f[d][1]	-= _rotations[i][1][0] *  F[9] +  _rotations[i][1][1] * F[10] + _rotations[i][1][2] * F[11];
+    f[d][2]	-= _rotations[i][2][0] *  F[9] +  _rotations[i][2][1] * F[10] + _rotations[i][2][2] * F[11];
+
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -955,6 +996,8 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
     case LARGE :
     {
         _rotations.resize( _indexedElements->size() );
+        _initialRotations.resize( _indexedElements->size() );
+        _rotationIdx.resize(_indexedElements->size() *4);
         _rotatedInitialElements.resize(_indexedElements->size());
         for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
         {
@@ -970,6 +1013,8 @@ void TetrahedronFEMForceField<DataTypes>::reinit()
     case POLAR :
     {
         _rotations.resize( _indexedElements->size() );
+        _initialRotations.resize( _indexedElements->size() );
+        _rotationIdx.resize(_indexedElements->size() *4);
         _rotatedInitialElements.resize(_indexedElements->size());
         _initialTransformation.resize(_indexedElements->size());
         unsigned int i=0;
@@ -1146,6 +1191,39 @@ void TetrahedronFEMForceField<DataTypes>::draw()
 
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    ////////////// AFFICHAGE DES ROTATIONS ////////////////////////
+
+    glBegin(GL_LINES);
+    glLineWidth(5);
+
+    for(unsigned ii = 0; ii<  x.size() ; ii++)
+    {
+        Coord a = x[ii];
+        Transformation R;
+        getRotation(R, ii);
+        //R.transpose();
+        Deriv v;
+        // x
+        glColor4f(1,0,0,1);
+        v.x() =1.0; v.y()=0.0; v.z()=0.0;
+        Coord b = a + R*v;
+        helper::gl::glVertexT(a);
+        helper::gl::glVertexT(b);
+        // y
+        glColor4f(0,1,0,1);
+        v.x() =0.0; v.y()=1.0; v.z()=0.0;
+        b = a + R*v;
+        helper::gl::glVertexT(a);
+        helper::gl::glVertexT(b);
+        // z
+        glColor4f(0,0,1,1);
+        v.x() =0.0; v.y()=0.0; v.z()=1.0;
+        b = a + R*v;
+        helper::gl::glVertexT(a);
+        helper::gl::glVertexT(b);
+    }
+    glEnd();
+
 }
 
 
