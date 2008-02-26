@@ -59,6 +59,7 @@ public:
     Data<double> f_rayleighStiffness;
     Data<double> f_rayleighMass;
     Data<double> f_velocityDamping;
+    Data<bool> f_verbose;
 
 protected:
 

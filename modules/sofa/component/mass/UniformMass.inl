@@ -121,7 +121,8 @@ void UniformMass<DataTypes, MassType>::addGravityToV(double dt)
         Deriv theGravity;
         DataTypes::set( theGravity, g[0], g[1], g[2]);
         Deriv hg = theGravity * dt;
-
+        if (this->f_printLog.getValue())
+            std::cerr << "UniformMass::addGravityToV hg = "<<theGravity<<"*"<<dt<<"="<<hg<<std::endl;
         for (unsigned int i=0; i<v.size(); i++)
         {
             v[i] += hg;
@@ -147,7 +148,8 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
     ( theGravity, g[0], g[1], g[2]);
     const MassType& m = mass.getValue();
     Deriv mg = theGravity * m;
-    //cerr<<"UniformMass<DataTypes, MassType>::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<endl;
+    if (this->f_printLog.getValue())
+        cerr<<"UniformMass::addForce, mg = "<<mass<<" * "<<theGravity<<" = "<<mg<<endl;
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     // velocity-based stuff

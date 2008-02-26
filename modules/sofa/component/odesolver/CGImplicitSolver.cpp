@@ -26,7 +26,6 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/odesolver/CGImplicitSolver.h>
-//#include "Sofa/Core/IntegrationGroup.h"
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
 #include <iostream>
@@ -54,6 +53,7 @@ CGImplicitSolver::CGImplicitSolver()
     , f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
     , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
     , f_velocityDamping( initData(&f_velocityDamping,0.,"vdamping","Velocity decay coefficient (no decay if null)") )
+    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
 {
     //     maxCGIter = 25;
     //     smallDenominatorThreshold = 1e-5;
@@ -83,7 +83,8 @@ void CGImplicitSolver::solve(double dt)
     MultiVector x(this, VecId::V_DERIV);
 
     double h = dt;
-    bool printLog = f_printLog.getValue();
+    const bool printLog = f_printLog.getValue();
+    const bool verbose  = f_verbose.getValue();
 
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
@@ -91,11 +92,11 @@ void CGImplicitSolver::solve(double dt)
 
     // compute the right-hand term of the equation system
     computeForce(b);             // b = f0
+
     //propagateDx(vel);            // dx = v
     //computeDf(f);                // f = df/dx v
     computeDfV(f);                // f = df/dx v
     b.peq(f,h+f_rayleighStiffness.getValue());      // b = f0 + (h+rs)df/dx v
-
 
     if (f_rayleighMass.getValue() != 0.0)
     {
@@ -106,8 +107,11 @@ void CGImplicitSolver::solve(double dt)
         addMdx(b,vel,-f_rayleighMass.getValue()); // no need to propagate vel as dx again
     }
 
-
     b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
+
+    if( verbose )
+        cerr<<"CGImplicitSolver, f0 = "<< b <<endl;
+
     projectResponse(b);          // b is projected to the constrained space
 
     double normb2 = b.dot(b);
@@ -117,18 +121,21 @@ void CGImplicitSolver::solve(double dt)
     // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
 
+    if( verbose )
+        cerr<<"CGImplicitSolver, projected f0 = "<< b <<endl;
+
     v_clear( x );
     //v_eq(r,b); // initial residual
     MultiVector& r = b; // b is never used after this point
 
-    /*if( printLog )
+    if( verbose )
     {
         cerr<<"CGImplicitSolver, dt = "<< dt <<endl;
         cerr<<"CGImplicitSolver, initial x = "<< pos <<endl;
         cerr<<"CGImplicitSolver, initial v = "<< vel <<endl;
-        cerr<<"CGImplicitSolver, f0 = "<< b <<endl;
-        cerr<<"CGImplicitSolver, r0 = "<< r <<endl;
-    }*/
+        cerr<<"CGImplicitSolver, r0 = f0 = "<< b <<endl;
+        //cerr<<"CGImplicitSolver, r0 = "<< r <<endl;
+    }
 
     unsigned nb_iter;
     const char* endcond = "iterations";
@@ -161,26 +168,26 @@ void CGImplicitSolver::solve(double dt)
             v_op(p,r,p,beta); // p = p*beta + r
         }
 
-        /*if( printLog )
+        if( verbose )
         {
             cerr<<"p : "<<p<<endl;
-        }*/
+        }
 
         // matrix-vector product
         propagateDx(p);          // dx = p
         computeDf(q);            // q = df/dx p
 
-        /*if( printLog )
+        if( verbose )
         {
             cerr<<"q = df/dx p : "<<q<<endl;
-        }*/
+        }
 
         q *= -h*(h+f_rayleighStiffness.getValue());  // q = -h(h+rs) df/dx p
 
-        /*if( printLog )
+        if( verbose )
         {
             cerr<<"q = -h(h+rs) df/dx p : "<<q<<endl;
-        }*/
+        }
         //
         // 		cerr<<"-h(h+rs) df/dx p : "<<q<<endl;
         // 		cerr<<"f_rayleighMass.getValue() : "<<f_rayleighMass.getValue()<<endl;
@@ -198,18 +205,18 @@ void CGImplicitSolver::solve(double dt)
             //q.peq(q2,(1+h*f_rayleighMass.getValue())); // q = Mp -h(h+rs) df/dx p +hr Mp  =  (M + dt(rd M + rs K) + dt2 K) dx
             addMdx(q,VecId(),(1+h*f_rayleighMass.getValue())); // no need to propagate p as dx again
         }
-        /*if( printLog )
+        if( verbose )
         {
             cerr<<"q = Mp -h(h+rs) df/dx p +hr Mp  =  "<<q<<endl;
-        }*/
+        }
 
         // filter the product to take the constraints into account
         //
         projectResponse(q);     // q is projected to the constrained space
-        /*if( printLog )
+        if( verbose )
         {
             cerr<<"q after constraint projection : "<<q<<endl;
-        }*/
+        }
 
         double den = p.dot(q);
 
@@ -217,20 +224,21 @@ void CGImplicitSolver::solve(double dt)
         if( fabs(den)<f_smallDenominatorThreshold.getValue() )
         {
             endcond = "threshold";
-            if( printLog )
+            if( verbose )
             {
-                //                 cerr<<"CGImplicitSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
+                cerr<<"CGImplicitSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
             }
             break;
         }
         alpha = rho/den;
         x.peq(p,alpha);                 // x = x + alpha p
         r.peq(q,-alpha);                // r = r - alpha q
-        /*if( printLog ){
+        if( verbose )
+        {
             cerr<<"den = "<<den<<", alpha = "<<alpha<<endl;
             cerr<<"x : "<<x<<endl;
             cerr<<"r : "<<r<<endl;
-        }*/
+        }
 
         rho_1 = rho;
     }
@@ -245,9 +253,12 @@ void CGImplicitSolver::solve(double dt)
     if( printLog )
     {
         cerr<<"CGImplicitSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
-        //cerr<<"CGImplicitSolver::solve, solution = "<<x<<endl;
-        //cerr<<"CGImplicitSolver, final x = "<< pos <<endl;
-        //cerr<<"CGImplicitSolver, final v = "<< vel <<endl;
+    }
+    if( verbose )
+    {
+        cerr<<"CGImplicitSolver::solve, solution = "<<x<<endl;
+        cerr<<"CGImplicitSolver, final x = "<< pos <<endl;
+        cerr<<"CGImplicitSolver, final v = "<< vel <<endl;
     }
 }
 

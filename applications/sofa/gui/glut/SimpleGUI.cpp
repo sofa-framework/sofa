@@ -1848,11 +1848,19 @@ void SimpleGUI::keyPressEvent ( int k )
             break;
         }
 
-//    case GLUT_KEY_Escape:
-//        {
-//            exit(0);
-//            break;
-//        }
+        case 'n':
+            // --- step
+        {
+            step();
+            redraw();
+            break;
+        }
+
+        case 'q': //GLUT_KEY_Escape:
+        {
+            exit(0);
+            break;
+        }
 
         case 'c':
         {
