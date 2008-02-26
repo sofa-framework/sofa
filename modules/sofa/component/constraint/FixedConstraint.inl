@@ -83,7 +83,7 @@ template <class DataTypes>
 FixedConstraint<DataTypes>::FixedConstraint()
     : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
     , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
-    , f_fixAll( initData(&f_fixAll,"fixAll","filter all the DOF to implement a fixed object") )
+    , f_fixAll( initData(&f_fixAll,false,"fixAll","filter all the DOF to implement a fixed object") )
 {
     // default to indice 0
     f_indices.beginEdit()->push_back(0);

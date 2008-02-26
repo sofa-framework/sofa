@@ -45,10 +45,12 @@ void FixedConstraint<Rigid3dTypes>::draw()
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-    {
-        gl::glVertexT(x[0].getCenter());
-    }
+    if( f_fixAll.getValue()==true )
+        for (unsigned i=0; i<x.size(); i++ )
+            gl::glVertexT(x[i].getCenter());
+    else
+        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            gl::glVertexT(x[0].getCenter());
     glEnd();
 }
 
@@ -62,10 +64,12 @@ void FixedConstraint<Rigid3fTypes>::draw()
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-    {
-        gl::glVertexT(x[0].getCenter());
-    }
+    if( f_fixAll.getValue()==true )
+        for (unsigned i=0; i<x.size(); i++ )
+            gl::glVertexT(x[i].getCenter());
+    else
+        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            gl::glVertexT(x[0].getCenter());
     glEnd();
 }
 
@@ -79,10 +83,12 @@ void FixedConstraint<Rigid2dTypes>::draw()
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-    {
-        gl::glVertexT(x[0].getCenter());
-    }
+    if( f_fixAll.getValue()==true )
+        for (unsigned i=0; i<x.size(); i++ )
+            gl::glVertexT(x[i].getCenter());
+    else
+        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            gl::glVertexT(x[0].getCenter());
     glEnd();
 }
 
@@ -96,10 +102,12 @@ void FixedConstraint<Rigid2fTypes>::draw()
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
-    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-    {
-        gl::glVertexT(x[0].getCenter());
-    }
+    if( f_fixAll.getValue()==true )
+        for (unsigned i=0; i<x.size(); i++ )
+            gl::glVertexT(x[i].getCenter());
+    else
+        for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            gl::glVertexT(x[0].getCenter());
     glEnd();
 }
 

@@ -5,7 +5,7 @@
     <Object type="CollisionResponse" name="Response" response="default" />
     <Object type="CollisionGroup" name="Group" />
    <Node name="beam">
-      <Object type="CGImplicit" threshold="0.000000001" tolerance="0.0000000001" rayleighStiffness="0" />
+      <Object type="CGImplicit" threshold="0.000000001" tolerance="0.0000000001" rayleighStiffness="0" printLog="false" />
       <Object type="MechanicalObject" template="Rigid" name="DOFs" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1  4 0 0 0 0 0 1  5 0 0 0 0 0 1  6 0 0 0 0 0 1  7 0 0 0 0 0 1" />
       <Object type="Mesh" name="lines" lines="0 1 1 2 2 3 3 4 4 5 5 6 6 7" />
       <!--
@@ -17,7 +17,7 @@
       <Object type="Mesh" name="lines" lines="0 1" />
       -->
       <Object type="FixedConstraint" name="FixedConstraint" indices="0" />
-      <Object type="UniformMass" mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1"/>
+      <Object type="UniformMass" mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
       <Object type="BeamFEMForceField" name="FEM" radius="0.05" youngModulus="10000000" />
 <!--
       <Object type="Gravity" value="0 0 0 0 0 0" />
@@ -38,7 +38,7 @@
       </Node>
    </Node>
    <Node name="beam2">
-      <Object type="CGImplicit" threshold="0.000000001" tolerance="0.0000000001" rayleighStiffness="0" />
+      <Object type="CGImplicit" threshold="0.000000001" tolerance="0.0000000001" rayleighStiffness="0" printLog="false" />
       <!--
       <Object type="MechanicalObject" template="Rigid" name="DOFs" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1" />
       <Object type="Mesh" name="lines" lines="0 1 1 2 2 3" />
