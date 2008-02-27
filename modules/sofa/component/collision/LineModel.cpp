@@ -29,6 +29,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
 #include <sofa/helper/system/gl.h>
+#include <sofa/simulation/tree/GNode.h>
 
 namespace sofa
 {
@@ -145,10 +146,12 @@ void LineSetModel::init()
 {
     LineModel::init();
     needsUpdate = true;
-    mesh = dynamic_cast< Topology* > (getContext()->getMainTopology());
+// 	mesh = dynamic_cast< Topology* > (getContext()->getMainTopology());
+    sofa::simulation::tree::GNode* context = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
+    mesh = context->get< sofa::component::topology::EdgeSetTopology<DataTypes> >();
     if (mesh==NULL)
     {
-        std::cerr << "ERROR: LineSetModel requires a Mesh Topology.\n";
+        std::cerr << "ERROR: LineSetModel requires a EdgeSetTopology.\n";
         return;
     }
     updateFromTopology();
