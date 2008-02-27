@@ -17,15 +17,18 @@ SOFA_DECL_CLASS(CudaMechanicalObject)
 
 int MechanicalObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::MechanicalObject<CudaVec3fTypes> >()
+        .add< component::MechanicalObject<CudaVec3f1Types> >()
         .add< component::MechanicalObject<CudaRigid3fTypes> >()
         ;
 
 int CudaSphereModelClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::collision::TSphereModel<CudaVec3fTypes> >()
+//.add< component::collision::TSphereModel<CudaVec3f1Types> >()
         ;
 
 int MappedObjectCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::MappedObject<CudaVec3fTypes> >()
+        .add< component::MappedObject<CudaVec3f1Types> >()
         .add< component::MappedObject<CudaRigid3fTypes> >()
         ;
 

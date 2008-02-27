@@ -18,6 +18,18 @@ extern "C"
     void RegularGridMapperCuda3f_apply(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in);
     void RegularGridMapperCuda3f_applyJ(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in);
     void RegularGridMapperCuda3f_applyJT(unsigned int insize, unsigned int maxNOut, const unsigned int* gridsize, const void* mapT, void* out, const void* in);
+
+    void RegularGridMapperCuda3f1_apply(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in);
+    void RegularGridMapperCuda3f1_applyJ(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in);
+    void RegularGridMapperCuda3f1_applyJT(unsigned int insize, unsigned int maxNOut, const unsigned int* gridsize, const void* mapT, void* out, const void* in);
+
+    void RegularGridMapperCuda3f_3f1_apply(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in);
+    void RegularGridMapperCuda3f_3f1_applyJ(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in);
+    void RegularGridMapperCuda3f_3f1_applyJT(unsigned int insize, unsigned int maxNOut, const unsigned int* gridsize, const void* mapT, void* out, const void* in);
+
+    void RegularGridMapperCuda3f1_3f_apply(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in);
+    void RegularGridMapperCuda3f1_3f_applyJ(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in);
+    void RegularGridMapperCuda3f1_3f_applyJT(unsigned int insize, unsigned int maxNOut, const unsigned int* gridsize, const void* mapT, void* out, const void* in);
 }
 
 } // namespace cuda
@@ -33,13 +45,15 @@ namespace mapping
 using namespace gpu::cuda;
 
 
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::clear(int reserve)
+template <typename VecIn, typename VecOut>
+void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(int reserve)
 {
     map.clear();
     if (reserve>0) map.reserve(reserve);
 }
 
-int TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::addPointInCube(int cubeIndex, const Real* baryCoords)
+template <typename VecIn, typename VecOut>
+int TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(int cubeIndex, const Real* baryCoords)
 {
     map.resize(map.size()+1);
     CubeData& data = map[map.size()-1];
@@ -52,32 +66,18 @@ int TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaV
     return map.size()-1;
 }
 
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::init()
+template <typename VecIn, typename VecOut>
+void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::init()
 {
 }
 
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
+template <typename VecIn, typename VecOut>
+void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::calcMapT()
 {
-    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
-    out.fastResize(map.size());
-    RegularGridMapperCuda3f_apply(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
-{
-    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
-    out.fastResize(map.size());
-    RegularGridMapperCuda3f_applyJ(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
-}
-
-void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
-{
-    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
-
-    if (map.size() == 0) return;
-    unsigned int insize = out.size();
-    if (maxNOut == 0)
+    if (!map.empty() && maxNOut == 0)
     {
+        const unsigned int insize = topology->getNbPoints();
+        const unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
         // compute mapT
         const int nx = gridsize[0];
         const int nxny = gridsize[0]*gridsize[1];
@@ -115,18 +115,164 @@ void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,Cuda
             }
         }
     }
+}
 
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    out.fastResize(map.size());
+    RegularGridMapperCuda3f_apply(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    out.fastResize(map.size());
+    RegularGridMapperCuda3f_applyJ(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    if (map.size() == 0) return;
+    calcMapT();
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    unsigned int insize = out.size();
 
     RegularGridMapperCuda3f_applyJT(insize, maxNOut, gridsize, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
 }
 
+template<>
 void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
 {
 }
 
+template<>
 void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3fTypes>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
 {
 }
+
+
+
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    out.fastResize(map.size());
+    RegularGridMapperCuda3f1_apply(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    out.fastResize(map.size());
+    RegularGridMapperCuda3f1_applyJ(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    calcMapT();
+    if (map.size() == 0) return;
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    unsigned int insize = out.size();
+
+    RegularGridMapperCuda3f1_applyJT(insize, maxNOut, gridsize, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+{
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3f1Types>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+{
+}
+
+
+
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    out.fastResize(map.size());
+    RegularGridMapperCuda3f1_3f_apply(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    out.fastResize(map.size());
+    RegularGridMapperCuda3f1_3f_applyJ(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    calcMapT();
+    if (map.size() == 0) return;
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    unsigned int insize = out.size();
+
+    RegularGridMapperCuda3f1_3f_applyJT(insize, maxNOut, gridsize, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+{
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3f1Types,CudaVec3fTypes>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+{
+}
+
+
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    out.fastResize(map.size());
+    RegularGridMapperCuda3f_3f1_apply(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    out.fastResize(map.size());
+    RegularGridMapperCuda3f_3f1_applyJ(map.size(), gridsize, map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    calcMapT();
+    if (map.size() == 0) return;
+    unsigned int gridsize[3] = { topology->getNx(), topology->getNy(), topology->getNz() };
+    unsigned int insize = out.size();
+
+    RegularGridMapperCuda3f_3f1_applyJT(insize, maxNOut, gridsize, mapT.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+{
+}
+
+template<>
+void TopologyBarycentricMapper<topology::RegularGridTopology,CudaVec3fTypes,CudaVec3f1Types>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+{
+}
+
 
 } // namespace mapping
 

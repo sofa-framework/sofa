@@ -631,6 +631,191 @@ public:
 typedef sofa::defaulttype::Vec3f Vec3f;
 typedef sofa::defaulttype::Vec2f Vec2f;
 
+using defaulttype::Vec;
+using defaulttype::NoInit;
+using defaulttype::NOINIT;
+
+class Vec3f1 : public Vec3f
+{
+public:
+    typedef float real;
+    enum { N=3 };
+    Vec3f1() : dummy(0.0f) {}
+    template<class real2>
+    Vec3f1(const Vec<N,real2>& v): Vec3f(v), dummy(0.0f) {}
+    Vec3f1(float x, float y, float z) : Vec3f(x,y,z), dummy(0.0f) {}
+
+    /// Fast constructor: no initialization
+    explicit Vec3f1(NoInit n) : Vec3f(n), dummy(0.0f)
+    {
+    }
+
+    // LINEAR ALGEBRA
+
+    /// Multiplication by a scalar f.
+    template<class real2>
+    Vec3f1 operator*(real2 f) const
+    {
+        Vec3f1 r(NOINIT);
+        for (int i=0; i<N; i++)
+            r[i] = this->elems[i]*(real)f;
+        return r;
+    }
+
+    /// On-place multiplication by a scalar f.
+    template<class real2>
+    void operator*=(real2 f)
+    {
+        for (int i=0; i<N; i++)
+            this->elems[i]*=(real)f;
+    }
+
+    template<class real2>
+    Vec3f1 operator/(real2 f) const
+    {
+        Vec3f1 r(NOINIT);
+        for (int i=0; i<N; i++)
+            r[i] = this->elems[i]/(real)f;
+        return r;
+    }
+
+    /// On-place division by a scalar f.
+    template<class real2>
+    void operator/=(real2 f)
+    {
+        for (int i=0; i<N; i++)
+            this->elems[i]/=(real)f;
+    }
+
+    /// Dot product.
+    template<class real2>
+    real operator*(const Vec<N,real2>& v) const
+    {
+        real r = (real)(this->elems[0]*v[0]);
+        for (int i=1; i<N; i++)
+            r += (real)(this->elems[i]*v[i]);
+        return r;
+    }
+
+    /// Dot product.
+    real operator*(const Vec3f1& v) const
+    {
+        real r = (real)(this->elems[0]*v[0]);
+        for (int i=1; i<N; i++)
+            r += (real)(this->elems[i]*v[i]);
+        return r;
+    }
+
+    /// linear product.
+    template<class real2>
+    Vec3f1 linearProduct(const Vec<N,real2>& v) const
+    {
+        Vec3f1 r(NOINIT);
+        for (int i=0; i<N; i++)
+            r[i]=this->elems[i]*(real)v[i];
+        return r;
+    }
+
+    /// linear product.
+    Vec3f1 linearProduct(const Vec3f1& v) const
+    {
+        Vec3f1 r(NOINIT);
+        for (int i=0; i<N; i++)
+            r[i]=this->elems[i]*(real)v[i];
+        return r;
+    }
+
+    /// Vector addition.
+    template<class real2>
+    Vec3f1 operator+(const Vec<N,real2>& v) const
+    {
+        Vec3f1 r(NOINIT);
+        for (int i=0; i<N; i++)
+            r[i]=this->elems[i]+(real)v[i];
+        return r;
+    }
+
+    /// Vector addition.
+    Vec3f1 operator+(const Vec3f1& v) const
+    {
+        Vec3f1 r(NOINIT);
+        for (int i=0; i<N; i++)
+            r[i]=this->elems[i]+(real)v[i];
+        return r;
+    }
+
+    /// On-place vector addition.
+    template<class real2>
+    void operator+=(const Vec<N,real2>& v)
+    {
+        for (int i=0; i<N; i++)
+            this->elems[i]+=(real)v[i];
+    }
+
+    /// On-place vector addition.
+    void operator+=(const Vec3f1& v)
+    {
+        for (int i=0; i<N; i++)
+            this->elems[i]+=(real)v[i];
+    }
+
+    /// Vector subtraction.
+    template<class real2>
+    Vec3f1 operator-(const Vec<N,real2>& v) const
+    {
+        Vec3f1 r(NOINIT);
+        for (int i=0; i<N; i++)
+            r[i]=this->elems[i]-(real)v[i];
+        return r;
+    }
+
+    /// Vector subtraction.
+    Vec3f1 operator-(const Vec3f1& v) const
+    {
+        Vec3f1 r(NOINIT);
+        for (int i=0; i<N; i++)
+            r[i]=this->elems[i]-(real)v[i];
+        return r;
+    }
+
+    /// On-place vector subtraction.
+    template<class real2>
+    void operator-=(const Vec<N,real2>& v)
+    {
+        for (int i=0; i<N; i++)
+            this->elems[i]-=(real)v[i];
+    }
+
+    /// On-place vector subtraction.
+    void operator-=(const Vec3f1& v)
+    {
+        for (int i=0; i<N; i++)
+            this->elems[i]-=(real)v[i];
+    }
+
+    /// Vector negation.
+    Vec3f1 operator-() const
+    {
+        Vec3f1 r(NOINIT);
+        for (int i=0; i<N; i++)
+            r[i]=-this->elems[i];
+        return r;
+    }
+
+    Vec3f1 cross( const Vec3f1& b ) const
+    {
+        BOOST_STATIC_ASSERT(N == 3);
+        return Vec3f1(
+                (*this)[1]*b[2] - (*this)[2]*b[1],
+                (*this)[2]*b[0] - (*this)[0]*b[2],
+                (*this)[0]*b[1] - (*this)[1]*b[0]
+                );
+    }
+
+protected:
+    float dummy;
+};
+
 // GPUs do not support double precision yet
 // ( NVIDIA announced at SuperComputing'06 that it will be supported in 2007... )
 //typedef sofa::defaulttype::Vec3d Vec3d;
@@ -654,6 +839,14 @@ template<>
 inline const char* CudaVec2fTypes::Name()
 {
     return "CudaVec2f";
+}
+
+typedef CudaVectorTypes<Vec3f1,Vec3f1,float> CudaVec3f1Types;
+
+template<>
+inline const char* CudaVec3f1Types::Name()
+{
+    return "CudaVec3f1";
 }
 
 template<int N, typename real>

@@ -35,6 +35,12 @@ int RigidMappingCudaClass = core::RegisterObject("Supports GPU-side computations
 //.add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<Vec3fTypes> > > >()
 //.add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
 //.add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< RigidMapping< MechanicalMapping< MechanicalState<CudaRigid3fTypes>, MechanicalState<CudaVec3f1Types> > > >()
+        .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<CudaVec3f1Types> > > >()
+        .add< RigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<CudaVec3f1Types> > > >()
+        .add< RigidMapping< Mapping< State<CudaRigid3fTypes>, MappedModel<CudaVec3f1Types> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<CudaVec3f1Types> > > >()
+        .add< RigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<CudaVec3f1Types> > > >()
         ;
 
 } // namespace cuda

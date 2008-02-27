@@ -45,6 +45,21 @@ void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const Ve
 template <>
 void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx);
 
+
+template <>
+class PlaneForceFieldInternalData<gpu::cuda::CudaVec3f1Types>
+{
+public:
+    gpu::cuda::GPUPlane plane;
+    gpu::cuda::CudaVector<float> penetration;
+};
+
+template <>
+void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx);
+
 } // namespace forcefield
 
 } // namespace component

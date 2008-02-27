@@ -45,6 +45,20 @@ void SphereForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const V
 template <>
 void SphereForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx);
 
+template <>
+class SphereForceFieldInternalData<gpu::cuda::CudaVec3f1Types>
+{
+public:
+    gpu::cuda::GPUSphere sphere;
+    gpu::cuda::CudaVector<defaulttype::Vec4f> penetration;
+};
+
+template <>
+void SphereForceField<gpu::cuda::CudaVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void SphereForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx);
+
 } // namespace forcefield
 
 } // namespace component

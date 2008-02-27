@@ -68,6 +68,11 @@ __device__ float3 operator*(float a, float3 b)
     return make_float3(a*b.x, a*b.y, a*b.z);
 }
 
+__device__ float3 make_float3(float3 f)
+{
+    return f;
+}
+
 __device__ float3 make_float3(float4 f)
 {
     return make_float3(f.x,f.y,f.z);
@@ -76,6 +81,11 @@ __device__ float3 make_float3(float4 f)
 __device__ float4 make_float4(float3 f, float w=0.0)
 {
     return make_float4(f.x,f.y,f.z,w);
+}
+
+__device__ float4 make_float4(float4 f)
+{
+    return f;
 }
 
 
