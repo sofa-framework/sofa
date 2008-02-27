@@ -32,6 +32,19 @@ double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::
 template <>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw();
 
+template <>
+void UniformMass<gpu::cuda::CudaVec3f1Types, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor);
+
+template <>
+void UniformMass<gpu::cuda::CudaVec3f1Types, float>::accFromF(VecDeriv& a, const VecDeriv& f);
+
+template <>
+void UniformMass<gpu::cuda::CudaVec3f1Types, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
+
+template <>
+bool UniformMass<gpu::cuda::CudaVec3f1Types, float>::addBBox(double* minBBox, double* maxBBox);
+
+
 } // namespace mass
 
 } // namespace component

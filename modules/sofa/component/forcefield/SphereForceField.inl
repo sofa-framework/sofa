@@ -71,13 +71,12 @@ void SphereForceField<DataTypes>::addDForce(VecDeriv& df1, const VecDeriv& dx1)
     df1.resize(dx1.size());
     for (unsigned int i=0; i<this->contacts.getValue().size(); i++)
     {
-        const Contact& c = (*this->contacts.beginEdit())[i];
+        const Contact& c = (this->contacts.getValue())[i];
         assert((unsigned)c.index<dx1.size());
         Deriv du = dx1[c.index];
         Deriv dforce; dforce = -this->stiffness.getValue()*(c.normal * ((du*c.normal)*c.fact) + du * (1 - c.fact));
         df1[c.index] += dforce;
     }
-    this->contacts.endEdit();
 }
 
 template<class DataTypes>

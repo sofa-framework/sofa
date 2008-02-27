@@ -31,6 +31,18 @@ int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computation
         .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > > >()
         .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
         .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3f1Types> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3fTypes> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3f1Types> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > > >()
         ;
 
 } // namespace cuda

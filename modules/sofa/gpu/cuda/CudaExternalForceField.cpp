@@ -15,8 +15,9 @@ namespace cuda
 
 SOFA_DECL_CLASS(CudaExternalForceField)
 int ExternalForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-
-        .add< component::interactionforcefield::ExternalForceField<CudaVec3fTypes> >();
+        .add< component::interactionforcefield::ExternalForceField<CudaVec3fTypes> >()
+        .add< component::interactionforcefield::ExternalForceField<CudaVec3f1Types> >()
+        ;
 
 
 

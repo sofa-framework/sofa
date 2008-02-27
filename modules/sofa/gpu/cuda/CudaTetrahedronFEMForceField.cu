@@ -14,6 +14,9 @@ extern "C"
 {
     void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
     void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx);
+
+    void TetrahedronFEMForceFieldCuda3f1_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v);
+    void TetrahedronFEMForceFieldCuda3f1_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx);
 }
 
 class __align__(16) GPUElement
@@ -87,6 +90,24 @@ __device__ float3 getX(int i)
     return make_float3(x1,x2,x3);
 }
 
+static texture<float4,1,cudaReadModeElementType> texX1;
+static const void* curX1 = NULL;
+
+static void setX1(const void* x1)
+{
+    if (x1!=curX1)
+    {
+        cudaBindTexture((size_t*)NULL, texX1, x1);
+        curX1 = x1;
+    }
+}
+
+__device__ float3 getX1(int i)
+{
+    float4 x1 = tex1Dfetch(texX1, i);
+    return make_float3(x1);
+}
+
 #else
 
 static void setX(const void* x)
@@ -94,6 +115,12 @@ static void setX(const void* x)
 }
 
 #define getX(i) (((const float3*)x)[i])
+
+static void setX1(const void* x1)
+{
+}
+
+#define getX1(i) make_float3((x)[i])
 
 #endif
 
@@ -123,7 +150,18 @@ static void setElementForce(const void* x)
 
 #endif
 
-__global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, const GPUElement* elems, float* rotations, float* eforce, const float* x)
+__device__ float3 getTX(const float3* x, int i)
+{
+    return getX(i);
+}
+
+__device__ float3 getTX(const float4* x, int i)
+{
+    return getX1(i);
+}
+
+template<typename T>
+__global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, const GPUElement* elems, float* rotations, float* eforce, const T* x)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -139,8 +177,8 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, cons
 
     if (index < nbElem)
     {
-        float3 A = getX(e->ia[index1]); //((const float3*)x)[e.ia];
-        float3 B = getX(e->ib[index1]); //((const float3*)x)[e.ib];
+        float3 A = getTX(x, e->ia[index1]); //((const float3*)x)[e.ia];
+        float3 B = getTX(x, e->ib[index1]); //((const float3*)x)[e.ib];
         B -= A;
 
         // Compute R
@@ -170,7 +208,7 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, cons
         JtRtX1.y = 0;
         JtRtX1.z = e_Jbz_bx * bx;
 
-        float3 C = getX(e->ic[index1]); //((const float3*)x)[e.ic];
+        float3 C = getTX(x,e->ic[index1]); //((const float3*)x)[e.ic];
         C -= A;
         Rt.z = cross(B,C);
         Rt.y = cross(Rt.z,B);
@@ -199,7 +237,7 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, cons
         JtRtX1.y -= e_dy * cy;
         JtRtX1.z -= e_dy * cx;
 
-        float3 D = getX(e->id[index1]); //((const float3*)x)[e.id];
+        float3 D = getTX(x,e->id[index1]); //((const float3*)x)[e.id];
         D -= A;
 
         float e_dx = e->dx[index1];
@@ -325,7 +363,7 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcForce_kernel(int nbElem, cons
 
 }
 
-__global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(int nbVertex, unsigned int nbElemPerVertex, const float* eforce, /* const GPUElement* elems, GPUElementState* state, */ const int* velems, float* f, const float* x)
+__global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(int nbVertex, unsigned int nbElemPerVertex, const float* eforce, /* const GPUElement* elems, GPUElementState* state, */ const int* velems, float* f)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -336,15 +374,7 @@ __global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(int nbVertex, uns
 
     // First copy x inside temp
     int iext = umul24(blockIdx.x,BSIZE*3)+index1; //index0*3+index1;
-    /*
-        temp[index1        ] = x[iext        ];
-        temp[index1+  BSIZE] = x[iext+  BSIZE];
-        temp[index1+2*BSIZE] = x[iext+2*BSIZE];
 
-        __syncthreads();
-
-        float3 pos1 = make_float3(temp[index3  ],temp[index3+1],temp[index3+2]);
-    */
     float3 force = make_float3(0.0f,0.0f,0.0f);
 
     velems+=umul24(index0,nbElemPerVertex)+index1;
@@ -414,7 +444,35 @@ __global__ void TetrahedronFEMForceFieldCuda3f_addForce_kernel(int nbVertex, uns
     f[iext+2*BSIZE] += temp[index1+2*BSIZE];
 }
 
-__global__ void TetrahedronFEMForceFieldCuda3f_calcDForce_kernel(int nbElem, const GPUElement* elems, const float* rotations, float* eforce, const float* x)
+__global__ void TetrahedronFEMForceFieldCuda3f1_addForce_kernel(int nbVertex, unsigned int nbElemPerVertex, const float* eforce, /* const GPUElement* elems, GPUElementState* state, */ const int* velems, float4* f)
+{
+    const int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
+    const int index1 = threadIdx.x;
+    const int index = index0 + index1;
+
+    float3 force = make_float3(0.0f,0.0f,0.0f);
+
+    velems+=umul24(index0,nbElemPerVertex)+index1;
+
+    if (index < nbVertex)
+        for (int s = 0; s < nbElemPerVertex; s++)
+        {
+            int i = *velems -1;
+            velems+=BSIZE;
+            if (i != -1)
+            {
+                force -= getElementForce(i);
+            }
+        }
+    float4 fi = f[index];
+    fi.x += force.x;
+    fi.y += force.y;
+    fi.z += force.z;
+    f[index] = fi;
+}
+
+template<class T>
+__global__ void TetrahedronFEMForceFieldCuda3f_calcDForce_kernel(int nbElem, const GPUElement* elems, const float* rotations, float* eforce, const T* x)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -434,11 +492,11 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcDForce_kernel(int nbElem, con
     {
         // Compute JtRtX = JbtRtB + JctRtC + JdtRtD
 
-        float3 A = getX(e->ia[index1]); //((const float3*)x)[e.ia];
+        float3 A = getTX(x,e->ia[index1]); //((const float3*)x)[e.ia];
         float3 JtRtX0,JtRtX1;
 
 
-        float3 B = getX(e->ib[index1]); //((const float3*)x)[e.ib];
+        float3 B = getTX(x,e->ib[index1]); //((const float3*)x)[e.ib];
         B = Rt * (B-A);
 
         // Jtb = (Jbx  0   0 )
@@ -457,7 +515,7 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcDForce_kernel(int nbElem, con
         JtRtX1.y =                  e_Jbz_bx * B.y + e_Jby_bx * B.z;
         JtRtX1.z = e_Jbz_bx * B.x                  + e_Jbx_bx * B.z;
 
-        float3 C = getX(e->ic[index1]); //((const float3*)x)[e.ic];
+        float3 C = getTX(x,e->ic[index1]); //((const float3*)x)[e.ic];
         C = Rt * (C-A);
 
         // Jtc = ( 0   0   0 )
@@ -481,7 +539,7 @@ __global__ void TetrahedronFEMForceFieldCuda3f_calcDForce_kernel(int nbElem, con
         //       ( 0   0   0 )
         //       ( 0   cy  0 )
         //       ( cy  0   0 )
-        float3 D = getX(e->id[index1]); //((const float3*)x)[e.id];
+        float3 D = getTX(x,e->id[index1]); //((const float3*)x)[e.id];
         D = Rt * (D-A);
 
         float e_cy = e->cy[index1];
@@ -602,10 +660,10 @@ void TetrahedronFEMForceFieldCuda3f_addForce(unsigned int nbElem, unsigned int n
     setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3f_calcForce_kernel<<< grid1, threads1, BSIZE*13*sizeof(float)>>>(nbElem, (const GPUElement*)elems, (float*)state, (float*)eforce, (const float*)x);
+    TetrahedronFEMForceFieldCuda3f_calcForce_kernel<float3><<< grid1, threads1, BSIZE*13*sizeof(float)>>>(nbElem, (const GPUElement*)elems, (float*)state, (float*)eforce, (const float3*)x);
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (const float*)eforce, (const int*)velems, (float*)f, (const float*)x);
+    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (const float*)eforce, (const int*)velems, (float*)f);
 }
 
 void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx)
@@ -614,10 +672,34 @@ void TetrahedronFEMForceFieldCuda3f_addDForce(unsigned int nbElem, unsigned int 
     setElementForce(eforce);
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3f_calcDForce_kernel<<< grid1, threads1, BSIZE*13*sizeof(float)>>>(nbElem, (const GPUElement*)elems, (const float*)state, (float*)eforce, (const float*)dx);
+    TetrahedronFEMForceFieldCuda3f_calcDForce_kernel<float3><<< grid1, threads1, BSIZE*13*sizeof(float)>>>(nbElem, (const GPUElement*)elems, (const float*)state, (float*)eforce, (const float3*)dx);
     dim3 threads2(BSIZE,1);
     dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
-    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (const float*)eforce, (const int*)velems, (float*)df, (const float*)dx);
+    TetrahedronFEMForceFieldCuda3f_addForce_kernel<<< grid2, threads2, BSIZE*3*sizeof(float) >>>(nbVertex, nbElemPerVertex, (const float*)eforce, (const int*)velems, (float*)df);
+}
+
+void TetrahedronFEMForceFieldCuda3f1_addForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, void* state, void* eforce, const void* velems, void* f, const void* x, const void* v)
+{
+    setX1(x);
+    setElementForce(eforce);
+    dim3 threads1(BSIZE,1);
+    dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
+    TetrahedronFEMForceFieldCuda3f_calcForce_kernel<float4><<< grid1, threads1, BSIZE*13*sizeof(float)>>>(nbElem, (const GPUElement*)elems, (float*)state, (float*)eforce, (const float4*)x);
+    dim3 threads2(BSIZE,1);
+    dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
+    TetrahedronFEMForceFieldCuda3f1_addForce_kernel<<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const float*)eforce, (const int*)velems, (float4*)f);
+}
+
+void TetrahedronFEMForceFieldCuda3f1_addDForce(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* elems, const void* state, void* eforce, const void* velems, void* df, const void* dx)
+{
+    setX1(dx);
+    setElementForce(eforce);
+    dim3 threads1(BSIZE,1);
+    dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
+    TetrahedronFEMForceFieldCuda3f_calcDForce_kernel<float4><<< grid1, threads1, BSIZE*13*sizeof(float)>>>(nbElem, (const GPUElement*)elems, (const float*)state, (float*)eforce, (const float4*)dx);
+    dim3 threads2(BSIZE,1);
+    dim3 grid2((nbVertex+BSIZE-1)/BSIZE,1);
+    TetrahedronFEMForceFieldCuda3f1_addForce_kernel<<< grid2, threads2 >>>(nbVertex, nbElemPerVertex, (const float*)eforce, (const int*)velems, (float4*)df);
 }
 
 #if defined(__cplusplus)

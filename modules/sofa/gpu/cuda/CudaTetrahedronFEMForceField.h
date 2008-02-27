@@ -16,12 +16,12 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-template <>
-class TetrahedronFEMForceFieldInternalData<gpu::cuda::CudaVec3fTypes>
+template <class Coord, class Deriv, class Real>
+class TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<Coord,Deriv,Real> >
 {
 public:
-    typedef gpu::cuda::CudaVec3fTypes::Real Real;
-    typedef gpu::cuda::CudaVec3fTypes::Coord Coord;
+    //typedef float Real;
+    //typedef gpu::cuda::CudaVec3fTypes::Coord Coord;
     typedef topology::MeshTopology::Tetra Element;
     typedef Mat<6, 6, Real> MaterialStiffness;
     typedef Mat<12, 6, Real> StrainDisplacement;
@@ -259,6 +259,19 @@ void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f,
 
 template <>
 void TetrahedronFEMForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx);
+
+
+//////// CudaVec3f1
+
+template <>
+void TetrahedronFEMForceField<gpu::cuda::CudaVec3f1Types>::reinit();
+
+template <>
+void TetrahedronFEMForceField<gpu::cuda::CudaVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
+
+template <>
+void TetrahedronFEMForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx);
+
 
 } // namespace forcefield
 

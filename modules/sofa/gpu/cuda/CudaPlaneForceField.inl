@@ -18,6 +18,8 @@ extern "C"
     void PlaneForceFieldCuda3f_addForce(unsigned int size, GPUPlane* plane, void* penetration, void* f, const void* x, const void* v);
     void PlaneForceFieldCuda3f_addDForce(unsigned int size, GPUPlane* plane, const void* penetration, void* f, const void* dx); //, const void* dfdx);
 
+    void PlaneForceFieldCuda3f1_addForce(unsigned int size, GPUPlane* plane, void* penetration, void* f, const void* x, const void* v);
+    void PlaneForceFieldCuda3f1_addDForce(unsigned int size, GPUPlane* plane, const void* penetration, void* f, const void* dx); //, const void* dfdx);
 }
 
 } // namespace cuda
@@ -50,6 +52,26 @@ void PlaneForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const V
 {
     df.resize(dx.size());
     PlaneForceFieldCuda3f_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+}
+
+
+template <>
+void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+{
+    data.plane.normal = planeNormal.getValue();
+    data.plane.d = planeD.getValue();
+    data.plane.stiffness = stiffness.getValue();
+    data.plane.damping = damping.getValue();
+    f.resize(x.size());
+    data.penetration.resize(x.size());
+    PlaneForceFieldCuda3f1_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+}
+
+template <>
+void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce(VecDeriv& df, const VecCoord& dx)
+{
+    df.resize(dx.size());
+    PlaneForceFieldCuda3f1_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
 }
 
 } // namespace forcefield

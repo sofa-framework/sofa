@@ -67,6 +67,7 @@ SOFA_DECL_CLASS(CudaUniformMass)
 
 int UniformMassCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::mass::UniformMass<CudaVec3fTypes,float> >()
+        .add< component::mass::UniformMass<CudaVec3f1Types,float> >()
         .add< component::mass::UniformMass<CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass> >()
         ;
 

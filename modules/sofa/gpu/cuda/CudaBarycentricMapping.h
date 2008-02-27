@@ -16,20 +16,22 @@ namespace component
 namespace mapping
 {
 
-template <>
-class TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVec3fTypes, gpu::cuda::CudaVec3fTypes> : public BarycentricMapper<gpu::cuda::CudaVec3fTypes,gpu::cuda::CudaVec3fTypes>
+template <typename VecIn, typename VecOut>
+class TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > : public BarycentricMapper< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >
 {
 public:
-    typedef gpu::cuda::CudaVec3fTypes In;
-    typedef gpu::cuda::CudaVec3fTypes Out;
+    typedef gpu::cuda::CudaVectorTypes<VecIn,VecIn,float> In;
+    typedef gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> Out;
     typedef BarycentricMapper<In,Out> Inherit;
-    typedef Inherit::Real Real;
-    typedef Inherit::OutReal OutReal;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::CubeData CubeData;
 protected:
     gpu::cuda::CudaVector<CubeData> map;
     int maxNOut;
     gpu::cuda::CudaVector< std::pair<int,float> > mapT;
     topology::RegularGridTopology* topology;
+    void calcMapT();
 public:
     TopologyBarycentricMapper(topology::RegularGridTopology* topology) : maxNOut(0), topology(topology)
     {}
@@ -44,11 +46,11 @@ public:
 
     void init();
 
-    void apply( Out::VecCoord& out, const In::VecCoord& in );
-    void applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
-    void applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
-    void applyJT( In::VecConst& out, const Out::VecConst& in );
-    void draw( const Out::VecCoord& out, const In::VecCoord& in);
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     inline friend std::istream& operator >> ( std::istream& in, TopologyBarycentricMapper<topology::RegularGridTopology, In, Out> &b )
     {

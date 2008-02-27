@@ -24,7 +24,7 @@
 			ymin="0" ymax="3"
 			zmin="-7.5" zmax="7.5"
 		/>
-		<Object type="MechanicalObject" template="CudaVec3f" />
+		<Object type="MechanicalObject" template="CudaVec3f1" />
 		<Object type="UniformMass" totalmass="400" />
 		<Object type="BoxConstraint" box="-1.6 -0.1 -7.6 1.6 3.1 -7.4" />
 		<!--		<Object type="MeshSpringForceField" stiffness="2333" /> -->
