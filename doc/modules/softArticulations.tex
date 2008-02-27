@@ -100,10 +100,10 @@ The example softArticulations.scn shows a basic pendulum :
       <Object type="RigidRigidMapping"
               repartition="1 2 2 2 2" />
       <Object type="JointSpringForceField" template="Rigid" name="joint springs"
-              spring="0 1   0 0 0 0 1 0   0 30000  0 200000   0  0 0 0  0 0 0 1 
-                      2 3   0 0 0 0 1 0   0 30000  0 200000   0  0 0 0  0 0 0 1
-                      4 5   0 0 0 0 1 0   0 30000  0 200000   0  0 0 0  0 0 0 1
-                      6 7   0 0 0 0 1 0   0 30000  0 200000   0  0 0 0  0 0 0 1" />
+              spring="BEGIN_SPRING 0 1  FREE_AXIS 0 0 0 0 1 0  ......  END_SPRING 
+                      BEGIN_SPRING 2 3  FREE_AXIS 0 0 0 0 1 0  ......  END_SPRING 
+                      BEGIN_SPRING 4 5  FREE_AXIS 0 0 0 0 1 0  ......  END_SPRING 
+                      BEGIN_SPRING 6 7  FREE_AXIS 0 0 0 0 1 0  ......  END_SPRING " />
     </Node>
     <Node>
       <Object type="MechanicalObject" template="Vec3d"
@@ -145,14 +145,18 @@ The third node (a child of the previous one) contains the components relative to
 			\item one value specified (ex: repartition="2") : each bone has the same number of articulations.
 			\item number of bones values (like here, repartition="1 2 2 2 2") : the number of articulations is specified for each bone. For instance, here the first bone has 1 articulation, the next has 2 articulations, the next 2, Etc.
 		\end{itemize}
-	\item the JointSpringForceField containing the springs (4 springs here). Each spring is defined by a list of parameters. For instance for the first spring we have "0 1   0 0 0 0 1 0   0 30000  0 200000   0  0 0 0  0 0 0 1".
+	\item the JointSpringForceField containing the springs (4 springs here). Each spring is defined by a list of parameters, separated by tag names. Each spring is defined between the tags BEGIN\_SPRING and END\_SPRING. For instance here we have : "BEGIN\_SPRING 0 1  FREE\_AXIS 0 0 0 0 1 0  KS\_T 0.0 30000.0  KS\_R 0.0 200000.0  KS\_B 2000.0  KD 1.0  R\_LIM\_X -0.80 0.80  R\_LIM\_Y -1.57 1.57  R\_LIM\_Z 0.0 0.0  END\_SPRING".
 		\begin{itemize}
-			\item "0 1" are the indices of the two articulations the spring is attached to
-			\item "0 0 0 0 1 0" design the free axis for the movements. "0 0 0" mean that the 3 translation axis are constrained, and "0 1 0" mean that only the Y rotation axis is free.
-			\item "0 30000 0 2000000" are the stiffnesses for each kind of movement: "0 30000" are respectively for free translation and for constrained translation", and "0 2000000" are respectively for free rotation and for constrained rotation.
-			\item "0" is the damping factor
-			\item "0 0 0" is to specify the initial translation
-			\item "0 0 0 1" is to specify the initial rotation (quaternion)
+			\item "0 1" are the indices of the two articulations the spring is attached to. They are the only compulsory parameters, the others are optional and take a default value if they are not specified.
+			\item "FREE\_AXIS 0 0 0 0 1 0" design the free axis for the movements. it contains 6 booleans, one for each axis."0 0 0" mean that the 3 translation axis are constrained, and "0 1 0" mean that only the Y rotation axis is free.
+			\item "KS\_T 0.0 30000.0" specify the stiffnesses to apply respectively for free translations and constrained translations.
+			\item "KS\_R 0.0 200000.0" specify the stiffnesses to apply respectively for free rotations and constrained rotations.
+			\item "KS\_B 2000.0" specify the stiffnesses to apply when an articulation is blocked, i.e. when a rotation exceeds the limit angle put on one axis.
+			\item "KD 1.0" is the damping factor
+			\item "R\_LIM\_X -0.80 0.80" design the limit angles (min and  max) on the x axis.
+			\item "R\_LIM\_Y -1.57 1.57" design the limit angles (min and  max) on the y axis.
+			\item "R\_LIM\_Z  0.0  0.0" design the limit angles (min and  max) on the z axis.
+			\item It is also possible to specify "REST\_T x y z" and "REST\_R x y z t", which design the initial translation and rotation of the spring (in rest state).
 		\end{itemize}
 \end{itemize}
 
@@ -180,4 +184,11 @@ The influence of the bones on each point of the external model is given by skinn
 		\includegraphics[width=0.50\textwidth]{skinning}
 		\includegraphics[width=0.30\textwidth]{skinnedPendulum}	
 	\caption{In the example "softArticulationsSkinned.scn" the external points compute their skinning weights from the 3 nearest DOFs}
+\end{figure*}
+
+\begin{figure*}[htpb]
+		\centering
+		\includegraphics[width=0.40\textwidth]{teodule_wireframe}	
+		\includegraphics[width=0.50\textwidth]{teodule_soupedepoulpe}	
+	\caption{soft articulations coupled with skinning allow complexe model deformations}
 \end{figure*}
