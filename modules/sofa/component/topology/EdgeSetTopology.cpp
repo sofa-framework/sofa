@@ -26,6 +26,9 @@ template class EdgeSetTopology<Vec2fTypes>;
 template class EdgeSetTopology<Vec1dTypes>;
 template class EdgeSetTopology<Vec1fTypes>;
 template class EdgeSetTopology<Rigid3dTypes>;
+template class EdgeSetTopology<Rigid3fTypes>;
+template class EdgeSetTopology<Rigid2dTypes>;
+template class EdgeSetTopology<Rigid2fTypes>;
 
 template class EdgeSetTopologyAlgorithms<Vec3fTypes>;
 template class EdgeSetTopologyAlgorithms<Vec3dTypes>;
@@ -34,6 +37,9 @@ template class EdgeSetTopologyAlgorithms<Vec2fTypes>;
 template class EdgeSetTopologyAlgorithms<Vec1dTypes>;
 template class EdgeSetTopologyAlgorithms<Vec1fTypes>;
 template class EdgeSetTopologyAlgorithms<Rigid3dTypes>;
+template class EdgeSetTopologyAlgorithms<Rigid3fTypes>;
+template class EdgeSetTopologyAlgorithms<Rigid2dTypes>;
+template class EdgeSetTopologyAlgorithms<Rigid2fTypes>;
 
 template class EdgeSetGeometryAlgorithms<Vec3fTypes>;
 template class EdgeSetGeometryAlgorithms<Vec3dTypes>;
@@ -42,6 +48,9 @@ template class EdgeSetGeometryAlgorithms<Vec2fTypes>;
 template class EdgeSetGeometryAlgorithms<Vec1dTypes>;
 template class EdgeSetGeometryAlgorithms<Vec1fTypes>;
 template class EdgeSetGeometryAlgorithms<Rigid3dTypes>;
+template class EdgeSetGeometryAlgorithms<Rigid3fTypes>;
+template class EdgeSetGeometryAlgorithms<Rigid2dTypes>;
+template class EdgeSetGeometryAlgorithms<Rigid2fTypes>;
 // implementation EdgeSetTopologyContainer
 
 void EdgeSetTopologyContainer::createEdgeVertexShellArray ()
@@ -176,7 +185,14 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topolog
 int EdgeSetTopologyClass = core::RegisterObject("Dynamic topology handling point sets")
         .add< EdgeSetTopology<Vec3dTypes> >()
         .add< EdgeSetTopology<Vec3fTypes> >()
+        .add< EdgeSetTopology<Vec2dTypes> >()
+        .add< EdgeSetTopology<Vec2fTypes> >()
+        .add< EdgeSetTopology<Vec1dTypes> >()
+        .add< EdgeSetTopology<Vec1fTypes> >()
         .add< EdgeSetTopology<Rigid3dTypes> >()
+        .add< EdgeSetTopology<Rigid3fTypes> >()
+        .add< EdgeSetTopology<Rigid2dTypes> >()
+        .add< EdgeSetTopology<Rigid2fTypes> >()
         ;
 
 
