@@ -40,8 +40,9 @@ void BeamFEMForceField<DataTypes>::init()
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
     sofa::simulation::tree::GNode* context = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
-    _topology = context->get< sofa::component::topology::EdgeSetTopology<DataTypes> >();
-    topology::MeshTopology* topo2 = context->get< sofa::component::topology::MeshTopology >();
+    sofa::core::componentmodel::topology::BaseTopology* bt = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(context->getMainTopology());
+    _topology = dynamic_cast<sofa::component::topology::EdgeSetTopology<DataTypes> *>(bt);// context->get< sofa::component::topology::EdgeSetTopology<DataTypes> >();
+    topology::MeshTopology* topo2 = dynamic_cast<topology::MeshTopology*>(context->getTopology()); // context->get< sofa::component::topology::MeshTopology >();
     if (_topology==NULL && topo2==NULL)
     {
         std::cerr << "ERROR(BeamFEMForceField): object must have a EdgeSetTopology or MeshTopology.\n";
