@@ -108,6 +108,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(GNode* node)
 
 void MechanicalVisitor::processNodeBottomUp(GNode* node)
 {
+    for_each(this, node, node->constraint, &MechanicalVisitor::bwdConstraint);
     if (node->mechanicalState != NULL)
     {
         if (node->mechanicalMapping != NULL)
@@ -159,7 +160,8 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDow
 void MechanicalPropagatePositionAndVelocityVisitor::processNodeBottomUp(GNode* node)
 {
     //cerr<<" MechanicalPropagatePositionAndVelocityVisitor::processNodeBottomUp "<<node->getName()<<endl;
-    for_each(this, node, node->constraint, &MechanicalPropagatePositionAndVelocityVisitor::bwdConstraint);
+    //for_each(this, node, node->constraint, &MechanicalPropagatePositionAndVelocityVisitor::bwdConstraint);
+    MechanicalVisitor::processNodeBottomUp( node);
 
 }
 
