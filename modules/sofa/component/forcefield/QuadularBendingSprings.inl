@@ -419,7 +419,7 @@ template <class DataTypes> void QuadularBendingSprings<DataTypes>::handleTopolog
 
                     Quad tj = quadArray[shell[j]];
 
-                    int vertexIndex = tstc->getVertexIndexInQuad(tj, lastIndexVec[i]);
+                    unsigned int vertexIndex = tstc->getVertexIndexInQuad(tj, lastIndexVec[i]);
 
                     QuadEdges tej = quadEdgeArray[shell[j]];
 
