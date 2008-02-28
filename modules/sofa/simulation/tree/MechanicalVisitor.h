@@ -164,6 +164,11 @@ public:
     virtual void bwdOdeSolver(GNode* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
     {}
 
+
+    /// Process all the BaseConstraint
+    virtual void bwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
+    {}
+
     ///@}
 
 
@@ -553,8 +558,6 @@ public:
         map->propagateV();
         return RESULT_CONTINUE;
     }
-    virtual void bwdConstraint( GNode*, core::componentmodel::behavior::BaseConstraint* /*c*/)
-    {}
     virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
         // FF, 14/07/06: I do not understand the purpose of this method
@@ -853,14 +856,18 @@ public:
         {
             mm->setDx(res);
         }
+
+        return RESULT_CONTINUE;
+    }
+
+    virtual void bwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    {
         c->projectResponse();
 
         if (W != NULL)
         {
             c->projectResponse(W);
         }
-
-        return RESULT_CONTINUE;
     }
 
     /// Specify whether this action can be parallelized.
