@@ -50,16 +50,16 @@ SOFA_DECL_CLASS(QuadularBendingSprings)
 
 template class QuadularBendingSprings<Vec3fTypes>;
 template class QuadularBendingSprings<Vec3dTypes>;
-template class QuadularBendingSprings<Vec2fTypes>;
-template class QuadularBendingSprings<Vec2dTypes>;
+//template class QuadularBendingSprings<Vec2fTypes>;
+//template class QuadularBendingSprings<Vec2dTypes>;
 
 
 // Register in the Factory
 int QuadularBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh to prevent bending")
         .add< QuadularBendingSprings<Vec3dTypes> >()
         .add< QuadularBendingSprings<Vec3fTypes> >()
-        .add< QuadularBendingSprings<Vec2dTypes> >()
-        .add< QuadularBendingSprings<Vec2fTypes> >()
+//.add< QuadularBendingSprings<Vec2dTypes> >()
+//.add< QuadularBendingSprings<Vec2fTypes> >()
         ;
 
 } // namespace forcefield
