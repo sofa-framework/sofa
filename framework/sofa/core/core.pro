@@ -24,6 +24,10 @@ HEADERS += \
           componentmodel/behavior/PairInteractionForceField.inl \
 	  componentmodel/behavior/MixedInteractionForceField.h \
 	  componentmodel/behavior/MixedInteractionForceField.inl \
+          componentmodel/behavior/PairInteractionConstraint.h \
+          componentmodel/behavior/PairInteractionConstraint.inl \
+	  componentmodel/behavior/MixedInteractionConstraint.h \
+	  componentmodel/behavior/MixedInteractionConstraint.inl \
 	  componentmodel/behavior/MappedModel.h \
           componentmodel/behavior/Mass.h \
           componentmodel/behavior/Mass.inl \
@@ -97,7 +101,9 @@ SOURCES +=  \
           componentmodel/behavior/Mass.cpp \
           componentmodel/behavior/MechanicalMapping.cpp \
           componentmodel/behavior/PairInteractionForceField.cpp \
-		 componentmodel/behavior/MixedInteractionForceField.cpp 
+          componentmodel/behavior/MixedInteractionForceField.cpp \
+          componentmodel/behavior/PairInteractionConstraint.cpp \
+          componentmodel/behavior/MixedInteractionConstraint.cpp 
 
 SOFA_DIR = ../../..
 TEMPLATE = lib
