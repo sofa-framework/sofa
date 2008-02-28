@@ -105,7 +105,7 @@ void StaticSolver::solve(double , VecId b)
         /*        cerr<<"StaticSolver::solve, den = "<<den<<endl;*/
         if( fabs(den)<f_smallDenominatorThreshold.getValue() )
         {
-            std::cout << "nb_iter = " << nb_iter << std::endl;
+            //std::cout << "nb_iter = " << nb_iter << std::endl;
             break;
         }
 

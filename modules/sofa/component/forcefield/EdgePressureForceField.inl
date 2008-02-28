@@ -81,8 +81,8 @@ void EdgePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& /*
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
         force=(*it).second.force/2;
-        f[ea[(*it).first].first]+=force;
-        f[ea[(*it).first].second]+=force;
+        f[ea[(*it).first][0]]+=force;
+        f[ea[(*it).first][1]]+=force;
 
     }
 }
@@ -139,7 +139,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 
     for (n=0; n<ea.size(); ++n)
     {
-        if ((vArray[ea[n].first]) && (vArray[ea[n].second]))
+        if ((vArray[ea[n][0]]) && (vArray[ea[n][1]]))
         {
             // insert a dummy element : computation of pressure done later
             EdgePressureInformation t;
@@ -196,8 +196,8 @@ void EdgePressureForceField<DataTypes>::draw()
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
-        helper::gl::glVertexT(x[ea[(*it).first].first]);
-        helper::gl::glVertexT(x[ea[(*it).first].second]);
+        helper::gl::glVertexT(x[ea[(*it).first][0]]);
+        helper::gl::glVertexT(x[ea[(*it).first][1]]);
     }
     glEnd();
 

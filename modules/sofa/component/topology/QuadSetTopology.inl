@@ -85,6 +85,9 @@ void QuadSetTopologyModifier<DataTypes>::addQuadsProcess(const sofa::helper::vec
     QuadSetTopologyContainer * container = static_cast<QuadSetTopologyContainer *>( topology->getTopologyContainer() );
     assert (container != 0);
 
+    container->getQuadEdgeShellArray();
+    container->getQuadVertexShellArray();
+
     if (container->m_quad.size()>0)
     {
 
@@ -200,7 +203,7 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsWarning( sofa::helper::vecto
 
 
 template<class DataTypes>
-void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems)
+void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedEdges, const bool removeIsolatedPoints)
 {
     QuadSetTopology<DataTypes> *topology = dynamic_cast<QuadSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
@@ -210,14 +213,14 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
 
     /// only remove isolated edges if the structures exists since removeEdges
     /// will remove isolated vertices
-    if (removeIsolatedItems)
-    {
-        /// force the creation of the Quad Edge Shell array to detect isolated edges
-        if (container->m_quadEdge.size()>0)
-            container->getQuadEdgeShellArray();
-        /// force the creation of the Quad Shell array to detect isolated vertices
-        container->getQuadVertexShellArray();
-    }
+    //if (removeIsolatedItems)
+    //{
+    /// force the creation of the Quad Edge Shell array to detect isolated edges
+    //if (container->m_quadEdge.size()>0)
+    container->getQuadEdgeShellArray();
+    /// force the creation of the Quad Shell array to detect isolated vertices
+    container->getQuadVertexShellArray();
+    //}
 
 
     if (container->m_quad.size()>0)
@@ -238,7 +241,7 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
                 shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell0.size()==0))
+                if ((removeIsolatedPoints) && (shell0.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[0]);
                 }
@@ -248,7 +251,7 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
                 shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell1.size()==0))
+                if ((removeIsolatedPoints) && (shell1.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[1]);
                 }
@@ -258,7 +261,7 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
                 shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell2.size()==0))
+                if ((removeIsolatedPoints) && (shell2.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[2]);
                 }
@@ -267,7 +270,7 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
                 shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell3.size()==0))
+                if ((removeIsolatedPoints) && (shell3.size()==0))
                 {
                     vertexToBeRemoved.push_back(t[3]);
                 }
@@ -281,14 +284,14 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
                 shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell0.size()==0))
+                if ((removeIsolatedEdges) && (shell0.size()==0))
                     edgeToBeRemoved.push_back(container->m_quadEdge[indices[i]][0]);
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_quadEdgeShell[ container->m_quadEdge[indices[i]][1]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
                 shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell1.size()==0))
+                if ((removeIsolatedEdges) && (shell1.size()==0))
                     edgeToBeRemoved.push_back(container->m_quadEdge[indices[i]][1]);
 
 
@@ -296,7 +299,7 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
                 shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell2.size()==0))
+                if ((removeIsolatedEdges) && (shell2.size()==0))
                     edgeToBeRemoved.push_back(container->m_quadEdge[indices[i]][2]);
 
 
@@ -304,7 +307,7 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
                 shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
-                if ((removeIsolatedItems) && (shell3.size()==0))
+                if ((removeIsolatedEdges) && (shell3.size()==0))
                     edgeToBeRemoved.push_back(container->m_quadEdge[indices[i]][3]);
 
             }
@@ -394,13 +397,22 @@ void QuadSetTopologyModifier<DataTypes>::removeQuadsProcess(const sofa::helper::
             if (edgeToBeRemoved.size()>0)
                 /// warn that edges will be deleted
                 this->removeEdgesWarning(edgeToBeRemoved);
-            if (vertexToBeRemoved.size()>0)
-                this->removePointsWarning(vertexToBeRemoved);
+
+            //if (vertexToBeRemoved.size()>0)
+            //this->removePointsWarning(vertexToBeRemoved);
             /// propagate to all components
             topology->propagateTopologicalChanges();
+
             if (edgeToBeRemoved.size()>0)
                 /// actually remove edges without looking for isolated vertices
                 this->removeEdgesProcess(edgeToBeRemoved,false);
+
+            if (vertexToBeRemoved.size()>0)
+            {
+                this->removePointsWarning(vertexToBeRemoved);
+                /// propagate to all components
+                topology->propagateTopologicalChanges();
+            }
 
             if (vertexToBeRemoved.size()>0)
             {
@@ -565,7 +577,7 @@ void QuadSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::he
 ////////////////////////////////////QuadSetTopologyAlgorithms//////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 template<class DataTypes>
-void QuadSetTopologyAlgorithms< DataTypes >::removeQuads(sofa::helper::vector< unsigned int >& quads)
+void QuadSetTopologyAlgorithms< DataTypes >::removeQuads(sofa::helper::vector< unsigned int >& quads, const bool removeIsolatedEdges, const bool removeIsolatedPoints)
 {
     QuadSetTopology< DataTypes > *topology = dynamic_cast<QuadSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
@@ -577,7 +589,7 @@ void QuadSetTopologyAlgorithms< DataTypes >::removeQuads(sofa::helper::vector< u
     topology->propagateTopologicalChanges();
     // now destroy the old quads.
 
-    modifier->removeQuadsProcess(  quads ,true);
+    modifier->removeQuadsProcess(  quads ,removeIsolatedEdges, removeIsolatedPoints);
 
     assert(topology->getQuadSetTopologyContainer()->checkTopology());
 }
@@ -766,13 +778,27 @@ void QuadSetTopology<DataTypes>::init()
 {
 }
 template<class DataTypes>
-QuadSetTopology<DataTypes>::QuadSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj)
+QuadSetTopology<DataTypes>::QuadSetTopology(MechanicalObject<DataTypes> *obj) : EdgeSetTopology<DataTypes>( obj) ,f_m_topologyContainer(new DataPtr< QuadSetTopologyContainer >(new QuadSetTopologyContainer(), "Quad Container"))
 {
+
+    /*
     this->m_topologyContainer= new QuadSetTopologyContainer(this);
     this->m_topologyModifier= new QuadSetTopologyModifier<DataTypes>(this);
     this->m_topologyAlgorithms= new QuadSetTopologyAlgorithms<DataTypes>(this);
     this->m_geometryAlgorithms= new QuadSetGeometryAlgorithms<DataTypes>(this);
+    */
+
+    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
+    this->m_topologyContainer->setTopology(this);
+
+    this->m_topologyModifier=(new QuadSetTopologyModifier<DataTypes>(this));
+    this->m_topologyAlgorithms=(new QuadSetTopologyAlgorithms<DataTypes>(this));
+    this->m_geometryAlgorithms=(new QuadSetGeometryAlgorithms<DataTypes>(this));
+
+    this->addField(f_m_topologyContainer, "quadcontainer");
+
 }
+
 
 } // namespace topology
 

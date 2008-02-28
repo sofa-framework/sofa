@@ -212,14 +212,14 @@ void LineSetModel::updateFromTopology()
         for (unsigned int i=0; i<nlines; i++)
         {
             sofa::component::topology::Edge idx = container->getEdge(i);
-            if (idx.first >= npoints || idx.second >= npoints)
+            if (idx[0] >= npoints || idx[1] >= npoints)
             {
-                std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx.first<<" "<<idx.second<<" ( total points="<<npoints<<")\n";
+                std::cerr << "ERROR: Out of range index in Line "<<i<<": "<<idx[0]<<" "<<idx[1]<<" ( total points="<<npoints<<")\n";
                 continue;
             }
 
-            elems[index].i1 = idx.first;
-            elems[index].i2 = idx.second;
+            elems[index].i1 = idx[0];
+            elems[index].i2 = idx[1];
             ++index;
         }
     }

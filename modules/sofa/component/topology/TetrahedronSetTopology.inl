@@ -539,9 +539,8 @@ void TetrahedronSetTopologyModifier<DataTypes>::removeTetrahedraProcess( const s
             if (vertexToBeRemoved.size()>0)
             {
                 this->removePointsWarning(vertexToBeRemoved);
+                topology->propagateTopologicalChanges();
             }
-            topology->propagateTopologicalChanges();
-
 
             if (vertexToBeRemoved.size()>0)
             {
@@ -887,7 +886,7 @@ void TetrahedronSetTopology<DataTypes>::init()
 {
 }
 template<class DataTypes>
-TetrahedronSetTopology<DataTypes>::TetrahedronSetTopology(MechanicalObject<DataTypes> *obj) : TriangleSetTopology<DataTypes>( obj)/*,(PointSetTopology<DataTypes> *)0)*/, f_m_topologyContainer(new DataPtr< TetrahedronSetTopologyContainer >(new TetrahedronSetTopologyContainer(), "Tetrahedron Container"))
+TetrahedronSetTopology<DataTypes>::TetrahedronSetTopology(MechanicalObject<DataTypes> *obj) : TriangleSetTopology<DataTypes>( obj), f_m_topologyContainer(new DataPtr< TetrahedronSetTopologyContainer >(new TetrahedronSetTopologyContainer(), "Tetrahedron Container"))
 
 {
     this->m_topologyContainer=f_m_topologyContainer->beginEdit();

@@ -562,8 +562,8 @@ int TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::createPoint
 {
     Real baryCoords[1];
     const topology::Edge& elem = topology->getEdgeSetTopologyContainer()->getEdge(edgeIndex);
-    const typename In::Coord p0 = (*points)[elem.first];
-    const typename In::Coord pA = (*points)[elem.second] - p0;
+    const typename In::Coord p0 = (*points)[elem[0]];
+    const typename In::Coord pA = (*points)[elem[1]] - p0;
     typename In::Coord pos = p - p0;
     baryCoords[0] = dot(pA,pos)/dot(pA,pA);
     return this->addPointInEdge(edgeIndex, baryCoords);
@@ -779,8 +779,8 @@ void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::apply( typ
         const Real fx = map[i].baryCoords[0];
         int index = map[i].in_index;
         const topology::Edge& edge = edges[index];
-        out[i] = in[edge.first] * (1-fx)
-                + in[edge.second] * fx;
+        out[i] = in[edge[0]] * (1-fx)
+                + in[edge[1]] * fx;
     }
 }
 
@@ -945,8 +945,8 @@ void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::applyJ( ty
         const Real fx = map[i].baryCoords[0];
         int index = map[i].in_index;
         const topology::Edge& edge = edges[index];
-        out[i] = in[edge.first] * (1-fx)
-                + in[edge.second] * fx;
+        out[i] = in[edge[0]] * (1-fx)
+                + in[edge[1]] * fx;
     }
 }
 
@@ -1113,8 +1113,8 @@ void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::applyJT( t
         const OutReal fx = (OutReal)map[i].baryCoords[0];
         int index = map[i].in_index;
         const topology::Edge& edge = edges[index];
-        out[edge.first] += v * (1-fx);
-        out[edge.second] += v * fx;
+        out[edge[0]] += v * (1-fx);
+        out[edge[1]] += v * fx;
     }
 }
 
@@ -1390,7 +1390,7 @@ void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::draw(const
                 {
                     glColor3f((float)f,1,(float)f);
                     helper::gl::glVertexT(out[i]);
-                    helper::gl::glVertexT(in[edge.first]);
+                    helper::gl::glVertexT(in[edge[0]]);
                 }
             }
             {
@@ -1399,7 +1399,7 @@ void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::draw(const
                 {
                     glColor3f((float)f,1,(float)f);
                     helper::gl::glVertexT(out[i]);
-                    helper::gl::glVertexT(in[edge.second]);
+                    helper::gl::glVertexT(in[edge[1]]);
                 }
             }
         }
@@ -1685,8 +1685,8 @@ void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::applyJT( t
             const topology::Edge edge = edges[this->map[cIn.index].in_index];
             const OutReal fx = (OutReal)map[cIn.index].baryCoords[0];
 
-            out[i+offset].push_back(typename In::SparseDeriv(edge.first, (typename In::Deriv) (cIn.data * (1-fx))));
-            out[i+offset].push_back(typename In::SparseDeriv(edge.second, (typename In::Deriv) (cIn.data * (fx))));
+            out[i+offset].push_back(typename In::SparseDeriv(edge[0], (typename In::Deriv) (cIn.data * (1-fx))));
+            out[i+offset].push_back(typename In::SparseDeriv(edge[1], (typename In::Deriv) (cIn.data * (fx))));
         }
     }
 }

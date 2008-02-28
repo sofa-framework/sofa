@@ -136,7 +136,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunc
                 dpk= point[j]-point[l];
                 val1= -cotangent[j]*(lambda+mu)/2;
 
-                if (edgeArray[te[j]].first==t[l])
+                if (edgeArray[te[j]][0]==t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -231,7 +231,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionF
                 dpk= point[j]-point[l];
                 val1= -cotangent[j]*(lambda+mu)/2;
 
-                if (edgeArray[te[j]].first==t[l])
+                if (edgeArray[te[j]][0]==t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -363,8 +363,8 @@ void TriangularTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const VecC
     for(i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInfo[i];
-        v0=edgeArray[i].first;
-        v1=edgeArray[i].second;
+        v0=edgeArray[i][0];
+        v1=edgeArray[i][1];
         dp0=x[v0]-_initialPoints[v0];
         dp1=x[v1]-_initialPoints[v1];
         dp = dp1-dp0;
@@ -393,8 +393,8 @@ void TriangularTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const Ve
     for(i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInfo[i];
-        v0=edgeArray[i].first;
-        v1=edgeArray[i].second;
+        v0=edgeArray[i][0];
+        v1=edgeArray[i][1];
         dp0=dx[v0];
         dp1=dx[v1];
         dp = dp1-dp0;

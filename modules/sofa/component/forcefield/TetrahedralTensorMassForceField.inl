@@ -124,8 +124,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
             for(j=0; j<6; ++j)
             {
                 /// local indices of the edge
-                k = container->getLocalTetrahedronEdges(j).first;
-                l = container->getLocalTetrahedronEdges(j).second;
+                k = container->getLocalTetrahedronEdges(j)[0];
+                l = container->getLocalTetrahedronEdges(j)[1];
 
                 Mat3 &m=edgeData[te[j]].DfDx;
 
@@ -137,7 +137,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
                         std::cerr<<"negative cotangent["<<tetrahedronAdded[i]<<"]["<<j<<"]"<<std::endl;
                 }
 
-                if (edgeArray[te[j]].first!=t[l])
+                if (edgeArray[te[j]][0]!=t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -217,8 +217,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
             for(j=0; j<6; ++j)
             {
                 /// local indices of the edge
-                k = container->getLocalTetrahedronEdges(j).first;
-                l = container->getLocalTetrahedronEdges(j).second;
+                k = container->getLocalTetrahedronEdges(j)[0];
+                l = container->getLocalTetrahedronEdges(j)[1];
 
                 Mat3 &m=edgeData[te[j]].DfDx;
 
@@ -230,7 +230,7 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
                         std::cerr<<"negative cotangent["<<tetrahedronRemoved[i]<<"]["<<j<<"]"<<std::endl;
                 }
 
-                if (edgeArray[te[j]].first!=t[l])
+                if (edgeArray[te[j]][0]!=t[l])
                 {
                     for (u=0; u<3; ++u)
                     {
@@ -364,8 +364,8 @@ void TetrahedralTensorMassForceField<DataTypes>::addForce(VecDeriv& f, const Vec
     for(i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInfo[i];
-        v0=edgeArray[i].first;
-        v1=edgeArray[i].second;
+        v0=edgeArray[i][0];
+        v1=edgeArray[i][1];
         dp0=x[v0]-_initialPoints[v0];
         dp1=x[v1]-_initialPoints[v1];
         dp = dp1-dp0;
@@ -394,8 +394,8 @@ void TetrahedralTensorMassForceField<DataTypes>::addDForce(VecDeriv& df, const V
     for(i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInfo[i];
-        v0=edgeArray[i].first;
-        v1=edgeArray[i].second;
+        v0=edgeArray[i][0];
+        v1=edgeArray[i][1];
         dp0=dx[v0];
         dp1=dx[v1];
         dp = dp1-dp0;

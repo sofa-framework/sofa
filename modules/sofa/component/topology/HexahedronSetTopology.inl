@@ -45,7 +45,7 @@ public:
     {
     }
 
-    virtual void addHexahedron(int p1, int p2, int p3,int p4, int p5, int p6, int p7,int p8)
+    virtual void addCube(int p1, int p2, int p3,int p4, int p5, int p6, int p7,int p8)
     {
         tstm->addHexahedron(Hexahedron(helper::make_array<unsigned int>((unsigned int)p1,(unsigned int)p2,(unsigned int) p3,(unsigned int) p4, (unsigned int)p5,(unsigned int)p6,(unsigned int) p7,(unsigned int) p8)));
     }
@@ -163,7 +163,7 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
             }
             if (tesa.size()>0)
             {
-                for (j=0; j<7; ++j)
+                for (j=0; j<12; ++j)
                 {
                     container->m_hexahedronEdgeShell[container->m_hexahedronEdge[hexahedronIndex][j]].push_back( hexahedronIndex );
                 }
@@ -174,6 +174,13 @@ void HexahedronSetTopologyModifier<DataTypes>::addHexahedraProcess(const sofa::h
                 {
                     container->m_hexahedronQuadShell[container->m_hexahedronQuad[hexahedronIndex][j]].push_back( hexahedronIndex );
                 }
+
+                sofa::helper::vector< Hexahedron > current_hexahedron;
+                current_hexahedron.push_back(t);
+                sofa::helper::vector< unsigned int > hexahedraIndexList;
+                hexahedraIndexList.push_back((unsigned int) hexahedronIndex);
+                addHexahedraWarning((const unsigned int) 1, current_hexahedron, hexahedraIndexList);
+
             }
 
 
@@ -211,15 +218,30 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraWarning( sofa::hel
 
 
 template<class DataTypes>
-void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sofa::helper::vector<unsigned int> &indices,const bool )
+void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems)
 {
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     HexahedronSetTopologyContainer * container = static_cast<HexahedronSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
 
+    container->getHexahedronEdgeShellArray();
+
+    container->getHexahedronQuadShellArray();
+
+    container->getHexahedronVertexShellArray();
+
+    container->getQuadVertexShellArray();
+    container->getQuadEdgeShellArray();
+
+    container->getEdgeVertexShellArray();
+
     if (container->m_hexahedron.size()>0)
     {
+
+        sofa::helper::vector<unsigned int> quadToBeRemoved;
+        sofa::helper::vector<unsigned int> edgeToBeRemoved;
+        sofa::helper::vector<unsigned int> vertexToBeRemoved;
 
         for (unsigned int i = 0; i < indices.size(); ++i)
         {
@@ -232,41 +254,73 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sof
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
                 shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell0.size()==0))
+                {
+                    vertexToBeRemoved.push_back(t[0]);
+                }
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_hexahedronVertexShell[ t[1] ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
                 shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell1.size()==0))
+                {
+                    vertexToBeRemoved.push_back(t[1]);
+                }
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_hexahedronVertexShell[ t[2] ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
                 shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell2.size()==0))
+                {
+                    vertexToBeRemoved.push_back(t[2]);
+                }
 
                 sofa::helper::vector< unsigned int > &shell3 = container->m_hexahedronVertexShell[ t[3] ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
                 shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell3.size()==0))
+                {
+                    vertexToBeRemoved.push_back(t[3]);
+                }
 
                 sofa::helper::vector< unsigned int > &shell4 = container->m_hexahedronVertexShell[ t[4] ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell4.begin(), shell4.end(), indices[i] ) !=shell4.end());
                 shell4.erase( std::find( shell4.begin(), shell4.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell4.size()==0))
+                {
+                    vertexToBeRemoved.push_back(t[4]);
+                }
 
                 sofa::helper::vector< unsigned int > &shell5 = container->m_hexahedronVertexShell[ t[5] ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell5.begin(), shell5.end(), indices[i] ) !=shell5.end());
                 shell5.erase( std::find( shell5.begin(), shell5.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell5.size()==0))
+                {
+                    vertexToBeRemoved.push_back(t[5]);
+                }
 
                 sofa::helper::vector< unsigned int > &shell6 = container->m_hexahedronVertexShell[ t[6] ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell6.begin(), shell6.end(), indices[i] ) !=shell6.end());
                 shell6.erase( std::find( shell6.begin(), shell6.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell6.size()==0))
+                {
+                    vertexToBeRemoved.push_back(t[6]);
+                }
 
                 sofa::helper::vector< unsigned int > &shell7 = container->m_hexahedronVertexShell[ t[7] ];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell7.begin(), shell7.end(), indices[i] ) !=shell7.end());
                 shell7.erase( std::find( shell7.begin(), shell7.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell7.size()==0))
+                {
+                    vertexToBeRemoved.push_back(t[7]);
+                }
 
             }
 
@@ -277,61 +331,85 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sof
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
                 shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell0.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][0]);
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][1]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
                 shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell1.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][1]);
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][2]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
                 shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell2.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][2]);
 
                 sofa::helper::vector< unsigned int > &shell3 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][3]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
                 shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell3.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][3]);
 
                 sofa::helper::vector< unsigned int > &shell4 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][4]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell4.begin(), shell4.end(), indices[i] ) !=shell4.end());
                 shell4.erase( std::find( shell4.begin(), shell4.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell4.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][4]);
 
                 sofa::helper::vector< unsigned int > &shell5 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][5]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell5.begin(), shell5.end(), indices[i] ) !=shell5.end());
                 shell5.erase( std::find( shell5.begin(), shell5.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell5.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][5]);
 
                 sofa::helper::vector< unsigned int > &shell6 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][6]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell6.begin(), shell6.end(), indices[i] ) !=shell6.end());
                 shell6.erase( std::find( shell6.begin(), shell6.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell6.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][6]);
 
                 sofa::helper::vector< unsigned int > &shell7 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][7]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell7.begin(), shell7.end(), indices[i] ) !=shell7.end());
                 shell7.erase( std::find( shell7.begin(), shell7.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell7.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][7]);
 
                 sofa::helper::vector< unsigned int > &shell8 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][8]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell8.begin(), shell8.end(), indices[i] ) !=shell8.end());
                 shell8.erase( std::find( shell8.begin(), shell8.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell8.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][8]);
 
                 sofa::helper::vector< unsigned int > &shell9 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][9]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell9.begin(), shell9.end(), indices[i] ) !=shell9.end());
                 shell9.erase( std::find( shell9.begin(), shell9.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell9.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][9]);
 
                 sofa::helper::vector< unsigned int > &shell10 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][10]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell10.begin(), shell10.end(), indices[i] ) !=shell10.end());
                 shell10.erase( std::find( shell10.begin(), shell10.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell10.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][10]);
 
                 sofa::helper::vector< unsigned int > &shell11 = container->m_hexahedronEdgeShell[ container->m_hexahedronEdge[indices[i]][11]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell11.begin(), shell11.end(), indices[i] ) !=shell11.end());
                 shell11.erase( std::find( shell11.begin(), shell11.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell11.size()==0))
+                    edgeToBeRemoved.push_back(container->m_hexahedronEdge[indices[i]][11]);
 
             }
             /** first check that the hexahedron quad shell array has been initialized */
@@ -341,31 +419,43 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sof
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell0.begin(), shell0.end(), indices[i] ) !=shell0.end());
                 shell0.erase( std::find( shell0.begin(), shell0.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell0.size()==0))
+                    quadToBeRemoved.push_back(container->m_hexahedronQuad[indices[i]][0]);
 
                 sofa::helper::vector< unsigned int > &shell1 = container->m_hexahedronQuadShell[ container->m_hexahedronQuad[indices[i]][1]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell1.begin(), shell1.end(), indices[i] ) !=shell1.end());
                 shell1.erase( std::find( shell1.begin(), shell1.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell1.size()==0))
+                    quadToBeRemoved.push_back(container->m_hexahedronQuad[indices[i]][1]);
 
                 sofa::helper::vector< unsigned int > &shell2 = container->m_hexahedronQuadShell[ container->m_hexahedronQuad[indices[i]][2]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell2.begin(), shell2.end(), indices[i] ) !=shell2.end());
                 shell2.erase( std::find( shell2.begin(), shell2.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell2.size()==0))
+                    quadToBeRemoved.push_back(container->m_hexahedronQuad[indices[i]][2]);
 
                 sofa::helper::vector< unsigned int > &shell3 = container->m_hexahedronQuadShell[ container->m_hexahedronQuad[indices[i]][3]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell3.begin(), shell3.end(), indices[i] ) !=shell3.end());
                 shell3.erase( std::find( shell3.begin(), shell3.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell3.size()==0))
+                    quadToBeRemoved.push_back(container->m_hexahedronQuad[indices[i]][3]);
 
                 sofa::helper::vector< unsigned int > &shell4 = container->m_hexahedronQuadShell[ container->m_hexahedronQuad[indices[i]][4]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell4.begin(), shell4.end(), indices[i] ) !=shell4.end());
                 shell4.erase( std::find( shell4.begin(), shell4.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell4.size()==0))
+                    quadToBeRemoved.push_back(container->m_hexahedronQuad[indices[i]][4]);
 
                 sofa::helper::vector< unsigned int > &shell5 = container->m_hexahedronQuadShell[ container->m_hexahedronQuad[indices[i]][5]];
                 // removes the first occurence (should be the only one) of the edge in the edge shell of the point
                 assert(std::find( shell5.begin(), shell5.end(), indices[i] ) !=shell5.end());
                 shell5.erase( std::find( shell5.begin(), shell5.end(), indices[i] ) );
+                if ((removeIsolatedItems) && (shell5.size()==0))
+                    quadToBeRemoved.push_back(container->m_hexahedronQuad[indices[i]][5]);
 
             }
 
@@ -566,6 +656,60 @@ void HexahedronSetTopologyModifier<DataTypes>::removeHexahedraProcess( const sof
                 }
             }
         }
+
+        if ( (quadToBeRemoved.size()>0) || (edgeToBeRemoved.size()>0) || (vertexToBeRemoved.size()>0))   //
+        {
+
+            if (quadToBeRemoved.size()>0)
+            {
+                /// warn that quads will be deleted
+                this->removeQuadsWarning(quadToBeRemoved);
+            }
+
+
+            if (edgeToBeRemoved.size()>0)
+            {
+                /// warn that edges will be deleted
+                this->removeEdgesWarning(edgeToBeRemoved);
+            }
+
+            //if (vertexToBeRemoved.size()>0){
+            //	this->removePointsWarning(vertexToBeRemoved);
+            //}
+
+            /// propagate to all components
+
+            topology->propagateTopologicalChanges();
+
+
+            if (quadToBeRemoved.size()>0)
+            {
+                /// actually remove quads without looking for isolated vertices
+
+                this->removeQuadsProcess(quadToBeRemoved,false,false);
+
+            }
+
+            if (edgeToBeRemoved.size()>0)
+            {
+                /// actually remove edges without looking for isolated vertices
+                this->removeEdgesProcess(edgeToBeRemoved,false);
+            }
+
+
+            if (vertexToBeRemoved.size()>0)
+            {
+                this->removePointsWarning(vertexToBeRemoved);
+                topology->propagateTopologicalChanges();
+            }
+
+            if (vertexToBeRemoved.size()>0)
+            {
+                this->removePointsProcess(vertexToBeRemoved);
+            }
+
+        }
+
     }
 }
 
@@ -577,7 +721,7 @@ void HexahedronSetTopologyModifier< DataTypes >::addPointsProcess(const unsigned
         const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs)
 {
     // start by calling the standard method.
-    EdgeSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs );
+    QuadSetTopologyModifier< DataTypes >::addPointsProcess( nPoints, ancestors, baryCoefs );
 
     // now update the local container structures.
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -592,7 +736,7 @@ template<class DataTypes >
 void HexahedronSetTopologyModifier< DataTypes >::addEdgesProcess(const sofa::helper::vector< Edge > &edges)
 {
     // start by calling the standard method.
-    EdgeSetTopologyModifier< DataTypes >::addEdgesProcess( edges );
+    QuadSetTopologyModifier< DataTypes >::addEdgesProcess( edges );
 
     // now update the local container structures.
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
@@ -623,16 +767,22 @@ void HexahedronSetTopologyModifier< DataTypes >::removePointsProcess( sofa::help
 {
     // Important : the points are actually deleted from the mechanical object's state vectors iff (removeDOF == true)
     // start by calling the standard method.
-    QuadSetTopologyModifier< DataTypes >::removePointsProcess(  indices, removeDOF );
 
     // now update the local container structures
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     HexahedronSetTopologyContainer * container = static_cast<HexahedronSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
+
+    //if (container->m_hexahedron.size()>0)
+    container->getHexahedronVertexShellArray();
+
+    // start by calling the standard method.
+    QuadSetTopologyModifier< DataTypes >::removePointsProcess(  indices, removeDOF );
+
     int vertexIndex;
 
-    assert(container->m_hexahedronVertexShell.size()>0);
+    //assert(container->m_hexahedronVertexShell.size()>0);
 
     unsigned int lastPoint = container->m_hexahedronVertexShell.size() - 1;
 
@@ -659,24 +809,37 @@ void HexahedronSetTopologyModifier< DataTypes >::removePointsProcess( sofa::help
 }
 
 template< class DataTypes >
-void HexahedronSetTopologyModifier< DataTypes >::removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,const bool )
+void HexahedronSetTopologyModifier< DataTypes >::removeEdgesProcess( const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems)
 {
-    // start by calling the standard method.
-    QuadSetTopologyModifier< DataTypes >::removeEdgesProcess(  indices );
-
     // now update the local container structures
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     HexahedronSetTopologyContainer * container = static_cast<HexahedronSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
 
+    //if (container->m_hexahedronEdge.size()>0)
+    container->getHexahedronEdgeShellArray();
 
-    if (container->m_hexahedronEdgeShell.size()>0)
+    // start by calling the standard method.
+    QuadSetTopologyModifier< DataTypes >::removeEdgesProcess(  indices, removeIsolatedItems );
+
+    if (container->m_hexahedronEdge.size()>0)
     {
+
+        unsigned int edgeIndex;
         unsigned int lastEdge = container->m_hexahedronEdgeShell.size() - 1;
 
         for (unsigned int i = 0; i < indices.size(); ++i)
         {
+            sofa::helper::vector<unsigned int>::iterator itt=container->m_hexahedronEdgeShell[lastEdge].begin();
+            for (; itt!=container->m_hexahedronEdgeShell[lastEdge].end(); ++itt)
+            {
+
+                edgeIndex=container->getEdgeIndexInHexahedron(container->m_hexahedronEdge[(*itt)],lastEdge);
+                assert((int)edgeIndex!= -1);
+                container->m_hexahedronEdge[(*itt)][(unsigned int)edgeIndex]=indices[i];
+            }
+
             // updating the edge shell itself (change the old index for the new one)
             container->m_hexahedronEdgeShell[ indices[i] ] = container->m_hexahedronEdgeShell[ lastEdge ];
 
@@ -688,24 +851,37 @@ void HexahedronSetTopologyModifier< DataTypes >::removeEdgesProcess( const sofa:
 }
 
 template< class DataTypes >
-void HexahedronSetTopologyModifier< DataTypes >::removeQuadsProcess(  const sofa::helper::vector<unsigned int> &indices,const bool )
+void HexahedronSetTopologyModifier< DataTypes >::removeQuadsProcess(  const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedEdges, const bool removeIsolatedPoints)
 {
-    // start by calling the standard method.
-    QuadSetTopologyModifier< DataTypes >::removeQuadsProcess( indices );
-
     // now update the local container structures
     HexahedronSetTopology<DataTypes> *topology = dynamic_cast<HexahedronSetTopology<DataTypes> *>(this->m_basicTopology);
     assert (topology != 0);
     HexahedronSetTopologyContainer * container = static_cast<HexahedronSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
 
+    //if (container->m_hexahedronQuad.size()>0)
+    container->getHexahedronQuadShellArray();
 
-    if (container->m_hexahedronQuadShell.size()>0)
+    // start by calling the standard method.
+    QuadSetTopologyModifier< DataTypes >::removeQuadsProcess( indices, removeIsolatedEdges, removeIsolatedPoints );
+
+    if (container->m_hexahedronQuad.size()>0)
     {
+
+        unsigned int quadIndex;
         unsigned int lastQuad = container->m_hexahedronQuadShell.size() - 1;
 
         for (unsigned int i = 0; i < indices.size(); ++i)
         {
+            sofa::helper::vector<unsigned int>::iterator itt=container->m_hexahedronQuadShell[lastQuad].begin();
+            for (; itt!=container->m_hexahedronQuadShell[lastQuad].end(); ++itt)
+            {
+
+                quadIndex=container->getQuadIndexInHexahedron(container->m_hexahedronQuad[(*itt)],lastQuad);
+                assert((int)quadIndex!= -1);
+                container->m_hexahedronQuad[(*itt)][(unsigned int)quadIndex]=indices[i];
+            }
+
             // updating the quad shell itself (change the old index for the new one)
             container->m_hexahedronQuadShell[ indices[i] ] = container->m_hexahedronQuadShell[ lastQuad ];
 
@@ -714,6 +890,7 @@ void HexahedronSetTopologyModifier< DataTypes >::removeQuadsProcess(  const sofa
 
         container->m_hexahedronQuadShell.resize( container->m_hexahedronQuadShell.size() - indices.size() );
     }
+
 }
 
 
@@ -755,6 +932,35 @@ void HexahedronSetTopologyModifier< DataTypes >::renumberPointsProcess( const so
 ////////////////////////////////////QuadSetGeometryAlgorithms//////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
+template<class DataTypes>
+void HexahedronSetTopologyAlgorithms< DataTypes >::removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra)
+{
+    HexahedronSetTopology< DataTypes > *topology = dynamic_cast<HexahedronSetTopology< DataTypes >* >(this->m_basicTopology);
+    assert (topology != 0);
+    HexahedronSetTopologyModifier< DataTypes >* modifier  = static_cast< HexahedronSetTopologyModifier< DataTypes >* >(topology->getTopologyModifier());
+    assert(modifier != 0);
+    /// add the topological changes in the queue
+
+    //HexahedronSetTopologyContainer * container = static_cast< HexahedronSetTopologyContainer* >(topology->getTopologyContainer());
+
+    modifier->removeHexahedraWarning(hexahedra);
+
+
+    // inform other objects that the quads are going to be removed
+
+    topology->propagateTopologicalChanges();
+
+
+    // now destroy the old hexahedra.
+
+
+    modifier->removeHexahedraProcess(  hexahedra ,true);
+
+
+    //assert(topology->getHexahedronSetTopologyContainer()->checkTopology());
+    topology->getHexahedronSetTopologyContainer()->checkTopology();
+
+}
 
 /// Cross product for 3-elements vectors.
 template<typename real>
@@ -826,12 +1032,22 @@ void HexahedronSetTopology<DataTypes>::init()
 {
 }
 template<class DataTypes>
-HexahedronSetTopology<DataTypes>::HexahedronSetTopology(MechanicalObject<DataTypes> *obj) : PointSetTopology<DataTypes>( obj,(PointSetTopology<DataTypes> *)0)
+HexahedronSetTopology<DataTypes>::HexahedronSetTopology(MechanicalObject<DataTypes> *obj) : QuadSetTopology<DataTypes>( obj), f_m_topologyContainer(new DataPtr< HexahedronSetTopologyContainer >(new HexahedronSetTopologyContainer(), "Hexahedron Container"))
 {
+    /*
     this->m_topologyContainer= new HexahedronSetTopologyContainer(this);
     this->m_topologyModifier= new HexahedronSetTopologyModifier<DataTypes>(this);
     this->m_topologyAlgorithms= new HexahedronSetTopologyAlgorithms<DataTypes>(this);
     this->m_geometryAlgorithms= new HexahedronSetGeometryAlgorithms<DataTypes>(this);
+    */
+
+    this->m_topologyContainer=f_m_topologyContainer->beginEdit();
+    this->m_topologyContainer->setTopology(this);
+    this->m_topologyModifier= new HexahedronSetTopologyModifier<DataTypes>(this);
+    this->m_topologyAlgorithms= new HexahedronSetTopologyAlgorithms<DataTypes>(this);
+    this->m_geometryAlgorithms= new HexahedronSetGeometryAlgorithms<DataTypes>(this);
+
+    this->addField(f_m_topologyContainer, "hexahedroncontainer");
 }
 
 

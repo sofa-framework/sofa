@@ -43,6 +43,7 @@ using namespace sofa::defaulttype;
 using namespace core;
 using namespace core::componentmodel::behavior;
 
+
 SOFA_DECL_CLASS(IdentityMapping)
 
 // Register in the Factory
@@ -64,40 +65,16 @@ int IdentityMappingClass = core::RegisterObject("Special case of mapping where t
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec2fTypes>, MechanicalState<Vec2fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec2dTypes>, MappedModel<Vec2dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec2fTypes>, MappedModel<Vec2dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec2dTypes>, MappedModel<Vec2fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec2fTypes>, MappedModel<Vec2fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec2dTypes>, MappedModel<ExtVec2dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec2fTypes>, MappedModel<ExtVec2dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec2dTypes>, MappedModel<ExtVec2fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec2fTypes>, MappedModel<ExtVec2fTypes> > > >()
 
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec1dTypes>, MappedModel<Vec1dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec1fTypes>, MappedModel<Vec1dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec1dTypes>, MappedModel<Vec1fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec1fTypes>, MappedModel<Vec1fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec1dTypes>, MappedModel<ExtVec1dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec1fTypes>, MappedModel<ExtVec1dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec1dTypes>, MappedModel<ExtVec1fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec1fTypes>, MappedModel<ExtVec1fTypes> > > >()
 
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6dTypes>, MechanicalState<Vec6fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec6fTypes>, MechanicalState<Vec6fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec6dTypes>, MappedModel<Vec6dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec6fTypes>, MappedModel<Vec6dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec6dTypes>, MappedModel<Vec6fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec6fTypes>, MappedModel<Vec6fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec6dTypes>, MappedModel<ExtVec6dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec6fTypes>, MappedModel<ExtVec6dTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec6dTypes>, MappedModel<ExtVec6fTypes> > > >()
-// .add< IdentityMapping< Mapping< State<Vec6fTypes>, MappedModel<ExtVec6fTypes> > > >()
 
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > > >()
@@ -132,7 +109,6 @@ template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3d
 template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
 template class IdentityMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
 template class IdentityMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-
 
 // Mech -> Mech
 template class IdentityMapping< MechanicalMapping< MechanicalState<Vec2dTypes>, MechanicalState<Vec2dTypes> > >;
@@ -200,7 +176,6 @@ template class IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3
 template class IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3dTypes> > >;
 template class IdentityMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3fTypes> > >;
 template class IdentityMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
-
 
 // Rigid2
 template class IdentityMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Rigid2dTypes> > >;

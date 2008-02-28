@@ -51,8 +51,8 @@ void EdgeSetTopologyContainer::createEdgeVertexShellArray ()
     for (unsigned int i = 0; i < m_edge.size(); ++i)
     {
         // adding edge i in the edge shell of both points
-        m_edgeVertexShell[ m_edge[i].first  ].push_back( i );
-        m_edgeVertexShell[ m_edge[i].second ].push_back( i );
+        m_edgeVertexShell[ m_edge[i][0]  ].push_back( i );
+        m_edgeVertexShell[ m_edge[i][1] ].push_back( i );
     }
 }
 
@@ -75,7 +75,7 @@ int EdgeSetTopologyContainer::getEdgeIndex(const unsigned int v1, const unsigned
     while ((i<es1.size()) && (result== -1))
     {
         const Edge &e=ea[es1[i]];
-        if ((e.first==v2)|| (e.second==v2))
+        if ((e[0]==v2)|| (e[1]==v2))
             result=(int) es1[i];
 
         i++;
@@ -103,7 +103,7 @@ bool EdgeSetTopologyContainer::checkTopology() const
 
             for (j=0; j<es.size(); ++j)
             {
-                bool check_edge_vertex_shell = (m_edge[es[j]].first==i) ||  (m_edge[es[j]].second==i);
+                bool check_edge_vertex_shell = (m_edge[es[j]][0]==i) ||  (m_edge[es[j]][1]==i);
                 if(!check_edge_vertex_shell)
                 {
                     std::cout << "*** CHECK FAILED : check_edge_vertex_shell, i = " << i << " , j = " << j << std::endl;

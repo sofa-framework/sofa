@@ -86,6 +86,9 @@ void TriangleSetTopologyModifier<DataTypes>::addTrianglesProcess(const sofa::hel
     TriangleSetTopologyContainer * container = static_cast<TriangleSetTopologyContainer *>( topology->getTopologyContainer() );
     assert (container != 0);
 
+    container->getTriangleEdgeShellArray();
+    container->getTriangleVertexShellArray();
+
     if (container->m_triangle.size()>0)
     {
 
@@ -374,7 +377,6 @@ void TriangleSetTopologyModifier<DataTypes>::removeTrianglesProcess(const sofa::
                 /// actually remove edges without looking for isolated vertices
                 this->removeEdgesProcess(edgeToBeRemoved,false);
 
-
             if (vertexToBeRemoved.size()>0)
             {
                 this->removePointsWarning(vertexToBeRemoved);
@@ -478,7 +480,7 @@ void TriangleSetTopologyModifier< DataTypes >::removeEdgesProcess( const sofa::h
     //if (container->m_triangleEdge.size()>0)
     container->getTriangleEdgeShellArray();
 
-    // start by calling the standard method.
+    // start by calling the standard method
     EdgeSetTopologyModifier< DataTypes >::removeEdgesProcess(indices,removeIsolatedItems);
 
     if (container->m_triangleEdge.size()>0)
@@ -2245,8 +2247,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
     assert(modifier != 0);
 
     const Edge & edge0=container->getEdge(ind_edge);
-    unsigned ind_pa = edge0.first;
-    unsigned ind_pb = edge0.second;
+    unsigned ind_pa = edge0[0];
+    unsigned ind_pb = edge0[1];
 
     const helper::vector<unsigned>& triangles0 = container->getTriangleEdgeShell(ind_edge);
     if (triangles0.size() != 2)
@@ -2272,7 +2274,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
         int j=0;
         for (j=0; j<3; ++j)
         {
-            if (te[j] != ind_edgea && (container->getEdge(te[j]).first == ind_pa || container->getEdge(te[j]).second == ind_pa))
+            if (te[j] != ind_edgea && (container->getEdge(te[j])[0] == ind_pa || container->getEdge(te[j])[1] == ind_pa))
                 break;
         }
         if (j == 3)
@@ -2298,7 +2300,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdge(unsigned int ind_e
         int j=0;
         for (j=0; j<3; ++j)
         {
-            if (te[j] != ind_edgeb && (container->getEdge(te[j]).first == ind_pb || container->getEdge(te[j]).second == ind_pb))
+            if (te[j] != ind_edgeb && (container->getEdge(te[j])[0] == ind_pb || container->getEdge(te[j])[1] == ind_pb))
                 break;
         }
         if (j == 3)
@@ -4013,7 +4015,7 @@ TriangleSetTopology<DataTypes>::TriangleSetTopology(MechanicalObject<DataTypes> 
 {
     this->m_topologyContainer=f_m_topologyContainer->beginEdit();
     this->m_topologyContainer->setTopology(this);
-    this->m_topologyContainer->setTopology(this);
+
     this->m_topologyModifier=(new TriangleSetTopologyModifier<DataTypes>(this));
     this->m_topologyAlgorithms=(new TriangleSetTopologyAlgorithms<DataTypes>(this));
     this->m_geometryAlgorithms=(new TriangleSetGeometryAlgorithms<DataTypes>(this));

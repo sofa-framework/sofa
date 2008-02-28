@@ -22,23 +22,12 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-//
-// C++ Interface: TriangleBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-
-#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/forcefield/HexahedralFEMForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/MechanicalObject.h>
-#include <map>
+#include <sofa/core/ObjectFactory.h>
+//#include <typeinfo>
+
 
 namespace sofa
 {
@@ -49,38 +38,19 @@ namespace component
 namespace forcefield
 {
 
-/**
-Bending springs added between vertices of triangles sharing a common edge.
-The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
+using namespace sofa::defaulttype;
+
+template class HexahedralFEMForceField<Vec3dTypes>;
+template class HexahedralFEMForceField<Vec3fTypes>;
 
 
-	@author The SOFA team </www.sofa-framework.org>
-*/
-template<class DataTypes>
-class TriangleBendingSprings : public sofa::component::forcefield::StiffSpringForceField<DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::VecCoord VecCoord;
+SOFA_DECL_CLASS(HexahedralFEMForceField)
 
-    TriangleBendingSprings();
-
-    ~TriangleBendingSprings();
-
-    /// Searches triangle topology and creates the bending springs
-    virtual void init();
-
-    //virtual void draw()
-    //{
-    //}
-
-protected:
-    typedef std::pair<unsigned,unsigned> IndexPair;
-    void addSpring( unsigned, unsigned );
-    void registerTriangle( unsigned, unsigned, unsigned, std::map<IndexPair, unsigned>& );
-    component::MechanicalObject<DataTypes>* dof;
-
-};
+// Register in the Factory
+int HexahedralFEMForceFieldClass = core::RegisterObject("Hexahedral finite elements")
+        .add< HexahedralFEMForceField<Vec3dTypes> >()
+        .add< HexahedralFEMForceField<Vec3fTypes> >()
+        ;
 
 } // namespace forcefield
 
@@ -88,4 +58,3 @@ protected:
 
 } // namespace sofa
 
-#endif

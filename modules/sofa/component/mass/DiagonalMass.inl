@@ -79,8 +79,8 @@ inline void MassEdgeCreationFunction(const sofa::helper::vector<unsigned int> &e
             // compute its mass based on the mass density and the edge length
             mass=(md*ga->computeRestEdgeLength(edgeAdded[i]))/2;
             // added mass on its two vertices
-            masses[e.first]+=mass;
-            masses[e.second]+=mass;
+            masses[e[0]]+=mass;
+            masses[e[1]]+=mass;
         }
 
     }
@@ -109,8 +109,8 @@ inline void MassEdgeDestroyFunction(const sofa::helper::vector<unsigned int> &ed
             // compute its mass based on the mass density and the edge length
             mass=(md*ga->computeRestEdgeLength(edgeRemoved[i]))/2;
             // added mass on its two vertices
-            masses[e.first]-=mass;
-            masses[e.second]-=mass;
+            masses[e[0]]-=mass;
+            masses[e[1]]-=mass;
         }
 
     }
@@ -506,8 +506,8 @@ void DiagonalMass<DataTypes, MassType>::init()
             {
                 const Edge &e=ea[i];
                 mass=(md*ga->computeEdgeLength(i))/2;
-                masses[e.first]+=mass;
-                masses[e.second]+=mass;
+                masses[e[0]]+=mass;
+                masses[e[1]]+=mass;
             }
             f_mass.endEdit();
         }

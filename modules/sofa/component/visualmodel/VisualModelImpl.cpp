@@ -903,6 +903,7 @@ void VisualModelImpl::handleTopologyChange()
 
             for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
             {
+
                 t[0]=(int)(ta->triangleArray[i])[0];
                 t[1]=(int)(ta->triangleArray[i])[1];
                 t[2]=(int)(ta->triangleArray[i])[2];
@@ -1098,7 +1099,7 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::POINTSREMOVED:
         {
-            std::cout << "INFO_print : Vis - POINTSREMOVED" << std::endl;
+            //std::cout << "INFO_print : Vis - POINTSREMOVED" << std::endl;
 
             if (tstc)
             {
@@ -1119,8 +1120,6 @@ void VisualModelImpl::handleTopologyChange()
 
                 for ( i = 0; i < tab.size(); ++i)
                 {
-                    std::cout << "INFO_print : Vis - Remove point = " << tab[i] << std::endl;
-
                     unsigned int i_next = i;
                     bool is_reached = false;
                     while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
@@ -1147,11 +1146,11 @@ void VisualModelImpl::handleTopologyChange()
 
                             unsigned int ind_j = Glob2LocMap[shell[j]];
 
-                            if ((unsigned)triangles[ind_j][0]==lastIndexVec[i])
+                            if ((unsigned)triangles[ind_j][0]==last)
                                 triangles[ind_j][0]=tab[i];
-                            else if ((unsigned)triangles[ind_j][1]==lastIndexVec[i])
+                            else if ((unsigned)triangles[ind_j][1]==last)
                                 triangles[ind_j][1]=tab[i];
-                            else if ((unsigned)triangles[ind_j][2]==lastIndexVec[i])
+                            else if ((unsigned)triangles[ind_j][2]==last)
                                 triangles[ind_j][2]=tab[i];
                         }
                         else
@@ -1169,7 +1168,7 @@ void VisualModelImpl::handleTopologyChange()
                         {
 
                             bool is_forgotten = false;
-                            if ((unsigned)triangles[j_loc][0]==lastIndexVec[i])
+                            if ((unsigned)triangles[j_loc][0]==last)
                             {
                                 triangles[j_loc][0]=tab[i];
                                 is_forgotten=true;
@@ -1177,7 +1176,7 @@ void VisualModelImpl::handleTopologyChange()
                             }
                             else
                             {
-                                if ((unsigned)triangles[j_loc][1]==lastIndexVec[i])
+                                if ((unsigned)triangles[j_loc][1]==last)
                                 {
                                     triangles[j_loc][1]=tab[i];
                                     is_forgotten=true;
@@ -1185,7 +1184,7 @@ void VisualModelImpl::handleTopologyChange()
                                 }
                                 else
                                 {
-                                    if ((unsigned)triangles[j_loc][2]==lastIndexVec[i])
+                                    if ((unsigned)triangles[j_loc][2]==last)
                                     {
                                         triangles[j_loc][2]=tab[i];
                                         is_forgotten=true;

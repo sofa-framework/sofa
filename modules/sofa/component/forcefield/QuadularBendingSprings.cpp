@@ -22,23 +22,14 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-//
-// C++ Interface: TriangleBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
+#include <sofa/component/forcefield/QuadularBendingSprings.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
 
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/MechanicalObject.h>
-#include <map>
+#include <sofa/component/topology/MeshTopology.h>
+#include <fstream> // for reading the file
+#include <iostream> //for debugging
+#include <vector>
 
 namespace sofa
 {
@@ -49,38 +40,27 @@ namespace component
 namespace forcefield
 {
 
-/**
-Bending springs added between vertices of triangles sharing a common edge.
-The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
+using namespace sofa::defaulttype;
+
+using std::cerr;
+using std::cout;
+using std::endl;
+
+SOFA_DECL_CLASS(QuadularBendingSprings)
+
+template class QuadularBendingSprings<Vec3fTypes>;
+template class QuadularBendingSprings<Vec3dTypes>;
+template class QuadularBendingSprings<Vec2fTypes>;
+template class QuadularBendingSprings<Vec2dTypes>;
 
 
-	@author The SOFA team </www.sofa-framework.org>
-*/
-template<class DataTypes>
-class TriangleBendingSprings : public sofa::component::forcefield::StiffSpringForceField<DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::VecCoord VecCoord;
-
-    TriangleBendingSprings();
-
-    ~TriangleBendingSprings();
-
-    /// Searches triangle topology and creates the bending springs
-    virtual void init();
-
-    //virtual void draw()
-    //{
-    //}
-
-protected:
-    typedef std::pair<unsigned,unsigned> IndexPair;
-    void addSpring( unsigned, unsigned );
-    void registerTriangle( unsigned, unsigned, unsigned, std::map<IndexPair, unsigned>& );
-    component::MechanicalObject<DataTypes>* dof;
-
-};
+// Register in the Factory
+int QuadularBendingSpringsClass = core::RegisterObject("Springs added to a quad mesh to prevent bending")
+        .add< QuadularBendingSprings<Vec3dTypes> >()
+        .add< QuadularBendingSprings<Vec3fTypes> >()
+        .add< QuadularBendingSprings<Vec2dTypes> >()
+        .add< QuadularBendingSprings<Vec2fTypes> >()
+        ;
 
 } // namespace forcefield
 
@@ -88,4 +68,3 @@ protected:
 
 } // namespace sofa
 
-#endif

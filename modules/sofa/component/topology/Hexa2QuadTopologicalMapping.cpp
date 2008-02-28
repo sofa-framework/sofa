@@ -22,23 +22,19 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-//
-// C++ Interface: TriangleBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
+#include <sofa/component/topology/Hexa2QuadTopologicalMapping.inl>
 
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/MechanicalObject.h>
-#include <map>
+#include <sofa/core/ObjectFactory.h>
+
+#include <sofa/component/topology/QuadSetTopology.h>
+#include <sofa/component/topology/HexahedronSetTopology.h>
+
+#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/componentmodel/topology/BaseTopology.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/Vec3Types.h>
+
 
 namespace sofa
 {
@@ -46,46 +42,37 @@ namespace sofa
 namespace component
 {
 
-namespace forcefield
+namespace topology
 {
 
-/**
-Bending springs added between vertices of triangles sharing a common edge.
-The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
+using namespace sofa::defaulttype;
+using namespace core;
+using namespace core::componentmodel::topology;
+using namespace sofa::core::componentmodel::behavior;
 
+using namespace sofa::component::topology;
 
-	@author The SOFA team </www.sofa-framework.org>
-*/
-template<class DataTypes>
-class TriangleBendingSprings : public sofa::component::forcefield::StiffSpringForceField<DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::VecCoord VecCoord;
+SOFA_DECL_CLASS(Hexa2QuadTopologicalMapping)
 
-    TriangleBendingSprings();
+// Register in the Factory
+int Hexa2QuadTopologicalMappingClass = core::RegisterObject("Special case of mapping where HexahedronSetTopology is converted to QuadSetTopology")
+        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec3dTypes>, QuadSetTopology<Vec3dTypes> > >()
+        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec3fTypes>, QuadSetTopology<Vec3fTypes> > >()
+        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec2dTypes>, QuadSetTopology<Vec2dTypes> > >()
+        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec1dTypes>, QuadSetTopology<Vec1dTypes> > >()
+        .add< Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec1fTypes>, QuadSetTopology<Vec1fTypes> > >();
 
-    ~TriangleBendingSprings();
+template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec3dTypes>, QuadSetTopology<Vec3dTypes> >;
+template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec3fTypes>, QuadSetTopology<Vec3fTypes> >;
+template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec2dTypes>, QuadSetTopology<Vec2dTypes> >;
+template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec1dTypes>, QuadSetTopology<Vec1dTypes> >;
+template class Hexa2QuadTopologicalMapping< HexahedronSetTopology<Vec1fTypes>, QuadSetTopology<Vec1fTypes> >;
 
-    /// Searches triangle topology and creates the bending springs
-    virtual void init();
+;
 
-    //virtual void draw()
-    //{
-    //}
-
-protected:
-    typedef std::pair<unsigned,unsigned> IndexPair;
-    void addSpring( unsigned, unsigned );
-    void registerTriangle( unsigned, unsigned, unsigned, std::map<IndexPair, unsigned>& );
-    component::MechanicalObject<DataTypes>* dof;
-
-};
-
-} // namespace forcefield
+} // namespace topology
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
