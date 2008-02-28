@@ -53,8 +53,8 @@ void PointSetTopologyModifier<DataTypes>::loadPointSet(PointSetTopologyLoader<Da
 {
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
-    PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
-    assert (container != 0);
+    //PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
+    //assert (container != 0);
     if ((loader->pointArray.size()>0) && (topology->object->getSize()<=1))
     {
         /// resize the DOF stored in the mechanical object
@@ -104,8 +104,8 @@ void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
 {
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
-    PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
-    assert (container != 0);
+    //PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
+    //assert (container != 0);
     //topology->object->swapValues( container->getDOFIndex(i1), container->getDOFIndex(i2) );
     topology->object->swapValues( i1, i2 );
 
@@ -120,8 +120,8 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
 {
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
-    PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
-    assert (container != 0);
+    //PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
+    //assert (container != 0);
     unsigned int prevSizeMechObj   = topology->object->getSize();
     //unsigned int prevSizeContainer = container->getDOFIndexArray().size();
     //unsigned int prevSizeContainer = container->getNumberOfVertices();
@@ -180,8 +180,8 @@ void PointSetTopologyModifier<DataTypes>::addNewPoint( const sofa::helper::vecto
 {
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
-    PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
-    assert (container != 0);
+    //PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
+    //assert (container != 0);
     unsigned int prevSizeMechObj   = topology->object->getSize();
     //unsigned int prevSizeContainer = container->getDOFIndexArray().size();
     //unsigned int prevSizeContainer = container->getNumberOfVertices();
@@ -239,8 +239,8 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vec
 
     PointSetTopology<DataTypes> *topology = dynamic_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     assert (topology != 0);
-    PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
-    assert (container != 0);
+    //PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
+    //assert (container != 0);
     int prevSizeMechObj   = topology->object->getSize();
     //unsigned int prevDOFIndexArraySize = container->getDOFIndexArray().size();
     //int prevPointSetIndexArraySize = container->getPointSetIndexArray().size();
