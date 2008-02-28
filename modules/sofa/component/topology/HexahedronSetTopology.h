@@ -354,7 +354,7 @@ public:
 
 
     HexahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
-            const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
+            /* const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,  */
             const sofa::helper::vector< Hexahedron >         &hexahedra    = (const sofa::helper::vector< Hexahedron >)        0 );
 
     template< typename DataTypes >

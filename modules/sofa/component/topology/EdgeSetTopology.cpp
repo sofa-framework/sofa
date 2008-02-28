@@ -162,9 +162,9 @@ sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShe
 */
 
 
-EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector< unsigned int > &DOFIndex,
+EdgeSetTopologyContainer::EdgeSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, /*const sofa::helper::vector< unsigned int > &DOFIndex, */
         const sofa::helper::vector< Edge >         &edges )
-    : PointSetTopologyContainer( top, DOFIndex ), m_edge( edges )
+    : PointSetTopologyContainer( top /*, DOFIndex*/ ), m_edge( edges )
 {
 
 }

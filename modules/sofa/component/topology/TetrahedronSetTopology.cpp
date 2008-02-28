@@ -416,9 +416,9 @@ sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::getTetrah
 
 
 
-TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector< unsigned int > &DOFIndex,
+TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, /*const sofa::helper::vector< unsigned int > &DOFIndex, */
         const sofa::helper::vector< Tetrahedron >         &tetrahedra )
-    : TriangleSetTopologyContainer( top,DOFIndex), m_tetrahedron( tetrahedra )
+    : TriangleSetTopologyContainer( top/*,DOFIndex*/), m_tetrahedron( tetrahedra )
 {
 
 }

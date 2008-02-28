@@ -596,9 +596,9 @@ sofa::helper::vector< unsigned int > &HexahedronSetTopologyContainer::getHexahed
 
 
 
-HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector< unsigned int > &DOFIndex,
+HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, /* const sofa::helper::vector< unsigned int > &DOFIndex, */
         const sofa::helper::vector< Hexahedron >         &hexahedra )
-    : QuadSetTopologyContainer( top,DOFIndex), m_hexahedron( hexahedra )
+    : QuadSetTopologyContainer( top /*,DOFIndex*/), m_hexahedron( hexahedra )
 {
 
 }

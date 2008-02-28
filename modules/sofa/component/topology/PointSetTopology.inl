@@ -60,14 +60,15 @@ void PointSetTopologyModifier<DataTypes>::loadPointSet(PointSetTopologyLoader<Da
         /// resize the DOF stored in the mechanical object
         topology->object->resize(loader->pointArray.size());
         /// resize the point set container
-        sofa::helper::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
-        DOFIndex.resize(loader->pointArray.size());
+        //sofa::helper::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
+        //DOFIndex.resize(loader->pointArray.size());
+
         /// store position and vertex index in containers
         unsigned int index;
         for (index=0; index<loader->pointArray.size(); ++index)
         {
             (*topology->object->getX())[index]=loader->pointArray[index];
-            DOFIndex[index] = index;
+            //DOFIndex[index] = index;
         }
     }
 }
@@ -105,7 +106,8 @@ void PointSetTopologyModifier<DataTypes>::swapPoints(const int i1,const int i2)
     assert (topology != 0);
     PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
-    topology->object->swapValues( container->getDOFIndex(i1), container->getDOFIndex(i2) );
+    //topology->object->swapValues( container->getDOFIndex(i1), container->getDOFIndex(i2) );
+    topology->object->swapValues( i1, i2 );
 
     PointsIndicesSwap *e=new PointsIndicesSwap( i1, i2 ); // Indices locaux ou globaux? (exemple de arretes)
     addTopologyChange(e);
@@ -121,7 +123,8 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
     PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     unsigned int prevSizeMechObj   = topology->object->getSize();
-    unsigned int prevSizeContainer = container->getDOFIndexArray().size();
+    //unsigned int prevSizeContainer = container->getDOFIndexArray().size();
+    //unsigned int prevSizeContainer = container->getNumberOfVertices();
 
     // resizing the state vectors
     topology->object->resize( prevSizeMechObj + nPoints );
@@ -156,16 +159,19 @@ void PointSetTopologyModifier<DataTypes>::addPointsProcess(const unsigned int nP
     }
 
     // setting the new indices
-    sofa::helper::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
-    DOFIndex.resize(prevSizeContainer + nPoints);
+    //sofa::helper::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
+    //DOFIndex.resize(prevSizeContainer + nPoints);
+
+    /*
     for (unsigned int i = 0; i < nPoints; ++i)
-    {
+      {
         DOFIndex[prevSizeContainer + i] = prevSizeMechObj + i;
-    }
+      }
+    */
 
 
     //invalidating PointSetIndex, since it is no longer up-to-date
-    assert(container->getPointSetIndexSize()==0);
+    //assert(container->getPointSetIndexSize()==0);
 
 }
 
@@ -177,7 +183,8 @@ void PointSetTopologyModifier<DataTypes>::addNewPoint( const sofa::helper::vecto
     PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     unsigned int prevSizeMechObj   = topology->object->getSize();
-    unsigned int prevSizeContainer = container->getDOFIndexArray().size();
+    //unsigned int prevSizeContainer = container->getDOFIndexArray().size();
+    //unsigned int prevSizeContainer = container->getNumberOfVertices();
 
     // resizing the state vectors
     topology->object->resize( prevSizeMechObj + 1 );
@@ -185,13 +192,13 @@ void PointSetTopologyModifier<DataTypes>::addNewPoint( const sofa::helper::vecto
     topology->object->computeNewPoint(prevSizeMechObj, x);
 
     // setting the new indices
-    sofa::helper::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
-    DOFIndex.resize(prevSizeContainer + 1);
+    //sofa::helper::vector<unsigned int> DOFIndex = container->getDOFIndexArray();
+    //DOFIndex.resize(prevSizeContainer + 1);
 
-    DOFIndex[prevSizeContainer] = prevSizeMechObj;
+    //DOFIndex[prevSizeContainer] = prevSizeMechObj;
 
     //invalidating PointSetIndex, since it is no longer up-to-date
-    assert(container->getPointSetIndexSize()==0);
+    //assert(container->getPointSetIndexSize()==0);
 
 }
 
@@ -235,8 +242,8 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vec
     PointSetTopologyContainer * container = static_cast<PointSetTopologyContainer *>(topology->getTopologyContainer());
     assert (container != 0);
     int prevSizeMechObj   = topology->object->getSize();
-    unsigned int prevDOFIndexArraySize = container->getDOFIndexArray().size();
-    int prevPointSetIndexArraySize = container->getPointSetIndexArray().size();
+    //unsigned int prevDOFIndexArraySize = container->getDOFIndexArray().size();
+    //int prevPointSetIndexArraySize = container->getPointSetIndexArray().size();
 
     int lastIndexMech = prevSizeMechObj - 1;
 
@@ -247,11 +254,14 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vec
         for (unsigned int i = 0; i < indices.size(); ++i)
         {
             // tests if the DOFIndex array is empty (if we have a main topology) or not
+            /*
             if (prevDOFIndexArraySize)
-                topology->object->replaceValue(lastIndexMech, container->getDOFIndex(indices[i]) );
+              topology->object->replaceValue(lastIndexMech, container->getDOFIndex(indices[i]) );
             else
-                topology->object->replaceValue(lastIndexMech, indices[i] );
+              topology->object->replaceValue(lastIndexMech, indices[i] );
+            */
 
+            topology->object->replaceValue(lastIndexMech, indices[i] );
 
             --lastIndexMech;
         }
@@ -266,10 +276,12 @@ void PointSetTopologyModifier<DataTypes>::removePointsProcess( sofa::helper::vec
     }
 
     // resizing the topology container vectors
+    /*
     if (prevDOFIndexArraySize)
-        container->getDOFIndexArrayForModification().resize(prevDOFIndexArraySize - indices.size() );
+      container->getDOFIndexArrayForModification().resize(prevDOFIndexArraySize - indices.size() );
     if (prevPointSetIndexArraySize)
-        container->getPointSetIndexArrayForModification().resize(prevPointSetIndexArraySize - indices.size() );
+      container->getPointSetIndexArrayForModification().resize(prevPointSetIndexArraySize - indices.size() );
+    */
 
 }
 
@@ -296,11 +308,12 @@ typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCent
     PointSetTopology<DataTypes> *parent=static_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     typename DataTypes::VecCoord& p = *parent->getDOF()->getX0();
     PointSetTopologyContainer *ps=static_cast<PointSetTopologyContainer *>( parent->getTopologyContainer());
-    const sofa::helper::vector<unsigned int> &va=ps->getDOFIndexArray();
+    //const sofa::helper::vector<unsigned int> &va=ps->getDOFIndexArray();
     unsigned int i;
     for(i=0; i<ps->getNumberOfVertices(); i++)
     {
-        center+=p[va[i]];
+        //center+=p[va[i]];
+        center+=p[i];
     }
     center/= (ps->getNumberOfVertices());
     return center;
@@ -318,18 +331,20 @@ void  PointSetGeometryAlgorithms<DataTypes>::getEnclosingSphere(typename DataTyp
     PointSetTopology<DataTypes> *parent=static_cast<PointSetTopology<DataTypes> *>(m_basicTopology);
     typename DataTypes::VecCoord& p = *parent->getDOF()->getX0();
     PointSetTopologyContainer *ps=static_cast<PointSetTopologyContainer *>( parent->getTopologyContainer());
-    const sofa::helper::vector<unsigned int> &va=ps->getDOFIndexArray();
+    //const sofa::helper::vector<unsigned int> &va=ps->getDOFIndexArray();
     unsigned int i;
     for(i=0; i<ps->getNumberOfVertices(); i++)
     {
-        center+=p[va[i]];
+        //center+=p[va[i]];
+        center+=p[i];
     }
     center/= (ps->getNumberOfVertices());
     dp=center-p[0];
     radius=dot(dp,dp);
     for(i=1; i<ps->getNumberOfVertices(); i++)
     {
-        dp=center-p[va[i]];
+        //dp=center-p[va[i]];
+        dp=center-p[i];
         val=dot(dp,dp);
         if (val<radius)
             radius=val;

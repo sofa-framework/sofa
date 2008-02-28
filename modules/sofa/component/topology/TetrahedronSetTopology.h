@@ -340,7 +340,7 @@ public:
     virtual bool checkTopology() const;
 
     TetrahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
-            const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
+            /* const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,  */
             const sofa::helper::vector< Tetrahedron >         &tetrahedra    = (const sofa::helper::vector< Tetrahedron >)        0 );
 
 

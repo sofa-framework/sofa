@@ -282,9 +282,9 @@ sofa::helper::vector< unsigned int > &QuadSetTopologyContainer::getQuadVertexShe
 
 
 
-QuadSetTopologyContainer::QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector< unsigned int > &DOFIndex,
+QuadSetTopologyContainer::QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, /* const sofa::helper::vector< unsigned int > &DOFIndex, */
         const sofa::helper::vector< Quad >         &quads )
-    : EdgeSetTopologyContainer( top,DOFIndex), m_quad( quads )
+    : EdgeSetTopologyContainer( top /*,DOFIndex*/), m_quad( quads )
 {
 
 }

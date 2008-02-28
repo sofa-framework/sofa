@@ -282,9 +282,9 @@ sofa::helper::vector< unsigned int > &TriangleSetTopologyContainer::getTriangleV
 
 
 
-TriangleSetTopologyContainer::TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector< unsigned int > &DOFIndex,
+TriangleSetTopologyContainer::TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, /* const sofa::helper::vector< unsigned int > &DOFIndex, */
         const sofa::helper::vector< Triangle >         &triangles )
-    : EdgeSetTopologyContainer( top,DOFIndex), m_triangle( triangles )
+    : EdgeSetTopologyContainer( top /*,DOFIndex*/), m_triangle( triangles )
 {
 
 }
