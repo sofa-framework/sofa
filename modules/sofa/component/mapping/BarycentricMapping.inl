@@ -1385,7 +1385,7 @@ void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::draw(const
             int index = map[i].in_index;
             const topology::Edge& edge = edges[index];
             {
-                const Real f = 1.0-fx;
+                const Real f = Real(1.0)-fx;
                 if (f<=-0.0001 || f>=0.0001)
                 {
                     glColor3f((float)f,1,(float)f);
