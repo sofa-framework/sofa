@@ -22,10 +22,10 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_H
-#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_H
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/BaseConstraint.h>
+#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
 namespace sofa
@@ -41,36 +41,43 @@ namespace behavior
 {
 
 /**
- *  \brief Component computing constraints within a simulated body.
+ *  \brief Component computing constraints between a pair of simulated body.
  *
- *  This class define the abstract API common to constraints using a given type
- *  of DOFs.
- *  A Constraint computes constraints applied to one simulated body given its
- *  current position and velocity.
- *
+ *  This class define the abstract API common to interaction constraints
+ *  between a pair of bodies using a given type of DOFs.
  */
-template<class DataTypes>
-class Constraint : public BaseConstraint
+template<class TDataTypes1, class TDataTypes2>
+class MixedInteractionConstraint : public InteractionConstraint
 {
 public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::VecConst VecConst;
+    typedef TDataTypes1 DataTypes1;
+    typedef typename DataTypes1::VecCoord VecCoord1;
+    typedef typename DataTypes1::VecDeriv VecDeriv1;
+    typedef typename DataTypes1::VecConst VecConst1;
+    typedef typename DataTypes1::Coord Coord1;
+    typedef typename DataTypes1::Deriv Deriv1;
+    typedef TDataTypes2 DataTypes2;
+    typedef typename DataTypes2::VecCoord VecCoord2;
+    typedef typename DataTypes2::VecDeriv VecDeriv2;
+    typedef typename DataTypes2::VecConst VecConst2;
+    typedef typename DataTypes2::Coord Coord2;
+    typedef typename DataTypes2::Deriv Deriv2;
 
-    Constraint(MechanicalState<DataTypes> *mm = NULL);
+    MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
 
-    virtual ~Constraint();
+    virtual ~MixedInteractionConstraint();
 
-    Data<Real> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
+    Data<double> endTime;  ///< Time when the constraint becomes inactive (-1 for infinitely active)
     virtual bool isActive() const; ///< if false, the constraint does nothing
 
     virtual void init();
 
     /// Retrieve the associated MechanicalState
-    MechanicalState<DataTypes>* getMState() { return mstate; }
+    MechanicalState<DataTypes1>* getMState1() { return mstate1; }
+    BaseMechanicalState* getMechModel1() { return mstate1; }
+    /// Retrieve the associated MechanicalState
+    MechanicalState<DataTypes2>* getMState2() { return mstate2; }
+    BaseMechanicalState* getMechModel2() { return mstate2; }
 
     /// @name Vector operations
     /// @{
@@ -78,21 +85,21 @@ public:
     /// Project dx to constrained space (dx models an acceleration).
     ///
     /// This method retrieves the dx vector from the MechanicalState and call
-    /// the internal projectResponse(VecDeriv&) method implemented by
+    /// the internal projectResponse(VecDeriv1&,VecDeriv2&) method implemented by
     /// the component.
     virtual void projectResponse();
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method retrieves the v vector from the MechanicalState and call
-    /// the internal projectVelocity(VecDeriv&) method implemented by
+    /// the internal projectVelocity(VecDeriv1&,VecDeriv2&) method implemented by
     /// the component.
     virtual void projectVelocity();
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method retrieves the x vector from the MechanicalState and call
-    /// the internal projectPosition(VecCoord&) method implemented by
+    /// the internal projectPosition(VecCoord1&,VecCoord2&) method implemented by
     /// the component.
     virtual void projectPosition();
 
@@ -100,35 +107,52 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic Constraint::projectResponse() method.
-    virtual void projectResponse(VecDeriv& dx) = 0;
+    virtual void projectResponse(VecDeriv1& dx1, VecDeriv2& dx2) = 0;
 
     /// Project v to constrained space (v models a velocity).
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic Constraint::projectVelocity() method.
-    virtual void projectVelocity(VecDeriv& v) = 0;
+    virtual void projectVelocity(VecDeriv1& v1, VecDeriv2& v2) = 0;
 
     /// Project x to constrained space (x models a position).
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic Constraint::projectPosition() method.
-    virtual void projectPosition(VecCoord& x) = 0;
+    virtual void projectPosition(VecCoord1& x1, VecCoord2& x2) = 0;
 
     /// @}
 
     /// \todo What is the difference with BaseConstraint::applyConstraint(unsigned int&, double&) ?
     virtual void applyConstraint(unsigned int & contactId); // Pure virtual would be better
 
-    virtual void applyConstraint(VecConst& /*c*/, unsigned int & /*contactId*/) {}
+    virtual void applyConstraint(VecConst1& /*c1*/, VecConst2& /*c2*/, unsigned int & /*contactId*/) {}
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
     static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-            return false;
-        return BaseObject::canCreate(obj, context, arg);
+        if (arg->getAttribute("object1") || arg->getAttribute("object2"))
+        {
+            if (dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1",".."))) == NULL)
+                return false;
+            if (dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2",".."))) == NULL)
+                return false;
+        }
+        return InteractionConstraint::canCreate(obj, context, arg);
+    }
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        core::componentmodel::behavior::InteractionConstraint::create(obj, context, arg);
+        if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
+        {
+            obj->mstate1 = dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1","..")));
+            obj->mstate2 = dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2","..")));
+        }
     }
 
     virtual std::string getTemplateName() const
@@ -136,13 +160,14 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const Constraint<DataTypes>* = NULL)
+    static std::string templateName(const MixedInteractionConstraint<DataTypes1,DataTypes2>* = NULL)
     {
-        return DataTypes::Name();
+        return DataTypes1::Name();
     }
 
 protected:
-    MechanicalState<DataTypes> *mstate;
+    MechanicalState<DataTypes1> *mstate1;
+    MechanicalState<DataTypes2> *mstate2;
 };
 
 } // namespace behavior

@@ -22,10 +22,11 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_INL
-#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_INL
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_INL
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_INL
 
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/objectmodel/DataPtr.h>
+#include "MixedInteractionConstraint.h"
 
 namespace sofa
 {
@@ -39,62 +40,61 @@ namespace componentmodel
 namespace behavior
 {
 
-template<class DataTypes>
-Constraint<DataTypes>::Constraint(MechanicalState<DataTypes> *mm)
-    : endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value. Une a negative value for infinite constraints") )
-    , mstate(mm)
+template<class DataTypes1, class DataTypes2>
+MixedInteractionConstraint<DataTypes1, DataTypes2>::MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
+    : endTime( initData(&endTime,(double)-1,"endTime","The constraint stops acting after the given value. Une a negative value for infinite constraints") )
+    , mstate1(mm1), mstate2(mm2)
 {
 }
 
-template<class DataTypes>
-Constraint<DataTypes>::~Constraint()
+template<class DataTypes1, class DataTypes2>
+MixedInteractionConstraint<DataTypes1, DataTypes2>::~MixedInteractionConstraint()
 {
 }
 
-template <class DataTypes>
-bool Constraint<DataTypes>::isActive() const
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::init()
+{
+    InteractionConstraint::init();
+}
+
+template<class DataTypes1, class DataTypes2>
+bool MixedInteractionConstraint<DataTypes1, DataTypes2>::isActive() const
 {
     if( endTime.getValue()<0 ) return true;
     return endTime.getValue()>getContext()->getTime();
 }
 
-template<class DataTypes>
-void Constraint<DataTypes>::init()
-{
-    BaseConstraint::init();
-    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-}
-
-template<class DataTypes>
-void Constraint<DataTypes>::projectResponse()
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectResponse()
 {
     if( !isActive() ) return;
-    if (mstate)
-        projectResponse(*mstate->getDx());
+    if (mstate1 && mstate2)
+        projectResponse(*mstate1->getDx(), *mstate2->getDx());
 }
 
-template<class DataTypes>
-void Constraint<DataTypes>::projectVelocity()
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectVelocity()
 {
     if( !isActive() ) return;
-    if (mstate)
-        projectVelocity(*mstate->getV());
+    if (mstate1 && mstate2)
+        projectVelocity(*mstate1->getV(), *mstate2->getV());
 }
 
-template<class DataTypes>
-void Constraint<DataTypes>::projectPosition()
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectPosition()
 {
     if( !isActive() ) return;
-    if (mstate)
-        projectPosition(*mstate->getX());
+    if (mstate1 && mstate2)
+        projectPosition(*mstate1->getX(), *mstate2->getX());
 }
 
-template<class DataTypes>
-void Constraint<DataTypes>::applyConstraint(unsigned int &contactId)
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::applyConstraint(unsigned int &contactId)
 {
     if( !isActive() ) return;
-    if (mstate)
-        applyConstraint(*mstate->getC(), contactId);
+    if (mstate1 && mstate2)
+        applyConstraint(*mstate1->getC(), *mstate2->getC(), contactId);
 }
 
 } // namespace behavior

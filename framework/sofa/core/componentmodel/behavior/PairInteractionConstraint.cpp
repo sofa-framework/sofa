@@ -22,10 +22,9 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_INL
-#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINT_INL
-
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include "PairInteractionConstraint.inl"
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -39,63 +38,18 @@ namespace componentmodel
 namespace behavior
 {
 
-template<class DataTypes>
-Constraint<DataTypes>::Constraint(MechanicalState<DataTypes> *mm)
-    : endTime( initData(&endTime,(Real)-1,"endTime","The constraint stops acting after the given value. Une a negative value for infinite constraints") )
-    , mstate(mm)
-{
-}
+using namespace sofa::defaulttype;
+template class PairInteractionConstraint<Vec3dTypes>;
+template class PairInteractionConstraint<Vec3fTypes>;
+template class PairInteractionConstraint<Vec2dTypes>;
+template class PairInteractionConstraint<Vec2fTypes>;
+template class PairInteractionConstraint<Vec1dTypes>;
+template class PairInteractionConstraint<Vec1fTypes>;
+template class PairInteractionConstraint<Rigid3dTypes>;
+template class PairInteractionConstraint<Rigid3fTypes>;
+template class PairInteractionConstraint<Rigid2dTypes>;
+template class PairInteractionConstraint<Rigid2fTypes>;
 
-template<class DataTypes>
-Constraint<DataTypes>::~Constraint()
-{
-}
-
-template <class DataTypes>
-bool Constraint<DataTypes>::isActive() const
-{
-    if( endTime.getValue()<0 ) return true;
-    return endTime.getValue()>getContext()->getTime();
-}
-
-template<class DataTypes>
-void Constraint<DataTypes>::init()
-{
-    BaseConstraint::init();
-    mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-}
-
-template<class DataTypes>
-void Constraint<DataTypes>::projectResponse()
-{
-    if( !isActive() ) return;
-    if (mstate)
-        projectResponse(*mstate->getDx());
-}
-
-template<class DataTypes>
-void Constraint<DataTypes>::projectVelocity()
-{
-    if( !isActive() ) return;
-    if (mstate)
-        projectVelocity(*mstate->getV());
-}
-
-template<class DataTypes>
-void Constraint<DataTypes>::projectPosition()
-{
-    if( !isActive() ) return;
-    if (mstate)
-        projectPosition(*mstate->getX());
-}
-
-template<class DataTypes>
-void Constraint<DataTypes>::applyConstraint(unsigned int &contactId)
-{
-    if( !isActive() ) return;
-    if (mstate)
-        applyConstraint(*mstate->getC(), contactId);
-}
 
 } // namespace behavior
 
@@ -104,5 +58,3 @@ void Constraint<DataTypes>::applyConstraint(unsigned int &contactId)
 } // namespace core
 
 } // namespace sofa
-
-#endif
