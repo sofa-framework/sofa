@@ -311,7 +311,7 @@ public:
     virtual bool checkTopology() const;
 
     TriangleSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
-            const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
+            /* const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,   */
             const sofa::helper::vector< Triangle >         &triangles    = (const sofa::helper::vector< Triangle >)        0 );
 
     template< typename DataTypes >

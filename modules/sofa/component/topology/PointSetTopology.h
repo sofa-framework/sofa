@@ -128,9 +128,10 @@ private:
 
 protected:
     /** an array that gives the DOF index of a subset of DOFs */
-    sofa::helper::vector<unsigned int> m_DOFIndex;
+    //sofa::helper::vector<unsigned int> m_DOFIndex;
+
     /** an array that takes as input the index a DOF and as an ouput the index in the m_DOFIndex array */
-    sofa::helper::vector<int> m_PointSetIndex;
+    //sofa::helper::vector<int> m_PointSetIndex;
 
 
 public:
@@ -138,33 +139,38 @@ public:
      *
      * See getPointSetIndex(const unsigned int i) for more explanation.
      */
-    const sofa::helper::vector<int>& getPointSetIndexArray();
+    //const sofa::helper::vector<int>& getPointSetIndexArray();
 
-    inline friend std::ostream& operator<< (std::ostream& out, const PointSetTopologyContainer& t)
+    inline friend std::ostream& operator<< (std::ostream& out, const PointSetTopologyContainer& /*t*/)
     {
-        out << t.m_DOFIndex.size() << " " <<t.m_DOFIndex << " "
-            << t.m_PointSetIndex.size() << " " << t.m_PointSetIndex;
+
+        /*
+          out << t.m_DOFIndex.size() << " " <<t.m_DOFIndex << " "
+              << t.m_PointSetIndex.size() << " " << t.m_PointSetIndex;
+        */
         return out;
     }
 
     /// Needed to be compliant with Datas.
-    inline friend std::istream& operator>>(std::istream& in, PointSetTopologyContainer& t)
+    inline friend std::istream& operator>>(std::istream& in, PointSetTopologyContainer& /*t*/)
     {
-        unsigned int s;
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            unsigned int value;
-            in >> value;
-            t.m_DOFIndex.push_back(value);
-        }
-        in >> s;
-        for (unsigned int i=0; i<s; i++)
-        {
-            unsigned int value;
-            in >> value;
-            t.m_PointSetIndex.push_back(value);
-        }
+        /*
+          unsigned int s;
+          in >> s;
+          for (unsigned int i=0;i<s;i++)
+            {
+              unsigned int value;
+              in >> value;
+              t.m_DOFIndex.push_back(value);
+            }
+          in >> s;
+          for (unsigned int i=0;i<s;i++)
+            {
+              unsigned int value;
+              in >> value;
+              t.m_PointSetIndex.push_back(value);
+            }
+          */
         return in;
     }
 
@@ -172,12 +178,12 @@ public:
     /** \brief Returns the index in this topology of the point corresponding to the ith DOF of the mechanical object, or -1 if the ith DOF is not in this topology.
      *
      */
-    int getPointSetIndex(const unsigned int i);
+    //int getPointSetIndex(const unsigned int i);
 
     /** \brief Returns the number of vertices in this index array
      *
      */
-    unsigned int getPointSetIndexSize() const;
+    //unsigned int getPointSetIndexSize() const;
 
     /** \brief Returns the number of vertices in this topology.
      *
@@ -188,12 +194,12 @@ public:
      *
      * See getDOFIndex(const int i) for more explanation.
      */
-    const sofa::helper::vector<unsigned int>& getDOFIndexArray() const;
+    //const sofa::helper::vector<unsigned int>& getDOFIndexArray() const;
 
     /** \brief Returns the index in the mechanical object of the DOF corresponding to the ith point of this topology.
      *
      */
-    unsigned int getDOFIndex(const int i) const;
+    //unsigned int getDOFIndex(const int i) const;
 
     /** \brief Constructor from a a Base Topology.
      */
@@ -201,7 +207,7 @@ public:
 
     /** \brief Constructor from a a Base Topology and a set of DOF indices
      */
-    PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector<unsigned int>& );
+    //PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector<unsigned int>& );
 
     /** \brief Checks if the Topology is coherent
      *

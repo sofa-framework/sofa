@@ -9,7 +9,7 @@ HEADERS += \
           CollisionElement.h \
           CollisionModel.h \
           componentmodel/behavior/BaseConstraint.h \
-          componentmodel/collision/BaseConstraintCorrection.h \
+          componentmodel/behavior/BaseConstraintCorrection.h \
           componentmodel/behavior/BaseForceField.h \
           componentmodel/behavior/BaseMass.h \
           componentmodel/behavior/BaseMechanicalMapping.h \

@@ -29,14 +29,14 @@ PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topol
 {
 }
 
+/*
 PointSetTopologyContainer::PointSetTopologyContainer(core::componentmodel::topology::BaseTopology *top, const sofa::helper::vector<unsigned int>& DOFIndex)
-    : core::componentmodel::topology::TopologyContainer(top), m_DOFIndex(DOFIndex)
+: core::componentmodel::topology::TopologyContainer(top), m_DOFIndex(DOFIndex)
 {
 }
 
 
-void PointSetTopologyContainer::createPointSetIndex()
-{
+void PointSetTopologyContainer::createPointSetIndex() {
     // resizing
     m_PointSetIndex.resize( m_basicTopology->getDOFNumber() );
 
@@ -53,72 +53,75 @@ void PointSetTopologyContainer::createPointSetIndex()
 
 
 
-const sofa::helper::vector<int> &PointSetTopologyContainer::getPointSetIndexArray()
-{
+const sofa::helper::vector<int> &PointSetTopologyContainer::getPointSetIndexArray() {
     if (!m_PointSetIndex.size())
         createPointSetIndex();
-    return m_PointSetIndex;
+	return m_PointSetIndex;
 }
 
-unsigned int PointSetTopologyContainer::getPointSetIndexSize() const
-{
-    return m_PointSetIndex.size();
+unsigned int PointSetTopologyContainer::getPointSetIndexSize() const{
+	return m_PointSetIndex.size();
 }
 
-sofa::helper::vector<int> &PointSetTopologyContainer::getPointSetIndexArrayForModification()
-{
+sofa::helper::vector<int> &PointSetTopologyContainer::getPointSetIndexArrayForModification() {
     if (!m_PointSetIndex.size())
         createPointSetIndex();
-    return m_PointSetIndex;
+	return m_PointSetIndex;
 }
 
 
 
-int PointSetTopologyContainer::getPointSetIndex(const unsigned int i)
-{
-    if (!m_PointSetIndex.size())
+int PointSetTopologyContainer::getPointSetIndex(const unsigned int i) {
+	if (!m_PointSetIndex.size())
         createPointSetIndex();
-    return m_PointSetIndex[i];
+	return m_PointSetIndex[i];
 }
+
+*/
 
 unsigned int PointSetTopologyContainer::getNumberOfVertices() const
 {
-    return m_DOFIndex.size();
+    //return m_DOFIndex.size();
+    return m_basicTopology->getDOFNumber();
 }
+
+/*
 
 const sofa::helper::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArray() const
 {
-    return m_DOFIndex;
+	return m_DOFIndex;
 }
 
 sofa::helper::vector<unsigned int> &PointSetTopologyContainer::getDOFIndexArrayForModification()
 {
-    return m_DOFIndex;
+	return m_DOFIndex;
 }
 
 unsigned int PointSetTopologyContainer::getDOFIndex(const int i) const
 {
-    return m_DOFIndex[i];
+	return m_DOFIndex[i];
 }
+*/
+
 bool PointSetTopologyContainer::checkTopology() const
 {
 
     //std::cout << "*** CHECK PointSetTopologyContainer ***" << std::endl;
 
-    if (m_PointSetIndex.size()>0)
-    {
-        unsigned int i;
-        for (i=0; i<m_DOFIndex.size(); ++i)
-        {
-            bool check_vertex = m_PointSetIndex[m_DOFIndex[i]]!= -1;
-            if(!check_vertex)
-            {
-                std::cout << "*** CHECK FAILED : check_vertex, i = " << i << std::endl;
-            }
-            assert(check_vertex);
-        }
-        //std::cout << "******** DONE : check_point" << std::endl;
+    /*
+    if (m_PointSetIndex.size()>0) {
+    	 unsigned int i;
+    	 for (i=0;i<m_DOFIndex.size();++i) {
+    		 bool check_vertex = m_PointSetIndex[m_DOFIndex[i]]!= -1;
+    		 if(!check_vertex){
+    			std::cout << "*** CHECK FAILED : check_vertex, i = " << i << std::endl;
+    		 }
+    		 assert(check_vertex);
+    	 }
+    	 //std::cout << "******** DONE : check_point" << std::endl;
     }
+    */
+
     return true;
 }
 
