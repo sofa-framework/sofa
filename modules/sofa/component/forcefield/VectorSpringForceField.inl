@@ -38,7 +38,7 @@ void VectorSpringForceField<DataTypes>::springCreationFunction(int /*index*/,
             //EdgeSetGeometryAlgorithms<DataTypes> *ga=topology->getEdgeSetGeometryAlgorithms();
             //t.restLength=ga->computeRestEdgeLength(index);
             const typename DataTypes::VecCoord& x0 = *ff->getObject1()->getX0();
-            t.restVector = x0[e.second] - x0[e.first];
+            t.restVector = x0[e[1]] - x0[e[0]];
             if (ancestors.size()>0)
             {
                 t.kd=t.ks=0;
@@ -173,7 +173,7 @@ void VectorSpringForceField<DataTypes>::createDefaultSprings()
     {
         springArray[i].ks=(Real)m_stiffness.getValue();
         springArray[i].kd=(Real)m_viscosity.getValue();
-        springArray[i].restVector = x0[ea[i].second]-x0[ea[i].first];
+        springArray[i].restVector = x0[ea[i][1]]-x0[ea[i][0]];
     }
 
 }
@@ -230,13 +230,13 @@ void VectorSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, con
         const topology::Edge &e=ea[i];
         const Spring &s=springArray[i];
         // paul---------------------------------------------------------------
-        Deriv current_direction = x2[e.second]-x1[e.first];
+        Deriv current_direction = x2[e[1]]-x1[e[0]];
         Deriv squash_vector = current_direction - s.restVector;
-        Deriv relativeVelocity = v2[e.second]-v1[e.first];
+        Deriv relativeVelocity = v2[e[1]]-v1[e[0]];
         force = (squash_vector * s.ks) + (relativeVelocity * s.kd);
 
-        f1[e.first]+=force;
-        f2[e.second]-=force;
+        f1[e[0]]+=force;
+        f2[e[1]]-=force;
     }
 }
 
@@ -255,10 +255,10 @@ void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, 
     {
         const topology::Edge &e=ea[i];
         const Spring &s=springArray[i];
-        d = dx2[e.second]-dx1[e.first];
+        d = dx2[e[1]]-dx1[e[0]];
         dforce = d*s.ks;
-        df1[e.first]+=dforce;
-        df2[e.second]-=dforce;
+        df1[e[0]]+=dforce;
+        df2[e[1]]-=dforce;
     }
 
 }
@@ -283,8 +283,8 @@ void VectorSpringForceField<DataTypes>::draw()
 
         glColor4f(0,1,1,0.5f);
 
-        glVertex3d(x1[e.first][0],x1[e.first][1],x1[e.first][2]);
-        glVertex3d(x2[e.second][0],x2[e.second][1],x2[e.second][2]);
+        glVertex3d(x1[e[0]][0],x1[e[0]][1],x1[e[0]][2]);
+        glVertex3d(x2[e[1]][0],x2[e[1]][1],x2[e[1]][2]);
     }
     glEnd();
 }

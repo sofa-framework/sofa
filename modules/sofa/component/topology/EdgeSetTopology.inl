@@ -89,16 +89,16 @@ void EdgeSetTopologyModifier<DataTypes>::addEdgesProcess(const sofa::helper::vec
         {
             const Edge &e = edges[i];
             // check if the 2 vertices are different
-            assert(e.first!=e.second);
+            assert(e[0]!=e[1]);
             // check if there already exists an edge
-            assert(container->getEdgeIndex(e.first,e.second)== -1);
+            assert(container->getEdgeIndex(e[0],e[1])== -1);
             container->m_edge.push_back(e);
 
             if (sa.size()>0)
             {
 
-                container->getEdgeVertexShellForModification( e.first ).push_back( container->m_edge.size() - 1 );
-                container->getEdgeVertexShellForModification( e.second ).push_back( container->m_edge.size() - 1 );
+                container->getEdgeVertexShellForModification( e[0] ).push_back( container->m_edge.size() - 1 );
+                container->getEdgeVertexShellForModification( e[1] ).push_back( container->m_edge.size() - 1 );
             }
         }
     }
@@ -152,7 +152,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::
         for (unsigned int i = 0; i < indices.size(); ++i)
         {
             Edge *e = &container->m_edge[ indices[i] ];
-            unsigned int point1 = e->first, point2 = e->second;
+            unsigned int point1 = (*e)[0], point2 = (*e)[1];
             // first check that the edge shell array has been initialized
             if (container->m_edgeVertexShell.size()>0)
             {
@@ -188,7 +188,7 @@ void EdgeSetTopologyModifier<DataTypes>::removeEdgesProcess(const sofa::helper::
 
                 unsigned int oldEdgeIndex=container->m_edge.size();
                 e = &container->m_edge[ indices[i] ];
-                point1 = e->first; point2 = e->second;
+                point1 = (*e)[0]; point2 = (*e)[1];
 
                 //replaces the edge index oldEdgeIndex with indices[i] for the first vertex
                 sofa::helper::vector< unsigned int > &shell3 = container->m_edgeVertexShell[ point1 ];
@@ -262,10 +262,10 @@ void EdgeSetTopologyModifier< DataTypes >::removePointsProcess( sofa::helper::ve
         for (unsigned int j = 0; j < container->m_edgeVertexShell[lastPoint].size(); ++j)
         {
             // change the old index for the new one
-            if ( container->m_edge[ container->m_edgeVertexShell[lastPoint][j] ].first == lastPoint )
-                container->m_edge[ container->m_edgeVertexShell[lastPoint][j] ].first = indices[i];
+            if ( container->m_edge[ container->m_edgeVertexShell[lastPoint][j] ][0] == lastPoint )
+                container->m_edge[ container->m_edgeVertexShell[lastPoint][j] ][0] = indices[i];
             else
-                container->m_edge[ container->m_edgeVertexShell[lastPoint][j] ].second = indices[i];
+                container->m_edge[ container->m_edgeVertexShell[lastPoint][j] ][1] = indices[i];
         }
 
         // updating the edge shell itself (change the old index for the new one)
@@ -300,8 +300,8 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::he
 
     for (unsigned int i = 0; i < container->m_edge.size(); ++i)
     {
-        container->m_edge[i].first  = index[ container->m_edge[i].first  ];
-        container->m_edge[i].second = index[ container->m_edge[i].second ];
+        container->m_edge[i][0]  = index[ container->m_edge[i][0]  ];
+        container->m_edge[i][1] = index[ container->m_edge[i][1] ];
     }
 
 
@@ -310,7 +310,7 @@ void EdgeSetTopologyModifier< DataTypes >::renumberPointsProcess( const sofa::he
 
 
 template<class DataTypes>
-void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::vector< std::pair< unsigned int, unsigned int > >& edgesPair)
+void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::vector< Edge >& edgesPair)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast< EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert(topology != 0);
@@ -328,13 +328,13 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::
 
     for (unsigned int i = 0; i < edgesPair.size(); ++i)
     {
-        unsigned int i1 = edgesPair[i].first,
-                     i2 = edgesPair[i].second;
+        unsigned int i1 = edgesPair[i][0],
+                     i2 = edgesPair[i][1];
 
-        unsigned int p11 = container->getEdge(i1).first,
-                     p12 = container->getEdge(i1).second,
-                     p21 = container->getEdge(i2).first,
-                     p22 = container->getEdge(i2).second;
+        unsigned int p11 = container->getEdge(i1)[0],
+                     p12 = container->getEdge(i1)[1],
+                     p21 = container->getEdge(i2)[0],
+                     p22 = container->getEdge(i2)[1];
 
         Edge e1 (p11, p21),
              e2 (p12, p22);
@@ -361,8 +361,8 @@ void EdgeSetTopologyModifier< DataTypes >::fuseEdgesProcess(const sofa::helper::
     sofa::helper::vector< unsigned int > indices;
     for (unsigned int i = 0; i < edgesPair.size(); ++i)
     {
-        indices.push_back( edgesPair[i].first  );
-        indices.push_back( edgesPair[i].second );
+        indices.push_back( edgesPair[i][0]  );
+        indices.push_back( edgesPair[i][1] );
     }
     modifier->removeEdgesWarning(indices );
 
@@ -400,8 +400,8 @@ void EdgeSetTopologyModifier< DataTypes >::splitEdgesProcess( sofa::helper::vect
     sofa::helper::vector< unsigned int >  edgesIndex;
     for (unsigned int i = 0; i < indices.size(); ++i)
     {
-        unsigned int p1 = container->getEdge( indices[i] ).first,
-                     p2 = container->getEdge( indices[i] ).second;
+        unsigned int p1 = container->getEdge( indices[i] )[0],
+                     p2 = container->getEdge( indices[i] )[1];
 
         // Adding the new point
         v[i].push_back( p1 );
@@ -494,7 +494,7 @@ void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper::vector
 
 }
 template<class DataTypes>
-void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const sofa::helper::vector< std::pair< unsigned int, unsigned int > >& edgesPair)
+void EdgeSetTopologyAlgorithms< DataTypes >::fuseEdges(const sofa::helper::vector< Edge >& edgesPair)
 {
     EdgeSetTopology< DataTypes > *topology = dynamic_cast<EdgeSetTopology< DataTypes >* >(this->m_basicTopology);
     assert (topology != 0);
@@ -525,7 +525,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLeng
     EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
     const Edge &e=container->getEdge(i);
     const VecCoord& p = *topology->getDOF()->getX();
-    Real length=(p[e.first]-p[e.second]).norm();
+    Real length=(p[e[0]]-p[e[1]]).norm();
     return length;
 }
 template< class DataTypes>
@@ -536,7 +536,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestEdge
     EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
     const Edge &e=container->getEdge(i);
     const VecCoord& p = *topology->getDOF()->getX0();
-    Real length=(p[e.first]-p[e.second]).norm();
+    Real length=(p[e[0]]-p[e[1]]).norm();
     return length;
 }
 template< class DataTypes>
@@ -547,7 +547,7 @@ typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeRestSqua
     EdgeSetTopologyContainer * container = static_cast< EdgeSetTopologyContainer* >(topology->getTopologyContainer());
     const Edge &e=container->getEdge(i);
     const VecCoord& p = *topology->getDOF()->getX0();
-    Real length=(p[e.first]-p[e.second]).norm2();
+    Real length=(p[e[0]]-p[e[1]]).norm2();
     return length;
 }
 /// computes the edge length of all edges are store in the array interface
@@ -563,7 +563,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeLength( BasicArrayInterfac
     for (i=0; i<ea.size(); ++i)
     {
         const Edge &e=ea[i];
-        ai[i]=(p[e.first]-p[e.second]).norm();
+        ai[i]=(p[e[0]]-p[e[1]]).norm();
     }
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////

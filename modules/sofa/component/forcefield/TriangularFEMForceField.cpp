@@ -435,8 +435,8 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
                 while (it != itEnd)
                 {
-                    a = edgeArray[*it].first;
-                    b = edgeArray[*it].second;
+                    a = edgeArray[*it][0];
+                    b = edgeArray[*it][1];
 
                     if (vertexInfo[mostDeformableVertexIndex].meanStrainDirection.norm() != 0.0)
                     {
@@ -1130,8 +1130,8 @@ void TriangularFEMForceField<DataTypes>::draw()
                 glLineWidth(7);
                 glBegin(GL_LINES);
                 glColor4f(1,0.5,0.25,1);
-                helper::gl::glVertexT(x[edgeArray[i].first]);
-                helper::gl::glVertexT(x[edgeArray[i].second]);
+                helper::gl::glVertexT(x[edgeArray[i][0]]);
+                helper::gl::glVertexT(x[edgeArray[i][1]]);
                 glEnd();
                 glLineWidth(1);
             }

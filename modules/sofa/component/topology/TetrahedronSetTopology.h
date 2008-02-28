@@ -284,7 +284,7 @@ public:
     /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
      *
      */
-    std::pair<unsigned int,unsigned int> getLocalTetrahedronEdges (const unsigned int i) const;
+    Edge getLocalTetrahedronEdges (const unsigned int i) const;
 
 
 

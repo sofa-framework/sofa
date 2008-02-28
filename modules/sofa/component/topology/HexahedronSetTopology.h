@@ -60,7 +60,7 @@ class HexahedraAdded : public core::componentmodel::topology::TopologyChange
 public:
     unsigned int nHexahedra;
 
-protected:
+    //protected:
     sofa::helper::vector< Hexahedron > hexahedronArray;
 
     sofa::helper::vector< unsigned int > hexahedronIndexArray;
@@ -69,8 +69,6 @@ public:
     sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestorsList;
 
     sofa::helper::vector< sofa::helper::vector< double > > coefs;
-
-
 
 public:
 
@@ -87,10 +85,9 @@ public:
         return nHexahedra;
     }
 
-    const Hexahedron &getHexahedron(const unsigned int i)
-    {
-        return hexahedronArray[i];
-    }
+    //const Hexahedron &getHexahedron(const unsigned int i){
+    //	return hexahedronArray[i];
+    //}
 
 };
 
@@ -100,14 +97,11 @@ public:
 class HexahedraRemoved : public core::componentmodel::topology::TopologyChange
 {
 
-protected:
-
+    //protected:
+public:
     sofa::helper::vector<unsigned int> removedHexahedraArray;
 
-    const sofa::helper::vector<unsigned int> &getArray() const
-    {
-        return removedHexahedraArray;
-    }
+
 
 public:
 
@@ -115,15 +109,19 @@ public:
     {
     }
 
+    const sofa::helper::vector<unsigned int> &getArray() const
+    {
+        return removedHexahedraArray;
+    }
+
     unsigned int getNbRemovedHexahedra() const
     {
         return removedHexahedraArray.size();
     }
 
-    unsigned int &getHexahedronIndices(const unsigned int i)
-    {
-        return removedHexahedraArray[i];
-    }
+    //unsigned int &getHexahedronIndices(const unsigned int i){
+    //	return removedHexahedraArray[i];
+    //}
 
 
 };
@@ -207,38 +205,66 @@ protected:
     */
     virtual void createHexahedronSetArray() {}
 
+public:
+
+    inline friend std::ostream& operator<< (std::ostream& out, const HexahedronSetTopologyContainer& t)
+    {
+        out  << t.m_hexahedron<< " "
+                << t.m_hexahedronEdge<< " "
+                << t.m_hexahedronQuad;
+
+        out << " "<< t.m_hexahedronVertexShell.size();
+        for (unsigned int i=0; i<t.m_hexahedronVertexShell.size(); i++)
+        {
+            out << " " << t.m_hexahedronVertexShell[i];
+        }
+        out <<" "<< t.m_hexahedronEdgeShell.size();
+        for (unsigned int i=0; i<t.m_hexahedronEdgeShell.size(); i++)
+        {
+            out << " " << t.m_hexahedronEdgeShell[i];
+        }
+        out <<" "<< t.m_hexahedronQuadShell.size();
+        for (unsigned int i=0; i<t.m_hexahedronQuadShell.size(); i++)
+        {
+            out << " " << t.m_hexahedronQuadShell[i];
+        }
+        return out;
+    }
+
+    inline friend std::istream& operator>>(std::istream& in, HexahedronSetTopologyContainer& t)
+    {
+        unsigned int s;
+        sofa::helper::vector< unsigned int > value;
+
+
+        in >> t.m_hexahedron >> t.m_hexahedronEdge >> t.m_hexahedronQuad;
+
+
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> value;
+            t.m_hexahedronVertexShell.push_back(value);
+        }
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> value;
+            t.m_hexahedronEdgeShell.push_back(value);
+        }
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> value;
+            t.m_hexahedronQuadShell.push_back(value);
+        }
+        return in;
+    }
+
     /** \brief Returns the Hexahedron array.
      *
      */
     const sofa::helper::vector<Hexahedron> &getHexahedronArray();
-
-    /** \brief Returns the Hexahedron Vertex Shells array.
-     *
-     */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedronVertexShellArray() ;
-
-    /** \brief Returns the Hexahedron Edges  array.
-     *
-     */
-    const sofa::helper::vector< HexahedronEdges > &getHexahedronEdgeArray() ;
-
-    /** \brief Returns the Hexahedron Quads  array.
-     *
-     */
-    const sofa::helper::vector< HexahedronQuads > &getHexahedronQuadArray() ;
-
-    /** \brief Returns the Hexahedron Edge Shells array.
-     *
-     */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedronEdgeShellArray() ;
-
-    /** \brief Returns the Hexahedron Quad Shells array.
-     *
-     */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedronQuadShellArray() ;
-
-public:
-
 
     /** \brief Returns the ith Hexahedron.
      *
@@ -250,31 +276,56 @@ public:
      */
     unsigned int getNumberOfHexahedra() ;
 
+    /** \brief Returns the Hexahedron Vertex Shells array.
+     *
+     */
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedronVertexShellArray() ;
 
     /** \brief Returns the set of hexahedra adjacent to a given vertex.
      *
      */
     const sofa::helper::vector< unsigned int > &getHexahedronVertexShell(const unsigned int i) ;
 
+    /** \brief Returns the Hexahedron Edges  array.
+     *
+     */
+    const sofa::helper::vector< HexahedronEdges > &getHexahedronEdgeArray() ;
 
-
-    /** \brief Returns the 12 edges adjacent to a given hexahedron.
+    /** \brief Returns the 6 edges adjacent to a given hexahedron.
      *
      */
     const HexahedronEdges &getHexahedronEdges(const unsigned int i) ;
 
+    /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge
+     *
+     */
+    Edge getLocalHexahedronEdges (const unsigned int i) const;
 
-    /** \brief Returns the 6 quads adjacent to a given hexahedron.
+    /** \brief Returns the Hexahedron Quads  array.
+     *
+     */
+    const sofa::helper::vector< HexahedronQuads > &getHexahedronQuadArray() ;
+
+    /** \brief Returns the 4 quads adjacent to a given hexahedron.
      *
      */
     const HexahedronQuads &getHexahedronQuads(const unsigned int i) ;
 
+    /** \brief Returns the Hexahedron Edge Shells array.
+     *
+     */
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedronEdgeShellArray() ;
 
     /** \brief Returns the set of hexahedra adjacent to a given edge.
      *
      */
     const sofa::helper::vector< unsigned int > &getHexahedronEdgeShell(const unsigned int i) ;
 
+
+    /** \brief Returns the Hexahedron Quad Shells array.
+     *
+     */
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedronQuadShellArray() ;
 
     /** \brief Returns the set of hexahedra adjacent to a given quad.
      *
@@ -286,11 +337,23 @@ public:
     int getHexahedronIndex(const unsigned int v1, const unsigned int v2, const unsigned int v3, const unsigned int v4, const unsigned int v5, const unsigned int v6, const unsigned int v7, const unsigned int v8);
 
 
-    /** returns the index (either 0, 1, 2, 3, 4, 5, 6 or 7) of the vertex whose global index is vertexIndex. Returns -1 if none */
+    /** returns the index of the vertex whose global index is vertexIndex. Returns -1 if none */
     int getVertexIndexInHexahedron(Hexahedron &t,unsigned int vertexIndex) const;
 
+    /** returns the index of the edge whose global index is edgeIndex. Returns -1 if none */
+    int getEdgeIndexInHexahedron(const HexahedronEdges &t,unsigned int edgeIndex) const;
 
-    HexahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
+    /** returns the index of the quad whose global index is quadIndex. Returns -1 if none */
+    int getQuadIndexInHexahedron(const HexahedronQuads &t,unsigned int quadIndex) const;
+
+
+    /** \brief Checks if the Hexahedron Set Topology is coherent
+     *
+     */
+    virtual bool checkTopology() const;
+
+
+    HexahedronSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
             const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
             const sofa::helper::vector< Hexahedron >         &hexahedra    = (const sofa::helper::vector< Hexahedron >)        0 );
 
@@ -379,9 +442,10 @@ public:
     /** \brief Remove a subset of quads
      *
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
-     * @param removeIsolatedItems if true remove isolated edges and vertices
+     * @param removeIsolatedEdges if true isolated edges are also removed
+     * @param removeIsolatedPoints if true isolated vertices are also removed
      */
-    virtual void removeQuadsProcess(const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
+    virtual void removeQuadsProcess(const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedEdges=false, const bool removeIsolatedPoints=false);
 
     /** \brief Add some edges to this topology.
     *
@@ -415,7 +479,7 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors = (const sofa::helper::vector< sofa::helper::vector< unsigned int > >)0,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs = (const sofa::helper::vector< sofa::helper::vector< double > >)0 );
 
-
+    virtual void addNewPoint( const sofa::helper::vector< double >& x) {QuadSetTopologyModifier< DataTypes >::addNewPoint(x);};
 
     /** \brief Remove a subset of points
      *
@@ -451,14 +515,23 @@ public:
  * A class that performs topology algorithms on an HexahedronSet.
  */
 template < class DataTypes >
-class HexahedronSetTopologyAlgorithms : public PointSetTopologyAlgorithms<DataTypes>
+class HexahedronSetTopologyAlgorithms : public QuadSetTopologyAlgorithms<DataTypes>
 {
 
 public:
 
-    HexahedronSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : PointSetTopologyAlgorithms<DataTypes>(top)
+    typedef typename DataTypes::Real Real;
+
+    HexahedronSetTopologyAlgorithms(sofa::core::componentmodel::topology::BaseTopology *top) : QuadSetTopologyAlgorithms<DataTypes>(top)
     {
     }
+
+    /** \brief Remove a set  of hexahedra
+    	@param hexahedra an array of hexahedron indices to be removed (note that the array is not const since it needs to be sorted)
+    	*
+    	*/
+    virtual void removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra);
+
 };
 
 /**
@@ -489,12 +562,12 @@ public:
 /** Describes a topological object that only consists as a set of points :
 it is a base class for all topological objects */
 template<class DataTypes>
-class HexahedronSetTopology : public PointSetTopology <DataTypes>
+class HexahedronSetTopology : public QuadSetTopology <DataTypes>
 {
 
 public:
     HexahedronSetTopology(component::MechanicalObject<DataTypes> *obj);
-
+    DataPtr<HexahedronSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
     /** \brief Returns the HexahedronSetTopologyContainer object of this HexahedronSetTopology.

@@ -68,7 +68,7 @@ void BeamFEMForceField<DataTypes>::init()
         VecElement* e = new VecElement;
         e->resize(topo2->getNbEdges());
         for (unsigned int i=0; i<e->size(); ++i)
-            (*e)[i] = std::make_pair(topo2->getEdge(i)[0], topo2->getEdge(i)[1]);
+            (*e)[i] = helper::make_array<unsigned int>(topo2->getEdge(i)[0], topo2->getEdge(i)[1]);
         _indexedElements = e;
     }
 
@@ -86,7 +86,7 @@ void BeamFEMForceField<DataTypes>::init()
     {
         beamsData[i]._E = _youngModulus.getValue();
         beamsData[i]._nu = _poissonRatio.getValue();
-        defaulttype::Vec<3,Real> dp; dp = _initialPoints.getValue()[(*it).first].getCenter()-_initialPoints.getValue()[(*it).second].getCenter();
+        defaulttype::Vec<3,Real> dp; dp = _initialPoints.getValue()[(*it)[0]].getCenter()-_initialPoints.getValue()[(*it)[1]].getCenter();
         beamsData[i]._L = dp.norm();
         beamsData[i]._r = _radius.getValue();
         beamsData[i]._G  = beamsData[i]._E/(2.0*(1.0+beamsData[i]._nu));
@@ -116,8 +116,8 @@ void BeamFEMForceField<DataTypes>::init()
         i=0;
         for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
         {
-            Index a = (*it).first;
-            Index b = (*it).second;
+            Index a = (*it)[0];
+            Index b = (*it)[1];
 
             computeStiffness(i,a,b);
             initLarge(i,a,b);
@@ -150,8 +150,8 @@ void BeamFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, con
 
     for(it=_indexedElements->begin(),i=0; it!=_indexedElements->end(); ++it,++i)
     {
-        Index a = (*it).first;
-        Index b = (*it).second;
+        Index a = (*it)[0];
+        Index b = (*it)[1];
 
         accumulateForceLarge( f, p, i, a, b );
         initLarge(i,a,b);
@@ -171,8 +171,8 @@ void BeamFEMForceField<DataTypes>::addDForce (VecDeriv& df, const VecDeriv& dx)
 
         for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
         {
-            Index a = (*it).first;
-            Index b = (*it).second;
+            Index a = (*it)[0];
+            Index b = (*it)[1];
 
             applyStiffnessLarge( df, dx, i, a, b );
         }
@@ -383,8 +383,8 @@ void BeamFEMForceField<DataTypes>::draw()
     int i;
     for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
     {
-        Index a = (*it).first;
-        Index b = (*it).second;
+        Index a = (*it)[0];
+        Index b = (*it)[1];
         defaulttype::Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
         Vec3d beamVec;
         beamVec[0]=beamsData[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;

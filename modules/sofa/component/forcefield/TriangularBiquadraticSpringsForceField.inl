@@ -267,8 +267,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
     for(i=0; i<nbEdges; i++ )
     {
         einfo=&edgeInfo[i];
-        v0=edgeArray[i].first;
-        v1=edgeArray[i].second;
+        v0=edgeArray[i][0];
+        v1=edgeArray[i][1];
         dp=x[v0]-x[v1];
         dv=v[v0]-v[v1];
         L=einfo->currentSquareLength=dp.norm2();

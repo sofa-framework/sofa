@@ -15,7 +15,7 @@ namespace topology
 {
 
 /// defining Edges as the pair of the DOFs indices
-typedef std::pair<unsigned int, unsigned int> Edge;
+typedef helper::fixed_array<unsigned int,2> Edge;
 
 /////////////////////////////////////////////////////////
 /// TopologyChange subclasses
@@ -125,7 +125,7 @@ public:
     {
         out << t.m_edge.size();
         for (unsigned int i=0; i<t.m_edge.size(); i++)
-            out << " " << t.m_edge[i].first << " " << t.m_edge[i].second ;
+            out << " " << t.m_edge[i][0] << " " << t.m_edge[i][1] ;
 
         return out;
     }
@@ -137,9 +137,8 @@ public:
         in >> s;
         for (unsigned int i=0; i<s; i++)
         {
-            unsigned int value1,value2;
-            in >> value1 >> value2;
-            t.m_edge.push_back(std::make_pair(value1, value2));
+            Edge T; in >> T;
+            t.m_edge.push_back(T);
         }
         return in;
     }
@@ -303,7 +302,7 @@ public:
     /** \brief Fuse the edges.
      *
      */
-    virtual void fuseEdgesProcess(const sofa::helper::vector< std::pair< unsigned int, unsigned int > >& edgesPair);
+    virtual void fuseEdgesProcess(const sofa::helper::vector< Edge >& edgesPair);
 
     /** \brief Split the edges.
      *
@@ -348,7 +347,7 @@ public:
     /** \brief Fuse a list of pair edges.
      *
      */
-    virtual void fuseEdges(const sofa::helper::vector< std::pair< unsigned int, unsigned int > >& edgesPair);
+    virtual void fuseEdges(const sofa::helper::vector< Edge >& edgesPair);
 
     /** \brief Split an array of edges. On each edge, a vertex is created based on its barycentric coordinates
      *

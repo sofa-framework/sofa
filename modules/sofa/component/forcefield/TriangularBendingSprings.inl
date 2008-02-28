@@ -357,13 +357,14 @@ TriangularBendingSprings<DataTypes>::~TriangularBendingSprings()
 
 template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopologyChange()
 {
+    bool debug_mode = false;
+
     sofa::core::componentmodel::topology::BaseTopology *topology = static_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
 
     std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 
     edgeInfo.handleTopologyEvents(itBegin,itEnd);
-    //triangleInfo.handleTopologyEvents(itBegin,itEnd);
 
     while( itBegin != itEnd )
     {
@@ -387,7 +388,7 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
 
             const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
 
-            sofa::helper::vector<unsigned int> lastIndexVec; //= tab;
+            sofa::helper::vector<unsigned int> lastIndexVec;
             for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
             {
 
@@ -413,95 +414,60 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
 
                 }
 
-
-                const sofa::helper::vector<unsigned int> &shell= tvsa[lastIndexVec[i]]; // tvsa[last]; //
+                const sofa::helper::vector<unsigned int> &shell= tvsa[lastIndexVec[i]];
                 for (j=0; j<shell.size(); ++j)
                 {
 
                     Triangle tj = triangleArray[shell[j]];
 
-                    //int vertexIndex = tstc->getVertexIndexInTriangle(tj, lastIndexVec[i]);
+                    int vertexIndex = tstc->getVertexIndexInTriangle(tj, lastIndexVec[i]);
 
                     TriangleEdges tej = triangleEdgeArray[shell[j]];
 
-                    //unsigned int ind_j = tej[vertexIndex];
+                    unsigned int ind_j = tej[vertexIndex];
 
-                    for (unsigned int j_edge=0; j_edge<3; ++j_edge)
+                    if (edgeInfo[ind_j].m1 == (int) last)
                     {
-
-                        unsigned int ind_j = tej[j_edge];
-
-                        if (edgeInfo[ind_j].m1 == (int) last)
-                        {
-                            edgeInfo[ind_j].m1=(int) tab[i];
-                            //std::cout << "INFO_print : OK m1 for ind_j =" << ind_j << std::endl;
-                        }
-                        else
-                        {
-                            if (edgeInfo[ind_j].m2 == (int) last)
-                            {
-                                edgeInfo[ind_j].m2=(int) tab[i];
-                                //std::cout << "INFO_print : OK m2 for ind_j =" << ind_j << std::endl;
-                            }
-                        }
-
-                    }
-                }
-
-
-                for (unsigned int j_loc=0; j_loc<edgeInfo.size(); ++j_loc)
-                {
-
-                    bool is_forgotten = false;
-                    if (edgeInfo[j_loc].m1 == (int) last)
-                    {
-                        edgeInfo[j_loc].m1 =(int) tab[i];
-                        is_forgotten=true;
-                        //std::cout << "INFO_print : MISS m1 for j_loc =" << j_loc << std::endl;
-
+                        edgeInfo[ind_j].m1=(int) tab[i];
+                        //std::cout << "INFO_print : OK m1 for ind_j =" << ind_j << std::endl;
                     }
                     else
                     {
-                        if (edgeInfo[j_loc].m2 ==(int) last)
+                        if (edgeInfo[ind_j].m2 == (int) last)
                         {
-                            edgeInfo[j_loc].m2 =(int) tab[i];
+                            edgeInfo[ind_j].m2=(int) tab[i];
+                            //std::cout << "INFO_print : OK m2 for ind_j =" << ind_j << std::endl;
+                        }
+                    }
+                }
+
+                if(debug_mode)
+                {
+
+                    for (unsigned int j_loc=0; j_loc<edgeInfo.size(); ++j_loc)
+                    {
+
+                        bool is_forgotten = false;
+                        if (edgeInfo[j_loc].m1 == (int) last)
+                        {
+                            edgeInfo[j_loc].m1 =(int) tab[i];
                             is_forgotten=true;
-                            //std::cout << "INFO_print : MISS m2 for j_loc =" << j_loc << std::endl;
+                            //std::cout << "INFO_print : TriangularBendingSprings - MISS m1 for j_loc =" << j_loc << std::endl;
+
+                        }
+                        else
+                        {
+                            if (edgeInfo[j_loc].m2 ==(int) last)
+                            {
+                                edgeInfo[j_loc].m2 =(int) tab[i];
+                                is_forgotten=true;
+                                //std::cout << "INFO_print : TriangularBendingSprings - MISS m2 for j_loc =" << j_loc << std::endl;
+
+                            }
 
                         }
 
                     }
-
-                    /*
-                    if(is_forgotten){
-
-                    	unsigned int ind_forgotten = j_loc;
-
-                    	bool is_in_shell = false;
-                    	for (unsigned int j_glob=0;j_glob<shell.size();++j_glob) {
-
-                    		TriangleEdges tetest = triangleEdgeArray[shell[j_glob]];
-
-                    		for (unsigned int j_test=0;j_test<3;++j_test) {
-                    			is_in_shell = is_in_shell || (tetest[j_test] == ind_forgotten);
-                    		}
-                    	}
-
-                    	if(!is_in_shell) {
-                    		std::cout << "INFO_print : Vis - edge is forgotten in SHELL !!! global indices (point, edge) = ( "  << last << " , " << ind_forgotten  << " )" << std::endl;
-
-                    		if(ind_forgotten<tstc->getEdgeArray().size()){
-                    			const sofa::component::topology::Edge t_forgotten = tstc->getEdge(ind_forgotten);
-                    			std::cout << "INFO_print : Vis - last = " << last << std::endl;
-                    			std::cout << "INFO_print : Vis - tab.size() = " << tab.size() << " , tab[i] = " << tab[i] << std::endl;
-
-                    		}
-
-                    	}
-
-                    }
-                    */
-
                 }
 
                 --last;
@@ -516,8 +482,7 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
 template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::init()
 {
-
-    std::cerr << "initializing TriangularBendingSprings" << std::endl;
+    //std::cerr << "initializing TriangularBendingSprings" << std::endl;
     this->Inherited::init();
 
     _mesh =0;
@@ -616,10 +581,10 @@ void TriangularBendingSprings<DataTypes>::addForce(VecDeriv& f, const VecCoord& 
                 e2.m1 = -1;
                 e2.m2 = -1;
                 for (int j=0; j<3; j++)
-                    if (triangleArray[shell[0]][j] != edgeArray[i].first && triangleArray[shell[0]][j] != edgeArray[i].second)
+                    if (triangleArray[shell[0]][j] != edgeArray[i][0] && triangleArray[shell[0]][j] != edgeArray[i][1])
                         e2.m1 = triangleArray[shell[0]][j];
                 for (int j=0; j<3; j++)
-                    if (triangleArray[shell[1]][j] != edgeArray[i].first && triangleArray[shell[1]][j] != edgeArray[i].second)
+                    if (triangleArray[shell[1]][j] != edgeArray[i][0] && triangleArray[shell[1]][j] != edgeArray[i][1])
                         e2.m2 = triangleArray[shell[1]][j];
                 if (e2.m1 >= 0 && e2.m2 >= 0)
                 {

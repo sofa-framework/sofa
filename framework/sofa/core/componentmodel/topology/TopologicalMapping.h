@@ -50,6 +50,8 @@ using namespace sofa::core;
 using namespace sofa::defaulttype;
 
 class Tetra2TriangleTopologicalMapping;
+class Quad2TriangleTopologicalMapping;
+class Hexa2QuadTopologicalMapping;
 
 
 /**
@@ -83,6 +85,8 @@ public:
     const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
     const sofa::helper::vector<unsigned int>& getLoc2GlobVec() { return Loc2GlobVec;}
 
+    const std::map<unsigned int, sofa::helper::vector<unsigned int> >& getIn2OutMap() { return In2OutMap;}
+
 protected:
 
     // Two index maps :
@@ -94,6 +98,8 @@ protected:
     // Map which gives for each index (global index) of an element in the INPUT topology
     // the corresponding index (local index) of the same element in the OUTPUT topology :
     std::map<unsigned int, unsigned int> Glob2LocMap;
+
+    std::map<unsigned int, sofa::helper::vector<unsigned int> > In2OutMap;
 
 
 };

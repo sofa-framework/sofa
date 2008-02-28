@@ -443,6 +443,7 @@ void TriangleSetModel::handleTopologyChange()
                 const sofa::component::topology::TrianglesAdded *ta=dynamic_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
                 for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
                 {
+
                     mytriangles.push_back(ta->triangleArray[i]);
 
                     unsigned int ind_triangle = Loc2GlobVec.size();
@@ -699,11 +700,11 @@ void TriangleSetModel::handleTopologyChange()
 
                                 unsigned int ind_j =Glob2LocMap[shell[j]];
 
-                                if ((unsigned)mytriangles[ind_j][0]==lastIndexVec[i])
+                                if ((unsigned)mytriangles[ind_j][0]==last)
                                     mytriangles[ind_j][0]=tab[i];
-                                else if ((unsigned)mytriangles[ind_j][1]==lastIndexVec[i])
+                                else if ((unsigned)mytriangles[ind_j][1]==last)
                                     mytriangles[ind_j][1]=tab[i];
-                                else if ((unsigned)mytriangles[ind_j][2]==lastIndexVec[i])
+                                else if ((unsigned)mytriangles[ind_j][2]==last)
                                     mytriangles[ind_j][2]=tab[i];
                             }
                             else

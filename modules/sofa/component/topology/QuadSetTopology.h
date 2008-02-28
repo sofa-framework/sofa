@@ -72,7 +72,7 @@ class QuadsAdded : public core::componentmodel::topology::TopologyChange
 public:
     unsigned int nQuads;
 
-protected:
+    //protected:
     sofa::helper::vector< Quad > quadArray;
 
     sofa::helper::vector< unsigned int > quadIndexArray;
@@ -97,6 +97,11 @@ public:
         return nQuads;
     }
 
+    const sofa::helper::vector<unsigned int> &getArray() const
+    {
+        return quadIndexArray;
+    }
+
     const Quad &getQuad(const unsigned int i)
     {
         return quadArray[i];
@@ -113,11 +118,6 @@ class QuadsRemoved : public core::componentmodel::topology::TopologyChange
 protected:
     sofa::helper::vector<unsigned int> removedQuadsArray;
 
-    const sofa::helper::vector<unsigned int> &getArray() const
-    {
-        return removedQuadsArray;
-    }
-
 public:
     QuadsRemoved(const sofa::helper::vector<unsigned int> _qArray) : core::componentmodel::topology::TopologyChange(core::componentmodel::topology::QUADSREMOVED), removedQuadsArray(_qArray)
     {
@@ -126,6 +126,11 @@ public:
     unsigned int getNbRemovedQuads() const
     {
         return removedQuadsArray.size();
+    }
+
+    const sofa::helper::vector<unsigned int> &getArray() const
+    {
+        return removedQuadsArray;
     }
 
     unsigned int &getQuadIndices(const unsigned int i)
@@ -189,10 +194,80 @@ protected:
      */
     virtual void createEdgeSetArray() {createQuadEdgeArray();}
 
+public:
     /** \brief Returns the Quad array.
      *
      */
     const sofa::helper::vector<Quad> &getQuadArray();
+
+    inline friend std::ostream& operator<< (std::ostream& out, const QuadSetTopologyContainer& t)
+    {
+        out << t.m_quad.size() << " " << t.m_quad << " "
+            << t.m_quadEdge.size() << " " << t.m_quadEdge << " "
+            << t.m_quadVertexShell.size();
+        for (unsigned int i=0; i<t.m_quadVertexShell.size(); i++)
+        {
+            out << " " << t.m_quadVertexShell[i].size();
+            out << " " <<t.m_quadVertexShell[i] ;
+        }
+        out  << " " << t.m_quadEdgeShell.size();
+        for (unsigned int i=0; i<t.m_quadEdgeShell.size(); i++)
+        {
+            out  << " " << t.m_quadEdgeShell[i].size();
+            out  << " " << t.m_quadEdgeShell[i];
+        }
+
+        return out;
+    }
+
+    /// Needed to be compliant with Datas.
+    inline friend std::istream& operator>>(std::istream& in, QuadSetTopologyContainer& t)
+    {
+        unsigned int s;
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            Quad T; in >> T;
+            t.m_quad.push_back(T);
+        }
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            QuadEdges T; in >> T;
+            t.m_quadEdge.push_back(T);
+        }
+
+        unsigned int sub;
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> sub;
+            sofa::helper::vector< unsigned int > v;
+            for (unsigned int j=0; j<sub; j++)
+            {
+                unsigned int value;
+                in >> value;
+                v.push_back(value);
+            }
+            t.m_quadVertexShell.push_back(v);
+        }
+
+        in >> s;
+        for (unsigned int i=0; i<s; i++)
+        {
+            in >> sub;
+            sofa::helper::vector< unsigned int > v;
+            for (unsigned int j=0; j<sub; j++)
+            {
+                unsigned int value;
+                in >> value;
+                v.push_back(value);
+            }
+            t.m_quadEdgeShell.push_back(v);
+        }
+
+        return in;
+    }
 
     /** \brief Returns the Quad Vertex Shells array.
      *
@@ -254,7 +329,7 @@ public:
      */
     virtual bool checkTopology() const;
 
-    QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top,
+    QuadSetTopologyContainer(core::componentmodel::topology::BaseTopology *top=NULL,
             const sofa::helper::vector< unsigned int > &DOFIndex = (const sofa::helper::vector< unsigned int >)0,
             const sofa::helper::vector< Quad >         &quads    = (const sofa::helper::vector< Quad >)        0 );
 
@@ -336,9 +411,10 @@ public:
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
      * \sa removeQuadsWarning
      *
-     * @param removeIsolatedItems if true isolated vertices are also removed
+     * @param removeIsolatedEdges if true isolated edges are also removed
+     * @param removeIsolatedPoints if true isolated vertices are also removed
      */
-    virtual void removeQuadsProcess( const sofa::helper::vector<unsigned int> &indices,const bool removeIsolatedItems=false);
+    virtual void removeQuadsProcess( const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedEdges=false, const bool removeIsolatedPoints=false);
 
     /** \brief Add some edges to this topology.
      *
@@ -392,7 +468,7 @@ public:
     virtual void renumberPointsProcess( const sofa::helper::vector<unsigned int> &index );
 
 
-protected:
+    //protected:
     void addQuad(Quad e);
 
 public:
@@ -421,8 +497,11 @@ public:
     /** \brief Remove a set  of quads
         @param quads an array of quad indices to be removed (note that the array is not const since it needs to be sorted)
         *
+    	@param removeIsolatedEdges if true isolated edges are also removed
+        @param removeIsolatedPoints if true isolated vertices are also removed
+    	*
         */
-    virtual void removeQuads(sofa::helper::vector< unsigned int >& quads);
+    virtual void removeQuads(sofa::helper::vector< unsigned int >& quads, const bool removeIsolatedEdges, const bool removeIsolatedPoints);
 
 };
 
@@ -465,7 +544,7 @@ class QuadSetTopology : public EdgeSetTopology <DataTypes>
 
 public:
     QuadSetTopology(component::MechanicalObject<DataTypes> *obj);
-
+    DataPtr< QuadSetTopologyContainer > *f_m_topologyContainer;
 
     virtual void init();
     /** \brief Returns the QuadSetTopologyContainer object of this QuadSetTopology.

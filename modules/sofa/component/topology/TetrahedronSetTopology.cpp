@@ -299,10 +299,10 @@ const sofa::helper::vector< TetrahedronEdges> &TetrahedronSetTopologyContainer::
         createTetrahedronEdgeArray();
     return m_tetrahedronEdge;
 }
-std::pair<unsigned int,unsigned int> TetrahedronSetTopologyContainer::getLocalTetrahedronEdges (const unsigned int i) const
+Edge TetrahedronSetTopologyContainer::getLocalTetrahedronEdges (const unsigned int i) const
 {
     assert(i<6);
-    return std::pair<unsigned int,unsigned int> (tetrahedronEdgeArray[i][0],tetrahedronEdgeArray[i][1]);
+    return Edge (tetrahedronEdgeArray[i][0],tetrahedronEdgeArray[i][1]);
 }
 
 const sofa::helper::vector< TetrahedronTriangles> &TetrahedronSetTopologyContainer::getTetrahedronTriangleArray()
