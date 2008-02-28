@@ -187,7 +187,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
         typename DataTypes::Real lambda=ff->getLambda();
         typename DataTypes::Real mu=ff->getMu();
         typename DataTypes::Real lambdastar, mustar;
-        typename DataTypes::Coord point[4],shapeVector[4];		const typename DataTypes::VecCoord *restPosition=_mesh->getDOF()->getX0();
+        typename DataTypes::Coord point[4],shapeVector[4];
+        const typename DataTypes::VecCoord *restPosition=_mesh->getDOF()->getX0();
 
         for (i=0; i<tetrahedronRemoved.size(); ++i)
         {
@@ -326,7 +327,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     }
     // create edge tensor by calling the tetrahedron creation function
     std::vector<unsigned int> tetrahedronAdded;
-    for (i=0; i<1/*container->getNumberOfTetrahedra()*/; ++i)
+    for (i=0; i<container->getNumberOfTetrahedra(); ++i)
         tetrahedronAdded.push_back(i);
     TetrahedralTMTetrahedronCreationFunction(tetrahedronAdded,(void*) this,
             edgeInfo);
