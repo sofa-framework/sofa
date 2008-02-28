@@ -172,7 +172,12 @@ public:
         return in;
     }
 
-    static unsigned int size() {return 6;};
+    enum { static_size = 3 };
+
+    real* ptr() { return vCenter.ptr(); }
+    const real* ptr() const { return vCenter.ptr(); }
+
+    static unsigned int size() {return 6;}
 
     /// Access to i-th element.
     real& operator[](int i)
@@ -294,7 +299,7 @@ public:
                 +orientation[2]*a.orientation[2]+orientation[3]*a.orientation[3];
     }
 
-    /// Squared norm.
+    /// Squared norm
     real norm2() const
     {
         real r = (this->center).elems[0]*(this->center).elems[0];
@@ -303,7 +308,7 @@ public:
         return r;
     }
 
-    /// Euclidean norm.
+    /// Euclidean norm
     real norm() const
     {
         return helper::rsqrt(norm2());
@@ -398,7 +403,10 @@ public:
     }
     enum { static_size = 3 };
 
-    static unsigned int size() {return 7;};
+    real* ptr() { return center.ptr(); }
+    const real* ptr() const { return center.ptr(); }
+
+    static unsigned int size() {return 7;}
 
     /// Access to i-th element.
     real& operator[](int i)
@@ -662,7 +670,12 @@ public:
         return in;
     }
 
-    static unsigned int size() {return 3;};
+    enum { static_size = 2 };
+
+    real* ptr() { return vCenter.ptr(); }
+    const real* ptr() const { return vCenter.ptr(); }
+
+    static unsigned int size() {return 3;}
 
     /// Access to i-th element.
     real& operator[](int i)
@@ -714,6 +727,11 @@ public:
         return c;
     }
 
+    RigidCoord<2,real> operator -(const RigidCoord<2,real>& a) const
+    {
+        return RigidCoord<2,real>(this->center - a.getCenter(), this->orientation - a.orientation);
+    }
+
     void operator +=(const RigidCoord<2,real>& a)
     {
 //         std::cout << "+="<<std::endl;
@@ -740,6 +758,18 @@ public:
     {
         return center[0]*a.center[0]+center[1]*a.center[1]
                 +orientation*a.orientation;
+    }
+
+    /// Squared norm
+    real norm2() const
+    {
+        return center[0]*center[0]+center[1]*center[1];
+    }
+
+    /// Euclidean norm
+    real norm() const
+    {
+        return helper::rsqrt(norm2());
     }
 
     Vec2& getCenter () { return center; }
@@ -772,7 +802,7 @@ public:
     void multRight( const RigidCoord<2,real>& c )
     {
         center += /*orientation.*/rotate(c.getCenter());
-        orientation = orientation * c.getOrientation();
+        orientation = orientation + c.getOrientation();
     }
 
     /// compute the product with another frame on the right
@@ -780,7 +810,7 @@ public:
     {
         RigidCoord<2,real> r;
         r.center = center + /*orientation.*/rotate( c.center );
-        r.orientation = orientation * c.getOrientation();
+        r.orientation = orientation + c.getOrientation();
         return r;
     }
 
@@ -854,9 +884,13 @@ public:
     {
         return 3;
     }
-    enum { static_size = 3 };
 
-    static unsigned int size() {return 3;};
+    enum { static_size = 2 };
+
+    real* ptr() { return center.ptr(); }
+    const real* ptr() const { return center.ptr(); }
+
+    static unsigned int size() {return 3;}
 
     /// Access to i-th element.
     real& operator[](int i)
