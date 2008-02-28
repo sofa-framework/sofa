@@ -437,6 +437,11 @@ void MechanicalObject<DataTypes>::applyRotation (const defaulttype::Quat q)
     //TODO: special case of rigid bodies. need to update the orientation
 }
 
+template<>
+void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q);
+template<>
+void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
+
 template <class DataTypes>
 void MechanicalObject<DataTypes>::applyScale(const double s)
 {
