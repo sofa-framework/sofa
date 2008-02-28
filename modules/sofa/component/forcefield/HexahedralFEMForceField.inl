@@ -80,11 +80,6 @@ void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (int hexahe
     HexahedralFEMForceField<DataTypes> *ff= (HexahedralFEMForceField<DataTypes> *)param;
     if (ff)
     {
-        HexahedronSetTopology<DataTypes> *_mesh=ff->getHexahedralTopology();
-        assert(_mesh!=0);
-        HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-        const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
-        const Hexahedron &t=hexahedronArray[hexahedronIndex];
 
         switch(ff->method)
         {
@@ -284,7 +279,7 @@ void HexahedralFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
 
     unsigned int i;
     HexahedronSetTopologyContainer *container=_mesh->getHexahedronSetTopologyContainer();
-    const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
+    //const std::vector< Hexahedron > &hexahedronArray=container->getHexahedronArray() ;
 
     switch(method)
     {
@@ -387,7 +382,7 @@ double HexahedralFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 
 
 template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes, const int elementIndice)
+void HexahedralFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes, const int /* elementIndice */)
 {
     Mat33 J_1; // only accurate for orthogonal regular hexa
     J_1.fill( 0.0 );
