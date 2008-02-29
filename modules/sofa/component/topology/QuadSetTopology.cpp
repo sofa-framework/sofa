@@ -1,7 +1,6 @@
 #include <sofa/component/topology/QuadSetTopology.h>
 #include <sofa/component/topology/QuadSetTopology.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-//#include <sofa/simulation/tree/xml/ObjectFactory.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -46,6 +45,13 @@ template class QuadSetGeometryAlgorithms<Vec2fTypes>;
 template class QuadSetGeometryAlgorithms<Vec2dTypes>;
 template class QuadSetGeometryAlgorithms<Vec1fTypes>;
 template class QuadSetGeometryAlgorithms<Vec1dTypes>;
+
+template class QuadSetTopologyModifier<Vec3fTypes>;
+template class QuadSetTopologyModifier<Vec3dTypes>;
+template class QuadSetTopologyModifier<Vec2fTypes>;
+template class QuadSetTopologyModifier<Vec2dTypes>;
+template class QuadSetTopologyModifier<Vec1fTypes>;
+template class QuadSetTopologyModifier<Vec1dTypes>;
 
 // implementation QuadSetTopologyContainer
 
@@ -316,20 +322,6 @@ bool QuadSetTopologyContainer::checkTopology() const
 }
 
 
-// factory related stuff
-/*
-template<class DataTypes>
-void create(QuadSetTopology<DataTypes>*& obj, simulation::tree::xml::ObjectDescription* arg)
-{
-	simulation::tree::xml::createWithParent< QuadSetTopology<DataTypes>, component::MechanicalObject<DataTypes> >(obj, arg);
-	if (obj!=NULL)
-	{
-		if (arg->getAttribute("filename"))
-			obj->load(arg->getAttribute("filename"));
-	}
-}
-
-*/
 
 } // namespace topology
 
