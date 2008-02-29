@@ -858,6 +858,8 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
 
     std::vector< std::pair <Vector3, Vector3> > neighborsTri;
     p.getTriangleNeighbors(neighborsTri);
+    std::vector<Vector3> neighborsPt;
+    p.getLineNeighbors(neighborsPt);
 
     Vector3 nMean;
     nMean.clear();
@@ -869,10 +871,20 @@ bool MinProximityIntersection::testValidity(Point &p, const Vector3 &PQ)
         nMean += nCur;
     }
 
-    nMean.normalize();
+    if (neighborsTri.size()==0)
+    {
 
-    std::vector<Vector3> neighborsPt;
-    p.getLineNeighbors(neighborsPt);
+        for (unsigned int i=0; i<neighborsPt.size(); i++)
+        {
+            Vector3 l = pt - neighborsPt[i];
+            l.normalize();
+            nMean += l;
+        }
+    }
+
+    if (nMean.norm()> 0.0000000001)
+        nMean.normalize();
+
 
     for (unsigned int i=0; i<neighborsPt.size(); i++)
     {
