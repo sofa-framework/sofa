@@ -357,7 +357,6 @@ private:
     void addViewer();
     void setGUI(void);
 
-
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);
     virtual void lmlOpen(const char* filename);

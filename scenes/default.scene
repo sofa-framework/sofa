@@ -1,6 +1,6 @@
 <scene formatVersion="">
     <environment>
-       <colourBackground r="0.22" g="0.22" b="0.275" a="0" />
+       <colourBackground r="0.0" g="0.0" b="0.0" a="0" />
        <colourAmbient r="0.1" g="0.1" b="0.1" />
     </environment>
     <nodes>

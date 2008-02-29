@@ -130,7 +130,7 @@ public:
         groot = scene;
         initTexturesDone = false;
         sceneBBoxIsValid = true;
-        if (!keepParams) resetView();
+        if (!keepParams) /*resetView()*/;
     }
 
 

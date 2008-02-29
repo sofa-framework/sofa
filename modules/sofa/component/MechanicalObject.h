@@ -159,6 +159,8 @@ public:
 
     virtual void resize( int vsize);
 
+    virtual bool addBBox(double* minBBox, double* maxBBox);
+
     int getSize() const
     {
         return vsize;
