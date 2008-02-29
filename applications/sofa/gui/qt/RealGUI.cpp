@@ -800,6 +800,8 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     setTitle ( filename );
     record_simulation = false;
     viewer->setScene ( groot, filename );
+    viewer->resetView();
+
     initial_time = groot->getTime();
 
     if (timeSlider->maxValue() == 0)
@@ -2372,7 +2374,6 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
     item_clicked = NULL;
     playpauseGUI ( isAnimated );
 }
-
 
 /*****************************************************************************************************************/
 //Visibility Option in grah : expand or collapse a node : easier to get access to a node, and see its properties properly

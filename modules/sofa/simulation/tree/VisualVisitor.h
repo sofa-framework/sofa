@@ -30,6 +30,8 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/helper/system/gl.h>
 #include <iostream>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 using std::cerr;
 using std::endl;
@@ -88,13 +90,22 @@ public:
     virtual void processVisualModel(GNode*, core::VisualModel* vm);
 };
 
-class VisualComputeBBoxVisitor : public VisualVisitor
+class VisualComputeBBoxVisitor : public Visitor
 {
 public:
     double minBBox[3];
     double maxBBox[3];
     VisualComputeBBoxVisitor();
-    virtual void processVisualModel(GNode*, core::VisualModel* vm);
+
+    virtual void processVisualModel(GNode*, core::componentmodel::behavior::BaseMechanicalState* vm);
+
+    virtual Result processNodeTopDown(GNode* node)
+    {
+        for_each(this, node, node->mechanicalState, &VisualComputeBBoxVisitor::processVisualModel);
+        return RESULT_CONTINUE;
+    }
+
+
 };
 
 } // namespace tree

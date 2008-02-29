@@ -76,6 +76,15 @@ template class MechanicalObject<defaulttype::Rigid2fTypes>;
 template class MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
 
 template<>
+void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q)
+{
+    VecCoord& x = *this->getX();
+    for (unsigned int i = 0; i < x.size(); i++)
+        x[i].getOrientation() *= q;
+}
+
+
+template<>
 void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaulttype::Quat q)
 {
     VecCoord& x = *this->getX();
@@ -83,13 +92,6 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
         x[i].getOrientation() *= q;
 }
 
-template<>
-void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q)
-{
-    VecCoord& x = *this->getX();
-    for (unsigned int i = 0; i < x.size(); i++)
-        x[i].getOrientation() *= q;
-}
 
 } // namespace component
 

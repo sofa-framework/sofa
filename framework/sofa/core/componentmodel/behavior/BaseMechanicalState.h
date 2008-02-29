@@ -119,6 +119,12 @@ public:
     /// Scale the MechanicalObject
     virtual void applyScale(const double s)=0;
 
+
+    virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+    {
+        return false;
+    }
+
     /// Identify one vector stored in MechanicalState
     class VecId
     {
