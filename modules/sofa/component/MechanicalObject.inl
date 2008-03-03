@@ -79,6 +79,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     translation[0]=0.0;
     translation[1]=0.0;
     translation[2]=0.0;
+    rotation[0]=0.0;
+    rotation[1]=0.0;
+    rotation[2]=0.0;
     scale = 1.0;
     /*    cerr<<"MechanicalObject<DataTypes>::MechanicalObject, x.size() = "<<x->size()<<endl;
       cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
@@ -176,6 +179,9 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
         Vec<3, double> rotationVector = Vec<3,double>(atof(arg->getAttribute("rx","0.0")),atof(arg->getAttribute("ry","0.0")),atof(arg->getAttribute("rz","0.0")))*3.141592653/180.0;
+        rotation[0] = rotationVector[0];
+        rotation[1] = rotationVector[1];
+        rotation[2] = rotationVector[2];
         this->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
     }
 }
@@ -675,6 +681,8 @@ void MechanicalObject<DataTypes>::init()
                 DataTypes::set
                 ((*getX())[i], topo->getPX(i)*scale+translation[0], topo->getPY(i)*scale+translation[1], topo->getPZ(i)*scale+translation[2]);
             }
+            if (rotation[0]!=0.0 || rotation[1]!=0.0 || rotation[2]!=0.0)
+                this->applyRotation(defaulttype::Quat::createFromRotationVector( Vec<3,double>(rotation[0],rotation[1],rotation[2])));
         }
     }
     // Save initial state for reset button

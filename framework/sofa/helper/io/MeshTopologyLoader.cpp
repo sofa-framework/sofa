@@ -231,9 +231,10 @@ bool MeshTopologyLoader::load(const char *filename)
                     nnodes = 8;
                     break;
                 default:
-                    std::cerr << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found. Exiting..." << std::endl;
-                    fclose(file);
-                    return false;
+                    std::cerr << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." << std::endl;
+                    //fclose(file);
+                    //return false;
+                    nnodes = 0;
                 }
             }
 
