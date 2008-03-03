@@ -489,8 +489,8 @@ void BeamInfo::localStiffness()
 
         _k_flex = _k_loc;
 
-        for (i=1; i<=12; i++)
-            _k_flex(i,i) = FLEXIBILITY * _k_flex(i,i);
+// 		for (i=1; i<=12; i++)
+// 			_k_flex(i,i) = FLEXIBILITY * _k_flex(i,i);
 
     }
     CatchAll { cout << "ERROR while computing '_k_loc'" << NewMAT::Exception::what() << endl;
