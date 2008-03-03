@@ -174,6 +174,7 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset)
 {
     std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
+    const unsigned int N = Deriv::size();
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
@@ -181,31 +182,20 @@ void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, u
         // Reset Fixed Row
         for (int i=0; i<mat->colSize(); i++)
         {
-            mat->element(i, 3 * (*it) + offset) = 0.0;
-            mat->element(i, 3 * (*it) + offset + 1) = 0.0;
-            mat->element(i, 3 * (*it) + offset + 2) = 0.0;
+            for (unsigned int c=0; c<N; ++c)
+                mat->element(i, offset + N * (*it) + c) = 0.0;
         }
 
         // Reset Fixed Col
         for (int i=0; i<mat->rowSize(); i++)
         {
-            mat->element(3 * (*it) + offset, i) = 0.0;
-            mat->element(3 * (*it) + offset + 1, i) = 0.0;
-            mat->element(3 * (*it) + offset + 2, i) = 0.0;
+            for (unsigned int c=0; c<N; ++c)
+                mat->element(offset + N * (*it) + c, i) = 0.0;
         }
 
         // Set Fixed Vertex
-        mat->element(3 * (*it) + offset, 3 * (*it) + offset) = 1.0;
-        mat->element(3 * (*it) + offset, 3 * (*it) + offset + 1) = 0.0;
-        mat->element(3 * (*it) + offset, 3 * (*it) + offset + 2) = 0.0;
-
-        mat->element(3 * (*it) + offset + 1, 3 * (*it) + offset) = 0.0;
-        mat->element(3 * (*it) + offset + 1, 3 * (*it) + offset + 1) = 1.0;
-        mat->element(3 * (*it) + offset + 1, 3 * (*it) + offset + 2) = 0.0;
-
-        mat->element(3 * (*it) + offset + 2, 3 * (*it) + offset) = 0.0;
-        mat->element(3 * (*it) + offset + 2, 3 * (*it) + offset + 1) = 0.0;
-        mat->element(3 * (*it) + offset + 2, 3 * (*it) + offset + 2) = 1.0;
+        for (unsigned int c=0; c<N; ++c)
+            mat->element(offset + N * (*it) + c, offset + N * (*it) + c) = 1.0;
     }
 }
 
@@ -213,13 +203,13 @@ template <class DataTypes>
 void FixedConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset)
 {
     std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
+    const unsigned int N = Deriv::size();
 
     const SetIndexArray & indices = f_indices.getValue().getArray();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        vect->element(3 * (*it) + offset) = 0.0;
-        vect->element(3 * (*it) + offset + 1) = 0.0;
-        vect->element(3 * (*it) + offset + 2) = 0.0;
+        for (unsigned int c=0; c<N; ++c)
+            vect->element(offset + N * (*it) + c) = 0.0;
     }
 }
 

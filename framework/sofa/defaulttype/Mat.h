@@ -146,6 +146,20 @@ public:
         std::copy(m.begin(), m.begin()+(L>L2?L2:L), this->begin());
     }
 
+    template<int L2, int C2> void getsub(int L0, int C0, Mat<L2,C2,real>& m) const
+    {
+        for (int i=0; i<L2; i++)
+            for (int j=0; j<C2; j++)
+                m[i][j] = this->elems[i+L0][j+C0];
+    }
+
+    template<int L2, int C2> void setsub(int L0, int C0, const Mat<L2,C2,real>& m)
+    {
+        for (int i=0; i<L2; i++)
+            for (int j=0; j<C2; j++)
+                this->elems[i+L0][j+C0] = m[i][j];
+    }
+
     /// Sets each element to 0.
     void clear()
     {
