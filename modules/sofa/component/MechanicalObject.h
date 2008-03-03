@@ -88,6 +88,7 @@ protected:
 
     bool initialized;
     double translation[3];
+    double rotation[3];
     double scale;
 
     /// @name Integration-related data
