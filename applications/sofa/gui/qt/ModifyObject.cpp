@@ -116,15 +116,17 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
 
     //Each tab
-    unsigned int counterWidget=0;
+    counterWidget=0;
     unsigned int counterTab=0;
     QWidget *currentTab=NULL;
+    QWidget *currentTab_save=NULL;
     bool emptyTab = false;
 
 
     bool visualTab = false;
     QWidget *tabVisualization = NULL; //tab for visualization info: only created if needed ( boolean visualTab gives this answer ).
 
+    QVBoxLayout *currentTabLayout = NULL;
     QVBoxLayout *tabPropertiesLayout=NULL;
     QVBoxLayout *tabVisualizationLayout = NULL;
 
@@ -141,13 +143,14 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
         for( std::vector< std::pair<std::string, BaseData*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
-
+            currentTab = currentTab_save; //in case we modified currentTab to the visualTab
+            currentTabLayout = tabPropertiesLayout;
             if (!emptyTab && counterWidget/WIDGET_BY_TAB==counterTab)
             {
                 emptyTab = true;
                 if (tabPropertiesLayout!= NULL) tabPropertiesLayout->addStretch();
-                currentTab= new QWidget();
-                tabPropertiesLayout = new QVBoxLayout( currentTab, 0, 1, QString("tabPropertiesLayout") + QString::number(counterWidget));
+                currentTab_save  = currentTab= new QWidget();
+                currentTabLayout = tabPropertiesLayout = new QVBoxLayout( currentTab, 0, 1, QString("tabPropertiesLayout") + QString::number(counterWidget));
             }
             //For each element, we create a layout
             std::ostringstream oss;
@@ -162,19 +165,36 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             name.resize(4);
             if (name == "show")
             {
-                if( dynamic_cast< Data<int> * >( (*it).second ) || dynamic_cast< Data<bool> * >( (*it).second ) )
+                if (!visualTab)
                 {
-                    --counterWidget;
+                    visualTab = true;
+                    tabVisualization = new QWidget();
+
+                    tabVisualizationLayout = new QVBoxLayout( tabVisualization, 0, 1, "tabVisualizationLayout");
+                }
+
+                --counterWidget;
+                currentTab = tabVisualization;
+                currentTabLayout = tabVisualizationLayout;
+                if( (dynamic_cast< Data<int> * >( (*it).second ) )
+                    &&
+                    (
+                            (*it).first == "showVisualModels" ||
+                            (*it).first == "showBehaviorModels" ||
+                            (*it).first == "showCollisionModels" ||
+                            (*it).first == "showBoundingCollisionModels" ||
+                            (*it).first == "showMappings" ||
+                            (*it).first == "showMechanicalMappings" ||
+                            (*it).first == "showForceFields" ||
+                            (*it).first == "showInteractionForceFields" ||
+                            (*it).first == "showWireFrame" ||
+                            (*it).first == "showNormals"
+                    )
+                  )
+                {
                     //Remove from the dialog window everything about showing collision models, visual models...
                     //Don't have any effect if the scene is animated: the root will erase the value.
 
-                    if (!visualTab)
-                    {
-                        visualTab = true;
-                        tabVisualization = new QWidget();
-
-                        tabVisualizationLayout = new QVBoxLayout( tabVisualization, 0, 1, "tabVisualizationLayout");
-                    }
 
                     std::string box_name(oss.str());
                     box = new Q3GroupBox(tabVisualization, QString(box_name.c_str()));
@@ -194,12 +214,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     if (Data<int> *ff=dynamic_cast< Data<int> * >( (*it).second))
                     {
                         checkBox->setChecked(ff->getValue());
-                        connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeVisualValue() ) );
-                    }
-                    else
-                    {
-                        Data<bool> *fff= dynamic_cast< Data<bool> * >( (*it).second );
-                        checkBox->setChecked(fff->getValue());
                         connect( checkBox, SIGNAL( toggled(bool) ), this, SLOT( changeVisualValue() ) );
                     }
 
@@ -832,7 +846,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             ++i;
             if (box != NULL)
             {
-                if (emptyTab && counterWidget/WIDGET_BY_TAB == counterTab)
+                if (currentTab == currentTab_save && emptyTab && counterWidget/WIDGET_BY_TAB == counterTab)
                 {
                     dialogTab->addTab(currentTab, QString("Properties ") + QString::number(counterWidget/WIDGET_BY_TAB));
                     ++counterTab;
@@ -840,7 +854,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 }
 
                 ++counterWidget;
-                tabPropertiesLayout->addWidget( box );
+                currentTabLayout->addWidget( box );
             }
         }
 
@@ -1268,6 +1282,13 @@ void ModifyObject::updateValues()
                 storeVector(list_it, &v.getOrientation());
                 ff->setValue(v);
             }
+            else if( Data<RigidDeriv<3,double> > * ff = dynamic_cast< Data<RigidDeriv<3,double> > * >( (*it).second )  )
+            {
+                RigidDeriv<3,double> v;
+                storeVector(list_it, &v.getVCenter());
+                storeVector(list_it, &v.getVOrientation());
+                ff->setValue(v);
+            }
             //*******************************************************************************************************************
             else if( Data<PointSubset> * ff = dynamic_cast< Data<PointSubset> * >( (*it).second ))
             {
@@ -1637,7 +1658,6 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     {
         return createQtTable(ff,box,vectorTable);
     }
-
     //********************************************************************************************************//
     //vector< Vec< 2, unsigned int> >
     else if(  Data< vector< Vec< 2, unsigned int> > >   *ff = dynamic_cast< Data< vector< Vec< 2, unsigned  int> > >   * >( field ))
@@ -1742,7 +1762,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
     }
     //********************************************************************************************************//
     //vector<Rigid3dTypes::Coord>
-    else if (DataPtr< vector<Rigid3dTypes::Coord> >  *ff = dynamic_cast< DataPtr< vector<Rigid3dTypes::Coord>  >   * >( field ))
+    else if (DataPtr< vector<Rigid3Types::Coord> >  *ff = dynamic_cast< DataPtr< vector<Rigid3Types::Coord>  >   * >( field ))
     {
 
         if (!vectorTable)
@@ -1772,7 +1792,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
 
         }
-        vector<Rigid3dTypes::Coord> value = ff->getValue();
+        vector<Rigid3Types::Coord> value = ff->getValue();
 
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -1791,11 +1811,12 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
                 vectorTable2->setText(i,j,std::string(oss2[j].str()).c_str());
             }
         }
+        counterWidget+=2;
         return true;
     }
     //********************************************************************************************************//
-    //vector<Rigid3fTypes::Coord>
-    else if (DataPtr< vector<Rigid3fTypes::Coord> >  *ff = dynamic_cast< DataPtr< vector<Rigid3fTypes::Coord>  >   * >( field ))
+    //vector<Rigid3dTypes::Deriv> && vector<Rigid3fTypes::Deriv>
+    else if (DataPtr< vector<Rigid3Types::Deriv> >  *ff = dynamic_cast< DataPtr< vector<Rigid3Types::Deriv>  >   * >( field ))
     {
 
         if (!vectorTable)
@@ -1808,6 +1829,60 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             vectorTable->setReadOnly(false);
             list_Table.push_back(std::make_pair(vectorTable, field));
             vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
+            vectorTable->horizontalHeader()->setLabel(2,QString("Z"));      vectorTable->setColumnStretchable(2,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+            new QLabel("Orientation", box);
+
+            vectorTable2 = new Q3Table(ff->getValue().size(),3, box);
+            list_Table.push_back(std::make_pair(vectorTable2, field));
+            vectorTable2->horizontalHeader()->setLabel(0,QString("X"));	 vectorTable2->setColumnStretchable(0,true);
+            vectorTable2->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable2->setColumnStretchable(1,true);
+            vectorTable2->horizontalHeader()->setLabel(2,QString("Z"));      vectorTable2->setColumnStretchable(2,true);
+
+            connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+        }
+        vector<Rigid3Types::Deriv> value = ff->getValue();
+
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[3];
+
+            for (int j=0; j<3; j++)
+            {
+                oss[j] << value[i].getVCenter()[j];
+                vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
+            }
+            std::ostringstream oss2[3];
+            for (int j=0; j<3; j++)
+            {
+                oss2[j] << value[i].getVOrientation()[j];
+                vectorTable2->setText(i,j,std::string(oss2[j].str()).c_str());
+            }
+        }
+        counterWidget+=2;
+        return true;
+
+    }
+    //********************************************************************************************************//
+    //vector<Rigid3dTypes::Coord>
+    else if (Data< vector<Rigid3Types::Coord> >  *ff = dynamic_cast< Data< vector<Rigid3Types::Coord>  >   * >( field ))
+    {
+
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            new QLabel("Center", box);
+
+            vectorTable = new Q3Table(ff->getValue().size(),3, box);
+            vectorTable->setReadOnly(false);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("X"));	    vectorTable->setColumnStretchable(0,true);
             vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
             vectorTable->horizontalHeader()->setLabel(2,QString("Z"));      vectorTable->setColumnStretchable(2,true);
 
@@ -1817,7 +1892,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
 
             vectorTable2 = new Q3Table(ff->getValue().size(),4, box);
             list_Table.push_back(std::make_pair(vectorTable2, field));
-            vectorTable2->horizontalHeader()->setLabel(0,QString("X"));	 vectorTable2->setColumnStretchable(0,true);
+            vectorTable2->horizontalHeader()->setLabel(0,QString("X"));	    vectorTable2->setColumnStretchable(0,true);
             vectorTable2->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable2->setColumnStretchable(1,true);
             vectorTable2->horizontalHeader()->setLabel(2,QString("Z"));      vectorTable2->setColumnStretchable(2,true);
             vectorTable2->horizontalHeader()->setLabel(3,QString("W"));      vectorTable2->setColumnStretchable(3,true);
@@ -1825,7 +1900,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
 
         }
-        vector<Rigid3fTypes::Coord> value = ff->getValue();
+        vector<Rigid3Types::Coord> value = ff->getValue();
 
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -1844,12 +1919,12 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
                 vectorTable2->setText(i,j,std::string(oss2[j].str()).c_str());
             }
         }
+        counterWidget+=2;
         return true;
-
     }
     //********************************************************************************************************//
-    //vector<Rigid3dTypes::Deriv>
-    else if (DataPtr< vector<Rigid3dTypes::Deriv> >  *ff = dynamic_cast< DataPtr< vector<Rigid3dTypes::Deriv>  >   * >( field ))
+    //vector<Rigid3dTypes::Deriv> && vector<Rigid3fTypes::Deriv>
+    else if (Data< vector<Rigid3Types::Deriv> >  *ff = dynamic_cast< Data< vector<Rigid3Types::Deriv>  >   * >( field ))
     {
 
         if (!vectorTable)
@@ -1878,7 +1953,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
 
         }
-        vector<Rigid3dTypes::Deriv> value = ff->getValue();
+        vector<Rigid3Types::Deriv> value = ff->getValue();
 
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -1897,65 +1972,12 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
                 vectorTable2->setText(i,j,std::string(oss2[j].str()).c_str());
             }
         }
+        counterWidget+=2;
         return true;
-
     }
     //********************************************************************************************************//
-    //vector<Rigid3fTypes::Deriv>
-    else if (DataPtr< vector<Rigid3fTypes::Deriv> >  *ff = dynamic_cast< DataPtr< vector<Rigid3fTypes::Deriv>  >   * >( field ))
-    {
-
-        if (!vectorTable)
-        {
-            if (ff->getValue().size() == 0)  return false;
-            box->setColumns(1);
-            new QLabel("Center", box);
-
-            vectorTable = new Q3Table(ff->getValue().size(),3, box);
-            vectorTable->setReadOnly(false);
-            list_Table.push_back(std::make_pair(vectorTable, field));
-            vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
-            vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
-            vectorTable->horizontalHeader()->setLabel(2,QString("Z"));      vectorTable->setColumnStretchable(2,true);
-
-            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-
-            new QLabel("Orientation", box);
-
-            vectorTable2 = new Q3Table(ff->getValue().size(),3, box);
-            list_Table.push_back(std::make_pair(vectorTable2, field));
-            vectorTable2->horizontalHeader()->setLabel(0,QString("X"));	 vectorTable2->setColumnStretchable(0,true);
-            vectorTable2->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable2->setColumnStretchable(1,true);
-            vectorTable2->horizontalHeader()->setLabel(2,QString("Z"));      vectorTable2->setColumnStretchable(2,true);
-
-            connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-
-        }
-        vector<Rigid3fTypes::Deriv> value = ff->getValue();
-
-
-        for (unsigned int i=0; i<ff->getValue().size(); i++)
-        {
-            std::ostringstream oss[3];
-
-            for (int j=0; j<3; j++)
-            {
-                oss[j] << value[i].getVCenter()[j];
-                vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
-            }
-            std::ostringstream oss2[3];
-            for (int j=0; j<3; j++)
-            {
-                oss2[j] << value[i].getVOrientation()[j];
-                vectorTable2->setText(i,j,std::string(oss2[j].str()).c_str());
-            }
-        }
-        return true;
-
-    }
-    //********************************************************************************************************//
-    //vector<Rigid2dTypes::Coord>
-    else if (DataPtr< vector<Rigid2dTypes::Coord> >  *ff = dynamic_cast< DataPtr< vector<Rigid2dTypes::Coord>  >   * >( field ))
+    //vector<Rigid2Types::Coord>
+    else if (DataPtr< vector<Rigid2Types::Coord> >  *ff = dynamic_cast< DataPtr< vector<Rigid2Types::Coord>  >   * >( field ))
     {
 
         if (!vectorTable)
@@ -1981,7 +2003,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
 
         }
-        vector<Rigid2dTypes::Coord> value = ff->getValue();
+        vector<Rigid2Types::Coord> value = ff->getValue();
 
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -1998,58 +2020,12 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             vectorTable2->setText(i,0,std::string(oss2.str()).c_str());
 
         }
-        return true;
-    }
-    //********************************************************************************************************//
-    //vector<Rigid2fTypes::Coord>
-    else if (DataPtr< vector<Rigid2fTypes::Coord> >  *ff = dynamic_cast< DataPtr< vector<Rigid2fTypes::Coord>  >   * >( field ))
-    {
-
-        if (!vectorTable)
-        {
-            if (ff->getValue().size() == 0)  return false;
-            box->setColumns(1);
-            new QLabel("Center", box);
-
-            vectorTable = new Q3Table(ff->getValue().size(),2, box);
-            vectorTable->setReadOnly(false);
-            list_Table.push_back(std::make_pair(vectorTable, field));
-            vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
-            vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
-
-            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-
-            new QLabel("Orientation", box);
-
-            vectorTable2 = new Q3Table(ff->getValue().size(),1, box);
-            list_Table.push_back(std::make_pair(vectorTable2, field));
-            vectorTable2->horizontalHeader()->setLabel(0,QString("angle"));	 vectorTable2->setColumnStretchable(0,true);
-
-            connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-
-        }
-        vector<Rigid2fTypes::Coord> value = ff->getValue();
-
-
-        for (unsigned int i=0; i<ff->getValue().size(); i++)
-        {
-            std::ostringstream oss[2];
-
-            for (int j=0; j<2; j++)
-            {
-                oss[j] << value[i].getCenter()[j];
-                vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
-            }
-            std::ostringstream oss2;
-            oss2 << value[i].getOrientation();
-            vectorTable2->setText(i,0,std::string(oss2.str()).c_str());
-
-        }
+        counterWidget+=2;
         return true;
     }
     //********************************************************************************************************//
     //vector<Rigid2dTypes::Deriv>
-    else if (DataPtr< vector<Rigid2dTypes::Deriv> >  *ff = dynamic_cast< DataPtr< vector<Rigid2dTypes::Deriv>  >   * >( field ))
+    else if (DataPtr< vector<Rigid2Types::Deriv> >  *ff = dynamic_cast< DataPtr< vector<Rigid2Types::Deriv>  >   * >( field ))
     {
 
         if (!vectorTable)
@@ -2075,7 +2051,7 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
 
         }
-        vector<Rigid2dTypes::Deriv> value = ff->getValue();
+        vector<Rigid2Types::Deriv> value = ff->getValue();
 
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -2091,12 +2067,13 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             oss2 << value[i].getVOrientation();
             vectorTable2->setText(i,0,std::string(oss2.str()).c_str());
         }
+        counterWidget+=2;
         return true;
 
     }
     //********************************************************************************************************//
-    //vector<Rigid2fTypes::Deriv>
-    else if (DataPtr< vector<Rigid2fTypes::Deriv> >  *ff = dynamic_cast< DataPtr< vector<Rigid2fTypes::Deriv>  >   * >( field ))
+    //vector<Rigid2Types::Coord>
+    else if (Data< vector<Rigid2Types::Coord> >  *ff = dynamic_cast< Data< vector<Rigid2Types::Coord>  >   * >( field ))
     {
 
         if (!vectorTable)
@@ -2122,7 +2099,54 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
 
         }
-        vector<Rigid2fTypes::Deriv> value = ff->getValue();
+        vector<Rigid2Types::Coord> value = ff->getValue();
+
+
+        for (unsigned int i=0; i<ff->getValue().size(); i++)
+        {
+            std::ostringstream oss[2];
+
+            for (int j=0; j<2; j++)
+            {
+                oss[j] << value[i].getCenter()[j];
+                vectorTable->setText(i,j,std::string(oss[j].str()).c_str());
+            }
+            std::ostringstream oss2;
+            oss2 << value[i].getOrientation();
+            vectorTable2->setText(i,0,std::string(oss2.str()).c_str());
+
+        }
+        counterWidget+=2;
+        return true;
+    }
+    //********************************************************************************************************//
+    //vector<Rigid2dTypes::Deriv>
+    else if (Data< vector<Rigid2Types::Deriv> >  *ff = dynamic_cast< Data< vector<Rigid2Types::Deriv>  >   * >( field ))
+    {
+        if (!vectorTable)
+        {
+            if (ff->getValue().size() == 0)  return false;
+            box->setColumns(1);
+            new QLabel("Center", box);
+
+            vectorTable = new Q3Table(ff->getValue().size(),2, box);
+            vectorTable->setReadOnly(false);
+            list_Table.push_back(std::make_pair(vectorTable, field));
+            vectorTable->horizontalHeader()->setLabel(0,QString("X"));	vectorTable->setColumnStretchable(0,true);
+            vectorTable->horizontalHeader()->setLabel(1,QString("Y"));      vectorTable->setColumnStretchable(1,true);
+
+            connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+            new QLabel("Orientation", box);
+
+            vectorTable2 = new Q3Table(ff->getValue().size(),1, box);
+            list_Table.push_back(std::make_pair(vectorTable2, field));
+            vectorTable2->horizontalHeader()->setLabel(0,QString("angle"));	 vectorTable2->setColumnStretchable(0,true);
+
+            connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
+
+        }
+        vector<Rigid2Types::Deriv> value = ff->getValue();
 
 
         for (unsigned int i=0; i<ff->getValue().size(); i++)
@@ -2138,7 +2162,9 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
             oss2 << value[i].getVOrientation();
             vectorTable2->setText(i,0,std::string(oss2.str()).c_str());
         }
+        counterWidget+=2;
         return true;
+
     }
     //********************************************************************************************************//
     //vector<LaparoscopicRigid3Types::Coord>
