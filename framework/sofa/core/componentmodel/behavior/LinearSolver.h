@@ -46,7 +46,7 @@ namespace behavior
  *  \brief Abstract interface for linear system solvers
  *
  */
-class LinearSolver : public objectmodel::BaseObject
+class LinearSolver : public virtual objectmodel::BaseObject
 {
 public:
     typedef BaseMechanicalState::VecId VecId;
@@ -74,16 +74,16 @@ public:
     virtual void solveSystem() = 0;
 
     /// Get the linear system matrix, or NULL if this solver does not build it
-    virtual defaulttype::BaseMatrix* getSystemMatrix() { return NULL; }
+    virtual defaulttype::BaseMatrix* getSystemBaseMatrix() { return NULL; }
 
     /// Get the linear system right-hand term vector, or NULL if this solver does not build it
-    virtual defaulttype::BaseVector* getSystemRHVector() { return NULL; }
+    virtual defaulttype::BaseVector* getSystemRHBaseVector() { return NULL; }
 
     /// Get the linear system left-hand term vector, or NULL if this solver does not build it
-    virtual defaulttype::BaseVector* getSystemLHVector() { return NULL; }
+    virtual defaulttype::BaseVector* getSystemLHBaseVector() { return NULL; }
 
     /// Get the linear system inverse matrix, or NULL if this solver does not build it
-    virtual defaulttype::BaseMatrix* getSystemInverseMatrix() { return NULL; }
+    virtual defaulttype::BaseMatrix* getSystemInverseBaseMatrix() { return NULL; }
 
 protected:
 };

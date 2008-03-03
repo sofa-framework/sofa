@@ -1,0 +1,174 @@
+/*******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
+*                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
+*                                                                              *
+* This library is free software; you can redistribute it and/or modify it      *
+* under the terms of the GNU Lesser General Public License as published by the *
+* Free Software Foundation; either version 2.1 of the License, or (at your     *
+* option) any later version.                                                   *
+*                                                                              *
+* This library is distributed in the hope that it will be useful, but WITHOUT  *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
+* for more details.                                                            *
+*                                                                              *
+* You should have received a copy of the GNU Lesser General Public License     *
+* along with this library; if not, write to the Free Software Foundation,      *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
+*                                                                              *
+* Contact information: contact@sofa-framework.org                              *
+*                                                                              *
+* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
+* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
+* and F. Poyer                                                                 *
+*******************************************************************************/
+#ifndef SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_H
+#define SOFA_COMPONENT_LINEARSOLVER_CGLINEARSOLVER_H
+
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <math.h>
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace linearsolver
+{
+
+/// Linear system solver using the conjugate gradient iterative algorithm
+template<class Matrix, class Vector>
+class CGLinearSolver : public sofa::simulation::tree::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
+{
+public:
+
+    Data<unsigned> f_maxIter;
+    Data<double> f_tolerance;
+    Data<double> f_smallDenominatorThreshold;
+    Data<bool> f_verbose;
+
+    CGLinearSolver()
+        : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
+        , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
+        , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
+        , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+    {
+    }
+
+    /// Solve Mx=b
+    void solve (Matrix& M, Vector& x, Vector& b)
+    {
+        using std::cerr;
+        using std::endl;
+
+        Vector& p = *this->createVector();
+        Vector& q = *this->createVector();
+        Vector& r = *this->createVector();
+
+        const bool printLog = f_printLog.getValue();
+        const bool verbose  = f_verbose.getValue();
+
+        // -- solve the system using a conjugate gradient solution
+        double rho, rho_1=0, alpha, beta;
+
+        if( verbose )
+            cerr<<"CGLinearSolver, b = "<< b <<endl;
+
+        x.clear();
+        r = b; // initial residual
+
+        double normb2 = b.dot(b);
+        double normb = sqrt(normb2);
+
+        unsigned nb_iter;
+        const char* endcond = "iterations";
+        for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
+        {
+
+            // 		printWithElapsedTime( x, helper::system::thread::CTime::getTime()-time0,std::cout );
+
+            //z = r; // no precond
+            //rho = r.dot(z);
+            rho = (nb_iter==1) ? normb2 : r.dot(r);
+
+            if (nb_iter>1)
+            {
+                double normr = sqrt(rho); //sqrt(r.dot(r));
+                if (normr/normb <= f_tolerance.getValue())
+                {
+                    endcond = "tolerance";
+                    break;
+                }
+            }
+
+            if( nb_iter==1 )
+                p = r; //z;
+            else
+            {
+                beta = rho / rho_1;
+                //p *= beta;
+                //p += r; //z;
+                v_op(p,r,p,beta); // p = p*beta + r
+            }
+
+            if( verbose )
+            {
+                cerr<<"p : "<<p<<endl;
+            }
+
+            // matrix-vector product
+            q = M*p;
+
+            if( verbose )
+            {
+                cerr<<"q = M p : "<<q<<endl;
+            }
+
+            double den = p.dot(q);
+
+
+            if( fabs(den)<f_smallDenominatorThreshold.getValue() )
+            {
+                endcond = "threshold";
+                if( verbose )
+                {
+                    cerr<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
+                }
+                break;
+            }
+            alpha = rho/den;
+            x.peq(p,alpha);                 // x = x + alpha p
+            r.peq(q,-alpha);                // r = r - alpha q
+            if( verbose )
+            {
+                cerr<<"den = "<<den<<", alpha = "<<alpha<<endl;
+                cerr<<"x : "<<x<<endl;
+                cerr<<"r : "<<r<<endl;
+            }
+
+            rho_1 = rho;
+        }
+        // x is the solution of the system
+        if( printLog )
+        {
+            cerr<<"CGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
+        }
+        if( verbose )
+        {
+            cerr<<"CGLinearSolver::solve, solution = "<<x<<endl;
+        }
+        this->deleteVector(&p);
+        this->deleteVector(&q);
+        this->deleteVector(&r);
+    }
+};
+
+} // namespace linearsolver
+
+} // namespace component
+
+} // namespace sofa
+
+#endif

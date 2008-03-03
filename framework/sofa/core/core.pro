@@ -36,6 +36,8 @@ HEADERS += \
           componentmodel/behavior/MechanicalMapping.h \
           componentmodel/behavior/MechanicalMapping.inl \
           componentmodel/behavior/MechanicalState.h \
+          componentmodel/behavior/MultiVector.h \
+          componentmodel/behavior/MultiMatrix.h \
           componentmodel/behavior/OdeSolver.h \
           componentmodel/collision/BroadPhaseDetection.h \
           componentmodel/collision/CollisionAlgorithm.h \
@@ -78,6 +80,7 @@ SOURCES +=  \
           CollisionModel.cpp \
           componentmodel/behavior/LinearSolver.cpp \
           componentmodel/behavior/MasterSolver.cpp \
+          componentmodel/behavior/MultiMatrix.cpp \
           componentmodel/behavior/OdeSolver.cpp \
           componentmodel/collision/Contact.cpp \
           componentmodel/collision/Intersection.cpp \

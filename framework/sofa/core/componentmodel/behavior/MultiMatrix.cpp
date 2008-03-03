@@ -22,9 +22,7 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <stdlib.h>
-#include <math.h>
+#include <sofa/core/componentmodel/behavior/MultiMatrix.h>
 
 namespace sofa
 {
@@ -38,15 +36,9 @@ namespace componentmodel
 namespace behavior
 {
 
-OdeSolver::OdeSolver()
-{}
-
-OdeSolver::~OdeSolver()
-{}
-
-//const OdeSolver::MechanicalMatrix OdeSolver::M(1,0,0);
-//const OdeSolver::MechanicalMatrix OdeSolver::B(0,1,0);
-//const OdeSolver::MechanicalMatrix OdeSolver::K(0,0,1);
+const MechanicalMatrix MechanicalMatrix::M(1,0,0);
+const MechanicalMatrix MechanicalMatrix::B(0,1,0);
+const MechanicalMatrix MechanicalMatrix::K(0,0,1);
 
 } // namespace behavior
 
