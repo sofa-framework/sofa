@@ -257,6 +257,8 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
     , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
     , topologyType(TOPOLOGY_UNKNOWN)
+    , showCenterOfGravity( initData(&showCenterOfGravity, false, "show center of gravity", "display the center of gravity of the system" ) )
+    , showAxisSize( initData(&showAxisSize, 1.0f, "axis size factor", "factor length of the axis displayed (only used for rigids)" ) )
 {
 
 }
@@ -568,7 +570,10 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw()
 {
     if (!getContext()->getShowBehaviorModels()) return;
+    const MassVector &masses= f_mass.getValue();
     const VecCoord& x = *this->mstate->getX();
+    Coord gravityCenter;
+    Real totalMass=0.0;
     glDisable (GL_LIGHTING);
     glPointSize(2);
     glColor4f (1,1,1,1);
@@ -576,8 +581,26 @@ void DiagonalMass<DataTypes, MassType>::draw()
     for (unsigned int i=0; i<x.size(); i++)
     {
         helper::gl::glVertexT(x[i]);
+        gravityCenter += x[i]*masses[i];
+        totalMass += masses[i];
     }
     glEnd();
+
+    if(showCenterOfGravity.getValue())
+    {
+        glBegin (GL_LINES);
+        glColor4f (1,1,0,1);
+        glPointSize(5);
+        gravityCenter /= totalMass;
+        for(unsigned int i=0 ; i<Coord::static_size ; i++)
+        {
+            Coord v;
+            v[i] = showAxisSize.getValue();
+            helper::gl::glVertexT(gravityCenter-v);
+            helper::gl::glVertexT(gravityCenter+v);
+        }
+        glEnd();
+    }
 }
 
 template <class DataTypes, class MassType>

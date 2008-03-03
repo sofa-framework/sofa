@@ -131,6 +131,8 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
     const MassVector &masses= f_mass.getValue();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mstate->getX();
+    Real totalMass=0;
+    RigidTypes::Vec3 gravityCenter;
     for (unsigned int i=0; i<x.size(); i++)
     {
         const Quat& orient = x[i].getOrientation();
@@ -151,7 +153,24 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
         len[1] = sqrt(m00+m22-m11);
         len[2] = sqrt(m00+m11-m22);
 
-        helper::gl::Axis::draw(center, orient, len);
+        helper::gl::Axis::draw(center, orient, len*showAxisSize.getValue());
+
+        gravityCenter += (center * masses[i].mass);
+        totalMass += masses[i].mass;
+    }
+
+    if(showCenterOfGravity.getValue())
+    {
+        glColor3f (1,1,0);
+        glBegin (GL_LINES);
+        gravityCenter /= totalMass;
+        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
+        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
+        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
+        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
+        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
+        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
+        glEnd();
     }
 }
 
@@ -162,6 +181,8 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
     const MassVector &masses= f_mass.getValue();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *mstate->getX();
+    Real totalMass=0;
+    RigidTypes::Vec3 gravityCenter;
     for (unsigned int i=0; i<x.size(); i++)
     {
         const Quat& orient = x[i].getOrientation();
@@ -183,6 +204,23 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
         len[2] = sqrt(m00+m11-m22);
 
         helper::gl::Axis::draw(center, orient, len);
+
+        gravityCenter += (center * masses[i].mass);
+        totalMass += masses[i].mass;
+    }
+
+    if(showCenterOfGravity.getValue())
+    {
+        glColor3f (1,1,0);
+        glBegin (GL_LINES);
+        gravityCenter /= totalMass;
+        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
+        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
+        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
+        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
+        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
+        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
+        glEnd();
     }
 }
 template <>

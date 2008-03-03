@@ -51,6 +51,8 @@ template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
     : mass( initData(&mass, MassType(1.0f), "mass", "Mass of each particle") )
     , totalMass( initData(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
+    , showCenterOfGravity( initData(&showCenterOfGravity, false, "show center of gravity", "display the center of gravity of the system" ) )
+    , showAxisSize( initData(&showAxisSize, 1.0f, "axis size factor", "factor length of the axis displayed (only used for rigids)" ) )
 {}
 
 template <class DataTypes, class MassType>
@@ -223,6 +225,7 @@ void UniformMass<DataTypes, MassType>::draw()
     if (!getContext()->getShowBehaviorModels())
         return;
     const VecCoord& x = *this->mstate->getX();
+    Coord gravityCenter;
     glDisable (GL_LIGHTING);
     glPointSize(2);
     glColor4f (1,1,1,1);
@@ -230,8 +233,24 @@ void UniformMass<DataTypes, MassType>::draw()
     for (unsigned int i=0; i<x.size(); i++)
     {
         helper::gl::glVertexT(x[i]);
+        gravityCenter += x[i];
     }
     glEnd();
+
+    if(showCenterOfGravity.getValue())
+    {
+        glBegin (GL_LINES);
+        glColor4f (1,1,0,1);
+        gravityCenter /= x.size();
+        for(unsigned int i=0 ; i<Coord::static_size ; i++)
+        {
+            Coord v;
+            v[i] = showAxisSize.getValue();
+            helper::gl::glVertexT(gravityCenter-v);
+            helper::gl::glVertexT(gravityCenter+v);
+        }
+        glEnd();
+    }
 }
 
 template <class DataTypes, class MassType>
