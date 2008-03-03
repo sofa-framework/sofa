@@ -29,7 +29,7 @@ using sofa::helper::vector;
 
 struct BeamInfo
 {
-    static const double FLEXIBILITY=1.00000; // was 1.00001
+// 	static const double FLEXIBILITY=1.00000; // was 1.00001
     double _E0,_E; //Young
     double _nu;//Poisson
     double _L; //length
