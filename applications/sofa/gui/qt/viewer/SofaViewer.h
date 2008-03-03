@@ -98,7 +98,7 @@ public:
     virtual void                           setSceneFileName(const std::string &f) {sceneFileName = f;};
 
     virtual void setup() {}
-    virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false)
+    virtual void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool /*keepParams*/=false)
     {
 //               if (interactor != NULL) delete interactor;
         interactor = NULL;
@@ -130,7 +130,7 @@ public:
         groot = scene;
         initTexturesDone = false;
         sceneBBoxIsValid = true;
-        if (!keepParams) /*resetView()*/;
+        //if (!keepParams) resetView();
     }
 
 

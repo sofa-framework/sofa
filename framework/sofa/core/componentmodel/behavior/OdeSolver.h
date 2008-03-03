@@ -139,6 +139,19 @@ public:
 
     /// @}
 
+
+    /// @name Matrix operations using LinearSolver components
+    /// @{
+
+    virtual void m_resetSystem() = 0;
+    virtual void m_setSystemMBKMatrix(double mFact, double bFact, double kFact) = 0;
+    virtual void m_setSystemRHVector(VecId v) = 0;
+    virtual void m_setSystemLHVector(VecId v) = 0;
+    virtual void m_solveSystem() = 0;
+    virtual void m_print( std::ostream& out ) = 0;
+
+    /// @}
+
     /// @name Debug operations
     /// @{
 
@@ -151,6 +164,7 @@ public:
     /// @}
 
 protected:
+#if 0
     /// Helper class allocating IDs to temporary vectors.
     class VectorIndexAlloc
     {
@@ -166,6 +180,7 @@ protected:
         bool free(unsigned int v);
     };
     std::map<VecId::Type, VectorIndexAlloc > vectors; ///< Current temporary vectors
+#endif
 
     /// Helper class providing a high-level view of underlying state vectors.
     ///
@@ -182,21 +197,24 @@ protected:
         /// Identifier of this vector
         VecId v;
 
+        /// Flag indicating if this vector was dynamically allocated
+        bool dynamic;
+
         /// Copy-constructor is forbidden
         MultiVector(const MultiVector& v);
 
     public:
         /// Refers to a state vector with the given ID (VecId::position(), VecId::velocity(), etc).
-        MultiVector(OdeSolver* parent, VecId v) : parent(parent), v(v)
+        MultiVector(OdeSolver* parent, VecId v) : parent(parent), v(v), dynamic(false)
         {}
 
         /// Allocate a new temporary vector with the given type (VecId::V_COORD or VecId::V_DERIV).
-        MultiVector(OdeSolver* parent, VecId::Type t) : parent(parent), v(parent->v_alloc(t))
+        MultiVector(OdeSolver* parent, VecId::Type t) : parent(parent), v(parent->v_alloc(t)), dynamic(true)
         {}
 
         ~MultiVector()
         {
-            parent->v_free(v);
+            if (dynamic) parent->v_free(v);
         }
 
         /// Automatic conversion to the underlying VecId
@@ -292,6 +310,116 @@ protected:
         friend std::ostream& operator << (std::ostream& out, const MultiVector& mv )
         {
             mv.parent->print(mv.v,out);
+            return out;
+        }
+    };
+
+    /// Helper class allowing to construct mechanical expressions
+    ///
+    class MechanicalMatrix
+    {
+    protected:
+        enum { MFACT = 0, BFACT = 1, KFACT = 2 };
+        defaulttype::Vec<3,double> factors;
+    public:
+        MechanicalMatrix(double m, double b, double k) : factors(m,b,k) {}
+        explicit MechanicalMatrix(const defaulttype::Vec<3,double>& f) : factors(f) {}
+
+        double getMFact() const { return factors[MFACT]; }
+        double getBFact() const { return factors[BFACT]; }
+        double getKFact() const { return factors[KFACT]; }
+
+        MechanicalMatrix operator + (const MechanicalMatrix& m2) { return MechanicalMatrix(factors + m2.factors); }
+        MechanicalMatrix operator - (const MechanicalMatrix& m2) { return MechanicalMatrix(factors - m2.factors); }
+        MechanicalMatrix operator - () { return MechanicalMatrix(- factors); }
+        MechanicalMatrix operator * (double f) { return MechanicalMatrix(factors * f); }
+        friend MechanicalMatrix operator * (double f, const MechanicalMatrix& m1) { return MechanicalMatrix(f * m1.factors); }
+        MechanicalMatrix operator / (double f) { return MechanicalMatrix(factors / f); }
+        friend std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
+        {
+            out << '(';
+            bool first = true;
+            for (unsigned int i=0; i<m.factors.size(); ++i)
+            {
+                double f = m.factors[i];
+                if (f!=0.0)
+                {
+                    if (!first) out << ' ';
+                    if (f == -1.0) out << '-';
+                    else if (f < 0) out << f << ' ';
+                    else
+                    {
+                        if (!first) out << '+';
+                        if (f != 1.0) out << f << ' ';
+                    }
+                    out << ("MBK")[i];
+                    first = false;
+                }
+            }
+            out << ')';
+            return out;
+        }
+    };
+
+    static const MechanicalMatrix M;
+    static const MechanicalMatrix B;
+    static const MechanicalMatrix K;
+
+    /// Helper class providing a high-level view of underlying linear system matrices.
+    ///
+    /// It is used to convert math-like operations to call to computation methods.
+    class MultiMatrix
+    {
+    public:
+        typedef OdeSolver::VecId VecId;
+
+    protected:
+        /// Solver who is using this vector
+        OdeSolver* parent;
+
+        /// Identifier of this vector
+        VecId v;
+
+        /// Copy-constructor is forbidden
+        MultiMatrix(const MultiVector& v);
+
+    public:
+
+        MultiMatrix(OdeSolver* parent) : parent(parent)
+        {
+        }
+
+        ~MultiMatrix()
+        {
+        }
+
+        /// m = 0
+        void clear()
+        {
+            parent->m_resetSystem();
+        }
+
+        /// m = 0
+        void reset()
+        {
+            parent->m_resetSystem();
+        }
+
+        /// m = m*M+b*B+k*K
+        void operator=(const MechanicalMatrix& m)
+        {
+            parent->m_setSystemMBKMatrix(m.getMFact(), m.getBFact(), m.getKFact());
+        }
+
+        void solve(MultiVector& solution, MultiVector& rh)
+        {
+            parent->m_setSystemRHVector(rh);
+            parent->m_setSystemLHVector(solution);
+            parent->m_solveSystem();
+        }
+        friend std::ostream& operator << (std::ostream& out, const MultiMatrix& m )
+        {
+            m.parent->m_print(out);
             return out;
         }
     };

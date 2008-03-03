@@ -20,6 +20,7 @@ HEADERS += \
           componentmodel/behavior/ForceField.inl \
           componentmodel/behavior/InteractionForceField.h \
           componentmodel/behavior/InteractionConstraint.h \
+          componentmodel/behavior/LinearSolver.h \
           componentmodel/behavior/PairInteractionForceField.h \
           componentmodel/behavior/PairInteractionForceField.inl \
 	  componentmodel/behavior/MixedInteractionForceField.h \
@@ -75,6 +76,7 @@ HEADERS += \
  
 SOURCES +=  \
           CollisionModel.cpp \
+          componentmodel/behavior/LinearSolver.cpp \
           componentmodel/behavior/MasterSolver.cpp \
           componentmodel/behavior/OdeSolver.cpp \
           componentmodel/collision/Contact.cpp \

@@ -249,6 +249,8 @@ public:
 
     VecDeriv* getVecDeriv(unsigned int index);
 
+    virtual void vAvail(VecId& v);
+
     virtual void vAlloc(VecId v);
 
     virtual void vFree(VecId v);

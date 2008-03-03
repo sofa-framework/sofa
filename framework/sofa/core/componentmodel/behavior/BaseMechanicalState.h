@@ -159,6 +159,9 @@ public:
         }
     };
 
+    /// Increment the index of the given VecId, so that all 'allocated' vectors in this state have a lower index
+    virtual void vAvail(VecId& v) = 0;
+
     /// Allocate a new temporary vector
     virtual void vAlloc(VecId v) = 0;
 

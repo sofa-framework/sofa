@@ -22,9 +22,7 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <stdlib.h>
-#include <math.h>
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
 
 namespace sofa
 {
@@ -38,46 +36,11 @@ namespace componentmodel
 namespace behavior
 {
 
-OdeSolver::OdeSolver()
-//: /*mat(NULL),*/ result(0)
+LinearSolver::LinearSolver()
 {}
 
-OdeSolver::~OdeSolver()
+LinearSolver::~LinearSolver()
 {}
-
-#if 0
-OdeSolver::VectorIndexAlloc::VectorIndexAlloc()
-    : maxIndex(VecId::V_FIRST_DYNAMIC_INDEX-1)
-{}
-
-unsigned int OdeSolver::VectorIndexAlloc::alloc()
-{
-    int v;
-    if (vfree.empty())
-        v = ++maxIndex;
-    else
-    {
-        v = *vfree.begin();
-        vfree.erase(vfree.begin());
-    }
-    vused.insert(v);
-    return v;
-}
-
-bool OdeSolver::VectorIndexAlloc::free(unsigned int v)
-{
-    if (v < VecId::V_FIRST_DYNAMIC_INDEX)
-        return false;
-// @TODO: Check for errors
-    vused.erase(v);
-    vfree.insert(v);
-    return true;
-}
-#endif
-
-const OdeSolver::MechanicalMatrix OdeSolver::M(1,0,0);
-const OdeSolver::MechanicalMatrix OdeSolver::B(0,1,0);
-const OdeSolver::MechanicalMatrix OdeSolver::K(0,0,1);
 
 } // namespace behavior
 
