@@ -22,37 +22,38 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <stdlib.h>
-#include <math.h>
+// Author: François Faure, INRIA-UJF, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
+#include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/core/ObjectFactory.h>
+#include <iostream>
+#include "sofa/helper/system/thread/CTime.h"
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace componentmodel
+namespace linearsolver
 {
 
-namespace behavior
-{
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::simulation::tree;
 
-OdeSolver::OdeSolver()
-{}
+SOFA_DECL_CLASS(CGLinearSolver)
 
-OdeSolver::~OdeSolver()
-{}
+int CGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+        .add< CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
+        .addAlias("CGSolver")
+        .addAlias("ConjugateGradient")
+        ;
 
-//const OdeSolver::MechanicalMatrix OdeSolver::M(1,0,0);
-//const OdeSolver::MechanicalMatrix OdeSolver::B(0,1,0);
-//const OdeSolver::MechanicalMatrix OdeSolver::K(0,0,1);
+} // namespace linearsolver
 
-} // namespace behavior
-
-} // namespace componentmodel
-
-} // namespace core
+} // namespace component
 
 } // namespace sofa
 

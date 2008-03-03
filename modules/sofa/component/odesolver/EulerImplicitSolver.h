@@ -22,37 +22,43 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
+#ifndef SOFA_COMPONENT_ODESOLVER_EULERIMPLICITSOLVER_H
+#define SOFA_COMPONENT_ODESOLVER_EULERIMPLICITSOLVER_H
+
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <stdlib.h>
-#include <math.h>
+#include <sofa/simulation/tree/OdeSolverImpl.h>
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace componentmodel
+namespace odesolver
 {
 
-namespace behavior
+using namespace sofa::defaulttype;
+
+/** Implicit time integrator using backward Euler scheme.
+*/
+class EulerImplicitSolver : public sofa::simulation::tree::OdeSolverImpl
 {
+public:
 
-OdeSolver::OdeSolver()
-{}
+    Data<double> f_rayleighStiffness;
+    Data<double> f_rayleighMass;
+    Data<double> f_velocityDamping;
+    Data<bool> f_verbose;
 
-OdeSolver::~OdeSolver()
-{}
+    EulerImplicitSolver();
 
-//const OdeSolver::MechanicalMatrix OdeSolver::M(1,0,0);
-//const OdeSolver::MechanicalMatrix OdeSolver::B(0,1,0);
-//const OdeSolver::MechanicalMatrix OdeSolver::K(0,0,1);
+    void solve (double dt);
+};
 
-} // namespace behavior
+} // namespace odesolver
 
-} // namespace componentmodel
-
-} // namespace core
+} // namespace component
 
 } // namespace sofa
 
+#endif

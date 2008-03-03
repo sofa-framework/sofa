@@ -55,27 +55,25 @@ StaticSolver::StaticSolver()
 void StaticSolver::solve(double , VecId b)
 {
     /*std::cout << "Static Solver will solve knowing b!! "<< this->getName() << "\n";*/
-    //objectmodel::BaseContext* group = getContext();
-    OdeSolver* group = this;
-    MultiVector pos(group, VecId::position());
-    MultiVector vel(group, VecId::velocity());
-    MultiVector dx(group, VecId::dx());
-    MultiVector f(group, VecId::force());
-    MultiVector p(group, VecId::V_DERIV);
-    MultiVector q(group, VecId::V_DERIV);
-    MultiVector r(group, VecId::V_DERIV);
-    MultiVector x(group, VecId::V_DERIV);
-    MultiVector z(group, VecId::V_DERIV);
+    MultiVector pos(this, VecId::position());
+    MultiVector vel(this, VecId::velocity());
+    MultiVector dx(this, VecId::dx());
+    MultiVector f(this, VecId::force());
+    MultiVector p(this, VecId::V_DERIV);
+    MultiVector q(this, VecId::V_DERIV);
+    MultiVector r(this, VecId::V_DERIV);
+    MultiVector x(this, VecId::V_DERIV);
+    MultiVector z(this, VecId::V_DERIV);
 
 //    b.teq(-1);                          // b = -f0
-    group->projectResponse(b);         // b is projected to the constrained space
+    this->projectResponse(b);         // b is projected to the constrained space
     //     cerr<<"StaticSolver::solve, initial position = "<<pos<<endl;
     //     cerr<<"StaticSolver::solve, b = "<<b<<endl;
 
     // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
-    group->v_clear( x );
-    group->v_eq(r,b); // initial residual
+    this->v_clear( x );
+    this->v_eq(r,b); // initial residual
 
     unsigned nb_iter;
     for( nb_iter=1; nb_iter<=f_maxCGIter.getValue(); nb_iter++ )
@@ -94,11 +92,11 @@ void StaticSolver::solve(double , VecId b)
 
         // matrix-vector product
         /*        cerr<<"StaticSolver::solve, dx = "<<p<<endl;*/
-        group->propagateDx(p);          // dx = p
-        group->computeDf(q);            // q = df/dx p
+        this->propagateDx(p);          // dx = p
+        this->computeDf(q);            // q = df/dx p
         /*        cerr<<"StaticSolver::solve, df = "<<q<<endl;*/
         // filter the product to take the constraints into account
-        group->projectResponse(q);     // q is projected to the constrained space
+        this->projectResponse(q);     // q is projected to the constrained space
         //         cerr<<"StaticSolver::solve, df filtered = "<<q<<endl;
 
         double den = p.dot(q);
@@ -130,14 +128,12 @@ void StaticSolver::solve(double , VecId b)
 }
 void StaticSolver::solve(double dt)
 {
-    //objectmodel::BaseContext* group = getContext();
-    OdeSolver* group = this;
-    MultiVector b(group, VecId::V_DERIV);
+    MultiVector b(this, VecId::V_DERIV);
 
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     // compute the right-hand term of the equation system
-    group->computeForce(b);             // b = f0
+    this->computeForce(b);             // b = f0
     b.teq(-1);
     solve(dt, b);
 }

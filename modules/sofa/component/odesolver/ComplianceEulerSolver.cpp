@@ -57,14 +57,13 @@ ComplianceEulerSolver::ComplianceEulerSolver()
 
 void ComplianceEulerSolver::solve(double dt)
 {
-    OdeSolver* group = this;
-    MultiVector force(group, VecId::force());
-    MultiVector pos(group, VecId::position());
-    MultiVector vel(group, VecId::velocity());
-    MultiVector acc(group, VecId::dx());
-    MultiVector posFree(group, VecId::freePosition());
-    MultiVector velFree(group, VecId::freeVelocity());
-    MultiVector dx(group, VecId::V_DERIV);
+    MultiVector force(this, VecId::force());
+    MultiVector pos(this, VecId::position());
+    MultiVector vel(this, VecId::velocity());
+    MultiVector acc(this, VecId::dx());
+    MultiVector posFree(this, VecId::freePosition());
+    MultiVector velFree(this, VecId::freeVelocity());
+    MultiVector dx(this, VecId::V_DERIV);
 
     bool printLog = f_printLog.getValue();
 
