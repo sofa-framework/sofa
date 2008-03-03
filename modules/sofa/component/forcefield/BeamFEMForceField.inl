@@ -79,34 +79,11 @@ void BeamFEMForceField<DataTypes>::init()
         _initialPoints.setValue(p);
     }
 
-    beamsData.resize(_indexedElements->size());
+
 
     typename VecElement::const_iterator it;
     unsigned int i=0;
-    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-    {
-        beamsData[i]._E = _youngModulus.getValue();
-        beamsData[i]._nu = _poissonRatio.getValue();
-        defaulttype::Vec<3,Real> dp; dp = _initialPoints.getValue()[(*it)[0]].getCenter()-_initialPoints.getValue()[(*it)[1]].getCenter();
-        beamsData[i]._L = dp.norm();
-        beamsData[i]._r = _radius.getValue();
-        beamsData[i]._G  = beamsData[i]._E/(2.0*(1.0+beamsData[i]._nu));
-        beamsData[i]._Iz = R_PI*beamsData[i]._r*beamsData[i]._r*beamsData[i]._r*beamsData[i]._r/4;
-        beamsData[i]._Iy = beamsData[i]._Iz ;
-        beamsData[i]._J  = beamsData[i]._Iz+beamsData[i]._Iy;
-        beamsData[i]._A  = R_PI*beamsData[i]._r*beamsData[i]._r;
 
-        if (_timoshenko.getValue())
-        {
-            beamsData[i]._Asy = 10.0/9.0;
-            beamsData[i]._Asz = 10.0/9.0;
-        }
-        else
-        {
-            beamsData[i]._Asy = 0.0;
-            beamsData[i]._Asz = 0.0;
-        }
-    }
     _stiffnessMatrices.resize(_indexedElements->size() );
     _forces.resize( _initialPoints.getValue().size() );
 
@@ -409,6 +386,196 @@ void BeamFEMForceField<DataTypes>::draw()
     glEnd();
 }
 
+template<class DataTypes>
+void BeamFEMForceField<DataTypes>::initBeams(unsigned int size)
+{
+    beamsData.resize(size);
+}
+
+template<class DataTypes>
+void BeamFEMForceField<DataTypes>::setBeam(unsigned int i, double E, double L, double nu, double r)
+{
+    beamsData[i].init(E,L,nu,r);
+}
+
+void BeamInfo::init(double E, double L, double nu, double r)
+{
+    _E = E;
+    _E0 = E;
+    _nu = nu;
+    _L = L;
+    _r = r;
+
+    _G=_E/(2.0*(1.0+_nu));
+    _Iz = M_PI*r*r*r*r/4;
+    _Iy = _Iz ;
+    _J = _Iz+_Iy;
+    _A = M_PI*r*r;
+
+    _Asy = 0.0;
+    _Asz = 0.0;
+
+    _k_loc.ReSize(12, 12);
+    _k_flex.ReSize(12,12);
+    _lambda.ReSize(12, 12);
+    _u_init.ReSize(12,1);
+    _u_actual.ReSize(12,1);
+    _f_k.ReSize(12,1);
+
+    _k_loc=0;
+    _u_init=0;
+
+    _Ke.ReSize(12,12);
+
+    localStiffness();
+}
+
+void BeamInfo::localStiffness()
+{
+    int      i,j;
+    double   phiy, phiz;
+    double   L2 = _L * _L;
+    double   L3 = L2 * _L;
+    double   EIy = _E * _Iy;
+    double   EIz = _E * _Iz;
+
+    // Find shear-deformation parameters
+    if (_Asy == 0)
+        phiy = 0.0;
+    else
+        phiy = 24.0*(1.0+_nu)*_Iz/(_Asy*L2);
+
+    if (_Asz == 0)
+        phiz = 0.0;
+    else
+        phiz = 24.0*(1.0+_nu)*_Iy/(_Asz*L2);
+
+
+    // Define stiffness matrix 'k' in local coordinates
+    Try
+    {
+        _k_loc = 0;
+        _k_loc(1,1)   = _E*_A/_L;
+        _k_loc(2,2)   = 12.0*EIz/(L3*(1.0+phiy));
+        _k_loc(3,3)   = 12.0*EIy/(L3*(1.0+phiz));
+        _k_loc(4,4)   = _G*_J/_L;
+        _k_loc(5,5)   = (4.0+phiz)*EIy/(_L*(1.0+phiz));
+        _k_loc(6,6)   = (4.0+phiy)*EIz/(_L*(1.0+phiy));
+        _k_loc(7,7)   = _k_loc(1,1);
+        _k_loc(8,8)   = _k_loc(2,2);
+        _k_loc(9,9)   = _k_loc(3,3);
+        _k_loc(10,10) = _k_loc(4,4);
+        _k_loc(11,11) = _k_loc(5,5);
+        _k_loc(12,12) = _k_loc(6,6);
+
+        _k_loc(5,3)   = -6.0*EIy/(L2*(1.0+phiz));
+        _k_loc(6,2)   =  6.0*EIz/(L2*(1.0+phiy));
+        _k_loc(7,1)   = -_k_loc(1,1);
+        _k_loc(8,2)   = -_k_loc(2,2);
+        _k_loc(8,6)   = -_k_loc(6,2);
+        _k_loc(9,3)   = -_k_loc(3,3);
+        _k_loc(9,5)   = -_k_loc(5,3);
+        _k_loc(10,4)  = -_k_loc(4,4);
+        _k_loc(11,3)  = _k_loc(5,3);
+        _k_loc(11,5)  = (2.0-phiz)*EIy/(_L*(1.0+phiz));
+        _k_loc(11,9)  = -_k_loc(5,3);
+        _k_loc(12,2)  = _k_loc(6,2);
+        _k_loc(12,6)  = (2.0-phiy)*EIz/(_L*(1.0+phiy));
+        _k_loc(12,8)  = -_k_loc(6,2);
+
+        for (i=1; i<=11; i++)
+            for (j=i+1; j<=12; j++)
+                _k_loc(i,j) = _k_loc(j,i);
+
+        _k_flex = _k_loc;
+
+        for (i=1; i<=12; i++)
+            _k_flex(i,i) = FLEXIBILITY * _k_flex(i,i);
+
+    }
+    CatchAll { cout << "ERROR while computing '_k_loc'" << NewMAT::Exception::what() << endl;
+             }
+}
+/*
+template<class DataTypes>
+void BeamFEMForceField<DataTypes>::computeUinit(unsigned int i, Vec3d &P1, Vec3d &P2, Vec3d &LoX1, Vec3d &LoY1, Vec3d &LoZ1, Vec3d &LoX2, Vec3d &LoY2, Vec3d &LoZ2)
+{
+	beamsData[i].computeUinit(P1, P2, LoX1, LoY1, LoZ1, LoX2, LoY2, LoZ2);
+}
+
+void BeamInfo::computeUinit(Vec3d &P1, Vec3d &P2, Vec3d &LoX1, Vec3d &LoY1, Vec3d &LoZ1, Vec3d &LoX2, Vec3d &LoY2, Vec3d &LoZ2)
+{
+	Vec3d        p2; //position of point2 in local frame (LoX1,LoY1,LoZ1);
+	Vec3d      P1P2, p1p2, p1p2_init, u_init;
+	Vec3d      LoX1_loc, LoY1_loc, LoZ1_loc, LoX2_loc, LoY2_loc, LoZ2_loc;
+	sofa::defaulttype::Mat3x3d    R1;
+	NewMAT::ColumnVector Finit(9);
+	NewMAT::ColumnVector Uinit(9);
+	NewMAT::Matrix K(9,9);
+
+	Finit=0; Uinit=0; K=0;
+
+	LoX1_loc = Vec3d(1.0,0.0,0.0);
+	LoY1_loc = Vec3d(0.0,1.0,0.0);
+	LoZ1_loc = Vec3d(0.0,0.0,1.0);
+
+ 	Try{
+		K.SubMatrix(1,6,1,6) = _k_loc.SubMatrix(7,12,7,12);
+	}
+	CatchAll {
+		cout << "ERROR while computing 'K' in ComputeUinit" << NewMAT::Exception::what() << endl;
+	}
+
+	P1P2 = P2 - P1;
+	p1p2_init = Vec3d(_L,0.0,0.0); //the beam is aligned along LoX1 if there is no initial deformation
+
+	R1[0] = LoX1;
+	R1[1] = LoY1;
+	R1[2] = LoZ1;
+
+	p1p2 = R1*P1P2;
+
+	u_init = p1p2 - p1p2_init;
+
+	// add lagrange multipliers:
+	K(7,1) = 1.0; K(1,7) = 1.0;
+	K(8,2) = 1.0; K(2,8) = 1.0;
+	K(9,3) = 1.0; K(3,9) = 1.0;
+
+	//_u_init must respect displacements
+	Finit(7) = u_init[0];
+	Finit(8) = u_init[1];
+	Finit(9) = u_init[2];
+
+	Try
+	{
+		Uinit = K.i() *	 Finit;
+	}
+	CatchAll
+	{
+		cout << "ERROR while computing 'Uinit = K.i() * Finit' in ComputeUinit" << NewMAT::Exception::what() << endl;
+	}
+	_u_init=0.0;
+ 	_u_init.SubMatrix(7,12,1,1) = Uinit.SubMatrix(1,6,1,1);
+	Vec3d vtemp = Vec3d(Uinit(4), Uinit(5), Uinit(6));
+
+	if (vtemp == Vec3d(0.0,0.0,0.0))
+		vtemp = Vec3d(0.0,0.0,1.0);
+
+	Quaternion q(vtemp, vtemp.norm());
+	vtemp.normalize();
+
+	LoX2_loc = q.rotate(LoX1_loc);
+	LoY2_loc = q.rotate(LoY1_loc);
+	LoZ2_loc = q.rotate(LoZ1_loc);
+
+	LoX2 = LoX1 * LoX2_loc[0] + LoY1 * LoX2_loc[1] + LoZ1 * LoX2_loc[2] ;
+	LoY2 = LoX1 * LoY2_loc[0] + LoY1 * LoY2_loc[1] + LoZ1 * LoY2_loc[2] ;
+	LoZ2 = LoX1 * LoZ2_loc[0] + LoY1 * LoZ2_loc[1] + LoZ1 * LoZ2_loc[2] ;
+
+	_u_actual = _u_init;
+}
+*/
 } // namespace forcefield
 
 } // namespace component

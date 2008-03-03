@@ -10,6 +10,8 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
+#include "NewMAT/newmat.h"
+
 namespace sofa
 {
 
@@ -27,7 +29,8 @@ using sofa::helper::vector;
 
 struct BeamInfo
 {
-    double _E; //Young
+    static const double FLEXIBILITY=1.00000; // was 1.00001
+    double _E0,_E; //Young
     double _nu;//Poisson
     double _L; //length
     double _r; //radius of the section
@@ -38,6 +41,27 @@ struct BeamInfo
     double _A; // A is the cross-sectional area;
     double _Asy; //_Asy is the y-direction effective shear area =  10/9 (for solid circular section) or 0 for a non-Timoshenko beam
     double _Asz; //_Asz is the z-direction effective shear area;
+
+    //new: k_loc is the stiffness in the local frame... to compute Ke we only change lambda
+    NewMAT::Matrix  _k_loc;
+    // _eigenvalue_loc are 4 diagonal matrices (6x6) representing the eigenvalues of each
+    // 6x6 block of _k_loc. _eigenvalue_loc[1] = _eigenvalue_loc[2] since _k_loc[1] = _k_loc[2]
+    NewMAT::DiagonalMatrix  _eigenvalue_loc[4], _inv_eigenvalue_loc[4];
+    // k_flex is the stiffness matrix + reinforcement of diagonal (used in gauss-seidel process)
+    NewMAT::Matrix  _k_flex;
+    //lambda is a matrix that contains the direction of the local frame in the global frame
+    NewMAT::Matrix  _lambda;
+    //non-linear value of the internal forces (computed with previous time step positions) (based on k_loc)
+    NewMAT::ColumnVector  _f_k;
+    //initial deformation of the beam (gives the curvature) on the local frame
+    NewMAT::ColumnVector _u_init;
+    //actual deformation of the beam on the local frame
+    NewMAT::ColumnVector _u_actual;
+
+    NewMAT::Matrix _Ke;
+
+    void localStiffness();
+    void init(double E, double L, double nu, double r);
 };
 
 template<class DataTypes>
@@ -115,6 +139,7 @@ public:
         , _updateStiffnessMatrix(true)
         , _assembling(false)
     {
+
     }
 
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }
@@ -134,6 +159,9 @@ public:
 
     void draw();
 
+    void setBeam(unsigned int i, double E, double L, double nu, double r);
+    void initBeams(unsigned int size);
+
 protected:
 
     //void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
@@ -146,7 +174,7 @@ protected:
 
     //void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
 
-////////////// large displacements method
+    ////////////// large displacements method
     //vector<fixed_array<Coord,4> > _rotatedInitialElements;   ///< The initials positions in its frame
     //VecReal _initialLength;
     vector<Transformation> _nodeRotations;
@@ -157,27 +185,8 @@ protected:
     //void accumulateDampingLarge( Vector& f, Index elementIndex );
     void applyStiffnessLarge( VecDeriv& f, const VecDeriv& x, int i, Index a, Index b );
 
-    /*
-        Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
-        {
-            double cosX = cos(thetaX);
-            double sinX = sin(thetaX);
-            double cosY = cos(thetaY);
-            double sinY = sin(thetaY);
-            double cosZ = cos(thetaZ);
-            double sinZ = sin(thetaZ);
-            return
-                Mat3x3d(Vec3d( cosZ, -sinZ,     0),
-                        Vec3d( sinZ,  cosZ,     0),
-                        Vec3d(    0,     0,     1)) *
-                Mat3x3d(Vec3d( cosY,     0,  sinY),
-                        Vec3d(    0,     1,     0),
-                        Vec3d(-sinY,     0,  cosY)) *
-                Mat3x3d(Vec3d(    1,     0,     0),
-                        Vec3d(    0,  cosX, -sinX),
-                        Vec3d(    0,  sinX,  cosX)) ;
-        }
-    */
+    //sofa::helper::vector< sofa::helper::vector <Real> > subMatrix(unsigned int fr, unsigned int lr, unsigned int fc, unsigned int lc);
+
 };
 
 } // namespace forcefield
