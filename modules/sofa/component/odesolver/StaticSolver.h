@@ -41,20 +41,13 @@ namespace component
 namespace odesolver
 {
 
-using core::objectmodel::Data;
-
 /** Finds the static equilibrium of a system. Can diverge when there are an infinity of solutions. */
 class StaticSolver : public sofa::simulation::tree::OdeSolverImpl
 {
 
 public:
-    Data<unsigned int> f_maxCGIter;
-    Data<double> f_smallDenominatorThreshold;
-
     StaticSolver();
 
-    //virtual const char* getTypeName() const { return "StaticSolver"; }
-    void solve(double dt, VecId b);
     void solve (double dt);
 };
 

@@ -58,7 +58,7 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
     {
         parent->addMdx(res); // no need to propagate p as dx again
     }
-    else
+    else if (mFact != 0.0)
     {
         parent->addMdx(res,SolverImpl::VecId(),mFact); // no need to propagate p as dx again
     }
@@ -137,6 +137,9 @@ defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredV
 
 template<>
 defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemInverseBaseMatrix() { return NULL; }
+
+// Force template instantiation
+template class MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
 
 } // namespace tree
 
