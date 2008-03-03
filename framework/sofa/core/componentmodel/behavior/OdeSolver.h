@@ -333,7 +333,7 @@ protected:
         MechanicalMatrix operator - (const MechanicalMatrix& m2) { return MechanicalMatrix(factors - m2.factors); }
         MechanicalMatrix operator - () { return MechanicalMatrix(- factors); }
         MechanicalMatrix operator * (double f) { return MechanicalMatrix(factors * f); }
-        friend MechanicalMatrix operator * (double f, const MechanicalMatrix& m1) { return MechanicalMatrix(m1.factors * f); }
+        //friend MechanicalMatrix operator * (double f, const MechanicalMatrix& m1) { return MechanicalMatrix(m1.factors * f); }
         MechanicalMatrix operator / (double f) { return MechanicalMatrix(factors / f); }
         friend std::ostream& operator << (std::ostream& out, const MechanicalMatrix& m )
         {
