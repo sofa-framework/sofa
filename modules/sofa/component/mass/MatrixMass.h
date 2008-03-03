@@ -107,6 +107,9 @@ public:
 
     double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
 
+    /// Add Mass contribution to global Matrix assembling
+    void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);
+
 protected:
     MassType diagonalMass( const Real& m ); ///< return a diagonal matrix mass with value m on all the diagonal
     MassType lump( const MassType& m ); ///< lump the matrix m, ie sum line on diagonal

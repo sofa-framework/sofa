@@ -30,7 +30,8 @@
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
-//#include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -216,6 +217,18 @@ double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
         e -= mg*x[i];
     }
     return e;
+}
+
+/// Add Mass contribution to global Matrix assembling
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
+{
+    const MassType& m = mass.getValue();
+    const int N = defaulttype::DataTypeInfo<Deriv>::size();
+    const unsigned int size = this->mstate->getSize();
+    AddMToMatrixFunctor<Deriv,MassType> calc;
+    for (unsigned int i=0; i<size; i++)
+        calc(mat, m, offset + N*i, mFact);
 }
 
 

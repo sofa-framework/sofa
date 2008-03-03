@@ -22,76 +22,72 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_NEWMATMATRIX_H
-#define SOFA_DEFAULTTYPE_NEWMATMATRIX_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_NEWMATMATRIX_H
+#define SOFA_COMPONENT_LINEARSOLVER_NEWMATMATRIX_H
 
 #include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/NewMatVector.h>
-
-#include "NewMAT/newmat.h"
+#include "NewMatVector.h"
 
 namespace sofa
 {
 
-namespace defaulttype
+namespace component
 {
 
-class NewMatMatrix : public BaseMatrix
+namespace linearsolver
+{
+
+class NewMatMatrix : public NewMAT::Matrix, public defaulttype::BaseMatrix
 {
 public:
 
-    NewMatMatrix()
-    {
-        impl = new NewMAT::Matrix;
-    }
-
-    virtual ~NewMatMatrix()
-    {
-        delete impl;
-    }
-
     virtual void resize(int nbRow, int nbCol)
     {
-        impl->ReSize(nbRow, nbCol);
-        (*impl) = 0.0;
-    };
+        ReSize(nbRow, nbCol);
+        (*this) = 0.0;
+    }
 
     virtual int rowSize(void)
     {
-        return impl->Nrows();
-    };
+        return Nrows();
+    }
 
     virtual int colSize(void)
     {
-        return impl->Ncols();
-    };
+        return Ncols();
+    }
 
     virtual double &element(int i, int j)
     {
-        return impl->element(i,j);
-    };
+        return NewMAT::Matrix::element(i,j);
+    }
 
-    virtual void solve(BaseVector *op, BaseVector *res)
+    void solve(NewMatVector *rv, NewMatVector *ov)
+    {
+        *rv = this->i() * *ov;
+    }
+
+    virtual void solve(defaulttype::BaseVector *op, defaulttype::BaseVector *res)
     {
         NewMatVector *rv = dynamic_cast<NewMatVector *>(res);
         NewMatVector *ov = dynamic_cast<NewMatVector *>(op);
 
         assert((ov!=NULL) && (rv!=NULL));
-        *(rv->impl) = impl->i() * (*(ov->impl));
-    };
-
-    virtual void inverse()
-    {
-        NewMAT::Matrix *back = impl;
-        impl=new NewMAT::Matrix(impl->i());
-        delete back;
+        solve(rv,ov);
     }
-private:
-    NewMAT::Matrix *impl;
+
+    template<class T>
+    void operator=(const T& m) { NewMAT::Matrix::operator=(m); }
+
+    void clear() { (*this) = 0.0; }
+
+    static const char* Name() { return "NewMat"; }
 };
 
+} // namespace linearsolver
 
-} // namespace defaulttype
+} // namespace component
 
 } // namespace sofa
+
 #endif

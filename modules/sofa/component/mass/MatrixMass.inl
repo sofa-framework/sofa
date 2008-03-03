@@ -26,6 +26,9 @@
 #define SOFA_COMPONENT_MASS_MATRIXMASS_INL
 
 #include <sofa/component/mass/MatrixMass.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/component/mass/AddMToMatrixFunctor.h>
 
 #include <sofa/helper/gl/template.h>
 
@@ -182,6 +185,15 @@ void MatrixMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, c
     }
 }
 
+template <class DataTypes, class MassType>
+void MatrixMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
+{
+    const VecMass &masses= *_usedMassMatrices;
+    const int N = defaulttype::DataTypeInfo<Deriv>::size();
+    AddMToMatrixFunctor<Deriv,MassType> calc;
+    for (unsigned int i=0; i<masses.size(); i++)
+        calc(mat, masses[i], offset + N*i, mFact);
+}
 
 
 

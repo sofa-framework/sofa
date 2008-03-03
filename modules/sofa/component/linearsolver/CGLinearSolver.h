@@ -108,9 +108,9 @@ public:
             else
             {
                 beta = rho / rho_1;
-                //p *= beta;
-                //p += r; //z;
-                v_op(p,r,p,beta); // p = p*beta + r
+                p *= beta;
+                p += r; //z;
+                //v_op(p,r,p,beta); // p = p*beta + r
             }
 
             if( verbose )

@@ -22,77 +22,117 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MKLMATRIX_H
-#define SOFA_DEFAULTTYPE_MKLMATRIX_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_NEWMATVECTOR_H
+#define SOFA_COMPONENT_LINEARSOLVER_NEWMATVECTOR_H
 
-#include <sofa/defaulttype/BaseMatrix.h>
-#include <sofa/defaulttype/MKLVector.h>
-
-#include <MKL/mat_dyn.h>
-#include <mkl_lapack.h>
+#include "NewMAT/newmat.h"
+//#define WANT_STREAM
+//#include "NewMAT/newmatio.h"
+#include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
 {
 
-namespace defaulttype
+namespace component
 {
 
-class MKLMatrix : public BaseMatrix
+namespace linearsolver
 {
+
+class NewMatVector : public NewMAT::ColumnVector, public defaulttype::BaseVector
+{
+    friend class NewMatMatrix;
 public:
 
-    MKLMatrix()
+    NewMatVector()
     {
-        impl = new Dynamic_Matrix<double>;
     }
 
-    virtual ~MKLMatrix()
+    virtual ~NewMatVector()
     {
-        delete impl;
     }
 
-    virtual void resize(int nbRow, int nbCol)
+    virtual void resize(int dim)
     {
-        impl->resize(nbRow, nbCol);
-        //	(*impl) = 0.0;
-    };
+        ReSize(dim);
+        (*this) = 0.0;
+    }
 
-    virtual int rowSize(void)
+    virtual double &element(int i)
     {
-        return impl->rows;
-    };
+        return NewMAT::ColumnVector::element(i);
+    }
 
-    virtual int colSize(void)
+    double& operator[](int i)
     {
-        return impl->columns;
-    };
+        return NewMAT::ColumnVector::element(i);
+    }
 
-    virtual double &element(int i, int j)
+    double operator[](int i) const
     {
-        return *(impl->operator[](j) + i);
-    };
+        return NewMAT::ColumnVector::element(i);
+    }
 
-    virtual void solve(MKLVector *rHTerm)
+    virtual int size(void)
     {
-        int n=impl->rows;
-        int nrhs=1;
-        int lda = n;
-        int ldb = n;
-        int info;
-        int *ipiv = new int[n];
+        return Nrows();
+    }
 
-        // solve Ax=b
-        // b is overwritten by the linear system solution
-        dgesv(&n,&nrhs,impl->m,&lda,ipiv,rHTerm->impl->v,&ldb,&info);
-    };
+    /// v = 0
+    void clear()
+    {
+        (*this) = 0.0;
+    }
 
+    /// v = a
+    void eq(const NewMatVector& a)
+    {
+        (*this) = a;
+    }
 
-private:
-    Dynamic_Matrix<double> *impl;
+    /// v += a*f
+    void peq(const NewMatVector& a, double f=1.0)
+    {
+        (*this) += a*f;
+    }
+    /// v *= f
+    void teq(double f)
+    {
+        (*this) *= f;
+    }
+    /// \return v.a
+    double dot(const NewMatVector& a) const
+    {
+        return NewMAT::DotProduct(*this,a);
+    }
+
+    /// \return sqrt(v.v)
+    double norm() const
+    {
+        return NormFrobenius();
+    }
+
+    //void operator=(double f) { NewMAT::ColumnVector::operator=(f); }
+
+    template<class T>
+    void operator=(const T& m) { NewMAT::ColumnVector::operator=(m); }
+
+    friend std::ostream& operator << (std::ostream& out, const NewMatVector& v )
+    {
+        for (int i=0,s=v.Nrows(); i<s; ++i)
+        {
+            if (i) out << ' ';
+            out << v[i];
+        }
+        return out;
+    }
+
 };
 
+} // namespace linearsolver
 
-} // namespace defaulttype
+} // namespace component
 
 } // namespace sofa
+
 #endif

@@ -22,8 +22,8 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_MKLVECTOR_H
-#define SOFA_DEFAULTTYPE_MKLVECTOR_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_MKLVECTOR_H
+#define SOFA_COMPONENT_LINEARSOLVER_MKLVECTOR_H
 
 #include <sofa/defaulttype/BaseVector.h>
 
@@ -32,10 +32,13 @@
 namespace sofa
 {
 
-namespace defaulttype
+namespace component
 {
 
-class MKLVector : public BaseVector
+namespace linearsolver
+{
+
+class MKLVector : public defaulttype::BaseVector
 {
     friend class MKLMatrix;
 
@@ -70,7 +73,9 @@ private:
     Dynamic_Vector<double> *impl;
 };
 
-} // namespace defaulttype
+} // namespace linearsolver
+
+} // namespace component
 
 } // namespace sofa
 
