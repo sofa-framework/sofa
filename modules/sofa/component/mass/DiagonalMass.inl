@@ -256,8 +256,8 @@ template <class DataTypes, class MassType>
 DiagonalMass<DataTypes, MassType>::DiagonalMass()
     : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
     , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry") )
-    , showCenterOfGravity( initData(&showCenterOfGravity, false, "show center of gravity", "display the center of gravity of the system" ) )
-    , showAxisSize( initData(&showAxisSize, 1.0f, "axis size factor", "factor length of the axis displayed (only used for rigids)" ) )
+    , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
+    , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , topologyType(TOPOLOGY_UNKNOWN)
 {
 

@@ -51,8 +51,8 @@ template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::UniformMass()
     : mass( initData(&mass, MassType(1.0f), "mass", "Mass of each particle") )
     , totalMass( initData(&totalMass, 0.0, "totalmass", "Sum of the particles' masses") )
-    , showCenterOfGravity( initData(&showCenterOfGravity, false, "show center of gravity", "display the center of gravity of the system" ) )
-    , showAxisSize( initData(&showAxisSize, 1.0f, "axis size factor", "factor length of the axis displayed (only used for rigids)" ) )
+    , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
+    , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
 {}
 
 template <class DataTypes, class MassType>
