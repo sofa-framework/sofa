@@ -26,6 +26,7 @@
 //
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/linearsolver/CGLinearSolver.h>
+#include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
@@ -47,6 +48,7 @@ SOFA_DECL_CLASS(CGLinearSolver)
 
 int CGLinearSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
         .add< CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
+        .add< CGLinearSolver<NewMatMatrix,NewMatVector> >()
         .addAlias("CGSolver")
         .addAlias("ConjugateGradient")
         ;

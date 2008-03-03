@@ -147,12 +147,12 @@ template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
 {
     if (!systemMatrix) systemMatrix = new Matrix;
-    systemMatrix->resize(n);
+    systemMatrix->resize(n,n);
     if (!systemRHVector) systemRHVector = new Vector;
     systemRHVector->resize(n);
     if (!systemLHVector) systemLHVector = new Vector;
     systemLHVector->resize(n);
-    if (systemInverseMatrix) systemInverseMatrix->resize(n);
+    if (systemInverseMatrix) systemInverseMatrix->resize(n,n);
 }
 
 template<class Matrix, class Vector>
@@ -192,11 +192,11 @@ void MatrixLinearSolver<Matrix,Vector>::solveSystem()
     if (!solutionVecId.isNull())
     {
         unsigned int offset = 0;
-        //MechanicalBaseVector2MultiVectorVisitor(systemRHVector, solutionVecId, offset).execute( getContext() );
+        //MechanicalBaseVector2MultiVectorVisitor(systemLHVector, solutionVecId, offset).execute( getContext() );
         //MechanicalVOpVisitor(solutionVecId).execute( getContext() ); // clear solutionVecId
-        //MechanicalMultiVectorPeqBaseVectorVisitor(solutionVecId, systemRHVector, offset).execute( getContext() );
+        //MechanicalMultiVectorPeqBaseVectorVisitor(solutionVecId, systemLHVector, offset).execute( getContext() );
         v_clear(solutionVecId);
-        multiVectorPeqBaseVector(solutionVecId, systemRHVector, offset);
+        multiVectorPeqBaseVector(solutionVecId, systemLHVector, offset);
     }
 }
 

@@ -20,8 +20,6 @@ HEADERS += \
           Frame.h \ 
           LaparoscopicRigidTypes.h \
           Mat.h \
-	  NewMatMatrix.h \
-          NewMatVector.h \
           Quat.h \
           Quat.inl \
           RigidTypes.h \
@@ -34,11 +32,3 @@ HEADERS += \
 SOURCES += \
           Frame.cpp \
           SolidTypes.cpp
-
-contains(DEFINES,SOFA_HAVE_MKL) {
-
-HEADERS += \
-	MKLMatrix.h \
-	MKLVector.h
-
-}

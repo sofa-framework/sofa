@@ -89,6 +89,9 @@ public:
 
     void addGravityToV(double dt);
 
+    /// Add Mass contribution to global Matrix assembling
+    void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);
+
     void draw();
 
     bool addBBox(double* minBBox, double* maxBBox);

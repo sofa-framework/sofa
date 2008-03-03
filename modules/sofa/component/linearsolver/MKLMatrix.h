@@ -22,55 +22,82 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_NEWMATVECTOR_H
-#define SOFA_DEFAULTTYPE_NEWMATVECTOR_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_MKLMATRIX_H
+#define SOFA_COMPONENT_LINEARSOLVER_MKLMATRIX_H
 
-#include "NewMAT/newmat.h"
-#include <sofa/defaulttype/BaseVector.h>
-#include <sofa/defaulttype/NewMatMatrix.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/MKLVector.h>
+
+#include <MKL/mat_dyn.h>
+#include <mkl_lapack.h>
 
 namespace sofa
 {
 
-namespace defaulttype
+namespace component
 {
 
-class NewMatVector : public BaseVector
+namespace linearsolver
 {
-    friend class NewMatMatrix;
+
+class MKLMatrix : public defaulttype::BaseMatrix
+{
 public:
 
-    NewMatVector()
+    MKLMatrix()
     {
-        impl = new NewMAT::ColumnVector();
+        impl = new Dynamic_Matrix<double>;
     }
 
-    virtual ~NewMatVector()
+    virtual ~MKLMatrix()
     {
         delete impl;
     }
 
-    virtual void resize(int dim)
+    virtual void resize(int nbRow, int nbCol)
     {
-        impl->ReSize(dim);
-        (*impl) = 0.0;
+        impl->resize(nbRow, nbCol);
+        //	(*impl) = 0.0;
     };
 
-    virtual double &element(int i)
+    virtual int rowSize(void)
     {
-        return impl->element(i);
+        return impl->rows;
     };
 
-    virtual int size(void)
+    virtual int colSize(void)
     {
-        return impl->Nrows();
+        return impl->columns;
     };
+
+    virtual double &element(int i, int j)
+    {
+        return *(impl->operator[](j) + i);
+    };
+
+    virtual void solve(MKLVector *rHTerm)
+    {
+        int n=impl->rows;
+        int nrhs=1;
+        int lda = n;
+        int ldb = n;
+        int info;
+        int *ipiv = new int[n];
+
+        // solve Ax=b
+        // b is overwritten by the linear system solution
+        dgesv(&n,&nrhs,impl->m,&lda,ipiv,rHTerm->impl->v,&ldb,&info);
+    };
+
 
 private:
-    NewMAT::ColumnVector *impl;
+    Dynamic_Matrix<double> *impl;
 };
 
-} // namespace defaulttype
+
+} // namespace linearsolver
+
+} // namespace component
 
 } // namespace sofa
 

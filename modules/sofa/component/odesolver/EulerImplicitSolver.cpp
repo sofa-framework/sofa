@@ -67,7 +67,7 @@ void EulerImplicitSolver::solve(double dt)
     MultiVector x(this, VecId::V_DERIV);
 
     double h = dt;
-    const bool printLog = f_printLog.getValue();
+    //const bool printLog = f_printLog.getValue();
     const bool verbose  = f_verbose.getValue();
 
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
@@ -105,7 +105,7 @@ void EulerImplicitSolver::solve(double dt)
     matrix = MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue());
 
     if( verbose )
-        cerr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) <<endl;
+        cerr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<endl;
 
     matrix.solve(x, b);
     // x is the solution of the system

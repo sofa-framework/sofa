@@ -491,18 +491,20 @@ inline void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transform
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
 {
-
-    Transformation R0t;
-    R0t.transpose(_initialRotations[_rotationIdx[nodeIdx]]);
-    R = _rotations[_rotationIdx[nodeIdx]] * R0t;
-    //R = _rotations[_rotationIdx[nodeIdx]];
-
-    /*
-    	R[0][0] = 1.0 ; R[1][1] = 1.0 ;R[2][2] = 1.0 ;
-    	R[0][1] = 0.0 ; R[0][2] = 0.0 ;
-    	R[1][0] = 0.0 ; R[1][2] = 0.0 ;
-    	R[2][0] = 0.0 ; R[2][1] = 0.0 ;
-    */
+    if (!_rotationIdx.empty())
+    {
+        Transformation R0t;
+        R0t.transpose(_initialRotations[_rotationIdx[nodeIdx]]);
+        R = _rotations[_rotationIdx[nodeIdx]] * R0t;
+        //R = _rotations[_rotationIdx[nodeIdx]];
+    }
+    else
+    {
+        R[0][0] = 1.0 ; R[1][1] = 1.0 ; R[2][2] = 1.0 ;
+        R[0][1] = 0.0 ; R[0][2] = 0.0 ;
+        R[1][0] = 0.0 ; R[1][2] = 0.0 ;
+        R[2][0] = 0.0 ; R[2][1] = 0.0 ;
+    }
 }
 
 template<class DataTypes>
@@ -730,6 +732,12 @@ void TetrahedronFEMForceField<DataTypes>::initPolar(int i, Index& a, Index&b, In
     polar_decomp(A, R_0_1, S);
 
     _initialRotations[i].transpose( R_0_1);
+
+    //save the element index as the node index
+    _rotationIdx[a] = i;
+    _rotationIdx[b] = i;
+    _rotationIdx[c] = i;
+    _rotationIdx[d] = i;
 
     _rotatedInitialElements[i][0] = R_0_1*_initialPoints[a];
     _rotatedInitialElements[i][1] = R_0_1*_initialPoints[b];
@@ -1192,43 +1200,44 @@ void TetrahedronFEMForceField<DataTypes>::draw()
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     ////////////// AFFICHAGE DES ROTATIONS ////////////////////////
-
-    glBegin(GL_LINES);
-    glLineWidth(5);
-
-    for(unsigned ii = 0; ii<  x.size() ; ii++)
+    if (getContext()->getShowNormals())
     {
-        Coord a = x[ii];
-        Transformation R;
-        getRotation(R, ii);
-        //R.transpose();
-        Deriv v;
-        // x
-        glColor4f(1,0,0,1);
-        v.x() =1.0; v.y()=0.0; v.z()=0.0;
-        Coord b = a + R*v;
-        helper::gl::glVertexT(a);
-        helper::gl::glVertexT(b);
-        // y
-        glColor4f(0,1,0,1);
-        v.x() =0.0; v.y()=1.0; v.z()=0.0;
-        b = a + R*v;
-        helper::gl::glVertexT(a);
-        helper::gl::glVertexT(b);
-        // z
-        glColor4f(0,0,1,1);
-        v.x() =0.0; v.y()=0.0; v.z()=1.0;
-        b = a + R*v;
-        helper::gl::glVertexT(a);
-        helper::gl::glVertexT(b);
-    }
-    glEnd();
+        glBegin(GL_LINES);
+        glLineWidth(5);
 
+        for(unsigned ii = 0; ii<  x.size() ; ii++)
+        {
+            Coord a = x[ii];
+            Transformation R;
+            getRotation(R, ii);
+            //R.transpose();
+            Deriv v;
+            // x
+            glColor4f(1,0,0,1);
+            v.x() =1.0; v.y()=0.0; v.z()=0.0;
+            Coord b = a + R*v;
+            helper::gl::glVertexT(a);
+            helper::gl::glVertexT(b);
+            // y
+            glColor4f(0,1,0,1);
+            v.x() =0.0; v.y()=1.0; v.z()=0.0;
+            b = a + R*v;
+            helper::gl::glVertexT(a);
+            helper::gl::glVertexT(b);
+            // z
+            glColor4f(0,0,1,1);
+            v.x() =0.0; v.y()=0.0; v.z()=1.0;
+            b = a + R*v;
+            helper::gl::glVertexT(a);
+            helper::gl::glVertexT(b);
+        }
+        glEnd();
+    }
 }
 
 
 template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, double /*k*/, unsigned int &offset)
+void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     int i,j,n1, n2, row, column, ROW, COLUMN , IT;
@@ -1247,7 +1256,10 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
 
     for(it = _indexedElements->begin(), IT=0 ; it != _indexedElements->end() ; ++it,++IT)
     {
-        computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
+        if (method == SMALL)
+            computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],Rot);
+        else
+            computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[IT], _strainDisplacements[IT],_rotations[IT]);
 
         // find index of node 1
         for (n1=0; n1<4; n1++)
@@ -1267,7 +1279,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
                     {
                         COLUMN = offset+3*noeud2+j;
                         column = 3*n2+j;
-                        mat->element(ROW, COLUMN) += tmp[row][column];
+                        mat->element(ROW, COLUMN) -= tmp[row][column]*k;
                     }
                 }
             }

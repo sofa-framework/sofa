@@ -29,10 +29,12 @@
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/topology/EdgeSetTopology.h>
 #include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/component/topology/PointData.inl>
 #include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/mass/AddMToMatrixFunctor.h>
 
 namespace sofa
 {
@@ -356,6 +358,16 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
         e -= theGravity*masses[i]*x[i];
     }
     return e;
+}
+
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
+{
+    const MassVector &masses= f_mass.getValue();
+    const int N = defaulttype::DataTypeInfo<Deriv>::size();
+    AddMToMatrixFunctor<Deriv,MassType> calc;
+    for (unsigned int i=0; i<masses.size(); i++)
+        calc(mat, masses[i], offset + N*i, mFact);
 }
 
 template <class DataTypes, class MassType>
