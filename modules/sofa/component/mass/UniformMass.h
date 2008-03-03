@@ -55,6 +55,10 @@ public:
     Data<MassType> mass;    ///< the mass of each particle
     Data<double> totalMass; ///< if >0 : total mass of this body
 
+    /// to display the center of gravity of the system
+    Data< bool > showCenterOfGravity;
+    Data< float > showAxisSize;
+
 public:
     UniformMass();
 

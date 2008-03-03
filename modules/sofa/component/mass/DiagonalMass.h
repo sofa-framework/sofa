@@ -73,6 +73,11 @@ public:
     Data< VecMass > f_mass;
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > m_massDensity;
+
+    /// to display the center of gravity of the system
+    Data< bool > showCenterOfGravity;
+    Data< float > showAxisSize;
+
 protected:
     //VecMass masses;
 
