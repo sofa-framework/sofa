@@ -82,7 +82,9 @@ void BeamLinearMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
         Coord inpos1 = inpos; inpos1[0] -= 1;
         rotatedPoints1[i] = in[in0+1].getOrientation().rotate(inpos1);
         Coord out1 = in[in0+1].getCenter() + rotatedPoints1[i];
-        out[i] = out0 * (1-inpos[0]) + out1 * (inpos[0]);
+        Real fact = inpos[0];
+        fact = 3*(fact*fact)-2*(fact*fact*fact);
+        out[i] = out0 * (1-fact) + out1 * (fact);
     }
 }
 
@@ -108,7 +110,9 @@ void BeamLinearMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const
         Deriv out0 = in[in0].getVCenter() - cross(rotatedPoints0[i], omega0);
         Deriv omega1 = in[in0+1].getVOrientation();
         Deriv out1 = in[in0+1].getVCenter() - cross(rotatedPoints1[i], omega1);
-        out[i] = out0 * (1-inpos[0]) + out1 * (inpos[0]);
+        Real fact = inpos[0];
+        fact = 3*(fact*fact)-2*(fact*fact*fact);
+        out[i] = out0 * (1-fact) + out1 * (fact);
     }
 }
 
@@ -143,10 +147,12 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const
         if (in0<0) in0 = 0; else if (in0 > (int)out.size()-2) in0 = out.size()-2;
         inpos[0] -= in0;
         Deriv f = in[i];
-        out[in0].getVCenter() += f * (1-inpos[0]);
-        out[in0].getVOrientation() += cross(rotatedPoints0[i], f) * (1-inpos[0]);
-        out[in0+1].getVCenter() += f * (inpos[0]);
-        out[in0+1].getVOrientation() += cross(rotatedPoints1[i], f) * (inpos[0]);
+        Real fact = inpos[0];
+        fact = 3*(fact*fact)-2*(fact*fact*fact);
+        out[in0].getVCenter() += f * (1-fact);
+        out[in0].getVOrientation() += cross(rotatedPoints0[i], f) * (1-fact);
+        out[in0+1].getVCenter() += f * (fact);
+        out[in0+1].getVOrientation() += cross(rotatedPoints1[i], f) * (fact);
     }
     //out[index.getValue()].getVCenter() += v;
     //out[index.getValue()].getVOrientation() += omega;
@@ -190,16 +196,18 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecConst& out, const
             int in0 = helper::rfloor(inpos[0]);
             if (in0<0) in0 = 0; else if (in0 > (int)x.size()-2) in0 = x.size()-2;
             inpos[0] -= in0;
+            Real fact = inpos[0];
+            fact = 3*(fact*fact)-2*(fact*fact*fact);
             /////////////////////////
             Deriv w_n = (Deriv) in[i][j].data;	// weighted value of the constraint direction
 
             // Compute the mapped Constraint on the beam nodes ///
             InDeriv direction0;
-            direction0.getVCenter() = w_n * (1-inpos[0]);
-            direction0.getVOrientation() = cross(rotatedPoints0[index], w_n) * (1-inpos[0]);
+            direction0.getVCenter() = w_n * (1-fact);
+            direction0.getVOrientation() = cross(rotatedPoints0[index], w_n) * (1-fact);
             InDeriv direction1;
-            direction1.getVCenter() = w_n * (inpos[0]);
-            direction1.getVOrientation() = cross(rotatedPoints1[index], w_n) * (inpos[0]);
+            direction1.getVCenter() = w_n * (fact);
+            direction1.getVOrientation() = cross(rotatedPoints1[index], w_n) * (fact);
             out[outSize+i].push_back(InSparseDeriv(in0, direction0));
             out[outSize+i].push_back(InSparseDeriv(in0+1, direction1));
         }
