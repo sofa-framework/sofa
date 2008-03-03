@@ -5,7 +5,8 @@
     <Object type="CollisionResponse" name="Response" response="default" />
     <Object type="CollisionGroup" name="Group" />
    <Node name="beam">
-      <Object type="CGImplicit" threshold="0.000000001" tolerance="0.0000000001" rayleighStiffness="0" printLog="false" />
+      <Object type="EulerImplicit" rayleighStiffness="0" printLog="false" />
+      <Object type="CGLinearSolver" _template="NewMat" threshold="0.000000001" tolerance="0.0000000001" printLog="false" />
       <Object type="MechanicalObject" template="Rigid" name="DOFs" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1  4 0 0 0 0 0 1  5 0 0 0 0 0 1  6 0 0 0 0 0 1  7 0 0 0 0 0 1" />
       <Object type="Mesh" name="lines" lines="0 1 1 2 2 3 3 4 4 5 5 6 6 7" />
       <!--
@@ -38,7 +39,8 @@
       </Node>
    </Node>
    <Node name="beam2">
-      <Object type="CGImplicit" threshold="0.000000001" tolerance="0.0000000001" rayleighStiffness="0" printLog="false" />
+      <Object type="EulerImplicit" rayleighStiffness="0" printLog="false" />
+      <Object type="CGLinearSolver" _template="NewMat" threshold="0.000000001" tolerance="0.0000000001" printLog="false" />
       <!--
       <Object type="MechanicalObject" template="Rigid" name="DOFs" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1" />
       <Object type="Mesh" name="lines" lines="0 1 1 2 2 3" />

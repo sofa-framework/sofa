@@ -87,6 +87,9 @@ void BeamFEMForceField<DataTypes>::init()
     _stiffnessMatrices.resize(_indexedElements->size() );
     _forces.resize( _initialPoints.getValue().size() );
 
+    bool needInit = (beamsData.empty());
+    if (needInit)
+        initBeams(_indexedElements->size());
     //case LARGE :
     {
         _beamQuat.resize( _indexedElements->size() );
@@ -97,6 +100,8 @@ void BeamFEMForceField<DataTypes>::init()
             Index a = (*it)[0];
             Index b = (*it)[1];
 
+            if (needInit)
+                setBeam(i, _youngModulus.getValue(), (_initialPoints.getValue()[a].getCenter()-_initialPoints.getValue()[b].getCenter()).norm(), _poissonRatio.getValue(), _radius.getValue() );
             computeStiffness(i,a,b);
             initLarge(i,a,b);
         }
@@ -228,8 +233,7 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 {
-    behavior::MechanicalState<DataTypes>* mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = *this->mstate->getX();
 
     Quat quatA, quatB, dQ;
     Vec3d dW;
@@ -258,8 +262,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecCoord & x, int i, Index a, Index b )
 {
-    behavior::MechanicalState<DataTypes>* mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    const VecCoord& x0 = *mstate->getX0();
+    const VecCoord& x0 = *this->mstate->getX0();
 
     Vec<3,Real> u, P1P2, P1P2_0;
     // local displacement
@@ -307,8 +310,7 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::applyStiffnessLarge( VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b )
 {
-    behavior::MechanicalState<DataTypes>* mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
-    const VecCoord& x = *mstate->getX();
+    const VecCoord& x = *this->mstate->getX();
 
     Displacement local_depl;
     Vec3d u;
@@ -344,6 +346,46 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge( VecDeriv& df, const VecD
 
     df[a] += Deriv(-fa1,-fa2);
     df[b] += Deriv(-fb1,-fb2);
+}
+
+template<class DataTypes>
+void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
+{
+    const VecCoord& x = *this->mstate->getX();
+
+    unsigned int i=0;
+    typename VecElement::const_iterator it;
+
+    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+    {
+        Index a = (*it)[0];
+        Index b = (*it)[1];
+
+        Displacement local_depl;
+        Vec3d u;
+        const Quat& q = x[a].getOrientation();
+        Transformation R,Rt;
+        q.toMatrix(R);
+        Rt.transpose(R);
+        const StiffnessMatrix& K0 = _stiffnessMatrices[i];
+        StiffnessMatrix K;
+        for (int x1=0; x1<12; x1+=3)
+            for (int y1=0; y1<12; y1+=3)
+            {
+                Mat<3,3,Real> m;
+                K0.getsub(x1,y1, m);
+                m = R*m*Rt;
+                K.setsub(x1,y1, m);
+            }
+        int index[12];
+        for (int x1=0; x1<6; x1++)
+            index[x1] = offset+a*6+x1;
+        for (int x1=0; x1<6; x1++)
+            index[6+x1] = offset+b*6+x1;
+        for (int x1=0; x1<12; ++x1)
+            for (int y1=0; y1<12; ++y1)
+                mat->element(index[x1], index[y1]) -= K(x1,y1)*k;
+    }
 }
 
 template<class DataTypes>
