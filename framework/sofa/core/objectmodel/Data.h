@@ -61,6 +61,7 @@ public:
      */
     Data( const char* helpMsg=0 )
         : BaseData(helpMsg)
+        , m_value(T()) // BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {}
 
     /** Constructor

@@ -180,6 +180,34 @@ public:
     }
 };
 
+/** Find the first available index for a VecId
+*/
+class MechanicalVAvailVisitor : public MechanicalVisitor
+{
+public:
+    VecId& v;
+    MechanicalVAvailVisitor(VecId& v) : v(v)
+    {}
+    virtual Result fwdMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
+    {
+        mm->vAvail(v);
+        return RESULT_CONTINUE;
+    }
+    virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    {
+        core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
+        if (mm)
+            mm->vAvail(v);
+        return RESULT_CONTINUE;
+    }
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+};
+
 /** Reserve an auxiliary vector identified by a symbolic constant.
 */
 class MechanicalVAllocVisitor : public MechanicalVisitor

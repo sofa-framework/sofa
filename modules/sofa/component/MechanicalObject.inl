@@ -786,6 +786,23 @@ typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::get
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::vAvail(VecId& v)
+{
+    if (v.type == VecId::V_COORD)
+    {
+        for (unsigned int i=v.index; i < vectorsCoord.size(); ++i)
+            if (vectorsCoord[i] && ! vectorsCoord[i]->empty())
+                v.index = i+1;
+    }
+    else if (v.type == VecId::V_DERIV)
+    {
+        for (unsigned int i=v.index; i < vectorsDeriv.size(); ++i)
+            if (vectorsDeriv[i] && ! vectorsDeriv[i]->empty())
+                v.index = i+1;
+    }
+}
+
+template <class DataTypes>
 void MechanicalObject<DataTypes>::vAlloc(VecId v)
 {
     if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
