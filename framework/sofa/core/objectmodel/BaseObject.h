@@ -89,8 +89,11 @@ public:
         if (arg) obj->parse(arg);
     }
 
-    /// Initialization method called after each graph modification.
+    /// Initialization method called at graph modification, during bottom-up traversal.
     virtual void init();
+
+    /// Initialization method called at graph modification, during top-down traversal.
+    virtual void bwdInit();
 
     /// Update method called when variables used in precomputation are modified.
     virtual void reinit();
