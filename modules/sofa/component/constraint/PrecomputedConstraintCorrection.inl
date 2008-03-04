@@ -54,6 +54,8 @@ template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
     : _rotations(false)
     , f_rotations(initDataPtr(&f_rotations,&_rotations,"rotations",""))
+    , _restRotations(false)
+    , f_restRotations(initDataPtr(&f_restRotations,&_restRotations,"restDeformations",""))
     , mstate(mm)
 {
 }
@@ -202,21 +204,55 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
     _sparseCompliance.resize(v0.size()*MAX_NUM_CONSTRAINT_PER_NODE);
 
 
-    //  debug print 10 first row and column of the matrix
-    std::cout << "Matrix compliance" ;
+    ////  debug print 100 first row and column of the matrix
+    //std::cout << "Matrix compliance" ;
 
-    for (unsigned int i=0; i<100 && i<nbCols; i++)
-    {
-        std::cout << std::endl;
-        for (unsigned int j=0; j<100 && j<nbCols; j++)
-        {
-            std::cout <<" \t "<< appCompliance[j*nbCols + i];
-        }
-    }
+    //for (unsigned int i=0; i<100 && i<nbCols; i++){
+    //	std::cout << std::endl;
+    //	for (unsigned int j=0; j<100 && j<nbCols; j++)
+    //	{
+    //		std::cout <<" \t "<< appCompliance[j*nbCols + i];
+    //	}
+    //}
+    //std::cout << "quit init "  << endl;
+
+    std::cout << "----------- Test Quaternions --------------" << std::endl;
+
+    // rotation de -Pi/2 autour de z en init
+    Quat q0(0,0,-0.7071067811865475, 0.7071067811865475);
+    q0.normalize();
+
+
+    // rotation de -Pi/2 autour de x dans le repère défini par q0; (=rotation Pi/2 autour de l'axe y dans le repère global)
+    Quat q_q0(-0.7071067811865475,0,0,0.7071067811865475);
+    q_q0.normalize();
+
+
+    // calcul de la rotation équivalente dans le repère global;
+    Quat q = q0 * q_q0;
+    q.normalize();
+
+    // test des rotations:
+    std::cout<<"VecX = "<<q.rotate( Vec3d(1.0,0.0,0.0) )<<std::endl;
+    std::cout<<"VecY = "<<q.rotate( Vec3d(0.0,1.0,0.0) )<<std::endl;
+    std::cout<<"VecZ = "<<q.rotate( Vec3d(0.0,0.0,1.0) )<<std::endl;
+
+
+    // on veut maintenant retrouver l'équivalent de q_q0 dans le repère global
+    // c'est à dire une rotation de Pi/2 autour de l'axe y
+    Quat q_test = q * q0.inverse();
+
+    std::cout<<"q_test = "<<q_test<<std::endl;
+
+    std::cout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<std::endl;
 
 
 
-    std::cout << "quit init "  << endl;
+
+
+
+
+
 }
 
 template<>
@@ -413,7 +449,8 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(double *f)
     force.clear();
     force.resize(x_free.size());
 
-    rotateResponse();
+    if(_rotations)
+        rotateResponse();
 
 
     for (unsigned int i=0; i< dx.size(); i++)
@@ -620,6 +657,7 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateConstraint
 {
     VecCoord& x = *mstate->getX();
     VecConst& constraints = *mstate->getC();
+    VecCoord& x0 = *mstate->getX0();
 
     unsigned int numConstraints = constraints.size();
 //	int sizemax=0;
@@ -632,9 +670,15 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateConstraint
         for(int i = 0; i < sizeCurRowConst; i++)
         {
             const int localRowNodeIdx = constraints[curRowConst][i].index;
+            Quat q;
+            if (_restRotations)
+                q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
+            else
+                q = x[localRowNodeIdx].getOrientation();
 
-            Vec3d n_i = x[localRowNodeIdx].getOrientation().inverseRotate(constraints[curRowConst][i].data.getVCenter());
-            Vec3d wn_i= x[localRowNodeIdx].getOrientation().inverseRotate(constraints[curRowConst][i].data.getVOrientation());
+
+            Vec3d n_i = q.inverseRotate(constraints[curRowConst][i].data.getVCenter());
+            Vec3d wn_i= q.inverseRotate(constraints[curRowConst][i].data.getVOrientation());
 
             // on passe les normales du repere global au repere local
             constraints[curRowConst][i].data.getVCenter() = n_i;
@@ -683,12 +727,19 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateResponse()
 
     VecDeriv& dx = *mstate->getDx();
     VecCoord& x = *mstate->getX();
+    VecCoord& x0 = *mstate->getX0();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
-        // on passe les deplacements du repere local au repere global
+        // on passe les deplacements du repere local (au repos) au repere global
         Deriv toto ;
-        toto.getVCenter()		= x[j].getOrientation().rotate(dx[j].getVCenter());
-        toto.getVOrientation()  = x[j].getOrientation().rotate(dx[j].getVOrientation());
+        Quat q;
+        if (_restRotations)
+            q = x[j].getOrientation() * x0[j].getOrientation().inverse();
+        else
+            q = x[j].getOrientation();
+
+        toto.getVCenter()		= q.rotate(dx[j].getVCenter());
+        toto.getVOrientation()  = q.rotate(dx[j].getVOrientation());
         dx[j] = toto;
     }
 }
