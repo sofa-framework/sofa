@@ -90,6 +90,22 @@ void Constraint<DataTypes>::projectPosition()
 }
 
 template<class DataTypes>
+void Constraint<DataTypes>::projectFreeVelocity()
+{
+    if( !isActive() ) return;
+    if (mstate)
+        projectVelocity(*mstate->getVfree());
+}
+
+template<class DataTypes>
+void Constraint<DataTypes>::projectFreePosition()
+{
+    if( !isActive() ) return;
+    if (mstate)
+        projectPosition(*mstate->getXfree());
+}
+
+template<class DataTypes>
 void Constraint<DataTypes>::applyConstraint(unsigned int &contactId)
 {
     if( !isActive() ) return;

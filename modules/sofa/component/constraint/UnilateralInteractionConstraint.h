@@ -100,9 +100,11 @@ public:
     virtual void getConstraintId(long* id, unsigned int &offset);
 
     // Previous Constraint Interface
-    virtual void projectResponse() {};
-    virtual void projectVelocity() {};
-    virtual void projectPosition() {};
+    virtual void projectResponse() {}
+    virtual void projectVelocity() {}
+    virtual void projectPosition() {}
+    virtual void projectFreeVelocity() {}
+    virtual void projectFreePosition() {}
 
     /// Pre-construction check method called by ObjectFactory.
     template<class T>

@@ -98,6 +98,20 @@ public:
     /// the component.
     virtual void projectPosition();
 
+    /// Project vFree to constrained space (vFree models a velocity).
+    ///
+    /// This method retrieves the vFree vector from the MechanicalState and call
+    /// the internal projectVelocity(VecDeriv&,VecDeriv&) method implemented by
+    /// the component.
+    virtual void projectFreeVelocity();
+
+    /// Project xFree to constrained space (xFree models a position).
+    ///
+    /// This method retrieves the xFree vector from the MechanicalState and call
+    /// the internal projectPosition(VecCoord&,VecCoord&) method implemented by
+    /// the component.
+    virtual void projectFreePosition();
+
     /// Project dx to constrained space (dx models an acceleration).
     ///
     /// This method must be implemented by the component, and is usually called

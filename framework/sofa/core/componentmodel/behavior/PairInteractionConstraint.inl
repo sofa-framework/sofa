@@ -94,6 +94,22 @@ void PairInteractionConstraint<DataTypes>::projectPosition()
 }
 
 template<class DataTypes>
+void PairInteractionConstraint<DataTypes>::projectFreeVelocity()
+{
+    if( !isActive() ) return;
+    if (mstate1 && mstate2)
+        projectVelocity(*mstate1->getVfree(), *mstate2->getVfree());
+}
+
+template<class DataTypes>
+void PairInteractionConstraint<DataTypes>::projectFreePosition()
+{
+    if( !isActive() ) return;
+    if (mstate1 && mstate2)
+        projectPosition(*mstate1->getXfree(), *mstate2->getXfree());
+}
+
+template<class DataTypes>
 void PairInteractionConstraint<DataTypes>::applyConstraint(unsigned int &contactId)
 {
     if( !isActive() ) return;
