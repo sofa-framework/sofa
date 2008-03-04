@@ -67,8 +67,10 @@ BaseContext* BaseObject::getContext()
     //return context_;
 }
 
-/// Initialization method called after each graph modification.
 void BaseObject::init()
+{ }
+
+void BaseObject::bwdInit()
 { }
 
 /// Update method called when variables used in precomputation are modified.

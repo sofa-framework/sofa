@@ -64,9 +64,15 @@ void InitVisitor::processNodeBottomUp(GNode* node)
 //     }
 
     node->setDefaultVisualContextValue();
-    if( !node->solver.empty() )
-        for( unsigned i=0; i<node->solver.size(); i++ )
-            node->solver[i]->bwdInit();
+
+    for( GNode::Sequence<sofa::core::objectmodel::BaseObject>::iterator i=node->
+            object.begin(), iend=node->object.end();
+            i!=iend;
+            i++ )
+    {
+        //cerr<<"InitVisitor::processNodeBottomUp(), initializing node "<<(*i)->getName()<<endl;
+        (*i)->bwdInit();
+    }
 }
 
 
