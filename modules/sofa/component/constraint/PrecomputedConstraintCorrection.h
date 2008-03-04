@@ -66,6 +66,8 @@ public:
 
     bool   _rotations;
     DataPtr<bool> f_rotations;
+    bool   _restRotations;
+    DataPtr<bool> f_restRotations;
 
     PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
