@@ -114,8 +114,10 @@ public:
     virtual void projectResponse() ///< project dx to constrained space
     {
     }
-    virtual void projectVelocity() {} ///< project dx to constrained space (dx models a velocity)
+    virtual void projectVelocity() {} ///< project v to constrained space (v models a velocity)
     virtual void projectPosition() {} ///< project x to constrained space (x models a position)
+    virtual void projectFreeVelocity() {} ///< project vFree to constrained space (vFree models a velocity)
+    virtual void projectFreePosition() {} ///< project xFree to constrained space (xFree models a position)
 
     virtual core::componentmodel::behavior::BaseMechanicalState* getDOFs()
     {

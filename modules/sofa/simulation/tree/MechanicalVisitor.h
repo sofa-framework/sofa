@@ -433,6 +433,7 @@ public:
         core::componentmodel::behavior::BaseMechanicalState* mm = c->getDOFs();
         if (mm)
             mm->setDx(dx);
+        c->projectPosition();
         return RESULT_CONTINUE;
     }
 
@@ -640,6 +641,12 @@ public:
     virtual Result fwdMechanicalMapping(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
     {
         map->propagateXfree();
+        return RESULT_CONTINUE;
+    }
+    virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    {
+        c->projectFreeVelocity();
+        c->projectFreePosition();
         return RESULT_CONTINUE;
     }
     /// Specify whether this action can be parallelized.

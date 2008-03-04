@@ -19,7 +19,7 @@
       -->
       <Object type="FixedConstraint" name="FixedConstraint" indices="0" />
       <Object type="UniformMass" mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" />
-      <Object type="BeamFEMForceField" name="FEM" radius="0.05" youngModulus="10000000" />
+      <Object type="BeamFEMForceField" name="FEM" radius="0.1" youngModulus="20000000" />
 <!--
       <Object type="Gravity" value="0 0 0 0 0 0" />
       <Object type="ExternalForceField" forces="10 0 0 0 0 0" indices="1" />
@@ -31,7 +31,7 @@
       </Node>
 -->
       <Node name="Collision">
-        <Object type="RegularGrid" nx="57" ny="1" nz="2" xmin="0" xmax="7" ymin="0" ymax="0" zmin="0.2" zmax="-0.2" />
+        <Object type="CubeTopology" nx="115" ny="4" nz="4" xmin="0" xmax="7" ymin="-0.1" ymax="0.1" zmin="-0.1" zmax="0.1" />
         <Object type="MechanicalObject" />
         <Object type="BeamLinearMapping" />
         <Object type="Triangle" />

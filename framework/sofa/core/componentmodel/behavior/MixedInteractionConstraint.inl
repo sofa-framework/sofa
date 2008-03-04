@@ -90,6 +90,22 @@ void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectPosition()
 }
 
 template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectFreeVelocity()
+{
+    if( !isActive() ) return;
+    if (mstate1 && mstate2)
+        projectVelocity(*mstate1->getVfree(), *mstate2->getVfree());
+}
+
+template<class DataTypes1, class DataTypes2>
+void MixedInteractionConstraint<DataTypes1, DataTypes2>::projectFreePosition()
+{
+    if( !isActive() ) return;
+    if (mstate1 && mstate2)
+        projectPosition(*mstate1->getXfree(), *mstate2->getXfree());
+}
+
+template<class DataTypes1, class DataTypes2>
 void MixedInteractionConstraint<DataTypes1, DataTypes2>::applyConstraint(unsigned int &contactId)
 {
     if( !isActive() ) return;

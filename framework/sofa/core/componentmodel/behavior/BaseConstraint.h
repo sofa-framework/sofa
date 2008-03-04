@@ -74,6 +74,12 @@ public:
     /// Project x to constrained space (x models a position).
     virtual void projectPosition() = 0;
 
+    /// Project vFree to constrained space (vFree models a velocity).
+    virtual void projectFreeVelocity() = 0;
+
+    /// Project xFree to constrained space (xFree models a position).
+    virtual void projectFreePosition() = 0;
+
     /// @}
 
     /// @name Matrix operations

@@ -82,7 +82,7 @@ void BeamLinearMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
         Coord inpos1 = inpos; inpos1[0] -= 1;
         rotatedPoints1[i] = in[in0+1].getOrientation().rotate(inpos1);
         Coord out1 = in[in0+1].getCenter() + rotatedPoints1[i];
-        Real fact = inpos[0];
+        Real fact = (Real)inpos[0];
         fact = 3*(fact*fact)-2*(fact*fact*fact);
         out[i] = out0 * (1-fact) + out1 * (fact);
     }
@@ -110,7 +110,7 @@ void BeamLinearMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const
         Deriv out0 = in[in0].getVCenter() - cross(rotatedPoints0[i], omega0);
         Deriv omega1 = in[in0+1].getVOrientation();
         Deriv out1 = in[in0+1].getVCenter() - cross(rotatedPoints1[i], omega1);
-        Real fact = inpos[0];
+        Real fact = (Real)inpos[0];
         fact = 3*(fact*fact)-2*(fact*fact*fact);
         out[i] = out0 * (1-fact) + out1 * (fact);
     }
@@ -147,7 +147,7 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const
         if (in0<0) in0 = 0; else if (in0 > (int)out.size()-2) in0 = out.size()-2;
         inpos[0] -= in0;
         Deriv f = in[i];
-        Real fact = inpos[0];
+        Real fact = (Real)inpos[0];
         fact = 3*(fact*fact)-2*(fact*fact*fact);
         out[in0].getVCenter() += f * (1-fact);
         out[in0].getVOrientation() += cross(rotatedPoints0[i], f) * (1-fact);
@@ -196,7 +196,7 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecConst& out, const
             int in0 = helper::rfloor(inpos[0]);
             if (in0<0) in0 = 0; else if (in0 > (int)x.size()-2) in0 = x.size()-2;
             inpos[0] -= in0;
-            Real fact = inpos[0];
+            Real fact = (Real)inpos[0];
             fact = 3*(fact*fact)-2*(fact*fact*fact);
             /////////////////////////
             Deriv w_n = (Deriv) in[i][j].data;	// weighted value of the constraint direction
