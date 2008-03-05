@@ -1279,7 +1279,7 @@ void TetrahedronFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMa
                     {
                         COLUMN = offset+3*noeud2+j;
                         column = 3*n2+j;
-                        mat->element(ROW, COLUMN) -= tmp[row][column]*k;
+                        mat->add(ROW, COLUMN, - tmp[row][column]*k);
                     }
                 }
             }

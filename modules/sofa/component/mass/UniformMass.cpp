@@ -540,9 +540,9 @@ void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *re
         for (unsigned int j=0; j<derivDim; j++)
         {
             if (dx != NULL)
-                resVect->element(offset + i * derivDim + j) += mFact * m * g[j] * (*dx)[i][0];
+                resVect->add(offset + i * derivDim + j, mFact * m * g[j] * (*dx)[i][0]);
             else
-                resVect->element(offset + i * derivDim + j) += mFact * m * g[j];
+                resVect->add(offset + i * derivDim + j, mFact * m * g[j]);
         }
 }
 
@@ -560,9 +560,9 @@ void UniformMass<Vec3fTypes, float>::addMDxToVector(defaulttype::BaseVector *res
         for (unsigned int j=0; j<derivDim; j++)
         {
             if (dx != NULL)
-                resVect->element(offset + i * derivDim + j) += mFact * m * g[j] * (*dx)[i][0];
+                resVect->add(offset + i * derivDim + j, mFact * m * g[j] * (*dx)[i][0]);
             else
-                resVect->element(offset + i * derivDim + j) += mFact * m * g[j];
+                resVect->add(offset + i * derivDim + j, mFact * m * g[j]);
         }
 }
 

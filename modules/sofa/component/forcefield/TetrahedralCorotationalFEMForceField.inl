@@ -1133,7 +1133,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::default
                     {
                         COLUMN = offset+3*noeud2+j;
                         column = 3*n2+j;
-                        mat->element(ROW, COLUMN) += tmp[row][column];
+                        mat->add(ROW, COLUMN, tmp[row][column]);
                     }
                 }
             }

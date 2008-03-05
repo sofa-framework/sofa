@@ -89,6 +89,9 @@ public:
     const Vec3& getDy() const { return dy; }
     const Vec3& getDz() const { return dz; }
 
+    Vec3   getMin() const { return min.getValue();}
+    Vec3   getMax() const { return max.getValue();}
+
     Vec3 getPoint(int i) const;
     Vec3 getPoint(int x, int y, int z) const;
     bool hasPos()  const { return true; }
@@ -105,6 +108,7 @@ protected:
     Data<bool> internalPoints;
     Data<bool> splitNormals;
 
+    Data< Vec3 > min, max;
     /// Position of point 0
     Vec3 p0;
     /// Distance between points in the grid. Must be perpendicular to each other

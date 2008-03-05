@@ -32,14 +32,37 @@ namespace sofa
 namespace defaulttype
 {
 
+/// Generic vector API, allowing to fill and use a vector independently of the linear algebra library in use.
+///
+/// Note that accessing values using this class is rather slow and should only be used in codes where the
+/// provided genericity is necessary.
 class BaseVector
 {
 public:
-    virtual ~BaseVector() {};
+    virtual ~BaseVector() {}
 
+    /// Number of elements
+    virtual int size(void) const = 0;
+    /// Read the value of element i
+    virtual double element(int i) const = 0;
+
+    /// Resize the vector, and reset all values to 0
     virtual void resize(int dim) = 0;
-    virtual double &element(int i) = 0;
-    virtual int size(void) = 0;
+    /// Reset all values to 0
+    virtual void clear() = 0;
+
+    /// Write the value of element i
+    virtual void set(int i, double v) = 0;
+    /// Add v to the existing value of element i
+    virtual void add(int i, double v) = 0;
+
+    /// Write the value of element i
+    virtual void set(int i, float v) { set(i,(double)v); }
+    /// Add v to the existing value of element i
+    virtual void add(int i, float v) { add(i,(double)v); }
+
+    /// Reset the value of element i to 0
+    virtual void clear(int i) { set(i,0.0); }
 };
 
 } // nampespace defaulttype

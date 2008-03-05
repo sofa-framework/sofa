@@ -22,55 +22,60 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_DEFAULTTYPE_BASEMATRIX_H
-#define SOFA_DEFAULTTYPE_BASEMATRIX_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_LULINEARSOLVER_H
+#define SOFA_COMPONENT_LINEARSOLVER_LULINEARSOLVER_H
+
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <math.h>
 
 namespace sofa
 {
 
-namespace defaulttype
+namespace component
 {
 
-/// Generic matrix API, allowing to fill and use a matrix independently of the linear algebra library in use.
-///
-/// Note that accessing values using this class is rather slow and should only be used in codes where the
-/// provided genericity is necessary.
-class BaseMatrix
+namespace linearsolver
+{
+
+/// Linear system solver using the default (LU factorization) algorithm
+template<class Matrix, class Vector>
+class LULinearSolver : public sofa::simulation::tree::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    virtual ~BaseMatrix() {}
+    Data<bool> f_verbose;
 
-    /// Number of rows
-    virtual int rowSize(void) const = 0;
-    /// Number of columns
-    virtual int colSize(void) const = 0;
-    /// Read the value of the element at row i, column j (using 0-based indices)
-    virtual double element(int i, int j) const = 0;
-    /// Resize the matrix and reset all values to 0
-    virtual void resize(int nbRow, int nbCol) = 0;
-    /// Reset all values to 0
-    virtual void clear() = 0;
-    /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(int i, int j, double v) = 0;
-    /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(int i, int j, double v) = 0;
-    /// Write the value of the element at row i, column j (using 0-based indices)
-    virtual void set(int i, int j, float v) { set(i,j,(double)v); }
-    /// Add v to the existing value of the element at row i, column j (using 0-based indices)
-    virtual void add(int i, int j, float v) { add(i,j,(double)v); }
-    /// Reset the value of element i,j to 0
-    virtual void clear(int i, int j) { set(i,j,0.0); }
-    /// Reset the value of row i to 0
-    virtual void clearRow(int i) { for (int j=0,n=colSize(); j<n; ++j) clear(i,j); }
-    /// Reset the value of column j to 0
-    virtual void clearCol(int j) { for (int i=0,n=rowSize(); i<n; ++i) clear(i,j); }
-    /// Reset the value of both row and column i to 0
-    virtual void clearRowCol(int i) { clearRow(i); clearCol(i); }
+    LULinearSolver()
+        : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+    {
+    }
+
+    /// Solve Mx=b
+    void solve (Matrix& M, Vector& x, Vector& b)
+    {
+        using std::cerr;
+        using std::endl;
+
+        const bool verbose  = f_verbose.getValue();
+
+        if( verbose )
+        {
+            cerr<<"LULinearSolver, b = "<< b <<endl;
+            cerr<<"LULinearSolver, M = "<< M <<endl;
+        }
+        M.solve(&x,&b);
+        // x is the solution of the system
+        if( verbose )
+        {
+            cerr<<"LULinearSolver::solve, solution = "<<x<<endl;
+        }
+    }
 };
 
+} // namespace linearsolver
 
-} // nampespace defaulttype
+} // namespace component
 
-} // nampespace sofa
+} // namespace sofa
 
 #endif
