@@ -395,14 +395,41 @@ int HexahedronSetTopologyContainer::getHexahedronIndex(const unsigned int v1, co
     const sofa::helper::vector<unsigned int> &set7=tvs[v7];
     const sofa::helper::vector<unsigned int> &set8=tvs[v8];
 
-    sofa::helper::vector<unsigned int> out1,out2,out3,out4,out5,out6,out7;
-    std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
-    std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
-    std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
-    std::set_intersection(set5.begin(),set5.end(),out3.begin(),out3.end(),out4.begin());
-    std::set_intersection(set6.begin(),set6.end(),out4.begin(),out4.end(),out5.begin());
-    std::set_intersection(set7.begin(),set7.end(),out5.begin(),out5.end(),out6.begin());
-    std::set_intersection(set8.begin(),set8.end(),out6.begin(),out6.end(),out7.begin());
+    // The destination vector must be large enough to contain the result.
+    sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());
+    sofa::helper::vector<unsigned int>::iterator result1;
+    result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
+    out1.erase(result1,out1.end());
+
+    sofa::helper::vector<unsigned int> out2(set3.size()+out1.size());
+    sofa::helper::vector<unsigned int>::iterator result2;
+    result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
+    out2.erase(result2,out2.end());
+
+    sofa::helper::vector<unsigned int> out3(set4.size()+out2.size());
+    sofa::helper::vector<unsigned int>::iterator result3;
+    result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
+    out3.erase(result3,out3.end());
+
+    sofa::helper::vector<unsigned int> out4(set5.size()+out3.size());
+    sofa::helper::vector<unsigned int>::iterator result4;
+    result4 = std::set_intersection(set5.begin(),set5.end(),out3.begin(),out3.end(),out4.begin());
+    out4.erase(result4,out4.end());
+
+    sofa::helper::vector<unsigned int> out5(set6.size()+out4.size());
+    sofa::helper::vector<unsigned int>::iterator result5;
+    result5 = std::set_intersection(set6.begin(),set6.end(),out4.begin(),out4.end(),out5.begin());
+    out5.erase(result5,out5.end());
+
+    sofa::helper::vector<unsigned int> out6(set7.size()+out5.size());
+    sofa::helper::vector<unsigned int>::iterator result6;
+    result6 = std::set_intersection(set7.begin(),set7.end(),out5.begin(),out5.end(),out6.begin());
+    out6.erase(result6,out6.end());
+
+    sofa::helper::vector<unsigned int> out7(set8.size()+out6.size());
+    sofa::helper::vector<unsigned int>::iterator result7;
+    result7 = std::set_intersection(set8.begin(),set8.end(),out6.begin(),out6.end(),out7.begin());
+    out7.erase(result7,out7.end());
 
     assert(out7.size()==0 || out7.size()==1);
     if (out7.size()==1)

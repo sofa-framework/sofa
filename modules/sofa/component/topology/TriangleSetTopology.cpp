@@ -166,9 +166,16 @@ int TriangleSetTopologyContainer::getTriangleIndex(const unsigned int v1, const 
     const sofa::helper::vector<unsigned int> &set2=tvs[v2];
     const sofa::helper::vector<unsigned int> &set3=tvs[v3];
 
-    sofa::helper::vector<unsigned int> out1,out2;
-    std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
-    std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
+    // The destination vector must be large enough to contain the result.
+    sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());
+    sofa::helper::vector<unsigned int>::iterator result1;
+    result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
+    out1.erase(result1,out1.end());
+
+    sofa::helper::vector<unsigned int> out2(set3.size()+out1.size());
+    sofa::helper::vector<unsigned int>::iterator result2;
+    result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
+    out2.erase(result2,out2.end());
 
     assert(out2.size()==0 || out2.size()==1);
 

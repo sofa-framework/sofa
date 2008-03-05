@@ -243,10 +243,21 @@ int TetrahedronSetTopologyContainer::getTetrahedronIndex(const unsigned int v1, 
     const sofa::helper::vector<unsigned int> &set3=tvs[v3];
     const sofa::helper::vector<unsigned int> &set4=tvs[v4];
 
-    sofa::helper::vector<unsigned int> out1,out2,out3;
-    std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
-    std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
-    std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
+    // The destination vector must be large enough to contain the result.
+    sofa::helper::vector<unsigned int> out1(set1.size()+set2.size());
+    sofa::helper::vector<unsigned int>::iterator result1;
+    result1 = std::set_intersection(set1.begin(),set1.end(),set2.begin(),set2.end(),out1.begin());
+    out1.erase(result1,out1.end());
+
+    sofa::helper::vector<unsigned int> out2(set3.size()+out1.size());
+    sofa::helper::vector<unsigned int>::iterator result2;
+    result2 = std::set_intersection(set3.begin(),set3.end(),out1.begin(),out1.end(),out2.begin());
+    out2.erase(result2,out2.end());
+
+    sofa::helper::vector<unsigned int> out3(set4.size()+out2.size());
+    sofa::helper::vector<unsigned int>::iterator result3;
+    result3 = std::set_intersection(set4.begin(),set4.end(),out2.begin(),out2.end(),out3.begin());
+    out3.erase(result3,out3.end());
 
     assert(out3.size()==0 || out3.size()==1);
     if (out3.size()==1)
