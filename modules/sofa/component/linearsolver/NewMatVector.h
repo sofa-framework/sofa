@@ -26,8 +26,8 @@
 #define SOFA_COMPONENT_LINEARSOLVER_NEWMATVECTOR_H
 
 #include "NewMAT/newmat.h"
-//#define WANT_STREAM
-//#include "NewMAT/newmatio.h"
+#define WANT_STREAM
+#include "NewMAT/newmatio.h"
 #include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
@@ -42,6 +42,8 @@ namespace linearsolver
 class NewMatVector : public NewMAT::ColumnVector, public defaulttype::BaseVector
 {
 public:
+
+    typedef NewMAT::ColumnVector SubVector;
 
     NewMatVector()
     {
@@ -85,6 +87,23 @@ public:
     int size() const
     {
         return Nrows();
+    }
+
+    NewMAT::GetSubMatrix sub(int i, int n)
+    {
+        return NewMAT::ColumnVector::SubMatrix(i+1,i+n,1,1);
+    }
+
+    template<class T>
+    void getsub(int i, int n, T& v)
+    {
+        v = NewMAT::ColumnVector::SubMatrix(i+1,i+n,1,1);
+    }
+
+    template<class T>
+    void setsub(int i, int n, const T& v)
+    {
+        NewMAT::ColumnVector::SubMatrix(i+1,i+n,1,1) = v;
     }
 
     /// v = 0
