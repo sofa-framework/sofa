@@ -46,6 +46,8 @@ class TNewMatMatrix : public Mat, public defaulttype::BaseMatrix
 {
 public:
     typedef Mat M;
+    //typedef NewMAT::Matrix SubMatrixType;
+    typedef TNewMatMatrix<NewMAT::Matrix> SubMatrixType;
     explicit TNewMatMatrix(int defaultBandWidth = 11)
         : bandWidth(defaultBandWidth)
     {
@@ -173,6 +175,23 @@ public:
         M::Column(1+i) = 0.0;
     }
 
+    NewMAT::GetSubMatrix sub(int i, int j, int nrow, int ncol)
+    {
+        return M::SubMatrix(i+1,i+nrow,j+1,j+ncol);
+    }
+
+    template<class T>
+    void getSubMatrix(int i, int j, int nrow, int ncol, T& m)
+    {
+        m = M::SubMatrix(i+1,i+nrow,j+1,j+ncol);
+    }
+
+    template<class T>
+    void setSubMatrix(int i, int j, int nrow, int ncol, const T& m)
+    {
+        M::SubMatrix(i+1,i+nrow,j+1,j+ncol) = m;
+    }
+
     void solve(NewMatVector *rv, NewMatVector *ov)
     {
 #ifdef NEWMAT_VERBOSE
@@ -205,7 +224,7 @@ public:
         out << "[";
         for (int y=0; y<ny; ++y)
         {
-            out << "[";
+            out << "\n[";
             for (int x=0; x<nx; ++x)
             {
                 out << " " << v.element(y,x);
@@ -297,6 +316,22 @@ inline void TNewMatMatrix<NewMAT::SymmetricMatrix>::add(int i, int j, double v)
 }
 
 template<>
+inline double TNewMatMatrix<NewMAT::BandMatrix>::element(int i, int j) const
+{
+#ifdef NEWMAT_CHECK
+    if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+    {
+        std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        return 0.0;
+    }
+#endif
+    if (j < i-bandWidth || j > i+bandWidth)
+        return 0.0;
+    else
+        return M::element(i,j);
+}
+
+template<>
 inline void TNewMatMatrix<NewMAT::BandMatrix>::set(int i, int j, double v)
 {
 #ifdef NEWMAT_VERBOSE
@@ -336,6 +371,22 @@ inline void TNewMatMatrix<NewMAT::BandMatrix>::add(int i, int j, double v)
         return;
     }
     M::element(i,j) += v;
+}
+
+template<>
+inline double TNewMatMatrix<NewMAT::SymmetricBandMatrix>::element(int i, int j) const
+{
+#ifdef NEWMAT_CHECK
+    if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+    {
+        std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+        return 0.0;
+    }
+#endif
+    if (j < i-bandWidth || j > i+bandWidth)
+        return 0.0;
+    else
+        return M::element(i,j);
 }
 
 template<>
