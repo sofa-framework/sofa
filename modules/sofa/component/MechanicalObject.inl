@@ -592,24 +592,30 @@ void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * des
 {
     if (src.type == VecId::V_COORD)
     {
-        VecCoord* vSrc = getVecCoord(src.index);
-        unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const VecCoord* vSrc = getVecCoord(src.index);
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
 
         for (unsigned int i=0; i<vSrc->size(); i++)
             for (unsigned int j=0; j<coordDim; j++)
-                DataTypeInfo<Coord>::getValue((*vSrc)[i],j,dest->element(offset + i * coordDim + j));
-
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vSrc)[i],j,tmp);
+                dest->set(offset + i * coordDim + j, tmp);
+            }
         offset += vSrc->size() * coordDim;
     }
     else
     {
-        VecDeriv* vSrc = getVecDeriv(src.index);
-        unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const VecDeriv* vSrc = getVecDeriv(src.index);
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
 
         for (unsigned int i=0; i<vSrc->size(); i++)
             for (unsigned int j=0; j<derivDim; j++)
-                DataTypeInfo<Deriv>::getValue((*vSrc)[i],j,dest->element(offset + i * derivDim + j));
-
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue((*vSrc)[i],j,tmp);
+                dest->set(offset + i * derivDim + j, tmp);
+            }
         offset += vSrc->size() * derivDim;
     }
 }
@@ -620,7 +626,7 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
     if (dest.type == VecId::V_COORD)
     {
         VecCoord* vDest = getVecCoord(dest.index);
-        unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
 
         for (unsigned int i=0; i<vDest->size(); i++)
         {
@@ -637,7 +643,7 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
     else
     {
         VecDeriv* vDest = getVecDeriv(dest.index);
-        unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
 
         for (unsigned int i=0; i<vDest->size(); i++)
             for (unsigned int j=0; j<derivDim; j++)

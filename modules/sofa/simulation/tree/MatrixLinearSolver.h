@@ -38,6 +38,14 @@ namespace tree
 {
 
 template<class Matrix, class Vector>
+class MatrixLinearSolverInternalData
+{
+public:
+    MatrixLinearSolverInternalData(core::objectmodel::BaseObject*)
+    {}
+};
+
+template<class Matrix, class Vector>
 class MatrixLinearSolver : public sofa::core::componentmodel::behavior::LinearSolver, public SolverImpl
 {
 public:
@@ -111,6 +119,11 @@ protected:
     Vector* createVector();
     void deleteVector(Vector* v);
 
+    Matrix* createMatrix();
+    void deleteMatrix(Matrix* v);
+
+    MatrixLinearSolverInternalData<Matrix,Vector>* data;
+
     Matrix* systemMatrix;
     Vector* systemRHVector;
     Vector* systemLHVector;
@@ -122,15 +135,16 @@ template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
     : systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL), systemInverseMatrix(NULL)
 {
+    data = new MatrixLinearSolverInternalData<Matrix,Vector>(this);
 }
 
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver()
 {
-    if (systemMatrix) delete systemMatrix;
-    if (systemRHVector) delete systemRHVector;
-    if (systemLHVector) delete systemLHVector;
-    if (systemInverseMatrix) delete systemInverseMatrix;
+    if (systemMatrix) deleteMatrix(systemMatrix);
+    if (systemRHVector) deleteVector(systemRHVector);
+    if (systemLHVector) deleteVector(systemLHVector);
+    if (systemInverseMatrix) deleteMatrix(systemInverseMatrix);
 }
 
 template<class Matrix, class Vector>
@@ -146,11 +160,11 @@ void MatrixLinearSolver<Matrix,Vector>::resetSystem()
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
 {
-    if (!systemMatrix) systemMatrix = new Matrix;
+    if (!systemMatrix) systemMatrix = createMatrix();
     systemMatrix->resize(n,n);
-    if (!systemRHVector) systemRHVector = new Vector;
+    if (!systemRHVector) systemRHVector = createVector();
     systemRHVector->resize(n);
-    if (!systemLHVector) systemLHVector = new Vector;
+    if (!systemLHVector) systemLHVector = createVector();
     systemLHVector->resize(n);
     if (systemInverseMatrix) systemInverseMatrix->resize(n,n);
 }
@@ -211,6 +225,19 @@ void MatrixLinearSolver<Matrix,Vector>::deleteVector(Vector* v)
 {
     delete v;
 }
+
+template<class Matrix, class Vector>
+Matrix* MatrixLinearSolver<Matrix,Vector>::createMatrix()
+{
+    return new Matrix;
+}
+
+template<class Matrix, class Vector>
+void MatrixLinearSolver<Matrix,Vector>::deleteMatrix(Matrix* v)
+{
+    delete v;
+}
+
 
 class GraphScatteredMatrix;
 class GraphScatteredVector;
@@ -309,6 +336,12 @@ GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVect
 
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deleteVector(GraphScatteredVector* v);
+
+template<>
+GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredMatrix>::createMatrix();
+
+template<>
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deleteMatrix(GraphScatteredMatrix* v);
 
 template<>
 defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemBaseMatrix();

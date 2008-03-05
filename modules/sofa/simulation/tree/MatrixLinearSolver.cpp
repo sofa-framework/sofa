@@ -115,6 +115,18 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::solveSystem(
 }
 
 template<>
+GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::createMatrix()
+{
+    return new GraphScatteredMatrix(this);
+}
+
+template<>
+void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deleteMatrix(GraphScatteredMatrix* v)
+{
+    delete v;
+}
+
+template<>
 GraphScatteredVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::createVector()
 {
     return new GraphScatteredVector(this);

@@ -41,7 +41,6 @@ namespace linearsolver
 
 class NewMatVector : public NewMAT::ColumnVector, public defaulttype::BaseVector
 {
-    friend class NewMatMatrix;
 public:
 
     NewMatVector()
@@ -58,9 +57,19 @@ public:
         (*this) = 0.0;
     }
 
-    virtual double &element(int i)
+    virtual double element(int i) const
     {
         return NewMAT::ColumnVector::element(i);
+    }
+
+    void set(int i, double v)
+    {
+        NewMAT::ColumnVector::element(i) = v;
+    }
+
+    void add(int i, double v)
+    {
+        NewMAT::ColumnVector::element(i) += v;
     }
 
     double& operator[](int i)
@@ -73,7 +82,7 @@ public:
         return NewMAT::ColumnVector::element(i);
     }
 
-    virtual int size(void)
+    int size() const
     {
         return Nrows();
     }

@@ -384,7 +384,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *m
             index[6+x1] = offset+b*6+x1;
         for (int x1=0; x1<12; ++x1)
             for (int y1=0; y1<12; ++y1)
-                mat->element(index[x1], index[y1]) -= K(x1,y1)*k;
+                mat->add(index[x1], index[y1], - K(x1,y1)*k);
     }
 }
 

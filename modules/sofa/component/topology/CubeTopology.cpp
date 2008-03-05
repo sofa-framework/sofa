@@ -41,14 +41,29 @@ using std::endl;
 void CubeTopology::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->MeshTopology::parse(arg);
+    float scale=1.0f;
+    if (arg->getAttribute("scale")!=NULL)
+    {
+        scale = (float)atof(arg->getAttribute("scale"));
+    }
     this->setSize();
-    const char* xmin = arg->getAttribute("xmin",arg->getAttribute("min","0"));
-    const char* ymin = arg->getAttribute("ymin",arg->getAttribute("min","0"));
-    const char* zmin = arg->getAttribute("zmin",arg->getAttribute("min","0"));
-    const char* xmax = arg->getAttribute("xmax",arg->getAttribute("max",arg->getAttribute("nx","1")));
-    const char* ymax = arg->getAttribute("ymax",arg->getAttribute("max",arg->getAttribute("ny","1")));
-    const char* zmax = arg->getAttribute("zmax",arg->getAttribute("max",arg->getAttribute("nz","1")));
-    this->setPos(atof(xmin),atof(xmax),atof(ymin),atof(ymax),atof(zmin),atof(zmax));
+    if (arg->getAttribute("xmin") != NULL &&
+        arg->getAttribute("ymin") != NULL &&
+        arg->getAttribute("zmin") != NULL &&
+        arg->getAttribute("xmax") != NULL &&
+        arg->getAttribute("ymax") != NULL &&
+        arg->getAttribute("zmax") != NULL )
+    {
+        const char* xmin = arg->getAttribute("xmin");
+        const char* ymin = arg->getAttribute("ymin");
+        const char* zmin = arg->getAttribute("zmin");
+        const char* xmax = arg->getAttribute("xmax");
+        const char* ymax = arg->getAttribute("ymax");
+        const char* zmax = arg->getAttribute("zmax");
+        min.setValue(Vec3(atof(xmin)*scale,atof(ymin)*scale,atof(zmin)*scale));
+        max.setValue(Vec3(atof(xmax)*scale,atof(ymax)*scale,atof(zmax)*scale));
+    }
+    this->setPos(min.getValue()[0],max.getValue()[0],min.getValue()[1],max.getValue()[1],min.getValue()[2],max.getValue()[2]);
 }
 
 SOFA_DECL_CLASS(CubeTopology)
@@ -61,6 +76,8 @@ CubeTopology::CubeTopology(int _nx, int _ny, int _nz)
     : nx(initData(&nx,_nx,"nx","x grid resolution")), ny(initData(&ny,_ny,"ny","y grid resolution")), nz(initData(&nz,_nz,"nz","z grid resolution"))
     , internalPoints(initData(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
     , splitNormals(initData(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
+    , min(initData(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min"))
+    , max(initData(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
 {
     setSize();
 }
@@ -69,6 +86,8 @@ CubeTopology::CubeTopology()
     : nx(initData(&nx,0,"nx","x grid resolution")), ny(initData(&ny,0,"ny","y grid resolution")), nz(initData(&nz,0,"nz","z grid resolution"))
     , internalPoints(initData(&internalPoints, false, "internalPoints", "include internal points (allow a one-to-one mapping between points from RegularGridTopology and CubeTopology)"))
     , splitNormals(initData(&splitNormals, false, "splitNormals", "split corner points to have planar normals"))
+    , min(initData(&min,Vec3(0.0f,0.0f,0.0f),"min", "Min"))
+    , max(initData(&max,Vec3(1.0f,1.0f,1.0f),"max", "Max"))
 {
 }
 

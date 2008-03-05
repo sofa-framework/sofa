@@ -49,7 +49,7 @@ public:
     {
         const double m = mass*fact;
         for (unsigned int i=0; i<Deriv::size(); ++i)
-            mat->element(pos+i,pos+i) += m;
+            mat->add(pos+i, pos+i, m);
     }
 };
 
@@ -62,7 +62,7 @@ public:
         for (int i=0; i<N; ++i)
             for (int j=0; j<N; ++j)
             {
-                mat->element(pos+i, pos+j) += mass[i][j]*fact;
+                mat->add(pos+i, pos+j, mass[i][j]*fact);
             }
     }
 };
@@ -76,11 +76,11 @@ public:
     {
         const double m = mass.mass*fact;
         for (int i=0; i<N; ++i)
-            mat->element(pos+i,pos+i) += m;
+            mat->add(pos+i, pos+i, m);
         for (int i=0; i<N; ++i)
             for (int j=0; j<N; ++j)
             {
-                mat->element(pos+N+i, pos+N+j) += mass.inertiaMassMatrix[i][j]*fact;
+                mat->add(pos+N+i, pos+N+j, mass.inertiaMassMatrix[i][j]*fact);
             }
     }
 };
@@ -94,8 +94,8 @@ public:
     {
         const double m = mass.mass*fact;
         for (int i=0; i<N; ++i)
-            mat->element(pos+i,pos+i) += m;
-        mat->element(pos+N, pos+N) += mass.inertiaMassMatrix*fact;
+            mat->add(pos+i, pos+i, m);
+        mat->add(pos+N, pos+N, mass.inertiaMassMatrix*fact);
     }
 };
 
