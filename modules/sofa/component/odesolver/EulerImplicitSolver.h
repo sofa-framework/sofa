@@ -53,6 +53,24 @@ public:
     EulerImplicitSolver();
 
     void solve (double dt);
+
+    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
+    ///
+    /// This method is used to compute the compliance for contact corrections
+    /// For Euler methods, it is typically 1/dt.
+    virtual double getVelocityIntegrationFactor() const
+    {
+        return 1.0; // /getContext()->getDt();
+    }
+
+    /// Given a displacement as computed by the linear system inversion, how much will it affect the position
+    ///
+    /// This method is used to compute the compliance for contact corrections
+    /// For Euler methods, it is typically 1/dt².
+    virtual double getPositionIntegrationFactor() const
+    {
+        return 1.0/(getContext()->getDt()); //*getContext()->getDt());
+    }
 };
 
 } // namespace odesolver

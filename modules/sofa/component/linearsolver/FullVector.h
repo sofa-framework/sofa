@@ -46,6 +46,11 @@ public:
     typedef T* Iterator;
     typedef const T* ConstIterator;
 
+    typedef Real value_type;
+    typedef Index size_type;
+    typedef Iterator iterator;
+    typedef ConstIterator const_iterator;
+
 protected:
     T* data;
     Index cursize;
@@ -67,11 +72,23 @@ public:
     {
     }
 
+    FullVector(T* ptr, Index n, Index nmax)
+        : data(ptr), cursize(n), allocsize(-nmax)
+    {
+    }
+
     virtual ~FullVector()
     {
         if (allocsize>0)
             delete[] data;
     }
+
+    T* ptr() { return data; }
+    const T* ptr() const { return data; }
+
+    void setptr(T* p) { ptr = p; }
+
+    Index capacity() const { if (allocsize < 0) return -allocsize; else return allocsize; }
 
     Iterator begin() { return data; }
     Iterator end()   { return data+cursize; }

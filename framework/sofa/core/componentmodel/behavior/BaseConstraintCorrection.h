@@ -26,6 +26,8 @@
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_BASECONSTRAINTCORRECTION_H
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/defaulttype/BaseVector.h>
 
 namespace sofa
 {
@@ -47,12 +49,11 @@ class BaseConstraintCorrection : public virtual objectmodel::BaseObject
 public:
     virtual ~BaseConstraintCorrection() {}
 
-    virtual void getCompliance(double**W) = 0;
+    virtual void getCompliance(defaulttype::BaseMatrix* W) = 0;
 
-    virtual void applyContactForce(double *f) = 0;
+    virtual void applyContactForce(const defaulttype::BaseVector *f) = 0;
 
     virtual void resetContactForce() = 0;
-
 
 };
 
