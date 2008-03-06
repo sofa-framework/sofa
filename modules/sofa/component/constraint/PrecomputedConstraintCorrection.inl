@@ -223,12 +223,12 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
     q0.normalize();
 
 
-    // rotation de -Pi/2 autour de x dans le repère défini par q0; (=rotation Pi/2 autour de l'axe y dans le repère global)
+    // rotation de -Pi/2 autour de x dans le repÃ‹re dÃˆfini par q0; (=rotation Pi/2 autour de l'axe y dans le repÃ‹re global)
     Quat q_q0(-0.7071067811865475,0,0,0.7071067811865475);
     q_q0.normalize();
 
 
-    // calcul de la rotation équivalente dans le repère global;
+    // calcul de la rotation Ãˆquivalente dans le repÃ‹re global;
     Quat q = q0 * q_q0;
     q.normalize();
 
@@ -238,8 +238,8 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
     std::cout<<"VecZ = "<<q.rotate( Vec3d(0.0,0.0,1.0) )<<std::endl;
 
 
-    // on veut maintenant retrouver l'équivalent de q_q0 dans le repère global
-    // c'est à dire une rotation de Pi/2 autour de l'axe y
+    // on veut maintenant retrouver l'Ãˆquivalent de q_q0 dans le repÃ‹re global
+    // c'est â€¡ dire une rotation de Pi/2 autour de l'axe y
     Quat q_test = q * q0.inverse();
 
     std::cout<<"q_test = "<<q_test<<std::endl;
@@ -263,7 +263,7 @@ PrecomputedConstraintCorrection<defaulttype::Vec3Types>::~PrecomputedConstraintC
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::getCompliance(double**W)
+void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMatrix* W)
 {
 
     VecConst& constraints = *mstate->getC();
@@ -354,22 +354,26 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(double**W)
             for(curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
                 indexCurColConst = mstate->getConstraintId()[curColConst];
-                W[indexCurRowConst][indexCurColConst] +=
-                    _sparseCompliance[toto + curColConst]*n1;
+                double w = _sparseCompliance[toto + curColConst]*n1;
+                //W[indexCurRowConst][indexCurColConst] += w;
+                W->add(indexCurRowConst, indexCurColConst, w);
+                if (indexCurRowConst != indexCurColConst)
+                    W->add(indexCurColConst, indexCurRowConst, w);
             }
         }
-
-        //Compliance matrix is symetric ?
-        for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-        {
-            int indexCurColConst = mstate->getConstraintId()[curColConst];
-            W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-        }
+        /*
+        		//Compliance matrix is symetric ?
+        		for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+        		{
+        			int indexCurColConst = mstate->getConstraintId()[curColConst];
+        			W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+        		}
+        */
     }
 }
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(double *f)
+void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
 {
     VecDeriv& force = *mstate->getExternalForces();
     VecConst& constraints = *mstate->getC();
@@ -398,8 +402,9 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(double *f)
     {
         int indexC1 = mstate->getConstraintId()[c1];
 
+        double fC1 = f->element(indexC1);
 
-        if (f[indexC1] != 0.0)
+        if (fC1 != 0.0)
         {
 
             const int sizeC1 = constraints[c1].size();
@@ -407,7 +412,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(double *f)
             {
                 //on ne fait pas passer les forces du repere courant a celui initial ?
                 // <-non, car elles ont deja ete tournees car on utilise une reference dans getCompliance !!!
-                const Deriv& toto =  constraints[c1][i].data * f[indexC1];
+                const Deriv& toto =  constraints[c1][i].data * fC1;
                 force[constraints[c1][i].index] += toto;
                 activeDof.push_back(constraints[c1][i].index);
             }

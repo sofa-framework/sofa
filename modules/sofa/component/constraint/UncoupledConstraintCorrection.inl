@@ -58,7 +58,7 @@ void UncoupledConstraintCorrection<DataTypes>::init()
 }
 
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(double**W)
+void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defaulttype::BaseMatrix*W)
 {
     const VecConst& constraints = *mstate->getC();
     Deriv weighedNormal;
@@ -106,22 +106,26 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(doub
 
                 for(int j = 0; j < sizeCurColConst; j++)
                 {
-                    W[indexCurRowConst][indexCurColConst] +=  constraints[curColConst][j].data * InvM_wN;
+                    //W[indexCurRowConst][indexCurColConst] +=  constraints[curColConst][j].data * InvM_wN;
+                    double w =  constraints[curColConst][j].data * InvM_wN;
+                    W->add(indexCurRowConst, indexCurColConst, w);
+                    if (indexCurRowConst != indexCurColConst)
+                        W->add(indexCurColConst, indexCurRowConst, w);
                 }
             }
-
-            for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-            {
-                indexCurColConst = mstate->getConstraintId()[curColConst];
-                W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-            }
-
+            /*
+            			for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+            			{
+            				indexCurColConst = mstate->getConstraintId()[curColConst];
+            				W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+            			}
+            */
         }
     }
 }
 
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(double *f)
+void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(const defaulttype::BaseVector *f)
 {
     VecDeriv& force = *mstate->getExternalForces();
     const VecConst& constraints = *mstate->getC();
@@ -155,15 +159,16 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
     for(int c1 = 0; c1 < numConstraints; c1++)
     {
         int indexC1 = mstate->getConstraintId()[c1];
+        double fC1 = f->element(indexC1);
 
-        if (f[indexC1] != 0.0)
+        if (fC1 != 0.0)
         {
             int sizeC1 = constraints[c1].size();
             for(int i = 0; i < sizeC1; i++)
             {
                 weighedNormal = constraints[c1][i].data; // weighted normal
-                force[0].getVCenter() += weighedNormal.getVCenter() * f[indexC1];
-                force[0].getVOrientation() += weighedNormal.getVOrientation() * f[indexC1];
+                force[0].getVCenter() += weighedNormal.getVCenter() * fC1;
+                force[0].getVOrientation() += weighedNormal.getVOrientation() * fC1;
             }
         }
     }
@@ -193,7 +198,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
 }
 
 template<>
-void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(double**W)
+void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(defaulttype::BaseMatrix *W)
 {
     const VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
@@ -216,17 +221,21 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(doubl
                 {
                     if (constraints[curRowConst][i].index == constraints[curColConst][j].index)
                     {
-                        W[indexCurRowConst][indexCurColConst] += (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
+                        //W[indexCurRowConst][indexCurColConst] += (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
+                        double w = (1.0/10000.0) * constraints[curRowConst][i].data.x() * constraints[curColConst][j].data.x();
+                        W->add(indexCurRowConst, indexCurColConst, w);
+                        if (indexCurRowConst != indexCurColConst)
+                            W->add(indexCurColConst, indexCurRowConst, w);
                     }
                 }
             }
-
-            for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
-            {
-                indexCurColConst = mstate->getConstraintId()[curColConst];
-                W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
-            }
-
+            /*
+            			for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+            			{
+            				indexCurColConst = mstate->getConstraintId()[curColConst];
+            				W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+            			}
+            */
         }
     }
 
@@ -247,7 +256,7 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::getCompliance(doubl
 }
 
 template<>
-void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(double *f)
+void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(const defaulttype::BaseVector *f)
 {
 
     VecDeriv& force = *mstate->getExternalForces();
@@ -259,13 +268,13 @@ void UncoupledConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(d
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         int indexC1 = mstate->getConstraintId()[c1];
-
-        if (f[indexC1] != 0.0)
+        double fC1 = f->element(indexC1);
+        if (fC1 != 0.0)
         {
             int sizeC1 = constraints[c1].size();
             for(int i = 0; i < sizeC1; i++)
             {
-                force[constraints[c1][i].index] += constraints[c1][i].data * f[indexC1];
+                force[constraints[c1][i].index] += constraints[c1][i].data * fC1;
             }
         }
     }

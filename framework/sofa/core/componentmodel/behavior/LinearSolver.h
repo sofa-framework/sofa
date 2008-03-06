@@ -78,7 +78,7 @@ public:
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addMInvJt(defaulttype::BaseMatrix* /*result*/, defaulttype::BaseMatrix* /*J*/)
+    virtual bool addMInvJt(defaulttype::BaseMatrix* /*result*/, defaulttype::BaseMatrix* /*J*/, double /*fact*/)
     {
         return false;
     }
@@ -88,7 +88,7 @@ public:
     /// @param result the variable where the result will be added
     /// @param J the matrix J to use
     /// @return false if the solver does not support this operation, of it the system matrix is not invertible
-    virtual bool addJMInvJt(defaulttype::BaseMatrix* /*result*/, defaulttype::BaseMatrix* /*J*/)
+    virtual bool addJMInvJt(defaulttype::BaseMatrix* /*result*/, defaulttype::BaseMatrix* /*J*/, double /*fact*/)
     {
         return false;
     }

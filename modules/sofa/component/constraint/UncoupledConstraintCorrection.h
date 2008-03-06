@@ -63,9 +63,9 @@ public:
     /// Retrieve the associated MechanicalState
     behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
 
-    virtual void getCompliance(double**W);
+    virtual void getCompliance(defaulttype::BaseMatrix *W);
 
-    virtual void applyContactForce(double *f);
+    virtual void applyContactForce(const defaulttype::BaseVector *f);
 
     virtual void resetContactForce();
 
