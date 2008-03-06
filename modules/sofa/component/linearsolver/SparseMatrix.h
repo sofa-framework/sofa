@@ -1,0 +1,284 @@
+/*******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 1       *
+*                (c) 2006-2007 MGH, INRIA, USTL, UJF, CNRS                     *
+*                                                                              *
+* This library is free software; you can redistribute it and/or modify it      *
+* under the terms of the GNU Lesser General Public License as published by the *
+* Free Software Foundation; either version 2.1 of the License, or (at your     *
+* option) any later version.                                                   *
+*                                                                              *
+* This library is distributed in the hope that it will be useful, but WITHOUT  *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or        *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License  *
+* for more details.                                                            *
+*                                                                              *
+* You should have received a copy of the GNU Lesser General Public License     *
+* along with this library; if not, write to the Free Software Foundation,      *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.           *
+*                                                                              *
+* Contact information: contact@sofa-framework.org                              *
+*                                                                              *
+* Authors: J. Allard, P-J. Bensoussan, S. Cotin, C. Duriez, H. Delingette,     *
+* F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
+* and F. Poyer                                                                 *
+*******************************************************************************/
+#ifndef SOFA_COMPONENT_LINEARSOLVER_SPARSEMATRIX_H
+#define SOFA_COMPONENT_LINEARSOLVER_SPARSEMATRIX_H
+
+#include <sofa/defaulttype/BaseMatrix.h>
+#include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include "FullVector.h"
+
+#include <map>
+
+namespace sofa
+{
+
+namespace component
+{
+
+namespace linearsolver
+{
+
+//#define SPARSEMATRIX_CHECK
+//#define SPARSEMATRIX_VERBOSE
+
+template<typename T>
+class SparseMatrix : public defaulttype::BaseMatrix
+{
+public:
+    typedef T Real;
+    typedef int Index;
+    typedef std::map<Index,Real> Line;
+    typedef std::map<Index,Line> Data;
+    typedef typename Line::iterator LElementIterator;
+    typedef typename Line::const_iterator LElementConstIterator;
+    typedef typename Data::iterator LineIterator;
+    typedef typename Data::const_iterator LineConstIterator;
+
+protected:
+    Data data;
+    Index nRow,nCol;
+
+public:
+
+    SparseMatrix()
+        : nRow(0), nCol(0)
+    {
+    }
+
+    SparseMatrix(int nbRow, int nbCol)
+        : nRow(nbRow), nCol(nbCol)
+    {
+    }
+
+    LineIterator begin() { return data.begin(); }
+    LineIterator end()   { return data.end();   }
+    LineConstIterator begin() const { return data.begin(); }
+    LineConstIterator end()   const { return data.end();   }
+
+    Line& operator[](Index i)
+    {
+        return data[i];
+    }
+
+    const Line& operator[](Index i) const
+    {
+        static const Line empty;
+        LineConstIterator it = data.find(i);
+        if (it==data.end())
+            return empty;
+        else
+            return it->second;
+    }
+
+    void resize(int nbRow, int nbCol)
+    {
+#ifndef SPARSEMATRIX_VERBOSE
+        if (nbRow != rowSize() || nbCol != colSize())
+#endif
+            std::cout << this->Name() << ": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
+        data.clear();
+        nRow = nbRow;
+        nCol = nbCol;
+    }
+
+    int rowSize(void) const
+    {
+        return nRow;
+    }
+
+    int colSize(void) const
+    {
+        return nCol;
+    }
+
+    double element(int i, int j) const
+    {
+#ifdef SPARSEMATRIX_CHECK
+        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        {
+            std::cerr << "ERROR: invalid read access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            return 0.0;
+        }
+#endif
+        LineConstIterator it = data.find(i);
+        if (it==data.end())
+            return 0.0;
+        LElementConstIterator ite = it->second.find(j);
+        if (ite == it->second.end())
+            return 0.0;
+        return ite->second;
+    }
+
+    void set(int i, int j, double v)
+    {
+#ifdef SPARSEMATRIX_VERBOSE
+        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = "<<v<<std::endl;
+#endif
+#ifdef SPARSEMATRIX_CHECK
+        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        {
+            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            return;
+        }
+#endif
+        data[i][j] = v;
+    }
+
+    void add(int i, int j, double v)
+    {
+#ifdef SPARSEMATRIX_VERBOSE
+        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") += "<<v<<std::endl;
+#endif
+#ifdef SPARSEMATRIX_CHECK
+        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        {
+            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            return;
+        }
+#endif
+        data[i][j] += v;
+    }
+
+    void clear(int i, int j)
+    {
+#ifdef SPARSEMATRIX_VERBOSE
+        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): element("<<i<<","<<j<<") = 0"<<std::endl;
+#endif
+#ifdef SPARSEMATRIX_CHECK
+        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)j >= (unsigned)colSize())
+        {
+            std::cerr << "ERROR: invalid write access to element ("<<i<<","<<j<<") in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            return;
+        }
+#endif
+        LineIterator it = data.find(i);
+        if (it==data.end())
+            return;
+        LElementIterator ite = it->second.find(j);
+        if (ite == it->second.end())
+            return;
+        it->second.erase(ite);
+        if (it->second.empty())
+            data.erase(it);
+    }
+
+    void clearRow(int i)
+    {
+#ifdef SPARSEMATRIX_VERBOSE
+        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0"<<std::endl;
+#endif
+#ifdef SPARSEMATRIX_CHECK
+        if ((unsigned)i >= (unsigned)rowSize())
+        {
+            std::cerr << "ERROR: invalid write access to row "<<i<<" in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            return;
+        }
+#endif
+        LineIterator it = data.find(i);
+        if (it==data.end())
+            return;
+        data.erase(it);
+    }
+
+    void clearCol(int j)
+    {
+#ifdef SPARSEMATRIX_VERBOSE
+        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): col("<<j<<") = 0"<<std::endl;
+#endif
+#ifdef SPARSEMATRIX_CHECK
+        if ((unsigned)j >= (unsigned)colSize())
+        {
+            std::cerr << "ERROR: invalid write access to column "<<j<<" in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            return;
+        }
+#endif
+        for(LineIterator it=data.begin(),itend=data.end(); it!=itend; ++it)
+        {
+            LElementIterator ite = it->second.find(j);
+            if (ite != it->second.end())
+                it->second.erase(ite);
+        }
+    }
+
+    void clearRowCol(int i)
+    {
+#ifdef SPARSEMATRIX_VERBOSE
+        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
+#endif
+#ifdef SPARSEMATRIX_CHECK
+        if ((unsigned)i >= (unsigned)rowSize() || (unsigned)i >= (unsigned)colSize())
+        {
+            std::cerr << "ERROR: invalid write access to row and column "<<i<<" in "<<this->Name()<<" of size ("<<rowSize()<<","<<colSize()<<")"<<std::endl;
+            return;
+        }
+#endif
+        clearRow(i);
+        clearCol(i);
+    }
+
+    void clear() { data.clear(); }
+
+    template<class Real2>
+    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+    {
+        FullVector<Real2> res(rowSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            Real2 r = 0;
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+                r += ite->second * v[ite->first];
+            res[itl->first] = r;
+        }
+        return res;
+    }
+
+    friend std::ostream& operator << (std::ostream& out, const SparseMatrix<T>& v )
+    {
+        int nx = v.Ncols();
+        int ny = v.Nrows();
+        out << "[";
+        for (int y=0; y<ny; ++y)
+        {
+            out << "\n[";
+            for (int x=0; x<nx; ++x)
+            {
+                out << " " << v.element(y,x);
+            }
+            out << " ]";
+        }
+        out << " ]";
+        return out;
+    }
+
+    static const char* Name() { return "SparseMatrix"; }
+};
+
+} // namespace linearsolver
+
+} // namespace component
+
+} // namespace sofa
+
+#endif

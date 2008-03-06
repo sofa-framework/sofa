@@ -63,14 +63,43 @@ public:
 
     /// Factorize M
     ///
-    ///     [ A0 C0 0  0  ]   [ a0 0  0  0  ] [ I  l0 0  0  ]
-    /// M = [ B1 A1 C1 0  ] = [ B1 a1 0  0  ] [ 0  I  l1 0  ]
-    ///     [ 0  B2 A2 C2 ] = [ 0  B2 a2 0  ] [ 0  0  I  l2 ]
-    ///     [ 0  0  B3 A3 ] = [ 0  0  B3 a3 ] [ 0  0  0  I  ]
+    ///     [ A0 C0 0  0  ]         [ a0 0  0  0  ] [ I  l0 0  0  ]
+    /// M = [ B1 A1 C1 0  ] = L U = [ B1 a1 0  0  ] [ 0  I  l1 0  ]
+    ///     [ 0  B2 A2 C2 ]         [ 0  B2 a2 0  ] [ 0  0  I  l2 ]
+    ///     [ 0  0  B3 A3 ]         [ 0  0  B3 a3 ] [ 0  0  0  I  ]
     ///     [ a0 a0l0    0       0       ]
     /// M = [ B1 B1l0+a1 a1l1    0       ]
     ///     [ 0  B2      B2l1+a2 a2l2    ]
     ///     [ 0  0       B3      B3l2+a3 ]
+    /// L X = [ a0X0 B1X0+a1X1 B2X1+a2X2 B3X2+a3X3 ]
+    ///        [                       inva0                   0             0     0 ]
+    /// Linv = [               -inva1B1inva0               inva1             0     0 ]
+    ///        [         inva2B2inva1B1inva0       -inva2B2inva1         inva2     0 ]
+    ///        [ -inva3B3inva2B2inva1B1inva0 inva3B3inva2B2inva1 -inva3B3inva2 inva3 ]
+    /// U X = [ X0+l0X1 X1+l1X2 X2+l2X3 X3 ]
+    /// Uinv = [ I -l0 l0l1 -l0l1l2 ]
+    ///        [ 0   I  -l1    l1l2 ]
+    ///        [ 0   0    I     -l2 ]
+    ///        [ 0   0    0       I ]
+    ///
+    ///                    [ (I+l0(I+l1(I+l2inva3B3)inva2B2)inva1B1)inva0 -l0(I+l1(I+l2inva3B3)inva2B2)inva1 l0l1(inva2+l2inva3B3inva2) -l0l1l2inva3 ]
+    /// Minv = Uinv Linv = [    -((I+l1(I+l2inva3B3)inva2B2)inva1B1)inva0    (I+l1(I+l2inva3B3)inva2B2)inva1  -l1(inva2+l2inva3B3inva2)    l1l2inva3 ]
+    ///                    [         (((I+l2inva3B3)inva2B2)inva1B1)inva0       -((I+l2inva3B3)inva2B2)inva1      inva2+l2inva3B3inva2     -l2inva3 ]
+    ///                    [                  -inva3B3inva2B2inva1B1inva0                inva3B3inva2B2inva1             -inva3B3inva2        inva3 ]
+    ///
+    ///                    [ inva0-l0(Minv10)              (-l0)(Minv11)              (-l0)(Minv12)           (-l0)(Minv13) ]
+    /// Minv = Uinv Linv = [         (Minv11)(-B1inva0) inva1-l1(Minv21)              (-l1)(Minv22)           (-l1)(Minv23) ]
+    ///                    [         (Minv21)(-B1inva0)         (Minv22)(-B2inva1) inva2-l2(Minv32)           (-l2)(Minv33) ]
+    ///                    [         (Minv31)(-B1inva0)         (Minv32)(-B2inva1)         (Minv33)(-B3inva2)       inva3   ]
+    ///
+    /// if M is symmetric (Ai = Ait and Bi+1 = C1t) :
+    /// li = invai*Ci = (invai)t*(Bi+1)t = (B(i+1)invai)t
+    ///
+    ///                    [ inva0-l0(Minv10)     Minv10t          Minv20t      Minv30t ]
+    /// Minv = Uinv Linv = [  (Minv11)(-l0t)  inva1-l1(Minv21)     Minv21t      Minv31t ]
+    ///                    [  (Minv21)(-l0t)   (Minv22)(-l1t)  inva2-l2(Minv32) Minv32t ]
+    ///                    [  (Minv31)(-l0t)   (Minv32)(-l1t)   (Minv33)(-l2t)   inva3  ]
+    ///
     void invert(Matrix& M)
     {
         const bool verbose  = f_verbose.getValue();

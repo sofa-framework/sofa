@@ -48,6 +48,7 @@ public:
     typedef Mat M;
     //typedef NewMAT::Matrix SubMatrixType;
     typedef TNewMatMatrix<NewMAT::Matrix> SubMatrixType;
+    typedef TNewMatMatrix<NewMAT::Matrix> InvMatrixType;
     explicit TNewMatMatrix(int defaultBandWidth = 11)
         : bandWidth(defaultBandWidth)
     {
@@ -55,9 +56,9 @@ public:
 
     void resize(int nbRow, int nbCol)
     {
-#ifdef NEWMAT_VERBOSE
+//#ifdef NEWMAT_VERBOSE
         std::cout << this->Name() << ": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
-#endif
+//#endif
         M::ReSize(nbRow, nbCol);
         (*this) = 0.0;
     }

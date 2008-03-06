@@ -27,6 +27,7 @@
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
@@ -52,6 +53,7 @@ int CGLinearSolverClass = core::RegisterObject("Linear system solver using the c
         .add< CGLinearSolver<NewMatSymmetricMatrix,NewMatVector> >()
         .add< CGLinearSolver<NewMatBandMatrix,NewMatVector> >()
         .add< CGLinearSolver<NewMatSymmetricBandMatrix,NewMatVector> >()
+        .add< CGLinearSolver< SparseMatrix<double>, FullVector<double> > >()
         .addAlias("CGSolver")
         .addAlias("ConjugateGradient")
         ;
