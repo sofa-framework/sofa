@@ -338,7 +338,7 @@ template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deleteVector(GraphScatteredVector* v);
 
 template<>
-GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredMatrix>::createMatrix();
+GraphScatteredMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::createMatrix();
 
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deleteMatrix(GraphScatteredMatrix* v);
