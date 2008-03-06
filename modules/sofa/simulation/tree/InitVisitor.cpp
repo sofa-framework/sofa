@@ -39,13 +39,9 @@ Visitor::Result InitVisitor::processNodeTopDown(GNode* node)
 {
     node->initialize();
 
-    for( GNode::Sequence<sofa::core::objectmodel::BaseObject>::iterator i=node->
-            object.begin(), iend=node->object.end();
-            i!=iend;
-            i++ )
+    for(unsigned int i=0; i<node->object.size(); ++i)
     {
-        //cerr<<"InitVisitor::processNodeBottomUp(), initializing node "<<(*i)->getName()<<endl;
-        (*i)->init();
+        node->object[i]->init();
     }
 
     return RESULT_CONTINUE;
@@ -54,24 +50,11 @@ Visitor::Result InitVisitor::processNodeTopDown(GNode* node)
 void InitVisitor::processNodeBottomUp(GNode* node)
 {
     // init all the components in reverse order
-//     for( GNode::Sequence<OdeSolver>::iterator i=node->
-//          solver.begin(), iend=node->solver.end();
-//          i!=iend;
-//          i++ )
-//     {
-//         cerr<<"InitVisitor::processNodeBottomUp(), initializing solver "<<(*i)->getName()<<endl;
-//         (*i)->init();
-//     }
-
     node->setDefaultVisualContextValue();
 
-    for( GNode::Sequence<sofa::core::objectmodel::BaseObject>::iterator i=node->
-            object.begin(), iend=node->object.end();
-            i!=iend;
-            i++ )
+    for(unsigned int i=0; i<node->object.size(); ++i)
     {
-        //cerr<<"InitVisitor::processNodeBottomUp(), initializing node "<<(*i)->getName()<<endl;
-        (*i)->bwdInit();
+        node->object[i]->bwdInit();
     }
 }
 
