@@ -80,6 +80,24 @@ public:
     ///
     /// @TODO Why is this necessary in the OdeSolver API ? (Jeremie A. 03/02/2008)
     virtual void propagatePositionAndVelocity(double t, BaseMechanicalState::VecId x, BaseMechanicalState::VecId v) = 0;
+
+    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
+    ///
+    /// This method is used to compute the compliance for contact corrections
+    /// For Euler methods, it is typically 1/dt.
+    virtual double getVelocityIntegrationFactor() const
+    {
+        return 1.0/getContext()->getDt();
+    }
+
+    /// Given a displacement as computed by the linear system inversion, how much will it affect the position
+    ///
+    /// This method is used to compute the compliance for contact corrections
+    /// For Euler methods, it is typically 1/dt².
+    virtual double getPositionIntegrationFactor() const
+    {
+        return 1.0/(getContext()->getDt()*getContext()->getDt());
+    }
 };
 
 } // namespace behavior

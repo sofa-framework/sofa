@@ -73,6 +73,26 @@ public:
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem() = 0;
 
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix J
+    ///
+    /// @param result the variable where the result will be added
+    /// @param J the matrix J to use
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    virtual bool addMInvJt(defaulttype::BaseMatrix* /*result*/, defaulttype::BaseMatrix* /*J*/)
+    {
+        return false;
+    }
+
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// @param result the variable where the result will be added
+    /// @param J the matrix J to use
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    virtual bool addJMInvJt(defaulttype::BaseMatrix* /*result*/, defaulttype::BaseMatrix* /*J*/)
+    {
+        return false;
+    }
+
     /// Get the linear system matrix, or NULL if this solver does not build it
     virtual defaulttype::BaseMatrix* getSystemBaseMatrix() { return NULL; }
 
