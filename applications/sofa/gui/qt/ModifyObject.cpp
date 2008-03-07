@@ -276,6 +276,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //float
                 else if( Data<float> * ff = dynamic_cast< Data<float> * >( (*it).second )  )
                 {
+                    std::cout << "float " << it->first << "\n";
                     WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
                     list_Object.push_back( (QObject *) editSFFloat);
 
@@ -289,7 +290,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //double
                 else if(Data<double> * ff = dynamic_cast< Data<double> * >( (*it).second )  )
                 {
-
+                    std::cout << "double " << it->first << "\n";
                     WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
                     list_Object.push_back( (QObject *) editSFFloat);
 
@@ -344,6 +345,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //float
                 else if( DataPtr<float> * ff = dynamic_cast< DataPtr<float> * >( (*it).second )  )
                 {
+                    std::cout << "testdouble " << it->first << "\n";
                     WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
                     list_Object.push_back( (QObject *) editSFFloat);
 
@@ -358,6 +360,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 else if(DataPtr<double> * ff = dynamic_cast< DataPtr<double> * >( (*it).second )  )
                 {
 
+                    std::cout << "testdouble " << it->first << "\n";
                     WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
                     list_Object.push_back( (QObject *) editSFFloat);
 
@@ -498,6 +501,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         dynamic_cast< Data<Vec<1,unsigned int> > *  > ( (*it).second ))
                 {
 
+                    std::cout << "vec " << it->first << "\n";
                     if( Data<Vec1f> * ff = dynamic_cast< Data<Vec1f> * >( (*it).second )  )
                     {
                         createVector(ff->getValue(), box);
@@ -1078,8 +1082,10 @@ void ModifyObject::updateValues()
             //*******************************************************************************************************************
             if( Data<int> * ff = dynamic_cast< Data<int> * >( (*it).second )  )
             {
+                std::cout << "test " << it->first << "\n";
                 if (dynamic_cast< QSpinBox *> ( (*list_it) ))
                 {
+
                     QSpinBox* spinBox = dynamic_cast< QSpinBox *> ( (*list_it) ); list_it++;
                     ff->setValue(spinBox->value());
                 }
@@ -1102,7 +1108,7 @@ void ModifyObject::updateValues()
             else if( dynamic_cast< Data<float> * >( (*it).second ) ||
                     dynamic_cast< Data<double> * >( (*it).second ))
             {
-
+                std::cout << "test " << it->first << "\n";
                 WFloatLineEdit* editSFFloat = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
 
 
@@ -1392,6 +1398,354 @@ void ModifyObject::updateValues()
                 ff->setValue(current_mass);
             }
             else if (Data<helper::io::Mesh::Material > *ff = dynamic_cast< Data<helper::io::Mesh::Material > * >( (*it).second ))
+            {
+                helper::io::Mesh::Material M;  QCheckBox* checkBox;    WFloatLineEdit* value;
+
+                //Diffuse
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useDiffuse = checkBox->isOn();
+                for (int i=0; i<4; i++) { value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;	M.diffuse[i] = value->getFloatValue();}
+                //Ambient
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useAmbient = checkBox->isOn();
+                for (int i=0; i<4; i++) { value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;	M.ambient[i] = value->getFloatValue();}
+                //Emissive
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useEmissive = checkBox->isOn();
+                for (int i=0; i<4; i++) { value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;  M.emissive[i] = value->getFloatValue();}
+                //Specular
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useSpecular = checkBox->isOn();
+                for (int i=0; i<4; i++) { value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;	M.specular[i] = value->getFloatValue();}
+                //Shininess
+                checkBox= dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                M.useShininess = checkBox->isOn();
+                value = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                M.shininess = value->getFloatValue();
+
+                ff->setValue(M);
+            }
+            //**********************************************************************
+            //support for Dataptr
+            //*******************************************************************************************************************
+            else if( DataPtr<int> * ff = dynamic_cast< DataPtr<int> * >( (*it).second )  )
+            {
+                std::cout << "test " << it->first << "\n";
+                if (dynamic_cast< QSpinBox *> ( (*list_it) ))
+                {
+
+                    QSpinBox* spinBox = dynamic_cast< QSpinBox *> ( (*list_it) ); list_it++;
+                    ff->setValue(spinBox->value());
+                }
+                else
+                {
+                    QCheckBox* checkBox = dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                    ff->setValue(checkBox->isOn());
+                }
+
+            }
+            //*******************************************************************************************************************
+            else if( DataPtr<unsigned int> * ff = dynamic_cast< DataPtr<unsigned int> * >( (*it).second )  )
+            {
+
+                QSpinBox* spinBox = dynamic_cast< QSpinBox *> ( (*list_it) ); list_it++;
+
+                ff->setValue(spinBox->value());
+            }
+            //*******************************************************************************************************************
+            else if( dynamic_cast< DataPtr<float> * >( (*it).second ) ||
+                    dynamic_cast< DataPtr<double> * >( (*it).second ))
+            {
+                std::cout << "test " << it->first << "\n";
+                WFloatLineEdit* editSFFloat = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+
+
+                if( DataPtr<float> * ff = dynamic_cast< DataPtr<float> * >( (*it).second )  )
+                {
+                    ff->setValue(editSFFloat->getFloatValue());
+                }
+                else if(DataPtr<double> * ff = dynamic_cast< DataPtr<double> * >( (*it).second )  )
+                {
+                    ff->setValue((double) editSFFloat->getFloatValue());
+                }
+
+            }
+            //*******************************************************************************************************************
+            else if( DataPtr<bool> * ff = dynamic_cast< DataPtr<bool> * >( (*it).second ))
+            {
+                // the bool line edit
+                QCheckBox* checkBox = dynamic_cast< QCheckBox *> ( (*list_it) ); list_it++;
+                ff->setValue(checkBox->isOn());
+            }
+            //*******************************************************************************************************************
+            else if( DataPtr<std::string> * ff = dynamic_cast< DataPtr<std::string> * >( (*it).second )  )
+            {
+
+                QLineEdit* lineEdit = dynamic_cast< QLineEdit *> ( (*list_it) ); list_it++;
+
+                ff->setValue(lineEdit->text().ascii());
+
+
+                if( !dynamic_cast< GNode *>(node) && !strcmp(ff->help,"object name") )
+                {
+                    std::string name=item->text(0).ascii();
+                    std::string::size_type pos = name.find(' ');
+                    if (pos != std::string::npos)
+                        name.resize(pos);
+                    name += "  ";
+
+                    name+=lineEdit->text().ascii();
+                    item->setText(0,name.c_str());
+                }
+                else if (dynamic_cast< GNode *>(node))
+                    item->setText(0,lineEdit->text().ascii());
+
+            }
+            //*******************************************************************************************************************
+            else if( dynamic_cast< DataPtr<Vec6f> * >( (*it).second )         ||
+                    dynamic_cast< DataPtr<Vec6d> * >( (*it).second )         ||
+                    dynamic_cast< DataPtr<Vec<6,int> > * >( (*it).second )   ||
+                    dynamic_cast< DataPtr<Vec<6,unsigned int> > * >( (*it).second )   )
+            {
+                if( DataPtr<Vec6f> * ff = dynamic_cast< DataPtr<Vec6f> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec6d> * ff = dynamic_cast< DataPtr<Vec6d> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if( DataPtr<Vec<6,int> > * ff = dynamic_cast< DataPtr<Vec<6,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec<6, unsigned int> > * ff = dynamic_cast< DataPtr<Vec<6, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+
+
+            }
+            //*******************************************************************************************************************
+            else if(  dynamic_cast< DataPtr<Vec4f> * >( (*it).second )           ||
+                    dynamic_cast< DataPtr<Vec4d> * >( (*it).second )           ||
+                    dynamic_cast< DataPtr<Vec<4,int> > * >( (*it).second )     ||
+                    dynamic_cast< DataPtr<Vec<4,unsigned int> > * >( (*it).second )  )
+            {
+
+                if( DataPtr<Vec4f> * ff = dynamic_cast< DataPtr<Vec4f> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec4d> * ff = dynamic_cast< DataPtr<Vec4d> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if( DataPtr<Vec<4,int> > * ff = dynamic_cast< DataPtr<Vec<4,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec<4, unsigned int> > * ff = dynamic_cast< DataPtr<Vec<4, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+
+            }
+            //*******************************************************************************************************************
+            else if( dynamic_cast< DataPtr<Vec3f> * >( (*it).second )         ||
+                    dynamic_cast< DataPtr<Vec3d> * >( (*it).second )         ||
+                    dynamic_cast< DataPtr<Vec<3,int> > * >( (*it).second )   ||
+                    dynamic_cast< DataPtr<Vec<3,unsigned int> > * >( (*it).second )  )
+            {
+
+                if( DataPtr<Vec3f> * ff = dynamic_cast< DataPtr<Vec3f> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec3d> * ff = dynamic_cast< DataPtr<Vec3d> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if( DataPtr<Vec<3,int> > * ff = dynamic_cast< DataPtr<Vec<3,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec<3, unsigned int> > * ff = dynamic_cast< DataPtr<Vec<3, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+
+
+            }
+            //*******************************************************************************************************************
+            else if( dynamic_cast< DataPtr<Vec2f> * >( (*it).second )          ||
+                    dynamic_cast< DataPtr<Vec2d> * >( (*it).second )          ||
+                    dynamic_cast< DataPtr<Vec<2,int> > * >( (*it).second )    ||
+                    dynamic_cast< DataPtr<Vec<2,unsigned int> > * >( (*it).second )  )
+            {
+
+
+                if( DataPtr<Vec2f> * ff = dynamic_cast< DataPtr<Vec2f> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec2d> * ff = dynamic_cast< DataPtr<Vec2d> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if( DataPtr<Vec<2,int> > * ff = dynamic_cast< DataPtr<Vec<2,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec<2, unsigned int> > * ff = dynamic_cast< DataPtr<Vec<2, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+
+            }
+            //*******************************************************************************************************************
+            else if( dynamic_cast< DataPtr<Vec1f> * >( (*it).second )         ||
+                    dynamic_cast< DataPtr<Vec1d> * >( (*it).second )         ||
+                    dynamic_cast< DataPtr<Vec<1,int> > * >( (*it).second )   ||
+                    dynamic_cast< DataPtr<Vec<1,unsigned int> > * >( (*it).second )  )
+            {
+
+
+                if( DataPtr<Vec1f> * ff = dynamic_cast< DataPtr<Vec1f> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec1d> * ff = dynamic_cast< DataPtr<Vec1d> * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if( DataPtr<Vec<1,int> > * ff = dynamic_cast< DataPtr<Vec<1,int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+                else if(DataPtr<Vec<1, unsigned int> > * ff = dynamic_cast< DataPtr<Vec<1, unsigned int> > * >( (*it).second )  )
+                {
+                    storeVector(list_it, ff);
+                }
+
+            }
+            else if( DataPtr<RigidCoord<3,double> > * ff = dynamic_cast< DataPtr<RigidCoord<3,double> > * >( (*it).second )  )
+            {
+                RigidCoord<3,double> v;
+                storeVector(list_it, &v.getCenter());
+                storeVector(list_it, &v.getOrientation());
+                ff->setValue(v);
+            }
+            else if( DataPtr<RigidDeriv<3,double> > * ff = dynamic_cast< DataPtr<RigidDeriv<3,double> > * >( (*it).second )  )
+            {
+                RigidDeriv<3,double> v;
+                storeVector(list_it, &v.getVCenter());
+                storeVector(list_it, &v.getVOrientation());
+                ff->setValue(v);
+            }
+            //*******************************************************************************************************************
+            else if( DataPtr<PointSubset> * ff = dynamic_cast< DataPtr<PointSubset> * >( (*it).second ))
+            {
+                std::list< QObject *>::iterator element_iterator=(*block_iterator)->begin();
+                element_iterator++;
+                Q3Table  *table = dynamic_cast< Q3Table *>  ( (*element_iterator) );
+                block_iterator++;
+
+
+                PointSubset p;
+                p.resize(table->numRows());
+                for ( int index=0; index<table->numRows(); index++)
+                {
+                    if (table->text(index,0) == "") p[index] = 0;
+                    else                            p[index] = atoi(table->text(index,0));
+                }
+                ff->setValue(p);
+            }
+            //*******************************************************************************************************************
+            else if( DataPtr<RigidMass<3, double> > * ff = dynamic_cast< DataPtr<RigidMass<3, double> > * >( (*it).second )  )
+            {
+                RigidMass<3, double> current_mass = ff->getValue();
+
+                WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.mass = (double) mass->getFloatValue();
+                WFloatLineEdit* volume = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.volume = (double) volume->getFloatValue();
+                for (int row=0; row<3; row++)
+                {
+                    for (int column=0; column<3; column++)
+                    {
+                        WFloatLineEdit* matrix_element = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                        current_mass.inertiaMatrix[row][column] = (double) matrix_element->getFloatValue();
+                    }
+                }
+                for (int row=0; row<3; row++)
+                {
+                    for (int column=0; column<3; column++)
+                    {
+                        WFloatLineEdit* matrix_element = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                        current_mass.inertiaMassMatrix[row][column] = (double) matrix_element->getFloatValue();
+                    }
+                }
+                ff->setValue(current_mass);
+            }
+            //*******************************************************************************************************************
+            else if( DataPtr<RigidMass<3, float> > * ff = dynamic_cast< DataPtr<RigidMass<3, float> > * >( (*it).second )  )
+            {
+                RigidMass<3, float> current_mass = ff->getValue();
+
+                WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.mass =  mass->getFloatValue();
+                WFloatLineEdit* volume = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.volume =  volume->getFloatValue();
+                for (int row=0; row<3; row++)
+                {
+                    for (int column=0; column<3; column++)
+                    {
+                        WFloatLineEdit* matrix_element = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                        current_mass.inertiaMatrix[row][column] = (double) matrix_element->getFloatValue();
+                    }
+                }
+                for (int row=0; row<3; row++)
+                {
+                    for (int column=0; column<3; column++)
+                    {
+                        WFloatLineEdit* matrix_element = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                        current_mass.inertiaMassMatrix[row][column] = (double) matrix_element->getFloatValue();
+                    }
+                }
+                ff->setValue(current_mass);
+            }
+            //*******************************************************************************************************************
+            else if( DataPtr<RigidMass<2, double> > * ff = dynamic_cast< DataPtr<RigidMass<2, double> > * >( (*it).second )  )
+            {
+                RigidMass<2, double> current_mass = ff->getValue();
+
+                WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.mass = (double) mass->getFloatValue();
+                WFloatLineEdit* volume = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.volume = (double) volume->getFloatValue();
+                WFloatLineEdit* inertiaMatrix = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.inertiaMatrix = (double) inertiaMatrix->getFloatValue();
+
+                ff->setValue(current_mass);
+            }
+            //*******************************************************************************************************************
+            else if( DataPtr<RigidMass<2, float> > * ff = dynamic_cast< DataPtr<RigidMass<2, float> > * >( (*it).second )  )
+            {
+                RigidMass<2, float> current_mass = ff->getValue();
+
+                WFloatLineEdit* mass = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.mass =  mass->getFloatValue();
+                WFloatLineEdit* volume = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.volume =  volume->getFloatValue();
+                WFloatLineEdit* inertiaMatrix = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.inertiaMatrix = (double) inertiaMatrix->getFloatValue();
+                WFloatLineEdit* inertiaMassMatrix = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+                current_mass.inertiaMassMatrix = (double) inertiaMassMatrix->getFloatValue();
+
+                ff->setValue(current_mass);
+            }
+            else if (DataPtr<helper::io::Mesh::Material > *ff = dynamic_cast< DataPtr<helper::io::Mesh::Material > * >( (*it).second ))
             {
                 helper::io::Mesh::Material M;  QCheckBox* checkBox;    WFloatLineEdit* value;
 
@@ -3142,6 +3496,34 @@ void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, Data< Q
     for (int i=0; i<4; i++)  value[i] =  (T) editSFFloat[i]->getFloatValue();
     ff->setValue(value);
 }
+
+template< int N, class T>
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataPtr< Vec<N,T> > *ff)
+{
+    WFloatLineEdit* editSFFloat[N];
+    for (int i=0; i<N; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Vec<N, T> value;
+    for (int i=0; i<N; i++)  value[i] =  (T) editSFFloat[i]->getFloatValue();
+    ff->setValue(value);
+}
+template<class T>
+void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, DataPtr< Quater<T> > *ff)
+{
+    WFloatLineEdit* editSFFloat[4];
+    for (int i=0; i<4; i++)
+    {
+        editSFFloat[i] = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
+    }
+
+    Quater<T> value;
+    for (int i=0; i<4; i++)  value[i] =  (T) editSFFloat[i]->getFloatValue();
+    ff->setValue(value);
+}
+
 template< int N, class T>
 void ModifyObject::storeVector(std::list< QObject *>::iterator &list_it, Vec<N,T> *ff)
 {
