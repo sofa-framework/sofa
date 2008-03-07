@@ -276,7 +276,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //float
                 else if( Data<float> * ff = dynamic_cast< Data<float> * >( (*it).second )  )
                 {
-                    std::cout << "float " << it->first << "\n";
                     WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
                     list_Object.push_back( (QObject *) editSFFloat);
 
@@ -290,7 +289,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //double
                 else if(Data<double> * ff = dynamic_cast< Data<double> * >( (*it).second )  )
                 {
-                    std::cout << "double " << it->first << "\n";
                     WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
                     list_Object.push_back( (QObject *) editSFFloat);
 
@@ -345,7 +343,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //float
                 else if( DataPtr<float> * ff = dynamic_cast< DataPtr<float> * >( (*it).second )  )
                 {
-                    std::cout << "testdouble " << it->first << "\n";
                     WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
                     list_Object.push_back( (QObject *) editSFFloat);
 
@@ -359,8 +356,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 //double
                 else if(DataPtr<double> * ff = dynamic_cast< DataPtr<double> * >( (*it).second )  )
                 {
-
-                    std::cout << "testdouble " << it->first << "\n";
                     WFloatLineEdit* editSFFloat = new WFloatLineEdit( box, "editSFFloat" );
                     list_Object.push_back( (QObject *) editSFFloat);
 
@@ -500,8 +495,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         dynamic_cast< Data<Vec<1,int> > * >( (*it).second ) ||
                         dynamic_cast< Data<Vec<1,unsigned int> > *  > ( (*it).second ))
                 {
-
-                    std::cout << "vec " << it->first << "\n";
                     if( Data<Vec1f> * ff = dynamic_cast< Data<Vec1f> * >( (*it).second )  )
                     {
                         createVector(ff->getValue(), box);
@@ -1082,7 +1075,6 @@ void ModifyObject::updateValues()
             //*******************************************************************************************************************
             if( Data<int> * ff = dynamic_cast< Data<int> * >( (*it).second )  )
             {
-                std::cout << "test " << it->first << "\n";
                 if (dynamic_cast< QSpinBox *> ( (*list_it) ))
                 {
 
@@ -1108,7 +1100,6 @@ void ModifyObject::updateValues()
             else if( dynamic_cast< Data<float> * >( (*it).second ) ||
                     dynamic_cast< Data<double> * >( (*it).second ))
             {
-                std::cout << "test " << it->first << "\n";
                 WFloatLineEdit* editSFFloat = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
 
 
@@ -1430,7 +1421,6 @@ void ModifyObject::updateValues()
             //*******************************************************************************************************************
             else if( DataPtr<int> * ff = dynamic_cast< DataPtr<int> * >( (*it).second )  )
             {
-                std::cout << "test " << it->first << "\n";
                 if (dynamic_cast< QSpinBox *> ( (*list_it) ))
                 {
 
@@ -1456,7 +1446,6 @@ void ModifyObject::updateValues()
             else if( dynamic_cast< DataPtr<float> * >( (*it).second ) ||
                     dynamic_cast< DataPtr<double> * >( (*it).second ))
             {
-                std::cout << "test " << it->first << "\n";
                 WFloatLineEdit* editSFFloat = dynamic_cast< WFloatLineEdit *> ( (*list_it) ); list_it++;
 
 
