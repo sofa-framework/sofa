@@ -126,6 +126,10 @@ protected:
     template<class T>
     void storeVector(std::list< QObject *>::iterator &list_it, Data< Quater<T> > *ff);
     template< int N, class T>
+    void storeVector(std::list< QObject *>::iterator &list_it, DataPtr< Vec<N,T> > *ff);
+    template<class T>
+    void storeVector(std::list< QObject *>::iterator &list_it, DataPtr< Quater<T> > *ff);
+    template< int N, class T>
     void storeVector(std::list< QObject *>::iterator &list_it, Vec<N,T> *ff);
     template<class T>
     void storeVector(std::list< QObject *>::iterator &list_it, Quater<T> *ff);
