@@ -27,6 +27,8 @@
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/FullMatrix.h>
 #include <math.h>
 
 namespace sofa
@@ -44,10 +46,29 @@ class LULinearSolver : public sofa::simulation::tree::MatrixLinearSolver<Matrix,
 {
 public:
     Data<bool> f_verbose;
+    typename Matrix::LUSolver* solver;
+    typename Matrix::InvMatrixType Minv;
+    bool computedMinv;
 
     LULinearSolver()
         : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+        , solver(NULL), computedMinv(false)
     {
+    }
+
+    ~LULinearSolver()
+    {
+        if (solver != NULL)
+            delete solver;
+    }
+
+    /// Invert M
+    void invert (Matrix& M)
+    {
+        if (solver != NULL)
+            delete solver;
+        solver = M.makeLUSolver();
+        computedMinv = false;
     }
 
     /// Solve Mx=b
@@ -63,13 +84,130 @@ public:
             cerr<<"LULinearSolver, b = "<< b <<endl;
             cerr<<"LULinearSolver, M = "<< M <<endl;
         }
-        M.solve(&x,&b);
+        if (solver)
+            M.solve(&x,&b, solver);
+        else
+            M.solve(&x,&b);
+
         // x is the solution of the system
         if( verbose )
         {
             cerr<<"LULinearSolver::solve, solution = "<<x<<endl;
         }
     }
+
+    void computeMinv()
+    {
+        if (!computedMinv)
+        {
+            if (solver)
+                Minv = solver->i();
+            else
+                Minv = this->systemMatrix->i();
+            computedMinv = true;
+        }
+        /*typename Matrix::InvMatrixType I;
+        I = ((*this->systemMatrix)*Minv);
+        for (int i=0;i<I.rowSize();++i)
+            for (int j=0;j<I.rowSize();++j)
+            {
+                double err = I.element(i,j)-((i==j)?1.0:0.0);
+                if (fabs(err) > 1.0e-6)
+                    std::cerr << "ERROR: I("<<i<<","<<j<<") error "<<err<<std::endl;
+            }*/
+    }
+
+    double getMinvElement(int i, int j)
+    {
+        return Minv.element(i,j);
+    }
+
+    template<class RMatrix, class JMatrix>
+    bool addJMInvJt(RMatrix& result, JMatrix& J, double fact)
+    {
+        const int Jrows = J.rowSize();
+        const int Jcols = J.colSize();
+        if (Jcols != this->systemMatrix->rowSize())
+        {
+            std::cerr << "LULinearSolver::addJMInvJt ERROR: incompatible J matrix size." << std::endl;
+            return false;
+        }
+
+        if (!Jrows) return false;
+        computeMinv();
+
+        const typename JMatrix::LineConstIterator jitend = J.end();
+        for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != jitend; ++jit1)
+        {
+            int row1 = jit1->first;
+            for (typename JMatrix::LineConstIterator jit2 = jit1; jit2 != jitend; ++jit2)
+            {
+                int row2 = jit2->first;
+                double acc = 0.0;
+                for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(), i1end = jit1->second.end(); i1 != i1end; ++i1)
+                {
+                    int col1 = i1->first;
+                    double val1 = i1->second;
+                    for (typename JMatrix::LElementConstIterator i2 = jit2->second.begin(), i2end = jit2->second.end(); i2 != i2end; ++i2)
+                    {
+                        int col2 = i2->first;
+                        double val2 = i2->second;
+                        acc += val1 * getMinvElement(col1,col2) * val2;
+                    }
+                }
+                acc *= fact;
+                //std::cout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<std::endl;
+                result.add(row1,row2,acc);
+                if (row1!=row2)
+                    result.add(row2,row1,acc);
+            }
+        }
+        return true;
+    }
+
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// @param result the variable where the result will be added
+    /// @param J the matrix J to use
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    {
+        if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
+        {
+            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+        }
+        else if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
+        {
+            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+        }
+        else if (defaulttype::BaseMatrix* r = result)
+        {
+            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+        }
+        return false;
+    }
+
 };
 
 } // namespace linearsolver

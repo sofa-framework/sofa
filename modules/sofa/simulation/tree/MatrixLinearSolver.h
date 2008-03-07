@@ -83,9 +83,6 @@ public:
     /// Get the linear system left-hand term vector, or NULL if this solver does not build it
     Vector* getSystemLHVector() { return systemLHVector; }
 
-    /// Get the linear system inverse matrix, or NULL if this solver does not build it
-    Matrix* getSystemInverseMatrix() { return systemInverseMatrix; }
-
     /// Get the linear system matrix, or NULL if this solver does not build it
     defaulttype::BaseMatrix* getSystemBaseMatrix() { return systemMatrix; }
 
@@ -94,9 +91,6 @@ public:
 
     /// Get the linear system left-hand term vector, or NULL if this solver does not build it
     defaulttype::BaseVector* getSystemLHBaseVector() { return systemLHVector; }
-
-    /// Get the linear system inverse matrix, or NULL if this solver does not build it
-    defaulttype::BaseMatrix* getSystemInverseBaseMatrix() { return systemInverseMatrix; }
 
     /// Solve the system as constructed using the previous methods
     virtual void solveSystem();
@@ -114,6 +108,8 @@ public:
 
 protected:
 
+    virtual void invert(Matrix& /*M*/) {}
+
     virtual void solve(Matrix& M, Vector& solution, Vector& rh) = 0;
 
     Vector* createVector();
@@ -124,16 +120,16 @@ protected:
 
     MatrixLinearSolverInternalData<Matrix,Vector>* data;
 
+    bool needInvert;
     Matrix* systemMatrix;
     Vector* systemRHVector;
     Vector* systemLHVector;
-    Matrix* systemInverseMatrix;
     VecId solutionVecId;
 };
 
 template<class Matrix, class Vector>
 MatrixLinearSolver<Matrix,Vector>::MatrixLinearSolver()
-    : systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL), systemInverseMatrix(NULL)
+    : needInvert(true), systemMatrix(NULL), systemRHVector(NULL), systemLHVector(NULL)
 {
     data = new MatrixLinearSolverInternalData<Matrix,Vector>(this);
 }
@@ -144,7 +140,6 @@ MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver()
     if (systemMatrix) deleteMatrix(systemMatrix);
     if (systemRHVector) deleteVector(systemRHVector);
     if (systemLHVector) deleteVector(systemLHVector);
-    if (systemInverseMatrix) deleteMatrix(systemInverseMatrix);
 }
 
 template<class Matrix, class Vector>
@@ -153,8 +148,8 @@ void MatrixLinearSolver<Matrix,Vector>::resetSystem()
     if (systemMatrix) systemMatrix->clear();
     if (systemRHVector) systemRHVector->clear();
     if (systemLHVector) systemLHVector->clear();
-    if (systemInverseMatrix) systemInverseMatrix->clear();
     solutionVecId = VecId();
+    needInvert = true;
 }
 
 template<class Matrix, class Vector>
@@ -166,7 +161,7 @@ void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
     systemRHVector->resize(n);
     if (!systemLHVector) systemLHVector = createVector();
     systemLHVector->resize(n);
-    if (systemInverseMatrix) systemInverseMatrix->resize(n,n);
+    needInvert = true;
 }
 
 template<class Matrix, class Vector>
@@ -202,6 +197,11 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(VecId v)
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::solveSystem()
 {
+    if (needInvert)
+    {
+        this->invert(*systemMatrix);
+        needInvert = false;
+    }
     this->solve(*systemMatrix, *systemLHVector, *systemRHVector);
     if (!solutionVecId.isNull())
     {
@@ -351,9 +351,6 @@ defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredV
 
 template<>
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemLHBaseVector();
-
-template<>
-defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemInverseBaseMatrix();
 
 } // namespace tree
 

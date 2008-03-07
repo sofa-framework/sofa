@@ -140,7 +140,7 @@ public:
 
     void resize(int nbRow, int nbCol)
     {
-#ifndef FULLMATRIX_VERBOSE
+#ifdef FULLMATRIX_VERBOSE
         if (nbRow != rowSize() || nbCol != colSize())
             std::cout << this->Name() << ": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
 #endif

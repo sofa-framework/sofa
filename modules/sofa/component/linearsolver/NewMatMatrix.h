@@ -49,6 +49,7 @@ public:
     //typedef NewMAT::Matrix SubMatrixType;
     typedef TNewMatMatrix<NewMAT::Matrix> SubMatrixType;
     typedef TNewMatMatrix<NewMAT::Matrix> InvMatrixType;
+    typedef NewMAT::LinearEquationSolver LUSolver;
     explicit TNewMatMatrix(int defaultBandWidth = 11)
         : bandWidth(defaultBandWidth)
     {
@@ -56,9 +57,9 @@ public:
 
     void resize(int nbRow, int nbCol)
     {
-//#ifdef NEWMAT_VERBOSE
+#ifdef NEWMAT_VERBOSE
         std::cout << this->Name() << ": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
-//#endif
+#endif
         M::ReSize(nbRow, nbCol);
         (*this) = 0.0;
     }
@@ -211,6 +212,22 @@ public:
 
         assert((ov!=NULL) && (rv!=NULL));
         solve(rv,ov);
+    }
+
+    LUSolver* makeLUSolver()
+    {
+        return new LUSolver(*this);
+    }
+
+    void solve(NewMatVector *rv, NewMatVector *ov, LUSolver* solver)
+    {
+#ifdef NEWMAT_VERBOSE
+        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = "<<std::endl;
+#endif
+        *rv = solver->i() * *ov;
+#ifdef NEWMAT_VERBOSE
+        std::cout << this->Name() << "("<<rowSize()<<","<<colSize()<<"): solve("<<*ov<<") = "<<*rv<<std::endl;
+#endif
     }
 
     template<class T>

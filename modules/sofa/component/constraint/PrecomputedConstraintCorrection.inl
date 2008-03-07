@@ -356,6 +356,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
                 indexCurColConst = mstate->getConstraintId()[curColConst];
                 double w = _sparseCompliance[toto + curColConst]*n1;
                 //W[indexCurRowConst][indexCurColConst] += w;
+                //std::cout << "W("<<indexCurRowConst<<","<<indexCurColConst<<") = "<<w<<std::endl;
                 W->add(indexCurRowConst, indexCurColConst, w);
                 if (indexCurRowConst != indexCurColConst)
                     W->add(indexCurColConst, indexCurRowConst, w);
@@ -403,6 +404,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
         int indexC1 = mstate->getConstraintId()[c1];
 
         double fC1 = f->element(indexC1);
+        //std::cout << "fC("<<indexC1<<")="<<fC1<<std::endl;
 
         if (fC1 != 0.0)
         {
@@ -422,6 +424,8 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
     activeDof.sort();
     activeDof.unique();
 
+    //for (unsigned int i=0; i< force.size(); i++)
+    //    std::cout << "f("<<i<<")="<<force[i]<<std::endl;
 
     std::list<int>::iterator IterateurListe;
     unsigned int i;
@@ -460,6 +464,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 
     for (unsigned int i=0; i< dx.size(); i++)
     {
+        //std::cout << "dx("<<i<<")="<<dx[i]<<std::endl;
         x[i] = x_free[i];
         v[i] = v_free[i];
 
