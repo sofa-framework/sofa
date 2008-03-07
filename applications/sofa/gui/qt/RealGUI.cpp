@@ -495,27 +495,25 @@ void RealGUI::addViewer()
     const char* name = viewerName;
 
     // set menu state
+
 #ifdef SOFA_GUI_QTVIEWER
     viewerOpenGLAction->setEnabled ( true );
 #else
     viewerOpenGLAction->setEnabled ( false );
     viewerOpenGLAction->setToolTip ( "enable SOFA_GUI_QTVIEWER in sofa-local.cfg to activate" );
 #endif
-    viewerOpenGLAction->setOn ( false );
 #ifdef SOFA_GUI_QGLVIEWER
     viewerQGLViewerAction->setEnabled ( true );
 #else
     viewerQGLViewerAction->setEnabled ( false );
     viewerQGLViewerAction->setToolTip ( "enable SOFA_GUI_QGLVIEWER in sofa-local.cfg to activate" );
 #endif
-    viewerQGLViewerAction->setOn ( false );
 #ifdef SOFA_GUI_QTOGREVIEWER
     viewerOGREAction->setEnabled ( true );
 #else
     viewerOGREAction->setEnabled ( false );
     viewerOGREAction->setToolTip ( "enable SOFA_GUI_QTOGREVIEWER in sofa-local.cfg to activate" );
 #endif
-    viewerOGREAction->setOn ( false );
 
 #ifdef SOFA_GUI_QGLVIEWER
     if ( !name[0] || !strcmp ( name,"qglviewer" ) )
@@ -595,21 +593,32 @@ void RealGUI::addViewer()
     viewer->getQWidget()->show();
     viewer->getQWidget()->update();
     setGUI();
+
+
 }
 
 void RealGUI::viewerOpenGL()
 {
-    viewerOpenGLAction->setOn ( setViewer ( "qt" ) );
+    setViewer ( "qt" );
+    viewerOpenGLAction->setOn(true);
+    viewerQGLViewerAction->setOn(false);
+    viewerOGREAction->setOn(false);
 }
 
 void RealGUI::viewerQGLViewer()
 {
-    viewerOpenGLAction->setOn ( setViewer ( "qglviewer" ) );
+    setViewer ( "qglviewer" );
+    viewerOpenGLAction->setOn(false);
+    viewerQGLViewerAction->setOn(true);
+    viewerOGREAction->setOn(false);
 }
 
 void RealGUI::viewerOGRE()
 {
-    viewerOpenGLAction->setOn ( setViewer ( "ogre" ) );
+    setViewer ( "ogre" );
+    viewerOpenGLAction->setOn(false);
+    viewerQGLViewerAction->setOn(false);
+    viewerOGREAction->setOn(true);
 }
 
 bool RealGUI::setViewer ( const char* name )
@@ -647,8 +656,9 @@ bool RealGUI::setViewer ( const char* name )
 
 
     std::string filename = viewer->getSceneFileName();
-    GNode* groot = new GNode; // empty scene to do the transition
-    setScene ( groot,filename.c_str() ); // keep the current display flags
+// 	fileOpen(filename);
+// 	GNode* groot = new GNode; // empty scene to do the transition
+// 	setScene ( groot,filename.c_str() ); // keep the current display flags
     left_stack->removeWidget ( viewer->getQWidget() );
     delete viewer;
     viewer = NULL;
@@ -697,11 +707,12 @@ bool RealGUI::setViewer ( const char* name )
             }
 #endif
 
+
     viewerName = name;
 
 
-    if ( graphListener )
-        graphListener->removeChild ( NULL, groot );
+// 	if ( graphListener )
+// 	  graphListener->removeChild ( NULL, groot );
 
     addViewer();
 
