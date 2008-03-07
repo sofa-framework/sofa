@@ -22,61 +22,40 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#ifndef SOFA_COMPONENT_ODESOLVER_EULERIMPLICITSOLVER_H
-#define SOFA_COMPONENT_ODESOLVER_EULERIMPLICITSOLVER_H
-
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/simulation/tree/OdeSolverImpl.h>
+#include "LinearSolverConstraintCorrection.inl"
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
-
 namespace component
 {
-
-namespace odesolver
+namespace constraint
 {
-
 using namespace sofa::defaulttype;
 
-/** Implicit time integrator using backward Euler scheme.
-*/
-class EulerImplicitSolver : public sofa::simulation::tree::OdeSolverImpl
-{
-public:
+SOFA_DECL_CLASS(LinearSolverConstraintCorrection)
 
-    Data<double> f_rayleighStiffness;
-    Data<double> f_rayleighMass;
-    Data<double> f_velocityDamping;
-    Data<bool> f_verbose;
+int LinearSolverContactCorrectionClass = core::RegisterObject("")
+        .add< LinearSolverConstraintCorrection<Vec1dTypes> >()
+        .add< LinearSolverConstraintCorrection<Rigid3dTypes> >()
+        .add< LinearSolverConstraintCorrection<Vec3dTypes> >()
+        ;
 
-    EulerImplicitSolver();
+template class LinearSolverConstraintCorrection<Vec3dTypes>;
+//template class LinearSolverConstraintCorrection<Vec3fTypes>;
+//template class LinearSolverConstraintCorrection<Vec2dTypes>;
+//template class LinearSolverConstraintCorrection<Vec2fTypes>;
+template class LinearSolverConstraintCorrection<Vec1dTypes>;
+//template class LinearSolverConstraintCorrection<Vec1fTypes>;
+template class LinearSolverConstraintCorrection<Rigid3dTypes>;
+//template class LinearSolverConstraintCorrection<Rigid3fTypes>;
+//template class LinearSolverConstraintCorrection<Rigid2dTypes>;
+//template class LinearSolverConstraintCorrection<Rigid2fTypes>;
 
-    void solve (double dt);
 
-    /// Given a displacement as computed by the linear system inversion, how much will it affect the velocity
-    ///
-    /// This method is used to compute the compliance for contact corrections
-    /// For Euler methods, it is typically dt.
-    virtual double getVelocityIntegrationFactor() const
-    {
-        return 1.0; // getContext()->getDt();
-    }
-
-    /// Given a displacement as computed by the linear system inversion, how much will it affect the position
-    ///
-    /// This method is used to compute the compliance for contact corrections
-    /// For Euler methods, it is typically dt².
-    virtual double getPositionIntegrationFactor() const
-    {
-        return getContext()->getDt(); //*getContext()->getDt());
-    }
-};
-
-} // namespace odesolver
+} // namespace collision
 
 } // namespace component
 
 } // namespace sofa
-
-#endif

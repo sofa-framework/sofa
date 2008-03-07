@@ -219,7 +219,7 @@ void AttachConstraint<DataTypes>::projectResponse(VecDeriv& res1, VecDeriv& res2
 template <class DataTypes>
 void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset)
 {
-    std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
+    //std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
     const SetIndexArray & indices = f_indices2.getValue().getArray();
     const unsigned int N = Deriv::size();
 
@@ -237,7 +237,7 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, 
 template <class DataTypes>
 void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset)
 {
-    std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
+    //std::cout << "applyConstraint in Vector with offset = " << offset << std::endl;
 
     const SetIndexArray & indices = f_indices2.getValue().getArray();
     const unsigned int N = Deriv::size();

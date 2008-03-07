@@ -94,10 +94,10 @@ public:
 
     void resize(int nbRow, int nbCol)
     {
-#ifndef SPARSEMATRIX_VERBOSE
+#ifdef SPARSEMATRIX_VERBOSE
         if (nbRow != rowSize() || nbCol != colSize())
-#endif
             std::cout << this->Name() << ": resize("<<nbRow<<","<<nbCol<<")"<<std::endl;
+#endif
         data.clear();
         nRow = nbRow;
         nCol = nbCol;
@@ -241,16 +241,108 @@ public:
     void clear() { data.clear(); }
 
     template<class Real2>
-    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+    void mul(FullVector<Real2>& res, const FullVector<Real2>& v) const
     {
-        FullVector<Real2> res(rowSize());
+        res.resize(rowSize());
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
         {
             Real2 r = 0;
             for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
-                r += ite->second * v[ite->first];
+                r += (Real2)ite->second * v[ite->first];
             res[itl->first] = r;
         }
+    }
+
+    template<class Real2>
+    void mulTranspose(FullVector<Real2>& res, const FullVector<Real2>& v) const
+    {
+        res.resize(colSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            Real2 vi = v[itl->first];
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+                res[ite->first] += (Real2)ite->second * vi;
+        }
+    }
+
+    template<class Real2>
+    void mul(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
+    {
+        res.resize(rowSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            Real2 r = 0;
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+                r += (Real2)ite->second * (Real2)v->element(ite->first);
+            res[itl->first] = r;
+        }
+    }
+
+    template<class Real2>
+    void mulTranspose(FullVector<Real2>& res, const defaulttype::BaseVector* v) const
+    {
+        res.resize(colSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            Real2 vi = v->element(itl->first);
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+                res[ite->first] += (Real2)ite->second * vi;
+        }
+    }
+
+    template<class Real2>
+    void mul(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
+    {
+        res->resize(rowSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            Real2 r = 0;
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+                r += (Real2)ite->second * v[ite->first];
+            res->set(itl->first, r);
+        }
+    }
+
+    template<class Real2>
+    void mulTranspose(defaulttype::BaseVector* res, const FullVector<Real2>& v) const
+    {
+        res->resize(colSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            Real2 vi = v[itl->first];
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+                res->add(ite->first, ite->second * vi);
+        }
+    }
+
+    void mul(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
+    {
+        res->resize(rowSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            Real r = 0;
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+                r += ite->second * (Real)v->element(ite->first);
+            res->set(itl->first, r);
+        }
+    }
+
+    void mulTranspose(defaulttype::BaseVector* res, const defaulttype::BaseVector* v) const
+    {
+        res->resize(colSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            Real vi = (Real)v->element(itl->first);
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+                res->add(ite->first, ite->second * vi);
+        }
+    }
+
+    template<class Real2>
+    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+    {
+        FullVector<Real2> res;
+        mul(res,v);
         return res;
     }
 

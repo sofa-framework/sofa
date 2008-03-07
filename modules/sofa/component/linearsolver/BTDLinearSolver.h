@@ -27,6 +27,8 @@
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/simulation/tree/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/FullMatrix.h>
 #include <math.h>
 
 namespace sofa
@@ -51,6 +53,8 @@ public:
     helper::vector<SubMatrix> alpha_inv;
     helper::vector<SubMatrix> lambda;
     helper::vector<SubMatrix> B;
+    typename Matrix::InvMatrixType Minv;
+    helper::vector<int> nBlockComputedMinv;
     Vector Y;
 
     Data<int> f_blockSize;
@@ -102,7 +106,13 @@ public:
     ///
     void invert(Matrix& M)
     {
-        const bool verbose  = f_verbose.getValue();
+        const bool verbose  = f_verbose.getValue() || f_printLog.getValue();
+
+        if( verbose )
+        {
+            std::cerr<<"BTDLinearSolver, M = "<< M <<std::endl;
+        }
+
         const int bsize = f_blockSize.getValue();
         const int nb = M.rowSize() / bsize;
         if (nb == 0) return;
@@ -142,26 +152,82 @@ public:
                 //if (verbose) std::cout << "C["<<i<<"] = alpha["<<i<<"]*lambda["<<i<<"] = " << alpha[i]*lambda[i] << std::endl;
             }
         }
+        nBlockComputedMinv.resize(nb);
+        for (int i=0; i<nb; ++i)
+            nBlockComputedMinv[i] = 0;
+        Minv.resize(nb*bsize,nb*bsize);
+        Minv.setSubMatrix((nb-1)*bsize,(nb-1)*bsize,bsize,bsize,alpha_inv[nb-1]);
+        nBlockComputedMinv[nb-1] = 1;
+    }
+
+    ///
+    ///                    [ inva0-l0(Minv10)     Minv10t          Minv20t      Minv30t ]
+    /// Minv = Uinv Linv = [  (Minv11)(-l0t)  inva1-l1(Minv21)     Minv21t      Minv31t ]
+    ///                    [  (Minv21)(-l0t)   (Minv22)(-l1t)  inva2-l2(Minv32) Minv32t ]
+    ///                    [  (Minv31)(-l0t)   (Minv32)(-l1t)   (Minv33)(-l2t)   inva3  ]
+    ///
+
+    void computeMinvBlock(int i, int j)
+    {
+        const int bsize = f_blockSize.getValue();
+        if (i < j)
+        {
+            // lower diagonal
+            int t = i; i = j; j = t;
+        }
+        if (nBlockComputedMinv[i] > i-j) return;
+        int i0 = i;
+        while (nBlockComputedMinv[i0]==0)
+            ++i0;
+        while (i0 > i)
+        {
+            if (nBlockComputedMinv[i0] == 1)
+            {
+                // compute bloc (i0,i0-1)
+                Minv.sub((i0  )*bsize,(i0-1)*bsize,bsize,bsize) = Minv.sub((i0  )*bsize,(i0  )*bsize,bsize,bsize)*(-lambda[i0-1].t());
+                ++nBlockComputedMinv[i0];
+            }
+            // compute bloc (i0-1,i0-1)
+            Minv.sub((i0-1)*bsize,(i0-1)*bsize,bsize,bsize) = alpha_inv[i0-1] - lambda[i0-1]*Minv.sub((i0  )*bsize,(i0-1)*bsize,bsize,bsize);
+            ++nBlockComputedMinv[i0-1];
+            --i0;
+        }
+        int j0 = i-nBlockComputedMinv[i];
+        while (j0 > j)
+        {
+            // compute bloc (i0,j0)
+            Minv.sub((i0  )*bsize,(j0  )*bsize,bsize,bsize) = Minv.sub((i0  )*bsize,(j0+1)*bsize,bsize,bsize)*(-lambda[j0].t());
+            ++nBlockComputedMinv[i0];
+            --j0;
+        }
+    }
+
+    double getMinvElement(int i, int j)
+    {
+        const int bsize = f_blockSize.getValue();
+        if (i < j)
+        {
+            // lower diagonal
+            int t = i; i = j; j = t;
+        }
+        computeMinvBlock(i/bsize, j/bsize);
+        return Minv.element(i,j);
     }
 
     /// Solve Mx=b
-    void solve (Matrix& M, Vector& x, Vector& b)
+    void solve (Matrix& /*M*/, Vector& x, Vector& b)
     {
-        using std::cerr;
-        using std::endl;
-
         const bool verbose  = f_verbose.getValue() || f_printLog.getValue();
 
         if( verbose )
         {
-            cerr<<"BTDLinearSolver, b = "<< b <<endl;
-            cerr<<"BTDLinearSolver, M = "<< M <<endl;
+            std::cerr<<"BTDLinearSolver, b = "<< b <<std::endl;
         }
 
-        invert(M);
+        //invert(M);
 
         const int bsize = f_blockSize.getValue();
-        const int nb = M.rowSize() / bsize;
+        const int nb = b.size() / bsize;
         if (nb == 0) return;
 
         //if (verbose) std::cout << "D["<<0<<"] = " << b.sub(0,bsize) << std::endl;
@@ -184,8 +250,90 @@ public:
         // x is the solution of the system
         if( verbose )
         {
-            cerr<<"BTDLinearSolver::solve, solution = "<<x<<endl;
+            std::cerr<<"BTDLinearSolver::solve, solution = "<<x<<std::endl;
         }
+    }
+
+    template<class RMatrix, class JMatrix>
+    bool addJMInvJt(RMatrix& result, JMatrix& J, double fact)
+    {
+        //const int Jrows = J.rowSize();
+        const int Jcols = J.colSize();
+        if (Jcols != Minv.rowSize())
+        {
+            std::cerr << "BTDLinearSolver::addJMInvJt ERROR: incompatible J matrix size." << std::endl;
+            return false;
+        }
+
+        const typename JMatrix::LineConstIterator jitend = J.end();
+        for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != jitend; ++jit1)
+        {
+            int row1 = jit1->first;
+            for (typename JMatrix::LineConstIterator jit2 = jit1; jit2 != jitend; ++jit2)
+            {
+                int row2 = jit2->first;
+                double acc = 0.0;
+                for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(), i1end = jit1->second.end(); i1 != i1end; ++i1)
+                {
+                    int col1 = i1->first;
+                    double val1 = i1->second;
+                    for (typename JMatrix::LElementConstIterator i2 = jit2->second.begin(), i2end = jit2->second.end(); i2 != i2end; ++i2)
+                    {
+                        int col2 = i2->first;
+                        double val2 = i2->second;
+                        acc += val1 * getMinvElement(col1,col2) * val2;
+                    }
+                }
+                acc *= fact;
+                result.add(row1,row2,acc);
+                if (row1!=row2)
+                    result.add(row2,row1,acc);
+            }
+        }
+        return true;
+    }
+
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// @param result the variable where the result will be added
+    /// @param J the matrix J to use
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    {
+        if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
+        {
+            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+        }
+        else if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
+        {
+            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+        }
+        else if (defaulttype::BaseMatrix* r = result)
+        {
+            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+        }
+        return false;
     }
 };
 

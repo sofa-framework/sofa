@@ -80,6 +80,7 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::resetSystem(
     systemRHVector->reset();
     systemLHVector->reset();
     solutionVecId = VecId();
+    needInvert = true;
 }
 
 template<>
@@ -111,6 +112,11 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemLHV
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::solveSystem()
 {
+    if (needInvert)
+    {
+        this->invert(*systemMatrix);
+        needInvert = false;
+    }
     this->solve(*systemMatrix, *systemLHVector, *systemRHVector);
 }
 
@@ -146,9 +152,6 @@ defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredV
 
 template<>
 defaulttype::BaseVector* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemLHBaseVector() { return NULL; }
-
-template<>
-defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemInverseBaseMatrix() { return NULL; }
 
 // Force template instantiation
 template class MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>;
