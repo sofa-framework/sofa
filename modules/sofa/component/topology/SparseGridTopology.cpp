@@ -30,6 +30,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/polygon_cube_intersection/polygon_cube_intersection.h>
+#include <sofa/helper/system/FileRepository.h>
 
 
 using std::cerr;
@@ -107,7 +108,11 @@ SparseGridTopology::SparseGridTopology()
 
 bool SparseGridTopology::load(const char* filename)
 {
-    this->filename.setValue( filename );
+    std::string f(filename);
+    if ( sofa::helper::system::DataRepository.findFile ( f ) )
+        f = sofa::helper::system::DataRepository.getFile ( f );
+
+    this->filename.setValue( f );
 // 		cerr<<"SparseGridTopology::load : "<<filename<<"    "<<this->filename.getValue()<<endl;
     return true;
 }
