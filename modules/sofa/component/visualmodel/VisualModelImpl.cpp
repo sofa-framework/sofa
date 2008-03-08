@@ -327,7 +327,11 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     }
     else
     {
-        if (vertices.size() == 0)  useTopology = true;
+        if (vertices.size() == 0)
+        {
+            std::cout << "VisualModel: will use Topology."<<std::endl;
+            useTopology = true;
+        }
         else  computeBBox();
         modified = true;
     }
@@ -620,15 +624,15 @@ void VisualModelImpl::updateVisual()
         {
             /** HD : build also a Ogl description from main Topology. But it needs to be build only once since the topology update
             is taken care of by the handleTopologyChange() routine */
+            topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(getContext()->getTopology());
             sofa::core::componentmodel::topology::BaseTopology* pst = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(getContext()->getMainTopology());
-            if (pst)
+            if (!topology && pst)
             {
                 useTopology=false;
                 computeMeshFromTopology(pst);
             }
             else
             {
-                topology::MeshTopology* topology = dynamic_cast<topology::MeshTopology*>(getContext()->getTopology());
                 if (topology != NULL && topology->getRevision() != lastMeshRev)
                 {
                     computeMesh(topology);
@@ -658,6 +662,7 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
     if (vertices.empty())
     {
         if (!topology->hasPos()) return;
+        std::cout << "VisualModel: copying "<<topology->getNbPoints()<<" points from topology."<<std::endl;
         vertices.resize(topology->getNbPoints());
         for (unsigned int i=0; i<vertices.size(); i++)
         {
@@ -669,6 +674,7 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
 
     lastMeshRev = topology->getRevision();
     const vector<topology::MeshTopology::Triangle>& inputTriangles = topology->getTriangles();
+    std::cout << "VisualModel: copying "<<inputTriangles.size()<<" triangles from topology."<<std::endl;
 
     triangles.resize(inputTriangles.size());
 
@@ -678,6 +684,7 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
     }
 
     const vector<topology::MeshTopology::Quad>& inputQuads = topology->getQuads();
+    std::cout << "VisualModel: copying "<<inputQuads.size()<<" quads from topology."<<std::endl;
     quads.resize(inputQuads.size());
     for (unsigned int i=0; i<quads.size(); ++i)
         quads[i] = inputQuads[i];

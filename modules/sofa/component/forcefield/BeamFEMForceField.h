@@ -149,6 +149,7 @@ public:
 //    component::MechanicalObject<DataTypes>* getObject() { return object; }
 
     virtual void init();
+    virtual void reinit();
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 

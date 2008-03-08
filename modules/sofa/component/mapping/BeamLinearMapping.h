@@ -61,6 +61,7 @@ protected:
     //Coord translation;
     //Real orientation[4];
     //Mat rotation;
+    sofa::helper::vector<Real> beamLength;
     sofa::helper::vector<Coord> rotatedPoints0;
     sofa::helper::vector<Coord> rotatedPoints1;
 public:

@@ -59,6 +59,11 @@ void BeamLinearMapping<BasicMapping>::init()
         points.resize(x.size());
         for (unsigned int i=0; i<x.size(); i++)
             points[i] = x[i];
+        typename In::VecCoord& xfrom = *this->fromModel->getX();
+        beamLength.resize(xfrom.size());
+        for (unsigned int i=0; i<xfrom.size()-1; i++)
+            beamLength[i] = (xfrom[i]-xfrom[i+1]).norm();
+
     }
     this->BasicMapping::init();
 }
@@ -77,10 +82,10 @@ void BeamLinearMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
         int in0 = helper::rfloor(inpos[0]);
         if (in0<0) in0 = 0; else if (in0 > (int)in.size()-2) in0 = in.size()-2;
         inpos[0] -= in0;
-        rotatedPoints0[i] = in[in0].getOrientation().rotate(inpos);
+        rotatedPoints0[i] = in[in0].getOrientation().rotate(inpos) * beamLength[in0];
         Coord out0 = in[in0].getCenter() + rotatedPoints0[i];
         Coord inpos1 = inpos; inpos1[0] -= 1;
-        rotatedPoints1[i] = in[in0+1].getOrientation().rotate(inpos1);
+        rotatedPoints1[i] = in[in0+1].getOrientation().rotate(inpos1) * beamLength[in0];
         Coord out1 = in[in0+1].getCenter() + rotatedPoints1[i];
         Real fact = (Real)inpos[0];
         fact = 3*(fact*fact)-2*(fact*fact*fact);

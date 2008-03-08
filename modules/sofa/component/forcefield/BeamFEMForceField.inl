@@ -79,8 +79,12 @@ void BeamFEMForceField<DataTypes>::init()
         _initialPoints.setValue(p);
     }
 
+    reinit();
+}
 
-
+template <class DataTypes>
+void BeamFEMForceField<DataTypes>::reinit()
+{
     typename VecElement::const_iterator it;
     unsigned int i=0;
 
@@ -136,8 +140,8 @@ void BeamFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, con
         Index a = (*it)[0];
         Index b = (*it)[1];
 
-        accumulateForceLarge( f, p, i, a, b );
         initLarge(i,a,b);
+        accumulateForceLarge( f, p, i, a, b );
     }
 
 }
@@ -229,6 +233,20 @@ void BeamFEMForceField<DataTypes>::computeStiffness(int i, Index , Index )
             k_loc[i][j] = k_loc[j][i];
 }
 
+inline Quat qDiff(Quat a, const Quat& b)
+{
+    if (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]<0)
+    {
+        a[0] = -a[0];
+        a[1] = -a[1];
+        a[2] = -a[2];
+        a[3] = -a[3];
+    }
+    Quat q = b.inverse() * a;
+    //std::cout << "qDiff("<<a<<","<<b<<")="<<q<<", bq="<<(b*q)<<std::endl;
+    return q;
+}
+
 ////////////// large displacements method
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
@@ -242,7 +260,8 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
     quatB = x[b].getOrientation();
 
 
-    dQ = quatA.inverse() * quatB;
+
+    dQ = qDiff(quatB, quatA);
 
     dW = dQ.toEulerVector();
 
@@ -253,6 +272,7 @@ void BeamFEMForceField<DataTypes>::initLarge(int i, Index a, Index b)
         dW.normalize();
 
         _beamQuat[i] = quatA*dQ.axisToQuat(dW, Theta/2);
+        _beamQuat[i].normalize();
     }
     else
         _beamQuat[i]= quatA;
@@ -263,6 +283,8 @@ template<class DataTypes>
 void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecCoord & x, int i, Index a, Index b )
 {
     const VecCoord& x0 = *this->mstate->getX0();
+
+    _beamQuat[i]= x[a].getOrientation();
 
     Vec<3,Real> u, P1P2, P1P2_0;
     // local displacement
@@ -282,9 +304,10 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
     Quat dQ0, dQ;
 
     // dQ = QA.i * QB ou dQ = QB * QA.i() ??
-    dQ0 = x0[a].getOrientation().inverse() * x0[b].getOrientation();
-    dQ =  x[a].getOrientation().inverse() * x[b].getOrientation();
-    u = dQ.toEulerVector() - dQ0.toEulerVector();
+    dQ0 = qDiff(x0[b].getOrientation(), x0[a].getOrientation()); // x0[a].getOrientation().inverse() * x0[b].getOrientation();
+    dQ =  qDiff(x[b].getOrientation(), x[a].getOrientation()); // x[a].getOrientation().inverse() * x[b].getOrientation();
+    //u = dQ.toEulerVector() - dQ0.toEulerVector();
+    u = qDiff(dQ,dQ0).toEulerVector(); //dQ.toEulerVector() - dQ0.toEulerVector();
 
     depl[3] = 0.0; 	depl[4] = 0.0; 	depl[5] = 0.0;
     depl[9] = u[0]; depl[10]= u[1]; depl[11]= u[2];
@@ -310,11 +333,11 @@ void BeamFEMForceField<DataTypes>::accumulateForceLarge( VecDeriv& f, const VecC
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::applyStiffnessLarge( VecDeriv& df, const VecDeriv& dx, int i, Index a, Index b )
 {
-    const VecCoord& x = *this->mstate->getX();
+    //const VecCoord& x = *this->mstate->getX();
 
     Displacement local_depl;
     Vec3d u;
-    const Quat& q = x[a].getOrientation();
+    const Quat& q = _beamQuat[i]; //x[a].getOrientation();
 
     u = q.inverseRotate(dx[a].getVCenter());
     local_depl[0] = u[0];
@@ -351,7 +374,7 @@ void BeamFEMForceField<DataTypes>::applyStiffnessLarge( VecDeriv& df, const VecD
 template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
 {
-    const VecCoord& x = *this->mstate->getX();
+    //const VecCoord& x = *this->mstate->getX();
 
     unsigned int i=0;
     typename VecElement::const_iterator it;
@@ -363,7 +386,7 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *m
 
         Displacement local_depl;
         Vec3d u;
-        const Quat& q = x[a].getOrientation();
+        const Quat& q = _beamQuat[i]; //x[a].getOrientation();
         Transformation R,Rt;
         q.toMatrix(R);
         Rt.transpose(R);

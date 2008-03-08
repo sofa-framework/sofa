@@ -92,6 +92,19 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
         x[i].getOrientation() *= q;
 }
 
+template <>
+bool MechanicalObject<Vec1dTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+{
+    return false; // ignore 1D DOFs for 3D bbox
+}
+
+template <>
+bool MechanicalObject<Vec1fTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+{
+    return false; // ignore 1D DOFs for 3D bbox
+}
+
+
 
 } // namespace component
 
