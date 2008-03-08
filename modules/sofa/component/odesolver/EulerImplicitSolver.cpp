@@ -108,6 +108,7 @@ void EulerImplicitSolver::solve(double dt)
         cerr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<endl;
 
     matrix.solve(x, b);
+    // projectResponse(x);
     // x is the solution of the system
 
     // apply the solution
