@@ -51,6 +51,207 @@ using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::core::componentmodel::behavior;
 
+template<>
+inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations)
+{
+    x2.getCenter() = x1.getCenter();
+    if (!freeRotations)
+        x2.getOrientation() = x1.getOrientation();
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations)
+{
+    x2.getCenter() = x1.getCenter();
+    if (!freeRotations)
+        x2.getOrientation() = x1.getOrientation();
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations)
+{
+    x2.getCenter() = x1.getCenter();
+    if (!freeRotations)
+        x2.getOrientation() = x1.getOrientation();
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations)
+{
+    x2.getCenter() = x1.getCenter();
+    if (!freeRotations)
+        x2.getOrientation() = x1.getOrientation();
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations)
+{
+    x2.getVCenter() = x1.getVCenter();
+    if (!freeRotations)
+        x2.getVOrientation() = x1.getVOrientation();
+    //x2 = Deriv();
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations)
+{
+    x2.getVCenter() = x1.getVCenter();
+    if (!freeRotations)
+        x2.getVOrientation() = x1.getVOrientation();
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations)
+{
+    x2.getVCenter() = x1.getVCenter();
+    if (!freeRotations)
+        x2.getVOrientation() = x1.getVOrientation();
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations)
+{
+    x2.getVCenter() = x1.getVCenter();
+    if (!freeRotations)
+        x2.getVOrientation() = x1.getVOrientation();
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway)
+{
+    if (oneway)
+    {
+        if (!freeRotations)
+            dx2 = Deriv();
+        else
+            dx2.getVCenter().clear();
+    }
+    else
+    {
+        if (!freeRotations)
+        {
+            dx1 += dx2;
+            dx2 = dx1;
+        }
+        else
+        {
+            dx1.getVCenter() += dx2.getVCenter();
+            dx2.getVCenter() = dx1.getVCenter();
+        }
+    }
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway)
+{
+    if (oneway)
+    {
+        if (!freeRotations)
+            dx2 = Deriv();
+        else
+            dx2.getVCenter().clear();
+    }
+    else
+    {
+        if (!freeRotations)
+        {
+            dx1 += dx2;
+            dx2 = dx1;
+        }
+        else
+        {
+            dx1.getVCenter() += dx2.getVCenter();
+            dx2.getVCenter() = dx1.getVCenter();
+        }
+    }
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway)
+{
+    if (oneway)
+    {
+        if (!freeRotations)
+            dx2 = Deriv();
+        else
+            dx2.getVCenter().clear();
+    }
+    else
+    {
+        if (!freeRotations)
+        {
+            dx1 += dx2;
+            dx2 = dx1;
+        }
+        else
+        {
+            dx1.getVCenter() += dx2.getVCenter();
+            dx2.getVCenter() = dx1.getVCenter();
+        }
+    }
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway)
+{
+    if (oneway)
+    {
+        if (!freeRotations)
+            dx2 = Deriv();
+        else
+            dx2.getVCenter().clear();
+    }
+    else
+    {
+        if (!freeRotations)
+        {
+            dx1 += dx2;
+            dx2 = dx1;
+        }
+        else
+        {
+            dx1.getVCenter() += dx2.getVCenter();
+            dx2.getVCenter() = dx1.getVCenter();
+        }
+    }
+}
+
+template<>
+inline unsigned int AttachConstraint<defaulttype::Rigid3dTypes>::DerivConstrainedSize(bool freeRotations)
+{
+    if (freeRotations)
+        return Deriv::static_size;
+    else
+        return Deriv::size();
+}
+
+template<>
+inline unsigned int AttachConstraint<defaulttype::Rigid3fTypes>::DerivConstrainedSize(bool freeRotations)
+{
+    if (freeRotations)
+        return Deriv::static_size;
+    else
+        return Deriv::size();
+}
+
+template<>
+inline unsigned int AttachConstraint<defaulttype::Rigid2dTypes>::DerivConstrainedSize(bool freeRotations)
+{
+    if (freeRotations)
+        return Deriv::static_size;
+    else
+        return Deriv::size();
+}
+
+template<>
+inline unsigned int AttachConstraint<defaulttype::Rigid2fTypes>::DerivConstrainedSize(bool freeRotations)
+{
+    if (freeRotations)
+        return Deriv::static_size;
+    else
+        return Deriv::size();
+}
+
 #if 0
 // Define TestNewPointFunction
 template< class DataTypes>
@@ -86,6 +287,10 @@ AttachConstraint<DataTypes>::AttachConstraint()
     , f_indices2( initData(&f_indices2,"indices2","Indices of the fixed points on the second model") )
     , f_radius( initData(&f_radius,(Real)-1,"radius", "Radius to search corresponding fixed point if no indices are given") )
     , f_twoWay( initData(&f_twoWay,false,"twoWay", "true if forces should be projected back from model2 to model1") )
+    , f_freeRotations( initData(&f_freeRotations,false,"freeRotations", "true to keep rotations free (only used for Rigid DOFs)") )
+    , f_lastPos( initData(&f_lastPos,"lastPos", "position at which the attach constraint should become inactive") )
+    , f_lastDir( initData(&f_lastDir,"lastDir", "direction from lastPos at which the attach coustraint should become inactive") )
+    , f_clamp( initData(&f_clamp, false,"clamp", "true to clamp particles at lastPos instead of freeing them.") )
 {
     // default to indice 0
 //     f_indices1.beginEdit()->push_back(0);
@@ -178,9 +383,33 @@ void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2
 {
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
+    const bool freeRotations = f_freeRotations.getValue();
+    const bool last = (f_lastDir.isSet() && f_lastDir.getValue().norm() > 1.0e-10);
+    const bool clamp = f_clamp.getValue();
+    activeFlags.resize(indices2.size());
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
-        res2[indices2[i]] = res1[indices1[i]];
+        bool active = true;
+        Coord p = res1[indices1[i]];
+        if (last)
+        {
+            defaulttype::Vec3d p3d;
+            DataTypes::get(p3d[0],p3d[1],p3d[2],p);
+            if ((p3d-f_lastPos.getValue())*f_lastDir.getValue() > 0.0)
+            {
+                if (clamp)
+                    DataTypes::set(p,f_lastPos.getValue()[0],f_lastPos.getValue()[1],f_lastPos.getValue()[2]);
+                //p = f_lastPos.getValue();
+                //else
+                active = false;
+            }
+        }
+        activeFlags[i] = active;
+        if (active || clamp)
+        {
+            //res2[indices2[i]] = res1[indices1[i]];
+            projectPosition(p, res2[indices2[i]], freeRotations);
+        }
     }
 }
 
@@ -189,9 +418,20 @@ void AttachConstraint<DataTypes>::projectVelocity(VecDeriv& res1, VecDeriv& res2
 {
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
+    const bool freeRotations = f_freeRotations.getValue();
+    const bool clamp = f_clamp.getValue();
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
-        res2[indices2[i]] = res1[indices1[i]];
+        bool active = true;
+        if (i < activeFlags.size()) active = activeFlags[i];
+        //res2[indices2[i]] = res1[indices1[i]];
+        if (active)
+            projectVelocity(res1[indices1[i]], res2[indices2[i]], freeRotations);
+        else if (clamp)
+        {
+            Deriv v = Deriv();
+            projectVelocity(v, res2[indices2[i]], freeRotations);
+        }
     }
 }
 
@@ -200,17 +440,19 @@ void AttachConstraint<DataTypes>::projectResponse(VecDeriv& res1, VecDeriv& res2
 {
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
-    bool twoway = f_twoWay.getValue();
+    const bool twoway = f_twoWay.getValue();
+    const bool freeRotations = f_freeRotations.getValue();
+    const bool clamp = f_clamp.getValue();
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
-        if (twoway)
+        bool active = true;
+        if (i < activeFlags.size()) active = activeFlags[i];
+        if (active)
+            projectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations, twoway);
+        else if (clamp)
         {
-            res1[indices1[i]] += res2[indices2[i]];
-            res2[indices2[i]] = res1[indices1[i]];
-        }
-        else
-        {
-            res2[indices2[i]] = Deriv();
+            Deriv v = Deriv();
+            projectResponse(v, res2[indices2[i]], freeRotations, false);
         }
     }
 }
@@ -222,15 +464,18 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, 
     //std::cout << "applyConstraint in Matrix with offset = " << offset << std::endl;
     const SetIndexArray & indices = f_indices2.getValue().getArray();
     const unsigned int N = Deriv::size();
-
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
+    unsigned int i=0;
+    const bool clamp = f_clamp.getValue();
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
+        if (!clamp && activeFlags.size() > i && !activeFlags[i]) continue;
         // Reset Fixed Row and Col
-        for (unsigned int c=0; c<N; ++c)
+        for (unsigned int c=0; c<NC; ++c)
             mat->clearRowCol(offset + N * (*it) + c);
         // Set Fixed Vertex
-        for (unsigned int c=0; c<N; ++c)
-            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        for (unsigned int c=0; c<NC; ++c)
+            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0e10);
     }
 }
 
@@ -241,9 +486,12 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect,
 
     const SetIndexArray & indices = f_indices2.getValue().getArray();
     const unsigned int N = Deriv::size();
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+    const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
+    unsigned int i=0;
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
-        for (unsigned int c=0; c<N; ++c)
+        if (activeFlags.size() > i && !activeFlags[i]) continue;
+        for (unsigned int c=0; c<NC; ++c)
             vect->clear(offset + N * (*it) + c);
     }
 }
@@ -264,6 +512,7 @@ void AttachConstraint<DataTypes>::draw()
     glBegin (GL_POINTS);
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
+        if (activeFlags.size() > i && !activeFlags[i]) continue;
         gl::glVertexT(x2[indices2[i]]);
     }
     glEnd();
@@ -272,6 +521,7 @@ void AttachConstraint<DataTypes>::draw()
     glBegin (GL_LINES);
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
+        if (activeFlags.size() > i && !activeFlags[i]) continue;
         gl::glVertexT(x1[indices1[i]]);
         gl::glVertexT(x2[indices2[i]]);
     }

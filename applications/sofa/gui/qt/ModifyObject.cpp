@@ -2032,6 +2032,54 @@ bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vector
         return createQtTable(ff,box,vectorTable);
     }
     //********************************************************************************************************//
+    //vector< Vec1f >
+    else if (Data< vector< Vec1f > >  *ff = dynamic_cast< Data< vector< Vec1f > >  * >( field ))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< Vec1d >
+    else if ( Data< vector< Vec1d> >   *ff = dynamic_cast< Data< vector< Vec1d > >   * >( field ) )
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< Vec< 1, int> >
+    else if(  Data< vector< Vec< 1, int> > >   *ff = dynamic_cast< Data< vector< Vec< 1, int> > >   * >( field ))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< Vec< 1, unsigned int> >
+    else if(  Data< vector< Vec< 1, unsigned int> > >   *ff = dynamic_cast< Data< vector< Vec< 1, unsigned  int> > >   * >( field ))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< Vec1f >
+    else if (DataPtr< vector< Vec1f > >  *ff = dynamic_cast< DataPtr< vector< Vec1f > >  * >( field ))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< Vec1d >
+    else if ( DataPtr< vector< Vec1d> >   *ff = dynamic_cast< DataPtr< vector< Vec1d > >   * >( field ) )
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< Vec< 1, int> >
+    else if(  DataPtr< vector< Vec< 1, int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 1, int> > >   * >( field ))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
+    //vector< Vec< 1, unsigned int> >
+    else if(  DataPtr< vector< Vec< 1, unsigned int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 1, unsigned int> > >   * >( field ))
+    {
+        return createQtTable(ff,box,vectorTable);
+    }
+    //********************************************************************************************************//
     //vector< double >
     else if(  Data< vector< double > >   *ff = dynamic_cast< Data< vector< double> >   * >( field))
     {
@@ -3068,6 +3116,46 @@ void ModifyObject::storeTable(Q3Table* table, BaseData* field)
     }
     //**************************************************************************************************************************************
     else if(  DataPtr< vector< Vec< 2, unsigned int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 2, unsigned int> > >   * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if ( Data< vector< Vec<1,float> > >  *ff = dynamic_cast< Data< vector< Vec<1,float> > >  * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if ( Data< vector< Vec<1,double> > >   *ff = dynamic_cast< Data< vector< Vec<1,double> > >   * >( field ) )
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if( Data< vector< Vec< 1, int> > >   *ff = dynamic_cast< Data< vector< Vec< 1, int> > >   * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if( Data< vector< Vec< 1, unsigned int> > >   *ff = dynamic_cast< Data< vector< Vec< 1, unsigned int> > >   * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if (DataPtr< vector< Vec<1,float> > >  *ff = dynamic_cast< DataPtr< vector< Vec<1,float> > >  * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if ( DataPtr< vector< Vec<1,double> > >   *ff = dynamic_cast< DataPtr< vector< Vec<1,double> > >   * >( field ) )
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if(  DataPtr< vector< Vec< 1, int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 1, int> > >   * >( field ))
+    {
+        storeQtTable( table, ff);
+    }
+    //**************************************************************************************************************************************
+    else if(  DataPtr< vector< Vec< 1, unsigned int> > >   *ff = dynamic_cast< DataPtr< vector< Vec< 1, unsigned int> > >   * >( field ))
     {
         storeQtTable( table, ff);
     }

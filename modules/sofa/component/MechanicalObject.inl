@@ -1445,16 +1445,15 @@ bool MechanicalObject<DataTypes>::addBBox(double* minBBox, double* maxBBox)
     return true;
 }
 
-
 //
 // Template specializations
 
-//template<>
-//void MechanicalObject<defaulttype::Rigid3Types>::getCompliance (double**W);
-//template<>
-//void MechanicalObject<defaulttype::Rigid3Types>::applyContactForce(double *f);
-//template<>
-//void MechanicalObject<defaulttype::Rigid3Types>::resetContactForce();
+
+template <>
+bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox);
+
+template <>
+bool MechanicalObject<Vec1fTypes>::addBBox(double* minBBox, double* maxBBox);
 
 
 } // namespace component
