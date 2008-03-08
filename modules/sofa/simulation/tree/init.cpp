@@ -111,6 +111,7 @@ SOFA_LINK_CLASS(MinProximityIntersection)
 #ifdef SOFA_HAVE_MKL
 SOFA_LINK_CLASS(MKLSolver)
 #endif
+SOFA_LINK_CLASS(MultiStepMasterSolver)
 SOFA_LINK_CLASS(NewMatSolver)
 SOFA_LINK_CLASS(NewProximityIntersection)
 SOFA_LINK_CLASS(Node)
