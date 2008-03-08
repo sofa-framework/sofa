@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <cassert>
 #include <iostream>
+#include <stdlib.h>
 
 namespace sofa
 {
@@ -105,28 +106,38 @@ public:
         return *(this->begin() + n);
     }
 
+    std::ostream& write(std::ostream& os) const
+    {
+        if( this->size()>0 )
+        {
+            for( unsigned int i=0; i<this->size()-1; ++i ) os<<(*this)[i]<<" ";
+            os<<(*this)[this->size()-1];
+        }
+        return os;
+    }
+
+    std::istream& read(std::istream& in)
+    {
+        T t;
+        this->clear();
+        while(in>>t)
+        {
+            this->push_back(t);
+        }
+        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+        return in;
+    }
+
 /// Output stream
     inline friend std::ostream& operator<< ( std::ostream& os, const vector<T,Alloc>& vec )
     {
-        if( vec.size()>0 )
-        {
-            for( unsigned int i=0; i<vec.size()-1; ++i ) os<<vec[i]<<" ";
-            os<<vec[vec.size()-1];
-        }
-        return os;
+        return vec.write(os);
     }
 
 /// Input stream
     inline friend std::istream& operator>> ( std::istream& in, vector<T,Alloc>& vec )
     {
-        T t;
-        vec.clear();
-        while(in>>t)
-        {
-            vec.push_back(t);
-        }
-        if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-        return in;
+        return vec.read(in);
     }
 
     /// Sets every element to 'value'
@@ -136,6 +147,79 @@ public:
     }
 
 };
+
+/// Input stream
+/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
+template<>
+inline std::istream& vector<int, std::allocator<int> >::read( std::istream& in )
+{
+    int t;
+    this->clear();
+    std::string s;
+    while(in>>s)
+    {
+        std::string::size_type hyphen = s.find_first_of('-',1);
+        if (hyphen == std::string::npos)
+        {
+            t = atoi(s.c_str());
+            this->push_back(t);
+        }
+        else
+        {
+            std::string s1(s,0,hyphen);
+            std::string s2(s,hyphen+1);
+            int t1,t2;
+            t1 = atoi(s1.c_str());
+            t2 = atoi(s2.c_str());
+            std::cout << s << " = "<<t1 << " -> " << t2 << std::endl;
+            if (t1<=t2)
+                for (t=t1; t<=t2; ++t)
+                    this->push_back(t);
+            else
+                for (t=t1; t>=t2; --t)
+                    this->push_back(t);
+        }
+    }
+    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+    return in;
+}
+
+/// Input stream
+/// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
+template<>
+inline std::istream& vector<unsigned int, std::allocator<unsigned int> >::read( std::istream& in )
+{
+    unsigned int t;
+    this->clear();
+    std::string s;
+    while(in>>s)
+    {
+        std::string::size_type hyphen = s.find_first_of('-',1);
+        if (hyphen == std::string::npos)
+        {
+            t = atoi(s.c_str());
+            this->push_back(t);
+        }
+        else
+        {
+            std::string s1(s,0,hyphen);
+            std::string s2(s,hyphen+1);
+            unsigned int t1,t2;
+            t1 = atoi(s1.c_str());
+            t2 = atoi(s2.c_str());
+            std::cout << s << " = "<<t1 << " -> " << t2 << std::endl;
+            if (t1<=t2)
+                for (t=t1; t<=t2; ++t)
+                    this->push_back(t);
+            else
+                for (t=t1; t>=t2; --t)
+                    this->push_back(t);
+        }
+    }
+    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+    return in;
+}
+
 
 // ======================  operations on standard vectors
 
