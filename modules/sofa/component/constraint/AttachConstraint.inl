@@ -376,6 +376,8 @@ void AttachConstraint<DataTypes>::init()
     my_subset.setTestParameter( (void *) this );
     my_subset.setRemovalParameter( (void *) this );
 #endif
+    activeFlags.resize(f_indices2.getValue().size());
+    std::fill(activeFlags.begin(), activeFlags.end(), true);
 }
 
 template <class DataTypes>
@@ -386,7 +388,10 @@ void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2
     const bool freeRotations = f_freeRotations.getValue();
     const bool last = (f_lastDir.isSet() && f_lastDir.getValue().norm() > 1.0e-10);
     const bool clamp = f_clamp.getValue();
+    const bool log = this->f_printLog.getValue();
     activeFlags.resize(indices2.size());
+    //std::cout << "lastDir="<<f_lastDir.getValue()<<std::endl;
+    //std::cout << "lastPos="<<f_lastPos.getValue()<<std::endl;
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
@@ -398,15 +403,24 @@ void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2
             if ((p3d-f_lastPos.getValue())*f_lastDir.getValue() > 0.0)
             {
                 if (clamp)
+                {
+                    if (activeFlags[i])
+                        std::cout << "AttachConstraint: point "<<indices1[i]<<" stopped."<<std::endl;
                     DataTypes::set(p,f_lastPos.getValue()[0],f_lastPos.getValue()[1],f_lastPos.getValue()[2]);
-                //p = f_lastPos.getValue();
-                //else
+                    //p = f_lastPos.getValue();
+                }
+                else
+                {
+                    if (activeFlags[i])
+                        std::cout << "AttachConstraint: point "<<indices1[i]<<" is free."<<std::endl;
+                }
                 active = false;
             }
         }
         activeFlags[i] = active;
         if (active || clamp)
         {
+            if (log) std::cout << "AttachConstraint: x2["<<indices2[i]<<"] = x1["<<indices1[i]<<"]\n";
             //res2[indices2[i]] = res1[indices1[i]];
             projectPosition(p, res2[indices2[i]], freeRotations);
         }
@@ -420,15 +434,20 @@ void AttachConstraint<DataTypes>::projectVelocity(VecDeriv& res1, VecDeriv& res2
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
     const bool freeRotations = f_freeRotations.getValue();
     const bool clamp = f_clamp.getValue();
+    const bool log = this->f_printLog.getValue();
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
         if (i < activeFlags.size()) active = activeFlags[i];
         //res2[indices2[i]] = res1[indices1[i]];
         if (active)
+        {
+            if (log) std::cout << "AttachConstraint: v2["<<indices2[i]<<"] = v1["<<indices1[i]<<"]\n";
             projectVelocity(res1[indices1[i]], res2[indices2[i]], freeRotations);
+        }
         else if (clamp)
         {
+            if (log) std::cout << "AttachConstraint: v2["<<indices2[i]<<"] = 0\n";
             Deriv v = Deriv();
             projectVelocity(v, res2[indices2[i]], freeRotations);
         }
@@ -443,14 +462,23 @@ void AttachConstraint<DataTypes>::projectResponse(VecDeriv& res1, VecDeriv& res2
     const bool twoway = f_twoWay.getValue();
     const bool freeRotations = f_freeRotations.getValue();
     const bool clamp = f_clamp.getValue();
+    const bool log = this->f_printLog.getValue();
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
         if (i < activeFlags.size()) active = activeFlags[i];
         if (active)
+        {
+            if (log)
+            {
+                if (twoway) std::cout << "AttachConstraint: r2["<<indices2[i]<<"] = r1["<<indices2[i]<<"] = (r2["<<indices2[i]<<"] + r2["<<indices2[i]<<"])\n";
+                else        std::cout << "AttachConstraint: r2["<<indices2[i]<<"] = 0\n";
+            }
             projectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations, twoway);
+        }
         else if (clamp)
         {
+            if (log) std::cout << "AttachConstraint: r2["<<indices2[i]<<"] = 0\n";
             Deriv v = Deriv();
             projectResponse(v, res2[indices2[i]], freeRotations, false);
         }
@@ -467,9 +495,11 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, 
     const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
     unsigned int i=0;
     const bool clamp = f_clamp.getValue();
+    const bool log = this->f_printLog.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
-        if (!clamp && activeFlags.size() > i && !activeFlags[i]) continue;
+        if (!clamp && i < activeFlags.size() && !activeFlags[i]) continue;
+        if (log) std::cout << "AttachConstraint: apply in matrix column/row "<<(*it)<<"\n";
         // Reset Fixed Row and Col
         for (unsigned int c=0; c<NC; ++c)
             mat->clearRowCol(offset + N * (*it) + c);
@@ -488,9 +518,10 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect,
     const unsigned int N = Deriv::size();
     const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
     unsigned int i=0;
+    const bool clamp = f_clamp.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
-        if (activeFlags.size() > i && !activeFlags[i]) continue;
+        if (!clamp && i < activeFlags.size() && !activeFlags[i]) continue;
         for (unsigned int c=0; c<NC; ++c)
             vect->clear(offset + N * (*it) + c);
     }
