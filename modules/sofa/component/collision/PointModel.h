@@ -91,6 +91,7 @@ public:
 
     void draw();
 
+    virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2);
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
 

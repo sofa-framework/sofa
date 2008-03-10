@@ -60,7 +60,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
-    const double minDist2 = 0.0000001f;
+    const double minDist2 = 0.000000001f;
     std::vector<DetectionOutput*> contacts;
     contacts.reserve(outputs.size());
 

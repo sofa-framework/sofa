@@ -205,6 +205,19 @@ void PointModel::draw()
         dynamic_cast<core::VisualModel*>(getPrevious())->draw();
 }
 
+bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
+{
+    if (!this->bSelfCollision.getValue()) return true;
+    if (this->getContext() != model2->getContext()) return true;
+    if (model2 == this)
+    {
+        //std::cout << "point self test "<<index<<" - "<<index2<<std::endl;
+        return index < index2-1; // || index > index2+1;
+    }
+    else
+        return model2->canCollideWithElement(index2, this, index);
+}
+
 void PointModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();

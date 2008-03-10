@@ -86,6 +86,8 @@ void CurveMapping<BasicMapping>::init()
 
     old_angle.resize(this->toModel->getSize());
     fill(old_angle.begin(), old_angle.end(), 0.0);
+    apply(*this->toModel->getX(), *this->fromModel->getX());
+    apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
     /*
 
      	VecCoord& xto = *this->toModel->getX();

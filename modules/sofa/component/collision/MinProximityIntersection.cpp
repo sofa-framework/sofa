@@ -138,7 +138,7 @@ bool MinProximityIntersection::testIntersection(Line& e1, Line& e2)
     double alpha = 0.5;
     double beta = 0.5;
 
-    if (det < -0.000000000001 || det > 0.000000000001)
+    if (det < -1.0e-18 || det > 1.0e-18)
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
@@ -186,7 +186,7 @@ int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVect
     double alpha = 0.5;
     double beta = 0.5;
 
-    if (det < -0.000000000001 || det > 0.000000000001)
+    if (det < -1.0e-15 || det > 1.0e-15)
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
