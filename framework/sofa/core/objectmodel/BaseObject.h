@@ -98,6 +98,9 @@ public:
     /// Update method called when variables used in precomputation are modified.
     virtual void reinit();
 
+    /// Save the initial state for later uses in reset()
+    virtual void storeResetState();
+
     /// Reset to initial state
     virtual void reset();
 

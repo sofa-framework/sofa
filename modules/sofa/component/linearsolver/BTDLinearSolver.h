@@ -284,6 +284,7 @@ public:
                         acc += val1 * getMinvElement(col1,col2) * val2;
                     }
                 }
+                //std::cout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<std::endl;
                 acc *= fact;
                 result.add(row1,row2,acc);
                 if (row1!=row2)

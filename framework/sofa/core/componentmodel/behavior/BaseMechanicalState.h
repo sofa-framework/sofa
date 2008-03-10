@@ -129,7 +129,7 @@ public:
     class VecId
     {
     public:
-        enum { V_FIRST_DYNAMIC_INDEX = 4 }; ///< This is the first index used for dynamically allocated vectors
+        enum { V_FIRST_DYNAMIC_INDEX = 8 }; ///< This is the first index used for dynamically allocated vectors
         enum Type
         {
             V_NULL=0,
@@ -143,15 +143,13 @@ public:
         bool isNull() const { return type==V_NULL; }
         static VecId null()     { return VecId(V_NULL,0); }
         static VecId position() { return VecId(V_COORD,0); }
-        static VecId initialPosition() { return VecId(V_COORD,1); }
+        static VecId restPosition() { return VecId(V_COORD,1); }
         static VecId velocity() { return VecId(V_DERIV,0); }
-        static VecId initialVelocity() { return VecId(V_DERIV,3); }
-        static VecId force() { return VecId(V_DERIV,1); }
-        static VecId dx() { return VecId(V_DERIV,2); }
-        /// \todo Why is this the same index as initialPosition ?
-        static VecId freePosition() { return VecId(V_COORD,1); }
-        /// \todo Why is this the same index as initialVelocity ?
-        static VecId freeVelocity() { return VecId(V_DERIV,3); }
+        static VecId restVelocity() { return VecId(V_DERIV,1); }
+        static VecId force() { return VecId(V_DERIV,3); }
+        static VecId dx() { return VecId(V_DERIV,4); }
+        static VecId freePosition() { return VecId(V_COORD,2); }
+        static VecId freeVelocity() { return VecId(V_DERIV,2); }
         /// Test if two VecId identify the same vector
         bool operator==(const VecId& v)
         {

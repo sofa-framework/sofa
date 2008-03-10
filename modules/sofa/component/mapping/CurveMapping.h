@@ -53,6 +53,8 @@ public:
     helper::vector<int> old_integer;
     helper::vector<double> old_angle;
 
+    helper::vector<Real> reset_abscissa;
+
     CurveMapping(In* from, Out* to)
         : Inherit(from, to),
           abscissa( initData(&abscissa, "abscissa", "")),
@@ -70,6 +72,8 @@ public:
     }
 
     void init();
+    void storeResetState();
+    void reset();
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 

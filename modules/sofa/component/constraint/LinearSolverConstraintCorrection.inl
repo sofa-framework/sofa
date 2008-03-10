@@ -180,6 +180,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     behavior::BaseMechanicalState::VecId forceID(behavior::BaseMechanicalState::VecId::V_DERIV, behavior::BaseMechanicalState::VecId::V_FIRST_DYNAMIC_INDEX);
     behavior::BaseMechanicalState::VecId dxID(behavior::BaseMechanicalState::VecId::dx()); //behavior::BaseMechanicalState::VecId::V_DERIV, behavior::BaseMechanicalState::VecId::V_FIRST_DYNAMIC_INDEX+1);
     mstate->vAlloc(forceID);
+    mstate->vOp(forceID);
 //    mstate->vAlloc(dxID);
     mstate->setDx(forceID);
     VecDeriv& force = *mstate->getDx();
@@ -258,6 +259,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
         v[i] = v_free[i] + dvi;
         dx[i] = dxi;
     }
+    mstate->vFree(forceID);
 }
 
 template<class DataTypes>

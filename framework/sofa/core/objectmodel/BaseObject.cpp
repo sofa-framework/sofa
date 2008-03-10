@@ -77,6 +77,10 @@ void BaseObject::bwdInit()
 void BaseObject::reinit()
 { std::cout<<"WARNING: for this object, the reinit method does nothing.\n\n";}
 
+/// Save the initial state for later uses in reset()
+void BaseObject::storeResetState()
+{ }
+
 /// Reset to initial state
 void BaseObject::reset()
 { }
