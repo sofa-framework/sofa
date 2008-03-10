@@ -32,9 +32,14 @@
 #include <sofa/helper/gl/template.h>
 #include <algorithm>
 #include <iostream>
+
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/RegularGridTopology.h>
+#include <sofa/component/topology/SparseGridTopology.h>
+#include <sofa/component/topology/TriangleSetTopology.h>
+
 using std::cerr;
 using std::endl;
-
 
 namespace sofa
 {
@@ -67,48 +72,24 @@ int TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::addPointInC
 }
 
 template <class In, class Out>
-void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::init()
+void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-}
+    int outside = 0;
 
-template <class BasicMapping>
-void BarycentricMapping<BasicMapping>::calcMap(topology::RegularGridTopology* topology)
-{
-
-    if (f_grid->beginEdit()->empty())
+    clear(out.size());
+    for (unsigned int i=0; i<out.size(); i++)
     {
-        const OutVecCoord& out = *this->toModel->getX();
-        int outside = 0;
-        RegularGridMapper* mapper = new RegularGridMapper(topology);
-
-        this->mapper = mapper;
-        mapper->clear(out.size());
-        for (unsigned int i=0; i<out.size(); i++)
+        Vec3d coefs;
+        int cube = topology->findCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+        if (cube==-1)
         {
-            Vec3d coefs;
-            int cube = topology->findCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
-            if (cube==-1)
-            {
-                ++outside;
-                cube = topology->findNearestCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
-            }
-            Vec<3,Real> baryCoords = coefs;
-            mapper->addPointInCube(cube, baryCoords.ptr());
+            ++outside;
+            cube = topology->findNearestCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
-//	   if (outside>0) std::cerr << "WARNING: Barycentric mapping (in RegularGridTopology) with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
-        f_grid->setValue(*mapper);
-
-    }
-    else
-    {
-        f_grid->beginEdit()->setTopology(topology);
-        this->mapper = f_grid->beginEdit();
+        Vec<3,Real> baryCoords = coefs;
+        addPointInCube(cube, baryCoords.ptr());
     }
 }
-
-
-
-
 
 template <class In, class Out>
 void TopologyBarycentricMapper<topology::SparseGridTopology,In,Out>::clear(int reserve)
@@ -130,48 +111,24 @@ int TopologyBarycentricMapper<topology::SparseGridTopology,In,Out>::addPointInCu
 }
 
 template <class In, class Out>
-void TopologyBarycentricMapper<topology::SparseGridTopology,In,Out>::init()
+void TopologyBarycentricMapper<topology::SparseGridTopology,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-}
+    int outside = 0;
 
-template <class BasicMapping>
-void BarycentricMapping<BasicMapping>::calcMap(topology::SparseGridTopology* topology)
-{
-
-    if (f_sparsegrid->beginEdit()->empty())
+    clear(out.size());
+    for (unsigned int i=0; i<out.size(); i++)
     {
-        const OutVecCoord& out = *this->toModel->getX();
-        int outside = 0;
-        SparseGridMapper* mapper = new SparseGridMapper(topology);
-
-        this->mapper = mapper;
-        mapper->clear(out.size());
-        for (unsigned int i=0; i<out.size(); i++)
+        Vec3d coefs;
+        int cube = topology->findCube(topology::SparseGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+        if (cube==-1)
         {
-            Vec3d coefs;
-            int cube = topology->findCube(topology::SparseGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
-            if (cube==-1)
-            {
-                ++outside;
-                cube = topology->findNearestCube(topology::SparseGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
-            }
-            Vec<3,Real> baryCoords = coefs;
-            mapper->addPointInCube(cube, baryCoords.ptr());
+            ++outside;
+            cube = topology->findNearestCube(topology::SparseGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
         }
-//		if (outside>0) std::cerr << "WARNING: Barycentric mapping (in SparseGridTopology) with "<<outside<<"/"<<out.size()<<" points outside of grid. Can be unstable!"<<std::endl;
-        f_sparsegrid->setValue(*mapper);
-
-    }
-    else
-    {
-        f_sparsegrid->beginEdit()->setTopology(topology);
-        this->mapper = f_sparsegrid->beginEdit();
+        Vec<3,Real> baryCoords = coefs;
+        addPointInCube(cube, baryCoords.ptr());
     }
 }
-
-
-
-
 
 
 template <class In, class Out>
@@ -289,155 +246,131 @@ int TopologyBarycentricMapper<topology::MeshTopology,In,Out>::createPointInQuad(
 }
 
 template <class In, class Out>
-void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::init()
+void TopologyBarycentricMapper<topology::MeshTopology,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-}
+    int outside = 0;
 
-template <class BasicMapping>
-void BarycentricMapping<BasicMapping>::calcMap(topology::MeshTopology* topology)
-{
-
-    if (f_mesh->beginEdit()->empty())
+    const topology::MeshTopology::SeqTetras& tetras = topology->getTetras();
+    const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();
+    const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
+    const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
+    sofa::helper::vector<Mat3x3d> bases;
+    sofa::helper::vector<Vec3d> centers;
+    if (tetras.empty() && cubes.empty())
     {
-        const OutVecCoord& out = *this->toModel->getX();
-        const InVecCoord& in = *this->fromModel->getX();
-        int outside = 0;
-        MeshMapper* mapper = new MeshMapper(topology);
-
-        this->mapper = mapper;
-        const topology::MeshTopology::SeqTetras& tetras = topology->getTetras();
-        const topology::MeshTopology::SeqCubes& cubes = topology->getCubes();
-        const topology::MeshTopology::SeqTriangles& triangles = topology->getTriangles();
-        const topology::MeshTopology::SeqQuads& quads = topology->getQuads();
-        sofa::helper::vector<Mat3x3d> bases;
-        sofa::helper::vector<Vec3d> centers;
-        if (tetras.empty() && cubes.empty())
+        // no 3D elements -> map on 2D elements
+        clear(0,out.size(),0); // reserve space for 2D mapping
+        int c0 = triangles.size();
+        bases.resize(triangles.size()+quads.size());
+        centers.resize(triangles.size()+quads.size());
+        for (unsigned int t = 0; t < triangles.size(); t++)
         {
-            // no 3D elements -> map on 2D elements
-            mapper->clear(0,out.size(),0); // reserve space for 2D mapping
-            int c0 = triangles.size();
-            bases.resize(triangles.size()+quads.size());
-            centers.resize(triangles.size()+quads.size());
+            Mat3x3d m,mt;
+            m[0] = in[triangles[t][1]]-in[triangles[t][0]];
+            m[1] = in[triangles[t][2]]-in[triangles[t][0]];
+            m[2] = cross(m[0],m[1]);
+            mt.transpose(m);
+            bases[t].invert(mt);
+            centers[t] = (in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]])/3;
+        }
+        for (unsigned int c = 0; c < quads.size(); c++)
+        {
+            Mat3x3d m,mt;
+            m[0] = in[quads[c][1]]-in[quads[c][0]];
+            m[1] = in[quads[c][3]]-in[quads[c][0]];
+            m[2] = cross(m[0],m[1]);
+            mt.transpose(m);
+            bases[c0+c].invert(mt);
+            centers[c0+c] = (in[quads[c][0]]+in[quads[c][1]]+in[quads[c][2]]+in[quads[c][3]])*0.25;
+        }
+        for (unsigned int i=0; i<out.size(); i++)
+        {
+            Vec3d pos = out[i];
+            Vec<3,Real> coefs;
+            int index = -1;
+            double distance = 1e10;
             for (unsigned int t = 0; t < triangles.size(); t++)
             {
-                Mat3x3d m,mt;
-                m[0] = in[triangles[t][1]]-in[triangles[t][0]];
-                m[1] = in[triangles[t][2]]-in[triangles[t][0]];
-                m[2] = cross(m[0],m[1]);
-                mt.transpose(m);
-                bases[t].invert(mt);
-                centers[t] = (in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]])/3;
+                Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
+                double d = std::max(std::max(-v[0],-v[1]),std::max((v[2]<0?-v[2]:v[2])-0.01,v[0]+v[1]-1));
+                if (d>0) d = (pos-centers[t]).norm2();
+                if (d<distance) { coefs = v; distance = d; index = t; }
             }
             for (unsigned int c = 0; c < quads.size(); c++)
             {
-                Mat3x3d m,mt;
-                m[0] = in[quads[c][1]]-in[quads[c][0]];
-                m[1] = in[quads[c][3]]-in[quads[c][0]];
-                m[2] = cross(m[0],m[1]);
-                mt.transpose(m);
-                bases[c0+c].invert(mt);
-                centers[c0+c] = (in[quads[c][0]]+in[quads[c][1]]+in[quads[c][2]]+in[quads[c][3]])*0.25;
+                Vec3d v = bases[c0+c] * (pos - in[quads[c][0]]);
+                double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(v[1]-1,v[0]-1),std::max(v[2]-0.01,-v[2]-0.01)));
+                if (d>0) d = (pos-centers[c0+c]).norm2();
+                if (d<distance) { coefs = v; distance = d; index = c0+c; }
             }
-            for (unsigned int i=0; i<out.size(); i++)
+            if (distance>0)
             {
-                Vec3d pos = out[i];
-                Vec<3,Real> coefs;
-                int index = -1;
-                double distance = 1e10;
-                for (unsigned int t = 0; t < triangles.size(); t++)
-                {
-                    Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
-                    double d = std::max(std::max(-v[0],-v[1]),std::max((v[2]<0?-v[2]:v[2])-0.01,v[0]+v[1]-1));
-                    if (d>0) d = (pos-centers[t]).norm2();
-                    if (d<distance) { coefs = v; distance = d; index = t; }
-                }
-                for (unsigned int c = 0; c < quads.size(); c++)
-                {
-                    Vec3d v = bases[c0+c] * (pos - in[quads[c][0]]);
-                    double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(v[1]-1,v[0]-1),std::max(v[2]-0.01,-v[2]-0.01)));
-                    if (d>0) d = (pos-centers[c0+c]).norm2();
-                    if (d<distance) { coefs = v; distance = d; index = c0+c; }
-                }
-                if (distance>0)
-                {
-                    ++outside;
-                }
-                if (index < c0)
-                    mapper->addPointInTriangle(index, coefs.ptr());
-                else
-                    mapper->addPointInQuad(index-c0, coefs.ptr());
+                ++outside;
             }
+            if (index < c0)
+                addPointInTriangle(index, coefs.ptr());
+            else
+                addPointInQuad(index-c0, coefs.ptr());
         }
-        else
-        {
-            mapper->clear(out.size(),0,0); // reserve space for 3D mapping
-            int c0 = tetras.size();
-            bases.resize(tetras.size()+cubes.size());
-            centers.resize(tetras.size()+cubes.size());
-            for (unsigned int t = 0; t < tetras.size(); t++)
-            {
-                Mat3x3d m,mt;
-                m[0] = in[tetras[t][1]]-in[tetras[t][0]];
-                m[1] = in[tetras[t][2]]-in[tetras[t][0]];
-                m[2] = in[tetras[t][3]]-in[tetras[t][0]];
-                mt.transpose(m);
-                bases[t].invert(mt);
-                centers[t] = (in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]])*0.25;
-                //std::cout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<std::endl;
-            }
-            for (unsigned int c = 0; c < cubes.size(); c++)
-            {
-                Mat3x3d m,mt;
-                m[0] = in[cubes[c][1]]-in[cubes[c][0]];
-                m[1] = in[cubes[c][2]]-in[cubes[c][0]];
-                m[2] = in[cubes[c][4]]-in[cubes[c][0]];
-                mt.transpose(m);
-                bases[c0+c].invert(mt);
-                centers[c0+c] = (in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]])*0.125;
-            }
-            for (unsigned int i=0; i<out.size(); i++)
-            {
-                Vec3d pos = out[i];
-                Vec<3,Real> coefs;
-                int index = -1;
-                double distance = 1e10;
-                for (unsigned int t = 0; t < tetras.size(); t++)
-                {
-                    Vec3d v = bases[t] * (pos - in[tetras[t][0]]);
-                    double d = std::max(std::max(-v[0],-v[1]),std::max(-v[2],v[0]+v[1]+v[2]-1));
-                    if (d>0) d = (pos-centers[t]).norm2();
-                    if (d<distance) { coefs = v; distance = d; index = t; }
-                }
-                for (unsigned int c = 0; c < cubes.size(); c++)
-                {
-                    Vec3d v = bases[c0+c] * (pos - in[cubes[c][0]]);
-                    double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(-v[2],v[0]-1),std::max(v[1]-1,v[2]-1)));
-                    if (d>0) d = (pos-centers[c0+c]).norm2();
-                    if (d<distance) { coefs = v; distance = d; index = c0+c; }
-                }
-                if (distance>0)
-                {
-                    ++outside;
-                }
-                if (index < c0)
-                    mapper->addPointInTetra(index, coefs.ptr());
-                else
-                    mapper->addPointInCube(index-c0, coefs.ptr());
-            }
-        }
-//	if (outside>0) std::cerr << "WARNING: Barycentric mapping (in MeshGridTopology) with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
-        f_mesh->setValue(*mapper);
     }
     else
     {
-        f_mesh->beginEdit()->setTopology(topology);
-        this->mapper = f_mesh->beginEdit();
+        clear(out.size(),0,0); // reserve space for 3D mapping
+        int c0 = tetras.size();
+        bases.resize(tetras.size()+cubes.size());
+        centers.resize(tetras.size()+cubes.size());
+        for (unsigned int t = 0; t < tetras.size(); t++)
+        {
+            Mat3x3d m,mt;
+            m[0] = in[tetras[t][1]]-in[tetras[t][0]];
+            m[1] = in[tetras[t][2]]-in[tetras[t][0]];
+            m[2] = in[tetras[t][3]]-in[tetras[t][0]];
+            mt.transpose(m);
+            bases[t].invert(mt);
+            centers[t] = (in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]])*0.25;
+            //std::cout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<std::endl;
+        }
+        for (unsigned int c = 0; c < cubes.size(); c++)
+        {
+            Mat3x3d m,mt;
+            m[0] = in[cubes[c][1]]-in[cubes[c][0]];
+            m[1] = in[cubes[c][2]]-in[cubes[c][0]];
+            m[2] = in[cubes[c][4]]-in[cubes[c][0]];
+            mt.transpose(m);
+            bases[c0+c].invert(mt);
+            centers[c0+c] = (in[cubes[c][0]]+in[cubes[c][1]]+in[cubes[c][2]]+in[cubes[c][3]]+in[cubes[c][4]]+in[cubes[c][5]]+in[cubes[c][6]]+in[cubes[c][7]])*0.125;
+        }
+        for (unsigned int i=0; i<out.size(); i++)
+        {
+            Vec3d pos = out[i];
+            Vec<3,Real> coefs;
+            int index = -1;
+            double distance = 1e10;
+            for (unsigned int t = 0; t < tetras.size(); t++)
+            {
+                Vec3d v = bases[t] * (pos - in[tetras[t][0]]);
+                double d = std::max(std::max(-v[0],-v[1]),std::max(-v[2],v[0]+v[1]+v[2]-1));
+                if (d>0) d = (pos-centers[t]).norm2();
+                if (d<distance) { coefs = v; distance = d; index = t; }
+            }
+            for (unsigned int c = 0; c < cubes.size(); c++)
+            {
+                Vec3d v = bases[c0+c] * (pos - in[cubes[c][0]]);
+                double d = std::max(std::max(-v[0],-v[1]),std::max(std::max(-v[2],v[0]-1),std::max(v[1]-1,v[2]-1)));
+                if (d>0) d = (pos-centers[c0+c]).norm2();
+                if (d<distance) { coefs = v; distance = d; index = c0+c; }
+            }
+            if (distance>0)
+            {
+                ++outside;
+            }
+            if (index < c0)
+                addPointInTetra(index, coefs.ptr());
+            else
+                addPointInCube(index-c0, coefs.ptr());
+        }
     }
 }
-
-
-
-
 
 
 template <class In, class Out>
@@ -476,67 +409,47 @@ int TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::createP
 }
 
 template <class In, class Out>
-void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::init()
+void TopologyBarycentricMapper<topology::TriangleSetTopology<In>,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
-}
+    int outside = 0;
 
-template <class BasicMapping>
-void BarycentricMapping<BasicMapping>::calcMap(topology::TriangleSetTopology<InDataTypes>* topology)
-{
-
-    if (f_mesh->beginEdit()->empty())
+    const sofa::helper::vector<topology::Triangle>& triangles = topology->getTriangleSetTopologyContainer()->getTriangleArray();
+    sofa::helper::vector<Mat3x3d> bases;
+    sofa::helper::vector<Vec3d> centers;
     {
-        const OutVecCoord& out = *this->toModel->getX();
-        const InVecCoord& in = *this->fromModel->getX();
-        int outside = 0;
-        TriangleSetMapper* mapper = new TriangleSetMapper(topology);
-
-        this->mapper = mapper;
-        const sofa::helper::vector<topology::Triangle>& triangles = topology->getTriangleSetTopologyContainer()->getTriangleArray();
-        sofa::helper::vector<Mat3x3d> bases;
-        sofa::helper::vector<Vec3d> centers;
+        // no 3D elements -> map on 2D elements
+        clear(out.size()); // reserve space for 2D mapping
+        bases.resize(triangles.size());
+        centers.resize(triangles.size());
+        for (unsigned int t = 0; t < triangles.size(); t++)
         {
-            // no 3D elements -> map on 2D elements
-            mapper->clear(out.size()); // reserve space for 2D mapping
-            bases.resize(triangles.size());
-            centers.resize(triangles.size());
+            Mat3x3d m,mt;
+            m[0] = in[triangles[t][1]]-in[triangles[t][0]];
+            m[1] = in[triangles[t][2]]-in[triangles[t][0]];
+            m[2] = cross(m[0],m[1]);
+            mt.transpose(m);
+            bases[t].invert(mt);
+            centers[t] = (in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]])/3;
+        }
+        for (unsigned int i=0; i<out.size(); i++)
+        {
+            Vec3d pos = out[i];
+            Vec<3,Real> coefs;
+            int index = -1;
+            double distance = 1e10;
             for (unsigned int t = 0; t < triangles.size(); t++)
             {
-                Mat3x3d m,mt;
-                m[0] = in[triangles[t][1]]-in[triangles[t][0]];
-                m[1] = in[triangles[t][2]]-in[triangles[t][0]];
-                m[2] = cross(m[0],m[1]);
-                mt.transpose(m);
-                bases[t].invert(mt);
-                centers[t] = (in[triangles[t][0]]+in[triangles[t][1]]+in[triangles[t][2]])/3;
+                Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
+                double d = std::max(std::max(-v[0],-v[1]),std::max((v[2]<0?-v[2]:v[2])-0.01,v[0]+v[1]-1));
+                if (d>0) d = (pos-centers[t]).norm2();
+                if (d<distance) { coefs = v; distance = d; index = t; }
             }
-            for (unsigned int i=0; i<out.size(); i++)
+            if (distance>0)
             {
-                Vec3d pos = out[i];
-                Vec<3,Real> coefs;
-                int index = -1;
-                double distance = 1e10;
-                for (unsigned int t = 0; t < triangles.size(); t++)
-                {
-                    Vec3d v = bases[t] * (pos - in[triangles[t][0]]);
-                    double d = std::max(std::max(-v[0],-v[1]),std::max((v[2]<0?-v[2]:v[2])-0.01,v[0]+v[1]-1));
-                    if (d>0) d = (pos-centers[t]).norm2();
-                    if (d<distance) { coefs = v; distance = d; index = t; }
-                }
-                if (distance>0)
-                {
-                    ++outside;
-                }
-                mapper->addPointInTriangle(index, coefs.ptr());
+                ++outside;
             }
+            addPointInTriangle(index, coefs.ptr());
         }
-//	if (outside>0) std::cerr << "WARNING: Barycentric mapping (in TriangleSetTopology) with "<<outside<<"/"<<out.size()<<" points outside of mesh. Can be unstable!"<<std::endl;
-        f_triangle->setValue(*mapper);
-    }
-    else
-    {
-        f_triangle->beginEdit()->setTopology(topology);
-        this->mapper = f_triangle->beginEdit();
     }
 }
 
@@ -570,51 +483,69 @@ int TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::createPoint
 }
 
 template <class In, class Out>
-void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::init()
+void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
 {
 }
 
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::init()
 {
-    core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
-    if (topology!=NULL)
+    if(mapper == NULL) // try to create a mapper according to the topology of the In model
     {
-        topology::RegularGridTopology* t2 = dynamic_cast<topology::RegularGridTopology*>(topology);
-        if (t2!=NULL && t2->getNbCubes()>0)
-            this->calcMap(t2);
-        else
+        core::componentmodel::topology::Topology* topology = dynamic_cast<core::componentmodel::topology::Topology*>(this->fromModel->getContext()->getTopology());
+        if (topology!=NULL)
         {
-            topology::SparseGridTopology* t4 = dynamic_cast<topology::SparseGridTopology*>(topology);
-            if (t4!=NULL)
-                this->calcMap(t4);
+            topology::RegularGridTopology* t2 = dynamic_cast<topology::RegularGridTopology*>(topology);
+            if (t2!=NULL)
+            {
+                typedef TopologyBarycentricMapper<topology::RegularGridTopology, InDataTypes, OutDataTypes> RegularGridMapper;
+                mapper = new RegularGridMapper(t2);
+            }
             else
             {
-                topology::MeshTopology* t3 = dynamic_cast<topology::MeshTopology*>(topology);
-                if (t3!=NULL)
-                    this->calcMap(t3);
+                topology::SparseGridTopology* t4 = dynamic_cast<topology::SparseGridTopology*>(topology);
+                if (t4!=NULL)
+                {
+                    typedef TopologyBarycentricMapper<topology::SparseGridTopology, InDataTypes, OutDataTypes> SparseGridMapper;
+                    mapper = new SparseGridMapper(t4);
+                }
                 else
                 {
-                    std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;
+                    topology::MeshTopology* t3 = dynamic_cast<topology::MeshTopology*>(topology);
+                    if (t3!=NULL)
+                    {
+                        typedef TopologyBarycentricMapper<topology::MeshTopology, InDataTypes, OutDataTypes> MeshMapper;
+                        mapper = new MeshMapper(t3);
+                    }
+                    else
+                    {
+                        std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;
+                    }
                 }
             }
         }
-    }
-    core::componentmodel::topology::BaseTopology* topology2 = dynamic_cast<core::componentmodel::topology::BaseTopology*>(this->fromModel->getContext()->getMainTopology());
-    if (topology2!=NULL)
-    {
-        topology::TriangleSetTopology<InDataTypes>* t1 = dynamic_cast<topology::TriangleSetTopology<InDataTypes>*>(topology2);
-        if (t1!=NULL)
-            this->calcMap(t1);
-        else
+
+        core::componentmodel::topology::BaseTopology* topology2 = dynamic_cast<core::componentmodel::topology::BaseTopology*>(this->fromModel->getContext()->getMainTopology());
+        if (topology2!=NULL)
         {
-            std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;
+            topology::TriangleSetTopology<InDataTypes>* t1 = dynamic_cast<topology::TriangleSetTopology<InDataTypes>*>(topology2);
+            if (t1!=NULL)
+            {
+                typedef TopologyBarycentricMapper<topology::TriangleSetTopology<InDataTypes>, InDataTypes, OutDataTypes> TriangleSetMapper;
+                mapper = new TriangleSetMapper(t1);
+            }
+            else
+            {
+                std::cerr << "ERROR: Barycentric mapping does not understand topology."<<std::endl;
+            }
         }
     }
+
     if (mapper != NULL)
     {
-        mapper->init();
+        mapper->init(*this->toModel->getX(), *this->fromModel->getX());
     }
+
     this->BasicMapping::init();
 }
 
