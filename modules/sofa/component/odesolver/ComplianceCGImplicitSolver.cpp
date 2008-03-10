@@ -38,8 +38,8 @@ void ComplianceCGImplicitSolver::solve(double dt)
 {
     MultiVector pos(this, VecId::position());
     MultiVector vel(this, VecId::velocity());
-    MultiVector prevPos(this, VecId::initialPosition());
-    MultiVector prevVel(this, VecId::initialVelocity());
+    MultiVector freePos(this, VecId::freePosition());
+    MultiVector freeVel(this, VecId::freeVelocity());
     MultiVector f(this, VecId::force());
     MultiVector b(this, VecId::V_DERIV);
     MultiVector p(this, VecId::V_DERIV);
@@ -50,13 +50,13 @@ void ComplianceCGImplicitSolver::solve(double dt)
 
     if (!firstCallToSolve)
     {
-        vel.eq(prevVel);
-        pos.eq(prevPos);
+        vel.eq(freeVel);
+        pos.eq(freePos);
     }
     else
     {
-        prevVel.eq(vel);
-        prevPos.eq(pos);
+        freeVel.eq(vel);
+        freePos.eq(pos);
     }
 
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.

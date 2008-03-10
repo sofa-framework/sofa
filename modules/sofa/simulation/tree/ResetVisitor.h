@@ -53,6 +53,20 @@ public:
     virtual bool isThreadSafe() const { return true; }
 };
 
+class StoreResetStateVisitor : public Visitor
+{
+public:
+    StoreResetStateVisitor() {}
+
+    void processObject(core::objectmodel::BaseObject* obj);
+
+    virtual Result processNodeTopDown(GNode* node);
+    virtual void processNodeBottomUp(GNode* node);
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const { return true; }
+};
+
 } // namespace tree
 
 } // namespace simulation

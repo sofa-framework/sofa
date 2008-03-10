@@ -94,7 +94,7 @@ public:
     /// Process the BaseMechanicalState if it is mapped from the parent level
     virtual Result fwdMappedMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
-        return RESULT_CONTINUE;
+        return RESULT_PRUNE;
     }
 
     /// Process the BaseMechanicalState if it is not mapped from the parent level

@@ -163,6 +163,10 @@ void Simulation::init ( GNode* root )
 {
     if ( !root ) return;
     root->execute<InitVisitor>();
+    // Save reset state for later uses in reset()
+    root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
+    root->execute<MechanicalPropagateFreePositionVisitor>();
+    root->execute<StoreResetStateVisitor>();
 
     //Get the list of instruments present in the scene graph
     getInstruments(root);

@@ -46,10 +46,14 @@ namespace component
 using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
-    , f_X ( new XDataPtr<DataTypes>(&x,  "position coordinates ot the degrees of freedom") )
-    , f_V ( new VDataPtr<DataTypes>(&v,  "velocity coordinates ot the degrees of freedom") )
-    , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates ot the degrees of freedom") )
+    : x(new VecCoord), v(new VecDeriv), f(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
+    , f_X ( new XDataPtr<DataTypes>(&x,  "position coordinates of the degrees of freedom") )
+    , f_V ( new VDataPtr<DataTypes>(&v,  "velocity coordinates of the degrees of freedom") )
+    , f_F ( new VDataPtr<DataTypes>(&f,  "f vector of the degrees of freedom") )
+    , f_Dx ( new VDataPtr<DataTypes>(&dx,  "dx vector of the degrees of freedom") )
+    , f_Xfree ( new XDataPtr<DataTypes>(&xfree,  "free position coordinates of the degrees of freedom") )
+    , f_Vfree ( new VDataPtr<DataTypes>(&vfree,  "free velocity coordinates of the degrees of freedom") )
+    , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates of the degrees of freedom") )
     , restScale(initData(&restScale, (Real)1, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
 {
     initialized = false;
@@ -57,16 +61,21 @@ MechanicalObject<DataTypes>::MechanicalObject()
     f_X->beginEdit();
     this->addField(f_V, "velocity");
     f_V->beginEdit();
+    this->addField(f_F, "force");
+    f_F->beginEdit();
+    this->addField(f_Dx, "dx");
+    f_Dx->beginEdit();
+    this->addField(f_Xfree, "free_position");
+    f_Xfree->beginEdit();
+    this->addField(f_Vfree, "free_velocity");
+    f_Vfree->beginEdit();
     this->addField(f_X0,"rest_position");
     f_X0->beginEdit();
     /*    x = new VecCoord;
       v = new VecDeriv;*/
-    internalForces = f = new VecDeriv;
+    internalForces = f; // = new VecDeriv;
     externalForces = new VecDeriv;
-    dx = new VecDeriv;
-
-    xfree = new VecCoord;
-    vfree = new VecDeriv;
+    //dx = new VecDeriv;
 
     // default size is 1
     resize(1);
@@ -74,6 +83,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(VecId::velocity().index, this->v);
     setVecDeriv(VecId::force().index, this->f);
     setVecDeriv(VecId::dx().index, this->dx);
+    setVecCoord(VecId::restPosition().index, this->x0);
     setVecCoord(VecId::freePosition().index, this->xfree);
     setVecDeriv(VecId::freeVelocity().index, this->vfree);
     translation[0]=0.0;
@@ -164,7 +174,11 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
 
     unsigned int size0 = getX()->size();
     Inherited::parse(arg);
-    if (getX()->size() != size0)
+    if (arg->getAttribute("size")!=NULL)
+    {
+        resize( atoi(arg->getAttribute("size")) );
+    }
+    else if (getX()->size() != size0)
         resize( getX()->size() );
 
     //obj->parseTransform(arg);
@@ -192,8 +206,8 @@ MechanicalObject<DataTypes>::~MechanicalObject()
     delete externalForces;
     if (reset_position!=NULL)
         delete reset_position;
-    if (x0!=NULL)
-        delete x0;
+    //if (x0!=NULL)
+    //  delete x0;
     if (v0!=NULL)
         delete v0;
     for (unsigned int i=0; i<vectorsCoord.size(); i++)
@@ -691,9 +705,6 @@ void MechanicalObject<DataTypes>::init()
                 this->applyRotation(defaulttype::Quat::createFromRotationVector( Vec<3,double>(rotation[0],rotation[1],rotation[2])));
         }
     }
-    // Save initial state for reset button
-    if (reset_position == NULL) this->reset_position = new VecCoord;
-    *this->reset_position = *x;
     if (v0 == NULL) this->v0 = new VecDeriv;
     *this->v0 = *v;
     // free position = position
@@ -715,6 +726,14 @@ void MechanicalObject<DataTypes>::init()
     initialized = true;
 }
 
+template <class DataTypes>
+void MechanicalObject<DataTypes>::storeResetState()
+{
+    // Save initial state for reset button
+    if (reset_position == NULL) this->reset_position = new VecCoord;
+    *this->reset_position = *x;
+}
+
 //
 // Integration related methods
 //
@@ -730,6 +749,7 @@ void MechanicalObject<DataTypes>::reset()
     *this->v = *v0;
 
     *this->xfree = *x;
+    *this->vfree = *v;
 }
 
 template <class DataTypes>

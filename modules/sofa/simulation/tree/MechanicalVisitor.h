@@ -425,6 +425,7 @@ public:
     }
     virtual Result fwdMappedMechanicalState(GNode* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
     {
+        //mm->printDOF(VecId::dx());
         mm->addDxToCollisionModel();
         return RESULT_CONTINUE;
     }

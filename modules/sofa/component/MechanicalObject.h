@@ -123,6 +123,10 @@ public:
 
     XDataPtr<DataTypes>* const f_X;
     VDataPtr<DataTypes>* const f_V;
+    VDataPtr<DataTypes>* const f_F;
+    VDataPtr<DataTypes>* const f_Dx;
+    XDataPtr<DataTypes>* const f_Xfree;
+    VDataPtr<DataTypes>* const f_Vfree;
 
     XDataPtr<DataTypes>* const f_X0;
 
@@ -130,13 +134,13 @@ public:
 
     virtual VecCoord* getX()  { f_X->beginEdit(); return x;  }
     virtual VecDeriv* getV()  { f_V->beginEdit(); return v;  }
-    virtual VecDeriv* getF()  { return f;  }
+    virtual VecDeriv* getF()  { f_F->beginEdit(); return f;  }
     virtual VecDeriv* getExternalForces()  { return externalForces;  }
-    virtual VecDeriv* getDx() { return dx; }
+    virtual VecDeriv* getDx() { f_Dx->beginEdit(); return dx; }
     virtual VecConst* getC() { return c;}
-    virtual VecCoord* getXfree() { return xfree; }
-    virtual VecDeriv* getVfree() { return vfree;  }
-    VecCoord* getX0() { return x0;}
+    virtual VecCoord* getXfree() { f_Xfree->beginEdit(); return xfree; }
+    virtual VecDeriv* getVfree() { f_Vfree->beginEdit(); return vfree;  }
+    VecCoord* getX0() { f_X0->beginEdit(); return x0;}
 
     virtual const VecCoord* getX()  const { return x;  }
     virtual const VecCoord* getX0()  const { return x0;  }
@@ -150,6 +154,7 @@ public:
     virtual const VecDeriv* getVfree()  const { return vfree;  }
 
     virtual void init();
+    virtual void storeResetState();
 
     virtual void reset();
 

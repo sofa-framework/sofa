@@ -107,6 +107,20 @@ void CurveMapping<BasicMapping>::init()
     this->BasicMapping::init();
 }
 
+template <class BasicMapping>
+void CurveMapping<BasicMapping>::storeResetState()
+{
+    reset_abscissa = abscissa.getValue();
+}
+
+template <class BasicMapping>
+void CurveMapping<BasicMapping>::reset()
+{
+    abscissa.setValue(reset_abscissa );
+    fill(old_integer.begin(), old_integer.end(), -1);
+    fill(old_angle.begin(), old_angle.end(), 0.0);
+}
+
 Quat computeOrientation(const Vec3d& AB, const Quat& Q)
 {
     Vec3d PQ = AB;
@@ -141,6 +155,7 @@ Quat computeOrientation(const Vec3d& AB, const Quat& Q)
 template <class BasicMapping>
 void CurveMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+    out.resize(abscissa.getValue().size());
     for (unsigned int i=0; i<out.size(); i++)
     {
         int integer = helper::rfloor(abscissa.getValue()[i]);
@@ -154,7 +169,7 @@ void CurveMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
             B = in[integer+1];
             AB = B - A;
             out[i].getCenter() = A + (AB * fraction);
-            if (integer != old_integer[i]) // rigid position has changed
+            //if (integer != old_integer[i]) // rigid position has changed
             {
                 out[i].getOrientation() = computeOrientation(AB, out[i].getOrientation());
 
@@ -172,11 +187,43 @@ void CurveMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
 template <class BasicMapping>
 void CurveMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
+    out.resize(abscissa.getValue().size());
+    for (unsigned int i=0; i<out.size(); i++)
+    {
+        out[i] = typename Out::Deriv();
+        int integer = helper::rfloor(abscissa.getValue()[i]);
+        if (integer < 0) integer = 0;
+        else if (integer > (int)in.size()-2) integer = in.size()-2;
+        double fraction = abscissa.getValue()[i] - integer;
+        if (fraction > 1.0) fraction = 1.0;
+        {
+            typename In::Deriv A, B, AB;
+            A = in[integer];
+            B = in[integer+1];
+            AB = B - A;
+            out[i].getVCenter() = A + (AB * fraction);
+            //out[i].getOrientation() = computeOrientation(AB, out[i].getOrientation());
+        }
+    }
 }
 
 template <class BasicMapping>
 void CurveMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
+    const unsigned int pathsize = this->fromModel->getSize();
+    out.resize(pathsize);
+    for (unsigned int i=0; i<in.size(); i++)
+    {
+        int integer = helper::rfloor(abscissa.getValue()[i]);
+        if (integer < 0) integer = 0;
+        else if (integer > pathsize-2) integer = pathsize-2;
+        double fraction = abscissa.getValue()[i] - integer;
+        if (fraction > 1.0) fraction = 1.0;
+        {
+            out[integer] += in[i].getVCenter() * (1-fraction);
+            out[integer+1] += in[i].getVCenter() * (fraction);
+        }
+    }
 }
 
 template <class BaseMapping>
@@ -187,7 +234,7 @@ void CurveMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
 template <class BaseMapping>
 void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* event)
 {
-    if (sofa::simulation::tree::AnimateBeginEvent* ev = dynamic_cast<sofa::simulation::tree::AnimateBeginEvent*>(event))
+    if (/*sofa::simulation::tree::AnimateBeginEvent* ev = */dynamic_cast<sofa::simulation::tree::AnimateBeginEvent*>(event))
     {
         if (fabs(velocity.getValue()) > 0.00001)
         {
@@ -198,8 +245,8 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
             for(unsigned int i=0; i<abscissa.getValue().size(); i++)
             {
                 ab[i] += s;
-                if (ab[i] > (*this->fromModel->getX()).size())
-                    ab[i] = (*this->fromModel->getX()).size();
+                if (ab[i] > this->fromModel->getSize())
+                    ab[i] = this->fromModel->getSize();
 //                std::cout << "abscissa["<<i<<"] = "<<ab[i]<<std::endl;
             }
             abscissa.setValue(ab);
@@ -222,8 +269,8 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
             for(unsigned int i=0; i<abscissa.getValue().size(); i++)
             {
                 ab[i] += step.getValue();
-                if (ab[i] > (*this->fromModel->getX()).size())
-                    ab[i] = (*this->fromModel->getX()).size();
+                if (ab[i] > this->fromModel->getSize())
+                    ab[i] = this->fromModel->getSize();
             }
             abscissa.setValue(ab);
             break;

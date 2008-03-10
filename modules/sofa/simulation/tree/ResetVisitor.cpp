@@ -53,6 +53,24 @@ void ResetVisitor::processNodeBottomUp(GNode* /*node*/)
 {
 }
 
+void StoreResetStateVisitor::processObject(core::objectmodel::BaseObject* obj)
+{
+    obj->storeResetState();
+}
+
+Visitor::Result StoreResetStateVisitor::processNodeTopDown(GNode* node)
+{
+    for (GNode::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        this->processObject(*it);
+    }
+    return RESULT_CONTINUE;
+}
+
+void StoreResetStateVisitor::processNodeBottomUp(GNode* /*node*/)
+{
+}
+
 } // namespace tree
 
 } // namespace simulation
