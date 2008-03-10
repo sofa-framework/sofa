@@ -25,14 +25,25 @@
 #ifndef SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPING_H
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/topology/SparseGridTopology.h>
-#include <sofa/component/topology/TriangleSetTopology.h>
-#include <vector>
+#include <sofa/helper/vector.h>
 
+// forward declarations
+namespace sofa
+{
+namespace component
+{
+namespace topology
+{
+class MeshTopology;
+class RegularGridTopology;
+class SparseGridTopology;
+template<class T>
+class TriangleSetTopology;
+template<class T>
+class EdgeSetTopology;
+}
+}
+}
 
 namespace sofa
 {
@@ -88,7 +99,7 @@ public:
     typedef MappingData<3,0> MappingData3D;
 
     virtual ~BarycentricMapper() {}
-    virtual void init() = 0;
+    virtual void init(const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) = 0;
@@ -128,7 +139,7 @@ public:
 
     int addPointInCube(int cubeIndex, const Real* baryCoords);
 
-    void init();
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
@@ -174,7 +185,7 @@ public:
 
     int addPointInCube(int cubeIndex, const Real* baryCoords);
 
-    void init();
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
@@ -235,7 +246,7 @@ public:
 
     int addPointInCube(int cubeIndex, const Real* baryCoords);
 
-    void init();
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
@@ -322,7 +333,7 @@ public:
     int addPointInEdge(int edgeIndex, const Real* baryCoords);
     int createPointInEdge(const typename Out::Coord& p, int edgeIndex, const typename In::VecCoord* points);
 
-    void init();
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
@@ -388,7 +399,7 @@ public:
     int addPointInTriangle(int triangleIndex, const Real* baryCoords);
     int createPointInTriangle(const typename Out::Coord& p, int triangleIndex, const typename In::VecCoord* points);
 
-    void init();
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
@@ -452,72 +463,17 @@ public:
 protected:
 
     typedef BarycentricMapper<InDataTypes,OutDataTypes> Mapper;
-    typedef TopologyBarycentricMapper<topology::MeshTopology, InDataTypes, OutDataTypes> MeshMapper;
-    typedef TopologyBarycentricMapper<topology::TriangleSetTopology<InDataTypes>, InDataTypes, OutDataTypes> TriangleSetMapper;
-    //typedef TriangleSetTopologyBarycentricMapper<InDataTypes, OutDataTypes> TriangleSetMapper;
-    typedef TopologyBarycentricMapper<topology::RegularGridTopology, InDataTypes, OutDataTypes> RegularGridMapper;
-    typedef TopologyBarycentricMapper<topology::SparseGridTopology, InDataTypes, OutDataTypes> SparseGridMapper;
 
     Mapper* mapper;
-    DataPtr< RegularGridMapper >* f_grid;
-    DataPtr< SparseGridMapper >* f_sparsegrid;
-    DataPtr< MeshMapper >*        f_mesh;
-    DataPtr< TriangleSetMapper >*        f_triangle;
-    void calcMap(topology::RegularGridTopology* topo);
-    void calcMap(topology::SparseGridTopology* topo);
-    void calcMap(topology::MeshTopology* topo);
-    void calcMap(topology::TriangleSetTopology<InDataTypes>* topo);
 
 public:
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
-        , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping"))
-        , f_sparsegrid (new DataPtr< SparseGridMapper >( new SparseGridMapper( NULL ),"Sparse Grid Mapping"))
-        , f_mesh (new DataPtr< MeshMapper >       ( new MeshMapper( NULL ),"Mesh Mapping"))
-        , f_triangle (new DataPtr< TriangleSetMapper >       ( new TriangleSetMapper( NULL ),"TriangleSet Mapping"))
-    {
-        this->addField( f_grid, "gridmap");	f_grid->beginEdit();
-        this->addField( f_sparsegrid, "sparsegridmap");	f_sparsegrid->beginEdit();
-        this->addField( f_mesh, "meshmap");	f_mesh->beginEdit();
-        this->addField( f_triangle, "trianglemap");	f_triangle->beginEdit();
-    }
+    {}
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
-    {
-        //Regular Grid Case
-        if (RegularGridMapper* m = dynamic_cast< RegularGridMapper* >(mapper))
-            f_grid = new DataPtr< RegularGridMapper >( m,"Regular Grid Mapping");
-        else
-            f_grid = new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping");
-
-        this->addField( f_grid, "gridmap");	f_grid->beginEdit();
-
-        //Sparse Grid Case
-        if (SparseGridMapper* m = dynamic_cast< SparseGridMapper* >(mapper))
-            f_sparsegrid = new DataPtr< SparseGridMapper >( m,"Sparse Grid Mapping");
-        else
-            f_sparsegrid = new DataPtr< SparseGridMapper >( new SparseGridMapper( NULL ),"Sparse Grid Mapping");
-
-        this->addField( f_sparsegrid, "sparsegridmap");	f_sparsegrid->beginEdit();
-
-        //Mesh Case
-        if (MeshMapper* m = dynamic_cast< MeshMapper* >(mapper))
-            f_mesh = new DataPtr< MeshMapper >( m,"Mesh Mapping");
-        else
-            f_mesh = new DataPtr< MeshMapper >( new MeshMapper( NULL ),"Mesh Mapping");
-
-        this->addField( f_mesh, "meshmap");	f_mesh->beginEdit();
-
-        //TriangleSet Case
-        if (TriangleSetMapper* m = dynamic_cast< TriangleSetMapper* >(mapper))
-            f_triangle = new DataPtr< TriangleSetMapper >( m,"TriangleSet Mapping");
-        else
-            f_triangle = new DataPtr< TriangleSetMapper >( new TriangleSetMapper( NULL ),"TriangleSet Mapping");
-
-        this->addField( f_triangle, "trianglemap");	f_triangle->beginEdit();
-
-    }
+    {}
 
     virtual ~BarycentricMapping()
     {
