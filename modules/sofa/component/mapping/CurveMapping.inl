@@ -34,19 +34,50 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 
+template <class BasicMapping>
+typename CurveMapping<BasicMapping>::Real CurveMapping<BasicMapping>::advanceAbscissa(Real ab, Real dist)
+{
+    int integer = helper::rfloor(ab);
+    if (integer < 0) integer = 0;
+    else if (integer > (int)this->lengthElements.size()-1) integer = this->lengthElements.size()-1;
+    double fraction = ab - integer;
+    while (integer < this->lengthElements.size()-1 && lengthElements[integer] * (1-fraction) < dist)
+    {
+        dist -= lengthElements[integer] * (1-fraction);
+        ++integer;
+        fraction = 0;
+    }
+    fraction += dist / lengthElements[integer];
+    return integer + fraction;
+}
 
 template <class BasicMapping>
 void CurveMapping<BasicMapping>::init()
 {
-    this->toModel->resize(numNodes.getValue());
+    int n = (int) numNodes.getValue();
+    this->toModel->resize(n);
+
+    lengthElements.resize(n-1);
+    InVecCoord& x0 = *this->fromModel->getX0();
+
+    for (int i=0; i<n-1; i++)
+        lengthElements[i] = (x0[i+1]-x0[i]).norm();
 
     helper::vector<Real> ab;
-    ab.resize(numNodes.getValue());
 
-    ab[0] = abscissa.getValue()[0];
+    ab = abscissa.getValue();
+    ab.resize(n);
 
-    for (unsigned int i=1; i<ab.size(); i++)
-        ab[i] += ab[i-1] + stepNode.getValue();
+    if (stepNode.getValue() != 0)
+    {
+        for (unsigned int i=1; i<ab.size(); i++)
+            ab[i] += ab[i-1] + stepNode.getValue();
+    }
+    else if (distNode.getValue() != 0)
+    {
+        for (unsigned int i=1; i<ab.size(); i++)
+            ab[i] += advanceAbscissa( ab[i-1], distNode.getValue());
+    }
 
     abscissa.setValue(ab);
 
@@ -160,7 +191,7 @@ void CurveMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
     {
         int integer = helper::rfloor(abscissa.getValue()[i]);
         if (integer < 0) integer = 0;
-        else if (integer > in.size()-2) integer = in.size()-2;
+        else if (integer > (int)in.size()-2) integer = in.size()-2;
         double fraction = abscissa.getValue()[i] - integer;
         if (fraction > 1.0) fraction = 1.0;
         {
@@ -216,7 +247,7 @@ void CurveMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
     {
         int integer = helper::rfloor(abscissa.getValue()[i]);
         if (integer < 0) integer = 0;
-        else if (integer > pathsize-2) integer = pathsize-2;
+        else if (integer > (int)pathsize-2) integer = pathsize-2;
         double fraction = abscissa.getValue()[i] - integer;
         if (fraction > 1.0) fraction = 1.0;
         {
@@ -244,7 +275,8 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
 //            std::cout << "abscissa += "<<s<<std::endl;
             for(unsigned int i=0; i<abscissa.getValue().size(); i++)
             {
-                ab[i] += s;
+                //ab[i] += s;
+                ab[i] = advanceAbscissa(ab[i], s);
                 if (ab[i] > this->fromModel->getSize())
                     ab[i] = this->fromModel->getSize();
 //                std::cout << "abscissa["<<i<<"] = "<<ab[i]<<std::endl;
