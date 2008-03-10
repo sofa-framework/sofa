@@ -78,6 +78,7 @@ void LineModel::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    mpoints = getContext()->get<PointModel>();
 
     if (mstate==NULL)
     {
@@ -258,6 +259,24 @@ void LineModel::draw()
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels() && dynamic_cast<core::VisualModel*>(getPrevious())!=NULL)
         dynamic_cast<core::VisualModel*>(getPrevious())->draw();
+}
+
+bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
+{
+    if (!this->bSelfCollision.getValue()) return true;
+    if (this->getContext() != model2->getContext()) return true;
+    if (model2 == this)
+    {
+        //std::cout << "line self test "<<index<<" - "<<index2<<std::endl;
+        return index < index2-1; // || index > index2+1;
+    }
+    else if (model2 == mpoints)
+    {
+        //std::cout << "line-point self test "<<index<<" - "<<index2<<std::endl;
+        return elems[index].i1 != index2 && elems[index].i2 != index2;
+    }
+    else
+        return model2->canCollideWithElement(index2, this, index);
 }
 
 void LineModel::computeBoundingTree(int maxDepth)

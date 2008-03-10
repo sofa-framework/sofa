@@ -85,6 +85,13 @@ void OglModel::internalDraw()
     Vec4f emissive = material.getValue().useEmissive?material.getValue().emissive:Vec4f();
     float shininess = material.getValue().useShininess?material.getValue().shininess:45;
 
+    if (isTransparent())
+    {
+        emissive[3] = 0; //diffuse[3];
+        ambient[3] = 0; //diffuse[3];
+        //diffuse[3] = 0;
+        specular[3] = 0;
+    }
     glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
@@ -105,12 +112,8 @@ void OglModel::internalDraw()
     if (isTransparent())
     {
         glEnable(GL_BLEND);
-        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         glDepthMask(GL_FALSE);
-        emissive[3] = diffuse[3];
-        ambient[3] = 0;
-//	diffuse[3] = 0;
-//	specular[3] = 0;
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
 
         for (unsigned int i=0; i<xforms.size(); i++)
         {

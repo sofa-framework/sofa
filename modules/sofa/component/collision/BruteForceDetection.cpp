@@ -67,6 +67,19 @@ void BruteForceDetection::addCollisionModel(core::CollisionModel *cm)
 {
     if (cm->empty())
         return;
+    if (cm->isSimulated() && cm->getLast()->canCollideWith(cm->getLast()))
+    {
+        // self collision
+        //std::cout << "Test broad phase Self "<<cm->getLast()->getName()<<std::endl;
+        bool swapModels = false;
+        core::componentmodel::collision::ElementIntersector* intersector = intersectionMethod->findIntersector(cm, cm, swapModels);
+        if (intersector != NULL)
+            if (intersector->canIntersect(cm->begin(), cm->begin()))
+            {
+                //std::cout << "Broad phase Self "<<cm->getLast()->getName()<<std::endl;
+                cmPairs.push_back(std::make_pair(cm, cm));
+            }
+    }
     for (sofa::helper::vector<core::CollisionModel*>::iterator it = collisionModels.begin(); it != collisionModels.end(); ++it)
     {
         core::CollisionModel* cm2 = *it;
@@ -179,7 +192,10 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         tmp = cm1; cm1 = cm2; cm2 = tmp;
         tmp = finalcm1; finalcm1 = finalcm2; finalcm2 = tmp;
     }
-    //std::cout << "Final intersector " << finalintersector->name() << " for "<<finalcm1->getName()<<" - "<<finalcm2->getName()<<std::endl;
+
+    const bool self = (finalcm1->getContext() == finalcm2->getContext());
+    //if (self)
+    //    std::cout << "SELF: Final intersector " << finalintersector->name() << " for "<<finalcm1->getName()<<" - "<<finalcm2->getName()<<std::endl;
 
     sofa::core::componentmodel::collision::DetectionOutputVector*& outputs = outputsMap[std::make_pair(finalcm1, finalcm2)];
 
@@ -271,7 +287,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                 {
                     for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
                     {
-                        intersector->intersect(it1,it2,outputs);
+                        if (!self || it1.canCollideWith(it2))
+                            intersector->intersect(it1,it2,outputs);
                     }
                 }
             }
@@ -281,6 +298,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                 {
                     for (core::CollisionElementIterator it2 = begin2; it2 != end2; ++it2)
                     {
+                        //if (self && !it1.canCollideWith(it2)) continue;
                         //if (!it1->canCollideWith(it2)) continue;
 
                         bool b = intersector->canIntersect(it1,it2);
@@ -335,7 +353,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                                                     {
                                                         //if (!it1->canCollideWith(it2)) continue;
                                                         // Final collision pair
-                                                        finalintersector->intersect(it1,it2,outputs);
+                                                        if (!self || it1.canCollideWith(it2))
+                                                            finalintersector->intersect(it1,it2,outputs);
                                                     }
                                                 }
                                                 if (node) ft += node->startTime() - t0;
@@ -365,7 +384,8 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
                                     else
                                     {
                                         // No child -> final collision pair
-                                        intersector->intersect(it1,it2, outputs);
+                                        if (!self || it1.canCollideWith(it2))
+                                            intersector->intersect(it1,it2, outputs);
                                     }
                                 }
                             }
