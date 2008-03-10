@@ -27,7 +27,7 @@ namespace mapping
 {
 
 template <class BasicMapping>
-class CurveMapping : public BasicMapping
+class CurveMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef BasicMapping Inherit;
@@ -46,12 +46,14 @@ public:
     Data < helper::vector<Real> > angle;
     Data < Real > step;
     Data < Real > angularStep;
-    Data < Real > numNodes;
+    Data < int > numNodes;
     Data < Real > stepNode;
+    Data < Real > distNode;
     Data < Real > velocity;
 
     helper::vector<int> old_integer;
     helper::vector<double> old_angle;
+    helper::vector<Real> lengthElements;
 
     helper::vector<Real> reset_abscissa;
 
@@ -61,8 +63,9 @@ public:
           angle( initData(&angle, "angle", "")),
           step( initData(&step, (Real) 10.0, "step", "")),
           angularStep( initData(&angularStep, (Real) 0.0, "angularStep", "")),
-          numNodes( initData(&numNodes,  5.0, "numNodes", "")),
-          stepNode( initData(&stepNode, (Real) 0.5, "stepNode", "")),
+          numNodes( initData(&numNodes,  (int)5, "numNodes", "")),
+          stepNode( initData(&stepNode, (Real) 0.0, "stepNode", "")),
+          distNode( initData(&distNode, (Real) 0.0, "distNode", "")),
           velocity( initData(&velocity, (Real) 0.0, "velocity", ""))
     {
     }
@@ -87,6 +90,7 @@ public:
 
     void draw();
 
+    Real advanceAbscissa(Real ab, Real dist);
 };
 
 } // namespace mapping
