@@ -26,6 +26,7 @@
 #define SOFA_HELPER_VECTOR_H
 
 #include <vector>
+#include <string>
 #include <algorithm>
 #include <cassert>
 #include <iostream>
