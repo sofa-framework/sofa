@@ -193,4 +193,5 @@ SOFA_LINK_CLASS(OglShader)
 SOFA_LINK_CLASS(DirectionalLight)
 SOFA_LINK_CLASS(PositionalLight)
 SOFA_LINK_CLASS(SpotLight)
+SOFA_LINK_CLASS(VoidMapping)
 
