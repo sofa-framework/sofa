@@ -85,16 +85,6 @@ void OglModel::internalDraw()
     Vec4f emissive = material.getValue().useEmissive?material.getValue().emissive:Vec4f();
     float shininess = material.getValue().useShininess?material.getValue().shininess:45;
 
-    if (isTransparent())
-    {
-        glEnable(GL_BLEND);
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-        glDepthMask(GL_FALSE);
-        emissive[3] = diffuse[3];
-        ambient[3] = 0;
-//	diffuse[3] = 0;
-//	specular[3] = 0;
-    }
     glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
@@ -110,6 +100,33 @@ void OglModel::internalDraw()
         tex->bind();
         glTexCoordPointer(2, GL_FLOAT, 0, vtexcoords.getData());
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    }
+
+    if (isTransparent())
+    {
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+        glDepthMask(GL_FALSE);
+        emissive[3] = diffuse[3];
+        ambient[3] = 0;
+//	diffuse[3] = 0;
+//	specular[3] = 0;
+
+        for (unsigned int i=0; i<xforms.size(); i++)
+        {
+            float matrix[16];
+            xforms[i].writeOpenGlMatrix(matrix);
+            glPushMatrix();
+            glMultMatrixf(matrix);
+
+            if (!triangles.empty())
+                glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, triangles.getData());
+            if (!quads.empty())
+                glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, quads.getData());
+
+            glPopMatrix();
+        }
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
     for (unsigned int i=0; i<xforms.size(); i++)
