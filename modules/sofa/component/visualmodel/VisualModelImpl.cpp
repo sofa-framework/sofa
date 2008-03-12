@@ -155,6 +155,155 @@ void VisualModelImpl::drawShadow()
     }
 }
 
+void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
+{
+    const vector< vector< vector<int> > > &facetsImport = objLoader.getFacets();
+    const vector<Vector3> &verticesImport = objLoader.getVertices();
+    const vector<Vector3> &normalsImport = objLoader.getNormals();
+    const vector<Vector3> &texCoordsImport = objLoader.getTexCoords();
+
+    const helper::io::Mesh::Material &materialImport = objLoader.getMaterial();
+
+    if (materialImport.activated)
+    {
+        helper::io::Mesh::Material M;
+        M = materialImport;
+        material.setValue(M);
+    }
+
+//             std::cout << "Vertices Import size : " << verticesImport.size() << " (" << normalsImport.size() << " normals)." << std::endl;
+
+    int nbVIn = verticesImport.size();
+    // First we compute for each point how many pair of normal/texcoord indices are used
+    // The map store the final index of each combinaison
+    vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
+    vertTexNormMap.resize(nbVIn);
+    for (unsigned int i = 0; i < facetsImport.size(); i++)
+    {
+        const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
+        if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
+        const vector<int>& verts = vertNormTexIndex[0];
+        const vector<int>& texs = vertNormTexIndex[1];
+        const vector<int>& norms = vertNormTexIndex[2];
+        for (unsigned int j = 0; j < verts.size(); j++)
+        {
+            vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (useNormals?norms[j]:0))] = 0;
+        }
+    }
+
+    // Then we can compute how many vertices are created
+    int nbVOut = 0;
+    bool vsplit = false;
+    for (int i = 0; i < nbVIn; i++)
+    {
+        int s = vertTexNormMap[i].size();
+        nbVOut += s;
+        if (s!=1)
+            vsplit = true;
+    }
+
+    // Then we can create the final arrays
+
+    vertices.resize(nbVOut);
+    vnormals.resize(nbVOut);
+
+    if (tex)
+        vtexcoords.resize(nbVOut);
+
+    if (vsplit)
+    {
+        inputVertices = new ResizableExtVector<Coord>;
+        inputVertices->resize(nbVIn);
+        vertPosIdx.resize(nbVOut);
+        vertNormIdx.resize(nbVOut);
+    }
+    else
+        inputVertices = &vertices;
+
+    int nbNOut = 0; /// Number of different normals
+    for (int i = 0, j = 0; i < nbVIn; i++)
+    {
+        if (vsplit)
+            (*inputVertices)[i] = verticesImport[i];
+        std::map<int, int> normMap;
+        for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
+                it != vertTexNormMap[i].end(); ++it)
+        {
+            vertices[j] = verticesImport[i];
+            int t = it->first.first;
+            int n = it->first.second;
+            if ((unsigned)n < normalsImport.size())
+                vnormals[j] = normalsImport[n];
+            if ((unsigned)t < texCoordsImport.size())
+                vtexcoords[j] = texCoordsImport[t];
+            if (vsplit)
+            {
+                vertPosIdx[j] = i;
+                if (normMap.count(n))
+                    vertNormIdx[j] = normMap[n];
+                else
+                    vertNormIdx[j] = normMap[n] = nbNOut++;
+            }
+            it->second = j++;
+        }
+    }
+    if (!vsplit) nbNOut = nbVOut;
+    else if (nbNOut == nbVOut) vertNormIdx.resize(0);
+
+//             std::cout << "Vertices Export size : " << nbVOut << " (" << nbNOut << " normals)." << std::endl;
+
+//             std::cout << "Facets Import size : " << facetsImport.size() << std::endl;
+
+    // Then we create the triangles and quads
+
+    for (unsigned int i = 0; i < facetsImport.size(); i++)
+    {
+        const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
+        if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
+        const vector<int>& verts = vertNormTexIndex[0];
+        const vector<int>& texs = vertNormTexIndex[1];
+        const vector<int>& norms = vertNormTexIndex[2];
+        vector<int> idxs;
+        idxs.resize(verts.size());
+        for (unsigned int j = 0; j < verts.size(); j++)
+        {
+            idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (useNormals?norms[j]:0))];
+            if ((unsigned)idxs[j] >= (unsigned)nbVOut)
+            {
+                std::cerr << "ERROR(VisualModelImpl): index "<<idxs[j]<<" out of range\n";
+                idxs[j] = 0;
+            }
+        }
+
+        if (verts.size() == 4)
+        {
+            // quad
+            quads.push_back(helper::make_array(idxs[0],idxs[1],idxs[2],idxs[3]));
+        }
+        else
+        {
+            // triangle(s)
+            for (unsigned int j = 2; j < verts.size(); j++)
+            {
+                triangles.push_back(helper::make_array(idxs[0],idxs[j-1],idxs[j]));
+            }
+        }
+    }
+
+//             std::cout << "Facets Export size : ";
+//             if (!triangles.empty())
+//                 std::cout << triangles.size() << " triangles";
+//             if (!quads.empty())
+//                 std::cout << quads.size() << " quads";
+//             std::cout << "." << std::endl;
+
+    //for (unsigned int i = 0; i < triangles.size() ; i++)
+    //    std::cout << "T"<<i<<": "<<triangles[i][0]<<" "<<triangles[i][1]<<" "<<triangles[i][2]<<std::endl;
+
+    computeNormals();
+    computeBBox();
+}
+
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
     bool tex = false;
@@ -178,151 +327,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         }
         else
         {
-            const vector< vector< vector<int> > > &facetsImport = objLoader->getFacets();
-            const vector<Vector3> &verticesImport = objLoader->getVertices();
-            const vector<Vector3> &normalsImport = objLoader->getNormals();
-            const vector<Vector3> &texCoordsImport = objLoader->getTexCoords();
-
-            const helper::io::Mesh::Material &materialImport = objLoader->getMaterial();
-
-            if (materialImport.activated)
-            {
-                helper::io::Mesh::Material M;
-                M = materialImport;
-                material.setValue(M);
-            }
-
-//             std::cout << "Vertices Import size : " << verticesImport.size() << " (" << normalsImport.size() << " normals)." << std::endl;
-
-            int nbVIn = verticesImport.size();
-            // First we compute for each point how many pair of normal/texcoord indices are used
-            // The map store the final index of each combinaison
-            vector< std::map< std::pair<int,int>, int > > vertTexNormMap;
-            vertTexNormMap.resize(nbVIn);
-            for (unsigned int i = 0; i < facetsImport.size(); i++)
-            {
-                const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
-                if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
-                const vector<int>& verts = vertNormTexIndex[0];
-                const vector<int>& texs = vertNormTexIndex[1];
-                const vector<int>& norms = vertNormTexIndex[2];
-                for (unsigned int j = 0; j < verts.size(); j++)
-                {
-                    vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (useNormals?norms[j]:0))] = 0;
-                }
-            }
-
-            // Then we can compute how many vertices are created
-            int nbVOut = 0;
-            bool vsplit = false;
-            for (int i = 0; i < nbVIn; i++)
-            {
-                int s = vertTexNormMap[i].size();
-                nbVOut += s;
-                if (s!=1)
-                    vsplit = true;
-            }
-
-            // Then we can create the final arrays
-
-            vertices.resize(nbVOut);
-            vnormals.resize(nbVOut);
-
-            if (tex)
-                vtexcoords.resize(nbVOut);
-
-            if (vsplit)
-            {
-                inputVertices = new ResizableExtVector<Coord>;
-                inputVertices->resize(nbVIn);
-                vertPosIdx.resize(nbVOut);
-                vertNormIdx.resize(nbVOut);
-            }
-            else
-                inputVertices = &vertices;
-
-            int nbNOut = 0; /// Number of different normals
-            for (int i = 0, j = 0; i < nbVIn; i++)
-            {
-                if (vsplit)
-                    (*inputVertices)[i] = verticesImport[i];
-                std::map<int, int> normMap;
-                for (std::map<std::pair<int, int>, int>::iterator it = vertTexNormMap[i].begin();
-                        it != vertTexNormMap[i].end(); ++it)
-                {
-                    vertices[j] = verticesImport[i];
-                    int t = it->first.first;
-                    int n = it->first.second;
-                    if ((unsigned)n < normalsImport.size())
-                        vnormals[j] = normalsImport[n];
-                    if ((unsigned)t < texCoordsImport.size())
-                        vtexcoords[j] = texCoordsImport[t];
-                    if (vsplit)
-                    {
-                        vertPosIdx[j] = i;
-                        if (normMap.count(n))
-                            vertNormIdx[j] = normMap[n];
-                        else
-                            vertNormIdx[j] = normMap[n] = nbNOut++;
-                    }
-                    it->second = j++;
-                }
-            }
-            if (!vsplit) nbNOut = nbVOut;
-            else if (nbNOut == nbVOut) vertNormIdx.resize(0);
-
-//             std::cout << "Vertices Export size : " << nbVOut << " (" << nbNOut << " normals)." << std::endl;
-
-//             std::cout << "Facets Import size : " << facetsImport.size() << std::endl;
-
-            // Then we create the triangles and quads
-
-            for (unsigned int i = 0; i < facetsImport.size(); i++)
-            {
-                const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
-                if (vertNormTexIndex[0].size() < 3) continue; // ignore lines
-                const vector<int>& verts = vertNormTexIndex[0];
-                const vector<int>& texs = vertNormTexIndex[1];
-                const vector<int>& norms = vertNormTexIndex[2];
-                vector<int> idxs;
-                idxs.resize(verts.size());
-                for (unsigned int j = 0; j < verts.size(); j++)
-                {
-                    idxs[j] = vertTexNormMap[verts[j]][std::make_pair((tex?texs[j]:-1), (useNormals?norms[j]:0))];
-                    if ((unsigned)idxs[j] >= (unsigned)nbVOut)
-                    {
-                        std::cerr << "ERROR(VisualModelImpl): index "<<idxs[j]<<" out of range\n";
-                        idxs[j] = 0;
-                    }
-                }
-
-                if (verts.size() == 4)
-                {
-                    // quad
-                    quads.push_back(helper::make_array(idxs[0],idxs[1],idxs[2],idxs[3]));
-                }
-                else
-                {
-                    // triangle(s)
-                    for (unsigned int j = 2; j < verts.size(); j++)
-                    {
-                        triangles.push_back(helper::make_array(idxs[0],idxs[j-1],idxs[j]));
-                    }
-                }
-            }
-
-//             std::cout << "Facets Export size : ";
-//             if (!triangles.empty())
-//                 std::cout << triangles.size() << " triangles";
-//             if (!quads.empty())
-//                 std::cout << quads.size() << " quads";
-//             std::cout << "." << std::endl;
-
-            //for (unsigned int i = 0; i < triangles.size() ; i++)
-            //    std::cout << "T"<<i<<": "<<triangles[i][0]<<" "<<triangles[i][1]<<" "<<triangles[i][2]<<std::endl;
-
-            computeNormals();
-            computeBBox();
+            setMesh(*objLoader,tex);
         }
     }
     else
@@ -404,8 +409,8 @@ void VisualModelImpl::computeNormals()
     if (vertNormIdx.empty())
     {
         int nbn = vertices.size();
-        /*		std::cerr << "nb of visual vertices"<<nbn<<std::endl;
-        		std::cerr << "nb of visual triangles"<<triangles.size()<<std::endl; */
+// 		std::cerr << "nb of visual vertices"<<nbn<<std::endl;
+// 		std::cerr << "nb of visual triangles"<<triangles.size()<<std::endl;
 
         ResizableExtVector<Coord>& normals = vnormals;
 
@@ -415,16 +420,18 @@ void VisualModelImpl::computeNormals()
 
         for (unsigned int i = 0; i < triangles.size() ; i++)
         {
+
             const Coord  v1 = vertices[triangles[i][0]];
             const Coord  v2 = vertices[triangles[i][1]];
             const Coord  v3 = vertices[triangles[i][2]];
             Coord n = cross(v2-v1, v3-v1);
+
             n.normalize();
             normals[triangles[i][0]] += n;
             normals[triangles[i][1]] += n;
             normals[triangles[i][2]] += n;
-        }
 
+        }
         for (unsigned int i = 0; i < quads.size() ; i++)
         {
             const Coord & v1 = vertices[quads[i][0]];
@@ -437,7 +444,6 @@ void VisualModelImpl::computeNormals()
             normals[quads[i][2]] += n;
             normals[quads[i][3]] += n;
         }
-
         for (unsigned int i = 0; i < normals.size(); i++)
         {
             normals[i].normalize();
@@ -662,8 +668,21 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
     if (vertices.empty())
     {
         if (!topology->hasPos()) return;
+
+        if (sofa::component::topology::SparseGridTopology * spTopo = dynamic_cast< sofa::component::topology::SparseGridTopology *>(topology))
+        {
+            std::cout << "VisualModel: getting marching cube mesh from topology : "
+                    <<topology->getNbPoints()<<" points, "
+                    << topology->getNbTriangles() << " triangles."<<std::endl;
+            sofa::helper::io::Mesh m;
+            spTopo->getMesh(m);
+            setMesh(m);
+            useTopology = false; //visual model needs to be created only once at initial time
+            return;
+        }
         std::cout << "VisualModel: copying "<<topology->getNbPoints()<<" points from topology."<<std::endl;
         vertices.resize(topology->getNbPoints());
+
         for (unsigned int i=0; i<vertices.size(); i++)
         {
             vertices[i][0] = (Real)topology->getPX(i);

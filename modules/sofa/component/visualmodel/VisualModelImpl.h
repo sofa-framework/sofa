@@ -36,6 +36,7 @@
 #include <sofa/component/topology/QuadSetTopology.h>
 #include <sofa/component/topology/TetrahedronSetTopology.h>
 #include <sofa/component/topology/HexahedronSetTopology.h>
+#include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/helper/io/Mesh.h>
 
 #include <map>
@@ -186,6 +187,9 @@ public:
 
     void setCastShadow(bool val) { castShadow = val;  }
     bool getCastShadow() const   { return castShadow; }
+
+    void setMesh(helper::io::Mesh &m, bool tex=false);
+    bool isUsingTopology() const {return useTopology;};
 
     ResizableExtVector<Coord> * getVertices() {return &vertices;}
     void setVertices(ResizableExtVector<Coord> * x) {vertices = *x;}

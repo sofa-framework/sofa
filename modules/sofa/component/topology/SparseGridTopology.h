@@ -27,11 +27,13 @@
 
 #include <string>
 
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/component/topology/MeshTopology.h>
-#include <sofa/defaulttype/Vec.h>
-#include "RegularGridTopology.h"
 
+#include <sofa/component/topology/MeshTopology.h>
+#include <sofa/component/topology/MarchingCubeUtility.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/component/topology/RegularGridTopology.h>
+
+#include <sofa/helper/io/Mesh.h>
 namespace sofa
 {
 
@@ -99,27 +101,37 @@ public:
     NodeCornersAdjacency _nodeCornersAdjacency;
 
 
-    int getNx() const { return nx.getValue(); }
-    int getNy() const { return ny.getValue(); }
-    int getNz() const { return nz.getValue(); }
+    Vec<3, int> getN() const { return n.getValue();}
+    int getNx() const { return n.getValue()[0]; }
+    int getNy() const { return n.getValue()[1]; }
+    int getNz() const { return n.getValue()[2]; }
 
-    void setNx(int n) { nx.setValue(n); }
-    void setNy(int n) { ny.setValue(n); }
-    void setNz(int n) { nz.setValue(n); }
+    void setN(Vec<3,int> _n) {n.setValue(_n);}
+    void setNx(int _n) { n.setValue(Vec<3,int>(_n             ,n.getValue()[1],n.getValue()[2])); }
+    void setNy(int _n) { n.setValue(Vec<3,int>(n.getValue()[0],_n             ,n.getValue()[2])); }
+    void setNz(int _n) { n.setValue(Vec<3,int>(n.getValue()[0],n.getValue()[1],_n)             ); }
 
-    void setXmin(double n) { xmin.setValue(n); }
-    void setYmin(double n) { ymin.setValue(n); }
-    void setZmin(double n) { zmin.setValue(n); }
-    void setXmax(double n) { xmax.setValue(n); }
-    void setYmax(double n) { ymax.setValue(n); }
-    void setZmax(double n) { zmax.setValue(n); }
+    void setMin(Vec3d _min) {min.setValue(_min);}
+    void setXmin(double _min) { min.setValue(Vec3d(_min             ,min.getValue()[1],min.getValue()[2])); }
+    void setYmin(double _min) { min.setValue(Vec3d(min.getValue()[0],_min             ,min.getValue()[2])); }
+    void setZmin(double _min) { min.setValue(Vec3d(min.getValue()[0],min.getValue()[1],_min)             ); }
 
-    double getXmin() { return xmin.getValue(); }
-    double getYmin() { return ymin.getValue(); }
-    double getZmin() { return zmin.getValue(); }
-    double getXmax() { return xmax.getValue(); }
-    double getYmax() { return ymax.getValue(); }
-    double getZmax() { return zmax.getValue(); }
+
+    void setMax(Vec3d _max) {min.setValue(_max);}
+
+    void setXmax(double _max) { max.setValue(Vec3d(_max             ,max.getValue()[1],max.getValue()[2])); }
+    void setYmax(double _max) { max.setValue(Vec3d(max.getValue()[0],_max             ,max.getValue()[2])); }
+    void setZmax(double _max) { max.setValue(Vec3d(max.getValue()[0],max.getValue()[1],_max)             ); }
+
+    Vec3d getMin() {return min.getValue();}
+    double getXmin() { return min.getValue()[0]; }
+    double getYmin() { return min.getValue()[1]; }
+    double getZmin() { return min.getValue()[2]; }
+
+    Vec3d getMax() {return max.getValue();}
+    double getXmax() { return max.getValue()[0]; }
+    double getYmax() { return max.getValue()[1]; }
+    double getZmax() { return max.getValue()[2]; }
 
     bool hasPos()  const { return true; }
 
@@ -144,27 +156,27 @@ public:
 
     Vec3 getPointPos( int i ) { return Vec3( seqPoints[i][0],seqPoints[i][1],seqPoints[i][2] ); }
 
+    void getMesh( sofa::helper::io::Mesh &m);
+
 protected:
 
     /// cutting number in all directions
-    Data<int> nx;
-    Data<int> ny;
-    Data<int> nz;
+    Data< Vec<3, int>    > n;
+    Data< Vec<3, double> > min;
+    Data< Vec<3, double> > max;
 
-    /// bounding box positions, by default the real bounding box is used
-    Data<double> xmin;
-    Data<double> ymin;
-    Data<double> zmin;
-    Data<double> xmax;
-    Data<double> ymax;
-    Data<double> zmax;
+    Data< Vec<3, int>  > dim_voxels;
+    Data< Vec3d >        size_voxel;
 
     virtual void updateEdges();
     virtual void updateQuads();
     virtual void updateHexas();
 
-
-
+    MarchingCubeUtility                 MC;
+    vector< float >                     dataVoxels;
+    sofa::helper::vector< unsigned int> mesh_MC;
+    std::map< unsigned int, Vec3f >     map_indices;
+    bool                                _usingMC;
 
     sofa::helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
 
@@ -198,6 +210,12 @@ protected:
     	0 0 255 0 0 ... // data
     */
     void buildFromVoxelFile(const std::string& filename);
+    void buildFromRawVoxelFile(const std::string& filename);
+
+    void constructCollisionModels(const sofa::helper::vector< sofa::component::topology::MeshTopology * > &list_mesh,
+            const sofa::helper::vector< sofa::helper::vector< Vec3d >* >            &list_X,
+            const sofa::helper::vector< unsigned int> mesh_MC,
+            std::map< unsigned int, Vec3f >     map_indices) const;
 
     SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
     SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid
@@ -255,7 +273,45 @@ public :
         return getHexas().size();
     }
 
-    virtual vector< fixed_array<double,3> >& getPoints() {return this->seqPoints;}
+    virtual vector< fixed_array<unsigned int, 4> >& getQuads()
+    {
+
+        if (_usingMC) return this->seqQuads;
+        else
+        {
+            seqQuads = MeshTopology::getQuads();
+            return this->seqQuads;
+        }
+    }
+
+    virtual vector< fixed_array<unsigned int, 3> >& getTriangles()
+    {
+        vector< fixed_array<unsigned int, 3> > &t = *seqTriangles.beginEdit();
+        if (_usingMC)
+        {
+            t.resize(mesh_MC.size()/3);
+            for (unsigned int i=0; i<t.size(); ++i)
+            {
+                t[i]=fixed_array<int, 3>(mesh_MC[3*i]-1,mesh_MC[3*i+1]-1,mesh_MC[3*i+2]-1);
+            }
+        }
+        return t;
+    }
+
+    virtual vector< fixed_array<double,3> >& getPoints()
+    {
+        std::cout << getPoints() << "\n";
+        if (_usingMC)
+        {
+            seqPoints.resize(map_indices.size());
+            for (unsigned int i=0; i<seqPoints.size(); ++i)
+            {
+                Vec3f p=map_indices[i+1];
+                seqPoints[i] = fixed_array<double,3>(p[0],p[1],p[2]);
+            }
+        }
+        return this->seqPoints;
+    }
 
 };
 
