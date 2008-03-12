@@ -14,7 +14,7 @@
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <vector>
+#include <sofa/defaulttype/Quat.h>
 #include <sofa/core/objectmodel/Event.h>
 
 namespace sofa
@@ -54,6 +54,9 @@ public:
     helper::vector<int> old_integer;
     helper::vector<double> old_angle;
     helper::vector<Real> lengthElements;
+    helper::vector<defaulttype::Quat> quatElements;
+    helper::vector<defaulttype::Quat> rotatedQuatElements;
+    helper::vector<defaulttype::Quat> quatInitNodes;
 
     helper::vector<Real> reset_abscissa;
 
@@ -75,6 +78,7 @@ public:
     }
 
     void init();
+    void reinit();
     void storeResetState();
     void reset();
 
@@ -91,6 +95,7 @@ public:
     void draw();
 
     Real advanceAbscissa(Real ab, Real dist);
+    void rotateElements();
 };
 
 } // namespace mapping

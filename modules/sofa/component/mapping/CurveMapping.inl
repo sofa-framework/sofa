@@ -15,7 +15,6 @@
 #include <sofa/component/mapping/CurveMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/helper/gl/template.h>
-#include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/rmath.h>
@@ -51,40 +50,91 @@ typename CurveMapping<BasicMapping>::Real CurveMapping<BasicMapping>::advanceAbs
     return integer + fraction;
 }
 
+inline Quat computeOrientation(const Vec3d& AB, const Quat& Q)
+{
+    Vec3d PQ = AB;
+    Quat quat = Q;
+
+    Vec3d x = quat.rotate(Vec3d(1,0,0));
+    PQ.normalize();
+
+    if (dot(x, PQ) > 0.99)
+        return Q;
+
+    Vec3d y;
+    double alpha;
+
+    if (dot(x, PQ) < -0.99)
+    {
+        y = quat.rotate(Vec3d(0,0,1));
+        alpha = M_PI;
+    }
+    else
+    {
+        y = cross(x, PQ);
+        y.normalize();
+        alpha = acos(dot(x, PQ));
+    }
+
+    Quat qaux = Quat(y, alpha);
+
+    return (qaux * quat);
+}
+
 template <class BasicMapping>
 void CurveMapping<BasicMapping>::init()
 {
-    int n = (int) numNodes.getValue();
-    this->toModel->resize(n);
+    int nin = this->fromModel->getSize();
+    int nout = numNodes.getValue();
+    this->toModel->resize(nout);
 
-    lengthElements.resize(n-1);
-    InVecCoord& x0 = *this->fromModel->getX0();
+    lengthElements.resize(nin-1);
+    const InVecCoord& x0 = *this->fromModel->getX0();
 
-    for (int i=0; i<n-1; i++)
+    for (int i=0; i<nin-1; i++)
+    {
         lengthElements[i] = (x0[i+1]-x0[i]).norm();
+        //std::cout << "l["<<i<<"] = "<<lengthElements[i]<<std::endl;
+    }
+
+    helper::vector<Real> &a = *angle.beginEdit();
+    Real a0 = (a.empty()?(Real)0.0:a[a.size()-1]);
+    int ai = a.size();
+    a.resize(nout);
+    while (ai < nout)
+        a[ai++] = a0;
+    angle.endEdit();
+    quatElements.resize(nin-1);
+    Quat q(0,0,0,1);
+    for (int i=0; i<nin-1; i++)
+    {
+        quatElements[i] = computeOrientation(x0[i+1]-x0[i], q);
+        q = quatElements[i];
+    }
+    rotateElements();
 
     helper::vector<Real> ab;
 
     ab = abscissa.getValue();
-    ab.resize(n);
+    ab.resize(nout);
 
     if (stepNode.getValue() != 0)
     {
         for (unsigned int i=1; i<ab.size(); i++)
-            ab[i] += ab[i-1] + stepNode.getValue();
+            ab[i] = ab[i-1] + stepNode.getValue();
     }
     else if (distNode.getValue() != 0)
     {
         for (unsigned int i=1; i<ab.size(); i++)
-            ab[i] += advanceAbscissa( ab[i-1], distNode.getValue());
+            ab[i] = advanceAbscissa( ab[i-1], distNode.getValue());
     }
 
     abscissa.setValue(ab);
 
-    old_integer.resize(this->toModel->getSize());
+    old_integer.resize(nout);
     fill(old_integer.begin(), old_integer.end(), -1);
 
-    old_angle.resize(this->toModel->getSize());
+    old_angle.resize(nout);
     fill(old_angle.begin(), old_angle.end(), 0.0);
     apply(*this->toModel->getX(), *this->fromModel->getX());
     apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
@@ -141,6 +191,26 @@ void CurveMapping<BasicMapping>::init()
 }
 
 template <class BasicMapping>
+void CurveMapping<BasicMapping>::reinit()
+{
+    rotateElements();
+}
+
+template <class BasicMapping>
+void CurveMapping<BasicMapping>::rotateElements()
+{
+    int nin = this->fromModel->getSize();
+    rotatedQuatElements.resize(nin-1);
+    //const InVecCoord& x0 = *this->fromModel->getX0();
+    Real a = angle.getValue()[0];
+    for (int i=0; i<nin-1; i++)
+    {
+        rotatedQuatElements[i] = quatElements[i]*Quat(Vec3d(1.0,0.0,0.0), a);
+        rotatedQuatElements[i].normalize();
+    }
+}
+
+template <class BasicMapping>
 void CurveMapping<BasicMapping>::storeResetState()
 {
     reset_abscissa = abscissa.getValue();
@@ -154,37 +224,6 @@ void CurveMapping<BasicMapping>::reset()
     fill(old_angle.begin(), old_angle.end(), 0.0);
 }
 
-Quat computeOrientation(const Vec3d& AB, const Quat& Q)
-{
-    Vec3d PQ = AB;
-    Quat quat = Q;
-
-    Vec3d x = quat.rotate(Vec3d(1,0,0));
-    PQ.normalize();
-
-    if (dot(x, PQ) > 0.99)
-        return Q;
-
-    Vec3d y;
-    double alpha;
-
-    if (dot(x, PQ) < -0.99)
-    {
-        y = quat.rotate(Vec3d(0,0,1));
-        alpha = M_PI;
-    }
-    else
-    {
-        y = cross(x, PQ);
-        y.normalize();
-        alpha = acos(dot(x, PQ));
-    }
-
-    Quat qaux = Quat(y, alpha);
-
-    return (qaux * quat);
-}
-
 template <class BasicMapping>
 void CurveMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
@@ -195,7 +234,7 @@ void CurveMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
         if (integer < 0) integer = 0;
         else if (integer > (int)in.size()-2) integer = in.size()-2;
         double fraction = abscissa.getValue()[i] - integer;
-        if (fraction > 1.0) fraction = 1.0;
+        //if (fraction > 1.0) fraction = 1.0;
         {
             InCoord A, B, AB;
             A = in[integer];
@@ -204,15 +243,18 @@ void CurveMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typen
             out[i].getCenter() = A + (AB * fraction);
             //if (integer != old_integer[i]) // rigid position has changed
             {
-                out[i].getOrientation() = computeOrientation(AB, out[i].getOrientation());
+                out[i].getOrientation() = rotatedQuatElements[integer]; //computeOrientation(AB, out[i].getOrientation());
 
             }
-            Real Dtheta = angle.getValue()[i] - old_angle[i];
-            Quat angularRotation = Quat(Vec3d(0.0,0.0,1.0), Dtheta);
-            out[i].getOrientation() = angularRotation * out[i].getOrientation();
-            out[i].getOrientation().normalize();
+// 			Real Dtheta = angle.getValue()[i] - old_angle[i];
+// 			if (fabs(Dtheta) > 0.00001)
+// 			{
+// 			 Quat angularRotation = Quat(Vec3d(0.0,0.0,1.0), Dtheta);
+// 			out[i].getOrientation() = angularRotation * out[i].getOrientation();
+// 			out[i].getOrientation().normalize();
+// 			old_angle[i] = angle.getValue()[i];
+// 			}
             old_integer[i] = integer;
-            old_angle[i] = angle.getValue()[i];
         }
     }
 }
@@ -221,6 +263,18 @@ template <class BasicMapping>
 void CurveMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     out.resize(abscissa.getValue().size());
+    bool isV = false;
+    const typename In::VecCoord* x = NULL;
+    if (&in == this->fromModel->getV())
+    {
+        isV = true;
+        x = this->fromModel->getX();
+    }
+    else if (&in == this->fromModel->getVfree())
+    {
+        isV = true;
+        x = this->fromModel->getXfree();
+    }
     for (unsigned int i=0; i<out.size(); i++)
     {
         out[i] = typename Out::Deriv();
@@ -228,13 +282,16 @@ void CurveMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
         if (integer < 0) integer = 0;
         else if (integer > (int)in.size()-2) integer = in.size()-2;
         double fraction = abscissa.getValue()[i] - integer;
-        if (fraction > 1.0) fraction = 1.0;
+        //if (fraction > 1.0) fraction = 1.0;
         {
             typename In::Deriv A, B, AB;
             A = in[integer];
             B = in[integer+1];
             AB = B - A;
             out[i].getVCenter() = A + (AB * fraction);
+            if (isV)
+                out[i].getVCenter() += ((*x)[integer+1]-(*x)[integer])*(velocity.getValue()/lengthElements[integer]);
+            out[i].getVOrientation().clear();
             //out[i].getOrientation() = computeOrientation(AB, out[i].getOrientation());
         }
     }
@@ -251,7 +308,7 @@ void CurveMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
         if (integer < 0) integer = 0;
         else if (integer > (int)pathsize-2) integer = pathsize-2;
         double fraction = abscissa.getValue()[i] - integer;
-        if (fraction > 1.0) fraction = 1.0;
+        //if (fraction > 1.0) fraction = 1.0;
         {
             out[integer] += in[i].getVCenter() * (1-fraction);
             out[integer+1] += in[i].getVCenter() * (fraction);
@@ -273,15 +330,20 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
         {
             helper::vector<Real> ab;
             ab = abscissa.getValue();
-            Real s = velocity.getValue(); // * (Real)ev->getDt();
+            Real s = velocity.getValue() * (Real)this->getContext()->getDt();
 //            std::cout << "abscissa += "<<s<<std::endl;
             for(unsigned int i=0; i<abscissa.getValue().size(); i++)
             {
                 //ab[i] += s;
                 ab[i] = advanceAbscissa(ab[i], s);
-                if (ab[i] > this->fromModel->getSize())
-                    ab[i] = this->fromModel->getSize();
+                //if (ab[i] > this->fromModel->getSize())
+                //    ab[i] = this->fromModel->getSize();
 //                std::cout << "abscissa["<<i<<"] = "<<ab[i]<<std::endl;
+            }
+            if (distNode.getValue() != 0)
+            {
+                for (unsigned int i=1; i<ab.size(); i++)
+                    ab[i] = advanceAbscissa( ab[i-1], distNode.getValue());
             }
             abscissa.setValue(ab);
         }
@@ -325,6 +387,7 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
                 ang[i] += angularStep.getValue();
             }
             angle.setValue(ang);
+            rotateElements();
             break;
         case 'M':
             ang = angle.getValue();
@@ -333,6 +396,7 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
                 ang[i] -= angularStep.getValue();
             }
             angle.setValue(ang);
+            rotateElements();
             break;
         }
 
@@ -342,6 +406,7 @@ void CurveMapping<BaseMapping>::handleEvent(sofa::core::objectmodel::Event* even
 template <class BaseMapping>
 void CurveMapping<BaseMapping>::draw()
 {
+    if (!this->getShow()) return;
     glPointSize(5);
     glColor4f (1,1,0,1);
     glBegin (GL_POINTS);

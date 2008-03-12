@@ -104,6 +104,37 @@ public:
     ///                    [  (Minv21)(-l0t)   (Minv22)(-l1t)  inva2-l2(Minv32) Minv32t ]
     ///                    [  (Minv31)(-l0t)   (Minv32)(-l1t)   (Minv33)(-l2t)   inva3  ]
     ///
+    template<class T>
+    void invert(SubMatrix& Inv, const T& m)
+    {
+        SubMatrix M;
+        M = m;
+        // Check for diagonal matrices
+        unsigned int i0 = 0;
+        const unsigned int n = M.Nrows();
+        Inv.resize(n,n);
+        while (i0 < n)
+        {
+            unsigned int j0 = i0+1;
+            double eps = M.element(i0,i0)*1.0e-6;
+            while (j0 < n)
+                if (fabs(M.element(i0,j0)) > eps) break;
+                else ++j0;
+            if (j0 == n)
+            {
+                // i0 row is the identity
+                Inv.set(i0,i0,1.0/M.element(i0,i0));
+                ++i0;
+            }
+            else break;
+        }
+        if (i0 == 0)
+            Inv = M.i();
+        else if (i0 < n)
+            Inv.sub(i0,i0,n-i0,n-i0) = M.sub(i0,i0,n-i0,n-i0).i();
+        //else return true;
+        //return false;
+    }
     void invert(Matrix& M)
     {
         const bool verbose  = f_verbose.getValue() || f_printLog.getValue();
@@ -122,13 +153,13 @@ public:
         B.resize(nb);
 
         SubMatrix A, C;
-
+        //int ndiag = 0;
         M.getSubMatrix(0*bsize,0*bsize,bsize,bsize,A);
         //if (verbose) std::cout << "A[0] = " << A << std::endl;
         M.getSubMatrix(0*bsize,1*bsize,bsize,bsize,C);
         //if (verbose) std::cout << "C[0] = " << C << std::endl;
         //alpha[0] = A;
-        alpha_inv[0] = A.i();
+        invert(alpha_inv[0],A);
         if (verbose) std::cout << "alpha_inv[0] = " << alpha_inv[0] << std::endl;
         lambda[0] = alpha_inv[0]*C;
         if (verbose) std::cout << "lambda[0] = " << lambda[0] << std::endl;
@@ -140,7 +171,7 @@ public:
             M.getSubMatrix((i  )*bsize,(i-1)*bsize,bsize,bsize,B[i]);
             //if (verbose) std::cout << "B["<<i<<"] = " << B[i] << std::endl;
             //alpha[i] = (A - B[i]*lambda[i-1]);
-            alpha_inv[i] = (A - B[i]*lambda[i-1]).i();
+            invert(alpha_inv[i], (A - B[i]*lambda[i-1]));
             if (verbose) std::cout << "alpha_inv["<<i<<"] = " << alpha_inv[i] << std::endl;
             //if (verbose) std::cout << "A["<<i<<"] = B["<<i<<"]*lambda["<<i-1<<"]+alpha["<<i<<"] = " << B[i]*lambda[i-1]+alpha[i] << std::endl;
             if (i<nb-1)
@@ -158,6 +189,7 @@ public:
         Minv.resize(nb*bsize,nb*bsize);
         Minv.setSubMatrix((nb-1)*bsize,(nb-1)*bsize,bsize,bsize,alpha_inv[nb-1]);
         nBlockComputedMinv[nb-1] = 1;
+        //std::cout << "BTDLinearSolver: "<<ndiag<<"/"<<nb<<"diagonal blocs."<<std::endl;
     }
 
     ///

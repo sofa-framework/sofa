@@ -268,12 +268,12 @@ bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int ind
     if (model2 == this)
     {
         //std::cout << "line self test "<<index<<" - "<<index2<<std::endl;
-        return index < index2-1; // || index > index2+1;
+        return index < index2-2; // || index > index2+1;
     }
     else if (model2 == mpoints)
     {
         //std::cout << "line-point self test "<<index<<" - "<<index2<<std::endl;
-        return elems[index].i1 != index2 && elems[index].i2 != index2;
+        return index2 < elems[index].i1-1 || index2 > elems[index].i2+1;
     }
     else
         return model2->canCollideWithElement(index2, this, index);
