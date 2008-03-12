@@ -274,7 +274,7 @@ double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 
 
 template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const Vec<8,Coord> &nodes, const int elementIndice)
+void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffness &K, const MaterialStiffness &M, const helper::fixed_array<Coord,8> &nodes, const int elementIndice)
 {
     Mat33 J_1; // only accurate for orthogonal regular hexa
     J_1.fill( 0.0 );
@@ -323,6 +323,14 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
             K[j][i] = K[i][j];
         }
 
+    /*if (elementIndice==0)
+    {
+    	std::cout << "nodes = "<<nodes[0]<<"  "<<nodes[1]<<"  "<<nodes[2]<<"  "<<nodes[3]<<"  "<<nodes[4]<<"  "<<nodes[5]<<"  "<<nodes[6]<<"  "<<nodes[7]<<std::endl;
+    	std::cout << "M = "<<M<<std::endl;
+    	std::cout << "K = "<<std::endl;
+    	for (int i=0;i<24;i++)
+    		std::cout << K[i] << std::endl;
+    }*/
 
     // if sparseGrid -> the filling ratio is taken into account
     if( _sparseGrid && _sparseGrid->getType(elementIndice)==topology::SparseGridTopology::BOUNDARY)
@@ -558,10 +566,10 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
     computeRotationLarge( R_0_1, horizontal,vertical);
 
     for(int w=0; w<8; ++w)
-        _rotatedInitialElements[i][_indices[w]] = R_0_1*_initialPoints.getValue()[elem[w]];
+        _rotatedInitialElements[i][w] = R_0_1*_initialPoints.getValue()[elem[_indices[w]]];
 
 
-    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], nodes, i );
+    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i );
 
 
 // 		if(i==0) cerr<<_elementStiffnesses[i]<<endl;
@@ -677,7 +685,7 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
         _rotatedInitialElements[i][j] = R_0_1 * nodes[j];
     }
 
-    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], nodes, i );
+    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i );
 
 }
 
