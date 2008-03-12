@@ -1265,6 +1265,7 @@ void VisualModelImpl::handleTopologyChange()
 
 
 }
+
 void VisualModelImpl::initVisual()
 {
     //if (tex)

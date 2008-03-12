@@ -66,6 +66,7 @@ public:
     bool loadTexture(const std::string& filename);
 
     void initTextures();
+    void initVisual();
 };
 
 typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;

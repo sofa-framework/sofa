@@ -129,6 +129,7 @@ void OglModel::internalDraw()
 
             glPopMatrix();
         }
+
         glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
@@ -197,6 +198,14 @@ bool OglModel::loadTexture(const std::string& filename)
         return false;
     tex = new helper::gl::Texture(img);
     return true;
+}
+
+void OglModel::initVisual()
+{
+    if (tex)
+    {
+        tex->init();
+    }
 }
 
 void OglModel::initTextures()
