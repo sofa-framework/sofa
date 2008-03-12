@@ -25,14 +25,20 @@
 #include <fstream>
 #include <string>
 
+#include <sofa/component/MechanicalObject.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/topology/SparseGridTopology.h>
+#include <sofa/component/topology/MeshTopology.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/polygon_cube_intersection/polygon_cube_intersection.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/defaulttype/VecTypes.h>
 
-
+#define DIM                512
+#define DEPTH              246
+#define CUBES              256
 using std::cerr;
 using std::endl;
 using std::pair;
@@ -95,15 +101,18 @@ const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 
 
 SparseGridTopology::SparseGridTopology()
-    : nx(initData(&nx,2,"nx","x grid resolution")), ny(initData(&ny,2,"ny","y grid resolution")), nz(initData(&nz,2,"nz","z grid resolution")),
-      xmin(initData(&xmin,0.0,"xmin","xmin grid")), ymin(initData(&ymin,0.0,"ymin","ymin grid")), zmin(initData(&zmin,0.0,"zmin","zmin grid")),
-      xmax(initData(&xmax,0.0,"xmax","xmax grid")), ymax(initData(&ymax,0.0,"ymax","ymax grid")), zmax(initData(&zmax,0.0,"zmax","zmax grid"))
+    :
+    n(initData(&n,Vec<3,int>(2,2,2),"n","grid resolution")),
+    min(initData(&min,Vec3d(0,0,0),"min","Min")),
+    max(initData(&max,Vec3d(0,0,0),"max","Max")),
+    dim_voxels(initData(&dim_voxels,Vec<3,int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
+    size_voxel(initData(&size_voxel,Vec3d(0.7,0.7,2.0),"size_voxel","Dimension of one voxel"))
 {
     _alreadyInit = false;
     _finerSparseGrid = NULL;
     _coarserSparseGrid = NULL;
+    _usingMC = false;
 }
-
 
 
 bool SparseGridTopology::load(const char* filename)
@@ -127,19 +136,18 @@ void SparseGridTopology::init()
     this->MeshTopology::init();
     invalidate();
 
-    if(nx.getValue() < 2)
-        nx = 2;
-    if(ny.getValue() < 2)
-        ny = 2;
-    if(nz.getValue() < 2)
-        nz = 2;
+    Vec<3,int> grid = n.getValue();
+
+    if(grid[0] < 2) grid[0]= 2;
+    if(grid[1] < 2) grid[1]= 2;
+    if(grid[2] < 2) grid[2]= 2;
+
+    n.setValue(grid);
 
     if( _finerSparseGrid != NULL )
         buildFromFiner();
     else
         buildAsFinest();
-
-
 
     _nodeAdjacency.resize(seqPoints.size() );
     for(unsigned i=0; i<seqPoints.size(); ++i)
@@ -214,7 +222,6 @@ void SparseGridTopology::buildAsFinest(  )
     // xmin, xmax, ymin, ymax, zmin, zmax, evtl. nx, ny, nz
     // _regularGrid, _indicesOfRegularCubeInSparseGrid, _types
     // seqPoints, seqHexas, nbPoints
-
     if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".obj")==0)
     {
         //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
@@ -224,6 +231,12 @@ void SparseGridTopology::buildAsFinest(  )
     {
         //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
         buildFromTriangleMesh(_filename);
+    }
+    else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".raw")==0)
+    {
+        //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+        _usingMC = true;
+        buildFromRawVoxelFile(_filename);
     }
     else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".voxel")==0)
     {
@@ -241,6 +254,8 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
     }
 
     int fileNx, fileNy, fileNz;
+    int nx, ny,nz;
+    int xmin, ymin, zmin, xmax, ymax, zmax;
     float dx, dy, dz;
 
     file >> fileNx >> fileNy >> fileNz;
@@ -252,20 +267,26 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
     nx = fileNx+1;
     ny = fileNy+1;
     nz = fileNz+1;
-    _regularGrid.setSize(nx.getValue(), ny.getValue(), nz.getValue());
 
     xmin = 0.0;
     ymin = 0.0;
     zmin = 0.0;
+
     xmax = dx * fileNx;
     ymax = dy * fileNy;
     zmax = dz * fileNz;
 
-    _regularGrid.setPos(xmin.getValue(), xmax.getValue(), ymin.getValue(), ymax.getValue(), zmin.getValue(), zmax.getValue());
+    n.setValue(Vec<3,int>(nx,ny,nz));
+    min.setValue(Vec3d(xmin, ymin, zmin));
+    max.setValue(Vec3d(xmax, ymax, zmax));
+
+    _regularGrid.setSize(nx, ny, nz);
+    _regularGrid.setPos(xmin, xmax, ymin, ymax, zmin, zmax);
+
 
     int value;
     int numVoxels = 0;
-    vector<int> buffer(fileNx * fileNy * fileNz, 0);
+    dataVoxels.resize(fileNx * fileNy * fileNz, 0.0f);
     for(int z=0; z<fileNz; ++z)
         for(int y=0; y<fileNy; ++y)
             for(int x=0; x<fileNx; ++x)
@@ -273,7 +294,7 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
                 file >> value;
                 if (value != 0)
                 {
-                    buffer[x + fileNx * y + fileNx * fileNy * z] = value;
+                    dataVoxels[x + fileNx * y + fileNx * fileNy * z] = value;
                     numVoxels++;
                 }
             }
@@ -288,12 +309,136 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
     // at the moment, no BOUNDARY type voxels are generated at the finest level
     for(int i=0; i<nbCubesRG; ++i)
     {
-        if(buffer[i] != 0)
+        if(dataVoxels[i] != 0.0f)
             regularGridTypes[i] = INSIDE;
     }
 
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
 }
+
+
+
+//Building from a RAW file
+void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
+{
+    FILE *file = fopen( filename.c_str(), "r" );
+    unsigned char value;
+
+    _regularGrid.setSize(getNx(),getNy(),getNz());
+    const int nbCubesRG = _regularGrid.getNbHexas();
+
+    _indicesOfRegularCubeInSparseGrid.resize(nbCubesRG, -1); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
+    vector<Type> regularGridTypes(nbCubesRG, OUTSIDE); // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
+
+
+    Vec3d voxel_min, voxel_max;
+    const Vec3d transform(                (getNx()-1)/(float)dim_voxels.getValue()[0],
+            (getNy()-1)/(float)dim_voxels.getValue()[1],
+            (getNz()-1)/(float)dim_voxels.getValue()[2]);
+
+    //Get the voxels from the file
+    dataVoxels.resize(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]*dim_voxels.getValue()[2], 0.0f);
+
+    for (unsigned int i=0; i<dataVoxels.size(); i++)
+    {
+        value=getc(file);
+        if ((int)value != 0)
+        {
+            dataVoxels[i] = 1.0f;
+
+            const int z = i/(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]);
+            const int y = (  (i%(dim_voxels.getValue()[0]*dim_voxels.getValue()[1]))
+                    /(dim_voxels.getValue()[0])                  	    );
+            const int x = i%dim_voxels.getValue()[0];
+
+            unsigned int indexGrid =
+                (unsigned int)(z*transform[2])*(getNy()-1)*(getNx()-1)
+                + (unsigned int)(y*transform[1])*(getNx()-1)
+                + (unsigned int)(x*transform[0]);
+
+            regularGridTypes[indexGrid] = INSIDE;
+
+        }
+    }
+    fclose(file);
+
+    min.setValue(Vec<3,double>(-1,-1,-1));
+    max.setValue(Vec<3,double>(1,1,1));
+
+
+    _regularGrid.setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
+    buildFromRegularGridTypes(_regularGrid, regularGridTypes);
+
+    //Creating if needed collision models and visual models
+    using sofa::simulation::tree::GNode;
+
+    sofa::helper::vector< sofa::component::topology::MeshTopology * > list_mesh;
+    sofa::helper::vector< sofa::helper::vector< Vec3d >* > list_X;
+
+    const GNode *context = static_cast< GNode* >(this->getContext());
+
+    for (GNode::ChildIterator it= context->child.begin(); it != context->child.end(); ++it)
+    {
+        //Get Collision Model
+        sofa::component::topology::MeshTopology  *m_temp = (*it)->get< sofa::component::topology::MeshTopology >();
+        if (    m_temp != NULL
+                && m_temp != this
+                && m_temp->getFilename() == "")
+        {
+            MechanicalObject< Vec3Types > *mecha_temp = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3Types > >();
+            if (mecha_temp != NULL)
+            {
+                list_mesh.push_back(m_temp);
+                list_X.push_back(mecha_temp->getX());
+            }
+        }
+    }
+
+    mesh_MC.clear();
+    map_indices.clear();
+    MC.setSize(Vec<3,int>(dim_voxels.getValue()[0],dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
+    MC.setGridSize(Vec<3,int>(CUBES,CUBES,(int)(CUBES*(dim_voxels.getValue()[2]/(float)dim_voxels.getValue()[0]))));
+    //HACK WARNING: only work with square base data (DIM*DIM*DEPTH) for voxels
+    MC.RenderMarchCube(&dataVoxels[0], 0.25f,mesh_MC, map_indices);
+
+    constructCollisionModels(list_mesh, list_X, mesh_MC, map_indices);
+}
+
+void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
+{
+    MC.createMesh(mesh_MC, map_indices, m);
+}
+
+void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< sofa::component::topology::MeshTopology * > &list_mesh,
+        const sofa::helper::vector< sofa::helper::vector< Vec3d >* >            &list_X,
+        const sofa::helper::vector< unsigned int> mesh_MC,
+        std::map< unsigned int, Vec3f >     map_indices) const
+{
+    for (unsigned int i=0; i<list_mesh.size(); ++i)
+    {
+        list_mesh[i]->clear();
+        list_X[i]->resize(map_indices.size());
+    }
+    //Fill the dofs : WARNING mesh from Marching Cube has indices starting from ID 1, a sofa mesh begins with ID 0
+    for (unsigned int id_point=0; id_point<map_indices.size(); ++id_point)
+    {
+        const Vec3f point(map_indices[id_point+1]);
+        for (unsigned int j=0; j<list_mesh.size(); ++j)
+        {
+            (*list_X[j])[id_point] = point;
+        }
+    }
+
+    //Fill the facets
+    for (unsigned int id_vertex=0; id_vertex<mesh_MC.size(); id_vertex+=3)
+    {
+        for (unsigned int j=0; j<list_mesh.size(); ++j)
+        {
+            list_mesh[j]->addTriangle(mesh_MC[id_vertex]-1,mesh_MC[id_vertex+1]-1, mesh_MC[id_vertex+2]-1);
+        }
+    }
+}
+
 
 void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 {
@@ -306,7 +451,7 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
     }
 
     // if not given sizes -> bounding box
-    if( xmin.getValue()==0.0 && xmax.getValue()==0.0 && ymin.getValue()==0.0 && ymax.getValue()==0.0 && zmin.getValue()==0.0 && zmax.getValue()==0.0 )
+    if( min.getValue()== Vec3d() && max.getValue()== Vec3d())
     {
         double xMin, xMax, yMin, yMax, zMin, zMax;
         computeBoundingBox(mesh->getVertices(), xMin, xMax, yMin, yMax, zMin, zMax);
@@ -314,16 +459,12 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
         // increase the box a little
         Vec3 diff ( xMax-xMin, yMax - yMin, zMax - zMin );
         diff /= 100.0;
-        xmax.setValue( xMax + diff[0] );
-        xmin.setValue( xMin - diff[0] );
-        ymax.setValue( yMax + diff[1] );
-        ymin.setValue( yMin - diff[1] );
-        zmax.setValue( zMax + diff[2] );
-        zmin.setValue( zMin - diff[2] );
+        min.setValue(Vec3d( xMin - diff[0], yMin - diff[1], zMin - diff[2] ));
+        max.setValue(Vec3d( xMax + diff[0], yMax + diff[1], zMax + diff[2] ));
     }
 
     _regularGrid.setSize(getNx(),getNy(),getNz());
-    _regularGrid.setPos(xmin.getValue(), xmax.getValue(), ymin.getValue(), ymax.getValue(), zmin.getValue(), zmax.getValue());
+    _regularGrid.setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
 
     vector<Type> regularGridTypes; // to compute filling types (OUTSIDE, INSIDE, BOUNDARY)
     voxelizeTriangleMesh(mesh, _regularGrid, regularGridTypes);
@@ -454,7 +595,6 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology& regularG
     MapBetweenCornerPositionAndIndice cubeCornerPositionIndiceMap; // to compute cube corner indice values
 
     _indicesOfRegularCubeInSparseGrid.resize( _regularGrid.getNbHexas(), -1 ); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
-
     int cubeCntr = 0;
     // add BOUNDARY cubes to valid cells
     for(int w=0; w<regularGrid.getNbHexas(); ++w)
@@ -472,6 +612,7 @@ void SparseGridTopology::buildFromRegularGridTypes(RegularGridTopology& regularG
             }
             cubeCorners.push_back(corners);
         }
+
     // add INSIDE cubes to valid cells
     for(int w=0; w<regularGrid.getNbHexas(); ++w)
         if( regularGridTypes[w] == INSIDE )
@@ -552,12 +693,7 @@ void SparseGridTopology::buildFromFiner(  )
 
     _regularGrid.setSize(getNx(),getNy(),getNz());
 
-    xmin = _finerSparseGrid->getXmin();
-//		xmax = _finerSparseGrid->getXmax();
-    ymin = _finerSparseGrid->getYmin();
-//		ymax = _finerSparseGrid->getYmax();
-    zmin = _finerSparseGrid->getZmin();
-//		zmax = _finerSparseGrid->getZmax();
+    setMin(_finerSparseGrid->getMin());
 
     // the cube size of the coarser mesh is twice the cube size of the finer mesh
     // if the finer mesh contains an odd number of cubes in any direction,
@@ -565,11 +701,12 @@ void SparseGridTopology::buildFromFiner(  )
     Vec3 dx = _finerSparseGrid->_regularGrid.getDx();
     Vec3 dy = _finerSparseGrid->_regularGrid.getDy();
     Vec3 dz = _finerSparseGrid->_regularGrid.getDz();
-    xmax = xmin.getValue() + (nx.getValue()-1) * 2.0 * dx[0];
-    ymax = ymin.getValue() + (ny.getValue()-1) * 2.0 * dy[1];
-    zmax = zmin.getValue() + (nz.getValue()-1) * 2.0 * dz[2];
+    setXmax(getXmin() + (getNx()-1) * 2.0 * dx[0]);
+    setYmax(getYmin() + (getNy()-1) * 2.0 * dy[1]);
+    setZmax(getZmin() + (getNz()-1) * 2.0 * dz[2]);
 
-    _regularGrid.setPos(xmin.getValue(), xmax.getValue(), ymin.getValue(), ymax.getValue(), zmin.getValue(), zmax.getValue());
+
+    _regularGrid.setPos(getXmin(), getXmax(), getYmin(), getYmax(), getZmin(), getZmax());
 
     _indicesOfRegularCubeInSparseGrid.resize( _regularGrid.getNbHexas(), -1 ); // to redirect an indice of a cube in the regular grid to its indice in the sparse grid
 
@@ -812,7 +949,7 @@ int SparseGridTopology::findNearestCube(const Vec3& pos, double& fx, double &fy,
 
     for(unsigned w=0; w<seqHexas.size(); ++w)
     {
-        if(_types[w]!=BOUNDARY)continue;
+        if(!_usingMC && _types[w]!=BOUNDARY )continue;
 
         const Hexa& c = getHexa( w );
         int c0 = c[0];
@@ -1034,7 +1171,12 @@ const SparseGridTopology::SeqHexas& SparseGridTopology::getHexas()
 int SparseGridTopology::getNbPoints() const
 {
     if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
-    return MeshTopology::getNbPoints();
+    if (_usingMC)
+    {
+        return map_indices.size();
+    }
+    else
+        return MeshTopology::getNbPoints();
 }
 
 
