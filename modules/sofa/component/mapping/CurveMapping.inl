@@ -41,7 +41,7 @@ typename CurveMapping<BasicMapping>::Real CurveMapping<BasicMapping>::advanceAbs
     if (integer < 0) integer = 0;
     else if (integer > (int)this->lengthElements.size()-1) integer = this->lengthElements.size()-1;
     double fraction = ab - integer;
-    while (integer < this->lengthElements.size()-1 && lengthElements[integer] * (1-fraction) < dist)
+    while (integer < (int)this->lengthElements.size()-1 && lengthElements[integer] * (1-fraction) < dist)
     {
         dist -= lengthElements[integer] * (1-fraction);
         ++integer;
@@ -260,7 +260,7 @@ void CurveMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
 }
 
 template <class BaseMapping>
-void CurveMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void CurveMapping<BaseMapping>::applyJT( typename In::VecConst& /*out*/, const typename Out::VecConst& /*in*/ )
 {
 }
 
