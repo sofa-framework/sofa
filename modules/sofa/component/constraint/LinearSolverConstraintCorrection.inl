@@ -72,8 +72,10 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 {
     mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     objectmodel::BaseContext* c = this->getContext();
-    odesolver = c->get< behavior::OdeSolver >();
-    linearsolver = c->get< behavior::LinearSolver >();
+//     odesolver = c->get< behavior::OdeSolver >();
+//     linearsolver = c->get< behavior::LinearSolver >();
+    odesolver=getOdeSolver(c);
+    linearsolver=getLinearSolver(c);
     if (odesolver == NULL)
     {
         std::cerr << "LinearSolverConstraintCorrection: ERROR no OdeSolver found."<<std::endl;

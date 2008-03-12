@@ -46,6 +46,20 @@ namespace constraint
 using namespace sofa::core;
 using namespace sofa::core::componentmodel;
 using namespace sofa::defaulttype;
+
+
+
+/// to avoid compilation problem under gcc3.3
+behavior::OdeSolver* getOdeSolver(objectmodel::BaseContext* context)
+{
+    return context->get<behavior::OdeSolver>();
+}
+behavior::LinearSolver* getLinearSolver(objectmodel::BaseContext* context)
+{
+    return context->get<behavior::LinearSolver>();
+}
+
+
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
  */
@@ -82,12 +96,18 @@ public:
     {
         if (dynamic_cast<behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
             return false;
-        if (context->get<behavior::OdeSolver>() == NULL)
+        if( getOdeSolver(context)==NULL )
             return false;
-        if (context->get<behavior::LinearSolver>() == NULL)
+        if( getLinearSolver(context)==NULL )
             return false;
+//         if (context->get<behavior::OdeSolver>() == NULL)
+//             return false;
+// 		if (context->get<behavior::LinearSolver>() == NULL)
+//             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
+
+
 
     virtual std::string getTemplateName() const
     {
@@ -108,6 +128,8 @@ protected:
     linearsolver::FullVector<double> F; ///< forces computed from the constraints
     linearsolver::FullMatrix<double> refMinv; ///< reference inverse matrix
 };
+
+
 
 } // namespace collision
 
