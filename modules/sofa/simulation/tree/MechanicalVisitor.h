@@ -597,8 +597,8 @@ public:
             mm->setX(x);
             mm->setV(v);
         }
-        c->projectVelocity();
         c->projectPosition();
+        c->projectVelocity();
         return RESULT_CONTINUE;
     }
 
@@ -646,8 +646,8 @@ public:
     }
     virtual Result fwdConstraint(GNode* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
     {
-        c->projectFreeVelocity();
         c->projectFreePosition();
+        c->projectFreeVelocity();
         return RESULT_CONTINUE;
     }
     /// Specify whether this action can be parallelized.

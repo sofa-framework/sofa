@@ -77,11 +77,15 @@ public:
     Data<Real> f_radius;
     Data<bool> f_twoWay;
     Data<bool> f_freeRotations;
+    Data<bool> f_lastFreeRotation;
+    Data<bool> f_restRotations;
     Data<defaulttype::Vec3d> f_lastPos;
     Data<defaulttype::Vec3d> f_lastDir;
     Data<bool> f_clamp;
 
     helper::vector<bool> activeFlags;
+    helper::vector<Real> lastDist;
+    helper::vector<defaulttype::Quat> restRotations;
 
     AttachConstraint();
 
@@ -105,9 +109,9 @@ public:
     virtual void draw();
 
 protected :
-    void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/) { x2 = x1; }
-    void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/) { x2 = x1; }
-    void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool oneway)
+    void projectPosition(Coord& x1, Coord& x2, bool /*freeRotations*/, unsigned /*index*/) { x2 = x1; }
+    void projectVelocity(Deriv& x1, Deriv& x2, bool /*freeRotations*/, unsigned /*index*/) { x2 = x1; }
+    void projectResponse(Deriv& dx1, Deriv& dx2, bool /*freeRotations*/, bool oneway, unsigned /*index*/)
     {
         if (oneway)
             dx2 = Deriv();
@@ -118,6 +122,8 @@ protected :
         }
     }
     static unsigned int DerivConstrainedSize(bool /*freeRotations*/) { return Deriv::size(); }
+
+    void calcRestRotations();
 
     // Define TestNewPointFunction
     //static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );

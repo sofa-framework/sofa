@@ -212,7 +212,7 @@ bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int in
     if (model2 == this)
     {
         //std::cout << "point self test "<<index<<" - "<<index2<<std::endl;
-        return index < index2-1; // || index > index2+1;
+        return index < index2-2; // || index > index2+1;
     }
     else
         return model2->canCollideWithElement(index2, this, index);

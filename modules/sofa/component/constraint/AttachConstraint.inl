@@ -52,7 +52,32 @@ using namespace sofa::helper;
 using namespace sofa::core::componentmodel::behavior;
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations)
+inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned index)
+{
+    x2.getCenter() = x1.getCenter();
+    if (!freeRotations)
+    {
+        if (!restRotations.empty())
+        {
+            if (index+1 >= lastDist.size() || activeFlags[index+1])
+                x2.getOrientation() = x1.getOrientation()*restRotations[index];
+            else
+            {
+                // gradually set the velocity along the direction axis
+                Real fact = -lastDist[index] / (lastDist[index+1]-lastDist[index]);
+                Vec3d axis(restRotations[index][0], restRotations[index][1], restRotations[index][2]);
+                Real angle = acos(restRotations[index][3])*2;
+                //restRotations[index].toAngleAxis(angle,axis);
+                x2.getOrientation() = x1.getOrientation()*Quat(axis,angle*fact);
+            }
+        }
+        else
+            x2.getOrientation() = x1.getOrientation();
+    }
+}
+
+template<>
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned /*index*/)
 {
     x2.getCenter() = x1.getCenter();
     if (!freeRotations)
@@ -60,7 +85,7 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectPosition(Coord& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations)
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned /*index*/)
 {
     x2.getCenter() = x1.getCenter();
     if (!freeRotations)
@@ -68,7 +93,7 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectPosition(Coord& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations)
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations, unsigned /*index*/)
 {
     x2.getCenter() = x1.getCenter();
     if (!freeRotations)
@@ -76,15 +101,7 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectPosition(Coord& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectPosition(Coord& x1, Coord& x2, bool freeRotations)
-{
-    x2.getCenter() = x1.getCenter();
-    if (!freeRotations)
-        x2.getOrientation() = x1.getOrientation();
-}
-
-template<>
-inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations)
+inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned /*index*/)
 {
     x2.getVCenter() = x1.getVCenter();
     if (!freeRotations)
@@ -93,7 +110,7 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectVelocity(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations)
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned /*index*/)
 {
     x2.getVCenter() = x1.getVCenter();
     if (!freeRotations)
@@ -101,7 +118,7 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectVelocity(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations)
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned /*index*/)
 {
     x2.getVCenter() = x1.getVCenter();
     if (!freeRotations)
@@ -109,7 +126,7 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectVelocity(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations)
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& x1, Deriv& x2, bool freeRotations, unsigned /*index*/)
 {
     x2.getVCenter() = x1.getVCenter();
     if (!freeRotations)
@@ -117,7 +134,7 @@ inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectVelocity(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway)
+inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway, unsigned /*index*/)
 {
     if (oneway)
     {
@@ -142,7 +159,7 @@ inline void AttachConstraint<defaulttype::Rigid3dTypes>::projectResponse(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway)
+inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway, unsigned /*index*/)
 {
     if (oneway)
     {
@@ -167,7 +184,7 @@ inline void AttachConstraint<defaulttype::Rigid3fTypes>::projectResponse(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway)
+inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway, unsigned /*index*/)
 {
     if (oneway)
     {
@@ -192,7 +209,7 @@ inline void AttachConstraint<defaulttype::Rigid2dTypes>::projectResponse(Deriv& 
 }
 
 template<>
-inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway)
+inline void AttachConstraint<defaulttype::Rigid2fTypes>::projectResponse(Deriv& dx1, Deriv& dx2, bool freeRotations, bool oneway, unsigned /*index*/)
 {
     if (oneway)
     {
@@ -288,6 +305,8 @@ AttachConstraint<DataTypes>::AttachConstraint()
     , f_radius( initData(&f_radius,(Real)-1,"radius", "Radius to search corresponding fixed point if no indices are given") )
     , f_twoWay( initData(&f_twoWay,false,"twoWay", "true if forces should be projected back from model2 to model1") )
     , f_freeRotations( initData(&f_freeRotations,false,"freeRotations", "true to keep rotations free (only used for Rigid DOFs)") )
+    , f_lastFreeRotation( initData(&f_lastFreeRotation,false,"lastFreeRotation", "true to keep rotation of the last attached point free (only used for Rigid DOFs)") )
+    , f_restRotations( initData(&f_restRotations,false,"restRotations", "true to use rest rotations local offsets (only used for Rigid DOFs)") )
     , f_lastPos( initData(&f_lastPos,"lastPos", "position at which the attach constraint should become inactive") )
     , f_lastDir( initData(&f_lastDir,"lastDir", "direction from lastPos at which the attach coustraint should become inactive") )
     , f_clamp( initData(&f_clamp, false,"clamp", "true to clamp particles at lastPos instead of freeing them.") )
@@ -378,6 +397,36 @@ void AttachConstraint<DataTypes>::init()
 #endif
     activeFlags.resize(f_indices2.getValue().size());
     std::fill(activeFlags.begin(), activeFlags.end(), true);
+    if (f_restRotations.getValue())
+        calcRestRotations();
+}
+
+template <class DataTypes>
+void AttachConstraint<DataTypes>::calcRestRotations()
+{
+}
+
+template <>
+void AttachConstraint<Rigid3dTypes>::calcRestRotations()
+{
+    const SetIndexArray & indices2 = f_indices2.getValue().getArray();
+    const VecCoord& x0 = *this->mstate2->getX0();
+    restRotations.resize(indices2.size());
+    for (unsigned int i=0; i<indices2.size(); ++i)
+    {
+        Quat q(0,0,0,1);
+        if (indices2[i] < x0.size()-1)
+        {
+            Vec3d dp0 = x0[indices2[i]].vectorToChild(x0[indices2[i]+1].getCenter()-x0[indices2[i]].getCenter());
+            dp0.normalize();
+            Vec3d y = cross(dp0, Vec3d(1,0,0));
+            y.normalize();
+            double alpha = acos(dp0[0]);
+            q = Quat(y,alpha);
+            std::cout << "restRotations x2["<<indices2[i]<<"]="<<q<<" dp0="<<dp0<<" qx="<<q.rotate(Vec3d(1,0,0))<<std::endl;
+        }
+        restRotations[i] = q;
+    }
 }
 
 template <class DataTypes>
@@ -386,27 +435,33 @@ void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
     const bool freeRotations = f_freeRotations.getValue();
+    const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool last = (f_lastDir.isSet() && f_lastDir.getValue().norm() > 1.0e-10);
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
+
+    // update active flags
     activeFlags.resize(indices2.size());
+    if (last)
+        lastDist.resize(indices2.size());
     //std::cout << "lastDir="<<f_lastDir.getValue()<<std::endl;
     //std::cout << "lastPos="<<f_lastPos.getValue()<<std::endl;
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
     {
         bool active = true;
-        Coord p = res1[indices1[i]];
         if (last)
         {
+            Coord p = res1[indices1[i]];
             defaulttype::Vec3d p3d;
             DataTypes::get(p3d[0],p3d[1],p3d[2],p);
-            if ((p3d-f_lastPos.getValue())*f_lastDir.getValue() > 0.0)
+            lastDist[i] = (p3d-f_lastPos.getValue())*f_lastDir.getValue();
+            if (lastDist[i] > 0.0)
             {
                 if (clamp)
                 {
                     if (activeFlags[i])
                         std::cout << "AttachConstraint: point "<<indices1[i]<<" stopped."<<std::endl;
-                    DataTypes::set(p,f_lastPos.getValue()[0],f_lastPos.getValue()[1],f_lastPos.getValue()[2]);
+                    //DataTypes::set(p,f_lastPos.getValue()[0],f_lastPos.getValue()[1],f_lastPos.getValue()[2]);
                     //p = f_lastPos.getValue();
                 }
                 else
@@ -418,11 +473,21 @@ void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2
             }
         }
         activeFlags[i] = active;
-        if (active || clamp)
+    }
+    for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
+    {
+        Coord p = res1[indices1[i]];
+        if (activeFlags[i])
         {
             if (log) std::cout << "AttachConstraint: x2["<<indices2[i]<<"] = x1["<<indices1[i]<<"]\n";
             //res2[indices2[i]] = res1[indices1[i]];
-            projectPosition(p, res2[indices2[i]], freeRotations);
+            projectPosition(p, res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i);
+        }
+        else if (clamp)
+        {
+            DataTypes::set(p,f_lastPos.getValue()[0],f_lastPos.getValue()[1],f_lastPos.getValue()[2]);
+            if (log) std::cout << "AttachConstraint: x2["<<indices2[i]<<"] = lastPos\n";
+            projectPosition(p, res2[indices2[i]], freeRotations, i);
         }
     }
 }
@@ -433,6 +498,7 @@ void AttachConstraint<DataTypes>::projectVelocity(VecDeriv& res1, VecDeriv& res2
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
     const bool freeRotations = f_freeRotations.getValue();
+    const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
@@ -443,13 +509,13 @@ void AttachConstraint<DataTypes>::projectVelocity(VecDeriv& res1, VecDeriv& res2
         if (active)
         {
             if (log) std::cout << "AttachConstraint: v2["<<indices2[i]<<"] = v1["<<indices1[i]<<"]\n";
-            projectVelocity(res1[indices1[i]], res2[indices2[i]], freeRotations);
+            projectVelocity(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), i);
         }
         else if (clamp)
         {
             if (log) std::cout << "AttachConstraint: v2["<<indices2[i]<<"] = 0\n";
             Deriv v = Deriv();
-            projectVelocity(v, res2[indices2[i]], freeRotations);
+            projectVelocity(v, res2[indices2[i]], freeRotations, i);
         }
     }
 }
@@ -461,6 +527,7 @@ void AttachConstraint<DataTypes>::projectResponse(VecDeriv& res1, VecDeriv& res2
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
     const bool twoway = f_twoWay.getValue();
     const bool freeRotations = f_freeRotations.getValue();
+    const bool lastFreeRotation = f_lastFreeRotation.getValue();
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)
@@ -474,13 +541,13 @@ void AttachConstraint<DataTypes>::projectResponse(VecDeriv& res1, VecDeriv& res2
                 if (twoway) std::cout << "AttachConstraint: r2["<<indices2[i]<<"] = r1["<<indices2[i]<<"] = (r2["<<indices2[i]<<"] + r2["<<indices2[i]<<"])\n";
                 else        std::cout << "AttachConstraint: r2["<<indices2[i]<<"] = 0\n";
             }
-            projectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations, twoway);
+            projectResponse(res1[indices1[i]], res2[indices2[i]], freeRotations || (lastFreeRotation && (i>=activeFlags.size() || !activeFlags[i+1])), twoway, i);
         }
         else if (clamp)
         {
             if (log) std::cout << "AttachConstraint: r2["<<indices2[i]<<"] = 0\n";
             Deriv v = Deriv();
-            projectResponse(v, res2[indices2[i]], freeRotations, false);
+            projectResponse(v, res2[indices2[i]], freeRotations, false, i);
         }
     }
 }
@@ -493,6 +560,7 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, 
     const SetIndexArray & indices = f_indices2.getValue().getArray();
     const unsigned int N = Deriv::size();
     const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
+    const unsigned int NCLast = DerivConstrainedSize(f_lastFreeRotation.getValue());
     unsigned int i=0;
     const bool clamp = f_clamp.getValue();
     const bool log = this->f_printLog.getValue();
@@ -500,12 +568,24 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseMatrix *mat, 
     {
         if (!clamp && i < activeFlags.size() && !activeFlags[i]) continue;
         if (log) std::cout << "AttachConstraint: apply in matrix column/row "<<(*it)<<"\n";
-        // Reset Fixed Row and Col
-        for (unsigned int c=0; c<NC; ++c)
-            mat->clearRowCol(offset + N * (*it) + c);
-        // Set Fixed Vertex
-        for (unsigned int c=0; c<NC; ++c)
-            mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0e10);
+        if (NCLast != NC && (i>=activeFlags.size() || !activeFlags[i+1]))
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<NCLast; ++c)
+                mat->clearRowCol(offset + N * (*it) + c);
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<NCLast; ++c)
+                mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        }
+        else
+        {
+            // Reset Fixed Row and Col
+            for (unsigned int c=0; c<NC; ++c)
+                mat->clearRowCol(offset + N * (*it) + c);
+            // Set Fixed Vertex
+            for (unsigned int c=0; c<NC; ++c)
+                mat->set(offset + N * (*it) + c, offset + N * (*it) + c, 1.0);
+        }
     }
 }
 
@@ -517,13 +597,22 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect,
     const SetIndexArray & indices = f_indices2.getValue().getArray();
     const unsigned int N = Deriv::size();
     const unsigned int NC = DerivConstrainedSize(f_freeRotations.getValue());
+    const unsigned int NCLast = DerivConstrainedSize(f_lastFreeRotation.getValue());
     unsigned int i=0;
     const bool clamp = f_clamp.getValue();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it, ++i)
     {
         if (!clamp && i < activeFlags.size() && !activeFlags[i]) continue;
-        for (unsigned int c=0; c<NC; ++c)
-            vect->clear(offset + N * (*it) + c);
+        if (NCLast != NC && (i>=activeFlags.size() || !activeFlags[i+1]))
+        {
+            for (unsigned int c=0; c<NCLast; ++c)
+                vect->clear(offset + N * (*it) + c);
+        }
+        else
+        {
+            for (unsigned int c=0; c<NC; ++c)
+                vect->clear(offset + N * (*it) + c);
+        }
     }
 }
 
@@ -538,7 +627,7 @@ void AttachConstraint<DataTypes>::draw()
     VecCoord& x1 = *this->mstate1->getX();
     VecCoord& x2 = *this->mstate2->getX();
     glDisable (GL_LIGHTING);
-    glPointSize(5);
+    glPointSize(10);
     glColor4f (1,0.5,0.5,1);
     glBegin (GL_POINTS);
     for (unsigned int i=0; i<indices1.size() && i<indices2.size(); ++i)

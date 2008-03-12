@@ -60,7 +60,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
 {
     TOutputVector& outputs = *static_cast<TOutputVector*>(o);
     // We need to remove duplicate contacts
-    const double minDist2 = 0.000000001f;
+    const double minDist2 = 0.0000001f;
     std::vector<DetectionOutput*> contacts;
     contacts.reserve(outputs.size());
 
@@ -101,6 +101,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
     mapper1.resize(size);
     mapper2.resize(size);
     int i = 0;
+    const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
     for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
         DetectionOutput* o = *it;
@@ -119,9 +120,10 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         if (mu < 0.0 || mu > 1.0)
             cerr << endl << "Error: mu has to take values between 0.0 and 1.0" << endl;
 
-        // Polynome de Cantor de N² sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
+        double distance = d0 + mapper1.radius(elem1) + mapper2.radius(elem2);
+        // Polynome de Cantor de Nï¿½ sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
         long index = cantorPolynomia(cantorPolynomia(index1, index2),id);
-        c->addContact(mu, o->normal, o->point[1], o->point[0], intersectionMethod->getContactDistance(), index1, index2, o->freePoint[1], o->freePoint[0], index);
+        c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, o->freePoint[1], o->freePoint[0], index);
     }
     // Update mappings
     mapper1.update();
