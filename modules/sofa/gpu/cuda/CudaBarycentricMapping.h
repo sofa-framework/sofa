@@ -44,8 +44,7 @@ public:
 
     int addPointInCube(int cubeIndex, const Real* baryCoords);
 
-    void init();
-
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );

@@ -67,8 +67,23 @@ int TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVecto
 }
 
 template <typename VecIn, typename VecOut>
-void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::init()
+void TopologyBarycentricMapper<topology::RegularGridTopology,gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::init(const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/)
 {
+    int outside = 0;
+
+    clear(out.size());
+    for (unsigned int i=0; i<out.size(); i++)
+    {
+        Vec3d coefs;
+        int cube = topology->findCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+        if (cube==-1)
+        {
+            ++outside;
+            cube = topology->findNearestCube(topology::RegularGridTopology::Vec3(out[i]), coefs[0], coefs[1], coefs[2]);
+        }
+        Vec<3,Real> baryCoords = coefs;
+        addPointInCube(cube, baryCoords.ptr());
+    }
 }
 
 template <typename VecIn, typename VecOut>
