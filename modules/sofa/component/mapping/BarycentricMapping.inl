@@ -72,7 +72,7 @@ int TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::addPointInC
 }
 
 template <class In, class Out>
-void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+void TopologyBarycentricMapper<topology::RegularGridTopology,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/)
 {
     int outside = 0;
 
@@ -111,7 +111,7 @@ int TopologyBarycentricMapper<topology::SparseGridTopology,In,Out>::addPointInCu
 }
 
 template <class In, class Out>
-void TopologyBarycentricMapper<topology::SparseGridTopology,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+void TopologyBarycentricMapper<topology::SparseGridTopology,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/)
 {
     int outside = 0;
 
@@ -483,7 +483,7 @@ int TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::createPoint
 }
 
 template <class In, class Out>
-void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::init(const typename Out::VecCoord& out, const typename In::VecCoord& in)
+void TopologyBarycentricMapper<topology::EdgeSetTopology<In>,In,Out>::init(const typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/)
 {
 }
 
