@@ -467,6 +467,13 @@ void EdgeSetTopologyAlgorithms< DataTypes >::removeEdges(sofa::helper::vector< u
     topology->getEdgeSetTopologyContainer()->checkTopology();
 
 }
+
+template<class DataTypes>
+void EdgeSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    removeEdges(items);
+}
+
 template<class DataTypes>
 void EdgeSetTopologyAlgorithms< DataTypes >::addEdges(const sofa::helper::vector< Edge >& edges,
         const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors ,

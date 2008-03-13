@@ -104,6 +104,8 @@ public:
      */
     virtual void updateTopologicalMapping();
 
+    virtual unsigned int getFromIndex(unsigned int ind);
+
     /// Pre-construction check method called by ObjectFactory.
     ///
     /// This implementation read the object1 and object2 attributes and check

@@ -156,7 +156,7 @@ public :
      * Specific topologies cannot be allowed to be directly modified, since this might invalidate their
      * mapping from the main topology.
      */
-    TopologyAlgorithms *getTopologyAlgorithms() const
+    virtual TopologyAlgorithms *getTopologyAlgorithms() const
     {
         if (m_mainTopology)
             return m_topologyAlgorithms;
@@ -404,6 +404,10 @@ public:
     {
         EndingEvent *e=new EndingEvent();
         addTopologyChange(e);
+    }
+
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items)
+    {
     }
 
 };

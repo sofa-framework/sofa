@@ -46,6 +46,13 @@ template class TetrahedronSetGeometryAlgorithms<Vec2dTypes>;
 template class TetrahedronSetGeometryAlgorithms<Vec1fTypes>;
 template class TetrahedronSetGeometryAlgorithms<Vec1dTypes>;
 
+template class TetrahedronSetTopologyModifier<Vec3fTypes>;
+template class TetrahedronSetTopologyModifier<Vec3dTypes>;
+template class TetrahedronSetTopologyModifier<Vec2fTypes>;
+template class TetrahedronSetTopologyModifier<Vec2dTypes>;
+template class TetrahedronSetTopologyModifier<Vec1fTypes>;
+template class TetrahedronSetTopologyModifier<Vec1dTypes>;
+
 
 // implementation TetrahedronSetTopologyContainer
 

@@ -436,13 +436,17 @@ void VisualModelImpl::computeNormals()
         {
             const Coord & v1 = vertices[quads[i][0]];
             const Coord & v2 = vertices[quads[i][1]];
-            const Coord & v3 = vertices[quads[i][3]]; // INFO_WARN : what if quad not planar ?
-            Coord n = cross(v2-v1, v3-v1);
-            n.normalize();
-            normals[quads[i][0]] += n;
-            normals[quads[i][1]] += n;
-            normals[quads[i][2]] += n;
-            normals[quads[i][3]] += n;
+            const Coord & v3 = vertices[quads[i][2]];
+            const Coord & v4 = vertices[quads[i][3]];
+            Coord n1 = cross(v2-v1, v4-v1);
+            Coord n2 = cross(v3-v2, v1-v2);
+            Coord n3 = cross(v4-v3, v2-v3);
+            Coord n4 = cross(v1-v4, v3-v4);
+            n1.normalize(); n2.normalize(); n3.normalize(); n4.normalize();
+            normals[quads[i][0]] += n1;
+            normals[quads[i][1]] += n2;
+            normals[quads[i][2]] += n3;
+            normals[quads[i][3]] += n4;
         }
         for (unsigned int i = 0; i < normals.size(); i++)
         {
@@ -477,13 +481,17 @@ void VisualModelImpl::computeNormals()
         {
             const Coord & v1 = vertices[quads[i][0]];
             const Coord & v2 = vertices[quads[i][1]];
-            const Coord & v3 = vertices[quads[i][3]];
-            Coord n = cross(v2-v1, v3-v1);
-            n.normalize();
-            normals[vertNormIdx[quads[i][0]]] += n;
-            normals[vertNormIdx[quads[i][1]]] += n;
-            normals[vertNormIdx[quads[i][2]]] += n;
-            normals[vertNormIdx[quads[i][3]]] += n;
+            const Coord & v3 = vertices[quads[i][2]];
+            const Coord & v4 = vertices[quads[i][3]];
+            Coord n1 = cross(v2-v1, v4-v1);
+            Coord n2 = cross(v3-v2, v1-v2);
+            Coord n3 = cross(v4-v3, v2-v3);
+            Coord n4 = cross(v1-v4, v3-v4);
+            n1.normalize(); n2.normalize(); n3.normalize(); n4.normalize();
+            normals[vertNormIdx[quads[i][0]]] += n1;
+            normals[vertNormIdx[quads[i][1]]] += n2;
+            normals[vertNormIdx[quads[i][2]]] += n3;
+            normals[vertNormIdx[quads[i][3]]] += n4;
         }
 
         for (unsigned int i = 0; i < normals.size(); i++)
@@ -549,11 +557,9 @@ void VisualModelImpl::flipFaces()
     for (unsigned int i = 0; i < quads.size() ; i++)
     {
         int temp = quads[i][1];
-        quads[i][1] = quads[i][2];
-        quads[i][2] = temp;
-        temp = quads[i][0];
-        quads[i][0] = quads[i][3];
+        quads[i][1] = quads[i][3];
         quads[i][3] = temp;
+
     }
 
     for (unsigned int i = 0; i < vnormals.size(); i++)
@@ -759,6 +765,7 @@ void VisualModelImpl::computeMeshFromTopology(sofa::core::componentmodel::topolo
 
         //std::cout << "INFO_print : Vis - init TRIANGLE " << std::endl;
         sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
+        sofa::component::topology::QuadSetTopologyContainer *qstc= dynamic_cast<sofa::component::topology::QuadSetTopologyContainer *>(container);
         if (tstc)
         {
 
@@ -774,6 +781,25 @@ void VisualModelImpl::computeMeshFromTopology(sofa::core::componentmodel::topolo
                 Glob2LocMap[i]=i;
             }
 
+        }
+        else
+        {
+            if (qstc)
+            {
+
+                const sofa::helper::vector<sofa::component::topology::Quad> &quadArray=qstc->getQuadArray();
+                quads.resize(quadArray.size());
+
+                for (unsigned int i=0; i<quadArray.size(); ++i)
+                {
+
+                    quads[i] = quadArray[i];
+
+                    Loc2GlobVec.push_back(i);
+                    Glob2LocMap[i]=i;
+                }
+
+            }
         }
     }
 
@@ -798,6 +824,8 @@ void VisualModelImpl::handleTopologyChange()
 
         sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
         sofa::component::topology::TetrahedronSetTopologyContainer *testc= dynamic_cast<sofa::component::topology::TetrahedronSetTopologyContainer *>(container);
+
+        sofa::component::topology::QuadSetTopologyContainer *qstc= dynamic_cast<sofa::component::topology::QuadSetTopologyContainer *>(container);
 
         if(debug_mode && (changeType == core::componentmodel::topology::TETRAHEDRAREMOVED) || (((!testc) && changeType == core::componentmodel::topology::TRIANGLESREMOVED)))
         {
@@ -943,6 +971,31 @@ void VisualModelImpl::handleTopologyChange()
             break;
         }
 
+        case core::componentmodel::topology::QUADSADDED:
+        {
+            //std::cout << "INFO_print : Vis - QUADSADDED" << std::endl;
+
+            const sofa::component::topology::QuadsAdded *ta_const=dynamic_cast< const sofa::component::topology::QuadsAdded * >( *itBegin );
+            sofa::component::topology::QuadsAdded *ta = const_cast< sofa::component::topology::QuadsAdded * >(ta_const);
+            Quad t;
+
+            for (unsigned int i=0; i<ta->getNbAddedQuads(); ++i)
+            {
+
+                t[0]=(int)(ta->getQuad(i))[0];
+                t[1]=(int)(ta->getQuad(i))[1];
+                t[2]=(int)(ta->getQuad(i))[2];
+                t[3]=(int)(ta->getQuad(i))[3];
+                quads.push_back(t);
+
+                unsigned int ind_quad = Loc2GlobVec.size();
+                Loc2GlobVec.push_back(ind_quad);
+                Glob2LocMap[ind_quad]=ind_quad;
+            }
+
+            break;
+        }
+
         case core::componentmodel::topology::TRIANGLESREMOVED:
         {
             //std::cout << "INFO_print : Vis - TRIANGLESREMOVED" << std::endl;
@@ -1033,6 +1086,90 @@ void VisualModelImpl::handleTopologyChange()
 
             }
             //}
+
+            break;
+        }
+
+        case core::componentmodel::topology::QUADSREMOVED:
+        {
+            //std::cout << "INFO_print : Vis - QUADSREMOVED" << std::endl;
+
+            unsigned int last;
+            unsigned int ind_last;
+
+            if(qstc)
+            {
+                last= (qstc->getQuadArray()).size() - 1;
+            }
+            else
+            {
+                last= quads.size() -1;
+            }
+
+            const sofa::helper::vector<unsigned int> &tab = ( dynamic_cast< const sofa::component::topology::QuadsRemoved *>( *itBegin ) )->getArray();
+
+            Quad tmp;
+            unsigned int ind_tmp;
+            unsigned int ind_real_last;
+
+            for (unsigned int i = 0; i <tab.size(); ++i)
+            {
+
+                unsigned int k = tab[i];
+                unsigned int ind_k;
+
+                std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                if(iter_1 != Glob2LocMap.end() )
+                {
+
+                    ind_k = Glob2LocMap[k];
+                    ind_real_last = ind_k;
+
+                    std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
+                    if(iter_2 != Glob2LocMap.end())
+                    {
+
+                        ind_real_last = Glob2LocMap[last];
+
+                        tmp = quads[ind_k];
+                        quads[ind_k] = quads[ind_real_last];
+                        quads[ind_real_last] = tmp;
+                    }
+
+                    ind_last = quads.size() - 1;
+
+                    if(ind_real_last != ind_last)
+                    {
+
+                        tmp = quads[ind_real_last];
+                        quads[ind_real_last] = quads[ind_last];
+                        quads[ind_last] = tmp;
+
+                        Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));
+                        Glob2LocMap[Loc2GlobVec[ind_last]] = ind_real_last;
+                        Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_real_last]));
+                        Glob2LocMap[Loc2GlobVec[ind_real_last]] = ind_last;
+
+                        ind_tmp = Loc2GlobVec[ind_real_last];
+                        Loc2GlobVec[ind_real_last] = Loc2GlobVec[ind_last];
+                        Loc2GlobVec[ind_last] = ind_tmp;
+
+                    }
+
+                    quads.resize( quads.size() - 1 );
+                    Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));
+                    Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
+
+                }
+                else
+                {
+
+                    std::cout << "INFO_print : Vis -------------------------------------------------- Glob2LocMap should have the visible quad " << tab[i] << std::endl;
+                }
+
+                --last;
+
+            }
 
             break;
         }
@@ -1266,6 +1403,76 @@ void VisualModelImpl::handleTopologyChange()
 
                 ///
 
+            }
+            else
+            {
+                if (qstc)
+                {
+
+                    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &tvsa=qstc->getQuadVertexShellArray();
+                    unsigned int last = tvsa.size() -1;
+
+                    unsigned int i,j;
+
+                    const sofa::helper::vector<unsigned int> tab = ( dynamic_cast< const sofa::component::topology::PointsRemoved * >( *itBegin ) )->getArray();
+
+                    sofa::helper::vector<unsigned int> lastIndexVec;
+                    for(unsigned int i_init = 0; i_init < tab.size(); ++i_init)
+                    {
+
+                        lastIndexVec.push_back(last - i_init);
+                    }
+
+                    for ( i = 0; i < tab.size(); ++i)
+                    {
+                        unsigned int i_next = i;
+                        bool is_reached = false;
+                        while( (!is_reached) && (i_next < lastIndexVec.size() - 1))
+                        {
+
+                            i_next += 1 ;
+                            is_reached = is_reached || (lastIndexVec[i_next] == tab[i]);
+                        }
+
+                        if(is_reached)
+                        {
+
+                            lastIndexVec[i_next] = lastIndexVec[i];
+
+                        }
+
+                        const sofa::helper::vector<unsigned int> &shell= tvsa[lastIndexVec[i]];
+                        for (j=0; j<shell.size(); ++j)
+                        {
+
+                            std::map<unsigned int, unsigned int>::iterator iter = Glob2LocMap.find(shell[j]);
+                            if(iter != Glob2LocMap.end() )
+                            {
+
+                                unsigned int ind_j = Glob2LocMap[shell[j]];
+
+                                if ((unsigned)quads[ind_j][0]==last)
+                                    quads[ind_j][0]=tab[i];
+                                else if ((unsigned)quads[ind_j][1]==last)
+                                    quads[ind_j][1]=tab[i];
+                                else if ((unsigned)quads[ind_j][2]==last)
+                                    quads[ind_j][2]=tab[i];
+                                else if ((unsigned)quads[ind_j][3]==last)
+                                    quads[ind_j][3]=tab[i];
+                            }
+                            else
+                            {
+
+                                //std::cout << "INFO_print : Vis - quad NOT FOUND in the map !!! global index = "  << shell[j] << std::endl;
+                            }
+                        }
+
+                        --last;
+                    }
+
+                    ///
+
+                }
             }
 
             //}

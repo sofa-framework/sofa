@@ -532,6 +532,9 @@ public:
     	*/
     virtual void removeHexahedra(sofa::helper::vector< unsigned int >& hexahedra);
 
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
+
 };
 
 /**
@@ -582,6 +585,12 @@ public:
     {
         return (HexahedronSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
+
+    virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
+    {
+        return getHexahedronSetTopologyAlgorithms();
+    }
+
     /** \brief Returns the HexahedronSetTopologyAlgorithms object of this HexahedronSetTopology.
      */
     HexahedronSetGeometryAlgorithms<DataTypes> *getHexahedronSetGeometryAlgorithms() const

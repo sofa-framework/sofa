@@ -690,7 +690,7 @@ void TriangleSetModel::handleTopologyChange()
 
                         }
 
-                        const sofa::helper::vector<unsigned int> &shell=tvsa[lastIndexVec[i]];
+                        const sofa::helper::vector<unsigned int> &shell=tvsa[last];
                         for (j=0; j<shell.size(); ++j)
                         {
 

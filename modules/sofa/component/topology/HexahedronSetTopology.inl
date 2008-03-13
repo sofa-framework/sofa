@@ -962,6 +962,12 @@ void HexahedronSetTopologyAlgorithms< DataTypes >::removeHexahedra(sofa::helper:
 
 }
 
+template<class DataTypes>
+void HexahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    removeHexahedra(items);
+}
+
 /// Cross product for 3-elements vectors.
 template<typename real>
 inline real tripleProduct(const Vec<3,real>& a, const Vec<3,real>& b,const Vec<3,real> &c)

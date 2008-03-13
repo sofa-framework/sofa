@@ -595,6 +595,11 @@ void QuadSetTopologyAlgorithms< DataTypes >::removeQuads(sofa::helper::vector< u
 }
 
 
+template<class DataTypes>
+void QuadSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    removeQuads(items, true, true);
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////QuadSetGeometryAlgorithms//////////////////////////////////////////////

@@ -497,6 +497,8 @@ public:
         */
     virtual void removeTriangles(sofa::helper::vector< unsigned int >& triangles, const bool removeIsolatedEdges, const bool removeIsolatedPoints);
 
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
     // Prepares the incision along the list of points (ind_edge,coord) intersected by the vector from point a to point b
     // and the triangular mesh
     double Prepare_InciseAlongPointsList(const Vec<3,double>& a, const Vec<3,double>& b, const unsigned int ind_ta, const unsigned int ind_tb, unsigned int new_ind_ta, unsigned int newind_tb);
@@ -614,6 +616,12 @@ public:
     {
         return (TriangleSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
+
+    virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
+    {
+        return getTriangleSetTopologyAlgorithms();
+    }
+
     /** \brief Returns the TriangleSetTopologyAlgorithms object of this TriangleSetTopology.
      */
     TriangleSetGeometryAlgorithms<DataTypes> *getTriangleSetGeometryAlgorithms() const

@@ -816,6 +816,12 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::removeTetrahedra(sofa::helpe
 
 }
 
+template<class DataTypes>
+void TetrahedronSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    removeTetrahedra(items);
+}
+
 /// Cross product for 3-elements vectors.
 template<typename real>
 inline real tripleProduct(const Vec<3,real>& a, const Vec<3,real>& b,const Vec<3,real> &c)

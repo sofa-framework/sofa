@@ -353,6 +353,9 @@ public:
     PointSetTopologyAlgorithms(core::componentmodel::topology::BaseTopology *top) : TopologyAlgorithms(top)
     {
     }
+
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items) {return;}
+
 };
 
 
@@ -401,6 +404,18 @@ public:
     DataPtr< PointSetTopologyContainer > *f_m_topologyContainer;
 public:
     PointSetTopology(component::MechanicalObject<DataTypes> *obj);
+
+    /** \brief Returns the PointSetTopologyAlgorithms object of this PointSetTopology.
+     */
+    PointSetTopologyAlgorithms<DataTypes> *getPointSetTopologyAlgorithms() const
+    {
+        return (PointSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
+    }
+
+    virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
+    {
+        return getPointSetTopologyAlgorithms();
+    }
 
     component::MechanicalObject<DataTypes> *getDOF() const
     {

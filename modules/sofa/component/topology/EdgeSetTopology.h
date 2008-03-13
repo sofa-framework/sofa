@@ -334,6 +334,8 @@ public:
         */
     virtual void removeEdges(sofa::helper::vector< unsigned int >& edges);
 
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
     /** \brief add a set  of edges
         @param edges an array of pair of vertex indices describing the edge to be created
         @param ancestors for each edge to be created provides an array of edge ancestors (optional)
@@ -422,6 +424,12 @@ public:
     {
         return (EdgeSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
+
+    virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
+    {
+        return getEdgeSetTopologyAlgorithms();
+    }
+
     /** \brief Returns the EdgeSetTopologyAlgorithms object of this EdgeSetTopology.
      */
     EdgeSetGeometryAlgorithms<DataTypes> *getEdgeSetGeometryAlgorithms() const

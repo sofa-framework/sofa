@@ -51,6 +51,14 @@ template class EdgeSetGeometryAlgorithms<Rigid3dTypes>;
 template class EdgeSetGeometryAlgorithms<Rigid3fTypes>;
 template class EdgeSetGeometryAlgorithms<Rigid2dTypes>;
 template class EdgeSetGeometryAlgorithms<Rigid2fTypes>;
+
+template class EdgeSetTopologyModifier<Vec3fTypes>;
+template class EdgeSetTopologyModifier<Vec3dTypes>;
+template class EdgeSetTopologyModifier<Vec2fTypes>;
+template class EdgeSetTopologyModifier<Vec2dTypes>;
+template class EdgeSetTopologyModifier<Vec1fTypes>;
+template class EdgeSetTopologyModifier<Vec1dTypes>;
+
 // implementation EdgeSetTopologyContainer
 
 void EdgeSetTopologyContainer::createEdgeVertexShellArray ()
