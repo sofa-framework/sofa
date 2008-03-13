@@ -354,7 +354,7 @@ public:
     {
     }
 
-    virtual void removeItems(sofa::helper::vector< unsigned int >& items) {return;}
+    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/) {return;}
 
 };
 

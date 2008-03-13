@@ -94,13 +94,13 @@ public:
         }
         else
         {
-            return -1;
+            return 0;
         }
     }
 
-    virtual unsigned int getFromIndex(unsigned int ind)
+    virtual unsigned int getFromIndex(unsigned int /*ind*/)
     {
-        return -1;
+        return 0;
     }
 
     const std::map<unsigned int, sofa::helper::vector<unsigned int> >& getIn2OutMap() { return In2OutMap;}
