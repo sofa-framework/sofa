@@ -406,7 +406,7 @@ public:
         addTopologyChange(e);
     }
 
-    virtual void removeItems(sofa::helper::vector< unsigned int >& items)
+    virtual void removeItems(sofa::helper::vector< unsigned int >& /*items*/)
     {
     }
 
