@@ -226,15 +226,15 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int outputIndex)
 {
-    const int maxIndex = std::max(inputIndex, outputIndex);
+    const unsigned int maxIndex = std::max(inputIndex, outputIndex);
 
     // standard state vectors
-    // Note that the x,v,f,dx,xfree,vfree and internalForces vectors (but
-    // not x0, v0, reset_position, and externalForces) are present in the
+    // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
+    // not v0, reset_position, and externalForces) are present in the
     // array of all vectors, so then don't need to be processed separatly.
     //(*x) [outputIndex] = (*x) [inputIndex];
-    if((*x0).size() > maxIndex)
-        (*x0)[outputIndex] = (*x0)[inputIndex];
+    //if((*x0).size() > maxIndex)
+    //    (*x0)[outputIndex] = (*x0)[inputIndex];
     //(*v) [outputIndex] = (*v) [inputIndex];
     if (v0 != NULL && (*v0).size() > maxIndex)
         (*v0)[outputIndex] = (*v0)[inputIndex];
@@ -278,11 +278,11 @@ void MechanicalObject<DataTypes>::replaceValue (const int inputIndex, const int 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
 {
-    const int maxIndex = std::max(idx1, idx2);
+    const unsigned int maxIndex = std::max(idx1, idx2);
 
     // standard state vectors
-    // Note that the x,v,f,dx,xfree,vfree and internalForces vectors (but
-    // not x0, v0, reset_position, and externalForces) are present in the
+    // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
+    // not v0, reset_position, and externalForces) are present in the
     // array of all vectors, so then don't need to be processed separatly.
     Coord tmp;
     Deriv tmp2;
@@ -290,12 +290,12 @@ void MechanicalObject<DataTypes>::swapValues (const int idx1, const int idx2)
     //(*x) [idx1] = (*x) [idx2];
     //(*x) [idx2] = tmp;
 
-    if((*x0).size() > maxIndex)
-    {
-        tmp = (*x0)[idx1];
-        (*x0)[idx1] = (*x0)[idx2];
-        (*x0)[idx2] = tmp;
-    }
+    //if((*x0).size() > maxIndex)
+    //{
+    //	tmp = (*x0)[idx1];
+    //	(*x0)[idx1] = (*x0)[idx2];
+    //	(*x0)[idx2] = tmp;
+    //}
     //tmp2 = (*v)[idx1];
     //(*v) [idx1] = (*v) [idx2];
     //(*v) [idx2] = tmp2;
@@ -368,11 +368,11 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< unsigned int > &index )
 {
     // standard state vectors
-    // Note that the x,v,f,dx,xfree,vfree and internalForces vectors (but
-    // not x0, v0, reset_position, and externalForces) are present in the
+    // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
+    // not v0, reset_position, and externalForces) are present in the
     // array of all vectors, so then don't need to be processed separatly.
     //VecCoord x_cp  = (*x);
-    VecCoord x0_cp = (*x0);
+    //VecCoord x0_cp = (*x0);
     //VecDeriv v_cp  = (*v);
     VecDeriv v0_cp = (*v0);
     //VecDeriv f_cp  = (*f);
@@ -402,7 +402,7 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
     for (unsigned int i = 0; i < index.size(); ++i)
     {
         //(*x )[i] = x_cp [ index[i] ];
-        (*x0)[i] = x0_cp[ index[i] ];
+        //(*x0)[i] = x0_cp[ index[i] ];
         //(*v )[i] = v_cp [ index[i] ];
         (*v0)[i] = v0_cp[ index[i] ];
         //(*f )[i] = f_cp [ index[i] ];
@@ -531,22 +531,15 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
     // assume all coef sum to 1.0
     unsigned int j;
 
-    // Note that the x,v,f,dx,xfree,vfree and internalForces vectors (but
-    // not x0, v0, reset_position, and externalForces) are present in the
+    // Note that the x,v,x0,f,dx,xfree,vfree and internalForces vectors (but
+    // not v0, reset_position, and externalForces) are present in the
     // array of all vectors, so then don't need to be processed separatly.
-    //(*x)[i]=Coord();
-    (*x0)[i]=Coord();
-    for (j=0; j<ancestors.size(); ++j)
-        (*x0)[i]+=(*x0)[ancestors[j]]*coefs[j];
     if (v0 != NULL)
     {
         (*v0)[i]=Deriv();
         for (j=0; j<ancestors.size(); ++j)
             (*v0)[i]+=(*v0)[ancestors[j]]*coefs[j];
     }
-    //(*v)[i]=Deriv();
-    //(*f)[i]=Deriv();
-    //(*dx)[i]=Deriv();
     // Note: the following assumes that topological changes won't be reset
     if (reset_position != NULL)
     {
@@ -591,29 +584,11 @@ void MechanicalObject<DataTypes>::computeNewPoint( const unsigned int i, const s
     this->resize(i+1);
 
     DataTypes::set((*getX())[i], m_x[0]*scale+translation[0], m_x[1]*scale+translation[1], m_x[2]*scale+translation[2]);
+    DataTypes::set((*getXfree())[i], m_x[0]*scale+translation[0], m_x[1]*scale+translation[1], m_x[2]*scale+translation[2]);
+    DataTypes::set((*getX0())[i], m_x[0]*scale*restScale.getValue()+translation[0], m_x[1]*scale*restScale.getValue()+translation[1], m_x[2]*scale*restScale.getValue()+translation[2]);
 
-    // Save initial state for reset button
-    if (reset_position == NULL) this->reset_position = new VecCoord;
-    *this->reset_position = *x;
-    if (v0 == NULL) this->v0 = new VecDeriv;
-    *this->v0 = *v;
-    // free position = position
-    *this->xfree = *x;
-
-    //Rest position
-
-    if (x0->size() == 0)
-    {
-        *x0 = *x;
-        if (restScale.getValue() != (Real)1)
-        {
-            Real s = restScale.getValue();
-            for (unsigned int i=0; i<x0->size(); i++)
-                (*x0)[i] *= s;
-        }
-    }
-
-    initialized = true;
+    if (reset_position != NULL)
+        DataTypes::set((*reset_position)[i], m_x[0]*scale+translation[0], m_x[1]*scale+translation[1], m_x[2]*scale+translation[2]);
 }
 
 template <class DataTypes>
