@@ -111,7 +111,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 {
-    _elementMasses.resize( this->_elementStiffnesses.size() );
+// 		  _elementMasses.resize( this->_elementStiffnesses.getValue().size() );
 
     int i=0;
     typename VecElement::const_iterator it;
@@ -121,15 +121,19 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
         for(int w=0; w<8; ++w)
             nodes[w] = this->_initialPoints.getValue()[(*it)[this->_indices[w]]];
 
-
-        computeElementMass( _elementMasses[i], nodes,i );
+        if( _elementMasses.getValue().size() <= (unsigned)i )
+        {
+            _elementMasses.beginEdit()->resize( _elementMasses.getValue().size()+1 );
+// 			  computeElementMass( (*_elementMasses.beginEdit())[i], nodes,i );
+            computeElementMass( (*_elementMasses.beginEdit())[i], this->_rotatedInitialElements[i],i );
+        }
 
 
     }
 }
 
 template<class DataTypes>
-void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const Vec<8,Coord> &nodes, const int elementIndice)
+void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice)
 {
     Real vol = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
@@ -216,7 +220,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addMDx(VecDeriv& f, const VecDer
                 actualDx[indice+j] = dx[(*it)[this->_indices[k]]][j];
         }
 
-        actualF = _elementMasses[i] * actualDx;
+        actualF = _elementMasses.getValue()[i] * actualDx;
 
 
         for(int w=0; w<8; ++w)

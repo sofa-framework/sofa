@@ -86,8 +86,9 @@ public:
     typedef topology::MeshTopology::Cube Element;
     typedef topology::MeshTopology::SeqCubes VecElement;
 
-    static const int LARGE = 0;   ///< Symbol of large displacements tetrahedron solver
+    static const int LARGE = 0;   ///< Symbol of mean large displacements tetrahedron solver (frame = edges mean on the 3 directions)
     static const int POLAR = 1;   ///< Symbol of polar displacements tetrahedron solver
+    static const int FAST = 2;   ///< Symbol of fast large displacements tetrahedron solver (frame centered on a vertex)
 
 protected:
     //component::MechanicalObject<DataTypes>* object;
@@ -99,8 +100,8 @@ protected:
     VecMaterialStiffness _materialsStiffnesses;					///< the material stiffness matrices vector
 
     typedef Mat<24, 24, Real> ElementStiffness;
-    typedef vector<ElementStiffness> VecElementStiffness;
-    VecElementStiffness _elementStiffnesses;
+    typedef helper::vector<ElementStiffness> VecElementStiffness;
+    Data<VecElementStiffness> _elementStiffnesses;
 
     typedef Mat<3, 3, Real> Mat33;
     typedef Mat33 Transformation; ///< matrix for rigid transformations like rotations
@@ -129,18 +130,19 @@ public:
     Data<std::string> f_method; ///< the computation method of the displacements
     Data<Real> f_poissonRatio;
     Data<Real> f_youngModulus;
-//         Data<bool> f_updateStiffnessMatrix;
+    Data<bool> f_updateStiffnessMatrix;
     Data<bool> f_assembling;
 
 
     HexahedronFEMForceField()
-        : _mesh(NULL), _trimgrid(NULL)
+        : _elementStiffnesses(initData(&_elementStiffnesses,"stiffnessMatrices", "Stiffness matrices per element (K_i)"))
+        ,_mesh(NULL), _trimgrid(NULL)
         , _indexedElements(NULL)
         , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
         , f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
         , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
-//             , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
+        , f_updateStiffnessMatrix(initData(&f_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
         , f_assembling(initData(&f_assembling,false,"assembling",""))
     {
         _coef[0][0]=-1;
@@ -169,6 +171,7 @@ public:
         _coef[7][2]=1;
 
         _alreadyInit=false;
+
     }
 
     void parse(core::objectmodel::BaseObjectDescription* arg);
@@ -179,7 +182,7 @@ public:
 
     void setMethod(int val) { method = val; }
 
-// 		void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
+    void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
 
     void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
 
@@ -206,6 +209,7 @@ protected:
     void computeMaterialStiffness(int i);
 
     void computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
+    void computeForceOptimized( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
 
 
     ////////////// large displacements method
@@ -219,6 +223,12 @@ protected:
     void initPolar(int i, const Element&elem);
     void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( Vector& f, const Vector & p, int i, const Element&elem  );
+
+    ////////////// polar decomposition method
+    void initFast(int i, const Element&elem);
+    void computeRotationFast( Transformation &r, Vec<8,Coord> &nodes);
+    virtual void accumulateForceFast( Vector& f, const Vector & p, int i, const Element&elem  );
+
 
     bool _alreadyInit;
 };

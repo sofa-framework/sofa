@@ -50,7 +50,7 @@ public:
     virtual void reinit( );
 
     virtual void computeElementMasses( ); ///< compute the mass matrices
-    virtual void computeElementMass( ElementMass &Mass, const Vec<8,Coord> &nodes, const int elementIndice); ///< compute the mass matrix of an element
+    virtual void computeElementMass( ElementMass &Mass, const helper::fixed_array<Coord,8> &nodes, const int elementIndice); ///< compute the mass matrix of an element
     Real integrateMass( int signx, int signy, int signz, Real l0, Real l1, Real l2 );
 
     virtual std::string getTemplateName() const;
@@ -91,7 +91,7 @@ public:
 
 protected :
 
-    VecElementMass _elementMasses; ///< mass matrices per element
+    Data<VecElementMass> _elementMasses; ///< mass matrices per element
 
     Data<Real> _density;
 
