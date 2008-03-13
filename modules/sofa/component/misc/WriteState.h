@@ -19,7 +19,9 @@ namespace component
 namespace misc
 {
 
-/** Write State vectors to file at each timestep
+/** Write State vectors to file at a given set of time instants
+ * A period can be etablished at the last time instant
+ * The DoFs to print can be chosen using DOFsX and DOFsV
 */
 template<class DataTypes>
 class WriteState: public core::objectmodel::BaseObject
@@ -35,12 +37,16 @@ public:
     Data < bool > f_writeX;
     Data < bool > f_writeV;
     Data < double > f_interval;
-
+    Data < helper::vector<double> > f_time;
+    Data < double > f_period;
+    Data < helper::vector<unsigned int> > f_DOFsX;
+    Data < helper::vector<unsigned int> > f_DOFsV;
 
 protected:
     core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;
     std::ofstream* outfile;
-    double nextTime;
+    unsigned int nextTime;
+    double lastTime;
 
 public:
     WriteState();
