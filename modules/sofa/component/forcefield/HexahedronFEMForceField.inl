@@ -79,6 +79,8 @@ void HexahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDesc
         this->setMethod(LARGE);
     else if (f_method == "polar")
         this->setMethod(POLAR);
+    else if (f_method == "fast")
+        this->setMethod(FAST);
 
 }
 
@@ -128,7 +130,9 @@ void HexahedronFEMForceField<DataTypes>::init()
     _materialsStiffnesses.resize(_indexedElements->size() );
     _rotations.resize( _indexedElements->size() );
     _rotatedInitialElements.resize(_indexedElements->size());
-    _elementStiffnesses.resize(_indexedElements->size());
+
+// 	if( _elementStiffnesses.getValue().empty() )
+// 		_elementStiffnesses.beginEdit()->resize(_indexedElements->size());
     // 	_stiffnesses.resize( _initialPoints.getValue().size()*3 ); // assembly ?
 
     reinit();
@@ -145,9 +149,6 @@ void HexahedronFEMForceField<DataTypes>::init()
 // 		}
 // 		cerr<<"------\n";
 // 	}
-
-
-
 
 
 
@@ -181,6 +182,17 @@ void HexahedronFEMForceField<DataTypes>::reinit()
         }
         break;
     }
+    case FAST :
+    {
+        unsigned int i=0;
+        typename VecElement::const_iterator it;
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        {
+            computeMaterialStiffness(i);
+            initFast(i,*it);
+        }
+        break;
+    }
     }
 }
 
@@ -201,18 +213,39 @@ void HexahedronFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& 
     unsigned int i=0;
     typename VecElement::const_iterator it;
 
-    if(method==LARGE)
+
+
+    switch(method)
+    {
+    case LARGE :
+    {
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
         {
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForceLarge( f, p, i, *it );
         }
-    else
+        break;
+    }
+    case POLAR :
+    {
         for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
         {
             if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
             accumulateForcePolar( f, p, i, *it );
         }
+        break;
+    }
+    case FAST :
+    {
+        for(it=_indexedElements->begin(); it!=_indexedElements->end(); ++it,++i)
+        {
+            if (_trimgrid && !_trimgrid->isCubeActive(i/6)) continue;
+            accumulateForceFast( f, p, i, *it );
+        }
+        break;
+    }
+    }
+
 
 }
 
@@ -244,8 +277,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         }
 
         Displacement F;
-        computeForce( F, X, _elementStiffnesses[i] );
-
+        computeForce( F, X, _elementStiffnesses.getValue()[i] );
 
         for(int w=0; w<8; ++w)
             v[(*it)[_indices[w]]] -= _rotations[i] * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
@@ -526,11 +558,330 @@ void HexahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i)
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K )
 {
-    F = K*Depl;
+// 	F = K*Depl;
+// 	return;
+
+    // taking into account null terms in K
+    Real t23 = K[0][13]*Depl[13]+K[0][14]*Depl[14]+K[0][15]*Depl[15]+K[0]
+            [16]*Depl[16]+K[0][17]*Depl[17]+K[0][18]*Depl[18]+K[0][19]*Depl[19]
+            +K[0][20]*Depl[20]+K[0][21]*Depl[21]+K[0][22]*Depl[22]+K[0][23]*Depl
+            [23];
+    Real t36 = K[1][0]*Depl[0]+K[1][1]*Depl[1]+K[1][2]*Depl[2]+K[1][3]*
+            Depl[3]+K[1][5]*Depl[5]+K[1][6]*Depl[6]+K[1][7]*Depl[7]+K[1][8]*
+            Depl[8]+K[1][9]*Depl[9]+K[1][10]*Depl[10]+K[1][11]*Depl[11];
+    Real t48 = K[1][12]*Depl[12]+K[1][14]*Depl[14]+K[1][15]*Depl[15]+K[1]
+            [16]*Depl[16]+K[1][17]*Depl[17]+K[1][18]*Depl[18]+K[1][19]*Depl[19]
+            +K[1][20]*Depl[20]+K[1][21]*Depl[21]+K[1][22]*Depl[22]+K[1][23]*Depl
+            [23];
+    Real t61 = K[2][0]*Depl[0]+K[2][1]*Depl[1]+K[2][2]*Depl[2]+K[2][3]*
+            Depl[3]+K[2][4]*Depl[4]+K[2][6]*Depl[6]+K[2][7]*Depl[7]+K[2][8]*
+            Depl[8]+K[2][9]*Depl[9]+K[2][10]*Depl[10]+K[2][12]*Depl[12];
+    Real t73 = K[2][13]*Depl[13]+K[2][14]*Depl[14]+K[2][15]*Depl[15]+K[2]
+            [16]*Depl[16]+K[2][17]*Depl[17]+K[2][18]*Depl[18]+K[2][19]*Depl[19]
+            +K[2][20]*Depl[20]+K[2][21]*Depl[21]+K[2][22]*Depl[22]+K[2][23]*Depl
+            [23];
+    Real t97 = K[3][12]*Depl[12]+K[3][13]*Depl[13]+K[3][14]*Depl[14]+K[3]
+            [16]*Depl[16]+K[3][17]*Depl[17]+K[3][18]*Depl[18]+K[3][19]*Depl[19]
+            +K[3][20]*Depl[20]+K[3][21]*Depl[21]+K[3][22]*Depl[22]+K[3][23]*Depl
+            [23];
+    Real t110 = K[4][0]*Depl[0]+K[4][2]*Depl[2]+K[4][3]*Depl[3]+K[4][4]*
+            Depl[4]+K[4][5]*Depl[5]+K[4][6]*Depl[6]+K[4][7]*Depl[7]+K[4][8]*
+            Depl[8]+K[4][9]*Depl[9]+K[4][10]*Depl[10]+K[4][11]*Depl[11];
+    Real t122 = K[4][12]*Depl[12]+K[4][13]*Depl[13]+K[4][14]*Depl[14]+K
+            [4][15]*Depl[15]+K[4][17]*Depl[17]+K[4][18]*Depl[18]+K[4][19]*Depl[19]
+            +K[4][20]*Depl[20]+K[4][21]*Depl[21]+K[4][22]*Depl[22]+K[4][23]*
+            Depl[23];
+    Real t135 = K[5][0]*Depl[0]+K[5][1]*Depl[1]+K[5][3]*Depl[3]+K[5][4]*
+            Depl[4]+K[5][5]*Depl[5]+K[5][6]*Depl[6]+K[5][7]*Depl[7]+K[5][9]*
+            Depl[9]+K[5][10]*Depl[10]+K[5][11]*Depl[11]+K[5][12]*Depl[12];
+    Real t147 = K[5][13]*Depl[13]+K[5][14]*Depl[14]+K[5][15]*Depl[15]+K
+            [5][16]*Depl[16]+K[5][17]*Depl[17]+K[5][18]*Depl[18]+K[5][19]*Depl[19]
+            +K[5][20]*Depl[20]+K[5][21]*Depl[21]+K[5][22]*Depl[22]+K[5][23]*
+            Depl[23];
+    Real t171 = K[6][12]*Depl[12]+K[6][13]*Depl[13]+K[6][14]*Depl[14]+K
+            [6][15]*Depl[15]+K[6][16]*Depl[16]+K[6][17]*Depl[17]+K[6][19]*Depl[19]
+            +K[6][20]*Depl[20]+K[6][21]*Depl[21]+K[6][22]*Depl[22]+K[6][23]*
+            Depl[23];
+    Real t184 = K[7][0]*Depl[0]+K[7][1]*Depl[1]+K[7][2]*Depl[2]+K[7][3]*
+            Depl[3]+K[7][4]*Depl[4]+K[7][5]*Depl[5]+K[7][6]*Depl[6]+K[7][7]*
+            Depl[7]+K[7][8]*Depl[8]+K[7][9]*Depl[9]+K[7][11]*Depl[11];
+    Real t196 = K[7][12]*Depl[12]+K[7][13]*Depl[13]+K[7][14]*Depl[14]+K
+            [7][15]*Depl[15]+K[7][16]*Depl[16]+K[7][17]*Depl[17]+K[7][18]*Depl[18]
+            +K[7][20]*Depl[20]+K[7][21]*Depl[21]+K[7][22]*Depl[22]+K[7][23]*
+            Depl[23];
+    Real t209 = K[8][0]*Depl[0]+K[8][1]*Depl[1]+K[8][2]*Depl[2]+K[8][3]*
+            Depl[3]+K[8][4]*Depl[4]+K[8][6]*Depl[6]+K[8][7]*Depl[7]+K[8][8]*
+            Depl[8]+K[8][9]*Depl[9]+K[8][10]*Depl[10]+K[8][12]*Depl[12];
+    Real t221 = K[8][13]*Depl[13]+K[8][14]*Depl[14]+K[8][15]*Depl[15]+K
+            [8][16]*Depl[16]+K[8][17]*Depl[17]+K[8][18]*Depl[18]+K[8][19]*Depl[19]
+            +K[8][20]*Depl[20]+K[8][21]*Depl[21]+K[8][22]*Depl[22]+K[8][23]*
+            Depl[23];
+    Real t245 = K[9][12]*Depl[12]+K[9][13]*Depl[13]+K[9][14]*Depl[14]+K
+            [9][15]*Depl[15]+K[9][16]*Depl[16]+K[9][17]*Depl[17]+K[9][18]*Depl[18]
+            +K[9][19]*Depl[19]+K[9][20]*Depl[20]+K[9][22]*Depl[22]+K[9][23]*
+            Depl[23];
+    Real t258 = K[10][0]*Depl[0]+K[10][1]*Depl[1]+K[10][2]*Depl[2]+K[10]
+            [3]*Depl[3]+K[10][4]*Depl[4]+K[10][5]*Depl[5]+K[10][6]*Depl[6]+K
+            [10][8]*Depl[8]+K[10][9]*Depl[9]+K[10][10]*Depl[10]+K[10][11]*Depl[11];
+    Real t270 = K[10][12]*Depl[12]+K[10][13]*Depl[13]+K[10][14]*Depl[14]+
+            K[10][15]*Depl[15]+K[10][16]*Depl[16]+K[10][17]*Depl[17]+K[10][18]*
+            Depl[18]+K[10][19]*Depl[19]+K[10][20]*Depl[20]+K[10][21]*Depl[21]+K
+            [10][23]*Depl[23];
+    Real t283 = K[11][0]*Depl[0]+K[11][1]*Depl[1]+K[11][3]*Depl[3]+K[11]
+            [4]*Depl[4]+K[11][5]*Depl[5]+K[11][6]*Depl[6]+K[11][7]*Depl[7]+K
+            [11][9]*Depl[9]+K[11][10]*Depl[10]+K[11][11]*Depl[11]+K[11][12]*Depl
+            [12];
+    Real t295 = K[11][13]*Depl[13]+K[11][14]*Depl[14]+K[11][15]*Depl[15]+
+            K[11][16]*Depl[16]+K[11][17]*Depl[17]+K[11][18]*Depl[18]+K[11][19]*
+            Depl[19]+K[11][20]*Depl[20]+K[11][21]*Depl[21]+K[11][22]*Depl[22]+K
+            [11][23]*Depl[23];
+    Real t319 = K[12][11]*Depl[11]+K[12][12]*Depl[12]+K[12][13]*Depl[13]+
+            K[12][14]*Depl[14]+K[12][16]*Depl[16]+K[12][17]*Depl[17]+K[12][18]*
+            Depl[18]+K[12][19]*Depl[19]+K[12][20]*Depl[20]+K[12][22]*Depl[22]+K
+            [12][23]*Depl[23];
+    Real t332 = K[13][0]*Depl[0]+K[13][2]*Depl[2]+K[13][3]*Depl[3]+K[13]
+            [4]*Depl[4]+K[13][5]*Depl[5]+K[13][6]*Depl[6]+K[13][7]*Depl[7]+K
+            [13][8]*Depl[8]+K[13][9]*Depl[9]+K[13][10]*Depl[10]+K[13][11]*Depl[11];
+    Real t344 = K[13][12]*Depl[12]+K[13][13]*Depl[13]+K[13][14]*Depl[14]+
+            K[13][15]*Depl[15]+K[13][17]*Depl[17]+K[13][18]*Depl[18]+K[13][19]*
+            Depl[19]+K[13][20]*Depl[20]+K[13][21]*Depl[21]+K[13][22]*Depl[22]+K
+            [13][23]*Depl[23];
+    Real t357 = K[14][0]*Depl[0]+K[14][1]*Depl[1]+K[14][2]*Depl[2]+K[14]
+            [3]*Depl[3]+K[14][4]*Depl[4]+K[14][5]*Depl[5]+K[14][6]*Depl[6]+K
+            [14][7]*Depl[7]+K[14][8]*Depl[8]+K[14][9]*Depl[9]+K[14][10]*Depl[10];
+    Real t369 = K[14][11]*Depl[11]+K[14][12]*Depl[12]+K[14][13]*Depl[13]+
+            K[14][14]*Depl[14]+K[14][15]*Depl[15]+K[14][16]*Depl[16]+K[14][18]*
+            Depl[18]+K[14][19]*Depl[19]+K[14][20]*Depl[20]+K[14][21]*Depl[21]+K
+            [14][22]*Depl[22];
+    Real t393 = K[15][11]*Depl[11]+K[15][13]*Depl[13]+K[15][14]*Depl[14]+
+            K[15][15]*Depl[15]+K[15][16]*Depl[16]+K[15][17]*Depl[17]+K[15][19]*
+            Depl[19]+K[15][20]*Depl[20]+K[15][21]*Depl[21]+K[15][22]*Depl[22]+K
+            [15][23]*Depl[23];
+    Real t406 = K[16][0]*Depl[0]+K[16][1]*Depl[1]+K[16][2]*Depl[2]+K[16]
+            [3]*Depl[3]+K[16][5]*Depl[5]+K[16][6]*Depl[6]+K[16][7]*Depl[7]+K
+            [16][8]*Depl[8]+K[16][9]*Depl[9]+K[16][10]*Depl[10]+K[16][11]*Depl[11]
+            ;
+    Real t418 = K[16][12]*Depl[12]+K[16][14]*Depl[14]+K[16][15]*Depl[15]+
+            K[16][16]*Depl[16]+K[16][17]*Depl[17]+K[16][18]*Depl[18]+K[16][19]*
+            Depl[19]+K[16][20]*Depl[20]+K[16][21]*Depl[21]+K[16][22]*Depl[22]+K
+            [16][23]*Depl[23];
+    Real t431 = K[17][0]*Depl[0]+K[17][1]*Depl[1]+K[17][2]*Depl[2]+K[17]
+            [3]*Depl[3]+K[17][4]*Depl[4]+K[17][5]*Depl[5]+K[17][6]*Depl[6]+K
+            [17][7]*Depl[7]+K[17][8]*Depl[8]+K[17][9]*Depl[9]+K[17][10]*Depl[10]
+            ;
+    Real t443 = K[17][11]*Depl[11]+K[17][12]*Depl[12]+K[17][13]*Depl[13]+
+            K[17][15]*Depl[15]+K[17][16]*Depl[16]+K[17][17]*Depl[17]+K[17][18]*
+            Depl[18]+K[17][19]*Depl[19]+K[17][21]*Depl[21]+K[17][22]*Depl[22]+K
+            [17][23]*Depl[23];
+    Real t467 = K[18][11]*Depl[11]+K[18][12]*Depl[12]+K[18][13]*Depl[13]+
+            K[18][14]*Depl[14]+K[18][16]*Depl[16]+K[18][17]*Depl[17]+K[18][18]*
+            Depl[18]+K[18][19]*Depl[19]+K[18][20]*Depl[20]+K[18][22]*Depl[22]+K
+            [18][23]*Depl[23];
+    Real t480 = K[19][0]*Depl[0]+K[19][1]*Depl[1]+K[19][2]*Depl[2]+K[19]
+            [3]*Depl[3]+K[19][4]*Depl[4]+K[19][5]*Depl[5]+K[19][6]*Depl[6]+K
+            [19][8]*Depl[8]+K[19][9]*Depl[9]+K[19][10]*Depl[10]+K[19][11]*Depl[11]
+            ;
+    Real t492 = K[19][12]*Depl[12]+K[19][13]*Depl[13]+K[19][14]*Depl[14]+
+            K[19][15]*Depl[15]+K[19][16]*Depl[16]+K[19][17]*Depl[17]+K[19][18]*
+            Depl[18]+K[19][19]*Depl[19]+K[19][20]*Depl[20]+K[19][21]*Depl[21]+K
+            [19][23]*Depl[23];
+    Real t505 = K[20][0]*Depl[0]+K[20][1]*Depl[1]+K[20][2]*Depl[2]+K[20]
+            [3]*Depl[3]+K[20][4]*Depl[4]+K[20][5]*Depl[5]+K[20][6]*Depl[6]+K
+            [20][7]*Depl[7]+K[20][8]*Depl[8]+K[20][9]*Depl[9]+K[20][10]*Depl[10]
+            ;
+    Real t517 = K[20][11]*Depl[11]+K[20][12]*Depl[12]+K[20][13]*Depl[13]+
+            K[20][14]*Depl[14]+K[20][15]*Depl[15]+K[20][16]*Depl[16]+K[20][18]*
+            Depl[18]+K[20][19]*Depl[19]+K[20][20]*Depl[20]+K[20][21]*Depl[21]+K
+            [20][22]*Depl[22];
+    Real t541 = K[21][11]*Depl[11]+K[21][13]*Depl[13]+K[21][14]*Depl[14]+
+            K[21][15]*Depl[15]+K[21][16]*Depl[16]+K[21][17]*Depl[17]+K[21][19]*
+            Depl[19]+K[21][20]*Depl[20]+K[21][21]*Depl[21]+K[21][22]*Depl[22]+K
+            [21][23]*Depl[23];
+    Real t554 = K[22][0]*Depl[0]+K[22][1]*Depl[1]+K[22][2]*Depl[2]+K[22]
+            [3]*Depl[3]+K[22][4]*Depl[4]+K[22][5]*Depl[5]+K[22][6]*Depl[6]+K
+            [22][7]*Depl[7]+K[22][8]*Depl[8]+K[22][9]*Depl[9]+K[22][11]*Depl[11]
+            ;
+    Real t566 = K[22][12]*Depl[12]+K[22][13]*Depl[13]+K[22][14]*Depl[14]+
+            K[22][15]*Depl[15]+K[22][16]*Depl[16]+K[22][17]*Depl[17]+K[22][18]*
+            Depl[18]+K[22][20]*Depl[20]+K[22][21]*Depl[21]+K[22][22]*Depl[22]+K
+            [22][23]*Depl[23];
+    Real t579 = K[23][0]*Depl[0]+K[23][1]*Depl[1]+K[23][2]*Depl[2]+K[23]
+            [3]*Depl[3]+K[23][4]*Depl[4]+K[23][5]*Depl[5]+K[23][6]*Depl[6]+K
+            [23][7]*Depl[7]+K[23][8]*Depl[8]+K[23][9]*Depl[9]+K[23][10]*Depl[10]
+            ;
+    Real t591 = K[23][11]*Depl[11]+K[23][12]*Depl[12]+K[23][13]*Depl[13]+
+            K[23][15]*Depl[15]+K[23][16]*Depl[16]+K[23][17]*Depl[17]+K[23][18]*
+            Depl[18]+K[23][19]*Depl[19]+K[23][21]*Depl[21]+K[23][22]*Depl[22]+K
+            [23][23]*Depl[23];
+    F[0] = K[0][0]*Depl[0]+K[0][1]*Depl[1]+K[0][2]*Depl[2]+
+            K[0][4]*Depl[4]+K[0][5]*Depl[5]+K[0][6]*Depl[6]+K[0][7]*Depl[7]+K
+            [0][8]*Depl[8]+K[0][10]*Depl[10]+K[0][11]*Depl[11]+t23;
+    F[1] = t36+t48;
+    F[2] = t61+t73;
+    F[3] = K[3][1]*Depl[1]+K[3][2]*Depl[2]+K[3][3]*Depl[3]+
+            K[3][4]*Depl[4]+K[3][5]*Depl[5]+K[3][7]*Depl[7]+K[3][8]*Depl[8]+K
+            [3][9]*Depl[9]+K[3][10]*Depl[10]+K[3][11]*Depl[11]+t97;
+    F[4] = t110+t122;
+    F[5] = t135+t147;
+    F[6] = K[6][0]*Depl[0]+K[6][1]*Depl[1]+K[6][2]*Depl[2]+
+            K[6][4]*Depl[4]+K[6][5]*Depl[5]+K[6][6]*Depl[6]+K[6][7]*Depl[7]+K
+            [6][8]*Depl[8]+K[6][10]*Depl[10]+K[6][11]*Depl[11]+t171;
+    F[7] = t184+t196;
+    F[8] = t209+t221;
+    F[9] = K[9][1]*Depl[1]+K[9][2]*Depl[2]+K[9][3]*Depl[3]+
+            K[9][4]*Depl[4]+K[9][5]*Depl[5]+K[9][7]*Depl[7]+K[9][8]*Depl[8]+K
+            [9][9]*Depl[9]+K[9][10]*Depl[10]+K[9][11]*Depl[11]+t245;
+    F[10] = t258+t270;
+    F[11] = t283+t295;
+    F[12] = K[12][1]*Depl[1]+K[12][2]*Depl[2]+K[12][3]*Depl[3]
+            +K[12][4]*Depl[4]+K[12][5]*Depl[5]+K[12][6]*Depl[6]+K[12][7]*Depl
+            [7]+K[12][8]*Depl[8]+K[12][9]*Depl[9]+K[12][10]*Depl[10]+t319;
+    F[13] = t332+t344;
+    F[14] = t357+t369;
+    F[15] = K[15][0]*Depl[0]+K[15][1]*Depl[1]+K[15][2]*Depl[2]
+            +K[15][4]*Depl[4]+K[15][5]*Depl[5]+K[15][6]*Depl[6]+K[15][7]*Depl
+            [7]+K[15][8]*Depl[8]+K[15][9]*Depl[9]+K[15][10]*Depl[10]+t393;
+    F[16] = t406+t418;
+    F[17] = t431+t443;
+    F[18] = K[18][0]*Depl[0]+K[18][1]*Depl[1]+K[18][2]*Depl[2]
+            +K[18][3]*Depl[3]+K[18][4]*Depl[4]+K[18][5]*Depl[5]+K[18][7]*Depl
+            [7]+K[18][8]*Depl[8]+K[18][9]*Depl[9]+K[18][10]*Depl[10]+t467;
+    F[19] = t480+t492;
+    F[20] = t505+t517;
+    F[21] = K[21][0]*Depl[0]+K[21][1]*Depl[1]+K[21][2]*Depl[2]
+            +K[21][3]*Depl[3]+K[21][4]*Depl[4]+K[21][5]*Depl[5]+K[21][6]*Depl
+            [6]+K[21][7]*Depl[7]+K[21][8]*Depl[8]+K[21][10]*Depl[10]+t541;
+    F[22] = t554+t566;
+    F[23] = t579+t591;
+
+
 }
 
-
-
+template<class DataTypes>
+void HexahedronFEMForceField<DataTypes>::computeForceOptimized( Displacement &F, const Displacement &Depl, const ElementStiffness &K )
+{
+    // taking into account null terms in K and in Depl
+    float t16 = K[0][6]*Depl[6]+K[0][7]*Depl[7]+K[0][8]*Depl[8]+K[0][10]*Depl[10]+K[0][13]*
+            Depl[13]+K[0][14]*Depl[14]+K[0][15]*Depl[15]+K[0][16]*Depl[16]+K[0][17]*Depl[17]+K[0][18]
+            *Depl[18]+K[0][19]*Depl[19]+K[0][20]*Depl[20]+K[0][21]*Depl[21]+K[0][22]*Depl[22]+K[0]
+            [23]*Depl[23];
+    float t34 = K[1][3]*Depl[3]+K[1][6]*Depl[6]+K[1][7]*Depl[7]+K[1][8]*Depl[8]+K[1][9]*Depl
+            [9]+K[1][10]*Depl[10]+K[1][12]*Depl[12]+K[1][14]*Depl[14]+K[1][15]*Depl[15]+K[1][16]*Depl
+            [16]+K[1][17]*Depl[17]+K[1][18]*Depl[18]+K[1][19]*Depl[19]+K[1][20]*Depl[20]+K[1][21]*
+            Depl[21]+K[1][22]*Depl[22]+K[1][23]*Depl[23];
+    float t53 = K[2][3]*Depl[3]+K[2][6]*Depl[6]+K[2][7]*Depl[7]+K[2][8]*Depl[8]+K[2][9]*Depl
+            [9]+K[2][10]*Depl[10]+K[2][12]*Depl[12]+K[2][13]*Depl[13]+K[2][14]*Depl[14]+K[2][15]*Depl
+            [15]+K[2][16]*Depl[16]+K[2][17]*Depl[17]+K[2][18]*Depl[18]+K[2][19]*Depl[19]+K[2][20]*
+            Depl[20]+K[2][21]*Depl[21]+K[2][22]*Depl[22]+K[2][23]*Depl[23];
+    float t70 = K[3][3]*Depl[3]+K[3][7]*Depl[7]+K[3][8]*Depl[8]+K[3][9]*Depl[9]+K[3][10]*Depl
+            [10]+K[3][12]*Depl[12]+K[3][13]*Depl[13]+K[3][14]*Depl[14]+K[3][16]*Depl[16]+K[3][17]*
+            Depl[17]+K[3][18]*Depl[18]+K[3][19]*Depl[19]+K[3][20]*Depl[20]+K[3][21]*Depl[21]+K[3][22]
+            *Depl[22]+K[3][23]*Depl[23];
+    float t88 = K[4][3]*Depl[3]+K[4][6]*Depl[6]+K[4][7]*Depl[7]+K[4][8]*Depl[8]+K[4][9]*Depl
+            [9]+K[4][10]*Depl[10]+K[4][12]*Depl[12]+K[4][13]*Depl[13]+K[4][14]*Depl[14]+K[4][15]*Depl
+            [15]+K[4][17]*Depl[17]+K[4][18]*Depl[18]+K[4][19]*Depl[19]+K[4][20]*Depl[20]+K[4][21]*
+            Depl[21]+K[4][22]*Depl[22]+K[4][23]*Depl[23];
+    float t106 = K[5][3]*Depl[3]+K[5][6]*Depl[6]+K[5][7]*Depl[7]+K[5][9]*Depl[9]+K[5][10]*
+            Depl[10]+K[5][12]*Depl[12]+K[5][13]*Depl[13]+K[5][14]*Depl[14]+K[5][15]*Depl[15]+K[5][16]
+            *Depl[16]+K[5][17]*Depl[17]+K[5][18]*Depl[18]+K[5][19]*Depl[19]+K[5][20]*Depl[20]+K[5]
+            [21]*Depl[21]+K[5][22]*Depl[22]+K[5][23]*Depl[23];
+    float t122 = K[6][6]*Depl[6]+K[6][7]*Depl[7]+K[6][8]*Depl[8]+K[6][10]*Depl[10]+K[6][12]
+            *Depl[12]+K[6][13]*Depl[13]+K[6][14]*Depl[14]+K[6][15]*Depl[15]+K[6][16]*Depl[16]+K[6]
+            [17]*Depl[17]+K[6][19]*Depl[19]+K[6][20]*Depl[20]+K[6][21]*Depl[21]+K[6][22]*Depl[22]+K
+            [6][23]*Depl[23];
+    float t139 = K[7][3]*Depl[3]+K[7][6]*Depl[6]+K[7][7]*Depl[7]+K[7][8]*Depl[8]+K[7][9]*Depl
+            [9]+K[7][12]*Depl[12]+K[7][13]*Depl[13]+K[7][14]*Depl[14]+K[7][15]*Depl[15]+K[7][16]*Depl
+            [16]+K[7][17]*Depl[17]+K[7][18]*Depl[18]+K[7][20]*Depl[20]+K[7][21]*Depl[21]+K[7][22]*
+            Depl[22]+K[7][23]*Depl[23];
+    float t158 = K[8][3]*Depl[3]+K[8][6]*Depl[6]+K[8][7]*Depl[7]+K[8][8]*Depl[8]+K[8][9]*Depl
+            [9]+K[8][10]*Depl[10]+K[8][12]*Depl[12]+K[8][13]*Depl[13]+K[8][14]*Depl[14]+K[8][15]*Depl
+            [15]+K[8][16]*Depl[16]+K[8][17]*Depl[17]+K[8][18]*Depl[18]+K[8][19]*Depl[19]+K[8][20]*
+            Depl[20]+K[8][21]*Depl[21]+K[8][22]*Depl[22]+K[8][23]*Depl[23];
+    float t175 = K[9][3]*Depl[3]+K[9][7]*Depl[7]+K[9][8]*Depl[8]+K[9][9]*Depl[9]+K[9][10]*
+            Depl[10]+K[9][12]*Depl[12]+K[9][13]*Depl[13]+K[9][14]*Depl[14]+K[9][15]*Depl[15]+K[9][16]
+            *Depl[16]+K[9][17]*Depl[17]+K[9][18]*Depl[18]+K[9][19]*Depl[19]+K[9][20]*Depl[20]+K[9]
+            [22]*Depl[22]+K[9][23]*Depl[23];
+    float t192 = K[10][3]*Depl[3]+K[10][6]*Depl[6]+K[10][8]*Depl[8]+K[10][9]*Depl[9]+K[10]
+            [10]*Depl[10]+K[10][12]*Depl[12]+K[10][13]*Depl[13]+K[10][14]*Depl[14]+K[10][15]*Depl[15]
+            +K[10][16]*Depl[16]+K[10][17]*Depl[17]+K[10][18]*Depl[18]+K[10][19]*Depl[19]+K[10][20]*
+            Depl[20]+K[10][21]*Depl[21]+K[10][23]*Depl[23];
+    float t210 = K[11][3]*Depl[3]+K[11][6]*Depl[6]+K[11][7]*Depl[7]+K[11][9]*Depl[9]+K[11]
+            [10]*Depl[10]+K[11][12]*Depl[12]+K[11][13]*Depl[13]+K[11][14]*Depl[14]+K[11][15]*Depl[15]
+            +K[11][16]*Depl[16]+K[11][17]*Depl[17]+K[11][18]*Depl[18]+K[11][19]*Depl[19]+K[11][20]*
+            Depl[20]+K[11][21]*Depl[21]+K[11][22]*Depl[22]+K[11][23]*Depl[23];
+    float t227 = K[12][3]*Depl[3]+K[12][6]*Depl[6]+K[12][7]*Depl[7]+K[12][8]*Depl[8]+K[12]
+            [9]*Depl[9]+K[12][10]*Depl[10]+K[12][12]*Depl[12]+K[12][13]*Depl[13]+K[12][14]*Depl[14]+K
+            [12][16]*Depl[16]+K[12][17]*Depl[17]+K[12][18]*Depl[18]+K[12][19]*Depl[19]+K[12][20]*Depl
+            [20]+K[12][22]*Depl[22]+K[12][23]*Depl[23];
+    float t245 = K[13][3]*Depl[3]+K[13][6]*Depl[6]+K[13][7]*Depl[7]+K[13][8]*Depl[8]+K[13]
+            [9]*Depl[9]+K[13][10]*Depl[10]+K[13][12]*Depl[12]+K[13][13]*Depl[13]+K[13][14]*Depl[14]+K
+            [13][15]*Depl[15]+K[13][17]*Depl[17]+K[13][18]*Depl[18]+K[13][19]*Depl[19]+K[13][20]*Depl
+            [20]+K[13][21]*Depl[21]+K[13][22]*Depl[22]+K[13][23]*Depl[23];
+    float t262 = K[14][3]*Depl[3]+K[14][6]*Depl[6]+K[14][7]*Depl[7]+K[14][8]*Depl[8]+K[14]
+            [9]*Depl[9]+K[14][10]*Depl[10]+K[14][12]*Depl[12]+K[14][13]*Depl[13]+K[14][14]*Depl[14]+K
+            [14][15]*Depl[15]+K[14][16]*Depl[16]+K[14][18]*Depl[18]+K[14][19]*Depl[19]+K[14][20]*Depl
+            [20]+K[14][21]*Depl[21]+K[14][22]*Depl[22];
+    float t278 = K[15][6]*Depl[6]+K[15][7]*Depl[7]+K[15][8]*Depl[8]+K[15][9]*Depl[9]+K[15]
+            [10]*Depl[10]+K[15][13]*Depl[13]+K[15][14]*Depl[14]+K[15][15]*Depl[15]+K[15][16]*Depl[16]
+            +K[15][17]*Depl[17]+K[15][19]*Depl[19]+K[15][20]*Depl[20]+K[15][21]*Depl[21]+K[15][22]*
+            Depl[22]+K[15][23]*Depl[23];
+    float t296 = K[16][3]*Depl[3]+K[16][6]*Depl[6]+K[16][7]*Depl[7]+K[16][8]*Depl[8]+K[16]
+            [9]*Depl[9]+K[16][10]*Depl[10]+K[16][12]*Depl[12]+K[16][14]*Depl[14]+K[16][15]*Depl[15]+K
+            [16][16]*Depl[16]+K[16][17]*Depl[17]+K[16][18]*Depl[18]+K[16][19]*Depl[19]+K[16][20]*Depl
+            [20]+K[16][21]*Depl[21]+K[16][22]*Depl[22]+K[16][23]*Depl[23];
+    float t313 = K[17][3]*Depl[3]+K[17][6]*Depl[6]+K[17][7]*Depl[7]+K[17][8]*Depl[8]+K[17]
+            [9]*Depl[9]+K[17][10]*Depl[10]+K[17][12]*Depl[12]+K[17][13]*Depl[13]+K[17][15]*Depl[15]+K
+            [17][16]*Depl[16]+K[17][17]*Depl[17]+K[17][18]*Depl[18]+K[17][19]*Depl[19]+K[17][21]*Depl
+            [21]+K[17][22]*Depl[22]+K[17][23]*Depl[23];
+    float t329 = K[18][3]*Depl[3]+K[18][7]*Depl[7]+K[18][8]*Depl[8]+K[18][9]*Depl[9]+K[18]
+            [10]*Depl[10]+K[18][12]*Depl[12]+K[18][13]*Depl[13]+K[18][14]*Depl[14]+K[18][16]*Depl[16]
+            +K[18][17]*Depl[17]+K[18][18]*Depl[18]+K[18][19]*Depl[19]+K[18][20]*Depl[20]+K[18][22]*
+            Depl[22]+K[18][23]*Depl[23];
+    float t346 = K[19][3]*Depl[3]+K[19][6]*Depl[6]+K[19][8]*Depl[8]+K[19][9]*Depl[9]+K[19]
+            [10]*Depl[10]+K[19][12]*Depl[12]+K[19][13]*Depl[13]+K[19][14]*Depl[14]+K[19][15]*Depl[15]
+            +K[19][16]*Depl[16]+K[19][17]*Depl[17]+K[19][18]*Depl[18]+K[19][19]*Depl[19]+K[19][20]*
+            Depl[20]+K[19][21]*Depl[21]+K[19][23]*Depl[23];
+    float t363 = K[20][3]*Depl[3]+K[20][6]*Depl[6]+K[20][7]*Depl[7]+K[20][8]*Depl[8]+K[20]
+            [9]*Depl[9]+K[20][10]*Depl[10]+K[20][12]*Depl[12]+K[20][13]*Depl[13]+K[20][14]*Depl[14]+K
+            [20][15]*Depl[15]+K[20][16]*Depl[16]+K[20][18]*Depl[18]+K[20][19]*Depl[19]+K[20][20]*Depl
+            [20]+K[20][21]*Depl[21]+K[20][22]*Depl[22];
+    float t379 = K[21][3]*Depl[3]+K[21][6]*Depl[6]+K[21][7]*Depl[7]+K[21][8]*Depl[8]+K[21]
+            [10]*Depl[10]+K[21][13]*Depl[13]+K[21][14]*Depl[14]+K[21][15]*Depl[15]+K[21][16]*Depl[16]
+            +K[21][17]*Depl[17]+K[21][19]*Depl[19]+K[21][20]*Depl[20]+K[21][21]*Depl[21]+K[21][22]*
+            Depl[22]+K[21][23]*Depl[23];
+    float t396 = K[22][3]*Depl[3]+K[22][6]*Depl[6]+K[22][7]*Depl[7]+K[22][8]*Depl[8]+K[22]
+            [9]*Depl[9]+K[22][12]*Depl[12]+K[22][13]*Depl[13]+K[22][14]*Depl[14]+K[22][15]*Depl[15]+K
+            [22][16]*Depl[16]+K[22][17]*Depl[17]+K[22][18]*Depl[18]+K[22][20]*Depl[20]+K[22][21]*Depl
+            [21]+K[22][22]*Depl[22]+K[22][23]*Depl[23];
+    float t413 = K[23][3]*Depl[3]+K[23][6]*Depl[6]+K[23][7]*Depl[7]+K[23][8]*Depl[8]+K[23]
+            [9]*Depl[9]+K[23][10]*Depl[10]+K[23][12]*Depl[12]+K[23][13]*Depl[13]+K[23][15]*Depl[15]+K
+            [23][16]*Depl[16]+K[23][17]*Depl[17]+K[23][18]*Depl[18]+K[23][19]*Depl[19]+K[23][21]*Depl
+            [21]+K[23][22]*Depl[22]+K[23][23]*Depl[23];
+    F[0] = t16;
+    F[1] = t34;
+    F[2] = t53;
+    F[3] = t70;
+    F[4] = t88;
+    F[5] = t106;
+    F[6] = t122;
+    F[7] = t139;
+    F[8] = t158;
+    F[9] = t175;
+    F[10] = t192;
+    F[11] = t210;
+    F[12] = t227;
+    F[13] = t245;
+    F[14] = t262;
+    F[15] = t278;
+    F[16] = t296;
+    F[17] = t313;
+    F[18] = t329;
+    F[19] = t346;
+    F[20] = t363;
+    F[21] = t379;
+    F[22] = t396;
+    F[23] = t413;
+}
 
 
 
@@ -547,9 +898,7 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
 {
     // Rotation matrix (initial Tetrahedre/world)
-    // first vector on first edge
-    // second vector in the plane of the two first edges
-    // third vector orthogonal to first and second
+    // edges mean on 3 directions
 
 
 
@@ -569,18 +918,19 @@ void HexahedronFEMForceField<DataTypes>::initLarge(int i, const Element &elem)
         _rotatedInitialElements[i][w] = R_0_1*_initialPoints.getValue()[elem[_indices[w]]];
 
 
-    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i );
+    if( _elementStiffnesses.getValue().size() <= (unsigned)i )
+    {
+        _elementStiffnesses.beginEdit()->resize( _elementStiffnesses.getValue().size()+1 );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i );
+    }
 
 
-// 		if(i==0) cerr<<_elementStiffnesses[i]<<endl;
 }
 
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeRotationLarge( Transformation &r, Coord &edgex, Coord &edgey)
 {
-    // first vector on first edge
-    // second vector in the plane of the two first edges
-    // third vector orthogonal to first and second
+
     edgex.normalize();
     edgey.normalize();
 
@@ -645,12 +995,13 @@ void HexahedronFEMForceField<DataTypes>::accumulateForceLarge( Vector& f, const 
     }
 
 
-// 	if(f_updateStiffnessMatrix.getValue())
+    if(f_updateStiffnessMatrix.getValue())
 // 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i );
 
 
     Displacement F; //forces
-    computeForce( F, D, _elementStiffnesses[i] ); // compute force on element
+    computeForce( F, D, _elementStiffnesses.getValue()[i] ); // compute force on element
 
     for(int w=0; w<8; ++w)
         f[elem[_indices[w]]] += _rotations[i] * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
@@ -685,8 +1036,12 @@ void HexahedronFEMForceField<DataTypes>::initPolar(int i, const Element& elem)
         _rotatedInitialElements[i][j] = R_0_1 * nodes[j];
     }
 
-    computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i );
 
+    if( _elementStiffnesses.getValue().size() <= (unsigned)i )
+    {
+        _elementStiffnesses.beginEdit()->resize( _elementStiffnesses.getValue().size()+1 );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], _rotatedInitialElements[i], i );
+    }
 }
 
 
@@ -753,11 +1108,12 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
     //forces
     Displacement F;
 
-// 	if(f_updateStiffnessMatrix.getValue())
+    if(f_updateStiffnessMatrix.getValue())
 // 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i );
 
     // compute force on element
-    computeForce( F, D, _elementStiffnesses[i] );
+    computeForce( F, D, _elementStiffnesses.getValue()[i] );
 
 
     for(int j=0; j<8; ++j)
@@ -766,6 +1122,116 @@ void HexahedronFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 
 
 
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+////////////// fast displacements method
+
+
+template<class DataTypes>
+void HexahedronFEMForceField<DataTypes>::initFast(int i, const Element &elem)
+{
+    // Rotation matrix (initial Tetrahedre/world)
+    // first vector on first edge
+    // second vector in the plane of the two first edges
+    // third vector orthogonal to first and second
+
+
+
+    Vec<8,Coord> nodes;
+    for(int j=0; j<8; ++j)
+        nodes[j] = _initialPoints.getValue()[elem[_indices[j]]];
+
+    Transformation R_0_1; // Rotation matrix (deformed and displaced Tetrahedron/world)
+    computeRotationFast( R_0_1, nodes );
+
+
+    for(int j=0; j<8; ++j)
+    {
+        _rotatedInitialElements[i][j] = R_0_1 * (nodes[j]-nodes[0]);
+    }
+
+
+    if( _elementStiffnesses.getValue().size() <= (unsigned)i )
+    {
+        _elementStiffnesses.beginEdit()->resize( _elementStiffnesses.getValue().size()+1 );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], nodes, i );
+    }
+}
+
+template<class DataTypes>
+void HexahedronFEMForceField<DataTypes>::computeRotationFast( Transformation &r, Vec<8,Coord> &nodes)
+{
+    // first vector on first edge
+    // second vector in the plane of the two first edges
+    // third vector orthogonal to first and second
+    Coord edgex = nodes[1]-nodes[0];
+    edgex.normalize();
+
+    Coord edgey = nodes[3]-nodes[0];
+    edgey.normalize();
+
+    Coord edgez = cross( edgex, edgey );
+    edgez.normalize();
+
+    edgey = cross( edgez, edgex );
+    edgey.normalize();
+
+    r[0][0] = edgex[0];
+    r[0][1] = edgex[1];
+    r[0][2] = edgex[2];
+    r[1][0] = edgey[0];
+    r[1][1] = edgey[1];
+    r[1][2] = edgey[2];
+    r[2][0] = edgez[0];
+    r[2][1] = edgez[1];
+    r[2][2] = edgez[2];
+
+}
+
+template<class DataTypes>
+void HexahedronFEMForceField<DataTypes>::accumulateForceFast( Vector& f, const Vector & p, int i, const Element&elem )
+{
+    Vec<8,Coord> nodes;
+    for(int w=0; w<8; ++w)
+        nodes[w] = p[elem[_indices[w]]];
+
+
+    Transformation R_0_2; // Rotation matrix (deformed and displaced Tetrahedron/world)
+    computeRotationFast( R_0_2, nodes);
+
+    _rotations[i].transpose(R_0_2);
+
+    // positions of the deformed and displaced Tetrahedre in its frame
+    Vec<8,Coord> deformed;
+    for(int w=0; w<8; ++w)
+        deformed[w] = R_0_2 * (nodes[w] - nodes[0]);
+
+
+// 	cerr<<deformed<<endl<<endl;
+
+
+    // displacement
+    Displacement D;
+    for(int k=0 ; k<8 ; ++k )
+    {
+        int indice = k*3;
+        for(int j=0 ; j<3 ; ++j )
+            D[indice+j] = _rotatedInitialElements[i][k][j] - deformed[k][j];
+    }
+
+
+    if(f_updateStiffnessMatrix.getValue())
+// 		computeElementStiffness( _elementStiffnesses[i], _materialsStiffnesses[i], deformed );
+        computeElementStiffness( (*_elementStiffnesses.beginEdit())[i], _materialsStiffnesses[i], deformed, i );
+
+
+    Displacement F; //forces
+    computeForceOptimized( F, D, _elementStiffnesses.getValue()[i] ); // compute force on element
+
+    for(int w=0; w<8; ++w)
+        f[elem[_indices[w]]] += _rotations[i] * Deriv( F[w*3],  F[w*3+1],   F[w*3+2]  );
+}
 
 
 
