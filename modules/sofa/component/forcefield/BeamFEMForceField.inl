@@ -43,6 +43,11 @@ void BeamFEMForceField<DataTypes>::init()
     sofa::core::componentmodel::topology::BaseTopology* bt = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(context->getMainTopology());
     _topology = dynamic_cast<sofa::component::topology::EdgeSetTopology<DataTypes> *>(bt);// context->get< sofa::component::topology::EdgeSetTopology<DataTypes> >();
     topology::MeshTopology* topo2 = dynamic_cast<topology::MeshTopology*>(context->getTopology()); // context->get< sofa::component::topology::MeshTopology >();
+    stiffnessContainer = dynamic_cast<StiffnessContainer *>(context->get< StiffnessContainer >());
+    lengthContainer = dynamic_cast<LengthContainer *>(context->get< LengthContainer >());
+    poissonContainer = dynamic_cast<PoissonContainer *>(context->get< PoissonContainer >());
+    radiusContainer = dynamic_cast<RadiusContainer *>(context->get< RadiusContainer >());
+
     if (_topology==NULL && topo2==NULL)
     {
         std::cerr << "ERROR(BeamFEMForceField): object must have a EdgeSetTopology or MeshTopology.\n";
@@ -91,26 +96,59 @@ void BeamFEMForceField<DataTypes>::reinit()
     _stiffnessMatrices.resize(_indexedElements->size() );
     _forces.resize( _initialPoints.getValue().size() );
 
-    bool needInit = (beamsData.empty());
-    if (needInit)
-        initBeams(_indexedElements->size());
-    //case LARGE :
-    {
-        _beamQuat.resize( _indexedElements->size() );
-        typename VecElement::const_iterator it;
-        i=0;
-        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
-        {
-            Index a = (*it)[0];
-            Index b = (*it)[1];
+    initBeams(_indexedElements->size());
 
-            if (needInit)
-                setBeam(i, _youngModulus.getValue(), (_initialPoints.getValue()[a].getCenter()-_initialPoints.getValue()[b].getCenter()).norm(), _poissonRatio.getValue(), _radius.getValue() );
-            computeStiffness(i,a,b);
-            initLarge(i,a,b);
-        }
-        //break;
+    if (!stiffnessContainer)
+    {
+        ///TODO
+        std::cerr << "Warning(BeamFEMForceField): No object from StiffnessContainer has been loaded.\n";
     }
+    if (!lengthContainer)
+    {
+        ///TODO
+        std::cerr << "Warning(BeamFEMForceField): No object from LengthContainer has been loaded.\n";
+    }
+    if (!poissonContainer)
+    {
+        ///TODO
+        std::cerr << "Warning(BeamFEMForceField): No object from PoissonContainer has been loaded.\n";
+    }
+    if (!radiusContainer)
+    {
+        ///TODO
+        std::cerr << "Warning(BeamFEMForceField): No object from RadiusContainer has been loaded.\n";
+    }
+
+    _beamQuat.resize( _indexedElements->size() );
+    i=0;
+    double stiffness, length, radius, poisson;
+
+    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+    {
+        Index a = (*it)[0];
+        Index b = (*it)[1];
+
+        //if (needInit)
+        if (stiffnessContainer)
+            stiffness = stiffnessContainer->getStiffness(i) ;
+        else stiffness =  _youngModulus.getValue() ;
+        if (lengthContainer)
+            length = lengthContainer->getLength(i) ;
+        else  length = (_initialPoints.getValue()[a].getCenter()-_initialPoints.getValue()[b].getCenter()).norm() ;
+        if (radiusContainer)
+            radius = radiusContainer->getRadius(i) ;
+        else  radius = _radius.getValue() ;
+        if (poissonContainer)
+            poisson = poissonContainer->getPoisson(i) ;
+        else poisson = _poissonRatio.getValue() ;
+
+        std::cout << i << " " << stiffness << " " << length << " " << poisson << " " << radius << std::endl;
+        setBeam(i, stiffness, length, poisson, radius );
+
+        computeStiffness(i,a,b);
+        initLarge(i,a,b);
+    }
+
 
     std::cout << "BeamFEMForceField: init OK, "<<_indexedElements->size()<<" elements."<<std::endl;
 }
