@@ -503,6 +503,7 @@ public:
         */
     virtual void removeQuads(sofa::helper::vector< unsigned int >& quads, const bool removeIsolatedEdges, const bool removeIsolatedPoints);
 
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
 };
 
 /**
@@ -559,6 +560,12 @@ public:
     {
         return (QuadSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
+
+    virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
+    {
+        return getQuadSetTopologyAlgorithms();
+    }
+
     /** \brief Returns the QuadSetTopologyAlgorithms object of this QuadSetTopology.
      */
     QuadSetGeometryAlgorithms<DataTypes> *getQuadSetGeometryAlgorithms() const

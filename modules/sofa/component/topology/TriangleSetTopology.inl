@@ -562,6 +562,12 @@ void TriangleSetTopologyAlgorithms< DataTypes >::removeTriangles(sofa::helper::v
     topology->getTriangleSetTopologyContainer()->checkTopology();
 }
 
+template<class DataTypes>
+void TriangleSetTopologyAlgorithms< DataTypes >::removeItems(sofa::helper::vector< unsigned int >& items)
+{
+    removeTriangles(items, true, true);
+}
+
 // Preparation of "InciseAlongPointsList" :
 // if the input points a and b are equal, then return false
 // if a and b are distinct but belong to the same triangle indexed by ind_a (= ind_p), then remesh the input triangle (such that a and b belongs to distinct triangles indexed by new_ind_ta and new_ind_tb) and return true

@@ -526,6 +526,8 @@ public:
       */
     virtual void removeTetrahedra(sofa::helper::vector< unsigned int >& tetrahedra);
 
+    virtual void removeItems(sofa::helper::vector< unsigned int >& items);
+
 };
 
 /**
@@ -576,6 +578,12 @@ public:
     {
         return (TetrahedronSetTopologyAlgorithms<DataTypes> *)this->m_topologyAlgorithms;
     }
+
+    virtual core::componentmodel::topology::TopologyAlgorithms *getTopologyAlgorithms() const
+    {
+        return getTetrahedronSetTopologyAlgorithms();
+    }
+
     /** \brief Returns the TetrahedronSetTopologyAlgorithms object of this TetrahedronSetTopology.
      */
     TetrahedronSetGeometryAlgorithms<DataTypes> *getTetrahedronSetGeometryAlgorithms() const

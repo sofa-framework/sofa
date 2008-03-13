@@ -46,6 +46,13 @@ template class HexahedronSetGeometryAlgorithms<Vec2dTypes>;
 template class HexahedronSetGeometryAlgorithms<Vec1fTypes>;
 template class HexahedronSetGeometryAlgorithms<Vec1dTypes>;
 
+template class HexahedronSetTopologyModifier<Vec3fTypes>;
+template class HexahedronSetTopologyModifier<Vec3dTypes>;
+template class HexahedronSetTopologyModifier<Vec2fTypes>;
+template class HexahedronSetTopologyModifier<Vec2dTypes>;
+template class HexahedronSetTopologyModifier<Vec1fTypes>;
+template class HexahedronSetTopologyModifier<Vec1dTypes>;
+
 
 // implementation HexahedronSetTopologyContainer
 

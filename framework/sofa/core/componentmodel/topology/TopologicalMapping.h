@@ -85,6 +85,24 @@ public:
     const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
     const sofa::helper::vector<unsigned int>& getLoc2GlobVec() { return Loc2GlobVec;}
 
+    unsigned int getGlobIndex(unsigned int ind)
+    {
+
+        if(ind<Loc2GlobVec.size())
+        {
+            return Loc2GlobVec[ind];
+        }
+        else
+        {
+            return -1;
+        }
+    }
+
+    virtual unsigned int getFromIndex(unsigned int ind)
+    {
+        return -1;
+    }
+
     const std::map<unsigned int, sofa::helper::vector<unsigned int> >& getIn2OutMap() { return In2OutMap;}
 
 protected:
