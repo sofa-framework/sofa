@@ -454,7 +454,7 @@ void AttachConstraint<DataTypes>::projectPosition(VecCoord& res1, VecCoord& res2
             Coord p = res1[indices1[i]];
             defaulttype::Vec3d p3d;
             DataTypes::get(p3d[0],p3d[1],p3d[2],p);
-            lastDist[i] = (p3d-f_lastPos.getValue())*f_lastDir.getValue();
+            lastDist[i] = (Real)( (p3d-f_lastPos.getValue())*f_lastDir.getValue());
             if (lastDist[i] > 0.0)
             {
                 if (clamp)

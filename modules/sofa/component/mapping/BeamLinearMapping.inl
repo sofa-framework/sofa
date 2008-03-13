@@ -62,7 +62,7 @@ void BeamLinearMapping<BasicMapping>::init()
         typename In::VecCoord& xfrom = *this->fromModel->getX();
         beamLength.resize(xfrom.size());
         for (unsigned int i=0; i<xfrom.size()-1; i++)
-            beamLength[i] = (xfrom[i]-xfrom[i+1]).norm();
+            beamLength[i] = (Real)((xfrom[i]-xfrom[i+1]).norm());
 
     }
     this->BasicMapping::init();

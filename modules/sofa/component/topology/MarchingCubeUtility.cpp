@@ -147,7 +147,7 @@ void MarchingCubeUtility::RenderMarchCube(const float *data, const float isoleve
             for(int i=0; i<gridsize[0]-1; i++)
             {
                 GridCell cell;
-                Vec3f vcurf(i, j, k);
+                Vec3f vcurf((float)i, (float)j, (float)k);
                 Vec<3,int> vcuri(i, j, k);
 
                 cell.pos[0]=vcurf.linearProduct(gridStep)-Vec3f(1.0f,1.0f,1.0f);
