@@ -9,8 +9,13 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
-
+#include <sofa/component/StiffnessContainer.h>
+#include <sofa/component/PoissonContainer.h>
+#include <sofa/component/LengthContainer.h>
+#include <sofa/component/RadiusContainer.h>
 #include "NewMAT/newmat.h"
+
+
 
 namespace sofa
 {
@@ -125,6 +130,11 @@ protected:
     Data<Real> _radius;
     bool _updateStiffnessMatrix;
     bool _assembling;
+
+    StiffnessContainer* stiffnessContainer;
+    LengthContainer* lengthContainer;
+    PoissonContainer* poissonContainer;
+    RadiusContainer* radiusContainer;
 
 public:
     BeamFEMForceField()
