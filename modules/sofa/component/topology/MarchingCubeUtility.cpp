@@ -23,19 +23,19 @@ namespace topology
 const float convolutionKernel[3][3][3]
 =
 {
-    {   {0.02,0.034,0.02},
-        {0.034,0.056,0.034},
-        {0.02,0.034,0.02}
+    {   {0.02f,0.034f,0.02f},
+        {0.034f,0.056f,0.034f},
+        {0.02f,0.034f,0.02f}
     },
     {
-        {0.034,0.056,0.034},
-        {0.056,0.092,0.056},
-        {0.034,0.056,0.034}
+        {0.034f,0.056f,0.034f},
+        {0.056f,0.092f,0.056f},
+        {0.034f,0.056f,0.034f}
     },
     {
-        {0.02,0.034,0.02},
-        {0.034,0.056,0.034},
-        {0.02,0.034,0.02}
+        {0.02f,0.034f,0.02f},
+        {0.034f,0.056f,0.034f},
+        {0.02f,0.034f,0.02f}
     }
 };
 
@@ -154,9 +154,9 @@ int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::
 void MarchingCubeUtility::RenderMarchCube( float *data, const float isolevel,
         sofa::helper::vector< IdVertex > &mesh,
         std::map< IdVertex, Vec3f>       &map_indices,
-        const Vec3f &size_voxel, bool smoothing) const
+        const Vec3f &size_voxel, unsigned int CONVOLUTION_LENGTH) const
 {
-    if (smoothing) smoothData(data);
+    if (CONVOLUTION_LENGTH != 0) smoothData(data, CONVOLUTION_LENGTH);
     unsigned int ID = 0;
     std::map< Vec3f, IdVertex> map_vertices;
 
@@ -247,7 +247,7 @@ void MarchingCubeUtility::createMesh( const sofa::helper::vector< IdVertex > &me
     }
 }
 
-void MarchingCubeUtility::createMesh(  float *data,  const float isolevel, sofa::helper::io::Mesh &m,const Vec3f &size_voxel, bool smoothing) const
+void MarchingCubeUtility::createMesh(  float *data,  const float isolevel, sofa::helper::io::Mesh &m,const Vec3f &size_voxel, unsigned int CONVOLUTION_LENGTH) const
 {
     using sofa::helper::vector;
     using sofa::defaulttype::Vector3;
@@ -256,63 +256,84 @@ void MarchingCubeUtility::createMesh(  float *data,  const float isolevel, sofa:
     std::map< IdVertex, Vec3f>  map_indices;
 
     //Do the Marching Cube
-    RenderMarchCube(data, isolevel, mesh, map_indices, size_voxel, smoothing);
+    RenderMarchCube(data, isolevel, mesh, map_indices, size_voxel, CONVOLUTION_LENGTH);
     createMesh(mesh, map_indices, m);
 }
 
-void  MarchingCubeUtility::applyConvolution(unsigned int x, unsigned int y, unsigned int z, const float *original_data, float *data) const
+
+
+void MarchingCubeUtility::smoothData(float *data, unsigned int CONVOLUTION_LENGTH) const
 {
-    const unsigned int index = size[0]*(z*size[1] +y) + x;
-    const unsigned int step=size[0]*size[1];
-    data[index] =
-        convolutionKernel[0][0][0]*original_data[index-step-size[0]-1]+
-        convolutionKernel[0][0][1]*original_data[index-step-size[0]  ]+
-        convolutionKernel[0][0][2]*original_data[index-step-size[0]+1]+
-        convolutionKernel[0][1][0]*original_data[index-step        -1]+
-        convolutionKernel[0][1][1]*original_data[index-step          ]+
-        convolutionKernel[0][1][2]*original_data[index-step        +1]+
-        convolutionKernel[0][2][0]*original_data[index-step+size[0]-1]+
-        convolutionKernel[0][2][1]*original_data[index-step+size[0]  ]+
-        convolutionKernel[0][2][2]*original_data[index-step+size[0]+1]+
+    vector< float >convolutionKernel;
+    createConvolutionKernel(CONVOLUTION_LENGTH, convolutionKernel);
 
-        convolutionKernel[1][0][0]*original_data[index     -size[0]-1]+
-        convolutionKernel[1][0][1]*original_data[index     -size[0]  ]+
-        convolutionKernel[1][0][2]*original_data[index     -size[0]+1]+
-        convolutionKernel[1][1][0]*original_data[index             -1]+
-        convolutionKernel[1][1][1]*original_data[index               ]+
-        convolutionKernel[1][1][2]*original_data[index             +1]+
-        convolutionKernel[1][2][0]*original_data[index     +size[0]-1]+
-        convolutionKernel[1][2][1]*original_data[index     +size[0]  ]+
-        convolutionKernel[1][2][2]*original_data[index     +size[0]+1]+
-
-        convolutionKernel[2][0][0]*original_data[index+step-size[0]-1]+
-        convolutionKernel[2][0][1]*original_data[index+step-size[0]  ]+
-        convolutionKernel[2][0][2]*original_data[index+step-size[0]+1]+
-        convolutionKernel[2][1][0]*original_data[index+step        -1]+
-        convolutionKernel[2][1][1]*original_data[index+step          ]+
-        convolutionKernel[2][1][2]*original_data[index+step        +1]+
-        convolutionKernel[2][2][0]*original_data[index+step+size[0]-1]+
-        convolutionKernel[2][2][1]*original_data[index+step+size[0]  ]+
-        convolutionKernel[2][2][2]*original_data[index+step+size[0]+1];
-}
-
-
-
-void MarchingCubeUtility::smoothData(float *data) const
-{
     float *original_data=new float[size[0]*size[1]*size[2]];
     memcpy(original_data, data, sizeof(float)*size[0]*size[1]*size[2]);
-    for ( int z=1; z<size[2]-1; ++z)
+    unsigned int limit = CONVOLUTION_LENGTH/2;
+    unsigned int z,y,x;
+    for (z=limit; z<size[2]-limit; ++z)
     {
-        for ( int y=1; y<size[1]-1; ++y)
+        for (y=limit; y<size[1]-limit; ++y)
         {
-            for ( int x=1; x<size[0]-1; ++x)
+            for (x=limit; x<size[0]-limit; ++x)
             {
-                applyConvolution(x,y,z, original_data, data);
+                applyConvolution(CONVOLUTION_LENGTH, x,y,z, original_data, data, convolutionKernel);
             }
         }
     }
+
     delete [] original_data;
+}
+
+void  MarchingCubeUtility::applyConvolution(unsigned int CONVOLUTION_LENGTH, unsigned int x, unsigned int y, unsigned int z, const float *original_data, float *data, const vector< float >  &convolutionKernel) const
+{
+
+    const unsigned int index = size[0]*(z*size[1] +y) +x;
+    const unsigned int step=size[0]*size[1];
+    data[index] = 0;
+    const unsigned int c=CONVOLUTION_LENGTH/2;
+    unsigned int _z,_y,_x;
+    unsigned int i=0;
+    for (  _z=0; _z<CONVOLUTION_LENGTH; ++_z)
+    {
+        for (  _y=0; _y<CONVOLUTION_LENGTH; ++_y)
+        {
+            for (  _x=0; _x<CONVOLUTION_LENGTH; ++_x)
+            {
+                data[index] += convolutionKernel[i++]*original_data[index+step*(_z-c)+size[0]*(_y-c)+(_x-c)];
+            }
+        }
+    }
+}
+
+
+void MarchingCubeUtility::createConvolutionKernel(unsigned int CONVOLUTION_LENGTH, vector< float >  &convolutionKernel) const
+{
+    double c = 1.0 + CONVOLUTION_LENGTH/2;
+    double total = 0.0;
+
+    convolutionKernel.resize(CONVOLUTION_LENGTH*CONVOLUTION_LENGTH*CONVOLUTION_LENGTH);
+
+    unsigned int i=0;
+    for (unsigned int z=0; z<CONVOLUTION_LENGTH; ++z)
+    {
+        for (unsigned int y=0; y<CONVOLUTION_LENGTH; ++y)
+        {
+            for (unsigned int x=0; x<CONVOLUTION_LENGTH; ++x)
+            {
+                convolutionKernel[i] = (float)(exp( -(pow(x+1-c,2) + pow(y+1-c,2) + pow(z+1-c,2))/(2.0)));
+                total += convolutionKernel[i++];
+            }
+        }
+    }
+
+    i=0;
+    for (unsigned int z=0; z<CONVOLUTION_LENGTH; ++z)
+        for (unsigned int y=0; y<CONVOLUTION_LENGTH; ++y)
+            for (unsigned int x=0; x<CONVOLUTION_LENGTH; ++x)
+                convolutionKernel[i++] /= total;
+
+
 }
 
 }

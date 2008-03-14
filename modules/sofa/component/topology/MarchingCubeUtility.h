@@ -18,6 +18,7 @@ namespace topology
 
 using sofa::defaulttype::Vec3f;
 using sofa::defaulttype::Vec;
+using sofa::helper::vector;
 
 class MarchingCubeUtility
 {
@@ -44,10 +45,11 @@ public:
     void RenderMarchCube( float *data,  const float isolevel,
             sofa::helper::vector< IdVertex >   &mesh,
             std::map< IdVertex, Vec3f>  &map_indices,
-            const Vec3f &size_voxel=Vec3f(1.0f,1.0f,1.0f), bool smoothing=false) const ;
+            const Vec3f &size_voxel=Vec3f(1.0f,1.0f,1.0f), unsigned int CONVOLUTION_LENGTH=3) const ;
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously), we construct a Sofa mesh.
-    void createMesh(  float *data,  const float isolevel, sofa::helper::io::Mesh &m, const Vec3f &size_voxel=Vec3f(1.0f,1.0f,1.0f), bool smoothing=false) const;
+    void createMesh(  float *data,  const float isolevel, sofa::helper::io::Mesh &m, const Vec3f &size_voxel=Vec3f(1.0f,1.0f,1.0f),
+            unsigned int CONVOLUTION_LENGTH=0) const;
 
     void createMesh( const sofa::helper::vector< IdVertex >   &mesh,
             std::map< IdVertex, Vec3f>  &map_indices,
@@ -64,15 +66,16 @@ protected:
             std::map< IdVertex, Vec3f> &map_indices,
             unsigned int &ID, const Vec3f &size_voxel) const ;
 
-    void applyConvolution(unsigned int x, unsigned int y, unsigned int z, const float *original_data, float *data) const;
-    void smoothData( float *data) const;
+
+    void createConvolutionKernel(unsigned int CONVOLUTION_LENGTH, vector< float >  &convolutionKernel) const;
+    void applyConvolution(unsigned int CONVOLUTION_LENGTH,unsigned int x, unsigned int y, unsigned int z, const float *original_data, float *data, const vector< float >  &convolutionKernel) const;
+    void smoothData( float *data, unsigned int CONVOLUTION_LENGTH) const;
 
     Vec<3,int> size;
     Vec<3,int> gridsize;
 
 };
 
-extern const float convolutionKernel[3][3][3];
 
 }
 }

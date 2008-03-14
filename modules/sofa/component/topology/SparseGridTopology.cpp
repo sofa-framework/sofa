@@ -105,7 +105,8 @@ SparseGridTopology::SparseGridTopology()
     max(initData(&max,Vec3d(0,0,0),"max","Max")),
     dim_voxels(initData(&dim_voxels,Vec<3,int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
     size_voxel(initData(&size_voxel,Vec3f(1.0f,1.0f,1.0f),"size_voxel","Dimension of one voxel")),
-    resolution(initData(&resolution, (unsigned int) 128, "resolution", "Resolution of the Marching Cube"))
+    resolution(initData(&resolution, (unsigned int) 128, "resolution", "Resolution of the Marching Cube")),
+    smoothData(initData(&smoothData, (unsigned int) 0, "smoothData", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
 {
     _alreadyInit = false;
     _finerSparseGrid = NULL;
@@ -409,11 +410,11 @@ void SparseGridTopology::updateMesh()
     MC.setSize(Vec<3,int>(dim_voxels.getValue()[0],dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
 
     //Cubic voxels
-    MC.setGridSize(Vec<3,int>(      resolution.getValue()*dim_voxels.getValue()[1]/s,
+    MC.setGridSize(Vec<3,int>(      resolution.getValue()*dim_voxels.getValue()[0]/s,
             (int)(resolution.getValue()*dim_voxels.getValue()[1]/s),
             (int)(resolution.getValue()*dim_voxels.getValue()[2]/s)));
 
-    MC.RenderMarchCube(&dataVoxels[0], 0.25f,mesh_MC, map_indices, size_voxel.getValue(), true); //Apply Smoothing
+    MC.RenderMarchCube(&dataVoxels[0], 0.25f,mesh_MC, map_indices, size_voxel.getValue(), smoothData.getValue()); //Apply Smoothing
 
     constructCollisionModels(list_mesh, list_X, mesh_MC, map_indices);
 
