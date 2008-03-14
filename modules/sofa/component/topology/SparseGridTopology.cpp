@@ -103,7 +103,7 @@ SparseGridTopology::SparseGridTopology()
     n(initData(&n,Vec<3,int>(2,2,2),"n","grid resolution")),
     min(initData(&min,Vec3d(0,0,0),"min","Min")),
     max(initData(&max,Vec3d(0,0,0),"max","Max")),
-    dim_voxels(initData(&dim_voxels,Vec<3,int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
+    dim_voxels(initData(&dim_voxels,Vec<3,unsigned int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
     size_voxel(initData(&size_voxel,Vec3f(1.0f,1.0f,1.0f),"size_voxel","Dimension of one voxel")),
     resolution(initData(&resolution, (unsigned int) 128, "resolution", "Resolution of the Marching Cube")),
     smoothData(initData(&smoothData, (unsigned int) 0, "smoothData", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
@@ -377,7 +377,7 @@ void SparseGridTopology::updateMesh()
     if (!_usingMC || dataVoxels.size() == 0) return;
 
 
-    double s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
+    unsigned int s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
     min.setValue(size_voxel.getValue()*s*(-0.5));
     max.setValue(size_voxel.getValue()*s*0.5);
 

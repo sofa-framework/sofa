@@ -169,10 +169,10 @@ protected:
     Data< Vec<3, double> > min;
     Data< Vec<3, double> > max;
 
-    Data< Vec<3, int>  > dim_voxels;
-    Data< Vec3f >        size_voxel;
-    Data< unsigned int > resolution;
-    Data< unsigned int > smoothData;
+    Data< Vec<3, unsigned int>  > dim_voxels;
+    Data< Vec3f >                 size_voxel;
+    Data< unsigned int >          resolution;
+    Data< unsigned int >          smoothData;
 
     virtual void updateEdges();
     virtual void updateQuads();
