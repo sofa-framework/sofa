@@ -22,6 +22,8 @@ namespace misc
 /** Write State vectors to file at a given set of time instants
  * A period can be etablished at the last time instant
  * The DoFs to print can be chosen using DOFsX and DOFsV
+ * Stop to write the state if the kinematic energy reach a given threshold (stopAt)
+ * The energy will be measured at each period determined by keperiod
 */
 template<class DataTypes>
 class WriteState: public core::objectmodel::BaseObject
@@ -41,12 +43,17 @@ public:
     Data < double > f_period;
     Data < helper::vector<unsigned int> > f_DOFsX;
     Data < helper::vector<unsigned int> > f_DOFsV;
+    Data < double > f_stopAt;
+    Data < double > f_keperiod;
 
 protected:
     core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;
     std::ofstream* outfile;
     unsigned int nextTime;
     double lastTime;
+    bool kineticEnergyThresholdReached;
+    double timeToTestEnergyIncrease;
+    double savedKineticEnergy;
 
 public:
     WriteState();
