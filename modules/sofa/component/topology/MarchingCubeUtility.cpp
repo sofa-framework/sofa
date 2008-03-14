@@ -288,8 +288,8 @@ void  MarchingCubeUtility::applyConvolution(unsigned int CONVOLUTION_LENGTH, uns
 
 void MarchingCubeUtility::createConvolutionKernel(unsigned int CONVOLUTION_LENGTH, vector< float >  &convolutionKernel) const
 {
-    double c = 1.0 + CONVOLUTION_LENGTH/2;
-    double total = 0.0;
+    float c = 1.0 + CONVOLUTION_LENGTH/2;
+    float total = 0.0;
 
     convolutionKernel.resize(CONVOLUTION_LENGTH*CONVOLUTION_LENGTH*CONVOLUTION_LENGTH);
 
