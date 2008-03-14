@@ -761,99 +761,99 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeForceOptimized( Displacement &F, const Displacement &Depl, const ElementStiffness &K )
 {
     // taking into account null terms in K and in Depl
-    float t16 = K[0][6]*Depl[6]+K[0][7]*Depl[7]+K[0][8]*Depl[8]+K[0][10]*Depl[10]+K[0][13]*
+    Real t16 = K[0][6]*Depl[6]+K[0][7]*Depl[7]+K[0][8]*Depl[8]+K[0][10]*Depl[10]+K[0][13]*
             Depl[13]+K[0][14]*Depl[14]+K[0][15]*Depl[15]+K[0][16]*Depl[16]+K[0][17]*Depl[17]+K[0][18]
             *Depl[18]+K[0][19]*Depl[19]+K[0][20]*Depl[20]+K[0][21]*Depl[21]+K[0][22]*Depl[22]+K[0]
             [23]*Depl[23];
-    float t34 = K[1][3]*Depl[3]+K[1][6]*Depl[6]+K[1][7]*Depl[7]+K[1][8]*Depl[8]+K[1][9]*Depl
+    Real t34 = K[1][3]*Depl[3]+K[1][6]*Depl[6]+K[1][7]*Depl[7]+K[1][8]*Depl[8]+K[1][9]*Depl
             [9]+K[1][10]*Depl[10]+K[1][12]*Depl[12]+K[1][14]*Depl[14]+K[1][15]*Depl[15]+K[1][16]*Depl
             [16]+K[1][17]*Depl[17]+K[1][18]*Depl[18]+K[1][19]*Depl[19]+K[1][20]*Depl[20]+K[1][21]*
             Depl[21]+K[1][22]*Depl[22]+K[1][23]*Depl[23];
-    float t53 = K[2][3]*Depl[3]+K[2][6]*Depl[6]+K[2][7]*Depl[7]+K[2][8]*Depl[8]+K[2][9]*Depl
+    Real t53 = K[2][3]*Depl[3]+K[2][6]*Depl[6]+K[2][7]*Depl[7]+K[2][8]*Depl[8]+K[2][9]*Depl
             [9]+K[2][10]*Depl[10]+K[2][12]*Depl[12]+K[2][13]*Depl[13]+K[2][14]*Depl[14]+K[2][15]*Depl
             [15]+K[2][16]*Depl[16]+K[2][17]*Depl[17]+K[2][18]*Depl[18]+K[2][19]*Depl[19]+K[2][20]*
             Depl[20]+K[2][21]*Depl[21]+K[2][22]*Depl[22]+K[2][23]*Depl[23];
-    float t70 = K[3][3]*Depl[3]+K[3][7]*Depl[7]+K[3][8]*Depl[8]+K[3][9]*Depl[9]+K[3][10]*Depl
+    Real t70 = K[3][3]*Depl[3]+K[3][7]*Depl[7]+K[3][8]*Depl[8]+K[3][9]*Depl[9]+K[3][10]*Depl
             [10]+K[3][12]*Depl[12]+K[3][13]*Depl[13]+K[3][14]*Depl[14]+K[3][16]*Depl[16]+K[3][17]*
             Depl[17]+K[3][18]*Depl[18]+K[3][19]*Depl[19]+K[3][20]*Depl[20]+K[3][21]*Depl[21]+K[3][22]
             *Depl[22]+K[3][23]*Depl[23];
-    float t88 = K[4][3]*Depl[3]+K[4][6]*Depl[6]+K[4][7]*Depl[7]+K[4][8]*Depl[8]+K[4][9]*Depl
+    Real t88 = K[4][3]*Depl[3]+K[4][6]*Depl[6]+K[4][7]*Depl[7]+K[4][8]*Depl[8]+K[4][9]*Depl
             [9]+K[4][10]*Depl[10]+K[4][12]*Depl[12]+K[4][13]*Depl[13]+K[4][14]*Depl[14]+K[4][15]*Depl
             [15]+K[4][17]*Depl[17]+K[4][18]*Depl[18]+K[4][19]*Depl[19]+K[4][20]*Depl[20]+K[4][21]*
             Depl[21]+K[4][22]*Depl[22]+K[4][23]*Depl[23];
-    float t106 = K[5][3]*Depl[3]+K[5][6]*Depl[6]+K[5][7]*Depl[7]+K[5][9]*Depl[9]+K[5][10]*
+    Real t106 = K[5][3]*Depl[3]+K[5][6]*Depl[6]+K[5][7]*Depl[7]+K[5][9]*Depl[9]+K[5][10]*
             Depl[10]+K[5][12]*Depl[12]+K[5][13]*Depl[13]+K[5][14]*Depl[14]+K[5][15]*Depl[15]+K[5][16]
             *Depl[16]+K[5][17]*Depl[17]+K[5][18]*Depl[18]+K[5][19]*Depl[19]+K[5][20]*Depl[20]+K[5]
             [21]*Depl[21]+K[5][22]*Depl[22]+K[5][23]*Depl[23];
-    float t122 = K[6][6]*Depl[6]+K[6][7]*Depl[7]+K[6][8]*Depl[8]+K[6][10]*Depl[10]+K[6][12]
+    Real t122 = K[6][6]*Depl[6]+K[6][7]*Depl[7]+K[6][8]*Depl[8]+K[6][10]*Depl[10]+K[6][12]
             *Depl[12]+K[6][13]*Depl[13]+K[6][14]*Depl[14]+K[6][15]*Depl[15]+K[6][16]*Depl[16]+K[6]
             [17]*Depl[17]+K[6][19]*Depl[19]+K[6][20]*Depl[20]+K[6][21]*Depl[21]+K[6][22]*Depl[22]+K
             [6][23]*Depl[23];
-    float t139 = K[7][3]*Depl[3]+K[7][6]*Depl[6]+K[7][7]*Depl[7]+K[7][8]*Depl[8]+K[7][9]*Depl
+    Real t139 = K[7][3]*Depl[3]+K[7][6]*Depl[6]+K[7][7]*Depl[7]+K[7][8]*Depl[8]+K[7][9]*Depl
             [9]+K[7][12]*Depl[12]+K[7][13]*Depl[13]+K[7][14]*Depl[14]+K[7][15]*Depl[15]+K[7][16]*Depl
             [16]+K[7][17]*Depl[17]+K[7][18]*Depl[18]+K[7][20]*Depl[20]+K[7][21]*Depl[21]+K[7][22]*
             Depl[22]+K[7][23]*Depl[23];
-    float t158 = K[8][3]*Depl[3]+K[8][6]*Depl[6]+K[8][7]*Depl[7]+K[8][8]*Depl[8]+K[8][9]*Depl
+    Real t158 = K[8][3]*Depl[3]+K[8][6]*Depl[6]+K[8][7]*Depl[7]+K[8][8]*Depl[8]+K[8][9]*Depl
             [9]+K[8][10]*Depl[10]+K[8][12]*Depl[12]+K[8][13]*Depl[13]+K[8][14]*Depl[14]+K[8][15]*Depl
             [15]+K[8][16]*Depl[16]+K[8][17]*Depl[17]+K[8][18]*Depl[18]+K[8][19]*Depl[19]+K[8][20]*
             Depl[20]+K[8][21]*Depl[21]+K[8][22]*Depl[22]+K[8][23]*Depl[23];
-    float t175 = K[9][3]*Depl[3]+K[9][7]*Depl[7]+K[9][8]*Depl[8]+K[9][9]*Depl[9]+K[9][10]*
+    Real t175 = K[9][3]*Depl[3]+K[9][7]*Depl[7]+K[9][8]*Depl[8]+K[9][9]*Depl[9]+K[9][10]*
             Depl[10]+K[9][12]*Depl[12]+K[9][13]*Depl[13]+K[9][14]*Depl[14]+K[9][15]*Depl[15]+K[9][16]
             *Depl[16]+K[9][17]*Depl[17]+K[9][18]*Depl[18]+K[9][19]*Depl[19]+K[9][20]*Depl[20]+K[9]
             [22]*Depl[22]+K[9][23]*Depl[23];
-    float t192 = K[10][3]*Depl[3]+K[10][6]*Depl[6]+K[10][8]*Depl[8]+K[10][9]*Depl[9]+K[10]
+    Real t192 = K[10][3]*Depl[3]+K[10][6]*Depl[6]+K[10][8]*Depl[8]+K[10][9]*Depl[9]+K[10]
             [10]*Depl[10]+K[10][12]*Depl[12]+K[10][13]*Depl[13]+K[10][14]*Depl[14]+K[10][15]*Depl[15]
             +K[10][16]*Depl[16]+K[10][17]*Depl[17]+K[10][18]*Depl[18]+K[10][19]*Depl[19]+K[10][20]*
             Depl[20]+K[10][21]*Depl[21]+K[10][23]*Depl[23];
-    float t210 = K[11][3]*Depl[3]+K[11][6]*Depl[6]+K[11][7]*Depl[7]+K[11][9]*Depl[9]+K[11]
+    Real t210 = K[11][3]*Depl[3]+K[11][6]*Depl[6]+K[11][7]*Depl[7]+K[11][9]*Depl[9]+K[11]
             [10]*Depl[10]+K[11][12]*Depl[12]+K[11][13]*Depl[13]+K[11][14]*Depl[14]+K[11][15]*Depl[15]
             +K[11][16]*Depl[16]+K[11][17]*Depl[17]+K[11][18]*Depl[18]+K[11][19]*Depl[19]+K[11][20]*
             Depl[20]+K[11][21]*Depl[21]+K[11][22]*Depl[22]+K[11][23]*Depl[23];
-    float t227 = K[12][3]*Depl[3]+K[12][6]*Depl[6]+K[12][7]*Depl[7]+K[12][8]*Depl[8]+K[12]
+    Real t227 = K[12][3]*Depl[3]+K[12][6]*Depl[6]+K[12][7]*Depl[7]+K[12][8]*Depl[8]+K[12]
             [9]*Depl[9]+K[12][10]*Depl[10]+K[12][12]*Depl[12]+K[12][13]*Depl[13]+K[12][14]*Depl[14]+K
             [12][16]*Depl[16]+K[12][17]*Depl[17]+K[12][18]*Depl[18]+K[12][19]*Depl[19]+K[12][20]*Depl
             [20]+K[12][22]*Depl[22]+K[12][23]*Depl[23];
-    float t245 = K[13][3]*Depl[3]+K[13][6]*Depl[6]+K[13][7]*Depl[7]+K[13][8]*Depl[8]+K[13]
+    Real t245 = K[13][3]*Depl[3]+K[13][6]*Depl[6]+K[13][7]*Depl[7]+K[13][8]*Depl[8]+K[13]
             [9]*Depl[9]+K[13][10]*Depl[10]+K[13][12]*Depl[12]+K[13][13]*Depl[13]+K[13][14]*Depl[14]+K
             [13][15]*Depl[15]+K[13][17]*Depl[17]+K[13][18]*Depl[18]+K[13][19]*Depl[19]+K[13][20]*Depl
             [20]+K[13][21]*Depl[21]+K[13][22]*Depl[22]+K[13][23]*Depl[23];
-    float t262 = K[14][3]*Depl[3]+K[14][6]*Depl[6]+K[14][7]*Depl[7]+K[14][8]*Depl[8]+K[14]
+    Real t262 = K[14][3]*Depl[3]+K[14][6]*Depl[6]+K[14][7]*Depl[7]+K[14][8]*Depl[8]+K[14]
             [9]*Depl[9]+K[14][10]*Depl[10]+K[14][12]*Depl[12]+K[14][13]*Depl[13]+K[14][14]*Depl[14]+K
             [14][15]*Depl[15]+K[14][16]*Depl[16]+K[14][18]*Depl[18]+K[14][19]*Depl[19]+K[14][20]*Depl
             [20]+K[14][21]*Depl[21]+K[14][22]*Depl[22];
-    float t278 = K[15][6]*Depl[6]+K[15][7]*Depl[7]+K[15][8]*Depl[8]+K[15][9]*Depl[9]+K[15]
+    Real t278 = K[15][6]*Depl[6]+K[15][7]*Depl[7]+K[15][8]*Depl[8]+K[15][9]*Depl[9]+K[15]
             [10]*Depl[10]+K[15][13]*Depl[13]+K[15][14]*Depl[14]+K[15][15]*Depl[15]+K[15][16]*Depl[16]
             +K[15][17]*Depl[17]+K[15][19]*Depl[19]+K[15][20]*Depl[20]+K[15][21]*Depl[21]+K[15][22]*
             Depl[22]+K[15][23]*Depl[23];
-    float t296 = K[16][3]*Depl[3]+K[16][6]*Depl[6]+K[16][7]*Depl[7]+K[16][8]*Depl[8]+K[16]
+    Real t296 = K[16][3]*Depl[3]+K[16][6]*Depl[6]+K[16][7]*Depl[7]+K[16][8]*Depl[8]+K[16]
             [9]*Depl[9]+K[16][10]*Depl[10]+K[16][12]*Depl[12]+K[16][14]*Depl[14]+K[16][15]*Depl[15]+K
             [16][16]*Depl[16]+K[16][17]*Depl[17]+K[16][18]*Depl[18]+K[16][19]*Depl[19]+K[16][20]*Depl
             [20]+K[16][21]*Depl[21]+K[16][22]*Depl[22]+K[16][23]*Depl[23];
-    float t313 = K[17][3]*Depl[3]+K[17][6]*Depl[6]+K[17][7]*Depl[7]+K[17][8]*Depl[8]+K[17]
+    Real t313 = K[17][3]*Depl[3]+K[17][6]*Depl[6]+K[17][7]*Depl[7]+K[17][8]*Depl[8]+K[17]
             [9]*Depl[9]+K[17][10]*Depl[10]+K[17][12]*Depl[12]+K[17][13]*Depl[13]+K[17][15]*Depl[15]+K
             [17][16]*Depl[16]+K[17][17]*Depl[17]+K[17][18]*Depl[18]+K[17][19]*Depl[19]+K[17][21]*Depl
             [21]+K[17][22]*Depl[22]+K[17][23]*Depl[23];
-    float t329 = K[18][3]*Depl[3]+K[18][7]*Depl[7]+K[18][8]*Depl[8]+K[18][9]*Depl[9]+K[18]
+    Real t329 = K[18][3]*Depl[3]+K[18][7]*Depl[7]+K[18][8]*Depl[8]+K[18][9]*Depl[9]+K[18]
             [10]*Depl[10]+K[18][12]*Depl[12]+K[18][13]*Depl[13]+K[18][14]*Depl[14]+K[18][16]*Depl[16]
             +K[18][17]*Depl[17]+K[18][18]*Depl[18]+K[18][19]*Depl[19]+K[18][20]*Depl[20]+K[18][22]*
             Depl[22]+K[18][23]*Depl[23];
-    float t346 = K[19][3]*Depl[3]+K[19][6]*Depl[6]+K[19][8]*Depl[8]+K[19][9]*Depl[9]+K[19]
+    Real t346 = K[19][3]*Depl[3]+K[19][6]*Depl[6]+K[19][8]*Depl[8]+K[19][9]*Depl[9]+K[19]
             [10]*Depl[10]+K[19][12]*Depl[12]+K[19][13]*Depl[13]+K[19][14]*Depl[14]+K[19][15]*Depl[15]
             +K[19][16]*Depl[16]+K[19][17]*Depl[17]+K[19][18]*Depl[18]+K[19][19]*Depl[19]+K[19][20]*
             Depl[20]+K[19][21]*Depl[21]+K[19][23]*Depl[23];
-    float t363 = K[20][3]*Depl[3]+K[20][6]*Depl[6]+K[20][7]*Depl[7]+K[20][8]*Depl[8]+K[20]
+    Real t363 = K[20][3]*Depl[3]+K[20][6]*Depl[6]+K[20][7]*Depl[7]+K[20][8]*Depl[8]+K[20]
             [9]*Depl[9]+K[20][10]*Depl[10]+K[20][12]*Depl[12]+K[20][13]*Depl[13]+K[20][14]*Depl[14]+K
             [20][15]*Depl[15]+K[20][16]*Depl[16]+K[20][18]*Depl[18]+K[20][19]*Depl[19]+K[20][20]*Depl
             [20]+K[20][21]*Depl[21]+K[20][22]*Depl[22];
-    float t379 = K[21][3]*Depl[3]+K[21][6]*Depl[6]+K[21][7]*Depl[7]+K[21][8]*Depl[8]+K[21]
+    Real t379 = K[21][3]*Depl[3]+K[21][6]*Depl[6]+K[21][7]*Depl[7]+K[21][8]*Depl[8]+K[21]
             [10]*Depl[10]+K[21][13]*Depl[13]+K[21][14]*Depl[14]+K[21][15]*Depl[15]+K[21][16]*Depl[16]
             +K[21][17]*Depl[17]+K[21][19]*Depl[19]+K[21][20]*Depl[20]+K[21][21]*Depl[21]+K[21][22]*
             Depl[22]+K[21][23]*Depl[23];
-    float t396 = K[22][3]*Depl[3]+K[22][6]*Depl[6]+K[22][7]*Depl[7]+K[22][8]*Depl[8]+K[22]
+    Real t396 = K[22][3]*Depl[3]+K[22][6]*Depl[6]+K[22][7]*Depl[7]+K[22][8]*Depl[8]+K[22]
             [9]*Depl[9]+K[22][12]*Depl[12]+K[22][13]*Depl[13]+K[22][14]*Depl[14]+K[22][15]*Depl[15]+K
             [22][16]*Depl[16]+K[22][17]*Depl[17]+K[22][18]*Depl[18]+K[22][20]*Depl[20]+K[22][21]*Depl
             [21]+K[22][22]*Depl[22]+K[22][23]*Depl[23];
-    float t413 = K[23][3]*Depl[3]+K[23][6]*Depl[6]+K[23][7]*Depl[7]+K[23][8]*Depl[8]+K[23]
+    Real t413 = K[23][3]*Depl[3]+K[23][6]*Depl[6]+K[23][7]*Depl[7]+K[23][8]*Depl[8]+K[23]
             [9]*Depl[9]+K[23][10]*Depl[10]+K[23][12]*Depl[12]+K[23][13]*Depl[13]+K[23][15]*Depl[15]+K
             [23][16]*Depl[16]+K[23][17]*Depl[17]+K[23][18]*Depl[18]+K[23][19]*Depl[19]+K[23][21]*Depl
             [21]+K[23][22]*Depl[22]+K[23][23]*Depl[23];
