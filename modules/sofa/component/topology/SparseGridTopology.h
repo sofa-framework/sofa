@@ -172,6 +172,8 @@ protected:
     Data< Vec<3, int>  > dim_voxels;
     Data< Vec3f >        size_voxel;
     Data< unsigned int > resolution;
+    Data< unsigned int > smoothData;
+
     virtual void updateEdges();
     virtual void updateQuads();
     virtual void updateHexas();
