@@ -41,12 +41,13 @@ public:
     /// given a set of data (size of the data and size of the marching cube beeing defined previously), we construct the surface.
     /// mesh is a vector containing the triangles defined as a sequence of three indices
     /// map_indices gives the correspondance between an indice and a 3d position in space
-    void RenderMarchCube(const float *data,  const float isolevel,
+    void RenderMarchCube( float *data,  const float isolevel,
             sofa::helper::vector< IdVertex >   &mesh,
-            std::map< IdVertex, Vec3f>  &map_indices) const ;
+            std::map< IdVertex, Vec3f>  &map_indices,
+            const Vec3f &size_voxel=Vec3f(1.0f,1.0f,1.0f), bool smoothing=false) const ;
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously), we construct a Sofa mesh.
-    void createMesh( const float *data,  const float isolevel, sofa::helper::io::Mesh &m) const;
+    void createMesh(  float *data,  const float isolevel, sofa::helper::io::Mesh &m, const Vec3f &size_voxel=Vec3f(1.0f,1.0f,1.0f), bool smoothing=false) const;
 
     void createMesh( const sofa::helper::vector< IdVertex >   &mesh,
             std::map< IdVertex, Vec3f>  &map_indices,
@@ -54,18 +55,24 @@ public:
 
 protected:
 
-    inline void VertexInterp(const float isolevel, const Vec3f &p1, const Vec3f &p2, const float valp1, const float valp2, Vec3f &p) const ;
+    inline void VertexInterp(const float isolevel, const Vec3f &p1, const Vec3f &p2, const float valp1, const float valp2, const Vec3f &size_voxel, Vec3f &p) const ;
     inline bool testGrid(const float v, const float isolevel) const;
 
     int Polygonise(const GridCell &grid, const float isolevel,
             sofa::helper::vector< IdVertex > &triangles,
             std::map< Vec3f, IdVertex> &map_vertices,
             std::map< IdVertex, Vec3f> &map_indices,
-            unsigned int &ID) const ;
+            unsigned int &ID, const Vec3f &size_voxel) const ;
+
+    void applyConvolution(unsigned int x, unsigned int y, unsigned int z, const float *original_data, float *data) const;
+    void smoothData( float *data) const;
 
     Vec<3,int> size;
     Vec<3,int> gridsize;
+
 };
+
+extern const float convolutionKernel[3][3][3];
 
 }
 }

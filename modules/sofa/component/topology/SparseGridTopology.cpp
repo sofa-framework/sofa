@@ -36,9 +36,7 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/VecTypes.h>
 
-#define DIM                512
-#define DEPTH              246
-#define CUBES              256
+
 using std::cerr;
 using std::endl;
 using std::pair;
@@ -106,7 +104,8 @@ SparseGridTopology::SparseGridTopology()
     min(initData(&min,Vec3d(0,0,0),"min","Min")),
     max(initData(&max,Vec3d(0,0,0),"max","Max")),
     dim_voxels(initData(&dim_voxels,Vec<3,int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
-    size_voxel(initData(&size_voxel,Vec3d(0.7,0.7,2.0),"size_voxel","Dimension of one voxel"))
+    size_voxel(initData(&size_voxel,Vec3f(1.0f,1.0f,1.0f),"size_voxel","Dimension of one voxel")),
+    resolution(initData(&resolution, (unsigned int) 128, "resolution", "Resolution of the Marching Cube"))
 {
     _alreadyInit = false;
     _finerSparseGrid = NULL;
@@ -204,6 +203,7 @@ void SparseGridTopology::init()
 // 		  cerr<<"SparseGridTopology::init() :   "<<this->getName()<<"    cubes size = ";
 // 		  cerr<<seqHexas.size()<<"       ";
 // 		  cerr<<_types.size()<<endl;
+
 }
 
 
@@ -362,12 +362,23 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
     }
     fclose(file);
 
-    min.setValue(Vec<3,double>(-1,-1,-1));
-    max.setValue(Vec<3,double>(1,1,1));
-
+    double s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
+    min.setValue(size_voxel.getValue()*s*(-0.5)); //Centered on 0
+    max.setValue(size_voxel.getValue()*s*0.5);
 
     _regularGrid.setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
+    updateMesh();
+}
+
+void SparseGridTopology::updateMesh()
+{
+    if (!_usingMC || dataVoxels.size() == 0) return;
+
+
+    double s = std::max(dim_voxels.getValue()[0],std::max(dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
+    min.setValue(size_voxel.getValue()*s*(-0.5));
+    max.setValue(size_voxel.getValue()*s*0.5);
 
     //Creating if needed collision models and visual models
     using sofa::simulation::tree::GNode;
@@ -393,15 +404,19 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
             }
         }
     }
-
     mesh_MC.clear();
     map_indices.clear();
     MC.setSize(Vec<3,int>(dim_voxels.getValue()[0],dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
-    MC.setGridSize(Vec<3,int>(CUBES,CUBES,(int)(CUBES*(dim_voxels.getValue()[2]/(float)dim_voxels.getValue()[0]))));
-    //HACK WARNING: only work with square base data (DIM*DIM*DEPTH) for voxels
-    MC.RenderMarchCube(&dataVoxels[0], 0.25f,mesh_MC, map_indices);
+
+    //Cubic voxels
+    MC.setGridSize(Vec<3,int>(      resolution.getValue()*dim_voxels.getValue()[1]/s,
+            (int)(resolution.getValue()*dim_voxels.getValue()[1]/s),
+            (int)(resolution.getValue()*dim_voxels.getValue()[2]/s)));
+
+    MC.RenderMarchCube(&dataVoxels[0], 0.25f,mesh_MC, map_indices, size_voxel.getValue(), true); //Apply Smoothing
 
     constructCollisionModels(list_mesh, list_X, mesh_MC, map_indices);
+
 }
 
 void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
@@ -417,6 +432,7 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
     for (unsigned int i=0; i<list_mesh.size(); ++i)
     {
         list_mesh[i]->clear();
+        std::cout << list_mesh[i]->getName() << " Name Topology \n";
         list_X[i]->resize(map_indices.size());
     }
     //Fill the dofs : WARNING mesh from Marching Cube has indices starting from ID 1, a sofa mesh begins with ID 0
@@ -1159,25 +1175,6 @@ void SparseGridTopology::propagateFrom( const int i, const int j, const int k,
 
 
 /////////////////////
-
-
-const SparseGridTopology::SeqHexas& SparseGridTopology::getHexas()
-{
-    if( !_alreadyInit ) init();
-    return MeshTopology::getHexas();
-}
-
-
-int SparseGridTopology::getNbPoints() const
-{
-    if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
-    if (_usingMC)
-    {
-        return map_indices.size();
-    }
-    else
-        return MeshTopology::getNbPoints();
-}
 
 
 } // namespace topology

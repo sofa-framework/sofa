@@ -677,12 +677,13 @@ void VisualModelImpl::computeMesh(topology::MeshTopology* topology)
 
         if (sofa::component::topology::SparseGridTopology * spTopo = dynamic_cast< sofa::component::topology::SparseGridTopology *>(topology))
         {
-            std::cout << "VisualModel: getting marching cube mesh from topology : "
-                    <<topology->getNbPoints()<<" points, "
-                    << topology->getNbTriangles() << " triangles."<<std::endl;
+            std::cout << "VisualModel: getting marching cube mesh from topology : ";
             sofa::helper::io::Mesh m;
             spTopo->getMesh(m);
             setMesh(m);
+            std::cout
+                    <<m.getVertices().size()<<" points, "
+                            <<m.getFacets().size()  << " triangles."<<std::endl;
             useTopology = false; //visual model needs to be created only once at initial time
             return;
         }

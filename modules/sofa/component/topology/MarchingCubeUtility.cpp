@@ -10,6 +10,8 @@
 
 #define PRECISION 10000.0f
 
+
+
 namespace sofa
 {
 
@@ -18,18 +20,39 @@ namespace component
 
 namespace topology
 {
+const float convolutionKernel[3][3][3]
+=
+{
+    {   {0.02,0.034,0.02},
+        {0.034,0.056,0.034},
+        {0.02,0.034,0.02}
+    },
+    {
+        {0.034,0.056,0.034},
+        {0.056,0.092,0.056},
+        {0.034,0.056,0.034}
+    },
+    {
+        {0.02,0.034,0.02},
+        {0.034,0.056,0.034},
+        {0.02,0.034,0.02}
+    }
+};
+
 
 /*
    Linearly interpolate the position where an isosurface cuts
    an edge between two vertices, each with their own scalar value
 */
-void MarchingCubeUtility::VertexInterp(const float isolevel, const Vec3f &p1, const Vec3f &p2, const float valp1, const float valp2, Vec3f &p) const
+void MarchingCubeUtility::VertexInterp(const float isolevel, const Vec3f &p1, const Vec3f &p2, const float valp1, const float valp2, const Vec3f &size_voxel, Vec3f &p) const
 {
     float mu = (isolevel - valp1) / (valp2 - valp1);
     p = p1 + (p2 - p1) * mu;
+    p = p.linearProduct(size_voxel*size[0]*0.5);
     p[0] = (int)(p[0]*PRECISION)/PRECISION;
     p[1] = (int)(p[1]*PRECISION)/PRECISION;
     p[2] = (int)(p[2]*PRECISION)/PRECISION;
+    //resize to good scale
 }
 
 
@@ -50,7 +73,7 @@ bool MarchingCubeUtility::testGrid(const float v, const float isolevel) const
 int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::helper::vector< IdVertex > &triangles,
         std::map< Vec3f, IdVertex> &map_vertices,
         std::map< IdVertex, Vec3f> &map_indices,
-        unsigned int &ID) const
+        unsigned int &ID, const Vec3f &size_voxel) const
 {
     using namespace sofa::component::mapping; //to grant access to tri and edge tables
     int i,ntriang;
@@ -75,29 +98,29 @@ int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::
 
     /* Find the vertices where the surface intersects the cube */
     if (MarchingCubeEdgeTable[cubeindex] & 1)
-        VertexInterp(isolevel,grid.pos[0],grid.pos[1],grid.val[0],grid.val[1],vertindex[0]);
+        VertexInterp(isolevel,grid.pos[0],grid.pos[1],grid.val[0],grid.val[1], size_voxel, vertindex[0]);
     if (MarchingCubeEdgeTable[cubeindex] & 2)
-        VertexInterp(isolevel,grid.pos[1],grid.pos[2],grid.val[1],grid.val[2],vertindex[1]);
+        VertexInterp(isolevel,grid.pos[1],grid.pos[2],grid.val[1],grid.val[2], size_voxel, vertindex[1]);
     if (MarchingCubeEdgeTable[cubeindex] & 4)
-        VertexInterp(isolevel,grid.pos[2],grid.pos[3],grid.val[2],grid.val[3],vertindex[2]);
+        VertexInterp(isolevel,grid.pos[2],grid.pos[3],grid.val[2],grid.val[3], size_voxel, vertindex[2]);
     if (MarchingCubeEdgeTable[cubeindex] & 8)
-        VertexInterp(isolevel,grid.pos[3],grid.pos[0],grid.val[3],grid.val[0],vertindex[3]);
+        VertexInterp(isolevel,grid.pos[3],grid.pos[0],grid.val[3],grid.val[0], size_voxel, vertindex[3]);
     if (MarchingCubeEdgeTable[cubeindex] & 16)
-        VertexInterp(isolevel,grid.pos[4],grid.pos[5],grid.val[4],grid.val[5],vertindex[4]);
+        VertexInterp(isolevel,grid.pos[4],grid.pos[5],grid.val[4],grid.val[5], size_voxel, vertindex[4]);
     if (MarchingCubeEdgeTable[cubeindex] & 32)
-        VertexInterp(isolevel,grid.pos[5],grid.pos[6],grid.val[5],grid.val[6],vertindex[5]);
+        VertexInterp(isolevel,grid.pos[5],grid.pos[6],grid.val[5],grid.val[6], size_voxel, vertindex[5]);
     if (MarchingCubeEdgeTable[cubeindex] & 64)
-        VertexInterp(isolevel,grid.pos[6],grid.pos[7],grid.val[6],grid.val[7],vertindex[6]);
+        VertexInterp(isolevel,grid.pos[6],grid.pos[7],grid.val[6],grid.val[7], size_voxel, vertindex[6]);
     if (MarchingCubeEdgeTable[cubeindex] & 128)
-        VertexInterp(isolevel,grid.pos[7],grid.pos[4],grid.val[7],grid.val[4],vertindex[7]);
+        VertexInterp(isolevel,grid.pos[7],grid.pos[4],grid.val[7],grid.val[4], size_voxel, vertindex[7]);
     if (MarchingCubeEdgeTable[cubeindex] & 256)
-        VertexInterp(isolevel,grid.pos[0],grid.pos[4],grid.val[0],grid.val[4],vertindex[8]);
+        VertexInterp(isolevel,grid.pos[0],grid.pos[4],grid.val[0],grid.val[4], size_voxel, vertindex[8]);
     if (MarchingCubeEdgeTable[cubeindex] & 512)
-        VertexInterp(isolevel,grid.pos[1],grid.pos[5],grid.val[1],grid.val[5],vertindex[9]);
+        VertexInterp(isolevel,grid.pos[1],grid.pos[5],grid.val[1],grid.val[5], size_voxel, vertindex[9]);
     if (MarchingCubeEdgeTable[cubeindex] & 1024)
-        VertexInterp(isolevel,grid.pos[2],grid.pos[6],grid.val[2],grid.val[6],vertindex[10]);
+        VertexInterp(isolevel,grid.pos[2],grid.pos[6],grid.val[2],grid.val[6], size_voxel, vertindex[10]);
     if (MarchingCubeEdgeTable[cubeindex] & 2048)
-        VertexInterp(isolevel,grid.pos[3],grid.pos[7],grid.val[3],grid.val[7],vertindex[11]);
+        VertexInterp(isolevel,grid.pos[3],grid.pos[7],grid.val[3],grid.val[7], size_voxel, vertindex[11]);
 
     /* Create the triangle */
     ntriang = 0;
@@ -115,8 +138,7 @@ int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::
             else
             {
                 //Add new Vertex in map
-                ID++;
-                current_ID = ID;
+                current_ID = ++ID;
                 map_vertices.insert(std::make_pair(current_P, current_ID));
                 map_indices.insert (std::make_pair(current_ID,current_P));
             }
@@ -129,12 +151,13 @@ int MarchingCubeUtility::Polygonise(const GridCell &grid, float isolevel, sofa::
 
 
 
-void MarchingCubeUtility::RenderMarchCube(const float *data, const float isolevel,
+void MarchingCubeUtility::RenderMarchCube( float *data, const float isolevel,
         sofa::helper::vector< IdVertex > &mesh,
-        std::map< IdVertex, Vec3f>       &map_indices) const
+        std::map< IdVertex, Vec3f>       &map_indices,
+        const Vec3f &size_voxel, bool smoothing) const
 {
+    if (smoothing) smoothData(data);
     unsigned int ID = 0;
-
     std::map< Vec3f, IdVertex> map_vertices;
 
     Vec3f gridStep=Vec3f(2.0f/((float)gridsize[0]),2.0f/((float)gridsize[1]),2.0f/((float)gridsize[2]));
@@ -191,7 +214,7 @@ void MarchingCubeUtility::RenderMarchCube(const float *data, const float isoleve
                 cell.val[7]=data[valPos[0] + valPos[1]*size[0] + valPos[2]*size[0]*size[1]];
 
 
-                int numvert=Polygonise(cell, isolevel, mesh, map_vertices, map_indices, ID);
+                int numvert=Polygonise(cell, isolevel, mesh, map_vertices, map_indices, ID, size_voxel);
                 counter_triangles += numvert/3;
             }
 
@@ -224,7 +247,7 @@ void MarchingCubeUtility::createMesh( const sofa::helper::vector< IdVertex > &me
     }
 }
 
-void MarchingCubeUtility::createMesh( const float *data,  const float isolevel, sofa::helper::io::Mesh &m) const
+void MarchingCubeUtility::createMesh(  float *data,  const float isolevel, sofa::helper::io::Mesh &m,const Vec3f &size_voxel, bool smoothing) const
 {
     using sofa::helper::vector;
     using sofa::defaulttype::Vector3;
@@ -233,9 +256,65 @@ void MarchingCubeUtility::createMesh( const float *data,  const float isolevel, 
     std::map< IdVertex, Vec3f>  map_indices;
 
     //Do the Marching Cube
-    RenderMarchCube(data, isolevel, mesh, map_indices);
+    RenderMarchCube(data, isolevel, mesh, map_indices, size_voxel, smoothing);
     createMesh(mesh, map_indices, m);
 }
+
+void  MarchingCubeUtility::applyConvolution(unsigned int x, unsigned int y, unsigned int z, const float *original_data, float *data) const
+{
+    const unsigned int index = size[0]*(z*size[1] +y) + x;
+    const unsigned int step=size[0]*size[1];
+    data[index] =
+        convolutionKernel[0][0][0]*original_data[index-step-size[0]-1]+
+        convolutionKernel[0][0][1]*original_data[index-step-size[0]  ]+
+        convolutionKernel[0][0][2]*original_data[index-step-size[0]+1]+
+        convolutionKernel[0][1][0]*original_data[index-step        -1]+
+        convolutionKernel[0][1][1]*original_data[index-step          ]+
+        convolutionKernel[0][1][2]*original_data[index-step        +1]+
+        convolutionKernel[0][2][0]*original_data[index-step+size[0]-1]+
+        convolutionKernel[0][2][1]*original_data[index-step+size[0]  ]+
+        convolutionKernel[0][2][2]*original_data[index-step+size[0]+1]+
+
+        convolutionKernel[1][0][0]*original_data[index     -size[0]-1]+
+        convolutionKernel[1][0][1]*original_data[index     -size[0]  ]+
+        convolutionKernel[1][0][2]*original_data[index     -size[0]+1]+
+        convolutionKernel[1][1][0]*original_data[index             -1]+
+        convolutionKernel[1][1][1]*original_data[index               ]+
+        convolutionKernel[1][1][2]*original_data[index             +1]+
+        convolutionKernel[1][2][0]*original_data[index     +size[0]-1]+
+        convolutionKernel[1][2][1]*original_data[index     +size[0]  ]+
+        convolutionKernel[1][2][2]*original_data[index     +size[0]+1]+
+
+        convolutionKernel[2][0][0]*original_data[index+step-size[0]-1]+
+        convolutionKernel[2][0][1]*original_data[index+step-size[0]  ]+
+        convolutionKernel[2][0][2]*original_data[index+step-size[0]+1]+
+        convolutionKernel[2][1][0]*original_data[index+step        -1]+
+        convolutionKernel[2][1][1]*original_data[index+step          ]+
+        convolutionKernel[2][1][2]*original_data[index+step        +1]+
+        convolutionKernel[2][2][0]*original_data[index+step+size[0]-1]+
+        convolutionKernel[2][2][1]*original_data[index+step+size[0]  ]+
+        convolutionKernel[2][2][2]*original_data[index+step+size[0]+1];
+}
+
+
+
+void MarchingCubeUtility::smoothData(float *data) const
+{
+    float *original_data=new float[size[0]*size[1]*size[2]];
+    memcpy(original_data, data, sizeof(float)*size[0]*size[1]*size[2]);
+    for ( int z=1; z<size[2]-1; ++z)
+    {
+        for ( int y=1; y<size[1]-1; ++y)
+        {
+            for ( int x=1; x<size[0]-1; ++x)
+            {
+                applyConvolution(x,y,z, original_data, data);
+            }
+        }
+    }
+    delete [] original_data;
+}
+
 }
 }
 }
