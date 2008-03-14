@@ -20,26 +20,6 @@ namespace component
 
 namespace topology
 {
-const float convolutionKernel[3][3][3]
-=
-{
-    {   {0.02f,0.034f,0.02f},
-        {0.034f,0.056f,0.034f},
-        {0.02f,0.034f,0.02f}
-    },
-    {
-        {0.034f,0.056f,0.034f},
-        {0.056f,0.092f,0.056f},
-        {0.034f,0.056f,0.034f}
-    },
-    {
-        {0.02f,0.034f,0.02f},
-        {0.034f,0.056f,0.034f},
-        {0.02f,0.034f,0.02f}
-    }
-};
-
-
 /*
    Linearly interpolate the position where an isosurface cuts
    an edge between two vertices, each with their own scalar value
@@ -48,11 +28,10 @@ void MarchingCubeUtility::VertexInterp(const float isolevel, const Vec3f &p1, co
 {
     float mu = (isolevel - valp1) / (valp2 - valp1);
     p = p1 + (p2 - p1) * mu;
-    p = p.linearProduct(size_voxel*size[0]*0.5);
+    p = p.linearProduct(size_voxel*size[0]*0.5f);
     p[0] = (int)(p[0]*PRECISION)/PRECISION;
     p[1] = (int)(p[1]*PRECISION)/PRECISION;
     p[2] = (int)(p[2]*PRECISION)/PRECISION;
-    //resize to good scale
 }
 
 
@@ -321,7 +300,7 @@ void MarchingCubeUtility::createConvolutionKernel(unsigned int CONVOLUTION_LENGT
         {
             for (unsigned int x=0; x<CONVOLUTION_LENGTH; ++x)
             {
-                convolutionKernel[i] = (float)(exp( -(pow(x+1-c,2) + pow(y+1-c,2) + pow(z+1-c,2))/(2.0)));
+                convolutionKernel[i] = (float)(exp( -(pow(x+1-c,2) + pow(y+1-c,2) + pow(z+1-c,2))/(2.0f)));
                 total += convolutionKernel[i++];
             }
         }
