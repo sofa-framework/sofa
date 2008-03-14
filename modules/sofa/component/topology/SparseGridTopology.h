@@ -63,6 +63,8 @@ public:
 
     SparseGridTopology();
 
+//					virtual void reinit() {updateMesh();};
+
 // 					static const float WEIGHT[8][8];
     static const float WEIGHT27[8][27];
     static const int cornerIndicesFromFineToCoarse[8][8];
@@ -151,6 +153,8 @@ public:
     SparseGridTopology* getCoarserSparseGrid() const {return _coarserSparseGrid;}
     void setCoarserSparseGrid( SparseGridTopology* csp ) {_coarserSparseGrid=csp;}
 
+    void updateMesh();
+
     RegularGridTopology _regularGrid; ///< based on a corresponding RegularGrid
     vector< int > _indicesOfRegularCubeInSparseGrid; ///< to redirect an indice of a cube in the regular grid to its indice in the sparse grid
 
@@ -166,8 +170,8 @@ protected:
     Data< Vec<3, double> > max;
 
     Data< Vec<3, int>  > dim_voxels;
-    Data< Vec3d >        size_voxel;
-
+    Data< Vec3f >        size_voxel;
+    Data< unsigned int > resolution;
     virtual void updateEdges();
     virtual void updateQuads();
     virtual void updateHexas();
@@ -265,53 +269,21 @@ protected:
     bool _alreadyInit;
 
 public :
-    virtual const SeqCubes& getHexas();
-    virtual int getNbPoints() const;
 
-    virtual int getNbHexas()
+
+    virtual const SeqCubes& getHexas()
     {
-        return getHexas().size();
+        if( !_alreadyInit ) init();
+        return MeshTopology::getHexas();
     }
 
-    virtual vector< fixed_array<unsigned int, 4> >& getQuads()
+    virtual int getNbPoints() const
     {
-
-        if (_usingMC) return this->seqQuads;
-        else
-        {
-            seqQuads = MeshTopology::getQuads();
-            return this->seqQuads;
-        }
+        if( !_alreadyInit ) const_cast<SparseGridTopology*>(this)->init();
+        return MeshTopology::getNbPoints();
     }
 
-    virtual vector< fixed_array<unsigned int, 3> >& getTriangles()
-    {
-        vector< fixed_array<unsigned int, 3> > &t = *seqTriangles.beginEdit();
-        if (_usingMC)
-        {
-            t.resize(mesh_MC.size()/3);
-            for (unsigned int i=0; i<t.size(); ++i)
-            {
-                t[i]=fixed_array<int, 3>(mesh_MC[3*i]-1,mesh_MC[3*i+1]-1,mesh_MC[3*i+2]-1);
-            }
-        }
-        return t;
-    }
-
-    virtual vector< fixed_array<double,3> >& getPoints()
-    {
-        std::cout << getPoints() << "\n";
-        if (_usingMC)
-        {
-            seqPoints.resize(map_indices.size());
-            for (unsigned int i=0; i<seqPoints.size(); ++i)
-            {
-                Vec3f p=map_indices[i+1];
-                seqPoints[i] = fixed_array<double,3>(p[0],p[1],p[2]);
-            }
-        }
-        return this->seqPoints;
-    }
+    virtual int getNbHexas() { return this->getHexas().size();}
 
 };
 
