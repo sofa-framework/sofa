@@ -62,8 +62,6 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef Vec<N,Real> Vec;
 
-    //axis length for display
-    Data<double> axisLength;
 
 protected:
     Data < VecCoord > points;
@@ -76,6 +74,8 @@ protected:
 public:
     Data<unsigned> index;
     Data< std::string > filename;
+    //axis length for display
+    Data<double> axisLength;
 
     RigidRigidMapping(In* from, Out* to)
         : Inherit(from, to),

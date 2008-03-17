@@ -126,7 +126,7 @@ void CenterOfMassMapping<BasicMapping>::applyJT ( typename In::VecDeriv& parentF
 template <class BasicMapping>
 void CenterOfMassMapping<BasicMapping>::draw()
 {
-    Out::VecCoord &X= *this->toModel->getX();
+    const typename Out::VecCoord &X = *this->toModel->getX();
     glBegin (GL_LINES);
     glColor4f (1,1,0,1);
     for(unsigned int i=0 ; i<OutCoord::static_size ; i++)
