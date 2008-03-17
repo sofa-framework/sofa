@@ -359,7 +359,7 @@ void RigidRigidMapping<BasicMapping>::draw()
     const typename Out::VecCoord& x = *this->toModel->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
-        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), 0.7);
+        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), axisLength.getValue());
     }
     glEnd();
 }

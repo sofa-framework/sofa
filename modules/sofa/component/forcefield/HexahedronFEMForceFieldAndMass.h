@@ -72,6 +72,8 @@ public:
 
     void addGravityToV(double dt);
 
+    double getElementMass(unsigned int index);
+
     // visual model
 
     virtual void draw();
