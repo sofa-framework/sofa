@@ -300,7 +300,7 @@ void MarchingCubeUtility::createConvolutionKernel(unsigned int CONVOLUTION_LENGT
         {
             for (unsigned int x=0; x<CONVOLUTION_LENGTH; ++x)
             {
-                convolutionKernel[i] = (float)(exp( -(pow(x+1-c,2) + pow(y+1-c,2) + pow(z+1-c,2))/(2.0f)));
+                convolutionKernel[i] = (float)(exp( -(pow((float)(x+1-c),2) + pow((float)(y+1-c),2) + pow((float)(z+1-c),2))/(2.0f)));
                 total += convolutionKernel[i++];
             }
         }

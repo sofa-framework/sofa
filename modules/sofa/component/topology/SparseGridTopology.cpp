@@ -418,6 +418,8 @@ void SparseGridTopology::updateMesh()
 
     constructCollisionModels(list_mesh, list_X, mesh_MC, map_indices);
 
+    //TODO remove!!!!
+    dataVoxels.clear();
 }
 
 void SparseGridTopology::getMesh(sofa::helper::io::Mesh &m)
@@ -433,7 +435,6 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
     for (unsigned int i=0; i<list_mesh.size(); ++i)
     {
         list_mesh[i]->clear();
-        std::cout << list_mesh[i]->getName() << " Name Topology \n";
         list_X[i]->resize(map_indices.size());
     }
     //Fill the dofs : WARNING mesh from Marching Cube has indices starting from ID 1, a sofa mesh begins with ID 0
