@@ -82,6 +82,9 @@ public:
     /// perform  v += dt*g operation. Used if mass wants to added G separately from the other forces to v.
     virtual void addGravityToV(double dt)=0;
 
+    /// return the mass relative to the DOF #index
+    virtual double getElementMass(unsigned int index)=0;
+
     /// @}
 
 

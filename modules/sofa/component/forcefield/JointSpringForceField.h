@@ -238,7 +238,7 @@ public:
         {
             out<<"BEGIN_SPRING  "<<s.m1<<" "<<s.m2<<"  ";
 
-            if (s.freeMovements[0]!=false || s.freeMovements[1]!=false || s.freeMovements[2]!=false || s.freeMovements[3]!=true || s.freeMovements[4]!=true || s.freeMovements[5]!=false)
+            if (s.freeMovements[0]!=false || s.freeMovements[1]!=false || s.freeMovements[2]!=false || s.freeMovements[3]!=true || s.freeMovements[4]!=true || s.freeMovements[5]!=true)
                 out<<"FREE_AXIS "<<s.freeMovements<<"  ";
             if (s.softStiffnessTrans != 0.0 || s.hardStiffnessTrans != 10000.0)
                 out<<"KS_T "<<s.softStiffnessTrans<<" "<<s.hardStiffnessTrans<<"  ";

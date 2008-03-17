@@ -370,6 +370,14 @@ void DiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * m
         calc(mat, masses[i], offset + N*i, mFact);
 }
 
+
+template <class DataTypes, class MassType>
+double DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index)
+{
+    return (double)(f_mass.getValue()[index]);
+}
+
+
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::handleTopologyChange()
 {

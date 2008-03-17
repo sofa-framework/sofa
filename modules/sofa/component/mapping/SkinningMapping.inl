@@ -308,7 +308,7 @@ void SkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, const t
     const sofa::helper::vector<unsigned int>& m_reps = repartition.getValue();
     const sofa::helper::vector<double>& m_coefs = coefs.getValue();
     const unsigned int nbr = nbRefs.getValue();
-    const unsigned int nbi = this->fromModel->getSize();
+    const unsigned int nbi = this->fromModel->getX()->size();
     Deriv omega;
     typename In::VecDeriv v;
     sofa::helper::vector<bool> flags;

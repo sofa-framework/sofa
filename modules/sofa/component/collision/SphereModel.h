@@ -101,6 +101,7 @@ public:
     sofa::core::componentmodel::behavior::MechanicalState<InDataTypes>* getMechanicalState() { return this; }
 
     Real getRadius(int i) const { return this->radius[i]; }
+    void setRadius(int i, Real r) { this->radius[i] = r; }
 
     const VecReal& getR() const { return this->radius; }
 

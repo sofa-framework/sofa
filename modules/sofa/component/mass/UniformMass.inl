@@ -233,6 +233,13 @@ void UniformMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * ma
 
 
 template <class DataTypes, class MassType>
+double UniformMass<DataTypes, MassType>::getElementMass(unsigned int )
+{
+    return (double)(mass.getValue());
+}
+
+
+template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw()
 {
     if (!getContext()->getShowBehaviorModels())

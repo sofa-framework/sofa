@@ -62,6 +62,9 @@ public:
     typedef defaulttype::Mat<N,N,Real> Mat;
     typedef Vec<N,Real> Vec;
 
+    //axis length for display
+    Data<double> axisLength;
+
 protected:
     Data < VecCoord > points;
     VecCoord pointsR0;
@@ -79,7 +82,8 @@ public:
           points(initData(&points, "initialPoints", "Initial position of the points")),
           repartition(initData(&repartition,"repartition","number of dest dofs per entry dof")),
           index(initData(&index,(unsigned)0,"index","input DOF index")),
-          filename(initData(&filename,"filename","Filename"))
+          filename(initData(&filename,"filename","Filename")),
+          axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display"))
     {
     }
 
@@ -109,6 +113,8 @@ public:
     void draw();
 
     void clear();
+
+    sofa::helper::vector<unsigned int> getRepartition() {return repartition.getValue(); }
 
     void setRepartition(unsigned int value);
     void setRepartition(sofa::helper::vector<unsigned int> values);

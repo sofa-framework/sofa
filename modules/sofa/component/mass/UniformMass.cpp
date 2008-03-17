@@ -437,6 +437,32 @@ double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const Rigid2fT
     return e;
 }
 
+
+template <>
+double UniformMass<Rigid3dTypes,Rigid3dMass>::getElementMass(unsigned int )
+{
+    return (mass.getValue().mass);
+}
+
+template <>
+double UniformMass<Rigid3fTypes,Rigid3fMass>::getElementMass(unsigned int )
+{
+    return (double)(mass.getValue().mass);
+}
+
+template <>
+double UniformMass<Rigid2dTypes,Rigid2dMass>::getElementMass(unsigned int )
+{
+    return (mass.getValue().mass);
+}
+
+template <>
+double UniformMass<Rigid2fTypes,Rigid2fMass>::getElementMass(unsigned int )
+{
+    return (double)(mass.getValue().mass);
+}
+
+
 Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 {
     double cosX = cos(thetaX);

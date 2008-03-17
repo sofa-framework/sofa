@@ -194,6 +194,9 @@ public:
     /// Dynamic Topology
     virtual BaseObject* getMainTopology() const;
 
+    /// Mass
+    virtual BaseObject* getMass() const;
+
     /// Global Shader
     virtual BaseObject* getShader() const;
 

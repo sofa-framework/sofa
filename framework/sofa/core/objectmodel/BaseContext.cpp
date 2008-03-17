@@ -25,6 +25,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 #include <sofa/core/Shader.h>
@@ -235,6 +236,13 @@ BaseObject* BaseContext::getMechanicalState() const
 {
     return this->get<sofa::core::componentmodel::behavior::BaseMechanicalState>();
 }
+
+/// Mass
+BaseObject* BaseContext::getMass() const
+{
+    return this->get<sofa::core::componentmodel::behavior::BaseMass>();
+}
+
 
 /// Topology
 BaseObject* BaseContext::getTopology() const

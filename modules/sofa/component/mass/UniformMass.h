@@ -92,6 +92,8 @@ public:
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);
 
+    double getElementMass(unsigned int index);
+
     void draw();
 
     bool addBBox(double* minBBox, double* maxBBox);
