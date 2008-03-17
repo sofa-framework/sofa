@@ -2174,7 +2174,9 @@ void RealGUI::graphModify()
             return;
         }
 
-        ModifyObject *dialogModify = new ModifyObject ( current_Id_modifyDialog, node, item_clicked,this,node->getName().data() );
+
+        ModifyObject *dialogModify = new ModifyObject ( current_Id_modifyDialog, node, item_clicked,this,item_clicked->text(0));
+
         map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModify));
 
         //If the item clicked is a node, we add it to the list of the element modified

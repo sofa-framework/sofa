@@ -295,7 +295,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const Ve
 
 
 template<class DataTypes>
-double  HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int index)
+double  HexahedronFEMForceFieldAndMass<DataTypes>::getElementMass(unsigned int /*index*/)
 {
     std::cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::getPotentialEnergy not yet implemented\n"; return 0.0;
 }

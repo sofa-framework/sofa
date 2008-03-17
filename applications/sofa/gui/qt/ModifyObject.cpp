@@ -86,13 +86,14 @@ typedef QScrollView Q3ScrollView;
 #endif
 
 
-ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags f ):
+ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags // f
+                          ):
     parent(parent_), node(NULL), Id(Id_),visualContentModified(false)
 {
+    //Title of the Dialog
+    setCaption(name);
 
     energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
-    //Constructor of the QDialog
-    QDialog( parent_, name, f);
     //Initialization of the Widget
     setNode(node_clicked, item_clicked);
     connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
@@ -996,8 +997,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
         connect( buttonCancel,   SIGNAL( clicked() ), this, SLOT( reject() ) );
 
 
-        //Title of the Dialog
-        setCaption((node->getTypeName()+"::"+node->getName()).data());
 
         resize( QSize(553, 130).expandedTo(minimumSizeHint()) );
     }

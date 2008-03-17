@@ -197,7 +197,7 @@ void MatrixMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat
 
 
 template <class DataTypes, class MassType>
-double MatrixMass<DataTypes, MassType>::getElementMass(unsigned int index)
+double MatrixMass<DataTypes, MassType>::getElementMass(unsigned int /*index*/)
 {
     //NOT IMPLEMENTED YET
     return (double)(_defaultValue.getValue());
