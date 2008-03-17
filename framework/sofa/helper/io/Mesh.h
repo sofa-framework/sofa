@@ -67,46 +67,28 @@ public:
 
         inline friend std::ostream& operator << (std::ostream& out, const Material& m )
         {
-            /*
-            out   << m.name << "\"";
-            out<< " diffuse=\""       << m.diffuse      << "\"";
-            out<< " usediffuse=\""    << m.useDiffuse   << "\"";
-            out<< " ambient=\""       <<  m.ambient     << "\"";
-            out<< " useambient=\""    <<  m.useAmbient  << "\"";
-            out<< " specular=\""      <<  m.specular    << "\"";
-            out<< " usespecular=\""   <<  m.useSpecular << "\"";
-            out<< " emissive=\""      <<  m.emissive    << "\"";
-            out<< " useemissive=\""   <<  m.useEmissive << "\"";
-            out<< " shininess=\""     << m.shininess    << "\"";;
-            out<< " useshininess=\""  << m.useShininess;*/
-
             out   << m.name         << " ";
-            out  <<  m.diffuse      << " ";
-            out  <<  m.useDiffuse   << " ";
-            out  <<  m.ambient      << " ";
-            out  <<  m.useAmbient   << " ";
-            out  <<  m.specular     << " ";
-            out  <<  m.useSpecular  << " ";
-            out  <<  m.emissive     << " ";
-            out  <<  m.useEmissive  << " ";
-            out  <<  m.shininess    << " ";;
-            out  <<  m.useShininess;
+            out  << "Diffuse"       << " " <<  m.useDiffuse   << " " <<  m.diffuse      << " ";
+            out  << "Ambient"       << " " <<  m.useAmbient   << " " <<  m.ambient      << " ";
+            out  << "Specular"      << " " <<  m.useSpecular  << " " <<  m.specular     << " ";
+            out  << "Emissive"      << " " <<  m.useEmissive  << " " <<  m.emissive     << " ";
+            out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess ;
             return out;
         }
         inline friend std::istream& operator >> (std::istream& in, Material &m )
         {
 
-            in  >>  m.name        ;
-            in  >>  m.diffuse     ;
-            in  >>  m.useDiffuse  ;
-            in  >>  m.ambient     ;
-            in  >>  m.useAmbient  ;
-            in  >>  m.specular    ;
-            in  >>  m.useSpecular ;
-            in  >>  m.emissive    ;
-            in  >>  m.useEmissive ;
-            in  >>  m.shininess   ;
-            in  >>  m.useShininess;
+            std::string element;
+            in  >>  m.name ;
+            for (unsigned int i=0; i<5; ++i)
+            {
+                in  >>  element;
+                if      (element == std::string("Diffuse")   || element == std::string("diffuse")   ) { in  >>  m.useDiffuse   ; in >> m.diffuse;   }
+                else if (element == std::string("Ambient")   || element == std::string("ambient")   ) { in  >>  m.useAmbient   ; in >> m.ambient;   }
+                else if (element == std::string("Specular")  || element == std::string("specular")  ) { in  >>  m.useSpecular  ; in >> m.specular;  }
+                else if (element == std::string("Emissive")  || element == std::string("emissive")  ) { in  >>  m.useEmissive  ; in >> m.emissive;  }
+                else if (element == std::string("Shininess") || element == std::string("shininess") ) { in  >>  m.useShininess ; in >> m.shininess; }
+            }
             return in;
         }
 

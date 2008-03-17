@@ -179,9 +179,7 @@ protected:
     virtual void updateHexas();
 
     MarchingCubeUtility                 MC;
-    vector< float >                     dataVoxels;
-    sofa::helper::vector< unsigned int> mesh_MC;
-    std::map< unsigned int, Vec3f >     map_indices;
+    Data< vector< unsigned char > >     dataVoxels;
     bool                                _usingMC;
 
     sofa::helper::vector<Type> _types; ///< BOUNDARY or FULL filled cells
@@ -225,6 +223,27 @@ protected:
 
     SparseGridTopology* _finerSparseGrid; ///< an eventual finer sparse grid that can be used to built this coarser sparse grid
     SparseGridTopology* _coarserSparseGrid; ///< an eventual coarser sparse grid
+
+    void setVoxel(unsigned int index, unsigned char value)
+    {
+        if (value)
+        {
+            (*dataVoxels.beginEdit())[index>>3] |= (int) pow(2.0f, index%8);
+        }
+        else
+        {
+            const unsigned int i = index%8;
+            const int mask = (int) pow(2.0f, i);
+            if (((*dataVoxels.beginEdit())[index>>3]&mask)>>i) (*dataVoxels.beginEdit())[index>>3] -= mask;
+        }
+    };
+
+    bool getVoxel(unsigned int index) const
+    {
+        const unsigned int i = index%8;
+        unsigned char c = dataVoxels.getValue()[index>>3];
+        return ((c&((int)(pow(2.0f, i)))) >> i) == 1;
+    };
 
 
     /*	/// to compute valid cubes (intersection between mesh segments and cubes)
