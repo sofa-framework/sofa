@@ -187,7 +187,8 @@ void HexahedronSetTopologyContainer::createHexahedronQuadArray ()
             if (itt==quadMap.end())
             {
                 // quad not in edgeMap so create a new one
-                quadIndex=quadMap.size();
+                quadIndex=m_quad.size();
+                quadMap[qu]=quadIndex;
                 qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
                 quadMap[qu]=quadIndex;
                 m_quad.push_back(qu);
@@ -214,7 +215,8 @@ void HexahedronSetTopologyContainer::createHexahedronQuadArray ()
             if (itt==quadMap.end())
             {
                 // quad not in edgeMap so create a new one
-                quadIndex=quadMap.size();
+                quadIndex=m_quad.size();
+                quadMap[qu]=quadIndex;
                 qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
                 quadMap[qu]=quadIndex;
                 m_quad.push_back(qu);
@@ -241,7 +243,8 @@ void HexahedronSetTopologyContainer::createHexahedronQuadArray ()
             if (itt==quadMap.end())
             {
                 // quad not in edgeMap so create a new one
-                quadIndex=quadMap.size();
+                quadIndex=m_quad.size();
+                quadMap[qu]=quadIndex;
                 qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
                 quadMap[qu]=quadIndex;
                 m_quad.push_back(qu);
@@ -268,7 +271,8 @@ void HexahedronSetTopologyContainer::createHexahedronQuadArray ()
             if (itt==quadMap.end())
             {
                 // quad not in edgeMap so create a new one
-                quadIndex=quadMap.size();
+                quadIndex=m_quad.size();
+                quadMap[qu]=quadIndex;
                 qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
                 quadMap[qu]=quadIndex;
                 m_quad.push_back(qu);
@@ -295,7 +299,8 @@ void HexahedronSetTopologyContainer::createHexahedronQuadArray ()
             if (itt==quadMap.end())
             {
                 // quad not in edgeMap so create a new one
-                quadIndex=quadMap.size();
+                quadIndex=m_quad.size();
+                quadMap[qu]=quadIndex;
                 qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
                 quadMap[qu]=quadIndex;
                 m_quad.push_back(qu);
@@ -322,9 +327,10 @@ void HexahedronSetTopologyContainer::createHexahedronQuadArray ()
             if (itt==quadMap.end())
             {
                 // quad not in edgeMap so create a new one
-                quadIndex=quadMap.size();
+                quadIndex=m_quad.size();
                 quadMap[qu]=quadIndex;
                 qu=helper::make_array<unsigned int>(v[0],v[1],v[2],v[3]);
+                quadMap[qu]=quadIndex;
                 m_quad.push_back(qu);
             }
             else
