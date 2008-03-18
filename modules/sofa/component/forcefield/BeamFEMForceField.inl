@@ -43,10 +43,10 @@ void BeamFEMForceField<DataTypes>::init()
     sofa::core::componentmodel::topology::BaseTopology* bt = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(context->getMainTopology());
     _topology = dynamic_cast<sofa::component::topology::EdgeSetTopology<DataTypes> *>(bt);// context->get< sofa::component::topology::EdgeSetTopology<DataTypes> >();
     topology::MeshTopology* topo2 = dynamic_cast<topology::MeshTopology*>(context->getTopology()); // context->get< sofa::component::topology::MeshTopology >();
-    stiffnessContainer = dynamic_cast<StiffnessContainer*>(context->get<StiffnessContainer>());
-    lengthContainer = dynamic_cast<LengthContainer*>(context->get<LengthContainer>());
-    poissonContainer = dynamic_cast<PoissonContainer*>(context->get<PoissonContainer>());
-    radiusContainer = dynamic_cast<RadiusContainer*>(context->get<RadiusContainer>());
+    stiffnessContainer = context->core::objectmodel::BaseContext::get<StiffnessContainer>();
+    lengthContainer = context->core::objectmodel::BaseContext::get<LengthContainer>();
+    poissonContainer = context->core::objectmodel::BaseContext::get<PoissonContainer>();
+    radiusContainer = context->core::objectmodel::BaseContext::get<RadiusContainer>();
 
     if (_topology==NULL && topo2==NULL)
     {
