@@ -287,7 +287,7 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
 
         int value;
         int numVoxels = 0;
-        dataVoxels.beginEdit()->resize(fileNx * fileNy * fileNz, 0.0f);
+        dataVoxels.beginEdit()->resize(fileNx * fileNy * fileNz, (unsigned char) 0);
         for(int z=0; z<fileNz; ++z)
             for(int y=0; y<fileNy; ++y)
                 for(int x=0; x<fileNx; ++x)
@@ -295,7 +295,7 @@ void SparseGridTopology::buildFromVoxelFile(const std::string& filename)
                     file >> value;
                     if (value != 0)
                     {
-                        (*dataVoxels.beginEdit())[x + fileNx * y + fileNx * fileNy * z] = (float) value;
+                        setVoxel(x + fileNx * y + fileNx * fileNy * z,1);
                         numVoxels++;
                     }
                 }
