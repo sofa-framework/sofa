@@ -303,7 +303,7 @@ double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 // enable to use generic matrix computing code instead of the original optimized code specific to parallelepipeds
 #define GENERIC_STIFFNESS_MATRIX
 // enable to use the full content of the MaterialStiffness matrix, instead of only the 3x3 upper bloc
-//#define MAT_STIFFNESS_USE_W
+#define MAT_STIFFNESS_USE_W
 // enable to use J when computing qx/qy/qz, instead of computing the matrix relative to (x1,x2,x3) and pre/post multiply by J^-1 afterward.
 // note that this does not matter if the element is a cube.
 //#define DN_USE_J
@@ -490,7 +490,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
     for(int i=0; i<8; ++i)
     {
-        Mat33 k = vol*integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[i][0], _coef[i][1],_coef[i][2], M[0][0], M[0][1],M[2][2], J_1  );
+        Mat33 k = vol*integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[i][0], _coef[i][1],_coef[i][2], M[0][0], M[0][1],M[3][3], J_1  );
 
 
         for(int m=0; m<3; ++m)
@@ -503,7 +503,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
 
         for(int j=i+1; j<8; ++j)
         {
-            Mat33 k = vol*integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[j][0], _coef[j][1],_coef[j][2], M[0][0], M[0][1],M[2][2], J_1  );
+            Mat33 k = vol*integrateStiffness(  _coef[i][0], _coef[i][1],_coef[i][2],  _coef[j][0], _coef[j][1],_coef[j][2], M[0][0], M[0][1],M[3][3], J_1  );
 
 
             for(int m=0; m<3; ++m)
@@ -805,8 +805,8 @@ void HexahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i)
 template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K )
 {
-// 	F = K*Depl;
-// 	return;
+    F = K*Depl;
+    return;
 
     // taking into account null terms in K
     Real t23 = K[0][13]*Depl[13]+K[0][14]*Depl[14]+K[0][15]*Depl[15]+K[0]
