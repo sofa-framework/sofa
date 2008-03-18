@@ -30,6 +30,9 @@ template <>
 double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
 
 template <>
+double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int );
+
+template <>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw();
 
 template <>
