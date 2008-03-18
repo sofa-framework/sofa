@@ -197,6 +197,8 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
+    void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset);
+
 
     void draw();
 

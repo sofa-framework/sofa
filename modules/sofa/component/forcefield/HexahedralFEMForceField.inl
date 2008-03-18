@@ -820,8 +820,8 @@ void HexahedralFEMForceField<DataTypes>::computeRotationPolar( Transformation &r
     for(int k=0; k<3; ++k)
         for(int j=0; j<3; ++j)
             HT[k][j]=A[k][j];
-    HT[3][0] = HT[3][1] = HT[3][2] = HT[0][3] = HT[1][3] = HT[2][3] = 0;
-    HT[3][3] = 1;
+    //HT[3][0] = HT[3][1] = HT[3][2] = HT[0][3] = HT[1][3] = HT[2][3] = 0;
+    //HT[3][3] = 1;
     Mat33 S;
 
     polar_decomp(HT, r, S);

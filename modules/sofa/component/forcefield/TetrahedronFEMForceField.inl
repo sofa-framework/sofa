@@ -217,6 +217,13 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J )
 {
+
+    // Unit of K = unit of youngModulus / unit of volume = Pa / m^3 = kg m^-4 s^-2
+    // Unit of J = m^2
+    // Unit of JKJt =  kg s^-2
+    // Unit of displacement = m
+    // Unit of force = kg m s^-2
+
 #if 0
     F = J*(K*(J.multTranspose(Depl)));
 #else
@@ -917,7 +924,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
             // if (flags && !flags->isCubeActive(i)) continue;
             topology::MeshTopology::Cube c = _mesh->getCube(i);
             int sym = 0;
-            if ((i%nx)&1)      sym+=1;
+            if (!((i%nx)&1)) sym+=1;
             if (((i/nx)%ny)&1) sym+=2;
             if ((i/(nx*ny))&1) sym+=4;
             typedef topology::MeshTopology::Tetra Tetra;
