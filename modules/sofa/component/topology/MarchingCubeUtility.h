@@ -69,7 +69,7 @@ protected:
 
     bool getVoxel(unsigned int index, const unsigned char *dataVoxels) const
     {
-        const unsigned int i = index%8;
+        const int i = index%8;
         return ((dataVoxels[index>>3]&((int)(pow(2.0f, i)))) >> i) == 1;
     };
 
