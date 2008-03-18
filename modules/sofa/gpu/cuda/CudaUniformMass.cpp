@@ -26,6 +26,12 @@ double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::
 }
 
 template <>
+double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int )
+{
+    return (double)(mass.getValue().mass);
+}
+
+template <>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw()
 {
     if (!getContext()->getShowBehaviorModels())
