@@ -47,6 +47,7 @@ public:
     Data < IndexArray > f_indices;
     Data < int > f_first;
     Data < int > f_last;
+    Data < Real > f_radius;
     SubsetMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
     void postInit();
 
