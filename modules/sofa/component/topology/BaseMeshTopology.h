@@ -65,6 +65,10 @@ public:
     typedef fixed_array<PointID,4> Tetra;
     typedef fixed_array<PointID,8> Hexa;
 
+    /// defining TriangleEdges as 3 Edge indices
+    typedef fixed_array<EdgeID,3> TriangleEdges;
+
+
     typedef vector<Edge> SeqEdges;
     typedef vector<Triangle> SeqTriangles;
     typedef vector<Quad> SeqQuads;
