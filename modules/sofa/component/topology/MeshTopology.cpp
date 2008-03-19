@@ -310,6 +310,159 @@ MeshTopology::Hexa MeshTopology::getHexa(index_type i)
     return getHexas()[i];
 }
 
+
+void MeshTopology::createEdgeVertexShellArray ()
+{
+    m_edgeVertexShell.resize( nbPoints );
+
+    for (unsigned int i = 0; i < seqEdges.getValue().size(); ++i)
+    {
+        // adding edge i in the edge shell of both points
+        m_edgeVertexShell[ seqEdges.getValue()[i][0]  ].push_back( i );
+        m_edgeVertexShell[ seqEdges.getValue()[i][1] ].push_back( i );
+    }
+}
+
+const vector<MeshTopology::EdgeID>& MeshTopology::getEdgeVertexShell(PointID i)
+{
+    if (!m_edgeVertexShell.size())
+        createEdgeVertexShellArray();
+    return m_edgeVertexShell[i];
+}
+
+void MeshTopology::createTriangleVertexShellArray ()
+{
+    m_triangleVertexShell.resize( nbPoints );
+    unsigned int j;
+
+    for (unsigned int i = 0; i < seqTriangles.getValue().size(); ++i)
+    {
+        // adding edge i in the edge shell of both points
+        for (j=0; j<3; ++j)
+            m_triangleVertexShell[ seqTriangles.getValue()[i][j]  ].push_back( i );
+    }
+}
+
+const vector<MeshTopology::TriangleID>& MeshTopology::getTriangleVertexShell(PointID i)
+{
+    if (!m_triangleVertexShell.size())
+        createTriangleVertexShellArray();
+    return m_triangleVertexShell[i];
+}
+
+int MeshTopology::getEdgeIndex(PointID v1, PointID v2)
+{
+    const vector< EdgeID > &es1=getEdgeVertexShell(v1) ;
+    const vector<MeshTopology::Edge> &ea=seqEdges.getValue();
+    unsigned int i=0;
+    int result= -1;
+    while ((i<es1.size()) && (result== -1))
+    {
+        const MeshTopology::Edge &e=ea[es1[i]];
+        if ((e[0]==v2)|| (e[1]==v2))
+            result=(int) es1[i];
+
+        i++;
+    }
+    return result;
+}
+
+void MeshTopology::createTriangleEdgeArray ()
+{
+    m_triangleEdge.resize( getNbTriangles());
+    unsigned int j;
+    int edgeIndex;
+
+    if (seqEdges.getValue().size()>0)
+    {
+
+        for (unsigned int i = 0; i < seqTriangles.getValue().size(); ++i)
+        {
+            const Triangle &t=seqTriangles.getValue()[i];
+            // adding edge i in the edge shell of both points
+            for (j=0; j<3; ++j)
+            {
+                edgeIndex=getEdgeIndex(t[(j+1)%3],t[(j+2)%3]);
+                assert(edgeIndex!= -1);
+                m_triangleEdge[i][j]=edgeIndex;
+            }
+        }
+    }
+    else
+    {
+        // create a temporary map to find redundant edges
+        std::map<Edge,unsigned int> edgeMap;
+        std::map<Edge,unsigned int>::iterator ite;
+        Edge e;
+        unsigned int v1,v2;
+        /// create the m_edge array at the same time than it fills the m_tetrahedronEdges array
+        for (unsigned int i = 0; i < seqTriangles.getValue().size(); ++i)
+        {
+            const Triangle &t=seqTriangles.getValue()[i];
+            for (j=0; j<3; ++j)
+            {
+                v1=t[(j+1)%3];
+                v2=t[(j+2)%3];
+                // sort vertices in lexicographics order
+                if (v1<v2)
+                {
+                    e=Edge(v1,v2);
+                }
+                else
+                {
+                    e=Edge(v2,v1);
+                }
+                ite=edgeMap.find(e);
+                if (ite==edgeMap.end())
+                {
+                    // edge not in edgeMap so create a new one
+                    edgeIndex=edgeMap.size();
+                    edgeMap[e]=edgeIndex;
+                    vector<Edge> ea=seqEdges.getValue();
+                    ea.push_back(e);
+                    seqEdges.setValue(ea);
+                }
+                else
+                {
+                    edgeIndex=(*ite).second;
+                }
+                m_triangleEdge[i][j]=edgeIndex;
+            }
+        }
+    }
+}
+
+const vector< MeshTopology::TriangleEdges >& MeshTopology::getTriangleEdgeArray()
+{
+    if (!m_triangleEdge.size())
+        createTriangleEdgeArray();
+    return m_triangleEdge;
+}
+
+void MeshTopology::createTriangleEdgeShellArray ()
+{
+    m_triangleEdgeShell.resize( getNbEdges());
+    unsigned int j;
+    const vector< TriangleEdges > &tea=getTriangleEdgeArray();
+
+
+    for (unsigned int i = 0; i < seqTriangles.getValue().size(); ++i)
+    {
+        // adding edge i in the edge shell of both points
+        for (j=0; j<3; ++j)
+        {
+            m_triangleEdgeShell[ tea[i][j] ].push_back( i );
+        }
+    }
+}
+
+const vector<MeshTopology::TriangleID>& MeshTopology::getTriangleEdgeShell(EdgeID i)
+{
+    if (!m_triangleEdgeShell.size())
+        createTriangleEdgeShellArray();
+    return m_triangleEdgeShell[i];
+}
+
 bool MeshTopology::hasPos() const
 {
     return !seqPoints.empty();

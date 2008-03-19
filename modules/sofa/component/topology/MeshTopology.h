@@ -80,6 +80,15 @@ public:
     virtual Tetra getTetra(TetraID i);
     virtual Hexa getHexa(HexaID i);
 
+    /// @name neighbors queries
+    /// @{
+    /// Returns the set of edges adjacent to a given vertex.
+    virtual const vector<EdgeID> &getEdgeVertexShell(PointID i);
+    /// Returns the set of triangle adjacent to a given edge.
+    virtual const vector<TriangleID> &getTriangleVertexShell(TriangleID i);
+    /// Returns the set of triangle adjacent to a given edge.
+    virtual const vector<TriangleID> &getTriangleEdgeShell(EdgeID i);
+
     // Points accessors (not always available)
 
     virtual bool hasPos() const;
@@ -129,6 +138,57 @@ protected:
     bool         validTetras;
     SeqCubes       seqHexas;
     bool         validHexas;
+
+    /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
+    vector< vector< EdgeID > > m_edgeVertexShell;
+
+    /// for each vertex provides the set of triangles adjacent to that vertex
+    vector< vector< TriangleID > > m_triangleVertexShell;
+
+    /// provides the 3 edges in each triangle
+    vector<TriangleEdges> m_triangleEdge;
+
+    /// for each edge provides the set of triangles adjacent to that edge
+    vector< vector< TriangleID > > m_triangleEdgeShell;
+
+    /** \brief Creates the EdgeSetIndex.
+     *
+     * This function is only called if the EdgeShell member is required.
+     * EdgeShell[i] contains the indices of all edges having the ith DOF as
+     * one of their ends.
+     */
+    void createEdgeVertexShellArray();
+
+    /** \brief Creates the Triangle Vertex Shell Array
+     *
+     * This function is only called if the TriangleVertexShell array is required.
+     * m_triangleVertexShell[i] contains the indices of all triangles adjacent to the ith vertex
+     */
+    void createTriangleVertexShellArray();
+
+    /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
+     *
+     */
+    int getEdgeIndex(PointID v1, PointID v2);
+
+    /** \brief Creates the array of edge indices for each triangle
+     *
+     * This function is only called if the TriangleEdge array is required.
+     * m_triangleEdge[i] contains the 3 indices of the 3 edges opposite to the ith vertex
+     */
+    void createTriangleEdgeArray();
+
+    /** \brief Returns the TriangleEdges array (ie provide the 3 edge indices for each triangle)
+     *
+     */
+    const sofa::helper::vector< TriangleEdges > &getTriangleEdgeArray() ;
+
+    /** \brief Creates the Triangle Edge Shell Array
+     *
+     * This function is only called if the TriangleVertexShell array is required.
+     * m_triangleEdgeShell[i] contains the indices of all triangles adjacent to the ith edge
+     */
+    void createTriangleEdgeShellArray();
 
     int revision;
 
