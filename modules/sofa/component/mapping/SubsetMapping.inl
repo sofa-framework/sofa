@@ -19,6 +19,7 @@ SubsetMapping<BaseMapping>::SubsetMapping(In* from, Out* to)
     , f_indices( initData(&f_indices, "indices", "list of input indices"))
     , f_first( initData(&f_first, -1, "first", "first index (use if indices are sequential)"))
     , f_last( initData(&f_last, -1, "last", "last index (use if indices are sequential)"))
+    , f_radius( initData(&f_radius, (Real)1.0e-5, "radius", "search radius to find corresponding points in case no indices are given"))
 {
 }
 
@@ -69,7 +70,6 @@ void SubsetMapping<BaseMapping>::init()
     else if (f_indices.getValue().empty())
     {
 
-
         // We have to construct the correspondance index
         const InVecCoord& in   = *this->fromModel->getX();
         const OutVecCoord& out = *this->toModel->getX();
@@ -80,17 +80,20 @@ void SubsetMapping<BaseMapping>::init()
         for (unsigned int i = 0; i < out.size(); ++i)
         {
             bool found = false;
-            for (unsigned int j = 0;  j < in.size() && !found; ++j )
+            Real rmax = f_radius.getValue();
+            for (unsigned int j = 0;  j < in.size(); ++j )
             {
-                if ( (out[i] - in[j]).norm() < 1.0e-5 )
+                Real r = (out[i] - in[j]).norm();
+                if ( r < rmax )
                 {
                     indices[i] = j;
                     found = true;
+                    rmax = r;
                 }
             }
             if (!found)
             {
-                std::cerr<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model."<<std::endl;
+                std::cerr<<"ERROR(SubsetMapping): point "<<i<<"="<<out[i]<<" not found in input model within a radius of "<<rmax<<"."<<std::endl;
                 indices[i] = 0;
             }
         }
