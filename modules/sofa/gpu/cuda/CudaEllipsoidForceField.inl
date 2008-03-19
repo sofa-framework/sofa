@@ -50,7 +50,7 @@ void EllipsoidForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const
     data.ellipsoid.stiffness = stiffness;
     data.ellipsoid.damping = damping;
     f.resize(x.size());
-    data.tmp.resize(x.size()*EllipsoidForceFieldCuda3f_getNTmp());
+    data.tmp.resize((x.size()+BSIZE*2)*EllipsoidForceFieldCuda3f_getNTmp());
     EllipsoidForceFieldCuda3f_addForce(x.size(), &data.ellipsoid, data.tmp.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
 }
 
@@ -75,7 +75,7 @@ void EllipsoidForceField<gpu::cuda::CudaVec3f1Types>::addForce(VecDeriv& f, cons
     data.ellipsoid.stiffness = stiffness;
     data.ellipsoid.damping = damping;
     f.resize(x.size());
-    data.tmp.resize(x.size()*EllipsoidForceFieldCuda3f_getNTmp());
+    data.tmp.resize((x.size()+BSIZE*2)*EllipsoidForceFieldCuda3f_getNTmp());
     EllipsoidForceFieldCuda3f1_addForce(x.size(), &data.ellipsoid, data.tmp.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
 }
 

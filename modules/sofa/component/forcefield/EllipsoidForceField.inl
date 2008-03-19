@@ -19,26 +19,26 @@ namespace component
 namespace forcefield
 {
 
-// v = sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1
-// dv/dxj = xj/rj² * 1/sqrt(x0²/r0²+x1²/r1²+x2²/r2²)
+// v = sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1
+// dv/dxj = xj/rj^2 * 1/sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)
 
 // f  = -stiffness * v * (dv/dp) / norm(dv/dp)
 
-// fi = -stiffness * (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1) * (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
+// fi = -stiffness * (sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1) * (xi/ri^2) / sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4)
 
-// dfi/dxj = -stiffness * [ d(sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)/dxj *   (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)     * d(xi/ri²)/dxj / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)     *  (xi/ri²) * d(1/sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))/dxj ]
-// dfi/dxj = -stiffness * [ xj/rj² * 1/sqrt(x0²/r0²+x1²/r1²+x2²/r2²) * (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (i==j)/ri² / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (xi/ri²) * (-1/2*2xj/rj^4*1/(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
-// dfi/dxj = -stiffness * [ xj/rj² * 1/sqrt(x0²/r0²+x1²/r1²+x2²/r2²) * (xi/ri²) / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (i==j)/ri² / sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4)
-//                          +  (sqrt(x0²/r0²+x1²/r1²+x2²/r2²)-1)       * (xi/ri²) * (-xj/rj^4*1/(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
+// dfi/dxj = -stiffness * [ d(sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1)/dxj *   (xi/ri^2) / sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4)
+//                          +  (sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1)     * d(xi/ri^2)/dxj / sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4)
+//                          +  (sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1)     *  (xi/ri^2) * d(1/sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4))/dxj ]
+// dfi/dxj = -stiffness * [ xj/rj^2 * 1/sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2) * (xi/ri^2) / sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4)
+//                          +  (sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1)       * (i==j)/ri^2 / sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4)
+//                          +  (sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1)       * (xi/ri^2) * (-1/2*2xj/rj^4*1/(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4) ]
+// dfi/dxj = -stiffness * [ xj/rj^2 * 1/sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2) * (xi/ri^2) / sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4)
+//                          +  (sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1)       * (i==j)/ri^2 / sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4)
+//                          +  (sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2)-1)       * (xi/ri^2) * (-xj/rj^4*1/(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4) ]
 
-// dfi/dxj = -stiffness * [ (xj/rj²) * (xi/ri²) * 1/(sqrt(x0²/r0²+x1²/r1²+x2²/r2²) * sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))
-//                          +  v       * (i==j) / (ri²*sqrt(x0²/r0^4+x1²/r1^4+x2²/r2^4))
-//                          +  v       * (xi/ri²) * (xj/rj²) * 1/(rj²*(x0²/r0^4+x1²/r1^4+x2²/r2^4) ]
+// dfi/dxj = -stiffness * [ (xj/rj^2) * (xi/ri^2) * 1/(sqrt(x0^2/r0^2+x1^2/r1^2+x2^2/r2^2) * sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4))
+//                          +  v       * (i==j) / (ri^2*sqrt(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4))
+//                          +  v       * (xi/ri^2) * (xj/rj^2) * 1/(rj^2*(x0^2/r0^4+x1^2/r1^4+x2^2/r2^4) ]
 
 
 template<class DataTypes>
