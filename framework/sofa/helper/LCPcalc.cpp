@@ -1028,7 +1028,7 @@ struct listSortAscending
 int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, double &tol, int &numItMax, bool useInitialF)
 {
 
-    ///* Allocation */
+    ///* Allocation
     //A = (double **)malloc( dim*sizeof(double*) );
     //for( ic = 0 ; ic < dim; ++ic )
     // A[ic] = (double *)malloc( dim2*sizeof(double) );
@@ -1169,13 +1169,13 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
         {
             //printf("Convergence after %d iteration(s)\n",it);
             //afficheLCP(dfree,W,f,dim);
-            return 1;
+            return it;
         }
     }
 
     printf("\n No convergence in nlcp_gaussseidel function : error =%f", error);
     //afficheLCP(dfree,W,f,dim);
-    return 0;
+    return it;
 
 }
 
@@ -1184,7 +1184,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double &mu, d
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
  */
-void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double &tol, int &numItMax)
+int gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double &tol, int &numItMax)
 {
     int compteur;	// compteur de boucle
     int compteur2, compteur3;	// compteur de boucle
@@ -1229,7 +1229,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
 
     }
 
-    for (compteur=0; compteur<dim; compteur++)
+    for (int compteur=0; compteur<dim; compteur++)
         res[compteur] = res[compteur+dim];
 
     if (error >= tol)
@@ -1237,6 +1237,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
         std::cout << "No convergence in gaussSeidelLCP1 : error = " << error << std::endl;
         //	afficheLCP(q, M, res, dim);
     }
+    return compteur;
 }
 
 } // namespace helper

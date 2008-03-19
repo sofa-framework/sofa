@@ -42,7 +42,7 @@ void afficheLCP(double *q, double **M, int dim);
 void afficheLCP(double *q, double **M, double *f, int dim);
 
 typedef double FemClipsReal;
-void gaussSeidelLCP1(int, FemClipsReal *,FemClipsReal **, FemClipsReal *, double &, int &);
+int gaussSeidelLCP1(int, FemClipsReal *,FemClipsReal **, FemClipsReal *, double &, int &);
 
 // inverted SymMatrix 3x3 //
 class LocalBlock33

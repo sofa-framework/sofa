@@ -47,6 +47,7 @@ HEADERS += mycuda.h \
            CudaPenalityContactForceField.h \
            CudaPenalityContactForceField.inl \
 	   CudaLCP.h \
+           CudaMasterContactSolver.h \
            CudaTestForceField.h
 
 SOURCES += mycuda.cpp \
@@ -68,6 +69,7 @@ SOURCES += mycuda.cpp \
            CudaPointModel.cpp \
            CudaPenalityContactForceField.cpp \
 	   CudaLCP.cpp \
+           CudaMasterContactSolver.cpp \
            CudaTestForceField.cpp
 
 CUDA_SOURCES += mycuda.cu \

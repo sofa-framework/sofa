@@ -98,7 +98,8 @@ public:
     /// Project the global Mechanical Vector to constrained space using offset parameter
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int & /*offset*/);
 
-    virtual void getConstraintValue(double * /*, unsigned int &*/) {}
+    virtual void getConstraintValue(defaulttype::BaseVector *) {};
+    virtual void getConstraintValue(double *) {};
     virtual void getConstraintId(long * /*id*/, unsigned int & /*offset*/) {}
 
     /// Get additionnal DOFs associated to this constraint (such as Lagrange Multiplier values)
