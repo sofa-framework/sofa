@@ -873,7 +873,10 @@ void SparseGridTopology::buildFromFiner(  )
 
 
     for( unsigned i=0; i<_finerSparseGrid->_inversePointMap.size(); ++i)
-        _pointMap[ _finerSparseGrid->_inversePointMap[i] ]=i;
+    {
+        if(_finerSparseGrid->_inversePointMap[i] != -1)
+            _pointMap[ _finerSparseGrid->_inversePointMap[i] ] = i;
+    }
 
 // 		for(unsigned i=0;i<_finerSparseGrid->seqPoints.size();++i)
 // 		{
