@@ -295,7 +295,8 @@ protected:
     size_type    sizeX;     ///< Current size of the vector
     size_type    sizeY;     ///< Current size of the vector
     size_type    pitch;     ///< Row alignment on the GPU
-    size_type    allocSize;      ///< Allocated size
+    size_type    hostAllocSize;  ///< Allocated size
+    size_type    deviceAllocSize;///< Allocated size
     void*        devicePointer;  ///< Pointer to the data on the GPU side
     T*           hostPointer;    ///< Pointer to the data on the CPU side
     mutable bool deviceIsValid;  ///< True if the data on the GPU is currently valid
@@ -303,17 +304,17 @@ protected:
 public:
 
     CudaMatrix()
-        : sizeX ( 0 ), sizeY( 0 ), pitch(0), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : sizeX ( 0 ), sizeY( 0 ), pitch(0), hostAllocSize ( 0 ), deviceAllocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {}
 
     CudaMatrix(size_t x, size_t y )
-        : sizeX ( 0 ), sizeY ( 0 ), pitch(0), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : sizeX ( 0 ), sizeY ( 0 ), pitch(0), hostAllocSize ( 0 ), deviceAllocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {
-        resize (x,y);
+        resize (x,y,0);
     }
 
     CudaMatrix(const CudaMatrix<T>& v )
-        : sizeX ( 0 ), sizeY ( 0 ), pitch(0), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : sizeX ( 0 ), sizeY ( 0 ), pitch(0), hostAllocSize ( 0 ), deviceAllocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {
         *this = v;
     }
@@ -325,19 +326,6 @@ public:
         pitch = 0;
         deviceIsValid = true;
         hostIsValid = true;
-    }
-
-    void operator= (const CudaMatrix<T>& v )
-    {
-        clear();
-        fastResize(v.sizeX,v.sizeY);
-        deviceIsValid = v.deviceIsValid;
-        hostIsValid = v.hostIsValid;
-        pitch=v.pitch;
-        if (!empty() && deviceIsValid)
-            mycudaMemcpyDeviceToDevice(devicePointer,v.devicePointer,sizeX*sizeY*sizeof(T));
-        if (!empty() && hostIsValid)
-            std::copy (v.hostPointer,v.hostPointer+sizeX*sizeY,hostPointer);
     }
 
     ~CudaMatrix()
@@ -365,36 +353,54 @@ public:
         return sizeX==0 || sizeY==0;
     }
 
-    void fastResize(size_type x,size_type y)
+    void fastResize(size_type x,size_type y,size_type WARP_SIZE)
     {
-        if (x <= sizeX && y <= sizeY) return;
         size_type s = x*y;
-        if (s > allocSize)
+        if (s > hostAllocSize)
         {
-            allocSize = ( s>2*allocSize ) ? s : 2*allocSize;
+            hostAllocSize = ( s>2*hostAllocSize ) ? s : 2*hostAllocSize;
             // always allocate multiples of BSIZE values
-            allocSize = ( allocSize+BSIZE-1 ) &-BSIZE;
+            hostAllocSize = ( hostAllocSize+BSIZE-1 ) &-BSIZE;
             T* prevHostPointer = hostPointer;
             if ( prevHostPointer != NULL )
                 mycudaFreeHost ( prevHostPointer );
             void* newHostPointer = NULL;
-            mycudaMallocHost ( &newHostPointer, allocSize*sizeof ( T ) );
+            mycudaMallocHost ( &newHostPointer, hostAllocSize*sizeof ( T ) );
             hostPointer = (T*)newHostPointer;
         }
-        void* prevDevicePointer = devicePointer;
-        if (prevDevicePointer != NULL )
-            mycudaFree ( prevDevicePointer );
-        //mycudaMalloc (&devicePointer,allocSize*sizeof(T));
-        mycudaMallocPitch(&devicePointer, &pitch, x*sizeof(T), y);
+        if (WARP_SIZE==0)
+        {
+            pitch = x*sizeof(T);
+            if (y*pitch > deviceAllocSize)
+            {
+                void* prevDevicePointer = devicePointer;
+                if (prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
+
+                mycudaMallocPitch(&devicePointer, &pitch, x, y);
+                deviceAllocSize = y*pitch;
+            }
+        }
+        else
+        {
+            pitch = ((x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE*sizeof(T);
+            if (y*pitch > deviceAllocSize)
+            {
+                void* prevDevicePointer = devicePointer;
+                if (prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
+
+                mycudaMallocPitch(&devicePointer, &pitch, pitch, y);
+                deviceAllocSize = y*pitch;
+            }
+        }
         sizeX = x;
         sizeY = y;
         deviceIsValid = true;
         hostIsValid = true;
     }
 
-    void resize (size_type x,size_type y)
+    void resize (size_type x,size_type y,size_t w)
     {
-        fastResize(x,y);
+        fastResize(x,y,w);
     }
 
     void swap ( CudaMatrix<T>& v )
@@ -403,36 +409,15 @@ public:
         VSWAP ( size_type, sizeX );
         VSWAP ( size_type, sizeY );
         VSWAP ( size_type, pitch );
-        VSWAP ( size_type, allocSize );
+        VSWAP ( size_type, hostAllocSize );
+        VSWAP ( size_type, deviceAllocSize );
         VSWAP ( void*    , devicePointer );
         VSWAP ( T*       , hostPointer );
         VSWAP ( bool     , deviceIsValid );
         VSWAP ( bool     , hostIsValid );
 #undef VSWAP
     }
-    /*
-    const void* deviceRead ( int x=0, int y=0 ) const {
-    	copyToDevice();
-    	return (const T*)(( ( const char* ) devicePointer ) +(x*pitch+y*sizeof(T)));
-    }
 
-    void* deviceWrite ( int x=0, int y=0 )	{
-    	copyToDevice();
-    	hostIsValid = false;
-    	return (T*)(( ( const char* ) devicePointer ) +(x*pitch+y*sizeof(T)));
-    }
-
-    const T* hostRead ( int x=0, int y=0 ) const {
-    	copyToHost();
-    	return hostPointer+(x*sizeY+y);
-    }
-
-    T* hostWrite ( int x=0, int y=0 ) {
-    	copyToHost();
-    	deviceIsValid = false;
-    	return hostPointer+(x*sizeY+y);
-    }
-    */
     const void* deviceRead ( int x=0, int y=0 ) const
     {
         copyToDevice();
@@ -480,21 +465,6 @@ public:
         checkIndex (x,y);
         return hostWrite(x,y);
     }
-    /*
-    const T* operator[] (size_type x) const	{
-    	checkIndex (x,0);
-    	return hostRead(x,0);
-    }
-
-    T* operator[] (size_type x)	{
-    	checkIndex (x,0);
-    	return hostWrite(x,0);
-    }
-    const T& getCached (size_type x,size_type y) const {
-    	checkIndex (x,y);
-    	return hostPointer[x*sizeY+y];
-    }
-    */
 
     const T* operator[] (size_type y) const
     {
@@ -515,27 +485,6 @@ public:
     }
 
 protected:
-    /*
-    void copyToHost() const
-    {
-    	if ( hostIsValid ) return;
-    #ifndef NDEBUG
-    	std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
-    #endif
-    	mycudaMemcpyDeviceToHost2D (hostPointer, sizeX*sizeY*sizeof(float), devicePointer, sizeX*pitch, sizeY*sizeof(T), sizeX);
-    	hostIsValid = true;
-    }
-    void copyToDevice() const
-    {
-    	if ( deviceIsValid ) return;
-    #ifndef NDEBUG
-    	std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
-    #endif
-    	mycudaMemcpyHostToDevice2D (devicePointer, sizeX*pitch, hostPointer, sizeX*sizeY*sizeof(float),  sizeY*sizeof(T), sizeX);
-    	deviceIsValid = true;
-    }
-    */
-
     void copyToHost() const
     {
         if ( hostIsValid ) return;
