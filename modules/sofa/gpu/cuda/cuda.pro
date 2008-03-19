@@ -29,6 +29,8 @@ HEADERS += mycuda.h \
            CudaPlaneForceField.inl \
            CudaSphereForceField.h \
            CudaSphereForceField.inl \
+           CudaEllipsoidForceField.h \
+           CudaEllipsoidForceField.inl \
            CudaIdentityMapping.h \
            CudaIdentityMapping.inl \
            CudaBarycentricMapping.h \
@@ -55,6 +57,7 @@ SOURCES += mycuda.cpp \
            CudaTetrahedronFEMForceField.cpp \
            CudaPlaneForceField.cpp \
            CudaSphereForceField.cpp \
+           CudaEllipsoidForceField.cpp \
            CudaIdentityMapping.cpp \
            CudaBarycentricMapping.cpp \
            CudaRigidMapping.cpp \
@@ -75,6 +78,7 @@ CUDA_SOURCES += mycuda.cu \
            CudaTetrahedronFEMForceField.cu \
            CudaPlaneForceField.cu \
            CudaSphereForceField.cu \
+           CudaEllipsoidForceField.cu \
            CudaBarycentricMapping.cu \
            CudaRigidMapping.cu \
            CudaSubsetMapping.cu \
