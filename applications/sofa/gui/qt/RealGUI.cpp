@@ -1717,7 +1717,7 @@ void RealGUI::loadSimulation(DIRECTION forward, bool one_step)
     sofa::simulation::tree::ReadStateModifier v(time);
     v.execute(viewer->getScene());
 
-    if (!one_step) sleep(1000*viewer->getScene()->getDt());
+    if (!one_step) sleep((unsigned int)(1000*viewer->getScene()->getDt()));
 
     viewer->getQWidget()->repaint();
     statusBar()->repaint();
