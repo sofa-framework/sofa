@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_INL
 
-#include <sofa/component/constraint/BilateralInteractionConstraint.h>"
+#include <sofa/component/constraint/BilateralInteractionConstraint.h>
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/gl/template.h>
