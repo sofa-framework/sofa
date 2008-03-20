@@ -29,8 +29,6 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
-#include <sofa/simulation/tree/AnimateBeginEvent.h>
-#include <sofa/simulation/tree/AnimateEndEvent.h>
 
 #include <fstream>
 
@@ -44,7 +42,7 @@ namespace misc
 {
 
 template<class TDataTypes>
-class EvalPointsDistance: public core::objectmodel::BaseObject
+class EvalPointsDistance: public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     typedef TDataTypes DataTypes;
@@ -61,11 +59,13 @@ public:
     virtual ~EvalPointsDistance();
 
     virtual double eval();
+    virtual double doEval(const VecCoord& x1, const VecCoord& x2);
 
     virtual void init();
     virtual void reset();
     virtual void handleEvent(sofa::core::objectmodel::Event* event);
     virtual void draw();
+    virtual void doDraw(const VecCoord& x1, const VecCoord& x2);
 
     /// Retrieve the associated MechanicalState
     core::componentmodel::behavior::MechanicalState<DataTypes>* getMState1() { return mstate1; }
