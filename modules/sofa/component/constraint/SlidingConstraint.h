@@ -1,8 +1,9 @@
-#ifndef SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_H
 
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/VisualModel.h>
 #include <iostream>
 
 namespace sofa
@@ -15,7 +16,7 @@ namespace constraint
 {
 
 template<class DataTypes>
-class UnilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
+class SlidingConstraint : public core::componentmodel::behavior::InteractionConstraint, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -31,51 +32,45 @@ public:
 protected:
     MechanicalState* object1;
     MechanicalState* object2;
-
-    struct Contact
-    {
-        int m1, m2;		///< the two extremities of the spring: masses m1 and m2
-        Deriv norm;		///< contact normal, from m1 to m2
-        Deriv t;		///< added for friction
-        Deriv s;		///< added for friction
-        Real dt;
-        Real delta;		///< QP * normal - contact distance
-        Real dfree;		///< QPfree * normal - contact distance
-        Real dfree_t;   ///< QPfree * t
-        Real dfree_s;   ///< QPfree * s
-        unsigned int id;
-        long contactId;
-        double mu;		///< angle for friction
-
-        // for visu
-        Coord P, Q;
-        Coord Pfree, Qfree;
-    };
-
-    sofa::helper::vector<Contact> contacts;
-    Real epsilon;
     bool yetIntegrated;
+
+    unsigned int cid;
+
+    Data<int> m1;
+    Data<int> m2a;
+    Data<int> m2b;
+    int m3; // the constraint point we add
+
+    Real dist;	// constraint violation
+    Real thirdConstraint; // 0 if A<proj<B, -1 if proj<A, 1 if B<proj
 
 public:
 
-    unsigned int constraintId;
-
-    UnilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
-        : object1(object1), object2(object2), epsilon(Real(0.001)),yetIntegrated(false)
+    SlidingConstraint(MechanicalState* object1, MechanicalState* object2)
+        : object1(object1), object2(object2), yetIntegrated(false)
+        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
+        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
+        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
     {
     }
 
-    UnilateralInteractionConstraint(MechanicalState* object)
-        : object1(object), object2(object), epsilon(Real(0.001)),yetIntegrated(false)
+    SlidingConstraint(MechanicalState* object)
+        : object1(object), object2(object), yetIntegrated(false)
+        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
+        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
+        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
     {
     }
 
-    UnilateralInteractionConstraint()
-        : object1(NULL), object2(NULL), epsilon(Real(0.001)),yetIntegrated(false)
+    SlidingConstraint()
+        : object1(NULL), object2(NULL), yetIntegrated(false)
+        , m1(initData(&m1, 0, "sliding_point","index of the spliding point on the first model"))
+        , m2a(initData(&m2a, 0, "axis_1","index of one end of the sliding axis"))
+        , m2b(initData(&m2b, 0, "axis_2","index of the other end of the sliding axis"))
     {
     }
 
-    virtual ~UnilateralInteractionConstraint()
+    virtual ~SlidingConstraint()
     {
     }
 
@@ -84,16 +79,9 @@ public:
     core::componentmodel::behavior::BaseMechanicalState* getMechModel1() { return object1; }
     core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
-    void clear(int reserve = 0)
-    {
-        contacts.clear();
-        if (reserve)
-            contacts.reserve(reserve);
-    }
+    virtual void init();
 
-    virtual void applyConstraint(unsigned int & /*contactId*/, double & /*mu*/);
-
-    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree = Coord(), Coord Qfree = Coord(), long id=0);
+    virtual void applyConstraint(unsigned int & /*constraintId*/, double & /*unused*/);
 
     virtual void getConstraintValue(double* v /*, unsigned int &numContacts */);
 
@@ -153,4 +141,4 @@ public:
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_CONSTRAINT_UNILATERALINTERACTIONCONSTRAINT_H
+#endif // SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_H
