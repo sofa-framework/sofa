@@ -38,7 +38,7 @@ protected:
     core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;
     std::ifstream* infile;
     double nextTime;
-
+    double lastTime;
 public:
     ReadState();
 
@@ -48,8 +48,12 @@ public:
 
     virtual void reset();
 
+    void setTime(double time);
+
     virtual void handleEvent(sofa::core::objectmodel::Event* event);
 
+    void processReadState();
+    void processReadState(double time);
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.

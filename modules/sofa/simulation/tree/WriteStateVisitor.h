@@ -43,6 +43,9 @@
 #include <sofa/simulation/tree/Visitor.h>
 #include <iostream>
 
+#include <sofa/component/misc/WriteState.h>
+#include <sofa/component/misc/ReadState.h>
+
 namespace sofa
 {
 
@@ -63,6 +66,57 @@ public:
 protected:
     std::ostream& m_out;
 };
+
+//Create WriteState component in the graph each time needed
+class WriteStateCreator: public Visitor
+{
+public:
+    WriteStateCreator():sceneName(""), counterWriteState(0) {};
+    WriteStateCreator(std::string &n, int c) {sceneName=n; counterWriteState=c;};
+    virtual Result processNodeTopDown( GNode*  );
+
+    void setSceneName(std::string &n) { sceneName = n;}
+    void setCounter(int c) {counterWriteState = c;};
+protected:
+    template< class DataTypes >
+    void addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode);
+
+    std::string sceneName;
+    int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
+};
+
+class WriteStateActivator: public Visitor
+{
+public:
+    WriteStateActivator( bool active):state(active) {};
+    virtual Result processNodeTopDown( GNode*  );
+
+    bool getState() const {return state;};
+    void setState(bool active) {state=active;};
+protected:
+    template< class DataTypes >
+    void changeStateWriter(sofa::component::misc::WriteState < DataTypes > *ws);
+
+    bool state;
+};
+
+
+class ReadStateModifier: public Visitor
+{
+public:
+    ReadStateModifier( double _time):time(_time) {};
+    virtual Result processNodeTopDown( GNode*  );
+
+    double getTime() const {return time;};
+    void setTime(double _time) {time=_time;};
+protected:
+    template< class DataTypes >
+    void changeTimeReader(sofa::component::misc::ReadState < DataTypes > *rs) {rs->processReadState(time);};
+
+    double time;
+};
+
+
 }
 }
 }

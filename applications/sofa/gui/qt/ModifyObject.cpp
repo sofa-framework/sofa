@@ -1903,8 +1903,11 @@ void ModifyObject::updateTables()
 {
     updateHistory();
     std::list< std::pair< Q3Table*, BaseData*> >::iterator it_list_Table;
+    bool skip;
     for (it_list_Table = list_Table.begin(); it_list_Table != list_Table.end(); it_list_Table++)
     {
+        skip = false;
+        if ( dialogTab->indexOf((*it_list_Table).first) == dialogTab->currentPageIndex()) skip = true;
         if ( dynamic_cast<DataPtr< vector<Rigid3Types::Coord> > *> ( (*it_list_Table).second ) ||
                 dynamic_cast<DataPtr< vector<Rigid3Types::Deriv> > *> ( (*it_list_Table).second ) ||
                 dynamic_cast<DataPtr< vector<Rigid2Types::Coord> > *> ( (*it_list_Table).second ) ||
@@ -1916,10 +1919,9 @@ void ModifyObject::updateTables()
         {
             std::list< std::pair< Q3Table*, BaseData*> >::iterator it_center = it_list_Table;
             it_list_Table++;
-            createTable((*it_list_Table).second,NULL,(*it_center).first, (*it_list_Table).first);
+            if (!skip) createTable((*it_list_Table).second,NULL,(*it_center).first, (*it_list_Table).first);
         }
-        else
-            createTable((*it_list_Table).second,NULL,(*it_list_Table).first);
+        else if (!skip) createTable((*it_list_Table).second,NULL,(*it_list_Table).first);
     }
 }
 
