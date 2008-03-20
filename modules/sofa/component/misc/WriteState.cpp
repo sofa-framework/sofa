@@ -1,4 +1,5 @@
-#include "WriteState.inl"
+
+#include <sofa/component/misc/WriteState.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>

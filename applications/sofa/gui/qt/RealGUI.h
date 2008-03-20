@@ -30,6 +30,8 @@
 #  include <sofa/filemanager/sofapml/LMLReader.h>
 #endif
 
+#include <time.h>
+
 
 #include <sofa/gui/SofaGUI.h>
 
@@ -219,7 +221,7 @@ public slots:
     void slot_recordSimulation( bool);
     void slot_backward( );
     void slot_stepbackward( );
-    void slot_playbackward(  );
+// 	  void slot_playbackward(  );
     void slot_playforward(  ) ;
     void slot_stepforward( ) ;
     void slot_forward( );
@@ -261,7 +263,7 @@ signals:
     void reload();
     void newScene();
     void newStep();
-
+    void insideStepForward();
 
 protected:
 
@@ -270,7 +272,8 @@ protected:
     void init();
     void keyPressEvent ( QKeyEvent * e );
 
-    void playSimulation(bool);
+    enum DIRECTION {BACKWARD, FORWARD};
+    void loadSimulation(DIRECTION, bool one_step=false);
 
     //Graph Stats
     bool graphCreateStats(GNode *groot,QListViewItem *parent);
@@ -303,11 +306,12 @@ protected:
     inline void   setRecordFinalTime  (const double time);
     inline double getRecordTime       () const;
     inline void   setRecordTime       (const double time);
+    inline void   setTimeSimulation   (const double time);
 
     QPushButton* record;
     QPushButton* backward_record;
     QPushButton* stepbackward_record;
-    QPushButton* playbackward_record;
+// 	  QPushButton* playbackward_record;
     QPushButton* playforward_record;
     QPushButton* stepforward_record;
     QPushButton* forward_record;
@@ -320,6 +324,7 @@ protected:
     std::string simulation_name;
     std::string record_directory;
     std::string gnuplot_directory;
+    std::string writeSceneName;
 
     QWidgetStack* left_stack;
     AddObject *dialog;
@@ -330,6 +335,13 @@ protected:
     //sofa::simulation::tree::GNode* groot;
     //std::string sceneFileName;
     sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
+
+    void sleep(unsigned int mseconds)
+    {
+        unsigned int t;
+        clock_t goal = mseconds + clock();
+        while (goal > clock()) t++;
+    }
 
 private:
     //Map: Id -> Node currently modified. Used to avoid dependancies during removing actions
@@ -345,7 +357,7 @@ private:
     float object_Scale[2];
 
     float initial_time;
-
+    int frameCounter;
     //At initialization: list of the path to the basic objects you can add to the scene
     std::vector< std::string > list_object;
     std::list< GNode *> list_object_added;
@@ -356,6 +368,9 @@ private:
     bool setViewer(const char* name);
     void addViewer();
     void setGUI(void);
+
+
+    void addWriteState();
 
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);

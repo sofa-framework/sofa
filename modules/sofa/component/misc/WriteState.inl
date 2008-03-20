@@ -1,7 +1,7 @@
 #ifndef SOFA_COMPONENT_MISC_WRITESTATE_INL
 #define SOFA_COMPONENT_MISC_WRITESTATE_INL
 
-#include "WriteState.h"
+#include <sofa/component/misc/WriteState.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/simulation/tree/GNode.h>
 
@@ -130,6 +130,7 @@ void WriteState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (/* simulation::tree::AnimateBeginEvent* ev = */ dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
     {
+
         if (outfile && mmodel)
         {
             if (!kineticEnergyThresholdReached)
@@ -179,8 +180,8 @@ void WriteState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
                             (*outfile) << "  X=";
                             for (int i=0; i<mmodel->getSize(); i++)
                             {
-                                for (unsigned int j=0; j<f_DOFsX.getValue().size(); j++)
-                                    (*outfile) << " " << (*mmodel->getX())[i][f_DOFsX.getValue()[j]];
+// 								for (unsigned int j=0; j<f_DOFsX.getValue().size(); j++)
+                                (*outfile) << " " << (*mmodel->getX())[i];
                             }
                             (*outfile) << "\n";
                         }
@@ -190,8 +191,8 @@ void WriteState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
                             (*outfile) << "  V=";
                             for (int i=0; i<mmodel->getSize(); i++)
                             {
-                                for (unsigned int j=0; j<f_DOFsV.getValue().size(); j++)
-                                    (*outfile) << " " << (*mmodel->getV())[i][f_DOFsV.getValue()[j]];
+// 								for (unsigned int j=0; j<f_DOFsV.getValue().size(); j++)
+                                (*outfile) << " " << (*mmodel->getV())[i]/*[f_DOFsV.getValue()[j]]*/;
                             }
                             (*outfile) << "\n";
                         }
@@ -208,10 +209,11 @@ void WriteState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
                         if (f_writeX.getValue())
                         {
                             (*outfile) << "  X=";
+
                             for (int i=0; i<mmodel->getSize(); i++)
                             {
-                                for (unsigned int j=0; j<f_DOFsX.getValue().size(); j++)
-                                    (*outfile) << " " << (*mmodel->getX())[i][f_DOFsX.getValue()[j]];
+// 								for (unsigned int j=0; j<f_DOFsX.getValue().size(); j++)
+                                (*outfile) << " " << (*mmodel->getX())[i]/*[f_DOFsX.getValue()[j]]*/;
                             }
                             (*outfile) << "\n";
                         }
@@ -220,8 +222,8 @@ void WriteState<DataTypes>::handleEvent(sofa::core::objectmodel::Event* event)
                             (*outfile) << "  V=";
                             for (int i=0; i<mmodel->getSize(); i++)
                             {
-                                for (unsigned int j=0; j<f_DOFsV.getValue().size(); j++)
-                                    (*outfile) << " " << (*mmodel->getV())[i][f_DOFsV.getValue()[j]];
+// 								for (unsigned int j=0; j<f_DOFsV.getValue().size(); j++)
+                                (*outfile) << " " << (*mmodel->getV())[i]/*[f_DOFsV.getValue()[j]]*/;
                             }
                             (*outfile) << "\n";
                         }

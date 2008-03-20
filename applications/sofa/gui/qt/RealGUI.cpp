@@ -37,10 +37,11 @@
 #endif
 
 
-
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/InitVisitor.h>
 
+#include <sofa/component/misc/ReadState.h>
+#include <sofa/component/misc/WriteState.h>
 
 #include <sofa/simulation/tree/MutationListener.h>
 #include <sofa/simulation/tree/Colors.h>
@@ -61,6 +62,10 @@
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/SphereModel.h>
 
+#include <sofa/simulation/tree/WriteStateVisitor.h>
+#include <sofa/simulation/tree/UpdateContextVisitor.h>
+
+#include <sofa/simulation/tree/xml/XML.cpp> //--> static int num defined. If the same scene is reloaded, num has to be set to zero
 #include <limits.h>
 
 namespace sofa
@@ -294,6 +299,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL )
 {
 
+
     left_stack = new QWidgetStack ( splitter2 );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
 
@@ -321,7 +327,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     record                 = new QPushButton( statusBar(), "Record");  	record->setToggleButton(true);
     backward_record        = new QPushButton( statusBar(), "Backward");
     stepbackward_record    = new QPushButton( statusBar(), "Step Backward");
-    playbackward_record    = new QPushButton( statusBar(), "Play Backward"); playbackward_record->setToggleButton(true);
+// 	playbackward_record    = new QPushButton( statusBar(), "Play Backward");playbackward_record->setToggleButton(true);
     playforward_record     = new QPushButton( statusBar(), "Play Forward"); playforward_record->setToggleButton(true);
     stepforward_record     = new QPushButton( statusBar(), "Step Forward");
     forward_record         = new QPushButton( statusBar(), "Forward");
@@ -329,7 +335,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     QToolTip::add(record               , tr( "Record" ) );
     QToolTip::add(backward_record      , tr( "Load Initial Time" ) );
     QToolTip::add(stepbackward_record  , tr( "Make one step backward" ) );
-    QToolTip::add(playbackward_record  , tr( "Continuous play backward" ) );
+// 	QToolTip::add(playbackward_record  , tr( "Continuous play backward" ) );
     QToolTip::add(playforward_record   , tr( "Continuous play forward" ) );
     QToolTip::add(stepforward_record   , tr( "Make one step forward" ) );
     QToolTip::add(forward_record       , tr( "Load Final Time" ) );
@@ -354,10 +360,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     stepbackward_record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
 
     // Image for the play backward button
-    pixmap_filename = "textures/media-back-start.png";
-    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-    playbackward_record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
+// 	pixmap_filename = "textures/media-back-start.png";
+// 	if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
+// 	  pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
+// 	playbackward_record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
 
     // Image for the play forward button
     pixmap_filename = "textures/media-playback-start.png";
@@ -388,7 +394,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     statusBar()->addWidget( record);
     statusBar()->addWidget( backward_record);
     statusBar()->addWidget( stepbackward_record);
-    statusBar()->addWidget( playbackward_record);
+// 	statusBar()->addWidget( playbackward_record);
     statusBar()->addWidget( playforward_record);
     statusBar()->addWidget( stepforward_record);
     statusBar()->addWidget( forward_record);
@@ -415,9 +421,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( record, SIGNAL (toggled (bool) ),              this, SLOT( slot_recordSimulation( bool) ) );
     connect ( backward_record, SIGNAL (clicked () ),         this, SLOT( slot_backward( ) ) );
     connect ( stepbackward_record, SIGNAL (clicked () ),     this, SLOT( slot_stepbackward( ) ) );
-    connect ( playbackward_record, SIGNAL (clicked () ),     this, SLOT( slot_playbackward( ) ) );
+// 	connect ( playbackward_record, SIGNAL (clicked () ),     this, SLOT( slot_playbackward( ) ) );
     connect ( playforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_playforward( ) ) );
     connect ( stepforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_stepforward( ) ) );
+    connect ( this,      SIGNAL (insideStepForward () ),     this, SLOT( slot_stepforward( ) ) );
     connect ( forward_record, SIGNAL (clicked () ),          this, SLOT( slot_forward( ) ) );
 
     connect (loadRecordTime, SIGNAL(returnPressed ()),       this, SLOT( slot_loadrecord_timevalue()));
@@ -456,6 +463,7 @@ RealGUI::~RealGUI()
 
 void RealGUI::init()
 {
+    frameCounter = 0;
     node_clicked = NULL;
     item_clicked = NULL;
     _animationOBJ = false;
@@ -466,6 +474,7 @@ void RealGUI::init()
     m_exportGnuplot = false;
     record_directory = sofa::helper::system::SetDirectory::GetRelativeFromDir("../../scenes/simulation/",sofa::helper::system::SetDirectory::GetProcessFullPath("").c_str());
     gnuplot_directory = "";
+    writeSceneName = "";
 
     current_Id_modifyDialog = 0;
     map_modifyDialogOpened.clear();
@@ -725,10 +734,18 @@ bool RealGUI::setViewer ( const char* name )
 
 void RealGUI::fileOpen ( const char* filename )
 {
+    frameCounter = 0;
+    sofa::simulation::tree::xml::num = 0;
     list_object_added.clear();
     list_object_removed.clear();
     list_object_initial.clear();
+    writeSceneName="";
 
+    timeSlider->setValue(0);
+    timeSlider->setMinValue(0);
+    timeSlider->setMaxValue(0);
+    timeSlider->update();
+    update();
 
     //Hide the dialog to add a new object in the graph
     if ( dialog != NULL ) dialog->hide();
@@ -752,6 +769,7 @@ void RealGUI::fileOpen ( const char* filename )
     }
 
     GNode* groot = getSimulation()->load ( filename );
+
     if ( groot == NULL )
     {
         qFatal ( "Failed to load %s",filename );
@@ -763,6 +781,8 @@ void RealGUI::fileOpen ( const char* filename )
 
     getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
+
+    displayComputationTime(m_displayComputationTime);
 }
 
 #ifdef SOFA_PML
@@ -821,6 +841,8 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
         setRecordFinalTime(initial_time);
         setRecordTime(initial_time);
     }
+
+
     eventNewTime();
 
 
@@ -956,16 +978,20 @@ void RealGUI::screenshot()
 void RealGUI::fileOpenSimu ( const char* s )
 {
     std::ifstream in(s);
+
     if (!in.fail())
     {
         std::string filename;
-        std::string initT, endT, dT;
+        std::string initT, endT, dT, writeName;
         in
                 >> filename
                         >> initT >> initT
                         >> endT  >> endT >> endT
-                        >> dT >> dT;
+                        >> dT >> dT
+                        >> writeName >> writeName;
         in.close();
+
+
 
         if ( sofa::helper::system::DataRepository.findFile (filename) )
         {
@@ -974,6 +1000,11 @@ void RealGUI::fileOpenSimu ( const char* s )
             std::string::size_type pointSimu = simulation_name.rfind(".simu");
             simulation_name.resize(pointSimu);
             fileOpen(filename.c_str());
+
+            addWriteState();
+            writeSceneName = writeName;
+
+
             char buf[100];
 
             sprintf ( buf, "Init: %s s",initT.c_str()  );
@@ -1297,7 +1328,6 @@ void RealGUI::eventNewStep()
 {
     static ctime_t beginTime[10];
     static const ctime_t timeTicks = CTime::getRefTicksPerSec();
-    static int frameCounter = 0;
     GNode* groot = getScene();
     if ( frameCounter==0 )
     {
@@ -1390,16 +1420,16 @@ void RealGUI::eventNewTime()
                 timeSlider->setValue(timeSlider->value()+1);
             }
             timeSlider->update();
-            std::string filename = simulation_name;
-            filename = sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
+// 		std::string filename = simulation_name;
+// 		filename = sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
 
-            std::string::size_type point = filename.rfind('.');
-            if (point != std::string::npos) filename.resize(point);
+// 		std::string::size_type point = filename.rfind('.');
+// 		if (point != std::string::npos) filename.resize(point);
 
-            sprintf ( buf, "%s_%.3f.scn",filename.c_str(), time );
-            std::string output(record_directory + buf);
+// 		sprintf ( buf, "%s_%.3f.scn",filename.c_str(), time );
+// 		std::string output(record_directory + buf);
 
-            fileSaveAs(viewer->getScene(),output.c_str());
+// 		fileSaveAs(viewer->getScene(),output.c_str());
         }
     }
 }
@@ -1534,7 +1564,7 @@ void RealGUI::slot_recordSimulation( bool value)
             {
                 if (atof(loadRecordTime->text()) != groot->getTime() )
                 {
-                    playSimulation(true); //set the correct sample of the simulation
+                    loadSimulation(FORWARD); //set the correct sample of the simulation
                 }
             }
 
@@ -1550,16 +1580,10 @@ void RealGUI::slot_recordSimulation( bool value)
 
                 std::string::size_type point = filename.rfind('.');
                 if (point != std::string::npos) filename.resize(point);
-
-                std::ostringstream ofilename;
-                ofilename << record_directory << filename << "_" << loadRecordTime->text().ascii() << ".scn";
-
-
-                fileSaveAs(viewer->getScene(),ofilename.str().c_str());
-                fileOpen(ofilename.str().c_str()); //change the local directory
             }
             record_simulation=true;
             playpauseGUI(true);
+            addWriteState();//Add if needed WriteState
         }
     }
     else
@@ -1577,54 +1601,64 @@ void RealGUI::slot_recordSimulation( bool value)
         std::ofstream out(simulationFileName.c_str());
         if (!out.fail())
         {
-            out << output << " " << initialTime->text().ascii() << " " << finalTime->text().ascii() << " " << dtEdit->text().ascii();
+            out << filename << " " << initialTime->text().ascii() << " " << finalTime->text().ascii() << " " << dtEdit->text().ascii() << " baseName: "<<writeSceneName;
             out.close();
         }
         std::cout << "Simulation parameters saved in "<<simulationFileName<<std::endl;
-
     }
+    //Change the state of the writers
+    sofa::simulation::tree::WriteStateActivator v(value);
+    v.execute(viewer->getScene());
 }
+
 void RealGUI::slot_backward(  )
 {
     if (timeSlider->value() != timeSlider->minValue())
     {
         setRecordTime(getRecordInitialTime());
         slot_sliderValue(timeSlider->minValue());
+        loadSimulation(BACKWARD);
     }
 }
 
 void RealGUI::slot_stepbackward()
 {
     playforward_record->setOn(false);
-    playbackward_record->setOn(false);
+// 	playbackward_record->setOn(false);
 
-    playSimulation(false);
-}
-
-void RealGUI::slot_playbackward()
-{
-    if (playbackward_record->isOn())
+    double init_time  = getRecordInitialTime();
+    double time = getRecordTime() - atof(dtEdit->text());
+    if (time >= init_time)
     {
-        playforward_record->setOn(false);
-        playSimulation(false);
+        setRecordTime(time);
+        slot_loadrecord_timevalue();
     }
 }
+
+//       void RealGUI::slot_playbackward()
+//       {
+// 	if (playbackward_record->isOn())
+// 	  {
+// 	    playforward_record->setOn(false);
+// 	    loadSimulation(BACKWARD);
+// 	  }
+//       }
 
 void RealGUI::slot_playforward( )
 {
     if (playforward_record->isOn())
     {
-        playbackward_record->setOn(false);
-        playSimulation(true);
+// 	    playbackward_record->setOn(false);
+        loadSimulation(FORWARD);
     }
 }
 
 void RealGUI::slot_stepforward()
 {
-    playforward_record->setOn(false);
-    playbackward_record->setOn(false);
-
-    playSimulation(true);
+// 	playforward_record->setOn(false);
+// 	playbackward_record->setOn(false);
+    setRecordTime(getRecordTime() + atof(dtEdit->text()));
+    slot_loadrecord_timevalue();
 }
 
 void RealGUI::slot_forward(  )
@@ -1638,13 +1672,15 @@ void RealGUI::slot_forward(  )
 
 void RealGUI::slot_sliderValue(int value)
 {
+    if (timeSlider->value() == value) return;
     double init_time  = getRecordInitialTime();
     double delta_time = atof(dtEdit->text().ascii());
     double time = init_time + delta_time*(value);
+
     setRecordTime(time);
     timeSlider->setValue(value);
     timeSlider->update();
-    playSimulation(true);
+    loadSimulation(FORWARD);
 }
 
 void RealGUI::slot_loadrecord_timevalue()
@@ -1653,128 +1689,49 @@ void RealGUI::slot_loadrecord_timevalue()
     double current_time = getRecordTime();
     int value = (int)((current_time - init_time)/( atof(dtEdit->text()))+0.5);
 
-    if (value >= timeSlider->minValue() && value <= timeSlider->maxValue())
-    {
-        timeSlider->setValue(value);
-        setRecordTime(getRecordTime());
-    }
-    else if (value < timeSlider->minValue())
-    {
-        timeSlider->setValue(timeSlider->minValue());
-        setRecordTime(getRecordInitialTime());
-    }
+    if (value >= timeSlider->minValue() && value <= timeSlider->maxValue())    slot_sliderValue(value);
+    else if (value < timeSlider->minValue()) 	                           slot_sliderValue(timeSlider->minValue());
     else if (value > timeSlider->maxValue())
     {
-        timeSlider->setValue(timeSlider->maxValue());
-        setRecordTime(getRecordFinalTime());
+        playforward_record->setOn(false);
+        slot_sliderValue(timeSlider->maxValue());
     }
-    playSimulation(true);
-
 }
 
 
 //Given a direction  (forward, or backward), load the samples of the simulation between the initial and final time.
-void RealGUI::playSimulation(bool forward)
+void RealGUI::loadSimulation(DIRECTION forward, bool one_step)
 {
     if (timeSlider->maxValue() == 0)
     {
-        playbackward_record->setOn(false);
+// 	    playbackward_record->setOn(false);
         playforward_record->setOn(false);
         return;
     }
 
-    const std::string originalName = viewer->getSceneFileName();
-    std::string filename = viewer->getSceneFileName();
-    std::string::size_type point = filename.rfind('_');
-    if (point != std::string::npos) filename.resize(point);
+    double time=getRecordTime();
 
+    //update the time in the context
+    viewer->getScene()->execute< sofa::simulation::tree::UpdateSimulationContextVisitor >();
+    //read the state for the current time
+    sofa::simulation::tree::ReadStateModifier v(time);
+    v.execute(viewer->getScene());
 
-    QString init_time  = initialTime->text();
-    QString final_time = finalTime->text();
+    if (!one_step) sleep(1000*viewer->getScene()->getDt());
 
-    double init_time_value = getRecordInitialTime();
-    double final_time_value = getRecordFinalTime();
+    viewer->getQWidget()->repaint();
+    statusBar()->repaint();
+    repaint();
+    update();
 
-    int max = timeSlider->maxValue();
+    emit newStep();
 
-
-    if (getScene()!=NULL && (getRecordTime() == getScene()->getTime()) )
+    if (forward && playforward_record->isOn())
     {
-        if (forward)
-        {
-            double time=getScene()->getTime() + atof(dtEdit->text());
-            if ((int)(1000*time) <= (int)(1000*final_time_value) )
-            {
-                setRecordTime(time);
-                timeSlider->setValue(timeSlider->value()+1);
-            }
-        }
-        else
-        {
-            double time=getScene()->getTime() - atof(dtEdit->text());
-            if ( (int)(1000*time) >= (int)(1000*init_time_value))
-            {
-                setRecordTime(time);
-                timeSlider->setValue(timeSlider->value()-1);
-            }
-        }
+        time+=atof(dtEdit->text());
+        emit insideStepForward();
     }
 
-    do
-    {
-        std::string stepFilename;
-        std::ostringstream ofilename;
-        ofilename << filename << "_" << loadRecordTime->text().ascii() << ".scn";
-        stepFilename = ofilename.str();
-
-        if ( sofa::helper::system::DataRepository.findFile (stepFilename) )
-        {
-            stepFilename = sofa::helper::system::DataRepository.getFile ( stepFilename );
-            fileOpen(stepFilename.c_str());
-
-            if ( m_exportGnuplot )
-                getSimulation()->exportGnuplot ( getScene(), getScene()->getTime() );
-
-            playpauseGUI(false);
-
-            viewer->setSceneFileName(originalName);
-            initialTime->setText(init_time);
-            finalTime->setText(final_time);
-            timeSlider->setMaxValue(max);
-
-            viewer->getQWidget()->repaint();
-            statusBar()->repaint();
-            repaint();
-        }
-        else
-            std::cout << "Not Found " << stepFilename << "\n";
-
-        float time=getRecordTime();
-        if (forward && playforward_record->isOn())
-        {
-            time+=atof(dtEdit->text());
-            if ((int)(1000*time+0.5) <= (int)(1000*final_time_value+0.5))
-            {
-                setRecordTime(time);
-                timeSlider->setValue(timeSlider->value()+1);
-            }
-            else
-                playforward_record->setOn(false);
-        }
-        else if (!forward && playbackward_record->isOn())
-        {
-            time-=atof(dtEdit->text());
-
-            if ((int)(1000*time+0.5) >= (int)(1000*init_time_value+0.5))
-            {
-                setRecordTime(time);
-                timeSlider->setValue(timeSlider->value()-1);
-            }
-            else
-                playbackward_record->setOn(false);
-        }
-    }
-    while ((forward && playforward_record->isOn()) || (!forward && playbackward_record->isOn()));
 }
 
 
@@ -1811,8 +1768,17 @@ void RealGUI::setRecordTime(double time)
     char buf[100];
     sprintf ( buf, "%.3f", fabs(time) );
     loadRecordTime->setText( buf );
+
+    setTimeSimulation(getRecordTime());
 }
 
+void RealGUI::setTimeSimulation(double time)
+{
+    char buf[100];
+    sprintf ( buf, "Time: %.3f s", time );
+    timeLabel->setText ( buf );
+    viewer->getScene()->setTime(time);
+}
 //*****************************************************************************************
 //
 void RealGUI::exportGraph()
@@ -2112,16 +2078,6 @@ void RealGUI::graphRemoveObject()
             groot->setShowWireFrame ( 0 );
             groot->setShowNormals ( 0 );
 
-// 		showVisual->setChecked ( groot->getShowVisualModels() );
-// 		showBehavior->setChecked ( groot->getShowBehaviorModels() );
-// 		showCollision->setChecked ( groot->getShowCollisionModels() );
-// 		showBoundingCollision->setChecked ( groot->getShowBoundingCollisionModels() );
-// 		showForceField->setChecked ( groot->getShowForceFields() );
-// 		showInteractionForceField->setChecked ( groot->getShowInteractionForceFields() );
-// 		showMapping->setChecked ( groot->getShowMappings() );
-// 		showMechanicalMapping->setChecked ( groot->getShowMechanicalMappings() );
-// 		showWireFrame->setChecked ( groot->getShowWireFrame() );
-// 		showNormals->setChecked ( groot->getShowNormals() );
 
             viewer->setScene ( groot, viewer->getSceneFileName().c_str() );
             graphListener->removeChild ( NULL, node_clicked );
@@ -2208,6 +2164,7 @@ void RealGUI::graphModify()
 /*****************************************************************************************************************/
 void RealGUI::graphDesactivateNode()
 {
+    item_clicked->setOpen(false);
     node_clicked->setActive(false);
     viewer->getQWidget()->update();
     node_clicked->reinit();
@@ -2217,6 +2174,7 @@ void RealGUI::graphDesactivateNode()
 
 void RealGUI::graphActivateNode()
 {
+    item_clicked->setEnabled(true);
     node_clicked->setActive(true);
     viewer->getQWidget()->update();
     node_clicked->reinit();
@@ -2586,6 +2544,21 @@ void RealGUI::viewExecutionGraph()
 {
 
 }
+
+void RealGUI::addWriteState()
+{
+    if (writeSceneName == "" )
+    {
+        //Create the filename to use, to save the mechanical states
+        writeSceneName = record_directory+sofa::helper::system::SetDirectory::GetFileName(simulation_name.c_str());
+        std::string::size_type pos = writeSceneName.rfind('.');
+        if (pos != std::string::npos) writeSceneName.resize(pos);
+    }
+    sofa::simulation::tree::WriteStateCreator v(writeSceneName,0);
+    v.execute(viewer->getScene());
+    std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+}
+
 
 } // namespace qt
 
