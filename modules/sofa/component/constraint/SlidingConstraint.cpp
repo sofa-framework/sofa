@@ -1,5 +1,4 @@
-// #include <sofa/component/constraint/SlidingConstraint.inl>
-#include "SlidingConstraint.inl"
+#include <sofa/component/constraint/SlidingConstraint.inl>
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/MechanicalObject.h>
