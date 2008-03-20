@@ -3,7 +3,9 @@
 
 #include "EvalPointsDistance.h"
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/tree/AnimateBeginEvent.h>
+#include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/simulation/tree/UpdateMappingEndEvent.h>
 #include <sofa/helper/gl/template.h>
 
 #include <fstream>
@@ -77,6 +79,12 @@ double EvalPointsDistance<DataTypes>::eval()
         return 0.0;
     const VecCoord& x1 = *mstate1->getX();
     const VecCoord& x2 = *mstate2->getX();
+    return this->doEval(x1, x2);
+}
+
+template<class DataTypes>
+double EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord& x2)
+{
     const int n = (x1.size()<x2.size())?x1.size():x2.size();
     double dsum = 0;
     double dmin = 0;
@@ -91,7 +99,7 @@ double EvalPointsDistance<DataTypes>::eval()
         if (i==0 || d > dmax) dmax = d;
     }
     double dmean = (n>0)?dsum/n : 0.0;
-    double ddev = (n>0)?sqrtf(d2/n - (dsum/n)*(dsum/n)) : 0.0;
+    double ddev = (n>1)?sqrtf(d2/n - (dsum/n)*(dsum/n)) : 0.0;
     distMean.setValue(dmean);
     distMin.setValue(dmin);
     distMax.setValue(dmax);
@@ -102,8 +110,16 @@ double EvalPointsDistance<DataTypes>::eval()
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::draw()
 {
+    if (!mstate1 || !mstate2)
+        return;
     const VecCoord& x1 = *mstate1->getX();
     const VecCoord& x2 = *mstate2->getX();
+    this->doDraw(x1,x2);
+}
+
+template<class DataTypes>
+void EvalPointsDistance<DataTypes>::doDraw(const VecCoord& x1, const VecCoord& x2)
+{
     const int n = (x1.size()<x2.size())?x1.size():x2.size();
     glDisable(GL_LIGHTING);
     glColor3f(1.0f,0.5f,0.5f);
@@ -122,7 +138,9 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
     if (!mstate1 || !mstate2)
         return;
     std::ostream& out = (outfile==NULL)?std::cout : *outfile;
-    if (/* simulation::tree::AnimateBeginEvent* ev = */ dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
+    //if (/* simulation::tree::AnimateBeginEvent* ev = */ dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
+    //if (/* simulation::tree::AnimateEndEvent* ev = */ dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
+    if (/* simulation::tree::UpdateMappingEndEvent* ev = */ dynamic_cast<simulation::tree::UpdateMappingEndEvent*>(event))
     {
         double time = getContext()->getTime();
         // write the state using a period

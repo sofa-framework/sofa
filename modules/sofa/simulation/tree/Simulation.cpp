@@ -44,6 +44,7 @@
 #include <sofa/simulation/tree/PropagateEventVisitor.h>
 #include <sofa/simulation/tree/AnimateBeginEvent.h>
 #include <sofa/simulation/tree/AnimateEndEvent.h>
+#include <sofa/simulation/tree/UpdateMappingEndEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream>
 
@@ -219,6 +220,11 @@ void Simulation::animate ( GNode* root, double dt )
     }
 
     root->execute<UpdateMappingVisitor>();
+    {
+        UpdateMappingEndEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        root->execute ( act );
+    }
     root->execute<VisualUpdateVisitor>();
 }
 
