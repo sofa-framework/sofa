@@ -103,6 +103,7 @@ SparseGridTopology::SparseGridTopology()
     n(initData(&n,Vec<3,int>(2,2,2),"n","grid resolution")),
     min(initData(&min,Vec3d(0,0,0),"min","Min")),
     max(initData(&max,Vec3d(0,0,0),"max","Max")),
+    _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
     dim_voxels(initData(&dim_voxels,Vec<3,unsigned int>(512,512,246),"dim_voxels","Dimension of the voxel File")),
     size_voxel(initData(&size_voxel,Vec3f(1.0f,1.0f,1.0f),"size_voxel","Dimension of one voxel")),
     resolution(initData(&resolution, (unsigned int) 128, "resolution", "Resolution of the Marching Cube")),
@@ -143,6 +144,10 @@ void SparseGridTopology::init()
     if(grid[2] < 2) grid[2]= 2;
 
     n.setValue(grid);
+
+    if( _nbVirtualFinerLevels.getValue() )
+        buildVirtualFinerLevels();
+
 
     if( _finerSparseGrid != NULL )
         buildFromFiner();
@@ -946,6 +951,57 @@ void SparseGridTopology::buildFromFiner(  )
                 _finerSparseGrid->_inverseHierarchicalCubeMap[ _hierarchicalCubeMap[i][w] ] = i;
         }
 }
+
+
+
+
+
+
+void SparseGridTopology::buildVirtualFinerLevels()
+{
+    int nb = _nbVirtualFinerLevels.getValue();
+
+    _virtualFinerLevels.resize(nb);
+
+    int newnx=n.getValue()[0],newny=n.getValue()[1],newnz=n.getValue()[2];
+    for( int i=0; i<nb; ++i)
+    {
+        newnx = (newnx-1)*2+1;
+        newny = (newny-1)*2+1;
+        newnz = (newnz-1)*2+1;
+    }
+
+    _virtualFinerLevels[0] = new SparseGridTopology();
+    _virtualFinerLevels[0]->setNx( newnx );
+    _virtualFinerLevels[0]->setNy( newny );
+    _virtualFinerLevels[0]->setNz( newnz );
+    _virtualFinerLevels[0]->load(this->filename.getValue().c_str());
+    _virtualFinerLevels[0]->init();
+
+    cerr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
+    cerr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexas() <<" elements , ";
+
+    for(int i=1; i<nb; ++i)
+    {
+        _virtualFinerLevels[i] = new SparseGridTopology();
+
+
+        _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1]);
+
+        _virtualFinerLevels[i]->init();
+
+
+        cerr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexas() <<" elements , ";
+    }
+
+    cerr<<endl;
+
+    this->setFinerSparseGrid(_virtualFinerLevels[nb-1]);
+
+
+}
+
+
 
 
 ///////////////////////////////////////////
