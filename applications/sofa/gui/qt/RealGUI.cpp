@@ -37,6 +37,7 @@
 #endif
 
 
+#include <sofa/simulation/tree/VisualVisitor.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/InitVisitor.h>
 
@@ -1713,6 +1714,8 @@ void RealGUI::loadSimulation(DIRECTION forward, bool one_step)
 
     //update the time in the context
     viewer->getScene()->execute< sofa::simulation::tree::UpdateSimulationContextVisitor >();
+    viewer->getScene()->execute< sofa::simulation::tree::VisualUpdateVisitor >();
+
     //read the state for the current time
     sofa::simulation::tree::ReadStateModifier v(time);
     v.execute(viewer->getScene());
