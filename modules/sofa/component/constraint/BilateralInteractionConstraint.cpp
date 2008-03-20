@@ -1,5 +1,4 @@
-// #include <sofa/component/constraint/BilateralInteractionConstraint.inl>
-#include "BilateralInteractionConstraint.inl"
+#include <sofa/component/constraint/BilateralInteractionConstraint.inl>
 
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/MechanicalObject.h>

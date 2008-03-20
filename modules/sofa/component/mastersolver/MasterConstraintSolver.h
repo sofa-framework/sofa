@@ -1,5 +1,5 @@
-#ifndef SOFA_COMPONENT_ODESOLVER_MASTERCONSTRAINTSOLVER_H
-#define SOFA_COMPONENT_ODESOLVER_MASTERCONSTRAINTSOLVER_H
+#ifndef SOFA_COMPONENT_MASTERSOLVER_MASTERCONSTRAINTSOLVER_H
+#define SOFA_COMPONENT_MASTERSOLVER_MASTERCONSTRAINTSOLVER_H
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/simulation/tree/MasterSolverImpl.h>
@@ -16,7 +16,7 @@ namespace sofa
 namespace component
 {
 
-namespace odesolver
+namespace mastersolver
 {
 
 using namespace sofa::defaulttype;

@@ -1,5 +1,4 @@
-//#include <sofa/component/odesolver/MasterConstraintSolver.h>
-#include "MasterConstraintSolver.h"
+#include <sofa/component/mastersolver/MasterConstraintSolver.h>
 #include <sofa/component/odesolver/MasterContactSolver.h>
 
 #include <sofa/simulation/tree/AnimateVisitor.h>
@@ -21,9 +20,10 @@ namespace sofa
 namespace component
 {
 
-namespace odesolver
+namespace mastersolver
 {
 
+using namespace sofa::component::odesolver;
 using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::componentmodel::behavior;
