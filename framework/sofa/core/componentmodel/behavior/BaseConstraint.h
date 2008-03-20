@@ -101,6 +101,7 @@ public:
     virtual void getConstraintValue(defaulttype::BaseVector *) {};
     virtual void getConstraintValue(double *) {};
     virtual void getConstraintId(long * /*id*/, unsigned int & /*offset*/) {}
+    virtual void getConstraintType(bool * /*type*/, unsigned int & /*offset*/) {}
 
     /// Get additionnal DOFs associated to this constraint (such as Lagrange Multiplier values)
     /// \todo Remove it or disable it until we have a working Lagrange Multipliers implementation

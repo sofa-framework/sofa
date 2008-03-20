@@ -172,6 +172,12 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsig
     }
 }
 
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::getConstraintType(bool* type, unsigned int &offset)
+{
+    for (unsigned int i=0; i<contacts.size()*3; i++)
+        type[offset++] = false;
+}
 
 template<class DataTypes>
 void UnilateralInteractionConstraint<DataTypes>::draw()
