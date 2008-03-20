@@ -73,7 +73,7 @@ public:
     virtual void init();
     void buildAsFinest(); ///< building from a mesh file
     void buildFromFiner(); ///< building by condensating a finer sparse grid (used if setFinerSparseGrid has initializated _finerSparseGrid before calling init() )
-
+    void buildVirtualFinerLevels(); ///< building eventual virtual finer levels (cf _nbVirtualFinerLevels)
 
     typedef std::map<Vec3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
 
@@ -101,6 +101,9 @@ public:
     NodeCubesAdjacency _nodeCubesAdjacency;
     typedef helper::vector< helper::vector<int> >NodeCornersAdjacency; ///< a node -> its 8 corners of neighboor cells
     NodeCornersAdjacency _nodeCornersAdjacency;
+
+
+    helper::vector<SparseGridTopology*> _virtualFinerLevels; ///< saving the virtual levels (cf _nbVirtualFinerLevels)
 
 
     Vec<3, int> getN() const { return n.getValue();}
@@ -169,6 +172,9 @@ protected:
     Data< Vec<3, double> > min;
     Data< Vec<3, double> > max;
 
+    Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
+
+
     Data< Vec<3, unsigned int>  > dim_voxels;
     Data< Vec3f >                 size_voxel;
     Data< unsigned int >          resolution;
@@ -177,6 +183,7 @@ protected:
     virtual void updateEdges();
     virtual void updateQuads();
     virtual void updateHexas();
+
 
     MarchingCubeUtility                 MC;
     Data< vector< unsigned char > >     dataVoxels;
