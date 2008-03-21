@@ -59,6 +59,7 @@ int TriangleSetModelClass = core::RegisterObject("collision model using a triang
 
 TriangleModel::TriangleModel()
     : mstate(NULL)
+    , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
 {
     triangles = &mytriangles;
 }
@@ -852,34 +853,96 @@ void TriangleModel::computeBoundingTree(int maxDepth)
 
     needsUpdate=false;
     Vector3 minElem, maxElem;
+    const VecCoord& x = *this->mstate->getX();
 
-    cubeModel->resize(size);  // size = number of triangles
-    if (!empty())
+    const bool calcNormals = computeNormals.getValue();
+
+    if (maxDepth == 0)
     {
-        for (int i=0; i<size; i++)
+        // no hierarchy
+        if (empty())
+            cubeModel->resize(0);
+        else
         {
-            Triangle t(this,i);
-            const Vector3& pt1 = t.p1();
-            const Vector3& pt2 = t.p2();
-            const Vector3& pt3 = t.p3();
-
-            for (int c = 0; c < 3; c++)
+            cubeModel->resize(1);
+            minElem = x[0];
+            maxElem = x[0];
+            for (unsigned i=1; i<x.size(); i++)
             {
-                minElem[c] = pt1[c];
-                maxElem[c] = pt1[c];
-                if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
-                else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
-                if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
-                else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+                const Vector3& pt1 = x[i];
+                if (pt1[0] > maxElem[0]) maxElem[0] = pt1[0];
+                else if (pt1[0] < minElem[0]) minElem[0] = pt1[0];
+                if (pt1[1] > maxElem[1]) maxElem[1] = pt1[1];
+                else if (pt1[1] < minElem[1]) minElem[1] = pt1[1];
+                if (pt1[2] > maxElem[2]) maxElem[2] = pt1[2];
+                else if (pt1[2] < minElem[2]) minElem[2] = pt1[2];
             }
+            if (calcNormals)
+                for (int i=0; i<size; i++)
+                {
+                    Triangle t(this,i);
+                    const Vector3& pt1 = x[t.p1Index()];
+                    const Vector3& pt2 = x[t.p2Index()];
+                    const Vector3& pt3 = x[t.p3Index()];
 
-            // Also recompute normal vector
-            t.n() = cross(pt2-pt1,pt3-pt1);
-            t.n().normalize();
+                    /*for (int c = 0; c < 3; c++)
+                    {
+                        if (i==0)
+                        {
+                    	minElem[c] = pt1[c];
+                    	maxElem[c] = pt1[c];
+                        }
+                        else
+                        {
+                    	if (pt1[c] > maxElem[c]) maxElem[c] = pt1[c];
+                    	else if (pt1[c] < minElem[c]) minElem[c] = pt1[c];
+                        }
+                        if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
+                        else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
+                        if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
+                        else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+                    }*/
 
-            cubeModel->setParentOf(i, minElem, maxElem); // define the bounding box of the current triangle
+                    // Also recompute normal vector
+                    t.n() = cross(pt2-pt1,pt3-pt1);
+                    t.n().normalize();
+
+                }
+            cubeModel->setLeafCube(0, std::make_pair(this->begin(),this->end()), minElem, maxElem); // define the bounding box of the current triangle
         }
-        cubeModel->computeBoundingTree(maxDepth);
+    }
+    else
+    {
+
+        cubeModel->resize(size);  // size = number of triangles
+        if (!empty())
+        {
+            for (int i=0; i<size; i++)
+            {
+                Triangle t(this,i);
+                const Vector3& pt1 = x[t.p1Index()];
+                const Vector3& pt2 = x[t.p2Index()];
+                const Vector3& pt3 = x[t.p3Index()];
+
+                for (int c = 0; c < 3; c++)
+                {
+                    minElem[c] = pt1[c];
+                    maxElem[c] = pt1[c];
+                    if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
+                    else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
+                    if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
+                    else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+                }
+                if (calcNormals)
+                {
+                    // Also recompute normal vector
+                    t.n() = cross(pt2-pt1,pt3-pt1);
+                    t.n().normalize();
+                }
+                cubeModel->setParentOf(i, minElem, maxElem); // define the bounding box of the current triangle
+            }
+            cubeModel->computeBoundingTree(maxDepth);
+        }
     }
 }
 
