@@ -708,6 +708,7 @@ void MechanicalObject<DataTypes>::init()
             this->resize(nbp);
             for (int i=0; i<nbp; i++)
             {
+                (*getX())[i] = Coord();
                 //DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
                 DataTypes::set
                 ((*getX())[i], topo->getPX(i)*scale+translation[0], topo->getPY(i)*scale+translation[1], topo->getPZ(i)*scale+translation[2]);
