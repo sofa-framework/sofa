@@ -1297,9 +1297,10 @@ void QtViewer::calcProjection()
     double offset;
     double xForeground, yForeground, zForeground, xBackground, yBackground,
            zBackground;
+    Vector3 center;
 
     //if (!sceneBBoxIsValid)
-    if (groot)
+    if (groot && !sceneBBoxIsValid)
     {
         getSimulation()->computeBBox(groot, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
         sceneBBoxIsValid = true;
@@ -1316,6 +1317,7 @@ void QtViewer::calcProjection()
         zFar = -1e10;
         double minBBox[3] = {sceneMinBBox[0], sceneMinBBox[1], sceneMinBBox[2] };
         double maxBBox[3] = {sceneMaxBBox[0], sceneMaxBBox[1], sceneMaxBBox[2] };
+        center = (sceneMinBBox+sceneMaxBBox)*0.5;
         if (_axis)
         {
             for (int i=0; i<3; i++)
@@ -1394,6 +1396,18 @@ void QtViewer::calcProjection()
     else
     {
         float ratio = zFar/(zNear*20);
+        //float ratio = zFar/(zNear*20);
+        Vector3 tcenter = _sceneTransform * center;
+        // find Z so that dot(tcenter,tcenter-(0,0,Z))==0
+        // tc.x*tc.x+tc.y*tc.y+tc.z*(tc.z-Z) = 0
+        // Z = (tc.x*tc.x+tc.y*tc.y+tc.z*tc.z)/tc.z
+        std::cout << "center="<<center<<std::endl;
+        std::cout << "tcenter="<<tcenter<<std::endl;
+        if (tcenter[2] < 0.0)
+        {
+            ratio = -300*(tcenter.norm2())/tcenter[2];
+            std::cout << "ratio="<<ratio<<std::endl;
+        }
         glOrtho( (-xNear * xFactor)*ratio , (xNear * xFactor)*ratio , (-yNear * yFactor)*ratio,
                 (yNear * yFactor)*ratio, zNear, zFar);
     }
