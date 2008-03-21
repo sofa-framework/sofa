@@ -138,6 +138,8 @@ double EvalSurfaceDistance<DataTypes>::eval()
 template<class DataTypes>
 void EvalSurfaceDistance<DataTypes>::draw()
 {
+    if (!this->f_draw.getValue())
+        return;
     if (!this->mstate1 || !this->mstate2 || xproj.empty()) return;
     const VecCoord& x1 = *this->mstate1->getX();
     const VecCoord& x2 = xproj; //*this->mstate2->getX();

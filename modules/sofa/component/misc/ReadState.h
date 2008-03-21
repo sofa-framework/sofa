@@ -33,6 +33,7 @@ public:
 
     Data < std::string > f_filename;
     Data < double > f_interval;
+    Data < double > f_shift;
 
 protected:
     core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel;

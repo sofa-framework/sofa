@@ -52,6 +52,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
+    Data < bool > f_draw;
     Data < std::string > f_filename;
     Data < double > f_period;
     Data < double > distMean, distMin, distMax, distDev;

@@ -21,7 +21,8 @@ namespace misc
 
 template<class DataTypes>
 EvalPointsDistance<DataTypes>::EvalPointsDistance()
-    : f_filename( initData(&f_filename, "filename", "output file name"))
+    : f_draw( initData(&f_draw, true, "draw", "activate rendering of lines between associated points"))
+    , f_filename( initData(&f_filename, "filename", "output file name"))
     , f_period( initData(&f_period, 1.0, "period", "period between outputs"))
     , distMean( initData(&distMean, 1.0, "distMean", "mean distance (OUTPUT)"))
     , distMin( initData(&distMin, 1.0, "distMin", "min distance (OUTPUT)"))
@@ -110,6 +111,8 @@ double EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord&
 template<class DataTypes>
 void EvalPointsDistance<DataTypes>::draw()
 {
+    if (!f_draw.getValue())
+        return;
     if (!mstate1 || !mstate2)
         return;
     const VecCoord& x1 = *mstate1->getX();
