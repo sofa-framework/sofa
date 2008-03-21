@@ -67,7 +67,8 @@ void CubeModel::resize(int size)
     // set additional indices
     for (int i=size0; i<size; ++i)
     {
-        this->elems[i].leaf = core::CollisionElementIterator(getNext(), i);
+        this->elems[i].children.first=core::CollisionElementIterator(getNext(), i);
+        this->elems[i].children.second=core::CollisionElementIterator(getNext(), i+1);
         this->parentOf[i] = i;
     }
 }
@@ -79,6 +80,13 @@ void CubeModel::setParentOf(int childIndex, const Vector3& min, const Vector3& m
     elems[i].maxBBox = max;
 }
 
+void CubeModel::setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max)
+{
+    elems[cubeIndex].minBBox = min;
+    elems[cubeIndex].maxBBox = max;
+    elems[cubeIndex].children = children;
+}
+
 int CubeModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
 {
     int i = size;
@@ -87,7 +95,8 @@ int CubeModel::addCube(Cube subcellsBegin, Cube subcellsEnd)
     //elems[i].subcells = std::make_pair(subcellsBegin, subcellsEnd);
     elems[i].subcells.first = subcellsBegin;
     elems[i].subcells.second = subcellsEnd;
-    elems[i].leaf = core::CollisionElementIterator();
+    elems[i].children.first = core::CollisionElementIterator();
+    elems[i].children.second = core::CollisionElementIterator();
     updateCube(i);
     return i;
 }
@@ -203,21 +212,24 @@ std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeMod
 
 std::pair<core::CollisionElementIterator,core::CollisionElementIterator> CubeModel::getExternalChildren(int index) const
 {
-    core::CollisionElementIterator i1 = elems[index].leaf;
-    if (!i1.valid())
-    {
-        return std::make_pair(core::CollisionElementIterator(),core::CollisionElementIterator());
-    }
-    else
-    {
-        core::CollisionElementIterator i2 = i1; ++i2;
-        return std::make_pair(i1,i2);
-    }
+    return elems[index].children;
+    /*
+        core::CollisionElementIterator i1 = elems[index].leaf;
+        if (!i1.valid())
+        {
+            return std::make_pair(core::CollisionElementIterator(),core::CollisionElementIterator());
+        }
+        else
+        {
+            core::CollisionElementIterator i2 = i1; ++i2;
+            return std::make_pair(i1,i2);
+        }
+    */
 }
 
 bool CubeModel::isLeaf( int index ) const
 {
-    return elems[index].leaf.valid();
+    return elems[index].children.first.valid();
 }
 
 class CubeModel::CubeSortPredicate
@@ -342,7 +354,7 @@ void CubeModel::computeBoundingTree(int maxDepth)
         }
         // Finally update parentOf to reflect new cell order
         for (int i=0; i<size; i++)
-            parentOf[elems[i].leaf.getIndex()] = i;
+            parentOf[elems[i].children.first.getIndex()] = i;
     }
     else
     {

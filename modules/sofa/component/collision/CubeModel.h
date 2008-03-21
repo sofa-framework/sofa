@@ -64,7 +64,7 @@ protected:
     {
         Vector3 minBBox, maxBBox;
         std::pair<Cube,Cube> subcells;
-        core::CollisionElementIterator leaf; ///< Note that leaf is only meaningfull if subcells in empty
+        std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children; ///< Note that children is only meaningfull if subcells in empty
     };
 
     class CubeSortPredicate;
@@ -83,6 +83,7 @@ public:
     virtual void resize(int size);
 
     void setParentOf(int childIndex, const Vector3& min, const Vector3& max);
+    void setLeafCube(int cubeIndex, std::pair<core::CollisionElementIterator,core::CollisionElementIterator> children, const Vector3& min, const Vector3& max);
 
 
     unsigned int getNumberCells() { return elems.size();};
@@ -98,7 +99,12 @@ public:
 
     int getLeafIndex(int index) const
     {
-        return elems[index].leaf.getIndex();
+        return elems[index].children.first.getIndex();
+    }
+
+    int getLeafEndIndex(int index) const
+    {
+        return elems[index].children.second.getIndex();
     }
 
     // -- CollisionModel interface

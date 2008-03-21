@@ -142,6 +142,7 @@ public:
 
 protected:
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+    Data<bool> computeNormals;
 };
 
 inline Triangle::Triangle(TriangleModel* model, int index)
