@@ -19,7 +19,8 @@ namespace misc
 template<class DataTypes>
 ReadState<DataTypes>::ReadState()
     : f_filename( initData(&f_filename, "filename", "output file name"))
-    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
+    , f_interval( initData(&f_interval, 0.0, "interval", "time duration between inputs"))
+    , f_shift( initData(&f_shift, 0.0, "shift", "shift between times in the file and times when they will be read"))
     , mmodel(NULL)
     , infile(NULL)
     , nextTime(0)
@@ -96,9 +97,9 @@ void ReadState<DataTypes>::processReadState()
 
     if (infile && mmodel)
     {
-        double time = getContext()->getTime();
+        double time = getContext()->getTime() + f_shift.getValue();
         lastTime = time;
-        std::string validLine;
+        std::vector<std::string> validLines;
         std::string line, cmd;
         while (nextTime <= time && !infile->eof())
         {
@@ -108,24 +109,64 @@ void ReadState<DataTypes>::processReadState()
             str >> cmd;
             //std::cout << "cmd= "<<cmd<<std::endl;
             if (cmd == "T=")
+            {
                 str >> nextTime;
+                validLines.clear();
+            }
 
-            if (nextTime <= time) validLine = line;
+            if (nextTime <= time) validLines.push_back(line);
         }
-        std::istringstream str(validLine);
-        str >> cmd;
-        //std::cout << "cmd= "<<cmd<<std::endl;
-        if (cmd == "X=")
+        for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
         {
-            str >> (*mmodel->getX());
-            updated = true;
+            std::istringstream str(*it);
+            cmd.clear();
+            str >> cmd;
+            //std::cout << "cmd= "<<cmd<<std::endl;
+            if (cmd == "X=")
+            {
+                int prevSize = mmodel->getSize();
+                //str >> (*mmodel->getX());
+                VecCoord v;
+                str >> v;
+                int newSize = v.size();
+                if (newSize == 0)
+                {
+                    std::cerr << "ReadState("<<f_filename.getValue()<<"): Empty vector read. Ignoring..."<<std::endl;
+                }
+                else
+                {
+                    if (newSize != prevSize)
+                    {
+                        std::cout << "ReadState("<<f_filename.getValue()<<"): size changed from "<<prevSize<<" to "<<newSize<<std::endl;
+                        mmodel->resize(newSize);
+                    }
+                    (*mmodel->getX()) = v;
+                }
+                updated = true;
+            }
+            else if (cmd == "V=")
+            {
+                int prevSize = mmodel->getSize();
+                //str >> (*mmodel->getV());
+                VecDeriv v;
+                str >> v;
+                int newSize = v.size();
+                if (newSize == 0)
+                {
+                    std::cerr << "ReadState("<<f_filename.getValue()<<"): Empty vector read. Ignoring..."<<std::endl;
+                }
+                else
+                {
+                    if (newSize != prevSize)
+                    {
+                        std::cout << "ReadState("<<f_filename.getValue()<<"): size changed from "<<prevSize<<" to "<<newSize<<std::endl;
+                        mmodel->resize(newSize);
+                    }
+                    (*mmodel->getV()) = v;
+                }
+                updated = true;
+            }
         }
-        else if (cmd == "V=")
-        {
-            str >> (*mmodel->getV());
-            updated = true;
-        }
-
     }
     if (updated)
     {
