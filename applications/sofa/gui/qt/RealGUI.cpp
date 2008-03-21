@@ -1002,8 +1002,8 @@ void RealGUI::fileOpenSimu ( const char* s )
             simulation_name.resize(pointSimu);
             fileOpen(filename.c_str());
 
-            addWriteState();
             writeSceneName = writeName;
+            addWriteState();
 
 
             char buf[100];
@@ -1602,7 +1602,7 @@ void RealGUI::slot_recordSimulation( bool value)
         std::ofstream out(simulationFileName.c_str());
         if (!out.fail())
         {
-            out << filename << " " << initialTime->text().ascii() << " " << finalTime->text().ascii() << " " << dtEdit->text().ascii() << " baseName: "<<writeSceneName;
+            out << sofa::helper::system::DataRepository.getFile ( viewer->getSceneFileName() ) << " " << initialTime->text().ascii() << " " << finalTime->text().ascii() << " " << dtEdit->text().ascii() << " baseName: "<<writeSceneName;
             out.close();
         }
         std::cout << "Simulation parameters saved in "<<simulationFileName<<std::endl;
@@ -1710,6 +1710,7 @@ void RealGUI::loadSimulation(DIRECTION forward, bool one_step)
         return;
     }
 
+    unsigned int sleep_time = clock();
     double time=getRecordTime();
 
     //update the time in the context
@@ -1720,12 +1721,14 @@ void RealGUI::loadSimulation(DIRECTION forward, bool one_step)
     sofa::simulation::tree::ReadStateModifier v(time);
     v.execute(viewer->getScene());
 
-    if (!one_step) sleep((unsigned int)(1000*viewer->getScene()->getDt()));
-
     viewer->getQWidget()->repaint();
     statusBar()->repaint();
+    timeLabel->repaint();
+    loadRecordTime->repaint();
     repaint();
     update();
+
+    if (!one_step) sleep((unsigned int)(1000*viewer->getScene()->getDt()), sleep_time);
 
     emit newStep();
 

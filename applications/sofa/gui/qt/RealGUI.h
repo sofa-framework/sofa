@@ -336,10 +336,10 @@ protected:
     //std::string sceneFileName;
     sofa::simulation::tree::GNode* getScene() { if (viewer) return viewer->getScene(); else return NULL; }
 
-    void sleep(unsigned int mseconds)
+    void sleep(unsigned int mseconds, unsigned int init_time)
     {
         unsigned int t;
-        clock_t goal = mseconds + clock();
+        clock_t goal = mseconds + init_time;
         while (goal > clock()) t++;
     }
 
