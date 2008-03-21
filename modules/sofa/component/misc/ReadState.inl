@@ -111,7 +111,7 @@ void ReadState<DataTypes>::processReadState()
             if (cmd == "T=")
             {
                 str >> nextTime;
-                validLines.clear();
+                if (nextTime <= time) validLines.clear();
             }
 
             if (nextTime <= time) validLines.push_back(line);
