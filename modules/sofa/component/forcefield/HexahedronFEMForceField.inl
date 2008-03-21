@@ -306,7 +306,7 @@ double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 #define MAT_STIFFNESS_USE_W
 // enable to use J when computing qx/qy/qz, instead of computing the matrix relative to (x1,x2,x3) and pre/post multiply by J^-1 afterward.
 // note that this does not matter if the element is a cube.
-//#define DN_USE_J
+#define DN_USE_J
 
 
 template<class DataTypes>
