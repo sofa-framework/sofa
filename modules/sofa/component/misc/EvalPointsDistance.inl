@@ -65,6 +65,7 @@ void EvalPointsDistance<DataTypes>::init()
         else
             (*outfile) << "# time\tmean\tmin\tmax\tdev" << std::endl;
     }
+
 }
 
 template<class DataTypes>
@@ -100,7 +101,7 @@ double EvalPointsDistance<DataTypes>::doEval(const VecCoord& x1, const VecCoord&
         if (i==0 || d > dmax) dmax = d;
     }
     double dmean = (n>0)?dsum/n : 0.0;
-    double ddev = (n>1)?sqrtf(d2/n - (dsum/n)*(dsum/n)) : 0.0;
+    double ddev = ((n>1)?sqrtf((float)(d2/n - (dsum/n)*(dsum/n))) : 0.0);
     distMean.setValue(dmean);
     distMin.setValue(dmin);
     distMax.setValue(dmax);
@@ -140,7 +141,7 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
 {
     if (!mstate1 || !mstate2)
         return;
-    std::ostream& out = (outfile==NULL)?std::cout : *outfile;
+    std::ostream *out = (outfile==NULL)? &std::cout : outfile;
     //if (/* simulation::tree::AnimateBeginEvent* ev = */ dynamic_cast<simulation::tree::AnimateBeginEvent*>(event))
     //if (/* simulation::tree::AnimateEndEvent* ev = */ dynamic_cast<simulation::tree::AnimateEndEvent*>(event))
     if (/* simulation::tree::UpdateMappingEndEvent* ev = */ dynamic_cast<simulation::tree::UpdateMappingEndEvent*>(event))
@@ -150,7 +151,7 @@ void EvalPointsDistance<DataTypes>::handleEvent(sofa::core::objectmodel::Event* 
         if (time+getContext()->getDt()/2 >= (lastTime + f_period.getValue()))
         {
             eval();
-            out << time << "\t" << distMean.getValue() << "\t" << distMin.getValue() << "\t" << distMax.getValue() << "\t" << distDev.getValue() << std::endl;
+            (*out) << time << "\t" << distMean.getValue() << "\t" << distMin.getValue() << "\t" << distMax.getValue() << "\t" << distDev.getValue() << std::endl;
             lastTime += f_period.getValue();
         }
     }
