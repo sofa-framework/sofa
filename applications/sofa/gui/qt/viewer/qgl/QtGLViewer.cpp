@@ -1407,6 +1407,7 @@ void QtGLViewer::keyPressEvent ( QKeyEvent * e )
         {
             SofaViewer::keyPressEvent(e);
             QGLViewer::keyPressEvent(e);
+            e->ignore();
         }
         }
     }
