@@ -1688,6 +1688,7 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
         default:
         {
             SofaViewer::keyPressEvent(e);
+            e->ignore();
         }
         update();
         }

@@ -1628,6 +1628,7 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
     default:
     {
+        e->ignore();
         break;
     }
     }
