@@ -39,7 +39,7 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::init()
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
-    sofa::simulation::tree::GNode* context = dynamic_cast<sofa::simulation::tree::GNode*>(this->getContext());
+    sofa::core::objectmodel::BaseContext* context = this->getContext();
     sofa::core::componentmodel::topology::BaseTopology* bt = dynamic_cast<sofa::core::componentmodel::topology::BaseTopology *>(context->getMainTopology());
     _topology = dynamic_cast<sofa::component::topology::EdgeSetTopology<DataTypes> *>(bt);// context->get< sofa::component::topology::EdgeSetTopology<DataTypes> >();
     topology::MeshTopology* topo2 = dynamic_cast<topology::MeshTopology*>(context->getTopology()); // context->get< sofa::component::topology::MeshTopology >();
