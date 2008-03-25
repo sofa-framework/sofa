@@ -296,17 +296,19 @@ protected:
     QListViewItem *item_clicked;
     GNode *node_clicked;
     QTimer* timerStep;
+    QTimer* timerRecordStep;
     QLabel* fpsLabel;
     QLabel* timeLabel;
 
+    void setPixmap(std::string pixmap_filename, QPushButton* b);
 
-    inline double getRecordInitialTime() const;
-    inline void   setRecordInitialTime(const double time);
-    inline double getRecordFinalTime  () const;
-    inline void   setRecordFinalTime  (const double time);
-    inline double getRecordTime       () const;
-    inline void   setRecordTime       (const double time);
-    inline void   setTimeSimulation   (const double time);
+    double getRecordInitialTime() const;
+    void   setRecordInitialTime(const double time);
+    double getRecordFinalTime  () const;
+    void   setRecordFinalTime  (const double time);
+    double getRecordTime       () const;
+    void   setRecordTime       (const double time);
+    void   setTimeSimulation   (const double time);
 
     QPushButton* record;
     QPushButton* backward_record;
@@ -370,6 +372,7 @@ private:
     void setGUI(void);
 
 
+    void addReadState(bool init);
     void addWriteState();
 
 #ifdef SOFA_PML

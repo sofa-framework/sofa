@@ -85,6 +85,25 @@ protected:
     int counterWriteState; //avoid to have two same files if two mechanical objects has the same name
 };
 
+//Create ReadState component in the graph each time needed
+class ReadStateCreator: public Visitor
+{
+public:
+    ReadStateCreator():sceneName(""), counterReadState(0) {};
+    ReadStateCreator(std::string &n, int c, bool i=true) {sceneName=n; counterReadState=c; init=i;};
+    virtual Result processNodeTopDown( GNode*  );
+
+    void setSceneName(std::string &n) { sceneName = n;}
+    void setCounter(int c) {counterReadState = c;};
+protected:
+    template< class DataTypes >
+    void addReadState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode);
+    bool init;
+    std::string sceneName;
+    int counterReadState; //avoid to have two same files if two mechanical objects has the same name
+};
+
+
 class WriteStateActivator: public Visitor
 {
 public:
