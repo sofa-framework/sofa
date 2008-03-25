@@ -31,10 +31,13 @@
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 #include <sofa/component/visualmodel/OglModel.h>
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/CudaDistanceGridCollisionModel.h>
+#endif
+
 #include <sofa/gui/SofaGUI.h>
 
-#include <sofa/helper/system/gl.h>
-#include <sofa/helper/system/glut.h>
+#include <GL/glut.h>
 
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
@@ -122,12 +125,12 @@ public:
 class FlowVRObject : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    Data<std::string> modName;
+    DataField<std::string> modName;
     FlowVRModule* mod;
 
 
     FlowVRObject()
-        : modName(initData(&modName, "module", "Name of FlowVR Module"))
+        : modName(dataField(&modName, "module", "Name of FlowVR Module"))
         , mod(NULL)
     {
         f_listening.setValue(true);
@@ -229,21 +232,21 @@ class FlowVRModule : public FlowVRObject
 {
 public:
     flowvr::ModuleAPI* module;
-    Data<double> f_dt;
-    Data<float> f_scale;
-    Data<Vec3f> f_trans;
-    Data< vector<std::string> > f_inputPorts;
-    Data< vector<std::string> > f_outputPorts;
+    DataField<double> f_dt;
+    DataField<float> f_scale;
+    DataField<Vec3f> f_trans;
+    DataField< vector<std::string> > f_inputPorts;
+    DataField< vector<std::string> > f_outputPorts;
     int it;
     double lasttime;
     bool step;
     FlowVRModule()
         : module(NULL)
-        , f_dt(initData(&f_dt,0.0,"dt","simulation time interval between flowvr iteration"))
-        , f_scale(initData(&f_scale,1.0f,"scale","scale"))
-        , f_trans(initData(&f_trans,Vec3f(0,0,0),"translation","translation"))
-        , f_inputPorts(initData(&f_inputPorts,"inputPorts","additional input ports to be defined"))
-        , f_outputPorts(initData(&f_outputPorts,"outputPorts","additional output ports to be defined"))
+        , f_dt(dataField(&f_dt,0.0,"dt","simulation time interval between flowvr iteration"))
+        , f_scale(dataField(&f_scale,1.0f,"scale","scale"))
+        , f_trans(dataField(&f_trans,Vec3f(0,0,0),"translation","translation"))
+        , f_inputPorts(dataField(&f_inputPorts,"inputPorts","additional input ports to be defined"))
+        , f_outputPorts(dataField(&f_outputPorts,"outputPorts","additional output ports to be defined"))
         , it(-1)
         , lasttime(0.0), step(false)
     {
@@ -357,8 +360,8 @@ public:
     flowvr::InputPort* pInPoints;
     flowvr::InputPort* pInMatrix;
 
-    Data<bool> computeV;
-    Data<double> maxVDist;
+    DataField<bool> computeV;
+    DataField<double> maxVDist;
 
     // Velocity is estimated by searching the nearest primitive from each new point
     // To do it we need to create an additionnal PointModel collision model, as well as a Detection and Intersection class
@@ -378,8 +381,8 @@ public:
 
     FlowVRInputMesh()
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
-        , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
-        , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
         , facetsLastIt(-20), pointsLastIt(-20), matrixLastIt(-20), motionLastTime(-1000)
     {
@@ -665,18 +668,21 @@ public:
     SofaFlowVRAllocator(flowvr::Buffer& data) : bRead(data) {}
 };
 
-using sofa::component::collision::DistanceGrid;
+//using sofa::component::collision::DistanceGrid;
 
+template<class DistanceGridModel>
 class FlowVRInputDistanceGrid : public FlowVRObject
 {
 public:
+    typedef typename DistanceGridModel::Grid DistanceGrid;
+
 
     flowvr::InputPort* pInDistance;
     flowvr::InputPort* pInMatrix;
     flowvr::StampInfo stampSizes, stampP0, stampDP, stampBB;
 
-    Data<bool> computeV;
-    Data<double> maxVDist;
+    DataField<bool> computeV;
+    DataField<double> maxVDist;
 
     Mat4x4f matrix, lastMatrix;
     float mscale; ///< scale part from input matrix
@@ -687,7 +693,7 @@ public:
     DistanceGrid* emptyGrid;
     //flowvr::Message curDistance, lastDistance;
 
-    sofa::component::collision::RigidDistanceGridCollisionModel* grid;
+    DistanceGridModel* grid;
     //sofa::core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
 
     FlowVRInputDistanceGrid()
@@ -696,8 +702,8 @@ public:
         , stampP0("P0", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
         , stampDP("DP", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
         , stampBB("BB", flowvr::TypeArray::create(6, flowvr::TypeInt::create()))
-        , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
-        , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , mscale(1.0f), distanceLastIt(-20), matrixLastIt(-20), motionLastTime(-1000), curDistGrid(NULL), emptyGrid(NULL)
         , grid(NULL) //, rigid(NULL)
     {
@@ -739,7 +745,7 @@ public:
                 //rigid = grid->getRigidModel();
 
                 // just create a dummy distance grid for now
-                emptyGrid = new DistanceGrid(2,2,2,DistanceGrid::Coord(0,0,-100),DistanceGrid::Coord(0.001f,0.001f,-99.999f));
+                emptyGrid = new DistanceGrid(2,2,2,typename DistanceGrid::Coord(0,0,-100),typename DistanceGrid::Coord(0.001f,0.001f,-99.999f));
                 for (int i=0; i<emptyGrid->size(); i++)
                     (*emptyGrid)[i] = emptyGrid->maxDist();
                 grid->resize(1);
@@ -841,17 +847,17 @@ public:
                 }
                 else
                 {
-                    DistanceGrid::Coord pmin = trans + p0*scale;
-                    DistanceGrid::Coord pmax = pmin + Vec3f(dp[0]*(nx-1),dp[1]*(ny-1),dp[2]*(ny-2))*scale;
-                    DistanceGrid::Coord bbmin = pmin + Vec3f(dp[0]*bbox[0],dp[1]*bbox[1],dp[2]*bbox[2])*scale;
-                    DistanceGrid::Coord bbmax = pmin + Vec3f(dp[0]*bbox[3],dp[1]*bbox[4],dp[2]*bbox[5])*scale;
+                    typename DistanceGrid::Coord pmin = trans + p0*scale;
+                    typename DistanceGrid::Coord pmax = pmin + Vec3f(dp[0]*(nx-1),dp[1]*(ny-1),dp[2]*(ny-2))*scale;
+                    typename DistanceGrid::Coord bbmin = pmin + Vec3f(dp[0]*bbox[0],dp[1]*bbox[1],dp[2]*bbox[2])*scale;
+                    typename DistanceGrid::Coord bbmax = pmin + Vec3f(dp[0]*bbox[3],dp[1]*bbox[4],dp[2]*bbox[5])*scale;
 
-                    if (scale==1.0f)
+                    /*if (scale==1.0f)
                     {
                         curDistGrid->release();
-                        curDistGrid = new DistanceGrid(nx,ny,nz, pmin, pmax, new SofaFlowVRAllocator<DistanceGrid::Real>(distance.data));
+                        curDistGrid = new DistanceGrid(nx,ny,nz, pmin, pmax, new SofaFlowVRAllocator<typename DistanceGrid::Real>(distance.data));
                     }
-                    else
+                    else*/
                     {
                         curDistGrid->release();
                         curDistGrid = new DistanceGrid(nx,ny,nz, pmin, pmax);
@@ -888,9 +894,11 @@ public:
 
 SOFA_DECL_CLASS(FlowVRInputDistanceGrid)
 int FlowVRInputDistanceGridClass = sofa::core::RegisterObject("Import a distance field from a FlowVR InputPort")
-        .add< FlowVRInputDistanceGrid >()
+        .add< FlowVRInputDistanceGrid<sofa::component::collision::RigidDistanceGridCollisionModel> >()
+#ifdef SOFA_GPU_CUDA
+        .add< FlowVRInputDistanceGrid<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> >()
+#endif
         ;
-
 
 class FlowVRRenderEvent : public FlowVREvent
 {
@@ -1192,9 +1200,9 @@ public:
     typedef Inherit::VecCoord VecCoord;
     typedef Inherit::Coord Coord;
 
-    Data<std::string> vShader;
-    Data<std::string> pShader;
-    Data<bool> useTangent;
+    DataField<std::string> vShader;
+    DataField<std::string> pShader;
+    DataField<bool> useTangent;
     std::string texture;
 
     std::map<std::string,std::string> paramT;
@@ -1220,10 +1228,10 @@ public:
     int lastNormRev;
 
     FlowVRRenderMesh()
-        : vShader(initData(&vShader, std::string(""), "vshader", "vertex shader name"))
-        , pShader(initData(&pShader, std::string(""), "pshader", "pixel shader name"))
-        , useTangent(initData(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
-//    , color(initData(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
+        : vShader(dataField(&vShader, std::string(""), "vshader", "vertex shader name"))
+        , pShader(dataField(&pShader, std::string(""), "pshader", "pixel shader name"))
+        , useTangent(dataField(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
+//    , color(dataField(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
 //    , topology(NULL)
 //    , mmodel(NULL)
         , idP(0)
