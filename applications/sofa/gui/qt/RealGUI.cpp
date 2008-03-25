@@ -22,52 +22,33 @@
 * F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza, M. Nesme, P. Neumann,        *
 * and F. Poyer                                                                 *
 *******************************************************************************/
-#include "RealGUI.h"
+#include <sofa/gui/qt/RealGUI.h>
 
 #ifdef SOFA_GUI_QTOGREVIEWER
-#include "viewer/qtogre/QtOgreViewer.h"
+#include <sofa/gui/qt/viewer/qtogre/QtOgreViewer.h>
 #endif
 
 #ifdef SOFA_GUI_QTVIEWER
-#include "viewer/qt/QtViewer.h"
+#include <sofa/gui/qt/viewer/qt/QtViewer.h>
 #endif
 
 #ifdef SOFA_GUI_QGLVIEWER
-#include "viewer/qgl/QtGLViewer.h"
+#include <sofa/gui/qt/viewer/qgl/QtGLViewer.h>
 #endif
 
 
-#include <sofa/simulation/tree/VisualVisitor.h>
 #include <sofa/simulation/tree/Simulation.h>
 #include <sofa/simulation/tree/InitVisitor.h>
 
-#include <sofa/component/misc/ReadState.h>
-#include <sofa/component/misc/WriteState.h>
-
-#include <sofa/simulation/tree/MutationListener.h>
-#include <sofa/simulation/tree/Colors.h>
-
-#include <sofa/helper/system/SetDirectory.h>
-#include <sofa/helper/system/FileRepository.h>
 
 #include <sofa/simulation/automatescheduler/ThreadSimulation.h>
 #include <sofa/simulation/automatescheduler/ExecBus.h>
 #include <sofa/simulation/automatescheduler/Node.h>
 
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/PointModel.h>
-#include <sofa/component/collision/SphereModel.h>
-
-#include <sofa/simulation/tree/WriteStateVisitor.h>
-#include <sofa/simulation/tree/UpdateContextVisitor.h>
-
 #include <sofa/simulation/tree/xml/XML.cpp> //--> static int num defined. If the same scene is reloaded, num has to be set to zero
-#include <limits.h>
+
 
 namespace sofa
 {
@@ -102,6 +83,7 @@ extern simulation::tree::GNode* groot;
 #include <QToolTip>
 #include <QButtonGroup>
 #include <QRadioButton>
+#include <QInputDialog>
 #else
 #include <qwidget.h>
 #include <qwidgetstack.h>
@@ -117,12 +99,12 @@ extern simulation::tree::GNode* groot;
 #include <qapplication.h>
 #include <qaction.h>
 #include <qmessagebox.h>
-#include <qfiledialog.h>
 #include <qtabwidget.h>
 #include <qpopupmenu.h>
 #include <qtooltip.h>
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
+#include <qinputdialog.h>
 #endif
 
 #include <GenGraphForm.h>
@@ -140,18 +122,12 @@ namespace qt
 
 #ifdef QT_MODULE_QT3SUPPORT
 typedef Q3ListView QListView;
-//      typedef Q3FileDialog QFileDialog;
 typedef Q3DockWindow QDockWindow;
 typedef QStackedWidget QWidgetStack;
 typedef Q3TextEdit QTextEdit;
 typedef Q3PopupMenu QPopupMenu;
 #else
-typedef QListViewItem Q3ListViewItem;
-typedef QListView Q3ListView;
 typedef QFileDialog Q3FileDialog;
-//typedef QWidgetStack QStackedWidget;
-typedef QTextEdit Q3TextEdit;
-typedef QPopupMenu Q3PopupMenu;
 #endif
 
 
@@ -342,47 +318,14 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     QToolTip::add(forward_record       , tr( "Load Final Time" ) );
 
 
-    // Image for the record button
-    pixmap_filename = "textures/media-record.png";
-    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-    record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
+    setPixmap("textures/media-record.png", record);
+    setPixmap("textures/media-seek-backward.png", backward_record);
+    setPixmap("textures/media-skip-backward.png", stepbackward_record);
+    //setPixmap("textures/media-back-start.png", playbackward_record);
+    setPixmap("textures/media-playback-start.png", playforward_record);
+    setPixmap("textures/media-skip-forward.png", stepforward_record);
+    setPixmap("textures/media-seek-forward.png", forward_record);
 
-    // Image for the backward button
-    pixmap_filename = "textures/media-seek-backward.png";
-    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-    backward_record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
-
-    // Image for the backward button
-    pixmap_filename = "textures/media-skip-backward.png";
-    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-    stepbackward_record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
-
-    // Image for the play backward button
-// 	pixmap_filename = "textures/media-back-start.png";
-// 	if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-// 	  pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-// 	playbackward_record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
-
-    // Image for the play forward button
-    pixmap_filename = "textures/media-playback-start.png";
-    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-    playforward_record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
-
-    // Image for the play forward button
-    pixmap_filename = "textures/media-skip-forward.png";
-    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-    stepforward_record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
-
-    // Image for the forward button
-    pixmap_filename = "textures/media-seek-forward.png";
-    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-    forward_record->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
 
     QLabel *timeRecord = new QLabel("T=",statusBar());
     loadRecordTime = new QLineEdit(statusBar());
@@ -407,10 +350,12 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     statusBar()->addWidget( timeSlider);
     statusBar()->addWidget ( finalTime );
 
-    timerStep = new QTimer ( this );
+    timerStep       = new QTimer ( this );
+    timerRecordStep = new QTimer ( this );
 
 
     connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
+    connect ( timerRecordStep, SIGNAL ( timeout() ), this, SLOT ( slot_stepforward() ) );
     connect ( ResetSceneButton, SIGNAL ( clicked() ), this, SLOT ( resetScene() ) );
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );
@@ -444,6 +389,13 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     pmlreader = NULL;
     lmlreader = NULL;
 #endif
+}
+
+void RealGUI::setPixmap(std::string pixmap_filename, QPushButton* b)
+{
+    if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
+        pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
+    b->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
 }
 
 RealGUI::~RealGUI()
@@ -1003,7 +955,7 @@ void RealGUI::fileOpenSimu ( const char* s )
             fileOpen(filename.c_str());
 
             writeSceneName = writeName;
-            addWriteState();
+            addReadState(true);
 
 
             char buf[100];
@@ -1546,245 +1498,6 @@ void RealGUI::resetScene()
 }
 
 
-
-//-----------------------------------------------------------------------------------
-//Recording a simulation
-void RealGUI::slot_recordSimulation( bool value)
-{
-    if (value)
-    {
-        GNode* groot = getScene();
-        if (groot)
-        {
-            if(timeSlider->maxValue() == 0)
-            {
-                double time = groot->getTime();
-                setRecordInitialTime(time);
-            }
-            else
-            {
-                if (atof(loadRecordTime->text()) != groot->getTime() )
-                {
-                    loadSimulation(FORWARD); //set the correct sample of the simulation
-                }
-            }
-
-            //save first sample
-            std::string filename = viewer->getSceneFileName();
-
-            //if no simulation has been recorded
-            if (timeSlider->maxValue() == 0)
-            {
-                simulation_name = filename;
-
-                filename = sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
-
-                std::string::size_type point = filename.rfind('.');
-                if (point != std::string::npos) filename.resize(point);
-            }
-            record_simulation=true;
-            playpauseGUI(true);
-            addWriteState();//Add if needed WriteState
-        }
-    }
-    else
-    {
-        record_simulation=false;
-        playpauseGUI(false);
-        //Save simulation file
-
-        std::string filename = viewer->getSceneFileName();
-        filename = sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
-        std::string simulationFileName = simulation_name + ".simu";
-
-        std::string output(record_directory + filename);
-
-        std::ofstream out(simulationFileName.c_str());
-        if (!out.fail())
-        {
-            out << sofa::helper::system::DataRepository.getFile ( viewer->getSceneFileName() ) << " " << initialTime->text().ascii() << " " << finalTime->text().ascii() << " " << dtEdit->text().ascii() << " baseName: "<<writeSceneName;
-            out.close();
-        }
-        std::cout << "Simulation parameters saved in "<<simulationFileName<<std::endl;
-    }
-    //Change the state of the writers
-    sofa::simulation::tree::WriteStateActivator v(value);
-    v.execute(viewer->getScene());
-}
-
-void RealGUI::slot_backward(  )
-{
-    if (timeSlider->value() != timeSlider->minValue())
-    {
-        setRecordTime(getRecordInitialTime());
-        slot_sliderValue(timeSlider->minValue());
-        loadSimulation(BACKWARD);
-    }
-}
-
-void RealGUI::slot_stepbackward()
-{
-    playforward_record->setOn(false);
-// 	playbackward_record->setOn(false);
-
-    double init_time  = getRecordInitialTime();
-    double time = getRecordTime() - atof(dtEdit->text());
-    if (time >= init_time)
-    {
-        setRecordTime(time);
-        slot_loadrecord_timevalue();
-    }
-}
-
-//       void RealGUI::slot_playbackward()
-//       {
-// 	if (playbackward_record->isOn())
-// 	  {
-// 	    playforward_record->setOn(false);
-// 	    loadSimulation(BACKWARD);
-// 	  }
-//       }
-
-void RealGUI::slot_playforward( )
-{
-    if (playforward_record->isOn())
-    {
-// 	    playbackward_record->setOn(false);
-        loadSimulation(FORWARD);
-    }
-}
-
-void RealGUI::slot_stepforward()
-{
-// 	playforward_record->setOn(false);
-// 	playbackward_record->setOn(false);
-    setRecordTime(getRecordTime() + atof(dtEdit->text()));
-    slot_loadrecord_timevalue();
-}
-
-void RealGUI::slot_forward(  )
-{
-    if (timeSlider->value() != timeSlider->maxValue())
-    {
-        setRecordTime(getRecordFinalTime());
-        slot_sliderValue(timeSlider->maxValue());
-    }
-}
-
-void RealGUI::slot_sliderValue(int value)
-{
-    if (timeSlider->value() == value) return;
-    double init_time  = getRecordInitialTime();
-    double delta_time = atof(dtEdit->text().ascii());
-    double time = init_time + delta_time*(value);
-
-    setRecordTime(time);
-    timeSlider->setValue(value);
-    timeSlider->update();
-    loadSimulation(FORWARD);
-}
-
-void RealGUI::slot_loadrecord_timevalue()
-{
-    double init_time = getRecordInitialTime();
-    double current_time = getRecordTime();
-    int value = (int)((current_time - init_time)/( atof(dtEdit->text()))+0.5);
-
-    if (value >= timeSlider->minValue() && value <= timeSlider->maxValue())    slot_sliderValue(value);
-    else if (value < timeSlider->minValue()) 	                           slot_sliderValue(timeSlider->minValue());
-    else if (value > timeSlider->maxValue())
-    {
-        playforward_record->setOn(false);
-        slot_sliderValue(timeSlider->maxValue());
-    }
-}
-
-
-//Given a direction  (forward, or backward), load the samples of the simulation between the initial and final time.
-void RealGUI::loadSimulation(DIRECTION forward, bool one_step)
-{
-    if (timeSlider->maxValue() == 0)
-    {
-// 	    playbackward_record->setOn(false);
-        playforward_record->setOn(false);
-        return;
-    }
-
-    unsigned int sleep_time = clock();
-    double time=getRecordTime();
-
-    //update the time in the context
-    viewer->getScene()->execute< sofa::simulation::tree::UpdateSimulationContextVisitor >();
-    viewer->getScene()->execute< sofa::simulation::tree::VisualUpdateVisitor >();
-
-    //read the state for the current time
-    sofa::simulation::tree::ReadStateModifier v(time);
-    v.execute(viewer->getScene());
-
-    viewer->getQWidget()->repaint();
-    statusBar()->repaint();
-    timeLabel->repaint();
-    loadRecordTime->repaint();
-    repaint();
-    update();
-
-    if (!one_step) sleep((unsigned int)(1000*viewer->getScene()->getDt()), sleep_time);
-
-    emit newStep();
-
-    if (forward && playforward_record->isOn())
-    {
-        time+=atof(dtEdit->text());
-        emit insideStepForward();
-    }
-
-}
-
-
-double RealGUI::getRecordInitialTime() const
-{
-    std::string init_time = initialTime->text().ascii();
-    init_time.resize(init_time.size()-2);
-    return fabs(atof((init_time.substr(6)).c_str()));
-}
-void RealGUI::setRecordInitialTime(double time)
-{
-    char buf[100];
-    sprintf ( buf, "Init: %.3f s", fabs(time) );
-    initialTime->setText ( buf );
-}
-double RealGUI::getRecordFinalTime() const
-{
-    std::string final_time = finalTime->text().ascii();
-    final_time.resize(final_time.size()-2);
-    return fabs(atof((final_time.substr(5)).c_str()));
-}
-void RealGUI::setRecordFinalTime(double time)
-{
-    char buf[100];
-    sprintf ( buf, "End: %.3f s", fabs(time) );
-    finalTime->setText( buf );
-}
-double RealGUI::getRecordTime() const
-{
-    return fabs(atof(loadRecordTime->text().ascii()));
-}
-void RealGUI::setRecordTime(double time)
-{
-    char buf[100];
-    sprintf ( buf, "%.3f", fabs(time) );
-    loadRecordTime->setText( buf );
-
-    setTimeSimulation(getRecordTime());
-}
-
-void RealGUI::setTimeSimulation(double time)
-{
-    char buf[100];
-    sprintf ( buf, "Time: %.3f s", time );
-    timeLabel->setText ( buf );
-    viewer->getScene()->setTime(time);
-}
 //*****************************************************************************************
 //
 void RealGUI::exportGraph()
@@ -1920,299 +1633,6 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     }
 }
 
-
-/*****************************************************************************************************************/
-// INTERACTION WITH THE GRAPH
-/*****************************************************************************************************************/
-void RealGUI::currentTabChanged ( QWidget* widget )
-{
-    if ( widget == currentTab ) return;
-    GNode* groot = viewer==NULL ? NULL : viewer->getScene();
-    if ( widget == TabGraph )
-    {
-        if ( groot && graphListener )
-        {
-            //graphListener->addChild(NULL, groot);
-            graphListener->unfreeze ( groot );
-        }
-    }
-    else if ( currentTab == TabGraph )
-    {
-        if ( groot && graphListener )
-        {
-            //graphListener->removeChild(NULL, groot);
-            graphListener->freeze ( groot );
-        }
-    }
-    else if (widget == TabStats)
-        graphCreateStats(viewer->getScene(),NULL);
-
-    currentTab = widget;
-}
-
-/*****************************************************************************************************************/
-void RealGUI::DoubleClickeItemInSceneView ( QListViewItem *item )
-{
-    // This happens because the clicked() signal also calls the select callback with
-    // NULL as a parameter.
-    if ( item == NULL )
-        return;
-
-    item_clicked = item;
-
-    // cancel the visibility action caused by the double click
-    item_clicked->setOpen ( !item_clicked->isOpen() );
-    graphModify();
-}
-
-
-/*****************************************************************************************************************/
-void RealGUI::RightClickedItemInSceneView ( QListViewItem *item, const QPoint& point, int index )
-{
-    if ( dialog == NULL )
-    {
-        //Creation of the file dialog
-        dialog = new AddObject ( &list_object, this );
-        dialog->setPath ( viewer->getSceneFileName() );
-        dialog->hide();
-    }
-
-
-    //Creation of a popup menu at the mouse position
-    item_clicked=item;
-
-    //Search in the graph if the element clicked is a node
-    node_clicked = NULL;
-    if ( item_clicked == NULL ) return;
-
-
-
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator;
-
-    for (graph_iterator = graphListener->items.begin(); graph_iterator != graphListener->items.end(); graph_iterator++)
-    {
-        if ( (*graph_iterator).second == item) {node_clicked = dynamic_cast< GNode* >( (*graph_iterator).first); break;}
-    }
-
-
-
-    QPopupMenu *contextMenu = new QPopupMenu ( graphView, "ContextMenu" );
-
-
-    //Creation of the context Menu
-    if ( node_clicked != NULL )
-    {
-        contextMenu->insertItem ( "Collapse", this, SLOT ( graphCollapse() ) );
-        contextMenu->insertItem ( "Expand", this, SLOT ( graphExpand() ) );
-        contextMenu->insertSeparator ();
-        /*****************************************************************************************************************/
-        if (node_clicked->isActive())
-            contextMenu->insertItem ( "Desactivate", this, SLOT ( graphDesactivateNode() ) );
-        else
-            contextMenu->insertItem ( "Activate", this, SLOT ( graphActivateNode() ) );
-        contextMenu->insertSeparator ();
-        /*****************************************************************************************************************/
-
-        contextMenu->insertItem ( "Save Node", this, SLOT ( graphSaveObject() ) );
-        contextMenu->insertItem ( "Add Node", this, SLOT ( graphAddObject() ) );
-        int index_menu = contextMenu->insertItem ( "Remove Node", this, SLOT ( graphRemoveObject() ) );
-
-        //If one of the elements or child of the current node is beeing modified, you cannot allow the user to erase the node
-        if ( !isErasable ( node_clicked ) )
-            contextMenu->setItemEnabled ( index_menu,false );
-
-    }
-    contextMenu->insertItem ( "Modify", this, SLOT ( graphModify() ) );
-    contextMenu->popup ( point, index );
-
-}
-
-/*****************************************************************************************************************/
-void RealGUI::graphSaveObject()
-{
-    bool isAnimated = startButton->isOn();
-
-    playpauseGUI ( false );
-    //Just pop up the dialog window
-    if ( node_clicked != NULL )
-    {
-        fileSaveAs(node_clicked);
-        item_clicked = NULL;
-    }
-    playpauseGUI ( isAnimated );
-}
-/*****************************************************************************************************************/
-void RealGUI::graphAddObject()
-{
-
-    bool isAnimated = startButton->isOn();
-
-    playpauseGUI ( false );
-    //Just pop up the dialog window
-    if ( node_clicked != NULL )
-    {
-        dialog->show();
-        dialog->raise();
-
-        item_clicked = NULL;
-    }
-    playpauseGUI ( isAnimated );
-}
-
-/*****************************************************************************************************************/
-void RealGUI::graphRemoveObject()
-{
-
-    bool isAnimated = startButton->isOn();
-
-    playpauseGUI ( false );
-    if ( node_clicked != NULL )
-    {
-        if ( node_clicked->getParent() == NULL )
-        {
-            //Attempt to destroy the Root node : create an empty node to handle new graph interaction
-            GNode *groot = new GNode ( "Root" );
-
-            groot->setShowVisualModels ( 1 );
-            groot->setShowCollisionModels ( 0 );
-            groot->setShowBoundingCollisionModels ( 0 );
-            groot->setShowBehaviorModels ( 0 );
-            groot->setShowMappings ( 0 );
-            groot->setShowMechanicalMappings ( 0 );
-            groot->setShowForceFields ( 0 );
-            groot->setShowInteractionForceFields ( 0 );
-            groot->setShowWireFrame ( 0 );
-            groot->setShowNormals ( 0 );
-
-
-            viewer->setScene ( groot, viewer->getSceneFileName().c_str() );
-            graphListener->removeChild ( NULL, node_clicked );
-            graphListener->addChild ( NULL, groot );
-        }
-        else
-        {
-            node_clicked->getParent()->removeChild ( node_clicked );
-            graphListener->removeChild ( NULL, node_clicked );
-            list_object_removed.push_back ( node_clicked );
-        }
-
-        viewer->resetView();
-        viewer->getQWidget()->update();
-        node_clicked = NULL;
-        item_clicked = NULL;
-    }
-    playpauseGUI ( isAnimated );
-
-    graphCreateStats(viewer->getScene(),NULL);
-}
-
-/*****************************************************************************************************************/
-void RealGUI::graphModify()
-{
-
-    bool isAnimated = startButton->isOn();
-
-    playpauseGUI ( false );
-    if ( item_clicked != NULL )
-    {
-        core::objectmodel::Base* node=NULL;
-        for ( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it )
-        {
-            if ( ( *it ).second == item_clicked )
-            {
-                node = ( *it ).first;
-                break;
-            }
-        }
-
-        //Opening of a dialog window automatically created
-        current_Id_modifyDialog = node;
-        std::map< void*, QDialog* >::iterator testWindow =  map_modifyObjectWindow.find( current_Id_modifyDialog);
-        if ( testWindow != map_modifyObjectWindow.end())
-        {
-            //Object already being modified: no need to open a new window
-            (*testWindow).second->raise();
-            playpauseGUI ( isAnimated );
-            return;
-        }
-
-
-        ModifyObject *dialogModify = new ModifyObject ( current_Id_modifyDialog, node, item_clicked,this,item_clicked->text(0));
-
-        map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModify));
-
-        //If the item clicked is a node, we add it to the list of the element modified
-        if ( dynamic_cast<GNode *> ( node ) )
-            map_modifyDialogOpened.insert ( std::make_pair ( current_Id_modifyDialog, node ) );
-        else
-        {
-            //If the item clicked is just an element of the node, we add the node containing it
-            for ( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it )
-            {
-                if ( ( *it ).second == item_clicked->parent() )
-                {
-                    map_modifyDialogOpened.insert ( std::make_pair ( current_Id_modifyDialog, ( *it ).first ) );
-                    break;
-                }
-            }
-        }
-
-        dialogModify->show();
-        dialogModify->raise();
-
-        connect ( this, SIGNAL ( newScene() ), dialogModify, SLOT ( closeNow() ) );
-        connect ( this, SIGNAL ( newStep() ),  dialogModify, SLOT ( updateTables() ) );
-        item_clicked = NULL;
-    }
-    playpauseGUI ( isAnimated );
-}
-
-/*****************************************************************************************************************/
-void RealGUI::graphDesactivateNode()
-{
-    item_clicked->setOpen(false);
-    node_clicked->setActive(false);
-    viewer->getQWidget()->update();
-    node_clicked->reinit();
-
-    graphCreateStats(viewer->getScene(),NULL);
-}
-
-void RealGUI::graphActivateNode()
-{
-    item_clicked->setEnabled(true);
-    node_clicked->setActive(true);
-    viewer->getQWidget()->update();
-    node_clicked->reinit();
-
-    graphCreateStats(viewer->getScene(),NULL);
-}
-
-
-/*****************************************************************************************************************/
-// Test if a node can be erased in the graph : the condition is that none of its children has a menu modify opened
-bool RealGUI::isErasable ( core::objectmodel::Base* element )
-{
-
-    if ( GNode *node = dynamic_cast<GNode *> ( element ) )
-    {
-        //we look into the list of element currently modified if the element is present.
-        std::map< void *, core::objectmodel::Base* >::iterator dialog_it;
-        for ( dialog_it = map_modifyDialogOpened.begin(); dialog_it !=map_modifyDialogOpened.end(); dialog_it++ )
-        {
-            if ( element == ( *dialog_it ).second ) return false;
-        }
-
-        //The element has not been found, we explorate its childs
-        GNode::ChildIterator it;
-        for ( it = node->child.begin(); it != node->child.end(); it++ )
-        {
-            if ( !isErasable ( ( *it ) ) ) return false; //If a child of the current node cannot be erased, the parent (the currend node) cannot be too.
-        }
-
-    }
-    return true;
-}
 
 /*****************************************************************************************************************/
 //Translate an object
@@ -2352,218 +1772,7 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
     playpauseGUI ( isAnimated );
 }
 
-/*****************************************************************************************************************/
-//Visibility Option in grah : expand or collapse a node : easier to get access to a node, and see its properties properly
-void RealGUI::graphCollapse()
-{
-    bool isAnimated = startButton->isOn ();
 
-    playpauseGUI ( false );
-    if ( item_clicked != NULL )
-    {
-        QListViewItem* child;
-        child = item_clicked->firstChild();
-        while ( child != NULL )
-        {
-            child->setOpen ( false );
-            child = child->nextSibling();
-        }
-        item_clicked->setOpen ( true );
-    }
-
-    playpauseGUI ( isAnimated );
-}
-
-void RealGUI::graphExpand()
-{
-    bool isAnimated = startButton->isOn();
-    playpauseGUI ( false );
-    item_clicked->setOpen ( true );
-    Q3ListViewItem *item_clicked_back = item_clicked;
-    if ( item_clicked != NULL )
-    {
-        QListViewItem* child;
-        child = item_clicked->firstChild();
-        while ( child != NULL )
-        {
-            item_clicked = child;
-
-            child->setOpen ( true );
-            graphExpand();
-            child = child->nextSibling();
-        }
-    }
-    item_clicked = item_clicked_back;
-    playpauseGUI ( isAnimated );
-}
-/*****************************************************************************************************************/
-void RealGUI::modifyUnlock ( void *Id )
-{
-    graphCreateStats(viewer->getScene(),NULL);
-
-    map_modifyDialogOpened.erase( Id );
-    map_modifyObjectWindow.erase( Id );
-}
-
-/*****************************************************************************************************************/
-// Fill the listview in the stats tab with information about the number of points/line/triangle/sphere of the collision models present in the scene
-
-//Add the current node and its child to the stats graph.
-bool RealGUI::graphCreateStats( GNode *node, QListViewItem *parent)
-{
-    bool initialization = false;
-    sofa::helper::vector< sofa::core::CollisionModel* > list_collisionModels;
-    node->get< sofa::core::CollisionModel >( &list_collisionModels);
-    //Creation of the item in the graph
-    Q3ListViewItem *item;
-    if (parent == NULL)
-    {
-        if (items_stats.size() != 0)
-        {
-            delete items_stats[0].second;
-            items_stats.clear();
-            GUI::StatsCounter->clear();
-        }
-
-        item = new Q3ListViewItem(GUI::StatsCounter);
-        initialization = true;
-    }
-    else
-        item = new Q3ListViewItem(parent);
-
-    int index = items_stats.size();
-
-    items_stats.push_back(std::make_pair(node, item));
-
-    item->setText(0,node->getName().c_str());  item->setOpen(true);
-
-    QPixmap* pix = sofa::gui::qt::getPixmap(node);
-    if (pix)
-        item->setPixmap(0, *pix);
-
-    bool usedNode = false;
-    //Add the current Collision Models
-    usedNode = graphAddCollisionModelsStat(list_collisionModels,item);
-
-    //Recursive call
-    for (GNode::ChildIterator it= node->child.begin(); it != node->child.end(); ++it)
-    {
-        usedNode |= graphCreateStats((*it), item);
-    }
-    if (!usedNode)
-    {
-        items_stats.erase(items_stats.begin()+index);
-        delete item; return false;
-    }
-
-    if (initialization)
-    {
-        graphSummary();
-    }
-    return true;
-}
-
-//Add a list of Collision model to the graph
-bool RealGUI::graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v,QListViewItem *parent)
-{
-    bool oneAdded = false;
-    for (unsigned int i=0; i<v.size(); i++)
-    {
-        if (!v[i]->isActive()) continue;
-        Q3ListViewItem *item = new Q3ListViewItem(parent);
-        item->setText(0,v[i]->getName().c_str());
-
-        if      (dynamic_cast< sofa::component::collision::TriangleModel* >(v[i])) item->setText(1, "Triangle");
-        else if (dynamic_cast< sofa::component::collision::LineModel* >(v[i]))     item->setText(1, "Line");
-        else if (dynamic_cast< sofa::component::collision::PointModel* >(v[i]))    item->setText(1, "Point");
-        else if (dynamic_cast< sofa::component::collision::TSphereModel<Vec3Types>* >(v[i]))  item->setText(1, "Sphere");
-        else continue;
-        item->setText(2,QString::number(v[i]->getSize()));
-        items_stats.push_back(std::make_pair(v[i], item));
-        oneAdded = true;
-    }
-    return oneAdded;
-}
-
-
-//create global stats
-void RealGUI::graphSummary()
-{
-    unsigned int counter[4]= {0,0,0,0};
-    for (unsigned int i=0; i < items_stats.size(); i++)
-    {
-        if (!dynamic_cast< GNode *>(items_stats[i].first))
-        {
-            if ( std::string(items_stats[i].second->text(1).ascii()) == "Triangle")
-            {
-                counter[0]+=atoi(items_stats[i].second->text(2));
-            }
-            else if ( std::string(items_stats[i].second->text(1).ascii()) == "Line")
-            {
-                counter[1]+=atoi(items_stats[i].second->text(2));
-            }
-            else if ( std::string(items_stats[i].second->text(1).ascii()) == "Point")
-            {
-                counter[2]+=atoi(items_stats[i].second->text(2));
-            }
-            else if ( std::string(items_stats[i].second->text(1).ascii()) == "Sphere")
-            {
-                counter[3]+=atoi(items_stats[i].second->text(2));
-            }
-        }
-    }
-    std::string textStats("Collision Elements present: <ul>");
-    if (counter[0] != 0)
-    {
-        char buf[100];
-        sprintf ( buf, "<li>Triangles: %d</li>", counter[0] );
-        textStats += buf;
-    }
-
-    if (counter[1] != 0)
-    {
-        char buf[100];
-        sprintf ( buf, "<li>Lines: %d</li>", counter[1] );
-        textStats += buf;
-    }
-
-    if (counter[2] != 0)
-    {
-        char buf[100];
-        sprintf ( buf, "<li>Points: %d</li>", counter[2] );
-        textStats += buf;
-    }
-
-    if (counter[3] != 0)
-    {
-        char buf[100];
-        sprintf ( buf, "<li>Spheres: %d</li>", counter[3] );
-        textStats += buf;
-    }
-
-    textStats += "</ul>";
-    statsLabel->setText( textStats.c_str());
-    statsLabel->update();
-}
-
-void RealGUI::viewExecutionGraph()
-{
-
-}
-
-void RealGUI::addWriteState()
-{
-    if (writeSceneName == "" )
-    {
-        //Create the filename to use, to save the mechanical states
-        writeSceneName = record_directory+sofa::helper::system::SetDirectory::GetFileName(simulation_name.c_str());
-        std::string::size_type pos = writeSceneName.rfind('.');
-        if (pos != std::string::npos) writeSceneName.resize(pos);
-    }
-    sofa::simulation::tree::WriteStateCreator v(writeSceneName,0);
-    v.execute(viewer->getScene());
-    std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
-}
 
 
 } // namespace qt

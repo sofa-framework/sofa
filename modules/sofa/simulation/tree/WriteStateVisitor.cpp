@@ -88,26 +88,71 @@ Visitor::Result WriteStateCreator::processNodeTopDown( GNode* gnode)
     return Visitor::RESULT_CONTINUE;
 }
 
-
 template< class DataTypes >
 void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode)
 {
-//     if (gnode->get< sofa::core::BaseMapping >() == NULL)
+    if (gnode->get< sofa::core::BaseMapping >() == NULL)
     {
         if ( gnode->get< sofa::component::misc::WriteState<DataTypes> >() == NULL )
         {
-            sofa::component::misc::ReadState <DataTypes> *rs = new sofa::component::misc::ReadState <DataTypes>(); gnode->addObject(rs);
             sofa::component::misc::WriteState<DataTypes> *ws = new sofa::component::misc::WriteState<DataTypes>(); gnode->addObject(ws);
 
             std::ostringstream ofilename;
             ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate.txt" ;
 
-            rs->f_filename.setValue(ofilename.str()); rs->init(); rs->f_listening.setValue(false); //Desactivated only called by extern functions
             ws->f_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
 
         }
 
         ++counterWriteState;
+    }
+}
+
+
+//Create a Read State component each time a mechanical state is found
+Visitor::Result ReadStateCreator::processNodeTopDown( GNode* gnode)
+{
+    using sofa::defaulttype::Vec3fTypes;
+    using sofa::defaulttype::Vec3dTypes;
+    using sofa::defaulttype::RigidTypes;
+
+    sofa::core::objectmodel::BaseObject * mstate = gnode->getMechanicalState();
+    //We have a mechanical state
+    if      (sofa::core::componentmodel::behavior::MechanicalState< Vec3fTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Vec3fTypes > *>(mstate))
+    {
+        addReadState(ms, gnode);
+    }
+    else if (sofa::core::componentmodel::behavior::MechanicalState< Vec3dTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< Vec3dTypes > *>(mstate))
+    {
+        addReadState(ms, gnode);
+    }
+    else if (sofa::core::componentmodel::behavior::MechanicalState< RigidTypes > *ms = dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState< RigidTypes > *>(mstate))
+    {
+        addReadState(ms, gnode);
+    }
+
+    return Visitor::RESULT_CONTINUE;
+}
+
+
+
+template< class DataTypes >
+void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode)
+{
+    if (gnode->get< sofa::core::BaseMapping >() == NULL)
+    {
+        if ( gnode->get< sofa::component::misc::ReadState<DataTypes> >() == NULL )
+        {
+            sofa::component::misc::ReadState<DataTypes> *rs = new sofa::component::misc::ReadState <DataTypes>(); gnode->addObject(rs);
+
+            std::ostringstream ofilename;
+            ofilename << sceneName << "_" << counterReadState << "_" << ms->getName()  << "_mstate.txt" ;
+
+            rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Desactivated only called by extern functions
+            if (init) rs->init();
+        }
+
+        ++counterReadState;
     }
 }
 

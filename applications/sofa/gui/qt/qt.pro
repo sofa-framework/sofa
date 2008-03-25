@@ -15,6 +15,8 @@ HEADERS += viewer/SofaViewer.h \
 
 
 SOURCES += Main.cpp \
+           RealGUI_graph.cpp \
+           RealGUI_record.cpp \
            RealGUI.cpp \
            GraphListenerQListView.cpp \
            GenGraphForm.cpp \
