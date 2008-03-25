@@ -40,7 +40,13 @@ namespace component
 namespace linearsolver
 {
 
-/// Linear system solver using the default (LU factorization) algorithm
+/// Linear system solver using Thomas Algorithm for Block Tridiagonal matrices
+///
+/// References:
+/// Conte, S.D., and deBoor, C. (1972). Elementary Numerical Analysis. McGraw-Hill, New York
+/// http://en.wikipedia.org/wiki/Tridiagonal_matrix_algorithm
+/// http://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
+/// http://www4.ncsu.edu/eos/users/w/white/www/white/ma580/chap2.5.PDF
 template<class Matrix, class Vector>
 class BTDLinearSolver : public sofa::simulation::tree::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
 {
