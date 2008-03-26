@@ -153,6 +153,8 @@ public:
     virtual const VecCoord* getXfree() const { return xfree; }
     virtual const VecDeriv* getVfree()  const { return vfree;  }
 
+    double getScale() {return scale;};
+
     virtual void init();
     virtual void storeResetState();
 
