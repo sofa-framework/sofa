@@ -91,9 +91,10 @@ Visitor::Result WriteStateCreator::processNodeTopDown( GNode* gnode)
 template< class DataTypes >
 void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode)
 {
-    if (gnode->get< sofa::core::BaseMapping >() == NULL)
+    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    if (context->get< sofa::core::BaseMapping >() == NULL)
     {
-        if ( gnode->get< sofa::component::misc::WriteState<DataTypes> >() == NULL )
+        if ( context->get< sofa::component::misc::WriteState<DataTypes> >() == NULL )
         {
             sofa::component::misc::WriteState<DataTypes> *ws = new sofa::component::misc::WriteState<DataTypes>(); gnode->addObject(ws);
 
@@ -101,7 +102,6 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Mech
             ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate.txt" ;
 
             ws->f_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
-
         }
 
         ++counterWriteState;
@@ -139,7 +139,9 @@ Visitor::Result ReadStateCreator::processNodeTopDown( GNode* gnode)
 template< class DataTypes >
 void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::MechanicalState< DataTypes > *ms, GNode* gnode)
 {
-    if (gnode->get< sofa::core::BaseMapping >() == NULL)
+
+    sofa::core::objectmodel::BaseContext* context = gnode->getContext();
+    if (context->get< sofa::core::BaseMapping >() == NULL)
     {
         sofa::component::misc::ReadState<DataTypes> *rs ;
         if ( gnode->get< sofa::component::misc::ReadState<DataTypes> >() == NULL )
@@ -148,7 +150,7 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::Mechan
             gnode->addObject(rs);
         }
         else
-            rs = gnode->get< sofa::component::misc::ReadState<DataTypes> >();
+            rs = context->get< sofa::component::misc::ReadState<DataTypes> >();
 
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterReadState << "_" << ms->getName()  << "_mstate.txt" ;
