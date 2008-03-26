@@ -294,7 +294,7 @@ void MarchingCubeUtility::createConvolutionKernel(unsigned int CONVOLUTION_LENGT
     float total = 0.0;
 
     convolutionKernel.resize(CONVOLUTION_LENGTH*CONVOLUTION_LENGTH*CONVOLUTION_LENGTH);
-    const float var = CONVOLUTION_LENGTH/*/2.0f*/;
+    const float var = (float)CONVOLUTION_LENGTH/*/2.0f*/;
     unsigned int i=0;
     for (unsigned int z=0; z<CONVOLUTION_LENGTH; ++z)
     {

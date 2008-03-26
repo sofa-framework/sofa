@@ -332,7 +332,7 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
     Mat33 J; // J[i][j] = dXi/dxj
     Mat33 J_1; // J_1[i][j] = dxi/dXj
     Mat33 J_1t;
-    double detJ = 1.0;
+    Real detJ = (Real)1.0;
     // check if the hexaedra is a parallelepiped
     Coord lx = nodes[1]-nodes[0];
     Coord ly = nodes[3]-nodes[0];
@@ -382,9 +382,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                 {
                     for (int c=0; c<3; ++c)
                     {
-                        J[c][0] = (nodes[1][c]-nodes[0][c])*(1-x2)*(1-x3)/8+(nodes[2][c]-nodes[3][c])*(1+x2)*(1-x3)/8+(nodes[5][c]-nodes[4][c])*(1-x2)*(1+x3)/8+(nodes[6][c]-nodes[7][c])*(1+x2)*(1+x3)/8;
-                        J[c][1] = (nodes[3][c]-nodes[0][c])*(1-x1)*(1-x3)/8+(nodes[2][c]-nodes[1][c])*(1+x1)*(1-x3)/8+(nodes[7][c]-nodes[4][c])*(1-x1)*(1+x3)/8+(nodes[6][c]-nodes[5][c])*(1+x1)*(1+x3)/8;
-                        J[c][2] = (nodes[4][c]-nodes[0][c])*(1-x1)*(1-x2)/8+(nodes[5][c]-nodes[1][c])*(1+x1)*(1-x2)/8+(nodes[6][c]-nodes[2][c])*(1+x1)*(1+x2)/8+(nodes[7][c]-nodes[3][c])*(1-x1)*(1+x2)/8;
+                        J[c][0] = (Real)( (nodes[1][c]-nodes[0][c])*(1-x2)*(1-x3)/8+(nodes[2][c]-nodes[3][c])*(1+x2)*(1-x3)/8+(nodes[5][c]-nodes[4][c])*(1-x2)*(1+x3)/8+(nodes[6][c]-nodes[7][c])*(1+x2)*(1+x3)/8);
+                        J[c][1] =(Real)( (nodes[3][c]-nodes[0][c])*(1-x1)*(1-x3)/8+(nodes[2][c]-nodes[1][c])*(1+x1)*(1-x3)/8+(nodes[7][c]-nodes[4][c])*(1-x1)*(1+x3)/8+(nodes[6][c]-nodes[5][c])*(1+x1)*(1+x3)/8);
+                        J[c][2] =(Real)( (nodes[4][c]-nodes[0][c])*(1-x1)*(1-x2)/8+(nodes[5][c]-nodes[1][c])*(1+x1)*(1-x2)/8+(nodes[6][c]-nodes[2][c])*(1+x1)*(1+x2)/8+(nodes[7][c]-nodes[3][c])*(1-x1)*(1+x2)/8);
                     }
                     detJ = defaulttype::determinant(J);
                     J_1.invert(J);
@@ -396,16 +396,16 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                         std::cout << "detJ = "<<detJ<<std::endl;
                     }
                 }
-                double qx[8];
-                double qy[8];
-                double qz[8];
+                Real qx[8];
+                Real qy[8];
+                Real qz[8];
                 for(int i=0; i<8; ++i)
                 {
                     // Ni = 1/8 (1+_coef[i][0]x1)(1+_coef[i][1]x2)(1+_coef[i][2]x3)
                     // qxi = dNi/dx = dNi/dx1 dx1/dx + dNi/dx2 dx2/dx + dNi/dx3 dx3/dx
-                    double dNi_dx1 = (_coef[i][0])*(1+_coef[i][1]*x2)*(1+_coef[i][2]*x3)/8;
-                    double dNi_dx2 = (1+_coef[i][0]*x1)*(_coef[i][1])*(1+_coef[i][2]*x3)/8;
-                    double dNi_dx3 = (1+_coef[i][0]*x1)*(1+_coef[i][1]*x2)*(_coef[i][2])/8;
+                    Real dNi_dx1 = (_coef[i][0])*(1+_coef[i][1]*x2)*(1+_coef[i][2]*x3)/8;
+                    Real dNi_dx2 = (1+_coef[i][0]*x1)*(_coef[i][1])*(1+_coef[i][2]*x3)/8;
+                    Real dNi_dx3 = (1+_coef[i][0]*x1)*(1+_coef[i][1]*x2)*(_coef[i][2])/8;
                     if (verbose) std::cout << "dN"<<i<<"/dxi = "<<dNi_dx1<<" "<<dNi_dx2<<" "<<dNi_dx3<<"\n";
 #ifdef DN_USE_J
                     qx[i] = dNi_dx1*J_1[0][0] + dNi_dx2*J_1[1][0] + dNi_dx3*J_1[2][0];
@@ -430,9 +430,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                     MBi[0][0] = U * qx[i]; MBi[0][1] = V * qy[i]; MBi[0][2] = V * qz[i];
                     MBi[1][0] = V * qx[i]; MBi[1][1] = U * qy[i]; MBi[1][2] = V * qz[i];
                     MBi[2][0] = V * qx[i]; MBi[2][1] = V * qy[i]; MBi[2][2] = U * qz[i];
-                    MBi[3][0] = W * qy[i]; MBi[3][1] = W * qx[i]; MBi[3][2] = 0;
-                    MBi[4][0] = 0;         MBi[4][1] = W * qz[i]; MBi[4][2] = W * qy[i];
-                    MBi[5][0] = W * qz[i]; MBi[5][1] = 0;         MBi[5][2] = W * qx[i];
+                    MBi[3][0] = W * qy[i]; MBi[3][1] = W * qx[i]; MBi[3][2] = (Real)0;
+                    MBi[4][0] = (Real)0;   MBi[4][1] = W * qz[i]; MBi[4][2] = W * qy[i];
+                    MBi[5][0] = W * qz[i]; MBi[5][1] = (Real)0;   MBi[5][2] = W * qx[i];
                     if (verbose) std::cout << "MB"<<i<<" = "<<MBi<<"\n";
                     for(int j=i; j<8; ++j)
                     {

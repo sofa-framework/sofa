@@ -83,7 +83,7 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsign
 {
     if (!yetIntegrated)
     {
-        id[offset++] = -cid;
+        id[offset++] = -(int)cid;
 
         yetIntegrated = true;
     }
