@@ -116,6 +116,9 @@ public:
     void setNy(int _n) { n.setValue(Vec<3,int>(n.getValue()[0],_n             ,n.getValue()[2])); }
     void setNz(int _n) { n.setValue(Vec<3,int>(n.getValue()[0],n.getValue()[1],_n)             ); }
 
+    int getNbVirtualFinerLevels() const { return _nbVirtualFinerLevels.getValue();}
+    void setNbVirtualFinerLevels(int n) {_nbVirtualFinerLevels.setValue(n);}
+
     void setMin(Vec3d _min) {min.setValue(_min);}
     void setXmin(double _min) { min.setValue(Vec3d(_min             ,min.getValue()[1],min.getValue()[2])); }
     void setYmin(double _min) { min.setValue(Vec3d(min.getValue()[0],_min             ,min.getValue()[2])); }
