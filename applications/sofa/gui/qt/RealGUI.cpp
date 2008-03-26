@@ -694,10 +694,6 @@ void RealGUI::fileOpen ( const char* filename )
     list_object_initial.clear();
     writeSceneName="";
 
-    timeSlider->setValue(0);
-    timeSlider->setMinValue(0);
-    timeSlider->setMaxValue(0);
-    timeSlider->update();
     update();
 
     //Hide the dialog to add a new object in the graph
@@ -782,107 +778,18 @@ void RealGUI::setScene ( GNode* groot, const char* filename )
     }
 
     setTitle ( filename );
-    record_simulation = false;
     viewer->setScene ( groot, filename );
     viewer->resetView();
-
     initial_time = groot->getTime();
 
-    if (timeSlider->maxValue() == 0)
-    {
-        setRecordInitialTime(initial_time);
-        setRecordFinalTime(initial_time);
-        setRecordTime(initial_time);
-    }
-
+    record_simulation = false;
+    clearRecord();
+    clearGraph();
 
     eventNewTime();
-
-
     //getSimulation()->updateVisualContext ( groot );
-
-
     startButton->setOn ( groot->getContext()->getAnimate() );
     dtEdit->setText ( QString::number ( groot->getDt() ) );
-
-
-    graphView->setSorting ( -1 );
-    //graphView->setTreeStepSize(10);
-    graphView->header()->hide();
-    //dumpGraph(groot, new Q3ListViewItem(graphView));
-    graphListener = new GraphListenerQListView ( graphView );
-    graphListener->addChild ( NULL, groot );
-
-    //Create Stats about the simulation
-    graphCreateStats(groot,NULL);
-
-    //Create the list of the object present at the beginning of the scene
-    for ( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it )
-    {
-        if ( GNode *current_node = dynamic_cast< GNode *> ( ( *it ).first ) )
-        {
-            list_object_initial.push_back ( current_node );
-            list_object_initial.push_back ( dynamic_cast< GNode *> ( current_node->getParent() ) );
-        }
-    }
-
-
-    if ( currentTab != TabGraph )
-    {
-        graphListener->freeze ( groot );
-    }
-
-    simulation::tree::Simulation *s = simulation::tree::getSimulation();
-
-    //In case instruments are present in the scene, we create a new tab, and display the listr
-    if (s->instruments.size() != 0)
-    {
-        tabInstrument = new QWidget();
-        tabs->addTab(tabInstrument, QString("Instrument"));
-
-        QVBoxLayout *layout = new QVBoxLayout( tabInstrument, 0, 1, "tabInstrument");
-
-        QButtonGroup *list_instrument = new QButtonGroup(tabInstrument);
-        list_instrument->setExclusive(true);
-
-#ifdef SOFA_QT4
-        connect ( list_instrument, SIGNAL ( buttonClicked(int) ), this, SLOT ( changeInstrument(int) ) );
-#else
-        connect ( list_instrument, SIGNAL ( clicked(int) ), this, SLOT ( changeInstrument(int) ) );
-#endif
-
-        QRadioButton *button = new QRadioButton(tabInstrument); button->setText("None");
-#ifdef SOFA_QT4
-        list_instrument->addButton(button, 0);
-#else
-        list_instrument->insert(button);
-#endif
-        layout->addWidget(button);
-
-        for (unsigned int i=0; i<s->instruments.size(); i++)
-        {
-            QRadioButton *button = new QRadioButton(tabInstrument);  button->setText(QString( s->instruments[i]->getName().c_str() ) );
-#ifdef SOFA_QT4
-            list_instrument->addButton(button, i+1);
-#else
-            list_instrument->insert(button);
-#endif
-            layout->addWidget(button);
-            if (i==0)
-            {
-                button->setChecked(true); changeInstrument(1);
-            }
-            else
-                s->instruments[i]->setActive(false);
-
-        }
-#ifdef SOFA_QT4
-        layout->addStretch(1);
-#endif
-#ifndef SOFA_QT4
-        layout->addWidget(list_instrument);
-#endif
-    }
 }
 
 void RealGUI::changeInstrument(int id)
@@ -969,8 +876,6 @@ void RealGUI::fileOpenSimu ( const char* s )
             loadRecordTime->setText( QString(initT.c_str()) );
 
             dtEdit->setText(QString(dT.c_str()));
-            timeSlider->setMinValue(0);
-            timeSlider->setValue(0);
             timeSlider->setMaxValue( (int)((atof(endT.c_str())-atof(initT.c_str()))/(atof(dT.c_str()))+0.5));
 
             record_directory = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str()) + "/";
@@ -1009,8 +914,6 @@ void RealGUI::fileOpen()
             else
             {
                 fileOpen (s);
-                timeSlider->setValue(0);
-                timeSlider->setMaxValue(0);
             }
     }
 }
@@ -1373,16 +1276,6 @@ void RealGUI::eventNewTime()
                 timeSlider->setValue(timeSlider->value()+1);
             }
             timeSlider->update();
-// 		std::string filename = simulation_name;
-// 		filename = sofa::helper::system::SetDirectory::GetFileName(filename.c_str());
-
-// 		std::string::size_type point = filename.rfind('.');
-// 		if (point != std::string::npos) filename.resize(point);
-
-// 		sprintf ( buf, "%s_%.3f.scn",filename.c_str(), time );
-// 		std::string output(record_directory + buf);
-
-// 		fileSaveAs(viewer->getScene(),output.c_str());
         }
     }
 }

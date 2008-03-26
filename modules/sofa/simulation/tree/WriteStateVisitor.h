@@ -72,7 +72,7 @@ class WriteStateCreator: public Visitor
 {
 public:
     WriteStateCreator():sceneName(""), counterWriteState(0) {};
-    WriteStateCreator(std::string &n, int c) {sceneName=n; counterWriteState=c;};
+    WriteStateCreator(std::string &n, int c=0) {sceneName=n; counterWriteState=c;};
     virtual Result processNodeTopDown( GNode*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
@@ -90,7 +90,7 @@ class ReadStateCreator: public Visitor
 {
 public:
     ReadStateCreator():sceneName(""), counterReadState(0) {};
-    ReadStateCreator(std::string &n, int c, bool i=true) {sceneName=n; counterReadState=c; init=i;};
+    ReadStateCreator(std::string &n, bool i=true, int c=0 ) {sceneName=n; init=i; counterReadState=c;};
     virtual Result processNodeTopDown( GNode*  );
 
     void setSceneName(std::string &n) { sceneName = n;}

@@ -218,6 +218,7 @@ public slots:
         viewer->getQWidget()->update();
     }
 
+    void clearRecord();
     void slot_recordSimulation( bool);
     void slot_backward( );
     void slot_stepbackward( );
@@ -232,6 +233,7 @@ public slots:
 
     void changeInstrument(int);
 
+    void clearGraph();
     //Used in Context Menu
     void graphSaveObject();
     void graphAddObject();
