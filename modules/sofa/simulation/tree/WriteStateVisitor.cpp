@@ -94,15 +94,17 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Mech
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     if (context->get< sofa::core::BaseMapping >() == NULL)
     {
-        if ( context->get< sofa::component::misc::WriteState<DataTypes> >() == NULL )
+        sofa::component::misc::WriteState<DataTypes> *ws=context->get< sofa::component::misc::WriteState<DataTypes> >();
+        if ( ws == NULL )
         {
-            sofa::component::misc::WriteState<DataTypes> *ws = new sofa::component::misc::WriteState<DataTypes>(); gnode->addObject(ws);
-
-            std::ostringstream ofilename;
-            ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate.txt" ;
-
-            ws->f_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
+            ws = new sofa::component::misc::WriteState<DataTypes>(); gnode->addObject(ws);
         }
+
+        std::ostringstream ofilename;
+        ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate.txt" ;
+
+        ws->f_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
+
 
         ++counterWriteState;
     }
@@ -143,14 +145,11 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::Mechan
     sofa::core::objectmodel::BaseContext* context = gnode->getContext();
     if (context->get< sofa::core::BaseMapping >() == NULL)
     {
-        sofa::component::misc::ReadState<DataTypes> *rs ;
-        if ( gnode->get< sofa::component::misc::ReadState<DataTypes> >() == NULL )
+        sofa::component::misc::ReadState<DataTypes> *rs = context->get< sofa::component::misc::ReadState<DataTypes> >();
+        if (  rs == NULL )
         {
-            rs = new sofa::component::misc::ReadState <DataTypes>();
-            gnode->addObject(rs);
+            rs = new sofa::component::misc::ReadState <DataTypes>(); gnode->addObject(rs);
         }
-        else
-            rs = context->get< sofa::component::misc::ReadState<DataTypes> >();
 
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterReadState << "_" << ms->getName()  << "_mstate.txt" ;
@@ -171,15 +170,15 @@ Visitor::Result WriteStateActivator::processNodeTopDown( GNode* gnode)
 
     bool reader_done = false;
     sofa::component::misc::ReadState< Vec3fTypes > *rsf = gnode->get< sofa::component::misc::ReadState< Vec3fTypes > >();
-    if (rsf != NULL) { rsf->reset(); reader_done = true;}
+    if (rsf != NULL) { rsf->reset();  rsf->f_listening.setValue(!state); reader_done = true;}
     if (!reader_done)
     {
         sofa::component::misc::ReadState< Vec3dTypes > *rsd = gnode->get< sofa::component::misc::ReadState< Vec3dTypes > >();
-        if (rsd != NULL) { rsd->reset(); reader_done = true;}
+        if (rsd != NULL) { rsd->reset();  rsd->f_listening.setValue(!state); reader_done = true;}
         if (!reader_done)
         {
             sofa::component::misc::ReadState< RigidTypes > *rsr = gnode->get< sofa::component::misc::ReadState< RigidTypes > >();
-            if (rsr != NULL) { rsr->reset(); reader_done = true;}
+            if (rsr != NULL) { rsr->reset();  rsr->f_listening.setValue(!state); reader_done = true;}
         }
     }
     bool writer_done = false;
