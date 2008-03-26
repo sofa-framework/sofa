@@ -83,7 +83,7 @@ void SubsetMapping<BaseMapping>::init()
             Real rmax = f_radius.getValue();
             for (unsigned int j = 0;  j < in.size(); ++j )
             {
-                Real r = (out[i] - in[j]).norm();
+                Real r = (Real)((out[i] - in[j]).norm());
                 if ( r < rmax )
                 {
                     indices[i] = j;

@@ -141,16 +141,20 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::Mechan
 {
     if (gnode->get< sofa::core::BaseMapping >() == NULL)
     {
+        sofa::component::misc::ReadState<DataTypes> *rs ;
         if ( gnode->get< sofa::component::misc::ReadState<DataTypes> >() == NULL )
         {
-            sofa::component::misc::ReadState<DataTypes> *rs = new sofa::component::misc::ReadState <DataTypes>(); gnode->addObject(rs);
-
-            std::ostringstream ofilename;
-            ofilename << sceneName << "_" << counterReadState << "_" << ms->getName()  << "_mstate.txt" ;
-
-            rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Desactivated only called by extern functions
-            if (init) rs->init();
+            rs = new sofa::component::misc::ReadState <DataTypes>();
+            gnode->addObject(rs);
         }
+        else
+            rs = gnode->get< sofa::component::misc::ReadState<DataTypes> >();
+
+        std::ostringstream ofilename;
+        ofilename << sceneName << "_" << counterReadState << "_" << ms->getName()  << "_mstate.txt" ;
+
+        rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Desactivated only called by extern functions
+        if (init) rs->init();
 
         ++counterReadState;
     }

@@ -111,7 +111,7 @@ double EvalSurfaceDistance<DataTypes>::eval()
                         int pi = (*contacts)[i].elem.second.getIndex();
                         if ((*contacts)[i].value < dmin[pi])
                         {
-                            dmin[pi] = (*contacts)[i].value;
+                            dmin[pi] = (Real)((*contacts)[i].value);
                             xproj[pi] = (*contacts)[i].point[0];
                         }
                     }
@@ -123,7 +123,7 @@ double EvalSurfaceDistance<DataTypes>::eval()
                         int pi = (*contacts)[i].elem.first.getIndex();
                         if ((*contacts)[i].value < dmin[pi])
                         {
-                            dmin[pi] = (*contacts)[i].value;
+                            dmin[pi] = (Real)((*contacts)[i].value);
                             xproj[pi] = (*contacts)[i].point[1];
                         }
                     }

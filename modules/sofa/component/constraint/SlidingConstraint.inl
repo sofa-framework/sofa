@@ -165,7 +165,7 @@ void SlidingConstraint<DataTypes>::getConstraintId(long* id, unsigned int &offse
 {
     if (!yetIntegrated)
     {
-        id[offset++] = -cid;
+        id[offset++] = -(int)cid;
 
         yetIntegrated =  true;
     }
