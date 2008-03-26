@@ -88,10 +88,13 @@ public:
 
     static const int LARGE = 0;   ///< Symbol of mean large displacements tetrahedron solver (frame = edges mean on the 3 directions)
     static const int POLAR = 1;   ///< Symbol of polar displacements tetrahedron solver
-    static const int FAST = 2;   ///< Symbol of fast large displacements tetrahedron solver (frame centered on a vertex)
+
+
+
 
 protected:
     //component::MechanicalObject<DataTypes>* object;
+
 
     typedef Vec<24, Real> Displacement;		///< the displacement vector
 
@@ -211,7 +214,6 @@ protected:
     void computeMaterialStiffness(int i);
 
     void computeForce( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
-    void computeForceOptimized( Displacement &F, const Displacement &Depl, const ElementStiffness &K );
 
 
     ////////////// large displacements method
@@ -226,10 +228,6 @@ protected:
     void computeRotationPolar( Transformation &r, Vec<8,Coord> &nodes);
     virtual void accumulateForcePolar( Vector& f, const Vector & p, int i, const Element&elem  );
 
-    ////////////// polar decomposition method
-    void initFast(int i, const Element&elem);
-    void computeRotationFast( Transformation &r, Vec<8,Coord> &nodes);
-    virtual void accumulateForceFast( Vector& f, const Vector & p, int i, const Element&elem  );
 
 
     bool _alreadyInit;

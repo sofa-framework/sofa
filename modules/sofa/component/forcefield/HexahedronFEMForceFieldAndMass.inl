@@ -86,6 +86,8 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
             _particleMasses[ (*it)[w] ] += mass;
     }
 
+
+
 // 		Real totalmass = 0.0;
 // 		for( unsigned i=0;i<_particleMasses.size();++i)
 // 		{
