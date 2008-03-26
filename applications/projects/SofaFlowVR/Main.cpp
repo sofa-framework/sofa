@@ -7,8 +7,8 @@
 //#include <flowvr/interact/chunkwriter.h>
 
 #include <sofa/simulation/tree/Simulation.h>
-#include <sofa/simulation/tree/Action.h>
-#include <sofa/simulation/tree/ParallelActionScheduler.h>
+#include <sofa/simulation/tree/Visitor.h>
+#include <sofa/simulation/tree/ParallelVisitorScheduler.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Mat.h>
@@ -21,8 +21,8 @@
 #include <sofa/component/topology/MeshTopology.h>
 
 #include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/InitAction.h>
-#include <sofa/simulation/tree/DeleteAction.h>
+#include <sofa/simulation/tree/InitVisitor.h>
+#include <sofa/simulation/tree/DeleteVisitor.h>
 #include <sofa/component/MechanicalObject.h>
 #include <sofa/component/collision/PointModel.h>
 #include <sofa/component/collision/MinProximityIntersection.h>
@@ -36,8 +36,8 @@
 #endif
 
 #include <sofa/gui/SofaGUI.h>
-
-#include <GL/glut.h>
+#include <sofa/helper/system/gl.h>
+#include <sofa/helper/system/glut.h>
 
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
@@ -125,12 +125,12 @@ public:
 class FlowVRObject : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
-    DataField<std::string> modName;
+    Data<std::string> modName;
     FlowVRModule* mod;
 
 
     FlowVRObject()
-        : modName(dataField(&modName, "module", "Name of FlowVR Module"))
+        : modName(initData(&modName, "module", "Name of FlowVR Module"))
         , mod(NULL)
     {
         f_listening.setValue(true);
@@ -232,21 +232,21 @@ class FlowVRModule : public FlowVRObject
 {
 public:
     flowvr::ModuleAPI* module;
-    DataField<double> f_dt;
-    DataField<float> f_scale;
-    DataField<Vec3f> f_trans;
-    DataField< vector<std::string> > f_inputPorts;
-    DataField< vector<std::string> > f_outputPorts;
+    Data<double> f_dt;
+    Data<float> f_scale;
+    Data<Vec3f> f_trans;
+    Data< vector<std::string> > f_inputPorts;
+    Data< vector<std::string> > f_outputPorts;
     int it;
     double lasttime;
     bool step;
     FlowVRModule()
         : module(NULL)
-        , f_dt(dataField(&f_dt,0.0,"dt","simulation time interval between flowvr iteration"))
-        , f_scale(dataField(&f_scale,1.0f,"scale","scale"))
-        , f_trans(dataField(&f_trans,Vec3f(0,0,0),"translation","translation"))
-        , f_inputPorts(dataField(&f_inputPorts,"inputPorts","additional input ports to be defined"))
-        , f_outputPorts(dataField(&f_outputPorts,"outputPorts","additional output ports to be defined"))
+        , f_dt(initData(&f_dt,0.0,"dt","simulation time interval between flowvr iteration"))
+        , f_scale(initData(&f_scale,1.0f,"scale","scale"))
+        , f_trans(initData(&f_trans,Vec3f(0,0,0),"translation","translation"))
+        , f_inputPorts(initData(&f_inputPorts,"inputPorts","additional input ports to be defined"))
+        , f_outputPorts(initData(&f_outputPorts,"outputPorts","additional output ports to be defined"))
         , it(-1)
         , lasttime(0.0), step(false)
     {
@@ -360,8 +360,8 @@ public:
     flowvr::InputPort* pInPoints;
     flowvr::InputPort* pInMatrix;
 
-    DataField<bool> computeV;
-    DataField<double> maxVDist;
+    Data<bool> computeV;
+    Data<double> maxVDist;
 
     // Velocity is estimated by searching the nearest primitive from each new point
     // To do it we need to create an additionnal PointModel collision model, as well as a Detection and Intersection class
@@ -381,8 +381,8 @@ public:
 
     FlowVRInputMesh()
         : pInFacets(createInputPort("facets")), pInPoints(createInputPort("points")), pInMatrix(createInputPort("matrix"))
-        , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
-        , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , newPointsNode(NULL), newPointsCM(NULL), intersection(NULL), detection(NULL)
         , facetsLastIt(-20), pointsLastIt(-20), matrixLastIt(-20), motionLastTime(-1000)
     {
@@ -393,7 +393,7 @@ public:
     {
         if (newPointsNode != NULL)
         {
-            newPointsNode->execute<sofa::simulation::tree::DeleteAction>();
+            newPointsNode->execute<sofa::simulation::tree::DeleteVisitor>();
             delete newPointsNode;
         }
     }
@@ -422,7 +422,7 @@ public:
             newPointsNode->addObject ( detection = new sofa::component::collision::BruteForceDetection );
             detection->setIntersectionMethod(intersection);
 
-            newPointsNode->execute<sofa::simulation::tree::InitAction>();
+            newPointsNode->execute<sofa::simulation::tree::InitVisitor>();
         }
     }
 
@@ -670,19 +670,19 @@ public:
 
 //using sofa::component::collision::DistanceGrid;
 
-template<class DistanceGridModel>
+template<class DistanceGridModel, class DistanceGrid>
 class FlowVRInputDistanceGrid : public FlowVRObject
 {
 public:
-    typedef typename DistanceGridModel::Grid DistanceGrid;
+
 
 
     flowvr::InputPort* pInDistance;
     flowvr::InputPort* pInMatrix;
     flowvr::StampInfo stampSizes, stampP0, stampDP, stampBB;
 
-    DataField<bool> computeV;
-    DataField<double> maxVDist;
+    Data<bool> computeV;
+    Data<double> maxVDist;
 
     Mat4x4f matrix, lastMatrix;
     float mscale; ///< scale part from input matrix
@@ -702,8 +702,8 @@ public:
         , stampP0("P0", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
         , stampDP("DP", flowvr::TypeArray::create(3, flowvr::TypeFloat::create()))
         , stampBB("BB", flowvr::TypeArray::create(6, flowvr::TypeInt::create()))
-        , computeV( dataField(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
-        , maxVDist( dataField(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
+        , computeV( initData(&computeV, false, "computeV", "estimate velocity by detecting nearest primitive of previous model") )
+        , maxVDist( initData(&maxVDist,   1.0, "maxVDist", "maximum distance to use for velocity estimation") )
         , mscale(1.0f), distanceLastIt(-20), matrixLastIt(-20), motionLastTime(-1000), curDistGrid(NULL), emptyGrid(NULL)
         , grid(NULL) //, rigid(NULL)
     {
@@ -783,7 +783,7 @@ public:
                 for(int j=0; j<3; j++)
                     for(int i=0; i<3; i++)
                         newmscale += matrix[j][i]*matrix[j][i];
-                newmscale = rsqrt(newmscale/3);
+                newmscale = sqrt(newmscale/3);
                 for(int j=0; j<3; j++)
                     for(int i=0; i<3; i++)
                         matrix[j][i] /= newmscale;
@@ -894,9 +894,9 @@ public:
 
 SOFA_DECL_CLASS(FlowVRInputDistanceGrid)
 int FlowVRInputDistanceGridClass = sofa::core::RegisterObject("Import a distance field from a FlowVR InputPort")
-        .add< FlowVRInputDistanceGrid<sofa::component::collision::RigidDistanceGridCollisionModel> >()
+        .add< FlowVRInputDistanceGrid<sofa::component::collision::RigidDistanceGridCollisionModel,sofa::component::collision::DistanceGrid> >()
 #ifdef SOFA_GPU_CUDA
-        .add< FlowVRInputDistanceGrid<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> >()
+        .add< FlowVRInputDistanceGrid<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,sofa::gpu::cuda::CudaDistanceGrid> >()
 #endif
         ;
 
@@ -1200,9 +1200,9 @@ public:
     typedef Inherit::VecCoord VecCoord;
     typedef Inherit::Coord Coord;
 
-    DataField<std::string> vShader;
-    DataField<std::string> pShader;
-    DataField<bool> useTangent;
+    Data<std::string> vShader;
+    Data<std::string> pShader;
+    Data<bool> useTangent;
     std::string texture;
 
     std::map<std::string,std::string> paramT;
@@ -1228,10 +1228,10 @@ public:
     int lastNormRev;
 
     FlowVRRenderMesh()
-        : vShader(dataField(&vShader, std::string(""), "vshader", "vertex shader name"))
-        , pShader(dataField(&pShader, std::string(""), "pshader", "pixel shader name"))
-        , useTangent(dataField(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
-//    , color(dataField(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
+        : vShader(initData(&vShader, std::string(""), "vshader", "vertex shader name"))
+        , pShader(initData(&pShader, std::string(""), "pshader", "pixel shader name"))
+        , useTangent(initData(&useTangent, false, "useTangent", "enable computation of texture tangent space vectors (for normal mapping)"))
+//    , color(initData(&color, Vec4f(1, 1, 1, 0.5f), "color", "RGBA color value"))
 //    , topology(NULL)
 //    , mmodel(NULL)
         , idP(0)
@@ -1325,7 +1325,7 @@ public:
             idP = addPrimitive(scene, getName().c_str());
 
             std::string predefs;
-            bool useSpecular = material.useSpecular && material.shininess > 0.0001 && (material.specular[0] > 0.0001 || material.specular[1] > 0.0001 || material.specular[2] > 0.0001);
+            bool useSpecular = material.getValue().useSpecular && material.getValue().shininess > 0.0001 && (material.getValue().specular[0] > 0.0001 || material.getValue().specular[1] > 0.0001 || material.getValue().specular[2] > 0.0001);
             if (useSpecular)
                 predefs += "#define SPECULAR 1\n";
 
@@ -1363,11 +1363,11 @@ public:
             ftl::Vec4f ambient  ( 0.3f, 0.3f, 0.3f, 1.0f);
             ftl::Vec3f diffuse  ( 0.6f, 0.6f, 0.6f);
             ftl::Vec4f specular ( 0.9f, 0.9f, 0.9f, 16.0f);
-            if (material.useAmbient) for (int i=0; i<3; i++) ambient[i] = (float)material.ambient[i] * 0.5f;
-            ambient[3] = material.diffuse[3]; // alpha
-            if (material.useDiffuse) for (int i=0; i<3; i++) diffuse[i] = (float)material.diffuse[i];
-            if (material.useSpecular) for (int i=0; i<3; i++) specular[i] = (float)material.specular[i];
-            specular[3] = material.shininess;
+            if (material.getValue().useAmbient) for (int i=0; i<3; i++) ambient[i] = (float)material.getValue().ambient[i] * 0.5f;
+            ambient[3] = material.getValue().diffuse[3]; // alpha
+            if (material.getValue().useDiffuse) for (int i=0; i<3; i++) diffuse[i] = (float)material.getValue().diffuse[i];
+            if (material.getValue().useSpecular) for (int i=0; i<3; i++) specular[i] = (float)material.getValue().specular[i];
+            specular[3] = material.getValue().shininess;
             //scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMVSHADER, "color", color); //ftl::Vec4f(1, 1, 1, 0.5));
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_ambient" , ambient );
             scene->addParam(idP, flowvr::render::ChunkPrimParam::PARAMPSHADER, "mat_diffuse" , diffuse );
