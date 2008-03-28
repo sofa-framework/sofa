@@ -103,7 +103,11 @@ VisualComputeBBoxVisitor::VisualComputeBBoxVisitor()
     maxBBox[0] = maxBBox[1] = maxBBox[2] = -1e10;
 }
 
-void VisualComputeBBoxVisitor::processVisualModel(GNode*, core::componentmodel::behavior::BaseMechanicalState* vm)
+void VisualComputeBBoxVisitor::processMechanicalState(GNode*, core::componentmodel::behavior::BaseMechanicalState* vm)
+{
+    vm->addBBox(minBBox, maxBBox);
+}
+void VisualComputeBBoxVisitor::processVisualModel(GNode*, core::VisualModel* vm)
 {
     vm->addBBox(minBBox, maxBBox);
 }

@@ -97,11 +97,14 @@ public:
     double maxBBox[3];
     VisualComputeBBoxVisitor();
 
-    virtual void processVisualModel(GNode*, core::componentmodel::behavior::BaseMechanicalState* vm);
+    virtual void processMechanicalState(GNode*, core::componentmodel::behavior::BaseMechanicalState* vm);
+    virtual void processVisualModel(GNode*, core::VisualModel* vm);
 
     virtual Result processNodeTopDown(GNode* node)
     {
-        for_each(this, node, node->mechanicalState, &VisualComputeBBoxVisitor::processVisualModel);
+        for_each(this, node, node->mechanicalState, &VisualComputeBBoxVisitor::processMechanicalState);
+        for_each(this, node, node->visualModel,     &VisualComputeBBoxVisitor::processVisualModel);
+
         return RESULT_CONTINUE;
     }
 
