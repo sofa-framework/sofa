@@ -67,6 +67,10 @@ public:
     {
         return 1.0;
     }
+
+    Data<double> massCoef;
+    Data<double> dampingCoef;
+    Data<double> stiffnessCoef;
 };
 
 } // namespace odesolver
