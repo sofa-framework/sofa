@@ -451,6 +451,11 @@ public:
         mass = m;
         recalc();
     }
+    // operator to cast to const Real
+    operator const Real() const
+    {
+        return mass;
+    }
     void recalc()
     {
         inertiaMassMatrix = inertiaMatrix * mass;
@@ -933,6 +938,11 @@ public:
     {
         mass = m;
         recalc();
+    }
+    // operator to cast to const Real
+    operator const Real() const
+    {
+        return mass;
     }
     /// Mass for a circle
     RigidMass(Real m, Real radius)

@@ -489,7 +489,7 @@ protected:
     {
         if ( hostIsValid ) return;
 #ifndef NDEBUG
-        std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
+        std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
 #endif
         mycudaMemcpyDeviceToHost2D ( hostPointer, sizeX*sizeof(T), devicePointer, pitch, sizeX*sizeof(T), sizeY);
         hostIsValid = true;
@@ -498,7 +498,7 @@ protected:
     {
         if ( deviceIsValid ) return;
 #ifndef NDEBUG
-        std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
+        std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeX*sizeof(T) <<" B"<<std::endl;
 #endif
         mycudaMemcpyHostToDevice2D ( devicePointer, pitch, hostPointer, sizeX*sizeof(T),  sizeX*sizeof(T), sizeY);
         deviceIsValid = true;
@@ -511,8 +511,8 @@ protected:
 #else
     void checkIndex ( size_type x,size_type y) const
     {
-        assert (x<this->sizeX());
-        assert (y<this->sizeY());
+        assert (x<this->sizeX);
+        assert (y<this->sizeY);
     }
 #endif
 
