@@ -47,6 +47,9 @@ using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
 
 StaticSolver::StaticSolver()
+    : massCoef( initData(&massCoef,(double)0.0,"massCoef","coefficient associated with the mass matrix in the equation system") )
+    , dampingCoef( initData(&dampingCoef,(double)0.0,"dampingCoef","coefficient associated with the mass matrix in the equation system") )
+    , stiffnessCoef( initData(&stiffnessCoef,(double)1.0,"stiffnessCoef","coefficient associated with the mass matrix in the equation system") )
 {
 }
 
@@ -66,7 +69,8 @@ void StaticSolver::solve(double dt)
     if( f_printLog.getValue() )
         cerr<<"StaticSolver, f0 = "<< b <<endl;
     MultiMatrix matrix(this);
-    matrix = MechanicalMatrix::K;
+    //matrix = MechanicalMatrix::K;
+    matrix = MechanicalMatrix(massCoef.getValue(),dampingCoef.getValue(),stiffnessCoef.getValue());
 
     if( f_printLog.getValue() )
         cerr<<"StaticSolver, matrix = "<< (MechanicalMatrix::K) << " = " << matrix <<endl;
