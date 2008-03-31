@@ -70,7 +70,7 @@ public:
 
     virtual void addDForce(VecDeriv& df, const VecDeriv& dx);
 
-    void addGravityToV(double dt);
+    virtual void addGravityToV(double dt);
 
     double getElementMass(unsigned int index);
 

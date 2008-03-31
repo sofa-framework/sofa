@@ -62,14 +62,17 @@ class NonUniformHexahedronFEMForceFieldAndMass : virtual public HexahedronFEMFor
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
     typedef topology::MeshTopology::SeqCubes VecElement;
 
 
     typedef HexahedronFEMForceFieldAndMass<DataTypes> HexahedronFEMForceFieldAndMassT;
+    typedef HexahedronFEMForceField<DataTypes> HexahedronFEMForceFieldT;
 
     typedef typename HexahedronFEMForceFieldAndMassT::ElementStiffness ElementStiffness;
     typedef typename HexahedronFEMForceFieldAndMassT::MaterialStiffness MaterialStiffness;
@@ -82,19 +85,20 @@ public:
 
     Data<int> _nbVirtualFinerLevels; ///< use virtual finer levels, in order to compte non-uniform stiffness, only valid if the topology is a SparseGridTopology with enough VirtualFinerLevels.
     Data<bool> _useMass; ///< Do we want to use this ForceField like a Mass? (or do we prefer using a separate Mass)
+    Data<Real> _totalMass;
 
     NonUniformHexahedronFEMForceFieldAndMass():HexahedronFEMForceFieldAndMassT()
         ,_finerLevel(NULL)
     {
         _nbVirtualFinerLevels = initData(&this->_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness");
         _useMass = initData(&this->_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)");
-
+        _totalMass = initData(&this->_totalMass,(Real)0.0,"totalMass","");
     }
 
 
 
     virtual void init();
-
+// 		virtual void reinit();
 
 protected:
 
@@ -112,6 +116,12 @@ protected:
 
     static const float FINE_TO_COARSE[8][8][8]; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
     void addFineToCoarse( ElementStiffness& coarse, const ElementStiffness& fine, int indice );
+
+
+
+    virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
+    virtual void addGravityToV(double dt);
+    virtual  void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
 
 };
