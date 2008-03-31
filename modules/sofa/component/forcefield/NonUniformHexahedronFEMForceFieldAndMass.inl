@@ -114,6 +114,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
             NonUniformHexahedronFEMForceFieldAndMass<DataTypes>* finer = _virtualFinerLevels.back();
 
             finer->_sparseGrid = this->_sparseGrid->_virtualFinerLevels[	this->_sparseGrid->getNbVirtualFinerLevels()-_nbVirtualFinerLevels.getValue() + i];
+// 			finer->setName( "virtual" );
 
 
             finer->_indexedElements = & (finer->_sparseGrid->getCubes());
@@ -157,6 +158,12 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
                 {
                     finer->_elementStiffnesses.beginEdit()->resize( finer->_elementStiffnesses.getValue().size()+1 );
                     finer->computeElementStiffnessFromFiner( (*finer->_elementStiffnesses.beginEdit())[j],j);
+
+                    if( _useMass.getValue())
+                    {
+                        finer->_elementMasses.beginEdit()->resize( finer->_elementMasses.getValue().size()+1 );
+                        finer->computeElementMassFromFiner( (*finer->_elementMasses.beginEdit())[j],j);
+                    }
                 }
 
             }
@@ -166,11 +173,16 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     }
 
 
-// 	if( _elementStiffnesses.getValue().empty() )
-// 		_elementStiffnesses.beginEdit()->resize(_indexedElements->size());
-    // 	_stiffnesses.resize( _initialPoints.getValue().size()*3 ); // assembly ?
 
     this->reinit();
+
+
+
+
+
+
+
+
 
 
 
@@ -193,9 +205,9 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     if(_useMass.getValue() )
     {
 
-
         MassT::init();
         this->_particleMasses.resize( this->_initialPoints.getValue().size() );
+
 
         int i=0;
         for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
@@ -207,8 +219,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
             // volume of a element
             Real volume = (nodes[1]-nodes[0]).norm()*(nodes[3]-nodes[0]).norm()*(nodes[4]-nodes[0]).norm();
 
-            if( this->_sparseGrid ) // if sparseGrid -> the filling ratio is taken into account
-                volume *= (Real) (this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
+            volume *= (Real) (this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY?.5:1.0);
 
             // mass of a particle...
             Real mass = Real (( volume * this->_density.getValue() ) / 8.0 );
@@ -217,17 +228,52 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
             for(int w=0; w<8; ++w)
                 this->_particleMasses[ (*it)[w] ] += mass;
         }
+    }
+    else
+    {
+        this->_particleMasses.resize( this->_initialPoints.getValue().size() );
+// 		int nbboundary=0;
+// 		int i=0;
+// 		for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+// 		{
+// 			if( this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY ) ++nbboundary;
+// 		}
+// 		Real semielemmass = _totalMass.getValue() / Real( 2*this->_indexedElements->size() - nbboundary);
+//
+// 		for(typename VecElement::const_iterator it = this->_indexedElements->begin() ; it != this->_indexedElements->end() ; ++it, ++i)
+// 		{
+// 			for(int w=0;w<8;++w)
+// 				if( this->_sparseGrid->getType(i)==topology::SparseGridTopology::BOUNDARY )
+// 					this->_particleMasses[ (*it)[w] ] += semielemmass;
+// 				else
+// 					this->_particleMasses[ (*it)[w] ] += 2.0*semielemmass;
+// 		}
 
-// 	for( unsigned i=0;i<this->_particleMasses.size();++i)
-// 		this->_particleMasses[i] = 1.0;
-
+        Real mass = _totalMass.getValue() / Real(this->_indexedElements->size());
+        for(unsigned i=0; i<this->_particleMasses.size(); ++i)
+            this->_particleMasses[ i ] = mass;
     }
 
 
 }
 
 
-
+// template <class DataTypes>
+// 		void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::reinit()
+// {
+// 	cerr<<"NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::reinit() "<<this->_sparseGrid->getNbCubes()<<endl;
+// // 	this->computeElementMasses();
+//
+// 	this->f_updateStiffnessMatrix.setValue(0);
+//
+// 	if( !_useMass.getValue())
+// 	{
+// 		Real mass = _totalMass.getValue() / Real(this->_indexedElements->size());
+// 		for(unsigned i=0;i<this->_particleMasses.size();++i)
+// 			this->_particleMasses[ i ] = mass;
+// 	}
+//
+// }
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -242,8 +288,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffnes
         computeElementStiffnessFromFiner(K,elementIndice); // non-uniform stiffness
     else
     {
-// 		cerr<<"NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffnessAsFinest\n";
-        HexahedronFEMForceFieldAndMassT::computeElementStiffness(K,M,nodes,elementIndice); // classical stiffness
+        HexahedronFEMForceFieldT::computeElementStiffness(K,M,nodes,elementIndice); // classical stiffness
     }
 }
 
@@ -275,6 +320,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeElementMass( ElementMas
 {
     if(_useMass.getValue() )
     {
+// 		cerr<<"NonUniformHexahedronFEMForceFieldAndMass<T>::computeElementMass "<<_finerLevel<<endl;
         if( _finerLevel )
             computeElementMassFromFiner(Mass,elementIndice); // non-uniform stiffness
         else
@@ -288,17 +334,15 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeElementMassFromFiner( E
 {
 // 	cerr<<"NonUniformHexahedronFEMForceFieldAndMass<T>::computeElementMassFromFiner\n";
     helper::fixed_array<int,8>& children = this->_sparseGrid->_hierarchicalCubeMap[elementIndice];
-
+    Mass.fill(0.0);
 
     for(int i=0; i<8; ++i)
     {
         if( children[i] == -1 ) continue; // outside
 
-        const ElementMass &Mchild = (*_finerLevel->_elementMasses.beginEdit())[children[i]];
-
+        const ElementMass &Mchild = _finerLevel->_elementMasses.getValue()[children[i]];
 
         addFineToCoarse(Mass, Mchild, i);
-
     }
 }
 
@@ -417,6 +461,64 @@ const float NonUniformHexahedronFEMForceFieldAndMass<T>::FINE_TO_COARSE[8][8][8]
     }
 
 };
+
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+/////////////////////////////////////////////////
+
+template<class T>
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addMDx(VecDeriv& f, const VecDeriv& dx, double factor)
+{
+    if(_useMass.getValue())
+        HexahedronFEMForceFieldAndMassT::addMDx(f,dx,factor);
+    else
+    {
+        for (unsigned int i=0; i<dx.size(); i++)
+        {
+            f[i] += dx[i] * this->_particleMasses[i] * (Real)factor;
+        }
+    }
+}
+
+template<class T>
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addGravityToV(double dt)
+{
+    if(_useMass.getValue())
+        HexahedronFEMForceFieldAndMassT::addGravityToV(dt);
+    else
+    {
+        VecDeriv& v = *this->mstate->getV();
+        const double* g = this->getContext()->getLocalGravity().ptr();
+        Deriv theGravity;
+        T::set( theGravity, g[0], g[1], g[2]);
+        Deriv hg = theGravity * dt;
+        for (unsigned int i=0; i<v.size(); i++)
+        {
+            v[i] += hg;
+        }
+    }
+}
+
+template<class T>
+void NonUniformHexahedronFEMForceFieldAndMass<T>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+{
+    if(_useMass.getValue())
+        HexahedronFEMForceFieldAndMassT::addForce(f,x,v);
+    else
+    {
+        HexahedronFEMForceFieldT::addForce(f,x,v);
+
+        const double* g = this->getContext()->getLocalGravity().ptr();
+        Deriv theGravity;
+        T::set( theGravity, g[0], g[1], g[2]);
+
+        for (unsigned int i=0; i<f.size(); i++)
+        {
+            f[i] += theGravity * this->_particleMasses[i];
+        }
+    }
+}
+
 
 
 } // namespace forcefield
