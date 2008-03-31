@@ -41,6 +41,7 @@
 #include <cxxabi.h>
 #endif
 
+#include <string.h>
 namespace sofa
 {
 

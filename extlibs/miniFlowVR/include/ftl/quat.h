@@ -91,7 +91,7 @@ class Quat
 namespace Type
 {
 
-template<> extern inline Type get(const Quat&) { return Vec4f; }
+// template<> extern inline Type get(const Quat&) { return Vec4f; }
 
 template <>
 bool assign(Quat& dest, int type, const void* data);

@@ -26,7 +26,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
-
+#include <string.h>
 namespace sofa
 {
 
@@ -449,6 +449,7 @@ bool Fluid3D::addBBox(double* minBBox, double* maxBBox)
         if (minBBox[c] > pos[c]        ) minBBox[c] = pos[c];
         if (maxBBox[c] < pos[c]+size[c]) maxBBox[c] = pos[c]+size[c];
     }
+    std::cout << minBBox << " " << maxBBox << " #####~#\n";
     return true;
 }
 

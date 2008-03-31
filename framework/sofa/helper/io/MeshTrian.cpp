@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(MeshTrian)
 
-Creator<Mesh::Factory,MeshTrian> MeshTrianClass("trian");
+Creator<Mesh::FactoryMesh,MeshTrian> MeshTrianClass("trian");
 
 void MeshTrian::init (std::string filename)
 {

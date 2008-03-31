@@ -28,6 +28,8 @@
 #include <sofa/helper/io/bvh/BVHChannels.h>
 #include <sofa/helper/io/bvh/BVHOffset.h>
 #include <sofa/helper/io/bvh/BVHMotion.h>
+#include <cstdio>
+#include <string.h>
 
 namespace sofa
 {

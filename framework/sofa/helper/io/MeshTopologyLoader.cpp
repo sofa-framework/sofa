@@ -30,6 +30,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <vector>
+#include <string.h>
 
 namespace sofa
 {
@@ -45,7 +46,7 @@ using namespace sofa::defaulttype;
 static void skipToEOL(FILE* f)
 {
     int	ch;
-    while ((ch = fgetc(f)) != EOF && ch != '\n');
+    while ((ch = fgetc(f)) != EOF && ch != '\n') ;
 }
 
 static bool readLine(char* buf, int size, FILE* f)

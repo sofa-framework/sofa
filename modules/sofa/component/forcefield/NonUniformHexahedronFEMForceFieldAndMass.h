@@ -69,12 +69,12 @@ public:
     typedef topology::MeshTopology::SeqCubes VecElement;
 
 
-    typedef HexahedronFEMForceFieldAndMass<DataTypes> HexahedronFEMForceFieldAndMass;
+    typedef HexahedronFEMForceFieldAndMass<DataTypes> HexahedronFEMForceFieldAndMassT;
 
-    typedef typename HexahedronFEMForceFieldAndMass::ElementStiffness ElementStiffness;
-    typedef typename HexahedronFEMForceFieldAndMass::MaterialStiffness MaterialStiffness;
-    typedef typename HexahedronFEMForceFieldAndMass::Mass Mass;
-    typedef typename HexahedronFEMForceFieldAndMass::ElementMass ElementMass;
+    typedef typename HexahedronFEMForceFieldAndMassT::ElementStiffness ElementStiffness;
+    typedef typename HexahedronFEMForceFieldAndMassT::MaterialStiffness MaterialStiffness;
+    typedef typename HexahedronFEMForceFieldAndMassT::MassT MassT;
+    typedef typename HexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
 
 
 public:
@@ -83,7 +83,7 @@ public:
     Data<int> _nbVirtualFinerLevels; ///< use virtual finer levels, in order to compte non-uniform stiffness, only valid if the topology is a SparseGridTopology with enough VirtualFinerLevels.
     Data<bool> _useMass; ///< Do we want to use this ForceField like a Mass? (or do we prefer using a separate Mass)
 
-    NonUniformHexahedronFEMForceFieldAndMass():HexahedronFEMForceFieldAndMass()
+    NonUniformHexahedronFEMForceFieldAndMass():HexahedronFEMForceFieldAndMassT()
         ,_finerLevel(NULL)
     {
         _nbVirtualFinerLevels = initData(&this->_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness");

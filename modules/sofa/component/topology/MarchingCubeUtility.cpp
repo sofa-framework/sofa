@@ -8,9 +8,9 @@
 #include <sofa/component/topology/MarchingCubeUtility.h>
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h>
 
-#define PRECISION 10000.0f
+#define PRECISION 2048.0f
 
-
+#include <string.h>
 
 namespace sofa
 {

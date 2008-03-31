@@ -58,7 +58,7 @@ public:
     unsigned char * getData()             { return data; }
     const unsigned char * getData() const { return data; }
 
-    typedef Factory<std::string, Image, std::string> Factory;
+    typedef Factory<std::string, Image, std::string> FactoryImage;
 
     static Image* Create(std::string filename);
 };

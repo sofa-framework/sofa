@@ -39,7 +39,7 @@ namespace io
 
 SOFA_DECL_CLASS(ImageBMP)
 
-Creator<Image::Factory,ImageBMP> ImageBMPClass("bmp");
+Creator<Image::FactoryImage,ImageBMP> ImageBMPClass("bmp");
 
 bool ImageBMP::load(std::string filename)
 {

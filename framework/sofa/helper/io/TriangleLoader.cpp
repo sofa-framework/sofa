@@ -30,6 +30,7 @@
 #include <iostream>
 #include <vector>
 #include <sofa/defaulttype/Vec.h>
+#include <string.h>
 
 namespace sofa
 {

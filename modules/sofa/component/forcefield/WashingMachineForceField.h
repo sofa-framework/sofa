@@ -60,7 +60,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef PlaneForceField<DataTypes> PlaneForceField;
+    typedef PlaneForceField<DataTypes> PlaneForceFieldT;
 
 protected:
     core::objectmodel::Data<Coord> _center;
@@ -70,7 +70,7 @@ protected:
     core::objectmodel::Data<Real> _stiffness;
     core::objectmodel::Data<Real> _damping;
 
-    defaulttype::Vec<6,PlaneForceField*> _planes;
+    defaulttype::Vec<6,PlaneForceFieldT*> _planes;
 
 public:
     WashingMachineForceField(core::componentmodel::behavior::MechanicalState<DataTypes>* object=NULL, const std::string& /*name*/="")
@@ -95,7 +95,7 @@ public:
     {
         for(int i=0; i<6; ++i)
         {
-            _planes[i] = new PlaneForceField;
+            _planes[i] = new PlaneForceFieldT;
             _planes[i]->setContext(this->getContext());
             _planes[i]->setStiffness(_stiffness.getValue());
             _planes[i]->setDamping(_damping.getValue());

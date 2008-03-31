@@ -19,6 +19,8 @@ using namespace sofa::defaulttype;
 SOFA_DECL_CLASS(PointSetTopology)
 
 
+template class PointSetTopologyModifier<Vec3dTypes>;
+template class PointSetTopologyModifier<Vec3fTypes>;
 template class PointSetTopology<Vec3dTypes>;
 template class PointSetTopology<Vec3fTypes>;
 template class PointSetGeometryAlgorithms<Vec3fTypes>;

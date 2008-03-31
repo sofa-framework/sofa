@@ -325,7 +325,7 @@ void TriangleSetModel::handleTopologyChange()
             sofa::component::topology::TriangleSetTopologyContainer *tstc= dynamic_cast<sofa::component::topology::TriangleSetTopologyContainer *>(container);
             sofa::component::topology::TetrahedronSetTopologyContainer *testc= dynamic_cast<sofa::component::topology::TetrahedronSetTopologyContainer *>(container);
 
-            if(debug_mode && (changeType == core::componentmodel::topology::TETRAHEDRAREMOVED) || (((!testc) && changeType == core::componentmodel::topology::TRIANGLESREMOVED)))
+            if(debug_mode && ((changeType == core::componentmodel::topology::TETRAHEDRAREMOVED) || (((!testc) && changeType == core::componentmodel::topology::TRIANGLESREMOVED))))
             {
 
                 unsigned int my_size = 0;

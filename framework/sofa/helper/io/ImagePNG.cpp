@@ -49,7 +49,7 @@ SOFA_DECL_CLASS(ImagePNG)
 
 #ifdef SOFA_HAVE_PNG
 
-Creator<Image::Factory,ImagePNG> ImagePNGClass("png");
+Creator<Image::FactoryImage,ImagePNG> ImagePNGClass("png");
 
 bool ImagePNG::load(std::string filename)
 {

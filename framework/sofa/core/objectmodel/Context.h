@@ -90,7 +90,7 @@ public:
     /// @{
 
     /// The Context is active
-    virtual const bool isActive() const;
+    virtual bool isActive() const;
     /// State of the context
     virtual void setActive(bool val);
     /// Gravity in the local coordinate system

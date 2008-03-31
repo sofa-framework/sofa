@@ -27,6 +27,8 @@
 
 #include <sofa/core/objectmodel/DataPtr.h>
 #include "PairInteractionForceField.h"
+#include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/objectmodel/BaseNode.h>
 
 namespace sofa
 {
@@ -42,7 +44,9 @@ namespace behavior
 
 template<class DataTypes>
 PairInteractionForceField<DataTypes>::PairInteractionForceField(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
-    : mstate1(mm1), mstate2(mm2)
+    : _object1(initData(&_object1, "object1", "First object in interaction")),
+      _object2(initData(&_object2, "object2", "Second object in interaction")),
+      mstate1(mm1), mstate2(mm2)
 {
 }
 
@@ -58,6 +62,34 @@ void PairInteractionForceField<DataTypes>::init()
     if (mstate1 == NULL || mstate2 == NULL)
     {
         mstate1 = mstate2 = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+    }
+
+    {
+        std::string object_name=mstate1->getName();
+        sofa::core::objectmodel::BaseContext *context = NULL;
+        sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(mstate1->getContext());
+        while (currentNode != NULL)
+        {
+            context = currentNode->getContext();
+            if (context == this->getContext()) break;
+            object_name = context->getName() + "/" + object_name;
+            currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
+        }
+        if (context != NULL) _object1.setValue(object_name);
+    }
+
+    {
+        std::string object_name=mstate2->getName();
+        sofa::core::objectmodel::BaseContext *context = NULL;
+        sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(mstate2->getContext());
+        while (currentNode != NULL)
+        {
+            context = currentNode->getContext();
+            if (context == this->getContext()) break;
+            object_name = context->getName() + "/" + object_name;
+            currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
+        }
+        if (context != NULL) _object2.setValue(object_name);
     }
 }
 

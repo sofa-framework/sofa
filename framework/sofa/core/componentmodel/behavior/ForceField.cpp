@@ -39,6 +39,8 @@ namespace behavior
 {
 
 using namespace sofa::defaulttype;
+template class ForceField<Vec6dTypes>;
+template class ForceField<Vec6fTypes>;
 template class ForceField<Vec3dTypes>;
 template class ForceField<Vec3fTypes>;
 template class ForceField<Vec2dTypes>;

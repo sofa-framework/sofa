@@ -135,7 +135,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
                 finer->_rotations.resize( finer->_indexedElements->size() );
                 finer->_rotatedInitialElements.resize(finer->_indexedElements->size());
 
-                double scale = 0.0;
+                Real scale(0.0);
                 if( MechanicalObject<DataTypes>*mo=dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate)) scale=mo->getScale();
 
                 int nbp = finer->_sparseGrid->getNbPoints();
@@ -194,7 +194,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     {
 
 
-        Mass::init();
+        MassT::init();
         this->_particleMasses.resize( this->_initialPoints.getValue().size() );
 
         int i=0;
@@ -243,7 +243,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffnes
     else
     {
 // 		cerr<<"NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::computeElementStiffnessAsFinest\n";
-        HexahedronFEMForceFieldAndMass::computeElementStiffness(K,M,nodes,elementIndice); // classical stiffness
+        HexahedronFEMForceFieldAndMassT::computeElementStiffness(K,M,nodes,elementIndice); // classical stiffness
     }
 }
 
@@ -278,7 +278,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::computeElementMass( ElementMas
         if( _finerLevel )
             computeElementMassFromFiner(Mass,elementIndice); // non-uniform stiffness
         else
-            HexahedronFEMForceFieldAndMass::computeElementMass(Mass,nodes,elementIndice); // classical stiffness
+            HexahedronFEMForceFieldAndMassT::computeElementMass(Mass,nodes,elementIndice); // classical stiffness
     }
 }
 
@@ -314,15 +314,15 @@ void NonUniformHexahedronFEMForceFieldAndMass<T>::addFineToCoarse( ElementStiffn
     for(int i=0; i<24; i++)
         for(int j=0; j<24; j++)
         {
-            A[i][j] = j%3==0 ? fine[i][0] * FINE_TO_COARSE[indice][0][j/3] : 0.0;
+            A[i][j] = j%3==0 ? fine[i][0] *(Real) FINE_TO_COARSE[indice][0][j/3] : Real(0.0);
             for(int k=1; k<24; k++)
-                A[i][j] += j%3==k%3  ? fine[i][k] * FINE_TO_COARSE[indice][k/3][j/3] : 0.0;
+                A[i][j] += j%3==k%3  ? fine[i][k] * (Real)FINE_TO_COARSE[indice][k/3][j/3] : Real(0.0);
         }
 
     for(int i=0; i<24; i++)
         for(int j=0; j<24; j++)
             for(int k=0; k<24; k++)
-                coarse[i][j] += i%3==k%3  ? FINE_TO_COARSE[indice][k/3][i/3] * A[k][j] : 0.0;   // FINE_TO_COARSE[indice] transposed
+                coarse[i][j] += i%3==k%3  ? (Real)FINE_TO_COARSE[indice][k/3][i/3] * A[k][j] : Real(0.0);   // FINE_TO_COARSE[indice] transposed
 }
 
 

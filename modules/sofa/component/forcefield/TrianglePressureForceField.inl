@@ -155,7 +155,7 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesFromString()
     do
     {
         const char *str=inputString.c_str();
-        for(i=0; (i<inputString.length())&&(str[i]!=','); ++i);
+        for(i=0; (i<inputString.length())&&(str[i]!=','); ++i) ;
         TrianglePressureInformation t;
 
         if (i==inputString.length())

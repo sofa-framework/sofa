@@ -81,7 +81,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     p1[a].writeRotationMatrix(Mr01);
     invertMatrix(Mr10, Mr01);
 
-    Vec damping(spring.kd, spring.kd, spring.kd);
+    Vector damping(spring.kd, spring.kd, spring.kd);
 
     //store the referential of the spring (p1) to use it in addSpringDForce()
     springRef[a] = p1[a];
@@ -96,9 +96,9 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     Mp1p2.getOrientation() = spring.initRot.inverse() * Mp1p2.getOrientation();
 
     //-- decomposing spring torsion in 2 parts (lawful rotation and illicit rotation) to fix bug with large rotations
-    Vec dRangles = Mp1p2.getOrientation().toEulerVector();
+    Vector dRangles = Mp1p2.getOrientation().toEulerVector();
     //lawful torsion = spring torsion in the axis where ksr is null
-    Vec lawfulRots( (Real)spring.freeMovements[3], (Real)spring.freeMovements[4], (Real)spring.freeMovements[5] );
+    Vector lawfulRots( (Real)spring.freeMovements[3], (Real)spring.freeMovements[4], (Real)spring.freeMovements[5] );
     spring.lawfulTorsion = Quat::createFromRotationVector(dRangles.linearProduct(lawfulRots));
     Mat MRLT;
     spring.lawfulTorsion.toMatrix(MRLT);
@@ -108,7 +108,7 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
 
     //--
     //--test limit angles
-    Vec dTorsion = spring.lawfulTorsion.toEulerVector();
+    Vector dTorsion = spring.lawfulTorsion.toEulerVector();
     bool bloc=false;
     for (unsigned int i=0; i<3; i++)
     {
@@ -128,14 +128,14 @@ void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy
     //--
 
     //compute stiffnesses components
-    Vec kst( spring.freeMovements[0]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[1]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[2]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans);
-    Vec ksrH( spring.freeMovements[3]!=0?(Real)0.0:spring.hardStiffnessRot, spring.freeMovements[4]!=0?(Real)0.0:spring.hardStiffnessRot, spring.freeMovements[5]!=0?(Real)0.0:spring.hardStiffnessRot);
-    Vec ksrS( spring.freeMovements[3]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[4]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[5]==0?(Real)0.0:spring.softStiffnessRot);
+    Vector kst( spring.freeMovements[0]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[1]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[2]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans);
+    Vector ksrH( spring.freeMovements[3]!=0?(Real)0.0:spring.hardStiffnessRot, spring.freeMovements[4]!=0?(Real)0.0:spring.hardStiffnessRot, spring.freeMovements[5]!=0?(Real)0.0:spring.hardStiffnessRot);
+    Vector ksrS( spring.freeMovements[3]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[4]==0?(Real)0.0:spring.softStiffnessRot, spring.freeMovements[5]==0?(Real)0.0:spring.softStiffnessRot);
 
     //compute directional force (relative translation is expressed in world coordinates)
-    Vec fT0 = Mr01 * (kst.linearProduct(Mr10 * Mp1p2.getCenter())) + damping.linearProduct(Vp1p2.getVCenter());
+    Vector fT0 = Mr01 * (kst.linearProduct(Mr10 * Mp1p2.getCenter())) + damping.linearProduct(Vp1p2.getVCenter());
     //compute rotational force (relative orientation is expressed in p1)
-    Vec fR0 = Mr01 * MRLT * ( ksrH.linearProduct(spring.extraTorsion.toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
+    Vector fR0 = Mr01 * MRLT * ( ksrH.linearProduct(spring.extraTorsion.toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
     fR0 += Mr01 * ( ksrS.linearProduct(spring.lawfulTorsion.toEulerVector())) + damping.linearProduct(Vp1p2.getVOrientation());
     //--
     if(bloc)
@@ -159,13 +159,13 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
     springRef[a].writeRotationMatrix(Mr01);
     invertMatrix(Mr10, Mr01);
 
-    Vec kst( spring.freeMovements[0]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[1]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[2]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans);
-    Vec ksr( spring.freeMovements[3]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[0], spring.freeMovements[4]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[1], spring.freeMovements[5]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[2]);
+    Vector kst( spring.freeMovements[0]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[1]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans, spring.freeMovements[2]==0?spring.hardStiffnessTrans:spring.softStiffnessTrans);
+    Vector ksr( spring.freeMovements[3]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[0], spring.freeMovements[4]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[1], spring.freeMovements[5]==0?spring.hardStiffnessRot:spring.softStiffnessRot+spring.bloquage[2]);
 
     //compute directional force
-    Vec df0 = Mr01 * (kst.linearProduct(Mr10*Mdx1dx2.getVCenter() ));
+    Vector df0 = Mr01 * (kst.linearProduct(Mr10*Mdx1dx2.getVCenter() ));
     //compute rotational force
-    Vec dR0 = Mr01 * (ksr.linearProduct(Mr10* Mdx1dx2.getVOrientation()));
+    Vector dR0 = Mr01 * (ksr.linearProduct(Mr10* Mdx1dx2.getVOrientation()));
 
     const Deriv dforce(df0,dR0);
 
@@ -173,7 +173,7 @@ void JointSpringForceField<DataTypes>::addSpringDForce(VecDeriv& f1, const VecDe
     f2[b]-=dforce;
 
     //--
-    spring.bloquage=Vec();
+    spring.bloquage=Vector();
 }
 
 template<class DataTypes>
@@ -243,15 +243,15 @@ void JointSpringForceField<DataTypes>::draw()
 
         if(springs[i].freeMovements[3] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(1,0,0));
+            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(1,0,0));
         }
         if(springs[i].freeMovements[4] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(0,1,0));
+            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,1,0));
         }
         if(springs[i].freeMovements[5] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vec(0,0,1));
+            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(0,0,1));
         }
 
         //---debugging

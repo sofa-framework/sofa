@@ -26,6 +26,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
+#include <string.h>
 
 namespace sofa
 {

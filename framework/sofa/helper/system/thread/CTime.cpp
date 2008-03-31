@@ -57,7 +57,7 @@ namespace thread
 
 #ifdef WIN32
 
-volatile ctime_t CTime::getRefTime()
+ctime_t CTime::getRefTime()
 {
     LARGE_INTEGER a;
     QueryPerformanceCounter(&a);
@@ -78,7 +78,7 @@ void CTime::sleep(double a)
 
 #else /* WIN32 */
 
-volatile ctime_t CTime::getRefTime()
+ctime_t CTime::getRefTime()
 {
     struct timeval tv;
     gettimeofday(&tv,0);
@@ -101,7 +101,7 @@ void CTime::sleep(double a)
 
 #ifdef SOFA_RDTSC
 #if defined(_MSC_VER)
-volatile ctime_t CTime::getFastTime()
+ctime_t CTime::getFastTime()
 {
 #if _MSC_VER >= 1400
     return __rdtsc();
@@ -112,12 +112,12 @@ volatile ctime_t CTime::getFastTime()
 }
 #elif defined(__ia64__)
 # if defined(__EDG_VERSION) || defined(__ECC)
-volatile ctime_t CTime::getFastTime()
+ctime_t CTime::getFastTime()
 {
     return __getReg(_IA64_REG_AR_ITC);
 }
 # else
-volatile ctime_t CTime::getFastTime()
+ctime_t CTime::getFastTime()
 {
     ctime_t t;
     __asm__ __volatile__("mov %0=ar.itc" : "=r"(t) :: "memory");
@@ -125,7 +125,7 @@ volatile ctime_t CTime::getFastTime()
 }
 # endif
 #elif defined(__powerpc__) || defined(__POWERPC__)
-volatile ctime_t CTime::getFastTime()
+ctime_t CTime::getFastTime()
 {
     register unsigned long t_u;
     register unsigned long t_l;
@@ -134,7 +134,7 @@ volatile ctime_t CTime::getFastTime()
     return (((ctime_t)t_u)<<32UL) | t_l;
 }
 #elif defined(__GNUC__)
-volatile ctime_t CTime::getFastTime()
+ctime_t CTime::getFastTime()
 {
     ctime_t t;
     __asm__ volatile ("rdtsc" : "=A" (t) );
@@ -173,7 +173,7 @@ ctime_t CTime::getTicksPerSec()
 
 #else /* SOFA_RDTSC */
 
-volatile ctime_t CTime::getFastTime()
+ctime_t CTime::getFastTime()
 {
     return getRefTime();
 }
@@ -185,7 +185,7 @@ ctime_t CTime::getTicksPerSec()
 
 #endif /* SOFA_RDTSC */
 
-volatile ctime_t CTime::getTime()
+ctime_t CTime::getTime()
 {
     static ctime_t last = 0;
     ctime_t t = getFastTime();

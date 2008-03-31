@@ -27,6 +27,8 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <cstdio>
+#include <string.h>
 
 namespace sofa
 {

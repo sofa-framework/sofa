@@ -27,6 +27,7 @@
 #ifndef FTL_TYPE_H
 #define FTL_TYPE_H
 
+#include <string.h>
 #include <string>
 
 namespace ftl

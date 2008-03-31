@@ -315,7 +315,6 @@ public:
     void removePointsWarning(sofa::helper::vector<unsigned int> &indices);
 
 
-
     /** \brief Remove a subset of points
      *
      * Elements corresponding to these points are removed from the mechanical object's state vectors.

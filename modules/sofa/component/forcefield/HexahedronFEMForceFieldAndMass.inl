@@ -45,8 +45,8 @@ using std::cerr; using std::endl;
 
 template<class DataTypes>
 HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
-    : Mass()
-    , HexahedronFEMForceField()
+    : MassT()
+    , HexahedronFEMForceFieldT()
     , _density(initData(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
 {}
 
@@ -57,8 +57,8 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::init( )
     if(this->_alreadyInit)return;
 
 // 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::init( ) "<<this->getName()<<endl;
-    HexahedronFEMForceField::init();
-    Mass::init();
+    HexahedronFEMForceFieldT::init();
+    MassT::init();
 
 //         computeElementMasses();
 
@@ -102,7 +102,7 @@ template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )
 {
 // 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )"<<endl;
-    HexahedronFEMForceField::reinit();
+    HexahedronFEMForceFieldT::reinit();
 //         Mass::reinit();
 
     computeElementMasses();
@@ -199,7 +199,7 @@ typename HexahedronFEMForceFieldAndMass<DataTypes>::Real HexahedronFEMForceField
 template<class DataTypes>
 std::string HexahedronFEMForceFieldAndMass<DataTypes>::getTemplateName() const
 {
-    return HexahedronFEMForceField::getTemplateName();
+    return HexahedronFEMForceFieldT::getTemplateName();
 }
 
 
@@ -261,7 +261,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addGravityToV(double dt)
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
-    HexahedronFEMForceField::addForce(f,x,v);
+    HexahedronFEMForceFieldT::addForce(f,x,v);
 
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if (this->m_separateGravity.getValue())
@@ -292,7 +292,7 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::addForce (VecDeriv& f, const Vec
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx)
 {
-    HexahedronFEMForceField::addDForce(df,dx);
+    HexahedronFEMForceFieldT::addDForce(df,dx);
 }
 
 
@@ -307,7 +307,7 @@ template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::draw()
 {
 // 		  cerr<<"HexahedronFEMForceFieldAndMass<DataTypes>::draw()  "<<this->_indexedElements->size()<<"\n";
-    HexahedronFEMForceField::draw();
+    HexahedronFEMForceFieldT::draw();
 
     if (!this->getContext()->getShowBehaviorModels())
         return;

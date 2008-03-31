@@ -33,6 +33,8 @@
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <iostream>
+#include <string.h>
+
 using std::cerr;
 using std::endl;
 
