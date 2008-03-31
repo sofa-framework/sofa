@@ -61,7 +61,7 @@ public:
 
 
 
-    SparseGridTopology();
+    SparseGridTopology(bool _isVirtual=false);
 
 //					virtual void reinit() {updateMesh();};
 
@@ -169,7 +169,7 @@ public:
     void getMesh( sofa::helper::io::Mesh &m);
 
 protected:
-
+    bool isVirtual;
     /// cutting number in all directions
     Data< Vec<3, int>    > n;
     Data< Vec<3, double> > min;

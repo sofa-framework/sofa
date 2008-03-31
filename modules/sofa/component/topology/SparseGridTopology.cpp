@@ -98,7 +98,7 @@ const int SparseGridTopology::cornerIndicesFromFineToCoarse[8][8]=
 };
 
 
-SparseGridTopology::SparseGridTopology()
+SparseGridTopology::SparseGridTopology(bool _isVirtual)
     :
     n(initData(&n,Vec<3,int>(2,2,2),"n","grid resolution")),
     min(initData(&min,Vec3d(0,0,0),"min","Min")),
@@ -109,6 +109,7 @@ SparseGridTopology::SparseGridTopology()
     resolution(initData(&resolution, (unsigned int) 128, "resolution", "Resolution of the Marching Cube")),
     smoothData(initData(&smoothData, (unsigned int) 0, "smoothData", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
 {
+    isVirtual = _isVirtual;
     _alreadyInit = false;
     _finerSparseGrid = NULL;
     _coarserSparseGrid = NULL;
@@ -377,7 +378,8 @@ void SparseGridTopology::buildFromRawVoxelFile(const std::string& filename)
 
     _regularGrid.setPos(getXmin(),getXmax(),getYmin(),getYmax(),getZmin(),getZmax());
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
-    updateMesh();
+    if (!isVirtual)
+        updateMesh();
 }
 
 void SparseGridTopology::updateMesh()
@@ -972,7 +974,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
         newnz = (newnz-1)*2+1;
     }
 
-    _virtualFinerLevels[0] = new SparseGridTopology();
+    _virtualFinerLevels[0] = new SparseGridTopology(true);
     _virtualFinerLevels[0]->setNx( newnx );
     _virtualFinerLevels[0]->setNy( newny );
     _virtualFinerLevels[0]->setNz( newnz );
@@ -984,7 +986,7 @@ void SparseGridTopology::buildVirtualFinerLevels()
 
     for(int i=1; i<nb; ++i)
     {
-        _virtualFinerLevels[i] = new SparseGridTopology();
+        _virtualFinerLevels[i] = new SparseGridTopology(true);
 
 
         _virtualFinerLevels[i]->setFinerSparseGrid(_virtualFinerLevels[i-1]);
