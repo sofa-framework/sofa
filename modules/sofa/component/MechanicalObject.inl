@@ -186,10 +186,6 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     {
         this->applyScale(atof(arg->getAttribute("scale")));
     }
-    if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
-    {
-        this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
-    }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
         Vec<3, double> rotationVector = Vec<3,double>(atof(arg->getAttribute("rx","0.0")),atof(arg->getAttribute("ry","0.0")),atof(arg->getAttribute("rz","0.0")))*3.141592653/180.0;
@@ -197,6 +193,10 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
         rotation[1] = rotationVector[1];
         rotation[2] = rotationVector[2];
         this->applyRotation(defaulttype::Quat::createFromRotationVector( rotationVector));
+    }
+    if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
+    {
+        this->applyTranslation(atof(arg->getAttribute("dx","0.0")),atof(arg->getAttribute("dy","0.0")),atof(arg->getAttribute("dz","0.0")));
     }
 }
 
@@ -710,11 +710,14 @@ void MechanicalObject<DataTypes>::init()
             {
                 (*getX())[i] = Coord();
                 //DataTypes::set((*getX())[i], topo->getPX(i), topo->getPY(i), topo->getPZ(i));
-                DataTypes::set
-                ((*getX())[i], topo->getPX(i)*scale+translation[0], topo->getPY(i)*scale+translation[1], topo->getPZ(i)*scale+translation[2]);
+                DataTypes::set((*getX())[i], topo->getPX(i)*scale, topo->getPY(i)*scale, topo->getPZ(i)*scale);
             }
+
             if (rotation[0]!=0.0 || rotation[1]!=0.0 || rotation[2]!=0.0)
                 this->applyRotation(defaulttype::Quat::createFromRotationVector( Vec<3,double>(rotation[0],rotation[1],rotation[2])));
+
+            if (translation[0]!=0.0 || translation[1]!=0.0 || translation[2]!=0.0)
+                this->applyTranslation( translation[0],translation[1],translation[2]);
         }
     }
     if (v0 == NULL) this->v0 = new VecDeriv;
