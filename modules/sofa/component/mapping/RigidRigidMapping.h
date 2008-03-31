@@ -60,7 +60,7 @@ public:
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Vec<N,Real> Vec;
+    typedef Vec<N,Real> Vector ;
 
 
 protected:

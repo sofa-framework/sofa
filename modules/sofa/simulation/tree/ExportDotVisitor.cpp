@@ -94,53 +94,81 @@ bool ExportDotVisitor::display(core::objectmodel::BaseObject* obj, const char **
     bool show = false;
     bool hide = false;
     if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalState*>(obj))
+    {
         if (showMechanicalState) { show = true; *color = COLOR[MMODEL]; }
         else hide = true;
+    }
     if (dynamic_cast<core::componentmodel::behavior::BaseMass*>(obj))
+    {
         if (showMass) { show = true; *color = COLOR[MASS]; }
         else hide = true;
+    }
     if (dynamic_cast<core::componentmodel::topology::Topology *>(obj))
+    {
         if (showTopology) { show = true; *color = COLOR[TOPOLOGY]; }
         else hide = true;
+    }
     if (dynamic_cast<core::CollisionModel*>(obj))
+    {
         if (showCollisionModel) { show = true; *color = COLOR[CMODEL]; }
         else hide = true;
+    }
     if (dynamic_cast<core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
+    {
         if (showMechanicalMapping) { show = true; *color = COLOR[MMAPPING]; }
         else hide = true;
+    }
     else if (dynamic_cast<core::BaseMapping*>(obj))
+    {
         if (showMapping) { show = true; *color = COLOR[MAPPING]; }
         else hide = true;
+    }
     if (dynamic_cast<core::objectmodel::ContextObject*>(obj))
+    {
         if (showContext) { show = true; *color = COLOR[CONTEXT]; }
         else hide = true;
+    }
     if (dynamic_cast<core::componentmodel::collision::Pipeline*>(obj)
         || dynamic_cast<core::componentmodel::collision::Intersection*>(obj)
         || dynamic_cast<core::componentmodel::collision::Detection*>(obj)
         || dynamic_cast<core::componentmodel::collision::ContactManager*>(obj)
         || dynamic_cast<core::componentmodel::collision::CollisionGroupManager*>(obj))
+    {
         if (showCollisionPipeline) { show = true; *color = COLOR[COLLISION]; }
         else hide = true;
+    }
     if (dynamic_cast<core::componentmodel::behavior::OdeSolver*>(obj))
+    {
         if (showSolver) { show = true; *color = COLOR[SOLVER]; }
         else hide = true;
+    }
     if (dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj) &&
         dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel1()!=dynamic_cast<core::componentmodel::behavior::InteractionForceField*>(obj)->getMechModel2())
+    {
         if (showInteractionForceField) { show = true; *color = COLOR[IFFIELD]; }
         else hide = true;
+    }
     else if (dynamic_cast<core::componentmodel::behavior::BaseForceField*>(obj))
+    {
         if (showForceField) { show = true; *color = COLOR[FFIELD]; }
         else hide = true;
+    }
     if (dynamic_cast<core::componentmodel::behavior::BaseConstraint*>(obj))
+    {
         if (showConstraint) { show = true; *color = COLOR[CONSTRAINT]; }
         else hide = true;
+    }
     if (dynamic_cast<core::BehaviorModel*>(obj))
+    {
         if (showBehaviorModel) { show = true; *color = COLOR[BMODEL]; }
         else hide = true;
+    }
 
     if (dynamic_cast<core::VisualModel*>(obj) && !hide && !show)
+    {
         if (showVisualModel) { show = true; *color = COLOR[VMODEL]; }
         else hide = true;
+    }
 
     return show || !hide;
 }

@@ -124,7 +124,7 @@ public:
         return textureName;
     };
 
-    typedef Factory<std::string, Mesh, std::string> Factory;
+    typedef Factory<std::string, Mesh, std::string> FactoryMesh;
 
     static Mesh* Create(std::string filename);
 };

@@ -156,7 +156,7 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromString()
     do
     {
         const char *str=inputString.c_str();
-        for(i=0; (i<inputString.length())&&(str[i]!=','); ++i);
+        for(i=0; (i<inputString.length())&&(str[i]!=','); ++i) ;
         EdgePressureInformation t;
 
         if (i==inputString.length())

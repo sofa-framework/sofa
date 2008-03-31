@@ -31,7 +31,7 @@
 
 #include <list>
 #include <iostream>
-
+#include <typeinfo>
 namespace sofa
 {
 

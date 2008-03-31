@@ -26,6 +26,7 @@
 #define SOFA_SIMULATION_TREE_COLORS_H
 
 #include <stdlib.h>
+#include <string.h>
 
 namespace sofa
 {

@@ -25,8 +25,8 @@ template<class DataTypes>
 class HexahedronFEMForceFieldAndMass : virtual public Mass<DataTypes>, virtual public HexahedronFEMForceField<DataTypes>
 {
 public:
-    typedef HexahedronFEMForceField<DataTypes> HexahedronFEMForceField;
-    typedef Mass<DataTypes> Mass;
+    typedef HexahedronFEMForceField<DataTypes> HexahedronFEMForceFieldT;
+    typedef Mass<DataTypes> MassT;
 
 
     typedef typename DataTypes::VecCoord VecCoord;
@@ -35,10 +35,10 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename HexahedronFEMForceField::Mat33 Mat33;
-    typedef typename HexahedronFEMForceField::VecElement VecElement;
-    typedef typename HexahedronFEMForceField::VecElementStiffness VecElementMass;
-    typedef typename HexahedronFEMForceField::ElementStiffness ElementMass;
+    typedef typename HexahedronFEMForceFieldT::Mat33 Mat33;
+    typedef typename HexahedronFEMForceFieldT::VecElement VecElement;
+    typedef typename HexahedronFEMForceFieldT::VecElementStiffness VecElementMass;
+    typedef typename HexahedronFEMForceFieldT::ElementStiffness ElementMass;
     typedef helper::vector<Real> MassVector;
 
 

@@ -57,20 +57,22 @@ typedef unsigned long long ctime_t;
 class CTime
 {
 public:
+    //volatile causes: "warning: type qualifiers ignored on function return type" on GCC 4.3
+
     // Get current reference time
-    static volatile ctime_t getRefTime();
+    static /*volatile*/ ctime_t getRefTime();
 
     // Get the frequency of the reference timer
     static ctime_t getRefTicksPerSec();
 
     // Get current time using the fastest available method
-    static volatile ctime_t getFastTime();
+    static /*volatile*/ ctime_t getFastTime();
 
     // Get the frequency of the fast timer
     static ctime_t getTicksPerSec();
 
     // Same as getFastTime, but with the additionnal guaranty that it will never decrease.
-    static volatile ctime_t getTime();
+    static /*volatile*/ ctime_t getTime();
 
     // Sleep for the given duration in second
     static void sleep(double s);

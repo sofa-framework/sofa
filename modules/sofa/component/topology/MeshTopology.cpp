@@ -29,7 +29,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/fixed_array.h>
 #include <set>
-
+#include <string.h>
 
 namespace sofa
 {

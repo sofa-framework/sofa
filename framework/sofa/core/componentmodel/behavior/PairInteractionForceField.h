@@ -28,6 +28,8 @@
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
+#include <sofa/core/objectmodel/Data.h>
+
 namespace sofa
 {
 
@@ -50,11 +52,14 @@ template<class TDataTypes>
 class PairInteractionForceField : public InteractionForceField
 {
 public:
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+
+//     using sofa::core::objectmodel::Data;
 
     PairInteractionForceField(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
@@ -204,6 +209,8 @@ public:
     }
 
 protected:
+    sofa::core::objectmodel::Data< std::string > _object1;
+    sofa::core::objectmodel::Data< std::string > _object2;
     MechanicalState<DataTypes> *mstate1;
     MechanicalState<DataTypes> *mstate2;
 };

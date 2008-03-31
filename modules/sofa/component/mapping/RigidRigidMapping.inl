@@ -35,7 +35,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/helper/gl/Axis.h>
-#include <string>
+#include <string.h>
 #include <iostream>
 
 using std::cerr;
@@ -224,7 +224,7 @@ void RigidRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out, const 
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForces, const typename In::VecDeriv& parentForces )
 {
-    Vec v,omega;
+    Vector v,omega;
     childForces.resize(points.getValue().size());
     unsigned int cptchildForces;
     unsigned int val;
@@ -286,7 +286,7 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childForce
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForces, const typename Out::VecDeriv& childForces )
 {
-    Vec v,omega;
+    Vector v,omega;
     unsigned int val;
     unsigned int cpt;
     switch(repartition.getValue().size())
@@ -299,7 +299,7 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
             //      [ -OM^t ]
             // -OM^t = OM^
 
-            Vec f = childForces[i].getVCenter();
+            Vector f = childForces[i].getVCenter();
             v += f;
             omega += childForces[i].getVOrientation() + cross(f,-pointsR0[i].getCenter());
         }
@@ -311,11 +311,11 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
         cpt=0;
         for(unsigned int ito=0; ito<parentForces.size(); ito++)
         {
-            v=Vec();
-            omega=Vec();
+            v=Vector();
+            omega=Vector();
             for(unsigned int i=0; i<val; i++)
             {
-                Vec f = childForces[cpt].getVCenter();
+                Vector f = childForces[cpt].getVCenter();
                 v += f;
                 omega += childForces[cpt].getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
                 cpt++;
@@ -333,11 +333,11 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
         cpt=0;
         for(unsigned int ito=0; ito<parentForces.size(); ito++)
         {
-            v=Vec();
-            omega=Vec();
+            v=Vector();
+            omega=Vector();
             for(unsigned int i=0; i<repartition.getValue()[ito]; i++)
             {
-                Vec f = childForces[cpt].getVCenter();
+                Vector f = childForces[cpt].getVCenter();
                 v += f;
                 omega += childForces[cpt].getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
                 cpt++;

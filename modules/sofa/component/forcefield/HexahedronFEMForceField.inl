@@ -390,9 +390,9 @@ void HexahedronFEMForceField<DataTypes>::computeElementStiffness( ElementStiffne
                 {
                     // Ni = 1/8 (1+_coef[i][0]x1)(1+_coef[i][1]x2)(1+_coef[i][2]x3)
                     // qxi = dNi/dx = dNi/dx1 dx1/dx + dNi/dx2 dx2/dx + dNi/dx3 dx3/dx
-                    Real dNi_dx1 = (_coef[i][0])*(1+_coef[i][1]*x2)*(1+_coef[i][2]*x3)/8;
-                    Real dNi_dx2 = (1+_coef[i][0]*x1)*(_coef[i][1])*(1+_coef[i][2]*x3)/8;
-                    Real dNi_dx3 = (1+_coef[i][0]*x1)*(1+_coef[i][1]*x2)*(_coef[i][2])/8;
+                    Real dNi_dx1 =(Real)( (_coef[i][0])*(1+_coef[i][1]*x2)*(1+_coef[i][2]*x3)/8.0);
+                    Real dNi_dx2 =(Real)((1+_coef[i][0]*x1)*(_coef[i][1])*(1+_coef[i][2]*x3)/8.0);
+                    Real dNi_dx3 =(Real)((1+_coef[i][0]*x1)*(1+_coef[i][1]*x2)*(_coef[i][2])/8.0);
                     if (verbose) std::cout << "dN"<<i<<"/dxi = "<<dNi_dx1<<" "<<dNi_dx2<<" "<<dNi_dx3<<"\n";
 #ifdef DN_USE_J
                     qx[i] = dNi_dx1*J_1[0][0] + dNi_dx2*J_1[1][0] + dNi_dx3*J_1[2][0];

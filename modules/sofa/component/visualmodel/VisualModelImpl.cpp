@@ -319,7 +319,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         if (loader.empty())
             objLoader = helper::io::Mesh::Create(filename);
         else
-            objLoader = helper::io::Mesh::Factory::CreateObject(loader, filename);
+            objLoader = helper::io::Mesh::FactoryMesh::CreateObject(loader, filename);
 
         if (!objLoader)
         {
@@ -630,7 +630,7 @@ void VisualModelImpl::setColor(std::string color)
 void VisualModelImpl::updateVisual()
 {
     //std::cout << "VisualModelImpl::updateVisual()"<<std::endl;
-    if (modified && !vertices.empty() || useTopology)
+    if (modified && (!vertices.empty() || useTopology))
     {
         if (useTopology)
         {
@@ -645,7 +645,7 @@ void VisualModelImpl::updateVisual()
             }
             else
             {
-                if (topology != NULL && topology->getRevision() != lastMeshRev)
+                if (topology != NULL && (topology->getRevision() != lastMeshRev))
                 {
                     computeMesh(topology);
                 }
@@ -828,7 +828,7 @@ void VisualModelImpl::handleTopologyChange()
 
         sofa::component::topology::QuadSetTopologyContainer *qstc= dynamic_cast<sofa::component::topology::QuadSetTopologyContainer *>(container);
 
-        if(debug_mode && (changeType == core::componentmodel::topology::TETRAHEDRAREMOVED) || (((!testc) && changeType == core::componentmodel::topology::TRIANGLESREMOVED)))
+        if(debug_mode && ((changeType == core::componentmodel::topology::TETRAHEDRAREMOVED) || (((!testc) && changeType == core::componentmodel::topology::TRIANGLESREMOVED))))
         {
 
             unsigned int my_size = 0;

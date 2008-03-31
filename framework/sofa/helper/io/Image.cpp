@@ -72,7 +72,7 @@ Image* Image::Create(std::string filename)
     std::string::size_type p = filename.rfind('.');
     if (p!=std::string::npos)
         loader = std::string(filename, p+1);
-    return Factory::CreateObject(loader, filename);
+    return FactoryImage::CreateObject(loader, filename);
 }
 
 } // namespace io

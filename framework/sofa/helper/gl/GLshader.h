@@ -29,6 +29,7 @@
 #include <sofa/helper/system/glu.h>
 
 #include <string>
+#include <string.h>
 
 
 namespace sofa

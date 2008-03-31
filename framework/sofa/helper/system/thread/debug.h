@@ -28,6 +28,7 @@
 #include <vector>
 
 #include <sofa/helper/system/thread/CTime.h>
+#include <string.h>
 
 namespace sofa
 {

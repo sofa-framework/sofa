@@ -27,7 +27,8 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <stdlib.h>
 #include <iostream>
-#include <string>
+#include <stdio.h>
+#include <string.h>
 
 namespace sofa
 {
@@ -42,7 +43,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(MeshOBJ)
 
-Creator<Mesh::Factory,MeshOBJ> MeshOBJClass("obj");
+Creator<Mesh::FactoryMesh,MeshOBJ> MeshOBJClass("obj");
 
 void MeshOBJ::init (std::string filename)
 {

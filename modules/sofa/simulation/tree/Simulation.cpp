@@ -47,7 +47,7 @@
 #include <sofa/simulation/tree/UpdateMappingEndEvent.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream>
-
+#include <string.h>
 
 namespace sofa
 {

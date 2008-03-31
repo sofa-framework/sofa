@@ -396,29 +396,31 @@ void SparseGridTopology::updateMesh()
     sofa::helper::vector< sofa::helper::vector< Vec3d >* > list_X;
 
     const GNode *context = static_cast< GNode* >(this->getContext());
-
     for (GNode::ChildIterator it= context->child.begin(); it != context->child.end(); ++it)
     {
+
         //Get Collision Model
         sofa::component::topology::MeshTopology  *m_temp = (*it)->get< sofa::component::topology::MeshTopology >();
         if (    m_temp != NULL
                 && m_temp != this
                 && m_temp->getFilename() == "")
         {
+
             MechanicalObject< Vec3Types > *mecha_temp = static_cast< GNode *>(m_temp->getContext())->get< MechanicalObject< Vec3Types > >();
+
             if (mecha_temp != NULL && mecha_temp->getX()->size() < 2) //a triangle mesh has minimum 3elements
             {
+
                 list_mesh.push_back(m_temp);
                 list_X.push_back(mecha_temp->getX());
             }
         }
+
     }
     if (list_mesh.size() == 0) return;
     //No Marching Cube to run
-
     sofa::helper::vector< unsigned int> mesh_MC;
     std::map< unsigned int, Vec3f >     map_indices;
-
     //Configuration of the Marching Cubes algorithm
     MC.setSize(Vec<3,int>(dim_voxels.getValue()[0],dim_voxels.getValue()[1],dim_voxels.getValue()[2]));
     //Cubic voxels
@@ -426,7 +428,6 @@ void SparseGridTopology::updateMesh()
             (int)(resolution.getValue()*dim_voxels.getValue()[1]/s),
             (int)(resolution.getValue()*dim_voxels.getValue()[2]/s)));
     MC.setSizeVoxel(size_voxel.getValue());
-
     MC.RenderMarchCube(&(*dataVoxels.beginEdit())[0], 0.25f,mesh_MC, map_indices, smoothData.getValue()); //Apply Smoothing is smoothData > 0
 
     constructCollisionModels(list_mesh, list_X, mesh_MC, map_indices);

@@ -30,7 +30,7 @@
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-
+#include <string.h>
 /* For loading the scene */
 
 

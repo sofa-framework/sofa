@@ -77,7 +77,7 @@ Context::Context()
 }
 
 /// The Context is active
-const bool Context::isActive() const {return is_activated.getValue();}
+bool Context::isActive() const {return is_activated.getValue();}
 
 /// State of the context
 void Context::setActive(bool val) { is_activated.setValue(val);}

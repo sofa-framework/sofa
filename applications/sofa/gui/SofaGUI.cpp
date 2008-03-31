@@ -1,5 +1,5 @@
 #include "SofaGUI.h"
-
+#include <string.h>
 namespace sofa
 {
 

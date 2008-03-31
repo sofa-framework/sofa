@@ -66,7 +66,7 @@ public:
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Vec<N,Real> Vec;
+    typedef Vec<N,Real> Vector;
 
 
     class Spring
@@ -74,7 +74,7 @@ public:
     public:
         int  m1, m2;			/// the two extremities of the spring: masses m1 and m2
         Real kd;				/// damping factor
-        Vec  initTrans;		/// rest length of the spring
+        Vector  initTrans;		/// rest length of the spring
         Quat initRot;			/// rest orientation of the spring
         Quat lawfulTorsion;	/// general (lawful) torsion of the springs (used to fix a bug with large rotations)
         Quat extraTorsion;	/// extra (illicit) torsion of the springs (used to fix a bug with large rotations)
@@ -88,7 +88,7 @@ public:
 
         sofa::defaulttype::Vec<6,Real> limitAngles; ///limit angles on rotation axis (default no limit)
 
-        Vec bloquage;
+        Vector bloquage;
 
 
         ///constructors
@@ -99,7 +99,7 @@ public:
         {
             freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
             limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
-            initTrans = Vec(0,0,0);
+            initTrans = Vector(0,0,0);
             initRot = Quat(0,0,0,1);
         }
 
@@ -110,7 +110,7 @@ public:
         {
             freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
             limitAngles = sofa::defaulttype::Vec<6,Real>(-100000, 100000, -100000, 100000, -100000, 100000);
-            initTrans = Vec(0,0,0);
+            initTrans = Vector(0,0,0);
             initRot = Quat(0,0,0,1);
         }
 
@@ -126,7 +126,7 @@ public:
                 if(limitAngles[2*i]==limitAngles[2*i+1])
                     freeMovements[3+i] = false;
             }
-            initTrans = Vec(0,0,0);
+            initTrans = Vector(0,0,0);
             initRot = Quat(0,0,0,1);
         }
 
@@ -138,7 +138,7 @@ public:
         Real getBlocStiffnessRotation() { return blocStiffnessRot; }
         sofa::defaulttype::Vec<6,Real> getLimitAngles() { return limitAngles;}
         sofa::defaulttype::Vec<6,bool> getFreeAxis() { return freeMovements;}
-        Vec getInitLength() { return initTrans; }
+        Vector getInitLength() { return initTrans; }
         Quat getInitOrientation() { return initRot; }
 
         //affectors
@@ -161,9 +161,9 @@ public:
             if(miny==maxy) freeMovements[4]=false;
             if(minz==maxz) freeMovements[5]=false;
         }
-        void setInitLength( const Vec& l) { initTrans=l; }
+        void setInitLength( const Vector& l) { initTrans=l; }
         void setInitOrientation( const Quat& o) { initRot=o; }
-        void setInitOrientation( const Vec& o) { initRot=Quat::createFromRotationVector(o); }
+        void setInitOrientation( const Vector& o) { initRot=Quat::createFromRotationVector(o); }
         void setFreeAxis(const sofa::defaulttype::Vec<6,bool>& axis) { freeMovements = axis; }
         void setFreeAxis(bool isFreeTx, bool isFreeTy, bool isFreeTz, bool isFreeRx, bool isFreeRy, bool isFreeRz)
         {
@@ -176,7 +176,7 @@ public:
         {
             //default joint is a free rotation joint --> translation is bloqued, rotation is free
             s.freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
-            s.initTrans = Vec(0,0,0);
+            s.initTrans = Vector(0,0,0);
             s.initRot = Quat(0,0,0,1);
             s.blocStiffnessRot = 0.0;
             //by default no angle limitation is set (bi values for initialisation)
@@ -254,7 +254,7 @@ public:
                 out<<"R_LIM_Y "<<s.limitAngles[2]<<" "<<s.limitAngles[3]<<"  ";
             if (s.limitAngles[4]!=-100000 || s.limitAngles[5] != 100000)
                 out<<"R_LIM_Z "<<s.limitAngles[4]<<" "<<s.limitAngles[5]<<"  ";
-            if (s.initTrans!= Vec())
+            if (s.initTrans!= Vector())
                 out<<"REST_T "<<s.initTrans<<"  ";
             if (s.initRot[3]!= 1)
                 out<<"REST_R "<<s.initRot<<"  ";
@@ -328,7 +328,7 @@ public:
     void addSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
     {
         Spring s(m1,m2,softKst,hardKst,softKsr,hardKsr, blocKsr, axmin, axmax, aymin, aymax, azmin, azmax, kd);
-        s.initTrans = Vec(0,0,0);
+        s.initTrans = Vector(0,0,0);
         s.initRot = Quat(0,0,0,1);
 
         springs.beginEdit()->push_back(s);

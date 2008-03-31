@@ -34,7 +34,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <string>
+#include <string.h>
 #include <iostream>
 
 using std::cerr;
