@@ -375,7 +375,7 @@ private:
 
 
     void addReadState(bool init);
-    void addWriteState();
+    bool addWriteState();
 
 #ifdef SOFA_PML
     virtual void pmlOpen(const char* filename, bool resetView=true);
