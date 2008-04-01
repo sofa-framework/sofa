@@ -51,6 +51,12 @@ public:
 
     virtual void getCompliance(defaulttype::BaseMatrix* W) = 0;
 
+    virtual void CudaGetCompliance(defaulttype::BaseMatrix* W)
+    {
+        std::cout << "warning : CudaGetCompliance(defaulttype::BaseMatrix* W) is not implemented in " << this->getTypeName() << std::endl;
+        getCompliance(W); // par defaut si la methode cuda n'est pas implementé on resoud sur CPU
+    }
+
     virtual void applyContactForce(const defaulttype::BaseVector *f) = 0;
 
     virtual void resetContactForce() = 0;

@@ -22,7 +22,7 @@ using namespace sofa::gpu::cuda;
 // --- MAIN
 // ---------------------------------------------------------------------
 
-//#define EXECUTION 1
+//#define EXECUTION 4
 
 #ifndef EXECUTION
 
@@ -123,7 +123,7 @@ int main(int argc, char** argv)
 #include <sofa/helper/system/thread/CTime.h>
 using sofa::helper::system::thread::CTime;
 
-static int sz = 2048;
+static int sz = 2048*4;
 static int dim;
 
 static float ** read_m;
@@ -442,6 +442,113 @@ int main(int argc, char** argv)
     }
 
     fclose(fc);
+}
+#endif
+
+#if EXECUTION == 4
+int main(int argc, char** argv)
+{
+    int itMax = 10;
+    float tol = -0.001;
+    double mu = 0.6;
+
+    readFile("dumpLCP.dat");
+
+    FILE * fc = fopen("courbe4.csv","w");
+
+    CudaMatrix<float> cuda_M;
+    CudaVector<float> cuda_q;
+    CudaVector<float> cuda_f0;
+    CudaVector<float> cuda_f1;
+    CudaVector<float> cuda_f2;
+    CudaVector<float> cuda_f3;
+    CudaVector<float> cuda_r;
+
+    cuda_M.resize(sz,sz,64);
+    cuda_q.resize(sz);
+    cuda_f0.resize(sz);
+    cuda_f1.resize(sz);
+    cuda_f2.resize(sz);
+    cuda_f3.resize(sz);
+    cuda_r.resize(sz);
+    double scale = 1.0 / (double)CTime::getRefTicksPerSec();
+
+    CudaLCP::CudaGaussSeidelLCP1(6,sz,cuda_q,cuda_M,cuda_f0,cuda_r,tol,0);
+    CudaLCP::CudaGaussSeidelLCP1(1,sz,cuda_q,cuda_M,cuda_f0,cuda_r,tol,0);
+    CudaLCP::CudaNlcp_gaussseidel(0,sz,cuda_q,cuda_M,cuda_f0,cuda_r,mu,tol,0);
+    CudaLCP::CudaNlcp_gaussseidel(6,sz,cuda_q,cuda_M,cuda_f0,cuda_r,mu,tol,0);
+
+    /*
+    cuda_M.resize(sz,sz,96);
+    for (int i=0;i<sz;i++) {
+    	for (int j=0;j<sz;j++) cuda_M[i][j] = read_m[i][j];
+    	cuda_q[i] = read_q[i];
+    }
+    */
+    for (int it=1; it<sz; it++)
+    {
+        cuda_M.resize(it,it,96);
+        cuda_q.resize(it);
+        cuda_f0.resize(it);
+        cuda_f1.resize(it);
+        cuda_f2.resize(it);
+        cuda_f3.resize(it);
+        cuda_r.resize(it);
+
+        for (int i=0; i<it; i++)
+        {
+            for (int j=0; j<it; j++) cuda_M[i][j] = read_m[i][j];
+            cuda_q[i] = read_q[i];
+            cuda_f0[i] = read_f[i];
+            cuda_f1[i] = read_f[i];
+            cuda_f2[i] = read_f[i];
+            cuda_f3[i] = read_f[i];
+        }
+
+        unsigned long long time0 = 0;
+        unsigned long long time1 = 0;
+        unsigned long long time2 = 0;
+        unsigned long long time3 = 0;
+
+        cuda_M.hostWrite();
+        cuda_q.hostWrite();
+        time0 = CTime::getRefTime();
+        CudaLCP::CudaGaussSeidelLCP1(0,it,cuda_q,cuda_M,cuda_f0,cuda_r,tol,itMax);
+        time0 = CTime::getRefTime() - time0;
+
+        cuda_M.hostWrite();
+        cuda_q.hostWrite();
+        time1 = CTime::getRefTime();
+        CudaLCP::CudaGaussSeidelLCP1(6,it,cuda_q,cuda_M,cuda_f1,cuda_r,tol,itMax);
+        cuda_r.deviceRead();
+        time1 = CTime::getRefTime() - time1;
+
+        cuda_M.hostWrite();
+        cuda_q.hostWrite();
+        time2 = CTime::getRefTime();
+        CudaLCP::CudaNlcp_gaussseidel(0,it,cuda_q,cuda_M,cuda_f2,cuda_r,mu,tol,itMax);
+        cuda_r.deviceRead();
+        time2 = CTime::getRefTime() - time2;
+
+        cuda_M.hostWrite();
+        cuda_q.hostWrite();
+        time3 = CTime::getRefTime();
+        CudaLCP::CudaNlcp_gaussseidel(6,it,cuda_q,cuda_M,cuda_f3,cuda_r,mu,tol,itMax);
+        cuda_r.deviceRead();
+        time3 = CTime::getRefTime() - time3;
+
+        double t0 = time0*scale;
+        double t1 = time1*scale;
+        double t2 = time2*scale;
+        double t3 = time3*scale;
+
+        fprintf(fc,"%d %f %f %f %f\n",it,t0,t1,t2,t3);
+
+        std::cout << it << endl;
+    }
+
+    fclose(fc);
+
 }
 #endif
 

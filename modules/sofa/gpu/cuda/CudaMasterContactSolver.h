@@ -4,8 +4,8 @@
 #include <sofa/simulation/tree/MasterSolverImpl.h>
 #include <sofa/simulation/tree/MechanicalVisitor.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/gpu/cuda/CudaLCP.h>
+#include "CudaTypesBase.h"
 
 namespace sofa
 {
@@ -20,166 +20,7 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 using namespace sofa::gpu::cuda;
-/*
-class CudaLPtrFullMatrix : public FullMatrix<double> {
-	public :
 
-		CudaMatrix<float>& getCudaMatrix() {
-			for (unsigned j=0; j<m.getSizeX(); j++) {
-				for (unsigned i=0; i<m.getSizeY(); i++) {
-					m[i][j] = this->FullMatrix<double>::operator [](i)[j];
-				}
-			}
-			return m;
-		}
-
-		void resize(int nbRow, int nbCol) {
-			m.resize(nbCol,nbRow,warp_size);
-			this->FullMatrix<double>::resize(nbRow,nbCol);
-		}
-
-		void setwarpsize(double mu) {
-			if (mu>0.0) warp_size = 96;
-			else warp_size = 64;
-		}
-
-	private :
-		CudaMatrix<float> m;
-		int warp_size;
-};
-
-class CudaFullVector : public FullVector<double> {
-
-	public :
-		CudaVector<float>& getCudaVector() {
-			for (int i=0; i<size(); i++) v[i]=this->FullVector<double>::operator [](i);
-			return v;
-		}
-
-		void resize(int nbRow) {
-			v.resize(nbRow);
-			this->FullVector<double>::resize(nbRow);
-		}
-
-	private :
-		CudaVector<float> v;
-};
-*/
-
-class CudaLPtrFullMatrix : public BaseMatrix
-{
-public :
-
-    CudaMatrix<float>& getCudaMatrix()
-    {
-        return m;
-    }
-
-    void resize(int nbRow, int nbCol)
-    {
-        m.resize(nbCol,nbRow,warp_size);
-        this->clear();
-    }
-
-    void setwarpsize(double mu)
-    {
-        if (mu>0.0) warp_size = 96;
-        else warp_size = 64;
-    }
-
-    int rowSize() const
-    {
-        return m.getSizeY();
-    }
-
-    int colSize() const
-    {
-        return m.getSizeX();
-    }
-
-    double element(int i, int j) const
-    {
-        return m[i][j];
-    }
-
-    void clear()
-    {
-        for (unsigned j=0; j<m.getSizeX(); j++)
-        {
-            for (unsigned i=0; i<m.getSizeY(); i++)
-            {
-                m[i][j] = 0.0;
-            }
-        }
-    }
-
-    void set(int i, int j, double v)
-    {
-        m[i][j] = v;
-    }
-
-    void add(int i, int j, double v)
-    {
-        m[i][j] += v;
-    }
-
-private :
-    CudaMatrix<float> m;
-    int warp_size;
-};
-
-class CudaFullVector : public BaseVector
-{
-
-public :
-    CudaVector<float>& getCudaVector()
-    {
-        return v;
-    }
-
-    float & operator[](int i)
-    {
-        return v[i];
-    }
-
-    const float & operator[](int i) const
-    {
-        return v[i];
-    }
-
-    void resize(int nbRow)
-    {
-        v.resize(nbRow);
-    }
-
-    int size() const
-    {
-        return v.size();
-    }
-
-    double element(int i) const
-    {
-        return v[i];
-    }
-
-    void clear()
-    {
-        for (int i=0; i<size(); i++) v[i]=0.0;
-    }
-
-    void set(int i, double val)
-    {
-        v[i] = (float) val;
-    }
-
-    void add(int i, double val)
-    {
-        v[i] += (float)val;
-    }
-
-private :
-    CudaVector<float> v;
-};
 
 class CudaMechanicalGetConstraintValueVisitor : public simulation::tree::MechanicalVisitor
 {
@@ -216,11 +57,11 @@ class CudaMasterContactSolver : public sofa::simulation::tree::MasterSolverImpl
 {
 public:
     Data<bool> initial_guess_d;
-    /*
+
     Data < double > tol_d;
-    Data < int > maxIt_d;
-    Data < double > mu_d;
-    */
+    Data<int> maxIt_d;
+    //Data < double > mu_d;
+
     Data<int> useGPU_d;
 
     CudaMasterContactSolver();
@@ -236,7 +77,7 @@ private:
 
     void build_LCP();
 
-    CudaLPtrFullMatrix _W, _A;
+    CudaBaseMatrix _W;
     CudaFullVector _dFree, _f, _res;
 
     unsigned int _numConstraints;

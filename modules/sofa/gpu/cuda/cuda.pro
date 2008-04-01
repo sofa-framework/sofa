@@ -13,6 +13,7 @@ LIBS += $$SOFA_EXT_LIBS
 
 HEADERS += mycuda.h \
            CudaTypes.h \
+	   CudaTypesBase.h \
            CudaCommon.h \
            CudaMath.h \
            CudaMechanicalObject.h \
@@ -48,7 +49,8 @@ HEADERS += mycuda.h \
            CudaPenalityContactForceField.inl \
 	   CudaLCP.h \
            CudaMasterContactSolver.h \
-           CudaTestForceField.h
+           CudaTestForceField.h \
+	   CudaBTDLinearSolver.h
 
 SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
@@ -70,7 +72,8 @@ SOURCES += mycuda.cpp \
            CudaPenalityContactForceField.cpp \
 	   CudaLCP.cpp \
            CudaMasterContactSolver.cpp \
-           CudaTestForceField.cpp
+           CudaTestForceField.cpp \
+	   CudaBTDLinearSolver.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
@@ -88,4 +91,6 @@ CUDA_SOURCES += mycuda.cu \
            CudaContactMapper.cu \
            CudaPenalityContactForceField.cu \
 	   CudaLCP.cu \
-           CudaTestForceField.cu
+           CudaTestForceField.cu \
+	   CudaBTDLinearSolver.cu
+
