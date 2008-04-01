@@ -356,42 +356,32 @@ public:
     void fastResize(size_type x,size_type y,size_type WARP_SIZE)
     {
         size_type s = x*y;
+
         if (s > hostAllocSize)
         {
             hostAllocSize = ( s>2*hostAllocSize ) ? s : 2*hostAllocSize;
             // always allocate multiples of BSIZE values
             hostAllocSize = ( hostAllocSize+BSIZE-1 ) &-BSIZE;
             T* prevHostPointer = hostPointer;
-            if ( prevHostPointer != NULL )
-                mycudaFreeHost ( prevHostPointer );
+
+            if ( prevHostPointer != NULL ) mycudaFreeHost ( prevHostPointer );
             void* newHostPointer = NULL;
             mycudaMallocHost ( &newHostPointer, hostAllocSize*sizeof ( T ) );
             hostPointer = (T*)newHostPointer;
         }
-        if (WARP_SIZE==0)
-        {
-            pitch = x*sizeof(T);
-            if (y*pitch > deviceAllocSize)
-            {
-                void* prevDevicePointer = devicePointer;
-                if (prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
 
-                mycudaMallocPitch(&devicePointer, &pitch, x, y);
-                deviceAllocSize = y*pitch;
-            }
-        }
-        else
-        {
-            pitch = ((x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE*sizeof(T);
-            if (y*pitch > deviceAllocSize)
-            {
-                void* prevDevicePointer = devicePointer;
-                if (prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
+        if (WARP_SIZE==0) pitch = x*sizeof(T);
+        else pitch = ((x+WARP_SIZE-1)/WARP_SIZE)*WARP_SIZE*sizeof(T);
 
-                mycudaMallocPitch(&devicePointer, &pitch, pitch, y);
-                deviceAllocSize = y*pitch;
-            }
+        if (y*pitch > deviceAllocSize)
+        {
+            void* prevDevicePointer = devicePointer;
+            if (prevDevicePointer != NULL ) mycudaFree ( prevDevicePointer );
+
+            mycudaMallocPitch(&devicePointer, &pitch, pitch, y);
+            deviceAllocSize = y*pitch;
         }
+
         sizeX = x;
         sizeY = y;
         deviceIsValid = true;

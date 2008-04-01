@@ -19,20 +19,20 @@ using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::componentmodel::behavior;
 
-#define MAX_NUM_CONSTRAINTS 3000
+#define MAX_NUM_CONSTRAINTS 1024
 //#define DISPLAY_TIME
 
 CudaMasterContactSolver::CudaMasterContactSolver()
-    :initial_guess_d(initData(&initial_guess_d, true, "initial_guess","activate LCP results history to improve its resolution performances."))
-    //,tol_d( initData(&tol_d, 0.001, "tolerance", ""))
-    //,maxIt_d( initData(&maxIt_d, 1000, "maxIt", ""))
+    :
+    initial_guess_d(initData(&initial_guess_d, true, "initial_guess","activate LCP results history to improve its resolution performances."))
+    ,tol_d( initData(&tol_d, 0.001, "tolerance", "tolerance"))
+    ,maxIt_d(initData(&maxIt_d, 200, "maxIt", "iterations of gauss seidel"))
     //,mu_d( initData(&mu_d, 0.6, "mu", ""))
     ,useGPU_d(initData(&useGPU_d, 6, "useGPU", "compute LCP using GPU"))
     ,_mu(0.0)
 {
 
     _W.resize(MAX_NUM_CONSTRAINTS,MAX_NUM_CONSTRAINTS);
-    _A.resize(MAX_NUM_CONSTRAINTS,2*MAX_NUM_CONSTRAINTS+1);
     _dFree.resize(MAX_NUM_CONSTRAINTS);
     _f.resize(MAX_NUM_CONSTRAINTS+1);
     _res.resize(MAX_NUM_CONSTRAINTS+1);
@@ -64,6 +64,7 @@ void CudaMasterContactSolver::build_LCP()
     _dFree.resize(_numConstraints);
     _W.setwarpsize(_mu);
     _W.resize(_numConstraints,_numConstraints);
+    _W.clear();
 
     CudaMechanicalGetConstraintValueVisitor(&_dFree).execute(context);
 
@@ -152,11 +153,11 @@ void CudaMasterContactSolver::keepContactForcesValue()
 
 void CudaMasterContactSolver::step(double dt)
 {
-    //float _tol = (float) tol_d.getValue();
-    //int _maxIt = maxIt_d.getValue();
-    //_mu = mu.getValue();
-    float _tol = 0.001;
-    int _maxIt = 1000;
+    float _tol = (float) tol_d.getValue();
+    int _maxIt = maxIt_d.getValue();
+    //_mu = mu_d.getValue();
+    //float _tol = 0.001;
+    //int _maxIt = 200;
 
     context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
 
@@ -164,6 +165,7 @@ void CudaMasterContactSolver::step(double dt)
     CTime *timer = new CTime();
     double time = 0;
     time = (double) timer->getTime();
+    std::cout<<" ********* Start Iteration *********" <<std::endl;
 #endif
 
     for(simulation::tree::GNode::ChildIterator it=context->child.begin(); it!=context->child.end(); ++it)
@@ -192,14 +194,14 @@ void CudaMasterContactSolver::step(double dt)
     simulation::tree::MechanicalVOpVisitor(dx_id).execute( context);
 
 #ifdef DISPLAY_TIME
-    std::cout<<" Free Motion " << ( (double) timer->getTime() - time)*0.001 <<" ms" <<std::endl;
+    std::cout<<" Free Motion :        " << ( (double) timer->getTime() - time)*0.001 <<" ms" <<std::endl;
     time = (double) timer->getTime();
 #endif
 
     computeCollision();
 
 #ifdef DISPLAY_TIME
-    std::cout<<" computeCollision " << ( (double) timer->getTime() - time)*0.001 <<" ms" <<std::endl;
+    std::cout<<" computeCollision :  " << ( (double) timer->getTime() - time)*0.001 <<" ms" <<std::endl;
     time = (double) timer->getTime();
 #endif
 
@@ -212,7 +214,7 @@ void CudaMasterContactSolver::step(double dt)
     build_LCP();
 
 #ifdef DISPLAY_TIME
-    std::cout<<" build_LCP " << ( (double) timer->getTime() - time)*0.001<<" ms" <<std::endl;
+    std::cout<<" build_LCP :         " << ( (double) timer->getTime() - time)*0.001<<" ms" <<std::endl;
     time = (double) timer->getTime();
 #endif
 
@@ -225,10 +227,11 @@ void CudaMasterContactSolver::step(double dt)
     else
     {
         sofa::gpu::cuda::CudaLCP::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(),_res.getCudaVector(), _tol, _maxIt);
+
     }
 
 #ifdef DISPLAY_TIME
-    std::cout<<" solve_LCP" <<( (double) timer->getTime() - time)*0.001<<" ms" <<std::endl;
+    std::cout<<" solve_LCP :         " <<( (double) timer->getTime() - time)*0.001<<" ms" <<std::endl;
     time = (double) timer->getTime();
 #endif
 
@@ -249,11 +252,12 @@ void CudaMasterContactSolver::step(double dt)
     }
 
 #ifdef DISPLAY_TIME
-    std::cout<<" contactCorrections" <<( (double) timer->getTime() - time)*0.001 <<" ms" <<std::endl;
+    std::cout<<" contactCorrections : " <<( (double) timer->getTime() - time)*0.001 <<" ms" <<std::endl;
 #endif
 
     simulation::tree::MechanicalEndIntegrationVisitor endVisitor(dt);
     context->execute(&endVisitor);
+
 }
 
 SOFA_DECL_CLASS(CudaMasterContactSolver)
