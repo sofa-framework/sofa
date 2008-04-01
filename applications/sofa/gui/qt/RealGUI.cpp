@@ -375,7 +375,8 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     connect (loadRecordTime, SIGNAL(returnPressed ()),       this, SLOT( slot_loadrecord_timevalue()));
 
-    connect ( timeSlider, SIGNAL (sliderMoved (int) ),  this, SLOT( slot_sliderValue( int) ) );
+    connect ( timeSlider, SIGNAL (sliderMoved (int) ),   this, SLOT( slot_sliderValue( int) ) );
+
     //Dialog Add Object
 
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
