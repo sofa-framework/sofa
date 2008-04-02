@@ -12,6 +12,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -1721,43 +1722,120 @@ int FlowVRRenderMeshClass = sofa::core::RegisterObject("FlowVRRender Visual Mode
 
 } // namespace SofaFlowVR
 
-// ---------------------------------------------------------------------
-// --- MAIN
-// ---------------------------------------------------------------------
+
+#ifndef WIN32
+#include <dlfcn.h>
+bool loadPlugin(const char* filename)
+{
+    void *handle;
+    handle=dlopen(filename, RTLD_LAZY);
+    if (!handle)
+    {
+        std::cerr<<"Error loading plugin "<<filename<<": "<<dlerror()<<std::endl;
+        return false;
+    }
+    std::cerr<<"Plugin "<<filename<<" loaded."<<std::endl;
+    return true;
+}
+#else
+bool loadPlugin(const char* filename)
+{
+    std::cerr << "Plugin loading not supported on this platform.\n";
+    return false;
+}
+#endif
+
+
 int main(int argc, char** argv)
 {
+    sofa::helper::BackTrace::autodump();
+
 
     glutInit(&argc,argv);
 
-    sofa::helper::BackTrace::autodump();
+    sofa::gui::SofaGUI::SetProgramName(argv[0]);
+    std::string fileName ;
+    bool        startAnim = false;
+    bool        printFactory = false;
+    std::string gui = sofa::gui::SofaGUI::GetGUIName();
+    std::vector<std::string> plugins;
+    std::vector<std::string> files;
 
-    std::string fileName = "/home/allardj/work/sig07et/data/test1.scn";
-    //int nbIter = 500;
+    std::string gui_help = "choose the UI (";
+    gui_help += sofa::gui::SofaGUI::ListSupportedGUI('|');
+    gui_help += ")";
 
-    if (argc>1)
-        fileName = argv[1];
+    sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
+//	.option(&fileName,'f',"file","scene file")
+    .option(&startAnim,'s',"start","start the animation loop")
+    .option(&printFactory,'p',"factory","print factory logs")
+    //.option(&nogui,'g',"nogui","use no gui, run a number of iterations and exit")
+    .option(&gui,'g',"gui",gui_help.c_str())
+    .option(&plugins,'l',"load","load given plugins")
+    (argc,argv);
 
-    //sofa::core::ObjectFactory::ClassEntry* classOglModel;
-    sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+    if (!files.empty()) fileName = files[0];
 
-    sofa::gui::SofaGUI::Init(argv[0]);
+    for (unsigned int i=0; i<plugins.size(); i++)
+        loadPlugin(plugins[i].c_str());
 
-    //sofa::core::ObjectFactory::AddAlias("OglModel", "FlowVRRenderMesh", true, &classOglModel);
-    sofa::core::ObjectFactory::AddAlias("VisualModel", "FlowVRRenderMesh", true, &classVisualModel);
-
-    GNode* groot = NULL;
-
-    if (!fileName.empty())
+    if (printFactory)
     {
-        groot = Simulation::load(fileName.c_str());
+        std::cout << "////////// FACTORY //////////" << std::endl;
+        sofa::helper::printFactoryLog();
+        std::cout << "//////// END FACTORY ////////" << std::endl;
     }
+
+    if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
+        return err;
+
+    sofa::simulation::tree::GNode* groot = NULL;
+
+    if (fileName.empty())
+    {
+        fileName = "liver.scn";
+        sofa::helper::system::DataRepository.findFile(fileName);
+    }
+
+    sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+    sofa::core::ObjectFactory::AddAlias("VisualModel", "FlowVRRenderMesh", true, &classVisualModel);
+    groot = sofa::simulation::tree::getSimulation()->load(fileName.c_str());
 
     if (groot==NULL)
     {
-        groot = new GNode;
+        groot = new sofa::simulation::tree::GNode;
+        //return 1;
     }
 
-    sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str());
+    if (startAnim)
+        groot->setAnimate(true);
 
+
+
+    //=======================================
+    // Run the main loop
+
+    if (gui=="batch")
+    {
+        if (groot==NULL)
+        {
+            std::cerr<<"Could not load file "<<fileName<<std::endl;
+            return 1;
+        }
+        for (int i=0; true; i++)
+        {
+            sofa::simulation::tree::getSimulation()->animate(groot);
+        }
+        std::cout << "FlowVR has sent stop" << std::endl;
+    }
+    else
+    {
+        if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
+            return err;
+        groot = sofa::gui::SofaGUI::CurrentSimulation();
+    }
+
+    if (groot!=NULL)
+        sofa::simulation::tree::getSimulation()->unload(groot);
     return 0;
 }
