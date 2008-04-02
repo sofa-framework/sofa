@@ -611,6 +611,59 @@ void PrecomputedConstraintCorrection<DataTypes>::parse(core::objectmodel::BaseOb
 }
 
 template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints()
+{
+    VecConst& constraints = *mstate->getC();
+    unsigned int numConstraints = constraints.size();
+
+    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+
+    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
+    if (node != NULL)
+    {
+//		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
+    }
+    else
+    {
+        cout << "No rotation defined : only defined for TetrahedronFEMForceField !";
+        return;
+    }
+
+
+    //std::cout << "start rotating normals " << g_timer_elapsed(timer, &micro) << std::endl;
+//	int sizemax=0;
+//	int index_const = -1;
+    // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
+    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
+    {
+        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
+
+        //Rmk : theres is one constraint for each contact direction, i.e. normal, tangent1, tangent2.
+        for(int i = 0; i < sizeCurRowConst; i++)
+        {
+            const int localRowNodeIdx = constraints[curRowConst][i].index;
+            Transformation Ri;
+            forceField->getRotation(Ri, localRowNodeIdx);
+            Ri.transpose();
+            // on passe les normales du repere global au repere local
+            const Deriv& n_i = Ri * constraints[curRowConst][i].data;
+            constraints[curRowConst][i].data.x() =  n_i.x();
+            constraints[curRowConst][i].data.y() =  n_i.y();
+            constraints[curRowConst][i].data.z() =  n_i.z();
+        }
+        /*
+        // test pour voir si on peut reduire le nombre de contrainte
+        if (sizeCurRowConst > sizemax)
+        {
+        sizemax = sizeCurRowConst;
+        index_const = curRowConst;
+        }
+        */
+    }
+}
+
+template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()
 {
     VecConst& constraints = *mstate->getC();
@@ -662,8 +715,9 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
         */
     }
 }
+
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateConstraints()
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints()
 {
     VecCoord& x = *mstate->getX();
     VecConst& constraints = *mstate->getC();
@@ -696,14 +750,53 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateConstraint
 
         }
     }
-
-
-
 }
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints()
+{
+    VecCoord& x = *mstate->getX();
+    VecConst& constraints = *mstate->getC();
+    VecCoord& x0 = *mstate->getX0();
+
+    unsigned int numConstraints = constraints.size();
+//	int sizemax=0;
+//	int index_const = -1;
+    // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
+    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
+    {
+        int sizeCurRowConst = constraints[curRowConst].size(); //number of nodes in constraint
+
+        for(int i = 0; i < sizeCurRowConst; i++)
+        {
+            const int localRowNodeIdx = constraints[curRowConst][i].index;
+            Quat q;
+            if (_restRotations)
+                q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
+            else
+                q = x[localRowNodeIdx].getOrientation();
+
+
+            Vec3d n_i = q.inverseRotate(constraints[curRowConst][i].data.getVCenter());
+            Vec3d wn_i= q.inverseRotate(constraints[curRowConst][i].data.getVOrientation());
+
+            // on passe les normales du repere global au repere local
+            constraints[curRowConst][i].data.getVCenter() = n_i;
+            constraints[curRowConst][i].data.getVOrientation() = wn_i;
+
+        }
+    }
+}
+
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints()
 {
 }
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints()
+{
+}
+
 
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateResponse()
@@ -732,7 +825,36 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateResponse()
     }
 }
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateResponse()
+void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
+{
+    simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+
+    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
+    if (node != NULL)
+    {
+//		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
+    }
+    else
+    {
+        cout << "No rotation defined  !";
+        return;
+    }
+    VecDeriv& dx = *mstate->getDx();
+    for(unsigned int j = 0; j < dx.size(); j++)
+    {
+        Transformation Rj;
+        forceField->getRotation(Rj, j);
+        // on passe les deplacements du repere local au repere global
+        const Deriv& toto = Rj * dx[j];
+        dx[j] = toto;
+    }
+}
+
+
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse()
 {
 
     VecDeriv& dx = *mstate->getDx();
@@ -753,8 +875,36 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::rotateResponse()
         dx[j] = toto;
     }
 }
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse()
+{
+
+    VecDeriv& dx = *mstate->getDx();
+    VecCoord& x = *mstate->getX();
+    VecCoord& x0 = *mstate->getX0();
+    for(unsigned int j = 0; j < dx.size(); j++)
+    {
+        // on passe les deplacements du repere local (au repos) au repere global
+        Deriv toto ;
+        Quat q;
+        if (_restRotations)
+            q = x[j].getOrientation() * x0[j].getOrientation().inverse();
+        else
+            q = x[j].getOrientation();
+
+        toto.getVCenter()		= q.rotate(dx[j].getVCenter());
+        toto.getVOrientation()  = q.rotate(dx[j].getVOrientation());
+        dx[j] = toto;
+    }
+}
+
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse()
+{
+}
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse()
 {
 }
 

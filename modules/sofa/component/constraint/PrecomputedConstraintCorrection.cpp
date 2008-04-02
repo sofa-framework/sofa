@@ -38,18 +38,21 @@ SOFA_DECL_CLASS(PrecomputedConstraintCorrection)
 
 int ContactCorrectionClass = core::RegisterObject("")
         .add< PrecomputedConstraintCorrection<Vec1dTypes> >()
-        .add< PrecomputedConstraintCorrection<Rigid3dTypes> >()
+        .add< PrecomputedConstraintCorrection<Vec1fTypes> >()
         .add< PrecomputedConstraintCorrection<Vec3dTypes> >()
+        .add< PrecomputedConstraintCorrection<Vec3fTypes> >()
+        .add< PrecomputedConstraintCorrection<Rigid3dTypes> >()
+        .add< PrecomputedConstraintCorrection<Rigid3fTypes> >()
         ;
 
+template class PrecomputedConstraintCorrection<Vec1dTypes>;
+template class PrecomputedConstraintCorrection<Vec1fTypes>;
 template class PrecomputedConstraintCorrection<Vec3dTypes>;
-//template class PrecomputedConstraintCorrection<Vec3fTypes>;
+template class PrecomputedConstraintCorrection<Vec3fTypes>;
+template class PrecomputedConstraintCorrection<Rigid3dTypes>;
+template class PrecomputedConstraintCorrection<Rigid3fTypes>;
 //template class PrecomputedConstraintCorrection<Vec2dTypes>;
 //template class PrecomputedConstraintCorrection<Vec2fTypes>;
-template class PrecomputedConstraintCorrection<Vec1dTypes>;
-//template class PrecomputedConstraintCorrection<Vec1fTypes>;
-template class PrecomputedConstraintCorrection<Rigid3dTypes>;
-//template class PrecomputedConstraintCorrection<Rigid3fTypes>;
 //template class PrecomputedConstraintCorrection<Rigid2dTypes>;
 //template class PrecomputedConstraintCorrection<Rigid2fTypes>;
 

@@ -82,12 +82,14 @@ SOFA_DECL_CLASS(OscillatorConstraint)
 
 template class OscillatorConstraint<Vec3dTypes>;
 template class OscillatorConstraint<Vec3fTypes>;
-
+template class OscillatorConstraint<Rigid3dTypes>;
+template class OscillatorConstraint<Rigid3fTypes>;
 
 int OscillatorConstraintClass = core::RegisterObject("Apply a sinusoidal trajectory to given points")
         .add< OscillatorConstraint<Vec3dTypes> >()
         .add< OscillatorConstraint<Vec3fTypes> >()
-        .add< OscillatorConstraint<RigidTypes> >()
+        .add< OscillatorConstraint<Rigid3dTypes> >()
+        .add< OscillatorConstraint<Rigid3fTypes> >()
         ;
 
 } // namespace constraint
