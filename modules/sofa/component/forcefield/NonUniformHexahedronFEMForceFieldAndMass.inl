@@ -105,7 +105,7 @@ void NonUniformHexahedronFEMForceFieldAndMass<DataTypes>::init()
     }
     else
     {
-        this->f_updateStiffnessMatrix.setValue(false);
+// 		this->f_updateStiffnessMatrix.setValue(false);
         //build virtual finer levels
         for(int i=0; i<_nbVirtualFinerLevels.getValue(); ++i)
         {
