@@ -67,7 +67,8 @@ public:
 
     /// defining TriangleEdges as 3 Edge indices
     typedef fixed_array<EdgeID,3> TriangleEdges;
-
+    /// defining QuadEdges as 4 Edge indices
+    typedef fixed_array<QuadID,4> QuadEdges;
 
     typedef vector<Edge> SeqEdges;
     typedef vector<Triangle> SeqTriangles;

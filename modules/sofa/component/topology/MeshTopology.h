@@ -84,10 +84,19 @@ public:
     /// @{
     /// Returns the set of edges adjacent to a given vertex.
     virtual const vector<EdgeID> &getEdgeVertexShell(PointID i);
-    /// Returns the set of triangle adjacent to a given edge.
-    virtual const vector<TriangleID> &getTriangleVertexShell(TriangleID i);
+    /// Returns the set of edges adjacent to a given triangle.
+    virtual const vector<EdgeID> &getEdgeTriangleShell(TriangleID i);
+    /// Returns the set of edges adjacent to a given quad.
+    virtual const vector<EdgeID> &getEdgeQuadShell(QuadID i);
+    /// Returns the set of triangle adjacent to a given vertex.
+    virtual const vector<TriangleID> &getTriangleVertexShell(PointID i);
     /// Returns the set of triangle adjacent to a given edge.
     virtual const vector<TriangleID> &getTriangleEdgeShell(EdgeID i);
+    /// Returns the set of quad adjacent to a given vertex.
+    virtual const vector<QuadID> &getQuadVertexShell(PointID i);
+    /// Returns the set of quad adjacent to a given edge.
+    virtual const vector<QuadID> &getQuadEdgeShell(EdgeID i);
+    /// @}
 
     // Points accessors (not always available)
 
@@ -142,6 +151,9 @@ protected:
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     vector< vector< EdgeID > > m_edgeVertexShell;
 
+    /** the array that stores the set of edge-triangle shells, ie for each triangle gives the set of adjacent edges */
+    vector< vector< EdgeID > > m_edgeTriangleShell;
+
     /// for each vertex provides the set of triangles adjacent to that vertex
     vector< vector< TriangleID > > m_triangleVertexShell;
 
@@ -150,6 +162,15 @@ protected:
 
     /// for each edge provides the set of triangles adjacent to that edge
     vector< vector< TriangleID > > m_triangleEdgeShell;
+
+    /// for each vertex provides the set of quads adjacent to that vertex
+    vector< vector< QuadID > > m_quadVertexShell;
+
+    /// for each edge provides the set of quads adjacent to that edge
+    vector< vector< QuadID > > m_quadEdgeShell;
+
+    /// provides the 4 edges in each quad
+    sofa::helper::vector<QuadEdges> m_quadEdge;
 
     /** \brief Creates the EdgeSetIndex.
      *
@@ -181,7 +202,7 @@ protected:
     /** \brief Returns the TriangleEdges array (ie provide the 3 edge indices for each triangle)
      *
      */
-    const sofa::helper::vector< TriangleEdges > &getTriangleEdgeArray() ;
+    const vector< TriangleEdges > &getTriangleEdgeArray() ;
 
     /** \brief Creates the Triangle Edge Shell Array
      *
@@ -189,6 +210,33 @@ protected:
      * m_triangleEdgeShell[i] contains the indices of all triangles adjacent to the ith edge
      */
     void createTriangleEdgeShellArray();
+
+    /** \brief Creates the Quad Vertex Shell Array
+     *
+     * This function is only called if the QuadVertexShell array is required.
+     * m_quadVertexShell[i] contains the indices of all quads adjacent to the ith vertex
+     */
+    void createQuadVertexShellArray ();
+
+    /** \brief Creates the array of edge indices for each quad
+     *
+     * This function is only called if the QuadEdge array is required.
+     * m_quadEdge[i] contains the 4 indices of the 4 edges opposite to the ith vertex
+     */
+    void createQuadEdgeArray();
+
+    /** \brief Returns the QuadEdges array (ie provide the 4 edge indices for each quad)
+     *
+     */
+    const vector< QuadEdges > &getQuadEdgeArray();
+
+    /** \brief Creates the Quad Edge Shell Array
+     *
+     * This function is only called if the QuadVertexShell array is required.
+     * m_quadEdgeShell[i] contains the indices of all quads adjacent to the ith edge
+     */
+    void createQuadEdgeShellArray();
+
 
     int revision;
 
