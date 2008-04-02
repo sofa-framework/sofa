@@ -343,6 +343,27 @@ void MeshTopology::createTriangleVertexShellArray ()
     }
 }
 
+const vector<MeshTopology::EdgeID>& MeshTopology::getEdgeTriangleShell(TriangleID i)
+{
+    const vector< TriangleEdges > &tea = getTriangleEdgeArray();
+    static vector< EdgeID > triangleEdge;
+    triangleEdge[0] = tea[i][0];
+    triangleEdge[1] = tea[i][1];
+    triangleEdge[2] = tea[i][2];
+    return triangleEdge;
+}
+
+const vector<MeshTopology::EdgeID>& MeshTopology::getEdgeQuadShell(QuadID i)
+{
+    const vector< QuadEdges > &qea = getQuadEdgeArray();
+    static vector< EdgeID > quadEdge;
+    quadEdge[0] = qea[i][0];
+    quadEdge[1] = qea[i][1];
+    quadEdge[2] = qea[i][2];
+    quadEdge[3] = qea[i][3];
+    return quadEdge;
+}
+
 const vector<MeshTopology::TriangleID>& MeshTopology::getTriangleVertexShell(PointID i)
 {
     if (!m_triangleVertexShell.size())
@@ -461,6 +482,123 @@ const vector<MeshTopology::TriangleID>& MeshTopology::getTriangleEdgeShell(EdgeI
     if (!m_triangleEdgeShell.size())
         createTriangleEdgeShellArray();
     return m_triangleEdgeShell[i];
+}
+
+void MeshTopology::createQuadVertexShellArray ()
+{
+    m_quadVertexShell.resize( nbPoints );
+    unsigned int j;
+
+    for (unsigned int i = 0; i < seqQuads.size(); ++i)
+    {
+        // adding edge i in the edge shell of both points
+        for (j=0; j<4; ++j)
+            m_quadVertexShell[ seqQuads[i][j]  ].push_back( i );
+    }
+}
+
+const vector<MeshTopology::QuadID>& MeshTopology::getQuadVertexShell(PointID i)
+{
+    if (!m_quadVertexShell.size())
+        createQuadVertexShellArray();
+    return m_quadVertexShell[i];
+}
+
+
+void MeshTopology::createQuadEdgeArray ()
+{
+    m_quadEdge.resize( getNbQuads());
+    unsigned int j;
+    int edgeIndex;
+
+    if (seqEdges.getValue().size()>0)
+    {
+
+        for (unsigned int i = 0; i < seqQuads.size(); ++i)
+        {
+            Quad &t=seqQuads[i];
+            // adding edge i in the edge shell of both points
+            for (j=0; j<4; ++j)
+            {
+                edgeIndex=getEdgeIndex(t[(j+1)%4],t[(j+2)%4]);
+                assert(edgeIndex!= -1);
+                m_quadEdge[i][j]=edgeIndex;
+            }
+        }
+    }
+    else
+    {
+        // create a temporary map to find redundant edges
+        std::map<Edge,unsigned int> edgeMap;
+        std::map<Edge,unsigned int>::iterator ite;
+        Edge e;
+        unsigned int v1,v2;
+        /// create the m_edge array at the same time than it fills the m_hexahedronEdges array
+        for (unsigned int i = 0; i < seqQuads.size(); ++i)
+        {
+            Quad &t=seqQuads[i];
+            for (j=0; j<4; ++j)
+            {
+                v1=t[(j+1)%4];
+                v2=t[(j+2)%4];
+                // sort vertices in lexicographics order
+                if (v1<v2)
+                {
+                    e=Edge(v1,v2);
+                }
+                else
+                {
+                    e=Edge(v2,v1);
+                }
+                ite=edgeMap.find(e);
+                if (ite==edgeMap.end())
+                {
+                    // edge not in edgeMap so create a new one
+                    edgeIndex=edgeMap.size();
+                    edgeMap[e]=edgeIndex;
+                    vector<Edge> ea=seqEdges.getValue();
+                    ea.push_back(e);
+                    seqEdges.setValue(ea);
+                }
+                else
+                {
+                    edgeIndex=(*ite).second;
+                }
+                m_quadEdge[i][j]=edgeIndex;
+            }
+        }
+    }
+}
+
+const vector< MeshTopology::QuadEdges>& MeshTopology::getQuadEdgeArray()
+{
+    if (!m_quadEdge.size())
+        createQuadEdgeArray();
+    return m_quadEdge;
+}
+
+void MeshTopology::createQuadEdgeShellArray ()
+{
+    m_quadEdgeShell.resize( getNbEdges() );
+    unsigned int j;
+    const vector< QuadEdges > &qea=getQuadEdgeArray();
+
+
+    for (unsigned int i = 0; i < seqQuads.size(); ++i)
+    {
+        // adding edge i in the edge shell of both points
+        for (j=0; j<4; ++j)
+        {
+            m_quadEdgeShell[ qea[i][j] ].push_back( i );
+        }
+    }
+}
+
+const vector< MeshTopology::QuadID >& MeshTopology::getQuadEdgeShell(EdgeID i)
+{
+    if (!m_quadEdgeShell.size())
+        createQuadEdgeShellArray();
+    return m_quadEdgeShell[i];
 }
 
 bool MeshTopology::hasPos() const
